@@ -20,31 +20,23 @@ public class SlcTestTask extends AbstractSpringTask {
 	}
 
 	public TestDefinitionArg createTestDefinition() {
-		testDefinitionArg = new TestDefinitionArg(getContext());
+		testDefinitionArg = new TestDefinitionArg();
 		return testDefinitionArg;
 	}
 
 	public TestDataArg createTestData() {
-		testDataArg = new TestDataArg(getContext());
+		testDataArg = new TestDataArg();
 		return testDataArg;
 	}
 }
 
 class TestDefinitionArg extends AbstractSpringArg {
-	public TestDefinitionArg(ApplicationContext context) {
-		setContext(context);
-	}
-	
 	public TestDefinition getTestDefinition(){
 		return (TestDefinition)getBeanInstance();
 	}
 }
 
 class TestDataArg extends AbstractSpringArg {
-	public TestDataArg(ApplicationContext context) {
-		setContext(context);
-	}
-	
 	public TestData getTestData(){
 		return (TestData)getBeanInstance();
 	}

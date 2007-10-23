@@ -7,13 +7,14 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.context.ApplicationContext;
 
-import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Location;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.DataType;
 
-public abstract class AbstractSpringArg {
+public abstract class AbstractSpringArg extends DataType {
 	private List<OverrideArg> overrides = new Vector<OverrideArg>();
 
 	private String bean;
-	private ApplicationContext context;
 
 	public String getBean() {
 		return bean;
@@ -24,7 +25,7 @@ public abstract class AbstractSpringArg {
 	}
 
 	protected Object getBeanInstance() {
-		Object obj = context.getBean(bean);
+		Object obj = getContext().getBean(bean);
 
 		BeanWrapper wrapper = new BeanWrapperImpl(obj);
 		for (OverrideArg override : overrides) {
@@ -34,14 +35,15 @@ public abstract class AbstractSpringArg {
 		return obj;
 	}
 
-	public void setContext(ApplicationContext context) {
-		this.context = context;
-	}
-
 	public OverrideArg createOverride() {
 		OverrideArg propertyArg = new OverrideArg();
-		propertyArg.setContext(context);
 		overrides.add(propertyArg);
 		return propertyArg;
 	}
+
+	protected ApplicationContext getContext() {
+		return (ApplicationContext) getProject().getReference(
+				SlcProjectHelper.REF_ROOT_CONTEXT);
+	}
+
 }
