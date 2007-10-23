@@ -1,4 +1,4 @@
-package org.argeo.slc.ant;
+package org.argeo.slc.ant.spring;
 
 import java.util.List;
 import java.util.Vector;
@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.DataType;
+
+import org.argeo.slc.ant.SlcProjectHelper;
 
 public abstract class AbstractSpringArg extends DataType {
 	private List<OverrideArg> overrides = new Vector<OverrideArg>();

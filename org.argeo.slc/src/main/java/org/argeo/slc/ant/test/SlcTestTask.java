@@ -1,13 +1,15 @@
-package org.argeo.slc.ant;
-
-import org.springframework.context.ApplicationContext;
+package org.argeo.slc.ant.test;
 
 import org.apache.tools.ant.BuildException;
 
+import org.argeo.slc.ant.SAwareArg;
+import org.argeo.slc.ant.SAwareTask;
+import org.argeo.slc.ant.spring.AbstractSpringArg;
+import org.argeo.slc.ant.spring.AbstractSpringTask;
 import org.argeo.slc.core.test.TestData;
 import org.argeo.slc.core.test.TestDefinition;
 
-public class SlcTestTask extends AbstractSpringTask {
+public class SlcTestTask extends SAwareTask {
 
 	private TestDefinitionArg testDefinitionArg;
 	private TestDataArg testDataArg;
@@ -21,22 +23,24 @@ public class SlcTestTask extends AbstractSpringTask {
 
 	public TestDefinitionArg createTestDefinition() {
 		testDefinitionArg = new TestDefinitionArg();
+		testDefinitionArg.setParentSAware(sAware);
 		return testDefinitionArg;
 	}
 
 	public TestDataArg createTestData() {
 		testDataArg = new TestDataArg();
+		testDataArg.setParentSAware(sAware);
 		return testDataArg;
 	}
 }
 
-class TestDefinitionArg extends AbstractSpringArg {
+class TestDefinitionArg extends SAwareArg {
 	public TestDefinition getTestDefinition(){
 		return (TestDefinition)getBeanInstance();
 	}
 }
 
-class TestDataArg extends AbstractSpringArg {
+class TestDataArg extends SAwareArg {
 	public TestData getTestData(){
 		return (TestData)getBeanInstance();
 	}

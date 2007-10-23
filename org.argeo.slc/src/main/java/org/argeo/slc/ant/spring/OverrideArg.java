@@ -1,6 +1,7 @@
-package org.argeo.slc.ant;
+package org.argeo.slc.ant.spring;
 
 import org.apache.tools.ant.BuildException;
+
 
 public class OverrideArg extends AbstractSpringArg {
 	private String name;
