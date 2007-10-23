@@ -19,4 +19,26 @@
 		<property name="reached" value="value2" />
 	</bean>
 
+	<bean id="dummyTestDataObjOK"
+		class="org.argeo.slc.testslc.DummyTestData" scope="prototype">
+		<property name="expected" ref="dummyTestDataObject1" />
+		<property name="reached" ref="dummyTestDataObject1" />
+	</bean>
+
+	<bean id="dummyTestDataObjNOK"
+		class="org.argeo.slc.testslc.DummyTestData" scope="prototype">
+		<property name="expected" ref="dummyTestDataObject1" />
+		<property name="reached" ref="dummyTestDataObject2" />
+	</bean>
+
+	<bean id="dummyTestDataObject1"
+		class="org.argeo.slc.testslc.DummyTestDataObject" scope="prototype">
+		<property name="value" value="dummy1" />
+	</bean>
+
+	<bean id="dummyTestDataObject2"
+		class="org.argeo.slc.testslc.DummyTestDataObject" scope="prototype">
+		<property name="value" value="dummy2" />
+	</bean>
+
 </beans>
