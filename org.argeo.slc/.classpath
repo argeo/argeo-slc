@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry kind="src" path="src/test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/ant.jar" sourcepath="lib-src/ant-src-1.7.0.zip"/>
+	<classpathentry kind="lib" path="lib/ant-launcher.jar" sourcepath="lib-src/ant-1.7.0.zip"/>
+	<classpathentry kind="lib" path="lib/spring-2.0.6.jar" sourcepath="lib-src/spring-2.0.6-src.zip"/>
+	<classpathentry kind="lib" path="lib/commons-logging.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

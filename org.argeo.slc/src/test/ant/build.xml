@@ -1,0 +1,15 @@
+<project default="test">
+	<taskdef name="slc.test" classname="org.argeo.slc.ant.SlcTestTask" />
+
+	<target name="test">
+		<slc.test>
+			<testDefinition bean="dummyTestDefinition" />
+			<testData bean="dummyTestDataOK" />
+		</slc.test>
+
+		<slc.test>
+			<testDefinition bean="dummyTestDefinition" />
+			<testData bean="dummyTestDataNOK" />
+		</slc.test>
+	</target>
+</project>
