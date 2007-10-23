@@ -1,10 +1,12 @@
-<project default="test">
+<project default="test" name="testProject">
+	<description>A Test project</description>
+	
 	<taskdef name="slc.test" classname="org.argeo.slc.ant.test.SlcTestTask" />
 
 	<target name="test" depends="testSimple,testObj">
 	</target>
 
-	<target name="testSimple">
+	<target name="testSimple" description="A simple test">
 		<!-- Success -->
 		<slc.test>
 			<testDefinition bean="dummyTestDefinition" />
@@ -26,11 +28,11 @@
 		</slc.test>
 	</target>
 	
-	<target name="testObj">
+	<target name="testObj" description="An object test">
 		<!-- Success -->
 		<slc.test>
-			<testDefinition bean="dummyTestDefinition" />
-			<testData bean="dummyTestDataObjOK" />
+			<testDefinition bean="dummyTestDefinition"/>
+			<testData bean="dummyTestDataObjOK"  description="A dummy testDef"/>
 		</slc.test>
 
 		<!-- Failure -->

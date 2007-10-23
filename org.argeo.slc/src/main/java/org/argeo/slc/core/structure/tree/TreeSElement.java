@@ -9,7 +9,6 @@ import org.argeo.slc.core.structure.StructurePath;
 public class TreeSElement implements StructureElement {
 	private String description;
 	private TreeSPath path;
-	private Boolean active;
 
 	private List<TreeSElement> children = new Vector<TreeSElement>();
 
@@ -23,14 +22,6 @@ public class TreeSElement implements StructureElement {
 
 	public StructurePath getPath() {
 		return path;
-	}
-
-	public Boolean getActive() {
-		return active;
-	}
-
-	public void setActive(Boolean active) {
-		this.active = active;
 	}
 
 	public List<TreeSElement> getChildren() {

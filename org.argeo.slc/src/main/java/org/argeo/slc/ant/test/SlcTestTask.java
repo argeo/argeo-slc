@@ -4,8 +4,6 @@ import org.apache.tools.ant.BuildException;
 
 import org.argeo.slc.ant.SAwareArg;
 import org.argeo.slc.ant.SAwareTask;
-import org.argeo.slc.ant.spring.AbstractSpringArg;
-import org.argeo.slc.ant.spring.AbstractSpringTask;
 import org.argeo.slc.core.test.TestData;
 import org.argeo.slc.core.test.TestDefinition;
 
@@ -15,7 +13,7 @@ public class SlcTestTask extends SAwareTask {
 	private TestDataArg testDataArg;
 
 	@Override
-	public void execute() throws BuildException {
+	public void executeActions(String mode) throws BuildException {
 		TestDefinition testDefinition = testDefinitionArg.getTestDefinition();
 		testDefinition.setTestData(testDataArg.getTestData());
 		testDefinition.execute();

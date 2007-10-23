@@ -1,0 +1,81 @@
+package org.argeo.slc.ant;
+
+import java.io.File;
+import java.util.List;
+import java.util.Vector;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.ProjectHelper;
+
+import org.argeo.slc.core.structure.StructureElement;
+import org.argeo.slc.core.structure.StructurePath;
+import org.argeo.slc.core.structure.StructureRegistry;
+
+public class AntRegistryUtil {
+	private static Log log = LogFactory.getLog(AntRegistryUtil.class);
+
+	public static StructureRegistry readRegistry(File antFile) {
+
+		Project p = new Project();
+		p.setUserProperty("ant.file", antFile.getAbsolutePath());
+		p.init();
+		ProjectHelper helper = new SlcProjectHelper();
+		p.addReference("ant.projectHelper", helper);
+		helper.parse(p, antFile);
+
+		StructureRegistry registry = (StructureRegistry) p
+				.getReference(SlcProjectHelper.REF_STRUCTURE_REGISTRY);
+		registry.setMode(StructureRegistry.READ);
+
+		p.executeTarget(p.getDefaultTarget());
+		return registry;
+	}
+
+	public static void runActive(File antFile, List<StructurePath> activePaths) {
+
+		Project p = new Project();
+		p.setUserProperty("ant.file", antFile.getAbsolutePath());
+		p.init();
+		ProjectHelper helper = new SlcProjectHelper();
+		p.addReference("ant.projectHelper", helper);
+		helper.parse(p, antFile);
+
+		StructureRegistry registry = (StructureRegistry) p
+		.getReference(SlcProjectHelper.REF_STRUCTURE_REGISTRY);
+		registry.setMode(StructureRegistry.ACTIVE);
+		registry.setActivePaths(activePaths);
+		p.executeTarget(p.getDefaultTarget());
+	}
+
+	public static void main(String[] args) {
+		File antFile = new File(
+				"C:/dev/workspaces/default/org.argeo.slc/src/test/ant/build.xml");
+		System
+				.setProperty(SlcProjectHelper.PROP_APPLICATION_CONTEXT,
+						"C:/dev/workspaces/default/org.argeo.slc/src/test/ant/applicationContext.xml");
+		StructureRegistry registry = AntRegistryUtil.readRegistry(antFile);
+
+		StringBuffer buf = new StringBuffer("");
+
+		int count = 0;
+		List<StructurePath> activePaths = new Vector<StructurePath>();
+		for (StructureElement element : registry.listElements()) {
+			buf.append(element.getPath());
+			if (count != 0 && count % 2 == 0) {
+				// skip
+			} else {
+				activePaths.add(element.getPath());
+				buf.append(" <");
+			}
+			buf.append('\n');
+			count++;
+		}
+		log.info(buf);
+
+		runActive(antFile, activePaths);
+
+	}
+
+}

@@ -7,13 +7,13 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.helper.ProjectHelperImpl;
 
-import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.tree.TreeSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 
 public class SlcProjectHelper extends ProjectHelperImpl {
 	public static String PROP_APPLICATION_CONTEXT = "org.argeo.slc.slcRootContext";
+	//public static String PROP_REGISTRY_MODE = "org.argeo.slc.slcRegistryMode";
 	public static String REF_ROOT_CONTEXT = "slcApplicationContext";
 	public static String REF_STRUCTURE_REGISTRY = "slcStructureRegistry";
 
@@ -27,18 +27,19 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		ApplicationContext context = new FileSystemXmlApplicationContext(acPath);
 		project.addReference(REF_ROOT_CONTEXT, context);
 
-		// init structure register
-		TreeSRegistry registry = new TreeSRegistry();
-		project.addReference(REF_STRUCTURE_REGISTRY, registry);
+		// init structure register if it does not exist
+			TreeSRegistry registry = new TreeSRegistry();
+			project.addReference(REF_STRUCTURE_REGISTRY, registry);
 
-		// call the underlying implementation to do the actual work
-		super.parse(project, source);
+			// call the underlying implementation to do the actual work
+			super.parse(project, source);
 
-		String projectDescription = project.getDescription() != null ? project
-				.getDescription() : "Root";
-		TreeSElement element = TreeSElement.createRootElelment(
-				getProjectPathName(project), projectDescription);
-		registry.register(element);
+			String projectDescription = project.getDescription() != null ? project
+					.getDescription()
+					: "Root";
+			TreeSElement element = TreeSElement.createRootElelment(
+					getProjectPathName(project), projectDescription);
+			registry.register(element);
 	}
 
 	private static void stdOut(Object o) {

@@ -1,8 +1,10 @@
 package org.argeo.slc.testslc;
 
-public class DummyTestDataObject {
-	private Object value;
+import org.argeo.slc.core.structure.tree.DefaultTreeSAware;
 
+public class DummyTestDataObject extends DefaultTreeSAware{
+	private Object value;
+	
 	public Object getValue() {
 		return value;
 	}

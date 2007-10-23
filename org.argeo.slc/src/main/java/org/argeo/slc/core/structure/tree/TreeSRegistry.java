@@ -16,6 +16,9 @@ public class TreeSRegistry implements StructureRegistry {
 
 	private List<TreeSElement> elements = new Vector<TreeSElement>();
 	private List<TreeSPath> paths = new Vector<TreeSPath>();
+	private String mode = StructureRegistry.ALL;
+
+	private List<StructurePath> activePaths;
 
 	public List<StructureElement> listElements() {
 		return new Vector<StructureElement>(elements);
@@ -51,4 +54,22 @@ public class TreeSRegistry implements StructureRegistry {
 		}
 		return (TreeSElement) element;
 	}
+
+	public String getMode() {
+		return mode;
+	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
+
+	public List<StructurePath> getActivePaths() {
+		return activePaths;
+	}
+
+	public void setActivePaths(List<StructurePath> activePaths) {
+		this.activePaths = activePaths;
+	}
+	
+	
 }
