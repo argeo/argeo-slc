@@ -1,15 +1,6 @@
 package org.argeo.slc.ant.structure;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Vector;
-
-import org.springframework.util.CollectionUtils;
-
-import org.argeo.slc.ant.SlcProjectHelper;
 import org.argeo.slc.ant.spring.AbstractSpringArg;
-import org.argeo.slc.core.structure.PropagatingSAware;
-import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSAware;

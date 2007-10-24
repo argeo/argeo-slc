@@ -1,9 +1,6 @@
 package org.argeo.slc.core.structure.tree;
 
-import java.util.List;
-
 import org.argeo.slc.core.structure.PropagatingSAware;
-import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.WritableSAware;
 
 /**

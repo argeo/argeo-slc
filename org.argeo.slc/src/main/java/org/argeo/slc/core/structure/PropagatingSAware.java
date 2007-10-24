@@ -2,7 +2,7 @@ package org.argeo.slc.core.structure;
 
 import java.util.List;
 
-/** Structure aware object able to propagate registrtaion.*/
+/** Structure aware object able to propagate registration.*/
 public interface PropagatingSAware extends StructureAware {
 	/**
 	 * Adds a structure aware to which registration should be propagated. The
