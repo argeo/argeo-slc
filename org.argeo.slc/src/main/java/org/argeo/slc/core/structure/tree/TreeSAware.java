@@ -2,11 +2,16 @@ package org.argeo.slc.core.structure.tree;
 
 import java.util.List;
 
+import org.argeo.slc.core.structure.PropagatingSAware;
 import org.argeo.slc.core.structure.StructureAware;
+import org.argeo.slc.core.structure.WritableSAware;
 
-public interface TreeSAware extends StructureAware{
-	public void setElement(TreeSElement element);
+/**
+ * Provides methods to externally propagate tree related informations in tree
+ * based registries.
+ * 
+ * @see TreeSElement
+ */
+public interface TreeSAware extends WritableSAware, PropagatingSAware {
 
-	public void addChild(TreeSAware sAware);
-	public List<TreeSAware> getChildren();
 }

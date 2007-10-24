@@ -7,9 +7,9 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.helper.ProjectHelperImpl;
 
+import org.argeo.slc.core.structure.DefaultSRegistry;
 import org.argeo.slc.core.structure.tree.TreeSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.structure.tree.TreeSRegistry;
 
 public class SlcProjectHelper extends ProjectHelperImpl {
 	public static String PROP_APPLICATION_CONTEXT = "org.argeo.slc.slcRootContext";
@@ -28,7 +28,7 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		project.addReference(REF_ROOT_CONTEXT, context);
 
 		// init structure register if it does not exist
-			TreeSRegistry registry = new TreeSRegistry();
+		DefaultSRegistry registry = new DefaultSRegistry();
 			project.addReference(REF_STRUCTURE_REGISTRY, registry);
 
 			// call the underlying implementation to do the actual work
@@ -46,7 +46,7 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		System.out.println(o);
 	}
 
-	static TreeSPath getProjectPath(Project project) {
+	public static TreeSPath getProjectPath(Project project) {
 		return TreeSPath.createChild(null, getProjectPathName(project));
 	}
 

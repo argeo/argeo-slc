@@ -31,9 +31,9 @@ public class DummyTestData extends DefaultTreeSAware implements TestData {
 		if (expected instanceof TreeSAware) {
 			TreeSAware sAware = (TreeSAware) expected;
 			TreeSElement element = ((TreeSElement) getElement()).createChild(
-					"expected" + getChildren().size(), "<no desc>");
+					"expected" + getPropagationList().size(), "<no desc>");
 			sAware.setElement(element);
-			addChild(sAware);
+			addToPropagationList(sAware);
 		}
 		super.onRegister(registry);
 	}

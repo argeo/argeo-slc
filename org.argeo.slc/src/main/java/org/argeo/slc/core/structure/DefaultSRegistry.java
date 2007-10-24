@@ -1,4 +1,4 @@
-package org.argeo.slc.core.structure.tree;
+package org.argeo.slc.core.structure;
 
 import java.util.List;
 import java.util.Vector;
@@ -6,16 +6,12 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.argeo.slc.core.structure.StructureAware;
-import org.argeo.slc.core.structure.StructureElement;
-import org.argeo.slc.core.structure.StructurePath;
-import org.argeo.slc.core.structure.StructureRegistry;
+/** Default implementation of a <code>StructureRegistry</code>.*/
+public class DefaultSRegistry implements StructureRegistry {
+	private static Log log = LogFactory.getLog(DefaultSRegistry.class);
 
-public class TreeSRegistry implements StructureRegistry {
-	private static Log log = LogFactory.getLog(TreeSRegistry.class);
-
-	private List<TreeSElement> elements = new Vector<TreeSElement>();
-	private List<TreeSPath> paths = new Vector<TreeSPath>();
+	private List<StructureElement> elements = new Vector<StructureElement>();
+	private List<StructurePath> paths = new Vector<StructurePath>();
 	private String mode = StructureRegistry.ALL;
 
 	private List<StructurePath> activePaths;
@@ -25,9 +21,9 @@ public class TreeSRegistry implements StructureRegistry {
 	}
 
 	public void register(StructureElement element) {
-		TreeSElement treeSElement = checkElement(element);
+		StructureElement treeSElement = element;
 		elements.add(treeSElement);
-		paths.add((TreeSPath) treeSElement.getPath());
+		paths.add( treeSElement.getPath());
 		log.debug("Registered " + treeSElement.getPath() + " (desc: "
 				+ treeSElement.getDescription() + " position: "
 				+ elements.size() + ")");
@@ -47,14 +43,6 @@ public class TreeSRegistry implements StructureRegistry {
 		}
 	}
 
-	protected TreeSElement checkElement(StructureElement element) {
-		if (!(element instanceof TreeSElement)) {
-			throw new RuntimeException("Element class " + element.getClass()
-					+ " is not supported.");
-		}
-		return (TreeSElement) element;
-	}
-
 	public String getMode() {
 		return mode;
 	}
@@ -70,6 +58,5 @@ public class TreeSRegistry implements StructureRegistry {
 	public void setActivePaths(List<StructurePath> activePaths) {
 		this.activePaths = activePaths;
 	}
-	
-	
+
 }

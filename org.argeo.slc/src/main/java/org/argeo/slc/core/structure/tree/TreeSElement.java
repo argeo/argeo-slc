@@ -6,6 +6,12 @@ import java.util.Vector;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructurePath;
 
+/**
+ * Implementation of <code>StructureElement</code> for tree based registries,
+ * using <code>TreeSPath</code>
+ * 
+ * @see TreeSPath
+ */
 public class TreeSElement implements StructureElement {
 	private String description;
 	private TreeSPath path;

@@ -2,11 +2,12 @@ package org.argeo.slc.ant.test;
 
 import org.apache.tools.ant.BuildException;
 
-import org.argeo.slc.ant.SAwareArg;
-import org.argeo.slc.ant.SAwareTask;
+import org.argeo.slc.ant.structure.SAwareArg;
+import org.argeo.slc.ant.structure.SAwareTask;
 import org.argeo.slc.core.test.TestData;
 import org.argeo.slc.core.test.TestDefinition;
 
+/** Ant task wrapping a test run.*/
 public class SlcTestTask extends SAwareTask {
 
 	private TestDefinitionArg testDefinitionArg;
@@ -17,17 +18,17 @@ public class SlcTestTask extends SAwareTask {
 		TestDefinition testDefinition = testDefinitionArg.getTestDefinition();
 		testDefinition.setTestData(testDataArg.getTestData());
 		testDefinition.execute();
-	}
+	}	
 
 	public TestDefinitionArg createTestDefinition() {
 		testDefinitionArg = new TestDefinitionArg();
-		testDefinitionArg.setParentSAware(sAware);
+		sAwareArgs.add(testDefinitionArg);
 		return testDefinitionArg;
 	}
 
 	public TestDataArg createTestData() {
 		testDataArg = new TestDataArg();
-		testDataArg.setParentSAware(sAware);
+		sAwareArgs.add(testDataArg);
 		return testDataArg;
 	}
 }

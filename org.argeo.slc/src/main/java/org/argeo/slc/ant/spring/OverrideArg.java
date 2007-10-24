@@ -2,11 +2,12 @@ package org.argeo.slc.ant.spring;
 
 import org.apache.tools.ant.BuildException;
 
-
+/** Ant type allowing to override bean properties. */
 public class OverrideArg extends AbstractSpringArg {
 	private String name;
 	private Object value;
 
+	/** The nbame of the property to override. */
 	public String getName() {
 		return name;
 	}
@@ -15,6 +16,7 @@ public class OverrideArg extends AbstractSpringArg {
 		this.name = name;
 	}
 
+	/** Both value and bean cannot be set. */
 	public void setValue(String value) {
 		if (getBean() != null) {
 			throw new BuildException(
@@ -32,6 +34,10 @@ public class OverrideArg extends AbstractSpringArg {
 		super.setBean(bean);
 	}
 
+	/**
+	 * The related object: the value if a value had been set or an instance of
+	 * the bean if not.
+	 */
 	public Object getObject() {
 		if (value != null) {
 			return value;

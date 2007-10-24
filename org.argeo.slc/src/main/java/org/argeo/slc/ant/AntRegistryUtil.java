@@ -63,7 +63,7 @@ public class AntRegistryUtil {
 		List<StructurePath> activePaths = new Vector<StructurePath>();
 		for (StructureElement element : registry.listElements()) {
 			buf.append(element.getPath());
-			if (count != 0 && count % 2 == 0) {
+			if (count != 0 && count % 3 == 0) {
 				// skip
 			} else {
 				activePaths.add(element.getPath());
