@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="javadoc">
+<target name="javadoc">
+<javadoc access="public" author="true" classpath="lib/commons-logging.jar;lib/ant-launcher.jar;lib/spring-2.0.6.jar;lib/ant.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.argeo.slc.ant,org.argeo.slc.core.structure.tree,org.argeo.slc.core.test,org.argeo.slc.ant.test,org.argeo.slc.core.structure,org.argeo.slc.ant.spring,org.argeo.slc.ant.structure" source="1.5" sourcepath="src/test/java;src/main/java" splitindex="true" use="true" version="true"/>
+</target>
+</project>

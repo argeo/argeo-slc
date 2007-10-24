@@ -1,7 +1,7 @@
 <project default="test" name="testProject">
 	<description>A Test project</description>
 	
-	<taskdef name="slc.test" classname="org.argeo.slc.ant.test.SlcTestTask" />
+	<taskdef resource="org/argeo/slc/ant/taskdefs.properties" />
 
 	<target name="test" depends="testSimple,testObj">
 	</target>

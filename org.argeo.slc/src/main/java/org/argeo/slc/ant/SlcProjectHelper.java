@@ -11,9 +11,14 @@ import org.argeo.slc.core.structure.DefaultSRegistry;
 import org.argeo.slc.core.structure.tree.TreeSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 
+/**
+ * Custom implementation of a <code>ProjectHelper</code> binding a Spring
+ * application context and a structure registry with the Ant project.
+ */
 public class SlcProjectHelper extends ProjectHelperImpl {
 	public static String PROP_APPLICATION_CONTEXT = "org.argeo.slc.slcRootContext";
-	//public static String PROP_REGISTRY_MODE = "org.argeo.slc.slcRegistryMode";
+	// public static String PROP_REGISTRY_MODE =
+	// "org.argeo.slc.slcRegistryMode";
 	public static String REF_ROOT_CONTEXT = "slcApplicationContext";
 	public static String REF_STRUCTURE_REGISTRY = "slcStructureRegistry";
 
@@ -29,23 +34,23 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 
 		// init structure register if it does not exist
 		DefaultSRegistry registry = new DefaultSRegistry();
-			project.addReference(REF_STRUCTURE_REGISTRY, registry);
+		project.addReference(REF_STRUCTURE_REGISTRY, registry);
 
-			// call the underlying implementation to do the actual work
-			super.parse(project, source);
+		// call the underlying implementation to do the actual work
+		super.parse(project, source);
 
-			String projectDescription = project.getDescription() != null ? project
-					.getDescription()
-					: "Root";
-			TreeSElement element = TreeSElement.createRootElelment(
-					getProjectPathName(project), projectDescription);
-			registry.register(element);
+		String projectDescription = project.getDescription() != null ? project
+				.getDescription() : "Root";
+		TreeSElement element = TreeSElement.createRootElelment(
+				getProjectPathName(project), projectDescription);
+		registry.register(element);
 	}
 
 	private static void stdOut(Object o) {
 		System.out.println(o);
 	}
 
+	/** Get the path of a project (root).*/
 	public static TreeSPath getProjectPath(Project project) {
 		return TreeSPath.createChild(null, getProjectPathName(project));
 	}

@@ -13,9 +13,11 @@ import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 
+/** Utilities to manipulate the structure registry in SLC Ant.*/
 public class AntRegistryUtil {
 	private static Log log = LogFactory.getLog(AntRegistryUtil.class);
 
+	/** Read a structure registry from an Ant file without executing it. */
 	public static StructureRegistry readRegistry(File antFile) {
 
 		Project p = new Project();
@@ -33,6 +35,7 @@ public class AntRegistryUtil {
 		return registry;
 	}
 
+	/** Execute only the active paths of teh Ant files. */
 	public static void runActive(File antFile, List<StructurePath> activePaths) {
 
 		Project p = new Project();
@@ -43,7 +46,7 @@ public class AntRegistryUtil {
 		helper.parse(p, antFile);
 
 		StructureRegistry registry = (StructureRegistry) p
-		.getReference(SlcProjectHelper.REF_STRUCTURE_REGISTRY);
+				.getReference(SlcProjectHelper.REF_STRUCTURE_REGISTRY);
 		registry.setMode(StructureRegistry.ACTIVE);
 		registry.setActivePaths(activePaths);
 		p.executeTarget(p.getDefaultTarget());
