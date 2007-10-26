@@ -4,11 +4,14 @@ import org.apache.tools.ant.BuildException;
 
 import org.argeo.slc.ant.structure.SAwareArg;
 import org.argeo.slc.ant.structure.SAwareTask;
+import org.argeo.slc.core.deploy.DeployedSystem;
 import org.argeo.slc.core.test.TestData;
 import org.argeo.slc.core.test.TestDefinition;
+import org.argeo.slc.core.test.TestResult;
+import org.argeo.slc.core.test.TestRun;
 
-/** Ant task wrapping a test run.*/
-public class SlcTestTask extends SAwareTask {
+/** Ant task wrapping a test run. */
+public class SlcTestTask extends SAwareTask implements TestRun {
 
 	private TestDefinitionArg testDefinitionArg;
 	private TestDataArg testDataArg;
@@ -16,9 +19,8 @@ public class SlcTestTask extends SAwareTask {
 	@Override
 	public void executeActions(String mode) throws BuildException {
 		TestDefinition testDefinition = testDefinitionArg.getTestDefinition();
-		testDefinition.setTestData(testDataArg.getTestData());
-		testDefinition.execute();
-	}	
+		testDefinition.execute(this);
+	}
 
 	public TestDefinitionArg createTestDefinition() {
 		testDefinitionArg = new TestDefinitionArg();
@@ -31,17 +33,48 @@ public class SlcTestTask extends SAwareTask {
 		sAwareArgs.add(testDataArg);
 		return testDataArg;
 	}
+
+	public DeployedSystem getDeployedSystem() {
+		throw new RuntimeException("Not yet implemented.");
+	}
+
+	public TestDefinition geTestDefinition() {
+		return testDefinitionArg.getTestDefinition();
+	}
+
+	public TestData getTestData() {
+		return testDataArg.getTestData();
+	}
+
+	public TestResult getTestResult() {
+		throw new RuntimeException("Not yet implemented.");
+	}
+
 }
 
 class TestDefinitionArg extends SAwareArg {
-	public TestDefinition getTestDefinition(){
-		return (TestDefinition)getBeanInstance();
+	private TestDefinition testDefinition;
+
+	public TestDefinition getTestDefinition() {
+		if (testDefinition == null) {
+			// don't call Spring each time in order not to multi-instantiate
+			// prototype
+			testDefinition = (TestDefinition) getBeanInstance();
+		}
+		return testDefinition;
 	}
 }
 
 class TestDataArg extends SAwareArg {
-	public TestData getTestData(){
-		return (TestData)getBeanInstance();
+	private TestData testData;
+
+	public TestData getTestData() {
+		if (testData == null) {
+			// don't call Spring each time in order not to multi-instantiate
+			// prototype
+			testData = (TestData) getBeanInstance();
+		}
+		return testData;
 	}
 
 }

@@ -1,6 +1,14 @@
 package org.argeo.slc.core.test;
 
-/** The actual run of a test (<b>NOT YET IMPLEMENTED</b>)*/
-public interface TestRun {
+import org.argeo.slc.core.deploy.DeployedSystem;
 
+/** The actual run of a test */
+public interface TestRun {
+	public TestDefinition geTestDefinition();
+
+	public TestData getTestData();
+
+	public DeployedSystem getDeployedSystem();
+
+	public TestResult getTestResult();
 }
