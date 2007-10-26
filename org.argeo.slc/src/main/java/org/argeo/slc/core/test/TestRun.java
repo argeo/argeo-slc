@@ -4,7 +4,7 @@ import org.argeo.slc.core.deploy.DeployedSystem;
 
 /** The actual run of a test */
 public interface TestRun {
-	public TestDefinition geTestDefinition();
+	public TestDefinition getTestDefinition();
 
 	public TestData getTestData();
 

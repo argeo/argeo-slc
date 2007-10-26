@@ -38,7 +38,7 @@ public class SlcTestTask extends SAwareTask implements TestRun {
 		throw new RuntimeException("Not yet implemented.");
 	}
 
-	public TestDefinition geTestDefinition() {
+	public TestDefinition getTestDefinition() {
 		return testDefinitionArg.getTestDefinition();
 	}
 
