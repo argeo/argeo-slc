@@ -1,5 +1,6 @@
 <project default="test" name="testProject">
 	<description>A Test project</description>
+
 	
 	<taskdef resource="org/argeo/slc/ant/taskdefs.properties" />
 
