@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
+import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 
 /**
@@ -12,8 +13,9 @@ import org.argeo.slc.core.structure.StructureRegistry;
  * registries, using <code>TreeSPath</code>. Convenient to be wrapped in
  * classes which cannot extend it.
  */
-public class DefaultTreeSAware implements TreeSAware {
+public class DefaultTreeSAware implements StructureAware {
 	private StructureElement element;
+	private List<String> names = new Vector<String>();
 	private List<StructureAware> children = new Vector<StructureAware>();
 
 	public StructureElement getElement() {
@@ -24,14 +26,20 @@ public class DefaultTreeSAware implements TreeSAware {
 		this.element = element;
 	}
 
-	public void onRegister(StructureRegistry registry) {
+	public void onRegister(StructureRegistry registry, StructurePath path) {
+		int index = 0;
 		for (StructureAware sAware : children) {
-			registry.register(sAware.getElement());
-			sAware.onRegister(registry);
+			TreeSPath childPath = ((TreeSPath) path).createChild(names
+					.get(index)
+					+ index);
+			registry.register(childPath, sAware.getElement());
+			sAware.onRegister(registry, childPath);
+			index++;
 		}
 	}
 
-	public void addToPropagationList(StructureAware sAware) {
+	public void addToPropagationList(String name, StructureAware sAware) {
+		names.add(name);
 		children.add(sAware);
 	}
 

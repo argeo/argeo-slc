@@ -9,11 +9,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 
-import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 
-/** Utilities to manipulate the structure registry in SLC Ant.*/
+/** Utilities to manipulate the structure registry in SLC Ant. */
 public class AntRegistryUtil {
 	private static Log log = LogFactory.getLog(AntRegistryUtil.class);
 
@@ -22,6 +21,7 @@ public class AntRegistryUtil {
 
 		Project p = new Project();
 		p.setUserProperty("ant.file", antFile.getAbsolutePath());
+		p.setBaseDir(antFile.getParentFile());
 		p.init();
 		ProjectHelper helper = new SlcProjectHelper();
 		p.addReference("ant.projectHelper", helper);
@@ -40,6 +40,7 @@ public class AntRegistryUtil {
 
 		Project p = new Project();
 		p.setUserProperty("ant.file", antFile.getAbsolutePath());
+		p.setBaseDir(antFile.getParentFile());
 		p.init();
 		ProjectHelper helper = new SlcProjectHelper();
 		p.addReference("ant.projectHelper", helper);
@@ -54,22 +55,19 @@ public class AntRegistryUtil {
 
 	public static void main(String[] args) {
 		File antFile = new File(
-				"C:/dev/workspaces/default/org.argeo.slc/src/test/ant/build.xml");
-		System
-				.setProperty(SlcAntConfig.APPLICATION_CONTEXT_PROPERTY,
-						"C:/dev/workspaces/default/org.argeo.slc/src/test/ant/applicationContext.xml");
+				"C:/dev/workspaces/default/org.argeo.slc/src/test/slc/root/Category1/SubCategory2/build.xml");
 		StructureRegistry registry = AntRegistryUtil.readRegistry(antFile);
 
 		StringBuffer buf = new StringBuffer("");
 
 		int count = 0;
 		List<StructurePath> activePaths = new Vector<StructurePath>();
-		for (StructureElement element : registry.listElements()) {
-			buf.append(element.getPath());
+		for (StructurePath path : registry.listPaths()) {
+			buf.append(path);
 			if (count != 0 && count % 3 == 0) {
 				// skip
 			} else {
-				activePaths.add(element.getPath());
+				activePaths.add(path);
 				buf.append(" <");
 			}
 			buf.append('\n');
@@ -80,5 +78,4 @@ public class AntRegistryUtil {
 		runActive(antFile, activePaths);
 
 	}
-
 }

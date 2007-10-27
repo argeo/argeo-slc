@@ -17,6 +17,9 @@ public abstract class AbstractSpringArg extends DataType {
 
 	private String bean;
 
+	// cache bean instance to avoid reading it twice if it is a prototype
+	private Object beanInstance = null;
+
 	/** The <u>name</u> of the underlying bean, as set throught the attribute. */
 	public String getBean() {
 		return bean;
@@ -28,28 +31,29 @@ public abstract class AbstractSpringArg extends DataType {
 	}
 
 	/**
-	 * Retrieve the instance of the bean. <b>If teh underlying Spring bean is a
-	 * prototype, it will instanciated each time.</b>
+	 * Retrieve the instance of the bean. <b>The value is cached.</b>
 	 */
-	protected Object getBeanInstance() {
-		Object obj = getContext().getBean(bean);
+	public Object getBeanInstance() {
+		if (beanInstance == null) {
+			beanInstance = getContext().getBean(bean);
 
-		BeanWrapper wrapper = new BeanWrapperImpl(obj);
-		for (OverrideArg override : overrides) {
-			wrapper.setPropertyValue(override.getName(), override.getObject());
+			BeanWrapper wrapper = new BeanWrapperImpl(beanInstance);
+			for (OverrideArg override : overrides) {
+				wrapper.setPropertyValue(override.getName(), override
+						.getObject());
+			}
 		}
-
-		return obj;
+		return beanInstance;
 	}
 
-	/** Creates an override subtag.*/
+	/** Creates an override subtag. */
 	public OverrideArg createOverride() {
 		OverrideArg propertyArg = new OverrideArg();
 		overrides.add(propertyArg);
 		return propertyArg;
 	}
 
-	/** The related Spring application context.*/
+	/** The related Spring application context. */
 	protected ApplicationContext getContext() {
 		return (ApplicationContext) getProject().getReference(
 				SlcProjectHelper.REF_ROOT_CONTEXT);

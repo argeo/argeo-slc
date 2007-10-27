@@ -24,16 +24,14 @@ public class SlcAntConfig {
 	/** Path to the root Spring application context */
 	public static String APPLICATION_CONTEXT_PROPERTY = "org.argeo.slc.ant.applicationContext";
 
-	private final File confDir;
-	private final File rootDir;
-	private final File workDir;
-
 	/** Retrieve all properties and set them as project user properties */
-	public SlcAntConfig(Project project, File slcRootFile) {
+	public static void initProject(Project project, File slcRootFile) {
 		Properties p = loadFile(slcRootFile.getAbsolutePath());
 
+		final File confDir;
+		final File workDir;
 		// Root dir
-		rootDir = slcRootFile.getParentFile();
+		final File rootDir = slcRootFile.getParentFile();
 		project.setUserProperty(ROOT_DIR_PROPERTY, rootDir.getAbsolutePath());
 
 		// Conf dir
@@ -85,7 +83,7 @@ public class SlcAntConfig {
 		}
 	}
 
-	private Properties loadFile(String path) {
+	private static Properties loadFile(String path) {
 		Properties p = new Properties();
 		try {
 			FileInputStream in = new FileInputStream(path);
@@ -95,18 +93,6 @@ public class SlcAntConfig {
 			throw new SlcAntException("Cannot read SLC root file", e);
 		}
 		return p;
-	}
-
-	public File getConfDir() {
-		return confDir;
-	}
-
-	public File getRootDir() {
-		return rootDir;
-	}
-
-	public File getWorkDir() {
-		return workDir;
 	}
 
 }

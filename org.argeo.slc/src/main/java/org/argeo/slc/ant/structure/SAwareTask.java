@@ -7,40 +7,42 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Target;
 
 import org.argeo.slc.ant.SlcProjectHelper;
+import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.spring.AbstractSpringTask;
+import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.DefaultTreeSAware;
-import org.argeo.slc.core.structure.tree.TreeSAware;
 import org.argeo.slc.core.structure.tree.TreeSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 
 /** Ant task that can be registered within a structure. */
 public abstract class SAwareTask extends AbstractSpringTask {
-	protected final TreeSAware sAware = new DefaultTreeSAware();
-	protected final List<SAwareArg> sAwareArgs = new Vector<SAwareArg>();
+	private final DefaultTreeSAware sAware = new DefaultTreeSAware();
+	private final List<AbstractSpringArg> sAwareArgs = new Vector<AbstractSpringArg>();
 
 	@Override
 	public void init() throws BuildException {
 		StructureRegistry registry = getRegistry();
 		Target target = getOwningTarget();
-		TreeSElement projectElement = (TreeSElement) registry
-				.getElement(SlcProjectHelper.getProjectPath(getProject()));
+
+		TreeSPath targetPath = createTargetPath(target);
 		TreeSElement targetElement = (TreeSElement) registry
 				.getElement(createTargetPath(target));
 
 		if (targetElement == null) {
-			// create target element
-			targetElement = projectElement.createChild(target.getName(), target
-					.getDescription() != null ? target.getDescription()
-					: "<no target>");
-			registry.register(targetElement);
+			targetElement = new TreeSElement(target.getDescription(),
+					"<no target desc>");
+			registry.register(targetPath, targetElement);
 		}
 
-		TreeSElement taskElement = targetElement.createChild(getTaskName()
-				+ targetElement.getChildren().size(),
-				getDescription() != null ? getDescription() : "<no task desc>");
+		TreeSElement taskElement = new TreeSElement(getDescription(),
+				"<no task desc>");
 		sAware.setElement(taskElement);
+	}
+
+	protected void addSAwareArg(AbstractSpringArg arg) {
+		sAwareArgs.add(arg);
 	}
 
 	@Override
@@ -52,24 +54,34 @@ public abstract class SAwareTask extends AbstractSpringTask {
 	 * @see StructureRegistry
 	 */
 	public final void execute() throws BuildException {
-		for(SAwareArg arg : sAwareArgs){
-			arg.init(sAware);
+		// init registered args
+		for (AbstractSpringArg arg : sAwareArgs) {
+			Object obj = arg.getBeanInstance();
+
+			if (obj instanceof StructureAware && sAware != null) {
+				StructureAware sAwareT = (StructureAware) obj;
+				sAware.addToPropagationList(arg.getBean(), sAwareT);
+			}
 		}
-		
-		getRegistry().register(sAware);
-		
+
+		// register the task in the structure
+		TreeSPath targetPath = createTargetPath(getOwningTarget());
+		TreeSPath taskPath = targetPath.createChild(getTaskName()
+				+ targetPath.listChildren(getRegistry()).size());
+		getRegistry().register(taskPath, sAware);
+
+		// execute depending on the registry mode
 		String mode = getRegistry().getMode();
 		if (mode.equals(StructureRegistry.ALL)) {
 			executeActions(mode);
 		} else if (mode.equals(StructureRegistry.ACTIVE)) {
 			List<StructurePath> activePaths = getRegistry().getActivePaths();
-			
-			StructurePath targetPath = createTargetPath(getOwningTarget());
-			if(activePaths.contains(targetPath)){
-				if (activePaths.contains(sAware.getElement().getPath())) {
+
+			if (activePaths.contains(targetPath)) {
+				if (activePaths.contains(taskPath)) {
 					executeActions(mode);
 				}
-			}			
+			}
 		}
 
 	}
@@ -84,9 +96,9 @@ public abstract class SAwareTask extends AbstractSpringTask {
 	}
 
 	/** Creates the path for a given Ant target. */
-	protected static StructurePath createTargetPath(Target target) {
+	protected static TreeSPath createTargetPath(Target target) {
 		TreeSPath projectPath = SlcProjectHelper.getProjectPath(target
 				.getProject());
-		return TreeSPath.createChild(projectPath, target.getName());
+		return projectPath.createChild(target.getName());
 	}
 }

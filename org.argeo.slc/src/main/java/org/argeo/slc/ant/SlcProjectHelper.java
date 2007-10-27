@@ -40,7 +40,7 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		if (slcRootFile == null) {
 			throw new SlcAntException("Cannot find SLC root file");
 		}
-		SlcAntConfig slcAntConfig = new SlcAntConfig(project, slcRootFile);
+		SlcAntConfig.initProject(project, slcRootFile);
 
 		// init Spring application context
 		String acPath = project
@@ -56,19 +56,17 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		super.parse(project, source);
 
 		addSlcTasks(project);
-		
+
 		// create structure root
-		String projectDescription = project.getDescription() != null ? project
-				.getDescription() : "Root";
-		TreeSElement element = TreeSElement.createRootElelment(
-				getProjectPathName(project), projectDescription);
-		registry.register(element);
+		TreeSElement element = new TreeSElement(project.getDescription(),
+				"Root");
+		registry.register(getProjectPath(project), element);
 
 	}
 
 	/** Get the path of a project (root). */
 	public static TreeSPath getProjectPath(Project project) {
-		return TreeSPath.createChild(null, getProjectPathName(project));
+		return TreeSPath.createRootPath(getProjectPathName(project));
 	}
 
 	private static String getProjectPathName(Project project) {
@@ -109,7 +107,7 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 				project.addTaskDefinition(name, Class.forName(taskdefs
 						.getProperty(name)));
 			} catch (ClassNotFoundException e) {
-				log.error("Unknown class for task "+name, e);
+				log.error("Unknown class for task " + name, e);
 			}
 		}
 	}

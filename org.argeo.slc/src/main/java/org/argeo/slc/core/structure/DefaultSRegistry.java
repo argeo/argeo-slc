@@ -20,18 +20,22 @@ public class DefaultSRegistry implements StructureRegistry {
 		return new Vector<StructureElement>(elements);
 	}
 
-	public void register(StructureElement element) {
+	public List<StructurePath> listPaths() {
+		return new Vector<StructurePath>(paths);
+	}
+
+	public void register(StructurePath path,StructureElement element) {
 		StructureElement treeSElement = element;
 		elements.add(treeSElement);
-		paths.add( treeSElement.getPath());
-		log.debug("Registered " + treeSElement.getPath() + " (desc: "
+		paths.add( path);
+		log.debug("Registered " + path + " (desc: "
 				+ treeSElement.getDescription() + " position: "
 				+ elements.size() + ")");
 	}
 
-	public void register(StructureAware structureAware) {
-		register(structureAware.getElement());
-		structureAware.onRegister(this);
+	public void register(StructurePath path,StructureAware structureAware) {
+		register(path,structureAware.getElement());
+		structureAware.onRegister(this,path);
 	}
 
 	public StructureElement getElement(StructurePath path) {

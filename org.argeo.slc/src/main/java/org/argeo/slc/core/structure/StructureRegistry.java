@@ -8,20 +8,23 @@ public interface StructureRegistry {
 	public static String READ = "READ";
 	/** All mode: everything is executed regardless of the active paths. */
 	public static String ALL = "ALL";
-	/** Active mode: only teh active paths are executed. */
+	/** Active mode: only the active paths are executed. */
 	public static String ACTIVE = "ACTIVE";
 
 	/** Adds an element to the registry. */
-	public void register(StructureElement element);
+	public void register(StructurePath path, StructureElement element);
 
 	/**
 	 * Adds the wrapped element of a <code>SructureAware</code>, and
 	 * propagates the registration.
 	 */
-	public void register(StructureAware structureAware);
+	public void register(StructurePath path, StructureAware structureAware);
 
 	/** Lists <b>all</b> registered elements. */
 	public List<StructureElement> listElements();
+
+	/** Lists <b>all</b> registered elements. */
+	public List<StructurePath> listPaths();
 
 	/** Gets a element based on its path. */
 	public StructureElement getElement(StructurePath path);

@@ -1,8 +1,8 @@
 package org.argeo.slc.testslc;
 
+import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.DefaultTreeSAware;
-import org.argeo.slc.core.structure.tree.TreeSAware;
 import org.argeo.slc.core.structure.tree.TreeSElement;
 import org.argeo.slc.core.test.TestData;
 
@@ -10,6 +10,10 @@ public class DummyTestData extends DefaultTreeSAware implements TestData {
 	private Object reached;
 	private Object expected;
 
+	public DummyTestData(){
+		setElement(new TreeSElement("This is a dummy test data"));
+	}
+	
 	public Object getReached() {
 		return reached;
 	}
@@ -27,15 +31,15 @@ public class DummyTestData extends DefaultTreeSAware implements TestData {
 	}
 
 	@Override
-	public void onRegister(StructureRegistry registry) {
-		if (expected instanceof TreeSAware) {
-			TreeSAware sAware = (TreeSAware) expected;
-			TreeSElement element = ((TreeSElement) getElement()).createChild(
-					"expected" + getPropagationList().size(), "<no desc>");
+	public void onRegister(StructureRegistry registry, StructurePath path) {
+		if (expected instanceof DefaultTreeSAware) {
+			DefaultTreeSAware sAware = (DefaultTreeSAware) expected;
+			TreeSElement element = new TreeSElement("This is an expected");
+			element.setDescription("<no desc>");
 			sAware.setElement(element);
-			addToPropagationList(sAware);
+			addToPropagationList("expected",sAware);
 		}
-		super.onRegister(registry);
+		super.onRegister(registry, path);
 	}
 	
 	

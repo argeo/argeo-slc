@@ -2,7 +2,7 @@ package org.argeo.slc.ant.test;
 
 import org.apache.tools.ant.BuildException;
 
-import org.argeo.slc.ant.structure.SAwareArg;
+import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
 import org.argeo.slc.core.deploy.DeployedSystem;
 import org.argeo.slc.core.test.TestData;
@@ -24,13 +24,13 @@ public class SlcTestTask extends SAwareTask implements TestRun {
 
 	public TestDefinitionArg createTestDefinition() {
 		testDefinitionArg = new TestDefinitionArg();
-		sAwareArgs.add(testDefinitionArg);
+		addSAwareArg(testDefinitionArg);
 		return testDefinitionArg;
 	}
 
 	public TestDataArg createTestData() {
 		testDataArg = new TestDataArg();
-		sAwareArgs.add(testDataArg);
+		addSAwareArg(testDataArg);
 		return testDataArg;
 	}
 
@@ -52,29 +52,15 @@ public class SlcTestTask extends SAwareTask implements TestRun {
 
 }
 
-class TestDefinitionArg extends SAwareArg {
-	private TestDefinition testDefinition;
-
+class TestDefinitionArg extends AbstractSpringArg {
 	public TestDefinition getTestDefinition() {
-		if (testDefinition == null) {
-			// don't call Spring each time in order not to multi-instantiate
-			// prototype
-			testDefinition = (TestDefinition) getBeanInstance();
-		}
-		return testDefinition;
+		return (TestDefinition) getBeanInstance();
 	}
 }
 
-class TestDataArg extends SAwareArg {
-	private TestData testData;
-
+class TestDataArg extends AbstractSpringArg {
 	public TestData getTestData() {
-		if (testData == null) {
-			// don't call Spring each time in order not to multi-instantiate
-			// prototype
-			testData = (TestData) getBeanInstance();
-		}
-		return testData;
+		return (TestData) getBeanInstance();
 	}
 
 }

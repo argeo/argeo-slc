@@ -1,8 +1,11 @@
 package org.argeo.slc.core.structure.tree;
 
+import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.argeo.slc.core.structure.StructurePath;
+import org.argeo.slc.core.structure.StructureRegistry;
 
 /**
  * Path for tree based <code>StructureRegistry</code> implementations.
@@ -37,10 +40,18 @@ public class TreeSPath implements StructurePath {
 		return name;
 	}
 
-	/** Create a child path based on a parent path and a name. */
-	public static TreeSPath createChild(TreeSPath parent, String name) {
+	/** Create a path without parent. */
+	public static TreeSPath createRootPath(String name) {
 		TreeSPath path = new TreeSPath();
-		path.parent = parent;
+		path.parent = null;
+		path.name = name;
+		return path;
+	}
+
+	/** Create a child . */
+	public TreeSPath createChild(String name) {
+		TreeSPath path = new TreeSPath();
+		path.parent = this;
 		path.name = name;
 		return path;
 	}
@@ -53,12 +64,29 @@ public class TreeSPath implements StructurePath {
 		TreeSPath currPath = null;
 		while (st.hasMoreTokens()) {
 			if (currPath == null) {// begin
-				currPath = createChild(null, st.nextToken());
+				currPath = createRootPath(st.nextToken());
 			} else {
-				currPath = createChild(currPath, st.nextToken());
+				currPath = currPath.createChild(st.nextToken());
 			}
 		}
 		return currPath;
+	}
+
+	public List<TreeSPath> listChildren(StructureRegistry registry){
+		return listChildrenPaths(registry, this);
+	}
+	
+	public static List<TreeSPath> listChildrenPaths(StructureRegistry registry,
+			TreeSPath path) {
+		List<TreeSPath> paths = new Vector<TreeSPath>();
+		List<StructurePath> allPaths = registry.listPaths();
+		for (StructurePath sPath : allPaths) {
+			TreeSPath pathT = (TreeSPath) sPath;
+			if (pathT.parent != null && pathT.parent.equals(path)) {
+				paths.add(pathT);
+			}
+		}
+		return paths;
 	}
 
 	@Override

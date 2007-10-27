@@ -9,5 +9,5 @@ public interface StructureAware {
 	public StructureElement getElement();
 
 	/** Called <b>after</b> registration. */
-	public void onRegister(StructureRegistry registry);
+	public void onRegister(StructureRegistry registry, StructurePath path);
 }
