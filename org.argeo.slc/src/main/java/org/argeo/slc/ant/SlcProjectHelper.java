@@ -64,11 +64,6 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 
 		// create structure root
 		registerProjectAndParents(project);
-
-		// TreeSElement element = new TreeSElement(project.getDescription(),
-		// "Root");
-		// registry.register(getProjectPath(project), element);
-
 	}
 
 	private void registerProjectAndParents(Project project) {
@@ -99,6 +94,11 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 						.getAbsolutePath());
 				description = properties
 						.getProperty(SlcAntConfig.DIR_DESCRIPTION_PROPERTY);
+			} else {
+				if (i == 0) {// project it self
+					description = project.getDescription() != null ? project
+							.getDescription() : "";
+				}
 			}
 			TreeSElement element = new TreeSElement(description);
 
@@ -114,14 +114,7 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 
 	/** Get the path of a project (root). */
 	public static TreeSPath getProjectPath(Project project) {
-		// return TreeSPath.createRootPath(getProjectPathName(project));
 		return (TreeSPath) project.getReference(REF_PROJECT_PATH);
-	}
-
-	private static String getProjectPathName(Project project) {
-		String projectName = project.getName() != null ? project.getName()
-				: "project";
-		return projectName;
 	}
 
 	private File findSlcRootFile(File dir) {
