@@ -56,7 +56,7 @@ public class AntRegistryUtil {
 		File antFile = new File(
 				"C:/dev/workspaces/default/org.argeo.slc/src/test/ant/build.xml");
 		System
-				.setProperty(SlcProjectHelper.PROP_APPLICATION_CONTEXT,
+				.setProperty(SlcAntConfig.APPLICATION_CONTEXT_PROPERTY,
 						"C:/dev/workspaces/default/org.argeo.slc/src/test/ant/applicationContext.xml");
 		StructureRegistry registry = AntRegistryUtil.readRegistry(antFile);
 
