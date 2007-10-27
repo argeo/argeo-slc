@@ -24,6 +24,9 @@ public class SlcAntConfig {
 	/** Path to the root Spring application context */
 	public static String APPLICATION_CONTEXT_PROPERTY = "org.argeo.slc.ant.applicationContext";
 
+	// SLC LOCAL PROPERTIES
+	public static String DIR_DESCRIPTION_PROPERTY = "org.argeo.slc.ant.dirDescription";
+	
 	/** Retrieve all properties and set them as project user properties */
 	public static void initProject(Project project, File slcRootFile) {
 		Properties p = loadFile(slcRootFile.getAbsolutePath());
@@ -83,7 +86,7 @@ public class SlcAntConfig {
 		}
 	}
 
-	private static Properties loadFile(String path) {
+	public static Properties loadFile(String path) {
 		Properties p = new Properties();
 		try {
 			FileInputStream in = new FileInputStream(path);
