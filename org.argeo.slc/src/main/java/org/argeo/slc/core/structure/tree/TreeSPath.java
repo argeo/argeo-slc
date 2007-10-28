@@ -24,6 +24,12 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		String parentStr = parent != null ? parent.getAsUniqueString() : "";
 		return parentStr + separator + name;
 	}
+	
+	public void setAsUniqueString(String str){
+		TreeSPath twin = parseToCreatePath(str, getSeparator());
+		name = twin.name;
+		parent = twin.parent;
+	}
 
 	/** The separator actually used by this path. */
 	public Character getSeparator() {

@@ -6,6 +6,9 @@ public class SimpleResultPart implements TestResultPart {
 	public final static Integer FAILED = 2;
 	public final static Integer ERROR = 3;
 
+	/** For ORM */
+	private Long tid;
+	
 	private Integer status;
 	private String message;
 	private Throwable exception;
@@ -49,6 +52,14 @@ public class SimpleResultPart implements TestResultPart {
 			buf.append("(").append(exception.getMessage()).append(")");
 		}
 		return buf.toString();
+	}
+
+	Long getTid() {
+		return tid;
+	}
+
+	void setTid(Long tid) {
+		this.tid = tid;
 	}
 
 }

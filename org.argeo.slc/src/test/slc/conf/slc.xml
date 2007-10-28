@@ -9,18 +9,19 @@
 		<property name="deployedSystem" ref="exampleDeployedSystem" />
 	</bean>
 
+	<bean id="testResultId"
+		class="org.argeo.slc.core.test.NumericTRId" init-method="init">
+	</bean>
+
 	<bean id="testResult"
 		class="org.argeo.slc.core.test.tree.TreeTestResult">
-		<property name="testResultId" ref="testResultId" />
+		<property name="numericResultId" ref="testResultId" />
 		<property name="listeners">
 			<list>
 				<ref bean="resultLogger" />
+				<ref bean="resultPersister" />
 			</list>
 		</property>
-	</bean>
-
-	<bean id="testResultId"
-		class="org.argeo.slc.core.test.TimeTestResultId" init-method="init">
 	</bean>
 
 	<bean
@@ -29,6 +30,11 @@
 	<bean id="resultLogger"
 		class="org.argeo.slc.core.test.tree.TreeTestResultLogger"
 		init-method="init" destroy-method="destroy">
+	</bean>
+
+	<bean id="resultPersister"
+		class="org.argeo.slc.core.test.tree.TreeTestResultPersister" init-method="init" destroy-method="destroy">
+		<property name="testResultDao" ref="testResultDao"/>
 	</bean>
 
 	<bean id="exampleDeployedSystem"
@@ -45,4 +51,5 @@
 			</bean>
 		</property>
 	</bean>
+
 </beans>
