@@ -35,7 +35,7 @@ public class AntRegistryUtil {
 		return registry;
 	}
 
-	/** Execute only the active paths of teh Ant files. */
+	/** Execute only the active paths of the Ant file. */
 	public static void runActive(File antFile, List<StructurePath> activePaths) {
 
 		Project p = new Project();
@@ -50,6 +50,18 @@ public class AntRegistryUtil {
 				.getReference(SlcProjectHelper.REF_STRUCTURE_REGISTRY);
 		registry.setMode(StructureRegistry.ACTIVE);
 		registry.setActivePaths(activePaths);
+		p.executeTarget(p.getDefaultTarget());
+	}
+
+	/** Execute all paths of the default target of the Ant file. */
+	public static void runAll(File antFile) {
+		Project p = new Project();
+		p.setUserProperty("ant.file", antFile.getAbsolutePath());
+		p.setBaseDir(antFile.getParentFile());
+		p.init();
+		ProjectHelper helper = new SlcProjectHelper();
+		p.addReference("ant.projectHelper", helper);
+		helper.parse(p, antFile);
 		p.executeTarget(p.getDefaultTarget());
 	}
 

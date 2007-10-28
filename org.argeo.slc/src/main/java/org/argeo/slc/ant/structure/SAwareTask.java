@@ -9,16 +9,17 @@ import org.apache.tools.ant.Target;
 import org.argeo.slc.ant.SlcProjectHelper;
 import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.spring.AbstractSpringTask;
+import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureAware;
+import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
-import org.argeo.slc.core.structure.tree.DefaultTreeSAware;
-import org.argeo.slc.core.structure.tree.TreeSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 
 /** Ant task that can be registered within a structure. */
-public abstract class SAwareTask extends AbstractSpringTask {
-	private final DefaultTreeSAware sAware = new DefaultTreeSAware();
+public abstract class SAwareTask extends AbstractSpringTask implements StructureElement {
+	private TreeSPath path;
+	//private final DefaultTreeSAware sAware = new DefaultTreeSAware();
 	private final List<AbstractSpringArg> sAwareArgs = new Vector<AbstractSpringArg>();
 
 	@Override
@@ -27,18 +28,14 @@ public abstract class SAwareTask extends AbstractSpringTask {
 		Target target = getOwningTarget();
 
 		TreeSPath targetPath = createTargetPath(target);
-		TreeSElement targetElement = (TreeSElement) registry
+		SimpleSElement targetElement = (SimpleSElement) registry
 				.getElement(createTargetPath(target));
 
 		if (targetElement == null) {
-			targetElement = new TreeSElement(target.getDescription(),
+			targetElement = new SimpleSElement(target.getDescription(),
 					"<no target desc>");
 			registry.register(targetPath, targetElement);
 		}
-
-		TreeSElement taskElement = new TreeSElement(getDescription(),
-				"<no task desc>");
-		sAware.setElement(taskElement);
 	}
 
 	protected void addSAwareArg(AbstractSpringArg arg) {
@@ -54,21 +51,22 @@ public abstract class SAwareTask extends AbstractSpringTask {
 	 * @see StructureRegistry
 	 */
 	public final void execute() throws BuildException {
-		// init registered args
-		for (AbstractSpringArg arg : sAwareArgs) {
-			Object obj = arg.getBeanInstance();
-
-			if (obj instanceof StructureAware && sAware != null) {
-				StructureAware sAwareT = (StructureAware) obj;
-				sAware.addToPropagationList(arg.getBean(), sAwareT);
-			}
-		}
-
 		// register the task in the structure
 		TreeSPath targetPath = createTargetPath(getOwningTarget());
 		TreeSPath taskPath = targetPath.createChild(getTaskName()
 				+ targetPath.listChildren(getRegistry()).size());
-		getRegistry().register(taskPath, sAware);
+		getRegistry().register(taskPath, this);
+		path = taskPath;
+		
+		// notify registered args
+		for (AbstractSpringArg arg : sAwareArgs) {
+			Object obj = arg.getBeanInstance();
+
+			if (obj instanceof StructureAware) {
+				StructureAware sAwareT = (StructureAware) obj;
+				sAwareT.notifyCurrentPath(getRegistry(), taskPath);
+			}
+		}
 
 		// execute depending on the registry mode
 		String mode = getRegistry().getMode();
@@ -101,4 +99,21 @@ public abstract class SAwareTask extends AbstractSpringTask {
 				.getProject());
 		return projectPath.createChild(target.getName());
 	}
+
+	public TreeSPath getPath() {
+		return path;
+	}
+
+	@Override
+	public String getDescription() {
+		String description = super.getDescription();
+		if(description==null){
+			return "<no task def>";
+		}
+		else{
+			return description;
+		}
+	}
+	
+	
 }

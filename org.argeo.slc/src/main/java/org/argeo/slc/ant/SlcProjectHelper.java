@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
@@ -17,8 +18,8 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.helper.ProjectHelperImpl;
 
 import org.argeo.slc.core.structure.DefaultSRegistry;
+import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureRegistry;
-import org.argeo.slc.core.structure.tree.TreeSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 
 /**
@@ -48,22 +49,20 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		SlcAntConfig.initProject(project, slcRootFile);
 
 		// init Spring application context
-		String acPath = project
-				.getUserProperty(SlcAntConfig.APPLICATION_CONTEXT_PROPERTY);
-		ApplicationContext context = new FileSystemXmlApplicationContext(acPath);
-		project.addReference(REF_ROOT_CONTEXT, context);
-
-		// init structure register if it does not exist
+		initSpringContext(project);
+		
+		// init structure registry
 		DefaultSRegistry registry = new DefaultSRegistry();
 		project.addReference(REF_STRUCTURE_REGISTRY, registry);
 
 		// call the underlying implementation to do the actual work
 		super.parse(project, source);
 
-		addSlcTasks(project);
-
 		// create structure root
 		registerProjectAndParents(project);
+
+		addSlcTasks(project);
+
 	}
 
 	private void registerProjectAndParents(Project project) {
@@ -100,7 +99,7 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 							.getDescription() : "";
 				}
 			}
-			TreeSElement element = new TreeSElement(description);
+			SimpleSElement element = new SimpleSElement(description);
 
 			if (dir.equals(rootDir)) {
 				currPath = TreeSPath.createRootPath(rootDir.getName());
@@ -130,6 +129,14 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		} else {
 			return findSlcRootFile(parentDir);
 		}
+	}
+
+	private void initSpringContext(Project project) {
+		System.getProperties().putAll(project.getProperties());
+		String acPath = project
+				.getUserProperty(SlcAntConfig.APPLICATION_CONTEXT_PROPERTY);
+		ApplicationContext context = new FileSystemXmlApplicationContext(acPath);
+		project.addReference(REF_ROOT_CONTEXT, context);
 	}
 
 	private void addSlcTasks(Project project) {

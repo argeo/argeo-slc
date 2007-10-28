@@ -1,6 +1,4 @@
-package org.argeo.slc.core.structure.tree;
-
-import org.argeo.slc.core.structure.StructureElement;
+package org.argeo.slc.core.structure;
 
 /**
  * Implementation of <code>StructureElement</code> for tree based registries,
@@ -8,14 +6,14 @@ import org.argeo.slc.core.structure.StructureElement;
  * 
  * @see TreeSPath
  */
-public class TreeSElement implements StructureElement {
+public class SimpleSElement implements StructureElement {
 	private String description;
 
-	public TreeSElement(String description){
+	public SimpleSElement(String description){
 		this.description = description;
 	}
 	
-	public TreeSElement(String description, String defaultDescription){
+	public SimpleSElement(String description, String defaultDescription){
 		this(description!=null?description:defaultDescription);
 	}
 	

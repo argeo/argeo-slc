@@ -1,52 +1,27 @@
 <project default="test" name="testProject">
 	<description>A Test project</description>
 
-	<target name="test" depends="testSimple,testObj">
+	<target name="test" depends="testSimple">
 	</target>
 
 	<target name="testSimple" description="A simple test">
 		<echo message="${rootTest}"/>
 		
-		<!-- Success -->
 		<slc.test>
-			<testDefinition bean="dummyTestDefinition" />
-			<testData bean="dummyTestDataOK" />
+			<testDefinition bean="simpleExampleTestDef" />
+			<testData bean="testData.nato" />
 		</slc.test>
 
-		<!-- Failure -->
 		<slc.test>
-			<testDefinition bean="dummyTestDefinition" />
-			<testData bean="dummyTestDataNOK" />
+			<testDefinition bean="simpleExampleTestDef" />
+			<testData bean="testData.un" />
 		</slc.test>
 
-		<!-- Override property -->
 		<slc.test>
-			<testDefinition bean="dummyTestDefinition" />
-			<testData bean="dummyTestDataNOK">
-				<override name="reached" value="value1" />
-			</testData>
+			<testDefinition bean="simpleExampleTestDef" />
+			<testData bean="testData.eu-reform" />
 		</slc.test>
+
 	</target>
 	
-	<target name="testObj" description="An object test">
-		<!-- Success -->
-		<slc.test>
-			<testDefinition bean="dummyTestDefinition"/>
-			<testData bean="dummyTestDataObjOK"  description="A dummy testDef"/>
-		</slc.test>
-
-		<!-- Failure -->
-		<slc.test>
-			<testDefinition bean="dummyTestDefinition" />
-			<testData bean="dummyTestDataObjNOK" />
-		</slc.test>
-
-		<!-- Override property -->
-		<slc.test>
-			<testDefinition bean="dummyTestDefinition" />
-			<testData bean="dummyTestDataObjNOK">
-				<override name="reached" bean="dummyTestDataObject1" />
-			</testData>
-		</slc.test>
-	</target>
 </project>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="defaultTestRun"
+		class="org.argeo.slc.core.test.SimpleTestRun" scope="prototype">
+		<property name="testResult" ref="testResult" />
+		<property name="deployedSystem" ref="exampleDeployedSystem" />
+	</bean>
+
+	<bean id="testResult"
+		class="org.argeo.slc.core.test.tree.TreeTestResult">
+		<property name="testResultId" ref="testResultId" />
+		<property name="listeners">
+			<list>
+				<ref bean="resultLogger" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="testResultId"
+		class="org.argeo.slc.core.test.TimeTestResultId" init-method="init">
+	</bean>
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+
+	<bean id="resultLogger"
+		class="org.argeo.slc.core.test.tree.TreeTestResultLogger"
+		init-method="init" destroy-method="destroy">
+	</bean>
+
+	<bean id="exampleDeployedSystem"
+		class="org.argeo.slc.example.ExampleDeployedSystem">
+		<property name="deployedSystemId">
+			<bean class="org.argeo.slc.core.deploy.NumericDSId">
+				<property name="value" value="123456" />
+				<property name="distributionId">
+					<bean
+						class="org.argeo.slc.core.build.VersionDistributionId">
+						<property name="versionString" value="0.3.1" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+</beans>

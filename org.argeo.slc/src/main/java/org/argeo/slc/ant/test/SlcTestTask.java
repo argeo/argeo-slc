@@ -2,24 +2,39 @@ package org.argeo.slc.ant.test;
 
 import org.apache.tools.ant.BuildException;
 
+import org.argeo.slc.ant.SlcAntConfig;
 import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
-import org.argeo.slc.core.deploy.DeployedSystem;
+import org.argeo.slc.core.structure.StructureAware;
+import org.argeo.slc.core.test.SimpleTestRun;
 import org.argeo.slc.core.test.TestData;
 import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestResult;
-import org.argeo.slc.core.test.TestRun;
 
 /** Ant task wrapping a test run. */
-public class SlcTestTask extends SAwareTask implements TestRun {
+public class SlcTestTask extends SAwareTask {
 
 	private TestDefinitionArg testDefinitionArg;
 	private TestDataArg testDataArg;
 
 	@Override
 	public void executeActions(String mode) throws BuildException {
-		TestDefinition testDefinition = testDefinitionArg.getTestDefinition();
-		testDefinition.execute(this);
+		SimpleTestRun simpleTestRun = (SimpleTestRun) getContext().getBean(
+				getProject().getUserProperty(
+						SlcAntConfig.DEFAULT_TEST_RUN_PROPERTY));
+		
+		if (testDataArg != null)
+			simpleTestRun.setTestData(testDataArg.getTestData());
+		if (testDefinitionArg != null)
+			simpleTestRun.setTestDefinition(testDefinitionArg
+					.getTestDefinition());
+
+		TestResult result = simpleTestRun.getTestResult();
+		if(result!=null && result instanceof StructureAware){
+			((StructureAware)result).notifyCurrentPath(getRegistry(), getPath());
+		}
+		
+		simpleTestRun.execute();
 	}
 
 	public TestDefinitionArg createTestDefinition() {
@@ -32,22 +47,6 @@ public class SlcTestTask extends SAwareTask implements TestRun {
 		testDataArg = new TestDataArg();
 		addSAwareArg(testDataArg);
 		return testDataArg;
-	}
-
-	public DeployedSystem getDeployedSystem() {
-		throw new RuntimeException("Not yet implemented.");
-	}
-
-	public TestDefinition getTestDefinition() {
-		return testDefinitionArg.getTestDefinition();
-	}
-
-	public TestData getTestData() {
-		return testDataArg.getTestData();
-	}
-
-	public TestResult getTestResult() {
-		throw new RuntimeException("Not yet implemented.");
 	}
 
 }

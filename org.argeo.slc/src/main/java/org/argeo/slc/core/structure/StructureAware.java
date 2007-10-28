@@ -5,9 +5,6 @@ package org.argeo.slc.core.structure;
  * sub-elements.
  */
 public interface StructureAware {
-	/** Get the wrapped element.*/
-	public StructureElement getElement();
-
 	/** Called <b>after</b> registration. */
-	public void onRegister(StructureRegistry registry, StructurePath path);
+	public void notifyCurrentPath(StructureRegistry registry, StructurePath path);
 }

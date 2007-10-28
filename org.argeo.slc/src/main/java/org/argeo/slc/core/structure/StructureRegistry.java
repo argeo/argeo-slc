@@ -14,12 +14,6 @@ public interface StructureRegistry {
 	/** Adds an element to the registry. */
 	public void register(StructurePath path, StructureElement element);
 
-	/**
-	 * Adds the wrapped element of a <code>SructureAware</code>, and
-	 * propagates the registration.
-	 */
-	public void register(StructurePath path, StructureAware structureAware);
-
 	/** Lists <b>all</b> registered elements. */
 	public List<StructureElement> listElements();
 

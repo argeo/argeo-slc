@@ -12,7 +12,7 @@ import org.argeo.slc.core.structure.StructureRegistry;
  * 
  * @see TreeSRegistry
  */
-public class TreeSPath implements StructurePath {
+public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	/** Default character to use a separator: #. */
 	public static Character DEFAULT_SEPARATOR = '#';
 
@@ -103,4 +103,9 @@ public class TreeSPath implements StructurePath {
 		return false;
 	}
 
+	public int compareTo(StructurePath o) {
+		return getAsUniqueString().compareTo(o.getAsUniqueString());
+	}
+
+	
 }
