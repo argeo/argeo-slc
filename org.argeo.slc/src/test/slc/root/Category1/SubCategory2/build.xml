@@ -22,6 +22,7 @@
 			<testData bean="testData.eu-reform" />
 		</slc.test>
 
+		<slc.closeResult result="testResult" report="report"/>
 	</target>
 	
 </project>

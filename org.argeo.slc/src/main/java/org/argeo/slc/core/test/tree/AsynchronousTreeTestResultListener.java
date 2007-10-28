@@ -24,6 +24,21 @@ public abstract class AsynchronousTreeTestResultListener implements
 			partStructs.notifyAll();
 		}
 	}
+	
+	/** Finish the remaining and destroy*/
+	public void close(){
+		synchronized (partStructs) {
+			// TODO: put a timeout
+			while (partStructs.size() != 0) {
+				try {
+					partStructs.wait();
+				} catch (InterruptedException e) {
+					// silent
+				}
+			}
+			destroy();
+		}
+	}
 
 	public final void resultPartAdded(TestResult testResult,
 			TestResultPart testResultPart) {
@@ -36,6 +51,8 @@ public abstract class AsynchronousTreeTestResultListener implements
 		}
 	}
 
+	protected abstract void resultPartAdded(PartStruct partStruct);
+
 	public void run() {
 		while (thread != null) {
 			synchronized (partStructs) {
@@ -44,6 +61,7 @@ public abstract class AsynchronousTreeTestResultListener implements
 				}
 
 				partStructs.clear();
+				partStructs.notifyAll();
 				while (partStructs.size() == 0) {
 					try {
 						partStructs.wait();
@@ -55,7 +73,6 @@ public abstract class AsynchronousTreeTestResultListener implements
 		}
 	}
 
-	protected abstract void resultPartAdded(PartStruct partStruct);
 
 	protected static class PartStruct {
 		public final TreeSPath path;

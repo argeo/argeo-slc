@@ -28,11 +28,25 @@ public class SimpleExampleTestDef implements TestDefinition {
 		String[] args = { data.getInputFile().getAbsolutePath(),
 				data.getReachedFile().getAbsolutePath() };
 
-		// execute
-		log.info("Execute example appli...");
-		appli.filter(args);
-
 		TestResult result = testRun.getTestResult();
+
+		SimpleResultPart executePart = new SimpleResultPart();
+		executePart.setMessage("Execute example appli");
+		try {
+			// execute
+			log.info("Execute example appli...");
+			appli.filter(args);
+			
+			executePart.setStatus(SimpleResultPart.PASSED);
+		} catch (Exception e) {
+			executePart.setStatus(SimpleResultPart.ERROR);
+			executePart.setException(e);
+		}
+		result.addResultPart(executePart);
+		if(executePart.getStatus()==SimpleResultPart.ERROR){
+			return;
+		}
+
 		result.addResultPart(assertFiles(data));
 	}
 

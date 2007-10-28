@@ -45,142 +45,83 @@ public class SlcAntConfig {
 				project.setUserProperty(key, all.getProperty(key));
 			}
 		}
-
-		/*
-		Properties rootProps = loadFile(slcRootFile.getAbsolutePath());
-
-		final File confDir;
-		final File workDir;
-		// Root dir
-		final File rootDir = slcRootFile.getParentFile();
-		project.setUserProperty(ROOT_DIR_PROPERTY, rootDir.getAbsolutePath());
-
-		// Conf dir
-		if (project.getUserProperty(CONF_DIR_PROPERTY) == null) {
-			confDir = new File(rootProps.getProperty(CONF_DIR_PROPERTY, rootDir
-					.getAbsolutePath()
-					+ "/../conf")).getAbsoluteFile();
-			project.setUserProperty(CONF_DIR_PROPERTY, confDir
-					.getAbsolutePath());
-		} else {
-			confDir = new File(project.getUserProperty(CONF_DIR_PROPERTY))
-					.getAbsoluteFile();
-		}
-
-		// Work dir
-		if (project.getUserProperty(WORK_DIR_PROPERTY) == null) {
-			workDir = new File(rootProps.getProperty(WORK_DIR_PROPERTY, rootDir
-					.getAbsolutePath()
-					+ "/../work")).getAbsoluteFile();
-			project.setUserProperty(WORK_DIR_PROPERTY, workDir
-					.getAbsolutePath());
-		} else {
-			workDir = new File(project.getUserProperty(WORK_DIR_PROPERTY))
-					.getAbsoluteFile();
-		}
-
-		// Properties from the conf dir files
-		Properties properties = new Properties();
-		StringTokenizer st = new StringTokenizer(rootProps.getProperty(
-				PROPERTY_FILE_NAMES_PROPERTY, "slc.properties"), ",");
-		while (st.hasMoreTokens()) {
-			String fileName = st.nextToken();
-			properties.putAll(loadFile(confDir.getAbsolutePath() + "/"
-					+ fileName));
-		}
-
-		for (Object o : properties.keySet()) {
-			String key = o.toString();
-			if (project.getUserProperty(key) == null) {// not already set
-				project.setUserProperty(key, properties.getProperty(key));
-			}
-		}
-
-		// Default application context
-		if (project.getUserProperty(APPLICATION_CONTEXT_PROPERTY) == null) {
-			project.setUserProperty(APPLICATION_CONTEXT_PROPERTY, confDir
-					.getAbsolutePath()
-					+ "/applicationContext.xml");
-		}
-		// Default test run
-		if (project.getUserProperty(DEFAULT_TEST_RUN_PROPERTY) == null) {
-			project
-					.setUserProperty(DEFAULT_TEST_RUN_PROPERTY,
-							"defaultTestRun");
-		}
-		*/
 	}
 
 	public static Properties prepareAllProperties() {
-		Properties all = new Properties();
-		all.putAll(System.getProperties());
+		try {
+			Properties all = new Properties();
+			all.putAll(System.getProperties());
 
-		if (all.getProperty(ROOT_FILE_PROPERTY) == null) {
-			throw new RuntimeException("System Property " + ROOT_FILE_PROPERTY
-					+ " has to be set.");
-		}
-
-		File slcRootFile = new File(all.getProperty(ROOT_FILE_PROPERTY))
-				.getAbsoluteFile();
-		Properties rootProps = loadFile(slcRootFile.getAbsolutePath());
-
-		final File confDir;
-		final File workDir;
-		// Root dir
-		final File rootDir = slcRootFile.getParentFile();
-		all.setProperty(ROOT_DIR_PROPERTY, rootDir.getAbsolutePath());
-
-		// Conf dir
-		if (all.getProperty(CONF_DIR_PROPERTY) == null) {
-			confDir = new File(rootProps.getProperty(CONF_DIR_PROPERTY, rootDir
-					.getAbsolutePath()
-					+ "/../conf")).getAbsoluteFile();
-			all.setProperty(CONF_DIR_PROPERTY, confDir.getAbsolutePath());
-		} else {
-			confDir = new File(all.getProperty(CONF_DIR_PROPERTY))
-					.getAbsoluteFile();
-		}
-
-		// Work dir
-		if (all.getProperty(WORK_DIR_PROPERTY) == null) {
-			workDir = new File(rootProps.getProperty(WORK_DIR_PROPERTY, rootDir
-					.getAbsolutePath()
-					+ "/../work")).getAbsoluteFile();
-			all.setProperty(WORK_DIR_PROPERTY, workDir.getAbsolutePath());
-		} else {
-			workDir = new File(all.getProperty(WORK_DIR_PROPERTY))
-					.getAbsoluteFile();
-		}
-
-		// Properties from the conf dir files
-		Properties properties = new Properties();
-		StringTokenizer st = new StringTokenizer(rootProps.getProperty(
-				PROPERTY_FILE_NAMES_PROPERTY, "slc.properties"), ",");
-		while (st.hasMoreTokens()) {
-			String fileName = st.nextToken();
-			properties.putAll(loadFile(confDir.getAbsolutePath() + "/"
-					+ fileName));
-		}
-
-		for (Object o : properties.keySet()) {
-			String key = o.toString();
-			if (all.getProperty(key) == null) {// not already set
-				all.setProperty(key, properties.getProperty(key));
+			if (all.getProperty(ROOT_FILE_PROPERTY) == null) {
+				throw new RuntimeException("System Property "
+						+ ROOT_FILE_PROPERTY + " has to be set.");
 			}
-		}
 
-		// Default application context
-		if (all.getProperty(APPLICATION_CONTEXT_PROPERTY) == null) {
-			all.setProperty(APPLICATION_CONTEXT_PROPERTY, confDir
-					.getAbsolutePath()
-					+ "/applicationContext.xml");
-		}
-		// Default test run
-		if (all.getProperty(DEFAULT_TEST_RUN_PROPERTY) == null) {
-			all.setProperty(DEFAULT_TEST_RUN_PROPERTY, "defaultTestRun");
-		}
+			File slcRootFile = new File(all.getProperty(ROOT_FILE_PROPERTY))
+					.getAbsoluteFile();
+			Properties rootProps = loadFile(slcRootFile.getAbsolutePath());
 
-		return all;
+			final File confDir;
+			final File workDir;
+			// Root dir
+			final File rootDir = slcRootFile.getParentFile();
+			all.setProperty(ROOT_DIR_PROPERTY, rootDir.getCanonicalPath());
+
+			// Conf dir
+			if (all.getProperty(CONF_DIR_PROPERTY) == null) {
+				confDir = new File(rootProps.getProperty(CONF_DIR_PROPERTY,
+						rootDir.getAbsolutePath() + "/../conf"))
+						.getCanonicalFile();
+				all.setProperty(CONF_DIR_PROPERTY, confDir.getAbsolutePath());
+			} else {
+				confDir = new File(all.getProperty(CONF_DIR_PROPERTY))
+						.getCanonicalFile();
+			}
+
+			// Work dir
+			if (all.getProperty(WORK_DIR_PROPERTY) == null) {
+				workDir = new File(rootProps.getProperty(WORK_DIR_PROPERTY,
+						rootDir.getAbsolutePath() + "/../work"))
+						.getCanonicalFile();
+				all.setProperty(WORK_DIR_PROPERTY, workDir.getAbsolutePath());
+			} else {
+				workDir = new File(all.getProperty(WORK_DIR_PROPERTY))
+						.getCanonicalFile();
+			}
+
+			// Properties from the conf dir files
+			Properties properties = new Properties();
+			StringTokenizer st = new StringTokenizer(rootProps.getProperty(
+					PROPERTY_FILE_NAMES_PROPERTY, "slc.properties"), ",");
+			while (st.hasMoreTokens()) {
+				String fileName = st.nextToken();
+				properties.putAll(loadFile(confDir.getAbsolutePath() + "/"
+						+ fileName));
+			}
+
+			for (Object o : properties.keySet()) {
+				String key = o.toString();
+				if (all.getProperty(key) == null) {// not already set
+					all.setProperty(key, properties.getProperty(key));
+				}
+			}
+
+			// Default application context
+			if (all.getProperty(APPLICATION_CONTEXT_PROPERTY) == null) {
+				all.setProperty(APPLICATION_CONTEXT_PROPERTY, confDir
+						.getAbsolutePath()
+						+ "/applicationContext.xml");
+			}
+			// Default test run
+			if (all.getProperty(DEFAULT_TEST_RUN_PROPERTY) == null) {
+				all.setProperty(DEFAULT_TEST_RUN_PROPERTY, "defaultTestRun");
+			}
+
+			return all;
+		} catch (Exception e) {
+			throw new SlcAntException("Unexpected exception while configuring",
+					e);
+		}
 	}
 
 	public static Properties loadFile(String path) {

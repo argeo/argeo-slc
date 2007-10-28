@@ -4,4 +4,5 @@ package org.argeo.slc.core.test;
 public interface TestResult {
 	public TestResultId getTestResultId();
 	public void addResultPart(TestResultPart part);
+	public void close();
 }

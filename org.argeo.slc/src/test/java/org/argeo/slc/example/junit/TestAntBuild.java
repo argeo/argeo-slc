@@ -16,10 +16,5 @@ public class TestAntBuild extends TestCase {
 				+ "/root/Category1/SubCategory2/build.xml");
 		AntRegistryUtil.runAll(antFile);
 		
-		try {
-			Thread.sleep(5000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 	}
 }

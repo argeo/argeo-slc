@@ -6,10 +6,10 @@
 	<!-- Results -->
 	<bean id="dataSourceResults"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-		destroy-method="close">
+		>
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
 		<property name="url"
-			value="jdbc:hsqldb:file:${slc.workDir}/results/hsqldb/db" />
+			value="jdbc:hsqldb:file:${slc.workDir}/results/hsqldb/db;shutdown=true" />
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 	</bean>
@@ -36,10 +36,10 @@
 		<property name="hibernateProperties">
 			<value>
 				hibernate.dialect=org.hibernate.dialect.HSQLDialect
-				c3p0.min_size=1 c3p0.timeout=1800
 				cache.provider_class=org.hibernate.cache.NoCacheProvider
-				cache.use_query_cache=false cache.use_minimal_puts=false
-				max_fetch_depth=3 show_sql=true format_sql=true
+				cache.use_query_cache=false
+				cache.use_minimal_puts=false
+				max_fetch_depth=3
 				current_session_context_class=thread
 				hibernate.hbm2ddl.auto=update
 			</value>
@@ -51,5 +51,11 @@
 		<property name="sessionFactory" ref="sessionFactoryResults" />
 	</bean>
 
+	<bean id="report"
+		class="org.argeo.slc.core.test.tree.FullHtmlTreeReport">
+		<property name="testResultDao" ref="testResultDao" />
+		<property name="reportDir" value="${slc.workDir}/results/report" />
+	</bean>
 
+	
 </beans>

@@ -7,11 +7,12 @@
 		<id name="tid" column="T_ID">
 			<generator class="native" />
 		</id>
-		<list name="parts" table="SUB_LIST_PARTS"  cascade="all" lazy="false">
-			<key column="PARENT_ID" unique="true" />
-			<list-index column="INDEX" />
-			<many-to-many
-				class="org.argeo.slc.core.test.SimpleResultPart" column="PART_ID" lazy="false"/>
+		<list name="parts" cascade="all" lazy="false">
+			<key column="PART_SUBLIST_ID" />
+			<list-index column="INDX" />
+
+			<one-to-many
+				class="org.argeo.slc.core.test.SimpleResultPart" />
 		</list>
 	</class>
 </hibernate-mapping>

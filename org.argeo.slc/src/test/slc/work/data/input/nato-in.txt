@@ -7,7 +7,7 @@ The Parties to this Treaty reaffirm their faith in the purposes and principles o
 They are determined to safeguard the freedom, common heritage and civilisation of their peoples, founded on the principles of democracy, individual liberty and the rule of law. They seek to promote stability and well-being in the North Atlantic area.
 
 They are resolved to unite their efforts for collective defence and for the preservation of peace and security. They therefore agree to this North Atlantic Treaty :
-Article 1
+Article 1CHANGE
 
 The Parties undertake, as set forth in the Charter of the United Nations, to settle any international dispute in which they may be involved by peaceful means in such a manner that international peace and security and justice are not endangered, and to refrain in their international relations from the threat or use of force in any manner inconsistent with the purposes of the United Nations.
 Article 2

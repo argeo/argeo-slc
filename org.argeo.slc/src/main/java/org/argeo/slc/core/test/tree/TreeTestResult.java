@@ -26,8 +26,6 @@ public class TreeTestResult implements TestResult, StructureAware {
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 
-
-	
 	public TestResultId getTestResultId() {
 		return testResultId;
 	}
@@ -56,8 +54,10 @@ public class TreeTestResult implements TestResult, StructureAware {
 		subList.getParts().add(part);
 
 		// notify listeners
-		for (TestResultListener listener : listeners) {
-			listener.resultPartAdded(this, part);
+		synchronized (listeners) {
+			for (TestResultListener listener : listeners) {
+				listener.resultPartAdded(this, part);
+			}
 		}
 	}
 
@@ -75,6 +75,15 @@ public class TreeTestResult implements TestResult, StructureAware {
 
 	void setResultParts(SortedMap<TreeSPath, PartSubList> resultParts) {
 		this.resultParts = resultParts;
+	}
+
+	public void close() {
+		synchronized (listeners) {
+			for (TestResultListener listener : listeners) {
+				listener.close();
+			}
+			listeners.clear();
+		}
 	}
 
 	Long getTid() {

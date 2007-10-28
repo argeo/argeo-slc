@@ -2,9 +2,9 @@ package org.argeo.slc.core.test;
 
 public class SimpleResultPart implements TestResultPart {
 
-	public final static Integer PASSED = 1;
-	public final static Integer FAILED = 2;
-	public final static Integer ERROR = 3;
+	public final static int PASSED = 1;
+	public final static int FAILED = 2;
+	public final static int ERROR = 3;
 
 	/** For ORM */
 	private Long tid;
