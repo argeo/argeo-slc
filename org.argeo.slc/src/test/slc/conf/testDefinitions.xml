@@ -7,4 +7,25 @@
 		class="org.argeo.slc.example.SimpleExampleTestDef"
 		scope="prototype">
 	</bean>
+
+	<bean id="complexExampleTestDef"
+		class="org.argeo.slc.example.ComplexExampleTestDef"
+		scope="prototype">
+		<property name="tasks">
+			<list>
+				<ref bean="dummyTask" />
+				<bean class="org.argeo.slc.example.ExampleTask">
+					<property name="description"
+						value="Another task (nested)" />
+				</bean>
+				<bean
+					class="org.argeo.slc.example.SimpleExampleTestDef" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dummyTask" class="org.argeo.slc.example.ExampleTask">
+		<property name="description" value="A dummy task" />
+	</bean>
+
 </beans>

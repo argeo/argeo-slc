@@ -1,28 +1,32 @@
 <project default="test" name="testProject">
 	<description>A Test project</description>
 
-	<target name="test" depends="testSimple">
+	<target name="test" depends="testSimple,testComplex">
+		<slc.closeResult result="testResult" report="report" />
 	</target>
 
-	<target name="testSimple" description="A simple test">
-		<echo message="${rootTest}"/>
-		
-		<slc.test>
+	<target name="testSimple" description="Simple tests">
+		<slc.test description="NATO">
 			<testDefinition bean="simpleExampleTestDef" />
 			<testData bean="testData.nato" />
 		</slc.test>
 
-		<slc.test>
+		<slc.test description="UN">
 			<testDefinition bean="simpleExampleTestDef" />
 			<testData bean="testData.un" />
 		</slc.test>
 
-		<slc.test>
+		<slc.test description="EU-reform">
 			<testDefinition bean="simpleExampleTestDef" />
 			<testData bean="testData.eu-reform" />
 		</slc.test>
-
-		<slc.closeResult result="testResult" report="report"/>
 	</target>
-	
+
+	<target name="testComplex" description="A complex test">
+		<slc.test description="Complex test">
+			<testDefinition bean="complexExampleTestDef" />
+			<testData bean="testData.un" />
+		</slc.test>
+	</target>
+
 </project>

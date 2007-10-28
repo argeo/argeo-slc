@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructurePath;
@@ -16,6 +19,7 @@ import org.argeo.slc.core.test.TestResultListener;
 import org.argeo.slc.core.test.TestResultPart;
 
 public class TreeTestResult implements TestResult, StructureAware {
+	private Log log = LogFactory.getLog(TreeTestResult.class);
 	/** For ORM */
 	private Long tid;
 
@@ -23,6 +27,8 @@ public class TreeTestResult implements TestResult, StructureAware {
 	private List<TestResultListener> listeners;
 
 	private TreeSPath currentPath;
+	
+	private boolean isClosed = false;
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 
@@ -78,12 +84,18 @@ public class TreeTestResult implements TestResult, StructureAware {
 	}
 
 	public void close() {
+		if(isClosed){
+			throw new SlcException("Test Result #"+getTestResultId()+" alredy closed.");
+		}
+		
 		synchronized (listeners) {
 			for (TestResultListener listener : listeners) {
 				listener.close();
 			}
 			listeners.clear();
 		}
+		isClosed = true;
+		log.info("Test Result #"+getTestResultId()+" closed.");
 	}
 
 	Long getTid() {

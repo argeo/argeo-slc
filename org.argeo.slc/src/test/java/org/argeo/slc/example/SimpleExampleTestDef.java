@@ -34,7 +34,6 @@ public class SimpleExampleTestDef implements TestDefinition {
 		executePart.setMessage("Execute example appli");
 		try {
 			// execute
-			log.info("Execute example appli...");
 			appli.filter(args);
 			
 			executePart.setStatus(SimpleResultPart.PASSED);
