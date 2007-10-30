@@ -2,7 +2,7 @@ package org.argeo.slc.core.test;
 
 import org.argeo.slc.core.deploy.DeployedSystem;
 
-public class SimpleTestRun implements TestRun {
+public class SimpleTestRun implements WritableTestRun {
 	private DeployedSystem deployedSystem;
 	private TestData testData;
 	private TestDefinition testDefinition;

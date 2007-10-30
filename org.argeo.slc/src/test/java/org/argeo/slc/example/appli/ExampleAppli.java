@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class ExampleAppli {
+	private int skipFreq = 2;
 
 	public void filter(String[] args) {
 		if (args.length < 2) {
@@ -14,7 +15,6 @@ public class ExampleAppli {
 		}
 		String input = args[0];
 		String output = args[1];
-		int skipFreq = 2;
 		if(args.length>2){
 			skipFreq = Integer.parseInt(args[2]);
 		}
@@ -36,6 +36,10 @@ public class ExampleAppli {
 		} catch (IOException e) {
 			throw new RuntimeException("Appli failed", e);
 		}
+	}
+
+	public void setSkipFreq(int skipFreq) {
+		this.skipFreq = skipFreq;
 	}
 
 }

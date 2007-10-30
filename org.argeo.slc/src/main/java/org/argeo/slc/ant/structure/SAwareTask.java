@@ -17,9 +17,9 @@ import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 
 /** Ant task that can be registered within a structure. */
-public abstract class SAwareTask extends AbstractSpringTask implements StructureElement {
+public abstract class SAwareTask extends AbstractSpringTask implements
+		StructureElement {
 	private TreeSPath path;
-	//private final DefaultTreeSAware sAware = new DefaultTreeSAware();
 	private final List<AbstractSpringArg> sAwareArgs = new Vector<AbstractSpringArg>();
 
 	@Override
@@ -57,7 +57,7 @@ public abstract class SAwareTask extends AbstractSpringTask implements Structure
 				+ targetPath.listChildren(getRegistry()).size());
 		getRegistry().register(taskPath, this);
 		path = taskPath;
-		
+
 		// notify registered args
 		for (AbstractSpringArg arg : sAwareArgs) {
 			Object obj = arg.getBeanInstance();
@@ -107,13 +107,11 @@ public abstract class SAwareTask extends AbstractSpringTask implements Structure
 	@Override
 	public String getDescription() {
 		String description = super.getDescription();
-		if(description==null){
+		if (description == null) {
 			return "<no task def>";
-		}
-		else{
+		} else {
 			return description;
 		}
 	}
-	
-	
+
 }

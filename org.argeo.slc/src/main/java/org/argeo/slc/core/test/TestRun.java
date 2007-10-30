@@ -11,4 +11,6 @@ public interface TestRun {
 	public DeployedSystem getDeployedSystem();
 
 	public TestResult getTestResult();
+	
+	public void execute();
 }

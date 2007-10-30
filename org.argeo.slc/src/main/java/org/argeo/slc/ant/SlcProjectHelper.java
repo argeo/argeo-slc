@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import org.apache.commons.logging.Log;
@@ -135,7 +134,8 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		System.getProperties().putAll(project.getProperties());
 		String acPath = project
 				.getUserProperty(SlcAntConfig.APPLICATION_CONTEXT_PROPERTY);
-		ApplicationContext context = new FileSystemXmlApplicationContext(acPath);
+		AbstractApplicationContext context = new FileSystemXmlApplicationContext(acPath);
+		context.registerShutdownHook();
 		project.addReference(REF_ROOT_CONTEXT, context);
 	}
 

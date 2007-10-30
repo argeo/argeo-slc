@@ -20,6 +20,14 @@
 			<testDefinition bean="simpleExampleTestDef" />
 			<testData bean="testData.eu-reform" />
 		</slc.test>
+		
+		<slc.test description="Distinct test">
+			<testDefinition bean="simpleExampleTestDef" />
+			<testData bean="testData.eu-reform" />
+			<deployedSystem bean="exampleDeployedSystem2"/>
+			<testResult bean="testResult2"/>
+		</slc.test>
+
 	</target>
 
 	<target name="testComplex" description="A complex test">
