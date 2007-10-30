@@ -9,7 +9,7 @@
 	</bean>
 
 	<bean id="complexExampleTestDef"
-		class="org.argeo.slc.example.ComplexExampleTestDef"
+		class="org.argeo.slc.core.test.tree.CompositeTreeTestDefinition "
 		scope="prototype">
 		<property name="tasks">
 			<list>

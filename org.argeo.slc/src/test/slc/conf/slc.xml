@@ -9,8 +9,8 @@
 		<property name="deployedSystem" ref="exampleDeployedSystem" />
 	</bean>
 
-	<bean id="testResultId"
-		class="org.argeo.slc.core.test.NumericTRId" init-method="init">
+	<bean id="testResultId" class="org.argeo.slc.core.test.NumericTRId"
+		init-method="init">
 	</bean>
 
 	<bean id="testResult"
@@ -33,8 +33,16 @@
 	</bean>
 
 	<bean id="resultPersister"
-		class="org.argeo.slc.core.test.tree.TreeTestResultPersister" init-method="init" destroy-method="destroy">
-		<property name="testResultDao" ref="testResultDao"/>
+		class="org.argeo.slc.core.test.tree.TreeTestResultPersister"
+		init-method="init" destroy-method="destroy">
+		<property name="testResultDao" ref="testResultDao" />
+	</bean>
+
+	<bean id="report"
+		class="org.argeo.slc.core.test.tree.FullHtmlTreeReport">
+		<property name="testResultDao" ref="testResultDao" />
+		<property name="reportDir"
+			value="${slc.workDir}/results/report" />
 	</bean>
 
 	<bean id="exampleDeployedSystem"

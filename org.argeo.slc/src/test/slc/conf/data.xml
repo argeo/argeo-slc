@@ -50,12 +50,4 @@
 		class="org.argeo.slc.hibernate.test.tree.TestResultDaoHibernate">
 		<property name="sessionFactory" ref="sessionFactoryResults" />
 	</bean>
-
-	<bean id="report"
-		class="org.argeo.slc.core.test.tree.FullHtmlTreeReport">
-		<property name="testResultDao" ref="testResultDao" />
-		<property name="reportDir" value="${slc.workDir}/results/report" />
-	</bean>
-
-	
 </beans>
