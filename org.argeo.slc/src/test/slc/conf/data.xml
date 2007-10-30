@@ -9,7 +9,7 @@
 		>
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
 		<property name="url"
-			value="jdbc:hsqldb:file:${slc.workDir}/results/hsqldb/db;shutdown=true" />
+			value="jdbc:hsqldb:file:${slc.workDir}/results/hsqldb/db" />
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 	</bean>
