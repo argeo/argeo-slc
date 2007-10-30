@@ -18,25 +18,19 @@ public abstract class AsynchronousTreeTestResultListener implements
 		thread.start();
 	}
 
-	public void destroy() {
-		thread = null;
-		synchronized (partStructs) {
-			partStructs.notifyAll();
-		}
-	}
-	
-	/** Finish the remaining and destroy*/
-	public void close(){
+	/** Finish the remaining and destroy */
+	public void close() {
 		synchronized (partStructs) {
 			// TODO: put a timeout
 			while (partStructs.size() != 0) {
 				try {
-					partStructs.wait();
+					partStructs.wait(500);
 				} catch (InterruptedException e) {
 					// silent
 				}
 			}
-			destroy();
+			thread = null;
+			partStructs.notifyAll();
 		}
 	}
 
@@ -72,7 +66,6 @@ public abstract class AsynchronousTreeTestResultListener implements
 			}
 		}
 	}
-
 
 	protected static class PartStruct {
 		public final TreeSPath path;

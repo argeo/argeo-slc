@@ -5,13 +5,14 @@
 
 	<!-- Results -->
 	<bean id="dataSourceResults"
-		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
-		>
+		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+		destroy-method="destroy">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
 		<property name="url"
-			value="jdbc:hsqldb:file:${slc.workDir}/results/hsqldb/db" />
+			value="jdbc:hsqldb:file:${slc.workDir}/results/hsqldb/db;shutdown=true" />
 		<property name="username" value="sa" />
 		<property name="password" value="" />
+		<property name="suppressClose" value="true" />
 	</bean>
 
 	<bean id="sessionFactoryResults"
@@ -37,10 +38,8 @@
 			<value>
 				hibernate.dialect=org.hibernate.dialect.HSQLDialect
 				cache.provider_class=org.hibernate.cache.NoCacheProvider
-				cache.use_query_cache=false
-				cache.use_minimal_puts=false
-				max_fetch_depth=3
-				current_session_context_class=thread
+				cache.use_query_cache=false cache.use_minimal_puts=false
+				max_fetch_depth=3 current_session_context_class=thread
 				hibernate.hbm2ddl.auto=update
 			</value>
 		</property>

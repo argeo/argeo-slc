@@ -3,6 +3,7 @@
 
 	<target name="test" depends="testSimple,testComplex">
 		<slc.closeResult result="testResult" report="report" />
+		<slc.closeResult result="testResult2" report="report" />
 	</target>
 
 	<target name="testSimple" description="Simple tests">

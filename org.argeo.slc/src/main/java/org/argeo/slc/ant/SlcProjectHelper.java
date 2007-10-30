@@ -26,7 +26,7 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
  * application context and a structure registry with the Ant project.
  */
 public class SlcProjectHelper extends ProjectHelperImpl {
-	private static Log log = LogFactory.getLog(SlcProjectHelper.class);
+	private static Log log ;
 
 	public static String REF_ROOT_CONTEXT = "slcApplicationContext";
 	public static String REF_STRUCTURE_REGISTRY = "slcStructureRegistry";
@@ -37,7 +37,6 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 
 	@Override
 	public void parse(Project project, Object source) throws BuildException {
-		log.debug("Entered SLC project helper");
 
 		// look for root file
 		File projectBaseDir = project.getBaseDir();
@@ -46,6 +45,12 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 			throw new SlcAntException("Cannot find SLC root file");
 		}
 		SlcAntConfig.initProject(project, slcRootFile);
+		
+		if(log == null){
+			// log4j is initialized only now
+			log = LogFactory.getLog(SlcProjectHelper.class);
+		}
+		log.debug("SLC properties are set, starting initialization..");
 
 		// init Spring application context
 		initSpringContext(project);

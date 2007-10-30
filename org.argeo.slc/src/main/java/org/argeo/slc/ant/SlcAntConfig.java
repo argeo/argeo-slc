@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.springframework.util.Log4jConfigurer;
+
 import org.apache.tools.ant.Project;
 
 /** Load reference to directories from an slcRoot.properties file */
@@ -95,7 +97,7 @@ public class SlcAntConfig {
 					PROPERTY_FILE_NAMES_PROPERTY, "slc.properties"), ",");
 			while (st.hasMoreTokens()) {
 				String fileName = st.nextToken();
-				properties.putAll(loadFile(confDir.getAbsolutePath() + "/"
+				properties.putAll(loadFile(confDir.getAbsolutePath() + File.separator
 						+ fileName));
 			}
 
@@ -115,6 +117,17 @@ public class SlcAntConfig {
 			// Default test run
 			if (all.getProperty(DEFAULT_TEST_RUN_PROPERTY) == null) {
 				all.setProperty(DEFAULT_TEST_RUN_PROPERTY, "defaultTestRun");
+			}
+
+			// Default log4j
+			if (all.getProperty("log4j.configuration") == null) {
+				System.setProperty("log4j.configuration",confDir
+						.getCanonicalPath()
+						+ File.separator + "log4j.properties" );
+				// TODO: fix dependency to log4j
+				Log4jConfigurer.initLogging(confDir
+						.getCanonicalPath()
+						+ File.separator + "log4j.properties");
 			}
 
 			return all;

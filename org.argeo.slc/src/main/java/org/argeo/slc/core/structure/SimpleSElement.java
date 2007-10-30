@@ -1,5 +1,7 @@
 package org.argeo.slc.core.structure;
 
+import org.argeo.slc.core.structure.tree.TreeSPath;
+
 /**
  * Implementation of <code>StructureElement</code> for tree based registries,
  * using <code>TreeSPath</code>
