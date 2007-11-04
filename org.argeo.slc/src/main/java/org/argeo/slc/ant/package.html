@@ -2,13 +2,37 @@
 <head></head>
 <body>
 Bases classes for SLC Ant extensions.
-<h2>Usage of SLC Ant extensions</h2>
-Add:
-<pre>
-&lt;taskdef resource="org/argeo/slc/ant/taskdefs.properties" /&gt;
-</pre>
-at the beginning of your file.
+<h2>Introduction</h2>
+SLC Ant allows to integrate Ant and Spring in order to run an
+application based on top of SLC. Sequence of actions are defined in Ant
+files with specific Ant tasks referencing Spring beans implementing the
+SLC interfaces. The properties of these beans can be overridden at
+runtime in the Ant scripts.
+<br />
+SLC Ant also provides a tree-based implementation of the SLC structure
+which allows to uniquely identify and reference the various actions.
 
+<h2>Installation</h2>
+The structure will be first defined by the directory tree where the Ant
+files are stored. In order to define the root of this tree, you need to
+place in the root directory an
+<b>SLC Ant root file</b>
+(default name: slcRoot.properties).
+<br />
+In this root file you can define a configuration directory and a work
+directory (default values are provided if they are not explicitly set).
+<br />
+Additional properties can then be defined in files stored under the
+configuration directory.
+<br />
+For details about the configuration and the various properties, please
+refer to {@link org.argeo.slc.ant.SlcAntConfig}.
+
+<h2>Running SLC Ant</h2>
+SLC Ant can be run either via pure Ant scripts or programmatically using
+{@link org.argeo.slc.ant.AntRegistryUtil}. In both cases, make sure that
+SLC and its dependencies are in the classpath (Spring (always), logging
+system such as log4j, Hibernate, etc.).
 
 </body>
 </html>

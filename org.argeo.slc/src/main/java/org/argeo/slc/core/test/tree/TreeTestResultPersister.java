@@ -5,6 +5,11 @@ import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.dao.test.TestResultDao;
 
+/**
+ * Listener persisting tree-based results.
+ * 
+ * @see TreeTestResult
+ */
 public class TreeTestResultPersister extends AsynchronousTreeTestResultListener {
 	private static Log log = LogFactory.getLog(TreeTestResultPersister.class);
 
@@ -49,6 +54,7 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 		}
 	}
 
+	/** Sets the dao to use in order to persist the results. */
 	public void setTestResultDao(TestResultDao testResultDao) {
 		this.testResultDao = testResultDao;
 	}

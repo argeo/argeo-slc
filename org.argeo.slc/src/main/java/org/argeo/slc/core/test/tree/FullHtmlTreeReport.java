@@ -16,6 +16,11 @@ import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultPart;
 import org.argeo.slc.dao.test.TestResultDao;
 
+/**
+ * Basic implementation of TestReport generating static HTML pages. If a
+ * <code>TestResultDao</code> is passed, all the datas are dumped, otherwise
+ * only the passed <code>TestResult</code>.
+ */
 public class FullHtmlTreeReport implements TestReport, StructureAware {
 	private TestResultDao testResultDao;
 	private File reportDir;
@@ -64,6 +69,14 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 		}
 	}
 
+	/**
+	 * Generates a result page for one test result
+	 * 
+	 * @param file
+	 *            file to which generate the HTML
+	 * @param result
+	 *            the result to dump
+	 */
 	protected void generateResultPage(File file, TreeTestResult result) {
 		StringBuffer buf = new StringBuffer("");
 		buf.append("<html>\n");
@@ -124,15 +137,21 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 		}
 	}
 
+	/**
+	 * Generates a result file location based on the report dir and the id of
+	 * the test result.
+	 */
 	protected File getResultFile(TreeTestResult result) {
 		return new File(reportDir.getPath() + File.separator
 				+ result.getTestResultId() + ".html");
 	}
 
+	/** Sets the dao to use to extract all data. */
 	public void setTestResultDao(TestResultDao testResultDao) {
 		this.testResultDao = testResultDao;
 	}
 
+	/** Sets the directory where to generate all the data. */
 	public void setReportDir(File reportDir) {
 		this.reportDir = reportDir;
 	}

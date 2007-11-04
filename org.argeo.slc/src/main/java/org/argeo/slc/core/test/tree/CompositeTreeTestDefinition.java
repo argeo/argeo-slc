@@ -16,6 +16,10 @@ import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestRun;
 
+/**
+ * Collection of test definitions propagating tree structure information to its
+ * children.
+ */
 public class CompositeTreeTestDefinition implements TestDefinition,
 		StructureAware {
 	private Log log = LogFactory.getLog(CompositeTreeTestDefinition.class);
@@ -45,6 +49,7 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 		}
 	}
 
+	/** Sets the list of children test definitions */
 	public void setTasks(List<TestDefinition> tasks) {
 		this.tasks = tasks;
 		if (tasks != null) {

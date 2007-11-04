@@ -6,10 +6,10 @@ import org.apache.tools.ant.Task;
 
 import org.argeo.slc.ant.SlcProjectHelper;
 
-/** Abstract Ant task providing access to a Spring context.*/
+/** Abstract Ant task providing access to a Spring context. */
 public abstract class AbstractSpringTask extends Task {
 
-	/** Gets the related Spring context.*/
+	/** Gets the related Spring context. */
 	protected ApplicationContext getContext() {
 		return (ApplicationContext) getProject().getReference(
 				SlcProjectHelper.REF_ROOT_CONTEXT);

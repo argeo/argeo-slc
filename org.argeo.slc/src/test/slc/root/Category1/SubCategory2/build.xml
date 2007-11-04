@@ -17,16 +17,16 @@
 			<testData bean="testData.un" />
 		</slc.test>
 
-		<slc.test description="EU-reform">
+		<slc.test description="EU-reform" testRun="otherTestRun">
 			<testDefinition bean="simpleExampleTestDef" />
 			<testData bean="testData.eu-reform" />
 		</slc.test>
-		
+
 		<slc.test description="Distinct test">
 			<testDefinition bean="simpleExampleTestDef" />
 			<testData bean="testData.eu-reform" />
-			<deployedSystem bean="exampleDeployedSystem2"/>
-			<testResult bean="testResult2"/>
+			<deployedSystem bean="exampleDeployedSystem2" />
+			<testResult bean="testResult2" />
 		</slc.test>
 
 	</target>
@@ -34,6 +34,16 @@
 	<target name="testComplex" description="A complex test">
 		<slc.test description="Complex test">
 			<testDefinition bean="complexExampleTestDef" />
+			<testData bean="testData.un" />
+		</slc.test>
+		<slc.test description="Complex overridden">
+			<testDefinition bean="complexExampleTestDef">
+				<override name="tasks">
+					<list>
+						<override bean="dummyTask" />
+					</list>
+				</override>
+			</testDefinition>
 			<testData bean="testData.un" />
 		</slc.test>
 	</target>

@@ -38,6 +38,10 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 		}
 	}
 
+	/**
+	 * Includes this arg in the checks for propagation of sstructure related
+	 * information.
+	 */
 	protected void addSAwareArg(AbstractSpringArg arg) {
 		sAwareArgs.add(arg);
 	}
@@ -100,6 +104,7 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 		return projectPath.createChild(target.getName());
 	}
 
+	/** Gets the path under which this task is registered. */
 	public TreeSPath getPath() {
 		return path;
 	}

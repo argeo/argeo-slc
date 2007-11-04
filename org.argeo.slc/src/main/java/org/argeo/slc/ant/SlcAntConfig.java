@@ -3,6 +3,7 @@ package org.argeo.slc.ant;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -10,7 +11,99 @@ import org.springframework.util.Log4jConfigurer;
 
 import org.apache.tools.ant.Project;
 
-/** Load reference to directories from an slcRoot.properties file */
+import org.argeo.slc.core.test.WritableTestRun;
+
+/**
+ * <p>
+ * Manager and initializer of the properties required by SLC Ant.
+ * </p>
+ * 
+ * <p>
+ * All properties described here will get a value one way or another (see below
+ * for details)/ Each property will be accessible via Ant or Spring properties.
+ * </p>
+ * 
+ * <p>
+ * The property <i>slc.rootFile</i> is set based on the location of the SLC
+ * root property file found in the directory structure of a called Ant file. The
+ * default name of this file is <b>slcRoot.properties</b> (can be set by
+ * {@link #setSlcRootFileName(String)}). <br>
+ * This property provides the absolute path to the unique SLC root property file
+ * which marks the root of an Ant SLC tree structure.
+ * </p>
+ * 
+ * <p>
+ * The property <i>slc.rootDir</i> is inferred from <i>slc.rootFile</i> and
+ * provides a convenient shortcut to the root directory of the Ant files
+ * directory structure.
+ * </p>
+ * 
+ * <p>
+ * A few directory and file related properties can be set in the SLC root
+ * property file (if they are not explicitly set their default values will be
+ * used):
+ * 
+ * <table border="1" cellspacing="0">
+ * <tr>
+ * <th>Property</th>
+ * <th>Description</th>
+ * <th>Default</th>
+ * </tr>
+ * <tr>
+ * <td><i>slc.confDir</i></td>
+ * <td>Directory where to find the various configuration files of a given SLC
+ * Ant deployment</td>
+ * <td>${slc.rootDir}/../conf</td>
+ * </tr>
+ * <tr>
+ * <td><i>slc.workDir</i></td>
+ * <td>Directory where data can be retrieved or generated: build outputs, test
+ * inputs/outputs, test results, etc. The underlying directory structure is
+ * specified by the specific SLC application.</td>
+ * <td>${slc.rootDir}/../work</td>
+ * </tr>
+ * <tr>
+ * <td><i>slc.propertyFileNames</i></td>
+ * <td>Comma-separated list of the files names of the property files to load
+ * from the conf directory. Having various files allows to separate between SLC
+ * framework properties and properties specific to a given application built on
+ * top of SLC. All will be available across Ant and Spring.</td>
+ * <td>slc.properties</td>
+ * </tr>
+ * </table> <b>Note:</b> Only the properties above can be set in the SLC root
+ * properties file. All other properties should be defined in the registered
+ * conf files.
+ * </p>
+ * 
+ * <p>
+ * Any property can be defined in the conf files defined in the SLC root
+ * properties file (see above). SLC expects some which will have defaults but
+ * can be overriden there. By convention they should be defined in the
+ * <b>slc.properties</b> file, while application specific properties should be
+ * defined in other conf files. This allows for a clean spearation between SLC
+ * and the applications built on top of it:
+ * 
+ * <table border="1" cellspacing="0">
+ * <tr>
+ * <th>Property</th>
+ * <th>Description</th>
+ * <th>Default</th>
+ * </tr>
+ * <tr>
+ * <td><i>slc.applicationContext</i></td>
+ * <td>Path to the root Spring application context file used by SLC Ant.</td>
+ * <td>${slc.confDir}/applicationContext.xml</td>
+ * </tr>
+ * <tr>
+ * <td><i>slc.defaultTestRun</i></td>
+ * <td>Name of the {@link WritableTestRun} Spring bean that the
+ * <code>slc.test</code> task will use by default. This can be overridden when
+ * calling the task from Ant.</td>
+ * <td>defaultTestRun</td>
+ * </tr>
+ * </table>
+ * </p>
+ */
 public class SlcAntConfig {
 	// SLC ROOT PROPERTIES
 	public final static String ROOT_FILE_PROPERTY = "slc.rootFile";
@@ -32,15 +125,27 @@ public class SlcAntConfig {
 	// SLC LOCAL PROPERTIES
 	public static String DIR_DESCRIPTION_PROPERTY = "slc.dirDescription";
 
+	private String slcRootFileName = "slcRoot.properties";
+	private String slcLocalFileName = "slcLocal.properties";
+
 	/**
-	 * Retrieve all properties and set them as project user properties. Root
-	 * properties (that is from slcRoot file) are added to System properties
-	 * (e.g. in order to be used by Spring)
+	 * Retrieves or infers all properties and set them as project user
+	 * properties. All these properties will be set as project properties <b>if
+	 * they had not been set as project properties before</b> (like by
+	 * overriding through the standard Ant mechanisms).
+	 * 
+	 * @param project
+	 *            the Ant <code>Project</code> being run.
 	 */
-	public static void initProject(Project project, File slcRootFile) {
-		System.getProperties().putAll(project.getUserProperties());
-		System.setProperty(ROOT_FILE_PROPERTY, slcRootFile.getAbsolutePath());
-		Properties all = prepareAllProperties();
+	public void initProject(Project project) {
+		File projectBaseDir = project.getBaseDir();
+		File slcRootFile = findSlcRootFile(projectBaseDir);
+		if (slcRootFile == null) {
+			throw new SlcAntException("Cannot find SLC root file");
+		}
+		// pass the project properties through the System properties
+		System.getProperties().putAll((Map<?, ?>) project.getUserProperties());
+		Properties all = prepareAllProperties(slcRootFile);
 		for (Object o : all.keySet()) {
 			String key = o.toString();
 			if (project.getUserProperty(key) == null) {// not already set
@@ -49,19 +154,22 @@ public class SlcAntConfig {
 		}
 	}
 
-	public static Properties prepareAllProperties() {
+	/**
+	 * Retrieves or infers all required properties.
+	 * 
+	 * @param slcRootFile
+	 *            the location of the SLC root file
+	 * 
+	 * @return the prepared properties. Note that it also contains the System
+	 *         and Ant properties which had previously been set.
+	 */
+	protected Properties prepareAllProperties(File slcRootFile) {
 		try {
 			Properties all = new Properties();
 			all.putAll(System.getProperties());
+			all.put(ROOT_FILE_PROPERTY, slcRootFile.getCanonicalPath());
 
-			if (all.getProperty(ROOT_FILE_PROPERTY) == null) {
-				throw new RuntimeException("System Property "
-						+ ROOT_FILE_PROPERTY + " has to be set.");
-			}
-
-			File slcRootFile = new File(all.getProperty(ROOT_FILE_PROPERTY))
-					.getAbsoluteFile();
-			Properties rootProps = loadFile(slcRootFile.getAbsolutePath());
+			Properties rootProps = loadFile(slcRootFile.getCanonicalPath());
 
 			final File confDir;
 			final File workDir;
@@ -97,8 +205,8 @@ public class SlcAntConfig {
 					PROPERTY_FILE_NAMES_PROPERTY, "slc.properties"), ",");
 			while (st.hasMoreTokens()) {
 				String fileName = st.nextToken();
-				properties.putAll(loadFile(confDir.getAbsolutePath() + File.separator
-						+ fileName));
+				properties.putAll(loadFile(confDir.getAbsolutePath()
+						+ File.separator + fileName));
 			}
 
 			for (Object o : properties.keySet()) {
@@ -121,12 +229,11 @@ public class SlcAntConfig {
 
 			// Default log4j
 			if (all.getProperty("log4j.configuration") == null) {
-				System.setProperty("log4j.configuration",confDir
+				System.setProperty("log4j.configuration", confDir
 						.getCanonicalPath()
-						+ File.separator + "log4j.properties" );
+						+ File.separator + "log4j.properties");
 				// TODO: fix dependency to log4j
-				Log4jConfigurer.initLogging(confDir
-						.getCanonicalPath()
+				Log4jConfigurer.initLogging(confDir.getCanonicalPath()
 						+ File.separator + "log4j.properties");
 			}
 
@@ -137,7 +244,8 @@ public class SlcAntConfig {
 		}
 	}
 
-	public static Properties loadFile(String path) {
+	/** Loads the content of a file as <code>Properties</code>. */
+	private Properties loadFile(String path) {
 		Properties p = new Properties();
 		try {
 			FileInputStream in = new FileInputStream(path);
@@ -147,6 +255,69 @@ public class SlcAntConfig {
 			throw new SlcAntException("Cannot read SLC root file", e);
 		}
 		return p;
+	}
+
+	/**
+	 * Looks for a file named {@link #getSlcLocalFileName()} in the directory,
+	 * loads it as properties file and return the value of the property
+	 * {@link #DIR_DESCRIPTION_PROPERTY}.
+	 */
+	public String getDescriptionForDir(File dir) {
+		String description = dir.getName();
+		File slcLocal = new File(dir.getPath() + File.separator
+				+ getSlcLocalFileName());
+		if (slcLocal.exists()) {
+			Properties properties = loadFile(slcLocal.getAbsolutePath());
+			description = properties.getProperty(
+					SlcAntConfig.DIR_DESCRIPTION_PROPERTY, description);
+		}
+		return description;
+	}
+
+	/**
+	 * Recursively scans directories downwards until it find a file names as
+	 * defined by {@link #getSlcRootFileName()}.
+	 */
+	public File findSlcRootFile(File dir) {
+		for (File file : dir.listFiles()) {
+			if (!file.isDirectory()
+					&& file.getName().equals(getSlcRootFileName())) {
+				return file;
+			}
+		}
+
+		File parentDir = dir.getParentFile();
+		if (parentDir == null) {
+			return null;// stop condition: not found
+		} else {
+			return findSlcRootFile(parentDir);
+		}
+	}
+
+	/**
+	 * Gets the file name of the file marking the root directory, default being
+	 * <i>slcRoot.properties</i>.
+	 */
+	public String getSlcRootFileName() {
+		return slcRootFileName;
+	}
+
+	/** Sets the file name of the file marking the root directory. */
+	public void setSlcRootFileName(String slcRootFileName) {
+		this.slcRootFileName = slcRootFileName;
+	}
+
+	/**
+	 * Gets the file name of the file containing directory specific properties,
+	 * default being <i>slcLocal.properties</i>.
+	 */
+	public String getSlcLocalFileName() {
+		return slcLocalFileName;
+	}
+
+	/** Sets the file name of the file containing directory specific properties. */
+	public void setSlcLocalFileName(String slcLocalFileName) {
+		this.slcLocalFileName = slcLocalFileName;
 	}
 
 }

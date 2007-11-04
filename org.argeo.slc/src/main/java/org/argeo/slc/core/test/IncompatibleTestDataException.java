@@ -3,7 +3,7 @@ package org.argeo.slc.core.test;
 import org.argeo.slc.core.SlcException;
 
 /**
- * Excception to throw when a test definition cannot interpret the provided tets
+ * Exception to throw when a test definition cannot interpret the provided test
  * data.
  */
 public class IncompatibleTestDataException extends SlcException {

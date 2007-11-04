@@ -9,8 +9,6 @@ import org.argeo.slc.core.structure.StructureRegistry;
 
 /**
  * Path for tree based <code>StructureRegistry</code> implementations.
- * 
- * @see TreeSRegistry
  */
 public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	/** Default character to use a separator: #. */
@@ -24,8 +22,8 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		String parentStr = parent != null ? parent.getAsUniqueString() : "";
 		return parentStr + separator + name;
 	}
-	
-	public void setAsUniqueString(String str){
+
+	public void setAsUniqueString(String str) {
 		TreeSPath twin = parseToCreatePath(str, getSeparator());
 		name = twin.name;
 		parent = twin.parent;
@@ -78,10 +76,10 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		return currPath;
 	}
 
-	public List<TreeSPath> listChildren(StructureRegistry registry){
+	public List<TreeSPath> listChildren(StructureRegistry registry) {
 		return listChildrenPaths(registry, this);
 	}
-	
+
 	public static List<TreeSPath> listChildrenPaths(StructureRegistry registry,
 			TreeSPath path) {
 		List<TreeSPath> paths = new Vector<TreeSPath>();
@@ -113,5 +111,4 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		return getAsUniqueString().compareTo(o.getAsUniqueString());
 	}
 
-	
 }

@@ -8,6 +8,12 @@ import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultListener;
 import org.argeo.slc.core.test.TestResultPart;
 
+/**
+ * Abstract asynchronous implementation of a listener listening to a
+ * <code>TreeTestResult</code>.
+ * 
+ * @see TreeTestResult
+ */
 public abstract class AsynchronousTreeTestResultListener implements
 		TestResultListener, Runnable {
 	private Vector<PartStruct> partStructs = new Vector<PartStruct>();
@@ -45,6 +51,7 @@ public abstract class AsynchronousTreeTestResultListener implements
 		}
 	}
 
+	/** Called when a result part has been added. */
 	protected abstract void resultPartAdded(PartStruct partStruct);
 
 	public void run() {
@@ -67,10 +74,15 @@ public abstract class AsynchronousTreeTestResultListener implements
 		}
 	}
 
+	/** Structure used to pass tree specific information to subclasses. */
 	protected static class PartStruct {
+		/** The tree path of this part. */
 		public final TreeSPath path;
+		/** The test result id of the related test result */
 		public final NumericTRId resultId;
+		/** The part itself */
 		public final TestResultPart part;
+		/** The tree test result itself. */
 		public final TreeTestResult result;
 
 		public PartStruct(TreeSPath path, NumericTRId resultId,

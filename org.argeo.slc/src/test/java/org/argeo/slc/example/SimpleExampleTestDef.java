@@ -35,14 +35,14 @@ public class SimpleExampleTestDef implements TestDefinition {
 		try {
 			// execute
 			appli.filter(args);
-			
+
 			executePart.setStatus(SimpleResultPart.PASSED);
 		} catch (Exception e) {
 			executePart.setStatus(SimpleResultPart.ERROR);
 			executePart.setException(e);
 		}
 		result.addResultPart(executePart);
-		if(executePart.getStatus()==SimpleResultPart.ERROR){
+		if (executePart.getStatus() == SimpleResultPart.ERROR) {
 			return;
 		}
 

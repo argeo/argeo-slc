@@ -3,11 +3,15 @@ package org.argeo.slc.core.test.tree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class TreeTestResultLogger extends
-		AsynchronousTreeTestResultListener {
+/**
+ * Listener logging tree-based test results to the underlying logging system.
+ * 
+ * @see TreeTestResult
+ * 
+ */
+public class TreeTestResultLogger extends AsynchronousTreeTestResultListener {
 
-	private static Log log = LogFactory
-			.getLog(TreeTestResultLogger.class);
+	private static Log log = LogFactory.getLog(TreeTestResultLogger.class);
 
 	@Override
 	protected void resultPartAdded(PartStruct partStruct) {

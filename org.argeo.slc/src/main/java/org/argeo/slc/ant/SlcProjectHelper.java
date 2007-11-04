@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -22,31 +23,32 @@ import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 
 /**
- * Custom implementation of a <code>ProjectHelper</code> binding a Spring
+ * Custom implementation of an Ant <code>ProjectHelper</code> binding a Spring
  * application context and a structure registry with the Ant project.
  */
 public class SlcProjectHelper extends ProjectHelperImpl {
-	private static Log log ;
+	private static Log log;
 
+	/** The Ant reference to the Spring application context used. */
 	public static String REF_ROOT_CONTEXT = "slcApplicationContext";
+	/** The Ant reference to the SLC structure registry used. */
 	public static String REF_STRUCTURE_REGISTRY = "slcStructureRegistry";
-	public static String REF_PROJECT_PATH = "slcProjectPath";
-
-	private String slcRootFileName = "slcRoot.properties";
-	private String slcLocalFileName = "slcLocal.properties";
+	/** The Ant reference to the <code>TreePath</code> of the current project */
+	private static String REF_PROJECT_PATH = "slcProjectPath";
+	/**
+	 * Resource path to the property file listing the SLC specific Ant tasks:
+	 * /org/argeo/slc/ant/taskdefs.properties
+	 */
+	private static String SLC_TASKDEFS_RESOURCE_PATH = "/org/argeo/slc/ant/taskdefs.properties";
 
 	@Override
 	public void parse(Project project, Object source) throws BuildException {
 
-		// look for root file
-		File projectBaseDir = project.getBaseDir();
-		File slcRootFile = findSlcRootFile(projectBaseDir);
-		if (slcRootFile == null) {
-			throw new SlcAntException("Cannot find SLC root file");
-		}
-		SlcAntConfig.initProject(project, slcRootFile);
-		
-		if(log == null){
+		// initialize config
+		SlcAntConfig slcAntConfig = new SlcAntConfig();
+		slcAntConfig.initProject(project);
+
+		if (log == null) {
 			// log4j is initialized only now
 			log = LogFactory.getLog(SlcProjectHelper.class);
 		}
@@ -54,7 +56,7 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 
 		// init Spring application context
 		initSpringContext(project);
-		
+
 		// init structure registry
 		DefaultSRegistry registry = new DefaultSRegistry();
 		project.addReference(REF_STRUCTURE_REGISTRY, registry);
@@ -63,13 +65,15 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		super.parse(project, source);
 
 		// create structure root
-		registerProjectAndParents(project);
+		registerProjectAndParents(project, slcAntConfig);
 
 		addSlcTasks(project);
 
 	}
 
-	private void registerProjectAndParents(Project project) {
+	/** Creates the tree-based structure for this project. */
+	private void registerProjectAndParents(Project project,
+			SlcAntConfig slcAntConfig) {
 		StructureRegistry registry = (StructureRegistry) project
 				.getReference(REF_STRUCTURE_REGISTRY);
 		File rootDir = new File(project
@@ -82,32 +86,27 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		do {
 			dirs.add(currentDir);
 			currentDir = currentDir.getParentFile();
-			log.trace("List " + currentDir);
+			if (log.isTraceEnabled())
+				log.trace("List " + currentDir);
 		} while (!currentDir.equals(rootDir.getParentFile()));
 
-		TreeSPath currPath = null;
+		// first path is root dir (because of previous algorithm)
+		TreeSPath currPath = TreeSPath.createRootPath(rootDir.getName());
 		for (int i = dirs.size() - 1; i >= 0; i--) {
 			File dir = dirs.get(i);
 
-			String description = dir.getName();
-			File slcLocal = new File(dir.getPath() + File.separator
-					+ slcLocalFileName);
-			if (slcLocal.exists()) {
-				Properties properties = SlcAntConfig.loadFile(slcLocal
-						.getAbsolutePath());
-				description = properties
-						.getProperty(SlcAntConfig.DIR_DESCRIPTION_PROPERTY);
+			// retrieves description for this path
+			final String description;
+			if (i == 0) {// project itself
+				description = project.getDescription() != null ? project
+						.getDescription() : "";
 			} else {
-				if (i == 0) {// project it self
-					description = project.getDescription() != null ? project
-							.getDescription() : "";
-				}
+				description = slcAntConfig.getDescriptionForDir(dir);
 			}
 			SimpleSElement element = new SimpleSElement(description);
 
-			if (dir.equals(rootDir)) {
-				currPath = TreeSPath.createRootPath(rootDir.getName());
-			} else {
+			// creates and register path
+			if (!dir.equals(rootDir)) {// already set
 				currPath = currPath.createChild(dir.getName());
 			}
 			registry.register(currPath, element);
@@ -115,40 +114,28 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		project.addReference(REF_PROJECT_PATH, currPath);
 	}
 
-	/** Get the path of a project (root). */
+	/** Gets the path of a project (root). */
 	public static TreeSPath getProjectPath(Project project) {
 		return (TreeSPath) project.getReference(REF_PROJECT_PATH);
 	}
 
-	private File findSlcRootFile(File dir) {
-		for (File file : dir.listFiles()) {
-			if (!file.isDirectory() && file.getName().equals(slcRootFileName)) {
-				return file;
-			}
-		}
-
-		File parentDir = dir.getParentFile();
-		if (parentDir == null) {
-			return null;// stop condition: not found
-		} else {
-			return findSlcRootFile(parentDir);
-		}
-	}
-
+	/** Initializes the Spring application context. */
 	private void initSpringContext(Project project) {
-		System.getProperties().putAll(project.getProperties());
+		System.getProperties().putAll((Map<?, ?>) project.getProperties());
 		String acPath = project
 				.getUserProperty(SlcAntConfig.APPLICATION_CONTEXT_PROPERTY);
-		AbstractApplicationContext context = new FileSystemXmlApplicationContext(acPath);
+		AbstractApplicationContext context = new FileSystemXmlApplicationContext(
+				acPath);
 		context.registerShutdownHook();
 		project.addReference(REF_ROOT_CONTEXT, context);
 	}
 
+	/** Loads the SLC specific Ant tasks. */
 	private void addSlcTasks(Project project) {
 		Properties taskdefs = new Properties();
 		try {
 			InputStream in = project.getClass().getResourceAsStream(
-					"/org/argeo/slc/ant/taskdefs.properties");
+					SLC_TASKDEFS_RESOURCE_PATH);
 			taskdefs.load(in);
 			in.close();
 		} catch (IOException e) {

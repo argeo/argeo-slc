@@ -6,7 +6,7 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** Default implementation of a <code>StructureRegistry</code>.*/
+/** Default implementation of a <code>StructureRegistry</code>. */
 public class DefaultSRegistry implements StructureRegistry {
 	private static Log log = LogFactory.getLog(DefaultSRegistry.class);
 
@@ -24,19 +24,19 @@ public class DefaultSRegistry implements StructureRegistry {
 		return new Vector<StructurePath>(paths);
 	}
 
-	public void register(StructurePath path,StructureElement element) {
+	public void register(StructurePath path, StructureElement element) {
 		StructureElement treeSElement = element;
 		elements.add(treeSElement);
-		paths.add( path);
+		paths.add(path);
 		log.debug("Registered " + path + " (desc: '"
 				+ treeSElement.getDescription() + "', position: "
 				+ elements.size() + ")");
 	}
 
-//	public void register(StructurePath path,StructureAware structureAware) {
-//		register(path,structureAware.getElement());
-//		structureAware.onRegister(this,path);
-//	}
+	// public void register(StructurePath path,StructureAware structureAware) {
+	// register(path,structureAware.getElement());
+	// structureAware.onRegister(this,path);
+	// }
 
 	public StructureElement getElement(StructurePath path) {
 		int index = paths.indexOf(path);

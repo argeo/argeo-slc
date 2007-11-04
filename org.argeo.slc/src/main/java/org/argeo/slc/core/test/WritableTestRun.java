@@ -2,6 +2,7 @@ package org.argeo.slc.core.test;
 
 import org.argeo.slc.core.deploy.DeployedSystem;
 
+/** Test run whose various components can be externally set. */
 public interface WritableTestRun extends TestRun {
 	public void setDeployedSystem(DeployedSystem deployedSystem);
 

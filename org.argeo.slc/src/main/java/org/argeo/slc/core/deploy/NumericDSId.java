@@ -2,6 +2,10 @@ package org.argeo.slc.core.deploy;
 
 import org.argeo.slc.core.build.DistributionId;
 
+/**
+ * A basic implementation of a deployed system id, based on a long value and a
+ * reference to a distribution id.
+ */
 public class NumericDSId implements DeployedSystemId {
 
 	private Long value;
@@ -33,5 +37,4 @@ public class NumericDSId implements DeployedSystemId {
 		return value.toString();
 	}
 
-	
 }

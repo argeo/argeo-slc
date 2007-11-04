@@ -15,7 +15,7 @@ public class ExampleAppli {
 		}
 		String input = args[0];
 		String output = args[1];
-		if(args.length>2){
+		if (args.length > 2) {
 			skipFreq = Integer.parseInt(args[2]);
 		}
 

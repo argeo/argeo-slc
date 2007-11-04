@@ -18,6 +18,10 @@ import org.argeo.slc.core.test.TestResultId;
 import org.argeo.slc.core.test.TestResultListener;
 import org.argeo.slc.core.test.TestResultPart;
 
+/**
+ * Complex implementation of a test result compatible with a tree based
+ * structure.
+ */
 public class TreeTestResult implements TestResult, StructureAware {
 	private Log log = LogFactory.getLog(TreeTestResult.class);
 	/** For ORM */
@@ -27,7 +31,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 	private List<TestResultListener> listeners;
 
 	private TreeSPath currentPath;
-	
+
 	private boolean isClosed = false;
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
@@ -36,6 +40,10 @@ public class TreeTestResult implements TestResult, StructureAware {
 		return testResultId;
 	}
 
+	/**
+	 * Use of a <code>NumericTRId</code> is required by Hibernate. <b>It may
+	 * change in the future.</b>
+	 */
 	public NumericTRId getNumericResultId() {
 		return testResultId;
 	}
@@ -75,19 +83,22 @@ public class TreeTestResult implements TestResult, StructureAware {
 		return currentPath;
 	}
 
+	/** Gets all the results structured as a map of <code>PartSubList<code>s. */
 	public SortedMap<TreeSPath, PartSubList> getResultParts() {
 		return resultParts;
 	}
 
+	/** Used by ORM systems. */
 	void setResultParts(SortedMap<TreeSPath, PartSubList> resultParts) {
 		this.resultParts = resultParts;
 	}
 
 	public void close() {
-		if(isClosed){
-			throw new SlcException("Test Result #"+getTestResultId()+" alredy closed.");
+		if (isClosed) {
+			throw new SlcException("Test Result #" + getTestResultId()
+					+ " alredy closed.");
 		}
-		
+
 		synchronized (listeners) {
 			for (TestResultListener listener : listeners) {
 				listener.close();
@@ -95,7 +106,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 			listeners.clear();
 		}
 		isClosed = true;
-		log.info("Test Result #"+getTestResultId()+" closed.");
+		log.info("Test Result #" + getTestResultId() + " closed.");
 	}
 
 	Long getTid() {

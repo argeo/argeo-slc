@@ -2,7 +2,19 @@ package org.argeo.slc.core.build;
 
 import java.util.StringTokenizer;
 
-
+/**
+ * <p>
+ * An implementation of the distribution id using the standard
+ * Major.Minor.Release notation. And additional arbitrary string can also be
+ * added.
+ * </p>
+ * 
+ * <p>
+ * <b>Examples:</b><br>
+ * 0.2.6<br>
+ * 2.4.12.RC1
+ * </p>
+ */
 public class VersionDistributionId implements DistributionId {
 
 	private Integer major;
@@ -10,6 +22,7 @@ public class VersionDistributionId implements DistributionId {
 	private Integer release;
 	private String additional;
 
+	/** Parse the provided string in order to set the various components. */
 	public void setVersionString(String str) {
 		StringTokenizer st = new StringTokenizer(str, ".");
 		if (st.hasMoreTokens())

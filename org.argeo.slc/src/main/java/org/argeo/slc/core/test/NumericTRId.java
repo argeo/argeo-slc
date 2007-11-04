@@ -2,19 +2,26 @@ package org.argeo.slc.core.test;
 
 import org.argeo.slc.core.deploy.DeployedSystemId;
 
+/**
+ * Basic implementation of test run id based on a long value and a reference to
+ * a deployed system id.
+ */
 public class NumericTRId implements TestResultId {
 	/** For ORM */
 	private Long tid;
 
 	private Long value;
 	private DeployedSystemId deployedSystemId;
-	
+
+	/**
+	 * Initializes the long value with the current time (based on
+	 * <code>java.lang.System.currentTimeMillis()</code>).
+	 */
 	public void init() {
 		if (getValue() == null) {
 			setValue(System.currentTimeMillis());
 		}
 	}
-
 
 	public Long getValue() {
 		return value;
@@ -49,7 +56,5 @@ public class NumericTRId implements TestResultId {
 	void setTid(Long tid) {
 		this.tid = tid;
 	}
-	
-	
 
 }

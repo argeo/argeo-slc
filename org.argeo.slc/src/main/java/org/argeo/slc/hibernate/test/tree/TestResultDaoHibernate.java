@@ -7,8 +7,14 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.argeo.slc.core.test.NumericTRId;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultId;
+import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.TestResultDao;
 
+/**
+ * The Hibernate implementation for tree-based result of the test result dao.
+ * 
+ * @see TreeTestResult
+ */
 public class TestResultDaoHibernate extends HibernateDaoSupport implements
 		TestResultDao {
 

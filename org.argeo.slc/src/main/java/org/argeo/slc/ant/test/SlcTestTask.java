@@ -16,7 +16,9 @@ import org.argeo.slc.core.test.WritableTestRun;
 
 /** Ant task wrapping a test run. */
 public class SlcTestTask extends SAwareTask {
-	Log log = LogFactory.getLog(SlcTestTask.class);
+	private Log log = LogFactory.getLog(SlcTestTask.class);
+
+	private String testRunBean = null;
 
 	private TestDefinitionArg testDefinitionArg;
 	private TestDataArg testDataArg;
@@ -25,27 +27,33 @@ public class SlcTestTask extends SAwareTask {
 
 	@Override
 	public void executeActions(String mode) throws BuildException {
+		final String testRunBeanT;
+		if (testRunBean != null) {
+			testRunBeanT = testRunBean;
+		} else {
+			testRunBeanT = getProject().getUserProperty(
+					SlcAntConfig.DEFAULT_TEST_RUN_PROPERTY);
+		}
 		WritableTestRun testRun = (WritableTestRun) getContext().getBean(
-				getProject().getUserProperty(
-						SlcAntConfig.DEFAULT_TEST_RUN_PROPERTY));
+				testRunBeanT);
 
-		// set overriden references
-		if (testDataArg != null){
+		// set overridden references
+		if (testDataArg != null) {
 			testRun.setTestData(testDataArg.getTestData());
 			log.trace("Overrides test data");
 		}
-		
-		if (testDefinitionArg != null){
+
+		if (testDefinitionArg != null) {
 			testRun.setTestDefinition(testDefinitionArg.getTestDefinition());
 			log.trace("Overrides test definition");
 		}
-		
-		if (deployedSystemArg != null){
+
+		if (deployedSystemArg != null) {
 			testRun.setDeployedSystem(deployedSystemArg.getDeployedSystem());
 			log.trace("Overrides deployed system");
 		}
-		
-		if (testResultArg != null){
+
+		if (testResultArg != null) {
 			testRun.setTestResult(testResultArg.getTestResult());
 			log.trace("Overrides test result");
 		}
@@ -58,6 +66,15 @@ public class SlcTestTask extends SAwareTask {
 		}
 
 		testRun.execute();
+	}
+
+	/**
+	 * The bean name of the test run to use. If not set the default is used.
+	 * 
+	 * @see SlcAntConfig
+	 */
+	public void setTestRun(String testRunBean) {
+		this.testRunBean = testRunBean;
 	}
 
 	public TestDefinitionArg createTestDefinition() {

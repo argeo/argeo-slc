@@ -31,7 +31,8 @@ public abstract class AbstractSpringArg extends DataType {
 	}
 
 	/**
-	 * Retrieve the instance of the bean. <b>The value is cached.</b>
+	 * Retrieve the instance of the bean, and sets the overriden properties.
+	 * <b>The value is cached.</b>
 	 */
 	public Object getBeanInstance() {
 		if (beanInstance == null) {

@@ -9,6 +9,12 @@
 		<property name="deployedSystem" ref="exampleDeployedSystem" />
 	</bean>
 
+	<bean id="otherTestRun"
+		class="org.argeo.slc.core.test.SimpleTestRun" scope="prototype">
+		<property name="testResult" ref="testResult2" />
+		<property name="deployedSystem" ref="exampleDeployedSystem" />
+	</bean>
+
 	<bean id="testResult"
 		class="org.argeo.slc.core.test.tree.TreeTestResult">
 		<property name="numericResultId" ref="testResultId" />
