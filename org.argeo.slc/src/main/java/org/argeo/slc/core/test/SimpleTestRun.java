@@ -6,7 +6,7 @@ import org.argeo.slc.core.deploy.DeployedSystem;
  * A basic bean implementation of a <code>WritableTestRun</code>, holding
  * references to the various parts of a test run.
  */
-public class SimpleTestRun implements WritableTestRun {
+public class SimpleTestRun implements WritableTestRun, ExecutableTestRun {
 	private DeployedSystem deployedSystem;
 	private TestData testData;
 	private TestDefinition testDefinition;

@@ -16,20 +16,26 @@ package org.argeo.slc.core.test;
  * </p>
  */
 public class SimpleResultPart implements TestResultPart {
-
-	/** The flag for a passed test: 1 */
-	public final static int PASSED = 1;
-	/** The flag for a failed test: 2 */
-	public final static int FAILED = 2;
-	/** The flag for a test which could not properly run because of an error: 3 */
-	public final static int ERROR = 3;
-
 	/** For ORM */
 	private Long tid;
 
-	private Integer status;
+	private TestStatus status;
 	private String message;
 	private Throwable exception;
+
+	
+	/** Empty constructor for ORM */
+	public SimpleResultPart(){
+		
+	}
+	
+	public SimpleResultPart(TestStatus status, String message,
+			Throwable exception) {
+		super();
+		this.status = status;
+		this.message = message;
+		this.exception = exception;
+	}
 
 	public String getMessage() {
 		return message;
@@ -39,11 +45,11 @@ public class SimpleResultPart implements TestResultPart {
 		this.message = message;
 	}
 
-	public void setStatus(Integer status) {
+	public void setStatus(TestStatus status) {
 		this.status = status;
 	}
 
-	public Integer getStatus() {
+	public TestStatus getStatus() {
 		return status;
 	}
 
@@ -58,13 +64,7 @@ public class SimpleResultPart implements TestResultPart {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer("");
-		if (status == PASSED) {
-			buf.append("PASSED ");
-		} else if (status == FAILED) {
-			buf.append("FAILED ");
-		} else if (status == ERROR) {
-			buf.append("ERROR  ");
-		}
+		buf.append(status).append(" ");
 		buf.append(message);
 		if (exception != null) {
 			buf.append("(").append(exception.getMessage()).append(")");

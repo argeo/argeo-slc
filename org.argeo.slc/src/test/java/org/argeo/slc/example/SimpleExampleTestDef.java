@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.test.SimpleResultPart;
+import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultPart;
@@ -36,13 +37,13 @@ public class SimpleExampleTestDef implements TestDefinition {
 			// execute
 			appli.filter(args);
 
-			executePart.setStatus(SimpleResultPart.PASSED);
+			executePart.setStatus(TestStatus.PASSED);
 		} catch (Exception e) {
-			executePart.setStatus(SimpleResultPart.ERROR);
+			executePart.setStatus(TestStatus.ERROR);
 			executePart.setException(e);
 		}
 		result.addResultPart(executePart);
-		if (executePart.getStatus() == SimpleResultPart.ERROR) {
+		if (executePart.getStatus() == TestStatus.ERROR) {
 			return;
 		}
 
@@ -56,10 +57,10 @@ public class SimpleExampleTestDef implements TestDefinition {
 		try {
 			String expected = loadFile(data.getExpectedFile());
 			String reached = loadFile(data.getReachedFile());
-			part.setStatus(expected.equals(reached) ? SimpleResultPart.PASSED
-					: SimpleResultPart.FAILED);
+			part.setStatus(expected.equals(reached) ? TestStatus.PASSED
+					: TestStatus.FAILED);
 		} catch (Exception e) {
-			part.setStatus(SimpleResultPart.ERROR);
+			part.setStatus(TestStatus.ERROR);
 			part.setException(e);
 			log.error("Error while asserting files", e);
 		}

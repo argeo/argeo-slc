@@ -11,6 +11,7 @@ import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
+import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.TestReport;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultPart;
@@ -108,7 +109,7 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 			for (TestResultPart part : subList.getParts()) {
 				SimpleResultPart sPart = (SimpleResultPart) part;
 				String color = "yellow";
-				if (sPart.getStatus() == SimpleResultPart.PASSED) {
+				if (sPart.getStatus() == TestStatus.PASSED) {
 					color = "green";
 				} else {
 					color = "red";

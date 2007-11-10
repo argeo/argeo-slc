@@ -9,6 +9,7 @@ import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
 import org.argeo.slc.core.deploy.DeployedSystem;
 import org.argeo.slc.core.structure.StructureAware;
+import org.argeo.slc.core.test.ExecutableTestRun;
 import org.argeo.slc.core.test.TestData;
 import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestResult;
@@ -65,7 +66,7 @@ public class SlcTestTask extends SAwareTask {
 					getPath());
 		}
 
-		testRun.execute();
+		((ExecutableTestRun)testRun).execute();
 	}
 
 	/**

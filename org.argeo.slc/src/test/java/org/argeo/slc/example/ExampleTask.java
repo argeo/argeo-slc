@@ -6,6 +6,7 @@ import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
+import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestRun;
@@ -17,7 +18,7 @@ public class ExampleTask implements StructureAware, TestDefinition,
 
 	public void execute(TestRun testRun) {
 		SimpleResultPart part = new SimpleResultPart();
-		part.setStatus(SimpleResultPart.PASSED);
+		part.setStatus(TestStatus.PASSED);
 		part.setMessage("Sub task with path " + path + " executed");
 
 		TestResult result = testRun.getTestResult();
