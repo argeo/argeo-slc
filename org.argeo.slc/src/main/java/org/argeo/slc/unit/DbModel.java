@@ -8,6 +8,11 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 
+/**
+ * Creates a relational data model from Hibernate mapping files. The benefit of
+ * this class is to be able to use Hibernate to have test data which are
+ * independent from the type of database used.
+ */
 public class DbModel {
 	private String dialect;
 	private List<String> mappings;

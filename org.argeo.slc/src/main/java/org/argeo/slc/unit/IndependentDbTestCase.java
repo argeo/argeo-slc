@@ -19,9 +19,14 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 
 import org.argeo.slc.core.SlcException;
 
+/**
+ * Helper to make db vendor independent tests using DbUnit data sets. Based on
+ * {@link DbModel}.
+ */
 public class IndependentDbTestCase extends SpringBasedTestCase {
 	private IDatabaseTester databaseTester;
 
+	/** Creates the DDL of the data model and loads the data. */
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -53,15 +58,27 @@ public class IndependentDbTestCase extends SpringBasedTestCase {
 		super.tearDown();
 	}
 
+	/**
+	 * The data source to use. The default implementation returns a bean named
+	 * {@link #getDataSourceBeanName}
+	 */
 	protected DataSource getDataSource() {
-		return (DataSource) getApplicationContext().getBean(
-				getDataSourceBeanName());
+		return (DataSource) getContext().getBean(getDataSourceBeanName());
 	}
 
+	/**
+	 * The name of the data source bean to use. The default implementation
+	 * returns <i>dataSource</i>.
+	 */
 	protected String getDataSourceBeanName() {
 		return "dataSource";
 	}
 
+	/**
+	 * Creates the data set to use. The default implementation creates a
+	 * <code>FlatXmlDataSet</code> load from the resource defined in
+	 * {@link #getDataSetResource()}
+	 */
 	protected IDataSet createDataSet() {
 		try {
 			InputStream in = getDataSetResource().getInputStream();
@@ -73,18 +90,35 @@ public class IndependentDbTestCase extends SpringBasedTestCase {
 		}
 	}
 
+	/**
+	 * The resource of the data set to load. The default implementation loads a
+	 * <code>ClassPathResource</code> located at
+	 * {@link #getDataSetResourceLocation()}.
+	 */
 	protected Resource getDataSetResource() {
 		return new ClassPathResource(getDataSetResourceLocation());
 	}
 
+	/**
+	 * The location of the data set to load. The default implementation loads
+	 * <i>dataSet.xml</i> found in the same package as the test.
+	 */
 	protected String getDataSetResourceLocation() {
 		return inPackage("dataSet.xml");
 	}
 
+	/**
+	 * The DB model to us to create the DDL of the testes database. The default
+	 * implementation loads a bean named after {@link #getDbModelBeanName()}.
+	 */
 	protected DbModel getDbModel() {
-		return (DbModel) getApplicationContext().getBean(getDbModelBeanName());
+		return (DbModel) getContext().getBean(getDbModelBeanName());
 	}
 
+	/**
+	 * The name of the bean to load. The default implementation returns
+	 * <i>dbModel</i>.
+	 */
 	protected String getDbModelBeanName() {
 		return "dbModel";
 	}

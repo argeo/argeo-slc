@@ -5,6 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import junit.framework.TestCase;
 
+/** Helper for tests using a Spring application co,text. */
 public class SpringBasedTestCase extends TestCase {
 	private ApplicationContext context;
 
@@ -13,7 +14,7 @@ public class SpringBasedTestCase extends TestCase {
 	 * implementation uses a class path xml application context and calls
 	 * {@link #getApplicationContextLocation()}.
 	 */
-	protected ApplicationContext getApplicationContext() {
+	protected ApplicationContext getContext() {
 		if (context == null) {
 			context = new ClassPathXmlApplicationContext(
 					getApplicationContextLocation());
@@ -22,15 +23,20 @@ public class SpringBasedTestCase extends TestCase {
 	}
 
 	/**
-	 * Get the application context location used by the default implementation
-	 * of {@link #getApplicationContext()}.
+	 * Th location of the application to load. The default implementation
+	 * returns <i>applicationContext.xml</i> found in the same package as the
+	 * test.
 	 */
 	protected String getApplicationContextLocation() {
 		return inPackage("applicationContext.xml");
 	}
-	
-	protected String inPackage(String suffix){
+
+	/**
+	 * Prefixes the package of the class after converting the '.' to '/' in
+	 * order to have a resource path.
+	 */
+	protected String inPackage(String suffix) {
 		String prefix = getClass().getPackage().getName().replace('.', '/');
-		return prefix+'/'+suffix;
+		return prefix + '/' + suffix;
 	}
 }
