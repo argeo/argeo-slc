@@ -5,33 +5,25 @@ package org.argeo.slc.core.test;
  * Basic implementation of a result part, implementing the standard three status
  * approach for test results.
  * </p>
- * <p>
- * <ul>
- * <li>{@link #PASSED}: the test succeeded</li>
- * <li>{@link #FAILED}: the test could run, but did not reach the expected
- * result</li>
- * <li>{@link #ERROR}: an error during the test run prevented to get a
- * significant information on the tested system.</li>
- * </ul>
- * </p>
+ * @see TestStatus
  */
-public class SimpleResultPart implements TestResultPart {
+public class SimpleResultPart implements TestResultPart, TestStatus {
+
 	/** For ORM */
 	private Long tid;
 
-	private TestStatus status;
+	private Integer status;
 	private String message;
 	private Throwable exception;
 
-	
-	/** Empty constructor for ORM */
-	public SimpleResultPart(){
-		
+	public SimpleResultPart() {
 	}
-	
-	public SimpleResultPart(TestStatus status, String message,
-			Throwable exception) {
-		super();
+
+	public SimpleResultPart(Integer status, String message) {
+		this(status, message, null);
+	}
+
+	public SimpleResultPart(Integer status, String message, Throwable exception) {
 		this.status = status;
 		this.message = message;
 		this.exception = exception;
@@ -45,11 +37,11 @@ public class SimpleResultPart implements TestResultPart {
 		this.message = message;
 	}
 
-	public void setStatus(TestStatus status) {
+	public void setStatus(Integer status) {
 		this.status = status;
 	}
 
-	public TestStatus getStatus() {
+	public Integer getStatus() {
 		return status;
 	}
 
@@ -64,7 +56,13 @@ public class SimpleResultPart implements TestResultPart {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer("");
-		buf.append(status).append(" ");
+		if (status == PASSED) {
+			buf.append("PASSED ");
+		} else if (status == FAILED) {
+			buf.append("FAILED ");
+		} else if (status == ERROR) {
+			buf.append("ERROR  ");
+		}
 		buf.append(message);
 		if (exception != null) {
 			buf.append("(").append(exception.getMessage()).append(")");

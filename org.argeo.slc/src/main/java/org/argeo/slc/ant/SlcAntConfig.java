@@ -165,6 +165,8 @@ public class SlcAntConfig {
 	 */
 	protected Properties prepareAllProperties(File slcRootFile) {
 		try {
+			final String fileUrlPrefix ="";
+
 			Properties all = new Properties();
 			all.putAll(System.getProperties());
 			all.put(ROOT_FILE_PROPERTY, slcRootFile.getCanonicalPath());
@@ -175,14 +177,16 @@ public class SlcAntConfig {
 			final File workDir;
 			// Root dir
 			final File rootDir = slcRootFile.getParentFile();
-			all.setProperty(ROOT_DIR_PROPERTY, rootDir.getCanonicalPath());
+			all.setProperty(ROOT_DIR_PROPERTY, fileUrlPrefix
+					+ rootDir.getCanonicalPath());
 
 			// Conf dir
 			if (all.getProperty(CONF_DIR_PROPERTY) == null) {
 				confDir = new File(rootProps.getProperty(CONF_DIR_PROPERTY,
 						rootDir.getAbsolutePath() + "/../conf"))
 						.getCanonicalFile();
-				all.setProperty(CONF_DIR_PROPERTY, confDir.getAbsolutePath());
+				all.setProperty(CONF_DIR_PROPERTY, fileUrlPrefix
+						+ confDir.getAbsolutePath());
 			} else {
 				confDir = new File(all.getProperty(CONF_DIR_PROPERTY))
 						.getCanonicalFile();
@@ -193,7 +197,8 @@ public class SlcAntConfig {
 				workDir = new File(rootProps.getProperty(WORK_DIR_PROPERTY,
 						rootDir.getAbsolutePath() + "/../work"))
 						.getCanonicalFile();
-				all.setProperty(WORK_DIR_PROPERTY, workDir.getAbsolutePath());
+				all.setProperty(WORK_DIR_PROPERTY, fileUrlPrefix
+						+ workDir.getAbsolutePath());
 			} else {
 				workDir = new File(all.getProperty(WORK_DIR_PROPERTY))
 						.getCanonicalFile();
