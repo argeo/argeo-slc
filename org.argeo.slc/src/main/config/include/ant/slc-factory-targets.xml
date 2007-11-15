@@ -1,3 +1,8 @@
+<!--
+$HeadURL:$
+$Revision:$
+$LastChangedDate:$
+-->
 <project default="all">
 	<!-- TO BE OVERRIDDEN -->
 	<property name="package.type" value="I" />
@@ -6,6 +11,7 @@
 
 	<property name="main.srcdir" location="src/main/java" />
 	<property name="main.libdir" location="lib" />
+	<property name="main.libdir-src" location="lib-src" />
 	<property name="test.srcdir" location="src/test/java" />
 
 	<property name="package.base" location="target/package/" />
@@ -13,10 +19,15 @@
 	<property name="dist.base" location="target/dist/" />
 	<property name="dist.doc" location="${dist.base}/doc" />
 	<property name="dist.lib" location="${dist.base}/lib" />
+	<property name="dist.lib-src" location="${dist.base}/lib-src" />
+	<property name="dist.build" location="${dist.base}/build" />
+	<property name="dist.junit" location="${dist.build}/junit" />
+	<property name="dist.appli" location="${dist.base}/appli" />
 
 	<property name="dist.jar" location="target/jar" />
 
 	<property name="compile.base" location="target/compile" />
+	<property name="slc.base" location="target/slc" />
 
 	<path id="cp.main">
 		<fileset dir="${main.libdir}">
@@ -37,8 +48,13 @@
 		<echo message="Build of ${package.name} completed" />
 	</target>
 
+	<target name="basePackage" depends="dist.basePackage">
+		<echo message="Build of ${package.name} completed" />
+	</target>
+
 	<target name="clean">
 		<delete dir="${dist.jar}" />
+		<delete dir="${slc.base}" />
 		<delete dir="${dist.base}" />
 		<delete dir="${package.base}" />
 		<delete dir="${compile.base}" />
@@ -49,7 +65,7 @@
 		<!-- To be overriden -->
 	</target>
 
-	<target name="initInternal">
+	<target name="init.internal">
 		<fail unless="package.version"
 		      message="Property 'package.version' must be set" />
 		<fail unless="package.prefix"
@@ -63,16 +79,42 @@
 
 		<property name="package.name"
 		          value="${package.prefix}-${package.releaseId}" />
+		<property name="basePackage.name" value="${package.prefix}-base" />
 
 		<mkdir dir="${dist.jar}" />
+		<mkdir dir="${slc.base}" />
 		<mkdir dir="${dist.base}" />
+		<mkdir dir="${dist.lib-src}" />
 		<mkdir dir="${package.base}" />
 		<mkdir dir="${compile.base}" />
 
 		<echo message="Build of ${package.name} started." />
 	</target>
 
-	<target name="build.main" depends="initInternal,init">
+	<target name="init.slcbase" if="slc.basePackage">
+		<unzip dest="${slc.base}" src="${slc.basePackage}" />
+
+		<copy todir="${dist.base}">
+			<fileset dir="${slc.base}">
+				<include name="doc/argeo-slc/**" />
+				<include name="bin/*" />
+				<include name="slc.*" />
+			</fileset>
+		</copy>
+
+		<copy todir="${main.libdir}">
+			<fileset dir="${slc.base}/lib">
+				<include name="*" />
+			</fileset>
+		</copy>
+		<copy todir="${main.libdir-src}">
+			<fileset dir="${slc.base}/lib-src">
+				<include name="*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build.main" depends="init.internal,init.slcbase,init">
 		<compile artifact="${main.artifact}" srcdir="${main.srcdir}" />
 	</target>
 
@@ -86,14 +128,45 @@
 		<createJar artifact="${main.artifact}" srcdir="${main.srcdir}" />
 	</target>
 
-	<target name="jar.test" depends="jar.main">
+	<target name="jar.sources" unless="flag.noSources">
+		<createSourcesJar artifact="${main.artifact}" srcdir="${main.srcdir}" />
+	</target>
+
+	<target name="jar.test" depends="jar.main,jar.sources">
 		<createJar artifact="${test.artifact}" srcdir="${test.srcdir}" />
 	</target>
 
 	<target name="dist.unittest" depends="jar.test">
+		<mkdir dir="${dist.junit}/xml" />
+		<junit printsummary="yes" haltonfailure="no">
+			<classpath>
+				<path refid="cp.test" />
+				<path location="${dist.jar}/${test.artifact}.jar" />
+			</classpath>
+
+			<formatter type="xml" />
+
+			<batchtest fork="yes" todir="${dist.junit}/xml">
+				<fileset dir="${test.srcdir}">
+					<include name="**/*Test*.java" />
+					<exclude name="**/Abstract*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+
+		<junitreport todir="${dist.junit}">
+			<fileset dir="${dist.junit}/xml">
+				<include name="*.xml" />
+			</fileset>
+			<report format="frames" todir="${dist.junit}" />
+		</junitreport>
 	</target>
 
-	<target name="dist.package" depends="dist.unittest,dist.api,dist.dependencies">
+	<target name="package.common"
+	        depends="dist.unittest,dist.api,dist.apiWithSlc,dist.dependencies,dist.appli">
+	</target>
+
+	<target name="dist.package" depends="package.common">
 		<copy todir="${dist.base}">
 			<fileset dir="src/main/config" includes="**/*" />
 		</copy>
@@ -102,7 +175,24 @@
 		</copy>
 
 		<zip destfile="${package.base}/${package.name}.zip">
-			<zipfileset dir="${dist.base}" prefix="${package.prefix}-${package.version}">
+			<zipfileset dir="${dist.base}"
+			            prefix="${package.prefix}-${package.version}">
+				<include name="**/*" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="dist.basePackage" depends="package.common">
+		<copy todir="${dist.base}">
+			<fileset dir="src/main/config" includes="**/*" />
+		</copy>
+		<copy todir="${dist.lib}">
+			<fileset dir="${dist.jar}" includes="*.jar" excludes="*-test.jar" />
+		</copy>
+
+		<zip destfile="${package.base}/${basePackage.name}.zip">
+			<zipfileset dir="${dist.base}">
+				<exclude name="build/**" />
 				<include name="**/*" />
 			</zipfileset>
 		</zip>
@@ -115,8 +205,24 @@
 
 	</target>
 
-	<target name="dist.api">
+	<target name="dist.appli" if="appli.base">
+		<copy todir="${dist.appli}">
+			<fileset dir="${appli.base}" includes="**" />
+		</copy>
+
+	</target>
+
+	<target name="dist.api" unless="slc.basePackage">
+		<api artifact="${main.artifact}" srcdir="${main.srcdir}" />
+
+	</target>
+
+	<target name="dist.apiWithSlc" if="slc.basePackage">
 		<api artifact="${main.artifact}" srcdir="${main.srcdir}">
+			<links>
+				<link href="../../argeo-slc/api" />
+			</links>
 		</api>
+
 	</target>
 </project>

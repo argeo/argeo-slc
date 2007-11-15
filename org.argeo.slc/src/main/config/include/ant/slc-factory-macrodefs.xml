@@ -1,3 +1,8 @@
+<!--
+$HeadURL:$
+$Revision:$
+$LastChangedDate:$
+-->
 <project>
 	<macrodef name="compile">
 		<attribute name="srcdir" />
@@ -35,6 +40,28 @@
 						value="${package.version}" />
 					<attribute name="Implementation-Title"
 						value="@{artifact}" />
+					<attribute name="Implementation-Version"
+						value="${package.releaseId}" />
+				</manifest>
+			</jar>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="createSourcesJar">
+		<attribute name="srcdir" />
+		<attribute name="artifact" />
+		<sequential>
+			<jar destfile="${dist.lib-src}/@{artifact}-sources.jar">
+				<zipfileset dir="@{srcdir}">
+					<include name="**/*" />
+				</zipfileset>
+				<manifest>
+					<attribute name="Specification-Title"
+						value="${package.prefix} Sources" />
+					<attribute name="Specification-Version"
+						value="${package.version}" />
+					<attribute name="Implementation-Title"
+						value="@{artifact} Sources" />
 					<attribute name="Implementation-Version"
 						value="${package.releaseId}" />
 				</manifest>
