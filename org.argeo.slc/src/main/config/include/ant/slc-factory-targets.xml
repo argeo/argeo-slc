@@ -1,0 +1,122 @@
+<project default="all">
+	<!-- TO BE OVERRIDDEN -->
+	<property name="package.type" value="I" />
+	<property name="main.artifact" value="${package.prefix}" />
+	<property name="test.artifact" value="${package.prefix}-test" />
+
+	<property name="main.srcdir" location="src/main/java" />
+	<property name="main.libdir" location="lib" />
+	<property name="test.srcdir" location="src/test/java" />
+
+	<property name="package.base" location="target/package/" />
+
+	<property name="dist.base" location="target/dist/" />
+	<property name="dist.doc" location="${dist.base}/doc" />
+	<property name="dist.lib" location="${dist.base}/lib" />
+
+	<property name="dist.jar" location="target/jar" />
+
+	<property name="compile.base" location="target/compile" />
+
+	<path id="cp.main">
+		<fileset dir="${main.libdir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<path id="cp.test">
+		<fileset dir="${main.libdir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${compile.base}/${main.artifact}" />
+	</path>
+
+	<import file="slc-factory-macrodefs.xml" />
+
+	<target name="all" depends="dist.package">
+		<echo message="Build of ${package.name} completed" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${dist.jar}" />
+		<delete dir="${dist.base}" />
+		<delete dir="${package.base}" />
+		<delete dir="${compile.base}" />
+	</target>
+
+
+	<target name="init">
+		<!-- To be overriden -->
+	</target>
+
+	<target name="initInternal">
+		<fail unless="package.version"
+		      message="Property 'package.version' must be set" />
+		<fail unless="package.prefix"
+		      message="Property 'package.prefix' must be set" />
+
+		<tstamp>
+			<format property="package.tstamp" pattern="yyMMddHHmmss" />
+		</tstamp>
+		<property name="package.releaseId"
+		          value="${package.version}.${package.tstamp}${package.type}" />
+
+		<property name="package.name"
+		          value="${package.prefix}-${package.releaseId}" />
+
+		<mkdir dir="${dist.jar}" />
+		<mkdir dir="${dist.base}" />
+		<mkdir dir="${package.base}" />
+		<mkdir dir="${compile.base}" />
+
+		<echo message="Build of ${package.name} started." />
+	</target>
+
+	<target name="build.main" depends="initInternal,init">
+		<compile artifact="${main.artifact}" srcdir="${main.srcdir}" />
+	</target>
+
+	<target name="build.test" depends="build.main">
+		<compile artifact="${test.artifact}"
+		         srcdir="${test.srcdir}"
+		         classpathref="cp.test" />
+	</target>
+
+	<target name="jar.main" depends="build.test">
+		<createJar artifact="${main.artifact}" srcdir="${main.srcdir}" />
+	</target>
+
+	<target name="jar.test" depends="jar.main">
+		<createJar artifact="${test.artifact}" srcdir="${test.srcdir}" />
+	</target>
+
+	<target name="dist.unittest" depends="jar.test">
+	</target>
+
+	<target name="dist.package" depends="dist.unittest,dist.api,dist.dependencies">
+		<copy todir="${dist.base}">
+			<fileset dir="src/main/config" includes="**/*" />
+		</copy>
+		<copy todir="${dist.lib}">
+			<fileset dir="${dist.jar}" includes="*.jar" excludes="*-test.jar" />
+		</copy>
+
+		<zip destfile="${package.base}/${package.name}.zip">
+			<zipfileset dir="${dist.base}" prefix="${package.prefix}-${package.version}">
+				<include name="**/*" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="dist.dependencies" if="flag.withDependencies">
+		<copy todir="${dist.lib}">
+			<fileset dir="${main.libdir}" includes="*.jar" />
+		</copy>
+
+	</target>
+
+	<target name="dist.api">
+		<api artifact="${main.artifact}" srcdir="${main.srcdir}">
+		</api>
+	</target>
+</project>

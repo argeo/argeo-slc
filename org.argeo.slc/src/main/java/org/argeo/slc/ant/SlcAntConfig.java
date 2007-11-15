@@ -136,13 +136,16 @@ public class SlcAntConfig {
 	 * 
 	 * @param project
 	 *            the Ant <code>Project</code> being run.
+	 * @return whether the project could be initialized for SLC usage (e.g.
+	 *         presence of an SLC root file)
 	 */
-	public void initProject(Project project) {
+	public boolean initProject(Project project) {
 		File projectBaseDir = project.getBaseDir();
 		File slcRootFile = findSlcRootFile(projectBaseDir);
 		if (slcRootFile == null) {
-			throw new SlcAntException("Cannot find SLC root file");
+			return false;
 		}
+		
 		// pass the project properties through the System properties
 		System.getProperties().putAll((Map<?, ?>) project.getUserProperties());
 		Properties all = prepareAllProperties(slcRootFile);
@@ -152,6 +155,7 @@ public class SlcAntConfig {
 				project.setUserProperty(key, all.getProperty(key));
 			}
 		}
+		return true;
 	}
 
 	/**
@@ -165,7 +169,7 @@ public class SlcAntConfig {
 	 */
 	protected Properties prepareAllProperties(File slcRootFile) {
 		try {
-			final String fileUrlPrefix ="";
+			final String fileUrlPrefix = "";
 
 			Properties all = new Properties();
 			all.putAll(System.getProperties());

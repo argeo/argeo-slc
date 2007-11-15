@@ -46,7 +46,12 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 
 		// initialize config
 		SlcAntConfig slcAntConfig = new SlcAntConfig();
-		slcAntConfig.initProject(project);
+		
+		if(!slcAntConfig.initProject(project)){
+			// not SLC compatible, do normal Ant
+			super.parse(project, source);
+			return;
+		}
 
 		if (log == null) {
 			// log4j is initialized only now
