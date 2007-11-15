@@ -1,7 +1,7 @@
 <!--
-$HeadURL:$
-$Revision:$
-$LastChangedDate:$
+$HeadURL$
+$Revision$
+$LastChangedDate$
 -->
 <project default="all">
 	<!-- TO BE OVERRIDDEN -->
@@ -98,7 +98,6 @@ $LastChangedDate:$
 			<fileset dir="${slc.base}">
 				<include name="doc/argeo-slc/**" />
 				<include name="bin/*" />
-				<include name="slc.*" />
 			</fileset>
 		</copy>
 
