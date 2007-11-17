@@ -106,9 +106,13 @@ import org.argeo.slc.core.test.WritableTestRun;
  */
 public class SlcAntConfig {
 	// SLC ROOT PROPERTIES
+	/** Property for the root file (SLC root property file). */
 	public final static String ROOT_FILE_PROPERTY = "slc.rootFile";
+	/** Property for the root dir (SLC root property file). */
 	public final static String ROOT_DIR_PROPERTY = "slc.rootDir";
+	/** Property for the conf dir (SLC root property file). */
 	public final static String CONF_DIR_PROPERTY = "slc.confDir";
+	/** Property for the work dir (SLC root property file). */
 	public final static String WORK_DIR_PROPERTY = "slc.workDir";
 	/**
 	 * Comma-separated list of property file names to load from the conf dir and
@@ -123,6 +127,7 @@ public class SlcAntConfig {
 	public static String DEFAULT_TEST_RUN_PROPERTY = "slc.defaultTestRun";
 
 	// SLC LOCAL PROPERTIES
+	/** Property for the dir description (SLC local property file). */
 	public static String DIR_DESCRIPTION_PROPERTY = "slc.dirDescription";
 
 	private String slcRootFileName = "slcRoot.properties";
@@ -145,7 +150,7 @@ public class SlcAntConfig {
 		if (slcRootFile == null) {
 			return false;
 		}
-		
+
 		// pass the project properties through the System properties
 		System.getProperties().putAll((Map<?, ?>) project.getUserProperties());
 		Properties all = prepareAllProperties(slcRootFile);

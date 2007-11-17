@@ -11,6 +11,7 @@ import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 
+/** Tree based implementation of a structure registry. */
 public class TreeSRegistry implements StructureRegistry {
 	/** For ORM */
 	private Long tid;
@@ -35,12 +36,12 @@ public class TreeSRegistry implements StructureRegistry {
 
 	public void register(StructurePath path, StructureElement element) {
 		final SimpleSElement simpleSElement;
-		if (element instanceof SimpleSElement){
-			simpleSElement = (SimpleSElement)element;
-		}else{
+		if (element instanceof SimpleSElement) {
+			simpleSElement = (SimpleSElement) element;
+		} else {
 			simpleSElement = new SimpleSElement(element.getDescription());
 		}
-		
+
 		if (!(path instanceof TreeSPath))
 			throw new UnsupportedException("path", path);
 
@@ -64,18 +65,22 @@ public class TreeSRegistry implements StructureRegistry {
 		this.activePaths = activePaths;
 	}
 
+	/** Gets the related root path. */
 	public TreeSPath getRoot() {
 		return root;
 	}
 
+	/** Sets the related root path. */
 	public void setRoot(TreeSPath root) {
 		this.root = root;
 	}
 
+	/** Gets the elements. */
 	public Map<TreeSPath, SimpleSElement> getElements() {
 		return elements;
 	}
 
+	/** Sets the elements (for ORM). */
 	public void setElements(Map<TreeSPath, SimpleSElement> elements) {
 		this.elements = elements;
 	}

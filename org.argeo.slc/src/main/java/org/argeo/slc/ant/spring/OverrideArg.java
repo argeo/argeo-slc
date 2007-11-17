@@ -16,6 +16,7 @@ public class OverrideArg extends AbstractSpringArg {
 		return name;
 	}
 
+	/** Sets the name. */
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -36,6 +37,7 @@ public class OverrideArg extends AbstractSpringArg {
 		super.setBean(bean);
 	}
 
+	/** Creates override list sub tag. */
 	public OverrideList createList() {
 		if (value != null || getBean() != null) {
 			throw new BuildException("Value already set.");
@@ -68,12 +70,14 @@ public class OverrideArg extends AbstractSpringArg {
 	protected class OverrideList {
 		private List<OverrideArg> list = new Vector<OverrideArg>();
 
+		/** Creates override sub tag. */
 		public OverrideArg createOverride() {
 			OverrideArg overrideArg = new OverrideArg();
 			list.add(overrideArg);
 			return overrideArg;
 		}
 
+		/** Gets as list of objects. */
 		public List<Object> getAsObjectList() {
 			List<Object> objectList = new Vector<Object>();
 			for (OverrideArg arg : list) {

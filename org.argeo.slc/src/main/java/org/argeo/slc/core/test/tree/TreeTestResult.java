@@ -51,10 +51,12 @@ public class TreeTestResult implements TestResult, StructureAware {
 		return testResultId;
 	}
 
+	/** Sets the test result id as a numeric test result id.*/
 	public void setNumericResultId(NumericTRId testResultId) {
 		this.testResultId = testResultId;
 	}
 
+	/** Sets the list of listeners.*/
 	public void setListeners(List<TestResultListener> listeners) {
 		this.listeners = listeners;
 	}
@@ -83,6 +85,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 		this.registry = registry;
 	}
 
+	/** Gets the current path.*/
 	public TreeSPath getCurrentPath() {
 		return currentPath;
 	}
@@ -121,10 +124,12 @@ public class TreeTestResult implements TestResult, StructureAware {
 		this.tid = tid;
 	}
 
+	/** Gets the related registry (can be null).*/
 	public StructureRegistry getRegistry() {
 		return registry;
 	}
 
+	/** Sets the related registry.*/
 	public void setRegistry(StructureRegistry registry) {
 		this.registry = registry;
 	}

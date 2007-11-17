@@ -17,14 +17,20 @@ public class DbModel {
 	private String dialect;
 	private List<String> mappings;
 
+	/** Sets the Hibernate dialect to use. */
 	public void setDialect(String dialect) {
 		this.dialect = dialect;
 	}
 
+	/** Sets the list of mappings to consider. */
 	public void setMappings(List<String> mappings) {
 		this.mappings = mappings;
 	}
 
+	/**
+	 * Creates an Hibernate schema export tool, in order to create the
+	 * underlying datamodel.
+	 */
 	public SchemaExport createSchemaExport(Connection connection) {
 		Configuration configuration = new Configuration();
 		Properties properties = new Properties();

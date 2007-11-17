@@ -16,10 +16,12 @@ public class SimpleSElement implements StructureElement {
 	public SimpleSElement() {
 	}
 
+	/** Constructor */
 	public SimpleSElement(String description) {
 		this.description = description;
 	}
 
+	/** Constructor */
 	public SimpleSElement(String description, String defaultDescription) {
 		this(description != null ? description : defaultDescription);
 	}
@@ -28,6 +30,7 @@ public class SimpleSElement implements StructureElement {
 		return description;
 	}
 
+	/** Sets the description. */
 	public void setDescription(String description) {
 		this.description = description;
 	}

@@ -27,6 +27,7 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		return parentStr + separator + name;
 	}
 
+	/** Sets all the required data from a string. */
 	public void setAsUniqueString(String str) {
 		TreeSPath twin = parseToCreatePath(str, getSeparator());
 		name = twin.name;
@@ -84,10 +85,12 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		return currPath;
 	}
 
+	/** Lists the children from a registry. */
 	public List<TreeSPath> listChildren(StructureRegistry registry) {
 		return listChildrenPaths(registry, this);
 	}
 
+	/** Lists the children from a given path from a registry. */
 	public static List<TreeSPath> listChildrenPaths(StructureRegistry registry,
 			TreeSPath path) {
 		List<TreeSPath> paths = new Vector<TreeSPath>();
@@ -101,14 +104,15 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		return paths;
 	}
 
-	public TreeSPath getRoot(){
+	/** Gets the root tree path of this path. */
+	public TreeSPath getRoot() {
 		TreeSPath root = this;
-		while(root.getParent()!=null){
+		while (root.getParent() != null) {
 			root = root.getParent();
 		}
 		return root;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getAsUniqueString();
@@ -135,14 +139,17 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		this.tid = tid;
 	}
 
+	/** Sets the separator character to use. */
 	public void setSeparator(Character separator) {
 		this.separator = separator;
 	}
 
+	/** Sets the parent (for ORM). */
 	protected void setParent(TreeSPath parent) {
 		this.parent = parent;
 	}
 
+	/** Sets the name (for ORM). */
 	protected void setName(String name) {
 		this.name = name;
 	}

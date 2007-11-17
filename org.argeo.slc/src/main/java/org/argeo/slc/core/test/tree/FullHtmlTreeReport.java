@@ -11,10 +11,7 @@ import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.core.test.SimpleTestResult;
-import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.TestReport;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultPart;
@@ -155,11 +152,12 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 				+ result.getTestResultId() + ".html");
 	}
 
-	/** Sets the dao to use to extract all data. */
+	/** Sets the DAO to use to extract all data. */
 	public void setTestResultDao(TestResultDao testResultDao) {
 		this.testResultDao = testResultDao;
 	}
 
+	/** Sets the tree structure registry DAO.*/
 	public void setTreeSRegistryDao(TreeSRegistryDao treeSRegistryDao) {
 		this.treeSRegistryDao = treeSRegistryDao;
 	}
@@ -169,7 +167,7 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 		this.reportDir = reportDir;
 	}
 
-	protected void initRegistry(TreeSPath path){
+	private void initRegistry(TreeSPath path){
 		if(treeSRegistryDao != null){
 			registry = treeSRegistryDao.getTreeSRegistry(path);
 		}

@@ -48,11 +48,13 @@ public class SlcDeployTask extends SAwareTask {
 		this.deploymentBean = deploymentBean;
 	}
 
+	/** Creates deployment data sub tag.*/
 	public DeploymentDataArg createDeploymentData() {
 		deploymentDataArg = new DeploymentDataArg();
 		return deploymentDataArg;
 	}
 
+	/** Creates target data sub tag.*/
 	public TargetDataArg createTargetData() {
 		targetDataArg = new TargetDataArg();
 		return targetDataArg;
@@ -60,14 +62,14 @@ public class SlcDeployTask extends SAwareTask {
 }
 
 class DeploymentDataArg extends AbstractSpringArg {
-	public DeploymentData getDeploymentData() {
+	DeploymentData getDeploymentData() {
 		return (DeploymentData) getBeanInstance();
 	}
 
 }
 
 class TargetDataArg extends AbstractSpringArg {
-	public TargetData getTargetData() {
+	TargetData getTargetData() {
 		return (TargetData) getBeanInstance();
 	}
 

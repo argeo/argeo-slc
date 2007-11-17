@@ -18,13 +18,16 @@ import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.TestResultDao;
 
+/** High level tests for SLC Ant. */
 public class TestAntBuild extends TestCase {
+	/** Tests an end-to-end Ant run. */
 	public void testAllRunSimple() {
-		File[] reportFiles = new File("src/test/slc/work/results/report/").listFiles();
-		for(File file: reportFiles){
+		File[] reportFiles = new File("src/test/slc/work/results/report/")
+				.listFiles();
+		for (File file : reportFiles) {
 			file.delete();
 		}
-		
+
 		File slcBaseDir = new File("./src/test/slc").getAbsoluteFile();
 
 		File antFile = new File(slcBaseDir.getPath()

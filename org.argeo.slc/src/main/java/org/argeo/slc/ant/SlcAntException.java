@@ -6,10 +6,12 @@ import org.argeo.slc.core.SlcException;
 public class SlcAntException extends SlcException {
 	static final long serialVersionUID = 1l;
 
+	/** Constructor. */
 	public SlcAntException(String message) {
 		super(message);
 	}
 
+	/** Constructor. */
 	public SlcAntException(String message, Throwable cause) {
 		super(message, cause);
 	}

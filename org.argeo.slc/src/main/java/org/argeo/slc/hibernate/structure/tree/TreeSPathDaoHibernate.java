@@ -26,7 +26,7 @@ public class TreeSPathDaoHibernate extends HibernateDaoSupport implements
 	}
 
 	
-	protected void createImpl(TreeSPath path) {
+	private void createImpl(TreeSPath path) {
 		if (path.getParent() != null) {
 			TreeSPath parent = getTreeSPath(path.getParent()
 					.getAsUniqueString());

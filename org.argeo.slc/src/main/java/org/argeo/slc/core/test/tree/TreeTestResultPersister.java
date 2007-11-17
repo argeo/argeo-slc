@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.structure.SimpleSElement;
-import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
@@ -41,6 +40,7 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 				} else {
 					registry.register(path, new SimpleSElement(path.getName()));
 				}
+				treeSRegistryDao.update(registry);
 			}
 
 			if (persistedResult == null) {
@@ -89,15 +89,17 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 		}
 	}
 
-	/** Sets the dao to use in order to persist the results. */
+	/** Sets the DAO to use in order to persist the results. */
 	public void setTestResultDao(TestResultDao testResultDao) {
 		this.testResultDao = testResultDao;
 	}
 
+	/** Sets the tree structure path DAO. */
 	public void setTreeSPathDao(TreeSPathDao treeSPathDao) {
 		this.treeSPathDao = treeSPathDao;
 	}
 
+	/** Sets the tree structure registry DAO. */
 	public void setTreeSRegistryDao(TreeSRegistryDao treeSRegistryDao) {
 		this.treeSRegistryDao = treeSRegistryDao;
 	}

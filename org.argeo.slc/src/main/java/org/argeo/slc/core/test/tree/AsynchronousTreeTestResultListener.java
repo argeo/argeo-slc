@@ -19,6 +19,7 @@ public abstract class AsynchronousTreeTestResultListener implements
 	private Vector<PartStruct> partStructs = new Vector<PartStruct>();
 	private Thread thread;
 
+	/** Starts the underlying thread. */
 	public void init() {
 		thread = new Thread(this);
 		thread.start();
@@ -85,6 +86,7 @@ public abstract class AsynchronousTreeTestResultListener implements
 		/** The tree test result itself. */
 		public final TreeTestResult result;
 
+		/** Constructor */
 		public PartStruct(TreeSPath path, NumericTRId resultId,
 				TestResultPart part, TreeTestResult result) {
 			super();

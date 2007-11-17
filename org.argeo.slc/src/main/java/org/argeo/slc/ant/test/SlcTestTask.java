@@ -66,7 +66,7 @@ public class SlcTestTask extends SAwareTask {
 					getPath());
 		}
 
-		((ExecutableTestRun)testRun).execute();
+		((ExecutableTestRun) testRun).execute();
 	}
 
 	/**
@@ -78,6 +78,7 @@ public class SlcTestTask extends SAwareTask {
 		this.testRunBean = testRunBean;
 	}
 
+	/** Creates sub tag. */
 	public TestDefinitionArg createTestDefinition() {
 		testDefinitionArg = new TestDefinitionArg();
 		// only test definitions can add to path
@@ -85,16 +86,19 @@ public class SlcTestTask extends SAwareTask {
 		return testDefinitionArg;
 	}
 
+	/** Creates sub tag. */
 	public TestDataArg createTestData() {
 		testDataArg = new TestDataArg();
 		return testDataArg;
 	}
 
+	/** Creates sub tag. */
 	public DeployedSystemArg createDeployedSystem() {
 		deployedSystemArg = new DeployedSystemArg();
 		return deployedSystemArg;
 	}
 
+	/** Creates sub tag. */
 	public TestResultArg createTestResult() {
 		testResultArg = new TestResultArg();
 		return testResultArg;
@@ -103,27 +107,27 @@ public class SlcTestTask extends SAwareTask {
 }
 
 class TestDefinitionArg extends AbstractSpringArg {
-	public TestDefinition getTestDefinition() {
+	TestDefinition getTestDefinition() {
 		return (TestDefinition) getBeanInstance();
 	}
 }
 
 class TestDataArg extends AbstractSpringArg {
-	public TestData getTestData() {
+	TestData getTestData() {
 		return (TestData) getBeanInstance();
 	}
 
 }
 
 class DeployedSystemArg extends AbstractSpringArg {
-	public DeployedSystem getDeployedSystem() {
+	DeployedSystem getDeployedSystem() {
 		return (DeployedSystem) getBeanInstance();
 	}
 
 }
 
 class TestResultArg extends AbstractSpringArg {
-	public TestResult getTestResult() {
+	TestResult getTestResult() {
 		return (TestResult) getBeanInstance();
 	}
 

@@ -5,9 +5,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/** Example appli.*/
 public class ExampleAppli {
 	private int skipFreq = 2;
 
+	/** Filters.*/
 	public void filter(String[] args) {
 		if (args.length < 2) {
 			throw new RuntimeException(
@@ -38,6 +40,7 @@ public class ExampleAppli {
 		}
 	}
 
+	/** Sets the frequency of the lines to skip.*/
 	public void setSkipFreq(int skipFreq) {
 		this.skipFreq = skipFreq;
 	}
