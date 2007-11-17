@@ -9,17 +9,15 @@
 		</id>
 
 		<many-to-one name="numericResultId" unique="true"
-			not-null="true" column="TEST_RESULT_ID" cascade="all" lazy="false"/>
+			not-null="true" column="TEST_RESULT_ID" cascade="all" lazy="false" />
 
-		<map name="resultParts" table="RESULT_PARTS_MAP"
-			cascade="all" lazy="false" sort="natural">
+		<map name="resultParts" table="RESULT_PARTS_MAP" cascade="all"
+			lazy="false" sort="natural">
 			<key column="PARENT_ID" />
-			<composite-map-key
-				class="org.argeo.slc.core.structure.tree.TreeSPath">
-				<key-property name="asUniqueString" column="PATH" />
-			</composite-map-key>
+			<map-key-many-to-many
+				class="org.argeo.slc.core.structure.tree.TreeSPath" column="PATH" />
 			<many-to-many class="PartSubList" column="PART_SUB_LIST_ID"
-				unique="true" lazy="false"/>
+				unique="true" lazy="false" />
 		</map>
 	</class>
 </hibernate-mapping>

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 
@@ -17,6 +18,9 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	private TreeSPath parent;
 	private String name;
 	private Character separator = DEFAULT_SEPARATOR;
+
+	/** For ORM */
+	private Long tid;
 
 	public String getAsUniqueString() {
 		String parentStr = parent != null ? parent.getAsUniqueString() : "";
@@ -54,6 +58,10 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 
 	/** Create a child . */
 	public TreeSPath createChild(String name) {
+		if (name.indexOf(separator) > -1) {
+			throw new SlcException("Tree path name '" + name
+					+ "' contains separator character " + separator);
+		}
 		TreeSPath path = new TreeSPath();
 		path.parent = this;
 		path.name = name;
@@ -93,6 +101,14 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		return paths;
 	}
 
+	public TreeSPath getRoot(){
+		TreeSPath root = this;
+		while(root.getParent()!=null){
+			root = root.getParent();
+		}
+		return root;
+	}
+	
 	@Override
 	public String toString() {
 		return getAsUniqueString();
@@ -109,6 +125,26 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 
 	public int compareTo(StructurePath o) {
 		return getAsUniqueString().compareTo(o.getAsUniqueString());
+	}
+
+	Long getTid() {
+		return tid;
+	}
+
+	void setTid(Long tid) {
+		this.tid = tid;
+	}
+
+	public void setSeparator(Character separator) {
+		this.separator = separator;
+	}
+
+	protected void setParent(TreeSPath parent) {
+		this.parent = parent;
+	}
+
+	protected void setName(String name) {
+		this.name = name;
 	}
 
 }

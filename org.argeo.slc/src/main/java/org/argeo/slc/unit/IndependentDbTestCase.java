@@ -23,7 +23,7 @@ import org.argeo.slc.core.SlcException;
  * Helper to make db vendor independent tests using DbUnit data sets. Based on
  * {@link DbModel}.
  */
-public class IndependentDbTestCase extends SpringBasedTestCase {
+public abstract class IndependentDbTestCase extends SpringBasedTestCase {
 	private IDatabaseTester databaseTester;
 
 	/** Creates the DDL of the data model and loads the data. */

@@ -6,7 +6,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import junit.framework.TestCase;
 
 /** Helper for tests using a Spring application co,text. */
-public class SpringBasedTestCase extends TestCase {
+public abstract class SpringBasedTestCase extends TestCase {
 	private ApplicationContext context;
 
 	/**

@@ -5,17 +5,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.SimpleTestResult;
 import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.TestReport;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultPart;
+import org.argeo.slc.dao.structure.tree.TreeSRegistryDao;
 import org.argeo.slc.dao.test.TestResultDao;
 
 /**
@@ -25,13 +28,16 @@ import org.argeo.slc.dao.test.TestResultDao;
  */
 public class FullHtmlTreeReport implements TestReport, StructureAware {
 	private TestResultDao testResultDao;
+	private TreeSRegistryDao treeSRegistryDao;
 	private File reportDir;
 
 	private StructureRegistry registry;
 
 	public void generateTestReport(TestResult testResult) {
+		
 		if (testResultDao == null) {
 			TreeTestResult result = (TreeTestResult) testResult;
+			initRegistry(result.getResultParts().firstKey());
 			generateResultPage(getResultFile(result), result);
 		} else {
 			if (reportDir.exists()) {
@@ -48,13 +54,14 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 
 			List<TestResult> list = testResultDao.listTestResults();
 			for (TestResult testRes : list) {
-				TreeTestResult res = (TreeTestResult) testRes;
+				TreeTestResult result = (TreeTestResult) testRes;
+				initRegistry(result.getResultParts().firstKey());
 
-				File file = getResultFile(res);
+				File file = getResultFile(result);
 				index.append("<tr><td><a href=\"").append(file.getName())
 						.append("\">");
-				index.append(res.getTestResultId()).append("</a></td></tr>\n");
-				generateResultPage(file, res);
+				index.append(result.getTestResultId()).append("</a></td></tr>\n");
+				generateResultPage(file, result);
 			}
 
 			index.append("</table>\n</body></html>");
@@ -153,11 +160,24 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 		this.testResultDao = testResultDao;
 	}
 
+	public void setTreeSRegistryDao(TreeSRegistryDao treeSRegistryDao) {
+		this.treeSRegistryDao = treeSRegistryDao;
+	}
+
 	/** Sets the directory where to generate all the data. */
 	public void setReportDir(File reportDir) {
 		this.reportDir = reportDir;
 	}
 
+	protected void initRegistry(TreeSPath path){
+		if(treeSRegistryDao != null){
+			registry = treeSRegistryDao.getTreeSRegistry(path);
+		}
+		if(registry==null){
+			throw new SlcException("No structure registry available");
+		}
+	}
+	
 	public void notifyCurrentPath(StructureRegistry registry, StructurePath path) {
 		this.registry = registry;
 	}

@@ -3,6 +3,7 @@ package org.argeo.slc.core.test.tree;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +29,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 	private Long tid;
 
 	private NumericTRId testResultId;
-	private List<TestResultListener> listeners;
+	private List<TestResultListener> listeners = new Vector<TestResultListener>();
 
 	private TreeSPath currentPath;
 
@@ -36,6 +37,8 @@ public class TreeTestResult implements TestResult, StructureAware {
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 
+	private StructureRegistry registry;
+	
 	public TestResultId getTestResultId() {
 		return testResultId;
 	}
@@ -77,6 +80,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 
 	public void notifyCurrentPath(StructureRegistry registry, StructurePath path) {
 		currentPath = (TreeSPath) path;
+		this.registry = registry;
 	}
 
 	public TreeSPath getCurrentPath() {
@@ -115,6 +119,14 @@ public class TreeTestResult implements TestResult, StructureAware {
 
 	void setTid(Long tid) {
 		this.tid = tid;
+	}
+
+	public StructureRegistry getRegistry() {
+		return registry;
+	}
+
+	public void setRegistry(StructureRegistry registry) {
+		this.registry = registry;
 	}
 
 }

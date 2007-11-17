@@ -3,6 +3,10 @@ package org.argeo.slc.core;
 public class UnsupportedException extends SlcException {
 	static final long serialVersionUID = 1l;
 
+	public UnsupportedException() {
+		this("Action not supported");
+	}
+
 	public UnsupportedException(String message) {
 		super(message);
 	}

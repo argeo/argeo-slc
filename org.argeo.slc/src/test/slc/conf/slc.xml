@@ -54,11 +54,14 @@
 		class="org.argeo.slc.core.test.tree.TreeTestResultPersister"
 		init-method="init">
 		<property name="testResultDao" ref="testResultDao" />
+		<property name="treeSPathDao" ref="treeSPathDao" />
+		<property name="treeSRegistryDao" ref="treeSRegistryDao" />
 	</bean>
 
 	<bean id="report"
 		class="org.argeo.slc.core.test.tree.FullHtmlTreeReport">
 		<property name="testResultDao" ref="testResultDao" />
+		<property name="treeSRegistryDao" ref="treeSRegistryDao" />
 		<property name="reportDir"
 			value="${slc.workDir}/results/report" />
 	</bean>

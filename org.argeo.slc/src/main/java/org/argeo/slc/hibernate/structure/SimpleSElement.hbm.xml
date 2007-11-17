@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.argeo.slc.core.structure">
+	<class name="SimpleSElement" table="SIMPLE_SELEMENT">
+		<id name="tid" column="T_ID">
+			<generator class="native" />
+		</id>
+		<property name="description" column="DESCRIPTION"
+			not-null="true" />
+	</class>
+</hibernate-mapping>

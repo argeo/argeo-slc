@@ -8,7 +8,13 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
  * @see TreeSPath
  */
 public class SimpleSElement implements StructureElement {
+	/** For ORM */
+	private Long tid;
 	private String description;
+
+	/** For ORM */
+	public SimpleSElement() {
+	}
 
 	public SimpleSElement(String description) {
 		this.description = description;
@@ -24,6 +30,14 @@ public class SimpleSElement implements StructureElement {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	Long getTid() {
+		return tid;
+	}
+
+	void setTid(Long tid) {
+		this.tid = tid;
 	}
 
 }

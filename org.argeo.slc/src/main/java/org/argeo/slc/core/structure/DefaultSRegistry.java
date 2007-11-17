@@ -33,11 +33,6 @@ public class DefaultSRegistry implements StructureRegistry {
 				+ elements.size() + ")");
 	}
 
-	// public void register(StructurePath path,StructureAware structureAware) {
-	// register(path,structureAware.getElement());
-	// structureAware.onRegister(this,path);
-	// }
-
 	public StructureElement getElement(StructurePath path) {
 		int index = paths.indexOf(path);
 		if (index >= 0) {
