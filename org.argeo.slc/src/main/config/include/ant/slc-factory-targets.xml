@@ -39,7 +39,7 @@ $LastChangedDate$
 		<fileset dir="${main.libdir}">
 			<include name="**/*.jar" />
 		</fileset>
-		<pathelement location="${compile.base}/${main.artifact}" />
+		<pathelement location="${dist.jar}/${main.artifact}.jar" />
 	</path>
 
 	<import file="slc-factory-macrodefs.xml" />
@@ -117,21 +117,21 @@ $LastChangedDate$
 		<compile artifact="${main.artifact}" srcdir="${main.srcdir}" />
 	</target>
 
-	<target name="build.test" depends="build.main">
+	<target name="jar.main" depends="build.main">
+		<createJar artifact="${main.artifact}" srcdir="${main.srcdir}" />
+	</target>
+
+	<target name="build.test" depends="jar.main">
 		<compile artifact="${test.artifact}"
 		         srcdir="${test.srcdir}"
 		         classpathref="cp.test" />
-	</target>
-
-	<target name="jar.main" depends="build.test">
-		<createJar artifact="${main.artifact}" srcdir="${main.srcdir}" />
 	</target>
 
 	<target name="jar.sources" unless="flag.noSources">
 		<createSourcesJar artifact="${main.artifact}" srcdir="${main.srcdir}" />
 	</target>
 
-	<target name="jar.test" depends="jar.main,jar.sources">
+	<target name="jar.test" depends="build.test">
 		<createJar artifact="${test.artifact}" srcdir="${test.srcdir}" />
 	</target>
 
@@ -149,6 +149,8 @@ $LastChangedDate$
 				<fileset dir="${test.srcdir}">
 					<include name="**/*Test*.java" />
 					<exclude name="**/Abstract*.java" />
+					<exclude name="**/*TestDef*.java" />
+					<exclude name="**/*TestData*.java" />
 				</fileset>
 			</batchtest>
 		</junit>
@@ -162,7 +164,7 @@ $LastChangedDate$
 	</target>
 
 	<target name="package.common"
-	        depends="dist.unittest,dist.api,dist.apiWithSlc,dist.dependencies,dist.appli">
+	        depends="dist.unittest,jar.sources,dist.api,dist.apiWithSlc,dist.dependencies,dist.appli">
 	</target>
 
 	<target name="dist.package" depends="package.common">

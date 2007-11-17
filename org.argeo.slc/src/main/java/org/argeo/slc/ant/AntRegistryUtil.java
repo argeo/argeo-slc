@@ -36,7 +36,8 @@ public class AntRegistryUtil {
 	}
 
 	/** Executes only the active paths of the Ant file. */
-	public static void runActive(File antFile, List<StructurePath> activePaths) {
+	public static Project runActive(File antFile,
+			List<StructurePath> activePaths) {
 		if (log.isDebugEnabled())
 			log.debug("Runs the " + activePaths.size()
 					+ " provided active paths of Ant file " + antFile);
@@ -53,10 +54,11 @@ public class AntRegistryUtil {
 		registry.setMode(StructureRegistry.ACTIVE);
 		registry.setActivePaths(activePaths);
 		p.executeTarget(p.getDefaultTarget());
+		return p;
 	}
 
 	/** Executes all paths of the default target of the Ant file. */
-	public static void runAll(File antFile) {
+	public static Project runAll(File antFile) {
 		if (log.isDebugEnabled())
 			log.debug("Runs all paths of Ant file " + antFile);
 		Project p = new Project();
@@ -67,5 +69,6 @@ public class AntRegistryUtil {
 		p.addReference("ant.projectHelper", helper);
 		helper.parse(p, antFile);
 		p.executeTarget(p.getDefaultTarget());
+		return p;
 	}
 }
