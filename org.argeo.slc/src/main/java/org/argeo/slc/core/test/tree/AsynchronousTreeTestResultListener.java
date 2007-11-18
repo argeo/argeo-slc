@@ -27,6 +27,8 @@ public abstract class AsynchronousTreeTestResultListener implements
 
 	/** Finish the remaining and destroy */
 	public void close(TestResult testResult) {
+		// FIXME: make behavior more robust when multiple results are
+		// registering this listener.
 		synchronized (partStructs) {
 			// TODO: put a timeout
 			while (partStructs.size() != 0) {
