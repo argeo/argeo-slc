@@ -46,10 +46,12 @@ $LastChangedDate$
 
 	<target name="all" depends="dist.package">
 		<echo message="Build of ${package.name} completed" />
+		<record name="${dist.build}/build.log" action="stop" />
 	</target>
 
 	<target name="basePackage" depends="dist.basePackage">
 		<echo message="Build of ${package.name} completed" />
+		<record name="${dist.build}/build.log" action="stop" />
 	</target>
 
 	<target name="clean">
@@ -66,6 +68,8 @@ $LastChangedDate$
 	</target>
 
 	<target name="init.internal">
+		<mkdir dir="${dist.build}"/>
+		<record name="${dist.build}/build.log" action="start" append="true"/>
 		<fail unless="package.version"
 		      message="Property 'package.version' must be set" />
 		<fail unless="package.prefix"
