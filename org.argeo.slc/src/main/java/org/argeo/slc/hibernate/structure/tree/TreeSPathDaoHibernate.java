@@ -25,7 +25,6 @@ public class TreeSPathDaoHibernate extends HibernateDaoSupport implements
 		createImpl(path);
 	}
 
-	
 	private void createImpl(TreeSPath path) {
 		if (path.getParent() != null) {
 			TreeSPath parent = getTreeSPath(path.getParent()
@@ -52,8 +51,7 @@ public class TreeSPathDaoHibernate extends HibernateDaoSupport implements
 	}
 
 	public TreeSPath getOrCreate(TreeSPath pathTransient) {
-		TreeSPath path = getTreeSPath(pathTransient
-				.getAsUniqueString());
+		TreeSPath path = getTreeSPath(pathTransient.getAsUniqueString());
 		if (path != null) {
 			return path;
 		} else {

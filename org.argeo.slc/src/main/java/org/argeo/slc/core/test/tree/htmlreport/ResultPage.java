@@ -1,6 +1,7 @@
 package org.argeo.slc.core.test.tree.htmlreport;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -51,7 +52,12 @@ class ResultPage {
 		buf.append("<a name=\"top\"/>\n");
 		buf.append("<h1>Result #").append(result.getTestResultId()).append(
 				"</h1>\n");
-		buf.append(report.sdf.format(result.getCloseDate()));
+		Date closeDate = result.getCloseDate();
+		if (closeDate == null) {
+			buf.append("[Not closed]");
+		} else {
+			buf.append(report.sdf.format(closeDate));
+		}
 
 		// TOC
 		generateToc(buf, registry);

@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 
 class ResultsList {
@@ -33,9 +32,10 @@ class ResultsList {
 		buf.append("<td>");
 		Date closeDate = result.getCloseDate();
 		if (closeDate == null) {
-			throw new SlcException("No close date");
+			buf.append("[Not closed]");
+		} else {
+			buf.append(report.sdf.format(closeDate));
 		}
-		buf.append(report.sdf.format(closeDate));
 		buf.append("</td>\n");
 		// Id and link
 		buf.append("<td><a class=\"nav\" href=\"");

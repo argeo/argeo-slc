@@ -33,7 +33,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 	private List<TestResultListener> listeners = new Vector<TestResultListener>();
 
 	private TreeSPath currentPath;
-	
+
 	private Date closeDate;
 
 	private boolean isClosed = false;
@@ -41,7 +41,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 
 	private StructureRegistry registry;
-	
+
 	public TestResultId getTestResultId() {
 		return testResultId;
 	}
@@ -54,12 +54,12 @@ public class TreeTestResult implements TestResult, StructureAware {
 		return testResultId;
 	}
 
-	/** Sets the test result id as a numeric test result id.*/
+	/** Sets the test result id as a numeric test result id. */
 	public void setNumericResultId(NumericTRId testResultId) {
 		this.testResultId = testResultId;
 	}
 
-	/** Sets the list of listeners.*/
+	/** Sets the list of listeners. */
 	public void setListeners(List<TestResultListener> listeners) {
 		this.listeners = listeners;
 	}
@@ -88,7 +88,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 		this.registry = registry;
 	}
 
-	/** Gets the current path.*/
+	/** Gets the current path. */
 	public TreeSPath getCurrentPath() {
 		return currentPath;
 	}
@@ -117,7 +117,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 			listeners.clear();
 		}
 		isClosed = true;
-		
+
 		log.info("Test Result #" + getTestResultId() + " closed.");
 	}
 
@@ -129,12 +129,12 @@ public class TreeTestResult implements TestResult, StructureAware {
 		this.tid = tid;
 	}
 
-	/** Gets the related registry (can be null).*/
+	/** Gets the related registry (can be null). */
 	public StructureRegistry getRegistry() {
 		return registry;
 	}
 
-	/** Sets the related registry.*/
+	/** Sets the related registry. */
 	public void setRegistry(StructureRegistry registry) {
 		this.registry = registry;
 	}
@@ -143,7 +143,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 		return closeDate;
 	}
 
-	/** Sets the close date (for ORM)*/
+	/** Sets the close date (for ORM) */
 	public void setCloseDate(Date closeDate) {
 		this.closeDate = closeDate;
 	}

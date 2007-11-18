@@ -9,15 +9,15 @@ public class TreeSPathDaoHibernateTest extends SpringBasedTestCase {
 	public void testCreate() {
 		TreeSPathDao treeSPathDao = (TreeSPathDao) getContext().getBean(
 				"treeSPathDao");
-		
+
 		String pathParentStr = "/root/testParent";
-		String pathStr = pathParentStr+"/test";
+		String pathStr = pathParentStr + "/test";
 		TreeSPath path = TreeSPath.parseToCreatePath(pathStr);
 		treeSPathDao.create(path);
-		
+
 		TreeSPath pathChild = treeSPathDao.getTreeSPath(pathStr);
 		assertEquals(path, pathChild);
-		
+
 		TreeSPath pathParent = treeSPathDao.getTreeSPath(pathParentStr);
 		assertEquals(path.getParent(), pathParent);
 	}
@@ -26,6 +26,5 @@ public class TreeSPathDaoHibernateTest extends SpringBasedTestCase {
 	protected String getApplicationContextLocation() {
 		return "org/argeo/slc/hibernate/applicationContext.xml";
 	}
-	
-	
+
 }

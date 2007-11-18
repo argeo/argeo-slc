@@ -1,9 +1,9 @@
 package org.argeo.slc.unit;
 
+import junit.framework.TestCase;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import junit.framework.TestCase;
 
 /** Helper for tests using a Spring application co,text. */
 public abstract class SpringBasedTestCase extends TestCase {

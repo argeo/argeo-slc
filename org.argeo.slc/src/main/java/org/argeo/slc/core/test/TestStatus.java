@@ -1,7 +1,7 @@
 package org.argeo.slc.core.test;
 
 /**
- * Simple statuses. 
+ * Simple statuses.
  * <p>
  * <ul>
  * <li>{@link #PASSED}: the test succeeded</li>

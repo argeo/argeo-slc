@@ -11,24 +11,24 @@ public class TreeSRegistryDaoHibernateTest extends SpringBasedTestCase {
 
 	public void testCreate() {
 		TreeSRegistryDao treeSRegistryDao = (TreeSRegistryDao) getContext()
-		.getBean("treeSRegistryDao");
-		
+				.getBean("treeSRegistryDao");
+
 		TreeSPathDao treeSPathDao = (TreeSPathDao) getContext().getBean(
-		"treeSPathDao");
+				"treeSPathDao");
 
 		TreeSPath root = TreeSPath.parseToCreatePath("/root");
 		TreeSPath path = root.createChild("test");
-		
+
 		treeSPathDao.create(root);
 		treeSPathDao.create(path);
-		
+
 		TreeSRegistry registry = new TreeSRegistry();
 		registry.setRoot(root);
-		String desc= "desc";
+		String desc = "desc";
 		registry.register(path, new SimpleSElement(desc));
-		
+
 		treeSRegistryDao.create(registry);
-		
+
 		TreeSRegistry registry2 = treeSRegistryDao.getTreeSRegistry(path);
 		SimpleSElement element = registry2.getElements().get(path);
 		assertEquals(desc, element.getDescription());

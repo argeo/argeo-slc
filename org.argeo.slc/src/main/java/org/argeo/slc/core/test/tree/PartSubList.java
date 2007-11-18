@@ -20,12 +20,12 @@ public class PartSubList {
 
 	private List<TestResultPart> parts = new Vector<TestResultPart>();
 
-	/** Gets the result parts.*/
+	/** Gets the result parts. */
 	public List<TestResultPart> getParts() {
 		return parts;
 	}
 
-	/** Sets the result parts.*/
+	/** Sets the result parts. */
 	public void setParts(List<TestResultPart> parts) {
 		this.parts = parts;
 	}

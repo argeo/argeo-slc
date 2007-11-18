@@ -1,6 +1,5 @@
 package org.argeo.slc.diff;
 
-
 /**
  * A value missing in one of the file. If its position is related to expected,
  * this means it is a left over in the reached, if its position is related to
@@ -23,8 +22,7 @@ public class DiffMissing extends DiffIssue {
 	public String toString() {
 		if (position.relatedFile == RelatedFile.EXPECTED) {
 			return position + ": left over " + key;
-		}
-		else if (position.relatedFile == RelatedFile.REACHED) {
+		} else if (position.relatedFile == RelatedFile.REACHED) {
 			return position + ": missing " + key;
 		}
 		return super.toString();

@@ -5,6 +5,7 @@ package org.argeo.slc.core.test;
  * Basic implementation of a result part, implementing the standard three status
  * approach for test results.
  * </p>
+ * 
  * @see TestStatus
  */
 public class SimpleResultPart implements TestResultPart, TestStatus {

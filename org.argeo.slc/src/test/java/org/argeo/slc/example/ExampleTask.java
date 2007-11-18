@@ -10,7 +10,7 @@ import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestRun;
 
-/** Example task.*/
+/** Example task. */
 public class ExampleTask implements StructureAware, TestDefinition,
 		StructureElement {
 	private TreeSPath path;
@@ -32,7 +32,7 @@ public class ExampleTask implements StructureAware, TestDefinition,
 		return description;
 	}
 
-	/** Sets the description.*/
+	/** Sets the description. */
 	public void setDescription(String description) {
 		this.description = description;
 	}

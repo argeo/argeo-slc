@@ -2,10 +2,10 @@ package org.argeo.slc.diff;
 
 /** The root class for issues which happened during a diff. */
 public abstract class DiffIssue implements Comparable<DiffIssue> {
-	/** The position of this issue.*/
+	/** The position of this issue. */
 	protected final DiffPosition position;
 
-	/** Constructor*/
+	/** Constructor */
 	public DiffIssue(DiffPosition position) {
 		super();
 		this.position = position;

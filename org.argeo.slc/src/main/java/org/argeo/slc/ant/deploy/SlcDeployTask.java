@@ -48,13 +48,13 @@ public class SlcDeployTask extends SAwareTask {
 		this.deploymentBean = deploymentBean;
 	}
 
-	/** Creates deployment data sub tag.*/
+	/** Creates deployment data sub tag. */
 	public DeploymentDataArg createDeploymentData() {
 		deploymentDataArg = new DeploymentDataArg();
 		return deploymentDataArg;
 	}
 
-	/** Creates target data sub tag.*/
+	/** Creates target data sub tag. */
 	public TargetDataArg createTargetData() {
 		targetDataArg = new TargetDataArg();
 		return targetDataArg;

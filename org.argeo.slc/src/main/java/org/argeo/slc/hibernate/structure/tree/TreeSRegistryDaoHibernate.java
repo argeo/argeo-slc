@@ -16,7 +16,8 @@ import org.argeo.slc.dao.structure.tree.TreeSRegistryDao;
 public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 		TreeSRegistryDao {
 
-	//private static Log log = LogFactory.getLog(TreeSRegistryDaoHibernate.class);
+	// private static Log log =
+	// LogFactory.getLog(TreeSRegistryDaoHibernate.class);
 
 	public void create(TreeSRegistry registry) {
 		getHibernateTemplate().save(registry);

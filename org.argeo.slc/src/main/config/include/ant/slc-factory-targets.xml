@@ -98,19 +98,19 @@ $LastChangedDate$
 	<target name="init.slcbase" if="slc.basePackage">
 		<unzip dest="${slc.base}" src="${slc.basePackage}" />
 
-		<copy todir="${dist.base}">
+		<copy todir="${dist.base}" overwrite="true" verbose="true">
 			<fileset dir="${slc.base}">
 				<include name="doc/argeo-slc/**" />
 				<include name="bin/*" />
 			</fileset>
 		</copy>
 
-		<copy todir="${main.libdir}">
+		<copy todir="${main.libdir}" overwrite="true" verbose="true">
 			<fileset dir="${slc.base}/lib">
 				<include name="*" />
 			</fileset>
 		</copy>
-		<copy todir="${main.libdir-src}">
+		<copy todir="${main.libdir-src}" overwrite="true" verbose="true">
 			<fileset dir="${slc.base}/lib-src">
 				<include name="*" />
 			</fileset>

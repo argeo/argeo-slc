@@ -1,9 +1,7 @@
 package org.argeo.slc.ant.test;
 
 import org.argeo.slc.ant.structure.SAwareTask;
-import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureRegistry;
-import org.argeo.slc.core.test.TestReport;
 import org.argeo.slc.core.test.TestResult;
 
 /** Ant tasks closing a given result. */

@@ -46,8 +46,8 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 
 		// initialize config
 		SlcAntConfig slcAntConfig = new SlcAntConfig();
-		
-		if(!slcAntConfig.initProject(project)){
+
+		if (!slcAntConfig.initProject(project)) {
 			// not SLC compatible, do normal Ant
 			super.parse(project, source);
 			return;

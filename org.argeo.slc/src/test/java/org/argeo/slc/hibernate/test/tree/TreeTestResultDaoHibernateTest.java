@@ -43,7 +43,7 @@ public class TreeTestResultDaoHibernateTest extends SpringBasedTestCase {
 		treeTestResult.notifyCurrentPath(null, path);
 		treeTestResult.addResultPart(partPassed);
 		treeTestResult.addResultPart(partFailed);
-		
+
 		Date closeDate = new Date();
 		treeTestResult.setCloseDate(closeDate);
 
@@ -52,16 +52,16 @@ public class TreeTestResultDaoHibernateTest extends SpringBasedTestCase {
 		TreeTestResult treeTestResult2 = (TreeTestResult) testResultDao
 				.getTestResult(trId);
 		PartSubList list = treeTestResult2.getResultParts().get(path);
-		
-		assertEquals(2,list.getParts().size());
-		SimpleResultPart part0 = (SimpleResultPart)list.getParts().get(0);
-		assertEquals(TestStatus.PASSED, (int)part0.getStatus());
-		assertEquals(msgPassed,part0.getMessage());
-		
-		SimpleResultPart part1 = (SimpleResultPart)list.getParts().get(1);
-		assertEquals(TestStatus.FAILED, (int)part1.getStatus());
-		assertEquals(msgFailed,part1.getMessage());
-		
+
+		assertEquals(2, list.getParts().size());
+		SimpleResultPart part0 = (SimpleResultPart) list.getParts().get(0);
+		assertEquals(TestStatus.PASSED, (int) part0.getStatus());
+		assertEquals(msgPassed, part0.getMessage());
+
+		SimpleResultPart part1 = (SimpleResultPart) list.getParts().get(1);
+		assertEquals(TestStatus.FAILED, (int) part1.getStatus());
+		assertEquals(msgFailed, part1.getMessage());
+
 		assertEquals(closeDate, treeTestResult2.getCloseDate());
 	}
 

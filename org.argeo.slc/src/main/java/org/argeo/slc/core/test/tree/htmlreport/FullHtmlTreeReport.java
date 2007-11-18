@@ -132,11 +132,11 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 		return reportDir;
 	}
 
-	void addStyles(StringBuffer buf){
+	void addStyles(StringBuffer buf) {
 		try {
 			buf.append("<style type=\"text/css\">\n");
 			InputStream in = FullHtmlTreeReport.class
-			.getResourceAsStream("style.css");
+					.getResourceAsStream("style.css");
 			String styles = IOUtils.toString(in);
 			IOUtils.closeQuietly(in);
 			buf.append(styles);
@@ -145,7 +145,7 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 			throw new SlcException("Cannot load styles", e);
 		}
 	}
-	
+
 	private void resourceToFile(String resourceName) {
 		try {
 			File file = new File(getReportDir() + File.separator + resourceName);

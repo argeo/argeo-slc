@@ -2,7 +2,7 @@ package org.argeo.slc.diff;
 
 import org.argeo.slc.core.UnsupportedException;
 
-/** A diff position within an Xml file. <b>NOT YET IMPLEMENTED</b>.*/
+/** A diff position within an Xml file. <b>NOT YET IMPLEMENTED</b>. */
 public class XPathDiffPosition extends DiffPosition {
 
 	private String xPath;

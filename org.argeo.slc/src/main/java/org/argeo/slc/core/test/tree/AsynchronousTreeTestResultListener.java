@@ -39,7 +39,7 @@ public abstract class AsynchronousTreeTestResultListener implements
 			thread = null;
 			partStructs.notifyAll();
 		}
-		postClose((TreeTestResult)testResult);
+		postClose((TreeTestResult) testResult);
 	}
 
 	public final void resultPartAdded(TestResult testResult,

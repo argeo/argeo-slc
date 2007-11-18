@@ -8,8 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Basic implementation of a test result containing only a list of result
- * parts.
+ * Basic implementation of a test result containing only a list of result parts.
  */
 public class SimpleTestResult implements TestResult {
 	private static Log log = LogFactory.getLog(SimpleTestResult.class);
