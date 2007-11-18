@@ -1,5 +1,6 @@
 package org.argeo.slc.core.test.tree;
 
+import java.util.Date;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -32,6 +33,8 @@ public class TreeTestResult implements TestResult, StructureAware {
 	private List<TestResultListener> listeners = new Vector<TestResultListener>();
 
 	private TreeSPath currentPath;
+	
+	private Date closeDate;
 
 	private boolean isClosed = false;
 
@@ -105,14 +108,16 @@ public class TreeTestResult implements TestResult, StructureAware {
 			throw new SlcException("Test Result #" + getTestResultId()
 					+ " alredy closed.");
 		}
+		closeDate = new Date();
 
 		synchronized (listeners) {
 			for (TestResultListener listener : listeners) {
-				listener.close();
+				listener.close(this);
 			}
 			listeners.clear();
 		}
 		isClosed = true;
+		
 		log.info("Test Result #" + getTestResultId() + " closed.");
 	}
 
@@ -132,6 +137,15 @@ public class TreeTestResult implements TestResult, StructureAware {
 	/** Sets the related registry.*/
 	public void setRegistry(StructureRegistry registry) {
 		this.registry = registry;
+	}
+
+	public Date getCloseDate() {
+		return closeDate;
+	}
+
+	/** Sets the close date (for ORM)*/
+	public void setCloseDate(Date closeDate) {
+		this.closeDate = closeDate;
 	}
 
 }

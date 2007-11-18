@@ -7,5 +7,5 @@ public interface TestResultListener {
 			TestResultPart testResultPart);
 
 	/** Stops listening and release the related resources. */
-	public void close();
+	public void close(TestResult testResult);
 }

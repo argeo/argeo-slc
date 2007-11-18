@@ -1,5 +1,7 @@
 package org.argeo.slc.hibernate.test.tree;
 
+import java.util.Date;
+
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.NumericTRId;
 import org.argeo.slc.core.test.SimpleResultPart;
@@ -41,6 +43,9 @@ public class TreeTestResultDaoHibernateTest extends SpringBasedTestCase {
 		treeTestResult.notifyCurrentPath(null, path);
 		treeTestResult.addResultPart(partPassed);
 		treeTestResult.addResultPart(partFailed);
+		
+		Date closeDate = new Date();
+		treeTestResult.setCloseDate(closeDate);
 
 		testResultDao.create(treeTestResult);
 
@@ -57,7 +62,7 @@ public class TreeTestResultDaoHibernateTest extends SpringBasedTestCase {
 		assertEquals(TestStatus.FAILED, (int)part1.getStatus());
 		assertEquals(msgFailed,part1.getMessage());
 		
-		
+		assertEquals(closeDate, treeTestResult2.getCloseDate());
 	}
 
 	@Override

@@ -26,7 +26,7 @@ public abstract class AsynchronousTreeTestResultListener implements
 	}
 
 	/** Finish the remaining and destroy */
-	public void close() {
+	public void close(TestResult testResult) {
 		synchronized (partStructs) {
 			// TODO: put a timeout
 			while (partStructs.size() != 0) {
@@ -39,6 +39,7 @@ public abstract class AsynchronousTreeTestResultListener implements
 			thread = null;
 			partStructs.notifyAll();
 		}
+		postClose((TreeTestResult)testResult);
 	}
 
 	public final void resultPartAdded(TestResult testResult,
@@ -54,6 +55,14 @@ public abstract class AsynchronousTreeTestResultListener implements
 
 	/** Called when a result part has been added. */
 	protected abstract void resultPartAdded(PartStruct partStruct);
+
+	/**
+	 * Called at the end of close. Default implementation is empty. To be
+	 * overridden.
+	 */
+	protected void postClose(TreeTestResult testResult) {
+
+	}
 
 	public void run() {
 		while (thread != null) {

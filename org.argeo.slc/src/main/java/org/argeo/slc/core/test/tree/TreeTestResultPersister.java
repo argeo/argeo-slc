@@ -76,6 +76,20 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 		}
 	}
 
+	@Override
+	protected void postClose(TreeTestResult testResult) {
+		TreeTestResult persistedResult = (TreeTestResult) testResultDao
+				.getTestResult(testResult.getTestResultId());
+
+		if (persistedResult != null) {
+			persistedResult.setCloseDate(testResult.getCloseDate());
+			testResultDao.update(persistedResult);
+		}
+		if (log.isDebugEnabled())
+			log.debug("Closed result persister for result "
+					+ testResult.getNumericResultId());
+	}
+
 	private TreeSRegistry getOrCreateTreeSRegistry(TreeSPath path) {
 		TreeSRegistry registry = treeSRegistryDao.getTreeSRegistry(path);
 		if (registry == null) {

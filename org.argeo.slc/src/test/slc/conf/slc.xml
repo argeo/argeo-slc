@@ -44,29 +44,25 @@
 			</list>
 		</property>
 	</bean>
-<!--  
-	<bean id="testResultId" class="org.argeo.slc.core.test.NumericTRId"
-		init-method="init" scope="prototype">
-	</bean>
--->
+
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
 
 	<bean id="resultLogger"
 		class="org.argeo.slc.core.test.tree.TreeTestResultLogger"
-		init-method="init">
+		init-method="init" scope="prototype">
 	</bean>
 
 	<bean id="resultPersister"
 		class="org.argeo.slc.core.test.tree.TreeTestResultPersister"
-		init-method="init">
+		init-method="init" scope="prototype">
 		<property name="testResultDao" ref="testResultDao" />
 		<property name="treeSPathDao" ref="treeSPathDao" />
 		<property name="treeSRegistryDao" ref="treeSRegistryDao" />
 	</bean>
 
 	<bean id="report"
-		class="org.argeo.slc.core.test.tree.FullHtmlTreeReport">
+		class="org.argeo.slc.core.test.tree.htmlreport.FullHtmlTreeReport">
 		<property name="testResultDao" ref="testResultDao" />
 		<property name="treeSRegistryDao" ref="treeSRegistryDao" />
 		<property name="reportDir"

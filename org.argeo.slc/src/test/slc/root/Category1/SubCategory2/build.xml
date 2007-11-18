@@ -2,8 +2,9 @@
 	<description>A Test project</description>
 
 	<target name="test" depends="testSimple,testComplex">
-		<slc.closeResult result="testResult" report="report" />
-		<slc.closeResult result="testResult2" report="report" />
+		<slc.closeResult result="testResult" />
+		<slc.closeResult result="testResult2" />
+		<slc.report report="report" />
 	</target>
 
 	<target name="testSimple" description="Simple tests">

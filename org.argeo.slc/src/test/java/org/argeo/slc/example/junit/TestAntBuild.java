@@ -68,10 +68,11 @@ public class TestAntBuild extends TestCase {
 				TestStatus.FAILED,
 				"Compare eu-reform-expected.txt with eu-reform-reached.txt");
 
-		assertTrue(new File("src/test/slc/work/results/report/index.html")
-				.exists());
-		assertTrue(new File("src/test/slc/work/results/report/1.html").exists());
-		assertTrue(new File("src/test/slc/work/results/report/2.html").exists());
+		String reportDirPath = "src/test/slc/work/results/report/";
+		assertTrue(new File(reportDirPath + "index.html").exists());
+		assertTrue(new File(reportDirPath + "slc-resultsList.html").exists());
+		assertTrue(new File(reportDirPath + "slc-result-1.html").exists());
+		assertTrue(new File(reportDirPath + "slc-result-2.html").exists());
 	}
 
 	private void assertPart(TreeTestResult testResult, String pathStr,

@@ -1,5 +1,7 @@
 package org.argeo.slc.core.test;
 
+import java.util.Date;
+
 /** The result of a test */
 public interface TestResult {
 	/** Gets the id of the related test result. */
@@ -13,4 +15,10 @@ public interface TestResult {
 	 * related resources (also closing listeners).
 	 */
 	public void close();
+
+	/**
+	 * The date when this test result was closed. Can be null, which means the
+	 * result is not closed.
+	 */
+	public Date getCloseDate();
 }

@@ -8,6 +8,9 @@
 			<generator class="native" />
 		</id>
 
+		<property name="closeDate" column="CLOSE_DATE" type="timestamp"
+			not-null="false" />
+
 		<many-to-one name="numericResultId" unique="true"
 			not-null="true" column="TEST_RESULT_ID" cascade="all" lazy="false" />
 
