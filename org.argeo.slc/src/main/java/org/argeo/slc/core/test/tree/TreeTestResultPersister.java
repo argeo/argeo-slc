@@ -31,17 +31,10 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 
 			TreeSPath path = treeSPathDao.getOrCreate(partStruct.path);
 
+			StructureRegistry localRegistry = partStruct.result.getRegistry();
 			TreeSRegistry registry = getOrCreateTreeSRegistry(path);
-			if (registry.getElement(path) == null) {
-				StructureRegistry localRegistry = partStruct.result
-						.getRegistry();
-				if (localRegistry != null) {
-					registry.register(path, localRegistry.getElement(path));
-				} else {
-					registry.register(path, new SimpleSElement(path.getName()));
-				}
-				treeSRegistryDao.update(registry);
-			}
+			syncPath(registry, localRegistry, path);
+			treeSRegistryDao.update(registry);
 
 			if (persistedResult == null) {
 				persistedResult = new TreeTestResult();
@@ -118,4 +111,19 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 		this.treeSRegistryDao = treeSRegistryDao;
 	}
 
+	private void syncPath(TreeSRegistry registry,
+			StructureRegistry localRegistry, TreeSPath path) {
+		if (registry.getElement(path) == null) {
+			if (localRegistry != null) {
+				registry.register(path, localRegistry.getElement(path));
+			} else {
+				registry.register(path, new SimpleSElement(path.getName()));
+			}
+		}
+
+		if (path.getParent() != null) {
+			TreeSPath parent = treeSPathDao.getOrCreate(path.getParent());
+			syncPath(registry, localRegistry, parent);
+		}
+	}
 }

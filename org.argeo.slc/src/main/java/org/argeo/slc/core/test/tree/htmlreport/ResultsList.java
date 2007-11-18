@@ -24,7 +24,7 @@ class ResultsList {
 		buf.append("<body>\n");
 
 		buf.append("<h1>Results</h1>\n");
-		buf.append("<table border=\"1\" cellspacing=\"0\">\n");
+		buf.append("<table border=\"0\" cellspacing=\"1\">\n");
 	}
 
 	void addTestResult(TreeTestResult result) {
@@ -32,17 +32,17 @@ class ResultsList {
 		// Date
 		buf.append("<td>");
 		Date closeDate = result.getCloseDate();
-		if(closeDate == null){
+		if (closeDate == null) {
 			throw new SlcException("No close date");
 		}
 		buf.append(report.sdf.format(closeDate));
 		buf.append("</td>\n");
 		// Id and link
-		buf.append("<td><a href=\"");
+		buf.append("<td><a class=\"nav\" href=\"");
 		buf.append(report.getResultFile(result).getName());
-		buf.append("\" target=\"main\">");
+		buf.append("\" target=\"main\">#");
 		buf.append(result.getTestResultId()).append("</a></td>\n");
-		
+
 		buf.append("</tr>\n");
 	}
 

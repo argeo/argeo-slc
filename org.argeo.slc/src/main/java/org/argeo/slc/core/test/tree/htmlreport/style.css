@@ -65,87 +65,24 @@ td {
 	text-align: left;
 }
 
-/**************** Navigation ****************/
-td.nav1 {
-	padding: 5px 0px 0px 0px;
-	font-size: 12px;
-	font-weight: bold;
+.passed {
+	color: green;
 }
 
-td.nav2 {
-	padding: 0px 0px 0px 5px;
-	font-size: 12px;
-}
-
-/**************** Forms ****************/
-input.submit {
-	border: solid 1px grey;
-	background-color: lightgrey;
-	align: right;
-}
-
-input.submit:hover {
-	border: solid 1px #3399FF;
-	background-color: white;
-	color: #3399FF;
-}
-
-input.std {
-	border: solid 1px lightgrey;
-	padding: 1px;
-	margin: 2px;
-}
-
-.formError {
+.failed {
 	color: red;
-	padding: 1px;
-	margin: 2px;
-	font-weight: bold;
 }
 
 /**************** Pseudo classes ****************/
-a:link {
-	color: #0066CC;
+a {
 	text-decoration: none;
 }
 
-a:visited {
+a.nav {
 	color: #0066CC;
 	text-decoration: none;
 }
 
 a:hover {
-	color: #3399FF;
-	text-decoration: none;
-}
-
-/************************* ID's *************************/
-#main {
-	position: absolute;
-	margin-left: 180px;
-	padding-top: 65px;
-}
-
-#navigation {
-	position: absolute;
-	width: 150px;
-	height: 800px;
-	border-right: 1px solid #0066CC;
-	font-weight: normal;
-	margin-top: 60px;
-	margin-left: 10px;
-}
-
-#banner {
-	position: absolute;
-	width: 400px;
-	height: 50px;
-}
-
-#upperRight {
-	position: absolute;
-	top: 0;
-	right: 0;
-	margin-top: 20px;
-	margin-right: 10px;
+	text-decoration: underline;
 }

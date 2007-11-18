@@ -68,6 +68,7 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		path.name = name;
 		return path;
 	}
+
 	/** Parses a string to a path. */
 	public static TreeSPath parseToCreatePath(String path) {
 		return parseToCreatePath(path, DEFAULT_SEPARATOR);
@@ -115,6 +116,19 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 			root = root.getParent();
 		}
 		return root;
+	}
+
+	/** Depth of this path. */
+	public Integer depth() {
+		return depthImpl(this);
+	}
+
+	private static int depthImpl(TreeSPath path) {
+		if (path.getParent() == null) {
+			return 1;
+		} else {
+			return depthImpl(path.getParent()) + 1;
+		}
 	}
 
 	@Override
