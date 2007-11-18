@@ -47,12 +47,12 @@ public class TestAntBuild extends TestCase {
 		// assertPart(testResult1, "", 0, TestStatus.PASSED, "");
 		assertPart(
 				testResult1,
-				"#root#Category1#SubCategory2#testComplex#slc.test0#0",
+				"/root/Category1/SubCategory2/testComplex/slc.test0/0",
 				0,
 				TestStatus.PASSED,
-				"Sub task with path #root#Category1#SubCategory2#testComplex#slc.test0#0 executed");
+				"Sub task with path /root/Category1/SubCategory2/testComplex/slc.test0/0 executed");
 		assertPart(testResult1,
-				"#root#Category1#SubCategory2#testSimple#slc.test0", 1,
+				"/root/Category1/SubCategory2/testSimple/slc.test0", 1,
 				TestStatus.FAILED,
 				"Compare nato-expected.txt with nato-reached.txt");
 
@@ -60,11 +60,11 @@ public class TestAntBuild extends TestCase {
 		TreeTestResult testResult2 = (TreeTestResult) testResultDao
 				.getTestResult(numericTRId);
 		assertPart(testResult2,
-				"#root#Category1#SubCategory2#testSimple#slc.test2", 1,
+				"/root/Category1/SubCategory2/testSimple/slc.test2", 1,
 				TestStatus.PASSED,
 				"Compare eu-reform-expected.txt with eu-reform-reached.txt");
 		assertPart(testResult2,
-				"#root#Category1#SubCategory2#testSimple#slc.test3", 1,
+				"/root/Category1/SubCategory2/testSimple/slc.test3", 1,
 				TestStatus.FAILED,
 				"Compare eu-reform-expected.txt with eu-reform-reached.txt");
 
@@ -76,7 +76,7 @@ public class TestAntBuild extends TestCase {
 
 	private void assertPart(TreeTestResult testResult, String pathStr,
 			int index, Integer status, String message) {
-		TreeSPath path = TreeSPath.parseToCreatePath(pathStr, '#');
+		TreeSPath path = TreeSPath.parseToCreatePath(pathStr);
 		PartSubList list = testResult.getResultParts().get(path);
 		SimpleResultPart part = (SimpleResultPart) list.getParts().get(index);
 		assertEquals(status, part.getStatus());

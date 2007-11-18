@@ -12,8 +12,8 @@ import org.argeo.slc.core.structure.StructureRegistry;
  * Path for tree based <code>StructureRegistry</code> implementations.
  */
 public class TreeSPath implements StructurePath, Comparable<StructurePath> {
-	/** Default character to use a separator: #. */
-	public static Character DEFAULT_SEPARATOR = '#';
+	/** Default character to use a separator: /. */
+	public static Character DEFAULT_SEPARATOR = '/';
 
 	private TreeSPath parent;
 	private String name;
@@ -67,6 +67,10 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		path.parent = this;
 		path.name = name;
 		return path;
+	}
+	/** Parses a string to a path. */
+	public static TreeSPath parseToCreatePath(String path) {
+		return parseToCreatePath(path, DEFAULT_SEPARATOR);
 	}
 
 	/** Parses a string to a path. */

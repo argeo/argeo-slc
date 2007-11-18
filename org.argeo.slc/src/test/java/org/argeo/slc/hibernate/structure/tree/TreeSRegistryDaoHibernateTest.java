@@ -16,7 +16,7 @@ public class TreeSRegistryDaoHibernateTest extends SpringBasedTestCase {
 		TreeSPathDao treeSPathDao = (TreeSPathDao) getContext().getBean(
 		"treeSPathDao");
 
-		TreeSPath root = TreeSPath.parseToCreatePath("#root", '#');
+		TreeSPath root = TreeSPath.parseToCreatePath("/root");
 		TreeSPath path = root.createChild("test");
 		
 		treeSPathDao.create(root);
