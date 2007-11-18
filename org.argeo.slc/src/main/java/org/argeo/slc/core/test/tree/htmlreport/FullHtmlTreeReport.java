@@ -11,6 +11,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.StructureAware;
@@ -29,7 +31,8 @@ import org.argeo.slc.dao.test.TestResultDao;
  * only the passed <code>TestResult</code>.
  */
 public class FullHtmlTreeReport implements TestReport, StructureAware {
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+	private static final Log log = LogFactory.getLog(FullHtmlTreeReport.class);
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 
 	private TestResultDao testResultDao;
 	private TreeSRegistryDao treeSRegistryDao;
@@ -83,6 +86,7 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 			}
 			index.close();
 		}
+		log.info("Generated HTML test result report to "+reportDir);
 	}
 
 	/**

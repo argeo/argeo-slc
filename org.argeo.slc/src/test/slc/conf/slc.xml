@@ -50,12 +50,12 @@
 
 	<bean id="resultLogger"
 		class="org.argeo.slc.core.test.tree.TreeTestResultLogger"
-		init-method="init" scope="prototype">
+		init-method="init">
 	</bean>
 
 	<bean id="resultPersister"
 		class="org.argeo.slc.core.test.tree.TreeTestResultPersister"
-		init-method="init" scope="prototype">
+		init-method="init">
 		<property name="testResultDao" ref="testResultDao" />
 		<property name="treeSPathDao" ref="treeSPathDao" />
 		<property name="treeSRegistryDao" ref="treeSRegistryDao" />
