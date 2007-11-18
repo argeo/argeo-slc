@@ -1,13 +1,8 @@
-/* Generic Selectors */
 body {
 	font-family: sans-serif;
 	font-size: 12px;
 	color: black;
 	background-color: white;
-}
-
-li {
-	list-style-type: none;
 }
 
 h1 {
@@ -33,24 +28,6 @@ table,form {
 	margin: 0px;
 }
 
-img {
-	border: none;
-}
-
-div {
-	font-size: 100%;
-}
-
-tr.list:hover {
-	background-color: lightgrey;
-}
-
-td.list {
-	border-top: 1px solid lighgrey;
-	padding: 2px 20px 2px 2px;
-	padding-right: 15px;
-}
-
 th {
 	font-size: 12px;
 	padding: 2px 20px 2px 2px;
@@ -73,7 +50,6 @@ td {
 	color: red;
 }
 
-/**************** Pseudo classes ****************/
 a {
 	text-decoration: none;
 }

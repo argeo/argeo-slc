@@ -18,13 +18,13 @@ class ResultsList {
 		buf.append("<html><header><title>Results</title></header><body>");
 		buf.append("<header>");
 		buf.append("<title>Results</title>\n");
-		buf
-				.append("<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\"/>");
+		report.addStyles(buf);
 		buf.append("</header>\n");
 		buf.append("<body>\n");
 
 		buf.append("<h1>Results</h1>\n");
 		buf.append("<table border=\"0\" cellspacing=\"1\">\n");
+		buf.append("<tr><th>Date</th><th>Result Id</th></tr>\n");
 	}
 
 	void addTestResult(TreeTestResult result) {

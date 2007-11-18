@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javax.swing.tree.TreePath;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -42,15 +40,15 @@ class ResultPage {
 		StringBuffer buf = new StringBuffer("");
 		buf.append("<html>\n");
 		buf.append("<header>");
-		buf.append("<title>Result #").append(result.getTestResultId()).append(
-				"</title>\n");
-		buf
-				.append("<link href=\"style.css\" rel=\"stylesheet\" type=\"text/css\"/>");
+		buf.append("<title>Result #").append(result.getTestResultId());
+		buf.append("</title>\n");
+		report.addStyles(buf);
 		buf.append("</header>\n");
 
 		buf.append("<body>\n");
 
 		// Header
+		buf.append("<a name=\"top\"/>\n");
 		buf.append("<h1>Result #").append(result.getTestResultId()).append(
 				"</h1>\n");
 		buf.append(report.sdf.format(result.getCloseDate()));
@@ -126,19 +124,13 @@ class ResultPage {
 			buf.append("<p>\n");
 			buf.append("<a name=\"").append(anchor(path)).append("\"></a>");
 			buf.append("<h2>");
-			String description = path.getName();
-			if (registry != null) {
-				StructureElement element = registry.getElement(path);
-				if (element != null) {
-					description = element.getDescription();
-				}
-			}
-			buf.append(description);
+			describedPath(path, registry, buf);
 			buf.append("</h2>");
 
 			PartSubList subList = (PartSubList) result.getResultParts().get(
 					path);
 			buf.append("<table border=0>\n");
+			int displayedIndex = 1;// for display only
 			for (TestResultPart part : subList.getParts()) {
 				SimpleResultPart sPart = (SimpleResultPart) part;
 				String clss = "";
@@ -147,12 +139,20 @@ class ResultPage {
 				} else {
 					clss = "failed";
 				}
-				buf.append("<tr><td class=\"").append(clss).append("\">");
+				buf.append("<tr>");
+				buf.append("<td><b>").append(displayedIndex)
+						.append("</b></td>");
+				buf.append("<td class=\"").append(clss).append("\">");
 
 				buf.append(sPart.getMessage());
-				buf.append("</td></tr>\n");
+				buf.append("</td>");
+				buf.append("</tr>\n");
+
+				displayedIndex++;
 			}
 			buf.append("</table>\n");
+			buf.append("<a class=\"nav\" href=\"#top\">top</a>\n");
+			buf.append("<hr/>\n");
 		}
 	}
 
@@ -175,8 +175,19 @@ class ResultPage {
 		return path.getAsUniqueString().replace(path.getSeparator(), '_');
 	}
 
-	private String describedPath(TreePath path, StructureRegistry registry) {
-		StringBuffer buf = new StringBuffer("");
-		return buf.toString();
+	private void describedPath(TreeSPath path, StructureRegistry registry,
+			StringBuffer buf) {
+		// StringBuffer buf = new StringBuffer("");
+		if (path.getParent() != null) {
+			describedPath(path.getParent(), registry, buf);
+		}
+		String description = path.getName();
+		if (registry != null) {
+			StructureElement element = registry.getElement(path);
+			if (element != null) {
+				description = element.getDescription();
+			}
+		}
+		buf.append('/').append(description);
 	}
 }

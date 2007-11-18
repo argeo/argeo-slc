@@ -2,15 +2,14 @@ package org.argeo.slc.core.test.tree.htmlreport;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
-import org.hsqldb.lib.FileUtil;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
 import org.argeo.slc.core.SlcException;
@@ -58,11 +57,24 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 			reportDir.mkdirs();
 
 			resourceToFile("index.html");
-			resourceToFile("style.css");
 
 			ResultsList index = new ResultsList(this);
 			List<TestResult> list = testResultDao.listTestResults();
-			for (TestResult testRes : list) {
+			SortedSet<TestResult> sortedSet = new TreeSet<TestResult>(
+					new Comparator<TestResult>() {
+
+						public int compare(TestResult o1, TestResult o2) {
+							if (o1.getCloseDate() == null
+									|| o2.getCloseDate() == null)
+								return 0;
+							// inverse date order (last first)
+							return o2.getCloseDate().compareTo(
+									o1.getCloseDate());
+						}
+
+					});
+			sortedSet.addAll(list);
+			for (TestResult testRes : sortedSet) {
 				TreeTestResult result = (TreeTestResult) testRes;
 
 				index.addTestResult(result);
@@ -120,6 +132,20 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 		return reportDir;
 	}
 
+	void addStyles(StringBuffer buf){
+		try {
+			buf.append("<style type=\"text/css\">\n");
+			InputStream in = FullHtmlTreeReport.class
+			.getResourceAsStream("style.css");
+			String styles = IOUtils.toString(in);
+			IOUtils.closeQuietly(in);
+			buf.append(styles);
+			buf.append("\n</style>\n");
+		} catch (IOException e) {
+			throw new SlcException("Cannot load styles", e);
+		}
+	}
+	
 	private void resourceToFile(String resourceName) {
 		try {
 			File file = new File(getReportDir() + File.separator + resourceName);

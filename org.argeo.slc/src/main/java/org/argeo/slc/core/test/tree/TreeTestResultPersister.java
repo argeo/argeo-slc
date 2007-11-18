@@ -34,7 +34,6 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 			StructureRegistry localRegistry = partStruct.result.getRegistry();
 			TreeSRegistry registry = getOrCreateTreeSRegistry(path);
 			syncPath(registry, localRegistry, path);
-			treeSRegistryDao.update(registry);
 
 			if (persistedResult == null) {
 				persistedResult = new TreeTestResult();
@@ -119,6 +118,7 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 			} else {
 				registry.register(path, new SimpleSElement(path.getName()));
 			}
+			treeSRegistryDao.update(registry);
 		}
 
 		if (path.getParent() != null) {
