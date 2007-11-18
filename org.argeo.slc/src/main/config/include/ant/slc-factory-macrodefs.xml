@@ -1,7 +1,7 @@
 <!--
-$HeadURL:$
-$Revision:$
-$LastChangedDate:$
+$HeadURL$
+$Revision$
+$LastChangedDate$
 -->
 <project>
 	<macrodef name="compile">
@@ -27,7 +27,7 @@ $LastChangedDate:$
 			<jar destfile="${dist.jar}/@{artifact}.jar">
 				<zipfileset dir="@{srcdir}">
 					<exclude name="**/*.java" />
-					<exclude name="**/*.html" />
+					<exclude name="**/package.html" />
 					<include name="**/*.*" />
 				</zipfileset>
 				<zipfileset dir="${compile.base}/@{artifact}">
