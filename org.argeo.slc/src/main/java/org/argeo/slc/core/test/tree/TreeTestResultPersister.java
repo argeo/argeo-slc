@@ -112,6 +112,11 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 
 	private void syncPath(TreeSRegistry registry,
 			StructureRegistry localRegistry, TreeSPath path) {
+		if (path.getParent() != null) {
+			TreeSPath parent = treeSPathDao.getOrCreate(path.getParent());
+			syncPath(registry, localRegistry, parent);
+		}
+
 		if (registry.getElement(path) == null) {
 			if (localRegistry != null) {
 				registry.register(path, localRegistry.getElement(path));
@@ -121,9 +126,5 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 			treeSRegistryDao.update(registry);
 		}
 
-		if (path.getParent() != null) {
-			TreeSPath parent = treeSPathDao.getOrCreate(path.getParent());
-			syncPath(registry, localRegistry, parent);
-		}
 	}
 }

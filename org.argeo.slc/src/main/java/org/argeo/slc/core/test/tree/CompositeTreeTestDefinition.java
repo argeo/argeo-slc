@@ -27,6 +27,7 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 	private List<TestDefinition> tasks = null;
 	private List<TreeSPath> taskPaths = null;
 	private TreeSPath path;
+	private StructureRegistry registry;
 
 	public void execute(TestRun testRun) {
 		log.info("Execute sequence of test definitions...");
@@ -35,7 +36,7 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 		for (TestDefinition task : tasks) {
 			TestResult result = testRun.getTestResult();
 			if (result instanceof StructureAware) {
-				((StructureAware) result).notifyCurrentPath(null, taskPaths
+				((StructureAware) result).notifyCurrentPath(registry, taskPaths
 						.get(i));
 			}
 
@@ -43,7 +44,7 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 
 			// Reset current path in case it has been changed
 			if (result instanceof StructureAware) {
-				((StructureAware) result).notifyCurrentPath(null, path);
+				((StructureAware) result).notifyCurrentPath(registry, path);
 			}
 			i++;
 		}
@@ -59,7 +60,8 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 
 	public void notifyCurrentPath(StructureRegistry registry, StructurePath path) {
 		this.path = (TreeSPath) path;
-
+		this.registry = registry;
+		
 		// clear task paths
 		taskPaths.clear();
 
@@ -69,7 +71,7 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 			if (task instanceof StructureElement) {
 				element = (StructureElement) task;
 			} else {
-				element = new SimpleSElement("<no desc>");
+				element = new SimpleSElement("[no desc]");
 			}
 			TreeSPath taskPath = this.path.createChild(count.toString());
 			registry.register(taskPath, element);

@@ -104,7 +104,7 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 			final String description;
 			if (i == 0) {// project itself
 				description = project.getDescription() != null ? project
-						.getDescription() : "";
+						.getDescription() : "[no desc]";
 			} else {
 				description = slcAntConfig.getDescriptionForDir(dir);
 			}
