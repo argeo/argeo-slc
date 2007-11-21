@@ -9,5 +9,6 @@
 		</id>
 		<property name="status" column="STATUS" not-null="true" />
 		<property name="message" column="MESSAGE" not-null="true" />
+		<property name="exception" column="EXCEPTION" not-null="false" />
 	</class>
 </hibernate-mapping>

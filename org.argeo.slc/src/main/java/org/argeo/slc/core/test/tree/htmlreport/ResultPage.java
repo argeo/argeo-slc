@@ -1,11 +1,14 @@
 package org.argeo.slc.core.test.tree.htmlreport;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -140,7 +143,7 @@ class ResultPage {
 			for (TestResultPart part : subList.getParts()) {
 				SimpleResultPart sPart = (SimpleResultPart) part;
 				String clss = "";
-				if (sPart.getStatus().equals(SimpleResultPart.PASSED)) {
+				if (sPart.getStatus().equals(TestStatus.PASSED)) {
 					clss = "passed";
 				} else {
 					clss = "failed";
@@ -151,6 +154,20 @@ class ResultPage {
 				buf.append("<td class=\"").append(clss).append("\">");
 
 				buf.append(sPart.getMessage());
+				if (sPart.getStatus().equals(TestStatus.ERROR)) {
+					buf
+							.append("<p><b>An unexpected error prevented the test to run properly.</b>");
+					Throwable exception = sPart.getException();
+					if (exception != null) {
+						StringWriter writer = new StringWriter();
+						exception.printStackTrace(new PrintWriter(writer));
+						buf.append("<br/><pre>");
+						buf.append(writer.toString());
+						buf.append("</pre>");
+						IOUtils.closeQuietly(writer);
+					}
+					buf.append("</p>");
+				}
 				buf.append("</td>");
 				buf.append("</tr>\n");
 

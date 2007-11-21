@@ -55,6 +55,9 @@ public class TestAntBuild extends TestCase {
 				"/root/Category1/SubCategory2/testSimple/slc.test0", 1,
 				TestStatus.FAILED,
 				"Compare nato-expected.txt with nato-reached.txt");
+		assertPart(testResult1,
+				"/root/Category1/SubCategory2/testError/slc.test0", 0,
+				TestStatus.ERROR, "Execute example appli");
 
 		numericTRId.setValue(2l);
 		TreeTestResult testResult2 = (TreeTestResult) testResultDao

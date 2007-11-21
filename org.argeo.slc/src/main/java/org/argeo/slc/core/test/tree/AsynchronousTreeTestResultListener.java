@@ -19,10 +19,22 @@ public abstract class AsynchronousTreeTestResultListener implements
 	private Vector<PartStruct> partStructs = new Vector<PartStruct>();
 	private Thread thread;
 
+	private Boolean synchronous = false;
+	
+	protected AsynchronousTreeTestResultListener(){
+		this(false);
+	}
+
+	protected AsynchronousTreeTestResultListener(Boolean synchronousByDefault){
+		synchronous = synchronousByDefault;
+	}
+
 	/** Starts the underlying thread. */
 	public void init() {
-		thread = new Thread(this);
-		thread.start();
+		if (!synchronous) {
+			thread = new Thread(this);
+			thread.start();
+		}
 	}
 
 	/** Finish the remaining and destroy */
@@ -47,11 +59,16 @@ public abstract class AsynchronousTreeTestResultListener implements
 	public final void resultPartAdded(TestResult testResult,
 			TestResultPart testResultPart) {
 		TreeTestResult result = (TreeTestResult) testResult;
-		synchronized (partStructs) {
-			partStructs.add(new PartStruct(result.getCurrentPath(),
-					(NumericTRId) result.getTestResultId(), testResultPart,
-					result));
-			partStructs.notifyAll();
+		PartStruct partStruct = new PartStruct(result.getCurrentPath(),
+				(NumericTRId) result.getTestResultId(), testResultPart, result);
+
+		if (!synchronous) {
+			synchronized (partStructs) {
+				partStructs.add(partStruct);
+				partStructs.notifyAll();
+			}
+		} else {
+			resultPartAdded(partStruct);
 		}
 	}
 
@@ -107,6 +124,14 @@ public abstract class AsynchronousTreeTestResultListener implements
 			this.result = result;
 		}
 
+	}
+
+	public Boolean getSynchronous() {
+		return synchronous;
+	}
+
+	public void setSynchronous(Boolean synchronous) {
+		this.synchronous = synchronous;
 	}
 
 }

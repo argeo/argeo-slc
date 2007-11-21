@@ -23,6 +23,16 @@
 			value="${slc.workDir}/data/expected/un-expected.txt" />
 	</bean>
 	
+	<bean id="testData.un.bad"
+		class="org.argeo.slc.example.ExampleTestData" scope="prototype">
+		<property name="inputFile"
+			value="${slc.workDir}/data/input/un-inXXX.txt" />
+		<property name="reachedFile"
+			value="${slc.workDir}/data/reached/un-reachedXXX.txt" />
+		<property name="expectedFile"
+			value="${slc.workDir}/data/expected/un-expectedXXX.txt" />
+	</bean>
+	
 	<bean id="testData.eu-reform"
 		class="org.argeo.slc.example.ExampleTestData" scope="prototype">
 		<property name="inputFile"

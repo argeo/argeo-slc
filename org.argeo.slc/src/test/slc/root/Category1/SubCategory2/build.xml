@@ -1,7 +1,7 @@
 <project default="test" name="testProject">
 	<description>A Test project</description>
 
-	<target name="test" depends="testSimple,testComplex">
+	<target name="test" depends="testSimple,testComplex,testError">
 		<slc.closeResult result="testResult" />
 		<slc.closeResult result="testResult2" />
 		<slc.report report="report" />
@@ -46,6 +46,13 @@
 				</override>
 			</testDefinition>
 			<testData bean="testData.un" />
+		</slc.test>
+	</target>
+
+	<target name="testError" description="A crashing test">
+		<slc.test description="UN crashing">
+			<testDefinition bean="simpleExampleTestDef" />
+			<testData bean="testData.un.bad" />
 		</slc.test>
 	</target>
 
