@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SLC UI Launch
+Bundle-SymbolicName: org.argeo.slc.ui.launch;singleton:=true
+Bundle-Version: 0.5.0
+Bundle-Activator: org.argeo.slc.ui.launch.SlcUiLaunchPlugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.debug.core,
+ org.eclipse.jdt.launching,
+ org.eclipse.debug.ui,
+ org.eclipse.jdt.core,
+ org.eclipse.ui.console
+Eclipse-LazyStart: true
