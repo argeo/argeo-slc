@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="testData.nato"
+		class="org.argeo.slc.example.ExampleTestData" scope="prototype">
+		<property name="inputFile"
+			value="${slc.workDir}/data/input/nato-in.txt" />
+		<property name="reachedFile"
+			value="${slc.workDir}/data/reached/nato-reached.txt" />
+		<property name="expectedFile"
+			value="${slc.workDir}/data/expected/nato-expected.txt" />
+	</bean>
+	
+	<bean id="testData.un"
+		class="org.argeo.slc.example.ExampleTestData" scope="prototype">
+		<property name="inputFile"
+			value="${slc.workDir}/data/input/un-in.txt" />
+		<property name="reachedFile"
+			value="${slc.workDir}/data/reached/un-reached.txt" />
+		<property name="expectedFile"
+			value="${slc.workDir}/data/expected/un-expected.txt" />
+	</bean>
+	
+	<bean id="testData.un.bad"
+		class="org.argeo.slc.example.ExampleTestData" scope="prototype">
+		<property name="inputFile"
+			value="${slc.workDir}/data/input/un-inXXX.txt" />
+		<property name="reachedFile"
+			value="${slc.workDir}/data/reached/un-reachedXXX.txt" />
+		<property name="expectedFile"
+			value="${slc.workDir}/data/expected/un-expectedXXX.txt" />
+	</bean>
+	
+	<bean id="testData.eu-reform"
+		class="org.argeo.slc.example.ExampleTestData" scope="prototype">
+		<property name="inputFile"
+			value="${slc.workDir}/data/input/eu-reform-in.txt" />
+		<property name="reachedFile"
+			value="${slc.workDir}/data/reached/eu-reform-reached.txt" />
+		<property name="expectedFile"
+			value="${slc.workDir}/data/expected/eu-reform-expected.txt" />
+	</bean>
+</beans>
