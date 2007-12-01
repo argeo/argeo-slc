@@ -58,28 +58,21 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
+				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<skip>true</skip>
+					<descriptors>
+						<descriptor>
+							src/assembly/with-dependencies.xml
+						</descriptor>
+					</descriptors>
 				</configuration>
 				<executions>
 					<execution>
-						<id>surefire-it</id>
-						<phase>integration-test</phase>
+						<id>make-assembly</id>
+						<phase>site</phase>
 						<goals>
-							<goal>test</goal>
+							<goal>attached</goal>
 						</goals>
-						<configuration>
-							<skip>false</skip>
-							<systemProperties>
-								<property>
-									<name>it.slc.base</name>
-									<value>
-										${basedir}/src/test/slc
-									</value>
-								</property>
-							</systemProperties>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -99,15 +92,18 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changelog-plugin</artifactId>
 			</plugin>
-			<!-- 
-				<plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				</plugin>
-			-->
+			</plugin>
 		</plugins>
 	</reporting>
 	<dependencies>
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>jta</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -173,4 +169,10 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>http://www.argeo.org/maven/repository</url>
+		</repository>
+	</repositories>
 </project>
