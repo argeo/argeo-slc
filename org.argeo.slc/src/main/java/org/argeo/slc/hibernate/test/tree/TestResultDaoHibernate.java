@@ -7,7 +7,6 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.argeo.slc.core.test.NumericTRId;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultId;
-import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.TestResultDao;
 
 /**

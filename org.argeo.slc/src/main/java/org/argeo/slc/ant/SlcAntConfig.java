@@ -11,8 +11,6 @@ import org.springframework.util.Log4jConfigurer;
 
 import org.apache.tools.ant.Project;
 
-import org.argeo.slc.core.test.WritableTestRun;
-
 /**
  * <p>
  * Manager and initializer of the properties required by SLC Ant.

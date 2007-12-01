@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
 
-import org.argeo.slc.ant.SlcAntConfig;
 import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
 import org.argeo.slc.core.deploy.DeploymentData;

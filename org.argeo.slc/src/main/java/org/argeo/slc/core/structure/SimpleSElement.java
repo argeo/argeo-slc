@@ -1,6 +1,5 @@
 package org.argeo.slc.core.structure;
 
-import org.argeo.slc.core.structure.tree.TreeSPath;
 
 /**
  * Basic implementation of <code>StructureElement</code>.

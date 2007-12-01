@@ -47,14 +47,15 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		if (!(source instanceof File)) {
 			throw new UnsupportedException("Ant file", source);
 		}
-		File sourceFile = (File)source;
+		File sourceFile = (File) source;
 
 		// initialize config
 		SlcAntConfig slcAntConfig = new SlcAntConfig();
 
-		System.out.println("Base dir prop2: " + project.getProperty("basedir"));
-		// In order to avoid base dire override when running in Maven
-		project.setProperty("basedir", sourceFile.getParentFile().getAbsolutePath());
+		// Reset basedir property, in order to avoid base dir override when
+		// running in Maven
+		project.setProperty("basedir", sourceFile.getParentFile()
+				.getAbsolutePath());
 		if (!slcAntConfig.initProject(project)) {
 			// not SLC compatible, do normal Ant
 			super.parse(project, source);
@@ -66,24 +67,17 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 			log = LogFactory.getLog(SlcProjectHelper.class);
 		}
 		log.debug("SLC properties are set, starting initialization..");
-		log.debug("Base dir1: " + project.getBaseDir().getAbsoluteFile());
-		log.debug("Base dir prop1: " + project.getProperty("basedir"));
 
 		// init Spring application context
 		initSpringContext(project);
-		log.debug("Base dir2: " + project.getBaseDir().getAbsoluteFile());
 
 		// init structure registry
 		DefaultSRegistry registry = new DefaultSRegistry();
 		project.addReference(REF_STRUCTURE_REGISTRY, registry);
 
-		log.debug("Base dir prop2: " + project.getProperty("basedir"));
-		// in order to prevent pb w/ basedir setting:
-		source = ((File) source).getAbsoluteFile();
 		// call the underlying implementation to do the actual work
 		super.parse(project, source);
 
-		log.debug("Base dir3: " + project.getBaseDir().getAbsoluteFile());
 		// create structure root
 		registerProjectAndParents(project, slcAntConfig);
 

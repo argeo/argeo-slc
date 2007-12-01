@@ -8,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.structure.tree.TreeSPathDao;
 
 /**
