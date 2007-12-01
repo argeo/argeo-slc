@@ -4,6 +4,8 @@ import java.io.File;
 
 import org.springframework.context.ApplicationContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.Project;
 
 import junit.framework.TestCase;
@@ -20,15 +22,19 @@ import org.argeo.slc.dao.test.TestResultDao;
 
 /** High level tests for SLC Ant. */
 public class TestAntBuild extends TestCase {
+	private static Log log = LogFactory.getLog(TestAntBuild.class);
+
 	/** Tests an end-to-end Ant run. */
 	public void testAllRunSimple() {
-		File[] reportFiles = new File("src/test/slc/work/results/report/")
-				.listFiles();
+		String slcBase = System.getProperty("it.slc.base");
+		File slcBaseDir = new File(slcBase).getAbsoluteFile();
+		log.info("SLC base: " + slcBaseDir);
+
+		String reportDirPath = slcBaseDir.getPath() + "/work/results/report/";
+		File[] reportFiles = new File(reportDirPath).listFiles();
 		for (File file : reportFiles) {
 			file.delete();
 		}
-
-		File slcBaseDir = new File("./src/test/slc").getAbsoluteFile();
 
 		File antFile = new File(slcBaseDir.getPath()
 				+ "/root/Category1/SubCategory2/build.xml");
@@ -71,7 +77,6 @@ public class TestAntBuild extends TestCase {
 				TestStatus.FAILED,
 				"Compare eu-reform-expected.txt with eu-reform-reached.txt");
 
-		String reportDirPath = "src/test/slc/work/results/report/";
 		assertTrue(new File(reportDirPath + "index.html").exists());
 		assertTrue(new File(reportDirPath + "slc-resultsList.html").exists());
 		assertTrue(new File(reportDirPath + "slc-result-1.html").exists());

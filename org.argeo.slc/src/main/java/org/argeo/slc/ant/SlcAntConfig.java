@@ -156,6 +156,7 @@ public class SlcAntConfig {
 		Properties all = prepareAllProperties(slcRootFile);
 		for (Object o : all.keySet()) {
 			String key = o.toString();
+			//System.out.println(key+"="+all.getProperty(key));
 			if (project.getUserProperty(key) == null) {// not already set
 				project.setUserProperty(key, all.getProperty(key));
 			}
@@ -179,6 +180,9 @@ public class SlcAntConfig {
 			Properties all = new Properties();
 			all.putAll(System.getProperties());
 			all.put(ROOT_FILE_PROPERTY, slcRootFile.getCanonicalPath());
+			// Remove basedir property in order to avoid conflict with Maven
+			if (all.containsKey("basedir"))
+				all.remove("basedir");
 
 			Properties rootProps = loadFile(slcRootFile.getCanonicalPath());
 

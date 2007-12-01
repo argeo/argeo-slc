@@ -17,6 +17,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.helper.ProjectHelperImpl;
 
+import org.argeo.slc.core.UnsupportedException;
 import org.argeo.slc.core.structure.DefaultSRegistry;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureRegistry;
@@ -43,10 +44,17 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 
 	@Override
 	public void parse(Project project, Object source) throws BuildException {
+		if (!(source instanceof File)) {
+			throw new UnsupportedException("Ant file", source);
+		}
+		File sourceFile = (File)source;
 
 		// initialize config
 		SlcAntConfig slcAntConfig = new SlcAntConfig();
 
+		System.out.println("Base dir prop2: " + project.getProperty("basedir"));
+		// In order to avoid base dire override when running in Maven
+		project.setProperty("basedir", sourceFile.getParentFile().getAbsolutePath());
 		if (!slcAntConfig.initProject(project)) {
 			// not SLC compatible, do normal Ant
 			super.parse(project, source);
@@ -58,17 +66,24 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 			log = LogFactory.getLog(SlcProjectHelper.class);
 		}
 		log.debug("SLC properties are set, starting initialization..");
+		log.debug("Base dir1: " + project.getBaseDir().getAbsoluteFile());
+		log.debug("Base dir prop1: " + project.getProperty("basedir"));
 
 		// init Spring application context
 		initSpringContext(project);
+		log.debug("Base dir2: " + project.getBaseDir().getAbsoluteFile());
 
 		// init structure registry
 		DefaultSRegistry registry = new DefaultSRegistry();
 		project.addReference(REF_STRUCTURE_REGISTRY, registry);
 
+		log.debug("Base dir prop2: " + project.getProperty("basedir"));
+		// in order to prevent pb w/ basedir setting:
+		source = ((File) source).getAbsoluteFile();
 		// call the underlying implementation to do the actual work
 		super.parse(project, source);
 
+		log.debug("Base dir3: " + project.getBaseDir().getAbsoluteFile());
 		// create structure root
 		registerProjectAndParents(project, slcAntConfig);
 
@@ -85,7 +100,6 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 				.getUserProperty(SlcAntConfig.ROOT_DIR_PROPERTY))
 				.getAbsoluteFile();
 		File baseDir = project.getBaseDir().getAbsoluteFile();
-
 		List<File> dirs = new Vector<File>();
 		File currentDir = baseDir;
 		do {
