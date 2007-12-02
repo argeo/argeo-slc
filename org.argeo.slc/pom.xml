@@ -12,12 +12,12 @@
 	<url>
 		http://www.argeo.org/projects/slc/${project.artfactId}/${project.version}
 	</url>
-
+<!-- 
 	<modules>
 		<module>../org.argeo.slc.core</module>
 		<module>../org.argeo.slc.example</module>
 	</modules>
-
+-->
 	<scm>
 		<connection>
 			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc
@@ -107,6 +107,13 @@
 			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<updateReleaseInfo>true</updateReleaseInfo>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<inherited>false</inherited>
 				<configuration>
@@ -118,7 +125,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>assembly-exampleSlcAppli</id>
+						<id>assembly-base</id>
 						<phase>verify</phase>
 						<inherited>false</inherited>
 						<goals>
