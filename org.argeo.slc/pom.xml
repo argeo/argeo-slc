@@ -22,9 +22,7 @@
 		<connection>
 			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc
 		</connection>
-		<url>
-			https://www.argeo.org/svn/slc/trunk/org.argeo.slc
-		</url>
+		<url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc</url>
 	</scm>
 	<issueManagement>
 		<system>Bugzilla</system>
@@ -92,20 +90,21 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+			<!-- 
+				<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>attach-javadoc</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
+				<execution>
+				<id>attach-javadoc</id>
+				<phase>verify</phase>
+				<goals>
+				<goal>jar</goal>
+				</goals>
+				</execution>
 				</executions>
-			</plugin>
-
+				</plugin>
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -117,6 +116,23 @@
 						</descriptor>
 					</descriptors>
 				</configuration>
+				<executions>
+					<execution>
+						<id>assembly-exampleSlcAppli</id>
+						<phase>verify</phase>
+						<inherited>false</inherited>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>
+									src/assembly/base.xml
+								</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

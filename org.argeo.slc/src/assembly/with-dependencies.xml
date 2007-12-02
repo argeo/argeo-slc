@@ -40,9 +40,9 @@
 			</includes>
 			<binaries>
 				<unpack>true</unpack>
-				<outputFileNameMapping>example</outputFileNameMapping>
+				<outputFileNameMapping>${artifactId}</outputFileNameMapping>
 				<attachmentClassifier>slc</attachmentClassifier>
-				<outputDirectory></outputDirectory>
+				<outputDirectory>example</outputDirectory>
 				<includeDependencies>false</includeDependencies>
 			</binaries>
 		</moduleSet>
