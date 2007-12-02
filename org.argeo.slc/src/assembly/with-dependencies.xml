@@ -5,7 +5,6 @@
 	<formats>
 		<format>zip</format>
 	</formats>
-	<includeSiteDirectory>true</includeSiteDirectory>
 	<fileSets>
 		<fileSet>
 			<directory>src/base</directory>
@@ -40,7 +39,7 @@
 			</includes>
 			<binaries>
 				<unpack>true</unpack>
-				<outputFileNameMapping>${artifactId}</outputFileNameMapping>
+				<outputFileNameMapping></outputFileNameMapping>
 				<attachmentClassifier>slc</attachmentClassifier>
 				<outputDirectory>example</outputDirectory>
 				<includeDependencies>false</includeDependencies>
@@ -59,6 +58,7 @@
 				<includeDependencies>false</includeDependencies>
 			</binaries>
 		</moduleSet>
+		<!-- 
 		<moduleSet>
 			<includes>
 				<include>org.argeo.slc:argeo-slc-core</include>
@@ -72,6 +72,6 @@
 				<includeDependencies>false</includeDependencies>
 			</binaries>
 		</moduleSet>
-
+		-->
 	</moduleSets>
 </assembly>
