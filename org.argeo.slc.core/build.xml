@@ -1,7 +1,0 @@
-<project default="basePackage">
-	<property name="package.version" value="0.5.1" />
-	<property name="package.prefix" value="argeo-slc" />
-
-	<import file="src/main/config/include/ant/slc-factory-targets.xml" />
-
-</project>
