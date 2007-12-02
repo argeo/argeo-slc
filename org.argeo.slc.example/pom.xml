@@ -62,10 +62,4 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>central</id>
-			<url>http://www.argeo.org/maven/repository</url>
-		</repository>
-	</repositories>
 </project>
