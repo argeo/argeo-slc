@@ -12,7 +12,7 @@
 	          value="file:///D:/dev/test/mavenArgeoLocalRep/" />
 
 	<target name="deploy">
-		<deploy artifact="argeo-slc-core" version="0.5.2" />
+		<deploy artifact="argeo-slc-core" version="0.6.0" />
 	</target>
 
 	<!-- Macrodefs -->
