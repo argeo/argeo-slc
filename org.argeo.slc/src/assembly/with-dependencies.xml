@@ -5,12 +5,6 @@
 	<formats>
 		<format>zip</format>
 	</formats>
-	<fileSets>
-		<fileSet>
-			<directory>src/base</directory>
-			<outputDirectory></outputDirectory>
-		</fileSet>
-	</fileSets>
 	<moduleSets>
 		<moduleSet>
 			<includes>
@@ -32,6 +26,18 @@
 				</dependencySets>
 			</binaries>
 
+		</moduleSet>
+		<moduleSet>
+			<includes>
+				<include>org.argeo.slc:argeo-slc-core</include>
+			</includes>
+			<binaries>
+				<unpack>true</unpack>
+				<outputFileNameMapping></outputFileNameMapping>
+				<attachmentClassifier>base</attachmentClassifier>
+				<outputDirectory></outputDirectory>
+				<includeDependencies>false</includeDependencies>
+			</binaries>
 		</moduleSet>
 		<moduleSet>
 			<includes>
