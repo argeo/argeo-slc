@@ -137,8 +137,12 @@ public class SlcProjectHelper extends ProjectHelperImpl {
 		System.getProperties().putAll((Map<?, ?>) project.getProperties());
 		String acPath = project
 				.getUserProperty(SlcAntConfig.APPLICATION_CONTEXT_PROPERTY);
+		if (log.isDebugEnabled())
+			log.debug("Loading Spring application context from " + acPath);
+		// FIXME: workaround to the removal of leading '/' by Spring
+		// use URL instead?
 		AbstractApplicationContext context = new FileSystemXmlApplicationContext(
-				acPath);
+				'/'+acPath);
 		context.registerShutdownHook();
 		project.addReference(REF_ROOT_CONTEXT, context);
 	}

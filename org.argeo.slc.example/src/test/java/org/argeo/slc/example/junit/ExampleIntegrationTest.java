@@ -25,9 +25,9 @@ public class ExampleIntegrationTest extends TestCase {
 	private static Log log = LogFactory.getLog(ExampleIntegrationTest.class);
 
 	/** Tests an end-to-end Ant run. */
-	public void testAllRunSimple() {
+	public void testAllRunSimple() throws Exception{
 		String slcBase = System.getProperty("it.slc.base","exampleSlcAppli");
-		File slcBaseDir = new File(slcBase).getAbsoluteFile();
+		File slcBaseDir = new File(slcBase).getCanonicalFile();
 		log.info("SLC base: " + slcBaseDir);
 
 		String reportDirPath = slcBaseDir.getPath() + "/work/results/report/";

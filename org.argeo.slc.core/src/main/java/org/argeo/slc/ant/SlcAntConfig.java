@@ -9,6 +9,8 @@ import java.util.StringTokenizer;
 
 import org.springframework.util.Log4jConfigurer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.Project;
 
 /**
@@ -152,10 +154,14 @@ public class SlcAntConfig {
 		// pass the project properties through the System properties
 		System.getProperties().putAll((Map<?, ?>) project.getUserProperties());
 		Properties all = prepareAllProperties(slcRootFile);
+
+		Log log = LogFactory.getLog(this.getClass());
 		for (Object o : all.keySet()) {
 			String key = o.toString();
-			//System.out.println(key+"="+all.getProperty(key));
+			// System.out.println(key+"="+all.getProperty(key));
 			if (project.getUserProperty(key) == null) {// not already set
+				if (log.isDebugEnabled())
+					log.debug(key + "=" + all.getProperty(key));
 				project.setUserProperty(key, all.getProperty(key));
 			}
 		}
