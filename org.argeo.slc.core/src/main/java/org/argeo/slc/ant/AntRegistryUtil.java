@@ -24,7 +24,7 @@ public class AntRegistryUtil {
 		p.setBaseDir(antFile.getParentFile());
 		p.init();
 		ProjectHelper helper = new SlcProjectHelper();
-		p.addReference("ant.projectHelper", helper);
+		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, helper);
 		helper.parse(p, antFile);
 
 		StructureRegistry registry = (StructureRegistry) p
@@ -46,7 +46,7 @@ public class AntRegistryUtil {
 		p.setBaseDir(antFile.getParentFile());
 		p.init();
 		ProjectHelper helper = new SlcProjectHelper();
-		p.addReference("ant.projectHelper", helper);
+		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, helper);
 		helper.parse(p, antFile);
 
 		StructureRegistry registry = (StructureRegistry) p
@@ -66,7 +66,7 @@ public class AntRegistryUtil {
 		p.setBaseDir(antFile.getParentFile());
 		p.init();
 		ProjectHelper helper = new SlcProjectHelper();
-		p.addReference("ant.projectHelper", helper);
+		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, helper);
 		helper.parse(p, antFile);
 		p.executeTarget(p.getDefaultTarget());
 		return p;
