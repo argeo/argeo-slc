@@ -1,0 +1,23 @@
+<project>
+	<description>Complex targets</description>
+
+
+	<target name="testComplex" description="A complex test">
+		<slc.test description="Complex test">
+			<testDefinition bean="complexExampleTestDef" />
+			<testData bean="testData.un" />
+		</slc.test>
+		<slc.test description="Complex overridden">
+			<testDefinition bean="complexExampleTestDef">
+				<override name="tasks">
+					<list>
+						<override bean="dummyTask" />
+					</list>
+				</override>
+			</testDefinition>
+			<testData bean="testData.un" />
+		</slc.test>
+	</target>
+
+
+</project>

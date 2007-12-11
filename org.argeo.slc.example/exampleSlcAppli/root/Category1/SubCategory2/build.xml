@@ -1,6 +1,8 @@
 <project default="test" name="testProject">
 	<description>A Test project</description>
 
+	<import file="complex.xml"/>
+	
 	<target name="test" depends="testSimple,testComplex,testError">
 		<slc.closeResult result="testResult" />
 		<slc.closeResult result="testResult2" />
@@ -30,23 +32,6 @@
 			<testResult bean="testResult2" />
 		</slc.test>
 
-	</target>
-
-	<target name="testComplex" description="A complex test">
-		<slc.test description="Complex test">
-			<testDefinition bean="complexExampleTestDef" />
-			<testData bean="testData.un" />
-		</slc.test>
-		<slc.test description="Complex overridden">
-			<testDefinition bean="complexExampleTestDef">
-				<override name="tasks">
-					<list>
-						<override bean="dummyTask" />
-					</list>
-				</override>
-			</testDefinition>
-			<testData bean="testData.un" />
-		</slc.test>
 	</target>
 
 	<target name="testError" description="A crashing test">
