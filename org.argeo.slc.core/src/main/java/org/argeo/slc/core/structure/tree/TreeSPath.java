@@ -119,7 +119,7 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	}
 
 	/** Depth of this path. */
-	public Integer depth() {
+	public Integer getDepth() {
 		return depthImpl(this);
 	}
 

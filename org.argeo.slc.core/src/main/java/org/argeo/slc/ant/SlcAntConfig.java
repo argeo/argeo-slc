@@ -160,8 +160,8 @@ public class SlcAntConfig {
 			String key = o.toString();
 			// System.out.println(key+"="+all.getProperty(key));
 			if (project.getUserProperty(key) == null) {// not already set
-				if (log.isDebugEnabled())
-					log.debug(key + "=" + all.getProperty(key));
+//				if (log.isDebugEnabled())
+//					log.debug(key + "=" + all.getProperty(key));
 				project.setUserProperty(key, all.getProperty(key));
 			}
 		}

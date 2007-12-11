@@ -101,7 +101,7 @@ class ResultPage {
 
 			buf.append("<tr><td class=\"").append(
 					isFailed ? "failed" : "passed").append("\">");
-			int depth = path.depth();
+			int depth = path.getDepth();
 			for (int i = 0; i < depth; i++) {
 				buf.append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 			}
