@@ -47,7 +47,6 @@
 					<execution>
 						<id>assembly-base</id>
 						<phase>package</phase>
-						<inherited>false</inherited>
 						<goals>
 							<goal>single</goal>
 						</goals>
