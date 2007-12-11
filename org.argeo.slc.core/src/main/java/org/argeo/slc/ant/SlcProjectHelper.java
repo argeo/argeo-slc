@@ -15,7 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.helper.ProjectHelperImpl;
+import org.apache.tools.ant.helper.ProjectHelper2;
 
 import org.argeo.slc.core.UnsupportedException;
 import org.argeo.slc.core.structure.DefaultSRegistry;
@@ -27,7 +27,7 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
  * Custom implementation of an Ant <code>ProjectHelper</code> binding a Spring
  * application context and a structure registry with the Ant project.
  */
-public class SlcProjectHelper extends ProjectHelperImpl {
+public class SlcProjectHelper extends ProjectHelper2 {
 	private static Log log;
 
 	/** The Ant reference to the Spring application context used. */
