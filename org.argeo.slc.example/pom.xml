@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.5.2</version>
+		<version>0.6-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-example</artifactId>
@@ -23,6 +23,19 @@
 	</scm>
 	<build>
 		<plugins>
+		<!-- Look to parent pom for inheritances -->
+		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -59,7 +72,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>argeo-slc-core</artifactId>
-			<version>0.5.2</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>
