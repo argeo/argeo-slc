@@ -198,9 +198,16 @@
 	</repositories>
 	<distributionManagement>
 		<repository>
+			<uniqueVersion>false</uniqueVersion>
 			<id>argeo</id>
-			<!-- Temporary hack before having the build on the server itself -->
-			<url>file:///D:\dev\test\mavenArgeoLocalRep</url>
+			<name>Argeo FOSS Repository</name>
+			<url>scpexe://argeo.org/var/argeo/maven2/argeo</url>
 		</repository>
+		<snapshotRepository>
+			<uniqueVersion>true</uniqueVersion>
+			<id>argeo-snapshots</id>
+			<name>Argeo FOSS Snapshots Repository</name>
+			<url>scpexe://argeo.org/var/argeo/maven2/argeo-snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 </project>
