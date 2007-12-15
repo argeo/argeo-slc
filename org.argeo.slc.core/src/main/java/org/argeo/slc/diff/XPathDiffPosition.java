@@ -24,4 +24,8 @@ public class XPathDiffPosition extends DiffPosition {
 		}
 	}
 
+	@Override
+	public String toString(){
+		return xPath;
+	}
 }
