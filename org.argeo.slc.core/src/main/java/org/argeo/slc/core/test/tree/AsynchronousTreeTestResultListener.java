@@ -19,10 +19,10 @@ public abstract class AsynchronousTreeTestResultListener implements
 	private Vector<PartStruct> partStructs = new Vector<PartStruct>();
 	private Thread thread;
 
-	private Boolean synchronous = false;
+	private Boolean synchronous = true;
 	
 	protected AsynchronousTreeTestResultListener(){
-		this(false);
+		this(true);
 	}
 
 	protected AsynchronousTreeTestResultListener(Boolean synchronousByDefault){
