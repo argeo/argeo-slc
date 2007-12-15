@@ -203,21 +203,63 @@
 	<repositories>
 		<repository>
 			<id>central</id>
-			<url>http://www.argeo.org/maven/repository</url>
+			<url>http://www.argeo.org/maven/proxy</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>argeo</id>
+			<url>http://www.argeo.org/maven/argeo</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>argeo-snapshots</id>
+			<url>http://www.argeo.org/maven/argeo-snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
 		</repository>
 	</repositories>
 	<distributionManagement>
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
-			<id>argeo</id>
+			<id>argeo-restricted</id>
 			<name>Argeo FOSS Repository</name>
 			<url>scpexe://argeo.org/var/argeo/maven2/argeo</url>
 		</repository>
 		<snapshotRepository>
 			<uniqueVersion>true</uniqueVersion>
-			<id>argeo-snapshots</id>
+			<id>argeo-snapshots-restricted</id>
 			<name>Argeo FOSS Snapshots Repository</name>
-			<url>scpexe://argeo.org/var/argeo/maven2/argeo-snapshots</url>
+			<url>
+				scpexe://argeo.org/var/argeo/maven2/argeo-snapshots
+			</url>
 		</snapshotRepository>
+		<site>
+			<id>argeo-slc-site</id>
+			<name>SLC Site</name>
+			<url>
+				scpexe://argeo.org/var/argeo/projects/SLC/www/site
+			</url>
+		</site>
 	</distributionManagement>
 </project>
