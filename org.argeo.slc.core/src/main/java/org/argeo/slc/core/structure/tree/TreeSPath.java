@@ -149,7 +149,7 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		return getAsUniqueString().compareTo(o.getAsUniqueString());
 	}
 
-	Long getTid() {
+	public Long getTid() {
 		return tid;
 	}
 

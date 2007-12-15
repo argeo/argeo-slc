@@ -117,7 +117,7 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 		StructureRegistry registry = null;
 		if (treeSRegistryDao != null) {
 			TreeSPath path = result.getResultParts().firstKey();
-			registry = treeSRegistryDao.getTreeSRegistry(path);
+			registry = treeSRegistryDao.getActiveTreeSRegistry();
 		}
 		if (registry == null) {
 			registry = localRegistry;

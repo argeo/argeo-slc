@@ -83,13 +83,13 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 	}
 
 	private TreeSRegistry getOrCreateTreeSRegistry(TreeSPath path) {
-		TreeSRegistry registry = treeSRegistryDao.getTreeSRegistry(path);
+		TreeSRegistry registry = treeSRegistryDao.getActiveTreeSRegistry();
 		if (registry == null) {
 			registry = new TreeSRegistry();
 			TreeSPath root = treeSPathDao.getOrCreate(path.getRoot());
-			registry.setRoot(root);
+			registry.setStatus(TreeSRegistry.STATUS_ACTIVE);
 			treeSRegistryDao.create(registry);
-			return treeSRegistryDao.getTreeSRegistry(path);
+			return treeSRegistryDao.getActiveTreeSRegistry();
 		} else {
 			return registry;
 		}

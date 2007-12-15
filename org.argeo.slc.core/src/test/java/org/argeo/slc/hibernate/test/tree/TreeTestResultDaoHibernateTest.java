@@ -1,6 +1,7 @@
 package org.argeo.slc.hibernate.test.tree;
 
 import java.util.Date;
+import java.util.List;
 
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.NumericTRId;
@@ -10,6 +11,7 @@ import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.structure.tree.TreeSPathDao;
 import org.argeo.slc.dao.test.TestResultDao;
+import org.argeo.slc.dao.test.tree.TreeTestResultDao;
 import org.argeo.slc.unit.SpringBasedTestCase;
 
 public class TreeTestResultDaoHibernateTest extends SpringBasedTestCase {
@@ -18,7 +20,7 @@ public class TreeTestResultDaoHibernateTest extends SpringBasedTestCase {
 		TreeSPathDao treeSPathDao = (TreeSPathDao) getContext().getBean(
 				"treeSPathDao");
 
-		TestResultDao testResultDao = (TestResultDao) getContext().getBean(
+		TreeTestResultDao testResultDao = (TreeTestResultDao) getContext().getBean(
 				"testResultDao");
 
 		String pathParentStr = "/root/testParent";
@@ -63,6 +65,11 @@ public class TreeTestResultDaoHibernateTest extends SpringBasedTestCase {
 		assertEquals(msgFailed, part1.getMessage());
 
 		assertEquals(closeDate, treeTestResult2.getCloseDate());
+		
+		List<TreeTestResult> results = testResultDao.listResults(path);
+		assertEquals(1, results.size());
+		assertEquals(trId, results.get(0).getTestResultId());
+		
 	}
 
 	@Override

@@ -13,9 +13,11 @@ import org.argeo.slc.core.structure.StructureRegistry;
 
 /** Tree based implementation of a structure registry. */
 public class TreeSRegistry implements StructureRegistry {
+	public final static String STATUS_ACTIVE = "STATUS_ACTIVE";
+	
 	/** For ORM */
 	private Long tid;
-	private TreeSPath root;
+	private String status;
 	private Map<TreeSPath, SimpleSElement> elements = new TreeMap<TreeSPath, SimpleSElement>();
 
 	private String mode = StructureRegistry.ALL;
@@ -65,14 +67,13 @@ public class TreeSRegistry implements StructureRegistry {
 		this.activePaths = activePaths;
 	}
 
-	/** Gets the related root path. */
-	public TreeSPath getRoot() {
-		return root;
+
+	public String getStatus() {
+		return status;
 	}
 
-	/** Sets the related root path. */
-	public void setRoot(TreeSPath root) {
-		this.root = root;
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 	/** Gets the elements. */

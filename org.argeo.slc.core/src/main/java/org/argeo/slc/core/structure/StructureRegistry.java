@@ -9,7 +9,7 @@ public interface StructureRegistry {
 	/** All mode: everything is executed regardless of the active paths. */
 	public static String ALL = "ALL";
 	/** Active mode: only the active paths are executed. */
-	public static String ACTIVE = "ACTIVE";
+	public static String ACTIVE = "STATUS_ACTIVE";
 
 	/** Adds an element to the registry. */
 	public void register(StructurePath path, StructureElement element);
@@ -28,7 +28,7 @@ public interface StructureRegistry {
 	 * 
 	 * @see #READ
 	 * @see #ALL
-	 * @see #ACTIVE
+	 * @see #STATUS_ACTIVE
 	 */
 	public void setMode(String mode);
 
@@ -37,19 +37,19 @@ public interface StructureRegistry {
 	 * 
 	 * @see #READ
 	 * @see #ALL
-	 * @see #ACTIVE
+	 * @see #STATUS_ACTIVE
 	 */
 	public String getMode();
 
 	/**
 	 * Gets the list of active paths, which will be run if executed in
-	 * <code>ACTIVE</code> mode.
+	 * <code>STATUS_ACTIVE</code> mode.
 	 */
 	public List<StructurePath> getActivePaths();
 
 	/**
 	 * Sets the list of active path, which will be run if executed in
-	 * <code>ACTIVE</code> mode.
+	 * <code>STATUS_ACTIVE</code> mode.
 	 */
 	public void setActivePaths(List<StructurePath> activePaths);
 }

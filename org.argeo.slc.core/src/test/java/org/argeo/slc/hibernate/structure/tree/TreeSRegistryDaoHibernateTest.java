@@ -23,13 +23,13 @@ public class TreeSRegistryDaoHibernateTest extends SpringBasedTestCase {
 		treeSPathDao.create(path);
 
 		TreeSRegistry registry = new TreeSRegistry();
-		registry.setRoot(root);
+		registry.setStatus(TreeSRegistry.STATUS_ACTIVE);
 		String desc = "desc";
 		registry.register(path, new SimpleSElement(desc));
 
 		treeSRegistryDao.create(registry);
 
-		TreeSRegistry registry2 = treeSRegistryDao.getTreeSRegistry(path);
+		TreeSRegistry registry2 = treeSRegistryDao.getActiveTreeSRegistry();
 		SimpleSElement element = registry2.getElements().get(path);
 		assertEquals(desc, element.getLabel());
 	}

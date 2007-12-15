@@ -27,10 +27,9 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 		getHibernateTemplate().update(registry);
 	}
 
-	public TreeSRegistry getTreeSRegistry(TreeSPath treeSPath) {
+	public TreeSRegistry getActiveTreeSRegistry() {
 		List<?> list = getHibernateTemplate().find(
-				"from TreeSRegistry where root.asUniqueString=?",
-				treeSPath.getRoot().getAsUniqueString());
+				"from TreeSRegistry where status=?", TreeSRegistry.STATUS_ACTIVE);
 		if (list.size() == 0) {
 			return null;
 		} else {

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.argeo.slc.core.test.TestResultPart;
+import org.argeo.slc.core.test.TestStatus;
 
 /**
  * List of <code>TestResultPart</code>. It can be used to build complex
@@ -38,4 +39,12 @@ public class PartSubList {
 		this.tid = tid;
 	}
 
+	public Boolean getIsPassed(){
+		for(TestResultPart part: parts){
+			if(part.getStatus()!=TestStatus.PASSED){
+				return false;
+			}
+		}
+		return true;
+	}
 }
