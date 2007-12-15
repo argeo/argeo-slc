@@ -28,7 +28,7 @@ public class ExampleTask implements StructureAware, TestDefinition,
 		this.path = (TreeSPath) path;
 	}
 
-	public String getDescription() {
+	public String getLabel() {
 		return description;
 	}
 
