@@ -24,8 +24,12 @@ public class XPathDiffPosition extends DiffPosition {
 		}
 	}
 
+	public String getXPath() {
+		return xPath;
+	}
+
 	@Override
-	public String toString(){
+	public String toString() {
 		return xPath;
 	}
 }
