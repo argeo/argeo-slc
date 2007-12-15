@@ -29,7 +29,7 @@ public class DefaultSRegistry implements StructureRegistry {
 		elements.add(treeSElement);
 		paths.add(path);
 		log.debug("Registered " + path + " (desc: '"
-				+ treeSElement.getDescription() + "', position: "
+				+ treeSElement.getLabel() + "', position: "
 				+ elements.size() + ")");
 	}
 

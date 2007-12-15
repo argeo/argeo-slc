@@ -7,7 +7,7 @@
 		<id name="tid" column="T_ID">
 			<generator class="native" />
 		</id>
-		<property name="description" column="DESCRIPTION"
+		<property name="label" column="LABEL"
 			not-null="true" />
 	</class>
 </hibernate-mapping>

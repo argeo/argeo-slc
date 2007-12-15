@@ -5,6 +5,6 @@ package org.argeo.slc.core.structure;
  * registered.
  */
 public interface StructureElement {
-	/** Description of this element. */
-	public String getDescription();
+	/** Label of this element. */
+	public String getLabel();
 }

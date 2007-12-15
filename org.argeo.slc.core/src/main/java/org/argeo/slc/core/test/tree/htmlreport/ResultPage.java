@@ -114,7 +114,7 @@ class ResultPage {
 			if (registry != null) {
 				StructureElement element = registry.getElement(path);
 				if (element != null) {
-					buf.append(element.getDescription());
+					buf.append(element.getLabel());
 				} else {
 					buf.append(path.getName());
 				}
@@ -208,7 +208,7 @@ class ResultPage {
 		if (registry != null) {
 			StructureElement element = registry.getElement(path);
 			if (element != null) {
-				description = element.getDescription();
+				description = element.getLabel();
 			}
 		}
 		buf.append('/').append(description);

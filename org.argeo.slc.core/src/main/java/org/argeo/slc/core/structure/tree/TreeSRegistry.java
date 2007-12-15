@@ -39,7 +39,7 @@ public class TreeSRegistry implements StructureRegistry {
 		if (element instanceof SimpleSElement) {
 			simpleSElement = (SimpleSElement) element;
 		} else {
-			simpleSElement = new SimpleSElement(element.getDescription());
+			simpleSElement = new SimpleSElement(element.getLabel());
 		}
 
 		if (!(path instanceof TreeSPath))

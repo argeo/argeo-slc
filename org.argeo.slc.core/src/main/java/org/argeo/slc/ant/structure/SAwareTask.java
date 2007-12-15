@@ -109,8 +109,7 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 		return path;
 	}
 
-	@Override
-	public String getDescription() {
+	public String getLabel() {
 		String description = super.getDescription();
 		if (description == null) {
 			return "<no task def>";

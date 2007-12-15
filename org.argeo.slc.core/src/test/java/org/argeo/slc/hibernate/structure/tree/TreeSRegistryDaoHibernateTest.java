@@ -31,7 +31,7 @@ public class TreeSRegistryDaoHibernateTest extends SpringBasedTestCase {
 
 		TreeSRegistry registry2 = treeSRegistryDao.getTreeSRegistry(path);
 		SimpleSElement element = registry2.getElements().get(path);
-		assertEquals(desc, element.getDescription());
+		assertEquals(desc, element.getLabel());
 	}
 
 	@Override
