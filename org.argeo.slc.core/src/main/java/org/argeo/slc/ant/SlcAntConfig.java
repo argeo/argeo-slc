@@ -153,7 +153,9 @@ public class SlcAntConfig {
 
 		// pass the project properties through the System properties
 		System.getProperties().putAll((Map<?, ?>) project.getUserProperties());
-		Properties all = prepareAllProperties(slcRootFile);
+		Properties all = new Properties();
+		all.putAll(System.getProperties());
+		prepareAllProperties(slcRootFile,all);
 
 		Log log = LogFactory.getLog(this.getClass());
 		for (Object o : all.keySet()) {
@@ -177,12 +179,10 @@ public class SlcAntConfig {
 	 * @return the prepared properties. Note that it also contains the System
 	 *         and Ant properties which had previously been set.
 	 */
-	protected Properties prepareAllProperties(File slcRootFile) {
+	public void prepareAllProperties(File slcRootFile, Properties all) {
 		try {
 			final String fileUrlPrefix = "";
 
-			Properties all = new Properties();
-			all.putAll(System.getProperties());
 			all.put(ROOT_FILE_PROPERTY, slcRootFile.getCanonicalPath());
 			// Remove basedir property in order to avoid conflict with Maven
 			if (all.containsKey("basedir"))
@@ -258,8 +258,6 @@ public class SlcAntConfig {
 				Log4jConfigurer.initLogging(confDir.getCanonicalPath()
 						+ File.separator + "log4j.properties");
 			}
-
-			return all;
 		} catch (Exception e) {
 			throw new SlcAntException("Unexpected exception while configuring",
 					e);
