@@ -3,7 +3,7 @@ package org.argeo.slc.core.test;
 import java.util.Date;
 
 /** The result of a test */
-public interface TestResult {
+public interface TestResult extends TestStatus {
 	/** Gets the id of the related test result. */
 	public TestResultId getTestResultId();
 
