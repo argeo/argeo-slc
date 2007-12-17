@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.structure.SimpleSElement;
+import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
@@ -124,6 +125,14 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 				registry.register(path, new SimpleSElement(path.getName()));
 			}
 			treeSRegistryDao.update(registry);
+		} else {
+			if (localRegistry != null) {
+				StructureElement sElement = localRegistry.getElement(path);
+				if (sElement != null) {
+					registry.register(path, sElement);
+					treeSRegistryDao.update(registry);
+				}
+			}
 		}
 
 	}
