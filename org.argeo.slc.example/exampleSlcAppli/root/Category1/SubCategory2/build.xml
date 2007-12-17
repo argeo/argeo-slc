@@ -13,6 +13,7 @@
 		<slc.test description="NATO">
 			<testDefinition bean="simpleExampleTestDef" />
 			<testData bean="testData.nato" />
+			<structureElement bean="sElement.nato"/>
 		</slc.test>
 
 		<slc.test description="UN">
