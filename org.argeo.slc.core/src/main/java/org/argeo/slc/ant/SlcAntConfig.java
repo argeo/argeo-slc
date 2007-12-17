@@ -127,8 +127,8 @@ public class SlcAntConfig {
 	public static String DEFAULT_TEST_RUN_PROPERTY = "slc.defaultTestRun";
 
 	// SLC LOCAL PROPERTIES
-	/** Property for the dir description (SLC local property file). */
-	public static String DIR_DESCRIPTION_PROPERTY = "slc.dirDescription";
+	/** Property for the dir label (SLC local property file). */
+	public static String DIR_LABEL_PROPERTY = "slc.dirLabel";
 
 	private String slcRootFileName = "slcRoot.properties";
 	private String slcLocalFileName = "slcLocal.properties";
@@ -280,7 +280,7 @@ public class SlcAntConfig {
 	/**
 	 * Looks for a file named {@link #getSlcLocalFileName()} in the directory,
 	 * loads it as properties file and return the value of the property
-	 * {@link #DIR_DESCRIPTION_PROPERTY}.
+	 * {@link #DIR_LABEL_PROPERTY}.
 	 */
 	public String getDescriptionForDir(File dir) {
 		String description = dir.getName();
@@ -289,7 +289,7 @@ public class SlcAntConfig {
 		if (slcLocal.exists()) {
 			Properties properties = loadFile(slcLocal.getAbsolutePath());
 			description = properties.getProperty(
-					SlcAntConfig.DIR_DESCRIPTION_PROPERTY, description);
+					SlcAntConfig.DIR_LABEL_PROPERTY, description);
 		}
 		return description;
 	}

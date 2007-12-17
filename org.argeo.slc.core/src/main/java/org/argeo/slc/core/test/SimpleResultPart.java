@@ -15,7 +15,7 @@ public class SimpleResultPart implements TestResultPart, TestStatus {
 
 	private Integer status;
 	private String message;
-	private Throwable exception;
+	private Exception exception;
 
 	public SimpleResultPart() {
 	}
@@ -24,7 +24,7 @@ public class SimpleResultPart implements TestResultPart, TestStatus {
 		this(status, message, null);
 	}
 
-	public SimpleResultPart(Integer status, String message, Throwable exception) {
+	public SimpleResultPart(Integer status, String message, Exception exception) {
 		this.status = status;
 		this.message = message;
 		this.exception = exception;
@@ -46,11 +46,11 @@ public class SimpleResultPart implements TestResultPart, TestStatus {
 		return status;
 	}
 
-	public Throwable getException() {
+	public Exception getException() {
 		return exception;
 	}
 
-	public void setException(Throwable exception) {
+	public void setException(Exception exception) {
 		this.exception = exception;
 	}
 

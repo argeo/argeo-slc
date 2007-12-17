@@ -6,6 +6,7 @@ import java.util.Vector;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Target;
 
+import org.argeo.slc.ant.SlcAntException;
 import org.argeo.slc.ant.SlcProjectHelper;
 import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.spring.AbstractSpringTask;
@@ -21,6 +22,8 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 		StructureElement {
 	private TreeSPath path;
 	private final List<AbstractSpringArg> sAwareArgs = new Vector<AbstractSpringArg>();
+
+	private StructureElementArg structureElementArg;
 
 	@Override
 	public void init() throws BuildException {
@@ -39,7 +42,7 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 	}
 
 	/**
-	 * Includes this arg in the checks for propagation of sstructure related
+	 * Includes this arg in the checks for propagation of structure related
 	 * information.
 	 */
 	protected void addSAwareArg(AbstractSpringArg arg) {
@@ -59,7 +62,12 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 		TreeSPath targetPath = createTargetPath(getOwningTarget());
 		TreeSPath taskPath = targetPath.createChild(getTaskName()
 				+ targetPath.listChildren(getRegistry()).size());
-		getRegistry().register(taskPath, this);
+		if (structureElementArg != null)
+			getRegistry().register(taskPath,
+					structureElementArg.getStructureElement());
+		else
+			getRegistry().register(taskPath, this);
+
 		path = taskPath;
 
 		// notify registered args
@@ -91,6 +99,14 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 	/** Actions to be executed by the implementor. */
 	protected abstract void executeActions(String mode);
 
+	/** Create a reference to an external structure element. */
+	public StructureElementArg createStructureElement() {
+		if (structureElementArg != null)
+			throw new SlcAntException("Arg already set.");
+		structureElementArg = new StructureElementArg();
+		return structureElementArg;
+	}
+
 	/** Gets the underlying structure registry. */
 	protected StructureRegistry getRegistry() {
 		return (StructureRegistry) getProject().getReference(
@@ -118,4 +134,10 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 		}
 	}
 
+}
+
+class StructureElementArg extends AbstractSpringArg {
+	public StructureElement getStructureElement() {
+		return (StructureElement) getBeanInstance();
+	}
 }
