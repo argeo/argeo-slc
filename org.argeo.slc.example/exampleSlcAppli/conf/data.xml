@@ -71,6 +71,7 @@
 	<bean id="treeSRegistryDao"
 		class="org.argeo.slc.hibernate.structure.tree.TreeSRegistryDaoHibernate">
 		<property name="sessionFactory" ref="sessionFactoryResults" />
+		<property name="treeSPathDao" ref="treeSPathDao" />
 	</bean>
 
 
