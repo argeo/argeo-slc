@@ -38,8 +38,6 @@ public class TreeSPathDaoHibernate extends HibernateDaoSupport implements
 	}
 
 	public TreeSPath getTreeSPath(String pathString) {
-		if (log.isTraceEnabled())
-			log.trace("Query path: " + pathString);
 		List<?> list = getHibernateTemplate().find(
 				"from TreeSPath where asUniqueString=?", pathString);
 		if (list.size() == 0) {

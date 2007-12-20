@@ -1,5 +1,6 @@
 package org.argeo.slc.dao.structure.tree;
 
+import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 
@@ -17,4 +18,8 @@ public interface TreeSRegistryDao {
 
 	/** Updates an existing registry. */
 	public void update(TreeSRegistry registry);
+	
+	/** Sync with local registry */
+	public void syncPath(TreeSRegistry registry,
+			StructureRegistry<TreeSPath> localRegistry, TreeSPath path);
 }

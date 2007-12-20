@@ -23,7 +23,8 @@ public class UnsupportedException extends SlcException {
 	 *            the object itself (its class name will be used in message)
 	 */
 	public UnsupportedException(String nature, Object obj) {
-		super("Unsupported " + nature + ": " + obj.getClass());
+		super("Unsupported " + nature + ": "
+				+ (obj != null ? obj.getClass() : "[object is null]"));
 	}
 
 	/**

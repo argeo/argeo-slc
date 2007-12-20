@@ -8,8 +8,9 @@
 			<generator class="native" />
 		</id>
 
-		<property name="status" column="STATUS" not-null="true"/>
-			
+		<property name="status" column="STATUS" not-null="true"
+			unique="true" />
+
 		<map name="elements" table="REGISTRY_ELEMENTS" cascade="all"
 			lazy="false" sort="natural">
 			<key column="PARENT_ID" />

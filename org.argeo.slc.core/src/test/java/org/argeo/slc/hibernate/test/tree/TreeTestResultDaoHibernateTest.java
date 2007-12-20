@@ -12,9 +12,9 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.structure.tree.TreeSPathDao;
 import org.argeo.slc.dao.test.TestResultDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
-import org.argeo.slc.unit.SpringBasedTestCase;
+import org.argeo.slc.unit.AbstractSpringTestCase;
 
-public class TreeTestResultDaoHibernateTest extends SpringBasedTestCase {
+public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 
 	public void testCreate() {
 		TreeSPathDao treeSPathDao = (TreeSPathDao) getContext().getBean(

@@ -11,6 +11,7 @@ import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.dao.structure.tree.TreeSPathDao;
 import org.argeo.slc.dao.structure.tree.TreeSRegistryDao;
 import org.argeo.slc.dao.test.TestResultDao;
+import org.argeo.slc.dao.test.tree.TreeTestResultDao;
 
 /**
  * Listener persisting tree-based results.
@@ -20,21 +21,22 @@ import org.argeo.slc.dao.test.TestResultDao;
 public class TreeTestResultPersister extends AsynchronousTreeTestResultListener {
 	private static Log log = LogFactory.getLog(TreeTestResultPersister.class);
 
-	private TestResultDao testResultDao;
+	private TreeTestResultDao testResultDao;
 	private TreeSPathDao treeSPathDao;
 	private TreeSRegistryDao treeSRegistryDao;
 
 	@Override
 	protected void resultPartAdded(PartStruct partStruct) {
 		try {
-			TreeTestResult persistedResult = (TreeTestResult) testResultDao
+			TreeTestResult persistedResult = testResultDao
 					.getTestResult(partStruct.resultId);
 
 			TreeSPath path = treeSPathDao.getOrCreate(partStruct.path);
 
-			StructureRegistry localRegistry = partStruct.result.getRegistry();
+			StructureRegistry<TreeSPath> localRegistry = partStruct.result
+					.getRegistry();
 			TreeSRegistry registry = getOrCreateTreeSRegistry(path);
-			syncPath(registry, localRegistry, path);
+			treeSRegistryDao.syncPath(registry, localRegistry, path);
 
 			if (persistedResult == null) {
 				persistedResult = new TreeTestResult();
@@ -87,7 +89,6 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 		TreeSRegistry registry = treeSRegistryDao.getActiveTreeSRegistry();
 		if (registry == null) {
 			registry = new TreeSRegistry();
-			TreeSPath root = treeSPathDao.getOrCreate(path.getRoot());
 			registry.setStatus(TreeSRegistry.STATUS_ACTIVE);
 			treeSRegistryDao.create(registry);
 			return treeSRegistryDao.getActiveTreeSRegistry();
@@ -97,7 +98,7 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 	}
 
 	/** Sets the DAO to use in order to persist the results. */
-	public void setTestResultDao(TestResultDao testResultDao) {
+	public void setTestResultDao(TreeTestResultDao testResultDao) {
 		this.testResultDao = testResultDao;
 	}
 
@@ -110,9 +111,9 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 	public void setTreeSRegistryDao(TreeSRegistryDao treeSRegistryDao) {
 		this.treeSRegistryDao = treeSRegistryDao;
 	}
-
+/*
 	private void syncPath(TreeSRegistry registry,
-			StructureRegistry localRegistry, TreeSPath path) {
+			StructureRegistry<TreeSPath> localRegistry, TreeSPath path) {
 		if (path.getParent() != null) {
 			TreeSPath parent = treeSPathDao.getOrCreate(path.getParent());
 			syncPath(registry, localRegistry, parent);
@@ -135,5 +136,5 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 			}
 		}
 
-	}
+	}*/
 }

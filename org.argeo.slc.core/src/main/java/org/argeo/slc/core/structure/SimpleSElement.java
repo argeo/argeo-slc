@@ -34,7 +34,7 @@ public class SimpleSElement implements StructureElement {
 		this.label = label;
 	}
 
-	Long getTid() {
+	public Long getTid() {
 		return tid;
 	}
 

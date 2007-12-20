@@ -7,7 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /** Default implementation of a <code>StructureRegistry</code>. */
-public class DefaultSRegistry implements StructureRegistry {
+public class DefaultSRegistry implements StructureRegistry<StructurePath> {
 	private static Log log = LogFactory.getLog(DefaultSRegistry.class);
 
 	private List<StructureElement> elements = new Vector<StructureElement>();

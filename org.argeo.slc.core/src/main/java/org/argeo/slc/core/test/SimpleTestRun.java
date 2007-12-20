@@ -17,32 +17,32 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun {
 		testDefinition.execute(this);
 	}
 
-	public DeployedSystem getDeployedSystem() {
-		return deployedSystem;
+	public <T extends DeployedSystem> T getDeployedSystem() {
+		return (T)deployedSystem;
 	}
 
 	public void setDeployedSystem(DeployedSystem deployedSystem) {
 		this.deployedSystem = deployedSystem;
 	}
 
-	public TestData getTestData() {
-		return testData;
+	public <T extends TestData> T getTestData() {
+		return (T)testData;
 	}
 
 	public void setTestData(TestData testData) {
 		this.testData = testData;
 	}
 
-	public TestDefinition getTestDefinition() {
-		return testDefinition;
+	public <T extends TestDefinition> T getTestDefinition() {
+		return (T)testDefinition;
 	}
 
 	public void setTestDefinition(TestDefinition testDefinition) {
 		this.testDefinition = testDefinition;
 	}
 
-	public TestResult getTestResult() {
-		return testResult;
+	public <T extends TestResult> T getTestResult() {
+		return (T)testResult;
 	}
 
 	public void setTestResult(TestResult testResult) {

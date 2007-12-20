@@ -8,13 +8,12 @@ import java.util.Vector;
 import org.argeo.slc.core.UnsupportedException;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureElement;
-import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 
 /** Tree based implementation of a structure registry. */
-public class TreeSRegistry implements StructureRegistry {
+public class TreeSRegistry implements StructureRegistry<TreeSPath> {
 	public final static String STATUS_ACTIVE = "STATUS_ACTIVE";
-	
+
 	/** For ORM */
 	private Long tid;
 	private String status;
@@ -22,21 +21,21 @@ public class TreeSRegistry implements StructureRegistry {
 
 	private String mode = StructureRegistry.ALL;
 
-	private List<StructurePath> activePaths;
+	private List<TreeSPath> activePaths;
 
-	public StructureElement getElement(StructurePath path) {
-		return elements.get(path);
+	public <T extends StructureElement> T getElement(TreeSPath path) {
+		return (T)elements.get(path);
 	}
 
 	public List<StructureElement> listElements() {
 		return new Vector<StructureElement>(elements.values());
 	}
 
-	public List<StructurePath> listPaths() {
-		return new Vector<StructurePath>(elements.keySet());
+	public List<TreeSPath> listPaths() {
+		return new Vector<TreeSPath>(elements.keySet());
 	}
 
-	public void register(StructurePath path, StructureElement element) {
+	public void register(TreeSPath path, StructureElement element) {
 		final SimpleSElement simpleSElement;
 		if (element instanceof SimpleSElement) {
 			simpleSElement = (SimpleSElement) element;
@@ -44,10 +43,10 @@ public class TreeSRegistry implements StructureRegistry {
 			simpleSElement = new SimpleSElement(element.getLabel());
 		}
 
-		if (!(path instanceof TreeSPath))
-			throw new UnsupportedException("path", path);
+		if (path == null)
+			throw new UnsupportedException("Path cannot be null.");
 
-		elements.put((TreeSPath) path, simpleSElement);
+		elements.put(path, simpleSElement);
 
 	}
 
@@ -59,14 +58,13 @@ public class TreeSRegistry implements StructureRegistry {
 		this.mode = mode;
 	}
 
-	public List<StructurePath> getActivePaths() {
+	public List<TreeSPath> getActivePaths() {
 		return activePaths;
 	}
 
-	public void setActivePaths(List<StructurePath> activePaths) {
+	public void setActivePaths(List<TreeSPath> activePaths) {
 		this.activePaths = activePaths;
 	}
-
 
 	public String getStatus() {
 		return status;

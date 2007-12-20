@@ -27,7 +27,7 @@ public class TestResultDaoHibernate extends HibernateDaoSupport implements
 		getHibernateTemplate().saveOrUpdate(testResult);
 	}
 
-	public TestResult getTestResult(TestResultId id) {
+	public TreeTestResult getTestResult(TestResultId id) {
 		NumericTRId ntrid = (NumericTRId) id;
 		List<?> list = getHibernateTemplate().find(
 				"from TreeTestResult where numericResultId.value=?",
@@ -35,13 +35,13 @@ public class TestResultDaoHibernate extends HibernateDaoSupport implements
 		if (list.size() == 0) {
 			return null;
 		} else {
-			return (TestResult) list.get(0);
+			return (TreeTestResult) list.get(0);
 		}
 
 	}
 
-	public List<TestResult> listTestResults() {
-		return (List<TestResult>) getHibernateTemplate().find(
+	public List<TreeTestResult> listTestResults() {
+		return (List<TreeTestResult>) getHibernateTemplate().find(
 				"from TreeTestResult");
 	}
 

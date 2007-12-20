@@ -10,9 +10,9 @@ import org.argeo.slc.core.test.TestResultId;
  * 
  * @see TestResult
  */
-public interface TestResultDao {
+public interface TestResultDao<T extends TestResult> {
 	/** Gets a test result based on its id. */
-	public TestResult getTestResult(TestResultId id);
+	public T getTestResult(TestResultId id);
 
 	/** Persists a new test result. */
 	public void create(TestResult testResult);
@@ -21,5 +21,5 @@ public interface TestResultDao {
 	public void update(TestResult testResult);
 
 	/** Lists all test results. */
-	public List<TestResult> listTestResults();
+	public List<T> listTestResults();
 }

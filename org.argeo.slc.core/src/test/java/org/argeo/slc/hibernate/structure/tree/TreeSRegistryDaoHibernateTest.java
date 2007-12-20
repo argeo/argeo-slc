@@ -5,9 +5,9 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.dao.structure.tree.TreeSPathDao;
 import org.argeo.slc.dao.structure.tree.TreeSRegistryDao;
-import org.argeo.slc.unit.SpringBasedTestCase;
+import org.argeo.slc.unit.AbstractSpringTestCase;
 
-public class TreeSRegistryDaoHibernateTest extends SpringBasedTestCase {
+public class TreeSRegistryDaoHibernateTest extends AbstractSpringTestCase {
 
 	public void testCreate() {
 		TreeSRegistryDao treeSRegistryDao = (TreeSRegistryDao) getContext()

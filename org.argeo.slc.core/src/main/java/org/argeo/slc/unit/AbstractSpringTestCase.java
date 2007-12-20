@@ -6,7 +6,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /** Helper for tests using a Spring application co,text. */
-public abstract class SpringBasedTestCase extends TestCase {
+public abstract class AbstractSpringTestCase extends TestCase {
 	private ApplicationContext context;
 
 	/**
@@ -20,6 +20,11 @@ public abstract class SpringBasedTestCase extends TestCase {
 					getApplicationContextLocation());
 		}
 		return context;
+	}
+	
+	/** Returns a bean from the underlying context */
+	protected <T> T getBean(String beanId){
+		return (T)getContext().getBean(beanId);
 	}
 
 	/**
