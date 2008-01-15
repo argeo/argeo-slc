@@ -10,10 +10,13 @@ import org.dbunit.DatabaseUnitException;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ReplacementDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+
+import org.apache.commons.io.IOUtils;
 
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 
@@ -80,14 +83,55 @@ public abstract class IndependentDbTestCase extends AbstractSpringTestCase {
 	 * {@link #getDataSetResource()}
 	 */
 	protected IDataSet createDataSet() {
+		InputStream in = null;
 		try {
-			InputStream in = getDataSetResource().getInputStream();
-			IDataSet dataSet = new FlatXmlDataSet(in);
-			in.close();
+			in = getDataSetResource().getInputStream();
+			String[] replaceStrings = getReplacementStrings();
+			IDataSet dataSet;
+			if (replaceStrings.length == 0) {
+				dataSet = new FlatXmlDataSet(in);
+			} else {
+				dataSet = new ReplacementDataSet(new FlatXmlDataSet(in));
+				for (String str : replaceStrings) {
+					replace((ReplacementDataSet) dataSet, str);
+				}
+			}
 			return dataSet;
 		} catch (Exception e) {
 			throw new SlcException("Cannot create data set", e);
+		} finally {
+			IOUtils.closeQuietly(in);
 		}
+	}
+
+	/**
+	 * To be overridden. Return an empty array by default.
+	 * 
+	 * @return the array of strings to replace in the dataset
+	 */
+	protected String[] getReplacementStrings() {
+		return new String[0];
+	}
+
+	/**
+	 * Set the object replacing the given string. To be overridden. Does nothing
+	 * by default.
+	 */
+	protected void replace(ReplacementDataSet dataSet, String str)
+			throws Exception {
+
+	}
+
+	/**
+	 * Replace the given string by the content of the resource with the same
+	 * name in the same package, as a byte array.
+	 */
+	protected void replaceByRessource(ReplacementDataSet dataSet, String str)
+			throws Exception {
+		Resource zipResource = new ClassPathResource(inPackage(str));
+
+		dataSet.addReplacementObject(str, IOUtils.toByteArray(zipResource
+				.getInputStream()));
 	}
 
 	/**
