@@ -12,8 +12,8 @@ import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestStatus;
 
-public class ContextHelper {
-	private final static Log log = LogFactory.getLog(ContextHelper.class);
+public class ContextUtils {
+	private final static Log log = LogFactory.getLog(ContextUtils.class);
 
 	public static void compareReachedExpected(ContextAware contextAware,
 			TestResult testResult, TreeSRelated treeSRelated) {
@@ -72,4 +72,8 @@ public class ContextHelper {
 		}
 	}
 
+	/** Makes sure this cannot be instantiated. */
+	private ContextUtils() {
+
+	}
 }
