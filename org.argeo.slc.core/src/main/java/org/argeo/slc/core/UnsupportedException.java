@@ -32,6 +32,18 @@ public class UnsupportedException extends SlcException {
 	 * 
 	 * @param nature
 	 *            the nature of the unsupported object
+	 * @param clss
+	 *            the class itself (will be used in message)
+	 */
+	public UnsupportedException(String nature, Class<?> clss) {
+		super("Unsupported " + nature + ": " + clss);
+	}
+
+	/**
+	 * Constructor generating a message.
+	 * 
+	 * @param nature
+	 *            the nature of the unsupported object
 	 * @param value
 	 *            the problematic value itself
 	 */
