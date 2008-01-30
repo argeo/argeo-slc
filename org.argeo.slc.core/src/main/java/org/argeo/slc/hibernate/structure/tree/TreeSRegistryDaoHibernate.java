@@ -53,8 +53,8 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 			syncPath(registry, localRegistry, parent);
 		}
 
-		if (log.isDebugEnabled())
-			log.debug("Synchronize path " + path);
+		if (log.isTraceEnabled())
+			log.trace("Synchronize path " + path);
 		
 		if (registry.getElement(path) == null) {
 			if (localRegistry != null) {

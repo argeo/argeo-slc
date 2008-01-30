@@ -13,8 +13,8 @@ public class SimpleContextAware implements ContextAware, InitializingBean {
 	private Map<String, Object> values = new TreeMap<String, Object>();
 	private Map<String, Object> expectedValues = new TreeMap<String, Object>();
 
-	private String contextSkipFlag = "!";
-	private String contextAnyFlag = "*";
+	private String contextSkipFlag = DEFAULT_SKIP_FLAG;
+	private String contextAnyFlag = DEFAULT_ANY_FLAG;
 
 	public Map<String, Object> getValues() {
 		return values;

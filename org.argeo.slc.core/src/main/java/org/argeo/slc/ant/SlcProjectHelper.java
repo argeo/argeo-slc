@@ -41,6 +41,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 	 * /org/argeo/slc/ant/taskdefs.properties
 	 */
 	private static String SLC_TASKDEFS_RESOURCE_PATH = "/org/argeo/slc/ant/taskdefs.properties";
+	private static String SLC_TYPEDEFS_RESOURCE_PATH = "/org/argeo/slc/ant/typedefs.properties";
 
 	@Override
 	public void parse(Project project, Object source) throws BuildException {
@@ -81,7 +82,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 		// create structure root
 		registerProjectAndParents(project, slcAntConfig);
 
-		addSlcTasks(project);
+		addCustomTaskAndTypes(project);
 
 	}
 
@@ -142,23 +143,14 @@ public class SlcProjectHelper extends ProjectHelper2 {
 		// FIXME: workaround to the removal of leading '/' by Spring
 		// use URL instead?
 		AbstractApplicationContext context = new FileSystemXmlApplicationContext(
-				'/'+acPath);
+				'/' + acPath);
 		context.registerShutdownHook();
 		project.addReference(REF_ROOT_CONTEXT, context);
 	}
 
 	/** Loads the SLC specific Ant tasks. */
-	private void addSlcTasks(Project project) {
-		Properties taskdefs = new Properties();
-		try {
-			InputStream in = project.getClass().getResourceAsStream(
-					SLC_TASKDEFS_RESOURCE_PATH);
-			taskdefs.load(in);
-			in.close();
-		} catch (IOException e) {
-			throw new SlcAntException("Cannot load task definitions", e);
-		}
-
+	private void addCustomTaskAndTypes(Project project) {
+		Properties taskdefs = getDefs(project, SLC_TASKDEFS_RESOURCE_PATH);
 		for (Object o : taskdefs.keySet()) {
 			String name = o.toString();
 			try {
@@ -168,5 +160,27 @@ public class SlcProjectHelper extends ProjectHelper2 {
 				log.error("Unknown class for task " + name, e);
 			}
 		}
+		Properties typedefs = getDefs(project, SLC_TYPEDEFS_RESOURCE_PATH);
+		for (Object o : typedefs.keySet()) {
+			String name = o.toString();
+			try {
+				project.addDataTypeDefinition(name, Class.forName(typedefs
+						.getProperty(name)));
+			} catch (ClassNotFoundException e) {
+				log.error("Unknown class for type " + name, e);
+			}
+		}
+	}
+
+	private Properties getDefs(Project project, String path) {
+		Properties defs = new Properties();
+		try {
+			InputStream in = project.getClass().getResourceAsStream(path);
+			defs.load(in);
+			in.close();
+		} catch (IOException e) {
+			throw new SlcAntException("Cannot load task definitions", e);
+		}
+		return defs;
 	}
 }

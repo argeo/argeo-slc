@@ -5,11 +5,14 @@ import java.util.Vector;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.types.DataType;
 
 import org.argeo.slc.ant.SlcProjectHelper;
+import org.argeo.slc.core.SlcException;
 
 /** Abstract Ant type wrapping a Spring bean. */
 public abstract class AbstractSpringArg extends DataType {
@@ -40,8 +43,17 @@ public abstract class AbstractSpringArg extends DataType {
 
 			BeanWrapper wrapper = new BeanWrapperImpl(beanInstance);
 			for (OverrideArg override : overrides) {
+				LogFactory.getLog(getClass()).debug("Prop "+override.getName());
 				wrapper.setPropertyValue(override.getName(), override
 						.getObject());
+			}
+
+			if (beanInstance instanceof InitializingBean) {
+				try {
+					((InitializingBean) beanInstance).afterPropertiesSet();
+				} catch (Exception e) {
+					throw new SlcException("Could not initialize bean", e);
+				}
 			}
 		}
 		return beanInstance;

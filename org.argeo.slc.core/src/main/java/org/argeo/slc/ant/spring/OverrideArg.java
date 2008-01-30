@@ -5,11 +5,14 @@ import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 
+import org.argeo.slc.core.SlcException;
+
 /** Ant type allowing to override bean properties. */
 public class OverrideArg extends AbstractSpringArg {
 	private String name;
 	private Object value;
 	private OverrideList overrideList;
+	private String antref;
 
 	/** The name of the property to override. */
 	public String getName() {
@@ -21,9 +24,17 @@ public class OverrideArg extends AbstractSpringArg {
 		this.name = name;
 	}
 
+	/** Sets a reference to an ant data type. */
+	public void setAntref(String antref) {
+		if (value != null || overrideList != null || getBean() != null) {
+			throw new BuildException("Value already set.");
+		}
+		this.antref = antref;
+	}
+
 	/** Both value and bean cannot be set. */
 	public void setValue(String value) {
-		if (getBean() != null || overrideList != null) {
+		if (getBean() != null || overrideList != null || antref != null) {
 			throw new BuildException("Value already set.");
 		}
 		this.value = value;
@@ -31,7 +42,7 @@ public class OverrideArg extends AbstractSpringArg {
 
 	@Override
 	public void setBean(String bean) {
-		if (value != null || overrideList != null) {
+		if (value != null || overrideList != null || antref != null) {
 			throw new BuildException("Value already set.");
 		}
 		super.setBean(bean);
@@ -61,6 +72,13 @@ public class OverrideArg extends AbstractSpringArg {
 			return getBeanInstance();
 		} else if (overrideList != null) {
 			return overrideList.getAsObjectList();
+		} else if (antref != null) {
+			Object obj = getProject().getReference(antref);
+			if (obj == null) {
+				throw new SlcException("No object found for reference "
+						+ antref);
+			}
+			return obj;
 		} else {
 			throw new BuildException("Value or bean not set.");
 		}
