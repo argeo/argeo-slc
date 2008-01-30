@@ -25,8 +25,8 @@ public class ExampleIntegrationTest extends TestCase {
 	private static Log log = LogFactory.getLog(ExampleIntegrationTest.class);
 
 	/** Tests an end-to-end Ant run. */
-	public void testAllRunSimple() throws Exception{
-		String slcBase = System.getProperty("it.slc.base","exampleSlcAppli");
+	public void testAllRunSimple() throws Exception {
+		String slcBase = System.getProperty("it.slc.base", "exampleSlcAppli");
 		File slcBaseDir = new File(slcBase).getCanonicalFile();
 		log.info("SLC base: " + slcBaseDir);
 
@@ -64,6 +64,17 @@ public class ExampleIntegrationTest extends TestCase {
 		assertPart(testResult1,
 				"/root/Category1/SubCategory2/testError/slc.test0", 0,
 				TestStatus.ERROR, "Execute example appli");
+
+		// Context
+		assertPart(testResult1,
+				"/root/Category1/SubCategory2/testContext/slc.test1/reference",
+				0, TestStatus.PASSED, "Values matched for key 'reference'");
+		assertPart(testResult1,
+				"/root/Category1/SubCategory2/testContext/slc.test1/varIntern",
+				0, TestStatus.PASSED, "Values matched for key 'varIntern'");
+		assertPart(testResult1,
+				"/root/Category1/SubCategory2/testContext/slc.test1/varExtern",
+				0, TestStatus.PASSED, "Values matched for key 'varExtern'");
 
 		numericTRId.setValue(2l);
 		TreeTestResult testResult2 = (TreeTestResult) testResultDao

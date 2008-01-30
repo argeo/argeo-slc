@@ -1,9 +1,9 @@
 <project default="test" name="testProject">
 	<description>A Test project</description>
 
-	<import file="complex.xml"/>
-	
-	<target name="test" depends="testSimple,testComplex,testError">
+	<import file="complex.xml" />
+
+	<target name="test" depends="testSimple,testComplex,testError,testContext">
 		<slc.closeResult result="testResult" />
 		<slc.closeResult result="testResult2" />
 		<slc.report report="report" />
@@ -13,7 +13,7 @@
 		<slc.test description="NATO">
 			<testDefinition bean="simpleExampleTestDef" />
 			<testData bean="testData.nato" />
-			<structureElement bean="sElement.nato"/>
+			<structureElement bean="sElement.nato" />
 		</slc.test>
 
 		<slc.test description="UN">

@@ -7,4 +7,5 @@
 	<import resource="slc.xml" />
 	<import resource="testDatas.xml" />
 	<import resource="testDefinitions.xml" />
+	<import resource="contextTests.xml" />
 </beans>

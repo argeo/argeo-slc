@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+
+	<bean id="context.simple1" parent="context.template">
+		<property name="values">
+			<map>
+				<entry key="reference" value="20" />
+				<entry key="varIntern" value="60" />
+			</map>
+		</property>
+		<property name="expectedValues">
+			<map>
+				<entry key="reference" value="21" />
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="context.simple2" parent="context.template">
+		<property name="values">
+			<map>
+				<entry key="var" value="50" />
+			</map>
+		</property>
+		<property name="expectedValues">
+			<map>
+				<entry key="reference" value="21" />
+				<entry key="var" value="50" />
+				<entry key="varIntern" value="60" />
+				<entry key="varExtern" value="70" />
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="context.template"
+		class="org.argeo.slc.core.test.context.DefaultContextTestData"
+		abstract="true">
+	</bean>
+</beans>

@@ -19,5 +19,30 @@
 		</slc.test>
 	</target>
 
+	<target name="testContext" description="Tests with context">
+		<slc.context id="context1">
+			<values>
+				<entry key="varExtern" value="70" />
+			</values>
+			<expectedValues>
+				<entry key="reference" value="20" />
+			</expectedValues>
+		</slc.context>
+
+		<slc.test description="Context 1">
+			<testDefinition bean="simpleContextTestDef" />
+			<testData bean="context.simple1">
+				<override name="parentContext" antref="context1" />
+			</testData>
+		</slc.test>
+
+		<slc.test description="Context 2">
+			<testDefinition bean="simpleContextTestDef" />
+			<testData bean="context.simple2">
+				<override name="parentContext" antref="context1" />
+			</testData>
+		</slc.test>
+	</target>
+
 
 </project>

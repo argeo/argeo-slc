@@ -8,6 +8,11 @@
 		scope="prototype">
 	</bean>
 
+	<bean id="simpleContextTestDef"
+		class="org.argeo.slc.example.ContextExampleTestDef"
+		scope="prototype">
+	</bean>
+
 	<bean id="complexExampleTestDef"
 		class="org.argeo.slc.core.test.tree.CompositeTreeTestDefinition "
 		scope="prototype">
