@@ -57,11 +57,11 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 
 		assertEquals(2, list.getParts().size());
 		SimpleResultPart part0 = (SimpleResultPart) list.getParts().get(0);
-		assertEquals(TestStatus.PASSED, (int) part0.getStatus());
+		assertEquals(TestStatus.PASSED, part0.getStatus());
 		assertEquals(msgPassed, part0.getMessage());
 
 		SimpleResultPart part1 = (SimpleResultPart) list.getParts().get(1);
-		assertEquals(TestStatus.FAILED, (int) part1.getStatus());
+		assertEquals(TestStatus.FAILED, part1.getStatus());
 		assertEquals(msgFailed, part1.getMessage());
 
 		assertEquals(closeDate, treeTestResult2.getCloseDate());
