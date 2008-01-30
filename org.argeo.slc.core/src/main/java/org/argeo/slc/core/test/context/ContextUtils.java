@@ -22,32 +22,27 @@ public class ContextUtils {
 			TestResult testResult, TreeSRelated treeSRelated) {
 		for (String key : contextAware.getExpectedValues().keySet()) {
 
-			// Register in structure
-			if (treeSRelated != null) {
-				if (treeSRelated.getBasePath() != null) {
-					TreeSPath path = treeSRelated.getBasePath()
-							.createChild(key);
-					StructureRegistry<TreeSPath> registry = treeSRelated
-							.getRegistry();
-					final StructureElement element = treeSRelated
-							.getStructureElement(key);
-					registry.register(path, element);
-					if (testResult instanceof StructureAware)
-						((StructureAware<TreeSPath>) testResult)
-								.notifyCurrentPath(registry, path);
-
-					if (log.isDebugEnabled())
-						log.debug("Checking key " + key + " for path " + path);
-				}
-			}
-
 			// Compare expected values with reached ones
 			Object expectedValue = contextAware.getExpectedValues().get(key);
+
+			if (expectedValue.toString().equals(
+					contextAware.getContextSkipFlag())) {
+				if (log.isDebugEnabled())
+					log.debug("Skipped check for key '" + key + "'");
+				continue;
+			}
+
+			// Register in structure
+			registerInStructure(testResult, treeSRelated, key);
 
 			if (contextAware.getValues().containsKey(key)) {
 				Object reachedValue = contextAware.getValues().get(key);
 
-				if (expectedValue.equals(reachedValue)) {
+				if (expectedValue.equals(contextAware.getContextAnyFlag())) {
+					testResult.addResultPart(new SimpleResultPart(
+							TestStatus.PASSED, "Expected any value for key '"
+									+ key + "'"));
+				} else if (expectedValue.equals(reachedValue)) {
 					testResult.addResultPart(new SimpleResultPart(
 							TestStatus.PASSED, "Values matched for key '" + key
 									+ "'"));
@@ -62,14 +57,38 @@ public class ContextUtils {
 						TestStatus.FAILED, "No value reached for key '" + key
 								+ "'"));
 			}
+			resetStructure(testResult, treeSRelated);
+		}
+	}
 
-			if (treeSRelated != null) {
-				if (treeSRelated.getBasePath() != null) {
-					if (testResult instanceof StructureAware) {
-						((StructureAware<TreeSPath>) testResult)
-								.notifyCurrentPath(treeSRelated.getRegistry(),
-										treeSRelated.getBasePath());
-					}
+	private static void registerInStructure(TestResult testResult,
+			TreeSRelated treeSRelated, String key) {
+		if (treeSRelated != null) {
+			if (treeSRelated.getBasePath() != null) {
+				TreeSPath path = treeSRelated.getBasePath().createChild(key);
+				StructureRegistry<TreeSPath> registry = treeSRelated
+						.getRegistry();
+				final StructureElement element = treeSRelated
+						.getStructureElement(key);
+				registry.register(path, element);
+				if (testResult instanceof StructureAware)
+					((StructureAware<TreeSPath>) testResult).notifyCurrentPath(
+							registry, path);
+
+				if (log.isDebugEnabled())
+					log.debug("Checking key " + key + " for path " + path);
+			}
+		}
+	}
+
+	private static void resetStructure(TestResult testResult,
+			TreeSRelated treeSRelated) {
+		if (treeSRelated != null) {
+			if (treeSRelated.getBasePath() != null) {
+				if (testResult instanceof StructureAware) {
+					((StructureAware<TreeSPath>) testResult).notifyCurrentPath(
+							treeSRelated.getRegistry(), treeSRelated
+									.getBasePath());
 				}
 			}
 		}

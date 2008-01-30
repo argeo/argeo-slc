@@ -24,7 +24,10 @@ public class SimpleParentContextAware extends SimpleContextAware implements
 			// If has a parent, sync it.
 			super.afterPropertiesSet();
 		} else {
-			ContextUtils.synchronize(this);
+			if(children.size()>0){
+				// No need to synchronize if no children
+				ContextUtils.synchronize(this);
+			}
 		}
 	}
 }
