@@ -9,4 +9,5 @@ public interface ContextAware {
 
 	public Map<String, Object> getExpectedValues();
 
+	public void setExpectedValues(Map<String, Object> expectedValues);
 }

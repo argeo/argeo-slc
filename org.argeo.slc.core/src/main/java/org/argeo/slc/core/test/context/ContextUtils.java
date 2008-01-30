@@ -1,5 +1,8 @@
 package org.argeo.slc.core.test.context;
 
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,6 +71,70 @@ public class ContextUtils {
 										treeSRelated.getBasePath());
 					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * Makes sure that all children and sub-children of parent share the same
+	 * maps for values and expected values.
+	 */
+	public static void synchronize(ParentContextAware parent) {
+		Map<String, Object> expectedValuesCommon = new TreeMap<String, Object>(
+				parent.getExpectedValues());
+		synchronize(parent, expectedValuesCommon);
+		if (log.isDebugEnabled())
+			log.debug("Synchonized context " + parent);
+
+	}
+
+	private static void synchronize(ParentContextAware parent,
+			Map<String, Object> expectedValuesCommon) {
+		for (ContextAware child : parent.getChildContexts()) {
+			// Values
+			putNotContained(parent.getValues(), child.getValues());
+			child.setValues(parent.getValues());
+
+			// Expected Values
+			// Expected values reference is not overridden: each child has its
+			// own expected values map.
+			overrideContained(expectedValuesCommon, child.getExpectedValues());
+
+			// Creates a new Map in order not to disturb other context using the
+			// same keys
+			Map<String, Object> expectedValuesCommonChild = new TreeMap<String, Object>(
+					expectedValuesCommon);
+			putNotContained(expectedValuesCommonChild, child
+					.getExpectedValues());
+
+			if (child instanceof ParentContextAware) {
+				// Recursive sync
+				synchronize((ParentContextAware) child,
+						expectedValuesCommonChild);
+			}
+		}
+
+	}
+
+	/**
+	 * Put into common map the values from child map which are not already
+	 * defined in common map.
+	 */
+	private static void putNotContained(Map<String, Object> commonMap,
+			Map<String, Object> childMap) {
+		for (String key : childMap.keySet()) {
+			if (!commonMap.containsKey(key)) {
+				commonMap.put(key, childMap.get(key));
+			}
+		}
+	}
+
+	/** Overrides child map values with the values already set in common map */
+	private static void overrideContained(Map<String, Object> commonMap,
+			Map<String, Object> childMap) {
+		for (String key : childMap.keySet()) {
+			if (commonMap.containsKey(key)) {
+				childMap.put(key, commonMap.get(key));
 			}
 		}
 	}
