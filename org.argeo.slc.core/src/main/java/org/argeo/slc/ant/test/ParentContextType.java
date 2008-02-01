@@ -3,7 +3,6 @@ package org.argeo.slc.ant.test;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 
 import org.apache.tools.ant.types.DataType;
@@ -13,7 +12,7 @@ import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.test.context.ContextAware;
 import org.argeo.slc.core.test.context.ParentContextAware;
 
-public class ParentContextArg extends DataType implements ParentContextAware {
+public class ParentContextType extends DataType implements ParentContextAware {
 	private MapArg values = null;
 	private MapArg expectedValues = null;
 
@@ -61,4 +60,12 @@ public class ParentContextArg extends DataType implements ParentContextAware {
 		throw new SlcException("Cannot override values map.");
 	}
 
+	public void setUpdateValues(Map<String, Object> overrideValues) {
+		getValues().putAll(overrideValues);
+	}
+
+	public void setUpdateExpectedValues(
+			Map<String, Object> overrideExpectedValues) {
+		getExpectedValues().putAll(overrideExpectedValues);
+	}
 }

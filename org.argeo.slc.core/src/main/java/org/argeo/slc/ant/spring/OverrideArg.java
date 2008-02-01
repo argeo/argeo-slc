@@ -12,6 +12,7 @@ public class OverrideArg extends AbstractSpringArg {
 	private String name;
 	private Object value;
 	private OverrideList overrideList;
+	private MapArg overrideMap;
 	private String antref;
 
 	/** The name of the property to override. */
@@ -26,39 +27,33 @@ public class OverrideArg extends AbstractSpringArg {
 
 	/** Sets a reference to an ant data type. */
 	public void setAntref(String antref) {
-		if (value != null || overrideList != null || getBean() != null) {
-			throw new BuildException("Value already set.");
-		}
+		checkValueAlreadySet();
 		this.antref = antref;
 	}
 
 	/** Both value and bean cannot be set. */
 	public void setValue(String value) {
-		if (getBean() != null || overrideList != null || antref != null) {
-			throw new BuildException("Value already set.");
-		}
+		checkValueAlreadySet();
 		this.value = value;
 	}
 
 	@Override
 	public void setBean(String bean) {
-		if (value != null || overrideList != null || antref != null) {
-			throw new BuildException("Value already set.");
-		}
+		checkValueAlreadySet();
 		super.setBean(bean);
 	}
 
 	/** Creates override list sub tag. */
 	public OverrideList createList() {
-		if (value != null || getBean() != null) {
-			throw new BuildException("Value already set.");
-		}
-		if (overrideList == null) {
-			overrideList = new OverrideList();
-		} else {
-			throw new BuildException("Only one list can be declared");
-		}
+		checkValueAlreadySet();
+		overrideList = new OverrideList();
 		return overrideList;
+	}
+
+	public MapArg createMap() {
+		checkValueAlreadySet();
+		overrideMap = new MapArg();
+		return overrideMap;
 	}
 
 	/**
@@ -72,15 +67,25 @@ public class OverrideArg extends AbstractSpringArg {
 			return getBeanInstance();
 		} else if (overrideList != null) {
 			return overrideList.getAsObjectList();
+		} else if (overrideMap != null) {
+			return overrideMap.getMap();
 		} else if (antref != null) {
 			Object obj = getProject().getReference(antref);
 			if (obj == null) {
 				throw new SlcException("No object found for reference "
 						+ antref);
 			}
+			setOverridenProperties(obj);
 			return obj;
 		} else {
 			throw new BuildException("Value or bean not set.");
+		}
+	}
+
+	private void checkValueAlreadySet() {
+		if (value != null || overrideList != null || antref != null
+				|| getBean() != null || overrideMap != null) {
+			throw new BuildException("Value already set.");
 		}
 	}
 

@@ -11,6 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.types.DataType;
 
+import org.argeo.slc.ant.SlcAntException;
 import org.argeo.slc.ant.SlcProjectHelper;
 import org.argeo.slc.core.SlcException;
 
@@ -40,13 +41,8 @@ public abstract class AbstractSpringArg extends DataType {
 	public Object getBeanInstance() {
 		if (beanInstance == null) {
 			beanInstance = getContext().getBean(bean);
-
-			BeanWrapper wrapper = new BeanWrapperImpl(beanInstance);
-			for (OverrideArg override : overrides) {
-				LogFactory.getLog(getClass()).debug("Prop "+override.getName());
-				wrapper.setPropertyValue(override.getName(), override
-						.getObject());
-			}
+			
+			setOverridenProperties(beanInstance);
 
 			if (beanInstance instanceof InitializingBean) {
 				try {
@@ -57,6 +53,22 @@ public abstract class AbstractSpringArg extends DataType {
 			}
 		}
 		return beanInstance;
+	}
+	
+	protected void setOverridenProperties(Object obj){
+		BeanWrapper wrapper = new BeanWrapperImpl(obj);
+		for (OverrideArg override : overrides) {
+			if (override.getName() == null) {
+				throw new SlcAntException(
+						"The name of the property to override has to be set.");
+			}
+
+//			LogFactory.getLog(getClass()).debug(
+//					"Prop " + override.getName());
+			wrapper.setPropertyValue(override.getName(), override
+					.getObject());
+		}
+	
 	}
 
 	/** Creates an override subtag. */
