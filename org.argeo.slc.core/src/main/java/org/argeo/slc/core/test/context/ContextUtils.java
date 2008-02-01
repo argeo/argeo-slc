@@ -139,7 +139,7 @@ public class ContextUtils {
 	 * Put into common map the values from child map which are not already
 	 * defined in common map.
 	 */
-	private static void putNotContained(Map<String, Object> commonMap,
+	public static void putNotContained(Map<String, Object> commonMap,
 			Map<String, Object> childMap) {
 		for (String key : childMap.keySet()) {
 			if (!commonMap.containsKey(key)) {
@@ -149,7 +149,7 @@ public class ContextUtils {
 	}
 
 	/** Overrides child map values with the values already set in common map */
-	private static void overrideContained(Map<String, Object> commonMap,
+	public static void overrideContained(Map<String, Object> commonMap,
 			Map<String, Object> childMap) {
 		for (String key : childMap.keySet()) {
 			if (commonMap.containsKey(key)) {

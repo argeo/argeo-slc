@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import org.apache.tools.ant.BuildException;
+
 import org.argeo.slc.core.SlcException;
 
 public class MapArg {
@@ -24,7 +26,7 @@ public class MapArg {
 				if (map.containsKey(key)) {
 					throw new SlcException("Key '" + key + "' already set.");
 				} else {
-					map.put(key, arg.getValue());
+					map.put(key, arg.getValueStr());
 				}
 			}
 		}
@@ -33,7 +35,8 @@ public class MapArg {
 
 	public static class EntryArg {
 		private String key;
-		private Object value;
+		private Object valueStr;
+		private OverrideArg overrideArg;
 
 		public String getKey() {
 			return key;
@@ -43,13 +46,31 @@ public class MapArg {
 			this.key = key;
 		}
 
-		public Object getValue() {
-			return value;
+		public Object getValueStr() {
+			if (overrideArg != null) {
+				return overrideArg.getObject();
+			} else if (valueStr != null) {
+				return valueStr;
+			} else {
+				throw new BuildException("Value not set.");
+			}
 		}
 
 		public void setValue(String value) {
-			this.value = value;
+			check();
+			this.valueStr = value;
 		}
 
+		public OverrideArg createOverride() {
+			check();
+			overrideArg = new OverrideArg();
+			return overrideArg;
+		}
+
+		private void check() {
+			if (valueStr != null || overrideArg != null) {
+				throw new BuildException("Value already set");
+			}
+		}
 	}
 }

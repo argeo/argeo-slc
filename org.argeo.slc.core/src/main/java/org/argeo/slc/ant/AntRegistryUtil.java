@@ -57,8 +57,8 @@ public class AntRegistryUtil {
 		return p;
 	}
 
-	/** Executes all paths of the default target of the Ant file. */
-	public static Project runAll(File antFile) {
+	/** Executes all paths of the provided target of the Ant file. */
+	public static Project runAll(File antFile, String target) {
 		if (log.isDebugEnabled())
 			log.debug("Runs all paths of Ant file " + antFile);
 		Project p = new Project();
@@ -68,7 +68,12 @@ public class AntRegistryUtil {
 		ProjectHelper helper = new SlcProjectHelper();
 		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, helper);
 		helper.parse(p, antFile);
-		p.executeTarget(p.getDefaultTarget());
+		p.executeTarget(target != null ? target : p.getDefaultTarget());
 		return p;
+	}
+
+	/** Executes all paths of the default target of the Ant file. */
+	public static Project runAll(File antFile) {
+		return runAll(antFile, null);
 	}
 }

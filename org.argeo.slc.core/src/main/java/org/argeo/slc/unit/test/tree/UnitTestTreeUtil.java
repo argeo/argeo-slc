@@ -14,6 +14,10 @@ public class UnitTestTreeUtil {
 			int index, Integer status, String message) {
 		TreeSPath path = TreeSPath.parseToCreatePath(pathStr);
 		PartSubList list = testResult.getResultParts().get(path);
+		if (list == null) {
+			TestCase.fail("No result for path " + path);
+			return;
+		}
 		SimpleResultPart part = (SimpleResultPart) list.getParts().get(index);
 		TestCase.assertEquals(status, part.getStatus());
 		TestCase.assertEquals(message, part.getMessage());
