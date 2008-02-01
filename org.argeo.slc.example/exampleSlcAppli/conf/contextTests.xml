@@ -21,15 +21,32 @@
 	<bean id="context.simple2" parent="context.template">
 		<property name="values">
 			<map>
-				<entry key="var" value="50" />
+				<entry key="reference" value="29" />
 			</map>
 		</property>
 		<property name="expectedValues">
 			<map>
-				<entry key="reference" value="21" />
+				<entry key="reference" value="22" />
+				<entry key="varIntern" value="60" />
+			</map>
+		</property>
+	</bean>
+	
+	<bean id="context.complex1" parent="context.template">
+		<property name="values">
+			<map>
+				<entry key="var" value="50" />
+				<entry key="reference2" value="28" />
+				<entry key="greeting" value="Hallo" />
+			</map>
+		</property>
+		<property name="expectedValues">
+			<map>
+				<entry key="reference2" value="22" />
 				<entry key="var" value="50" />
 				<entry key="varIntern" value="60" />
 				<entry key="varExtern" value="70" />
+				<entry key="greeting" value="Bonjour" />
 			</map>
 		</property>
 	</bean>

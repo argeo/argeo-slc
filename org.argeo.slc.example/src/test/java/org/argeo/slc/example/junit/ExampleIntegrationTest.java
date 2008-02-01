@@ -12,13 +12,11 @@ import org.apache.tools.ant.Project;
 
 import org.argeo.slc.ant.AntRegistryUtil;
 import org.argeo.slc.ant.SlcProjectHelper;
-import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.NumericTRId;
-import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestStatus;
-import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.TestResultDao;
+import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
 
 /** High level tests for SLC Ant. */
 public class ExampleIntegrationTest extends TestCase {
@@ -51,39 +49,29 @@ public class ExampleIntegrationTest extends TestCase {
 		TreeTestResult testResult1 = (TreeTestResult) testResultDao
 				.getTestResult(numericTRId);
 		// assertPart(testResult1, "", 0, TestStatus.PASSED, "");
-		assertPart(
-				testResult1,
-				"/root/Category1/SubCategory2/testComplex/slc.test0/0",
-				0,
-				TestStatus.PASSED,
-				"Sub task with path /root/Category1/SubCategory2/testComplex/slc.test0/0 executed");
-		assertPart(testResult1,
+		UnitTestTreeUtil
+				.assertPart(
+						testResult1,
+						"/root/Category1/SubCategory2/testComplex/slc.test0/0",
+						0,
+						TestStatus.PASSED,
+						"Sub task with path /root/Category1/SubCategory2/testComplex/slc.test0/0 executed");
+		UnitTestTreeUtil.assertPart(testResult1,
 				"/root/Category1/SubCategory2/testSimple/slc.test0", 1,
 				TestStatus.FAILED,
 				"Compare nato-expected.txt with nato-reached.txt");
-		assertPart(testResult1,
+		UnitTestTreeUtil.assertPart(testResult1,
 				"/root/Category1/SubCategory2/testError/slc.test0", 0,
 				TestStatus.ERROR, "Execute example appli");
-
-		// Context
-		assertPart(testResult1,
-				"/root/Category1/SubCategory2/testContext/slc.test1/reference",
-				0, TestStatus.PASSED, "Values matched for key 'reference'");
-		assertPart(testResult1,
-				"/root/Category1/SubCategory2/testContext/slc.test1/varIntern",
-				0, TestStatus.PASSED, "Values matched for key 'varIntern'");
-		assertPart(testResult1,
-				"/root/Category1/SubCategory2/testContext/slc.test1/varExtern",
-				0, TestStatus.PASSED, "Values matched for key 'varExtern'");
 
 		numericTRId.setValue(2l);
 		TreeTestResult testResult2 = (TreeTestResult) testResultDao
 				.getTestResult(numericTRId);
-		assertPart(testResult2,
+		UnitTestTreeUtil.assertPart(testResult2,
 				"/root/Category1/SubCategory2/testSimple/slc.test2", 1,
 				TestStatus.PASSED,
 				"Compare eu-reform-expected.txt with eu-reform-reached.txt");
-		assertPart(testResult2,
+		UnitTestTreeUtil.assertPart(testResult2,
 				"/root/Category1/SubCategory2/testSimple/slc.test3", 1,
 				TestStatus.FAILED,
 				"Compare eu-reform-expected.txt with eu-reform-reached.txt");
@@ -94,12 +82,4 @@ public class ExampleIntegrationTest extends TestCase {
 		assertTrue(new File(reportDirPath + "slc-result-2.html").exists());
 	}
 
-	private void assertPart(TreeTestResult testResult, String pathStr,
-			int index, Integer status, String message) {
-		TreeSPath path = TreeSPath.parseToCreatePath(pathStr);
-		PartSubList list = testResult.getResultParts().get(path);
-		SimpleResultPart part = (SimpleResultPart) list.getParts().get(index);
-		assertEquals(status, part.getStatus());
-		assertEquals(message, part.getMessage());
-	}
 }

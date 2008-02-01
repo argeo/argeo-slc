@@ -3,7 +3,7 @@
 
 	<import file="complex.xml" />
 
-	<target name="test" depends="testSimple,testComplex,testError,testContext">
+	<target name="test" depends="testSimple,testComplex,testError">
 		<slc.closeResult result="testResult" />
 		<slc.closeResult result="testResult2" />
 		<slc.report report="report" />

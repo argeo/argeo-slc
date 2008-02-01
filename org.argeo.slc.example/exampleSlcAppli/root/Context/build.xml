@@ -1,0 +1,69 @@
+<project default="testContext">
+	<target name="testContext" description="Tests with context">
+		<slc.context id="context1">
+			<values>
+				<entry key="varExtern" value="70" />
+			</values>
+			<expectedValues>
+				<entry key="reference" value="20" />
+			</expectedValues>
+		</slc.context>
+
+		<slc.test description="Context 1">
+			<testDefinition bean="simpleContextTestDef" />
+			<testData bean="context.simple1">
+				<override name="parentContext" antref="context1" />
+			</testData>
+		</slc.test>
+
+		<slc.test description="Context 2">
+			<testDefinition bean="simpleContextTestDef" />
+			<testData bean="context.complex1">
+				<override name="parentContext" antref="context1">
+					<override name="updateValues">
+						<map>
+							<entry key="greeting" value="Bonjour" />
+						</map>
+					</override>
+					<override name="updateExpectedValues">
+						<map>
+							<entry key="reference2" value="28" />
+						</map>
+					</override>
+				</override>
+			</testData>
+		</slc.test>
+	</target>
+
+	<target name="testBaseContext" description="Tests with base context">
+		<slc.context id="context1">
+			<expectedValues>
+				<entry key="reference" value="20" />
+			</expectedValues>
+		</slc.context>
+
+		<slc.test description="Context 1">
+			<testDefinition bean="simpleContextTestDef" />
+			<testData bean="context.simple1">
+				<override name="parentContext" antref="context1" />
+			</testData>
+		</slc.test>
+
+		<slc.context id="context2" basedon="context1">
+			<values>
+				<entry key="reference" value="29" />
+			</values>
+			<expectedValues>
+				<entry key="reference" value="29" />
+			</expectedValues>
+		</slc.context>
+		
+		<slc.test description="Context 2">
+			<testDefinition bean="simpleContextTestDef" />
+			<testData bean="context.simple2">
+				<override name="parentContext" antref="context2"/>
+			</testData>
+		</slc.test>
+	</target>
+
+</project>
