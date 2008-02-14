@@ -14,6 +14,7 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.dao.structure.tree.TreeSPathDao;
 import org.argeo.slc.dao.structure.tree.TreeSRegistryDao;
+import org.hibernate.Session;
 
 /**
  * The Hibernate implementation for tree-based structure registry.
@@ -48,27 +49,52 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 
 	public void syncPath(TreeSRegistry registry,
 			StructureRegistry<TreeSPath> localRegistry, TreeSPath path) {
+		Session session = getSession();
+		if (log.isTraceEnabled())
+			log.trace("Session#" + session.hashCode() + " " + session);
+		syncPathImpl(registry, localRegistry, path, session);
+		session.update(registry);
+		// update(registry);
+	}
+
+	private void syncPathImpl(TreeSRegistry registry,
+			StructureRegistry<TreeSPath> localRegistry, TreeSPath path,
+			Session session) {
 		if (path.getParent() != null) {
 			TreeSPath parent = treeSPathDao.getOrCreate(path.getParent());
-			syncPath(registry, localRegistry, parent);
+			syncPathImpl(registry, localRegistry, parent, session);
 		}
 
 		if (log.isTraceEnabled())
 			log.trace("Synchronize path " + path);
-		
+
 		if (registry.getElement(path) == null) {
-			if (localRegistry != null) {
-				registry.register(path, getElement(registry, localRegistry, path));
-			} else {
-				registry.register(path, new SimpleSElement(path.getName()));
-			}
-			update(registry);
+			final StructureElement element = getElement(registry,
+					localRegistry, path);
+			StructureElement elementPersisted = (StructureElement) session
+					.merge(element);
+			registry.register(path, elementPersisted);
+			// update(registry);
+
+			if (log.isTraceEnabled())
+				log.trace("No element in persisted structure for " + path
+						+ ", merged to " + elementPersisted);
 		} else {
 			if (localRegistry != null) {
-				StructureElement sElement = getElement(registry, localRegistry, path);
-				if (sElement != null) {
-					registry.register(path, sElement);
-					update(registry);
+				StructureElement element = getElement(registry, localRegistry,
+						path);
+
+				if (element != null) {
+					StructureElement elementPersisted = (StructureElement) session
+							.merge(element);
+					registry.register(path, elementPersisted);
+					// update(registry);
+					if (log.isTraceEnabled())
+						log
+								.trace("Update existing element in persisted structure for "
+										+ path
+										+ ", merged to "
+										+ elementPersisted);
 				}
 			}
 		}
@@ -80,7 +106,20 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 	}
 
 	protected StructureElement getElement(TreeSRegistry registry,
-			StructureRegistry<TreeSPath> localRegistry, TreeSPath path){
-		return localRegistry.getElement(path);
+			StructureRegistry<TreeSPath> localRegistry, TreeSPath path) {
+		StructureElement element;
+		if (localRegistry != null) {
+			element = localRegistry.getElement(path);
+			if (getSession().getSessionFactory().getClassMetadata(
+					element.getClass()) == null) {
+				if (log.isTraceEnabled())
+					log.trace("Replace non-hibernate element " + element
+							+ " by a simple element.");
+				element = new SimpleSElement(element.getLabel());
+			}
+		} else {
+			element = new SimpleSElement(path.getName());
+		}
+		return element;
 	}
 }
