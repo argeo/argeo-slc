@@ -32,8 +32,12 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 		getHibernateTemplate().save(registry);
 	}
 
-	public void update(TreeSRegistry registry) {
-		getHibernateTemplate().update(registry);
+	public void update(TreeSRegistry registryArg) {
+		Session session = getSession();
+		session.beginTransaction();
+		TreeSRegistry registry = (TreeSRegistry)session.merge(registryArg);
+		session.update(registry);
+		session.getTransaction().commit();
 	}
 
 	public TreeSRegistry getActiveTreeSRegistry() {
@@ -47,14 +51,17 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 		}
 	}
 
-	public void syncPath(TreeSRegistry registry,
-			StructureRegistry<TreeSPath> localRegistry, TreeSPath path) {
+	public void syncPath(TreeSRegistry registryArg,
+			StructureRegistry<TreeSPath> localRegistry, TreeSPath pathArg) {
 		Session session = getSession();
+		session.beginTransaction();
+		TreeSRegistry registry = (TreeSRegistry)session.merge(registryArg);
+		TreeSPath path = (TreeSPath)session.merge(pathArg);
 		if (log.isTraceEnabled())
 			log.trace("Session#" + session.hashCode() + " " + session);
 		syncPathImpl(registry, localRegistry, path, session);
 		session.update(registry);
-		// update(registry);
+		session.getTransaction().commit();
 	}
 
 	private void syncPathImpl(TreeSRegistry registry,
@@ -70,7 +77,7 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 
 		if (registry.getElement(path) == null) {
 			final StructureElement element = getElement(registry,
-					localRegistry, path);
+					localRegistry, path, session);
 			StructureElement elementPersisted = (StructureElement) session
 					.merge(element);
 			registry.register(path, elementPersisted);
@@ -82,7 +89,7 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 		} else {
 			if (localRegistry != null) {
 				StructureElement element = getElement(registry, localRegistry,
-						path);
+						path, session);
 
 				if (element != null) {
 					StructureElement elementPersisted = (StructureElement) session
@@ -106,12 +113,13 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 	}
 
 	protected StructureElement getElement(TreeSRegistry registry,
-			StructureRegistry<TreeSPath> localRegistry, TreeSPath path) {
+			StructureRegistry<TreeSPath> localRegistry, TreeSPath path,
+			Session session) {
 		StructureElement element;
 		if (localRegistry != null) {
 			element = localRegistry.getElement(path);
-			if (getSession().getSessionFactory().getClassMetadata(
-					element.getClass()) == null) {
+			if (session.getSessionFactory()
+					.getClassMetadata(element.getClass()) == null) {
 				if (log.isTraceEnabled())
 					log.trace("Replace non-hibernate element " + element
 							+ " by a simple element.");
