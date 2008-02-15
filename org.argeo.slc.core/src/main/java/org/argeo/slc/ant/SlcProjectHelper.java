@@ -62,12 +62,13 @@ public class SlcProjectHelper extends ProjectHelper2 {
 			super.parse(project, source);
 			return;
 		}
-		
+
 		if (log == null) {
 			// log4j is initialized only now
 			log = LogFactory.getLog(SlcProjectHelper.class);
 		}
-		log.debug("SLC properties are set, starting initialization for "+sourceFile);
+		log.debug("SLC properties are set, starting initialization for "
+				+ sourceFile);
 
 		// init Spring application context
 		initSpringContext(project);
@@ -114,8 +115,8 @@ public class SlcProjectHelper extends ProjectHelper2 {
 			if (i == 0) {// project itself
 				description = project.getDescription() != null
 						&& !project.getDescription().equals("") ? project
-						.getDescription() : slcAntConfig
-						.getDescriptionForDir(dir);
+						.getDescription() : project.getName() != null ? project
+						.getName() : slcAntConfig.getDescriptionForDir(dir);
 			} else {
 				description = slcAntConfig.getDescriptionForDir(dir);
 				if (log.isTraceEnabled())
