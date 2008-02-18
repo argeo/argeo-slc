@@ -263,7 +263,7 @@
 			<id>argeo-slc-site</id>
 			<name>SLC Site</name>
 			<url>
-				scp://argeo.org/var/argeo/projects/SLC/www/site
+				scpexe://argeo.org/var/argeo/projects/SLC/www/site
 			</url>
 		</site>
 	</distributionManagement>
