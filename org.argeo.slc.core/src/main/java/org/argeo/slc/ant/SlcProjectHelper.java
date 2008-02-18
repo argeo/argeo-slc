@@ -17,7 +17,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.helper.ProjectHelper2;
 
-import org.argeo.slc.core.UnsupportedException;
 import org.argeo.slc.core.structure.DefaultSRegistry;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureRegistry;
@@ -43,20 +42,28 @@ public class SlcProjectHelper extends ProjectHelper2 {
 	private static String SLC_TASKDEFS_RESOURCE_PATH = "/org/argeo/slc/ant/taskdefs.properties";
 	private static String SLC_TYPEDEFS_RESOURCE_PATH = "/org/argeo/slc/ant/typedefs.properties";
 
+	protected SlcAntConfig slcAntConfig = null;
+
 	@Override
 	public void parse(Project project, Object source) throws BuildException {
-		if (!(source instanceof File)) {
-			throw new UnsupportedException("Ant file", source);
+
+		if (source instanceof File) {
+			File sourceFile = (File) source;
+			// Reset basedir property, in order to avoid base dir override when
+			// running in Maven
+			project.setProperty("basedir", sourceFile.getParentFile()
+					.getAbsolutePath());
 		}
-		File sourceFile = (File) source;
 
-		// initialize config
-		SlcAntConfig slcAntConfig = new SlcAntConfig();
+		if (slcAntConfig != null) {
+			// Config already initialized (probably import), only parse
+			super.parse(project, source);
+			return;
+		}
 
-		// Reset basedir property, in order to avoid base dir override when
-		// running in Maven
-		project.setProperty("basedir", sourceFile.getParentFile()
-				.getAbsolutePath());
+		// Initialize config
+		slcAntConfig = new SlcAntConfig();
+
 		if (!slcAntConfig.initProject(project)) {
 			// not SLC compatible, do normal Ant
 			super.parse(project, source);
@@ -67,30 +74,47 @@ public class SlcProjectHelper extends ProjectHelper2 {
 			// log4j is initialized only now
 			log = LogFactory.getLog(SlcProjectHelper.class);
 		}
-		log.debug("SLC properties are set, starting initialization for "
-				+ sourceFile);
 
-		// init Spring application context
-		initSpringContext(project);
+		if (log.isDebugEnabled())
+			log.debug("SLC properties are set, starting initialization for "
+					+ source + " (projectHelper=" + this + ")");
 
-		// init structure registry
-		DefaultSRegistry registry = new DefaultSRegistry();
-		project.addReference(REF_STRUCTURE_REGISTRY, registry);
+		beforeParsing(project);
 
-		// call the underlying implementation to do the actual work
+		// Calls the underlying implementation to do the actual work
 		super.parse(project, source);
 
-		// create structure root
+		afterParsing(project);
+	}
+
+	/**
+	 * Performs operations after config initialization and before Ant file
+	 * parsing. Performed only once when the main project file is parsed. Should
+	 * be called by overriding methods.
+	 */
+	protected void beforeParsing(Project project) {
+		// Init Spring application context
+		initSpringContext(project);
+
+		// Init structure registry
+		DefaultSRegistry registry = new DefaultSRegistry();
+		project.addReference(REF_STRUCTURE_REGISTRY, registry);
+	}
+
+	/**
+	 * Performs operations after parsing of the main file. Called only once (not
+	 * for imports).
+	 */
+	protected void afterParsing(Project project) {
+		// Creates structure root
 		registerProjectAndParents(project, slcAntConfig);
-
 		addCustomTaskAndTypes(project);
-
 	}
 
 	/** Creates the tree-based structure for this project. */
 	private void registerProjectAndParents(Project project,
 			SlcAntConfig slcAntConfig) {
-		StructureRegistry registry = (StructureRegistry) project
+		StructureRegistry<TreeSPath> registry = (StructureRegistry<TreeSPath>) project
 				.getReference(REF_STRUCTURE_REGISTRY);
 		File rootDir = new File(project
 				.getUserProperty(SlcAntConfig.ROOT_DIR_PROPERTY))

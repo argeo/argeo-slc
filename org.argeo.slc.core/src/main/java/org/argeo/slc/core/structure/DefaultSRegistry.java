@@ -28,9 +28,11 @@ public class DefaultSRegistry implements StructureRegistry<StructurePath> {
 		StructureElement treeSElement = element;
 		elements.add(treeSElement);
 		paths.add(path);
-		log.debug("Registered " + path + " (label: '"
-				+ treeSElement.getLabel() + "', position: "
-				+ elements.size() + ")");
+
+		if (log.isTraceEnabled())
+			log.trace("Registered " + path + " (label: '"
+					+ treeSElement.getLabel() + "', position: "
+					+ elements.size() + ")");
 	}
 
 	public StructureElement getElement(StructurePath path) {
