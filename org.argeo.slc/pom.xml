@@ -249,14 +249,14 @@
 			<uniqueVersion>false</uniqueVersion>
 			<id>argeo-restricted</id>
 			<name>Argeo FOSS Repository</name>
-			<url>scp://argeo.org/var/argeo/maven2/argeo</url>
+			<url>scpexe://argeo.org/var/argeo/maven2/argeo</url>
 		</repository>
 		<snapshotRepository>
 			<uniqueVersion>true</uniqueVersion>
 			<id>argeo-snapshots-restricted</id>
 			<name>Argeo FOSS Snapshots Repository</name>
 			<url>
-				scp://argeo.org/var/argeo/maven2/argeo-snapshots
+				scpexe://argeo.org/var/argeo/maven2/argeo-snapshots
 			</url>
 		</snapshotRepository>
 		<site>
