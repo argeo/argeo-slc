@@ -1,7 +1,10 @@
 package org.argeo.slc.ant;
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -68,6 +71,24 @@ public class AntRegistryUtil {
 		ProjectHelper helper = new SlcProjectHelper();
 		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, helper);
 		helper.parse(p, antFile);
+		p.executeTarget(target != null ? target : p.getDefaultTarget());
+		return p;
+	}
+
+	/** Executes all paths of the provided target of the Ant URL. */
+	public static Project runAll(URL url, String target, Properties properties) {
+		if (log.isDebugEnabled())
+			log.debug("Runs all paths of Ant URL " + url);
+		Project p = new Project();
+		p.setUserProperty("ant.file", url.toString());
+		//p.setBaseDir(url.toString());
+		p.init();
+		ProjectHelper helper = new SlcProjectHelper();
+		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, helper);
+		helper.parse(p, url);
+		for(Map.Entry<Object, Object> entry : properties.entrySet()){
+			p.setUserProperty(entry.getKey().toString(), entry.getValue().toString());
+		}
 		p.executeTarget(target != null ? target : p.getDefaultTarget());
 		return p;
 	}
