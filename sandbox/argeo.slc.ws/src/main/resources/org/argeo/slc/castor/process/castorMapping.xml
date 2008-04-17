@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "http://castor.org/mapping.dtd">
+
+<mapping>
+	<description>Process objects XML mapping</description>
+
+	<class name="org.argeo.slc.core.process.Message"
+		auto-complete="true">
+		<field name="parts" collection="vector">
+			<bind-xml auto-naming="deriveByClass"/>
+		</field>
+	</class>
+
+	<class name="org.argeo.slc.core.process.SlcExecution"
+		auto-complete="true">
+		<field name="uuid" identity="true">
+			<bind-xml node="attribute" />
+		</field>
+	</class>
+
+	<class name="org.argeo.slc.core.process.SlcExecutionStep"
+		auto-complete="true">
+		<field name="slcExecution">
+			<bind-xml reference="true" node="attribute" />
+		</field>
+		<field name="log">
+			<bind-xml node="element" />
+		</field>
+	</class>
+</mapping>
