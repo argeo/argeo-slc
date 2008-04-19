@@ -1,98 +1,91 @@
 package org.argeo.slc.core.process;
 
+import java.io.IOException;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-import org.springframework.oxm.Marshaller;
-import org.springframework.oxm.Unmarshaller;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.argeo.slc.core.xml.XmlUtils;
+import org.argeo.slc.msg.process.SlcExecutionNotification;
+import org.argeo.slc.msg.process.SlcExecutionSaveOrUpdate;
 import org.argeo.slc.unit.AbstractSpringTestCase;
+import org.springframework.oxm.Marshaller;
+import org.springframework.oxm.Unmarshaller;
 
 public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());
 
 	public void testMarshalling() throws Exception {
-		Marshaller marshaller = getBean("castorMarshaller");
+		Marshaller marshaller = getBean("marshaller");
+		Unmarshaller unmarshaller = getBean("marshaller");
 
-		SlcExecution exec1 = new SlcExecution();
-		exec1.setUuid(UUID.randomUUID().toString());
-		exec1.setHost("localhost");
-		exec1.setPath("/test");
-		exec1.setType("slcAnt");
-		exec1.setStatus("STARTED");
+		SlcExecution slcExec = new SlcExecution();
+		slcExec.setUuid(UUID.randomUUID().toString());
+		slcExec.setHost("localhost");
+		slcExec.setPath("/test");
+		slcExec.setType("slcAnt");
+		slcExec.setStatus("STARTED");
+
+		SlcExecutionSaveOrUpdate msgSave = new SlcExecutionSaveOrUpdate();
+		msgSave.setSlcExecution(slcExec);
+
+		String msgSaveXml = marshallAndLog(marshaller, msgSave);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		SlcExecutionStep step0 = new SlcExecutionStep();
+		step0.setBegin(sdf.parse("2008-04-17 18:21"));
+		step0.setType("LOG");
+		step0.addLog("A log message\nand another line");
+
 		SlcExecutionStep step1 = new SlcExecutionStep();
-		step1.setBegin(sdf.parse("2008-04-17 18:21"));
+		step1.setBegin(sdf.parse("2008-04-17 18:25"));
 		step1.setType("LOG");
-		step1.setLog("A log message\nand another line");
-		step1.setSlcExecution(exec1);
+		step1.addLog("A nothe rlog message");
 
-		Message msg1 = new Message();
-		msg1.addPart(exec1);
-		msg1.addPart(step1);
+		SlcExecutionNotification msgNotif = new SlcExecutionNotification();
+		msgNotif.addStep(step0);
+		msgNotif.addStep(step1);
+		msgNotif.setSlcExecutionUuid(slcExec.getUuid());
 
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder parser = factory.newDocumentBuilder();
-		Document doc = parser.newDocument();
-		// Element rootElem = doc.createElement("msg");
-		// doc.appendChild(rootElem);
-		DOMResult domResult = new DOMResult(doc);
+		String msgNotifXml = marshallAndLog(marshaller, msgNotif);
 
-		marshaller.marshal(msg1, domResult);
-		// marshaller.marshal(step1, domResult);
-		// marshaller.marshal(exec1, domResult);
+		SlcExecutionSaveOrUpdate msgSaveUnm = unmarshall(unmarshaller,
+				msgSaveXml);
+		assertNotNull(msgSaveUnm);
+		assertSlcExecution(slcExec, msgSaveUnm.getSlcExecution());
 
-		String xml = XmlUtils.getDomAsString(doc, true);
+		SlcExecutionNotification msgNotifUnm = unmarshall(unmarshaller,
+				msgNotifXml);
+		assertNotNull(msgNotifUnm);
+		assertEquals(slcExec.getUuid(), msgNotifUnm.getSlcExecutionUuid());
+		assertEquals(2, msgNotifUnm.getSteps().size());
+		assertSlcExecutionStep(step0, msgNotifUnm.getSteps().get(0));
+		assertSlcExecutionStep(step1, msgNotifUnm.getSteps().get(1));
+
+	}
+
+	private String marshallAndLog(Marshaller marshaller, Object obj)
+			throws IOException {
+		StringWriter writer = new StringWriter();
+		marshaller.marshal(obj, new StreamResult(writer));
+		String xml = writer.toString();
 		log.info(xml);
+		IOUtils.closeQuietly(writer);
+		return xml;
+	}
 
-		Unmarshaller unmarshaller = getBean("castorMarshaller");
-
+	private <T> T unmarshall(Unmarshaller unmarshaller, String xml)
+			throws IOException {
 		StringReader reader = new StringReader(xml);
-		Document parsedDoc = parser.parse(new InputSource(reader));
-
-		Message message = (Message) unmarshaller.unmarshal(new DOMSource(
-				parsedDoc));
-
-		assertNotNull(message);
-
-		for (Object obj : message.getParts()) {
-			if (obj instanceof SlcExecutionStep) {
-				assertSlcExecution(exec1, ((SlcExecutionStep) obj)
-						.getSlcExecution());
-				log.debug("Execution step ok");
-			}
-		}
-
-		log.info(message.getParts());
-
-		// NodeList lstSteps = parsedDoc
-		// .getElementsByTagName("slc-execution-step");
-		// SlcExecutionStep slcExecutionStep = (SlcExecutionStep) unmarshaller
-		// .unmarshal(new DOMSource(lstSteps.item(0)));
-
-		// assertNotNull(slcExecutionStep);
-		//
-		// SlcExecution slcExecution = slcExecutionStep.getSlcExecution();
-		//
-		// assertNotNull(slcExecution);
-		// assertEquals(exec1.getHost(), slcExecution.getHost());
-		// assertEquals(exec1.getPath(), slcExecution.getPath());
-		// assertEquals(exec1.getType(), slcExecution.getType());
-		// assertEquals(exec1.getStatus(), slcExecution.getStatus());
-
+		Object obj = unmarshaller.unmarshal(new StreamSource(reader));
+		IOUtils.closeQuietly(reader);
+		return (T) obj;
 	}
 
 	private void assertSlcExecution(SlcExecution expected, SlcExecution reached) {
@@ -101,5 +94,13 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		assertEquals(expected.getPath(), reached.getPath());
 		assertEquals(expected.getType(), reached.getType());
 		assertEquals(expected.getStatus(), reached.getStatus());
+	}
+
+	private void assertSlcExecutionStep(SlcExecutionStep expected,
+			SlcExecutionStep reached) {
+		assertNotNull(reached);
+		assertEquals(expected.getType(), reached.getType());
+		assertEquals(expected.logAsString(), reached.logAsString());
+		assertEquals(expected.getBegin(), reached.getBegin());
 	}
 }

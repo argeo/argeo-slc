@@ -1,11 +1,26 @@
 package org.argeo.slc.core.process;
 
+import java.util.List;
+import java.util.Vector;
+
 public class SlcExecution {
 	private String uuid;
 	private String host;
 	private String path;
 	private String type;
 	private String status;
+	
+	private List<SlcExecutionStep> steps = new Vector<SlcExecutionStep>();
+	
+	
+
+	public List<SlcExecutionStep> getSteps() {
+		return steps;
+	}
+
+	public void setSteps(List<SlcExecutionStep> steps) {
+		this.steps = steps;
+	}
 
 	public String getUuid() {
 		return uuid;

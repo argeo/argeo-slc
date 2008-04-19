@@ -1,20 +1,18 @@
 package org.argeo.slc.core.process;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+
+import org.apache.commons.io.IOUtils;
 
 public class SlcExecutionStep {
-	private SlcExecution slcExecution;
 	private String type;
 	private Date begin;
-	private String log;
-
-	public SlcExecution getSlcExecution() {
-		return slcExecution;
-	}
-
-	public void setSlcExecution(SlcExecution slcExecution) {
-		this.slcExecution = slcExecution;
-	}
+	private List<String> logLines = new Vector<String>();
 
 	public String getType() {
 		return type;
@@ -32,12 +30,28 @@ public class SlcExecutionStep {
 		this.begin = begin;
 	}
 
-	public String getLog() {
+	public List<String> getLogLines() {
+		return logLines;
+	}
+
+	public void setLogLines(List<String> logLines) {
+		this.logLines = logLines;
+	}
+
+	public String logAsString() {
+		StringWriter writer = new StringWriter();
+		String log = writer.toString();
+		IOUtils.closeQuietly(writer);
 		return log;
 	}
 
-	public void setLog(String log) {
-		this.log = log;
+	public void addLog(String log) {
+		try {
+			List<String> lines = IOUtils.readLines(new StringReader(log));
+			logLines.addAll(lines);
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot add log", e);
+		}
 	}
 
 }

@@ -3,10 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-	<bean id="castorMarshaller"
+	<bean id="marshaller"
 		class="org.springframework.oxm.castor.CastorMarshaller">
 		<property name="mappingLocation"
-			value="classpath:org/argeo/slc/castor/process/castorMapping.xml" />
+			value="classpath:org/argeo/slc/castor/process/mapping.xml" />
 	</bean>
 
 </beans>
