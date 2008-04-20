@@ -10,118 +10,21 @@
 	<description>SLC Web Services</description>
 	<build>
 		<plugins>
-		<!--  
-			<plugin>
+			<!--  
+				<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<version>2.5-SNAPSHOT</version>
 				<configuration>
-					<wtpversion>2.0</wtpversion>
-					<downloadSources>true</downloadSources>
-						<workspace>C:\mbaudier\workspace</workspace>
+				<wtpversion>2.0</wtpversion>
+				<downloadSources>true</downloadSources>
+				<workspace>C:\mbaudier\workspace</workspace>
 				</configuration>
-			</plugin>
+				</plugin>
 			-->
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>jetty</artifactId>
-						<version>6.1.9</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.eclipse.jdt</groupId>
-								<artifactId>core</artifactId>
-							</exclusion>
-						</exclusions>
-
-					</dependency>
-					<dependency>
-						<groupId>org.apache.maven</groupId>
-						<artifactId>maven-project</artifactId>
-						<version>2.0.3</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.eclipse.jdt</groupId>
-								<artifactId>core</artifactId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-
-					<dependency>
-						<groupId>org.apache.maven</groupId>
-						<artifactId>maven-plugin-api</artifactId>
-						<version>2.0.3</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.eclipse.jdt</groupId>
-								<artifactId>core</artifactId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-					<dependency>
-						<groupId>org.apache.maven</groupId>
-
-						<artifactId>maven-artifact</artifactId>
-						<version>2.0.3</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.eclipse.jdt</groupId>
-								<artifactId>core</artifactId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-					<dependency>
-						<groupId>org.apache.maven</groupId>
-						<artifactId>maven-plugin-tools-api</artifactId>
-						<version>2.0</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.eclipse.jdt</groupId>
-								<artifactId>core</artifactId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-
-					<dependency>
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>jetty-plus</artifactId>
-						<version>${project.version}</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.eclipse.jdt</groupId>
-								<artifactId>core</artifactId>
-							</exclusion>
-						</exclusions>
-					</dependency>
-					<dependency>
-						<groupId>org.mortbay.jetty</groupId>
-
-						<artifactId>jetty-naming</artifactId>
-						<version>6.1.9</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.eclipse.jdt</groupId>
-								<artifactId>core</artifactId>
-							</exclusion>
-						</exclusions>
-
-					</dependency>
-					<dependency>
-						<groupId>org.mortbay.jetty</groupId>
-						<artifactId>jetty-management</artifactId>
-						<version>6.1.9</version>
-						<exclusions>
-							<exclusion>
-								<groupId>org.eclipse.jdt</groupId>
-								<artifactId>core</artifactId>
-							</exclusion>
-						</exclusions>
-
-					</dependency>
-				</dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -213,23 +116,37 @@
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty</artifactId>
 			<version>6.1.9</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.eclipse.jdt</groupId>
-					<artifactId>core</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
-		<dependency>
+		<!--
+			<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty-spring</artifactId>
 			<version>6.1.9</version>
 			<exclusions>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring</artifactId>
-				</exclusion>
+			<exclusion>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			</exclusion>
 			</exclusions>
+			</dependency>
+		-->
+		<dependency>
+			<groupId>javax.xml.soap</groupId>
+			<artifactId>saaj-api</artifactId>
+			<version>1.3</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.messaging.saaj</groupId>
+			<artifactId>saaj-impl</artifactId>
+			<version>1.3</version>
+			<scope>runtime</scope>			
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1</version>
+			<scope>runtime</scope>			
 		</dependency>
 
 

@@ -2,7 +2,7 @@ package org.argeo.slc.msg.process;
 
 import org.argeo.slc.core.process.SlcExecution;
 
-public class SlcExecutionSaveOrUpdate {
+public class SlcExecutionRequest {
 	private SlcExecution slcExecution;
 
 	public SlcExecution getSlcExecution() {

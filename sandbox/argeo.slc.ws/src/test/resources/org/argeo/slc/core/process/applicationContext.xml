@@ -9,4 +9,16 @@
 			value="classpath:org/argeo/slc/castor/process/mapping.xml" />
 	</bean>
 
+	<bean id="messageFactory"
+		class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
+
+	<bean id="webServiceTemplate"
+		class="org.springframework.ws.client.core.WebServiceTemplate">
+		<constructor-arg ref="messageFactory" />
+		<property name="marshaller" ref="marshaller"/>
+		<property name="unmarshaller" ref="marshaller"/>
+		<property name="defaultUri"
+			value="http://localhost:8080/argeo.slc.ws/slcService/" />
+	</bean>
+
 </beans>

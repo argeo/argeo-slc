@@ -1,0 +1,25 @@
+<slc-execution-steps-request
+	xmlns="http://argeo.org/projects/slc/schemas"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://argeo.org/projects/slc/schemas ../src/main/webapp/WEB-INF/slc.xsd">
+	<steps>
+		<slc-execution-step>
+			<log-lines>
+				<log-line>A log message</log-line>
+				<log-line>and another line</log-line>
+			</log-lines>
+			<type>LOG</type>
+			<begin>2008-04-17T18:21:00.000+02:00</begin>
+		</slc-execution-step>
+		<slc-execution-step>
+			<log-lines>
+				<log-line>A nothe rlog message</log-line>
+			</log-lines>
+			<type>LOG</type>
+			<begin>2008-04-17T18:25:00.000+02:00</begin>
+		</slc-execution-step>
+	</steps>
+	<slc-execution-uuid>
+		11848adc-33cf-4b3d-88c1-3a57486e1906
+	</slc-execution-uuid>
+</slc-execution-steps-request>

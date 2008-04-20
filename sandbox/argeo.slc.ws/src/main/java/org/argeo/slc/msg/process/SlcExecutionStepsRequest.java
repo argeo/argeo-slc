@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import org.argeo.slc.core.process.SlcExecutionStep;
 
-public class SlcExecutionNotification {
+public class SlcExecutionStepsRequest {
 	private String slcExecutionUuid;
 	private List<SlcExecutionStep> steps = new Vector<SlcExecutionStep>();
 

@@ -12,8 +12,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.msg.process.SlcExecutionNotification;
-import org.argeo.slc.msg.process.SlcExecutionSaveOrUpdate;
+import org.argeo.slc.msg.process.SlcExecutionRequest;
+import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
@@ -25,14 +25,9 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		Marshaller marshaller = getBean("marshaller");
 		Unmarshaller unmarshaller = getBean("marshaller");
 
-		SlcExecution slcExec = new SlcExecution();
-		slcExec.setUuid(UUID.randomUUID().toString());
-		slcExec.setHost("localhost");
-		slcExec.setPath("/test");
-		slcExec.setType("slcAnt");
-		slcExec.setStatus("STARTED");
+		SlcExecution slcExec = createSimpleSlcExecution();
 
-		SlcExecutionSaveOrUpdate msgSave = new SlcExecutionSaveOrUpdate();
+		SlcExecutionRequest msgSave = new SlcExecutionRequest();
 		msgSave.setSlcExecution(slcExec);
 
 		String msgSaveXml = marshallAndLog(marshaller, msgSave);
@@ -48,19 +43,18 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		step1.setType("LOG");
 		step1.addLog("A nothe rlog message");
 
-		SlcExecutionNotification msgNotif = new SlcExecutionNotification();
+		SlcExecutionStepsRequest msgNotif = new SlcExecutionStepsRequest();
 		msgNotif.addStep(step0);
 		msgNotif.addStep(step1);
 		msgNotif.setSlcExecutionUuid(slcExec.getUuid());
 
 		String msgNotifXml = marshallAndLog(marshaller, msgNotif);
 
-		SlcExecutionSaveOrUpdate msgSaveUnm = unmarshall(unmarshaller,
-				msgSaveXml);
+		SlcExecutionRequest msgSaveUnm = unmarshall(unmarshaller, msgSaveXml);
 		assertNotNull(msgSaveUnm);
 		assertSlcExecution(slcExec, msgSaveUnm.getSlcExecution());
 
-		SlcExecutionNotification msgNotifUnm = unmarshall(unmarshaller,
+		SlcExecutionStepsRequest msgNotifUnm = unmarshall(unmarshaller,
 				msgNotifXml);
 		assertNotNull(msgNotifUnm);
 		assertEquals(slcExec.getUuid(), msgNotifUnm.getSlcExecutionUuid());
@@ -68,6 +62,12 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		assertSlcExecutionStep(step0, msgNotifUnm.getSteps().get(0));
 		assertSlcExecutionStep(step1, msgNotifUnm.getSteps().get(1));
 
+		SlcExecution slcExecUnm = msgSaveUnm.getSlcExecution();
+		slcExecUnm.getSteps().addAll(msgNotifUnm.getSteps());
+
+		SlcExecutionRequest msgUpdate = new SlcExecutionRequest();
+		msgUpdate.setSlcExecution(slcExecUnm);
+		String msgUpdateXml = marshallAndLog(marshaller, msgUpdate);
 	}
 
 	private String marshallAndLog(Marshaller marshaller, Object obj)
@@ -102,5 +102,15 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		assertEquals(expected.getType(), reached.getType());
 		assertEquals(expected.logAsString(), reached.logAsString());
 		assertEquals(expected.getBegin(), reached.getBegin());
+	}
+
+	public static SlcExecution createSimpleSlcExecution() {
+		SlcExecution slcExec = new SlcExecution();
+		slcExec.setUuid(UUID.randomUUID().toString());
+		slcExec.setHost("localhost");
+		slcExec.setPath("/test");
+		slcExec.setType("slcAnt");
+		slcExec.setStatus("STARTED");
+		return slcExec;
 	}
 }

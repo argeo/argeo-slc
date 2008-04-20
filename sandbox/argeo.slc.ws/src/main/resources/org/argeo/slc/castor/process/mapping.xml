@@ -5,16 +5,18 @@
 <mapping>
 	<description>Process objects XML mapping</description>
 
-	<class name="org.argeo.slc.msg.process.SlcExecutionNotification"
+	<class name="org.argeo.slc.msg.process.SlcExecutionStepsRequest"
 		auto-complete="true">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas" />
 		<field name="steps" collection="vector"
 			type="org.argeo.slc.core.process.SlcExecutionStep">
-			<bind-xml auto-naming="deriveByClass" location="steps"/>
+			<bind-xml auto-naming="deriveByClass" location="steps" />
 		</field>
 	</class>
 
-	<class name="org.argeo.slc.msg.process.SlcExecutionSaveOrUpdate"
+	<class name="org.argeo.slc.msg.process.SlcExecutionRequest"
 		auto-complete="true">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas" />
 	</class>
 
 	<class name="org.argeo.slc.core.process.SlcExecution"
@@ -23,14 +25,14 @@
 			<bind-xml node="attribute" />
 		</field>
 		<field name="steps" collection="vector">
-			<bind-xml auto-naming="deriveByClass" location="steps"/>
+			<bind-xml auto-naming="deriveByClass" location="steps" />
 		</field>
 	</class>
 
 	<class name="org.argeo.slc.core.process.SlcExecutionStep"
 		auto-complete="true">
 		<field name="logLines" collection="vector" type="string">
-			<bind-xml name="log-line" location="log-lines"/>
+			<bind-xml name="log-line" location="log-lines" />
 		</field>
 	</class>
 </mapping>
