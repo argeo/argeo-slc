@@ -41,7 +41,7 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		SlcExecutionStep step1 = new SlcExecutionStep();
 		step1.setBegin(sdf.parse("2008-04-17 18:25"));
 		step1.setType("LOG");
-		step1.addLog("A nothe rlog message");
+		step1.addLog("A nother log message");
 
 		SlcExecutionStepsRequest msgNotif = new SlcExecutionStepsRequest();
 		msgNotif.addStep(step0);

@@ -36,7 +36,7 @@
 		<property name="schema" ref="schema" />
 		<property name="portTypeName" value="Slc" />
 		<property name="locationUri"
-			value="http://localhost:8080/argeo.slc.ws/slcService/" />
+			value="http://localhost:8080/argeo-slc-ws/slcService/" />
 		<property name="targetNamespace"
 			value="http://argeo.org/projects/slc/definitions" />
 		<property name="requestSuffix" value="-request" />
