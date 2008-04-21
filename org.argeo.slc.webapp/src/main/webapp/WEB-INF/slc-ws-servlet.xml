@@ -44,6 +44,6 @@
 
 	<bean id="schema"
 		class="org.springframework.xml.xsd.SimpleXsdSchema">
-		<property name="xsd" value="/WEB-INF/slc.xsd" />
+		<property name="xsd" value="classpath:/org/argeo/slc/xml/slc.xsd" />
 	</bean>
 </beans>
