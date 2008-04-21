@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.argeo.slc.core.process">
+	<class name="SlcExecution" table="SLC_EXECUTION">
+		<id name="uuid" column="UUID" />
+		<property name="host" column="HOST" />
+		<property name="path" column="PATH" />
+		<property name="type" column="TYPE" />
+		<property name="status" column="STATUS" />
+
+		<list name="steps" cascade="all" lazy="false"
+			table="SLC_EXECUTIONS_STEPS">
+			<key column="SLC_EXECUTION_ID" />
+			<list-index column="INDX" />
+			<one-to-many
+				class="org.argeo.slc.core.process.SlcExecutionStep" />
+		</list>
+	</class>
+</hibernate-mapping>

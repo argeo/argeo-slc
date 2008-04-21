@@ -25,7 +25,7 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		Marshaller marshaller = getBean("marshaller");
 		Unmarshaller unmarshaller = getBean("marshaller");
 
-		SlcExecution slcExec = createSimpleSlcExecution();
+		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
 
 		SlcExecutionRequest msgSave = new SlcExecutionRequest();
 		msgSave.setSlcExecution(slcExec);
@@ -34,11 +34,13 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		SlcExecutionStep step0 = new SlcExecutionStep();
+		step0.setUuid(UUID.randomUUID().toString());
 		step0.setBegin(sdf.parse("2008-04-17 18:21"));
 		step0.setType("LOG");
 		step0.addLog("A log message\nand another line");
 
 		SlcExecutionStep step1 = new SlcExecutionStep();
+		step1.setUuid(UUID.randomUUID().toString());
 		step1.setBegin(sdf.parse("2008-04-17 18:25"));
 		step1.setType("LOG");
 		step1.addLog("A nother log message");
@@ -52,15 +54,15 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 
 		SlcExecutionRequest msgSaveUnm = unmarshall(unmarshaller, msgSaveXml);
 		assertNotNull(msgSaveUnm);
-		assertSlcExecution(slcExec, msgSaveUnm.getSlcExecution());
+		SlcExecutionTestUtils.assertSlcExecution(slcExec, msgSaveUnm.getSlcExecution());
 
 		SlcExecutionStepsRequest msgNotifUnm = unmarshall(unmarshaller,
 				msgNotifXml);
 		assertNotNull(msgNotifUnm);
 		assertEquals(slcExec.getUuid(), msgNotifUnm.getSlcExecutionUuid());
 		assertEquals(2, msgNotifUnm.getSteps().size());
-		assertSlcExecutionStep(step0, msgNotifUnm.getSteps().get(0));
-		assertSlcExecutionStep(step1, msgNotifUnm.getSteps().get(1));
+		SlcExecutionTestUtils.assertSlcExecutionStep(step0, msgNotifUnm.getSteps().get(0));
+		SlcExecutionTestUtils.assertSlcExecutionStep(step1, msgNotifUnm.getSteps().get(1));
 
 		SlcExecution slcExecUnm = msgSaveUnm.getSlcExecution();
 		slcExecUnm.getSteps().addAll(msgNotifUnm.getSteps());
@@ -86,31 +88,5 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		Object obj = unmarshaller.unmarshal(new StreamSource(reader));
 		IOUtils.closeQuietly(reader);
 		return (T) obj;
-	}
-
-	private void assertSlcExecution(SlcExecution expected, SlcExecution reached) {
-		assertNotNull(reached);
-		assertEquals(expected.getHost(), reached.getHost());
-		assertEquals(expected.getPath(), reached.getPath());
-		assertEquals(expected.getType(), reached.getType());
-		assertEquals(expected.getStatus(), reached.getStatus());
-	}
-
-	private void assertSlcExecutionStep(SlcExecutionStep expected,
-			SlcExecutionStep reached) {
-		assertNotNull(reached);
-		assertEquals(expected.getType(), reached.getType());
-		assertEquals(expected.logAsString(), reached.logAsString());
-		assertEquals(expected.getBegin(), reached.getBegin());
-	}
-
-	public static SlcExecution createSimpleSlcExecution() {
-		SlcExecution slcExec = new SlcExecution();
-		slcExec.setUuid(UUID.randomUUID().toString());
-		slcExec.setHost("localhost");
-		slcExec.setPath("/test");
-		slcExec.setType("slcAnt");
-		slcExec.setStatus("STARTED");
-		return slcExec;
 	}
 }

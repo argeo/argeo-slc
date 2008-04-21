@@ -31,6 +31,9 @@
 
 	<class name="org.argeo.slc.core.process.SlcExecutionStep"
 		auto-complete="true">
+		<field name="uuid" identity="true">
+			<bind-xml node="attribute" />
+		</field>
 		<field name="logLines" collection="vector" type="string">
 			<bind-xml name="log-line" location="log-lines" />
 		</field>

@@ -11,7 +11,7 @@ public class SlcExecutionWsIntegrationTest extends AbstractSpringTestCase {
 
 	public void testSendSlcExecutionrequest() {
 		WebServiceTemplate template = getBean("webServiceTemplate");
-		SlcExecution slcExec = SlcExecutionCastorTest
+		SlcExecution slcExec = SlcExecutionTestUtils
 				.createSimpleSlcExecution();
 
 		SlcExecutionRequest req = new SlcExecutionRequest();
