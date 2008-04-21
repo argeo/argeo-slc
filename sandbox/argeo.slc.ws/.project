@@ -3,6 +3,7 @@
 	<name>argeo.slc.ws</name>
 	<comment></comment>
 	<projects>
+		<project>org.argeo.slc.core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

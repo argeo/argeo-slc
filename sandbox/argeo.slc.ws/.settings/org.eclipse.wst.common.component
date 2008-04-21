@@ -7,6 +7,9 @@
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/resources"/>
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/resources"/>
+<dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.argeo.slc.core/org.argeo.slc.core">
+<dependency-type>uses</dependency-type>
+</dependent-module>
 <property name="context-root" value="argeo.slc.ws"/>
 <property name="java-output-path" value="build/classes"/>
 </wb-module>
