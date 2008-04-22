@@ -8,6 +8,7 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 
@@ -56,7 +57,8 @@ public class AntRegistryUtil {
 				.getReference(SlcProjectHelper.REF_STRUCTURE_REGISTRY);
 		registry.setMode(StructureRegistry.ACTIVE);
 		registry.setActivePaths(activePaths);
-		p.executeTarget(p.getDefaultTarget());
+
+		runProject(p, null);
 		return p;
 	}
 
@@ -71,7 +73,8 @@ public class AntRegistryUtil {
 		ProjectHelper helper = new SlcProjectHelper();
 		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, helper);
 		helper.parse(p, antFile);
-		p.executeTarget(target != null ? target : p.getDefaultTarget());
+
+		runProject(p, target);
 		return p;
 	}
 
@@ -81,20 +84,37 @@ public class AntRegistryUtil {
 			log.debug("Runs all paths of Ant URL " + url);
 		Project p = new Project();
 		p.setUserProperty("ant.file", url.toString());
-		//p.setBaseDir(url.toString());
+		// p.setBaseDir(url.toString());
 		p.init();
 		ProjectHelper helper = new SlcProjectHelper();
 		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, helper);
 		helper.parse(p, url);
-		for(Map.Entry<Object, Object> entry : properties.entrySet()){
-			p.setUserProperty(entry.getKey().toString(), entry.getValue().toString());
+
+		if (properties != null) {
+			for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+				p.setUserProperty(entry.getKey().toString(), entry.getValue()
+						.toString());
+			}
 		}
-		p.executeTarget(target != null ? target : p.getDefaultTarget());
+
+		runProject(p, target);
 		return p;
 	}
 
 	/** Executes all paths of the default target of the Ant file. */
 	public static Project runAll(File antFile) {
 		return runAll(antFile, null);
+	}
+
+	protected static void runProject(Project p, String target) {
+		p.fireBuildStarted();
+		Throwable exception = null;
+		try {
+			p.executeTarget(target != null ? target : p.getDefaultTarget());
+		} catch (Throwable e) {
+			exception = e;
+		} finally {
+			p.fireBuildFinished(exception);
+		}
 	}
 }

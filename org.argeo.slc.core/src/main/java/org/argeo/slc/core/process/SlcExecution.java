@@ -4,15 +4,21 @@ import java.util.List;
 import java.util.Vector;
 
 public class SlcExecution {
+	public final static String STATUS_SCHEDULED = "SCHEDULED";
+	public final static String STATUS_RUNNING = "RUNNING";
+	public final static String STATUS_FINISHED = "FINISHED";
+	public final static String STATUS_ERROR = "ERROR";
+	public final static String STATUS_CLEANED = "CLEANED";
+
+	public final static String UNKOWN_HOST = "UNKOWN_HOST";
+
 	private String uuid;
 	private String host;
 	private String path;
 	private String type;
 	private String status;
-	
+
 	private List<SlcExecutionStep> steps = new Vector<SlcExecutionStep>();
-	
-	
 
 	public List<SlcExecutionStep> getSteps() {
 		return steps;
@@ -60,6 +66,19 @@ public class SlcExecution {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof SlcExecution) {
+			return getUuid().equals(((SlcExecution) obj).getUuid());
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return getUuid().hashCode();
 	}
 
 }

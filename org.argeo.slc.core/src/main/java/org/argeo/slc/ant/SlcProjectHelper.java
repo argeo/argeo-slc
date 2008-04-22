@@ -14,6 +14,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.helper.ProjectHelper2;
 
@@ -176,6 +177,13 @@ public class SlcProjectHelper extends ProjectHelper2 {
 				'/' + acPath);
 		context.registerShutdownHook();
 		project.addReference(REF_ROOT_CONTEXT, context);
+
+		// Add build listeners declared in Spring context
+		Map<String, BuildListener> listeners = context.getBeansOfType(
+				BuildListener.class, false, true);
+		for(BuildListener listener: listeners.values()){
+			project.addBuildListener(listener);
+		}
 	}
 
 	/** Loads the SLC specific Ant tasks. */
