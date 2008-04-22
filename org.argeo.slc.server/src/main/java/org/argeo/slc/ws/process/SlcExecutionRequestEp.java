@@ -21,8 +21,16 @@ public class SlcExecutionRequestEp extends AbstractMarshallingPayloadEndpoint {
 	protected Object invokeInternal(Object requestObject) throws Exception {
 		SlcExecutionRequest msg = (SlcExecutionRequest) requestObject;
 		SlcExecution slcExecution = msg.getSlcExecution();
-		slcExecutionDao.create(slcExecution);
-		log.debug("Created SlcExecution with uuid " + slcExecution.getUuid());
+
+		if (slcExecutionDao.getSlcExecution(slcExecution.getUuid()) == null) {
+			slcExecutionDao.create(slcExecution);
+			log.debug("Created SlcExecution with uuid "
+					+ slcExecution.getUuid());
+		} else {
+			slcExecutionDao.update(slcExecution);
+			log.debug("Updated SlcExecution with uuid "
+					+ slcExecution.getUuid());
+		}
 		return null;
 	}
 
