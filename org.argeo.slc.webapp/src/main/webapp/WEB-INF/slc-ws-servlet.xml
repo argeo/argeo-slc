@@ -10,6 +10,13 @@
 		<property name="unmarshaller" ref="marshaller" />
 	</bean>
 
+	<bean name="slcExecutionStepsRequestEp"
+		class="org.argeo.slc.ws.process.SlcExecutionStepsRequestEp">
+		<constructor-arg ref="slcExecutionDao" />
+		<property name="marshaller" ref="marshaller" />
+		<property name="unmarshaller" ref="marshaller" />
+	</bean>
+
 	<bean id="marshaller"
 		class="org.springframework.oxm.castor.CastorMarshaller">
 		<property name="mappingLocation"
@@ -23,6 +30,10 @@
 				<prop
 					key="{http://argeo.org/projects/slc/schemas}slc-execution-request">
 					slcExecutionRequestEp
+				</prop>
+				<prop
+					key="{http://argeo.org/projects/slc/schemas}slc-execution-steps-request">
+					slcExecutionStepsRequestEp
 				</prop>
 			</props>
 		</property>
