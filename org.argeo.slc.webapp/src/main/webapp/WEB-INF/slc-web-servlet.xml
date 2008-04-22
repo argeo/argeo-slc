@@ -10,6 +10,12 @@
 		<property name="viewName" value="home.jsp" />
 	</bean>
 
+	<bean name="/slcExecutionList.web"
+		class="org.argeo.slc.web.mvc.process.SlcExecutionListController">
+		<constructor-arg ref="slcExecutionDao" />
+		<property name="viewName" value="slcExecutionList" />
+	</bean>
+
 
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">

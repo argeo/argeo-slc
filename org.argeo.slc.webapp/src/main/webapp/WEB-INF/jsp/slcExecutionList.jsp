@@ -7,13 +7,16 @@
 <jsp:include page="common.jsp" />
 
 <div id="main">
-<h1>SLC Home</h1>
+<h1>SLC Execution List</h1>
 
-<h2>Web</h2>
-<a href="slcExecutionList.web">SLC Executions</a>
-
-<h2>Web Services</h2>
-<a href="slcService/slcDefinition.wsdl">WSDL Definition</a>
+<table>
+	<c:forEach items="${slcExecutions}" var="slcExecution">
+		<tr>
+			<td>${slcExecution.uuid}</td>
+			<td>${slcExecution.status}</td>
+		</tr>
+	</c:forEach>
+</table>
 
 </div>
 

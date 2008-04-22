@@ -1,28 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-         version="2.4">
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+	version="2.4">
 
-    <display-name>SLC Web Application</display-name>
+	<display-name>SLC Web Application</display-name>
 
-    <servlet>
-        <servlet-name>slc-ws</servlet-name>
-        <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
-    </servlet>
+	<servlet>
+		<servlet-name>slc-ws</servlet-name>
+		<servlet-class>
+			org.springframework.ws.transport.http.MessageDispatcherServlet
+		</servlet-class>
+	</servlet>
 
-    <servlet-mapping>
-        <servlet-name>slc-ws</servlet-name>
-        <url-pattern>/slcService/*</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>slc-ws</servlet-name>
+		<url-pattern>/slcService/*</url-pattern>
+	</servlet-mapping>
 
-    <servlet>
-        <servlet-name>slc-web</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    </servlet>
+	<servlet>
+		<servlet-name>slc-web</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+	</servlet>
 
-    <servlet-mapping>
-        <servlet-name>slc-web</servlet-name>
-        <url-pattern>*.web</url-pattern>
-    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>slc-web</servlet-name>
+		<url-pattern>*.web</url-pattern>
+	</servlet-mapping>
+
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/applicationContext.xml</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>
+			org.springframework.web.context.ContextLoaderListener
+		</listener-class>
+	</listener>
+
 
 </web-app>

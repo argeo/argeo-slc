@@ -5,6 +5,7 @@
 
 	<bean name="slcExecutionRequestEp"
 		class="org.argeo.slc.ws.process.SlcExecutionRequestEp">
+		<constructor-arg ref="slcExecutionDao" />
 		<property name="marshaller" ref="marshaller" />
 		<property name="unmarshaller" ref="marshaller" />
 	</bean>
