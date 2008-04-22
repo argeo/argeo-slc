@@ -8,4 +8,5 @@
 	<import resource="testDatas.xml" />
 	<import resource="testDefinitions.xml" />
 	<import resource="contextTests.xml" />
+	<import resource="execution.xml" />
 </beans>
