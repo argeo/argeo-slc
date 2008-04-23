@@ -35,7 +35,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 	/** The Ant reference to the SLC structure registry used. */
 	public static String REF_STRUCTURE_REGISTRY = "slcStructureRegistry";
 	/** The Ant reference to the <code>TreePath</code> of the current project */
-	private static String REF_PROJECT_PATH = "slcProjectPath";
+	public static String REF_PROJECT_PATH = "slcProjectPath";
 	/**
 	 * Resource path to the property file listing the SLC specific Ant tasks:
 	 * /org/argeo/slc/ant/taskdefs.properties
@@ -160,7 +160,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 	}
 
 	/** Gets the path of a project (root). */
-	public static TreeSPath getProjectPath(Project project) {
+	private static TreeSPath getProjectPath(Project project) {
 		return (TreeSPath) project.getReference(REF_PROJECT_PATH);
 	}
 
@@ -187,7 +187,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 	}
 
 	/** Loads the SLC specific Ant tasks. */
-	private void addCustomTaskAndTypes(Project project) {
+	protected static void addCustomTaskAndTypes(Project project) {
 		Properties taskdefs = getDefs(project, SLC_TASKDEFS_RESOURCE_PATH);
 		for (Object o : taskdefs.keySet()) {
 			String name = o.toString();
@@ -210,7 +210,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 		}
 	}
 
-	private Properties getDefs(Project project, String path) {
+	private static Properties getDefs(Project project, String path) {
 		Properties defs = new Properties();
 		try {
 			InputStream in = project.getClass().getResourceAsStream(path);

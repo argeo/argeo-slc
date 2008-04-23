@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean name="testRun"
+		class="org.argeo.slc.core.test.SimpleTestRun">
+	</bean>
+
+	<bean id="testResult"
+		class="org.argeo.slc.core.test.tree.TreeTestResult">
+		<property name="numericResultId">
+			<bean class="org.argeo.slc.core.test.NumericTRId">
+				<property name="value" value="1" />
+			</bean>
+		</property>
+		<property name="listeners">
+			<list>
+				<ref bean="resultLogger" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="resultLogger"
+		class="org.argeo.slc.core.test.tree.TreeTestResultLogger"
+		init-method="init">
+	</bean>
+
+	<bean name="testDef"
+		class="org.argeo.slc.core.test.BasicTestDefinition" scope="prototype" />
+
+	<bean name="testData1"
+		class="org.argeo.slc.core.test.BasicTestData">
+		<property name="expected">
+			<value>toto</value>
+		</property>
+		<property name="reached">
+			<value>toto</value>
+		</property>
+	</bean>
+
+	<bean id="testData.context1" parent="context.template">
+		<property name="values">
+			<map>
+				<entry key="reference" value="20" />
+				<entry key="varIntern" value="60" />
+			</map>
+		</property>
+		<property name="expectedValues">
+			<map>
+				<entry key="reference" value="21" />
+				<entry key="varIntern" value="60" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="context.template"
+		class="org.argeo.slc.core.test.context.DefaultContextTestData"
+		abstract="true">
+	</bean>
+
+</beans>

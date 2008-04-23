@@ -9,11 +9,15 @@ import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
 import org.argeo.slc.core.deploy.DeployedSystem;
 import org.argeo.slc.core.structure.StructureAware;
+import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.ExecutableTestRun;
+import org.argeo.slc.core.test.SimpleTestResult;
+import org.argeo.slc.core.test.SimpleTestRun;
 import org.argeo.slc.core.test.TestData;
 import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.WritableTestRun;
+import org.argeo.slc.spring.SpringUtils;
 
 /** Ant task wrapping a test run. */
 public class SlcTestTask extends SAwareTask {
@@ -28,6 +32,7 @@ public class SlcTestTask extends SAwareTask {
 
 	@Override
 	public void executeActions(String mode) throws BuildException {
+		// find test run
 		final String testRunBeanT;
 		if (testRunBean != null) {
 			testRunBeanT = testRunBean;
@@ -35,8 +40,25 @@ public class SlcTestTask extends SAwareTask {
 			testRunBeanT = getProject().getUserProperty(
 					SlcAntConfig.DEFAULT_TEST_RUN_PROPERTY);
 		}
-		WritableTestRun testRun = (WritableTestRun) getContext().getBean(
-				testRunBeanT);
+		WritableTestRun testRun = null;
+
+		if (testRunBeanT != null) {
+			testRun = (WritableTestRun) getContext().getBean(testRunBeanT);
+			if (log.isTraceEnabled())
+				log.trace("Load test run bean from bean name " + testRunBeanT);
+		}
+
+		if (testRun == null) {
+			testRun = loadSingleFromContext(WritableTestRun.class);
+			if (testRun == null) {
+				testRun = new SimpleTestRun();
+				if (log.isTraceEnabled())
+					log.trace("Created simple test run");
+			} else {
+				if (log.isTraceEnabled())
+					log.trace("Load test run from scanning Spring context");
+			}
+		}
 
 		// set overridden references
 		if (testDataArg != null) {
@@ -61,9 +83,22 @@ public class SlcTestTask extends SAwareTask {
 
 		// notify path to test result
 		TestResult result = testRun.getTestResult();
+		if (result == null) {
+			result = loadSingleFromContext(TestResult.class);
+			if (result == null) {
+				result = new SimpleTestResult();
+				if (log.isTraceEnabled())
+					log.trace("Created simple test result");
+			} else {
+				if (log.isTraceEnabled())
+					log.trace("Load test result from scanning Spring context");
+			}
+			testRun.setTestResult(result);
+		}
+
 		if (result != null && result instanceof StructureAware) {
-			((StructureAware) result).notifyCurrentPath(getRegistry(),
-					getPath());
+			((StructureAware<TreeSPath>) result).notifyCurrentPath(
+					getRegistry(), getTreeSPath());
 		}
 
 		((ExecutableTestRun) testRun).execute();
@@ -104,6 +139,9 @@ public class SlcTestTask extends SAwareTask {
 		return testResultArg;
 	}
 
+	protected <T> T loadSingleFromContext(Class<T> clss) {
+		return SpringUtils.loadSingleFromContext(getContext(), clss);
+	}
 }
 
 class TestDefinitionArg extends AbstractSpringArg {

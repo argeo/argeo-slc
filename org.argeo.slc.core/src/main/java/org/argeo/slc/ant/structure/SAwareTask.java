@@ -13,21 +13,21 @@ import org.argeo.slc.ant.spring.AbstractSpringTask;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
-import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 
 /** Ant task that can be registered within a structure. */
 public abstract class SAwareTask extends AbstractSpringTask implements
 		StructureElement {
-	private TreeSPath path;
+	private String path;
+	private TreeSPath treeSPath;
 	private final List<AbstractSpringArg> sAwareArgs = new Vector<AbstractSpringArg>();
 
 	private StructureElementArg structureElementArg;
 
 	@Override
 	public void init() throws BuildException {
-		StructureRegistry registry = getRegistry();
+		StructureRegistry<TreeSPath> registry = getRegistry();
 		Target target = getOwningTarget();
 
 		TreeSPath targetPath = createTargetPath(target);
@@ -58,25 +58,30 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 	 * @see StructureRegistry
 	 */
 	public final void execute() throws BuildException {
-		// register the task in the structure
-		TreeSPath targetPath = createTargetPath(getOwningTarget());
-		TreeSPath taskPath = targetPath.createChild(getTaskName()
-				+ targetPath.listChildren(getRegistry()).size());
+		if (path == null) {
+			// register the task in the structure
+			TreeSPath targetPath = createTargetPath(getOwningTarget());
+			TreeSPath taskPath = targetPath.createChild(getTaskName()
+					+ targetPath.listChildren(getRegistry()).size());
+
+			treeSPath = taskPath;
+		} else {
+			treeSPath = TreeSPath.parseToCreatePath(path);
+		}
+
 		if (structureElementArg != null)
-			getRegistry().register(taskPath,
+			getRegistry().register(treeSPath,
 					structureElementArg.getStructureElement());
 		else
-			getRegistry().register(taskPath, this);
-
-		path = taskPath;
+			getRegistry().register(treeSPath, this);
 
 		// notify registered args
 		for (AbstractSpringArg arg : sAwareArgs) {
 			Object obj = arg.getBeanInstance();
 
 			if (obj instanceof StructureAware) {
-				StructureAware sAwareT = (StructureAware) obj;
-				sAwareT.notifyCurrentPath(getRegistry(), taskPath);
+				StructureAware<TreeSPath> sAwareT = (StructureAware<TreeSPath>) obj;
+				sAwareT.notifyCurrentPath(getRegistry(), treeSPath);
 			}
 		}
 
@@ -85,10 +90,10 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 		if (mode.equals(StructureRegistry.ALL)) {
 			executeActions(mode);
 		} else if (mode.equals(StructureRegistry.ACTIVE)) {
-			List<StructurePath> activePaths = getRegistry().getActivePaths();
+			List<TreeSPath> activePaths = getRegistry().getActivePaths();
 
-			if (activePaths.contains(targetPath)) {
-				if (activePaths.contains(taskPath)) {
+			if (activePaths.contains(treeSPath)) {
+				if (activePaths.contains(treeSPath)) {
 					executeActions(mode);
 				}
 			}
@@ -108,21 +113,21 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 	}
 
 	/** Gets the underlying structure registry. */
-	protected StructureRegistry getRegistry() {
-		return (StructureRegistry) getProject().getReference(
+	protected StructureRegistry<TreeSPath> getRegistry() {
+		return (StructureRegistry<TreeSPath>) getProject().getReference(
 				SlcProjectHelper.REF_STRUCTURE_REGISTRY);
 	}
 
-	/** Creates the path for a given Ant target. */
+	/** Creates the treeSPath for a given Ant target. */
 	protected static TreeSPath createTargetPath(Target target) {
-		TreeSPath projectPath = SlcProjectHelper.getProjectPath(target
-				.getProject());
+		TreeSPath projectPath = (TreeSPath) target.getProject().getReference(
+				SlcProjectHelper.REF_PROJECT_PATH);
 		return projectPath.createChild(target.getName());
 	}
 
-	/** Gets the path under which this task is registered. */
-	public TreeSPath getPath() {
-		return path;
+	/** Gets the treeSPath under which this task is registered. */
+	public TreeSPath getTreeSPath() {
+		return treeSPath;
 	}
 
 	public String getLabel() {
@@ -134,6 +139,9 @@ public abstract class SAwareTask extends AbstractSpringTask implements
 		}
 	}
 
+	public void setPath(String path) {
+		this.path = path;
+	}
 }
 
 class StructureElementArg extends AbstractSpringArg {
