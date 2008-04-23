@@ -1,7 +1,5 @@
 package org.argeo.slc.example;
 
-import org.argeo.slc.core.structure.SimpleSElement;
-import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestRun;
@@ -16,9 +14,4 @@ public class ContextExampleTestDef extends TreeSRelatedHelper implements
 		ContextUtils
 				.compareReachedExpected(data, testRun.getTestResult(), this);
 	}
-
-	public StructureElement getStructureElement(String key) {
-		return new SimpleSElement(key);
-	}
-
 }
