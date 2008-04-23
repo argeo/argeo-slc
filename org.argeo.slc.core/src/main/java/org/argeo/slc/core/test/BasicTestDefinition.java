@@ -9,7 +9,7 @@ public class BasicTestDefinition extends TreeSRelatedHelper implements
 		TestDefinition {
 
 	public void execute(TestRun testRun) {
-		if (testRun.getTestData() instanceof BasicTestData) {
+		if (testRun.<TestData> getTestData() instanceof BasicTestData) {
 			BasicTestData testData = testRun.getTestData();
 			TestResult result = testRun.getTestResult();
 
@@ -27,7 +27,7 @@ public class BasicTestDefinition extends TreeSRelatedHelper implements
 				result.addResultPart(new SimpleResultPart(TestStatus.ERROR,
 						"Could not compare", e));
 			}
-		} else if (testRun.getTestData() instanceof ContextAware) {
+		} else if (testRun.<TestData> getTestData() instanceof ContextAware) {
 			TestData testData = testRun.getTestData();
 			ContextUtils.compareReachedExpected((ContextAware) testData,
 					testRun.getTestResult(), this);
