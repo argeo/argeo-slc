@@ -5,6 +5,7 @@ import org.springframework.ws.server.endpoint.AbstractMarshallingPayloadEndpoint
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
@@ -28,11 +29,14 @@ public class SlcExecutionStepsRequestEp extends
 			uuid = msg.getSlcExecutionUuid();
 			SlcExecution slcExecution = slcExecutionDao.getSlcExecution(uuid);
 
+			if (slcExecution == null)
+				throw new SlcException("Could not find slc execution " + uuid);
+
 			slcExecution.getSteps().addAll(msg.getSteps());
 
 			slcExecutionDao.update(slcExecution);
 			log.debug("Added " + msg.getSteps().size()
-					+ "steps to SlcExecution with uuid "
+					+ " steps to SlcExecution with uuid "
 					+ slcExecution.getUuid());
 			return null;
 		} catch (Exception e) {

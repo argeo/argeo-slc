@@ -37,6 +37,8 @@
 					<webAppSourceDirectory>
 						../org.argeo.slc.webapp/src/main/webapp
 					</webAppSourceDirectory>
+					<stopKey>stopKey</stopKey>
+					<stopPort>8081</stopPort>
 					<scanTargetPatterns>
 						<scanTargetPattern>
 							<directory>
