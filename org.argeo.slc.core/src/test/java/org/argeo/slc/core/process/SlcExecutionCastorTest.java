@@ -1,6 +1,7 @@
 package org.argeo.slc.core.process;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
@@ -21,10 +22,15 @@ import org.springframework.oxm.Unmarshaller;
 public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());
 
-	public void testMarshalling() throws Exception {
-		Marshaller marshaller = getBean("marshaller");
-		Unmarshaller unmarshaller = getBean("marshaller");
+	private Marshaller marshaller;
+	private Unmarshaller unmarshaller;
 
+	public void setUp() {
+		marshaller = getBean("marshaller");
+		unmarshaller = getBean("marshaller");
+	}
+
+	public void testMarshalling() throws Exception {
 		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
 
 		SlcExecutionRequest msgSave = new SlcExecutionRequest();
@@ -54,15 +60,18 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 
 		SlcExecutionRequest msgSaveUnm = unmarshall(unmarshaller, msgSaveXml);
 		assertNotNull(msgSaveUnm);
-		SlcExecutionTestUtils.assertSlcExecution(slcExec, msgSaveUnm.getSlcExecution());
+		SlcExecutionTestUtils.assertSlcExecution(slcExec, msgSaveUnm
+				.getSlcExecution());
 
 		SlcExecutionStepsRequest msgNotifUnm = unmarshall(unmarshaller,
 				msgNotifXml);
 		assertNotNull(msgNotifUnm);
 		assertEquals(slcExec.getUuid(), msgNotifUnm.getSlcExecutionUuid());
 		assertEquals(2, msgNotifUnm.getSteps().size());
-		SlcExecutionTestUtils.assertSlcExecutionStep(step0, msgNotifUnm.getSteps().get(0));
-		SlcExecutionTestUtils.assertSlcExecutionStep(step1, msgNotifUnm.getSteps().get(1));
+		SlcExecutionTestUtils.assertSlcExecutionStep(step0, msgNotifUnm
+				.getSteps().get(0));
+		SlcExecutionTestUtils.assertSlcExecutionStep(step1, msgNotifUnm
+				.getSteps().get(1));
 
 		SlcExecution slcExecUnm = msgSaveUnm.getSlcExecution();
 		slcExecUnm.getSteps().addAll(msgNotifUnm.getSteps());
@@ -70,6 +79,10 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		SlcExecutionRequest msgUpdate = new SlcExecutionRequest();
 		msgUpdate.setSlcExecution(slcExecUnm);
 		String msgUpdateXml = marshallAndLog(marshaller, msgUpdate);
+		
+		SlcExecutionRequest msgUpdateUnm = unmarshall(unmarshaller,
+				msgUpdateXml);
+		assertNotNull(msgUpdateUnm);
 	}
 
 	private String marshallAndLog(Marshaller marshaller, Object obj)

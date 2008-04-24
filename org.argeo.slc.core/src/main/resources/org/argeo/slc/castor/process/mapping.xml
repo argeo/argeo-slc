@@ -24,7 +24,8 @@
 		<field name="uuid" identity="true">
 			<bind-xml node="attribute" />
 		</field>
-		<field name="steps" collection="vector">
+		<field name="steps" collection="vector"
+			type="org.argeo.slc.core.process.SlcExecutionStep">
 			<bind-xml auto-naming="deriveByClass" location="steps" />
 		</field>
 	</class>

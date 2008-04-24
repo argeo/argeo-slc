@@ -12,6 +12,7 @@ import org.apache.tools.ant.Project;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionNotifier;
 import org.argeo.slc.core.process.SlcExecutionStep;
+import org.argeo.slc.core.process.WebServiceSlcExecutionNotifier;
 
 public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		ProjectRelatedBuildListener {
@@ -34,7 +35,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 
 	public void init(Project project) {
 		if (this.project != null) {
-			throw new SlcAntException("BuildListener already initialized");
+			throw new SlcAntException("Build listener already initialized");
 		}
 
 		this.project = project;
@@ -74,6 +75,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 			if (currentStep == null) {
 				currentStep = new SlcExecutionStep("LOG", event.getMessage());
 				notifyStep(slcExecution, currentStep);
+				currentStep = null;
 			} else {
 				currentStep.addLog(event.getMessage());
 			}
@@ -193,6 +195,12 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 			// avoid StackOverflow if notification calls Log4j itself.
 			return;
 		}
+
+		if (event.getLoggerName().equals(
+				WebServiceSlcExecutionNotifier.class.getName())) {
+			return;
+		}
+
 		isLogging = true;
 
 		try {
@@ -202,10 +210,8 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 				if (currentStep == null) {
 					currentStep = new SlcExecutionStep("LOG", event
 							.getMessage().toString());
-					notifyStep(slcExecution, currentStep);
-				} else {
-					currentStep.addLog(event.getMessage().toString());
 				}
+				currentStep.addLog(event.getMessage().toString());
 			} else {
 				// TODO: log before initialization?
 			}
