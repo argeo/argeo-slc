@@ -122,10 +122,6 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-changelog-plugin</artifactId>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 			</plugin>
@@ -334,21 +330,21 @@
 			<uniqueVersion>false</uniqueVersion>
 			<id>argeo-restricted</id>
 			<name>Argeo FOSS Repository</name>
-			<url>scpexe://argeo.org/var/argeo/maven2/argeo</url>
+			<url>file:///var/argeo/maven2/argeo</url>
 		</repository>
 		<snapshotRepository>
 			<uniqueVersion>true</uniqueVersion>
 			<id>argeo-snapshots-restricted</id>
 			<name>Argeo FOSS Snapshots Repository</name>
 			<url>
-				scpexe://argeo.org/var/argeo/maven2/argeo-snapshots
+				file:///var/argeo/maven2/argeo-snapshots
 			</url>
 		</snapshotRepository>
 		<site>
 			<id>argeo-slc-site</id>
 			<name>SLC Site</name>
 			<url>
-				scpexe://argeo.org/var/argeo/projects/SLC/www/site
+				file:///var/argeo/projects/SLC/www/site
 			</url>
 		</site>
 	</distributionManagement>
