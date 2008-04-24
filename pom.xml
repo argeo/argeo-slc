@@ -24,6 +24,18 @@
 			scm:svn:https://www.argeo.org/svn/slc/trunk
 		</connection>
 	</scm>
+	  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <excludeModules>org.argeo.slc</excludeModules>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
 	<distributionManagement>
 		<site>
 			<id>argeo-slc-site</id>
