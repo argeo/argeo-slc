@@ -340,7 +340,6 @@
 				file:///var/argeo/maven2/argeo-snapshots
 			</url>
 		</snapshotRepository>
-		<!-- 
 		<site>
 			<id>argeo-slc-site</id>
 			<name>SLC Site</name>
@@ -348,6 +347,5 @@
 				file:///var/argeo/projects/SLC/www/site/${project.version}
 			</url>
 		</site>
-		-->
 	</distributionManagement>
 </project>
