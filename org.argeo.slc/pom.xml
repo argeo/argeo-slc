@@ -344,7 +344,7 @@
 			<id>argeo-slc-site</id>
 			<name>SLC Site</name>
 			<url>
-				file:///var/argeo/projects/SLC/www/site
+				file:///var/argeo/projects/SLC/www/site/${project.version}
 			</url>
 		</site>
 	</distributionManagement>
