@@ -3,21 +3,29 @@ package org.argeo.slc.ant;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.Vector;
 
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.LogManager;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.helper.ProjectHelper2;
 
+import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.core.process.SlcExecutionNotifier;
 import org.argeo.slc.core.structure.DefaultSRegistry;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureRegistry;
@@ -178,12 +186,13 @@ public class SlcProjectHelper extends ProjectHelper2 {
 		context.registerShutdownHook();
 		project.addReference(REF_ROOT_CONTEXT, context);
 
+		createAndRegisterSlcExecution(project);
 		// Add build listeners declared in Spring context
-		Map<String, BuildListener> listeners = context.getBeansOfType(
-				BuildListener.class, false, true);
-		for(BuildListener listener: listeners.values()){
-			project.addBuildListener(listener);
-		}
+//		Map<String, BuildListener> listeners = context.getBeansOfType(
+//				BuildListener.class, false, true);
+//		for (BuildListener listener : listeners.values()) {
+//			project.addBuildListener(listener);
+//		}
 	}
 
 	/** Loads the SLC specific Ant tasks. */
@@ -220,5 +229,37 @@ public class SlcProjectHelper extends ProjectHelper2 {
 			throw new SlcAntException("Cannot load task definitions", e);
 		}
 		return defs;
+	}
+
+	protected static void createAndRegisterSlcExecution(Project project) {
+		SlcExecution slcExecution = new SlcExecution();
+		slcExecution.setUuid(UUID.randomUUID().toString());
+		try {
+			slcExecution.setHost(InetAddress.getLocalHost().getHostName());
+		} catch (UnknownHostException e) {
+			slcExecution.setHost(SlcExecution.UNKOWN_HOST);
+		}
+
+		if (project.getReference(SlcProjectHelper.REF_ROOT_CONTEXT) != null) {
+			slcExecution.setType(SlcExecutionBuildListener.SLC_ANT_TYPE);
+		} else {
+			slcExecution.setType(SlcExecutionBuildListener.ANT_TYPE);
+		}
+
+		slcExecution.setPath(project.getProperty("ant.file"));
+		slcExecution.setStatus(SlcExecution.STATUS_RUNNING);
+
+		project.addReference(SlcExecutionBuildListener.REF_SLC_EXECUTION,
+				slcExecution);
+
+		// Add build listeners declared in Spring context
+		Map<String, ProjectRelatedBuildListener> listeners = ((ListableBeanFactory) project
+				.getReference(REF_ROOT_CONTEXT)).getBeansOfType(
+				ProjectRelatedBuildListener.class, false, true);
+		for (ProjectRelatedBuildListener listener : listeners.values()) {
+			listener.init(project);
+			project.addBuildListener(listener);
+		}
+
 	}
 }
