@@ -10,10 +10,20 @@
 <h1>SLC Execution List</h1>
 
 <table>
+	<tr>
+		<td></td>
+		<td>UUID</td>
+		<td>STATUS</td>
+		<td>HOST</td>
+		<td>TYPE</td>		
+	</tr>
 	<c:forEach items="${slcExecutions}" var="slcExecution">
 		<tr>
+			<td><a href="slcExecutionView.web?uuid=${slcExecution.uuid}">View details</a></td>
 			<td>${slcExecution.uuid}</td>
 			<td>${slcExecution.status}</td>
+			<td>${slcExecution.host}</td>
+			<td>${slcExecution.type}</td>
 		</tr>
 	</c:forEach>
 </table>

@@ -16,6 +16,11 @@
 		<property name="viewName" value="slcExecutionList" />
 	</bean>
 
+	<bean name="/slcExecutionView.web"
+		class="org.argeo.slc.web.mvc.process.SlcExecutionViewController">
+		<constructor-arg ref="slcExecutionDao" />
+		<property name="viewName" value="slcExecutionView" />
+	</bean>
 
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
