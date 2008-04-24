@@ -8,9 +8,15 @@
 		<property name="notifiers">
 			<list>
 				<ref bean="fileNotifier" />
-				<ref bean="webServiceNotifier" />
+				<!-- <ref bean="webServiceNotifier" />-->
 			</list>
 		</property>
+	</bean>
+
+	<bean id="marshaller"
+		class="org.springframework.oxm.castor.CastorMarshaller">
+		<property name="mappingLocation"
+			value="classpath:org/argeo/slc/castor/process/mapping.xml" />
 	</bean>
 
 	<bean name="fileNotifier"
@@ -18,16 +24,10 @@
 		<property name="basePath" value="${slc.workDir}/process" />
 		<property name="marshaller" ref="marshaller" />
 	</bean>
-
+<!-- 
 	<bean name="webServiceNotifier"
 		class="org.argeo.slc.core.process.WebServiceSlcExecutionNotifier">
 		<property name="template" ref="webServiceTemplate" />
-	</bean>
-
-	<bean id="marshaller"
-		class="org.springframework.oxm.castor.CastorMarshaller">
-		<property name="mappingLocation"
-			value="classpath:org/argeo/slc/castor/process/mapping.xml" />
 	</bean>
 
 	<bean id="webServiceTemplate"
@@ -41,5 +41,5 @@
 
 	<bean id="messageFactory"
 		class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
-
+-->
 </beans>
