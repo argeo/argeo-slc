@@ -24,4 +24,13 @@
 			scm:svn:https://www.argeo.org/svn/slc/trunk
 		</connection>
 	</scm>
+	<distributionManagement>
+		<site>
+			<id>argeo-slc-site</id>
+			<name>SLC Site</name>
+			<url>
+				file:///var/argeo/projects/SLC/www/site/${project.version}
+			</url>
+		</site>
+	</distributionManagement>
 </project>
