@@ -68,6 +68,13 @@ public class SlcExecution {
 		this.status = status;
 	}
 
+	public SlcExecutionStep currentStep() {
+		if (steps.size() > 0)
+			return steps.get(steps.size() - 1);
+		else
+			return null;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof SlcExecution) {
