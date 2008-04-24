@@ -12,10 +12,12 @@
 	<url>
 		http://www.argeo.org/projects/slc/${project.artfactId}/${project.version}
 	</url>
+	<!-- 
 	<modules>
 		<module>../org.argeo.slc.core</module>
 		<module>../org.argeo.slc.example</module>
 	</modules>
+	 -->
 	<properties>
 		<version.spring>2.5.3</version.spring>
 	</properties>
