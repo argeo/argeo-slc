@@ -11,7 +11,7 @@
 	</parent>
 	<artifactId>org.argeo.slc.webapp</artifactId>
 	<packaging>war</packaging>
-	<name>SLC Web Application</name>
+	<name>Argeo SLC Web Application</name>
 	<build>
 		<plugins>
 			<plugin>
