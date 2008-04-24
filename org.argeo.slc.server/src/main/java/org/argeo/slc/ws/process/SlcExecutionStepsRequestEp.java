@@ -22,16 +22,24 @@ public class SlcExecutionStepsRequestEp extends
 
 	@Override
 	protected Object invokeInternal(Object requestObject) throws Exception {
-		SlcExecutionStepsRequest msg = (SlcExecutionStepsRequest) requestObject;
-		String uuid = msg.getSlcExecutionUuid();
-		SlcExecution slcExecution = slcExecutionDao.getSlcExecution(uuid);
+		String uuid = null;
+		try {
+			SlcExecutionStepsRequest msg = (SlcExecutionStepsRequest) requestObject;
+			uuid = msg.getSlcExecutionUuid();
+			SlcExecution slcExecution = slcExecutionDao.getSlcExecution(uuid);
 
-		slcExecution.getSteps().addAll(msg.getSteps());
+			slcExecution.getSteps().addAll(msg.getSteps());
 
-		slcExecutionDao.update(slcExecution);
-		log.debug("Added " + msg.getSteps().size()
-				+ "steps to SlcExecution with uuid " + slcExecution.getUuid());
-		return null;
+			slcExecutionDao.update(slcExecution);
+			log.debug("Added " + msg.getSteps().size()
+					+ "steps to SlcExecution with uuid "
+					+ slcExecution.getUuid());
+			return null;
+		} catch (Exception e) {
+			log.error("Could not update SlcExecution " + uuid
+					+ " with additional steps", e);
+			throw e;
+		}
 	}
 
 }
