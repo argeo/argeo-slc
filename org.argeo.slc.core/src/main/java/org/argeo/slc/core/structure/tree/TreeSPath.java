@@ -19,12 +19,17 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	private String name;
 	private Character separator = DEFAULT_SEPARATOR;
 
+	private String asUniqueString;
+
 	/** For ORM */
 	private Long tid;
 
 	public String getAsUniqueString() {
-		String parentStr = parent != null ? parent.getAsUniqueString() : "";
-		return parentStr + separator + name;
+		if (asUniqueString == null) {
+			String parentStr = parent != null ? parent.getAsUniqueString() : "";
+			asUniqueString = parentStr + separator + name;
+		}
+		return asUniqueString;
 	}
 
 	/** Sets all the required data from a string. */
@@ -32,6 +37,7 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		TreeSPath twin = parseToCreatePath(str, getSeparator());
 		name = twin.name;
 		parent = twin.parent;
+		asUniqueString = getAsUniqueString();
 	}
 
 	/** The separator actually used by this path. */
@@ -123,11 +129,26 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		return depthImpl(this);
 	}
 
-	private static int depthImpl(TreeSPath path) {
+	protected int depthImpl(TreeSPath path) {
 		if (path.getParent() == null) {
 			return 1;
 		} else {
 			return depthImpl(path.getParent()) + 1;
+		}
+	}
+
+	public List<TreeSPath> getHierarchyAsList() {
+		List<TreeSPath> lst = new Vector<TreeSPath>();
+		addParentToList(lst, this);
+		lst.add(this);
+		return lst;
+	}
+
+	protected void addParentToList(List<TreeSPath> lst, TreeSPath current) {
+		TreeSPath parent = current.getParent();
+		if (parent != null) {
+			addParentToList(lst, parent);
+			lst.add(parent);
 		}
 	}
 
@@ -145,6 +166,11 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		return false;
 	}
 
+	@Override
+	public int hashCode() {
+		return getAsUniqueString().hashCode();
+	}
+
 	public int compareTo(StructurePath o) {
 		return getAsUniqueString().compareTo(o.getAsUniqueString());
 	}
@@ -157,7 +183,11 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 		this.tid = tid;
 	}
 
-	/** Sets the separator character to use. */
+	/**
+	 * Sets the separator character to use.
+	 * 
+	 * @deprecated
+	 */
 	public void setSeparator(Character separator) {
 		this.separator = separator;
 	}

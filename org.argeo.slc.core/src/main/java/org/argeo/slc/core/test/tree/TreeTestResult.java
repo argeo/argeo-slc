@@ -14,6 +14,7 @@ import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionAware;
 import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.core.structure.StructureAware;
+import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.NumericTRId;
@@ -26,7 +27,8 @@ import org.argeo.slc.core.test.TestResultPart;
  * Complex implementation of a test result compatible with a tree based
  * structure.
  */
-public class TreeTestResult implements TestResult, StructureAware<TreeSPath>, SlcExecutionAware {
+public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
+		SlcExecutionAware {
 	private Log log = LogFactory.getLog(TreeTestResult.class);
 	/** For ORM */
 	private Long tid;
@@ -90,7 +92,19 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>, Sl
 		}
 	}
 
-	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry, TreeSPath path) {
+	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
+			TreeSPath path) {
+		if (registry != null) {
+			for (TreeSPath p : path.getHierarchyAsList()) {
+				if (!pathNames.containsKey(p)) {
+					StructureElement elem = registry.getElement(p);
+					if (elem != null) {
+						pathNames.put(p, elem.getLabel());
+					}
+				}
+			}
+		}
+
 		currentPath = (TreeSPath) path;
 		this.registry = registry;
 	}
@@ -142,10 +156,9 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>, Sl
 	}
 
 	/** Sets the related registry. */
-//	public void setRegistry(StructureRegistry<TreeSPath> registry) {
-//		this.registry = registry;
-//	}
-
+	// public void setRegistry(StructureRegistry<TreeSPath> registry) {
+	// this.registry = registry;
+	// }
 	public Date getCloseDate() {
 		return closeDate;
 	}
@@ -158,9 +171,17 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>, Sl
 	public void notifySlcExecution(SlcExecution slcExecution) {
 		currentSlcExecutionUuid = slcExecution.getUuid();
 		SlcExecutionStep step = slcExecution.currentStep();
-		if(step!=null){
+		if (step != null) {
 			currentSlcExecutionStepUuid = step.getUuid();
 		}
+	}
+
+	public SortedMap<TreeSPath, String> getPathNames() {
+		return pathNames;
+	}
+
+	public void setPathNames(SortedMap<TreeSPath, String> pathNames) {
+		this.pathNames = pathNames;
 	}
 
 }

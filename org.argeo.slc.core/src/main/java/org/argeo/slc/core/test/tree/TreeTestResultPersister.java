@@ -30,7 +30,14 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 		try {
 			TreeTestResult persistedResult = testResultDao
 					.getTestResult(partStruct.resultId);
-
+			
+			if(persistedResult==null){
+				testResultDao.create(partStruct.result);
+			}
+			else{
+				testResultDao.update(partStruct.result);
+			}
+/*
 			TreeSPath path = treeSPathDao.getOrCreate(partStruct.path);
 
 			StructureRegistry<TreeSPath> localRegistry = partStruct.result
@@ -64,7 +71,7 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 					log.trace("Part: " + partStruct.part);
 				}
 				testResultDao.update(persistedResult);
-			}
+			}*/
 		} catch (Exception e) {
 			log.error("Could not persist part for result #"
 					+ partStruct.resultId, e);
@@ -111,30 +118,5 @@ public class TreeTestResultPersister extends AsynchronousTreeTestResultListener 
 	public void setTreeSRegistryDao(TreeSRegistryDao treeSRegistryDao) {
 		this.treeSRegistryDao = treeSRegistryDao;
 	}
-/*
-	private void syncPath(TreeSRegistry registry,
-			StructureRegistry<TreeSPath> localRegistry, TreeSPath path) {
-		if (path.getParent() != null) {
-			TreeSPath parent = treeSPathDao.getOrCreate(path.getParent());
-			syncPath(registry, localRegistry, parent);
-		}
 
-		if (registry.getElement(path) == null) {
-			if (localRegistry != null) {
-				registry.register(path, localRegistry.getElement(path));
-			} else {
-				registry.register(path, new SimpleSElement(path.getName()));
-			}
-			treeSRegistryDao.update(registry);
-		} else {
-			if (localRegistry != null) {
-				StructureElement sElement = localRegistry.getElement(path);
-				if (sElement != null) {
-					registry.register(path, sElement);
-					treeSRegistryDao.update(registry);
-				}
-			}
-		}
-
-	}*/
 }

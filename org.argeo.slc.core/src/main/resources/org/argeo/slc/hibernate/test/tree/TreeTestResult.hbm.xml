@@ -17,10 +17,26 @@
 		<map name="resultParts" table="RESULT_PARTS_MAP" cascade="all"
 			lazy="false" sort="natural">
 			<key column="PARENT_ID" />
-			<map-key-many-to-many
+			<!-- 
+				<map-key-many-to-many
 				class="org.argeo.slc.core.structure.tree.TreeSPath" column="PATH" />
+			-->
+			<composite-map-key
+				class="org.argeo.slc.core.structure.tree.TreeSPath">
+				<key-property name="asUniqueString" column="PATH" />
+			</composite-map-key>
 			<many-to-many class="PartSubList" column="PART_SUB_LIST_ID"
 				unique="true" lazy="false" />
+		</map>
+
+		<map name="pathNames" table="RESULT_PATH_NAMES_MAP"
+			cascade="all" lazy="false" sort="natural">
+			<key column="PARENT_ID" />
+			<composite-map-key
+				class="org.argeo.slc.core.structure.tree.TreeSPath">
+				<key-property name="asUniqueString" column="PATH" />
+			</composite-map-key>
+			<element column="NAME" type="string" />
 		</map>
 	</class>
 </hibernate-mapping>

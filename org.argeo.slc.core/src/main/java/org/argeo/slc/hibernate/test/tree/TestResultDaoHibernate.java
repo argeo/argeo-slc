@@ -48,7 +48,7 @@ public class TestResultDaoHibernate extends HibernateDaoSupport implements
 	public List<TreeTestResult> listResults(TreeSPath path) {
 		List<TreeTestResult> list = getHibernateTemplate().find(
 				"from TreeTestResult res where ? in indices(res.resultParts)",
-				path);
+				path.getAsUniqueString());
 		return list;
 	}
 

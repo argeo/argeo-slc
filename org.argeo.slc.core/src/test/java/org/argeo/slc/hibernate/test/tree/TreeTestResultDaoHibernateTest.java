@@ -35,7 +35,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		String pathParentStr = "/root/testParent";
 		String pathStr = pathParentStr + "/test";
 		TreeSPath path = TreeSPath.parseToCreatePath(pathStr);
-		treeSPathDao.create(path);
+		//treeSPathDao.create(path);
 
 		TreeTestResult treeTestResult = new TreeTestResult();
 		treeTestResult.notifySlcExecution(slcExecution);
