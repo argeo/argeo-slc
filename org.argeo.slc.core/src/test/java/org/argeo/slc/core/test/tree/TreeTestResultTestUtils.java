@@ -31,6 +31,15 @@ public abstract class TreeTestResultTestUtils {
 		return partFailed;
 	}
 	
+	public static SimpleResultPart createSimpleResultPartError(){
+		SimpleResultPart partFailed = new SimpleResultPart();
+		String msgFailed = "crashed";
+		partFailed.setStatus(TestStatus.ERROR);
+		partFailed.setMessage(msgFailed);
+		partFailed.setException(new Exception("Test Exception"));
+		return partFailed;
+	}
+	
 	private TreeTestResultTestUtils(){
 		
 	}

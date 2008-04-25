@@ -3,6 +3,7 @@ package org.argeo.slc.hibernate.test.tree;
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleResultPartFailed;
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleResultPartPassed;
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleTreeTestResult;
+import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleResultPartError;
 
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionStep;
@@ -36,6 +37,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 
 		ttr.addResultPart(createSimpleResultPartPassed());
 		ttr.addResultPart(createSimpleResultPartFailed());
+		ttr.addResultPart(createSimpleResultPartError());
 
 		testResultDao.create(ttr);
 
