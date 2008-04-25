@@ -168,9 +168,9 @@ public class SlcProjectHelper extends ProjectHelper2 {
 	}
 
 	/** Gets the path of a project (root). */
-	private static TreeSPath getProjectPath(Project project) {
-		return (TreeSPath) project.getReference(REF_PROJECT_PATH);
-	}
+//	private static TreeSPath getProjectPath(Project project) {
+//		return (TreeSPath) project.getReference(REF_PROJECT_PATH);
+//	}
 
 	/** Initializes the Spring application context. */
 	private void initSpringContext(Project project) {

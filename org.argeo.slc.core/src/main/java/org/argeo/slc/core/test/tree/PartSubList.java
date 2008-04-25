@@ -21,6 +21,9 @@ public class PartSubList {
 
 	private List<TestResultPart> parts = new Vector<TestResultPart>();
 
+	private String slcExecutionUuid;
+	private String slcExecutionStepUuid;
+
 	/** Gets the result parts. */
 	public List<TestResultPart> getParts() {
 		return parts;
@@ -39,9 +42,25 @@ public class PartSubList {
 		this.tid = tid;
 	}
 
-	public Boolean getIsPassed(){
-		for(TestResultPart part: parts){
-			if(part.getStatus()!=TestStatus.PASSED){
+	public String getSlcExecutionUuid() {
+		return slcExecutionUuid;
+	}
+
+	public void setSlcExecutionUuid(String slcExecutionUuid) {
+		this.slcExecutionUuid = slcExecutionUuid;
+	}
+
+	public String getSlcExecutionStepUuid() {
+		return slcExecutionStepUuid;
+	}
+
+	public void setSlcExecutionStepUuid(String slcExecutionStepUuid) {
+		this.slcExecutionStepUuid = slcExecutionStepUuid;
+	}
+
+	public Boolean getIsPassed() {
+		for (TestResultPart part : parts) {
+			if (part.getStatus() != TestStatus.PASSED) {
 				return false;
 			}
 		}

@@ -3,6 +3,9 @@ package org.argeo.slc.hibernate.test.tree;
 import java.util.Date;
 import java.util.List;
 
+import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.core.process.SlcExecutionStep;
+import org.argeo.slc.core.process.SlcExecutionTestUtils;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.NumericTRId;
 import org.argeo.slc.core.test.SimpleResultPart;
@@ -20,8 +23,14 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		TreeSPathDao treeSPathDao = (TreeSPathDao) getContext().getBean(
 				"treeSPathDao");
 
-		TreeTestResultDao testResultDao = (TreeTestResultDao) getContext().getBean(
-				"testResultDao");
+		TreeTestResultDao testResultDao = (TreeTestResultDao) getContext()
+				.getBean("testResultDao");
+
+		// SLC Execution
+		SlcExecution slcExecution = SlcExecutionTestUtils
+				.createSimpleSlcExecution();
+		SlcExecutionStep step = new SlcExecutionStep("LOG", "JUnit step");
+		slcExecution.getSteps().add(step);
 
 		String pathParentStr = "/root/testParent";
 		String pathStr = pathParentStr + "/test";
@@ -29,6 +38,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		treeSPathDao.create(path);
 
 		TreeTestResult treeTestResult = new TreeTestResult();
+		treeTestResult.notifySlcExecution(slcExecution);
 		SimpleResultPart partPassed = new SimpleResultPart();
 		String msgPassed = "message";
 		partPassed.setStatus(TestStatus.PASSED);
@@ -51,25 +61,29 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 
 		testResultDao.create(treeTestResult);
 
-		TreeTestResult treeTestResult2 = (TreeTestResult) testResultDao
+		TreeTestResult ttrPersisted = (TreeTestResult) testResultDao
 				.getTestResult(trId);
-		PartSubList list = treeTestResult2.getResultParts().get(path);
+		PartSubList slPersisted = ttrPersisted.getResultParts().get(path);
+		assertEquals(slcExecution.getUuid(), slPersisted.getSlcExecutionUuid());
+		assertEquals(step.getUuid(), slPersisted.getSlcExecutionStepUuid());
 
-		assertEquals(2, list.getParts().size());
-		SimpleResultPart part0 = (SimpleResultPart) list.getParts().get(0);
+		assertEquals(2, slPersisted.getParts().size());
+		SimpleResultPart part0 = (SimpleResultPart) slPersisted.getParts().get(
+				0);
 		assertEquals(TestStatus.PASSED, part0.getStatus());
 		assertEquals(msgPassed, part0.getMessage());
 
-		SimpleResultPart part1 = (SimpleResultPart) list.getParts().get(1);
+		SimpleResultPart part1 = (SimpleResultPart) slPersisted.getParts().get(
+				1);
 		assertEquals(TestStatus.FAILED, part1.getStatus());
 		assertEquals(msgFailed, part1.getMessage());
 
-		assertEquals(closeDate, treeTestResult2.getCloseDate());
-		
+		assertEquals(closeDate, ttrPersisted.getCloseDate());
+
 		List<TreeTestResult> results = testResultDao.listResults(path);
 		assertEquals(1, results.size());
 		assertEquals(trId, results.get(0).getTestResultId());
-		
+
 	}
 
 	@Override

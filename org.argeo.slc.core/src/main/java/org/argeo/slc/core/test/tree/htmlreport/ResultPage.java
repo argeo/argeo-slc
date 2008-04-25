@@ -138,6 +138,10 @@ class ResultPage {
 
 			PartSubList subList = (PartSubList) result.getResultParts().get(
 					path);
+			buf.append("Related SLC execution:").append(
+					subList.getSlcExecutionUuid()).append("<br/>\n");
+			buf.append("Related SLC execution step:").append(
+					subList.getSlcExecutionUuid()).append("<br/>\n");
 			buf.append("<table border=0>\n");
 			int displayedIndex = 1;// for display only
 			for (TestResultPart part : subList.getParts()) {

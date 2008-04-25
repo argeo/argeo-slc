@@ -8,6 +8,8 @@ import org.argeo.slc.ant.SlcAntConfig;
 import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
 import org.argeo.slc.core.deploy.DeployedSystem;
+import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.core.process.SlcExecutionAware;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.ExecutableTestRun;
@@ -94,6 +96,12 @@ public class SlcTestTask extends SAwareTask {
 					log.trace("Load test result from scanning Spring context");
 			}
 			testRun.setTestResult(result);
+		}
+
+		SlcExecution slcExecution = getSlcExecution();
+		if (result != null && slcExecution != null
+				&& result instanceof SlcExecutionAware) {
+			((SlcExecutionAware) result).notifySlcExecution(slcExecution);
 		}
 
 		if (result != null && result instanceof StructureAware) {

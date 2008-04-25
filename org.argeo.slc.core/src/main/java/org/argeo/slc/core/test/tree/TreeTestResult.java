@@ -10,8 +10,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.SlcException;
+import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.core.process.SlcExecutionAware;
+import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.core.structure.StructureAware;
-import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.NumericTRId;
@@ -24,7 +26,7 @@ import org.argeo.slc.core.test.TestResultPart;
  * Complex implementation of a test result compatible with a tree based
  * structure.
  */
-public class TreeTestResult implements TestResult, StructureAware {
+public class TreeTestResult implements TestResult, StructureAware<TreeSPath>, SlcExecutionAware {
 	private Log log = LogFactory.getLog(TreeTestResult.class);
 	/** For ORM */
 	private Long tid;
@@ -33,14 +35,17 @@ public class TreeTestResult implements TestResult, StructureAware {
 	private List<TestResultListener> listeners = new Vector<TestResultListener>();
 
 	private TreeSPath currentPath;
+	private String currentSlcExecutionUuid;
+	private String currentSlcExecutionStepUuid;
 
 	private Date closeDate;
 
 	private boolean isClosed = false;
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
+	private SortedMap<TreeSPath, String> pathNames = new TreeMap<TreeSPath, String>();
 
-	private StructureRegistry registry;
+	private StructureRegistry<TreeSPath> registry;
 
 	public TestResultId getTestResultId() {
 		return testResultId;
@@ -71,6 +76,8 @@ public class TreeTestResult implements TestResult, StructureAware {
 		PartSubList subList = resultParts.get(currentPath);
 		if (subList == null) {
 			subList = new PartSubList();
+			subList.setSlcExecutionUuid(currentSlcExecutionUuid);
+			subList.setSlcExecutionStepUuid(currentSlcExecutionStepUuid);
 			resultParts.put(currentPath, subList);
 		}
 		subList.getParts().add(part);
@@ -83,7 +90,7 @@ public class TreeTestResult implements TestResult, StructureAware {
 		}
 	}
 
-	public void notifyCurrentPath(StructureRegistry registry, StructurePath path) {
+	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry, TreeSPath path) {
 		currentPath = (TreeSPath) path;
 		this.registry = registry;
 	}
@@ -130,14 +137,14 @@ public class TreeTestResult implements TestResult, StructureAware {
 	}
 
 	/** Gets the related registry (can be null). */
-	public StructureRegistry getRegistry() {
+	public StructureRegistry<TreeSPath> getRegistry() {
 		return registry;
 	}
 
 	/** Sets the related registry. */
-	public void setRegistry(StructureRegistry registry) {
-		this.registry = registry;
-	}
+//	public void setRegistry(StructureRegistry<TreeSPath> registry) {
+//		this.registry = registry;
+//	}
 
 	public Date getCloseDate() {
 		return closeDate;
@@ -146,6 +153,14 @@ public class TreeTestResult implements TestResult, StructureAware {
 	/** Sets the close date (for ORM) */
 	public void setCloseDate(Date closeDate) {
 		this.closeDate = closeDate;
+	}
+
+	public void notifySlcExecution(SlcExecution slcExecution) {
+		currentSlcExecutionUuid = slcExecution.getUuid();
+		SlcExecutionStep step = slcExecution.currentStep();
+		if(step!=null){
+			currentSlcExecutionStepUuid = step.getUuid();
+		}
 	}
 
 }
