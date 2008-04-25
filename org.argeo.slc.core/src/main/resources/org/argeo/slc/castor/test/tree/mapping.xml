@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+
+<mapping>
+	<description>TreeTestResult objects XML mapping</description>
+
+	<class name="org.argeo.slc.core.test.tree.TreeTestResult"
+		auto-complete="false">
+		<field name="numericResultId"
+			type="org.argeo.slc.core.test.NumericTRId" />
+		<field name="closeDate" />
+		<field name="resultParts" collection="map">
+			<bind-xml name="result-part" location="result-parts">
+				<class name="org.exolab.castor.mapping.MapItem">
+					<field name="key"
+						type="org.argeo.slc.core.structure.tree.TreeSPath">
+						<bind-xml name="path" node="attribute" />
+					</field>
+					<field name="value"
+						type="org.argeo.slc.core.test.tree.PartSubList">
+						<bind-xml name="part-sub-list" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+		<field name="pathNames" collection="map">
+			<bind-xml name="path-name" location="path-names">
+				<class name="org.exolab.castor.mapping.MapItem">
+					<field name="key"
+						type="org.argeo.slc.core.structure.tree.TreeSPath">
+						<bind-xml name="path" node="attribute" />
+					</field>
+					<field name="value" type="string">
+						<bind-xml name="name" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+	</class>
+
+	<class name="org.argeo.slc.core.test.tree.PartSubList"
+		auto-complete="false">
+		<field name="slcExecutionUuid" type="string" />
+		<field name="slcExecutionStepUuid" type="string" />
+		<field name="parts" collection="vector"
+			type="org.argeo.slc.core.test.SimpleResultPart">
+			<bind-xml auto-naming="deriveByClass" location="parts" />
+		</field>
+	</class>
+
+	<class name="org.argeo.slc.core.structure.tree.TreeSPath"
+		auto-complete="false">
+		<field name="asUniqueString" type="string" />
+	</class>
+
+	<class name="java.lang.StackTraceElement" auto-complete="false"
+		verify-constructable="false">
+		<field name="declaringClass" type="string" set-method="%1"
+			get-method="getClassName">
+			<bind-xml node="attribute" />
+		</field>
+		<field name="methodName" type="string" set-method="%2"
+			get-method="getMethodName">
+			<bind-xml node="attribute" />
+		</field>
+		<field name="fileName" type="string" set-method="%3"
+			get-method="getFileName">
+			<bind-xml node="attribute" />
+		</field>
+		<field name="lineNumber" type="integer" set-method="%4"
+			get-method="getLineNumber">
+			<bind-xml node="attribute" />
+		</field>
+	</class>
+</mapping>
