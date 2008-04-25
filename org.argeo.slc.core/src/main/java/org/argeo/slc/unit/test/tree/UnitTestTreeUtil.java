@@ -1,6 +1,7 @@
 package org.argeo.slc.unit.test.tree;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 
@@ -28,6 +29,16 @@ public class UnitTestTreeUtil {
 			}
 			assertPartSubList(lstExpected, lstReached);
 		}
+
+		assertEquals(expected.getPathNames().size(), reached.getPathNames()
+				.size());
+		for (TreeSPath path : expected.getPathNames().keySet()) {
+			String nameExpected = expected.getPathNames().get(path);
+			String nameReached = expected.getPathNames().get(path);
+			assertNotNull(nameReached);
+			assertEquals(nameExpected, nameReached);
+		}
+
 	}
 
 	public static void assertPartSubList(PartSubList lstExpected,
