@@ -12,6 +12,15 @@ public class NumericTRId implements TestResultId {
 
 	private Long value;
 	private DeployedSystemId deployedSystemId;
+	
+	/** For ORM*/
+	public NumericTRId(){
+		
+	}
+
+	public NumericTRId(Long value){
+		this.value = value;
+	}
 
 	/**
 	 * Initializes the long value with the current time (based on
