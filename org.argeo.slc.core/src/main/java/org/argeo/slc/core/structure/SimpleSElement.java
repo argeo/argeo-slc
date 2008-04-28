@@ -1,5 +1,7 @@
 package org.argeo.slc.core.structure;
 
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Basic implementation of <code>StructureElement</code>.
@@ -10,6 +12,7 @@ public class SimpleSElement implements StructureElement {
 	/** For ORM */
 	private Long tid;
 	private String label;
+	private Map<String, String> tags = new TreeMap<String, String>();
 
 	/** For ORM */
 	public SimpleSElement() {
@@ -40,6 +43,14 @@ public class SimpleSElement implements StructureElement {
 
 	void setTid(Long tid) {
 		this.tid = tid;
+	}
+
+	public Map<String, String> getTags() {
+		return tags;
+	}
+
+	public void setTags(Map<String, String> tags) {
+		this.tags = tags;
 	}
 
 }

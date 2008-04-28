@@ -29,14 +29,16 @@
 				unique="true" lazy="false" />
 		</map>
 
-		<map name="pathNames" table="RESULT_PATH_NAMES_MAP"
+		<map name="elements" table="RESULT_ELEMENTS_MAP"
 			cascade="all" lazy="false" sort="natural">
 			<key column="PARENT_ID" />
 			<composite-map-key
 				class="org.argeo.slc.core.structure.tree.TreeSPath">
 				<key-property name="asUniqueString" column="PATH" />
 			</composite-map-key>
-			<element column="NAME" type="string" />
+			<!-- element column="NAME" type="string" /-->
+			<many-to-many class="org.argeo.slc.core.structure.SimpleSElement" column="ELEMENT_ID"
+				unique="true" lazy="false" />
 		</map>
 	</class>
 </hibernate-mapping>

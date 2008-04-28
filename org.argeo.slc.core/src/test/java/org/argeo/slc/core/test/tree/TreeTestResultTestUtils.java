@@ -32,7 +32,9 @@ public abstract class TreeTestResultTestUtils {
 		TreeSPath path = TreeSPath.parseToCreatePath(pathStr);
 
 		TreeSRegistry registry = new TreeSRegistry();
-		registry.register(path, new SimpleSElement("Unit Test"));
+		SimpleSElement elem = new SimpleSElement("Unit Test");
+		elem.getTags().put("myTag", "myTagValue");
+		registry.register(path, elem);
 
 		TreeTestResult ttr = createSimpleTreeTestResult();
 		ttr.notifySlcExecution(slcExecution);

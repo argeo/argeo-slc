@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 
+import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestResultPart;
@@ -30,15 +31,31 @@ public class UnitTestTreeUtil {
 			assertPartSubList(lstExpected, lstReached);
 		}
 
-		assertEquals(expected.getPathNames().size(), reached.getPathNames()
+		assertEquals(expected.getElements().size(), reached.getElements()
 				.size());
-		for (TreeSPath path : expected.getPathNames().keySet()) {
-			String nameExpected = expected.getPathNames().get(path);
-			String nameReached = expected.getPathNames().get(path);
-			assertNotNull(nameReached);
-			assertEquals(nameExpected, nameReached);
+		for (TreeSPath path : expected.getElements().keySet()) {
+			// String nameExpected = expected.getElements().get(path);
+			// String nameReached = expected.getElements().get(path);
+			SimpleSElement elemExpected = (SimpleSElement) expected
+					.getElements().get(path);
+			SimpleSElement elemReached = (SimpleSElement) expected
+					.getElements().get(path);
+			assertNotNull(elemReached);
+			assertElements(elemExpected, elemReached);
 		}
 
+	}
+
+	public static void assertElements(SimpleSElement expected,
+			SimpleSElement reached) {
+		assertEquals(expected.getLabel(), reached.getLabel());
+		assertEquals(expected.getTags().size(), reached.getTags().size());
+		for (String tagName : expected.getTags().keySet()) {
+			String expectedTagValue = expected.getTags().get(tagName);
+			String reachedTagValue = reached.getTags().get(tagName);
+			assertNotNull(reachedTagValue);
+			assertEquals(expectedTagValue, reachedTagValue);
+		}
 	}
 
 	public static void assertPartSubList(PartSubList lstExpected,

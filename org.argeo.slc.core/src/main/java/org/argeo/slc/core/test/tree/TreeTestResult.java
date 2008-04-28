@@ -45,7 +45,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	private boolean isClosed = false;
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
-	private SortedMap<TreeSPath, String> pathNames = new TreeMap<TreeSPath, String>();
+	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
 
 	private StructureRegistry<TreeSPath> registry;
 
@@ -96,10 +96,14 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 			TreeSPath path) {
 		if (registry != null) {
 			for (TreeSPath p : path.getHierarchyAsList()) {
-				if (!pathNames.containsKey(p)) {
+				if (!elements.containsKey(p)) {
 					StructureElement elem = registry.getElement(p);
 					if (elem != null) {
-						pathNames.put(p, elem.getLabel());
+						// elements.put(p, elem.getLabel());
+						elements.put(p, elem);
+					} else {
+						log.warn("An element is already registered for path "
+								+ p);
 					}
 				}
 			}
@@ -176,12 +180,12 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		}
 	}
 
-	public SortedMap<TreeSPath, String> getPathNames() {
-		return pathNames;
+	public SortedMap<TreeSPath, StructureElement> getElements() {
+		return elements;
 	}
 
-	public void setPathNames(SortedMap<TreeSPath, String> pathNames) {
-		this.pathNames = pathNames;
+	public void setElements(SortedMap<TreeSPath, StructureElement> pathNames) {
+		this.elements = pathNames;
 	}
 
 }
