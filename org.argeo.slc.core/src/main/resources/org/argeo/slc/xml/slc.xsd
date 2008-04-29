@@ -6,22 +6,13 @@
 	<xs:element name="tree-test-result" type="slc:TreeTestResultType" />
 	<xs:complexType name="TreeTestResultType">
 		<xs:all>
-			<xs:element name="result-id" type="slc:ResultIdType" />
 			<xs:element name="close-date" type="xs:dateTime" />
 			<xs:element name="result-parts" minOccurs="0"
 				type="slc:ResultPartsType" />
 			<xs:element name="elements" minOccurs="0"
 				type="slc:ElementsType" />
 		</xs:all>
-	</xs:complexType>
-	<xs:complexType name="ResultIdType">
-		<xs:all>
-			<xs:element name="numeric-tRId"
-				type="slc:NumericResultIdType" />
-		</xs:all>
-	</xs:complexType>
-	<xs:complexType name="NumericResultIdType">
-		<xs:attribute name="value" type="xs:integer" use="required" />
+		<xs:attribute name="uuid" use="required"/>
 	</xs:complexType>
 	<xs:complexType name="ResultPartsType">
 		<xs:sequence>

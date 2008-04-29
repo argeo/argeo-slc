@@ -4,15 +4,10 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.argeo.slc.core.test.tree">
 	<class name="TreeTestResult" table="TREE_TEST_RESULT">
-		<id name="tid" column="T_ID">
-			<generator class="native" />
-		</id>
+		<id name="uuid" column="UUID"/>
 
 		<property name="closeDate" column="CLOSE_DATE" type="timestamp"
 			not-null="false" />
-
-		<many-to-one name="numericResultId" unique="true"
-			not-null="true" column="TEST_RESULT_ID" cascade="all" lazy="false" />
 
 		<map name="resultParts" table="RESULT_PARTS_MAP" cascade="all"
 			lazy="false" sort="natural">

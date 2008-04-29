@@ -9,16 +9,18 @@
 
 	<bean id="testResult"
 		class="org.argeo.slc.core.test.tree.TreeTestResult">
-		<property name="numericResultId">
-			<bean class="org.argeo.slc.core.test.NumericTRId">
-				<property name="value" value="1" />
-			</bean>
+		<property name="uuid">
+			<bean factory-bean="uuid" factory-method="toString"></bean>
 		</property>
 		<property name="listeners">
 			<list>
 				<ref bean="resultLogger" />
 			</list>
 		</property>
+	</bean>
+
+	<bean name="uuid" class="java.util.UUID" factory-method="randomUUID"
+		scope="prototype">
 	</bean>
 
 	<bean id="resultLogger"

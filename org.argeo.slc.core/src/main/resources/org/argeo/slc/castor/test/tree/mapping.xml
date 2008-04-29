@@ -7,13 +7,10 @@
 		auto-complete="false">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
-		<field name="closeDate" />
-		<field name="numericResultId"
-			type="org.argeo.slc.core.test.NumericTRId">
-			<bind-xml auto-naming="deriveByClass"
-				location="result-id">
-			</bind-xml>
+		<field name="uuid" type="string">
+			<bind-xml name="uuid" node="attribute" />
 		</field>
+		<field name="closeDate" />
 		<field name="resultParts" collection="map">
 			<bind-xml name="result-part" location="result-parts">
 				<class name="org.exolab.castor.mapping.MapItem">
@@ -45,15 +42,6 @@
 					</field>
 				</class>
 			</bind-xml>
-		</field>
-	</class>
-
-	<class name="org.argeo.slc.core.test.NumericTRId"
-		auto-complete="false">
-		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
-			ns-prefix="slc" />
-		<field name="value">
-			<bind-xml node="attribute" />
 		</field>
 	</class>
 

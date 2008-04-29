@@ -17,7 +17,7 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 public class UnitTestTreeUtil {
 	public static void assertTreeTestResult(TreeTestResult expected,
 			TreeTestResult reached) {
-		assertEquals(expected.getTestResultId(), reached.getTestResultId());
+		assertEquals(expected.getUuid(), reached.getUuid());
 		assertDateSec(expected.getCloseDate(), reached.getCloseDate());
 
 		assertEquals(expected.getResultParts().size(), reached.getResultParts()

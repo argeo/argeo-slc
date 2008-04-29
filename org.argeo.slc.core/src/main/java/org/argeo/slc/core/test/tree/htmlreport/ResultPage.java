@@ -44,7 +44,7 @@ class ResultPage {
 		StringBuffer buf = new StringBuffer("");
 		buf.append("<html>\n");
 		buf.append("<header>");
-		buf.append("<title>Result #").append(result.getTestResultId());
+		buf.append("<title>Result #").append(result.getUuid());
 		buf.append("</title>\n");
 		report.addStyles(buf);
 		buf.append("</header>\n");
@@ -53,7 +53,7 @@ class ResultPage {
 
 		// Header
 		buf.append("<a name=\"top\"/>\n");
-		buf.append("<h1>Result #").append(result.getTestResultId()).append(
+		buf.append("<h1>Result #").append(result.getUuid()).append(
 				"</h1>\n");
 		Date closeDate = result.getCloseDate();
 		if (closeDate == null) {

@@ -23,7 +23,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		testResultDao.create(ttr);
 
 		TreeTestResult ttrPersisted = (TreeTestResult) testResultDao
-				.getTestResult(ttr.getTestResultId());
+				.getTestResult(ttr.getUuid());
 		
 		UnitTestTreeUtil.assertTreeTestResult(ttr, ttrPersisted);
 	}
@@ -36,7 +36,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		testResultDao.create(ttr);
 
 		TreeTestResult ttrUpdated = (TreeTestResult) testResultDao
-				.getTestResult(ttr.getTestResultId());
+				.getTestResult(ttr.getUuid());
 		
 		// Modifying ttrUpdated
 		
@@ -64,7 +64,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		
 		// comparison of ttrUpdated and ttrRetrieved
 		TreeTestResult ttrRetrieved = (TreeTestResult) testResultDao
-		.getTestResult(ttr.getTestResultId());
+		.getTestResult(ttr.getUuid());
 		
 		UnitTestTreeUtil.assertTreeTestResult(ttrRetrieved, ttrUpdated);
 	}

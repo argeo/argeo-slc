@@ -5,6 +5,8 @@ import org.argeo.slc.core.deploy.DeployedSystemId;
 /**
  * Basic implementation of test run id based on a long value and a reference to
  * a deployed system id.
+ * 
+ * @deprecated
  */
 public class NumericTRId implements TestResultId {
 	/** For ORM */
@@ -12,13 +14,13 @@ public class NumericTRId implements TestResultId {
 
 	private Long value;
 	private DeployedSystemId deployedSystemId;
-	
-	/** For ORM*/
-	public NumericTRId(){
-		
+
+	/** For ORM */
+	public NumericTRId() {
+
 	}
 
-	public NumericTRId(Long value){
+	public NumericTRId(Long value) {
 		this.value = value;
 	}
 

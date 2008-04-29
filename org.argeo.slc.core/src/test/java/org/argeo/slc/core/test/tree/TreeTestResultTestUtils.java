@@ -1,6 +1,7 @@
 package org.argeo.slc.core.test.tree;
 
 import java.util.Date;
+import java.util.UUID;
 
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionStep;
@@ -8,7 +9,6 @@ import org.argeo.slc.core.process.SlcExecutionTestUtils;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
-import org.argeo.slc.core.test.NumericTRId;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestStatus;
 
@@ -16,8 +16,7 @@ public abstract class TreeTestResultTestUtils {
 
 	public static TreeTestResult createSimpleTreeTestResult() {
 		TreeTestResult treeTestResult = new TreeTestResult();
-		treeTestResult.setNumericResultId(new NumericTRId(System
-				.currentTimeMillis()));
+		treeTestResult.setUuid(UUID.randomUUID().toString());
 		treeTestResult.setCloseDate(new Date());
 		return treeTestResult;
 	}

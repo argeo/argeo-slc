@@ -20,12 +20,12 @@ public abstract class AsynchronousTreeTestResultListener implements
 	private Thread thread;
 
 	private Boolean synchronous = true;
-	
-	protected AsynchronousTreeTestResultListener(){
+
+	protected AsynchronousTreeTestResultListener() {
 		this(true);
 	}
 
-	protected AsynchronousTreeTestResultListener(Boolean synchronousByDefault){
+	protected AsynchronousTreeTestResultListener(Boolean synchronousByDefault) {
 		synchronous = synchronousByDefault;
 	}
 
@@ -59,8 +59,8 @@ public abstract class AsynchronousTreeTestResultListener implements
 	public final void resultPartAdded(TestResult testResult,
 			TestResultPart testResultPart) {
 		TreeTestResult result = (TreeTestResult) testResult;
-		PartStruct partStruct = new PartStruct(result.getCurrentPath(),
-				(NumericTRId) result.getTestResultId(), testResultPart, result);
+		PartStruct partStruct = new PartStruct(result.getCurrentPath(), result
+				.getUuid(), testResultPart, result);
 
 		if (!synchronous) {
 			synchronized (partStructs) {
@@ -108,18 +108,18 @@ public abstract class AsynchronousTreeTestResultListener implements
 		/** The tree path of this part. */
 		public final TreeSPath path;
 		/** The test result id of the related test result */
-		public final NumericTRId resultId;
+		public final String uuid;
 		/** The part itself */
 		public final TestResultPart part;
 		/** The tree test result itself. */
 		public final TreeTestResult result;
 
 		/** Constructor */
-		public PartStruct(TreeSPath path, NumericTRId resultId,
-				TestResultPart part, TreeTestResult result) {
+		public PartStruct(TreeSPath path, String uuid, TestResultPart part,
+				TreeTestResult result) {
 			super();
 			this.path = path;
-			this.resultId = resultId;
+			this.uuid = uuid;
 			this.part = part;
 			this.result = result;
 		}

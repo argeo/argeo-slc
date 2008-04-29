@@ -24,7 +24,7 @@ public class TreeTestResultLogger extends AsynchronousTreeTestResultListener {
 	@Override
 	protected void resultPartAdded(PartStruct partStruct) {
 		TestResultPart part = partStruct.part;
-		String msg = partStruct.part + " - " + partStruct.resultId + ":"
+		String msg = partStruct.part + " - " + partStruct.uuid + ":"
 				+ partStruct.path;
 		if (part.getStatus().equals(TestStatus.PASSED)) {
 			log.info(msg);

@@ -95,7 +95,7 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 	 */
 	protected File getResultFile(TreeTestResult result) {
 		return new File(reportDir.getPath() + File.separator + "slc-result-"
-				+ result.getTestResultId() + ".html");
+				+ result.getUuid() + ".html");
 	}
 
 	/** Sets the DAO to use to extract all data. */

@@ -4,9 +4,6 @@ import java.util.Date;
 
 /** The result of a test */
 public interface TestResult extends TestStatus {
-	/** Gets the id of the related test result. */
-	public TestResultId getTestResultId();
-
 	/** Adds a part of the result. */
 	public void addResultPart(TestResultPart part);
 

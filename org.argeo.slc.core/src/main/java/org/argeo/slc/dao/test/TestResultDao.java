@@ -12,7 +12,7 @@ import org.argeo.slc.core.test.TestResultId;
  */
 public interface TestResultDao<T extends TestResult> {
 	/** Gets a test result based on its id. */
-	public T getTestResult(TestResultId id);
+	public T getTestResult(String uuid);
 
 	/** Persists a new test result. */
 	public void create(TestResult testResult);

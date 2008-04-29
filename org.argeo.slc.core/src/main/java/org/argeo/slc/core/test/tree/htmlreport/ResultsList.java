@@ -41,7 +41,7 @@ class ResultsList {
 		buf.append("<td><a class=\"nav\" href=\"");
 		buf.append(report.getResultFile(result).getName());
 		buf.append("\" target=\"main\">#");
-		buf.append(result.getTestResultId()).append("</a></td>\n");
+		buf.append(result.getUuid()).append("</a></td>\n");
 
 		buf.append("</tr>\n");
 	}

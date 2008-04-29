@@ -33,7 +33,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	/** For ORM */
 	private Long tid;
 
-	private NumericTRId testResultId;
+	//private NumericTRId testResultId;
 	private List<TestResultListener> listeners = new Vector<TestResultListener>();
 
 	private TreeSPath currentPath;
@@ -44,27 +44,29 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private boolean isClosed = false;
 
+	private String uuid;
+
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
 
 	private StructureRegistry<TreeSPath> registry;
 
-	public TestResultId getTestResultId() {
-		return testResultId;
-	}
+//	public TestResultId getTestResultId() {
+//		return testResultId;
+//	}
 
 	/**
 	 * Use of a <code>NumericTRId</code> is required by Hibernate. <b>It may
 	 * change in the future.</b>
 	 */
-	public NumericTRId getNumericResultId() {
-		return testResultId;
-	}
+//	public NumericTRId getNumericResultId() {
+//		return testResultId;
+//	}
 
 	/** Sets the test result id as a numeric test result id. */
-	public void setNumericResultId(NumericTRId testResultId) {
-		this.testResultId = testResultId;
-	}
+//	public void setNumericResultId(NumericTRId testResultId) {
+//		this.testResultId = testResultId;
+//	}
 
 	/** Sets the list of listeners. */
 	public void setListeners(List<TestResultListener> listeners) {
@@ -130,7 +132,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	public void close() {
 		if (isClosed) {
-			throw new SlcException("Test Result #" + getTestResultId()
+			throw new SlcException("Test Result #" + getUuid()
 					+ " alredy closed.");
 		}
 		closeDate = new Date();
@@ -143,7 +145,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		}
 		isClosed = true;
 
-		log.info("Test Result #" + getTestResultId() + " closed.");
+		log.info("Test Result #" + getUuid() + " closed.");
 	}
 
 	Long getTid() {
@@ -186,6 +188,14 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	public void setElements(SortedMap<TreeSPath, StructureElement> pathNames) {
 		this.elements = pathNames;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 }
