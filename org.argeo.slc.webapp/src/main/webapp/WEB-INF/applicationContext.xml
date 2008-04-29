@@ -40,17 +40,6 @@
 		<property name="suppressClose" value="true" />
 	</bean>
 
-
-	<bean id="treeSPathDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSPathDaoHibernate">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="treeSRegistryDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSRegistryDaoHibernate">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
 	<bean id="testResultDao"
 		class="org.argeo.slc.hibernate.test.tree.TestResultDaoHibernate">
 		<property name="sessionFactory" ref="sessionFactory" />
