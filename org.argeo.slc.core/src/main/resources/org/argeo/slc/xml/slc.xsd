@@ -114,6 +114,16 @@
 		<xs:attribute name="name" type="xs:string" use="required" />
 	</xs:complexType>
 
+	<!-- TREE TEST RESULT -->
+	<xs:element name="tree-test-result-request">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="tree-test-result"
+					type="slc:TreeTestResultType" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
 	<!-- SLC EXECUTION -->
 	<xs:element name="slc-execution" type="slc:SlcExecutionType" />
 	<xs:complexType name="SlcExecutionType">

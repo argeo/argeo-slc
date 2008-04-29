@@ -3,6 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<import resource="classpath:/org/argeo/slc/castor/applicationContext.xml" />
+
 	<bean name="executionBuildListener"
 		class="org.argeo.slc.ant.SlcExecutionBuildListener">
 		<property name="notifiers">
@@ -21,30 +23,6 @@
 	<bean name="webServiceNotifier"
 		class="org.argeo.slc.core.process.WebServiceSlcExecutionNotifier">
 		<property name="template" ref="webServiceTemplate" />
-	</bean>
-
-	<bean id="marshaller"
-		class="org.springframework.oxm.castor.CastorMarshaller">
-		<property name="mappingLocation"
-			value="classpath:org/argeo/slc/castor/process/mapping.xml" />
-	</bean>
-
-	<bean id="webServiceTemplate"
-		class="org.springframework.ws.client.core.WebServiceTemplate">
-		<constructor-arg ref="messageFactory" />
-		<property name="marshaller" ref="marshaller" />
-		<property name="unmarshaller" ref="marshaller" />
-		<property name="defaultUri"
-			value="http://localhost:8080/org.argeo.slc.webapp/slcService/" />
-	</bean>
-
-	<bean id="messageFactory"
-		class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
-
-	<bean id="schema"
-		class="org.springframework.xml.xsd.SimpleXsdSchema">
-		<property name="xsd"
-			value="classpath:/org/argeo/slc/xml/slc.xsd" />
 	</bean>
 
 </beans>

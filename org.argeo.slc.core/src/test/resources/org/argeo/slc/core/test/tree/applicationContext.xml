@@ -3,15 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="marshaller"
-		class="org.springframework.oxm.castor.CastorMarshaller">
-		<property name="mappingLocation"
-			value="classpath:org/argeo/slc/castor/test/tree/mapping.xml" />
-	</bean>
+	<import
+		resource="classpath:/org/argeo/slc/castor/applicationContext.xml" />
 
-	<bean id="schema"
-		class="org.springframework.xml.xsd.SimpleXsdSchema">
-		<property name="xsd"
-			value="classpath:/org/argeo/slc/xml/slc.xsd" />
-	</bean>
 </beans>

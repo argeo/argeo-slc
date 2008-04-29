@@ -127,4 +127,11 @@
 			<bind-xml node="attribute" />
 		</field>
 	</class>
+
+	<class name="org.argeo.slc.msg.test.tree.TreeTestResultRequest">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="treeTestResult"
+			type="org.argeo.slc.core.test.tree.TreeTestResult" />
+	</class>
 </mapping>
