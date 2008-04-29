@@ -2,6 +2,36 @@
 	xmlns:slc="http://argeo.org/projects/slc/schemas"
 	elementFormDefault="qualified"
 	targetNamespace="http://argeo.org/projects/slc/schemas">
+	<!-- TREE TEST RESULT -->
+	<xs:complexType name="TreeTestResultType">
+		<xs:all>
+			<xs:element name="close-date" type="xs:dateTime" />
+			<xs:element name="result-parts" minOccurs="0"
+				type="slc:ResultPartsType" />
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="ResultPartsType">
+		<xs:sequence>
+			<xs:element name="result-part" type="slc:ResultPartType"
+				maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ResultPartType">
+		<xs:all>
+			<xs:element name="part-sub-list" type="slc:PartSubListType" />
+		</xs:all>
+		<xs:attribute name="path" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="PartSubListType">
+		<xs:all>
+			<xs:element name="slc-execution-uuid" type="xs:string" />
+			<xs:element name="slc-execution-step-uuid" type="xs:string" />
+		</xs:all>
+		<xs:attribute name="path" type="xs:string" use="required" />
+	</xs:complexType>
+
+	<!-- SLC EXECUTION -->
 	<xs:element name="slc-execution-request">
 		<xs:complexType>
 			<xs:all>
@@ -28,7 +58,7 @@
 			<xs:element name="steps" minOccurs="0"
 				type="slc:SlcExecutionStepsType" />
 		</xs:all>
-		<xs:attribute name="uuid" type="xs:string" use="required"/>
+		<xs:attribute name="uuid" type="xs:string" use="required" />
 	</xs:complexType>
 	<xs:complexType name="SlcExecutionStepType">
 		<xs:all>
@@ -43,7 +73,7 @@
 				</xs:complexType>
 			</xs:element>
 		</xs:all>
-		<xs:attribute name="uuid" type="xs:string" use="required"/>
+		<xs:attribute name="uuid" type="xs:string" use="required" />
 	</xs:complexType>
 	<xs:complexType name="SlcExecutionStepsType">
 		<xs:sequence>
