@@ -8,6 +8,8 @@
 			<xs:element name="close-date" type="xs:dateTime" />
 			<xs:element name="result-parts" minOccurs="0"
 				type="slc:ResultPartsType" />
+			<xs:element name="elements" minOccurs="0"
+				type="slc:ElementsType" />
 		</xs:all>
 	</xs:complexType>
 	<xs:complexType name="ResultPartsType">
@@ -27,8 +29,88 @@
 		<xs:all>
 			<xs:element name="slc-execution-uuid" type="xs:string" />
 			<xs:element name="slc-execution-step-uuid" type="xs:string" />
+			<xs:element name="parts" minOccurs="0" type="slc:PartsType" />
 		</xs:all>
 		<xs:attribute name="path" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="PartsType">
+		<xs:sequence>
+			<xs:element name="simple-result-part"
+				type="slc:SimpleResultPartType" maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SimpleResultPartType">
+		<xs:all>
+			<xs:element name="status">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="PASSED" />
+						<xs:enumeration value="FAILED" />
+						<xs:enumeration value="ERROR" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="message" type="xs:string" />
+			<xs:element name="exception" minOccurs="0"
+				type="slc:ExceptionType" />
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="ExceptionType">
+		<xs:all>
+			<xs:element name="localized-message" type="xs:string" />
+			<xs:element name="message" type="xs:string" />
+			<xs:element name="exception" minOccurs="0"
+				type="slc:StackTraceType" />
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="StackTraceType">
+		<xs:sequence>
+			<xs:element name="stack-trace-element"
+				type="slc:StackTraceElementType" maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="StackTraceElementType">
+		<xs:attribute name="delaring-class" type="xs:string"
+			use="required" />
+		<xs:attribute name="method-name" type="xs:string"
+			use="required" />
+		<xs:attribute name="file-name" type="xs:string" use="required" />
+		<xs:attribute name="line-number" type="xs:integer"
+			use="required" />
+	</xs:complexType>
+	<xs:complexType name="ElementsType">
+		<xs:sequence>
+			<xs:element name="element" type="slc:ElementType"
+				maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ElementType">
+		<xs:all>
+			<xs:element name="simpleSElement" type="slc:SimpleSElementType" />
+		</xs:all>
+		<xs:attribute name="path" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="SimpleSElementType">
+		<xs:all>
+			<xs:element name="label" type="xs:string" />
+			<xs:element name="tags" type="slc:TagsType" minOccurs="0"/>
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="TagsType">
+		<xs:sequence>
+			<xs:element name="tag" type="slc:TagType"
+				maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="TagType">
+		<xs:all>
+			<xs:element name="value" type="xs:string" />
+		</xs:all>
+		<xs:attribute name="name" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<!-- SLC EXECUTION -->

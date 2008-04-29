@@ -48,6 +48,14 @@
 		</field>
 	</class>
 
+	<class name="org.argeo.slc.core.test.SimpleResultPart"
+		auto-complete="false">
+		<field name="message" type="string" />
+		<field name="status" type="string"
+			handler="org.argeo.slc.castor.test.tree.StatusFieldHandler" />
+		<field name="exception" type="java.lang.Exception" />
+	</class>
+
 	<class name="org.argeo.slc.core.structure.tree.TreeSPath"
 		auto-complete="false">
 		<field name="asUniqueString" type="string" />
@@ -67,6 +75,15 @@
 					</field>
 				</class>
 			</bind-xml>
+		</field>
+	</class>
+
+	<class name="java.lang.Exception" auto-complete="false">
+		<field name="message"></field>
+		<field name="stackTrace" collection="array"
+			type="java.lang.StackTraceElement">
+			<bind-xml auto-naming="deriveByClass"
+				location="stack-trace" />
 		</field>
 	</class>
 

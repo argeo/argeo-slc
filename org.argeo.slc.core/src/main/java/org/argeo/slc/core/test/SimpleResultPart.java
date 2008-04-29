@@ -13,7 +13,8 @@ public class SimpleResultPart implements TestResultPart, TestStatus {
 	/** For ORM */
 	private Long tid;
 
-	private Integer status;
+	/** The status. Default to ERROR since it should always be explicitely set. */
+	private Integer status = ERROR;
 	private String message;
 	private Exception exception;
 
@@ -57,12 +58,11 @@ public class SimpleResultPart implements TestResultPart, TestStatus {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer("");
-		if (status == PASSED) {
-			buf.append("PASSED ");
-		} else if (status == FAILED) {
-			buf.append("FAILED ");
+		buf.append(SlcTestUtils.statusToString(status));
+		if (status == PASSED || status == FAILED) {
+			buf.append(' ');
 		} else if (status == ERROR) {
-			buf.append("ERROR  ");
+			buf.append("  ");
 		}
 		buf.append(message);
 		if (exception != null) {

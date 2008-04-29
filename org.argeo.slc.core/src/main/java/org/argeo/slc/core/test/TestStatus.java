@@ -22,4 +22,8 @@ public interface TestStatus {
 	 * (there is no feedback on the behavior of the tested component): 2
 	 */
 	public final static Integer ERROR = 2;
+	public final static String STATUSSTR_PASSED = "PASSED";
+	public final static String STATUSSTR_FAILED = "FAILED";
+	public final static String STATUSSTR_ERROR = "ERROR";
+
 }
