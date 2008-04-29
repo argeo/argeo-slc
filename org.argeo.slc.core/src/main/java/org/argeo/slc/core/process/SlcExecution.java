@@ -1,6 +1,8 @@
 package org.argeo.slc.core.process;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 
 public class SlcExecution {
@@ -14,9 +16,10 @@ public class SlcExecution {
 
 	private String uuid;
 	private String host;
-	private String path;
+	private String user;
 	private String type;
 	private String status;
+	private Map<String, String> attributes = new TreeMap<String, String>();
 
 	private List<SlcExecutionStep> steps = new Vector<SlcExecutionStep>();
 
@@ -44,12 +47,12 @@ public class SlcExecution {
 		this.host = host;
 	}
 
-	public String getPath() {
-		return path;
+	public String getUser() {
+		return user;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setUser(String path) {
+		this.user = path;
 	}
 
 	public String getType() {
@@ -88,4 +91,11 @@ public class SlcExecution {
 		return getUuid().hashCode();
 	}
 
+	public Map<String, String> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(Map<String, String> attributes) {
+		this.attributes = attributes;
+	}
 }

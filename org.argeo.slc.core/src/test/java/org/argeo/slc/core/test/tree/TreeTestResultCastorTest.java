@@ -4,6 +4,7 @@ import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.xml.transform.StringResult;
 import org.springframework.xml.transform.StringSource;
+import org.springframework.xml.xsd.XsdSchema;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
 
 import org.argeo.slc.unit.AbstractSpringTestCase;
+import org.argeo.slc.unit.UnitXmlUtils;
 import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
 
 public class TreeTestResultCastorTest extends AbstractSpringTestCase {
@@ -26,6 +28,10 @@ public class TreeTestResultCastorTest extends AbstractSpringTestCase {
 		marshaller.marshal(ttr, xml);
 
 		log.info("Marshalled TreeTestResult: " + xml);
+
+		XsdSchema schema = getBean("schema");
+		UnitXmlUtils.assertXsdSchemaValidation(schema, new StringSource(xml
+				.toString()));
 
 		TreeTestResult ttrUnm = (TreeTestResult) unmarshaller
 				.unmarshal(new StringSource(xml.toString()));

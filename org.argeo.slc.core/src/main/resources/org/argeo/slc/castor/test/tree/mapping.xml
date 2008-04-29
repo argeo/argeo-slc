@@ -5,12 +5,20 @@
 
 	<class name="org.argeo.slc.core.test.tree.TreeTestResult"
 		auto-complete="false">
-		<field name="numericResultId"
-			type="org.argeo.slc.core.test.NumericTRId" />
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
 		<field name="closeDate" />
+		<field name="numericResultId"
+			type="org.argeo.slc.core.test.NumericTRId">
+			<bind-xml auto-naming="deriveByClass"
+				location="result-id">
+			</bind-xml>
+		</field>
 		<field name="resultParts" collection="map">
 			<bind-xml name="result-part" location="result-parts">
 				<class name="org.exolab.castor.mapping.MapItem">
+					<map-to
+						ns-uri="http://argeo.org/projects/slc/schemas" ns-prefix="slc" />
 					<field name="key"
 						type="org.argeo.slc.core.structure.tree.TreeSPath">
 						<bind-xml name="path" node="attribute" />
@@ -25,21 +33,34 @@
 		<field name="elements" collection="map">
 			<bind-xml name="element" location="elements">
 				<class name="org.exolab.castor.mapping.MapItem">
+					<map-to
+						ns-uri="http://argeo.org/projects/slc/schemas" ns-prefix="slc" />
 					<field name="key"
 						type="org.argeo.slc.core.structure.tree.TreeSPath">
 						<bind-xml name="path" node="attribute" />
 					</field>
 					<field name="value"
 						type="org.argeo.slc.core.structure.SimpleSElement">
-						<bind-xml name="simpleSElement" />
+						<bind-xml auto-naming="deriveByClass" />
 					</field>
 				</class>
 			</bind-xml>
 		</field>
 	</class>
 
+	<class name="org.argeo.slc.core.test.NumericTRId"
+		auto-complete="false">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="value">
+			<bind-xml node="attribute" />
+		</field>
+	</class>
+
 	<class name="org.argeo.slc.core.test.tree.PartSubList"
 		auto-complete="false">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
 		<field name="slcExecutionUuid" type="string" />
 		<field name="slcExecutionStepUuid" type="string" />
 		<field name="parts" collection="vector"
@@ -50,6 +71,8 @@
 
 	<class name="org.argeo.slc.core.test.SimpleResultPart"
 		auto-complete="false">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
 		<field name="message" type="string" />
 		<field name="status" type="string"
 			handler="org.argeo.slc.castor.test.tree.StatusFieldHandler" />
@@ -58,20 +81,26 @@
 
 	<class name="org.argeo.slc.core.structure.tree.TreeSPath"
 		auto-complete="false">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
 		<field name="asUniqueString" type="string" />
 	</class>
 
 	<class name="org.argeo.slc.core.structure.SimpleSElement"
 		auto-complete="false">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
 		<field name="label" type="string" />
 		<field name="tags" collection="map">
 			<bind-xml name="tag" location="tags">
 				<class name="org.exolab.castor.mapping.MapItem">
+					<map-to
+						ns-uri="http://argeo.org/projects/slc/schemas" ns-prefix="slc" />
 					<field name="key" type="string">
 						<bind-xml name="name" node="attribute" />
 					</field>
 					<field name="value" type="string">
-						<bind-xml name="value" />
+						<bind-xml name="tag-value" />
 					</field>
 				</class>
 			</bind-xml>
@@ -79,6 +108,8 @@
 	</class>
 
 	<class name="java.lang.Exception" auto-complete="false">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
 		<field name="message"></field>
 		<field name="stackTrace" collection="array"
 			type="java.lang.StackTraceElement">
@@ -89,6 +120,8 @@
 
 	<class name="java.lang.StackTraceElement" auto-complete="false"
 		verify-constructable="false">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
 		<field name="declaringClass" type="string" set-method="%1"
 			get-method="getClassName">
 			<bind-xml node="attribute" />

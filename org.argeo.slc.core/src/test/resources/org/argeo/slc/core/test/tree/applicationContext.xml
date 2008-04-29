@@ -8,4 +8,10 @@
 		<property name="mappingLocation"
 			value="classpath:org/argeo/slc/castor/test/tree/mapping.xml" />
 	</bean>
+
+	<bean id="schema"
+		class="org.springframework.xml.xsd.SimpleXsdSchema">
+		<property name="xsd"
+			value="classpath:/org/argeo/slc/xml/slc.xsd" />
+	</bean>
 </beans>

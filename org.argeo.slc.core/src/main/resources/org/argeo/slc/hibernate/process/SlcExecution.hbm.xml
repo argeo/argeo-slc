@@ -6,7 +6,7 @@
 	<class name="SlcExecution" table="SLC_EXECUTION">
 		<id name="uuid" column="UUID" />
 		<property name="host" column="HOST" />
-		<property name="path" column="PATH" />
+		<property name="user" column="USER" />
 		<property name="type" column="TYPE" />
 		<property name="status" column="STATUS" />
 
@@ -17,5 +17,13 @@
 			<one-to-many
 				class="org.argeo.slc.core.process.SlcExecutionStep" />
 		</list>
+
+		<map name="attributes" table="SLC_EXEC_ATTRS_MAP" cascade="all"
+			lazy="false" sort="natural">
+			<key column="PARENT_ID" />
+			<map-key type="string" column="ATTR_NAME" />
+			<element column="NAME" type="string" />
+		</map>
+
 	</class>
 </hibernate-mapping>

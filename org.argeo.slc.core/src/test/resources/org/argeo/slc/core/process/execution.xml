@@ -32,13 +32,19 @@
 	<bean id="webServiceTemplate"
 		class="org.springframework.ws.client.core.WebServiceTemplate">
 		<constructor-arg ref="messageFactory" />
-		<property name="marshaller" ref="marshaller"/>
-		<property name="unmarshaller" ref="marshaller"/>
+		<property name="marshaller" ref="marshaller" />
+		<property name="unmarshaller" ref="marshaller" />
 		<property name="defaultUri"
 			value="http://localhost:8080/org.argeo.slc.webapp/slcService/" />
 	</bean>
 
 	<bean id="messageFactory"
 		class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
+
+	<bean id="schema"
+		class="org.springframework.xml.xsd.SimpleXsdSchema">
+		<property name="xsd"
+			value="classpath:/org/argeo/slc/xml/slc.xsd" />
+	</bean>
 
 </beans>

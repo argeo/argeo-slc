@@ -3,14 +3,25 @@
 	elementFormDefault="qualified"
 	targetNamespace="http://argeo.org/projects/slc/schemas">
 	<!-- TREE TEST RESULT -->
+	<xs:element name="tree-test-result" type="slc:TreeTestResultType" />
 	<xs:complexType name="TreeTestResultType">
 		<xs:all>
+			<xs:element name="result-id" type="slc:ResultIdType" />
 			<xs:element name="close-date" type="xs:dateTime" />
 			<xs:element name="result-parts" minOccurs="0"
 				type="slc:ResultPartsType" />
 			<xs:element name="elements" minOccurs="0"
 				type="slc:ElementsType" />
 		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="ResultIdType">
+		<xs:all>
+			<xs:element name="numeric-tRId"
+				type="slc:NumericResultIdType" />
+		</xs:all>
+	</xs:complexType>
+	<xs:complexType name="NumericResultIdType">
+		<xs:attribute name="value" type="xs:integer" use="required" />
 	</xs:complexType>
 	<xs:complexType name="ResultPartsType">
 		<xs:sequence>
@@ -31,7 +42,6 @@
 			<xs:element name="slc-execution-step-uuid" type="xs:string" />
 			<xs:element name="parts" minOccurs="0" type="slc:PartsType" />
 		</xs:all>
-		<xs:attribute name="path" type="xs:string" use="required" />
 	</xs:complexType>
 	<xs:complexType name="PartsType">
 		<xs:sequence>
@@ -58,9 +68,8 @@
 	</xs:complexType>
 	<xs:complexType name="ExceptionType">
 		<xs:all>
-			<xs:element name="localized-message" type="xs:string" />
 			<xs:element name="message" type="xs:string" />
-			<xs:element name="exception" minOccurs="0"
+			<xs:element name="stack-trace" minOccurs="0"
 				type="slc:StackTraceType" />
 		</xs:all>
 	</xs:complexType>
@@ -72,7 +81,7 @@
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="StackTraceElementType">
-		<xs:attribute name="delaring-class" type="xs:string"
+		<xs:attribute name="declaring-class" type="xs:string"
 			use="required" />
 		<xs:attribute name="method-name" type="xs:string"
 			use="required" />
@@ -89,14 +98,15 @@
 	</xs:complexType>
 	<xs:complexType name="ElementType">
 		<xs:all>
-			<xs:element name="simpleSElement" type="slc:SimpleSElementType" />
+			<xs:element name="simple-sElement"
+				type="slc:SimpleSElementType" />
 		</xs:all>
 		<xs:attribute name="path" type="xs:string" use="required" />
 	</xs:complexType>
 	<xs:complexType name="SimpleSElementType">
 		<xs:all>
 			<xs:element name="label" type="xs:string" />
-			<xs:element name="tags" type="slc:TagsType" minOccurs="0"/>
+			<xs:element name="tags" type="slc:TagsType" minOccurs="0" />
 		</xs:all>
 	</xs:complexType>
 	<xs:complexType name="TagsType">
@@ -108,39 +118,32 @@
 	</xs:complexType>
 	<xs:complexType name="TagType">
 		<xs:all>
-			<xs:element name="value" type="xs:string" />
+			<xs:element name="tag-value" type="xs:string" />
 		</xs:all>
 		<xs:attribute name="name" type="xs:string" use="required" />
 	</xs:complexType>
 
 	<!-- SLC EXECUTION -->
-	<xs:element name="slc-execution-request">
-		<xs:complexType>
-			<xs:all>
-				<xs:element name="slc-execution"
-					type="slc:SlcExecutionType" />
-			</xs:all>
-		</xs:complexType>
-	</xs:element>
-	<xs:element name="slc-execution-steps-request">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="steps"
-					type="slc:SlcExecutionStepsType" />
-				<xs:element name="slc-execution-uuid" type="xs:string" />
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+	<xs:element name="slc-execution" type="slc:SlcExecutionType" />
 	<xs:complexType name="SlcExecutionType">
 		<xs:all>
 			<xs:element name="status" type="xs:string" />
 			<xs:element name="type" type="xs:string" />
 			<xs:element name="host" type="xs:string" />
-			<xs:element name="path" type="xs:string" />
+			<xs:element name="user" type="xs:string" />
 			<xs:element name="steps" minOccurs="0"
 				type="slc:SlcExecutionStepsType" />
+			<xs:element name="attributes" minOccurs="0"
+				type="slc:AttributesType" />
 		</xs:all>
 		<xs:attribute name="uuid" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="SlcExecutionStepsType">
+		<xs:sequence>
+			<xs:element name="slc-execution-step"
+				type="slc:SlcExecutionStepType" maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="SlcExecutionStepType">
 		<xs:all>
@@ -157,12 +160,39 @@
 		</xs:all>
 		<xs:attribute name="uuid" type="xs:string" use="required" />
 	</xs:complexType>
-	<xs:complexType name="SlcExecutionStepsType">
+	<xs:complexType name="AttributesType">
 		<xs:sequence>
-			<xs:element name="slc-execution-step"
-				type="slc:SlcExecutionStepType" maxOccurs="unbounded">
+			<xs:element name="attribute" type="slc:AttributeType"
+				maxOccurs="unbounded">
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
+	<xs:complexType name="AttributeType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string"
+					use="required" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
+	<!-- SLC EXECUTION REQUESTS-->
+	<xs:element name="slc-execution-request">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="slc-execution"
+					type="slc:SlcExecutionType" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="slc-execution-steps-request">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="slc-execution-uuid" type="xs:string" />
+				<xs:element name="steps"
+					type="slc:SlcExecutionStepsType" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
 
 </xs:schema>

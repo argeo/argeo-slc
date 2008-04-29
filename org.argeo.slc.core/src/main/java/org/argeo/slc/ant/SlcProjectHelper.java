@@ -168,10 +168,9 @@ public class SlcProjectHelper extends ProjectHelper2 {
 	}
 
 	/** Gets the path of a project (root). */
-//	private static TreeSPath getProjectPath(Project project) {
-//		return (TreeSPath) project.getReference(REF_PROJECT_PATH);
-//	}
-
+	// private static TreeSPath getProjectPath(Project project) {
+	// return (TreeSPath) project.getReference(REF_PROJECT_PATH);
+	// }
 	/** Initializes the Spring application context. */
 	private void initSpringContext(Project project) {
 		System.getProperties().putAll((Map<?, ?>) project.getProperties());
@@ -188,11 +187,11 @@ public class SlcProjectHelper extends ProjectHelper2 {
 
 		createAndRegisterSlcExecution(project);
 		// Add build listeners declared in Spring context
-//		Map<String, BuildListener> listeners = context.getBeansOfType(
-//				BuildListener.class, false, true);
-//		for (BuildListener listener : listeners.values()) {
-//			project.addBuildListener(listener);
-//		}
+		// Map<String, BuildListener> listeners = context.getBeansOfType(
+		// BuildListener.class, false, true);
+		// for (BuildListener listener : listeners.values()) {
+		// project.addBuildListener(listener);
+		// }
 	}
 
 	/** Loads the SLC specific Ant tasks. */
@@ -246,8 +245,10 @@ public class SlcProjectHelper extends ProjectHelper2 {
 			slcExecution.setType(SlcExecutionBuildListener.ANT_TYPE);
 		}
 
-		slcExecution.setPath(project.getProperty("ant.file"));
+		slcExecution.setUser(System.getProperty("user.name"));
 		slcExecution.setStatus(SlcExecution.STATUS_RUNNING);
+		slcExecution.getAttributes().put("ant.file",
+				project.getProperty("ant.file"));
 
 		project.addReference(SlcExecutionBuildListener.REF_SLC_EXECUTION,
 				slcExecution);

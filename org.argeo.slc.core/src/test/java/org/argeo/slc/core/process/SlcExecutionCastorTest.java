@@ -16,8 +16,13 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
+import org.argeo.slc.unit.UnitXmlUtils;
+
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
+import org.springframework.xml.transform.StringResult;
+import org.springframework.xml.transform.StringSource;
+import org.springframework.xml.xsd.XsdSchema;
 
 public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());
@@ -25,6 +30,7 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 	private Marshaller marshaller;
 	private Unmarshaller unmarshaller;
 
+	@Override
 	public void setUp() {
 		marshaller = getBean("marshaller");
 		unmarshaller = getBean("marshaller");
@@ -79,7 +85,7 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		SlcExecutionRequest msgUpdate = new SlcExecutionRequest();
 		msgUpdate.setSlcExecution(slcExecUnm);
 		String msgUpdateXml = marshallAndLog(marshaller, msgUpdate);
-		
+
 		SlcExecutionRequest msgUpdateUnm = unmarshall(unmarshaller,
 				msgUpdateXml);
 		assertNotNull(msgUpdateUnm);
@@ -87,12 +93,15 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 
 	private String marshallAndLog(Marshaller marshaller, Object obj)
 			throws IOException {
-		StringWriter writer = new StringWriter();
-		marshaller.marshal(obj, new StreamResult(writer));
-		String xml = writer.toString();
-		log.info(xml);
-		IOUtils.closeQuietly(writer);
-		return xml;
+		StringResult xml = new StringResult();
+		marshaller.marshal(obj, xml);
+		log.info("Marshalled object: " + xml);
+
+		XsdSchema schema = getBean("schema");
+		UnitXmlUtils.assertXsdSchemaValidation(schema, new StringSource(xml
+				.toString()));
+
+		return xml.toString();
 	}
 
 	private <T> T unmarshall(Unmarshaller unmarshaller, String xml)
