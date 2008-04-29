@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
+import static org.argeo.slc.unit.UnitUtils.assertDateSec;
 
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
@@ -17,7 +18,7 @@ public class UnitTestTreeUtil {
 	public static void assertTreeTestResult(TreeTestResult expected,
 			TreeTestResult reached) {
 		assertEquals(expected.getTestResultId(), reached.getTestResultId());
-		assertEquals(expected.getCloseDate(), reached.getCloseDate());
+		assertDateSec(expected.getCloseDate(), reached.getCloseDate());
 
 		assertEquals(expected.getResultParts().size(), reached.getResultParts()
 				.size());

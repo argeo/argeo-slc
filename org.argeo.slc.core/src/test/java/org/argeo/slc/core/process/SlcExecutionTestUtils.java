@@ -2,9 +2,11 @@ package org.argeo.slc.core.process;
 
 import java.util.UUID;
 
-import junit.framework.TestCase;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static org.argeo.slc.unit.UnitUtils.assertDateSec;
 
-public abstract class SlcExecutionTestUtils extends TestCase {
+public abstract class SlcExecutionTestUtils {
 
 	public static SlcExecution createSimpleSlcExecution() {
 		SlcExecution slcExec = new SlcExecution();
@@ -40,7 +42,7 @@ public abstract class SlcExecutionTestUtils extends TestCase {
 		assertEquals(expected.getUuid(), reached.getUuid());
 		assertEquals(expected.getType(), reached.getType());
 		assertEquals(expected.logAsString(), reached.logAsString());
-		// assertEquals(expected.getBegin(), reached.getBegin());
+		assertDateSec(expected.getBegin(), reached.getBegin());
 	}
 
 	private SlcExecutionTestUtils() {
