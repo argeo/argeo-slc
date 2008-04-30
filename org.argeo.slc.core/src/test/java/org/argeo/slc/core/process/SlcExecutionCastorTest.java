@@ -22,6 +22,7 @@ import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.xml.transform.StringResult;
 import org.springframework.xml.transform.StringSource;
+import org.springframework.xml.validation.XmlValidator;
 import org.springframework.xml.xsd.XsdSchema;
 
 public class SlcExecutionCastorTest extends AbstractSpringTestCase {
@@ -32,8 +33,8 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 
 	@Override
 	public void setUp() {
-		marshaller = getBean("marshaller");
-		unmarshaller = getBean("marshaller");
+		marshaller = getBean(Marshaller.class);
+		unmarshaller = getBean(Unmarshaller.class);
 	}
 
 	public void testMarshalling() throws Exception {
@@ -97,9 +98,8 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		marshaller.marshal(obj, xml);
 		log.info("Marshalled object: " + xml);
 
-		XsdSchema schema = getBean("schema");
-		UnitXmlUtils.assertXsdSchemaValidation(schema, new StringSource(xml
-				.toString()));
+		UnitXmlUtils.assertXmlValidation(getBean(XmlValidator.class),
+				new StringSource(xml.toString()));
 
 		return xml.toString();
 	}

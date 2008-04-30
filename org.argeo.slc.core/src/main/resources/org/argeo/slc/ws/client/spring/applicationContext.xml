@@ -1,0 +1,33 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<import
+		resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
+	<import
+		resource="classpath:/org/argeo/slc/xml/spring/applicationContext.xml" />
+
+	<bean id="slcDefault.ws.client.webServiceTemplate"
+		class="org.springframework.ws.client.core.WebServiceTemplate">
+		<constructor-arg ref="slcDefault.ws.client.messageFactory" />
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="unmarshaller"
+			ref="slcDefault.castor.marshaller" />
+		<property name="defaultUri"
+			value="http://localhost:8080/org.argeo.slc.webapp/slcService/" />
+		<property name="interceptors">
+			<list>
+				<bean
+					class="org.argeo.slc.ws.client.ValidatingClientInterceptor">
+					<property name="validator"
+						ref="slcDefault.xml.xsdValidator" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="slcDefault.ws.client.messageFactory"
+		class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
+
+</beans>

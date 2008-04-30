@@ -3,29 +3,30 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<import resource="classpath:/org/argeo/slc/spring/templates.xml" />
+	<import
+		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
 
 	<bean id="sessionFactory"
-		parent="slcTemplates.sessionFactory.hibernateTestHSQL">
-	</bean>
-
-	<bean id="treeSPathDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSPathDaoHibernate">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="treeSRegistryDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSRegistryDaoHibernate">
-		<property name="sessionFactory" ref="sessionFactory" />
+		parent="slcDefault.sessionFactory.hibernateTestHSQL">
 	</bean>
 
 	<bean id="testResultDao"
-		class="org.argeo.slc.hibernate.test.tree.TestResultDaoHibernate">
+		parent="slcTemplates.dao.testResultDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
 	<bean id="slcExecutionDao"
-		class="org.argeo.slc.hibernate.process.SlcExecutionDaoHibernate">
+		parent="slcTemplates.dao.slcExecutionDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="treeSPathDao"
+		parent="slcTemplates.dao.treeSPathDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="treeSRegistryDao"
+		parent="slcTemplates.dao.treeSRegistryDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 </beans>

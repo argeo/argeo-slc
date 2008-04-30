@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
 	default-lazy-init="true">
 
-	<bean id="slcTemplates.dataSource.inMemoryTestHSQL"
+	<bean id="slcDefault.dataSource.inMemoryTestHSQL"
 		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
 		destroy-method="destroy">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
@@ -50,10 +50,10 @@
 		</property>
 	</bean>
 
-	<bean id="slcTemplates.sessionFactory.hibernateTestHSQL"
+	<bean id="slcDefault.sessionFactory.hibernateTestHSQL"
 		parent="slcTemplates.sessionFactory.hibernateBasic">
 		<property name="dataSource"
-			ref="slcTemplates.dataSource.inMemoryTestHSQL" />
+			ref="slcDefault.dataSource.inMemoryTestHSQL" />
 		<property name="hibernateProperties">
 			<value><![CDATA[
 				hibernate.dialect=org.hibernate.dialect.HSQLDialect
@@ -63,18 +63,22 @@
 	</bean>
 
 	<bean id="slcTemplates.dao.treeSPathDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSPathDaoHibernate">
+		class="org.argeo.slc.hibernate.structure.tree.TreeSPathDaoHibernate"
+		abstract="true">
 	</bean>
 
 	<bean id="slcTemplates.dao.treeSRegistryDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSRegistryDaoHibernate">
+		class="org.argeo.slc.hibernate.structure.tree.TreeSRegistryDaoHibernate"
+		abstract="true">
 	</bean>
 
 	<bean id="slcTemplates.dao.testResultDao"
-		class="org.argeo.slc.hibernate.test.tree.TestResultDaoHibernate">
+		class="org.argeo.slc.hibernate.test.tree.TestResultDaoHibernate"
+		abstract="true">
 	</bean>
 
 	<bean id="slcTemplates.dao.slcExecutionDao"
-		class="org.argeo.slc.hibernate.process.SlcExecutionDaoHibernate">
+		class="org.argeo.slc.hibernate.process.SlcExecutionDaoHibernate"
+		abstract="true">
 	</bean>
 </beans>

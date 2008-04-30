@@ -10,8 +10,7 @@ import org.argeo.slc.unit.AbstractSpringTestCase;
 public class TreeSRegistryDaoHibernateTest extends AbstractSpringTestCase {
 
 	public void testCreate() {
-		TreeSRegistryDao treeSRegistryDao = (TreeSRegistryDao) getContext()
-				.getBean("treeSRegistryDao");
+		TreeSRegistryDao treeSRegistryDao = getBean(TreeSRegistryDao.class);
 
 		TreeSPathDao treeSPathDao = (TreeSPathDao) getContext().getBean(
 				"treeSPathDao");

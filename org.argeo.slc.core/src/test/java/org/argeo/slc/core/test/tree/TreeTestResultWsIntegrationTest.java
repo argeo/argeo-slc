@@ -14,7 +14,7 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());
 
 	public void testSendSlcExecutionrequest() {
-		WebServiceTemplate template = getBean("webServiceTemplate");
+		WebServiceTemplate template = getBean(WebServiceTemplate.class);
 		TreeTestResultRequest req = new TreeTestResultRequest();
 		req.setTreeTestResult(createCompleteTreeTestResult());
 

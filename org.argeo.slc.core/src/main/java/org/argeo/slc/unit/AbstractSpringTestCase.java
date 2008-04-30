@@ -1,9 +1,14 @@
 package org.argeo.slc.unit;
 
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import org.argeo.slc.core.SlcException;
+import org.argeo.slc.core.process.SlcExecution;
 
 /** Helper for tests using a Spring application co,text. */
 public abstract class AbstractSpringTestCase extends TestCase {
@@ -21,10 +26,20 @@ public abstract class AbstractSpringTestCase extends TestCase {
 		}
 		return context;
 	}
-	
+
 	/** Returns a bean from the underlying context */
-	protected <T> T getBean(String beanId){
-		return (T)getContext().getBean(beanId);
+	protected <T> T getBean(String beanId) {
+		return (T) getContext().getBean(beanId);
+	}
+
+	protected <T> T getBean(Class<? extends T> clss) {
+		Map<String, T> map = getContext().getBeansOfType(clss);
+		if (map.size() == 1) {
+			return map.values().iterator().next();
+		} else {
+			throw new SlcException("Cannot retrieve a unique bean of type "
+					+ clss);
+		}
 	}
 
 	/**

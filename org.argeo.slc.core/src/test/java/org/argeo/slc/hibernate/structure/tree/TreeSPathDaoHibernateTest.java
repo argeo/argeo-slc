@@ -7,8 +7,7 @@ import org.argeo.slc.unit.AbstractSpringTestCase;
 public class TreeSPathDaoHibernateTest extends AbstractSpringTestCase {
 
 	public void testCreate() {
-		TreeSPathDao treeSPathDao = (TreeSPathDao) getContext().getBean(
-				"treeSPathDao");
+		TreeSPathDao treeSPathDao = getBean(TreeSPathDao.class);
 
 		String pathParentStr = "/root/testParent";
 		String pathStr = pathParentStr + "/test";
