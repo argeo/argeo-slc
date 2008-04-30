@@ -5,6 +5,7 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.xml.transform.StringResult;
 import org.springframework.xml.transform.StringSource;
 
+import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultTestUtils;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
@@ -23,6 +24,10 @@ public class CastorTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		StringSource source = new StringSource(result.toString());
 		TreeTestResult ttrUnm = (TreeTestResult) getBean(Unmarshaller.class)
 				.unmarshal(source);
+
+		for (TreeSPath path : ttrUnm.getResultParts().keySet()) {
+			log.debug("Path: " + path.getClass() + ": " + path);
+		}
 
 		TreeTestResultDao ttrDao = getBean(TreeTestResultDao.class);
 		ttrDao.create(ttrUnm);

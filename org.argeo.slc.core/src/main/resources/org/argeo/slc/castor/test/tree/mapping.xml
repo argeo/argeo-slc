@@ -17,7 +17,8 @@
 					<map-to
 						ns-uri="http://argeo.org/projects/slc/schemas" ns-prefix="slc" />
 					<field name="key"
-						type="org.argeo.slc.core.structure.tree.TreeSPath">
+						type="org.argeo.slc.core.structure.tree.TreeSPath"
+						handler="org.argeo.slc.castor.structure.tree.TreeSPathFieldHandler">
 						<bind-xml name="path" node="attribute" />
 					</field>
 					<field name="value"
@@ -33,7 +34,8 @@
 					<map-to
 						ns-uri="http://argeo.org/projects/slc/schemas" ns-prefix="slc" />
 					<field name="key"
-						type="org.argeo.slc.core.structure.tree.TreeSPath">
+						type="org.argeo.slc.core.structure.tree.TreeSPath"
+						handler="org.argeo.slc.castor.structure.tree.TreeSPathFieldHandler">
 						<bind-xml name="path" node="attribute" />
 					</field>
 					<field name="value"
