@@ -17,9 +17,7 @@ import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.test.NumericTRId;
 import org.argeo.slc.core.test.TestResult;
-import org.argeo.slc.core.test.TestResultId;
 import org.argeo.slc.core.test.TestResultListener;
 import org.argeo.slc.core.test.TestResultPart;
 
@@ -30,10 +28,7 @@ import org.argeo.slc.core.test.TestResultPart;
 public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		SlcExecutionAware {
 	private Log log = LogFactory.getLog(TreeTestResult.class);
-	/** For ORM */
-	private Long tid;
 
-	//private NumericTRId testResultId;
 	private List<TestResultListener> listeners = new Vector<TestResultListener>();
 
 	private TreeSPath currentPath;
@@ -48,25 +43,6 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
-
-	private StructureRegistry<TreeSPath> registry;
-
-//	public TestResultId getTestResultId() {
-//		return testResultId;
-//	}
-
-	/**
-	 * Use of a <code>NumericTRId</code> is required by Hibernate. <b>It may
-	 * change in the future.</b>
-	 */
-//	public NumericTRId getNumericResultId() {
-//		return testResultId;
-//	}
-
-	/** Sets the test result id as a numeric test result id. */
-//	public void setNumericResultId(NumericTRId testResultId) {
-//		this.testResultId = testResultId;
-//	}
 
 	/** Sets the list of listeners. */
 	public void setListeners(List<TestResultListener> listeners) {
@@ -101,18 +77,18 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 				if (!elements.containsKey(p)) {
 					StructureElement elem = registry.getElement(p);
 					if (elem != null) {
-						// elements.put(p, elem.getLabel());
 						elements.put(p, elem);
-					} else {
-						log.warn("An element is already registered for path "
-								+ p);
 					}
+				} else {
+					if (log.isTraceEnabled())
+						log.trace("An element is already registered for path "
+								+ p + " and was not updated");
 				}
+
 			}
 		}
 
 		currentPath = (TreeSPath) path;
-		this.registry = registry;
 	}
 
 	/** Gets the current path. */
@@ -148,23 +124,6 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		log.info("Test Result #" + getUuid() + " closed.");
 	}
 
-	Long getTid() {
-		return tid;
-	}
-
-	void setTid(Long tid) {
-		this.tid = tid;
-	}
-
-	/** Gets the related registry (can be null). */
-	public StructureRegistry<TreeSPath> getRegistry() {
-		return registry;
-	}
-
-	/** Sets the related registry. */
-	// public void setRegistry(StructureRegistry<TreeSPath> registry) {
-	// this.registry = registry;
-	// }
 	public Date getCloseDate() {
 		return closeDate;
 	}

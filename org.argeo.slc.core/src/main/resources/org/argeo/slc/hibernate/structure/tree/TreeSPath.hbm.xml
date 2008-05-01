@@ -9,6 +9,5 @@
 		</id>
 		<property name="asUniqueString" column="PATH" not-null="true"
 			unique="true" />
-		<property name="separator" column="SEPARATOR" not-null="true" />
 	</class>
 </hibernate-mapping>

@@ -13,10 +13,8 @@ import org.argeo.slc.core.structure.StructureRegistry;
  */
 public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	/** Default character to use a separator: /. */
-	public static Character DEFAULT_SEPARATOR = '/';
+	private static Character DEFAULT_SEPARATOR = '/';
 
-	private TreeSPath parent;
-	private String name;
 	private Character separator = DEFAULT_SEPARATOR;
 
 	private String asUniqueString;
@@ -24,20 +22,26 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	/** For ORM */
 	private Long tid;
 
+	public TreeSPath() {
+
+	}
+
+	public TreeSPath(String asUniqueString) {
+		this.asUniqueString = checkAndFormatPath(asUniqueString);
+	}
+
 	public String getAsUniqueString() {
-		if (asUniqueString == null) {
-			String parentStr = parent != null ? parent.getAsUniqueString() : "";
-			asUniqueString = parentStr + separator + name;
-		}
 		return asUniqueString;
 	}
 
-	/** Sets all the required data from a string. */
-	public void setAsUniqueString(String str) {
-		TreeSPath twin = parseToCreatePath(str, getSeparator());
-		name = twin.name;
-		parent = twin.parent;
-		asUniqueString = getAsUniqueString();
+	/**
+	 * Sets all the required data from a string. <b>ATTENTION</b>: the path is
+	 * not checked for performance reason. This method should be used only by
+	 * ORM/OXM frameworks. Use constructor to create immutable tree structure
+	 * paths.
+	 */
+	void setAsUniqueString(String str) {
+		this.asUniqueString = str;
 	}
 
 	/** The separator actually used by this path. */
@@ -47,20 +51,26 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 
 	/** Gets the parent path. */
 	public TreeSPath getParent() {
-		return parent;
+		int lastSep = getAsUniqueString().lastIndexOf(separator);
+		if (lastSep < 1) {
+			return null;
+		}
+		String parentUniqueString = getAsUniqueString().substring(0, lastSep);
+		return new TreeSPath(parentUniqueString);
 	}
 
 	/** Gets the name part of the path. */
 	public String getName() {
-		return name;
+		int lastSep = getAsUniqueString().lastIndexOf(separator);
+		return getAsUniqueString().substring(lastSep);
 	}
 
 	/** Create a path without parent. */
 	public static TreeSPath createRootPath(String name) {
-		TreeSPath path = new TreeSPath();
-		path.parent = null;
-		path.name = name;
-		return path;
+		if (name.indexOf(DEFAULT_SEPARATOR) >= 0) {
+			throw new SlcException("Name cannot contain " + DEFAULT_SEPARATOR);
+		}
+		return new TreeSPath('/' + name);
 	}
 
 	/** Create a child . */
@@ -69,46 +79,56 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 			throw new SlcException("Tree path name '" + name
 					+ "' contains separator character " + separator);
 		}
-		TreeSPath path = new TreeSPath();
-		path.parent = this;
-		path.name = name;
-		return path;
+		return new TreeSPath(getAsUniqueString() + '/' + name);
 	}
 
-	/** Parses a string to a path. */
+	/**
+	 * Parses a string to a path.
+	 * 
+	 * @deprecated use constructor instead
+	 */
 	public static TreeSPath parseToCreatePath(String path) {
 		return parseToCreatePath(path, DEFAULT_SEPARATOR);
 	}
 
-	/** Parses a string to a path. */
-	public static TreeSPath parseToCreatePath(String path, Character separator) {
-		StringTokenizer st = new StringTokenizer(path, Character
-				.toString(separator));
-
-		TreeSPath currPath = null;
-		while (st.hasMoreTokens()) {
-			if (currPath == null) {// begin
-				currPath = createRootPath(st.nextToken());
-			} else {
-				currPath = currPath.createChild(st.nextToken());
-			}
+	protected String checkAndFormatPath(String str) {
+		if (str.length() < 2) {
+			throw new SlcException("Path " + str + " is not short");
 		}
-		return currPath;
+		if (str.charAt(0) != separator) {
+			throw new SlcException("Path " + str + " have to start with "
+					+ separator);
+		}
+
+		StringBuffer buf = new StringBuffer(str.length() + 5);
+		StringTokenizer st = new StringTokenizer(str, separator.toString());
+		while (st.hasMoreTokens()) {
+			buf.append(separator).append(st.nextToken());
+		}
+		return buf.toString();
+	}
+
+	/**
+	 * Parses a string to a path.
+	 * 
+	 * @deprecated use constructor instead
+	 */
+	public static TreeSPath parseToCreatePath(String path, Character separator) {
+		return new TreeSPath(path);
 	}
 
 	/** Lists the children from a registry. */
-	public List<TreeSPath> listChildren(StructureRegistry registry) {
+	public List<TreeSPath> listChildren(StructureRegistry<TreeSPath> registry) {
 		return listChildrenPaths(registry, this);
 	}
 
 	/** Lists the children from a given path from a registry. */
-	public static List<TreeSPath> listChildrenPaths(StructureRegistry registry,
-			TreeSPath path) {
+	public static List<TreeSPath> listChildrenPaths(
+			StructureRegistry<TreeSPath> registry, TreeSPath path) {
 		List<TreeSPath> paths = new Vector<TreeSPath>();
-		List<StructurePath> allPaths = registry.listPaths();
-		for (StructurePath sPath : allPaths) {
-			TreeSPath pathT = (TreeSPath) sPath;
-			if (pathT.parent != null && pathT.parent.equals(path)) {
+		List<TreeSPath> allPaths = registry.listPaths();
+		for (TreeSPath pathT : allPaths) {
+			if (pathT.getParent() != null && pathT.getParent().equals(path)) {
 				paths.add(pathT);
 			}
 		}
@@ -182,24 +202,4 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	void setTid(Long tid) {
 		this.tid = tid;
 	}
-
-	/**
-	 * Sets the separator character to use.
-	 * 
-	 * @deprecated
-	 */
-	public void setSeparator(Character separator) {
-		this.separator = separator;
-	}
-
-	/** Sets the parent (for ORM). */
-	protected void setParent(TreeSPath parent) {
-		this.parent = parent;
-	}
-
-	/** Sets the name (for ORM). */
-	protected void setName(String name) {
-		this.name = name;
-	}
-
 }
