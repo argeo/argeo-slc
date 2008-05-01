@@ -24,12 +24,16 @@ public class SlcExecutionRequestEp extends AbstractMarshallingPayloadEndpoint {
 
 		if (slcExecutionDao.getSlcExecution(slcExecution.getUuid()) == null) {
 			slcExecutionDao.create(slcExecution);
-			log.debug("Created SlcExecution with uuid "
-					+ slcExecution.getUuid());
+
+			if (log.isDebugEnabled())
+				log.debug("Created SlcExecution with uuid "
+						+ slcExecution.getUuid());
 		} else {
 			slcExecutionDao.update(slcExecution);
-			log.debug("Updated SlcExecution with uuid "
-					+ slcExecution.getUuid());
+
+			if (log.isDebugEnabled())
+				log.debug("Updated SlcExecution with uuid "
+						+ slcExecution.getUuid());
 		}
 		return null;
 	}
