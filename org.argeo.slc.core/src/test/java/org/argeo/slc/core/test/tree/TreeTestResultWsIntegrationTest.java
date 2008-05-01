@@ -7,7 +7,7 @@ import org.apache.commons.logging.LogFactory;
 
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
 
-import org.argeo.slc.msg.test.tree.TreeTestResultRequest;
+import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 
 public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
@@ -15,7 +15,7 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 
 	public void testSendSlcExecutionrequest() {
 		WebServiceTemplate template = getBean(WebServiceTemplate.class);
-		TreeTestResultRequest req = new TreeTestResultRequest();
+		CreateTreeTestResultRequest req = new CreateTreeTestResultRequest();
 		req.setTreeTestResult(createCompleteTreeTestResult());
 
 		log.info("Send SlcExecutionRequest for SlcExecution "

@@ -1,5 +1,7 @@
 package org.argeo.slc.unit.test.tree;
 
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -61,20 +63,6 @@ public class UnitTestTreeUtil {
 
 	public static void assertPartSubList(PartSubList lstExpected,
 			PartSubList lstReached) {
-		if (lstExpected.getSlcExecutionUuid() == null) {
-			assertNull(lstReached.getSlcExecutionUuid());
-		} else {
-			assertEquals(lstExpected.getSlcExecutionUuid(), lstReached
-					.getSlcExecutionUuid());
-		}
-
-		if (lstExpected.getSlcExecutionStepUuid() == null) {
-			assertNull(lstReached.getSlcExecutionStepUuid());
-		} else {
-			assertEquals(lstExpected.getSlcExecutionStepUuid(), lstReached
-					.getSlcExecutionStepUuid());
-		}
-
 		assertEquals(lstExpected.getParts().size(), lstReached.getParts()
 				.size());
 		for (int i = 0; i < lstExpected.getParts().size(); i++) {
@@ -101,25 +89,47 @@ public class UnitTestTreeUtil {
 			fail("Not enough parts.");
 		}
 		SimpleResultPart part = (SimpleResultPart) list.getParts().get(index);
-		assertPart(part, status, message, null);
+		assertPart(part, status, message, null, null, part.getTestRunUuid());
 	}
 
 	public static void assertPart(TestResultPart expected,
 			TestResultPart reached) {
+		String expectedTestRunUuid = null;
+		if (expected instanceof SimpleResultPart) {
+			expectedTestRunUuid = ((SimpleResultPart) expected)
+					.getTestRunUuid();
+		}
+
 		assertPart(reached, expected.getStatus(), expected.getMessage(),
-				expected.getException());
+				expected.getExceptionMessage(), expected
+						.getExceptionStackLines(), expectedTestRunUuid);
 	}
 
 	/** Assert one part of a tree test result. */
 	private static void assertPart(TestResultPart part, Integer status,
-			String message, Exception exception) {
+			String message, String exceptionDescription,
+			List<String> stackLines, String expectedTestRunUuid) {
 		assertEquals(status, part.getStatus());
 		assertEquals(message, part.getMessage());
-		if (exception == null) {
-			assertNull(part.getException());
+		if (exceptionDescription == null) {
+			assertNull(part.getExceptionMessage());
 		} else {
-			assertEquals(exception, part.getException());
+			assertEquals(exceptionDescription, part.getExceptionMessage());
+			assertEquals(stackLines.size(), part.getExceptionStackLines()
+					.size());
 		}
+
+		if (expectedTestRunUuid != null) {
+			SimpleResultPart reachedPart = (SimpleResultPart) part;
+			assertNotNull(reachedPart.getTestRunUuid());
+			assertEquals(expectedTestRunUuid, reachedPart.getTestRunUuid());
+		} else {
+			if (part instanceof SimpleResultPart) {
+				assertNull(((SimpleResultPart) part).getTestRunUuid());
+			}
+
+		}
+
 	}
 
 	/** Makes sure this is a singleton */

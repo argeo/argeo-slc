@@ -7,13 +7,9 @@
 		<id name="tid" column="T_ID">
 			<generator class="native" />
 		</id>
-		<property name="slcExecutionUuid" column="SLC_EXEC_UUID" />
-		<property name="slcExecutionStepUuid"
-			column="SLC_EXEC_STEP_UUID" />
 		<list name="parts" cascade="all" lazy="false">
 			<key column="PART_SUBLIST_ID" />
 			<list-index column="INDX" />
-
 			<one-to-many
 				class="org.argeo.slc.core.test.SimpleResultPart" />
 		</list>

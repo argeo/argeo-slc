@@ -10,9 +10,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionAware;
-import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructureRegistry;
@@ -20,20 +17,20 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultListener;
 import org.argeo.slc.core.test.TestResultPart;
+import org.argeo.slc.core.test.TestRun;
+import org.argeo.slc.core.test.TestRunAware;
 
 /**
  * Complex implementation of a test result compatible with a tree based
  * structure.
  */
-public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
-		SlcExecutionAware {
+public class TreeTestResult implements TestResult, StructureAware<TreeSPath> {
 	private Log log = LogFactory.getLog(TreeTestResult.class);
 
 	private List<TestResultListener> listeners = new Vector<TestResultListener>();
 
 	private TreeSPath currentPath;
-	private String currentSlcExecutionUuid;
-	private String currentSlcExecutionStepUuid;
+	private TestRun currentTestRun;
 
 	private Date closeDate;
 
@@ -56,9 +53,10 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		PartSubList subList = resultParts.get(currentPath);
 		if (subList == null) {
 			subList = new PartSubList();
-			subList.setSlcExecutionUuid(currentSlcExecutionUuid);
-			subList.setSlcExecutionStepUuid(currentSlcExecutionStepUuid);
 			resultParts.put(currentPath, subList);
+		}
+		if (part instanceof TestRunAware && currentTestRun != null) {
+			((TestRunAware) part).notifyTestRun(currentTestRun);
 		}
 		subList.getParts().add(part);
 
@@ -133,12 +131,8 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		this.closeDate = closeDate;
 	}
 
-	public void notifySlcExecution(SlcExecution slcExecution) {
-		currentSlcExecutionUuid = slcExecution.getUuid();
-		SlcExecutionStep step = slcExecution.currentStep();
-		if (step != null) {
-			currentSlcExecutionStepUuid = step.getUuid();
-		}
+	public void notifyTestRun(TestRun testRun) {
+		currentTestRun = testRun;
 	}
 
 	public SortedMap<TreeSPath, StructureElement> getElements() {
@@ -157,4 +151,21 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		this.uuid = uuid;
 	}
 
+	public SortedMap<TreeSPath, StructureElement> getRelatedElements(
+			TreeSPath path) {
+		SortedMap<TreeSPath, StructureElement> relatedElements = new TreeMap<TreeSPath, StructureElement>();
+		List<TreeSPath> hierarchy = path.getHierarchyAsList();
+		for (TreeSPath currPath : elements.keySet()) {
+			if (hierarchy.contains(currPath)) {
+				relatedElements.put(currPath, elements.get(currPath));
+			}
+		}
+		return relatedElements;
+	}
+
+	public TestRun getCurrentTestRun() {
+		return currentTestRun;
+	}
+	
+	
 }

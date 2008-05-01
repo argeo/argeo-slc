@@ -1,7 +1,5 @@
 package org.argeo.slc.unit;
 
-import java.util.Map;
-
 import junit.framework.TestCase;
 
 import org.springframework.context.ApplicationContext;
@@ -11,7 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.spring.SpringUtils;
 
 /** Helper for tests using a Spring application co,text. */
 public abstract class AbstractSpringTestCase extends TestCase {
@@ -37,12 +35,12 @@ public abstract class AbstractSpringTestCase extends TestCase {
 	}
 
 	protected <T> T getBean(Class<? extends T> clss) {
-		Map<String, T> map = getContext().getBeansOfType(clss);
-		if (map.size() == 1) {
-			return map.values().iterator().next();
-		} else {
+		T bean = SpringUtils.loadSingleFromContext(getContext(), clss);
+		if (bean == null) {
 			throw new SlcException("Cannot retrieve a unique bean of type "
 					+ clss);
+		} else {
+			return bean;
 		}
 	}
 

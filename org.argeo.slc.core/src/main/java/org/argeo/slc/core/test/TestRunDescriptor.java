@@ -1,0 +1,72 @@
+package org.argeo.slc.core.test;
+
+import org.argeo.slc.core.deploy.DeployedSystem;
+
+public class TestRunDescriptor {
+	private String testRunUuid;
+	private String slcExecutionUuid;
+	private String slcExecutionStepUuid;
+	private String testResultUuid;
+	private String deployedSytemId;
+
+	public TestRunDescriptor() {
+
+	}
+
+	public TestRunDescriptor(TestRun testRun) {
+		testRunUuid = testRun.getUuid();
+
+		if (testRun.getTestResult() != null)
+			testResultUuid = testRun.<TestResult>getTestResult().getUuid();
+
+		if (testRun.getDeployedSystem() != null)
+			deployedSytemId = testRun.<DeployedSystem>getDeployedSystem().getDeployedSystemId();
+
+		if (testRun instanceof SimpleTestRun) {
+			slcExecutionUuid = ((SimpleTestRun) testRun).getSlcExecutionUuid();
+			slcExecutionStepUuid = ((SimpleTestRun) testRun)
+					.getSlcExecutionStepUuid();
+		}
+	}
+
+	public String getTestRunUuid() {
+		return testRunUuid;
+	}
+
+	public void setTestRunUuid(String testRunUuid) {
+		this.testRunUuid = testRunUuid;
+	}
+
+	public String getSlcExecutionUuid() {
+		return slcExecutionUuid;
+	}
+
+	public void setSlcExecutionUuid(String slcExecutionUuid) {
+		this.slcExecutionUuid = slcExecutionUuid;
+	}
+
+	public String getSlcExecutionStepUuid() {
+		return slcExecutionStepUuid;
+	}
+
+	public void setSlcExecutionStepUuid(String slcExecutionStepUuid) {
+		this.slcExecutionStepUuid = slcExecutionStepUuid;
+	}
+
+	public String getTestResultUuid() {
+		return testResultUuid;
+	}
+
+	public void setTestResultUuid(String testResultUuid) {
+		this.testResultUuid = testResultUuid;
+	}
+
+	public String getDeployedSytemId() {
+		return deployedSytemId;
+	}
+
+	public void setDeployedSytemId(String deploymentId) {
+		this.deployedSytemId = deploymentId;
+	}
+
+}

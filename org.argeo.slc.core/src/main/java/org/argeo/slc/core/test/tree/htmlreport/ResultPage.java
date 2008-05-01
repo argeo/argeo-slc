@@ -40,7 +40,7 @@ class ResultPage {
 	 * @param result
 	 *            the result to dump
 	 */
-	protected void generate(StructureRegistry registry) {
+	protected void generate(StructureRegistry<TreeSPath> registry) {
 		StringBuffer buf = new StringBuffer("");
 		buf.append("<html>\n");
 		buf.append("<header>");
@@ -53,8 +53,7 @@ class ResultPage {
 
 		// Header
 		buf.append("<a name=\"top\"/>\n");
-		buf.append("<h1>Result #").append(result.getUuid()).append(
-				"</h1>\n");
+		buf.append("<h1>Result #").append(result.getUuid()).append("</h1>\n");
 		Date closeDate = result.getCloseDate();
 		if (closeDate == null) {
 			buf.append("[Not closed]");
@@ -78,7 +77,8 @@ class ResultPage {
 		}
 	}
 
-	private void generateToc(StringBuffer buf, StructureRegistry registry) {
+	private void generateToc(StringBuffer buf,
+			StructureRegistry<TreeSPath> registry) {
 		buf.append("<h2>Overview</h2>\n");
 		SortedMap<TreeSPath, Integer> toc = new TreeMap<TreeSPath, Integer>();
 		for (TreeSPath path : result.getResultParts().keySet()) {
@@ -128,7 +128,8 @@ class ResultPage {
 		buf.append("<hr/>\n");
 	}
 
-	private void generatePartsList(StringBuffer buf, StructureRegistry registry) {
+	private void generatePartsList(StringBuffer buf,
+			StructureRegistry<TreeSPath> registry) {
 		for (TreeSPath path : result.getResultParts().keySet()) {
 			buf.append("<p>\n");
 			buf.append("<a name=\"").append(anchor(path)).append("\"></a>");
@@ -138,14 +139,12 @@ class ResultPage {
 
 			PartSubList subList = (PartSubList) result.getResultParts().get(
 					path);
-			buf.append("Related SLC execution:").append(
-					subList.getSlcExecutionUuid()).append("<br/>\n");
-			buf.append("Related SLC execution step:").append(
-					subList.getSlcExecutionUuid()).append("<br/>\n");
 			buf.append("<table border=0>\n");
 			int displayedIndex = 1;// for display only
 			for (TestResultPart part : subList.getParts()) {
 				SimpleResultPart sPart = (SimpleResultPart) part;
+				buf.append("Related Test Run Id:").append(
+						sPart.getTestRunUuid()).append("<br/>\n");
 				String clss = "";
 				if (sPart.getStatus().equals(TestStatus.PASSED)) {
 					clss = "passed";
@@ -161,15 +160,7 @@ class ResultPage {
 				if (sPart.getStatus().equals(TestStatus.ERROR)) {
 					buf
 							.append("<p><b>An unexpected error prevented the test to run properly.</b>");
-					Throwable exception = sPart.getException();
-					if (exception != null) {
-						StringWriter writer = new StringWriter();
-						exception.printStackTrace(new PrintWriter(writer));
-						buf.append("<br/><pre>");
-						buf.append(writer.toString());
-						buf.append("</pre>");
-						IOUtils.closeQuietly(writer);
-					}
+					buf.append(sPart.getExceptionMessage());
 					buf.append("</p>");
 				}
 				buf.append("</td>");
@@ -202,8 +193,8 @@ class ResultPage {
 		return path.getAsUniqueString().replace(path.getSeparator(), '_');
 	}
 
-	private void describedPath(TreeSPath path, StructureRegistry registry,
-			StringBuffer buf) {
+	private void describedPath(TreeSPath path,
+			StructureRegistry<TreeSPath> registry, StringBuffer buf) {
 		// StringBuffer buf = new StringBuffer("");
 		if (path.getParent() != null) {
 			describedPath(path.getParent(), registry, buf);

@@ -99,10 +99,7 @@ public class SlcTestTask extends SAwareTask {
 		}
 
 		SlcExecution slcExecution = getSlcExecution();
-		if (result != null && slcExecution != null
-				&& result instanceof SlcExecutionAware) {
-			((SlcExecutionAware) result).notifySlcExecution(slcExecution);
-		}
+		testRun.notifySlcExecution(slcExecution);
 
 		if (result != null && result instanceof StructureAware) {
 			((StructureAware<TreeSPath>) result).notifyCurrentPath(

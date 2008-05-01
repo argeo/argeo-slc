@@ -1,5 +1,14 @@
 package org.argeo.slc.core.test;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.List;
+import java.util.Vector;
+
+import org.apache.commons.io.IOUtils;
+
 /**
  * <p>
  * Basic implementation of a result part, implementing the standard three status
@@ -8,15 +17,19 @@ package org.argeo.slc.core.test;
  * 
  * @see TestStatus
  */
-public class SimpleResultPart implements TestResultPart, TestStatus {
+public class SimpleResultPart implements TestResultPart, TestStatus,
+		TestRunAware {
 
-	/** For ORM */
+	/** @deprecated */
 	private Long tid;
+
+	private String testRunUuid;
 
 	/** The status. Default to ERROR since it should always be explicitely set. */
 	private Integer status = ERROR;
 	private String message;
-	private Exception exception;
+	private String exceptionMessage;
+	private List<String> exceptionStackLines = new Vector<String>();
 
 	public SimpleResultPart() {
 	}
@@ -28,7 +41,7 @@ public class SimpleResultPart implements TestResultPart, TestStatus {
 	public SimpleResultPart(Integer status, String message, Exception exception) {
 		this.status = status;
 		this.message = message;
-		this.exception = exception;
+		setException(exception);
 	}
 
 	public String getMessage() {
@@ -47,12 +60,29 @@ public class SimpleResultPart implements TestResultPart, TestStatus {
 		return status;
 	}
 
-	public Exception getException() {
-		return exception;
+	public String getExceptionMessage() {
+		return exceptionMessage;
 	}
 
 	public void setException(Exception exception) {
-		this.exception = exception;
+		if (exception == null)
+			return;
+
+		this.exceptionMessage = exception.getMessage();
+
+		StringWriter writer = null;
+		StringReader reader = null;
+		try {
+			writer = new StringWriter();
+			exception.printStackTrace(new PrintWriter(writer));
+			reader = new StringReader(writer.toString());
+			exceptionStackLines = new Vector<String>(IOUtils.readLines(reader));
+		} catch (IOException e) {
+			// silent
+		} finally {
+			IOUtils.closeQuietly(writer);
+			IOUtils.closeQuietly(reader);
+		}
 	}
 
 	@Override
@@ -65,18 +95,42 @@ public class SimpleResultPart implements TestResultPart, TestStatus {
 			buf.append("  ");
 		}
 		buf.append(message);
-		if (exception != null) {
-			buf.append("(").append(exception.getMessage()).append(")");
-		}
 		return buf.toString();
 	}
 
+	/** @deprecated */
 	Long getTid() {
 		return tid;
 	}
 
+	/** @deprecated */
 	void setTid(Long tid) {
 		this.tid = tid;
+	}
+
+	public String getTestRunUuid() {
+		return testRunUuid;
+	}
+
+	/** For ORM */
+	public void setTestRunUuid(String testRunUuid) {
+		this.testRunUuid = testRunUuid;
+	}
+
+	public void notifyTestRun(TestRun testRun) {
+		testRunUuid = testRun.getUuid();
+	}
+
+	public List<String> getExceptionStackLines() {
+		return exceptionStackLines;
+	}
+
+	public void setExceptionStackLines(List<String> exceptionStackLines) {
+		this.exceptionStackLines = exceptionStackLines;
+	}
+
+	public void setExceptionMessage(String exceptionMessage) {
+		this.exceptionMessage = exceptionMessage;
 	}
 
 }

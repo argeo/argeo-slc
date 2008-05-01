@@ -3,7 +3,9 @@ package org.argeo.slc.core.test;
 import java.util.Date;
 
 /** The result of a test */
-public interface TestResult extends TestStatus {
+public interface TestResult extends TestStatus, TestRunAware {
+	public String getUuid();
+
 	/** Adds a part of the result. */
 	public void addResultPart(TestResultPart part);
 

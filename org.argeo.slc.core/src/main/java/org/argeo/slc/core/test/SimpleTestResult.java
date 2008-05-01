@@ -2,6 +2,7 @@ package org.argeo.slc.core.test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
@@ -15,16 +16,19 @@ import org.argeo.slc.core.SlcException;
 public class SimpleTestResult implements TestResult {
 	private static Log log = LogFactory.getLog(SimpleTestResult.class);
 
+	private String uuid;
+	private String currentTestRunUuid;
+
 	private Boolean throwError = true;
 
-	private TestResultId testResultId;
 	private Date closeDate;
 	private List<TestResultPart> parts = new Vector<TestResultPart>();
 
 	public void addResultPart(TestResultPart part) {
 		if (throwError && part.getStatus() == ERROR) {
-			throw new SlcException("There was an error in the underlying test",
-					part.getException());
+			throw new SlcException(
+					"There was an error in the underlying test: "
+							+ part.getExceptionMessage());
 		}
 		parts.add(part);
 		if (log.isDebugEnabled())
@@ -34,15 +38,6 @@ public class SimpleTestResult implements TestResult {
 	public void close() {
 		parts.clear();
 		closeDate = new Date();
-	}
-
-	public TestResultId getTestResultId() {
-		return testResultId;
-	}
-
-	/** Sets the test result id. */
-	public void setTestResultId(TestResultId testResultId) {
-		this.testResultId = testResultId;
 	}
 
 	public List<TestResultPart> getParts() {
@@ -55,6 +50,25 @@ public class SimpleTestResult implements TestResult {
 
 	public void setThrowError(Boolean throwError) {
 		this.throwError = throwError;
+	}
+
+	public void notifyTestRun(TestRun testRun) {
+		currentTestRunUuid = testRun.getUuid();
+	}
+
+	public String getUuid() {
+		if (uuid == null) {
+			uuid = UUID.randomUUID().toString();
+		}
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getCurrentTestRunUuid() {
+		return currentTestRunUuid;
 	}
 
 }

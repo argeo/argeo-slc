@@ -2,7 +2,7 @@ package org.argeo.slc.msg.test.tree;
 
 import org.argeo.slc.core.test.tree.TreeTestResult;
 
-public class TreeTestResultRequest {
+public class CreateTreeTestResultRequest {
 	private TreeTestResult treeTestResult;
 
 	public TreeTestResult getTreeTestResult() {

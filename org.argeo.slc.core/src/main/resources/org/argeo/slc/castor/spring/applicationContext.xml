@@ -11,7 +11,7 @@
 					classpath:org/argeo/slc/castor/process/mapping.xml
 				</value>
 				<value>
-					classpath:org/argeo/slc/castor/test/tree/mapping.xml
+					classpath:org/argeo/slc/castor/test/mapping.xml
 				</value>
 			</list>
 		</property>

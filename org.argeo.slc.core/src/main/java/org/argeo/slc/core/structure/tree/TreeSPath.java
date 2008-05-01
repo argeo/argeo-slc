@@ -40,7 +40,7 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	 * ORM/OXM frameworks. Use constructor to create immutable tree structure
 	 * paths.
 	 */
-	void setAsUniqueString(String str) {
+	public void setAsUniqueString(String str) {
 		this.asUniqueString = str;
 	}
 

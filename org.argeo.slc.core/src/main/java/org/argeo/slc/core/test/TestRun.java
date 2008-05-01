@@ -1,9 +1,13 @@
 package org.argeo.slc.core.test;
 
 import org.argeo.slc.core.deploy.DeployedSystem;
+import org.argeo.slc.core.process.SlcExecutionAware;
 
 /** The actual run of a test */
-public interface TestRun {
+public interface TestRun extends SlcExecutionAware{
+	/** Gets UUID */
+	public String getUuid();
+
 	/** Gets the related test definition. */
 	public <T extends TestDefinition> T getTestDefinition();
 

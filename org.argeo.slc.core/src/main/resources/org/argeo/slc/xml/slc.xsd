@@ -12,7 +12,7 @@
 			<xs:element name="elements" minOccurs="0"
 				type="slc:ElementsType" />
 		</xs:all>
-		<xs:attribute name="uuid" use="required"/>
+		<xs:attribute name="uuid" use="required" />
 	</xs:complexType>
 	<xs:complexType name="ResultPartsType">
 		<xs:sequence>
@@ -29,8 +29,6 @@
 	</xs:complexType>
 	<xs:complexType name="PartSubListType">
 		<xs:all>
-			<xs:element name="slc-execution-uuid" type="xs:string" />
-			<xs:element name="slc-execution-step-uuid" type="xs:string" />
 			<xs:element name="parts" minOccurs="0" type="slc:PartsType" />
 		</xs:all>
 	</xs:complexType>
@@ -53,16 +51,28 @@
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="message" type="xs:string" />
-			<xs:element name="exception" minOccurs="0"
-				type="slc:ExceptionType" />
+			<xs:element name="exception-message" minOccurs="0"
+				type="xs:string" />
+			<xs:element name="stack-lines" minOccurs="0"
+				type="slc:StackLinesType" />
+			<xs:element name="test-run-uuid" type="xs:string"
+				minOccurs="0" />
 		</xs:all>
 	</xs:complexType>
+	<xs:complexType name="StackLinesType">
+		<xs:sequence>
+			<xs:element name="stack-line" maxOccurs="unbounded"
+				type="xs:string" />
+		</xs:sequence>
+		<xs:attribute name="message" type="xs:string" />
+	</xs:complexType>
+	<!-- 
 	<xs:complexType name="ExceptionType">
 		<xs:all>
-			<xs:element name="message" type="xs:string" />
 			<xs:element name="stack-trace" minOccurs="0"
 				type="slc:StackTraceType" />
 		</xs:all>
+		<xs:attribute name="message" type="xs:string" />
 	</xs:complexType>
 	<xs:complexType name="StackTraceType">
 		<xs:sequence>
@@ -80,6 +90,7 @@
 		<xs:attribute name="line-number" type="xs:integer"
 			use="required" />
 	</xs:complexType>
+	-->
 	<xs:complexType name="ElementsType">
 		<xs:sequence>
 			<xs:element name="element" type="slc:ElementType"
@@ -113,13 +124,41 @@
 		</xs:all>
 		<xs:attribute name="name" type="xs:string" use="required" />
 	</xs:complexType>
+	<xs:complexType name="TreeSPathType">
+		<xs:attribute name="as-unique-string" type="xs:string"
+			use="required" />
+	</xs:complexType>
+	<xs:complexType name="TestRunDescriptorType">
+		<xs:all>
+			<xs:element name="slc-execution-uuid" type="xs:string" />
+			<xs:element name="slc-execution-step-uuid" type="xs:string" />
+			<xs:element name="test-run-uuid" type="xs:string" />
+			<xs:element name="deployed-sytem-id" type="xs:string" />
+			<xs:element name="test-result-uuid" type="xs:string" />
+		</xs:all>
+	</xs:complexType>
 
-	<!-- TREE TEST RESULT -->
-	<xs:element name="tree-test-result-request">
+	<!-- TREE TEST RESULT REQUESTS -->
+	<xs:element name="create-tree-test-result-request">
 		<xs:complexType>
 			<xs:all>
 				<xs:element name="tree-test-result"
 					type="slc:TreeTestResultType" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="result-part-request">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="result-uuid" type="xs:string" />
+				<xs:element name="simple-result-part"
+					type="slc:SimpleResultPartType" />
+				<xs:element name="related-elements"
+					type="slc:ElementsType" />
+				<xs:element name="tree-sPath" type="slc:TreeSPathType" />
+				<xs:element name="test-run-descriptor"
+					type="slc:TestRunDescriptorType" />
 			</xs:all>
 		</xs:complexType>
 	</xs:element>
