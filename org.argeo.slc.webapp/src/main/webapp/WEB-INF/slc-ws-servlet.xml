@@ -3,39 +3,33 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
+	<import
+		resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
+	<import
+		resource="classpath:/org/argeo/slc/xml/spring/applicationContext.xml" />
+
 	<bean name="slcExecutionRequestEp"
 		class="org.argeo.slc.ws.process.SlcExecutionRequestEp">
 		<constructor-arg ref="slcExecutionDao" />
-		<property name="marshaller" ref="marshaller" />
-		<property name="unmarshaller" ref="marshaller" />
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="unmarshaller"
+			ref="slcDefault.castor.marshaller" />
 	</bean>
 
 	<bean name="slcExecutionStepsRequestEp"
 		class="org.argeo.slc.ws.process.SlcExecutionStepsRequestEp">
 		<constructor-arg ref="slcExecutionDao" />
-		<property name="marshaller" ref="marshaller" />
-		<property name="unmarshaller" ref="marshaller" />
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="unmarshaller"
+			ref="slcDefault.castor.marshaller" />
 	</bean>
 
-	<bean name="treeTestResultRequestEp"
-		class="org.argeo.slc.ws.test.tree.TreeTestResultRequestEp">
+	<bean name="createTreeTestResultRequestEp"
+		class="org.argeo.slc.ws.test.tree.CreateTreeTestResultRequestEp">
 		<constructor-arg ref="testResultDao" />
-		<property name="marshaller" ref="marshaller" />
-		<property name="unmarshaller" ref="marshaller" />
-	</bean>
-
-	<bean id="marshaller"
-		class="org.springframework.oxm.castor.CastorMarshaller">
-		<property name="mappingLocations">
-			<list>
-				<value>
-					classpath:org/argeo/slc/castor/process/mapping.xml
-				</value>
-				<value>
-					classpath:org/argeo/slc/castor/test/tree/mapping.xml
-				</value>
-			</list>
-		</property>
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="unmarshaller"
+			ref="slcDefault.castor.marshaller" />
 	</bean>
 
 	<bean id="endPointMapping"
@@ -52,8 +46,8 @@
 					slcExecutionStepsRequestEp
 				</prop>
 				<prop
-					key="{http://argeo.org/projects/slc/schemas}tree-test-result-request">
-					treeTestResultRequestEp
+					key="{http://argeo.org/projects/slc/schemas}create-tree-test-result-request">
+					createTreeTestResultRequestEp
 				</prop>
 			</props>
 		</property>
@@ -66,19 +60,13 @@
 
 	<bean id="slcDefinition"
 		class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition">
-		<property name="schema" ref="schema" />
+		<property name="schema" ref="slcDefault.xml.xsdSchema" />
 		<property name="portTypeName" value="Slc" />
 		<property name="locationUri"
-			value="http://localhost:8080/argeo-slc-ws/slcService/" />
+			value="http://localhost:8080/org.argeo.slc.webapp/slcService/" />
 		<property name="targetNamespace"
 			value="http://argeo.org/projects/slc/definitions" />
 		<property name="requestSuffix" value="-request" />
-	</bean>
-
-	<bean id="schema"
-		class="org.springframework.xml.xsd.SimpleXsdSchema">
-		<property name="xsd"
-			value="classpath:/org/argeo/slc/xml/slc.xsd" />
 	</bean>
 
 	<bean class="org.argeo.slc.ws.CustomSoapExceptionResolver" />
