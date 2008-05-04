@@ -1,13 +1,5 @@
 package org.argeo.slc.core.test;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.List;
-import java.util.Vector;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * <p>
@@ -29,7 +21,6 @@ public class SimpleResultPart implements TestResultPart, TestStatus,
 	private Integer status = ERROR;
 	private String message;
 	private String exceptionMessage;
-	private List<String> exceptionStackLines = new Vector<String>();
 
 	public SimpleResultPart() {
 	}
@@ -68,8 +59,18 @@ public class SimpleResultPart implements TestResultPart, TestStatus,
 		if (exception == null)
 			return;
 
-		this.exceptionMessage = exception.getMessage();
+		//this.exceptionMessage = exception.getMessage();
 
+		StringBuffer buf = new StringBuffer("");
+		buf.append(exception.getMessage());
+		buf.append('\n');
+		for(StackTraceElement elem : exception.getStackTrace()){
+			buf.append(elem.toString()).append('\n');
+		}
+		
+		this.exceptionMessage = buf.toString();
+		
+/*		
 		StringWriter writer = null;
 		StringReader reader = null;
 		try {
@@ -82,7 +83,7 @@ public class SimpleResultPart implements TestResultPart, TestStatus,
 		} finally {
 			IOUtils.closeQuietly(writer);
 			IOUtils.closeQuietly(reader);
-		}
+		}*/
 	}
 
 	@Override
@@ -119,14 +120,6 @@ public class SimpleResultPart implements TestResultPart, TestStatus,
 
 	public void notifyTestRun(TestRun testRun) {
 		testRunUuid = testRun.getUuid();
-	}
-
-	public List<String> getExceptionStackLines() {
-		return exceptionStackLines;
-	}
-
-	public void setExceptionStackLines(List<String> exceptionStackLines) {
-		this.exceptionStackLines = exceptionStackLines;
 	}
 
 	public void setExceptionMessage(String exceptionMessage) {

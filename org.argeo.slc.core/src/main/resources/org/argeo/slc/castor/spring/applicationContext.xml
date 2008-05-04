@@ -21,6 +21,7 @@
 				</value>
 			</list>
 		</property>
+		<property name="whitespacePreserve" value="true"/>
 	</bean>
 
 </beans>

@@ -10,8 +10,14 @@
 		<list name="parts" cascade="all" lazy="false">
 			<key column="PART_SUBLIST_ID" />
 			<list-index column="INDX" />
-			<one-to-many
-				class="org.argeo.slc.core.test.SimpleResultPart" />
+			<composite-element
+				class="org.argeo.slc.core.test.SimpleResultPart">
+				<property name="status" column="STATUS" not-null="true" />
+				<property name="message" column="MESSAGE"
+					not-null="true" />
+				<property name="exceptionMessage"
+					column="EXCEPTION_MESSAGE" not-null="false" />
+			</composite-element>
 		</list>
 	</class>
 </hibernate-mapping>

@@ -1,6 +1,7 @@
 package org.argeo.slc.unit.test.tree;
 
-import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
@@ -17,6 +18,8 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 
 /** Utilities for unit tests. */
 public class UnitTestTreeUtil {
+	private final static Log log = LogFactory.getLog(UnitTestTreeUtil.class);
+
 	public static void assertTreeTestResult(TreeTestResult expected,
 			TreeTestResult reached) {
 		assertEquals(expected.getUuid(), reached.getUuid());
@@ -89,7 +92,7 @@ public class UnitTestTreeUtil {
 			fail("Not enough parts.");
 		}
 		SimpleResultPart part = (SimpleResultPart) list.getParts().get(index);
-		assertPart(part, status, message, null, null, part.getTestRunUuid());
+		assertPart(part, status, message, null, part.getTestRunUuid());
 	}
 
 	public static void assertPart(TestResultPart expected,
@@ -101,22 +104,30 @@ public class UnitTestTreeUtil {
 		}
 
 		assertPart(reached, expected.getStatus(), expected.getMessage(),
-				expected.getExceptionMessage(), expected
-						.getExceptionStackLines(), expectedTestRunUuid);
+				expected.getExceptionMessage(), expectedTestRunUuid);
 	}
 
 	/** Assert one part of a tree test result. */
 	private static void assertPart(TestResultPart part, Integer status,
 			String message, String exceptionDescription,
-			List<String> stackLines, String expectedTestRunUuid) {
+			String expectedTestRunUuid) {
 		assertEquals(status, part.getStatus());
+
+		if (log.isTraceEnabled()) {
+			log.trace("Expected message:" + message);
+			log.trace("Reached message:" + part.getMessage());
+		}
 		assertEquals(message, part.getMessage());
 		if (exceptionDescription == null) {
 			assertNull(part.getExceptionMessage());
 		} else {
+			if (log.isTraceEnabled()) {
+				log.trace("Expected exception message:" + exceptionDescription);
+				log.trace("Reached exception message:"
+						+ part.getExceptionMessage());
+			}
+
 			assertEquals(exceptionDescription, part.getExceptionMessage());
-			assertEquals(stackLines.size(), part.getExceptionStackLines()
-					.size());
 		}
 
 		if (expectedTestRunUuid != null) {

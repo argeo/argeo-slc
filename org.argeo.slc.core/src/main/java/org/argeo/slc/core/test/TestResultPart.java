@@ -1,6 +1,5 @@
 package org.argeo.slc.core.test;
 
-import java.util.List;
 
 /**
  * Part of a test result.
@@ -16,6 +15,4 @@ public interface TestResultPart {
 
 	/** The underlying <code>Exception</code>. Can be null. */
 	public String getExceptionMessage();
-
-	public List<String> getExceptionStackLines();
 }

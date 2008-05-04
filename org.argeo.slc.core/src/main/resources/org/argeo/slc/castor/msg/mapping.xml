@@ -16,9 +16,11 @@
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="resultUuid" />
-		<field name="resultPart">
+		<field name="resultPart"
+			type="org.argeo.slc.core.test.SimpleResultPart">
 			<bind-xml auto-naming="deriveByClass" />
 		</field>
+
 		<field name="relatedElements" collection="map">
 			<bind-xml name="element" location="related-elements">
 				<class name="org.exolab.castor.mapping.MapItem">
@@ -41,6 +43,7 @@
 		</field>
 		<field name="testRunDescriptor" />
 	</class>
+
 
 	<!-- PROCESS -->
 	<class name="org.argeo.slc.msg.process.SlcExecutionStepsRequest">

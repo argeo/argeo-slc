@@ -11,10 +11,5 @@
 		<property name="message" column="MESSAGE" not-null="true" />
 		<property name="exceptionMessage" column="EXCEPTION_MESSAGE"
 			not-null="false" />
-		<list name="exceptionStackLines" cascade="all" lazy="false">
-			<key column="RESULT_PART_ID" />
-			<list-index column="INDX" />
-			<element type="string" column="STACK_LINE" />
-		</list>
 	</class>
 </hibernate-mapping>

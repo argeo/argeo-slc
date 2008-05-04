@@ -5,13 +5,12 @@ import java.util.Map;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.core.test.TestResultPart;
 import org.argeo.slc.core.test.TestRunDescriptor;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 
 public class ResultPartRequest {
 	private String resultUuid;
-	private TestResultPart resultPart;
+	private SimpleResultPart resultPart;
 	private TreeSPath path;
 	private Map<TreeSPath, StructureElement> relatedElements;
 	private TestRunDescriptor testRunDescriptor;
@@ -21,7 +20,7 @@ public class ResultPartRequest {
 	}
 
 	public ResultPartRequest(TreeTestResult ttr, TreeSPath path,
-			TestResultPart resultPart) {
+			SimpleResultPart resultPart) {
 		resultUuid = ttr.getUuid();
 		this.resultPart = resultPart;
 		this.path = path;
@@ -38,14 +37,16 @@ public class ResultPartRequest {
 		this.resultUuid = resultUuid;
 	}
 
-	public TestResultPart getResultPart() {
+	public SimpleResultPart getResultPart() {
 		return resultPart;
 	}
 
-	public void setResultPart(TestResultPart resultPart) {
+	public void setResultPart(SimpleResultPart resultPart) {
 		this.resultPart = resultPart;
 	}
 
+	
+	
 	public TreeSPath getPath() {
 		return path;
 	}

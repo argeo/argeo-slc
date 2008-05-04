@@ -66,7 +66,7 @@ public abstract class TreeTestResultTestUtils {
 
 	public static SimpleResultPart createSimpleResultPartPassed() {
 		SimpleResultPart partPassed = new SimpleResultPart();
-		String msgPassed = "message";
+		String msgPassed = "message\nnew line";
 		partPassed.setStatus(TestStatus.PASSED);
 		partPassed.setMessage(msgPassed);
 		return partPassed;
@@ -82,7 +82,7 @@ public abstract class TreeTestResultTestUtils {
 
 	public static SimpleResultPart createSimpleResultPartError() {
 		SimpleResultPart partFailed = new SimpleResultPart();
-		String msgFailed = "crashed";
+		String msgFailed = "crashed\nanother line";
 		partFailed.setStatus(TestStatus.ERROR);
 		partFailed.setMessage(msgFailed);
 		partFailed.setException(new Exception("Test Exception"));

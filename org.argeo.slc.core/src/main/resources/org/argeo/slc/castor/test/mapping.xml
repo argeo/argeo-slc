@@ -7,11 +7,11 @@
 		auto-complete="false">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
-		<field name="testRunUuid"/>
-		<field name="slcExecutionUuid"/>
-		<field name="slcExecutionStepUuid"/>
-		<field name="testResultUuid"/>
-		<field name="deployedSytemId"/>
+		<field name="testRunUuid" />
+		<field name="slcExecutionUuid" />
+		<field name="slcExecutionStepUuid" />
+		<field name="testResultUuid" />
+		<field name="deployedSytemId" />
 	</class>
 
 	<class name="org.argeo.slc.core.test.tree.TreeTestResult"
@@ -73,14 +73,10 @@
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="testRunUuid" type="string" />
-		<field name="message" type="string" />
+		<field name="message" type="string"/>
 		<field name="status" type="string"
 			handler="org.argeo.slc.castor.test.tree.StatusFieldHandler" />
-		<field name="exceptionMessage" type="string" />
-		<field name="exceptionStackLines" collection="vector"
-			type="string">
-			<bind-xml name="stack-line" location="stack-lines" />
-		</field>
+		<field name="exceptionMessage" type="string"/>
 	</class>
-	
+
 </mapping>

@@ -13,7 +13,7 @@ import org.argeo.slc.unit.AbstractSpringTestCase;
 public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());
 
-	public void testSendSlcExecutionrequest() {
+	public void testCreateTreeTestResultRequest() {
 		WebServiceTemplate template = getBean(WebServiceTemplate.class);
 		CreateTreeTestResultRequest req = new CreateTreeTestResultRequest();
 		req.setTreeTestResult(createCompleteTreeTestResult());
