@@ -9,7 +9,8 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 
-public class CreateTreeTestResultRequestEp extends AbstractMarshallingPayloadEndpoint {
+public class CreateTreeTestResultRequestEp extends
+		AbstractMarshallingPayloadEndpoint {
 
 	private Log log = LogFactory.getLog(getClass());
 
@@ -25,10 +26,9 @@ public class CreateTreeTestResultRequestEp extends AbstractMarshallingPayloadEnd
 		TreeTestResult treeTestResult = msg.getTreeTestResult();
 
 		treeTestResultDao.create(treeTestResult);
-		
+
 		if (log.isDebugEnabled())
-			log.debug("Created TreeTestResult with uuid "
-					+ treeTestResult.getUuid());
+			log.debug("Created result with id " + treeTestResult.getUuid());
 		return null;
 	}
 
