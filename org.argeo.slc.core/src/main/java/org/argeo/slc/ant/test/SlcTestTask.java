@@ -7,6 +7,7 @@ import org.apache.tools.ant.BuildException;
 import org.argeo.slc.ant.SlcAntConfig;
 import org.argeo.slc.ant.spring.AbstractSpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.deploy.DeployedSystem;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionAware;
@@ -54,8 +55,7 @@ public class SlcTestTask extends SAwareTask {
 			testRun = loadSingleFromContext(WritableTestRun.class);
 			if (testRun == null) {
 				testRun = new SimpleTestRun();
-				if (log.isTraceEnabled())
-					log.trace("Created simple test run");
+				log.warn("Created default simple test run");
 			} else {
 				if (log.isTraceEnabled())
 					log.trace("Load test run from scanning Spring context");
@@ -89,8 +89,7 @@ public class SlcTestTask extends SAwareTask {
 			result = loadSingleFromContext(TestResult.class);
 			if (result == null) {
 				result = new SimpleTestResult();
-				if (log.isTraceEnabled())
-					log.trace("Created simple test result");
+				log.warn("Created default simple test result");
 			} else {
 				if (log.isTraceEnabled())
 					log.trace("Load test result from scanning Spring context");

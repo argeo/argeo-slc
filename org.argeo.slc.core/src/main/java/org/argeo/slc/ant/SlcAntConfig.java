@@ -99,7 +99,7 @@ import org.apache.tools.ant.Project;
  * <td>Name of the {@link WritableTestRun} Spring bean that the
  * <code>slc.test</code> task will use by default. This can be overridden when
  * calling the task from Ant.</td>
- * <td>slcDefault.test.testRun</td>
+ * <td>defaultTestRun</td>
  * </tr>
  * </table>
  * </p>
@@ -247,7 +247,7 @@ public class SlcAntConfig {
 			// Default test run
 			if (all.getProperty(DEFAULT_TEST_RUN_PROPERTY) == null) {
 				all.setProperty(DEFAULT_TEST_RUN_PROPERTY,
-						"slcDefault.test.testRun");
+						"defaultTestRun");
 			}
 
 			// Default log4j
