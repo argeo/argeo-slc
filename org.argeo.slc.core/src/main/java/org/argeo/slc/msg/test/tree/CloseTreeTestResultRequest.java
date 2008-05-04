@@ -2,6 +2,8 @@ package org.argeo.slc.msg.test.tree;
 
 import java.util.Date;
 
+import org.argeo.slc.core.test.tree.TreeTestResult;
+
 public class CloseTreeTestResultRequest {
 	private String resultUuid;
 	private Date closeDate;
@@ -11,9 +13,13 @@ public class CloseTreeTestResultRequest {
 	}
 
 	public CloseTreeTestResultRequest(String resultUuid, Date closeDate) {
-		super();
 		this.resultUuid = resultUuid;
 		this.closeDate = closeDate;
+	}
+
+	public CloseTreeTestResultRequest(TreeTestResult ttr) {
+		this.resultUuid = ttr.getUuid();
+		this.closeDate = ttr.getCloseDate();
 	}
 
 	public String getResultUuid() {

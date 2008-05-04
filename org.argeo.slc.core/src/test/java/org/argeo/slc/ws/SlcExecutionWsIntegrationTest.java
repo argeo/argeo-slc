@@ -1,10 +1,14 @@
-package org.argeo.slc.core.process;
+package org.argeo.slc.ws;
+
+import org.springframework.ws.client.core.WebServiceTemplate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.core.process.SlcExecutionTestUtils;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
-import org.springframework.ws.client.core.WebServiceTemplate;
 
 public class SlcExecutionWsIntegrationTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());

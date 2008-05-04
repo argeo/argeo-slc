@@ -36,6 +36,7 @@ public class TreeTestResultLogger implements TestResultListener<TreeTestResult> 
 	}
 
 	public void close(TreeTestResult testResult) {
+		log.info("Test result " + testResult.getUuid() + " closed.");
 	}
 
 }

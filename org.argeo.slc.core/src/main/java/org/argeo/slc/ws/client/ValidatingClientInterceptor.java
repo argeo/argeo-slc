@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import javax.xml.transform.Source;
 
-import junit.framework.TestCase;
-
 import org.springframework.ws.client.WebServiceClientException;
 import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.support.interceptor.ClientInterceptor;

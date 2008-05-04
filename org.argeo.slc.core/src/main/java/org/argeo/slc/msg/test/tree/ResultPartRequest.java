@@ -2,10 +2,13 @@ package org.argeo.slc.msg.test.tree;
 
 import java.util.Map;
 
+import org.argeo.slc.core.SlcException;
+import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestRunDescriptor;
+import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 
 public class ResultPartRequest {
@@ -29,6 +32,23 @@ public class ResultPartRequest {
 			testRunDescriptor = new TestRunDescriptor(ttr.getCurrentTestRun());
 	}
 
+	public ResultPartRequest(TreeTestResult ttr) {
+		resultUuid = ttr.getUuid();
+		this.path = ttr.getCurrentPath();
+
+		PartSubList lst = ttr.getResultParts().get(path);
+		if (lst.getParts().size() < 1) {
+			throw new SlcException("Cannot find part for path " + path
+					+ " in result " + resultUuid);
+		}
+
+		this.resultPart = (SimpleResultPart) lst.getParts().get(
+				lst.getParts().size() - 1);
+		relatedElements = ttr.getRelatedElements(path);
+		if (ttr.getCurrentTestRun() != null)
+			testRunDescriptor = new TestRunDescriptor(ttr.getCurrentTestRun());
+	}
+
 	public String getResultUuid() {
 		return resultUuid;
 	}
@@ -45,8 +65,6 @@ public class ResultPartRequest {
 		this.resultPart = resultPart;
 	}
 
-	
-	
 	public TreeSPath getPath() {
 		return path;
 	}

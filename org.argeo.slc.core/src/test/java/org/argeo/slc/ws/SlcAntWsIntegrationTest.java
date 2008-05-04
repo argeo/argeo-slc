@@ -1,4 +1,4 @@
-package org.argeo.slc.core.process;
+package org.argeo.slc.ws;
 
 import java.net.URL;
 

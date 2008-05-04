@@ -1,6 +1,7 @@
 package org.argeo.slc.core.test;
 
 import org.argeo.slc.core.deploy.DeployedSystem;
+import org.argeo.slc.core.process.SlcExecution;
 
 public class TestRunDescriptor {
 	private String testRunUuid;

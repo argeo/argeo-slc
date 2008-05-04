@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<import
-		resource="classpath:/org/argeo/slc/castor/applicationContext.xml" />
+		resource="classpath:/org/argeo/slc/xml/spring/applicationContext.xml" />
+	<import
+		resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
 
 </beans>

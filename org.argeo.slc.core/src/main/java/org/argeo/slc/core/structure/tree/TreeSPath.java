@@ -62,7 +62,7 @@ public class TreeSPath implements StructurePath, Comparable<StructurePath> {
 	/** Gets the name part of the path. */
 	public String getName() {
 		int lastSep = getAsUniqueString().lastIndexOf(separator);
-		return getAsUniqueString().substring(lastSep);
+		return getAsUniqueString().substring(lastSep+1);
 	}
 
 	/** Create a path without parent. */

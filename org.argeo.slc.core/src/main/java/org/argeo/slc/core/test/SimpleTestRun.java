@@ -1,5 +1,7 @@
 package org.argeo.slc.core.test;
 
+import java.util.UUID;
+
 import org.argeo.slc.core.deploy.DeployedSystem;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionStep;
@@ -21,6 +23,7 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun {
 
 	/** Executes the underlying test definition. */
 	public void execute() {
+		uuid = UUID.randomUUID().toString();
 		if (testResult != null)
 			testResult.notifyTestRun(this);
 		testDefinition.execute(this);
