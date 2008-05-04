@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
+import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleResultPartRequest;
 
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
@@ -57,14 +58,7 @@ public class TreeTestResultCastorTest extends AbstractSpringTestCase {
 
 	public void testResultPartRequest() throws Exception {
 		TreeTestResult ttr = createCompleteTreeTestResult();
-
-		TreeSPath path = ttr.getCurrentPath();
-		PartSubList lst = ttr.getResultParts().get(path);
-		// TestResultPart part = lst.getParts().get(lst.getParts().size() - 1);
-		SimpleResultPart part = (SimpleResultPart) lst.getParts().get(2);
-
-		ResultPartRequest req = new ResultPartRequest(ttr, path, part);
-		req.setPath(ttr.getCurrentPath());
+		ResultPartRequest req = createSimpleResultPartRequest(ttr);
 
 		StringResult xml = marshallAndValidate(req);
 
@@ -81,7 +75,7 @@ public class TreeTestResultCastorTest extends AbstractSpringTestCase {
 
 		log.info("Marshalled ResultPart Request: " + xml);
 
-		 UnitXmlUtils.assertXmlValidation(getBean(XmlValidator.class),
+		UnitXmlUtils.assertXmlValidation(getBean(XmlValidator.class),
 				new StringSource(xml.toString()));
 		return xml;
 	}

@@ -14,6 +14,7 @@ import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.SimpleTestRun;
 import org.argeo.slc.core.test.TestStatus;
+import org.argeo.slc.msg.test.tree.ResultPartRequest;
 
 public abstract class TreeTestResultTestUtils {
 
@@ -87,6 +88,17 @@ public abstract class TreeTestResultTestUtils {
 		partFailed.setMessage(msgFailed);
 		partFailed.setException(new Exception("Test Exception"));
 		return partFailed;
+	}
+
+	public static ResultPartRequest createSimpleResultPartRequest(TreeTestResult ttr) {
+		TreeSPath path = ttr.getCurrentPath();
+		PartSubList lst = ttr.getResultParts().get(path);
+		SimpleResultPart part = (SimpleResultPart) lst.getParts().get(2);
+
+		ResultPartRequest req = new ResultPartRequest(ttr, path, part);
+		req.setPath(ttr.getCurrentPath());
+
+		return req;
 	}
 
 	private TreeTestResultTestUtils() {
