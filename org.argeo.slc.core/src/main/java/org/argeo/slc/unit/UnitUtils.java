@@ -5,9 +5,18 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertNotNull;
 
 public abstract class UnitUtils {
 	public static void assertDateSec(Date expected, Date reached) {
+		if (expected == null) {
+			assertNull(reached);
+			return;
+		} else {
+			assertNotNull(reached);
+		}
+
 		Calendar expectedCal = new GregorianCalendar();
 		expectedCal.setTime(expected);
 		Calendar reachedCal = new GregorianCalendar();

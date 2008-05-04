@@ -17,6 +17,8 @@
 					not-null="true" />
 				<property name="exceptionMessage"
 					column="EXCEPTION_MESSAGE" not-null="false" />
+				<property name="testRunUuid" column="TEST_RUN_UUID"
+					not-null="false" />
 			</composite-element>
 		</list>
 	</class>

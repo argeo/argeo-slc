@@ -6,7 +6,8 @@
 	<xs:element name="tree-test-result" type="slc:TreeTestResultType" />
 	<xs:complexType name="TreeTestResultType">
 		<xs:all>
-			<xs:element name="close-date" type="xs:dateTime" />
+			<xs:element name="close-date" type="xs:dateTime"
+				minOccurs="0" />
 			<xs:element name="result-parts" minOccurs="0"
 				type="slc:ResultPartsType" />
 			<xs:element name="elements" minOccurs="0"

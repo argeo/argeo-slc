@@ -17,10 +17,11 @@ public class TestRunDescriptor {
 		testRunUuid = testRun.getUuid();
 
 		if (testRun.getTestResult() != null)
-			testResultUuid = testRun.<TestResult>getTestResult().getUuid();
+			testResultUuid = testRun.<TestResult> getTestResult().getUuid();
 
 		if (testRun.getDeployedSystem() != null)
-			deployedSytemId = testRun.<DeployedSystem>getDeployedSystem().getDeployedSystemId();
+			deployedSytemId = testRun.<DeployedSystem> getDeployedSystem()
+					.getDeployedSystemId();
 
 		if (testRun instanceof SimpleTestRun) {
 			slcExecutionUuid = ((SimpleTestRun) testRun).getSlcExecutionUuid();
@@ -69,4 +70,12 @@ public class TestRunDescriptor {
 		this.deployedSytemId = deploymentId;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof TestRunDescriptor) {
+			return getTestRunUuid().equals(
+					((TestRunDescriptor) obj).getTestRunUuid());
+		}
+		return false;
+	}
 }

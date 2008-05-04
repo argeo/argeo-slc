@@ -41,6 +41,9 @@
 					org/argeo/slc/hibernate/test/tree/PartSubList.hbm.xml
 				</value>
 				<value>
+					org/argeo/slc/hibernate/test/TestRunDescriptor.hbm.xml
+				</value>
+				<value>
 					org/argeo/slc/hibernate/process/SlcExecution.hbm.xml
 				</value>
 				<value>
@@ -74,6 +77,11 @@
 
 	<bean id="slcTemplates.dao.testResultDao"
 		class="org.argeo.slc.hibernate.test.tree.TestResultDaoHibernate"
+		abstract="true">
+	</bean>
+
+	<bean id="slcTemplates.dao.testRunDescriptorDao"
+		class="org.argeo.slc.hibernate.test.TestRunDescriptorDaoHibernate"
 		abstract="true">
 	</bean>
 
