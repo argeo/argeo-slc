@@ -17,11 +17,7 @@
 
 	<bean id="testResult"
 		class="org.argeo.slc.core.test.tree.TreeTestResult">
-		<property name="numericResultId">
-			<bean class="org.argeo.slc.core.test.NumericTRId">
-				<property name="value" value="1" />
-			</bean>
-		</property>
+		<property name="uuid" value="1" />
 		<property name="listeners">
 			<list>
 				<ref bean="resultLogger" />
@@ -32,11 +28,7 @@
 
 	<bean id="testResult2"
 		class="org.argeo.slc.core.test.tree.TreeTestResult">
-		<property name="numericResultId">
-			<bean class="org.argeo.slc.core.test.NumericTRId">
-				<property name="value" value="2" />
-			</bean>
-		</property>
+		<property name="uuid" value="2" />
 		<property name="listeners">
 			<list>
 				<ref bean="resultLogger" />
@@ -49,16 +41,12 @@
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
 
 	<bean id="resultLogger"
-		class="org.argeo.slc.core.test.tree.TreeTestResultLogger"
-		init-method="init">
+		class="org.argeo.slc.core.test.tree.TreeTestResultLogger">
 	</bean>
 
 	<bean id="resultPersister"
-		class="org.argeo.slc.core.test.tree.TreeTestResultPersister"
-		init-method="init">
+		class="org.argeo.slc.core.test.tree.TreeTestResultPersister">
 		<property name="testResultDao" ref="testResultDao" />
-		<property name="treeSPathDao" ref="treeSPathDao" />
-		<property name="treeSRegistryDao" ref="treeSRegistryDao" />
 	</bean>
 
 	<bean id="report"
@@ -72,33 +60,13 @@
 	<bean id="exampleDeployedSystem"
 		class="org.argeo.slc.example.ExampleDeployedSystem">
 		<property name="skipFreq" value="2" />
-		<property name="deployedSystemId">
-			<bean class="org.argeo.slc.core.deploy.NumericDSId">
-				<property name="value" value="123456" />
-				<property name="distributionId">
-					<bean
-						class="org.argeo.slc.core.build.VersionDistributionId">
-						<property name="versionString" value="0.3.1" />
-					</bean>
-				</property>
-			</bean>
-		</property>
+		<property name="deployedSystemId" value="123456"/>
 	</bean>
 
 	<bean id="exampleDeployedSystem2"
 		class="org.argeo.slc.example.ExampleDeployedSystem">
 		<property name="skipFreq" value="3" />
-		<property name="deployedSystemId">
-			<bean class="org.argeo.slc.core.deploy.NumericDSId">
-				<property name="value" value="654321" />
-				<property name="distributionId">
-					<bean
-						class="org.argeo.slc.core.build.VersionDistributionId">
-						<property name="versionString" value="0.3.1" />
-					</bean>
-				</property>
-			</bean>
-		</property>
+		<property name="deployedSystemId" value="654321"/>
 	</bean>
 
 </beans>

@@ -1,20 +1,20 @@
 package org.argeo.slc.example;
 
+import org.argeo.slc.core.build.Distribution;
 import org.argeo.slc.core.deploy.DeployedSystem;
-import org.argeo.slc.core.deploy.DeployedSystemId;
 import org.argeo.slc.example.appli.ExampleAppli;
 
 /** Example deployed sytem. */
 public class ExampleDeployedSystem implements DeployedSystem {
-	private DeployedSystemId deployedSystemId;
+	private String deployedSystemId;
 	private int skipFreq = 2;
 
-	public DeployedSystemId getDeployedSystemId() {
-		return deployedSystemId;
+	public String getDeployedSystemId() {
+		return deployedSystemId.toString();
 	}
 
 	/** Sets deployed system id. */
-	public void setDeployedSystemId(DeployedSystemId deployedSystemId) {
+	public void setDeployedSystemId(String deployedSystemId) {
 		this.deployedSystemId = deployedSystemId;
 	}
 
@@ -28,6 +28,11 @@ public class ExampleDeployedSystem implements DeployedSystem {
 	/** Sets the frequency used to skip lines. */
 	public void setSkipFreq(int skipFreq) {
 		this.skipFreq = skipFreq;
+	}
+
+	public Distribution getDistribution() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

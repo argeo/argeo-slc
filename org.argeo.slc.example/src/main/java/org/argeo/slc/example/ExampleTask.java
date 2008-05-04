@@ -1,7 +1,9 @@
 package org.argeo.slc.example;
 
+import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
+import org.argeo.slc.core.structure.StructureElementProvider;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
@@ -11,8 +13,8 @@ import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestRun;
 
 /** Example task. */
-public class ExampleTask implements StructureAware, TestDefinition,
-		StructureElement {
+public class ExampleTask implements StructureAware<TreeSPath>, TestDefinition,
+		StructureElementProvider {
 	private TreeSPath path;
 	private String description;
 
@@ -24,12 +26,13 @@ public class ExampleTask implements StructureAware, TestDefinition,
 		result.addResultPart(part);
 	}
 
-	public void notifyCurrentPath(StructureRegistry registry, StructurePath path) {
-		this.path = (TreeSPath) path;
+	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
+			TreeSPath path) {
+		this.path = path;
 	}
 
-	public String getLabel() {
-		return description;
+	public StructureElement createStructureElement() {
+		return new SimpleSElement(description);
 	}
 
 	/** Sets the description. */

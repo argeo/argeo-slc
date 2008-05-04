@@ -25,10 +25,8 @@ public class ContextIntegrationTest extends TestCase {
 		TestResultDao<TreeTestResult> testResultDao = runAnt(
 				"root/Context/build.xml", null);
 
-		NumericTRId numericTRId = new NumericTRId();
-		numericTRId.setValue(1l);
 		TreeTestResult testResult1 = (TreeTestResult) testResultDao
-				.getTestResult(numericTRId);
+				.getTestResult("1");
 
 		String basePath = "/root/Context/testContext/";
 		UnitTestTreeUtil.assertPart(testResult1, basePath
@@ -37,9 +35,8 @@ public class ContextIntegrationTest extends TestCase {
 		UnitTestTreeUtil.assertPart(testResult1, basePath
 				+ "slc.test1/reference2", 0, TestStatus.PASSED,
 				"Values matched for key 'reference2'");
-		UnitTestTreeUtil.assertPart(testResult1, basePath
-				+ "slc.test1/var", 0, TestStatus.PASSED,
-				"Values matched for key 'var'");
+		UnitTestTreeUtil.assertPart(testResult1, basePath + "slc.test1/var", 0,
+				TestStatus.PASSED, "Values matched for key 'var'");
 		UnitTestTreeUtil.assertPart(testResult1, basePath
 				+ "slc.test1/varIntern", 0, TestStatus.PASSED,
 				"Values matched for key 'varIntern'");
@@ -56,10 +53,8 @@ public class ContextIntegrationTest extends TestCase {
 		TestResultDao<TreeTestResult> testResultDao = runAnt(
 				"root/Context/build.xml", "testBaseContext");
 
-		NumericTRId numericTRId = new NumericTRId();
-		numericTRId.setValue(1l);
 		TreeTestResult testResult1 = (TreeTestResult) testResultDao
-				.getTestResult(numericTRId);
+				.getTestResult("1");
 
 		String basePath = "/root/Context/testBaseContext/";
 		UnitTestTreeUtil.assertPart(testResult1, basePath
