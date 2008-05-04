@@ -32,6 +32,14 @@
 			ref="slcDefault.castor.marshaller" />
 	</bean>
 
+	<bean name="resultPartRequestEp"
+		class="org.argeo.slc.ws.test.tree.ResultPartRequestEp">
+		<constructor-arg ref="testResultDao" />
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="unmarshaller"
+			ref="slcDefault.castor.marshaller" />
+	</bean>
+
 	<bean id="endPointMapping"
 		class="org.springframework.ws.server.endpoint.mapping.PayloadRootQNameEndpointMapping">
 		<property name="mappings">
@@ -48,6 +56,10 @@
 				<prop
 					key="{http://argeo.org/projects/slc/schemas}create-tree-test-result-request">
 					createTreeTestResultRequestEp
+				</prop>
+				<prop
+					key="{http://argeo.org/projects/slc/schemas}result-part-request">
+					resultPartRequestEp
 				</prop>
 			</props>
 		</property>

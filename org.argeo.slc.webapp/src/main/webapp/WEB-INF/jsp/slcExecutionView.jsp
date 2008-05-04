@@ -11,28 +11,18 @@
 <h2>Uuid = ${slcExecution.uuid}</h2>
 <br>
 <h2>Execution Steps</h2>
+<c:forEach items="${slcExecutionSteps}" var="slcExecutionStep">
+	<a name="step_${slcExecutionStep.uuid}"></a>
+	<h3 class="executionStep">${slcExecutionStep.begin} - ${slcExecutionStep.uuid}
+	(${slcExecutionStep.type})</h3>
 <table>
-	<tr>
-		<td>UUID</td>
-		<td>TYPE</td>
-		<td>BEGIN</td>
-	</tr>
-	<c:forEach items="${slcExecutionSteps}" var="slcExecutionStep">
-		<tr>
-			<td>${slcExecutionStep.uuid}</td>
-			<td>${slcExecutionStep.type}</td>
-			<td>${slcExecutionStep.begin}</td>
-		</tr>
-		<c:forEach items="${slcExecutionStep.logLines}" var="slcExecutionStepLog">
-		<tr>
-			<td colspan="3">- <em>${slcExecutionStepLog}</em></td>
-		</tr>
+		<c:forEach items="${slcExecutionStep.logLines}"
+			var="slcExecutionStepLogLine">
+			<tr>
+				<td colspan="3">${slcExecutionStepLogLine}</td>
+			</tr>
 		</c:forEach>
-		<tr>
-		</tr>
-	</c:forEach>
-
-</table>
-</div>
+	</table>
+</c:forEach></div>
 
 <%@include file="footer.txt"%>

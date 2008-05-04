@@ -22,6 +22,18 @@
 		<property name="viewName" value="slcExecutionView" />
 	</bean>
 
+	<bean name="/resultList.web"
+		class="org.argeo.slc.web.mvc.result.ResultListController">
+		<constructor-arg ref="testResultDao" />
+		<property name="viewName" value="resultList" />
+	</bean>
+
+	<bean name="/resultView.web"
+		class="org.argeo.slc.web.mvc.result.ResultViewController">
+		<constructor-arg ref="testResultDao" />
+		<property name="viewName" value="resultView" />
+	</bean>
+
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
 	</bean>

@@ -10,6 +10,7 @@
 <h1>SLC Home</h1>
 
 <h2>Web</h2>
+<a href="resultList.web">Results</a><br/>
 <a href="slcExecutionList.web">SLC Executions</a>
 
 <h2>Web Services</h2>
