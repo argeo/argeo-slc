@@ -38,7 +38,7 @@ public class SlcExecutionViewController extends ParameterizableViewController {
 		SlcExecution slcExecution = slcExecutionDao.getSlcExecution(uuid);
 
 		if (slcExecution == null) 
-			throw new SlcException("Could not find slcException with uuid " + uuid +".");
+			throw new SlcException("Could not find slc execution with uuid " + uuid +".");
 		
 		if (log.isDebugEnabled()) {
 			log.debug("SlcExecution " + slcExecution.getUuid());
