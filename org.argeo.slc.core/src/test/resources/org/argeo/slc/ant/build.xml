@@ -12,5 +12,7 @@
 			<testDefinition bean="testDef"/>
 			<testData bean="testData.context1"/>
 		</slc.test>
+		
+		<slc.closeResult result="testResult" />
 	</target>
 </project>

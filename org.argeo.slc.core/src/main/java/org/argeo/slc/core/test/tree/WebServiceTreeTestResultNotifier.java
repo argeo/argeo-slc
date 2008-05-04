@@ -1,7 +1,5 @@
 package org.argeo.slc.core.test.tree;
 
-import java.util.List;
-
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.client.SoapFaultClientException;
 
@@ -10,15 +8,12 @@ import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.test.TestResultListener;
 import org.argeo.slc.core.test.TestResultPart;
-import org.argeo.slc.dao.test.tree.TreeTestResultDao;
-import org.argeo.slc.msg.process.SlcExecutionRequest;
-import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
 import org.argeo.slc.ws.client.WebServiceUtils;
 
-public class WebServiceSlcExecutionNotifier implements
+public class WebServiceTreeTestResultNotifier implements
 		TestResultListener<TreeTestResult> {
 	private WebServiceTemplate template;
 	private Boolean onlyOnClose = false;
@@ -27,6 +22,9 @@ public class WebServiceSlcExecutionNotifier implements
 
 	public void resultPartAdded(TreeTestResult testResult,
 			TestResultPart testResultPart) {
+		if (onlyOnClose)
+			return;
+			
 		try {
 			if (testResult.getResultParts().size() == 1) {
 				CreateTreeTestResultRequest req = new CreateTreeTestResultRequest(

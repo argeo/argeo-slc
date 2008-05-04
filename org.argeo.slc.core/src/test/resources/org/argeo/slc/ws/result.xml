@@ -20,9 +20,10 @@
 	</bean>
 
 	<bean name="resultWsNotfier"
-		class="org.argeo.slc.core.test.tree.WebServiceSlcExecutionNotifier">
+		class="org.argeo.slc.core.test.tree.WebServiceTreeTestResultNotifier">
 		<property name="template"
 			ref="slcDefault.ws.client.webServiceTemplate" />
+		<property name="onlyOnClose" value="false" />
 	</bean>
 
 </beans>
