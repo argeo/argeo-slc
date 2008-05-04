@@ -8,7 +8,13 @@
 		<property name="mappingLocations">
 			<list>
 				<value>
+					classpath:org/argeo/slc/castor/msg/mapping.xml
+				</value>
+				<value>
 					classpath:org/argeo/slc/castor/process/mapping.xml
+				</value>
+				<value>
+					classpath:org/argeo/slc/castor/structure/mapping.xml
 				</value>
 				<value>
 					classpath:org/argeo/slc/castor/test/mapping.xml

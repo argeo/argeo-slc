@@ -48,24 +48,4 @@
 		</field>
 	</class>
 	
-		<!-- PROCESS -->
-	<class name="org.argeo.slc.msg.process.SlcExecutionStepsRequest">
-		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
-			ns-prefix="slc" />
-		<field name="slcExecutionUuid" />
-		<field name="steps" collection="vector"
-			type="org.argeo.slc.core.process.SlcExecutionStep">
-			<bind-xml auto-naming="deriveByClass" location="steps" />
-		</field>
-	</class>
-
-	<class name="org.argeo.slc.msg.process.SlcExecutionRequest">
-		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
-			ns-prefix="slc" />
-		<field name="slcExecution"
-			type="org.argeo.slc.core.process.SlcExecution" />
-	</class>
-
-
-	
 </mapping>
