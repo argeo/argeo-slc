@@ -21,7 +21,6 @@ public abstract class TreeTestResultTestUtils {
 	public static TreeTestResult createSimpleTreeTestResult() {
 		TreeTestResult treeTestResult = new TreeTestResult();
 		treeTestResult.setUuid(UUID.randomUUID().toString());
-		treeTestResult.setCloseDate(new Date());
 		return treeTestResult;
 	}
 

@@ -11,9 +11,11 @@ import org.apache.commons.logging.LogFactory;
 
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleResultPartRequest;
+import static org.argeo.slc.unit.UnitUtils.assertDateSec;
 
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
+import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
@@ -67,6 +69,22 @@ public class TreeTestResultCastorTest extends AbstractSpringTestCase {
 
 		UnitTestTreeUtil
 				.assertPart(req.getResultPart(), reqUnm.getResultPart());
+	}
+
+	public void testCloseTreeTestResultRequest() throws Exception {
+		TreeTestResult ttr = createCompleteTreeTestResult();
+		ttr.close();
+
+		CloseTreeTestResultRequest req = new CloseTreeTestResultRequest(ttr
+				.getUuid(), ttr.getCloseDate());
+
+		StringResult xml = marshallAndValidate(req);
+
+		CloseTreeTestResultRequest reqUnm = (CloseTreeTestResultRequest) unmarshaller
+				.unmarshal(new StringSource(xml.toString()));
+
+		assertEquals(ttr.getUuid(), reqUnm.getResultUuid());
+		assertDateSec(ttr.getCloseDate(), ttr.getCloseDate());
 	}
 
 	private StringResult marshallAndValidate(Object obj) throws Exception {

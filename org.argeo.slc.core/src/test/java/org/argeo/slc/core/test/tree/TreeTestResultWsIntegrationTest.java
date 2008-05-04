@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
 import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleResultPartRequest;
 
+import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
@@ -17,7 +18,8 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 
 	public void testCreateTreeTestResultRequest() {
 		WebServiceTemplate template = getBean(WebServiceTemplate.class);
-		CreateTreeTestResultRequest req = new CreateTreeTestResultRequest(createCompleteTreeTestResult());
+		CreateTreeTestResultRequest req = new CreateTreeTestResultRequest(
+				createCompleteTreeTestResult());
 
 		log.info("Send CreateTreeTestResultRequest for result "
 				+ req.getTreeTestResult().getUuid());
@@ -29,15 +31,35 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 	public void testResultPartRequest() {
 		WebServiceTemplate template = getBean(WebServiceTemplate.class);
 		TreeTestResult ttr = createCompleteTreeTestResult();
-		CreateTreeTestResultRequest reqCreate = new CreateTreeTestResultRequest(ttr);
+		CreateTreeTestResultRequest reqCreate = new CreateTreeTestResultRequest(
+				ttr);
 		log.info("Send CreateTreeTestResultRequest for result "
 				+ reqCreate.getTreeTestResult().getUuid());
-		Object respCreate = template.marshalSendAndReceive(reqCreate);
-		
-		
+		template.marshalSendAndReceive(reqCreate);
+
 		ResultPartRequest req = createSimpleResultPartRequest(ttr);
 
 		log.info("Send ResultPartRequest for result " + req.getResultUuid());
+		Object resp = template.marshalSendAndReceive(req);
+		log.info("Resp: " + resp);
+	}
+
+	public void testCloseTreeTestResultRequest() {
+		WebServiceTemplate template = getBean(WebServiceTemplate.class);
+
+		TreeTestResult ttr = createCompleteTreeTestResult();
+		CreateTreeTestResultRequest reqCreate = new CreateTreeTestResultRequest(
+				ttr);
+		log.info("Send CreateTreeTestResultRequest for result "
+				+ reqCreate.getTreeTestResult().getUuid());
+		template.marshalSendAndReceive(reqCreate);
+
+		ttr.close();
+		CloseTreeTestResultRequest req = new CloseTreeTestResultRequest(ttr
+				.getUuid(), ttr.getCloseDate());
+
+		log.info("Send CloseTreeTestResultRequest for result "
+				+ req.getResultUuid());
 
 		Object resp = template.marshalSendAndReceive(req);
 		log.info("Resp: " + resp);

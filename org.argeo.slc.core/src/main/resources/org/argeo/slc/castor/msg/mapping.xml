@@ -12,6 +12,14 @@
 			type="org.argeo.slc.core.test.tree.TreeTestResult" />
 	</class>
 
+	<class
+		name="org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="resultUuid" />
+		<field name="closeDate" />
+	</class>
+
 	<class name="org.argeo.slc.msg.test.tree.ResultPartRequest">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />

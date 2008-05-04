@@ -66,31 +66,6 @@
 		</xs:sequence>
 		<xs:attribute name="message" type="xs:string" />
 	</xs:complexType>
-	<!-- 
-	<xs:complexType name="ExceptionType">
-		<xs:all>
-			<xs:element name="stack-trace" minOccurs="0"
-				type="slc:StackTraceType" />
-		</xs:all>
-		<xs:attribute name="message" type="xs:string" />
-	</xs:complexType>
-	<xs:complexType name="StackTraceType">
-		<xs:sequence>
-			<xs:element name="stack-trace-element"
-				type="slc:StackTraceElementType" maxOccurs="unbounded">
-			</xs:element>
-		</xs:sequence>
-	</xs:complexType>
-	<xs:complexType name="StackTraceElementType">
-		<xs:attribute name="declaring-class" type="xs:string"
-			use="required" />
-		<xs:attribute name="method-name" type="xs:string"
-			use="required" />
-		<xs:attribute name="file-name" type="xs:string" use="required" />
-		<xs:attribute name="line-number" type="xs:integer"
-			use="required" />
-	</xs:complexType>
-	-->
 	<xs:complexType name="ElementsType">
 		<xs:sequence>
 			<xs:element name="element" type="slc:ElementType"
@@ -144,6 +119,15 @@
 			<xs:all>
 				<xs:element name="tree-test-result"
 					type="slc:TreeTestResultType" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="close-tree-test-result-request">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="result-uuid" type="xs:string" />
+				<xs:element name="close-date" type="xs:dateTime" />
 			</xs:all>
 		</xs:complexType>
 	</xs:element>
