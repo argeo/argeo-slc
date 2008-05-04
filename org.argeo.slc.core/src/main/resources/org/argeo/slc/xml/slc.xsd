@@ -18,7 +18,7 @@
 	<xs:complexType name="ResultPartsType">
 		<xs:sequence>
 			<xs:element name="result-part" type="slc:ResultPartType"
-				maxOccurs="unbounded">
+				minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
@@ -70,7 +70,7 @@
 	<xs:complexType name="ElementsType">
 		<xs:sequence>
 			<xs:element name="element" type="slc:ElementType"
-				maxOccurs="unbounded">
+				minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
@@ -89,7 +89,7 @@
 	</xs:complexType>
 	<xs:complexType name="TagsType">
 		<xs:sequence>
-			<xs:element name="tag" type="slc:TagType"
+			<xs:element name="tag" type="slc:TagType" minOccurs="0"
 				maxOccurs="unbounded">
 			</xs:element>
 		</xs:sequence>
@@ -106,11 +106,15 @@
 	</xs:complexType>
 	<xs:complexType name="TestRunDescriptorType">
 		<xs:all>
-			<xs:element name="slc-execution-uuid" type="xs:string" />
-			<xs:element name="slc-execution-step-uuid" type="xs:string" />
 			<xs:element name="test-run-uuid" type="xs:string" />
-			<xs:element name="deployed-sytem-id" type="xs:string" />
-			<xs:element name="test-result-uuid" type="xs:string" />
+			<xs:element name="slc-execution-uuid" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="slc-execution-step-uuid" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="deployed-sytem-id" type="xs:string"
+				minOccurs="0" />
+			<xs:element name="test-result-uuid" type="xs:string"
+				minOccurs="0" />
 		</xs:all>
 	</xs:complexType>
 
