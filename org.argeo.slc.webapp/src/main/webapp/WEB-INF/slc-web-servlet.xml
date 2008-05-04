@@ -34,6 +34,12 @@
 		<property name="viewName" value="resultView" />
 	</bean>
 
+	<bean name="/testRunView.web"
+		class="org.argeo.slc.web.mvc.result.TestRunViewController">
+		<constructor-arg ref="testRunDescriptorDao" />
+		<property name="viewName" value="testRunView" />
+	</bean>
+
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
 	</bean>

@@ -11,8 +11,7 @@
 <h1>Result #${result.uuid}</h1>
 
 <jsp:useBean id="describedPaths" type="java.util.SortedMap"
-	scope="request" /> 
-<jsp:useBean id="toc" type="java.util.SortedMap"
+	scope="request" /> <jsp:useBean id="toc" type="java.util.SortedMap"
 	scope="request" />
 
 <table>
@@ -34,6 +33,12 @@
 			<tr>
 				<td class="${part.status == 0 ? 'passed' : 'failed'}">
 				${part.message}</td>
+				<c:if test="${part.testRunUuid!=null}">
+					<td>
+					<a href="testRunView.web?uuid=${part.testRunUuid}">related
+					test run</a>
+					</td>
+				</c:if>
 			</tr>
 		</c:forEach>
 	</table>

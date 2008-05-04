@@ -46,6 +46,11 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
+	<bean id="testRunDescriptorDao"
+		parent="slcTemplates.dao.testRunDescriptorDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
 	<bean id="slcExecutionDao"
 		parent="slcTemplates.dao.slcExecutionDao">
 		<property name="sessionFactory" ref="sessionFactory" />
