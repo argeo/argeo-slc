@@ -74,15 +74,10 @@ public class UnitTestTreeUtil {
 		}
 	}
 
-	/**
-	 * Assert one part of a tree test result.
-	 * 
-	 * @deprecated use {@link #assertPart(TestResultPart, TestResultPart)}
-	 *             instead
-	 */
+	/** Asserts one part of a tree test result */
 	public static void assertPart(TreeTestResult testResult, String pathStr,
 			int index, Integer status, String message) {
-		TreeSPath path = TreeSPath.parseToCreatePath(pathStr);
+		TreeSPath path = new TreeSPath(pathStr);
 		PartSubList list = testResult.getResultParts().get(path);
 		if (list == null) {
 			fail("No result for path " + path);
@@ -92,7 +87,7 @@ public class UnitTestTreeUtil {
 			fail("Not enough parts.");
 		}
 		SimpleResultPart part = (SimpleResultPart) list.getParts().get(index);
-		assertPart(part, status, message, null, part.getTestRunUuid());
+		assertPart(part, status, message, null, part.getTestRunUuid(), true);
 	}
 
 	public static void assertPart(TestResultPart expected,
@@ -104,13 +99,13 @@ public class UnitTestTreeUtil {
 		}
 
 		assertPart(reached, expected.getStatus(), expected.getMessage(),
-				expected.getExceptionMessage(), expectedTestRunUuid);
+				expected.getExceptionMessage(), expectedTestRunUuid, false);
 	}
 
 	/** Assert one part of a tree test result. */
 	private static void assertPart(TestResultPart part, Integer status,
 			String message, String exceptionDescription,
-			String expectedTestRunUuid) {
+			String expectedTestRunUuid, boolean skipExceptionMessage) {
 		assertEquals(status, part.getStatus());
 
 		if (log.isTraceEnabled()) {
@@ -118,16 +113,19 @@ public class UnitTestTreeUtil {
 			log.trace("Reached message:" + part.getMessage());
 		}
 		assertEquals(message, part.getMessage());
-		if (exceptionDescription == null) {
-			assertNull(part.getExceptionMessage());
-		} else {
-			if (log.isTraceEnabled()) {
-				log.trace("Expected exception message:" + exceptionDescription);
-				log.trace("Reached exception message:"
-						+ part.getExceptionMessage());
-			}
+		if (!skipExceptionMessage) {
+			if (exceptionDescription == null) {
+				assertNull(part.getExceptionMessage());
+			} else {
+				if (log.isTraceEnabled()) {
+					log.trace("Expected exception message:"
+							+ exceptionDescription);
+					log.trace("Reached exception message:"
+							+ part.getExceptionMessage());
+				}
 
-			assertEquals(exceptionDescription, part.getExceptionMessage());
+				assertEquals(exceptionDescription, part.getExceptionMessage());
+			}
 		}
 
 		if (expectedTestRunUuid != null) {

@@ -27,7 +27,7 @@ import org.argeo.slc.core.test.TestRunAware;
 public class TreeTestResult implements TestResult, StructureAware<TreeSPath> {
 	private Log log = LogFactory.getLog(TreeTestResult.class);
 
-	private List<TestResultListener> listeners = new Vector<TestResultListener>();
+	private List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();
 
 	private TreeSPath currentPath;
 	private TestRun currentTestRun;
@@ -42,7 +42,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath> {
 	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
 
 	/** Sets the list of listeners. */
-	public void setListeners(List<TestResultListener> listeners) {
+	public void setListeners(List<TestResultListener<TreeTestResult>> listeners) {
 		this.listeners = listeners;
 	}
 
@@ -62,7 +62,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath> {
 
 		// notify listeners
 		synchronized (listeners) {
-			for (TestResultListener listener : listeners) {
+			for (TestResultListener<TreeTestResult> listener : listeners) {
 				listener.resultPartAdded(this, part);
 			}
 		}
@@ -112,7 +112,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath> {
 		closeDate = new Date();
 
 		synchronized (listeners) {
-			for (TestResultListener listener : listeners) {
+			for (TestResultListener<TreeTestResult> listener : listeners) {
 				listener.close(this);
 			}
 			listeners.clear();
@@ -166,6 +166,5 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath> {
 	public TestRun getCurrentTestRun() {
 		return currentTestRun;
 	}
-	
-	
+
 }

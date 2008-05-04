@@ -7,6 +7,6 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.TestResultDao;
 
 public interface TreeTestResultDao extends TestResultDao<TreeTestResult> {
-	/** Lists results containing this path*/
+	/** Lists results containing this path */
 	public List<TreeTestResult> listResults(TreeSPath path);
 }

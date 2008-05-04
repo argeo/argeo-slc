@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
+import org.argeo.slc.core.structure.StructureElementProvider;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
@@ -21,13 +22,13 @@ import org.argeo.slc.core.test.TestRun;
  * children.
  */
 public class CompositeTreeTestDefinition implements TestDefinition,
-		StructureAware {
+		StructureAware<TreeSPath> {
 	private Log log = LogFactory.getLog(CompositeTreeTestDefinition.class);
 
 	private List<TestDefinition> tasks = null;
 	private List<TreeSPath> taskPaths = null;
 	private TreeSPath path;
-	private StructureRegistry registry;
+	private StructureRegistry<TreeSPath> registry;
 
 	public void execute(TestRun testRun) {
 		log.info("Execute sequence of test definitions...");
@@ -58,18 +59,20 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 		}
 	}
 
-	public void notifyCurrentPath(StructureRegistry registry, StructurePath path) {
-		this.path = (TreeSPath) path;
+	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
+			TreeSPath path) {
+		this.path = path;
 		this.registry = registry;
-		
+
 		// clear task paths
 		taskPaths.clear();
 
 		Integer count = 0;
 		for (TestDefinition task : tasks) {
 			final StructureElement element;
-			if (task instanceof StructureElement) {
-				element = (StructureElement) task;
+			if (task instanceof StructureElementProvider) {
+				element = ((StructureElementProvider) task)
+						.createStructureElement();
 			} else {
 				element = new SimpleSElement("[no desc]");
 			}
@@ -77,7 +80,8 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 			registry.register(taskPath, element);
 			taskPaths.add(taskPath);
 			if (task instanceof StructureAware) {
-				((StructureAware) task).notifyCurrentPath(registry, taskPath);
+				((StructureAware<TreeSPath>) task).notifyCurrentPath(registry,
+						taskPath);
 			}
 			count++;
 		}

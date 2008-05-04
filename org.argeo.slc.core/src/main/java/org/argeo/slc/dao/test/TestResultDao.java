@@ -1,9 +1,9 @@
 package org.argeo.slc.dao.test;
 
+import java.util.Date;
 import java.util.List;
 
 import org.argeo.slc.core.test.TestResult;
-import org.argeo.slc.core.test.TestResultId;
 
 /**
  * The dao for <code>TestResult</code>.
@@ -22,4 +22,7 @@ public interface TestResultDao<T extends TestResult> {
 
 	/** Lists all test results. */
 	public List<T> listTestResults();
+	
+
+	public void close(String id, Date closeDate);
 }

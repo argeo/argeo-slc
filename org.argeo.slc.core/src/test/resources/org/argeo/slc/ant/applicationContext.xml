@@ -24,8 +24,7 @@
 	</bean>
 
 	<bean id="resultLogger"
-		class="org.argeo.slc.core.test.tree.TreeTestResultLogger"
-		init-method="init">
+		class="org.argeo.slc.core.test.tree.TreeTestResultLogger">
 	</bean>
 
 	<bean name="testDef"

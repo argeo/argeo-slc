@@ -1,6 +1,5 @@
 package org.argeo.slc.core.test;
 
-
 /**
  * <p>
  * Basic implementation of a result part, implementing the standard three status
@@ -59,31 +58,31 @@ public class SimpleResultPart implements TestResultPart, TestStatus,
 		if (exception == null)
 			return;
 
-		//this.exceptionMessage = exception.getMessage();
-
 		StringBuffer buf = new StringBuffer("");
-		buf.append(exception.getMessage());
+		buf.append(exception.toString());
 		buf.append('\n');
-		for(StackTraceElement elem : exception.getStackTrace()){
-			buf.append(elem.toString()).append('\n');
+		for (StackTraceElement elem : exception.getStackTrace()) {
+			buf.append('\t').append(elem.toString()).append('\n');
 		}
-		
+
+		if (exception.getCause() != null)
+			addRootCause(buf, exception.getCause());
+
 		this.exceptionMessage = buf.toString();
-		
-/*		
-		StringWriter writer = null;
-		StringReader reader = null;
-		try {
-			writer = new StringWriter();
-			exception.printStackTrace(new PrintWriter(writer));
-			reader = new StringReader(writer.toString());
-			exceptionStackLines = new Vector<String>(IOUtils.readLines(reader));
-		} catch (IOException e) {
-			// silent
-		} finally {
-			IOUtils.closeQuietly(writer);
-			IOUtils.closeQuietly(reader);
-		}*/
+	}
+
+	protected void addRootCause(StringBuffer buf, Throwable cause) {
+		if (cause == null)
+			return;
+
+		buf.append("Caused by: " + cause.getMessage());
+		for (StackTraceElement elem : cause.getStackTrace()) {
+			buf.append('\t').append(elem.toString()).append('\n');
+		}
+
+		if (cause.getCause() != null) {
+			addRootCause(buf, cause.getCause());
+		}
 	}
 
 	@Override

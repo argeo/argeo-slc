@@ -1,9 +1,11 @@
 package org.argeo.slc.hibernate.test.tree;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.NumericTRId;
 import org.argeo.slc.core.test.TestResult;
@@ -48,6 +50,19 @@ public class TestResultDaoHibernate extends HibernateDaoSupport implements
 				"from TreeTestResult res where ? in indices(res.resultParts)",
 				path.getAsUniqueString());
 		return list;
+	}
+
+	public void close(String id, Date closeDate) {
+//		TreeTestResult ttr = (TreeTestResult) getHibernateTemplate().load(
+//				TreeTestResult.class, id);
+		TreeTestResult ttr = getTestResult(id);
+		if (ttr != null) {
+			ttr.setCloseDate(closeDate);
+			getHibernateTemplate().update(ttr);
+		} else {
+			throw new SlcException("Result with id " + id
+					+ " could not be closed because it was not found.");
+		}
 	}
 
 }

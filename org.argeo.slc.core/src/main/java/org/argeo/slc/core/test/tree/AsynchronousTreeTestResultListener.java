@@ -3,7 +3,6 @@ package org.argeo.slc.core.test.tree;
 import java.util.Vector;
 
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.test.NumericTRId;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultListener;
 import org.argeo.slc.core.test.TestResultPart;
@@ -12,6 +11,7 @@ import org.argeo.slc.core.test.TestResultPart;
  * Abstract asynchronous implementation of a listener listening to a
  * <code>TreeTestResult</code>.
  * 
+ * @deprecated listeners should be called synchronously
  * @see TreeTestResult
  */
 public abstract class AsynchronousTreeTestResultListener implements
