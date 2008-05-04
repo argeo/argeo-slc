@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" default-lazy-init="true">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
 
 	<import
 		resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
@@ -32,6 +33,14 @@
 			ref="slcDefault.castor.marshaller" />
 	</bean>
 
+	<bean name="closeTreeTestResultRequestEp"
+		class="org.argeo.slc.ws.test.tree.CloseTreeTestResultRequestEp">
+		<constructor-arg ref="testResultDao" />
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="unmarshaller"
+			ref="slcDefault.castor.marshaller" />
+	</bean>
+
 	<bean name="resultPartRequestEp"
 		class="org.argeo.slc.ws.test.tree.ResultPartRequestEp">
 		<constructor-arg ref="testResultDao" />
@@ -56,6 +65,10 @@
 				<prop
 					key="{http://argeo.org/projects/slc/schemas}create-tree-test-result-request">
 					createTreeTestResultRequestEp
+				</prop>
+				<prop
+					key="{http://argeo.org/projects/slc/schemas}close-tree-test-result-request">
+					closeTreeTestResultRequestEp
 				</prop>
 				<prop
 					key="{http://argeo.org/projects/slc/schemas}result-part-request">
