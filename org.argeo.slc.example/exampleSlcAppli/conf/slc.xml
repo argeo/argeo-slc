@@ -45,7 +45,7 @@
 	</bean>
 
 	<bean id="resultPersister"
-		class="org.argeo.slc.core.test.tree.TreeTestResultPersister">
+		class="org.argeo.slc.dao.test.tree.TreeTestResultPersister">
 		<property name="testResultDao" ref="testResultDao" />
 	</bean>
 
