@@ -28,4 +28,11 @@
 		</property>
 	</bean>
 
+	<bean id="slcDefault.test.basicSimpleTestResult"
+		class="org.argeo.slc.core.test.SimpleTestResult" abstract="true">
+		<property name="uuid">
+			<bean factory-bean="slcDefault.test.uuid" factory-method="toString"></bean>
+		</property>
+	</bean>
+
 </beans>

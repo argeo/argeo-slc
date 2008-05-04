@@ -89,4 +89,5 @@
 		class="org.argeo.slc.hibernate.process.SlcExecutionDaoHibernate"
 		abstract="true">
 	</bean>
+
 </beans>

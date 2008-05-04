@@ -74,7 +74,7 @@ public abstract class IndependentDbTestCase extends AbstractSpringTestCase {
 	 * returns <i>dataSource</i>.
 	 */
 	protected String getDataSourceBeanName() {
-		return "dataSource";
+		return "slcDefault.dataSource.inMemoryTestHSQL";
 	}
 
 	/**
