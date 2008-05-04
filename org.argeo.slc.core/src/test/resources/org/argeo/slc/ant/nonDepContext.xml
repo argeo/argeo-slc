@@ -3,29 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean name="testRun"
-		class="org.argeo.slc.core.test.SimpleTestRun">
-	</bean>
-
-	<bean id="testResult"
-		class="org.argeo.slc.core.test.tree.TreeTestResult">
-		<property name="uuid">
-			<bean factory-bean="uuid" factory-method="toString"></bean>
-		</property>
-		<property name="listeners">
-			<list>
-				<ref bean="resultLogger" />
-			</list>
-		</property>
-	</bean>
-
-	<bean name="uuid" class="java.util.UUID" factory-method="randomUUID"
-		scope="prototype">
-	</bean>
-
-	<bean id="resultLogger"
-		class="org.argeo.slc.core.test.tree.TreeTestResultLogger">
-	</bean>
+	<import
+		resource="classpath:/org/argeo/slc/core/test/spring/applicationContext.xml" />
 
 	<bean name="testDef"
 		class="org.argeo.slc.core.test.BasicTestDefinition" scope="prototype" />

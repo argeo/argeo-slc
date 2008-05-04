@@ -30,4 +30,11 @@
 	<bean id="slcDefault.ws.client.messageFactory"
 		class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
 
+	<bean name="slcDefault.ws.client.treeTestResultWsNotfier"
+		class="org.argeo.slc.core.test.tree.WebServiceTreeTestResultNotifier">
+		<property name="template"
+			ref="slcDefault.ws.client.webServiceTemplate" />
+		<property name="onlyOnClose" value="false" />
+	</bean>
+
 </beans>

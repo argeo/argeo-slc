@@ -6,15 +6,7 @@
 	<import resource="classpath:/org/argeo/slc/ant/nonDepContext.xml" />
 
 	<bean id="testResult"
-		class="org.argeo.slc.core.test.tree.TreeTestResult">
-		<property name="uuid">
-			<bean factory-bean="uuid" factory-method="toString"></bean>
-		</property>
-		<property name="listeners">
-			<list>
-				<ref bean="resultLogger" />
-			</list>
-		</property>
+		parent="slcDefault.test.basicTreeTestResult">
 	</bean>
 
 </beans>

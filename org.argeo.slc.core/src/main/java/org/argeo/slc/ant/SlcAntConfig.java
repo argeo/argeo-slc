@@ -99,7 +99,7 @@ import org.apache.tools.ant.Project;
  * <td>Name of the {@link WritableTestRun} Spring bean that the
  * <code>slc.test</code> task will use by default. This can be overridden when
  * calling the task from Ant.</td>
- * <td>defaultTestRun</td>
+ * <td>slcDefault.test.testRun</td>
  * </tr>
  * </table>
  * </p>
@@ -155,15 +155,15 @@ public class SlcAntConfig {
 		System.getProperties().putAll((Map<?, ?>) project.getUserProperties());
 		Properties all = new Properties();
 		all.putAll(System.getProperties());
-		prepareAllProperties(slcRootFile,all);
+		prepareAllProperties(slcRootFile, all);
 
 		Log log = LogFactory.getLog(this.getClass());
 		for (Object o : all.keySet()) {
 			String key = o.toString();
 			// System.out.println(key+"="+all.getProperty(key));
 			if (project.getUserProperty(key) == null) {// not already set
-//				if (log.isDebugEnabled())
-//					log.debug(key + "=" + all.getProperty(key));
+			// if (log.isDebugEnabled())
+			// log.debug(key + "=" + all.getProperty(key));
 				project.setUserProperty(key, all.getProperty(key));
 			}
 		}
@@ -246,7 +246,8 @@ public class SlcAntConfig {
 			}
 			// Default test run
 			if (all.getProperty(DEFAULT_TEST_RUN_PROPERTY) == null) {
-				all.setProperty(DEFAULT_TEST_RUN_PROPERTY, "defaultTestRun");
+				all.setProperty(DEFAULT_TEST_RUN_PROPERTY,
+						"slcDefault.test.testRun");
 			}
 
 			// Default log4j

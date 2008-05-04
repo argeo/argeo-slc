@@ -7,23 +7,11 @@
 		resource="classpath:/org/argeo/slc/ws/client/spring/applicationContext.xml" />
 
 	<bean id="testResult"
-		class="org.argeo.slc.core.test.tree.TreeTestResult">
-		<property name="uuid">
-			<bean factory-bean="uuid" factory-method="toString"></bean>
-		</property>
+		parent="slcDefault.test.basicTreeTestResult">
 		<property name="listeners">
-			<list>
-				<ref bean="resultLogger" />
-				<ref bean="resultWsNotfier" />
+			<list merge="true">
+				<ref bean="slcDefault.ws.client.treeTestResultWsNotfier" />
 			</list>
 		</property>
 	</bean>
-
-	<bean name="resultWsNotfier"
-		class="org.argeo.slc.core.test.tree.WebServiceTreeTestResultNotifier">
-		<property name="template"
-			ref="slcDefault.ws.client.webServiceTemplate" />
-		<property name="onlyOnClose" value="false" />
-	</bean>
-
 </beans>
