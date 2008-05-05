@@ -67,6 +67,9 @@ public class SlcExecutionStep {
 	}
 
 	public void addLog(String log) {
+		if (log == null)
+			return;
+
 		try {
 			List<String> lines = IOUtils.readLines(new StringReader(log));
 			logLines.addAll(lines);

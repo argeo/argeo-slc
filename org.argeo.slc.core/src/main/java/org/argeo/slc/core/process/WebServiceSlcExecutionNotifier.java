@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.msg.process.SlcExecutionRequest;
+import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.ws.client.WebServiceUtils;
 
@@ -37,6 +38,20 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 			WebServiceUtils.marshalSendAndReceive(template, req);
 			if (log.isTraceEnabled())
 				log.trace("Notified update of slc execution "
+						+ slcExecution.getUuid());
+		} catch (SoapFaultClientException e) {
+			WebServiceUtils.manageSoapException(e);
+		}
+	}
+
+	public void updateStatus(SlcExecution slcExecution, String oldStatus,
+			String newStatus) {
+		SlcExecutionStatusRequest req = new SlcExecutionStatusRequest(
+				slcExecution.getUuid(), newStatus);
+		try {
+			WebServiceUtils.marshalSendAndReceive(template, req);
+			if (log.isTraceEnabled())
+				log.trace("Notified status update of slc execution "
 						+ slcExecution.getUuid());
 		} catch (SoapFaultClientException e) {
 			WebServiceUtils.manageSoapException(e);

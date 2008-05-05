@@ -3,6 +3,8 @@ package org.argeo.slc.core.structure;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.tree.TreeSelectionModel;
+
 /**
  * Basic implementation of <code>StructureElement</code>.
  * 
@@ -26,6 +28,12 @@ public class SimpleSElement implements StructureElement {
 	/** Constructor */
 	public SimpleSElement(String label, String defaultLabel) {
 		this(label != null ? label : defaultLabel);
+	}
+
+	/** Constructor */
+	public SimpleSElement(SimpleSElement sElement) {
+		setLabel(sElement.getLabel());
+		setTags(new TreeMap<String, String>(sElement.getTags()));
 	}
 
 	public String getLabel() {
@@ -55,10 +63,7 @@ public class SimpleSElement implements StructureElement {
 
 	@Override
 	public SimpleSElement clone(){
-		SimpleSElement clone = new SimpleSElement();
-		clone.setLabel(getLabel());
-		clone.setTags(getTags());
-		return clone;
+		return new SimpleSElement(this);
 	}
 
 }

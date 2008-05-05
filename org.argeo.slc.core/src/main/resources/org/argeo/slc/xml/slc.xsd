@@ -223,5 +223,13 @@
 			</xs:all>
 		</xs:complexType>
 	</xs:element>
+	<xs:element name="slc-execution-status-request">
+		<xs:complexType>
+			<xs:all>
+				<xs:element name="slc-execution-uuid" type="xs:string" />
+				<xs:element name="new-status" type="xs:string" />
+			</xs:all>
+		</xs:complexType>
+	</xs:element>
 
 </xs:schema>

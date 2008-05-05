@@ -28,11 +28,13 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 
 	private List<SlcExecutionNotifier> notifiers = new Vector<SlcExecutionNotifier>();
 
-	// private Map<SlcExecution, SlcExecutionStep> currentStep = new
-	// HashMap<SlcExecution, SlcExecutionStep>();
-
-	// private SlcExecutionStep currentStep = null;
 	private boolean currentStepNotified = true;
+
+	// CUSTOMIZATIONS
+	private boolean logBeforeFirstTarget = false;
+	private boolean firstTargetStarted = false;
+
+	private boolean logTaskStartFinish = true;
 
 	public void init(Project project) {
 		if (this.project != null) {
@@ -57,20 +59,23 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 	}
 
 	public void buildStarted(BuildEvent event) {
-		// SlcExecution slcExecution = getSlcExecution(event);
-
 	}
 
 	public void buildFinished(BuildEvent event) {
 		SlcExecution slcExecution = getSlcExecution(event);
+		String oldStatus = slcExecution.getStatus();
 		slcExecution.setStatus(SlcExecution.STATUS_FINISHED);
 
 		for (SlcExecutionNotifier notifier : notifiers) {
-			notifier.updateExecution(slcExecution);
+			notifier.updateStatus(slcExecution, oldStatus, slcExecution
+					.getStatus());
 		}
 	}
 
 	public void messageLogged(BuildEvent event) {
+		if (!shouldLog())
+			return;
+
 		SlcExecution slcExecution = getSlcExecution(event);
 		if (slcExecution != null) {
 			if (currentStepNotified) {
@@ -87,6 +92,9 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 	}
 
 	public void targetStarted(BuildEvent event) {
+		if (!firstTargetStarted)
+			firstTargetStarted = true;
+
 		addLogStep(event, "Target " + event.getTarget().getName() + " started");
 	}
 
@@ -95,23 +103,35 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 	}
 
 	public void taskStarted(BuildEvent event) {
+		if (!shouldLog())
+			return;
+
 		SlcExecution slcExecution = getSlcExecution(event);
 		if (!currentStepNotified) {
 			notifyStep(slcExecution, slcExecution.currentStep());
 			currentStepNotified = true;
 		}
 
-		slcExecution.getSteps().add(
-				new SlcExecutionStep("LOG", "Task "
-						+ event.getTask().getTaskName() + " started"));
+		String msg = null;
+		if (logTaskStartFinish)
+			msg = "Task " + event.getTask().getTaskName() + " started";
+
+		slcExecution.getSteps().add(new SlcExecutionStep("LOG", msg));
+
 		currentStepNotified = false;
 	}
 
 	public void taskFinished(BuildEvent event) {
+		if (!shouldLog())
+			return;
+
 		SlcExecution slcExecution = getSlcExecution(event);
 		if (!currentStepNotified) {
-			slcExecution.currentStep().addLog(
-					"Task " + event.getTask().getTaskName() + " finished");
+
+			if (logTaskStartFinish)
+				slcExecution.currentStep().addLog(
+						"Task " + event.getTask().getTaskName() + " finished");
+
 			notifyStep(slcExecution, slcExecution.currentStep());
 			currentStepNotified = true;
 		}
@@ -193,15 +213,16 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 
 	}
 
+	protected boolean shouldLog() {
+		return logBeforeFirstTarget || firstTargetStarted;
+	}
+
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public boolean requiresLayout() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

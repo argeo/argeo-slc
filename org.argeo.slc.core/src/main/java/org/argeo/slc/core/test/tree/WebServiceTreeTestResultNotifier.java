@@ -24,9 +24,11 @@ public class WebServiceTreeTestResultNotifier implements
 			TestResultPart testResultPart) {
 		if (onlyOnClose)
 			return;
-			
+
 		try {
-			if (testResult.getResultParts().size() == 1) {
+			if (testResult.getResultParts().size() == 1
+					&& testResult.getResultParts().values().iterator().next()
+							.getParts().size() == 1) {
 				CreateTreeTestResultRequest req = new CreateTreeTestResultRequest(
 						testResult);
 

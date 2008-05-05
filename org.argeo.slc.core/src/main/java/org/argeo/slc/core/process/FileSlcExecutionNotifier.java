@@ -45,6 +45,11 @@ public class FileSlcExecutionNotifier implements SlcExecutionNotifier {
 		writeSlcExecution(slcExecution);
 	}
 
+	public void updateStatus(SlcExecution slcExecution, String oldStatus,
+			String newStatus) {
+		writeSlcExecution(slcExecution);
+	}
+
 	protected void writeSlcExecution(SlcExecution slcExecution) {
 		FileWriter out = null;
 		try {
@@ -75,6 +80,5 @@ public class FileSlcExecutionNotifier implements SlcExecutionNotifier {
 	public void setMarshaller(Marshaller marshaller) {
 		this.marshaller = marshaller;
 	}
-	
-	
+
 }

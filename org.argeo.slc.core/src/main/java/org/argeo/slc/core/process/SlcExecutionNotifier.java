@@ -9,4 +9,7 @@ public interface SlcExecutionNotifier {
 			List<SlcExecutionStep> additionalSteps);
 
 	public void updateExecution(SlcExecution slcExecution);
+
+	public void updateStatus(SlcExecution slcExecution, String oldStatus,
+			String newStatus);
 }

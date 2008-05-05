@@ -64,6 +64,13 @@
 		</field>
 	</class>
 
+	<class name="org.argeo.slc.msg.process.SlcExecutionStatusRequest">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="slcExecutionUuid" />
+		<field name="newStatus"/>
+	</class>
+
 	<class name="org.argeo.slc.msg.process.SlcExecutionRequest">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
