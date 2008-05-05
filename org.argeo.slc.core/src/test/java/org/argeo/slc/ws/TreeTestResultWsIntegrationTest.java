@@ -21,6 +21,7 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 		WebServiceTemplate template = getBean(WebServiceTemplate.class);
 		CreateTreeTestResultRequest req = new CreateTreeTestResultRequest(
 				createCompleteTreeTestResult());
+		req.getTreeTestResult().close();// in order to avoid unclosed in test db
 
 		log.info("Send CreateTreeTestResultRequest for result "
 				+ req.getTreeTestResult().getUuid());
@@ -32,6 +33,7 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 	public void testResultPartRequest() {
 		WebServiceTemplate template = getBean(WebServiceTemplate.class);
 		TreeTestResult ttr = createCompleteTreeTestResult();
+		ttr.close();// in order to avoid unclosed in test db
 		CreateTreeTestResultRequest reqCreate = new CreateTreeTestResultRequest(
 				ttr);
 		log.info("Send CreateTreeTestResultRequest for result "

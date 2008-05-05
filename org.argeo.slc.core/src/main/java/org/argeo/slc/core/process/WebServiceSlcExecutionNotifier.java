@@ -2,6 +2,7 @@ package org.argeo.slc.core.process;
 
 import java.util.List;
 
+import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.client.SoapFaultClientException;
 
@@ -18,7 +19,12 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 
 	private Log log = LogFactory.getLog(getClass());
 
+	private Boolean cannotConnect = false;
+
 	public void newExecution(SlcExecution slcExecution) {
+		if (cannotConnect)
+			return;
+
 		SlcExecutionRequest req = new SlcExecutionRequest();
 		req.setSlcExecution(slcExecution);
 		try {
@@ -28,10 +34,15 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 						+ slcExecution.getUuid());
 		} catch (SoapFaultClientException e) {
 			WebServiceUtils.manageSoapException(e);
+		} catch (WebServiceIOException e) {
+			manageIoException(e);
 		}
 	}
 
 	public void updateExecution(SlcExecution slcExecution) {
+		if (cannotConnect)
+			return;
+
 		SlcExecutionRequest req = new SlcExecutionRequest();
 		req.setSlcExecution(slcExecution);
 		try {
@@ -41,11 +52,16 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 						+ slcExecution.getUuid());
 		} catch (SoapFaultClientException e) {
 			WebServiceUtils.manageSoapException(e);
+		} catch (WebServiceIOException e) {
+			manageIoException(e);
 		}
 	}
 
 	public void updateStatus(SlcExecution slcExecution, String oldStatus,
 			String newStatus) {
+		if (cannotConnect)
+			return;
+
 		SlcExecutionStatusRequest req = new SlcExecutionStatusRequest(
 				slcExecution.getUuid(), newStatus);
 		try {
@@ -55,11 +71,16 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 						+ slcExecution.getUuid());
 		} catch (SoapFaultClientException e) {
 			WebServiceUtils.manageSoapException(e);
+		} catch (WebServiceIOException e) {
+			manageIoException(e);
 		}
 	}
 
 	public void addSteps(SlcExecution slcExecution,
 			List<SlcExecutionStep> additionalSteps) {
+		if (cannotConnect)
+			return;
+
 		SlcExecutionStepsRequest req = new SlcExecutionStepsRequest();
 		req.setSlcExecutionUuid(slcExecution.getUuid());
 		req.setSteps(additionalSteps);
@@ -76,11 +97,21 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 						+ slcExecution.getUuid());
 		} catch (SoapFaultClientException e) {
 			WebServiceUtils.manageSoapException(e);
+		} catch (WebServiceIOException e) {
+			manageIoException(e);
 		}
 	}
 
 	public void setTemplate(WebServiceTemplate template) {
 		this.template = template;
+	}
+
+	protected void manageIoException(WebServiceIOException e) {
+		if (!cannotConnect) {
+			log.error("Cannot connect to " + template.getDefaultUri()
+					+ ". Won't try again.", e);
+			cannotConnect = true;
+		}
 	}
 
 }

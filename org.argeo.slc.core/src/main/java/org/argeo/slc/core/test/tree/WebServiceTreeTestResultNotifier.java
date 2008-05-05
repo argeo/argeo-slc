@@ -1,5 +1,6 @@
 package org.argeo.slc.core.test.tree;
 
+import org.springframework.ws.client.WebServiceIOException;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.client.SoapFaultClientException;
 
@@ -20,9 +21,14 @@ public class WebServiceTreeTestResultNotifier implements
 
 	private Log log = LogFactory.getLog(getClass());
 
+	private Boolean cannotConnect = false;
+
 	public void resultPartAdded(TreeTestResult testResult,
 			TestResultPart testResultPart) {
 		if (onlyOnClose)
+			return;
+
+		if (cannotConnect)
 			return;
 
 		try {
@@ -48,10 +54,16 @@ public class WebServiceTreeTestResultNotifier implements
 			}
 		} catch (SoapFaultClientException e) {
 			WebServiceUtils.manageSoapException(e);
+
+		} catch (WebServiceIOException e) {
+			manageIoException(e);
 		}
 	}
 
 	public void close(TreeTestResult testResult) {
+		if (cannotConnect)
+			return;
+
 		try {
 			if (onlyOnClose) {
 				CreateTreeTestResultRequest req = new CreateTreeTestResultRequest(
@@ -75,8 +87,9 @@ public class WebServiceTreeTestResultNotifier implements
 			}
 		} catch (SoapFaultClientException e) {
 			WebServiceUtils.manageSoapException(e);
+		} catch (WebServiceIOException e) {
+			manageIoException(e);
 		}
-
 	}
 
 	public void setTemplate(WebServiceTemplate template) {
@@ -85,5 +98,13 @@ public class WebServiceTreeTestResultNotifier implements
 
 	public void setOnlyOnClose(Boolean onlyOnClose) {
 		this.onlyOnClose = onlyOnClose;
+	}
+
+	protected void manageIoException(WebServiceIOException e) {
+		if (!cannotConnect) {
+			log.error("Cannot connect to " + template.getDefaultUri()
+					+ ". Won't try again.", e);
+			cannotConnect = true;
+		}
 	}
 }

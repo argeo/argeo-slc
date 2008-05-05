@@ -113,6 +113,7 @@ public class AntRegistryUtil {
 			p.executeTarget(target != null ? target : p.getDefaultTarget());
 		} catch (Throwable e) {
 			exception = e;
+			log.error("Exception when running Ant: ",e);
 		} finally {
 			p.fireBuildFinished(exception);
 		}
