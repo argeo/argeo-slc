@@ -53,4 +53,12 @@ public class SimpleSElement implements StructureElement {
 		this.tags = tags;
 	}
 
+	@Override
+	public SimpleSElement clone(){
+		SimpleSElement clone = new SimpleSElement();
+		clone.setLabel(getLabel());
+		clone.setTags(getTags());
+		return clone;
+	}
+
 }
