@@ -30,6 +30,18 @@
 		<url-pattern>*.web</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>slc-xslt</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>slc-xslt</servlet-name>
+		<url-pattern>*.xslt</url-pattern>
+	</servlet-mapping>
+
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/applicationContext.xml</param-value>
