@@ -28,7 +28,7 @@
 					<td>NOT CLOSED</td>
 				</c:otherwise>
 			</c:choose>
-			<td><a href="resultView.web?uuid=${result.uuid}">view</a></td>
+			<td style="padding-right: 5px"><a href="resultView.web?uuid=${result.uuid}">view</a></td>
 			<td><a href="resultView.xslt?uuid=${result.uuid}">xsl</a></td>
 		</tr>
 	</c:forEach>
