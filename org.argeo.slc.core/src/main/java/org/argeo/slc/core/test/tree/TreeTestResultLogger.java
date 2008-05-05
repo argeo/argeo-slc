@@ -3,12 +3,9 @@ package org.argeo.slc.core.test.tree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestResultListener;
 import org.argeo.slc.core.test.TestResultPart;
 import org.argeo.slc.core.test.TestStatus;
-import org.argeo.slc.core.test.tree.AsynchronousTreeTestResultListener.PartStruct;
 
 /**
  * Listener logging tree-based test results to the underlying logging system.

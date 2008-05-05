@@ -10,8 +10,22 @@
 		parent="slcDefault.test.basicTreeTestResult">
 		<property name="listeners">
 			<list merge="true">
-				<ref bean="slcDefault.ws.client.treeTestResultWsNotfier" />
+				<ref
+					bean="slcDefault.ws.client.treeTestResultWsNotfier" />
+				<ref bean="xsltReportGenerator" />
 			</list>
 		</property>
+	</bean>
+
+	<bean id="xsltReportGenerator"
+		class="org.argeo.slc.core.test.tree.XsltReportGenerator"
+		init-method="init">
+		<property name="xsltStyleSheet"
+			value="classpath:/org/argeo/slc/core/test/tree/basicReport.xslt" />
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="logXml" value="false" />
+		<!-- 
+		<property name="outputDir" value="D:\dev\test\SLC\SlcReports" />
+		-->
 	</bean>
 </beans>

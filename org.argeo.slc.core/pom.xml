@@ -137,5 +137,9 @@
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>xalan</artifactId>
+		</dependency>
 	</dependencies>
 </project>
