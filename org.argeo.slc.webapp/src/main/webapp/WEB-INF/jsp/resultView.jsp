@@ -29,14 +29,22 @@
 
 	<h2><%=describedPaths.get(resultPartEntry.getKey())%></h2>
 	<table>
+		<c:forEach items="${result.elements[resultPartEntry.key].tags}" var="tagEntry">
+			<tr>
+				<td style="font-style: italic;font-size: 80%">${tagEntry.key}</td>
+				<td style="font-size: 80%">${tagEntry.value}</td>
+			</tr>
+		</c:forEach>
+	</table>
+	<table>
+	
 		<c:forEach items="${resultPartEntry.value.parts}" var="part">
 			<tr>
 				<td class="${part.status == 0 ? 'passed' : 'failed'}">
 				${part.message}</td>
 				<c:if test="${part.testRunUuid!=null}">
 					<td>
-					<a href="testRunView.web?uuid=${part.testRunUuid}">related
-					test run</a>
+					<a href="testRunView.web?uuid=${part.testRunUuid}">test run</a>
 					</td>
 				</c:if>
 			</tr>

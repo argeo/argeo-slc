@@ -60,6 +60,10 @@
 					slcExecutionRequestEp
 				</prop>
 				<prop
+					key="{http://argeo.org/projects/slc/schemas}slc-execution-status-request">
+					slcExecutionRequestEp
+				</prop>
+				<prop
 					key="{http://argeo.org/projects/slc/schemas}slc-execution-steps-request">
 					slcExecutionStepsRequestEp
 				</prop>
