@@ -2,9 +2,13 @@ package org.argeo.slc.ws.process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
+import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
+
 import org.springframework.ws.server.endpoint.AbstractMarshallingPayloadEndpoint;
 
 public class SlcExecutionRequestEp extends AbstractMarshallingPayloadEndpoint {
@@ -19,23 +23,37 @@ public class SlcExecutionRequestEp extends AbstractMarshallingPayloadEndpoint {
 
 	@Override
 	protected Object invokeInternal(Object requestObject) throws Exception {
-		SlcExecutionRequest msg = (SlcExecutionRequest) requestObject;
-		SlcExecution slcExecution = msg.getSlcExecution();
+		if (requestObject instanceof SlcExecutionRequest) {
 
-		if (slcExecutionDao.getSlcExecution(slcExecution.getUuid()) == null) {
-			slcExecutionDao.create(slcExecution);
+			SlcExecutionRequest msg = (SlcExecutionRequest) requestObject;
+			SlcExecution slcExecution = msg.getSlcExecution();
 
-			if (log.isDebugEnabled())
-				log.debug("Created SlcExecution with uuid "
-						+ slcExecution.getUuid());
-		} else {
+			if (slcExecutionDao.getSlcExecution(slcExecution.getUuid()) == null) {
+				if (log.isDebugEnabled())
+					log.debug("Creating SlcExecution with uuid "
+							+ slcExecution.getUuid());
+
+				slcExecutionDao.create(slcExecution);
+			} else {
+				if (log.isDebugEnabled())
+					log.debug("Updating SlcExecution with uuid "
+							+ slcExecution.getUuid());
+
+				slcExecutionDao.update(slcExecution);
+			}
+			return null;
+
+		} else if (requestObject instanceof SlcExecutionStatusRequest) {
+			SlcExecutionStatusRequest msg = (SlcExecutionStatusRequest) requestObject;
+			SlcExecution slcExecution = slcExecutionDao.getSlcExecution(msg
+					.getSlcExecutionUuid());
+			slcExecution.setStatus(msg.getNewStatus());
 			slcExecutionDao.update(slcExecution);
-
-			if (log.isDebugEnabled())
-				log.debug("Updated SlcExecution with uuid "
-						+ slcExecution.getUuid());
+			return null;
+		} else {
+			throw new SlcException("Unrecognized request format: "
+					+ requestObject.getClass());
 		}
-		return null;
 	}
 
 }

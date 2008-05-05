@@ -22,11 +22,13 @@ public class CloseTreeTestResultRequestEp extends
 	@Override
 	protected Object invokeInternal(Object requestObject) throws Exception {
 		CloseTreeTestResultRequest msg = (CloseTreeTestResultRequest) requestObject;
+		
+		if (log.isDebugEnabled())
+			log.debug("Closing result with id " + msg.getResultUuid()
+					+ " at date " + msg.getCloseDate());
+
 		treeTestResultDao.close(msg.getResultUuid(), msg.getCloseDate());
 
-		if (log.isDebugEnabled())
-			log.debug("Close result with id " + msg.getResultUuid()
-					+ " at date " + msg.getCloseDate());
 		return null;
 	}
 

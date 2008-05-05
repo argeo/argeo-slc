@@ -25,10 +25,11 @@ public class CreateTreeTestResultRequestEp extends
 		CreateTreeTestResultRequest msg = (CreateTreeTestResultRequest) requestObject;
 		TreeTestResult treeTestResult = msg.getTreeTestResult();
 
+		if (log.isDebugEnabled())
+			log.debug("Creating result with id " + treeTestResult.getUuid());
+
 		treeTestResultDao.create(treeTestResult);
 
-		if (log.isDebugEnabled())
-			log.debug("Created result with id " + treeTestResult.getUuid());
 		return null;
 	}
 

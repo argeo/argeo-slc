@@ -32,10 +32,11 @@ public class ResultPartRequestEp extends AbstractMarshallingPayloadEndpoint {
 
 		TestRunDescriptor testRunDescriptor = msg.getTestRunDescriptor();
 		if (testRunDescriptor != null) {
-			testRunDescriptorDao.saveOrUpdate(testRunDescriptor);
 			if (log.isDebugEnabled())
-				log.debug("Updated test run descriptor with id "
+				log.debug("Updating test run descriptor with id "
 						+ testRunDescriptor.getTestRunUuid());
+
+			testRunDescriptorDao.saveOrUpdate(testRunDescriptor);
 		}
 
 		TreeTestResult treeTestResult = treeTestResultDao.getTestResult(msg
@@ -52,10 +53,11 @@ public class ResultPartRequestEp extends AbstractMarshallingPayloadEndpoint {
 		lst.getParts().add(msg.getResultPart());
 		treeTestResult.getElements().putAll(msg.getRelatedElements());
 
+		if (log.isDebugEnabled())
+			log.debug("Updating result with id " + treeTestResult.getUuid());
+
 		treeTestResultDao.update(treeTestResult);
 
-		if (log.isDebugEnabled())
-			log.debug("Update result with id " + treeTestResult.getUuid());
 		return null;
 	}
 

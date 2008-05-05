@@ -44,10 +44,11 @@ public class SlcExecutionStepsRequestEp extends
 			}
 			slcExecution.getSteps().addAll(additionalSteps);
 
-			slcExecutionDao.update(slcExecution);
-			log.debug("Added " + msg.getSteps().size()
+			log.debug("Adding " + msg.getSteps().size()
 					+ " steps to SlcExecution with uuid "
 					+ slcExecution.getUuid());
+
+			slcExecutionDao.update(slcExecution);
 			return null;
 		} catch (Exception e) {
 			log.error("Could not update SlcExecution " + uuid
