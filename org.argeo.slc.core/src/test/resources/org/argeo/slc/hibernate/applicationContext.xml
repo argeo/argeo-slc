@@ -14,6 +14,10 @@
 		parent="slcTemplates.dao.testResultDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+	<bean id="testResultCollectionDao"
+		parent="slcTemplates.dao.testResultCollectionDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 
 	<bean id="slcExecutionDao"
 		parent="slcTemplates.dao.slcExecutionDao">

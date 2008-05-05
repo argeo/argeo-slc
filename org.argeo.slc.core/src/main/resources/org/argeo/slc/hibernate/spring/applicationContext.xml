@@ -38,6 +38,9 @@
 					org/argeo/slc/hibernate/test/tree/TreeTestResult.hbm.xml
 				</value>
 				<value>
+					org/argeo/slc/hibernate/test/tree/TreeTestResultCollection.hbm.xml
+				</value>
+				<value>
 					org/argeo/slc/hibernate/test/tree/PartSubList.hbm.xml
 				</value>
 				<value>
@@ -61,6 +64,7 @@
 			<value><![CDATA[
 				hibernate.dialect=org.hibernate.dialect.HSQLDialect
 				hibernate.hbm2ddl.auto=create
+				hibernate.current_session_context_class=thread
 			]]></value>
 		</property>
 	</bean>
@@ -77,6 +81,11 @@
 
 	<bean id="slcTemplates.dao.testResultDao"
 		class="org.argeo.slc.hibernate.test.tree.TestResultDaoHibernate"
+		abstract="true">
+	</bean>
+
+	<bean id="slcTemplates.dao.testResultCollectionDao"
+		class="org.argeo.slc.hibernate.test.tree.TreeTestResultCollectionDaoHibernate"
 		abstract="true">
 	</bean>
 
