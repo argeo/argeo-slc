@@ -62,7 +62,7 @@
 		auto-complete="false">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
-		<field name="parts" collection="vector"
+		<field name="parts" collection="arraylist"
 			type="org.argeo.slc.core.test.SimpleResultPart">
 			<bind-xml auto-naming="deriveByClass" location="parts" />
 		</field>
