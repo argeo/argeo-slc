@@ -42,7 +42,22 @@
 		<property name="suppressClose" value="true" />
 	</bean>
 
+	<!-- Services -->
+	<bean id="testManagerService"
+		class="org.argeo.slc.services.test.impl.TestManagerServiceImpl">
+		<constructor-arg ref="testResultDao" />
+		<constructor-arg ref="testRunDescriptorDao" />
+		<constructor-arg ref="slcExecutionDao" />
+		<constructor-arg ref="testResultCollectionDao" />
+	</bean>
+
+	<!-- DAOs -->
 	<bean id="testResultDao" parent="slcTemplates.dao.testResultDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="testResultCollectionDao"
+		parent="slcTemplates.dao.testResultCollectionDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 

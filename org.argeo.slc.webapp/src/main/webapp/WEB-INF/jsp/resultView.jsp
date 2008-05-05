@@ -11,8 +11,14 @@
 <h1>Result #${result.uuid}</h1>
 
 <jsp:useBean id="describedPaths" type="java.util.SortedMap"
-	scope="request" /> <jsp:useBean id="toc" type="java.util.SortedMap"
+	scope="request" /> 
+<jsp:useBean id="toc" type="java.util.SortedMap"
 	scope="request" />
+
+<p>
+<a href="addResultToCollection.web?resultUuid=${result.uuid}&collectionId=staging">Add to staging collection</a><br/>
+<a href="addResultToCollection.web?resultUuid=${result.uuid}&collectionId=official">Add to official collection</a>
+</p>
 
 <table>
 	<c:forEach items="${toc}" var="tocEntry">

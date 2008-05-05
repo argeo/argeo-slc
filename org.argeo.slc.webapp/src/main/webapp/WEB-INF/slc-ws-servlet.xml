@@ -44,7 +44,7 @@
 	<bean name="resultPartRequestEp"
 		class="org.argeo.slc.ws.test.tree.ResultPartRequestEp">
 		<constructor-arg ref="testResultDao" />
-		<constructor-arg ref="testRunDescriptorDao" />
+		<constructor-arg ref="testManagerService" />
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 		<property name="unmarshaller"
 			ref="slcDefault.castor.marshaller" />
