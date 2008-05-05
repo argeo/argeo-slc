@@ -1,9 +1,9 @@
 package org.argeo.slc.hibernate.test.tree;
 
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-import org.hibernate.SessionFactory;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
@@ -22,6 +22,11 @@ public class TreeTestResultCollectionDaoHibernate extends HibernateDaoSupport
 
 	public void update(TreeTestResultCollection ttrCollection) {
 		getHibernateTemplate().update(ttrCollection);
+	}
+
+	public SortedSet<TreeTestResultCollection> listCollections() {
+		return new TreeSet<TreeTestResultCollection>(getHibernateTemplate()
+				.find("from TreeTestResultCollection"));
 	}
 
 }

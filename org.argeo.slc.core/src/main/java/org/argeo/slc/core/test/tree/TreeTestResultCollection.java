@@ -3,7 +3,8 @@ package org.argeo.slc.core.test.tree;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class TreeTestResultCollection {
+public class TreeTestResultCollection implements
+		Comparable<TreeTestResultCollection> {
 	private String id;
 	private SortedSet<TreeTestResult> results = new TreeSet<TreeTestResult>();
 
@@ -30,4 +31,15 @@ public class TreeTestResultCollection {
 		this.results = results;
 	}
 
+	public int compareTo(TreeTestResultCollection o) {
+		return getId().compareTo(o.getId());
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof TreeTestResultCollection) {
+			return getId().equals(((TreeTestResultCollection) o).getId());
+		}
+		return false;
+	}
 }
