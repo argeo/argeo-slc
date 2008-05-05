@@ -3,6 +3,7 @@
 <wb-module deploy-name="org.argeo.slc.webapp">
 <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+<wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
 <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/org.argeo.slc.server/org.argeo.slc.server">
 <dependency-type>uses</dependency-type>
 </dependent-module>
