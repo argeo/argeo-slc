@@ -6,13 +6,14 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.9.1</version>
+		<version>0.9-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.webapp</artifactId>
 	<packaging>war</packaging>
 	<name>Argeo SLC Web Application</name>
 	<build>
+		<finalName>${artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
