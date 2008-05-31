@@ -75,5 +75,10 @@
 			<artifactId>argeo-slc-hibernate</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>argeo-slc-agent</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 </project>
