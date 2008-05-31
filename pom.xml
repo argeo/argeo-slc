@@ -15,6 +15,8 @@
 	<modules>
 		<module>org.argeo.slc</module>
 		<module>org.argeo.slc.core</module>
+		<module>org.argeo.slc.agent</module>
+		<module>org.argeo.slc.hibernate</module>
 		<module>org.argeo.slc.example</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.webapp</module>
