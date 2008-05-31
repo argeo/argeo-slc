@@ -20,6 +20,8 @@
 	-->
 	<properties>
 		<version.spring>2.5.3</version.spring>
+		<version.maven>2.0.9</version.maven>
+		<version.ant>1.7.0</version.ant>
 	</properties>
 	<scm>
 		<connection>
@@ -199,17 +201,12 @@
 			<dependency>
 				<groupId>org.apache.ant</groupId>
 				<artifactId>ant</artifactId>
-				<version>1.7.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.ant</groupId>
-				<artifactId>ant-util</artifactId>
-				<version>1.7.0</version>
+				<version>${version.ant}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.ant</groupId>
 				<artifactId>ant-commons-logging</artifactId>
-				<version>1.7.0</version>
+				<version>${version.ant}</version>
 			</dependency>
 
 			<dependency>
@@ -304,13 +301,19 @@
 
 			<dependency>
 				<groupId>org.apache.maven</groupId>
+				<artifactId>maven-core</artifactId>
+				<version>${version.maven}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-embedder</artifactId>
+				<!-- no higher version available -->
 				<version>2.0.4</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-settings</artifactId>
-				<version>2.0.4</version>
+				<version>${version.maven}</version>
 			</dependency>
 
 		</dependencies>
