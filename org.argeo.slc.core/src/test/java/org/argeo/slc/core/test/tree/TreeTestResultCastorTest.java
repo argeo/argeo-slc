@@ -9,9 +9,9 @@ import org.springframework.xml.validation.XmlValidator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
-import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleResultPartRequest;
 import static org.argeo.slc.unit.UnitUtils.assertDateSec;
+import static org.argeo.slc.unit.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
+import static org.argeo.slc.unit.test.tree.TreeTestResultTestUtils.createSimpleResultPartRequest;
 
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;

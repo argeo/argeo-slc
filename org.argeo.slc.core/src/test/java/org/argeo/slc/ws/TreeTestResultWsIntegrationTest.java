@@ -5,8 +5,8 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
-import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleResultPartRequest;
+import static org.argeo.slc.unit.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
+import static org.argeo.slc.unit.test.tree.TreeTestResultTestUtils.createSimpleResultPartRequest;
 
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;

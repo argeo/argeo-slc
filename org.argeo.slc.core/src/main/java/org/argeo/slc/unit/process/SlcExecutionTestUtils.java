@@ -1,10 +1,13 @@
-package org.argeo.slc.core.process;
-
-import java.util.UUID;
+package org.argeo.slc.unit.process;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.argeo.slc.unit.UnitUtils.assertDateSec;
+
+import java.util.UUID;
+
+import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.core.process.SlcExecutionStep;
 
 public abstract class SlcExecutionTestUtils {
 

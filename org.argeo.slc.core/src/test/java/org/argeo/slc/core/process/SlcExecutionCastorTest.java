@@ -17,6 +17,7 @@ import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.argeo.slc.unit.UnitXmlUtils;
+import org.argeo.slc.unit.process.SlcExecutionTestUtils;
 
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
