@@ -9,16 +9,12 @@
 		<version>0.9-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
-	<artifactId>argeo-slc-core</artifactId>
-	<name>Argeo SLC Core</name>
-	<description>SLC Core</description>
+	<artifactId>argeo-slc-agent</artifactId>
+	<name>Argeo SLC Agent</name>
 	<scm>
 		<connection>
-			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.core
+			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.agent
 		</connection>
-		<url>
-			https://www.argeo.org/svn/slc/trunk/org.argeo.slc.core
-		</url>
 	</scm>
 	<build>
 		<plugins>
@@ -33,24 +29,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>src/assembly/base.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>assembly-base</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<excludes>
@@ -62,21 +40,19 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>argeo-slc-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>spring-ws-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.ws</groupId>
-			<artifactId>spring-oxm</artifactId>
 		</dependency>
 
 		<dependency>
@@ -111,16 +87,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.dbunit</groupId>
 			<artifactId>dbunit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>xalan</groupId>

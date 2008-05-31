@@ -1,18 +1,19 @@
-package org.argeo.slc.core.process;
+package org.argeo.slc.ws.process;
 
 import java.util.List;
 
-import org.springframework.ws.client.WebServiceIOException;
-import org.springframework.ws.client.core.WebServiceTemplate;
-import org.springframework.ws.soap.client.SoapFaultClientException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.core.process.SlcExecutionNotifier;
+import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.ws.client.WebServiceUtils;
+import org.springframework.ws.client.WebServiceIOException;
+import org.springframework.ws.client.core.WebServiceTemplate;
+import org.springframework.ws.soap.client.SoapFaultClientException;
 
 public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 	private WebServiceTemplate template;
