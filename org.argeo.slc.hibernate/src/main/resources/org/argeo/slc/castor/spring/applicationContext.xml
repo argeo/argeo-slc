@@ -1,0 +1,40 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<bean id="slcDefault.castor.marshaller"
+		class="org.springframework.oxm.castor.CastorMarshaller">
+		<property name="mappingLocations">
+			<list>
+				<value>
+					classpath:org/argeo/slc/castor/msg/mapping.xml
+				</value>
+				<value>
+					classpath:org/argeo/slc/castor/process/mapping.xml
+				</value>
+				<value>
+					classpath:org/argeo/slc/castor/structure/mapping.xml
+				</value>
+				<value>
+					classpath:org/argeo/slc/castor/test/mapping.xml
+				</value>
+			</list>
+		</property>
+		<property name="whitespacePreserve" value="true" />
+	</bean>
+
+	<bean id="slcDefault.castor.xsltReportGenerator"
+		class="org.argeo.slc.core.test.tree.XsltReportGenerator"
+		init-method="init">
+		<property name="xsltStyleSheet"
+			value="classpath:/org/argeo/slc/core/test/tree/basicReport.xslt" />
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="logXml" value="false" />
+		<!-- 
+			<property name="outputDir" value="D:\dev\test\SLC\SlcReports" />
+		-->
+	</bean>
+
+
+</beans>

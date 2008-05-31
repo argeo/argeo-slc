@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.argeo.slc.core.test">
+	<class name="TestRunDescriptor" table="TEST_RUN_DESCRIPTOR">
+		<id name="testRunUuid" column="TEST_RUN_UUID" />
+		<property name="slcExecutionUuid" column="SLC_EXEC_UUID"
+			not-null="false" />
+		<property name="slcExecutionStepUuid"
+			column="SLC_EXEC_STEP_UUID" not-null="false" />
+		<property name="testResultUuid" column="TEST_RESULT_UUID"
+			not-null="false" />
+		<property name="deployedSytemId" column="DEPLOYED_SYSTEM_ID"
+			not-null="false" />
+	</class>
+</hibernate-mapping>

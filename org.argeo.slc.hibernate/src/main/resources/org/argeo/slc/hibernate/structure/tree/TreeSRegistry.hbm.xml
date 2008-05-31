@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.argeo.slc.core.structure.tree">
+	<class name="TreeSRegistry" table="TREE_SREGISTRY">
+		<id name="tid" column="T_ID">
+			<generator class="native" />
+		</id>
+
+		<property name="status" column="STATUS" not-null="true"
+			unique="true" />
+
+		<map name="elements" table="REGISTRY_ELEMENTS" cascade="all"
+			lazy="false" sort="natural">
+			<key column="PARENT_ID" />
+			<map-key-many-to-many class="TreeSPath" column="PATH" />
+
+			<many-to-many
+				class="org.argeo.slc.core.structure.SimpleSElement"
+				column="ELEMENT_ID" unique="true" lazy="false" />
+		</map>
+
+	</class>
+</hibernate-mapping>
