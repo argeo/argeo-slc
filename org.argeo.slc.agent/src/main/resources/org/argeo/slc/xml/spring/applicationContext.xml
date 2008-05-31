@@ -1,0 +1,14 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<bean id="slcDefault.xml.xsdValidator"
+		factory-bean="slcDefault.xml.xsdSchema" factory-method="createValidator" />
+
+	<bean id="slcDefault.xml.xsdSchema"
+		class="org.springframework.xml.xsd.SimpleXsdSchema">
+		<property name="xsd"
+			value="classpath:/org/argeo/slc/xml/slc.xsd" />
+	</bean>
+</beans>
