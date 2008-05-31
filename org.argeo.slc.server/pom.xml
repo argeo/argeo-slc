@@ -58,6 +58,11 @@
 			<artifactId>argeo-slc-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>argeo-slc-hibernate</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
