@@ -8,10 +8,9 @@ import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
-
+import org.apache.tools.ant.listener.CommonsLoggingListener;
 import org.argeo.slc.core.structure.StructurePath;
 import org.argeo.slc.core.structure.StructureRegistry;
 
@@ -85,6 +84,7 @@ public class AntRegistryUtil {
 		Project p = new Project();
 		p.setUserProperty("ant.file", url.toString());
 		// p.setBaseDir(url.toString());
+		p.addBuildListener(new CommonsLoggingListener());
 		p.init();
 		ProjectHelper helper = new SlcProjectHelper();
 		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, helper);
