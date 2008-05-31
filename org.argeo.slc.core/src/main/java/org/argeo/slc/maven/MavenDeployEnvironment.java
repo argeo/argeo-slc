@@ -1,4 +1,4 @@
-package org.argeo.slc.support.deploy;
+package org.argeo.slc.maven;
 
 import java.io.File;
 import java.net.URL;
@@ -11,12 +11,10 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.ant.AntRegistryUtil;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.deploy.DeployEnvironment;
-import org.argeo.slc.maven.MavenFile;
-import org.argeo.slc.maven.MavenManager;
 
-public class BasicDeployEnvironment implements DeployEnvironment {
+public class MavenDeployEnvironment implements DeployEnvironment {
 	private static final Log log = LogFactory
-			.getLog(BasicDeployEnvironment.class);
+			.getLog(MavenDeployEnvironment.class);
 	private MavenManager mavenManager;
 
 	public void unpackTo(Object packg, File targetLocation,
