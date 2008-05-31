@@ -1,10 +1,13 @@
-package org.argeo.slc.unit;
+package org.argeo.slc.hibernate.unit;
 
 import java.io.InputStream;
 import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.io.IOUtils;
+import org.argeo.slc.core.SlcException;
+import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.dbunit.DataSourceDatabaseTester;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.IDatabaseTester;
@@ -13,14 +16,9 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ReplacementDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-
-import org.apache.commons.io.IOUtils;
-
-import org.hibernate.tool.hbm2ddl.SchemaExport;
-
-import org.argeo.slc.core.SlcException;
 
 /**
  * Helper to make db vendor independent tests using DbUnit data sets. Based on

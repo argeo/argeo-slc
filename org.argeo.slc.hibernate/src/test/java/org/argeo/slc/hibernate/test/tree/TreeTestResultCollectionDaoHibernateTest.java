@@ -2,10 +2,10 @@ package org.argeo.slc.hibernate.test.tree;
 
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
-import org.argeo.slc.core.test.tree.TreeTestResultTestUtils;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
 import org.argeo.slc.unit.AbstractSpringTestCase;
+import org.argeo.slc.unit.test.tree.TreeTestResultTestUtils;
 import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
 
 public class TreeTestResultCollectionDaoHibernateTest extends

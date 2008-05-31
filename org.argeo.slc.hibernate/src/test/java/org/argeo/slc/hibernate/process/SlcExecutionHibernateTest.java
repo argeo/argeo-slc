@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionStep;
-import org.argeo.slc.core.process.SlcExecutionTestUtils;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.unit.AbstractSpringTestCase;
+import org.argeo.slc.unit.process.SlcExecutionTestUtils;
 
 public class SlcExecutionHibernateTest extends AbstractSpringTestCase {
 

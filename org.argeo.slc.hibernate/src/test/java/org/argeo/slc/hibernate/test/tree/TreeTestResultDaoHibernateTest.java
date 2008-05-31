@@ -1,19 +1,14 @@
 package org.argeo.slc.hibernate.test.tree;
 
-import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
-import static org.argeo.slc.core.test.tree.TreeTestResultTestUtils.createSimpleTreeTestResult;
-
-import java.util.Date;
-
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.TreeTestResult;
-import org.argeo.slc.core.test.tree.TreeTestResultTestUtils;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
 import org.argeo.slc.unit.AbstractSpringTestCase;
+import org.argeo.slc.unit.test.tree.TreeTestResultTestUtils;
 import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
 
 public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
@@ -27,7 +22,8 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 
 	public void testCreate() {
 
-		TreeTestResult ttr = createCompleteTreeTestResult();
+		TreeTestResult ttr = TreeTestResultTestUtils
+				.createCompleteTreeTestResult();
 		testResultDao.create(ttr);
 
 		TreeTestResult ttrPersisted = (TreeTestResult) testResultDao
@@ -37,7 +33,8 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 	}
 
 	public void testUpdate() {
-		TreeTestResult ttr = createCompleteTreeTestResult();
+		TreeTestResult ttr = TreeTestResultTestUtils
+				.createCompleteTreeTestResult();
 		testResultDao.create(ttr);
 
 		TreeTestResult ttrUpdated = (TreeTestResult) testResultDao
@@ -77,37 +74,43 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		UnitTestTreeUtil.assertTreeTestResult(ttrRetrieved, ttrUpdated);
 	}
 
-	public void testMultipleUpdateScenario() throws Exception{
+	public void testMultipleUpdateScenario() throws Exception {
 		TreeSRegistry registry = new TreeSRegistry();
 
 		TreeSPath path = new TreeSPath("/root/test");
 		SimpleSElement elem = new SimpleSElement("Unit Test");
 		elem.getTags().put("myTag", "myTagValue");
 		registry.register(path, elem);
-		
-		TreeTestResult ttr = createSimpleTreeTestResult();
+
+		TreeTestResult ttr = TreeTestResultTestUtils
+				.createSimpleTreeTestResult();
 		ttr.notifyCurrentPath(registry, path);
-		ttr.addResultPart(new SimpleResultPart(TestStatus.PASSED,"First test"));
-		
+		ttr
+				.addResultPart(new SimpleResultPart(TestStatus.PASSED,
+						"First test"));
+
 		testResultDao.create(ttr);
-		
+
 		path = new TreeSPath("/root/test2/subtest");
 		elem = new SimpleSElement("Sub Test");
 		elem.getTags().put("myTag", "myTagValue");
 		registry.register(path, elem);
-		
+
 		ttr.notifyCurrentPath(registry, path);
-		ttr.addResultPart(new SimpleResultPart(TestStatus.PASSED,"Second test"));
-		
+		ttr
+				.addResultPart(new SimpleResultPart(TestStatus.PASSED,
+						"Second test"));
+
 		testResultDao.update(ttr);
-		
+
 		ttr.notifyCurrentPath(registry, path);
-		ttr.addResultPart(new SimpleResultPart(TestStatus.PASSED,"Third test with same path"));
-		
+		ttr.addResultPart(new SimpleResultPart(TestStatus.PASSED,
+				"Third test with same path"));
+
 		testResultDao.update(ttr);
-		
+
 		ttr.close();
-		
+
 		testResultDao.close(ttr.getUuid(), ttr.getCloseDate());
 	}
 

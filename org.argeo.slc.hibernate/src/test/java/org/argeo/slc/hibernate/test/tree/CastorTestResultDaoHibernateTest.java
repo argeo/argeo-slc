@@ -1,16 +1,15 @@
 package org.argeo.slc.hibernate.test.tree;
 
+import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.dao.test.tree.TreeTestResultDao;
+import org.argeo.slc.unit.AbstractSpringTestCase;
+import org.argeo.slc.unit.test.tree.TreeTestResultTestUtils;
+import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.xml.transform.StringResult;
 import org.springframework.xml.transform.StringSource;
-
-import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.test.tree.TreeTestResult;
-import org.argeo.slc.core.test.tree.TreeTestResultTestUtils;
-import org.argeo.slc.dao.test.tree.TreeTestResultDao;
-import org.argeo.slc.unit.AbstractSpringTestCase;
-import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
 
 public class CastorTestResultDaoHibernateTest extends AbstractSpringTestCase {
 

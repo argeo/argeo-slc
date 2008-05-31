@@ -1,4 +1,4 @@
-package org.argeo.slc.unit;
+package org.argeo.slc.hibernate.unit;
 
 import java.sql.Connection;
 import java.util.List;
