@@ -3,6 +3,11 @@ package org.argeo.slc.ui.launch.script;
 import java.util.List;
 import java.util.Vector;
 
+import org.argeo.slc.ui.launch.DeployedSlcRuntime;
+import org.argeo.slc.ui.launch.EmbeddedSlcRuntime;
+import org.argeo.slc.ui.launch.SlcRuntime;
+import org.argeo.slc.ui.launch.SlcUiLaunchPlugin;
+import org.argeo.slc.ui.launch.preferences.SlcPreferencePage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -14,18 +19,14 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
-import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
-
-import org.argeo.slc.ui.launch.DefaultSlcRuntime;
-import org.argeo.slc.ui.launch.SlcRuntime;
-import org.argeo.slc.ui.launch.SlcUiLaunchPlugin;
-import org.argeo.slc.ui.launch.preferences.SlcPreferencePage;
 
 public class SlcScriptLaunchDelegate extends
 		AbstractJavaLaunchConfigurationDelegate {
@@ -46,54 +47,43 @@ public class SlcScriptLaunchDelegate extends
 		System.out.println("Launched " + file.getLocation().toFile());
 
 		// Retrieve SLC Runtime
-		String slcRuntimePath = SlcUiLaunchPlugin.getDefault()
-				.getPreferenceStore().getString(
-						SlcPreferencePage.PREF_SLC_RUNTIME_LOCATION);
-		if (slcRuntimePath == null || slcRuntimePath.equals("")) {
-			showError("SLC Runtime path is not set. Set it in Windows > Preferences > SLC");
-			return;
-		}
-		SlcRuntime deployedSlc = new DefaultSlcRuntime(slcRuntimePath);
+		SlcRuntime deployedSlc = null;
 
 		IProject project = file.getProject();
-
-		IVMInstall vmInstall = null;
-		String[] classPath = null;
-
-		if (project instanceof IJavaProject) {
-			JavaRuntime.getVMInstall((IJavaProject) project);
-			classPath = JavaRuntime
-					.computeDefaultRuntimeClassPath((IJavaProject) project);
-		}
-
-		if (vmInstall == null)
-			vmInstall = JavaRuntime.getDefaultVMInstall();
-		if (vmInstall != null) {
-			IVMRunner vmRunner = vmInstall.getVMRunner(mode);
-			if (vmRunner != null) {
-				if (classPath == null) {
-					classPath = deployedSlc.getClasspath();
-				}
-
-				if (classPath != null) {
-					VMRunnerConfiguration vmConfig = new VMRunnerConfiguration(
-							ANT_MAIN, classPath);
-					vmConfig.setVMArguments(getVmArguments(deployedSlc));
-					vmConfig.setWorkingDirectory(file.getLocation().toFile()
-							.getParent());
-					vmConfig.setProgramArguments(getProgramArguments(
-							deployedSlc, file, mode));
-					vmRunner.run(vmConfig, launch, null);
-				}
+		if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
+			IJavaProject javaProject = JavaCore.create(project);
+			if (checkProjectForEmbedded(javaProject)) {
+				deployedSlc = new EmbeddedSlcRuntime(javaProject);
 			}
 		}
 
+		if (deployedSlc == null) {
+			String slcRuntimePath = SlcUiLaunchPlugin.getDefault()
+					.getPreferenceStore().getString(
+							SlcPreferencePage.PREF_SLC_RUNTIME_LOCATION);
+			if (slcRuntimePath == null || slcRuntimePath.equals("")) {
+				showError("SLC Runtime path is not set. Set it in Windows > Preferences > SLC");
+				return;
+			}
+
+			deployedSlc = new DeployedSlcRuntime(slcRuntimePath);
+		}
+
+		IVMRunner vmRunner = deployedSlc.getVmInstall().getVMRunner(mode);
+		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration(ANT_MAIN,
+				deployedSlc.getClasspath());
+		vmConfig.setVMArguments(getVmArguments(deployedSlc));
+		vmConfig.setWorkingDirectory(file.getLocation().toFile().getParent());
+		vmConfig.setProgramArguments(getProgramArguments(deployedSlc, file,
+				mode));
+		vmRunner.run(vmConfig, launch, null);
 	}
 
 	private String[] getVmArguments(SlcRuntime deployedSlc) {
 		List<String> list = new Vector<String>();
-		list.add("-Dant.home=" + deployedSlc.getAntHome());
-		list.add("-Djava.library.path=" + deployedSlc.getJavaLibraryPath());
+		// list.add("-Dant.home=" + deployedSlc.getAntHome());
+		if (deployedSlc.getJavaLibraryPath() != null)
+			list.add("-Djava.library.path=" + deployedSlc.getJavaLibraryPath());
 		return list.toArray(new String[list.size()]);
 	}
 
@@ -116,5 +106,18 @@ public class SlcScriptLaunchDelegate extends
 				message);
 		ErrorDialog.openError(shell, "Error", "Cannot launch SLC script",
 				status);
+	}
+
+	protected boolean checkProjectForEmbedded(IJavaProject project) {
+		try {
+			IType antmainType = project.findType(ANT_MAIN);
+			if (antmainType == null)
+				return false;
+			else
+				return true;
+		} catch (JavaModelException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

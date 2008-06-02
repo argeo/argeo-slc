@@ -12,6 +12,8 @@ public class SlcPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 	public final static String PREF_SLC_RUNTIME_LOCATION = SlcUiLaunchPlugin.ID
 			+ ".slcRuntimeLocation";
+	public final static String PREF_EMBEDDED_JAVA_LIBRARY_PATH = SlcUiLaunchPlugin.ID
+			+ ".embeddedJavaLibraryPath";
 
 	public SlcPreferencePage() {
 		IPreferenceStore store = SlcUiLaunchPlugin.getDefault()
@@ -24,6 +26,8 @@ public class SlcPreferencePage extends FieldEditorPreferencePage implements
 	protected void createFieldEditors() {
 		addField(new DirectoryFieldEditor(PREF_SLC_RUNTIME_LOCATION,
 				"SLC Runtime", getFieldEditorParent()));
+		addField(new DirectoryFieldEditor(PREF_EMBEDDED_JAVA_LIBRARY_PATH,
+				"Embedded Java Library Path", getFieldEditorParent()));
 	}
 
 	public void init(IWorkbench workbench) {

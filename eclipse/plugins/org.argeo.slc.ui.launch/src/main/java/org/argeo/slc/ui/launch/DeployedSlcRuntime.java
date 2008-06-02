@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
-public class DefaultSlcRuntime implements SlcRuntime {
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.JavaRuntime;
+
+public class DeployedSlcRuntime implements SlcRuntime {
 	private File baseDir;
 	private String relLibDir = "lib";
 
-	public DefaultSlcRuntime(String baseDirPath) {
+	public DeployedSlcRuntime(String baseDirPath) {
 		try {
 			this.baseDir = new File(baseDirPath).getCanonicalFile();
 		} catch (IOException e) {
@@ -17,7 +21,8 @@ public class DefaultSlcRuntime implements SlcRuntime {
 		}
 	}
 
-	public String[] getClasspath() {
+	@Override
+	public String[] getClasspath() throws CoreException {
 		List<String> classpath = new Vector<String>();
 		File libDir = new File(baseDir.getPath() + File.separator + relLibDir);
 		File[] files = libDir.listFiles();
@@ -31,13 +36,18 @@ public class DefaultSlcRuntime implements SlcRuntime {
 		return classpath.toArray(new String[classpath.size()]);
 	}
 
+	@Override
+	public IVMInstall getVmInstall() throws CoreException {
+		return JavaRuntime.getDefaultVMInstall();
+	}
+
 	public String getAntHome() {
 		return baseDir.getPath();
 	}
 
+	@Override
 	public String getJavaLibraryPath() {
 		return baseDir.getPath() + File.separator + "bin";
 	}
-	
-	
+
 }
