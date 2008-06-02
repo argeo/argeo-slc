@@ -13,12 +13,10 @@ public class EmbeddedSlcRuntime implements SlcRuntime {
 		this.project = project;
 	}
 
-	@Override
 	public String[] getClasspath() throws CoreException {
 		return JavaRuntime.computeDefaultRuntimeClassPath(project);
 	}
 
-	@Override
 	public String getJavaLibraryPath() {
 		String javaLibPath = SlcUiLaunchPlugin.getDefault()
 				.getPreferenceStore().getString(
@@ -29,7 +27,6 @@ public class EmbeddedSlcRuntime implements SlcRuntime {
 			return javaLibPath;
 	}
 
-	@Override
 	public IVMInstall getVmInstall() throws CoreException {
 		return JavaRuntime.getVMInstall(project);
 	}

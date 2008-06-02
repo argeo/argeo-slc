@@ -21,7 +21,6 @@ public class DeployedSlcRuntime implements SlcRuntime {
 		}
 	}
 
-	@Override
 	public String[] getClasspath() throws CoreException {
 		List<String> classpath = new Vector<String>();
 		File libDir = new File(baseDir.getPath() + File.separator + relLibDir);
@@ -36,7 +35,6 @@ public class DeployedSlcRuntime implements SlcRuntime {
 		return classpath.toArray(new String[classpath.size()]);
 	}
 
-	@Override
 	public IVMInstall getVmInstall() throws CoreException {
 		return JavaRuntime.getDefaultVMInstall();
 	}
@@ -45,7 +43,6 @@ public class DeployedSlcRuntime implements SlcRuntime {
 		return baseDir.getPath();
 	}
 
-	@Override
 	public String getJavaLibraryPath() {
 		return baseDir.getPath() + File.separator + "bin";
 	}
