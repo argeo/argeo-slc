@@ -2,6 +2,8 @@ package org.argeo.slc.example;
 
 import org.argeo.slc.core.build.Distribution;
 import org.argeo.slc.core.deploy.DeployedSystem;
+import org.argeo.slc.core.deploy.DeploymentData;
+import org.argeo.slc.core.deploy.TargetData;
 import org.argeo.slc.example.appli.ExampleAppli;
 
 /** Example deployed sytem. */
@@ -31,6 +33,16 @@ public class ExampleDeployedSystem implements DeployedSystem {
 	}
 
 	public Distribution getDistribution() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public DeploymentData getDeploymentData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public TargetData getTargetData() {
 		// TODO Auto-generated method stub
 		return null;
 	}
