@@ -8,7 +8,7 @@ import org.apache.tools.ant.BuildException;
 import org.argeo.slc.core.SlcException;
 
 /** Ant type allowing to override bean properties. */
-public class OverrideArg extends AbstractSpringArg {
+public class OverrideArg extends SpringArg<Object> {
 	private String name;
 	private Object value;
 	private OverrideList overrideList;

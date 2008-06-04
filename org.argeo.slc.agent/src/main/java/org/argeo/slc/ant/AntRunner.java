@@ -3,15 +3,13 @@ package org.argeo.slc.ant;
 import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
-import org.springframework.context.ApplicationContext;
-
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
+import org.springframework.context.ApplicationContext;
 
 public class AntRunner {
 	private ApplicationContext context;

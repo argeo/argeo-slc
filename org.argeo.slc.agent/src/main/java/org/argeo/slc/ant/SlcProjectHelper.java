@@ -11,25 +11,19 @@ import java.util.Properties;
 import java.util.UUID;
 import java.util.Vector;
 
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.LogManager;
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.helper.ProjectHelper2;
-
 import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionNotifier;
 import org.argeo.slc.core.structure.DefaultSRegistry;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 /**
  * Custom implementation of an Ant <code>ProjectHelper</code> binding a Spring

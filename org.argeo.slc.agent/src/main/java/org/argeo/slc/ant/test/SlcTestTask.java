@@ -3,14 +3,11 @@ package org.argeo.slc.ant.test;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
-
 import org.argeo.slc.ant.SlcAntConfig;
-import org.argeo.slc.ant.spring.AbstractSpringArg;
+import org.argeo.slc.ant.spring.SpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
-import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.deploy.DeployedSystem;
 import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionAware;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.ExecutableTestRun;
@@ -28,10 +25,10 @@ public class SlcTestTask extends SAwareTask {
 
 	private String testRunBean = null;
 
-	private TestDefinitionArg testDefinitionArg;
-	private TestDataArg testDataArg;
-	private DeployedSystemArg deployedSystemArg;
-	private TestResultArg testResultArg;
+	private SpringArg<TestDefinition> testDefinitionArg;
+	private SpringArg<TestData> testDataArg;
+	private SpringArg<DeployedSystem> deployedSystemArg;
+	private SpringArg<TestResult> testResultArg;
 
 	@Override
 	public void executeActions(String mode) throws BuildException {
@@ -64,22 +61,22 @@ public class SlcTestTask extends SAwareTask {
 
 		// set overridden references
 		if (testDataArg != null) {
-			testRun.setTestData(testDataArg.getTestData());
+			testRun.setTestData(testDataArg.getBeanInstance());
 			log.trace("Overrides test data");
 		}
 
 		if (testDefinitionArg != null) {
-			testRun.setTestDefinition(testDefinitionArg.getTestDefinition());
+			testRun.setTestDefinition(testDefinitionArg.getBeanInstance());
 			log.trace("Overrides test definition");
 		}
 
 		if (deployedSystemArg != null) {
-			testRun.setDeployedSystem(deployedSystemArg.getDeployedSystem());
+			testRun.setDeployedSystem(deployedSystemArg.getBeanInstance());
 			log.trace("Overrides deployed system");
 		}
 
 		if (testResultArg != null) {
-			testRun.setTestResult(testResultArg.getTestResult());
+			testRun.setTestResult(testResultArg.getBeanInstance());
 			log.trace("Overrides test result");
 		}
 
@@ -118,59 +115,32 @@ public class SlcTestTask extends SAwareTask {
 	}
 
 	/** Creates sub tag. */
-	public TestDefinitionArg createTestDefinition() {
-		testDefinitionArg = new TestDefinitionArg();
+	public SpringArg<TestDefinition> createTestDefinition() {
+		testDefinitionArg = new SpringArg<TestDefinition>();
 		// only test definitions can add to path
 		addSAwareArg(testDefinitionArg);
 		return testDefinitionArg;
 	}
 
 	/** Creates sub tag. */
-	public TestDataArg createTestData() {
-		testDataArg = new TestDataArg();
+	public SpringArg<TestData> createTestData() {
+		testDataArg = new SpringArg<TestData>();
 		return testDataArg;
 	}
 
 	/** Creates sub tag. */
-	public DeployedSystemArg createDeployedSystem() {
-		deployedSystemArg = new DeployedSystemArg();
+	public SpringArg<DeployedSystem> createDeployedSystem() {
+		deployedSystemArg = new SpringArg<DeployedSystem>();
 		return deployedSystemArg;
 	}
 
 	/** Creates sub tag. */
-	public TestResultArg createTestResult() {
-		testResultArg = new TestResultArg();
+	public SpringArg<TestResult> createTestResult() {
+		testResultArg = new SpringArg<TestResult>();
 		return testResultArg;
 	}
 
 	protected <T> T loadSingleFromContext(Class<T> clss) {
 		return SpringUtils.loadSingleFromContext(getContext(), clss);
 	}
-}
-
-class TestDefinitionArg extends AbstractSpringArg {
-	TestDefinition getTestDefinition() {
-		return (TestDefinition) getBeanInstance();
-	}
-}
-
-class TestDataArg extends AbstractSpringArg {
-	TestData getTestData() {
-		return (TestData) getBeanInstance();
-	}
-
-}
-
-class DeployedSystemArg extends AbstractSpringArg {
-	DeployedSystem getDeployedSystem() {
-		return (DeployedSystem) getBeanInstance();
-	}
-
-}
-
-class TestResultArg extends AbstractSpringArg {
-	TestResult getTestResult() {
-		return (TestResult) getBeanInstance();
-	}
-
 }

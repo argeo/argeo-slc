@@ -8,7 +8,7 @@ import org.apache.tools.ant.Target;
 
 import org.argeo.slc.ant.SlcAntException;
 import org.argeo.slc.ant.SlcProjectHelper;
-import org.argeo.slc.ant.spring.AbstractSpringArg;
+import org.argeo.slc.ant.spring.SpringArg;
 import org.argeo.slc.ant.spring.AbstractSpringTask;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureAware;
@@ -20,7 +20,7 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
 public abstract class SAwareTask extends AbstractSpringTask {
 	private String path;
 	private TreeSPath treeSPath;
-	private final List<AbstractSpringArg> sAwareArgs = new Vector<AbstractSpringArg>();
+	private final List<SpringArg> sAwareArgs = new Vector<SpringArg>();
 
 	private StructureElementArg structureElementArg;
 
@@ -44,7 +44,7 @@ public abstract class SAwareTask extends AbstractSpringTask {
 	 * Includes this arg in the checks for propagation of structure related
 	 * information.
 	 */
-	protected void addSAwareArg(AbstractSpringArg arg) {
+	protected void addSAwareArg(SpringArg arg) {
 		sAwareArgs.add(arg);
 	}
 
@@ -82,7 +82,7 @@ public abstract class SAwareTask extends AbstractSpringTask {
 		}
 
 		// notify registered args
-		for (AbstractSpringArg arg : sAwareArgs) {
+		for (SpringArg arg : sAwareArgs) {
 			Object obj = arg.getBeanInstance();
 
 			if (obj instanceof StructureAware) {
@@ -150,7 +150,7 @@ public abstract class SAwareTask extends AbstractSpringTask {
 	}
 }
 
-class StructureElementArg extends AbstractSpringArg {
+class StructureElementArg extends SpringArg {
 	public StructureElement getStructureElement() {
 		return (StructureElement) getBeanInstance();
 	}
