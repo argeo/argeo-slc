@@ -3,76 +3,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-	<!-- Results -->
-	<bean id="dataSourceResults"
-		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
-		destroy-method="destroy">
-		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-		<!-- <property name="url"
-			value="jdbc:hsqldb:file:${slc.workDir}/results/hsqldb/db;shutdown=true" />-->
-		<property name="url"
-			value="jdbc:hsqldb:mem:results" />
-		<property name="username" value="sa" />
-		<property name="password" value="" />
-		<property name="suppressClose" value="true" />
-	</bean>
-
-	<bean id="sessionFactoryResults"
-		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
-		<property name="dataSource" ref="dataSourceResults" />
-		<property name="mappingResources">
-			<list>
-				<value>
-					org/argeo/slc/hibernate/structure/SimpleSElement.hbm.xml
-				</value>
-				<value>
-					org/argeo/slc/hibernate/structure/tree/TreeSPath.hbm.xml
-				</value>
-				<value>
-					org/argeo/slc/hibernate/structure/tree/TreeSRegistry.hbm.xml
-				</value>
-				<value>
-					org/argeo/slc/hibernate/test/NumericTRId.hbm.xml
-				</value>
-				<value>
-					org/argeo/slc/hibernate/test/SimpleResultPart.hbm.xml
-				</value>
-				<value>
-					org/argeo/slc/hibernate/test/tree/TreeTestResult.hbm.xml
-				</value>
-				<value>
-					org/argeo/slc/hibernate/test/tree/PartSubList.hbm.xml
-				</value>
-			</list>
-		</property>
-		<property name="hibernateProperties">
-			<value>
-				hibernate.dialect=org.hibernate.dialect.HSQLDialect
-				cache.provider_class=org.hibernate.cache.NoCacheProvider
-				cache.use_query_cache=false
-				cache.use_minimal_puts=false
-				max_fetch_depth=3
-				current_session_context_class=thread
-				hibernate.hbm2ddl.auto=create
-			</value>
-		</property>
-	</bean>
+	<import
+		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
 
 	<bean id="testResultDao"
 		class="org.argeo.slc.hibernate.test.tree.TestResultDaoHibernate">
-		<property name="sessionFactory" ref="sessionFactoryResults" />
+		<property name="sessionFactory"
+			ref="slcDefault.sessionFactory.hibernateTestHSQL" />
 	</bean>
-
-	<bean id="treeSPathDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSPathDaoHibernate">
-		<property name="sessionFactory" ref="sessionFactoryResults" />
-	</bean>
-
-	<bean id="treeSRegistryDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSRegistryDaoHibernate">
-		<property name="sessionFactory" ref="sessionFactoryResults" />
-		<property name="treeSPathDao" ref="treeSPathDao" />
-	</bean>
-
-
 </beans>

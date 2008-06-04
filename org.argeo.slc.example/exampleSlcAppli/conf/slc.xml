@@ -52,7 +52,6 @@
 	<bean id="report"
 		class="org.argeo.slc.core.test.tree.htmlreport.FullHtmlTreeReport">
 		<property name="testResultDao" ref="testResultDao" />
-		<property name="treeSRegistryDao" ref="treeSRegistryDao" />
 		<property name="reportDir"
 			value="${slc.workDir}/results/report" />
 	</bean>
