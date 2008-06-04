@@ -29,9 +29,6 @@
 					org/argeo/slc/hibernate/structure/tree/TreeSRegistry.hbm.xml
 				</value>
 				<value>
-					org/argeo/slc/hibernate/test/NumericTRId.hbm.xml
-				</value>
-				<value>
 					org/argeo/slc/hibernate/test/SimpleResultPart.hbm.xml
 				</value>
 				<value>

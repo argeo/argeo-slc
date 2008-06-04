@@ -22,7 +22,7 @@ import org.springframework.core.io.Resource;
 
 /**
  * Helper to make db vendor independent tests using DbUnit data sets. Based on
- * {@link DbModel}.
+ * {@link DbModelHibernate}.
  */
 public abstract class IndependentDbTestCase extends AbstractSpringTestCase {
 	private IDatabaseTester databaseTester;
@@ -38,7 +38,7 @@ public abstract class IndependentDbTestCase extends AbstractSpringTestCase {
 			@Override
 			public void execute(IDatabaseConnection connection, IDataSet dataSet)
 					throws DatabaseUnitException, SQLException {
-				DbModel dbModel = getDbModel();
+				DbModelHibernate dbModel = getDbModel();
 				SchemaExport schemaExport = dbModel
 						.createSchemaExport(connection.getConnection());
 				schemaExport.create(true, true);
@@ -153,8 +153,8 @@ public abstract class IndependentDbTestCase extends AbstractSpringTestCase {
 	 * The DB model to us to create the DDL of the testes database. The default
 	 * implementation loads a bean named after {@link #getDbModelBeanName()}.
 	 */
-	protected DbModel getDbModel() {
-		return (DbModel) getContext().getBean(getDbModelBeanName());
+	protected DbModelHibernate getDbModel() {
+		return (DbModelHibernate) getContext().getBean(getDbModelBeanName());
 	}
 
 	/**

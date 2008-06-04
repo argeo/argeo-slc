@@ -3,15 +3,12 @@ package org.argeo.slc.hibernate.test.tree;
 import java.util.Date;
 import java.util.List;
 
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.test.NumericTRId;
 import org.argeo.slc.core.test.TestResult;
-import org.argeo.slc.core.test.TestResultId;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /**
  * The Hibernate implementation for tree-based result of the test result dao.

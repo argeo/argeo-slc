@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Properties;
 
+import org.argeo.slc.support.deploy.db.DbModel;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
@@ -13,7 +14,7 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
  * this class is to be able to use Hibernate to have test data which are
  * independent from the type of database used.
  */
-public class DbModel {
+public class DbModelHibernate implements DbModel {
 	private String dialect;
 	private List<String> mappings;
 
@@ -31,7 +32,7 @@ public class DbModel {
 	 * Creates an Hibernate schema export tool, in order to create the
 	 * underlying datamodel.
 	 */
-	public SchemaExport createSchemaExport(Connection connection) {
+	protected SchemaExport createSchemaExport(Connection connection) {
 		Configuration configuration = new Configuration();
 		Properties properties = new Properties();
 		properties.setProperty(Environment.DIALECT, dialect);
@@ -44,4 +45,10 @@ public class DbModel {
 
 		return new SchemaExport(configuration, connection);
 	}
+
+	public void createSchema(Connection connection) {
+		SchemaExport schemaExport = createSchemaExport(connection);
+		schemaExport.create(true, true);
+	}
+
 }
