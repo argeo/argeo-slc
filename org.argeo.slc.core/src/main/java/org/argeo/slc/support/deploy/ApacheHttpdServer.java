@@ -6,6 +6,8 @@ import java.net.URL;
 
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.build.Distribution;
+import org.argeo.slc.core.deploy.DeploymentData;
+import org.argeo.slc.core.deploy.TargetData;
 import org.springframework.core.io.Resource;
 
 public class ApacheHttpdServer implements WebServer {
@@ -40,6 +42,16 @@ public class ApacheHttpdServer implements WebServer {
 	}
 
 	public Distribution getDistribution() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public DeploymentData getDeploymentData() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public TargetData getTargetData() {
 		// TODO Auto-generated method stub
 		return null;
 	}

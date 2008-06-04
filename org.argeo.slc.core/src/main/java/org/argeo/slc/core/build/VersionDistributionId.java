@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
  * 2.4.12.RC1
  * </p>
  */
-public class VersionDistributionId implements DistributionId {
+public class VersionDistributionId {
 
 	private Integer major;
 	private Integer minor;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 
 import org.argeo.slc.core.build.Distribution;
+import org.argeo.slc.core.deploy.DeploymentData;
 
 public class SimpleHttpdApplication implements WebApplication {
 	private HttpdApplicationTargetData targetData;
@@ -36,6 +37,11 @@ public class SimpleHttpdApplication implements WebApplication {
 
 	public Distribution getDistribution() {
 		return distribution;
+	}
+
+	public DeploymentData getDeploymentData() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

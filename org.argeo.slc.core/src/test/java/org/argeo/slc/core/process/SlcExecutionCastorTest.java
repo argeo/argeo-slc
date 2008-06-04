@@ -1,13 +1,10 @@
 package org.argeo.slc.core.process;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
@@ -18,13 +15,11 @@ import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.argeo.slc.unit.UnitXmlUtils;
 import org.argeo.slc.unit.process.SlcExecutionTestUtils;
-
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.xml.transform.StringResult;
 import org.springframework.xml.transform.StringSource;
 import org.springframework.xml.validation.XmlValidator;
-import org.springframework.xml.xsd.XsdSchema;
 
 public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());

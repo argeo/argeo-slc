@@ -8,11 +8,11 @@ import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.build.Distribution;
 import org.argeo.slc.core.deploy.DeployEnvironment;
 import org.argeo.slc.core.deploy.DeployedSystem;
+import org.argeo.slc.core.deploy.Deployment;
 import org.argeo.slc.core.deploy.DeploymentData;
-import org.argeo.slc.core.deploy.ExecutableDeployment;
 import org.argeo.slc.core.deploy.TargetData;
 
-public class HttpdApplicationDeployment implements ExecutableDeployment {
+public class HttpdApplicationDeployment implements Deployment {
 	private static final Log log = LogFactory
 			.getLog(HttpdApplicationDeployment.class);
 
@@ -25,20 +25,21 @@ public class HttpdApplicationDeployment implements ExecutableDeployment {
 
 	public void execute() {
 		try {
-			deployEnvironment.unpackTo(getDistribution(), targetData
+			deployEnvironment.unpackTo(distribution, targetData
 					.getTargetRootLocation(), null);
-			
+
 			// FIXME: make it generic
 			String deployDataPath = targetData.getTargetRootLocation()
 					.getCanonicalPath();
-			
-			deployEnvironment.unpackTo(getDeploymentData(), new File(
-					deployDataPath), null);
+
+			deployEnvironment.unpackTo(deploymentData,
+					new File(deployDataPath), null);
 			deployedSystem = new SimpleHttpdApplication();
 			deployedSystem.setTargetData(targetData);
 
+			log.info("Deployed " + distribution + " to " + targetData);
 		} catch (Exception e) {
-			throw new SlcException("Cannot deploy " + deploymentData + " to "
+			throw new SlcException("Cannot deploy " + distribution + " to "
 					+ targetData, e);
 		}
 
@@ -54,18 +55,6 @@ public class HttpdApplicationDeployment implements ExecutableDeployment {
 
 	public DeployedSystem getDeployedSystem() {
 		return deployedSystem;
-	}
-
-	public DeploymentData getDeploymentData() {
-		return deploymentData;
-	}
-
-	public TargetData getTargetData() {
-		return targetData;
-	}
-
-	public Distribution getDistribution() {
-		return distribution;
 	}
 
 	public void setDistribution(Distribution distribution) {

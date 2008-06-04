@@ -1,26 +1,22 @@
 package org.argeo.slc.core.test.tree;
 
-import org.springframework.oxm.Marshaller;
-import org.springframework.oxm.Unmarshaller;
-import org.springframework.xml.transform.StringResult;
-import org.springframework.xml.transform.StringSource;
-import org.springframework.xml.validation.XmlValidator;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import static org.argeo.slc.unit.UnitUtils.assertDateSec;
 import static org.argeo.slc.unit.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
 import static org.argeo.slc.unit.test.tree.TreeTestResultTestUtils.createSimpleResultPartRequest;
 
-import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.test.SimpleResultPart;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.argeo.slc.unit.UnitXmlUtils;
 import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
+import org.springframework.oxm.Marshaller;
+import org.springframework.oxm.Unmarshaller;
+import org.springframework.xml.transform.StringResult;
+import org.springframework.xml.transform.StringSource;
+import org.springframework.xml.validation.XmlValidator;
 
 public class TreeTestResultCastorTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());

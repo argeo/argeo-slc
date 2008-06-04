@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.argeo.slc.core.build.Distribution;
 import org.argeo.slc.core.deploy.DeployedSystem;
+import org.argeo.slc.core.deploy.DeploymentData;
+import org.argeo.slc.core.deploy.TargetData;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.core.structure.SimpleSElement;
@@ -56,6 +58,17 @@ public abstract class TreeTestResultTestUtils {
 			public Distribution getDistribution() {
 				return null;
 			}
+
+			public DeploymentData getDeploymentData() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public TargetData getTargetData() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
 		});
 		testRun.notifySlcExecution(slcExecution);
 
@@ -90,7 +103,8 @@ public abstract class TreeTestResultTestUtils {
 		return partFailed;
 	}
 
-	public static ResultPartRequest createSimpleResultPartRequest(TreeTestResult ttr) {
+	public static ResultPartRequest createSimpleResultPartRequest(
+			TreeTestResult ttr) {
 		TreeSPath path = ttr.getCurrentPath();
 		PartSubList lst = ttr.getResultParts().get(path);
 		SimpleResultPart part = (SimpleResultPart) lst.getParts().get(2);

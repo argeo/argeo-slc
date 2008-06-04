@@ -3,7 +3,7 @@ package org.argeo.slc.core.structure;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.swing.tree.TreeSelectionModel;
+import org.argeo.slc.core.structure.tree.TreeSPath;
 
 /**
  * Basic implementation of <code>StructureElement</code>.

@@ -3,7 +3,6 @@ package org.argeo.slc.msg.test.tree;
 import java.util.Map;
 
 import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;

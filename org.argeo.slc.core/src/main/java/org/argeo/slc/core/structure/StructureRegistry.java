@@ -2,8 +2,6 @@ package org.argeo.slc.core.structure;
 
 import java.util.List;
 
-import org.argeo.slc.core.deploy.DeployedSystem;
-
 /** Registry where the whole structure is stored. */
 public interface StructureRegistry<P extends StructurePath> {
 	/** Read mode: the structure is only read. */
