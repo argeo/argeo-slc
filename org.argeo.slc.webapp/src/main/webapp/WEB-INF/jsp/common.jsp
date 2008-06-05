@@ -1,5 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
 <div id="banner"><a href="home.web"><img
 	src="images/SpartaBanner.gif" /></a></div>
 

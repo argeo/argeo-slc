@@ -53,5 +53,12 @@
 		</listener-class>
 	</listener>
 
-
+	<jsp-config>
+		<jsp-property-group>
+			<url-pattern>*.jsp</url-pattern>
+			<page-encoding>ISO-8859-1</page-encoding>
+			<include-prelude>/WEB-INF/jsp/prelude.jspf</include-prelude>
+			<include-coda>/WEB-INF/jsp/coda.jspf</include-coda>
+		</jsp-property-group>
+	</jsp-config>
 </web-app>
