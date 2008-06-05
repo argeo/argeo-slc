@@ -5,7 +5,7 @@
 	default-lazy-init="true">
 
 	<import
-		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
+		resource="classpath:/org/argeo/slc/server/spring/servletContext.xml" />
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -40,34 +40,5 @@
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 		<property name="suppressClose" value="true" />
-	</bean>
-
-	<!-- Services -->
-	<bean id="testManagerService"
-		class="org.argeo.slc.services.test.impl.TestManagerServiceImpl">
-		<constructor-arg ref="testResultDao" />
-		<constructor-arg ref="testRunDescriptorDao" />
-		<constructor-arg ref="slcExecutionDao" />
-		<constructor-arg ref="testResultCollectionDao" />
-	</bean>
-
-	<!-- DAOs -->
-	<bean id="testResultDao" parent="slcTemplates.dao.testResultDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="testResultCollectionDao"
-		parent="slcTemplates.dao.testResultCollectionDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="testRunDescriptorDao"
-		parent="slcTemplates.dao.testRunDescriptorDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="slcExecutionDao"
-		parent="slcTemplates.dao.slcExecutionDao">
-		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 </beans>
