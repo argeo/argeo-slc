@@ -29,7 +29,7 @@
 				<version>6.1.9</version>
 				<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
-					<contextPath>${artifactId}</contextPath>
+					<contextPath>org.argeo.slc.webapp</contextPath>
 					<useTestClasspath>true</useTestClasspath>
 					<webAppSourceDirectory>
 						../org.argeo.slc.webapp/src/main/webapp

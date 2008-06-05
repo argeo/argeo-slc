@@ -25,7 +25,7 @@
 			<value>org.argeo.slc.web.mvc.XsltMarshallerView</value>
 		</property>
 		<property name="prefix">
-			<value>WEB-INF/slc-xslt/</value>
+			<value>WEB-INF/xslt/</value>
 		</property>
 		<property name="suffix">
 			<value>.xsl</value>
