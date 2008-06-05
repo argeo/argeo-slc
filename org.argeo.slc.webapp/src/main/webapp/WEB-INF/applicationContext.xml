@@ -7,38 +7,4 @@
 	<import
 		resource="classpath:/org/argeo/slc/server/spring/servletContext.xml" />
 
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="locations">
-			<value>WEB-INF/local.properties</value>
-		</property>
-		<property name="properties">
-			<props>
-				<prop key="${dataSourceBean}">
-					slcTemplates.dataSource.inMemoryTestHSQL
-				</prop>
-			</props>
-		</property>
-	</bean>
-
-	<bean id="sessionFactory"
-		parent="slcTemplates.sessionFactory.hibernateBasic">
-		<property name="dataSource" ref="${dataSourceBean}" />
-		<property name="hibernateProperties">
-			<value><![CDATA[
-				hibernate.dialect=org.hibernate.dialect.HSQLDialect
-				hibernate.hbm2ddl.auto=update
-			]]></value>
-		</property>
-	</bean>
-
-	<bean id="persistentDataSource"
-		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
-		destroy-method="destroy">
-		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
-		<property name="url" value="${jdbcUrl}" />
-		<property name="username" value="sa" />
-		<property name="password" value="" />
-		<property name="suppressClose" value="true" />
-	</bean>
 </beans>
