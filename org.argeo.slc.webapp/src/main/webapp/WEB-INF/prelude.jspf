@@ -13,4 +13,4 @@
 </head>
 <body>
 
-<%@include file="common.jsp"%>
+<%@include file="slc-jsp/common.jsp"%>

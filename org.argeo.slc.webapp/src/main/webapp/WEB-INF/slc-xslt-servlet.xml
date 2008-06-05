@@ -5,33 +5,5 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-lazy-init="true">
 
-	<import
-		resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
-
-	<bean name="/resultView.xslt"
-		class="org.argeo.slc.web.mvc.result.ResultViewController">
-		<constructor-arg ref="testResultDao" />
-		<property name="viewName" value="resultView" />
-	</bean>
-
-	<bean
-		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
-	</bean>
-
-
-	<bean id="viewResolverXslt"
-		class="org.argeo.slc.web.mvc.XsltMarshallerViewResolver">
-		<property name="viewClass">
-			<value>org.argeo.slc.web.mvc.XsltMarshallerView</value>
-		</property>
-		<property name="prefix">
-			<value>WEB-INF/xslt/</value>
-		</property>
-		<property name="suffix">
-			<value>.xsl</value>
-		</property>
-		<property name="marshaller" ref="slcDefault.castor.marshaller"/>
-	</bean>
-
-
+	<import resource="classpath:/org/argeo/slc/server/spring/slc-xslt-servlet.xml"/>
 </beans>
