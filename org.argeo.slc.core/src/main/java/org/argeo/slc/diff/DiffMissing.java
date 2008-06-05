@@ -6,24 +6,19 @@ package org.argeo.slc.diff;
  * the reached it means that it is missing from the reached. If the value is
  * null it means that the entire line is missing.
  */
-public class DiffMissing extends DiffIssue {
-	private final DiffKey key;
+public class DiffMissing extends DiffIssueKey {
 
 	public DiffMissing(DiffPosition position, DiffKey key) {
 		super(position);
-		this.key = key;
-	}
-
-	public Object getKey() {
-		return key;
+		super.key = key;
 	}
 
 	@Override
 	public String toString() {
 		if (position.relatedFile == RelatedFile.EXPECTED) {
-			return position + ": left over " + key;
+			return position + ": left over " + super.toString();
 		} else if (position.relatedFile == RelatedFile.REACHED) {
-			return position + ": missing " + key;
+			return position + ": missing " + super.toString();
 		}
 		return super.toString();
 	}
