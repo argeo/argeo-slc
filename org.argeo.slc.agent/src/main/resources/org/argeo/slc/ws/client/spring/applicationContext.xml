@@ -9,13 +9,17 @@
 		resource="classpath:/org/argeo/slc/xml/spring/applicationContext.xml" />
 
 	<bean id="slcDefault.ws.client.webServiceTemplate"
-		class="org.springframework.ws.client.core.WebServiceTemplate">
+		parent="slcTemplate.ws.client.webServiceTemplate">
 		<constructor-arg ref="slcDefault.ws.client.messageFactory" />
+		<property name="defaultUri"
+			value="http://localhost:8080/org.argeo.slc.webapp/slcService/" />
+	</bean>
+
+	<bean id="slcTemplate.ws.client.webServiceTemplate"
+		class="org.springframework.ws.client.core.WebServiceTemplate" abstract="true">
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 		<property name="unmarshaller"
 			ref="slcDefault.castor.marshaller" />
-		<property name="defaultUri"
-			value="http://localhost:8080/org.argeo.slc.webapp/slcService/" />
 		<property name="interceptors">
 			<list>
 				<bean
