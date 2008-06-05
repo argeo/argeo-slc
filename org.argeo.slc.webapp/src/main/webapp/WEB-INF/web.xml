@@ -31,14 +31,14 @@
 	</servlet-mapping>
 
 	<servlet>
-		<servlet-name>slc-xslt</servlet-name>
+		<servlet-name>xslt</servlet-name>
 		<servlet-class>
 			org.springframework.web.servlet.DispatcherServlet
 		</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>slc-xslt</servlet-name>
+		<servlet-name>xslt</servlet-name>
 		<url-pattern>*.xslt</url-pattern>
 	</servlet-mapping>
 
@@ -57,8 +57,8 @@
 		<jsp-property-group>
 			<url-pattern>*.jsp</url-pattern>
 			<page-encoding>ISO-8859-1</page-encoding>
-			<include-prelude>/WEB-INF/prelude.jspf</include-prelude>
-			<include-coda>/WEB-INF/coda.jspf</include-coda>
+			<include-prelude>/WEB-INF/specific/prelude.jspf</include-prelude>
+			<include-coda>/WEB-INF/specific/coda.jspf</include-coda>
 		</jsp-property-group>
 	</jsp-config>
 </web-app>
