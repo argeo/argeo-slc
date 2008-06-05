@@ -19,7 +19,8 @@
 		</modules>
 	-->
 	<properties>
-		<version.spring>2.5.3</version.spring>
+		<version.spring>2.5.4</version.spring>
+		<version.spring-ws>1.5.2</version.spring-ws>
 		<version.maven>2.0.9</version.maven>
 		<version.ant>1.7.0</version.ant>
 	</properties>
@@ -136,6 +137,12 @@
 				<artifactId>jta</artifactId>
 				<version>1.0.1</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>3.8.2</version>
+			</dependency>
 			<dependency>
 				<groupId>org.dbunit</groupId>
 				<artifactId>dbunit</artifactId>
@@ -164,7 +171,7 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate</artifactId>
-				<version>3.2.5.ga</version>
+				<version>3.2.6.ga</version>
 			</dependency>
 
 			<dependency>
@@ -190,12 +197,12 @@
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-ws-core</artifactId>
-				<version>1.5.0</version>
+				<version>${version.spring-ws}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-oxm</artifactId>
-				<version>1.5.0</version>
+				<version>${version.spring-ws}</version>
 			</dependency>
 
 			<dependency>
@@ -214,16 +221,7 @@
 				<artifactId>commons-io</artifactId>
 				<version>1.3.2</version>
 			</dependency>
-			<dependency>
-				<groupId>org.dbunit</groupId>
-				<artifactId>dbunit</artifactId>
-				<version>2.2</version>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>3.8.2</version>
-			</dependency>
+
 			<dependency>
 				<groupId>hsqldb</groupId>
 				<artifactId>hsqldb</artifactId>
@@ -233,7 +231,7 @@
 			<dependency>
 				<groupId>org.codehaus.castor</groupId>
 				<artifactId>castor</artifactId>
-				<version>1.1.2.1</version>
+				<version>1.2</version>
 				<exclusions>
 					<exclusion>
 						<groupId>xerces</groupId>
