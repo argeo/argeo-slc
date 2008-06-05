@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<import
+		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
+
+	<!-- Services -->
+	<bean id="testManagerService"
+		class="org.argeo.slc.services.test.impl.TestManagerServiceImpl">
+		<constructor-arg ref="testResultDao" />
+		<constructor-arg ref="testRunDescriptorDao" />
+		<constructor-arg ref="slcExecutionDao" />
+		<constructor-arg ref="testResultCollectionDao" />
+	</bean>
+
+	<!-- DAOs -->
+	<bean id="testResultDao" parent="slcTemplates.dao.testResultDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="testResultCollectionDao"
+		parent="slcTemplates.dao.testResultCollectionDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="testRunDescriptorDao"
+		parent="slcTemplates.dao.testRunDescriptorDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<bean id="slcExecutionDao"
+		parent="slcTemplates.dao.slcExecutionDao">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+</beans>
