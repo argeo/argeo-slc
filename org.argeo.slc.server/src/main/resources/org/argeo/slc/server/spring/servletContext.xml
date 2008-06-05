@@ -7,6 +7,50 @@
 	<import
 		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
 
+	<!--  Default data source -->
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		lazy-init="false">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="locations">
+			<value>WEB-INF/local.properties</value>
+		</property>
+		<property name="properties">
+			<props>
+				<prop key="${sessionFactoryParentBean}">
+					slcDefault.sessionFactory.hibernateTestHSQL
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<bean id="sessionFactory" parent="${sessionFactoryParentBean}" />
+
+	<bean id="slcServerDefault.sessionFactory.persistentHSQL"
+		parent="slcTemplates.sessionFactory.hibernateBasic">
+		<property name="dataSource"
+			ref="slcServerDefault.datasource.persistentHSQL" />
+		<property name="hibernateProperties">
+			<value><![CDATA[
+				hibernate.dialect=org.hibernate.dialect.HSQLDialect
+				hibernate.hbm2ddl.auto=update
+				hibernate.current_session_context_class=thread
+			]]></value>
+		</property>
+	</bean>
+
+	<bean id="slcServerDefault.datasource.persistentHSQL"
+		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+		destroy-method="destroy">
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<property name="url" value="${jdbcUrl}" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+		<property name="suppressClose" value="true" />
+	</bean>
+
 	<!-- Services -->
 	<bean id="testManagerService"
 		class="org.argeo.slc.services.test.impl.TestManagerServiceImpl">
