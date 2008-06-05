@@ -92,8 +92,6 @@
 		class="org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition">
 		<property name="schema" ref="slcDefault.xml.xsdSchema" />
 		<property name="portTypeName" value="Slc" />
-		<property name="locationUri"
-			value="http://localhost:8080/org.argeo.slc.webapp/slcService/" />
 		<property name="targetNamespace"
 			value="http://argeo.org/projects/slc/definitions" />
 		<property name="requestSuffix" value="-request" />
