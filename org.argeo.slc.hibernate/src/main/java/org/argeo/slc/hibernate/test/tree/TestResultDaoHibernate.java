@@ -50,8 +50,8 @@ public class TestResultDaoHibernate extends HibernateDaoSupport implements
 	}
 
 	public void close(String id, Date closeDate) {
-//		TreeTestResult ttr = (TreeTestResult) getHibernateTemplate().load(
-//				TreeTestResult.class, id);
+		// TreeTestResult ttr = (TreeTestResult) getHibernateTemplate().load(
+		// TreeTestResult.class, id);
 		TreeTestResult ttr = getTestResult(id);
 		if (ttr != null) {
 			ttr.setCloseDate(closeDate);

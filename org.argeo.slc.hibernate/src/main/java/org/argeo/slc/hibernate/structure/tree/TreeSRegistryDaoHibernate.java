@@ -35,7 +35,7 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 	public void update(TreeSRegistry registryArg) {
 		Session session = getSession();
 		session.beginTransaction();
-		TreeSRegistry registry = (TreeSRegistry)session.merge(registryArg);
+		TreeSRegistry registry = (TreeSRegistry) session.merge(registryArg);
 		session.update(registry);
 		session.getTransaction().commit();
 	}
@@ -55,8 +55,8 @@ public class TreeSRegistryDaoHibernate extends HibernateDaoSupport implements
 			StructureRegistry<TreeSPath> localRegistry, TreeSPath pathArg) {
 		Session session = getSession();
 		session.beginTransaction();
-		TreeSRegistry registry = (TreeSRegistry)session.merge(registryArg);
-		TreeSPath path = (TreeSPath)session.merge(pathArg);
+		TreeSRegistry registry = (TreeSRegistry) session.merge(registryArg);
+		TreeSPath path = (TreeSPath) session.merge(pathArg);
 		if (log.isTraceEnabled())
 			log.trace("Session#" + session.hashCode() + " " + session);
 		syncPathImpl(registry, localRegistry, path, session);
