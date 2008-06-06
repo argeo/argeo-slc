@@ -5,7 +5,7 @@ import org.apache.tools.ant.Project;
 
 public interface ProjectRelatedBuildListener extends BuildListener {
 	public Project getProject();
-	
-	/** SlcExecution must already have been registered in project*/
+
+	/** SlcExecution must already have been registered in project */
 	public void init(Project project);
 }

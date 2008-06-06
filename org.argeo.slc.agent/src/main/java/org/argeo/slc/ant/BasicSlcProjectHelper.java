@@ -19,15 +19,15 @@ public class BasicSlcProjectHelper extends ProjectHelper2 {
 	public void parse(Project project, Object source) throws BuildException {
 		TreeSRegistry registry = new TreeSRegistry();
 		TreeSPath projectPath = TreeSPath.parseToCreatePath(projectRootPath);
-		
+
 		// FIXME
 		registry.register(projectPath, new SimpleSElement("ROOT"));
-		
+
 		project.addReference(SlcProjectHelper.REF_STRUCTURE_REGISTRY, registry);
 		project.addReference(SlcProjectHelper.REF_PROJECT_PATH, projectPath);
 
 		super.parse(project, source);
-		
+
 		project.addReference(SlcProjectHelper.REF_ROOT_CONTEXT, context);
 		SlcProjectHelper.createAndRegisterSlcExecution(project);
 
@@ -38,6 +38,4 @@ public class BasicSlcProjectHelper extends ProjectHelper2 {
 		this.context = context;
 	}
 
-	
-	
 }

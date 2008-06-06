@@ -24,16 +24,16 @@ public abstract class WebServiceUtils {
 			Object resp = marshalSendAndReceive(template, req);
 			return resp;
 		} catch (Exception e) {
-			log.error("Cannot send web servicerequest: "+e.getMessage());
-			if(log.isDebugEnabled()){
-				log.debug("Webservice exception details: ",e);
+			log.error("Cannot send web servicerequest: " + e.getMessage());
+			if (log.isDebugEnabled()) {
+				log.debug("Webservice exception details: ", e);
 			}
 			return null;
 		}
 	}
 
-	public static Object marshalSendAndReceive(
-			WebServiceTemplate template, Object req) {
+	public static Object marshalSendAndReceive(WebServiceTemplate template,
+			Object req) {
 		if (log.isTraceEnabled()) {
 			try {
 				StringResult result = new StringResult();

@@ -49,7 +49,7 @@ public class ValidatingClientInterceptor implements ClientInterceptor {
 		if (validateResponse) {
 			if (messageContext.getResponse() == null)
 				return true;
-			
+
 			Source source = messageContext.getResponse().getPayloadSource();
 			try {
 				return validate(source);

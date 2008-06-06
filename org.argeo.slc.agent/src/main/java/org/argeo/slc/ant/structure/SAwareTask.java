@@ -110,11 +110,10 @@ public abstract class SAwareTask extends AbstractSpringTask {
 	/** Actions to be executed by the implementor. */
 	protected abstract void executeActions(String mode);
 
-	
-	public <T> T getBean(String beanName){
-		return (T)getContext().getBean(beanName);
+	public <T> T getBean(String beanName) {
+		return (T) getContext().getBean(beanName);
 	}
-	
+
 	/** Create a reference to an external structure element. */
 	public StructureElementArg createStructureElement() {
 		if (structureElementArg != null)

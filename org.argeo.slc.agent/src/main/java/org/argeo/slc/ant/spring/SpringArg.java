@@ -37,8 +37,8 @@ public class SpringArg<T> extends DataType {
 	 */
 	public T getBeanInstance() {
 		if (beanInstance == null) {
-			beanInstance = (T)getContext().getBean(bean);
-			
+			beanInstance = (T) getContext().getBean(bean);
+
 			setOverridenProperties(beanInstance);
 
 			// FIXME: why are we doing this? Could not find any object using it
@@ -52,8 +52,8 @@ public class SpringArg<T> extends DataType {
 		}
 		return beanInstance;
 	}
-	
-	protected void setOverridenProperties(Object obj){
+
+	protected void setOverridenProperties(Object obj) {
 		BeanWrapper wrapper = new BeanWrapperImpl(obj);
 		for (OverrideArg override : overrides) {
 			if (override.getName() == null) {
@@ -61,12 +61,11 @@ public class SpringArg<T> extends DataType {
 						"The name of the property to override has to be set.");
 			}
 
-//			LogFactory.getLog(getClass()).debug(
-//					"Prop " + override.getName());
-			wrapper.setPropertyValue(override.getName(), override
-					.getObject());
+			// LogFactory.getLog(getClass()).debug(
+			// "Prop " + override.getName());
+			wrapper.setPropertyValue(override.getName(), override.getObject());
 		}
-	
+
 	}
 
 	/** Creates an override subtag. */

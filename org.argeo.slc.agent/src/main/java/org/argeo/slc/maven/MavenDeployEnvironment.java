@@ -39,7 +39,7 @@ public class MavenDeployEnvironment implements DeployEnvironment {
 		}
 
 		try {
-			File tempDir = new File("/tmp/"+UUID.randomUUID().toString());
+			File tempDir = new File("/tmp/" + UUID.randomUUID().toString());
 			tempDir.mkdirs();
 			targetLocation.mkdirs();
 			Properties props = new Properties();
