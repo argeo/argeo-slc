@@ -8,10 +8,10 @@ import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.springframework.core.io.Resource;
 
-public class DbUnitDeploymentData implements DeploymentData{
+public class DbUnitDeploymentData implements DeploymentData {
 	private Resource dataSetLocation;
 
-	public IDataSet createDataSet(){
+	public IDataSet createDataSet() {
 		try {
 			InputStream in = dataSetLocation.getInputStream();
 			IDataSet dataSet = new FlatXmlDataSet(in);
@@ -22,10 +22,9 @@ public class DbUnitDeploymentData implements DeploymentData{
 		}
 
 	}
-	
+
 	public void setDataSetLocation(Resource dataSetLocation) {
 		this.dataSetLocation = dataSetLocation;
 	}
-	
-	
+
 }

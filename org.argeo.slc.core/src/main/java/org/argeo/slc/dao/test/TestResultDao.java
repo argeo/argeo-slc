@@ -22,7 +22,6 @@ public interface TestResultDao<T extends TestResult> {
 
 	/** Lists all test results. */
 	public List<T> listTestResults();
-	
 
 	public void close(String id, Date closeDate);
 }

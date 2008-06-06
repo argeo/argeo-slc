@@ -62,7 +62,7 @@ public class SimpleSElement implements StructureElement {
 	}
 
 	@Override
-	public SimpleSElement clone(){
+	public SimpleSElement clone() {
 		return new SimpleSElement(this);
 	}
 

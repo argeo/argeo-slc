@@ -1,6 +1,5 @@
 package org.argeo.slc.core.test;
 
-
 /**
  * Part of a test result.
  * 

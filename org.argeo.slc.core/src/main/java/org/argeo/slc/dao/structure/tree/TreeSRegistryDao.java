@@ -18,7 +18,7 @@ public interface TreeSRegistryDao {
 
 	/** Updates an existing registry. */
 	public void update(TreeSRegistry registry);
-	
+
 	/** Sync with local registry */
 	public void syncPath(TreeSRegistry registry,
 			StructureRegistry<TreeSPath> localRegistry, TreeSPath path);

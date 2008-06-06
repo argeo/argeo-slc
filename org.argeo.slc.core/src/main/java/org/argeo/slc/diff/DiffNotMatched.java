@@ -11,7 +11,8 @@ public class DiffNotMatched extends DiffIssueKey {
 		this.reached = reached;
 	}
 
-	public DiffNotMatched(DiffPosition position, Object expected, Object reached, DiffKey key) {
+	public DiffNotMatched(DiffPosition position, Object expected,
+			Object reached, DiffKey key) {
 		super(position, key);
 		this.expected = expected;
 		this.reached = reached;
@@ -27,11 +28,12 @@ public class DiffNotMatched extends DiffIssueKey {
 
 	@Override
 	public String toString() {
-		String result = position + ": not matched " + expected + " <> " + reached;
+		String result = position + ": not matched " + expected + " <> "
+				+ reached;
 		if (super.key != null) {
-			 result = result + " - Key: " + super.toString();
+			result = result + " - Key: " + super.toString();
 		}
-		
+
 		return result;
 	}
 

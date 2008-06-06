@@ -86,7 +86,7 @@ public class FullHtmlTreeReport implements TestReport, StructureAware {
 			}
 			index.close();
 		}
-		log.info("Generated HTML test result report to "+reportDir);
+		log.info("Generated HTML test result report to " + reportDir);
 	}
 
 	/**

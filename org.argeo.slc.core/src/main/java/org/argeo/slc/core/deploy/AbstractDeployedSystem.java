@@ -21,5 +21,4 @@ public abstract class AbstractDeployedSystem implements DeployedSystem {
 		throw new UnsupportedException("Method not supported");
 	}
 
-
 }

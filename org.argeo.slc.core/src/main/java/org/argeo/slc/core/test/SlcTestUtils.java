@@ -3,38 +3,32 @@ package org.argeo.slc.core.test;
 import org.argeo.slc.core.SlcException;
 
 public abstract class SlcTestUtils {
-	public static String statusToString(Integer status){
-		if(status.equals(TestStatus.PASSED)){
+	public static String statusToString(Integer status) {
+		if (status.equals(TestStatus.PASSED)) {
 			return TestStatus.STATUSSTR_PASSED;
-		}
-		else if(status.equals(TestStatus.FAILED)){
+		} else if (status.equals(TestStatus.FAILED)) {
 			return TestStatus.STATUSSTR_FAILED;
-		}
-		else if(status.equals(TestStatus.ERROR)){
+		} else if (status.equals(TestStatus.ERROR)) {
 			return TestStatus.STATUSSTR_ERROR;
-		}
-		else{
-			throw new SlcException("Unrecognized status "+status);
+		} else {
+			throw new SlcException("Unrecognized status " + status);
 		}
 	}
-	
-	public static Integer stringToStatus(String statusStr){
-		if(statusStr.equals(TestStatus.STATUSSTR_PASSED)){
+
+	public static Integer stringToStatus(String statusStr) {
+		if (statusStr.equals(TestStatus.STATUSSTR_PASSED)) {
 			return TestStatus.PASSED;
-		}
-		else if(statusStr.equals(TestStatus.STATUSSTR_FAILED)){
+		} else if (statusStr.equals(TestStatus.STATUSSTR_FAILED)) {
 			return TestStatus.FAILED;
-		}
-		else if(statusStr.equals(TestStatus.STATUSSTR_ERROR)){
+		} else if (statusStr.equals(TestStatus.STATUSSTR_ERROR)) {
 			return TestStatus.ERROR;
-		}
-		else{
-			throw new SlcException("Unrecognized status string "+statusStr);
+		} else {
+			throw new SlcException("Unrecognized status string " + statusStr);
 		}
 	}
-	
-	private SlcTestUtils(){
-		
+
+	private SlcTestUtils() {
+
 	}
 
 }

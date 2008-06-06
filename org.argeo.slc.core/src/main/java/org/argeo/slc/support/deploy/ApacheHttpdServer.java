@@ -18,16 +18,14 @@ public class ApacheHttpdServer implements WebServer {
 		try {
 			return baseUrlRes.getURL();
 		} catch (IOException e) {
-			throw new SlcException("Cannot get url from "+baseUrlRes,e);
+			throw new SlcException("Cannot get url from " + baseUrlRes, e);
 		}
 	}
 
-	public void setBaseUrlRes(Resource baseUrlRes){
+	public void setBaseUrlRes(Resource baseUrlRes) {
 		this.baseUrlRes = baseUrlRes;
 	}
-	
-	
-	
+
 	public File getBaseLocation() {
 		return baseLocation;
 	}

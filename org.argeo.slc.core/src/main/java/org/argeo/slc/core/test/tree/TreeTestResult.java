@@ -24,7 +24,8 @@ import org.argeo.slc.core.test.TestRunAware;
  * Complex implementation of a test result compatible with a tree based
  * structure.
  */
-public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,Comparable<TreeTestResult> {
+public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
+		Comparable<TreeTestResult> {
 	private Log log = LogFactory.getLog(TreeTestResult.class);
 
 	private List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();

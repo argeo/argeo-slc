@@ -8,7 +8,7 @@ public interface Deployment {
 	public void setTargetData(TargetData targetData);
 
 	public void setDeploymentData(DeploymentData deploymentData);
-	
+
 	public void setDistribution(Distribution distribution);
 
 	public void execute();

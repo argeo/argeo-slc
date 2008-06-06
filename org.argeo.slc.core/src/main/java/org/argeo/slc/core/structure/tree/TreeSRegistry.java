@@ -24,7 +24,7 @@ public class TreeSRegistry implements StructureRegistry<TreeSPath> {
 	private List<TreeSPath> activePaths;
 
 	public <T extends StructureElement> T getElement(TreeSPath path) {
-		return (T)elements.get(path);
+		return (T) elements.get(path);
 	}
 
 	public List<StructureElement> listElements() {
