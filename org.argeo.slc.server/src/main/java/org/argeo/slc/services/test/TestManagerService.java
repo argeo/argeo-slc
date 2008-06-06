@@ -7,5 +7,6 @@ public interface TestManagerService {
 
 	public void addResultToCollection(String collectionId, String resultUuid);
 
-	public void removeResultFromCollection(String collectionId, String resultUuid);
+	public void removeResultFromCollection(String collectionId,
+			String resultUuid);
 }

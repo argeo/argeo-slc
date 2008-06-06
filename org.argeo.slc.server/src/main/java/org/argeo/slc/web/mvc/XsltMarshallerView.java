@@ -14,27 +14,23 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 public class XsltMarshallerView extends XsltView {
 
 	private Marshaller marshaller;
-	
-	
 
 	@Override
 	protected Class<?>[] getSourceTypes() {
-		return new Class[]{TreeTestResult.class};
+		return new Class[] { TreeTestResult.class };
 	}
 
 	@Override
 	protected Source convertSource(Object source) throws Exception {
-		Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		Document document = DocumentBuilderFactory.newInstance()
+				.newDocumentBuilder().newDocument();
 		DOMResult result = new DOMResult(document);
 		marshaller.marshal(source, result);
 		return new DOMSource(result.getNode());
 	}
 
-
-
 	public void setMarshaller(Marshaller marshaller) {
 		this.marshaller = marshaller;
 	}
 
-	
 }

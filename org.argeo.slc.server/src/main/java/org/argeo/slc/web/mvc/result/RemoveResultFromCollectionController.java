@@ -1,19 +1,11 @@
 package org.argeo.slc.web.mvc.result;
 
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.argeo.slc.services.test.TestManagerService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
-
-import org.argeo.slc.core.test.tree.TreeTestResult;
-import org.argeo.slc.core.test.tree.TreeTestResultCollection;
-import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
-import org.argeo.slc.dao.test.tree.TreeTestResultDao;
-import org.argeo.slc.services.test.TestManagerService;
 
 public class RemoveResultFromCollectionController extends
 		ParameterizableViewController {

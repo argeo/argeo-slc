@@ -30,22 +30,24 @@ public class SlcExecutionViewController extends ParameterizableViewController {
 			HttpServletResponse response) throws Exception {
 		ModelAndView modelAndView = new ModelAndView();
 
-		//List<SlcExecution> slcExecutions = slcExecutionDao.listSlcExecutions();
+		// List<SlcExecution> slcExecutions =
+		// slcExecutionDao.listSlcExecutions();
 		String uuid = request.getParameter("uuid");
-		if (uuid == null) 
+		if (uuid == null)
 			throw new SlcException("Parameter uuid required.");
-		
+
 		SlcExecution slcExecution = slcExecutionDao.getSlcExecution(uuid);
 
-		if (slcExecution == null) 
-			throw new SlcException("Could not find slc execution with uuid " + uuid +".");
-		
+		if (slcExecution == null)
+			throw new SlcException("Could not find slc execution with uuid "
+					+ uuid + ".");
+
 		if (log.isDebugEnabled()) {
 			log.debug("SlcExecution " + slcExecution.getUuid());
 		}
-		
+
 		List<SlcExecutionStep> slcExecutionSteps = slcExecution.getSteps();
-		
+
 		modelAndView.addObject("slcExecutionSteps", slcExecutionSteps);
 		modelAndView.addObject("slcExecution", slcExecution);
 		modelAndView.setViewName(getViewName());

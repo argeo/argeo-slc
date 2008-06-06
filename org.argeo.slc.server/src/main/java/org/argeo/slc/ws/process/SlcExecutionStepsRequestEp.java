@@ -36,10 +36,12 @@ public class SlcExecutionStepsRequestEp extends
 				throw new SlcException("Could not find slc execution " + uuid);
 
 			List<SlcExecutionStep> additionalSteps = msg.getSteps();
-			if(log.isTraceEnabled()){
-				log.trace("Trying to add additional steps to slc execution "+uuid+":");
-				for(SlcExecutionStep step: additionalSteps){
-					log.trace("Step "+step.getUuid()+" (in slc execution "+uuid+")");
+			if (log.isTraceEnabled()) {
+				log.trace("Trying to add additional steps to slc execution "
+						+ uuid + ":");
+				for (SlcExecutionStep step : additionalSteps) {
+					log.trace("Step " + step.getUuid() + " (in slc execution "
+							+ uuid + ")");
 				}
 			}
 			slcExecution.getSteps().addAll(additionalSteps);

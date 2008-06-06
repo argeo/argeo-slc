@@ -7,7 +7,7 @@ import org.springframework.web.servlet.view.xslt.XsltViewResolver;
 public class XsltMarshallerViewResolver extends XsltViewResolver {
 
 	private Marshaller marshaller;
-	
+
 	@Override
 	protected AbstractUrlBasedView buildView(String viewName) throws Exception {
 		AbstractUrlBasedView viewT = super.buildView(viewName);
@@ -20,5 +20,4 @@ public class XsltMarshallerViewResolver extends XsltViewResolver {
 		this.marshaller = marshaller;
 	}
 
-	
 }

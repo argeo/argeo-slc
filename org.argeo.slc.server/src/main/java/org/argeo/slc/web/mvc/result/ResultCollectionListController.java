@@ -23,11 +23,11 @@ public class ResultCollectionListController extends
 		ModelAndView modelAndView = new ModelAndView();
 
 		// no need to retrieve since collection list is always in session
-		
-//		SortedSet<TreeTestResultCollection> results = testResultCollectionDao
-//				.listCollections();
-//		modelAndView.addObject("resultCollections", results);
-		
+
+		// SortedSet<TreeTestResultCollection> results = testResultCollectionDao
+		// .listCollections();
+		// modelAndView.addObject("resultCollections", results);
+
 		modelAndView.setViewName(getViewName());
 		return modelAndView;
 	}

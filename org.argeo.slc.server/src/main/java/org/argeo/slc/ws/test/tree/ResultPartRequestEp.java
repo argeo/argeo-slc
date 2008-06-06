@@ -1,25 +1,14 @@
 package org.argeo.slc.ws.test.tree;
 
-import javax.swing.plaf.basic.BasicTreeUI.TreeTraverseAction;
-
-import org.springframework.ws.server.endpoint.AbstractMarshallingPayloadEndpoint;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.test.TestRunDescriptor;
 import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
-import org.argeo.slc.core.test.tree.TreeTestResultCollection;
-import org.argeo.slc.dao.process.SlcExecutionDao;
-import org.argeo.slc.dao.test.TestRunDescriptorDao;
-import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
 import org.argeo.slc.services.test.TestManagerService;
-import org.argeo.slc.services.test.impl.TestManagerServiceImpl;
+import org.springframework.ws.server.endpoint.AbstractMarshallingPayloadEndpoint;
 
 public class ResultPartRequestEp extends AbstractMarshallingPayloadEndpoint {
 
