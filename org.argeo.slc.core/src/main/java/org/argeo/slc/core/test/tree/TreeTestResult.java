@@ -2,6 +2,7 @@ package org.argeo.slc.core.test.tree;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -10,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.core.SlcException;
+import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructureRegistry;
@@ -32,6 +34,8 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private TreeSPath currentPath;
 	private TestRun currentTestRun;
+	
+	private Map<String, String> rootTags = new TreeMap<String, String>();
 
 	private Date closeDate;
 
@@ -76,6 +80,13 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 				if (!elements.containsKey(p)) {
 					StructureElement elem = registry.getElement(p);
 					if (elem != null) {
+						
+						if(elements.size()==0 && (elem instanceof SimpleSElement)){
+							SimpleSElement sElem = ((SimpleSElement)elem).clone();
+							sElem.getTags().putAll(rootTags);
+							elem = sElem;
+						}
+						
 						elements.put(p, elem);
 					}
 				} else {
@@ -179,6 +190,14 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		} else {
 			return ttr1.getUuid().compareTo(ttr2.getUuid());
 		}
+	}
+
+	public Map<String, String> getRootTags() {
+		return rootTags;
+	}
+
+	public void setRootTags(Map<String, String> rootTags) {
+		this.rootTags = rootTags;
 	}
 
 }
