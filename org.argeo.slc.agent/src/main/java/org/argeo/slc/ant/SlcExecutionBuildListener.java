@@ -12,6 +12,8 @@ import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionNotifier;
 import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.ws.process.WebServiceSlcExecutionNotifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		ProjectRelatedBuildListener {
@@ -69,6 +71,11 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 			notifier.updateStatus(slcExecution, oldStatus, slcExecution
 					.getStatus());
 		}
+
+//		AbstractApplicationContext context = (AbstractApplicationContext) getProject()
+//				.getReference(SlcProjectHelper.REF_ROOT_CONTEXT);
+//		if (context != null)
+//			context.close();
 	}
 
 	public void messageLogged(BuildEvent event) {
