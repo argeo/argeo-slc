@@ -18,6 +18,7 @@ import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.WritableTestRun;
 import org.argeo.slc.spring.SpringUtils;
+import org.springframework.beans.BeansException;
 
 /** Ant task wrapping a test run. */
 public class SlcTestTask extends SAwareTask {
@@ -43,9 +44,13 @@ public class SlcTestTask extends SAwareTask {
 		WritableTestRun testRun = null;
 
 		if (testRunBeanT != null) {
-			testRun = (WritableTestRun) getContext().getBean(testRunBeanT);
-			if (log.isTraceEnabled())
-				log.trace("Load test run bean from bean name " + testRunBeanT);
+			try {
+				testRun = (WritableTestRun) getContext().getBean(testRunBeanT);
+				if (log.isTraceEnabled())
+					log.trace("Load test run bean from bean name " + testRunBeanT);
+			} catch (BeansException e) {
+				// silent, will try defaults
+			}
 		}
 
 		if (testRun == null) {
