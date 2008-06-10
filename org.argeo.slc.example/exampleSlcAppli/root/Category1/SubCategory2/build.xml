@@ -4,8 +4,12 @@
 	<import file="complex.xml" />
 
 	<target name="test" depends="testSimple,testComplex,testError">
-		<slc.closeResult result="testResult" />
-		<slc.closeResult result="testResult2" />
+		<slc.closeResult>
+			<result bean="testResult" />
+		</slc.closeResult>
+		<slc.closeResult>
+			<result bean="testResult2" />
+		</slc.closeResult>
 		<slc.report report="report" />
 	</target>
 

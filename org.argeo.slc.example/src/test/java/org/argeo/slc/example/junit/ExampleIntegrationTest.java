@@ -8,7 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.Project;
 import org.argeo.slc.ant.AntRegistryUtil;
-import org.argeo.slc.ant.SlcProjectHelper;
+import org.argeo.slc.ant.SlcAntConstants;
 import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.TestResultDao;
@@ -36,7 +36,7 @@ public class ExampleIntegrationTest extends TestCase {
 		Project p = AntRegistryUtil.runAll(antFile);
 
 		ApplicationContext context = (ApplicationContext) p
-				.getReference(SlcProjectHelper.REF_ROOT_CONTEXT);
+				.getReference(SlcAntConstants.REF_ROOT_CONTEXT);
 
 		TestResultDao testResultDao = (TestResultDao) context
 				.getBean("testResultDao");
