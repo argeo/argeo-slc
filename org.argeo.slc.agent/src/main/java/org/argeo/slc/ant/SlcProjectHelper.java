@@ -32,19 +32,6 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 public class SlcProjectHelper extends ProjectHelper2 {
 	private static Log log;
 
-	/** The Ant reference to the Spring application context used. */
-	public static String REF_ROOT_CONTEXT = "slcApplicationContext";
-	/** The Ant reference to the SLC structure registry used. */
-	public static String REF_STRUCTURE_REGISTRY = "slcStructureRegistry";
-	/** The Ant reference to the <code>TreePath</code> of the current project */
-	public static String REF_PROJECT_PATH = "slcProjectPath";
-	/**
-	 * Resource path to the property file listing the SLC specific Ant tasks:
-	 * /org/argeo/slc/ant/taskdefs.properties
-	 */
-	private static String SLC_TASKDEFS_RESOURCE_PATH = "/org/argeo/slc/ant/taskdefs.properties";
-	private static String SLC_TYPEDEFS_RESOURCE_PATH = "/org/argeo/slc/ant/typedefs.properties";
-
 	protected SlcAntConfig slcAntConfig = null;
 
 	@Override
@@ -101,7 +88,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 
 		// Init structure registry
 		DefaultSRegistry registry = new DefaultSRegistry();
-		project.addReference(REF_STRUCTURE_REGISTRY, registry);
+		project.addReference(SlcAntConstants.REF_STRUCTURE_REGISTRY, registry);
 	}
 
 	/**
@@ -118,7 +105,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 	private void registerProjectAndParents(Project project,
 			SlcAntConfig slcAntConfig) {
 		StructureRegistry<TreeSPath> registry = (StructureRegistry<TreeSPath>) project
-				.getReference(REF_STRUCTURE_REGISTRY);
+				.getReference(SlcAntConstants.REF_STRUCTURE_REGISTRY);
 		File rootDir = new File(project
 				.getUserProperty(SlcAntConfig.ROOT_DIR_PROPERTY))
 				.getAbsoluteFile();
@@ -158,7 +145,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 			}
 			registry.register(currPath, element);
 		}
-		project.addReference(REF_PROJECT_PATH, currPath);
+		project.addReference(SlcAntConstants.REF_PROJECT_PATH, currPath);
 	}
 
 	/** Gets the path of a project (root). */
@@ -177,7 +164,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 		AbstractApplicationContext context = new FileSystemXmlApplicationContext(
 				'/' + acPath);
 		context.registerShutdownHook();
-		project.addReference(REF_ROOT_CONTEXT, context);
+		project.addReference(SlcAntConstants.REF_ROOT_CONTEXT, context);
 
 		createAndRegisterSlcExecution(project);
 		// Add build listeners declared in Spring context
@@ -190,7 +177,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 
 	/** Loads the SLC specific Ant tasks. */
 	protected static void addCustomTaskAndTypes(Project project) {
-		Properties taskdefs = getDefs(project, SLC_TASKDEFS_RESOURCE_PATH);
+		Properties taskdefs = getDefs(project, SlcAntConstants.SLC_TASKDEFS_RESOURCE_PATH);
 		for (Object o : taskdefs.keySet()) {
 			String name = o.toString();
 			try {
@@ -200,7 +187,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 				log.error("Unknown class for task " + name, e);
 			}
 		}
-		Properties typedefs = getDefs(project, SLC_TYPEDEFS_RESOURCE_PATH);
+		Properties typedefs = getDefs(project, SlcAntConstants.SLC_TYPEDEFS_RESOURCE_PATH);
 		for (Object o : typedefs.keySet()) {
 			String name = o.toString();
 			try {
@@ -233,10 +220,10 @@ public class SlcProjectHelper extends ProjectHelper2 {
 			slcExecution.setHost(SlcExecution.UNKOWN_HOST);
 		}
 
-		if (project.getReference(SlcProjectHelper.REF_ROOT_CONTEXT) != null) {
-			slcExecution.setType(SlcExecutionBuildListener.SLC_ANT_TYPE);
+		if (project.getReference(SlcAntConstants.REF_ROOT_CONTEXT) != null) {
+			slcExecution.setType(SlcAntConstants.EXECTYPE_SLC_ANT);
 		} else {
-			slcExecution.setType(SlcExecutionBuildListener.ANT_TYPE);
+			slcExecution.setType(SlcAntConstants.EXECTYPE_ANT);
 		}
 
 		slcExecution.setUser(System.getProperty("user.name"));
@@ -244,12 +231,12 @@ public class SlcProjectHelper extends ProjectHelper2 {
 		slcExecution.getAttributes().put("ant.file",
 				project.getProperty("ant.file"));
 
-		project.addReference(SlcExecutionBuildListener.REF_SLC_EXECUTION,
+		project.addReference(SlcAntConstants.REF_SLC_EXECUTION,
 				slcExecution);
 
 		// Add build listeners declared in Spring context
 		Map<String, ProjectRelatedBuildListener> listeners = ((ListableBeanFactory) project
-				.getReference(REF_ROOT_CONTEXT)).getBeansOfType(
+				.getReference(SlcAntConstants.REF_ROOT_CONTEXT)).getBeansOfType(
 				ProjectRelatedBuildListener.class, false, true);
 		for (ProjectRelatedBuildListener listener : listeners.values()) {
 			listener.init(project);

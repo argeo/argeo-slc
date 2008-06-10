@@ -13,7 +13,6 @@ public class OverrideArg extends SpringArg<Object> {
 	private Object value;
 	private OverrideList overrideList;
 	private MapArg overrideMap;
-	private String antref;
 
 	/** The name of the property to override. */
 	public String getName() {
@@ -23,12 +22,6 @@ public class OverrideArg extends SpringArg<Object> {
 	/** Sets the name. */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/** Sets a reference to an ant data type. */
-	public void setAntref(String antref) {
-		checkValueAlreadySet();
-		this.antref = antref;
 	}
 
 	/** Both value and bean cannot be set. */
@@ -63,28 +56,20 @@ public class OverrideArg extends SpringArg<Object> {
 	public Object getObject() {
 		if (value != null) {
 			return value;
-		} else if (getBean() != null) {
+		} else if (getBean() != null || getAntref() != null) {
 			return getBeanInstance();
 		} else if (overrideList != null) {
 			return overrideList.getAsObjectList();
 		} else if (overrideMap != null) {
 			return overrideMap.getMap();
-		} else if (antref != null) {
-			Object obj = getProject().getReference(antref);
-			if (obj == null) {
-				throw new SlcException("No object found for reference "
-						+ antref);
-			}
-			setOverridenProperties(obj);
-			return obj;
 		} else {
 			throw new BuildException("Value or bean not set.");
 		}
 	}
 
-	private void checkValueAlreadySet() {
-		if (value != null || overrideList != null || antref != null
-				|| getBean() != null || overrideMap != null) {
+	protected void checkValueAlreadySet() {
+		super.checkValueAlreadySet();
+		if (value != null || overrideList != null || overrideMap != null) {
 			throw new BuildException("Value already set.");
 		}
 	}

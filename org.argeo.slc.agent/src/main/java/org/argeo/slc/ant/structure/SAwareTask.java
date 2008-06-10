@@ -6,8 +6,8 @@ import java.util.Vector;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Target;
 
+import org.argeo.slc.ant.SlcAntConstants;
 import org.argeo.slc.ant.SlcAntException;
-import org.argeo.slc.ant.SlcProjectHelper;
 import org.argeo.slc.ant.spring.SpringArg;
 import org.argeo.slc.ant.spring.AbstractSpringTask;
 import org.argeo.slc.core.structure.SimpleSElement;
@@ -125,13 +125,13 @@ public abstract class SAwareTask extends AbstractSpringTask {
 	/** Gets the underlying structure registry. */
 	protected StructureRegistry<TreeSPath> getRegistry() {
 		return (StructureRegistry<TreeSPath>) getProject().getReference(
-				SlcProjectHelper.REF_STRUCTURE_REGISTRY);
+				SlcAntConstants.REF_STRUCTURE_REGISTRY);
 	}
 
 	/** Creates the treeSPath for a given Ant target. */
 	protected static TreeSPath createTargetPath(Target target) {
 		TreeSPath projectPath = (TreeSPath) target.getProject().getReference(
-				SlcProjectHelper.REF_PROJECT_PATH);
+				SlcAntConstants.REF_PROJECT_PATH);
 		return projectPath.createChild(target.getName());
 	}
 

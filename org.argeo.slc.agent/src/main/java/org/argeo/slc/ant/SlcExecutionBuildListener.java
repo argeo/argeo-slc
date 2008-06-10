@@ -17,11 +17,6 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		ProjectRelatedBuildListener {
-	public static final String ANT_TYPE = "org.apache.tools.ant";
-	public static final String SLC_ANT_TYPE = "org.argeo.slc.ant";
-
-	public static final String REF_SLC_EXECUTION = "slcExecution";
-
 	private Project project;
 
 	// to avoid stack overflow when logging for log4j
@@ -49,7 +44,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		}
 
 		SlcExecution slcExecution = (SlcExecution) project
-				.getReference(REF_SLC_EXECUTION);
+				.getReference(SlcAntConstants.REF_SLC_EXECUTION);
 		if (slcExecution == null)
 			throw new SlcAntException("No SLC Execution registered.");
 
@@ -154,7 +149,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 					+ " not consistent with listener project " + project);
 
 		SlcExecution slcExecution = (SlcExecution) project
-				.getReference(REF_SLC_EXECUTION);
+				.getReference(SlcAntConstants.REF_SLC_EXECUTION);
 
 		if (slcExecution == null)
 			throw new SlcAntException("No SLC Execution registered.");
@@ -201,7 +196,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 
 		try {
 			SlcExecution slcExecution = (SlcExecution) project
-					.getReference(REF_SLC_EXECUTION);
+					.getReference(SlcAntConstants.REF_SLC_EXECUTION);
 			if (slcExecution != null) {
 				if (currentStepNotified) {
 					slcExecution.getSteps().add(

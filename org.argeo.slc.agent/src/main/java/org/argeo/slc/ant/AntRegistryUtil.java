@@ -31,7 +31,7 @@ public class AntRegistryUtil {
 		helper.parse(p, antFile);
 
 		StructureRegistry registry = (StructureRegistry) p
-				.getReference(SlcProjectHelper.REF_STRUCTURE_REGISTRY);
+				.getReference(SlcAntConstants.REF_STRUCTURE_REGISTRY);
 		registry.setMode(StructureRegistry.READ);
 
 		p.executeTarget(p.getDefaultTarget());
@@ -53,7 +53,7 @@ public class AntRegistryUtil {
 		helper.parse(p, antFile);
 
 		StructureRegistry registry = (StructureRegistry) p
-				.getReference(SlcProjectHelper.REF_STRUCTURE_REGISTRY);
+				.getReference(SlcAntConstants.REF_STRUCTURE_REGISTRY);
 		registry.setMode(StructureRegistry.ACTIVE);
 		registry.setActivePaths(activePaths);
 

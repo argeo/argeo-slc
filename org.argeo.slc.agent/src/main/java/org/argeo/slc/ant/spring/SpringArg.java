@@ -3,9 +3,10 @@ package org.argeo.slc.ant.spring;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.DataType;
+import org.argeo.slc.ant.SlcAntConstants;
 import org.argeo.slc.ant.SlcAntException;
-import org.argeo.slc.ant.SlcProjectHelper;
 import org.argeo.slc.core.SlcException;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -17,6 +18,7 @@ public class SpringArg<T> extends DataType {
 	private List<OverrideArg> overrides = new Vector<OverrideArg>();
 
 	private String bean;
+	private String antref;
 
 	// cache bean instance to avoid reading it twice if it is a prototype
 	private T beanInstance = null;
@@ -28,16 +30,40 @@ public class SpringArg<T> extends DataType {
 
 	/** Setter for the bean name. */
 	public void setBean(String bean) {
+		checkValueAlreadySet();
 		this.bean = bean;
 	}
 
+	public String getAntref() {
+		return antref;
+	}
+
+	/** Sets a reference to an ant data type. */
+	public void setAntref(String antref) {
+		checkValueAlreadySet();
+		this.antref = antref;
+	}
+
 	/**
-	 * Retrieve the instance of the bean, and sets the overriden properties.
+	 * Retrieve the instance of the bean, and sets the overridden properties.
 	 * <b>The value is cached.</b>
 	 */
 	public T getBeanInstance() {
 		if (beanInstance == null) {
-			beanInstance = (T) getContext().getBean(bean);
+			if (bean != null) {
+				beanInstance = (T) getContext().getBean(bean);
+				if (beanInstance == null)
+					throw new SlcAntException(
+							"No object found for Spring bean " + bean);
+			} else if (antref != null) {
+				beanInstance = (T) getProject().getReference(antref);
+				if (beanInstance == null)
+					throw new SlcAntException(
+							"No object found for Ant reference " + antref);
+			} else {
+				throw new SlcAntException(
+						"Don't know how to retrieve bean instance");
+			}
 
 			setOverridenProperties(beanInstance);
 
@@ -78,7 +104,13 @@ public class SpringArg<T> extends DataType {
 	/** The related Spring application context. */
 	protected ApplicationContext getContext() {
 		return (ApplicationContext) getProject().getReference(
-				SlcProjectHelper.REF_ROOT_CONTEXT);
+				SlcAntConstants.REF_ROOT_CONTEXT);
+	}
+
+	protected void checkValueAlreadySet() {
+		if (antref != null || bean != null) {
+			throw new BuildException("Value already set.");
+		}
 	}
 
 }
