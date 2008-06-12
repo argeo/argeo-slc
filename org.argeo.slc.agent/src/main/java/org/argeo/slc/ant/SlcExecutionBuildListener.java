@@ -185,7 +185,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 			// avoid StackOverflow if notification calls Log4j itself.
 			return;
 		}
-
+		
 		// FIXME: make it more generic
 		if (event.getLoggerName().equals(
 				WebServiceSlcExecutionNotifier.class.getName())) {

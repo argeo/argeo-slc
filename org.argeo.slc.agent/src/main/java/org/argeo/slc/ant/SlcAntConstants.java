@@ -24,5 +24,11 @@ public interface SlcAntConstants {
 
 	public final static String EXECATTR_ANT_FILE = "ant.file";
 	public final static String EXECATTR_ANT_TARGETS = "ant.targets";
+	/** Property for the root dir (SLC root property file). */
+	public final static String ROOT_DIR_PROPERTY = "slc.rootDir";
+	/** Property for the conf dir (SLC root property file). */
+	public final static String CONF_DIR_PROPERTY = "slc.confDir";
+	/** Property for the work dir (SLC root property file). */
+	public final static String WORK_DIR_PROPERTY = "slc.workDir";
 
 }

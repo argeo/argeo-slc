@@ -107,7 +107,7 @@ public class SlcProjectHelper extends ProjectHelper2 {
 		StructureRegistry<TreeSPath> registry = (StructureRegistry<TreeSPath>) project
 				.getReference(SlcAntConstants.REF_STRUCTURE_REGISTRY);
 		File rootDir = new File(project
-				.getUserProperty(SlcAntConfig.ROOT_DIR_PROPERTY))
+				.getUserProperty(SlcAntConstants.ROOT_DIR_PROPERTY))
 				.getAbsoluteFile();
 		File baseDir = project.getBaseDir().getAbsoluteFile();
 		List<File> dirs = new Vector<File>();

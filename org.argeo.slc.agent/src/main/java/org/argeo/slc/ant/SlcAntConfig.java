@@ -108,12 +108,6 @@ public class SlcAntConfig {
 	// SLC ROOT PROPERTIES
 	/** Property for the root file (SLC root property file). */
 	public final static String ROOT_FILE_PROPERTY = "slc.rootFile";
-	/** Property for the root dir (SLC root property file). */
-	public final static String ROOT_DIR_PROPERTY = "slc.rootDir";
-	/** Property for the conf dir (SLC root property file). */
-	public final static String CONF_DIR_PROPERTY = "slc.confDir";
-	/** Property for the work dir (SLC root property file). */
-	public final static String WORK_DIR_PROPERTY = "slc.workDir";
 	/**
 	 * Comma-separated list of property file names to load from the conf dir and
 	 * add to project user properties
@@ -194,30 +188,30 @@ public class SlcAntConfig {
 			final File workDir;
 			// Root dir
 			final File rootDir = slcRootFile.getParentFile();
-			all.setProperty(ROOT_DIR_PROPERTY, fileUrlPrefix
+			all.setProperty(SlcAntConstants.ROOT_DIR_PROPERTY, fileUrlPrefix
 					+ rootDir.getCanonicalPath());
 
 			// Conf dir
-			if (all.getProperty(CONF_DIR_PROPERTY) == null) {
-				confDir = new File(rootProps.getProperty(CONF_DIR_PROPERTY,
+			if (all.getProperty(SlcAntConstants.CONF_DIR_PROPERTY) == null) {
+				confDir = new File(rootProps.getProperty(SlcAntConstants.CONF_DIR_PROPERTY,
 						rootDir.getAbsolutePath() + "/../conf"))
 						.getCanonicalFile();
-				all.setProperty(CONF_DIR_PROPERTY, fileUrlPrefix
+				all.setProperty(SlcAntConstants.CONF_DIR_PROPERTY, fileUrlPrefix
 						+ confDir.getAbsolutePath());
 			} else {
-				confDir = new File(all.getProperty(CONF_DIR_PROPERTY))
+				confDir = new File(all.getProperty(SlcAntConstants.CONF_DIR_PROPERTY))
 						.getCanonicalFile();
 			}
 
 			// Work dir
-			if (all.getProperty(WORK_DIR_PROPERTY) == null) {
-				workDir = new File(rootProps.getProperty(WORK_DIR_PROPERTY,
+			if (all.getProperty(SlcAntConstants.WORK_DIR_PROPERTY) == null) {
+				workDir = new File(rootProps.getProperty(SlcAntConstants.WORK_DIR_PROPERTY,
 						rootDir.getAbsolutePath() + "/../work"))
 						.getCanonicalFile();
-				all.setProperty(WORK_DIR_PROPERTY, fileUrlPrefix
+				all.setProperty(SlcAntConstants.WORK_DIR_PROPERTY, fileUrlPrefix
 						+ workDir.getAbsolutePath());
 			} else {
-				workDir = new File(all.getProperty(WORK_DIR_PROPERTY))
+				workDir = new File(all.getProperty(SlcAntConstants.WORK_DIR_PROPERTY))
 						.getCanonicalFile();
 			}
 
