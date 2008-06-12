@@ -37,10 +37,34 @@ public class AntSlcApplication {
 	private SlcRuntime slcRuntime;
 
 	private Resource contextLocation;
+	private ConfigurableApplicationContext context;
 
 	private Resource rootDir;
 	private Resource confDir;
 	private Resource workDir;
+
+	public void init() {
+		try {
+			if (confDir != null && contextLocation == null) {
+				contextLocation = confDir
+						.createRelative("applicationContext.xml");
+			}
+
+			GenericApplicationContext ctx = new GenericApplicationContext(
+					slcRuntime.getRuntimeContext());
+			if (contextLocation != null && contextLocation.exists()) {
+				XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
+						ctx);
+				xmlReader.loadBeanDefinitions(contextLocation);
+			}
+			ctx.refresh();
+			context = ctx;
+		} catch (Exception e) {
+			throw new SlcAntException(
+					"Cannot create SLC app application context.", e);
+		}
+
+	}
 
 	public void execute(SlcExecution slcExecution, Properties properties,
 			Map<String, Object> references) {
@@ -66,6 +90,8 @@ public class AntSlcApplication {
 
 		initStructure(project, script);
 		runProject(project, targets);
+		
+		ctx.close();
 	}
 
 	protected Resource findAntScript(SlcExecution slcExecution) {
@@ -114,18 +140,9 @@ public class AntSlcApplication {
 
 	protected ConfigurableApplicationContext createExecutionContext() {
 		try {
-			if (confDir != null && contextLocation == null) {
-				contextLocation = confDir
-						.createRelative("applicationContext.xml");
-			}
-
 			GenericApplicationContext ctx = new GenericApplicationContext(
-					slcRuntime.getRuntimeContext());
-			if (contextLocation != null && contextLocation.exists()) {
-				XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
-						ctx);
-				xmlReader.loadBeanDefinitions(contextLocation);
-			}
+					context);
+			ctx.refresh();
 			return ctx;
 		} catch (Exception e) {
 			throw new SlcAntException(
@@ -234,30 +251,6 @@ public class AntSlcApplication {
 			throw new SlcAntException("Cannot inititalize execution structure",
 					e);
 		}
-
-		/*
-		 * File rootDir = new File(project
-		 * .getUserProperty(SlcAntConstants.ROOT_DIR_PROPERTY))
-		 * .getAbsoluteFile(); File baseDir =
-		 * project.getBaseDir().getAbsoluteFile(); List<File> dirs = new Vector<File>();
-		 * File currentDir = baseDir; do { dirs.add(currentDir); currentDir =
-		 * currentDir.getParentFile(); if (log.isTraceEnabled()) log.trace("List " +
-		 * currentDir); } while (!currentDir.equals(rootDir.getParentFile())); //
-		 * first path is root dir (because of previous algorithm) TreeSPath
-		 * currPath = TreeSPath.createRootPath(rootDir.getName()); for (int i =
-		 * dirs.size() - 1; i >= 0; i--) { File dir = dirs.get(i); // retrieves
-		 * description for this path final String description; if (i == 0) {//
-		 * project itself description = project.getDescription() != null &&
-		 * !project.getDescription().equals("") ? project .getDescription() :
-		 * project.getName(); } else { description = dir.getName(); if
-		 * (log.isTraceEnabled()) log.trace("Dir desc " + i + "/" + dirs.size() + ": " +
-		 * description); } SimpleSElement element = new
-		 * SimpleSElement(description); // creates and register path if
-		 * (!dir.equals(rootDir)) {// already set currPath =
-		 * currPath.createChild(dir.getName()); } registry.register(currPath,
-		 * element); } project.addReference(SlcAntConstants.REF_PROJECT_PATH,
-		 * currPath);
-		 */
 	}
 
 	protected void parseProject(Project project, Resource script) {
