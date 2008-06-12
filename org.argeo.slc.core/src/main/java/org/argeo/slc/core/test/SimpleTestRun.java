@@ -86,10 +86,12 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun {
 	}
 
 	public void notifySlcExecution(SlcExecution slcExecution) {
-		slcExecutionUuid = slcExecution.getUuid();
-		SlcExecutionStep step = slcExecution.currentStep();
-		if (step != null) {
-			slcExecutionStepUuid = step.getUuid();
+		if (slcExecution != null) {
+			slcExecutionUuid = slcExecution.getUuid();
+			SlcExecutionStep step = slcExecution.currentStep();
+			if (step != null) {
+				slcExecutionStepUuid = step.getUuid();
+			}
 		}
 	}
 
