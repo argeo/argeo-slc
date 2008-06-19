@@ -3,7 +3,10 @@ package org.argeo.slc.runtime;
 import org.springframework.context.ApplicationContext;
 
 public class SimpleSlcRuntime implements SlcRuntime {
-	private ApplicationContext runtimeContext;
+	protected ApplicationContext runtimeContext;
+
+	public SimpleSlcRuntime() {
+	}
 
 	public SimpleSlcRuntime(ApplicationContext runtimeContext) {
 		this.runtimeContext = runtimeContext;
