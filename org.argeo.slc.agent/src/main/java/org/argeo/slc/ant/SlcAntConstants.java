@@ -30,5 +30,7 @@ public interface SlcAntConstants {
 	public final static String CONF_DIR_PROPERTY = "slc.confDir";
 	/** Property for the work dir (SLC root property file). */
 	public final static String WORK_DIR_PROPERTY = "slc.workDir";
+	/** Name of the Spring bean used by default */
+	public final static String DEFAULT_TEST_RUN_PROPERTY = "slc.defaultTestRun";
 
 }

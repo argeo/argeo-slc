@@ -117,9 +117,6 @@ public class SlcAntConfig {
 	// SLC CONF PROPERTIES
 	/** Path to the root Spring application context */
 	public static String APPLICATION_CONTEXT_PROPERTY = "slc.applicationContext";
-	/** Name of the Spring bean used by default */
-	public static String DEFAULT_TEST_RUN_PROPERTY = "slc.defaultTestRun";
-
 	// SLC LOCAL PROPERTIES
 	/** Property for the dir label (SLC local property file). */
 	public static String DIR_LABEL_PROPERTY = "slc.dirLabel";
@@ -239,8 +236,8 @@ public class SlcAntConfig {
 						+ "/applicationContext.xml");
 			}
 			// Default test run
-			if (all.getProperty(DEFAULT_TEST_RUN_PROPERTY) == null) {
-				all.setProperty(DEFAULT_TEST_RUN_PROPERTY, "defaultTestRun");
+			if (all.getProperty(SlcAntConstants.DEFAULT_TEST_RUN_PROPERTY) == null) {
+				all.setProperty(SlcAntConstants.DEFAULT_TEST_RUN_PROPERTY, "defaultTestRun");
 			}
 
 			// Default log4j

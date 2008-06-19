@@ -36,8 +36,11 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 	public SlcExecutionContext executeScript(Resource script,
 			Properties properties, Map<String, Object> references) {
 
-		if (runtimeContext == null)
-			runtimeContext = new GenericApplicationContext();
+		if (runtimeContext == null) {
+			GenericApplicationContext ctx = new GenericApplicationContext();
+			ctx.refresh();
+			runtimeContext = ctx;
+		}
 
 		SlcExecution slcExecution = new SlcExecution();
 		slcExecution.setUuid(UUID.randomUUID().toString());
@@ -51,8 +54,13 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 
 		slcExecution.setUser(System.getProperty("user.name"));
 		slcExecution.setStatus(SlcExecution.STATUS_RUNNING);
-		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,
-				script.toString());
+		try {
+			slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,
+					script.getURL().toString());
+		} catch (IOException e) {
+			throw new SlcException("Cannot interpret script " + script
+					+ " as URL.", e);
+		}
 
 		AntSlcApplication application = new AntSlcApplication();
 		prepareApplication(slcExecution, application, script);
@@ -80,7 +88,7 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 			Resource confDir = null;
 			File workDir = null;
 			// Root dir
-			final Resource rootDir = getParentOfFile(slcRootFile);
+			final Resource rootDir = getParent(slcRootFile);
 
 			// Conf dir
 			String confDirStr = rootProps
@@ -89,7 +97,8 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 				confDir = runtimeContext.getResource(confDirStr);
 
 			if (confDir == null || !confDir.exists()) {
-				confDir = rootDir.createRelative("../conf");
+				// confDir = rootDir.createRelative("../conf");
+				confDir = getParent(rootDir).createRelative("conf/");
 			}
 
 			// Work dir
@@ -116,8 +125,10 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 			application.setConfDir(confDir);
 			application.setRootDir(rootDir);
 			application.setWorkDir(workDir);
-			
+
 			application.setSlcRuntime(this);
+
+			application.init();
 		} catch (IOException e) {
 			throw new SlcException(
 					"Could not prepare SLC application for SLC execution "
@@ -161,7 +172,7 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 				if (currPath.equals("/") || currPath.equals("")) {
 					return null;
 				} else {
-					return findSlcRootFile(getParentOfDir(currDir));
+					return findSlcRootFile(getParent(currDir));
 				}
 				// int indx = currPath.lastIndexOf('/',currPath.length()-1);
 
@@ -197,19 +208,27 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 		return p;
 	}
 
-	private Resource getParentOfDir(Resource dir) {
+	private Resource getParent(Resource res) {
 		try {
-			return dir.createRelative("..");
+			if (res.getURL().getPath().equals("/"))
+				return null;
+
+			String urlStr = res.getURL().toString();
+			if (urlStr.charAt(urlStr.length() - 1) == '/')
+				urlStr = urlStr.substring(0, urlStr.length() - 2);
+
+			String parentUrlStr = urlStr.substring(0, urlStr.lastIndexOf('/'));
+			return runtimeContext.getResource(parentUrlStr + '/');
 		} catch (IOException e) {
-			throw new SlcException("Cannot get parent for resource " + dir, e);
+			throw new SlcException("Cannot get parent for resource " + res, e);
 		}
 	}
 
-	private Resource getParentOfFile(Resource file) {
-		try {
-			return file.createRelative(".");
-		} catch (IOException e) {
-			throw new SlcException("Cannot get parent for resource " + file, e);
-		}
-	}
+	// private Resource getParentOfFile(Resource file) {
+	// try {
+	// return file.createRelative(".");
+	// } catch (IOException e) {
+	// throw new SlcException("Cannot get parent for resource " + file, e);
+	// }
+	// }
 }

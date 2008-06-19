@@ -17,6 +17,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.helper.ProjectHelper2;
 import org.apache.tools.ant.listener.CommonsLoggingListener;
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.structure.DefaultSRegistry;
 import org.argeo.slc.core.structure.SimpleSElement;
@@ -47,6 +48,20 @@ public class AntSlcApplication {
 
 	public void init() {
 		try {
+			try {
+				if (rootDir != null)
+					System.setProperty(SlcAntConstants.ROOT_DIR_PROPERTY,
+							rootDir.getURL().toString());
+				if (confDir != null)
+					System.setProperty(SlcAntConstants.CONF_DIR_PROPERTY,
+							confDir.getURL().toString());
+			} catch (IOException e) {
+				throw new SlcAntException("Cannot interpret dir as URL.", e);
+			}
+			if (workDir != null)
+				System.setProperty(SlcAntConstants.WORK_DIR_PROPERTY, workDir
+						.toString());
+
 			if (confDir != null && contextLocation == null) {
 				contextLocation = confDir
 						.createRelative("applicationContext.xml");
@@ -70,23 +85,12 @@ public class AntSlcApplication {
 
 	public SlcExecutionContext execute(SlcExecution slcExecution,
 			Properties properties, Map<String, Object> references) {
+		log.info("### Start SLC execution " + slcExecution.getUuid() + " ###");
 		if (log.isDebugEnabled()) {
-			log.debug("### Start SLC execution " + slcExecution.getUuid()
-					+ " ###");
 			log.debug("rootDir=" + rootDir);
 			log.debug("confDir=" + confDir);
 			log.debug("workDir=" + workDir);
 		}
-
-		if (rootDir != null)
-			properties.put(SlcAntConstants.ROOT_DIR_PROPERTY, rootDir
-					.toString());
-		if (confDir != null)
-			properties.put(SlcAntConstants.CONF_DIR_PROPERTY, confDir
-					.toString());
-		if (workDir != null)
-			properties.put(SlcAntConstants.WORK_DIR_PROPERTY, workDir
-					.toString());
 
 		// Ant coordinates
 		Resource script = findAntScript(slcExecution);
@@ -133,7 +137,7 @@ public class AntSlcApplication {
 				log.trace("script(absolute)=" + script);
 			if (script.exists())
 				return script;
-			
+
 			script = new FileSystemResource(scriptStr);
 			if (log.isTraceEnabled())
 				log.trace("script(fs)=" + script);
@@ -167,6 +171,11 @@ public class AntSlcApplication {
 		for (Object key : userProperties.keySet()) {
 			System.setProperty(key.toString(), userProperties.getProperty(key
 					.toString()));
+		}
+
+		if (System.getProperty(SlcAntConstants.DEFAULT_TEST_RUN_PROPERTY) == null) {
+			System.setProperty(SlcAntConstants.DEFAULT_TEST_RUN_PROPERTY,
+					"defaultTestRun");
 		}
 
 		try {
@@ -253,7 +262,6 @@ public class AntSlcApplication {
 			}
 			log.debug("scriptPath=" + scriptPath);
 
-			List<String> dirNames = new Vector<String>();
 			StringTokenizer st = new StringTokenizer(scriptPath, "/");
 			TreeSPath currPath = null;
 			while (st.hasMoreTokens()) {

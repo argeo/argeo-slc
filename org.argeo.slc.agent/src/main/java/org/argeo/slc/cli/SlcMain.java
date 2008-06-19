@@ -91,6 +91,7 @@ public class SlcMain {
 			printUsage();
 		}
 
+		// Execution
 		if (mode.equals(Mode.single)) {
 			DefaultSlcRuntime runtime = new DefaultSlcRuntime();
 			runtime.executeScript(new FileSystemResource(script), properties,
