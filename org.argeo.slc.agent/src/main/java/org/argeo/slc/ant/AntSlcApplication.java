@@ -23,12 +23,14 @@ import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
+import org.argeo.slc.runtime.SlcExecutionContext;
 import org.argeo.slc.runtime.SlcRuntime;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 public class AntSlcApplication {
@@ -41,7 +43,7 @@ public class AntSlcApplication {
 
 	private Resource rootDir;
 	private Resource confDir;
-	private Resource workDir;
+	private File workDir;
 
 	public void init() {
 		try {
@@ -66,8 +68,8 @@ public class AntSlcApplication {
 
 	}
 
-	public void execute(SlcExecution slcExecution, Properties properties,
-			Map<String, Object> references) {
+	public SlcExecutionContext execute(SlcExecution slcExecution,
+			Properties properties, Map<String, Object> references) {
 		if (log.isDebugEnabled()) {
 			log.debug("### Start SLC execution " + slcExecution.getUuid()
 					+ " ###");
@@ -76,13 +78,24 @@ public class AntSlcApplication {
 			log.debug("workDir=" + workDir);
 		}
 
+		if (rootDir != null)
+			properties.put(SlcAntConstants.ROOT_DIR_PROPERTY, rootDir
+					.toString());
+		if (confDir != null)
+			properties.put(SlcAntConstants.CONF_DIR_PROPERTY, confDir
+					.toString());
+		if (workDir != null)
+			properties.put(SlcAntConstants.WORK_DIR_PROPERTY, workDir
+					.toString());
+
 		// Ant coordinates
 		Resource script = findAntScript(slcExecution);
 		List<String> targets = findAntTargets(slcExecution);
 
-		ConfigurableApplicationContext ctx = createExecutionContext();
+		ConfigurableApplicationContext ctx = createExecutionContext(properties);
 
 		Project project = new Project();
+		AntExecutionContext executionContext = new AntExecutionContext(project);
 		project.addReference(SlcAntConstants.REF_ROOT_CONTEXT, ctx);
 		project.addReference(SlcAntConstants.REF_SLC_EXECUTION, slcExecution);
 		initProject(project, properties, references);
@@ -90,8 +103,10 @@ public class AntSlcApplication {
 
 		initStructure(project, script);
 		runProject(project, targets);
-		
+
 		ctx.close();
+
+		return executionContext;
 	}
 
 	protected Resource findAntScript(SlcExecution slcExecution) {
@@ -118,11 +133,18 @@ public class AntSlcApplication {
 				log.trace("script(absolute)=" + script);
 			if (script.exists())
 				return script;
+			
+			script = new FileSystemResource(scriptStr);
+			if (log.isTraceEnabled())
+				log.trace("script(fs)=" + script);
+			if (script.exists())
+				return script;
 
-			throw new SlcAntException("Cannot find Ant script " + scriptStr);
 		} catch (Exception e) {
 			throw new SlcAntException("Cannot find Ant script " + scriptStr, e);
 		}
+
+		throw new SlcAntException("Cannot find Ant script " + scriptStr);
 	}
 
 	protected List<String> findAntTargets(SlcExecution slcExecution) {
@@ -138,7 +160,15 @@ public class AntSlcApplication {
 		return targets;
 	}
 
-	protected ConfigurableApplicationContext createExecutionContext() {
+	protected ConfigurableApplicationContext createExecutionContext(
+			Properties userProperties) {
+		// Set user properties as system properties so that Spring can access
+		// them
+		for (Object key : userProperties.keySet()) {
+			System.setProperty(key.toString(), userProperties.getProperty(key
+					.toString()));
+		}
+
 		try {
 			GenericApplicationContext ctx = new GenericApplicationContext(
 					context);
@@ -311,7 +341,7 @@ public class AntSlcApplication {
 		this.confDir = confDir;
 	}
 
-	public void setWorkDir(Resource workDir) {
+	public void setWorkDir(File workDir) {
 		this.workDir = workDir;
 	}
 
