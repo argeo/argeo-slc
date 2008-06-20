@@ -12,8 +12,6 @@ import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionNotifier;
 import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.ws.process.WebServiceSlcExecutionNotifier;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
 
 public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		ProjectRelatedBuildListener {

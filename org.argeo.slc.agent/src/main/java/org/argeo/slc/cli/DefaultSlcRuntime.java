@@ -1,16 +1,15 @@
 package org.argeo.slc.cli;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.UUID;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.ant.AntSlcApplication;
@@ -18,17 +17,12 @@ import org.argeo.slc.ant.SlcAntConstants;
 import org.argeo.slc.ant.SlcAntException;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.runtime.SimpleSlcRuntime;
 import org.argeo.slc.runtime.SlcExecutionContext;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
+import org.argeo.slc.spring.SpringUtils;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 
-public class DefaultSlcRuntime extends SimpleSlcRuntime implements
-		BeanFactoryAware {
+public class DefaultSlcRuntime {
 	private final static Log log = LogFactory.getLog(DefaultSlcRuntime.class);
 
 	public final static String SLC_ROOT_FILE_NAME = "slcRoot.properties";
@@ -36,12 +30,20 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 	public SlcExecutionContext executeScript(Resource script,
 			Properties properties, Map<String, Object> references) {
 
-		if (runtimeContext == null) {
-			GenericApplicationContext ctx = new GenericApplicationContext();
-			ctx.refresh();
-			runtimeContext = ctx;
-		}
+		Resource slcRootFile = findSlcRootFile(script);
+		String scriptRelativePath = SpringUtils.extractRelativePath(SpringUtils
+				.getParent(slcRootFile), script);
 
+		SlcExecution slcExecution = createSlcExecution();
+		slcExecution.setStatus(SlcExecution.STATUS_RUNNING);
+		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,
+				scriptRelativePath);
+
+		AntSlcApplication application = getApplication(slcRootFile);
+		return application.execute(slcExecution, properties, references);
+	}
+
+	protected SlcExecution createSlcExecution() {
 		SlcExecution slcExecution = new SlcExecution();
 		slcExecution.setUuid(UUID.randomUUID().toString());
 		try {
@@ -53,52 +55,36 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 		slcExecution.setType(SlcAntConstants.EXECTYPE_SLC_ANT);
 
 		slcExecution.setUser(System.getProperty("user.name"));
-		slcExecution.setStatus(SlcExecution.STATUS_RUNNING);
-		try {
-			slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,
-					script.getURL().toString());
-		} catch (IOException e) {
-			throw new SlcException("Cannot interpret script " + script
-					+ " as URL.", e);
-		}
+		return slcExecution;
+	}
 
+	protected AntSlcApplication getApplication(Resource slcRootFile) {
 		AntSlcApplication application = new AntSlcApplication();
-		prepareApplication(slcExecution, application, script);
-		return application.execute(slcExecution, properties, references);
-	}
-
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		runtimeContext = (ApplicationContext) beanFactory;
-	}
-
-	protected void prepareApplication(SlcExecution slcExecution,
-			AntSlcApplication application, Resource script) {
+		InputStream inRootFile = null;
 		try {
-			final String fileUrlPrefix = "";
-
-			Resource slcRootFile = findSlcRootFile(script);
-
 			// Remove basedir property in order to avoid conflict with Maven
 			// if (all.containsKey("basedir"))
 			// all.remove("basedir");
 
-			InputStream inRootFile = slcRootFile.getInputStream();
+			inRootFile = slcRootFile.getInputStream();
 			Properties rootProps = loadFile(inRootFile);
 
 			Resource confDir = null;
 			File workDir = null;
 			// Root dir
-			final Resource rootDir = getParent(slcRootFile);
+			final Resource rootDir = SpringUtils.getParent(slcRootFile);
 
 			// Conf dir
 			String confDirStr = rootProps
 					.getProperty(SlcAntConstants.CONF_DIR_PROPERTY);
 			if (confDirStr != null)
-				confDir = runtimeContext.getResource(confDirStr);
+				confDir = new DefaultResourceLoader(application.getClass()
+						.getClassLoader()).getResource(confDirStr);
 
 			if (confDir == null || !confDir.exists()) {
 				// confDir = rootDir.createRelative("../conf");
-				confDir = getParent(rootDir).createRelative("conf/");
+				confDir = SpringUtils.getParent(rootDir)
+						.createRelative("conf/");
 			}
 
 			// Work dir
@@ -116,24 +102,24 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 				} catch (IOException e) {
 					workDir = new File(System.getProperty("java.io.tmpdir")
 							+ File.separator + "slcExecutions" + File.separator
-							+ slcExecution.getUuid()).getCanonicalFile();
+							+ slcRootFile.getURL().getPath());
 					log.debug("Root dir is not a file: " + e.getMessage()
 							+ ", creating work dir in temp: " + workDir);
 				}
+				workDir.mkdirs();
 			}
 
 			application.setConfDir(confDir);
 			application.setRootDir(rootDir);
 			application.setWorkDir(workDir);
 
-			application.setSlcRuntime(this);
-
-			application.init();
+			return application;
 		} catch (IOException e) {
 			throw new SlcException(
-					"Could not prepare SLC application for SLC execution "
-							+ slcExecution.getUuid() + " and script " + script,
-					e);
+					"Could not prepare SLC application for root file "
+							+ slcRootFile, e);
+		} finally {
+			IOUtils.closeQuietly(inRootFile);
 		}
 
 		// Properties from the conf dir files
@@ -172,7 +158,7 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 				if (currPath.equals("/") || currPath.equals("")) {
 					return null;
 				} else {
-					return findSlcRootFile(getParent(currDir));
+					return findSlcRootFile(SpringUtils.getParent(currDir));
 				}
 				// int indx = currPath.lastIndexOf('/',currPath.length()-1);
 
@@ -206,22 +192,6 @@ public class DefaultSlcRuntime extends SimpleSlcRuntime implements
 			throw new SlcAntException("Cannot read SLC root file", e);
 		}
 		return p;
-	}
-
-	private Resource getParent(Resource res) {
-		try {
-			if (res.getURL().getPath().equals("/"))
-				return null;
-
-			String urlStr = res.getURL().toString();
-			if (urlStr.charAt(urlStr.length() - 1) == '/')
-				urlStr = urlStr.substring(0, urlStr.length() - 2);
-
-			String parentUrlStr = urlStr.substring(0, urlStr.lastIndexOf('/'));
-			return runtimeContext.getResource(parentUrlStr + '/');
-		} catch (IOException e) {
-			throw new SlcException("Cannot get parent for resource " + res, e);
-		}
 	}
 
 	// private Resource getParentOfFile(Resource file) {

@@ -1,7 +1,6 @@
 package org.argeo.slc.ant;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -12,76 +11,31 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.helper.ProjectHelper2;
 import org.apache.tools.ant.listener.CommonsLoggingListener;
-import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.structure.DefaultSRegistry;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.runtime.SlcExecutionContext;
-import org.argeo.slc.runtime.SlcRuntime;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 public class AntSlcApplication {
 	private final static Log log = LogFactory.getLog(AntSlcApplication.class);
 
-	private SlcRuntime slcRuntime;
-
 	private Resource contextLocation;
-	private ConfigurableApplicationContext context;
+	private ApplicationContext parentContext;
 
 	private Resource rootDir;
 	private Resource confDir;
 	private File workDir;
-
-	public void init() {
-		try {
-			try {
-				if (rootDir != null)
-					System.setProperty(SlcAntConstants.ROOT_DIR_PROPERTY,
-							rootDir.getURL().toString());
-				if (confDir != null)
-					System.setProperty(SlcAntConstants.CONF_DIR_PROPERTY,
-							confDir.getURL().toString());
-			} catch (IOException e) {
-				throw new SlcAntException("Cannot interpret dir as URL.", e);
-			}
-			if (workDir != null)
-				System.setProperty(SlcAntConstants.WORK_DIR_PROPERTY, workDir
-						.toString());
-
-			if (confDir != null && contextLocation == null) {
-				contextLocation = confDir
-						.createRelative("applicationContext.xml");
-			}
-
-			GenericApplicationContext ctx = new GenericApplicationContext(
-					slcRuntime.getRuntimeContext());
-			if (contextLocation != null && contextLocation.exists()) {
-				XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
-						ctx);
-				xmlReader.loadBeanDefinitions(contextLocation);
-			}
-			ctx.refresh();
-			context = ctx;
-		} catch (Exception e) {
-			throw new SlcAntException(
-					"Cannot create SLC app application context.", e);
-		}
-
-	}
 
 	public SlcExecutionContext execute(SlcExecution slcExecution,
 			Properties properties, Map<String, Object> references) {
@@ -120,35 +74,10 @@ public class AntSlcApplication {
 			throw new SlcAntException("No Ant script provided");
 
 		try {
-			if (log.isTraceEnabled())
-				log.trace("scriptStr=" + scriptStr);
-			Resource script = null;
-
-			if (rootDir != null) {
-				script = rootDir.createRelative(scriptStr);
-				if (log.isTraceEnabled())
-					log.trace("script(relative)=" + script);
-				if (script.exists())
-					return script;
-			}
-
-			script = slcRuntime.getRuntimeContext().getResource(scriptStr);
-			if (log.isTraceEnabled())
-				log.trace("script(absolute)=" + script);
-			if (script.exists())
-				return script;
-
-			script = new FileSystemResource(scriptStr);
-			if (log.isTraceEnabled())
-				log.trace("script(fs)=" + script);
-			if (script.exists())
-				return script;
-
+			return rootDir.createRelative(scriptStr);
 		} catch (Exception e) {
 			throw new SlcAntException("Cannot find Ant script " + scriptStr, e);
 		}
-
-		throw new SlcAntException("Cannot find Ant script " + scriptStr);
 	}
 
 	protected List<String> findAntTargets(SlcExecution slcExecution) {
@@ -168,9 +97,12 @@ public class AntSlcApplication {
 			Properties userProperties) {
 		// Set user properties as system properties so that Spring can access
 		// them
-		for (Object key : userProperties.keySet()) {
-			System.setProperty(key.toString(), userProperties.getProperty(key
-					.toString()));
+
+		if (userProperties != null) {
+			for (Object key : userProperties.keySet()) {
+				System.setProperty(key.toString(), userProperties
+						.getProperty(key.toString()));
+			}
 		}
 
 		if (System.getProperty(SlcAntConstants.DEFAULT_TEST_RUN_PROPERTY) == null) {
@@ -179,8 +111,28 @@ public class AntSlcApplication {
 		}
 
 		try {
+			if (rootDir != null)
+				System.setProperty(SlcAntConstants.ROOT_DIR_PROPERTY, rootDir
+						.getURL().toString());
+			if (confDir != null)
+				System.setProperty(SlcAntConstants.CONF_DIR_PROPERTY, confDir
+						.getURL().toString());
+			if (workDir != null)
+				System.setProperty(SlcAntConstants.WORK_DIR_PROPERTY, workDir
+						.toString());
+
+			if (confDir != null && contextLocation == null) {
+				contextLocation = confDir
+						.createRelative("applicationContext.xml");
+			}
+
 			GenericApplicationContext ctx = new GenericApplicationContext(
-					context);
+					parentContext);
+			if (contextLocation != null && contextLocation.exists()) {
+				XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
+						ctx);
+				xmlReader.loadBeanDefinitions(contextLocation);
+			}
 			ctx.refresh();
 			return ctx;
 		} catch (Exception e) {
@@ -333,10 +285,6 @@ public class AntSlcApplication {
 		}
 	}
 
-	public void setSlcRuntime(SlcRuntime slcRuntime) {
-		this.slcRuntime = slcRuntime;
-	}
-
 	public void setContextLocation(Resource contextLocation) {
 		this.contextLocation = contextLocation;
 	}
@@ -351,6 +299,10 @@ public class AntSlcApplication {
 
 	public void setWorkDir(File workDir) {
 		this.workDir = workDir;
+	}
+
+	public void setParentContext(ApplicationContext parentContext) {
+		this.parentContext = parentContext;
 	}
 
 }
