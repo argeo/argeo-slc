@@ -22,6 +22,7 @@ public interface SlcAntConstants {
 	public static final String EXECTYPE_SLC_ANT = "org.argeo.slc.ant";
 	public static final String REF_SLC_EXECUTION = "slcExecution";
 
+	public final static String EXECATTR_RUNTIME = "slc.runtime";
 	public final static String EXECATTR_ANT_FILE = "ant.file";
 	public final static String EXECATTR_ANT_TARGETS = "ant.targets";
 	/** Property for the root dir (SLC root property file). */

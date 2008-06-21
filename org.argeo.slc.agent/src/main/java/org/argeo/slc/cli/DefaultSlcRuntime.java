@@ -27,8 +27,9 @@ public class DefaultSlcRuntime {
 
 	public final static String SLC_ROOT_FILE_NAME = "slcRoot.properties";
 
-	public SlcExecutionContext executeScript(Resource script,
-			Properties properties, Map<String, Object> references) {
+	public SlcExecutionContext executeScript(String runtimeStr,
+			Resource script, String targets, Properties properties,
+			Map<String, Object> references) {
 
 		Resource slcRootFile = findSlcRootFile(script);
 		String scriptRelativePath = SpringUtils.extractRelativePath(SpringUtils
@@ -36,8 +37,13 @@ public class DefaultSlcRuntime {
 
 		SlcExecution slcExecution = createSlcExecution();
 		slcExecution.setStatus(SlcExecution.STATUS_RUNNING);
+		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_RUNTIME,
+				runtimeStr);
 		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,
 				scriptRelativePath);
+		if (targets != null)
+			slcExecution.getAttributes().put(
+					SlcAntConstants.EXECATTR_ANT_TARGETS, targets);
 
 		AntSlcApplication application = getApplication(slcRootFile);
 		return application.execute(slcExecution, properties, references);

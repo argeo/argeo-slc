@@ -15,7 +15,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.logging.Log4jUtils;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 public class SlcMain {
 	public enum Mode {
@@ -37,8 +39,17 @@ public class SlcMain {
 					"use value for given property").create('p');
 
 	private final static Option scriptOpt = OptionBuilder.withLongOpt("script")
-			.withArgName("script").hasArg().withType(File.class)
-			.withDescription("SLC script to execute").create('s');
+			.withArgName("script").hasArg().withDescription(
+					"SLC script to execute").create('s');
+
+	private final static Option targetsOpt = OptionBuilder.withLongOpt(
+			"targets").withArgName("targets").hasArg().withDescription(
+			"Targets to execute").create('t');
+
+	private final static Option runtimeOpt = OptionBuilder.withLongOpt(
+			"runtime").withArgName("runtime").hasArg().withDescription(
+			"Runtime to use, either a full path or relative to slc app conf dir: "
+					+ "<conf dir>/runtime/<runtime>/.xml").create('r');
 
 	private final static Options options;
 
@@ -48,13 +59,17 @@ public class SlcMain {
 		options = new Options();
 		options.addOption(modeOpt);
 		options.addOption(scriptOpt);
+		options.addOption(targetsOpt);
 		options.addOption(propertyOpt);
+		options.addOption(runtimeOpt);
 	}
 
 	public static void main(String[] args) {
 		Mode mode = null;
 		Properties properties = new Properties();
-		File script = null;
+		String script = null;
+		String targets = null;
+		String runtimeStr = null;
 
 		try {
 
@@ -75,7 +90,11 @@ public class SlcMain {
 					throw new SlcException("Mode " + Mode.single
 							+ " requires option '" + scriptOpt.getLongOpt()
 							+ "'");
-				script = (File) cl.getOptionObject(scriptOpt.getOpt());
+				script = cl.getOptionValue(scriptOpt.getOpt());
+
+				// Targets
+				if (cl.hasOption(targetsOpt.getOpt()))
+					targets = cl.getOptionValue(targetsOpt.getOpt());
 			}
 
 			// Properties
@@ -83,6 +102,13 @@ public class SlcMain {
 				for (String property : cl.getOptionValues(propertyOpt.getOpt())) {
 					addProperty(properties, property);
 				}
+			}
+
+			// Runtime
+			if (cl.hasOption(runtimeOpt.getOpt())) {
+				runtimeStr = cl.getOptionValue(runtimeOpt.getOpt());
+			} else {
+				runtimeStr = "default";
 			}
 
 		} catch (ParseException e) {
@@ -102,15 +128,26 @@ public class SlcMain {
 		initLogging(properties);
 		if (log.isDebugEnabled()) {
 			log.debug("Mode: " + mode);
+			log.debug("Runtime: " + runtimeStr);
 			log.debug("User properties: " + properties);
 			if (script != null)
-				log.debug("Script: " + script.getAbsolutePath());
+				log.debug("Script: " + script);
+			if (targets != null)
+				log.debug("Targets: " + targets);
 		}
 
 		// Execution
 		if (mode.equals(Mode.single)) {
+			Resource scriptRes;
+			if (new File(script).exists()) {
+				scriptRes = new FileSystemResource(script);
+			} else {
+				scriptRes = new DefaultResourceLoader(SlcMain.class
+						.getClassLoader()).getResource(script);
+			}
+
 			DefaultSlcRuntime runtime = new DefaultSlcRuntime();
-			runtime.executeScript(new FileSystemResource(script), properties,
+			runtime.executeScript(runtimeStr, scriptRes, targets, properties,
 					null);
 		}
 	}
