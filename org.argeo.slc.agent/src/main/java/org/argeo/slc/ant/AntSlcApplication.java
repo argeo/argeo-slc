@@ -9,6 +9,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.Project;
@@ -20,14 +21,19 @@ import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
+import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.runtime.SlcExecutionContext;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.util.SystemPropertyUtils;
 
 public class AntSlcApplication {
+	private final static String DEFAULT_APP_LOG4J_PROPERTIES = "org/argeo/slc/ant/defaultAppLog4j.properties";
+
 	private final static Log log = LogFactory.getLog(AntSlcApplication.class);
 
 	private Resource contextLocation;
@@ -39,6 +45,11 @@ public class AntSlcApplication {
 
 	public SlcExecutionContext execute(SlcExecution slcExecution,
 			Properties properties, Map<String, Object> references) {
+
+		// Properties and app logging initialization
+		initSystemProperties(properties);
+		Log4jUtils.initLog4j("classpath:" + DEFAULT_APP_LOG4J_PROPERTIES);
+		
 		log.info("### Start SLC execution " + slcExecution.getUuid() + " ###");
 		if (log.isDebugEnabled()) {
 			log.debug("rootDir=" + rootDir);
@@ -46,12 +57,14 @@ public class AntSlcApplication {
 			log.debug("workDir=" + workDir);
 		}
 
+		// Spring initialization
+		ConfigurableApplicationContext ctx = createExecutionContext();
+
 		// Ant coordinates
 		Resource script = findAntScript(slcExecution);
 		List<String> targets = findAntTargets(slcExecution);
-
-		ConfigurableApplicationContext ctx = createExecutionContext(properties);
-
+		
+		// Ant project initialization
 		Project project = new Project();
 		AntExecutionContext executionContext = new AntExecutionContext(project);
 		project.addReference(SlcAntConstants.REF_ROOT_CONTEXT, ctx);
@@ -93,11 +106,9 @@ public class AntSlcApplication {
 		return targets;
 	}
 
-	protected ConfigurableApplicationContext createExecutionContext(
-			Properties userProperties) {
+	protected void initSystemProperties(Properties userProperties) {
 		// Set user properties as system properties so that Spring can access
 		// them
-
 		if (userProperties != null) {
 			for (Object key : userProperties.keySet()) {
 				System.setProperty(key.toString(), userProperties
@@ -119,8 +130,40 @@ public class AntSlcApplication {
 						.getURL().toString());
 			if (workDir != null)
 				System.setProperty(SlcAntConstants.WORK_DIR_PROPERTY, workDir
-						.toString());
+						.getCanonicalPath());
 
+			// Additional properties in slc.properties file. Already set sytem
+			// properties (such as the various directories) can be resolved in
+			// placeholders.
+			if (confDir != null) {
+				Resource slcPropertiesRes = confDir
+						.createRelative("slc.properties");
+				if (slcPropertiesRes.exists()) {
+					Properties slcProperties = new Properties();
+					InputStream in = slcPropertiesRes.getInputStream();
+					try {
+						slcProperties.load(in);
+					} finally {
+						IOUtils.closeQuietly(in);
+					}
+
+					for (String key : slcProperties.stringPropertyNames()) {
+						if (!System.getProperties().containsKey(key)) {
+							String value = SystemPropertyUtils
+									.resolvePlaceholders(slcProperties
+											.getProperty(key));
+							System.setProperty(key, value);
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new SlcAntException("Cannot init system properties.", e);
+		}
+	}
+
+	protected ConfigurableApplicationContext createExecutionContext() {
+		try {
 			if (confDir != null && contextLocation == null) {
 				contextLocation = confDir
 						.createRelative("applicationContext.xml");
@@ -133,6 +176,12 @@ public class AntSlcApplication {
 						ctx);
 				xmlReader.loadBeanDefinitions(contextLocation);
 			}
+
+			// Add property place holder
+			PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
+			ppc.setIgnoreUnresolvablePlaceholders(true);
+			ctx.addBeanFactoryPostProcessor(ppc);
+
 			ctx.refresh();
 			return ctx;
 		} catch (Exception e) {

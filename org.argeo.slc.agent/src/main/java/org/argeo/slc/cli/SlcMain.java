@@ -11,7 +11,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.SlcException;
+import org.argeo.slc.logging.Log4jUtils;
 import org.springframework.core.io.FileSystemResource;
 
 public class SlcMain {
@@ -19,8 +22,9 @@ public class SlcMain {
 		single, agent
 	}
 
-	public final static String MODE_SINGLE = "single";
-	public final static String MODE_AGENT = "agent";
+	private static Log log = null;
+
+	private final static String BOOTSTRAP_LOG4J_CONFIG = "org/argeo/slc/cli/bootstrapLog4j.properties";
 
 	private final static Option modeOpt = OptionBuilder.withLongOpt("mode")
 			.withArgName("mode").hasArg().isRequired().withDescription(
@@ -53,6 +57,7 @@ public class SlcMain {
 		File script = null;
 
 		try {
+
 			CommandLineParser clParser = new GnuParser();
 			CommandLine cl = clParser.parse(options, args);
 
@@ -63,7 +68,6 @@ public class SlcMain {
 			} catch (IllegalArgumentException e) {
 				throw new SlcException("Unrecognized mode '" + modeStr + "'", e);
 			}
-			System.out.println("Mode: " + mode);
 
 			// Script
 			if (mode.equals(Mode.single)) {
@@ -73,7 +77,6 @@ public class SlcMain {
 							+ "'");
 				script = (File) cl.getOptionObject(scriptOpt.getOpt());
 			}
-			System.out.println("Script: " + script.getAbsolutePath());
 
 			// Properties
 			if (cl.hasOption(propertyOpt.getOpt())) {
@@ -81,14 +84,27 @@ public class SlcMain {
 					addProperty(properties, property);
 				}
 			}
-			System.out.print("Properties: " + properties);
+
 		} catch (ParseException e) {
 			System.err.println("Problem with command line arguments. "
 					+ e.getMessage());
-			printUsage();
+			badExit();
 		} catch (SlcException e) {
 			System.err.println(e.getMessage());
-			printUsage();
+			badExit();
+		} catch (Exception e) {
+			System.err.println("Unexpected exception when bootstrapping.");
+			e.printStackTrace();
+			badExit();
+		}
+
+		// Initializes logging and log arguments
+		initLogging(properties);
+		if (log.isDebugEnabled()) {
+			log.debug("Mode: " + mode);
+			log.debug("User properties: " + properties);
+			if (script != null)
+				log.debug("Script: " + script.getAbsolutePath());
 		}
 
 		// Execution
@@ -127,5 +143,25 @@ public class SlcMain {
 			properties.setProperty(property, "true");
 		}
 
+	}
+
+	private static void initLogging(Properties userProperties) {
+		// Add log4j user properties to System properties
+		for (String key : userProperties.stringPropertyNames()) {
+			if (key.startsWith("log4j.")) {
+					System.setProperty(key, userProperties.getProperty(key));
+			}
+		}
+		
+		System.setProperty("log4j.defaultInitOverride", "true");
+		Log4jUtils.initLog4j(System.getProperty("log4j.configuration",
+				"classpath:" + BOOTSTRAP_LOG4J_CONFIG));
+		log = LogFactory.getLog(SlcMain.class);
+
+	}
+
+	private static void badExit() {
+		printUsage();
+		System.exit(1);
 	}
 }

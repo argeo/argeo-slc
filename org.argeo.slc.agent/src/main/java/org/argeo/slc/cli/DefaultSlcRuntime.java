@@ -121,24 +121,6 @@ public class DefaultSlcRuntime {
 		} finally {
 			IOUtils.closeQuietly(inRootFile);
 		}
-
-		// Properties from the conf dir files
-		// Properties properties = new Properties();
-		// StringTokenizer st = new StringTokenizer(rootProps.getProperty(
-		// PROPERTY_FILE_NAMES_PROPERTY, "slc.properties"), ",");
-		// while (st.hasMoreTokens()) {
-		// String fileName = st.nextToken();
-		// properties.putAll(loadFile(confDir.getAbsolutePath()
-		// + File.separator + fileName));
-		// }
-		//
-		// for (Object o : properties.keySet()) {
-		// String key = o.toString();
-		// if (all.getProperty(key) == null) {// not already set
-		// all.setProperty(key, properties.getProperty(key));
-		// }
-		// }
-		//
 	}
 
 	/**
@@ -160,27 +142,11 @@ public class DefaultSlcRuntime {
 				} else {
 					return findSlcRootFile(SpringUtils.getParent(currDir));
 				}
-				// int indx = currPath.lastIndexOf('/',currPath.length()-1);
-
 			}
 		} catch (IOException e) {
 			throw new SlcException("Problem when looking in SLC root file in "
 					+ currDir, e);
 		}
-
-		// for (File file : dir.listFiles()) {
-		// if (!file.isDirectory()
-		// && file.getName().equals(SLC_ROOT_FILE_NAME)) {
-		// return file;
-		// }
-		// }
-		//
-		// File parentDir = dir.getParentFile();
-		// if (parentDir == null) {
-		// return null;// stop condition: not found
-		// } else {
-		// return findSlcRootFile(parentDir);
-		// }
 	}
 
 	/** Loads the content of a file as <code>Properties</code>. */
@@ -193,12 +159,4 @@ public class DefaultSlcRuntime {
 		}
 		return p;
 	}
-
-	// private Resource getParentOfFile(Resource file) {
-	// try {
-	// return file.createRelative(".");
-	// } catch (IOException e) {
-	// throw new SlcException("Cannot get parent for resource " + file, e);
-	// }
-	// }
 }
