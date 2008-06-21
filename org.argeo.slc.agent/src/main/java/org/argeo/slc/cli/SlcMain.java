@@ -138,17 +138,9 @@ public class SlcMain {
 
 		// Execution
 		if (mode.equals(Mode.single)) {
-			Resource scriptRes;
-			if (new File(script).exists()) {
-				scriptRes = new FileSystemResource(script);
-			} else {
-				scriptRes = new DefaultResourceLoader(SlcMain.class
-						.getClassLoader()).getResource(script);
-			}
-
 			DefaultSlcRuntime runtime = new DefaultSlcRuntime();
-			runtime.executeScript(runtimeStr, scriptRes, targets, properties,
-					null);
+			runtime.executeScript(runtimeStr, script, targets, properties,
+					null, null);
 		}
 	}
 

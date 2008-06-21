@@ -21,7 +21,7 @@ public class SlcAntTest extends AbstractSpringTestCase {
 		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,
 				"/org/argeo/slc/ant/build.xml");
 
-		slcApp.execute(slcExecution, null, null);
+		slcApp.execute(slcExecution, null, null, null);
 	}
 
 }

@@ -12,14 +12,17 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.ant.AntExecutionContext;
 import org.argeo.slc.ant.AntSlcApplication;
 import org.argeo.slc.ant.SlcAntConstants;
 import org.argeo.slc.ant.SlcAntException;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.runtime.SlcExecutionContext;
+import org.argeo.slc.runtime.SlcExecutionOutput;
 import org.argeo.slc.spring.SpringUtils;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 public class DefaultSlcRuntime {
@@ -27,29 +30,69 @@ public class DefaultSlcRuntime {
 
 	public final static String SLC_ROOT_FILE_NAME = "slcRoot.properties";
 
-	public SlcExecutionContext executeScript(String runtimeStr,
-			Resource script, String targets, Properties properties,
-			Map<String, Object> references) {
-
-		Resource slcRootFile = findSlcRootFile(script);
-		String scriptRelativePath = SpringUtils.extractRelativePath(SpringUtils
-				.getParent(slcRootFile), script);
-
-		SlcExecution slcExecution = createSlcExecution();
-		slcExecution.setStatus(SlcExecution.STATUS_RUNNING);
-		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_RUNTIME,
-				runtimeStr);
-		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,
-				scriptRelativePath);
-		if (targets != null)
-			slcExecution.getAttributes().put(
-					SlcAntConstants.EXECATTR_ANT_TARGETS, targets);
-
-		AntSlcApplication application = getApplication(slcRootFile);
-		return application.execute(slcExecution, properties, references);
+	/**
+	 * Simplified execution with default runtime, default target, and no
+	 * properties/reference arguments.
+	 * 
+	 * @param script
+	 *            path to the script
+	 * @param executionOutput
+	 *            output
+	 * 
+	 * @see #executeScript(String, String, String, Properties, Map,
+	 *      SlcExecutionOutput)
+	 */
+	public void executeScript(String script,
+			SlcExecutionOutput<AntExecutionContext> executionOutput) {
+		executeScript(null, script, null, null, null, executionOutput);
 	}
 
-	protected SlcExecution createSlcExecution() {
+	/**
+	 * Simplified execution with default runtime, and no properties/reference
+	 * arguments.
+	 * 
+	 * @param script
+	 *            path to the script
+	 * @param targets
+	 *            comma separated list of targets
+	 * @param executionOutput
+	 *            output
+	 * @see #executeScript(String, String, String, Properties, Map,
+	 *      SlcExecutionOutput)
+	 */
+	public void executeScript(String script, String targets,
+			SlcExecutionOutput<AntExecutionContext> executionOutput) {
+		executeScript(null, script, targets, null, null, executionOutput);
+	}
+
+	public void executeScript(String runtime, String script, String targets,
+			Properties properties, Map<String, Object> references,
+			SlcExecutionOutput<AntExecutionContext> executionOutput) {
+
+		Resource scriptRes = findScript(script);
+		Resource slcRootFile = findSlcRootFile(scriptRes);
+
+		SlcExecution slcExecution = createSlcExecution(runtime, slcRootFile,
+				scriptRes, targets);
+
+		AntSlcApplication application = getApplication(slcRootFile);
+		application.execute(slcExecution, properties, references,
+				executionOutput);
+	}
+
+	protected Resource findScript(String scriptStr) {
+		Resource scriptRes;
+		if (new File(scriptStr).exists()) {
+			scriptRes = new FileSystemResource(scriptStr);
+		} else {
+			scriptRes = new DefaultResourceLoader(SlcMain.class
+					.getClassLoader()).getResource(scriptStr);
+		}
+		return scriptRes;
+	}
+
+	protected SlcExecution createSlcExecution(String runtimeStr,
+			Resource slcRootFile, Resource script, String targets) {
 		SlcExecution slcExecution = new SlcExecution();
 		slcExecution.setUuid(UUID.randomUUID().toString());
 		try {
@@ -61,6 +104,20 @@ public class DefaultSlcRuntime {
 		slcExecution.setType(SlcAntConstants.EXECTYPE_SLC_ANT);
 
 		slcExecution.setUser(System.getProperty("user.name"));
+
+		if (runtimeStr != null)
+			slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_RUNTIME,
+					runtimeStr);
+		String scriptRelativePath = SpringUtils.extractRelativePath(SpringUtils
+				.getParent(slcRootFile), script);
+
+		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,
+				scriptRelativePath);
+		if (targets != null)
+			slcExecution.getAttributes().put(
+					SlcAntConstants.EXECATTR_ANT_TARGETS, targets);
+
+		slcExecution.setStatus(SlcExecution.STATUS_SCHEDULED);
 		return slcExecution;
 	}
 

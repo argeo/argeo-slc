@@ -28,6 +28,7 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.runtime.SlcExecutionContext;
+import org.argeo.slc.runtime.SlcExecutionOutput;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -52,10 +53,11 @@ public class AntSlcApplication {
 	private Resource confDir;
 	private File workDir;
 
-	public SlcExecutionContext execute(SlcExecution slcExecution,
-			Properties properties, Map<String, Object> references) {
+	public void execute(SlcExecution slcExecution, Properties properties,
+			Map<String, Object> references,
+			SlcExecutionOutput<AntExecutionContext> executionOutput) {
 
-		// Properties and app logging initialization
+		// Properties and application logging initialization
 		initSystemProperties(properties);
 		Log4jUtils.initLog4j("classpath:" + DEFAULT_APP_LOG4J_PROPERTIES);
 
@@ -71,7 +73,7 @@ public class AntSlcApplication {
 		ConfigurableApplicationContext ctx = createExecutionContext(slcExecution);
 
 		// Ant coordinates
-		Resource script = findAntScript(slcExecution);
+		String scriptRelativePath = findAntScript(slcExecution);
 		List<String> targets = findAntTargets(slcExecution);
 
 		// Ant project initialization
@@ -80,14 +82,16 @@ public class AntSlcApplication {
 		project.addReference(SlcAntConstants.REF_ROOT_CONTEXT, ctx);
 		project.addReference(SlcAntConstants.REF_SLC_EXECUTION, slcExecution);
 		initProject(project, properties, references);
-		parseProject(project, script);
+		parseProject(project, scriptRelativePath);
 
-		initStructure(project, script);
+		// Execute project
+		initStructure(project, scriptRelativePath);
 		runProject(project, targets);
 
-		ctx.close();
+		if (executionOutput != null)
+			executionOutput.postExecution(executionContext);
 
-		return executionContext;
+		ctx.close();
 	}
 
 	protected void initSystemProperties(Properties userProperties) {
@@ -154,18 +158,20 @@ public class AntSlcApplication {
 			Resource runtimeRes = null;
 			String runtimeStr = slcExecution.getAttributes().get(
 					SlcAntConstants.EXECATTR_RUNTIME);
-			if (runtimeStr != null) {
-				ResourceLoader rl = new DefaultResourceLoader(getClass()
-						.getClassLoader());
-				try {
-					runtimeRes = rl.getResource(runtimeStr);
-				} catch (Exception e) {
-					// silent
-				}
-				if (runtimeRes == null || !runtimeRes.exists()) {
+			if (runtimeStr == null)
+				runtimeStr = "default";
+
+			ResourceLoader rl = new DefaultResourceLoader(getClass()
+					.getClassLoader());
+			try {// tries absolute reference
+				runtimeRes = rl.getResource(runtimeStr);
+			} catch (Exception e) {
+				// silent
+			}
+			if (runtimeRes == null || !runtimeRes.exists()) {
+				if (confDir != null)
 					runtimeRes = confDir.createRelative("runtime/" + runtimeStr
 							+ ".xml");
-				}
 			}
 
 			// Find runtime independent application context definition
@@ -202,17 +208,13 @@ public class AntSlcApplication {
 		}
 	}
 
-	protected Resource findAntScript(SlcExecution slcExecution) {
+	protected String findAntScript(SlcExecution slcExecution) {
 		String scriptStr = slcExecution.getAttributes().get(
 				SlcAntConstants.EXECATTR_ANT_FILE);
 		if (scriptStr == null)
 			throw new SlcAntException("No Ant script provided");
 
-		try {
-			return rootDir.createRelative(scriptStr);
-		} catch (Exception e) {
-			throw new SlcAntException("Cannot find Ant script " + scriptStr, e);
-		}
+		return scriptStr;
 	}
 
 	protected List<String> findAntTargets(SlcExecution slcExecution) {
@@ -304,52 +306,45 @@ public class AntSlcApplication {
 		return defs;
 	}
 
-	protected void initStructure(Project project, Resource script) {
+	protected void initStructure(Project project, String scriptRelativePath) {
 		// Init structure registry
-		try {
-			StructureRegistry<TreeSPath> registry = new TreeSRegistry();
-			project.addReference(SlcAntConstants.REF_STRUCTURE_REGISTRY,
-					registry);
+		StructureRegistry<TreeSPath> registry = new TreeSRegistry();
+		project.addReference(SlcAntConstants.REF_STRUCTURE_REGISTRY, registry);
 
-			String scriptPath = script.getURL().getPath();
-			if (rootDir != null) {
-				scriptPath = scriptPath.substring(rootDir.getURL().getPath()
-						.length());
-				log.debug("rootDirPath=" + rootDir.getURL().getPath());
-			}
-			log.debug("scriptPath=" + scriptPath);
-
-			StringTokenizer st = new StringTokenizer(scriptPath, "/");
-			TreeSPath currPath = null;
-			while (st.hasMoreTokens()) {
-				String name = st.nextToken();
-				if (currPath == null) {
-					currPath = TreeSPath.createRootPath(name);
-				} else {
+		// Lowest levels
+		StringTokenizer st = new StringTokenizer(scriptRelativePath, "/");
+		TreeSPath currPath = null;
+		while (st.hasMoreTokens()) {
+			String name = st.nextToken();
+			if (currPath == null) {
+				currPath = TreeSPath.createRootPath(name);
+			} else {
+				if (st.hasMoreTokens())// don't register project file
 					currPath = currPath.createChild(name);
-				}
-				registry.register(currPath, new SimpleSElement(name));
 			}
-			TreeSPath projectPath = currPath
-					.createChild(project.getName() != null
-							&& !project.getName().equals("") ? project
-							.getName() : "project");
-			String projectDesc = project.getDescription() != null
-					&& !project.getDescription().equals("") ? project
-					.getDescription() : projectPath.getName();
-			registry.register(projectPath, new SimpleSElement(projectDesc));
-			project.addReference(SlcAntConstants.REF_PROJECT_PATH, currPath);
-
-			if (log.isDebugEnabled())
-				log.debug("Project path: " + projectPath);
-		} catch (IOException e) {
-			throw new SlcAntException("Cannot inititalize execution structure",
-					e);
+			registry.register(currPath, new SimpleSElement(name));
 		}
+
+		// Project level
+		String projectName = project.getName() != null
+				&& !project.getName().equals("") ? project.getName()
+				: "project";
+		TreeSPath projectPath = currPath.createChild(projectName);
+
+		String projectDesc = project.getDescription() != null
+				&& !project.getDescription().equals("") ? project
+				.getDescription() : projectPath.getName();
+
+		registry.register(projectPath, new SimpleSElement(projectDesc));
+		project.addReference(SlcAntConstants.REF_PROJECT_PATH, projectPath);
+
+		if (log.isDebugEnabled())
+			log.debug("Project path: " + projectPath);
 	}
 
-	protected void parseProject(Project project, Resource script) {
+	protected void parseProject(Project project, String scriptRelativePath) {
 		try {
+			Resource script = rootDir.createRelative(scriptRelativePath);
 			File baseDir = null;
 			try {
 				File scriptFile = script.getFile();
@@ -368,7 +363,7 @@ public class AntSlcApplication {
 			projectHelper.parse(project, script.getURL());
 		} catch (Exception e) {
 			throw new SlcAntException("Could not parse project for script "
-					+ script, e);
+					+ scriptRelativePath, e);
 		}
 
 	}
