@@ -14,6 +14,7 @@
 		<property name="listeners">
 			<list>
 				<ref bean="slcDefault.test.resultLogger" />
+				<ref bean="slcDefault.castor.xsltReportGenerator" />
 			</list>
 		</property>
 	</bean>
@@ -30,7 +31,7 @@
 
 	<bean name="executionBuildListener"
 		class="org.argeo.slc.ant.SlcExecutionBuildListener">
-		<property name="logLevel" value="INFO"/>
+		<property name="logLevel" value="INFO" />
 		<property name="notifiers">
 			<list>
 				<ref bean="slcDefault.process.fileSlcExecutionNotifier" />
