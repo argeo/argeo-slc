@@ -31,9 +31,7 @@
 			value="classpath:/org/argeo/slc/core/test/tree/basicReport.xslt" />
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 		<property name="logXml" value="false" />
-		<!-- 
-			<property name="outputDir" value="/path/to/output/dir" />
-		-->
+		<property name="outputDir" value="${slc.workDir}/results/html" />
 	</bean>
 
 
