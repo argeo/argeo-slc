@@ -133,7 +133,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 				.getReference(SlcAntConstants.REF_SLC_EXECUTION);
 
 		if (slcExecution == null)
-			throw new SlcAntException("No SLC Execution registered.");
+			throw new SlcException("No SLC Execution registered.");
 		return slcExecution;
 	}
 

@@ -47,7 +47,8 @@ public class SlcTestTask extends SAwareTask {
 			try {
 				testRun = (WritableTestRun) getContext().getBean(testRunBeanT);
 				if (log.isTraceEnabled())
-					log.trace("Load test run bean from bean name " + testRunBeanT);
+					log.trace("Load test run bean from bean name "
+							+ testRunBeanT);
 			} catch (BeansException e) {
 				// silent, will try defaults
 			}

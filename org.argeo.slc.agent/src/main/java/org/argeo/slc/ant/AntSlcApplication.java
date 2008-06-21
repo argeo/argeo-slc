@@ -20,6 +20,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.helper.ProjectHelper2;
 import org.apache.tools.ant.listener.CommonsLoggingListener;
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureRegistry;
@@ -143,7 +144,7 @@ public class AntSlcApplication {
 				}
 			}
 		} catch (Exception e) {
-			throw new SlcAntException("Cannot init system properties.", e);
+			throw new SlcException("Cannot init system properties.", e);
 		}
 	}
 
@@ -200,7 +201,7 @@ public class AntSlcApplication {
 			ctx.refresh();
 			return ctx;
 		} catch (Exception e) {
-			throw new SlcAntException(
+			throw new SlcException(
 					"Cannot create SLC execution application context.", e);
 		}
 	}
@@ -209,7 +210,7 @@ public class AntSlcApplication {
 		String scriptStr = slcExecution.getAttributes().get(
 				SlcAntConstants.EXECATTR_ANT_FILE);
 		if (scriptStr == null)
-			throw new SlcAntException("No Ant script provided");
+			throw new SlcException("No Ant script provided");
 
 		return scriptStr;
 	}
@@ -298,7 +299,7 @@ public class AntSlcApplication {
 			defs.load(in);
 			in.close();
 		} catch (IOException e) {
-			throw new SlcAntException("Cannot load task definitions", e);
+			throw new SlcException("Cannot load task definitions", e);
 		}
 		return defs;
 	}
@@ -359,7 +360,7 @@ public class AntSlcApplication {
 					projectHelper);
 			projectHelper.parse(project, script.getURL());
 		} catch (Exception e) {
-			throw new SlcAntException("Could not parse project for script "
+			throw new SlcException("Could not parse project for script "
 					+ scriptRelativePath, e);
 		}
 
@@ -376,7 +377,7 @@ public class AntSlcApplication {
 			}
 		} catch (Throwable e) {
 			exception = e;
-			throw new SlcAntException("SLC Ant execution failed", exception);
+			throw new SlcException("SLC Ant execution failed", exception);
 		} finally {
 			p.fireBuildFinished(exception);
 		}

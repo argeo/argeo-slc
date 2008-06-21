@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.ant.AntExecutionContext;
 import org.argeo.slc.ant.AntSlcApplication;
 import org.argeo.slc.ant.SlcAntConstants;
-import org.argeo.slc.ant.SlcAntException;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.runtime.SlcExecutionOutput;
@@ -217,7 +216,7 @@ public class DefaultSlcRuntime {
 		try {
 			p.load(in);
 		} catch (IOException e) {
-			throw new SlcAntException("Cannot read SLC root file", e);
+			throw new SlcException("Cannot read SLC root file", e);
 		}
 		return p;
 	}

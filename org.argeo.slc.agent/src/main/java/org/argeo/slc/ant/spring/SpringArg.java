@@ -6,7 +6,6 @@ import java.util.Vector;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.DataType;
 import org.argeo.slc.ant.SlcAntConstants;
-import org.argeo.slc.ant.SlcAntException;
 import org.argeo.slc.core.SlcException;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -53,15 +52,15 @@ public class SpringArg<T> extends DataType {
 			if (bean != null) {
 				beanInstance = (T) getContext().getBean(bean);
 				if (beanInstance == null)
-					throw new SlcAntException(
-							"No object found for Spring bean " + bean);
+					throw new SlcException("No object found for Spring bean "
+							+ bean);
 			} else if (antref != null) {
 				beanInstance = (T) getProject().getReference(antref);
 				if (beanInstance == null)
-					throw new SlcAntException(
-							"No object found for Ant reference " + antref);
+					throw new SlcException("No object found for Ant reference "
+							+ antref);
 			} else {
-				throw new SlcAntException(
+				throw new SlcException(
 						"Don't know how to retrieve bean instance");
 			}
 
@@ -83,7 +82,7 @@ public class SpringArg<T> extends DataType {
 		BeanWrapper wrapper = new BeanWrapperImpl(obj);
 		for (OverrideArg override : overrides) {
 			if (override.getName() == null) {
-				throw new SlcAntException(
+				throw new SlcException(
 						"The name of the property to override has to be set.");
 			}
 
