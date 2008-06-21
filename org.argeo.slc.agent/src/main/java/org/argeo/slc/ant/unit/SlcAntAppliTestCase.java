@@ -2,10 +2,8 @@ package org.argeo.slc.ant.unit;
 
 import junit.framework.TestCase;
 
-import org.apache.tools.ant.launch.AntMain;
 import org.argeo.slc.ant.AntExecutionContext;
 import org.argeo.slc.cli.DefaultSlcRuntime;
-import org.argeo.slc.runtime.SlcExecutionContext;
 import org.argeo.slc.runtime.SlcExecutionOutput;
 
 public abstract class SlcAntAppliTestCase extends TestCase implements

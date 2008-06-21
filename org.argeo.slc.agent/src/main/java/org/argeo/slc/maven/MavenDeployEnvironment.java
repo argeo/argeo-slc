@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.ant.AntRegistryUtil;
+import org.argeo.slc.ant.AntRunner;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.deploy.DeployEnvironment;
 
@@ -52,9 +52,9 @@ public class MavenDeployEnvironment implements DeployEnvironment {
 					"org/argeo/slc/support/deploy/ant/build.xml");
 
 			if (type == null || type.equals("zip")) {
-				AntRegistryUtil.runAll(antUrl, "deployZip", props);
+				new AntRunner(antUrl, "deployZip", props).run();
 			} else if (type.equals("tar.gz")) {
-				AntRegistryUtil.runAll(antUrl, "deployTarGz", props);
+				new AntRunner(antUrl, "deployTarGz", props).run();
 			} else {
 				throw new SlcException("Unknow package type " + type);
 			}

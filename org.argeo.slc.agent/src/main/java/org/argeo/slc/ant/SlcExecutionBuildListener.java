@@ -5,9 +5,7 @@ import java.util.Vector;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.MDC;
-import org.apache.log4j.Priority;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildListener;
@@ -16,7 +14,6 @@ import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionNotifier;
 import org.argeo.slc.core.process.SlcExecutionStep;
-import org.argeo.slc.ws.process.WebServiceSlcExecutionNotifier;
 
 public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		BuildListener {

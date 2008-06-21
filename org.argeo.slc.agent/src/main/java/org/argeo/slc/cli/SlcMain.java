@@ -1,6 +1,5 @@
 package org.argeo.slc.cli;
 
-import java.io.File;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -15,9 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.logging.Log4jUtils;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 
 public class SlcMain {
 	public enum Mode {

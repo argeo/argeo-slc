@@ -9,12 +9,10 @@ import java.util.Vector;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
-import org.springframework.context.ApplicationContext;
+import org.apache.tools.ant.helper.ProjectHelper2;
 
-/** @deprecated */
+/** Run regular Ant script (that is, not SLC instrumented) */
 public class AntRunner {
-	private ApplicationContext context;
-	private ProjectHelper projectHelper;
 	private URL buildFile;
 	private String[] targets;
 	private Properties properties;
@@ -23,25 +21,14 @@ public class AntRunner {
 
 	}
 
-	public AntRunner(ApplicationContext context, ProjectHelper projectHelper,
-			URL buildFile, String[] targets) {
-		super();
-		this.context = context;
-		this.projectHelper = projectHelper;
-		this.buildFile = buildFile;
-		this.targets = targets;
+	public AntRunner(URL buildFile, String target, Properties properties) {
+		this(buildFile, new String[] { target }, properties);
 	}
 
-	public AntRunner(ApplicationContext context, URL buildFile, String target) {
-		super();
-		this.context = context;
-
-		BasicSlcProjectHelper basicSlcProjectHelper = new BasicSlcProjectHelper();
-		this.projectHelper = basicSlcProjectHelper;
-		basicSlcProjectHelper.setContext(context);
-
+	public AntRunner(URL buildFile, String[] targets, Properties properties) {
 		this.buildFile = buildFile;
-		this.targets = new String[] { target };
+		this.targets = targets;
+		this.properties = properties;
 	}
 
 	public void run() {
@@ -52,6 +39,7 @@ public class AntRunner {
 		p.setBaseDir(extractBaseDir(path));
 
 		p.init();
+		ProjectHelper projectHelper = new ProjectHelper2();
 		p.addReference(ProjectHelper.PROJECTHELPER_REFERENCE, projectHelper);
 		projectHelper.parse(p, buildFile);
 
@@ -98,11 +86,6 @@ public class AntRunner {
 		} else {
 			return new File(System.getProperty("user.dir"));
 		}
-	}
-
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

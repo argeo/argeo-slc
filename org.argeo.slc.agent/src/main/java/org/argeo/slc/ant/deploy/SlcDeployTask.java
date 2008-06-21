@@ -3,7 +3,6 @@ package org.argeo.slc.ant.deploy;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
-import org.argeo.slc.ant.SlcAntConfig;
 import org.argeo.slc.ant.spring.SpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
 import org.argeo.slc.core.build.Distribution;

@@ -18,7 +18,6 @@ import org.argeo.slc.ant.SlcAntConstants;
 import org.argeo.slc.ant.SlcAntException;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.runtime.SlcExecutionContext;
 import org.argeo.slc.runtime.SlcExecutionOutput;
 import org.argeo.slc.spring.SpringUtils;
 import org.springframework.core.io.DefaultResourceLoader;
