@@ -1,22 +1,15 @@
 package org.argeo.slc.example.appli;
 
-import org.argeo.slc.ant.AntExecutionContext;
-import org.argeo.slc.cli.DefaultSlcRuntime;
-import org.argeo.slc.cli.SlcMain;
-import org.argeo.slc.core.test.TestStatus;
-import org.argeo.slc.core.test.tree.TreeTestResult;
-import org.argeo.slc.runtime.SlcExecutionOutput;
-import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
-
 import static org.argeo.slc.unit.test.tree.UnitTestTreeUtil.assertPart;
 
-import junit.framework.TestCase;
+import org.argeo.slc.ant.AntExecutionContext;
+import org.argeo.slc.ant.unit.SlcAntAppliTestCase;
+import org.argeo.slc.core.test.TestStatus;
+import org.argeo.slc.core.test.tree.TreeTestResult;
 
-public class SubCategory2Test extends TestCase implements
-		SlcExecutionOutput<AntExecutionContext> {
+public class SubCategory2Test extends SlcAntAppliTestCase {
 	public void testSimpleRun() {
-		new DefaultSlcRuntime().executeScript(
-				"exampleSlcAppli/root/Category1/SubCategory2/build.xml", this);
+		execute("/Category1/SubCategory2/build.xml");
 	}
 
 	public void postExecution(AntExecutionContext executionContext) {

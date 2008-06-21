@@ -2,13 +2,9 @@ package org.argeo.slc.example.context;
 
 import org.argeo.slc.ant.AntExecutionContext;
 import org.argeo.slc.ant.unit.SlcAntAppliTestCase;
-import org.argeo.slc.cli.DefaultSlcRuntime;
 import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.TreeTestResult;
-import org.argeo.slc.runtime.SlcExecutionOutput;
 import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
-
-import junit.framework.TestCase;
 
 public class ContextTest extends SlcAntAppliTestCase {
 	public void testExecute() {
@@ -36,10 +32,4 @@ public class ContextTest extends SlcAntAppliTestCase {
 				+ "slc.test1/greeting", 0, TestStatus.PASSED,
 				"Values matched for key 'greeting'");
 	}
-
-	@Override
-	protected String getRootDir() {
-		return "exampleSlcAppli/root";
-	}
-
 }
