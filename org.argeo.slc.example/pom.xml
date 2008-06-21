@@ -23,8 +23,8 @@
 	</scm>
 	<build>
 		<plugins>
-		<!-- Look to parent pom for inheritances -->
-		<plugin>
+			<!-- Look to parent pom for inheritances -->
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 			</plugin>
@@ -56,8 +56,8 @@
 				<configuration>
 					<systemProperties>
 						<property>
-							<name>it.slc.base</name>
-							<value>${basedir}/exampleSlcAppli</value>
+							<name>slc.rootDir</name>
+							<value>${basedir}/src/main/slc/root</value>
 						</property>
 					</systemProperties>
 				</configuration>
@@ -68,11 +68,6 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>argeo-slc-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>argeo-slc-hibernate</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

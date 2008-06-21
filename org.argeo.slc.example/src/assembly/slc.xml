@@ -8,7 +8,7 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>exampleSlcAppli</directory>
+			<directory>src/main/slc</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
 				<include>**/*</include>
