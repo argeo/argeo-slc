@@ -30,6 +30,7 @@
 
 	<bean name="executionBuildListener"
 		class="org.argeo.slc.ant.SlcExecutionBuildListener">
+		<property name="logLevel" value="INFO"/>
 		<property name="notifiers">
 			<list>
 				<ref bean="slcDefault.process.fileSlcExecutionNotifier" />
