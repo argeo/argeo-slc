@@ -146,14 +146,14 @@ public class SlcMain {
 	}
 
 	private static void initLogging(Properties userProperties) {
+		System.setProperty("log4j.defaultInitOverride", "true");
+
 		// Add log4j user properties to System properties
 		for (String key : userProperties.stringPropertyNames()) {
 			if (key.startsWith("log4j.")) {
-					System.setProperty(key, userProperties.getProperty(key));
+				System.setProperty(key, userProperties.getProperty(key));
 			}
 		}
-		
-		System.setProperty("log4j.defaultInitOverride", "true");
 		Log4jUtils.initLog4j(System.getProperty("log4j.configuration",
 				"classpath:" + BOOTSTRAP_LOG4J_CONFIG));
 		log = LogFactory.getLog(SlcMain.class);

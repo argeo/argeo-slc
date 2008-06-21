@@ -49,8 +49,9 @@ public class AntSlcApplication {
 		// Properties and app logging initialization
 		initSystemProperties(properties);
 		Log4jUtils.initLog4j("classpath:" + DEFAULT_APP_LOG4J_PROPERTIES);
-		
-		log.info("### Start SLC execution " + slcExecution.getUuid() + " ###");
+
+		log.info("\n###\n### Start SLC execution " + slcExecution.getUuid()
+				+ "\n###\n");
 		if (log.isDebugEnabled()) {
 			log.debug("rootDir=" + rootDir);
 			log.debug("confDir=" + confDir);
@@ -63,7 +64,7 @@ public class AntSlcApplication {
 		// Ant coordinates
 		Resource script = findAntScript(slcExecution);
 		List<String> targets = findAntTargets(slcExecution);
-		
+
 		// Ant project initialization
 		Project project = new Project();
 		AntExecutionContext executionContext = new AntExecutionContext(project);
