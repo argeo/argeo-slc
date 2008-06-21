@@ -4,55 +4,47 @@ import java.util.List;
 import java.util.Vector;
 
 import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
+import org.apache.log4j.MDC;
+import org.apache.log4j.Priority;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.tools.ant.BuildEvent;
+import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.process.SlcExecutionNotifier;
 import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.ws.process.WebServiceSlcExecutionNotifier;
 
 public class SlcExecutionBuildListener extends AppenderSkeleton implements
-		ProjectRelatedBuildListener {
-	private Project project;
-
-	// to avoid stack overflow when logging for log4j
-	private boolean isLogging = false;
-
+		BuildListener {
 	private List<SlcExecutionNotifier> notifiers = new Vector<SlcExecutionNotifier>();
 
 	private boolean currentStepNotified = true;
 
 	// CUSTOMIZATIONS
+	/**
+	 * Whether to log Ant initialization stuff before the first target has been
+	 * called.
+	 */
 	private boolean logBeforeFirstTarget = false;
+	/** Whether the first target has been called. */
 	private boolean firstTargetStarted = false;
 
 	private boolean logTaskStartFinish = true;
 
-	public void init(Project project) {
-		if (this.project != null) {
-			throw new SlcAntException("Build listener already initialized");
-		}
-
-		this.project = project;
-
-		if (!LogManager.getRootLogger().isAttached(this)) {
-			LogManager.getRootLogger().addAppender(this);
-		}
-
-		SlcExecution slcExecution = (SlcExecution) project
-				.getReference(SlcAntConstants.REF_SLC_EXECUTION);
-		if (slcExecution == null)
-			throw new SlcAntException("No SLC Execution registered.");
-
-		for (SlcExecutionNotifier notifier : notifiers) {
-			notifier.newExecution(slcExecution);
-		}
-
+	public SlcExecutionBuildListener() {
+		// Default log level
+		setThreshold(Level.INFO);
 	}
 
 	public void buildStarted(BuildEvent event) {
+		SlcExecution slcExecution = getSlcExecution(event);
+		for (SlcExecutionNotifier notifier : notifiers) {
+			notifier.newExecution(slcExecution);
+		}
 	}
 
 	public void buildFinished(BuildEvent event) {
@@ -64,11 +56,6 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 			notifier.updateStatus(slcExecution, oldStatus, slcExecution
 					.getStatus());
 		}
-
-//		AbstractApplicationContext context = (AbstractApplicationContext) getProject()
-//				.getReference(SlcProjectHelper.REF_ROOT_CONTEXT);
-//		if (context != null)
-//			context.close();
 	}
 
 	public void messageLogged(BuildEvent event) {
@@ -141,11 +128,10 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 	}
 
 	protected SlcExecution getSlcExecution(BuildEvent event) {
-		Project projectEvt = event.getProject();
-		if (!projectEvt.equals(project))
-			throw new SlcAntException("Event project " + projectEvt
-					+ " not consistent with listener project " + project);
+		return getSlcExecution(event.getProject());
+	}
 
+	protected SlcExecution getSlcExecution(Project project) {
 		SlcExecution slcExecution = (SlcExecution) project
 				.getReference(SlcAntConstants.REF_SLC_EXECUTION);
 
@@ -179,38 +165,18 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 
 	@Override
 	protected void append(LoggingEvent event) {
-		if (isLogging) {
-			// avoid StackOverflow if notification calls Log4j itself.
-			return;
-		}
-		
-		// FIXME: make it more generic
-		if (event.getLoggerName().equals(
-				WebServiceSlcExecutionNotifier.class.getName())) {
-			return;
-		}
+		Project project = (Project) MDC.get(SlcAntConstants.MDC_ANT_PROJECT);
+		if (project == null)
+			throw new SlcException("No Ant project registered in Log4j MDC.");
 
-		isLogging = true;
-
-		try {
-			SlcExecution slcExecution = (SlcExecution) project
-					.getReference(SlcAntConstants.REF_SLC_EXECUTION);
-			if (slcExecution != null) {
-				if (currentStepNotified) {
-					slcExecution.getSteps().add(
-							new SlcExecutionStep("LOG", event.getMessage()
-									.toString()));
-					currentStepNotified = false;
-				}
-				slcExecution.currentStep()
-						.addLog(event.getMessage().toString());
-			} else {
-				// TODO: log before initialization?
-			}
-		} finally {
-			isLogging = false;
+		SlcExecution slcExecution = getSlcExecution(project);
+		if (currentStepNotified) {
+			slcExecution.getSteps().add(
+					new SlcExecutionStep("LOG", event.getMessage().toString()));
+			currentStepNotified = false;
+		} else {
+			slcExecution.currentStep().addLog(event.getMessage().toString());
 		}
-
 	}
 
 	protected boolean shouldLog() {
@@ -226,8 +192,16 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		return false;
 	}
 
-	public Project getProject() {
-		return project;
+	public void setLogBeforeFirstTarget(boolean logBeforeFirstTarget) {
+		this.logBeforeFirstTarget = logBeforeFirstTarget;
+	}
+
+	public void setLogTaskStartFinish(boolean logTaskStartFinish) {
+		this.logTaskStartFinish = logTaskStartFinish;
+	}
+
+	public void setLogLevel(String logLevel) {
+		setThreshold(Level.toLevel(logLevel));
 	}
 
 }

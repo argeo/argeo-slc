@@ -10,6 +10,7 @@ import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 
+/** @deprecated */
 public class BasicSlcProjectHelper extends ProjectHelper2 {
 	private ApplicationContext context;
 

@@ -12,6 +12,10 @@ import java.util.Vector;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Appender;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.MDC;
+import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.helper.ProjectHelper2;
@@ -25,6 +29,7 @@ import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.runtime.SlcExecutionContext;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationContext;
@@ -41,7 +46,7 @@ public class AntSlcApplication {
 	private final static Log log = LogFactory.getLog(AntSlcApplication.class);
 
 	private Resource contextLocation;
-	private ApplicationContext runtimeContext;
+	private ApplicationContext parentContext;
 
 	private Resource rootDir;
 	private Resource confDir;
@@ -63,8 +68,7 @@ public class AntSlcApplication {
 		}
 
 		// Spring initialization
-		initRuntimeContext(slcExecution);
-		ConfigurableApplicationContext ctx = createExecutionContext();
+		ConfigurableApplicationContext ctx = createExecutionContext(slcExecution);
 
 		// Ant coordinates
 		Resource script = findAntScript(slcExecution);
@@ -142,66 +146,48 @@ public class AntSlcApplication {
 		}
 	}
 
-	protected void initRuntimeContext(SlcExecution slcExecution) {
-		if (runtimeContext == null) {
+	protected ConfigurableApplicationContext createExecutionContext(
+			SlcExecution slcExecution) {
+		try {
+
+			// Find runtime definition
 			Resource runtimeRes = null;
 			String runtimeStr = slcExecution.getAttributes().get(
 					SlcAntConstants.EXECATTR_RUNTIME);
 			if (runtimeStr != null) {
+				ResourceLoader rl = new DefaultResourceLoader(getClass()
+						.getClassLoader());
 				try {
-					ResourceLoader rl = new DefaultResourceLoader(getClass()
-							.getClassLoader());
-					try {
-						runtimeRes = rl.getResource(runtimeStr);
-					} catch (Exception e) {
-						// silent
-					}
-					if (runtimeRes == null || !runtimeRes.exists()) {
-						runtimeRes = confDir.createRelative("runtime/"
-								+ runtimeStr + ".xml");
-					}
-
-					if (runtimeRes.exists()) {
-						GenericApplicationContext ctx = new GenericApplicationContext();
-						XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
-								ctx);
-						xmlReader.loadBeanDefinitions(runtimeRes);
-
-						// Add property place holder
-						PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
-						ppc.setIgnoreUnresolvablePlaceholders(true);
-						ctx.addBeanFactoryPostProcessor(ppc);
-
-						ctx.refresh();
-
-						runtimeContext = ctx;
-					}
+					runtimeRes = rl.getResource(runtimeStr);
 				} catch (Exception e) {
-					throw new SlcException(
-							"Could not initialize runtime context from "
-									+ runtimeStr, e);
+					// silent
+				}
+				if (runtimeRes == null || !runtimeRes.exists()) {
+					runtimeRes = confDir.createRelative("runtime/" + runtimeStr
+							+ ".xml");
 				}
 			}
 
-			if (runtimeContext == null)
-				log.warn("No runtime is defined.");
-		}
-	}
-
-	protected ConfigurableApplicationContext createExecutionContext() {
-		try {
+			// Find runtime independent application context definition
 			if (confDir != null && contextLocation == null) {
 				contextLocation = confDir
 						.createRelative("applicationContext.xml");
 			}
 
 			GenericApplicationContext ctx = new GenericApplicationContext(
-					runtimeContext);
-			if (contextLocation != null && contextLocation.exists()) {
-				XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
-						ctx);
+					parentContext);
+			ctx.setDisplayName("SLC Execution #" + slcExecution.getUuid());
+
+			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(ctx);
+			if (runtimeRes != null && runtimeRes.exists())
+				xmlReader.loadBeanDefinitions(runtimeRes);
+			else
+				log.warn("No runtime context defined");
+
+			if (contextLocation != null && contextLocation.exists())
 				xmlReader.loadBeanDefinitions(contextLocation);
-			}
+			else
+				log.warn("No runtime independent application context defined");
 
 			// Add property place holder
 			PropertyPlaceholderConfigurer ppc = new PropertyPlaceholderConfigurer();
@@ -258,6 +244,24 @@ public class AntSlcApplication {
 		}
 
 		project.addBuildListener(new CommonsLoggingListener());
+
+		ListableBeanFactory context = (ListableBeanFactory) project
+				.getReference(SlcAntConstants.REF_ROOT_CONTEXT);
+		// Register build listeners
+		Map<String, BuildListener> listeners = context.getBeansOfType(
+				BuildListener.class, false, true);
+		for (BuildListener listener : listeners.values()) {
+			project.addBuildListener(listener);
+		}
+
+		// Register log4j appenders from context
+		MDC.put(SlcAntConstants.MDC_ANT_PROJECT, project);
+		Map<String, Appender> appenders = context.getBeansOfType(
+				Appender.class, false, true);
+		for (Appender appender : appenders.values()) {
+			LogManager.getRootLogger().addAppender(appender);
+		}
+
 		project.init();
 		addCustomTaskAndTypes(project);
 	}
@@ -402,8 +406,8 @@ public class AntSlcApplication {
 		this.workDir = workDir;
 	}
 
-	public void setRuntimeContext(ApplicationContext runtimeContext) {
-		this.runtimeContext = runtimeContext;
+	public void setParentContext(ApplicationContext runtimeContext) {
+		this.parentContext = runtimeContext;
 	}
 
 }

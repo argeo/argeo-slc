@@ -3,6 +3,7 @@ package org.argeo.slc.ant;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 
+/** @deprecated */
 public interface ProjectRelatedBuildListener extends BuildListener {
 	public Project getProject();
 

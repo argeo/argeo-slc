@@ -11,6 +11,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.springframework.context.ApplicationContext;
 
+/** @deprecated */
 public class AntRunner {
 	private ApplicationContext context;
 	private ProjectHelper projectHelper;

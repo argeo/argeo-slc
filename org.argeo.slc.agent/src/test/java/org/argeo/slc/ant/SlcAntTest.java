@@ -15,7 +15,7 @@ public class SlcAntTest extends AbstractSpringTestCase {
 				.getAbsolutePath()
 				+ File.separator));
 		slcApp.setWorkDir(new File(System.getProperty("java.io.tmpdir")));
-		slcApp.setRuntimeContext(getContext());
+		slcApp.setParentContext(getContext());
 
 		SlcExecution slcExecution = new SlcExecution();
 		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,

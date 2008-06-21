@@ -1,7 +1,7 @@
 package org.argeo.slc.ant;
 
 public interface SlcAntConstants {
-
+	// ANT
 	/** The Ant reference to the Spring application context used. */
 	public static final String REF_ROOT_CONTEXT = "slcApplicationContext";
 	/** The Ant reference to the SLC structure registry used. */
@@ -18,13 +18,17 @@ public interface SlcAntConstants {
 	 * /org/argeo/slc/ant/typedefs.properties
 	 */
 	public static final String SLC_TYPEDEFS_RESOURCE_PATH = "/org/argeo/slc/ant/typedefs.properties";
+	public static final String REF_SLC_EXECUTION = "slcExecution";
+	
+	// SLC EXECUTION
 	public static final String EXECTYPE_ANT = "org.apache.tools.ant";
 	public static final String EXECTYPE_SLC_ANT = "org.argeo.slc.ant";
-	public static final String REF_SLC_EXECUTION = "slcExecution";
 
 	public final static String EXECATTR_RUNTIME = "slc.runtime";
 	public final static String EXECATTR_ANT_FILE = "ant.file";
 	public final static String EXECATTR_ANT_TARGETS = "ant.targets";
+	
+	// PROPERTIES
 	/** Property for the root dir (SLC root property file). */
 	public final static String ROOT_DIR_PROPERTY = "slc.rootDir";
 	/** Property for the conf dir (SLC root property file). */
@@ -34,4 +38,7 @@ public interface SlcAntConstants {
 	/** Name of the Spring bean used by default */
 	public final static String DEFAULT_TEST_RUN_PROPERTY = "slc.defaultTestRun";
 
+	// LOG4J
+	public final static String MDC_ANT_PROJECT = "slc.ant.project";
+	
 }
