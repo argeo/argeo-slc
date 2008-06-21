@@ -3,10 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-	<import resource="data.xml" />
-	<import resource="slc.xml" />
-	<import resource="testDatas.xml" />
-	<import resource="testDefinitions.xml" />
-	<import resource="contextTests.xml" />
-	<import resource="execution.xml" />
+	<import resource="runtime/default.xml" />
+	<import resource="environments/environments.xml" />
+
+	<import resource="test/testDatas.xml" />
+	<import resource="test/testDefinitions.xml" />
+	<import resource="test/contextTests.xml" />
 </beans>

@@ -10,7 +10,8 @@ public class ExecutionTest extends TestCase {
 				"--mode",
 				"single",
 				"--script",
-				"/home/mbaudier/workspace/org.argeo.slc.example/exampleSlcAppli/root/Category1/SubCategory2/build.xml" };
+				"/home/mbaudier/workspace/org.argeo.slc.example/exampleSlcAppli/root/Category1/SubCategory2/build.xml",
+				"-p", "log4j.logger.org.argeo.slc=WARN" };
 		SlcMain.main(args);
 	}
 }

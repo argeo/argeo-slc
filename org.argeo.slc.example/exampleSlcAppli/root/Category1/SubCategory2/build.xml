@@ -10,7 +10,6 @@
 		<slc.closeResult>
 			<result bean="testResult2" />
 		</slc.closeResult>
-		<slc.report report="report" />
 	</target>
 
 	<target name="testSimple" description="Simple tests">
