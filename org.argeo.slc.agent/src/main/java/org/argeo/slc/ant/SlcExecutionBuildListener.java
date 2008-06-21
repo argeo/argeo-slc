@@ -130,7 +130,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 
 	protected SlcExecution getSlcExecution(Project project) {
 		SlcExecution slcExecution = (SlcExecution) project
-				.getReference(SlcAntConstants.REF_SLC_EXECUTION);
+				.getReference(AntConstants.REF_SLC_EXECUTION);
 
 		if (slcExecution == null)
 			throw new SlcException("No SLC Execution registered.");
@@ -162,7 +162,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 
 	@Override
 	protected void append(LoggingEvent event) {
-		Project project = (Project) MDC.get(SlcAntConstants.MDC_ANT_PROJECT);
+		Project project = (Project) MDC.get(AntConstants.MDC_ANT_PROJECT);
 		if (project == null)
 			throw new SlcException("No Ant project registered in Log4j MDC.");
 

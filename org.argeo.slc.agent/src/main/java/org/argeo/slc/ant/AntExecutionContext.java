@@ -14,13 +14,13 @@ public class AntExecutionContext implements SlcExecutionContext {
 
 	public <T> T getBean(String name) {
 		ApplicationContext context = (ApplicationContext) project
-				.getReference(SlcAntConstants.REF_ROOT_CONTEXT);
+				.getReference(AntConstants.REF_ROOT_CONTEXT);
 		return (T) context.getBean(name);
 	}
 
 	public SlcExecution getSlcExecution() {
 		return (SlcExecution) project
-				.getReference(SlcAntConstants.REF_SLC_EXECUTION);
+				.getReference(AntConstants.REF_SLC_EXECUTION);
 	}
 
 	public Project getProject() {

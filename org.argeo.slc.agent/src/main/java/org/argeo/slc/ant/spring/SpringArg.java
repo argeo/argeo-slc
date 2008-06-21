@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.DataType;
-import org.argeo.slc.ant.SlcAntConstants;
+import org.argeo.slc.ant.AntConstants;
 import org.argeo.slc.core.SlcException;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -103,7 +103,7 @@ public class SpringArg<T> extends DataType {
 	/** The related Spring application context. */
 	protected ApplicationContext getContext() {
 		return (ApplicationContext) getProject().getReference(
-				SlcAntConstants.REF_ROOT_CONTEXT);
+				AntConstants.REF_ROOT_CONTEXT);
 	}
 
 	protected void checkValueAlreadySet() {

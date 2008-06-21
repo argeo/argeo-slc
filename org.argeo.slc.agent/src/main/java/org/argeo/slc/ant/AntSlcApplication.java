@@ -77,8 +77,8 @@ public class AntSlcApplication {
 		// Ant project initialization
 		Project project = new Project();
 		AntExecutionContext executionContext = new AntExecutionContext(project);
-		project.addReference(SlcAntConstants.REF_ROOT_CONTEXT, ctx);
-		project.addReference(SlcAntConstants.REF_SLC_EXECUTION, slcExecution);
+		project.addReference(AntConstants.REF_ROOT_CONTEXT, ctx);
+		project.addReference(AntConstants.REF_SLC_EXECUTION, slcExecution);
 		initProject(project, properties, references);
 		parseProject(project, scriptRelativePath);
 
@@ -102,20 +102,20 @@ public class AntSlcApplication {
 			}
 		}
 
-		if (System.getProperty(SlcAntConstants.DEFAULT_TEST_RUN_PROPERTY) == null) {
-			System.setProperty(SlcAntConstants.DEFAULT_TEST_RUN_PROPERTY,
+		if (System.getProperty(AntConstants.DEFAULT_TEST_RUN_PROPERTY) == null) {
+			System.setProperty(AntConstants.DEFAULT_TEST_RUN_PROPERTY,
 					"defaultTestRun");
 		}
 
 		try {
 			if (rootDir != null)
-				System.setProperty(SlcAntConstants.ROOT_DIR_PROPERTY, rootDir
+				System.setProperty(AntConstants.ROOT_DIR_PROPERTY, rootDir
 						.getURL().toString());
 			if (confDir != null)
-				System.setProperty(SlcAntConstants.CONF_DIR_PROPERTY, confDir
+				System.setProperty(AntConstants.CONF_DIR_PROPERTY, confDir
 						.getURL().toString());
 			if (workDir != null)
-				System.setProperty(SlcAntConstants.WORK_DIR_PROPERTY, workDir
+				System.setProperty(AntConstants.WORK_DIR_PROPERTY, workDir
 						.getCanonicalPath());
 
 			// Additional properties in slc.properties file. Already set sytem
@@ -155,7 +155,7 @@ public class AntSlcApplication {
 			// Find runtime definition
 			Resource runtimeRes = null;
 			String runtimeStr = slcExecution.getAttributes().get(
-					SlcAntConstants.EXECATTR_RUNTIME);
+					AntConstants.EXECATTR_RUNTIME);
 			if (runtimeStr == null)
 				runtimeStr = "default";
 
@@ -208,7 +208,7 @@ public class AntSlcApplication {
 
 	protected String findAntScript(SlcExecution slcExecution) {
 		String scriptStr = slcExecution.getAttributes().get(
-				SlcAntConstants.EXECATTR_ANT_FILE);
+				AntConstants.EXECATTR_ANT_FILE);
 		if (scriptStr == null)
 			throw new SlcException("No Ant script provided");
 
@@ -217,7 +217,7 @@ public class AntSlcApplication {
 
 	protected List<String> findAntTargets(SlcExecution slcExecution) {
 		String targetList = slcExecution.getAttributes().get(
-				SlcAntConstants.EXECATTR_ANT_TARGETS);
+				AntConstants.EXECATTR_ANT_TARGETS);
 		List<String> targets = new Vector<String>();
 		if (targetList != null) {
 			StringTokenizer stTargets = new StringTokenizer(targetList, ",");
@@ -246,7 +246,7 @@ public class AntSlcApplication {
 		project.addBuildListener(new CommonsLoggingListener());
 
 		ListableBeanFactory context = (ListableBeanFactory) project
-				.getReference(SlcAntConstants.REF_ROOT_CONTEXT);
+				.getReference(AntConstants.REF_ROOT_CONTEXT);
 		// Register build listeners
 		Map<String, BuildListener> listeners = context.getBeansOfType(
 				BuildListener.class, false, true);
@@ -255,7 +255,7 @@ public class AntSlcApplication {
 		}
 
 		// Register log4j appenders from context
-		MDC.put(SlcAntConstants.MDC_ANT_PROJECT, project);
+		MDC.put(AntConstants.MDC_ANT_PROJECT, project);
 		Map<String, Appender> appenders = context.getBeansOfType(
 				Appender.class, false, true);
 		for (Appender appender : appenders.values()) {
@@ -269,7 +269,7 @@ public class AntSlcApplication {
 	/** Loads the SLC specific Ant tasks. */
 	protected void addCustomTaskAndTypes(Project project) {
 		Properties taskdefs = getDefs(project,
-				SlcAntConstants.SLC_TASKDEFS_RESOURCE_PATH);
+				AntConstants.SLC_TASKDEFS_RESOURCE_PATH);
 		for (Object o : taskdefs.keySet()) {
 			String name = o.toString();
 			try {
@@ -280,7 +280,7 @@ public class AntSlcApplication {
 			}
 		}
 		Properties typedefs = getDefs(project,
-				SlcAntConstants.SLC_TYPEDEFS_RESOURCE_PATH);
+				AntConstants.SLC_TYPEDEFS_RESOURCE_PATH);
 		for (Object o : typedefs.keySet()) {
 			String name = o.toString();
 			try {
@@ -307,7 +307,7 @@ public class AntSlcApplication {
 	protected void initStructure(Project project, String scriptRelativePath) {
 		// Init structure registry
 		StructureRegistry<TreeSPath> registry = new TreeSRegistry();
-		project.addReference(SlcAntConstants.REF_STRUCTURE_REGISTRY, registry);
+		project.addReference(AntConstants.REF_STRUCTURE_REGISTRY, registry);
 
 		// Lowest levels
 		StringTokenizer st = new StringTokenizer(scriptRelativePath, "/");
@@ -334,7 +334,7 @@ public class AntSlcApplication {
 				.getDescription() : projectPath.getName();
 
 		registry.register(projectPath, new SimpleSElement(projectDesc));
-		project.addReference(SlcAntConstants.REF_PROJECT_PATH, projectPath);
+		project.addReference(AntConstants.REF_PROJECT_PATH, projectPath);
 
 		if (log.isDebugEnabled())
 			log.debug("Project path: " + projectPath);

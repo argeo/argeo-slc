@@ -3,7 +3,7 @@ package org.argeo.slc.ant.test;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
-import org.argeo.slc.ant.SlcAntConstants;
+import org.argeo.slc.ant.AntConstants;
 import org.argeo.slc.ant.spring.SpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
 import org.argeo.slc.core.deploy.DeployedSystem;
@@ -39,7 +39,7 @@ public class SlcTestTask extends SAwareTask {
 			testRunBeanT = testRunBean;
 		} else {
 			testRunBeanT = getProject().getProperty(
-					SlcAntConstants.DEFAULT_TEST_RUN_PROPERTY);
+					AntConstants.DEFAULT_TEST_RUN_PROPERTY);
 		}
 		WritableTestRun testRun = null;
 

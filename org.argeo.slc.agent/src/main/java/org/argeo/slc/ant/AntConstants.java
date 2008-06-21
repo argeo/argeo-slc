@@ -1,6 +1,6 @@
 package org.argeo.slc.ant;
 
-public interface SlcAntConstants {
+public interface AntConstants {
 	// ANT
 	/** The Ant reference to the Spring application context used. */
 	public static final String REF_ROOT_CONTEXT = "slcApplicationContext";

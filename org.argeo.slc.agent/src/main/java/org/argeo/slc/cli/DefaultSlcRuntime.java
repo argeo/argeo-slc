@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.ant.AntExecutionContext;
 import org.argeo.slc.ant.AntSlcApplication;
-import org.argeo.slc.ant.SlcAntConstants;
+import org.argeo.slc.ant.AntConstants;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.runtime.SlcExecutionOutput;
@@ -99,21 +99,21 @@ public class DefaultSlcRuntime {
 			slcExecution.setHost(SlcExecution.UNKOWN_HOST);
 		}
 
-		slcExecution.setType(SlcAntConstants.EXECTYPE_SLC_ANT);
+		slcExecution.setType(AntConstants.EXECTYPE_SLC_ANT);
 
 		slcExecution.setUser(System.getProperty("user.name"));
 
 		if (runtimeStr != null)
-			slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_RUNTIME,
+			slcExecution.getAttributes().put(AntConstants.EXECATTR_RUNTIME,
 					runtimeStr);
 		String scriptRelativePath = SpringUtils.extractRelativePath(SpringUtils
 				.getParent(slcRootFile), script);
 
-		slcExecution.getAttributes().put(SlcAntConstants.EXECATTR_ANT_FILE,
+		slcExecution.getAttributes().put(AntConstants.EXECATTR_ANT_FILE,
 				scriptRelativePath);
 		if (targets != null)
 			slcExecution.getAttributes().put(
-					SlcAntConstants.EXECATTR_ANT_TARGETS, targets);
+					AntConstants.EXECATTR_ANT_TARGETS, targets);
 
 		slcExecution.setStatus(SlcExecution.STATUS_SCHEDULED);
 		return slcExecution;
@@ -137,7 +137,7 @@ public class DefaultSlcRuntime {
 
 			// Conf dir
 			String confDirStr = rootProps
-					.getProperty(SlcAntConstants.CONF_DIR_PROPERTY);
+					.getProperty(AntConstants.CONF_DIR_PROPERTY);
 			if (confDirStr != null)
 				confDir = new DefaultResourceLoader(application.getClass()
 						.getClassLoader()).getResource(confDirStr);
@@ -150,7 +150,7 @@ public class DefaultSlcRuntime {
 
 			// Work dir
 			String workDirStr = rootProps
-					.getProperty(SlcAntConstants.WORK_DIR_PROPERTY);
+					.getProperty(AntConstants.WORK_DIR_PROPERTY);
 			if (workDirStr != null) {
 				workDir = new File(workDirStr);
 			}
