@@ -108,11 +108,14 @@ public class UnitTestTreeUtil {
 			String expectedTestRunUuid, boolean skipExceptionMessage) {
 		assertEquals(status, part.getStatus());
 
-		if (log.isTraceEnabled()) {
-			log.trace("Expected message:" + message);
-			log.trace("Reached message:" + part.getMessage());
+		if (message != null) {
+			if (log.isTraceEnabled()) {
+				log.trace("Expected message:" + message);
+				log.trace("Reached message:" + part.getMessage());
+			}
+			assertEquals(message, part.getMessage());
 		}
-		assertEquals(message, part.getMessage());
+
 		if (!skipExceptionMessage) {
 			if (exceptionDescription == null) {
 				assertNull(part.getExceptionMessage());
