@@ -27,7 +27,7 @@ public class SpringUtils {
 		try {
 			if (res.getURL().getPath().equals("/"))
 				return null;
-
+			
 			String urlStr = res.getURL().toString();
 			if (urlStr.charAt(urlStr.length() - 1) == '/')
 				urlStr = urlStr.substring(0, urlStr.length() - 2);
@@ -42,14 +42,8 @@ public class SpringUtils {
 
 	public static String extractRelativePath(Resource ancestor, Resource child) {
 		try {
-			String childPath = child.getURL().getPath();
-			String ancestorPath = ancestor.getURL().getPath();
-
-			if (log.isTraceEnabled())
-				log.trace("extractRelativePath(): childPath=" + childPath
-						+ ", ancestorPath=" + ancestorPath);
-
-			return childPath.substring(ancestorPath.length());
+			
+			return ancestor.getURI().relativize(child.getURI()).toString();
 		} catch (IOException e) {
 			throw new SlcException("Cannot extract relative path of " + child
 					+ " based on " + ancestor, e);

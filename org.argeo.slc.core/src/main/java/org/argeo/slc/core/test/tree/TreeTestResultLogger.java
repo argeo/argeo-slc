@@ -16,6 +16,8 @@ import org.argeo.slc.core.test.TestStatus;
 public class TreeTestResultLogger implements TestResultListener<TreeTestResult> {
 
 	private static Log log = LogFactory.getLog(TreeTestResultLogger.class);
+	
+	private Boolean logExceptionMessages = false;
 
 	public void resultPartAdded(TreeTestResult testResult,
 			TestResultPart testResultPart) {
@@ -26,7 +28,10 @@ public class TreeTestResultLogger implements TestResultListener<TreeTestResult> 
 		} else if (testResultPart.getStatus().equals(TestStatus.FAILED)) {
 			log.warn(msg);
 		} else if (testResultPart.getStatus().equals(TestStatus.ERROR)) {
-			log.error(msg + "\n" + testResultPart.getExceptionMessage());
+			if(logExceptionMessages || log.isDebugEnabled())
+				msg = msg + "\n" + testResultPart.getExceptionMessage();
+			
+			log.error(msg);
 		} else {
 			log.error("Unknow test status: " + msg);
 		}
@@ -36,4 +41,9 @@ public class TreeTestResultLogger implements TestResultListener<TreeTestResult> 
 		log.info("Test result " + testResult.getUuid() + " closed.");
 	}
 
+	public void setLogExceptionMessages(Boolean logExceptionMessages) {
+		this.logExceptionMessages = logExceptionMessages;
+	}
+
+	
 }

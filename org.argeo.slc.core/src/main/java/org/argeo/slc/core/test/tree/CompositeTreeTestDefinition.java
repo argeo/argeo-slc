@@ -29,7 +29,8 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 	private StructureRegistry<TreeSPath> registry;
 
 	public void execute(TestRun testRun) {
-		log.info("Execute sequence of test definitions...");
+		if (log.isTraceEnabled())
+			log.trace("Execute sequence of test definitions...");
 
 		int i = 0;
 		for (TestDefinition task : tasks) {

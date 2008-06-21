@@ -34,7 +34,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private TreeSPath currentPath;
 	private TestRun currentTestRun;
-	
+
 	private Map<String, String> rootTags = new TreeMap<String, String>();
 
 	private Date closeDate;
@@ -80,13 +80,15 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 				if (!elements.containsKey(p)) {
 					StructureElement elem = registry.getElement(p);
 					if (elem != null) {
-						
-						if(elements.size()==0 && (elem instanceof SimpleSElement)){
-							SimpleSElement sElem = ((SimpleSElement)elem).clone();
+
+						if (elements.size() == 0
+								&& (elem instanceof SimpleSElement)) {
+							SimpleSElement sElem = ((SimpleSElement) elem)
+									.clone();
 							sElem.getTags().putAll(rootTags);
 							elem = sElem;
 						}
-						
+
 						elements.put(p, elem);
 					}
 				} else {
@@ -131,7 +133,8 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		}
 		isClosed = true;
 
-		log.info("Test Result #" + getUuid() + " closed.");
+		if (log.isTraceEnabled())
+			log.trace("Test Result " + getUuid() + " closed.");
 	}
 
 	public Date getCloseDate() {

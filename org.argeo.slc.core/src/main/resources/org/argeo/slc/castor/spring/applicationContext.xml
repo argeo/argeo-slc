@@ -32,7 +32,7 @@
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 		<property name="logXml" value="false" />
 		<!-- 
-			<property name="outputDir" value="D:\dev\test\SLC\SlcReports" />
+			<property name="outputDir" value="/path/to/output/dir" />
 		-->
 	</bean>
 
