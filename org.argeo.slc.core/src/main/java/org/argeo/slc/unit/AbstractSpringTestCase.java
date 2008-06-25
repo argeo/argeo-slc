@@ -3,6 +3,7 @@ package org.argeo.slc.unit;
 import junit.framework.TestCase;
 
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import org.apache.commons.logging.Log;
@@ -14,14 +15,14 @@ import org.argeo.slc.spring.SpringUtils;
 /** Helper for tests using a Spring application co,text. */
 public abstract class AbstractSpringTestCase extends TestCase {
 	protected final Log log = LogFactory.getLog(getClass());
-	private ApplicationContext context;
+	private ConfigurableApplicationContext context;
 
 	/**
 	 * Gets (and create if necessary) the application context to use. Default
 	 * implementation uses a class path xml application context and calls
 	 * {@link #getApplicationContextLocation()}.
 	 */
-	protected ApplicationContext getContext() {
+	protected ConfigurableApplicationContext getContext() {
 		if (context == null) {
 			context = new ClassPathXmlApplicationContext(
 					getApplicationContextLocation());
