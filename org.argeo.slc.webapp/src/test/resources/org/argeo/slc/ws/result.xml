@@ -12,7 +12,6 @@
 			<list merge="true">
 				<ref
 					bean="slcDefault.ws.client.treeTestResultWsNotfier" />
-				<ref bean="slcDefault.castor.xsltReportGenerator" />
 			</list>
 		</property>
 	</bean>
