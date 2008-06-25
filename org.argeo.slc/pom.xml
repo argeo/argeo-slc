@@ -97,6 +97,16 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>maven-jetty-plugin</artifactId>
+					<version>6.1.10</version>
+					<configuration>
+						<contextPath>org.argeo.slc.webapp</contextPath>
+						<stopKey>stopKey</stopKey>
+						<stopPort>8081</stopPort>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -137,7 +147,7 @@
 				<artifactId>jta</artifactId>
 				<version>1.0.1</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
@@ -330,6 +340,11 @@
 				<updatePolicy>daily</updatePolicy>
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>argeo</id>
