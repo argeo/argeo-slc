@@ -45,7 +45,7 @@ public class AntSlcApplication {
 	private final static Log log = LogFactory.getLog(AntSlcApplication.class);
 
 	private Resource contextLocation;
-	private ApplicationContext parentContext;
+	private ConfigurableApplicationContext parentContext;
 
 	private Resource rootDir;
 	private Resource confDir;
@@ -399,7 +399,7 @@ public class AntSlcApplication {
 		this.workDir = workDir;
 	}
 
-	public void setParentContext(ApplicationContext runtimeContext) {
+	public void setParentContext(ConfigurableApplicationContext runtimeContext) {
 		this.parentContext = runtimeContext;
 	}
 
