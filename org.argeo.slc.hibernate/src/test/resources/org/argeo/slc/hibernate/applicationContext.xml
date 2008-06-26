@@ -23,14 +23,4 @@
 		parent="slcTemplates.dao.slcExecutionDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	
-	<bean id="treeSPathDao"
-		parent="slcTemplates.dao.treeSPathDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
-
-	<bean id="treeSRegistryDao"
-		parent="slcTemplates.dao.treeSRegistryDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
 </beans>

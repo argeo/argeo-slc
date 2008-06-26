@@ -23,15 +23,6 @@
 					org/argeo/slc/hibernate/structure/SimpleSElement.hbm.xml
 				</value>
 				<value>
-					org/argeo/slc/hibernate/structure/tree/TreeSPath.hbm.xml
-				</value>
-				<value>
-					org/argeo/slc/hibernate/structure/tree/TreeSRegistry.hbm.xml
-				</value>
-				<value>
-					org/argeo/slc/hibernate/test/SimpleResultPart.hbm.xml
-				</value>
-				<value>
 					org/argeo/slc/hibernate/test/tree/TreeTestResult.hbm.xml
 				</value>
 				<value>
@@ -64,16 +55,6 @@
 				hibernate.current_session_context_class=thread
 			]]></value>
 		</property>
-	</bean>
-
-	<bean id="slcTemplates.dao.treeSPathDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSPathDaoHibernate"
-		abstract="true">
-	</bean>
-
-	<bean id="slcTemplates.dao.treeSRegistryDao"
-		class="org.argeo.slc.hibernate.structure.tree.TreeSRegistryDaoHibernate"
-		abstract="true">
 	</bean>
 
 	<bean id="slcTemplates.dao.testResultDao"
