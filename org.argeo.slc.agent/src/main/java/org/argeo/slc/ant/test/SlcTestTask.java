@@ -58,7 +58,7 @@ public class SlcTestTask extends SAwareTask {
 			testRun = loadSingleFromContext(WritableTestRun.class);
 			if (testRun == null) {
 				testRun = new SimpleTestRun();
-				log.warn("Created default simple test run");
+				log.trace("Created default simple test run");
 			} else {
 				if (log.isTraceEnabled())
 					log.trace("Load test run from scanning Spring context");

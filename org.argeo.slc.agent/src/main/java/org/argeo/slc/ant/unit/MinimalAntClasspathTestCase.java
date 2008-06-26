@@ -1,6 +1,7 @@
 package org.argeo.slc.ant.unit;
 
 import java.io.File;
+import java.util.UUID;
 
 import org.argeo.slc.ant.AntConstants;
 import org.argeo.slc.ant.AntSlcApplication;
@@ -18,6 +19,7 @@ public class MinimalAntClasspathTestCase extends AbstractSpringTestCase {
 		slcApp.setParentContext(getContext());
 
 		SlcExecution slcExecution = new SlcExecution();
+		slcExecution.setUuid(UUID.randomUUID().toString());
 		slcExecution.getAttributes().put(AntConstants.EXECATTR_ANT_FILE,
 				scriptPath);
 
