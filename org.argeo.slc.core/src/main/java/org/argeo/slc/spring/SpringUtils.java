@@ -8,6 +8,8 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.SlcException;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -17,7 +19,9 @@ public class SpringUtils {
 
 	public static <T> T loadSingleFromContext(ListableBeanFactory context,
 			Class<T> clss) {
-		Map<String, T> beans = context.getBeansOfType(clss);
+		// Map<String, T> beans = context.getBeansOfType(clss);
+		Map<String, T> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+				context, clss);
 		if (beans.size() == 1) {
 			return beans.values().iterator().next();
 		} else {
