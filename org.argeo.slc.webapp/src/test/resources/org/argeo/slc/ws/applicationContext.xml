@@ -5,7 +5,23 @@
 	<import
 		resource="classpath:/org/argeo/slc/ws/client/spring/applicationContext.xml" />
 	<import resource="classpath:/org/argeo/slc/ant/nonDepContext.xml" />
-	<import resource="execution.xml" />
-	<import resource="result.xml" />
 
+	<bean name="executionBuildListener"
+		class="org.argeo.slc.ant.SlcExecutionBuildListener">
+		<property name="notifiers">
+			<list>
+				<ref bean="slcDefault.ws.client.slcExecutionNotifier" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="testResult"
+		parent="slcDefault.test.basicTreeTestResult">
+		<property name="listeners">
+			<list merge="true">
+				<ref
+					bean="slcDefault.ws.client.treeTestResultWsNotfier" />
+			</list>
+		</property>
+	</bean>
 </beans>
