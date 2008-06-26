@@ -41,11 +41,15 @@ public class TestManagerServiceImpl implements TestManagerService {
 
 			// Update tree test result collection
 			// TODO: optimize
-			SlcExecution slcExecution = slcExecutionDao
-					.getSlcExecution(testRunDescriptor.getSlcExecutionUuid());
-			if (slcExecution != null) {
-				addResultToCollection(slcExecution.getUser(), testRunDescriptor
-						.getTestResultUuid());
+
+			if (testRunDescriptor.getSlcExecutionUuid() != null) {
+				SlcExecution slcExecution = slcExecutionDao
+						.getSlcExecution(testRunDescriptor
+								.getSlcExecutionUuid());
+				if (slcExecution != null) {
+					addResultToCollection(slcExecution.getUser(),
+							testRunDescriptor.getTestResultUuid());
+				}
 			}
 		}
 	}
