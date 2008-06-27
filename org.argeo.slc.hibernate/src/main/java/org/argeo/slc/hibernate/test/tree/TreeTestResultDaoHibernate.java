@@ -15,7 +15,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
  * 
  * @see TreeTestResult
  */
-public class TestResultDaoHibernate extends HibernateDaoSupport implements
+public class TreeTestResultDaoHibernate extends HibernateDaoSupport implements
 		TreeTestResultDao {
 
 	public void create(TestResult testResult) {

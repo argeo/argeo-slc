@@ -7,7 +7,7 @@
 		<id name="tid" column="T_ID">
 			<generator class="native" />
 		</id>
-		<list name="parts" cascade="all" lazy="false">
+		<list name="parts" cascade="all">
 			<key column="PART_SUBLIST_ID" />
 			<list-index column="INDX" />
 			<composite-element

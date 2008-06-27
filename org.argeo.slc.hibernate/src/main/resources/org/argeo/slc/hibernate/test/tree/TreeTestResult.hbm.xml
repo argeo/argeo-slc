@@ -4,31 +4,32 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.argeo.slc.core.test.tree">
 	<class name="TreeTestResult" table="TREE_TEST_RESULT">
-		<id name="uuid" column="UUID"/>
+		<id name="uuid" column="UUID" />
 
 		<property name="closeDate" column="CLOSE_DATE" type="timestamp"
 			not-null="false" />
 
 		<map name="resultParts" table="RESULT_PARTS_MAP" cascade="all"
-			lazy="false" sort="natural">
+			sort="natural">
 			<key column="PARENT_ID" />
 			<composite-map-key
 				class="org.argeo.slc.core.structure.tree.TreeSPath">
 				<key-property name="asUniqueString" column="PATH" />
 			</composite-map-key>
 			<many-to-many class="PartSubList" column="PART_SUB_LIST_ID"
-				unique="true" lazy="false" />
+				unique="true" />
 		</map>
 
-		<map name="elements" table="RESULT_ELEMENTS_MAP"
-			cascade="all" lazy="false" sort="natural">
+		<map name="elements" table="RESULT_ELEMENTS_MAP" cascade="all"
+			sort="natural">
 			<key column="PARENT_ID" />
 			<composite-map-key
 				class="org.argeo.slc.core.structure.tree.TreeSPath">
 				<key-property name="asUniqueString" column="PATH" />
 			</composite-map-key>
-			<many-to-many class="org.argeo.slc.core.structure.SimpleSElement" column="ELEMENT_ID"
-				unique="true" lazy="false" />
+			<many-to-many
+				class="org.argeo.slc.core.structure.SimpleSElement"
+				column="ELEMENT_ID" unique="true" />
 		</map>
 	</class>
 </hibernate-mapping>

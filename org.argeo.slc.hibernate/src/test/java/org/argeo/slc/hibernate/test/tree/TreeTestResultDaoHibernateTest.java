@@ -1,5 +1,7 @@
 package org.argeo.slc.hibernate.test.tree;
 
+import java.sql.SQLException;
+
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
@@ -10,14 +12,22 @@ import org.argeo.slc.dao.test.tree.TreeTestResultDao;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.argeo.slc.unit.test.tree.TreeTestResultTestUtils;
 import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
+import org.hibernate.HibernateException;
+import org.hibernate.LockMode;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateTemplate;
 
 public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 	private TreeTestResultDao testResultDao = null;
+	private HibernateTemplate template = null;
 
 	@Override
 	public void setUp() {
-		testResultDao = (TreeTestResultDao) getContext().getBean(
-				"testResultDao");
+		testResultDao = getBean(TreeTestResultDao.class);
+		template = new HibernateTemplate(getBean(SessionFactory.class));
 	}
 
 	public void testCreate() {
@@ -29,7 +39,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		TreeTestResult ttrPersisted = (TreeTestResult) testResultDao
 				.getTestResult(ttr.getUuid());
 
-		UnitTestTreeUtil.assertTreeTestResult(ttr, ttrPersisted);
+		assertInHibernate(ttr, ttrPersisted);
 	}
 
 	public void testUpdate() {
@@ -37,7 +47,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 				.createCompleteTreeTestResult();
 		testResultDao.create(ttr);
 
-		TreeTestResult ttrUpdated = (TreeTestResult) testResultDao
+		final TreeTestResult ttrUpdated = (TreeTestResult) testResultDao
 				.getTestResult(ttr.getUuid());
 
 		// Modifying ttrUpdated
@@ -49,21 +59,29 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		 */
 
 		String pathStr = "/test";
-		TreeSPath path = TreeSPath.parseToCreatePath(pathStr);
+		final TreeSPath path = new TreeSPath(pathStr);
 
-		TreeSRegistry registry = new TreeSRegistry();
+		final TreeSRegistry registry = new TreeSRegistry();
 		SimpleSElement elem = new SimpleSElement("Unit Test");
 		elem.getTags().put("myTag", "myTagValue");
 		registry.register(path, elem);
 
-		ttrUpdated.notifyCurrentPath(registry, path);
+		template.execute(new HibernateCallback() {
 
-		ttrUpdated.addResultPart(TreeTestResultTestUtils
-				.createSimpleResultPartPassed());
-		ttrUpdated.addResultPart(TreeTestResultTestUtils
-				.createSimpleResultPartFailed());
-		ttrUpdated.addResultPart(TreeTestResultTestUtils
-				.createSimpleResultPartError());
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				session.refresh(ttrUpdated);
+				ttrUpdated.notifyCurrentPath(registry, path);
+
+				ttrUpdated.addResultPart(TreeTestResultTestUtils
+						.createSimpleResultPartPassed());
+				ttrUpdated.addResultPart(TreeTestResultTestUtils
+						.createSimpleResultPartFailed());
+				ttrUpdated.addResultPart(TreeTestResultTestUtils
+						.createSimpleResultPartError());
+				return null;
+			}
+		});
 
 		testResultDao.update(ttrUpdated);
 
@@ -71,7 +89,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		TreeTestResult ttrRetrieved = (TreeTestResult) testResultDao
 				.getTestResult(ttr.getUuid());
 
-		UnitTestTreeUtil.assertTreeTestResult(ttrRetrieved, ttrUpdated);
+		assertInHibernate(ttrUpdated, ttrRetrieved);
 	}
 
 	public void testMultipleUpdateScenario() throws Exception {
@@ -112,11 +130,31 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		ttr.close();
 
 		testResultDao.close(ttr.getUuid(), ttr.getCloseDate());
+
+		TreeTestResult ttrRetrieved = (TreeTestResult) testResultDao
+				.getTestResult(ttr.getUuid());
+
+		assertInHibernate(ttr, ttrRetrieved);
+
 	}
 
 	@Override
 	protected String getApplicationContextLocation() {
 		return "org/argeo/slc/hibernate/applicationContext.xml";
+	}
+
+	public void assertInHibernate(final TreeTestResult ttrExpected,
+			final TreeTestResult ttrPersisted) {
+		template.execute(new HibernateCallback() {
+			public Object doInHibernate(Session session) {
+				session.refresh(ttrPersisted);
+				UnitTestTreeUtil
+						.assertTreeTestResult(ttrExpected, ttrPersisted);
+				return null;
+			}
+
+		});
+
 	}
 
 }

@@ -58,7 +58,7 @@
 	</bean>
 
 	<bean id="slcTemplates.dao.testResultDao"
-		class="org.argeo.slc.hibernate.test.tree.TestResultDaoHibernate"
+		class="org.argeo.slc.hibernate.test.tree.TreeTestResultDaoHibernate"
 		abstract="true">
 	</bean>
 
