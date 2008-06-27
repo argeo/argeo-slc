@@ -37,6 +37,13 @@ public abstract class SlcExecutionTestUtils {
 			assertNotNull(reachedValue);
 			assertEquals(expectedValue, reachedValue);
 		}
+
+		assertEquals(expected.getSteps().size(), reached.getSteps().size());
+		for (int i = 0; i < expected.getSteps().size(); i++) {
+			SlcExecutionStep stepExpected = expected.getSteps().get(i);
+			SlcExecutionStep stepReached = reached.getSteps().get(i);
+			assertSlcExecutionStep(stepExpected, stepReached);
+		}
 	}
 
 	public static void assertSlcExecutionStep(SlcExecutionStep expected,
