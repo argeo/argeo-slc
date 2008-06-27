@@ -57,8 +57,26 @@
 		<jsp-property-group>
 			<url-pattern>*.jsp</url-pattern>
 			<page-encoding>ISO-8859-1</page-encoding>
-			<include-prelude>/WEB-INF/specific/prelude.jspf</include-prelude>
+			<include-prelude>
+				/WEB-INF/specific/prelude.jspf
+			</include-prelude>
 			<include-coda>/WEB-INF/specific/coda.jspf</include-coda>
 		</jsp-property-group>
 	</jsp-config>
+
+	<!-- Log4j configContext loader config -->
+	<listener>
+		<listener-class>
+			org.springframework.web.util.Log4jConfigListener
+		</listener-class>
+	</listener>
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/log4j.properties</param-value>
+	</context-param>
+	<context-param>
+		<param-name>log4jRefreshInterval</param-name>
+		<param-value>5000</param-value>
+	</context-param>
+
 </web-app>

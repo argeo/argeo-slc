@@ -26,8 +26,7 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 		log.info("Send CreateTreeTestResultRequest for result "
 				+ req.getTreeTestResult().getUuid());
 
-		Object resp = template.marshalSendAndReceive(req);
-		log.info("Resp: " + resp);
+		template.marshalSendAndReceive(req);
 	}
 
 	public void testResultPartRequest() {
@@ -43,8 +42,7 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 		ResultPartRequest req = createSimpleResultPartRequest(ttr);
 
 		log.info("Send ResultPartRequest for result " + req.getResultUuid());
-		Object resp = template.marshalSendAndReceive(req);
-		log.info("Resp: " + resp);
+		template.marshalSendAndReceive(req);
 	}
 
 	public void testCloseTreeTestResultRequest() {
@@ -64,7 +62,6 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 		log.info("Send CloseTreeTestResultRequest for result "
 				+ req.getResultUuid());
 
-		Object resp = template.marshalSendAndReceive(req);
-		log.info("Resp: " + resp);
+		template.marshalSendAndReceive(req);
 	}
 }
