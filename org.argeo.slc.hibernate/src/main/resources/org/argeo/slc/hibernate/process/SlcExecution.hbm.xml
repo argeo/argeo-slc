@@ -10,8 +10,7 @@
 		<property name="type" column="TYPE" />
 		<property name="status" column="STATUS" />
 
-		<list name="steps" cascade="all" lazy="false"
-			table="SLC_EXECUTIONS_STEPS">
+		<list name="steps" cascade="all" table="SLC_EXECUTIONS_STEPS">
 			<key column="SLC_EXECUTION_ID" />
 			<list-index column="INDX" />
 			<one-to-many

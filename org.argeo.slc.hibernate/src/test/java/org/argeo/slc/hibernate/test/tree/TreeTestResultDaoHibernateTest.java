@@ -9,25 +9,20 @@ import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
-import org.argeo.slc.unit.AbstractSpringTestCase;
+import org.argeo.slc.hibernate.unit.HibernateTestCase;
 import org.argeo.slc.unit.test.tree.TreeTestResultTestUtils;
 import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
 import org.hibernate.HibernateException;
-import org.hibernate.LockMode;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
-public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
+public class TreeTestResultDaoHibernateTest extends HibernateTestCase {
 	private TreeTestResultDao testResultDao = null;
-	private HibernateTemplate template = null;
 
 	@Override
 	public void setUp() {
 		testResultDao = getBean(TreeTestResultDao.class);
-		template = new HibernateTemplate(getBean(SessionFactory.class));
 	}
 
 	public void testCreate() {
@@ -66,7 +61,7 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		elem.getTags().put("myTag", "myTagValue");
 		registry.register(path, elem);
 
-		template.execute(new HibernateCallback() {
+		getHibernateTemplate().execute(new HibernateCallback() {
 
 			public Object doInHibernate(Session session)
 					throws HibernateException, SQLException {
@@ -143,8 +138,8 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 		return "org/argeo/slc/hibernate/applicationContext.xml";
 	}
 
-	public void assertInHibernate(final TreeTestResult ttrExpected,
-			final TreeTestResult ttrPersisted) {
+	public static void assertInHibernate(HibernateTemplate template,
+			final TreeTestResult ttrExpected, final TreeTestResult ttrPersisted) {
 		template.execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) {
 				session.refresh(ttrPersisted);
@@ -155,6 +150,11 @@ public class TreeTestResultDaoHibernateTest extends AbstractSpringTestCase {
 
 		});
 
+	}
+
+	public void assertInHibernate(final TreeTestResult ttrExpected,
+			final TreeTestResult ttrPersisted) {
+		assertInHibernate(getHibernateTemplate(), ttrExpected, ttrPersisted);
 	}
 
 }

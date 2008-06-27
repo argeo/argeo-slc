@@ -8,7 +8,7 @@
 		<id name="id" column="ID" />
 
 		<set name="results" table="TTR_COLLECTION_RESULTS"
-			sort="natural" lazy="false">
+			sort="natural">
 			<key column="PARENT_ID" />
 			<many-to-many class="TreeTestResult" />
 		</set>
