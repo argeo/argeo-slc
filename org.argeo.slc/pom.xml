@@ -12,12 +12,6 @@
 	<url>
 		http://www.argeo.org/projects/slc/${project.artfactId}/${project.version}
 	</url>
-	<!-- 
-		<modules>
-		<module>../org.argeo.slc.core</module>
-		<module>../org.argeo.slc.example</module>
-		</modules>
-	-->
 	<properties>
 		<version.spring>2.5.4</version.spring>
 		<version.spring-ws>1.5.2</version.spring-ws>
@@ -205,6 +199,12 @@
 				<version>${version.spring}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aop</artifactId>
+				<version>${version.spring}</version>
+			</dependency>
+			
+			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-ws-core</artifactId>
 				<version>${version.spring-ws}</version>
@@ -329,6 +329,11 @@
 				<version>${version.maven}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>aspectjweaver</artifactId>
+				<version>1.6.0</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
