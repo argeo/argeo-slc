@@ -1,13 +1,21 @@
 package org.argeo.slc.hibernate.test.tree;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.argeo.slc.core.SlcException;
+import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestResult;
+import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /**
@@ -49,17 +57,51 @@ public class TreeTestResultDaoHibernate extends HibernateDaoSupport implements
 		return list;
 	}
 
-	public void close(String id, Date closeDate) {
-		// TreeTestResult ttr = (TreeTestResult) getHibernateTemplate().load(
-		// TreeTestResult.class, id);
-		TreeTestResult ttr = getTestResult(id);
-		if (ttr != null) {
-			ttr.setCloseDate(closeDate);
-			getHibernateTemplate().update(ttr);
-		} else {
-			throw new SlcException("Result with id " + id
-					+ " could not be closed because it was not found.");
-		}
+	public void close(final String testResultId, final Date closeDate) {
+		getHibernateTemplate().execute(new HibernateCallback() {
+
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				TreeTestResult treeTestResult = getTreeTestResult(session,
+						testResultId);
+				treeTestResult.setCloseDate(closeDate);
+				session.update(treeTestResult);
+				return treeTestResult;
+			}
+		});
 	}
 
+	public void addResultPart(final String testResultId, final TreeSPath path,
+			final SimpleResultPart resultPart,
+			final Map<TreeSPath, StructureElement> relatedElements) {
+
+		getHibernateTemplate().execute(new HibernateCallback() {
+
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				TreeTestResult treeTestResult = getTreeTestResult(session,
+						testResultId);
+				PartSubList lst = treeTestResult.getResultParts().get(path);
+				if (lst == null) {
+					lst = new PartSubList();
+					treeTestResult.getResultParts().put(path, lst);
+				}
+				lst.getParts().add(resultPart);
+				treeTestResult.getElements().putAll(relatedElements);
+
+				session.update(treeTestResult);
+				return treeTestResult;
+			}
+		});
+
+	}
+
+	protected TreeTestResult getTreeTestResult(Session session,
+			String testResultId) {
+		TreeTestResult treeTestResult = (TreeTestResult) session.get(
+				TreeTestResult.class, testResultId);
+		if (treeTestResult == null)
+			throw new SlcException("No result with id " + testResultId);
+		return treeTestResult;
+	}
 }

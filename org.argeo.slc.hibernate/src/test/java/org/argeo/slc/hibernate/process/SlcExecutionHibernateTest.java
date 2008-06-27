@@ -18,8 +18,8 @@ public class SlcExecutionHibernateTest extends HibernateTestCase {
 		SlcExecutionDao dao = getBean(SlcExecutionDao.class);
 
 		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
-		slcExec.getSteps().add(new SlcExecutionStep("LOG", "A log line"));
-		slcExec.getSteps().add(new SlcExecutionStep("LOG", "Two log\nlines"));
+		slcExec.getSteps().add(new SlcExecutionStep("A log line"));
+		slcExec.getSteps().add(new SlcExecutionStep("Two log\nlines"));
 
 		dao.create(slcExec);
 
@@ -32,8 +32,8 @@ public class SlcExecutionHibernateTest extends HibernateTestCase {
 
 		// slcExecution Creation
 		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
-		slcExec.getSteps().add(new SlcExecutionStep("LOG", "A log line"));
-		slcExec.getSteps().add(new SlcExecutionStep("LOG", "Two log\nlines"));
+		slcExec.getSteps().add(new SlcExecutionStep("A log line"));
+		slcExec.getSteps().add(new SlcExecutionStep("Two log\nlines"));
 
 		dao.create(slcExec);
 
@@ -54,7 +54,7 @@ public class SlcExecutionHibernateTest extends HibernateTestCase {
 				slcExecRetrieved.getSteps().get(0)
 						.setLogLines(logLineListStep0);
 				slcExecRetrieved.getSteps().add(
-						new SlcExecutionStep("LOG", "Three \n log \n lines"));
+						new SlcExecutionStep("Three \n log \n lines"));
 				return null;
 			}
 		});
