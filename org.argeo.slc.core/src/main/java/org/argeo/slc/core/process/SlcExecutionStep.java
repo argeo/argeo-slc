@@ -11,6 +11,8 @@ import java.util.Vector;
 import org.apache.commons.io.IOUtils;
 
 public class SlcExecutionStep {
+	public final static String TYPE_LOG = "LOG";
+
 	private String uuid;
 	private String type;
 	private Date begin;
@@ -20,8 +22,8 @@ public class SlcExecutionStep {
 	public SlcExecutionStep() {
 	}
 
-	public SlcExecutionStep(String type, String log) {
-		this.type = type;
+	public SlcExecutionStep(String log) {
+		this.type = TYPE_LOG;
 		this.begin = new Date();
 		this.uuid = UUID.randomUUID().toString();
 		addLog(log);
@@ -76,6 +78,11 @@ public class SlcExecutionStep {
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot add log", e);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "#" + uuid;
 	}
 
 }

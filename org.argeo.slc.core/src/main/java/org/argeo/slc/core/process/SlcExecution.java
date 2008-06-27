@@ -51,8 +51,8 @@ public class SlcExecution {
 		return user;
 	}
 
-	public void setUser(String path) {
-		this.user = path;
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 	public String getType() {

@@ -9,6 +9,16 @@ public class SlcExecutionStepsRequest {
 	private String slcExecutionUuid;
 	private List<SlcExecutionStep> steps = new Vector<SlcExecutionStep>();
 
+	public SlcExecutionStepsRequest() {
+
+	}
+
+	public SlcExecutionStepsRequest(String slcExecutionUuid,
+			List<SlcExecutionStep> steps) {
+		this.slcExecutionUuid = slcExecutionUuid;
+		this.steps = steps;
+	}
+
 	public String getSlcExecutionUuid() {
 		return slcExecutionUuid;
 	}
@@ -27,5 +37,11 @@ public class SlcExecutionStepsRequest {
 
 	public void addStep(SlcExecutionStep step) {
 		steps.add(step);
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "#" + slcExecutionUuid + " "
+				+ steps;
 	}
 }

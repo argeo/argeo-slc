@@ -38,4 +38,9 @@ public class CloseTreeTestResultRequest {
 		this.closeDate = closeDate;
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "#" + resultUuid;
+	}
+
 }

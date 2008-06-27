@@ -30,7 +30,7 @@ public abstract class TreeTestResultTestUtils {
 	public static TreeTestResult createCompleteTreeTestResult() {
 		SlcExecution slcExecution = SlcExecutionTestUtils
 				.createSimpleSlcExecution();
-		SlcExecutionStep step = new SlcExecutionStep("LOG", "JUnit step");
+		SlcExecutionStep step = new SlcExecutionStep("JUnit step");
 		slcExecution.getSteps().add(step);
 
 		SimpleTestRun testRun = new SimpleTestRun();

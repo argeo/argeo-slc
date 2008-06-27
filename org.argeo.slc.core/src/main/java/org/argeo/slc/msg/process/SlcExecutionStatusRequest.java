@@ -27,4 +27,9 @@ public class SlcExecutionStatusRequest {
 	public void setNewStatus(String newStatus) {
 		this.newStatus = newStatus;
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "#" + slcExecutionUuid;
+	}
 }

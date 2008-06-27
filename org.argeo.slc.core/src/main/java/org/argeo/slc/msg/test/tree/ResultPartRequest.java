@@ -89,4 +89,8 @@ public class ResultPartRequest {
 		this.relatedElements = relatedElements;
 	}
 
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + "#" + resultUuid + " " + path;
+	}
 }
