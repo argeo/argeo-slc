@@ -63,7 +63,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		if (slcExecution != null) {
 			if (currentStepNotified) {
 				slcExecution.getSteps().add(
-						new SlcExecutionStep("LOG", event.getMessage()));
+						new SlcExecutionStep(event.getMessage()));
 				notifyStep(slcExecution, slcExecution.currentStep());
 				currentStepNotified = true;
 			} else {
@@ -99,7 +99,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		if (logTaskStartFinish)
 			msg = "Task " + event.getTask().getTaskName() + " started";
 
-		slcExecution.getSteps().add(new SlcExecutionStep("LOG", msg));
+		slcExecution.getSteps().add(new SlcExecutionStep(msg));
 
 		currentStepNotified = false;
 	}
@@ -139,7 +139,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 
 	protected void addLogStep(BuildEvent event, String msg) {
 		SlcExecution slcExecution = getSlcExecution(event);
-		slcExecution.getSteps().add(new SlcExecutionStep("LOG", msg));
+		slcExecution.getSteps().add(new SlcExecutionStep(msg));
 
 		notifyStep(slcExecution, slcExecution.currentStep());
 		currentStepNotified = true;
@@ -169,7 +169,7 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		SlcExecution slcExecution = getSlcExecution(project);
 		if (currentStepNotified) {
 			slcExecution.getSteps().add(
-					new SlcExecutionStep("LOG", event.getMessage().toString()));
+					new SlcExecutionStep(event.getMessage().toString()));
 			currentStepNotified = false;
 		} else {
 			slcExecution.currentStep().addLog(event.getMessage().toString());

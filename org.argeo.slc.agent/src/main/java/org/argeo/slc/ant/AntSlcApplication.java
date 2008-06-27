@@ -28,6 +28,7 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.runtime.SlcExecutionOutput;
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
@@ -248,8 +249,9 @@ public class AntSlcApplication {
 		ListableBeanFactory context = (ListableBeanFactory) project
 				.getReference(AntConstants.REF_ROOT_CONTEXT);
 		// Register build listeners
-		Map<String, BuildListener> listeners = context.getBeansOfType(
-				BuildListener.class, false, true);
+		Map<String, BuildListener> listeners = BeanFactoryUtils
+				.beansOfTypeIncludingAncestors(context, BuildListener.class,
+						false, false);
 		for (BuildListener listener : listeners.values()) {
 			project.addBuildListener(listener);
 		}

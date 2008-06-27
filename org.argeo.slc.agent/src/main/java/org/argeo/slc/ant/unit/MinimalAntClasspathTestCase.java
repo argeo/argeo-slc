@@ -22,6 +22,7 @@ public class MinimalAntClasspathTestCase extends AbstractSpringTestCase {
 		slcExecution.setUuid(UUID.randomUUID().toString());
 		slcExecution.getAttributes().put(AntConstants.EXECATTR_ANT_FILE,
 				scriptPath);
+		slcExecution.setUser("user");
 
 		slcApp.execute(slcExecution, null, null, null);
 	}

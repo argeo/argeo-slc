@@ -11,6 +11,7 @@ import org.springframework.ws.soap.SoapFaultDetailElement;
 import org.springframework.ws.soap.client.SoapFaultClientException;
 import org.springframework.xml.transform.StringResult;
 import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,24 +52,31 @@ public abstract class WebServiceUtils {
 		log
 				.error("WS root cause: "
 						+ e.getSoapFault().getFaultStringOrReason());
-		StringBuffer stack = new StringBuffer("");
-		SoapFaultDetail detail = e.getSoapFault().getFaultDetail();
-		if (detail != null) {
-			Iterator<SoapFaultDetailElement> it = (Iterator<SoapFaultDetailElement>) detail
-					.getDetailEntries();
-			while (it.hasNext()) {
-				SoapFaultDetailElement elem = it.next();
-				if (elem.getName().getLocalPart().equals("StackElement")) {
-					Source source = elem.getSource();
-					if (source instanceof DOMSource) {
-						Node node = ((DOMSource) source).getNode();
-						stack.append(node.getTextContent()).append('\n');
+		if (log.isTraceEnabled()) {
+			StringBuffer stack = new StringBuffer("");
+			SoapFaultDetail detail = e.getSoapFault().getFaultDetail();
+			if (detail != null) {
+				Iterator<SoapFaultDetailElement> it = (Iterator<SoapFaultDetailElement>) detail
+						.getDetailEntries();
+				while (it.hasNext()) {
+					SoapFaultDetailElement elem = it.next();
+					if (elem.getName().getLocalPart().equals("StackElement")) {
+						Source source = elem.getSource();
+						if (source instanceof DOMSource) {
+							Node node = ((DOMSource) source).getNode();
+							// stack.append(node.getTextContent()).append('\n');
+							stack
+									.append(
+											node.getChildNodes().item(0)
+													.getNodeValue()).append(
+											'\n');
+						}
 					}
 				}
-			}
 
-			if (stack.length() > 0 && log.isTraceEnabled())
-				log.error("WS root cause stack: " + stack);
+				if (stack.length() > 0)
+					log.error("WS root cause stack: " + stack);
+			}
 		}
 	}
 
