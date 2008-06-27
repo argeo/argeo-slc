@@ -26,16 +26,11 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
-				<version>6.1.9</version>
 				<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
-					<contextPath>org.argeo.slc.webapp</contextPath>
-					<useTestClasspath>true</useTestClasspath>
 					<webAppSourceDirectory>
 						../org.argeo.slc.webapp/src/main/webapp
 					</webAppSourceDirectory>
-					<stopKey>stopKey</stopKey>
-					<stopPort>8081</stopPort>
 					<scanTargetPatterns>
 						<scanTargetPattern>
 							<directory>
@@ -49,7 +44,6 @@
 					</scanTargetPatterns>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 	<dependencies>
@@ -57,11 +51,23 @@
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>argeo-slc-core</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>argeo-slc-hibernate</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xerces</groupId>
+					<artifactId>xercesImpl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -81,6 +87,10 @@
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
@@ -88,6 +98,10 @@
 		<dependency>
 			<groupId>c3p0</groupId>
 			<artifactId>c3p0</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
 		</dependency>
 	</dependencies>
 </project>

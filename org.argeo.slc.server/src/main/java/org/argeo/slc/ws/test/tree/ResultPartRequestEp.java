@@ -29,49 +29,13 @@ public class ResultPartRequestEp extends AbstractMarshallingPayloadEndpoint {
 
 		testManagerService
 				.registerTestRunDescriptor(msg.getTestRunDescriptor());
-		// if (testRunDescriptor != null) {
-		// if (log.isDebugEnabled())
-		// log.debug("Updating test run descriptor with id "
-		// + testRunDescriptor.getTestRunUuid());
-		//
-		// testRunDescriptorDao.saveOrUpdate(testRunDescriptor);
-		//
-		// // Update tree test result collection
-		// // TODO: put it in dedicated service and optimize
-		// SlcExecution slcExecution = slcExecutionDao
-		// .getSlcExecution(testRunDescriptor.getSlcExecutionUuid());
-		// if (slcExecution != null) {
-		// TreeTestResultCollection ttrc = treeTestResultCollectionDao
-		// .getTestResultCollection(slcExecution.getUser());
-		// if (ttrc == null) {
-		// ttrc = new TreeTestResultCollection(slcExecution.getUser());
-		// treeTestResultCollectionDao.create(ttrc);
-		// }
-		// TreeTestResult ttr = treeTestResultDao
-		// .getTestResult(testRunDescriptor.getTestResultUuid());
-		// ttrc.getResults().add(ttr);
-		// treeTestResultCollectionDao.update(ttrc);
-		// }
-		// }
 
-		TreeTestResult treeTestResult = treeTestResultDao.getTestResult(msg
-				.getResultUuid());
-		if (treeTestResult == null) {
-			throw new SlcException("No result with id " + msg.getResultUuid());
-		}
-
-		PartSubList lst = treeTestResult.getResultParts().get(msg.getPath());
-		if (lst == null) {
-			lst = new PartSubList();
-			treeTestResult.getResultParts().put(msg.getPath(), lst);
-		}
-		lst.getParts().add(msg.getResultPart());
-		treeTestResult.getElements().putAll(msg.getRelatedElements());
+		treeTestResultDao.addResultPart(msg.getResultUuid(), msg.getPath(), msg
+				.getResultPart(), msg.getRelatedElements());
 
 		if (log.isDebugEnabled())
-			log.debug("Updating result with id " + treeTestResult.getUuid());
-
-		treeTestResultDao.update(treeTestResult);
+			log.debug("Added result part to test result #"
+					+ msg.getResultUuid());
 
 		return null;
 	}

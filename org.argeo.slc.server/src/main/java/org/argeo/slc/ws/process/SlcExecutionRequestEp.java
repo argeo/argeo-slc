@@ -30,13 +30,13 @@ public class SlcExecutionRequestEp extends AbstractMarshallingPayloadEndpoint {
 
 			if (slcExecutionDao.getSlcExecution(slcExecution.getUuid()) == null) {
 				if (log.isDebugEnabled())
-					log.debug("Creating SlcExecution with uuid "
+					log.debug("Creating SLC execution #"
 							+ slcExecution.getUuid());
 
 				slcExecutionDao.create(slcExecution);
 			} else {
 				if (log.isDebugEnabled())
-					log.debug("Updating SlcExecution with uuid "
+					log.debug("Updating SLC execution #"
 							+ slcExecution.getUuid());
 
 				slcExecutionDao.update(slcExecution);
@@ -47,6 +47,10 @@ public class SlcExecutionRequestEp extends AbstractMarshallingPayloadEndpoint {
 			SlcExecutionStatusRequest msg = (SlcExecutionStatusRequest) requestObject;
 			SlcExecution slcExecution = slcExecutionDao.getSlcExecution(msg
 					.getSlcExecutionUuid());
+			if (slcExecution == null)
+				throw new SlcException("Could not find SLC execution #"
+						+ msg.getSlcExecutionUuid());
+
 			slcExecution.setStatus(msg.getNewStatus());
 			slcExecutionDao.update(slcExecution);
 			return null;

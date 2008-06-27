@@ -30,30 +30,22 @@ public class SlcExecutionStepsRequestEp extends
 		try {
 			SlcExecutionStepsRequest msg = (SlcExecutionStepsRequest) requestObject;
 			uuid = msg.getSlcExecutionUuid();
-			SlcExecution slcExecution = slcExecutionDao.getSlcExecution(uuid);
-
-			if (slcExecution == null)
-				throw new SlcException("Could not find slc execution " + uuid);
-
-			List<SlcExecutionStep> additionalSteps = msg.getSteps();
 			if (log.isTraceEnabled()) {
-				log.trace("Trying to add additional steps to slc execution "
+				log.trace("Trying to add additional steps to SLC execution #"
 						+ uuid + ":");
-				for (SlcExecutionStep step : additionalSteps) {
-					log.trace("Step " + step.getUuid() + " (in slc execution "
+				for (SlcExecutionStep step : msg.getSteps()) {
+					log.trace("Step " + step.getUuid() + " (in SLC execution #"
 							+ uuid + ")");
 				}
 			}
-			slcExecution.getSteps().addAll(additionalSteps);
 
 			log.debug("Adding " + msg.getSteps().size()
-					+ " steps to SlcExecution with uuid "
-					+ slcExecution.getUuid());
+					+ " steps to SLC execution #" + uuid);
 
-			slcExecutionDao.update(slcExecution);
+			slcExecutionDao.addSteps(uuid, msg.getSteps());
 			return null;
 		} catch (Exception e) {
-			log.error("Could not update SlcExecution " + uuid
+			log.error("Could not update SLC execution #" + uuid
 					+ " with additional steps", e);
 			throw e;
 		}

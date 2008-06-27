@@ -26,7 +26,7 @@ public class CreateTreeTestResultRequestEp extends
 		TreeTestResult treeTestResult = msg.getTreeTestResult();
 
 		if (log.isDebugEnabled())
-			log.debug("Creating result with id " + treeTestResult.getUuid());
+			log.debug("Creating result #" + treeTestResult.getUuid());
 
 		treeTestResultDao.create(treeTestResult);
 

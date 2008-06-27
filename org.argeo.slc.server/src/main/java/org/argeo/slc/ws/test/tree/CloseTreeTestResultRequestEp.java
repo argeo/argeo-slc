@@ -24,8 +24,8 @@ public class CloseTreeTestResultRequestEp extends
 		CloseTreeTestResultRequest msg = (CloseTreeTestResultRequest) requestObject;
 
 		if (log.isDebugEnabled())
-			log.debug("Closing result with id " + msg.getResultUuid()
-					+ " at date " + msg.getCloseDate());
+			log.debug("Closing result #" + msg.getResultUuid() + " at date "
+					+ msg.getCloseDate());
 
 		treeTestResultDao.close(msg.getResultUuid(), msg.getCloseDate());
 

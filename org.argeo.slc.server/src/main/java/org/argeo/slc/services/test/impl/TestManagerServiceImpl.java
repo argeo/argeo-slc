@@ -47,8 +47,11 @@ public class TestManagerServiceImpl implements TestManagerService {
 						.getSlcExecution(testRunDescriptor
 								.getSlcExecutionUuid());
 				if (slcExecution != null) {
-					addResultToCollection(slcExecution.getUser(),
-							testRunDescriptor.getTestResultUuid());
+					String collectionId = slcExecution.getUser() != null ? slcExecution
+							.getUser()
+							: "default";
+					addResultToCollection(collectionId, testRunDescriptor
+							.getTestResultUuid());
 				}
 			}
 		}
@@ -61,9 +64,7 @@ public class TestManagerServiceImpl implements TestManagerService {
 			ttrc = new TreeTestResultCollection(collectionId);
 			treeTestResultCollectionDao.create(ttrc);
 		}
-		TreeTestResult ttr = treeTestResultDao.getTestResult(resultUuid);
-		ttrc.getResults().add(ttr);
-		treeTestResultCollectionDao.update(ttrc);
+		treeTestResultCollectionDao.addResultToCollection(ttrc, resultUuid);
 	}
 
 	public void removeResultFromCollection(String collectionId,
@@ -71,10 +72,8 @@ public class TestManagerServiceImpl implements TestManagerService {
 		TreeTestResultCollection ttrc = treeTestResultCollectionDao
 				.getTestResultCollection(collectionId);
 		if (ttrc != null) {
-			TreeTestResult ttr = treeTestResultDao.getTestResult(resultUuid);
-			if (ttrc.getResults().remove(ttr)) {
-				treeTestResultCollectionDao.update(ttrc);
-			}
+			treeTestResultCollectionDao.removeResultFromCollection(ttrc,
+					resultUuid);
 		}
 	}
 
