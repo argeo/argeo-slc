@@ -21,9 +21,16 @@ public class SpringUtils {
 			Class<T> clss) {
 		// Map<String, T> beans = context.getBeansOfType(clss);
 		Map<String, T> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(
-				context, clss);
+				context, clss, false, false);
 		if (beans.size() == 1) {
 			return beans.values().iterator().next();
+		} else if (beans.size() > 1) {
+			if (log.isDebugEnabled()) {
+				log
+						.debug(("Found more that on bean for type " + clss
+								+ ": " + beans.keySet()));
+			}
+			return null;
 		} else {
 			return null;
 		}
