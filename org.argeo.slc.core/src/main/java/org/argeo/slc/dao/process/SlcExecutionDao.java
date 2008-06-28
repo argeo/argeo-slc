@@ -10,6 +10,8 @@ public interface SlcExecutionDao {
 
 	public void update(SlcExecution slcExecution);
 
+	public void merge(SlcExecution slcExecution);
+
 	public SlcExecution getSlcExecution(String uuid);
 
 	public List<SlcExecution> listSlcExecutions();
