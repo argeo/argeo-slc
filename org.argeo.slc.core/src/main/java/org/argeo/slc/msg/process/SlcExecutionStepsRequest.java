@@ -19,6 +19,14 @@ public class SlcExecutionStepsRequest {
 		this.steps = steps;
 	}
 
+	public SlcExecutionStepsRequest(String slcExecutionUuid,
+			SlcExecutionStep step) {
+		this.slcExecutionUuid = slcExecutionUuid;
+		List<SlcExecutionStep> steps = new Vector<SlcExecutionStep>();
+		steps.add(step);
+		this.steps = steps;
+	}
+
 	public String getSlcExecutionUuid() {
 		return slcExecutionUuid;
 	}

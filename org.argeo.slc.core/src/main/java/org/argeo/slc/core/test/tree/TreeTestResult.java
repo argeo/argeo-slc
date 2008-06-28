@@ -9,7 +9,6 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureAware;
@@ -100,7 +99,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 			}
 		}
 
-		currentPath = (TreeSPath) path;
+		currentPath = path;
 	}
 
 	/** Gets the current path. */
@@ -168,6 +167,11 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	public SortedMap<TreeSPath, StructureElement> getRelatedElements(
 			TreeSPath path) {
+		if (path == null)
+			throw new SlcException(
+					"Cannot retrieve element for a null path in result #"
+							+ uuid);
+
 		SortedMap<TreeSPath, StructureElement> relatedElements = new TreeMap<TreeSPath, StructureElement>();
 		List<TreeSPath> hierarchy = path.getHierarchyAsList();
 		for (TreeSPath currPath : elements.keySet()) {

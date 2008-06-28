@@ -33,6 +33,16 @@ public abstract class TreeTestResultTestUtils {
 		SlcExecutionStep step = new SlcExecutionStep("JUnit step");
 		slcExecution.getSteps().add(step);
 
+		TreeTestResult ttr = createMinimalConsistentTreeTestResult(slcExecution);
+
+		ttr.addResultPart(createSimpleResultPartPassed());
+		ttr.addResultPart(createSimpleResultPartFailed());
+		ttr.addResultPart(createSimpleResultPartError());
+		return ttr;
+	}
+
+	public static TreeTestResult createMinimalConsistentTreeTestResult(
+			SlcExecution slcExecution) {
 		SimpleTestRun testRun = new SimpleTestRun();
 		testRun.setUuid(UUID.randomUUID().toString());
 
@@ -71,10 +81,6 @@ public abstract class TreeTestResultTestUtils {
 
 		});
 		testRun.notifySlcExecution(slcExecution);
-
-		ttr.addResultPart(createSimpleResultPartPassed());
-		ttr.addResultPart(createSimpleResultPartFailed());
-		ttr.addResultPart(createSimpleResultPartError());
 		return ttr;
 	}
 

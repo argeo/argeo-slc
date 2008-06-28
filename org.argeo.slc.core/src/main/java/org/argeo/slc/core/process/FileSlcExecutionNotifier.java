@@ -10,12 +10,9 @@ import java.util.Map;
 
 import javax.xml.transform.stream.StreamResult;
 
-import org.springframework.oxm.Marshaller;
-
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.LogFactory;
-
 import org.argeo.slc.core.SlcException;
+import org.springframework.oxm.Marshaller;
 
 public class FileSlcExecutionNotifier implements SlcExecutionNotifier {
 	private final static SimpleDateFormat sdf = new SimpleDateFormat(

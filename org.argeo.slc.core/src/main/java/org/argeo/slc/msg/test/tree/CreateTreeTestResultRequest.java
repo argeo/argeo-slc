@@ -20,7 +20,7 @@ public class CreateTreeTestResultRequest {
 	public void setTreeTestResult(TreeTestResult treeTestResult) {
 		this.treeTestResult = treeTestResult;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "#" + treeTestResult.getUuid();

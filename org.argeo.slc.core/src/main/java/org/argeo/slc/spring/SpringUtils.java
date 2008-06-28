@@ -2,13 +2,11 @@ package org.argeo.slc.spring;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.SlcException;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.io.DefaultResourceLoader;

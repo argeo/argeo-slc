@@ -9,7 +9,7 @@ public interface StructureRegistry<P extends StructurePath> {
 	/** All mode: everything is executed regardless of the active paths. */
 	public static String ALL = "ALL";
 	/** Active mode: only the active paths are executed. */
-	public static String ACTIVE = "STATUS_ACTIVE";
+	public static String ACTIVE = "ACTIVE";
 
 	/** Adds an element to the registry. */
 	public void register(P path, StructureElement element);

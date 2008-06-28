@@ -2,7 +2,6 @@ package org.argeo.slc.dao.test.tree;
 
 import java.util.SortedSet;
 
-import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 
 public interface TreeTestResultCollectionDao {

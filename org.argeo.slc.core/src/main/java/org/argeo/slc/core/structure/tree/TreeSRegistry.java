@@ -12,11 +12,8 @@ import org.argeo.slc.core.structure.StructureRegistry;
 
 /** Tree based implementation of a structure registry. */
 public class TreeSRegistry implements StructureRegistry<TreeSPath> {
-	public final static String STATUS_ACTIVE = "STATUS_ACTIVE";
-
 	/** For ORM */
 	private Long tid;
-	private String status;
 	private Map<TreeSPath, SimpleSElement> elements = new TreeMap<TreeSPath, SimpleSElement>();
 
 	private String mode = StructureRegistry.ALL;
@@ -36,6 +33,16 @@ public class TreeSRegistry implements StructureRegistry<TreeSPath> {
 	}
 
 	public void register(TreeSPath path, StructureElement element) {
+		if (path == null)
+			throw new UnsupportedException("Cannot register under a null path.");
+		if (element == null)
+			throw new UnsupportedException(
+					"Cannot register null element for path " + path);
+		if (element.getLabel() == null)
+			throw new UnsupportedException(
+					"Cannot register an element with null label for path "
+							+ path);
+
 		final SimpleSElement simpleSElement;
 		if (element instanceof SimpleSElement) {
 			simpleSElement = (SimpleSElement) element;
@@ -43,11 +50,7 @@ public class TreeSRegistry implements StructureRegistry<TreeSPath> {
 			simpleSElement = new SimpleSElement(element.getLabel());
 		}
 
-		if (path == null)
-			throw new UnsupportedException("Path cannot be null.");
-
 		elements.put(path, simpleSElement);
-
 	}
 
 	public String getMode() {
@@ -64,14 +67,6 @@ public class TreeSRegistry implements StructureRegistry<TreeSPath> {
 
 	public void setActivePaths(List<TreeSPath> activePaths) {
 		this.activePaths = activePaths;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 	/** Gets the elements. */

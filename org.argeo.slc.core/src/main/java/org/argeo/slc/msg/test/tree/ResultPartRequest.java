@@ -25,8 +25,8 @@ public class ResultPartRequest {
 			SimpleResultPart resultPart) {
 		resultUuid = ttr.getUuid();
 		this.resultPart = resultPart;
-		this.path = path;
-		relatedElements = ttr.getRelatedElements(path);
+		this.path = (path != null ? path : ttr.getCurrentPath());
+		relatedElements = ttr.getRelatedElements(this.path);
 		if (ttr.getCurrentTestRun() != null)
 			testRunDescriptor = new TestRunDescriptor(ttr.getCurrentTestRun());
 	}
