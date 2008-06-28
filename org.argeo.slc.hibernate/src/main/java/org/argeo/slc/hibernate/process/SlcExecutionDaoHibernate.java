@@ -20,8 +20,12 @@ public class SlcExecutionDaoHibernate extends HibernateDaoSupport implements
 		getHibernateTemplate().save(slcExecution);
 	}
 
-	public void update(SlcExecution slcExecution) {
+	public void update(final SlcExecution slcExecution) {
 		getHibernateTemplate().update(slcExecution);
+	}
+
+	public void merge(final SlcExecution slcExecution) {
+		getHibernateTemplate().merge(slcExecution);
 	}
 
 	public SlcExecution getSlcExecution(String uuid) {

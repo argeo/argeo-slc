@@ -11,6 +11,7 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.hibernate.HibernateException;
+import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.hibernate.action.Executable;
 
@@ -40,7 +41,7 @@ public class TreeTestResultCollectionDaoHibernate extends HibernateDaoSupport
 		getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 					throws HibernateException, SQLException {
-				session.refresh(ttrc);
+				session.lock(ttrc, LockMode.NONE);
 				TreeTestResult ttr = (TreeTestResult) session.get(
 						TreeTestResult.class, resultUuid);
 				ttrc.getResults().add(ttr);
@@ -55,7 +56,7 @@ public class TreeTestResultCollectionDaoHibernate extends HibernateDaoSupport
 		getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session)
 					throws HibernateException, SQLException {
-				session.refresh(ttrc);
+				session.lock(ttrc, LockMode.NONE);
 				TreeTestResult ttr = (TreeTestResult) session.get(
 						TreeTestResult.class, resultUuid);
 				if (ttrc.getResults().remove(ttr))
