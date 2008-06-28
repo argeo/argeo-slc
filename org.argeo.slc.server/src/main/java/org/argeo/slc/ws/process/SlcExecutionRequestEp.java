@@ -26,20 +26,21 @@ public class SlcExecutionRequestEp extends AbstractMarshallingPayloadEndpoint {
 		if (requestObject instanceof SlcExecutionRequest) {
 
 			SlcExecutionRequest msg = (SlcExecutionRequest) requestObject;
-			SlcExecution slcExecution = msg.getSlcExecution();
+			SlcExecution slcExecutionMsg = msg.getSlcExecution();
 
-			if (slcExecutionDao.getSlcExecution(slcExecution.getUuid()) == null) {
+			SlcExecution slcExecutionPersisted = slcExecutionDao.getSlcExecution(slcExecutionMsg.getUuid());
+			if (slcExecutionPersisted == null) {
 				if (log.isTraceEnabled())
 					log.trace("Creating SLC execution #"
-							+ slcExecution.getUuid());
+							+ slcExecutionMsg.getUuid());
 
-				slcExecutionDao.create(slcExecution);
+				slcExecutionDao.create(slcExecutionMsg);
 			} else {
 				if (log.isTraceEnabled())
 					log.trace("Updating SLC execution #"
-							+ slcExecution.getUuid());
+							+ slcExecutionMsg.getUuid());
 
-				slcExecutionDao.update(slcExecution);
+				slcExecutionDao.merge(slcExecutionMsg);
 			}
 			return null;
 
@@ -64,5 +65,4 @@ public class SlcExecutionRequestEp extends AbstractMarshallingPayloadEndpoint {
 					+ requestObject.getClass());
 		}
 	}
-
 }

@@ -103,20 +103,18 @@
 
 	<bean class="org.argeo.slc.ws.CustomSoapExceptionResolver" />
 
-	<!-- Transaction
+	<!-- Transaction -->
 
 	<aop:config>
-		<aop:pointcut id="resultPartRequestEpMethods"
-			expression="execution(* org.argeo.slc.ws.test.tree.ResultPartRequestEp.*(..))" />
-		<aop:advisor advice-ref="resultPartRequestEpAdvice"
-			pointcut-ref="resultPartRequestEpMethods" />
+		<aop:pointcut id="epMethods"
+			expression="execution(* org.springframework.ws.server.endpoint.MessageEndpoint.invoke(..))" />
+		<aop:advisor advice-ref="epAdvice" pointcut-ref="epMethods" />
 	</aop:config>
 
-	<tx:advice id="resultPartRequestEpAdvice"
-		transaction-manager="hibernateTransactionManager">
+	<tx:advice id="epAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method name="*" propagation="REQUIRED" />
+			<tx:method name="*" propagation="REQUIRES_NEW" />
 		</tx:attributes>
 	</tx:advice>
- -->
+
 </beans>

@@ -4,7 +4,9 @@
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
-	 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-lazy-init="true">
 
 	<import
@@ -34,15 +36,21 @@
 	<bean id="slcServerDefault.sessionFactory.hibernateTestHSQL"
 		parent="slcTemplates.sessionFactory.hibernateBasic">
 		<property name="dataSource"
-			ref="slcDefault.dataSource.inMemoryTestHSQL" />
+			ref="slcServerDefault.dataSource.inMemoryTestHSQL" />
 		<property name="hibernateProperties">
 			<value><![CDATA[
 				hibernate.dialect=org.hibernate.dialect.HSQLDialect
 				hibernate.hbm2ddl.auto=create
-				hibernate.current_session_context_class=thread
 				hibernate.generate_statistics=true
+				hibernate.connection.autocommit=false
 			]]></value>
 		</property>
+	</bean>
+
+	<bean id="slcServerDefault.dataSource.inMemoryTestHSQL"
+		parent="slcDefault.dataSource.inMemoryTestHSQL"
+		destroy-method="destroy">
+		<property name="autoCommit" value="false" />
 	</bean>
 
 	<bean id="slcServerDefault.sessionFactory.persistentHSQL"
@@ -78,23 +86,29 @@
 	</bean>
 
 	<!-- DAOs -->
-	<bean id="testResultDao" parent="slcTemplates.dao.testResultDao">
+	<bean id="hibernateTemplate"
+		class="org.springframework.orm.hibernate3.HibernateTemplate">
 		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="allowCreate" value="false" />
+	</bean>
+
+	<bean id="testResultDao" parent="slcTemplates.dao.testResultDao">
+		<property name="hibernateTemplate" ref="hibernateTemplate" />
 	</bean>
 
 	<bean id="testResultCollectionDao"
 		parent="slcTemplates.dao.testResultCollectionDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="hibernateTemplate" ref="hibernateTemplate" />
 	</bean>
 
 	<bean id="testRunDescriptorDao"
 		parent="slcTemplates.dao.testRunDescriptorDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="hibernateTemplate" ref="hibernateTemplate" />
 	</bean>
 
 	<bean id="slcExecutionDao"
 		parent="slcTemplates.dao.slcExecutionDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="hibernateTemplate" ref="hibernateTemplate" />
 	</bean>
 
 	<!-- Hibernate instrumentation -->
@@ -102,4 +116,12 @@
 		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
+
+	<!-- Transaction -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager"
+		lazy-init="false">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
 </beans>
