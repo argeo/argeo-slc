@@ -102,9 +102,8 @@
 	</bean>
 
 	<bean class="org.argeo.slc.ws.CustomSoapExceptionResolver" />
-
-	<!-- Transaction -->
-
+	
+	<!-- Web Services transactions -->
 	<aop:config>
 		<aop:pointcut id="epMethods"
 			expression="execution(* org.springframework.ws.server.endpoint.MessageEndpoint.invoke(..))" />
@@ -113,8 +112,7 @@
 
 	<tx:advice id="epAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method name="*" propagation="REQUIRES_NEW" />
+			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
-
 </beans>

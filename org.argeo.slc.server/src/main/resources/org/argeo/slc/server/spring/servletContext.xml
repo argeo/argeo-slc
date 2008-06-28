@@ -11,6 +11,7 @@
 
 	<import
 		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
+	<import resource="transaction.xml" />
 
 	<!--  Default data source -->
 	<bean
