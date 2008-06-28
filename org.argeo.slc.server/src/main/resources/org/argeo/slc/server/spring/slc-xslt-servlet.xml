@@ -16,6 +16,11 @@
 
 	<bean
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="osivInterceptor" />
+			</list>
+		</property>
 	</bean>
 
 
@@ -30,7 +35,7 @@
 		<property name="suffix">
 			<value>.xsl</value>
 		</property>
-		<property name="marshaller" ref="slcDefault.castor.marshaller"/>
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 	</bean>
 
 

@@ -45,7 +45,7 @@
 		<constructor-arg ref="testResultCollectionDao" />
 		<property name="viewName" value="resultCollectionView" />
 	</bean>
-	
+
 	<bean name="/addResultToCollection.web"
 		class="org.argeo.slc.web.mvc.result.AddResultToCollectionController">
 		<constructor-arg ref="testManagerService" />
@@ -69,6 +69,7 @@
 		<property name="interceptors">
 			<list>
 				<ref bean="resultInterceptor" />
+				<ref bean="osivInterceptor" />
 			</list>
 		</property>
 	</bean>
