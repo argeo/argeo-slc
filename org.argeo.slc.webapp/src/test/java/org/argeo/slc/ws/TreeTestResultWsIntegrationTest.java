@@ -17,27 +17,18 @@ import org.argeo.slc.unit.AbstractSpringTestCase;
 public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());
 
+	private WebServiceTemplate template;
+
+	public void setUp() {
+		template = getBean(WebServiceTemplate.class);
+	}
+
 	public void testCreateTreeTestResultRequest() {
-		WebServiceTemplate template = getBean(WebServiceTemplate.class);
-		CreateTreeTestResultRequest req = new CreateTreeTestResultRequest(
-				createCompleteTreeTestResult());
-		req.getTreeTestResult().close();// in order to avoid unclosed in test db
-
-		log.info("Send CreateTreeTestResultRequest for result "
-				+ req.getTreeTestResult().getUuid());
-
-		template.marshalSendAndReceive(req);
+		createAndSendTreeTestResult(true);
 	}
 
 	public void testResultPartRequest() {
-		WebServiceTemplate template = getBean(WebServiceTemplate.class);
-		TreeTestResult ttr = createCompleteTreeTestResult();
-		ttr.close();// in order to avoid unclosed in test db
-		CreateTreeTestResultRequest reqCreate = new CreateTreeTestResultRequest(
-				ttr);
-		log.info("Send CreateTreeTestResultRequest for result "
-				+ reqCreate.getTreeTestResult().getUuid());
-		template.marshalSendAndReceive(reqCreate);
+		TreeTestResult ttr = createAndSendTreeTestResult(true);
 
 		ResultPartRequest req = createSimpleResultPartRequest(ttr);
 
@@ -46,22 +37,24 @@ public class TreeTestResultWsIntegrationTest extends AbstractSpringTestCase {
 	}
 
 	public void testCloseTreeTestResultRequest() {
-		WebServiceTemplate template = getBean(WebServiceTemplate.class);
-
-		TreeTestResult ttr = createCompleteTreeTestResult();
-		CreateTreeTestResultRequest reqCreate = new CreateTreeTestResultRequest(
-				ttr);
-		log.info("Send CreateTreeTestResultRequest for result "
-				+ reqCreate.getTreeTestResult().getUuid());
-		template.marshalSendAndReceive(reqCreate);
+		TreeTestResult ttr = createAndSendTreeTestResult(false);
 
 		ttr.close();
 		CloseTreeTestResultRequest req = new CloseTreeTestResultRequest(ttr
 				.getUuid(), ttr.getCloseDate());
-
 		log.info("Send CloseTreeTestResultRequest for result "
 				+ req.getResultUuid());
-
 		template.marshalSendAndReceive(req);
+	}
+
+	protected TreeTestResult createAndSendTreeTestResult(boolean close) {
+		TreeTestResult ttr = createCompleteTreeTestResult();
+		log.info("Send CreateTreeTestResultRequest for result #"
+				+ ttr.getUuid());
+		template.marshalSendAndReceive(new CreateTreeTestResultRequest(ttr));
+
+		if (close)
+			ttr.close();
+		return ttr;
 	}
 }

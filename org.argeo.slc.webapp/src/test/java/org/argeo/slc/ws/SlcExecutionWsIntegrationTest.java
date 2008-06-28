@@ -21,19 +21,14 @@ import org.argeo.slc.ws.client.WebServiceUtils;
 public class SlcExecutionWsIntegrationTest extends AbstractSpringTestCase {
 	private Log log = LogFactory.getLog(getClass());
 
-	WebServiceTemplate template;
+	private WebServiceTemplate template;
 
 	public void setUp() {
 		template = getBean(WebServiceTemplate.class);
-		;
 	}
 
 	public void testSlcExecutionRequests() {
-		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
-
-		log.info("Send create SlcExecutionRequest for SlcExecution #"
-				+ slcExec.getUuid());
-		template.marshalSendAndReceive(new SlcExecutionRequest(slcExec));
+		SlcExecution slcExec = createAndSendSlcExecution();
 
 		slcExec.setUser("otherUser");
 		log.info("Send update SlcExecutionRequest for SlcExecution #"
@@ -42,25 +37,17 @@ public class SlcExecutionWsIntegrationTest extends AbstractSpringTestCase {
 	}
 
 	public void testSlcExecutionStatusRequest() {
-		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
-
-		log.info("Send create SlcExecutionRequest for SlcExecution #"
-				+ slcExec.getUuid());
-		template.marshalSendAndReceive(new SlcExecutionRequest(slcExec));
+		SlcExecution slcExec = createAndSendSlcExecution();
 
 		slcExec.setStatus(SlcExecution.STATUS_FINISHED);
-		log.info("Send update SlcExecutionStatusRequest for SlcExecution #"
+		log.info("Send SlcExecutionStatusRequest for SlcExecution #"
 				+ slcExec.getUuid());
 		template.marshalSendAndReceive(new SlcExecutionStatusRequest(slcExec
 				.getUuid(), slcExec.getStatus()));
 	}
 
 	public void testSendSlcExecutionStepRequest() {
-		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
-
-		log.info("Send create SlcExecutionRequest for SlcExecution #"
-				+ slcExec.getUuid());
-		template.marshalSendAndReceive(new SlcExecutionRequest(slcExec));
+		SlcExecution slcExec = createAndSendSlcExecution();
 
 		SlcExecutionStep step1 = new SlcExecutionStep(
 				"Logline\nAnother log line.");
@@ -70,7 +57,6 @@ public class SlcExecutionWsIntegrationTest extends AbstractSpringTestCase {
 		steps.add(step1);
 		steps.add(step2);
 
-		slcExec.setStatus(SlcExecution.STATUS_FINISHED);
 		log.info("Send SlcExecutionStepsRequest for SlcExecution #"
 				+ slcExec.getUuid());
 		try {
@@ -80,5 +66,14 @@ public class SlcExecutionWsIntegrationTest extends AbstractSpringTestCase {
 			WebServiceUtils.manageSoapException(e);
 			throw e;
 		}
+	}
+
+	protected SlcExecution createAndSendSlcExecution() {
+		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
+
+		log.info("Send create SlcExecutionRequest for SlcExecution #"
+				+ slcExec.getUuid());
+		template.marshalSendAndReceive(new SlcExecutionRequest(slcExec));
+		return slcExec;
 	}
 }
