@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+	 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<!-- MBeans -->
+	<bean id="hibernateStatistics"
+		class="org.hibernate.jmx.StatisticsService" lazy-init="false">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<!-- JMX -->
+	<bean id="jmxExporter"
+		class="org.springframework.jmx.export.MBeanExporter"
+		lazy-init="false">
+		<property name="beans">
+			<map>
+				<entry
+					key="bean:name=hibernateStatistics,type=statistics,sessionFactory=sessionFactory"
+					value-ref="hibernateStatistics" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="jxmServerConnector"
+		class="org.springframework.jmx.support.ConnectorServerFactoryBean"
+		lazy-init="false" depends-on="rmiRegistry">
+		<property name="objectName" value="connector:name=rmi" />
+		<property name="serviceUrl"
+			value="service:jmx:rmi://localhost/jndi/rmi://localhost:1099/springconnector" />
+	</bean>
+
+	<bean id="rmiRegistry"
+		class="org.springframework.remoting.rmi.RmiRegistryFactoryBean"
+		lazy-init="false">
+		<property name="port" value="1099" />
+	</bean>
+</beans>

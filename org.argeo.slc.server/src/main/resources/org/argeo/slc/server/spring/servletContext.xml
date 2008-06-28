@@ -4,9 +4,7 @@
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
-	 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	 http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-lazy-init="true">
 
 	<import
@@ -24,7 +22,7 @@
 		<property name="properties">
 			<props>
 				<prop key="sessionFactoryParentBean">
-					slcDefault.sessionFactory.hibernateTestHSQL
+					slcServerDefault.sessionFactory.hibernateTestHSQL
 				</prop>
 			</props>
 		</property>
@@ -32,6 +30,20 @@
 
 
 	<bean id="sessionFactory" parent="${sessionFactoryParentBean}" />
+
+	<bean id="slcServerDefault.sessionFactory.hibernateTestHSQL"
+		parent="slcTemplates.sessionFactory.hibernateBasic">
+		<property name="dataSource"
+			ref="slcDefault.dataSource.inMemoryTestHSQL" />
+		<property name="hibernateProperties">
+			<value><![CDATA[
+				hibernate.dialect=org.hibernate.dialect.HSQLDialect
+				hibernate.hbm2ddl.auto=create
+				hibernate.current_session_context_class=thread
+				hibernate.generate_statistics=true
+			]]></value>
+		</property>
+	</bean>
 
 	<bean id="slcServerDefault.sessionFactory.persistentHSQL"
 		parent="slcTemplates.sessionFactory.hibernateBasic">
@@ -85,13 +97,7 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<!-- Transaction
-		<bean id="hibernateTransactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager"
-		lazy-init="false">
-		<property name="sessionFactory" ref="sessionFactory" />
-		</bean> -->
-
+	<!-- Hibernate instrumentation -->
 	<bean id="osivInterceptor"
 		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
 		<property name="sessionFactory" ref="sessionFactory" />
