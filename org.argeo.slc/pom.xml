@@ -99,6 +99,13 @@
 						<contextPath>org.argeo.slc.webapp</contextPath>
 						<stopKey>stopKey</stopKey>
 						<stopPort>8081</stopPort>
+						<connectors>
+							<connector
+								implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+								<port>9090</port>
+								<maxIdleTime>60000</maxIdleTime>
+							</connector>
+						</connectors>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -203,7 +210,7 @@
 				<artifactId>spring-aop</artifactId>
 				<version>${version.spring}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>spring-ws-core</artifactId>
