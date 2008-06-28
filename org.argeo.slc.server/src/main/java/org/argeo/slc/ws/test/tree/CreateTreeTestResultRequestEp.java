@@ -25,8 +25,8 @@ public class CreateTreeTestResultRequestEp extends
 		CreateTreeTestResultRequest msg = (CreateTreeTestResultRequest) requestObject;
 		TreeTestResult treeTestResult = msg.getTreeTestResult();
 
-		if (log.isDebugEnabled())
-			log.debug("Creating result #" + treeTestResult.getUuid());
+		if (log.isTraceEnabled())
+			log.trace("Creating result #" + treeTestResult.getUuid());
 
 		treeTestResultDao.create(treeTestResult);
 

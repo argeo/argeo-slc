@@ -2,10 +2,8 @@ package org.argeo.slc.services.test.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.test.TestRunDescriptor;
-import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.dao.test.TestRunDescriptorDao;
@@ -33,10 +31,6 @@ public class TestManagerServiceImpl implements TestManagerService {
 
 	public void registerTestRunDescriptor(TestRunDescriptor testRunDescriptor) {
 		if (testRunDescriptor != null) {
-			if (log.isDebugEnabled())
-				log.debug("Updating test run descriptor with id "
-						+ testRunDescriptor.getTestRunUuid());
-
 			testRunDescriptorDao.saveOrUpdate(testRunDescriptor);
 
 			// Update tree test result collection

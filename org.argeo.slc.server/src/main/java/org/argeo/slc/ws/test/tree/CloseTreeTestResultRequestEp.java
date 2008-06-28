@@ -23,8 +23,8 @@ public class CloseTreeTestResultRequestEp extends
 	protected Object invokeInternal(Object requestObject) throws Exception {
 		CloseTreeTestResultRequest msg = (CloseTreeTestResultRequest) requestObject;
 
-		if (log.isDebugEnabled())
-			log.debug("Closing result #" + msg.getResultUuid() + " at date "
+		if (log.isTraceEnabled())
+			log.trace("Closing result #" + msg.getResultUuid() + " at date "
 					+ msg.getCloseDate());
 
 		treeTestResultDao.close(msg.getResultUuid(), msg.getCloseDate());
