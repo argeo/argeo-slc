@@ -7,4 +7,6 @@
 	<import
 		resource="classpath:/org/argeo/slc/server/spring/servletContext.xml" />
 
+	<import resource="classpath:/org/argeo/slc/server/spring/jmx.xml" />
+
 </beans>
