@@ -12,33 +12,4 @@
 
 	<import resource="classpath:/org/argeo/slc/server/spring/jmx.xml" />
 
-	<aop:config>
-		<aop:pointcut id="daoProcessMethods"
-			expression="execution(* org.argeo.slc.dao.process.*.*(..))" />
-		<aop:advisor advice-ref="daoAdvice"
-			pointcut-ref="daoProcessMethods" />
-	</aop:config>
-
-	<aop:config>
-		<aop:pointcut id="daoTestMethods"
-			expression="execution(* org.argeo.slc.dao.test.*.*(..))" />
-		<aop:advisor advice-ref="daoAdvice"
-			pointcut-ref="daoTestMethods" />
-	</aop:config>
-
-	<aop:config>
-		<aop:pointcut id="daoTestTreeMethods"
-			expression="execution(* org.argeo.slc.dao.test.tree.*.*(..))" />
-		<aop:advisor advice-ref="daoAdvice"
-			pointcut-ref="daoTestTreeMethods" />
-	</aop:config>
-
-	<tx:advice id="daoAdvice"
-		transaction-manager="transactionManager">
-		<tx:attributes>
-			<tx:method name="*" propagation="REQUIRED" />
-		</tx:attributes>
-	</tx:advice>
-
-
 </beans>
