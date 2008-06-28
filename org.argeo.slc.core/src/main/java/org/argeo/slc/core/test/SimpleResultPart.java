@@ -11,7 +11,6 @@ package org.argeo.slc.core.test;
 public class SimpleResultPart implements TestResultPart, TestStatus,
 		TestRunAware {
 
-	/** @deprecated */
 	private Long tid;
 
 	private String testRunUuid;
