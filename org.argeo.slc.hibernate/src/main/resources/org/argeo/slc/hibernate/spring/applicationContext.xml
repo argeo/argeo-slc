@@ -23,6 +23,9 @@
 					org/argeo/slc/hibernate/structure/SimpleSElement.hbm.xml
 				</value>
 				<value>
+					org/argeo/slc/hibernate/test/SimpleResultPart.hbm.xml
+				</value>
+				<value>
 					org/argeo/slc/hibernate/test/tree/TreeTestResult.hbm.xml
 				</value>
 				<value>

@@ -7,19 +7,12 @@
 		<id name="tid" column="T_ID">
 			<generator class="native" />
 		</id>
-		<list name="parts" cascade="all">
+		<list name="parts" cascade="all" table="PARTS_LIST">
 			<key column="PART_SUBLIST_ID" />
 			<list-index column="INDX" />
-			<composite-element
-				class="org.argeo.slc.core.test.SimpleResultPart">
-				<property name="status" column="STATUS" not-null="true" />
-				<property name="message" column="MESSAGE"
-					not-null="true" />
-				<property name="exceptionMessage"
-					column="EXCEPTION_MESSAGE" not-null="false" />
-				<property name="testRunUuid" column="TEST_RUN_UUID"
-					not-null="false" />
-			</composite-element>
+			<many-to-many
+				class="org.argeo.slc.core.test.SimpleResultPart" column="PART_ID"
+				unique="true" />
 		</list>
 	</class>
 </hibernate-mapping>
