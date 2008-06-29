@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.argeo.slc.ui.launch.feature_0.9.1.jar" id="org.argeo.slc.ui.launch.feature" version="0.9.1">
+   <feature url="features/org.argeo.slc.ui.launch.feature_0.9.3.jar" id="org.argeo.slc.ui.launch.feature" version="0.9.3">
       <category name="argeo.slc.ui"/>
    </feature>
    <category-def name="argeo.slc.ui" label="Argeo SLC UI">
