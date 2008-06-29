@@ -10,7 +10,6 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.StructureRegistry;
@@ -111,7 +110,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	public void close() {
 		if (isClosed) {
 			throw new SlcException("Test Result #" + getUuid()
-					+ " alredy closed.");
+					+ " already closed.");
 		}
 		closeDate = new Date();
 
