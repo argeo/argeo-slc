@@ -3,7 +3,6 @@ package org.argeo.slc.ui.launch.script;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -31,7 +30,6 @@ import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.omg.CORBA.VM_CUSTOM;
 
 public class SlcScriptLaunchDelegate extends
 		AbstractJavaLaunchConfigurationDelegate {
@@ -43,8 +41,8 @@ public class SlcScriptLaunchDelegate extends
 	public final static String ATTR_TARGETS = "targets";
 	public final static String ATTR_PRE093 = "pre093";
 
-	private final static String ANT_MAIN = "org.apache.tools.ant.Main";
-	private final static String SLC_MAIN = "org.argeo.slc.cli.SlcMain";
+	public final static String ANT_MAIN = "org.apache.tools.ant.Main";
+	public final static String SLC_MAIN = "org.argeo.slc.cli.SlcMain";
 
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
@@ -62,7 +60,7 @@ public class SlcScriptLaunchDelegate extends
 		boolean pre093 = configuration.getAttribute(ATTR_PRE093, false);
 
 		// Retrieve SLC Runtime
-		SlcSystem slcSystem = findSlcSystem(file);
+		SlcSystem slcSystem = findSlcSystem(file, pre093);
 		if (slcSystem == null)
 			return;
 
@@ -73,16 +71,17 @@ public class SlcScriptLaunchDelegate extends
 		} else {
 			vmConfig = createConfig(slcSystem, file, mode, configuration);
 		}
-		vmRunner.run(vmConfig, launch, null);
+		vmRunner.run(vmConfig, launch, monitor);
 	}
 
-	protected SlcSystem findSlcSystem(IFile file) throws CoreException {
+	protected SlcSystem findSlcSystem(IFile file, boolean pre093)
+			throws CoreException {
 		SlcSystem slcSystem = null;
 
 		IProject project = file.getProject();
 		if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
 			IJavaProject javaProject = JavaCore.create(project);
-			if (checkProjectForEmbedded(javaProject)) {
+			if (checkProjectForEmbedded(javaProject, pre093)) {
 				slcSystem = new EmbeddedSlcSystem(javaProject);
 			}
 		}
@@ -102,10 +101,16 @@ public class SlcScriptLaunchDelegate extends
 		return slcSystem;
 	}
 
-	protected boolean checkProjectForEmbedded(IJavaProject project) {
+	protected boolean checkProjectForEmbedded(IJavaProject project,
+			boolean pre093) {
 		try {
-			IType antmainType = project.findType(ANT_MAIN);
-			if (antmainType == null)
+			IType mainType = null;
+			if (pre093)
+				mainType = project.findType(ANT_MAIN);
+			else
+				mainType = project.findType(SLC_MAIN);
+
+			if (mainType == null)
 				return false;
 			else
 				return true;
@@ -221,7 +226,7 @@ public class SlcScriptLaunchDelegate extends
 	}
 
 	// Utilities
-	private void showError(String message) {
+	private static void showError(String message) {
 		Shell shell = SlcUiLaunchPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow().getShell();
 
