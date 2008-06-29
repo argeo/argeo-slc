@@ -6,10 +6,10 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 
-public class EmbeddedSlcRuntime implements SlcRuntime {
+public class EmbeddedSlcSystem implements SlcSystem {
 	private final IJavaProject project;
 
-	public EmbeddedSlcRuntime(IJavaProject project) {
+	public EmbeddedSlcSystem(IJavaProject project) {
 		this.project = project;
 	}
 

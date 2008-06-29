@@ -33,7 +33,8 @@ public class SlcScriptLaunchShortcut implements ILaunchShortcut {
 			IFile file = ((IFile) obj);
 			IProject project = file.getProject();
 			IPath relativePath = file.getProjectRelativePath();
-			String name = "["+project.getName() + "] - " + relativePath.toString();
+			String name = "[" + project.getName() + "] - "
+					+ relativePath.toString();
 			name = name.replace('/', '_');// otherwise not properly saved
 
 			System.out.println(name);

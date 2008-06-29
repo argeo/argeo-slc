@@ -9,11 +9,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 
-public class DeployedSlcRuntime implements SlcRuntime {
+public class DeployedSlcSystem implements SlcSystem {
 	private File baseDir;
 	private String relLibDir = "lib";
 
-	public DeployedSlcRuntime(String baseDirPath) {
+	public DeployedSlcSystem(String baseDirPath) {
 		try {
 			this.baseDir = new File(baseDirPath).getCanonicalFile();
 		} catch (IOException e) {

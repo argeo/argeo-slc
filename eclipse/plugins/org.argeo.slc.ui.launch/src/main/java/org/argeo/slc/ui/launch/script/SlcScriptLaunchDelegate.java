@@ -1,11 +1,15 @@
 package org.argeo.slc.ui.launch.script;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Vector;
 
-import org.argeo.slc.ui.launch.DeployedSlcRuntime;
-import org.argeo.slc.ui.launch.EmbeddedSlcRuntime;
-import org.argeo.slc.ui.launch.SlcRuntime;
+import org.argeo.slc.ui.launch.DeployedSlcSystem;
+import org.argeo.slc.ui.launch.EmbeddedSlcSystem;
+import org.argeo.slc.ui.launch.SlcSystem;
 import org.argeo.slc.ui.launch.SlcUiLaunchPlugin;
 import org.argeo.slc.ui.launch.preferences.SlcPreferencePage;
 import org.eclipse.core.resources.IFile;
@@ -27,16 +31,25 @@ import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.omg.CORBA.VM_CUSTOM;
 
 public class SlcScriptLaunchDelegate extends
 		AbstractJavaLaunchConfigurationDelegate {
 	public static final String ID = "org.argeo.slc.launch.slcScriptLaunchType";
 
+	public final static String ATTR_SCRIPT = "script";
+	public final static String ATTR_PROPERTIES = "properties";
+	public final static String ATTR_RUNTIME = "runtime";
+	public final static String ATTR_TARGETS = "targets";
+	public final static String ATTR_PRE093 = "pre093";
+
 	private final static String ANT_MAIN = "org.apache.tools.ant.Main";
+	private final static String SLC_MAIN = "org.argeo.slc.cli.SlcMain";
 
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		IResource[] resources = configuration.getMappedResources();
+
 		if (resources.length != 1) {
 			throw new RuntimeException("Can only launch one script.");
 		}
@@ -46,66 +59,47 @@ public class SlcScriptLaunchDelegate extends
 		IFile file = (IFile) resources[0];
 		System.out.println("Launched " + file.getLocation().toFile());
 
+		boolean pre093 = configuration.getAttribute(ATTR_PRE093, false);
+
 		// Retrieve SLC Runtime
-		SlcRuntime deployedSlc = null;
+		SlcSystem slcSystem = findSlcSystem(file);
+		if (slcSystem == null)
+			return;
+
+		IVMRunner vmRunner = slcSystem.getVmInstall().getVMRunner(mode);
+		final VMRunnerConfiguration vmConfig;
+		if (pre093) {
+			vmConfig = createPre093Config(slcSystem, file, mode);
+		} else {
+			vmConfig = createConfig(slcSystem, file, mode, configuration);
+		}
+		vmRunner.run(vmConfig, launch, null);
+	}
+
+	protected SlcSystem findSlcSystem(IFile file) throws CoreException {
+		SlcSystem slcSystem = null;
 
 		IProject project = file.getProject();
 		if (project.getNature("org.eclipse.jdt.core.javanature") != null) {
 			IJavaProject javaProject = JavaCore.create(project);
 			if (checkProjectForEmbedded(javaProject)) {
-				deployedSlc = new EmbeddedSlcRuntime(javaProject);
+				slcSystem = new EmbeddedSlcSystem(javaProject);
 			}
 		}
 
-		if (deployedSlc == null) {
+		if (slcSystem == null) {
 			String slcRuntimePath = SlcUiLaunchPlugin.getDefault()
 					.getPreferenceStore().getString(
 							SlcPreferencePage.PREF_SLC_RUNTIME_LOCATION);
 			if (slcRuntimePath == null || slcRuntimePath.equals("")) {
 				showError("SLC Runtime path is not set. Set it in Windows > Preferences > SLC");
-				return;
+				return null;
 			}
 
-			deployedSlc = new DeployedSlcRuntime(slcRuntimePath);
+			slcSystem = new DeployedSlcSystem(slcRuntimePath);
 		}
 
-		IVMRunner vmRunner = deployedSlc.getVmInstall().getVMRunner(mode);
-		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration(ANT_MAIN,
-				deployedSlc.getClasspath());
-		vmConfig.setVMArguments(getVmArguments(deployedSlc));
-		vmConfig.setWorkingDirectory(file.getLocation().toFile().getParent());
-		vmConfig.setProgramArguments(getProgramArguments(deployedSlc, file,
-				mode));
-		vmRunner.run(vmConfig, launch, null);
-	}
-
-	private String[] getVmArguments(SlcRuntime deployedSlc) {
-		List<String> list = new Vector<String>();
-		// list.add("-Dant.home=" + deployedSlc.getAntHome());
-		if (deployedSlc.getJavaLibraryPath() != null)
-			list.add("-Djava.library.path=" + deployedSlc.getJavaLibraryPath());
-		return list.toArray(new String[list.size()]);
-	}
-
-	private String[] getProgramArguments(SlcRuntime deployedSlc, IFile file,
-			String mode) {
-		List<String> list = new Vector<String>();
-		list.add("-f");
-		list.add(file.getLocation().toFile().getAbsolutePath());
-		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
-			list.add("-d");
-		}
-		return list.toArray(new String[list.size()]);
-	}
-
-	private void showError(String message) {
-		Shell shell = SlcUiLaunchPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow().getShell();
-
-		IStatus status = new Status(IStatus.ERROR, SlcUiLaunchPlugin.ID,
-				message);
-		ErrorDialog.openError(shell, "Error", "Cannot launch SLC script",
-				status);
+		return slcSystem;
 	}
 
 	protected boolean checkProjectForEmbedded(IJavaProject project) {
@@ -120,4 +114,121 @@ public class SlcScriptLaunchDelegate extends
 			return false;
 		}
 	}
+
+	// Regular SLC
+	protected VMRunnerConfiguration createConfig(SlcSystem deployedSlc,
+			IFile file, String mode, ILaunchConfiguration configuration)
+			throws CoreException {
+		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration(SLC_MAIN,
+				deployedSlc.getClasspath());
+		vmConfig.setVMArguments(getVmArguments(deployedSlc));
+		vmConfig.setWorkingDirectory(file.getLocation().toFile().getParent());
+		vmConfig.setProgramArguments(getProgramArguments(deployedSlc, file,
+				mode, configuration));
+		return vmConfig;
+	}
+
+	protected String[] getVmArguments(SlcSystem deployedSlc) {
+		List<String> list = new Vector<String>();
+		if (deployedSlc.getJavaLibraryPath() != null)
+			list.add("-Djava.library.path=" + deployedSlc.getJavaLibraryPath());
+		return list.toArray(new String[list.size()]);
+	}
+
+	protected String[] getProgramArguments(SlcSystem deployedSlc, IFile file,
+			String mode, ILaunchConfiguration configuration)
+			throws CoreException {
+		List<String> list = new Vector<String>();
+
+		list.add("--mode");
+		list.add("single");
+
+		// Script
+		list.add("--script");
+		list.add(file.getLocation().toFile().getAbsolutePath());
+
+		// Runtime
+		String runtime = configuration.getAttribute(ATTR_RUNTIME, "");
+		if (!runtime.equals("")) {
+			list.add("--runtime");
+			list.add(runtime);
+		}
+
+		// Targets
+		String targets = configuration.getAttribute(ATTR_RUNTIME, "");
+		if (!runtime.equals("")) {
+			list.add("--targets");
+			list.add(targets);
+		}
+
+		// Properties
+		Properties properties = new Properties();
+		StringReader reader = new StringReader(configuration.getAttribute(
+				ATTR_PROPERTIES, ""));
+		try {
+			properties.load(reader);
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot read properties", e);
+		} finally {
+			if (reader != null)
+				reader.close();
+		}
+
+		for (Object key : properties.keySet()) {
+			list.add("-p");
+			StringBuffer buf = new StringBuffer("");
+			buf.append(key).append('=').append(properties.get(key));
+			list.add(buf.toString());
+		}
+
+		// Debug mode
+		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
+			list.add("--property");
+			list.add("log4j.logger.org.argeo.slc=DEBUG");
+		}
+		return list.toArray(new String[list.size()]);
+	}
+
+	// Pre SLC v0.9.3
+	protected VMRunnerConfiguration createPre093Config(SlcSystem deployedSlc,
+			IFile file, String mode) throws CoreException {
+		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration(ANT_MAIN,
+				deployedSlc.getClasspath());
+		vmConfig.setVMArguments(getPre093VmArguments(deployedSlc));
+		vmConfig.setWorkingDirectory(file.getLocation().toFile().getParent());
+		vmConfig.setProgramArguments(getPre093ProgramArguments(deployedSlc,
+				file, mode));
+		return vmConfig;
+	}
+
+	protected String[] getPre093VmArguments(SlcSystem deployedSlc) {
+		List<String> list = new Vector<String>();
+		// list.add("-Dant.home=" + deployedSlc.getAntHome());
+		if (deployedSlc.getJavaLibraryPath() != null)
+			list.add("-Djava.library.path=" + deployedSlc.getJavaLibraryPath());
+		return list.toArray(new String[list.size()]);
+	}
+
+	protected String[] getPre093ProgramArguments(SlcSystem deployedSlc,
+			IFile file, String mode) {
+		List<String> list = new Vector<String>();
+		list.add("-f");
+		list.add(file.getLocation().toFile().getAbsolutePath());
+		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
+			list.add("-d");
+		}
+		return list.toArray(new String[list.size()]);
+	}
+
+	// Utilities
+	private void showError(String message) {
+		Shell shell = SlcUiLaunchPlugin.getDefault().getWorkbench()
+				.getActiveWorkbenchWindow().getShell();
+
+		IStatus status = new Status(IStatus.ERROR, SlcUiLaunchPlugin.ID,
+				message);
+		ErrorDialog.openError(shell, "Error", "Cannot launch SLC script",
+				status);
+	}
+
 }
