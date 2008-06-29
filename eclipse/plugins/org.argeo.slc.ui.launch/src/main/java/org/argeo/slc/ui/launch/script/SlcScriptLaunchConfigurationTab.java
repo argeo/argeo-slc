@@ -1,10 +1,12 @@
 package org.argeo.slc.ui.launch.script;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -16,11 +18,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 
 public class SlcScriptLaunchConfigurationTab extends
 		AbstractLaunchConfigurationTab {
 
-	private Text scriptL;
+	private Text scriptTF;
 	private Text propertiesTF;
 	private Text runtimeTF;
 	private Text targetsTF;
@@ -33,9 +36,8 @@ public class SlcScriptLaunchConfigurationTab extends
 		body.setFont(parent.getFont());
 
 		createLabel(body, "Script location");
-		scriptL = createSingleText(body);
-		scriptL.setEditable(false);
-		scriptL.setBackground(body.getBackground());
+		scriptTF = createSingleText(body);
+		createWorkspaceButton(body);
 
 		createLabel(body, "Runtime");
 		runtimeTF = createSingleText(body);
@@ -55,18 +57,18 @@ public class SlcScriptLaunchConfigurationTab extends
 
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			IFile script = (IFile) configuration.getMappedResources()[0];
-			scriptL.setText(script.getLocation().toFile().getAbsolutePath());
+			scriptTF.setText(configuration.getAttribute(
+					SlcScriptUtils.ATTR_SCRIPT, ""));
 
 			boolean pre093 = configuration.getAttribute(
-					SlcScriptLaunchDelegate.ATTR_PRE093, false);
+					SlcScriptUtils.ATTR_PRE093, false);
 
 			propertiesTF.setText(configuration.getAttribute(
-					SlcScriptLaunchDelegate.ATTR_PROPERTIES, ""));
+					SlcScriptUtils.ATTR_PROPERTIES, ""));
 			runtimeTF.setText(configuration.getAttribute(
-					SlcScriptLaunchDelegate.ATTR_RUNTIME, ""));
+					SlcScriptUtils.ATTR_RUNTIME, ""));
 			targetsTF.setText(configuration.getAttribute(
-					SlcScriptLaunchDelegate.ATTR_TARGETS, ""));
+					SlcScriptUtils.ATTR_TARGETS, ""));
 			pre093B.setSelection(pre093);
 		} catch (CoreException e) {
 			throw new RuntimeException("Cannot initialize tab", e);
@@ -75,17 +77,24 @@ public class SlcScriptLaunchConfigurationTab extends
 	}
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(SlcScriptLaunchDelegate.ATTR_PROPERTIES,
-				propertiesTF.getText());
-		configuration.setAttribute(SlcScriptLaunchDelegate.ATTR_RUNTIME,
-				runtimeTF.getText());
-		configuration.setAttribute(SlcScriptLaunchDelegate.ATTR_TARGETS,
-				targetsTF.getText());
-		configuration.setAttribute(SlcScriptLaunchDelegate.ATTR_PRE093, pre093B
+		configuration.setAttribute(SlcScriptUtils.ATTR_SCRIPT, scriptTF
+				.getText());
+		configuration.setAttribute(SlcScriptUtils.ATTR_PROPERTIES, propertiesTF
+				.getText());
+		configuration.setAttribute(SlcScriptUtils.ATTR_RUNTIME, runtimeTF
+				.getText());
+		configuration.setAttribute(SlcScriptUtils.ATTR_TARGETS, targetsTF
+				.getText());
+		configuration.setAttribute(SlcScriptUtils.ATTR_PRE093, pre093B
 				.getSelection());
 	}
 
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
+		configuration.setAttribute(SlcScriptUtils.ATTR_SCRIPT, "");
+		configuration.setAttribute(SlcScriptUtils.ATTR_PROPERTIES, "");
+		configuration.setAttribute(SlcScriptUtils.ATTR_RUNTIME, "");
+		configuration.setAttribute(SlcScriptUtils.ATTR_TARGETS, "");
+		configuration.setAttribute(SlcScriptUtils.ATTR_PRE093, false);
 	}
 
 	// UI Utils
@@ -127,6 +136,37 @@ public class SlcScriptLaunchConfigurationTab extends
 		b.addSelectionListener(selectionListener);
 		return b;
 
+	}
+
+	protected Button createWorkspaceButton(Composite parent) {
+		Button b = new Button(parent, SWT.PUSH);
+		b.setFont(parent.getFont());
+		b.setText("Workspace...");
+		b.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				handleWorkspaceLocationButtonSelected();
+			}
+		});
+		return b;
+	}
+
+	protected void handleWorkspaceLocationButtonSelected() {
+		ResourceSelectionDialog dialog;
+		dialog = new ResourceSelectionDialog(getShell(), ResourcesPlugin
+				.getWorkspace().getRoot(), "Select a file");
+		if (dialog.open() == Window.OK) {
+			Object[] results = dialog.getResult();
+			if (results == null || results.length < 1) {
+				return;
+			}
+			IResource resource = (IResource) results[0];
+			scriptTF.setText(SlcScriptUtils
+					.convertToWorkspaceLocation(resource));
+			updateLaunchConfigurationDialog();
+		}
 	}
 
 	// LISTENERS

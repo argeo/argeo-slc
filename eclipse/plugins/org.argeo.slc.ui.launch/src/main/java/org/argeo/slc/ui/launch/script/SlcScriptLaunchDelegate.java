@@ -13,11 +13,15 @@ import org.argeo.slc.ui.launch.SlcUiLaunchPlugin;
 import org.argeo.slc.ui.launch.preferences.SlcPreferencePage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.variables.IStringVariableManager;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
@@ -35,29 +39,37 @@ public class SlcScriptLaunchDelegate extends
 		AbstractJavaLaunchConfigurationDelegate {
 	public static final String ID = "org.argeo.slc.launch.slcScriptLaunchType";
 
-	public final static String ATTR_SCRIPT = "script";
-	public final static String ATTR_PROPERTIES = "properties";
-	public final static String ATTR_RUNTIME = "runtime";
-	public final static String ATTR_TARGETS = "targets";
-	public final static String ATTR_PRE093 = "pre093";
-
 	public final static String ANT_MAIN = "org.apache.tools.ant.Main";
 	public final static String SLC_MAIN = "org.argeo.slc.cli.SlcMain";
 
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		IResource[] resources = configuration.getMappedResources();
+		if (!saveBeforeLaunch(configuration, mode, monitor))
+			return;
 
-		if (resources.length != 1) {
-			throw new RuntimeException("Can only launch one script.");
-		}
-		if (!(resources[0] instanceof IFile)) {
-			throw new RuntimeException("Can only launch file.");
-		}
-		IFile file = (IFile) resources[0];
-		System.out.println("Launched " + file.getLocation().toFile());
+		String scriptLocation = configuration.getAttribute(
+				SlcScriptUtils.ATTR_SCRIPT, "");
+		if (scriptLocation.equals(""))
+			abort("Script has to be provided", null, 1);
 
-		boolean pre093 = configuration.getAttribute(ATTR_PRE093, false);
+		IStringVariableManager manager = VariablesPlugin.getDefault()
+				.getStringVariableManager();
+		scriptLocation = manager.performStringSubstitution(scriptLocation);
+		System.out.println("Script location " + scriptLocation);
+
+		IPath path = new Path(scriptLocation);
+		System.out.println("Script path " + path);
+		IFile[] files = ResourcesPlugin.getWorkspace().getRoot()
+				.findFilesForLocation(path);
+
+		if (files.length == 0)
+			abort("Coulkd not find related file", null, 1);
+
+		IFile file = (IFile) files[0];
+		System.out.println("Launching " + file.getLocation().toFile());
+
+		boolean pre093 = configuration.getAttribute(SlcScriptUtils.ATTR_PRE093,
+				false);
 
 		// Retrieve SLC Runtime
 		SlcSystem slcSystem = findSlcSystem(file, pre093);
@@ -153,14 +165,16 @@ public class SlcScriptLaunchDelegate extends
 		list.add(file.getLocation().toFile().getAbsolutePath());
 
 		// Runtime
-		String runtime = configuration.getAttribute(ATTR_RUNTIME, "");
+		String runtime = configuration.getAttribute(
+				SlcScriptUtils.ATTR_RUNTIME, "");
 		if (!runtime.equals("")) {
 			list.add("--runtime");
 			list.add(runtime);
 		}
 
 		// Targets
-		String targets = configuration.getAttribute(ATTR_RUNTIME, "");
+		String targets = configuration.getAttribute(
+				SlcScriptUtils.ATTR_TARGETS, "");
 		if (!runtime.equals("")) {
 			list.add("--targets");
 			list.add(targets);
@@ -169,7 +183,7 @@ public class SlcScriptLaunchDelegate extends
 		// Properties
 		Properties properties = new Properties();
 		StringReader reader = new StringReader(configuration.getAttribute(
-				ATTR_PROPERTIES, ""));
+				SlcScriptUtils.ATTR_PROPERTIES, ""));
 		try {
 			properties.load(reader);
 		} catch (IOException e) {

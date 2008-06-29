@@ -2,14 +2,17 @@ package org.argeo.slc.ui.launch.script;
 
 import org.argeo.slc.ui.launch.SlcUiLaunchPlugin;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.ui.DebugUITools;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.debug.ui.ILaunchShortcut;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -18,6 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 
 public class SlcScriptLaunchShortcut implements ILaunchShortcut {
+	private boolean showDialog = false;
 
 	public void launch(ISelection selection, String mode) {
 		try {
@@ -41,17 +45,20 @@ public class SlcScriptLaunchShortcut implements ILaunchShortcut {
 					.getLaunchConfigurationType(SlcScriptLaunchDelegate.ID);
 
 			// Find or create config
-			ILaunchConfiguration config = findLaunchConfiguration(file, manager
-					.getLaunchConfigurations(type));
+			String configLocation = SlcScriptUtils
+					.convertToWorkspaceLocation(file);
+			ILaunchConfiguration config = findLaunchConfiguration(
+					configLocation, manager.getLaunchConfigurations(type));
 			if (config == null) {
 				ILaunchConfigurationWorkingCopy wc = type.newInstance(null,
 						generateName(file));
+				wc.setAttribute(SlcScriptUtils.ATTR_SCRIPT, configLocation);
 				wc.setMappedResources(new IFile[] { file });
 				config = wc.doSave();
 			}
-			
+
 			// Launch
-			config.launch(mode, null);
+			launch(config, mode);
 		} catch (CoreException e) {
 			Shell shell = SlcUiLaunchPlugin.getDefault().getWorkbench()
 					.getActiveWorkbenchWindow().getShell();
@@ -77,22 +84,44 @@ public class SlcScriptLaunchShortcut implements ILaunchShortcut {
 		return name;
 	}
 
-	protected ILaunchConfiguration findLaunchConfiguration(IFile file,
-			ILaunchConfiguration[] configs) throws CoreException {
+	protected ILaunchConfiguration findLaunchConfiguration(
+			String configLocation, ILaunchConfiguration[] configs)
+			throws CoreException {
 		for (ILaunchConfiguration config : configs) {
-			IResource[] res = config.getMappedResources();
-			if (res.length > 1) {
-				IFile fileT = (IFile) res[0];
-				if (fileT.equals(file)) {
-					return config;
-				}
+			String loc = config.getAttribute(SlcScriptUtils.ATTR_SCRIPT, "");
+			if (loc.equals(configLocation)) {
+				return config;
 			}
 		}
 		return null;
 	}
 
+	protected void launch(ILaunchConfiguration configuration, String mode)
+			throws CoreException {
+		if (showDialog) {
+			IStatus status = new Status(IStatus.INFO, SlcUiLaunchPlugin.ID,
+					"Configure SLC Launch");
+			String groupId;
+			if (mode.equals(ILaunchManager.DEBUG_MODE)) {
+				groupId = IDebugUIConstants.ID_DEBUG_LAUNCH_GROUP;
+			} else {
+				groupId = IDebugUIConstants.ID_RUN_LAUNCH_GROUP;
+			}
+			DebugUITools.openLaunchConfigurationDialog(SlcUiLaunchPlugin
+					.getDefault().getWorkbench().getActiveWorkbenchWindow()
+					.getShell(), configuration, groupId, status);
+		} else {
+			DebugUITools.launch(configuration, mode);
+		}
+
+	}
+
 	public void launch(IEditorPart editor, String mode) {
 		// not (yet) implemented
+	}
+
+	public void setShowDialog(boolean showDialog) {
+		this.showDialog = showDialog;
 	}
 
 }

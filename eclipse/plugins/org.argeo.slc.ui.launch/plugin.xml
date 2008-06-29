@@ -30,7 +30,26 @@
              </with>
            </enablement>
   		 </contextualLaunch>
-  	
+   </shortcut>
+   <shortcut
+         class="org.argeo.slc.ui.launch.script.SlcScriptLaunchShortcutWithDialog"
+         icon="icons/slcScriptLaunch.gif"
+         id="org.argeo.slc.ui.launch.slcScriptLaunchShortcutWithDialog"
+         label="SLC script..."
+         modes="run,debug">
+    
+        <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+                <count value="1"/>
+               <iterate>
+               <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.xml"/>
+                   </or>
+                </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
    </shortcut>
 </extension>
 <extension
