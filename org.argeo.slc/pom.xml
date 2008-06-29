@@ -98,7 +98,7 @@
 					<configuration>
 						<contextPath>org.argeo.slc.webapp</contextPath>
 						<stopKey>stopKey</stopKey>
-						<stopPort>8081</stopPort>
+						<stopPort>9091</stopPort>
 						<connectors>
 							<connector
 								implementation="org.mortbay.jetty.nio.SelectChannelConnector">
