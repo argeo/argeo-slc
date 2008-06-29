@@ -50,9 +50,12 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	}
 
 	public void addResultPart(TestResultPart part) {
-		if (currentPath == null) {
+		if (isClosed)
+			throw new SlcException("Cannot result parts to a closed result");
+
+		if (currentPath == null)
 			throw new SlcException("No current path set.");
-		}
+
 		PartSubList subList = resultParts.get(currentPath);
 		if (subList == null) {
 			subList = new PartSubList();
@@ -109,9 +112,11 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	public void close() {
 		if (isClosed) {
-			throw new SlcException("Test Result #" + getUuid()
-					+ " already closed.");
+			log.warn("Test Result #" + getUuid()
+					+ " already closed. Doing nothing.");
+			return;
 		}
+
 		closeDate = new Date();
 
 		synchronized (listeners) {
