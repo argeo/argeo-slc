@@ -20,7 +20,7 @@
 		<map name="attributes" table="SLC_EXEC_ATTRS_MAP" cascade="all"
 			lazy="false" sort="natural">
 			<key column="PARENT_ID" />
-			<map-key type="string" column="ATTR_NAME" />
+			<map-key column="ATTR_NAME" type="string" />
 			<element column="NAME" type="string" />
 		</map>
 
