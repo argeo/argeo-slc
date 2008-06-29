@@ -4,15 +4,14 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<import
-		resource="classpath:/org/argeo/slc/core/test/spring/applicationContext.xml" />
-	<import
-		resource="classpath:/org/argeo/slc/core/process/spring/applicationContext.xml" />
+		resource="classpath:/org/argeo/slc/example/ws/client/spring/applicationContext.xml" />
 
 	<bean id="testResult"
 		parent="slcDefault.test.basicTreeTestResult">
 		<property name="listeners">
 			<list merge="true">
-				<ref bean="slcDefault.castor.xsltReportGenerator" />
+				<ref
+					bean="exampleDefault.ws.client.treeTestResultWsNotfier" />
 			</list>
 		</property>
 	</bean>
@@ -21,7 +20,8 @@
 		parent="slcDefault.test.basicTreeTestResult">
 		<property name="listeners">
 			<list merge="true">
-				<ref bean="slcDefault.castor.xsltReportGenerator" />
+				<ref
+					bean="exampleDefault.ws.client.treeTestResultWsNotfier" />
 			</list>
 		</property>
 	</bean>
@@ -31,7 +31,8 @@
 		<property name="logLevel" value="INFO" />
 		<property name="notifiers">
 			<list>
-				<ref bean="slcDefault.process.fileSlcExecutionNotifier" />
+				<ref
+					bean="exampleDefault.ws.client.slcExecutionNotifier" />
 			</list>
 		</property>
 	</bean>

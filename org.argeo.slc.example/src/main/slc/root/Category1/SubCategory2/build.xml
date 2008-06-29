@@ -4,12 +4,15 @@
 	<import file="complex.xml" />
 
 	<target name="test" depends="testSimple,testComplex,testError">
+		<echo message="${example.testMessage}" />
+		<!--
 		<slc.closeResult>
 			<result bean="testResult" />
 		</slc.closeResult>
 		<slc.closeResult>
 			<result bean="testResult2" />
 		</slc.closeResult>
+		-->
 	</target>
 
 	<target name="testSimple" description="Simple tests">
