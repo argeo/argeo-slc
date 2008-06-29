@@ -32,7 +32,6 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -68,29 +67,32 @@ public class AntSlcApplication {
 			log.debug("workDir=" + workDir);
 		}
 
-		// Spring initialization
-		ConfigurableApplicationContext ctx = createExecutionContext(slcExecution);
-
 		// Ant coordinates
 		String scriptRelativePath = findAntScript(slcExecution);
 		List<String> targets = findAntTargets(slcExecution);
+
+		// Spring initialization
+		ConfigurableApplicationContext ctx = createExecutionContext(slcExecution);
 
 		// Ant project initialization
 		Project project = new Project();
 		AntExecutionContext executionContext = new AntExecutionContext(project);
 		project.addReference(AntConstants.REF_ROOT_CONTEXT, ctx);
 		project.addReference(AntConstants.REF_SLC_EXECUTION, slcExecution);
-		initProject(project, properties, references);
-		parseProject(project, scriptRelativePath);
 
-		// Execute project
-		initStructure(project, scriptRelativePath);
-		runProject(project, targets);
+		try {
+			initProject(project, properties, references);
+			parseProject(project, scriptRelativePath);
 
-		if (executionOutput != null)
-			executionOutput.postExecution(executionContext);
+			// Execute project
+			initStructure(project, scriptRelativePath);
+			runProject(project, targets);
 
-		ctx.close();
+			if (executionOutput != null)
+				executionOutput.postExecution(executionContext);
+		} finally {
+			ctx.close();
+		}
 	}
 
 	protected void initSystemProperties(Properties userProperties) {

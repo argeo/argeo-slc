@@ -5,16 +5,14 @@ import java.util.Iterator;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.ws.client.core.WebServiceTemplate;
 import org.springframework.ws.soap.SoapFaultDetail;
 import org.springframework.ws.soap.SoapFaultDetailElement;
 import org.springframework.ws.soap.client.SoapFaultClientException;
 import org.springframework.xml.transform.StringResult;
 import org.w3c.dom.Node;
-import org.w3c.dom.Text;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public abstract class WebServiceUtils {
 	private final static Log log = LogFactory.getLog(WebServiceUtils.class);
