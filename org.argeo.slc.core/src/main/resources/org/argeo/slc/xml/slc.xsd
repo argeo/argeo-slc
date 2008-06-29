@@ -193,7 +193,7 @@
 	</xs:complexType>
 	<xs:complexType name="AttributesType">
 		<xs:sequence>
-			<xs:element name="attribute" type="slc:AttributeType"
+			<xs:element name="attribute" type="slc:AttributeType" minOccurs="0"
 				maxOccurs="unbounded">
 			</xs:element>
 		</xs:sequence>
