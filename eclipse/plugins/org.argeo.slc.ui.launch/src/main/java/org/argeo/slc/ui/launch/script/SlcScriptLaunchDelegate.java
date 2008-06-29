@@ -174,7 +174,7 @@ public class SlcScriptLaunchDelegate extends
 		// Targets
 		String targets = configuration.getAttribute(
 				SlcScriptUtils.ATTR_TARGETS, "");
-		if (!runtime.equals("")) {
+		if (!targets.equals("")) {
 			list.add("--targets");
 			list.add(targets);
 		}
