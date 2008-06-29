@@ -35,7 +35,9 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private Date closeDate;
 
-	private boolean isClosed = false;
+	private Boolean isClosed = false;
+
+	private Boolean warnIfAlreadyClosed = true;
 
 	private String uuid;
 
@@ -111,9 +113,17 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	}
 
 	public void close() {
+		if (resultParts.size() == 0) {
+			if (log.isTraceEnabled())
+				log.trace("Test Result #" + getUuid()
+						+ " contains no results, no need to close it.");
+			return;
+		}
+
 		if (isClosed) {
-			log.warn("Test Result #" + getUuid()
-					+ " already closed. Doing nothing.");
+			if (warnIfAlreadyClosed)
+				log.warn("Test Result #" + getUuid()
+						+ " already closed. Doing nothing.");
 			return;
 		}
 
@@ -201,4 +211,9 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	public void setAttributes(Map<String, String> attributes) {
 		this.attributes = attributes;
 	}
+
+	public void setWarnIfAlreadyClosed(Boolean warnIfAlreadyClosed) {
+		this.warnIfAlreadyClosed = warnIfAlreadyClosed;
+	}
+
 }
