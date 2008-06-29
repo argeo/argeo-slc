@@ -17,9 +17,12 @@
 	</bean>
 
 	<bean id="slcDefault.test.basicTreeTestResult"
-		class="org.argeo.slc.core.test.tree.TreeTestResult" abstract="true">
+		class="org.argeo.slc.core.test.tree.TreeTestResult" abstract="true"
+		destroy-method="close">
 		<property name="uuid">
-			<bean factory-bean="slcDefault.test.uuid" factory-method="toString"></bean>
+			<bean factory-bean="slcDefault.test.uuid"
+				factory-method="toString">
+			</bean>
 		</property>
 		<property name="listeners">
 			<list>
@@ -31,7 +34,9 @@
 	<bean id="slcDefault.test.basicSimpleTestResult"
 		class="org.argeo.slc.core.test.SimpleTestResult" abstract="true">
 		<property name="uuid">
-			<bean factory-bean="slcDefault.test.uuid" factory-method="toString"></bean>
+			<bean factory-bean="slcDefault.test.uuid"
+				factory-method="toString">
+			</bean>
 		</property>
 	</bean>
 
