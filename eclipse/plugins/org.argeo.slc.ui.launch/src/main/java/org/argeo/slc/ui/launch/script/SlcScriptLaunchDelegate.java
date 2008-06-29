@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.VariablesPlugin;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
@@ -55,10 +56,7 @@ public class SlcScriptLaunchDelegate extends
 		IStringVariableManager manager = VariablesPlugin.getDefault()
 				.getStringVariableManager();
 		scriptLocation = manager.performStringSubstitution(scriptLocation);
-		System.out.println("Script location " + scriptLocation);
-
 		IPath path = new Path(scriptLocation);
-		System.out.println("Script path " + path);
 		IFile[] files = ResourcesPlugin.getWorkspace().getRoot()
 				.findFilesForLocation(path);
 
@@ -66,7 +64,8 @@ public class SlcScriptLaunchDelegate extends
 			abort("Coulkd not find related file", null, 1);
 
 		IFile file = (IFile) files[0];
-		System.out.println("Launching " + file.getLocation().toFile());
+		DebugPlugin
+				.logMessage("Launching " + file.getLocation().toFile(), null);
 
 		boolean pre093 = configuration.getAttribute(SlcScriptUtils.ATTR_PRE093,
 				false);
