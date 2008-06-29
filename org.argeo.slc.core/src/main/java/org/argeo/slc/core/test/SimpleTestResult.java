@@ -2,6 +2,8 @@ package org.argeo.slc.core.test;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.Vector;
 
@@ -23,6 +25,8 @@ public class SimpleTestResult implements TestResult {
 
 	private Date closeDate;
 	private List<TestResultPart> parts = new Vector<TestResultPart>();
+	
+	private Map<String, String> attributes = new TreeMap<String, String>();
 
 	public void addResultPart(TestResultPart part) {
 		if (throwError && part.getStatus() == ERROR) {
@@ -69,6 +73,10 @@ public class SimpleTestResult implements TestResult {
 
 	public String getCurrentTestRunUuid() {
 		return currentTestRunUuid;
+	}
+
+	public Map<String, String> getAttributes() {
+		return attributes;
 	}
 
 }

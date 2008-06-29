@@ -8,6 +8,8 @@
 		<xs:all>
 			<xs:element name="close-date" type="xs:dateTime"
 				minOccurs="0" />
+			<xs:element name="attributes" minOccurs="0"
+				type="slc:AttributesType" />
 			<xs:element name="result-parts" minOccurs="0"
 				type="slc:ResultPartsType" />
 			<xs:element name="elements" minOccurs="0"

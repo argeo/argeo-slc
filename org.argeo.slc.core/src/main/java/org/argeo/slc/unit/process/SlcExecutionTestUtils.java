@@ -29,6 +29,8 @@ public abstract class SlcExecutionTestUtils {
 		assertEquals(expected.getUser(), reached.getUser());
 		assertEquals(expected.getType(), reached.getType());
 		assertEquals(expected.getStatus(), reached.getStatus());
+		
+		// Attributes
 		assertEquals(expected.getAttributes().size(), reached.getAttributes()
 				.size());
 		for (String key : expected.getAttributes().keySet()) {

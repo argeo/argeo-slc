@@ -25,6 +25,17 @@ public class UnitTestTreeUtil {
 		assertEquals(expected.getUuid(), reached.getUuid());
 		assertDateSec(expected.getCloseDate(), reached.getCloseDate());
 
+		// Attributes
+		assertEquals(expected.getAttributes().size(), reached.getAttributes()
+				.size());
+		for (String key : expected.getAttributes().keySet()) {
+			String expectedValue = expected.getAttributes().get(key);
+			String reachedValue = reached.getAttributes().get(key);
+			assertNotNull(reachedValue);
+			assertEquals(expectedValue, reachedValue);
+		}
+
+		// Result parts
 		assertEquals(expected.getResultParts().size(), reached.getResultParts()
 				.size());
 		for (TreeSPath path : expected.getResultParts().keySet()) {
@@ -37,6 +48,7 @@ public class UnitTestTreeUtil {
 			assertPartSubList(lstExpected, lstReached);
 		}
 
+		// Elements
 		assertEquals(expected.getElements().size(), reached.getElements()
 				.size());
 		for (TreeSPath path : expected.getElements().keySet()) {

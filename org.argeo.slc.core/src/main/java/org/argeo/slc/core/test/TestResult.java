@@ -1,6 +1,7 @@
 package org.argeo.slc.core.test;
 
 import java.util.Date;
+import java.util.Map;
 
 /** The result of a test */
 public interface TestResult extends TestStatus, TestRunAware {
@@ -20,4 +21,7 @@ public interface TestResult extends TestStatus, TestRunAware {
 	 * result is not closed.
 	 */
 	public Date getCloseDate();
+
+	/** Additional arbitrary meta data */
+	public Map<String, String> getAttributes();
 }

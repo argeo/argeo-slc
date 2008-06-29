@@ -55,6 +55,9 @@ public abstract class TreeTestResultTestUtils {
 		registry.register(path, elem);
 
 		TreeTestResult ttr = createSimpleTreeTestResult();
+		ttr.getAttributes().put("testCase", "UNIT");
+
+		// Simulate test run
 		ttr.notifyCurrentPath(registry, path);
 		ttr.notifyTestRun(testRun);
 		testRun.setTestResult(ttr);

@@ -34,8 +34,6 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	private TreeSPath currentPath;
 	private TestRun currentTestRun;
 
-	private Map<String, String> rootTags = new TreeMap<String, String>();
-
 	private Date closeDate;
 
 	private boolean isClosed = false;
@@ -44,6 +42,8 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
+
+	private Map<String, String> attributes = new TreeMap<String, String>();
 
 	/** Sets the list of listeners. */
 	public void setListeners(List<TestResultListener<TreeTestResult>> listeners) {
@@ -79,15 +79,6 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 				if (!elements.containsKey(p)) {
 					StructureElement elem = registry.getElement(p);
 					if (elem != null) {
-
-						if (elements.size() == 0
-								&& (elem instanceof SimpleSElement)) {
-							SimpleSElement sElem = ((SimpleSElement) elem)
-									.clone();
-							sElem.getTags().putAll(rootTags);
-							elem = sElem;
-						}
-
 						elements.put(p, elem);
 					}
 				} else {
@@ -199,12 +190,11 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		}
 	}
 
-	public Map<String, String> getRootTags() {
-		return rootTags;
+	public Map<String, String> getAttributes() {
+		return attributes;
 	}
 
-	public void setRootTags(Map<String, String> rootTags) {
-		this.rootTags = rootTags;
+	public void setAttributes(Map<String, String> attributes) {
+		this.attributes = attributes;
 	}
-
 }
