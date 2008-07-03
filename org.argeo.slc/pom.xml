@@ -13,7 +13,7 @@
 		http://www.argeo.org/projects/slc/${project.artfactId}/${project.version}
 	</url>
 	<properties>
-		<version.spring>2.5.4</version.spring>
+		<version.spring>2.5.5</version.spring>
 		<version.spring-ws>1.5.2</version.spring-ws>
 		<version.maven>2.0.9</version.maven>
 		<version.ant>1.7.0</version.ant>
@@ -157,7 +157,7 @@
 			<dependency>
 				<groupId>org.dbunit</groupId>
 				<artifactId>dbunit</artifactId>
-				<version>2.2</version>
+				<version>2.2.3</version>
 				<exclusions>
 					<exclusion>
 						<groupId>junit-addons</groupId>
@@ -172,7 +172,25 @@
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
-				<version>1.2.14</version>
+				<version>1.2.15</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.sun.jmx</groupId>
+						<artifactId>jmxri</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.sun.jdmk</groupId>
+						<artifactId>jmxtools</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>javax.mail</groupId>
+						<artifactId>mail</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>javax.jms</groupId>
+						<artifactId>jms</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
@@ -234,9 +252,9 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.apache.commons</groupId>
+				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>1.3.2</version>
+				<version>1.4</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-cli</groupId>
