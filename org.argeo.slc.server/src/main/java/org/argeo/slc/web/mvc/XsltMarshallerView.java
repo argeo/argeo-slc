@@ -6,6 +6,9 @@ import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 
 import org.argeo.slc.core.SlcException;
+import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.xslt.XsltView;
 import org.w3c.dom.Document;
@@ -16,7 +19,8 @@ public class XsltMarshallerView extends XsltView {
 
 	@Override
 	protected Class<?>[] getSourceTypes() {
-		return new Class[] { Object.class };
+		return new Class[] { TreeTestResult.class,
+				TreeTestResultCollection.class, SlcExecution.class };
 	}
 
 	@Override

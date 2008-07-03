@@ -32,5 +32,4 @@
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 	</bean>
 
-
 </beans>

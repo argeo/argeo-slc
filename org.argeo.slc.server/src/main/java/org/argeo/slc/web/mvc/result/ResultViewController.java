@@ -91,7 +91,7 @@ public class ResultViewController extends ParameterizableViewController {
 
 	private static String describedPath(TreeSPath path, TreeTestResult ttr) {
 		StringBuffer buf = new StringBuffer("");
-		// TODO :optimize with hierarichy
+		// TODO :optimize with hierarchy
 		describedPath(path, buf, ttr);
 		return buf.toString();
 	}
