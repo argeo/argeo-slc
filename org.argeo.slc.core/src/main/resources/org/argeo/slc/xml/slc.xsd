@@ -4,6 +4,23 @@
 	targetNamespace="http://argeo.org/projects/slc/schemas">
 	<!-- TREE TEST RESULT -->
 	<xs:element name="tree-test-result" type="slc:TreeTestResultType" />
+	<xs:element name="tree-test-result-collection"
+		type="slc:TreeTestResultCollectionType" />
+
+	<xs:complexType name="TreeTestResultCollectionType">
+		<xs:all>
+			<xs:element name="results" minOccurs="0"
+				type="slc:ResultsType" />
+		</xs:all>
+		<xs:attribute name="id" use="required" />
+	</xs:complexType>
+	<xs:complexType name="ResultsType">
+		<xs:sequence>
+			<xs:element name="tree-test-result"
+				type="slc:TreeTestResultType" minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
 	<xs:complexType name="TreeTestResultType">
 		<xs:all>
 			<xs:element name="close-date" type="xs:dateTime"
@@ -193,8 +210,8 @@
 	</xs:complexType>
 	<xs:complexType name="AttributesType">
 		<xs:sequence>
-			<xs:element name="attribute" type="slc:AttributeType" minOccurs="0"
-				maxOccurs="unbounded">
+			<xs:element name="attribute" type="slc:AttributeType"
+				minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
 		</xs:sequence>
 	</xs:complexType>
