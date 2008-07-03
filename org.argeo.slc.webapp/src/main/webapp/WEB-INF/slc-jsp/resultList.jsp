@@ -21,6 +21,7 @@
 			</c:choose>
 			<td style="padding-right: 5px"><a href="resultView.web?uuid=${result.uuid}">view</a></td>
 			<td><a href="resultView.xslt?uuid=${result.uuid}">xsl</a></td>
+			<td><a href="resultViewXml.xslt?uuid=${result.uuid}">xml</a></td>
 		</tr>
 	</c:forEach>
 </table>

@@ -12,6 +12,8 @@
 			<td>${resultCollection.id}</td>
 			<td><a
 				href="resultCollectionView.web?id=${resultCollection.id}">view</a></td>
+			<td><a
+				href="resultCollectionViewXml.xslt?id=${resultCollection.id}">xml</a></td>
 		</tr>
 	</c:forEach>
 </table>
