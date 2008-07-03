@@ -5,11 +5,10 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 
+import org.argeo.slc.core.SlcException;
 import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.xslt.XsltView;
 import org.w3c.dom.Document;
-
-import org.argeo.slc.core.test.tree.TreeTestResult;
 
 public class XsltMarshallerView extends XsltView {
 
@@ -17,7 +16,7 @@ public class XsltMarshallerView extends XsltView {
 
 	@Override
 	protected Class<?>[] getSourceTypes() {
-		return new Class[] { TreeTestResult.class };
+		return new Class[] { Object.class };
 	}
 
 	@Override
@@ -25,6 +24,9 @@ public class XsltMarshallerView extends XsltView {
 		Document document = DocumentBuilderFactory.newInstance()
 				.newDocumentBuilder().newDocument();
 		DOMResult result = new DOMResult(document);
+		if (!marshaller.supports(source.getClass()))
+			throw new SlcException("Object of type " + source.getClass()
+					+ " not supported.");
 		marshaller.marshal(source, result);
 		return new DOMSource(result.getNode());
 	}
