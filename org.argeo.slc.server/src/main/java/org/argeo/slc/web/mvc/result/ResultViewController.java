@@ -18,6 +18,8 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
 
 public class ResultViewController extends ParameterizableViewController {
+	public final static String MODELKEY_RESULT = "result";
+
 	private final TreeTestResultDao testResultDao;
 
 	public ResultViewController(TreeTestResultDao testResultDao) {
@@ -45,7 +47,7 @@ public class ResultViewController extends ParameterizableViewController {
 
 		ModelAndView modelAndView = new ModelAndView();
 
-		modelAndView.addObject("result", result);
+		modelAndView.addObject(MODELKEY_RESULT, result);
 		modelAndView.addObject("toc", toc);
 		modelAndView.addObject("describedPaths", describedPaths);
 		modelAndView.addObject("anchors", anchors);
