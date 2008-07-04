@@ -29,10 +29,6 @@ public class SlcExecutionListController extends ParameterizableViewController {
 		ModelAndView modelAndView = new ModelAndView();
 
 		List<SlcExecution> slcExecutions = slcExecutionDao.listSlcExecutions();
-		if (log.isDebugEnabled()) {
-			log.debug("SlcExecutions (" + slcExecutions.getClass() + "): "
-					+ slcExecutions);
-		}
 		modelAndView.addObject("slcExecutions", slcExecutions);
 		modelAndView.setViewName(getViewName());
 		return modelAndView;
