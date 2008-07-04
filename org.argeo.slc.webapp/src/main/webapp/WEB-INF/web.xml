@@ -42,6 +42,22 @@
 		<url-pattern>*.xslt</url-pattern>
 	</servlet-mapping>
 
+	<servlet>
+		<servlet-name>doc</servlet-name>
+		<servlet-class>
+			org.springframework.web.servlet.DispatcherServlet
+		</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>doc</servlet-name>
+		<url-pattern>*.xls</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>doc</servlet-name>
+		<url-pattern>*.pdf</url-pattern>
+	</servlet-mapping>
+
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/applicationContext.xml</param-value>
