@@ -1,14 +1,9 @@
 package org.argeo.slc.core.test.tree;
 
-import static org.argeo.slc.unit.UnitUtils.assertDateSec;
 import static org.argeo.slc.unit.test.tree.TreeTestResultTestUtils.createCompleteTreeTestResult;
-import static org.argeo.slc.unit.test.tree.TreeTestResultTestUtils.createSimpleResultPartRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
-import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
-import org.argeo.slc.msg.test.tree.ResultPartRequest;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.argeo.slc.unit.UnitXmlUtils;
 import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
