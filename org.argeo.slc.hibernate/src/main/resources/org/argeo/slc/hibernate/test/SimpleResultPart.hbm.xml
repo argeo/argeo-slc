@@ -4,6 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.argeo.slc.core.test">
 	<class name="SimpleResultPart" table="SIMPLE_RESULT_PART">
+		<cache usage="nonstrict-read-write" />
 		<id name="tid" column="T_ID">
 			<generator class="native" />
 		</id>

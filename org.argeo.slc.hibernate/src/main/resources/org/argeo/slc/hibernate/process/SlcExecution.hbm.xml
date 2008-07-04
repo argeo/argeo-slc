@@ -4,6 +4,8 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.argeo.slc.core.process">
 	<class name="SlcExecution" table="SLC_EXECUTION">
+		<cache usage="read-write" />
+
 		<id name="uuid" column="UUID" />
 		<property name="host" column="HOST" />
 		<property name="user" column="USER" />
@@ -11,6 +13,7 @@
 		<property name="status" column="STATUS" />
 
 		<list name="steps" cascade="all" table="SLC_EXECUTIONS_STEPS">
+			<cache usage="read-write" />
 			<key column="SLC_EXECUTION_ID" />
 			<list-index column="INDX" />
 			<one-to-many
@@ -19,6 +22,8 @@
 
 		<map name="attributes" table="SLC_EXEC_ATTRS_MAP" cascade="all"
 			lazy="false" sort="natural">
+			<cache usage="read-write" />
+
 			<key column="PARENT_ID" />
 			<map-key column="ATTR_NAME" type="string" />
 			<element column="NAME" type="string" />

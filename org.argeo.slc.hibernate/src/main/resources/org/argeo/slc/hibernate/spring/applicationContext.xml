@@ -45,6 +45,20 @@
 				</value>
 			</list>
 		</property>
+		<property name="cacheProvider"
+			ref="slcDefault.cacheProvider.ehCache" />
+	</bean>
+
+	<bean id="slcDefault.cacheProvider.ehCache"
+		class="net.sf.ehcache.hibernate.SingletonEhCacheProvider"
+		depends-on="slcDefault.cacheProvider.ehCacheManager">
+	</bean>
+
+	<bean id="slcDefault.cacheProvider.ehCacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="shared" value="true" />
+		<property name="configLocation"
+			value="classpath:/org/argeo/slc/hibernate/cache/ehcache.xml" />
 	</bean>
 
 	<bean id="slcDefault.sessionFactory.hibernateTestHSQL"

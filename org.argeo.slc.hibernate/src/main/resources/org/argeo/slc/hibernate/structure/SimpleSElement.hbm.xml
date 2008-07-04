@@ -4,12 +4,14 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.argeo.slc.core.structure">
 	<class name="SimpleSElement" table="SIMPLE_SELEMENT">
+		<cache usage="nonstrict-read-write" />
 		<id name="tid" column="T_ID">
 			<generator class="native" />
 		</id>
 		<property name="label" column="LABEL" not-null="true" />
 		<map name="tags" table="SIMPLE_SELEMENT_TAGS" cascade="all"
 			lazy="false" sort="natural">
+			<cache usage="nonstrict-read-write" />
 			<key column="PARENT_ID" />
 			<map-key type="string" column="NAME" />
 			<element type="string" column="VALUE" />

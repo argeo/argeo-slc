@@ -4,6 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.argeo.slc.core.test.tree">
 	<class name="TreeTestResult" table="TREE_TEST_RESULT">
+		<cache usage="read-write" />
 		<id name="uuid" column="UUID" />
 
 		<property name="closeDate" column="CLOSE_DATE" type="timestamp"
@@ -11,6 +12,7 @@
 
 		<map name="attributes" table="TTR_ATTRS_MAP" cascade="all"
 			lazy="false" sort="natural">
+			<cache usage="read-write" />
 			<key column="PARENT_ID" />
 			<map-key column="ATTR_NAME" type="string" />
 			<element column="NAME" type="string" />
@@ -18,6 +20,7 @@
 
 		<map name="resultParts" table="RESULT_PARTS_MAP" cascade="all"
 			sort="natural">
+			<cache usage="nonstrict-read-write" />
 			<key column="PARENT_ID" />
 			<composite-map-key
 				class="org.argeo.slc.core.structure.tree.TreeSPath">
@@ -29,6 +32,7 @@
 
 		<map name="elements" table="RESULT_ELEMENTS_MAP" cascade="all"
 			sort="natural">
+			<cache usage="nonstrict-read-write" />
 			<key column="PARENT_ID" />
 			<composite-map-key
 				class="org.argeo.slc.core.structure.tree.TreeSPath">
