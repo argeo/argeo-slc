@@ -69,6 +69,10 @@ public class DefaultSlcRuntime {
 
 		Resource scriptRes = findScript(script);
 		Resource slcRootFile = findSlcRootFile(scriptRes);
+		if (slcRootFile == null)
+			throw new SlcException(
+					"Could not find any SLC root file, "
+							+ "please configure one at the root of your scripts hierarchy.");
 
 		SlcExecution slcExecution = createSlcExecution(runtime, slcRootFile,
 				scriptRes, targets);
@@ -112,8 +116,8 @@ public class DefaultSlcRuntime {
 		slcExecution.getAttributes().put(AntConstants.EXECATTR_ANT_FILE,
 				scriptRelativePath);
 		if (targets != null)
-			slcExecution.getAttributes().put(
-					AntConstants.EXECATTR_ANT_TARGETS, targets);
+			slcExecution.getAttributes().put(AntConstants.EXECATTR_ANT_TARGETS,
+					targets);
 
 		slcExecution.setStatus(SlcExecution.STATUS_SCHEDULED);
 		return slcExecution;

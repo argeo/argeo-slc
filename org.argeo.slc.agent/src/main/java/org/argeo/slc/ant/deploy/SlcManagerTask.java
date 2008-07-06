@@ -20,7 +20,7 @@ public class SlcManagerTask extends SAwareTask {
 			method.invoke(systemManager, null);
 		} catch (Exception e) {
 			throw new SlcException("Cannot execute action " + action
-					+ " for manager " + manager);
+					+ " for manager " + manager, e);
 		}
 	}
 
