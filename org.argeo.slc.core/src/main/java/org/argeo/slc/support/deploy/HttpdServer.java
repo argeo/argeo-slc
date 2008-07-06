@@ -1,17 +1,19 @@
 package org.argeo.slc.support.deploy;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.build.Distribution;
-import org.argeo.slc.core.deploy.DeploymentData;
-import org.argeo.slc.core.deploy.TargetData;
-import org.springframework.core.io.Resource;
 
 public class HttpdServer implements WebServer {
 	private HttpdServerTargetData targetData;
+	private HttpdServerDeploymentData deploymentData;
 
 	public URL getBaseUrl() {
 		try {
@@ -32,9 +34,8 @@ public class HttpdServer implements WebServer {
 		return null;
 	}
 
-	public DeploymentData getDeploymentData() {
-		// TODO Auto-generated method stub
-		return null;
+	public HttpdServerDeploymentData getDeploymentData() {
+		return deploymentData;
 	}
 
 	public HttpdServerTargetData getTargetData() {
@@ -43,6 +44,10 @@ public class HttpdServer implements WebServer {
 
 	public void setTargetData(HttpdServerTargetData targetData) {
 		this.targetData = targetData;
+	}
+
+	public void setDeploymentData(HttpdServerDeploymentData deploymentData) {
+		this.deploymentData = deploymentData;
 	}
 
 }

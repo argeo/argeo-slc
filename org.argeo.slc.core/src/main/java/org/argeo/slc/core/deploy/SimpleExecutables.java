@@ -2,6 +2,7 @@ package org.argeo.slc.core.deploy;
 
 import java.io.File;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,7 +13,7 @@ public class SimpleExecutables implements InstalledExecutables {
 	private final static Log log = LogFactory.getLog(SimpleExecutables.class);
 
 	private String baseDir;
-	private Map<String, String> paths;
+	private Map<String, String> paths = new TreeMap<String, String>();
 
 	private Distribution distribution;
 
