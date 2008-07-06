@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.9-SNAPSHOT</version>
+		<version>0.9.3-SNAPSHOT</version>
 		<relativePath>org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-all</artifactId>
@@ -26,17 +26,24 @@
 			scm:svn:https://www.argeo.org/svn/slc/trunk
 		</connection>
 	</scm>
-	  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <excludeModules>org.argeo.slc</excludeModules>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<excludeModules>org.argeo.slc</excludeModules>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 	<distributionManagement>
 		<site>
