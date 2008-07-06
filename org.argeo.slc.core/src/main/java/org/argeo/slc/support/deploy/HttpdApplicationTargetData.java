@@ -8,14 +8,14 @@ import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.deploy.TargetData;
 
 public class HttpdApplicationTargetData implements TargetData {
-	private ApacheHttpdServer webServer;
+	private HttpdServer webServer;
 	private String relativePath;
 
-	public ApacheHttpdServer getWebServer() {
+	public HttpdServer getWebServer() {
 		return webServer;
 	}
 
-	public void setWebServer(ApacheHttpdServer webServer) {
+	public void setWebServer(HttpdServer webServer) {
 		this.webServer = webServer;
 	}
 
@@ -30,6 +30,7 @@ public class HttpdApplicationTargetData implements TargetData {
 	public URL getTargetBaseUrl() {
 		try {
 			URL wsUrl = getWebServer().getBaseUrl();
+			// TODO: use URI
 			return new URL(wsUrl, wsUrl.getFile() + '/' + relativePath);
 		} catch (MalformedURLException e) {
 			throw new SlcException("Cannot get base url for " + relativePath, e);
@@ -37,8 +38,11 @@ public class HttpdApplicationTargetData implements TargetData {
 	}
 
 	public File getTargetRootLocation() {
-		return new File(getWebServer().getBaseLocation().getPath()
-				+ File.separator + getRelativePath());
+		HttpdServerTargetData targetData = (HttpdServerTargetData) getWebServer()
+				.getTargetData();
+		String path = targetData.getServerRoot() + File.separator
+				+ getRelativePath();
+		return new File(path);
 	}
 
 }

@@ -10,28 +10,16 @@ import org.argeo.slc.core.deploy.DeploymentData;
 import org.argeo.slc.core.deploy.TargetData;
 import org.springframework.core.io.Resource;
 
-public class ApacheHttpdServer implements WebServer {
-	private Resource baseUrlRes;
-	private File baseLocation;
+public class HttpdServer implements WebServer {
+	private HttpdServerTargetData targetData;
 
 	public URL getBaseUrl() {
 		try {
-			return baseUrlRes.getURL();
+			return new URL("http://localhost:" + targetData.getPort());
 		} catch (IOException e) {
-			throw new SlcException("Cannot get url from " + baseUrlRes, e);
+			throw new SlcException("Cannot get url for Httpd server "
+					+ getDeployedSystemId(), e);
 		}
-	}
-
-	public void setBaseUrlRes(Resource baseUrlRes) {
-		this.baseUrlRes = baseUrlRes;
-	}
-
-	public File getBaseLocation() {
-		return baseLocation;
-	}
-
-	public void setBaseLocation(File baseLocation) {
-		this.baseLocation = baseLocation;
 	}
 
 	public String getDeployedSystemId() {
@@ -49,9 +37,12 @@ public class ApacheHttpdServer implements WebServer {
 		return null;
 	}
 
-	public TargetData getTargetData() {
-		// TODO Auto-generated method stub
-		return null;
+	public HttpdServerTargetData getTargetData() {
+		return targetData;
+	}
+
+	public void setTargetData(HttpdServerTargetData targetData) {
+		this.targetData = targetData;
 	}
 
 }
