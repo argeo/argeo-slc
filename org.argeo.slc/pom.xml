@@ -106,13 +106,6 @@
 								<maxIdleTime>60000</maxIdleTime>
 							</connector>
 						</connectors>
-						<systemProperties>
-							<systemProperty>
-								<!-- some library (JExcelAPi) include log4j config in their jar -->
-								<name>log4j.defaultInitOverride</name>
-								<value>true</value>
-							</systemProperty>
-						</systemProperties>
 					</configuration>
 				</plugin>
 			</plugins>
