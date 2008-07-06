@@ -51,6 +51,15 @@
 						<configuration>
 							<scanIntervalSeconds>0</scanIntervalSeconds>
 							<daemon>true</daemon>
+							<systemProperties>
+								<systemProperty>
+									<!-- some library (JExcelAPi) include log4j config in their jar -->
+									<name>
+										log4j.defaultInitOverride
+									</name>
+									<value>true</value>
+								</systemProperty>
+							</systemProperties>
 						</configuration>
 					</execution>
 					<execution>
