@@ -4,16 +4,14 @@ import java.sql.SQLException;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
-import org.hibernate.action.Executable;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 public class TreeTestResultCollectionDaoHibernate extends HibernateDaoSupport
 		implements TreeTestResultCollectionDao {
