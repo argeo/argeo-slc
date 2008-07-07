@@ -173,7 +173,8 @@ public class AntSlcApplication {
 			String runtimeStr = slcExecution.getAttributes().get(
 					AntConstants.EXECATTR_RUNTIME);
 			if (runtimeStr == null)
-				runtimeStr = "default";
+				runtimeStr = System.getProperty(AntConstants.RUNTIME_PROPERTY,
+						"default");
 
 			ResourceLoader rl = new DefaultResourceLoader(getClass()
 					.getClassLoader());

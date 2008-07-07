@@ -38,6 +38,9 @@ public interface AntConstants {
 	/** Name of the Spring bean used by default */
 	public final static String DEFAULT_TEST_RUN_PROPERTY = "slc.defaultTestRun";
 
+	/** Property for the runtime to use. */
+	public final static String RUNTIME_PROPERTY = "slc.runtime";
+
 	// LOG4J
 	public final static String MDC_ANT_PROJECT = "slc.ant.project";
 

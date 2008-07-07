@@ -1,5 +1,8 @@
 package org.argeo.slc.cli;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -10,8 +13,10 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.ant.AntConstants;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.logging.Log4jUtils;
 
@@ -25,7 +30,7 @@ public class SlcMain {
 	private final static String BOOTSTRAP_LOG4J_CONFIG = "org/argeo/slc/cli/bootstrapLog4j.properties";
 
 	private final static Option modeOpt = OptionBuilder.withLongOpt("mode")
-			.withArgName("mode").hasArg().isRequired().withDescription(
+			.withArgName("mode").hasArg().withDescription(
 					"SLC execution mode, one of: " + listModeValues()).create(
 					'm');
 
@@ -33,6 +38,11 @@ public class SlcMain {
 			"property").withArgName("prop1=val1,prop2=val2").hasArgs()
 			.withValueSeparator(',').withDescription(
 					"use value for given property").create('p');
+
+	private final static Option propertiesOpt = OptionBuilder.withLongOpt(
+			"properties").withArgName("properties file").hasArgs()
+			.withValueSeparator(',').withDescription(
+					"load properties from file (-p has priority)").create('P');
 
 	private final static Option scriptOpt = OptionBuilder.withLongOpt("script")
 			.withArgName("script").hasArg().withDescription(
@@ -57,6 +67,7 @@ public class SlcMain {
 		options.addOption(scriptOpt);
 		options.addOption(targetsOpt);
 		options.addOption(propertyOpt);
+		options.addOption(propertiesOpt);
 		options.addOption(runtimeOpt);
 	}
 
@@ -74,10 +85,15 @@ public class SlcMain {
 
 			// Mode
 			String modeStr = cl.getOptionValue(modeOpt.getOpt());
-			try {
-				mode = Mode.valueOf(modeStr);
-			} catch (IllegalArgumentException e) {
-				throw new SlcException("Unrecognized mode '" + modeStr + "'", e);
+			if (modeStr == null) {
+				mode = Mode.single;
+			} else {
+				try {
+					mode = Mode.valueOf(modeStr);
+				} catch (IllegalArgumentException e) {
+					throw new SlcException("Unrecognized mode '" + modeStr
+							+ "'", e);
+				}
 			}
 
 			// Script
@@ -94,6 +110,12 @@ public class SlcMain {
 			}
 
 			// Properties
+			if (cl.hasOption(propertiesOpt.getOpt())) {
+				for (String propertyFile : cl.getOptionValues(propertiesOpt
+						.getOpt())) {
+					loadPropertyFile(properties, propertyFile);
+				}
+			}
 			if (cl.hasOption(propertyOpt.getOpt())) {
 				for (String property : cl.getOptionValues(propertyOpt.getOpt())) {
 					addProperty(properties, property);
@@ -103,10 +125,7 @@ public class SlcMain {
 			// Runtime
 			if (cl.hasOption(runtimeOpt.getOpt())) {
 				runtimeStr = cl.getOptionValue(runtimeOpt.getOpt());
-			} else {
-				runtimeStr = "default";
 			}
-
 		} catch (ParseException e) {
 			System.err.println("Problem with command line arguments. "
 					+ e.getMessage());
@@ -124,7 +143,8 @@ public class SlcMain {
 		initLogging(properties);
 		if (log.isDebugEnabled()) {
 			log.debug("Mode: " + mode);
-			log.debug("Runtime: " + runtimeStr);
+			if (runtimeStr != null)
+				log.debug("Runtime: " + runtimeStr);
 			log.debug("User properties: " + properties);
 			if (script != null)
 				log.debug("Script: " + script);
@@ -154,7 +174,7 @@ public class SlcMain {
 		return str.substring(0, str.length() - 2);
 	}
 
-	private static void addProperty(Properties properties, String property) {
+	protected static void addProperty(Properties properties, String property) {
 		int eqIndex = property.indexOf('=');
 		if (eqIndex == 0)
 			throw new SlcException("Badly formatted property " + property);
@@ -167,7 +187,20 @@ public class SlcMain {
 		} else {
 			properties.setProperty(property, "true");
 		}
+	}
 
+	protected static void loadPropertyFile(Properties properties,
+			String propertyFile) {
+		FileInputStream in = null;
+		try {
+			in = new FileInputStream(propertyFile);
+			properties.load(in);
+		} catch (Exception e) {
+			throw new SlcException("Could not load proeprty file "
+					+ propertyFile);
+		} finally {
+			IOUtils.closeQuietly(in);
+		}
 	}
 
 	private static void initLogging(Properties userProperties) {

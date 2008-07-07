@@ -25,9 +25,11 @@ fi
 
 echo ARGEO_SLC_HOME=$ARGEO_SLC_HOME
 
-for i in "$ARGEO_SLC_HOME/lib/*.jar
+for i in "${ARGEO_SLC_HOME}"/lib/*.jar
 	do
 	CLASSPATH="$CLASSPATH:$i"
 	done
 
-java -cp $CLASSPATH org.argeo.slc.cli.SlcMain $1 $2 $3 $4 $5 $6 $7 $8 $9
+#echo CLASSPATH=$CLASSPATH
+
+java -cp $CLASSPATH org.argeo.slc.cli.SlcMain "$@"
