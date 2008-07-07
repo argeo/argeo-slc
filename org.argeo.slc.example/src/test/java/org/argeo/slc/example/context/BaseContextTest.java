@@ -1,12 +1,12 @@
 package org.argeo.slc.example.context;
 
 import org.argeo.slc.ant.AntExecutionContext;
-import org.argeo.slc.ant.unit.SlcAntAppliTestCase;
+import org.argeo.slc.ant.unit.AntSlcApplicationTestCase;
 import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.unit.test.tree.UnitTestTreeUtil;
 
-public class BaseContextTest extends SlcAntAppliTestCase {
+public class BaseContextTest extends AntSlcApplicationTestCase {
 	public void testExecute() {
 		execute("Context/build.xml", "testBaseContext");
 	}

@@ -3,11 +3,11 @@ package org.argeo.slc.example.appli;
 import static org.argeo.slc.unit.test.tree.UnitTestTreeUtil.assertPart;
 
 import org.argeo.slc.ant.AntExecutionContext;
-import org.argeo.slc.ant.unit.SlcAntAppliTestCase;
+import org.argeo.slc.ant.unit.AntSlcApplicationTestCase;
 import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 
-public class SubCategory2Test extends SlcAntAppliTestCase {
+public class SubCategory2Test extends AntSlcApplicationTestCase {
 	public void testSimpleRun() {
 		execute("/Category1/SubCategory2/build.xml");
 	}
