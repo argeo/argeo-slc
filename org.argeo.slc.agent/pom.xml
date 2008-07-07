@@ -1,21 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.9.3-SNAPSHOT</version>
+		<version>0.9.3</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-agent</artifactId>
 	<name>Argeo SLC Agent</name>
 	<scm>
-		<connection>
-			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.agent
-		</connection>
-	</scm>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/tags/0.9.3/org.argeo.slc.agent</connection>
+	  <url>https://www.argeo.org/svn/slc/tags/0.9.3/org.argeo.slc.agent</url>
+  </scm>
 	<build>
 		<plugins>
 			<!-- Look to parent pom for inheritances -->
