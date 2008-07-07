@@ -6,7 +6,7 @@ import org.argeo.slc.ant.AntExecutionContext;
 import org.argeo.slc.cli.DefaultSlcRuntime;
 import org.argeo.slc.runtime.SlcExecutionOutput;
 
-public abstract class SlcAntAppliTestCase extends TestCase implements
+public abstract class AntSlcApplicationTestCase extends TestCase implements
 		SlcExecutionOutput<AntExecutionContext> {
 
 	/** To be overriden */

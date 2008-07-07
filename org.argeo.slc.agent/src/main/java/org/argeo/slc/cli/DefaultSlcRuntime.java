@@ -199,6 +199,8 @@ public class DefaultSlcRuntime {
 		try {
 			Resource slcRootFile = currDir.createRelative(SLC_ROOT_FILE_NAME);
 			if (slcRootFile.exists()) {
+				if (log.isDebugEnabled())
+					log.debug("Found SLC root file: " + slcRootFile);
 				return slcRootFile;
 			} else {
 				String currPath = currDir.getURL().getPath();

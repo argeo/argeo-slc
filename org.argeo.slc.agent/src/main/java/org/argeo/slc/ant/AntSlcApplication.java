@@ -112,11 +112,9 @@ public class AntSlcApplication {
 
 		try {
 			if (rootDir != null)
-				System.setProperty(AntConstants.ROOT_DIR_PROPERTY, rootDir
-						.getURL().toString());
+				setSystemPropertyForRes(AntConstants.ROOT_DIR_PROPERTY, rootDir);
 			if (confDir != null)
-				System.setProperty(AntConstants.CONF_DIR_PROPERTY, confDir
-						.getURL().toString());
+				setSystemPropertyForRes(AntConstants.CONF_DIR_PROPERTY, confDir);
 			if (workDir != null)
 				System.setProperty(AntConstants.WORK_DIR_PROPERTY, workDir
 						.getCanonicalPath());
@@ -149,6 +147,21 @@ public class AntSlcApplication {
 		} catch (Exception e) {
 			throw new SlcException("Cannot init system properties.", e);
 		}
+	}
+
+	/**
+	 * Set property as an absolute file path if the resource can be located on
+	 * the file system, or as an url.
+	 */
+	private void setSystemPropertyForRes(String key, Resource res)
+			throws IOException {
+		String value = null;
+		try {
+			value = res.getFile().getCanonicalPath();
+		} catch (IOException e) {
+			value = res.getURL().toString();
+		}
+		System.setProperty(key, value);
 	}
 
 	protected ConfigurableApplicationContext createExecutionContext(
