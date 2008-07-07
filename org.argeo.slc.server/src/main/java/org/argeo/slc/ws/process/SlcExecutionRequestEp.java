@@ -28,7 +28,8 @@ public class SlcExecutionRequestEp extends AbstractMarshallingPayloadEndpoint {
 			SlcExecutionRequest msg = (SlcExecutionRequest) requestObject;
 			SlcExecution slcExecutionMsg = msg.getSlcExecution();
 
-			SlcExecution slcExecutionPersisted = slcExecutionDao.getSlcExecution(slcExecutionMsg.getUuid());
+			SlcExecution slcExecutionPersisted = slcExecutionDao
+					.getSlcExecution(slcExecutionMsg.getUuid());
 			if (slcExecutionPersisted == null) {
 				if (log.isTraceEnabled())
 					log.trace("Creating SLC execution #"

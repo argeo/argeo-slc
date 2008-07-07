@@ -42,7 +42,7 @@ public class ResultExcelView extends AbstractJExcelView {
 					sheet.addCell(new Label(1, currentRow, part.getMessage()));
 					currentRow++;
 				}
-				currentRow++;// add an empty line betweeb paths
+				currentRow++;// add an empty line between paths
 			}
 		} catch (Exception e) {
 			throw new SlcException("Could not write spreadsheet.", e);
