@@ -5,13 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.deploy.DeployedSystem;
 import org.argeo.slc.core.deploy.DeployedSystemManager;
 
 public class HttpdServerManager implements DeployedSystemManager<HttpdServer> {

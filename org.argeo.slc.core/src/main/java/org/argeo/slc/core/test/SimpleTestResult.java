@@ -25,7 +25,7 @@ public class SimpleTestResult implements TestResult {
 
 	private Date closeDate;
 	private List<TestResultPart> parts = new Vector<TestResultPart>();
-	
+
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
 	public void addResultPart(TestResultPart part) {

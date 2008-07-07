@@ -1,14 +1,13 @@
 package org.argeo.slc.unit.test.tree;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.fail;
 import static org.argeo.slc.unit.UnitUtils.assertDateSec;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
@@ -152,6 +151,31 @@ public class UnitTestTreeUtil {
 				assertNull(((SimpleResultPart) part).getTestRunUuid());
 			}
 
+		}
+
+	}
+
+	public static void describeTreeTestResult(TreeTestResult ttr) {
+		log.info("TreeTestResult #" + ttr.getUuid());
+		log.info(" Close date: " + ttr.getCloseDate());
+		log.info(" Attributes:");
+		for (String key : ttr.getAttributes().keySet())
+			log.info("  " + key + "=" + ttr.getAttributes().get(key));
+
+		log.info(" Result parts: (size=" + ttr.getResultParts().size() + ")");
+		for (TreeSPath path : ttr.getResultParts().keySet()) {
+			log.info(" Path: " + path);
+			PartSubList lst = ttr.getResultParts().get(path);
+			for (TestResultPart part : lst.getParts())
+				log.info("  " + part);
+		}
+
+		log.info(" Elements: (size=" + ttr.getElements().size() + ")");
+		for (TreeSPath path : ttr.getElements().keySet()) {
+			SimpleSElement elem = (SimpleSElement) ttr.getElements().get(path);
+			log.info(" Path: " + path + ", Element: " + elem.getLabel());
+			for (String tag : elem.getTags().keySet())
+				log.info("  " + tag + "=" + elem.getTags().get(tag));
 		}
 
 	}
