@@ -1,0 +1,92 @@
+<pluginMetadata>
+	<mojos>
+		<mojo>
+			<goal>build</goal>
+			<call>build</call>
+			<description>Generate PDE build scripts</description>
+
+			<requiresProject>true</requiresProject>
+
+			<parameters>
+				<parameter>
+					<name>baseLocation</name>
+					<property>baseLocation</property>
+					<required>true</required>
+					<expression>${baseLocation}</expression>
+					<type>java.lang.String</type>
+					<description>The Eclipse base location</description>
+				</parameter>
+				<parameter>
+					<name>buildScriptTargets</name>
+					<property>buildScriptTargets</property>
+					<required>true</required>
+					<expression>${buildScriptTargets}</expression>
+					<defaultValue>
+						clean build.jars zip.plugin
+					</defaultValue>
+					<type>java.lang.String</type>
+					<description>
+						The targets to execute in the generated build
+						script
+					</description>
+				</parameter>
+				<parameter>
+					<name>buildScriptProperties</name>
+					<property>buildScriptProperties</property>
+					<required>true</required>
+					<expression>${buildScriptProperties}</expression>
+					<defaultValue></defaultValue>
+					<type>java.lang.String</type>
+					<description>
+						The properties to pass to the generated build
+						script
+					</description>
+				</parameter>
+				<parameter>
+					<name>eclipseAntArgs</name>
+					<property>eclipseAntArgs</property>
+					<expression>${eclipseAntArgs}</expression>
+					<defaultValue></defaultValue>
+					<type>java.lang.String</type>
+					<description>
+						Additional args passed to Eclipse Ant (such as
+						verbose/debug level)
+					</description>
+				</parameter>
+				<parameter>
+					<name>elementId</name>
+					<property>elementId</property>
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.artifactId}</defaultValue>
+					<type>java.lang.String</type>
+					<description>
+						The artifact id of the project by default, will
+						be used as element id.
+					</description>
+				</parameter>
+			</parameters>
+		</mojo>
+		<mojo>
+			<goal>clean</goal>
+			<call>clean</call>
+			<description>Clean generated artifacts</description>
+
+			<requiresProject>true</requiresProject>
+			<parameters>
+				<parameter>
+					<name>elementId</name>
+					<property>elementId</property>
+					<required>true</required>
+					<readonly>true</readonly>
+					<defaultValue>${project.artifactId}</defaultValue>
+					<type>java.lang.String</type>
+					<description>
+						The artifact id of the project by default, will
+						be used as element id.
+					</description>
+				</parameter>
+			</parameters>
+		</mojo>
+	</mojos>
+</pluginMetadata>
