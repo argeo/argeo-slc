@@ -1,0 +1,73 @@
+<project>
+	<property name="projectDirectory" location="${basedir}" />
+	<property name="eclipseAntArgs" value="" />
+	<property name="elementBuildScript" location="${projectDirectory}/build.xml" />
+	<property name="buildTempFolder" location="${projectDirectory}/target/argeo-pde-temp" />
+	<property name="buildScriptProperties" value="" />
+
+	<available file="${projectDirectory}/plugin.xml" property="elementType" value="plugin" />
+	<available file="${projectDirectory}/feature.xml" property="elementType" value="feature" />
+
+	<property name="pluginDestination" location="${projectDirectory}/target/plugins" />
+	<property name="featureDestination" location="${projectDirectory}/target/features" />
+
+	<target name="build" depends="init">
+		<fail message="Property buildScriptTargets has to be set" unless="buildScriptTargets" />
+		<eclipseAnt antfile="${ant.file}" antargs="eclipse.generateScripts" />
+		<eclipseAnt antfile="${elementBuildScript}" antargs="${buildScriptTargets} -Dplugin.destination=${pluginDestination} -Dfeature.destination=${featureDestination} ${buildScriptProperties}" />
+	</target>
+
+	<target name="clean" depends="logContext,clean.elementBuildScript">
+		<delete file="${projectDirectory}/javaCompiler...args" verbose="true" />
+	</target>
+
+	<target name="clean.elementBuildScript" if="elementBuildScript.exists">
+		<ant antfile="${elementBuildScript}" target="clean" />
+		<delete file="${elementBuildScript}" verbose="true" />
+	</target>
+
+	<target name="logContext">
+		<echo message="basedir=${basedir}" />
+		<echo message="ant.file=${ant.file}" />
+		<echo message="projectDirectory=${projectDirectory}" />
+		<echo message="baseLocation=${baseLocation}" />
+		<echo message="elementId=${elementId}" />
+		<echo message="elementBuildScript=${elementBuildScript}" />
+		<echo message="eclipseAntArgs=${eclipseAntArgs}" />
+		<echo message="buildScriptTargets=${buildScriptTargets}" />
+		<echo message="buildScriptProperties=${buildScriptProperties}" />
+
+		<available file="${elementBuildScript}" property="elementBuildScript.exists" value="true" />
+	</target>
+
+	<target name="init" depends="logContext">
+		<mkdir dir="${projectDirectory}/target/plugins" />
+		<mkdir dir="${projectDirectory}/target/features" />
+	</target>
+
+	<!-- TARGETS TO BE CALLED WITH ANT ECLIPSE -->
+	<target name="eclipse.generateScripts">
+		<fail message="Property elementType has to be set" unless="elementType" />
+		<eclipse.buildScript elements="${elementType}@${elementId}" buildDirectory="${projectDirectory}/../.." baseLocation="${baseLocation}" outputUpdateJars="true" generateVersionsLists="true"/>
+	</target>
+
+	<!-- MACRODEFS -->
+	<macrodef name="eclipseAnt">
+		<attribute name="antfile" />
+		<attribute name="antargs" />
+		<sequential>
+			<java fork="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
+				<classpath>
+					<fileset dir="${baseLocation}/plugins">
+						<include name="org.eclipse.equinox.launcher_*.jar" />
+					</fileset>
+				</classpath>
+				<arg line="-application org.eclipse.ant.core.antRunner" />
+				<arg line="-buildfile @{antfile}" />
+				<arg line="-DbaseLocation=${baseLocation} -DprojectDirectory=${projectDirectory} -DelementId=${elementId} -DbuildTempFolder=${buildTempFolder} -Dtemp.folder=${buildTempFolder}/temp.folder -Dfeature.temp.folder=${buildTempFolder}/feature.temp.folder" />
+				<arg line="${eclipseAntArgs}" />
+				<arg line="@{antargs}" />
+			</java>
+		</sequential>
+	</macrodef>
+</project>
