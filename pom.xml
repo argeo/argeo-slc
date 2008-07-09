@@ -17,6 +17,7 @@
 		<module>org.argeo.slc.example</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.webapp</module>
+		<module>eclipse/features/org.argeo.slc.ui.launch.feature</module>
 	</modules>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
