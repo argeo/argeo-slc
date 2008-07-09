@@ -8,8 +8,6 @@
 				components
 			</description>
 
-			<requiresProject>true</requiresProject>
-
 			<parameters>
 				<!-- Common -->
 				<parameter>
