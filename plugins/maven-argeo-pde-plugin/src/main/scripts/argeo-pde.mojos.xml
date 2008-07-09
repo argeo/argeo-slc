@@ -1,21 +1,49 @@
 <pluginMetadata>
 	<mojos>
 		<mojo>
-			<goal>build</goal>
-			<call>build</call>
-			<description>Generate PDE build scripts</description>
+			<goal>buildElement</goal>
+			<call>buildElement</call>
+			<description>
+				Builds an element (plugin or feature)
+			</description>
 
 			<requiresProject>true</requiresProject>
 
 			<parameters>
+				<!-- Common -->
 				<parameter>
-					<name>baseLocation</name>
-					<property>baseLocation</property>
+					<name>eclipseBuildDir</name>
+					<property>eclipseBuildDir</property>
 					<required>true</required>
-					<expression>${baseLocation}</expression>
+					<expression>${eclipseBuildDir}</expression>
 					<type>java.lang.String</type>
-					<description>The Eclipse base location</description>
+					<description>
+						The Eclipse build dir location
+					</description>
 				</parameter>
+				<parameter>
+					<name>eclipseAntArgs</name>
+					<property>eclipseAntArgs</property>
+					<expression>${eclipseAntArgs}</expression>
+					<defaultValue></defaultValue>
+					<type>java.lang.String</type>
+					<description>
+						Additional args passed to Eclipse Ant (such as
+						verbose/debug level)
+					</description>
+				</parameter>
+				<parameter>
+					<name>elementId</name>
+					<property>elementId</property>
+					<required>true</required>
+					<defaultValue>${project.artifactId}</defaultValue>
+					<type>java.lang.String</type>
+					<description>
+						The artifact id of the project by default, will
+						be used as element id.
+					</description>
+				</parameter>
+				<!-- Specific -->
 				<parameter>
 					<name>buildScriptTargets</name>
 					<property>buildScriptTargets</property>
@@ -42,6 +70,29 @@
 						script
 					</description>
 				</parameter>
+			</parameters>
+		</mojo>
+
+
+		<mojo>
+			<goal>buildProduct</goal>
+			<call>buildProduct</call>
+			<description>Builds a product</description>
+
+			<requiresProject>true</requiresProject>
+
+			<parameters>
+				<!-- Common -->
+				<parameter>
+					<name>eclipseBuildDir</name>
+					<property>eclipseBuildDir</property>
+					<required>true</required>
+					<expression>${eclipseBuildDir}</expression>
+					<type>java.lang.String</type>
+					<description>
+						The Eclipse build dir location
+					</description>
+				</parameter>
 				<parameter>
 					<name>eclipseAntArgs</name>
 					<property>eclipseAntArgs</property>
@@ -57,7 +108,6 @@
 					<name>elementId</name>
 					<property>elementId</property>
 					<required>true</required>
-					<readonly>true</readonly>
 					<defaultValue>${project.artifactId}</defaultValue>
 					<type>java.lang.String</type>
 					<description>
@@ -65,14 +115,28 @@
 						be used as element id.
 					</description>
 				</parameter>
+				<!-- Specific -->
+				<parameter>
+					<name>buildConfiguration</name>
+					<property>buildConfiguration</property>
+					<required>true</required>
+					<defaultValue>buildConfiguration</defaultValue>
+					<expression>${buildConfiguration}</expression>
+					<type>java.lang.String</type>
+					<description>
+						Relative path to the product build directory
+					</description>
+				</parameter>
 			</parameters>
 		</mojo>
+
+
 		<mojo>
 			<goal>clean</goal>
 			<call>clean</call>
 			<description>Clean generated artifacts</description>
-
 			<requiresProject>true</requiresProject>
+
 			<parameters>
 				<parameter>
 					<name>elementId</name>

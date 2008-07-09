@@ -1,24 +1,123 @@
 <project>
+	<!-- Defaults -->
 	<property name="projectDirectory" location="${basedir}" />
+	<property name="project.build.directory"
+	          location="${projectDirectory}/target" />
+	<property name="dependencyDir"
+	          location="${project.build.directory}/dependency" />
 	<property name="eclipseAntArgs" value="" />
-	<property name="elementBuildScript" location="${projectDirectory}/build.xml" />
-	<property name="buildTempFolder" location="${projectDirectory}/target/argeo-pde-temp" />
+
+	<!-- Element build properties-->
+	<property name="elementBuildScript"
+	          location="${projectDirectory}/build.xml" />
+	<property name="buildTempFolder"
+	          location="${project.build.directory}/argeo-pde-temp" />
 	<property name="buildScriptProperties" value="" />
 
-	<available file="${projectDirectory}/plugin.xml" property="elementType" value="plugin" />
-	<available file="${projectDirectory}/feature.xml" property="elementType" value="feature" />
+	<available file="${projectDirectory}/plugin.xml"
+	           property="elementType"
+	           value="plugin" />
+	<available file="${projectDirectory}/feature.xml"
+	           property="elementType"
+	           value="feature" />
 
-	<property name="pluginDestination" location="${projectDirectory}/target/plugins" />
-	<property name="featureDestination" location="${projectDirectory}/target/features" />
+	<property name="pluginDestination"
+	          location="${project.build.directory}/plugins" />
+	<property name="featureDestination"
+	          location="${project.build.directory}/features" />
 
-	<target name="build" depends="init">
-		<fail message="Property buildScriptTargets has to be set" unless="buildScriptTargets" />
-		<eclipseAnt antfile="${ant.file}" antargs="eclipse.generateScripts" />
-		<eclipseAnt antfile="${elementBuildScript}" antargs="${buildScriptTargets} -Dplugin.destination=${pluginDestination} -Dfeature.destination=${featureDestination} ${buildScriptProperties}" />
+	<!-- Product build properties -->
+	<property name="buildConfiguration" value="buildConfiguration" />
+	<property name="buildConfiguration.dir"
+	          location="${projectDirectory}/${buildConfiguration}" />
+
+	<!-- TARGET Build Element -->
+	<target name="buildElement"
+	        depends="init,setPluginPath"
+	        description="Builds an element (plugin or feature)">
+		<fail message="Property buildScriptTargets has to be set"
+		      unless="buildScriptTargets" />
+
+		<mkdir dir="${pluginDestination}" />
+		<mkdir dir="${featureDestination}" />
+
+		<eclipseAnt antfile="${ant.file}"
+		            antargs="eclipse.generateScripts -DpluginPath=${pluginPath} -DprojectDirectory=${projectDirectory} -DeclipseBuildDir=${eclipseBuildDir} -DelementId=${elementId}" />
+		<eclipseAnt antfile="${elementBuildScript}"
+		            antargs="${buildScriptTargets} -Dplugin.destination=${pluginDestination} -Dfeature.destination=${featureDestination}  -DelementId=${elementId} -DbuildTempFolder=${buildTempFolder} -Dtemp.folder=${buildTempFolder}/temp.folder -Dfeature.temp.folder=${buildTempFolder}/feature.temp.folder ${buildScriptProperties}" />
+
+		<copy todir="${project.build.directory}">
+			<fileset dir="${featureDestination}">
+				<include name="*.zip" />
+			</fileset>
+			<mergemapper to="${elementId}.zip" />
+		</copy>
 	</target>
 
-	<target name="clean" depends="logContext,clean.elementBuildScript">
+	<!-- TARGET Build Product -->
+	<target name="buildProduct"
+	        depends="init,setPluginPath"
+	        description="Builds a product">
+		<!-- Load provided build.properties to leave a chance to override -->
+		<property file="${buildConfiguration.dir}/build.properties" />
+		<!-- Set default properties -->
+		<property name="archivePrefix" value="${elementId}" />
+		<property name="buildId" value="${archivePrefix}" />
+		<property name="buildLabel" value="${archivePrefix}" />
+		<property name="collectingFolder" value="${archivePrefix}" />
+		<property name="skipFetch" value="true" />
+		<property name="skipMaps" value="true" />
+		<property name="runPackager" value="true" />
+
+		<!-- Find PDE build file -->
+		<pathconvert pathsep="" property="productBuildFile">
+			<path>
+				<fileset dir="${pdeBuilder}/plugins">
+					<include name="org.eclipse.pde.build_*/scripts/productBuild/productBuild.xml" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<echo message="productBuildFile=${productBuildFile}" />
+
+		<!-- Copy sources -->
+		<property name="buildDirectory"
+		          location="${project.build.directory}/productBuild" />
+		<mkdir dir="${buildDirectory}" />
+		<copy todir="${buildDirectory}" includeemptydirs="true" verbose="true">
+			<fileset dir="${projectDirectory}/../..">
+				<include name="plugins/**" />
+				<include name="features/**" />
+				<exclude name="**/.svn/**" />
+				<exclude name="**/target/**" />
+			</fileset>
+		</copy>
+
+		<!-- Execute -->
+		<eclipseAnt antfile="${productBuildFile}"
+		            antargs="-Dbuilder=${buildConfiguration.dir} -DbuildDirectory=${buildDirectory} -DbaseLocation=${baseLocation} -Dbase=${base} -DpluginPath=${pluginPath} -DarchivePrefix=${archivePrefix} -DbuildLabel=${buildLabel} -DbuildId=${buildId} -DcollectingFolder=${collectingFolder} -DskipFetch=${skipFetch} -DskipMaps=${skipMaps} -DrunPackager=${runPackager}" />
+
+		<!-- Copy to target dir -->
+		<copy todir="${project.build.directory}">
+			<fileset dir="${buildDirectory}/${collectingFolder}">
+				<include name="*.zip" />
+			</fileset>
+			<globmapper from="${archivePrefix}-*" to="${elementId}-*" />
+		</copy>
+	</target>
+
+	<!-- TARGET Clean -->
+	<target name="clean"
+	        depends="init,clean.elementBuildScript"
+	        description="Cleans the generated resources">
+		<delete dir="${projectDirectory}/workspace" verbose="true" />
 		<delete file="${projectDirectory}/javaCompiler...args" verbose="true" />
+		<delete>
+			<fileset dir="${projectDirectory}/../..">
+				<include name="final*.properties" />
+				<include name="assemble*.xml" />
+				<include name="package*.xml" />
+			</fileset>
+		</delete>
 	</target>
 
 	<target name="clean.elementBuildScript" if="elementBuildScript.exists">
@@ -26,29 +125,73 @@
 		<delete file="${elementBuildScript}" verbose="true" />
 	</target>
 
-	<target name="logContext">
+	<!-- COMMON UTILITIES -->
+	<target name="init">
+		<!-- Init Base -->
+		<property name="base" location="${eclipseBuildDir}" />
+		<property name="baseLocation" location="${base}/eclipse-SDK-DP-3.3.2" />
+		<property name="pdeBuilder"
+		          location="${eclipseBuildDir}/argeo-slc-pde" />
+		<property name="pluginPathBase"
+		          location="${eclipseBuildDir}/pluginPath" />
+
+		<path id="pdeBuilder.launcher.classpath">
+			<fileset dir="${pdeBuilder}/plugins">
+				<include name="org.eclipse.equinox.launcher_*.jar" />
+			</fileset>
+		</path>
+
+		<!-- Log properties -->
 		<echo message="basedir=${basedir}" />
 		<echo message="ant.file=${ant.file}" />
 		<echo message="projectDirectory=${projectDirectory}" />
+
+		<echo message="eclipseBuildDir=${eclipseBuildDir}" />
+		<echo message="base=${base}" />
 		<echo message="baseLocation=${baseLocation}" />
+		<echo message="pdeBuilder=${pdeBuilder}" />
+		<echo message="localBuildDir=${localBuildDir}" />
+		<echo message="pluginPathBase=${pluginPathBase}" />
+
+		<echo message="elementType=${elementType}" />
 		<echo message="elementId=${elementId}" />
 		<echo message="elementBuildScript=${elementBuildScript}" />
-		<echo message="eclipseAntArgs=${eclipseAntArgs}" />
 		<echo message="buildScriptTargets=${buildScriptTargets}" />
 		<echo message="buildScriptProperties=${buildScriptProperties}" />
 
-		<available file="${elementBuildScript}" property="elementBuildScript.exists" value="true" />
+		<echo message="eclipseAntArgs=${eclipseAntArgs}" />
+
+		<echo message="buildConfiguration.dir=${buildConfiguration.dir}" />
+
+		<available file="${elementBuildScript}"
+		           property="elementBuildScript.exists"
+		           value="true" />
 	</target>
 
-	<target name="init" depends="logContext">
-		<mkdir dir="${projectDirectory}/target/plugins" />
-		<mkdir dir="${projectDirectory}/target/features" />
+	<target name="setPluginPath">
+		<mkdir dir="${dependencyDir}" />
+		<pathconvert property="pluginPath">
+			<path>
+				<pathelement location="${dependencyDir}" />
+				<dirset dir="${pluginPathBase}">
+					<include name="*" />
+				</dirset>
+			</path>
+		</pathconvert>
+		<echo message="pluginPath=${pluginPath}" />
 	</target>
 
 	<!-- TARGETS TO BE CALLED WITH ANT ECLIPSE -->
-	<target name="eclipse.generateScripts">
-		<fail message="Property elementType has to be set" unless="elementType" />
-		<eclipse.buildScript elements="${elementType}@${elementId}" buildDirectory="${projectDirectory}/../.." baseLocation="${baseLocation}" outputUpdateJars="true" generateVersionsLists="true"/>
+	<target name="eclipse.generateScripts" depends="init">
+		<fail message="Property elementType has to be set"
+		      unless="elementType" />
+		<property name="buildDirectory" location="${projectDirectory}/../.." />
+		<eclipse.buildScript elements="${elementType}@${elementId}"
+		                     buildDirectory="${buildDirectory}"
+		                     baseLocation="${baseLocation}"
+		                     outputUpdateJars="true"
+		                     generateVersionsLists="true"
+		                     pluginPath="${pluginPath}" />
 	</target>
 
 	<!-- MACRODEFS -->
@@ -56,15 +199,14 @@
 		<attribute name="antfile" />
 		<attribute name="antargs" />
 		<sequential>
-			<java fork="true" classname="org.eclipse.core.launcher.Main" failonerror="true">
-				<classpath>
-					<fileset dir="${baseLocation}/plugins">
-						<include name="org.eclipse.equinox.launcher_*.jar" />
-					</fileset>
-				</classpath>
+			<echo message="Call Eclipse Ant for file @{antfile} with args ${eclipseAntArgs} @{antargs}" />
+			<java fork="true"
+			      classname="org.eclipse.core.launcher.Main"
+			      failonerror="true">
+				<classpath refid="pdeBuilder.launcher.classpath" />
+				<arg line="-data ${project.build.directory}/workspace" />
 				<arg line="-application org.eclipse.ant.core.antRunner" />
 				<arg line="-buildfile @{antfile}" />
-				<arg line="-DbaseLocation=${baseLocation} -DprojectDirectory=${projectDirectory} -DelementId=${elementId} -DbuildTempFolder=${buildTempFolder} -Dtemp.folder=${buildTempFolder}/temp.folder -Dfeature.temp.folder=${buildTempFolder}/feature.temp.folder" />
 				<arg line="${eclipseAntArgs}" />
 				<arg line="@{antargs}" />
 			</java>
