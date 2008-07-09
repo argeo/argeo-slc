@@ -1,0 +1,28 @@
+<pluginMetadata>
+	<mojos>
+		<mojo>
+			<goal>eclipseBuildDir</goal>
+			<call>eclipseBuildDir</call>
+			<description>
+				Prepare an eclispe build dir by downloading the required
+				components
+			</description>
+
+			<requiresProject>true</requiresProject>
+
+			<parameters>
+				<!-- Common -->
+				<parameter>
+					<name>eclipseBuildDir</name>
+					<property>eclipseBuildDir</property>
+					<required>true</required>
+					<expression>${eclipseBuildDir}</expression>
+					<type>java.lang.String</type>
+					<description>
+						The Eclipse build dir location
+					</description>
+				</parameter>
+			</parameters>
+		</mojo>
+	</mojos>
+</pluginMetadata>
