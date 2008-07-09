@@ -12,9 +12,9 @@
 	<packaging>pom</packaging>
 	<name>Argeo SLC Launch Eclipse Feature</name>
 	<properties>
-		<eclipse.base>
-			/home/mbaudier/dev/eclipseBases/eclipse-3.3
-		</eclipse.base>
+		<eclipseBuildDir>
+			/home/mbaudier/dev/eclipseBuild
+		</eclipseBuildDir>
 	</properties>
 	<build>
 		<plugins>
@@ -26,12 +26,14 @@
 						<id>argeo-pde-build</id>
 						<phase>compile</phase>
 						<goals>
-							<goal>build</goal>
+							<goal>buildElement</goal>
 						</goals>
 						<configuration>
-							<baseLocation>${eclipse.base}</baseLocation>
+							<eclipseBuildDir>
+								${eclipseBuildDir}
+							</eclipseBuildDir>
 							<buildScriptTargets>
-								build.update.jar
+								build.update.jar zip.distribution
 							</buildScriptTargets>
 							<buildScriptProperties>
 								-DjavacSource=1.5 -DjavacTarget=1.5
@@ -47,6 +49,29 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-artifacts</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${project.build.directory}/${project.artifactId}.zip</file>
+									<type>zip</type>
+									<classifier>feature</classifier>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 </project>
