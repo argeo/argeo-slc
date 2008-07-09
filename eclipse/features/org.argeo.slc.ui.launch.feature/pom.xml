@@ -11,11 +11,6 @@
 	<artifactId>org.argeo.slc.ui.launch.feature</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC Launch Eclipse Feature</name>
-	<properties>
-		<eclipseBuildDir>
-			/home/mbaudier/dev/eclipseBuild
-		</eclipseBuildDir>
-	</properties>
 	<build>
 		<plugins>
 			<plugin>
@@ -32,9 +27,6 @@
 							<eclipseBuildDir>
 								${eclipseBuildDir}
 							</eclipseBuildDir>
-							<buildScriptTargets>
-								build.update.jar zip.distribution
-							</buildScriptTargets>
 							<buildScriptProperties>
 								-DjavacSource=1.5 -DjavacTarget=1.5
 							</buildScriptProperties>
@@ -65,6 +57,13 @@
 									<file>${project.build.directory}/${project.artifactId}.zip</file>
 									<type>zip</type>
 									<classifier>feature</classifier>
+								</artifact>
+							</artifacts>
+							<artifacts>
+								<artifact>
+									<file>${project.build.directory}/${project.artifactId}-updatesite.zip</file>
+									<type>zip</type>
+									<classifier>updatesite</classifier>
 								</artifact>
 							</artifacts>
 						</configuration>
