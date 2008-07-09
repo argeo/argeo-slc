@@ -46,7 +46,7 @@
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>attach-artifacts</id>
+						<id>attach-feature</id>
 						<phase>package</phase>
 						<goals>
 							<goal>attach-artifact</goal>
@@ -54,14 +54,27 @@
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>${project.build.directory}/${project.artifactId}.zip</file>
+									<file>
+										${project.build.directory}/${project.artifactId}.zip
+									</file>
 									<type>zip</type>
 									<classifier>feature</classifier>
 								</artifact>
 							</artifacts>
+						</configuration>
+					</execution>
+					<execution>
+						<id>attach-updatesite</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
 							<artifacts>
 								<artifact>
-									<file>${project.build.directory}/${project.artifactId}-updatesite.zip</file>
+									<file>
+										${project.build.directory}/${project.artifactId}-updatesite.zip
+									</file>
 									<type>zip</type>
 									<classifier>updatesite</classifier>
 								</artifact>
