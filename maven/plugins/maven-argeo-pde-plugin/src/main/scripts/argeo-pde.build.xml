@@ -26,6 +26,9 @@
 	<property name="featureDestination"
 	          location="${project.build.directory}/features" />
 
+	<property name="siteTemplate"
+	          location="${projectDirectory}/site.template" />
+
 	<!-- Product build properties -->
 	<property name="buildConfiguration" value="buildConfiguration" />
 	<property name="buildConfiguration.dir"
@@ -41,8 +44,10 @@
 		<mkdir dir="${pluginDestination}" />
 		<mkdir dir="${featureDestination}" />
 
+		<property name="buildDirectory" location="${projectDirectory}/../.." />
+
 		<eclipseAnt antfile="${ant.file}"
-		            antargs="eclipse.generateScripts -DpluginPath=${pluginPath} -DprojectDirectory=${projectDirectory} -DeclipseBuildDir=${eclipseBuildDir} -DelementId=${elementId}" />
+		            antargs="eclipse.generateScripts -DpluginPath=${pluginPath} -DprojectDirectory=${projectDirectory} -DeclipseBuildDir=${eclipseBuildDir} -DelementId=${elementId} -DbuildDirectory=${buildDirectory}" />
 		<eclipseAnt antfile="${elementBuildScript}"
 		            antargs="${buildScriptTargets} -Dplugin.destination=${pluginDestination} -Dfeature.destination=${featureDestination}  -DelementId=${elementId} -DbuildTempFolder=${buildTempFolder} -Dtemp.folder=${buildTempFolder}/temp.folder -Dfeature.temp.folder=${buildTempFolder}/feature.temp.folder ${buildScriptProperties}" />
 
@@ -52,6 +57,21 @@
 			</fileset>
 			<mergemapper to="${elementId}.zip" />
 		</copy>
+
+		<!-- Update site -->
+		<copy tofile="${project.build.directory}/site.xml"
+		      file="${siteTemplate}">
+			<filterset begintoken="$${" endtoken="}">
+				<filtersfile file="${buildDirectory}/finalFeaturesVersions.properties" />
+			</filterset>
+		</copy>
+		<zip destfile="${project.build.directory}/${elementId}-updatesite.zip">
+			<fileset dir="${project.build.directory}">
+				<include name="plugins/*.jar" />
+				<include name="features/*.jar" />
+				<include name="site.xml" />
+			</fileset>
+		</zip>
 	</target>
 
 	<!-- TARGET Build Product -->
@@ -129,7 +149,7 @@
 	<target name="init">
 		<!-- Init Base -->
 		<property name="base" location="${eclipseBuildDir}" />
-		<property name="baseLocation" location="${base}/eclipse-SDK-DP-3.3.2" />
+		<property name="baseLocation" location="${base}/eclipse" />
 		<property name="pdeBuilder"
 		          location="${eclipseBuildDir}/argeo-slc-pde" />
 		<property name="pluginPathBase"
@@ -185,7 +205,6 @@
 	<target name="eclipse.generateScripts" depends="init">
 		<fail message="Property elementType has to be set"
 		      unless="elementType" />
-		<property name="buildDirectory" location="${projectDirectory}/../.." />
 		<eclipse.buildScript elements="${elementType}@${elementId}"
 		                     buildDirectory="${buildDirectory}"
 		                     baseLocation="${baseLocation}"

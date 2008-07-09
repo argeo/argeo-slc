@@ -50,7 +50,7 @@
 					<required>true</required>
 					<expression>${buildScriptTargets}</expression>
 					<defaultValue>
-						clean build.jars zip.plugin
+						build.update.jar zip.distribution
 					</defaultValue>
 					<type>java.lang.String</type>
 					<description>
