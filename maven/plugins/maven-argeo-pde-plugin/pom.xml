@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.argeo.slc.maven.plugins</groupId>
 	<artifactId>maven-argeo-pde-plugin</artifactId>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.2.0</version>
 	<packaging>maven-plugin</packaging>
 	<name>Argeo PDE Plugin</name>
 
