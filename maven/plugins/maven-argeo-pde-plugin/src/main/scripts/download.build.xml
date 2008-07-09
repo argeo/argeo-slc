@@ -14,8 +14,10 @@
 		<doZip target="eclipse"
 		       file="eclipse-RCP-3.3.2-delta-pack.zip"
 		       url="http://www.mirrorservice.org/sites/download.eclipse.org/eclipseMirror/eclipse/downloads/drops/R-3.3.2-200802211800/eclipse-RCP-3.3.2-delta-pack.zip" />
-		<doZip target="eclipse" file="" url="" />
 
+		<!--
+		<doZip target="eclipse" file="" url="" />
+-->
 		<!-- WTP -->
 		<doZip target="pluginPath/eclipse-WTP-2.0.2"
 		       file="wtp-R-2.0.2-20080223205547.zip"
@@ -45,6 +47,7 @@
 			<retrieve url="@{url}" downloadfile="@{downloadFile}" />
 			<mkdir dir="${eclipseBuildDir}/@{target}" />
 			<unzip dest="${eclipseBuildDir}/@{target}" src="@{downloadFile}" />
+			<removeEclipseDir dir="${eclipseBuildDir}/@{target}" />
 		</sequential>
 	</macrodef>
 
@@ -62,6 +65,7 @@
 			<untar dest="${eclipseBuildDir}/@{target}"
 			       src="@{downloadFile}"
 			       compression="gzip" />
+			<removeEclipseDir dir="${eclipseBuildDir}/@{target}" />
 		</sequential>
 	</macrodef>
 
@@ -74,7 +78,21 @@
 			     dest="@{downloadFile}"
 			     verbose="true"
 			     usetimestamp="true" />
+		</sequential>
+	</macrodef>
 
+	<macrodef name="removeEclipseDir">
+		<attribute name="dir" />
+		<sequential>
+			<echo message="Remove eclipse dir from @{dir} if present" />
+			<move todir="@{dir}">
+				<fileset dir="@{dir}">
+					<include name="eclipse/plugins/**" />
+					<include name="eclipse/features/**" />
+				</fileset>
+				<globmapper from="eclipse/*" to="*" />
+			</move>
+			<delete dir="@{dir}/eclipse" />
 		</sequential>
 	</macrodef>
 </project>
