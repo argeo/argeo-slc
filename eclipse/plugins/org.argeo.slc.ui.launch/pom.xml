@@ -11,37 +11,12 @@
 	<artifactId>org.argeo.slc.ui.launch</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC Launch Eclipse Plugin</name>
-	<properties>
-		<eclipse.base>
-			/home/mbaudier/dev/eclipseBases/eclipse-3.3
-		</eclipse.base>
-		<eclipse.launcher>
-			plugins/org.eclipse.equinox.launcher_1.0.1.R33x_v20080118.jar
-		</eclipse.launcher>
-		<java.home>/home/mbaudier/dev/jdk/jdk1.6.0_06</java.home>
-	</properties>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.argeo.slc.maven.plugins</groupId>
 				<artifactId>maven-argeo-pde-plugin</artifactId>
 				<executions>
-					<execution>
-						<id>argeo-pde-build</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>build</goal>
-						</goals>
-						<configuration>
-							<baseLocation>${eclipse.base}</baseLocation>
-							<buildScriptTargets>
-								build.update.jar
-							</buildScriptTargets>
-							<buildScriptProperties>
-								-DjavacSource=1.5 -DjavacTarget=1.5
-							</buildScriptProperties>
-						</configuration>
-					</execution>
 					<execution>
 						<id>argeo-pde-clean</id>
 						<phase>clean</phase>
@@ -51,100 +26,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 
-				<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<configuration>
-				<executable>${java.home}/bin/java</executable>
-				<arguments>
-				<argument>-classpath</argument>
-				<argument>
-				${eclipse.base}/${eclipse.launcher}
-				</argument>
-				<argument>
-				org.eclipse.core.launcher.Main
-				</argument>
-				<argument>-application</argument>
-				<argument>
-				org.eclipse.ant.core.antRunner
-				</argument>
-				<argument>-buildfile</argument>
-				<argument>
-				${basedir}/src/assembly/build.xml
-				</argument>
-				<argument>-v</argument>
-				</arguments>
-				</configuration>
-				<executions>
-				<execution>
-				<id>generateScript</id>
-				<phase>compile</phase>
-				<goals>
-				<goal>exec</goal>
-				</goals>
-				<configuration>
-				<argument>generateScript</argument>
-				<argument>
-				-DbaseLocation=${eclipse.base}
-				</argument>
-				</configuration>
-				</execution>
-				<execution>
-				<id>clean</id>
-				<phase>clean</phase>
-				<goals>
-				<goal>exec</goal>
-				</goals>
-				<configuration>
-				<argument>clean</argument>
-				</configuration>
-				</execution>
-				</executions>
-				</plugin>
-			-->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>pde-maven-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<eclipseInstall>${eclipse.base}</eclipseInstall>
-					<antVerbose>false</antVerbose>
-					<antDebug>false</antDebug>
-					<buildProperties>
-						<javacSource>1.5</javacSource>
-						<javacTarget>1.5</javacTarget>
-					</buildProperties>
-					<eclipseBuildScriptProperties>
-						<outputUpdateJars>true</outputUpdateJars>
-					</eclipseBuildScriptProperties>
-				</configuration>
-				<!-- 				<executions>
-					<execution>
-					<id>build-pde</id>
-					<phase>compile</phase>
-					<goals>
-					<goal>attach</goal>
-					</goals>
-					</execution>
-					<execution>
-					<id>clean-pde</id>
-					<phase>clean</phase>
-					<goals>
-					<goal>clean</goal>
-					</goals>
-					</execution>
-					</executions>-->
-			</plugin>
 		</plugins>
 	</build>
-	<!-- 
-		<dependencies>
-		<dependency>
-		<groupId>org.eclipse.equinox</groupId>
-		<artifactId>launcher</artifactId>
-		<version>1.0.0-v20070606</version>
-		</dependency>
-		</dependencies>
-	-->
 </project>
