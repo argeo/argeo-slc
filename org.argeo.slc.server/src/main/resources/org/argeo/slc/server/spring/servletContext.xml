@@ -13,31 +13,50 @@
 		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
 	<import resource="transaction.xml" />
 
-	<!--  Default data source -->
+	<!--  Properties -->
 	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"
 		lazy-init="false">
-		<property name="ignoreResourceNotFound" value="true" />
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
-		<property name="locations">
-			<value>WEB-INF/local.properties</value>
-		</property>
+		<property name="contextOverride" value="true"/>
 		<property name="properties">
 			<props>
 				<prop key="sessionFactoryParentBean">
-					slcServerDefault.sessionFactory.hibernateTestHSQL
+					slcServerDefault.sessionFactory.HSQLTest
 				</prop>
 			</props>
 		</property>
 	</bean>
 
-
+	<!-- Use session factories -->
 	<bean id="sessionFactory" parent="${sessionFactoryParentBean}" />
 
-	<bean id="slcServerDefault.sessionFactory.hibernateTestHSQL"
+	<!--  JNDI data source  -->
+	<bean id="slcDefault.jndiTemplate"
+		class="org.springframework.jndi.JndiTemplate">
+	</bean>
+
+	<bean id="slcDefaut.dataSourceJndi"
+		class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiTemplate" ref="slcDefault.jndiTemplate" />
+		<property name="jndiName" value="java:comp/env/jdbc/mainDs" />
+	</bean>
+
+	<!-- DB types -->
+	<bean id="slcServerDefault.sessionFactory.HSQL"
 		parent="slcTemplates.sessionFactory.hibernateBasic">
-		<property name="dataSource"
-			ref="slcServerDefault.dataSource.inMemoryTestHSQL" />
+		<property name="dataSource" ref="slcDefaut.dataSourceJndi" />
+		<property name="hibernateProperties">
+			<value><![CDATA[
+				hibernate.dialect=org.hibernate.dialect.HSQLDialect
+				hibernate.hbm2ddl.auto=update
+				hibernate.connection.autocommit=false
+			]]></value>
+		</property>
+	</bean>
+
+	<bean id="slcServerDefault.sessionFactory.HSQLTest"
+		parent="slcTemplates.sessionFactory.hibernateBasic">
+		<property name="dataSource" ref="slcDefaut.dataSourceJndi" />
 		<property name="hibernateProperties">
 			<value><![CDATA[
 				hibernate.dialect=org.hibernate.dialect.HSQLDialect
@@ -48,26 +67,55 @@
 		</property>
 	</bean>
 
-	<bean id="slcServerDefault.dataSource.inMemoryTestHSQL"
-		parent="slcDefault.dataSource.inMemoryTestHSQL"
-		destroy-method="destroy">
-		<property name="autoCommit" value="false" />
-	</bean>
-
-	<bean id="slcServerDefault.sessionFactory.persistentHSQL"
+	<bean id="slcServerDefault.sessionFactory.MySQL"
 		parent="slcTemplates.sessionFactory.hibernateBasic">
-		<property name="dataSource"
-			ref="slcServerDefault.datasource.persistentHSQL" />
+		<property name="dataSource" ref="slcDefaut.dataSourceJndi" />
 		<property name="hibernateProperties">
 			<value><![CDATA[
-				hibernate.dialect=org.hibernate.dialect.HSQLDialect
+				hibernate.dialect=org.hibernate.dialect.MySQLDialect
 				hibernate.hbm2ddl.auto=update
-				hibernate.current_session_context_class=thread
+				hibernate.connection.autocommit=false
 			]]></value>
 		</property>
 	</bean>
 
-	<bean id="slcServerDefault.datasource.persistentHSQL"
+
+	<!--  In memory session factory
+		<bean id="slcServerDefault.dataSource.inMemoryTestHSQL"
+		parent="slcDefault.dataSource.inMemoryTestHSQL"
+		destroy-method="destroy">
+		<property name="autoCommit" value="false" />
+		</bean>
+		
+		<bean id="slcServerDefault.sessionFactory.hibernateTestHSQL"
+		parent="slcTemplates.sessionFactory.hibernateBasic">
+		<property name="dataSource"
+		ref="slcServerDefault.dataSource.inMemoryTestHSQL" />
+		<property name="hibernateProperties">
+		<value><![CDATA[
+		hibernate.dialect=org.hibernate.dialect.HSQLDialect
+		hibernate.hbm2ddl.auto=create
+		hibernate.generate_statistics=true
+		hibernate.connection.autocommit=false
+		]]></value>
+		</property>
+		</bean>
+	-->
+	<!--  HSQLDB persistent session factory
+		<bean id="slcServerDefault.sessionFactory.persistentHSQL"
+		parent="slcTemplates.sessionFactory.hibernateBasic">
+		<property name="dataSource"
+		ref="slcServerDefault.datasource.persistentHSQL" />
+		<property name="hibernateProperties">
+		<value><![CDATA[
+		hibernate.dialect=org.hibernate.dialect.HSQLDialect
+		hibernate.hbm2ddl.auto=update
+		hibernate.connection.autocommit=false
+		]]></value>
+		</property>
+		</bean>
+		
+		<bean id="slcServerDefault.datasource.persistentHSQL"
 		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
 		destroy-method="destroy">
 		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
@@ -75,8 +123,8 @@
 		<property name="username" value="sa" />
 		<property name="password" value="" />
 		<property name="suppressClose" value="true" />
-	</bean>
-
+		</bean>
+	-->
 	<!-- Services -->
 	<bean id="testManagerService"
 		class="org.argeo.slc.services.test.impl.TestManagerServiceImpl">
