@@ -22,13 +22,10 @@
 		<Arg>jdbc/mainDs</Arg>
 		<Arg>
 			<New class="org.hsqldb.jdbc.jdbcDataSource">
-				<Set name="database">jdbc:hsqldb:mem:mainDs</Set>
-				<!--
 				<Set name="database">
 					<Property name="jdbcUrl"
 						default="jdbc:hsqldb:mem:mainDs" />
 				</Set>
-				  -->
 				<Set name="user">sa</Set>
 				<Set name="password"></Set>
 			</New>
