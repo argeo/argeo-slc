@@ -66,6 +66,7 @@
 		<dependency>
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
+			<scope>testing</scope>
 		</dependency>
 	</dependencies>
 </project>
