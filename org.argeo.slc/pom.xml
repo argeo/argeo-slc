@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -14,9 +16,12 @@
 		<version.spring-ws>1.5.2</version.spring-ws>
 		<version.maven>2.0.9</version.maven>
 		<version.ant>1.7.0</version.ant>
+		<version.jetty>6.1.11</version.jetty>
 	</properties>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc</connection>
+		<connection>
+			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc
+		</connection>
 		<url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc</url>
 	</scm>
 	<issueManagement>
@@ -89,18 +94,42 @@
 				<plugin>
 					<groupId>org.mortbay.jetty</groupId>
 					<artifactId>maven-jetty-plugin</artifactId>
-					<version>6.1.10</version>
+					<version>${version.jetty}</version>
 					<configuration>
 						<contextPath>org.argeo.slc.webapp</contextPath>
 						<stopKey>stopKey</stopKey>
 						<stopPort>9091</stopPort>
 						<connectors>
-							<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<connector
+								implementation="org.mortbay.jetty.nio.SelectChannelConnector">
 								<port>9090</port>
 								<maxIdleTime>60000</maxIdleTime>
 							</connector>
 						</connectors>
 					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>hsqldb</groupId>
+							<artifactId>hsqldb</artifactId>
+							<version>1.8.0.9</version>
+						</dependency>
+						<dependency>
+							<groupId>org.mortbay.jetty</groupId>
+							<artifactId>jetty-plus</artifactId>
+							<version>${version.jetty}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.mortbay.jetty</groupId>
+							<artifactId>jetty-naming</artifactId>
+							<version>${version.jetty}</version>
+						</dependency>
+						<dependency>
+							<groupId>log4j</groupId>
+							<artifactId>log4j</artifactId>
+							<version>1.2.14</version>
+							<type>jar</type>
+						</dependency>
+					</dependencies>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -334,11 +363,6 @@
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>2.5</version>
-			</dependency>
-			<dependency>
-				<groupId>c3p0</groupId>
-				<artifactId>c3p0</artifactId>
-				<version>0.9.1.2</version>
 			</dependency>
 
 			<dependency>
