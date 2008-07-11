@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.9.5-SNAPSHOT</version>
+		<version>0.10.0</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-hibernate</artifactId>
 	<name>Argeo SLC Hibernate</name>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.hibernate</connection>
-	  <url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc/argeo-slc-hibernate</url>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.10.0/org.argeo.slc.hibernate</connection>
+	  <url>https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.10.0/org.argeo.slc.hibernate</url>
   </scm>
 	<build>
 		<plugins>
