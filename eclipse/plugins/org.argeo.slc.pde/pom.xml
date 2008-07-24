@@ -78,5 +78,11 @@
 			<url>file:///var/argeo/maven2/argeo-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>argeo-plugins</id>
+            <url>http://www.argeo.org/maven/argeo</url>
+        </pluginRepository>
+    </pluginRepositories>
 
 </project>
