@@ -2,7 +2,7 @@
 <feature
       id="org.argeo.slc.ui.launch.feature"
       label="Argeo SLC Launch"
-      version="0.9.4.qualifier"
+      version="0.10.1.qualifier"
       provider-name="Argeo">
 
    <description url="http://www.argeo.org/projects/SLC">
@@ -221,7 +221,7 @@
          id="org.argeo.slc.ui.launch"
          download-size="0"
          install-size="0"
-         version="0.9.4.qualifier"
+         version="0.10.1.qualifier"
          unpack="false"/>
 
 </feature>
