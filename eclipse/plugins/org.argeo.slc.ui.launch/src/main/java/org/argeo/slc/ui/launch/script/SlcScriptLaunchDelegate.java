@@ -1,5 +1,6 @@
 package org.argeo.slc.ui.launch.script;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -181,15 +182,20 @@ public class SlcScriptLaunchDelegate extends
 
 		// Properties
 		Properties properties = new Properties();
-		StringReader reader = new StringReader(configuration.getAttribute(
-				SlcScriptUtils.ATTR_PROPERTIES, ""));
+		String str = configuration.getAttribute(SlcScriptUtils.ATTR_PROPERTIES,
+				"");
+		ByteArrayInputStream in = new ByteArrayInputStream(str.getBytes());
 		try {
-			properties.load(reader);
+			properties.load(in);
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot read properties", e);
 		} finally {
-			if (reader != null)
-				reader.close();
+			if (in != null)
+				try {
+					in.close();
+				} catch (IOException e) {
+					// silent
+				}
 		}
 
 		for (Object key : properties.keySet()) {
