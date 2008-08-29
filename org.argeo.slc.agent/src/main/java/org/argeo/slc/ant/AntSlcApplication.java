@@ -134,7 +134,8 @@ public class AntSlcApplication {
 						IOUtils.closeQuietly(in);
 					}
 
-					for (String key : slcProperties.stringPropertyNames()) {
+					for (Object obj : slcProperties.keySet()) {
+						String key = obj.toString();
 						if (!System.getProperties().containsKey(key)) {
 							String value = SystemPropertyUtils
 									.resolvePlaceholders(slcProperties

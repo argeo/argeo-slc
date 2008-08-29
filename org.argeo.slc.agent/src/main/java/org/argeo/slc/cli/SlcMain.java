@@ -207,7 +207,8 @@ public class SlcMain {
 		System.setProperty("log4j.defaultInitOverride", "true");
 
 		// Add log4j user properties to System properties
-		for (String key : userProperties.stringPropertyNames()) {
+		for (Object obj : userProperties.keySet()) {
+			String key = obj.toString();
 			if (key.startsWith("log4j.")) {
 				System.setProperty(key, userProperties.getProperty(key));
 			}

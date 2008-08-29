@@ -180,11 +180,9 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		return logBeforeFirstTarget || firstTargetStarted;
 	}
 
-	@Override
 	public void close() {
 	}
 
-	@Override
 	public boolean requiresLayout() {
 		return false;
 	}
