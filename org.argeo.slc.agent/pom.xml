@@ -3,14 +3,14 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.10.1-SNAPSHOT</version>
+		<version>0.10.1</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-agent</artifactId>
 	<name>Argeo SLC Agent</name>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.agent</connection>
-	  <url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc/argeo-slc-agent</url>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.10.1/org.argeo.slc.agent</connection>
+	  <url>https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.10.1/org.argeo.slc.agent</url>
   </scm>
 	<build>
 		<plugins>
