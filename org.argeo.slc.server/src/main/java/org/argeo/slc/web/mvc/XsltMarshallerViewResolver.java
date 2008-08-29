@@ -41,7 +41,6 @@ public class XsltMarshallerViewResolver extends XsltViewResolver implements
 		this.marshaller = marshaller;
 	}
 
-	@Override
 	public Source resolve(String href, String base) throws TransformerException {
 		if (log.isTraceEnabled())
 			log.trace("Resolve URI for href=" + href + " base=" + base);
