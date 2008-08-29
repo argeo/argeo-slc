@@ -57,7 +57,8 @@ public class Log4jUtils {
 
 	private static void overrideLog4jProperties(Properties target,
 			Properties additional) {
-		for (String key : additional.stringPropertyNames()) {
+		for (Object obj : additional.keySet()) {
+			String key = obj.toString();
 			if (key.startsWith("log4j.")) {
 				if (!key.equals("log4j.configuration")) {
 					String value = SystemPropertyUtils
