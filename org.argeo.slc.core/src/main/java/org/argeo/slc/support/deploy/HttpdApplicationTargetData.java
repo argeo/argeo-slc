@@ -10,6 +10,7 @@ import org.argeo.slc.core.deploy.TargetData;
 public class HttpdApplicationTargetData implements TargetData {
 	private HttpdServer webServer;
 	private String relativePath;
+	private String targetRootPath;
 
 	public HttpdServer getWebServer() {
 		return webServer;
@@ -23,8 +24,20 @@ public class HttpdApplicationTargetData implements TargetData {
 		return relativePath;
 	}
 
+	/**
+	 * If targetRootLocation not set, used to build the targetRootLocation,
+	 * relative to the webserver base.
+	 */
 	public void setRelativePath(String relativePath) {
 		this.relativePath = relativePath;
+	}
+
+	public String getTargetRootPath() {
+		return targetRootPath;
+	}
+
+	public void setTargetRootPath(String targetRootPath) {
+		this.targetRootPath = targetRootPath;
 	}
 
 	public URL getTargetBaseUrl() {
@@ -38,11 +51,15 @@ public class HttpdApplicationTargetData implements TargetData {
 	}
 
 	public File getTargetRootLocation() {
-		HttpdServerTargetData targetData = (HttpdServerTargetData) getWebServer()
-				.getTargetData();
-		String path = targetData.getServerRoot() + File.separator
-				+ getRelativePath();
-		return new File(path);
+		if (targetRootPath != null && !targetRootPath.equals("")) {
+			return new File(targetRootPath);
+		} else {
+			HttpdServerTargetData targetData = (HttpdServerTargetData) getWebServer()
+					.getTargetData();
+			String path = targetData.getServerRoot() + File.separator
+					+ getRelativePath();
+			return new File(path);
+		}
 	}
 
 }

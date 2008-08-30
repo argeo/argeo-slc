@@ -5,6 +5,8 @@ import java.net.URL;
 
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.build.Distribution;
+import org.argeo.slc.core.deploy.DeploymentData;
+import org.argeo.slc.core.deploy.TargetData;
 
 public class HttpdServer implements WebServer {
 	private HttpdServerTargetData targetData;
@@ -29,20 +31,20 @@ public class HttpdServer implements WebServer {
 		return null;
 	}
 
-	public HttpdServerDeploymentData getDeploymentData() {
+	public DeploymentData getDeploymentData() {
 		return deploymentData;
 	}
 
-	public HttpdServerTargetData getTargetData() {
+	public TargetData getTargetData() {
 		return targetData;
 	}
 
-	public void setTargetData(HttpdServerTargetData targetData) {
-		this.targetData = targetData;
+	public void setTargetData(TargetData targetData) {
+		this.targetData = (HttpdServerTargetData)targetData;
 	}
 
-	public void setDeploymentData(HttpdServerDeploymentData deploymentData) {
-		this.deploymentData = deploymentData;
+	public void setDeploymentData(DeploymentData deploymentData) {
+		this.deploymentData = (HttpdServerDeploymentData)deploymentData;
 	}
 
 }

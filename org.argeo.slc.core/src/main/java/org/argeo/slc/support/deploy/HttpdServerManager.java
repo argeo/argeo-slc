@@ -19,21 +19,21 @@ public class HttpdServerManager implements DeployedSystemManager<HttpdServer> {
 	public void start() {
 		runProcessAsync(createCommandLine("start"));
 		log.info("Started httpd server with root "
-				+ httpdServer.getTargetData().getServerRoot());
+				+ getHttpdServerTargetData().getServerRoot());
 	}
 
 	public void stop() {
 		runProcessAsync(createCommandLine("stop"));
 		log.info("Stopped httpd server with root "
-				+ httpdServer.getTargetData().getServerRoot());
+				+ getHttpdServerTargetData().getServerRoot());
 	}
 
 	protected String[] createCommandLine(String action) {
-		String httpdPath = httpdServer.getTargetData().getExecutables()
+		String httpdPath = getHttpdServerTargetData().getExecutables()
 				.getExecutablePath("httpd");
 		String[] cmd = { httpdPath, "-d",
-				httpdServer.getTargetData().getServerRoot(), "-f",
-				httpdServer.getDeploymentData().getConfigFile(), "-k", action };
+				getHttpdServerTargetData().getServerRoot(), "-f",
+				getHttpdServerDeploymentData().getConfigFile(), "-k", action };
 		if (log.isDebugEnabled())
 			log.debug("Command line: " + Arrays.asList(cmd));
 		return cmd;
@@ -71,4 +71,11 @@ public class HttpdServerManager implements DeployedSystemManager<HttpdServer> {
 		this.httpdServer = httpdServer;
 	}
 
+	protected HttpdServerDeploymentData getHttpdServerDeploymentData() {
+		return (HttpdServerDeploymentData) httpdServer.getDeploymentData();
+	}
+
+	protected HttpdServerTargetData getHttpdServerTargetData() {
+		return (HttpdServerTargetData) httpdServer.getTargetData();
+	}
 }
