@@ -193,8 +193,8 @@ public class DefaultSlcRuntime {
 	 * defined by {@link #SLC_ROOT_FILE_NAME}.
 	 */
 	protected Resource findSlcRootFile(Resource currDir) {
-		if (log.isDebugEnabled())
-			log.debug("Look for SLC root file in " + currDir);
+		if (log.isTraceEnabled())
+			log.trace("Look for SLC root file in " + currDir);
 
 		try {
 			Resource slcRootFile = currDir.createRelative(SLC_ROOT_FILE_NAME);

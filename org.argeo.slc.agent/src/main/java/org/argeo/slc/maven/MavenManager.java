@@ -16,12 +16,11 @@ import org.argeo.slc.core.SlcException;
 public class MavenManager {
 	private final Log log = LogFactory.getLog(getClass());
 
-	private String repositoryId;
-	private String repositoryUrl;
 	private String localRepositoryPath;
 
 	private ArtifactRepository localRepository;
-	private List<ArtifactRepository> remoteRepositories;
+	private List<ArtifactRepository> remoteRepositoriesInternal;
+	private List<RemoteRepository> remoteRepositories = new Vector<RemoteRepository>();
 
 	private MavenEmbedder mavenEmbedder;
 
@@ -38,14 +37,14 @@ public class MavenManager {
 
 			localRepository = mavenEmbedder.getLocalRepository();
 
-			// localRepository = mavenEmbedder.createLocalRepository(new File(
-			// localRepositoryPath));
+			remoteRepositoriesInternal = new Vector<ArtifactRepository>();
+			for (RemoteRepository remoteRepository : remoteRepositories) {
 
-			ArtifactRepository repository = mavenEmbedder.createRepository(
-					repositoryUrl, repositoryId);
+				ArtifactRepository repository = mavenEmbedder.createRepository(
+						remoteRepository.getUrl(), remoteRepository.getId());
+				remoteRepositoriesInternal.add(repository);
+			}
 
-			remoteRepositories = new Vector<ArtifactRepository>();
-			remoteRepositories.add(repository);
 		} catch (Exception e) {
 			throw new SlcException("Cannot initialize Maven manager", e);
 		}
@@ -67,8 +66,8 @@ public class MavenManager {
 						mavenDistribution.getClassifier());
 			}
 
-			mavenEmbedder
-					.resolve(artifact, remoteRepositories, localRepository);
+			mavenEmbedder.resolve(artifact, remoteRepositoriesInternal,
+					localRepository);
 
 			return artifact;
 		} catch (Exception e) {
@@ -90,16 +89,16 @@ public class MavenManager {
 		}
 	}
 
-	public void setRepositoryId(String repositoryId) {
-		this.repositoryId = repositoryId;
-	}
-
-	public void setRepositoryUrl(String repositoryUrl) {
-		this.repositoryUrl = repositoryUrl;
-	}
-
 	public void setLocalRepositoryPath(String localRepositoryPath) {
 		this.localRepositoryPath = localRepositoryPath;
+	}
+
+	public List<RemoteRepository> getRemoteRepositories() {
+		return remoteRepositories;
+	}
+
+	public void setRemoteRepositories(List<RemoteRepository> remoteRepositories) {
+		this.remoteRepositories = remoteRepositories;
 	}
 
 }
