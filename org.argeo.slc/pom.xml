@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.argeo.slc</groupId>
     <artifactId>argeo-slc</artifactId>
@@ -11,13 +13,15 @@
     </url>
     <properties>
         <version.spring>2.5.5</version.spring>
-        <version.spring-ws>1.5.2</version.spring-ws>
+        <version.spring-ws>1.5.4</version.spring-ws>
         <version.maven>2.0.9</version.maven>
-        <version.ant>1.7.0</version.ant>
+        <version.ant>1.7.1</version.ant>
         <version.jetty>6.1.11</version.jetty>
     </properties>
     <scm>
-        <connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc</connection>
+        <connection>
+            scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc
+        </connection>
         <url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc</url>
     </scm>
     <issueManagement>
@@ -96,7 +100,8 @@
                         <stopKey>stopKey</stopKey>
                         <stopPort>9091</stopPort>
                         <connectors>
-                            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <connector
+                                implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                                 <port>9090</port>
                                 <maxIdleTime>60000</maxIdleTime>
                             </connector>
@@ -268,6 +273,7 @@
                 <version>${version.spring-ws}</version>
             </dependency>
 
+            <!-- Ant -->
             <dependency>
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant</artifactId>
@@ -277,6 +283,32 @@
                 <groupId>org.apache.ant</groupId>
                 <artifactId>ant-commons-logging</artifactId>
                 <version>${version.ant}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-commons-net</artifactId>
+                <version>${version.ant}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-apache-oro</artifactId>
+                <version>${version.ant}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant-apache-bsf</artifactId>
+                <version>${version.ant}</version>
+            </dependency>
+            <!-- Required by FTP Ant task -->
+            <dependency>
+                <groupId>commons-net</groupId>
+                <artifactId>commons-net</artifactId>
+                <version>1.4.1</version>
+            </dependency>
+            <dependency>
+                <groupId>oro</groupId>
+                <artifactId>oro</artifactId>
+                <version>2.0.8</version>
             </dependency>
 
             <dependency>
