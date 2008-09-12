@@ -15,7 +15,7 @@ public class SpringRegister extends AbstractSpringTask {
 	@Override
 	public void execute() throws BuildException {
 		for (BeanArg bean : beans) {
-			Object instance = bean.getBeanInstance();
+			Object instance = bean.getInstance();
 			if (bean.getAntid() != null) {
 				getProject().addReference(bean.getAntid(), instance);
 			} else {

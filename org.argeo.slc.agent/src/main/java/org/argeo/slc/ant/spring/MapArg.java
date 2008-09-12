@@ -19,17 +19,33 @@ public class MapArg {
 		return arg;
 	}
 
-	public Map<String, Object> getMap() {
-		if (map.size() == 0) {
-			for (EntryArg arg : entries) {
-				String key = arg.getKey();
-				if (map.containsKey(key)) {
-					throw new SlcException("Key '" + key + "' already set.");
-				} else {
-					map.put(key, arg.getValueStr());
-				}
+	public Map<String, Object> getAsObjectMap(Map<String, Object> originalMap) {
+		Map<String, Object> objectMap = new TreeMap<String, Object>();
+		for (EntryArg arg : entries) {
+			String key = arg.getKey();
+
+			if (objectMap.containsKey(key)) {
+				throw new SlcException("Key '" + key + "' already set.");
 			}
+
+			if (originalMap != null && originalMap.containsKey(key)
+					&& arg.getOverrideArg() != null)
+				arg.getOverrideArg().setOriginal(originalMap.get(key));
+
+			objectMap.put(key, arg.getObject());
+
 		}
+		return objectMap;
+	}
+
+	/**
+	 * Returns a cached reference if it was already called. This reference could
+	 * have been modified externally and thus not anymore be in line with the
+	 * configuration.
+	 */
+	public Map<String, Object> getMap() {
+		if (map.size() == 0)
+			map = getAsObjectMap(null);
 		return map;
 	}
 
@@ -46,7 +62,7 @@ public class MapArg {
 			this.key = key;
 		}
 
-		public Object getValueStr() {
+		public Object getObject() {
 			if (overrideArg != null) {
 				return overrideArg.getObject();
 			} else if (valueStr != null) {
@@ -72,5 +88,10 @@ public class MapArg {
 				throw new BuildException("Value already set");
 			}
 		}
+
+		public OverrideArg getOverrideArg() {
+			return overrideArg;
+		}
+
 	}
 }

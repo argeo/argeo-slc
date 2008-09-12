@@ -1,0 +1,77 @@
+<project default="test">
+
+	<target name="test">
+		<slc.register>
+			<object antid="dummy1.unmodified" bean="dummy1" />
+			<object antid="dummy1.modif1" bean="dummy1">
+				<override name="name" value="dummy1.modif1" />
+				<override name="other" bean="dummy3" />
+			</object>
+			<object antid="dummy1.modif2" bean="dummy1">
+				<override name="children">
+					<list>
+						<override bean="dummy3" />
+					</list>
+				</override>
+			</object>
+			<object antid="dummy1.modif3" bean="dummy1">
+				<override name="children" merge="true">
+					<list>
+						<override>
+							<override name="name" value="dummy3" />
+						</override>
+						<override>
+							<override name="name" value="dummy2" />
+						</override>
+					</list>
+				</override>
+			</object>
+			<object antid="dummy1.modif4" bean="dummy1">
+				<override name="children" merge="true">
+					<list>
+						<override>
+							<override name="name" value="dummy3" />
+							<override name="other" antref="dummy1.modif1" />
+						</override>
+						<override>
+							<override name="name" value="dummy2" />
+							<override name="children">
+								<list>
+									<override bean="dummy3" />
+								</list>
+							</override>
+						</override>
+					</list>
+				</override>
+			</object>
+			<object antid="dummy1.modif5" bean="dummy1">
+				<override name="map">
+					<map>
+						<entry key="key1">
+							<override bean="dummy3" />
+						</entry>
+						<entry key="key2">
+							<override bean="dummy2" />
+						</entry>
+					</map>
+				</override>
+			</object>
+			<object antid="dummy1.modif6" bean="dummy1">
+				<override name="map" merge="true">
+					<map>
+						<entry key="key1">
+							<override>
+								<override name="name" value="dummy2.merged" />
+							</override>
+						</entry>
+						<entry key="key2">
+							<override>
+								<override name="name" value="dummy3.merged" />
+							</override>
+						</entry>
+					</map>
+				</override>
+			</object>
+		</slc.register>
+	</target>
+</project>

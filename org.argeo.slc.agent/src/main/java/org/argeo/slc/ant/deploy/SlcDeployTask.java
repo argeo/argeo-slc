@@ -27,17 +27,17 @@ public class SlcDeployTask extends SAwareTask {
 
 		// set overridden references
 		if (distributionArg != null) {
-			deployment.setDistribution(distributionArg.getBeanInstance());
+			deployment.setDistribution(distributionArg.getInstance());
 			log.trace("Overrides distribution");
 		}
 
 		if (deploymentDataArg != null) {
-			deployment.setDeploymentData(deploymentDataArg.getBeanInstance());
+			deployment.setDeploymentData(deploymentDataArg.getInstance());
 			log.trace("Overrides deployment data");
 		}
 
 		if (targetDataArg != null) {
-			deployment.setTargetData(targetDataArg.getBeanInstance());
+			deployment.setTargetData(targetDataArg.getInstance());
 			log.trace("Overrides target data");
 		}
 

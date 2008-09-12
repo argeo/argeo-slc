@@ -1,16 +1,22 @@
 package org.argeo.slc.ant.spring;
 
 import java.util.List;
-import java.util.Vector;
+import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
 
 /** Ant type allowing to override bean properties. */
 public class OverrideArg extends SpringArg<Object> {
+	private final static Log log = LogFactory.getLog(OverrideArg.class);
+
 	private String name;
 	private Object value;
-	private OverrideList overrideList;
+	private ListArg overrideList;
 	private MapArg overrideMap;
+
+	private Boolean merge = false;
 
 	/** The name of the property to override. */
 	public String getName() {
@@ -35,9 +41,9 @@ public class OverrideArg extends SpringArg<Object> {
 	}
 
 	/** Creates override list sub tag. */
-	public OverrideList createList() {
+	public ListArg createList() {
 		checkValueAlreadySet();
-		overrideList = new OverrideList();
+		overrideList = new ListArg();
 		return overrideList;
 	}
 
@@ -53,13 +59,25 @@ public class OverrideArg extends SpringArg<Object> {
 	 */
 	public Object getObject() {
 		if (value != null) {
+			if (log.isTraceEnabled())
+				log.trace(this + "\t: Returns override object as value");
 			return value;
-		} else if (getBean() != null || getAntref() != null) {
-			return getBeanInstance();
+		} else if (getBean() != null
+				|| getAntref() != null
+				// works on original if no collection is defined
+				|| (getOriginal() != null && overrideList == null && overrideMap == null)) {
+			if (log.isTraceEnabled())
+				log.trace(this + "\t: Returns override object as instance");
+			return getInstance();
 		} else if (overrideList != null) {
-			return overrideList.getAsObjectList();
+			if (log.isTraceEnabled())
+				log.trace(this + "\t: Returns override object as list");
+			return overrideList.getAsObjectList((List<Object>) getOriginal());
 		} else if (overrideMap != null) {
-			return overrideMap.getMap();
+			if (log.isTraceEnabled())
+				log.trace(this + "\t: Returns override object as map");
+			return overrideMap
+					.getAsObjectMap((Map<String, Object>) getOriginal());
 		} else {
 			throw new BuildException("Value or bean not set.");
 		}
@@ -68,28 +86,18 @@ public class OverrideArg extends SpringArg<Object> {
 	protected void checkValueAlreadySet() {
 		super.checkValueAlreadySet();
 		if (value != null || overrideList != null || overrideMap != null) {
-			throw new BuildException("Value already set.");
-		}
-	}
-
-	/** List of overrides */
-	protected class OverrideList {
-		private List<OverrideArg> list = new Vector<OverrideArg>();
-
-		/** Creates override sub tag. */
-		public OverrideArg createOverride() {
-			OverrideArg overrideArg = new OverrideArg();
-			list.add(overrideArg);
-			return overrideArg;
-		}
-
-		/** Gets as list of objects. */
-		public List<Object> getAsObjectList() {
-			List<Object> objectList = new Vector<Object>();
-			for (OverrideArg arg : list) {
-				objectList.add(arg.getObject());
+			if (!getMerge()) {
+				throw new BuildException("Value already set.");
 			}
-			return objectList;
 		}
 	}
+
+	public Boolean getMerge() {
+		return merge;
+	}
+
+	public void setMerge(Boolean merge) {
+		this.merge = merge;
+	}
+
 }

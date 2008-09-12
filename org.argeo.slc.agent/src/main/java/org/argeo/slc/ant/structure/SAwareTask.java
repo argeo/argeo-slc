@@ -82,7 +82,7 @@ public abstract class SAwareTask extends AbstractSpringTask {
 
 		// notify registered args
 		for (SpringArg arg : sAwareArgs) {
-			Object obj = arg.getBeanInstance();
+			Object obj = arg.getInstance();
 
 			if (obj instanceof StructureAware) {
 				StructureAware<TreeSPath> sAwareT = (StructureAware<TreeSPath>) obj;
@@ -155,6 +155,6 @@ public abstract class SAwareTask extends AbstractSpringTask {
 
 class StructureElementArg extends SpringArg {
 	public StructureElement getStructureElement() {
-		return (StructureElement) getBeanInstance();
+		return (StructureElement) getInstance();
 	}
 }

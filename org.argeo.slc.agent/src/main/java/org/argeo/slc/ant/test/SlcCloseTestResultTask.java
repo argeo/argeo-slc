@@ -22,7 +22,7 @@ public class SlcCloseTestResultTask extends SAwareTask {
 		if (!mode.equals(StructureRegistry.READ)) {
 			for (SpringArg<TestResult> result : results) {
 				try {
-					result.getBeanInstance().close();
+					result.getInstance().close();
 				} catch (RuntimeException e) {
 					log.error("Could not close result "
 							+ (result.getBean() != null ? result.getBean()

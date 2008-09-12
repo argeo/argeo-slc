@@ -18,6 +18,10 @@ public class AntExecutionContext implements SlcExecutionContext {
 		return (T) context.getBean(name);
 	}
 
+	public <T> T getAntRef(String antId) {
+		return (T) project.getReference(antId);
+	}
+
 	public SlcExecution getSlcExecution() {
 		return (SlcExecution) project
 				.getReference(AntConstants.REF_SLC_EXECUTION);

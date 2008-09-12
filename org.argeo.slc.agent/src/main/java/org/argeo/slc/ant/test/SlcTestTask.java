@@ -67,22 +67,22 @@ public class SlcTestTask extends SAwareTask {
 
 		// set overridden references
 		if (testDataArg != null) {
-			testRun.setTestData(testDataArg.getBeanInstance());
+			testRun.setTestData(testDataArg.getInstance());
 			log.trace("Overrides test data");
 		}
 
 		if (testDefinitionArg != null) {
-			testRun.setTestDefinition(testDefinitionArg.getBeanInstance());
+			testRun.setTestDefinition(testDefinitionArg.getInstance());
 			log.trace("Overrides test definition");
 		}
 
 		if (deployedSystemArg != null) {
-			testRun.setDeployedSystem(deployedSystemArg.getBeanInstance());
+			testRun.setDeployedSystem(deployedSystemArg.getInstance());
 			log.trace("Overrides deployed system");
 		}
 
 		if (testResultArg != null) {
-			testRun.setTestResult(testResultArg.getBeanInstance());
+			testRun.setTestResult(testResultArg.getInstance());
 			log.trace("Overrides test result");
 		}
 
