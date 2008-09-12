@@ -17,7 +17,6 @@
 		<module>org.argeo.slc.example</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.dist</module>
-		<module>eclipse/features/org.argeo.slc.ui.launch.feature</module>
 		<module>org.argeo.slc.webapp</module>
 	</modules>
 	<scm>
@@ -42,7 +41,14 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<profiles>
+		<profile>
+			<id>withEclipseBuild</id>
+			<modules>
+				<module>eclipse/features/org.argeo.slc.ui.launch.feature</module>
+			</modules>
+		</profile>
+	</profiles>
 	<distributionManagement>
 		<site>
 			<id>argeo-slc-site</id>
