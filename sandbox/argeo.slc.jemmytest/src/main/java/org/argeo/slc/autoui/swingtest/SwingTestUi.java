@@ -1,5 +1,6 @@
 package org.argeo.slc.autoui.swingtest;
 
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -8,24 +9,25 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 public class SwingTestUi {
-	private static void createAndShowGUI() {
+	private static void createAndShowGUI(boolean exitOnClose) {
 		// Create and set up the window.
 		JFrame frame = new JFrame("HelloWorldSwing");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		if (exitOnClose)
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		frame.getContentPane().setLayout(new GridLayout(2, 1));
 
 		// Add the ubiquitous "Hello World" label.
 		final JLabel label = new JLabel("Hello World");
 		frame.getContentPane().add(label);
-		
+
 		final JButton button = new JButton("Button");
 		frame.getContentPane().add(button);
 		button.addActionListener(new ActionListener() {
-
-			@Override
 			public void actionPerformed(ActionEvent e) {
-				button.setText("Pressed!!");
-
-			}});
+				label.setText("Pressed!!");
+			}
+		});
 
 		// Display the window.
 		frame.pack();
@@ -33,11 +35,17 @@ public class SwingTestUi {
 	}
 
 	public static void main(String[] args) {
-		// Schedule a job for the event-dispatching thread:
-		// creating and showing this application's GUI.
+		boolean noExitOnClose = false;
+		for (int i = 0; i < args.length; i++) {
+			if (args[i].equals("noExitOnClose")) {
+				noExitOnClose = true;
+			}
+		}
+
+		final boolean exitOnClose = !noExitOnClose;
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				createAndShowGUI();
+				createAndShowGUI(exitOnClose);
 			}
 		});
 	}

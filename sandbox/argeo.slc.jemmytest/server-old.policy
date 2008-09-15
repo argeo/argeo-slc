@@ -1,0 +1,11 @@
+grant codeBase "file:/home/mbaudier/dev/src/slc/sandbox/argeo.slc.jemmytest/bin/" {
+    permission java.security.AllPermission;
+};
+
+grant codeBase "file:/home/mbaudier/dev/src/slc/sandbox/argeo.slc.jemmytest/local/autouiserver.jar" {
+    permission java.security.AllPermission;
+};
+
+grant codeBase "file:/home/mbaudier/.m2/repository/org/netbeans/jemmy/2.2.7.5/jemmy-2.2.7.5.jar" {
+    permission java.security.AllPermission;
+};
