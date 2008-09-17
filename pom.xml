@@ -17,6 +17,9 @@
 		<module>org.argeo.slc.example</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.dist</module>
+		<!-- Deactivate to make check out more flexible
+		<module>eclipse/features/org.argeo.slc.ui.launch.feature</module>
+		-->
 		<module>org.argeo.slc.webapp</module>
 	</modules>
 	<scm>
