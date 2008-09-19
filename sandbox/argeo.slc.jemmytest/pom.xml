@@ -2,14 +2,37 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.argeo.slc</groupId>
-	<artifactId>slc-jemmy</artifactId>
-	<name>SLC Jemmy</name>
+	<groupId>org.argeo.slc.sandbox</groupId>
+	<artifactId>org.argeo.slc.sandbox.jemmytest</artifactId>
+	<name>SLC Sandbox JemmyTest</name>
 	<version>0.1.1-SNAPSHOT</version>
-	<description />
+	<packaging>bundle</packaging>
 	<build>
-		<filters></filters>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>1.4.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<manifestLocation>META-INF</manifestLocation>
+					<instructions>
+						<Bundle-SymbolicName>
+							${pom.artifactId}
+						</Bundle-SymbolicName>
+						<Import-Package>
+							!org.apache.felix.*,*
+						</Import-Package>
+						<Export-Package>
+							org.argeo.slc.jemmytest.*
+						</Export-Package>
+						<!-- 
+							<Require-Bundle>
+							org.argeo.slc.autoui
+							</Require-Bundle> -->
+					</instructions>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -36,46 +59,40 @@
 	<profiles></profiles>
 	<dependencies>
 		<dependency>
-			<groupId>org.netbeans</groupId>
-			<artifactId>jemmy</artifactId>
-			<version>2.2.7.5</version>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.autoui</artifactId>
+			<version>0.10.3-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>org.osgi.core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.argeo.dep.jemmy</groupId>
+			<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
+			<version>0.2.0</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>3.8.2</version>
+			<scope>test</scope>
 		</dependency>
+		<!-- OSGi -->
 		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.15</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.sun.jmx</groupId>
-					<artifactId>jmxri</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jdmk</groupId>
-					<artifactId>jmxtools</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.mail</groupId>
-					<artifactId>mail</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.jms</groupId>
-					<artifactId>jms</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.main</artifactId>
+			<version>1.2.1</version>
 		</dependency>
 	</dependencies>
-	<dependencyManagement>
-		<dependencies></dependencies>
-	</dependencyManagement>
-
+	<repositories>
+		<repository>
+			<id>argeo</id>
+			<url>http://www.argeo.org/maven/argeo</url>
+		</repository>
+	</repositories>
 </project>

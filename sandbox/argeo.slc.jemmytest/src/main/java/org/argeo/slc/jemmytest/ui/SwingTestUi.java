@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui.swingtest;
+package org.argeo.slc.jemmytest.ui;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;

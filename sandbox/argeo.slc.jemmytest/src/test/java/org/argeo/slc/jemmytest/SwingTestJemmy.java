@@ -1,16 +1,15 @@
-package org.argeo.slc.autoui.swingtest;
+package org.argeo.slc.jemmytest;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.jemmytest.ui.SwingTestUi;
 import org.netbeans.jemmy.ClassReference;
 import org.netbeans.jemmy.operators.JButtonOperator;
 import org.netbeans.jemmy.operators.JFrameOperator;
 import org.netbeans.jemmy.operators.JLabelOperator;
 
 public class SwingTestJemmy extends TestCase {
-	private final static Log log = LogFactory.getLog(SwingTestJemmy.class);
+//	private final static Log log = LogFactory.getLog(SwingTestJemmy.class);
 
 	public void testSimple() throws Exception {
 		// Start application

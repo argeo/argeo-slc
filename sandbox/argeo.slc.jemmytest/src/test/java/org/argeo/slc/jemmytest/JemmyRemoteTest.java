@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui.swingtest;
+package org.argeo.slc.jemmytest;
 
 import java.io.Serializable;
 import java.rmi.registry.LocateRegistry;
@@ -7,6 +7,7 @@ import java.rmi.registry.Registry;
 import org.argeo.slc.autoui.swingtest.rmi.AutoUiContext;
 import org.argeo.slc.autoui.swingtest.rmi.AutoUiServer;
 import org.argeo.slc.autoui.swingtest.rmi.AutoUiTask;
+import org.argeo.slc.jemmytest.ui.SwingTestUi;
 import org.netbeans.jemmy.ClassReference;
 import org.netbeans.jemmy.operators.JButtonOperator;
 import org.netbeans.jemmy.operators.JFrameOperator;
