@@ -57,6 +57,13 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>true</skipTests>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<profiles></profiles>
@@ -72,7 +79,7 @@
 				</exclusion>
 				<exclusion>
 					<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.main</artifactId>
+					<artifactId>org.apache.felix.main</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -88,6 +95,13 @@
 			<version>3.8.2</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.sandbox</groupId>
+			<artifactId>org.argeo.slc.sandbox.testui</artifactId>
+			<version>0.1.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- OSGi -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>

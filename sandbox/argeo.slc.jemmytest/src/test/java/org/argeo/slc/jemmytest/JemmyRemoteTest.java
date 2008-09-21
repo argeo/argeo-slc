@@ -4,16 +4,16 @@ import java.io.Serializable;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import junit.framework.TestCase;
+
 import org.argeo.slc.autoui.swingtest.rmi.AutoUiContext;
 import org.argeo.slc.autoui.swingtest.rmi.AutoUiServer;
 import org.argeo.slc.autoui.swingtest.rmi.AutoUiTask;
-import org.argeo.slc.jemmytest.ui.SwingTestUi;
+import org.argeo.slc.testui.SwingTestUi;
 import org.netbeans.jemmy.ClassReference;
 import org.netbeans.jemmy.operators.JButtonOperator;
 import org.netbeans.jemmy.operators.JFrameOperator;
 import org.netbeans.jemmy.operators.JLabelOperator;
-
-import junit.framework.TestCase;
 
 public class JemmyRemoteTest extends TestCase implements Serializable {
 	static final long serialVersionUID = 1l;

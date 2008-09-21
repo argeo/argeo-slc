@@ -2,7 +2,7 @@ package org.argeo.slc.jemmytest;
 
 import junit.framework.TestCase;
 
-import org.argeo.slc.jemmytest.ui.SwingTestUi;
+import org.argeo.slc.testui.SwingTestUi;
 import org.netbeans.jemmy.ClassReference;
 import org.netbeans.jemmy.operators.JButtonOperator;
 import org.netbeans.jemmy.operators.JFrameOperator;
