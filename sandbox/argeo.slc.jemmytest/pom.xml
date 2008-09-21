@@ -24,15 +24,11 @@
 							org.argeo.slc.jemmytest.JemmyTestActivator
 						</Bundle-Activator>
 						<Import-Package>
-							!org.apache.felix.*,*,javax.swing.*
+							!org.apache.felix.*,*
 						</Import-Package>
 						<Export-Package>
 							org.argeo.slc.jemmytest.*
 						</Export-Package>
-						<!-- 
-							<Require-Bundle>
-							org.argeo.slc.autoui
-							</Require-Bundle> -->
 					</instructions>
 				</configuration>
 			</plugin>
@@ -105,8 +101,8 @@
 		<!-- OSGi -->
 		<dependency>
 			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.main</artifactId>
-			<version>1.2.1</version>
+			<artifactId>org.osgi.core</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 	<repositories>
