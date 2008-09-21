@@ -1,193 +1,181 @@
 package org.argeo.slc.autoui;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.cache.BundleCache;
-import org.apache.felix.framework.util.FelixConstants;
-import org.apache.felix.framework.util.StringMap;
 import org.apache.felix.main.AutoActivator;
 import org.netbeans.jemmy.ClassReference;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
 public class Main {
+	private final Felix felix;
+	private final BundleContext context;
 
-	/**
-	 * @param args
-	 */
+	public Main(Felix felix) {
+		this.felix = felix;
+		context = felix.getBundleContext();
+	}
+
+	public Felix getFelix() {
+		return felix;
+	}
+
+	public BundleContext getContext() {
+		return context;
+	}
+
 	public static void main(String[] args) {
 		try {
-			// Create a temporary bundle cache directory and
-			// make sure to clean it up on exit.
-			final File cachedir = File.createTempFile(
-					"felix.example.servicebased", null);
-			cachedir.delete();
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				public void run() {
-					deleteFileOrDir(cachedir);
-				}
-			});
+			// Start OSGi system
+			Properties config = prepareConfig();
+			Main main = startSystem(config);
 
-			String mavenBase = "file:/home/mbaudier/.m2/repository/";
-			String uiPackage = "org.argeo.slc.testui";
-			Map configMap = new StringMap(false);
-			configMap
-					.put(
-							Constants.FRAMEWORK_SYSTEMPACKAGES,
-							"org.osgi.framework; version=1.4.0,"
-									+ "org.osgi.service.packageadmin; version=1.2.0,"
-									+ "org.osgi.service.startlevel; version=1.1.0,"
-									+ "org.osgi.service.url; version=1.0.0,"
-									+ "org.osgi.util.tracker; version=1.3.3,"
-									/*+ "org.apache.felix.example.servicebased.host.service; version=1.0.0,"*/
-									+ "org.argeo.slc.autoui; version=0.10.3.SNAPSHOT,"
-									+ uiPackage+","
-									+ "javax.swing");
-			configMap
-					.put(
-							AutoActivator.AUTO_START_PROP + ".1",
-							mavenBase
-									+ "org/apache/felix/org.apache.felix.shell/1.0.2/org.apache.felix.shell-1.0.2.jar "
-									+ mavenBase
-									+ "org/apache/felix/org.apache.felix.shell.tui/1.0.2/org.apache.felix.shell.tui-1.0.2.jar "
-									+ mavenBase
-									+ "org/argeo/dep/jemmy/org.argeo.dep.jemmy.nb61/0.2.0/org.argeo.dep.jemmy.nb61-0.2.0.jar "
-									+ mavenBase
-									+ "org/argeo/slc/sandbox/org.argeo.slc.sandbox.jemmytest/0.1.1-SNAPSHOT/org.argeo.slc.sandbox.jemmytest-0.1.1-SNAPSHOT.jar");
-			configMap.put(FelixConstants.LOG_LEVEL_PROP, "1");
-			configMap.put(BundleCache.CACHE_PROFILE_DIR_PROP, cachedir
-					.getAbsolutePath());
+			// Start UI (in main class loader)
+			startUi(config);
 
-			// Create list to hold custom framework activators.
-			List list = new ArrayList();
-			// Add activator to process auto-start/install properties.
-			list.add(new AutoActivator(configMap));
-			// Add our own activator.
-			list.add(new AutoUiActivator());
-
-			BundleContext context = null;
-			try {
-				// Now create an instance of the framework.
-				Felix felix = new Felix(configMap, list);
-				felix.start();
-
-				context = felix.getBundleContext();
-
-				// Bundle jemmyTestBundle = context
-				// .installBundle(mavenBase
-				// +
-				// "org/argeo/slc/sandbox/org.argeo.slc.sandbox.jemmytest/0.1.1-SNAPSHOT/org.argeo.slc.sandbox.jemmytest-0.1.1-SNAPSHOT.jar");
-				// jemmyTestBundle.start();
-
-			} catch (Exception ex) {
-				System.err.println("Could not create framework: " + ex);
-				ex.printStackTrace();
-				System.exit(-1);
-			}
-
-			
-			// Start UI
-			String className = "org.argeo.slc.testui.SwingTestUi";
-			//String className = SwingTestUi.class.getName();
-			// String[] args = {};
-			// SwingTestUi.main(args);
-			// Start application
-			ClassReference classReference = new ClassReference(className);
-			String[] uiArgs = { "noExitOnClose" };
-			classReference.startApplication(uiArgs);
-
-
-			
-			ServiceReference ref = context
-			.getServiceReference("org.argeo.slc.autoui.AutoUiApplication");
-//			ServiceReference ref = context
-//			.getServiceReference("java.lang.Runnable");
-			Object service = context.getService(ref);
-			AutoUiActivator.stdOut("service=" + service.getClass());
-			AutoUiApplication app = (AutoUiApplication) service;
-			app.execute(null);
-			// app.execute(null);
-			
-
+			// Automate
+			automateUi(main.getContext());
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
 		}
-
-		// Felix felix;
-		// // JemmyTestActivator activator;
-		//
-		// // Create a case-insensitive configuration property map.
-		// Map configMap = new StringMap(false);
-		// // Configure the Felix instance to be embedded.
-		// configMap.put(FelixConstants.EMBEDDED_EXECUTION_PROP, "true");
-		// // Add core OSGi packages to be exported from the class path
-		// // via the system bundle.
-		// configMap.put(Constants.FRAMEWORK_SYSTEMPACKAGES,
-		// "org.osgi.framework; version=1.3.0,"
-		// + "org.osgi.service.packageadmin; version=1.2.0,"
-		// + "org.osgi.service.startlevel; version=1.0.0,"
-		// + "org.osgi.service.url; version=1.0.0");
-		// // Explicitly specify the directory to use for caching bundles.
-		// configMap.put(BundleCache.CACHE_PROFILE_DIR_PROP, "target/cache");
-		//
-		// try {
-		// // Create host activator;
-		// // activator = new JemmyTestActivator();
-		// List list = new ArrayList();
-		// // list.add(activator);
-		// list.add(new Activator());
-		// list.add(new org.apache.felix.shell.impl.Activator());
-		// list.add(new org.apache.felix.bundlerepository.Activator());
-		//
-		// // Now create an instance of the framework with
-		// // our configuration properties and activator.
-		// felix = new Felix(configMap, list);
-		//
-		// // Now start Felix instance.
-		// felix.start();
-		//
-		// Bundle jemmyBundle = felix
-		// .getBundleContext()
-		// .installBundle(
-		// "file:/home/mbaudier/.m2/repository/org/argeo/dep/jemmy/org.argeo.dep.jemmy.nb61/0.2.0/org.argeo.dep.jemmy.nb61-0.2.0.jar");
-		// jemmyBundle.start();
-		// //
-		// // Bundle autoUiBundle = felix
-		// // .getBundleContext()
-		// // .installBundle(
-		// //
-		// "reference:file:/home/mbaudier/dev/src/slc/org.argeo.slc.autoui/");
-		// // autoUiBundle.start();
-		//
-		// Bundle[] bundles = felix.getBundleContext().getBundles();
-		// for (int i = 0; i < bundles.length; i++) {
-		// Bundle bundle = bundles[i];
-		// System.out.println("" + bundle.getBundleId() + "\t"
-		// + bundle.getSymbolicName() + "\t" + bundle.getState()
-		// + "\t" + bundle.getLocation());
-		// }
-		//
-		// // felix.stop();
-		// } catch (Exception ex) {
-		// System.err.println("Could not create framework: " + ex);
-		// ex.printStackTrace();
-		// }
-		//
 	}
 
+	protected static Properties prepareConfig() throws Exception {
+		final File cachedir = createTemporaryCacheDir();
+
+		// Load config
+		Properties config = new Properties();
+		InputStream in = null;
+		;
+		try {
+			in = Main.class
+					.getResourceAsStream("/org/argeo/slc/autoui/felix.properties");
+			config.load(in);
+		} finally {
+			if (in != null)
+				in.close();
+		}
+
+		// Perform variable substitution for system properties.
+		for (Enumeration e = config.propertyNames(); e.hasMoreElements();) {
+			String name = (String) e.nextElement();
+			config.setProperty(name, org.apache.felix.main.Main.substVars(
+					config.getProperty(name), name, null, config));
+		}
+
+		config.put(BundleCache.CACHE_PROFILE_DIR_PROP, cachedir
+				.getAbsolutePath());
+
+		return config;
+	}
+
+	protected static File createTemporaryCacheDir() throws IOException {
+		// Create a temporary bundle cache directory and
+		// make sure to clean it up on exit.
+		final File cachedir = File.createTempFile("argeo.slc.autoui", null);
+		cachedir.delete();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				deleteFileOrDir(cachedir);
+			}
+		});
+		return cachedir;
+	}
+
+	public static Main startSystem(Properties config) throws Exception {
+		// Create list to hold custom framework activators.
+		List list = new ArrayList();
+		// Add activator to process auto-start/install properties.
+		list.add(new AutoActivator(config));
+		// Add our own activator.
+		list.add(new AutoUiActivator());
+
+		// Now create an instance of the framework.
+		Felix felix = new Felix(config, list);
+		felix.start();
+
+		return new Main(felix);
+	}
+
+	public static void startUi(Properties config) throws Exception {
+		String className = config.getProperty("argeo.scl.autoui.uiclass");
+		String[] uiArgs = readArgumentsFromLine(config.getProperty(
+				"argeo.slc.autoui.uiargs", ""));
+		ClassReference classReference = new ClassReference(className);
+		classReference.startApplication(uiArgs);
+	}
+
+	protected static void automateUi(BundleContext context) throws Exception {
+		// Retrieve service and execute it
+		ServiceReference ref = context
+				.getServiceReference("org.argeo.slc.autoui.AutoUiApplication");
+		Object service = context.getService(ref);
+		AutoUiActivator.stdOut("service.class=" + service.getClass());
+		AutoUiApplication app = (AutoUiApplication) service;
+		app.execute(null);
+	}
+
+	/* UTILITIES */
+
 	/**
-	 * Utility method used to delete the profile directory when run as a
-	 * stand-alone application.
-	 * 
-	 * @param file
-	 *            The file to recursively delete.
+	 * Transform a line into an array of arguments, taking "" as single
+	 * arguments. (nested \" are not supported)
 	 */
+	private static String[] readArgumentsFromLine(String lineOrig) {
+
+		String line = lineOrig.trim();// make sure there are no trailing
+		// spaces
+		System.out.println("line=" + line);
+		List args = new Vector();
+		StringBuffer curr = new StringBuffer("");
+		boolean inQuote = false;
+		char[] arr = line.toCharArray();
+		for (int i = 0; i < arr.length; i++) {
+			char c = arr[i];
+			switch (c) {
+			case '\"':
+				inQuote = !inQuote;
+				break;
+			case ' ':
+				if (!inQuote) {// otherwise, no break: goes to default
+					if (curr.length() > 0) {
+						args.add(curr.toString());
+						curr = new StringBuffer("");
+					}
+					break;
+				}
+			default:
+				curr.append(c);
+				break;
+			}
+		}
+
+		// Add last arg
+		if (curr.length() > 0) {
+			args.add(curr.toString());
+			curr = null;
+		}
+
+		String[] res = new String[args.size()];
+		for (int i = 0; i < args.size(); i++) {
+			res[i] = args.get(i).toString();
+			System.out.println("res[i]=" + res[i]);
+		}
+		return res;
+	}
+
 	private static void deleteFileOrDir(File file) {
 		if (file.isDirectory()) {
 			File[] childs = file.listFiles();
