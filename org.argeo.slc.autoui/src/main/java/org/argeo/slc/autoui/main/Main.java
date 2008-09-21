@@ -1,11 +1,9 @@
-package org.argeo.slc.autoui;
+package org.argeo.slc.autoui.main;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
@@ -14,38 +12,27 @@ import java.util.Vector;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.cache.BundleCache;
 import org.apache.felix.main.AutoActivator;
+import org.argeo.slc.autoui.AutoUiActivator;
+import org.argeo.slc.autoui.AutoUiApplication;
 import org.netbeans.jemmy.ClassReference;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 public class Main {
-	private final Felix felix;
-	private final BundleContext context;
-
-	public Main(Felix felix) {
-		this.felix = felix;
-		context = felix.getBundleContext();
-	}
-
-	public Felix getFelix() {
-		return felix;
-	}
-
-	public BundleContext getContext() {
-		return context;
-	}
 
 	public static void main(String[] args) {
 		try {
 			// Start OSGi system
 			Properties config = prepareConfig();
-			Main main = startSystem(config);
+			Felix felix = startSystem(config);
 
 			// Start UI (in main class loader)
 			startUi(config);
 
 			// Automate
-			automateUi(main.getContext());
+			automateUi(felix.getBundleContext());
+			
+			felix.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
@@ -94,7 +81,7 @@ public class Main {
 		return cachedir;
 	}
 
-	public static Main startSystem(Properties config) throws Exception {
+	public static Felix startSystem(Properties config) throws Exception {
 		// Create list to hold custom framework activators.
 		List list = new ArrayList();
 		// Add activator to process auto-start/install properties.
@@ -106,7 +93,7 @@ public class Main {
 		Felix felix = new Felix(config, list);
 		felix.start();
 
-		return new Main(felix);
+		return felix;
 	}
 
 	public static void startUi(Properties config) throws Exception {
@@ -135,9 +122,8 @@ public class Main {
 	 */
 	private static String[] readArgumentsFromLine(String lineOrig) {
 
-		String line = lineOrig.trim();// make sure there are no trailing
-		// spaces
-		System.out.println("line=" + line);
+		String line = lineOrig.trim();// remove trailing spaces
+		// System.out.println("line=" + line);
 		List args = new Vector();
 		StringBuffer curr = new StringBuffer("");
 		boolean inQuote = false;
@@ -171,7 +157,7 @@ public class Main {
 		String[] res = new String[args.size()];
 		for (int i = 0; i < args.size(); i++) {
 			res[i] = args.get(i).toString();
-			System.out.println("res[i]=" + res[i]);
+			// System.out.println("res[i]=" + res[i]);
 		}
 		return res;
 	}
