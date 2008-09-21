@@ -31,9 +31,6 @@
 						<Export-Package>
 							org.argeo.slc.autoui.*
 						</Export-Package>
-						<Import-Package>
-							org.argeo.slc.jemmytest.ui.*;resolution=optional
-						</Import-Package>
 						<!-- 
 							<Export-Service>
 							org.argeo.slc.autoui.AutoUiApplication
@@ -75,16 +72,16 @@
 			<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
 		</dependency>
 
-		<!-- OSGi -->
+		<!-- OSGi 
 		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.0.0</version>
-		</dependency>
-		<!-- 
+		</dependency>-->
+		
 			<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.main</artifactId>
-			</dependency> -->
+			</dependency> 
 	</dependencies>
 </project>

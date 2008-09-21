@@ -20,8 +20,11 @@
 						<Bundle-SymbolicName>
 							${pom.artifactId}
 						</Bundle-SymbolicName>
+						<Bundle-Activator>
+							org.argeo.slc.jemmytest.JemmyTestActivator
+						</Bundle-Activator>
 						<Import-Package>
-							!org.apache.felix.*,*
+							!org.apache.felix.*,*,javax.swing.*
 						</Import-Package>
 						<Export-Package>
 							org.argeo.slc.jemmytest.*
@@ -67,6 +70,10 @@
 					<groupId>org.apache.felix</groupId>
 					<artifactId>org.osgi.core</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.main</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 
@@ -74,7 +81,6 @@
 			<groupId>org.argeo.dep.jemmy</groupId>
 			<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
 			<version>0.2.0</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

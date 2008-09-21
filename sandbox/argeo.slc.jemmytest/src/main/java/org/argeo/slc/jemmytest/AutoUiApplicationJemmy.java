@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui.internal;
+package org.argeo.slc.jemmytest;
 
 import org.argeo.slc.autoui.AutoUiActivator;
 import org.argeo.slc.autoui.AutoUiApplication;
@@ -13,19 +13,12 @@ public class AutoUiApplicationJemmy implements AutoUiApplication {
 			execute(new Object());
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new RuntimeException("Could not execute as Runnable", e);
+			throw new RuntimeException("Could not execute as Runnable"
+					+ e.getMessage());
 		}
 	}
 
 	public Object execute(Object object) throws Exception {
-
-		String className = "org.argeo.slc.jemmytest.ui.SwingTestUi";
-		// String[] args = {};
-		// SwingTestUi.main(args);
-		// Start application
-		ClassReference classReference = new ClassReference(className);
-		String[] args = { "noExitOnClose" };
-		classReference.startApplication(args);
 
 		// Find components
 		JFrameOperator jFrameOperator = new JFrameOperator("HelloWorldSwing");

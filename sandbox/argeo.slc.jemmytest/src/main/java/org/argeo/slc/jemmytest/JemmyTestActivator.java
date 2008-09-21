@@ -1,5 +1,8 @@
 package org.argeo.slc.jemmytest;
 
+import java.util.Properties;
+
+import org.argeo.slc.autoui.AutoUiApplication;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceEvent;
@@ -9,6 +12,12 @@ public class JemmyTestActivator implements BundleActivator, ServiceListener {
 
 	public void start(BundleContext context) throws Exception {
 		stdOut("JemmyTest started");
+		Properties properties = new Properties();
+		AutoUiApplicationJemmy applicationJemmy = new AutoUiApplicationJemmy();
+		context.registerService(AutoUiApplication.class.getName(),
+				applicationJemmy, properties);
+		context.registerService(Runnable.class.getName(), applicationJemmy,
+				properties);
 
 //		ServiceReference ref = context
 //				.getServiceReference("org.argeo.slc.autoui.AutoUiApplication");
