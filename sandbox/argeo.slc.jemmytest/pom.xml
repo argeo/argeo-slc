@@ -110,5 +110,9 @@
 			<id>argeo</id>
 			<url>http://www.argeo.org/maven/argeo</url>
 		</repository>
+		<repository>
+			<id>argeo-snapshots</id>
+			<url>http://www.argeo.org/maven/argeo-snapshots</url>
+		</repository>
 	</repositories>
 </project>
