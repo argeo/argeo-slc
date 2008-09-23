@@ -73,7 +73,15 @@
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.osgi.core</artifactId>
 			<version>1.0.0</version>
-			</dependency>-->
+			</dependency>
+			        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>osgi</artifactId>
+            <version>3.3.0-v20070530</version>
+        </dependency>
+			
+			
+			-->
 
 		<dependency>
 			<groupId>org.apache.felix</groupId>
