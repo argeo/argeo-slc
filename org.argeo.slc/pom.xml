@@ -433,7 +433,7 @@
 			<dependency>
 				<groupId>org.argeo.dep.jemmy</groupId>
 				<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
-				<version>0.2.0</version>
+				<version>0.2.2</version>
 			</dependency>
 
 		</dependencies>
