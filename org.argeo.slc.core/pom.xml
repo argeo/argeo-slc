@@ -3,15 +3,15 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.10.3</version>
+		<version>0.10.4-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-core</artifactId>
 	<name>Argeo SLC Core</name>
 	<description>SLC Core</description>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.10.3/org.argeo.slc.core</connection>
-		<url>https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.10.3/org.argeo.slc.core</url>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.core</connection>
+		<url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc.core</url>
 	</scm>
 	<build>
 		<plugins>
