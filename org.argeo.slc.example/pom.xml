@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.10.4-SNAPSHOT</version>
+		<version>0.11.0</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-example</artifactId>
@@ -11,8 +11,8 @@
 	<packaging>jar</packaging>
 	<description>An Example SLC application</description>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.example</connection>
-		<url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc.example</url>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.11.0/org.argeo.slc.example</connection>
+		<url>https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.11.0/org.argeo.slc.example</url>
 	</scm>
 	<build>
 		<plugins>
