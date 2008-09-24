@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.10.3-SNAPSHOT</version>
+		<version>0.11.1-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.autoui</artifactId>
@@ -29,7 +29,7 @@
 							org.argeo.slc.autoui.AutoUiActivator
 						</Bundle-Activator>
 						<Export-Package>
-							org.argeo.slc.autoui
+							org.argeo.slc.autoui.*
 						</Export-Package>
 					</instructions>
 				</configuration>

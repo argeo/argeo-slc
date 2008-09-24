@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui.swingtest.rmi;
+package org.argeo.slc.autoui.rmi;
 
 import java.io.Serializable;
 
