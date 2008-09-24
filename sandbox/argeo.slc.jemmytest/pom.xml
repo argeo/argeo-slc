@@ -5,7 +5,7 @@
 	<groupId>org.argeo.slc.sandbox</groupId>
 	<artifactId>org.argeo.slc.sandbox.jemmytest</artifactId>
 	<name>SLC Sandbox JemmyTest</name>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<build>
 		<plugins>
@@ -23,9 +23,6 @@
 						<Bundle-Activator>
 							org.argeo.slc.jemmytest.JemmyTestActivator
 						</Bundle-Activator>
-						<Import-Package>
-							!org.apache.felix.*,*
-						</Import-Package>
 						<Export-Package>
 							org.argeo.slc.jemmytest.*
 						</Export-Package>
@@ -67,17 +64,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.autoui</artifactId>
-			<version>0.10.3-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>org.osgi.core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>org.apache.felix.main</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>0.11.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -85,24 +72,11 @@
 			<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
 			<version>0.2.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.sandbox</groupId>
-			<artifactId>org.argeo.slc.sandbox.testui</artifactId>
-			<version>0.1.1-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
 
-		<!-- OSGi -->
 		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.eclipse</groupId>
+			<artifactId>osgi</artifactId>
+			<version>3.3.0-v20070530</version>
 		</dependency>
 	</dependencies>
 	<repositories>
