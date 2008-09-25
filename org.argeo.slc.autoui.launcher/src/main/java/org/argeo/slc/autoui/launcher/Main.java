@@ -3,6 +3,7 @@ package org.argeo.slc.autoui.launcher;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -15,8 +16,13 @@ import org.apache.felix.main.AutoActivator;
 import org.argeo.slc.autoui.AutoUiActivator;
 import org.argeo.slc.autoui.AutoUiApplication;
 import org.netbeans.jemmy.ClassReference;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.io.UrlResource;
 
 public class Main {
 
@@ -26,12 +32,28 @@ public class Main {
 			Properties config = prepareConfig();
 			Felix felix = startSystem(config);
 
+			// GenericApplicationContext context = new
+			// GenericApplicationContext();
+			// XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
+			// context);
+			// Bundle[] bundles = felix.getBundleContext().getBundles();
+			// for (int i = 0; i < bundles.length; i++) {
+			// Bundle bundle = bundles[i];
+			// URL url = bundle
+			// .getResource("META-INF/slc/conf/applicationContext.xml");
+			// if (url != null) {
+			// System.out.println("Loads application context from bundle "
+			// + bundle.getSymbolicName());
+			// xmlReader.loadBeanDefinitions(new UrlResource(url));
+			// }
+			// }
+
 			// Start UI (in main class loader)
 			startUi(config);
 
 			// Automate
 			automateUi(felix.getBundleContext());
-			
+
 			felix.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -104,11 +126,14 @@ public class Main {
 		classReference.startApplication(uiArgs);
 	}
 
-	protected static void automateUi(BundleContext context) throws Exception {
+	protected static void automateUi(BundleContext bundleContext)
+			throws Exception {
 		// Retrieve service and execute it
-		ServiceReference ref = context
+		ServiceReference ref = bundleContext
 				.getServiceReference("org.argeo.slc.autoui.AutoUiApplication");
-		Object service = context.getService(ref);
+		Object service = bundleContext.getService(ref);
+
+		// Object service = applicationContext.getBean("jemmyTest");
 		AutoUiActivator.stdOut("service.class=" + service.getClass());
 		AutoUiApplication app = (AutoUiApplication) service;
 		app.execute(null);
