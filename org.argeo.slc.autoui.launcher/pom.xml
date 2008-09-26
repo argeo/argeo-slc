@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.10.3-SNAPSHOT</version>
+		<version>0.11.1-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.autoui.launcher.launcher</artifactId>
@@ -57,5 +57,10 @@
 			<artifactId>spring-beans</artifactId>
 			<version>2.0.8</version>
 		</dependency>
+
+			<dependency>
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+			</dependency>
 	</dependencies>
 </project>
