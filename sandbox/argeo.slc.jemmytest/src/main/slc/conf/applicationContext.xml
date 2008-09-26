@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
 	<bean id="jemmyTest"
-		class="org.argeo.slc.jemmytest.AutoUiApplicationJemmy">
+		class="org.argeo.slc.jemmytest.DummyStep">
 	</bean>
 
 </beans>

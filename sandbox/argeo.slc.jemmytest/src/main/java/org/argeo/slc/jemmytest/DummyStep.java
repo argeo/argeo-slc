@@ -1,13 +1,17 @@
 package org.argeo.slc.jemmytest;
 
 import org.argeo.slc.autoui.AutoUiActivator;
-import org.argeo.slc.autoui.AutoUiApplication;
+import org.argeo.slc.autoui.DetachedContext;
+import org.argeo.slc.autoui.DetachedStep;
+import org.argeo.slc.autoui.DetachedStepAnswer;
+import org.argeo.slc.autoui.DetachedStepRequest;
 import org.netbeans.jemmy.operators.JButtonOperator;
 import org.netbeans.jemmy.operators.JFrameOperator;
 import org.netbeans.jemmy.operators.JLabelOperator;
 
-public class AutoUiApplicationJemmy implements AutoUiApplication {
-	public Object execute(Object object) throws Exception {
+public class DummyStep implements DetachedStep {
+	public DetachedStepAnswer execute(DetachedContext detachedContext,
+			DetachedStepRequest detachedStepRequest) {
 
 		// Find components
 		JFrameOperator jFrameOperator = new JFrameOperator("HelloWorldSwing");
