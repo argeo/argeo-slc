@@ -11,7 +11,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.UrlResource;
 
-public class AbstractAutoActivator implements BundleActivator {
+public class AbstractDetachedActivator implements BundleActivator {
 	private AbstractApplicationContext applicationContext;
 
 	public final void start(BundleContext context) throws Exception {

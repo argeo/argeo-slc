@@ -49,28 +49,6 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<!-- 
-			<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			</dependency>
-			<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			</dependency>
-			<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			</dependency>
-		-->
-
-		<!-- OSGi 
-			<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<version>1.0.0</version>
-			</dependency>
-		-->
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>osgi</artifactId>
@@ -83,6 +61,9 @@
 			<version>2.0.8</version>
 		</dependency>
 
-
+		<dependency>
+			<groupId>org.codehaus.castor</groupId>
+			<artifactId>castor</artifactId>
+		</dependency>
 	</dependencies>
 </project>
