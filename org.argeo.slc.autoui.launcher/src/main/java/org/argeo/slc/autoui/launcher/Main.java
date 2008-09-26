@@ -3,7 +3,7 @@ package org.argeo.slc.autoui.launcher;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -15,41 +15,21 @@ import org.apache.felix.framework.cache.BundleCache;
 import org.apache.felix.main.AutoActivator;
 import org.argeo.slc.autoui.AutoUiActivator;
 import org.argeo.slc.autoui.AutoUiApplication;
-import org.netbeans.jemmy.ClassReference;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.io.UrlResource;
 
 public class Main {
 
 	public static void main(String[] args) {
 		try {
-			// Start OSGi system
+			// Load properties
 			Properties config = prepareConfig();
-			Felix felix = startSystem(config);
-
-			// GenericApplicationContext context = new
-			// GenericApplicationContext();
-			// XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
-			// context);
-			// Bundle[] bundles = felix.getBundleContext().getBundles();
-			// for (int i = 0; i < bundles.length; i++) {
-			// Bundle bundle = bundles[i];
-			// URL url = bundle
-			// .getResource("META-INF/slc/conf/applicationContext.xml");
-			// if (url != null) {
-			// System.out.println("Loads application context from bundle "
-			// + bundle.getSymbolicName());
-			// xmlReader.loadBeanDefinitions(new UrlResource(url));
-			// }
-			// }
-
+			
 			// Start UI (in main class loader)
 			startUi(config);
+
+			// Start OSGi system
+			Felix felix = startSystem(config);
 
 			// Automate
 			automateUi(felix.getBundleContext());
@@ -122,8 +102,17 @@ public class Main {
 		String className = config.getProperty("argeo.scl.autoui.uiclass");
 		String[] uiArgs = readArgumentsFromLine(config.getProperty(
 				"argeo.slc.autoui.uiargs", ""));
-		ClassReference classReference = new ClassReference(className);
-		classReference.startApplication(uiArgs);
+
+		// Launch main method using reflection
+		Class clss = Class.forName(className);
+		Class[] mainArgsClasses = new Class[] { uiArgs.getClass() };
+		Object[] mainArgs = { uiArgs };
+		// mainArgs[0] = Class.forName("[Ljava.lang.String;");
+		Method mainMethod = clss.getMethod("main", mainArgsClasses);
+		mainMethod.invoke(null, mainArgs);
+
+		// ClassReference classReference = new ClassReference(className);
+		// classReference.startApplication(uiArgs);
 	}
 
 	protected static void automateUi(BundleContext bundleContext)

@@ -34,10 +34,6 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.dep.jemmy</groupId>
-			<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.felix</groupId>
 			<artifactId>org.apache.felix.main</artifactId>
 		</dependency>
