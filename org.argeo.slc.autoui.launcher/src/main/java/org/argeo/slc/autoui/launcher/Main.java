@@ -14,7 +14,7 @@ import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.cache.BundleCache;
 import org.apache.felix.main.AutoActivator;
 import org.argeo.slc.autoui.AutoUiActivator;
-import org.argeo.slc.autoui.AutoUiApplication;
+import org.argeo.slc.autoui.DetachedStep;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -24,7 +24,7 @@ public class Main {
 		try {
 			// Load properties
 			Properties config = prepareConfig();
-			
+
 			// Start UI (in main class loader)
 			startUi(config);
 
@@ -110,22 +110,18 @@ public class Main {
 		// mainArgs[0] = Class.forName("[Ljava.lang.String;");
 		Method mainMethod = clss.getMethod("main", mainArgsClasses);
 		mainMethod.invoke(null, mainArgs);
-
-		// ClassReference classReference = new ClassReference(className);
-		// classReference.startApplication(uiArgs);
 	}
 
 	protected static void automateUi(BundleContext bundleContext)
 			throws Exception {
 		// Retrieve service and execute it
 		ServiceReference ref = bundleContext
-				.getServiceReference("org.argeo.slc.autoui.AutoUiApplication");
+				.getServiceReference("org.argeo.slc.autoui.DetachedStep");
 		Object service = bundleContext.getService(ref);
 
-		// Object service = applicationContext.getBean("jemmyTest");
 		AutoUiActivator.stdOut("service.class=" + service.getClass());
-		AutoUiApplication app = (AutoUiApplication) service;
-		app.execute(null);
+		DetachedStep app = (DetachedStep) service;
+		app.execute(null, null);
 	}
 
 	/* UTILITIES */
