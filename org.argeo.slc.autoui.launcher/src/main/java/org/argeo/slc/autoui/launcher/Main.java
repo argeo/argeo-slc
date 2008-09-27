@@ -32,12 +32,13 @@ public class Main {
 
 			// Start UI (in main class loader)
 			startUi(config);
-
+			//Thread.sleep(10000);
+			
 			// Start OSGi system
 			Felix felix = startSystem(config);
 
 			// Automate
-			automateUi(felix.getBundleContext());
+			//automateUi(felix.getBundleContext());
 
 			// felix.stop();
 		} catch (Exception e) {
@@ -112,7 +113,6 @@ public class Main {
 		Class clss = Class.forName(className);
 		Class[] mainArgsClasses = new Class[] { uiArgs.getClass() };
 		Object[] mainArgs = { uiArgs };
-		// mainArgs[0] = Class.forName("[Ljava.lang.String;");
 		Method mainMethod = clss.getMethod("main", mainArgsClasses);
 		mainMethod.invoke(null, mainArgs);
 	}

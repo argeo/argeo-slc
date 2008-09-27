@@ -19,7 +19,7 @@ public class AutoUiActivator extends AbstractDetachedActivator {
 		else
 			throw new DetachedException("Could not find execution server.");
 
-		executionServer.setBundleContext(context);
+		executionServer.init(context);
 
 		context.registerService(DetachedExecutionServer.class.getName(),
 				executionServer, new Properties());

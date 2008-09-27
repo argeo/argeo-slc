@@ -5,6 +5,11 @@
 
 	<bean id="executionServer"
 		class="org.argeo.slc.autoui.internal.DetachedExecutionServerImpl">
+		<property name="driver" ref="driver"/>
+	</bean>
+	<bean id="driver"
+		class="org.argeo.slc.autoui.drivers.FileDriver">
+		<property name="requestDir" value="/home/mbaudier/dev/test/SLC/detachedRequests"/>
 	</bean>
 
 </beans>

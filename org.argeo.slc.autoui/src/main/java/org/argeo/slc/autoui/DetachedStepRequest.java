@@ -1,8 +1,10 @@
 package org.argeo.slc.autoui;
 
+import java.io.Serializable;
 import java.util.Properties;
 
-public class DetachedStepRequest {
+public class DetachedStepRequest implements Serializable {
+	private String uuid;
 	private Properties inputParameters;
 	private String stepRef;
 	private String path;
@@ -29,5 +31,13 @@ public class DetachedStepRequest {
 
 	public void setPath(String path) {
 		this.path = path;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 }

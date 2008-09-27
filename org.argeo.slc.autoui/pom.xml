@@ -50,6 +50,10 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>osgi</artifactId>
 			<version>3.3.0-v20070530</version>

@@ -1,6 +1,7 @@
 package org.argeo.slc.autoui.internal;
 
 import org.argeo.slc.autoui.DetachedContextImpl;
+import org.argeo.slc.autoui.DetachedDriver;
 import org.argeo.slc.autoui.DetachedException;
 import org.argeo.slc.autoui.DetachedExecutionServer;
 import org.argeo.slc.autoui.DetachedStep;
@@ -14,6 +15,13 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 	private final DetachedContextImpl detachedContext;
 
 	private BundleContext bundleContext;
+	private DetachedDriver driver;
+
+	private boolean active = false;
+
+	public void setDriver(DetachedDriver driver) {
+		this.driver = driver;
+	}
 
 	public DetachedExecutionServerImpl() {
 		detachedContext = new DetachedContextImpl();
@@ -51,8 +59,27 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 		}
 	}
 
-	public void setBundleContext(BundleContext bundleContext) {
+	public void init(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
+		Thread driverThread = new Thread(new Runnable() {
+
+			public void run() {
+				while (active) {
+					try {
+						DetachedStepRequest request = driver.receiveRequest();
+						executeStep(request);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+		},"driverThread");
+
+		active = true;
+
+		driverThread.start();
 	}
 
 }
