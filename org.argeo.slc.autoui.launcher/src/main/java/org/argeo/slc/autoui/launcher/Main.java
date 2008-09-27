@@ -10,15 +10,20 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.cache.BundleCache;
 import org.apache.felix.main.AutoActivator;
 import org.argeo.slc.autoui.AutoUiActivator;
+import org.argeo.slc.autoui.DetachedExecutionServer;
 import org.argeo.slc.autoui.DetachedStep;
+import org.argeo.slc.autoui.DetachedStepRequest;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 public class Main {
+	private final static Log log = LogFactory.getLog(Main.class);
 
 	public static void main(String[] args) {
 		try {
@@ -34,7 +39,7 @@ public class Main {
 			// Automate
 			automateUi(felix.getBundleContext());
 
-			felix.stop();
+			// felix.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(-1);
@@ -116,12 +121,14 @@ public class Main {
 			throws Exception {
 		// Retrieve service and execute it
 		ServiceReference ref = bundleContext
-				.getServiceReference("org.argeo.slc.autoui.DetachedStep");
+				.getServiceReference(DetachedExecutionServer.class.getName());
 		Object service = bundleContext.getService(ref);
 
-		AutoUiActivator.stdOut("service.class=" + service.getClass());
-		DetachedStep app = (DetachedStep) service;
-		app.execute(null, null);
+		log.debug("service.class=" + service.getClass());
+		DetachedExecutionServer app = (DetachedExecutionServer) service;
+		DetachedStepRequest request = new DetachedStepRequest();
+		request.setStepRef("jemmyTest");
+		app.executeStep(request);
 	}
 
 	/* UTILITIES */

@@ -1,5 +1,7 @@
 package org.argeo.slc.jemmytest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.autoui.AutoUiActivator;
 import org.argeo.slc.autoui.DetachedContext;
 import org.argeo.slc.autoui.DetachedStep;
@@ -10,6 +12,8 @@ import org.netbeans.jemmy.operators.JFrameOperator;
 import org.netbeans.jemmy.operators.JLabelOperator;
 
 public class DummyStep implements DetachedStep {
+	private final static Log log = LogFactory.getLog(DummyStep.class);
+
 	public DetachedStepAnswer execute(DetachedContext detachedContext,
 			DetachedStepRequest detachedStepRequest) {
 
@@ -25,7 +29,7 @@ public class DummyStep implements DetachedStep {
 
 		// Performs checks
 		String textAfterPush = jLabelOperator.getText();
-		AutoUiActivator.stdOut("textAfterPush=" + textAfterPush);
+		log.info("textAfterPush=" + textAfterPush);
 
 		return null;
 	}

@@ -1,6 +1,7 @@
 package org.argeo.slc.autoui;
 
 import java.net.URL;
+import java.util.Properties;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
@@ -12,11 +13,12 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.UrlResource;
 
 public class AbstractDetachedActivator implements BundleActivator {
-	private AbstractApplicationContext applicationContext;
+	private SpringStaticRefProvider staticRefProvider;
 
 	public final void start(BundleContext context) throws Exception {
 		ClassLoader classLoader = getClass().getClassLoader();
 
+		// Creates application context
 		Thread cur = Thread.currentThread();
 		ClassLoader save = cur.getContextClassLoader();
 		cur.setContextClassLoader(classLoader);
@@ -25,7 +27,7 @@ public class AbstractDetachedActivator implements BundleActivator {
 			// applicationContext = new ClassPathXmlApplicationContext(
 			// "/slc/conf/applicationContext.xml");
 
-			applicationContext = new GenericApplicationContext();
+			AbstractApplicationContext applicationContext = new GenericApplicationContext();
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
 					(BeanDefinitionRegistry) applicationContext);
 			Bundle bundle = context.getBundle();
@@ -37,6 +39,14 @@ public class AbstractDetachedActivator implements BundleActivator {
 						+ bundle.getSymbolicName() + " (url=" + url + ")");
 				xmlReader.loadBeanDefinitions(new UrlResource(url));
 			}
+
+			// Register static ref provider
+			staticRefProvider = new SpringStaticRefProvider(applicationContext);
+			Properties properties = new Properties();
+			properties.setProperty("slc.detached.bundle", bundle
+					.getSymbolicName());
+			context.registerService(StaticRefProvider.class.getName(),
+					staticRefProvider, properties);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,8 +66,8 @@ public class AbstractDetachedActivator implements BundleActivator {
 	public final void stop(BundleContext context) throws Exception {
 		stopAutoBundle(context);
 
-		if (applicationContext != null) {
-			applicationContext.close();
+		if (staticRefProvider != null) {
+			staticRefProvider.close();
 		}
 
 	}
@@ -67,8 +77,7 @@ public class AbstractDetachedActivator implements BundleActivator {
 
 	}
 
-	public Object getStaticRef(String id) {
-		return applicationContext.getBean(id);
+	protected StaticRefProvider getStaticRefProvider() {
+		return staticRefProvider;
 	}
-
 }

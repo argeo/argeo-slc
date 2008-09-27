@@ -1,19 +1,32 @@
 package org.argeo.slc.autoui;
 
-import org.osgi.framework.BundleActivator;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.autoui.internal.DetachedExecutionServerImpl;
 import org.osgi.framework.BundleContext;
 
-public class AutoUiActivator implements BundleActivator {
+public class AutoUiActivator extends AbstractDetachedActivator {
+	private final Log log = LogFactory.getLog(getClass());
 
-	public void start(BundleContext context) throws Exception {
-		stdOut("AutoUi started");
+	private DetachedExecutionServerImpl executionServer;
+
+	public void startAutoBundle(BundleContext context) throws Exception {
+		Object obj = getStaticRefProvider().getStaticRef("executionServer");
+		if (obj != null)
+			executionServer = (DetachedExecutionServerImpl) obj;
+		else
+			throw new DetachedException("Could not find execution server.");
+
+		executionServer.setBundleContext(context);
+
+		context.registerService(DetachedExecutionServer.class.getName(),
+				executionServer, new Properties());
+		log.info("AutoUi started");
 	}
 
-	public void stop(BundleContext context) throws Exception {
-		stdOut("AutoUi stopped");
-	}
-
-	public static void stdOut(Object obj) {
-		System.out.println(obj);
+	public void stopAutoBundle(BundleContext context) throws Exception {
+		log.info("AutoUi stopped");
 	}
 }

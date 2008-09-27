@@ -20,7 +20,7 @@
 				<version>1.4.3</version>
 				<extensions>true</extensions>
 				<configuration>
-					<manifestLocation>META-INF</manifestLocation>
+					<manifestLocation>src/main/resources/META-INF</manifestLocation>
 					<instructions>
 						<Bundle-SymbolicName>
 							${pom.artifactId}

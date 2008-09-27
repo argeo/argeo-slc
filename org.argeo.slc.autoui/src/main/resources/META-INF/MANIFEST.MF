@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Export-Package: org.argeo.slc.autoui.rmi,org.argeo.slc.autoui;uses:="o
+ rg.springframework.beans.factory.support,org.apache.commons.logging,o
+ rg.springframework.context.support,org.springframework.core.io,org.os
+ gi.framework,org.springframework.beans.factory.xml,org.springframewor
+ k.context,org.springframework.beans.factory",org.argeo.slc.autoui.int
+ ernal;uses:="org.argeo.slc.autoui"
+Built-By: mbaudier
+Tool: Bnd-0.0.255
+Bundle-Name: SLC Auto UI
+Created-By: Apache Maven Bundle Plugin
+Bundle-Vendor: Argeo
+Build-Jdk: 1.6.0_0
+Bundle-Version: 0.11.1.SNAPSHOT
+Bnd-LastModified: 1222511849722
+Bundle-ManifestVersion: 2
+Bundle-Activator: org.argeo.slc.autoui.AutoUiActivator
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Import-Package: org.apache.commons.logging,org.argeo.slc.autoui,org.ar
+ geo.slc.autoui.internal,org.argeo.slc.autoui.rmi,org.osgi.framework;v
+ ersion="1.4",org.springframework.beans.factory,org.springframework.be
+ ans.factory.support,org.springframework.beans.factory.xml,org.springf
+ ramework.context,org.springframework.context.support,org.springframew
+ ork.core.io
+Bundle-SymbolicName: org.argeo.slc.autoui
+Bundle-DocURL: http://www.argeo.org
+Originally-Created-By: Apache Maven Bundle Plugin
+
