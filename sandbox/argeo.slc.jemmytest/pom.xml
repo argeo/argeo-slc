@@ -2,10 +2,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>argeo-slc</artifactId>
+		<version>0.11.1-SNAPSHOT</version>
+		<relativePath>../org.argeo.slc</relativePath>
+	</parent>
 	<groupId>org.argeo.slc.sandbox</groupId>
 	<artifactId>org.argeo.slc.sandbox.jemmytest</artifactId>
 	<name>SLC Sandbox JemmyTest</name>
-	<version>0.1.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<build>
 		<plugins>
@@ -72,44 +77,24 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached</artifactId>
-			<version>0.11.1-SNAPSHOT</version>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.argeo.dep.jemmy</groupId>
 			<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
-			<version>0.2.2</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>osgi</artifactId>
-			<version>3.3.0-v20070530</version>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>argeo</id>
-			<url>http://www.argeo.org/maven/argeo</url>
-		</repository>
-		<repository>
-			<id>argeo-snapshots</id>
-			<url>http://www.argeo.org/maven/argeo-snapshots</url>
-		</repository>
-	</repositories>
-	<distributionManagement>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>argeo-restricted</id>
-			<name>Argeo FOSS Repository</name>
-			<url>file:///var/argeo/maven2/argeo</url>
-		</repository>
-		<snapshotRepository>
-			<uniqueVersion>true</uniqueVersion>
-			<id>argeo-snapshots-restricted</id>
-			<name>Argeo FOSS Snapshots Repository</name>
-			<url>file:///var/argeo/maven2/argeo-snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>
