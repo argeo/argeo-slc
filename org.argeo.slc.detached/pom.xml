@@ -11,7 +11,6 @@
 	<artifactId>org.argeo.slc.detached</artifactId>
 	<name>Argeo SLC Detached</name>
 	<packaging>bundle</packaging>
-	<description />
 	<build>
 		<plugins>
 			<plugin>
@@ -27,9 +26,6 @@
 						<Bundle-SymbolicName>
 							${pom.artifactId}
 						</Bundle-SymbolicName>
-						<Bundle-Activator>
-							org.argeo.slc.detached.AutoUiActivator
-						</Bundle-Activator>
 						<Export-Package>
 							org.argeo.slc.detached.*
 						</Export-Package>
@@ -62,16 +58,16 @@
 			<version>2.0.8</version>
 		</dependency>
 
-<!-- 
-		<dependency>
+		<!-- 
+			<dependency>
 			<groupId>org.codehaus.castor</groupId>
 			<artifactId>castor</artifactId>
-		</dependency>
- -->
+			</dependency>
+		-->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 	</dependencies>
 </project>

@@ -34,8 +34,7 @@ public class AbstractDetachedActivator implements BundleActivator {
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
 					(BeanDefinitionRegistry) applicationContext);
 
-			URL url = bundle
-					.getResource("META-INF/slc/conf/applicationContext.xml");
+			URL url = bundle.getResource("META-INF/spring/slc-detached.xml");
 			if (url != null) {
 				System.out.println("Loads application context from bundle "
 						+ bundle.getSymbolicName() + " (url=" + url + ")");

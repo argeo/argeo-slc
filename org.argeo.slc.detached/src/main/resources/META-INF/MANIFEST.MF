@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
-Export-Package: org.argeo.slc.detached.rmi,org.argeo.slc.detached;uses
- :="org.springframework.beans.factory.support,org.apache.commons.loggi
- ng,org.springframework.context.support,org.springframework.core.io,or
- g.osgi.framework,org.springframework.beans.factory.xml,org.springfram
- ework.context,org.springframework.beans.factory",org.argeo.slc.detach
- ed.drivers;uses:="org.argeo.slc.detached"
+Export-Package: org.argeo.slc.detached;uses:="org.springframework.bean
+ s.factory.support,org.apache.commons.logging,org.springframework.cont
+ ext.support,org.springframework.core.io,org.osgi.framework,org.spring
+ framework.beans.factory.xml,org.springframework.context,org.springfra
+ mework.beans.factory",org.argeo.slc.detached.drivers;uses:="org.argeo
+ .slc.detached"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Detached
@@ -12,16 +12,15 @@ Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Argeo
 Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1222615485731
+Bnd-LastModified: 1222616555343
 Bundle-ManifestVersion: 2
-Bundle-Activator: org.argeo.slc.detached.AutoUiActivator
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: SLC Distribution
 Import-Package: org.apache.commons.logging,org.argeo.slc.detached,org.
- argeo.slc.detached.drivers,org.argeo.slc.detached.rmi,org.osgi.framew
- ork,org.springframework.beans.factory,org.springframework.beans.facto
- ry.support,org.springframework.beans.factory.xml,org.springframework.
- context,org.springframework.context.support,org.springframework.core.
- io
+ argeo.slc.detached.drivers,org.osgi.framework,org.springframework.bea
+ ns.factory,org.springframework.beans.factory.support,org.springframew
+ ork.beans.factory.xml,org.springframework.context,org.springframework
+ .context.support,org.springframework.core.io
 Bundle-SymbolicName: org.argeo.slc.detached
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: Apache Maven Bundle Plugin
