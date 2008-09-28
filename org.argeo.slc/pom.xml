@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -17,7 +19,9 @@
 		<version.jetty>6.1.11</version.jetty>
 	</properties>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc</connection>
+		<connection>
+			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc
+		</connection>
 		<url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc</url>
 	</scm>
 	<issueManagement>
@@ -96,7 +100,8 @@
 						<stopKey>stopKey</stopKey>
 						<stopPort>9091</stopPort>
 						<connectors>
-							<connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+							<connector
+								implementation="org.mortbay.jetty.nio.SelectChannelConnector">
 								<port>9090</port>
 								<maxIdleTime>60000</maxIdleTime>
 							</connector>
@@ -427,6 +432,21 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.main</artifactId>
 				<version>1.2.1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.felix</groupId>
+						<artifactId>
+							org.apache.felix.framework
+						</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.osgi.core</artifactId>
+				<version>1.2.0</version>
+				<scope>provided</scope>
 			</dependency>
 
 			<!-- Auto UI -->
