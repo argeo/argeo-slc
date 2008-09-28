@@ -1,18 +1,19 @@
 Manifest-Version: 1.0
-Build-Jdk: 1.5.0
-Bnd-LastModified: 1222532363680
+Export-Package: org.argeo.slc.jemmytest;uses:="org.apache.commons.logg
+ ing,org.argeo.slc.autoui,org.netbeans.jemmy.operators"
+Built-By: mbaudier
+Tool: Bnd-0.0.255
 Bundle-Name: SLC Sandbox JemmyTest
-Originally-Created-By: Apache Maven Bundle Plugin
-Bundle-SymbolicName: org.argeo.slc.sandbox.jemmytest
+Created-By: Apache Maven Bundle Plugin
+Require-Bundle: org.argeo.slc.autoui
+Build-Jdk: 1.6.0
+Bundle-Version: 0.1.2.SNAPSHOT
+Bnd-LastModified: 1222605247862
 Bundle-ManifestVersion: 2
 Bundle-Activator: org.argeo.slc.jemmytest.JemmyTestActivator
-Tool: Bnd-0.0.255
-Created-By: Apache Maven Bundle Plugin
-Bundle-Version: 0.1.2.SNAPSHOT
-Built-By: mbaudier
-Import-Package: org.apache.commons.logging,org.argeo.slc.autoui,org.arge
- o.slc.jemmytest,org.netbeans.jemmy.operators,org.osgi.framework;version
- ="1.4",org.springframework.beans.factory.xml
-Export-Package: org.argeo.slc.jemmytest;uses:="org.argeo.slc.autoui,org.
- osgi.framework,org.netbeans.jemmy.operators,org.apache.commons.logging"
+Import-Package: org.apache.commons.logging,org.argeo.slc.autoui,org.ar
+ geo.slc.jemmytest,org.netbeans.jemmy.operators,org.springframework.be
+ ans.factory.xml
+Bundle-SymbolicName: org.argeo.slc.sandbox.jemmytest
+Originally-Created-By: Apache Maven Bundle Plugin
 

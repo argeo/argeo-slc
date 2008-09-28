@@ -7,16 +7,17 @@
 	<name>SLC Sandbox JemmyTest</name>
 	<version>0.1.2-SNAPSHOT</version>
 	<packaging>bundle</packaging>
-	<build><!--
-		<resources>
+	<build>
+		<!--
+			<resources>
 			<resource>
-				<directory>src/main/slc</directory>
-				<targetPath>META-INF/slc</targetPath>
-				<includes>
-					<include>**/*</include>
-				</includes>
+			<directory>src/main/slc</directory>
+			<targetPath>META-INF/slc</targetPath>
+			<includes>
+			<include>**/*</include>
+			</includes>
 			</resource>
-		</resources>-->
+			</resources>-->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -24,7 +25,9 @@
 				<version>1.4.3</version>
 				<extensions>true</extensions>
 				<configuration>
-					<manifestLocation>src/main/resources/META-INF</manifestLocation>
+					<manifestLocation>
+						src/main/resources/META-INF
+					</manifestLocation>
 					<instructions>
 						<Bundle-SymbolicName>
 							${pom.artifactId}
@@ -38,6 +41,9 @@
 						<Import-Package>
 							*,org.springframework.beans.factory.xml
 						</Import-Package>
+						<Require-Bundle>
+							org.argeo.slc.autoui
+						</Require-Bundle>
 					</instructions>
 				</configuration>
 			</plugin>
