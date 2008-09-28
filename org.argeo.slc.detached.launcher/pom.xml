@@ -9,7 +9,7 @@
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.detached.launcher</artifactId>
-	<name>SLC Detached Launcher</name>
+	<name>Argeo SLC Detached Launcher</name>
 	<packaging>jar</packaging>
 	<build>
 		<plugins>
