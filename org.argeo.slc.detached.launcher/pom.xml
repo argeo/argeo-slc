@@ -8,8 +8,8 @@
 		<version>0.11.1-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.autoui.launcher.launcher</artifactId>
-	<name>SLC Auto UI Launcher</name>
+	<artifactId>org.argeo.slc.detached.launcher</artifactId>
+	<name>SLC Detached Launcher</name>
 	<packaging>jar</packaging>
 	<build>
 		<plugins>
@@ -30,7 +30,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.autoui</artifactId>
+			<artifactId>org.argeo.slc.detached</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
