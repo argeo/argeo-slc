@@ -95,7 +95,7 @@ public class Main {
 		// Add activator to process auto-start/install properties.
 		list.add(new AutoActivator(config));
 		// Add our own activator.
-		list.add(new AutoUiActivator());
+		//list.add(new AutoUiActivator());
 
 		// Now create an instance of the framework.
 		Felix felix = new Felix(config, list);
