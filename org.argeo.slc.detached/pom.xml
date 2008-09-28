@@ -20,7 +20,9 @@
 				<version>1.4.3</version>
 				<extensions>true</extensions>
 				<configuration>
-					<manifestLocation>src/main/resources/META-INF</manifestLocation>
+					<manifestLocation>
+						src/main/resources/META-INF
+					</manifestLocation>
 					<instructions>
 						<Bundle-SymbolicName>
 							${pom.artifactId}
@@ -50,13 +52,8 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse</groupId>
-			<artifactId>osgi</artifactId>
-			<version>3.3.0-v20070530</version>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
 		</dependency>
 
 		<dependency>
@@ -65,9 +62,16 @@
 			<version>2.0.8</version>
 		</dependency>
 
+<!-- 
 		<dependency>
 			<groupId>org.codehaus.castor</groupId>
 			<artifactId>castor</artifactId>
 		</dependency>
+ -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>		
 	</dependencies>
 </project>
