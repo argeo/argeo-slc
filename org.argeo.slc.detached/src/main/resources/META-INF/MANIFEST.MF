@@ -7,12 +7,12 @@ Export-Package: org.argeo.slc.autoui.rmi,org.argeo.slc.autoui;uses:="o
  vers;uses:="org.argeo.slc.autoui"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
-Bundle-Name: SLC Auto UI
+Bundle-Name: SLC Detached
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Argeo
 Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1222605231968
+Bnd-LastModified: 1222607518021
 Bundle-ManifestVersion: 2
 Bundle-Activator: org.argeo.slc.autoui.AutoUiActivator
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -22,7 +22,7 @@ Import-Package: org.apache.commons.logging,org.argeo.slc.autoui,org.ar
  ns.factory.support,org.springframework.beans.factory.xml,org.springfr
  amework.context,org.springframework.context.support,org.springframewo
  rk.core.io
-Bundle-SymbolicName: org.argeo.slc.autoui
+Bundle-SymbolicName: org.argeo.slc.detached
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: Apache Maven Bundle Plugin
 
