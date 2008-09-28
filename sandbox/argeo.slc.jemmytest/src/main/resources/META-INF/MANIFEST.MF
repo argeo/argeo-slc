@@ -5,10 +5,10 @@ Built-By: mbaudier
 Tool: Bnd-0.0.255
 Bundle-Name: SLC Sandbox JemmyTest
 Created-By: Apache Maven Bundle Plugin
-Require-Bundle: org.argeo.slc.autoui
+Require-Bundle: org.argeo.slc.detached
 Build-Jdk: 1.6.0
 Bundle-Version: 0.1.2.SNAPSHOT
-Bnd-LastModified: 1222605247862
+Bnd-LastModified: 1222608014886
 Bundle-ManifestVersion: 2
 Bundle-Activator: org.argeo.slc.jemmytest.JemmyTestActivator
 Import-Package: org.apache.commons.logging,org.argeo.slc.autoui,org.ar
