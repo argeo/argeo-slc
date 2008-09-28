@@ -2,11 +2,11 @@ package org.argeo.slc.jemmytest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.autoui.AutoUiActivator;
-import org.argeo.slc.autoui.DetachedContext;
-import org.argeo.slc.autoui.DetachedStep;
-import org.argeo.slc.autoui.DetachedStepAnswer;
-import org.argeo.slc.autoui.DetachedStepRequest;
+import org.argeo.slc.detached.AutoUiActivator;
+import org.argeo.slc.detached.DetachedContext;
+import org.argeo.slc.detached.DetachedStep;
+import org.argeo.slc.detached.DetachedStepAnswer;
+import org.argeo.slc.detached.DetachedStepRequest;
 import org.netbeans.jemmy.operators.JButtonOperator;
 import org.netbeans.jemmy.operators.JFrameOperator;
 import org.netbeans.jemmy.operators.JLabelOperator;

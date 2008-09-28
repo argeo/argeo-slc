@@ -1,12 +1,12 @@
-package org.argeo.slc.detached;
+package org.argeo.slc.jemmytest;
 
 import java.io.File;
 import java.util.UUID;
 
 import junit.framework.TestCase;
 
-import org.argeo.slc.autoui.DetachedStepRequest;
-import org.argeo.slc.autoui.drivers.FileDriver;
+import org.argeo.slc.detached.DetachedStepRequest;
+import org.argeo.slc.detached.drivers.FileDriver;
 
 public class DetachedTest extends TestCase {
 	public void testSendRequest() throws Exception {

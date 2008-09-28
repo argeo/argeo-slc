@@ -9,10 +9,10 @@
 	</bean>
 
 	<bean id="executionServer"
-		class="org.argeo.slc.autoui.DetachedExecutionServerImpl">
+		class="org.argeo.slc.detached.DetachedExecutionServerImpl">
 		<property name="driver" ref="driver" />
 	</bean>
-	<bean id="driver" class="org.argeo.slc.autoui.drivers.FileDriver">
+	<bean id="driver" class="org.argeo.slc.detached.drivers.FileDriver">
 		<property name="requestDir" value="file:${user.dir}/../sandbox/argeo.slc.jemmytest/local/detachedRequests"/>
 	</bean>
 
