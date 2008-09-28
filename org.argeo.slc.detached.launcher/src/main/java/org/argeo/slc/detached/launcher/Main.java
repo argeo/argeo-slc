@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui.launcher;
+package org.argeo.slc.detached.launcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,12 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.cache.BundleCache;
 import org.apache.felix.main.AutoActivator;
-import org.argeo.slc.autoui.AutoUiActivator;
-import org.argeo.slc.autoui.DetachedExecutionServer;
-import org.argeo.slc.autoui.DetachedStep;
-import org.argeo.slc.autoui.DetachedStepRequest;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 public class Main {
 	private final static Log log = LogFactory.getLog(Main.class);
@@ -32,13 +26,12 @@ public class Main {
 
 			// Start UI (in main class loader)
 			startUi(config);
-			//Thread.sleep(10000);
-			
+			// Thread.sleep(10000);
+
 			// Start OSGi system
 			Felix felix = startSystem(config);
 
-			// Automate
-			//automateUi(felix.getBundleContext());
+			log.info("Argeo SLC Detached system started (Felix " + felix + ")");
 
 			// felix.stop();
 		} catch (Exception e) {
@@ -56,7 +49,7 @@ public class Main {
 		;
 		try {
 			in = Main.class
-					.getResourceAsStream("/org/argeo/slc/autoui/launcher/felix.properties");
+					.getResourceAsStream("/org/argeo/slc/detached/launcher/felix.properties");
 			config.load(in);
 		} finally {
 			if (in != null)
@@ -72,6 +65,9 @@ public class Main {
 
 		config.put(BundleCache.CACHE_PROFILE_DIR_PROP, cachedir
 				.getAbsolutePath());
+
+		// System properties have priority.
+		config.putAll(System.getProperties());
 
 		return config;
 	}
@@ -95,7 +91,7 @@ public class Main {
 		// Add activator to process auto-start/install properties.
 		list.add(new AutoActivator(config));
 		// Add our own activator.
-		//list.add(new AutoUiActivator());
+		// list.add(new AutoUiActivator());
 
 		// Now create an instance of the framework.
 		Felix felix = new Felix(config, list);
@@ -117,19 +113,19 @@ public class Main {
 		mainMethod.invoke(null, mainArgs);
 	}
 
-	protected static void automateUi(BundleContext bundleContext)
-			throws Exception {
-		// Retrieve service and execute it
-		ServiceReference ref = bundleContext
-				.getServiceReference(DetachedExecutionServer.class.getName());
-		Object service = bundleContext.getService(ref);
-
-		log.debug("service.class=" + service.getClass());
-		DetachedExecutionServer app = (DetachedExecutionServer) service;
-		DetachedStepRequest request = new DetachedStepRequest();
-		request.setStepRef("jemmyTest");
-		app.executeStep(request);
-	}
+	// protected static void automateUi(BundleContext bundleContext)
+	// throws Exception {
+	// // Retrieve service and execute it
+	// ServiceReference ref = bundleContext
+	// .getServiceReference(DetachedExecutionServer.class.getName());
+	// Object service = bundleContext.getService(ref);
+	//
+	// log.debug("service.class=" + service.getClass());
+	// DetachedExecutionServer app = (DetachedExecutionServer) service;
+	// DetachedStepRequest request = new DetachedStepRequest();
+	// request.setStepRef("jemmyTest");
+	// app.executeStep(request);
+	// }
 
 	/* UTILITIES */
 
