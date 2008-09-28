@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui.drivers;
+package org.argeo.slc.detached.drivers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,11 +6,11 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.argeo.slc.autoui.DetachedClient;
-import org.argeo.slc.autoui.DetachedDriver;
-import org.argeo.slc.autoui.DetachedException;
-import org.argeo.slc.autoui.DetachedStepAnswer;
-import org.argeo.slc.autoui.DetachedStepRequest;
+import org.argeo.slc.detached.DetachedClient;
+import org.argeo.slc.detached.DetachedDriver;
+import org.argeo.slc.detached.DetachedException;
+import org.argeo.slc.detached.DetachedStepAnswer;
+import org.argeo.slc.detached.DetachedStepRequest;
 
 public class FileDriver implements DetachedDriver, DetachedClient {
 	private File requestDir;

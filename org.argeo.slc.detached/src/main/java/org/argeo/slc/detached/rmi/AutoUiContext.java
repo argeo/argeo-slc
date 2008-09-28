@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui.rmi;
+package org.argeo.slc.detached.rmi;
 
 public interface AutoUiContext {
 	public Object getLocalRef(String key);

@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui;
+package org.argeo.slc.detached;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

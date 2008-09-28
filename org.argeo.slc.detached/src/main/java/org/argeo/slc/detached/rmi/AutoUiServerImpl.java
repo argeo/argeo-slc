@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui.rmi;
+package org.argeo.slc.detached.rmi;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;

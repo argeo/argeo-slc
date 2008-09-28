@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui;
+package org.argeo.slc.detached;
 
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ConfigurableApplicationContext;

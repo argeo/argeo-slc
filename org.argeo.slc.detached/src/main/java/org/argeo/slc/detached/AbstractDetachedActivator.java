@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui;
+package org.argeo.slc.detached;
 
 import java.net.URL;
 import java.util.Properties;

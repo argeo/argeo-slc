@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui;
+package org.argeo.slc.detached;
 
 import java.util.ArrayList;
 import java.util.List;

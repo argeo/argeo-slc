@@ -28,10 +28,10 @@
 							${pom.artifactId}
 						</Bundle-SymbolicName>
 						<Bundle-Activator>
-							org.argeo.slc.autoui.AutoUiActivator
+							org.argeo.slc.detached.AutoUiActivator
 						</Bundle-Activator>
 						<Export-Package>
-							org.argeo.slc.autoui.*
+							org.argeo.slc.detached.*
 						</Export-Package>
 					</instructions>
 				</configuration>

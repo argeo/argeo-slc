@@ -1,4 +1,4 @@
-package org.argeo.slc.autoui;
+package org.argeo.slc.detached;
 
 public interface StaticRefProvider {
 	/** Returns null if no such ref. */
