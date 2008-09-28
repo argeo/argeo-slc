@@ -7,12 +7,12 @@ Export-Package: org.argeo.slc.autoui.rmi,org.argeo.slc.autoui;uses:="o
  vers;uses:="org.argeo.slc.autoui"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
-Bundle-Name: SLC Detached
+Bundle-Name: Argeo SLC Detached
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Argeo
 Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1222607518021
+Bnd-LastModified: 1222608397750
 Bundle-ManifestVersion: 2
 Bundle-Activator: org.argeo.slc.autoui.AutoUiActivator
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt

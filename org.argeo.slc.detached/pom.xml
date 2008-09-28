@@ -9,7 +9,7 @@
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.detached</artifactId>
-	<name>SLC Detached</name>
+	<name>Argeo SLC Detached</name>
 	<packaging>bundle</packaging>
 	<description />
 	<build>
