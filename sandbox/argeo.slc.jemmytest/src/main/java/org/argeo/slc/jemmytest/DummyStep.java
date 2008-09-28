@@ -2,7 +2,6 @@ package org.argeo.slc.jemmytest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.detached.AutoUiActivator;
 import org.argeo.slc.detached.DetachedContext;
 import org.argeo.slc.detached.DetachedStep;
 import org.argeo.slc.detached.DetachedStepAnswer;
