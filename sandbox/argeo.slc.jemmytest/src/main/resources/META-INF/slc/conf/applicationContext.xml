@@ -3,19 +3,17 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 
-	<import resource="common/import.xml"/>
+	<import resource="common/import.xml" />
 
-	<bean id="jemmyTest"
-		class="org.argeo.slc.jemmytest.DummyStep">
+	<bean id="jemmyTest" class="org.argeo.slc.jemmytest.DummyStep">
 	</bean>
 
 	<bean id="executionServer"
 		class="org.argeo.slc.autoui.DetachedExecutionServerImpl">
-		<property name="driver" ref="driver"/>
+		<property name="driver" ref="driver" />
 	</bean>
-	<bean id="driver"
-		class="org.argeo.slc.autoui.drivers.FileDriver">
-		<property name="requestDir" value="/home/mbaudier/dev/test/SLC/detachedRequests"/>
+	<bean id="driver" class="org.argeo.slc.autoui.drivers.FileDriver">
+		<property name="requestDir" value="file:${user.dir}/../sandbox/argeo.slc.jemmytest/local/detachedRequests"/>
 	</bean>
 
 
