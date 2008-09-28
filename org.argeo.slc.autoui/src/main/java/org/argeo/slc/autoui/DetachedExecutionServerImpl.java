@@ -61,13 +61,15 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 						DetachedStepRequest request = driver.receiveRequest();
 						executeStep(request);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						if (e instanceof RuntimeException)
+							throw (RuntimeException) e;
+						else
+							e.printStackTrace();
 					}
 				}
 
 			}
-		},"driverThread");
+		}, "driverThread");
 
 		active = true;
 

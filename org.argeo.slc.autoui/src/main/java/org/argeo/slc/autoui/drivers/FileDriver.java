@@ -8,6 +8,7 @@ import java.io.ObjectOutputStream;
 
 import org.argeo.slc.autoui.DetachedClient;
 import org.argeo.slc.autoui.DetachedDriver;
+import org.argeo.slc.autoui.DetachedException;
 import org.argeo.slc.autoui.DetachedStepAnswer;
 import org.argeo.slc.autoui.DetachedStepRequest;
 
@@ -16,6 +17,10 @@ public class FileDriver implements DetachedDriver, DetachedClient {
 	private File answerDir;
 
 	public synchronized DetachedStepRequest receiveRequest() throws Exception {
+		if (!requestDir.exists())
+			throw new DetachedException("Request dir "
+					+ requestDir.getCanonicalPath() + " does not exist.");
+
 		File file = null;
 		while (file == null) {
 			File[] files = requestDir.listFiles();
@@ -28,7 +33,7 @@ public class FileDriver implements DetachedDriver, DetachedClient {
 		ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
 		DetachedStepRequest request = (DetachedStepRequest) in.readObject();
 		in.close();
-		
+
 		file.delete();// move it to a processed dir instead?
 		return request;
 	}

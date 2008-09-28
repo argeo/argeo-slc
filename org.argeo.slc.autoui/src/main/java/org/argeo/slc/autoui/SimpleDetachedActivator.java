@@ -2,13 +2,9 @@ package org.argeo.slc.autoui;
 
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.BundleContext;
 
 public class SimpleDetachedActivator extends AbstractDetachedActivator {
-	private final Log log = LogFactory.getLog(getClass());
-
 	private DetachedExecutionServerImpl executionServer;
 
 	protected void startAutoBundle(BundleContext context) throws Exception {
@@ -22,7 +18,6 @@ public class SimpleDetachedActivator extends AbstractDetachedActivator {
 
 		context.registerService(DetachedExecutionServer.class.getName(),
 				executionServer, new Properties());
-		log.info("SimpleDetachedActivator started");
 	}
 
 }
