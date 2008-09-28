@@ -1,13 +1,5 @@
-package org.argeo.slc.autoui.internal;
+package org.argeo.slc.autoui;
 
-import org.argeo.slc.autoui.DetachedContextImpl;
-import org.argeo.slc.autoui.DetachedDriver;
-import org.argeo.slc.autoui.DetachedException;
-import org.argeo.slc.autoui.DetachedExecutionServer;
-import org.argeo.slc.autoui.DetachedStep;
-import org.argeo.slc.autoui.DetachedStepAnswer;
-import org.argeo.slc.autoui.DetachedStepRequest;
-import org.argeo.slc.autoui.StaticRefProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 

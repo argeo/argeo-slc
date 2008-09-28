@@ -1,29 +1,27 @@
 Manifest-Version: 1.0
 Export-Package: org.argeo.slc.autoui.rmi,org.argeo.slc.autoui;uses:="o
- rg.apache.commons.logging,org.springframework.context.support,org.spr
- ingframework.core.io,org.springframework.context,org.springframework.
- beans.factory.xml,org.argeo.slc.autoui.internal,org.springframework.b
- eans.factory.support,org.osgi.framework,org.springframework.beans.fac
- tory",org.argeo.slc.autoui.internal;uses:="org.argeo.slc.autoui,org.o
- sgi.framework",org.argeo.slc.autoui.drivers;uses:="org.argeo.slc.auto
- ui"
+ rg.springframework.beans.factory.support,org.apache.commons.logging,o
+ rg.springframework.context.support,org.springframework.core.io,org.os
+ gi.framework,org.springframework.beans.factory.xml,org.springframewor
+ k.context,org.springframework.beans.factory",org.argeo.slc.autoui.dri
+ vers;uses:="org.argeo.slc.autoui"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
 Bundle-Name: SLC Auto UI
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Argeo
-Build-Jdk: 1.6.0_0
+Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1222532180778
+Bnd-LastModified: 1222605231968
 Bundle-ManifestVersion: 2
 Bundle-Activator: org.argeo.slc.autoui.AutoUiActivator
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Import-Package: org.apache.commons.logging,org.argeo.slc.autoui,org.ar
- geo.slc.autoui.drivers,org.argeo.slc.autoui.internal,org.argeo.slc.au
- toui.rmi,org.osgi.framework;version="1.4",org.springframework.beans.f
- actory,org.springframework.beans.factory.support,org.springframework.
- beans.factory.xml,org.springframework.context,org.springframework.con
- text.support,org.springframework.core.io
+ geo.slc.autoui.drivers,org.argeo.slc.autoui.rmi,org.osgi.framework;ve
+ rsion="1.4",org.springframework.beans.factory,org.springframework.bea
+ ns.factory.support,org.springframework.beans.factory.xml,org.springfr
+ amework.context,org.springframework.context.support,org.springframewo
+ rk.core.io
 Bundle-SymbolicName: org.argeo.slc.autoui
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: Apache Maven Bundle Plugin

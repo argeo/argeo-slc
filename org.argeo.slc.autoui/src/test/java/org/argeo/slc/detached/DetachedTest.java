@@ -11,8 +11,10 @@ import org.argeo.slc.autoui.drivers.FileDriver;
 public class DetachedTest extends TestCase {
 	public void testSendRequest() throws Exception {
 		FileDriver client = new FileDriver();
-		client.setRequestDir(new File(
-				"/home/mbaudier/dev/test/SLC/detachedRequests"));
+		File requestDir = new File(
+				"/home/mbaudier/dev/test/SLC/detachedRequests");
+		requestDir.mkdirs();
+		client.setRequestDir(requestDir);
 
 		DetachedStepRequest request = new DetachedStepRequest();
 		request.setUuid(UUID.randomUUID().toString());

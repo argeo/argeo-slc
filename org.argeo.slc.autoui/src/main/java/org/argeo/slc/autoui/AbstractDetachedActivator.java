@@ -3,6 +3,8 @@ package org.argeo.slc.autoui;
 import java.net.URL;
 import java.util.Properties;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -13,24 +15,24 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.core.io.UrlResource;
 
 public class AbstractDetachedActivator implements BundleActivator {
+	private final Log log = LogFactory.getLog(getClass());
+
 	private SpringStaticRefProvider staticRefProvider;
 
 	public final void start(BundleContext context) throws Exception {
-		ClassLoader classLoader = getClass().getClassLoader();
 
-		// Creates application context
+		Bundle bundle = context.getBundle();
+
+		// Creates application context with this class class loader
+		ClassLoader classLoader = getClass().getClassLoader();
 		Thread cur = Thread.currentThread();
 		ClassLoader save = cur.getContextClassLoader();
 		cur.setContextClassLoader(classLoader);
 
 		try {
-			// applicationContext = new ClassPathXmlApplicationContext(
-			// "/slc/conf/applicationContext.xml");
-
 			AbstractApplicationContext applicationContext = new GenericApplicationContext();
 			XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(
 					(BeanDefinitionRegistry) applicationContext);
-			Bundle bundle = context.getBundle();
 
 			URL url = bundle
 					.getResource("META-INF/slc/conf/applicationContext.xml");
@@ -38,15 +40,17 @@ public class AbstractDetachedActivator implements BundleActivator {
 				System.out.println("Loads application context from bundle "
 						+ bundle.getSymbolicName() + " (url=" + url + ")");
 				xmlReader.loadBeanDefinitions(new UrlResource(url));
-			}
 
-			// Register static ref provider
-			staticRefProvider = new SpringStaticRefProvider(applicationContext);
-			Properties properties = new Properties();
-			properties.setProperty("slc.detached.bundle", bundle
-					.getSymbolicName());
-			context.registerService(StaticRefProvider.class.getName(),
-					staticRefProvider, properties);
+				// Register static ref provider
+				staticRefProvider = new SpringStaticRefProvider(
+						applicationContext);
+				Properties properties = new Properties();
+				properties.setProperty("slc.detached.bundle", bundle
+						.getSymbolicName());
+				context.registerService(StaticRefProvider.class.getName(),
+						staticRefProvider, properties);
+
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -56,6 +60,9 @@ public class AbstractDetachedActivator implements BundleActivator {
 		}
 
 		startAutoBundle(context);
+
+		log.info("SLC Detached bundle " + bundle.getSymbolicName() + " ("
+				+ bundle.getBundleId() + ") started");
 	}
 
 	/** Does nothing by default. */
