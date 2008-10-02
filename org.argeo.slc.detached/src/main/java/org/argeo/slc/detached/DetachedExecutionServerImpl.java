@@ -20,20 +20,20 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 	private int skipCount = 0;
 
 	private BundleContext bundleContext;
-	private DetachedDriver driver;
+	//private DetachedDriver driver;
 
-	private boolean active = false;
+	//private boolean active = false;
 
-	public void setDriver(DetachedDriver driver) {
-		this.driver = driver;
-	}
+//	public void setDriver(DetachedDriver driver) {
+//		this.driver = driver;
+//	}
 
 	public DetachedExecutionServerImpl() {
 		detachedContext = new DetachedContextImpl();
 		sessions = new Vector();
 	}
 
-	public DetachedAnswer executeStep(DetachedRequest request) {
+	public synchronized DetachedAnswer executeStep(DetachedRequest request) {
 		DetachedAnswer answer = null;
 		try {
 			DetachedStep step = null;
@@ -171,28 +171,28 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 
 	public void init(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
-		Thread driverThread = new Thread(new Runnable() {
-
-			public void run() {
-				while (active) {
-					try {
-						DetachedRequest request = driver.receiveRequest();
-						DetachedAnswer answer = executeStep(request);
-						driver.sendAnswer(answer);
-					} catch (Exception e) {
-						if (e instanceof RuntimeException)
-							throw (RuntimeException) e;
-						else
-							e.printStackTrace();
-					}
-				}
-
-			}
-		}, "driverThread");
-
-		active = true;
-
-		driverThread.start();
+//		Thread driverThread = new Thread(new Runnable() {
+//
+//			public void run() {
+//				while (active) {
+//					try {
+//						DetachedRequest request = driver.receiveRequest();
+//						DetachedAnswer answer = executeStep(request);
+//						driver.sendAnswer(answer);
+//					} catch (Exception e) {
+//						if (e instanceof RuntimeException)
+//							throw (RuntimeException) e;
+//						else
+//							e.printStackTrace();
+//					}
+//				}
+//
+//			}
+//		}, "driverThread");
+//
+//		active = true;
+//
+//		driverThread.start();
 	}
 
 }

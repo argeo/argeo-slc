@@ -26,6 +26,7 @@
 						<Bundle-SymbolicName>
 							${pom.artifactId}
 						</Bundle-SymbolicName>
+                        <Bundle-Activator>org.argeo.slc.detached.Activator</Bundle-Activator>
 						<Export-Package>
 							org.argeo.slc.detached.*
 						</Export-Package>

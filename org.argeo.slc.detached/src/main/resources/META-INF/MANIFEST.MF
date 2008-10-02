@@ -1,12 +1,13 @@
 Manifest-Version: 1.0
-Export-Package: org.argeo.slc.detached.admin;uses:="org.osgi.framework
- ,org.argeo.slc.detached",org.argeo.slc.detached;uses:="org.apache.com
- mons.logging,org.springframework.context.support,org.springframework.
- core.io,org.springframework.context,org.springframework.beans.factory
- .xml,org.springframework.beans.factory.support,org.argeo.slc.detached
- .admin,org.osgi.framework,org.springframework.beans.factory",org.arge
- o.slc.detached.drivers;uses:="org.apache.commons.logging,org.argeo.sl
- c.detached,org.springframework.beans.factory"
+Export-Package: org.argeo.slc.detached.admin;uses:="org.apache.commons
+ .logging,org.osgi.framework,org.argeo.slc.detached",org.argeo.slc.det
+ ached;uses:="org.apache.commons.logging,org.springframework.context.s
+ upport,org.springframework.core.io,org.springframework.context,org.sp
+ ringframework.beans.factory.xml,org.argeo.slc.detached.drivers,org.sp
+ ringframework.beans.factory.support,org.argeo.slc.detached.admin,org.
+ osgi.framework,org.springframework.beans.factory",org.argeo.slc.detac
+ hed.drivers;uses:="org.apache.commons.logging,org.argeo.slc.detached,
+ org.springframework.beans.factory"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Detached
@@ -14,8 +15,9 @@ Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Argeo
 Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1222949081084
+Bnd-LastModified: 1222954246943
 Bundle-ManifestVersion: 2
+Bundle-Activator: org.argeo.slc.detached.Activator
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: SLC Distribution
 Import-Package: org.apache.commons.logging,org.argeo.slc.detached,org.

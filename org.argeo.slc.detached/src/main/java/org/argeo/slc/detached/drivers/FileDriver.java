@@ -9,15 +9,14 @@ import java.io.ObjectOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedClient;
 import org.argeo.slc.detached.DetachedCommunication;
-import org.argeo.slc.detached.DetachedDriver;
 import org.argeo.slc.detached.DetachedException;
-import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedRequest;
 import org.springframework.beans.factory.InitializingBean;
 
-public class FileDriver implements DetachedDriver, DetachedClient,
+public class FileDriver extends AbstractDriver implements DetachedClient,
 		InitializingBean {
 	private final static Log log = LogFactory.getLog(FileDriver.class);
 
@@ -30,9 +29,10 @@ public class FileDriver implements DetachedDriver, DetachedClient,
 	public synchronized DetachedRequest receiveRequest() throws Exception {
 		DetachedRequest request = (DetachedRequest) receiveFile(requestsDir,
 				processedRequestsDir);
-		log.debug("Received detached request #" + request.getUuid()
-				+ " for ref '" + request.getRef() + "', path="
-				+ request.getPath());
+		if (request != null)
+			log.debug("Received detached request #" + request.getUuid()
+					+ " for ref '" + request.getRef() + "', path="
+					+ request.getPath());
 		return request;
 	}
 
@@ -44,7 +44,8 @@ public class FileDriver implements DetachedDriver, DetachedClient,
 	public DetachedAnswer receiveAnswer() throws Exception {
 		DetachedAnswer answer = (DetachedAnswer) receiveFile(answersDir,
 				processedAnswersDir);
-		log.debug("Received detached answer  #" + answer.getUuid());
+		if (answer != null)
+			log.debug("Received detached answer  #" + answer.getUuid());
 		return answer;
 	}
 
@@ -66,19 +67,27 @@ public class FileDriver implements DetachedDriver, DetachedClient,
 		lockFile.delete();
 	}
 
-	protected DetachedCommunication receiveFile(File dir, File processedDir)
-			throws Exception {
+	protected synchronized DetachedCommunication receiveFile(File dir,
+			File processedDir) throws Exception {
 		File file = null;
-		while (file == null) {
+		while (file == null && isActive()) {
 			if (!dir.exists())
 				throw new DetachedException("Dir " + dir + " does not exist.");
 
 			File[] files = dir.listFiles();
 			if (files.length > 0)
 				file = files[0];
-			else
-				Thread.sleep(1000);
+			else {
+				try {
+					wait(100);
+				} catch (InterruptedException e) {
+					// silent
+				}
+			}
 		}
+
+		if (!isActive())
+			return null;
 
 		File lockFile = nameLockFile(file);
 		while (lockFile.exists())
@@ -114,7 +123,15 @@ public class FileDriver implements DetachedDriver, DetachedClient,
 		this.baseDir = baseDir;
 	}
 
-	public void init() {
+	private void createIfNotExist(File dir) {
+		if (!dir.exists()) {
+			log.warn("Dir " + dir.getAbsolutePath()
+					+ " does not exist. Creating it...");
+			dir.mkdirs();
+		}
+	}
+
+	public void afterPropertiesSet() throws Exception {
 		this.requestsDir = new File(baseDir.getAbsolutePath() + File.separator
 				+ "requests");
 		this.answersDir = new File(baseDir.getAbsolutePath() + File.separator
@@ -128,18 +145,6 @@ public class FileDriver implements DetachedDriver, DetachedClient,
 		createIfNotExist(answersDir);
 		createIfNotExist(processedRequestsDir);
 		createIfNotExist(processedAnswersDir);
-	}
-
-	private void createIfNotExist(File dir) {
-		if (!dir.exists()) {
-			log.warn("Dir " + requestsDir.getAbsolutePath()
-					+ " does not exist. Creating it...");
-			dir.mkdirs();
-		}
-	}
-
-	public void afterPropertiesSet() throws Exception {
-		init();
 	}
 
 }
