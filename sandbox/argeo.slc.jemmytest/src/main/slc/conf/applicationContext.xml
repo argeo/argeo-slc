@@ -7,7 +7,7 @@
 
     <bean id="detachedTestDef"
         class="org.argeo.slc.lib.detached.DetachedTestDefinition">
-        <property name="client" ref="driver" />
+        <property name="client" ref="slcDetached.driver" />
         <property name="step" ref="jemmyTest" />
     </bean>
 

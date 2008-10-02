@@ -1,8 +1,12 @@
 <project default="steps">
 
 	<target name="steps">
-		<slc.detached action="slcDefault.detached.admin.openSession"
-		              client="driver" />
+		<slc.detached action="slcDefault.detached.admin.openSession">
+			<properties>
+				<entry key="slc.detached.refreshedBundles"
+				       value="org.argeo.slc.sandbox.jemmytest" />
+			</properties>
+		</slc.detached>
 
 		<slc.test>
 			<testDefinition bean="detachedTestDef" />
@@ -13,8 +17,7 @@
 			<testData bean="detachedTestData2" />
 		</slc.test>
 
-		<slc.detached action="slcDefault.detached.admin.closeSession"
-		              client="driver" />
+		<slc.detached action="slcDefault.detached.admin.closeSession" />
 
 	</target>
 

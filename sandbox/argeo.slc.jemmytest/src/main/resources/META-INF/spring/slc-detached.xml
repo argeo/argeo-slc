@@ -8,12 +8,7 @@
     <bean id="jemmyTest" class="org.argeo.slc.jemmytest.DummyStep">
     </bean>
 
-    <bean id="executionServer"
-        class="org.argeo.slc.detached.DetachedExecutionServerImpl">
-        <property name="driver" ref="driver" />
-    </bean>
-
-    <bean id="driver"
+    <bean id="slcDetached.driver"
         class="org.argeo.slc.detached.drivers.FileDriver">
         <property name="baseDir" value="file:${slc.workDir}/detached" />
     </bean>
