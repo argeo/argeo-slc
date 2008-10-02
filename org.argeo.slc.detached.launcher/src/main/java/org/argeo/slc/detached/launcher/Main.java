@@ -1,6 +1,7 @@
 package org.argeo.slc.detached.launcher;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -20,12 +21,21 @@ public class Main {
 	private final static Log log = LogFactory.getLog(Main.class);
 
 	public static void main(String[] args) {
+		log.info("Argeo SLC Detached launcher starting...");
 		try {
 			// Load properties
-			Properties config = prepareConfig();
+			String propertyPath = "slc-detached.properties";
+			Properties config = prepareConfig(propertyPath);
 
-			// Start UI (in main class loader)
-			startUi(config);
+			// Create cache dir
+			if (!config.containsKey(BundleCache.CACHE_PROFILE_DIR_PROP)) {
+				final File cachedir = createTemporaryCacheDir();
+				config.put(BundleCache.CACHE_PROFILE_DIR_PROP, cachedir
+						.getAbsolutePath());
+			}
+
+			// Start app (in main class loader)
+			startApp(config);
 			// Thread.sleep(10000);
 
 			// Start OSGi system
@@ -40,9 +50,8 @@ public class Main {
 		}
 	}
 
-	protected static Properties prepareConfig() throws Exception {
-		final File cachedir = createTemporaryCacheDir();
-
+	protected static Properties prepareConfig(String propertyFilePath)
+			throws Exception {
 		// Load config
 		Properties config = new Properties();
 		InputStream in = null;
@@ -56,18 +65,25 @@ public class Main {
 				in.close();
 		}
 
+		try {
+			in = new FileInputStream(propertyFilePath);
+			config.load(in);
+		} finally {
+			if (in != null)
+				in.close();
+		}
+
+		// System properties have priority.
+		config.putAll(System.getProperties());
+
 		// Perform variable substitution for system properties.
 		for (Enumeration e = config.propertyNames(); e.hasMoreElements();) {
 			String name = (String) e.nextElement();
 			config.setProperty(name, org.apache.felix.main.Main.substVars(
 					config.getProperty(name), name, null, config));
+			if (log.isTraceEnabled())
+				log.trace(name + "=" + config.getProperty(name));
 		}
-
-		config.put(BundleCache.CACHE_PROFILE_DIR_PROP, cachedir
-				.getAbsolutePath());
-
-		// System properties have priority.
-		config.putAll(System.getProperties());
 
 		return config;
 	}
@@ -100,10 +116,10 @@ public class Main {
 		return felix;
 	}
 
-	public static void startUi(Properties config) throws Exception {
-		String className = config.getProperty("argeo.scl.autoui.uiclass");
+	public static void startApp(Properties config) throws Exception {
+		String className = config.getProperty("argeo.scl.detached.appclass");
 		String[] uiArgs = readArgumentsFromLine(config.getProperty(
-				"argeo.slc.autoui.uiargs", ""));
+				"argeo.slc.detached.appargs", ""));
 
 		// Launch main method using reflection
 		Class clss = Class.forName(className);
