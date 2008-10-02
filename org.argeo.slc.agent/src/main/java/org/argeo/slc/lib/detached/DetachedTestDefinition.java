@@ -53,8 +53,6 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 
 		try {
 			client.sendRequest(request);
-			log.debug("Sent detached request #" + request.getUuid()
-					+ " for step " + stepBeanName);
 		} catch (Exception e) {
 			throw new SlcException("Could not send request for step "
 					+ stepBeanName, e);
@@ -62,12 +60,15 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 
 		try {
 			DetachedAnswer answer = client.receiveAnswer();
+			if (answer.getStatus() == DetachedAnswer.ERROR)
+				throw new SlcException("Error when executing step "
+						+ answer.getUuid() + ": " + answer.getLog());
+			else
+				log.info("Step answer: " + answer.getLog());
 			Properties outputParameters = answer.getProperties();
 			for (Object key : outputParameters.keySet())
 				testData.getValues().put(key.toString(),
 						outputParameters.get(key));
-			log.debug("Received detached answer #" + answer.getUuid()
-					+ " for step " + stepBeanName);
 		} catch (Exception e) {
 			throw new SlcException("Could not receive answer #"
 					+ request.getUuid() + " for step " + stepBeanName, e);
@@ -97,7 +98,6 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 			PropertyValue propValue = thisBeanDef.getPropertyValues()
 					.getPropertyValue("step");
 			Object stepBeanRef = propValue.getValue();
-			log.info("stepBeanRef.class=" + stepBeanRef.getClass());
 			BeanReference ref = (BeanReference) stepBeanRef;
 			stepBeanName = ref.getBeanName();
 		}
