@@ -19,7 +19,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 		detachedContext = new DetachedContextImpl();
 	}
 
-	public DetachedStepAnswer executeStep(DetachedStepRequest request) {
+	public DetachedAnswer executeStep(DetachedRequest request) {
 		try {
 			DetachedStep step = null;
 
@@ -29,7 +29,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 			for (int i = 0; i < refs.length; i++) {
 				StaticRefProvider provider = (StaticRefProvider) bundleContext
 						.getService(refs[i]);
-				Object obj = provider.getStaticRef(request.getStepRef());
+				Object obj = provider.getStaticRef(request.getRef());
 				if (obj != null) {
 					step = (DetachedStep) obj;
 					break;
@@ -38,7 +38,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 
 			if (step == null)
 				throw new DetachedException("Could not find step with ref "
-						+ request.getStepRef());
+						+ request.getRef());
 
 			return step.execute(detachedContext, request);
 		} catch (DetachedException e) {
@@ -58,8 +58,9 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 			public void run() {
 				while (active) {
 					try {
-						DetachedStepRequest request = driver.receiveRequest();
-						executeStep(request);
+						DetachedRequest request = driver.receiveRequest();
+						DetachedAnswer answer = executeStep(request);
+						driver.sendAnswer(answer);
 					} catch (Exception e) {
 						if (e instanceof RuntimeException)
 							throw (RuntimeException) e;
