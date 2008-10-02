@@ -5,19 +5,19 @@ import java.util.UUID;
 
 import junit.framework.TestCase;
 
-import org.argeo.slc.detached.DetachedStepRequest;
+import org.argeo.slc.detached.DetachedRequest;
 import org.argeo.slc.detached.drivers.FileDriver;
 
 public class DetachedTest extends TestCase {
 	public void testSendRequest() throws Exception {
 		FileDriver client = new FileDriver();
-		File requestDir = new File("local/detachedRequests");
-		requestDir.mkdirs();
-		client.setRequestDir(requestDir);
+		File baseDir = new File("local/detached");
+		baseDir.mkdirs();
+		client.setBaseDir(baseDir);
 
-		DetachedStepRequest request = new DetachedStepRequest();
+		DetachedRequest request = new DetachedRequest();
 		request.setUuid(UUID.randomUUID().toString());
-		request.setStepRef("jemmyTest");
+		request.setRef("jemmyTest");
 
 		client.sendRequest(request);
 	}

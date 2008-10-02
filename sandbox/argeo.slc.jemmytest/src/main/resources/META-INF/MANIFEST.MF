@@ -9,7 +9,7 @@ Require-Bundle: org.argeo.slc.detached
 Bundle-Vendor: Argeo
 Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1222615501820
+Bnd-LastModified: 1222929009409
 Bundle-Activator: org.argeo.slc.jemmytest.JemmyTestActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt

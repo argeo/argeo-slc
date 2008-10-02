@@ -1,0 +1,76 @@
+<project default="steps">
+
+	<target name="steps">
+		<slc.test>
+			<testDefinition bean="detachedTestDef" />
+			<testData bean="detachedTestData1" />
+		</slc.test>
+		<slc.test>
+			<testDefinition bean="detachedTestDef" />
+			<testData bean="detachedTestData2" />
+		</slc.test>
+	</target>
+
+	<property name="devBase" location="/home/mbaudier/dev/src" />
+	<property name="localRepo" location="/mnt/wind/dev/mavenLocal" />
+	<property name="argeo.slc.mavenBase" value="file:${localRepo}" />
+
+	<property name="execDir"
+	          location="/home/mbaudier/dev/src/slc/sandbox/argeo.slc.jemmytest/" />
+
+	<target name="startDetached">
+		<echo message="Starting detached in ${execDir}..." />
+
+		<java dir="${execDir}" classname="org.argeo.slc.detached.launcher.Main">
+			<classpath>
+				<!-- Dev -->
+				<pathelement location="${devBase}/slc/org.argeo.slc.detached/target/classes" />
+				<pathelement location="${devBase}/slc/org.argeo.slc.detached.launcher/target/classes" />
+				<pathelement location="${devBase}/slc/sandbox/argeo.slc.testui/bin" />
+				<!-- Maven -->
+				<pathelement location="${localRepo}/org/springframework/spring-context/2.0.8/spring-context-2.0.8.jar" />
+				<pathelement location="${localRepo}/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" />
+				<pathelement location="${localRepo}/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar" />
+				<pathelement location="${localRepo}/org/springframework/spring-beans/2.0.8/spring-beans-2.0.8.jar" />
+				<pathelement location="${localRepo}/springframework/spring-core/2.0.8/spring-core-2.0.8.jar" />
+				<pathelement location="${localRepo}/log4j/log4j/1.2.15/log4j-1.2.15.jar" />
+				<pathelement location="${localRepo}/org/apache/felix/org.apache.felix.main/1.2.1/org.apache.felix.main-1.2.1.jar" />
+				<pathelement location="${localRepo}/xerces/xercesImpl/2.8.1/xercesImpl-2.8.1.jar" />
+				<pathelement location="${localRepo}/xml-apis/xml-apis/1.3.03/xml-apis-1.3.03.jar" />
+			</classpath>
+			<sysproperty key="argeo.slc.mavenBase"
+			             value="${argeo.slc.mavenBase}" />
+			<sysproperty key="felix.auto.start.1"
+			             value="reference:file:${devBase}/slc/sandbox/argeo.slc.jemmytest/bin/ reference:file:${devBase}/slc/org.argeo.slc.detached/bin/ ${argeo.slc.mavenBase}/org/apache/felix/org.apache.felix.shell/1.0.2/org.apache.felix.shell-1.0.2.jar ${argeo.slc.mavenBase}/org/apache/felix/org.apache.felix.shell.tui/1.0.2/org.apache.felix.shell.tui-1.0.2.jar ${argeo.slc.mavenBase}/org/argeo/dep/jemmy/org.argeo.dep.jemmy.nb61/0.2.2/org.argeo.dep.jemmy.nb61-0.2.2.jar" />
+
+		</java>
+
+		<echo message="Started detached..." />
+
+	</target>
+</project>
+<!--
+/home/mbaudier/dev/src/slc/org.argeo.slc.detached.launcher/target/classes
+/home/mbaudier/dev/src/slc/org.argeo.slc.detached/target/classes
+/mnt/wind/dev/mavenLocal/org/springframework/spring-context/2.0.8/spring-context-2.0.8.jar
+/mnt/wind/dev/mavenLocal/aopalliance/aopalliance/1.0/aopalliance-1.0.jar
+/mnt/wind/dev/mavenLocal/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar
+/mnt/wind/dev/mavenLocal/org/springframework/spring-beans/2.0.8/spring-beans-2.0.8.jar
+/mnt/wind/dev/mavenLocal/org/springframework/spring-core/2.0.8/spring-core-2.0.8.jar
+/mnt/wind/dev/mavenLocal/log4j/log4j/1.2.15/log4j-1.2.15.jar
+/mnt/wind/dev/mavenLocal/org/apache/felix/org.apache.felix.main/1.2.1/org.apache.felix.main-1.2.1.jar
+/mnt/wind/dev/mavenLocal/org/apache/felix/org.apache.felix.shell/1.0.2/org.apache.felix.shell-1.0.2.jar
+/mnt/wind/dev/mavenLocal/org/apache/felix/org.apache.felix.shell.tui/1.0.2/org.apache.felix.shell.tui-1.0.2.jar
+/mnt/wind/dev/mavenLocal/org/apache/felix/org.apache.felix.bundlerepository/1.2.0/org.apache.felix.bundlerepository-1.2.0.jar
+/mnt/wind/dev/mavenLocal/xerces/xercesImpl/2.8.1/xercesImpl-2.8.1.jar
+/mnt/wind/dev/mavenLocal/xml-apis/xml-apis/1.3.03/xml-apis-1.3.03.jar
+/home/mbaudier/dev/src/slc/sandbox/argeo.slc.testui/bin
+
+felix.auto.start.1= \
+ reference:file:${user.dir}/../sandbox/argeo.slc.jemmytest/bin/ \
+ reference:file:${user.dir}/../org.argeo.slc.detached/bin/ \
+ ${argeo.slc.mavenBase}/org/apache/felix/org.apache.felix.shell/1.0.2/org.apache.felix.shell-1.0.2.jar \
+ ${argeo.slc.mavenBase}/org/apache/felix/org.apache.felix.shell.tui/1.0.2/org.apache.felix.shell.tui-1.0.2.jar \
+ ${argeo.slc.mavenBase}/org/argeo/dep/jemmy/org.argeo.dep.jemmy.nb61/0.2.2/org.argeo.dep.jemmy.nb61-0.2.2.jar
+
+-->
