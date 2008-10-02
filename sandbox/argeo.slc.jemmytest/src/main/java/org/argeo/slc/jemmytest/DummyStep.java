@@ -20,8 +20,7 @@ public class DummyStep implements DetachedStep {
 		JFrameOperator jFrameOperator = new JFrameOperator("HelloWorldSwing");
 		JButtonOperator jButtonOperator = new JButtonOperator(jFrameOperator,
 				"Button");
-		String label = request.getProperties().getProperty(
-				"jemmyTest.label");
+		String label = request.getProperties().getProperty("jemmyTest.label");
 		JLabelOperator jLabelOperator = new JLabelOperator(jFrameOperator,
 				label);
 
@@ -34,8 +33,7 @@ public class DummyStep implements DetachedStep {
 
 		DetachedAnswer answer = new DetachedAnswer(request,
 				"DummyStep passed!! textAfterPush=" + textAfterPush);
-		answer.getProperties().setProperty("jemmyTest.label",
-				textAfterPush);
+		answer.getProperties().setProperty("jemmyTest.label", textAfterPush);
 		return answer;
 	}
 

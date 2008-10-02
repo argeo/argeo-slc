@@ -12,7 +12,8 @@
     </bean>
 
     <bean id="detachedTestData1"
-        class="org.argeo.slc.lib.detached.DetachedTestData">
+        class="org.argeo.slc.lib.detached.DetachedTestData"
+        scope="prototype">
         <property name="values">
             <map>
                 <entry key="jemmyTest.label" value="Hello World" />
@@ -26,7 +27,8 @@
     </bean>
 
     <bean id="detachedTestData2"
-        class="org.argeo.slc.lib.detached.DetachedTestData">
+        class="org.argeo.slc.lib.detached.DetachedTestData"
+        scope="prototype">
         <property name="values">
             <map>
                 <entry key="jemmyTest.label" value="Pressed!!" />

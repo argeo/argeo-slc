@@ -1,6 +1,9 @@
 <project default="steps">
 
 	<target name="steps">
+		<slc.detached action="slcDefault.detached.admin.openSession"
+		              client="driver" />
+
 		<slc.test>
 			<testDefinition bean="detachedTestDef" />
 			<testData bean="detachedTestData1" />
@@ -9,6 +12,10 @@
 			<testDefinition bean="detachedTestDef" />
 			<testData bean="detachedTestData2" />
 		</slc.test>
+
+		<slc.detached action="slcDefault.detached.admin.closeSession"
+		              client="driver" />
+
 	</target>
 
 	<property name="devBase" location="/home/mbaudier/dev/src" />
