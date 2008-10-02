@@ -53,6 +53,11 @@
 			<artifactId>argeo-slc-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.argeo.slc</groupId>
+            <artifactId>org.argeo.slc.detached</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
 		<dependency>
 			<groupId>log4j</groupId>
