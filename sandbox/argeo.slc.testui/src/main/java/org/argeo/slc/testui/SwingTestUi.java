@@ -25,7 +25,10 @@ public class SwingTestUi {
 		frame.getContentPane().add(button);
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				label.setText("Pressed!!");
+				if (label.getText().equals("Hello World"))
+					label.setText("Pressed!!");
+				else
+					label.setText("Hello World");
 			}
 		});
 
