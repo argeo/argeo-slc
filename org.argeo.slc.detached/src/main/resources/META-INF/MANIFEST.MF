@@ -1,10 +1,12 @@
 Manifest-Version: 1.0
-Export-Package: org.argeo.slc.detached;uses:="org.springframework.bean
- s.factory.support,org.apache.commons.logging,org.springframework.cont
- ext.support,org.springframework.core.io,org.osgi.framework,org.spring
- framework.beans.factory.xml,org.springframework.context,org.springfra
- mework.beans.factory",org.argeo.slc.detached.drivers;uses:="org.argeo
- .slc.detached"
+Export-Package: org.argeo.slc.detached.admin;uses:="org.osgi.framework
+ ,org.argeo.slc.detached",org.argeo.slc.detached;uses:="org.apache.com
+ mons.logging,org.springframework.context.support,org.springframework.
+ core.io,org.springframework.context,org.springframework.beans.factory
+ .xml,org.springframework.beans.factory.support,org.argeo.slc.detached
+ .admin,org.osgi.framework,org.springframework.beans.factory",org.arge
+ o.slc.detached.drivers;uses:="org.apache.commons.logging,org.argeo.sl
+ c.detached,org.springframework.beans.factory"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Detached
@@ -12,15 +14,16 @@ Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Argeo
 Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1222787012918
+Bnd-LastModified: 1222949081084
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: SLC Distribution
 Import-Package: org.apache.commons.logging,org.argeo.slc.detached,org.
- argeo.slc.detached.drivers,org.osgi.framework,org.springframework.bea
- ns.factory,org.springframework.beans.factory.support,org.springframew
- ork.beans.factory.xml,org.springframework.context,org.springframework
- .context.support,org.springframework.core.io
+ argeo.slc.detached.admin,org.argeo.slc.detached.drivers,org.osgi.fram
+ ework,org.springframework.beans.factory,org.springframework.beans.fac
+ tory.support,org.springframework.beans.factory.xml,org.springframewor
+ k.context,org.springframework.context.support,org.springframework.cor
+ e.io
 Bundle-SymbolicName: org.argeo.slc.detached
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: Apache Maven Bundle Plugin

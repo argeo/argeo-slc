@@ -8,7 +8,15 @@ public class DetachedRequest implements DetachedCommunication {
 	private String uuid;
 	private Properties properties = new Properties();
 	private String ref;
-	private String path;
+	private String path = "";
+
+	public DetachedRequest() {
+
+	}
+
+	public DetachedRequest(String uuid) {
+		this.uuid = uuid;
+	}
 
 	public Properties getProperties() {
 		return properties;

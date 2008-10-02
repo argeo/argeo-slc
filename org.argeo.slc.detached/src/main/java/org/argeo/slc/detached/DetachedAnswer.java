@@ -5,12 +5,14 @@ import java.util.Properties;
 public class DetachedAnswer implements DetachedCommunication {
 	static final long serialVersionUID = 1l;
 
+	public static int UNKOWN = -1;
 	public static int PROCESSED = 0;
 	public static int ERROR = 1;
 	public static int SKIPPED = 2;
+	public static int CLOSED_SESSION = 10;
 
 	private Properties properties = new Properties();
-	private int status;
+	private int status = UNKOWN;
 	private String log;
 	private String uuid;
 
@@ -18,8 +20,12 @@ public class DetachedAnswer implements DetachedCommunication {
 
 	}
 
-	public DetachedAnswer(DetachedRequest request, String message) {
+	public DetachedAnswer(DetachedRequest request) {
 		uuid = request.getUuid();
+	}
+
+	public DetachedAnswer(DetachedRequest request, String message) {
+		this(request);
 		log = message;
 		status = PROCESSED;
 	}

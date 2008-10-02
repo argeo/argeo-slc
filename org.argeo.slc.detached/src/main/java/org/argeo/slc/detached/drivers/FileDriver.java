@@ -28,19 +28,31 @@ public class FileDriver implements DetachedDriver, DetachedClient,
 	private File processedAnswersDir;
 
 	public synchronized DetachedRequest receiveRequest() throws Exception {
-		return (DetachedRequest) receiveFile(requestsDir, processedRequestsDir);
+		DetachedRequest request = (DetachedRequest) receiveFile(requestsDir,
+				processedRequestsDir);
+		log.debug("Received detached request #" + request.getUuid()
+				+ " for ref '" + request.getRef() + "', path="
+				+ request.getPath());
+		return request;
 	}
 
 	public void sendAnswer(DetachedAnswer answer) throws Exception {
 		sendFile(answersDir, answer);
+		log.debug("Sent     detached answer  #" + answer.getUuid());
 	}
 
 	public DetachedAnswer receiveAnswer() throws Exception {
-		return (DetachedAnswer) receiveFile(answersDir, processedAnswersDir);
+		DetachedAnswer answer = (DetachedAnswer) receiveFile(answersDir,
+				processedAnswersDir);
+		log.debug("Received detached answer  #" + answer.getUuid());
+		return answer;
 	}
 
 	public void sendRequest(DetachedRequest request) throws Exception {
 		sendFile(requestsDir, request);
+		log.debug("Sent     detached request #" + request.getUuid()
+				+ " for ref '" + request.getRef() + "', path="
+				+ request.getPath());
 	}
 
 	protected void sendFile(File dir, DetachedCommunication detCom)
