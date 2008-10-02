@@ -28,8 +28,7 @@ public class FileDriver implements DetachedDriver, DetachedClient,
 	private File processedAnswersDir;
 
 	public synchronized DetachedRequest receiveRequest() throws Exception {
-		return (DetachedRequest) receiveFile(requestsDir,
-				processedRequestsDir);
+		return (DetachedRequest) receiveFile(requestsDir, processedRequestsDir);
 	}
 
 	public void sendAnswer(DetachedAnswer answer) throws Exception {
@@ -59,6 +58,9 @@ public class FileDriver implements DetachedDriver, DetachedClient,
 			throws Exception {
 		File file = null;
 		while (file == null) {
+			if (!dir.exists())
+				throw new DetachedException("Dir " + dir + " does not exist.");
+
 			File[] files = dir.listFiles();
 			if (files.length > 0)
 				file = files[0];
