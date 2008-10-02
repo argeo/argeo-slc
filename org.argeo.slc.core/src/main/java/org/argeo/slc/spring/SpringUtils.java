@@ -55,9 +55,9 @@ public class SpringUtils {
 	public static String extractRelativePath(Resource ancestor, Resource child) {
 		try {
 
-			return ancestor.getURI().relativize(child.getURI()).normalize()
-					.toString();
-		} catch (IOException e) {
+			return ancestor.getURL().toURI().relativize(child.getURL().toURI())
+					.normalize().toString();
+		} catch (Exception e) {
 			throw new SlcException("Cannot extract relative path of " + child
 					+ " based on " + ancestor, e);
 		}
