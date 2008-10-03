@@ -1,13 +1,14 @@
 Manifest-Version: 1.0
 Export-Package: org.argeo.slc.detached.admin;uses:="org.apache.commons
  .logging,org.osgi.framework,org.argeo.slc.detached",org.argeo.slc.det
- ached;uses:="org.apache.commons.logging,org.springframework.context.s
- upport,org.springframework.core.io,org.springframework.context,org.sp
- ringframework.beans.factory.xml,org.argeo.slc.detached.drivers,org.sp
- ringframework.beans.factory.support,org.argeo.slc.detached.admin,org.
- osgi.framework,org.springframework.beans.factory",org.argeo.slc.detac
- hed.drivers;uses:="org.apache.commons.logging,org.argeo.slc.detached,
- org.springframework.beans.factory"
+ ached.ui;uses:="org.argeo.slc.detached",org.argeo.slc.detached;uses:=
+ "org.apache.commons.logging,org.springframework.context.support,org.s
+ pringframework.core.io,org.springframework.context,org.springframewor
+ k.beans.factory.xml,org.argeo.slc.detached.drivers,org.springframewor
+ k.beans.factory.support,org.argeo.slc.detached.admin,org.osgi.framewo
+ rk,org.springframework.beans.factory",org.argeo.slc.detached.drivers;
+ uses:="org.apache.commons.logging,org.argeo.slc.detached,org.springfr
+ amework.beans.factory"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Detached
@@ -15,17 +16,17 @@ Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Argeo
 Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1222954246943
+Bnd-LastModified: 1223022716810
 Bundle-ManifestVersion: 2
 Bundle-Activator: org.argeo.slc.detached.Activator
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: SLC Distribution
 Import-Package: org.apache.commons.logging,org.argeo.slc.detached,org.
- argeo.slc.detached.admin,org.argeo.slc.detached.drivers,org.osgi.fram
- ework,org.springframework.beans.factory,org.springframework.beans.fac
- tory.support,org.springframework.beans.factory.xml,org.springframewor
- k.context,org.springframework.context.support,org.springframework.cor
- e.io
+ argeo.slc.detached.admin,org.argeo.slc.detached.drivers,org.argeo.slc
+ .detached.ui,org.osgi.framework,org.springframework.beans.factory,org
+ .springframework.beans.factory.support,org.springframework.beans.fact
+ ory.xml,org.springframework.context,org.springframework.context.suppo
+ rt,org.springframework.core.io
 Bundle-SymbolicName: org.argeo.slc.detached
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: Apache Maven Bundle Plugin
