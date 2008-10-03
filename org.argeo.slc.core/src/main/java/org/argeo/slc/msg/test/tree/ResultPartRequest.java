@@ -1,6 +1,7 @@
 package org.argeo.slc.msg.test.tree;
 
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.StructureElement;
@@ -16,6 +17,7 @@ public class ResultPartRequest {
 	private TreeSPath path;
 	private Map<TreeSPath, StructureElement> relatedElements;
 	private TestRunDescriptor testRunDescriptor;
+	private SortedMap<String, String> attributes;
 
 	public ResultPartRequest() {
 
@@ -29,6 +31,7 @@ public class ResultPartRequest {
 		relatedElements = ttr.getRelatedElements(this.path);
 		if (ttr.getCurrentTestRun() != null)
 			testRunDescriptor = new TestRunDescriptor(ttr.getCurrentTestRun());
+		attributes = ttr.getAttributes();
 	}
 
 	public ResultPartRequest(TreeTestResult ttr) {
@@ -87,6 +90,14 @@ public class ResultPartRequest {
 	public void setRelatedElements(
 			Map<TreeSPath, StructureElement> relatedElements) {
 		this.relatedElements = relatedElements;
+	}
+
+	public SortedMap<String, String> getAttributes() {
+		return attributes;
+	}
+
+	public void setAttributes(SortedMap<String, String> attributes) {
+		this.attributes = attributes;
 	}
 
 	@Override

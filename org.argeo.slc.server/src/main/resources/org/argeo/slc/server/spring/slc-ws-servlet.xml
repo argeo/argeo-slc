@@ -32,6 +32,7 @@
 	<bean name="createTreeTestResultRequestEp"
 		class="org.argeo.slc.ws.test.tree.CreateTreeTestResultRequestEp">
 		<constructor-arg ref="testResultDao" />
+        <constructor-arg ref="testManagerService" />
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 		<property name="unmarshaller"
 			ref="slcDefault.castor.marshaller" />

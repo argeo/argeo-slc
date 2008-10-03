@@ -37,10 +37,14 @@
 	
 		<c:forEach items="${resultPartEntry.value.parts}" var="part">
 			<tr>
-				<td class="${part.status == 0 ? 'passed' : 'failed'}">
-				${part.message}</td>
+				<td class="${part.status == 0 ? 'passed' : (part.status == 1 ? 'failed': 'error')}" style="vertical-align:top">
+				${part.message}
+				<c:if test="${part.status == 2}">
+					<pre>${part.exceptionMessage}</pre>
+				</c:if>
+				</td>
 				<c:if test="${part.testRunUuid!=null}">
-					<td>
+					<td style="vertical-align:top">
 					<a href="testRunView.web?uuid=${part.testRunUuid}">test run</a>
 					</td>
 				</c:if>

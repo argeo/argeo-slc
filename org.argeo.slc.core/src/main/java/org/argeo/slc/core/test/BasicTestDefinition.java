@@ -1,5 +1,6 @@
 package org.argeo.slc.core.test;
 
+import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.context.ContextAware;
 import org.argeo.slc.core.test.context.ContextUtils;
@@ -31,6 +32,8 @@ public class BasicTestDefinition extends TreeSRelatedHelper implements
 			TestData testData = testRun.getTestData();
 			ContextUtils.compareReachedExpected((ContextAware) testData,
 					testRun.getTestResult(), this);
+		} else {
+			throw new SlcException("No test data defined.");
 		}
 	}
 }
