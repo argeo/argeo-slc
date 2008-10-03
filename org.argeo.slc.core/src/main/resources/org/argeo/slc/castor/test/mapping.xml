@@ -22,7 +22,7 @@
 			<bind-xml name="uuid" node="attribute" />
 		</field>
 		<field name="closeDate" />
-		<field name="attributes" collection="map">
+		<field name="attributes" collection="sortedmap">
 			<bind-xml name="attribute" location="attributes">
 				<class name="org.exolab.castor.mapping.MapItem">
 					<map-to
@@ -36,7 +36,7 @@
 				</class>
 			</bind-xml>
 		</field>
-		<field name="resultParts" collection="map">
+		<field name="resultParts" collection="sortedmap">
 			<bind-xml name="result-part" location="result-parts">
 				<class name="org.exolab.castor.mapping.MapItem">
 					<map-to
@@ -53,7 +53,7 @@
 				</class>
 			</bind-xml>
 		</field>
-		<field name="elements" collection="map">
+		<field name="elements" collection="sortedmap">
 			<bind-xml name="element" location="elements">
 				<class name="org.exolab.castor.mapping.MapItem">
 					<map-to
