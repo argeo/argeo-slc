@@ -84,6 +84,10 @@ td {
 	color: red;
 }
 
+.error {
+	color: purple;
+}
+
 /**************** Navigation ****************/
 td.nav1 {
 	padding: 5px 0px 0px 0px;
