@@ -11,11 +11,14 @@ import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.structure.StructureAware;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.ExecutableTestRun;
+import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.SimpleTestResult;
 import org.argeo.slc.core.test.SimpleTestRun;
 import org.argeo.slc.core.test.TestData;
 import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestResult;
+import org.argeo.slc.core.test.TestResultPart;
+import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.WritableTestRun;
 import org.argeo.slc.spring.SpringUtils;
 import org.springframework.beans.BeansException;
@@ -108,7 +111,17 @@ public class SlcTestTask extends SAwareTask {
 					getRegistry(), getTreeSPath());
 		}
 
-		((ExecutableTestRun) testRun).execute();
+		try {
+			((ExecutableTestRun) testRun).execute();
+		} catch (RuntimeException e) {
+			if (result != null) {
+				SimpleResultPart errorPart = new SimpleResultPart(
+						TestStatus.ERROR,
+						"Unexpected exception when running test", e);
+				result.addResultPart(errorPart);
+			}
+			throw e;
+		}
 	}
 
 	/**
