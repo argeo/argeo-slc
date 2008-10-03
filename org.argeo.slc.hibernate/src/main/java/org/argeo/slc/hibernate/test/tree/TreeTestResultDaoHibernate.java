@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.StructureElement;
@@ -104,4 +105,21 @@ public class TreeTestResultDaoHibernate extends HibernateDaoSupport implements
 			throw new SlcException("No result with id " + testResultId);
 		return treeTestResult;
 	}
+
+	public void updateAttributes(final String testResultId,
+			final SortedMap<String, String> attributes) {
+		getHibernateTemplate().execute(new HibernateCallback() {
+
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				TreeTestResult treeTestResult = getTreeTestResult(session,
+						testResultId);
+				treeTestResult.setAttributes(attributes);
+
+				session.update(treeTestResult);
+				return treeTestResult;
+			}
+		});
+	}
+
 }
