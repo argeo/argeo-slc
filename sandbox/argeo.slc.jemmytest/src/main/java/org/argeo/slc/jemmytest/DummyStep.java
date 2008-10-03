@@ -7,6 +7,7 @@ import org.argeo.slc.detached.DetachedStep;
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedRequest;
 import org.netbeans.jemmy.operators.JButtonOperator;
+import org.netbeans.jemmy.operators.JDialogOperator;
 import org.netbeans.jemmy.operators.JFrameOperator;
 import org.netbeans.jemmy.operators.JLabelOperator;
 
@@ -20,12 +21,22 @@ public class DummyStep implements DetachedStep {
 		JFrameOperator jFrameOperator = new JFrameOperator("HelloWorldSwing");
 		JButtonOperator jButtonOperator = new JButtonOperator(jFrameOperator,
 				"Button");
+		JButtonOperator jButtonStartOperator = new JButtonOperator(
+				jFrameOperator, "Start");
 		String label = request.getProperties().getProperty("jemmyTest.label");
 		JLabelOperator jLabelOperator = new JLabelOperator(jFrameOperator,
 				label);
 
 		// Execute actions
 		jButtonOperator.push();
+		jButtonStartOperator.push();
+
+		// Find some more components
+		JDialogOperator jDialogOperator = new JDialogOperator("TestDialog");
+		JLabelOperator jLabelOperatorDialog = new JLabelOperator(
+				jDialogOperator, "Dialog Open");
+		String textLabelDialog = jLabelOperatorDialog.getText();
+		jDialogOperator.close();
 
 		// Performs checks
 		String textAfterPush = jLabelOperator.getText();
@@ -34,6 +45,8 @@ public class DummyStep implements DetachedStep {
 		DetachedAnswer answer = new DetachedAnswer(request,
 				"DummyStep passed!! textAfterPush=" + textAfterPush);
 		answer.getProperties().setProperty("jemmyTest.label", textAfterPush);
+		answer.getProperties().setProperty("jemmyTest.labelDialog",
+				textLabelDialog);
 		return answer;
 	}
 
