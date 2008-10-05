@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+    targetNamespace="http://argeo.org/projects/slc/schemas/detached"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified"
+    xmlns:slc-det="http://argeo.org/projects/slc/schemas/detached">
+
+    <xs:element name="detached-request">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="uuid" type="xs:string" maxOccurs="1" />
+                <xs:element name="ref" type="xs:string" minOccurs="0"
+                    maxOccurs="1" />
+                <xs:element name="path" type="xs:string" minOccurs="0"
+                    maxOccurs="1" />
+                <xs:element name="properties" minOccurs="0"
+                    maxOccurs="1" type="slc-det:PropertiesType" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="detached-answer">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="uuid" type="xs:string" maxOccurs="1" />
+                <xs:element name="status" minOccurs="0" maxOccurs="1">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:integer">
+                            <xs:enumeration value="-1" />
+                            <xs:enumeration value="0" />
+                            <xs:enumeration value="1" />
+                            <xs:enumeration value="2" />
+                            <xs:enumeration value="10" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="log" type="xs:string" minOccurs="0"
+                    maxOccurs="1" />
+                <xs:element name="properties" minOccurs="0"
+                    maxOccurs="1" type="slc-det:PropertiesType" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="PropertiesType">
+        <xs:sequence>
+            <xs:element name="prop" type="slc-det:PropType"
+                minOccurs="0" maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PropType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="key" type="xs:string"
+                    use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+
+</xs:schema>

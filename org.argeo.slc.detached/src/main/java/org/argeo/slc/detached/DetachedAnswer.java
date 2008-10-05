@@ -58,4 +58,8 @@ public class DetachedAnswer implements DetachedCommunication {
 		return uuid;
 	}
 
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
 }
