@@ -1,0 +1,34 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+    default-lazy-init="true">
+
+    <bean id="slcDefault.detached.xmlConverterCastor"
+        class="org.argeo.slc.lib.detached.DetachedXmlConverterSpring">
+        <property name="marshaller" ref="slcDefault.detached.castor.marshaller"/>
+        <property name="unmarshaller" ref="slcDefault.detached.castor.marshaller"/>
+    </bean>
+
+    <bean id="slcDefault.detached.castor.marshaller"
+        class="org.springframework.oxm.castor.CastorMarshaller">
+        <property name="mappingLocations">
+            <list>
+                <value>
+                    classpath:org/argeo/slc/lib/detached/castor.xml
+                </value>
+            </list>
+        </property>
+        <property name="whitespacePreserve" value="true" />
+    </bean>
+
+    <bean id="slcDefault.detached.xml.xsdValidator"
+        factory-bean="slcDefault.detached.xml.xsdSchema"
+        factory-method="createValidator" />
+
+    <bean id="slcDefault.detached.xml.xsdSchema"
+        class="org.springframework.xml.xsd.SimpleXsdSchema">
+        <property name="xsd"
+            value="classpath:/org/argeo/slc/detached/slc-detached.xsd" />
+    </bean>
+
+</beans>
