@@ -4,13 +4,15 @@ import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedContext;
 import org.argeo.slc.detached.DetachedRequest;
 import org.argeo.slc.detached.DetachedStep;
+import org.springframework.beans.factory.BeanNameAware;
 
-public abstract class UiStep implements DetachedStep {
+public abstract class UiStep implements DetachedStep, BeanNameAware {
 	private UiPart uiPart;
+	private String beanName;
 
 	public final DetachedAnswer execute(DetachedContext detachedContext,
 			DetachedRequest detachedStepRequest) {
-		uiPart.init(detachedContext, detachedStepRequest);
+		// uiPart.init(detachedContext, detachedStepRequest);
 		return executeUiStep(detachedContext, detachedStepRequest);
 	}
 
@@ -23,6 +25,14 @@ public abstract class UiStep implements DetachedStep {
 
 	public void setUiPart(UiPart uiPart) {
 		this.uiPart = uiPart;
+	}
+
+	public void setBeanName(String name) {
+		this.beanName = name;
+	}
+
+	public String getBeanName() {
+		return beanName;
 	}
 
 }

@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -28,12 +30,16 @@ import org.springframework.beans.factory.InitializingBean;
 public class FileDriver extends AbstractDriver implements DetachedClient,
 		InitializingBean {
 	private final static Log log = LogFactory.getLog(FileDriver.class);
+	private final static SimpleDateFormat sdf = new SimpleDateFormat(
+			"yyMMdd_HHmmss_SSS");
 
 	private File baseDir;
 	private File requestsDir;
 	private File answersDir;
 	private File processedRequestsDir;
 	private File processedAnswersDir;
+	private File cleanedRequestsDir;
+	private File cleanedAnswersDir;
 
 	private String lockFileExt = "lck";
 	private FileFilter notLockFileFilter = new NotFileFilter(
@@ -77,8 +83,8 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 			throws Exception {
 		final File file;
 		if (getXmlConverter() != null)
-			file = new File(dir.getPath() + File.separator + detCom.getUuid()
-					+ ".xml");
+			file = new File(dir.getPath() + File.separator
+					+ sdf.format(new Date()) + '-' + detCom.getUuid() + ".xml");
 		else
 			file = new File(dir.getPath() + File.separator + detCom.getUuid());
 
@@ -202,11 +208,17 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 				+ File.separator + "processed" + File.separator + "requests");
 		this.processedAnswersDir = new File(baseDir.getAbsolutePath()
 				+ File.separator + "processed" + File.separator + "answers");
+		this.cleanedRequestsDir = new File(baseDir.getAbsolutePath()
+				+ File.separator + "cleaned" + File.separator + "requests");
+		this.cleanedAnswersDir = new File(baseDir.getAbsolutePath()
+				+ File.separator + "cleaned" + File.separator + "answers");
 
 		createIfNotExist(requestsDir);
 		createIfNotExist(answersDir);
 		createIfNotExist(processedRequestsDir);
 		createIfNotExist(processedAnswersDir);
+		createIfNotExist(cleanedRequestsDir);
+		createIfNotExist(cleanedAnswersDir);
 	}
 
 }

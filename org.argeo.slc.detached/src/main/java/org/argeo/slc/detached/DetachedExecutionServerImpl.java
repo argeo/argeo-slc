@@ -29,8 +29,6 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 	public synchronized DetachedAnswer executeRequest(DetachedRequest request) {
 		DetachedAnswer answer = null;
 		try {
-			// DetachedStep step = null;
-
 			// Find action
 			ServiceReference[] refs = bundleContext.getAllServiceReferences(
 					StaticRefProvider.class.getName(), null);
@@ -61,23 +59,18 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 				throw new DetachedException("Unknown action type "
 						+ obj.getClass() + " for action with ref "
 						+ request.getRef());
-			} else {
-				log.info("Processed '" + request.getRef() + "' (path="
-						+ request.getPath() + ")");
 			}
-
-		} catch (DetachedException e) {
+		} catch (Exception e) {
 			answer = new DetachedAnswer(request);
 			answer.setStatus(DetachedAnswer.ERROR);
 			answer.setLog(e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new DetachedException(
-					"Unexpected exception while executing request " + request,
-					e);
 		}
 		getCurrentSession().getRequests().add(request);
 		getCurrentSession().getAnswers().add(answer);
+		if (log.isDebugEnabled())
+			log.debug("Processed '" + request.getRef() + "' (status="
+					+ answer.getStatusAsString() + ", path="
+					+ request.getPath() + ")");
 		return answer;
 	}
 

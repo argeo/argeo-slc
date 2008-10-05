@@ -5,11 +5,11 @@ import java.util.Properties;
 public class DetachedAnswer implements DetachedCommunication {
 	static final long serialVersionUID = 1l;
 
-	public static int UNKOWN = -1;
-	public static int PROCESSED = 0;
-	public static int ERROR = 1;
-	public static int SKIPPED = 2;
-	public static int CLOSED_SESSION = 10;
+	public final static int UNKOWN = -1;
+	public final static int PROCESSED = 0;
+	public final static int ERROR = 1;
+	public final static int SKIPPED = 2;
+	public final static int CLOSED_SESSION = 10;
 
 	private Properties properties = new Properties();
 	private int status = UNKOWN;
@@ -62,4 +62,24 @@ public class DetachedAnswer implements DetachedCommunication {
 		this.uuid = uuid;
 	}
 
+	public String getStatusAsString() {
+		return convertStatus(getStatus());
+	}
+
+	public static String convertStatus(int status) {
+		switch (status) {
+		case UNKOWN:
+			return "UNKOWN";
+		case PROCESSED:
+			return "PROCESSED";
+		case SKIPPED:
+			return "SKIPPED";
+		case ERROR:
+			return "ERROR";
+		case CLOSED_SESSION:
+			return "CLOSED_SESSION";
+		default:
+			throw new DetachedException("Unkown status " + status);
+		}
+	}
 }
