@@ -154,9 +154,15 @@ public class SlcMain {
 
 		// Execution
 		if (mode.equals(Mode.single)) {
-			DefaultSlcRuntime runtime = new DefaultSlcRuntime();
-			runtime.executeScript(runtimeStr, script, targets, properties,
-					null, null);
+			try {
+				DefaultSlcRuntime runtime = new DefaultSlcRuntime();
+				runtime.executeScript(runtimeStr, script, targets, properties,
+						null, null);
+				System.exit(0);
+			} catch (SlcException e) {
+				log.error("SLC client terminated with an error: ", e);
+				System.exit(1);
+			}
 		}
 	}
 
