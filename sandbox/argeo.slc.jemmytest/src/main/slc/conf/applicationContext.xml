@@ -4,11 +4,19 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
     <import resource="classpath:/META-INF/spring/slc-detached.xml" />
+    <import resource="classpath:/org/argeo/slc/lib/detached/spring.xml" />
 
     <bean id="detachedTestDef"
         class="org.argeo.slc.lib.detached.DetachedTestDefinition">
         <property name="client" ref="slcDetached.driver" />
         <property name="step" ref="jemmyTest" />
+    </bean>
+
+    <bean id="slcDetached.driver"
+        class="org.argeo.slc.detached.drivers.FileDriver">
+        <property name="baseDir" value="file:${slc.workDir}/detached" />
+        <property name="xmlConverter"
+            ref="slcDefault.detached.xmlConverterCastor" />
     </bean>
 
     <bean id="detachedTestData1"

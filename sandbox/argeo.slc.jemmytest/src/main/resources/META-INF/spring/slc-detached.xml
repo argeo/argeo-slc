@@ -11,6 +11,7 @@
     <bean id="slcDetached.driver"
         class="org.argeo.slc.detached.drivers.FileDriver">
         <property name="baseDir" value="file:${slc.workDir}/detached" />
+        <property name="xmlConverter"
+            ref="slcDefault.detached.xmlConverterCompat" />
     </bean>
-
 </beans>
