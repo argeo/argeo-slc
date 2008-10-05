@@ -3,10 +3,17 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
     default-lazy-init="true">
 
+    <bean id="slcTemplate.detached.testDefinition"
+        class="org.argeo.slc.lib.detached.DetachedTestDefinition"
+        abstract="true">
+    </bean>
+
     <bean id="slcDefault.detached.xmlConverterCastor"
         class="org.argeo.slc.lib.detached.DetachedXmlConverterSpring">
-        <property name="marshaller" ref="slcDefault.detached.castor.marshaller"/>
-        <property name="unmarshaller" ref="slcDefault.detached.castor.marshaller"/>
+        <property name="marshaller"
+            ref="slcDefault.detached.castor.marshaller" />
+        <property name="unmarshaller"
+            ref="slcDefault.detached.castor.marshaller" />
     </bean>
 
     <bean id="slcDefault.detached.castor.marshaller"

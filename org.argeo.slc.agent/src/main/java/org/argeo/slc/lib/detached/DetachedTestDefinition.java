@@ -8,13 +8,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
+import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestDefinition;
 import org.argeo.slc.core.test.TestRun;
+import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.context.ContextUtils;
 import org.argeo.slc.detached.DetachedClient;
 import org.argeo.slc.detached.DetachedStep;
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedRequest;
+import org.argeo.slc.detached.ui.UiStep;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.BeanFactory;
@@ -35,27 +38,49 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 	private DetachedClient client;
 
 	// Spring properties
-	private String thisBeanName = null;
+	private String testDefBeanName = null;
 	private BeanDefinitionRegistry beanDefinitionRegistry = null;
 	private String stepBeanName = null;
 
 	public void execute(TestRun testRun) {
-		DetachedTestData testData = testRun.getTestData();
-		Map<String, Object> values = testData.getValues();
-		Properties inputParameters = new Properties();
-		inputParameters.putAll(values);// TODO: check conversions to string
+		// Look for step bean name
+		String stepBeanNameT = null;
+		if (this.stepBeanName == null && step != null) {
+			if (step instanceof UiStep) {
+				stepBeanNameT = ((UiStep) step).getBeanName();
+			} else {
+				// Introspects bean factory in order to find step bean name
+				BeanDefinition thisBeanDef = beanDefinitionRegistry
+						.getBeanDefinition(testDefBeanName);
+				PropertyValue propValue = thisBeanDef.getPropertyValues()
+						.getPropertyValue("step");
+				Object stepBeanRef = propValue.getValue();
+				BeanReference ref = (BeanReference) stepBeanRef;
+				stepBeanNameT = ref.getBeanName();
+			}
+		} else if (this.stepBeanName != null) {
+			stepBeanNameT = this.stepBeanName;
+		}
 
+		// Execute
 		DetachedRequest request = new DetachedRequest();
 		request.setPath(getBasePath().toString());
 		request.setUuid(UUID.randomUUID().toString());
-		request.setRef(stepBeanName);
-		request.setProperties(inputParameters);
+		request.setRef(stepBeanNameT);
+
+		DetachedTestData testData = testRun.getTestData();
+		if (testData != null) {
+			Map<String, Object> values = testData.getValues();
+			Properties inputParameters = new Properties();
+			inputParameters.putAll(values);// TODO: check conversions to string
+			request.setProperties(inputParameters);
+		}
 
 		try {
 			client.sendRequest(request);
 		} catch (Exception e) {
 			throw new SlcException("Could not send request for step "
-					+ stepBeanName, e);
+					+ stepBeanNameT, e);
 		}
 
 		try {
@@ -64,22 +89,32 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 				throw new SlcException("Error when executing step "
 						+ answer.getUuid() + ": " + answer.getLog());
 			else
-				log.info("Step answer: " + answer.getLog());
-			Properties outputParameters = answer.getProperties();
-			for (Object key : outputParameters.keySet())
-				testData.getValues().put(key.toString(),
-						outputParameters.get(key));
+				log.info("Received answer for '" + request.getRef() + "' ("
+						+ answer.getStatusAsString() + "):" + answer.getLog());
+
+			if (testData != null) {
+				Properties outputParameters = answer.getProperties();
+				for (Object key : outputParameters.keySet())
+					testData.getValues().put(key.toString(),
+							outputParameters.get(key));
+			}
 		} catch (Exception e) {
 			throw new SlcException("Could not receive answer #"
-					+ request.getUuid() + " for step " + stepBeanName, e);
+					+ request.getUuid() + " for step " + stepBeanNameT, e);
 		}
 
-		ContextUtils.compareReachedExpected(testData, testRun.getTestResult(),
-				this);
+		if (testData != null) {
+			ContextUtils.compareReachedExpected(testData, testRun
+					.getTestResult(), this);
+		} else {
+			testRun.getTestResult().addResultPart(
+					new SimpleResultPart(TestStatus.PASSED, "Step "
+							+ stepBeanNameT + " executed successfully"));
+		}
 	}
 
 	public void setBeanName(String name) {
-		this.thisBeanName = name;
+		this.testDefBeanName = name;
 	}
 
 	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
@@ -91,16 +126,6 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		if (stepBeanName == null) {
-			// Introspects bean factory in order to find step bean name
-			BeanDefinition thisBeanDef = beanDefinitionRegistry
-					.getBeanDefinition(thisBeanName);
-			PropertyValue propValue = thisBeanDef.getPropertyValues()
-					.getPropertyValue("step");
-			Object stepBeanRef = propValue.getValue();
-			BeanReference ref = (BeanReference) stepBeanRef;
-			stepBeanName = ref.getBeanName();
-		}
 	}
 
 	public void setStep(DetachedStep step) {
