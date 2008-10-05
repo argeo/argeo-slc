@@ -9,6 +9,7 @@ import org.argeo.slc.detached.DetachedXmlConverter;
 public abstract class AbstractDriver implements DetachedDriver {
 	private boolean active = true;
 	private DetachedExecutionServer executionServer = null;
+	private long receiveAnswerTimeout = 10000l;
 
 	private DetachedXmlConverter xmlConverter = null;
 
@@ -23,7 +24,7 @@ public abstract class AbstractDriver implements DetachedDriver {
 						if (!active)
 							break;
 						DetachedAnswer answer = executionServer
-								.executeStep(request);
+								.executeRequest(request);
 						sendAnswer(answer);
 					} catch (Exception e) {
 						if (e instanceof RuntimeException)
@@ -62,6 +63,14 @@ public abstract class AbstractDriver implements DetachedDriver {
 
 	public void setXmlConverter(DetachedXmlConverter xmlConverter) {
 		this.xmlConverter = xmlConverter;
+	}
+
+	public long getReceiveAnswerTimeout() {
+		return receiveAnswerTimeout;
+	}
+
+	public void setReceiveAnswerTimeout(long reveiveTimeout) {
+		this.receiveAnswerTimeout = reveiveTimeout;
 	}
 
 }

@@ -41,32 +41,36 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 
 	public synchronized DetachedRequest receiveRequest() throws Exception {
 		DetachedRequest request = (DetachedRequest) receiveFile(requestsDir,
-				processedRequestsDir);
+				processedRequestsDir, 0);
 		if (request != null)
-			log.debug("Received detached request #" + request.getUuid()
-					+ " for ref '" + request.getRef() + "', path="
-					+ request.getPath());
+			if (log.isTraceEnabled())
+				log.trace("Received detached request #" + request.getUuid()
+						+ " for ref '" + request.getRef() + "', path="
+						+ request.getPath());
 		return request;
 	}
 
 	public void sendAnswer(DetachedAnswer answer) throws Exception {
 		sendFile(answersDir, answer);
-		log.debug("Sent     detached answer  #" + answer.getUuid());
+		if (log.isTraceEnabled())
+			log.trace("Sent     detached answer  #" + answer.getUuid());
 	}
 
 	public DetachedAnswer receiveAnswer() throws Exception {
 		DetachedAnswer answer = (DetachedAnswer) receiveFile(answersDir,
-				processedAnswersDir);
+				processedAnswersDir, getReceiveAnswerTimeout());
 		if (answer != null)
-			log.debug("Received detached answer  #" + answer.getUuid());
+			if (log.isTraceEnabled())
+				log.trace("Received detached answer  #" + answer.getUuid());
 		return answer;
 	}
 
 	public void sendRequest(DetachedRequest request) throws Exception {
 		sendFile(requestsDir, request);
-		log.debug("Sent     detached request #" + request.getUuid()
-				+ " for ref '" + request.getRef() + "', path="
-				+ request.getPath());
+		if (log.isTraceEnabled())
+			log.trace("Sent     detached request #" + request.getUuid()
+					+ " for ref '" + request.getRef() + "', path="
+					+ request.getPath());
 	}
 
 	protected void sendFile(File dir, DetachedCommunication detCom)
@@ -99,8 +103,13 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 		lockFile.delete();
 	}
 
+	/**
+	 * @param timeout
+	 *            in ms, 0 is no timeout
+	 */
 	protected synchronized DetachedCommunication receiveFile(File dir,
-			File processedDir) throws Exception {
+			File processedDir, long timeout) throws Exception {
+		long begin = System.currentTimeMillis();
 		File file = null;
 		while (file == null && isActive()) {
 			if (!dir.exists())
@@ -115,6 +124,12 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 				} catch (InterruptedException e) {
 					// silent
 				}
+			}
+
+			long duration = System.currentTimeMillis() - begin;
+			if (timeout != 0 && duration > timeout) {
+				throw new DetachedException("Receive file timed out after "
+						+ duration + "ms.");
 			}
 		}
 
@@ -149,9 +164,6 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 		}
 		// Move to processed dir
 		FileUtils.moveFileToDirectory(file, processedDir, false);
-		// file.renameTo(new File(processedDir.getAbsolutePath() +
-		// File.separator
-		// + file.getName()));
 		return detCom;
 	}
 
