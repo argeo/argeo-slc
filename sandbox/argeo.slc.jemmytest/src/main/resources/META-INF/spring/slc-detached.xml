@@ -5,15 +5,43 @@
 
     <import resource="classpath:/org/argeo/slc/detached/spring.xml" />
 
-    <bean id="step.mainFrameLabel"
-        class="org.argeo.slc.jemmytest.steps.MainFrameLabel">
-        <property name="uiPart" ref="uipart.mainFrame" />
-    </bean>
-
-    <bean id="uipart.mainFrame"
+    <!-- UI Parts -->
+    <bean id="uipart.MainFrame"
         class="org.argeo.slc.jemmytest.uiparts.MainFrame">
+        <property name="complexPanel" ref="uipart.ComplexPanel" />
     </bean>
 
+    <bean id="uipart.TestDialog"
+        class="org.argeo.slc.jemmytest.uiparts.TestDialog">
+    </bean>
+
+    <bean id="uipart.ComplexPanel"
+        class="org.argeo.slc.jemmytest.uiparts.ComplexPanel">
+    </bean>
+
+    <!-- Steps -->
+    <bean id="step.MainFrameLabel"
+        class="org.argeo.slc.jemmytest.steps.MainFrameLabel">
+        <property name="mainFrame" ref="uipart.MainFrame" />
+    </bean>
+
+    <bean id="step.TestDialogOpen"
+        class="org.argeo.slc.jemmytest.steps.TestDialogOpen">
+        <property name="mainFrame" ref="uipart.MainFrame" />
+        <property name="testDialog" ref="uipart.TestDialog" />
+    </bean>
+
+    <bean id="step.TestDialogLabel"
+        class="org.argeo.slc.jemmytest.steps.TestDialogLabel">
+        <property name="testDialog" ref="uipart.TestDialog" />
+    </bean>
+
+    <bean id="step.ComplexPanelValues"
+        class="org.argeo.slc.jemmytest.steps.ComplexPanelValues">
+        <property name="complexPanel" ref="uipart.ComplexPanel" />
+    </bean>
+
+    <!-- Runtime -->
     <bean id="slcDetached.driver"
         class="org.argeo.slc.detached.drivers.FileDriver">
         <property name="baseDir" value="file:${slc.workDir}/detached" />

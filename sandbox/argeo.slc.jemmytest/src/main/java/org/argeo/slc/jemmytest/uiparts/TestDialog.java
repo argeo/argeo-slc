@@ -6,11 +6,11 @@ import org.argeo.slc.detached.ui.UiPart;
 import org.netbeans.jemmy.operators.JDialogOperator;
 import org.netbeans.jemmy.operators.JLabelOperator;
 
-public class TestDialog implements UiPart {
+public class TestDialog extends UiPart {
 	private JDialogOperator dialog = null;
 	private JLabelOperator label = null;
 
-	public void init(DetachedContext context, DetachedRequest request) {
+	protected void initUi(DetachedContext context, DetachedRequest request) {
 		dialog = new JDialogOperator("TestDialog");
 		label = new JLabelOperator(dialog, "Dialog Open");
 	}
@@ -22,4 +22,5 @@ public class TestDialog implements UiPart {
 	public void close() {
 		dialog.close();
 	}
+
 }

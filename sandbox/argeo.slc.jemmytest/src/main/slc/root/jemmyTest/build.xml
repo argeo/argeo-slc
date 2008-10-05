@@ -8,13 +8,39 @@
 			</properties>
 		</slc.detached>
 
+		<!-- Main frame label -->
 		<slc.test>
-			<testDefinition bean="detachedTestDef" />
-			<testData bean="detachedTestData1" />
+			<testDefinition bean="detachedTestDef">
+				<override name="step" bean="step.MainFrameLabel" />
+			</testDefinition>
+			<testData bean="testData.mainFrameLabel1" />
 		</slc.test>
 		<slc.test>
-			<testDefinition bean="detachedTestDef" />
-			<testData bean="detachedTestData2" />
+			<testDefinition bean="detachedTestDef">
+				<override name="step" bean="step.MainFrameLabel" />
+			</testDefinition>
+			<testData bean="testData.mainFrameLabel2" />
+		</slc.test>
+
+		<!-- Test dialog -->
+		<slc.test>
+			<testDefinition bean="detachedTestDef">
+				<override name="step" bean="step.TestDialogOpen" />
+			</testDefinition>
+		</slc.test>
+
+		<slc.test>
+			<testDefinition bean="detachedTestDef">
+				<override name="step" bean="step.TestDialogLabel" />
+			</testDefinition>
+			<testData bean="testData.testDialogLabel" />
+		</slc.test>
+
+		<!-- Complex Panel -->
+		<slc.test>
+			<testDefinition bean="detachedTestDef">
+				<override name="step" bean="step.ComplexPanelValues" />
+			</testDefinition>
 		</slc.test>
 
 		<slc.detached action="slcDefault.detached.admin.closeSession" />

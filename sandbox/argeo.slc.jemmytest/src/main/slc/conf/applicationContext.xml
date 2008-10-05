@@ -8,9 +8,9 @@
     <import resource="classpath:/META-INF/spring/slc-detached.xml" />
 
     <bean id="detachedTestDef"
-        class="org.argeo.slc.lib.detached.DetachedTestDefinition">
+        parent="slcTemplate.detached.testDefinition"
+        scope="prototype">
         <property name="client" ref="slcDetached.driver" />
-        <property name="step" ref="step.mainFrameLabel" />
     </bean>
 
     <bean id="slcDetached.driver"
@@ -20,7 +20,7 @@
             ref="slcDefault.detached.xmlConverterCastor" />
     </bean>
 
-    <bean id="detachedTestData1"
+    <bean id="testData.mainFrameLabel1"
         class="org.argeo.slc.lib.detached.DetachedTestData"
         scope="prototype">
         <property name="values">
@@ -35,7 +35,7 @@
         </property>
     </bean>
 
-    <bean id="detachedTestData2"
+    <bean id="testData.mainFrameLabel2"
         class="org.argeo.slc.lib.detached.DetachedTestData"
         scope="prototype">
         <property name="values">
@@ -46,6 +46,16 @@
         <property name="expectedValues">
             <map>
                 <entry key="jemmyTest.label" value="Hello World" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="testData.testDialogLabel"
+        class="org.argeo.slc.lib.detached.DetachedTestData"
+        scope="prototype">
+        <property name="expectedValues">
+            <map>
+                <entry key="jemmyTest.labelDialog" value="Dialog open" />
             </map>
         </property>
     </bean>
