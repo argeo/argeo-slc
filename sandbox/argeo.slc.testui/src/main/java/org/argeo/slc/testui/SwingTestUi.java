@@ -8,6 +8,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class SwingTestUi {
 	private static void createAndShowGUI(boolean exitOnClose) {
@@ -16,34 +18,57 @@ public class SwingTestUi {
 		if (exitOnClose)
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		frame.getContentPane().setLayout(new GridLayout(3, 1));
+		frame.getContentPane().setLayout(new GridLayout(4, 1));
 
-		// Add the ubiquitous "Hello World" label.
+		// "Hello World" label.
 		final JLabel label = new JLabel("Hello World");
 		frame.getContentPane().add(label);
 
-		final JButton button = new JButton("Button");
-		frame.getContentPane().add(button);
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (label.getText().equals("Hello World"))
-					label.setText("Pressed!!");
-				else
-					label.setText("Hello World");
-			}
-		});
+		// Change label button
+		{
+			final JButton button = new JButton("Button");
+			frame.getContentPane().add(button);
+			button.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (label.getText().equals("Hello World"))
+						label.setText("Pressed!!");
+					else
+						label.setText("Hello World");
+				}
+			});
+		}
 
-		final JButton buttonStart = new JButton("Start");
-		frame.getContentPane().add(buttonStart);
-		buttonStart.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				JDialog dialog = new JDialog(frame, "TestDialog");
-				JLabel label = new JLabel("Dialog open");
-				dialog.getContentPane().add(label);
-				dialog.pack();
-				dialog.setVisible(true);
-			}
-		});
+		// Start dialog button
+		{
+			final JButton buttonStart = new JButton("Start");
+			frame.getContentPane().add(buttonStart);
+			buttonStart.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					JDialog dialog = new JDialog(frame, "TestDialog");
+					JLabel label = new JLabel("Dialog open");
+					dialog.getContentPane().add(label);
+					dialog.pack();
+					dialog.setVisible(true);
+				}
+			});
+		}
+
+		// Complex Panel
+		{
+			JPanel complexPanel = new JPanel();
+			complexPanel.setLayout(new GridLayout(1, 2));
+			final JTextField textTime = new JTextField(Long.toString(System
+					.currentTimeMillis()));
+			complexPanel.add(textTime);
+			JButton buttonTime = new JButton("Now!");
+			buttonTime.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					textTime.setText(Long.toString(System.currentTimeMillis()));
+				}
+			});
+			complexPanel.add(buttonTime);
+			frame.getContentPane().add(complexPanel);
+		}
 
 		// Display the window.
 		frame.pack();
