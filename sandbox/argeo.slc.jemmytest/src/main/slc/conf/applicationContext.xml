@@ -3,13 +3,14 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <import resource="classpath:/META-INF/spring/slc-detached.xml" />
     <import resource="classpath:/org/argeo/slc/lib/detached/spring.xml" />
+
+    <import resource="classpath:/META-INF/spring/slc-detached.xml" />
 
     <bean id="detachedTestDef"
         class="org.argeo.slc.lib.detached.DetachedTestDefinition">
         <property name="client" ref="slcDetached.driver" />
-        <property name="step" ref="jemmyTest" />
+        <property name="step" ref="step.mainFrameLabel" />
     </bean>
 
     <bean id="slcDetached.driver"

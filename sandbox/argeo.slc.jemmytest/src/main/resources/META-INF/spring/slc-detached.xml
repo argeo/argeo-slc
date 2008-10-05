@@ -5,7 +5,13 @@
 
     <import resource="classpath:/org/argeo/slc/detached/spring.xml" />
 
-    <bean id="jemmyTest" class="org.argeo.slc.jemmytest.DummyStep">
+    <bean id="step.mainFrameLabel"
+        class="org.argeo.slc.jemmytest.steps.MainFrameLabel">
+        <property name="uiPart" ref="uipart.mainFrame" />
+    </bean>
+
+    <bean id="uipart.mainFrame"
+        class="org.argeo.slc.jemmytest.uiparts.MainFrame">
     </bean>
 
     <bean id="slcDetached.driver"

@@ -1,4 +1,4 @@
-package org.argeo.slc.jemmytest;
+package org.argeo.slc.jemmytest.uiparts;
 
 import org.argeo.slc.detached.DetachedContext;
 import org.argeo.slc.detached.DetachedRequest;

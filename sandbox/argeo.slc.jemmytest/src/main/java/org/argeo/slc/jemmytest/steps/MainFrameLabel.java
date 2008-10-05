@@ -1,9 +1,10 @@
-package org.argeo.slc.jemmytest;
+package org.argeo.slc.jemmytest.steps;
 
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedContext;
 import org.argeo.slc.detached.DetachedRequest;
 import org.argeo.slc.detached.ui.UiStep;
+import org.argeo.slc.jemmytest.uiparts.MainFrame;
 
 public class MainFrameLabel extends UiStep {
 
