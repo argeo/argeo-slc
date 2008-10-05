@@ -32,13 +32,13 @@ public class DetachedCastorTest extends AbstractSpringTestCase {
 		DetachedRequest request = createTestRequest();
 
 		StringResult result = new StringResult();
-		converter.marshallRequest(request, result);
+		converter.marshallCommunication(request, result);
 		String xml = result.toString();
 		log.debug(xml + "\n");
 
 		UnitXmlUtils.assertXmlValidation(validator, new StringSource(xml));
-		DetachedRequest requestUnm = converter
-				.unmarshallRequest(new StringSource(xml));
+		DetachedRequest requestUnm = (DetachedRequest) converter
+				.unmarshallCommunication(new StringSource(xml));
 		assertDetachedRequest(request, requestUnm);
 	}
 
@@ -46,39 +46,39 @@ public class DetachedCastorTest extends AbstractSpringTestCase {
 		DetachedRequest request = createTestRequest();
 
 		StringResult result = new StringResult();
-		converter.marshallRequest(request, result);
+		converter.marshallCommunication(request, result);
 		String xml = result.toString();
 		log.debug(xml + "\n");
 
 		UnitXmlUtils.assertXmlValidation(validator, new StringSource(xml));
-		DetachedRequest requestUnm = converterCompat
-				.unmarshallRequest(new StringSource(xml));
+		DetachedRequest requestUnm = (DetachedRequest) converterCompat
+				.unmarshallCommunication(new StringSource(xml));
 		assertDetachedRequest(request, requestUnm);
 	}
 
 	public void testAnswer() throws Exception {
 		DetachedAnswer answer = createTestAnswer();
 		StringResult result = new StringResult();
-		converter.marshallAnswer(answer, result);
+		converter.marshallCommunication(answer, result);
 		String xml = result.toString();
 		log.debug(xml + "\n");
 
 		UnitXmlUtils.assertXmlValidation(validator, new StringSource(xml));
-		DetachedAnswer answerUnm = converter.unmarshallAnswer(new StringSource(
-				xml));
+		DetachedAnswer answerUnm = (DetachedAnswer) converter
+				.unmarshallCommunication(new StringSource(xml));
 		assertDetachedAnswer(answer, answerUnm);
 	}
 
 	public void testAnswerCompat() throws Exception {
 		DetachedAnswer answer = createTestAnswer();
 		StringResult result = new StringResult();
-		converterCompat.marshallAnswer(answer, result);
+		converterCompat.marshallCommunication(answer, result);
 		String xml = result.toString();
 		log.debug(xml + "\n");
 
 		UnitXmlUtils.assertXmlValidation(validator, new StringSource(xml));
-		DetachedAnswer answerUnm = converter.unmarshallAnswer(new StringSource(
-				xml));
+		DetachedAnswer answerUnm = (DetachedAnswer) converter
+				.unmarshallCommunication(new StringSource(xml));
 		assertDetachedAnswer(answer, answerUnm);
 	}
 
@@ -114,7 +114,7 @@ public class DetachedCastorTest extends AbstractSpringTestCase {
 		Properties expectedProps = expected.getProperties();
 		Properties reachedProps = reached.getProperties();
 		assertEquals(expectedProps.size(), reachedProps.size());
-		Enumeration keys = expectedProps.keys();
+		Enumeration<Object> keys = expectedProps.keys();
 		while (keys.hasMoreElements()) {
 			String key = (String) keys.nextElement();
 			assertTrue(reachedProps.containsKey(key));
@@ -131,7 +131,7 @@ public class DetachedCastorTest extends AbstractSpringTestCase {
 		Properties expectedProps = expected.getProperties();
 		Properties reachedProps = reached.getProperties();
 		assertEquals(expectedProps.size(), reachedProps.size());
-		Enumeration keys = expectedProps.keys();
+		Enumeration<Object> keys = expectedProps.keys();
 		while (keys.hasMoreElements()) {
 			String key = (String) keys.nextElement();
 			assertTrue(reachedProps.containsKey(key));
@@ -139,18 +139,4 @@ public class DetachedCastorTest extends AbstractSpringTestCase {
 					.getProperty(key));
 		}
 	}
-
-	private void validate() {
-
-	}
-
-	public static void main(String[] args) {
-		try {
-			new DetachedCastorTest().testRequest();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 }

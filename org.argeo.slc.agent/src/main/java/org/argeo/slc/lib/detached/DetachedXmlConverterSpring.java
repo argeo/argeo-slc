@@ -7,6 +7,8 @@ import javax.xml.transform.Source;
 
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.detached.DetachedAnswer;
+import org.argeo.slc.detached.DetachedCommunication;
+import org.argeo.slc.detached.DetachedException;
 import org.argeo.slc.detached.DetachedRequest;
 import org.argeo.slc.detached.DetachedXmlConverter;
 import org.springframework.oxm.Marshaller;
@@ -18,6 +20,26 @@ import org.xml.sax.InputSource;
 public class DetachedXmlConverterSpring implements DetachedXmlConverter {
 	private Marshaller marshaller;
 	private Unmarshaller unmarshaller;
+
+	public void marshallCommunication(DetachedCommunication detCom,
+			Result result) {
+		if (detCom instanceof DetachedRequest) {
+			marshallRequest((DetachedRequest) detCom, result);
+		} else if (detCom instanceof DetachedAnswer) {
+			marshallAnswer((DetachedAnswer) detCom, result);
+		} else {
+			throw new DetachedException("Unkown communication type "
+					+ detCom.getClass());
+		}
+	}
+
+	public DetachedCommunication unmarshallCommunication(Source source) {
+		try {
+			return (DetachedCommunication) unmarshaller.unmarshal(source);
+		} catch (Exception e) {
+			throw new SlcException("Could not unmarshall", e);
+		}
+	}
 
 	public void marshallRequest(DetachedRequest request, Result result) {
 		try {
@@ -32,22 +54,6 @@ public class DetachedXmlConverterSpring implements DetachedXmlConverter {
 			marshaller.marshal(answer, result);
 		} catch (Exception e) {
 			throw new SlcException("Could not marshall", e);
-		}
-	}
-
-	public DetachedAnswer unmarshallAnswer(Source source) {
-		try {
-			return (DetachedAnswer) unmarshaller.unmarshal(source);
-		} catch (Exception e) {
-			throw new SlcException("Could not unmarshall", e);
-		}
-	}
-
-	public DetachedRequest unmarshallRequest(Source source) {
-		try {
-			return (DetachedRequest) unmarshaller.unmarshal(source);
-		} catch (Exception e) {
-			throw new SlcException("Could not unmarshall", e);
 		}
 	}
 
