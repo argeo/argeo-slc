@@ -7,7 +7,6 @@ import org.argeo.slc.detached.DetachedStep;
 import org.springframework.beans.factory.BeanNameAware;
 
 public abstract class UiStep implements DetachedStep, BeanNameAware {
-	private UiPart uiPart;
 	private String beanName;
 
 	public final DetachedAnswer execute(DetachedContext detachedContext,
@@ -18,14 +17,6 @@ public abstract class UiStep implements DetachedStep, BeanNameAware {
 
 	protected abstract DetachedAnswer executeUiStep(DetachedContext context,
 			DetachedRequest request);
-
-	public UiPart getUiPart() {
-		return uiPart;
-	}
-
-	public void setUiPart(UiPart uiPart) {
-		this.uiPart = uiPart;
-	}
 
 	public void setBeanName(String name) {
 		this.beanName = name;
