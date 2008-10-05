@@ -4,10 +4,13 @@ import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedDriver;
 import org.argeo.slc.detached.DetachedExecutionServer;
 import org.argeo.slc.detached.DetachedRequest;
+import org.argeo.slc.detached.DetachedXmlConverter;
 
 public abstract class AbstractDriver implements DetachedDriver {
 	private boolean active = true;
 	private DetachedExecutionServer executionServer = null;
+
+	private DetachedXmlConverter xmlConverter = null;
 
 	public synchronized void start() {
 
@@ -51,6 +54,14 @@ public abstract class AbstractDriver implements DetachedDriver {
 
 	public synchronized void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public DetachedXmlConverter getXmlConverter() {
+		return xmlConverter;
+	}
+
+	public void setXmlConverter(DetachedXmlConverter xmlConverter) {
+		this.xmlConverter = xmlConverter;
 	}
 
 }

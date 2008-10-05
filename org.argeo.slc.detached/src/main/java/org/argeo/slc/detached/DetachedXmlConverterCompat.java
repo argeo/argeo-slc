@@ -33,6 +33,61 @@ public class DetachedXmlConverterCompat implements DetachedXmlConverter {
 		}
 	}
 
+	public void marshallCommunication(DetachedCommunication detCom,
+			Result result) {
+		if (detCom instanceof DetachedRequest) {
+			marshallRequest((DetachedRequest) detCom, result);
+		} else if (detCom instanceof DetachedAnswer) {
+			marshallAnswer((DetachedAnswer) detCom, result);
+		} else {
+			throw new DetachedException("Unkown communication type "
+					+ detCom.getClass());
+		}
+	}
+
+	public DetachedCommunication unmarshallCommunication(Source source) {
+		// Parse
+		DOMResult result = new DOMResult();
+		try {
+			copy.transform(source, result);
+		} catch (TransformerException e) {
+			throw new DetachedException("Could not copy xml source", e);
+		}
+		Element root = (Element) ((Document) result.getNode())
+				.getDocumentElement();
+		
+		// Create objects
+		String requestType = root.getLocalName();
+		if (requestType.equals("detached-request")) {
+			DetachedRequest request = new DetachedRequest();
+			request.setUuid(root.getElementsByTagNameNS(
+					SLC_DETACHED_NAMESPACE_URI, "uuid").item(0)
+					.getTextContent());
+			request
+					.setRef(root.getElementsByTagNameNS(
+							SLC_DETACHED_NAMESPACE_URI, "ref").item(0)
+							.getTextContent());
+			request.setPath(root.getElementsByTagNameNS(
+					SLC_DETACHED_NAMESPACE_URI, "path").item(0)
+					.getTextContent());
+			Element propertiesElement = (Element) root.getElementsByTagNameNS(
+					SLC_DETACHED_NAMESPACE_URI, "properties").item(0);
+			NodeList propElements = propertiesElement.getElementsByTagNameNS(
+					SLC_DETACHED_NAMESPACE_URI, "prop");
+			Properties properties = new Properties();
+			for (int i = 0; i < propElements.getLength(); i++) {
+				Element propElement = (Element) propElements.item(i);
+				String key = propElement.getAttribute("key");
+				String value = propElement.getTextContent();
+				properties.setProperty(key, value);
+			}
+			request.setProperties(properties);
+			return request;
+		} else {
+			throw new DetachedException(requestType + " not implemented.");
+		}
+	}
+
 	public void marshallAnswer(DetachedAnswer answer, Result result) {
 		StringBuffer buf = new StringBuffer("");
 		buf.append("<slc-det:detached-answer xmlns:slc-det=\""
@@ -69,11 +124,7 @@ public class DetachedXmlConverterCompat implements DetachedXmlConverter {
 	}
 
 	public void marshallRequest(DetachedRequest request, Result result) {
-		throw new DetachedException("Not implemented.");
-	}
-
-	public DetachedAnswer unmarshallAnswer(Source source) {
-		throw new DetachedException("Not implemented.");
+		throw new DetachedException(" Not implemented.");
 	}
 
 	public DetachedRequest unmarshallRequest(Source source) {
