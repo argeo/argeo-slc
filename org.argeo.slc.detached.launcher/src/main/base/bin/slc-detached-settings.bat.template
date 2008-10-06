@@ -5,6 +5,7 @@ set JAVA_HOME=[the target JRE]
 set SLC_USER_CLASSPATH=[classpath of the application to test]
 set SLC_DETACHED_APPCLASS=[main class of the application to test]
 set SLC_DETACHED_APPARGS=[arguments of the application to test]
+set SLC_DETACHED_JVM_ARGS=[additional JVM arguments]
 
 rem Runtime
 set PROJECT_BASE=[base of the project to being developed]
