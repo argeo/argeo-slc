@@ -48,6 +48,19 @@
 			<classifier>base</classifier>
 		</dependency>
 
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.detached.launcher</artifactId>
+            <version>${project.version}</version>
+			<type>zip</type>
+			<classifier>dist</classifier>
+		</dependency>
+
+        <dependency>
+            <groupId>org.argeo.dep.jemmy</groupId>
+            <artifactId>org.argeo.dep.jemmy.nb61</artifactId>
+        </dependency>
+
 		<!-- Additional Third Parties
 		<dependency>
 			<groupId>net.sourceforge.jtds</groupId>

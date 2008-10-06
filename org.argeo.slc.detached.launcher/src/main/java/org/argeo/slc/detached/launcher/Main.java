@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.felix.framework.Felix;
@@ -52,25 +53,33 @@ public class Main {
 
 	protected static Properties prepareConfig(String propertyFilePath)
 			throws Exception {
+		// Format slc.home
+		String slcHome = System.getProperty("slc.home");
+		if (slcHome != null) {
+			slcHome = new File(slcHome).getCanonicalPath();
+			System.setProperty("slc.home", slcHome);
+		}
+
 		// Load config
 		Properties config = new Properties();
 		InputStream in = null;
-		;
+
 		try {
 			in = Main.class
 					.getResourceAsStream("/org/argeo/slc/detached/launcher/felix.properties");
 			config.load(in);
 		} finally {
-			if (in != null)
-				in.close();
+			IOUtils.closeQuietly(in);
 		}
 
 		try {
-			in = new FileInputStream(propertyFilePath);
-			config.load(in);
+			File file = new File(propertyFilePath);
+			if (file.exists()) {
+				in = new FileInputStream(propertyFilePath);
+				config.load(in);
+			}
 		} finally {
-			if (in != null)
-				in.close();
+			IOUtils.closeQuietly(in);
 		}
 
 		// System properties have priority.
@@ -117,9 +126,9 @@ public class Main {
 	}
 
 	public static void startApp(Properties config) throws Exception {
-		String className = config.getProperty("argeo.scl.detached.appclass");
+		String className = config.getProperty("slc.detached.appclass");
 		String[] uiArgs = readArgumentsFromLine(config.getProperty(
-				"argeo.slc.detached.appargs", ""));
+				"slc.detached.appargs", ""));
 
 		// Launch main method using reflection
 		Class clss = Class.forName(className);
