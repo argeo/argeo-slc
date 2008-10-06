@@ -8,6 +8,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -19,10 +22,31 @@ public class SwingTestUi {
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		frame.getContentPane().setLayout(new GridLayout(4, 1));
+		frame.setTitle("Mx");
 
 		// "Hello World" label.
 		final JLabel label = new JLabel("Hello World");
 		frame.getContentPane().add(label);
+
+		{
+			// Add menu
+			JMenuBar menubar = new JMenuBar();
+			JMenu menuSession = new JMenu("Session");
+			menubar.add(menuSession);
+			JMenuItem start = new JMenuItem("Start");
+			menuSession.add(start);
+			start.addActionListener(new ActionListener() {
+
+				public void actionPerformed(ActionEvent e) {
+					JDialog dialog = new JDialog(frame, "New Session");
+					JLabel label = new JLabel("Mx Session");
+					dialog.getContentPane().add(label);
+					dialog.pack();
+					dialog.setVisible(true);
+				}
+			});
+			frame.setJMenuBar(menubar);
+		}
 
 		// Change label button
 		{
