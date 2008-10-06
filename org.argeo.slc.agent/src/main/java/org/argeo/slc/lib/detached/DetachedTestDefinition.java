@@ -40,12 +40,12 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 	// Spring properties
 	private String testDefBeanName = null;
 	private BeanDefinitionRegistry beanDefinitionRegistry = null;
-	private String stepBeanName = null;
+	private String stepRef = null;
 
 	public void execute(TestRun testRun) {
 		// Look for step bean name
 		String stepBeanNameT = null;
-		if (this.stepBeanName == null && step != null) {
+		if (this.stepRef == null && step != null) {
 			if (step instanceof UiStep) {
 				stepBeanNameT = ((UiStep) step).getBeanName();
 			} else {
@@ -58,8 +58,8 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 				BeanReference ref = (BeanReference) stepBeanRef;
 				stepBeanNameT = ref.getBeanName();
 			}
-		} else if (this.stepBeanName != null) {
-			stepBeanNameT = this.stepBeanName;
+		} else if (this.stepRef != null) {
+			stepBeanNameT = this.stepRef;
 		}
 
 		// Execute
@@ -136,8 +136,8 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 		this.client = client;
 	}
 
-	public void setStepBeanName(String stepBeanName) {
-		this.stepBeanName = stepBeanName;
+	public void setStepRef(String stepBeanName) {
+		this.stepRef = stepBeanName;
 	}
 
 }
