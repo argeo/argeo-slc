@@ -1,25 +1,25 @@
 Manifest-Version: 1.0
 Export-Package: org.argeo.slc.detached.admin;uses:="org.apache.commons
  .logging,org.osgi.framework,org.argeo.slc.detached",org.argeo.slc.det
- ached.ui;uses:="org.argeo.slc.detached",org.argeo.slc.detached;uses:=
- "org.apache.commons.logging,org.springframework.context.support,org.s
- pringframework.core.io,org.springframework.context,org.springframewor
- k.beans.factory.xml,javax.xml.transform.dom,org.argeo.slc.detached.dr
- ivers,org.w3c.dom,org.springframework.beans.factory.support,org.argeo
- .slc.detached.admin,javax.xml.transform,javax.xml.transform.stream,or
- g.osgi.framework,org.apache.commons.io,org.springframework.beans.fact
- ory",org.argeo.slc.detached.drivers;uses:="org.apache.commons.logging
- ,org.apache.commons.io.filefilter,javax.xml.transform,javax.xml.trans
- form.stream,org.apache.commons.io,org.argeo.slc.detached,org.springfr
- amework.beans.factory"
+ ached.ui;uses:="org.argeo.slc.detached,org.springframework.beans.fact
+ ory",org.argeo.slc.detached;uses:="org.apache.commons.logging,org.spr
+ ingframework.context.support,org.springframework.core.io,org.springfr
+ amework.context,org.springframework.beans.factory.xml,javax.xml.trans
+ form.dom,org.argeo.slc.detached.drivers,org.w3c.dom,org.springframewo
+ rk.beans.factory.support,org.argeo.slc.detached.admin,javax.xml.trans
+ form,javax.xml.transform.stream,org.osgi.framework,org.apache.commons
+ .io,org.springframework.beans.factory",org.argeo.slc.detached.drivers
+ ;uses:="org.apache.commons.logging,org.apache.commons.io.filefilter,j
+ avax.xml.transform,javax.xml.transform.stream,org.apache.commons.io,o
+ rg.argeo.slc.detached,org.springframework.beans.factory"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Detached
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Argeo
-Build-Jdk: 1.6.0
+Build-Jdk: 1.6.0_06
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1223214001545
+Bnd-LastModified: 1223286252609
 Bundle-ManifestVersion: 2
 Bundle-Activator: org.argeo.slc.detached.Activator
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt

@@ -219,6 +219,8 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 		createIfNotExist(processedAnswersDir);
 		createIfNotExist(cleanedRequestsDir);
 		createIfNotExist(cleanedAnswersDir);
+
+		log.info("Detached File Driver initialized on " + baseDir);
 	}
 
 }
