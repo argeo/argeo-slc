@@ -1,0 +1,13 @@
+@echo off
+
+rem Target application
+set JAVA_HOME=[the target JRE]
+set SLC_USER_CLASSPATH=[classpath of the application to test]
+set SLC_DETACHED_APPCLASS=[main class of the application to test]
+set SLC_DETACHED_APPARGS=[arguments of the application to test]
+
+rem Runtime
+set PROJECT_BASE=[base of the project to being developed]
+set SLC_WORK_DIR=%PROJECT_BASE%/src/main/slc/work
+set SLC_USER_BUNDLES=reference:file:%PROJECT_BASE%/target/classes
+

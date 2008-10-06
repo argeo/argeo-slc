@@ -52,7 +52,7 @@
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached.launcher</artifactId>
             <version>${project.version}</version>
-			<type>zip</type>
+			<type>tar.gz</type>
 			<classifier>dist</classifier>
 		</dependency>
 

@@ -30,7 +30,7 @@
             <outputFileNameMapping></outputFileNameMapping>
             <includes>
                 <include>
-                    org.argeo.slc:org.argeo.slc.detached.launcher:zip:dist
+                    org.argeo.slc:org.argeo.slc.detached.launcher:tar.gz:dist
                 </include>
             </includes>
             <fileMode>0755</fileMode>
