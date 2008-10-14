@@ -17,9 +17,9 @@ Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Detached
 Created-By: Apache Maven Bundle Plugin
 Bundle-Vendor: Argeo
-Build-Jdk: 1.6.0_06
+Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1223286252609
+Bnd-LastModified: 1224019400860
 Bundle-ManifestVersion: 2
 Bundle-Activator: org.argeo.slc.detached.Activator
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
