@@ -52,7 +52,7 @@
             <bind-xml auto-naming="deriveByClass" />
         </field>
         <field name="testRunDescriptor" />
-        <field name="attributes" collection="sortedmap">
+        <field name="attributes" collection="hashtable">
             <bind-xml name="attribute" location="attributes">
                 <class name="org.exolab.castor.mapping.MapItem">
                     <map-to
