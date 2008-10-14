@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Export-Package: org.argeo.slc.jemmytest.uiparts;uses:="org.argeo.slc.d
  etached.ui,javax.swing,org.netbeans.jemmy,org.netbeans.jemmy.operator
- s,org.argeo.slc.detached",org.argeo.slc.jemmytest;uses:="org.apache.c
- ommons.logging,org.netbeans.jemmy.operators,org.argeo.slc.detached",o
- rg.argeo.slc.jemmytest.steps;uses:="org.argeo.slc.jemmytest.uiparts,o
- rg.argeo.slc.detached.ui,org.argeo.slc.detached"
+ s,org.argeo.slc.detached",org.argeo.slc.jemmytest;uses:="org.argeo.sl
+ c.detached",org.argeo.slc.jemmytest.steps;uses:="org.argeo.slc.jemmyt
+ est.uiparts,org.argeo.slc.detached.ui,org.argeo.slc.detached"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
 Bundle-Name: SLC Sandbox JemmyTest
@@ -13,17 +12,18 @@ Require-Bundle: org.argeo.slc.detached
 Bundle-Vendor: Argeo
 Build-Jdk: 1.6.0
 Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1223229086154
 Bundle-Activator: org.argeo.slc.jemmytest.JemmyTestActivator
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: SLC Distribution
-Import-Package: javax.swing,org.apache.commons.logging,org.argeo.slc.d
- etached,org.argeo.slc.detached.ui,org.argeo.slc.jemmytest,org.argeo.s
- lc.jemmytest.steps,org.argeo.slc.jemmytest.uiparts,org.netbeans.jemmy
- ,org.netbeans.jemmy.operators,org.springframework.beans.factory.xml;v
- ersion="2.0.8"
+Import-Package: javax.swing,org.argeo.slc.detached,org.argeo.slc.detac
+ hed.ui,org.argeo.slc.jemmytest,org.argeo.slc.jemmytest.steps,org.arge
+ o.slc.jemmytest.uiparts,org.netbeans.jemmy,org.netbeans.jemmy.operato
+ rs,org.springframework.beans.factory.xml;version="2.0.8"
 Bundle-SymbolicName: org.argeo.slc.sandbox.jemmytest
 Bundle-DocURL: http://www.argeo.org
+Include-Resource: META-INF/spring/slc-detached.xml=src/main/resources/
+ META-INF/spring/slc-detached.xml,META-INF/MANIFEST.MF=src/main/resour
+ ces/META-INF/MANIFEST.MF
 Originally-Created-By: Apache Maven Bundle Plugin
 
