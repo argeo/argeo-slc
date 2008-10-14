@@ -10,6 +10,11 @@
 
 	<bean id="testResult"
 		parent="slcDefault.test.basicTreeTestResult">
+       <property name="attributes">
+            <map>
+                <entry key="test" value="TEST"/>
+            </map>
+        </property>       
 		<property name="listeners">
 			<list merge="true">
 				<ref bean="slcDefault.castor.xsltReportGenerator" />
