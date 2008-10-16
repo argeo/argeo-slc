@@ -37,8 +37,8 @@ public class ResultPartRequestEp extends AbstractMarshallingPayloadEndpoint {
 
 		treeTestResultDao.addResultPart(msg.getResultUuid(), msg.getPath(), msg
 				.getResultPart(), msg.getRelatedElements());
-		treeTestResultDao.updateAttributes(msg.getResultUuid(), msg
-				.getAttributes());
+//		treeTestResultDao.updateAttributes(msg.getResultUuid(), msg
+//				.getAttributes());
 
 		return null;
 	}
