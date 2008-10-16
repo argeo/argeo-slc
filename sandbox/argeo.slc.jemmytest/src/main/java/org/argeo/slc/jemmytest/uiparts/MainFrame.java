@@ -20,7 +20,7 @@ public class MainFrame extends UiPart {
 	public final static String PROP_CONTENT_PANE = "jemmytest.ui.contentPane";
 
 	protected void initUi(DetachedContext context, DetachedRequest request) {
-		frame = new JFrameOperator("HelloWorldSwing");
+		frame = new JFrameOperator("Mx");
 		button = new JButtonOperator(frame, "Button");
 		buttonStart = new JButtonOperator(frame, "Start");
 		String labelStr = request.getProperties()
