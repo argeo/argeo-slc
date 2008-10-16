@@ -220,6 +220,19 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 		createIfNotExist(cleanedRequestsDir);
 		createIfNotExist(cleanedAnswersDir);
 
+		// Clean requests and answers from previous builds
+		File[] remainingRequests = requestsDir.listFiles();
+		for (int i = 0; i < remainingRequests.length; i++) {
+			FileUtils.moveFileToDirectory(remainingRequests[i],
+					cleanedRequestsDir, false);
+		}
+
+		File[] remainingAnswers = answersDir.listFiles();
+		for (int i = 0; i < remainingAnswers.length; i++) {
+			FileUtils.moveFileToDirectory(remainingAnswers[i],
+					cleanedAnswersDir, false);
+		}
+
 		log.info("Detached File Driver initialized on " + baseDir);
 	}
 
