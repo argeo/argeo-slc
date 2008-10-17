@@ -1,12 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.argeo.slc</groupId>
     <artifactId>argeo-slc</artifactId>
     <packaging>pom</packaging>
     <name>Argeo SLC</name>
-    <version>0.11.1-SNAPSHOT</version>
+    <version>0.11.mbaudier-SNAPSHOT</version>
     <description>SLC Distribution</description>
     <url>
         http://www.argeo.org/projects/slc/${project.artfactId}/${project.version}
@@ -19,10 +17,8 @@
         <version.jetty>6.1.11</version.jetty>
     </properties>
     <scm>
-        <connection>
-            scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc
-        </connection>
-        <url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc</url>
+        <connection>scm:svn:https://www.argeo.org/svn/slc/branches/0.11.mbaudier/org.argeo.slc</connection>
+        <url>https://www.argeo.org/svn/slc/branches/0.11.mbaudier/org.argeo.slc</url>
     </scm>
     <issueManagement>
         <system>Bugzilla</system>
@@ -100,8 +96,7 @@
                         <stopKey>stopKey</stopKey>
                         <stopPort>9091</stopPort>
                         <connectors>
-                            <connector
-                                implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+                            <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                                 <port>9090</port>
                                 <maxIdleTime>60000</maxIdleTime>
                             </connector>
