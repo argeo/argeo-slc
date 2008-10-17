@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.11.mbaudier-SNAPSHOT</version>
+		<version>0.11.1-SNAPSHOT</version>
 		<relativePath>org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-all</artifactId>
@@ -25,8 +25,8 @@
 		<module>org.argeo.slc.webapp</module>
 	</modules>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/branches/0.11.mbaudier</connection>
-	  <url>https://www.argeo.org/svn/slc/branches/0.11.mbaudier</url>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
+	  <url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc/argeo-slc-all</url>
   </scm>
 	<build>
 		<plugins>
