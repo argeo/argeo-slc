@@ -103,6 +103,17 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 
 					if (previousAnswer.getStatus() != DetachedAnswer.ERROR) {
 						execute = false;
+						String msg = "Skipped path " + request.getPath()
+								+ " (skipCount=" + skipCount + ")";
+						skippedLog.append(msg);
+						log.info(msg);
+						skipCount++;
+					} else {
+						log
+								.info("Path "
+										+ request.getPath()
+										+ " was previously in error, executing it again."
+										+ " (skipCount=" + skipCount + ")");
 					}
 				} else {
 					// went further as skip count, doing nothing.
@@ -114,8 +125,6 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 			DetachedStep step = (DetachedStep) obj;
 			answer = step.execute(detachedContext, request);
 		} else {
-			skippedLog.append("Skipped path " + request.getPath()
-					+ " (skipCount=" + skipCount + ")");
 			answer = new DetachedAnswer(request);
 			answer.setStatus(DetachedAnswer.SKIPPED);
 			answer.setLog(skippedLog.toString());
