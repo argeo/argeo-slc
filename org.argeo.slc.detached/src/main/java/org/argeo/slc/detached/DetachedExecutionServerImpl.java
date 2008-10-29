@@ -17,7 +17,8 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 	private final DetachedContextImpl detachedContext;
 	private final List sessions;
 
-	private int skipCount = 0;
+	private int skipCount = 1;// start skipCount at 1 since the first step is
+								// always an open session
 
 	private BundleContext bundleContext;
 
@@ -113,7 +114,8 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 								.info("Path "
 										+ request.getPath()
 										+ " was previously in error, executing it again."
-										+ " (skipCount=" + skipCount + ")");
+										+ " (skipCount=" + skipCount + "). Reset skip count to 1");
+						skipCount = 1;
 					}
 				} else {
 					// went further as skip count, doing nothing.
