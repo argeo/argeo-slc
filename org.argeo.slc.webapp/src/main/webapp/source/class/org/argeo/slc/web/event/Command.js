@@ -10,7 +10,8 @@ qx.Class.define("org.argeo.slc.web.event.Command",
   		nullable: true,
   		event : "changeMenu"
   	},
-  	menuCallback : {nullable:true}
+  	menuCallback : {nullable:true},
+  	menuContext : {nullable:true}
   },
   
   construct : function(id, label, icon, shortcut){
@@ -92,7 +93,7 @@ qx.Class.define("org.argeo.slc.web.event.Command",
   	executeSubMenuCallback : function(event){
 		var button = event.getTarget();
 		var callback = this.getMenuCallback();
-		callback = qx.lang.Function.bind(callback, this);
+		callback = qx.lang.Function.bind(callback, this.getMenuContext() || this);
 		callback(button.getUserData("commandId"));  		
   	},  	
   	

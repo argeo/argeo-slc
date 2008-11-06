@@ -67,6 +67,10 @@ qx.Class.define("org.argeo.slc.web.Application",
       toolbar.setShow("icon");
       this.commandManager.addToolbarContextMenu(toolbar);
 
+      var stopCommand = this.commandManager.getCommandById("stop");
+      var serviceManager = org.argeo.slc.web.util.RequestManager.getInstance();
+      serviceManager.setStopCommand(stopCommand);
+      
       var splitPane = new qx.ui.splitpane.Pane("horizontal");
 	  var splitLeft = new qx.ui.splitpane.Pane("vertical").set({
 	    width: 300,
@@ -84,7 +88,7 @@ qx.Class.define("org.argeo.slc.web.Application",
 	  splitLeft.add(bottomLeft, 0);
 	  
 	  splitPane.add(splitLeft, 0);
-  	  this.rightPane = new org.argeo.slc.web.components.View("applet", "Test");
+  	  this.rightPane = new org.argeo.slc.web.components.View("applet", "Test");  	  
   	  this.registerView(this.rightPane);
 	  splitPane.add(this.rightPane, 1);
       
@@ -167,25 +171,20 @@ qx.Class.define("org.argeo.slc.web.Application",
     },
     
     loadTable : function(url){
-    	
-      this.baseUrl = "http://localhost:7070/com.capco.sparta.web/";
-      this.resultListService = "resultList.xml";
-    	
+    	    	
 	  	var model = this.getModel();
 	  	model.removeRows(0, model.getRowCount());
-	  	var request = new qx.io2.HttpRequest(url);	  	
-	  	request.addListener("load", function(e){
-	  		var xml = this.getResponseXml();
-	  		if(xml == null){
-	  			var txt = this.getResponseText();
-	  			xml = new qx.xml.Document.fromString(txt);
-	  		}
+	  	var serviceManager = org.argeo.slc.web.util.RequestManager.getInstance();
+	  	var request = serviceManager.getRequest(url, "GET", "application/xml");	  	
+	  	request.addListener("completed", function(response){
+  			xml = response.getContent();
 	  		qx.log.Logger.info("Successfully loaded XML");
 	  		var nodes = qx.xml.Element.selectNodes(xml, "//data");
 	  		for(var i=0; i<nodes.length;i++){
 	  			var rowData = nodes[i];
 	  			model.addRows([rowData]);
 	  		}
+	  		serviceManager.requestCompleted(this);
 	  	}, request);
 	  	request.send();
     },
@@ -194,7 +193,7 @@ qx.Class.define("org.argeo.slc.web.Application",
 		var applet = new org.argeo.slc.web.components.Applet();
 		applet.initData(xmlNode);
 		this.rightPane.empty();
-		this.rightPane.setContent(applet, true);		
+		this.rightPane.setContent(applet, false);		
 	}	
   }
 });

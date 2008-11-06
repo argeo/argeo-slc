@@ -23,9 +23,19 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   				menu	   	: "File",
   				toolbar  	: "list",
   				callback 	: function(e){
-  					this.loadTable("/com.capco.sparta.web/resultList.sparta");
+  					this.loadTable("/org.argeo.slc.webapp/resultList.web");
   				}, 
   				command 	: null
+  			},
+  			"stop" : {
+  				label 		: "Stop", 
+  				icon		: "resource/slc/edit-delete.png",
+  				shortcut	: "Control+s",
+  				enabled		: false,
+  				menu		: null,
+  				toolbar		: "list",
+  				callback	: function(e){},
+  				command		: null
   			},
 	  		"quit" : {
   				label		: "Quit", 
@@ -51,8 +61,8 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   				selectionChange : function(viewId, xmlNodes){
   					if(viewId != "list") return;
   					this.setEnabled(false);
-  					if(xmlNodes == null) return;
-  					var applet = qx.xml.Element.selectSingleNode(xmlNodes[0],'report[@type="applet"]'); 
+  					if(xmlNodes == null || !xmlNodes.length) return;
+  					var applet = org.argeo.slc.web.util.Element.selectSingleNode(xmlNodes[0],'report[@type="applet"]'); 
   					if(applet != null && qx.dom.Node.getText(applet) != ""){
   						this.setEnabled(true);  						
   					}  					
@@ -70,7 +80,21 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   				command 	: null,
   				submenu 	: {},
   				submenuCallback : function(commandId){
-  					qx.log.Logger.info(commandId);
+  					var xmlNodes = this.getSelectionForView("list").getNodes();
+  					// Single selection
+  					var uuid = qx.xml.Element.getSingleNodeText(xmlNodes[0], 'param[@name="uuid"]');
+  					var urls = {
+  						xsl : "resultView.xslt",
+  						xml : "resultViewXml.xslt",
+  						xls : "resultView.xls",
+  						pdf : "resultView.pdf"
+  					};
+  					var url = "../"+urls[commandId]+"?uuid="+uuid;
+  					if(commandId == "xls" || commandId == "pdf"){
+	  					document.location.href = url;
+  					}else{
+  						var win = window.open(url);
+  					}
   				},
   				selectionChange : function(viewId, xmlNodes){
   					if(viewId!="list")return;
@@ -81,13 +105,14 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   					var reports = qx.xml.Element.selectNodes(xmlNodes[0],'report[@type="download"]');
   					if(reports == null || !reports.length)return;
   					
-  					reports.map(function(report){
+  					for(var i=0; i<reports.length;i++){
+  						var report = reports[i];
   						this.addSubMenuButton(
   							qx.dom.Node.getText(report),
-  							qx.dom.Node.getText(qx.xml.Element.selectSingleNode(report, "@icon")),
-  							qx.dom.Node.getText(qx.xml.Element.selectSingleNode(report, "@commandid"))
+  							qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(report, "@icon")),
+  							qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(report, "@commandid"))
 						);
-  					}, this);
+  					}
   					this.setEnabled(true);
   					this.fireDataEvent("changeMenu", this.getMenu());
   				}
@@ -175,13 +200,14 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   		this.toolbars = {};
   		var defs = this.getDefinitions();
   		for(var key in defs){
-  			var definition = defs[key];
+  			var definition = defs[key];  			
   			var command = new org.argeo.slc.web.event.Command(key, definition.label, definition.icon, definition.shortcut);
   			if(definition.submenu){
   				var menu = new qx.ui.menu.Menu();
   				command.setMenu(menu);
   				if(definition.submenuCallback){
   					command.setMenuCallback(definition.submenuCallback);
+  					command.setMenuContext(this.application);
   				}
   			}
   			command.setEnabled(definition.enabled);
@@ -247,6 +273,12 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   		if(defs[commandId] && defs[commandId].command.getEnabled()){
   			defs[commandId].command.execute();
   		}
+  	},
+  	getCommandById : function(commandId){
+  		var defs = this.getDefinitions();
+  		if(defs[commandId] && defs[commandId].command){
+  			return defs[commandId].command;
+  		}  		
   	},
   	addToolbarContextMenu : function(toolbar){
   		var menu = new qx.ui.menu.Menu();

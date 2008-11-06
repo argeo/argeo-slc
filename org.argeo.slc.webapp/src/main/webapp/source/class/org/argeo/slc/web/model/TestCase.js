@@ -29,7 +29,7 @@ qx.Class.define("org.argeo.slc.web.model.TestCase",
   {
   	getProperty : function(xPath){
   		var xmlNode = this.getData();
-  		return qx.dom.Node.getText(qx.xml.Element.selectSingleNode(xmlNode, xPath)) || "";
+  		return qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(xmlNode, xPath)) || "";
   	}
   }
 });

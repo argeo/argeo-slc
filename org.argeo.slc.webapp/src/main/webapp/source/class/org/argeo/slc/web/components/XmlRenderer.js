@@ -13,18 +13,20 @@ qx.Class.define("org.argeo.slc.web.components.XmlRenderer",
     // overridden
     _getContentHtml : function(cellInfo) {
     	var xmlNode = cellInfo.rowData;
+    	if(!xmlNode) return "";
     	var xPath;
     	switch(cellInfo.col){
     		case 0 :
     			xPath = "param[@name='testName']";
-		    	var nameParam = qx.xml.Element.selectSingleNode(xmlNode, xPath);
+		    	var nameParam = org.argeo.slc.web.util.Element.selectSingleNode(xmlNode, xPath);
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || "Not Found");
     			break;
     		case 1 : 
     			xPath = "param[@name='date']";
-		    	var nameParam = qx.xml.Element.selectSingleNode(xmlNode, xPath);
+		    	var nameParam = org.argeo.slc.web.util.Element.selectSingleNode(xmlNode, xPath);
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || 0);
-		    	var splits = value.split(".");		    	
+		    	var splits = value.split(".");
+				qx.log.Logger.info(value);
 		    	var dateFormat = new qx.util.format.DateFormat("yyyy-MM-dd HH:mm:ss");
 		    	try {
 			    	var date = dateFormat.parse(splits[0]);
