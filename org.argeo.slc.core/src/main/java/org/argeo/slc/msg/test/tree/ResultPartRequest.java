@@ -17,7 +17,7 @@ public class ResultPartRequest {
 	private TreeSPath path;
 	private Map<TreeSPath, StructureElement> relatedElements;
 	private TestRunDescriptor testRunDescriptor;
-	private SortedMap<String, String> attributes;
+	private Map<String, String> attributes;
 
 	public ResultPartRequest() {
 
@@ -92,7 +92,7 @@ public class ResultPartRequest {
 		this.relatedElements = relatedElements;
 	}
 
-	public SortedMap<String, String> getAttributes() {
+	public Map<String, String> getAttributes() {
 		return attributes;
 	}
 

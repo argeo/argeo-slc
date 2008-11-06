@@ -2,7 +2,6 @@ package org.argeo.slc.dao.test.tree;
 
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 
 import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
@@ -19,5 +18,5 @@ public interface TreeTestResultDao extends TestResultDao<TreeTestResult> {
 			Map<TreeSPath, StructureElement> relatedElements);
 
 	public void updateAttributes(String testResultId,
-			SortedMap<String, String> attributes);
+			Map<String, String> attributes);
 }

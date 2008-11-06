@@ -44,7 +44,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
 
-	private SortedMap<String, String> attributes = new TreeMap<String, String>();
+	private Map<String, String> attributes = new TreeMap<String, String>();
 
 	/** Sets the list of listeners. */
 	public void setListeners(List<TestResultListener<TreeTestResult>> listeners) {
@@ -204,11 +204,11 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		}
 	}
 
-	public SortedMap<String, String> getAttributes() {
+	public Map<String, String> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(SortedMap<String, String> attributes) {
+	public void setAttributes(Map<String, String> attributes) {
 		this.attributes = attributes;
 	}
 
