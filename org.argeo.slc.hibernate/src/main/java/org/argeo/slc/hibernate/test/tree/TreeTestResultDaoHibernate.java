@@ -107,7 +107,7 @@ public class TreeTestResultDaoHibernate extends HibernateDaoSupport implements
 	}
 
 	public void updateAttributes(final String testResultId,
-			final SortedMap<String, String> attributes) {
+			final Map<String, String> attributes) {
 		getHibernateTemplate().execute(new HibernateCallback() {
 
 			public Object doInHibernate(Session session)
