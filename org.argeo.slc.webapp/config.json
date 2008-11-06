@@ -1,0 +1,145 @@
+{
+  "name"    : "slc",
+
+  "include" :
+  [
+    {
+      "path" : "G:/dev/qooxdoo-0.8-sdk/tool/data/config/application.json"
+    }
+  ],
+
+  "let" :
+  {
+    "APPLICATION"  : "org.argeo.slc.web",
+    "QOOXDOO_PATH" : "src/main/webapp/qooxdoo",
+    "QOOXDOO_URI"  : "../qooxdoo",
+    "QXTHEME"      : "qx.theme.Modern",
+	"QXICONTHEME"  : ["Tango"],
+    "API_EXCLUDE"  : ["qx.legacy.*"],
+    "LOCALES"      : [ "en" ],
+    "ROOT"         : "src/main/webapp/",
+	"BUILD_PATH"   : "src/main/webapp/build",
+	"CACHE"		   : "cache" 
+  },
+
+  "jobs" : 
+  {
+    "common" :
+    {
+      "library" :
+      [
+        {
+          "manifest" : "${QOOXDOO_PATH}/Manifest.json",
+          "uri"      : "${QOOXDOO_URI}"
+        },
+
+        {
+          "manifest" : "${ROOT}/Manifest.json",
+          "uri"      : ".."
+        }
+      ],
+
+      "include" :
+      [
+        "${APPLICATION}.Application",
+        "${QXTHEME}"
+      ],
+
+      "cache" :
+      {
+        "compile" :  "${CACHE}"
+      },
+
+      "settings" :
+      {
+        "qx.version"     : "${QXVERSION}",
+        "qx.theme"       : "${QXTHEME}",
+        "qx.application" : "${APPLICATION}.Application"
+      }
+    },
+
+    // -- source jobs --------------------------------------------------
+
+    "source-script" :
+    {
+      "extend" : ["common"],
+
+      "compile-source" :
+      {
+        "file" : "${ROOT}/source/script/${APPLICATION}.js",
+        "locales" : "${LOCALES}",
+        "root" : "${ROOT}/source"
+      }
+    },
+
+
+    "slc-source" :
+    {
+      "run" :
+      [
+        "source-script"
+      ]
+    },
+
+    // -- build jobs --------------------------------------------------
+
+    "build-script" :
+    {
+      "extend" : ["common"],
+
+      "variants" :
+      {
+        "qx.debug" : ["off"]
+      },
+
+      "compile-dist" :
+      {
+        "target" : "${BUILD_PATH}",
+        "file" : "${BUILD_PATH}/script/${APPLICATION}.js",
+        "uri"  : "script/${APPLICATION}.js",
+        "root" : "${BUILD_PATH}",
+        "format" : "on",
+        "locales" : "${LOCALES}",
+        "optimize" : ["basecalls", "variables", "privates", "strings"]
+      }
+    },
+
+
+    "build-resources":
+    {
+      "extend" : ["common"],
+
+      "copy-resources" :
+      {
+        "target"          : "${BUILD_PATH}",
+        "resource-filter" : true
+      }
+    },
+
+    "my-build-files" :
+    {
+      "extend" : ["common"],
+
+      "copy-files" :
+      {
+        "files" :
+        [
+          "index.html"
+        ],
+		"source" : "${ROOT}/source",
+        "target" : "${BUILD_PATH}"
+      }
+    },
+	
+    "slc-build" :
+    {
+      "run" :
+      [
+        "build-resources",
+        "build-script",
+        "my-build-files"
+      ]
+    }
+	
+  }
+}

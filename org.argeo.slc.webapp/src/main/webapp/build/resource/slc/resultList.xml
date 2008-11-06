@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<dataSet id="tblResultList">
+	<data>
+		<param name="testName">QTP</param>
+		<param name="testType">qtp</param>
+		<param name="testCollection">Charles</param>
+		<param name="date">2008-10-31 18:49:39.421</param>
+		<report type="applet">slc.qtp</report>
+		<report type="download" commandid="xls" icon="Excel.gif">Excel</report>
+	</data>
+	<data>
+		<param name="testName">MX_CONTRACT</param>
+		<param name="testType">csvDiff</param>
+		<param name="uuid">96ef0c7a-f985-4c53-b255-c803b0cbfc80</param>
+		<param name="date">2008-10-31 18:49:25.0</param>
+		<param name="testCollection">Charles</param>
+		<report type="applet">slc.csvDiff</report>
+		<report type="download" commandid="xls" icon="Excel.gif">Excel</report>
+	</data>
+	<data>
+		<param name="testName"></param>
+		<param name="testType"></param>
+		<param name="uuid">421ebdae-d53e-46a3-9526-0957c4480260</param>
+		<param name="date">2008-10-31 18:49:22.203</param>
+		<param name="testCollection">Charles</param>
+		<report type="download" commandid="xls" icon="Excel.gif">Excel</report>
+		<report type="download" commandid="csv" icon="Excel.gif">Csv</report>
+	</data>
+	<data>
+		<param name="testName"></param>
+		<param name="testType"></param>
+		<param name="uuid">10d7febd-9f93-48c2-b979-d50777009044</param>
+		<param name="date">2008-10-31 18:49:13.515</param>
+		<param name="testCollection">Charles</param>
+	</data>
+	<data>
+		<param name="testName">Simulation view / Risk</param>
+		<param name="uuid">8c0dd093-4e93-49a1-bd1d-68c1eefa6415</param>
+		<param name="date">2008-10-31 18:49:11.109</param>
+		<param name="testCollection">Charles</param>
+		<report type="applet">slc.csvDiff</report>
+		<report type="download" commandid="xls" icon="Excel.gif">Excel</report>
+	</data>
+</dataSet>
