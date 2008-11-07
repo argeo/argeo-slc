@@ -15,24 +15,16 @@ qx.Class.define("org.argeo.slc.web.util.RequestManager",
 		
 		getRequest : function(url, method, responseType){
 			var request = new qx.io.remote.Request(url, method, responseType);
-			/*
-			request.addListener("sending", function(event){
-				this.requestCreated(request);
-			}, this);
-			request.addListener("aborted", function(event){
-				this.requestAborted(request);
-			}, this);
-			request.addListener("failed", function(event){
-				this.requestFailed(request);
-			}, this);
-			request.addListener("timeout", function(event){
+			this.enableCommand(request);
+			request.addListener("timeout", function(e){
 				this.requestTimeout(request);
 			}, this);
-			request.addListener("completed", function(event){
-				this.requestCompleted(request);
+			request.addListener("failed", function(e){
+				this.requestFailed(request);
 			}, this);
-			*/
-			this.enableCommand(request);
+			request.addListener("aborted", function(e){
+				this.requestFailed(request);
+			}, this);
 			return request;
 		},		
 	
@@ -41,33 +33,35 @@ qx.Class.define("org.argeo.slc.web.util.RequestManager",
 		},
 		
 		requestAborted : function(req){
-			this.disableCommand();
+			this.disableCommand(req);
 		},
 		
 		requestFailed : function(req){
-			this.disableCommand();
+			this.disableCommand(req);
 		},
 		
 		requestTimeout : function(req){
-			this.disableCommand();
+			this.disableCommand(req);
 		},
 
-		requestCompleted : function(req){
-			this.disableCommand();
+		requestCompleted : function(request){
+			this.disableCommand(request);
 		},
 		
-		disableCommand : function(){
-			this.command.setEnabled(false);			
-			var manager = qx.event.Registration.getManager(this.command);
-			manager.removeAllListeners(this.command);
+		disableCommand : function(request){
+			this.command.setEnabled(false);
+			var listener = request.getUserData("listener");
+			if(listener){
+				this.command.removeListener("execute", listener);
+			}
 		},
 		
 		enableCommand : function(request){
 			this.command.setEnabled(true);
 			qx.ui.core.queue.Manager.flush();
-			this.command.addListener("execute", function(){
-				request.abort();
-			});
+			var listener = request.abort;
+			request.setUserData("listener", listener);
+			this.command.addListener("execute", listener);
 		}
 	}
 });

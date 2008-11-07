@@ -79,7 +79,7 @@ qx.Class.define("org.argeo.slc.web.event.Command",
   	},
   	
   	addSubMenuButton : function(label, icon, commandId, menu){
-  		var button = new qx.ui.menu.Button(label);
+  		var button = new qx.ui.menu.Button(label, icon);
   		button.setUserData("commandId", commandId);
   		button.addListener("execute", this.executeSubMenuCallback, this);
   		if(menu){

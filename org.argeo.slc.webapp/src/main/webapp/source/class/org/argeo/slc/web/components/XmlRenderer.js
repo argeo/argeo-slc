@@ -22,11 +22,12 @@ qx.Class.define("org.argeo.slc.web.components.XmlRenderer",
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || "Not Found");
     			break;
     		case 1 : 
-    			xPath = "param[@name='date']";
+    			xPath = 'param[@name="date"]';
 		    	var nameParam = org.argeo.slc.web.util.Element.selectSingleNode(xmlNode, xPath);
+		    	//qx.log.Logger.info(nameParam);
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || 0);
 		    	var splits = value.split(".");
-				qx.log.Logger.info(value);
+				//qx.log.Logger.info(value);
 		    	var dateFormat = new qx.util.format.DateFormat("yyyy-MM-dd HH:mm:ss");
 		    	try {
 			    	var date = dateFormat.parse(splits[0]);

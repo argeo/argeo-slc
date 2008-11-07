@@ -29,7 +29,7 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   			},
   			"stop" : {
   				label 		: "Stop", 
-  				icon		: "resource/slc/edit-delete.png",
+  				icon		: "resource/slc/process-stop.png",
   				shortcut	: "Control+s",
   				enabled		: false,
   				menu		: null,
@@ -107,10 +107,11 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   					
   					for(var i=0; i<reports.length;i++){
   						var report = reports[i];
+  						var commandId = qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(report, "@commandid")); 
   						this.addSubMenuButton(
   							qx.dom.Node.getText(report),
-  							qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(report, "@icon")),
-  							qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(report, "@commandid"))
+  							"resource/slc/mime-"+commandId+".png",
+  							commandId
 						);
   					}
   					this.setEnabled(true);
