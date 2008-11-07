@@ -5,8 +5,9 @@ qx.Class.define("org.argeo.slc.web.components.Applet",
 {
   extend : qx.ui.container.Composite,
 
-  construct : function(){
+  construct : function(containerView){
   	this.base(arguments);
+  	this.setView(containerView);
 	this.setLayout(new qx.ui.layout.VBox());
   	this.passedStatus = "<div align=\"center\"><img src=\"resource/slc/dialog-ok.png\" height=\"16\" width=\"16\"></div>";
   	this.failedStatus = "<div align=\"center\"><img src=\"resource/slc/flag.png\" height=\"16\" width=\"16\"></div>";
@@ -14,6 +15,36 @@ qx.Class.define("org.argeo.slc.web.components.Applet",
 
   properties : 
   {
+  	view : {
+  		init : null
+  	},
+  	commands : {
+  		init : {
+  			"close" : {
+  				label	 	: "Close Result", 
+  				icon 		: "resource/slc/window-close.png",
+  				shortcut 	: "Control+w",
+  				enabled  	: true,
+  				menu	   	: "Test",
+  				toolbar  	: "result",
+  				callback	: function(e){
+  					// Call service to delete
+  					this.views["applet"].empty();
+  				},
+  				selectionChange : function(viewId, xmlNode){  					
+  					if(viewId != "applet") return;
+  					/*
+  					if(xmlNode){
+  						this.setEnabled(true);
+  					}else{
+  						this.setEnabled(false);
+  					}
+  					*/
+  				},
+  				command 	: null
+  			}  			
+  		}
+  	}
   },
 
   /*
@@ -45,11 +76,14 @@ qx.Class.define("org.argeo.slc.web.components.Applet",
   		var NSMap = {
   			"slc" : "http://argeo.org/projects/slc/schemas"
   		}
-		qx.Class.include(qx.ui.treevirtual.TreeVirtual,qx.ui.treevirtual.MNode);  		
+  		if(!qx.Class.hasMixin(qx.ui.treevirtual.TreeVirtual, qx.ui.treevirtual.MNode)){
+			qx.Class.include(qx.ui.treevirtual.TreeVirtual,qx.ui.treevirtual.MNode);
+  		}
   		this.tree = new qx.ui.treevirtual.TreeVirtual(["Test", "State", "Message", "Id"]);
   		this.tree.getTableColumnModel().setDataCellRenderer(0, new org.argeo.slc.web.util.TreeDataCellRenderer());
   		this.tree.setRowHeight(18);
   		this.tree.setStatusBarVisible(false);
+  		this.tree.setDecorator(new qx.ui.decoration.Background("#fff"));
   		var model = this.tree.getDataModel();
   		var resNodes = org.argeo.slc.web.util.Element.selectNodes(responseXml, "//slc:result-part", NSMap);
   		window.result = responseXml;
@@ -106,6 +140,19 @@ qx.Class.define("org.argeo.slc.web.components.Applet",
   		resize.set(3, {width:100});
   		columnModel.setDataCellRenderer(1, new qx.ui.table.cellrenderer.Html());
   		
+	    this.tree.getSelectionManager().getSelectionModel().addListener("changeSelection", function(e){
+			var viewSelection = this.getView().getViewSelection();
+			viewSelection.clear();
+			var nodes = this.tree.getDataModel().getSelectedNodes();
+			if(nodes.length){
+				viewSelection.addNode(nodes[0]);
+				this.getView().setViewSelection(viewSelection);
+			}
+	  	}, this);
+  		
+	  	var contextMenu = this.getView().getApplication().getCommandManager().createMenuFromIds(["close"]);
+	  	this.tree.setContextMenu(contextMenu);
+	  	
   	},
   	
   	_setParentBranchAsFailed : function(id){

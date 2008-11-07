@@ -9,6 +9,8 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   construct : function(application){
   	this.base(arguments);
   	this.application = application;
+  	this.setInitialDefinitions(qx.lang.Object.copy(this.getDefinitions()));
+  	this.addListener("changedCommands", this.createCommands, this);
   },
 
   properties : 
@@ -185,9 +187,16 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   				command 	: null
   			}
   		}
+  	},
+  	initialDefinitions : {
+  		init : {}
   	}
   },
 
+  events : {
+  	"changedCommands" : "qx.event.type.Event"
+  },
+  
   /*
   *****************************************************************************
      MEMBERS
@@ -201,19 +210,24 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   		this.toolbars = {};
   		var defs = this.getDefinitions();
   		for(var key in defs){
-  			var definition = defs[key];  			
-  			var command = new org.argeo.slc.web.event.Command(key, definition.label, definition.icon, definition.shortcut);
-  			if(definition.submenu){
-  				var menu = new qx.ui.menu.Menu();
-  				command.setMenu(menu);
-  				if(definition.submenuCallback){
-  					command.setMenuCallback(definition.submenuCallback);
-  					command.setMenuContext(this.application);
-  				}
+  			var definition = defs[key];
+  			var command;
+  			if(!definition.command){
+	  			command = new org.argeo.slc.web.event.Command(key, definition.label, definition.icon, definition.shortcut);
+	  			if(definition.submenu){
+	  				var menu = new qx.ui.menu.Menu();
+	  				command.setMenu(menu);
+	  				if(definition.submenuCallback){
+	  					command.setMenuCallback(definition.submenuCallback);
+	  					command.setMenuContext(this.application);
+	  				}
+	  			}
+	  			command.setEnabled(definition.enabled);
+	  			command.addListener("execute", definition.callback, this.application);
+	  			definition.command = command;
+  			}else{
+  				command = definition.command;
   			}
-  			command.setEnabled(definition.enabled);
-  			command.addListener("execute", definition.callback, this.application);
-  			definition.command = command;
   			if(definition.menu){
   				if(!this.menus[definition.menu]) this.menus[definition.menu] = [];
   				this.menus[definition.menu].push(command);
@@ -225,7 +239,7 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   		}
   		this.setDefinitions(defs);
   	},
-  	
+  	  	
   	refreshCommands : function(viewSelection){
   		var defs = this.getDefinitions();
   		var xmlNodes = null;
@@ -239,7 +253,23 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   			binded(viewSelection.getViewId(), xmlNodes);
   		}
   	},
+  	
+  	registerMenuBar : function(menuBar){
+  		this.addListener("changedCommands", function(){
+  			this.createMenuButtons(menuBar);
+  		}, this);
+  		this.createMenuButtons(menuBar);
+  	},
+
+  	registerToolBar : function(toolBar){
+  		this.addListener("changedCommands", function(){
+  			this.createToolbarParts(toolBar);
+  		}, this);
+  		this.createToolbarParts(toolBar);
+  	},  	
+  	
   	createMenuButtons : function(menuBar){
+  		menuBar.removeAll();
   		for(var key in this.menus){
   			var menu = new qx.ui.menu.Menu();
   			var button = new qx.ui.menubar.Button(key, null, menu);
@@ -248,9 +278,9 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   			}
   			menuBar.add(button);
   		}
-
   	},
   	createToolbarParts : function(toolbar){
+  		toolbar.removeAll();
   		for(var key in this.toolbars){
   			var tPart = new qx.ui.toolbar.Part();
   			toolbar.add(tPart);
@@ -269,6 +299,30 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   		}
   		return contextMenu;
   	},
+  	
+  	addCommands : function(definitions){
+  		var crtDefs = this.getDefinitions();  		
+  		for(var key in definitions){
+  			crtDefs[key] = definitions[key];
+  		}
+  		this.setDefinitions(crtDefs);
+  		this.fireEvent("changedCommands");
+  	},
+  	removeCommands : function(definitions){
+  		var crtDefs = this.getDefinitions();
+  		var initDefs = this.getInitialDefinitions();
+  		for(var key in definitions){
+  			if(!crtDefs[key]) continue;
+  			if(initDefs[key]){
+  				crtDefs[key] = initDefs[key];
+  			}else{
+  				delete crtDefs[key];
+  			}
+  		}
+  		this.setDefinitions(crtDefs);
+  		this.fireEvent("changedCommands");
+  	},
+  	
   	executeCommand : function(commandId){
   		var defs = this.getDefinitions();
   		if(defs[commandId] && defs[commandId].command.getEnabled()){

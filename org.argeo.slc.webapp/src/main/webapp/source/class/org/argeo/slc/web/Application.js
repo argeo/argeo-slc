@@ -25,7 +25,9 @@ qx.Class.define("org.argeo.slc.web.Application",
   properties : 
   {
   	model : {nullable:true},
-  	commandManager : {}
+  	commandManager : {
+  		init: null
+  	}
   },
 
   /*
@@ -60,35 +62,43 @@ qx.Class.define("org.argeo.slc.web.Application",
 	  
       var menuBar = new qx.ui.menubar.MenuBar();
       var toolbar = new qx.ui.toolbar.ToolBar();
-      this.commandManager = new org.argeo.slc.web.event.CommandsManager(this);
-      this.commandManager.createCommands();
-      this.commandManager.createMenuButtons(menuBar);
-      this.commandManager.createToolbarParts(toolbar);
+      var commandManager = new org.argeo.slc.web.event.CommandsManager(this);
+      this.setCommandManager(commandManager);
+      commandManager.createCommands();
+      commandManager.registerMenuBar(menuBar);
+      commandManager.registerToolBar(toolbar);
       toolbar.setShow("icon");
-      this.commandManager.addToolbarContextMenu(toolbar);
+      commandManager.addToolbarContextMenu(toolbar);
 
-      var stopCommand = this.commandManager.getCommandById("stop");
+      var stopCommand = commandManager.getCommandById("stop");
       var serviceManager = org.argeo.slc.web.util.RequestManager.getInstance();
       serviceManager.setStopCommand(stopCommand);
       
       var splitPane = new qx.ui.splitpane.Pane("horizontal");
 	  var splitLeft = new qx.ui.splitpane.Pane("vertical").set({
 	    width: 300,
-	    minWidth:100	    
+	    minWidth:36	    
 	  });
 	  splitLeft.setDecorator(null);
-	  var topLeft = new org.argeo.slc.web.components.View("list", "Test Cases");
+	  var topLeft = new org.argeo.slc.web.components.View(this, "list", "Test Cases", {
+	  	orientation : "horizontal",
+	  	min : 36,
+	  	object : splitLeft
+	  });
 	  this.registerView(topLeft);
 	  
-	  var bottomLeft = new org.argeo.slc.web.components.View("details", "Details");
-	  bottomLeft.set({minHeight:200});
+	  var bottomLeft = new org.argeo.slc.web.components.View(this, "details", "Details", {
+	  	orientation : "vertical",
+	  	min : 30
+	  });
+	  bottomLeft.set({height: 200});
 	  this.registerView(bottomLeft);
 
 	  splitLeft.add(topLeft, 1);
 	  splitLeft.add(bottomLeft, 0);
 	  
 	  splitPane.add(splitLeft, 0);
-  	  this.rightPane = new org.argeo.slc.web.components.View("applet", "Test");  	  
+  	  this.rightPane = new org.argeo.slc.web.components.View(this, "applet", "Test");  	  
   	  this.registerView(this.rightPane);
 	  splitPane.add(this.rightPane, 1);
       
@@ -112,7 +122,7 @@ qx.Class.define("org.argeo.slc.web.Application",
 	registerView : function(view){
 		this.views[view.getViewId()] = view;
 	  	view.getViewSelection().addListener("changeSelection", function(e){
-	  		this.commandManager.refreshCommands(e.getData());
+	  		this.getCommandManager().refreshCommands(e.getData());
 	  }, this);
 		
 	},
@@ -124,7 +134,7 @@ qx.Class.define("org.argeo.slc.web.Application",
 		this.error("Cannot find view '"+viewId+"'");
 		return null;
 	},
-    
+    	
     /**************************
       CLIENT METHODS
      ************************/
@@ -142,11 +152,11 @@ qx.Class.define("org.argeo.slc.web.Application",
 	  	statusBarVisible: false,
 		showCellFocusIndicator:false,
 		columnVisibilityButtonVisible:false,
-		contextMenu : this.commandManager.createMenuFromIds(["opentest", "deletetest", "copytocollection"]),
+		contextMenu : this.getCommandManager().createMenuFromIds(["opentest", "deletetest", "copytocollection"]),
 		decorator : new qx.ui.decoration.Background("#fff")
 	  });
 	  this.table.addListener("dblclick", function(e){
-	this.commandManager.executeCommand("opentest");
+	this.getCommandManager().executeCommand("opentest");
 	  }, this);
 	  var columnModel = this.table.getTableColumnModel(); 
 	  columnModel.getBehavior().setWidth(0, "60%");
@@ -190,9 +200,14 @@ qx.Class.define("org.argeo.slc.web.Application",
     },
     
 	createTestApplet : function(xmlNode){
-		var applet = new org.argeo.slc.web.components.Applet();
+		var applet = new org.argeo.slc.web.components.Applet(this.rightPane);
 		applet.initData(xmlNode);
+		var commands = applet.getCommands();
 		this.rightPane.empty();
+		if(commands){
+			this.rightPane.setCommands(commands);
+			this.getCommandManager().addCommands(commands);
+		}
 		this.rightPane.setContent(applet, false);		
 	}	
   }
