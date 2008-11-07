@@ -72,7 +72,7 @@
 
 	<jsp-config>
 		<jsp-property-group>
-			<url-pattern>*.jsp</url-pattern>
+			<url-pattern>/WEB-INF/slc-jsp/*.jsp</url-pattern>
 			<page-encoding>ISO-8859-1</page-encoding>
 			<include-prelude>
 				/WEB-INF/specific/prelude.jspf
