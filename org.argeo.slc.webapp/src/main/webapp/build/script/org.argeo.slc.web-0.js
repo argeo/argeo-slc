@@ -14901,40 +14901,40 @@ l="changeMenu",
 m="../",
 n="org.argeo.slc.web.event.CommandsManager",
 o="resultView.xls",
-p="About...",
-q="Control+o",
-r="Close",
-s="both",
-t='100%',
-u="pdf",
-v="resource/slc/help-contents.png",
-w="resource/slc/process-stop.png",
-x="@commandid",
-y="Show Text",
-z="resultView.xslt",
-A='report[@type="download"]',
-B="Copy to...",
-C="Download as...",
-D="Load Tests",
-E="Control+l",
-F="Control+c",
-G="SLC is a product from Argeo.",
-H="xls",
-I="Show Icons",
-J='south',
-K="About SLC",
-L="Delete",
-M="Control+q",
-N="resource/slc/go-down.png",
-O="Control+s",
-P="Control+h",
-Q="Open",
-R=".png",
-S="resource/slc/view-refresh.png",
-T="icon",
-U="Stop",
-V="resource/slc/system-shutdown.png",
-W="/org.argeo.slc.webapp/resultList.web",
+p="/org.argeo.slc.webapp/resultList.ui",
+q="About...",
+r="Control+o",
+s="Close",
+t="both",
+u='100%',
+v="pdf",
+w="resource/slc/help-contents.png",
+x="resource/slc/process-stop.png",
+y="@commandid",
+z="Show Text",
+A="resultView.xslt",
+B='report[@type="download"]',
+C="Copy to...",
+D="Download as...",
+E="Load Tests",
+F="Control+l",
+G="Control+c",
+H="SLC is a product from Argeo.",
+I="xls",
+J="Show Icons",
+K='south',
+L="About SLC",
+M="Delete",
+N="Control+q",
+O="resource/slc/go-down.png",
+P="Control+s",
+Q="Control+h",
+R="Open",
+S=".png",
+T="resource/slc/view-refresh.png",
+U="icon",
+V="Stop",
+W="resource/slc/system-shutdown.png",
 X="changeValue",
 Y="resource/slc/edit-copy.png",
 ba="Quit",
@@ -14955,34 +14955,34 @@ qx.Class.define(n,
 construct:function(bn){arguments.callee.base.call(this);
 this.application=bn;
 },
-properties:{definitions:{init:{"loadtestlist":{label:D,
-icon:S,
-shortcut:E,
+properties:{definitions:{init:{"loadtestlist":{label:E,
+icon:T,
+shortcut:F,
 enabled:true,
 menu:f,
 toolbar:a,
-callback:function(bo){this.loadTable(W);
+callback:function(bo){this.loadTable(p);
 },
 command:null},
-"stop":{label:U,
-icon:w,
-shortcut:O,
+"stop":{label:V,
+icon:x,
+shortcut:P,
 enabled:false,
 menu:null,
 toolbar:a,
 callback:function(bo){},
 command:null},
 "quit":{label:ba,
-icon:V,
-shortcut:M,
+icon:W,
+shortcut:N,
 enabled:true,
 menu:f,
 toolbar:false,
 callback:function(bo){},
 command:null},
-"opentest":{label:Q,
+"opentest":{label:R,
 icon:bg,
-shortcut:q,
+shortcut:r,
 enabled:false,
 menu:c,
 toolbar:b,
@@ -14998,8 +14998,8 @@ bb);
 if(br!=null&&qx.dom.Node.getText(br)!=g){this.setEnabled(true);
 }},
 command:null},
-"download":{label:C,
-icon:N,
+"download":{label:D,
+icon:O,
 shortcut:null,
 enabled:false,
 menu:c,
@@ -15010,12 +15010,12 @@ submenu:{},
 submenuCallback:function(bs){var bp=this.getSelectionForView(a).getNodes();
 var bt=qx.xml.Element.getSingleNodeText(bp[0],
 bc);
-var bu={xsl:z,
+var bu={xsl:A,
 xml:j,
 xls:o,
 pdf:k};
 var bv=m+bu[bs]+bl+bt;
-if(bs==H||bs==u){document.location.href=bv;
+if(bs==I||bs==v){document.location.href=bv;
 }else{var bw=window.open(bv);
 }},
 selectionChange:function(bq,
@@ -15024,19 +15024,19 @@ this.clearMenus();
 this.setEnabled(false);
 if(bp==null)return;
 var bx=qx.xml.Element.selectNodes(bp[0],
-A);
+B);
 if(bx==null||!bx.length)return;
 for(var by=0;by<bx.length;by++){var bz=bx[by];
 var bs=qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(bz,
-x));
+y));
 this.addSubMenuButton(qx.dom.Node.getText(bz),
-bf+bs+R,
+bf+bs+S,
 bs);
 }this.setEnabled(true);
 this.fireDataEvent(l,
 this.getMenu());
 }},
-"deletetest":{label:L,
+"deletetest":{label:M,
 icon:bm,
 shortcut:bj,
 enabled:false,
@@ -15044,16 +15044,16 @@ menu:c,
 toolbar:b,
 callback:function(bo){},
 command:null},
-"copytocollection":{label:B,
+"copytocollection":{label:C,
 icon:Y,
-shortcut:F,
+shortcut:G,
 enabled:false,
 menu:c,
 toolbar:b,
 callback:function(bo){},
 command:null},
 "log":{label:bd,
-icon:v,
+icon:w,
 shortcut:g,
 enabled:true,
 menu:d,
@@ -15061,29 +15061,29 @@ toolbar:false,
 callback:function(bo){qx.log.appender.Console.toggle();
 },
 command:null},
-"help":{label:p,
+"help":{label:q,
 icon:bh,
-shortcut:P,
+shortcut:Q,
 enabled:true,
 menu:d,
 toolbar:false,
-callback:function(bo){var bA=new qx.ui.window.Window(K);
+callback:function(bo){var bA=new qx.ui.window.Window(L);
 bA.set({showMaximize:false,
 showMinimize:false,
 width:200,
 height:150});
 bA.setLayout(new qx.ui.layout.Dock());
-bA.add(new qx.ui.basic.Label(G),
+bA.add(new qx.ui.basic.Label(H),
 {edge:bi,
-width:t});
-var bB=new qx.ui.form.Button(r);
+width:u});
+var bB=new qx.ui.form.Button(s);
 bB.addListener(h,
 function(bo){this.hide();
 this.destroy();
 },
 bA);
 bA.add(bB,
-{edge:J});
+{edge:K});
 bA.setModal(true);
 bA.center();
 this.getRoot().add(bA);
@@ -15151,12 +15151,12 @@ getCommandById:function(bs){var bC=this.getDefinitions();
 if(bC[bs]&&bC[bs].command){return bC[bs].command;
 }},
 addToolbarContextMenu:function(bL){var bG=new qx.ui.menu.Menu();
-var bP=new qx.ui.menu.RadioButton(I);
-bP.setValue(T);
-var bQ=new qx.ui.menu.RadioButton(y);
+var bP=new qx.ui.menu.RadioButton(J);
+bP.setValue(U);
+var bQ=new qx.ui.menu.RadioButton(z);
 bQ.setValue(be);
 var bR=new qx.ui.menu.RadioButton(bk);
-bR.setValue(s);
+bR.setValue(t);
 var bS=new qx.ui.form.RadioGroup(bP,
 bQ,
 bR);
