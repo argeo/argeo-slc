@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	version="2.5">
 
 	<display-name>SLC Web Application</display-name>
 
+	<!-- WS servlet -->
 	<servlet>
 		<servlet-name>slc-ws</servlet-name>
 		<servlet-class>
-			org.springframework.ws.transport.http.MessageDispatcherServlet
-		</servlet-class>
+			org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -18,11 +17,10 @@
 		<url-pattern>/slcService/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- WEB servlet -->
 	<servlet>
 		<servlet-name>slc-web</servlet-name>
-		<servlet-class>
-			org.springframework.web.servlet.DispatcherServlet
-		</servlet-class>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -30,11 +28,21 @@
 		<url-pattern>*.web</url-pattern>
 	</servlet-mapping>
 
+	<!-- UI servlet -->
+	<servlet>
+		<servlet-name>slc-ui</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>slc-ui</servlet-name>
+		<url-pattern>*.ui</url-pattern>
+	</servlet-mapping>
+
+	<!-- XSLT servlet -->
 	<servlet>
 		<servlet-name>xslt</servlet-name>
-		<servlet-class>
-			org.springframework.web.servlet.DispatcherServlet
-		</servlet-class>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -42,11 +50,10 @@
 		<url-pattern>*.xslt</url-pattern>
 	</servlet-mapping>
 
+	<!-- DOC servlet -->
 	<servlet>
 		<servlet-name>doc</servlet-name>
-		<servlet-class>
-			org.springframework.web.servlet.DispatcherServlet
-		</servlet-class>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 	</servlet>
 
 	<servlet-mapping>
@@ -58,6 +65,7 @@
 		<url-pattern>*.pdf</url-pattern>
 	</servlet-mapping>
 
+	<!-- General -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/applicationContext.xml</param-value>
@@ -65,18 +73,14 @@
 
 	<listener>
 		<display-name>Spring Context</display-name>
-		<listener-class>
-			org.springframework.web.context.ContextLoaderListener
-		</listener-class>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
 	<jsp-config>
 		<jsp-property-group>
 			<url-pattern>/WEB-INF/slc-jsp/*.jsp</url-pattern>
 			<page-encoding>ISO-8859-1</page-encoding>
-			<include-prelude>
-				/WEB-INF/specific/prelude.jspf
-			</include-prelude>
+			<include-prelude>/WEB-INF/specific/prelude.jspf</include-prelude>
 			<include-coda>/WEB-INF/specific/coda.jspf</include-coda>
 		</jsp-property-group>
 	</jsp-config>
@@ -84,17 +88,13 @@
 	<!-- Env refs -->
 	<resource-env-ref>
 		<resource-env-ref-name>jdbc/mainDs</resource-env-ref-name>
-		<resource-env-ref-type>
-			javax.sql.DataSource
-		</resource-env-ref-type>
+		<resource-env-ref-type>javax.sql.DataSource</resource-env-ref-type>
 	</resource-env-ref>
 
 	<!-- Log4j configContext loader config -->
 	<listener>
 		<display-name>Log4j</display-name>
-		<listener-class>
-			org.springframework.web.util.Log4jConfigListener
-		</listener-class>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
 	</listener>
 	<context-param>
 		<param-name>log4jConfigLocation</param-name>
