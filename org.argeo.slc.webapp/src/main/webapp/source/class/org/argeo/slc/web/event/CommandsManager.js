@@ -23,7 +23,7 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   				menu	   	: "File",
   				toolbar  	: "list",
   				callback 	: function(e){
-  					this.loadTable("/org.argeo.slc.webapp/resultList.web");
+  					this.loadTable("/org.argeo.slc.webapp/resultList.ui");
   				}, 
   				command 	: null
   			},
