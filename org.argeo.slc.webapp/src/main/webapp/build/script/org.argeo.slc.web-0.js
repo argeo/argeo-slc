@@ -14892,23 +14892,23 @@ event:d}}});
 b="test",
 c="Test",
 d="Help",
-f="execute",
-g="File",
-h="",
-j="resource/slc/edit-delete.png",
-k="resultViewXml.xslt",
-l="resultView.pdf",
-m='center',
-n="../",
-o="org.argeo.slc.web.event.CommandsManager",
-p="resultView.xls",
-q="resource/slc/help-about.png",
-r="Control+o",
-s="Close",
-t="both",
-u='100%',
-v="pdf",
-w="resource/slc/help-contents.png",
+f="File",
+g="",
+h="execute",
+j="resultViewXml.xslt",
+k="resultView.pdf",
+l="changeMenu",
+m="../",
+n="org.argeo.slc.web.event.CommandsManager",
+o="resultView.xls",
+p="About...",
+q="Control+o",
+r="Close",
+s="both",
+t='100%',
+u="pdf",
+v="resource/slc/help-contents.png",
+w="resource/slc/process-stop.png",
 x="@commandid",
 y="Show Text",
 z="resultView.xslt",
@@ -14918,9 +14918,9 @@ C="Download as...",
 D="Load Tests",
 E="Control+l",
 F="Control+c",
-G='param[@name="uuid"]',
-H="SLC is a product from Argeo.",
-I="xls",
+G="SLC is a product from Argeo.",
+H="xls",
+I="Show Icons",
 J='south',
 K="About SLC",
 L="Delete",
@@ -14929,7 +14929,7 @@ N="resource/slc/go-down.png",
 O="Control+s",
 P="Control+h",
 Q="Open",
-R="About...",
+R=".png",
 S="resource/slc/view-refresh.png",
 T="icon",
 U="Stop",
@@ -14939,61 +14939,63 @@ X="changeValue",
 Y="resource/slc/edit-copy.png",
 ba="Quit",
 bb='report[@type="applet"]',
-bc="Toggle Console",
-bd="label",
-be="@icon",
-bf="changeMenu",
+bc='param[@name="uuid"]',
+bd="Toggle Console",
+be="label",
+bf="resource/slc/mime-",
 bg="resource/slc/document-open.png",
-bh="Show Icons",
-bi="Control+d",
-bj="Show Both",
-bk="?uuid=";
-qx.Class.define(o,
+bh="resource/slc/help-about.png",
+bi='center',
+bj="Control+d",
+bk="Show Both",
+bl="?uuid=",
+bm="resource/slc/edit-delete.png";
+qx.Class.define(n,
 {extend:qx.core.Object,
-construct:function(bl){arguments.callee.base.call(this);
-this.application=bl;
+construct:function(bn){arguments.callee.base.call(this);
+this.application=bn;
 },
 properties:{definitions:{init:{"loadtestlist":{label:D,
 icon:S,
 shortcut:E,
 enabled:true,
-menu:g,
+menu:f,
 toolbar:a,
-callback:function(bm){this.loadTable(W);
+callback:function(bo){this.loadTable(W);
 },
 command:null},
 "stop":{label:U,
-icon:j,
+icon:w,
 shortcut:O,
 enabled:false,
 menu:null,
 toolbar:a,
-callback:function(bm){},
+callback:function(bo){},
 command:null},
 "quit":{label:ba,
 icon:V,
 shortcut:M,
 enabled:true,
-menu:g,
+menu:f,
 toolbar:false,
-callback:function(bm){},
+callback:function(bo){},
 command:null},
 "opentest":{label:Q,
 icon:bg,
-shortcut:r,
+shortcut:q,
 enabled:false,
 menu:c,
 toolbar:b,
-callback:function(bm){var bn=this.getSelectionForView(a).getNodes();
-this.createTestApplet(bn[0]);
+callback:function(bo){var bp=this.getSelectionForView(a).getNodes();
+this.createTestApplet(bp[0]);
 },
-selectionChange:function(bo,
-bn){if(bo!=a)return;
+selectionChange:function(bq,
+bp){if(bq!=a)return;
 this.setEnabled(false);
-if(bn==null||!bn.length)return;
-var bp=org.argeo.slc.web.util.Element.selectSingleNode(bn[0],
+if(bp==null||!bp.length)return;
+var br=org.argeo.slc.web.util.Element.selectSingleNode(bp[0],
 bb);
-if(bp!=null&&qx.dom.Node.getText(bp)!=h){this.setEnabled(true);
+if(br!=null&&qx.dom.Node.getText(br)!=g){this.setEnabled(true);
 }},
 command:null},
 "download":{label:C,
@@ -15002,45 +15004,45 @@ shortcut:null,
 enabled:false,
 menu:c,
 toolbar:b,
-callback:function(bm){},
+callback:function(bo){},
 command:null,
 submenu:{},
-submenuCallback:function(bq){var bn=this.getSelectionForView(a).getNodes();
-var br=qx.xml.Element.getSingleNodeText(bn[0],
-G);
-var bs={xsl:z,
-xml:k,
-xls:p,
-pdf:l};
-var bt=n+bs[bq]+bk+br;
-if(bq==I||bq==v){document.location.href=bt;
-}else{var bu=window.open(bt);
+submenuCallback:function(bs){var bp=this.getSelectionForView(a).getNodes();
+var bt=qx.xml.Element.getSingleNodeText(bp[0],
+bc);
+var bu={xsl:z,
+xml:j,
+xls:o,
+pdf:k};
+var bv=m+bu[bs]+bl+bt;
+if(bs==H||bs==u){document.location.href=bv;
+}else{var bw=window.open(bv);
 }},
-selectionChange:function(bo,
-bn){if(bo!=a)return;
+selectionChange:function(bq,
+bp){if(bq!=a)return;
 this.clearMenus();
 this.setEnabled(false);
-if(bn==null)return;
-var bv=qx.xml.Element.selectNodes(bn[0],
+if(bp==null)return;
+var bx=qx.xml.Element.selectNodes(bp[0],
 A);
-if(bv==null||!bv.length)return;
-for(var bw=0;bw<bv.length;bw++){var bx=bv[bw];
-this.addSubMenuButton(qx.dom.Node.getText(bx),
-qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(bx,
-be)),
-qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(bx,
-x)));
+if(bx==null||!bx.length)return;
+for(var by=0;by<bx.length;by++){var bz=bx[by];
+var bs=qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(bz,
+x));
+this.addSubMenuButton(qx.dom.Node.getText(bz),
+bf+bs+R,
+bs);
 }this.setEnabled(true);
-this.fireDataEvent(bf,
+this.fireDataEvent(l,
 this.getMenu());
 }},
 "deletetest":{label:L,
-icon:j,
-shortcut:bi,
+icon:bm,
+shortcut:bj,
 enabled:false,
 menu:c,
 toolbar:b,
-callback:function(bm){},
+callback:function(bo){},
 command:null},
 "copytocollection":{label:B,
 icon:Y,
@@ -15048,124 +15050,124 @@ shortcut:F,
 enabled:false,
 menu:c,
 toolbar:b,
-callback:function(bm){},
+callback:function(bo){},
 command:null},
-"log":{label:bc,
-icon:w,
-shortcut:h,
+"log":{label:bd,
+icon:v,
+shortcut:g,
 enabled:true,
 menu:d,
 toolbar:false,
-callback:function(bm){qx.log.appender.Console.toggle();
+callback:function(bo){qx.log.appender.Console.toggle();
 },
 command:null},
-"help":{label:R,
-icon:q,
+"help":{label:p,
+icon:bh,
 shortcut:P,
 enabled:true,
 menu:d,
 toolbar:false,
-callback:function(bm){var by=new qx.ui.window.Window(K);
-by.set({showMaximize:false,
+callback:function(bo){var bA=new qx.ui.window.Window(K);
+bA.set({showMaximize:false,
 showMinimize:false,
 width:200,
 height:150});
-by.setLayout(new qx.ui.layout.Dock());
-by.add(new qx.ui.basic.Label(H),
-{edge:m,
-width:u});
-var bz=new qx.ui.form.Button(s);
-bz.addListener(f,
-function(bm){this.hide();
+bA.setLayout(new qx.ui.layout.Dock());
+bA.add(new qx.ui.basic.Label(G),
+{edge:bi,
+width:t});
+var bB=new qx.ui.form.Button(r);
+bB.addListener(h,
+function(bo){this.hide();
 this.destroy();
 },
-by);
-by.add(bz,
+bA);
+bA.add(bB,
 {edge:J});
-by.setModal(true);
-by.center();
-this.getRoot().add(by);
-by.show();
+bA.setModal(true);
+bA.center();
+this.getRoot().add(bA);
+bA.show();
 },
 command:null}}}},
 members:{createCommands:function(){this.menus={};
 this.toolbars={};
-var bA=this.getDefinitions();
-for(var bB in bA){var bC=bA[bB];
-var bD=new org.argeo.slc.web.event.Command(bB,
-bC.label,
-bC.icon,
-bC.shortcut);
-if(bC.submenu){var bE=new qx.ui.menu.Menu();
-bD.setMenu(bE);
-if(bC.submenuCallback){bD.setMenuCallback(bC.submenuCallback);
-bD.setMenuContext(this.application);
-}}bD.setEnabled(bC.enabled);
-bD.addListener(f,
-bC.callback,
+var bC=this.getDefinitions();
+for(var bD in bC){var bE=bC[bD];
+var bF=new org.argeo.slc.web.event.Command(bD,
+bE.label,
+bE.icon,
+bE.shortcut);
+if(bE.submenu){var bG=new qx.ui.menu.Menu();
+bF.setMenu(bG);
+if(bE.submenuCallback){bF.setMenuCallback(bE.submenuCallback);
+bF.setMenuContext(this.application);
+}}bF.setEnabled(bE.enabled);
+bF.addListener(h,
+bE.callback,
 this.application);
-bC.command=bD;
-if(bC.menu){if(!this.menus[bC.menu])this.menus[bC.menu]=[];
-this.menus[bC.menu].push(bD);
+bE.command=bF;
+if(bE.menu){if(!this.menus[bE.menu])this.menus[bE.menu]=[];
+this.menus[bE.menu].push(bF);
 }
-if(bC.toolbar){if(!this.toolbars[bC.toolbar])this.toolbars[bC.toolbar]=[];
-this.toolbars[bC.toolbar].push(bD);
-}}this.setDefinitions(bA);
+if(bE.toolbar){if(!this.toolbars[bE.toolbar])this.toolbars[bE.toolbar]=[];
+this.toolbars[bE.toolbar].push(bF);
+}}this.setDefinitions(bC);
 },
-refreshCommands:function(bF){var bA=this.getDefinitions();
-var bn=null;
-if(bF.getCount()>0){var bn=bF.getNodes();
+refreshCommands:function(bH){var bC=this.getDefinitions();
+var bp=null;
+if(bH.getCount()>0){var bp=bH.getNodes();
 }
-for(var bB in bA){var bC=bA[bB];
-if(!bC.selectionChange)continue;
-var bG=qx.lang.Function.bind(bC.selectionChange,
-bC.command);
-bG(bF.getViewId(),
-bn);
+for(var bD in bC){var bE=bC[bD];
+if(!bE.selectionChange)continue;
+var bI=qx.lang.Function.bind(bE.selectionChange,
+bE.command);
+bI(bH.getViewId(),
+bp);
 }},
-createMenuButtons:function(bH){for(var bB in this.menus){var bE=new qx.ui.menu.Menu();
-var bI=new qx.ui.menubar.Button(bB,
+createMenuButtons:function(bJ){for(var bD in this.menus){var bG=new qx.ui.menu.Menu();
+var bK=new qx.ui.menubar.Button(bD,
 null,
-bE);
-for(var bw=0;bw<this.menus[bB].length;bw++){bE.add(this.menus[bB][bw].getMenuButton());
-}bH.add(bI);
+bG);
+for(var by=0;by<this.menus[bD].length;by++){bG.add(this.menus[bD][by].getMenuButton());
+}bJ.add(bK);
 }},
-createToolbarParts:function(bJ){for(var bB in this.toolbars){var bK=new qx.ui.toolbar.Part();
-bJ.add(bK);
-this.toolbars[bB].map(function(bD){bK.add(bD.getToolbarButton());
+createToolbarParts:function(bL){for(var bD in this.toolbars){var bM=new qx.ui.toolbar.Part();
+bL.add(bM);
+this.toolbars[bD].map(function(bF){bM.add(bF.getToolbarButton());
 });
 }},
-createMenuFromIds:function(bL){var bA=this.getDefinitions();
-var bM=new qx.ui.menu.Menu();
-for(var bw=0;bw<bL.length;bw++){var bC=bA[bL[bw]];
-var bD=bC.command;
-bM.add(bD.getMenuButton());
-}return bM;
+createMenuFromIds:function(bN){var bC=this.getDefinitions();
+var bO=new qx.ui.menu.Menu();
+for(var by=0;by<bN.length;by++){var bE=bC[bN[by]];
+var bF=bE.command;
+bO.add(bF.getMenuButton());
+}return bO;
 },
-executeCommand:function(bq){var bA=this.getDefinitions();
-if(bA[bq]&&bA[bq].command.getEnabled()){bA[bq].command.execute();
+executeCommand:function(bs){var bC=this.getDefinitions();
+if(bC[bs]&&bC[bs].command.getEnabled()){bC[bs].command.execute();
 }},
-getCommandById:function(bq){var bA=this.getDefinitions();
-if(bA[bq]&&bA[bq].command){return bA[bq].command;
+getCommandById:function(bs){var bC=this.getDefinitions();
+if(bC[bs]&&bC[bs].command){return bC[bs].command;
 }},
-addToolbarContextMenu:function(bJ){var bE=new qx.ui.menu.Menu();
-var bN=new qx.ui.menu.RadioButton(bh);
-bN.setValue(T);
-var bO=new qx.ui.menu.RadioButton(y);
-bO.setValue(bd);
-var bP=new qx.ui.menu.RadioButton(bj);
-bP.setValue(t);
-var bQ=new qx.ui.form.RadioGroup(bN,
-bO,
-bP);
-bE.add(bN);
-bE.add(bO);
-bE.add(bP);
-bJ.setContextMenu(bE);
-bQ.addListener(X,
-function(bm){this.setShow(bm.getData());
+addToolbarContextMenu:function(bL){var bG=new qx.ui.menu.Menu();
+var bP=new qx.ui.menu.RadioButton(I);
+bP.setValue(T);
+var bQ=new qx.ui.menu.RadioButton(y);
+bQ.setValue(be);
+var bR=new qx.ui.menu.RadioButton(bk);
+bR.setValue(s);
+var bS=new qx.ui.form.RadioGroup(bP,
+bQ,
+bR);
+bG.add(bP);
+bG.add(bQ);
+bG.add(bR);
+bL.setContextMenu(bG);
+bS.addListener(X,
+function(bo){this.setShow(bo.getData());
 },
-bJ);
+bL);
 }}});
 })();
 (function(){var a="qx.client",
@@ -17427,7 +17429,8 @@ this.getMenuClone().removeAll();
 addSubMenuButton:function(i,
 j,
 o,
-p){var l=new qx.ui.menu.Button(i);
+p){var l=new qx.ui.menu.Button(i,
+j);
 l.setUserData(c,
 o);
 l.addListener(g,
@@ -18147,43 +18150,62 @@ v++;
 destruct:function(){this._disposeArray(f);
 }});
 })();
-(function(){var a="org.argeo.slc.web.util.RequestManager",
+(function(){var a="listener",
 b="execute",
-c="singleton";
-qx.Class.define(a,
-{type:c,
+c="failed",
+d="org.argeo.slc.web.util.RequestManager",
+f="aborted",
+g="timeout",
+h="singleton";
+qx.Class.define(d,
+{type:h,
 extend:qx.core.Object,
 construct:function(){arguments.callee.base.call(this);
 },
-members:{setStopCommand:function(d){this.command=d;
+members:{setStopCommand:function(i){this.command=i;
 },
-getRequest:function(e,
-f,
-g){var h=new qx.io.remote.Request(e,
-f,
-g);
-this.enableCommand(h);
-return h;
+getRequest:function(j,
+k,
+l){var m=new qx.io.remote.Request(j,
+k,
+l);
+this.enableCommand(m);
+m.addListener(g,
+function(n){this.requestTimeout(m);
 },
-requestCreated:function(i){this.enableCommand(i);
+this);
+m.addListener(c,
+function(n){this.requestFailed(m);
 },
-requestAborted:function(i){this.disableCommand();
+this);
+m.addListener(f,
+function(n){this.requestFailed(m);
 },
-requestFailed:function(i){this.disableCommand();
+this);
+return m;
 },
-requestTimeout:function(i){this.disableCommand();
+requestCreated:function(o){this.enableCommand(o);
 },
-requestCompleted:function(i){this.disableCommand();
+requestAborted:function(o){this.disableCommand(o);
 },
-disableCommand:function(){this.command.setEnabled(false);
-var j=qx.event.Registration.getManager(this.command);
-j.removeAllListeners(this.command);
+requestFailed:function(o){this.disableCommand(o);
 },
-enableCommand:function(h){this.command.setEnabled(true);
+requestTimeout:function(o){this.disableCommand(o);
+},
+requestCompleted:function(m){this.disableCommand(m);
+},
+disableCommand:function(m){this.command.setEnabled(false);
+var p=m.getUserData(a);
+if(p){this.command.removeListener(b,
+p);
+}},
+enableCommand:function(m){this.command.setEnabled(true);
 qx.ui.core.queue.Manager.flush();
+var p=m.abort;
+m.setUserData(a,
+p);
 this.command.addListener(b,
-function(){h.abort();
-});
+p);
 }}});
 })();
 (function(){var a="Boolean",
@@ -26858,8 +26880,8 @@ _getCellClass:function(d){return b;
 (function(){var a="",
 b="org.argeo.slc.web.components.XmlRenderer",
 c="yyyy-MM-dd HH:mm:ss",
-d="MMM d, yy HH:mm:ss",
-e="param[@name='date']",
+d='param[@name="date"]',
+e="MMM d, yy HH:mm:ss",
 f=".",
 g="Not Found",
 h="param[@name='testName']";
@@ -26873,15 +26895,14 @@ var l=org.argeo.slc.web.util.Element.selectSingleNode(j,
 k);
 var m=qx.bom.String.escape(qx.dom.Node.getText(l)||g);
 break;
-case 1:k=e;
+case 1:k=d;
 var l=org.argeo.slc.web.util.Element.selectSingleNode(j,
 k);
 var m=qx.bom.String.escape(qx.dom.Node.getText(l)||0);
 var n=m.split(f);
-qx.log.Logger.info(m);
 var o=new qx.util.format.DateFormat(c);
 try{var p=o.parse(n[0]);
-var q=new qx.util.format.DateFormat(d);
+var q=new qx.util.format.DateFormat(e);
 return q.format(p);
 }catch(e){qx.log.Logger.info(e);
 }break;
