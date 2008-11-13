@@ -12,13 +12,13 @@
 	<modules>
 		<module>org.argeo.slc</module>
 		<module>org.argeo.slc.core</module>
+		<module>org.argeo.slc.detached</module>
+		<module>org.argeo.slc.detached.launcher</module>
 		<module>org.argeo.slc.agent</module>
 		<module>org.argeo.slc.hibernate</module>
 		<module>org.argeo.slc.example</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.dist</module>
-		<module>org.argeo.slc.detached</module>
-		<module>org.argeo.slc.detached.launcher</module>
 		<!-- Deactivate to make check out more flexible
 		<module>eclipse/features/org.argeo.slc.ui.launch.feature</module>
 		-->
