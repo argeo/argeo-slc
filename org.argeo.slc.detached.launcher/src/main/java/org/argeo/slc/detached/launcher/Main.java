@@ -139,6 +139,11 @@ public class Main {
 		Class[] mainArgsClasses = new Class[] { uiArgs.getClass() };
 		Object[] mainArgs = { uiArgs };
 		Method mainMethod = clss.getMethod("main", mainArgsClasses);
+		String[] passedArgs = (String[])mainArgs[0];
+		System.out.println("PASSED ARGS:");
+		for(int i=0;i<passedArgs.length;i++){
+			System.out.println(passedArgs[i]);
+		}
 		mainMethod.invoke(null, mainArgs);
 	}
 

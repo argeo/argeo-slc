@@ -1,39 +1,41 @@
 Manifest-Version: 1.0
 Export-Package: org.argeo.slc.detached.admin;uses:="org.apache.commons
- .logging,org.osgi.framework,org.argeo.slc.detached",org.argeo.slc.det
- ached.ui;uses:="org.argeo.slc.detached,org.springframework.beans.fact
- ory",org.argeo.slc.detached;uses:="org.apache.commons.logging,org.spr
- ingframework.context.support,org.springframework.core.io,org.springfr
- amework.context,org.springframework.beans.factory.xml,javax.xml.trans
- form.dom,org.argeo.slc.detached.drivers,org.w3c.dom,org.springframewo
- rk.beans.factory.support,org.argeo.slc.detached.admin,javax.xml.trans
- form,javax.xml.transform.stream,org.osgi.framework,org.apache.commons
- .io,org.springframework.beans.factory",org.argeo.slc.detached.drivers
- ;uses:="org.apache.commons.logging,org.apache.commons.io.filefilter,j
- avax.xml.transform,javax.xml.transform.stream,org.apache.commons.io,o
- rg.argeo.slc.detached,org.springframework.beans.factory"
+ .logging,org.osgi.framework,org.argeo.slc.detached";version="0.11.2.S
+ NAPSHOT",org.argeo.slc.detached.ui;uses:="org.argeo.slc.detached,org.
+ springframework.beans.factory";version="0.11.2.SNAPSHOT",org.argeo.sl
+ c.detached;uses:="org.apache.commons.logging,org.springframework.cont
+ ext.support,org.springframework.core.io,org.springframework.context,o
+ rg.springframework.beans.factory.xml,javax.xml.transform.dom,org.arge
+ o.slc.detached.drivers,org.w3c.dom,org.springframework.beans.factory.
+ support,org.argeo.slc.detached.admin,javax.xml.transform,javax.xml.tr
+ ansform.stream,org.osgi.framework,org.apache.commons.io,org.springfra
+ mework.beans.factory";version="0.11.2.SNAPSHOT",org.argeo.slc.detache
+ d.drivers;uses:="org.apache.commons.logging,org.apache.commons.io.fil
+ efilter,javax.xml.transform,javax.xml.transform.stream,org.apache.com
+ mons.io,org.argeo.slc.detached,org.springframework.beans.factory";ver
+ sion="0.11.2.SNAPSHOT"
 Built-By: mbaudier
 Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Detached
-Created-By: Apache Maven Bundle Plugin
+Created-By: 1.6.0 (Sun Microsystems Inc.)
 Bundle-Vendor: Argeo
 Build-Jdk: 1.6.0
-Bundle-Version: 0.11.1.SNAPSHOT
-Bnd-LastModified: 1224019400860
-Bundle-ManifestVersion: 2
+Bundle-Version: 0.11.2.SNAPSHOT
 Bundle-Activator: org.argeo.slc.detached.Activator
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: SLC Distribution
 Import-Package: javax.xml.transform,javax.xml.transform.dom,javax.xml.
  transform.stream,org.apache.commons.io;version="1.4",org.apache.commo
  ns.io.filefilter;version="1.4",org.apache.commons.logging,org.argeo.s
- lc.detached,org.argeo.slc.detached.admin,org.argeo.slc.detached.drive
- rs,org.argeo.slc.detached.ui,org.osgi.framework,org.springframework.b
- eans.factory;version="2.0",org.springframework.beans.factory.support;
- version="2.0",org.springframework.beans.factory.xml;version="2.0",org
- .springframework.context;version="2.0",org.springframework.context.su
- pport;version="2.0",org.springframework.core.io;version="2.0",org.w3c
- .dom
+ lc.detached;version="0.11.2.SNAPSHOT",org.argeo.slc.detached.admin;ve
+ rsion="0.11.2.SNAPSHOT",org.argeo.slc.detached.drivers;version="0.11.
+ 2.SNAPSHOT",org.argeo.slc.detached.ui;version="0.11.2.SNAPSHOT",org.o
+ sgi.framework,org.springframework.beans.factory;version="2.0",org.spr
+ ingframework.beans.factory.support;version="2.0",org.springframework.
+ beans.factory.xml;version="2.0",org.springframework.context;version="
+ 2.0",org.springframework.context.support;version="2.0",org.springfram
+ ework.core.io;version="2.0",org.w3c.dom
 Bundle-SymbolicName: org.argeo.slc.detached
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: Apache Maven Bundle Plugin
