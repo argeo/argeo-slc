@@ -16,8 +16,8 @@ Export-Package: org.argeo.slc.hibernate.cache;version="0.11.2.SNAPSHOT
  ate.tool.hbm2ddl,org.dbunit.dataset.xml,org.dbunit.database,org.dbuni
  t,org.apache.commons.io,org.springframework.orm.hibernate3";version="
  0.11.2.SNAPSHOT",org.argeo.slc.hibernate.test;uses:="org.argeo.slc.da
- o.test,org.springframework.orm.hibernate3.support,org.argeo.slc.core.
- test,org.springframework.orm.hibernate3";version="0.11.2.SNAPSHOT"
+ o.test,org.springframework.orm.hibernate3.support,org.springframework
+ .orm.hibernate3,org.argeo.slc.core.test";version="0.11.2.SNAPSHOT"
 Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Hibernate
 Created-By: 1.6.0 (Sun Microsystems Inc.)

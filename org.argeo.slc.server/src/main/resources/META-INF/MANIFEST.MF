@@ -7,7 +7,7 @@ Export-Package: org.argeo.slc.web.mvc;uses:="org.springframework.oxm,o
  w.xslt,javax.xml.transform.stream,org.argeo.slc.core.process";version
  ="0.11.2.SNAPSHOT",org.argeo.slc.ws.process;uses:="org.springframewor
  k.ws.server.endpoint,org.apache.commons.logging,org.argeo.slc.core,or
- g.argeo.slc.core.process,org.argeo.slc.dao.process,org.argeo.slc.msg.
+ g.argeo.slc.core.process,org.argeo.slc.msg.process,org.argeo.slc.dao.
  process";version="0.11.2.SNAPSHOT",org.argeo.slc.web.mvc.process;uses
  :="org.springframework.web.servlet.mvc,org.apache.commons.logging,org
  .argeo.slc.core,org.springframework.web.servlet,org.argeo.slc.core.pr
@@ -16,7 +16,7 @@ Export-Package: org.argeo.slc.web.mvc;uses:="org.springframework.oxm,o
  ervlet.mvc,org.springframework.web.servlet,javax.servlet.http";versio
  n="0.11.2.SNAPSHOT",org.argeo.slc.ws.test.tree;uses:="org.springframe
  work.ws.server.endpoint,org.apache.commons.logging,org.argeo.slc.msg.
- test.tree,org.argeo.slc.services.test,org.argeo.slc.core.test.tree,or
+ test.tree,org.argeo.slc.core.test.tree,org.argeo.slc.services.test,or
  g.argeo.slc.dao.test.tree,org.argeo.slc.core.structure.tree,org.argeo
  .slc.core.test";version="0.11.2.SNAPSHOT",org.argeo.slc.web.mvc.resul
  t;uses:="org.springframework.web.servlet,com.lowagie.text.pdf,org.arg
@@ -28,8 +28,8 @@ Export-Package: org.argeo.slc.web.mvc;uses:="org.springframework.oxm,o
  cture.tree,javax.servlet.http";version="0.11.2.SNAPSHOT",org.argeo.sl
  c.services.test.impl;uses:="org.argeo.slc.dao.test,org.apache.commons
  .logging,org.argeo.slc.services.test,org.argeo.slc.core.test.tree,org
- .argeo.slc.core.process,org.argeo.slc.dao.test.tree,org.argeo.slc.dao
- .process,org.argeo.slc.core.test";version="0.11.2.SNAPSHOT",org.argeo
+ .argeo.slc.core.process,org.argeo.slc.dao.process,org.argeo.slc.dao.t
+ est.tree,org.argeo.slc.core.test";version="0.11.2.SNAPSHOT",org.argeo
  .slc.services.test;uses:="org.argeo.slc.core.test";version="0.11.2.SN
  APSHOT",org.argeo.slc.ws;uses:="org.apache.commons.logging,org.spring
  framework.ws.soap,org.springframework.ws.soap.server.endpoint,org.spr

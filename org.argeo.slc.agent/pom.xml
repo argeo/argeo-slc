@@ -110,37 +110,43 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>com.springsource.org.apache.tools.ant</artifactId>
+			<groupId>org.argeo.dep.osgi</groupId>
+			<artifactId>org.argeo.dep.osgi.ant</artifactId>
 		</dependency>
+
 		<!--
 			<dependency> <groupId>org.apache.ant</groupId>
-			<artifactId>ant</artifactId> </dependency>
+			<artifactId>com.springsource.org.apache.tools.ant</artifactId>
+			</dependency> <dependency> <groupId>org.apache.ant</groupId>
+			<artifactId>ant</artifactId> </dependency> <dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant-commons-logging</artifactId> </dependency>
+			<dependency> <groupId>org.apache.ant</groupId>
+			<artifactId>ant-commons-net</artifactId> </dependency> <dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant-apache-oro</artifactId> </dependency> <dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant-apache-bsf</artifactId> </dependency>
 		-->
+
 		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant-commons-logging</artifactId>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.net</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant-commons-net</artifactId>
+			<groupId>org.apache.oro</groupId>
+			<artifactId>com.springsource.org.apache.oro</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.bsf</groupId>
+			<artifactId>com.springsource.org.apache.bsf</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant-apache-oro</artifactId>
+			<groupId>org.beanshell</groupId>
+			<artifactId>com.springsource.bsh</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant-apache-bsf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-net</groupId>
-			<artifactId>commons-net</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>oro</groupId>
-			<artifactId>oro</artifactId>
-		</dependency>
+
 		<!--
 			<dependency> <groupId>org.apache.maven</groupId>
 			<artifactId>maven-embedder</artifactId> </dependency> <dependency>
@@ -148,8 +154,8 @@
 			<artifactId>maven-settings</artifactId> </dependency>
 		-->
 		<dependency>
-			<groupId>commons-cli</groupId>
-			<artifactId>commons-cli</artifactId>
+			<groupId>org.argeo.dep.osgi</groupId>
+			<artifactId>org.argeo.dep.osgi.commons.cli</artifactId>
 		</dependency>
 
 	</dependencies>

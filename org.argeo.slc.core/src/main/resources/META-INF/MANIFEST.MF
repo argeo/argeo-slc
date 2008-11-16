@@ -15,8 +15,8 @@ Export-Package: org.argeo.slc.castor.process;version="0.11.2.SNAPSHOT"
  PSHOT",org.argeo.slc.castor.test.tree;uses:="org.exolab.castor.mappin
  g,org.argeo.slc.core.test";version="0.11.2.SNAPSHOT",org.argeo.slc.co
  re.test.context;uses:="org.argeo.slc.core.structure,org.apache.common
- s.logging,org.argeo.slc.core,org.argeo.slc.core.test,org.argeo.slc.co
- re.structure.tree,org.springframework.beans.factory";version="0.11.2.
+ s.logging,org.argeo.slc.core,org.argeo.slc.core.structure.tree,org.ar
+ geo.slc.core.test,org.springframework.beans.factory";version="0.11.2.
  SNAPSHOT",org.argeo.slc.core.build;version="0.11.2.SNAPSHOT",org.arge
  o.slc.core.process;uses:="org.springframework.oxm,org.argeo.slc.core,
  javax.xml.transform,javax.xml.transform.stream,org.apache.commons.io"

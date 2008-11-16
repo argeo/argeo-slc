@@ -19,7 +19,7 @@
             <outputFileNameMapping></outputFileNameMapping>
             <includes>
                 <include>
-                    org.argeo.slc:argeo-slc-agent:tar.gz:base
+                    org.argeo.slc:org.argeo.slc.agent:tar.gz:base
                 </include>
             </includes>
             <fileMode>0755</fileMode>

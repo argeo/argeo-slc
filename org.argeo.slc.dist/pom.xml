@@ -50,6 +50,11 @@
 			<artifactId>org.argeo.slc.agent</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.server</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!--  Additional SLC dependencies -->
 		<dependency>
@@ -72,6 +77,36 @@
 			<groupId>org.argeo.dep.jemmy</groupId>
 			<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
 		</dependency>
+
+		<!--
+			Artifacts below are required for consistency of the P2 repository
+		-->
+
+		<!-- Required by SOAP and Web Services -->
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>com.springsource.javax.activation</artifactId>
+		</dependency>
+		<!-- Required by Xerces -->
+		<dependency>
+			<groupId>org.apache.xmlcommons</groupId>
+			<artifactId>com.springsource.org.apache.xmlcommons</artifactId>
+		</dependency>
+		<!-- Required by DB unit -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.collections</artifactId>
+		</dependency>
+		<!-- Required by JSP -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>com.springsource.javax.servlet.jsp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>com.springsource.javax.el</artifactId>
+		</dependency>
+
 
 		<!--
 			Additional Third Parties <dependency>
