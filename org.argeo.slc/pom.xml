@@ -269,7 +269,11 @@
 				<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
 				<version>1.5.3</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>com.springsource.slf4j.org.apache.log4j</artifactId>
+				<version>1.5.3</version>
+			</dependency>
 			<!-- Spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -463,7 +467,7 @@
 			<dependency>
 				<groupId>javax.el</groupId>
 				<artifactId>com.springsource.javax.el</artifactId>
-				<version>1.0.0</version> 
+				<version>1.0.0</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>

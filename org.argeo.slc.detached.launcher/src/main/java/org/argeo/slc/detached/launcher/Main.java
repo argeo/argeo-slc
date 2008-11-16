@@ -132,7 +132,7 @@ public class Main {
 
 		if (className == null)
 			throw new Exception(
-					"A main class has to be defined with teh system property slc.detached.appclass");
+					"A main class has to be defined with the system property slc.detached.appclass");
 
 		// Launch main method using reflection
 		Class clss = Class.forName(className);

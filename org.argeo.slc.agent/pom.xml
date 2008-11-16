@@ -64,21 +64,9 @@
 							org.argeo.slc.*
 						</Export-Package>
 						<Import-Package>*,org.argeo.slc.core.test.spring,org.apache.commons.cli;resolution:=optional</Import-Package>
-						<!--
-							<Embed-Dependency>ant*</Embed-Dependency>
-							<Embed-Directory>target/dependency</Embed-Directory>
-							<Embed-StripGroup>true</Embed-StripGroup>
-						-->
 					</instructions>
 				</configuration>
 			</plugin>
-			<!--
-				<plugin> <artifactId>maven-dependency-plugin</artifactId>
-				<executions> <execution> <id>copy-dependencies</id>
-				<phase>process-resources</phase> <goals>
-				<goal>copy-dependencies</goal> </goals> </execution> </executions>
-				</plugin>
-			-->
 		</plugins>
 	</build>
 	<dependencies>

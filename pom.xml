@@ -13,6 +13,7 @@
 		<module>org.argeo.slc</module>
 		<module>org.argeo.slc.core</module>
 		<module>org.argeo.slc.detached</module>
+		<module>org.argeo.slc.detached.ext.log4j</module>
 		<module>org.argeo.slc.detached.launcher</module>
 		<module>org.argeo.slc.agent</module>
 		<module>org.argeo.slc.hibernate</module>
