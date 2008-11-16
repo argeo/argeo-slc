@@ -83,7 +83,7 @@
 
         <dependency>
             <groupId>org.argeo.slc</groupId>
-            <artifactId>argeo-slc-agent</artifactId>
+            <artifactId>org.argeo.slc.agent</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
@@ -91,7 +91,7 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
+            <artifactId>org.springframework.context</artifactId>
         </dependency>
 
         <dependency>
@@ -103,12 +103,5 @@
             <groupId>org.argeo.dep.jemmy</groupId>
             <artifactId>org.argeo.dep.jemmy.nb61</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 </project>

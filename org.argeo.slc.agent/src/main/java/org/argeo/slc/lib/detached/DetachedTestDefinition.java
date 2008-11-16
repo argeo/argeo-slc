@@ -10,13 +10,14 @@ import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.TestDefinition;
+import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.TestRun;
 import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.context.ContextUtils;
-import org.argeo.slc.detached.DetachedClient;
-import org.argeo.slc.detached.DetachedStep;
 import org.argeo.slc.detached.DetachedAnswer;
+import org.argeo.slc.detached.DetachedClient;
 import org.argeo.slc.detached.DetachedRequest;
+import org.argeo.slc.detached.DetachedStep;
 import org.argeo.slc.detached.ui.UiStep;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
@@ -107,7 +108,7 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 			ContextUtils.compareReachedExpected(testData, testRun
 					.getTestResult(), this);
 		} else {
-			testRun.getTestResult().addResultPart(
+			((TestResult)testRun.getTestResult()).addResultPart(
 					new SimpleResultPart(TestStatus.PASSED, "Step "
 							+ stepBeanNameT + " executed successfully"));
 		}

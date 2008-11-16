@@ -19,7 +19,6 @@ import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.helper.ProjectHelper2;
-import org.apache.tools.ant.listener.CommonsLoggingListener;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.core.structure.SimpleSElement;
@@ -261,7 +260,7 @@ public class AntSlcApplication {
 			}
 		}
 
-		project.addBuildListener(new CommonsLoggingListener());
+		//project.addBuildListener(new CommonsLoggingListener());
 
 		ListableBeanFactory context = (ListableBeanFactory) project
 				.getReference(AntConstants.REF_ROOT_CONTEXT);

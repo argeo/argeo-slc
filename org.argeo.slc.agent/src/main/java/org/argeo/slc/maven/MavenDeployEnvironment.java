@@ -12,7 +12,7 @@ import org.argeo.slc.ant.AntRunner;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.deploy.DeployEnvironment;
 
-public class MavenDeployEnvironment implements DeployEnvironment {
+public class MavenDeployEnvironment {/*implements DeployEnvironment {
 	private static final Log log = LogFactory
 			.getLog(MavenDeployEnvironment.class);
 	private MavenManager mavenManager;
@@ -69,5 +69,5 @@ public class MavenDeployEnvironment implements DeployEnvironment {
 	public void setMavenManager(MavenManager mavenManager) {
 		this.mavenManager = mavenManager;
 	}
-
+*/
 }

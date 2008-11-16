@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -30,20 +31,31 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<configuration>
+					<overWriteReleases>false</overWriteReleases>
+					<overWriteSnapshots>false</overWriteSnapshots>
+					<overWriteIfNewer>true</overWriteIfNewer>
+					<outputDirectory>${project.build.directory}/p2Repository/plugins</outputDirectory>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>argeo-slc-agent</artifactId>
+			<artifactId>org.argeo.slc.agent</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<!--  Additional SLC dependencies -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>argeo-slc-agent</artifactId>
-            <version>${project.version}</version>
+			<artifactId>org.argeo.slc.agent</artifactId>
+			<version>${project.version}</version>
 			<type>tar.gz</type>
 			<classifier>base</classifier>
 		</dependency>
@@ -51,39 +63,28 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached.launcher</artifactId>
-            <version>${project.version}</version>
+			<version>${project.version}</version>
 			<type>tar.gz</type>
 			<classifier>dist</classifier>
 		</dependency>
 
-        <dependency>
-            <groupId>org.argeo.dep.jemmy</groupId>
-            <artifactId>org.argeo.dep.jemmy.nb61</artifactId>
-        </dependency>
+		<dependency>
+			<groupId>org.argeo.dep.jemmy</groupId>
+			<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
+		</dependency>
 
-		<!-- Additional Third Parties
-		<dependency>
-			<groupId>net.sourceforge.jtds</groupId>
-			<artifactId>jtds</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-		</dependency>
- -->
-        <!-- Required by FTP Ant task
-        <dependency>
-            <groupId>commons-net</groupId>
-            <artifactId>commons-net</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>oro</groupId>
-            <artifactId>oro</artifactId>
-        </dependency>
- -->
+		<!--
+			Additional Third Parties <dependency>
+			<groupId>net.sourceforge.jtds</groupId> <artifactId>jtds</artifactId>
+			</dependency> <dependency> <groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId> </dependency>
+			<dependency> <groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId> </dependency>
+		-->
+		<!--
+			Required by FTP Ant task <dependency> <groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId> </dependency> <dependency>
+			<groupId>oro</groupId> <artifactId>oro</artifactId> </dependency>
+		-->
 	</dependencies>
 </project>

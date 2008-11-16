@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -6,8 +7,8 @@
 		<version>0.11.2-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
-	<artifactId>argeo-slc-example</artifactId>
-	<name>Argeo SLC Example</name>
+	<artifactId>org.argeo.slc.example</artifactId>
+	<name>Argeo SLC Demo Example 1</name>
 	<packaging>jar</packaging>
 	<description>An Example SLC application</description>
 	<scm>
@@ -55,17 +56,31 @@
 					</systemProperties>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Export-Package>
+							org.argeo.slc.example.*
+						</Export-Package>
+						<Import-Package>*,org.argeo.slc.core.test.spring,org.springframework.oxm.castor,org.argeo.slc.msg.test.tree,org.apache.tools.ant,org.apache.tools.ant.taskdefs,org.apache.tools.ant.types</Import-Package>
+						<Bundle-Activator>org.argeo.slc.example.Activator</Bundle-Activator>
+						<Require-Bundle>org.argeo.slc.core,org.argeo.slc.agent</Require-Bundle>
+					</instructions>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>argeo-slc-core</artifactId>
+			<artifactId>org.argeo.slc.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>argeo-slc-agent</artifactId>
+			<artifactId>org.argeo.slc.agent</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
