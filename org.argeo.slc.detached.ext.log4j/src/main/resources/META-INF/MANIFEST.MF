@@ -13,5 +13,6 @@ Bundle-Description: SLC Distribution
 Bundle-SymbolicName: org.argeo.slc.detached.ext.log4j
 Bundle-DocURL: http://www.argeo.org
 Include-Resource: log4j.properties=src/main/resources/log4j.properties
+ ,META-INF/MANIFEST.MF=src/main/resources/META-INF/MANIFEST.MF
 Originally-Created-By: Apache Maven Bundle Plugin
 

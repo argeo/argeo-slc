@@ -1,51 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-    <import resource="classpath:/org/argeo/slc/detached/spring.xml" />
+	<import resource="classpath:/org/argeo/slc/detached/spring.xml" />
 
-    <!-- UI Parts -->
-    <bean id="uipart.MainFrame"
-        class="org.argeo.slc.jemmytest.uiparts.MainFrame">
-        <property name="complexPanel" ref="uipart.ComplexPanel" />
-    </bean>
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName">
+			<value>SYSTEM_PROPERTIES_MODE_OVERRIDE</value>
+		</property>
+	</bean>
 
-    <bean id="uipart.TestDialog"
-        class="org.argeo.slc.jemmytest.uiparts.TestDialog">
-    </bean>
+	<!-- UI Parts -->
+	<bean id="uipart.MainFrame" class="org.argeo.slc.jemmytest.uiparts.MainFrame">
+		<property name="complexPanel" ref="uipart.ComplexPanel" />
+	</bean>
 
-    <bean id="uipart.ComplexPanel"
-        class="org.argeo.slc.jemmytest.uiparts.ComplexPanel">
-    </bean>
+	<bean id="uipart.TestDialog" class="org.argeo.slc.jemmytest.uiparts.TestDialog">
+	</bean>
 
-    <!-- Steps -->
-    <bean id="step.MainFrameLabel"
-        class="org.argeo.slc.jemmytest.steps.MainFrameLabel">
-        <property name="mainFrame" ref="uipart.MainFrame" />
-    </bean>
+	<bean id="uipart.ComplexPanel" class="org.argeo.slc.jemmytest.uiparts.ComplexPanel">
+	</bean>
 
-    <bean id="step.TestDialogOpen"
-        class="org.argeo.slc.jemmytest.steps.TestDialogOpen">
-        <property name="mainFrame" ref="uipart.MainFrame" />
-        <property name="testDialog" ref="uipart.TestDialog" />
-    </bean>
+	<!-- Steps -->
+	<bean id="step.MainFrameLabel" class="org.argeo.slc.jemmytest.steps.MainFrameLabel">
+		<property name="mainFrame" ref="uipart.MainFrame" />
+	</bean>
 
-    <bean id="step.TestDialogLabel"
-        class="org.argeo.slc.jemmytest.steps.TestDialogLabel">
-        <property name="testDialog" ref="uipart.TestDialog" />
-    </bean>
+	<bean id="step.TestDialogOpen" class="org.argeo.slc.jemmytest.steps.TestDialogOpen">
+		<property name="mainFrame" ref="uipart.MainFrame" />
+		<property name="testDialog" ref="uipart.TestDialog" />
+	</bean>
 
-    <bean id="step.ComplexPanelValues"
-        class="org.argeo.slc.jemmytest.steps.ComplexPanelValues">
-        <property name="complexPanel" ref="uipart.ComplexPanel" />
-    </bean>
+	<bean id="step.TestDialogLabel" class="org.argeo.slc.jemmytest.steps.TestDialogLabel">
+		<property name="testDialog" ref="uipart.TestDialog" />
+	</bean>
 
-    <!-- Runtime -->
-    <bean id="slcDetached.driver"
-        class="org.argeo.slc.detached.drivers.FileDriver">
-        <property name="baseDir" value="file:${slc.workDir}/detached" />
-        <property name="xmlConverter"
-            ref="slcDefault.detached.xmlConverterCompat" />
-    </bean>
+	<bean id="step.ComplexPanelValues" class="org.argeo.slc.jemmytest.steps.ComplexPanelValues">
+		<property name="complexPanel" ref="uipart.ComplexPanel" />
+	</bean>
+
+	<!-- Runtime -->
+	<bean id="slcDetached.driver" parent="slcTemplate.detached.fileDriver"
+		init-method="start" destroy-method="stop">
+		<property name="baseDir" value="${slc.workDir}/detached" />
+		<property name="xmlConverter" ref="slcDefault.detached.xmlConverterCompat" />
+		<property name="executionServer" ref="executionServer.serviceref" />
+	</bean>
+
 </beans>

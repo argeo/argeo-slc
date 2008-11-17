@@ -9,8 +9,11 @@ import org.argeo.slc.detached.admin.CloseSession;
 import org.argeo.slc.detached.admin.OpenSession;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
+import org.springframework.context.ApplicationContext;
+import org.springframework.osgi.context.BundleContextAware;
 
-public class DetachedExecutionServerImpl implements DetachedExecutionServer {
+public class DetachedExecutionServerImpl implements DetachedExecutionServer,
+		BundleContextAware {
 	private final static Log log = LogFactory
 			.getLog(DetachedExecutionServerImpl.class);
 
@@ -18,7 +21,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 	private final List sessions;
 
 	private int skipCount = 1;// start skipCount at 1 since the first step is
-								// always an open session
+	// always an open session
 
 	private BundleContext bundleContext;
 
@@ -32,12 +35,18 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 		try {
 			// Find action
 			ServiceReference[] refs = bundleContext.getAllServiceReferences(
-					StaticRefProvider.class.getName(), null);
+					ApplicationContext.class.getName(), null);
 			Object obj = null;
 			for (int i = 0; i < refs.length; i++) {
-				StaticRefProvider provider = (StaticRefProvider) bundleContext
+				ApplicationContext appContext = (ApplicationContext) bundleContext
 						.getService(refs[i]);
-				obj = provider.getStaticRef(request.getRef());
+				try {
+					obj = appContext.getBean(request.getRef());
+				} catch (Exception e) {
+					// silent
+					if (log.isTraceEnabled())
+						log.trace("Could not find ref " + request.getRef(), e);
+				}
 				if (obj != null) {
 					break;
 				}
@@ -114,7 +123,8 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 								.info("Path "
 										+ request.getPath()
 										+ " was previously in error, executing it again."
-										+ " (skipCount=" + skipCount + "). Reset skip count to 1");
+										+ " (skipCount=" + skipCount
+										+ "). Reset skip count to 1");
 						skipCount = 1;
 					}
 				} else {
@@ -182,7 +192,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer {
 			return (DetachedSession) sessions.get(sessions.size() - 2);
 	}
 
-	public void init(BundleContext bundleContext) {
+	public void setBundleContext(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 

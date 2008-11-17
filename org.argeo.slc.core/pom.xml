@@ -85,14 +85,17 @@
 			<groupId>org.codehaus.castor</groupId>
 			<artifactId>com.springsource.org.castor</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.xerces</groupId>
 			<artifactId>com.springsource.org.apache.xerces</artifactId>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.apache.xalan</groupId>
 			<artifactId>com.springsource.org.apache.xalan</artifactId>
 		</dependency>
+		 -->
 		<dependency>
 			<groupId>edu.emory.mathcs.backport</groupId>
 			<artifactId>

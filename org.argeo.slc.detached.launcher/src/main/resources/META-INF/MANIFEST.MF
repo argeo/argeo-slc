@@ -1,7 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: org.argeo.slc.detached.launcher;uses:="org.apache.comm
- ons.logging,org.apache.felix.framework,org.apache.commons.io,org.apac
- he.felix.main";version="0.11.2.SNAPSHOT"
+Export-Package: org.argeo.slc.detached.launcher;uses:="org.osgi.framew
+ ork,org.eclipse.core.runtime.adaptor";version="0.11.2.SNAPSHOT"
 Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Detached Launcher
 Created-By: 1.6.0 (Sun Microsystems Inc.)
@@ -10,9 +9,8 @@ Bundle-Version: 0.11.2.SNAPSHOT
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: SLC Distribution
-Import-Package: org.apache.commons.io;version="1.4",org.apache.commons
- .logging;version="1.1",org.apache.felix.framework,org.apache.felix.ma
- in,org.argeo.slc.detached.launcher;version="0.11.2.SNAPSHOT"
+Import-Package: org.argeo.slc.detached.launcher;version="0.11.2.SNAPSH
+ OT",org.eclipse.core.runtime.adaptor,org.osgi.framework;version="1.4"
 Bundle-SymbolicName: org.argeo.slc.detached.launcher
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)

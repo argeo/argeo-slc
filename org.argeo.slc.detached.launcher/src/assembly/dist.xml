@@ -13,13 +13,4 @@
 			<fileMode>0755</fileMode>
 		</fileSet>
 	</fileSets>
-	<dependencySets>
-		<dependencySet>
-			<unpack>false</unpack>
-			<outputDirectory>lib/detached</outputDirectory>
-			<includes>
-				<include>*:jar</include>
-			</includes>
-		</dependencySet>
-	</dependencySets>
 </assembly>

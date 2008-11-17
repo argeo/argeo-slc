@@ -35,7 +35,7 @@ public abstract class AbstractDriver implements DetachedDriver {
 				}
 
 			}
-		}, "driverThread");
+		}, "driverThread ("+getClass()+")");
 		driverThread.start();
 
 	}

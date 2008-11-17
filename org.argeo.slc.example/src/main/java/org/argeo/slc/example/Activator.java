@@ -1,20 +1,12 @@
 package org.argeo.slc.example;
 
-import java.net.URL;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.cli.DefaultSlcRuntime;
-import org.argeo.slc.detached.SpringStaticRefProvider;
-import org.argeo.slc.detached.StaticRefProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.context.support.GenericApplicationContext;
-import org.springframework.core.io.UrlResource;
 
 public class Activator implements BundleActivator {
 	//private final static String BOOTSTRAP_LOG4J_CONFIG = "org/argeo/slc/example/log4j.properties";

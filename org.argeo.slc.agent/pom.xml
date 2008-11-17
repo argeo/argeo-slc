@@ -102,21 +102,6 @@
 			<artifactId>org.argeo.dep.osgi.ant</artifactId>
 		</dependency>
 
-		<!--
-			<dependency> <groupId>org.apache.ant</groupId>
-			<artifactId>com.springsource.org.apache.tools.ant</artifactId>
-			</dependency> <dependency> <groupId>org.apache.ant</groupId>
-			<artifactId>ant</artifactId> </dependency> <dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant-commons-logging</artifactId> </dependency>
-			<dependency> <groupId>org.apache.ant</groupId>
-			<artifactId>ant-commons-net</artifactId> </dependency> <dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant-apache-oro</artifactId> </dependency> <dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant-apache-bsf</artifactId> </dependency>
-		-->
-
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.net</artifactId>
