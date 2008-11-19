@@ -167,7 +167,13 @@ public class Main {
 		Bundle[] bundles = bundleContext.getBundles();
 		for (int i = 0; i < bundles.length; i++) {
 			Bundle bundle = bundles[i];
-			if (bundle.getSymbolicName().equals(symbolicName)) {
+			String bundleSymbolicName = bundle.getSymbolicName();
+			if (bundleSymbolicName == null)
+				throw new RuntimeException("Bundle " + bundle.getBundleId()
+						+ " (" + bundle.getLocation()
+						+ ") has no symbolic name.");
+
+			if (bundleSymbolicName.equals(symbolicName)) {
 				return bundle;
 			}
 		}
