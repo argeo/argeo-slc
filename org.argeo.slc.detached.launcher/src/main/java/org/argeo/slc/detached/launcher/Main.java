@@ -31,7 +31,12 @@ public class Main {
 			startApp(config);
 
 			// Start OSGi framework
-			startEquinox(config);
+			try {
+				startEquinox(config);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			info("Argeo SLC Detached launcher started.");
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -75,7 +80,7 @@ public class Main {
 				.getCanonicalFile();
 		String equinoxConfigurationPath = baseDir.getPath() + File.separator
 				+ "slc-detached" + File.separator + "equinoxConfiguration";
-		String[] equinoxArgs = { "-console", "-noExit", "-clean",
+		String[] equinoxArgs = { "-console", "-noExit", "-clean", "-debug",
 				"-configuration", equinoxConfigurationPath };
 
 		BundleContext context = EclipseStarter.startup(equinoxArgs, null);
@@ -153,6 +158,7 @@ public class Main {
 
 	private static void startBundle(BundleContext bundleContext,
 			String symbolicName) throws BundleException {
+		info("Starting bundle " + symbolicName + "...");
 		Bundle bundle = findBundleBySymbolicName(bundleContext, symbolicName);
 		if (bundle != null)
 			bundle.start();
@@ -185,16 +191,16 @@ public class Main {
 		String[] uiArgs = readArgumentsFromLine(config.getProperty(
 				"slc.detached.appargs", ""));
 
-		if (className == null)
-			throw new Exception(
-					"A main class has to be defined with the system property slc.detached.appclass");
-
-		// Launch main method using reflection
-		Class clss = Class.forName(className);
-		Class[] mainArgsClasses = new Class[] { uiArgs.getClass() };
-		Object[] mainArgs = { uiArgs };
-		Method mainMethod = clss.getMethod("main", mainArgsClasses);
-		mainMethod.invoke(null, mainArgs);
+		if (className == null) {
+			info("No slc.detached.appclass property define: does not try to launch an app from the standard classpath.");
+		} else {
+			// Launch main method using reflection
+			Class clss = Class.forName(className);
+			Class[] mainArgsClasses = new Class[] { uiArgs.getClass() };
+			Object[] mainArgs = { uiArgs };
+			Method mainMethod = clss.getMethod("main", mainArgsClasses);
+			mainMethod.invoke(null, mainArgs);
+		}
 	}
 
 	/* UTILITIES */
