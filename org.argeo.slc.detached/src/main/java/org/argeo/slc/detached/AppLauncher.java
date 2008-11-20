@@ -1,24 +1,29 @@
 package org.argeo.slc.detached;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 
 public class AppLauncher {
 	private Properties systemProperties = new Properties();
 	private String mainClass = null;
-	private List arguments = new Vector();
+	private List arguments = new ArrayList();
 
 	public void launch() {
+
+		Properties base = System.getProperties();
+		Properties fake = new Properties(base);
+
 		try {
 			if (mainClass == null)
 				throw new DetachedException(
-						"A main class name muste be specified.");
+						"A main class name has to be specified.");
 
 			System.getProperties().putAll(systemProperties);
-			//Class clss = getClass().getClassLoader().loadClass(mainClass);
-			Class clss = Class.forName(mainClass);
+
+			ClassLoader cl = Thread.currentThread().getContextClassLoader();
+			Class clss = cl.loadClass(mainClass);
 
 			String[] args = new String[arguments.size()];
 			for (int i = 0; i < arguments.size(); i++) {
@@ -28,11 +33,16 @@ public class AppLauncher {
 			Class[] mainArgsClasses = new Class[] { args.getClass() };
 			Object[] mainArgs = { args };
 			Method mainMethod = clss.getMethod("main", mainArgsClasses);
+
+			System.setProperties(fake);
+
 			mainMethod.invoke(null, mainArgs);
 
 		} catch (Exception e) {
 			throw new DetachedException("Unexpected exception while launching "
 					+ mainClass, e);
+		} finally {
+			System.setProperties(base);
 		}
 
 	}
