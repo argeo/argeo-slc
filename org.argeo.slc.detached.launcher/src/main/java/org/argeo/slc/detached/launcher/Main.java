@@ -18,6 +18,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
 public class Main {
+	public final static String PROP_SLC_HOME = "slc.home";
+	public final static String PROP_SLC_OSGI_START = "slc.osgi.start";
+	public final static String PROP_SLC_OSGI_SCAN_CLASSPATH = "slc.osgi.scanClasspath";
+	public final static String PROP_SLC_OSGI_EQUINOX_ARGS = "slc.osgi.equinox.args";
+
 	private final static String DEV_BUNDLE_PREFIX = "slc.osgi.devbundle.";
 
 	public static void main(String[] args) {
@@ -47,10 +52,10 @@ public class Main {
 	protected static Properties prepareConfig(String propertyFilePath)
 			throws Exception {
 		// Format slc.home
-		String slcHome = System.getProperty("slc.home");
+		String slcHome = System.getProperty(PROP_SLC_HOME);
 		if (slcHome != null) {
 			slcHome = new File(slcHome).getCanonicalPath();
-			System.setProperty("slc.home", slcHome);
+			System.setProperty(PROP_SLC_HOME, slcHome);
 		}
 
 		// Load config
@@ -73,30 +78,38 @@ public class Main {
 	}
 
 	public static void startEquinox(Properties config) throws Exception {
-		System.out.println("java.class.path="
-				+ System.getProperty("java.class.path"));
+		info("java.class.path=" + System.getProperty("java.class.path"));
 
 		File baseDir = new File(System.getProperty("user.dir"))
 				.getCanonicalFile();
 		String equinoxConfigurationPath = baseDir.getPath() + File.separator
 				+ "slc-detached" + File.separator + "equinoxConfiguration";
-		String[] equinoxArgs = { "-console", "-noExit", "-clean", "-debug",
-				"-configuration", equinoxConfigurationPath };
+
+		String equinoxArgsLineDefault = "-console -noExit -clean -debug -configuration "
+				+ equinoxConfigurationPath;
+		String equinoxArgsLine = System.getProperty(PROP_SLC_OSGI_EQUINOX_ARGS,
+				equinoxArgsLineDefault);
+		// String[] equinoxArgs = { "-console", "-noExit", "-clean", "-debug",
+		// "-configuration", equinoxConfigurationPath };
+		String[] equinoxArgs = equinoxArgsLine.split(" ");
 
 		BundleContext context = EclipseStarter.startup(equinoxArgs, null);
 
 		// Load from class path (dev environment, maven)
-		StringTokenizer st = new StringTokenizer(System
-				.getProperty("java.class.path"), File.pathSeparator);
-		while (st.hasMoreTokens()) {
-			try {
-				String path = st.nextToken();
-				String url = "reference:file:"
-						+ new File(path).getCanonicalPath();
-				context.installBundle(url);
-				info("Installed from classpath " + url);
-			} catch (Exception e) {
-				bundleInstallWarn(e.getMessage());
+		if (config.getProperty(PROP_SLC_OSGI_SCAN_CLASSPATH, "false").equals(
+				"true")) {
+			StringTokenizer st = new StringTokenizer(System
+					.getProperty("java.class.path"), File.pathSeparator);
+			while (st.hasMoreTokens()) {
+				try {
+					String path = st.nextToken();
+					String url = "reference:file:"
+							+ new File(path).getCanonicalPath();
+					context.installBundle(url);
+					info("Installed from classpath " + url);
+				} catch (Exception e) {
+					bundleInstallWarn(e.getMessage());
+				}
 			}
 		}
 
@@ -115,7 +128,7 @@ public class Main {
 		}
 
 		// Load from distribution
-		String slcHome = config.getProperty("slc.home");
+		String slcHome = config.getProperty(PROP_SLC_HOME);
 		if (slcHome != null) {
 			File libDir = new File(slcHome + File.separator + "lib");
 			File[] bundleFiles = libDir.listFiles();
@@ -133,7 +146,7 @@ public class Main {
 		}
 
 		// Start bundles
-		String bundleStart = config.getProperty("slc.osgi.start",
+		String bundleStart = config.getProperty(PROP_SLC_OSGI_START,
 				"org.springframework.osgi.extender,org.argeo.slc.detached");
 		StringTokenizer stBundleStart = new StringTokenizer(bundleStart, ",");
 		while (stBundleStart.hasMoreTokens()) {
