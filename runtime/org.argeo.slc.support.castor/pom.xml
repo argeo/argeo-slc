@@ -5,22 +5,14 @@
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
 		<version>0.11.2-SNAPSHOT</version>
-		<relativePath>../org.argeo.slc</relativePath>
+		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.core</artifactId>
-	<name>Argeo SLC Core</name>
-	<description>SLC Core</description>
-	<scm>
-		<connection>
-			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.core
-		</connection>
-		<url>
-			https://www.argeo.org/svn/slc/trunk/org.argeo.slc.core
-		</url>
-	</scm>
+	<groupId>org.argeo.slc.runtime</groupId>
+	<artifactId>org.argeo.slc.support.castor</artifactId>
+	<name>Argeo SLC Support Castor</name>
+	<description>Implementations of SLC Specs using Castor</description>
 	<build>
 		<plugins>
-			<!-- Look to parent pom for inheritances -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -53,6 +45,13 @@
 		</plugins>
 	</build>
 	<dependencies>
+
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
@@ -85,17 +84,16 @@
 			<groupId>org.codehaus.castor</groupId>
 			<artifactId>com.springsource.org.castor</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.xerces</groupId>
 			<artifactId>com.springsource.org.apache.xerces</artifactId>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.apache.xalan</groupId>
+		<!--
+			<dependency> <groupId>org.apache.xalan</groupId>
 			<artifactId>com.springsource.org.apache.xalan</artifactId>
-		</dependency>
-		 -->
+			</dependency>
+		-->
 		<dependency>
 			<groupId>edu.emory.mathcs.backport</groupId>
 			<artifactId>

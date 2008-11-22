@@ -5,22 +5,13 @@
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
 		<version>0.11.2-SNAPSHOT</version>
-		<relativePath>../org.argeo.slc</relativePath>
+		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.core</artifactId>
-	<name>Argeo SLC Core</name>
-	<description>SLC Core</description>
-	<scm>
-		<connection>
-			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.core
-		</connection>
-		<url>
-			https://www.argeo.org/svn/slc/trunk/org.argeo.slc.core
-		</url>
-	</scm>
+	<groupId>org.argeo.slc.runtime</groupId>
+	<artifactId>org.argeo.slc.specs</artifactId>
+	<name>Argeo SLC Specifications</name>
 	<build>
 		<plugins>
-			<!-- Look to parent pom for inheritances -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -28,10 +19,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -45,7 +32,6 @@
 						<Export-Package>
 							org.argeo.slc.*
 						</Export-Package>
-						<Import-Package>*,org.apache.commons.logging;version="1.1"</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -55,74 +41,9 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>
-					com.springsource.org.apache.log4j
-				</artifactId>
-		</dependency>
-		<!--
-			<dependency> <groupId>org.slf4j</groupId>
-			<artifactId>com.springsource.slf4j.log4j</artifactId>
-			<version>1.5.3</version> </dependency> <dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
-			<version>1.5.3</version> </dependency>
-		-->
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.context</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.ws</groupId>
-			<artifactId>org.springframework.oxm</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.castor</groupId>
-			<artifactId>com.springsource.org.castor</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.xerces</groupId>
-			<artifactId>com.springsource.org.apache.xerces</artifactId>
-		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>org.apache.xalan</groupId>
-			<artifactId>com.springsource.org.apache.xalan</artifactId>
-		</dependency>
-		 -->
-		<dependency>
-			<groupId>edu.emory.mathcs.backport</groupId>
-			<artifactId>
-				com.springsource.edu.emory.mathcs.backport
-			</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.stream</groupId>
-			<artifactId>com.springsource.javax.xml.stream</artifactId>
-		</dependency>
-		<!--
-			<dependency> <groupId>javax.xml.stream</groupId>
-			<artifactId>stax-api</artifactId> </dependency>
-		-->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
 			<artifactId>
 				com.springsource.org.apache.commons.io
 			</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.dbunit</groupId>
-			<artifactId>com.springsource.org.dbunit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.junit</groupId>
-			<artifactId>com.springsource.junit</artifactId>
 		</dependency>
 	</dependencies>
 </project>
