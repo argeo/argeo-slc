@@ -5,17 +5,13 @@
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
 		<version>0.11.2-SNAPSHOT</version>
-		<relativePath>../org.argeo.slc</relativePath>
+		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
+	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.hibernate</artifactId>
 	<name>Argeo SLC Hibernate</name>
-	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.hibernate</connection>
-		<url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc/argeo-slc-hibernate</url>
-	</scm>
 	<build>
 		<plugins>
-			<!-- Look to parent pom for inheritances -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -47,8 +43,8 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.simple</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -83,10 +79,18 @@
 			<artifactId>org.springframework.context.support</artifactId>
 		</dependency>
 
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.castor</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>com.springsource.org.hsqldb</artifactId>
-			<scope>testing</scope>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

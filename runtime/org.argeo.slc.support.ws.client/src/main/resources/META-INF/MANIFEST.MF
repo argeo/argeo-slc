@@ -24,24 +24,25 @@ Bundle-Version: 0.11.2.SNAPSHOT
 Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: SLC Distribution
-Import-Package: javax.xml.namespace,javax.xml.transform,javax.xml.tran
- sform.dom,org.apache.commons.logging;version="1.1",org.argeo.slc.core
- .process;version="0.11.2.SNAPSHOT",org.argeo.slc.core.test;version="0
- .11.2.SNAPSHOT",org.argeo.slc.core.test.tree;version="0.11.2.SNAPSHOT
- ",org.argeo.slc.msg.process;version="0.11.2.SNAPSHOT",org.argeo.slc.m
- sg.test.tree;version="0.11.2.SNAPSHOT",org.argeo.slc.ws.client;versio
- n="0.11.2.SNAPSHOT",org.argeo.slc.ws.client.spring;version="0.11.2.SN
- APSHOT",org.argeo.slc.ws.process;version="0.11.2.SNAPSHOT",org.argeo.
- slc.ws.test.tree;version="0.11.2.SNAPSHOT",org.springframework.oxm;ve
- rsion="1.5.5.A",org.springframework.ws;version="1.5.5.A",org.springfr
- amework.ws.client;version="1.5.5.A",org.springframework.ws.client.cor
- e;version="1.5.5.A",org.springframework.ws.client.support.interceptor
- ;version="1.5.5.A",org.springframework.ws.context;version="1.5.5.A",o
- rg.springframework.ws.soap;version="1.5.5.A",org.springframework.ws.s
- oap.client;version="1.5.5.A",org.springframework.xml.transform;versio
- n="1.5.5.A",org.springframework.xml.validation;version="1.5.5.A",org.
- w3c.dom,org.xml.sax
-Bundle-SymbolicName: org.argeo.slc.support.ws
+Import-Package: javax.xml.namespace;version="1.3",javax.xml.transform;
+ version="1.3",javax.xml.transform.dom;version="1.3",org.apache.common
+ s.logging;version="1.1",org.argeo.slc.core.process;version="0.11.2.SN
+ APSHOT",org.argeo.slc.core.test;version="0.11.2.SNAPSHOT",org.argeo.s
+ lc.core.test.tree;version="0.11.2.SNAPSHOT",org.argeo.slc.msg.process
+ ;version="0.11.2.SNAPSHOT",org.argeo.slc.msg.test.tree;version="0.11.
+ 2.SNAPSHOT",org.argeo.slc.ws.client;version="0.11.2.SNAPSHOT",org.arg
+ eo.slc.ws.client.spring;version="0.11.2.SNAPSHOT",org.argeo.slc.ws.pr
+ ocess;version="0.11.2.SNAPSHOT",org.argeo.slc.ws.test.tree;version="0
+ .11.2.SNAPSHOT",org.springframework.oxm;version="1.5.5.A",org.springf
+ ramework.ws;version="1.5.5.A",org.springframework.ws.client;version="
+ 1.5.5.A",org.springframework.ws.client.core;version="1.5.5.A",org.spr
+ ingframework.ws.client.support.interceptor;version="1.5.5.A",org.spri
+ ngframework.ws.context;version="1.5.5.A",org.springframework.ws.soap;
+ version="1.5.5.A",org.springframework.ws.soap.client;version="1.5.5.A
+ ",org.springframework.xml.transform;version="1.5.5.A",org.springframe
+ work.xml.validation;version="1.5.5.A",org.w3c.dom;version="1.3",org.x
+ ml.sax;version="1.3"
+Bundle-SymbolicName: org.argeo.slc.support.ws.client
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
 

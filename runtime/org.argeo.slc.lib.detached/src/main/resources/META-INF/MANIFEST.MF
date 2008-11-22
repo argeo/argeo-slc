@@ -11,7 +11,7 @@ Export-Package: org.argeo.slc.lib.detached;uses:="org.springframework.
  hed,org.argeo.slc.ant.structure,org.springframework.beans.factory";ve
  rsion="0.11.2.SNAPSHOT"
 Tool: Bnd-0.0.255
-Bundle-Name: Argeo SLC Agent
+Bundle-Name: Argeo SLC Lib Detached
 Created-By: 1.6.0 (Sun Microsystems Inc.)
 Bundle-Vendor: Argeo
 Bundle-Version: 0.11.2.SNAPSHOT

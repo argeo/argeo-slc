@@ -260,7 +260,7 @@ public class AntSlcApplication {
 			}
 		}
 
-		//project.addBuildListener(new CommonsLoggingListener());
+		// project.addBuildListener(new CommonsLoggingListener());
 
 		ListableBeanFactory context = (ListableBeanFactory) project
 				.getReference(AntConstants.REF_ROOT_CONTEXT);
@@ -290,11 +290,11 @@ public class AntSlcApplication {
 				AntConstants.SLC_TASKDEFS_RESOURCE_PATH);
 		for (Object o : taskdefs.keySet()) {
 			String name = o.toString();
+			String className = taskdefs.getProperty(name);
 			try {
-				project.addTaskDefinition(name, Class.forName(taskdefs
-						.getProperty(name)));
+				project.addTaskDefinition(name, Class.forName(className));
 			} catch (ClassNotFoundException e) {
-				log.error("Unknown class for task " + name, e);
+				log.warn("Unknown class " + className + " for task " + name);
 			}
 		}
 		Properties typedefs = getDefs(project,

@@ -1,13 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
 		<version>0.11.2-SNAPSHOT</version>
-		<relativePath>../org.argeo.slc</relativePath>
+		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
+	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.server</artifactId>
 	<name>Argeo SLC Server</name>
 	<description>SLC Server</description>
@@ -42,10 +42,10 @@
 				<artifactId>maven-jetty-plugin</artifactId>
 				<configuration>
 					<webAppSourceDirectory>
-						../org.argeo.slc.webapp/src/main/webapp
+						../../org.argeo.slc.webapp/src/main/webapp
 					</webAppSourceDirectory>
 					<jettyConfig>
-						../org.argeo.slc.webapp/src/main/config/jetty/jetty-test.xml
+						../../org.argeo.slc.webapp/src/main/config/jetty/jetty-test.xml
 					</jettyConfig>
 				</configuration>
 			</plugin>
@@ -53,26 +53,14 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
-			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>xerces</groupId>
-					<artifactId>xercesImpl</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
+			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.hibernate</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>xerces</groupId>
-					<artifactId>xercesImpl</artifactId>
-				</exclusion>
-			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.castor</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>

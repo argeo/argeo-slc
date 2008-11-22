@@ -8,7 +8,7 @@
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
-	<artifactId>org.argeo.slc.support.ws</artifactId>
+	<artifactId>org.argeo.slc.support.ws.client</artifactId>
 	<packaging>jar</packaging>
 	<name>Argeo SLC Support Web Services Client</name>
 	<build>
@@ -46,12 +46,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.specs</artifactId>
+			<artifactId>org.argeo.slc.support.simple</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<artifactId>org.argeo.slc.support.castor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

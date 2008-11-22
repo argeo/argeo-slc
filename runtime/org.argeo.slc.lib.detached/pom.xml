@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.lib.detached</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC Agent</name>
+	<name>Argeo SLC Lib Detached</name>
 	<build>
 		<plugins>
 			<!-- Look to parent pom for inheritances -->
@@ -44,11 +44,6 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.specs</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
