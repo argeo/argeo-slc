@@ -15,7 +15,7 @@
 		<module>org.argeo.slc.support.castor</module>
 		<module>org.argeo.slc.support.ant</module>
 		<module>org.argeo.slc.support.ws.client</module>
-		<module>org.argeo.slc.hibernate</module>
+		<module>org.argeo.slc.support.hibernate</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.detached</module>
 		<module>org.argeo.slc.launcher</module>
