@@ -1,0 +1,65 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<import
+		resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
+	<import
+		resource="classpath:/org/argeo/slc/xml/spring/applicationContext.xml" />
+
+	<bean id="slcDefault.ws.client.webServiceTemplate"
+		parent="slcTemplate.ws.client.webServiceTemplate">
+		<constructor-arg ref="slcDefault.ws.client.messageFactory" />
+		<property name="defaultUri" value="${slc.ws.uri}" />
+	</bean>
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		lazy-init="false">
+		<property name="systemPropertiesModeName"
+			value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="properties">
+			<props>
+				<prop key="slc.ws.uri">
+					http://localhost:9090/org.argeo.slc.webapp/slcService/
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="slcTemplate.ws.client.webServiceTemplate"
+		class="org.springframework.ws.client.core.WebServiceTemplate"
+		abstract="true">
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="unmarshaller"
+			ref="slcDefault.castor.marshaller" />
+		<property name="interceptors">
+			<list>
+				<bean
+					class="org.argeo.slc.ws.client.ValidatingClientInterceptor">
+					<property name="validator"
+						ref="slcDefault.xml.xsdValidator" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="slcDefault.ws.client.messageFactory"
+		class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory" />
+
+	<bean name="slcDefault.ws.client.treeTestResultWsNotfier"
+		class="org.argeo.slc.ws.test.tree.WebServiceTreeTestResultNotifier">
+		<property name="template"
+			ref="slcDefault.ws.client.webServiceTemplate" />
+		<property name="onlyOnClose" value="false" />
+	</bean>
+
+	<bean name="slcDefault.ws.client.slcExecutionNotifier"
+		class="org.argeo.slc.ws.process.WebServiceSlcExecutionNotifier">
+		<property name="template"
+			ref="slcDefault.ws.client.webServiceTemplate" />
+	</bean>
+
+</beans>
