@@ -1,15 +1,8 @@
 package org.argeo.slc.example;
 
-import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.cli.DefaultSlcRuntime;
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
-
-public class Activator implements BundleActivator {
-	//private final static String BOOTSTRAP_LOG4J_CONFIG = "org/argeo/slc/example/log4j.properties";
+public class Activator{// implements BundleActivator {
+/*	//private final static String BOOTSTRAP_LOG4J_CONFIG = "org/argeo/slc/example/log4j.properties";
 	private static Log log = LogFactory.getLog(Activator.class);
 
 	public void start(BundleContext context) throws Exception {
@@ -65,6 +58,6 @@ public class Activator implements BundleActivator {
 //				"classpath:" + BOOTSTRAP_LOG4J_CONFIG));
 		log = LogFactory.getLog(Activator.class);
 
-	}
+	}*/
 
 }
