@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<import
+		resource="classpath:/org/argeo/slc/core/test/spring/applicationContext.xml" />
+	<import
+		resource="classpath:/org/argeo/slc/core/process/spring/applicationContext.xml" />
+
+	<bean id="testResult"
+		parent="slcDefault.test.basicTreeTestResult">
+       <property name="attributes">
+            <map>
+                <entry key="test" value="TEST"/>
+            </map>
+        </property>       
+		<property name="listeners">
+			<list merge="true">
+				<ref bean="slcDefault.castor.xsltReportGenerator" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="testResult2"
+		parent="slcDefault.test.basicTreeTestResult">
+		<property name="listeners">
+			<list merge="true">
+				<ref bean="slcDefault.castor.xsltReportGenerator" />
+			</list>
+		</property>
+	</bean>
+
+	<bean name="executionBuildListener"
+		class="org.argeo.slc.ant.SlcExecutionBuildListener">
+		<property name="logLevel" value="INFO" />
+		<property name="notifiers">
+			<list>
+				<ref bean="slcDefault.process.fileSlcExecutionNotifier" />
+			</list>
+		</property>
+	</bean>
+</beans>
