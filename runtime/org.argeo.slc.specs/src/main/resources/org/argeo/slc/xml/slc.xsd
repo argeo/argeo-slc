@@ -1,0 +1,259 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:slc="http://argeo.org/projects/slc/schemas"
+    elementFormDefault="qualified"
+    targetNamespace="http://argeo.org/projects/slc/schemas">
+    <!-- TREE TEST RESULT -->
+    <xs:element name="tree-test-result" type="slc:TreeTestResultType" />
+    <xs:element name="tree-test-result-collection"
+        type="slc:TreeTestResultCollectionType" />
+
+    <xs:complexType name="TreeTestResultCollectionType">
+        <xs:all>
+            <xs:element name="results" minOccurs="0"
+                type="slc:ResultsType" />
+        </xs:all>
+        <xs:attribute name="id" use="required" />
+    </xs:complexType>
+    <xs:complexType name="ResultsType">
+        <xs:sequence>
+            <xs:element name="tree-test-result"
+                type="slc:TreeTestResultType" minOccurs="0"
+                maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TreeTestResultType">
+        <xs:all>
+            <xs:element name="close-date" type="xs:dateTime"
+                minOccurs="0" />
+            <xs:element name="attributes" minOccurs="0"
+                type="slc:AttributesType" />
+            <xs:element name="result-parts" minOccurs="0"
+                type="slc:ResultPartsType" />
+            <xs:element name="elements" minOccurs="0"
+                type="slc:ElementsType" />
+        </xs:all>
+        <xs:attribute name="uuid" use="required" />
+    </xs:complexType>
+    <xs:complexType name="ResultPartsType">
+        <xs:sequence>
+            <xs:element name="result-part" type="slc:ResultPartType"
+                minOccurs="0" maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ResultPartType">
+        <xs:all>
+            <xs:element name="part-sub-list" type="slc:PartSubListType" />
+        </xs:all>
+        <xs:attribute name="path" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="PartSubListType">
+        <xs:all>
+            <xs:element name="parts" minOccurs="0" type="slc:PartsType" />
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="PartsType">
+        <xs:sequence>
+            <xs:element name="simple-result-part"
+                type="slc:SimpleResultPartType" maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SimpleResultPartType">
+        <xs:all>
+            <xs:element name="status">
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="PASSED" />
+                        <xs:enumeration value="FAILED" />
+                        <xs:enumeration value="ERROR" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="message" type="xs:string" />
+            <xs:element name="exception-message" minOccurs="0"
+                type="xs:string" />
+            <xs:element name="stack-lines" minOccurs="0"
+                type="slc:StackLinesType" />
+            <xs:element name="test-run-uuid" type="xs:string"
+                minOccurs="0" />
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="StackLinesType">
+        <xs:sequence>
+            <xs:element name="stack-line" maxOccurs="unbounded"
+                type="xs:string" />
+        </xs:sequence>
+        <xs:attribute name="message" type="xs:string" />
+    </xs:complexType>
+    <xs:complexType name="ElementsType">
+        <xs:sequence>
+            <xs:element name="element" type="slc:ElementType"
+                minOccurs="0" maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="ElementType">
+        <xs:all>
+            <xs:element name="simple-sElement"
+                type="slc:SimpleSElementType" />
+        </xs:all>
+        <xs:attribute name="path" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="SimpleSElementType">
+        <xs:all>
+            <xs:element name="label" type="xs:string" />
+            <xs:element name="tags" type="slc:TagsType" minOccurs="0" />
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="TagsType">
+        <xs:sequence>
+            <xs:element name="tag" type="slc:TagType" minOccurs="0"
+                maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TagType">
+        <xs:all>
+            <xs:element name="tag-value" type="xs:string" />
+        </xs:all>
+        <xs:attribute name="name" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="TreeSPathType">
+        <xs:attribute name="as-unique-string" type="xs:string"
+            use="required" />
+    </xs:complexType>
+    <xs:complexType name="TestRunDescriptorType">
+        <xs:all>
+            <xs:element name="test-run-uuid" type="xs:string" />
+            <xs:element name="slc-execution-uuid" type="xs:string"
+                minOccurs="0" />
+            <xs:element name="slc-execution-step-uuid" type="xs:string"
+                minOccurs="0" />
+            <xs:element name="deployed-sytem-id" type="xs:string"
+                minOccurs="0" />
+            <xs:element name="test-result-uuid" type="xs:string"
+                minOccurs="0" />
+        </xs:all>
+    </xs:complexType>
+
+    <!-- TREE TEST RESULT REQUESTS -->
+    <xs:element name="create-tree-test-result-request">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="tree-test-result"
+                    type="slc:TreeTestResultType" />
+                <xs:element name="test-run-descriptor"
+                    type="slc:TestRunDescriptorType" maxOccurs="1" minOccurs="0"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="close-tree-test-result-request">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="result-uuid" type="xs:string" />
+                <xs:element name="close-date" type="xs:dateTime" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="result-part-request">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="result-uuid" type="xs:string" />
+                <xs:element name="simple-result-part"
+                    type="slc:SimpleResultPartType" />
+                <xs:element name="related-elements"
+                    type="slc:ElementsType" />
+                <xs:element name="tree-sPath" type="slc:TreeSPathType" />
+                <xs:element name="test-run-descriptor"
+                    type="slc:TestRunDescriptorType" />
+                <xs:element name="attributes" minOccurs="0"
+                    type="slc:AttributesType" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- SLC EXECUTION -->
+    <xs:element name="slc-execution" type="slc:SlcExecutionType" />
+    <xs:complexType name="SlcExecutionType">
+        <xs:all>
+            <xs:element name="status" type="xs:string" />
+            <xs:element name="type" type="xs:string" />
+            <xs:element name="host" type="xs:string" />
+            <xs:element name="user" type="xs:string" />
+            <xs:element name="steps" minOccurs="0"
+                type="slc:SlcExecutionStepsType" />
+            <xs:element name="attributes" minOccurs="0"
+                type="slc:AttributesType" />
+        </xs:all>
+        <xs:attribute name="uuid" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="SlcExecutionStepsType">
+        <xs:sequence>
+            <xs:element name="slc-execution-step"
+                type="slc:SlcExecutionStepType" maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SlcExecutionStepType">
+        <xs:all>
+            <xs:element name="type" type="xs:string" />
+            <xs:element name="begin" type="xs:dateTime" />
+            <xs:element name="log-lines" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="log-line" type="xs:string"
+                            maxOccurs="unbounded" />
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+        <xs:attribute name="uuid" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="AttributesType">
+        <xs:sequence>
+            <xs:element name="attribute" type="slc:AttributeType"
+                minOccurs="0" maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AttributeType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="name" type="xs:string"
+                    use="required" />
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <!-- SLC EXECUTION REQUESTS-->
+    <xs:element name="slc-execution-request">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="slc-execution"
+                    type="slc:SlcExecutionType" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="slc-execution-steps-request">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="slc-execution-uuid" type="xs:string" />
+                <xs:element name="steps"
+                    type="slc:SlcExecutionStepsType" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="slc-execution-status-request">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="slc-execution-uuid" type="xs:string" />
+                <xs:element name="new-status" type="xs:string" />
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

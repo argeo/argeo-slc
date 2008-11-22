@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="parentContext.pc1" parent="parentContext.template">
+		<property name="values">
+			<map>
+				<entry key="rootvar" value="text" />
+			</map>
+		</property>
+		<property name="expectedValues">
+			<map>
+				<entry key="reference" value="20" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="context.c1" parent="context.template">
+		<property name="parentContext" ref="parentContext.pc1" />
+		<property name="values">
+			<map>
+				<entry key="reference" value="20" />
+				<entry key="any" value="999" />
+				<entry key="skipped" value="999" />
+			</map>
+		</property>
+		<property name="expectedValues">
+			<map>
+				<entry key="reference" value="21" />
+				<entry key="any" value="*" />
+				<entry key="skipped" value="!" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="context.c2" parent="context.template">
+		<property name="parentContext" ref="parentContext.pc1" />
+		<property name="values">
+			<map>
+				<entry key="var" value="37" />
+				<entry key="bad" value="56" />
+			</map>
+		</property>
+		<property name="expectedValues">
+			<map>
+				<entry key="var" value="37" />
+				<entry key="bad" value="57" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="parentContext.pc2" parent="parentContext.template">
+		<property name="parentContext" ref="parentContext.pc1" />
+		<property name="expectedValues">
+			<map>
+				<entry key="reference" value="40" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="context.c3" parent="context.template">
+		<property name="parentContext" ref="parentContext.pc2" />
+		<property name="values">
+			<map>
+				<entry key="reference" value="41" />
+				<entry key="rootvar" value="textX" />
+			</map>
+		</property>
+		<property name="expectedValues">
+			<map>
+				<entry key="reference" value="40" />
+				<entry key="rootvar" value="text" />
+			</map>
+		</property>
+	</bean>
+
+
+	<bean id="parentContext.template"
+		class="org.argeo.slc.core.test.context.SimpleParentContextAware"
+		abstract="true">
+	</bean>
+
+	<bean id="context.template"
+		class="org.argeo.slc.core.test.context.SimpleContextAware"
+		abstract="true">
+	</bean>
+</beans>

@@ -1,0 +1,35 @@
+<project xmlns:artifact="urn:maven-artifact-ant" default="deploy">
+
+	<path id="maven-ant-tasks.classpath"
+	      path="D:\dev\tools\maven-2.0.7\lib\maven-ant-tasks-2.0.7.jar" />
+	<typedef resource="org/apache/maven/artifact/ant/antlib.xml"
+	         uri="urn:maven-artifact-ant"
+	         classpathref="maven-ant-tasks.classpath" />
+
+	<property name="local" location="D:/dev/mavenLocal/" />
+	<property name="local.argeo" location="${local}/org/argeo/slc/" />
+	<property name="repo.argeo"
+	          value="file:///D:/dev/test/mavenArgeoLocalRep/" />
+
+	<target name="deploy">
+		<deploy artifact="argeo-slc-core" version="0.6.0" />
+	</target>
+
+	<!-- Macrodefs -->
+	<macrodef name="deploy">
+		<attribute name="artifact" />
+		<attribute name="version" />
+		<sequential>
+			<artifact:install-provider artifactId="wagon-file"
+			                           version="1.0-beta-2" />
+			<artifact:deploy file="${local.argeo}/@{artifact}/@{version}/@{artifact}-@{version}.jar">
+				<artifact:pom file="pom.xml" />
+				<remoterepository url="${repo.argeo}" />
+				<attach classifier="sources"
+				        file="${local.argeo}/@{artifact}/@{version}/@{artifact}-@{version}-sources.jar" />
+				<attach classifier="javadoc"
+				        file="${local.argeo}/@{artifact}/@{version}/@{artifact}-@{version}-javadoc.jar" />
+			</artifact:deploy>
+		</sequential>
+	</macrodef>
+</project>
