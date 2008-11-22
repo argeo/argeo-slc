@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 import org.apache.tools.ant.Task;
 
 import org.argeo.slc.ant.AntConstants;
-import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.process.SlcExecution;
 
 /** Abstract Ant task providing access to a Spring context. */
 public abstract class AbstractSpringTask extends Task {

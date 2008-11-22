@@ -5,10 +5,10 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
-import org.argeo.slc.core.UnsupportedException;
+import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.core.structure.SimpleSElement;
-import org.argeo.slc.core.structure.StructureElement;
-import org.argeo.slc.core.structure.StructureRegistry;
+import org.argeo.slc.structure.StructureElement;
+import org.argeo.slc.structure.StructureRegistry;
 
 /** Tree based implementation of a structure registry. */
 public class TreeSRegistry implements StructureRegistry<TreeSPath> {

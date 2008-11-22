@@ -7,7 +7,7 @@ import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 
 public class MapArg {
 	private List<EntryArg> entries = new Vector<EntryArg>();

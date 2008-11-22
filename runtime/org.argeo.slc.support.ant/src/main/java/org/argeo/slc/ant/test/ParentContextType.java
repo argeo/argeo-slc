@@ -7,11 +7,11 @@ import java.util.Vector;
 
 import org.apache.tools.ant.types.DataType;
 
+import org.argeo.slc.SlcException;
 import org.argeo.slc.ant.spring.MapArg;
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.test.context.ContextAware;
 import org.argeo.slc.core.test.context.ContextUtils;
-import org.argeo.slc.core.test.context.ParentContextAware;
+import org.argeo.slc.test.context.ContextAware;
+import org.argeo.slc.test.context.ParentContextAware;
 
 public class ParentContextType extends DataType implements ParentContextAware {
 	private MapArg values = null;

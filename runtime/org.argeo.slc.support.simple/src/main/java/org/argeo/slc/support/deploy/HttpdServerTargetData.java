@@ -1,7 +1,7 @@
 package org.argeo.slc.support.deploy;
 
-import org.argeo.slc.core.deploy.InstalledExecutables;
-import org.argeo.slc.core.deploy.TargetData;
+import org.argeo.slc.deploy.InstalledExecutables;
+import org.argeo.slc.deploy.TargetData;
 
 public class HttpdServerTargetData implements TargetData {
 	private String serverRoot;

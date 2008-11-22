@@ -11,9 +11,9 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.core.test.TestResultPart;
 import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.test.TestResultPart;
 
 /** Utilities for unit tests. */
 public class UnitTestTreeUtil {

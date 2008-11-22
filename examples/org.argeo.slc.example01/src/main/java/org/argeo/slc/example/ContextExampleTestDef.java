@@ -1,10 +1,10 @@
 package org.argeo.slc.example;
 
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
-import org.argeo.slc.core.test.TestDefinition;
-import org.argeo.slc.core.test.TestRun;
 import org.argeo.slc.core.test.context.ContextUtils;
 import org.argeo.slc.core.test.context.DefaultContextTestData;
+import org.argeo.slc.test.TestDefinition;
+import org.argeo.slc.test.TestRun;
 
 public class ContextExampleTestDef extends TreeSRelatedHelper implements
 		TestDefinition {

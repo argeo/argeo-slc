@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.argeo.slc.core.test">
+<hibernate-mapping package="org.argeo.slc.test">
 	<class name="TestRunDescriptor" table="TEST_RUN_DESCRIPTOR">
 		<cache usage="nonstrict-read-write" />
 		<id name="testRunUuid" column="TEST_RUN_UUID" />

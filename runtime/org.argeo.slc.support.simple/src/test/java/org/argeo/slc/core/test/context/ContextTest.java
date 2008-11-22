@@ -3,8 +3,9 @@ package org.argeo.slc.core.test.context;
 import java.util.List;
 
 import org.argeo.slc.core.test.SimpleTestResult;
-import org.argeo.slc.core.test.TestResultPart;
-import org.argeo.slc.core.test.TestStatus;
+import org.argeo.slc.test.TestResultPart;
+import org.argeo.slc.test.TestStatus;
+import org.argeo.slc.test.context.ContextAware;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 
 public class ContextTest extends AbstractSpringTestCase {

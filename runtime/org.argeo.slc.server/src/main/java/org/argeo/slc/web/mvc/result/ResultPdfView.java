@@ -8,10 +8,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SlcTestUtils;
-import org.argeo.slc.core.test.TestResultPart;
-import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.test.TestResultPart;
+import org.argeo.slc.test.TestStatus;
 import org.springframework.web.servlet.view.document.AbstractPdfView;
 
 import com.lowagie.text.Cell;

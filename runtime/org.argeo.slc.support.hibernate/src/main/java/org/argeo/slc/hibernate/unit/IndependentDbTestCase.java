@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import org.apache.commons.io.IOUtils;
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.dbunit.DataSourceDatabaseTester;
 import org.dbunit.DatabaseUnitException;

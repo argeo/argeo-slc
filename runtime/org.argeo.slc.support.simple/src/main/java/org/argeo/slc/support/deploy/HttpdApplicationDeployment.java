@@ -4,13 +4,13 @@ import java.io.File;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.build.Distribution;
-import org.argeo.slc.core.deploy.DeployEnvironment;
-import org.argeo.slc.core.deploy.DeployedSystem;
-import org.argeo.slc.core.deploy.Deployment;
-import org.argeo.slc.core.deploy.DeploymentData;
-import org.argeo.slc.core.deploy.TargetData;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.build.Distribution;
+import org.argeo.slc.deploy.DeployEnvironment;
+import org.argeo.slc.deploy.DeployedSystem;
+import org.argeo.slc.deploy.Deployment;
+import org.argeo.slc.deploy.DeploymentData;
+import org.argeo.slc.deploy.TargetData;
 
 public class HttpdApplicationDeployment implements Deployment {
 	private static final Log log = LogFactory

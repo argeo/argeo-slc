@@ -1,6 +1,7 @@
 package org.argeo.slc.core.test;
 
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.test.TestStatus;
 
 public abstract class SlcTestUtils {
 	public static String statusToString(Integer status) {

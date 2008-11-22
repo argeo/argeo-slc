@@ -9,11 +9,11 @@ import org.springframework.ws.soap.client.SoapFaultClientException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.argeo.slc.unit.process.SlcExecutionTestUtils;
 import org.argeo.slc.ws.client.WebServiceUtils;

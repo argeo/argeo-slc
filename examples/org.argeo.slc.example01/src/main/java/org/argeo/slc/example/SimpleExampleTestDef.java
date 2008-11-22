@@ -7,14 +7,13 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.core.test.TestStatus;
-import org.argeo.slc.core.test.TestDefinition;
-import org.argeo.slc.core.test.TestResult;
-import org.argeo.slc.core.test.TestResultPart;
-import org.argeo.slc.core.test.TestRun;
 import org.argeo.slc.example.appli.ExampleAppli;
+import org.argeo.slc.test.TestDefinition;
+import org.argeo.slc.test.TestResult;
+import org.argeo.slc.test.TestResultPart;
+import org.argeo.slc.test.TestRun;
+import org.argeo.slc.test.TestStatus;
 
 public class SimpleExampleTestDef implements TestDefinition {
 	private Log log = LogFactory.getLog(SimpleExampleTestDef.class);

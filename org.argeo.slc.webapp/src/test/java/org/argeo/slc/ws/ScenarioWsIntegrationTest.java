@@ -7,8 +7,6 @@ import static org.argeo.slc.unit.test.tree.TreeTestResultTestUtils.createSimpleR
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
@@ -17,6 +15,8 @@ import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.argeo.slc.unit.process.SlcExecutionTestUtils;
 import org.springframework.ws.client.core.WebServiceTemplate;

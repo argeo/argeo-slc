@@ -1,5 +1,10 @@
 package org.argeo.slc.core.test;
 
+import org.argeo.slc.test.TestResultPart;
+import org.argeo.slc.test.TestRun;
+import org.argeo.slc.test.TestRunAware;
+import org.argeo.slc.test.TestStatus;
+
 /**
  * <p>
  * Basic implementation of a result part, implementing the standard three status

@@ -1,6 +1,6 @@
 package org.argeo.slc.msg.process;
 
-import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.process.SlcExecution;
 
 public class SlcExecutionRequest {
 	private SlcExecution slcExecution;

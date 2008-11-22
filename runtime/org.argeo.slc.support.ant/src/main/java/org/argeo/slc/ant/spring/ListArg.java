@@ -3,7 +3,7 @@ package org.argeo.slc.ant.spring;
 import java.util.List;
 import java.util.Vector;
 
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 
 /** List of overrides */
 public class ListArg {

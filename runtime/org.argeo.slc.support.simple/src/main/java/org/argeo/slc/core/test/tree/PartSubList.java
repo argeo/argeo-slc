@@ -3,8 +3,8 @@ package org.argeo.slc.core.test.tree;
 import java.util.List;
 import java.util.Vector;
 
-import org.argeo.slc.core.test.TestResultPart;
-import org.argeo.slc.core.test.TestStatus;
+import org.argeo.slc.test.TestResultPart;
+import org.argeo.slc.test.TestStatus;
 
 /**
  * List of <code>TestResultPart</code>. It can be used to build complex

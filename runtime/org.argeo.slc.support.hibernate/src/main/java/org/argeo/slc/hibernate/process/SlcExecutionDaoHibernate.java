@@ -6,10 +6,10 @@ import java.util.List;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionStep;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.dao.process.SlcExecutionDao;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 

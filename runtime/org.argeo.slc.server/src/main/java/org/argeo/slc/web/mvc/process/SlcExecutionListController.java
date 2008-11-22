@@ -11,8 +11,8 @@ import org.springframework.web.servlet.mvc.ParameterizableViewController;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.argeo.slc.core.process.SlcExecution;
 import org.argeo.slc.dao.process.SlcExecutionDao;
+import org.argeo.slc.process.SlcExecution;
 
 public class SlcExecutionListController extends ParameterizableViewController {
 	private Log log = LogFactory.getLog(getClass());

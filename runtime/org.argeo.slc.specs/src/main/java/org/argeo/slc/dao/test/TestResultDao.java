@@ -3,7 +3,7 @@ package org.argeo.slc.dao.test;
 import java.util.Date;
 import java.util.List;
 
-import org.argeo.slc.core.test.TestResult;
+import org.argeo.slc.test.TestResult;
 
 /**
  * The dao for <code>TestResult</code>.

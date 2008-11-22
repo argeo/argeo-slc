@@ -3,7 +3,7 @@ package org.argeo.slc.msg.process;
 import java.util.List;
 import java.util.Vector;
 
-import org.argeo.slc.core.process.SlcExecutionStep;
+import org.argeo.slc.process.SlcExecutionStep;
 
 public class SlcExecutionStepsRequest {
 	private String slcExecutionUuid;

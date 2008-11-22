@@ -11,7 +11,7 @@ import org.apache.commons.logging.LogFactory;
 //import org.apache.maven.embedder.MavenEmbedder;
 //import org.apache.maven.embedder.MavenEmbedderException;
 
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 
 public class MavenManager {/* FIXME
 	private final Log log = LogFactory.getLog(getClass());

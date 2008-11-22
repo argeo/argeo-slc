@@ -1,5 +1,7 @@
 package org.argeo.slc.core.test;
 
+import org.argeo.slc.test.TestData;
+
 public class BasicTestData implements TestData {
 	private Object expected;
 	private Object reached;

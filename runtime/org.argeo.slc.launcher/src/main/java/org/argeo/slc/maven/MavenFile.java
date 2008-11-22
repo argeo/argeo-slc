@@ -1,7 +1,7 @@
 package org.argeo.slc.maven;
 
-import org.argeo.slc.core.build.Distribution;
-import org.argeo.slc.core.deploy.DeploymentData;
+import org.argeo.slc.build.Distribution;
+import org.argeo.slc.deploy.DeploymentData;
 
 public class MavenFile implements Distribution, DeploymentData {
 	private String groupId;

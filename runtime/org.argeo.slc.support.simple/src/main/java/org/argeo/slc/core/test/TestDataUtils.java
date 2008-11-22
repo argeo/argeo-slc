@@ -1,6 +1,8 @@
 package org.argeo.slc.core.test;
 
-import org.argeo.slc.core.UnsupportedException;
+import org.argeo.slc.UnsupportedException;
+import org.argeo.slc.test.TestData;
+import org.argeo.slc.test.TestDataProvider;
 
 /** Utilities for dealing with test datas. */
 public class TestDataUtils {

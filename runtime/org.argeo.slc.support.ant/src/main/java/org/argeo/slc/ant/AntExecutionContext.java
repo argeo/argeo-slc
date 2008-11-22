@@ -1,7 +1,7 @@
 package org.argeo.slc.ant;
 
 import org.apache.tools.ant.Project;
-import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcExecutionContext;
 import org.springframework.context.ApplicationContext;
 

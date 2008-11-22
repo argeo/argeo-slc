@@ -5,15 +5,15 @@ import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Target;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.ant.AntConstants;
 import org.argeo.slc.ant.spring.AbstractSpringTask;
 import org.argeo.slc.ant.spring.SpringArg;
-import org.argeo.slc.core.SlcException;
 import org.argeo.slc.core.structure.SimpleSElement;
-import org.argeo.slc.core.structure.StructureAware;
-import org.argeo.slc.core.structure.StructureElement;
-import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.structure.StructureAware;
+import org.argeo.slc.structure.StructureElement;
+import org.argeo.slc.structure.StructureRegistry;
 
 /** Ant task that can be registered within a structure. */
 public abstract class SAwareTask extends AbstractSpringTask {

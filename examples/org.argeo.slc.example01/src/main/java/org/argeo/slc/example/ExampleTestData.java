@@ -2,7 +2,7 @@ package org.argeo.slc.example;
 
 import java.io.File;
 
-import org.argeo.slc.core.test.TestData;
+import org.argeo.slc.test.TestData;
 
 public class ExampleTestData implements TestData {
 	private File inputFile;

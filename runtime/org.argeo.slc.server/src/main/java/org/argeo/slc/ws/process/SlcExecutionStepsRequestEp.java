@@ -2,9 +2,9 @@ package org.argeo.slc.ws.process;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.springframework.ws.server.endpoint.AbstractMarshallingPayloadEndpoint;
 
 public class SlcExecutionStepsRequestEp extends

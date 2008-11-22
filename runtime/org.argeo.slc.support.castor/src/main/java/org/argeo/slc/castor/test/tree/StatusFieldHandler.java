@@ -2,7 +2,7 @@ package org.argeo.slc.castor.test.tree;
 
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.SlcTestUtils;
-import org.argeo.slc.core.test.TestStatus;
+import org.argeo.slc.test.TestStatus;
 import org.exolab.castor.mapping.AbstractFieldHandler;
 
 public class StatusFieldHandler extends AbstractFieldHandler {

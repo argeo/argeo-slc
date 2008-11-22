@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
-import org.argeo.slc.core.test.TestRunDescriptor;
 import org.argeo.slc.dao.test.TestRunDescriptorDao;
+import org.argeo.slc.test.TestRunDescriptor;
 
 public class TestRunViewController extends ParameterizableViewController {
 	private final TestRunDescriptorDao testRunDescriptorDao;

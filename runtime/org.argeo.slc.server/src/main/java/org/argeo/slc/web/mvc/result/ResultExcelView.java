@@ -9,12 +9,12 @@ import jxl.write.Label;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SlcTestUtils;
-import org.argeo.slc.core.test.TestResultPart;
 import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.test.TestResultPart;
 import org.springframework.web.servlet.view.document.AbstractJExcelView;
 
 public class ResultExcelView extends AbstractJExcelView {

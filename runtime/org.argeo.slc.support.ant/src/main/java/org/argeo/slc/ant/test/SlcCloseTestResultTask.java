@@ -7,8 +7,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.ant.spring.SpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
-import org.argeo.slc.core.structure.StructureRegistry;
-import org.argeo.slc.core.test.TestResult;
+import org.argeo.slc.structure.StructureRegistry;
+import org.argeo.slc.test.TestResult;
 
 /** Ant tasks closing a given result. */
 public class SlcCloseTestResultTask extends SAwareTask {

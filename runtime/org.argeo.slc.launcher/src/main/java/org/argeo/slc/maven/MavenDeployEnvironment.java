@@ -9,8 +9,8 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 //import org.argeo.slc.ant.AntRunner;
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.deploy.DeployEnvironment;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.deploy.DeployEnvironment;
 
 public class MavenDeployEnvironment {/*implements DeployEnvironment {
 	private static final Log log = LogFactory

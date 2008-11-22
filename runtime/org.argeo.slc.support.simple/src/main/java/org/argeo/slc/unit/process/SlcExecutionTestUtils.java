@@ -6,8 +6,8 @@ import static org.argeo.slc.unit.UnitUtils.assertDateSec;
 
 import java.util.UUID;
 
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionStep;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 
 public abstract class SlcExecutionTestUtils {
 

@@ -3,9 +3,9 @@ package org.argeo.slc.dao.test.tree;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.argeo.slc.core.test.TestResultListener;
-import org.argeo.slc.core.test.TestResultPart;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.test.TestResultListener;
+import org.argeo.slc.test.TestResultPart;
 
 /**
  * Listener persisting tree-based results.

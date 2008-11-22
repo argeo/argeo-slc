@@ -3,11 +3,11 @@ package org.argeo.slc.ws.process;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
+import org.argeo.slc.process.SlcExecution;
 
 import org.springframework.ws.server.endpoint.AbstractMarshallingPayloadEndpoint;
 

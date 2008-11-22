@@ -4,8 +4,8 @@ import static org.argeo.slc.unit.test.tree.UnitTestTreeUtil.assertPart;
 
 import org.argeo.slc.ant.AntExecutionContext;
 import org.argeo.slc.ant.unit.AntSlcApplicationTestCase;
-import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.test.TestStatus;
 
 public class SubCategory2Test extends AntSlcApplicationTestCase {
 	public void testSimpleRun() {

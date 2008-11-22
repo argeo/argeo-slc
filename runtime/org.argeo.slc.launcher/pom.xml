@@ -55,7 +55,7 @@
 						<Export-Package>
 							org.argeo.slc.*
 						</Export-Package>
-						<Import-Package>*,org.argeo.slc.core.test.spring,org.apache.commons.cli;resolution:=optional</Import-Package>
+						<Import-Package>*,org.argeo.slc.test.spring,org.apache.commons.cli;resolution:=optional</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>

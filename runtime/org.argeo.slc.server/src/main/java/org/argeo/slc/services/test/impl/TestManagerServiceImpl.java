@@ -2,14 +2,14 @@ package org.argeo.slc.services.test.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.test.TestRunDescriptor;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.dao.test.TestRunDescriptorDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
+import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.services.test.TestManagerService;
+import org.argeo.slc.test.TestRunDescriptor;
 
 public class TestManagerServiceImpl implements TestManagerService {
 	private Log log = LogFactory.getLog(getClass());

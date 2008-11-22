@@ -2,8 +2,8 @@ package org.argeo.slc.support.deploy.db;
 
 import java.io.InputStream;
 
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.deploy.DeploymentData;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.deploy.DeploymentData;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.springframework.core.io.Resource;

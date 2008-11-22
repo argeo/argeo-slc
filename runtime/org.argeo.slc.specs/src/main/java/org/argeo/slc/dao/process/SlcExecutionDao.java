@@ -2,8 +2,8 @@ package org.argeo.slc.dao.process;
 
 import java.util.List;
 
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionStep;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 
 public interface SlcExecutionDao {
 	public void create(SlcExecution slcExecution);

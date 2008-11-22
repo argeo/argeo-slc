@@ -1,6 +1,6 @@
 package org.argeo.slc.services.test;
 
-import org.argeo.slc.core.test.TestRunDescriptor;
+import org.argeo.slc.test.TestRunDescriptor;
 
 public interface TestManagerService {
 	public void registerTestRunDescriptor(TestRunDescriptor testRunDescriptor);

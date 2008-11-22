@@ -1,6 +1,6 @@
 package org.argeo.slc.runtime;
 
-import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.process.SlcExecution;
 
 /** Provides access to the object used during the execution */
 public interface SlcExecutionContext {

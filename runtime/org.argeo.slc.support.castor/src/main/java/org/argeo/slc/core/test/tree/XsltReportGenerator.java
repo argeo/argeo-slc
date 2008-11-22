@@ -24,9 +24,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.test.TestResultListener;
-import org.argeo.slc.core.test.TestResultPart;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.test.TestResultListener;
+import org.argeo.slc.test.TestResultPart;
 
 public class XsltReportGenerator implements TestResultListener<TreeTestResult> {
 	private Log log = LogFactory.getLog(getClass());

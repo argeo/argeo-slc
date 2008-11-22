@@ -8,8 +8,8 @@ import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.deploy.DeployedSystemManager;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.deploy.DeployedSystemManager;
 
 public class HttpdServerManager implements DeployedSystemManager<HttpdServer> {
 	private final static Log log = LogFactory.getLog(HttpdServerManager.class);

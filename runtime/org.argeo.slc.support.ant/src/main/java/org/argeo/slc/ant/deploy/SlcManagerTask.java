@@ -2,10 +2,10 @@ package org.argeo.slc.ant.deploy;
 
 import java.lang.reflect.Method;
 
+import org.argeo.slc.SlcException;
 import org.argeo.slc.ant.structure.SAwareTask;
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.deploy.DeployedSystem;
-import org.argeo.slc.core.deploy.DeployedSystemManager;
+import org.argeo.slc.deploy.DeployedSystem;
+import org.argeo.slc.deploy.DeployedSystemManager;
 
 public class SlcManagerTask extends SAwareTask {
 	private String action;

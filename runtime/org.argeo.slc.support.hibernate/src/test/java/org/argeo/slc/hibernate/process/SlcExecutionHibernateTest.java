@@ -3,10 +3,10 @@ package org.argeo.slc.hibernate.process;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionStep;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.hibernate.unit.HibernateTestCase;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.unit.process.SlcExecutionTestUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;

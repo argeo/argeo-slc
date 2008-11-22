@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
-<hibernate-mapping package="org.argeo.slc.core.process">
+<hibernate-mapping package="org.argeo.slc.process">
 	<class name="SlcExecution" table="SLC_EXECUTION">
 		<cache usage="read-write" />
 
@@ -17,7 +17,7 @@
 			<key column="SLC_EXECUTION_ID" />
 			<list-index column="INDX" />
 			<one-to-many
-				class="org.argeo.slc.core.process.SlcExecutionStep" />
+				class="org.argeo.slc.process.SlcExecutionStep" />
 		</list>
 
 		<map name="attributes" table="SLC_EXEC_ATTRS_MAP" cascade="all"

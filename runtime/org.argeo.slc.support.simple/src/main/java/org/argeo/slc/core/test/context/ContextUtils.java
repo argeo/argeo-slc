@@ -6,14 +6,16 @@ import java.util.TreeMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.argeo.slc.core.structure.StructureAware;
-import org.argeo.slc.core.structure.StructureElement;
-import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRelated;
 import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.core.test.TestResult;
-import org.argeo.slc.core.test.TestStatus;
+import org.argeo.slc.structure.StructureAware;
+import org.argeo.slc.structure.StructureElement;
+import org.argeo.slc.structure.StructureRegistry;
+import org.argeo.slc.test.TestResult;
+import org.argeo.slc.test.TestStatus;
+import org.argeo.slc.test.context.ContextAware;
+import org.argeo.slc.test.context.ParentContextAware;
 
 public class ContextUtils {
 	private final static Log log = LogFactory.getLog(ContextUtils.class);

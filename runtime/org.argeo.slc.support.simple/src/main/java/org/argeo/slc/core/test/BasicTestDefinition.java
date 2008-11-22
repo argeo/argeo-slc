@@ -1,9 +1,14 @@
 package org.argeo.slc.core.test;
 
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
-import org.argeo.slc.core.test.context.ContextAware;
 import org.argeo.slc.core.test.context.ContextUtils;
+import org.argeo.slc.test.TestData;
+import org.argeo.slc.test.TestDefinition;
+import org.argeo.slc.test.TestResult;
+import org.argeo.slc.test.TestRun;
+import org.argeo.slc.test.TestStatus;
+import org.argeo.slc.test.context.ContextAware;
 
 /** Understands basic test data and context aware test data. */
 public class BasicTestDefinition extends TreeSRelatedHelper implements

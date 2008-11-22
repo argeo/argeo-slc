@@ -10,7 +10,10 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.test.TestResult;
+import org.argeo.slc.test.TestResultPart;
+import org.argeo.slc.test.TestRun;
 
 /**
  * Basic implementation of a test result containing only a list of result parts.

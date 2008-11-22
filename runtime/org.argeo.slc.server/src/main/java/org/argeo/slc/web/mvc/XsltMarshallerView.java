@@ -5,10 +5,10 @@ import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
+import org.argeo.slc.process.SlcExecution;
 import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.xslt.XsltView;
 import org.w3c.dom.Document;

@@ -9,13 +9,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
-import org.argeo.slc.core.structure.StructureElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.test.TestResultPart;
-import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
+import org.argeo.slc.structure.StructureElement;
+import org.argeo.slc.test.TestResultPart;
+import org.argeo.slc.test.TestStatus;
 
 public class ResultViewController extends ParameterizableViewController {
 	public final static String MODELKEY_RESULT = "result";

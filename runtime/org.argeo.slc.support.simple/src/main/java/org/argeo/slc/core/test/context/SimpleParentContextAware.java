@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
+import org.argeo.slc.test.context.ContextAware;
+import org.argeo.slc.test.context.ParentContextAware;
 import org.springframework.beans.factory.InitializingBean;
 
 public class SimpleParentContextAware extends SimpleContextAware implements

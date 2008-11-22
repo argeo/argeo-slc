@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.argeo.slc.ant.AntConstants;
 import org.argeo.slc.ant.AntExecutionContext;
 import org.argeo.slc.ant.AntSlcApplication;
-import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcExecutionOutput;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.springframework.core.io.FileSystemResource;

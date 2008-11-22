@@ -3,8 +3,8 @@ package org.argeo.slc.support.deploy;
 import java.io.File;
 import java.net.URL;
 
-import org.argeo.slc.core.build.Distribution;
-import org.argeo.slc.core.deploy.DeploymentData;
+import org.argeo.slc.build.Distribution;
+import org.argeo.slc.deploy.DeploymentData;
 
 public class SimpleHttpdApplication implements WebApplication {
 	private HttpdApplicationTargetData targetData;

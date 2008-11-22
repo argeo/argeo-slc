@@ -5,10 +5,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
 import org.argeo.slc.ant.spring.SpringArg;
 import org.argeo.slc.ant.structure.SAwareTask;
-import org.argeo.slc.core.build.Distribution;
-import org.argeo.slc.core.deploy.Deployment;
-import org.argeo.slc.core.deploy.DeploymentData;
-import org.argeo.slc.core.deploy.TargetData;
+import org.argeo.slc.build.Distribution;
+import org.argeo.slc.deploy.Deployment;
+import org.argeo.slc.deploy.DeploymentData;
+import org.argeo.slc.deploy.TargetData;
 
 /** Ant task wrapping a deployment. */
 public class SlcDeployTask extends SAwareTask {

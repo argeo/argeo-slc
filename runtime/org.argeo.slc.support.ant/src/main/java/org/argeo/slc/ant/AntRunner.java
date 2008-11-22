@@ -10,7 +10,7 @@ import java.util.Vector;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.helper.ProjectHelper2;
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 
 /** Run regular Ant script (that is, not SLC instrumented) */
 public class AntRunner {

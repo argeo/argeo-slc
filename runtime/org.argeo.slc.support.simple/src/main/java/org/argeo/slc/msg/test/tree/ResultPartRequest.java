@@ -3,13 +3,13 @@ package org.argeo.slc.msg.test.tree;
 import java.util.Map;
 import java.util.SortedMap;
 
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.structure.StructureElement;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.core.test.TestRunDescriptor;
 import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.structure.StructureElement;
+import org.argeo.slc.test.TestRunDescriptor;
 
 public class ResultPartRequest {
 	private String resultUuid;

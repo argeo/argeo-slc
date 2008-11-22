@@ -14,7 +14,7 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.runtime.SlcExecutionContext;
 import org.argeo.slc.runtime.SlcRuntime;

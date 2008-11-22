@@ -12,6 +12,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.argeo.slc.unit.UnitXmlUtils;
 import org.argeo.slc.unit.process.SlcExecutionTestUtils;

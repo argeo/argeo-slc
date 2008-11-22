@@ -3,7 +3,7 @@
 <mapping>
 	<description>Test objects XML mapping</description>
 
-	<class name="org.argeo.slc.core.test.TestRunDescriptor"
+	<class name="org.argeo.slc.test.TestRunDescriptor"
 		auto-complete="false">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />

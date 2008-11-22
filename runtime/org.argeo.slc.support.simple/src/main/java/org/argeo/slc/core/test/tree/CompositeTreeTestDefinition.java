@@ -6,14 +6,14 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.structure.SimpleSElement;
-import org.argeo.slc.core.structure.StructureAware;
-import org.argeo.slc.core.structure.StructureElement;
-import org.argeo.slc.core.structure.StructureElementProvider;
-import org.argeo.slc.core.structure.StructureRegistry;
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.test.TestDefinition;
-import org.argeo.slc.core.test.TestResult;
-import org.argeo.slc.core.test.TestRun;
+import org.argeo.slc.structure.StructureAware;
+import org.argeo.slc.structure.StructureElement;
+import org.argeo.slc.structure.StructureElementProvider;
+import org.argeo.slc.structure.StructureRegistry;
+import org.argeo.slc.test.TestDefinition;
+import org.argeo.slc.test.TestResult;
+import org.argeo.slc.test.TestRun;
 
 /**
  * Collection of test definitions propagating tree structure information to its

@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.structure.StructurePath;
-import org.argeo.slc.core.structure.StructureRegistry;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.structure.StructurePath;
+import org.argeo.slc.structure.StructureRegistry;
 
 /**
  * Path for tree based <code>StructureRegistry</code> implementations.

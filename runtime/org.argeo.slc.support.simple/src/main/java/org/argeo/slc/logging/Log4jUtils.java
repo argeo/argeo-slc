@@ -7,7 +7,7 @@ import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.PropertyConfigurator;
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.util.ResourceUtils;
 import org.springframework.util.SystemPropertyUtils;

@@ -5,9 +5,9 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.ant.spring.MapArg;
 import org.argeo.slc.ant.structure.SAwareTask;
-import org.argeo.slc.core.SlcException;
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedClient;
 import org.argeo.slc.detached.DetachedRequest;

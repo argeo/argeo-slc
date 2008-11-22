@@ -9,16 +9,16 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.structure.StructureAware;
-import org.argeo.slc.core.structure.StructureElement;
-import org.argeo.slc.core.structure.StructureRegistry;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.test.TestResult;
-import org.argeo.slc.core.test.TestResultListener;
-import org.argeo.slc.core.test.TestResultPart;
-import org.argeo.slc.core.test.TestRun;
-import org.argeo.slc.core.test.TestRunAware;
+import org.argeo.slc.structure.StructureAware;
+import org.argeo.slc.structure.StructureElement;
+import org.argeo.slc.structure.StructureRegistry;
+import org.argeo.slc.test.TestResult;
+import org.argeo.slc.test.TestResultListener;
+import org.argeo.slc.test.TestResultPart;
+import org.argeo.slc.test.TestRun;
+import org.argeo.slc.test.TestRunAware;
 
 /**
  * Complex implementation of a test result compatible with a tree based

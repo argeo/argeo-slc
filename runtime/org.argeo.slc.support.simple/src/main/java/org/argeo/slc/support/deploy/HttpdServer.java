@@ -3,10 +3,10 @@ package org.argeo.slc.support.deploy;
 import java.io.IOException;
 import java.net.URL;
 
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.build.Distribution;
-import org.argeo.slc.core.deploy.DeploymentData;
-import org.argeo.slc.core.deploy.TargetData;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.build.Distribution;
+import org.argeo.slc.deploy.DeploymentData;
+import org.argeo.slc.deploy.TargetData;
 
 public class HttpdServer implements WebServer {
 	private HttpdServerTargetData targetData;

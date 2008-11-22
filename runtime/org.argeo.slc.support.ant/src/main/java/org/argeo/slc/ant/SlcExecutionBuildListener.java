@@ -10,10 +10,10 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionNotifier;
-import org.argeo.slc.core.process.SlcExecutionStep;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionNotifier;
+import org.argeo.slc.process.SlcExecutionStep;
 
 public class SlcExecutionBuildListener extends AppenderSkeleton implements
 		BuildListener {

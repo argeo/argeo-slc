@@ -1,17 +1,17 @@
 Manifest-Version: 1.0
-Export-Package: org.argeo.slc.detached.launcher;uses:="org.osgi.framew
- ork,org.eclipse.core.runtime.adaptor";version="0.11.2.SNAPSHOT"
-Tool: Bnd-0.0.255
-Bundle-Name: Argeo SLC Detached Launcher
-Created-By: 1.6.0 (Sun Microsystems Inc.)
-Bundle-Vendor: Argeo
-Bundle-Version: 0.11.2.SNAPSHOT
-Bundle-ManifestVersion: 2
+Created-By: 1.5.0_16 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-Description: SLC Distribution
 Import-Package: org.argeo.slc.detached.launcher;version="0.11.2.SNAPSH
  OT",org.eclipse.core.runtime.adaptor,org.osgi.framework;version="1.4"
-Bundle-SymbolicName: org.argeo.slc.detached.launcher
+Export-Package: org.argeo.slc.detached.launcher;uses:="org.osgi.framew
+ ork,org.eclipse.core.runtime.adaptor";version="0.11.2.SNAPSHOT"
+Bundle-Version: 0.11.2.SNAPSHOT
+Bundle-Name: Argeo SLC Detached Launcher
+Bundle-Description: SLC Distribution
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Argeo
+Bundle-SymbolicName: org.argeo.slc.detached.launcher
+Tool: Bnd-0.0.255
 

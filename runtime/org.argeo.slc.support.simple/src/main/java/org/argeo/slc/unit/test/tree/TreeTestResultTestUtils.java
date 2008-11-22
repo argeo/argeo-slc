@@ -2,21 +2,21 @@ package org.argeo.slc.unit.test.tree;
 
 import java.util.UUID;
 
-import org.argeo.slc.core.build.Distribution;
-import org.argeo.slc.core.deploy.DeployedSystem;
-import org.argeo.slc.core.deploy.DeploymentData;
-import org.argeo.slc.core.deploy.TargetData;
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionStep;
+import org.argeo.slc.build.Distribution;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.SimpleTestRun;
-import org.argeo.slc.core.test.TestStatus;
 import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.deploy.DeployedSystem;
+import org.argeo.slc.deploy.DeploymentData;
+import org.argeo.slc.deploy.TargetData;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
+import org.argeo.slc.test.TestStatus;
 import org.argeo.slc.unit.process.SlcExecutionTestUtils;
 
 public abstract class TreeTestResultTestUtils {

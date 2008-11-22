@@ -5,7 +5,7 @@
 <mapping>
 	<description>Process objects XML mapping</description>
 
-	<class name="org.argeo.slc.core.process.SlcExecution">
+	<class name="org.argeo.slc.process.SlcExecution">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="uuid" identity="true">
@@ -16,7 +16,7 @@
 		<field name="host" />
 		<field name="user" />
 		<field name="steps" collection="vector"
-			type="org.argeo.slc.core.process.SlcExecutionStep">
+			type="org.argeo.slc.process.SlcExecutionStep">
 			<bind-xml auto-naming="deriveByClass" location="steps" />
 		</field>
 		<field name="attributes" collection="map">
@@ -35,7 +35,7 @@
 		</field>
 	</class>
 
-	<class name="org.argeo.slc.core.process.SlcExecutionStep">
+	<class name="org.argeo.slc.process.SlcExecutionStep">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="uuid" identity="true">

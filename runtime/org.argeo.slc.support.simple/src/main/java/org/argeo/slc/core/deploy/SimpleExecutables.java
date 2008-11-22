@@ -6,7 +6,10 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.build.Distribution;
+import org.argeo.slc.build.Distribution;
+import org.argeo.slc.deploy.DeploymentData;
+import org.argeo.slc.deploy.InstalledExecutables;
+import org.argeo.slc.deploy.TargetData;
 
 public class SimpleExecutables implements InstalledExecutables {
 	private final static Log log = LogFactory.getLog(SimpleExecutables.class);

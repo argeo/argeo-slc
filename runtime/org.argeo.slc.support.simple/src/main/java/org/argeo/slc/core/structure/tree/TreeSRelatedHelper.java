@@ -1,8 +1,8 @@
 package org.argeo.slc.core.structure.tree;
 
 import org.argeo.slc.core.structure.SimpleSElement;
-import org.argeo.slc.core.structure.StructureElement;
-import org.argeo.slc.core.structure.StructureRegistry;
+import org.argeo.slc.structure.StructureElement;
+import org.argeo.slc.structure.StructureRegistry;
 
 /**
  * Provides default implementations of some methods of <code>TreeSRelated</code>.

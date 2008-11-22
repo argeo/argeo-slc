@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.structure.StructureElement;
 
 /**
  * Basic implementation of <code>StructureElement</code>.

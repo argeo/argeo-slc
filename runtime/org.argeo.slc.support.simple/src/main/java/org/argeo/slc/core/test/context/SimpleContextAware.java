@@ -5,7 +5,9 @@ import java.util.TreeMap;
 
 import org.springframework.beans.factory.InitializingBean;
 
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.test.context.ContextAware;
+import org.argeo.slc.test.context.ParentContextAware;
 
 public class SimpleContextAware implements ContextAware, InitializingBean {
 	private ParentContextAware parentContext;

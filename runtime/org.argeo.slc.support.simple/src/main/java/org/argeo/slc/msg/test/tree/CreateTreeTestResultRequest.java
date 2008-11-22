@@ -1,7 +1,7 @@
 package org.argeo.slc.msg.test.tree;
 
-import org.argeo.slc.core.test.TestRunDescriptor;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.test.TestRunDescriptor;
 
 public class CreateTreeTestResultRequest {
 	private TreeTestResult treeTestResult;

@@ -11,7 +11,10 @@ import java.util.Map;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionNotifier;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.springframework.oxm.Marshaller;
 
 public class FileSlcExecutionNotifier implements SlcExecutionNotifier {

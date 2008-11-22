@@ -2,10 +2,15 @@ package org.argeo.slc.core.test;
 
 import java.util.UUID;
 
-import org.argeo.slc.core.deploy.DeployedSystem;
-import org.argeo.slc.core.process.SlcExecution;
-import org.argeo.slc.core.process.SlcExecutionRelated;
-import org.argeo.slc.core.process.SlcExecutionStep;
+import org.argeo.slc.deploy.DeployedSystem;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionRelated;
+import org.argeo.slc.process.SlcExecutionStep;
+import org.argeo.slc.test.ExecutableTestRun;
+import org.argeo.slc.test.TestData;
+import org.argeo.slc.test.TestDefinition;
+import org.argeo.slc.test.TestResult;
+import org.argeo.slc.test.WritableTestRun;
 
 /**
  * A basic bean implementation of a <code>WritableTestRun</code>, holding

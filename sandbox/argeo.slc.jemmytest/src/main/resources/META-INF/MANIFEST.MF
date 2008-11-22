@@ -2,10 +2,9 @@ Manifest-Version: 1.0
 Export-Package: org.argeo.slc.jemmytest.uiparts;uses:="javax.swing.tex
  t,org.argeo.slc.detached.ui,javax.swing,org.netbeans.jemmy,org.netbea
  ns.jemmy.operators,org.argeo.slc.detached";version="0.11.2.SNAPSHOT",
- org.argeo.slc.jemmytest;uses:="org.argeo.slc.detached";version="0.11.
- 2.SNAPSHOT",org.argeo.slc.jemmytest.steps;uses:="org.argeo.slc.jemmyt
- est.uiparts,org.argeo.slc.detached.ui,org.argeo.slc.detached";version
- ="0.11.2.SNAPSHOT"
+ org.argeo.slc.jemmytest.steps;uses:="org.argeo.slc.jemmytest.uiparts,
+ org.argeo.slc.detached.ui,org.argeo.slc.detached";version="0.11.2.SNA
+ PSHOT"
 Tool: Bnd-0.0.255
 Bundle-Name: SLC Sandbox JemmyTest
 Created-By: 1.6.0 (Sun Microsystems Inc.)
@@ -17,11 +16,10 @@ Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-Description: SLC Distribution
 Import-Package: javax.swing,javax.swing.text,org.argeo.slc.detached;ve
  rsion="0.11.2.SNAPSHOT",org.argeo.slc.detached.ui;version="0.11.2.SNA
- PSHOT",org.argeo.slc.jemmytest;version="0.11.2.SNAPSHOT",org.argeo.sl
- c.jemmytest.steps;version="0.11.2.SNAPSHOT",org.argeo.slc.jemmytest.u
- iparts;version="0.11.2.SNAPSHOT",org.netbeans.jemmy,org.netbeans.jemm
- y.operators,org.springframework.beans.factory.config;version="2.5.6.A
- "
+ PSHOT",org.argeo.slc.jemmytest.steps;version="0.11.2.SNAPSHOT",org.ar
+ geo.slc.jemmytest.uiparts;version="0.11.2.SNAPSHOT",org.netbeans.jemm
+ y,org.netbeans.jemmy.operators,org.springframework.beans.factory.conf
+ ig;version="2.5.6.A"
 Bundle-SymbolicName: org.argeo.slc.sandbox.jemmytest
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)

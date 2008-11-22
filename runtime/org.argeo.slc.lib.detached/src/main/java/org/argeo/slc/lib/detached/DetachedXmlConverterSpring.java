@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
-import org.argeo.slc.core.SlcException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedCommunication;
 import org.argeo.slc.detached.DetachedException;

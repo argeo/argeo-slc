@@ -6,14 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import org.argeo.slc.core.SlcException;
-import org.argeo.slc.core.structure.StructureElement;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.core.test.TestResult;
 import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
+import org.argeo.slc.structure.StructureElement;
+import org.argeo.slc.test.TestResult;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;

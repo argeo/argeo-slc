@@ -76,7 +76,7 @@
             ns-prefix="slc" />
         <field name="slcExecutionUuid" />
         <field name="steps" collection="vector"
-            type="org.argeo.slc.core.process.SlcExecutionStep">
+            type="org.argeo.slc.process.SlcExecutionStep">
             <bind-xml auto-naming="deriveByClass" location="steps" />
         </field>
     </class>
@@ -92,7 +92,7 @@
         <map-to ns-uri="http://argeo.org/projects/slc/schemas"
             ns-prefix="slc" />
         <field name="slcExecution"
-            type="org.argeo.slc.core.process.SlcExecution" />
+            type="org.argeo.slc.process.SlcExecution" />
     </class>
 
 
