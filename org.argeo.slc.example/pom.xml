@@ -74,13 +74,13 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.simple</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent</artifactId>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.ant</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
