@@ -68,13 +68,25 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
+			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent</artifactId>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.launcher</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.ant</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.ws.client</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
