@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<bean id="slcDefault.dataSource.inMemoryTestHSQL"
+		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+		destroy-method="destroy">
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<property name="url" value="jdbc:hsqldb:mem:test" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+		<property name="suppressClose" value="true" />
+	</bean>
+
+	<bean id="slcTemplates.sessionFactory.hibernateBasic"
+		abstract="true"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="mappingResources">
+			<list>
+				<value>
+					org/argeo/slc/hibernate/structure/SimpleSElement.hbm.xml
+				</value>
+				<value>
+					org/argeo/slc/hibernate/test/SimpleResultPart.hbm.xml
+				</value>
+				<value>
+					org/argeo/slc/hibernate/test/tree/TreeTestResult.hbm.xml
+				</value>
+				<value>
+					org/argeo/slc/hibernate/test/tree/TreeTestResultCollection.hbm.xml
+				</value>
+				<value>
+					org/argeo/slc/hibernate/test/tree/PartSubList.hbm.xml
+				</value>
+				<value>
+					org/argeo/slc/hibernate/test/TestRunDescriptor.hbm.xml
+				</value>
+				<value>
+					org/argeo/slc/hibernate/process/SlcExecution.hbm.xml
+				</value>
+				<value>
+					org/argeo/slc/hibernate/process/SlcExecutionStep.hbm.xml
+				</value>
+			</list>
+		</property>
+		<property name="cacheProvider"
+			ref="slcDefault.cacheProvider.ehCache" />
+	</bean>
+
+	<bean id="slcDefault.cacheProvider.ehCache"
+		class="net.sf.ehcache.hibernate.SingletonEhCacheProvider"
+		depends-on="slcDefault.cacheProvider.ehCacheManager">
+	</bean>
+
+	<bean id="slcDefault.cacheProvider.ehCacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="shared" value="true" />
+		<property name="configLocation"
+			value="classpath:/org/argeo/slc/hibernate/cache/ehcache.xml" />
+	</bean>
+
+	<bean id="slcDefault.sessionFactory.hibernateTestHSQL"
+		parent="slcTemplates.sessionFactory.hibernateBasic">
+		<property name="dataSource"
+			ref="slcDefault.dataSource.inMemoryTestHSQL" />
+		<property name="hibernateProperties">
+			<value><![CDATA[
+				hibernate.dialect=org.hibernate.dialect.HSQLDialect
+				hibernate.hbm2ddl.auto=create
+				hibernate.current_session_context_class=thread
+			]]></value>
+		</property>
+	</bean>
+
+	<bean id="slcTemplates.dao.testResultDao"
+		class="org.argeo.slc.hibernate.test.tree.TreeTestResultDaoHibernate"
+		abstract="true">
+	</bean>
+
+	<bean id="slcTemplates.dao.testResultCollectionDao"
+		class="org.argeo.slc.hibernate.test.tree.TreeTestResultCollectionDaoHibernate"
+		abstract="true">
+	</bean>
+
+	<bean id="slcTemplates.dao.testRunDescriptorDao"
+		class="org.argeo.slc.hibernate.test.TestRunDescriptorDaoHibernate"
+		abstract="true">
+	</bean>
+
+	<bean id="slcTemplates.dao.slcExecutionDao"
+		class="org.argeo.slc.hibernate.process.SlcExecutionDaoHibernate"
+		abstract="true">
+	</bean>
+
+</beans>

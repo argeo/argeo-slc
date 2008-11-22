@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.argeo.slc.core.test.tree">
+	<class name="PartSubList" table="PART_SUB_LIST">
+		<cache usage="nonstrict-read-write" />
+		<id name="tid" column="T_ID">
+			<generator class="native" />
+		</id>
+		<list name="parts" cascade="all" table="PARTS_LIST">
+			<cache usage="nonstrict-read-write" />
+			<key column="PART_SUBLIST_ID" />
+			<list-index column="INDX" />
+			<many-to-many
+				class="org.argeo.slc.core.test.SimpleResultPart" column="PART_ID"
+				unique="true" />
+		</list>
+	</class>
+</hibernate-mapping>

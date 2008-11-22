@@ -1,0 +1,48 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="ehcache.xsd">
+
+	<diskStore path="java.io.tmpdir" />
+
+	<defaultCache maxElementsInMemory="10000" overflowToDisk="false" />
+
+	<cache name="org.argeo.slc.core.test.tree.TreeTestResult"
+		maxElementsInMemory="1000" />
+	<cache name="org.argeo.slc.core.test.tree.TreeTestResult.attributes"
+		maxElementsInMemory="1000" />
+	<cache name="org.argeo.slc.core.test.tree.PartSubList"
+		maxElementsInMemory="5000" />
+	<cache name="org.argeo.slc.core.test.tree.PartSubList.parts"
+		maxElementsInMemory="10000" />
+	<cache name="org.argeo.slc.core.test.SimpleResultPart"
+		maxElementsInMemory="10000" />
+	<cache
+		name="org.argeo.slc.core.test.tree.TreeTestResult.resultParts"
+		maxElementsInMemory="10000" />
+	<cache name="org.argeo.slc.core.test.tree.TreeTestResult.elements"
+		maxElementsInMemory="10000" />
+	<cache name="org.argeo.slc.core.structure.SimpleSElement"
+		maxElementsInMemory="10000" />
+	<cache name="org.argeo.slc.core.structure.SimpleSElement.tags"
+		maxElementsInMemory="20000" />
+
+	<cache name="org.argeo.slc.core.test.tree.TreeTestResultCollection"
+		maxElementsInMemory="100" />
+	<cache
+		name="org.argeo.slc.core.test.tree.TreeTestResultCollection.results"
+		maxElementsInMemory="1000" />
+
+	<cache name="org.argeo.slc.core.process.SlcExecution"
+		maxElementsInMemory="1000" />
+	<cache name="org.argeo.slc.core.process.SlcExecution.attributes"
+		maxElementsInMemory="5000" />
+	<cache name="org.argeo.slc.core.process.SlcExecution.steps"
+		maxElementsInMemory="10000" />
+	<cache name="org.argeo.slc.core.process.SlcExecutionStep"
+		maxElementsInMemory="10000" />
+	<cache name="org.argeo.slc.core.process.SlcExecutionStep.logLines"
+		maxElementsInMemory="100000" />
+
+	<cache name="org.argeo.slc.core.test.TestRunDescriptor"
+		maxElementsInMemory="1000" />
+
+</ehcache>
