@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+    default-lazy-init="true">
+
+    <bean id="slcDefault.test.resultLogger"
+        class="org.argeo.slc.core.test.tree.TreeTestResultLogger">
+    </bean>
+
+    <bean name="slcDefault.test.testRun"
+        class="org.argeo.slc.core.test.SimpleTestRun"
+        scope="prototype">
+    </bean>
+
+    <bean name="slcDefault.test.uuid" class="java.util.UUID"
+        factory-method="randomUUID" scope="prototype">
+    </bean>
+
+    <bean id="slcDefault.test.basicTreeTestResult"
+        class="org.argeo.slc.core.test.tree.TreeTestResult"
+        abstract="true" destroy-method="close">
+        <property name="uuid">
+            <bean factory-bean="slcDefault.test.uuid"
+                factory-method="toString">
+            </bean>
+        </property>
+        <property name="listeners">
+            <list>
+                <ref bean="slcDefault.test.resultLogger" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="slcDefault.test.basicSimpleTestResult"
+        class="org.argeo.slc.core.test.SimpleTestResult"
+        abstract="true">
+        <property name="uuid">
+            <bean factory-bean="slcDefault.test.uuid"
+                factory-method="toString">
+            </bean>
+        </property>
+    </bean>
+
+</beans>

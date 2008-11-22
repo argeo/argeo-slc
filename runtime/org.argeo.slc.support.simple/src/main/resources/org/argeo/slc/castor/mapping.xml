@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+
+<mapping>
+	<description>Mapping of generic types</description>
+
+	<class name="java.lang.Exception" auto-complete="false">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="message" type="string" set-method="%1"
+			get-method="getMessage">
+			<bind-xml node="attribute" />
+		</field>
+		<field name="stackTrace" collection="array"
+			type="java.lang.StackTraceElement">
+			<bind-xml auto-naming="deriveByClass"
+				location="stack-trace" />
+		</field>
+	</class>
+
+	<class name="java.lang.StackTraceElement" auto-complete="false"
+		verify-constructable="false">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="declaringClass" type="string" set-method="%1"
+			get-method="getClassName">
+			<bind-xml node="attribute" />
+		</field>
+		<field name="methodName" type="string" set-method="%2"
+			get-method="getMethodName">
+			<bind-xml node="attribute" />
+		</field>
+		<field name="fileName" type="string" set-method="%3"
+			get-method="getFileName">
+			<bind-xml node="attribute" />
+		</field>
+		<field name="lineNumber" type="integer" set-method="%4"
+			get-method="getLineNumber">
+			<bind-xml node="attribute" />
+		</field>
+	</class>
+</mapping>
