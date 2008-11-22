@@ -6,7 +6,7 @@ Export-Package: org.argeo.slc.example.appli;version="0.11.2.SNAPSHOT",
  xt,org.argeo.slc.core.build,org.argeo.slc.core.deploy,org.argeo.slc.c
  ore.test,org.argeo.slc.core.structure.tree";version="0.11.2.SNAPSHOT"
 Tool: Bnd-0.0.255
-Bundle-Name: Argeo SLC Demo Example 01
+Bundle-Name: Argeo SLC Example 01
 Created-By: 1.6.0 (Sun Microsystems Inc.)
 Require-Bundle: org.argeo.slc.core,org.argeo.slc.agent
 Bundle-Vendor: Argeo

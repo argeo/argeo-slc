@@ -26,6 +26,7 @@
 		<module>eclipse/features/org.argeo.slc.ui.launch.feature</module>
 		-->
 		<module>runtime</module>
+		<module>examples</module>
 
 		<module>org.argeo.slc.webapp</module>
 		<module>org.argeo.slc.detached.launcher</module>
