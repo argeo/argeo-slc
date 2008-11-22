@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>argeo-slc</artifactId>
+		<version>0.11.2-SNAPSHOT</version>
+		<relativePath>../org.argeo.slc</relativePath>
+	</parent>
+	<artifactId>argeo-slc-runtime</artifactId>
+	<packaging>pom</packaging>
+	<name>Argeo SLC Runtime</name>
+	<modules>
+		<module>org.argeo.slc.specs</module>
+		<module>org.argeo.slc.support.simple</module>
+		<module>org.argeo.slc.support.castor</module>
+		<module>org.argeo.slc.support.ant</module>
+		<module>org.argeo.slc.support.ws.client</module>
+		<module>org.argeo.slc.hibernate</module>
+		<module>org.argeo.slc.server</module>
+		<module>org.argeo.slc.detached</module>
+		<module>org.argeo.slc.launcher</module>
+		<module>org.argeo.slc.lib.detached</module>
+	</modules>
+</project>
