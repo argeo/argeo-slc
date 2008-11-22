@@ -1,24 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: org.argeo.slc.core.structure;version="0.11.2.SNAPSHOT"
- ,org.argeo.slc.dao.test;uses:="org.argeo.slc.core.test";version="0.11
- .2.SNAPSHOT",org.argeo.slc.core;version="0.11.2.SNAPSHOT",org.argeo.s
- lc.core.test.context;version="0.11.2.SNAPSHOT",org.argeo.slc.core.bui
- ld;version="0.11.2.SNAPSHOT",org.argeo.slc.runtime;uses:="org.argeo.s
- lc.core.process";version="0.11.2.SNAPSHOT",org.argeo.slc.core.deploy;
- uses:="org.argeo.slc.core,org.argeo.slc.core.build";version="0.11.2.S
- NAPSHOT",org.argeo.slc.core.process;uses:="org.apache.commons.io";ver
- sion="0.11.2.SNAPSHOT",org.argeo.slc.dao.process;uses:="org.argeo.slc
- .core.process";version="0.11.2.SNAPSHOT",org.argeo.slc.core.test;uses
- :="org.argeo.slc.core,org.argeo.slc.core.deploy,org.argeo.slc.core.pr
- ocess";version="0.11.2.SNAPSHOT"
-Tool: Bnd-0.0.255
-Bundle-Name: Argeo SLC Specifications
-Created-By: 1.6.0 (Sun Microsystems Inc.)
-Bundle-Vendor: Argeo
-Bundle-Version: 0.11.2.SNAPSHOT
-Bundle-ManifestVersion: 2
+Created-By: 1.5.0_16 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-Description: SLC Distribution
 Import-Package: org.apache.commons.io;version="1.4",org.argeo.slc.core
  ;version="0.11.2.SNAPSHOT",org.argeo.slc.core.build;version="0.11.2.S
  NAPSHOT",org.argeo.slc.core.deploy;version="0.11.2.SNAPSHOT",org.arge
@@ -28,7 +10,25 @@ Import-Package: org.apache.commons.io;version="1.4",org.argeo.slc.core
  ,org.argeo.slc.dao.process;version="0.11.2.SNAPSHOT",org.argeo.slc.da
  o.test;version="0.11.2.SNAPSHOT",org.argeo.slc.runtime;version="0.11.
  2.SNAPSHOT"
-Bundle-SymbolicName: org.argeo.slc.specs
+Export-Package: org.argeo.slc.core.deploy;uses:="org.argeo.slc.core,or
+ g.argeo.slc.core.build";version="0.11.2.SNAPSHOT",org.argeo.slc.core.
+ test;uses:="org.argeo.slc.core.deploy,org.argeo.slc.core.process,org.
+ argeo.slc.core";version="0.11.2.SNAPSHOT",org.argeo.slc.core.process;
+ uses:="org.apache.commons.io";version="0.11.2.SNAPSHOT",org.argeo.slc
+ .core;version="0.11.2.SNAPSHOT",org.argeo.slc.runtime;uses:="org.arge
+ o.slc.core.process";version="0.11.2.SNAPSHOT",org.argeo.slc.dao.test;
+ uses:="org.argeo.slc.core.test";version="0.11.2.SNAPSHOT",org.argeo.s
+ lc.core.test.context;version="0.11.2.SNAPSHOT",org.argeo.slc.dao.proc
+ ess;uses:="org.argeo.slc.core.process";version="0.11.2.SNAPSHOT",org.
+ argeo.slc.core.build;version="0.11.2.SNAPSHOT",org.argeo.slc.core.str
+ ucture;version="0.11.2.SNAPSHOT"
+Bundle-Version: 0.11.2.SNAPSHOT
+Bundle-Name: Argeo SLC Specifications
+Bundle-Description: SLC Distribution
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Argeo
+Bundle-SymbolicName: org.argeo.slc.specs
+Tool: Bnd-0.0.255
 

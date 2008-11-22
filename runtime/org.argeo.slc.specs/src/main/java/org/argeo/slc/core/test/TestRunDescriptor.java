@@ -1,6 +1,7 @@
 package org.argeo.slc.core.test;
 
 import org.argeo.slc.core.deploy.DeployedSystem;
+import org.argeo.slc.core.process.SlcExecutionRelated;
 
 public class TestRunDescriptor {
 	private String testRunUuid;
@@ -23,9 +24,10 @@ public class TestRunDescriptor {
 			deployedSytemId = testRun.<DeployedSystem> getDeployedSystem()
 					.getDeployedSystemId();
 
-		if (testRun instanceof SimpleTestRun) {
-			slcExecutionUuid = ((SimpleTestRun) testRun).getSlcExecutionUuid();
-			slcExecutionStepUuid = ((SimpleTestRun) testRun)
+		if (testRun instanceof SlcExecutionRelated) {
+			slcExecutionUuid = ((SlcExecutionRelated) testRun)
+					.getSlcExecutionUuid();
+			slcExecutionStepUuid = ((SlcExecutionRelated) testRun)
 					.getSlcExecutionStepUuid();
 		}
 	}

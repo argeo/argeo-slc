@@ -4,13 +4,14 @@ import java.util.UUID;
 
 import org.argeo.slc.core.deploy.DeployedSystem;
 import org.argeo.slc.core.process.SlcExecution;
+import org.argeo.slc.core.process.SlcExecutionRelated;
 import org.argeo.slc.core.process.SlcExecutionStep;
 
 /**
  * A basic bean implementation of a <code>WritableTestRun</code>, holding
  * references to the various parts of a test run.
  */
-public class SimpleTestRun implements WritableTestRun, ExecutableTestRun {
+public class SimpleTestRun implements WritableTestRun, ExecutableTestRun, SlcExecutionRelated {
 	private String uuid;
 
 	private String slcExecutionUuid;

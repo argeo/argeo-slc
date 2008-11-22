@@ -1,18 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: org.argeo.slc.cli;uses:="org.apache.commons.logging,or
- g.argeo.slc.core,org.apache.commons.cli,org.argeo.slc.runtime,org.arg
- eo.slc.logging,org.apache.commons.io";version="0.11.2.SNAPSHOT",org.a
- rgeo.slc.maven;uses:="org.argeo.slc.core.build,org.argeo.slc.core.dep
- loy";version="0.11.2.SNAPSHOT",org.argeo.slc.support.deploy.ant;versi
- on="0.11.2.SNAPSHOT"
-Tool: Bnd-0.0.255
-Bundle-Name: Argeo SLC Launcher
-Created-By: 1.6.0 (Sun Microsystems Inc.)
-Bundle-Vendor: Argeo
-Bundle-Version: 0.11.2.SNAPSHOT
-Bundle-ManifestVersion: 2
+Created-By: 1.5.0_16 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-Description: SLC Distribution
 Import-Package: org.apache.commons.cli;resolution:=optional;version="1
  .1",org.apache.commons.io;version="1.4",org.apache.commons.logging;ve
  rsion="1.1",org.argeo.slc.cli;version="0.11.2.SNAPSHOT",org.argeo.slc
@@ -22,7 +10,19 @@ Import-Package: org.apache.commons.cli;resolution:=optional;version="1
  ogging;version="0.11.2.SNAPSHOT",org.argeo.slc.maven;version="0.11.2.
  SNAPSHOT",org.argeo.slc.runtime;version="0.11.2.SNAPSHOT",org.argeo.s
  lc.support.deploy.ant;version="0.11.2.SNAPSHOT"
-Bundle-SymbolicName: org.argeo.slc.launcher
+Export-Package: org.argeo.slc.support.deploy.ant;version="0.11.2.SNAPS
+ HOT",org.argeo.slc.maven;uses:="org.argeo.slc.core.deploy,org.argeo.s
+ lc.core.build";version="0.11.2.SNAPSHOT",org.argeo.slc.cli;uses:="org
+ .argeo.slc.logging,org.argeo.slc.core,org.argeo.slc.runtime,org.apach
+ e.commons.io,org.apache.commons.logging,org.apache.commons.cli";versi
+ on="0.11.2.SNAPSHOT"
+Bundle-Version: 0.11.2.SNAPSHOT
+Bundle-Name: Argeo SLC Launcher
+Bundle-Description: SLC Distribution
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Argeo
+Bundle-SymbolicName: org.argeo.slc.launcher
+Tool: Bnd-0.0.255
 

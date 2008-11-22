@@ -1,43 +1,6 @@
 Manifest-Version: 1.0
-Export-Package: org.argeo.slc.ant.spring;uses:="org.apache.commons.log
- ging,org.argeo.slc.core,org.springframework.beans,org.apache.tools.an
- t.types,org.springframework.context,org.argeo.slc.core.process,org.ap
- ache.tools.ant,org.springframework.beans.factory";version="0.11.2.SNA
- PSHOT",org.argeo.slc.ant;uses:="org.apache.commons.logging,org.apache
- .log4j,org.springframework.context.support,org.apache.log4j.spi,org.s
- pringframework.beans.factory.config,org.springframework.beans.factory
- .support,org.argeo.slc.core.structure,org.apache.tools.ant.util,org.a
- rgeo.slc.core,org.apache.commons.io,org.argeo.slc.core.process,org.ar
- geo.slc.core.structure.tree,org.springframework.beans.factory,org.apa
- che.tools.ant.helper,org.springframework.util,org.springframework.cor
- e.io,org.springframework.context,org.argeo.slc.logging,org.springfram
- ework.beans.factory.xml,org.apache.tools.ant,org.argeo.slc.runtime,or
- g.argeo.slc.spring";version="0.11.2.SNAPSHOT",org.argeo.slc.ant.test;
- uses:="org.apache.commons.logging,org.springframework.beans,org.sprin
- gframework.context,org.argeo.slc.ant.structure,org.apache.tools.ant,o
- rg.argeo.slc.core.test,org.argeo.slc.core.structure,org.argeo.slc.ant
- .spring,org.argeo.slc.core,org.argeo.slc.core.test.context,org.argeo.
- slc.spring,org.apache.tools.ant.types,org.argeo.slc.core.deploy,org.a
- rgeo.slc.core.process,org.argeo.slc.core.structure.tree,org.springfra
- mework.beans.factory";version="0.11.2.SNAPSHOT",org.argeo.slc.ant.str
- ucture;uses:="org.argeo.slc.core.structure,org.argeo.slc.ant.spring,o
- rg.argeo.slc.core,org.springframework.context,org.apache.tools.ant,or
- g.argeo.slc.core.structure.tree";version="0.11.2.SNAPSHOT",org.argeo.
- slc.ant.unit;uses:="org.argeo.slc.ant,junit.framework,org.argeo.slc.u
- nit,org.argeo.slc.runtime,org.springframework.core.io,org.springframe
- work.context,org.argeo.slc.core.process";version="0.11.2.SNAPSHOT",or
- g.argeo.slc.ant.deploy;uses:="org.argeo.slc.ant.spring,org.apache.com
- mons.logging,org.argeo.slc.core,org.argeo.slc.core.build,org.springfr
- amework.context,org.argeo.slc.core.deploy,org.argeo.slc.ant.structure
- ,org.apache.tools.ant";version="0.11.2.SNAPSHOT"
-Tool: Bnd-0.0.255
-Bundle-Name: Argeo SLC Support Ant
-Created-By: 1.6.0 (Sun Microsystems Inc.)
-Bundle-Vendor: Argeo
-Bundle-Version: 0.11.2.SNAPSHOT
-Bundle-ManifestVersion: 2
+Created-By: 1.5.0_16 (Sun Microsystems Inc.)
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-Description: SLC Distribution
 Import-Package: junit.framework;version="3.8",org.apache.commons.io;ve
  rsion="1.4",org.apache.commons.logging;version="1.1",org.apache.log4j
  ;version="1.2",org.apache.log4j.spi;version="1.2",org.apache.tools.an
@@ -63,7 +26,44 @@ Import-Package: junit.framework;version="3.8",org.apache.commons.io;ve
  2.5.6.A",org.springframework.context;version="2.5.6.A",org.springfram
  ework.context.support;version="2.5.6.A",org.springframework.core.io;v
  ersion="2.5.6.A",org.springframework.util;version="2.5.6.A"
-Bundle-SymbolicName: org.argeo.slc.support.ant
+Export-Package: org.argeo.slc.ant.deploy;uses:="org.argeo.slc.ant.stru
+ cture,org.argeo.slc.core.deploy,org.apache.tools.ant,org.argeo.slc.co
+ re,org.argeo.slc.ant.spring,org.apache.commons.logging,org.springfram
+ ework.context,org.argeo.slc.core.build";version="0.11.2.SNAPSHOT",org
+ .argeo.slc.ant.structure;uses:="org.apache.tools.ant,org.argeo.slc.co
+ re,org.argeo.slc.ant.spring,org.springframework.context,org.argeo.slc
+ .core.structure.tree,org.argeo.slc.core.structure";version="0.11.2.SN
+ APSHOT",org.argeo.slc.ant;uses:="org.argeo.slc.core.process,org.argeo
+ .slc.core,org.springframework.context.support,org.springframework.cor
+ e.io,org.apache.tools.ant.util,org.apache.tools.ant.helper,org.argeo.
+ slc.spring,org.springframework.beans.factory,org.argeo.slc.core.struc
+ ture.tree,org.apache.log4j.spi,org.apache.tools.ant,org.apache.common
+ s.logging,org.springframework.context,org.springframework.beans.facto
+ ry.support,org.argeo.slc.logging,org.apache.log4j,org.springframework
+ .beans.factory.config,org.springframework.beans.factory.xml,org.argeo
+ .slc.runtime,org.apache.commons.io,org.springframework.util,org.argeo
+ .slc.core.structure";version="0.11.2.SNAPSHOT",org.argeo.slc.ant.unit
+ ;uses:="org.argeo.slc.ant,org.argeo.slc.unit,org.springframework.core
+ .io,org.argeo.slc.core.process,org.argeo.slc.runtime,junit.framework,
+ org.springframework.context";version="0.11.2.SNAPSHOT",org.argeo.slc.
+ ant.test;uses:="org.argeo.slc.core.deploy,org.apache.tools.ant.types,
+ org.argeo.slc.core.test,org.apache.tools.ant,org.argeo.slc.core.proce
+ ss,org.argeo.slc.core,org.argeo.slc.ant.spring,org.argeo.slc.core.tes
+ t.context,org.apache.commons.logging,org.springframework.context,org.
+ argeo.slc.ant.structure,org.springframework.beans,org.argeo.slc.sprin
+ g,org.springframework.beans.factory,org.argeo.slc.core.structure.tree
+ ,org.argeo.slc.core.structure";version="0.11.2.SNAPSHOT",org.argeo.sl
+ c.ant.spring;uses:="org.apache.tools.ant.types,org.apache.tools.ant,o
+ rg.argeo.slc.core.process,org.argeo.slc.core,org.springframework.bean
+ s,org.apache.commons.logging,org.springframework.context,org.springfr
+ amework.beans.factory";version="0.11.2.SNAPSHOT"
+Bundle-Version: 0.11.2.SNAPSHOT
+Bundle-Name: Argeo SLC Support Ant
+Bundle-Description: SLC Distribution
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Argeo
+Bundle-SymbolicName: org.argeo.slc.support.ant
+Tool: Bnd-0.0.255
 

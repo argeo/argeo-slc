@@ -15,7 +15,7 @@
 		<version.spring-ws>1.5.5.A</version.spring-ws>
 		<version.maven>2.0.9</version.maven>
 		<version.ant>1.7.0</version.ant>
-		<version.jetty>6.1.11</version.jetty>
+		<version.jetty>6.1.14</version.jetty>
 	</properties>
 	<scm>
 		<connection>
@@ -134,10 +134,14 @@
 							<version>${version.jetty}</version>
 						</dependency>
 						<dependency>
-							<groupId>log4j</groupId>
-							<artifactId>log4j</artifactId>
-							<version>1.2.14</version>
-							<type>jar</type>
+							<groupId>org.apache.log4j</groupId>
+							<artifactId>com.springsource.org.apache.log4j</artifactId>
+							<version>1.2.15</version>
+						</dependency>
+						<dependency>
+							<groupId>javax.xml.soap</groupId>
+							<artifactId>com.springsource.javax.xml.soap</artifactId>
+							<version>1.3.0</version>
 						</dependency>
 					</dependencies>
 				</plugin>
