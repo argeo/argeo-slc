@@ -1,8 +1,6 @@
 package org.argeo.slc.cli;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -16,9 +14,10 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.ant.AntConstants;
 import org.argeo.slc.core.SlcException;
 import org.argeo.slc.logging.Log4jUtils;
+import org.argeo.slc.runtime.SlcExecutionContext;
+import org.argeo.slc.runtime.SlcRuntime;
 
 public class SlcMain {
 	public enum Mode {
@@ -155,11 +154,16 @@ public class SlcMain {
 		// Execution
 		if (mode.equals(Mode.single)) {
 			try {
-				DefaultSlcRuntime runtime = new DefaultSlcRuntime();
+				// DefaultSlcRuntime runtime = new DefaultSlcRuntime();
+				// FIXME: inject this more cleanly
+				ClassLoader cl = Thread.currentThread().getContextClassLoader();
+				Class clss = cl.loadClass("org.argeo.slc.ant.AntSlcRuntime");
+				SlcRuntime<? extends SlcExecutionContext> runtime = (SlcRuntime<? extends SlcExecutionContext>) clss
+						.newInstance();
 				runtime.executeScript(runtimeStr, script, targets, properties,
 						null, null);
-				//System.exit(0);
-			} catch (SlcException e) {
+				// System.exit(0);
+			} catch (Exception e) {
 				log.error("SLC client terminated with an error: ", e);
 				System.exit(1);
 			}

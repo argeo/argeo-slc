@@ -5,22 +5,14 @@
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
 		<version>0.11.2-SNAPSHOT</version>
-		<relativePath>../org.argeo.slc</relativePath>
+		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.agent</artifactId>
+	<groupId>org.argeo.slc.runtime</groupId>
+	<artifactId>org.argeo.slc.launcher</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC Agent</name>
-	<scm>
-		<connection>
-			scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc.agent
-		</connection>
-		<url>
-			https://www.argeo.org/svn/slc/trunk/org.argeo.slc.agent
-		</url>
-	</scm>
+	<name>Argeo SLC Launcher</name>
 	<build>
 		<plugins>
-			<!-- Look to parent pom for inheritances -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -71,53 +63,14 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.specs</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.detached</artifactId>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.simple</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.ws</groupId>
-			<artifactId>org.springframework.ws</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.xml.soap</groupId>
-			<artifactId>com.springsource.javax.xml.soap</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml</groupId>
-			<artifactId>
-				com.springsource.com.sun.xml.messaging.saaj
-			</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.argeo.dep.osgi</groupId>
-			<artifactId>org.argeo.dep.osgi.ant</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.net</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oro</groupId>
-			<artifactId>com.springsource.org.apache.oro</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.bsf</groupId>
-			<artifactId>com.springsource.org.apache.bsf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.beanshell</groupId>
-			<artifactId>com.springsource.bsh</artifactId>
 		</dependency>
 
 		<!--

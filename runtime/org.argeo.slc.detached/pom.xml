@@ -5,8 +5,9 @@
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
 		<version>0.11.2-SNAPSHOT</version>
-		<relativePath>../org.argeo.slc</relativePath>
+		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
+	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.detached</artifactId>
 	<name>Argeo SLC Detached</name>
 	<packaging>jar</packaging>

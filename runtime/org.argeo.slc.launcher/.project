@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.argeo.slc.agent</name>
+	<name>org.argeo.slc.launcher</name>
 	<comment></comment>
 	<projects>
 	</projects>

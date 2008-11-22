@@ -3,7 +3,7 @@ package org.argeo.slc.ant.unit;
 import junit.framework.TestCase;
 
 import org.argeo.slc.ant.AntExecutionContext;
-import org.argeo.slc.cli.DefaultSlcRuntime;
+import org.argeo.slc.ant.AntSlcRuntime;
 import org.argeo.slc.runtime.SlcExecutionOutput;
 
 public abstract class AntSlcApplicationTestCase extends TestCase implements
@@ -27,7 +27,7 @@ public abstract class AntSlcApplicationTestCase extends TestCase implements
 	}
 
 	protected void execute(String relativeScript, String targets) {
-		new DefaultSlcRuntime().executeScript(
+		new AntSlcRuntime().executeScript(
 				getAbsoluteScript(relativeScript), targets, this);
 	}
 
