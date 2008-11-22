@@ -8,7 +8,7 @@
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
-	<artifactId>org.argeo.slc.hibernate</artifactId>
+	<artifactId>org.argeo.slc.support.hibernate</artifactId>
 	<name>Argeo SLC Hibernate</name>
 	<build>
 		<plugins>

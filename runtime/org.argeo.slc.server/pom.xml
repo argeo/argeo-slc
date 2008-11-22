@@ -54,7 +54,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.hibernate</artifactId>
+			<artifactId>org.argeo.slc.support.hibernate</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

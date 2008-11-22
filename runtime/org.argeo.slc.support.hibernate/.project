@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.argeo.slc.hibernate</name>
+	<name>org.argeo.slc.support.hibernate</name>
 	<comment></comment>
 	<projects>
 	</projects>
