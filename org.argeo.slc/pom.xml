@@ -404,6 +404,7 @@
 				<version>1.8.0.9</version>
 			</dependency>
 
+			<!-- XML -->
 			<dependency>
 				<groupId>org.codehaus.castor</groupId>
 				<artifactId>com.springsource.org.castor</artifactId>

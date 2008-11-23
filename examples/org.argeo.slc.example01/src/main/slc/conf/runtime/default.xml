@@ -6,7 +6,7 @@
 	<import
 		resource="classpath:/org/argeo/slc/core/test/spring/applicationContext.xml" />
 	<import
-		resource="classpath:/org/argeo/slc/core/process/spring/applicationContext.xml" />
+		resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
 
 	<bean id="testResult"
 		parent="slcDefault.test.basicTreeTestResult">
@@ -36,7 +36,7 @@
 		<property name="logLevel" value="INFO" />
 		<property name="notifiers">
 			<list>
-				<ref bean="slcDefault.process.fileSlcExecutionNotifier" />
+				<ref bean="slcDefault.castor.fileSlcExecutionNotifier" />
 			</list>
 		</property>
 	</bean>

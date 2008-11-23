@@ -1,4 +1,4 @@
-package org.argeo.slc.core.process;
+package org.argeo.slc.xml.process;
 
 import java.io.File;
 import java.io.FileWriter;

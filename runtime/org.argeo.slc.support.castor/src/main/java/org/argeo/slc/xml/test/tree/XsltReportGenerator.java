@@ -1,4 +1,4 @@
-package org.argeo.slc.core.test.tree;
+package org.argeo.slc.xml.test.tree;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.test.TestResultListener;
 import org.argeo.slc.test.TestResultPart;
 

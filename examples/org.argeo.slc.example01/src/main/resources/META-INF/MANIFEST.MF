@@ -1,36 +1,40 @@
 Manifest-Version: 1.0
-Bundle-Activator: org.argeo.slc.example.Activator
-Created-By: 1.5.0_16 (Sun Microsystems Inc.)
+Export-Package: org.argeo.slc.example.appli;version="0.11.2.SNAPSHOT",
+ org.argeo.slc.example.ws.client.spring;version="0.11.2.SNAPSHOT",org.
+ argeo.slc.example;uses:="org.apache.commons.logging,org.argeo.slc.tes
+ t,org.argeo.slc.core.test,org.argeo.slc.core.structure,org.argeo.slc.
+ build,org.argeo.slc.example.appli,org.argeo.slc.test.context,org.arge
+ o.slc.core.test.context,org.argeo.slc.deploy,org.argeo.slc.structure,
+ org.argeo.slc.core.structure.tree";version="0.11.2.SNAPSHOT"
+Tool: Bnd-0.0.255
+Bundle-Name: Argeo SLC Example 01
+Created-By: 1.6.0 (Sun Microsystems Inc.)
+Bundle-Vendor: Argeo
+Bundle-Version: 0.11.2.SNAPSHOT
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: An Example SLC application
 Import-Package: org.apache.commons.logging;version="1.1",org.apache.to
  ols.ant;version="1.7",org.apache.tools.ant.taskdefs;version="1.7",org
  .apache.tools.ant.types;version="1.7",org.argeo.slc.build;version="0.
- 11.2.SNAPSHOT",org.argeo.slc.core.structure;version="0.11.2.SNAPSHOT"
- ,org.argeo.slc.core.structure.tree;version="0.11.2.SNAPSHOT",org.arge
- o.slc.core.test;version="0.11.2.SNAPSHOT",org.argeo.slc.core.test.con
- text;version="0.11.2.SNAPSHOT",org.argeo.slc.core.test.spring;version
- ="0.11.2.SNAPSHOT",org.argeo.slc.deploy;version="0.11.2.SNAPSHOT",org
- .argeo.slc.example;version="0.11.2.SNAPSHOT",org.argeo.slc.example.ap
- pli;version="0.11.2.SNAPSHOT",org.argeo.slc.example.ws.client.spring;
- version="0.11.2.SNAPSHOT",org.argeo.slc.msg.test.tree;version="0.11.2
- .SNAPSHOT",org.argeo.slc.structure;version="0.11.2.SNAPSHOT",org.arge
- o.slc.test;version="0.11.2.SNAPSHOT",org.argeo.slc.test.context;versi
- on="0.11.2.SNAPSHOT",org.springframework.oxm.castor;version="1.5.5.A"
-Export-Package: org.argeo.slc.example.appli;version="0.11.2.SNAPSHOT",
- org.argeo.slc.example;uses:="org.argeo.slc.test.context,org.argeo.slc
- .test,org.argeo.slc.core.test,org.argeo.slc.core.test.context,org.arg
- eo.slc.build,org.apache.commons.logging,org.argeo.slc.structure,org.a
- rgeo.slc.example.appli,org.argeo.slc.core.structure.tree,org.argeo.sl
- c.deploy,org.argeo.slc.core.structure";version="0.11.2.SNAPSHOT",org.
- argeo.slc.example.ws.client.spring;version="0.11.2.SNAPSHOT"
-Bundle-Version: 0.11.2.SNAPSHOT
-Bundle-Name: Argeo SLC Example 01
-Bundle-Description: An Example SLC application
+ 11.2.SNAPSHOT",org.argeo.slc.castor.msg;version="0.11.2.SNAPSHOT",org
+ .argeo.slc.castor.process;version="0.11.2.SNAPSHOT",org.argeo.slc.cas
+ tor.spring;version="0.11.2.SNAPSHOT",org.argeo.slc.castor.structure;v
+ ersion="0.11.2.SNAPSHOT",org.argeo.slc.castor.test;version="0.11.2.SN
+ APSHOT",org.argeo.slc.core.structure;version="0.11.2.SNAPSHOT",org.ar
+ geo.slc.core.structure.tree;version="0.11.2.SNAPSHOT",org.argeo.slc.c
+ ore.test;version="0.11.2.SNAPSHOT",org.argeo.slc.core.test.context;ve
+ rsion="0.11.2.SNAPSHOT",org.argeo.slc.core.test.spring;version="0.11.
+ 2.SNAPSHOT",org.argeo.slc.core.test.tree;version="0.11.2.SNAPSHOT",or
+ g.argeo.slc.deploy;version="0.11.2.SNAPSHOT",org.argeo.slc.example;ve
+ rsion="0.11.2.SNAPSHOT",org.argeo.slc.example.appli;version="0.11.2.S
+ NAPSHOT",org.argeo.slc.example.ws.client.spring;version="0.11.2.SNAPS
+ HOT",org.argeo.slc.msg.test.tree;version="0.11.2.SNAPSHOT",org.argeo.
+ slc.structure;version="0.11.2.SNAPSHOT",org.argeo.slc.test;version="0
+ .11.2.SNAPSHOT",org.argeo.slc.test.context;version="0.11.2.SNAPSHOT",
+ org.argeo.slc.xml.test.tree;version="0.11.2.SNAPSHOT",org.springframe
+ work.oxm.castor;version="1.5.5.A"
+Bundle-SymbolicName: org.argeo.slc.example01
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
-Bundle-Vendor: Argeo
-Bundle-ManifestVersion: 2
-Bundle-SymbolicName: org.argeo.slc.example01
-Tool: Bnd-0.0.255
-Require-Bundle: org.argeo.slc.core,org.argeo.slc.agent
 

@@ -37,7 +37,13 @@
 						<Export-Package>
 							org.argeo.slc.*
 						</Export-Package>
-						<Import-Package>*,org.apache.commons.logging;version="1.1"</Import-Package>
+						<Import-Package>*,org.apache.commons.logging;version="1.1",
+							org.dbunit;resolution:="optional",
+							org.dbunit.database;resolution:="optional",
+							org.dbunit.dataset;resolution:="optional",
+							org.dbunit.dataset.xml;resolution:="optional",
+							org.dbunit.operation;resolution:="optional"
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -73,5 +79,12 @@
 			<groupId>org.junit</groupId>
 			<artifactId>com.springsource.junit</artifactId>
 		</dependency>
+
+		<!-- Required by DB Unit -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.collections</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>

@@ -60,9 +60,26 @@
 						<Export-Package>
 							org.argeo.slc.example.*
 						</Export-Package>
-						<Import-Package>*,org.argeo.slc.core.test.spring,org.springframework.oxm.castor,org.argeo.slc.msg.test.tree,org.apache.tools.ant,org.apache.tools.ant.taskdefs,org.apache.tools.ant.types</Import-Package>
-						<Bundle-Activator>org.argeo.slc.example.Activator</Bundle-Activator>
-						<Require-Bundle>org.argeo.slc.core,org.argeo.slc.agent</Require-Bundle>
+						<Import-Package>*,
+							org.argeo.slc.core.test.spring,
+							org.argeo.slc.xml.test.tree,
+							org.argeo.slc.castor.spring,
+							org.argeo.slc.castor.msg,
+							org.argeo.slc.castor.process,
+							org.argeo.slc.castor.structure,
+							org.argeo.slc.castor.test,
+							org.springframework.oxm.castor,
+							org.argeo.slc.core.test.tree,
+							org.argeo.slc.msg.test.tree,
+							org.apache.tools.ant,
+							org.apache.tools.ant.taskdefs,
+							org.apache.tools.ant.types
+						</Import-Package>
+						<!--
+							<Import-Package>*,org.argeo.slc.core.test.spring,org.springframework.oxm.castor,org.argeo.slc.msg.test.tree,org.apache.tools.ant,org.apache.tools.ant.taskdefs,org.apache.tools.ant.types</Import-Package>
+							<Bundle-Activator>org.argeo.slc.example.Activator</Bundle-Activator>
+							<Require-Bundle>org.argeo.slc.core,org.argeo.slc.agent</Require-Bundle>
+						-->
 					</instructions>
 				</configuration>
 			</plugin>
@@ -88,7 +105,24 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
 			<version>${project.version}</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
+
+		<!-- OSGi -->
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>org.springframework.osgi.extender</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.xmlcommons</groupId>
+			<artifactId>com.springsource.org.apache.xmlcommons</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>
