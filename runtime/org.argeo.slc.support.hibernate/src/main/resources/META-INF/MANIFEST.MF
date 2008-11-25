@@ -1,6 +1,31 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_16 (Sun Microsystems Inc.)
+Export-Package: org.argeo.slc.hibernate.cache;version="0.11.2.SNAPSHOT
+ ",org.argeo.slc.hibernate.process;uses:="org.springframework.orm.hibe
+ rnate3.support,org.hibernate,org.argeo.slc.process,org.argeo.slc,org.
+ argeo.slc.dao.process,org.springframework.orm.hibernate3";version="0.
+ 11.2.SNAPSHOT",org.argeo.slc.hibernate.test.tree;uses:="org.argeo.slc
+ .test,org.argeo.slc.core.test.tree,org.argeo.slc.dao.test.tree,org.ar
+ geo.slc.core.test,org.hibernate,org.springframework.orm.hibernate3.su
+ pport,org.argeo.slc,org.springframework.orm.hibernate3,org.argeo.slc.
+ core.structure.tree";version="0.11.2.SNAPSHOT",org.argeo.slc.hibernat
+ e.spring;version="0.11.2.SNAPSHOT",org.argeo.slc.hibernate.structure;
+ version="0.11.2.SNAPSHOT",org.argeo.slc.hibernate.unit;uses:="org.hib
+ ernate.cfg,org.argeo.slc.unit,org.dbunit.operation,org.springframewor
+ k.core.io,org.springframework.context,org.dbunit.dataset,javax.sql,or
+ g.argeo.slc.support.deploy.db,org.hibernate,org.hibernate.tool.hbm2dd
+ l,org.dbunit.dataset.xml,org.dbunit.database,org.dbunit,org.apache.co
+ mmons.io,org.argeo.slc,org.springframework.orm.hibernate3";version="0
+ .11.2.SNAPSHOT",org.argeo.slc.hibernate.test;uses:="org.argeo.slc.dao
+ .test,org.springframework.orm.hibernate3.support,org.argeo.slc.test,o
+ rg.springframework.orm.hibernate3";version="0.11.2.SNAPSHOT"
+Tool: Bnd-0.0.255
+Bundle-Name: Argeo SLC Support Hibernate
+Created-By: 1.6.0 (Sun Microsystems Inc.)
+Bundle-Vendor: Argeo
+Bundle-Version: 0.11.2.SNAPSHOT
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: SLC Distribution
 Import-Package: javax.sql,org.apache.commons.io;version="1.4",org.arge
  o.slc;version="0.11.2.SNAPSHOT",org.argeo.slc.core.structure.tree;ver
  sion="0.11.2.SNAPSHOT",org.argeo.slc.core.test;version="0.11.2.SNAPSH
@@ -23,32 +48,7 @@ Import-Package: javax.sql,org.apache.commons.io;version="1.4",org.arge
  mework.context;version="2.5.6.A",org.springframework.core.io;version=
  "2.5.6.A",org.springframework.orm.hibernate3;version="2.5.6.A",org.sp
  ringframework.orm.hibernate3.support;version="2.5.6.A"
-Export-Package: org.argeo.slc.hibernate.spring;version="0.11.2.SNAPSHO
- T",org.argeo.slc.hibernate.test.tree;uses:="org.argeo.slc.dao.test.tr
- ee,org.argeo.slc.test,org.argeo.slc,org.argeo.slc.core.test,org.hiber
- nate,org.springframework.orm.hibernate3.support,org.argeo.slc.core.te
- st.tree,org.springframework.orm.hibernate3,org.argeo.slc.core.structu
- re.tree";version="0.11.2.SNAPSHOT",org.argeo.slc.hibernate.structure;
- version="0.11.2.SNAPSHOT",org.argeo.slc.hibernate.cache;version="0.11
- .2.SNAPSHOT",org.argeo.slc.hibernate.test;uses:="org.argeo.slc.test,o
- rg.argeo.slc.dao.test,org.springframework.orm.hibernate3.support,org.
- springframework.orm.hibernate3";version="0.11.2.SNAPSHOT",org.argeo.s
- lc.hibernate.unit;uses:="org.argeo.slc,org.hibernate.cfg,org.hibernat
- e,org.dbunit.database,org.dbunit.dataset.xml,org.springframework.cont
- ext,org.dbunit,javax.sql,org.hibernate.tool.hbm2ddl,org.argeo.slc.sup
- port.deploy.db,org.dbunit.dataset,org.argeo.slc.unit,org.springframew
- ork.core.io,org.dbunit.operation,org.apache.commons.io,org.springfram
- ework.orm.hibernate3";version="0.11.2.SNAPSHOT",org.argeo.slc.hiberna
- te.process;uses:="org.argeo.slc,org.argeo.slc.process,org.hibernate,o
- rg.springframework.orm.hibernate3.support,org.springframework.orm.hib
- ernate3,org.argeo.slc.dao.process";version="0.11.2.SNAPSHOT"
-Bundle-Version: 0.11.2.SNAPSHOT
-Bundle-Name: Argeo SLC Support Hibernate
-Bundle-Description: SLC Distribution
+Bundle-SymbolicName: org.argeo.slc.support.hibernate
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
-Bundle-ManifestVersion: 2
-Bundle-Vendor: Argeo
-Bundle-SymbolicName: org.argeo.slc.support.hibernate
-Tool: Bnd-0.0.255
 

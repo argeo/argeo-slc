@@ -1,6 +1,23 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_16 (Sun Microsystems Inc.)
+Export-Package: org.argeo.slc.lib.detached;uses:="org.springframework.
+ oxm,org.apache.commons.logging,org.argeo.slc.detached.ui,org.argeo.sl
+ c.test,org.springframework.beans,org.argeo.slc.detached,org.springfra
+ mework.beans.factory.config,org.argeo.slc.core.test,org.springframewo
+ rk.beans.factory.support,org.argeo.slc.core.test.context,org.argeo.sl
+ c.test.context,javax.xml.transform,org.argeo.slc,org.argeo.slc.core.s
+ tructure.tree,org.springframework.beans.factory";version="0.11.2.SNAP
+ SHOT",org.argeo.slc.ant.detached;uses:="org.argeo.slc.ant.spring,org.
+ apache.commons.logging,org.argeo.slc.spring,org.springframework.conte
+ xt,org.argeo.slc.detached,org.argeo.slc.ant.structure,org.argeo.slc,o
+ rg.springframework.beans.factory";version="0.11.2.SNAPSHOT"
+Tool: Bnd-0.0.255
+Bundle-Name: Argeo SLC Lib Detached
+Created-By: 1.6.0 (Sun Microsystems Inc.)
+Bundle-Vendor: Argeo
+Bundle-Version: 0.11.2.SNAPSHOT
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: SLC Distribution
 Import-Package: javax.xml.transform;version="1.3",org.apache.commons.l
  ogging;version="1.1",org.argeo.slc;version="0.11.2.SNAPSHOT",org.arge
  o.slc.ant.detached;version="0.11.2.SNAPSHOT",org.argeo.slc.ant.spring
@@ -17,24 +34,7 @@ Import-Package: javax.xml.transform;version="1.3",org.apache.commons.l
  on="2.5.6.A",org.springframework.beans.factory.support;version="2.5.6
  .A",org.springframework.context;version="2.5.6.A",org.springframework
  .oxm;version="1.5.5.A"
-Export-Package: org.argeo.slc.ant.detached;uses:="org.argeo.slc,org.ar
- geo.slc.ant.structure,org.argeo.slc.ant.spring,org.argeo.slc.detached
- ,org.apache.commons.logging,org.argeo.slc.spring,org.springframework.
- context,org.springframework.beans.factory";version="0.11.2.SNAPSHOT",
- org.argeo.slc.lib.detached;uses:="org.argeo.slc.test.context,org.arge
- o.slc.test,org.argeo.slc,org.argeo.slc.core.test,org.argeo.slc.core.t
- est.context,org.argeo.slc.detached,org.apache.commons.logging,org.spr
- ingframework.oxm,org.argeo.slc.detached.ui,javax.xml.transform,org.sp
- ringframework.beans.factory.support,org.springframework.beans.factory
- .config,org.springframework.beans,org.springframework.beans.factory,o
- rg.argeo.slc.core.structure.tree";version="0.11.2.SNAPSHOT"
-Bundle-Version: 0.11.2.SNAPSHOT
-Bundle-Name: Argeo SLC Lib Detached
-Bundle-Description: SLC Distribution
+Bundle-SymbolicName: org.argeo.slc.lib.detached
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
-Bundle-ManifestVersion: 2
-Bundle-Vendor: Argeo
-Bundle-SymbolicName: org.argeo.slc.lib.detached
-Tool: Bnd-0.0.255
 

@@ -1,6 +1,61 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_16 (Sun Microsystems Inc.)
+Export-Package: org.argeo.slc.unit;uses:="org.apache.commons.logging,j
+ unit.framework,org.springframework.context.support,org.argeo.slc.spri
+ ng,org.springframework.context,org.argeo.slc,org.springframework.bean
+ s.factory";version="0.11.2.SNAPSHOT",org.argeo.slc.diff;uses:="org.sp
+ ringframework.core.io,org.argeo.slc";version="0.11.2.SNAPSHOT",org.ar
+ geo.slc.core.test.spring;version="0.11.2.SNAPSHOT",org.argeo.slc.xml.
+ spring;version="0.11.2.SNAPSHOT",org.argeo.slc.logging;uses:="org.apa
+ che.log4j,org.springframework.util,org.springframework.core.io,org.ap
+ ache.commons.io,org.argeo.slc";version="0.11.2.SNAPSHOT",org.argeo.sl
+ c.core.test.tree;uses:="org.argeo.slc.core.structure,org.apache.commo
+ ns.logging,org.argeo.slc.test,org.argeo.slc,org.argeo.slc.structure,o
+ rg.argeo.slc.core.structure.tree";version="0.11.2.SNAPSHOT",org.argeo
+ .slc.dao.test.tree;uses:="org.argeo.slc.dao.test,org.apache.commons.l
+ ogging,org.argeo.slc.test,org.argeo.slc.core.test.tree,org.argeo.slc.
+ core.structure.tree,org.argeo.slc.core.test";version="0.11.2.SNAPSHOT
+ ",org.argeo.slc.core.test;uses:="org.apache.commons.logging,org.argeo
+ .slc.core.test.context,org.argeo.slc.test.context,org.argeo.slc.test,
+ org.argeo.slc.process,org.argeo.slc.deploy,org.argeo.slc,org.argeo.sl
+ c.core.structure.tree";version="0.11.2.SNAPSHOT",org.argeo.slc.unit.t
+ est.tree;uses:="org.apache.commons.logging,org.argeo.slc.unit,org.arg
+ eo.slc.test,org.argeo.slc.process,org.argeo.slc.core.test.tree,org.ar
+ geo.slc.core.test,org.argeo.slc.core.structure,org.argeo.slc.build,or
+ g.argeo.slc.msg.test.tree,junit.framework,org.argeo.slc.unit.process,
+ org.argeo.slc.deploy,org.argeo.slc.structure,org.argeo.slc.core.struc
+ ture.tree";version="0.11.2.SNAPSHOT",org.argeo.slc.core.structure;use
+ s:="org.argeo.slc.structure";version="0.11.2.SNAPSHOT",org.argeo.slc.
+ msg.test.tree;uses:="org.argeo.slc.test,org.argeo.slc.core.test.tree,
+ org.argeo.slc,org.argeo.slc.core.test,org.argeo.slc.core.structure.tr
+ ee";version="0.11.2.SNAPSHOT",org.argeo.slc.support.deploy;uses:="org
+ .argeo.slc.build,org.apache.commons.logging,org.argeo.slc.deploy,org.
+ argeo.slc";version="0.11.2.SNAPSHOT",org.argeo.slc.support.deploy.db;
+ uses:="org.apache.commons.logging,org.dbunit.operation,org.springfram
+ ework.core.io,org.dbunit.dataset,org.argeo.slc.build,javax.sql,org.db
+ unit.dataset.xml,org.dbunit.database,org.dbunit,org.argeo.slc.deploy,
+ org.argeo.slc";version="0.11.2.SNAPSHOT",org.argeo.slc.core.test.cont
+ ext;uses:="org.apache.commons.logging,org.argeo.slc.test.context,org.
+ argeo.slc.test,org.argeo.slc,org.argeo.slc.structure,org.argeo.slc.co
+ re.structure.tree,org.argeo.slc.core.test,org.springframework.beans.f
+ actory";version="0.11.2.SNAPSHOT",org.argeo.slc.unit.process;uses:="j
+ unit.framework,org.argeo.slc.unit,org.argeo.slc.process";version="0.1
+ 1.2.SNAPSHOT",org.argeo.slc.core.build;version="0.11.2.SNAPSHOT",org.
+ argeo.slc.spring;uses:="org.apache.commons.logging,org.springframewor
+ k.core.io,org.argeo.slc,org.springframework.beans.factory";version="0
+ .11.2.SNAPSHOT",org.argeo.slc.core.deploy;uses:="org.argeo.slc.build,
+ org.apache.commons.logging,org.argeo.slc.deploy";version="0.11.2.SNAP
+ SHOT",org.argeo.slc.msg.process;uses:="org.argeo.slc.process";version
+ ="0.11.2.SNAPSHOT",org.argeo.slc.core.structure.tree;uses:="org.argeo
+ .slc.core.structure,org.argeo.slc,org.argeo.slc.structure";version="0
+ .11.2.SNAPSHOT",org.argeo.slc.xml;version="0.11.2.SNAPSHOT"
+Tool: Bnd-0.0.255
+Bundle-Name: Argeo SLC Support Simple
+Created-By: 1.6.0 (Sun Microsystems Inc.)
+Bundle-Vendor: Argeo
+Bundle-Version: 0.11.2.SNAPSHOT
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: Basic implementations of SLC Specifications
 Import-Package: javax.sql,junit.framework;version="3.8",org.apache.com
  mons.io;version="1.4",org.apache.commons.logging;version="1.1",org.ap
  ache.log4j;version="1.2",org.argeo.slc;version="0.11.2.SNAPSHOT",org.
@@ -33,62 +88,7 @@ Import-Package: javax.sql,junit.framework;version="3.8",org.apache.com
  .6.A",org.springframework.context.support;version="2.5.6.A",org.sprin
  gframework.core.io;version="2.5.6.A",org.springframework.util;version
  ="2.5.6.A"
-Export-Package: org.argeo.slc.dao.test.tree;uses:="org.argeo.slc.test,
- org.argeo.slc.core.test.tree,org.argeo.slc.core.test,org.argeo.slc.da
- o.test,org.apache.commons.logging,org.argeo.slc.core.structure.tree";
- version="0.11.2.SNAPSHOT",org.argeo.slc.core.deploy;uses:="org.argeo.
- slc.build,org.apache.commons.logging,org.argeo.slc.deploy";version="0
- .11.2.SNAPSHOT",org.argeo.slc.core.test;uses:="org.argeo.slc,org.arge
- o.slc.test.context,org.argeo.slc.test,org.argeo.slc.process,org.argeo
- .slc.core.test.context,org.apache.commons.logging,org.argeo.slc.core.
- structure.tree,org.argeo.slc.deploy";version="0.11.2.SNAPSHOT",org.ar
- geo.slc.msg.process;uses:="org.argeo.slc.process";version="0.11.2.SNA
- PSHOT",org.argeo.slc.unit.process;uses:="org.argeo.slc.process,org.ar
- geo.slc.unit,junit.framework";version="0.11.2.SNAPSHOT",org.argeo.slc
- .core.test.context;uses:="org.argeo.slc,org.argeo.slc.test.context,or
- g.argeo.slc.test,org.argeo.slc.core.test,org.apache.commons.logging,o
- rg.springframework.beans.factory,org.argeo.slc.core.structure.tree,or
- g.argeo.slc.structure";version="0.11.2.SNAPSHOT",org.argeo.slc.core.b
- uild;version="0.11.2.SNAPSHOT",org.argeo.slc.core.test.spring;version
- ="0.11.2.SNAPSHOT",org.argeo.slc.xml.spring;version="0.11.2.SNAPSHOT"
- ,org.argeo.slc.support.deploy;uses:="org.argeo.slc,org.argeo.slc.buil
- d,org.apache.commons.logging,org.argeo.slc.deploy";version="0.11.2.SN
- APSHOT",org.argeo.slc.logging;uses:="org.argeo.slc,org.apache.log4j,o
- rg.springframework.core.io,org.apache.commons.io,org.springframework.
- util";version="0.11.2.SNAPSHOT",org.argeo.slc.core.test.tree;uses:="o
- rg.argeo.slc,org.argeo.slc.test,org.apache.commons.logging,org.argeo.
- slc.core.structure.tree,org.argeo.slc.structure,org.argeo.slc.core.st
- ructure";version="0.11.2.SNAPSHOT",org.argeo.slc.support.deploy.db;us
- es:="org.argeo.slc,org.dbunit.database,org.dbunit.dataset.xml,org.arg
- eo.slc.build,org.apache.commons.logging,org.dbunit,javax.sql,org.dbun
- it.dataset,org.springframework.core.io,org.dbunit.operation,org.argeo
- .slc.deploy";version="0.11.2.SNAPSHOT",org.argeo.slc.msg.test.tree;us
- es:="org.argeo.slc,org.argeo.slc.test,org.argeo.slc.core.test.tree,or
- g.argeo.slc.core.test,org.argeo.slc.core.structure.tree";version="0.1
- 1.2.SNAPSHOT",org.argeo.slc.xml;version="0.11.2.SNAPSHOT",org.argeo.s
- lc.unit;uses:="org.argeo.slc,org.apache.commons.logging,junit.framewo
- rk,org.argeo.slc.spring,org.springframework.context,org.springframewo
- rk.context.support,org.springframework.beans.factory";version="0.11.2
- .SNAPSHOT",org.argeo.slc.unit.test.tree;uses:="org.argeo.slc.test,org
- .argeo.slc.core.test,org.argeo.slc.unit.process,org.argeo.slc.build,o
- rg.apache.commons.logging,org.argeo.slc.structure,org.argeo.slc.core.
- test.tree,org.argeo.slc.msg.test.tree,org.argeo.slc.unit,org.argeo.sl
- c.process,junit.framework,org.argeo.slc.core.structure.tree,org.argeo
- .slc.core.structure,org.argeo.slc.deploy";version="0.11.2.SNAPSHOT",o
- rg.argeo.slc.diff;uses:="org.argeo.slc,org.springframework.core.io";v
- ersion="0.11.2.SNAPSHOT",org.argeo.slc.spring;uses:="org.argeo.slc,or
- g.springframework.core.io,org.apache.commons.logging,org.springframew
- ork.beans.factory";version="0.11.2.SNAPSHOT",org.argeo.slc.core.struc
- ture.tree;uses:="org.argeo.slc,org.argeo.slc.structure,org.argeo.slc.
- core.structure";version="0.11.2.SNAPSHOT",org.argeo.slc.core.structur
- e;uses:="org.argeo.slc.structure";version="0.11.2.SNAPSHOT"
-Bundle-Version: 0.11.2.SNAPSHOT
-Bundle-Name: Argeo SLC Support Simple
-Bundle-Description: Basic implementations of SLC Specifications
+Bundle-SymbolicName: org.argeo.slc.support.simple
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
-Bundle-ManifestVersion: 2
-Bundle-Vendor: Argeo
-Bundle-SymbolicName: org.argeo.slc.support.simple
-Tool: Bnd-0.0.255
 

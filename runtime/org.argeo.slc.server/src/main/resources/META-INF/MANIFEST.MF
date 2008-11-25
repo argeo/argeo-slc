@@ -1,6 +1,48 @@
 Manifest-Version: 1.0
-Created-By: 1.5.0_16 (Sun Microsystems Inc.)
+Export-Package: org.argeo.slc.web.mvc;uses:="org.springframework.oxm,o
+ rg.apache.commons.logging,org.springframework.web.servlet.view,org.sp
+ ringframework.core.io,org.argeo.slc.process,org.springframework.conte
+ xt,org.argeo.slc.core.test.tree,javax.xml.parsers,javax.xml.transform
+ .dom,org.w3c.dom,javax.xml.transform,org.springframework.web.servlet.
+ view.xslt,javax.xml.transform.stream,org.argeo.slc";version="0.11.2.S
+ NAPSHOT",org.argeo.slc.ws.process;uses:="org.springframework.ws.serve
+ r.endpoint,org.apache.commons.logging,org.argeo.slc.process,org.argeo
+ .slc,org.argeo.slc.msg.process,org.argeo.slc.dao.process";version="0.
+ 11.2.SNAPSHOT",org.argeo.slc.web.mvc.process;uses:="org.springframewo
+ rk.web.servlet.mvc,org.apache.commons.logging,org.springframework.web
+ .servlet,org.argeo.slc.process,org.argeo.slc,org.argeo.slc.dao.proces
+ s,javax.servlet.http";version="0.11.2.SNAPSHOT",org.argeo.slc.web.mvc
+ .admin;uses:="org.springframework.web.servlet.mvc,org.springframework
+ .web.servlet,javax.servlet.http";version="0.11.2.SNAPSHOT",org.argeo.
+ slc.ws.test.tree;uses:="org.springframework.ws.server.endpoint,org.ap
+ ache.commons.logging,org.argeo.slc.msg.test.tree,org.argeo.slc.test,o
+ rg.argeo.slc.core.test.tree,org.argeo.slc.services.test,org.argeo.slc
+ .dao.test.tree,org.argeo.slc.core.test,org.argeo.slc.core.structure.t
+ ree";version="0.11.2.SNAPSHOT",org.argeo.slc.web.mvc.result;uses:="or
+ g.springframework.web.servlet,org.argeo.slc.test,com.lowagie.text.pdf
+ ,org.argeo.slc.services.test,org.argeo.slc.core.test.tree,com.lowagie
+ .text,org.argeo.slc.dao.test.tree,org.argeo.slc.core.test,jxl.write,o
+ rg.springframework.web.servlet.mvc,org.argeo.slc.dao.test,org.springf
+ ramework.web.servlet.handler,org.springframework.web.servlet.view.doc
+ ument,org.argeo.slc,org.argeo.slc.structure,org.argeo.slc.core.struct
+ ure.tree,javax.servlet.http";version="0.11.2.SNAPSHOT",org.argeo.slc.
+ services.test.impl;uses:="org.argeo.slc.dao.test,org.apache.commons.l
+ ogging,org.argeo.slc.test,org.argeo.slc.process,org.argeo.slc.service
+ s.test,org.argeo.slc.core.test.tree,org.argeo.slc.dao.process,org.arg
+ eo.slc.dao.test.tree";version="0.11.2.SNAPSHOT",org.argeo.slc.service
+ s.test;uses:="org.argeo.slc.test";version="0.11.2.SNAPSHOT",org.argeo
+ .slc.ws;uses:="org.apache.commons.logging,org.springframework.ws.soap
+ ,org.springframework.ws.soap.server.endpoint,org.springframework.ws.c
+ ontext,javax.xml.namespace";version="0.11.2.SNAPSHOT",org.argeo.slc.s
+ erver.spring;version="0.11.2.SNAPSHOT"
+Tool: Bnd-0.0.255
+Bundle-Name: Argeo SLC Server
+Created-By: 1.6.0 (Sun Microsystems Inc.)
+Bundle-Vendor: Argeo
+Bundle-Version: 0.11.2.SNAPSHOT
+Bundle-ManifestVersion: 2
 Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-Description: SLC Server
 Import-Package: com.lowagie.text;version="2.0",com.lowagie.text.pdf;ve
  rsion="2.0",javax.servlet.http,javax.xml.namespace;version="1.3",java
  x.xml.parsers;version="1.3",javax.xml.transform;version="1.3",javax.x
@@ -33,49 +75,7 @@ Import-Package: com.lowagie.text;version="2.0",com.lowagie.text.pdf;ve
  A",org.springframework.ws.server.endpoint;version="1.5.5.A",org.sprin
  gframework.ws.soap;version="1.5.5.A",org.springframework.ws.soap.serv
  er.endpoint;version="1.5.5.A",org.w3c.dom;version="1.3"
-Export-Package: org.argeo.slc.ws;uses:="org.springframework.ws.soap,or
- g.springframework.ws.context,javax.xml.namespace,org.springframework.
- ws.soap.server.endpoint,org.apache.commons.logging";version="0.11.2.S
- NAPSHOT",org.argeo.slc.web.mvc.process;uses:="org.argeo.slc,javax.ser
- vlet.http,org.argeo.slc.process,org.apache.commons.logging,org.argeo.
- slc.dao.process,org.springframework.web.servlet.mvc,org.springframewo
- rk.web.servlet";version="0.11.2.SNAPSHOT",org.argeo.slc.web.mvc.admin
- ;uses:="javax.servlet.http,org.springframework.web.servlet,org.spring
- framework.web.servlet.mvc";version="0.11.2.SNAPSHOT",org.argeo.slc.se
- rver.spring;version="0.11.2.SNAPSHOT",org.argeo.slc.ws.test.tree;uses
- :="org.argeo.slc.test,org.argeo.slc.dao.test.tree,org.argeo.slc.core.
- test.tree,org.argeo.slc.msg.test.tree,org.argeo.slc.core.test,org.spr
- ingframework.ws.server.endpoint,org.argeo.slc.services.test,org.apach
- e.commons.logging,org.argeo.slc.core.structure.tree";version="0.11.2.
- SNAPSHOT",org.argeo.slc.services.test.impl;uses:="org.argeo.slc.dao.t
- est.tree,org.argeo.slc.test,org.argeo.slc.core.test.tree,org.argeo.sl
- c.process,org.argeo.slc.dao.test,org.argeo.slc.services.test,org.apac
- he.commons.logging,org.argeo.slc.dao.process";version="0.11.2.SNAPSHO
- T",org.argeo.slc.services.test;uses:="org.argeo.slc.test";version="0.
- 11.2.SNAPSHOT",org.argeo.slc.ws.process;uses:="org.argeo.slc,org.arge
- o.slc.process,org.springframework.ws.server.endpoint,org.argeo.slc.ms
- g.process,org.apache.commons.logging,org.argeo.slc.dao.process";versi
- on="0.11.2.SNAPSHOT",org.argeo.slc.web.mvc;uses:="org.argeo.slc,org.s
- pringframework.web.servlet.view,org.w3c.dom,org.apache.commons.loggin
- g,org.springframework.context,org.springframework.oxm,org.springframe
- work.web.servlet.view.xslt,javax.xml.transform,javax.xml.transform.do
- m,org.argeo.slc.core.test.tree,org.argeo.slc.process,org.springframew
- ork.core.io,javax.xml.parsers,javax.xml.transform.stream";version="0.
- 11.2.SNAPSHOT",org.argeo.slc.web.mvc.result;uses:="org.argeo.slc.dao.
- test.tree,org.argeo.slc.test,org.argeo.slc,javax.servlet.http,org.arg
- eo.slc.core.test,org.argeo.slc.dao.test,org.argeo.slc.services.test,o
- rg.argeo.slc.structure,jxl.write,org.springframework.web.servlet,org.
- springframework.web.servlet.mvc,org.argeo.slc.core.test.tree,org.spri
- ngframework.web.servlet.handler,org.springframework.web.servlet.view.
- document,com.lowagie.text.pdf,com.lowagie.text,org.argeo.slc.core.str
- ucture.tree";version="0.11.2.SNAPSHOT"
-Bundle-Version: 0.11.2.SNAPSHOT
-Bundle-Name: Argeo SLC Server
-Bundle-Description: SLC Server
+Bundle-SymbolicName: org.argeo.slc.server
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
-Bundle-ManifestVersion: 2
-Bundle-Vendor: Argeo
-Bundle-SymbolicName: org.argeo.slc.server
-Tool: Bnd-0.0.255
 
