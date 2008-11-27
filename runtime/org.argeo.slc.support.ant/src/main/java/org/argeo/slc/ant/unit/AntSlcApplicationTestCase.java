@@ -1,5 +1,7 @@
 package org.argeo.slc.ant.unit;
 
+import java.io.File;
+
 import junit.framework.TestCase;
 
 import org.argeo.slc.ant.AntExecutionContext;
@@ -15,7 +17,10 @@ public abstract class AntSlcApplicationTestCase extends TestCase implements
 	}
 
 	protected String getRootDir() {
-		return System.getProperty("slc.rootDir", "src/main/slc/root");
+		String rootDirPath =  System.getProperty("slc.rootDir", "src/slc/root");
+		if(!new File(rootDirPath).exists())
+			rootDirPath = "src/main/slc/root";// try older convention
+		return rootDirPath;
 	}
 
 	protected String getAbsoluteScript(String relative) {
