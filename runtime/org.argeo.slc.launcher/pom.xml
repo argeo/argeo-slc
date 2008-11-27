@@ -67,20 +67,9 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!--
-			<dependency> <groupId>org.apache.maven</groupId>
-			<artifactId>maven-embedder</artifactId> </dependency> <dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-settings</artifactId> </dependency>
-		-->
 		<dependency>
 			<groupId>org.argeo.dep.osgi</groupId>
 			<artifactId>org.argeo.dep.osgi.commons.cli</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.eclipse.osgi</groupId>
-			<artifactId>org.eclipse.osgi</artifactId>
 		</dependency>
 
 	</dependencies>
