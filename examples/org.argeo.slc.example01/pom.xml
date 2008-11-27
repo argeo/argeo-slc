@@ -47,7 +47,7 @@
 					<systemProperties>
 						<property>
 							<name>slc.rootDir</name>
-							<value>${basedir}/src/main/slc/root</value>
+							<value>${basedir}/src/slc/root</value>
 						</property>
 					</systemProperties>
 				</configuration>
@@ -107,22 +107,5 @@
 			<version>${project.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- OSGi -->
-		<dependency>
-			<groupId>org.eclipse.osgi</groupId>
-			<artifactId>org.eclipse.osgi</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.extender</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.xmlcommons</groupId>
-			<artifactId>com.springsource.org.apache.xmlcommons</artifactId>
-		</dependency>
-
 	</dependencies>
 </project>
