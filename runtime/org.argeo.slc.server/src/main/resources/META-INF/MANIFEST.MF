@@ -7,7 +7,7 @@ Export-Package: org.argeo.slc.web.mvc;uses:="org.springframework.oxm,o
  view.xslt,javax.xml.transform.stream,org.argeo.slc";version="0.11.2.S
  NAPSHOT",org.argeo.slc.ws.process;uses:="org.springframework.ws.serve
  r.endpoint,org.apache.commons.logging,org.argeo.slc.process,org.argeo
- .slc,org.argeo.slc.msg.process,org.argeo.slc.dao.process";version="0.
+ .slc,org.argeo.slc.dao.process,org.argeo.slc.msg.process";version="0.
  11.2.SNAPSHOT",org.argeo.slc.web.mvc.process;uses:="org.springframewo
  rk.web.servlet.mvc,org.apache.commons.logging,org.springframework.web
  .servlet,org.argeo.slc.process,org.argeo.slc,org.argeo.slc.dao.proces
@@ -16,7 +16,7 @@ Export-Package: org.argeo.slc.web.mvc;uses:="org.springframework.oxm,o
  .web.servlet,javax.servlet.http";version="0.11.2.SNAPSHOT",org.argeo.
  slc.ws.test.tree;uses:="org.springframework.ws.server.endpoint,org.ap
  ache.commons.logging,org.argeo.slc.msg.test.tree,org.argeo.slc.test,o
- rg.argeo.slc.core.test.tree,org.argeo.slc.services.test,org.argeo.slc
+ rg.argeo.slc.services.test,org.argeo.slc.core.test.tree,org.argeo.slc
  .dao.test.tree,org.argeo.slc.core.test,org.argeo.slc.core.structure.t
  ree";version="0.11.2.SNAPSHOT",org.argeo.slc.web.mvc.result;uses:="or
  g.springframework.web.servlet,org.argeo.slc.test,com.lowagie.text.pdf
@@ -28,8 +28,8 @@ Export-Package: org.argeo.slc.web.mvc;uses:="org.springframework.oxm,o
  ure.tree,javax.servlet.http";version="0.11.2.SNAPSHOT",org.argeo.slc.
  services.test.impl;uses:="org.argeo.slc.dao.test,org.apache.commons.l
  ogging,org.argeo.slc.test,org.argeo.slc.process,org.argeo.slc.service
- s.test,org.argeo.slc.core.test.tree,org.argeo.slc.dao.process,org.arg
- eo.slc.dao.test.tree";version="0.11.2.SNAPSHOT",org.argeo.slc.service
+ s.test,org.argeo.slc.core.test.tree,org.argeo.slc.dao.test.tree,org.a
+ rgeo.slc.dao.process";version="0.11.2.SNAPSHOT",org.argeo.slc.service
  s.test;uses:="org.argeo.slc.test";version="0.11.2.SNAPSHOT",org.argeo
  .slc.ws;uses:="org.apache.commons.logging,org.springframework.ws.soap
  ,org.springframework.ws.soap.server.endpoint,org.springframework.ws.c

@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Export-Package: org.argeo.slc.lib.detached;uses:="org.springframework.
  oxm,org.apache.commons.logging,org.argeo.slc.detached.ui,org.argeo.sl
- c.test,org.springframework.beans,org.argeo.slc.detached,org.springfra
- mework.beans.factory.config,org.argeo.slc.core.test,org.springframewo
+ c.test,org.springframework.beans,org.springframework.beans.factory.co
+ nfig,org.argeo.slc.detached,org.argeo.slc.core.test,org.springframewo
  rk.beans.factory.support,org.argeo.slc.core.test.context,org.argeo.sl
  c.test.context,javax.xml.transform,org.argeo.slc,org.argeo.slc.core.s
  tructure.tree,org.springframework.beans.factory";version="0.11.2.SNAP

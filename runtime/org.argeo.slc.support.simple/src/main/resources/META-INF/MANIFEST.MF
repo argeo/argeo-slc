@@ -36,7 +36,7 @@ Export-Package: org.argeo.slc.unit;uses:="org.apache.commons.logging,j
  org.argeo.slc";version="0.11.2.SNAPSHOT",org.argeo.slc.core.test.cont
  ext;uses:="org.apache.commons.logging,org.argeo.slc.test.context,org.
  argeo.slc.test,org.argeo.slc,org.argeo.slc.structure,org.argeo.slc.co
- re.structure.tree,org.argeo.slc.core.test,org.springframework.beans.f
+ re.test,org.argeo.slc.core.structure.tree,org.springframework.beans.f
  actory";version="0.11.2.SNAPSHOT",org.argeo.slc.unit.process;uses:="j
  unit.framework,org.argeo.slc.unit,org.argeo.slc.process";version="0.1
  1.2.SNAPSHOT",org.argeo.slc.core.build;version="0.11.2.SNAPSHOT",org.

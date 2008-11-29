@@ -10,8 +10,8 @@ Export-Package: org.argeo.slc.ant.spring;uses:="org.apache.commons.log
  ons.io,org.argeo.slc,org.argeo.slc.core.structure.tree,org.springfram
  ework.beans.factory,org.apache.tools.ant.helper,org.springframework.u
  til,org.argeo.slc.process,org.springframework.core.io,org.springframe
- work.context,org.springframework.beans.factory.xml,org.argeo.slc.logg
- ing,org.apache.tools.ant,org.argeo.slc.spring,org.argeo.slc.runtime,o
+ work.context,org.argeo.slc.logging,org.springframework.beans.factory.
+ xml,org.apache.tools.ant,org.argeo.slc.spring,org.argeo.slc.runtime,o
  rg.argeo.slc.structure";version="0.11.2.SNAPSHOT",org.argeo.slc.ant.t
  est;uses:="org.apache.commons.logging,org.argeo.slc.test,org.springfr
  amework.beans,org.argeo.slc.process,org.springframework.context,org.a

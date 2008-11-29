@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Export-Package: org.argeo.slc.cli;uses:="org.apache.commons.logging,or
- g.apache.commons.cli,org.argeo.slc.logging,org.argeo.slc.runtime,org.
- osgi.framework,org.apache.commons.io,org.argeo.slc,org.eclipse.core.r
- untime.adaptor";version="0.11.2.SNAPSHOT",org.argeo.slc.maven;uses:="
- org.argeo.slc.build,org.argeo.slc.deploy";version="0.11.2.SNAPSHOT",o
- rg.argeo.slc.support.deploy.ant;version="0.11.2.SNAPSHOT"
+ g.apache.commons.cli,org.argeo.slc.runtime,org.argeo.slc.logging,org.
+ apache.commons.io,org.argeo.slc";version="0.11.2.SNAPSHOT",org.argeo.
+ slc.maven;uses:="org.argeo.slc.build,org.argeo.slc.deploy";version="0
+ .11.2.SNAPSHOT",org.argeo.slc.support.deploy.ant;version="0.11.2.SNAP
+ SHOT"
 Tool: Bnd-0.0.255
 Bundle-Name: Argeo SLC Launcher
 Created-By: 1.6.0 (Sun Microsystems Inc.)
@@ -20,8 +20,7 @@ Import-Package: org.apache.commons.cli;version="1.1",org.apache.common
  loy;version="0.11.2.SNAPSHOT",org.argeo.slc.logging;version="0.11.2.S
  NAPSHOT",org.argeo.slc.maven;version="0.11.2.SNAPSHOT",org.argeo.slc.
  runtime;version="0.11.2.SNAPSHOT",org.argeo.slc.support.deploy.ant;ve
- rsion="0.11.2.SNAPSHOT",org.eclipse.core.runtime.adaptor,org.osgi.fra
- mework;version="1.4"
+ rsion="0.11.2.SNAPSHOT"
 Bundle-SymbolicName: org.argeo.slc.launcher
 Bundle-DocURL: http://www.argeo.org
 Originally-Created-By: 1.6.0 (Sun Microsystems Inc.)
