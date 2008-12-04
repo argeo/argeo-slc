@@ -47,6 +47,7 @@
 					<jettyConfig>
 						../../org.argeo.slc.webapp/src/main/config/jetty/jetty-test.xml
 					</jettyConfig>
+					<webDefaultXml>../../org.argeo.slc.webapp/src/main/config/jetty/webdefault.xml</webDefaultXml>
 				</configuration>
 			</plugin>
 		</plugins>
