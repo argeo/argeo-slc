@@ -6,11 +6,11 @@ import org.apache.maven.plugin.MojoExecutionException;
 /**
  * Forks a eclipseTarget lifecycle.
  * 
- * @goal eclipseTarget-fork
+ * @goal eclipseTarget
  * @execute lifecycle="eclipseTarget" phase="initialize"
  */
-public class EclipseTargetForkMojo extends AbstractMojo {
+public class EclipseTargetMojo extends AbstractMojo {
 	public void execute() throws MojoExecutionException {
-		getLog().info("doing nothing here");
+		getLog().info("EclipseTargetMojo done");
 	}
 }

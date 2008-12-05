@@ -87,7 +87,7 @@
 			<mergemapper to="${elementId}.zip" />
 		</copy>
 
-		<!-- Update site -->
+		<!-- TODO Update site 
 		<copy tofile="${project.build.directory}/site.xml" file="${siteTemplate}">
 			<filterset begintoken="$${" endtoken="}">
 				<filtersfile file="${buildDirectory}/finalFeaturesVersions.properties" />
@@ -100,6 +100,7 @@
 				<include name="site.xml" />
 			</fileset>
 		</zip>
+		-->
 	</target>
 
 	<!-- 
@@ -151,44 +152,16 @@
 		</copy>
 	</target>
 
-	<!-- 
-		TARGET Clean
-	-->
-	<target name="clean" depends="init,clean.elementBuildScript" description="Cleans the generated resources">
-		<delete dir="${projectDirectory}/workspace" verbose="true" />
-		<delete file="${projectDirectory}/javaCompiler...args" verbose="true" />
-		<delete>
-			<fileset dir="${projectDirectory}/../..">
-				<include name="final*.properties" />
-				<include name="assemble*.xml" />
-				<include name="package*.xml" />
-			</fileset>
-		</delete>
-	</target>
-
-	<target name="clean.elementBuildScript" if="elementBuildScript.exists">
-		<ant antfile="${elementBuildScript}" target="clean" />
-		<delete file="${elementBuildScript}" verbose="true" />
-	</target>
-
 	<!--
-		TARGET eclipseTarget
+		TARGET eclipseTarget-collect
 	-->
-	<target name="eclipseTarget" description="Creates an Eclipse target location based on the dependencies">
+	<target name="eclipseTarget-collect" description="Creates an Eclipse target location based on the dependencies">
 		<taskdef resource="net/sf/antcontrib/antlib.xml" />
 		<for param="dir">
 			<dirset dir="${project.build.directory}/dependency">
 				<include name="*" />
 			</dirset>
 			<sequential>
-				<!--
-				<move todir="@{dir}" failonerror="false">
-					<fileset dir="@{dir}/eclipse">
-						<include name="**" />
-					</fileset>
-				</move>
-				<delete dir="@{dir}/eclipse" failonerror="false" quiet="true" />
-				-->
 				<copy todir="${eclipseTarget}" failonerror="false">
 					<fileset dir="@{dir}">
 						<include name="plugins/**" />
@@ -223,12 +196,6 @@
 		COMMON UTILITIES 
 	-->
 	<target name="init">
-		<!-- Init Base 
-		<property name="base" location="${eclipseBuildDir}" />
-		<property name="baseLocation" location="${base}/eclipse" />
-		<property name="pdeBuilder" location="${eclipseBuildDir}/argeo-slc-pde" />
-		<property name="pluginPathBase" location="${eclipseBuildDir}/pluginPath" />
--->
 		<path id="pdeBuilder.launcher.classpath">
 			<fileset dir="${pdeBuilder}/plugins">
 				<include name="org.eclipse.equinox.launcher_*.jar" />
@@ -240,13 +207,6 @@
 		<echo message="ant.file=${ant.file}" />
 		<echo message="projectDirectory=${projectDirectory}" />
 
-		<!--<echo message="eclipseBuildDir=${eclipseBuildDir}" />
-		<echo message="base=${base}" />
-		<echo message="baseLocation=${baseLocation}" />
-		<echo message="pdeBuilder=${pdeBuilder}" />
-		<echo message="localBuildDir=${localBuildDir}" />
-		<echo message="pluginPathBase=${pluginPathBase}" />
--->
 		<echo message="pdeBuilder=${pdeBuilder}" />
 		<echo message="eclipseTarget=${eclipseTarget}" />
 
@@ -259,8 +219,6 @@
 		<echo message="eclipseAntArgs=${eclipseAntArgs}" />
 
 		<echo message="buildConfiguration.dir=${buildConfiguration.dir}" />
-
-		<available file="${elementBuildScript}" property="elementBuildScript.exists" value="true" />
 	</target>
 	<!--
 	<target name="setPluginPath">
