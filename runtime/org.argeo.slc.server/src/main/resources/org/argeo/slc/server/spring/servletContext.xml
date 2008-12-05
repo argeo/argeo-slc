@@ -21,7 +21,7 @@
         <property name="properties">
             <props>
                 <prop key="sessionFactoryParentBean">
-                    slcServerDefault.sessionFactory.HSQLTest
+                    slcServerDefault.sessionFactory.HSQL
                 </prop>
             </props>
         </property>
