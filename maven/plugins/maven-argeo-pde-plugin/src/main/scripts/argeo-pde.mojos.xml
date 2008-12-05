@@ -163,8 +163,8 @@
 		</mojo>
 
 		<mojo>
-			<goal>eclipseTarget</goal>
-			<call>eclipseTarget</call>
+			<goal>eclipseTarget-collect</goal>
+			<call>eclipseTarget-collect</call>
 			<description>
 				Installs an Eclipse target based on dependencies
 			</description>

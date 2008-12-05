@@ -17,7 +17,7 @@
 					</execution>
 					<execution>
 						<goals>
-							<goal>eclipseTarget</goal>
+							<goal>eclipseTarget-collect</goal>
 						</goals>
 					</execution>
 				</executions>
