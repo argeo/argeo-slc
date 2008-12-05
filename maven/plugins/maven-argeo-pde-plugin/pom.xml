@@ -1,16 +1,33 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.argeo.slc.maven.plugins</groupId>
+	<groupId>org.argeo.slc.maven.plugins
+	</groupId>
 	<artifactId>maven-argeo-pde-plugin</artifactId>
-	<version>0.1.2</version>
+	<version>0.3.1-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Argeo PDE Plugin</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-plugin-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-script-ant</artifactId>
 			<version>2.0.9</version>
+		</dependency>
+		<dependency>
+			<groupId>ant-contrib</groupId>
+			<artifactId>ant-contrib</artifactId>
+			<version>1.0b2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>ant</groupId>
+					<artifactId>ant</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 	</dependencies>
 
@@ -21,7 +38,8 @@
 				<dependencies>
 					<dependency>
 						<groupId>org.apache.maven</groupId>
-						<artifactId>maven-plugin-tools-ant</artifactId>
+						<artifactId>maven-plugin-tools-ant
+						</artifactId>
 						<version>2.1</version>
 					</dependency>
 				</dependencies>
@@ -31,19 +49,20 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<distributionManagement>
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
 			<id>argeo-restricted</id>
 			<name>Argeo FOSS Repository</name>
-			<url>file:///var/argeo/maven2/argeo</url>
+			<url>file:///var/argeo/maven2/argeo
+			</url>
 		</repository>
 		<snapshotRepository>
 			<uniqueVersion>true</uniqueVersion>
 			<id>argeo-snapshots-restricted</id>
 			<name>Argeo FOSS Snapshots Repository</name>
-			<url>file:///var/argeo/maven2/argeo-snapshots</url>
+			<url>file:///var/argeo/maven2/argeo-snapshots
+			</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>

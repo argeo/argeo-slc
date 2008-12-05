@@ -11,6 +11,7 @@
 
 			<parameters>
 				<!-- Common -->
+				<!--  
 				<parameter>
 					<name>eclipseBuildDir</name>
 					<property>eclipseBuildDir</property>
@@ -21,6 +22,7 @@
 						The Eclipse build dir location
 					</description>
 				</parameter>
+				-->
 				<parameter>
 					<name>eclipseAntArgs</name>
 					<property>eclipseAntArgs</property>
@@ -36,11 +38,13 @@
 					<name>elementId</name>
 					<property>elementId</property>
 					<required>true</required>
-					<defaultValue>${project.artifactId}</defaultValue>
+					<defaultValue>${project.artifactId}
+					</defaultValue>
 					<type>java.lang.String</type>
 					<description>
 						The artifact id of the project by default, will
-						be used as element id.
+						be used
+						as element id.
 					</description>
 				</parameter>
 				<!-- Specific -->
@@ -62,7 +66,8 @@
 					<name>buildScriptProperties</name>
 					<property>buildScriptProperties</property>
 					<required>true</required>
-					<expression>${buildScriptProperties}</expression>
+					<expression>${buildScriptProperties}
+					</expression>
 					<defaultValue></defaultValue>
 					<type>java.lang.String</type>
 					<description>
@@ -108,11 +113,13 @@
 					<name>elementId</name>
 					<property>elementId</property>
 					<required>true</required>
-					<defaultValue>${project.artifactId}</defaultValue>
+					<defaultValue>${project.artifactId}
+					</defaultValue>
 					<type>java.lang.String</type>
 					<description>
 						The artifact id of the project by default, will
-						be used as element id.
+						be used
+						as element id.
 					</description>
 				</parameter>
 				<!-- Specific -->
@@ -143,14 +150,25 @@
 					<property>elementId</property>
 					<required>true</required>
 					<readonly>true</readonly>
-					<defaultValue>${project.artifactId}</defaultValue>
+					<defaultValue>${project.artifactId}
+					</defaultValue>
 					<type>java.lang.String</type>
 					<description>
 						The artifact id of the project by default, will
-						be used as element id.
+						be used
+						as element id.
 					</description>
 				</parameter>
 			</parameters>
+		</mojo>
+
+		<mojo>
+			<goal>eclipseTarget</goal>
+			<call>eclipseTarget</call>
+			<description>
+				Installs an Eclipse target based on dependencies
+			</description>
+			<requiresProject>true</requiresProject>
 		</mojo>
 	</mojos>
 </pluginMetadata>
