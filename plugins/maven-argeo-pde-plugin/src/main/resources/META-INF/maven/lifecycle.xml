@@ -1,0 +1,27 @@
+<lifecycles>
+	<lifecycle>
+		<id>eclipseTarget</id>
+		<phases>
+			<phase>
+				<id>initialize</id>
+				<executions>
+					<execution>
+						<goals>
+							<goal>org.apache.maven.plugins:maven-dependency-plugin:unpack-dependencies</goal>
+						</goals>
+						<configuration>
+							<useSubDirectoryPerArtifact>
+								true
+                            </useSubDirectoryPerArtifact>
+						</configuration>
+					</execution>
+					<execution>
+						<goals>
+							<goal>eclipseTarget</goal>
+						</goals>
+					</execution>
+				</executions>
+			</phase>
+		</phases>
+	</lifecycle>
+</lifecycles>
