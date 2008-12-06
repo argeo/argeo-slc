@@ -96,7 +96,7 @@ qx.Class.define("org.argeo.slc.web.Application",
       perspective.initViews(viewsManager);
 
 	  // Test
-	  org.argeo.slc.web.util.RequestManager.getInstance().addListener("reload", function(e){
+	  org.argeo.slc.web.remote.RequestManager.getInstance().addListener("reload", function(e){
 	  	qx.log.Logger.info("Received reload event for data type : "+ e.getDataType());
 	  });      
       
