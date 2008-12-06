@@ -65,6 +65,32 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<artifactItems>
+						<artifactItem>
+							<groupId>org.argeo.dep.dist</groupId>
+							<artifactId>qooxdoo-sdk</artifactId>
+							<classifier>dist</classifier>
+							<type>zip</type>
+							<outputDirectory>src/main/webapp</outputDirectory>
+						</artifactItem>
+					</artifactItems>
+					<overWriteReleases>false</overWriteReleases>
+					<overWriteSnapshots>true</overWriteSnapshots>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -91,6 +117,16 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- Qooxdoo -->
+		<dependency>
+			<groupId>org.argeo.dep.dist</groupId>
+			<artifactId>qooxdoo-sdk</artifactId>
+			<version>0.8</version>
+			<classifier>dist</classifier>
+			<type>zip</type>			
+		</dependency>
+		
 		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>com.springsource.javax.activation</artifactId>
