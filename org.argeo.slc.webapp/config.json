@@ -4,7 +4,7 @@
   "include" :
   [
     {
-      "path" : "G:/dev/qooxdoo-0.8-sdk/tool/data/config/application.json",
+      "path" : "src/main/webapp/qooxdoo-0.8-sdk/tool/data/config/application.json",
       "as"   : "appconf"
     }
   ],
@@ -12,8 +12,8 @@
   "let" :
   {
     "APPLICATION"  : "org.argeo.slc.web",
-    "QOOXDOO_PATH" : "src/main/webapp/qooxdoo",
-    "QOOXDOO_URI"  : "../qooxdoo",
+    "QOOXDOO_PATH" : "src/main/webapp/qooxdoo-0.8-sdk/framework",
+    "QOOXDOO_URI"  : "../qooxdoo-0.8-sdk/framework",
     "QXTHEME"      : "qx.theme.Modern",
 	"QXICONTHEME"  : ["Tango"],
     "API_EXCLUDE"  : ["qx.legacy.*"],
