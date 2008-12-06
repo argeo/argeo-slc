@@ -8,7 +8,7 @@
 	<name>Argeo SLC Test Eclipse Feature</name>
 	<scm>
 		<developerConnection>
-            scm:svn:https://www.argeo.org/svn/slc/trunk/maven/plugins/maven-argeo-pde-plugin/src/test/eclipse/features/argeo.slc.testfeature
+            scm:svn:https://www.argeo.org/svn/slc/trunk/maven/maven-argeo-pde-plugin/src/test/eclipse/features/argeo.slc.testfeature
         </developerConnection>
 	</scm>
 	<build>
