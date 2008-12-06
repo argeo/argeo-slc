@@ -72,7 +72,7 @@ qx.Class.define("org.argeo.slc.web.Application",
       commandManager.addToolbarContextMenu(toolbar);
 
       var stopCommand = commandManager.getCommandById("stop");
-      var serviceManager = org.argeo.slc.web.util.RequestManager.getInstance();
+      var serviceManager = org.argeo.slc.web.remote.RequestManager.getInstance();
       serviceManager.setStopCommand(stopCommand);
 
       container.add(menuBar);

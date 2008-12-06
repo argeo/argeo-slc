@@ -70,7 +70,7 @@ qx.Class.define("org.argeo.slc.web.custom.Applet",
 		this.info("Opening test "+testId);
 		this.getView().setViewTitle("Test "+testId);
 		service = "../resultViewXml.xslt?uuid="+testId;
-		var serviceManager = org.argeo.slc.web.util.RequestManager.getInstance();
+		var serviceManager = org.argeo.slc.web.remote.RequestManager.getInstance();
   		var request = serviceManager.getRequest(service, "GET", "application/xml");
   		request.addListener("completed", function(response){
 			this.createXmlGui(response.getContent());

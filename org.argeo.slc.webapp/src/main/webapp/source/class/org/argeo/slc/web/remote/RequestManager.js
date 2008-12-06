@@ -1,4 +1,4 @@
-qx.Class.define("org.argeo.slc.web.util.RequestManager",
+qx.Class.define("org.argeo.slc.web.remote.RequestManager",
 {
 	type : "singleton",
 	extend : qx.core.Object,

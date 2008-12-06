@@ -181,7 +181,7 @@ qx.Class.define("org.argeo.slc.web.custom.TestList",
 		var url = "/org.argeo.slc.webapp/resultList.ui";
 	  	var model = this.getModel();
 	  	model.removeRows(0, model.getRowCount());
-	  	var serviceManager = org.argeo.slc.web.util.RequestManager.getInstance();
+	  	var serviceManager = org.argeo.slc.web.remote.RequestManager.getInstance();
 	  	var commandManager = org.argeo.slc.web.event.CommandsManager.getInstance();
 	  	var request = serviceManager.getRequest(
 	  		url, 
