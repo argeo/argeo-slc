@@ -7,7 +7,7 @@
    Authors: Charles du Jeu
 
 ************************************************************************ */
-qx.Class.define("org.argeo.slc.web.components.Logger",
+qx.Class.define("org.argeo.ria.components.Logger",
 {
 	type : "singleton",
 	extend : qx.ui.window.Window,
@@ -74,7 +74,7 @@ qx.Class.define("org.argeo.slc.web.components.Logger",
 			var label = new qx.ui.basic.Label('<div class="messages"><div class="'+wrapper.className+'">'+wrapper.innerHTML+'</div></div>');
 			label.setRich(true);
 			if(entry.level == "error"){
-				var alert = new org.argeo.slc.web.components.Modal("Error");
+				var alert = new org.argeo.ria.components.Modal("Error");
 				alert.addContent(label.clone());				
 				alert.attachAndShow();
 			}

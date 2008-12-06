@@ -7,7 +7,7 @@
    Authors: Charles du Jeu
 
 ************************************************************************ */
-qx.Class.define("org.argeo.slc.web.components.Modal",
+qx.Class.define("org.argeo.ria.components.Modal",
 {
 	extend : qx.ui.window.Window,
   
@@ -41,7 +41,7 @@ qx.Class.define("org.argeo.slc.web.components.Modal",
 			this.add(panel, {edge:'center', width:'100%'});
 		},
 		attachAndShow:function(){
-			org.argeo.slc.web.components.ViewsManager.getInstance().getApplicationRoot().add(this);			
+			org.argeo.ria.components.ViewsManager.getInstance().getApplicationRoot().add(this);			
 			this.show();
 		}
 	}

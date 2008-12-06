@@ -17,11 +17,11 @@
 /**
  * This is the main application class of your custom application "slc"
  */
-qx.Class.define("org.argeo.slc.web.Application",
+qx.Class.define("org.argeo.ria.Application",
 {
   extend : qx.application.Standalone,
   settings : {
-  	//"slc.Perspective" : "org.argeo.slc.web.custom.Perspective"
+  	//"slc.Perspective" : "org.argeo.ria.custom.Perspective"
   },
   
   /*
@@ -42,7 +42,7 @@ qx.Class.define("org.argeo.slc.web.Application",
       this.base(arguments);
       this.views = {};
       
-      var viewsManager = org.argeo.slc.web.components.ViewsManager.getInstance();
+      var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();
       viewsManager.setApplicationRoot(this.getRoot());
       
       // Enable logging in debug variant
@@ -51,7 +51,7 @@ qx.Class.define("org.argeo.slc.web.Application",
         qx.log.appender.Native;
         qx.log.appender.Console;
       }
-      var winLogger = org.argeo.slc.web.components.Logger.getInstance();
+      var winLogger = org.argeo.ria.components.Logger.getInstance();
       this.getRoot().add(winLogger);
       qx.log.Logger.register(winLogger);
 
@@ -64,7 +64,7 @@ qx.Class.define("org.argeo.slc.web.Application",
 	  
       var menuBar = new qx.ui.menubar.MenuBar();
       var toolbar = new qx.ui.toolbar.ToolBar();
-      var commandManager = org.argeo.slc.web.event.CommandsManager.getInstance();
+      var commandManager = org.argeo.ria.event.CommandsManager.getInstance();
       commandManager.createCommands();
       commandManager.registerMenuBar(menuBar);
       commandManager.registerToolBar(toolbar);
@@ -72,7 +72,7 @@ qx.Class.define("org.argeo.slc.web.Application",
       commandManager.addToolbarContextMenu(toolbar);
 
       var stopCommand = commandManager.getCommandById("stop");
-      var serviceManager = org.argeo.slc.web.remote.RequestManager.getInstance();
+      var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
       serviceManager.setStopCommand(stopCommand);
 
       container.add(menuBar);
@@ -81,7 +81,7 @@ qx.Class.define("org.argeo.slc.web.Application",
       /**
        * Call GuiLoader to load default perspective and associated views.
        */
-      var perspectiveClassName  = qx.core.Setting.get("slc.Perspective")
+      var perspectiveClassName  = qx.core.Setting.get("ria.Perspective")
       if(!perspectiveClassName){
       	this.error("Cannot find default perspective setting ! Please check your config.json file! (CUSTOM_PERSPECTIVE, line 23).");
       	return;
@@ -96,7 +96,7 @@ qx.Class.define("org.argeo.slc.web.Application",
       perspective.initViews(viewsManager);
 
 	  // Test
-	  org.argeo.slc.web.remote.RequestManager.getInstance().addListener("reload", function(e){
+	  org.argeo.ria.remote.RequestManager.getInstance().addListener("reload", function(e){
 	  	qx.log.Logger.info("Received reload event for data type : "+ e.getDataType());
 	  });      
       

@@ -20,7 +20,7 @@
  * i.e. using deeper namespaces and a corresponding file structure within the 
  * <tt>test</tt> folder.
  */
-qx.Class.define("org.argeo.slc.web.test.DemoTest",
+qx.Class.define("org.argeo.ria.test.DemoTest",
 {
   extend : qx.dev.unit.TestCase,
 

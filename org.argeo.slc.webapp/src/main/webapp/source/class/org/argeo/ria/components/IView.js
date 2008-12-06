@@ -2,7 +2,7 @@
  * @author Charles du Jeu
  * 
  */
-qx.Interface.define("org.argeo.slc.web.components.IView", {
+qx.Interface.define("org.argeo.ria.components.IView", {
 	
 	properties : {
 		commands : {}

@@ -1,7 +1,7 @@
-qx.Class.define("org.argeo.slc.web.event.Command",
+qx.Class.define("org.argeo.ria.event.Command",
 {
   extend : qx.event.Command,
-  implement : [org.argeo.slc.web.components.ILoadStatusable],
+  implement : [org.argeo.ria.components.ILoadStatusable],
 
   properties : {
   	id : {init:""},

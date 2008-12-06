@@ -10,7 +10,7 @@
  * http://msdn.microsoft.com/library/default.asp?url=/library/en-us/xmlsdk/html/81f3de54-3b79-46dc-8e01-73ca2d94cdb5.asp
  * http://developer.mozilla.org/en/docs/Parsing_and_serializing_XML
  */
-qx.Class.define("org.argeo.slc.web.util.Element",
+qx.Class.define("org.argeo.ria.util.Element",
 {
 		
   statics :

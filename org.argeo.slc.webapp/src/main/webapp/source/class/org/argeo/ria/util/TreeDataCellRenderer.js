@@ -29,7 +29,7 @@
 /**
  * A data cell renderer for the tree column of a simple tree
  */
-qx.Class.define("org.argeo.slc.web.util.TreeDataCellRenderer",
+qx.Class.define("org.argeo.ria.util.TreeDataCellRenderer",
 {
   extend : qx.ui.treevirtual.SimpleTreeDataCellRenderer,
 
@@ -482,7 +482,7 @@ qx.Class.define("org.argeo.slc.web.util.TreeDataCellRenderer",
                                 bAlwaysShowOpenCloseSymbol,
                                 bExcludeFirstLevelTreeLines)
     {
-      var STDCR = org.argeo.slc.web.util.TreeDataCellRenderer;
+      var STDCR = org.argeo.ria.util.TreeDataCellRenderer;
 
       // If we're in column 0 and excludeFirstLevelTreeLines is enabled, then
       // we treat this as if no tree lines were requested.
@@ -601,7 +601,7 @@ qx.Class.define("org.argeo.slc.web.util.TreeDataCellRenderer",
     // Ensure that the theme is initialized
     qx.theme.manager.Meta.getInstance().initialize();
 
-    var STDCR = org.argeo.slc.web.util.TreeDataCellRenderer;
+    var STDCR = org.argeo.ria.util.TreeDataCellRenderer;
 
     var ImageLoader = qx.io2.ImageLoader;
 

@@ -1,7 +1,7 @@
 /**
  * @author Charles du Jeu
  */
-qx.Class.define("org.argeo.slc.web.components.ViewsManager",
+qx.Class.define("org.argeo.ria.components.ViewsManager",
 {
 	type : "singleton",
   extend : qx.core.Object,
@@ -25,7 +25,7 @@ qx.Class.define("org.argeo.slc.web.components.ViewsManager",
 		viewPane.empty();
 		if(commands){
 			viewPane.setCommands(commands);
-			org.argeo.slc.web.event.CommandsManager.getInstance().addCommands(commands, iView);
+			org.argeo.ria.event.CommandsManager.getInstance().addCommands(commands, iView);
 		}
 		viewPane.setContent(iView); 
 		return iView;
@@ -34,7 +34,7 @@ qx.Class.define("org.argeo.slc.web.components.ViewsManager",
   	registerViewPane : function(viewPane){
 		this.views[viewPane.getViewId()] = viewPane;
 	  	viewPane.getViewSelection().addListener("changeSelection", function(e){
-	  		org.argeo.slc.web.event.CommandsManager.getInstance().refreshCommands(e.getData());
+	  		org.argeo.ria.event.CommandsManager.getInstance().refreshCommands(e.getData());
 		});  		
   	},
   	getViewPaneById : function(viewPaneId){

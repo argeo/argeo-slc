@@ -2,7 +2,7 @@
  * @author Charles
  * 
  */
-qx.Class.define("org.argeo.slc.web.event.CommandsManager",
+qx.Class.define("org.argeo.ria.event.CommandsManager",
 {
 	type : "singleton",
   extend : qx.core.Object,
@@ -46,7 +46,7 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   				menuPosition: "last",
   				toolbar  	: false,
   				callback 	: function(e){  					
-  					org.argeo.slc.web.components.Logger.getInstance().toggle();
+  					org.argeo.ria.components.Logger.getInstance().toggle();
   				}, 
   				command 	: null
   			},
@@ -58,7 +58,7 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   				menu	   	: "Help",
   				toolbar  	: false,
   				callback 	: function(e){
-					var win = new org.argeo.slc.web.components.Modal("About SLC", null, "SLC is a product from Argeo.");
+					var win = new org.argeo.ria.components.Modal("About SLC", null, "SLC is a product from Argeo.");
 					win.attachAndShow();
   				}, 
   				command 	: null
@@ -90,7 +90,7 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   			var definition = defs[key];
   			var command;
   			if(!definition.command){
-	  			command = new org.argeo.slc.web.event.Command(key, definition.label, definition.icon, definition.shortcut);
+	  			command = new org.argeo.ria.event.Command(key, definition.label, definition.icon, definition.shortcut);
 	  			if(definition.submenu){
 	  				var menu = new qx.ui.menu.Menu();
 	  				command.setMenu(menu);

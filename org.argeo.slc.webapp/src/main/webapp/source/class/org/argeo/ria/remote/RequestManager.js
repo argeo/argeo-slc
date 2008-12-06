@@ -1,10 +1,10 @@
-qx.Class.define("org.argeo.slc.web.remote.RequestManager",
+qx.Class.define("org.argeo.ria.remote.RequestManager",
 {
 	type : "singleton",
 	extend : qx.core.Object,
   
 	events : {
-		"reload" : "org.argeo.slc.web.event.ReloadEvent"
+		"reload" : "org.argeo.ria.event.ReloadEvent"
 	},
 	
 	construct : function(){
@@ -36,7 +36,7 @@ qx.Class.define("org.argeo.slc.web.remote.RequestManager",
 		},		
 	
 		fireReloadEvent : function(dataType, content){
-			this.fireEvent("reload", org.argeo.slc.web.event.ReloadEvent, [dataType, content]);			
+			this.fireEvent("reload", org.argeo.ria.event.ReloadEvent, [dataType, content]);			
 		},
 		
 		requestCreated : function(e){
@@ -88,7 +88,7 @@ qx.Class.define("org.argeo.slc.web.remote.RequestManager",
 		
 		updateGuiParts : function(iLoadStatusables, loadStatus){
 			for(var i=0;i<iLoadStatusables.length;i++){
-				if(qx.Class.implementsInterface(qx.Class.getByName(iLoadStatusables[i].classname), org.argeo.slc.web.components.ILoadStatusable)){
+				if(qx.Class.implementsInterface(qx.Class.getByName(iLoadStatusables[i].classname), org.argeo.ria.components.ILoadStatusable)){
 					iLoadStatusables[i].setOnLoad(loadStatus);
 				}else{
 					this.debug("Does not implement the ILoadStatusable interface! GUIPART type : "+ iLoadStatusables[i].classname);

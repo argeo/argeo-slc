@@ -1,4 +1,4 @@
-qx.Class.define("org.argeo.slc.web.components.XmlRenderer",
+qx.Class.define("org.argeo.ria.components.XmlRenderer",
 {
   extend : qx.ui.table.cellrenderer.String,
 
@@ -11,6 +11,7 @@ qx.Class.define("org.argeo.slc.web.components.XmlRenderer",
   members :
   {
     // overridden
+  	// TODO : Put this in org.argeo.slc.ria
     _getContentHtml : function(cellInfo) {
     	var xmlNode = cellInfo.rowData;
     	if(!xmlNode) return "";
@@ -18,12 +19,12 @@ qx.Class.define("org.argeo.slc.web.components.XmlRenderer",
     	switch(cellInfo.col){
     		case 0 :
     			xPath = "param[@name='testName']";
-		    	var nameParam = org.argeo.slc.web.util.Element.selectSingleNode(xmlNode, xPath);
+		    	var nameParam = org.argeo.ria.util.Element.selectSingleNode(xmlNode, xPath);
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || "Not Found");
     			break;
     		case 1 : 
     			xPath = 'param[@name="date"]';
-		    	var nameParam = org.argeo.slc.web.util.Element.selectSingleNode(xmlNode, xPath);
+		    	var nameParam = org.argeo.ria.util.Element.selectSingleNode(xmlNode, xPath);
 		    	//qx.log.Logger.info(nameParam);
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || 0);
 		    	var splits = value.split(".");

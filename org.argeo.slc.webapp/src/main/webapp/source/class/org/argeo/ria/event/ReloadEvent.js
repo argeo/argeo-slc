@@ -7,7 +7,7 @@
    Authors: Charles du Jeu
 
 ************************************************************************ */
-qx.Class.define("org.argeo.slc.web.event.ReloadEvent",
+qx.Class.define("org.argeo.ria.event.ReloadEvent",
 {
 	extend : qx.event.type.Event,
   

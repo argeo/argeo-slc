@@ -4,10 +4,10 @@
 /**
  * This is the main application class of your custom application "sparta"
  */
-qx.Class.define("org.argeo.slc.web.components.ViewPane",
+qx.Class.define("org.argeo.ria.components.ViewPane",
 {
   extend : qx.ui.container.Composite,
-  implement : [org.argeo.slc.web.components.ILoadStatusable],
+  implement : [org.argeo.ria.components.ILoadStatusable],
 
   construct : function(application, viewId, viewTitle, splitPaneData){
   	this.base(arguments);
@@ -15,7 +15,7 @@ qx.Class.define("org.argeo.slc.web.components.ViewPane",
   	this.setViewId(viewId);
   	this._defaultViewTitle = viewTitle;
 	this.setViewTitle(viewTitle);
-	var viewSelection = new org.argeo.slc.web.components.ViewSelection(viewId);
+	var viewSelection = new org.argeo.ria.components.ViewSelection(viewId);
 	this.setViewSelection(viewSelection);
 	if(splitPaneData){
 		this.setSplitPaneData(splitPaneData);
@@ -114,7 +114,7 @@ qx.Class.define("org.argeo.slc.web.components.ViewPane",
 			this.remove(this.content);
 		}
 		if(this.getCommands()){
-			org.argeo.slc.web.event.CommandsManager.getInstance().removeCommands(this.getCommands());
+			org.argeo.ria.event.CommandsManager.getInstance().removeCommands(this.getCommands());
 			this.setCommands(null);
 		}
 		this.setViewTitle(this._defaultViewTitle);

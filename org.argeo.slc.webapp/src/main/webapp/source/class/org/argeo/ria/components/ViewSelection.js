@@ -1,4 +1,4 @@
-qx.Class.define("org.argeo.slc.web.components.ViewSelection",
+qx.Class.define("org.argeo.ria.components.ViewSelection",
 {
   extend : qx.core.Object,
   
