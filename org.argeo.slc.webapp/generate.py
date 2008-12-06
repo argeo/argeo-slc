@@ -25,7 +25,7 @@
 import sys, os, subprocess
 
 CMD_PYTHON = 'python'
-QOOXDOO_PATH = 'G:/dev/qooxdoo-0.8-sdk'
+QOOXDOO_PATH = 'src/main/webapp/qooxdoo-0.8-sdk'
 REAL_GENERATOR = os.path.normpath(
                     os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),
                                  QOOXDOO_PATH, 'tool', 'bin', 'generator.py'))
