@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/org.argeo.slc.ui.launch.feature_${org.argeo.slc.ui.launch.feature}.jar" id="org.argeo.slc.ui.launch.feature" version="${org.argeo.slc.ui.launch.feature}">
+      <category name="argeo.slc.ui"/>
+   </feature>
+   <category-def name="argeo.slc.ui" label="Argeo SLC UI">
+      <description>
+         UI extensions used to simplify development based on Argeo SLC.
+      </description>
+   </category-def>
+</site>
