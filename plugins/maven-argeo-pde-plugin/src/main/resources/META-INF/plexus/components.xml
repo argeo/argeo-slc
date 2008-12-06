@@ -15,6 +15,9 @@
 							<initialize>
 								org.argeo.slc.maven:maven-argeo-pde-plugin:eclipseTarget
 							</initialize>
+							<process-resources>
+								org.argeo.slc.maven:maven-argeo-pde-plugin:featureDescriptor
+							</process-resources>
 							<package>
 								org.argeo.slc.maven:maven-argeo-pde-plugin:packageElement
 							</package>

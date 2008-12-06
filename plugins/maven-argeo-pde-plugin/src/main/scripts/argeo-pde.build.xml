@@ -78,7 +78,7 @@
 		<property name="elementBuildScript" location="${buildDirectory}/${elementType}s/${elementId}/build.xml" />
 
 		<eclipseAnt antfile="${ant.file}" antargs="eclipse.generateScripts -DpdeBuilder=${pdeBuilder} -DpluginPath=${dependencyDir} -DprojectDirectory=${projectDirectory} -DeclipseBuildDir=${eclipseBuildDir} -DelementId=${elementId} -DbuildDirectory=${buildDirectory}" />
-		<eclipseAnt antfile="${elementBuildScript}" antargs="${buildScriptTargets} -Dplugin.destination=${pluginDestination} -Dfeature.destination=${featureDestination}  -DelementId=${elementId} -DbuildTempFolder=${buildTempFolder} -Dtemp.folder=${buildTempFolder}/temp.folder -Dfeature.temp.folder=${buildTempFolder}/feature.temp.folder ${buildScriptProperties}" />
+		<eclipseAnt antfile="${elementBuildScript}" antargs="${buildScriptTargets} -Dplugin.destination=${pluginDestination} -Dfeature.destination=${featureDestination}  -DelementId=${elementId} -DbuildTempFolder=${buildTempFolder} -Dtemp.folder=${buildTempFolder}/temp.folder -Dfeature.temp.folder=${buildTempFolder}/feature.temp.folder -DjavacFailOnError=true ${buildScriptProperties}" />
 
 		<copy todir="${project.build.directory}">
 			<fileset dir="${featureDestination}">
