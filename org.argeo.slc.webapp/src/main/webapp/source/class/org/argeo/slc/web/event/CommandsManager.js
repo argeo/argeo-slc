@@ -4,11 +4,11 @@
  */
 qx.Class.define("org.argeo.slc.web.event.CommandsManager",
 {
+	type : "singleton",
   extend : qx.core.Object,
 
-  construct : function(application){
+  construct : function(){
   	this.base(arguments);
-  	this.application = application;
   	this.setInitialDefinitions(qx.lang.Object.copy(this.getDefinitions()));
   	this.addListener("changedCommands", this.createCommands, this);
   },
@@ -17,18 +17,6 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   {
   	definitions : {
   		init : {
-  			"loadtestlist" : {
-  				label		: "Load Tests", 
-  				icon 		: "resource/slc/view-refresh.png",
-  				shortcut 	: "Control+l",
-  				enabled  	: true,
-  				menu	   	: "File",
-  				toolbar  	: "list",
-  				callback 	: function(e){
-  					this.loadTable("/org.argeo.slc.webapp/resultList.ui");
-  				}, 
-  				command 	: null
-  			},
   			"stop" : {
   				label 		: "Stop", 
   				icon		: "resource/slc/process-stop.png",
@@ -49,110 +37,16 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   				callback 	: function(e){}, 
   				command 	: null
   			},
-  			"opentest" : {
-  				label	 	: "Open", 
-  				icon 		: "resource/slc/document-open.png",
-  				shortcut 	: "Control+o",
-  				enabled  	: false,
-  				menu	   	: "Test",
-  				toolbar  	: "test",
-  				callback	: function(e){
-  					var xmlNodes = this.getSelectionForView("list").getNodes();
-  					this.createTestApplet(xmlNodes[0]);
-  				},
-  				selectionChange : function(viewId, xmlNodes){
-  					if(viewId != "list") return;
-  					this.setEnabled(false);
-  					if(xmlNodes == null || !xmlNodes.length) return;
-  					var applet = org.argeo.slc.web.util.Element.selectSingleNode(xmlNodes[0],'report[@type="applet"]'); 
-  					if(applet != null && qx.dom.Node.getText(applet) != ""){
-  						this.setEnabled(true);  						
-  					}  					
-  				},
-  				command 	: null
-  			},
-  			"download" : {
-  				label	 	: "Download as...", 
-  				icon 		: "resource/slc/go-down.png",
-  				shortcut 	: null,
-  				enabled  	: false,
-  				menu	   	: "Test",
-  				toolbar  	: "test",
-  				callback	: function(e){ },
-  				command 	: null,
-  				submenu 	: {},
-  				submenuCallback : function(commandId){
-  					var xmlNodes = this.getSelectionForView("list").getNodes();
-  					// Single selection
-  					var uuid = qx.xml.Element.getSingleNodeText(xmlNodes[0], 'param[@name="uuid"]');
-  					var urls = {
-  						xsl : "resultView.xslt",
-  						xml : "resultViewXml.xslt",
-  						xls : "resultView.xls",
-  						pdf : "resultView.pdf"
-  					};
-  					var url = "../"+urls[commandId]+"?uuid="+uuid;
-  					if(commandId == "xls" || commandId == "pdf"){
-	  					document.location.href = url;
-  					}else{
-  						var win = window.open(url);
-  					}
-  				},
-  				selectionChange : function(viewId, xmlNodes){
-  					if(viewId!="list")return;
-  					this.clearMenus();
-  					this.setEnabled(false);
-  					if(xmlNodes == null) return;
-  					
-  					var reports = qx.xml.Element.selectNodes(xmlNodes[0],'report[@type="download"]');
-  					if(reports == null || !reports.length)return;
-  					
-  					for(var i=0; i<reports.length;i++){
-  						var report = reports[i];
-  						var commandId = qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(report, "@commandid")); 
-  						this.addSubMenuButton(
-  							qx.dom.Node.getText(report),
-  							"resource/slc/mime-"+commandId+".png",
-  							commandId
-						);
-  					}
-  					this.setEnabled(true);
-  					this.fireDataEvent("changeMenu", this.getMenu());
-  				}
-  			},
-  			"deletetest" : {
-  				label	 	: "Delete", 
-  				icon 		: "resource/slc/edit-delete.png",
-  				shortcut 	: "Control+d",
-  				enabled  	: false,
-  				menu	   	: "Test",
-  				toolbar  	: "test",
-  				callback	: function(e){
-  					// Call service to delete
-  				},
-  				command 	: null
-  			},
-  			"copytocollection" : {
-  				label	 	: "Copy to...", 
-  				icon 		: "resource/slc/edit-copy.png",
-  				shortcut 	: "Control+c",
-  				enabled  	: false,
-  				menu	   	: "Test",
-  				toolbar  	: "test",
-  				callback	: function(e){
-  					// Call service to copy
-  				},
-  				command 	: null
-  			},
   			"log" : {
-  				label		: "Toggle Console", 
+  				label		: "Show Console", 
   				icon 		: "resource/slc/help-contents.png",
   				shortcut 	: "",
   				enabled  	: true,
   				menu	   	: "Help",
+  				menuPosition: "last",
   				toolbar  	: false,
-  				callback 	: function(e){
-  					qx.log.appender.Console.toggle();
+  				callback 	: function(e){  					
+  					org.argeo.slc.web.components.Logger.getInstance().toggle();
   				}, 
   				command 	: null
   			},
@@ -164,25 +58,8 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   				menu	   	: "Help",
   				toolbar  	: false,
   				callback 	: function(e){
-					var wm1 = new qx.ui.window.Window("About SLC");
-					wm1.set({
-						showMaximize : false,
-						showMinimize : false,
-						width: 200,
-						height: 150
-					});
-					wm1.setLayout(new qx.ui.layout.Dock());
-					wm1.add(new qx.ui.basic.Label("SLC is a product from Argeo."), {edge:'center', width:'100%'});
-					var closeButton = new qx.ui.form.Button("Close");
-					closeButton.addListener("execute", function(e){
-						this.hide();
-						this.destroy();
-					}, wm1);
-					wm1.add(closeButton, {edge:'south'});
-					wm1.setModal(true);
-					wm1.center();
-					this.getRoot().add(wm1);
-					wm1.show();
+					var win = new org.argeo.slc.web.components.Modal("About SLC", null, "SLC is a product from Argeo.");
+					win.attachAndShow();
   				}, 
   				command 	: null
   			}
@@ -219,18 +96,18 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
 	  				command.setMenu(menu);
 	  				if(definition.submenuCallback){
 	  					command.setMenuCallback(definition.submenuCallback);
-	  					command.setMenuContext(this.application);
+	  					command.setMenuContext((definition.callbackContext?definition.callbackContext:null));
 	  				}
 	  			}
 	  			command.setEnabled(definition.enabled);
-	  			command.addListener("execute", definition.callback, this.application);
+	  			command.addListener("execute", definition.callback, (definition.callbackContext?definition.callbackContext:this));
 	  			definition.command = command;
   			}else{
   				command = definition.command;
   			}
   			if(definition.menu){
   				if(!this.menus[definition.menu]) this.menus[definition.menu] = [];
-  				this.menus[definition.menu].push(command);
+  				this.menus[definition.menu].push(definition);
   			}
   			if(definition.toolbar){
   				if(!this.toolbars[definition.toolbar]) this.toolbars[definition.toolbar] = [];
@@ -270,13 +147,27 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   	
   	createMenuButtons : function(menuBar){
   		menuBar.removeAll();
+  		var anchors = {};
   		for(var key in this.menus){
   			var menu = new qx.ui.menu.Menu();
   			var button = new qx.ui.menubar.Button(key, null, menu);
+  			var anchorDetected = false;
   			for(var i=0; i<this.menus[key].length;i++){
-  				menu.add(this.menus[key][i].getMenuButton());
+  				var def = this.menus[key][i]; 
+  				menu.add(def.command.getMenuButton());
+  				if(!anchorDetected && def.menuPosition){
+  					anchorDetected = true;
+  					anchors[def.menuPosition] = button;
+  				}
   			}
-  			menuBar.add(button);
+  			if(!anchorDetected){
+	  			menuBar.add(button);
+  			}
+  		}
+  		// Add specific anchored buttons
+  		if(anchors.first) menuBar.addAt(anchors.first, 0);
+  		else if(anchors.last){
+  			menuBar.add(anchors.last);
   		}
   	},
   	createToolbarParts : function(toolbar){
@@ -294,15 +185,18 @@ qx.Class.define("org.argeo.slc.web.event.CommandsManager",
   		var contextMenu = new qx.ui.menu.Menu();
   		for(var i=0;i<commandIdsArray.length;i++){
   			var definition = defs[commandIdsArray[i]];
-  			var command = definition.command;
-  			contextMenu.add(command.getMenuButton());
+  			if(definition){
+	  			var command = definition.command;
+	  			contextMenu.add(command.getMenuButton());
+  			}
   		}
   		return contextMenu;
   	},
   	
-  	addCommands : function(definitions){
+  	addCommands : function(definitions, callbackContext){
   		var crtDefs = this.getDefinitions();  		
   		for(var key in definitions){
+  			if(callbackContext) definitions[key]['callbackContext'] = callbackContext;
   			crtDefs[key] = definitions[key];
   		}
   		this.setDefinitions(crtDefs);

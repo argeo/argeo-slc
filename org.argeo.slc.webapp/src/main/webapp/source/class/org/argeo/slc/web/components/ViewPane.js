@@ -4,14 +4,16 @@
 /**
  * This is the main application class of your custom application "sparta"
  */
-qx.Class.define("org.argeo.slc.web.components.View",
+qx.Class.define("org.argeo.slc.web.components.ViewPane",
 {
   extend : qx.ui.container.Composite,
+  implement : [org.argeo.slc.web.components.ILoadStatusable],
 
   construct : function(application, viewId, viewTitle, splitPaneData){
   	this.base(arguments);
   	this.setApplication(application);
   	this.setViewId(viewId);
+  	this._defaultViewTitle = viewTitle;
 	this.setViewTitle(viewTitle);
 	var viewSelection = new org.argeo.slc.web.components.ViewSelection(viewId);
 	this.setViewSelection(viewSelection);
@@ -25,7 +27,7 @@ qx.Class.define("org.argeo.slc.web.components.View",
   {
   	application : {init : null},
   	viewId : {init:""},
-  	viewTitle : {init:""},
+  	viewTitle : {init:"", event:"changeViewTitle"},
   	viewSelection : { nullable:false },
 	ownScrollable : {init: false},
 	splitPaneData : {init  : null},
@@ -45,9 +47,15 @@ qx.Class.define("org.argeo.slc.web.components.View",
 		this.header = new qx.ui.container.Composite();
 		this.header.setLayout(new qx.ui.layout.Dock());
 		this.header.set({appearance:"app-header"});
-		this.header.add(new qx.ui.basic.Label(this.getViewTitle()), {edge:"west"});
+		this.headerLabel = new qx.ui.basic.Label(this.getViewTitle()); 
+		this.header.add(this.headerLabel, {edge:"west"});
+		this.addListener("changeViewTitle", function(e){
+			this.headerLabel.setContent(e.getData());
+		}, this);
 		this.add(this.header);
 		this.setDecorator(new qx.ui.decoration.Single(1,"solid","#000"));
+		/*
+		// Open close button of splitPane, not very useful at the moment.
 		if(this.getSplitPaneData()){
 			var data = this.getSplitPaneData();
 			var imgName = (data.orientation=="horizontal"?"go-left":"go-bottom");
@@ -73,9 +81,11 @@ qx.Class.define("org.argeo.slc.web.components.View",
 			}, this);
 			this.header.add(image,{edge:"east"});
 		}
+		*/
 	},
 	
-	setContent : function(content, addScrollable){
+	setContent : function(content){
+		var addScrollable = (content.addScroll?content.addScroll():false);
 		if(addScrollable){
 			this.setOwnScrollable(true);
 			this.scrollable = new qx.ui.container.Scroll(content);
@@ -86,6 +96,17 @@ qx.Class.define("org.argeo.slc.web.components.View",
 		}
 	},
 	
+	setOnLoad : function(load){
+		if(!this.loadImage){
+			this.loadImage = new qx.ui.basic.Image('resource/slc/ajax-loader.gif');
+		}
+		if(load){
+			this.header.add(this.loadImage, {edge:"east"});
+		}else{
+			this.header.remove(this.loadImage);
+		}
+	},
+	
 	empty: function(){
 		if(this.getOwnScrollable() && this.scrollable){
 			this.remove(this.scrollable);
@@ -93,9 +114,10 @@ qx.Class.define("org.argeo.slc.web.components.View",
 			this.remove(this.content);
 		}
 		if(this.getCommands()){
-			this.getApplication().getCommandManager().removeCommands(this.getCommands());
+			org.argeo.slc.web.event.CommandsManager.getInstance().removeCommands(this.getCommands());
 			this.setCommands(null);
 		}
+		this.setViewTitle(this._defaultViewTitle);
 	}
 
   }

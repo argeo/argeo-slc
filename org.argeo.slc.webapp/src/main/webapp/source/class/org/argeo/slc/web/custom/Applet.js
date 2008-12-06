@@ -1,13 +1,13 @@
 /**
  * @author Charles
  */
-qx.Class.define("org.argeo.slc.web.components.Applet",
+qx.Class.define("org.argeo.slc.web.custom.Applet",
 {
   extend : qx.ui.container.Composite,
+  implement : [org.argeo.slc.web.components.IView], 
 
-  construct : function(containerView){
+  construct : function(){
   	this.base(arguments);
-  	this.setView(containerView);
 	this.setLayout(new qx.ui.layout.VBox());
   	this.passedStatus = "<div align=\"center\"><img src=\"resource/slc/dialog-ok.png\" height=\"16\" width=\"16\"></div>";
   	this.failedStatus = "<div align=\"center\"><img src=\"resource/slc/flag.png\" height=\"16\" width=\"16\"></div>";
@@ -29,7 +29,8 @@ qx.Class.define("org.argeo.slc.web.components.Applet",
   				toolbar  	: "result",
   				callback	: function(e){
   					// Call service to delete
-  					this.views["applet"].empty();
+  					//org.argeo.slc.web.components.ViewsManager.getInstance().getViewPaneById("applet").empty();
+  					this.getView().empty();  					
   				},
   				selectionChange : function(viewId, xmlNode){  					
   					if(viewId != "applet") return;
@@ -55,23 +56,35 @@ qx.Class.define("org.argeo.slc.web.components.Applet",
 
   members :
   {
-  	initData : function(xmlNode){
+  	init : function(viewPane){
+  		this.setView(viewPane);
+  	},
+  	
+  	load : function(xmlNode){
   		this.data = xmlNode;
   		if(!xmlNode) return;
   		// Load XML or Whatever
   		//var testType = qx.dom.Node.getText(qx.xml.Element.selectSingleNode(this.data, "param[@name='testType']"));
   		var service;  		
 		var testId = qx.dom.Node.getText(org.argeo.slc.web.util.Element.selectSingleNode(this.data, "param[@name='uuid']"));
+		this.info("Opening test "+testId);
+		this.getView().setViewTitle("Test "+testId);
 		service = "../resultViewXml.xslt?uuid="+testId;
 		var serviceManager = org.argeo.slc.web.util.RequestManager.getInstance();
   		var request = serviceManager.getRequest(service, "GET", "application/xml");
   		request.addListener("completed", function(response){
 			this.createXmlGui(response.getContent());
-			serviceManager.requestCompleted(request);
+			this.getView().setOnLoad(false);
   		}, this);
+  		this.getView().setOnLoad(true);
   		request.send();
+  		
   	},
   	 
+	addScroll : function(){
+		return false;
+	},
+		
   	createXmlGui : function(responseXml){
   		var NSMap = {
   			"slc" : "http://argeo.org/projects/slc/schemas"
@@ -92,11 +105,14 @@ qx.Class.define("org.argeo.slc.web.components.Applet",
   		for(var i=0;i<resNodes.length;i++){
   			var currentParentId = null;
   			var node = resNodes[i];
-  			var pathAttr = qx.xml.Element.getSingleNodeText(node, "@path");
+  			var pathAttr = qx.xml.Element.getSingleNodeText(node, "@path");  			
 			var pathParts = pathAttr.split("/");
-			var crtPath = "";			
+			if(pathParts[0] == ""){
+				pathParts.shift();
+			}
+			var crtPath = "";
 			for(var j=0;j<pathParts.length;j++){
-				if(pathParts[j] == "") continue;
+				//if(pathParts[j] == "") continue;
 				crtPath = crtPath.concat("/", pathParts[j]);
 				if(addedPaths[crtPath]) {
 					currentParentId = addedPaths[crtPath];
@@ -110,22 +126,30 @@ qx.Class.define("org.argeo.slc.web.components.Applet",
 					label = crtPath;
 				}
 				var newId;
-				if(j < pathParts.length - 1){
-					newId = model.addBranch(currentParentId, label, false);
-					//model.setColumnData(newId, 1, this.passedStatus);
-				}else{
-					newId = model.addLeaf(currentParentId, label);
-					model.setColumnData(newId, 3, org.argeo.slc.web.util.Element.getSingleNodeText(node, "slc:part-sub-list/slc:parts/slc:simple-result-part/slc:test-run-uuid", NSMap));
-					model.setColumnData(newId, 2, org.argeo.slc.web.util.Element.getSingleNodeText(node, "slc:part-sub-list/slc:parts/slc:simple-result-part/slc:message", NSMap));
-					var status = org.argeo.slc.web.util.Element.getSingleNodeText(node, "slc:part-sub-list/slc:parts/slc:simple-result-part/slc:status", NSMap);
+				newId = model.addBranch(currentParentId, label, false);
+				
+				// Test Leaf Node
+				var simpleResults = org.argeo.slc.web.util.Element.selectNodes(node, "slc:part-sub-list/slc:parts/slc:simple-result-part", NSMap);
+				if(!simpleResults || !simpleResults.length){
+					addedPaths[crtPath] = newId;
+					currentParentId = newId;
+					continue;
+				}
+				for(var k=0;k<simpleResults.length;k++){
+					var sResNode = simpleResults[k];
+					resId = model.addLeaf(currentParentId, label);
+					model.setColumnData(resId, 3, org.argeo.slc.web.util.Element.getSingleNodeText(sResNode, "slc:test-run-uuid", NSMap));
+					model.setColumnData(resId, 2, org.argeo.slc.web.util.Element.getSingleNodeText(sResNode, "slc:message", NSMap));
+					var status = org.argeo.slc.web.util.Element.getSingleNodeText(sResNode, "slc:status", NSMap);
 					if(status != "PASSED"){
 						status = this.failedStatus ;
-						this._setParentBranchAsFailed(newId);
+						this._setParentBranchAsFailed(resId);
 					}else{
 						status = this.passedStatus;
 					}
-					model.setColumnData(newId, 1, status);
+					model.setColumnData(resId, 1, status);						
 				}
+				
 				addedPaths[crtPath] = newId;
 				currentParentId = newId;
 			}
@@ -150,7 +174,7 @@ qx.Class.define("org.argeo.slc.web.components.Applet",
 			}
 	  	}, this);
   		
-	  	var contextMenu = this.getView().getApplication().getCommandManager().createMenuFromIds(["close"]);
+	  	var contextMenu = org.argeo.slc.web.event.CommandsManager.getInstance().createMenuFromIds(["close"]);
 	  	this.tree.setContextMenu(contextMenu);
 	  	
   	},

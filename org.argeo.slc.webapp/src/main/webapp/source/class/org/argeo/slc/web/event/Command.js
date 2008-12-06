@@ -1,6 +1,7 @@
 qx.Class.define("org.argeo.slc.web.event.Command",
 {
   extend : qx.event.Command,
+  implement : [org.argeo.slc.web.components.ILoadStatusable],
 
   properties : {
   	id : {init:""},
@@ -101,6 +102,10 @@ qx.Class.define("org.argeo.slc.web.event.Command",
   		if(this.getShortcut() != null){
 	  		element.setToolTip(new qx.ui.tooltip.ToolTip(this.getShortcut()));
   		}  		
+  	},
+  	
+  	setOnLoad : function(status){
+  		this.setEnabled(!status);
   	}
   	
   }
