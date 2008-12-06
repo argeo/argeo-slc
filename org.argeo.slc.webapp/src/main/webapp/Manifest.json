@@ -1,7 +1,7 @@
 {
   "info" : 
   {
-    "name" : "org.argeo.slc.web",
+    "name" : "org.argeo.ria",
 
     "summary" : "Slc Webui",
     "description" : "This is the canonical GUI for the SLC framework.",
@@ -23,7 +23,7 @@
   
   "provides" : 
   {
-    "namespace"   : "org.argeo.slc.web",
+    "namespace"   : "org.argeo.ria",
     "encoding"    : "utf-8",
     "class"       : "source/class",
     "resource"    : "source/resource",

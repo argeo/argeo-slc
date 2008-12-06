@@ -1,5 +1,5 @@
 {
-  "name"    : "slc",
+  "name"    : "ria",
 
   "include" :
   [
@@ -11,7 +11,7 @@
 
   "let" :
   {
-    "APPLICATION"  : "org.argeo.slc.web",
+    "APPLICATION"  : "org.argeo.ria",
     "QOOXDOO_PATH" : "src/main/webapp/qooxdoo-0.8-sdk/framework",
     "QOOXDOO_URI"  : "../qooxdoo-0.8-sdk/framework",
     "QXTHEME"      : "qx.theme.Modern",
@@ -21,7 +21,7 @@
     "ROOT"         : "src/main/webapp/",
 	"BUILD_PATH"   : "src/main/webapp/build",
 	"CACHE"		   : "cache" ,
-	"CUSTOM_PERSPECTIVE" : "org.argeo.slc.web.custom.Perspective"
+	"CUSTOM_PERSPECTIVE" : "org.argeo.slc.web.Perspective"
   },
 
   "jobs" : 
@@ -58,7 +58,7 @@
         "qx.version"     : "${QXVERSION}",
         "qx.theme"       : "${QXTHEME}",
         "qx.application" : "${APPLICATION}.Application",
-		"slc.Perspective": "${CUSTOM_PERSPECTIVE}"
+		"ria.Perspective": "${CUSTOM_PERSPECTIVE}"
       }
     },
 
