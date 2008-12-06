@@ -4,7 +4,8 @@
   "include" :
   [
     {
-      "path" : "G:/dev/qooxdoo-0.8-sdk/tool/data/config/application.json"
+      "path" : "G:/dev/qooxdoo-0.8-sdk/tool/data/config/application.json",
+      "as"   : "appconf"
     }
   ],
 
@@ -19,7 +20,8 @@
     "LOCALES"      : [ "en" ],
     "ROOT"         : "src/main/webapp/",
 	"BUILD_PATH"   : "src/main/webapp/build",
-	"CACHE"		   : "cache" 
+	"CACHE"		   : "cache" ,
+	"CUSTOM_PERSPECTIVE" : "org.argeo.slc.web.custom.Perspective"
   },
 
   "jobs" : 
@@ -42,6 +44,7 @@
       "include" :
       [
         "${APPLICATION}.Application",
+        "${CUSTOM_PERSPECTIVE}",
         "${QXTHEME}"
       ],
 
@@ -54,7 +57,8 @@
       {
         "qx.version"     : "${QXVERSION}",
         "qx.theme"       : "${QXTHEME}",
-        "qx.application" : "${APPLICATION}.Application"
+        "qx.application" : "${APPLICATION}.Application",
+		"slc.Perspective": "${CUSTOM_PERSPECTIVE}"
       }
     },
 
@@ -138,6 +142,26 @@
         "build-resources",
         "build-script",
         "my-build-files"
+      ]
+    },
+    
+    "slc-api" :
+    {
+      "extend" : ["appconf::api"],
+
+      "let" :
+      {
+        "APIVIEWER_ROOT" : "${ROOT}",
+        "BUILD_PATH" : "./api",
+        "API_INCLUDE" : ["${APPLICATION}.*"]
+      },
+
+      "library" :
+      [
+        {
+          "manifest" : "Manifest.json",
+          "uri"      : ""
+        }
       ]
     }
 	

@@ -48,6 +48,7 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
+							<webDefaultXml>src/main/config/jetty/webdefault.xml</webDefaultXml>
 							<scanIntervalSeconds>0</scanIntervalSeconds>
 							<daemon>true</daemon>
 							<jettyConfig>
