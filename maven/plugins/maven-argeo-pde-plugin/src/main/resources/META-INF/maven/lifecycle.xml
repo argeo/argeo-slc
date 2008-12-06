@@ -24,4 +24,26 @@
 			</phase>
 		</phases>
 	</lifecycle>
+	<!-- 
+	<lifecycle>
+		<id>buildNumber</id>
+		<phases>
+			<phase>
+				<id>validate</id>
+				<executions>
+					<execution>
+						<goals>
+							<goal>org.codehaus.mojo:buildnumber-maven-plugin:create</goal>
+						</goals>
+						<configuration>
+							<buildNumberPropertyName>scmRevision</buildNumberPropertyName>
+							<doCheck>false</doCheck>
+							<doUpdate>false</doUpdate>
+						</configuration>
+					</execution>
+				</executions>
+			</phase>
+		</phases>
+	</lifecycle>
+	 -->
 </lifecycles>
