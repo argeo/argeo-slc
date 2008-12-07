@@ -1,7 +1,8 @@
 <project>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.argeo.slc.maven</groupId>
-	<artifactId>maven-qooxdoo-plugin</artifactId>
+	<artifactId>maven-argeo-qooxdoo-plugin
+	</artifactId>
 	<version>0.8.0-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Argeo Qooxdoo Plugin</name>
@@ -11,20 +12,9 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.4</source>
-					<target>1.4</target>
+					<source>1.5</source>
+					<target>1.5</target>
 				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-plugin-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven</groupId>
-						<artifactId>maven-plugin-tools-ant
-						</artifactId>
-						<version>2.1</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
@@ -36,24 +26,14 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-script-ant</artifactId>
-			<version>2.0.9</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-project</artifactId>
 			<version>2.0.7</version>
 		</dependency>
 		<dependency>
-			<groupId>ant-contrib</groupId>
-			<artifactId>ant-contrib</artifactId>
-			<version>1.0b2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>ant</groupId>
-					<artifactId>ant</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.argeo.dep.dist</groupId>
+			<artifactId>jython</artifactId>
+			<version>2.5.beta0</version>
+			<classifier>exec</classifier>
 		</dependency>
 	</dependencies>
 	<distributionManagement>
