@@ -11,13 +11,13 @@ import org.python.util.jython;
  * Calls Qooxdoo python tool chain
  * 
  * @goal generate
- * @execute lifecycle="env" phase="initialize"
+ * @execute goal="env"
  */
 public class GenerateMojo extends AbstractMojo {
 	/**
 	 * The Qooxdoo build target.
 	 * 
-	 * @parameter expression="${jobs}"
+	 * @parameter expression="${job}"
 	 * @required
 	 */
 	private String job;
