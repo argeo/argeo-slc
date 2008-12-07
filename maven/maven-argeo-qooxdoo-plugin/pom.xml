@@ -29,12 +29,6 @@
 			<artifactId>maven-project</artifactId>
 			<version>2.0.7</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.dep.dist</groupId>
-			<artifactId>jython</artifactId>
-			<version>2.5.beta0</version>
-			<classifier>exec</classifier>
-		</dependency>
 	</dependencies>
 	<distributionManagement>
 		<repository>

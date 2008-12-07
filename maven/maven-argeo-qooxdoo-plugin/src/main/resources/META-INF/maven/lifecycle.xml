@@ -14,16 +14,6 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>org.argeo.dep.dist</groupId>
-									<artifactId>jython</artifactId>
-									<version>2.5.beta0</version>
-									<classifier>lib</classifier>
-									<type>zip</type>
-									<outputDirectory>${project.build.directory}/jython
-									</outputDirectory>
-									<overWrite>false</overWrite>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.argeo.dep.dist</groupId>
 									<artifactId>qooxdoo-sdk</artifactId>
 									<classifier>dist</classifier>
 									<version>0.8</version>
