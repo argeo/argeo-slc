@@ -58,7 +58,14 @@ public class GenerateMojo extends AbstractMojo {
 			// jython.main(args);
 
 			Commandline cl = new Commandline();
-			cl.setExecutable("python");
+
+			if (File.separatorChar == '\\') {// win
+				File pythonBase = new File(buildDirectory, "python-win32")
+						.getCanonicalFile();
+				cl.setExecutable(pythonBase.getPath() + File.separator
+						+ "python");
+			} else
+				cl.setExecutable("python");
 			cl.setWorkingDirectory(baseDir.getCanonicalPath());
 			cl.createArgument().setValue(generateScript.getCanonicalPath());
 			cl.createArgument().setValue(job);
