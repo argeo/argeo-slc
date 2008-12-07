@@ -10,7 +10,7 @@ qx.Class.define("org.argeo.ria.components.ViewSelection",
 
   properties : {
   	viewId : {
-  	check : String,
+  	check : "String",
   	nullable: false
   	}
   },
