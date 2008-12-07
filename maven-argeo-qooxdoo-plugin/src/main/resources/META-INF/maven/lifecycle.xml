@@ -14,6 +14,16 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>org.argeo.dep.dist</groupId>
+									<artifactId>python-light-win32</artifactId>
+									<version>2.6.1</version>
+									<classifier>dist</classifier>
+									<type>zip</type>
+									<outputDirectory>${project.build.directory}/python
+									</outputDirectory>
+									<overWrite>false</overWrite>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.argeo.dep.dist</groupId>
 									<artifactId>qooxdoo-sdk</artifactId>
 									<classifier>dist</classifier>
 									<version>0.8</version>
