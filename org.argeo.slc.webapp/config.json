@@ -4,8 +4,8 @@
   "include" :
   [
     {
-      "path" : "src/main/webapp/qooxdoo-0.8-sdk/tool/data/config/application.json",
-      "as"   : "appconf"
+      "path" : "src/main/webapp/qooxdoo-0.8-sdk/component/apiviewer/api.json",
+      "as"   : "apiconf"
     }
   ],
 
@@ -147,20 +147,20 @@
     
     "slc-api" :
     {
-      "extend" : ["appconf::api"],
+      "extend" : ["apiconf::build"],
 
       "let" :
       {
-        "APIVIEWER_ROOT" : "${ROOT}",
-        "BUILD_PATH" : "./api",
+        "APIVIEWER_ROOT" : "${QOOXDOO_PATH}/../component/apiviewer",
+        "BUILD_PATH" : "./target/site/argeo-ria-api/",
         "API_INCLUDE" : ["${APPLICATION}.*"]
       },
 
       "library" :
       [
         {
-          "manifest" : "Manifest.json",
-          "uri"      : ""
+          "manifest" : "${ROOT}/Manifest.json",
+          "uri"      : ".."
         }
       ]
     }
