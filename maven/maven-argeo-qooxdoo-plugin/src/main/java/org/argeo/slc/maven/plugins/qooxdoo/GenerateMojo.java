@@ -44,12 +44,12 @@ public class GenerateMojo extends AbstractMojo {
 			jythonBase.mkdirs();
 			System.setProperty("python.home", jythonBase.getCanonicalPath());
 
-			File generateScript = new File(baseDir, "generate.py");
+			//File generateScript = new File(baseDir, "generate.py");
 			// String[] jobArray = jobs.split(" ");
 			// String[] args = new String[jobArray.length + 1];
 			// args[0] = generateScript.getCanonicalPath();
 			// System.arraycopy(jobArray, 0, args, 1, jobArray.length);
-			String[] args = { generateScript.getCanonicalPath(), job };
+			String[] args = { "generate.py", job };
 			getLog().info("Running Qooxdoo job: " + job + " ...");
 			jython.main(args);
 			getLog().info("Finished Qooxdoo job: " + job);
