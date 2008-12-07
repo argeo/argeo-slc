@@ -6,7 +6,11 @@
     {
       "path" : "src/main/webapp/qooxdoo-0.8-sdk/component/apiviewer/api.json",
       "as"   : "apiconf"
-    }
+    },
+    {
+      "path" : "src/main/webapp/qooxdoo-0.8-sdk/component/testrunner/testrunner.json",
+      "as"   : "testrunner"
+    }    
   ],
 
   "let" :
@@ -163,7 +167,28 @@
           "uri"      : ".."
         }
       ]
+    },
+    
+    "slc-test" :
+    {
+      "extend" : ["testrunner::build"],
+
+      "let" :
+      {
+        "TESTRUNNER_ROOT" : "${QOOXDOO_PATH}/../component/testrunner",
+        "TEST_INCLUDE"    : "${APPLICATION}.test.*",
+        "BUILD_PATH"      : "./target/site/argeo-ria-test/"
+      },
+
+      "library" :
+      [
+        {
+          "manifest" : "${ROOT}/Manifest.json",
+          "uri"      : ".."
+        }
+      ]
     }
+    
 	
   }
 }
