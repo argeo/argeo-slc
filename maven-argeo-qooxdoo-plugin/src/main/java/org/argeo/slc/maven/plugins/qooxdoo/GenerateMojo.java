@@ -27,6 +27,14 @@ public class GenerateMojo extends AbstractMojo {
 	private String job;
 
 	/**
+	 * Location of the qooxdoo sdk.
+	 * 
+	 * @parameter expression="${qooxdooSdk}"
+	 */
+	private String qooxdooSdk = "src" + File.separator + "main"
+			+ File.separator + "webapp" + File.separator + "qooxdoo-0.8-sdk";
+
+	/**
 	 * The build directory.
 	 * 
 	 * @parameter expression="${project.build.directory}"
@@ -48,12 +56,14 @@ public class GenerateMojo extends AbstractMojo {
 			// jythonBase.mkdirs();
 			// System.setProperty("python.home", jythonBase.getCanonicalPath());
 
-			File generateScript = new File(baseDir, "generate.py");
+			File generateScript = new File(baseDir.getPath() + File.separator
+					+ qooxdooSdk + File.separator + "tool" + File.separator
+					+ "bin", "generator.py");
 			// String[] jobArray = jobs.split(" ");
 			// String[] args = new String[jobArray.length + 1];
 			// args[0] = generateScript.getCanonicalPath();
 			// System.arraycopy(jobArray, 0, args, 1, jobArray.length);
-			String[] args = { "generate.py", job };
+			// String[] args = { "generate.py", job };
 			getLog().info("Running Qooxdoo job: " + job + " ...");
 			// jython.main(args);
 
