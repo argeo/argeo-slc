@@ -18,7 +18,7 @@
 									<version>2.6.1</version>
 									<classifier>dist</classifier>
 									<type>zip</type>
-									<outputDirectory>${project.build.directory}/python
+									<outputDirectory>${project.build.directory}/python-win32
 									</outputDirectory>
 									<overWrite>false</overWrite>
 								</artifactItem>
