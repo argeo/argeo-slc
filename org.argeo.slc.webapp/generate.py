@@ -29,8 +29,8 @@ QOOXDOO_PATH = 'src/main/webapp/qooxdoo-0.8-sdk'
 REAL_GENERATOR = os.path.normpath(
                     os.path.join(os.path.abspath(os.path.dirname(sys.argv[0])),
                                  QOOXDOO_PATH, 'tool', 'bin', 'generator.py'))
-if sys.platform == "win32": #added because of issue under Linux                              
-	os.chdir(os.path.dirname(sys.argv[0]))  # switch to skeleton dir
+#if sys.platform == "win32": #added because of issue under Linux                              
+#	os.chdir(os.path.dirname(sys.argv[0]))  # switch to skeleton dir
 
 argList = []
 argList.append(CMD_PYTHON)
