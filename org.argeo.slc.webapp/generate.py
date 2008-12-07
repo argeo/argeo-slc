@@ -32,6 +32,9 @@ REAL_GENERATOR = os.path.normpath(
 #if sys.platform == "win32": #added because of issue under Linux                              
 #	os.chdir(os.path.dirname(sys.argv[0]))  # switch to skeleton dir
 
+if sys.platform == "win32":
+	CMD_PYTHON = 'target\python-win32\python'
+
 argList = []
 argList.append(CMD_PYTHON)
 argList.append(REAL_GENERATOR)
