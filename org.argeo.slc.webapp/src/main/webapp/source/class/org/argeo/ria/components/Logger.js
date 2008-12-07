@@ -1,12 +1,9 @@
-/* ************************************************************************
-
-  Copyright: 2008 Argeo
-
-   License: 
-
-   Authors: Charles du Jeu
-
-************************************************************************ */
+/**
+ * A modal window like console for the logs. 
+ * Also opens a small alert window (qooxdoo, not native) on errors.
+ * 
+ * @author : Charles du Jeu
+ */
 qx.Class.define("org.argeo.ria.components.Logger",
 {
 	type : "singleton",
@@ -69,6 +66,10 @@ qx.Class.define("org.argeo.ria.components.Logger",
 	},
 	
 	members : {
+		/**
+		 * Adds a log in the GUI component.
+		 * @param entry {Map} A log entry
+		 */
 		process : function(entry){
 			var wrapper = qx.log.appender.Util.toHtml(entry);
 			var label = new qx.ui.basic.Label('<div class="messages"><div class="'+wrapper.className+'">'+wrapper.innerHTML+'</div></div>');
@@ -80,6 +81,9 @@ qx.Class.define("org.argeo.ria.components.Logger",
 			}
 			this._logPane.addAt(label, 0);
 		},
+		/**
+		 * Shows the GUI console and center it.
+		 */
 		toggle : function(){
 			this.show();
 			this.center();

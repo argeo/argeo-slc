@@ -1,6 +1,10 @@
 /**
- * @author Charles
+ * The main controller (in a standard MVC point of view) of the application. It is a singleton
+ * thus can be called by any part of the application.
+ * This will wire all the commands that can be defined dynamically by any IView, and add their
+ * corresponding buttons to the application menubar and toolbars.
  * 
+ * @author Charles du Jeu
  */
 qx.Class.define("org.argeo.ria.event.CommandsManager",
 {
@@ -15,6 +19,10 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 
   properties : 
   {
+	/**
+	 * Commands definitions
+	 * @see org.argeo.ria.event.Command for the definition Map details. 
+	 */
   	definitions : {
   		init : {
   			"stop" : {
@@ -65,12 +73,18 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   			}
   		}
   	},
+  	/**
+  	 * For internal use 
+  	 */
   	initialDefinitions : {
   		init : {}
   	}
   },
 
   events : {
+  	/**
+  	 * Triggered when the whole commands list is changed.
+  	 */
   	"changedCommands" : "qx.event.type.Event"
   },
   
@@ -82,6 +96,9 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 
   members :
   {
+  	/**
+  	 * Creates all the objects (if they are not already existing) from the definitions maps.
+  	 */
   	createCommands : function(){
   		this.menus = {};
   		this.toolbars = {};
@@ -116,7 +133,11 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		}
   		this.setDefinitions(defs);
   	},
-  	  	
+  	  
+  	/**
+  	 * Refresh the current commands status depending on the viewSelection.
+  	 * @param viewSelection {org.argeo.ria.components.ViewSelection} The current ViewSelection
+  	 */
   	refreshCommands : function(viewSelection){
   		var defs = this.getDefinitions();
   		var xmlNodes = null;
@@ -131,6 +152,10 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		}
   	},
   	
+  	/**
+  	 * Record a menubar for the application
+  	 * @param menuBar {qx.ui.menubar.MenuBar} The application menubar
+  	 */
   	registerMenuBar : function(menuBar){
   		this.addListener("changedCommands", function(){
   			this.createMenuButtons(menuBar);
@@ -138,6 +163,10 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		this.createMenuButtons(menuBar);
   	},
 
+  	/**
+  	 * Record a toolbar for the application
+  	 * @param toolBar {qx.ui.toolbar.ToolBar} The application toolbar
+  	 */
   	registerToolBar : function(toolBar){
   		this.addListener("changedCommands", function(){
   			this.createToolbarParts(toolBar);
@@ -145,6 +174,10 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		this.createToolbarParts(toolBar);
   	},  	
   	
+  	/**
+  	 * Creates the real buttons and add them to the passed menuBar. 
+  	 * @param menuBar {qx.ui.menubar.MenuBar} The application menubar
+  	 */
   	createMenuButtons : function(menuBar){
   		menuBar.removeAll();
   		var anchors = {};
@@ -170,6 +203,11 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   			menuBar.add(anchors.last);
   		}
   	},
+  	
+  	/**
+  	 * Creates the real buttons and add them to the passed toolbar. 
+  	 * @param toolbar {qx.ui.toolbar.ToolBar} The application toolbar
+  	 */
   	createToolbarParts : function(toolbar){
   		toolbar.removeAll();
   		for(var key in this.toolbars){
@@ -180,6 +218,11 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   			});
   		}
   	},
+  	/**
+  	 * Creates a context menu from an array of commands ids.
+  	 * @param commandIdsArray {Array} An array of string
+  	 * @return {qx.ui.menu.Menu}
+  	 */
   	createMenuFromIds : function(commandIdsArray){
   		var defs = this.getDefinitions();
   		var contextMenu = new qx.ui.menu.Menu();
@@ -192,7 +235,11 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		}
   		return contextMenu;
   	},
-  	
+  	/**
+  	 * Add a new set of commands definitions
+  	 * @param definitions {Map} a set of commands definitions.
+  	 * @param callbackContext {qx.ui.core.Object} The context used inside the commands callbacks.
+  	 */
   	addCommands : function(definitions, callbackContext){
   		var crtDefs = this.getDefinitions();  		
   		for(var key in definitions){
@@ -202,6 +249,10 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		this.setDefinitions(crtDefs);
   		this.fireEvent("changedCommands");
   	},
+  	/**
+  	 * Removes a whole set of commands by their definitions maps.
+  	 * @param definitions {Map} a set of commands definitions
+  	 */
   	removeCommands : function(definitions){
   		var crtDefs = this.getDefinitions();
   		var initDefs = this.getInitialDefinitions();
@@ -216,19 +267,30 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		this.setDefinitions(crtDefs);
   		this.fireEvent("changedCommands");
   	},
-  	
+  	/**
+  	 * Executes a command by its id.
+  	 * @param commandId {String} The command id.
+  	 */
   	executeCommand : function(commandId){
   		var defs = this.getDefinitions();
   		if(defs[commandId] && defs[commandId].command.getEnabled()){
   			defs[commandId].command.execute();
   		}
   	},
+  	/**
+  	 * Retrieves a command by its id.
+  	 * @param commandId {String} The command id.
+  	 */
   	getCommandById : function(commandId){
   		var defs = this.getDefinitions();
   		if(defs[commandId] && defs[commandId].command){
   			return defs[commandId].command;
   		}  		
   	},
+  	/**
+  	 * Add a standard context menu to a toolbar for button look and feel (show icon, text, both).
+  	 * @param toolbar {qx.ui.toolbar.ToolBar} The toolbar
+  	 */
   	addToolbarContextMenu : function(toolbar){
   		var menu = new qx.ui.menu.Menu();
   		var icon = new qx.ui.menu.RadioButton("Show Icons");

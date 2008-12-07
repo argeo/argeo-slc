@@ -1,3 +1,10 @@
+/**
+ * Basic helper for SLC XML results to be displayed in a qx.ui.table.
+ * Overrides the html of the standard qx.ui.table.cellrenderer.String
+ *  
+ * TODO : put in org.argeo.slc.ria package
+ * 
+ */
 qx.Class.define("org.argeo.ria.components.XmlRenderer",
 {
   extend : qx.ui.table.cellrenderer.String,
@@ -10,8 +17,11 @@ qx.Class.define("org.argeo.ria.components.XmlRenderer",
 
   members :
   {
-    // overridden
-  	// TODO : Put this in org.argeo.slc.ria
+  	/**
+  	 * Overrides the parent method.
+  	 * @param cellInfo {Map} The current cell data 
+  	 * @return {String}
+  	 */
     _getContentHtml : function(cellInfo) {
     	var xmlNode = cellInfo.rowData;
     	if(!xmlNode) return "";
@@ -47,6 +57,11 @@ qx.Class.define("org.argeo.ria.components.XmlRenderer",
     },
     
     // overridden
+    /**
+     * Overrides parent method
+     * @param cellInfo {Map} Current cell data
+     * @return {String}
+     */
     _getCellClass : function(cellInfo) {
    		return this.base(arguments, cellInfo);
     }

@@ -15,7 +15,7 @@ qx.Class.define("org.argeo.slc.web.Perspective",
   	initViewPanes : function(viewsManager){
   		
       var splitPane = new qx.ui.splitpane.Pane("horizontal");
-	  var topLeft = new org.argeo.ria.components.ViewPane(this, "list", "Collection", {
+	  var topLeft = new org.argeo.ria.components.ViewPane("list", "Collection", {
 	  	orientation : "horizontal",
 	  	min : 36
 	  });
@@ -23,7 +23,7 @@ qx.Class.define("org.argeo.slc.web.Perspective",
 	  viewsManager.registerViewPane(topLeft);
 	    
 	  splitPane.add(topLeft, 0);
-  	  var rightPane = new org.argeo.ria.components.ViewPane(this, "applet", "Test Detail");  	  
+  	  var rightPane = new org.argeo.ria.components.ViewPane("applet", "Test Detail");  	  
   	  viewsManager.registerViewPane(rightPane);
 	  splitPane.add(rightPane, 1);
       

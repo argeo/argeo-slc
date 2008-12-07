@@ -1,11 +1,7 @@
-/* ************************************************************************
-
-	Overrides the Qooxdoo qx.xml.Element to handle the namespace prefixes!!
-
-************************************************************************ */
-
 /**
  * Cross browser XML Element API
+ * 
+ * Overrides the Qooxdoo qx.xml.Element to handle the namespace prefixes
  *
  * http://msdn.microsoft.com/library/default.asp?url=/library/en-us/xmlsdk/html/81f3de54-3b79-46dc-8e01-73ca2d94cdb5.asp
  * http://developer.mozilla.org/en/docs/Parsing_and_serializing_XML
@@ -22,7 +18,7 @@ qx.Class.define("org.argeo.ria.util.Element",
      * @param query {String} XPath query
      * @param NSMap (Object) A map matching namespace prefixes to namespace URIS;
      * @return {Element} first matching element
-     * @signature function(element, query)
+     * @signature function(element, query, NSMap)
      */
     selectSingleNode : qx.core.Variant.select("qx.client",
     {
@@ -75,7 +71,7 @@ qx.Class.define("org.argeo.ria.util.Element",
      * @param query {String} XPath query
      * @param NSMap {Map} Mapping between namespaces prefixes and URI.
      * @return {Element[]} List of matching elements
-     * @signature function(element, query)
+     * @signature function(element, query, NSMap)
      */
     selectNodes : qx.core.Variant.select("qx.client",
     {

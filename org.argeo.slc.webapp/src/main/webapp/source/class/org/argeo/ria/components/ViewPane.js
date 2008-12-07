@@ -1,17 +1,21 @@
 /**
+ * A standard view container, referenced in the application by its unique id.
+ * It is managed by the ViewsManager singleton that works as the "View" part of an MVC model.
+ * @see org.argeo.ria.components.ViewsManager
  * @author Charles
- */
-/**
- * This is the main application class of your custom application "sparta"
  */
 qx.Class.define("org.argeo.ria.components.ViewPane",
 {
   extend : qx.ui.container.Composite,
   implement : [org.argeo.ria.components.ILoadStatusable],
 
-  construct : function(application, viewId, viewTitle, splitPaneData){
+  /**
+   * @param viewId {String} Unique id of this viewPane
+   * @param viewTitle {String} Readable Title of this viewPane
+   * @param splitPaneData {Map} Additionnal data to be used by splitpanes implementations.
+   */
+  construct : function(viewId, viewTitle, splitPaneData){
   	this.base(arguments);
-  	this.setApplication(application);
   	this.setViewId(viewId);
   	this._defaultViewTitle = viewTitle;
 	this.setViewTitle(viewTitle);
@@ -25,13 +29,31 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 
   properties : 
   {
-  	application : {init : null},
+  	/**
+  	 * Unique id of the pane
+  	 */
   	viewId : {init:""},
+  	/**
+  	 * Human-readable title for this view
+  	 */
   	viewTitle : {init:"", event:"changeViewTitle"},
-  	viewSelection : { nullable:false },
-	ownScrollable : {init: false},
-	splitPaneData : {init  : null},
-	commands : {init : null, nullable:true}
+  	/**
+  	 * Selection model for this view
+  	 */
+  	viewSelection : { nullable:false, check:"org.argeo.ria.components.ViewSelection" },
+  	/**
+  	 * Has its own scrollable content 
+  	 */
+	ownScrollable : {init: false, check:"Boolean"},
+	/**
+	 *  Data concerning the split pane
+	 */
+	splitPaneData : {init  : null, check:"Map"},
+	/**
+	 * Map of commands definition
+	 * @see org.argeo.ria.event.Command 
+	 */
+	commands : {init : null, nullable:true, check:"Map"}
   },
   
   /*
@@ -42,6 +64,9 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 
   members :
   {
+  	/**
+  	 * Creates a standard GUI for the viewPane, including a container for an IView.
+  	 */
   	createGui : function(){
 		this.setLayout(new qx.ui.layout.VBox());
 		this.header = new qx.ui.container.Composite();
@@ -84,6 +109,10 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		*/
 	},
 	
+	/**
+	 * Sets the content of this pane.
+	 * @param content {org.argeo.ria.components.IView} An IView implementation
+	 */
 	setContent : function(content){
 		var addScrollable = (content.addScroll?content.addScroll():false);
 		if(addScrollable){
@@ -96,6 +125,11 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		}
 	},
 	
+	/**
+	 * Implementation of the ILoadStatusable interface.
+	 * @see org.argeo.ria.components.ILoadStatusable
+	 * @param load {Boolean} The loading status
+	 */
 	setOnLoad : function(load){
 		if(!this.loadImage){
 			this.loadImage = new qx.ui.basic.Image('resource/slc/ajax-loader.gif');
@@ -107,6 +141,9 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		}
 	},
 	
+	/**
+	 * Removes and destroy the IView content of this viewPane.
+	 */
 	empty: function(){
 		if(this.getOwnScrollable() && this.scrollable){
 			this.remove(this.scrollable);

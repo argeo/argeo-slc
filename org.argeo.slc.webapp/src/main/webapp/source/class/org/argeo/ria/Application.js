@@ -15,7 +15,7 @@
 ************************************************************************ */
 
 /**
- * This is the main application class of your custom application "slc"
+ * This is the main application class of an Argeo RIA.
  */
 qx.Class.define("org.argeo.ria.Application",
 {
