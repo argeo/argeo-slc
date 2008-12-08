@@ -4,11 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.argeo.slc.services.test.TestManagerService;
+import org.argeo.slc.web.mvc.AbstractServiceController;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.ParameterizableViewController;
 
 public class RemoveResultFromCollectionController extends
-		ParameterizableViewController {
+		AbstractServiceController {
 	private final TestManagerService testManagerService;
 
 	public RemoveResultFromCollectionController(
@@ -16,17 +16,13 @@ public class RemoveResultFromCollectionController extends
 		this.testManagerService = testManagerService;
 	}
 
-	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request,
-			HttpServletResponse response) throws Exception {
+	protected void handleServiceRequest(HttpServletRequest request,
+			HttpServletResponse response, ModelAndView modelAndView)
+			throws Exception {
 
 		String collectionId = request.getParameter("collectionId");
 		String resultUuid = request.getParameter("resultUuid");
 
 		testManagerService.removeResultFromCollection(collectionId, resultUuid);
-
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName(getViewName());
-		return modelAndView;
 	}
 }

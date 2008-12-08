@@ -11,6 +11,14 @@
 		<field name="message" />
 	</class>
 
+	<class name="org.argeo.slc.msg.ReferenceList">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="references" collection="vector" type="string">
+			<bind-xml name="ref" />
+		</field>
+	</class>
+
 	<!-- TESTS -->
 	<class name="org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
