@@ -49,6 +49,7 @@
   	this.setId(id);
   	this.setLabel(label);
   	this.setIcon(icon);   	
+  	this.menuClones = [];
   },
   
   members :
@@ -62,14 +63,13 @@
   			this.getLabel(), 
   			this.getIcon(), 
   			this, 
-  			this.getMenu()
+  			this.getMenuClone()
   		);
   		this.addTooltip(button);
 		if(this.getMenu()){
 			this.addListener("changeMenu", function(event){
 				button.setMenu(this.getMenuClone());
-			}, this);
-			this.menuClones = [];
+			}, this);			
 		}
   		return button;
   	},
@@ -111,6 +111,7 @@
   	getMenuClone : function(){
   		var menuClone = new qx.ui.menu.Menu();
   		var submenus = this.getMenu();
+  		if(!submenus) return;
   		for(var i=0;i<submenus.length;i++){
 	  		var button = new qx.ui.menu.Button(submenus[i].label, submenus[i].icon);
 	  		button.setUserData("commandId", submenus[i].commandId);
@@ -131,25 +132,7 @@
   		}
   		this.menuClones = [];
   	},
-  	
-  	/**
-  	 * Add button to a given submenu.
-  	 * @param label {String} The label of the button
-  	 * @param icon {String} The icon of the button
-  	 * @param commandId {String} The associated command id.
-  	 * @param menu {qx.ui.menu.Menu} The menu to which add the button
-  	 */
-  	addSubMenuButton : function(label, icon, commandId, menu){
-  		var button = new qx.ui.menu.Button(label, icon);
-  		button.setUserData("commandId", commandId);
-  		button.addListener("execute", this.executeSubMenuCallback, this);
-  		if(menu){
-  			menu.add(button);
-  		}else{
-	  		this.getMenu().add(button);
-  		}
-  	},
-  	
+  	  	
   	/**
   	 * Triggers the menuCallback property in the right context.
   	 * @param event {qx.event.type.Event} The firing event.
