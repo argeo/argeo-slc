@@ -66,9 +66,9 @@ qx.Class.define("org.argeo.slc.web.Applet",
   		this.data = xmlNode;
   		if(!xmlNode) return;
   		// Load XML or Whatever
-  		//var testType = qx.dom.Node.getText(qx.xml.Element.selectSingleNode(this.data, "param[@name='testType']"));
   		var service;  		
-		var testId = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(this.data, "param[@name='uuid']"));
+		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
+		var testId = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(this.data, "slc:uuid"));		
 		this.info("Opening test "+testId);
 		this.getView().setViewTitle("Test "+testId);
 		service = "../resultViewXml.xslt?uuid="+testId;

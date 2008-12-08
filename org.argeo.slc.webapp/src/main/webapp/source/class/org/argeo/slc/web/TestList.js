@@ -87,10 +87,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   					if(viewId != "list") return;
   					this.setEnabled(false);
   					if(xmlNodes == null || !xmlNodes.length) return;
-  					var applet = org.argeo.ria.util.Element.selectSingleNode(xmlNodes[0],'report[@type="applet"]'); 
-  					if(applet != null && qx.dom.Node.getText(applet) != ""){
-  						this.setEnabled(true);  						
-  					}  					
+					this.setEnabled(true);
   				},
   				command 	: null
   			},
@@ -105,10 +102,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				command 	: null,
   				submenu 	: {},
   				submenuCallback : function(commandId){
-  					var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();
-  					var xmlNodes = viewsManager.getViewPaneSelection("list").getNodes();
-  					// Single selection
-  					var uuid = qx.xml.Element.getSingleNodeText(xmlNodes[0], 'param[@name="uuid"]');
+  					var uuid = this.extractTestUuid();
   					var urls = {
   						xsl : "resultView.xslt",
   						xml : "resultViewXml.xslt",
@@ -122,12 +116,21 @@ qx.Class.define("org.argeo.slc.web.TestList",
   						var win = window.open(url);
   					}
   				},
+  				init : function(command){
+  					this.setMenu([
+  						{'label':"Xsl", 'icon':'resource/slc/mime-xsl.png', 'commandId':'xsl'},
+  						{'label':"Xml", 'icon':'resource/slc/mime-xml.png', 'commandId':'xml'},
+  						{'label':"Excel", 'icon':'resource/slc/mime-xls.png', 'commandId':'xls'},
+  						{'label':"Pdf", 'icon':'resource/slc/mime-pdf.png', 'commandId':'pdf'}
+  					]);
+  				},
   				selectionChange : function(viewId, xmlNodes){
   					if(viewId!="list")return;
   					this.clearMenus();
   					this.setEnabled(false);
-  					if(xmlNodes == null) return;
-  					
+  					if(xmlNodes == null || !xmlNodes.length) return;
+  					this.setEnabled(true);
+  					/*
   					var reports = qx.xml.Element.selectNodes(xmlNodes[0],'report[@type="download"]');
   					if(reports == null || !reports.length)return;
   					var submenus = [];
@@ -142,6 +145,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   					}
   					this.setMenu(submenus);
   					this.setEnabled(true);
+  					*/
   				}
   			},
   			"deletetest" : {
@@ -152,9 +156,6 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				menu	   	: "Selection",
   				toolbar  	: "selection",
   				callback	: function(e){
-  					var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();
-  					var xmlNodes = viewsManager.getViewPaneSelection("list").getNodes();
-  					var uuid = qx.xml.Element.getSingleNodeText(xmlNodes[0], 'param[@name="uuid"]');
   					var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
   					var request = serviceManager.getRequest(
   						"/org.argeo.slc.webapp/removeResultFromCollection.service",
@@ -162,7 +163,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   						"application/xml"
   					);
   					request.setParameter("collectionId", this.getCollectionId());
-  					request.setParameter("resultUuid", uuid);
+  					request.setParameter("resultUuid", this.extractTestUuid());
 					request.addListener("completed", function(response){
 						this.loadCollections();
 						this.loadList();
@@ -266,6 +267,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	 		select.setSelected(item);
 	  	 	}
 	  	 }
+	  	 this.setCollectionId(select.getSelected().getValue());
 	  	 select.addListener("changeValue", this.collectionSelectorListener, this);
 	  }, this);
 	  	  
@@ -296,7 +298,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	},
 	
 	loadList : function(){
-		var url = "/org.argeo.slc.webapp/resultList.ui";
+		var url = "/org.argeo.slc.webapp/listResultAttributes.service";
 	  	var model = this.table.getTableModel();
 	  	model.removeRows(0, model.getRowCount());
 	  	var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
@@ -304,15 +306,16 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	var request = serviceManager.getRequest(
 	  		url, 
 	  		"GET", 
-	  		"application/xml",
-	  		"test_cases",
+	  		"application/xml",	
+	  		null,
 	  		[commandManager.getCommandById("loadtestlist"), this.getView()]
 	  	);	 
-	  	request.setParameter("collectionId", this.getCollectionId());
+	  	request.setParameter("id", this.getCollectionId());
+	  	var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
 	  	request.addListener("completed", function(response){
   			var xml = response.getContent();
 	  		this.info("Successfully loaded XML");
-	  		var nodes = qx.xml.Element.selectNodes(xml, "//data");
+	  		var nodes = org.argeo.ria.util.Element.selectNodes(xml, "//slc:result-attributes", NSMap);
 	  		for(var i=0; i<nodes.length;i++){
 	  			var rowData = nodes[i];
 	  			model.addRows([rowData]);
@@ -375,14 +378,19 @@ qx.Class.define("org.argeo.slc.web.TestList",
 		}else if(selectionType == "current_selection"){
 			// get selection ID
 			request.setParameter("collectionId", collectionId);
-			var xmlNodes = this.getView().getViewSelection().getNodes();
-			var uuid = qx.xml.Element.getSingleNodeText(xmlNodes[0], 'param[@name="uuid"]');
-			request.setParameter("resultUuid", uuid);
+			request.setParameter("resultUuid", this.extractTestUuid());
 		}
 		request.addListener("completed", function(response){
 			this.loadCollections();
 		}, this);
 		request.send();		
+	},
+	
+	extractTestUuid: function(){
+		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
+		var xmlNodes = this.getView().getViewSelection().getNodes();
+		var uuid = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(xmlNodes[0], "slc:uuid"));
+		return uuid;
 	},
 	
 	collectionSelectorListener : function(event){

@@ -26,15 +26,17 @@ qx.Class.define("org.argeo.slc.web.XmlRenderer",
     	var xmlNode = cellInfo.rowData;
     	if(!xmlNode) return "";
     	var xPath;
+    	var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
     	switch(cellInfo.col){
     		case 0 :
-    			xPath = "param[@name='testName']";
-		    	var nameParam = org.argeo.ria.util.Element.selectSingleNode(xmlNode, xPath);
+    			xPath = "slc:uuid";
+		    	var nameParam = org.argeo.ria.util.Element.selectSingleNode(xmlNode, xPath, NSMap);
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || "Not Found");
     			break;
     		case 1 : 
+    			return "-";
     			xPath = 'param[@name="date"]';
-		    	var nameParam = org.argeo.ria.util.Element.selectSingleNode(xmlNode, xPath);
+		    	var nameParam = org.argeo.ria.util.Element.selectSingleNode(xmlNode, xPath, NSMap);
 		    	//qx.log.Logger.info(nameParam);
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || 0);
 		    	if(value == "NOT CLOSED") return value;
