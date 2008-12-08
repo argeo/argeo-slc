@@ -3,6 +3,7 @@ package org.argeo.slc.web.mvc.result;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
 import org.argeo.slc.web.mvc.AbstractServiceController;
@@ -25,7 +26,8 @@ public class GetResultController extends AbstractServiceController {
 
 		String uuid = request.getParameter("uuid");
 		TreeTestResult result = testResultDao.getTestResult(uuid);
-
+		if (result == null)
+			throw new SlcException("No result found for uuid " + uuid);
 		modelAndView.addObject(MODELKEY_RESULT, result);
 	}
 
