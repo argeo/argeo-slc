@@ -36,6 +36,7 @@ qx.Class.define("org.argeo.slc.web.Perspective",
 	  view.load();
 	  //var command = org.argeo.ria.event.CommandsManager.getInstance().executeCommand("loadtestlist");
 	  view.loadCollections(); // We know it is a TestList!
+	  view.loadList();
   	}
   	
   }

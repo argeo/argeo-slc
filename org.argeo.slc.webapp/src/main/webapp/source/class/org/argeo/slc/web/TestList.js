@@ -152,7 +152,23 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				menu	   	: "Selection",
   				toolbar  	: "selection",
   				callback	: function(e){
-  					// Call service to delete
+  					var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();
+  					var xmlNodes = viewsManager.getViewPaneSelection("list").getNodes();
+  					var uuid = qx.xml.Element.getSingleNodeText(xmlNodes[0], 'param[@name="uuid"]');
+  					var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
+  					var request = serviceManager.getRequest(
+  						"/org.argeo.slc.webapp/removeResultFromCollection.service",
+  						"GET",
+  						"application/xml"
+  					);
+  					request.setParameter("collectionId", this.getCollectionId());
+  					request.setParameter("resultUuid", uuid);
+					request.addListener("completed", function(response){
+						this.loadCollections();
+						this.loadList();
+						this.info("Test was successfully deleted");
+					}, this);
+					request.send();
   				},
 	  			selectionChange : function(viewId, xmlNodes){
 					if(viewId != "list") return;
@@ -236,14 +252,11 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  this.getView().setViewTitle("");
 	  this.add(this.table, {flex:1});
 
-  	  select.addListener("changeValue", function(dataEvent){
-  	  	this.debug(dataEvent.getData());
-	  	this.setCollectionId(dataEvent.getData());
-	  	this.loadList();
-	  }, this);
+  	  select.addListener("changeValue", this.collectionSelectorListener, this);
 
 	  org.argeo.ria.remote.RequestManager.getInstance().addListener("reload", function(event){
 	  	 if(event.getDataType()!="collection") return;
+	  	 select.removeListener("changeValue", this.collectionSelectorListener, this);
 	  	 var collectionList = event.getContent();
 	  	 select.removeAll();
 	  	 for(key in collectionList){
@@ -253,13 +266,33 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	 		select.setSelected(item);
 	  	 	}
 	  	 }
+	  	 select.addListener("changeValue", this.collectionSelectorListener, this);
 	  }, this);
 	  	  
 	},
 	
 	loadCollections : function(){
-		this.setCollectionList({"Charles":"Collection 'Charles'","My Collection":"Collection 'My Collection'"});
-		org.argeo.ria.remote.RequestManager.getInstance().fireReloadEvent("collection", this.getCollectionList());
+		var url = "/org.argeo.slc.webapp/listCollectionRefs.service";
+		var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
+		var request = serviceManager.getRequest(
+			url,
+			"GET",
+			"application/xml"
+		);
+		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
+		request.addListener("completed", function(response){
+			var xml = response.getContent();
+			var collections = {};
+			var nodes = org.argeo.ria.util.Element.selectNodes(xml, "//slc:ref", NSMap);
+			for(var i=0;i<nodes.length;i++){
+				var collId = qx.xml.Element.getSingleNodeText(nodes[i], ".");
+				collections[collId] = collId;
+			}
+			this.setCollectionList(collections);
+			org.argeo.ria.remote.RequestManager.getInstance().fireReloadEvent("collection", this.getCollectionList());
+		}, this);
+		request.setAsynchronous(false);
+		request.send();
 	},
 	
 	loadList : function(){
@@ -277,8 +310,8 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	);	 
 	  	request.setParameter("collectionId", this.getCollectionId());
 	  	request.addListener("completed", function(response){
-  			xml = response.getContent();
-	  		qx.log.Logger.info("Successfully loaded XML");
+  			var xml = response.getContent();
+	  		this.info("Successfully loaded XML");
 	  		var nodes = qx.xml.Element.selectNodes(xml, "//data");
 	  		for(var i=0; i<nodes.length;i++){
 	  			var rowData = nodes[i];
@@ -327,9 +360,34 @@ qx.Class.define("org.argeo.slc.web.TestList",
 				}
 			}, this);
 			modal.attachAndShow();
-		}else{			
-			this.debug("Copying "+selectionType+" to collection " + collectionId);
+			return;
 		}
+
+		var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
+		var request = serviceManager.getRequest(
+			"/org.argeo.slc.webapp/addResultToCollection.service", 
+			"GET", 
+			"application/xml"
+		);
+
+		if(selectionType == "current_collection"){
+			this.error("Not implemented yet!");			
+		}else if(selectionType == "current_selection"){
+			// get selection ID
+			request.setParameter("collectionId", collectionId);
+			var xmlNodes = this.getView().getViewSelection().getNodes();
+			var uuid = qx.xml.Element.getSingleNodeText(xmlNodes[0], 'param[@name="uuid"]');
+			request.setParameter("resultUuid", uuid);
+		}
+		request.addListener("completed", function(response){
+			this.loadCollections();
+		}, this);
+		request.send();		
+	},
+	
+	collectionSelectorListener : function(event){
+	  	this.setCollectionId(event.getData());
+	  	this.loadList();		
 	},
 	
 	addScroll : function(){
