@@ -37,6 +37,7 @@ qx.Class.define("org.argeo.ria.components.XmlRenderer",
 		    	var nameParam = org.argeo.ria.util.Element.selectSingleNode(xmlNode, xPath);
 		    	//qx.log.Logger.info(nameParam);
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || 0);
+		    	if(value == "NOT CLOSED") return value;
 		    	var splits = value.split(".");
 				//qx.log.Logger.info(value);
 		    	var dateFormat = new qx.util.format.DateFormat("yyyy-MM-dd HH:mm:ss");
