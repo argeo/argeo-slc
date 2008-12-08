@@ -14,7 +14,7 @@ qx.Class.define("org.argeo.ria.components.Modal",
 	 * @param text {String} Default content of the window.
 	 */
 	construct : function(caption, icon, text){
-	  	this.base(arguments);
+	  	this.base(arguments, caption, icon);
 		this.set({
 			showMaximize : false,
 			showMinimize : false,
@@ -22,13 +22,8 @@ qx.Class.define("org.argeo.ria.components.Modal",
 			height: 150
 		});
 		this.setLayout(new qx.ui.layout.Dock());
-		var closeButton = new qx.ui.form.Button("Close");
-		closeButton.addListener("execute", function(e){
-			this.hide();
-			this.destroy();
-		}, this);
-		this.add(closeButton, {edge:'south'});
 		this.setModal(true);
+		this.addCloseButton();
 		this.center();
 		if(text){
 			this.addLabel(text);
@@ -56,6 +51,28 @@ qx.Class.define("org.argeo.ria.components.Modal",
 		attachAndShow:function(){
 			org.argeo.ria.components.ViewsManager.getInstance().getApplicationRoot().add(this);			
 			this.show();
+		},
+		addCloseButton : function(){
+			this.closeButton = new qx.ui.form.Button("Close");
+			this.closeButton.addListener("execute", this._closeAndDestroy, this);
+			this.add(this.closeButton, {edge:'south'});			
+		},
+		makePromptForm:function(questionString, validationCallback, callbackContext){
+			this.add(new qx.ui.basic.Label(questionString), {edge:'north'});
+			var textField = new qx.ui.form.TextField();
+			this.add(textField, {edge:'center'});
+			this.closeButton.removeListener("execute", this._closeAndDestroy, this);
+			if(callbackContext){
+				validationCallback = qx.lang.Function.bind(validationCallback, callbackContext);
+			}
+			this.closeButton.addListener("execute", function(e){
+				var valid = validationCallback(textField.getValue());
+				if(valid) this._closeAndDestroy();
+			}, this);
+		},
+		_closeAndDestroy : function(){
+			this.hide();
+			this.destroy();			
 		}
 	}
 });
