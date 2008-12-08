@@ -53,7 +53,16 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 	 * Map of commands definition
 	 * @see org.argeo.ria.event.Command 
 	 */
-	commands : {init : null, nullable:true, check:"Map"}
+	commands : {init : null, nullable:true, check:"Map"},
+	/**
+	 * The real business content. 
+	 */
+	content : {
+		init: null,
+		nullable : true,
+		check : "org.argeo.ria.components.IView",
+		apply : "_applyContent"
+	}
   },
   
   /*
@@ -122,18 +131,19 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 	 * Sets the content of this pane.
 	 * @param content {org.argeo.ria.components.IView} An IView implementation
 	 */
-	setContent : function(content){
+	_applyContent : function(content){
+		if(content == null) return;
 		var addScrollable = (content.addScroll?content.addScroll():false);
 		if(addScrollable){
 			this.setOwnScrollable(true);
 			this.scrollable = new qx.ui.container.Scroll(content);
 			this.add(this.scrollable, {flex: 1});
 		}else{
-			this.content = content;
-			this.add(this.content, {flex:1});
+			this.guiContent = content;
+			this.add(this.guiContent, {flex:1});
 		}
 	},
-	
+		
 	addHeaderComponent : function(component){
 		this.header.setPadding(4);
 		this.header.add(component, {edge:"center"});
@@ -159,14 +169,15 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 	empty: function(){
 		if(this.getOwnScrollable() && this.scrollable){
 			this.remove(this.scrollable);
-		}else if(this.content){
-			this.remove(this.content);
+		}else if(this.guiContent){
+			this.remove(this.guiContent);
 		}
 		if(this.getCommands()){
 			org.argeo.ria.event.CommandsManager.getInstance().removeCommands(this.getCommands());
 			this.setCommands(null);
 		}
 		this.setViewTitle(this._defaultViewTitle);
+		this.setContent(null);
 	}
 
   }
