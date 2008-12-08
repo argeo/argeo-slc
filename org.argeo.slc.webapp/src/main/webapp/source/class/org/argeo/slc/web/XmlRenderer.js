@@ -5,7 +5,7 @@
  * TODO : put in org.argeo.slc.ria package
  * 
  */
-qx.Class.define("org.argeo.ria.components.XmlRenderer",
+qx.Class.define("org.argeo.slc.web.XmlRenderer",
 {
   extend : qx.ui.table.cellrenderer.String,
 
