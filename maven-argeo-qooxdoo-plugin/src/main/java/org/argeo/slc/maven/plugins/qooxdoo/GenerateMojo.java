@@ -15,7 +15,6 @@ import org.codehaus.plexus.util.cli.StreamConsumer;
  * Calls Qooxdoo python tool chain
  * 
  * @goal generate
- * @execute goal="env"
  */
 public class GenerateMojo extends AbstractMojo {
 	/**
