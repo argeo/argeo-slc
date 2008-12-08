@@ -8,16 +8,16 @@
 		<property name="mappingLocations">
 			<list>
 				<value>
-					classpath:org/argeo/slc/castor/msg/mapping.xml
+					classpath:org/argeo/slc/castor/msg.xml
 				</value>
 				<value>
-					classpath:org/argeo/slc/castor/process/mapping.xml
+					classpath:org/argeo/slc/castor/process.xml
 				</value>
 				<value>
-					classpath:org/argeo/slc/castor/structure/mapping.xml
+					classpath:org/argeo/slc/castor/structure.xml
 				</value>
 				<value>
-					classpath:org/argeo/slc/castor/test/mapping.xml
+					classpath:org/argeo/slc/castor/test.xml
 				</value>
 			</list>
 		</property>
