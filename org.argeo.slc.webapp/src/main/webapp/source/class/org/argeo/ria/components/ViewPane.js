@@ -71,11 +71,20 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		this.setLayout(new qx.ui.layout.VBox());
 		this.header = new qx.ui.container.Composite();
 		this.header.setLayout(new qx.ui.layout.Dock());
-		this.header.set({appearance:"app-header"});
+		this.loadImage = new qx.ui.basic.Image('resource/slc/ajax-loader.gif');
+		this.header.set({appearance:"app-header", height:34});
 		this.headerLabel = new qx.ui.basic.Label(this.getViewTitle()); 
 		this.header.add(this.headerLabel, {edge:"west"});
 		this.addListener("changeViewTitle", function(e){
-			this.headerLabel.setContent(e.getData());
+			var newTitle = e.getData();
+			if(newTitle != ""){
+				this.headerLabel.setContent(newTitle);
+				if(e.getOldData() == ""){
+					this.header.add(this.headerLabel, {edge:"west"});
+				}
+			}else{
+				this.header.remove(this.headerLabel);
+			}
 		}, this);
 		this.add(this.header);
 		this.setDecorator(new qx.ui.decoration.Single(1,"solid","#000"));
@@ -125,15 +134,18 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		}
 	},
 	
+	addHeaderComponent : function(component){
+		this.header.setPadding(4);
+		this.header.add(component, {edge:"center"});
+		this.loadImage.setMargin(4);
+	},
+	
 	/**
 	 * Implementation of the ILoadStatusable interface.
 	 * @see org.argeo.ria.components.ILoadStatusable
 	 * @param load {Boolean} The loading status
 	 */
 	setOnLoad : function(load){
-		if(!this.loadImage){
-			this.loadImage = new qx.ui.basic.Image('resource/slc/ajax-loader.gif');
-		}
 		if(load){
 			this.header.add(this.loadImage, {edge:"east"});
 		}else{
