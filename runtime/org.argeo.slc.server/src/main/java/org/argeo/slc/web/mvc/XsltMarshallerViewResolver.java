@@ -17,6 +17,12 @@ import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.AbstractUrlBasedView;
 import org.springframework.web.servlet.view.xslt.XsltViewResolver;
 
+/**
+ * Xslt View resolver implementing URI resolver as well.
+ * 
+ * @see URIResolver
+ * @see XsltViewResolver
+ */
 public class XsltMarshallerViewResolver extends XsltViewResolver implements
 		URIResolver {
 	private final static Log log = LogFactory

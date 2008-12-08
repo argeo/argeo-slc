@@ -40,4 +40,12 @@ public class ExecutionAnswer {
 		this.message = message;
 	}
 
+	public static ExecutionAnswer error(String message) {
+		return new ExecutionAnswer(ERROR, message);
+	}
+
+	public static ExecutionAnswer ok(String message) {
+		return new ExecutionAnswer(OK, message);
+	}
+
 }

@@ -5,6 +5,17 @@
 
 	<display-name>SLC Web Application</display-name>
 
+	<!-- SERVICE servlet -->
+	<servlet>
+		<servlet-name>slc-service</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>slc-service</servlet-name>
+		<url-pattern>*.service</url-pattern>
+	</servlet-mapping>
+
 	<!-- WS servlet -->
 	<servlet>
 		<servlet-name>slc-ws</servlet-name>
