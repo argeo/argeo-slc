@@ -265,7 +265,7 @@ qx.Class.define("org.argeo.ria.util.TreeDataCellRenderer",
         imageData = this._getIndentSymbol(i, node, bUseTreeLines,
                                           bAlwaysShowOpenCloseSymbol,
                                           bExcludeFirstLevelTreeLines);
-
+		
         html += this._addImage(
         {
           url         : imageData.icon,
@@ -582,7 +582,7 @@ qx.Class.define("org.argeo.ria.util.TreeDataCellRenderer",
           if (node.bFirstChild)
           {
             // ... then return a start line.
-            return STDCR.__icon.start;
+            return STDCR.__icon.startContract;
           }
         }
 
