@@ -72,12 +72,14 @@ qx.Class.define("org.argeo.ria.components.Logger",
 		 */
 		process : function(entry){
 			var wrapper = qx.log.appender.Util.toHtml(entry);
-			var label = new qx.ui.basic.Label('<div class="messages"><div class="'+wrapper.className+'">'+wrapper.innerHTML+'</div></div>');
+			var label = new qx.ui.basic.Label('<div class="messages"><div class="'+wrapper.className+'">'+wrapper.innerHTML.replace(",","<br/>")+'</div></div>');			
 			label.setRich(true);
 			if(entry.level == "error"){
 				var alert = new org.argeo.ria.components.Modal("Error");
 				alert.addContent(label.clone());				
 				alert.attachAndShow();
+			}else if(entry.level == "info"){
+				this.showLogAsPopup(label.clone());
 			}
 			this._logPane.addAt(label, 0);
 		},
@@ -87,6 +89,25 @@ qx.Class.define("org.argeo.ria.components.Logger",
 		toggle : function(){
 			this.show();
 			this.center();
+		},
+		
+		showLogAsPopup:function(content){
+			if(!this.popup){
+		      this.popup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({
+		        backgroundColor: "#DFFAD3",
+		        padding: [2, 4],
+		        width: 350,
+		        offset:0,
+		        position: "right-top"
+		      });
+			}
+			this.popup.removeAll();
+			this.popup.add(content);
+			var appRoot = org.argeo.ria.components.ViewsManager.getInstance().getApplicationRoot(); 
+			appRoot.add(this.popup);
+			this.popup.show();
+			this.popup.moveTo((qx.bom.Viewport.getWidth()-350), 0);
+			qx.event.Timer.once(function(){this.popup.hide();}, this, 5000);
 		}
 	},
 
