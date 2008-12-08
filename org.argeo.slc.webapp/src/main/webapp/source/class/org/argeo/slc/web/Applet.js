@@ -9,8 +9,10 @@ qx.Class.define("org.argeo.slc.web.Applet",
   construct : function(){
   	this.base(arguments);
 	this.setLayout(new qx.ui.layout.VBox());
-  	this.passedStatus = "<div align=\"center\"><img src=\"resource/slc/dialog-ok.png\" height=\"16\" width=\"16\"></div>";
-  	this.failedStatus = "<div align=\"center\"><img src=\"resource/slc/flag.png\" height=\"16\" width=\"16\"></div>";
+  	//this.passedStatus = "<div align=\"center\"><img src=\"resource/slc/dialog-ok.png\" height=\"16\" width=\"16\"></div>";
+  	//this.failedStatus = "<div align=\"center\"><img src=\"resource/slc/flag.png\" height=\"16\" width=\"16\"></div>";
+  	this.passedStatus = "PASSED";
+  	this.failedStatus = "FAILED";
   },
 
   properties : 
@@ -94,6 +96,7 @@ qx.Class.define("org.argeo.slc.web.Applet",
   		}
   		this.tree = new qx.ui.treevirtual.TreeVirtual(["Test", "State", "Message", "Id"]);
   		this.tree.getTableColumnModel().setDataCellRenderer(0, new org.argeo.ria.util.TreeDataCellRenderer());
+  		this.tree.getDataRowRenderer().setHighlightFocusRow(false); // Default row renderer
   		this.tree.setRowHeight(18);
   		this.tree.setStatusBarVisible(false);
   		this.tree.setDecorator(new qx.ui.decoration.Background("#fff"));
@@ -125,11 +128,12 @@ qx.Class.define("org.argeo.slc.web.Applet",
 				}else{
 					label = crtPath;
 				}
+				var simpleResults = org.argeo.ria.util.Element.selectNodes(node, "slc:part-sub-list/slc:parts/slc:simple-result-part", NSMap);
+
 				var newId;
 				newId = model.addBranch(currentParentId, label, false);
 				
 				// Test Leaf Node
-				var simpleResults = org.argeo.ria.util.Element.selectNodes(node, "slc:part-sub-list/slc:parts/slc:simple-result-part", NSMap);
 				if(!simpleResults || !simpleResults.length){
 					addedPaths[crtPath] = newId;
 					currentParentId = newId;
@@ -159,10 +163,10 @@ qx.Class.define("org.argeo.slc.web.Applet",
   		var columnModel = this.tree.getTableColumnModel();
   		var resize = columnModel.getBehavior();
   		resize.set(0, {width:250, minWidth:250});
-  		resize.set(1, {width:40});
+  		resize.set(1, {width:55});
   		resize.set(2, {width:"1*"});
-  		resize.set(3, {width:100});
-  		columnModel.setDataCellRenderer(1, new qx.ui.table.cellrenderer.Html());
+  		resize.set(3, {width:150});
+  		columnModel.setDataCellRenderer(1, new org.argeo.slc.web.StatusCellRenderer());
   		
 	    this.tree.getSelectionManager().getSelectionModel().addListener("changeSelection", function(e){
 			var viewSelection = this.getView().getViewSelection();
