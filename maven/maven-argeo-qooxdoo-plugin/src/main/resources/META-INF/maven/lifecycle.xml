@@ -26,7 +26,7 @@
 									<groupId>org.argeo.dep.dist</groupId>
 									<artifactId>qooxdoo-sdk</artifactId>
 									<classifier>dist</classifier>
-									<version>0.8</version>
+									<version>0.8.0</version>
 									<type>zip</type>
 									<outputDirectory>${basedir}/src/main/webapp
 									</outputDirectory>
