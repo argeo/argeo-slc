@@ -48,7 +48,7 @@
   	this.base(arguments, shortcut);
   	this.setId(id);
   	this.setLabel(label);
-  	this.setIcon(icon); 	
+  	this.setIcon(icon);   	
   },
   
   members :
@@ -67,8 +67,9 @@
   		this.addTooltip(button);
 		if(this.getMenu()){
 			this.addListener("changeMenu", function(event){
-				this.setMenu(event.getData());
-			}, button);
+				button.setMenu(this.getMenuClone());
+			}, this);
+			this.menuClones = [];
 		}
   		return button;
   	},
@@ -108,19 +109,27 @@
   	 * @return {qx.ui.menu.Menu}
   	 */
   	getMenuClone : function(){
-  		if(!this.menuClone){
-  			this.menuClone = new qx.ui.menu.Menu();
-  			this.menuClone.setMinWidth(110);
+  		var menuClone = new qx.ui.menu.Menu();
+  		var submenus = this.getMenu();
+  		for(var i=0;i<submenus.length;i++){
+	  		var button = new qx.ui.menu.Button(submenus[i].label, submenus[i].icon);
+	  		button.setUserData("commandId", submenus[i].commandId);
+	  		button.addListener("execute", this.executeSubMenuCallback, this);
+	  		menuClone.add(button);
   		}
-  		return this.menuClone;
+  		this.menuClones.push(menuClone);
+  		return menuClone;
   	},
   	
   	/**
   	 * Remove all existing menus and their clones.
   	 */
   	clearMenus : function(){
-  		this.getMenu().removeAll();
-  		this.getMenuClone().removeAll();
+  		if(!this.getMenu()) return;
+  		for(var i=0;i<this.menuClones.length;i++){
+  			this.menuClones[i].destroy();
+  		}
+  		this.menuClones = [];
   	},
   	
   	/**
@@ -138,7 +147,6 @@
   			menu.add(button);
   		}else{
 	  		this.getMenu().add(button);
-	  		this.addSubMenuButton(label, icon, commandId, this.menuClone);
   		}
   	},
   	

@@ -109,8 +109,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   			if(!definition.command){
 	  			command = new org.argeo.ria.event.Command(key, definition.label, definition.icon, definition.shortcut);
 	  			if(definition.submenu){
-	  				var menu = new qx.ui.menu.Menu();
-	  				command.setMenu(menu);
+	  				command.setMenu(definition.submenu);
 	  				if(definition.submenuCallback){
 	  					command.setMenuCallback(definition.submenuCallback);
 	  					command.setMenuContext((definition.callbackContext?definition.callbackContext:null));
@@ -118,6 +117,10 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 	  			}
 	  			command.setEnabled(definition.enabled);
 	  			command.addListener("execute", definition.callback, (definition.callbackContext?definition.callbackContext:this));
+	  			if(definition.init){
+	  				var binded = qx.lang.Function.bind(definition.init, command);
+	  				binded();
+	  			}
 	  			definition.command = command;
   			}else{
   				command = definition.command;
