@@ -37,20 +37,45 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				icon 		: "resource/slc/view-refresh.png",
   				shortcut 	: "Control+l",
   				enabled  	: true,
-  				menu	   	: "File",
-  				toolbar  	: "test",
+  				menu	   	: "Collection",
+  				toolbar  	: "collection",
   				callback 	: function(e){
   					this.loadList();
   				}, 
   				command 	: null
   			},
+  			"copyfullcollection" : {
+  				label	 	: "Copy to...", 
+  				icon 		: "resource/slc/edit-copy.png",
+  				shortcut 	: null,
+  				enabled  	: false,
+  				menu	   	: "Collection",
+  				toolbar  	: "collection",
+  				callback	: function(e){
+  					// Call service to copy
+  				},
+  				submenu 	: {},
+  				submenuCallback : function(commandId){
+  					this.copySelectionToCollection(commandId, "current_collection");
+  				},
+  				init : function(){
+  					// Call at command creation
+  					org.argeo.ria.remote.RequestManager.getInstance().addListener("reload", function(event){
+  						if(event.getDataType() == "collection" || event.getDataType() == "test_cases"){
+	  						var testList = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("list").getContent();
+	  						testList.collectionListToMenu(this);
+  						}
+  					}, this);
+  				},
+  				command 	: null
+  			},
   			"opentest" : {
   				label	 	: "Open", 
-  				icon 		: "resource/slc/document-open.png",
+  				icon 		: "resource/slc/media-playback-start.png",
   				shortcut 	: "Control+o",
   				enabled  	: false,
   				menu	   	: "Selection",
-  				toolbar  	: "test",
+  				toolbar  	: "selection",
   				callback	: function(e){
   					var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();
   					var classObj = org.argeo.slc.web.Applet;
@@ -75,7 +100,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				shortcut 	: null,
   				enabled  	: false,
   				menu	   	: "Selection",
-  				toolbar  	: "test",
+  				toolbar  	: "selection",
   				callback	: function(e){ },
   				command 	: null,
   				submenu 	: {},
@@ -125,7 +150,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				shortcut 	: "Control+d",
   				enabled  	: false,
   				menu	   	: "Selection",
-  				toolbar  	: "test",
+  				toolbar  	: "selection",
   				callback	: function(e){
   					// Call service to delete
   				},
@@ -143,30 +168,21 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				shortcut 	: "Control+c",
   				enabled  	: false,
   				menu	   	: "Selection",
-  				toolbar  	: "test",
+  				toolbar  	: "selection",
   				callback	: function(e){
   					// Call service to copy
   				},
   				submenu 	: {},
+  				submenuCallback : function(commandId){
+					this.copySelectionToCollection(commandId, "current_selection");  				
+				},
   				init : function(){
   					// Call at command creation
   					org.argeo.ria.remote.RequestManager.getInstance().addListener("reload", function(event){
-  						if(event.getDataType() != "collection") return;
-  						this.setEnabled(false);
-  						this.clearMenus();  	
-  						var collectionList = event.getContent();
-  						if(!collectionList) return;
-  						var submenus = [];
-  						for(var key in collectionList){
-	  						submenus.push({
-	  							"label":collectionList[key], 
-	  							"icon":null, 
-	  							"commandId":key
-	  						});
+  						if(event.getDataType() == "collection" || event.getDataType() == "test_cases"){
+	  						var testList = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("list").getContent();
+	  						testList.collectionListToMenu(this, true);
   						}
-  						this.setMenu(submenus);
-  						var viewSelection = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneSelection("list");
-  						if(viewSelection.getCount()) this.setEnabled(true);
   					}, this);
   				},
 	  			selectionChange : function(viewId, xmlNodes){
@@ -231,7 +247,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	 var collectionList = event.getContent();
 	  	 select.removeAll();
 	  	 for(key in collectionList){
-	  	 	var item = new qx.ui.form.ListItem(collectionList[key], null, key);
+	  	 	var item = new qx.ui.form.ListItem(collectionList[key], "resource/slc/folder.png", key);
 	  	 	select.add(item);
 	  	 	if(key == this.getCollectionId()){
 	  	 		select.setSelected(item);
@@ -263,7 +279,6 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	request.addListener("completed", function(response){
   			xml = response.getContent();
 	  		qx.log.Logger.info("Successfully loaded XML");
-	  		//var resManager = org.argeo.ria.event.ResourcesManager.getInstance().fireReloadEvent("test_cases", xml);
 	  		var nodes = qx.xml.Element.selectNodes(xml, "//data");
 	  		for(var i=0; i<nodes.length;i++){
 	  			var rowData = nodes[i];
@@ -272,7 +287,51 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	}, request);
 	  	request.send();		
 	},
-		
+	
+	collectionListToMenu : function(command, checkSelection){
+		command.setEnabled(false);
+		command.clearMenus();
+		var collectionList = this.getCollectionList();
+		if(!collectionList) return;
+		var submenus = [];
+		for(var key in collectionList){
+			if(this.getCollectionId() && key == this.getCollectionId()) continue;
+			submenus.push({
+				"label":collectionList[key], 
+				"icon":"resource/slc/folder.png", 
+				"commandId":key
+			});
+		}		
+		submenus.push({"label":"New...", "icon":"resource/slc/folder-new.png", "commandId":"slc.client.create"});
+		command.setMenu(submenus);
+		if(checkSelection){
+			var viewSelection = this.getView().getViewSelection();
+			if(viewSelection.getCount()) command.setEnabled(true);
+		}else{
+			command.setEnabled(true);
+		}
+	},
+	
+	copySelectionToCollection:function(collectionId, selectionType){
+		if(collectionId == "slc.client.create"){
+			var modal = new org.argeo.ria.components.Modal("Create collection", "resource/slc/folder-new.png");
+			modal.makePromptForm("Enter the new collection name", function(value){
+				if(value == ""){
+					alert("Please enter a name for the new collection!");
+					return false;
+				}
+				else {
+					// Create the collection now, then recall the callback with the new name.  								
+					this.copySelectionToCollection(value, selectionType);
+					return true;
+				}
+			}, this);
+			modal.attachAndShow();
+		}else{			
+			this.debug("Copying "+selectionType+" to collection " + collectionId);
+		}
+	},
+	
 	addScroll : function(){
 		return false;
 	}  	
