@@ -1,10 +1,10 @@
 package org.argeo.slc.msg;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class ReferenceList {
-	private List<String> references = new Vector<String>();
+	private List<String> references = new ArrayList<String>();
 
 	public List<String> getReferences() {
 		return references;

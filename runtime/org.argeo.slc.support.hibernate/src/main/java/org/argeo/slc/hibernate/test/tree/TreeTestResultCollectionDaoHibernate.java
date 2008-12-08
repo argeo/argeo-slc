@@ -1,9 +1,11 @@
 package org.argeo.slc.hibernate.test.tree;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.argeo.slc.core.test.tree.ResultAttributes;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
@@ -29,6 +31,7 @@ public class TreeTestResultCollectionDaoHibernate extends HibernateDaoSupport
 		getHibernateTemplate().update(ttrCollection);
 	}
 
+	@SuppressWarnings("unchecked")
 	public SortedSet<TreeTestResultCollection> listCollections() {
 		return new TreeSet<TreeTestResultCollection>(getHibernateTemplate()
 				.find("from TreeTestResultCollection"));
@@ -64,4 +67,21 @@ public class TreeTestResultCollectionDaoHibernate extends HibernateDaoSupport
 		});
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<ResultAttributes> listResultAttributes(String collectionId) {
+		List<ResultAttributes> list;
+		if (collectionId == null)
+			list = getHibernateTemplate().find(
+					"select new org.argeo.slc.core.test.tree.ResultAttributes(ttr)"
+							+ " from TreeTestResult ttr");
+		else
+			list = getHibernateTemplate()
+					.find(
+							"select new org.argeo.slc.core.test.tree.ResultAttributes(ttr) "
+									+ " from TreeTestResult ttr, TreeTestResultCollection ttrc "
+									+ " where ttr in elements(ttrc.results) and ttrc.id=?",
+							collectionId);
+
+		return list;
+	}
 }
