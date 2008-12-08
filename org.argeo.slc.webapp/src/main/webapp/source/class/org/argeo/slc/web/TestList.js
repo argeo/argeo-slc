@@ -126,7 +126,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				},
   				selectionChange : function(viewId, xmlNodes){
   					if(viewId!="list")return;
-  					this.clearMenus();
+  					//this.clearMenus();
   					this.setEnabled(false);
   					if(xmlNodes == null || !xmlNodes.length) return;
   					this.setEnabled(true);
