@@ -137,6 +137,18 @@
                 minOccurs="0" />
         </xs:all>
     </xs:complexType>
+    
+    <!-- BASIC MESSAGES -->
+    <xs:element name="execution-answer">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="status"
+                    type="xs:string" maxOccurs="1" minOccurs="1" />
+                <xs:element name="message"
+                    type="xs:string" maxOccurs="1" minOccurs="1"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
 
     <!-- TREE TEST RESULT REQUESTS -->
     <xs:element name="create-tree-test-result-request">
