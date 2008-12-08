@@ -28,8 +28,8 @@
 		<module>runtime</module>
 		<module>examples</module>
 
-		<module>org.argeo.slc.webapp</module>
 		<module>org.argeo.slc.detached.launcher</module>
+		<module>org.argeo.slc.webapp</module>
 	</modules>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
