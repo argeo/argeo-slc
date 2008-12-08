@@ -24,7 +24,7 @@ public class PackageElementMojo extends AbstractMojo {
 	private MavenProject project;
 
 	/**
-	 * The directory for the generated JAR.
+	 * The build directory.
 	 * 
 	 * @parameter expression="${project.build.directory}"
 	 * @required

@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.maven.model.License;
+import org.apache.maven.model.Organization;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -54,6 +56,7 @@ public class FeatureDescriptorMojo extends AbstractMojo {
 			xmlWriter.addAttribute("id", project.getArtifactId());
 			xmlWriter.addAttribute("label", project.getName());
 
+			// Version
 			String projectVersion = project.getVersion();
 			int indexSnapshot = projectVersion.indexOf("-SNAPSHOT");
 			if (indexSnapshot > -1)
@@ -63,12 +66,60 @@ public class FeatureDescriptorMojo extends AbstractMojo {
 			// project.
 			xmlWriter.addAttribute("version", projectVersion);
 
+			
+			Organization organization = project.getOrganization();
+			if (organization != null && organization.getName() != null)
+				xmlWriter.addAttribute("provider-name", organization.getName());
+
+			if (project.getDescription() != null || project.getUrl() != null) {
+				xmlWriter.startElement("description");
+				if (project.getUrl() != null)
+					xmlWriter.addAttribute("url", project.getUrl());
+				if (project.getDescription() != null)
+					xmlWriter.writeText(project.getDescription());
+				xmlWriter.endElement();// description
+			}
+
+			if (feature.getCopyright() != null
+					|| (organization != null && organization.getUrl() != null)) {
+				xmlWriter.startElement("copyright");
+				if (organization != null && organization.getUrl() != null)
+					xmlWriter.addAttribute("url", organization.getUrl());
+				if (feature.getCopyright() != null)
+					xmlWriter.writeText(feature.getCopyright());
+				xmlWriter.endElement();// copyright
+			}
+
+			if (feature.getUpdateSite() != null) {
+				xmlWriter.startElement("url");
+				xmlWriter.startElement("update");
+				xmlWriter.addAttribute("url", feature.getUpdateSite());
+				xmlWriter.endElement();// update
+				xmlWriter.endElement();// url
+			}
+
+			List licenses = project.getLicenses();
+			if (licenses.size() > 0) {
+				// take the first one
+				License license = (License) licenses.get(0);
+				xmlWriter.startElement("license");
+
+				if (license.getUrl() != null)
+					xmlWriter.addAttribute("url", license.getUrl());
+				if (license.getComments() != null)
+					xmlWriter.writeText(license.getComments());
+				else if (license.getName() != null)
+					xmlWriter.writeText(license.getName());
+				xmlWriter.endElement();// license
+			}
+
 			List plugins = feature.getPlugins();
 			for (int i = 0; i < plugins.size(); i++) {
 				Plugin plugin = (Plugin) plugins.get(i);
 				xmlWriter.startElement("plugin");
 				xmlWriter.addAttribute("id", plugin.getId());
 				xmlWriter.addAttribute("version", plugin.getVersion());
+				xmlWriter.addAttribute("unpack", plugin.getUnpack());
 				xmlWriter.endElement();// plugin
 			}
 

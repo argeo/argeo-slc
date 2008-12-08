@@ -3,25 +3,16 @@ package org.argeo.slc.maven.plugins.pde;
 import java.util.List;
 
 public class Feature {
-	private String providerName;
-	private String license;
+	private String updateSite;
 	private String copyright;
 	private List plugins;
 
-	public String getProviderName() {
-		return providerName;
+	public String getUpdateSite() {
+		return updateSite;
 	}
 
-	public void setProviderName(String providerName) {
-		this.providerName = providerName;
-	}
-
-	public String getLicense() {
-		return license;
-	}
-
-	public void setLicense(String license) {
-		this.license = license;
+	public void setUpdateSite(String license) {
+		this.updateSite = license;
 	}
 
 	public String getCopyright() {
