@@ -8,7 +8,7 @@
 	<version>0.11.2-SNAPSHOT</version>
 	<description>SLC Distribution</description>
 	<url>
-		http://www.argeo.org/projects/slc/${project.artfactId}/${project.version}
+		http://www.argeo.org/projects/slc/${project.artifactId}/${project.version}
 	</url>
 	<properties>
 		<version.spring>2.5.6.A</version.spring>
@@ -34,7 +34,24 @@
 			<name>Apache 2</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 			<distribution>repo</distribution>
-			<comments>A business-friendly OSS license</comments>
+			<comments><![CDATA[
+SLC - Software LifeCycle framework
+			   
+Copyright 2008 Mathieu Baudier - Argeo e.U.
+
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+]]>
+		</comments>
 		</license>
 	</licenses>
 	<organization>
