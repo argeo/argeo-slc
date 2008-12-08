@@ -1,47 +1,23 @@
-package org.argeo.slc.core.process;
+package org.argeo.slc.castor;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.UUID;
 
-import javax.xml.transform.stream.StreamSource;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
-import org.argeo.slc.unit.AbstractSpringTestCase;
-import org.argeo.slc.unit.UnitXmlUtils;
 import org.argeo.slc.unit.process.SlcExecutionTestUtils;
-import org.springframework.oxm.Marshaller;
-import org.springframework.oxm.Unmarshaller;
 import org.springframework.xml.transform.StringResult;
-import org.springframework.xml.transform.StringSource;
-import org.springframework.xml.validation.XmlValidator;
 
-public class SlcExecutionCastorTest extends AbstractSpringTestCase {
-	private Log log = LogFactory.getLog(getClass());
-
-	private Marshaller marshaller;
-	private Unmarshaller unmarshaller;
-
-	@Override
-	public void setUp() {
-		marshaller = getBean(Marshaller.class);
-		unmarshaller = getBean(Unmarshaller.class);
-	}
-
+public class SlcExecutionCastorTest extends AbstractCastorTestCase {
 	public void testMarshalling() throws Exception {
 		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
 
 		SlcExecutionRequest msgSave = new SlcExecutionRequest();
 		msgSave.setSlcExecution(slcExec);
 
-		String msgSaveXml = marshallAndLog(marshaller, msgSave);
+		StringResult msgSaveXml = marshalAndValidate(msgSave);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		SlcExecutionStep step0 = new SlcExecutionStep();
@@ -61,15 +37,14 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 		msgNotif.addStep(step1);
 		msgNotif.setSlcExecutionUuid(slcExec.getUuid());
 
-		String msgNotifXml = marshallAndLog(marshaller, msgNotif);
+		StringResult msgNotifXml = marshalAndValidate(msgNotif);
 
-		SlcExecutionRequest msgSaveUnm = unmarshall(unmarshaller, msgSaveXml);
+		SlcExecutionRequest msgSaveUnm = unmarshal(msgSaveXml);
 		assertNotNull(msgSaveUnm);
 		SlcExecutionTestUtils.assertSlcExecution(slcExec, msgSaveUnm
 				.getSlcExecution());
 
-		SlcExecutionStepsRequest msgNotifUnm = unmarshall(unmarshaller,
-				msgNotifXml);
+		SlcExecutionStepsRequest msgNotifUnm = unmarshal(msgNotifXml);
 		assertNotNull(msgNotifUnm);
 		assertEquals(slcExec.getUuid(), msgNotifUnm.getSlcExecutionUuid());
 		assertEquals(2, msgNotifUnm.getSteps().size());
@@ -83,30 +58,9 @@ public class SlcExecutionCastorTest extends AbstractSpringTestCase {
 
 		SlcExecutionRequest msgUpdate = new SlcExecutionRequest();
 		msgUpdate.setSlcExecution(slcExecUnm);
-		String msgUpdateXml = marshallAndLog(marshaller, msgUpdate);
+		StringResult msgUpdateXml = marshalAndValidate(msgUpdate);
 
-		SlcExecutionRequest msgUpdateUnm = unmarshall(unmarshaller,
-				msgUpdateXml);
+		SlcExecutionRequest msgUpdateUnm = unmarshal(msgUpdateXml);
 		assertNotNull(msgUpdateUnm);
-	}
-
-	private String marshallAndLog(Marshaller marshaller, Object obj)
-			throws IOException {
-		StringResult xml = new StringResult();
-		marshaller.marshal(obj, xml);
-		log.info("Marshalled object: " + xml);
-
-		UnitXmlUtils.assertXmlValidation(getBean(XmlValidator.class),
-				new StringSource(xml.toString()));
-
-		return xml.toString();
-	}
-
-	private <T> T unmarshall(Unmarshaller unmarshaller, String xml)
-			throws IOException {
-		StringReader reader = new StringReader(xml);
-		Object obj = unmarshaller.unmarshal(new StreamSource(reader));
-		IOUtils.closeQuietly(reader);
-		return (T) obj;
 	}
 }
