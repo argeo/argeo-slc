@@ -33,12 +33,14 @@ public abstract class AbstractCastorTestCase extends AbstractSpringTestCase {
 		return xml;
 	}
 
+	@SuppressWarnings("unchecked")
 	protected <T> T unmarshal(StringResult xml) throws Exception {
 		return (T) unmarshaller.unmarshal(new StringSource(xml.toString()));
 	}
 
+	@SuppressWarnings("unchecked")
 	protected <T> T marshUnmarsh(Object obj) throws Exception {
 		StringResult xml = marshalAndValidate(obj);
-		return unmarshal(xml);
+		return (T)unmarshal(xml);
 	}
 }
