@@ -92,6 +92,7 @@
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="uuid" />
+		<field name="closeDate" />
 		<field name="attributes" collection="hashtable">
 			<bind-xml name="attribute" location="attributes">
 				<class name="org.exolab.castor.mapping.MapItem">
