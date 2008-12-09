@@ -40,6 +40,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${version.maven-bundle-plugin}</version>
 				<configuration>
 					<instructions>
 						<Export-Package>
@@ -94,34 +95,27 @@
 			<artifactId>commons-io</artifactId> </dependency>
 		-->
 
-<!--
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
+		<!--
+			<dependency> <groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached.ext.log4j</artifactId>
-			<version>0.11.2</version>
-		</dependency>
-  -->
+			<version>0.11.2</version> </dependency>
+		-->
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.context</artifactId>
 		</dependency>
 
-<!-- 
-		<dependency>
-			<groupId>org.apache.xerces</groupId>
+		<!--
+			<dependency> <groupId>org.apache.xerces</groupId>
 			<artifactId>com.springsource.org.apache.xerces</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xalan</groupId>
+			</dependency> <dependency> <groupId>org.apache.xalan</groupId>
 			<artifactId>com.springsource.org.apache.xalan</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>edu.emory.mathcs.backport</groupId>
-			<artifactId>
-				com.springsource.edu.emory.mathcs.backport
-			</artifactId>
-		</dependency> -->
+			</dependency> <dependency>
+			<groupId>edu.emory.mathcs.backport</groupId> <artifactId>
+			com.springsource.edu.emory.mathcs.backport </artifactId>
+			</dependency>
+		-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>
@@ -136,15 +130,11 @@
 			<groupId>org.apache.log4j</groupId>
 			<artifactId>com.springsource.org.apache.log4j</artifactId>
 		</dependency>
-		<!-- 
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>com.springsource.slf4j.jcl</artifactId>
-			</dependency>
-			 -->
+		<!--
+			<dependency> <groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
+			</dependency> <dependency> <groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.jcl</artifactId> </dependency>
+		-->
 	</dependencies>
 </project>
