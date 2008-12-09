@@ -60,7 +60,7 @@ qx.Class.define("org.argeo.slc.ria.Applet",
 		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
 		var testId = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(this.data, "slc:uuid"));		
 		this.getView().setViewTitle("Test "+testId);
-  		var request = org.argeo.slc.web.SlcApi.getLoadResultService(testId);  		
+  		var request = org.argeo.slc.ria.SlcApi.getLoadResultService(testId);  		
   		request.addListener("completed", function(response){
 			this.createXmlGui(response.getContent());
 			this.getView().setOnLoad(false);

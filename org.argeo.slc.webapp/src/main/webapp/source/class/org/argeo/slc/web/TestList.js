@@ -93,7 +93,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				toolbar  	: "selection",
   				callback	: function(e){
   					var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();
-  					var classObj = org.argeo.slc.web.Applet;
+  					var classObj = org.argeo.slc.ria.Applet;
 					var iView = viewsManager.initIViewClass(classObj, "applet");
   					var xmlNodes = viewsManager.getViewPaneSelection("list").getNodes();
 					iView.load(xmlNodes[0]);
@@ -184,7 +184,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				toolbar  	: "selection",
   				callback	: function(e){
   					
-  					var request = org.argeo.slc.web.SlcApi.getRemoveResultService(this.getCollectionId(), this.extractTestUuid());
+  					var request = org.argeo.slc.ria.SlcApi.getRemoveResultService(this.getCollectionId(), this.extractTestUuid());
 					request.addListener("completed", function(response){
 						this.loadCollections();
 						this.loadList();
@@ -222,8 +222,9 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  }, this);
 	  var columnModel = this.table.getTableColumnModel(); 
 	  columnModel.getBehavior().setWidth(0, "60%");
-	  columnModel.setDataCellRenderer(0, new org.argeo.slc.web.XmlRenderer());
-	  columnModel.setDataCellRenderer(1, new org.argeo.slc.web.XmlRenderer());
+	  var renderer = new org.argeo.slc.web.XmlRenderer();
+	  columnModel.setDataCellRenderer(0, renderer);
+	  columnModel.setDataCellRenderer(1, renderer);
 	  
 	  this.table.getSelectionManager().getSelectionModel().addListener("changeSelection", function(e){
 	  	var viewSelection = viewPane.getViewSelection();
@@ -264,7 +265,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	},
 	
 	loadCollections : function(){
-		var request = org.argeo.slc.web.SlcApi.getListCollectionsService();
+		var request = org.argeo.slc.ria.SlcApi.getListCollectionsService();
 		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
 		request.addListener("completed", function(response){
 			var xml = response.getContent();
@@ -285,16 +286,17 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	var model = this.table.getTableModel();
 	  	model.removeRows(0, model.getRowCount());
 	  	var commandManager = org.argeo.ria.event.CommandsManager.getInstance();
-	  	var request = org.argeo.slc.web.SlcApi.getListResultsService(this.getCollectionId(), null, [commandManager.getCommandById("loadtestlist"), this.getView()]);
+	  	var request = org.argeo.slc.ria.SlcApi.getListResultsService(this.getCollectionId(), null, [commandManager.getCommandById("loadtestlist"), this.getView()]);
 	  	var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
 	  	request.addListener("completed", function(response){
   			var xml = response.getContent();
 	  		this.debug("Successfully loaded XML");
 	  		var nodes = org.argeo.ria.util.Element.selectNodes(xml, "//slc:result-attributes", NSMap);
-	  		for(var i=0; i<nodes.length;i++){
-	  			var rowData = nodes[i];
-	  			model.addRows([rowData]);
-	  		}
+	  		//model.addRows(nodes);
+	  		
+	  		for(var i=0; i<nodes.length;i++){	  			
+	  			model.addRows([nodes[i]]);
+	  		}	  		
 	  	}, request);
 	  	request.send();		
 	},
@@ -359,7 +361,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 			this.error("Not implemented yet!");			
 		}else if(selectionType == "current_selection"){
 			// get selection ID
-			var request = org.argeo.slc.web.SlcApi.getAddResultService(collectionId,this.extractTestUuid());
+			var request = org.argeo.slc.ria.SlcApi.getAddResultService(collectionId,this.extractTestUuid());
 			request.addListener("completed", function(response){
 				this.info("Result successfully copied to collection!");
 				this.loadCollections();

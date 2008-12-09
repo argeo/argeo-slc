@@ -1,4 +1,4 @@
-qx.Class.define("org.argeo.slc.web.SlcApi",
+qx.Class.define("org.argeo.slc.ria.SlcApi",
 {
   extend : qx.core.Object,
   
@@ -21,7 +21,7 @@ qx.Class.define("org.argeo.slc.web.SlcApi",
   	getServiceRequest:function(serviceName, fireReloadEventType, iLoadStatusables){
   		var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
   		return serviceManager.getRequest(
-  			org.argeo.slc.web.SlcApi.DEFAULT_CONTEXT+"/"+serviceName,
+  			org.argeo.slc.ria.SlcApi.DEFAULT_CONTEXT+"/"+serviceName,
   			"GET",
   			"application/xml",
   			fireReloadEventType,
@@ -38,8 +38,8 @@ qx.Class.define("org.argeo.slc.web.SlcApi",
   	 * @return {qx.io.remote.Request}
   	 */
   	getRemoveResultService : function(collectionId, resultId, fireReloadEventType, iLoadStatusables){
-  		var request = org.argeo.slc.web.SlcApi.getServiceRequest(
-	  		org.argeo.slc.web.SlcApi.REMOVE_RESULT_FROM_COLL_SERVICE, 
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+	  		org.argeo.slc.ria.SlcApi.REMOVE_RESULT_FROM_COLL_SERVICE, 
 	  		fireReloadEventType, 
 	  		iLoadStatusables
   		);
@@ -57,8 +57,8 @@ qx.Class.define("org.argeo.slc.web.SlcApi",
   	 * @return {qx.io.remote.Request}
   	 */
   	getAddResultService : function(collectionId, resultId, fireReloadEventType, iLoadStatusables){
-  		var request = org.argeo.slc.web.SlcApi.getServiceRequest(
-	  		org.argeo.slc.web.SlcApi.ADD_RESULT_TO_COLL_SERVICE, 
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+	  		org.argeo.slc.ria.SlcApi.ADD_RESULT_TO_COLL_SERVICE, 
 	  		fireReloadEventType, 
 	  		iLoadStatusables
   		);
@@ -74,8 +74,8 @@ qx.Class.define("org.argeo.slc.web.SlcApi",
   	 * @return {qx.io.remote.Request}
   	 */
   	getListCollectionsService : function(fireReloadEventType, iLoadStatusables){
-  		return org.argeo.slc.web.SlcApi.getServiceRequest(
-	  		org.argeo.slc.web.SlcApi.LIST_COLLECTIONS_SERVICE, 
+  		return org.argeo.slc.ria.SlcApi.getServiceRequest(
+	  		org.argeo.slc.ria.SlcApi.LIST_COLLECTIONS_SERVICE, 
 	  		fireReloadEventType, 
 	  		iLoadStatusables
   		);
@@ -89,8 +89,8 @@ qx.Class.define("org.argeo.slc.web.SlcApi",
   	 * @return {qx.io.remote.Request}
   	 */
   	getListResultsService : function(collectionId, fireReloadEventType, iLoadStatusables){
-  		var request = org.argeo.slc.web.SlcApi.getServiceRequest(
-	  		org.argeo.slc.web.SlcApi.LIST_RESULTS_SERVICE, 
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+	  		org.argeo.slc.ria.SlcApi.LIST_RESULTS_SERVICE, 
 	  		fireReloadEventType, 
 	  		iLoadStatusables
   		);
@@ -108,8 +108,8 @@ qx.Class.define("org.argeo.slc.web.SlcApi",
   	 * @return {qx.io.remote.Request}
   	 */
   	getLoadResultService : function(resultId, fireReloadEventType, iLoadStatusables){
-  		var request = org.argeo.slc.web.SlcApi.getServiceRequest(
-	  		org.argeo.slc.web.SlcApi.GET_RESULT_SERVICE, 
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+	  		org.argeo.slc.ria.SlcApi.GET_RESULT_SERVICE, 
 	  		fireReloadEventType, 
 	  		iLoadStatusables
   		);
