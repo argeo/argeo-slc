@@ -1,10 +1,10 @@
 {
   "info" : 
   {
-    "name" : "org.argeo.ria",
+    "name" : "org.argeo.slc.ria",
 
-    "summary" : "Slc Webui",
-    "description" : "Argeo Rich Internet Application",
+    "summary" : "Slc Ria library",
+    "description" : "Utilities for SLC RIA",
     
     "homepage" : "http://www.argeo.org/",
 
@@ -23,12 +23,12 @@
   
   "provides" : 
   {
-    "namespace"   : "org.argeo.ria",
+    "namespace"   : "org.argeo.slc.ria",
     "encoding"    : "utf-8",
     "class"       : "class",
     "resource"    : "resource",
     "translation" : "translation",
-    "type"        : "application"
+    "type"        : "library"
   }
 }
 
