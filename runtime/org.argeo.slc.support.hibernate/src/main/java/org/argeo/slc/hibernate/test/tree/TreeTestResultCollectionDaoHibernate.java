@@ -15,6 +15,7 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+/** Hibernate implementation of collections DAO. */
 public class TreeTestResultCollectionDaoHibernate extends HibernateDaoSupport
 		implements TreeTestResultCollectionDao {
 
@@ -29,6 +30,10 @@ public class TreeTestResultCollectionDaoHibernate extends HibernateDaoSupport
 
 	public void update(TreeTestResultCollection ttrCollection) {
 		getHibernateTemplate().update(ttrCollection);
+	}
+
+	public void delete(TreeTestResultCollection ttrCollection) {
+		getHibernateTemplate().delete(ttrCollection);
 	}
 
 	@SuppressWarnings("unchecked")

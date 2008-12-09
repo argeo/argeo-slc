@@ -11,6 +11,8 @@ public interface TreeTestResultCollectionDao {
 
 	public void update(TreeTestResultCollection ttrCollection);
 
+	public void delete(TreeTestResultCollection ttrCollection);
+
 	public TreeTestResultCollection getTestResultCollection(String id);
 
 	public SortedSet<TreeTestResultCollection> listCollections();

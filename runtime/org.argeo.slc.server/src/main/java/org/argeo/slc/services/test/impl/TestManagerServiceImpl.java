@@ -11,6 +11,7 @@ import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.services.test.TestManagerService;
 import org.argeo.slc.test.TestRunDescriptor;
 
+/** Implementation of complex operations impacting the underlying data. */
 public class TestManagerServiceImpl implements TestManagerService {
 	private Log log = LogFactory.getLog(getClass());
 
@@ -68,6 +69,12 @@ public class TestManagerServiceImpl implements TestManagerService {
 		if (ttrc != null) {
 			treeTestResultCollectionDao.removeResultFromCollection(ttrc,
 					resultUuid);
+		}
+
+		// Delete collection if empty
+		// see https://www.argeo.org/bugzilla/show_bug.cgi?id=74
+		if (ttrc.getResults().size() == 0) {
+			treeTestResultCollectionDao.delete(ttrc);
 		}
 	}
 
