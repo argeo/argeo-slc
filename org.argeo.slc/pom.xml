@@ -16,6 +16,7 @@
 		<version.maven>2.0.9</version.maven>
 		<version.ant>1.7.0</version.ant>
 		<version.jetty>6.1.14</version.jetty>
+		<version.maven-bundle-plugin>1.4.3</version.maven-bundle-plugin>
 	</properties>
 	<scm>
 		<connection>
@@ -165,7 +166,7 @@ limitations under the License.
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>
-					<version>1.4.3</version>
+					<version>${version.maven-bundle-plugin}</version>
 					<extensions>true</extensions>
 					<configuration>
 						<manifestLocation>src/main/resources/META-INF</manifestLocation>
@@ -553,6 +554,7 @@ limitations under the License.
 				<groupId>org.hibernate</groupId>
 				<artifactId>com.springsource.org.hibernate</artifactId>
 				<version>3.2.6.ga</version>
+				<!-- <version>3.3.1.GA</version> TODO: fix issues with logging -->
 			</dependency>
 			<dependency>
 				<groupId>net.sourceforge.jexcelapi</groupId>
