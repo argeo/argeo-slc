@@ -93,13 +93,7 @@ qx.Class.define("org.argeo.ria.Application",
       }
       var perspective = new perspectiveClass;
       perspective.initViewPanes(viewsManager);
-      perspective.initViews(viewsManager);
-
-	  // Test
-	  org.argeo.ria.remote.RequestManager.getInstance().addListener("reload", function(e){
-	  	qx.log.Logger.info("Received reload event for data type : "+ e.getDataType());
-	  });      
-      
+      perspective.initViews(viewsManager);      
     }
     	        
   }

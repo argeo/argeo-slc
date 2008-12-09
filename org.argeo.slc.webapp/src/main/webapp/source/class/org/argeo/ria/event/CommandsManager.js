@@ -35,6 +35,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   				callback	: function(e){},
   				command		: null
   			},
+  			/*
 	  		"quit" : {
   				label		: "Quit", 
   				icon 		: "resource/slc/system-shutdown.png",
@@ -45,6 +46,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   				callback 	: function(e){}, 
   				command 	: null
   			},
+  			*/
   			"log" : {
   				label		: "Show Console", 
   				icon 		: "resource/slc/help-contents.png",
@@ -116,6 +118,9 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 	  				}
 	  			}
 	  			command.setEnabled(definition.enabled);
+	  			if(definition.toggle){
+	  				command.setToggle(true);
+	  			}
 	  			command.addListener("execute", definition.callback, (definition.callbackContext?definition.callbackContext:this));
 	  			if(definition.init){
 	  				var binded = qx.lang.Function.bind(definition.init, command);
@@ -306,6 +311,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		menu.add(icon);
   		menu.add(text);
   		menu.add(both);
+  		mgr.setSelected(both);
   		toolbar.setContextMenu(menu);  		
   		mgr.addListener("changeValue", function(e){
   			this.setShow(e.getData());

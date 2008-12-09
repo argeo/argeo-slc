@@ -22,6 +22,10 @@
   	 */
   	icon : {init:""},
   	/**
+  	 * Weather this command is a true/false state 
+  	 */
+  	toggle : {init:false},
+  	/**
   	 * Sub menu if needed 
   	 */
   	menu : {
@@ -59,18 +63,23 @@
   	 * @return {qx.ui.menu.Button}
   	 */
   	getMenuButton : function(){
-  		var button = new qx.ui.menu.Button(
-  			this.getLabel(), 
-  			this.getIcon(), 
-  			this, 
-  			this.getMenuClone()
-  		);
-  		this.addTooltip(button);
-		if(this.getMenu()){
-			this.addListener("changeMenu", function(event){
-				button.setMenu(this.getMenuClone());
-			}, this);			
+		if(this.getToggle()){
+  			button = new qx.ui.menu.CheckBox(this.getLabel());
+  			this._registerToggleButtonListeners(button);
+		}else{
+	  		var button = new qx.ui.menu.Button(
+	  			this.getLabel(), 
+	  			this.getIcon(), 
+	  			this, 
+	  			this.getMenuClone()
+	  		);
+			if(this.getMenu()){
+				this.addListener("changeMenu", function(event){
+					button.setMenu(this.getMenuClone());
+				}, this);			
+			}
 		}
+  		this.addTooltip(button);
   		return button;
   	},
   	
@@ -93,6 +102,9 @@
 		  		this.setEnabled(e.getData());
   			}, button);
   			button.setEnabled(this.getEnabled());
+  		}else if(this.getToggle()){
+  			button = new qx.ui.toolbar.CheckBox(this.getLabel(), this.getIcon());
+  			this._registerToggleButtonListeners(button);
   		}else{
   			button = new qx.ui.toolbar.Button(
   				this.getLabel(),
@@ -105,18 +117,42 @@
   	},
   	  	
   	/**
+  	 * Special tricks using UserData to enable/disable listeners to avoid loops...
+  	 * @param button {qx.ui.core.Widget} toolbar Checkbox or menu Checkbox button.
+  	 */
+  	_registerToggleButtonListeners : function(button){
+		button.addListener("changeChecked", function(event){
+			if(button.getUserData("disableListener")) return;
+			this.setUserData("slc.command.toggleState", event.getData());
+			this.setUserData("slc.command.toggleStateSource", button);
+			this.fireEvent("execute");
+		}, this);
+		this.addListener("execute", function(event){
+			if(this.getUserData("slc;command.toggleStateSource") == button) return;
+			button.setUserData("disableListener", true);
+			button.setChecked(this.getUserData("slc.command.toggleState"));
+			button.setUserData("disableListener", false);
+		}, this);  		
+  	},
+  	
+  	/**
   	 * Clones the command menu
   	 * @return {qx.ui.menu.Menu}
   	 */
   	getMenuClone : function(){
   		var menuClone = new qx.ui.menu.Menu();
+  		menuClone.setMinWidth(100);
   		var submenus = this.getMenu();
   		if(!submenus) return;
   		for(var i=0;i<submenus.length;i++){
-	  		var button = new qx.ui.menu.Button(submenus[i].label, submenus[i].icon);
-	  		button.setUserData("commandId", submenus[i].commandId);
-	  		button.addListener("execute", this.executeSubMenuCallback, this);
-	  		menuClone.add(button);
+  			if(submenus[i].separator){
+  				menuClone.add(new qx.ui.menu.Separator());
+  			}else{
+		  		var button = new qx.ui.menu.Button(submenus[i].label, submenus[i].icon);
+		  		button.setUserData("commandId", submenus[i].commandId);
+		  		button.addListener("execute", this.executeSubMenuCallback, this);
+		  		menuClone.add(button);
+  			}
   		}
   		this.menuClones.push(menuClone);
   		return menuClone;

@@ -23,7 +23,6 @@ qx.Class.define("org.argeo.ria.components.Modal",
 		});
 		this.setLayout(new qx.ui.layout.Dock());
 		this.setModal(true);
-		this.addCloseButton();
 		this.center();
 		if(text){
 			this.addLabel(text);
@@ -37,6 +36,7 @@ qx.Class.define("org.argeo.ria.components.Modal",
 		 */
 		addLabel:function(text){
 			this.add(new qx.ui.basic.Label(text), {edge:'center', width:'100%'});		
+			this.addCloseButton();
 		},
 		/**
 		 * Display a component (panel) in the center of the popup
@@ -44,6 +44,7 @@ qx.Class.define("org.argeo.ria.components.Modal",
 		 */
 		addContent: function(panel){
 			this.add(panel, {edge:'center', width:'100%'});
+			this.addCloseButton();
 		},
 		/**
 		 * Automatically attach to the application root, then show.
@@ -57,15 +58,26 @@ qx.Class.define("org.argeo.ria.components.Modal",
 			this.closeButton.addListener("execute", this._closeAndDestroy, this);
 			this.add(this.closeButton, {edge:'south'});			
 		},
+		addOkCancel : function(){
+			var buttonPane = new qx.ui.container.Composite(new qx.ui.layout.HBox(5, 'right'));
+			buttonPane.setAlignX("center");
+			this.add(buttonPane, {edge:"south"});
+			this.okButton = new qx.ui.form.Button("Ok");
+			this.cancelButton = new qx.ui.form.Button("Cancel");
+			this.cancelButton.addListener("execute", this._closeAndDestroy, this);
+			buttonPane.add(this.cancelButton);
+			buttonPane.add(this.okButton);
+		},
 		makePromptForm:function(questionString, validationCallback, callbackContext){
 			this.add(new qx.ui.basic.Label(questionString), {edge:'north'});
 			var textField = new qx.ui.form.TextField();
+			textField.setMarginTop(20);
 			this.add(textField, {edge:'center'});
-			this.closeButton.removeListener("execute", this._closeAndDestroy, this);
+			this.addOkCancel();
 			if(callbackContext){
 				validationCallback = qx.lang.Function.bind(validationCallback, callbackContext);
 			}
-			this.closeButton.addListener("execute", function(e){
+			this.okButton.addListener("execute", function(e){
 				var valid = validationCallback(textField.getValue());
 				if(valid) this._closeAndDestroy();
 			}, this);
