@@ -9,8 +9,6 @@ qx.Class.define("org.argeo.slc.web.Applet",
   construct : function(){
   	this.base(arguments);
 	this.setLayout(new qx.ui.layout.VBox());
-  	//this.passedStatus = "<div align=\"center\"><img src=\"resource/slc/dialog-ok.png\" height=\"16\" width=\"16\"></div>";
-  	//this.failedStatus = "<div align=\"center\"><img src=\"resource/slc/flag.png\" height=\"16\" width=\"16\"></div>";
   	this.passedStatus = "PASSED";
   	this.failedStatus = "FAILED";
   },
@@ -31,18 +29,10 @@ qx.Class.define("org.argeo.slc.web.Applet",
   				toolbar  	: "result",
   				callback	: function(e){
   					// Call service to delete
-  					//org.argeo.slc.web.components.ViewsManager.getInstance().getViewPaneById("applet").empty();
   					this.getView().empty();  					
   				},
   				selectionChange : function(viewId, xmlNode){  					
   					if(viewId != "applet") return;
-  					/*
-  					if(xmlNode){
-  						this.setEnabled(true);
-  					}else{
-  						this.setEnabled(false);
-  					}
-  					*/
   				},
   				command 	: null
   			}  			
@@ -99,7 +89,6 @@ qx.Class.define("org.argeo.slc.web.Applet",
   		this.tree.setDecorator(new qx.ui.decoration.Background("#fff"));
   		var model = this.tree.getDataModel();
   		var resNodes = org.argeo.ria.util.Element.selectNodes(responseXml, "//slc:result-part", NSMap);
-  		window.result = responseXml;
   		var resultParts = {};
   		var addedPaths = {};
   		for(var i=0;i<resNodes.length;i++){
