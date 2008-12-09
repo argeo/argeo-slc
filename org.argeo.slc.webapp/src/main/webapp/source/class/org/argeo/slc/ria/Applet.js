@@ -1,7 +1,7 @@
 /**
  * @author Charles
  */
-qx.Class.define("org.argeo.slc.web.Applet",
+qx.Class.define("org.argeo.slc.ria.Applet",
 {
   extend : qx.ui.container.Composite,
   implement : [org.argeo.ria.components.IView], 
@@ -173,7 +173,7 @@ qx.Class.define("org.argeo.slc.web.Applet",
   		resize.set(1, {width:55});
   		resize.set(2, {width:"1*"});
   		resize.set(3, {width:150});
-  		columnModel.setDataCellRenderer(1, new org.argeo.slc.web.StatusCellRenderer());
+  		columnModel.setDataCellRenderer(1, new org.argeo.slc.ria.StatusCellRenderer());
   		
 	    this.tree.getSelectionManager().getSelectionModel().addListener("changeSelection", function(e){
 			var viewSelection = this.getView().getViewSelection();

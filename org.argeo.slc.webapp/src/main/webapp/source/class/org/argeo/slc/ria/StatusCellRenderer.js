@@ -21,7 +21,7 @@
  * This Cellrender is for test status use. It create green or red background
  * cells depending on the status value (PASSED or FAILED).
  */
-qx.Class.define("org.argeo.slc.web.StatusCellRenderer",
+qx.Class.define("org.argeo.slc.ria.StatusCellRenderer",
 {
   extend : qx.ui.table.cellrenderer.Html,
 
