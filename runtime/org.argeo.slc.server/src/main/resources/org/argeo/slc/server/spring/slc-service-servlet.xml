@@ -29,6 +29,11 @@
 		<constructor-arg ref="testResultCollectionDao" />
 	</bean>
 
+	<bean name="/listResults.service"
+		class="org.argeo.slc.web.mvc.result.ListResultsController">
+		<constructor-arg ref="testResultCollectionDao" />
+	</bean>
+
 	<!--
 		<bean name="/resultList.service"
 		class="org.argeo.slc.web.mvc.result.ResultListController">

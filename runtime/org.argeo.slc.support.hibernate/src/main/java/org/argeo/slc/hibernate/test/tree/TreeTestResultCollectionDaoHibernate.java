@@ -2,9 +2,11 @@ package org.argeo.slc.hibernate.test.tree;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.test.tree.ResultAttributes;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
@@ -12,6 +14,7 @@ import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
+import org.hibernate.criterion.DetachedCriteria;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
@@ -87,6 +90,51 @@ public class TreeTestResultCollectionDaoHibernate extends HibernateDaoSupport
 									+ " where ttr in elements(ttrc.results) and ttrc.id=?",
 							collectionId);
 
+		return list;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<TreeTestResult> listResults(String collectionId,
+			Map<String, String> attributes) {
+		List<TreeTestResult> list;
+
+		if (collectionId == null) {
+			if (attributes == null || attributes.size() == 0)
+				list = getHibernateTemplate().find("from TreeTestResult");
+			else if (attributes.size() == 1) {
+				Map.Entry<String, String> entry = attributes.entrySet()
+						.iterator().next();
+				Object[] args = { entry.getKey(), entry.getValue() };
+				list = getHibernateTemplate().find(
+						"select ttr from TreeTestResult ttr"
+								+ " where attributes[?]=?", args);
+			} else {
+				throw new SlcException(
+						"Multiple attributes filter are currently not supported.");
+			}
+		} else {
+			if (attributes == null || attributes.size() == 0)
+				list = getHibernateTemplate()
+						.find(
+								"select ttr "
+										+ " from TreeTestResult ttr, TreeTestResultCollection ttrc "
+										+ " where ttr in elements(ttrc.results) and ttrc.id=?",
+								collectionId);
+			else if (attributes.size() == 1) {
+				Map.Entry<String, String> entry = attributes.entrySet()
+						.iterator().next();
+				Object[] args = { collectionId, entry.getKey(),
+						entry.getValue() };
+				list = getHibernateTemplate()
+						.find(
+								"select ttr from TreeTestResult ttr, TreeTestResultCollection ttrc "
+										+ " where ttr in elements(ttrc.results) and ttrc.id=?"
+										+ " and attributes[?]=?", args);
+			} else {
+				throw new SlcException(
+						"Multiple attributes filter are currently not supported.");
+			}
+		}
 		return list;
 	}
 }
