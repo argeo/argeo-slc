@@ -69,11 +69,8 @@ qx.Class.define("org.argeo.slc.web.Applet",
   		var service;  		
 		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
 		var testId = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(this.data, "slc:uuid"));		
-		this.info("Opening test "+testId);
 		this.getView().setViewTitle("Test "+testId);
-		service = "../resultViewXml.xslt?uuid="+testId;
-		var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
-  		var request = serviceManager.getRequest(service, "GET", "application/xml");
+  		var request = org.argeo.slc.web.SlcApi.getLoadResultService(testId);  		
   		request.addListener("completed", function(response){
 			this.createXmlGui(response.getContent());
 			this.getView().setOnLoad(false);
@@ -131,14 +128,34 @@ qx.Class.define("org.argeo.slc.web.Applet",
 				var simpleResults = org.argeo.ria.util.Element.selectNodes(node, "slc:part-sub-list/slc:parts/slc:simple-result-part", NSMap);
 
 				var newId;
-				newId = model.addBranch(currentParentId, label, false);
+				//newId = model.addBranch(currentParentId, label, false);
 				
 				// Test Leaf Node
 				if(!simpleResults || !simpleResults.length){
+					newId = model.addBranch(currentParentId, label, false);
 					addedPaths[crtPath] = newId;
 					currentParentId = newId;
 					continue;
 				}
+				if(simpleResults.length == 1){
+					//newId = model.addBranch(currentParentId, label, false);
+					var sResNode = simpleResults[0];
+					newId = model.addBranch(currentParentId, label);
+					model.setColumnData(newId, 3, org.argeo.ria.util.Element.getSingleNodeText(sResNode, "slc:test-run-uuid", NSMap));
+					model.setColumnData(newId, 2, org.argeo.ria.util.Element.getSingleNodeText(sResNode, "slc:message", NSMap));
+					var status = org.argeo.ria.util.Element.getSingleNodeText(sResNode, "slc:status", NSMap);
+					if(status != "PASSED"){
+						status = this.failedStatus ;
+						this._setParentBranchAsFailed(newId);
+					}else{
+						status = this.passedStatus;
+					}
+					model.setColumnData(newId, 1, status);											
+					addedPaths[crtPath] = newId;
+					currentParentId = newId;
+					continue;
+				}
+				newId = model.addBranch(currentParentId, label, false);
 				for(var k=0;k<simpleResults.length;k++){
 					var sResNode = simpleResults[k];
 					resId = model.addLeaf(currentParentId, label);
@@ -158,6 +175,7 @@ qx.Class.define("org.argeo.slc.web.Applet",
 				currentParentId = newId;
 			}
   		}
+  		this._refineLeaves(this.tree, 0);
   		this.add(this.tree, {flex:1});
   		model.setData();
   		var columnModel = this.tree.getTableColumnModel();
@@ -193,6 +211,17 @@ qx.Class.define("org.argeo.slc.web.Applet",
 				this.tree.nodeSetOpened(id, true);
 			}
 		}  		
+  	},
+  	
+  	_refineLeaves : function(tree, nodeId){
+  		var node = tree.nodeGet(nodeId);  		
+  		if(node.children && node.children.length){
+  			for(var i=0;i<node.children.length;i++){
+  				this._refineLeaves(tree, node.children[i]);
+  			}
+  		}else{
+  			node.type = qx.ui.treevirtual.SimpleTreeDataModel.Type.LEAF;
+  		}
   	},
   	
   	createHtmlGui : function(responseText){

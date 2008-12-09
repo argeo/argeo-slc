@@ -34,22 +34,18 @@ qx.Class.define("org.argeo.slc.web.XmlRenderer",
 		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || "Not Found");
     			break;
     		case 1 : 
-    			return "-";
-    			xPath = 'param[@name="date"]';
+    			xPath = "slc:close-date";
 		    	var nameParam = org.argeo.ria.util.Element.selectSingleNode(xmlNode, xPath, NSMap);
-		    	//qx.log.Logger.info(nameParam);
-		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || 0);
+		    	var value = qx.bom.String.escape(qx.dom.Node.getText(nameParam) || "NOT CLOSED");
 		    	if(value == "NOT CLOSED") return value;
 		    	var splits = value.split(".");
-				//qx.log.Logger.info(value);
+		    	value = splits[0].replace("T", " ");				
 		    	var dateFormat = new qx.util.format.DateFormat("yyyy-MM-dd HH:mm:ss");
 		    	try {
-			    	var date = dateFormat.parse(splits[0]);
+			    	var date = dateFormat.parse(value);
 			    	var dateFormat2 = new qx.util.format.DateFormat("MMM d, yy HH:mm:ss");
 			    	return dateFormat2.format(date);
-		    	}catch(e){
-		    		qx.log.Logger.info(e);
-		    	}
+		    	}catch(e){}
     			break;
     		default :
     			return "";

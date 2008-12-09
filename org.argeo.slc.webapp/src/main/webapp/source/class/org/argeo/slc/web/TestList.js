@@ -44,6 +44,20 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				}, 
   				command 	: null
   			},
+  			"polllistloading" : {
+  				label		: "Auto load", 
+  				icon 		: "resource/slc/document-open-recent.png",
+  				shortcut 	: "Control+l",
+  				enabled  	: true,
+  				toggle		: true,
+  				menu	   	: "Collection",
+  				toolbar  	: "collection",
+  				callback 	: function(event){
+  					this.pollListLoading(event.getTarget().getUserData("slc.command.toggleState"));
+  				}, 
+  				command 	: null
+  			},
+  			/*
   			"copyfullcollection" : {
   				label	 	: "Copy to...", 
   				icon 		: "resource/slc/edit-copy.png",
@@ -69,6 +83,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				},
   				command 	: null
   			},
+  			*/
   			"opentest" : {
   				label	 	: "Open", 
   				icon 		: "resource/slc/media-playback-start.png",
@@ -100,7 +115,12 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				toolbar  	: "selection",
   				callback	: function(e){ },
   				command 	: null,
-  				submenu 	: {},
+  				submenu 	: [
+  						{'label':"Xsl", 'icon':'resource/slc/mime-xsl.png', 'commandId':'xsl'},
+  						{'label':"Xml", 'icon':'resource/slc/mime-xml.png', 'commandId':'xml'},
+  						{'label':"Excel", 'icon':'resource/slc/mime-xls.png', 'commandId':'xls'},
+  						{'label':"Pdf", 'icon':'resource/slc/mime-pdf.png', 'commandId':'pdf'}
+  					],
   				submenuCallback : function(commandId){
   					var uuid = this.extractTestUuid();
   					var urls = {
@@ -116,68 +136,13 @@ qx.Class.define("org.argeo.slc.web.TestList",
   						var win = window.open(url);
   					}
   				},
-  				init : function(command){
-  					this.setMenu([
-  						{'label':"Xsl", 'icon':'resource/slc/mime-xsl.png', 'commandId':'xsl'},
-  						{'label':"Xml", 'icon':'resource/slc/mime-xml.png', 'commandId':'xml'},
-  						{'label':"Excel", 'icon':'resource/slc/mime-xls.png', 'commandId':'xls'},
-  						{'label':"Pdf", 'icon':'resource/slc/mime-pdf.png', 'commandId':'pdf'}
-  					]);
-  				},
   				selectionChange : function(viewId, xmlNodes){
   					if(viewId!="list")return;
   					//this.clearMenus();
   					this.setEnabled(false);
   					if(xmlNodes == null || !xmlNodes.length) return;
   					this.setEnabled(true);
-  					/*
-  					var reports = qx.xml.Element.selectNodes(xmlNodes[0],'report[@type="download"]');
-  					if(reports == null || !reports.length)return;
-  					var submenus = [];
-  					for(var i=0; i<reports.length;i++){
-  						var report = reports[i];
-  						var commandId = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(report, "@commandid"));
-  						submenus.push({
-  							"label":qx.dom.Node.getText(report), 
-  							"icon":"resource/slc/mime-"+commandId+".png", 
-  							"commandId":commandId
-  						});
-  					}
-  					this.setMenu(submenus);
-  					this.setEnabled(true);
-  					*/
   				}
-  			},
-  			"deletetest" : {
-  				label	 	: "Delete", 
-  				icon 		: "resource/slc/edit-delete.png",
-  				shortcut 	: "Control+d",
-  				enabled  	: false,
-  				menu	   	: "Selection",
-  				toolbar  	: "selection",
-  				callback	: function(e){
-  					var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
-  					var request = serviceManager.getRequest(
-  						"/org.argeo.slc.webapp/removeResultFromCollection.service",
-  						"GET",
-  						"application/xml"
-  					);
-  					request.setParameter("collectionId", this.getCollectionId());
-  					request.setParameter("resultUuid", this.extractTestUuid());
-					request.addListener("completed", function(response){
-						this.loadCollections();
-						this.loadList();
-						this.info("Test was successfully deleted");
-					}, this);
-					request.send();
-  				},
-	  			selectionChange : function(viewId, xmlNodes){
-					if(viewId != "list") return;
-					this.setEnabled(false);
-					if(xmlNodes == null || !xmlNodes.length) return;
-					this.setEnabled(true);  						
-	  			},
-  				command 	: null
   			},
   			"copytocollection" : {
   				label	 	: "Copy to...", 
@@ -209,7 +174,32 @@ qx.Class.define("org.argeo.slc.web.TestList",
 					this.setEnabled(true);  						
 	  			},
   				command 	: null
-  			}  			
+  			},
+  			"deletetest" : {
+  				label	 	: "Delete", 
+  				icon 		: "resource/slc/edit-delete.png",
+  				shortcut 	: "Control+d",
+  				enabled  	: false,
+  				menu	   	: "Selection",
+  				toolbar  	: "selection",
+  				callback	: function(e){
+  					
+  					var request = org.argeo.slc.web.SlcApi.getRemoveResultService(this.getCollectionId(), this.extractTestUuid());
+					request.addListener("completed", function(response){
+						this.loadCollections();
+						this.loadList();
+						this.info("Test was successfully deleted");
+					}, this);
+					request.send();
+  				},
+	  			selectionChange : function(viewId, xmlNodes){
+					if(viewId != "list") return;
+					this.setEnabled(false);
+					if(xmlNodes == null || !xmlNodes.length) return;
+					this.setEnabled(true);  						
+	  			},
+  				command 	: null
+  			}
   		}
 	}
   },
@@ -223,7 +213,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	statusBarVisible: false,
 		showCellFocusIndicator:false,
 		columnVisibilityButtonVisible:false,
-		contextMenu : org.argeo.ria.event.CommandsManager.getInstance().createMenuFromIds(["opentest", "deletetest", "copytocollection"]),
+		contextMenu : org.argeo.ria.event.CommandsManager.getInstance().createMenuFromIds(["opentest", "download", "copytocollection", "deletetest"]),
 		decorator : new qx.ui.decoration.Background("#fff")
 	  });
 	  var viewPane = this.getView();
@@ -274,13 +264,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	},
 	
 	loadCollections : function(){
-		var url = "/org.argeo.slc.webapp/listCollectionRefs.service";
-		var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
-		var request = serviceManager.getRequest(
-			url,
-			"GET",
-			"application/xml"
-		);
+		var request = org.argeo.slc.web.SlcApi.getListCollectionsService();
 		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
 		request.addListener("completed", function(response){
 			var xml = response.getContent();
@@ -298,23 +282,14 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	},
 	
 	loadList : function(){
-		var url = "/org.argeo.slc.webapp/listResultAttributes.service";
 	  	var model = this.table.getTableModel();
 	  	model.removeRows(0, model.getRowCount());
-	  	var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
 	  	var commandManager = org.argeo.ria.event.CommandsManager.getInstance();
-	  	var request = serviceManager.getRequest(
-	  		url, 
-	  		"GET", 
-	  		"application/xml",	
-	  		null,
-	  		[commandManager.getCommandById("loadtestlist"), this.getView()]
-	  	);	 
-	  	request.setParameter("id", this.getCollectionId());
+	  	var request = org.argeo.slc.web.SlcApi.getListResultsService(this.getCollectionId(), null, [commandManager.getCommandById("loadtestlist"), this.getView()]);
 	  	var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
 	  	request.addListener("completed", function(response){
   			var xml = response.getContent();
-	  		this.info("Successfully loaded XML");
+	  		this.debug("Successfully loaded XML");
 	  		var nodes = org.argeo.ria.util.Element.selectNodes(xml, "//slc:result-attributes", NSMap);
 	  		for(var i=0; i<nodes.length;i++){
 	  			var rowData = nodes[i];
@@ -322,6 +297,19 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  		}
 	  	}, request);
 	  	request.send();		
+	},
+	
+	pollListLoading : function(state){
+		if(!this.timer){
+			this.timer = new qx.event.Timer(5000);
+			this.timer.addListener("interval", this.loadList, this);
+		}
+		if(state){
+			this.loadList();
+			this.timer.start();
+		}else{
+			this.timer.stop();
+		}
 	},
 	
 	collectionListToMenu : function(command, checkSelection){
@@ -338,6 +326,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 				"commandId":key
 			});
 		}		
+		submenus.push({'separator':true});
 		submenus.push({"label":"New...", "icon":"resource/slc/folder-new.png", "commandId":"slc.client.create"});
 		command.setMenu(submenus);
 		if(checkSelection){
@@ -366,24 +355,17 @@ qx.Class.define("org.argeo.slc.web.TestList",
 			return;
 		}
 
-		var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
-		var request = serviceManager.getRequest(
-			"/org.argeo.slc.webapp/addResultToCollection.service", 
-			"GET", 
-			"application/xml"
-		);
-
 		if(selectionType == "current_collection"){
 			this.error("Not implemented yet!");			
 		}else if(selectionType == "current_selection"){
 			// get selection ID
-			request.setParameter("collectionId", collectionId);
-			request.setParameter("resultUuid", this.extractTestUuid());
+			var request = org.argeo.slc.web.SlcApi.getAddResultService(collectionId,this.extractTestUuid());
+			request.addListener("completed", function(response){
+				this.info("Result successfully copied to collection!");
+				this.loadCollections();
+			}, this);
+			request.send();		
 		}
-		request.addListener("completed", function(response){
-			this.loadCollections();
-		}, this);
-		request.send();		
 	},
 	
 	extractTestUuid: function(){
