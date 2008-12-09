@@ -24,7 +24,7 @@
 			<New class="org.hsqldb.jdbc.jdbcDataSource">
 				<Set name="database">
 					<Property name="jdbcUrl"
-						default="jdbc:hsqldb:file:/home/mbaudier/dev/work/slcDbs/slcMainDs" />
+						default="jdbc:hsqldb:mem:mainDs" />
 				</Set>
 				<Set name="user">sa</Set>
 				<Set name="password"></Set>
