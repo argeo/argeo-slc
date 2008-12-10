@@ -87,7 +87,7 @@ public class Main {
 
 		String equinoxArgsLineDefault = "-console -noExit -clean -debug -configuration "
 				+ equinoxConfigurationPath;
-		String equinoxArgsLine = System.getProperty(PROP_SLC_OSGI_EQUINOX_ARGS,
+		String equinoxArgsLine = config.getProperty(PROP_SLC_OSGI_EQUINOX_ARGS,
 				equinoxArgsLineDefault);
 		// String[] equinoxArgs = { "-console", "-noExit", "-clean", "-debug",
 		// "-configuration", equinoxConfigurationPath };
