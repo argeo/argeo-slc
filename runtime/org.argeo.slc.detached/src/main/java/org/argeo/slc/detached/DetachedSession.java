@@ -3,6 +3,7 @@ package org.argeo.slc.detached;
 import java.util.List;
 import java.util.Vector;
 
+/** A session within the detached context. */
 public class DetachedSession {
 	public final static String PROP_DO_IT_AGAIN_POLICY = "slc.detached.doItAgainPolicy";
 	public final static String SKIP_UNTIL_ERROR = "skipUntilError";
@@ -47,4 +48,10 @@ public class DetachedSession {
 		return answers;
 	}
 
+	public String toString() {
+		StringBuffer buf = new StringBuffer(getClass().getName());
+		buf.append("#").append(uuid);
+		buf.append(" doItAgainPolicy=").append(doItAgainPolicy);
+		return buf.toString();
+	}
 }

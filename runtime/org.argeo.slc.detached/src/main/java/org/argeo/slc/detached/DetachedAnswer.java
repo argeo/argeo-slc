@@ -2,6 +2,7 @@ package org.argeo.slc.detached;
 
 import java.util.Properties;
 
+/** An answer returned by the detached server. Always related to a request. */
 public class DetachedAnswer implements DetachedCommunication {
 	static final long serialVersionUID = 1l;
 
@@ -54,6 +55,11 @@ public class DetachedAnswer implements DetachedCommunication {
 		this.log = log;
 	}
 
+	public void addToLog(String msg) {
+		this.log = new StringBuffer(this.log).append(msg).toString();
+	}
+
+	/** The unique identifier of this answer. */
 	public String getUuid() {
 		return uuid;
 	}
@@ -82,4 +88,14 @@ public class DetachedAnswer implements DetachedCommunication {
 			throw new DetachedException("Unkown status " + status);
 		}
 	}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer(getClass().getName());
+		buf.append('#').append(uuid);
+		buf.append(" status=").append(convertStatus(status));
+		buf.append(" properties=").append(properties);
+		buf.append(" log=").append(log);
+		return buf.toString();
+	}
+
 }

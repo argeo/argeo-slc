@@ -30,4 +30,10 @@ public class DetachedContextImpl implements DetachedContext {
 		return new ArrayList(executedPaths);
 	}
 
+	public String toString() {
+		StringBuffer buf = new StringBuffer(getClass().getName());
+		buf.append(" currentPath=").append(currentPath);
+		buf.append(" executedPaths=").append(executedPaths);
+		return buf.toString();
+	}
 }
