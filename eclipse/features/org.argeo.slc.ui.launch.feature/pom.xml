@@ -7,8 +7,9 @@
 		<version>0.11.2-SNAPSHOT</version>
 		<relativePath>../../../org.argeo.slc</relativePath>
 	</parent>
+	<groupId>org.argeo.slc.eclipse</groupId>
 	<artifactId>org.argeo.slc.ui.launch.feature</artifactId>
-	<packaging>eclipseFeature</packaging>
+	<packaging>zip</packaging>
 	<name>Argeo SLC Launch Eclipse Feature</name>
 	<description>Simplify running scripts based on Argeo SLC</description>
 	<build>
@@ -16,7 +17,7 @@
 			<plugin>
 				<groupId>org.argeo.slc.maven</groupId>
 				<artifactId>maven-argeo-pde-plugin</artifactId>
-				<version>0.3.1</version>
+				<version>0.3.2</version>
 				<extensions>true</extensions>
 				<configuration>
 					<buildScriptProperties><![CDATA[-DjavacSource=1.5 -DjavacTarget=1.5]]></buildScriptProperties>
