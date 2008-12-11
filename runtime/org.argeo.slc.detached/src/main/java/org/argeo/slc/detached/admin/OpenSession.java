@@ -1,6 +1,9 @@
 package org.argeo.slc.detached.admin;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,15 +31,23 @@ public class OpenSession implements DetachedAdminCommand {
 		String refreshedBundles = props
 				.getProperty("slc.detached.refreshedBundles");
 		if (refreshedBundles != null) {
+			List refreshedBundleNames = new ArrayList();
+			StringTokenizer st = new StringTokenizer(refreshedBundles, ",");
+			while (st.hasMoreTokens()) {
+				refreshedBundleNames.add(st.nextElement());
+			}
+
 			Bundle[] bundles = bundleContext.getBundles();
-			Bundle bundle = null;
+
+			List bundlesToRefresh = new ArrayList();
 			for (int i = 0; i < bundles.length; i++) {
-				if (bundles[i].getSymbolicName().equals(refreshedBundles)) {
-					bundle = bundles[i];
+				if (refreshedBundleNames.contains(bundles[i].getSymbolicName())) {
+					bundlesToRefresh.add(bundles[i]);
 				}
 			}
 
-			if (bundle != null) {
+			for (int i = 0; i < bundlesToRefresh.size(); i++) {
+				Bundle bundle = (Bundle) bundlesToRefresh.get(i);
 				try {
 					bundle.stop();
 					bundle.update();
@@ -46,10 +57,7 @@ public class OpenSession implements DetachedAdminCommand {
 					throw new DetachedException("Could not refresh bundle "
 							+ bundle.getSymbolicName(), e);
 				}
-			} else {
-				log.warn("Did not find bundle to refresh " + refreshedBundles);
 			}
-
 		}
 
 		return session;
