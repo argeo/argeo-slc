@@ -76,17 +76,6 @@
 
 			<parameters>
 				<!-- Common -->
-				<!-- TODO: remove -->
-				<parameter>
-					<name>eclipseBuildDir</name>
-					<property>eclipseBuildDir</property>
-					<required>true</required>
-					<expression>${eclipseBuildDir}</expression>
-					<type>java.lang.String</type>
-					<description>
-						The Eclipse build dir location
-					</description>
-				</parameter>
 				<parameter>
 					<name>eclipseAntArgs</name>
 					<property>eclipseAntArgs</property>

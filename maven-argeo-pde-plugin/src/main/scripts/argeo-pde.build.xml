@@ -141,7 +141,7 @@
 		</copy>
 
 		<!-- Execute -->
-		<eclipseAnt antfile="${productBuildFile}" antargs="-Dbuilder=${buildConfiguration.dir} -DbuildDirectory=${buildDirectory} -DbaseLocation=${eclipseTarget} -Dbase=${base} -DpluginPath=${dependencyDir} -DarchivePrefix=${archivePrefix} -DbuildLabel=${buildLabel} -DbuildId=${buildId} -DcollectingFolder=${collectingFolder} -DskipFetch=${skipFetch} -DskipMaps=${skipMaps} -DrunPackager=${runPackager}" />
+		<eclipseAnt antfile="${productBuildFile}" antargs="-Dbuilder=${buildConfiguration.dir} -DbuildDirectory=${buildDirectory} -DskipBase=true -DbaseLocation=${eclipseTarget} -DpluginPath=${dependencyDir} -DarchivePrefix=${archivePrefix} -DbuildLabel=${buildLabel} -DbuildId=${buildId} -DcollectingFolder=${collectingFolder} -DskipFetch=${skipFetch} -DskipMaps=${skipMaps} -DrunPackager=${runPackager}" />
 
 		<!-- Copy to target dir -->
 		<copy todir="${project.build.directory}">

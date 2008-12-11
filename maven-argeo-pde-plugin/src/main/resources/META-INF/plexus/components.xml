@@ -33,9 +33,53 @@
 			</configuration>
 		</component>
 		<component>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping
+			</role>
+			<role-hint>eclipseProduct</role-hint>
+			<implementation>
+				org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<lifecycles>
+					<lifecycle>
+						<id>default</id>
+						<phases>
+							<initialize>
+								org.argeo.slc.maven:maven-argeo-pde-plugin:eclipseTarget
+							</initialize>
+							<package>
+								org.argeo.slc.maven:maven-argeo-pde-plugin:packageProduct
+							</package>
+							<install>
+								org.apache.maven.plugins:maven-install-plugin:install
+							</install>
+							<deploy>
+								org.apache.maven.plugins:maven-deploy-plugin:deploy
+							</deploy>
+						</phases>
+					</lifecycle>
+				</lifecycles>
+			</configuration>
+		</component>
+		<component>
 			<role>org.apache.maven.artifact.handler.ArtifactHandler
 			</role>
 			<role-hint>eclipseFeature</role-hint>
+			<implementation>
+				org.apache.maven.artifact.handler.DefaultArtifactHandler
+			</implementation>
+			<configuration>
+				<type>eclipseFeature</type>
+				<includesDependencies>false</includesDependencies>
+				<language>java</language>
+				<extension>zip</extension>
+				<addedToClasspath>false</addedToClasspath>
+			</configuration>
+		</component>
+		<component>
+			<role>org.apache.maven.artifact.handler.ArtifactHandler
+			</role>
+			<role-hint>eclipseProduct</role-hint>
 			<implementation>
 				org.apache.maven.artifact.handler.DefaultArtifactHandler
 			</implementation>
