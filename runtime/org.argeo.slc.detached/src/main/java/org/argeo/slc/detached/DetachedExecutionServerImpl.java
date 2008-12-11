@@ -35,6 +35,8 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 	}
 
 	public synchronized DetachedAnswer executeRequest(DetachedRequest request) {
+		log.info("Received request " + request);
+
 		DetachedAnswer answer = null;
 		try {
 			// Find action
@@ -104,10 +106,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 
 		getCurrentSession().getRequests().add(request);
 		getCurrentSession().getAnswers().add(answer);
-		if (log.isDebugEnabled())
-			log.debug("Processed '" + request.getRef() + "' (status="
-					+ answer.getStatusAsString() + ", path="
-					+ request.getPath() + ")");
+		log.info("Sent answer " + answer);
 		return answer;
 	}
 
@@ -176,10 +175,19 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 			DetachedAdminCommand obj, DetachedRequest request) {
 		DetachedAnswer answer;
 		if (obj instanceof OpenSession) {
-			if (getCurrentSession() != null)
-				throw new DetachedException(
-						"There is already an open session #"
-								+ getCurrentSession().getUuid());
+			if (getCurrentSession() != null) {
+				// TODO: better understand why there is sometimes two open
+				// sessions sent.
+				log.warn("There is already an open session #"
+						+ getCurrentSession().getUuid() + ". Closing it...");
+				DetachedAnswer answerT = new DetachedAnswer(
+						request,
+						"Session #"
+								+ getCurrentSession().getUuid()
+								+ " forcibly closed. THIS ANSWER WAS NOT SENT BACK.");
+				answerT.setStatus(DetachedAnswer.CLOSED_SESSION);
+				getCurrentSession().getAnswers().add(answerT);
+			}
 			sessions.add(((OpenSession) obj).execute(request, bundleContext));
 			answer = new DetachedAnswer(request, "Session #"
 					+ getCurrentSession().getUuid() + " open.");
@@ -226,7 +234,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 		buf.append("Current session: ").append(getCurrentSession())
 				.append('\n');
 		buf.append("Current request: ").append(requestCurrent).append('\n');
-		buf.append("Current answer: ").append(requestCurrent).append('\n');
+		buf.append("Current answer: ").append(answerCurrent).append('\n');
 		buf.append("Skip count: ").append(skipCount).append('\n');
 
 		buf.append("# SESSIONS\n");
