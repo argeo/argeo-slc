@@ -12,7 +12,7 @@
 			sort="natural">
 			<cache usage="read-write" />
 			<key column="PARENT_ID" />
-			<many-to-many class="TreeTestResult" />
+			<many-to-many class="TreeTestResult" column="TTR"/>
 		</set>
 	</class>
 </hibernate-mapping>

@@ -26,7 +26,7 @@ public class ListResultsController extends AbstractServiceController {
 	protected void handleServiceRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView modelAndView)
 			throws Exception {
-		String collectionId = request.getParameter("id");
+		String collectionId = request.getParameter("collectionId");
 
 		Map<String, String[]> parameterMap = request.getParameterMap();
 

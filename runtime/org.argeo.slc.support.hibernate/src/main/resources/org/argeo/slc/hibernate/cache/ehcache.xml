@@ -31,15 +31,15 @@
 		name="org.argeo.slc.core.test.tree.TreeTestResultCollection.results"
 		maxElementsInMemory="1000" />
 
-	<cache name="org.argeo.slc.core.process.SlcExecution"
+	<cache name="org.argeo.slc.process.SlcExecution"
 		maxElementsInMemory="1000" />
-	<cache name="org.argeo.slc.core.process.SlcExecution.attributes"
+	<cache name="org.argeo.slc.process.SlcExecution.attributes"
 		maxElementsInMemory="5000" />
-	<cache name="org.argeo.slc.core.process.SlcExecution.steps"
+	<cache name="org.argeo.slc.process.SlcExecution.steps"
 		maxElementsInMemory="10000" />
-	<cache name="org.argeo.slc.core.process.SlcExecutionStep"
+	<cache name="org.argeo.slc.process.SlcExecutionStep"
 		maxElementsInMemory="10000" />
-	<cache name="org.argeo.slc.core.process.SlcExecutionStep.logLines"
+	<cache name="org.argeo.slc.process.SlcExecutionStep.logLines"
 		maxElementsInMemory="100000" />
 
 	<cache name="org.argeo.slc.core.test.TestRunDescriptor"
