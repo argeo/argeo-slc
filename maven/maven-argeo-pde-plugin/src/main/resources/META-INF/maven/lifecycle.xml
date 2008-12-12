@@ -7,7 +7,7 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>org.argeo.slc.maven:maven-dependency-argeo-plugin:unpack-dependencies</goal>
+							<goal>org.apache.maven.plugins:maven-dependency-plugin:unpack-dependencies</goal>
 						</goals>
 						<configuration>
 							<useSubDirectoryPerArtifact>
