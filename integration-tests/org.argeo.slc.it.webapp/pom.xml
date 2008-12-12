@@ -112,5 +112,10 @@
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>com.springsource.javax.activation</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
