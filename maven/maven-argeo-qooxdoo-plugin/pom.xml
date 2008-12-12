@@ -3,7 +3,7 @@
 	<groupId>org.argeo.slc.maven</groupId>
 	<artifactId>maven-argeo-qooxdoo-plugin
 	</artifactId>
-	<version>0.8.0.6</version>
+	<version>0.8.0.7</version>
 	<packaging>maven-plugin</packaging>
 	<name>Argeo Qooxdoo Plugin</name>
 
@@ -29,7 +29,42 @@
 			<artifactId>maven-project</artifactId>
 			<version>2.0.7</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.maven</groupId>
+			<artifactId>maven-dependency-argeo-plugin</artifactId>
+			<version>2.0.argeo.1</version>
+		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>argeo</id>
+			<url>http://www.argeo.org/maven/argeo</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>argeo-snapshots</id>
+			<url>http://www.argeo.org/maven/argeo-snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 	<distributionManagement>
 		<repository>
 			<uniqueVersion>false</uniqueVersion>
