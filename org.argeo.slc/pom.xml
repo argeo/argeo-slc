@@ -4,7 +4,7 @@
 	<artifactId>argeo-slc</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC</name>
-	<version>0.11.2</version>
+	<version>0.11.3-SNAPSHOT</version>
 	<description>SLC Distribution</description>
 	<url>
 		http://www.argeo.org/projects/slc/${project.artifactId}/${project.version}
@@ -18,8 +18,8 @@
 		<version.maven-bundle-plugin>1.4.3</version.maven-bundle-plugin>
 	</properties>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.11.2/org.argeo.slc</connection>
-		<url>https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.11.2/org.argeo.slc</url>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc</connection>
+		<url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc</url>
 	</scm>
 	<issueManagement>
 		<system>Bugzilla</system>
