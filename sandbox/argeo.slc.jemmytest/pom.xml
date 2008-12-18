@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.11.2-SNAPSHOT</version>
+		<version>0.11.3-SNAPSHOT</version>
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.sandbox</groupId>
@@ -32,6 +32,7 @@
 						<Require-Bundle>
 							org.argeo.slc.detached
                         </Require-Bundle>
+						<Spring-Context>*;create-asynchronously:=false</Spring-Context>
 					</instructions>
 
 				</configuration>
