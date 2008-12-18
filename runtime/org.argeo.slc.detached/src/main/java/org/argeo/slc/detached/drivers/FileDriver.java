@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -32,6 +33,7 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 	private final static Log log = LogFactory.getLog(FileDriver.class);
 	private final static SimpleDateFormat sdf = new SimpleDateFormat(
 			"yyMMdd_HHmmss_SSS");
+	private final static MessageFormat mf = new MessageFormat("{0,number,000}");
 
 	private File baseDir;
 	private File requestsDir;
@@ -45,6 +47,10 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 	private FileFilter notLockFileFilter = new NotFileFilter(
 			new SuffixFileFilter("." + lockFileExt));
 
+	// Counters to avoid naming files with same prefix
+	private long lastSentTime = 0;
+	private int counter = 0;
+
 	public synchronized DetachedRequest receiveRequest() throws Exception {
 		DetachedRequest request = (DetachedRequest) receiveFile(requestsDir,
 				processedRequestsDir, 0);
@@ -56,13 +62,13 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 		return request;
 	}
 
-	public void sendAnswer(DetachedAnswer answer) throws Exception {
+	public synchronized void sendAnswer(DetachedAnswer answer) throws Exception {
 		sendFile(answersDir, answer);
 		if (log.isTraceEnabled())
 			log.trace("Sent     detached answer  #" + answer.getUuid());
 	}
 
-	public DetachedAnswer receiveAnswer() throws Exception {
+	public synchronized DetachedAnswer receiveAnswer() throws Exception {
 		DetachedAnswer answer = (DetachedAnswer) receiveFile(answersDir,
 				processedAnswersDir, getReceiveAnswerTimeout());
 		if (answer != null)
@@ -71,7 +77,7 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 		return answer;
 	}
 
-	public void sendRequest(DetachedRequest request) throws Exception {
+	public synchronized void sendRequest(DetachedRequest request) throws Exception {
 		sendFile(requestsDir, request);
 		if (log.isTraceEnabled())
 			log.trace("Sent     detached request #" + request.getUuid()
@@ -79,17 +85,34 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 					+ request.getPath());
 	}
 
-	protected void sendFile(File dir, DetachedCommunication detCom)
+	protected synchronized void sendFile(File dir, DetachedCommunication detCom)
 			throws Exception {
-		final File file;
+		final String ext;
 		if (getXmlConverter() != null)
-			file = new File(dir.getPath() + File.separator
-					+ sdf.format(new Date()) + '-' + detCom.getUuid() + ".xml");
+			ext = ".xml";
 		else
-			file = new File(dir.getPath() + File.separator + detCom.getUuid());
+			ext = "";
+
+		// Check counters
+		Date nowDate = new Date();
+		long nowMs = nowDate.getTime();
+		if (nowMs == lastSentTime) {
+			counter++;
+		} else {
+			counter = 0;
+		}
+
+		// Create file path
+		StringBuffer filePath = new StringBuffer(dir.getPath());
+		filePath.append(File.separatorChar).append(sdf.format(nowDate)).append(
+				'-');
+		filePath.append(mf.format(new Object[] { new Long(counter) })).append(
+				'-');
+		filePath.append(detCom.getUuid()).append(ext);
+		File file = new File(filePath.toString());
 
 		File lockFile = createLockFile(file);
-		if (getXmlConverter() != null) {
+		if (getXmlConverter() != null) {// xml
 			FileOutputStream outFile = new FileOutputStream(file);
 			try {
 				StreamResult result = new StreamResult(outFile);
@@ -97,7 +120,7 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 			} finally {
 				IOUtils.closeQuietly(outFile);
 			}
-		} else {
+		} else {// serialize
 			ObjectOutputStream out = new ObjectOutputStream(
 					new FileOutputStream(file));
 			try {
