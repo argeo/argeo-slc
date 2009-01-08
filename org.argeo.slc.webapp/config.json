@@ -166,7 +166,7 @@
       {
         "APIVIEWER_ROOT" : "${QOOXDOO_PATH}/../component/apiviewer",
         "BUILD_PATH" : "./target/site/argeo-ria-api/",
-        "API_INCLUDE" : ["${APPLICATION}.*"]
+        "API_INCLUDE" : ["${APPLICATION}.*", "${CUSTOM_PERSPECTIVE}"]
       },
 
       "library" :
@@ -174,7 +174,15 @@
         {
           "manifest" : "${ROOT}/Manifest.json",
           "uri"      : ".."
-        }
+        },
+        {
+          "manifest" : "${RIA_LIB_PATH}/slc-web/Manifest.json",
+          "uri"      : "${RIA_LIB_URI}/slc-web"
+        },
+        {
+          "manifest" : "${RIA_LIB_PATH}/slc/Manifest.json",
+          "uri"      : "${RIA_LIB_URI}/slc"
+        }        
       ]
     },
     
