@@ -53,11 +53,18 @@ qx.Class.define("org.argeo.ria.components.Modal",
 			org.argeo.ria.components.ViewsManager.getInstance().getApplicationRoot().add(this);			
 			this.show();
 		},
+		/**
+		 * Adds a close button bottom-center aligned to the popup
+		 */
 		addCloseButton : function(){
 			this.closeButton = new qx.ui.form.Button("Close");
 			this.closeButton.addListener("execute", this._closeAndDestroy, this);
 			this.add(this.closeButton, {edge:'south'});			
 		},
+		/**
+		 * Adds two buttons bottom-center aligned (Ok and Cancel). 
+		 * Ok button has no listener by default, Cancel will close and destroy the popup.
+		 */
 		addOkCancel : function(){
 			var buttonPane = new qx.ui.container.Composite(new qx.ui.layout.HBox(5, 'right'));
 			buttonPane.setAlignX("center");
@@ -68,6 +75,12 @@ qx.Class.define("org.argeo.ria.components.Modal",
 			buttonPane.add(this.cancelButton);
 			buttonPane.add(this.okButton);
 		},
+		/**
+		 * Adds a prompt form to the popup : a question, followed by a text input.
+		 * @param questionString {String} The question to ask to the user 
+		 * @param validationCallback {Function} Callback to apply : takes the text input value as unique argument.
+		 * @param callbackContext {Object} Context for the callback, optional.
+		 */
 		makePromptForm:function(questionString, validationCallback, callbackContext){
 			this.add(new qx.ui.basic.Label(questionString), {edge:'north'});
 			var textField = new qx.ui.form.TextField();
@@ -82,6 +95,9 @@ qx.Class.define("org.argeo.ria.components.Modal",
 				if(valid) this._closeAndDestroy();
 			}, this);
 		},
+		/**
+		 * Close this modal window and destroy it.
+		 */
 		_closeAndDestroy : function(){
 			this.hide();
 			this.destroy();			

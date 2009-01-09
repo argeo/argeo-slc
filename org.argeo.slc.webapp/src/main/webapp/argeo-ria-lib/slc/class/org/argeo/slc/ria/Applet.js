@@ -1,5 +1,9 @@
 /**
- * @author Charles
+ * The canonical SLC applet for test result viewing. It will display a TreeTestResult in a TreeVirtual component
+ * composed of four columns : test name, state (passed/failed/error), message and date.
+ * 
+ * It makes use of the StatusCellRenderer class for the "state" cell being a background-colored cell, the color depending on the FAILED or PASSED state message. 
+ * The only associated command is the "Close" command.
  */
 qx.Class.define("org.argeo.slc.ria.Applet",
 {
@@ -15,9 +19,15 @@ qx.Class.define("org.argeo.slc.ria.Applet",
 
   properties : 
   {
+  	/**
+  	 * The viewPane inside which this applet is added. 
+  	 */
   	view : {
   		init : null
   	},
+  	/**
+  	 * Commands definition, see {@link org.argeo.ria.event.CommandsManager#definitions} 
+  	 */
   	commands : {
   		init : {
   			"close" : {
@@ -40,18 +50,20 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   	}
   },
 
-  /*
-  *****************************************************************************
-     MEMBERS
-  *****************************************************************************
-  */
-
   members :
   {
+  	/**
+  	 * Called at applet creation. Just registers viewPane.
+  	 * @param viewPane {org.argeo.ria.components.ViewPane} The viewPane.
+  	 */
   	init : function(viewPane){
   		this.setView(viewPane);
   	},
   	
+  	/**
+  	 * Load a given test : the data passed must be an XML node containing the test unique ID.
+  	 * @param xmlNode {Element} The text xml description. 
+  	 */
   	load : function(xmlNode){
   		this.data = xmlNode;
   		if(!xmlNode) return;
@@ -73,7 +85,11 @@ qx.Class.define("org.argeo.slc.ria.Applet",
 	addScroll : function(){
 		return false;
 	},
-		
+	
+	/**
+	 * Creates the GUI.
+	 * @param responseXml {Document} The xml response of the "load" query.
+	 */
   	createXmlGui : function(responseXml){
   		var NSMap = {
   			"slc" : "http://argeo.org/projects/slc/schemas"
@@ -190,6 +206,10 @@ qx.Class.define("org.argeo.slc.ria.Applet",
 	  	
   	},
   	
+  	/**
+  	 * Goes up the parents recursively to set a whole tree branch in "failed" mode.
+  	 * @param id {Integer} The id of the child node.
+  	 */
   	_setParentBranchAsFailed : function(id){
   		var model = this.tree.getDataModel();
 		while(id != null && id!=0){
@@ -202,6 +222,12 @@ qx.Class.define("org.argeo.slc.ria.Applet",
 		}  		
   	},
   	
+  	/**
+  	 * Recursively make sur the last children are of qx.ui.treevirtual.SimpleTreeDataModel.Type.LEAF type.
+  	 * 
+  	 * @param tree {qx.ui.treevirtual.TreeVirtual} The main tree of the applet.
+  	 * @param nodeId {Integer} Current node id. 
+  	 */
   	_refineLeaves : function(tree, nodeId){
   		var node = tree.nodeGet(nodeId);  		
   		if(node.children && node.children.length){
@@ -213,6 +239,11 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   		}
   	},
   	
+  	/**
+  	 * Alternatively to the createXmlGui, create a simple HtmlElement and append the query responseText.
+  	 * Not used but sample.
+  	 * @param responseText {String} Html code to display.
+  	 */
   	createHtmlGui : function(responseText){
   		var htmlElement = new qx.ui.embed.Html(responseText);
   		htmlElement.setOverflowX("auto");

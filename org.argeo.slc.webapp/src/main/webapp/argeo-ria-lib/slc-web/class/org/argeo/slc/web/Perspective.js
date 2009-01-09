@@ -1,5 +1,5 @@
 /**
- * @author Charles
+ * IPerspective Implementation : Horizontal split pane defining two panes, "list" and "applet".
  */
 qx.Class.define("org.argeo.slc.web.Perspective",
 {
@@ -34,8 +34,7 @@ qx.Class.define("org.argeo.slc.web.Perspective",
   	initViews : function(viewsManager){
 	  var view = viewsManager.initIViewClass(org.argeo.slc.web.TestList, "list");
 	  view.load();
-	  //var command = org.argeo.ria.event.CommandsManager.getInstance().executeCommand("loadtestlist");
-	  view.loadCollections(); // We know it is a TestList!
+	  view.loadCollections();
 	  view.loadList();
   	}
   	

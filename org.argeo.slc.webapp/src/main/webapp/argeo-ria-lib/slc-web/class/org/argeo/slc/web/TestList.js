@@ -1,5 +1,9 @@
 /**
- * @author Charles
+ * Basic IView implementation for displaying the test results list, by collection.
+ * 
+ * This component creates a Table object and feed it with the results. It adds a collection chooser to its viewPane header.
+ *  
+ * It creates the following commands : "loadtestlist", "polllistloading", "opentest", "download", "copytocollection", "deletetest".
  */
 qx.Class.define("org.argeo.slc.web.TestList",
 {
@@ -19,17 +23,29 @@ qx.Class.define("org.argeo.slc.web.TestList",
 
   properties : 
   {
+  	/**
+  	 * The viewPane containing this applet.
+  	 */
   	view : {
   		init : null
   	},
+  	/**
+  	 * The load list of available collection (Map of ids => labels)
+  	 */
   	collectionList : {
   		init : {},
   		check : "Map"
   	},
+  	/**
+  	 * The current collection id selected.
+  	 */
   	collectionId:{
   		init : 'My Collection',
   		check : "String"
   	},
+  	/**
+  	 * The applet commands.
+  	 */
   	commands : {
   		init : {
   			"loadtestlist" : {
@@ -264,6 +280,9 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	  
 	},
 	
+	/**
+	 * Use SlcApi to load the available collections.
+	 */
 	loadCollections : function(){
 		var request = org.argeo.slc.ria.SlcApi.getListCollectionsService();
 		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
@@ -282,6 +301,9 @@ qx.Class.define("org.argeo.slc.web.TestList",
 		request.send();
 	},
 	
+	/**
+	 * Load the results of the currently selected collection.
+	 */
 	loadList : function(){
 	  	var model = this.table.getTableModel();
 	  	model.removeRows(0, model.getRowCount());
@@ -301,6 +323,10 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	request.send();		
 	},
 	
+	/**
+	 * Enable/disable the automatic reloading of the list.
+	 * @param state {Boolean} Whether the automatic reloading must be started or stopped.
+	 */
 	pollListLoading : function(state){
 		if(!this.timer){
 			this.timer = new qx.event.Timer(5000);
@@ -314,6 +340,11 @@ qx.Class.define("org.argeo.slc.web.TestList",
 		}
 	},
 	
+	/**
+	 * Creates a menu gui component from the currently loaded collectionList.
+	 * @param command {qx.event.Command} The command on which to attach the created menu. 
+	 * @param checkSelection {Boolean} Whether at the end, we must check the current viewSelection to enable/disable the command accordingly. 
+	 */
 	collectionListToMenu : function(command, checkSelection){
 		command.setEnabled(false);
 		command.clearMenus();
@@ -338,7 +369,12 @@ qx.Class.define("org.argeo.slc.web.TestList",
 			command.setEnabled(true);
 		}
 	},
-	
+	/**
+	 * Use SlcApi "addResult" service to add selected results to a given collection.
+	 * If collectionId is "slc.client.create", first triggers a modal dialog to enter a new collection name, then retrigger itself with the new id.
+	 * @param collectionId {String} The id of the destination collection, or "slc.client.create".
+	 * @param selectionType {String} "current_collection"|"current_selection". The first adds the whole collection content to the destination, the second only selected results.
+	 */
 	copySelectionToCollection:function(collectionId, selectionType){
 		if(collectionId == "slc.client.create"){
 			var modal = new org.argeo.ria.components.Modal("Create collection", "resource/slc/folder-new.png");
@@ -370,6 +406,10 @@ qx.Class.define("org.argeo.slc.web.TestList",
 		}
 	},
 	
+	/**
+	 * Utilitary function to extract test unique id from the currently selected node.
+	 * @return {String} The test unique id.
+	 */
 	extractTestUuid: function(){
 		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
 		var xmlNodes = this.getView().getViewSelection().getNodes();
@@ -377,7 +417,11 @@ qx.Class.define("org.argeo.slc.web.TestList",
 		return uuid;
 	},
 	
-	collectionSelectorListener : function(event){
+	/**
+	 * Listener of the collection selector (select box added to the viewpane header). 
+	 * @param event {qx.event.type.Event} The event.
+	 */
+	 collectionSelectorListener : function(event){
 	  	this.setCollectionId(event.getData());
 	  	this.loadList();		
 	},

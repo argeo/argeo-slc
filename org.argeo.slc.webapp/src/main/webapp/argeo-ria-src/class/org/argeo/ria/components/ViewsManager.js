@@ -33,8 +33,6 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
   	 * @return {org.argeo.ria.components.IView}
   	 */
   	initIViewClass: function(classObj, viewPaneId){
-  		//var iView = eval("new "+iViewClass+"()");
-  		//var classObj = qx.Class.getByName(iViewClass);
   		var iView = new classObj;
   		var viewPane = this.getViewPaneById(viewPaneId);
 		iView.init(viewPane);		

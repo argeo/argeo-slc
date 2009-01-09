@@ -91,6 +91,11 @@ qx.Class.define("org.argeo.ria.components.Logger",
 			this.center();
 		},
 		
+		/**
+		 * Show a given info log in a small popup right-top aligned. 
+		 * The popup will disappear after 5 seconds.
+		 * @param content {qx.ui.basic.Label} The content of the popup to display 
+		 */
 		showLogAsPopup:function(content){
 			if(!this.popup){
 		      this.popup = new qx.ui.popup.Popup(new qx.ui.layout.Canvas()).set({

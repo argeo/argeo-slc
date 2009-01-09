@@ -1,3 +1,12 @@
+/**
+ * SLC API Client implementation :
+ * This class encapsulate the various SLC services available. It just creates the Request object
+ * and return them, it does not execute them. 
+ * Available services are : 
+ * + loadResult / removeResult / addResult
+ * + listCollection / listResults
+ * When using it, be sure the static constant DEFAULT_CONTEXT is pointing to the right URL.
+ */
 qx.Class.define("org.argeo.slc.ria.SlcApi",
 {
   extend : qx.core.Object,

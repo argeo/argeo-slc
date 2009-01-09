@@ -143,7 +143,12 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 			this.add(this.guiContent, {flex:1});
 		}
 	},
-		
+	/**
+	 * Adds a graphical component too the header of the view pane.
+	 * It is added as "center" in the dock layout, and will override the view pane title label.
+	 * For example, you can add your own title, or add a switch, or buttons, etc.
+	 * @param component {qx.ui.core.Widget} The graphical component to add.
+	 */
 	addHeaderComponent : function(component){
 		this.header.setPadding(4);
 		this.header.add(component, {edge:"center"});

@@ -3,6 +3,7 @@
  * thus can be called by any part of the application.
  * This will wire all the commands that can be defined dynamically by any IView, and add their
  * corresponding buttons to the application menubar and toolbars.
+ * See the "definitions" property documentation below for more info on how to define new commands.
  * 
  * @author Charles du Jeu
  */
@@ -20,7 +21,56 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   properties : 
   {
 	/**
-	 * Commands definitions
+	 * The commands definitions is a Map described as below
+	 * <pre>
+	 * {
+	 * 	<b>label : "",</b> 
+	 * 	 | The label of the action
+	 * 
+	 * 	<b>icon	: "",</b> 
+	 * 	 | The icon image
+	 * 
+	 * 	<b>shortcut : "",</b>
+	 * 	 | The keyboard shortcut, as defined in qooxdoo (Control+s, Alt+k, etc.). Warning, the letter must be lowercase.
+	 * 
+	 * 	<b>enabled : true,</b>
+	 * 	 | Whether it is enabled or disabled at creation
+	 * 
+	 * 	<b>menu : ""|null,</b>
+	 * 	 | The menu group to which the command will be added. If null, will not appear in the menus.
+	 * 
+	 * 	<b>menuPosition : "first"|"last"</b>
+	 *	 | Optional : force the menu group to be first or last in the menubar.
+	 *   
+	 * 	<b>toolbar : ""|null,</b>
+	 * 	 | The toolbar group to which the command will be added. If null, will not appear in the toolbars.
+	 * 
+	 * 	<b>init : function(){},</b>
+	 * 	 | Optional function called at command creation.
+	 * 	 | Function context : the command itself
+	 * 
+	 * 	<b>callback : function(e){},</b>
+	 * 	 | The main callback to be triggered when command is executed.
+	 * 	 | Function context : the current class (not the command!)
+	 *  
+	 * 	<b>selectionChange : function(viewPaneId, xmlNodes){},</b>
+	 * 	 | Optional function called each time a selectionChange is detected in one of the active viewPane.
+	 * 	 | The origin viewPaneId and the new selection as a map of nodes are passed as arguments.
+	 * 	 | Function context : the command itself.
+	 * 
+	 * 	<b>submenu : [{label:"", icon:"", commandId:""}, ...],</b>
+	 * 	 | If set, the command will create a submenu, being in a menu or in the toolbar.
+	 * 	 | The submenu is created with the various array entries, and the submenuCallback function
+	 * 	 | will be called with the 'commandId' parameter when a submenu entry is selected.
+	 * 
+	 * 	<b>submenuCallback : function(commandId){},</b>
+	 * 	 | Callback if command is a submenu (cf. above).
+	 * 	 | Function context : the current class/
+	 * 
+	 * 	<b>command : null</b>
+	 * 	 | For internal use only, caching the actual org.argeo.ria.event.Command object.
+	 * }
+	 * </pre>
 	 * @see org.argeo.ria.event.Command for the definition Map details. 
 	 */
   	definitions : {
@@ -85,7 +135,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 
   events : {
   	/**
-  	 * Triggered when the whole commands list is changed.
+  	 * Triggered when the whole commands list is changed. Mainly used internally by the manager.
   	 */
   	"changedCommands" : "qx.event.type.Event"
   },
@@ -244,9 +294,9 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		return contextMenu;
   	},
   	/**
-  	 * Add a new set of commands definitions
+  	 * Add a new set of commands definitions. See the definitions property of this class.
   	 * @param definitions {Map} a set of commands definitions.
-  	 * @param callbackContext {qx.ui.core.Object} The context used inside the commands callbacks.
+  	 * @param callbackContext {qx.ui.core.Object} The context used inside the commands callbacks. 
   	 */
   	addCommands : function(definitions, callbackContext){
   		var crtDefs = this.getDefinitions();  		
