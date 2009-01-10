@@ -116,4 +116,79 @@
 		<param-value>5000</param-value>
 	</context-param>
 
+
+	<!-- Active MQ -->
+	    <!-- context config -->
+    <context-param>
+        <param-name>org.apache.activemq.brokerURL</param-name>
+        <param-value>vm://localhost</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>org.apache.activemq.embeddedBroker</param-name>
+        <param-value>false</param-value>
+    </context-param>
+
+    <!-- servlet mappings -->
+    
+    <!-- the subscription REST servlet -->
+    <servlet>
+        <servlet-name>AjaxServlet</servlet-name>
+        <servlet-class>org.apache.activemq.web.AjaxServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>MessageServlet</servlet-name>
+        <servlet-class>org.apache.activemq.web.MessageServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+        <!--
+        Uncomment this parameter if you plan to use multiple consumers over REST
+        <init-param>
+                <param-name>destinationOptions</param-name>
+                <param-value>consumer.prefetchSize=1</param-value>
+        </init-param> 
+        -->
+
+    </servlet>
+
+    <!-- the queue browse servlet -->
+    <servlet>
+        <servlet-name>QueueBrowseServlet</servlet-name>
+        <servlet-class>org.apache.activemq.web.QueueBrowseServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>AjaxServlet</servlet-name>
+        <url-pattern>/amq/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>MessageServlet</servlet-name>
+        <url-pattern>/amqMessage/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>QueueBrowseServlet</servlet-name>
+        <url-pattern>/amqQueueBrowse/*</url-pattern>
+    </servlet-mapping>
+
+    <filter>
+      <filter-name>session</filter-name>
+      <filter-class>org.apache.activemq.web.SessionFilter</filter-class>
+    </filter>
+    
+    <filter-mapping>
+      <filter-name>session</filter-name>
+      <url-pattern>/amq/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>session</filter-name>
+      <url-pattern>/amqMessage/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>session</filter-name>
+      <url-pattern>/amqQueueBrowse/*</url-pattern>
+    </filter-mapping>
+	
 </web-app>
