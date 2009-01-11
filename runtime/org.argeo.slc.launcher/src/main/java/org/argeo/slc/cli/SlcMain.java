@@ -1,6 +1,7 @@
 package org.argeo.slc.cli;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -18,8 +19,8 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.runtime.SlcExecutionContext;
 import org.argeo.slc.runtime.SlcRuntime;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class SlcMain {
@@ -30,6 +31,7 @@ public class SlcMain {
 	private static Log log = null;
 
 	private final static String BOOTSTRAP_LOG4J_CONFIG = "org/argeo/slc/cli/bootstrapLog4j.properties";
+	private final static String DEFAULT_AGENT_CONTEXT = "classpath:org/argeo/slc/activemq/spring-agent.xml";
 
 	private final static Option modeOpt = OptionBuilder.withLongOpt("mode")
 			.withArgName("mode").hasArg().withDescription(
@@ -173,29 +175,17 @@ public class SlcMain {
 		}
 		// Agent
 		else if (mode.equals(Mode.agent)) {
-			if (runtimeStr == null)
-				runtimeStr = "agent.xml";
-			final ConfigurableApplicationContext applicationContext = new FileSystemXmlApplicationContext(
-					"agent.xml");
+			final ConfigurableApplicationContext applicationContext;
+			if (runtimeStr == null) {
+				applicationContext = new ClassPathXmlApplicationContext(
+						DEFAULT_AGENT_CONTEXT);
+			} else {
+				applicationContext = new FileSystemXmlApplicationContext(
+						runtimeStr);
+			}
+			applicationContext.registerShutdownHook();
 			applicationContext.start();
 			log.info("SLC Agent context started.");
-
-			Thread shutdownHook = new Thread("SLC agent shutdown hook") {
-				public void run() {
-					applicationContext.stop();
-					applicationContext.close();
-					log.info("Closed agent application context.");
-				}
-			};
-			Runtime.getRuntime().addShutdownHook(shutdownHook);
-
-			while (applicationContext.isActive()) {
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// silent
-				}
-			}
 		}
 	}
 

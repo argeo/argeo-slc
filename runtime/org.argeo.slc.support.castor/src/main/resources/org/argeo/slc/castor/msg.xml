@@ -21,6 +21,14 @@
 		</field>
 	</class>
 
+	<class name="org.argeo.slc.msg.ObjectList">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="objects" collection="arraylist">
+			<bind-xml auto-naming="deriveByClass" />
+		</field>
+	</class>
+
 	<class name="org.argeo.slc.core.test.tree.TreeTestResultList">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />

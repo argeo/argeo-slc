@@ -98,4 +98,12 @@ public class SlcExecution {
 	public void setAttributes(Map<String, String> attributes) {
 		this.attributes = attributes;
 	}
+
+	public String toString() {
+		StringBuffer buf = new StringBuffer(getClass().getSimpleName());
+		buf.append('#').append(uuid);
+		buf.append(" status=").append(status);
+		buf.append(" attributes=").append(attributes);
+		return buf.toString();
+	}
 }

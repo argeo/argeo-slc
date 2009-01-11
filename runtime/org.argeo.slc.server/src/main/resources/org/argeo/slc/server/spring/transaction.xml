@@ -22,6 +22,12 @@
 	</aop:config>
 
 	<aop:config>
+		<aop:pointcut id="daoRuntimeMethods"
+			expression="execution(* org.argeo.slc.dao.runtime.*.*(..))" />
+		<aop:advisor advice-ref="daoAdvice" pointcut-ref="daoRuntimeMethods" />
+	</aop:config>
+
+	<aop:config>
 		<aop:pointcut id="daoTestMethods"
 			expression="execution(* org.argeo.slc.dao.test.*.*(..))" />
 		<aop:advisor advice-ref="daoAdvice" pointcut-ref="daoTestMethods" />
@@ -40,7 +46,7 @@
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
-
+<!-- 
 	<aop:config>
 		<aop:pointcut id="pointcut.services.allMethods"
 			expression="execution(* org.argeo.slc.services.*.*.*(..))" />
@@ -54,5 +60,5 @@
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
-
+ -->
 </beans>

@@ -7,6 +7,8 @@ import org.argeo.slc.runtime.SlcAgentDescriptor;
 public interface SlcAgentDescriptorDao {
 	public void create(SlcAgentDescriptor slcAgentDescriptor);
 
+	public void delete(SlcAgentDescriptor slcAgentDescriptor);
+
 	public List<SlcAgentDescriptor> listSlcAgentDescriptors();
 
 }

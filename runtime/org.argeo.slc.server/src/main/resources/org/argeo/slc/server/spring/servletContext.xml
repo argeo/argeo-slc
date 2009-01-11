@@ -39,12 +39,22 @@
 		<constructor-arg ref="slcAgentDescriptorDao" />
 	</bean>
 
-	<bean id="agentService.jmsContainer.register" parent="template.listenerContainer">
-		<property name="destination" ref="destination.agent.register" />
+	<bean id="agentService.jmsContainer.register" parent="template.jms.listenerContainer">
+		<property name="destination" ref="slcJms.destination.agent.register" />
 		<property name="messageListener">
-			<bean parent="template.listenerAdapter">
+			<bean parent="slcTemplate.jms.listenerAdapter">
 				<constructor-arg ref="agentService" />
 				<property name="defaultListenerMethod" value="register" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="agentService.jmsContainer.unregister" parent="template.jms.listenerContainer">
+		<property name="destination" ref="slcJms.destination.agent.unregister" />
+		<property name="messageListener">
+			<bean parent="slcTemplate.jms.listenerAdapter">
+				<constructor-arg ref="agentService" />
+				<property name="defaultListenerMethod" value="unregister" />
 			</bean>
 		</property>
 	</bean>

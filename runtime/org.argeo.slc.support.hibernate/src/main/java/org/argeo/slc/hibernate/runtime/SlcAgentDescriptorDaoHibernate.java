@@ -13,6 +13,10 @@ public class SlcAgentDescriptorDaoHibernate extends HibernateDaoSupport
 		getHibernateTemplate().save(slcAgentDescriptor);
 	}
 
+	public void delete(SlcAgentDescriptor slcAgentDescriptor) {
+		getHibernateTemplate().delete(slcAgentDescriptor);
+	}
+
 	public List<SlcAgentDescriptor> listSlcAgentDescriptors() {
 		return (List<SlcAgentDescriptor>) getHibernateTemplate().loadAll(
 				SlcAgentDescriptor.class);

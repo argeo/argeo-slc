@@ -12,18 +12,24 @@ import javax.jms.MessageListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.core.JmsTemplate;
 
 /** JMS based implementation of SLC Agent. */
-public class JmsAgent implements SlcAgent, MessageListener, InitializingBean {
+public class JmsAgent implements SlcAgent, InitializingBean, DisposableBean {
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
 
 	private final SlcAgentDescriptor agentDescriptor;
 	private JmsTemplate jmsTemplate;
 	private Destination agentRegister;
+	private Destination agentUnregister;
+
+	private String agentDestinationPrefix = "agent.";
+	private String agentDestinationBase;
 
 	public JmsAgent() {
 		try {
@@ -36,18 +42,25 @@ public class JmsAgent implements SlcAgent, MessageListener, InitializingBean {
 	}
 
 	public void afterPropertiesSet() throws Exception {
+		agentDestinationBase = agentDestinationPrefix
+				+ agentDescriptor.getUuid() + ".";
 		jmsTemplate.convertAndSend(agentRegister, agentDescriptor);
 		log.info("Agent #" + agentDescriptor.getUuid() + " registered to "
 				+ agentRegister);
 	}
 
-	public void onMessage(Message message) {
-		try {
-			log.info("Received message " + message.getJMSMessageID());
-		} catch (JMSException e) {
-			e.printStackTrace();
-		}
+	public void destroy() throws Exception {
+		jmsTemplate.convertAndSend(agentUnregister, agentDescriptor);
+		log.info("Agent #" + agentDescriptor.getUuid() + " unregistered to "
+				+ agentRegister);
+	}
 
+	public String actionDestinationName(String action) {
+		return agentDestinationBase + action;
+	}
+
+	public void newExecution(SlcExecution slcExecution) {
+		log.info("Would execute SlcExecution :" + slcExecution);
 	}
 
 	public void setJmsTemplate(JmsTemplate jmsTemplate) {
@@ -56,6 +69,14 @@ public class JmsAgent implements SlcAgent, MessageListener, InitializingBean {
 
 	public void setAgentRegister(Destination agentRegister) {
 		this.agentRegister = agentRegister;
+	}
+
+	public void setAgentUnregister(Destination agentUnregister) {
+		this.agentUnregister = agentUnregister;
+	}
+
+	public void setAgentDestinationPrefix(String agentDestinationPrefix) {
+		this.agentDestinationPrefix = agentDestinationPrefix;
 	}
 
 }

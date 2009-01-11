@@ -2,41 +2,20 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd">
+	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
 
-	<import resource="classpath:org/argeo/slc/jms/spring.xml" />
+	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
+	<!-- Create embedded broker -->
 	<amq:broker useJmx="false" persistent="false">
 		<amq:transportConnectors>
 			<amq:transportConnector uri="tcp://localhost:61616" />
 		</amq:transportConnectors>
 	</amq:broker>
 
-	<amq:connectionFactory id="amqConnectionFactory"
-		brokerURL="vm://localhost" />
-
-	<bean id="jmsConnectionFactory"
-		class="org.springframework.jms.connection.SingleConnectionFactory">
-		<property name="targetConnectionFactory">
-			<ref local="amqConnectionFactory" />
-		</property>
-	</bean>
-
-	<!-- Destinations -->
-	<amq:topic id="destination.agent.register" physicalName="agent.register" />
-
-	<!-- Templates -->
-	<bean id="template.listenerContainer"
-		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
+	<bean id="template.jms.listenerContainer" parent="slcTemplate.jms.listenerContainer"
 		abstract="true">
-		<property name="connectionFactory" ref="jmsConnectionFactory" />
 		<property name="transactionManager" ref="transactionManager" />
-	</bean>
-
-	<bean id="template.listenerAdapter"
-		class="org.springframework.jms.listener.adapter.MessageListenerAdapter"
-		abstract="true">
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 	</bean>
 
 </beans>

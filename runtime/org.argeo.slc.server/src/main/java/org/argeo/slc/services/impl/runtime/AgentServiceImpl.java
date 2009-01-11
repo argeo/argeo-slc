@@ -19,4 +19,9 @@ public class AgentServiceImpl {
 		log.info("Registered agent #" + slcAgentDescriptor.getUuid());
 	}
 
+	public void unregister(SlcAgentDescriptor slcAgentDescriptor) {
+		slcAgentDescriptorDao.delete(slcAgentDescriptor);
+		log.info("Unregistered agent #" + slcAgentDescriptor.getUuid());
+	}
+
 }

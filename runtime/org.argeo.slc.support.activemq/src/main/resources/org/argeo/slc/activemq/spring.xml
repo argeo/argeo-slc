@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd"
+	default-lazy-init="false">
+
+	<import resource="classpath:org/argeo/slc/castor/spring.xml" />
+
+	<bean id="slcDefault.jms.castorMessageConverter" class="org.argeo.slc.jms.MarshallerMessageConverter">
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
+	</bean>
+
+	<amq:connectionFactory id="slcDefault.jms.amqConnectionFactory"
+		brokerURL="${org.apache.activemq.brokerURL}" />
+
+	<bean id="slcDefault.jms.connectionFactory"
+		class="org.springframework.jms.connection.SingleConnectionFactory">
+		<property name="targetConnectionFactory">
+			<ref local="slcDefault.jms.amqConnectionFactory" />
+		</property>
+	</bean>
+
+	<bean id="slcDefault.jms.jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+	</bean>
+
+
+	<!-- Destinations -->
+	<amq:topic id="slcJms.destination.agent.register"
+		physicalName="agent.register" />
+	<amq:topic id="slcJms.destination.agent.unregister"
+		physicalName="agent.unregister" />
+
+	<!-- Templates -->
+	<bean id="slcTemplate.jms.listenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
+		abstract="true">
+		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
+	</bean>
+
+	<bean id="slcTemplate.jms.listenerAdapter"
+		class="org.springframework.jms.listener.adapter.MessageListenerAdapter"
+		abstract="true">
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+	</bean>
+</beans>
