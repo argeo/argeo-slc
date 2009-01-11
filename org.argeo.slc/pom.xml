@@ -355,6 +355,11 @@ limitations under the License.
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
+				<artifactId>org.springframework.transaction</artifactId>
+				<version>${version.spring}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.web</artifactId>
 				<version>${version.spring}</version>
 			</dependency>
@@ -366,6 +371,11 @@ limitations under the License.
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.aop</artifactId>
+				<version>${version.spring}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>org.springframework.jms</artifactId>
 				<version>${version.spring}</version>
 			</dependency>
 
@@ -605,6 +615,13 @@ limitations under the License.
 				<version>1.1.0</version>
 			</dependency>
 			<dependency>
+				<groupId>org.apache.geronimo.specs</groupId>
+				<artifactId>com.springsource.javax.management.j2ee</artifactId>
+				<version>1.0.1</version>
+			</dependency>
+			
+			<!-- ActiveMQ -->
+			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>com.springsource.org.apache.activemq</artifactId>
 				<version>${version.activemq}</version>
@@ -614,15 +631,22 @@ limitations under the License.
 				<artifactId>com.springsource.org.apache.activemq.web</artifactId>
 				<version>${version.activemq}</version>
 			</dependency>
+			<!-- 
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-pool</artifactId>
+				<version>${version.activemq}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>activemq-optional</artifactId>
+				<version>${version.activemq}</version>
+			</dependency>
+			 -->
 			<dependency>
 				<groupId>org.apache.xbean</groupId>
 				<artifactId>com.springsource.org.apache.xbean.spring</artifactId>
 				<version>3.3.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.geronimo.specs</groupId>
-				<artifactId>com.springsource.javax.management.j2ee</artifactId>
-				<version>1.0.1</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

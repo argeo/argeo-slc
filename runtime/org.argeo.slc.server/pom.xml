@@ -60,6 +60,7 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.hibernate</artifactId>
@@ -70,7 +71,27 @@
 			<artifactId>org.argeo.slc.support.castor</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.activemq</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>org.springframework.ws</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.web.servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.aop</artifactId>
+		</dependency>
+
+		<!-- J2EE -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>
@@ -89,17 +110,17 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.ws</groupId>
-			<artifactId>org.springframework.ws</artifactId>
+			<groupId>javax.wsdl</groupId>
+			<artifactId>com.springsource.javax.wsdl</artifactId>
 		</dependency>
+
+		<!-- ActiveMQ -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.web.servlet</artifactId>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>com.springsource.org.apache.activemq.web</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.aop</artifactId>
-		</dependency>
+
+		<!-- Various -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>com.springsource.org.aspectj.weaver</artifactId>
@@ -111,32 +132,6 @@
 		<dependency>
 			<groupId>com.lowagie.text</groupId>
 			<artifactId>com.springsource.com.lowagie.text</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.wsdl</groupId>
-			<artifactId>com.springsource.javax.wsdl</artifactId>
-		</dependency>
-
-		<!-- JMS -->
-		<dependency>
-			<groupId>javax.jms</groupId>
-			<artifactId>com.springsource.javax.jms</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>com.springsource.org.apache.activemq</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xbean</groupId>
-			<artifactId>com.springsource.org.apache.xbean.spring</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>com.springsource.org.apache.activemq.web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>com.springsource.javax.management.j2ee</artifactId>
 		</dependency>
 
 	</dependencies>

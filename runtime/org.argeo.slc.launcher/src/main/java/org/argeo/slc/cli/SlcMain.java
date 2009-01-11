@@ -18,6 +18,9 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.runtime.SlcExecutionContext;
 import org.argeo.slc.runtime.SlcRuntime;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class SlcMain {
 	public enum Mode {
@@ -166,6 +169,32 @@ public class SlcMain {
 			} catch (Exception e) {
 				log.error("SLC client terminated with an error: ", e);
 				System.exit(1);
+			}
+		}
+		// Agent
+		else if (mode.equals(Mode.agent)) {
+			if (runtimeStr == null)
+				runtimeStr = "agent.xml";
+			final ConfigurableApplicationContext applicationContext = new FileSystemXmlApplicationContext(
+					"agent.xml");
+			applicationContext.start();
+			log.info("SLC Agent context started.");
+
+			Thread shutdownHook = new Thread("SLC agent shutdown hook") {
+				public void run() {
+					applicationContext.stop();
+					applicationContext.close();
+					log.info("Closed agent application context.");
+				}
+			};
+			Runtime.getRuntime().addShutdownHook(shutdownHook);
+
+			while (applicationContext.isActive()) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// silent
+				}
 			}
 		}
 	}

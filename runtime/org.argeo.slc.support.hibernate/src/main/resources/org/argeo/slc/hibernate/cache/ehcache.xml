@@ -15,8 +15,7 @@
 		maxElementsInMemory="10000" />
 	<cache name="org.argeo.slc.core.test.SimpleResultPart"
 		maxElementsInMemory="10000" />
-	<cache
-		name="org.argeo.slc.core.test.tree.TreeTestResult.resultParts"
+	<cache name="org.argeo.slc.core.test.tree.TreeTestResult.resultParts"
 		maxElementsInMemory="10000" />
 	<cache name="org.argeo.slc.core.test.tree.TreeTestResult.elements"
 		maxElementsInMemory="10000" />
@@ -27,8 +26,7 @@
 
 	<cache name="org.argeo.slc.core.test.tree.TreeTestResultCollection"
 		maxElementsInMemory="100" />
-	<cache
-		name="org.argeo.slc.core.test.tree.TreeTestResultCollection.results"
+	<cache name="org.argeo.slc.core.test.tree.TreeTestResultCollection.results"
 		maxElementsInMemory="1000" />
 
 	<cache name="org.argeo.slc.process.SlcExecution"
@@ -42,7 +40,10 @@
 	<cache name="org.argeo.slc.process.SlcExecutionStep.logLines"
 		maxElementsInMemory="100000" />
 
-	<cache name="org.argeo.slc.core.test.TestRunDescriptor"
+	<cache name="org.argeo.slc.test.TestRunDescriptor"
 		maxElementsInMemory="1000" />
+
+	<cache name="org.argeo.slc.runtime.SlcAgentDescriptor"
+		maxElementsInMemory="100" />
 
 </ehcache>

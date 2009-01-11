@@ -66,10 +66,24 @@
 			<artifactId>org.argeo.slc.support.simple</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		
 		<dependency>
 			<groupId>org.argeo.dep.osgi</groupId>
 			<artifactId>org.argeo.dep.osgi.commons.cli</artifactId>
+		</dependency>
+	
+		<!-- TESTING -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.activemq</artifactId>
+			<version>${project.version}</version>
+			<scope>testing</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.castor</artifactId>
+			<version>${project.version}</version>
+			<scope>testing</scope>
 		</dependency>
 
 	</dependencies>

@@ -1,4 +1,4 @@
-package org.argeo.slc.services.test.impl;
+package org.argeo.slc.services.impl.test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

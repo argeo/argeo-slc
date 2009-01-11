@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "http://castor.org/mapping.dtd">
+
+<mapping>
+	<description>Runtime objects XML mapping</description>
+
+	<class name="org.argeo.slc.runtime.SlcAgentDescriptor">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="uuid" identity="true">
+			<bind-xml node="attribute" />
+		</field>
+		<field name="host" />
+	</class>
+</mapping>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd">
+
+	<import resource="classpath:org/argeo/slc/jms/spring.xml" />
+
+	<amq:broker useJmx="false" persistent="false">
+		<amq:transportConnectors>
+			<amq:transportConnector uri="tcp://localhost:61616" />
+		</amq:transportConnectors>
+	</amq:broker>
+
+	<amq:connectionFactory id="amqConnectionFactory"
+		brokerURL="vm://localhost" />
+
+	<bean id="jmsConnectionFactory"
+		class="org.springframework.jms.connection.SingleConnectionFactory">
+		<property name="targetConnectionFactory">
+			<ref local="amqConnectionFactory" />
+		</property>
+	</bean>
+
+	<!-- Destinations -->
+	<amq:topic id="destination.agent.register" physicalName="agent.register" />
+
+	<!-- Templates -->
+	<bean id="template.listenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
+		abstract="true">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+	<bean id="template.listenerAdapter"
+		class="org.springframework.jms.listener.adapter.MessageListenerAdapter"
+		abstract="true">
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+	</bean>
+
+</beans>

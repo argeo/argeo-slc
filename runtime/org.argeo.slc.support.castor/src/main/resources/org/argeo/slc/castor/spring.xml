@@ -3,10 +3,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-lazy-init="true">
 
-<!-- DEPRECATED, USE classpath:org/argeo/slc/castor/spring.xml instead -->
-
-	<import resource="classpath:org/argeo/slc/castor/spring.xml"/>
-<!-- 
 	<bean id="slcDefault.castor.marshaller"
 		class="org.springframework.oxm.castor.CastorMarshaller">
 		<property name="mappingLocations">
@@ -16,6 +12,9 @@
 				</value>
 				<value>
 					classpath:org/argeo/slc/castor/process.xml
+				</value>
+				<value>
+					classpath:org/argeo/slc/castor/runtime.xml
 				</value>
 				<value>
 					classpath:org/argeo/slc/castor/structure.xml
@@ -43,5 +42,5 @@
 		<property name="basePath" value="${slc.workDir}/process" />
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 	</bean>
- -->
+
 </beans>

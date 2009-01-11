@@ -14,8 +14,7 @@
 		<property name="suppressClose" value="true" />
 	</bean>
 
-	<bean id="slcTemplates.sessionFactory.hibernateBasic"
-		abstract="true"
+	<bean id="slcTemplates.sessionFactory.hibernateBasic" abstract="true"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
 		<property name="mappingResources">
 			<list>
@@ -43,14 +42,15 @@
 				<value>
 					org/argeo/slc/hibernate/process/SlcExecutionStep.hbm.xml
 				</value>
+				<value>
+					org/argeo/slc/hibernate/runtime/SlcAgentDescriptor.hbm.xml
+				</value>
 			</list>
 		</property>
-		<property name="cacheProvider"
-			ref="slcDefault.cacheProvider.ehCache" />
+		<property name="cacheProvider" ref="slcDefault.cacheProvider.ehCache" />
 	</bean>
 
-	<bean id="slcDefault.cacheProvider.ehCache"
-		class="net.sf.ehcache.hibernate.SingletonEhCacheProvider"
+	<bean id="slcDefault.cacheProvider.ehCache" class="net.sf.ehcache.hibernate.SingletonEhCacheProvider"
 		depends-on="slcDefault.cacheProvider.ehCacheManager">
 	</bean>
 
@@ -61,10 +61,8 @@
 			value="classpath:/org/argeo/slc/hibernate/cache/ehcache.xml" />
 	</bean>
 
-	<bean id="slcDefault.sessionFactory.hibernateTestHSQL"
-		parent="slcTemplates.sessionFactory.hibernateBasic">
-		<property name="dataSource"
-			ref="slcDefault.dataSource.inMemoryTestHSQL" />
+	<bean id="slcDefault.sessionFactory.hibernateTestHSQL" parent="slcTemplates.sessionFactory.hibernateBasic">
+		<property name="dataSource" ref="slcDefault.dataSource.inMemoryTestHSQL" />
 		<property name="hibernateProperties">
 			<value><![CDATA[
 				hibernate.dialect=org.hibernate.dialect.HSQLDialect
@@ -93,5 +91,9 @@
 		class="org.argeo.slc.hibernate.process.SlcExecutionDaoHibernate"
 		abstract="true">
 	</bean>
-
+	
+	<bean id="slcTemplates.dao.slcAgentDescriptorDao"
+		class="org.argeo.slc.hibernate.runtime.SlcAgentDescriptorDaoHibernate"
+		abstract="true">
+	</bean>
 </beans>

@@ -44,13 +44,55 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- SLC -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>org.springframework.oxm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.transaction</artifactId>
+		</dependency>
+
+		<!-- JMS -->
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>com.springsource.javax.jms</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>com.springsource.javax.management.j2ee</artifactId>
+		</dependency>
+
+		<!-- ActiveMQ -->
+		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>com.springsource.org.apache.activemq</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.xbean</groupId>
+			<artifactId>com.springsource.org.apache.xbean.spring</artifactId>
+		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-pool</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>activemq-optional</artifactId>
+		</dependency>
+		 -->
 	</dependencies>
 </project>
