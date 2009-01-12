@@ -20,6 +20,9 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	LIST_RESULTS_SERVICE : "listResultAttributes.service",
   	GET_RESULT_SERVICE : "getResult.service",
   	
+  	LIST_AGENTS_SERVICE : "listAgents.service",  	
+  	AMQ_SERVICE : "amq",
+  	
   	/**
   	 * Standard Request getter
   	 * @param serviceName {String} The name of the service to call (without base context)
@@ -123,6 +126,41 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
 	  		iLoadStatusables
   		);
   		request.setParameter("uuid", resultId);
+  		return request;
+  	},
+  	
+  	/**
+  	 * List currently available agents queues.
+  	 * @param fireReloadEventType {String} Event type to trigger (optionnal)
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update 
+  	 * @return {qx.io.remote.Request}
+  	 */
+  	getListAgentsService:function(fireReloadEventType, iLoadStatusables){
+  		return org.argeo.slc.ria.SlcApi.getServiceRequest(
+  			org.argeo.slc.ria.SlcApi.LIST_AGENTS_SERVICE,
+  			fireReloadEventType,
+  			iLoadStatusables
+  		);
+  	},
+  	
+  	/**
+  	 * Send a JMS message to the AMQ_CONTEXT
+  	 * @param destination {String} The destination queue, in the form "topic://destination" 
+  	 * @param message {org.argeo.slc.ria.SlcExecutionMessage} The message object
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update
+  	 */
+  	getSendAmqMessageRequest : function(destination, message, iLoadStatusables){
+  		var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
+  		var request = serviceManager.getRequest(
+  			org.argeo.slc.ria.SlcApi.DEFAULT_CONTEXT+"/"+org.argeo.slc.ria.SlcApi.AMQ_SERVICE,
+  			"POST",
+  			"text/plain",
+  			null,
+  			iLoadStatusables
+  		);
+  		request.setParameter("destination", destination);
+  		request.setParameter("message", message.toXml());
+  		request.setParameter("type", "send");
   		return request;
   	}
   	
