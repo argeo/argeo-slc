@@ -64,20 +64,20 @@ qx.Class.define("org.argeo.slc.ria.SlcExecutionMessage", {
 		 */
 		toXml : function (){
 			var builder = new qx.util.StringBuilder();
-			builder.add('<slc-execution uuid="'+this.getUuid()+'">');
-			builder.add('<slc-status>'+this.getStatus()+'</slc-status>');
-			builder.add('<slc-type>'+this.getType()+'</slc-type>');
-			builder.add('<slc-host>'+this.getHost()+'</slc-host>');
-			builder.add('<slc-user>'+this.getUser()+'</slc-user>');
+			builder.add('<slc:slc-execution uuid="'+this.getUuid()+'">');
+			builder.add('<slc:status>'+this.getStatus()+'</slc:status>');
+			builder.add('<slc:type>'+this.getType()+'</slc:type>');
+			builder.add('<slc:host>'+this.getHost()+'</slc:host>');
+			builder.add('<slc:user>'+this.getUser()+'</slc:user>');
 			var attr = this.getAttributes();
 			if(qx.lang.Object.getLength(attr)){
-				builder.add('<slc-attributes>');
+				builder.add('<slc:attributes>');
 				for(var key in attr){
-					builder.add('<slc-attribute name="'+key+'">'+attr[key]+'</slc-attribute>');
+					builder.add('<slc:attribute name="'+key+'">'+attr[key]+'</slc:attribute>');
 				}
-				builder.add('</slc-attributes>');
+				builder.add('</slc:attributes>');
 			}
-			builder.add('</slc-execution>');
+			builder.add('</slc:slc-execution>');
 			return builder.get();
 		}
 	}	
