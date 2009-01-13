@@ -27,7 +27,7 @@
 	"RIA_LIB_PATH" : "src/main/webapp/argeo-ria-lib",
 	"RIA_LIB_URI"  : "../argeo-ria-lib",
 	"CACHE"		   : "cache" ,
-	"CUSTOM_PERSPECTIVE" : "org.argeo.slc.web.Perspective"
+	"CUSTOM_PACKAGE" : "org.argeo.slc.web"
   },
 
   "jobs" : 
@@ -57,7 +57,7 @@
       "include" :
       [
         "${APPLICATION}.Application",
-        "${CUSTOM_PERSPECTIVE}",
+        "${CUSTOM_PACKAGE}.*",
         "${QXTHEME}"
       ],
 
@@ -71,7 +71,7 @@
         "qx.version"     : "${QXVERSION}",
         "qx.theme"       : "${QXTHEME}",
         "qx.application" : "${APPLICATION}.Application",
-		"ria.Perspective": "${CUSTOM_PERSPECTIVE}"
+        "ria.StartupPerspective":"org.argeo.slc.web.LauncherPerspective"		
       }
     },
 
@@ -166,7 +166,7 @@
       {
         "APIVIEWER_ROOT" : "${QOOXDOO_PATH}/../component/apiviewer",
         "BUILD_PATH" : "./target/site/argeo-ria-api/",
-        "API_INCLUDE" : ["${APPLICATION}.*", "${CUSTOM_PERSPECTIVE}"]
+        "API_INCLUDE" : ["${APPLICATION}.*", "${CUSTOM_PACKAGE}.*"]
       },
 
       "library" :
