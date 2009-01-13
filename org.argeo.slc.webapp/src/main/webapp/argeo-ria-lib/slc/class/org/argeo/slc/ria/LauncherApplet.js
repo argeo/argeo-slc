@@ -49,20 +49,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 			  		req.send();
   				},
   				command 	: null
-  			},  			
-  			"close" : {
-  				label	 	: "Close", 
-  				icon 		: "resource/slc/window-close.png",
-  				shortcut 	: "Control+w",
-  				enabled  	: true,
-  				menu	   	: "Launcher",
-  				toolbar  	: "launcher",
-  				callback	: function(e){
-  					// Call service to delete
-  					this.getView().empty();  					
-  				},
-  				command 	: null
-  			}  			
+  			}
   		}
   	}
   },
