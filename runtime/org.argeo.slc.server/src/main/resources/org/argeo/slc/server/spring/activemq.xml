@@ -15,7 +15,6 @@
 
 	<bean id="template.jms.listenerContainer" parent="slcTemplate.jms.listenerContainer"
 		abstract="true">
-		<property name="transactionManager" ref="transactionManager" />
 	</bean>
 
 </beans>
