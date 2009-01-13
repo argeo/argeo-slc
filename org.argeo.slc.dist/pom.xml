@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.11.2-SNAPSHOT</version>
+		<version>0.11.3-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-dist</artifactId>
@@ -46,21 +46,18 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.launcher</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
+			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.server</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<!--  Additional SLC dependencies -->
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>${project.version}</version>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.launcher</artifactId>
 			<type>tar.gz</type>
 			<classifier>base</classifier>
 		</dependency>
@@ -68,7 +65,6 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached.launcher</artifactId>
-			<version>${project.version}</version>
 			<type>tar.gz</type>
 			<classifier>dist</classifier>
 		</dependency>

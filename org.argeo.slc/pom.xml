@@ -241,6 +241,74 @@ limitations under the License.
 	</reporting>
 	<dependencyManagement>
 		<dependencies>
+			<!-- SLC (itself) -->
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.specs</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.launcher</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.detached</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.support.simple</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.support.ant</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.support.hibernate</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.support.castor</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.support.activemq</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.server</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.support.ws.client</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc</groupId>
+				<artifactId>org.argeo.slc.webapp</artifactId>
+				<version>${project.version}</version>
+				<type>war</type>
+			</dependency>
+
+			<!-- SLC dubious -->
+			<dependency>
+				<groupId>org.argeo.slc</groupId>
+				<artifactId>org.argeo.slc.detached.launcher</artifactId>
+				<version>${project.version}</version>
+				<type>tar.gz</type>
+				<classifier>dist</classifier>
+			</dependency>
+
+
 			<!-- Javax -->
 			<dependency>
 				<groupId>javax.transaction</groupId>
@@ -619,7 +687,7 @@ limitations under the License.
 				<artifactId>com.springsource.javax.management.j2ee</artifactId>
 				<version>1.0.1</version>
 			</dependency>
-			
+
 			<!-- ActiveMQ -->
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
@@ -631,18 +699,14 @@ limitations under the License.
 				<artifactId>com.springsource.org.apache.activemq.web</artifactId>
 				<version>${version.activemq}</version>
 			</dependency>
-			<!-- 
-			<dependency>
-				<groupId>org.apache.activemq</groupId>
+			<!--
+				<dependency> <groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-pool</artifactId>
-				<version>${version.activemq}</version>
-			</dependency>
-			<dependency>
+				<version>${version.activemq}</version> </dependency> <dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>activemq-optional</artifactId>
-				<version>${version.activemq}</version>
-			</dependency>
-			 -->
+				<version>${version.activemq}</version> </dependency>
+			-->
 			<dependency>
 				<groupId>org.apache.xbean</groupId>
 				<artifactId>com.springsource.org.apache.xbean.spring</artifactId>

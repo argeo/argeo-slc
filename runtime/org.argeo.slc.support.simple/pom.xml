@@ -54,7 +54,6 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.specs</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>

@@ -114,7 +114,6 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.server</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Required in JDK 1.5 -->
