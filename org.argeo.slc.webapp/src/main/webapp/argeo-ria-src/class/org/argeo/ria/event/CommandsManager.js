@@ -74,62 +74,15 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 	 * @see org.argeo.ria.event.Command for the definition Map details. 
 	 */
   	definitions : {
-  		init : {
-  			"stop" : {
-  				label 		: "Stop", 
-  				icon		: "resource/slc/process-stop.png",
-  				shortcut	: "Control+s",
-  				enabled		: false,
-  				menu		: null,
-  				toolbar		: "list",
-  				callback	: function(e){},
-  				command		: null
-  			},
-  			/*
-	  		"quit" : {
-  				label		: "Quit", 
-  				icon 		: "resource/slc/system-shutdown.png",
-  				shortcut 	: "Control+q",
-  				enabled  	: true,
-  				menu	   	: "File",
-  				toolbar  	: false,
-  				callback 	: function(e){}, 
-  				command 	: null
-  			},
-  			*/
-  			"log" : {
-  				label		: "Show Console", 
-  				icon 		: "resource/slc/help-contents.png",
-  				shortcut 	: "",
-  				enabled  	: true,
-  				menu	   	: "Help",
-  				menuPosition: "last",
-  				toolbar  	: false,
-  				callback 	: function(e){  					
-  					org.argeo.ria.components.Logger.getInstance().toggle();
-  				}, 
-  				command 	: null
-  			},
-  			"help" : {
-  				label		: "About...", 
-  				icon 		: "resource/slc/help-about.png",
-  				shortcut 	: "Control+h",
-  				enabled  	: true,
-  				menu	   	: "Help",
-  				toolbar  	: false,
-  				callback 	: function(e){
-					var win = new org.argeo.ria.components.Modal("About SLC", null, "SLC is a product from Argeo.");
-					win.attachAndShow();
-  				}, 
-  				command 	: null
-  			}
-  		}
+  		init : {},
+  		check : "Map"
   	},
   	/**
   	 * For internal use 
   	 */
   	initialDefinitions : {
-  		init : {}
+  		init : {},
+  		check : "Map"
   	}
   },
 
@@ -148,6 +101,11 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 
   members :
   {
+  	init : function(initDefinitions){
+  		this.setDefinitions(initDefinitions);
+  		this.setInitialDefinitions(qx.lang.Object.copy(initDefinitions));
+  	},
+  	
   	/**
   	 * Creates all the objects (if they are not already existing) from the definitions maps.
   	 */
