@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN" "http://jetty.mortbay.org/configure.dtd">
+
+<Configure id="Server" class="org.mortbay.jetty.Server">
+
+	<Array id="plusConfig" type="java.lang.String">
+		<Item>org.mortbay.jetty.webapp.WebInfConfiguration</Item>
+		<Item>org.mortbay.jetty.plus.webapp.EnvConfiguration</Item>
+		<Item>org.mortbay.jetty.plus.webapp.Configuration</Item>
+		<Item>org.mortbay.jetty.webapp.JettyWebXmlConfiguration</Item>
+		<Item>org.mortbay.jetty.webapp.TagLibConfiguration</Item>
+	</Array>
+
+	<New id="org.argeo.infra.web" class="org.mortbay.jetty.webapp.WebAppContext">
+		<Set name="ConfigurationClasses">
+			<Ref id="plusConfig" />
+		</Set>
+	</New>
+
+	<!-- Additional webapps -->
+	<Set name="handler">
+		<New id="Handlers" class="org.mortbay.jetty.handler.HandlerCollection">
+			<Set name="handlers">
+				<Array type="org.mortbay.jetty.Handler">
+					<Item>
+						<New id="archivaHandler" class="org.mortbay.jetty.webapp.WebAppContext">
+							<Set name="ConfigurationClasses">
+								<Ref id="plusConfig" />
+							</Set>
+						</New>
+					</Item>
+				</Array>
+			</Set>
+		</New>
+	</Set>
+	<Ref id="archivaHandler">
+		<Set name="contextPath">/archiva</Set>
+		<Set name="war">target/dependency/archiva-webapp.war</Set>
+	</Ref>
+
+	<!-- Datasources -->
+	<New id="mainDs" class="org.mortbay.jetty.plus.naming.Resource">
+		<Arg>jdbc/mainDs</Arg>
+		<Arg>
+			<New class="org.hsqldb.jdbc.jdbcDataSource">
+				<Set name="database">
+					<Property name="jdbcUrl" default="jdbc:hsqldb:mem:slcMainDs" />
+				</Set>
+				<Set name="user">sa</Set>
+				<Set name="password"></Set>
+			</New>
+		</Arg>
+	</New>
+
+	<!-- Archiva datasources -->
+	<New id="archivaUsersDs" class="org.mortbay.jetty.plus.naming.Resource">
+		<Arg>jdbc/users</Arg>
+		<Arg>
+			<New class="org.hsqldb.jdbc.jdbcDataSource">
+				<Set name="database">
+					<Property name="jdbcUrl" default="jdbc:hsqldb:mem:archivaUsers" />
+				</Set>
+				<Set name="user">sa</Set>
+				<Set name="password"></Set>
+			</New>
+		</Arg>
+	</New>
+	<New id="archivaDs" class="org.mortbay.jetty.plus.naming.Resource">
+		<Arg>jdbc/archiva</Arg>
+		<Arg>
+			<New class="org.hsqldb.jdbc.jdbcDataSource">
+				<Set name="database">
+					<Property name="jdbcUrl" default="jdbc:hsqldb:mem:archiva" />
+				</Set>
+				<Set name="user">sa</Set>
+				<Set name="password"></Set>
+			</New>
+		</Arg>
+	</New>
+	<New id="validation_mail" class="org.mortbay.jetty.plus.naming.Resource">
+		<Arg>mail/Session</Arg>
+		<Arg>
+			<New class="org.mortbay.naming.factories.MailSessionReference">
+				<Set name="user"></Set>
+				<Set name="password"></Set>
+				<Set name="properties">
+					<New class="java.util.Properties">
+						<Put name="mail.smtp.host">localhost</Put>
+					</New>
+				</Set>
+			</New>
+		</Arg>
+	</New>
+</Configure>
