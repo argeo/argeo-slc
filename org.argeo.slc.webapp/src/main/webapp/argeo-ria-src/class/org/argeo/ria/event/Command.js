@@ -149,6 +149,9 @@
   				menuClone.add(new qx.ui.menu.Separator());
   			}else{
 		  		var button = new qx.ui.menu.Button(submenus[i].label, submenus[i].icon);
+		  		if(submenus[i].disabled){
+		  			button.setEnabled(false);
+		  		}
 		  		button.setUserData("commandId", submenus[i].commandId);
 		  		button.addListener("execute", this.executeSubMenuCallback, this);
 		  		menuClone.add(button);
