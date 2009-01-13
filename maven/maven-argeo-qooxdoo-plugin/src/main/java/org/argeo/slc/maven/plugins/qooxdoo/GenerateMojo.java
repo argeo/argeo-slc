@@ -51,30 +51,14 @@ public class GenerateMojo extends AbstractMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
-			// File jythonBase = new File(buildDirectory, "jython");
-			// jythonBase.mkdirs();
-			// System.setProperty("python.home", jythonBase.getCanonicalPath());
-
 			File generateScript = new File(baseDir.getPath() + File.separator
 					+ qooxdooSdk + File.separator + "tool" + File.separator
 					+ "bin", "generator.py");
-			// String[] jobArray = jobs.split(" ");
-			// String[] args = new String[jobArray.length + 1];
-			// args[0] = generateScript.getCanonicalPath();
-			// System.arraycopy(jobArray, 0, args, 1, jobArray.length);
-			// String[] args = { "generate.py", job };
 			getLog().info("Running Qooxdoo job: " + job + " ...");
-			// jython.main(args);
 
 			Commandline cl = new Commandline();
 
-			if (File.separatorChar == '\\') {// win
-				File pythonBase = new File(buildDirectory, "python-win32")
-						.getCanonicalFile();
-				cl.setExecutable(pythonBase.getPath() + File.separator
-						+ "python");
-			} else
-				cl.setExecutable("python");
+			cl.setExecutable("python");// python needs to be installed
 			cl.setWorkingDirectory(baseDir.getCanonicalPath());
 			cl.createArgument().setValue(generateScript.getCanonicalPath());
 			cl.createArgument().setValue(job);
