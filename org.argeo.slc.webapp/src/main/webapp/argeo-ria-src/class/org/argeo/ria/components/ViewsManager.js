@@ -40,7 +40,7 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
 		viewPane.empty();
 		if(commands){
 			viewPane.setCommands(commands);
-			org.argeo.ria.event.CommandsManager.getInstance().addCommands(commands, iView);
+			org.argeo.ria.event.CommandsManager.getInstance().addCommands(commands, "view:"+viewPaneId);
 		}
 		viewPane.setContent(iView); 
 		return iView;

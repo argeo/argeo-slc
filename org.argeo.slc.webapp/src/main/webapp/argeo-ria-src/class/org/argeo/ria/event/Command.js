@@ -179,7 +179,17 @@
   	executeSubMenuCallback : function(event){
 		var button = event.getTarget();
 		var callback = this.getMenuCallback();
-		callback = qx.lang.Function.bind(callback, this.getMenuContext() || this);
+		var context;
+		if(this.getMenuContext()){
+			if(typeof(this.getMenuContext()) == "object") context = this.getMenuContext();
+			else if(typeof(this.getMenuContext()) == "string"){
+				if(this.getMenuContext().split(":")[0] == "view"){
+					var viewId = this.getMenuContext().split(":")[1];
+					context = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById(viewId).getContent();
+				}
+			}
+		}
+		callback = qx.lang.Function.bind(callback, context || this);
 		callback(button.getUserData("commandId"));  		
   	},  	
   	/**

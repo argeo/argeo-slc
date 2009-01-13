@@ -129,7 +129,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 	  			if(definition.toggle){
 	  				command.setToggle(true);
 	  			}
-	  			command.addListener("execute", definition.callback, (definition.callbackContext?definition.callbackContext:this));
+	  			this._attachListener(command, definition.callback, definition.callbackContext);
 	  			if(definition.init){
 	  				var binded = qx.lang.Function.bind(definition.init, command);
 	  				binded();
@@ -325,6 +325,37 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   			this.setShow(e.getData());
   		}, toolbar);
   		
+  	},
+  	/**
+  	 * Attach a listener to a command, with a context.
+  	 * The context can be an object, a string like "view:viewId" or null. 
+  	 * If a string, the viewPaneId content will be retrieved at runtime. If null, "this" will be used
+  	 * as default context.
+  	 * @param command {org.argeo.ria.event.Command} The command
+  	 * @param callback {Function} The function to execute
+  	 * @param callbackContext {Object|String} The context in which the function will be executed.  
+  	 */
+  	_attachListener:function(command, callback, callbackContext){  		
+		if(!callbackContext){
+			command.addListener("execute", callback, this);
+			return;
+		}
+		if(typeof(callbackContext) == "object"){
+			command.addListener("execute", callback, callbackContext);
+			return;
+		}		
+		if(typeof(callbackContext) == "string"){
+			if(callbackContext.split(":")[0] == "view"){
+				var viewId = callbackContext.split(":")[1];
+				command.addListener("execute", function(event){
+	  				var view = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById(viewId).getContent();
+	  				var binded = qx.lang.Function.bind(callback, view);
+	  				binded(event);
+				});
+			}else{
+				command.addListener("execute", callback, callbackContext);
+			}
+		}
   	}
   }
 });
