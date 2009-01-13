@@ -7,6 +7,11 @@
  */
 qx.Interface.define("org.argeo.ria.components.IPerspective", {
 	
+	statics : {
+		LABEL : "",
+		ICON  : ""
+	},
+	
 	members : {
 		/**
 		 * Initialize the available zones that will later contain IView implementations.
@@ -24,6 +29,11 @@ qx.Interface.define("org.argeo.ria.components.IPerspective", {
 		 * @param viewsManager {org.argeo.components.ViewsManager} the pane manager
 		 * 
 		 */
-	  	initViews : function(viewsManager){return true}
+	  	initViews : function(viewsManager){return true},
+	  	/**
+	  	 * Remove and destroy the perspective
+	  	 * @param viewsManager {org.argeo.components.ViewsManager} the pane manager
+	  	 */
+	  	remove : function(viewsManager){return true}
 	}
 });
