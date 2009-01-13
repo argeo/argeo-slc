@@ -48,20 +48,6 @@ qx.Class.define("org.argeo.slc.web.TestList",
   	 */
   	commands : {
   		init : {
-  			"openexecutionapplet" : {
-  				label		: "Launcher", 
-  				icon 		: "resource/slc/utilities-terminal.png",
-  				shortcut 	: "Control+i",
-  				enabled  	: true,
-  				menu	   	: "File",
-  				toolbar  	: "list",
-  				callback 	: function(e){
-  					var manager = org.argeo.ria.components.ViewsManager.getInstance();
-  					var iView = manager.initIViewClass(org.argeo.slc.ria.LauncherApplet, "applet");
-  					iView.load();
-  				}, 
-  				command 	: null
-  			},
   			"loadtestlist" : {
   				label		: "Load Collection", 
   				icon 		: "resource/slc/view-refresh.png",

@@ -10,11 +10,17 @@ qx.Class.define("org.argeo.slc.web.Perspective",
 	  	this.base(arguments);
   },
   
+  statics : {
+  	LABEL : "Test Results",
+  	ICON : "resource/slc/office-chart.png"
+  },
+  
   members : {
-  	  	
+  	_splitPane : null,  	
+  	
   	initViewPanes : function(viewsManager){
   		
-      var splitPane = new qx.ui.splitpane.Pane("horizontal");
+      this._splitPane = new qx.ui.splitpane.Pane("horizontal");
 	  var topLeft = new org.argeo.ria.components.ViewPane("list", "Collection", {
 	  	orientation : "horizontal",
 	  	min : 36
@@ -22,12 +28,12 @@ qx.Class.define("org.argeo.slc.web.Perspective",
 	  topLeft.set({width:300});
 	  viewsManager.registerViewPane(topLeft);
 	    
-	  splitPane.add(topLeft, 0);
+	  this._splitPane.add(topLeft, 0);
   	  var rightPane = new org.argeo.ria.components.ViewPane("applet", "Test Detail");  	  
   	  viewsManager.registerViewPane(rightPane);
-	  splitPane.add(rightPane, 1);
+	  this._splitPane.add(rightPane, 1);
       
-      viewsManager.getViewPanesContainer().add(splitPane, {flex:1});
+      viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1});
   		
   	},
   	
@@ -36,6 +42,12 @@ qx.Class.define("org.argeo.slc.web.Perspective",
 	  view.load();
 	  view.loadCollections();
 	  view.loadList();
+  	},
+  	
+  	remove : function(viewsManager){
+  		viewsManager.getViewPaneById("list").empty();
+  		viewsManager.getViewPaneById("applet").empty();
+  		viewsManager.getViewPanesContainer().remove(this._splitPane);  		
   	}
   	
   }
