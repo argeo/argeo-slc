@@ -64,6 +64,9 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
   		this.setView(viewPane);
   		this._createLayout();
   		this._createForm();
+  		this._amqClient = new org.argeo.ria.remote.AmqClient();
+  		this._amqClient.startPolling(); 
+  		qx.io.remote.RequestQueue.getInstance().setDefaultTimeout(30000);
   	},
   	
   	/**
@@ -204,7 +207,21 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 			var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host", NSMap);
 			var listItem = new qx.ui.form.ListItem(uuid+' ('+host+')', null, uuid);
 			selector.add(listItem);
+			this._addAmqListenerDeferred(uuid, i);
 		}
+	},
+	
+	_addAmqListenerDeferred: function(uuid, index){
+		qx.event.Timer.once(function(){			
+			this._amqClient.addListener("launcherId", "topic://agent."+uuid+".newExecution", function(message){
+				this.info("Received message!");
+				var slcExec = new org.argeo.slc.ria.SlcExecutionMessage(message.getAttribute("uuid"));
+				slcExec.fromXml(message);
+				this.logModel.addRows([
+					[new Date().toString(), slcExec.getUuid(), slcExec.getStatus(), slcExec.getType()]
+				]);				
+			}, this);
+		}, this, 500*index);		
 	},
 	
 	submitForm : function(){
@@ -222,13 +239,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 			}
 		}
 		var destination = "topic://agent."+currentUuid+".newExecution";
-		var req = org.argeo.slc.ria.SlcApi.getSendAmqMessageRequest(destination, slcExec);
-		req.addListener("completed", function(e){			
-			this.logModel.addRows([
-				[new Date().toString(), slcExec.getUuid(), slcExec.getStatus(), slcExec.getType()]
-			]);
-		}, this);
-		req.send();
+		this._amqClient.sendMessage(destination, slcExec.toXml());
 	}
 	  	
   }

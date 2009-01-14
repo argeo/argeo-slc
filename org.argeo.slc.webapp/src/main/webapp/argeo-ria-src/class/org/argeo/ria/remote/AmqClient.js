@@ -6,7 +6,7 @@ qx.Class.define("org.argeo.ria.remote.AmqClient", {
 	},
 	members : {
   		// The URI of the MessageListenerServlet
-		uri : '/amq',
+		uri : '/org.argeo.slc.webapp/amq',
 
 		// Polling. Set to true (default) if waiting poll for messages is needed
 		poll : true,
@@ -24,32 +24,17 @@ qx.Class.define("org.argeo.ria.remote.AmqClient", {
 		_messageQueue : '',
 		_queueMessages : 0,
 
-		_messageHandler : function(request) {
-			try {
-				if (request.status == 200) {
-					var response = request.responseXML
-							.getElementsByTagName("ajax-response");
-					if (response != null && response.length == 1) {
-						for (var i = 0; i < response[0].childNodes.length; i++) {
-							var responseElement = response[0].childNodes[i];
-
-							// only process nodes of type element.....
-							if (responseElement.nodeType != 1)
-								continue;
-
-							var id = responseElement.getAttribute('id');
-
-							var handler = this._handlers[id];
-							if (handler != null) {
-								for (var j = 0; j < responseElement.childNodes.length; j++) {
-									handler(responseElement.childNodes[j]);
-								}
-							}
-						}
-					}
+		_messageHandler : function(response) {
+			var doc = response.getContent();
+			var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
+			var messages = org.argeo.ria.util.Element.selectNodes(doc, "//response", NSMap);
+			//this.info("Received " + messages.length + " messages");
+			for(var i=0;i<messages.length;i++){
+				var id = messages[i].getAttribute("id");
+				var slcExec = org.argeo.ria.util.Element.selectSingleNode(messages[i], "slc:slc-execution", NSMap);				
+				if(id && this._handlers[id] && slcExec){
+					this._handlers[id](slcExec);
 				}
-			} catch (e) {
-				alert(e);
 			}
 		},
 
@@ -58,22 +43,22 @@ qx.Class.define("org.argeo.ria.remote.AmqClient", {
 		},
 
 		endBatch : function() {
-			this._queueMessages--;
+			this._queueMessages--;			
 			if (this._queueMessages == 0 && this._messages > 0) {
 				var body = this._messageQueue;
 				this._messageQueue = '';
 				this._messages = 0;
 				this._queueMessages++;
-				var request = new qx.io.remote.Request(this.uri, "post", "text/plain");
+				var request = new qx.io.remote.Request(this.uri, "POST", "text/plain");
 				request.addListener("completed", this.endBatch, this);
 				request.send();
 			}
 		},
 
-		_pollHandler : function(request) {
+		_pollHandler : function(response) {
 			this.startBatch();
 			try {
-				this._messageHandler(request);
+				this._messageHandler(response);
 				this._pollEvent(this._first);
 				this._first = false;
 			} catch (e) {
@@ -88,7 +73,7 @@ qx.Class.define("org.argeo.ria.remote.AmqClient", {
 		},
 
 		_sendPoll : function(request) {
-			var request = new qx.io.remote.Request(this.uri, "get", "application/xml");
+			var request = new qx.io.remote.Request(this.uri, "GET", "application/xml");
 			request.addListener("completed", this._pollHandler, this);
 			request.send();
 		},
@@ -111,8 +96,8 @@ qx.Class.define("org.argeo.ria.remote.AmqClient", {
 		},
 
 		// Listen on a channel or topic.   handler must be a function taking a message arguement
-		addListener : function(id, destination, handler) {
-			this._handlers[id] = handler;
+		addListener : function(id, destination, handler, context) {
+			this._handlers[id] = qx.lang.Function.bind(handler, context);
 			this._sendMessage(destination, id, 'listen');
 		},
 
@@ -135,7 +120,7 @@ qx.Class.define("org.argeo.ria.remote.AmqClient", {
 				this._messages++;
 			} else {
 				this.startBatch();
-				var req = new qx.io.remote.Request(this.uri, "post", "application/xml");
+				var req = new qx.io.remote.Request(this.uri, "POST", "text/plain");
 				req.setParameter("destination", destination);
 				req.setParameter("message", message);
 				req.setParameter("type", type);
@@ -144,9 +129,9 @@ qx.Class.define("org.argeo.ria.remote.AmqClient", {
 			}
 		},
 
-		_startPolling : function() {
+		startPolling : function() {
 			if (this.poll){
-				var req = new qx.io.remote.Request(this.uri, "get", "application/xml");
+				var req = new qx.io.remote.Request(this.uri, "GET", "application/xml");
 				req.setParameter("timeout", "10");
 				req.addListener("completed", this._pollHandler, this);
 				req.send();
