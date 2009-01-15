@@ -11,6 +11,9 @@ qx.Class.define("org.argeo.ria.util.Element",
 		
   statics :
   {
+  	
+  	DEFAULT_NAMESPACE_MAP : null,
+  	
      /**
      * Selects the first XmlNode that matches the XPath expression.
      *
@@ -23,7 +26,8 @@ qx.Class.define("org.argeo.ria.util.Element",
     selectSingleNode : qx.core.Variant.select("qx.client",
     {
       "mshtml|opera": function(element, query, NSMap) {
-      	if(NSMap){
+      	NSMap = NSMap || org.argeo.ria.util.Element.DEFAULT_NAMESPACE_MAP;
+      	if(NSMap){      		
       		var namespaces = [];
       		var i=0;
 	      	for(var prefix in NSMap){	      		
@@ -40,6 +44,7 @@ qx.Class.define("org.argeo.ria.util.Element",
 
       "default": function(element, query, NSMap)
       {
+      	NSMap = NSMap || org.argeo.ria.util.Element.DEFAULT_NAMESPACE_MAP;
         if(!this.__xpe) {
           this.__xpe = new XPathEvaluator();
         }
@@ -76,6 +81,7 @@ qx.Class.define("org.argeo.ria.util.Element",
     selectNodes : qx.core.Variant.select("qx.client",
     {
       "mshtml|opera": function(element, query, NSMap) {
+      	NSMap = NSMap || org.argeo.ria.util.Element.DEFAULT_NAMESPACE_MAP;
       	if(NSMap){
       		var namespaces = [];
       		var i=0;
@@ -91,6 +97,7 @@ qx.Class.define("org.argeo.ria.util.Element",
 
       "default": function(element, query, NSMap)
       {
+      	NSMap = NSMap || org.argeo.ria.util.Element.DEFAULT_NAMESPACE_MAP;
         var xpe = this.__xpe;
 
         if(!xpe) {
@@ -134,7 +141,7 @@ qx.Class.define("org.argeo.ria.util.Element",
      * @signature function(element, namespaceURI, tagname)
      */
     getElementsByTagNameNS : qx.core.Variant.select("qx.client",
-    {
+    {    	
       "mshtml": function(element, namespaceURI, tagname)
       {
         var doc = element.ownerDocument || element;
@@ -162,7 +169,8 @@ qx.Class.define("org.argeo.ria.util.Element",
      */
     getSingleNodeText : function(element, query, NSMap)
     {
-      var node = this.selectSingleNode(element, query, NSMap);
+      NSMap = NSMap || org.argeo.ria.util.Element.DEFAULT_NAMESPACE_MAP;
+      var node = org.argeo.ria.util.Element.selectSingleNode(element, query, NSMap);
       return qx.dom.Node.getText(node);
     }
   }

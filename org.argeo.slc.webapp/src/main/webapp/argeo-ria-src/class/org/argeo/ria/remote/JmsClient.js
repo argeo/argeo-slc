@@ -8,7 +8,7 @@ qx.Class.define("org.argeo.ria.remote.JmsClient", {
 	},
 	members : {
   		// The URI of the MessageListenerServlet
-		uri : '/org.argeo.slc.webapp/amq',		
+		uri : '../amq',		
 
 		// Polling. Set to true (default) if waiting poll for messages is needed
 		poll : true,
@@ -24,9 +24,8 @@ qx.Class.define("org.argeo.ria.remote.JmsClient", {
 		_handlers : new Array(),
 
 		_messageHandler : function(response) {
-			var doc = response.getContent();
-			var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
-			var messages = org.argeo.ria.util.Element.selectNodes(doc, "//response", NSMap);
+			var doc = response.getContent();			
+			var messages = org.argeo.ria.util.Element.selectNodes(doc, "//response");
 			for(var i=0;i<messages.length;i++){
 				var id = messages[i].getAttribute("id");
 				if(id && this._handlers[id]){

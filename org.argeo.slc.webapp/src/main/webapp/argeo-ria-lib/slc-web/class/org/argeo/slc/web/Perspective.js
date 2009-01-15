@@ -8,6 +8,7 @@ qx.Class.define("org.argeo.slc.web.Perspective",
   
   construct : function(){
 	  	this.base(arguments);
+	  	org.argeo.ria.util.Element.DEFAULT_NAMESPACE_MAP = {slc:"http://argeo.org/projects/slc/schemas"};
   },
   
   statics : {
