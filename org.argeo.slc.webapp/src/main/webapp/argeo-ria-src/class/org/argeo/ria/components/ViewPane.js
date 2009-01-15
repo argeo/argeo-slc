@@ -181,6 +181,9 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 			org.argeo.ria.event.CommandsManager.getInstance().removeCommands(this.getCommands());
 			this.setCommands(null);
 		}
+		if(this.getContent()){			
+			this.getContent().close();
+		}
 		this.setViewTitle(this._defaultViewTitle);
 		this.setContent(null);
 	}
