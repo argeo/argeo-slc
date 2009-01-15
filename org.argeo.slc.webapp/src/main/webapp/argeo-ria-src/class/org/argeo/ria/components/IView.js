@@ -40,6 +40,11 @@ qx.Interface.define("org.argeo.ria.components.IView", {
 		 * Whether this component is already contained in a scroller (return false) or not (return true).
 		 * @return {Boolean}
 		 */
-		addScroll : function(){return true;}
+		addScroll : function(){return true;},
+		/**
+		 * Called at destruction time
+		 * Perform all the clean operations (stopping polling queries, etc.) 
+		 */
+		close : function(){return true;}
 	}
 });

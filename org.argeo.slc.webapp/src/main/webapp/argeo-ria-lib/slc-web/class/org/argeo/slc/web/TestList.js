@@ -428,6 +428,13 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	
 	addScroll : function(){
 		return false;
-	}  	
+	},
+	
+	close : function(){
+		if(this.timer){
+			this.pollListLoading(false);
+		}
+	}
+	
   }
 });

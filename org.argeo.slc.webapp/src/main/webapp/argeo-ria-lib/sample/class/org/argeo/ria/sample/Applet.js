@@ -66,6 +66,10 @@ qx.Class.define("org.argeo.ria.sample.Applet",
 	addScroll : function(){
 		return false;
 	},
+	
+	close : function(){
+		return false;
+	},
 	  	
   	/**
   	 * Create a simple HtmlElement and and insert the html string..

@@ -39,7 +39,9 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   				toolbar  	: "result",
   				callback	: function(e){
   					// Call service to delete
-  					this.getView().empty();  					
+  					this.getView().empty();
+  					//alert(this.testId);
+  					
   				},
   				selectionChange : function(viewId, xmlNode){  					
   					if(viewId != "applet") return;
@@ -70,9 +72,9 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   		// Load XML or Whatever
   		var service;  		
 		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
-		var testId = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(this.data, "slc:uuid"));		
-		this.getView().setViewTitle("Test "+testId);
-  		var request = org.argeo.slc.ria.SlcApi.getLoadResultService(testId);  		
+		this.testId = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(this.data, "slc:uuid"));		
+		this.getView().setViewTitle("Test "+this.testId);
+  		var request = org.argeo.slc.ria.SlcApi.getLoadResultService(this.testId);  		
   		request.addListener("completed", function(response){
 			this.createXmlGui(response.getContent());
 			this.getView().setOnLoad(false);
@@ -84,6 +86,10 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   	 
 	addScroll : function(){
 		return false;
+	},
+	
+	close : function(){
+		
 	},
 	
 	/**

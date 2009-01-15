@@ -108,6 +108,10 @@ qx.Class.define("org.argeo.ria.sample.List",
 					
 	addScroll : function(){
 		return false;
-	}  	
+	},
+	
+	close : function(){
+		
+	}
   }
 });

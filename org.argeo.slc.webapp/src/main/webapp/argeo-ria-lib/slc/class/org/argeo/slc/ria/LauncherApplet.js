@@ -112,7 +112,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		this.add(this.scroll, {edge:'west'});
 		
 		this.logModel = new qx.ui.table.model.Simple();
-		this.logModel.setColumns(["Date", "Agent Uuid", "Status", "Type"]);
+		this.logModel.setColumns(["Date", "Agent Uuid", "Status"]);
 		this.logPane = new qx.ui.table.Table(this.logModel,  {
 		  	tableColumnModel: function(obj){
 				return new qx.ui.table.columnmodel.Resize(obj)
@@ -129,7 +129,6 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		});
 		var columnModel = this.logPane.getTableColumnModel(); 
 		columnModel.getBehavior().setWidth(2, "12%");
-		columnModel.getBehavior().setWidth(3, "12%");		
 	},
 	
 	_createForm : function(){
@@ -153,13 +152,12 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		serviceManager.addListener("reload", function(reloadEvent){
 			if(reloadEvent.getDataType()!= "agents") return ;
 			var xmlDoc = reloadEvent.getContent();
-			var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
-			var nodes = org.argeo.ria.util.Element.selectNodes(xmlDoc, "//slc:slc-agent-descriptor", NSMap);
+			var nodes = org.argeo.ria.util.Element.selectNodes(xmlDoc, "//slc:slc-agent-descriptor");
 			var newTopics = {};
 			for(var i=0;i<nodes.length;i++){
-				var uuid = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "@uuid", NSMap);
-				var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host", NSMap);
-				newTopics[uuid] = uuid+" ("+host+")";
+				var uuid = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "@uuid");
+				var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host");
+				newTopics[uuid] = host+" ("+uuid+")";
 			}
 			this.setRegisteredTopics(newTopics);
 		}, this);
@@ -259,12 +257,11 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 	
 	_addAmqListener: function(uuid){
 		this._amqClient.addListener("slcExec", "topic://agent."+uuid+".newExecution", function(response){
-			var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
-			var message = org.argeo.ria.util.Element.selectSingleNode(response, "slc:slc-execution", NSMap);				
+			var message = org.argeo.ria.util.Element.selectSingleNode(response, "slc:slc-execution");				
 			var slcExec = new org.argeo.slc.ria.SlcExecutionMessage(message.getAttribute("uuid"));
 			slcExec.fromXml(message);
 			this.logModel.addRows([
-				[new Date().toString(), slcExec.getUuid(), slcExec.getStatus(), slcExec.getType()]
+				[new Date().toString(), slcExec.getHost()+' ('+slcExec.getUuid()+')', slcExec.getStatus()]
 			]);				
 		}, this);
 	},
