@@ -51,6 +51,11 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
   				command 	: null
   			}
   		}
+  	},
+  	registeredTopics : {
+  		init : {},
+  		check : "Map", 
+  		event : "changeRegisteredTopics"
   	}
   },
 
@@ -64,22 +69,39 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
   		this.setView(viewPane);
   		this._createLayout();
   		this._createForm();
-  		this._amqClient = new org.argeo.ria.remote.AmqClient();
-  		this._amqClient.startPolling(); 
-  		qx.io.remote.RequestQueue.getInstance().setDefaultTimeout(30000);
+  		this._amqClient = org.argeo.ria.remote.JmsClient.getInstance();
+  		this._amqClient.startPolling();
   	},
   	
   	/**
-  	 * Load a given row : the data passed must be a simple data array.
-  	 * @param data {Element} The text xml description. 
+  	 *  
   	 */
   	load : function(){
-  		this.getView().setViewTitle("Slc Execution Launcher");
-  		org.argeo.ria.event.CommandsManager.getInstance().getCommandById("reloadagents").execute();
+  		this.getView().setViewTitle("Execution Launcher");
+  		this.addListener("changeRegisteredTopics", function(event){
+  			this._refreshTopicsSubscriptions(event);
+  			this._feedSelector(event);
+  		}, this);
+  		var reloadHandler = function(message){
+	  		org.argeo.ria.event.CommandsManager.getInstance().getCommandById("reloadagents").execute();
+  		}
+  		this._amqClient.addListener("agentregister", "topic://agent.register", reloadHandler, this);
+  		//qx.event.Timer.once(function(){  		
+  			this._amqClient.addListener("agentunregister", "topic://agent.unregister", reloadHandler, this);
+  		//}, this, 500);
+  		reloadHandler();
   	},
   	 
 	addScroll : function(){
 		return false;
+	},
+	
+	close : function(){
+  		this._amqClient.removeListener("agentregister", "topic://agent.register");
+  		this._amqClient.removeListener("agentunregister", "topic://agent.unregister");
+  		
+  		this.setRegisteredTopics({});
+		this._amqClient.stopPolling();
 	},
 	  	
 	_createLayout : function(){
@@ -130,14 +152,22 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
 		serviceManager.addListener("reload", function(reloadEvent){
 			if(reloadEvent.getDataType()!= "agents") return ;
-			this._xmlListToSelector(reloadEvent.getContent(), this.agentSelector);
+			var xmlDoc = reloadEvent.getContent();
+			var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
+			var nodes = org.argeo.ria.util.Element.selectNodes(xmlDoc, "//slc:slc-agent-descriptor", NSMap);
+			var newTopics = {};
+			for(var i=0;i<nodes.length;i++){
+				var uuid = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "@uuid", NSMap);
+				var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host", NSMap);
+				newTopics[uuid] = uuid+" ("+host+")";
+			}
+			this.setRegisteredTopics(newTopics);
 		}, this);
 		
 		this._addFormHeader("Choose Agent Uuid");
 		this._addFormEntry(new qx.ui.basic.Label("Agent Uuid"), this.agentSelector);
-		this._addFormHeader("Set SlcExecution Parameters");
+		this._addFormHeader("Set Execution Parameters");
 		this._addFormInputText("status", "Status", "STARTED");
-		this._addFormInputText("type", "Type", "slcAnt");
 		this._addFormInputText("host", "Host", "localhost");
 		this._addFormInputText("user", "User", "user");
 		
@@ -198,38 +228,56 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		this.formPane.add(entryPane);
 	},
 	
-	_xmlListToSelector : function(xmlDoc, selector){
-		selector.removeAll();
-		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
-		var nodes = org.argeo.ria.util.Element.selectNodes(xmlDoc, "//slc:slc-agent-descriptor", NSMap);
-		for(var i=0;i<nodes.length;i++){
-			var uuid = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "@uuid", NSMap);
-			var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host", NSMap);
-			var listItem = new qx.ui.form.ListItem(uuid+' ('+host+')', null, uuid);
-			selector.add(listItem);
-			this._addAmqListenerDeferred(uuid, i);
+	_refreshTopicsSubscriptions : function(changeTopicsEvent){
+		var oldTopics = changeTopicsEvent.getOldData() || {};
+		var newTopics = changeTopicsEvent.getData();
+		var removed = [];
+		var added = [];
+		for(var key in oldTopics){
+			if(!newTopics[key]) {
+				this._removeAmqListener(key);
+			}
+		}
+		for(var key in newTopics){
+			if(!oldTopics[key]) {
+				this._addAmqListener(key);
+			}			
+		}
+	},
+		
+	_feedSelector : function(changeTopicsEvent){
+		var topics = changeTopicsEvent.getData();
+		this.agentSelector.removeAll();
+		var emptyItem = new qx.ui.form.ListItem("", null, "");
+		this.agentSelector.add(emptyItem);
+		this.agentSelector.setSelected(emptyItem);
+		for(var key in topics){
+			var listItem = new qx.ui.form.ListItem(topics[key], null, key);
+			this.agentSelector.add(listItem);
 		}
 	},
 	
-	_addAmqListenerDeferred: function(uuid, index){
-		qx.event.Timer.once(function(){			
-			this._amqClient.addListener("launcherId", "topic://agent."+uuid+".newExecution", function(message){
-				this.info("Received message!");
-				var slcExec = new org.argeo.slc.ria.SlcExecutionMessage(message.getAttribute("uuid"));
-				slcExec.fromXml(message);
-				this.logModel.addRows([
-					[new Date().toString(), slcExec.getUuid(), slcExec.getStatus(), slcExec.getType()]
-				]);				
-			}, this);
-		}, this, 500*index);		
+	_addAmqListener: function(uuid){
+		this._amqClient.addListener("slcExec", "topic://agent."+uuid+".newExecution", function(response){
+			var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
+			var message = org.argeo.ria.util.Element.selectSingleNode(response, "slc:slc-execution", NSMap);				
+			var slcExec = new org.argeo.slc.ria.SlcExecutionMessage(message.getAttribute("uuid"));
+			slcExec.fromXml(message);
+			this.logModel.addRows([
+				[new Date().toString(), slcExec.getUuid(), slcExec.getStatus(), slcExec.getType()]
+			]);				
+		}, this);
+	},
+	
+	_removeAmqListener : function(uuid){
+		this._amqClient.removeListener("slcExec", "topic://agent."+uuid+".newExecution");
 	},
 	
 	submitForm : function(){
 		var currentUuid = this.agentSelector.getValue();
 		if(!currentUuid) return;
 		var slcExec = new org.argeo.slc.ria.SlcExecutionMessage(currentUuid);
-		slcExec.setStatus(this.fields.status.getValue());
-		slcExec.setType(this.fields.type.getValue());
+		slcExec.setStatus(this.fields.status.getValue());		
 		slcExec.setHost(this.fields.host.getValue());
 		slcExec.setUser(this.fields.user.getValue());
 		for(var i=0;i<this.freeFields.length;i++){
