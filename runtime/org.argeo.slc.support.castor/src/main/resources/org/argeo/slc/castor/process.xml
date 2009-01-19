@@ -15,7 +15,7 @@
 		<field name="type" />
 		<field name="host" />
 		<field name="user" />
-		<field name="steps" collection="vector"
+		<field name="steps" collection="arraylist"
 			type="org.argeo.slc.process.SlcExecutionStep">
 			<bind-xml auto-naming="deriveByClass" location="steps" />
 		</field>
@@ -43,7 +43,7 @@
 		</field>
 		<field name="type" />
 		<field name="begin" />
-		<field name="logLines" collection="vector" type="string">
+		<field name="logLines" collection="arraylist" type="string">
 			<bind-xml name="log-line" location="log-lines" />
 		</field>
 	</class>

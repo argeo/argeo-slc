@@ -41,6 +41,11 @@
 		<constructor-arg ref="slcAgentDescriptorDao" />
 	</bean>
 
+	<bean name="/listSlcExecutions.service" class="org.argeo.slc.web.mvc.process.ListSlcExecutionsController">
+		<constructor-arg ref="slcExecutionDao" />
+	</bean>
+
+
 	<!--
 		<bean name="/resultList.service"
 		class="org.argeo.slc.web.mvc.result.ResultListController">

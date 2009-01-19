@@ -3,10 +3,10 @@ package org.argeo.slc.process;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
 
@@ -16,7 +16,7 @@ public class SlcExecutionStep {
 	private String uuid;
 	private String type;
 	private Date begin;
-	private List<String> logLines = new Vector<String>();
+	private List<String> logLines = new ArrayList<String>();
 
 	/** Empty constructor */
 	public SlcExecutionStep() {

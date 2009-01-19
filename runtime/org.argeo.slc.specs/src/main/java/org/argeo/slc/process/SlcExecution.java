@@ -1,9 +1,9 @@
 package org.argeo.slc.process;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Vector;
 
 public class SlcExecution {
 	public final static String STATUS_SCHEDULED = "SCHEDULED";
@@ -21,7 +21,7 @@ public class SlcExecution {
 	private String status;
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
-	private List<SlcExecutionStep> steps = new Vector<SlcExecutionStep>();
+	private List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
 
 	public List<SlcExecutionStep> getSteps() {
 		return steps;
