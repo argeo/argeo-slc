@@ -360,7 +360,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 	submitForm : function(){
 		var currentUuid = this.agentSelector.getValue();
 		if(!currentUuid) return;
-		var slcExec = new org.argeo.slc.ria.SlcExecutionMessage(currentUuid);
+		var slcExec = new org.argeo.slc.ria.SlcExecutionMessage();
 		
 		var fields = {};
 		var hiddenFields = {};
