@@ -25,7 +25,9 @@ import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.runtime.SlcApplication;
 import org.argeo.slc.runtime.SlcExecutionOutput;
+import org.argeo.slc.spring.SpringUtils;
 import org.argeo.slc.structure.StructureRegistry;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -38,7 +40,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.SystemPropertyUtils;
 
-public class AntSlcApplication {
+public class AntSlcApplication implements SlcApplication<AntExecutionContext> {
 	private final static String DEFAULT_APP_LOG4J_PROPERTIES = "org/argeo/slc/ant/defaultAppLog4j.properties";
 
 	private final static Log log = LogFactory.getLog(AntSlcApplication.class);
@@ -49,6 +51,8 @@ public class AntSlcApplication {
 	private Resource rootDir;
 	private Resource confDir;
 	private File workDir;
+
+	private Resource slcRootFile;
 
 	public void execute(SlcExecution slcExecution, Properties properties,
 			Map<String, Object> references,
@@ -419,6 +423,92 @@ public class AntSlcApplication {
 
 	public void setParentContext(ConfigurableApplicationContext runtimeContext) {
 		this.parentContext = runtimeContext;
+	}
+
+	public void setSlcRootFile(Resource slcRootFile) {
+		this.slcRootFile = slcRootFile;
+	}
+
+	/**
+	 * Init all directories based on the SLC root file. TODO: don't override
+	 * already specified dirs.
+	 */
+	public void initFromSlcRootFile() {
+		// AntSlcApplication application = new AntSlcApplication();
+		InputStream inRootFile = null;
+		try {
+			// Remove basedir property in order to avoid conflict with Maven
+			// if (all.containsKey("basedir"))
+			// all.remove("basedir");
+
+			inRootFile = slcRootFile.getInputStream();
+			Properties rootProps = loadFile(inRootFile);
+
+			Resource confDir = null;
+			File workDir = null;
+			// Root dir
+			final Resource rootDir = SpringUtils.getParent(slcRootFile);
+
+			// Conf dir
+			String confDirStr = rootProps
+					.getProperty(AntConstants.CONF_DIR_PROPERTY);
+			if (confDirStr != null)
+				confDir = new DefaultResourceLoader(getClass().getClassLoader())
+						.getResource(confDirStr);
+
+			if (confDir == null || !confDir.exists()) {
+				// confDir = rootDir.createRelative("../conf");
+				confDir = SpringUtils.getParent(rootDir)
+						.createRelative("conf/");
+			}
+
+			// Work dir
+			String workDirStr = rootProps
+					.getProperty(AntConstants.WORK_DIR_PROPERTY);
+			if (workDirStr != null) {
+				workDir = new File(workDirStr);
+			}
+
+			if (workDir == null || !workDir.exists()) {
+				try {
+					File rootDirAsFile = rootDir.getFile();
+					workDir = new File(rootDirAsFile.getParent()
+							+ File.separator + "work").getCanonicalFile();
+				} catch (IOException e) {
+					workDir = new File(System.getProperty("java.io.tmpdir")
+							+ File.separator + "slcExecutions" + File.separator
+							+ slcRootFile.getURL().getPath());
+					log.debug("Root dir is not a file: " + e.getMessage()
+							+ ", creating work dir in temp: " + workDir);
+				}
+				workDir.mkdirs();
+			}
+
+			setConfDir(confDir);
+			setRootDir(rootDir);
+			setWorkDir(workDir);
+
+			if (log.isDebugEnabled())
+				log.debug("Ant SLC application initialized based on root file "
+						+ slcRootFile);
+		} catch (IOException e) {
+			throw new SlcException(
+					"Could not prepare SLC application for root file "
+							+ slcRootFile, e);
+		} finally {
+			IOUtils.closeQuietly(inRootFile);
+		}
+	}
+
+	/** Loads the content of a file as <code>Properties</code>. */
+	private Properties loadFile(InputStream in) {
+		Properties p = new Properties();
+		try {
+			p.load(in);
+		} catch (IOException e) {
+			throw new SlcException("Cannot read SLC root file", e);
+		}
+		return p;
 	}
 
 }

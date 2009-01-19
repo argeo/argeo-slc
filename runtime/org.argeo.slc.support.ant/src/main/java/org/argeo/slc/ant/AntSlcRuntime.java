@@ -72,10 +72,16 @@ public class AntSlcRuntime implements SlcRuntime<AntExecutionContext> {
 					"Could not find any SLC root file, "
 							+ "please configure one at the root of your scripts hierarchy.");
 
+		// Create SlcExecution from arguments
 		SlcExecution slcExecution = createSlcExecution(runtime, slcRootFile,
 				scriptRes, targets);
 
-		AntSlcApplication application = getApplication(slcRootFile);
+		// Init application
+		AntSlcApplication application = new AntSlcApplication();
+		application.setSlcRootFile(slcRootFile);
+		application.initFromSlcRootFile();
+
+		// Execute test
 		application.execute(slcExecution, properties, references,
 				executionOutput);
 	}
@@ -121,71 +127,6 @@ public class AntSlcRuntime implements SlcRuntime<AntExecutionContext> {
 		return slcExecution;
 	}
 
-	protected AntSlcApplication getApplication(Resource slcRootFile) {
-		AntSlcApplication application = new AntSlcApplication();
-		InputStream inRootFile = null;
-		try {
-			// Remove basedir property in order to avoid conflict with Maven
-			// if (all.containsKey("basedir"))
-			// all.remove("basedir");
-
-			inRootFile = slcRootFile.getInputStream();
-			Properties rootProps = loadFile(inRootFile);
-
-			Resource confDir = null;
-			File workDir = null;
-			// Root dir
-			final Resource rootDir = SpringUtils.getParent(slcRootFile);
-
-			// Conf dir
-			String confDirStr = rootProps
-					.getProperty(AntConstants.CONF_DIR_PROPERTY);
-			if (confDirStr != null)
-				confDir = new DefaultResourceLoader(application.getClass()
-						.getClassLoader()).getResource(confDirStr);
-
-			if (confDir == null || !confDir.exists()) {
-				// confDir = rootDir.createRelative("../conf");
-				confDir = SpringUtils.getParent(rootDir)
-						.createRelative("conf/");
-			}
-
-			// Work dir
-			String workDirStr = rootProps
-					.getProperty(AntConstants.WORK_DIR_PROPERTY);
-			if (workDirStr != null) {
-				workDir = new File(workDirStr);
-			}
-
-			if (workDir == null || !workDir.exists()) {
-				try {
-					File rootDirAsFile = rootDir.getFile();
-					workDir = new File(rootDirAsFile.getParent()
-							+ File.separator + "work").getCanonicalFile();
-				} catch (IOException e) {
-					workDir = new File(System.getProperty("java.io.tmpdir")
-							+ File.separator + "slcExecutions" + File.separator
-							+ slcRootFile.getURL().getPath());
-					log.debug("Root dir is not a file: " + e.getMessage()
-							+ ", creating work dir in temp: " + workDir);
-				}
-				workDir.mkdirs();
-			}
-
-			application.setConfDir(confDir);
-			application.setRootDir(rootDir);
-			application.setWorkDir(workDir);
-
-			return application;
-		} catch (IOException e) {
-			throw new SlcException(
-					"Could not prepare SLC application for root file "
-							+ slcRootFile, e);
-		} finally {
-			IOUtils.closeQuietly(inRootFile);
-		}
-	}
-
 	/**
 	 * Recursively scans directories downwards until it find a file name as
 	 * defined by {@link #SLC_ROOT_FILE_NAME}.
@@ -212,16 +153,5 @@ public class AntSlcRuntime implements SlcRuntime<AntExecutionContext> {
 			throw new SlcException("Problem when looking in SLC root file in "
 					+ currDir, e);
 		}
-	}
-
-	/** Loads the content of a file as <code>Properties</code>. */
-	private Properties loadFile(InputStream in) {
-		Properties p = new Properties();
-		try {
-			p.load(in);
-		} catch (IOException e) {
-			throw new SlcException("Cannot read SLC root file", e);
-		}
-		return p;
 	}
 }

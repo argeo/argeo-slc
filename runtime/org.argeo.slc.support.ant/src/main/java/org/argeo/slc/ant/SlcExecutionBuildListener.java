@@ -163,16 +163,18 @@ public class SlcExecutionBuildListener extends AppenderSkeleton implements
 	@Override
 	protected void append(LoggingEvent event) {
 		Project project = (Project) MDC.get(AntConstants.MDC_ANT_PROJECT);
-		if (project == null)
-			throw new SlcException("No Ant project registered in Log4j MDC.");
-
-		SlcExecution slcExecution = getSlcExecution(project);
-		if (currentStepNotified) {
-			slcExecution.getSteps().add(
-					new SlcExecutionStep(event.getMessage().toString()));
-			currentStepNotified = false;
+		if (project == null) {
+			System.err.println("No Ant project registered in Log4j MDC.");
 		} else {
-			slcExecution.currentStep().addLog(event.getMessage().toString());
+			SlcExecution slcExecution = getSlcExecution(project);
+			if (currentStepNotified) {
+				slcExecution.getSteps().add(
+						new SlcExecutionStep(event.getMessage().toString()));
+				currentStepNotified = false;
+			} else {
+				slcExecution.currentStep()
+						.addLog(event.getMessage().toString());
+			}
 		}
 	}
 

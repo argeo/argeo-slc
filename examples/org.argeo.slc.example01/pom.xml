@@ -84,6 +84,28 @@
 					</instructions>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.1-beta-1</version>
+				<configuration>
+					<mainClass>org.argeo.slc.cli.SlcMain</mainClass>
+					<systemProperties>
+						<systemProperty>
+							<key>slc.runtime</key>
+							<value>ws</value>
+						</systemProperty>
+						<systemProperty>
+							<key>slc.rootFile</key>
+							<value>file:${basedir}/src/slc/root/slcRoot.properties</value>
+						</systemProperty>
+					</systemProperties>
+					<arguments>
+						<argument>--mode</argument>
+						<argument>agent</argument>
+					</arguments>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -114,5 +136,28 @@
 			<version>1.1.1</version>
 			<scope>testing</scope>
 		</dependency>
+
+		<!-- TESTING -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.launcher</artifactId>
+			<scope>testing</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.activemq</artifactId>
+			<scope>testing</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.ant</artifactId>
+			<scope>testing</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.castor</artifactId>
+			<scope>testing</scope>
+		</dependency>
+
 	</dependencies>
 </project>

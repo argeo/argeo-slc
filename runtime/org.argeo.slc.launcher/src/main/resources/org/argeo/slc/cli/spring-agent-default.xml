@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd"
+	default-lazy-init="false">
+
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+		lazy-init="false">
+		<property name="properties">
+			<props>
+				<prop key="org.apache.activemq.brokerURL">
+					tcp://localhost:61616
+                </prop>
+			</props>
+		</property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+
+	<import resource="classpath:org/argeo/slc/activemq/spring-agent.xml" />
+
+	<bean id="slcDefault.cli.agent" parent="slcDefault.jms.agent">
+		<property name="slcApplication" ref="slcDefault.cli.slcApplication" />
+	</bean>
+
+	<bean id="slcDefault.cli.jms.agentListenerContainer.newExecution"
+		parent="slcTemplate.jms.agentListenerContainer">
+		<property name="action" value="newExecution" />
+		<property name="jmsAgent" ref="slcDefault.cli.agent" />
+	</bean>
+
+
+	<bean id="slcDefault.cli.slcApplication" class="org.argeo.slc.ant.AntSlcApplication"
+		init-method="initFromSlcRootFile">
+		<property name="slcRootFile" value="${slc.rootFile}" />
+	</bean>
+
+</beans>

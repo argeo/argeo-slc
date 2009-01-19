@@ -31,7 +31,7 @@ public class SlcMain {
 	private static Log log = null;
 
 	private final static String BOOTSTRAP_LOG4J_CONFIG = "org/argeo/slc/cli/bootstrapLog4j.properties";
-	private final static String DEFAULT_AGENT_CONTEXT = "classpath:org/argeo/slc/activemq/spring-agent.xml";
+	private final static String DEFAULT_AGENT_CONTEXT = "classpath:org/argeo/slc/cli/spring-agent-default.xml";
 
 	private final static Option modeOpt = OptionBuilder.withLongOpt("mode")
 			.withArgName("mode").hasArg().withDescription(

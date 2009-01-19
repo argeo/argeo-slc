@@ -5,37 +5,17 @@
 	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd"
 	default-lazy-init="false">
 
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
-		lazy-init="false">
-		<property name="properties">
-			<props>
-				<prop key="org.apache.activemq.brokerURL">
-					tcp://localhost:61616
-                </prop>
-			</props>
-		</property>
-		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
-	</bean>
-
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
-	<bean id="slcDefault.jms.agent" class="org.argeo.slc.jms.JmsAgent">
+	<bean id="slcDefault.jms.agent" class="org.argeo.slc.jms.JmsAgent" abstract="true">
 		<property name="jmsTemplate" ref="slcDefault.jms.jmsTemplate" />
 		<property name="agentRegister" ref="slcJms.destination.agent.register" />
 		<property name="agentUnregister" ref="slcJms.destination.agent.unregister" />
 	</bean>
 
-	<bean id="slcTemplate.jms.agentListenerContainer.newExecution"
-		parent="slcTemplate.jms.agentListenerContainer">
-		<property name="action" value="newExecution" />
-	</bean>
-
 	<!-- Templates -->
 	<bean id="slcTemplate.jms.agentListenerContainer" class="org.argeo.slc.jms.AgentListenerContainer"
 		abstract="true">
-		<property name="jmsAgent" ref="slcDefault.jms.agent" />
 		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
 		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 		<property name="pubSubDomain" value="true" />

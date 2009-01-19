@@ -12,6 +12,7 @@ import javax.jms.MessageListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.runtime.AbstractAgent;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
@@ -20,7 +21,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.core.JmsTemplate;
 
 /** JMS based implementation of SLC Agent. */
-public class JmsAgent implements SlcAgent, InitializingBean, DisposableBean {
+public class JmsAgent extends AbstractAgent implements SlcAgent, InitializingBean, DisposableBean {
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
 
 	private final SlcAgentDescriptor agentDescriptor;
@@ -60,7 +61,8 @@ public class JmsAgent implements SlcAgent, InitializingBean, DisposableBean {
 	}
 
 	public void newExecution(SlcExecution slcExecution) {
-		log.info("Would execute SlcExecution :" + slcExecution);
+		log.info("Execute SlcExecution :" + slcExecution);
+		runSlcExecution(slcExecution);
 	}
 
 	public void setJmsTemplate(JmsTemplate jmsTemplate) {
