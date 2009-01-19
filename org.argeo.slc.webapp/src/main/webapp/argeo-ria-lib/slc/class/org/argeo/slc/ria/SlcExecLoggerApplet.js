@@ -72,7 +72,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 	  	
 	_createLayout : function(){
 		this.logModel = new qx.ui.table.model.Simple();
-		this.logModel.setColumns(["Date", "Agent Uuid", "Status"]);
+		this.logModel.setColumns(["Date", "Host", "Id", "Status"]);
 		this.logPane = new qx.ui.table.Table(this.logModel,  {
 		  	tableColumnModel: function(obj){
 				return new qx.ui.table.columnmodel.Resize(obj)
@@ -90,7 +90,8 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		});
 		var columnModel = this.logPane.getTableColumnModel();
 		columnModel.getBehavior().setWidth(0, "30%");
-		columnModel.getBehavior().setWidth(2, "12%");		
+		columnModel.getBehavior().setWidth(1, "15%");
+		columnModel.getBehavior().setWidth(3, "12%");		
 	},
 	
 	_reloadLogger : function(){
@@ -103,7 +104,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 				var slcExec = new org.argeo.slc.ria.SlcExecutionMessage(message.getAttribute("uuid"));
 				slcExec.fromXml(message);
 				this.logModel.addRows([
-					[slcExec.getDate(), slcExec.getHost()+' ('+slcExec.getUuid()+')', slcExec.getStatus()]
+					[slcExec.getDate(), slcExec.getHost(), slcExec.getUuid(), slcExec.getStatus()]
 				]);				
 			}
 		}, this);
