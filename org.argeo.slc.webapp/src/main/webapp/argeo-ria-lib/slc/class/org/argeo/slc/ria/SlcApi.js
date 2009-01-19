@@ -19,6 +19,7 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	LIST_COLLECTIONS_SERVICE : "listCollectionRefs.service",
   	LIST_RESULTS_SERVICE : "listResultAttributes.service",
   	GET_RESULT_SERVICE : "getResult.service",
+  	LIST_SLCEXEC_SERVICE : "listSlcExecutions.service",
   	
   	LIST_AGENTS_SERVICE : "listAgents.service",  	
   	AMQ_SERVICE : "amq",
@@ -128,6 +129,21 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   		request.setParameter("uuid", resultId);
   		return request;
   	},
+
+  	/**
+  	 * List currently registered SlcExecutions.
+  	 * @param fireReloadEventType {String} Event type to trigger (optionnal)
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update 
+  	 * @return {qx.io.remote.Request}
+  	 */
+  	getListSlcExecutionsService:function(fireReloadEventType, iLoadStatusables){
+  		return org.argeo.slc.ria.SlcApi.getServiceRequest(
+  			org.argeo.slc.ria.SlcApi.LIST_SLCEXEC_SERVICE,
+  			fireReloadEventType,
+  			iLoadStatusables
+  		);
+  	},
+  	
   	
   	/**
   	 * List currently available agents queues.

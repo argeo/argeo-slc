@@ -112,7 +112,17 @@ qx.Class.define("org.argeo.ria.Application",
       
       var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();
       viewsManager.setApplicationRoot(this.getRoot());
-      
+     
+      /*
+      var appli = this;
+      qx.bom.Event.addNativeListener(window, "unload", function(){
+      	// TODO : Close perspective if one is open.	
+		if(appli.getActivePerspective()){
+			alert(appli.getActivePerspective());
+			appli.getActivePerspective().remove(org.argeo.ria.components.ViewsManager.getInstance());
+		} 
+	  });
+      */
       // Enable logging in debug variant
       if (qx.core.Variant.isSet("qx.debug", "on"))
       {
@@ -220,6 +230,16 @@ qx.Class.define("org.argeo.ria.Application",
 			switchCommand.command.clearMenus();
 			switchCommand.command.setMenu(switchCommand.submenu);
 		}
+    },
+    
+    terminate : function(){
+    	alert("toto");
+		if(this.getActivePerspective()){
+			alert(this.getActivePerspective());
+			this.getActivePerspective().remove(org.argeo.ria.components.ViewsManager.getInstance());
+		} 
+		this.base(arguments);
+
     }
     	        
   }

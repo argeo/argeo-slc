@@ -21,22 +21,36 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
   	_rightPane : null,
   	  	
   	initViewPanes : function(viewsManager){
-  		
-  	  this._rightPane = new org.argeo.ria.components.ViewPane("main", "Slc Execution");
-  	  this._rightPane.setBackgroundColor("white");
-  	  viewsManager.registerViewPane(this._rightPane);      
-      viewsManager.getViewPanesContainer().add(this._rightPane, {flex:1});
+
+      this._splitPane = new qx.ui.splitpane.Pane("horizontal");
+	  var topLeft = new org.argeo.ria.components.ViewPane("form", "Execution Launcher", {
+	  	orientation : "horizontal",
+	  	min : 36
+	  });
+	  topLeft.set({width:290});
+	  viewsManager.registerViewPane(topLeft);
+	    
+	  this._splitPane.add(topLeft, 0);
+  	  var rightPane = new org.argeo.ria.components.ViewPane("main", "Executions Log");  	  
+  	  viewsManager.registerViewPane(rightPane);
+	  this._splitPane.add(rightPane, 1);
+      
+      viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1});
   		
   	},
   	
   	initViews : function(viewsManager){
-	  var view = viewsManager.initIViewClass(org.argeo.slc.ria.LauncherApplet, "main");
-	  view.load();
+	  var formApplet = viewsManager.initIViewClass(org.argeo.slc.ria.LauncherApplet, "form");
+	  formApplet.load();
+	  
+	  var logger = viewsManager.initIViewClass(org.argeo.slc.ria.SlcExecLoggerApplet, "main");
+	  logger.load();
   	},
   	
   	remove : function(viewsManager){
   		viewsManager.getViewPaneById("main").empty();
-		viewsManager.getViewPanesContainer().remove(this._rightPane);  		
+  		viewsManager.getViewPaneById("form").empty();
+		viewsManager.getViewPanesContainer().remove(this._splitPane);  		
   	}  	
   	
   }
