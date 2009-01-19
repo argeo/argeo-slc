@@ -1,5 +1,6 @@
 package org.argeo.slc.core.runtime;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.logging.Log;
@@ -17,8 +18,14 @@ public abstract class AbstractAgent {
 		// TODO: in a separate process
 		Thread thread = new Thread("SlcExecution " + slcExecution.getUuid()) {
 			public void run() {
-				slcApplication.execute(slcExecution, new Properties(), null,
-						null);
+				Properties props = new Properties();
+				Map<String, String> attributes = slcExecution.getAttributes();
+				for (String key : attributes.keySet()) {
+					props.setProperty(key, attributes.get(key));
+					if (log.isTraceEnabled())
+						log.trace(key + "=" + props.getProperty(key));
+				}
+				slcApplication.execute(slcExecution, props, null, null);
 				log.debug("Thread for SLC execution #" + slcExecution.getUuid()
 						+ " finished.");
 			}
