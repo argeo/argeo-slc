@@ -6,6 +6,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecutionMessage", {
 	construct : function(uuid){
 		this.base(arguments);
 		this.setUuid(uuid);
+		this.setAttributes({});
 	},
 	properties : {
 		/**
@@ -50,8 +51,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecutionMessage", {
 		 * Additionnal attributes as map of key/values
 		 */
 		attributes : {
-			check : "Map",
-			init : {}
+			check : "Map"
 		}
 	},
 	members : {
