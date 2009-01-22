@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,8 +31,9 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.test.TestResultListener;
 import org.argeo.slc.test.TestResultPart;
 
+/** Build a report based on a tree test result using an XSLT stylesheet. */
 public class XsltReportGenerator implements TestResultListener<TreeTestResult> {
-	private Log log = LogFactory.getLog(getClass());
+	private final static Log log = LogFactory.getLog(XsltReportGenerator.class);
 
 	private DocumentBuilder documentBuilder = null;
 
@@ -44,6 +47,8 @@ public class XsltReportGenerator implements TestResultListener<TreeTestResult> {
 	private String outputFileExtension = "html";
 
 	private Boolean logXml = false;
+
+	private Map<String, String> xsltParameters = new HashMap<String, String>();
 
 	public void init() {
 		if (templates != null)
@@ -80,6 +85,13 @@ public class XsltReportGenerator implements TestResultListener<TreeTestResult> {
 
 		try {
 			Transformer transformer = templates.newTransformer();
+			for (String paramKey : xsltParameters.keySet()) {
+				transformer
+						.setParameter(paramKey, xsltParameters.get(paramKey));
+				if (log.isTraceEnabled())
+					log.trace("Set XSLT parameter " + paramKey + " to "
+							+ xsltParameters.get(paramKey));
+			}
 
 			if (documentBuilder == null)
 				documentBuilder = DocumentBuilderFactory.newInstance()
@@ -152,6 +164,10 @@ public class XsltReportGenerator implements TestResultListener<TreeTestResult> {
 
 	public void setLogXml(Boolean logXml) {
 		this.logXml = logXml;
+	}
+
+	public void setXsltParameters(Map<String, String> xsltParameters) {
+		this.xsltParameters = xsltParameters;
 	}
 
 }

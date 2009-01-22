@@ -5,6 +5,8 @@
 	exclude-result-prefixes="slc">
 
 	<xsl:output method="html" omit-xml-declaration="yes" />
+	<xsl:param name="confDir" select="unkown_confDir"/>
+	
 
 	<xsl:template match="/">
 		<html>
@@ -16,6 +18,7 @@
 					Result
 					<xsl:value-of select="slc:tree-test-result/@uuid" />
 				</h1>
+				<p>Conf dir: <xsl:value-of select="$confDir"/></p>
 				<xsl:for-each
 					select="slc:tree-test-result/slc:result-parts/slc:result-part">
 					<h2>
