@@ -27,7 +27,7 @@ public class ResultExcelView extends AbstractJExcelView {
 			WritableSheet sheet = workbook.getSheet("SLC");
 
 			TreeTestResult ttr = (TreeTestResult) model
-					.get(ResultViewController.MODELKEY_RESULT);
+					.get(GetResultController.MODELKEY_RESULT);
 
 			sheet.addCell(new Label(0, 0, "Result " + ttr.getUuid()));
 

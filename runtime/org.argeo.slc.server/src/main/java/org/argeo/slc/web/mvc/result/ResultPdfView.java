@@ -27,7 +27,7 @@ public class ResultPdfView extends AbstractPdfView {
 			PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		TreeTestResult ttr = (TreeTestResult) model
-				.get(ResultViewController.MODELKEY_RESULT);
+				.get(GetResultController.MODELKEY_RESULT);
 
 		document.addTitle("Result " + ttr.getUuid());
 		document.add(new Paragraph("Result " + ttr.getUuid()));

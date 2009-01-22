@@ -41,19 +41,11 @@
 		<constructor-arg ref="slcAgentDescriptorDao" />
 	</bean>
 
-	<bean name="/listSlcExecutions.service" class="org.argeo.slc.web.mvc.process.ListSlcExecutionsController">
+	<bean name="/listSlcExecutions.service"
+		class="org.argeo.slc.web.mvc.process.ListSlcExecutionsController">
 		<constructor-arg ref="slcExecutionDao" />
 	</bean>
 
-
-	<!--
-		<bean name="/resultList.service"
-		class="org.argeo.slc.web.mvc.result.ResultListController">
-		<constructor-arg ref="testResultDao" /> </bean> <bean
-		name="/resultCollectionView.service"
-		class="org.argeo.slc.web.mvc.result.ResultCollectionViewController">
-		<constructor-arg ref="testResultCollectionDao" /> </bean>
-	-->
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
 		<property name="interceptors">

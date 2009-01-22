@@ -28,28 +28,6 @@
 		<url-pattern>/slcService/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- WEB servlet -->
-	<servlet>
-		<servlet-name>slc-web</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>slc-web</servlet-name>
-		<url-pattern>*.web</url-pattern>
-	</servlet-mapping>
-
-	<!-- UI servlet -->
-	<servlet>
-		<servlet-name>slc-ui</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>slc-ui</servlet-name>
-		<url-pattern>*.ui</url-pattern>
-	</servlet-mapping>
-
 	<!-- XSLT servlet -->
 	<servlet>
 		<servlet-name>xslt</servlet-name>
@@ -86,15 +64,6 @@
 		<display-name>Spring Context</display-name>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-
-	<jsp-config>
-		<jsp-property-group>
-			<url-pattern>/WEB-INF/slc-jsp/*.jsp</url-pattern>
-			<page-encoding>ISO-8859-1</page-encoding>
-			<include-prelude>/WEB-INF/specific/prelude.jspf</include-prelude>
-			<include-coda>/WEB-INF/specific/coda.jspf</include-coda>
-		</jsp-property-group>
-	</jsp-config>
 
 	<!-- Env refs -->
 	<resource-env-ref>
@@ -152,12 +121,6 @@
 
     </servlet>
 
-    <!-- the queue browse servlet -->
-    <servlet>
-        <servlet-name>QueueBrowseServlet</servlet-name>
-        <servlet-class>org.apache.activemq.web.QueueBrowseServlet</servlet-class>
-    </servlet>
-
     <servlet-mapping>
         <servlet-name>AjaxServlet</servlet-name>
         <url-pattern>/amq/*</url-pattern>
@@ -166,11 +129,6 @@
     <servlet-mapping>
         <servlet-name>MessageServlet</servlet-name>
         <url-pattern>/amqMessage/*</url-pattern>
-    </servlet-mapping>
-    
-    <servlet-mapping>
-        <servlet-name>QueueBrowseServlet</servlet-name>
-        <url-pattern>/amqQueueBrowse/*</url-pattern>
     </servlet-mapping>
 
     <filter>
@@ -186,9 +144,4 @@
       <filter-name>session</filter-name>
       <url-pattern>/amqMessage/*</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-      <filter-name>session</filter-name>
-      <url-pattern>/amqQueueBrowse/*</url-pattern>
-    </filter-mapping>
-	
 </web-app>
