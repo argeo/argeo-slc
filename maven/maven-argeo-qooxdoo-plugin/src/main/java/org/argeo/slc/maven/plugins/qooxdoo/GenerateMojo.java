@@ -31,7 +31,7 @@ public class GenerateMojo extends AbstractMojo {
 	 * @parameter expression="${qooxdooSdk}"
 	 */
 	private String qooxdooSdk = "src" + File.separator + "main"
-			+ File.separator + "webapp" + File.separator + "qooxdoo-0.8-sdk";
+			+ File.separator + "webapp" + File.separator + "qooxdoo-sdk";
 
 	/**
 	 * The build directory.
