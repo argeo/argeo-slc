@@ -151,7 +151,8 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 	 */
 	addHeaderComponent : function(component){
 		this.header.setPadding(4);
-		this.header.add(component, {edge:"center"});
+		this.header.add(component, {edge:"center"});		
+		component.setTextColor("#1a1a1a");
 		this.loadImage.setMargin(4);
 	},
 	
