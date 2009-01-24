@@ -4,11 +4,11 @@
   "include" :
   [
     {
-      "path" : "src/main/webapp/qooxdoo-0.8-sdk/component/apiviewer/api.json",
+      "path" : "${QOOXDOO_PATH}/component/apiviewer/api.json",
       "as"   : "apiconf"
     },
     {
-      "path" : "src/main/webapp/qooxdoo-0.8-sdk/component/testrunner/testrunner.json",
+      "path" : "${QOOXDOO_PATH}/component/testrunner/testrunner.json",
       "as"   : "testrunner"
     }    
   ],
@@ -16,8 +16,7 @@
   "let" :
   {
     "APPLICATION"  : "org.argeo.ria",
-    "QOOXDOO_PATH" : "src/main/webapp/qooxdoo-0.8-sdk/framework",
-    "QOOXDOO_URI"  : "../qooxdoo-0.8-sdk/framework",
+    "QOOXDOO_PATH" : "src/main/webapp/qooxdoo-sdk",
     "QXTHEME"      : "qx.theme.Modern",
 	"QXICONTHEME"  : ["Tango"],
     "API_EXCLUDE"  : ["qx.legacy.*"],
@@ -37,20 +36,16 @@
       "library" :
       [
         {
-          "manifest" : "${QOOXDOO_PATH}/Manifest.json",
-          "uri"      : "${QOOXDOO_URI}"
+          "manifest" : "${QOOXDOO_PATH}/framework/Manifest.json"
         },
         {
-          "manifest" : "${RIA_LIB_PATH}/slc-web/Manifest.json",
-          "uri"      : "${RIA_LIB_URI}/slc-web"
+          "manifest" : "${RIA_LIB_PATH}/slc/Manifest.json"
         },
         {
-          "manifest" : "${RIA_LIB_PATH}/slc/Manifest.json",
-          "uri"      : "${RIA_LIB_URI}/slc"
+          "manifest" : "${RIA_LIB_PATH}/slc-web/Manifest.json"
         },
         {
-          "manifest" : "${ROOT}/Manifest.json",
-          "uri"      : ".."
+          "manifest" : "${ROOT}/Manifest.json"
         }
       ],
 
@@ -71,7 +66,7 @@
         "qx.version"     : "${QXVERSION}",
         "qx.theme"       : "${QXTHEME}",
         "qx.application" : "${APPLICATION}.Application",
-        "ria.StartupPerspective":"org.argeo.slc.web.LauncherPerspective"		
+        "ria.StartupPerspective":"org.argeo.slc.web.Perspective"		
       }
     },
 
@@ -85,7 +80,8 @@
       {
         "file" : "${ROOT}/script/${APPLICATION}.js",
         "locales" : "${LOCALES}",
-        "root" : "${ROOT}"
+        "root" : "${ROOT}",
+        "gzip" : false
       }
     },
 
@@ -111,13 +107,31 @@
 
       "compile-dist" :
       {
+		  "paths" :
+		  {
+	        "file" : "${BUILD_PATH}/script/${APPLICATION}.js",
+		    "gzip"     : false
+		  },
+		  "uris" :
+		  {
+		    "script"   : "script",
+		    "resource" : "resource"
+		  },
+		  "code" :
+		  {
+		    "format"   : true,
+		    "locales"  : "${LOCALES}",
+		    "optimize" : ["variables", "basecalls", "privates", "strings"]
+		  }
+      /*
+      "file" : "${BUILD_PATH}/script/${APPLICATION}.js",
         "target" : "${BUILD_PATH}",
-        "file" : "${BUILD_PATH}/script/${APPLICATION}.js",
         "uri"  : "script/${APPLICATION}.js",
         "root" : "${BUILD_PATH}",
         "format" : "on",
         "locales" : "${LOCALES}",
         "optimize" : ["basecalls", "variables", "privates", "strings"]
+       */
       }
     },
 
@@ -164,7 +178,7 @@
 
       "let" :
       {
-        "APIVIEWER_ROOT" : "${QOOXDOO_PATH}/../component/apiviewer",
+        "APIVIEWER_ROOT" : "${QOOXDOO_PATH}/component/apiviewer",
         "BUILD_PATH" : "./target/site/argeo-ria-api/",
         "API_INCLUDE" : ["${APPLICATION}.*", "${CUSTOM_PACKAGE}.*"]
       },
@@ -192,7 +206,7 @@
 
       "let" :
       {
-        "TESTRUNNER_ROOT" : "${QOOXDOO_PATH}/../component/testrunner",
+        "TESTRUNNER_ROOT" : "${QOOXDOO_PATH}/component/testrunner",
         "TEST_INCLUDE"    : "${APPLICATION}.test.*",
         "BUILD_PATH"      : "./target/site/argeo-ria-test/"
       },
