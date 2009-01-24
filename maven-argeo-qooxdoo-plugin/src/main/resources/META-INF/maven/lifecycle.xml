@@ -7,6 +7,18 @@
 				<executions>
 					<execution>
 						<goals>
+							<goal>org.apache.maven.plugins:maven-antrun-plugin:run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<!-- Removes qooxdoo-sdk -->
+								<delete dir="${basedir}/src/main/webapp/qooxdoo-sdk"
+									failonerror="false" />
+							</tasks>
+						</configuration>
+					</execution>
+					<execution>
+						<goals>
 							<goal>org.apache.maven.plugins:maven-dependency-plugin:unpack
 							</goal>
 						</goals>
@@ -16,7 +28,7 @@
 									<groupId>org.argeo.dep.dist</groupId>
 									<artifactId>qooxdoo-sdk</artifactId>
 									<classifier>dist</classifier>
-									<version>0.8.0</version>
+									<version>0.8.1.argeo.1</version>
 									<type>zip</type>
 									<outputDirectory>${basedir}/src/main/webapp
 									</outputDirectory>
@@ -25,6 +37,11 @@
 							</artifactItems>
 						</configuration>
 					</execution>
+				</executions>
+			</phase>
+			<phase>
+				<id>clean</id>
+				<executions>
 				</executions>
 			</phase>
 		</phases>
