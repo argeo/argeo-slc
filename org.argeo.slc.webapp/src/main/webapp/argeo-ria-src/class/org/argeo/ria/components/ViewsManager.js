@@ -18,7 +18,8 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
   	/**
   	 * The main container for the org.argeo.ria.components.ViewPane instances. 
   	 */
-  	viewPanesContainer : {init: null}
+  	viewPanesContainer : {init: null},
+  	currentFocus : {init :null}
   },
   construct : function(){
   	this.views = {};
@@ -32,15 +33,20 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
   	 * @param viewPaneId {String} The unique ID of the view pane
   	 * @return {org.argeo.ria.components.IView}
   	 */
-  	initIViewClass: function(classObj, viewPaneId){
+  	initIViewClass: function(classObj, viewPaneId, data){
+  		var viewPane = this.getViewPaneById(viewPaneId);  		
   		var iView = new classObj;
-  		var viewPane = this.getViewPaneById(viewPaneId);
-		iView.init(viewPane);		
+		iView.init(viewPane, data);
+		var existingView = viewPane.contentExists(iView.getInstanceId()); 
+		if(existingView){
+			delete iView;
+			return existingView;
+		}
 		var commands = iView.getCommands();
-		viewPane.empty();
+		//viewPane.empty();
 		if(commands){
 			viewPane.setCommands(commands);
-			org.argeo.ria.event.CommandsManager.getInstance().addCommands(commands, "view:"+viewPaneId);
+			org.argeo.ria.event.CommandsManager.getInstance().addCommands(commands, "view:"+viewPaneId, viewPaneId);
 		}
 		viewPane.setContent(iView); 
 		return iView;
@@ -52,9 +58,18 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
   	 */
   	registerViewPane : function(viewPane){
 		this.views[viewPane.getViewId()] = viewPane;
-	  	viewPane.getViewSelection().addListener("changeSelection", function(e){
-	  		org.argeo.ria.event.CommandsManager.getInstance().refreshCommands(e.getData());
-		});  		
+	  	viewPane.addListener("changeSelection", function(e){
+	  		var viewSelection = e.getTarget().getViewSelection();
+	  		if(!viewSelection) return;
+	  		org.argeo.ria.event.CommandsManager.getInstance().refreshCommands(viewSelection);
+		});
+		viewPane.addListener("changeFocus", function(e){
+			for(var key in this.views){
+				this.views[key].blur();
+			}
+			viewPane.focus();
+			this.setCurrentFocus(viewPane);
+		}, this);
   	},
   	/**
   	 * Returns a viewPane by its unique id.

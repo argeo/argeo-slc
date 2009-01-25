@@ -19,14 +19,21 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
   	this.setViewId(viewId);
   	this._defaultViewTitle = viewTitle;
 	this.setViewTitle(viewTitle);
-	var viewSelection = new org.argeo.ria.components.ViewSelection(viewId);
-	this.setViewSelection(viewSelection);
 	if(splitPaneData){
 		this.setSplitPaneData(splitPaneData);
 	}
+	this.setFocusable(true);
+	this.addListener("click", function(e){
+		this.fireDataEvent("changeFocus", this);
+	}, this);
 	this.createGui();
   },
 
+  events : {
+  	"changeFocus" : "qx.event.type.Data",
+  	"changeSelection" : "qx.event.type.Event"
+  },
+  
   properties : 
   {
   	/**
@@ -37,10 +44,6 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
   	 * Human-readable title for this view
   	 */
   	viewTitle : {init:"", event:"changeViewTitle"},
-  	/**
-  	 * Selection model for this view
-  	 */
-  	viewSelection : { nullable:false, check:"org.argeo.ria.components.ViewSelection" },
   	/**
   	 * Has its own scrollable content 
   	 */
@@ -127,11 +130,22 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		*/
 	},
 	
+	getViewSelection : function(){
+		if(this.getContent()){
+			return this.getContent().getViewSelection();
+		}
+		return null;
+	},
+	
+	contentExists : function(iViewId){
+		return false;
+	},
+	
 	/**
 	 * Sets the content of this pane.
 	 * @param content {org.argeo.ria.components.IView} An IView implementation
 	 */
-	_applyContent : function(content){
+	_applyContent : function(content){		
 		if(content == null) return;
 		var addScrollable = (content.addScroll?content.addScroll():false);
 		if(addScrollable){
@@ -142,6 +156,9 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 			this.guiContent = content;
 			this.add(this.guiContent, {flex:1});
 		}
+		content.getViewSelection().addListener("changeSelection", function(e){
+			this.fireEvent("changeSelection");
+		}, this);
 	},
 	/**
 	 * Adds a graphical component too the header of the view pane.
@@ -187,6 +204,16 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		}
 		this.setViewTitle(this._defaultViewTitle);
 		this.setContent(null);
+	},
+	
+	focus : function(){
+		this.setDecorator(new qx.ui.decoration.Single(1,"solid","#065fb2"));
+		qx.event.Timer.once(function(){
+			this.fireEvent("changeSelection");
+		}, this, 200);
+	}, 
+	blur : function(){
+		this.setDecorator(new qx.ui.decoration.Single(1,"solid","#000"));
 	}
 
   }

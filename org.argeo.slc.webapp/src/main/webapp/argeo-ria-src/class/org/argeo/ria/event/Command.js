@@ -54,6 +54,7 @@
   	this.setLabel(label);
   	this.setIcon(icon);   	
   	this.menuClones = [];
+  	this.callbacks = {};
   },
   
   members :
@@ -115,7 +116,19 @@
   		this.addTooltip(button);
   		return button;
   	},
-  	  	
+  	  
+  	registerCallback : function(callback, focusablePartId){
+  		this.callbacks[focusablePartId] = callback;
+  	},
+  	getCallbacks : function(){
+  		return this.callbacks;
+  	},
+  	removeCallback : function(focusablePartId){
+  		if(this.callbacks[focusablePartId]){
+  			delete this.callbacks[focusablePartId];
+  		}
+  	},  	
+  	
   	/**
   	 * Special tricks using UserData to enable/disable listeners to avoid loops...
   	 * @param button {qx.ui.core.Widget} toolbar Checkbox or menu Checkbox button.

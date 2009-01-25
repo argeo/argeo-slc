@@ -83,6 +83,10 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   	initialDefinitions : {
   		init : {},
   		check : "Map"
+  	},
+  	sharedDefinitions : {
+  		init: {},
+  		check: "Map"
   	}
   },
 
@@ -113,6 +117,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		this.menus = {};
   		this.toolbars = {};
   		var defs = this.getDefinitions();
+  		var shared = this.getSharedDefinitions();
   		for(var key in defs){
   			var definition = defs[key];
   			var command;
@@ -137,6 +142,20 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 	  			definition.command = command;
   			}else{
   				command = definition.command;
+	  			if(shared[key]){
+	  				
+	  				for(var focusPartId in shared[key]){
+		  				var sharedCommand = shared[key][focusPartId];
+		  				if(sharedCommand.callback){
+							var split = sharedCommand.callbackContext.split(":");
+							var focusPart = split[0];
+							var viewId = split[1];							
+							command.registerCallback(sharedCommand.callback, split[1]);		  					
+		  					//this._attachListener(command, sharedCommand.callback, sharedCommand.callbackContext);
+		  				}	  					
+	  				}
+	  				
+	  			}
   			}
   			if(definition.menu){
   				if(!this.menus[definition.menu]) this.menus[definition.menu] = [];
@@ -156,6 +175,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   	 */
   	refreshCommands : function(viewSelection){
   		var defs = this.getDefinitions();
+  		var shared = this.getSharedDefinitions();
   		var xmlNodes = null;
   		if(viewSelection.getCount() > 0){
   			var xmlNodes = viewSelection.getNodes();
@@ -163,6 +183,15 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		for(var key in defs){
   			var definition = defs[key];
   			if(!definition.selectionChange) continue;
+  			if(shared[key]){
+  				var currentFocus = org.argeo.ria.components.ViewsManager.getInstance().getCurrentFocus();
+  				if(!currentFocus) continue;
+  				var sharedComm = shared[key][currentFocus.getViewId()];
+  				if(sharedComm && sharedComm.selectionChange){
+		  			var binded = qx.lang.Function.bind(sharedComm.selectionChange, definition.command);
+	  				binded(viewSelection.getViewId(), xmlNodes);
+  				}
+  			}
   			var binded = qx.lang.Function.bind(definition.selectionChange, definition.command);
   			binded(viewSelection.getViewId(), xmlNodes);
   		}
@@ -256,11 +285,22 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   	 * @param definitions {Map} a set of commands definitions.
   	 * @param callbackContext {qx.ui.core.Object} The context used inside the commands callbacks. 
   	 */
-  	addCommands : function(definitions, callbackContext){
+  	addCommands : function(definitions, callbackContext, focusablePartId){
   		var crtDefs = this.getDefinitions();  		
   		for(var key in definitions){
   			if(callbackContext) definitions[key]['callbackContext'] = callbackContext;
-  			crtDefs[key] = definitions[key];
+  			if(crtDefs[key] && definitions[key]['shared']){
+				if(focusablePartId) {
+					definitions[key]['focusablePartId'] = focusablePartId;
+					if(!this.getSharedDefinitions()[key]){
+						this.getSharedDefinitions()[key] = {};
+					}
+					this.getSharedDefinitions()[key][focusablePartId] = definitions[key];
+				}
+				
+  			}else{
+	  			crtDefs[key] = definitions[key];
+  			}
   		}
   		this.setDefinitions(crtDefs);
   		this.fireEvent("changedCommands");
@@ -269,15 +309,21 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   	 * Removes a whole set of commands by their definitions maps.
   	 * @param definitions {Map} a set of commands definitions
   	 */
-  	removeCommands : function(definitions){
+  	removeCommands : function(definitions, focusablePartId){
   		var crtDefs = this.getDefinitions();
   		var initDefs = this.getInitialDefinitions();
+  		var sharedDefs = this.getSharedDefinitions();
   		for(var key in definitions){
   			if(!crtDefs[key]) continue;
   			if(initDefs[key]){
   				crtDefs[key] = initDefs[key];
   			}else{
-  				delete crtDefs[key];
+  				if(sharedDefs[key] && sharedDefs[key][focusablePartId]){
+  					crtDefs[key].command.removeCallback(focusablePartId);
+  					delete sharedDefs[key][focusablePartId];
+  				}else{
+	  				delete crtDefs[key];
+  				}
   			}
   		}
   		this.setDefinitions(crtDefs);
@@ -345,9 +391,39 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 			return;
 		}		
 		if(typeof(callbackContext) == "string"){
+			
+			var split = callbackContext.split(":");
+			var focusPart = split[0];
+			var viewId = split[1];
+			if(command.getCallbacks()[viewId]) return;
+			command.registerCallback(callback, split[1]);
+			command.addListener("execute", function(event){
+				var target = event.getTarget();
+				var callbacks = target.getCallbacks();
+				if(qx.lang.Object.getLength(callbacks) == 0) return;
+  				var view = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById(viewId).getContent();
+				if(qx.lang.Object.getLength(callbacks) == 1){
+	  				var binded = qx.lang.Function.bind(callbacks[qx.lang.Object.getKeys(callbacks)[0]], view);
+	  				binded(event);
+	  				return;
+				}
+				var currentFocus = org.argeo.ria.components.ViewsManager.getInstance().getCurrentFocus();
+				if(currentFocus && currentFocus.getViewId() && callbacks[currentFocus.getViewId()]){
+					var binded = qx.lang.Function.bind(callbacks[currentFocus.getViewId()], view);
+					binded(event);
+					return;
+				}
+			});
+			
+			
+			/*
 			if(callbackContext.split(":")[0] == "view"){
 				var viewId = callbackContext.split(":")[1];
 				command.addListener("execute", function(event){
+					if(event.getTarget().getCheckFocusAtCallback()){
+						var currentFocus = org.argeo.ria.components.ViewsManager.getInstance().getCurrentFocus();
+						if(currentFocus.getViewId() != viewId) return;
+					}
 	  				var view = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById(viewId).getContent();
 	  				var binded = qx.lang.Function.bind(callback, view);
 	  				binded(event);
@@ -355,6 +431,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 			}else{
 				command.addListener("execute", callback, callbackContext);
 			}
+			*/
 		}
   	}
   }

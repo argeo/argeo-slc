@@ -18,7 +18,13 @@ qx.Interface.define("org.argeo.ria.components.IView", {
 		 * The commands definition Map that will be automatically added and wired to the menubar and toolbar.
 		 * See {@link org.argeo.ria.event.CommandsManager#definitions} for the keys to use for defining commands.
 		 */
-		commands : {}
+		commands : {},
+	  	viewSelection : {
+	  		nullable:false, 
+	  		check:"org.argeo.ria.components.ViewSelection"
+	  	},
+	  	instanceId : {init:""},
+	  	instanceLabel : {init:""}
 	},
 	
 	members : {
@@ -29,7 +35,7 @@ qx.Interface.define("org.argeo.ria.components.IView", {
 		 * @param viewPane {org.argeo.ria.components.ViewPane} The pane manager
 		 * @return {Boolean}
 		 */
-		init : function(viewPane){return true;},
+		init : function(viewPane, data){return true;},
 		/**
 		 * The implementation should contain the real data loading (i.o. query...)
 		 * @param data {mixed} Any data in any format
