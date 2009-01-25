@@ -15,6 +15,7 @@ qx.Class.define("org.argeo.slc.ria.Applet",
 	this.setLayout(new qx.ui.layout.VBox());
   	this.passedStatus = "PASSED";
   	this.failedStatus = "FAILED";
+  	this.loaded = false;
   },
 
   properties : 
@@ -25,29 +26,49 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   	view : {
   		init : null
   	},
+  	viewSelection : {
+  		nullable:false, 
+  		check:"org.argeo.ria.components.ViewSelection"
+  	},  
+  	instanceId : {
+  		init : ""
+  	},
+  	instanceLabel : {
+  		init : ""
+  	},
   	/**
   	 * Commands definition, see {@link org.argeo.ria.event.CommandsManager#definitions} 
   	 */
   	commands : {
   		init : {
   			"close" : {
-  				label	 	: "Close Result", 
+  				label	 	: "Close Current", 
   				icon 		: "resource/slc/window-close.png",
   				shortcut 	: "Control+w",
   				enabled  	: true,
   				menu	   	: "Test",
   				toolbar  	: "result",
   				callback	: function(e){
-  					// Call service to delete
-  					this.getView().empty();
-  					//alert(this.testId);
+  					this.getView().closeCurrent();
+  					//this.getView().empty();
   					
   				},
-  				selectionChange : function(viewId, xmlNode){  					
-  					if(viewId != "applet") return;
-  				},
   				command 	: null
-  			}  			
+  			}, 			
+  			"deletetest" : {
+  				shared 		: true,
+  				callback	: function(e){
+  					alert("Should delete applet selection" + this.getInstanceId());
+  				},
+  				selectionChange : function(viewId, xmlNode){
+  					if(viewId != "applet") return;
+  					if(!xmlNode){
+  						this.setEnabled(false);
+  					}else{
+  						this.setEnabled(true);
+  					}  					
+  				}
+  			}
   		}
   	}
   },
@@ -58,26 +79,33 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   	 * Called at applet creation. Just registers viewPane.
   	 * @param viewPane {org.argeo.ria.components.ViewPane} The viewPane.
   	 */
-  	init : function(viewPane){
+  	init : function(viewPane, xmlNode){
   		this.setView(viewPane);
+		this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
+  		this.data = xmlNode;
+  		if(this.data){
+			this.testId = org.argeo.ria.util.Element.getSingleNodeText(this.data, "slc:uuid");
+			this.setInstanceId("test:"+this.testId);
+			this.setInstanceLabel("Test " + this.testId.substring(0,4)+"...");
+  		}
   	},
   	
   	/**
   	 * Load a given test : the data passed must be an XML node containing the test unique ID.
   	 * @param xmlNode {Element} The text xml description. 
   	 */
-  	load : function(xmlNode){
-  		this.data = xmlNode;
-  		if(!xmlNode) return;
+  	load : function(){
+  		if(!this.data) return;
+		if(this.loaded) return;
   		// Load XML or Whatever
   		var service;  		
-		var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};
-		this.testId = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(this.data, "slc:uuid"));		
+		//this.testId = qx.dom.Node.getText(org.argeo.ria.util.Element.selectSingleNode(this.data, "slc:uuid"));		
 		this.getView().setViewTitle("Test "+this.testId);
   		var request = org.argeo.slc.ria.SlcApi.getLoadResultService(this.testId);  		
   		request.addListener("completed", function(response){
 			this.createXmlGui(response.getContent());
 			this.getView().setOnLoad(false);
+			this.loaded = true;
   		}, this);
   		this.getView().setOnLoad(true);
   		request.send();
@@ -198,12 +226,11 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   		columnModel.setDataCellRenderer(1, new org.argeo.slc.ria.StatusCellRenderer());
   		
 	    this.tree.getSelectionManager().getSelectionModel().addListener("changeSelection", function(e){
-			var viewSelection = this.getView().getViewSelection();
+			var viewSelection = this.getViewSelection();
 			viewSelection.clear();
 			var nodes = this.tree.getDataModel().getSelectedNodes();
 			if(nodes.length){
 				viewSelection.addNode(nodes[0]);
-				this.getView().setViewSelection(viewSelection);
 			}
 	  	}, this);
   		

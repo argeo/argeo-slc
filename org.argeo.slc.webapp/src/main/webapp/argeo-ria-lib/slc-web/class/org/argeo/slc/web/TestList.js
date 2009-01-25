@@ -29,6 +29,12 @@ qx.Class.define("org.argeo.slc.web.TestList",
   	view : {
   		init : null
   	},
+  	viewSelection : {
+  		nullable:false, 
+  		check:"org.argeo.ria.components.ViewSelection"
+  	},  
+  	instanceId : {init:""},
+  	instanceLabel : {init:""},
   	/**
   	 * The load list of available collection (Map of ids => labels)
   	 */
@@ -110,8 +116,8 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				callback	: function(e){
   					var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();
   					var classObj = org.argeo.slc.ria.Applet;
-					var iView = viewsManager.initIViewClass(classObj, "applet");
   					var xmlNodes = viewsManager.getViewPaneSelection("list").getNodes();
+					var iView = viewsManager.initIViewClass(classObj, "applet", xmlNodes[0]);
 					iView.load(xmlNodes[0]);
   				},
   				selectionChange : function(viewId, xmlNodes){
@@ -199,7 +205,8 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				menu	   	: "Selection",
   				toolbar  	: "selection",
   				callback	: function(e){
-  					
+  					//alert("Should delete " + this.extractTestUuid());
+  					//return;
   					var request = org.argeo.slc.ria.SlcApi.getRemoveResultService(this.getCollectionId(), this.extractTestUuid());
 					request.addListener("completed", function(response){
 						this.loadCollections();
@@ -221,10 +228,11 @@ qx.Class.define("org.argeo.slc.web.TestList",
   },
   
   members : {
-	init : function(viewPane){
-	  this.setView(viewPane);
+	init : function(viewPane, data){
+		this.setView(viewPane);
+		this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));	  
 	},
-	load : function(data){
+	load : function(){
 	  this.table.set({	  	
 	  	statusBarVisible: false,
 		showCellFocusIndicator:false,
@@ -243,7 +251,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  columnModel.setDataCellRenderer(1, renderer);
 	  
 	  this.table.getSelectionManager().getSelectionModel().addListener("changeSelection", function(e){
-	  	var viewSelection = viewPane.getViewSelection();
+	  	var viewSelection = this.getViewSelection();
 	  	viewSelection.clear();
 	  	var selectionModel = this.table.getSelectionManager().getSelectionModel();
 	  	if(!selectionModel.getSelectedCount()){
@@ -252,7 +260,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	var ranges = this.table.getSelectionManager().getSelectionModel().getSelectedRanges();
 	  	var xmlNode = this.table.getTableModel().getRowData(ranges[0].minIndex);
 	  	viewSelection.addNode(xmlNode);
-	  	viewPane.setViewSelection(viewSelection);
+	  	//viewPane.setViewSelection(viewSelection);
 	  }, this);		
 	  
 	  var select = new qx.ui.form.SelectBox();

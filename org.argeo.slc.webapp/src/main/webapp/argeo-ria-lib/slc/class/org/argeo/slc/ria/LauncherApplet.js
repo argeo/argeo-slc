@@ -24,6 +24,12 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
   	view : {
   		init : null
   	},
+  	viewSelection : {
+  		nullable:false, 
+  		check:"org.argeo.ria.components.ViewSelection"
+  	},  	  	
+  	instanceId : {init:""},
+  	instanceLabel : {init:""},  	
   	/**
   	 * Commands definition, see {@link org.argeo.ria.event.CommandsManager#definitions} 
   	 */
@@ -71,6 +77,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
   	 */
   	init : function(viewPane){
   		this.setView(viewPane);
+  		this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
   		this._createLayout();
   		this._createForm();
   		this._amqClient = org.argeo.ria.remote.JmsClient.getInstance();
