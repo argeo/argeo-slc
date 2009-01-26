@@ -7,6 +7,9 @@ qx.Class.define("org.argeo.ria.components.Modal",
 {
 	extend : qx.ui.window.Window,
   
+	events : {
+		"ok" : "qx.event.type.Event"
+	},
 	/**
 	 * 
 	 * @param caption {String} Title of the window
@@ -35,8 +38,18 @@ qx.Class.define("org.argeo.ria.components.Modal",
 		 * @param text {String} A string content for the popup
 		 */
 		addLabel:function(text){
-			this.add(new qx.ui.basic.Label(text), {edge:'center', width:'100%'});		
+			var label = new qx.ui.basic.Label(text);
+			label.setRich(true);
+			label.setTextAlign("center");
+			this.add(label, {edge:'center', width:'100%'});
 			this.addCloseButton();
+		},
+		addConfirm : function(text){
+			var label = new qx.ui.basic.Label(text);
+			label.setRich(true);
+			label.setTextAlign("center");
+			this.add(label, {edge:'center', width:'100%'});
+			this.addOkCancel();
 		},
 		/**
 		 * Display a component (panel) in the center of the popup
@@ -70,10 +83,14 @@ qx.Class.define("org.argeo.ria.components.Modal",
 			buttonPane.setAlignX("center");
 			this.add(buttonPane, {edge:"south"});
 			this.okButton = new qx.ui.form.Button("Ok");
+			this.okButton.addListener("execute", function(e){
+				this.fireEvent("ok");
+				this._closeAndDestroy();
+			}, this);
 			this.cancelButton = new qx.ui.form.Button("Cancel");
 			this.cancelButton.addListener("execute", this._closeAndDestroy, this);
-			buttonPane.add(this.cancelButton);
 			buttonPane.add(this.okButton);
+			buttonPane.add(this.cancelButton);
 		},
 		/**
 		 * Adds a prompt form to the popup : a question, followed by a text input.

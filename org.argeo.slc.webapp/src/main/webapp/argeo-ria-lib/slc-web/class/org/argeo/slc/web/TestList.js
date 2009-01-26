@@ -205,15 +205,18 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				menu	   	: "Selection",
   				toolbar  	: "selection",
   				callback	: function(e){
-  					//alert("Should delete " + this.extractTestUuid());
-  					//return;
-  					var request = org.argeo.slc.ria.SlcApi.getRemoveResultService(this.getCollectionId(), this.extractTestUuid());
-					request.addListener("completed", function(response){
-						this.loadCollections();
-						this.loadList();
-						this.info("Test was successfully deleted");
-					}, this);
-					request.send();
+  					var modal = new org.argeo.ria.components.Modal("Confirm", null);
+  					modal.addConfirm("Are you sure you want to delete<br> test " + this.extractTestUuid() + "?");
+  					modal.addListener("ok", function(){
+	  					var request = org.argeo.slc.ria.SlcApi.getRemoveResultService(this.getCollectionId(), this.extractTestUuid());
+						request.addListener("completed", function(response){
+							this.loadCollections();
+							this.loadList();
+							this.info("Test was successfully deleted");
+						}, this);
+						request.send();  					
+  					}, this);
+  					modal.attachAndShow();
   				},
 	  			selectionChange : function(viewId, xmlNodes){
 					if(viewId != "list") return;
