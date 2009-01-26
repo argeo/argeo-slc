@@ -232,10 +232,8 @@ qx.Class.define("org.argeo.ria.Application",
 		}
     },
     
-    terminate : function(){
-    	alert("toto");
+    close : function(){
 		if(this.getActivePerspective()){
-			alert(this.getActivePerspective());
 			this.getActivePerspective().remove(org.argeo.ria.components.ViewsManager.getInstance());
 		} 
 		this.base(arguments);
