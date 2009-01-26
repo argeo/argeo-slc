@@ -404,6 +404,12 @@ qx.Class.define("org.argeo.slc.web.TestList",
 			return;
 		}
 
+		var currentFocus = org.argeo.ria.components.ViewsManager.getInstance().getCurrentFocus();
+		if(currentFocus.getViewId() == "applet"){
+			alert("Should copy data from the applet - command was " + collectionId);
+			return;
+		}
+		
 		if(selectionType == "current_collection"){
 			this.error("Not implemented yet!");			
 		}else if(selectionType == "current_selection"){

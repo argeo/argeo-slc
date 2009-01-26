@@ -54,7 +54,18 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   					
   				},
   				command 	: null
-  			}, 			
+  			}, 		
+  			"copytocollection" : {
+  				shared 		: true,
+  				selectionChange : function(viewId, xmlNode){
+  					if(viewId != "applet") return;
+  					if(!xmlNode){
+  						this.setEnabled(false);
+  					}else{
+  						this.setEnabled(true);
+  					}  					
+  				}  				
+  			},
   			"deletetest" : {
   				shared 		: true,
   				callback	: function(e){
