@@ -207,12 +207,13 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 	},
 	
 	focus : function(){
+		if(this.hasFocus) return;
 		this.setDecorator(new qx.ui.decoration.Single(1,"solid","#065fb2"));
-		qx.event.Timer.once(function(){
-			this.fireEvent("changeSelection");
-		}, this, 200);
+		this.fireEvent("changeSelection");
+		this.hasFocus = true;
 	}, 
 	blur : function(){
+		this.hasFocus = false;
 		this.setDecorator(new qx.ui.decoration.Single(1,"solid","#000"));
 	}
 

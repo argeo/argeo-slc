@@ -58,7 +58,8 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   			"deletetest" : {
   				shared 		: true,
   				callback	: function(e){
-  					alert("Should delete applet selection" + this.getInstanceId());
+  					//this.debug(this);
+  					alert("Should delete applet selection in " + this.getInstanceId());
   				},
   				selectionChange : function(viewId, xmlNode){
   					if(viewId != "applet") return;
@@ -232,11 +233,12 @@ qx.Class.define("org.argeo.slc.ria.Applet",
 			if(nodes.length){
 				viewSelection.addNode(nodes[0]);
 			}
+			this.getView().focus();
 	  	}, this);
   		
 	  	var contextMenu = org.argeo.ria.event.CommandsManager.getInstance().createMenuFromIds(["close"]);
 	  	this.tree.setContextMenu(contextMenu);
-	  	
+	  		  	
   	},
   	
   	/**

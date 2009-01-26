@@ -185,6 +185,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   			if(!definition.selectionChange) continue;
   			if(shared[key]){
   				var currentFocus = org.argeo.ria.components.ViewsManager.getInstance().getCurrentFocus();
+  				//this.debug(currentFocus);
   				if(!currentFocus) continue;
   				var sharedComm = shared[key][currentFocus.getViewId()];
   				if(sharedComm && sharedComm.selectionChange){
@@ -409,6 +410,8 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 				}
 				var currentFocus = org.argeo.ria.components.ViewsManager.getInstance().getCurrentFocus();
 				if(currentFocus && currentFocus.getViewId() && callbacks[currentFocus.getViewId()]){
+					var currentViewId = currentFocus.getViewId();
+					view = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById(currentViewId).getContent();
 					var binded = qx.lang.Function.bind(callbacks[currentFocus.getViewId()], view);
 					binded(event);
 					return;

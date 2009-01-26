@@ -129,10 +129,13 @@ qx.Class.define("org.argeo.ria.components.TabbedViewPane",
 			
 		},
 		focus : function(){
+			if(this.hasFocus) return;
 			this.fireEvent("changeSelection");
 			this.setDecorator(this.focusedDecorator);
+			this.hasFocus = true;
 		}, 
 		blur : function(){
+			this.hasFocus = false;
 			this.setDecorator(this.blurredDecorator);
 		}
 	}

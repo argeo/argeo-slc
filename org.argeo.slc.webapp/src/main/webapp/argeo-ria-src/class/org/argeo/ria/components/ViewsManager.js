@@ -48,7 +48,8 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
 			viewPane.setCommands(commands);
 			org.argeo.ria.event.CommandsManager.getInstance().addCommands(commands, "view:"+viewPaneId, viewPaneId);
 		}
-		viewPane.setContent(iView); 
+		viewPane.setContent(iView);
+		this.setViewPaneFocus(viewPane);
 		return iView;
   	},
   	
@@ -64,12 +65,15 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
 	  		org.argeo.ria.event.CommandsManager.getInstance().refreshCommands(viewSelection);
 		});
 		viewPane.addListener("changeFocus", function(e){
-			for(var key in this.views){
-				this.views[key].blur();
-			}
-			viewPane.focus();
-			this.setCurrentFocus(viewPane);
+			this.setViewPaneFocus(e.getTarget());
 		}, this);
+  	},
+  	setViewPaneFocus : function(viewPane){
+		for(var key in this.views){
+			this.views[key].blur();
+		}
+		this.setCurrentFocus(viewPane);
+		viewPane.focus();  		
   	},
   	/**
   	 * Returns a viewPane by its unique id.
