@@ -231,8 +231,15 @@ qx.Class.define("org.argeo.ria.Application",
 			switchCommand.command.setMenu(switchCommand.submenu);
 		}
     },
+
+    javascriptDownloadLocation: function(hrefValue){
+    	this.interruptClose = true;
+    	document.location.href = hrefValue;
+    	this.interruptClose = false;
+    },
     
     close : function(){
+    	if(this.interruptClose) return ;    	
 		if(this.getActivePerspective()){
 			this.getActivePerspective().remove(org.argeo.ria.components.ViewsManager.getInstance());
 		} 

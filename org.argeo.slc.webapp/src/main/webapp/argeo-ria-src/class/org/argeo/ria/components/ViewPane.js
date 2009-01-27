@@ -188,7 +188,11 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 			this.header.remove(this.loadImage);
 		}
 	},
-	
+
+	closeCurrent : function(){
+		this.empty();
+	},
+		
 	/**
 	 * Removes and destroy the IView content of this viewPane.
 	 */
