@@ -99,9 +99,13 @@ qx.Class.define("org.argeo.ria.components.Modal",
 		 * @param callbackContext {Object} Context for the callback, optional.
 		 */
 		makePromptForm:function(questionString, validationCallback, callbackContext){
-			this.add(new qx.ui.basic.Label(questionString), {edge:'north'});
+			var label = new qx.ui.basic.Label(questionString);
+			label.setRich(true);
+			label.setTextAlign("center");
+			this.add(label, {edge:'north'});
 			var textField = new qx.ui.form.TextField();
-			textField.setMarginTop(20);
+			textField.setMarginTop(10);
+			textField.setMarginBottom(10);
 			this.add(textField, {edge:'center'});
 			this.addOkCancel();
 			if(callbackContext){
