@@ -54,7 +54,8 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   					
   				},
   				command 	: null
-  			}, 		
+  			}
+  			/*, 		
   			"copytocollection" : {
   				shared 		: true,
   				selectionChange : function(viewId, xmlNode){
@@ -81,6 +82,7 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   					}  					
   				}
   			}
+  			*/
   		}
   	}
   },
