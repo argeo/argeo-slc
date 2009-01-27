@@ -8,7 +8,7 @@ qx.Class.define("org.argeo.ria.remote.JmsClient", {
 	},
 	members : {
   		// The URI of the MessageListenerServlet
-		uri : '../amqMessage',		
+		uri : '../amq',		
 
 		// Polling. Set to true (default) if waiting poll for messages is needed
 		poll : true,
