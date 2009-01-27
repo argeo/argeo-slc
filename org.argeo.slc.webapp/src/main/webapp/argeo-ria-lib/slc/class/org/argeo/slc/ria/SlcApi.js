@@ -17,6 +17,7 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	REMOVE_RESULT_FROM_COLL_SERVICE : "removeResultFromCollection.service",
   	ADD_RESULT_TO_COLL_SERVICE : "addResultToCollection.service",
   	LIST_COLLECTIONS_SERVICE : "listCollectionRefs.service",
+  	COPY_COLLECTION_TO_COLL_SERVICE : "copyCollectionToCollection.service",
   	LIST_RESULTS_SERVICE : "listResultAttributes.service",
   	GET_RESULT_SERVICE : "getResult.service",
   	LIST_SLCEXEC_SERVICE : "listSlcExecutions.service",
@@ -62,6 +63,29 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	},
   	
   	/**
+  	 * Remove a set of results from a collection. Either filtered by a given pattern, or the whole collection.
+  	 * @param collectionId {String} The id of the collection
+  	 * @param patternAttribute {String} An optional attribute name on which to filter
+  	 * @param patternValue {String} The pattern to use for filtering a subset of result
+  	 * @param fireReloadEventType {String} Whether query should trigger a ReloadEvent
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update
+  	 * @return {qx.io.remote.Request} The Request object
+  	 */
+  	getRemoveFromCollectionService : function(collectionId, patternAttribute, patternValue, fireReloadEventType, iLoadStatusables){
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+	  		org.argeo.slc.ria.SlcApi.REMOVE_RESULT_FROM_COLL_SERVICE, 
+	  		fireReloadEventType, 
+	  		iLoadStatusables
+  		);
+  		request.setParameter("collectionId", collectionId);
+  		if(patternAttribute && patternValue){
+  			request.setParameter("attrName", patternAttribute);
+  			request.setParameter("attrPattern", patternValue);
+  		}
+  		return request;
+  	},
+  	
+  	/**
   	 * Add a result to a given collection
   	 * @param collectionId {String} Id of the destination collection
   	 * @param resultId {String} Id of the test result to add
@@ -92,6 +116,31 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
 	  		fireReloadEventType, 
 	  		iLoadStatusables
   		);
+  	},
+  	
+  	/**
+  	 * Copy a whole collection or a subset of it to another collection. If a new id is provided for the target, it will be created.
+  	 * @param sourceCollectionId {String} The current collection from which to copy
+  	 * @param targetCollectionId {String} The target collection. If unknown, it will be created.
+  	 * @param patternAttribute {String} An optional attribute on which a filter can be applied to create a subset.
+  	 * @param patternValue {String} The associated pattern to filter on the atttribute's value.
+  	 * @param fireReloadEventType {String} Whether query should trigger a ReloadEvent
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update
+  	 * @return {qx.io.remote.Request} The request object
+  	 */
+  	getCopyCollectionService : function(sourceCollectionId, targetCollectionId, patternAttribute, patternValue, fireReloadEventType, iLoadStatusables){
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+	  		org.argeo.slc.ria.SlcApi.COPY_COLLECTION_TO_COLL_SERVICE, 
+	  		fireReloadEventType, 
+	  		iLoadStatusables  			
+  		);
+  		request.setParameter("sourceCollectionId", sourceCollectionId);
+  		request.setParameter("targetCollectionId", targetCollectionId);
+  		if(patternAttribute && patternValue){
+  			request.setParameter("attrName", patternAttribute);
+  			request.setParameter("attrPattern", patternValue);
+  		}
+  		return request;
   	},
   	
   	/**

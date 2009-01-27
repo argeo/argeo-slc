@@ -8,7 +8,7 @@ qx.Class.define("org.argeo.ria.remote.JmsClient", {
 	},
 	members : {
   		// The URI of the MessageListenerServlet
-		uri : '../amq',		
+		uri : '../amqMessage',		
 
 		// Polling. Set to true (default) if waiting poll for messages is needed
 		poll : true,
@@ -70,8 +70,8 @@ qx.Class.define("org.argeo.ria.remote.JmsClient", {
 
 		// Send a JMS message to a destination (eg topic://MY.TOPIC).  Message should be xml or encoded
 		// xml content.
-		sendMessage : function(destination, message) {
-			this._sendMessage(destination, message, 'send');
+		sendMessage : function(destination, message, properties) {
+			this._sendMessage(destination, message, 'send', properties);
 		},
 
 		// Listen on a channel or topic.   handler must be a function taking a message arguement
@@ -86,11 +86,16 @@ qx.Class.define("org.argeo.ria.remote.JmsClient", {
 			this._sendMessage(destination, id, 'unlisten');
 		},
 
-		_sendMessage : function(destination, message, type) {
+		_sendMessage : function(destination, message, type, properties) {
 			var req = new qx.io.remote.Request(this.uri, "POST", "text/plain");
 			req.setParameter("destination", destination);
 			req.setParameter("message", message);
 			req.setParameter("type", type);
+			if(properties){
+				for(var key in properties){
+					req.setParameter(key, properties[key]);
+				}
+			}
 			//req.addListener("completed", this.endBatch, this);
 			req.send();
 		},

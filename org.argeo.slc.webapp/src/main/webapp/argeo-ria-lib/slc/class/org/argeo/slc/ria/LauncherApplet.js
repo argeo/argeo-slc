@@ -90,7 +90,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
   	load : function(){
   		this.getView().setViewTitle("Execution Launcher");
   		this.addListener("changeRegisteredTopics", function(event){
-  			this._refreshTopicsSubscriptions(event);
+  			//this._refreshTopicsSubscriptions(event);
   			this._feedSelector(event);
   		}, this);
   		var reloadHandler = function(message){
@@ -304,6 +304,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		formObject.pane.add(entryPane);
 	},
 	
+	/*
 	_refreshTopicsSubscriptions : function(changeTopicsEvent){
 		var oldTopics = changeTopicsEvent.getOldData() || {};
 		var newTopics = changeTopicsEvent.getData();
@@ -320,6 +321,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 			}			
 		}
 	},
+	*/
 		
 	_feedSelector : function(changeTopicsEvent){
 		var topics = changeTopicsEvent.getData();
@@ -333,6 +335,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		}
 	},
 	
+	/*
 	_addAmqListener: function(uuid){
 		this._amqClient.addListener("slcExec", "topic://agent."+uuid+".newExecution", function(response){
 			var message = org.argeo.ria.util.Element.selectSingleNode(response, "slc:slc-execution");				
@@ -347,6 +350,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 	_removeAmqListener : function(uuid){
 		this._amqClient.removeListener("slcExec", "topic://agent."+uuid+".newExecution");
 	},
+	*/
 	
 	_prepareSlcExecutionMessage : function(crtPartId, slcExec, fields, hiddenFields, freeFields){
 		if(crtPartId == "standard"){
@@ -386,9 +390,12 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		}
 		
 		this._prepareSlcExecutionMessage(crtPartId, slcExec, fields, hiddenFields, freeFields);
-		
-		var destination = "topic://agent."+currentUuid+".newExecution";
-		this._amqClient.sendMessage(destination, slcExec.toXml());
+				
+		this._amqClient.sendMessage(
+			"topic://agent.newExecution", 
+			slcExec.toXml(), 
+			{"slc-agentId":currentUuid}
+		);
 		// Force logs refresh right now!
 		qx.event.Timer.once(function(){
 			var command = org.argeo.ria.event.CommandsManager.getInstance().getCommandById("reloadlogs");
