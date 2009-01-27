@@ -16,6 +16,7 @@
 
 	<bean name="/removeResultFromCollection.service"
 		class="org.argeo.slc.web.mvc.result.RemoveResultFromCollectionController">
+		<constructor-arg ref="testResultCollectionDao" />
 		<constructor-arg ref="testManagerService" />
 	</bean>
 
@@ -31,6 +32,12 @@
 
 	<bean name="/listResults.service" class="org.argeo.slc.web.mvc.result.ListResultsController">
 		<constructor-arg ref="testResultCollectionDao" />
+	</bean>
+
+	<bean name="/copyCollectionToCollection.service"
+		class="org.argeo.slc.web.mvc.result.CopyCollectionToCollectionController">
+		<constructor-arg ref="testResultCollectionDao" />
+		<constructor-arg ref="testManagerService" />
 	</bean>
 
 	<bean name="/listAgents.service" class="org.argeo.slc.web.mvc.runtime.ListAgentsController">
