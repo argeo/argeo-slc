@@ -54,7 +54,8 @@ public abstract class AbstractCastorTestCase extends AbstractSpringTestCase {
 		return (T) unmarshal(xml);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected <T> T marshUnmarsh(Object obj) throws Exception {
-		return marshUnmarsh(obj, true);
+		return (T) marshUnmarsh(obj, true);
 	}
 }
