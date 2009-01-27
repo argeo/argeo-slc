@@ -14,7 +14,7 @@ qx.Class.define("org.argeo.ria.sample.Perspective",
   	  	
   	initViewPanes : function(viewsManager){
   		
-      var splitPane = new qx.ui.splitpane.Pane("horizontal");
+      this.splitPane = new qx.ui.splitpane.Pane("horizontal");
 	  var topLeft = new org.argeo.ria.components.ViewPane("list", "Sample List", {
 	  	orientation : "horizontal",
 	  	min : 36
@@ -22,18 +22,24 @@ qx.Class.define("org.argeo.ria.sample.Perspective",
 	  topLeft.set({width:300});
 	  viewsManager.registerViewPane(topLeft);
 	    
-	  splitPane.add(topLeft, 0);
+	  this.splitPane.add(topLeft, 0);
   	  var rightPane = new org.argeo.ria.components.ViewPane("applet", "Sample Applet");  	  
   	  viewsManager.registerViewPane(rightPane);
-	  splitPane.add(rightPane, 1);
+	  this.splitPane.add(rightPane, 1);
       
-      viewsManager.getViewPanesContainer().add(splitPane, {flex:1});
+      viewsManager.getViewPanesContainer().add(this.splitPane, {flex:1});
   		
   	},
   	
   	initViews : function(viewsManager){
 	  var view = viewsManager.initIViewClass(org.argeo.ria.sample.List, "list");
 	  view.load();
+  	},
+  	
+  	remove : function(viewsManager){
+  		viewsManager.getViewPaneById("list").empty();
+  		viewsManager.getViewPaneById("applet").empty();
+  		viewsManager.getViewPanesContainer().remove(this.splitPane);
   	}
   	
   }

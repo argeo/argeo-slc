@@ -41,9 +41,9 @@ qx.Class.define("org.argeo.ria.sample.List",
   				callback	: function(e){
   					var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();
   					var classObj = org.argeo.ria.sample.Applet;
-					var iView = viewsManager.initIViewClass(classObj, "applet");
   					var rowData = viewsManager.getViewPaneSelection("list").getNodes();
-					iView.load(rowData[0]);
+					var iView = viewsManager.initIViewClass(classObj, "applet", rowData[0]);
+					iView.load();
   				},
   				selectionChange : function(viewId, rowData){
   					if(viewId != "list") return;
@@ -54,14 +54,22 @@ qx.Class.define("org.argeo.ria.sample.List",
   				command 	: null
   			}
   		}
-	}
+	},
+  	viewSelection : {
+  		nullable:false, 
+  		check:"org.argeo.ria.components.ViewSelection"
+  	},
+  	instanceId : {init:"0"},
+  	instanceLabel : {init:"Sample List"}	
   },
   
   members : {
-	init : function(viewPane){
+	init : function(viewPane, data){
 	  this.setView(viewPane);
+      this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
+	  
 	},
-	load : function(data){
+	load : function(){
 	  //
 	  // Customize table appearance
 	  //
@@ -76,10 +84,9 @@ qx.Class.define("org.argeo.ria.sample.List",
 	  //	  
 	  // Link table selection changes to the standard viewSelection mechanism
 	  //
-	  var viewPane = this.getView();
 	  var selectionModel = this.table.getSelectionManager().getSelectionModel();
 	  selectionModel.addListener("changeSelection", function(e){
-	  	var viewSelection = viewPane.getViewSelection();
+	  	var viewSelection = this.getViewSelection();
 	  	viewSelection.clear();
 	  	if(!selectionModel.getSelectedCount()){
 	  		return;
@@ -87,7 +94,6 @@ qx.Class.define("org.argeo.ria.sample.List",
 	  	var ranges = selectionModel.getSelectedRanges();
 	  	var rowData = this.table.getTableModel().getRowData(ranges[0].minIndex);
 	  	viewSelection.addNode(rowData);
-	  	viewPane.setViewSelection(viewSelection);
 	  }, this);		
 	  
 	  //

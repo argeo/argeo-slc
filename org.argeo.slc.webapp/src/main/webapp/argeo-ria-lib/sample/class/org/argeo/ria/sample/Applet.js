@@ -41,7 +41,14 @@ qx.Class.define("org.argeo.ria.sample.Applet",
   				command 	: null
   			}  			
   		}
-  	}
+  	},
+  	viewSelection : {
+  		nullable:false, 
+  		check:"org.argeo.ria.components.ViewSelection"
+  	},
+  	instanceId : {init:"Hello Applet"},
+  	instanceLabel : {init:"Hello"}
+  	
   },
 
   members :
@@ -50,17 +57,20 @@ qx.Class.define("org.argeo.ria.sample.Applet",
   	 * Called at applet creation. Just registers viewPane.
   	 * @param viewPane {org.argeo.ria.components.ViewPane} The viewPane.
   	 */
-  	init : function(viewPane){
+  	init : function(viewPane, data){
   		this.setView(viewPane);
+  		this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
+  		this.data = data;
+  		this.setInstanceId(data[0]);
+  		this.setInstanceLabel("Hello applet #"+data[0]);
   	},
   	
   	/**
   	 * Load a given row : the data passed must be a simple data array.
   	 * @param data {Element} The text xml description. 
   	 */
-  	load : function(data){
-  		this.data = data;
-  		this.createHtmlGui("<b>Hello World ! Data ID is : "+data[0]+"</b>");
+  	load : function(){  		
+  		this.createHtmlGui("<b>Hello World ! Data ID is : "+this.getInstanceId()+"</b>");
   	},
   	 
 	addScroll : function(){
