@@ -62,6 +62,9 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
   			}
   		}
   	},
+  	/**
+  	 * A map containing all currently registered agents.
+  	 */
   	registeredTopics : {
   		init : {},
   		check : "Map", 
@@ -116,6 +119,9 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		this._amqClient.stopPolling();
 	},
 	  	
+	/**
+	 * Creates the main applet layout.
+	 */
 	_createLayout : function(){
 		this.formPane = new qx.ui.container.Composite(new qx.ui.layout.VBox(5));		
 		this.scroll = new qx.ui.container.Scroll(this.formPane);
@@ -124,6 +130,9 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		
 	},
 		
+	/**
+	 * Creates the form.
+	 */
 	_createForm : function(){
   		this.fields = {};
   		this.hiddenFields = {};
@@ -175,6 +184,10 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		this._showSelectedPart(qx.lang.Object.getKeys(this.parts)[0]);		
 	},
 	
+	/**
+	 * Show a form part given its id.
+	 * @param partId {String} The part id
+	 */
 	_showSelectedPart : function(partId){
 		if(!this.parts) return;
 		if(!this.partsContainer){
@@ -194,6 +207,12 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		}
 	},
 	
+	/**
+	 * Init a form part : creates a pane, a set of fields, etc.
+	 * @param formId {String} A unique ID
+	 * @param label {String} A label
+	 * @return {Map} The form part.
+	 */
 	_initFormPart : function(formId, label){
 		if(!this.parts) this.parts = {};		
 		var formObject = {};
@@ -207,6 +226,9 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		return formObject;
 	},
 	
+	/**
+	 * To be overriden by this class children.
+	 */
 	_createFormVariableParts : function(){
 		var standard = this._initFormPart("standard", "Canonical");
 		this._createStandardForm(standard);
@@ -214,6 +236,10 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		this._createSimpleForm(simple);
 	},
 	
+	/**
+	 * Creates a form for SLC demo
+	 * @param formObject {Map} The form part
+	 */
 	_createSimpleForm : function(formObject){
 
 		this._addFormInputText(formObject, "ant.file", "File", "Category1/SubCategory2/build.xml");
@@ -229,6 +255,10 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		
 	},
 	
+	/**
+	 * Create a canonical form.
+	 * @param formObject {Map} The form part
+	 */
 	_createStandardForm : function(formObject){
 		
 		this._addFormHeader(formObject, "Set Execution Parameters");
@@ -247,10 +277,24 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		this._addFormInputText(formObject);		
 	},
 	
+	/**
+	 * Add an hidden field to the form
+	 * @param formObject {Map} The form part
+	 * @param fieldName {String} Name
+	 * @param fieldValue {String} Value
+	 */
 	_addFormHiddenField : function(formObject, fieldName, fieldValue){
 		formObject.hiddenFields[fieldName] = fieldValue;
 	},
 	
+	/**
+	 * Creates a simple label/input form entry.
+	 * @param formObject {Map} The form part
+	 * @param fieldName {String} Name
+	 * @param fieldLabel {String} Label of the field
+	 * @param defaultValue {String} The default value
+	 * @param choiceValues {Map} An map of values
+	 */
 	_addFormInputText : function(formObject, fieldName, fieldLabel, defaultValue, choiceValues){
 		var labelElement;
 		if(choiceValues){
@@ -277,6 +321,12 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		this._addFormEntry(formObject, labelElement, fieldElement);
 	},
 	
+	/**
+	 * Add an header
+	 * @param formObject {Map} The form part
+	 * @param content {Mixed} Content to add.
+	 * @param additionnalButton {Mixed} Any widget to add on the east.
+	 */
 	_addFormHeader : function(formObject, content, additionnalButton){
 		var header = new qx.ui.basic.Label('<b>'+content+'</b>');
 		header.setRich(true);		
@@ -293,6 +343,12 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		}
 	},
 	
+	/**
+	 * Adds a label/input like entry in the form.
+	 * @param formObject {Map} The form part
+	 * @param labelElement {Object} Either a label or an input 
+	 * @param fieldElement {Object} Any form input.
+	 */
 	_addFormEntry : function(formObject, labelElement, fieldElement){
 		var entryPane = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
 		labelElement.setWidth(100);
@@ -323,6 +379,10 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 	},
 	*/
 		
+	/**
+	 * Refresh the selector when the topics are updated.
+	 * @param changeTopicsEvent {qx.event.type.DataEvent} The reload event.
+	 */
 	_feedSelector : function(changeTopicsEvent){
 		var topics = changeTopicsEvent.getData();
 		this.agentSelector.removeAll();
@@ -352,6 +412,14 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 	},
 	*/
 	
+	/**
+	 * Make an SlcExecutionMessage from the currently displayed form.
+	 * @param crtPartId {String} The form part currently displayed
+	 * @param slcExec {org.argeo.slc.ria.SlcExecutionMessage} The message to fill.
+	 * @param fields {Map} The fields of the form
+	 * @param hiddenFields {Map} The hidden ones 
+	 * @param freeFields {Array} The free fields.
+	 */
 	_prepareSlcExecutionMessage : function(crtPartId, slcExec, fields, hiddenFields, freeFields){
 		if(crtPartId == "standard"){
 			slcExec.setStatus(fields.status.getValue());		
@@ -368,6 +436,9 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		}		
 	},
 	
+	/**
+	 * Called when the user clicks the "Execute" button.
+	 */
 	submitForm : function(){
 		var currentUuid = this.agentSelector.getValue();
 		if(!currentUuid) return;

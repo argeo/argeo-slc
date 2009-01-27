@@ -77,6 +77,9 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		this.timer.stop();
 	},
 	  	
+	/**
+	 * Creates the applet layout
+	 */
 	_createLayout : function(){
 		this.logModel = new qx.ui.table.model.Simple();
 		this.logModel.setColumns(["Date", "Host", "Id", "Status"]);
@@ -90,6 +93,9 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		this.add(this.logPane, {edge:'center'});
 	},
 	
+	/**
+	 * Initialize the log table.
+	 */
 	_initLogger : function(){
 		this.logPane.set({	  	
 		  	statusBarVisible: false,
@@ -101,6 +107,9 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		columnModel.getBehavior().setWidth(3, "12%");		
 	},
 	
+	/**
+	 * Refresh the data model.
+	 */
 	_reloadLogger : function(){
 		var request = org.argeo.slc.ria.SlcApi.getListSlcExecutionsService();
 		request.addListener("completed", function(response){			

@@ -30,7 +30,13 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
   },
 
   events : {
+  	/**
+  	 * Trigger when the focus is changing
+  	 */
   	"changeFocus" : "qx.event.type.Data",
+  	/**
+  	 * Triggered when selection of content has changed.
+  	 */
   	"changeSelection" : "qx.event.type.Event"
   },
   
@@ -130,13 +136,21 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		*/
 	},
 	
+	/**
+	 * Get the content ViewSelection object.
+	 * @return {org.argeo.ria.components.ViewSelection} The view selection
+	 */
 	getViewSelection : function(){
 		if(this.getContent()){
 			return this.getContent().getViewSelection();
 		}
 		return null;
 	},
-	
+	/**
+	 * Checks if the pane already contains a given view, identified by its instance id
+	 * @param iViewId {Mixed} The instance id to check
+	 * @return {Boolean}
+	 */	
 	contentExists : function(iViewId){
 		if(this.getContent()){
 			this.empty();
@@ -189,6 +203,9 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		}
 	},
 
+	/**
+	 * Call empty() method, since this pane can only handle one view.
+	 */
 	closeCurrent : function(){
 		this.empty();
 	},
@@ -212,13 +229,18 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		this.setViewTitle(this._defaultViewTitle);
 		this.setContent(null);
 	},
-	
+	/**
+	 * Sets a graphical indicator that this pane has the focus. A blue border.
+	 */	
 	focus : function(){
 		if(this.hasFocus) return;
 		this.setDecorator(new qx.ui.decoration.Single(1,"solid","#065fb2"));
 		this.fireEvent("changeSelection");
 		this.hasFocus = true;
 	}, 
+	/**
+	 * Remove a graphical focus indicator on this pane.
+	 */
 	blur : function(){
 		this.hasFocus = false;
 		this.setDecorator(new qx.ui.decoration.Single(1,"solid","#000"));

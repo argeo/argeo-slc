@@ -8,7 +8,13 @@
 qx.Interface.define("org.argeo.ria.components.IPerspective", {
 	
 	statics : {
+		/**
+		 * The human readable name of the perspective
+		 */
 		LABEL : "",
+		/**
+		 * An image resource associated to the perspective
+		 */
 		ICON  : ""
 	},
 	

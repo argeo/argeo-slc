@@ -19,6 +19,9 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
   	 * The main container for the org.argeo.ria.components.ViewPane instances. 
   	 */
   	viewPanesContainer : {init: null},
+  	/**
+  	 * Keeps the currently focused viewPane. 
+  	 */
   	currentFocus : {init :null}
   },
   construct : function(){
@@ -31,6 +34,7 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
   	 * 
   	 * @param classObj {Clazz} The class object to instantiate
   	 * @param viewPaneId {String} The unique ID of the view pane
+  	 * @param data {Mixed} Any data provided by the opener.
   	 * @return {org.argeo.ria.components.IView}
   	 */
   	initIViewClass: function(classObj, viewPaneId, data){
@@ -68,6 +72,10 @@ qx.Class.define("org.argeo.ria.components.ViewsManager",
 			this.setViewPaneFocus(e.getTarget());
 		}, this);
   	},
+  	/**
+  	 * Sets a given viewPane as the currently focused one. Blur the others.
+  	 * @param viewPane {org.argeo.ria.components.ViewPane} The viewPane (or TabbedViewPane) to focus on.
+  	 */
   	setViewPaneFocus : function(viewPane){
 		for(var key in this.views){
 			this.views[key].blur();

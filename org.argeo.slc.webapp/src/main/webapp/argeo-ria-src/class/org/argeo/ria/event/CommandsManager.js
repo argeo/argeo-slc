@@ -84,6 +84,9 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   		init : {},
   		check : "Map"
   	},
+  	/**
+  	 * Special command definitions that are shared between focusable parts. 
+  	 */
   	sharedDefinitions : {
   		init: {},
   		check: "Map"
@@ -105,6 +108,10 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 
   members :
   {
+  	/**
+  	 * Initialize the manager with basic definitions.
+  	 * @param initDefinitions {Map} A map of commands definitions.
+  	 */
   	init : function(initDefinitions){
   		this.setDefinitions(initDefinitions);
   		this.setInitialDefinitions(qx.lang.Object.copy(initDefinitions));
@@ -284,7 +291,8 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   	/**
   	 * Add a new set of commands definitions. See the definitions property of this class.
   	 * @param definitions {Map} a set of commands definitions.
-  	 * @param callbackContext {qx.ui.core.Object} The context used inside the commands callbacks. 
+  	 * @param callbackContext {qx.ui.core.Object} The context used inside the commands callbacks.
+  	 * @param focusablePartId {String} A string identifying the associated focusable part, like "view:viewId". 
   	 */
   	addCommands : function(definitions, callbackContext, focusablePartId){
   		var crtDefs = this.getDefinitions();  		
@@ -309,6 +317,7 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
   	/**
   	 * Removes a whole set of commands by their definitions maps.
   	 * @param definitions {Map} a set of commands definitions
+  	 * @param focusablePartId {String} A string identifying the associated focusable part, like "view:viewId".  
   	 */
   	removeCommands : function(definitions, focusablePartId){
   		var crtDefs = this.getDefinitions();

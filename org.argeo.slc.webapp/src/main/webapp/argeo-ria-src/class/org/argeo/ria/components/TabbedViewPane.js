@@ -1,3 +1,8 @@
+/**
+ * A more elaborate views container than ViewPane, as it can handle multiple contents
+ * at once via a TabView.
+ * See {@link org.argeo.ria.components.ViewPane}.
+ */
 qx.Class.define("org.argeo.ria.components.TabbedViewPane",
 {
 	extend : qx.ui.container.Composite,
@@ -6,7 +11,6 @@ qx.Class.define("org.argeo.ria.components.TabbedViewPane",
   /**
    * @param viewId {String} Unique id of this viewPane
    * @param viewTitle {String} Readable Title of this viewPane
-   * @param splitPaneData {Map} Additionnal data to be used by splitpanes implementations.
    */
 	construct : function(viewId, viewTitle){
 		this.base(arguments);
@@ -64,12 +68,21 @@ qx.Class.define("org.argeo.ria.components.TabbedViewPane",
 	},
 	
 	members : {
+		/**
+		 * Checks if the pane already contains a given view, identified by its instance id
+		 * @param contentId {Mixed} The instance id to check
+		 * @return {Boolean}
+		 */
 		contentExists : function(contentId){
 			if(this.pageIds[contentId]){
 				this.tabView.setSelected(this.pageIds[contentId]);
 				return this.pageIds[contentId].getUserData("argeoria.iview");
 			}						
 		},
+		/**
+		 * Sets a new instance in the tabbed pane.
+		 * @param content {org.argeo.ria.components.IView} The applet to add.
+		 */
 		setContent : function(content){
 			if(!this.tabView.getChildren().length){
 				this.tabView.setBackgroundColor("transparent");
@@ -88,19 +101,34 @@ qx.Class.define("org.argeo.ria.components.TabbedViewPane",
 			}, this);
 			this.tabView.setSelected(page);
 		},
+		/**
+		 * Get the currently selected tab content, if any.
+		 * @return {org.argeo.ria.components.IView} The currently selected view.
+		 */
 		getContent : function(){
 			if(this._getCrtPage()){
 				return this._getCrtPage().getUserData("argeoria.iview");
 			}
 			return null;
 		},
+		/**
+		 * Get the currently selected tab ViewSelection object.
+		 * @return {org.argeo.ria.components.ViewSelection} The view selection object of the currently selected view.
+		 */
 		getViewSelection : function(){
 			if(!this.getContent()) return null;
 			return this.getContent().getViewSelection();
 		},
+		/**
+		 * Return the currently selected tab Page.
+		 * @return {qx.ui.tabview.Page} The page
+		 */
 		_getCrtPage : function(){
 			return this.tabView.getSelected();
 		},
+		/**
+		 * Closes the currently selected view and remove all tabs components (button, page).
+		 */
 		closeCurrent : function(){
 			var crtPage = this._getCrtPage();
 			if(!crtPage) return;
@@ -118,6 +146,9 @@ qx.Class.define("org.argeo.ria.components.TabbedViewPane",
 				this.tabView.setMarginTop(27);
 			}						
 		},
+		/**
+		 * Call closeCurrent() recursively until there is no more page.
+		 */
 		empty : function(){
 			var crtPage = this._getCrtPage();
 			while(crtPage){
@@ -125,15 +156,25 @@ qx.Class.define("org.argeo.ria.components.TabbedViewPane",
 				crtPage = this._getCrtPage();
 			}
 		},
+		/**
+		 * Sets the tabView on "load" state. Nothing is done at the moment.
+		 * @param load {Boolean} Load status
+		 */
 		setOnLoad : function(load){
 			
 		},
+		/**
+		 * Sets a graphical indicator that this pane has the focus. A blue border.
+		 */
 		focus : function(){
 			if(this.hasFocus) return;
 			this.fireEvent("changeSelection");
 			this.setDecorator(this.focusedDecorator);
 			this.hasFocus = true;
 		}, 
+		/**
+		 * Remove a graphical focus indicator on this pane.
+		 */
 		blur : function(){
 			this.hasFocus = false;
 			this.setDecorator(this.blurredDecorator);

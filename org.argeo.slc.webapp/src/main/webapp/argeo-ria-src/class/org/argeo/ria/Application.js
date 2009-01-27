@@ -26,17 +26,29 @@ qx.Class.define("org.argeo.ria.Application",
   },
   
   properties : {
+  	/**
+  	 * Available perspective detected in the current compilation.
+  	 */
   	perspectives : {
   		check : "Map",
   		init : {}
   	},
+  	/**
+  	 * Currently layouted perspective label
+  	 */
   	activePerspectiveName : {
   		check : "String",
   		init : ""
   	},
+  	/**
+  	 *  Currently layouted perspective.
+  	 */
   	activePerspective : {
   		init : null
   	},
+  	/**
+  	 * Basic command associated to the application, applicable to all perspectives.
+  	 */
   	commandsDefinitions : {
   		init : {
   			"stop" : {
@@ -191,6 +203,10 @@ qx.Class.define("org.argeo.ria.Application",
       this.loadPerspective();
     },
     
+    /**
+     * Load a given perspective by its name.
+     * @param perspectiveName {String} Perspective to load
+     */
     loadPerspective : function(perspectiveName){
     	if(perspectiveName){
     		this.setActivePerspectiveName(perspectiveName);
@@ -214,6 +230,9 @@ qx.Class.define("org.argeo.ria.Application",
 		this.setActivePerspective(perspective);
     },
     
+    /**
+     * After switching perspective, call this function to rebuild menu with the right selected.
+     */
     rebuildPerspectiveMenus : function(){
 	     var switchCommand = this.getCommandsDefinitions()["switchperspective"];
 	     switchCommand.submenu = [];
@@ -232,12 +251,20 @@ qx.Class.define("org.argeo.ria.Application",
 		}
     },
 
+    /**
+     * Specific action of calling an external URL without triggering the "close()" method
+     * of Application.
+     * @param hrefValue {String} A download url that should reply with specific "attachment" header to avoid leaving the application.
+     */
     javascriptDownloadLocation: function(hrefValue){
     	this.interruptClose = true;
     	document.location.href = hrefValue;
     	this.interruptClose = false;
     },
     
+    /**
+     * Called at Application ending (closing the browser).
+     */
     close : function(){
     	if(this.interruptClose) return ;    	
 		if(this.getActivePerspective()){

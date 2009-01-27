@@ -117,12 +117,25 @@
   		return button;
   	},
   	  
+  	/**
+  	 * Register a given callback to be shared by one or more focusable part.
+  	 * @param callback {Function} A callback function
+  	 * @param focusablePartId {String} A string identifiing a focusable part. At the moment, it can only be "view:viewId"
+  	 */
   	registerCallback : function(callback, focusablePartId){
   		this.callbacks[focusablePartId] = callback;
   	},
+  	/**
+  	 * Return all the registered callbacks for this command.
+  	 * @return {Map} A map of callback, viewId => callBack.
+  	 */
   	getCallbacks : function(){
   		return this.callbacks;
   	},
+  	/**
+  	 * Remove a callback for a given focusable part.
+  	 * @param focusablePartId {String} A id like "view:viewId".
+  	 */
   	removeCallback : function(focusablePartId){
   		if(this.callbacks[focusablePartId]){
   			delete this.callbacks[focusablePartId];

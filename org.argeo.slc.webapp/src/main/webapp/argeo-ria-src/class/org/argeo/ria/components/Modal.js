@@ -8,6 +8,9 @@ qx.Class.define("org.argeo.ria.components.Modal",
 	extend : qx.ui.window.Window,
   
 	events : {
+		/**
+		 * Triggered when the user clicks the "ok" button. 
+		 */
 		"ok" : "qx.event.type.Event"
 	},
 	/**
@@ -44,6 +47,10 @@ qx.Class.define("org.argeo.ria.components.Modal",
 			this.add(label, {edge:'center', width:'100%'});
 			this.addCloseButton();
 		},
+		/**
+		 * Add a question and ok / cancel buttons
+		 * @param text {String} The question to ask to the user
+		 */
 		addConfirm : function(text){
 			var label = new qx.ui.basic.Label(text);
 			label.setRich(true);

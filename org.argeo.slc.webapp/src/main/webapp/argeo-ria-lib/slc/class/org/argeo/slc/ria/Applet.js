@@ -89,10 +89,6 @@ qx.Class.define("org.argeo.slc.ria.Applet",
 
   members :
   {
-  	/**
-  	 * Called at applet creation. Just registers viewPane.
-  	 * @param viewPane {org.argeo.ria.components.ViewPane} The viewPane.
-  	 */
   	init : function(viewPane, xmlNode){
   		this.setView(viewPane);
 		this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
@@ -104,10 +100,6 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   		}
   	},
   	
-  	/**
-  	 * Load a given test : the data passed must be an XML node containing the test unique ID.
-  	 * @param xmlNode {Element} The text xml description. 
-  	 */
   	load : function(){
   		if(!this.data) return;
 		if(this.loaded) return;

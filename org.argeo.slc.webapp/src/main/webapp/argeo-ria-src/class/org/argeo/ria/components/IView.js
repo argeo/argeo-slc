@@ -33,15 +33,15 @@ qx.Interface.define("org.argeo.ria.components.IView", {
 		 * This is the role of the manager to actually add the graphical component to the pane, 
 		 * so it's not necessary to do it here. 
 		 * @param viewPane {org.argeo.ria.components.ViewPane} The pane manager
+		 * @param data {Mixed} Any object or data passed by the initiator of the view
 		 * @return {Boolean}
 		 */
 		init : function(viewPane, data){return true;},
 		/**
 		 * The implementation should contain the real data loading (i.o. query...)
-		 * @param data {mixed} Any data in any format
 		 * @return {Boolean}
 		 */
-		load : function(data){return true;},
+		load : function(){return true;},
 		/**
 		 * Whether this component is already contained in a scroller (return false) or not (return true).
 		 * @return {Boolean}

@@ -3,6 +3,10 @@
  */
 qx.Class.define("org.argeo.slc.ria.SlcExecutionMessage", {
 	extend : qx.core.Object,
+	/**
+	 * New instance
+	 * @param uuid {String} The Uuid of the message. If none is passed, one is generated.
+	 */
 	construct : function(uuid){
 		this.base(arguments);
 		if(uuid){
@@ -54,6 +58,9 @@ qx.Class.define("org.argeo.slc.ria.SlcExecutionMessage", {
 			check : "String",
 			init : "user"
 		},
+		/**
+		 * Date of the message. now() by default.
+		 */
 		date : {
 			check : "String", 
 			init : new Date().toString()
@@ -67,6 +74,11 @@ qx.Class.define("org.argeo.slc.ria.SlcExecutionMessage", {
 	},
 	members : {
 		
+		/**
+		 * Add a free attribute to the message
+		 * @param attName {String} Name
+		 * @param attValue {String} Value
+		 */
 		addAttribute: function(attName, attValue){
 			var attr = this.getAttributes();
 			attr[attName] = attValue;
@@ -96,6 +108,10 @@ qx.Class.define("org.argeo.slc.ria.SlcExecutionMessage", {
 			return builder.get();
 		},
 		
+		/**
+		 * Parse an XML answer and fill the object with it.
+		 * @param slcExecXml {String} An slcExecMessage mapped in XML.
+		 */
 		fromXml : function(slcExecXml){
 			var NSMap = {slc:"http://argeo.org/projects/slc/schemas"};			
 			this.setStatus(org.argeo.ria.util.Element.getSingleNodeText(slcExecXml, "slc:status", NSMap));
