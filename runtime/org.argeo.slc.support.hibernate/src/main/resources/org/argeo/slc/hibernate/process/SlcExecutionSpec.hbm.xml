@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.argeo.slc.process">
+	<class name="SlcExecutionSpec" table="SLC_EXECUTION_SPEC">
+		<cache usage="read-write" />
+
+		<id name="tid" column="T_ID">
+			<generator class="native" />
+		</id>
+
+		<map name="executionSpecFields" table="SLC_EXEC_SPEC_FIELDS"
+			cascade="all" lazy="false" sort="natural">
+			<cache usage="read-write" />
+
+			<key column="PARENT_ID" />
+			<map-key column="KEY" type="string" />
+			<composite-element class="org.argeo.slc.process.SlcExecutionSpecField">
+				<property name="label" column="LABEL"/>
+				<property name="type" column="TYPE"/>
+				<property name="defaultValue" column="DEFAULT_VALUE"/>
+			</composite-element>
+		</map>
+
+	</class>
+</hibernate-mapping>

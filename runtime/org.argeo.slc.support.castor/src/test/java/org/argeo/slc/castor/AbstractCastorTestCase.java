@@ -22,14 +22,24 @@ public abstract class AbstractCastorTestCase extends AbstractSpringTestCase {
 		unmarshaller = getBean(Unmarshaller.class);
 	}
 
+	protected StringResult marshal(Object obj) throws Exception {
+		return marshal(obj, false);
+	}
+
 	protected StringResult marshalAndValidate(Object obj) throws Exception {
+		return marshal(obj, true);
+	}
+
+	protected StringResult marshal(Object obj, boolean validate)
+			throws Exception {
 		StringResult xml = new StringResult();
 		marshaller.marshal(obj, xml);
 
 		log.info("Marshalled ResultPart Request: " + xml);
 
-		UnitXmlUtils.assertXmlValidation(getBean(XmlValidator.class),
-				new StringSource(xml.toString()));
+		if (validate)
+			UnitXmlUtils.assertXmlValidation(getBean(XmlValidator.class),
+					new StringSource(xml.toString()));
 		return xml;
 	}
 
@@ -39,8 +49,12 @@ public abstract class AbstractCastorTestCase extends AbstractSpringTestCase {
 	}
 
 	@SuppressWarnings("unchecked")
+	protected <T> T marshUnmarsh(Object obj, boolean validate) throws Exception {
+		StringResult xml = marshal(obj, validate);
+		return (T) unmarshal(xml);
+	}
+
 	protected <T> T marshUnmarsh(Object obj) throws Exception {
-		StringResult xml = marshalAndValidate(obj);
-		return (T)unmarshal(xml);
+		return marshUnmarsh(obj, true);
 	}
 }

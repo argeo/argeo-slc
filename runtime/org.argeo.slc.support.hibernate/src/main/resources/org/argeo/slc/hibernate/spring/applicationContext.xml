@@ -43,6 +43,9 @@
 					org/argeo/slc/hibernate/process/SlcExecutionStep.hbm.xml
 				</value>
 				<value>
+					org/argeo/slc/hibernate/process/SlcExecutionSpec.hbm.xml
+				</value>
+				<value>
 					org/argeo/slc/hibernate/runtime/SlcAgentDescriptor.hbm.xml
 				</value>
 			</list>

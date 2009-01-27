@@ -8,5 +8,15 @@
 
 		<id name="uuid" column="UUID" />
 		<property name="host" column="HOST" />
+<!-- 
+		<map name="executionSpecs" table="AGENT_EXEC_SPEC_MAP" cascade="all"
+			sort="natural">
+			<cache usage="nonstrict-read-write" />
+			<key column="PARENT_ID" />
+			<map-key column="KEY" type="string" />
+			<many-to-many class="org.argeo.slc.process.SlcExecutionSpec"
+				column="ELEMENT_ID" unique="true" />
+		</map>
+		 -->
 	</class>
 </hibernate-mapping>
