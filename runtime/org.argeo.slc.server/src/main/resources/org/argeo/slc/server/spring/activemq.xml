@@ -17,4 +17,8 @@
 		abstract="true">
 	</bean>
 
+	<bean id="template.jms.listenerAdapter" parent="slcTemplate.jms.listenerAdapterCastor"
+		abstract="true">
+	</bean>
+
 </beans>

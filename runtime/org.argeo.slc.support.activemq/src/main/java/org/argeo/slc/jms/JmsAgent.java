@@ -5,9 +5,6 @@ import java.net.UnknownHostException;
 import java.util.UUID;
 
 import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,16 +18,14 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.core.JmsTemplate;
 
 /** JMS based implementation of SLC Agent. */
-public class JmsAgent extends AbstractAgent implements SlcAgent, InitializingBean, DisposableBean {
+public class JmsAgent extends AbstractAgent implements SlcAgent,
+		InitializingBean, DisposableBean {
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
 
 	private final SlcAgentDescriptor agentDescriptor;
 	private JmsTemplate jmsTemplate;
 	private Destination agentRegister;
 	private Destination agentUnregister;
-
-	private String agentDestinationPrefix = "agent.";
-	private String agentDestinationBase;
 
 	public JmsAgent() {
 		try {
@@ -43,8 +38,6 @@ public class JmsAgent extends AbstractAgent implements SlcAgent, InitializingBea
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		agentDestinationBase = agentDestinationPrefix
-				+ agentDescriptor.getUuid() + ".";
 		jmsTemplate.convertAndSend(agentRegister, agentDescriptor);
 		log.info("Agent #" + agentDescriptor.getUuid() + " registered to "
 				+ agentRegister);
@@ -52,12 +45,8 @@ public class JmsAgent extends AbstractAgent implements SlcAgent, InitializingBea
 
 	public void destroy() throws Exception {
 		jmsTemplate.convertAndSend(agentUnregister, agentDescriptor);
-		log.info("Agent #" + agentDescriptor.getUuid() + " unregistered to "
-				+ agentRegister);
-	}
-
-	public String actionDestinationName(String action) {
-		return agentDestinationBase + action;
+		log.info("Agent #" + agentDescriptor.getUuid() + " unregistered from "
+				+ agentUnregister);
 	}
 
 	public void newExecution(SlcExecution slcExecution) {
@@ -77,8 +66,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent, InitializingBea
 		this.agentUnregister = agentUnregister;
 	}
 
-	public void setAgentDestinationPrefix(String agentDestinationPrefix) {
-		this.agentDestinationPrefix = agentDestinationPrefix;
+	public String getMessageSelector() {
+		return "slc-agentId=" + agentDescriptor.getUuid();
 	}
-
 }

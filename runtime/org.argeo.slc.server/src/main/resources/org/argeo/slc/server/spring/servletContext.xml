@@ -42,7 +42,7 @@
 	<bean id="agentService.jmsContainer.register" parent="template.jms.listenerContainer">
 		<property name="destination" ref="slcJms.destination.agent.register" />
 		<property name="messageListener">
-			<bean parent="slcTemplate.jms.listenerAdapter">
+			<bean parent="template.jms.listenerAdapter">
 				<constructor-arg ref="agentService" />
 				<property name="defaultListenerMethod" value="register" />
 			</bean>
@@ -52,7 +52,7 @@
 	<bean id="agentService.jmsContainer.unregister" parent="template.jms.listenerContainer">
 		<property name="destination" ref="slcJms.destination.agent.unregister" />
 		<property name="messageListener">
-			<bean parent="slcTemplate.jms.listenerAdapter">
+			<bean parent="template.jms.listenerAdapter">
 				<constructor-arg ref="agentService" />
 				<property name="defaultListenerMethod" value="unregister" />
 			</bean>

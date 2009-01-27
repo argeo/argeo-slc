@@ -22,17 +22,6 @@
 
 	<import resource="classpath:org/argeo/slc/activemq/spring-agent.xml" />
 
-	<bean id="slcDefault.cli.agent" parent="slcDefault.jms.agent">
-		<property name="slcApplication" ref="slcDefault.cli.slcApplication" />
-	</bean>
-
-	<bean id="slcDefault.cli.jms.agentListenerContainer.newExecution"
-		parent="slcTemplate.jms.agentListenerContainer">
-		<property name="action" value="newExecution" />
-		<property name="jmsAgent" ref="slcDefault.cli.agent" />
-	</bean>
-
-
 	<bean id="slcDefault.cli.slcApplication" class="org.argeo.slc.ant.AntSlcApplication"
 		init-method="initFromSlcRootFile">
 		<property name="slcRootFile" value="${slc.rootFile}" />

@@ -7,19 +7,26 @@
 
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
-	<bean id="slcDefault.jms.agent" class="org.argeo.slc.jms.JmsAgent" abstract="true">
-		<property name="jmsTemplate" ref="slcDefault.jms.jmsTemplate" />
+	<bean id="slcDefault.jms.agent" class="org.argeo.slc.jms.JmsAgent"
+		autowire="byType">
+		<property name="jmsTemplate" ref="slcDefault.jms.jmsTemplateCastor" />
 		<property name="agentRegister" ref="slcJms.destination.agent.register" />
 		<property name="agentUnregister" ref="slcJms.destination.agent.unregister" />
 	</bean>
 
 	<!-- Templates -->
-	<bean id="slcTemplate.jms.agentListenerContainer" class="org.argeo.slc.jms.AgentListenerContainer"
-		abstract="true">
+	<bean id="slcDefault.jms.listener.newExecution" parent="slcTemplate.jms.listenerContainer">
 		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-		<property name="pubSubDomain" value="true" />
+		<property name="destination" ref="slcJms.destination.agent.newExecution" />
+		<property name="messageListener">
+			<bean parent="slcTemplate.jms.listenerAdapterCastor">
+				<constructor-arg ref="slcDefault.jms.agent" />
+				<property name="defaultListenerMethod" value="newExecution" />
+			</bean>
+		</property>
+		<property name="messageSelector">
+			<bean factory-bean="slcDefault.jms.agent" factory-method="getMessageSelector"/>
+		</property>
 	</bean>
-
 
 </beans>
