@@ -221,7 +221,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		moreButton.setToolTip(new qx.ui.tooltip.ToolTip("Add a parameter"));
 		moreButton.setCursor("pointer");
 		moreButton.addListener("click", function(){
-			this._addFormInputText();
+			this._addFormInputText(formObject);
 		}, this);
 		this._addFormHeader(formObject, "Add optionnal parameters", moreButton);
 		this._addFormInputText(formObject);
@@ -240,7 +240,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		moreButton.setToolTip(new qx.ui.tooltip.ToolTip("Add a parameter"));
 		moreButton.setCursor("pointer");
 		moreButton.addListener("click", function(){
-			this._addFormInputText();
+			this._addFormInputText(formObject);
 		}, this);
 		this._addFormHeader(formObject, "Add optionnal parameters", moreButton);
 		this._addFormInputText(formObject);
