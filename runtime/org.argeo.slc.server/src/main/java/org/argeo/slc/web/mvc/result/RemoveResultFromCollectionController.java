@@ -1,5 +1,8 @@
 package org.argeo.slc.web.mvc.result;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -55,8 +58,9 @@ public class RemoveResultFromCollectionController extends
 			for (String attrName : attrNames) {
 				String attrPattern = attrPatterns[index];// safe: checked above
 
-				for (TreeTestResult treeTestResult : sourceCollection
-						.getResults()) {
+				List<TreeTestResult> results = new ArrayList<TreeTestResult>(
+						sourceCollection.getResults());
+				for (TreeTestResult treeTestResult : results) {
 					if (PatternMatchUtils.simpleMatch(attrPattern,
 							treeTestResult.getAttributes().get(attrName))) {
 						testManagerService.removeResultFromCollection(
@@ -71,8 +75,9 @@ public class RemoveResultFromCollectionController extends
 				// TODO: optimize
 				TreeTestResultCollection sourceCollection = testResultCollectionDao
 						.getTestResultCollection(collectionId);
-				for (TreeTestResult treeTestResult : sourceCollection
-						.getResults()) {
+				List<TreeTestResult> results = new ArrayList<TreeTestResult>(
+						sourceCollection.getResults());
+				for (TreeTestResult treeTestResult : results) {
 					testManagerService.removeResultFromCollection(collectionId,
 							treeTestResult.getUuid());
 				}
