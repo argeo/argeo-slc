@@ -138,6 +138,9 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 	},
 	
 	contentExists : function(iViewId){
+		if(this.getContent()){
+			this.empty();
+		}
 		return false;
 	},
 	
