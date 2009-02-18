@@ -28,6 +28,16 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>com.springsource.org.aspectj.runtime</artifactId>
+			<version>1.6.2.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>com.springsource.org.aspectj.weaver</artifactId>
+			<version>1.6.2.RELEASE</version>
+		</dependency>
+		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
 			<version>1.5.7</version>

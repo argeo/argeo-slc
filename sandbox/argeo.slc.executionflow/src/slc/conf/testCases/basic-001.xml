@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<import resource="../basic.xml" />
 
-	<bean id="basic.001" parent="basic.executionFlowTemplate">
+	<bean id="basic.001" parent="basic.executionFlowTemplate" scope="execution">
+		<aop:scoped-proxy />
 		<property name="attributes">
 			<map>
-				<entry key="testData1" value-ref="basic.001.testData"/>
+				<entry key="testData1" value-ref="basic.001.testData" />
 				<entry key="testData2">
 					<bean class="org.argeo.slc.core.test.BasicTestData">
 						<property name="expected" value="tata" />
@@ -19,9 +24,11 @@
 		</property>
 	</bean>
 
-	<bean id="basic.001.testData" class="org.argeo.slc.core.test.BasicTestData">
-		<property name="expected" value="toto" />
-		<property name="reached" value="toto" />
+	<bean id="basic.001.testData" class="org.argeo.slc.core.test.BasicTestData"
+		scope="execution">
+		<aop:scoped-proxy />
+		<property name="expected" value="tata100" />
+		<property name="reached" value="tata@{testedComponentId}" />
 	</bean>
 
 	<bean id="basic.001.testData2" class="org.argeo.slc.core.test.context.DefaultContextTestData">

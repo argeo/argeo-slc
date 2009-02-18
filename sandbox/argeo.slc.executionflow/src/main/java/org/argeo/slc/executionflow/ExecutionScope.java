@@ -7,28 +7,46 @@ import org.springframework.beans.factory.config.Scope;
 
 public class ExecutionScope implements Scope {
 	private final static Log log = LogFactory.getLog(ExecutionScope.class);
-	
+
 	public Object get(String name, ObjectFactory objectFactory) {
-		log.info("Getting bean "+name);
-		ExecutionFlow executionFlow = SimpleExecutionFlow.getCurrentExecutionFlow();
-		Object obj = executionFlow.getAttributes().get(name);
-		log.info("Scoped object "+obj);
+
+		if (log.isTraceEnabled())
+			log.info("Getting scoped bean " + name);
+		ExecutionFlow executionFlow = ExecutionContext.getCurrentFlow();
+		// returns cached instance
+		if (executionFlow.getScopedObjects().containsKey(name)) {
+			Object obj = executionFlow.getScopedObjects().get(name);
+			if (log.isTraceEnabled())
+				log.info("Return cached scoped object " + obj);
+			return obj;
+		}
+		// creates instance
+		Object obj = objectFactory.getObject();
+		if (obj instanceof ExecutionFlow) {
+			// add to itself (it is not yet the current flow)
+			((ExecutionFlow) obj).getScopedObjects().put(name, obj);
+			if (log.isTraceEnabled())
+				log.info("Cached flow object " + obj + " in itself");
+		} else {
+			executionFlow.getScopedObjects().put(name, obj);
+			if (log.isTraceEnabled())
+				log.info("Created regular scoped object " + obj);
+		}
 		return obj;
 	}
 
 	public String getConversationId() {
-		ExecutionFlow executionFlow = SimpleExecutionFlow.getCurrentExecutionFlow();
+		ExecutionFlow executionFlow = ExecutionContext.getCurrentFlow();
 		return executionFlow.getUuid();
 	}
 
 	public void registerDestructionCallback(String name, Runnable callback) {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException();
 	}
 
 	public Object remove(String name) {
-		// TODO Auto-generated method stub
-		return null;
+		log.debug("Remove object " + name);
+		throw new UnsupportedOperationException();
 	}
 
 }

@@ -10,26 +10,31 @@ import org.apache.commons.lang.math.RandomUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.process.Executable;
 import org.argeo.slc.test.ExecutableTestRun;
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.validation.MapBindingResult;
 
-public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean {
-	private static ThreadLocal<ExecutionFlow> executionFlow = new ThreadLocal<ExecutionFlow>();
+public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
+		BeanNameAware {
+	// private static ThreadLocal<ExecutionFlow> executionFlow = new
+	// ThreadLocal<ExecutionFlow>();
 
-	private ExecutionSpec executionSpec;
+	private ExecutionSpec executionSpec = new SimpleExecutionSpec();
+	private String name = null;
 	private Map<String, Object> attributes = new HashMap<String, Object>();
+	private Map<String, Object> scopedObjects = new HashMap<String, Object>();
 	private List<Executable> executables = new ArrayList<Executable>();
 
 	private final String uuid = UUID.randomUUID().toString();
 
 	public void execute() {
 		try {
-			executionFlow.set(this);
+			// ExecutionContext.enterFlow(this);
 			for (Executable executable : executables) {
 				executable.execute();
 			}
 		} finally {
-			executionFlow.set(null);
+			// ExecutionContext.leaveFlow(this);
 		}
 	}
 
@@ -67,6 +72,10 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean {
 					+ errors.toString());
 	}
 
+	public void setBeanName(String name) {
+		this.name = name;
+	}
+
 	public void setExecutables(List<Executable> executables) {
 		this.executables = executables;
 	}
@@ -79,10 +88,6 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean {
 		this.attributes = attributes;
 	}
 
-	public static ExecutionFlow getCurrentExecutionFlow() {
-		return executionFlow.get();
-	}
-
 	public Map<String, Object> getAttributes() {
 		return attributes;
 	}
@@ -91,4 +96,16 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean {
 		return uuid;
 	}
 
+	public Map<String, Object> getScopedObjects() {
+		return scopedObjects;
+	}
+
+	public ExecutionSpec getExecutionSpec() {
+		return executionSpec;
+	}
+
+	public String toString() {
+		return new StringBuffer("Flow ").append(name).append(" [#")
+				.append(uuid).append(']').toString();
+	}
 }

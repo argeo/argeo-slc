@@ -14,8 +14,7 @@ public class ExecutionTargetSource implements TargetSource {
 	public Object getTarget() throws Exception {
 		if (log.isTraceEnabled())
 			log.trace("Getting object " + name);
-		ExecutionFlow executionFlow = SimpleExecutionFlow
-				.getCurrentExecutionFlow();
+		ExecutionFlow executionFlow = ExecutionContext.getCurrentFlow();
 		Object obj = executionFlow.getAttributes().get(name);
 		if (log.isTraceEnabled())
 			log.trace("Target object " + obj);
