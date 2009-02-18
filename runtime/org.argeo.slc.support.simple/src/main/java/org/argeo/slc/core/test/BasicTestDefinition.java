@@ -27,7 +27,7 @@ public class BasicTestDefinition extends TreeSRelatedHelper implements
 				} else {
 					result.addResultPart(new SimpleResultPart(
 							TestStatus.FAILED, "Expected "
-									+ testData.getExpected() + " but reched "
+									+ testData.getExpected() + " but reached "
 									+ testData.getReached()));
 				}
 			} catch (Exception e) {
