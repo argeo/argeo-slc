@@ -3,6 +3,7 @@ package org.argeo.slc.core.test;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.context.ContextUtils;
+import org.argeo.slc.test.IncompatibleTestDataException;
 import org.argeo.slc.test.TestData;
 import org.argeo.slc.test.TestDefinition;
 import org.argeo.slc.test.TestResult;
@@ -38,7 +39,7 @@ public class BasicTestDefinition extends TreeSRelatedHelper implements
 			ContextUtils.compareReachedExpected((ContextAware) testData,
 					testRun.getTestResult(), this);
 		} else {
-			throw new SlcException("No test data defined.");
+			throw new IncompatibleTestDataException(testRun);
 		}
 	}
 }
