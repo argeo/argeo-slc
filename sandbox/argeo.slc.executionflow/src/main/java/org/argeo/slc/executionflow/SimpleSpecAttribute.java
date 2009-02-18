@@ -1,13 +1,13 @@
 package org.argeo.slc.executionflow;
 
-public class SimpleSpecAttribute<T> implements ExecutionSpecAttribute<T> {
-	 private T value = null;
+public class SimpleSpecAttribute implements ExecutionSpecAttribute {
+	 private Object value = null;
 
-	public T getValue() {
+	public Object getValue() {
 		return value;
 	}
 	 
-	public void setValue(T value){
+	public void setValue(Object value){
 		this.value = value;
 	}
 }

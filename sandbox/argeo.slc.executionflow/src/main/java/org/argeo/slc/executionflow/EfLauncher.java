@@ -32,6 +32,7 @@ public class EfLauncher {
 		FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(
 				script);
 		// context.start();
+		log.info("Context initialized");
 
 		ExecutionFlow main = (ExecutionFlow)context.getBean("main");
 		main.execute();

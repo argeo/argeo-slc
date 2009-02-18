@@ -17,7 +17,7 @@ public class SimpleExecutionSpec implements ExecutionSpec {
 	}
 
 	public Object createRef(String name) {
-		RefSpecAttribute<Object> refSpecAttribute = (RefSpecAttribute<Object>) attributes
+		RefSpecAttribute refSpecAttribute = (RefSpecAttribute) attributes
 				.get(name);
 		Class targetClass = refSpecAttribute.getTargetClass();
 		ExecutionTargetSource targetSource = new ExecutionTargetSource();

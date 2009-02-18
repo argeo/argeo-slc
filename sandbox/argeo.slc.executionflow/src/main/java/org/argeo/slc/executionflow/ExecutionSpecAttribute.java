@@ -1,5 +1,5 @@
 package org.argeo.slc.executionflow;
 
-public interface ExecutionSpecAttribute<T> {
-	public T getValue();
+public interface ExecutionSpecAttribute {
+	public Object getValue();
 }

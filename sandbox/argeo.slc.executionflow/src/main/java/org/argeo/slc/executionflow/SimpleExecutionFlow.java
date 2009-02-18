@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.math.RandomUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.process.Executable;
 import org.argeo.slc.test.ExecutableTestRun;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.validation.MapBindingResult;
 
 public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean {
 	private static ThreadLocal<ExecutionFlow> executionFlow = new ThreadLocal<ExecutionFlow>();
@@ -17,7 +19,7 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean {
 	private ExecutionSpec executionSpec;
 	private Map<String, Object> attributes = new HashMap<String, Object>();
 	private List<Executable> executables = new ArrayList<Executable>();
-	
+
 	private final String uuid = UUID.randomUUID().toString();
 
 	public void execute() {
@@ -32,8 +34,37 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean {
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
+		// Validate execution specs
+		if (executionSpec == null)
+			return;
 
+		MapBindingResult errors = new MapBindingResult(attributes, "execution#"
+				+ getUuid());
+		for (String key : executionSpec.getAttributes().keySet()) {
+			ExecutionSpecAttribute executionSpecAttr = executionSpec
+					.getAttributes().get(key);
+			if (!attributes.containsKey(key)) {
+				Object defaultValue = executionSpecAttr.getValue();
+				if (defaultValue == null)
+					errors.rejectValue(key, "Not set and no default value");
+				else
+					attributes.put(key, defaultValue);
+			} else {// contains key
+				Object obj = attributes.get(key);
+				if (executionSpecAttr instanceof RefSpecAttribute) {
+					RefSpecAttribute rsa = (RefSpecAttribute) executionSpecAttr;
+					Class targetClass = rsa.getTargetClass();
+					if (!targetClass.isAssignableFrom(obj.getClass()))
+						errors.rejectValue(key,
+								"Not compatible with target class "
+										+ targetClass);
+				}
+			}
+		}
+
+		if (errors.hasErrors())
+			throw new SlcException("Could not prepare execution flow: "
+					+ errors.toString());
 	}
 
 	public void setExecutables(List<Executable> executables) {

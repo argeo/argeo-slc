@@ -8,12 +8,7 @@
 	<bean id="basic.001" parent="basic.executionFlowTemplate">
 		<property name="attributes">
 			<map>
-				<entry key="testData1">
-					<bean class="org.argeo.slc.core.test.BasicTestData">
-						<property name="expected" value="toto" />
-						<property name="reached" value="toto" />
-					</bean>
-				</entry>
+				<entry key="testData1" value-ref="basic.001.testData"/>
 				<entry key="testData2">
 					<bean class="org.argeo.slc.core.test.BasicTestData">
 						<property name="expected" value="tata" />
@@ -22,6 +17,14 @@
 				</entry>
 			</map>
 		</property>
+	</bean>
+
+	<bean id="basic.001.testData" class="org.argeo.slc.core.test.BasicTestData">
+		<property name="expected" value="toto" />
+		<property name="reached" value="toto" />
+	</bean>
+
+	<bean id="basic.001.testData2" class="org.argeo.slc.core.test.context.DefaultContextTestData">
 	</bean>
 
 </beans>
