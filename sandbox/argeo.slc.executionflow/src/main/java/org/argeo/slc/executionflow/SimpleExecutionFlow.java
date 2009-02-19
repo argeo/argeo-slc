@@ -16,25 +16,16 @@ import org.springframework.validation.MapBindingResult;
 
 public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 		BeanNameAware {
-	// private static ThreadLocal<ExecutionFlow> executionFlow = new
-	// ThreadLocal<ExecutionFlow>();
-
 	private ExecutionSpec executionSpec = new SimpleExecutionSpec();
 	private String name = null;
 	private Map<String, Object> attributes = new HashMap<String, Object>();
-	private Map<String, Object> scopedObjects = new HashMap<String, Object>();
 	private List<Executable> executables = new ArrayList<Executable>();
 
 	private final String uuid = UUID.randomUUID().toString();
 
 	public void execute() {
-		try {
-			// ExecutionContext.enterFlow(this);
-			for (Executable executable : executables) {
-				executable.execute();
-			}
-		} finally {
-			// ExecutionContext.leaveFlow(this);
+		for (Executable executable : executables) {
+			executable.execute();
 		}
 	}
 
@@ -59,10 +50,11 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 				if (executionSpecAttr instanceof RefSpecAttribute) {
 					RefSpecAttribute rsa = (RefSpecAttribute) executionSpecAttr;
 					Class targetClass = rsa.getTargetClass();
-					if (!targetClass.isAssignableFrom(obj.getClass()))
-						errors.rejectValue(key,
-								"Not compatible with target class "
-										+ targetClass);
+					if (!targetClass.isAssignableFrom(obj.getClass())) {
+						errors.reject(key
+								+ " not compatible with target class "
+								+ targetClass);
+					}
 				}
 			}
 		}
@@ -96,16 +88,12 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 		return uuid;
 	}
 
-	public Map<String, Object> getScopedObjects() {
-		return scopedObjects;
-	}
-
 	public ExecutionSpec getExecutionSpec() {
 		return executionSpec;
 	}
 
 	public String toString() {
-		return new StringBuffer("Flow ").append(name).append(" [#")
-				.append(uuid).append(']').toString();
+		return new StringBuffer("Flow ").append(name).toString();// .append(" [#")
+		// .append(uuid).append(']').toString();
 	}
 }

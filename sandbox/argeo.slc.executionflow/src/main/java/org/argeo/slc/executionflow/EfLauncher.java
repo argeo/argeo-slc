@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.logging.Log4jUtils;
+import org.argeo.slc.process.SlcExecution;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -18,43 +19,17 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionParser;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 
-public class EfLauncher {
-	private static Log log;
+public class EfLauncher implements ApplicationListener {
+	private final Log log;
 
-	public static void main(String[] args) {
-		init();
+	private boolean running = false;
 
-		String script = "src/slc/conf/main.xml";
-		//describe(script);
-
-		FileSystemXmlApplicationContext context = new FileSystemXmlApplicationContext(
-				script);
-		// context.start();
-		log.info("Context initialized");
-
-		ExecutionFlow main = (ExecutionFlow)context.getBean("main");
-		main.execute();
-		/*
-		Map<String, ExecutionFlow> eFlows = context
-				.getBeansOfType(ExecutionFlow.class);
-		for (String name : eFlows.keySet()) {
-			log.info("##\n## Execute ExecutionFlow " + name);
-			ExecutionFlow eFlow = eFlows.get(name);
-			eFlow.execute();
-			
-		}*/
-	}
-	
-	private static void describe(String script){
-		SimpleBeanDefinitionRegistry registry = new SimpleBeanDefinitionRegistry();
-		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
-		reader.loadBeanDefinitions("file:" + script);
-		new ConsoleContextDescriber().describeContext(registry);
-	}
-
-	private static void init() {
+	public EfLauncher() {
 		Properties userProperties = new Properties();
 		FileInputStream in = null;
 		try {
@@ -77,7 +52,80 @@ public class EfLauncher {
 
 		Log4jUtils.initLog4j(null);
 		log = LogFactory.getLog(EfLauncher.class);
+	}
+
+	public void launch(String script) {
+		// describe(script);
+
+		GenericApplicationContext context = new GenericApplicationContext();
+		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(context);
+		reader.loadBeanDefinitions(script);
+		// FileSystemXmlApplicationContext context = new
+		// FileSystemXmlApplicationContext(
+		// script);
+		context.addApplicationListener(this);
+		context.refresh();
+		context.start();
+		log.debug("Context initialized");
+
+		SlcExecution slcExecution = new SlcExecution();
+		slcExecution.getAttributes().put("slc.flows", "main");
+
+		running = true;
+		context.publishEvent(new NewExecutionEvent(this, slcExecution));
+
+		synchronized (this) {
+			while (running)
+				try {
+					wait();
+				} catch (InterruptedException e) {
+					// silent
+				}
+		}
+	}
+
+	public synchronized boolean isRunning() {
+		return running;
+	}
+
+	public synchronized void setRunning(boolean running) {
+		this.running = running;
+	}
+
+	public void onApplicationEvent(ApplicationEvent event) {
+		if (event instanceof ExecutionFinishedEvent) {
+			ExecutionContext executionContext = ((ExecutionFinishedEvent) event)
+					.getExecutionContext();
+			log.debug("Execution " + executionContext.getUuid()
+					+ " finished, stopping launcher...");
+			synchronized (this) {
+				running = false;
+				notifyAll();
+			}
+		}
 
 	}
 
+	public static void main(String[] args) {
+		String script = "file:src/slc/conf/main.xml";
+		new EfLauncher().launch(script);
+
+		// ExecutionFlow main = (ExecutionFlow)context.getBean("main");
+		// main.execute();
+		/*
+		 * Map<String, ExecutionFlow> eFlows = context
+		 * .getBeansOfType(ExecutionFlow.class); for (String name :
+		 * eFlows.keySet()) { log.info("##\n## Execute ExecutionFlow " + name);
+		 * ExecutionFlow eFlow = eFlows.get(name); eFlow.execute();
+		 * 
+		 * }
+		 */
+	}
+
+	private static void describe(String script) {
+		SimpleBeanDefinitionRegistry registry = new SimpleBeanDefinitionRegistry();
+		XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
+		reader.loadBeanDefinitions(script);
+		new ConsoleContextDescriber().describeContext(registry);
+	}
 }

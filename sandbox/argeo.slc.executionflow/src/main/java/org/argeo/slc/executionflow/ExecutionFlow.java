@@ -8,5 +8,4 @@ public interface ExecutionFlow extends Executable{
 	public Map<String, Object> getAttributes();
 	public ExecutionSpec getExecutionSpec();
 	public String getUuid();
-	public Map<String, Object> getScopedObjects();
 }

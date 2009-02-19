@@ -28,9 +28,10 @@ public class ExecutionParameterPostProcessor extends
 	public PropertyValues postProcessPropertyValues(PropertyValues pvs,
 			PropertyDescriptor[] pds, Object bean, String beanName)
 			throws BeansException {
-		ExecutionFlow currentFlow = ExecutionContext.getCurrentFlow();
-		if (currentFlow == null)
+		if (!ExecutionContext.isExecuting())
 			return pvs;
+
+		ExecutionFlow currentFlow = ExecutionContext.getCurrentFlow();
 
 		Properties props = new Properties();
 		Map<String, Object> attributes = currentFlow.getAttributes();
@@ -45,8 +46,8 @@ public class ExecutionParameterPostProcessor extends
 							+ " is not set in " + currentFlow);
 
 				props.setProperty(key, attributes.get(key).toString());
-//				if (log.isTraceEnabled())
-//					log.trace("Use attribute " + key);
+				// if (log.isTraceEnabled())
+				// log.trace("Use attribute " + key);
 			}
 		}
 		CustomPpc ppc = new CustomPpc(props);
@@ -59,14 +60,14 @@ public class ExecutionParameterPostProcessor extends
 				tsv.setValue(convertedValue);
 				if (log.isTraceEnabled()) {
 					if (!originalValue.equals(convertedValue))
-						log.trace("Converted " + beanName + "[" + pv.getName()
-								+ "]: " + originalValue + " to "
-								+ convertedValue);
+						log.trace("Converted field '" + pv.getName() + "': '"
+								+ originalValue + "' to '" + convertedValue
+								+ "' in bean " + beanName);
 				}
 			} else {
-//				if (log.isTraceEnabled())
-//					log.trace(beanName + "[" + pv.getName() + "]: "
-//							+ pv.getValue().getClass());
+				// if (log.isTraceEnabled())
+				// log.trace(beanName + "[" + pv.getName() + "]: "
+				// + pv.getValue().getClass());
 			}
 		}
 
@@ -97,7 +98,8 @@ public class ExecutionParameterPostProcessor extends
 		}
 
 		public String process(String strVal) {
-			String value = parseStringValue(strVal, this.props, new HashSet<String>());
+			String value = parseStringValue(strVal, this.props,
+					new HashSet<String>());
 			return (value.equals(nullValue) ? null : value);
 		}
 	}

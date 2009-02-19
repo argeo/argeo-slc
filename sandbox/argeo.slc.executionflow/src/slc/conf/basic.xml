@@ -33,6 +33,7 @@
 		<property name="executionSpec" ref="basic.executionSpec" />
 		<property name="executables">
 			<list>
+				<ref bean="echo1" />
 				<bean parent="testRun">
 					<property name="testDefinition" ref="testDef" />
 					<property name="testData">
@@ -43,14 +44,14 @@
 				</bean>
 				<bean parent="testRun">
 					<property name="testDefinition" ref="testDef" />
-					<property name="testData">
-						<bean parent="basic.ref">
-							<constructor-arg value="testData2" />
-						</bean>
-					</property>
+					<property name="testData" ref="ref1" />
 				</bean>
 			</list>
 		</property>
+	</bean>
+
+	<bean id="ref1" parent="basic.ref" scope="prototype">
+		<constructor-arg value="testData2" />
 	</bean>
 
 	<bean id="testDef" class="org.argeo.slc.core.test.BasicTestDefinition"

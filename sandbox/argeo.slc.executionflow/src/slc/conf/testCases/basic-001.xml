@@ -9,15 +9,15 @@
 
 	<import resource="../basic.xml" />
 
-	<bean id="basic.001" parent="basic.executionFlowTemplate" scope="execution">
-		<aop:scoped-proxy />
+	<bean id="basic.001" parent="basic.executionFlowTemplate">
 		<property name="attributes">
 			<map>
 				<entry key="testData1" value-ref="basic.001.testData" />
 				<entry key="testData2">
-					<bean class="org.argeo.slc.core.test.BasicTestData">
-						<property name="expected" value="tata" />
-						<property name="reached" value="tata" />
+					<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<aop:scoped-proxy />
+						<property name="expected" value="tata101" />
+						<property name="reached" value="tata@{testedComponentId}" />
 					</bean>
 				</entry>
 			</map>
