@@ -7,9 +7,9 @@
 		<version>0.11.3-SNAPSHOT</version>
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
-	<groupId>org.argeo.slc.sandbox</groupId>
-	<artifactId>org.argeo.slc.sandbox.executionflow</artifactId>
-	<name>SLC Sandbox Execution Flow</name>
+	<groupId>org.argeo.slc.runtime</groupId>
+	<artifactId>org.argeo.slc.sandbox.execution</artifactId>
+	<name>SLC Execution</name>
 	<packaging>jar</packaging>
 	<properties></properties>
 	<build>
