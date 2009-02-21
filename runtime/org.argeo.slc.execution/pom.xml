@@ -8,7 +8,7 @@
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
-	<artifactId>org.argeo.slc.sandbox.execution</artifactId>
+	<artifactId>org.argeo.slc.execution</artifactId>
 	<name>SLC Execution</name>
 	<packaging>jar</packaging>
 	<properties></properties>
