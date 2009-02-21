@@ -31,25 +31,27 @@ public class ExecutionParameterPostProcessor extends
 		if (!ExecutionContext.isExecuting())
 			return pvs;
 
-		ExecutionFlow currentFlow = ExecutionContext.getCurrentFlow();
+//		ExecutionFlow currentFlow = ExecutionContext.getCurrentFlow();
+//
+//		Properties props = new Properties();
+//		Map<String, Object> attributes = currentFlow.getAttributes();
+//		Map<String, ExecutionSpecAttribute> specAttributes = currentFlow
+//				.getExecutionSpec().getAttributes();
+//
+//		for (String key : specAttributes.keySet()) {
+//			ExecutionSpecAttribute obj = specAttributes.get(key);
+//			if (!(obj instanceof RefSpecAttribute)) {
+//				if (!attributes.containsKey(key))
+//					throw new SlcException("Specified attribute " + key
+//							+ " is not set in " + currentFlow);
+//
+//				props.setProperty(key, attributes.get(key).toString());
+//				// if (log.isTraceEnabled())
+//				// log.trace("Use attribute " + key);
+//			}
+//		}
 
 		Properties props = new Properties();
-		Map<String, Object> attributes = currentFlow.getAttributes();
-		Map<String, ExecutionSpecAttribute> specAttributes = currentFlow
-				.getExecutionSpec().getAttributes();
-
-		for (String key : specAttributes.keySet()) {
-			ExecutionSpecAttribute obj = specAttributes.get(key);
-			if (!(obj instanceof RefSpecAttribute)) {
-				if (!attributes.containsKey(key))
-					throw new SlcException("Specified attribute " + key
-							+ " is not set in " + currentFlow);
-
-				props.setProperty(key, attributes.get(key).toString());
-				// if (log.isTraceEnabled())
-				// log.trace("Use attribute " + key);
-			}
-		}
 		CustomPpc ppc = new CustomPpc(props);
 
 		for (PropertyValue pv : pvs.getPropertyValues()) {
@@ -102,5 +104,17 @@ public class ExecutionParameterPostProcessor extends
 					new HashSet<String>());
 			return (value.equals(nullValue) ? null : value);
 		}
+
+		@Override
+		protected String resolvePlaceholder(String placeholder, Properties props) {
+			if (ExecutionContext.isExecuting())
+				return ExecutionContext.getVariable(placeholder).toString();
+			else if (SimpleExecutionSpec.isInFlowInitialization())
+				return SimpleExecutionSpec.getInitializingFlowParameter(
+						placeholder).toString();
+			else
+				return super.resolvePlaceholder(placeholder, props);
+		}
+
 	}
 }

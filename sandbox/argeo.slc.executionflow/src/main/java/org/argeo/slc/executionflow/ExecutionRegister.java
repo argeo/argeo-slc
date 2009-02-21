@@ -32,15 +32,15 @@ public class ExecutionRegister implements InitializingBean {
 		log.debug("Register: " + executionFlows.size() + " flows");
 		for (ExecutionFlow flow : executionFlows) {
 			log.debug(flow);
-			Map<String, Object> attributes = flow.getAttributes();
-			log.debug("Specified parameters: ");
-			for (String key : flow.getExecutionSpec().getAttributes().keySet()) {
-				log.debug(" "
-						+ key
-						+ "\t"
-						+ (attributes.containsKey(key) ? "SPECIFIED"
-								: "TO SPECIFY"));
-			}
+//			Map<String, Object> attributes = flow.getAttributes();
+//			log.debug("Specified parameters: ");
+//			for (String key : flow.getExecutionSpec().getAttributes().keySet()) {
+//				log.debug(" "
+//						+ key
+//						+ "\t"
+//						+ (attributes.containsKey(key) ? "SPECIFIED"
+//								: "TO SPECIFY"));
+//			}
 		}
 
 	}

@@ -1,6 +1,6 @@
 package org.argeo.slc.executionflow;
 
-public class RefSpecAttribute implements ExecutionSpecAttribute {
+public class RefSpecAttribute  extends AbstractSpecAttribute {
 	private Class targetClass;
 	private Object value = null;
 

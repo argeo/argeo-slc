@@ -18,7 +18,7 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 		BeanNameAware {
 	private ExecutionSpec executionSpec = new SimpleExecutionSpec();
 	private String name = null;
-	private Map<String, Object> attributes = new HashMap<String, Object>();
+	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<Executable> executables = new ArrayList<Executable>();
 
 	private final String uuid = UUID.randomUUID().toString();
@@ -34,19 +34,19 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 		if (executionSpec == null)
 			return;
 
-		MapBindingResult errors = new MapBindingResult(attributes, "execution#"
+		MapBindingResult errors = new MapBindingResult(parameters, "execution#"
 				+ getUuid());
 		for (String key : executionSpec.getAttributes().keySet()) {
 			ExecutionSpecAttribute executionSpecAttr = executionSpec
 					.getAttributes().get(key);
-			if (!attributes.containsKey(key)) {
+			if (!parameters.containsKey(key)) {
 				Object defaultValue = executionSpecAttr.getValue();
 				if (defaultValue == null)
 					errors.rejectValue(key, "Not set and no default value");
 				else
-					attributes.put(key, defaultValue);
+					parameters.put(key, defaultValue);
 			} else {// contains key
-				Object obj = attributes.get(key);
+				Object obj = parameters.get(key);
 				if (executionSpecAttr instanceof RefSpecAttribute) {
 					RefSpecAttribute rsa = (RefSpecAttribute) executionSpecAttr;
 					Class targetClass = rsa.getTargetClass();
@@ -76,12 +76,8 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 		this.executionSpec = executionSpec;
 	}
 
-	public void setAttributes(Map<String, Object> attributes) {
-		this.attributes = attributes;
-	}
-
-	public Map<String, Object> getAttributes() {
-		return attributes;
+	public void setParameters(Map<String, Object> attributes) {
+		this.parameters = attributes;
 	}
 
 	public String getUuid() {
@@ -90,6 +86,25 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	public ExecutionSpec getExecutionSpec() {
 		return executionSpec;
+	}
+
+	public Object getParameter(String name) {
+		if (parameters.containsKey(name)) {
+			return parameters.get(name);
+		} else {
+			if (executionSpec.getAttributes().containsKey(name)) {
+				ExecutionSpecAttribute esa = executionSpec.getAttributes().get(
+						name);
+				if (esa.getValue() != null)
+					return esa.getValue();
+			} else {
+				throw new SlcException("Key " + name
+						+ " is not define in the specifications of "
+						+ toString());
+			}
+		}
+		throw new SlcException("Key " + name + " is not set as parameter in "
+				+ toString());
 	}
 
 	public String toString() {

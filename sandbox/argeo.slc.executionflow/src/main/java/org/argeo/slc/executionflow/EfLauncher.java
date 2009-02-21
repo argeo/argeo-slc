@@ -109,17 +109,6 @@ public class EfLauncher implements ApplicationListener {
 	public static void main(String[] args) {
 		String script = "file:src/slc/conf/main.xml";
 		new EfLauncher().launch(script);
-
-		// ExecutionFlow main = (ExecutionFlow)context.getBean("main");
-		// main.execute();
-		/*
-		 * Map<String, ExecutionFlow> eFlows = context
-		 * .getBeansOfType(ExecutionFlow.class); for (String name :
-		 * eFlows.keySet()) { log.info("##\n## Execute ExecutionFlow " + name);
-		 * ExecutionFlow eFlow = eFlows.get(name); eFlow.execute();
-		 * 
-		 * }
-		 */
 	}
 
 	private static void describe(String script) {

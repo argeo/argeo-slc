@@ -61,4 +61,14 @@ public class SimpleExecutionSpec implements ExecutionSpec, BeanNameAware {
 			throw new SlcException("Current flow is " + flow);
 		initializingFlow.set(null);
 	}
+
+	public static Object getInitializingFlowParameter(String key) {
+		if (initializingFlow.get() == null)
+			throw new SlcException("No initializing flow available.");
+		return initializingFlow.get().getParameter(key);
+	}
+
+	public static Boolean isInFlowInitialization() {
+		return initializingFlow.get() != null;
+	}
 }

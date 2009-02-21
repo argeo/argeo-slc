@@ -7,7 +7,7 @@
 	<import resource="../basic.xml" />
 
 	<bean id="basic.002" parent="basic.executionFlowTemplate">
-		<property name="attributes">
+		<property name="parameters">
 			<map>
 				<entry key="testData1">
 					<bean class="org.argeo.slc.core.test.BasicTestData">

@@ -5,7 +5,7 @@ import java.util.Map;
 import org.argeo.slc.process.Executable;
 
 public interface ExecutionFlow extends Executable{
-	public Map<String, Object> getAttributes();
+	public Object getParameter(String name);
 	public ExecutionSpec getExecutionSpec();
 	public String getUuid();
 }

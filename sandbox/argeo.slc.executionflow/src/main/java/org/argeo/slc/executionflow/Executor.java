@@ -49,14 +49,16 @@ public class Executor implements ApplicationListener, ApplicationContextAware {
 					.putAll(slcExecution.getAttributes());
 
 			try {
-				log
-						.info("Start execution #"
-								+ ExecutionContext.getExecutionUuid());
+				log.info("Start execution #"
+						+ ExecutionContext.getExecutionUuid());
 				String executionBean = slcExecution.getAttributes().get(
 						"slc.flows");
 				ExecutionFlow main = (ExecutionFlow) applicationContext
 						.getBean(executionBean);
 				main.execute();
+			} catch (Exception e) {
+				log.error("Execution " + executionContext.getUuid()
+						+ " failed.", e);
 			} finally {
 				applicationContext.publishEvent(new ExecutionFinishedEvent(
 						this, executionContext));

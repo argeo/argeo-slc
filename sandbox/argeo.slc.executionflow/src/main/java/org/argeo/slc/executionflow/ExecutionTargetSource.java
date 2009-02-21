@@ -1,10 +1,7 @@
 package org.argeo.slc.executionflow;
 
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.SlcException;
 import org.springframework.aop.TargetSource;
 
 public class ExecutionTargetSource implements TargetSource {
@@ -25,11 +22,7 @@ public class ExecutionTargetSource implements TargetSource {
 	public Object getTarget() throws Exception {
 		if (log.isTraceEnabled())
 			log.trace("Getting object " + name);
-		Map<String, Object> attributes = executionFlow.getAttributes();
-		if (!attributes.containsKey(name))
-			throw new SlcException("Key " + name + " is not registered in "
-					+ executionFlow);
-		Object obj = attributes.get(name);
+		Object obj = executionFlow.getParameter(name);
 		if (log.isTraceEnabled())
 			log.trace("Target object " + obj);
 		return obj;

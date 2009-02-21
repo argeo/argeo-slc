@@ -46,23 +46,59 @@ public class ExecutionContext {
 		executionContext.set(context);
 	}
 
-	// public static ExecutionFlow getCurrentFlow() {
-	// if (executionContext.get() == null)
-	// return null;
-	// return executionContext.get().stack.peek();
-	// }
-
 	public static void enterFlow(ExecutionFlow executionFlow) {
 		Stack<ExecutionFlowRuntime> stack = executionContext.get().stack;
-		stack.push(new ExecutionFlowRuntime(executionFlow));
+
+		ExecutionFlowRuntime runtime = new ExecutionFlowRuntime(executionFlow);
+		stack.push(runtime);
+
 		if (log.isTraceEnabled())
 			log.debug(depthSpaces(stack.size()) + "=> " + executionFlow + " #"
 					+ getCurrentStackUuid() + ", depth=" + stack.size());
+
+		Map<String, ExecutionSpecAttribute> specAttrs = executionFlow
+				.getExecutionSpec().getAttributes();
+		for (String key : specAttrs.keySet()) {
+			ExecutionSpecAttribute esa = specAttrs.get(key);
+			if (esa.getIsParameter()) {
+				runtime.getLocalVariables().put(key,
+						executionFlow.getParameter(key));
+				if (log.isTraceEnabled())
+					log.trace(depthSpaces(stack.size()) + "Add '" + key
+							+ "' as local variable.");
+			}
+		}
+
+	}
+
+	public static Object getVariable(String key) {
+		Object obj = getWithCheck().findVariable(key);
+		if (obj == null)
+			throw new SlcException("Variable '" + key + "' not found.");
+		return obj;
+	}
+
+	protected Object findVariable(String key) {
+		Object obj = null;
+		for (int i = stack.size() - 1; i >= 0; i--) {
+			if (stack.get(i).getLocalVariables().containsKey(key)) {
+				obj = stack.get(i).getLocalVariables().get(key);
+				break;
+			}
+		}
+
+		// Look into global execution variables
+		if (obj == null) {
+			if (variables.containsKey(key))
+				obj = variables.get(key);
+		}
+
+		return obj;
 	}
 
 	private static String depthSpaces(int depth) {
 		StringBuffer buf = new StringBuffer(depth * 2);
-		for (int i = 0; i < depth - 1; i++)
+		for (int i = 0; i < depth; i++)
 			buf.append("  ");
 		return buf.toString();
 	}
@@ -72,29 +108,31 @@ public class ExecutionContext {
 		if (log.isTraceEnabled())
 			log.debug(depthSpaces(stack.size()) + "<= " + executionFlow + " #"
 					+ getCurrentStackUuid() + ", depth=" + stack.size());
-		ExecutionFlowRuntime leftEf = stack.pop();
-		leftEf.getScopedObjects().clear();
 
+		ExecutionFlowRuntime leftEf = stack.pop();
 		if (!leftEf.getExecutionFlow().getUuid()
-				.equals(executionFlow.getUuid())) {
+				.equals(executionFlow.getUuid()))
 			throw new SlcException("Asked to leave " + executionFlow
 					+ " but last is " + leftEf);
-		}
+
+		leftEf.getScopedObjects().clear();
+		leftEf.getLocalVariables().clear();
+
 	}
 
 	public static String getCurrentStackUuid() {
 		return getWithCheck().stack.peek().uuid;
 	}
 
-	public static ExecutionFlow getCurrentFlow() {
-		return getWithCheck().stack.peek().executionFlow;
-	}
+	// public static ExecutionFlow getCurrentFlow() {
+	// return getWithCheck().stack.peek().executionFlow;
+	// }
 
 	public static Boolean isExecuting() {
 		return executionContext.get() != null;
 	}
 
-	private static ExecutionContext getWithCheck() {
+	protected static ExecutionContext getWithCheck() {
 		if (executionContext.get() == null)
 			throw new SlcException("No execution context");
 		return executionContext.get();
@@ -130,6 +168,7 @@ public class ExecutionContext {
 	private static class ExecutionFlowRuntime {
 		private final ExecutionFlow executionFlow;
 		private final Map<String, Object> scopedObjects = new HashMap<String, Object>();
+		private final Map<String, Object> localVariables = new HashMap<String, Object>();
 		private final String uuid = UUID.randomUUID().toString();
 
 		public ExecutionFlowRuntime(ExecutionFlow executionFlow) {
@@ -146,6 +185,10 @@ public class ExecutionContext {
 
 		public String getUuid() {
 			return uuid;
+		}
+
+		public Map<String, Object> getLocalVariables() {
+			return localVariables;
 		}
 
 	}
