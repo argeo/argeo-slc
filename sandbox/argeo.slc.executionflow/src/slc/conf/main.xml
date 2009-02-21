@@ -11,9 +11,9 @@
 	<import resource="testCases/basic-001.xml" />
 	<import resource="testCases/basic-002.xml" />
 
-	<bean id="main" class="org.argeo.slc.executionflow.SimpleExecutionFlow">
+	<bean id="main" class="org.argeo.slc.execution.SimpleExecutionFlow">
 		<property name="executionSpec">
-			<bean class="org.argeo.slc.executionflow.SimpleExecutionSpec">
+			<bean class="org.argeo.slc.execution.SimpleExecutionSpec">
 				<property name="attributes">
 					<map>
 						<entry key="testKey">
@@ -43,14 +43,14 @@
 	</bean>
 
 	<context:annotation-config />
-	<bean class="org.argeo.slc.executionflow.ExecutionRegister" />
+	<bean class="org.argeo.slc.execution.ExecutionRegister" />
 
 
 	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
 		<property name="scopes">
 			<map>
 				<entry key="execution">
-					<bean class="org.argeo.slc.executionflow.ExecutionScope" />
+					<bean class="org.argeo.slc.execution.ExecutionScope" />
 				</entry>
 			</map>
 		</property>
@@ -58,11 +58,11 @@
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
-	<bean class="org.argeo.slc.executionflow.ExecutionParameterPostProcessor" />
-	<bean class="org.argeo.slc.executionflow.InstantiationPostProcessor" />
-	<bean class="org.argeo.slc.executionflow.Executor" />
+	<bean class="org.argeo.slc.execution.ExecutionParameterPostProcessor" />
+	<bean class="org.argeo.slc.execution.InstantiationPostProcessor" />
+	<bean class="org.argeo.slc.execution.Executor" />
 
-	<bean class="org.argeo.slc.executionflow.ExecutionAspect"></bean>
+	<bean class="org.argeo.slc.execution.ExecutionAspect"></bean>
 	<aop:aspectj-autoproxy />
 
 </beans>

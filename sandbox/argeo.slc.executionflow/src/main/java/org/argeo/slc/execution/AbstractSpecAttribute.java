@@ -1,4 +1,4 @@
-package org.argeo.slc.executionflow;
+package org.argeo.slc.execution;
 
 public abstract class AbstractSpecAttribute implements ExecutionSpecAttribute {
 	private Boolean isParameter = true;

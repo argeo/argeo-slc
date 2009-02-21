@@ -10,10 +10,10 @@
 	<import
 		resource="classpath:/org/argeo/slc/core/test/spring/applicationContext.xml" />
 
-	<bean id="specAttribute" class="org.argeo.slc.executionflow.SimpleSpecAttribute"
+	<bean id="specAttribute" class="org.argeo.slc.execution.SimpleSpecAttribute"
 		abstract="true" />
 
-	<bean id="refAttribute" class="org.argeo.slc.executionflow.RefSpecAttribute"
+	<bean id="refAttribute" class="org.argeo.slc.execution.RefSpecAttribute"
 		abstract="true" />
 
 </beans>

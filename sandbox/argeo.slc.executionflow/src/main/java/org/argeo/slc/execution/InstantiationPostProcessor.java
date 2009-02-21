@@ -1,4 +1,4 @@
-package org.argeo.slc.executionflow;
+package org.argeo.slc.execution;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -1,4 +1,4 @@
-package org.argeo.slc.executionflow;
+package org.argeo.slc.execution;
 
 import org.argeo.slc.process.SlcExecution;
 import org.springframework.context.ApplicationEvent;

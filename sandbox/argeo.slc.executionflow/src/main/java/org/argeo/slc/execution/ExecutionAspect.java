@@ -1,4 +1,4 @@
-package org.argeo.slc.executionflow;
+package org.argeo.slc.execution;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,17 +13,6 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 public class ExecutionAspect {
 	private static Log log = LogFactory.getLog(ExecutionAspect.class);
-
-	// @Around("execution(void org.argeo.slc.executionflow.ExecutionFlow.execute()) && target(org.argeo.slc.executionflow.ExecutionFlow)")
-	public void registerFlow(ProceedingJoinPoint pjp) throws Throwable {
-		try {
-			log.debug("registerFlow " + pjp.getTarget().getClass());
-			ExecutionContext.enterFlow((ExecutionFlow) pjp.getTarget());
-			pjp.proceed();
-		} finally {
-			ExecutionContext.leaveFlow((ExecutionFlow) pjp.getTarget());
-		}
-	}
 
 	@Before("flowExecution()")
 	public void beforeFlow(JoinPoint jp) throws Throwable {
@@ -42,7 +31,7 @@ public class ExecutionAspect {
 		ExecutionContext.leaveFlow(executionFlow);
 	}
 
-	@Pointcut("execution(void org.argeo.slc.executionflow.ExecutionFlow.execute())")
+	@Pointcut("execution(void org.argeo.slc.execution.ExecutionFlow.execute())")
 	public void flowExecution() {
 	}
 }

@@ -8,6 +8,11 @@
 	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
 		<config>src/slc/conf/main.xml</config>
+		<config>src/slc/conf/testCases/basic-001.xml</config>
+		<config>src/slc/conf/testCases/basic-002.xml</config>
+		<config>src/slc/conf/basic.xml</config>
+		<config>src/slc/conf/common.xml</config>
+		<config>src/slc/conf/test.xml</config>
 	</configs>
 	<configSets>
 	</configSets>

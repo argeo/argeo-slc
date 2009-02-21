@@ -9,7 +9,7 @@
 
 	<import resource="common.xml" />
 
-	<bean id="basic.executionSpec" class="org.argeo.slc.executionflow.SimpleExecutionSpec">
+	<bean id="basic.executionSpec" class="org.argeo.slc.execution.SimpleExecutionSpec">
 		<property name="attributes">
 			<map>
 				<entry key="testedComponentId">
@@ -28,7 +28,7 @@
 	<bean id="basic.ref" factory-bean="basic.executionSpec"
 		factory-method="createRef" abstract="true" />
 
-	<bean id="basic.executionFlowTemplate" class="org.argeo.slc.executionflow.SimpleExecutionFlow"
+	<bean id="basic.executionFlowTemplate" class="org.argeo.slc.execution.SimpleExecutionFlow"
 		abstract="true">
 		<property name="executionSpec" ref="basic.executionSpec" />
 		<property name="executables">

@@ -1,4 +1,4 @@
-package org.argeo.slc.executionflow;
+package org.argeo.slc.execution;
 
 public interface ExecutionSpecAttribute {
 	public Object getValue();
