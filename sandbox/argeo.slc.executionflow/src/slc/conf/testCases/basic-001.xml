@@ -7,10 +7,8 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<import resource="../basic.xml" />
-
 	<bean id="basic.001" parent="basic.executionFlowTemplate">
-		<property name="parameters">
+		<constructor-arg>
 			<map>
 				<entry key="testData1" value-ref="basic.001.testData" />
 				<entry key="testData2">
@@ -21,7 +19,7 @@
 					</bean>
 				</entry>
 			</map>
-		</property>
+		</constructor-arg>
 	</bean>
 
 	<bean id="basic.001.testData" class="org.argeo.slc.core.test.BasicTestData"

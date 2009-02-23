@@ -8,8 +8,14 @@
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
+	<import resource="common.xml" />
+
+	<import resource="basic.xml" />
 	<import resource="testCases/basic-001.xml" />
 	<import resource="testCases/basic-002.xml" />
+
+	<bean id="testLaunch" class="org.argeo.slc.execution.TestLaunch"
+		p:flowName="main" init-method="launch"/>
 
 	<bean id="main" class="org.argeo.slc.execution.SimpleExecutionFlow">
 		<property name="executionSpec">
@@ -34,7 +40,8 @@
 	</bean>
 
 	<bean id="echo1" parent="echoTemplate" scope="execution">
-		<property name="message" value="From main! @{testKey}, slc.flows=@{slc.flows}" />
+		<property name="message"
+			value="From main! @{testKey}, slc.flows=@{slc.flows}" />
 		<aop:scoped-proxy />
 	</bean>
 

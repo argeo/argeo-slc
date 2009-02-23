@@ -4,10 +4,8 @@
 
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<import resource="../basic.xml" />
-
 	<bean id="basic.002" parent="basic.executionFlowTemplate">
-		<property name="parameters">
+		<constructor-arg>
 			<map>
 				<entry key="testData1">
 					<bean class="org.argeo.slc.core.test.BasicTestData">
@@ -22,6 +20,6 @@
 					</bean>
 				</entry>
 			</map>
-		</property>
+		</constructor-arg>
 	</bean>
 </beans>
