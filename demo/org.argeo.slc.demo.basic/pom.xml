@@ -7,15 +7,28 @@
 		<version>0.11.3-SNAPSHOT</version>
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
-	<groupId>org.argeo.slc.sandbox</groupId>
-	<artifactId>org.argeo.slc.sandbox.executionflow</artifactId>
-	<name>SLC Sandbox Execution Flow</name>
+	<groupId>org.argeo.slc.demo</groupId>
+	<artifactId>org.argeo.slc.demo.basic</artifactId>
+	<name>SLC Demo Basic Test Module</name>
 	<packaging>jar</packaging>
 	<properties></properties>
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${version.maven-bundle-plugin}</version>
+				<configuration>
+					<instructions>
+						<Export-Package>
+							org.argeo.slc.*
+						</Export-Package>
+						<Require-Bundle>org.argeo.slc.execution,org.argeo.slc.specs,org.argeo.slc.support.simple,org.springframework.aop,com.springsource.net.sf.cglib,com.springsource.org.aopalliance</Require-Bundle>
+					</instructions>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -24,33 +37,26 @@
 
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.execution</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.detached.launcher</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>com.springsource.org.aspectj.runtime</artifactId>
-			<version>1.6.2.RELEASE</version>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
 		</dependency>
+
 		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>com.springsource.org.aspectj.weaver</artifactId>
-			<version>1.6.2.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
-			<version>1.5.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.beanshell</groupId>
-			<artifactId>com.springsource.bsh</artifactId>
-			<version>2.0.0.b4</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.cglib</groupId>
-			<artifactId>com.springsource.net.sf.cglib</artifactId>
-			<version>2.1.3</version>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>org.springframework.osgi.extender</artifactId>
 		</dependency>
 	</dependencies>
 </project>
