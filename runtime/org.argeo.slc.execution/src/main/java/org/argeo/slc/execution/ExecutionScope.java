@@ -36,7 +36,8 @@ public class ExecutionScope implements Scope {
 	}
 
 	public void registerDestructionCallback(String name, Runnable callback) {
-		throw new UnsupportedOperationException();
+		// TODO: implement it
+		//throw new UnsupportedOperationException();
 	}
 
 	public Object remove(String name) {

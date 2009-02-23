@@ -27,7 +27,7 @@ public class SimpleExecutionSpec implements ExecutionSpec, BeanNameAware {
 		if (flow == null)
 			throw new SlcException("No flow is currently initializing."
 					+ " Declare flow refs as inner beans or prototypes.");
-
+/*
 		RefSpecAttribute refSpecAttribute = (RefSpecAttribute) attributes
 				.get(name);
 		Class<?> targetClass = refSpecAttribute.getTargetClass();
@@ -38,7 +38,8 @@ public class SimpleExecutionSpec implements ExecutionSpec, BeanNameAware {
 		proxyFactory.setProxyTargetClass(true);
 		proxyFactory.setTargetSource(targetSource);
 
-		return proxyFactory.getProxy();
+		return proxyFactory.getProxy();*/
+		return flow.getParameter(name);
 	}
 
 	public void setBeanName(String name) {

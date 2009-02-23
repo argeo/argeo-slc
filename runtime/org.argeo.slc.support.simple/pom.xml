@@ -35,7 +35,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>
-							org.argeo.slc.*
+							org.argeo.slc.*,org.argeo.slc.core.test.spring
 						</Export-Package>
 						<Import-Package>*,org.apache.commons.logging;version="1.1",
 							org.dbunit;resolution:="optional",

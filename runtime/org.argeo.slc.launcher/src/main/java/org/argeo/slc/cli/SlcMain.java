@@ -25,7 +25,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class SlcMain {
 	public enum Mode {
-		single, agent
+		single, agent, osgi
 	}
 
 	private static Log log = null;
@@ -175,6 +175,20 @@ public class SlcMain {
 		}
 		// Agent
 		else if (mode.equals(Mode.agent)) {
+			final ConfigurableApplicationContext applicationContext;
+			if (runtimeStr == null) {
+				applicationContext = new ClassPathXmlApplicationContext(
+						DEFAULT_AGENT_CONTEXT);
+			} else {
+				applicationContext = new FileSystemXmlApplicationContext(
+						runtimeStr);
+			}
+			applicationContext.registerShutdownHook();
+			applicationContext.start();
+			log.info("SLC Agent context started.");
+		}
+		// OSGi
+		else if (mode.equals(Mode.osgi)) {
 			final ConfigurableApplicationContext applicationContext;
 			if (runtimeStr == null) {
 				applicationContext = new ClassPathXmlApplicationContext(

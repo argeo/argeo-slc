@@ -22,6 +22,14 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 	private List<Executable> executables = new ArrayList<Executable>();
 
 	private final String uuid = UUID.randomUUID().toString();
+	
+	public SimpleExecutionFlow(){
+		
+	}
+
+	public SimpleExecutionFlow(Map<String, Object> parameters){
+		this.parameters.putAll(parameters);
+	}
 
 	public void execute() {
 		for (Executable executable : executables) {
