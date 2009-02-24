@@ -21,13 +21,11 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<Executable> executables = new ArrayList<Executable>();
 
-	private final String uuid = UUID.randomUUID().toString();
-	
-	public SimpleExecutionFlow(){
-		
+	public SimpleExecutionFlow() {
+
 	}
 
-	public SimpleExecutionFlow(Map<String, Object> parameters){
+	public SimpleExecutionFlow(Map<String, Object> parameters) {
 		this.parameters.putAll(parameters);
 	}
 
@@ -43,7 +41,7 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 			return;
 
 		MapBindingResult errors = new MapBindingResult(parameters, "execution#"
-				+ getUuid());
+				+ getName());
 		for (String key : executionSpec.getAttributes().keySet()) {
 			ExecutionSpecAttribute executionSpecAttr = executionSpec
 					.getAttributes().get(key);
@@ -88,8 +86,8 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 		this.parameters = attributes;
 	}
 
-	public String getUuid() {
-		return uuid;
+	public String getName() {
+		return name;
 	}
 
 	public ExecutionSpec getExecutionSpec() {
@@ -107,7 +105,7 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 					return esa.getValue();
 			} else {
 				throw new SlcException("Key " + name
-						+ " is not define in the specifications of "
+						+ " is not defined in the specifications of "
 						+ toString());
 			}
 		}
@@ -116,7 +114,10 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 	}
 
 	public String toString() {
-		return new StringBuffer("Flow ").append(name).toString();// .append(" [#")
-		// .append(uuid).append(']').toString();
+		return new StringBuffer("Flow ").append(name).toString();
+	}
+
+	public boolean equals(Object obj) {
+		return ((ExecutionFlow) obj).getName().equals(name);
 	}
 }

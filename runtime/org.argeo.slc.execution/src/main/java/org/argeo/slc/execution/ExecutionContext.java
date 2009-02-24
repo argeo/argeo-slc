@@ -110,8 +110,8 @@ public class ExecutionContext {
 					+ getCurrentStackUuid() + ", depth=" + stack.size());
 
 		ExecutionFlowRuntime leftEf = stack.pop();
-		if (!leftEf.getExecutionFlow().getUuid()
-				.equals(executionFlow.getUuid()))
+		if (!leftEf.getExecutionFlow().getName()
+				.equals(executionFlow.getName()))
 			throw new SlcException("Asked to leave " + executionFlow
 					+ " but last is " + leftEf);
 
