@@ -84,7 +84,7 @@ limitations under the License.
 					<artifactId>maven-jar-plugin</artifactId>
 					<configuration>
 						<archive>
-							<manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+							<manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
 						</archive>
 					</configuration>
 				</plugin>
@@ -192,7 +192,7 @@ limitations under the License.
 					<version>${version.maven-bundle-plugin}</version>
 					<extensions>true</extensions>
 					<configuration>
-						<manifestLocation>src/main/resources/META-INF</manifestLocation>
+						<manifestLocation>target/classes/META-INF</manifestLocation>
 						<instructions>
 							<Bundle-SymbolicName>
 								${pom.artifactId}
