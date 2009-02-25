@@ -40,9 +40,9 @@
 					<classpathScope>test</classpathScope> </configuration>
 				-->
 				<configuration>
-					<executable>${java.home}/bin/java</executable>
+					<executable>${java.home}${file.separator}bin${file.separator}java</executable>
 					<arguments>
-						<argument>-Xbootclasspath/p:${settings.localRepository}/org/apache/xerces/com.springsource.org.apache.xerces/2.8.1/com.springsource.org.apache.xerces-2.8.1.jar${path.separator}${settings.localRepository}/org/apache/xmlcommons/com.springsource.org.apache.xmlcommons/1.3.3/com.springsource.org.apache.xmlcommons-1.3.3.jar</argument>
+						<argument>-Xbootclasspath/p:${settings.localRepository}${file.separator}org${file.separator}apache${file.separator}xerces${file.separator}com.springsource.org.apache.xerces${file.separator}2.8.1${file.separator}com.springsource.org.apache.xerces-2.8.1.jar${path.separator}${settings.localRepository}${file.separator}org${file.separator}apache${file.separator}xmlcommons${file.separator}com.springsource.org.apache.xmlcommons${file.separator}1.3.3${file.separator}com.springsource.org.apache.xmlcommons-1.3.3.jar</argument>
 						<argument>-Dslc.osgi.scanClasspath=true</argument>
 						<argument>-Dslc.osgi.start=*</argument>
 						<argument>-classpath</argument>
