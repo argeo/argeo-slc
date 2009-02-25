@@ -8,8 +8,8 @@
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
-	<artifactId>org.argeo.slc.execution</artifactId>
-	<name>SLC Execution</name>
+	<artifactId>org.argeo.slc.support.equinox</artifactId>
+	<name>SLC Equinox OSGi Support</name>
 	<packaging>jar</packaging>
 	<properties></properties>
 	<build>
