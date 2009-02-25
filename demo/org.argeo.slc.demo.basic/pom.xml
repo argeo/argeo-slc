@@ -49,5 +49,12 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.argeo.slc.demo</groupId>
+			<artifactId>org.argeo.slc.demo.log4j</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 	</dependencies>
 </project>
