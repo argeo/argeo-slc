@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+<!-- 
+	<bean id="testLaunch" class="org.argeo.slc.execution.old.TestLaunch"
+		p:flowName="main" init-method="launch" />
+-->
+
+	<bean id="executionModule" class="org.argeo.slc.osgi.OsgiExecutionModule" />
+
+	<bean id="main" class="org.argeo.slc.core.execution.SimpleExecutionFlow">
+		<property name="executionSpec">
+			<bean class="org.argeo.slc.core.execution.SimpleExecutionSpec">
+				<property name="attributes">
+					<map>
+						<entry key="testKey">
+							<bean parent="specAttribute" p:value="660" />
+						</entry>
+					</map>
+				</property>
+			</bean>
+		</property>
+		<property name="executables">
+			<list>
+				<ref local="echo1" />
+				<ref bean="basic.001" />
+				<ref bean="basic.001" />
+				<ref bean="basic.002" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="echo1" parent="echoTemplate" scope="execution">
+		<property name="message"
+			value="From main! @{testKey}, slc.flows=@{slc.flows}" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="echoTemplate" class="org.argeo.slc.core.execution.tasks.Echo"
+		abstract="true">
+	</bean>
+
+</beans>
