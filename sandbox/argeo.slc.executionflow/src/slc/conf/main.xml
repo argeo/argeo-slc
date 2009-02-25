@@ -14,12 +14,12 @@
 	<import resource="testCases/basic-001.xml" />
 	<import resource="testCases/basic-002.xml" />
 
-	<bean id="testLaunch" class="org.argeo.slc.execution.TestLaunch"
+	<bean id="testLaunch" class="org.argeo.slc.execution.old.TestLaunch"
 		p:flowName="main" init-method="launch"/>
 
-	<bean id="main" class="org.argeo.slc.execution.SimpleExecutionFlow">
+	<bean id="main" class="org.argeo.slc.core.execution.SimpleExecutionFlow">
 		<property name="executionSpec">
-			<bean class="org.argeo.slc.execution.SimpleExecutionSpec">
+			<bean class="org.argeo.slc.core.execution.SimpleExecutionSpec">
 				<property name="attributes">
 					<map>
 						<entry key="testKey">
@@ -45,7 +45,7 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="echoTemplate" class="org.argeo.slc.execution.tasks.Echo"
+	<bean id="echoTemplate" class="org.argeo.slc.core.execution.tasks.Echo"
 		abstract="true">
 	</bean>
 
@@ -57,7 +57,7 @@
 		<property name="scopes">
 			<map>
 				<entry key="execution">
-					<bean class="org.argeo.slc.execution.ExecutionScope" />
+					<bean class="org.argeo.slc.core.execution.ExecutionScope" />
 				</entry>
 			</map>
 		</property>
@@ -65,11 +65,11 @@
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
-	<bean class="org.argeo.slc.execution.ExecutionParameterPostProcessor" />
-	<bean class="org.argeo.slc.execution.InstantiationPostProcessor" />
-	<bean class="org.argeo.slc.execution.Executor" />
+	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor" />
+	<bean class="org.argeo.slc.core.execution.InstantiationPostProcessor" />
+	<bean class="org.argeo.slc.core.execution.Executor" />
 
-	<bean class="org.argeo.slc.execution.ExecutionAspect"></bean>
+	<bean class="org.argeo.slc.core.execution.ExecutionAspect"></bean>
 	<aop:aspectj-autoproxy />
 
 </beans>

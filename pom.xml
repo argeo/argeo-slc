@@ -12,6 +12,7 @@
 	<modules>
 		<module>org.argeo.slc</module>
 		<module>runtime</module>
+		<module>demo</module>
 
 		<module>org.argeo.slc.detached.launcher</module>
 		<module>org.argeo.slc.webapp</module>
@@ -44,7 +45,7 @@
 		<profile>
 			<id>fullBuild</id>
 			<modules>
-				<module>eclipse/features/org.argeo.slc.ui.launch.feature</module>
+				<!--<module>eclipse/features/org.argeo.slc.ui.launch.feature</module>-->
 				<module>examples</module>
 				<module>integration-tests</module>
 			</modules>
