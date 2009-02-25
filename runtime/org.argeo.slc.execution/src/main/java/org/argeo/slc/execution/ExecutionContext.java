@@ -52,7 +52,7 @@ public class ExecutionContext {
 		ExecutionFlowRuntime runtime = new ExecutionFlowRuntime(executionFlow);
 		stack.push(runtime);
 
-		if (log.isTraceEnabled())
+		if (log.isDebugEnabled())
 			log.debug(depthSpaces(stack.size()) + "=> " + executionFlow + " #"
 					+ getCurrentStackUuid() + ", depth=" + stack.size());
 
@@ -105,7 +105,7 @@ public class ExecutionContext {
 
 	public static void leaveFlow(ExecutionFlow executionFlow) {
 		Stack<ExecutionFlowRuntime> stack = executionContext.get().stack;
-		if (log.isTraceEnabled())
+		if (log.isDebugEnabled())
 			log.debug(depthSpaces(stack.size()) + "<= " + executionFlow + " #"
 					+ getCurrentStackUuid() + ", depth=" + stack.size());
 

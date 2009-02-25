@@ -37,13 +37,30 @@
 						<Export-Package>
 							org.argeo.slc.*
 						</Export-Package>
-						<Import-Package>*,javax.xml.parsers;resolution:=optional,
+						<Import-Package>org.argeo.slc.*;resolution:=optional,
+						org.argeo.slc.core.structure;resolution:=optional,
+						org.argeo.slc.core.structure.tree;resolution:=optional,
+						org.argeo.slc.core.test;resolution:=optional,
+						org.argeo.slc.core.test.tree;resolution:=optional,
+						org.argeo.slc.runtime;resolution:=optional,
+						org.argeo.slc.execution;resolution:=optional,
+						org.argeo.slc.msg;resolution:=optional,
+						org.argeo.slc.msg.process;resolution:=optional,
+						org.argeo.slc.msg.test.tree;resolution:=optional
+						</Import-Package>
+						<Fragment-Host>com.springsource.org.castor</Fragment-Host>
+						<!-- 
+						<Import-Package>*,org.argeo.slc.msg,
+						org.argeo.slc.msg.process,
+						org.argeo.slc.msg.test.tree,
+						javax.xml.parsers;resolution:=optional,
 						javax.xml.transform;resolution:=optional,
 						javax.xml.transform.dom;resolution:=optional,
 						javax.xml.transform.stream;resolution:=optional,
 						org.w3c.dom;resolution:=optional,
 						org.xml.sax;resolution:=optional
 						</Import-Package>
+						 -->
 					</instructions>
 				</configuration>
 			</plugin>

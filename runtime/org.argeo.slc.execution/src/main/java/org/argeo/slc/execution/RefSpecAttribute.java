@@ -1,7 +1,9 @@
 package org.argeo.slc.execution;
 
-public class RefSpecAttribute  extends AbstractSpecAttribute {
+public class RefSpecAttribute extends AbstractSpecAttribute {
 	private Class targetClass;
+	/** Read only. */
+	private String targetClassName;
 	private Object value = null;
 
 	public Object getValue() {
@@ -18,6 +20,11 @@ public class RefSpecAttribute  extends AbstractSpecAttribute {
 
 	public void setTargetClass(Class targetClass) {
 		this.targetClass = targetClass;
+		this.targetClassName = targetClass.getName();
+	}
+
+	public String getTargetClassName() {
+		return targetClassName;
 	}
 
 }

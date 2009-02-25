@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<import resource="common.xml" />
-
-	<import resource="basic.xml" />
-	<import resource="testCases/basic-001.xml" />
-	<import resource="testCases/basic-002.xml" />
-
+<!-- 
 	<bean id="testLaunch" class="org.argeo.slc.execution.TestLaunch"
-		p:flowName="main" init-method="launch"/>
+		p:flowName="main" init-method="launch" />
+-->
+
+	<bean id="executionModule" class="org.argeo.slc.execution.OsgiExecutionModule" />
 
 	<bean id="main" class="org.argeo.slc.execution.SimpleExecutionFlow">
 		<property name="executionSpec">
@@ -48,28 +45,5 @@
 	<bean id="echoTemplate" class="org.argeo.slc.execution.tasks.Echo"
 		abstract="true">
 	</bean>
-
-	<context:annotation-config />
-	<bean class="org.argeo.slc.execution.ExecutionRegister" />
-
-
-	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
-		<property name="scopes">
-			<map>
-				<entry key="execution">
-					<bean class="org.argeo.slc.execution.ExecutionScope" />
-				</entry>
-			</map>
-		</property>
-	</bean>
-
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
-	<bean class="org.argeo.slc.execution.ExecutionParameterPostProcessor" />
-	<bean class="org.argeo.slc.execution.InstantiationPostProcessor" />
-	<bean class="org.argeo.slc.execution.Executor" />
-
-	<bean class="org.argeo.slc.execution.ExecutionAspect"></bean>
-	<aop:aspectj-autoproxy />
 
 </beans>

@@ -8,15 +8,12 @@
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.demo</groupId>
-	<artifactId>org.argeo.slc.demo.basic</artifactId>
-	<name>SLC Demo Basic Test Module</name>
-	<packaging>jar</packaging>
+	<artifactId>org.argeo.slc.demo.manager</artifactId>
+	<name>SLC Demo Manager</name>
+	<packaging>bundle</packaging>
 	<properties></properties>
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
@@ -24,8 +21,27 @@
 				<configuration>
 					<instructions>
 						<Import-Package>org.apache.commons.logging,org.springframework.beans.factory.config</Import-Package>
-						<Require-Bundle>org.argeo.slc.execution,org.argeo.slc.specs,org.argeo.slc.support.simple,org.springframework.aop,com.springsource.net.sf.cglib,com.springsource.org.aopalliance</Require-Bundle>
-						<Spring-Context>conf/main.xml</Spring-Context>
+						<Require-Bundle>org.springframework.jms,com.springsource.org.castor,com.springsource.org.apache.xbean.spring,com.springsource.org.apache.activemq,org.argeo.slc.execution,org.argeo.slc.support.activemq,org.argeo.slc.specs,org.argeo.slc.support.simple,org.springframework.aop,org.springframework.oxm,com.springsource.net.sf.cglib,com.springsource.org.aopalliance</Require-Bundle>
+						<Spring-Context>conf/*</Spring-Context>
+						<!-- 
+						<Embed-Dependency>com.springsource.org.castor</Embed-Dependency>
+						<Embed-Transitive>true</Embed-Transitive>
+						<Import-Package>*,javax.xml.parsers;resolution:=optional,
+							javax.xml.transform;resolution:=optional,
+							javax.xml.transform.dom;resolution:=optional,
+							javax.xml.transform.stream;resolution:=optional,
+							org.w3c.dom;resolution:=optional,
+							org.xml.sax;resolution:=optional,
+							org.xml.sax.helpers;resolution:=optional,
+							netscape.ldap;resolution:=optional,
+							org.apache.oro.text.regex;resolution:=optional,
+							org.apache.xerces.utils.regex;resolution:=optional,
+							weblogic.apache.xml.serialize;resolution:=optional,
+							com.sun.org.apache.xml.internal.serialize;resolution:=optional
+						</Import-Package>
+						<Eclipse-RegisterBuddy>com.springsource.org.castor</Eclipse-RegisterBuddy>
+						 -->
+
 					</instructions>
 				</configuration>
 			</plugin>
@@ -39,8 +55,43 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<artifactId>org.argeo.slc.support.activemq</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.castor</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.castor</groupId>
+			<artifactId>com.springsource.org.castor</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.ejb</groupId>
+			<artifactId>com.springsource.javax.ejb</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.rpc</groupId>
+			<artifactId>com.springsource.javax.xml.rpc</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.soap</groupId>
+			<artifactId>com.springsource.javax.xml.soap</artifactId>
+			<version>1.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>com.springsource.javax.activation</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>com.springsource.javax.servlet</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached.launcher</artifactId>
@@ -56,5 +107,6 @@
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>org.springframework.osgi.extender</artifactId>
 		</dependency>
+
 	</dependencies>
 </project>

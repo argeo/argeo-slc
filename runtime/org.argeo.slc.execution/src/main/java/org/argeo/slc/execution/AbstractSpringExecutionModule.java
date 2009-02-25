@@ -3,23 +3,21 @@ package org.argeo.slc.execution;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.process.SlcExecution;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.generic.GenericBeanFactoryAccessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
-public class ExecutionRegister implements InitializingBean,
+public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 		ApplicationContextAware {
-	private final static Log log = LogFactory.getLog(ExecutionRegister.class);
-
 	private ApplicationContext applicationContext;
 
 	public ExecutionModuleDescriptor getDescriptor() {
 		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
+		md.setName(getName());
+		md.setVersion(getVersion());
 
 		GenericBeanFactoryAccessor accessor = new GenericBeanFactoryAccessor(
 				applicationContext);
@@ -57,8 +55,9 @@ public class ExecutionRegister implements InitializingBean,
 		return md;
 	}
 
-	public void afterPropertiesSet() throws Exception {
-		log.debug("Execution Module Descriptor:\n" + getDescriptor());
+	public void execute(SlcExecution slcExecution) {
+		applicationContext.publishEvent(new NewExecutionEvent(this,
+				slcExecution));
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext)

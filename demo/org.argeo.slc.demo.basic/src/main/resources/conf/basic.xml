@@ -11,7 +11,7 @@
 		<property name="attributes">
 			<map>
 				<entry key="testedComponentId">
-					<bean parent="specAttribute" p:value="100" />
+					<bean parent="specAttribute" p:value="100" p:isParameter="true"/>
 				</entry>
 				<entry key="testData1">
 					<bean parent="refAttribute" p:targetClass="org.argeo.slc.core.test.BasicTestData" />

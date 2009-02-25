@@ -55,6 +55,7 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 				Object obj = parameters.get(key);
 				if (executionSpecAttr instanceof RefSpecAttribute) {
 					RefSpecAttribute rsa = (RefSpecAttribute) executionSpecAttr;
+					// TODO: make sure this will not cause pb with OSGi
 					Class targetClass = rsa.getTargetClass();
 					if (!targetClass.isAssignableFrom(obj.getClass())) {
 						errors.reject(key
