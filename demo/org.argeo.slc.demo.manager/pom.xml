@@ -42,7 +42,7 @@
 				<configuration>
 					<executable>${java.home}/bin/java</executable>
 					<arguments>
-						<argument>-Xbootclasspath/p:${settings.localRepository}/org/apache/xerces/com.springsource.org.apache.xerces/2.8.1/com.springsource.org.apache.xerces-2.8.1.jar:${settings.localRepository}/org/apache/xmlcommons/com.springsource.org.apache.xmlcommons/1.3.3/com.springsource.org.apache.xmlcommons-1.3.3.jar</argument>
+						<argument>-Xbootclasspath/p:${settings.localRepository}/org/apache/xerces/com.springsource.org.apache.xerces/2.8.1/com.springsource.org.apache.xerces-2.8.1.jar${path.separator}${settings.localRepository}/org/apache/xmlcommons/com.springsource.org.apache.xmlcommons/1.3.3/com.springsource.org.apache.xmlcommons-1.3.3.jar</argument>
 						<argument>-Dslc.osgi.scanClasspath=true</argument>
 						<argument>-Dslc.osgi.start=*</argument>
 						<argument>-classpath</argument>
