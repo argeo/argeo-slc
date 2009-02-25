@@ -397,6 +397,7 @@ limitations under the License.
 				<artifactId>com.springsource.slf4j.org.apache.log4j</artifactId>
 				<version>1.5.3</version>
 			</dependency>
+
 			<!-- Spring -->
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -476,6 +477,18 @@ limitations under the License.
 				<groupId>org.springframework.osgi</groupId>
 				<artifactId>org.springframework.osgi.core</artifactId>
 				<version>${version.spring-osgi}</version>
+			</dependency>
+
+			<!-- AOP -->
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>com.springsource.org.aspectj.runtime</artifactId>
+				<version>1.6.2.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.aspectj</groupId>
+				<artifactId>com.springsource.org.aspectj.weaver</artifactId>
+				<version>1.6.2.RELEASE</version>
 			</dependency>
 
 			<!-- Ant -->

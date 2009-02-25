@@ -45,7 +45,7 @@
 		</field>
 	</class>
 
-	<class name="org.argeo.slc.execution.SimpleExecutionSpec">
+	<class name="org.argeo.slc.core.execution.SimpleExecutionSpec">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="name" identity="true">
@@ -67,7 +67,7 @@
 		</field>
 	</class>
 
-	<class name="org.argeo.slc.execution.AbstractSpecAttribute">
+	<class name="org.argeo.slc.core.execution.AbstractSpecAttribute">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="isParameter">
@@ -75,14 +75,14 @@
 		</field>
 	</class>
 
-	<class name="org.argeo.slc.execution.SimpleSpecAttribute"
+	<class name="org.argeo.slc.core.execution.SimpleSpecAttribute"
 		extends="org.argeo.slc.execution.AbstractSpecAttribute">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="value" />
 	</class>
 
-	<class name="org.argeo.slc.execution.RefSpecAttribute" extends="org.argeo.slc.execution.AbstractSpecAttribute">
+	<class name="org.argeo.slc.core.execution.RefSpecAttribute" extends="org.argeo.slc.execution.AbstractSpecAttribute">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="targetClassName">

@@ -17,8 +17,8 @@ public class IncompatibleTestDataException extends SlcException {
 	}
 
 	public IncompatibleTestDataException(TestRun testRun) {
-		super("TestData " + testRun.getTestData().getClass()
+		super("TestData " + ((TestData) testRun.getTestData()).getClass()
 				+ " is not compatible with TestDefinition "
-				+ testRun.getTestDefinition().getClass());
+				+ ((TestDefinition) testRun.getTestDefinition()).getClass());
 	}
 }

@@ -8,15 +8,15 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 <!-- 
-	<bean id="testLaunch" class="org.argeo.slc.execution.TestLaunch"
+	<bean id="testLaunch" class="org.argeo.slc.execution.old.TestLaunch"
 		p:flowName="main" init-method="launch" />
 -->
 
-	<bean id="executionModule" class="org.argeo.slc.execution.OsgiExecutionModule" />
+	<bean id="executionModule" class="org.argeo.slc.osgi.OsgiExecutionModule" />
 
-	<bean id="main" class="org.argeo.slc.execution.SimpleExecutionFlow">
+	<bean id="main" class="org.argeo.slc.core.execution.SimpleExecutionFlow">
 		<property name="executionSpec">
-			<bean class="org.argeo.slc.execution.SimpleExecutionSpec">
+			<bean class="org.argeo.slc.core.execution.SimpleExecutionSpec">
 				<property name="attributes">
 					<map>
 						<entry key="testKey">
@@ -42,7 +42,7 @@
 		<aop:scoped-proxy />
 	</bean>
 
-	<bean id="echoTemplate" class="org.argeo.slc.execution.tasks.Echo"
+	<bean id="echoTemplate" class="org.argeo.slc.core.execution.tasks.Echo"
 		abstract="true">
 	</bean>
 

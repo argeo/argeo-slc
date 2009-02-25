@@ -24,7 +24,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>
-							org.argeo.slc.execution.*
+							org.argeo.slc.*
 						</Export-Package>
 					</instructions>
 				</configuration>
@@ -48,21 +48,13 @@
 			<artifactId>org.springframework.osgi.core</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>com.springsource.org.aspectj.runtime</artifactId>
-			<version>1.6.2.RELEASE</version>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>com.springsource.org.aspectj.weaver</artifactId>
-			<version>1.6.2.RELEASE</version>
-		</dependency>
+<!-- 
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
 			<version>1.5.7</version>
 		</dependency>
+		 -->
 		<dependency>
 			<groupId>net.sourceforge.cglib</groupId>
 			<artifactId>com.springsource.net.sf.cglib</artifactId>

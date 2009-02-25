@@ -4,7 +4,7 @@
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="modulesManager" class="org.argeo.slc.execution.ModulesManager">
+	<bean id="modulesManager" class="org.argeo.slc.core.execution.ModulesManager">
 		<property name="executionModules" ref="executionModules" />
 	</bean>
 </beans>

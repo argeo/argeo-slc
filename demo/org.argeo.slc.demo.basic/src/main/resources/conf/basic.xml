@@ -7,7 +7,7 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="basic.executionSpec" class="org.argeo.slc.execution.SimpleExecutionSpec">
+	<bean id="basic.executionSpec" class="org.argeo.slc.core.execution.SimpleExecutionSpec">
 		<property name="attributes">
 			<map>
 				<entry key="testedComponentId">
@@ -26,7 +26,7 @@
 	<bean id="basic.ref" factory-bean="basic.executionSpec"
 		factory-method="createRef" abstract="true" />
 
-	<bean id="basic.executionFlowTemplate" class="org.argeo.slc.execution.SimpleExecutionFlow"
+	<bean id="basic.executionFlowTemplate" class="org.argeo.slc.core.execution.SimpleExecutionFlow"
 		abstract="true">
 		<property name="executionSpec" ref="basic.executionSpec" />
 		<property name="executables">
