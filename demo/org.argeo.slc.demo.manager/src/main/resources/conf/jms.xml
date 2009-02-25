@@ -4,45 +4,29 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-lazy-init="false">
 
-	<import resource="classpath:org/argeo/slc/castor/spring.xml" />
+	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
-	<bean id="slcDefault.jms.castorMessageConverter" class="org.argeo.slc.jms.MarshallerMessageConverter">
-		<property name="marshaller" ref="slcDefault.castor.marshaller" />
-		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
-	</bean>
+	<bean id="modulesManager.listenerContainer" parent="slcTemplate.jms.listenerContainer">
+		<property name="destination" ref="slcJms.destination.modulesManager.request" />
+		<property name="messageListener">
+			<bean class="org.argeo.slc.jms.ServiceMessageListenerAdapter">
+				<property name="methodArguments">
+					<map>
+						<entry key="getExecutionModuleDescriptor">
+							<list>
+								<value>name</value>
+								<value>version</value>
+							</list>
+						</entry>
+					</map>
+				</property>
 
-
-	<bean id="slcDefault.jms.amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-		<property name="brokerURL">
-			<value>tcp://localhost:61616</value>
+				<property name="delegate" ref="modulesManager" />
+				<property name="defaultResponseDestination" ref="slcJms.destination.modulesManager.response" />
+				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+			</bean>
 		</property>
 	</bean>
 
 
-	<bean id="slcDefault.jms.connectionFactory"
-		class="org.springframework.jms.connection.SingleConnectionFactory">
-		<property name="targetConnectionFactory">
-			<ref local="slcDefault.jms.amqConnectionFactory" />
-		</property>
-	</bean>
-
-	<bean id="slcDefault.jms.jmsTemplateCastor" class="org.springframework.jms.core.JmsTemplate">
-		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-	</bean>
-
-
-
-	<!-- Templates -->
-	<bean id="slcTemplate.jms.listenerContainer"
-		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
-		abstract="true">
-		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
-	</bean>
-
-	<bean id="slcTemplate.jms.listenerAdapterCastor"
-		class="org.springframework.jms.listener.adapter.MessageListenerAdapter"
-		abstract="true">
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-	</bean>
 </beans>

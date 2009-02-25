@@ -22,7 +22,7 @@ public class JmsTesting {
 	 */
 	public static void main(String[] args) {
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-				"conf/jms.xml");
+				"org/argeo/slc/activemq/spring.xml");
 		try {
 
 			ConnectionFactory connectionFactory = (ConnectionFactory) applicationContext

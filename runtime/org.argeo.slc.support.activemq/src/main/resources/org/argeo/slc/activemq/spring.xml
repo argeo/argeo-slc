@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core-5.2.0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-lazy-init="false">
 
 	<import resource="classpath:org/argeo/slc/castor/spring.xml" />
@@ -12,9 +11,15 @@
 		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
 	</bean>
 
-	<amq:connectionFactory id="slcDefault.jms.amqConnectionFactory"
+	<bean id="slcDefault.jms.amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL">
+			<value>tcp://localhost:61616</value>
+		</property>
+	</bean>
+	<!--
+		<amq:connectionFactory id="slcDefault.jms.amqConnectionFactory"
 		brokerURL="${org.apache.activemq.brokerURL}" />
-
+	-->
 	<bean id="slcDefault.jms.connectionFactory"
 		class="org.springframework.jms.connection.SingleConnectionFactory">
 		<property name="targetConnectionFactory">
@@ -29,17 +34,25 @@
 
 
 	<!-- Destinations -->
-	<amq:topic id="slcJms.destination.agent.register"
-		physicalName="agent.register" />
-	<amq:topic id="slcJms.destination.agent.unregister"
-		physicalName="agent.unregister" />
-	<amq:topic id="slcJms.destination.agent.newExecution"
+	<!--
+		<amq:topic id="slcJms.destination.agent.register"
+		physicalName="agent.register" /> <amq:topic
+		id="slcJms.destination.agent.unregister"
+		physicalName="agent.unregister" /> <amq:topic
+		id="slcJms.destination.agent.newExecution"
 		physicalName="agent.newExecution" />
+	-->
+	<bean id="slcJms.destination.agent.register" p:physicalName="agent.register"
+		parent="slcJms.amTopic" />
+	<bean id="slcJms.destination.agent.unregister" p:physicalName="agent.unregister"
+		parent="slcJms.amTopic" />
+	<bean id="slcJms.destination.agent.newExecution" p:physicalName="agent.newExecution"
+		parent="slcJms.amTopic" />
 
-	<amq:queue id="slcJms.destination.modulesManager.request"
-		physicalName="modulesManager.request" />
-	<amq:topic id="slcJms.destination.modulesManager.response"
-		physicalName="modulesManager.response" />
+	<bean id="slcJms.destination.modulesManager.request"
+		p:physicalName="modulesManager.request" parent="slcJms.amQueue" />
+	<bean id="slcJms.destination.modulesManager.response"
+		p:physicalName="modulesManager.response" parent="slcJms.amQueue" />
 
 	<!-- Templates -->
 	<bean id="slcTemplate.jms.listenerContainer"
@@ -53,4 +66,10 @@
 		abstract="true">
 		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 	</bean>
+
+	<bean id="slcJms.amQueue" class="org.apache.activemq.command.ActiveMQQueue"
+		abstract="true" />
+	<bean id="slcJms.amTopic" class="org.apache.activemq.command.ActiveMQTopic"
+		abstract="true" />
+
 </beans>
