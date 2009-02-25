@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -95,6 +96,8 @@ public class Main {
 
 		BundleContext context = EclipseStarter.startup(equinoxArgs, null);
 
+		List installBundleNames = new ArrayList();
+
 		// Load from class path (dev environment, maven)
 		if (config.getProperty(PROP_SLC_OSGI_SCAN_CLASSPATH, "false").equals(
 				"true")) {
@@ -105,7 +108,8 @@ public class Main {
 					String path = st.nextToken();
 					String url = "reference:file:"
 							+ new File(path).getCanonicalPath();
-					context.installBundle(url);
+					Bundle bundle = context.installBundle(url);
+					installBundleNames.add(bundle.getSymbolicName());
 					info("Installed from classpath " + url);
 				} catch (Exception e) {
 					bundleInstallWarn(e.getMessage());
@@ -120,7 +124,8 @@ public class Main {
 			try {
 				String bundleName = (String) devBundles.next();
 				String url = (String) devBundleUrls.get(bundleName);
-				context.installBundle(url);
+				Bundle bundle = context.installBundle(url);
+				installBundleNames.add(bundle.getSymbolicName());
 				info("Installed as dev bundle " + url);
 			} catch (Exception e) {
 				bundleInstallWarn(e.getMessage());
@@ -136,7 +141,8 @@ public class Main {
 				try {
 					String url = "reference:file:"
 							+ bundleFiles[i].getCanonicalPath();
-					context.installBundle(url);
+					Bundle bundle = context.installBundle(url);
+					installBundleNames.add(bundle.getSymbolicName());
 					info("INFO: Installed from SLC home " + url);
 				} catch (Exception e) {
 					bundleInstallWarn(e.getMessage());
@@ -148,10 +154,24 @@ public class Main {
 		// Start bundles
 		String bundleStart = config.getProperty(PROP_SLC_OSGI_START,
 				"org.springframework.osgi.extender,org.argeo.slc.detached");
-		StringTokenizer stBundleStart = new StringTokenizer(bundleStart, ",");
-		while (stBundleStart.hasMoreTokens()) {
-			String bundleSymbolicName = stBundleStart.nextToken();
-			startBundle(context, bundleSymbolicName);
+
+		if (bundleStart.trim().equals("*")) {
+			for (int i = 0; i < installBundleNames.size(); i++) {
+				String bundleSymbolicName = installBundleNames.get(i)
+						.toString();
+				try {
+					startBundle(context, bundleSymbolicName);
+				} catch (Exception e) {
+					bundleInstallWarn(e.getMessage());
+				}
+			}
+		} else {
+			StringTokenizer stBundleStart = new StringTokenizer(bundleStart,
+					",");
+			while (stBundleStart.hasMoreTokens()) {
+				String bundleSymbolicName = stBundleStart.nextToken();
+				startBundle(context, bundleSymbolicName);
+			}
 		}
 	}
 

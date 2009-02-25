@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
-		<artifactId>argeo-slc</artifactId>
+		<artifactId>argeo-slc-demo</artifactId>
 		<version>0.11.3-SNAPSHOT</version>
-		<relativePath>../../org.argeo.slc</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.demo</groupId>
 	<artifactId>org.argeo.slc.demo.manager</artifactId>
-	<name>SLC Demo Manager</name>
-	<packaging>bundle</packaging>
+	<name>Argeo SLC Demo Manager</name>
+	<packaging>jar</packaging>
 	<properties></properties>
 	<build>
 		<plugins>
@@ -23,26 +23,33 @@
 						<Import-Package>org.apache.commons.logging,org.springframework.beans.factory.config</Import-Package>
 						<Require-Bundle>org.springframework.jms,com.springsource.org.castor,com.springsource.org.apache.xbean.spring,com.springsource.org.apache.activemq,org.argeo.slc.support.equinox,org.argeo.slc.support.activemq,org.argeo.slc.specs,org.argeo.slc.support.simple,org.springframework.aop,org.springframework.oxm,com.springsource.net.sf.cglib,com.springsource.org.aopalliance</Require-Bundle>
 						<Spring-Context>conf/*</Spring-Context>
-						<!-- 
-						<Embed-Dependency>com.springsource.org.castor</Embed-Dependency>
-						<Embed-Transitive>true</Embed-Transitive>
-						<Import-Package>*,javax.xml.parsers;resolution:=optional,
-							javax.xml.transform;resolution:=optional,
-							javax.xml.transform.dom;resolution:=optional,
-							javax.xml.transform.stream;resolution:=optional,
-							org.w3c.dom;resolution:=optional,
-							org.xml.sax;resolution:=optional,
-							org.xml.sax.helpers;resolution:=optional,
-							netscape.ldap;resolution:=optional,
-							org.apache.oro.text.regex;resolution:=optional,
-							org.apache.xerces.utils.regex;resolution:=optional,
-							weblogic.apache.xml.serialize;resolution:=optional,
-							com.sun.org.apache.xml.internal.serialize;resolution:=optional
-						</Import-Package>
-						<Eclipse-RegisterBuddy>com.springsource.org.castor</Eclipse-RegisterBuddy>
-						 -->
-
 					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.1-beta-1</version>
+				<!--
+					<configuration>
+					<mainClass>org.argeo.slc.detached.launcher.Main</mainClass>
+					<systemProperties> <systemProperty>
+					<key>slc.osgi.scanClasspath</key> <value>true</value>
+					</systemProperty> <systemProperty> <key>slc.osgi.start</key>
+					<value>*</value> </systemProperty> </systemProperties>
+					<classpathScope>test</classpathScope> </configuration>
+				-->
+				<configuration>
+					<executable>${java.home}/bin/java</executable>
+					<arguments>
+						<argument>-Xbootclasspath/p:${settings.localRepository}/org/apache/xerces/com.springsource.org.apache.xerces/2.8.1/com.springsource.org.apache.xerces-2.8.1.jar:${settings.localRepository}/org/apache/xmlcommons/com.springsource.org.apache.xmlcommons/1.3.3/com.springsource.org.apache.xmlcommons-1.3.3.jar</argument>
+						<argument>-Dslc.osgi.scanClasspath=true</argument>
+						<argument>-Dslc.osgi.start=*</argument>
+						<argument>-classpath</argument>
+						<classpath />
+						<argument>org.argeo.slc.detached.launcher.Main</argument>
+					</arguments>
+					<workingDirectory>target</workingDirectory>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -63,24 +70,20 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.codehaus.castor</groupId>
-			<artifactId>com.springsource.org.castor</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached.launcher</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.eclipse.osgi</groupId>
-			<artifactId>org.eclipse.osgi</artifactId>
+			<groupId>org.argeo.slc.demo</groupId>
+			<artifactId>org.argeo.slc.demo.basic</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.extender</artifactId>
+			<groupId>org.argeo.slc.demo</groupId>
+			<artifactId>org.argeo.slc.demo.log4j</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 	</dependencies>

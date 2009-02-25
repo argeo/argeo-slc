@@ -9,6 +9,7 @@
 	<configs>
 		<config>src/main/resources/conf/manager-osgi.xml</config>
 		<config>src/main/resources/conf/manager.xml</config>
+		<config>src/main/resources/conf/jms.xml</config>
 	</configs>
 	<configSets>
 	</configSets>

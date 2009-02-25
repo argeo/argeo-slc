@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.equinox</artifactId>
-	<name>SLC Equinox OSGi Support</name>
+	<name>Argeo SLC Support Equinox OSGi</name>
 	<packaging>jar</packaging>
 	<properties></properties>
 	<build>
@@ -48,22 +48,23 @@
 			<artifactId>org.springframework.osgi.core</artifactId>
 		</dependency>
 
-<!-- 
 		<dependency>
-			<groupId>org.codehaus.groovy</groupId>
-			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
-			<version>1.5.7</version>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
 		</dependency>
-		 -->
+
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>org.springframework.osgi.extender</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>net.sourceforge.cglib</groupId>
 			<artifactId>com.springsource.net.sf.cglib</artifactId>
-			<version>2.1.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.objectweb.asm</groupId>
 			<artifactId>com.springsource.org.objectweb.asm.attrs</artifactId>
-			<version>2.2.0</version>
 		</dependency>
 	</dependencies>
 </project>
