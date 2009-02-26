@@ -135,14 +135,36 @@ qx.Class.define("org.argeo.ria.remote.JmsClient", {
 		 */
 		_sendMessage : function(destination, message, type, properties) {
 			var req = new qx.io.remote.Request(this.uri, "POST", "text/plain");
-			req.setParameter("destination", destination);
-			req.setParameter("message", message);
-			req.setParameter("type", type);
-			if(properties){
-				for(var key in properties){
-					req.setParameter(key, properties[key]);
-				}
-			}
+			if(!properties) properties = {};			
+			properties["destination"] = destination;
+			properties["message"] = message;
+			properties["type"] = type;
+	        var vParametersList = [];
+	
+	        for (var vId in properties)
+	        {
+	          var value = properties[vId];
+	          if (value instanceof Array)
+	          {
+	            for (var i=0; i<value.length; i++)
+	            {
+	              vParametersList.push(encodeURIComponent(vId) +
+	                                   "=" +
+	                                   encodeURIComponent(value[i]));
+	            }
+	          }
+	          else
+	          {
+	            vParametersList.push(encodeURIComponent(vId) +
+	                                 "=" +
+	                                 encodeURIComponent(value));
+	          }
+	        }	
+	        if (vParametersList.length > 0)
+	        {
+	          req.setData(vParametersList.join("&"));
+	        }
+			
 			//req.addListener("completed", this.endBatch, this);
 			req.send();
 		},
