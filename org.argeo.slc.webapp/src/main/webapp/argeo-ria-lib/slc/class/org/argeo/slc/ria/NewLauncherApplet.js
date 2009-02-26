@@ -204,8 +204,8 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		  var label = e.getRelatedTarget().getLabel();
 		  var li = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
 		  li.add(new qx.ui.basic.Label(label));
-		  var item = new qx.ui.form.ListItem(label);
-		  item.setIcon(e.getRelatedTarget().getIcon());
+		  //var item = new qx.ui.form.ListItem(label);
+		  var item = new org.argeo.slc.ria.module.FlowListItem(label,e.getRelatedTarget().getIcon());
 		  item.setPaddingTop(1);
 		  item.setPaddingBottom(2);
 		  this.list.add(item);
