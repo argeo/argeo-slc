@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.argeo.slc.core.execution.SimpleExecutionFlow;
+import org.argeo.slc.core.execution.DefaultExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.process.Executable;
 
@@ -13,7 +13,7 @@ public class ExecutionFlowFactory {
 
 	
 	public ExecutionFlow createExecutionFlow(Map<String, Object> attributes){
-		SimpleExecutionFlow executionFlow = new SimpleExecutionFlow();
+		DefaultExecutionFlow executionFlow = new DefaultExecutionFlow();
 		executionFlow.setExecutables(executables);
 		return executionFlow;
 	}

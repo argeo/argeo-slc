@@ -2,7 +2,9 @@ package org.argeo.slc.core.execution;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
+import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModule;
@@ -10,6 +12,7 @@ import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.process.SlcExecution;
+import org.springframework.aop.scope.ScopedObject;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.generic.GenericBeanFactoryAccessor;
 import org.springframework.context.ApplicationContext;
@@ -40,21 +43,46 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 			Assert.notNull(executionSpec);
 			Assert.notNull(executionSpec.getName());
 
-			Map<String, Object> values = new HashMap<String, Object>();
+			Map<String, Object> values = new TreeMap<String, Object>();
 			for (String key : executionSpec.getAttributes().keySet()) {
 				ExecutionSpecAttribute attribute = executionSpec
 						.getAttributes().get(key);
-				if (attribute instanceof SimpleExecutionSpec
-						&& attribute.getIsParameter()) {
-					values.put(key, executionFlow.getParameter(key));
+
+				if (executionFlow.isSetAsParameter(key)) {
+					Object value = executionFlow.getParameter(key);
+					if (attribute instanceof PrimitiveSpecAttribute) {
+						PrimitiveValue primitiveValue = new PrimitiveValue();
+						primitiveValue
+								.setType(((PrimitiveSpecAttribute) attribute)
+										.getType());
+						primitiveValue.setValue(value);
+						values.put(key, primitiveValue);
+					} else if (attribute instanceof RefSpecAttribute) {
+						RefValue refValue = new RefValue();
+						if (value instanceof ScopedObject) {
+							refValue.setLabel("RUNTIME "
+									+ value.getClass().getName());
+						} else {
+							refValue.setLabel("STATIC "
+									+ value.getClass().getName());
+						}
+						values.put(key, refValue);
+					} else {
+						throw new SlcException("Unkown spec attribute type "
+								+ attribute.getClass());
+					}
 				}
+
 			}
 
 			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(name,
 					values, executionSpec);
 
+			// Add execution spec if necessary
 			if (!md.getExecutionSpecs().contains(executionSpec))
 				md.getExecutionSpecs().add(executionSpec);
+			
+			// Add execution flow
 			md.getExecutionFlows().add(efd);
 		}
 

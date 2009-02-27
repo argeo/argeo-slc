@@ -1,16 +1,19 @@
 package org.argeo.slc.demo.manager;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import org.apache.activemq.broker.BrokerService;
+import org.apache.activemq.broker.TransportConnector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
-import org.springframework.beans.BeansException;
-import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 
@@ -21,9 +24,28 @@ public class JmsTesting {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+//		BrokerService broker;
+//		try {
+//			broker = new BrokerService();
+//			broker.setPersistent(false);
+//			TransportConnector transportConnector = new TransportConnector();
+//			transportConnector.setUri(new URI("tcp://localhost:61616"));
+//			broker.addConnector(transportConnector);
+//			broker.start();
+//			
+//			Thread.sleep(5000);
+//		} catch (URISyntaxException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (Exception e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+
 		ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 				"org/argeo/slc/activemq/spring.xml");
 		try {
+
 
 			ConnectionFactory connectionFactory = (ConnectionFactory) applicationContext
 					.getBean("slcDefault.jms.connectionFactory");

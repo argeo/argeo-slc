@@ -6,5 +6,6 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<list id="executionModules" interface="org.argeo.slc.execution.ExecutionModule" />
+	<list id="executionModules" interface="org.argeo.slc.execution.ExecutionModule"
+		cardinality="0..N" />
 </beans:beans>

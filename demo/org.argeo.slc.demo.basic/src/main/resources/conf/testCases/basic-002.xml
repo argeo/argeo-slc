@@ -4,7 +4,7 @@
 
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="basic.002" parent="basic.executionFlowTemplate">
+	<bean id="basic.002" parent="basic.flowTemplate">
 		<constructor-arg>
 			<map>
 				<entry key="testData1">

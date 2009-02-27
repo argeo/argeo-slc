@@ -28,48 +28,37 @@ public class ExecutionParameterPostProcessor extends
 	public PropertyValues postProcessPropertyValues(PropertyValues pvs,
 			PropertyDescriptor[] pds, Object bean, String beanName)
 			throws BeansException {
-		if (!ExecutionContext.isExecuting())
+		if (!ExecutionContext.isExecuting()){
+				//&& !DefaultExecutionSpec.isInFlowInitialization()) {
+			//log.info("Skip parameter conversion for bean " + beanName);
 			return pvs;
-
-//		ExecutionFlow currentFlow = ExecutionContext.getCurrentFlow();
-//
-//		Properties props = new Properties();
-//		Map<String, Object> attributes = currentFlow.getAttributes();
-//		Map<String, ExecutionSpecAttribute> specAttributes = currentFlow
-//				.getExecutionSpec().getAttributes();
-//
-//		for (String key : specAttributes.keySet()) {
-//			ExecutionSpecAttribute obj = specAttributes.get(key);
-//			if (!(obj instanceof RefSpecAttribute)) {
-//				if (!attributes.containsKey(key))
-//					throw new SlcException("Specified attribute " + key
-//							+ " is not set in " + currentFlow);
-//
-//				props.setProperty(key, attributes.get(key).toString());
-//				// if (log.isTraceEnabled())
-//				// log.trace("Use attribute " + key);
-//			}
-//		}
+		} else {
+			//log.info("Execute parameter conversion for bean " + beanName);
+		}
 
 		Properties props = new Properties();
 		CustomPpc ppc = new CustomPpc(props);
 
 		for (PropertyValue pv : pvs.getPropertyValues()) {
+//			log.info("   PropertyValue pv " + pv.getValue() + " - "
+//					+ pv.getValue().getClass());
+			String originalValue = null;
+			String convertedValue = null;
 			if (pv.getValue() instanceof TypedStringValue) {
 				TypedStringValue tsv = (TypedStringValue) pv.getValue();
-				String originalValue = tsv.getValue();
-				String convertedValue = ppc.process(originalValue);
+				originalValue = tsv.getValue();
+				convertedValue = ppc.process(originalValue);
 				tsv.setValue(convertedValue);
-				if (log.isTraceEnabled()) {
-					if (!originalValue.equals(convertedValue))
-						log.trace("Converted field '" + pv.getName() + "': '"
-								+ originalValue + "' to '" + convertedValue
-								+ "' in bean " + beanName);
-				}
-			} else {
-				// if (log.isTraceEnabled())
-				// log.trace(beanName + "[" + pv.getName() + "]: "
-				// + pv.getValue().getClass());
+			} else if (pv.getValue() instanceof String) {
+				originalValue = pv.getValue().toString();
+				convertedValue = ppc.process(originalValue);
+				pv.setConvertedValue(convertedValue);
+			}
+			if (convertedValue != null && log.isTraceEnabled()) {
+				if (!originalValue.equals(convertedValue))
+					log.trace("Converted field '" + pv.getName() + "': '"
+							+ originalValue + "' to '" + convertedValue
+							+ "' in bean " + beanName);
 			}
 		}
 
@@ -107,10 +96,11 @@ public class ExecutionParameterPostProcessor extends
 
 		@Override
 		protected String resolvePlaceholder(String placeholder, Properties props) {
+			//log.info("Try convert placeholder " + placeholder);
 			if (ExecutionContext.isExecuting())
 				return ExecutionContext.getVariable(placeholder).toString();
-			else if (SimpleExecutionSpec.isInFlowInitialization())
-				return SimpleExecutionSpec.getInitializingFlowParameter(
+			else if (DefaultExecutionSpec.isInFlowInitialization())
+				return DefaultExecutionSpec.getInitializingFlowParameter(
 						placeholder).toString();
 			else
 				return super.resolvePlaceholder(placeholder, props);

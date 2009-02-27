@@ -15,16 +15,24 @@ public class InstantiationPostProcessor extends
 	public boolean postProcessAfterInstantiation(Object bean, String beanName)
 			throws BeansException {
 		if (bean instanceof ExecutionFlow)
-			SimpleExecutionSpec.flowInitializationStarted((ExecutionFlow) bean);
+			DefaultExecutionSpec
+					.flowInitializationStarted((ExecutionFlow) bean);
 		return true;
 	}
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName)
 			throws BeansException {
+		return bean;
+	}
+
+	@Override
+	public Object postProcessAfterInitialization(Object bean, String beanName)
+			throws BeansException {
 		if (bean instanceof ExecutionFlow)
-			SimpleExecutionSpec
+			DefaultExecutionSpec
 					.flowInitializationFinished((ExecutionFlow) bean);
 		return bean;
 	}
+
 }

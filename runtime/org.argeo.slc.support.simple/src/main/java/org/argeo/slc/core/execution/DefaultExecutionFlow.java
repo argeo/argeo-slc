@@ -17,18 +17,18 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.validation.MapBindingResult;
 
-public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
+public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		BeanNameAware {
-	private ExecutionSpec executionSpec = new SimpleExecutionSpec();
+	private ExecutionSpec executionSpec = new DefaultExecutionSpec();
 	private String name = null;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<Executable> executables = new ArrayList<Executable>();
 
-	public SimpleExecutionFlow() {
+	public DefaultExecutionFlow() {
 
 	}
 
-	public SimpleExecutionFlow(Map<String, Object> parameters) {
+	public DefaultExecutionFlow(Map<String, Object> parameters) {
 		this.parameters.putAll(parameters);
 	}
 
@@ -46,27 +46,37 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 		MapBindingResult errors = new MapBindingResult(parameters, "execution#"
 				+ getName());
 		for (String key : executionSpec.getAttributes().keySet()) {
-			ExecutionSpecAttribute executionSpecAttr = executionSpec
-					.getAttributes().get(key);
-			if (!parameters.containsKey(key)) {
-				Object defaultValue = executionSpecAttr.getValue();
-				if (defaultValue == null)
-					errors.rejectValue(key, "Not set and no default value");
-				else
-					parameters.put(key, defaultValue);
-			} else {// contains key
-				Object obj = parameters.get(key);
-				if (executionSpecAttr instanceof RefSpecAttribute) {
-					RefSpecAttribute rsa = (RefSpecAttribute) executionSpecAttr;
-					// TODO: make sure this will not cause pb with OSGi
-					Class targetClass = rsa.getTargetClass();
-					if (!targetClass.isAssignableFrom(obj.getClass())) {
-						errors.reject(key
-								+ " not compatible with target class "
-								+ targetClass);
-					}
-				}
+			ExecutionSpecAttribute attr = executionSpec.getAttributes()
+					.get(key);
+
+			if (attr.getIsParameter() && !isSetAsParameter(key)) {
+				errors.rejectValue(key, "Parameter not set");
+				break;
 			}
+
+			if (attr.getIsFrozen() && !isSetAsParameter(key)) {
+				errors.rejectValue(key, "Frozen but not set as parameter");
+				break;
+			}
+
+			if (attr.getIsHidden() && !isSetAsParameter(key)) {
+				errors.rejectValue(key, "Hidden but not set as parameter");
+				break;
+			}
+
+			/*
+			 * if (!parameters.containsKey(key)) { Object defaultValue =
+			 * attr.getValue(); if (defaultValue == null)
+			 * errors.rejectValue(key, "Not set and no default value"); else
+			 * parameters.put(key, defaultValue); } else {// contains key Object
+			 * obj = parameters.get(key); if (attr instanceof RefSpecAttribute)
+			 * { RefSpecAttribute rsa = (RefSpecAttribute) attr; // TODO: make
+			 * sure this will not cause pb with OSGi Class targetClass =
+			 * rsa.getTargetClass(); if
+			 * (!targetClass.isAssignableFrom(obj.getClass())) {
+			 * errors.reject(key + " not compatible with target class " +
+			 * targetClass); } } }
+			 */
 		}
 
 		if (errors.hasErrors())
@@ -115,6 +125,12 @@ public class SimpleExecutionFlow implements ExecutionFlow, InitializingBean,
 		}
 		throw new SlcException("Key " + name + " is not set as parameter in "
 				+ toString());
+	}
+
+	public Boolean isSetAsParameter(String key) {
+		return parameters.containsKey(key)
+				|| (executionSpec.getAttributes().containsKey(key) && executionSpec
+						.getAttributes().get(key).getValue() != null);
 	}
 
 	public String toString() {

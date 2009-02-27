@@ -7,28 +7,31 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="basic.executionSpec" class="org.argeo.slc.core.execution.SimpleExecutionSpec">
+	<bean id="basic.spec" parent="slcTemplate.simpleSpec">
 		<property name="attributes">
 			<map>
 				<entry key="testedComponentId">
-					<bean parent="specAttribute" p:value="100" p:isParameter="true"/>
+					<bean parent="specAttr.primitive" p:value="100" p:isParameter="true"
+						p:type="integer" />
 				</entry>
 				<entry key="testData1">
-					<bean parent="refAttribute" p:targetClass="org.argeo.slc.core.test.BasicTestData" />
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+						p:isParameter="true" p:isFrozen="true" />
 				</entry>
 				<entry key="testData2">
-					<bean parent="refAttribute" p:targetClass="org.argeo.slc.core.test.BasicTestData" />
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+						p:isParameter="true" p:isFrozen="true" />
 				</entry>
 			</map>
 		</property>
 	</bean>
 
-	<bean id="basic.ref" factory-bean="basic.executionSpec"
-		factory-method="createRef" abstract="true" />
+	<bean id="basic.ref" factory-bean="basic.spec" factory-method="createRef"
+		abstract="true" />
 
-	<bean id="basic.executionFlowTemplate" class="org.argeo.slc.core.execution.SimpleExecutionFlow"
+	<bean id="basic.flowTemplate" parent="slcTemplate.simpleFlow"
 		abstract="true">
-		<property name="executionSpec" ref="basic.executionSpec" />
+		<property name="executionSpec" ref="basic.spec" />
 		<property name="executables">
 			<list>
 				<ref bean="echo1" />
@@ -52,34 +55,11 @@
 		<constructor-arg value="testData2" />
 	</bean>
 
- 
- 	<bean id="basic.testData" class="org.argeo.slc.core.test.BasicTestData"
-		>
+
+	<bean id="basic.testData" class="org.argeo.slc.core.test.BasicTestData">
 		<aop:scoped-proxy />
 		<property name="expected" value="tata" />
 		<property name="reached" value="tata" />
 	</bean>
- 
- 
-	<bean id="testDef" class="org.argeo.slc.core.test.BasicTestDefinition"
-		scope="prototype" />
-
-	<bean id="testResult" parent="slcDefault.test.basicSimpleTestResult" />
-
-	<bean id="testRun" class="org.argeo.slc.core.test.SimpleTestRun"
-		abstract="true">
-		<property name="testResult" ref="testResult" />
-	</bean>
-
-	<!--
-		<bean class="org.springframework.aop.framework.ProxyFactoryBean">
-		<property name="targetClass"
-		value="org.argeo.slc.core.test.BasicTestData" /> <property
-		name="targetSource"> <bean
-		class="org.argeo.slc.executionflow.ExecutionTargetSource"> <property
-		name="name" value="testData" /> <property name="targetClass"
-		value="org.argeo.slc.core.test.BasicTestData" /> </bean> </property>
-		<property name="proxyTargetClass" value="true" /> </bean>
-	-->
 
 </beans>

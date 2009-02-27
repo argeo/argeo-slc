@@ -285,7 +285,7 @@ public class Main {
 	}
 
 	private static void info(Object obj) {
-		System.out.println("[INFO] " + obj);
+		//System.out.println("[INFO] " + obj);
 	}
 
 	private static void bundleInstallWarn(Object obj) {

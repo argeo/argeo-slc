@@ -7,7 +7,7 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="basic.001" parent="basic.executionFlowTemplate">
+	<bean id="basic.001" parent="basic.flowTemplate">
 		<constructor-arg>
 			<map>
 				<entry key="testData1" value-ref="basic.001.testData" />

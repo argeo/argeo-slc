@@ -11,8 +11,8 @@ import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.springframework.beans.factory.BeanNameAware;
 
-public class SimpleExecutionSpec implements ExecutionSpec, BeanNameAware {
-	private final static Log log = LogFactory.getLog(SimpleExecutionSpec.class);
+public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware {
+	private final static Log log = LogFactory.getLog(DefaultExecutionSpec.class);
 
 	private final static ThreadLocal<ExecutionFlow> initializingFlow = new ThreadLocal<ExecutionFlow>();
 

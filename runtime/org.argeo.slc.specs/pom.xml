@@ -32,6 +32,9 @@
 						<Export-Package>
 							org.argeo.slc.*
 						</Export-Package>
+						<Import-Package>*,
+							org.hibernate.proxy;resolution:="optional"
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>

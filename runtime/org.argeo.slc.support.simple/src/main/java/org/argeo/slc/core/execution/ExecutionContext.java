@@ -61,8 +61,8 @@ public class ExecutionContext {
 		Map<String, ExecutionSpecAttribute> specAttrs = executionFlow
 				.getExecutionSpec().getAttributes();
 		for (String key : specAttrs.keySet()) {
-			ExecutionSpecAttribute esa = specAttrs.get(key);
-			if (esa.getIsParameter()) {
+			//ExecutionSpecAttribute esa = specAttrs.get(key);
+			if (executionFlow.isSetAsParameter(key)) {
 				runtime.getLocalVariables().put(key,
 						executionFlow.getParameter(key));
 				if (log.isTraceEnabled())
