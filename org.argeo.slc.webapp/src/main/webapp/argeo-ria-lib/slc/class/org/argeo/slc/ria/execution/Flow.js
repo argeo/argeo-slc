@@ -1,7 +1,7 @@
 /**
  * Wrapper for ExecutionFlow server object
  */
-qx.Class.define("org.argeo.slc.ria.module.ExecutionFlow", {
+qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 	
 	extend : qx.core.Object,
 	
@@ -23,7 +23,7 @@ qx.Class.define("org.argeo.slc.ria.module.ExecutionFlow", {
 		 * Reference the actual ExecutionSpec object
 		 */
 		executionSpec : {
-			check : "org.argeo.slc.ria.module.ExecutionSpec"
+			check : "org.argeo.slc.ria.execution.Spec"
 		},
 		/**
 		 * Castor representation of the object 

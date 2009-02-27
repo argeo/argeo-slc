@@ -1,7 +1,7 @@
 /**
  * Wrapper for ExecutionModule server object
  */
-qx.Class.define("org.argeo.slc.ria.module.ExecutionModule", {
+qx.Class.define("org.argeo.slc.ria.execution.Module", {
 	
 	extend : qx.core.Object,
 	
@@ -54,7 +54,7 @@ qx.Class.define("org.argeo.slc.ria.module.ExecutionModule", {
 	members : {
 		/**
 		 * Add an execution flow to this module
-		 * @param executionFlow {org.argeo.slc.ria.module.ExecutionFlow}
+		 * @param executionFlow {org.argeo.slc.ria.execution.Flow}
 		 */
 		addExecutionFlow : function(executionFlow){
 			var spec = this.getExecutionSpecByName(executionFlow.getExecutionSpecName());
@@ -68,7 +68,7 @@ qx.Class.define("org.argeo.slc.ria.module.ExecutionModule", {
 		
 		/**
 		 * Add an execution Spec to this module
-		 * @param executionSpec {org.argeo.slc.ria.module.ExecutionSpec}
+		 * @param executionSpec {org.argeo.slc.ria.execution.Spec}
 		 */
 		addExecutionSpec : function(executionSpec){
 			this.getExecutionSpecs()[executionSpec.getName()] = executionSpec;
@@ -93,14 +93,14 @@ qx.Class.define("org.argeo.slc.ria.module.ExecutionModule", {
 			// Parse Specs first
 			var specs = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_EXECUTION_SPECS);
 			for(i=0; i< specs.length;i++){
-				var execSpec = new org.argeo.slc.ria.module.ExecutionSpec();
+				var execSpec = new org.argeo.slc.ria.execution.Spec();
 				execSpec.setXmlNode(specs[i]);
 				this.addExecutionSpec(execSpec);
 			}
 			// Now parse Flows : to do AFTER specs
 			var flows = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_EXECUTION_FLOWS);
 			for(var i=0;i<flows.length;i++){
-				var execFlow = new org.argeo.slc.ria.module.ExecutionFlow();
+				var execFlow = new org.argeo.slc.ria.execution.Flow();
 				execFlow.setXmlNode(flows[i]);
 				this.addExecutionFlow(execFlow);
 			}

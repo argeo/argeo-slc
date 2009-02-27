@@ -1,7 +1,7 @@
 /**
  * Wrapper for ExecutionSpec server object
  */
-qx.Class.define("org.argeo.slc.ria.module.ExecutionSpec", {
+qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 	
 	extend : qx.core.Object,
 	
