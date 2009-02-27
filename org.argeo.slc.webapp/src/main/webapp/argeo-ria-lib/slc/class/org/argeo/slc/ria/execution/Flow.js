@@ -39,7 +39,9 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 		XPATH_VALUES : "slc:values"
 	},
 	
-	construct : function(){},
+	construct : function(){
+		this.base(arguments);
+	},
 	
 	members : {		
 		/**

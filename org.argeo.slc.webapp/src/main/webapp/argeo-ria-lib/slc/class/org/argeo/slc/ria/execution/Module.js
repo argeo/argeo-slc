@@ -49,7 +49,9 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 		XPATH_EXECUTION_SPECS : "slc:execution-module-descriptor/slc:executionSpecs/slc:simple-execution-spec"
 	},
 	
-	construct : function(){},
+	construct : function(){
+		this.base(arguments);
+	},
 	
 	members : {
 		/**

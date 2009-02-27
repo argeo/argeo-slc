@@ -33,7 +33,9 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 		XPATH_VALUES : "slc:values"
 	},
 	
-	construct : function(){},
+	construct : function(){
+		this.base(arguments);
+	},
 	
 	members : {
 		/**

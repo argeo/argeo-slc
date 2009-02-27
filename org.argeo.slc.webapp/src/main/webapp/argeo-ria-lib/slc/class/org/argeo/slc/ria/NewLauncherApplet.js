@@ -59,10 +59,12 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				callback	: function(e){
   					var sel = this.list.getSortedSelection();
   					var item = sel[0];
-			  		alert('Edit Specs for : ' + item.getLabel());
+  					var execFlow = item.getUserData("batchEntrySpec").getFlow();
+  					var specEditor = new org.argeo.slc.ria.execution.SpecEditor(execFlow);
+  					specEditor.attachAndShow();
   				},
   				selectionChange : function(viewId, selection){
-  					if(viewId != "form") return;
+  					if(viewId != "form:list") return;
   					this.setEnabled(false);
   					if((selection && selection.length == 1)) this.setEnabled(true);
   				},
@@ -77,10 +79,17 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				toolbar  	: null,
   				callback	: function(e){
   					var sel = this.list.getSortedSelection();
-			  		alert('Remove '+ sel.length+ ' elements from batch');
+  					var modal = new org.argeo.ria.components.Modal("Confirm", null);
+  					modal.addConfirm("Are you sure you want to remove<br> the selected test" + (sel.length>1?"s":"") + " from the Batch?");
+  					modal.addListener("ok", function(){
+				  		for(var i=0;i<sel.length;i++){
+				  			this.list.remove(sel[i]);
+				  		}
+  					}, this);
+  					modal.attachAndShow();  					
   				},
   				selectionChange : function(viewId, selection){
-  					if(viewId != "form") return;
+  					if(viewId != "form:list") return;					
   					this.setEnabled(false);
   					if((selection && selection.length > 0)) this.setEnabled(true);
   				},  				
@@ -100,10 +109,10 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				command 	: null
   			},
   			"reloadtree" : {
-  				label	 	: "Reload Node", 
+  				label	 	: "Reload", 
   				icon 		: "resource/slc/view-refresh.png",
   				shortcut 	: "Control+m",
-  				enabled  	: true,
+  				enabled  	: false,
   				menu	   	: "Launcher",
   				toolbar  	: "launcher",
   				callback	: function(e){
@@ -111,7 +120,17 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   					if(selected.classname == "org.argeo.ria.components.DynamicTreeFolder"){
 	  					selected.reload();
   					}
-  				},  				
+  				},  
+  				selectionChange : function(viewId, selection){
+  					if(viewId != "form:tree") return;
+  					if(!selection || selection.length != 1) return;
+  					var item = selection[0];
+  					if(!qx.Class.isSubClassOf(qx.Class.getByName(item.classname), qx.ui.tree.AbstractTreeItem)) return;
+  					this.setEnabled(false);
+  					if(qx.Class.isSubClassOf(qx.Class.getByName(item.classname), org.argeo.ria.components.DynamicTreeFolder)){
+  						this.setEnabled(true);
+  					}
+  				},
   				command 	: null
   			}
   		}
@@ -128,15 +147,22 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 
   statics : {
 	flowLoader : function(folder){
-		var moduleData = folder.getUserData("executionModule");
-  		var req = org.argeo.ria.remote.RequestManager.getInstance().getRequest("stub.xml", "GET", "application/xml");
+		var moduleData = folder.getUserData("moduleData");
+  		var req = org.argeo.ria.remote.RequestManager.getInstance().getRequest("../argeo-ria-src/stub.xml", "GET", "application/xml");
   		req.addListener("completed", function(response){
   			var executionModule = new org.argeo.slc.ria.execution.Module();			  			
   			executionModule.setXmlNode(response.getContent());
+  			//
+  			// ARTIFIALLY REPLACE MODULE NAME / VERSION, FOR TESTS PURPOSES
+  			//
+  			executionModule.setName(moduleData.name);
+  			executionModule.setVersion(moduleData.version);
+  			// END
   			var execFlows = executionModule.getExecutionFlows();
   			for(var key in execFlows){
   				var file = new qx.ui.tree.TreeFile(key);
-  				file.setUserData("executionFlow", execFlows);
+  				file.setUserData("executionModule", executionModule);
+  				file.setUserData("executionFlow", execFlows[key]);
   				folder.add(file);
   			}
   			folder.setLoaded(true);
@@ -163,7 +189,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 					folder.getDragData()
 				);
 				moduleFolder.add(versionFolder);
-				//versionFolder.setUserData("executionModule", "object");
+				versionFolder.setUserData("moduleData", {name:key, version:mods[key][i]});
 			}
 			folder.setLoaded(true);
 		}
@@ -264,6 +290,16 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		this.tree.setRoot(root);
 		root.setOpen(true);
 		
+		this.tree.addListener("changeSelection", function(e){
+			var viewSelection = this.getViewSelection();
+			viewSelection.setViewId("form:tree");
+			viewSelection.clear();
+			var sel = this.tree.getSortedSelection();
+			for(var i=0;i<sel.length;i++){
+				viewSelection.addNode(sel[i]);
+			}			
+		}, this);
+		
 		this.listPane = new qx.ui.container.Composite(new qx.ui.layout.Dock());
 		var listToolBar = new qx.ui.toolbar.ToolBar();		
 		var toolGroup = new qx.ui.toolbar.Part();		
@@ -288,10 +324,14 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		this.list.setSelectionMode("multi");
 		this.list.setDroppable(true);
 		this.list.addListener("drop", function(e){
-		  var label = e.getRelatedTarget().getLabel();
-		  var li = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
-		  li.add(new qx.ui.basic.Label(label));
-		  var item = new qx.ui.form.ListItem(label, e.getRelatedTarget().getIcon());
+			var target = e.getRelatedTarget();
+			var executionModule = target.getUserData("executionModule");
+			var executionFlow = target.getUserData("executionFlow");
+			var label = executionModule.getName()+"/"+executionModule.getVersion()+"/"+executionFlow.getName();
+		  	var icon = target.getIcon();
+		  	
+		  var item = new qx.ui.form.ListItem(label, icon);
+		  item.setUserData("batchEntrySpec", new org.argeo.slc.ria.execution.BatchEntrySpec(executionModule, executionFlow));
 		  item.setPaddingTop(1);
 		  item.setPaddingBottom(2);
 		  this.list.add(item);
@@ -302,6 +342,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		
 		this.list.addListener("changeSelection", function(e){
 			var viewSelection = this.getViewSelection();
+			viewSelection.setViewId("form:list");
 			viewSelection.clear();
 			var listSel = this.list.getSortedSelection();
 			for(var i=0;i<listSel.length;i++){
