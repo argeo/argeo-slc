@@ -140,6 +140,9 @@ qx.Class.define("org.argeo.ria.event.CommandsManager",
 	  			command.setEnabled(definition.enabled);
 	  			if(definition.toggle){
 	  				command.setToggle(true);
+	  				if(definition.toggleInitialState){
+	  					command.setToggleInitialState(definition.toggleInitialState);
+	  				}
 	  			}
 	  			this._attachListener(command, definition.callback, definition.callbackContext);
 	  			if(definition.init){

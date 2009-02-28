@@ -9,11 +9,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 
   construct : function(){
   	this.base(arguments);
-	this.setLayout(new qx.ui.layout.Dock());
-	
-	this.COMMON_FORM_HEADER_LABEL = "Choose Agent";
-	this.CHOOSE_AGENT_LABEL = "Agent Uuid";
-	this.CHOOSE_FORM_PART_LABEL = "Test Type";
+	this.setLayout(new qx.ui.layout.Dock());	
   },
 
   properties : 
@@ -29,7 +25,11 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		check:"org.argeo.ria.components.ViewSelection"
   	},  	  	
   	instanceId : {init:""},
-  	instanceLabel : {init:""},  	
+  	instanceLabel : {init:""},  
+  	autoOpen : {
+  		init : true,
+  		check : "Boolean"
+  	},
   	/**
   	 * Commands definition, see {@link org.argeo.ria.event.CommandsManager#definitions} 
   	 */
@@ -45,7 +45,45 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				callback	: function(e){},
   				submenu		: [],
   				submenuCallback : function(commandId){
-  					alert("Execute Batch on Agent "+commandId);
+  					//alert("Execute Batch on Agent "+commandId);
+  					this.executeBatchOnAgent(commandId);
+  				},
+  				command 	: null
+  			},  			
+  			"addtobatch" : {
+  				label	 	: "Add to batch", 
+  				icon 		: "resource/slc/list-add.png",
+  				shortcut 	: null,
+  				enabled  	: true,
+  				menu	   	: null,
+  				toolbar  	: null,
+  				callback	: function(e){
+  					this._addFlowToBatch();
+  				},
+  				selectionChange : function(viewId, selection){
+  					if(viewId != "form:tree") return;
+  					if(!selection || selection.length != 1) return;
+  					var item = selection[0];
+  					this.setEnabled(false);
+  					if(qx.Class.isSubClassOf(qx.Class.getByName(item.classname), qx.ui.tree.TreeFile)){
+  						this.setEnabled(true);
+  					}
+  					
+  				},  				
+  				command 	: null
+  			}, 
+  			"toggleopenonadd" : {
+  				label		: "Auto Open", 
+  				icon 		: "resource/slc/document-open.png",
+  				shortcut 	: null,
+  				enabled  	: true,
+  				toggle		: true,
+  				toggleInitialState	: true,
+  				menu	   	: "Launcher",
+  				toolbar  	: "launcher",
+  				callback 	: function(event){
+  					var state = event.getTarget().getUserData("slc.command.toggleState");
+  					this.setAutoOpen(state);
   				},
   				command 	: null
   			},  			
@@ -59,8 +97,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				callback	: function(e){
   					var sel = this.list.getSortedSelection();
   					var item = sel[0];
-  					var execFlow = item.getUserData("batchEntrySpec").getFlow();
-  					var specEditor = new org.argeo.slc.ria.execution.SpecEditor(execFlow);
+  					 var specEditor = new org.argeo.slc.ria.execution.SpecEditor(item.getUserData("batchEntrySpec"));
   					specEditor.attachAndShow();
   				},
   				selectionChange : function(viewId, selection){
@@ -205,7 +242,6 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   	init : function(viewPane){
   		this.setView(viewPane);
   		this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
-  		//this._createForm();
   		this._amqClient = org.argeo.ria.remote.JmsClient.getInstance();
   		this._amqClient.startPolling();
   	},
@@ -289,6 +325,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		);
 		this.tree.setRoot(root);
 		root.setOpen(true);
+		this.tree.setContextMenu(org.argeo.ria.event.CommandsManager.getInstance().createMenuFromIds(["addtobatch", "reloadtree"]));
 		
 		this.tree.addListener("changeSelection", function(e){
 			var viewSelection = this.getViewSelection();
@@ -319,24 +356,52 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 				
 		this.listPane.add(listToolBar, {edge:"north"});
 		
+		var indicator = new qx.ui.core.Widget();
+		indicator.setDecorator(new qx.ui.decoration.Single().set({top:[1,"solid","#33508D"]}));
+		indicator.setHeight(0);
+		indicator.setOpacity(0.5);
+		indicator.setZIndex(100);
+		indicator.setLayoutProperties({left:-1000,top:-1000});
+		org.argeo.ria.Application.INSTANCE.getRoot().add(indicator);
+		
+		
 		this.list = new qx.ui.form.List();
 		this.list.setDecorator(null);
 		this.list.setSelectionMode("multi");
 		this.list.setDroppable(true);
+		this.list.setDraggable(true);
+		this.list.setContextMenu(org.argeo.ria.event.CommandsManager.getInstance().createMenuFromIds(["editexecutionspecs", "removefrombatch"]));
+		
+		
+		this.list.addListener("dragstart", function(e){
+			e.addType(["items"]);
+			e.addAction(["move"]);
+		},this);
+		this.list.addListener("dragend", function(e){
+			indicator.setDomPosition(-1000,-1000);
+		});
+		this.list.addListener("dragover", function(e){
+			var orig = e.getOriginalTarget();
+			var origCoords = orig.getContainerLocation();
+			indicator.setWidth(orig.getBounds().width);
+			indicator.setDomPosition(origCoords.left, origCoords.bottom);
+		});
+		this.list.addListener("drag", function(e){
+			var orig = e.getOriginalTarget();
+			var origCoords = orig.getContainerLocation();
+			indicator.setWidth(orig.getBounds().width);
+			indicator.setDomPosition(origCoords.left, origCoords.bottom);
+		});
+		
 		this.list.addListener("drop", function(e){
 			var target = e.getRelatedTarget();
-			var executionModule = target.getUserData("executionModule");
-			var executionFlow = target.getUserData("executionFlow");
-			var label = executionModule.getName()+"/"+executionModule.getVersion()+"/"+executionFlow.getName();
-		  	var icon = target.getIcon();
-		  	
-		  var item = new qx.ui.form.ListItem(label, icon);
-		  item.setUserData("batchEntrySpec", new org.argeo.slc.ria.execution.BatchEntrySpec(executionModule, executionFlow));
-		  item.setPaddingTop(1);
-		  item.setPaddingBottom(2);
-		  this.list.add(item);
-		  this.list.select(item);
-		  this.getCommands()["editexecutionspecs"].command.execute();
+			var afterItem = e.getOriginalTarget();
+			indicator.setDomPosition(-1000,-1000);
+			if(afterItem.classname != "qx.ui.form.ListItem") afterItem = null;
+			if(!target){
+				target = this.list.getSortedSelection()[0];
+			}
+			this._addFlowToBatch(target, afterItem);
 		}, this);		
 		this.listPane.add(this.list, {edge:"center"});		
 		
@@ -351,260 +416,41 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		}, this);
 		
 		splitPane.add(this.tree, 0);
-		splitPane.add(this.listPane, 1);
-		//this.add(this.scroll, {edge:'center'});
-		
+		splitPane.add(this.listPane, 1);		
 	},
 		
-	/**
-	 * Creates the form.
-	 */
-	_createForm : function(){
-  		this.fields = {};
-  		this.hiddenFields = {};
-  		this.freeFields = [];
-  		
-		var execButtonPane = new qx.ui.container.Composite(new qx.ui.layout.Dock());
-		var execButton = new qx.ui.form.Button(
-			"Execute", 
-			"resource/slc/media-playback-start-32.png"			
-		)
-		execButton.addListener("click", function(){
-			this.submitForm();
-		}, this);
-		execButtonPane.setPadding(10, 80);
-		execButtonPane.add(execButton, {edge:"center"});
-		this.formPane.add(execButtonPane);
-  		
-		this.agentSelector = new qx.ui.form.SelectBox();
-		var serviceManager = org.argeo.ria.remote.RequestManager.getInstance();
-		serviceManager.addListener("reload", function(reloadEvent){
-			if(reloadEvent.getDataType()!= "agents") return ;
-			var xmlDoc = reloadEvent.getContent();
-			var nodes = org.argeo.ria.util.Element.selectNodes(xmlDoc, "//slc:slc-agent-descriptor");
-			var newTopics = {};
-			for(var i=0;i<nodes.length;i++){
-				var uuid = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "@uuid");
-				var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host");
-				newTopics[uuid] = host+" ("+uuid+")";
-			}
-			this.setRegisteredTopics(newTopics);
-		}, this);
-		
-		var commonForm = {pane:this.formPane};		
-		this._addFormHeader(commonForm, this.COMMON_FORM_HEADER_LABEL);
-		this._addFormEntry(commonForm, new qx.ui.basic.Label(this.CHOOSE_AGENT_LABEL), this.agentSelector);
-		this._createFormVariableParts();
-		if(!this.parts) return;
-		if(qx.lang.Object.getLength(this.parts) > 1){
-			// Add chooser
-			this.partChooser = new qx.ui.form.SelectBox();
-			for(var key in this.parts){
-				this.partChooser.add(new qx.ui.form.ListItem(this.parts[key].label, null, key));
-			}
-			this._addFormEntry(commonForm, new qx.ui.basic.Label(this.CHOOSE_FORM_PART_LABEL), this.partChooser);
-			this.partChooser.addListener("changeValue", function(ev){
-				this._showSelectedPart(ev.getData());
-			}, this);
+	_addFlowToBatch : function(target, after){
+		this.debug(target);
+		if(!target){
+			 target = this.tree.getSelectedItem();
+			 if(!target) return;
+		}else if(target.classname == "qx.ui.form.ListItem"){
+			if(!after) return;
+			if(after == "first") this.list.addAt(target, 0);
+			else this.list.addAfter(target, after);
+			return;
 		}
-		this._showSelectedPart(qx.lang.Object.getKeys(this.parts)[0]);		
-	},
-	
-	/**
-	 * Show a form part given its id.
-	 * @param partId {String} The part id
-	 */
-	_showSelectedPart : function(partId){
-		if(!this.parts) return;
-		if(!this.partsContainer){
-			this.partsContainer = new qx.ui.container.Composite(new qx.ui.layout.Canvas());
-			this.formPane.add(this.partsContainer);			
-		}
-		for(var i in this.parts){
-			var formObject = this.parts[i];
-			if(!formObject.added){
-				this.partsContainer.add(formObject.pane, {top:0, left:0});
-				formObject.added = true;
-			}
-			formObject.pane.hide();
-		}
-		if(this.parts[partId]){
-			this.parts[partId].pane.show();
-		}
-	},
-	
-	/**
-	 * Init a form part : creates a pane, a set of fields, etc.
-	 * @param formId {String} A unique ID
-	 * @param label {String} A label
-	 * @return {Map} The form part.
-	 */
-	_initFormPart : function(formId, label){
-		if(!this.parts) this.parts = {};		
-		var formObject = {};
-		formObject.hiddenFields = {};
-		formObject.freeFields = [];
-		formObject.fields = {};
-		formObject.id = formId;
-		formObject.label = label;
-		this.parts[formId] = formObject;
-		formObject.pane = new qx.ui.container.Composite(new qx.ui.layout.VBox(5));
-		return formObject;
-	},
-	
-	/**
-	 * To be overriden by this class children.
-	 */
-	_createFormVariableParts : function(){
-		var standard = this._initFormPart("standard", "Canonical");
-		this._createStandardForm(standard);
-		var simple = this._initFormPart("simple", "SLC Sample");
-		this._createSimpleForm(simple);
-	},
-	
-	/**
-	 * Creates a form for SLC demo
-	 * @param formObject {Map} The form part
-	 */
-	_createSimpleForm : function(formObject){
-
-		this._addFormInputText(formObject, "ant.file", "File", "Category1/SubCategory2/build.xml");
-		var moreButton = new qx.ui.basic.Image("resource/slc/list-add.png");
-		moreButton.setToolTip(new qx.ui.tooltip.ToolTip("Add a parameter"));
-		moreButton.setCursor("pointer");
-		moreButton.addListener("click", function(){
-			this._addFormInputText(formObject);
-		}, this);
-		this._addFormHeader(formObject, "Add optionnal parameters", moreButton);
-		this._addFormInputText(formObject);
-		this._addFormInputText(formObject);		
-		
-	},
-	
-	/**
-	 * Create a canonical form.
-	 * @param formObject {Map} The form part
-	 */
-	_createStandardForm : function(formObject){
-		
-		this._addFormHeader(formObject, "Set Execution Parameters");
-		this._addFormInputText(formObject, "status", "Status", "STARTED");
-		this._addFormInputText(formObject, "host", "Host", "localhost");
-		this._addFormInputText(formObject, "user", "User", "user");
-		
-		var moreButton = new qx.ui.basic.Image("resource/slc/list-add.png");
-		moreButton.setToolTip(new qx.ui.tooltip.ToolTip("Add a parameter"));
-		moreButton.setCursor("pointer");
-		moreButton.addListener("click", function(){
-			this._addFormInputText(formObject);
-		}, this);
-		this._addFormHeader(formObject, "Add optionnal parameters", moreButton);
-		this._addFormInputText(formObject);
-		this._addFormInputText(formObject);		
-	},
-	
-	/**
-	 * Add an hidden field to the form
-	 * @param formObject {Map} The form part
-	 * @param fieldName {String} Name
-	 * @param fieldValue {String} Value
-	 */
-	_addFormHiddenField : function(formObject, fieldName, fieldValue){
-		formObject.hiddenFields[fieldName] = fieldValue;
-	},
-	
-	/**
-	 * Creates a simple label/input form entry.
-	 * @param formObject {Map} The form part
-	 * @param fieldName {String} Name
-	 * @param fieldLabel {String} Label of the field
-	 * @param defaultValue {String} The default value
-	 * @param choiceValues {Map} An map of values
-	 */
-	_addFormInputText : function(formObject, fieldName, fieldLabel, defaultValue, choiceValues){
-		var labelElement;
-		if(choiceValues){
-			var fieldElement = new qx.ui.form.SelectBox();
-			for(var key in choiceValues){
-				fieldElement.add(new qx.ui.form.ListItem(choiceValues[key], null, key));
-			}
+		var executionModule = target.getUserData("executionModule");
+		var executionFlow = target.getUserData("executionFlow");
+		var batchEntry = new org.argeo.slc.ria.execution.BatchEntrySpec(executionModule, executionFlow);
+		var label = batchEntry.getLabel();
+	  	var icon = target.getIcon();
+		var item = new qx.ui.form.ListItem(label, icon);
+		item.setUserData("batchEntrySpec", batchEntry);
+		item.setPaddingTop(1);
+		item.setPaddingBottom(2);
+		if(after){
+			if(after == "first") this.list.addAt(item, 0);
+			else this.list.addAfter(item, after);
 		}else{
-			var fieldElement = new qx.ui.form.TextField();
+			this.list.add(item);
 		}
-		if(defaultValue){
-			fieldElement.setValue(defaultValue);
-		}
-		if(fieldName && fieldLabel){
-			labelElement = new qx.ui.basic.Label(fieldLabel);
-			formObject.fields[fieldName] = fieldElement;
-		}else{
-			labelElement = new qx.ui.form.TextField();
-			formObject.freeFields.push({
-				labelEl:labelElement, 
-				valueEl:fieldElement
-			});
-		}
-		this._addFormEntry(formObject, labelElement, fieldElement);
-	},
-	
-	/**
-	 * Add an header
-	 * @param formObject {Map} The form part
-	 * @param content {Mixed} Content to add.
-	 * @param additionnalButton {Mixed} Any widget to add on the east.
-	 */
-	_addFormHeader : function(formObject, content, additionnalButton){
-		var header = new qx.ui.basic.Label('<b>'+content+'</b>');
-		header.setRich(true);		
-		if(!additionnalButton){
-			header.setPaddingTop(10);
-			formObject.pane.add(header);
-		}else{
-			var pane = new qx.ui.container.Composite(new qx.ui.layout.Dock());
-			pane.setPaddingTop(10);
-			pane.setPaddingRight(10);
-			pane.add(header, {edge:'center'});
-			pane.add(additionnalButton, {edge:'east'});
-			formObject.pane.add(pane);
+		this.list.select(item);
+		if(this.getAutoOpen()){
+			this.getCommands()["editexecutionspecs"].command.execute();
 		}
 	},
-	
-	/**
-	 * Adds a label/input like entry in the form.
-	 * @param formObject {Map} The form part
-	 * @param labelElement {Object} Either a label or an input 
-	 * @param fieldElement {Object} Any form input.
-	 */
-	_addFormEntry : function(formObject, labelElement, fieldElement){
-		var entryPane = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
-		labelElement.setWidth(100);
-		labelElement.setTextAlign("right");		
-		entryPane.add(labelElement);
-		entryPane.add(new qx.ui.basic.Label(':'));
-		fieldElement.setWidth(150);
-		entryPane.add(fieldElement);
-		formObject.pane.add(entryPane);
-	},
-	
-	/*
-	_refreshTopicsSubscriptions : function(changeTopicsEvent){
-		var oldTopics = changeTopicsEvent.getOldData() || {};
-		var newTopics = changeTopicsEvent.getData();
-		var removed = [];
-		var added = [];
-		for(var key in oldTopics){
-			if(!newTopics[key]) {
-				//this._removeAmqListener(key);
-			}
-		}
-		for(var key in newTopics){
-			if(!oldTopics[key]) {
-				//this._addAmqListener(key);
-			}			
-		}
-	},
-	*/
-		
+			
 	/**
 	 * Refresh the selector when the topics are updated.
 	 * @param changeTopicsEvent {qx.event.type.DataEvent} The reload event.
@@ -618,27 +464,29 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			var submenu = {"label":topics[key],"icon":"resource/slc/mime-xsl.png", "commandId":key};
 			menu.push(submenu);
 		}
+		// FAKE!!
+		if(!menu.length){
+			menu.push({"label":"Fake Agent", "icon":"resource/slc/mime-xsl.png", "commandId":"fake_agent_uuid"});
+		}
 		command.clearMenus();
 		command.setMenu(menu);
 		if(menu.length) command.setEnabled(true);
 	},
-	
-	/*
-	_addAmqListener: function(uuid){
-		this._amqClient.addListener("slcExec", "topic://agent."+uuid+".newExecution", function(response){
-			var message = org.argeo.ria.util.Element.selectSingleNode(response, "slc:slc-execution");				
-			var slcExec = new org.argeo.slc.ria.SlcExecutionMessage(message.getAttribute("uuid"));
-			slcExec.fromXml(message);
-			this.logModel.addRows([
-				[new Date().toString(), slcExec.getHost()+' ('+slcExec.getUuid()+')', slcExec.getStatus()]
-			]);				
-		}, this);
+		
+	currentBatchToXml : function(){
+		var selection = this.list.getChildren();
+		var xmlString = "";
+		for(var i=0;i<selection.length;i++){
+			var batchEntrySpec = selection[i].getUserData("batchEntrySpec");
+			xmlString += batchEntrySpec.toXml();
+		}
+		return xmlString;
 	},
 	
-	_removeAmqListener : function(uuid){
-		this._amqClient.removeListener("slcExec", "topic://agent."+uuid+".newExecution");
+	executeBatchOnAgent : function(agentUuid){
+		var xmlString = agentUuid + this.currentBatchToXml();
+		alert(xmlString);
 	},
-	*/
 	
 	/**
 	 * Make an SlcExecutionMessage from the currently displayed form.

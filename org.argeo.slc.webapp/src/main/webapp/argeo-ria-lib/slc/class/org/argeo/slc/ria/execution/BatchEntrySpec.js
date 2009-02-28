@@ -15,10 +15,23 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 		this.setModule(module);
 		this.setFlow(flow);
 		this.setOriginalSpec(flow.getExecutionSpec());
+		this.setName(flow.getExecutionSpec().getName());
 		this.fetchInstanceValues();
 	},
 	
 	members :  {
+		
+		getLabel : function(){
+			var label = this.getModule().getName();
+			label += "/" + this.getModule().getVersion();
+			label += "/" + this.getFlow().getName();
+			return label;
+		},
+		
+		toXml : function(){
+			return this.getLabel() + "\n";
+		},
+		
 		/**
 		 * Fetch the Spec Values with the Flow Values to make the current instance value
 		 */

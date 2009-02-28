@@ -40,7 +40,7 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
   	},
   	
   	initViews : function(viewsManager){
-	  var formApplet = viewsManager.initIViewClass(org.argeo.slc.ria.LauncherApplet, "form");
+	  var formApplet = viewsManager.initIViewClass(org.argeo.slc.ria.NewLauncherApplet, "form");
 	  formApplet.load();
 	  
 	  var logger = viewsManager.initIViewClass(org.argeo.slc.ria.SlcExecLoggerApplet, "main");

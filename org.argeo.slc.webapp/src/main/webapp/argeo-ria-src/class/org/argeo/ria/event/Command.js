@@ -26,6 +26,10 @@
   	 */
   	toggle : {init:false},
   	/**
+  	 * It toggle button, initial state 
+  	 */
+  	toggleInitialState : {init : false},
+  	/**
   	 * Sub menu if needed 
   	 */
   	menu : {
@@ -105,6 +109,9 @@
   			button.setEnabled(this.getEnabled());
   		}else if(this.getToggle()){
   			button = new qx.ui.toolbar.CheckBox(this.getLabel(), this.getIcon());
+  			if(this.getToggleInitialState()){
+  				button.setChecked(true);
+  			}
   			this._registerToggleButtonListeners(button);
   		}else{
   			button = new qx.ui.toolbar.Button(
@@ -154,7 +161,7 @@
 			this.fireEvent("execute");
 		}, this);
 		this.addListener("execute", function(event){
-			if(this.getUserData("slc;command.toggleStateSource") == button) return;
+			if(this.getUserData("slc.command.toggleStateSource") == button) return;
 			button.setUserData("disableListener", true);
 			button.setChecked(this.getUserData("slc.command.toggleState"));
 			button.setUserData("disableListener", false);

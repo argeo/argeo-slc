@@ -30,7 +30,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 			check : "Boolean"
 		},
 		value : {
-			
+			nullable : true
 		},
 		/**
 		 * Castor representation of the object 
