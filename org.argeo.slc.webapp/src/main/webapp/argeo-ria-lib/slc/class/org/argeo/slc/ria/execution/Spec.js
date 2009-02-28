@@ -30,7 +30,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 	
 	statics : {
 		XPATH_NAME : "@name",
-		XPATH_VALUES : "slc:values"
+		XPATH_VALUES : "slc:values/slc:value"
 	},
 	
 	construct : function(){
@@ -45,6 +45,15 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 		_applyXmlNode : function(xmlNode){
 			// Parse now
 			this.setName(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_NAME));
+			var values = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_VALUES);
+			var parsedValues = {};
+			for(var i=0;i<values.length;i++){
+				//var valueNode = values[i];
+				var value = new org.argeo.slc.ria.execution.Value();
+				value.setXmlSpecNode(values[i]);
+				parsedValues[value.getKey()] = value;
+			}
+			this.setValues(parsedValues);
 		}		
 	}	
 	

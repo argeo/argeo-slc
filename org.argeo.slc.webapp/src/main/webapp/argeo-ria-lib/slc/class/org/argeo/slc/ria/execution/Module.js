@@ -46,7 +46,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 		XPATH_NAME : "slc:execution-module-descriptor/slc:name",
 		XPATH_VERSION : "slc:execution-module-descriptor/slc:version",
 		XPATH_EXECUTION_FLOWS : "slc:execution-module-descriptor/slc:executionFlows/slc:execution-flow-descriptor",
-		XPATH_EXECUTION_SPECS : "slc:execution-module-descriptor/slc:executionSpecs/slc:simple-execution-spec"
+		XPATH_EXECUTION_SPECS : "slc:execution-module-descriptor/slc:executionSpecs/slc:default-execution-spec"
 	},
 	
 	construct : function(){

@@ -15,5 +15,31 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 		this.setModule(module);
 		this.setFlow(flow);
 		this.setOriginalSpec(flow.getExecutionSpec());
+		this.fetchInstanceValues();
+	},
+	
+	members :  {
+		/**
+		 * Fetch the Spec Values with the Flow Values to make the current instance value
+		 */
+		fetchInstanceValues : function(){
+			var specValues = this.getOriginalSpec().getValues();
+			var flow = this.getFlow();
+			var instanceValues = {};
+			for(var key in specValues){
+				var flowValue = flow.getValue(
+									key, 
+									specValues[key].getSpecType(), 
+									specValues[key].getSpecSubType()
+								);
+				var instValue = specValues[key].clone();
+				if(flowValue){
+					instValue.setValue(flowValue);
+				}
+				instanceValues[key] = instValue;
+			}
+			this.setValues(instanceValues);
+			this.debug(instanceValues);
+		}
 	}
 });

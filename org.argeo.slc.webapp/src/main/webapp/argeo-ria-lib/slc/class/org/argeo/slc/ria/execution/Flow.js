@@ -25,6 +25,9 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 		executionSpec : {
 			check : "org.argeo.slc.ria.execution.Spec"
 		},
+		values : {
+			check : "Node"
+		},
 		/**
 		 * Castor representation of the object 
 		 */
@@ -53,7 +56,18 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 				name : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_NAME),
 				executionSpecName : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_EXEC_SPEC_NAME)
 			});
-		}		
+			var values = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_VALUES);
+			this.setValues(values[0]);
+		},
+		getValue: function(key, specType, specSubType){
+			var xpath;
+			if(specType == "primitive"){
+				xpath = 'slc:value[@key="'+key+'"]/slc:primitive-value[@type="'+specSubType+'"]/slc:value';
+			}else if(specType == "ref"){
+				xpath = 'slc:value[@key="'+key+'"]/slc:ref-value/slc:label';
+			}
+			return org.argeo.ria.util.Element.getSingleNodeText(this.getValues(), xpath);
+		}
 	}	
 	
 });
