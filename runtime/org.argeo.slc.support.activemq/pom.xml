@@ -120,7 +120,6 @@
 		<dependency>
 			<groupId>org.argeo.dep.osgi</groupId>
 			<artifactId>org.argeo.dep.osgi.activemq</artifactId>
-			<version>5.2.0</version>
 		</dependency>
 		<!--
 			<dependency> <groupId>org.apache.activemq</groupId>
