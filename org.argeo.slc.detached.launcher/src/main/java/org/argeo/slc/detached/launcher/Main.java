@@ -79,6 +79,7 @@ public class Main {
 	}
 
 	public static void startEquinox(Properties config) throws Exception {
+		info("java.home=" + System.getProperty("java.home"));
 		info("java.class.path=" + System.getProperty("java.class.path"));
 
 		File baseDir = new File(System.getProperty("user.dir"))
@@ -109,7 +110,8 @@ public class Main {
 					String url = "reference:file:"
 							+ new File(path).getCanonicalPath();
 					Bundle bundle = context.installBundle(url);
-					installBundleNames.add(bundle.getSymbolicName());
+					if (bundle.getSymbolicName() != null)
+						installBundleNames.add(bundle.getSymbolicName());
 					info("Installed from classpath " + url);
 				} catch (Exception e) {
 					bundleInstallWarn(e.getMessage());
@@ -157,12 +159,15 @@ public class Main {
 
 		if (bundleStart.trim().equals("*")) {
 			for (int i = 0; i < installBundleNames.size(); i++) {
-				String bundleSymbolicName = installBundleNames.get(i)
-						.toString();
-				try {
-					startBundle(context, bundleSymbolicName);
-				} catch (Exception e) {
-					bundleInstallWarn(e.getMessage());
+				Object obj = installBundleNames.get(i);
+				if (obj != null) {
+					String bundleSymbolicName = obj.toString();
+					try {
+						startBundle(context, bundleSymbolicName);
+					} catch (Exception e) {
+						bundleInstallWarn("Cannot start " + bundleSymbolicName
+								+ ": " + e.getMessage());
+					}
 				}
 			}
 		} else {
@@ -207,13 +212,14 @@ public class Main {
 		for (int i = 0; i < bundles.length; i++) {
 			Bundle bundle = bundles[i];
 			String bundleSymbolicName = bundle.getSymbolicName();
-			if (bundleSymbolicName == null)
-				throw new RuntimeException("Bundle " + bundle.getBundleId()
-						+ " (" + bundle.getLocation()
-						+ ") has no symbolic name.");
+			if (bundleSymbolicName != null) {
+				// throw new RuntimeException("Bundle " + bundle.getBundleId()
+				// + " (" + bundle.getLocation()
+				// + ") has no symbolic name.");
 
-			if (bundleSymbolicName.equals(symbolicName)) {
-				return bundle;
+				if (bundleSymbolicName.equals(symbolicName)) {
+					return bundle;
+				}
 			}
 		}
 		return null;
@@ -285,10 +291,11 @@ public class Main {
 	}
 
 	private static void info(Object obj) {
-		//System.out.println("[INFO] " + obj);
+		System.out.println("[INFO] " + obj);
 	}
 
 	private static void bundleInstallWarn(Object obj) {
 		System.err.println("[WARN] " + obj);
+		//Thread.dumpStack();
 	}
 }

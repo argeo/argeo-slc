@@ -112,11 +112,11 @@
 			<artifactId>com.springsource.javax.wsdl</artifactId>
 		</dependency>
 
-		<!-- ActiveMQ -->
+		<!-- ActiveMQ
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>com.springsource.org.apache.activemq.web</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<!-- Various -->
 		<dependency>

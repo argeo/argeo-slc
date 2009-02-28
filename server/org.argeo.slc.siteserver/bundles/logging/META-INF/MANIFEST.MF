@@ -1,0 +1,4 @@
+Bundle-Name: Log4j configuration bundle
+Bundle-SymbolicName: server.logging
+Fragment-Host: com.springsource.org.apache.log4j
+

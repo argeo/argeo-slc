@@ -766,12 +766,12 @@ limitations under the License.
 			</dependency>
 
 			<!-- ActiveMQ -->
-			<dependency>
+			<!--  <dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>com.springsource.org.apache.activemq</artifactId>
 				<version>${version.activemq}</version>
-			</dependency>
-			<dependency>
+			</dependency>-->
+			<!-- <dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>com.springsource.org.apache.activemq.web</artifactId>
 				<version>${version.activemq}</version>
@@ -780,24 +780,16 @@ limitations under the License.
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>com.springsource.org.apache.activemq.pool</artifactId>
 				<version>${version.activemq}</version>
-			</dependency>
-			<!--
-				<dependency> <groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-pool</artifactId>
-				<version>${version.activemq}</version> </dependency> <dependency>
-				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-optional</artifactId>
-				<version>${version.activemq}</version> </dependency>
-			-->
-			<dependency>
+			</dependency> -->
+			<!-- <dependency>
 				<groupId>org.apache.xbean</groupId>
 				<artifactId>com.springsource.org.apache.xbean.spring</artifactId>
 				<version>3.3.0</version>
-			</dependency>
+			</dependency>-->
 			<dependency>
 				<groupId>org.apache.camel</groupId>
 				<artifactId>com.springsource.org.apache.camel</artifactId>
-				<version>1.3.0</version>
+				<version>1.3.0</version> 
 			</dependency>
 
 		</dependencies>

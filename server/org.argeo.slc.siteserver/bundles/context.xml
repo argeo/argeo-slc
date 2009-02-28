@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Local configuration of the Argeo SLC server -->
+<Context>
+
+	<!-- Default set of monitored resources -->
+	<WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+	<!--  
+		<Resource name="jdbc/mainDs" auth="Container"
+		type="javax.sql.DataSource" maxActive="10" maxIdle="5" maxWait="10000"
+		username="root" password="" driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://localhost:3306/argeo_slc?autoReconnect=true" />
+		
+		<Parameter name="sessionFactoryParentBean"
+		value="slcServerDefault.sessionFactory.MySQL5" override="false" />
+	-->
+
+	<Resource name="jdbc/mainDs" auth="Container"
+		type="javax.sql.DataSource" maxActive="10" maxIdle="5" maxWait="10000"
+		username="sa" password="" driverClassName="org.hsqldb.jdbcDriver"
+		url="jdbc:hsqldb:mem:test" />
+
+</Context>

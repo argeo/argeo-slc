@@ -1,0 +1,15 @@
+Bundle-SymbolicName: org.argeo.slc.server.activemq
+Bundle-Version: 0.1.0
+Import-Package: javax.jms,
+ javax.management.j2ee.statistics,
+ org.apache.commons.logging
+Require-Bundle: org.argeo.slc.server,
+ org.argeo.slc.support.activemq,
+ org.springframework.core,
+ org.springframework.context,
+ org.springframework.beans,
+ org.springframework.oxm,
+ org.springframework.jms,
+ com.springsource.org.castor,
+ org.argeo.dep.osgi.activemq
+Spring-Context: *;create-asynchronously:=false 
