@@ -58,7 +58,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 			var childs = xmlNode.childNodes;
 			for(var i=0;i<childs.length;i++){
 				var child = childs[i];
-				if(child.nodeType != Node.ELEMENT_NODE) continue;
+				if(child.nodeType != 1) continue;
 				if(child.nodeName == "slc:primitive-spec-attribute"){
 					this.setSpecType("primitive");
 					this.setSpecSubType(org.argeo.ria.util.Element.getSingleNodeText(child, "@type"));
