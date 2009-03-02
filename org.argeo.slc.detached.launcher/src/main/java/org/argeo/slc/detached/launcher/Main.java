@@ -196,7 +196,7 @@ public class Main {
 
 	private static void startBundle(BundleContext bundleContext,
 			String symbolicName) throws BundleException {
-		info("Starting bundle " + symbolicName + "...");
+		//info("Starting bundle " + symbolicName + "...");
 		Bundle bundle = findBundleBySymbolicName(bundleContext, symbolicName);
 		if (bundle != null)
 			bundle.start();

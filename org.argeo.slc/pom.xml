@@ -532,6 +532,11 @@ limitations under the License.
 			</dependency>
 			<dependency>
 				<groupId>org.objectweb.asm</groupId>
+				<artifactId>com.springsource.org.objectweb.asm</artifactId>
+				<version>2.2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.objectweb.asm</groupId>
 				<artifactId>com.springsource.org.objectweb.asm.attrs</artifactId>
 				<version>2.2.0</version>
 			</dependency>
@@ -787,7 +792,7 @@ limitations under the License.
 			<dependency>
 				<groupId>org.argeo.dep.osgi</groupId>
 				<artifactId>org.argeo.dep.osgi.activemq</artifactId>
-				<version>5.2.0.argeo.1</version>
+				<version>5.2.0.argeo.2</version>
 			</dependency>
 
 			<dependency>
