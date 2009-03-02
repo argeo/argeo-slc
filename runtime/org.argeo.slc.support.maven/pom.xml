@@ -7,9 +7,9 @@
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
-	<artifactId>org.argeo.slc.support.ant</artifactId>
+	<artifactId>org.argeo.slc.support.maven</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC Support Ant</name>
+	<name>Argeo SLC Support Maven</name>
 	<build>
 		<plugins>
 			<!-- Look to parent pom for inheritances -->
@@ -36,7 +36,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>
-							org.argeo.slc.ant.*
+							org.argeo.slc.maven.*
 						</Export-Package>
 					</instructions>
 				</configuration>
@@ -47,25 +47,6 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.argeo.dep.osgi</groupId>
-			<artifactId>org.argeo.dep.osgi.ant</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.net</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oro</groupId>
-			<artifactId>com.springsource.org.apache.oro</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.bsf</groupId>
-			<artifactId>com.springsource.org.apache.bsf</artifactId>
 		</dependency>
 	</dependencies>
 </project>
