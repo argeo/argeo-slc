@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>argeo-slc</artifactId>
+		<version>0.11.3-SNAPSHOT</version>
+		<relativePath>../../org.argeo.slc</relativePath>
+	</parent>
+	<groupId>org.argeo.slc.runtime</groupId>
+	<artifactId>org.argeo.slc.support.ant</artifactId>
+	<packaging>jar</packaging>
+	<name>Argeo SLC Support Ant</name>
+	<build>
+		<plugins>
+			<!-- Look to parent pom for inheritances -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${version.maven-bundle-plugin}</version>
+				<configuration>
+					<instructions>
+						<Export-Package>
+							org.argeo.slc.ant.*
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.simple</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.argeo.dep.osgi</groupId>
+			<artifactId>org.argeo.dep.osgi.ant</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.net</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.oro</groupId>
+			<artifactId>com.springsource.org.apache.oro</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.bsf</groupId>
+			<artifactId>com.springsource.org.apache.bsf</artifactId>
+		</dependency>
+	</dependencies>
+</project>
