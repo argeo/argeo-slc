@@ -16,6 +16,7 @@
 	</properties>
 	<build>
 		<plugins>
+		<!-- 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -26,6 +27,7 @@
 					<overWriteSnapshots>true</overWriteSnapshots>
 				</configuration>
 			</plugin>
+			 -->
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>maven-jetty-plugin</artifactId>
