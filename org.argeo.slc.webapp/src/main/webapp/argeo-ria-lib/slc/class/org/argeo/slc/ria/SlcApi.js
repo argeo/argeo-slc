@@ -22,7 +22,9 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	GET_RESULT_SERVICE : "getResult.service",
   	LIST_SLCEXEC_SERVICE : "listSlcExecutions.service",
   	
-  	LIST_AGENTS_SERVICE : "listAgents.service",  	
+  	LIST_AGENTS_SERVICE : "listAgents.service",
+	LIST_MODULES_SERVICE : "listModulesDescriptors.service",
+	GET_EXECUTION_DESC_SERVICE : "getExecutionDescriptor.service",
   	AMQ_SERVICE : "amq",
   	
   	/**
@@ -206,6 +208,39 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   			fireReloadEventType,
   			iLoadStatusables
   		);
+  	},
+
+  	/**
+  	 * Load the module descriptors
+  	 * @param fireReloadEventType {String} Event type to trigger (optionnal)
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update 
+  	 * @return {qx.io.remote.Request}
+  	 */
+  	getListModulesService : function(fireReloadEventType, iLoadStatusables){
+  		return org.argeo.slc.ria.SlcApi.getServiceRequest(
+  			org.argeo.slc.ria.SlcApi.LIST_MODULES_SERVICE,
+  			fireReloadEventType,
+  			iLoadStatusables
+  		);
+  	},
+  	
+  	/**
+  	 * Get an execution module descriptor by its name and version
+  	 * @param moduleName {String} The name of the module to get
+  	 * @param moduleVersion {String} Its version, passed directly as a string
+  	 * @param fireReloadEventType {String} Event type to trigger (optionnal)
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update 
+  	 * @return {qx.io.remote.Request}
+  	 */
+  	getLoadExecutionDescriptorService : function(moduleName, moduleVersion, fireReloadEventType, iLoadStatusables){
+  		var req = org.argeo.slc.ria.SlcApi.getServiceRequest(
+  			org.argeo.slc.ria.SlcApi.GET_EXECUTION_DESC_SERVICE,
+  			fireReloadEventType,
+  			iLoadStatusables
+  		); 
+		req.setParameter("moduleName", moduleName);
+		req.setParameter("version", moduleVersion);
+		return req;
   	},
   	
   	/**

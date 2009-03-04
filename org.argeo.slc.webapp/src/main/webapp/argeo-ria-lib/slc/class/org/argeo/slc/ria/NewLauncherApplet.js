@@ -185,15 +185,14 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   statics : {
 	flowLoader : function(folder){
 		var moduleData = folder.getUserData("moduleData");
-  		var req = org.argeo.ria.remote.RequestManager.getInstance().getRequest("../argeo-ria-src/stub.xml", "GET", "application/xml");
+  		//var req = org.argeo.ria.remote.RequestManager.getInstance().getRequest("../argeo-ria-src/stub.xml", "GET", "application/xml");
+		var req = org.argeo.slc.ria.SlcApi.getLoadExecutionDescriptorService(moduleData.name, moduleData.version);
   		req.addListener("completed", function(response){
   			var executionModule = new org.argeo.slc.ria.execution.Module();			  			
   			executionModule.setXmlNode(response.getContent());
-  			//
-  			// ARTIFIALLY REPLACE MODULE NAME / VERSION, FOR TESTS PURPOSES
-  			//
-  			executionModule.setName(moduleData.name);
-  			executionModule.setVersion(moduleData.version);
+  			// STUB
+  			// executionModule.setName(moduleData.name);
+  			// executionModule.setVersion(moduleData.version);
   			// END
   			var execFlows = executionModule.getExecutionFlows();
   			for(var key in execFlows){
@@ -208,28 +207,42 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 	},
 	
 	modulesLoader : function(folder){
-		// Call service, and parse
-		var mods = {
-			"Module 1":["ver1.1", "ver1.2", "ver1.3"], 
-			"Module 2":["ver2.1", "ver2.2", "ver2.3", "ver2.4"], 
-			"Module 3":["ver3.1", "ver3.2"]
-		};
-		var flowLoader = org.argeo.slc.ria.NewLauncherApplet.flowLoader;
-		for(var key in mods){
-			var moduleFolder = new qx.ui.tree.TreeFolder(key);
-			folder.add(moduleFolder);
-			for(var i=0;i<mods[key].length;i++){
-				var versionFolder = new org.argeo.ria.components.DynamicTreeFolder(
-					mods[key][i],
-					flowLoader,
-					"Loading Flows",
-					folder.getDragData()
-				);
-				moduleFolder.add(versionFolder);
-				versionFolder.setUserData("moduleData", {name:key, version:mods[key][i]});
+		var req = org.argeo.slc.ria.SlcApi.getListModulesService();
+		req.addListener("completed", function(response){
+			var descriptors = org.argeo.ria.util.Element.selectNodes(response.getContent(), "slc:object-list/slc:execution-module-descriptor");
+			var mods = {};
+			// STUB
+			/*
+			var mods = {
+				"Module 1":["ver1.1", "ver1.2", "ver1.3"], 
+				"Module 2":["ver2.1", "ver2.2", "ver2.3", "ver2.4"], 
+				"Module 3":["ver3.1", "ver3.2"]
+			};
+			*/			
+			for(var i=0;i<descriptors.length; i++){
+				var name = org.argeo.ria.util.Element.getSingleNodeText(descriptors[i], "slc:name");
+				var version = org.argeo.ria.util.Element.getSingleNodeText(descriptors[i], "slc:version");
+				if(!mods[name]) mods[name] = [];
+				mods[name].push(version);
 			}
-			folder.setLoaded(true);
-		}
+			var flowLoader = org.argeo.slc.ria.NewLauncherApplet.flowLoader;
+			for(var key in mods){
+				var moduleFolder = new qx.ui.tree.TreeFolder(key);
+				folder.add(moduleFolder);
+				for(var i=0;i<mods[key].length;i++){
+					var versionFolder = new org.argeo.ria.components.DynamicTreeFolder(
+						mods[key][i],
+						flowLoader,
+						"Loading Flows",
+						folder.getDragData()
+					);
+					moduleFolder.add(versionFolder);
+					versionFolder.setUserData("moduleData", {name:key, version:mods[key][i]});
+				}
+				folder.setLoaded(true);
+			}
+		});
+		req.send();		
 	}
   },
   
