@@ -19,6 +19,7 @@
 		<module>org.argeo.slc.support.equinox</module>
 		<module>org.argeo.slc.support.ws.client</module>
 		<module>org.argeo.slc.support.hibernate</module>
+		<module>org.argeo.slc.support.maven</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.detached</module>
 		<module>org.argeo.slc.launcher</module>
