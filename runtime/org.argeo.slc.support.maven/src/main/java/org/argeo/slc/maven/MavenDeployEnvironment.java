@@ -11,8 +11,8 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.deploy.DeployEnvironment;
 
-public class MavenDeployEnvironment implements DeployEnvironment {
-	private static final Log log = LogFactory
+public abstract class MavenDeployEnvironment implements DeployEnvironment {
+/*	private static final Log log = LogFactory
 			.getLog(MavenDeployEnvironment.class);
 	private MavenManager mavenManager;
 
@@ -69,5 +69,5 @@ public class MavenDeployEnvironment implements DeployEnvironment {
 	public void setMavenManager(MavenManager mavenManager) {
 		this.mavenManager = mavenManager;
 	}
-
+*/
 }

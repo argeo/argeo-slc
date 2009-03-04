@@ -6,14 +6,15 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderException;
+//import org.apache.maven.artifact.Artifact;
+//import org.apache.maven.artifact.repository.ArtifactRepository;
+//import org.apache.maven.embedder.MavenEmbedder;
+//import org.apache.maven.embedder.MavenEmbedderException;
 
 import org.argeo.slc.SlcException;
 
 public class MavenManager {
+	/*
 	private final Log log = LogFactory.getLog(getClass());
 
 	private String localRepositoryPath = System.getProperty("user.home")
@@ -111,5 +112,5 @@ public class MavenManager {
 	public void setRemoteRepositories(List<RemoteRepository> remoteRepositories) {
 		this.remoteRepositories = remoteRepositories;
 	}
-
+*/
 }
