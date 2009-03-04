@@ -9,11 +9,6 @@
 	<artifactId>argeo-slc-demo</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC Demo</name>
-	<modules>
-		<module>org.argeo.slc.demo.basic</module>
-		<module>org.argeo.slc.demo.manager</module>
-		<module>org.argeo.slc.demo.log4j</module>
-	</modules>
 	<build>
 		<plugins>
 		</plugins>
