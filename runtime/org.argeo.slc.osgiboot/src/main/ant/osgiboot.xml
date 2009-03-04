@@ -58,13 +58,14 @@ osgi.bundles=reference:file:${osgiBootBundle}@start
 				</not>
 			</and>
 		</condition>
-		<condition property="starter" value="start">
+		<condition property="starter" value="cmd">
 			<os family="windows" />
 		</condition>
 		<property name="starterArgs" value="" />
 		<property name="javaCommand" value="java" />
 
 		<echo message="commandArgs=${commandArgs}"/>
+		<echo message="${javaCommand} ${commandArgs}" file="${equinoxDir}/start.bat"/>
 		<exec executable="${starter}" dir="${equinoxDir}">
 			<arg line="${starterArgs}" />
 			<arg value="${javaCommand}" />
