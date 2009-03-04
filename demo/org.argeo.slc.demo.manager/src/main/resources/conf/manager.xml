@@ -7,4 +7,23 @@
 	<bean id="modulesManager" class="org.argeo.slc.core.execution.ModulesManager">
 		<property name="executionModules" ref="executionModules" />
 	</bean>
+
+	<bean class="org.argeo.slc.osgi.BundlesManager" init-method="init">
+		<property name="urlsToInstall">
+			<bean class="org.argeo.slc.maven.MavenToUrl">
+				<property name="baseUrl" value="reference:file:${user.home}/.m2/repository/" />
+				<property name="mavenFiles">
+					<bean class="org.argeo.slc.maven.DependencyFileLoader">
+						<property name="dependenciesResource"
+							value="classpath:/META-INF/slc/dep/manager.maven" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
 </beans>

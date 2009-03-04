@@ -16,6 +16,7 @@
 		<version.maven>2.0.9</version.maven>
 		<version.ant>1.7.0</version.ant>
 		<version.jetty>6.1.14</version.jetty>
+		<version.equinox>3.4.2.R34x_v20080826-1230</version.equinox>
 		<version.maven-bundle-plugin>1.4.3</version.maven-bundle-plugin>
 		<!-- <version.activemq>5.2.0</version.activemq> -->
 	</properties>
@@ -711,7 +712,7 @@ limitations under the License.
 			<dependency>
 				<groupId>org.eclipse.osgi</groupId>
 				<artifactId>org.eclipse.osgi</artifactId>
-				<version>3.4.2.R34x_v20080826-1230</version>
+				<version>${version.equinox}</version>
 			</dependency>
 
 			<!-- Auto UI -->

@@ -22,7 +22,7 @@ Import-Package: javax.servlet,
  org.springframework.web.context,
  org.springframework.web.util,
  org.apache.naming.java,
- com.sun.xml.messaging.saaj.soap
+ com.sun.xml.messaging.saaj.soap;resolution:=optional
 Require-Bundle: org.argeo.slc.server,
  org.argeo.slc.specs,
  org.argeo.slc.support.simple,

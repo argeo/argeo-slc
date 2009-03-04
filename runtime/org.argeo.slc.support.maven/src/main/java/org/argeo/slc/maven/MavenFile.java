@@ -9,6 +9,15 @@ public class MavenFile implements Distribution, DeploymentData {
 	private String version;
 	private String type;
 	private String classifier;
+	private String scope;
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
 
 	private String distributionId;
 

@@ -8,4 +8,6 @@
 
 	<list id="executionModules" interface="org.argeo.slc.execution.ExecutionModule"
 		cardinality="0..N" />
+		
+	
 </beans:beans>

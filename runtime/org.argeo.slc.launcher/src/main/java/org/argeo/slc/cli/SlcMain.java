@@ -1,7 +1,6 @@
 package org.argeo.slc.cli;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -16,7 +15,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.runtime.SlcExecutionContext;
 import org.argeo.slc.runtime.SlcRuntime;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -189,17 +187,6 @@ public class SlcMain {
 		}
 		// OSGi
 		else if (mode.equals(Mode.osgi)) {
-			final ConfigurableApplicationContext applicationContext;
-			if (runtimeStr == null) {
-				applicationContext = new ClassPathXmlApplicationContext(
-						DEFAULT_AGENT_CONTEXT);
-			} else {
-				applicationContext = new FileSystemXmlApplicationContext(
-						runtimeStr);
-			}
-			applicationContext.registerShutdownHook();
-			applicationContext.start();
-			log.info("SLC Agent context started.");
 		}
 	}
 
