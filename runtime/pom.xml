@@ -10,6 +10,7 @@
 	<packaging>pom</packaging>
 	<name>Argeo SLC Runtime</name>
 	<modules>
+		<module>org.argeo.slc.osgiboot</module>
 		<module>org.argeo.slc.specs</module>
 		<module>org.argeo.slc.support.simple</module>
 		<module>org.argeo.slc.support.castor</module>
