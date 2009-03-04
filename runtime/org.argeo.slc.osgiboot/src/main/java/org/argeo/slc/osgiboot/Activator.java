@@ -24,17 +24,25 @@ public class Activator implements BundleActivator {
 	public final static String PROP_SLC_OSGI_LOCATIONS = "slc.osgi.locations";
 	public final static String PROP_SLC_MAVEN_DEPENDENCY_FILE = "slc.maven.dependencyFile";
 
-	private static Boolean debug = true;
+	private static Boolean debug = false;
 
 	public void start(BundleContext bundleContext) throws Exception {
-		installUrls(bundleContext, getDevLocationsUrls());
+		try {
+			info("SLC OSGi bootstrap starting...");
+			installUrls(bundleContext, getDevLocationsUrls());
 
-		installUrls(bundleContext, getLocationsUrls());
+			installUrls(bundleContext, getLocationsUrls());
 
-		List<String> urls = getMavenUrls();
-		installUrls(bundleContext, urls);
+			List<String> urls = getMavenUrls();
+			installUrls(bundleContext, urls);
 
-		startBundles(bundleContext);
+			startBundles(bundleContext);
+
+			info("SLC OSGi bootstrap completed");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 
 	public void stop(BundleContext context) throws Exception {
@@ -49,12 +57,14 @@ public class Activator implements BundleActivator {
 				if (installedBundles.containsKey(url)) {
 					Bundle bundle = installedBundles.get(url);
 					// bundle.update();
-					info("Bundle " + bundle.getSymbolicName()
-							+ " already installed from " + url);
+					if (debug)
+						debug("Bundle " + bundle.getSymbolicName()
+								+ " already installed from " + url);
 				} else {
 					Bundle bundle = bundleContext.installBundle(url);
-					info("Installed bundle " + bundle.getSymbolicName()
-							+ " from " + url);
+					if (debug)
+						debug("Installed bundle " + bundle.getSymbolicName()
+								+ " from " + url);
 				}
 			} catch (BundleException e) {
 				warn("Could not install bundle from " + url + ": "
@@ -123,8 +133,16 @@ public class Activator implements BundleActivator {
 			String base, String currentPath, String pattern) {
 		if (currentPath == null) {
 			// Init
-			File[] files = new File(base.replace('/', File.separatorChar))
-					.listFiles();
+			File baseDir = new File(base.replace('/', File.separatorChar));
+			File[] files = baseDir.listFiles();
+
+			if (files == null) {
+				warn("Base dir " + baseDir + " has no children, exists="
+						+ baseDir.exists() + ", isDirectory="
+						+ baseDir.isDirectory());
+				return;
+			}
+
 			for (File file : files)
 				if (file.isDirectory())
 					match(matcher, matched, base, file.getName(), pattern);
@@ -152,8 +170,10 @@ public class Activator implements BundleActivator {
 							match(matcher, matched, base, newCurrentPath,
 									pattern);
 						} else {
-							debug(newCurrentPath
-									+ " does not start match with " + pattern);
+							if (debug)
+								debug(newCurrentPath
+										+ " does not start match with "
+										+ pattern);
 
 						}
 					}
@@ -181,7 +201,7 @@ public class Activator implements BundleActivator {
 
 				mavenFiles.add(convert(line));
 			} catch (Exception e) {
-				System.err.println("Could not load line " + line);
+				warn("Could not load line " + line);
 			}
 		}
 
@@ -260,15 +280,16 @@ public class Activator implements BundleActivator {
 	}
 
 	private static void info(Object obj) {
-		System.out.println("#INFO " + obj);
+		System.out.println("# INFO " + obj);
 	}
 
 	private static void debug(Object obj) {
-		System.out.println("#DBUG " + obj);
+		if (debug)
+			System.out.println("# DBUG " + obj);
 	}
 
 	private static void warn(Object obj) {
-		System.err.println("#WARN " + obj);
+		System.err.println("# WARN " + obj);
 	}
 
 	static class MavenFile {

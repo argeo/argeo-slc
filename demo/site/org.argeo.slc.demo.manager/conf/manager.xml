@@ -4,10 +4,10 @@
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="modulesManager" class="org.argeo.slc.core.execution.ModulesManager">
+	<bean id="modulesManager" class="org.argeo.slc.core.execution.DefaultModulesManager">
 		<property name="executionModules" ref="executionModules" />
 	</bean>
-
+<!-- 
 	<bean class="org.argeo.slc.osgi.BundlesManager" init-method="init">
 		<property name="urlsToInstall">
 			<bean class="org.argeo.slc.maven.MavenToUrl">
@@ -21,7 +21,7 @@
 			</bean>
 		</property>
 	</bean>
-
+ -->
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="ignoreUnresolvablePlaceholders" value="true" />

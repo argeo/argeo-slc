@@ -53,6 +53,16 @@
 		<constructor-arg ref="slcExecutionDao" />
 	</bean>
 
+	<bean name="/getExecutionDescriptor.service"
+		class="org.argeo.slc.web.mvc.execution.GetModuleDescriptor">
+		<property name="modulesManager" ref="modulesManager" />
+	</bean>
+
+	<bean name="/listModulesDescriptors.service"
+		class="org.argeo.slc.web.mvc.execution.ListModulesDescriptors">
+		<property name="modulesManager" ref="modulesManager" />
+	</bean>
+
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
 		<property name="interceptors">

@@ -80,6 +80,17 @@
 									<type>xml</type>
 									<classifier>osgiboot</classifier>
 								</artifactItem>
+								<!--  For Hibernate -->
+								<artifactItem>
+									<groupId>org.objectweb.asm</groupId>
+									<artifactId>com.springsource.org.objectweb.asm</artifactId>
+									<version>1.5.3</version>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.objectweb.asm</groupId>
+									<artifactId>com.springsource.org.objectweb.asm.attrs</artifactId>
+									<version>1.5.3</version>
+								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
@@ -90,22 +101,31 @@
 				<configuration>
 					<tasks>
 					
+						<property name="equinoxDir" location="${project.build.directory}/equinox" />
+						
 						<property name="mavenClasspath" refid="maven.compile.classpath" />
+						<!--  
 						<property name="jar.asm.153" location="${user.home}/.m2/repository/org/objectweb/asm/com.springsource.org.objectweb.asm/1.5.3/com.springsource.org.objectweb.asm-1.5.3.jar" />
 						<property name="jar.asm.attrs.153" location="${user.home}/.m2/repository/org/objectweb/asm/com.springsource.org.objectweb.asm.attrs/1.5.3/com.springsource.org.objectweb.asm.attrs-1.5.3.jar" />
-						<property name="slc.osgi.locations" value="${jar.asm.153}${path.separator}${jar.asm.attrs.153}${path.separator}${mavenClasspath}" />
+						-->
+						<property name="jar.asm.153" location="${equinoxDir}/com.springsource.org.objectweb.asm.jar" />
+						<property name="jar.asm.attrs.153" location="${equinoxDir}/com.springsource.org.objectweb.asm.attrs.jar" />
+						
+						<property name="bundle.argeo.ria" location="../../org.argeo.slc.webapp/src/main/webapp" />
+				
+						<property name="slc.osgi.locations" value="${bundle.argeo.ria}${path.separator}${jar.asm.153}${path.separator}${jar.asm.attrs.153}${path.separator}${mavenClasspath}" />
 						
 						<property name="slc.osgi.devBases"
-							value="${user.dir}/bundles" />
+							value="${user.dir}/bundles,${user.dir}/../../demo/site" />
 						<property name="slc.osgi.devPatterns"
 							value="*" />
 						<property name="slc.osgi.start"
-							value="org.springframework.osgi.catalina.start.osgi,org.springframework.bundle.osgi.extender,org.springframework.bundle.osgi.web.extender,org.springframework.osgi.samples.simplewebapp,org.argeo.slc.server.activemq,org.argeo.slc.server.hibernate,org.argeo.slc.webapp" />
+							value="org.springframework.osgi.catalina.start.osgi,org.springframework.bundle.osgi.extender,org.springframework.bundle.osgi.web.extender,org.springframework.osgi.samples.simplewebapp,org.argeo.slc.server.activemq,org.argeo.slc.server.hibernate,org.argeo.slc.webapp,org.argeo.slc.demo.basic,org.argeo.slc.demo.manager" />
 
 						<property name="javaCommand"
 							location="${java.home}${file.separator}bin${file.separator}java" />
 						<ant
-							antfile="${project.build.directory}/equinox/org.argeo.slc.osgiboot-osgiboot.xml" />
+							antfile="${equinoxDir}/org.argeo.slc.osgiboot-osgiboot.xml" />
 
 					</tasks>
 				</configuration>
@@ -356,6 +376,26 @@
 			<version>${project.version}</version>
 		</dependency>
 
+
+	<!-- For demo -->
+			<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.equinox</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.activemq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.castor</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.maven</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	
 	</dependencies>
 
 	<repositories>

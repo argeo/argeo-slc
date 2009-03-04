@@ -20,4 +20,7 @@
 	<reference interface="org.hibernate.SessionFactory"
 		id="sessionFactory" />
 
+	<reference interface="org.argeo.slc.execution.ExecutionModulesManager"
+		id="modulesManager" />
+
 </beans:beans>
