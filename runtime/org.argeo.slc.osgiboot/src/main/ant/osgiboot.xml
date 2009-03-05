@@ -68,7 +68,7 @@ osgi.bundles=reference:file:${osgiBootBundle}@start
 		<echo message="${javaCommand} ${commandArgs}" file="${equinoxDir}/start.bat"/>
 		<exec executable="${starter}" dir="${equinoxDir}">
 			<arg line="${starterArgs}" />
-			<arg value="${javaCommand}" />
+			<arg line="${javaCommand}" />
 			<arg line="${commandArgs}" />
 		</exec>
 	</target>

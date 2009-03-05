@@ -127,7 +127,7 @@
 							value="org.springframework.osgi.catalina.start.osgi,org.springframework.osgi.extender,org.springframework.osgi.web.extender,org.springframework.osgi.samples.simplewebapp,org.argeo.slc.server.activemq,org.argeo.slc.server.hibernate,org.argeo.slc.webapp,org.argeo.slc.demo.basic,org.argeo.slc.demo.manager" />
 
 						<property name="javaCommand"
-							location="${java.home}${file.separator}bin${file.separator}java" />
+							location="${java.home}${file.separator}bin${file.separator}java -Xmx256m" />
 						<ant antfile="${equinoxDir}/org.argeo.slc.osgiboot-osgiboot.xml" />
 
 					</tasks>
