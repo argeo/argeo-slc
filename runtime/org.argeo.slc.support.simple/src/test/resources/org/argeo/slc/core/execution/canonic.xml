@@ -7,25 +7,40 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<import resource="imports.xml" /> 
+	<import resource="imports.xml" />
 
 	<bean id="canonic.spec" parent="slcTemplate.simpleSpec">
 		<property name="attributes">
 			<map>
 				<entry key="parameterAtInstantiation">
-					<bean parent="specAttr.primitive" p:isParameter="true" p:type="integer" />
+					<bean parent="specAttr.primitive">
+						<property name="isParameter" value="true" />
+						<property name="type" value="integer" />
+					</bean>
 				</entry>
 				<entry key="displayWithoutControl">
-					<bean parent="specAttr.primitive" p:value="100" p:isParameter="true"
-						p:isFrozen="true" p:type="integer" />
+					<bean parent="specAttr.primitive">
+						<property name="isParameter" value="true" />
+						<property name="type" value="integer" />
+						<property name="value" value="100" />
+					</bean>
 				</entry>
 				<entry key="displayWithControl">
-					<bean parent="specAttr.primitive" p:value="200" p:isParameter="true"
-						p:isFrozen="false" p:type="integer" />
+					<bean parent="specAttr.primitive">
+						<property name="isParameter" value="true" />
+						<property name="type" value="integer" />
+						<property name="value" value="200" />
+						<property name="isFrozen" value="false" />
+					</bean>
 				</entry>
 				<entry key="hide">
-					<bean parent="specAttr.primitive" p:value="300" p:isParameter="true"
-						p:isFrozen="false" p:isHidden="true" p:type="integer" />
+					<bean parent="specAttr.primitive">
+						<property name="isParameter" value="true" />
+						<property name="type" value="integer" />
+						<property name="value" value="300" />
+						<property name="isFrozen" value="false" />
+						<property name="isHidden" value="true" />
+					</bean>
 				</entry>
 			</map>
 		</property>

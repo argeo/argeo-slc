@@ -16,7 +16,7 @@ public class ExecutionFlowTest extends AbstractSpringTestCase {
 	public void testCanonic() throws Exception {
 		configureAndExecuteSlcFlow("minimal.xml", "minimal");
 		// Parameter without default value in specification
-//		configureAndExecuteSlcFlow("canonic-001.xml", "canonic.001");
+		configureAndExecuteSlcFlow("canonic-001.xml", "canonic.001");
 //		configureAndExecuteSlcFlow("canonic-002.xml", "canonic.002");
 
 /*		try {
