@@ -121,19 +121,28 @@
 							value="${bundle.argeo.ria}:${jar.asm.153}:${jar.asm.attrs.153}:${mavenClasspath}" />
 
 						<path id="slc.osgi.locations.raw">
+							<dirset dir="${user.dir}/bundles">
+							  <include name="*"/>
+							  <exclude name=".svn"/>
+							</dirset>
+							<dirset dir="${user.dir}/../../demo/site">
+							  <include name="*"/>
+							  <exclude name=".svn"/>
+							</dirset>
 							<pathelement location="${bundle.argeo.ria}" />
 							<pathelement location="${jar.asm.153}" />
 							<pathelement location="${jar.asm.attrs.153}" />
 							<path refid="maven.compile.classpath" />
 						</path>
-
-						<pathconvert targetos="unix" property="slc.osgi.locations"
+						<pathconvert dirsep="/" property="slc.osgi.locations"
 							refid="slc.osgi.locations.raw">
 						</pathconvert>
 
+<!--
 						<property name="slc.osgi.devBases"
 							value="${user.dir}/bundles,${user.dir}/../../demo/site" />
 						<property name="slc.osgi.devPatterns" value="*" />
+						-->
 						<property name="slc.osgi.start"
 							value="org.springframework.osgi.catalina.start.osgi,org.springframework.osgi.extender,org.springframework.osgi.web.extender,org.springframework.osgi.samples.simplewebapp,org.argeo.slc.server.activemq,org.argeo.slc.server.hibernate,org.argeo.slc.webapp,org.argeo.slc.demo.basic,org.argeo.slc.demo.manager" />
 
