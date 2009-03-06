@@ -512,7 +512,7 @@ limitations under the License.
 			<dependency>
 				<groupId>org.argeo.slc.dep.osgi</groupId>
 				<artifactId>org.argeo.dep.osgi.catalina.start</artifactId>
-				<version>1.0.0</version>
+				<version>1.0.0.argeo.2</version>
 			</dependency>
 
 			<!-- AOP -->

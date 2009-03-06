@@ -16,37 +16,6 @@
 	</properties>
 	<build>
 		<plugins>
-			<!--
-				<plugin> <groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId> <configuration>
-				<includeTypes>war</includeTypes> <stripVersion>true</stripVersion>
-				<overWriteReleases>true</overWriteReleases>
-				<overWriteSnapshots>true</overWriteSnapshots> </configuration>
-				</plugin>
-			-->
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<configuration>
-					<webApp>${project.build.directory}/dependency/org.argeo.slc.webapp.war</webApp>
-					<scanIntervalSeconds>0</scanIntervalSeconds>
-					<webDefaultXml>../../org.argeo.slc.webapp/src/main/config/jetty/webdefault.xml</webDefaultXml>
-					<jettyConfig>src/test/config/jetty/jetty.xml</jettyConfig>
-					<systemProperties>
-						<systemProperty>
-							<!-- Archiva home -->
-							<name>appserver.base</name>
-							<value>target</value>
-						</systemProperty>
-						<systemProperty>
-							<!-- Archiva home -->
-							<name>appserver.home</name>
-							<value>target</value>
-						</systemProperty>
-					</systemProperties>
-
-				</configuration>
-			</plugin>
 
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -101,50 +70,33 @@
 
 						<property name="equinoxDir" location="${project.build.directory}/equinox" />
 
-						<property name="mavenClasspath" refid="maven.compile.classpath" />
-						<!--
-							<property name="jar.asm.153"
-							location="${user.home}/.m2/repository/org/objectweb/asm/com.springsource.org.objectweb.asm/1.5.3/com.springsource.org.objectweb.asm-1.5.3.jar"
-							/> <property name="jar.asm.attrs.153"
-							location="${user.home}/.m2/repository/org/objectweb/asm/com.springsource.org.objectweb.asm.attrs/1.5.3/com.springsource.org.objectweb.asm.attrs-1.5.3.jar"
-							/>
-						-->
-						<property name="jar.asm.153"
-							location="${equinoxDir}/com.springsource.org.objectweb.asm.jar" />
-						<property name="jar.asm.attrs.153"
-							location="${equinoxDir}/com.springsource.org.objectweb.asm.attrs.jar" />
-
-						<property name="bundle.argeo.ria"
-							location="../../org.argeo.slc.webapp/src/main/webapp" />
-
-						<property name="slc.osgi.locations.rawold"
-							value="${bundle.argeo.ria}:${jar.asm.153}:${jar.asm.attrs.153}:${mavenClasspath}" />
-
 						<path id="slc.osgi.locations.raw">
 							<dirset dir="${user.dir}/bundles">
-							  <include name="*"/>
-							  <exclude name=".svn"/>
+								<include name="*" />
+								<exclude name=".svn" />
 							</dirset>
 							<dirset dir="${user.dir}/../../demo/site">
-							  <include name="*"/>
-							  <exclude name=".svn"/>
+								<include name="*" />
+								<exclude name=".svn" />
 							</dirset>
-							<pathelement location="${bundle.argeo.ria}" />
-							<pathelement location="${jar.asm.153}" />
-							<pathelement location="${jar.asm.attrs.153}" />
+							<!-- Old ASM for Hibernate: -->
+							<pathelement
+								location="${equinoxDir}/com.springsource.org.objectweb.asm.jar" />
+							<pathelement
+								location="${equinoxDir}/com.springsource.org.objectweb.asm.attrs.jar" />
+							<!-- Dev for Argeo RIA: -->
+							<!--
+								<pathelement
+								location="../../org.argeo.slc.webapp/src/main/webapp" />
+							-->
 							<path refid="maven.compile.classpath" />
 						</path>
 						<pathconvert dirsep="/" property="slc.osgi.locations"
 							refid="slc.osgi.locations.raw">
 						</pathconvert>
 
-<!--
-						<property name="slc.osgi.devBases"
-							value="${user.dir}/bundles,${user.dir}/../../demo/site" />
-						<property name="slc.osgi.devPatterns" value="*" />
-						-->
 						<property name="slc.osgi.start"
-							value="org.springframework.osgi.catalina.start.osgi,org.springframework.osgi.extender,org.springframework.osgi.web.extender,org.springframework.osgi.samples.simplewebapp,org.argeo.slc.server.activemq,org.argeo.slc.server.hibernate,org.argeo.slc.webapp,org.argeo.slc.demo.basic,org.argeo.slc.demo.manager" />
+							value="org.argeo.dep.osgi.catalina.start,org.springframework.osgi.extender,org.springframework.osgi.web.extender,org.springframework.osgi.samples.simplewebapp,org.argeo.slc.server.activemq,org.argeo.slc.server.hibernate,org.argeo.slc.webapp,org.argeo.slc.demo.basic,org.argeo.slc.demo.manager" />
 
 						<property name="javaCommand"
 							location="${java.home}${file.separator}bin${file.separator}java -Xmx256m" />
@@ -153,39 +105,38 @@
 					</tasks>
 				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>manager</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>list</goal>
-						</goals>
-						<configuration>
-							<outputFile>target/server.maven</outputFile>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 
-
+			<!--
+				<plugin> <artifactId>maven-dependency-plugin</artifactId>
+				<executions> <execution> <id>manager</id> <phase>initialize</phase>
+				<goals> <goal>list</goal> </goals> <configuration>
+				<outputFile>target/server.maven</outputFile> </configuration>
+				</execution> </executions> </plugin>
+			-->
+			<!--
+				<plugin> <groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId> <configuration>
+				<webApp>${project.build.directory}/dependency/org.argeo.slc.webapp.war</webApp>
+				<scanIntervalSeconds>0</scanIntervalSeconds>
+				<webDefaultXml>../../org.argeo.slc.webapp/src/main/config/jetty/webdefault.xml</webDefaultXml>
+				<jettyConfig>src/test/config/jetty/jetty.xml</jettyConfig>
+				<systemProperties> <systemProperty> <name>appserver.base</name>
+				<value>target</value> </systemProperty> <systemProperty>
+				<name>appserver.home</name> <value>target</value> </systemProperty>
+				</systemProperties> </configuration> </plugin>
+			-->
 		</plugins>
 	</build>
 	<dependencies>
-		<!--
-			<dependency> <groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.webapp</artifactId> <type>war</type>
-			</dependency> <dependency> <groupId>org.apache.archiva</groupId>
-			<artifactId>archiva-webapp</artifactId> <type>war</type>
-			</dependency>
-		-->
-
-		<!--  OSGI TESTS -->
-
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.server</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.argeo.slc.server</groupId>
+			<artifactId>org.argeo.slc.ria</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 
@@ -224,22 +175,6 @@
 		</dependency>
 
 		<!--
-			<dependency> <groupId>org.argeo.slc.dep.osgi</groupId>
-			<artifactId>org.argeo.dep.osgi.catalina.start</artifactId>
-			</dependency>
-		-->
-
-		<!--
-			<dependency> <groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.web.extender</artifactId>
-			</dependency> <dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.extender</artifactId>
-			</dependency> <dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.web</artifactId> </dependency>
-		-->
-		<!--
 			Using springsource repo -->
 		<dependency>
 			<groupId>org.springframework.osgi</groupId>
@@ -254,10 +189,16 @@
 			<artifactId>org.springframework.osgi.web</artifactId>
 		</dependency>
 
+		<!-- Tomcat -->
 		<dependency>
 			<groupId>org.apache.catalina</groupId>
 			<artifactId>com.springsource.org.apache.catalina</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.dep.osgi</groupId>
+			<artifactId>org.argeo.dep.osgi.catalina.start</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.jasper</groupId>
 			<artifactId>com.springsource.org.apache.jasper</artifactId>
@@ -287,7 +228,6 @@
 		</dependency>
 
 
-		<!-- Using spring osgi repo -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
@@ -298,85 +238,6 @@
 					com.springsource.org.apache.log4j
 				</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>catalina.start.osgi</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.osgi</groupId>-->
-		<!--			<artifactId>catalina.osgi</artifactId>-->
-		<!--			<version>5.5.23-SNAPSHOT</version>-->
-		<!--		</dependency>-->
-<!---->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.osgi</groupId>-->
-		<!--			<artifactId>jasper.osgi</artifactId>-->
-		<!--			<version>5.5.23-SNAPSHOT</version>-->
-		<!--		</dependency>-->
-<!---->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.osgi</groupId>-->
-		<!--			<artifactId>commons-el.osgi</artifactId>-->
-		<!--			<version>1.0-SNAPSHOT</version>-->
-		<!--		</dependency>-->
-<!---->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.osgi</groupId>-->
-		<!--			<artifactId>jstl.osgi</artifactId>-->
-		<!--			<version>1.1.2-SNAPSHOT</version>-->
-		<!--		</dependency>-->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.osgi</groupId>-->
-		<!--			<artifactId>servlet-api.osgi</artifactId>-->
-		<!--			<version>2.5-SNAPSHOT</version>-->
-		<!--			<type>jar</type>-->
-		<!--		</dependency>-->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.osgi</groupId>-->
-		<!--			<artifactId>jsp-api.osgi</artifactId>-->
-		<!--			<version>2.0-SNAPSHOT</version>-->
-		<!--			<type>jar</type>-->
-		<!--		</dependency>-->
-
-		<!-- -->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.osgi</groupId>-->
-		<!--			<artifactId>spring-osgi-web</artifactId>-->
-		<!--			<version>${spring-osgi.version}</version>-->
-		<!--		</dependency>-->
-<!---->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.osgi</groupId>-->
-		<!--			<artifactId>spring-osgi-web-extender</artifactId>-->
-		<!--			<version>${spring-osgi.version}</version>-->
-		<!--		</dependency>-->
-<!---->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework.osgi</groupId>-->
-		<!--			<artifactId>spring-osgi-extender</artifactId>-->
-		<!--			<version>${spring-osgi.version}</version>-->
-		<!--		</dependency>-->
-<!---->
-<!---->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework</groupId>-->
-		<!--			<artifactId>spring-web</artifactId>-->
-		<!--			<version>${spring.version}</version>-->
-		<!--		</dependency>-->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework</groupId>-->
-		<!--			<artifactId>spring-context</artifactId>-->
-		<!--			<version>${spring.version}</version>-->
-		<!--		</dependency>-->
-<!---->
-		<!--		<dependency>-->
-		<!--			<groupId>org.springframework</groupId>-->
-		<!--			<artifactId>spring-webmvc</artifactId>-->
-		<!--			<version>${spring.version}</version>-->
-		<!--		</dependency>-->
 
 		<!-- Required in JDK 1.5 -->
 		<dependency>
@@ -399,12 +260,6 @@
 			<version>1.2.2</version>
 		</dependency>
 
-		<!--
-			To launch OSGi <dependency> <groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.detached.launcher</artifactId>
-			<version>${project.version}</version> </dependency>
-		-->
-
 		<!-- For demo -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
@@ -425,7 +280,7 @@
 		</dependency>
 
 	</dependencies>
-
+<!-- 
 	<repositories>
 		<repository>
 			<id>spring-osgified-artifacts</id>
@@ -436,4 +291,5 @@
 			<url>http://maven.springframework.org/osgi</url>
 		</repository>
 	</repositories>
+	 -->
 </project>
