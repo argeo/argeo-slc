@@ -45,28 +45,27 @@ osgi.bundles=reference:file:${osgiBootBundle}@start
 		<condition property="starter" value="gnome-terminal">
 			<and>
 				<os family="unix" />
-				<not>
-					<os family="mac" />
-				</not>
 			</and>
 		</condition>
 		<condition property="starterArgs" value="--maximize -x">
 			<and>
 				<os family="unix" />
-				<not>
-					<os family="mac" />
-				</not>
 			</and>
 		</condition>
-		<condition property="starter" value="cmd">
+		<condition property="starter" value="start">
+			<os family="windows" />
+		</condition>
+		<condition property="vmlauncher" value="false">
 			<os family="windows" />
 		</condition>
 		<property name="starterArgs" value="" />
 		<property name="javaCommand" value="java" />
+		<property name="vmlauncher" value="true" />
 
 		<echo message="commandArgs=${commandArgs}"/>
-		<echo message="${javaCommand} ${commandArgs}" file="${equinoxDir}/start.bat"/>
-		<exec executable="${starter}" dir="${equinoxDir}">
+		<echo message="${javaCommand} ${commandArgs}" file="${equinoxDir}/launch.bat"/>
+		<echo message="${javaCommand} ${commandArgs}" file="${equinoxDir}/launch.sh"/>
+		<exec executable="${starter}" dir="${equinoxDir}" vmlauncher="${vmlauncher}">
 			<arg line="${starterArgs}" />
 			<arg line="${javaCommand}" />
 			<arg line="${commandArgs}" />

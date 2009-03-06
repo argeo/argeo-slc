@@ -117,8 +117,19 @@
 						<property name="bundle.argeo.ria"
 							location="../../org.argeo.slc.webapp/src/main/webapp" />
 
-						<property name="slc.osgi.locations"
-							value="${bundle.argeo.ria}${path.separator}${jar.asm.153}${path.separator}${jar.asm.attrs.153}${path.separator}${mavenClasspath}" />
+						<property name="slc.osgi.locations.rawold"
+							value="${bundle.argeo.ria}:${jar.asm.153}:${jar.asm.attrs.153}:${mavenClasspath}" />
+
+						<path id="slc.osgi.locations.raw">
+							<pathelement location="${bundle.argeo.ria}" />
+							<pathelement location="${jar.asm.153}" />
+							<pathelement location="${jar.asm.attrs.153}" />
+							<path refid="maven.compile.classpath" />
+						</path>
+
+						<pathconvert targetos="unix" property="slc.osgi.locations"
+							refid="slc.osgi.locations.raw">
+						</pathconvert>
 
 						<property name="slc.osgi.devBases"
 							value="${user.dir}/bundles,${user.dir}/../../demo/site" />
@@ -248,7 +259,7 @@
 			<artifactId>com.springsource.org.apache.el</artifactId>
 			<version>6.0.18</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>com.springsource.javax.servlet.jsp</artifactId>
