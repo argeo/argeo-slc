@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<import resource="imports.xml" /> 
+
+	<bean id="canonic.spec" parent="slcTemplate.simpleSpec">
+		<property name="attributes">
+			<map>
+				<entry key="parameterAtInstantiation">
+					<bean parent="specAttr.primitive" p:isParameter="true" p:type="integer" />
+				</entry>
+				<entry key="displayWithoutControl">
+					<bean parent="specAttr.primitive" p:value="100" p:isParameter="true"
+						p:isFrozen="true" p:type="integer" />
+				</entry>
+				<entry key="displayWithControl">
+					<bean parent="specAttr.primitive" p:value="200" p:isParameter="true"
+						p:isFrozen="false" p:type="integer" />
+				</entry>
+				<entry key="hide">
+					<bean parent="specAttr.primitive" p:value="300" p:isParameter="true"
+						p:isFrozen="false" p:isHidden="true" p:type="integer" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="canonic.flowTemplate" parent="slcTemplate.simpleFlow"
+		abstract="true">
+		<property name="executionSpec" ref="canonic.spec" />
+		<property name="executables">
+			<list>
+				<bean parent="task.echo"
+					p:message="Canonical: displayWithControl=@{displayWithControl}, displayWithoutControl=@{displayWithoutControl}, hide=@{hide}"
+					scope="execution">
+					<aop:scoped-proxy />
+				</bean>
+			</list>
+		</property>
+	</bean>
+</beans>

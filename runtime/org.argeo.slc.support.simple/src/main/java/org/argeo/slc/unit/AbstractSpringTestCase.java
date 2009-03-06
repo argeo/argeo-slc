@@ -23,8 +23,15 @@ public abstract class AbstractSpringTestCase extends TestCase {
 		if (context == null) {
 			context = new ClassPathXmlApplicationContext(
 					getApplicationContextLocation());
+			if(getIsStartContext())
+				context.start();
 		}
 		return context;
+	}
+	
+	/** Whether the context should be started after being created. */
+	protected Boolean getIsStartContext(){
+		return false;
 	}
 
 	/** Returns a bean from the underlying context */

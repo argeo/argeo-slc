@@ -47,6 +47,20 @@ public class ExecutionContext {
 					+ " already registered.");
 		executionContext.set(context);
 	}
+	
+	/**
+	 * Unregisters the ExecutionContext for the current Thread
+	 * @throws a SlcException if no ExecutionContext was registered for the Thread
+	 * @return the unregistered ExecutionContext
+	 */
+	public static ExecutionContext unregisterExecutionContext() {
+		ExecutionContext current = executionContext.get();
+		if(current == null) {
+			throw new SlcException("No Context registered.");
+		}
+		executionContext.remove();
+		return current;
+	}
 
 	public static void enterFlow(ExecutionFlow executionFlow) {
 		Stack<ExecutionFlowRuntime> stack = executionContext.get().stack;

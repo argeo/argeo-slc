@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<import resource="imports.xml" /> 
+
+	<bean id="minimal" parent="slcTemplate.simpleFlow">
+		<property name="executionSpec">
+			<bean parent="slcTemplate.simpleSpec">
+<!-- 				<property name="attributes">
+					<map>
+						<entry key="testKey">
+							<bean parent="specAttr.primitive" p:value="660" />
+						</entry>
+					</map>
+				</property> -->
+			</bean>
+		</property>
+		<property name="executables">
+			<list>
+				<ref local="echo1" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="echo1" parent="task.echo" scope="execution">
+		<property name="message"
+			value="From minimal" />
+		<aop:scoped-proxy />
+	</bean>
+
+</beans>
