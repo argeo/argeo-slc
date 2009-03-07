@@ -12,16 +12,6 @@
 	<packaging>jar</packaging>
 	<name>Argeo SLC Web UI</name>
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/webapp</directory>
-				<includes>
-					<include>index.jsp</include>
-					<include>argeo-ria/**</include>
-				</includes>
-			</resource>
-		</resources>
-		<!--  <finalName>${artifactId}</finalName>-->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -34,6 +24,11 @@
 						<compress>false</compress>
 						<manifestFile>src/main/webapp/META-INF/MANIFEST.MF</manifestFile>
 					</archive>
+					<classesDirectory>src/main/webapp</classesDirectory>
+					<includes>
+						<include>index.jsp</include>
+						<include>argeo-ria/**</include>
+					</includes>
 				</configuration>
 			</plugin>
 			<!--
