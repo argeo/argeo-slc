@@ -28,9 +28,11 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 			return label;
 		},
 		
+		/*
 		toXml : function(){
 			return this.getLabel() + "\n";
 		},
+		*/
 		
 		/**
 		 * Fetch the Spec Values with the Flow Values to make the current instance value

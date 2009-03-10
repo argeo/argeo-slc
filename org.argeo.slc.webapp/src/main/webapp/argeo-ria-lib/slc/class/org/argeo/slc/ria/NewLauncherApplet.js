@@ -190,10 +190,6 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		req.addListener("completed", function(response){
   			var executionModule = new org.argeo.slc.ria.execution.Module();			  			
   			executionModule.setXmlNode(response.getContent());
-  			// STUB
-  			// executionModule.setName(moduleData.name);
-  			// executionModule.setVersion(moduleData.version);
-  			// END
   			var execFlows = executionModule.getExecutionFlows();
   			for(var key in execFlows){
   				var file = new qx.ui.tree.TreeFile(key);
@@ -433,7 +429,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 	},
 		
 	_addFlowToBatch : function(target, after){
-		this.debug(target);
+		//this.debug(target);
 		if(!target){
 			 target = this.tree.getSelectedItem();
 			 if(!target) return;
@@ -497,7 +493,8 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 	},
 	
 	executeBatchOnAgent : function(agentUuid){
-		var xmlString = agentUuid + this.currentBatchToXml();
+		//var xmlString = agentUuid + this.currentBatchToXml();
+		var xmlString = "<slc:executionSpecs>"+this.currentBatchToXml()+"</slc:executionSpecs>";
 		alert(xmlString);
 	},
 	

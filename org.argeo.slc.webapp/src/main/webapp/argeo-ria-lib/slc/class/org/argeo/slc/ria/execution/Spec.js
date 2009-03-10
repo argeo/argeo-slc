@@ -54,7 +54,15 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 				parsedValues[value.getKey()] = value;
 			}
 			this.setValues(parsedValues);
-		}		
+		},
+		toXml : function(){
+			var valuesXml = '';
+			var values = this.getValues();
+			for(var key in values){
+				valuesXml += values[key].toXml();
+			}
+			return '<slc:default-execution-spec name="'+this.getName()+'"><slc:values>'+valuesXml+'</slc:values></slc:default-execution-spec>';
+		}
 	}	
 	
 });

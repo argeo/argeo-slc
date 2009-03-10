@@ -85,6 +85,17 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 				xpath = "slc:ref-value/slc:label";
 			}
 			this.setValue(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, xpath));
+		},
+		
+		toXml : function(){
+			var valueTag = '<slc:value>'+this.getValue()+'</slc:value>';
+			var specAttribute = '';
+			if(this.getSpecType() == "primitive"){
+				specAttribute = '<slc:primitive-spec-attribute isParameter="'+(this.getParameter()?"true":"false")+'" isFrozen="'+(this.getFrozen()?"true":"false")+'" isHidden="'+(this.getHidden()?"true":"false")+'" type="'+this.getSpecSubType()+'">'+valueTag+'</slc:primitive-spec-attribute>';
+			}else if(this.getSpecType() == "ref"){
+				specAttribute = '<slc:ref-spec-attribute isParameter="'+(this.getParameter()?"true":"false")+'" isFrozen="'+(this.getFrozen()?"true":"false")+'" isHidden="'+(this.getHidden()?"true":"false")+'" targetClassName="'+this.getSpecSubType()+'">'+valueTag+'</slc:ref-spec-attribute>';
+			}
+			return '<slc:value key="'+this.getKey()+'">'+specAttribute+'</slc:value>';
 		}
 	}	
 	
