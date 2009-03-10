@@ -285,7 +285,9 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  	 		select.setSelected(item);
 	  	 	}
 	  	 }
-	  	 this.setCollectionId(select.getSelected().getValue());
+	  	 if(qx.lang.Object.getLength(collectionList)){
+		  	 this.setCollectionId(select.getSelected().getValue());
+	  	 }
 	  	 select.addListener("changeValue", this.collectionSelectorListener, this);
 	  }, this);
 	  	  
