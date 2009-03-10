@@ -519,8 +519,19 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 	 */
 	executeBatchOnAgent : function(agentUuid){
 		//var xmlString = agentUuid + this.currentBatchToXml();
-		var xmlString = "<slc:executionSpecs>"+this.currentBatchToXml()+"</slc:executionSpecs>";
-		alert(xmlString);
+		var xmlString = "<slc:execution-objects>"+this.currentBatchToXml()+"</slc:execution-objects>";
+		this._amqClient.sendMessage(
+			"topic://agent.newExecution", 
+			xmlString, 
+			{"slc-agentId":agentUuid}
+		);
+		// Force logs refresh right now!
+		qx.event.Timer.once(function(){
+			var command = org.argeo.ria.event.CommandsManager.getInstance().getCommandById("reloadlogs");
+			if(command){
+				command.execute();
+			}
+		}, this, 2000);		
 	},
 	
 	/**

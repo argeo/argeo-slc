@@ -45,6 +45,22 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 			return label;
 		},
 				
+		toXml : function(){			
+			var valuesXml = '';
+			var values = this.getValues();
+			for(var key in values){
+				valuesXml += values[key].toValueXml();
+			}
+			var execFlowDescXML = '<slc:execution-flow-descriptor name="'+this.getFlow().getName()+'" executionSpec="'+this.getName()+'"><slc:values>'+valuesXml+'</slc:values></slc:execution-flow-descriptor>';
+			
+			var execSpecDescXML = this.getOriginalSpec().toXml();
+			
+			var moduleData = '<slc:moduleName>'+this.getModule().getName()+'</slc:moduleName><slc:moduleVersion>'+this.getModule().getVersion()+'</slc:moduleVersion>';
+			
+			return '<slc:execution-object>'+moduleData + execFlowDescXML + execSpecDescXML +'</slc:execution-object>';
+			
+		},
+		
 		/**
 		 * Fetch the Spec Values with the Flow Values to make the current instance value
 		 */
