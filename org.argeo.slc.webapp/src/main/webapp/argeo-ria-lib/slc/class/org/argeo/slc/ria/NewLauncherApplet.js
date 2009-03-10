@@ -252,6 +252,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		this.setView(viewPane);
   		this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
   		this._amqClient = org.argeo.ria.remote.JmsClient.getInstance();
+  		this._amqClient.uri = "/org.argeo.slc.webapp/amq";
   		this._amqClient.startPolling();
   	},
   	
