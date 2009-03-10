@@ -13,22 +13,40 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 			check : "String",
 			init : ""
 		},
+		/**
+		 * The type of this value, for the moment "primitive" and "ref" are supported 
+		 */
 		specType : {
 			check : "String",
 			init : ""			
 		},
+		/**
+		 * Subtype, depending on the "type". 
+		 */
 		specSubType : {
 			check : "String"
 		},
+		/**
+		 * Whether it is a parameter or not 
+		 */
 		parameter : {
 			check : "Boolean"
 		},
+		/**
+		 * Whether it is frozen on the server, i.e. disabled in the form 
+		 */
 		frozen : {
 			check : "Boolean"
 		},
+		/**
+		 * Should not be editable nor seeable, thus hidden 
+		 */
 		hidden : {
 			check : "Boolean"
 		},
+		/**
+		 * The real value 
+		 */
 		value : {
 			nullable : true
 		},
@@ -77,6 +95,10 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 			}
 		},
 		
+		/**
+		 * Apply the value from the node
+		 * @param xmlNode {Node} Castor representation of this object
+		 */
 		_applyXmlValue : function(xmlNode){
 			var xpath;
 			if(this.getSpecType() == "primitive"){
@@ -87,6 +109,10 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 			this.setValue(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, xpath));
 		},
 		
+		/**
+		 * Create an XML Representation of this value
+		 * @return {String} The XML String
+		 */
 		toXml : function(){
 			var valueTag = '<slc:value>'+this.getValue()+'</slc:value>';
 			var specAttribute = '';

@@ -5,11 +5,25 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 	extend : org.argeo.slc.ria.execution.Spec,
 	
 	properties : {
+		/**
+		 * Reference module
+		 */
 		module :{},
+		/**
+		 * Reference flow
+		 */
 		flow : {},
+		/**
+		 * Original Spec (values shall stay untouched).
+		 */
 		originalSpec : {}		
 	},
 	
+	/**
+	 * Instance of BatchEntrySpec
+	 * @param module {org.argeo.slc.ria.execution.Module} Reference module
+	 * @param flow {org.argeo.slc.ria.execution.Flow} Reference flow
+	 */
 	construct : function(module, flow){
 		this.base(arguments);
 		this.setModule(module);
@@ -20,7 +34,10 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 	},
 	
 	members :  {
-		
+		/**
+		 * Create a label to display in the batch list.
+		 * @return {String} The label
+		 */
 		getLabel : function(){
 			var label = this.getModule().getName();
 			label += "/" + this.getModule().getVersion();

@@ -56,7 +56,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 	members : {
 		/**
 		 * Add an execution flow to this module
-		 * @param executionFlow {org.argeo.slc.ria.execution.Flow}
+		 * @param executionFlow {org.argeo.slc.ria.execution.Flow} An instance of execution.Flow
 		 */
 		addExecutionFlow : function(executionFlow){
 			var spec = this.getExecutionSpecByName(executionFlow.getExecutionSpecName());
@@ -70,16 +70,25 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 		
 		/**
 		 * Add an execution Spec to this module
-		 * @param executionSpec {org.argeo.slc.ria.execution.Spec}
+		 * @param executionSpec {org.argeo.slc.ria.execution.Spec} An instance of ExecutionSpec
 		 */
 		addExecutionSpec : function(executionSpec){
 			this.getExecutionSpecs()[executionSpec.getName()] = executionSpec;
 		},
-		
+		/**
+		 * Find an execution spec by its name
+		 * @param name {String} Name of the spec
+		 * @return {org.argeo.slc.ria.execution.Spec} The spec
+		 */
 		getExecutionSpecByName : function(name){
 			return this.getExecutionSpecs()[name];
 		},
 		
+		/**
+		 * Find an execution flow by its name
+		 * @param name {String} name of the flow
+		 * @return {org.argeo.slc.ria.execution.Flow} The flow
+		 */
 		getExecutionFlowByName : function(name){
 			return this.getExecutionFlows()[name];
 		},

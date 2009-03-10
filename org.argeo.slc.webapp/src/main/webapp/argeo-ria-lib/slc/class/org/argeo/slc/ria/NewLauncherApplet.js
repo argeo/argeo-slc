@@ -25,7 +25,10 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		check:"org.argeo.ria.components.ViewSelection"
   	},  	  	
   	instanceId : {init:""},
-  	instanceLabel : {init:""},  
+  	instanceLabel : {init:""},
+  	/**
+  	 * A boolean registering whether the SpecEditor must autoOpen or not when a spec is added to the Batch. 
+  	 */
   	autoOpen : {
   		init : true,
   		check : "Boolean"
@@ -183,6 +186,10 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   },
 
   statics : {
+  	/**
+  	 * Loader for the "flow" level : takes a folder containing "moduleData" and create its children. 
+  	 * @param folder {qx.ui.tree.TreeFolder} A Tree folder containing in the key "moduleData" of its user data a map containing the keys {name,version} 
+  	 */
 	flowLoader : function(folder){
 		var moduleData = folder.getUserData("moduleData");
   		//var req = org.argeo.ria.remote.RequestManager.getInstance().getRequest("../argeo-ria-src/stub.xml", "GET", "application/xml");
@@ -202,6 +209,10 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		req.send();		
 	},
 	
+	/**
+	 * Loader for the "modules" level : takes any tree folder, currently the root folder. 
+	 * @param folder {qx.ui.tree.TreeFolder} The root folder
+	 */
 	modulesLoader : function(folder){
 		var req = org.argeo.slc.ria.SlcApi.getListModulesService();
 		req.addListener("completed", function(response){
@@ -428,7 +439,12 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		splitPane.add(this.tree, 0);
 		splitPane.add(this.listPane, 1);		
 	},
-		
+	
+	/**
+	 * Adds a given ExecutionFlow to the batch
+	 * @param target {mixed} The dropped target, can be a TreeFile (add) or a ListItem (reorder).
+	 * @param after {qx.ui.form.ListItem} Optional list item : if set, the flow will be added as a new list item positionned after this one. 
+	 */
 	_addFlowToBatch : function(target, after){
 		//this.debug(target);
 		if(!target){
@@ -483,6 +499,10 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		if(menu.length) command.setEnabled(true);
 	},
 		
+	/**
+	 * Create XMLString to send for execution 
+	 * @return {String}
+	 */
 	currentBatchToXml : function(){
 		var selection = this.list.getChildren();
 		var xmlString = "";
@@ -493,6 +513,10 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		return xmlString;
 	},
 	
+	/**
+	 * Called at execution
+	 * @param agentUuid {String} The id of the target agent
+	 */
 	executeBatchOnAgent : function(agentUuid){
 		//var xmlString = agentUuid + this.currentBatchToXml();
 		var xmlString = "<slc:executionSpecs>"+this.currentBatchToXml()+"</slc:executionSpecs>";

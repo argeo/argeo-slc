@@ -55,6 +55,10 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 			}
 			this.setValues(parsedValues);
 		},
+		/**
+		 * XML Representation of this object.
+		 * @return {String} An XML String
+		 */
 		toXml : function(){
 			var valuesXml = '';
 			var values = this.getValues();

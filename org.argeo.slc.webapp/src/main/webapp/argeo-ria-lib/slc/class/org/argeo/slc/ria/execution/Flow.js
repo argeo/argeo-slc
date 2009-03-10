@@ -25,6 +25,9 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 		executionSpec : {
 			check : "org.argeo.slc.ria.execution.Spec"
 		},
+		/**
+		 * The values to init the ExecutionSpec
+		 */
 		values : {
 			check : "Node"
 		},
@@ -37,8 +40,17 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 	},
 	
 	statics : {
+		/**
+		 * Xpath to the name 
+		 */
 		XPATH_NAME : "@name",
+		/**
+		 * XPath to the ExecutionSpec name
+		 */
 		XPATH_EXEC_SPEC_NAME : "@executionSpec",
+		/**
+		 * XPath to the values
+		 */
 		XPATH_VALUES : "slc:values"
 	},
 	
@@ -59,6 +71,13 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 			var values = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_VALUES);
 			this.setValues(values[0]);
 		},
+		/**
+		 * Get a given value inside the values map
+		 * @param key {String} The key of the value 
+		 * @param specType {String} Expected type (currently "primitive" and "ref" are supported)
+		 * @param specSubType {String} Expected subtype (depends on the type)
+		 * @return {String} Value if it is set.
+		 */
 		getValue: function(key, specType, specSubType){
 			var xpath;
 			if(specType == "primitive"){

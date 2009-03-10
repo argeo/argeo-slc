@@ -8,6 +8,9 @@ qx.Class.define("org.argeo.slc.ria.execution.SpecEditor",
 	extend : qx.ui.window.Window,
   
 	properties : {
+		/**
+		 * The Spec to edit
+		 */
 		batchEntrySpec : {
 			check : "org.argeo.slc.ria.execution.BatchEntrySpec"
 		}
@@ -18,14 +21,15 @@ qx.Class.define("org.argeo.slc.ria.execution.SpecEditor",
 		 * Triggered when the user clicks the "save" button. 
 		 */
 		"save" : "qx.event.type.Event",
+		/**
+		 * Triggered when any data is modified
+		 */
 		"modified" : "qx.event.type.Event"
 
 	},
 	/**
-	 * 
-	 * @param caption {String} Title of the window
-	 * @param icon {String} Icon of the window
-	 * @param text {String} Default content of the window.
+	 * Opens an editor with the given values. 
+	 * @param batchEntrySpec {org.argeo.slc.ria.execution.BatchEntrySpec} The initial spec to edit
 	 */
 	construct : function(batchEntrySpec){
 		var editorLabel = "Edit Specs for "+batchEntrySpec.getLabel();
@@ -51,6 +55,9 @@ qx.Class.define("org.argeo.slc.ria.execution.SpecEditor",
 	},
 	
 	members : {
+		/**
+		 * Builds the form from the BatchEntrySpec
+		 */
 		createFormFromSpec : function(){
 			var values = this.getBatchEntrySpec().getValues();
 			for(var key in values){
@@ -66,7 +73,9 @@ qx.Class.define("org.argeo.slc.ria.execution.SpecEditor",
 				}
 			}
 		},
-		
+		/**
+		 * Gather data from the form
+		 */
 		saveFormToSpec : function(){
 			var values = this.getBatchEntrySpec().getValues();
 			for(var key in values){
@@ -117,6 +126,8 @@ qx.Class.define("org.argeo.slc.ria.execution.SpecEditor",
 		 * @param fieldLabel {String} Label of the field
 		 * @param defaultValue {String} The default value
 		 * @param choiceValues {Map} An map of values
+		 * @param disabled {Boolean} The field is not writable
+		 * @param subType {String} The type expected (string, integer, etc).
 		 */
 		_addFormInputText : function(formObject, fieldName, fieldLabel, defaultValue, disabled, subType, choiceValues){
 			var labelElement;
