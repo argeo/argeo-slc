@@ -11,7 +11,8 @@ public class PrimitiveFieldHandler extends AbstractFieldHandler {
 		if (object == null)
 			return null;
 
-		return ((PrimitiveAccessor) object).getValue().toString();
+		Object value = ((PrimitiveAccessor) object).getValue();
+		return value != null ? value.toString() : null;
 	}
 
 	@Override
