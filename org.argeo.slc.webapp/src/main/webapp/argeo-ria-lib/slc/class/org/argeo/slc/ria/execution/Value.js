@@ -80,8 +80,8 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 				if(child.nodeName == "slc:primitive-spec-attribute"){
 					this.setSpecType("primitive");
 					this.setSpecSubType(org.argeo.ria.util.Element.getSingleNodeText(child, "@type"));
-					if(org.argeo.ria.util.Element.getSingleNodeText(child, "slc:value")){
-						this.setValue(org.argeo.ria.util.Element.getSingleNodeText(child, "slc:value"));
+					if(org.argeo.ria.util.Element.getSingleNodeText(child, ".")){
+						this.setValue(org.argeo.ria.util.Element.getSingleNodeText(child, "."));
 					}
 				}else if(child.nodeName == "slc:ref-spec-attribute"){
 					this.setSpecType("ref");
@@ -94,31 +94,19 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 				});				
 			}
 		},
-		
-		/**
-		 * Apply the value from the node
-		 * @param xmlNode {Node} Castor representation of this object
-		 */
-		_applyXmlValue : function(xmlNode){
-			var xpath;
-			if(this.getSpecType() == "primitive"){
-				xpath = "slc:primitive-value/slc:value";
-			}else if(this.getSpecType() == "ref"){
-				xpath = "slc:ref-value/slc:label";
-			}
-			this.setValue(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, xpath));
-		},
-		
+				
 		/**
 		 * Create an XML Representation of this value
 		 * @return {String} The XML String
 		 */
 		toAttributeXml : function(){
-			var valueTag = '<slc:value>'+this.getValue()+'</slc:value>';
+			var valueTag = '';
 			var specAttribute = '';
 			if(this.getSpecType() == "primitive"){
+				valueTag =  this.getValue();
 				specAttribute = '<slc:primitive-spec-attribute isParameter="'+(this.getParameter()?"true":"false")+'" isFrozen="'+(this.getFrozen()?"true":"false")+'" isHidden="'+(this.getHidden()?"true":"false")+'" type="'+this.getSpecSubType()+'">'+valueTag+'</slc:primitive-spec-attribute>';
 			}else if(this.getSpecType() == "ref"){
+				valueTag = '<slc:label>'+this.getValue()+'</slc:label>';
 				specAttribute = '<slc:ref-spec-attribute isParameter="'+(this.getParameter()?"true":"false")+'" isFrozen="'+(this.getFrozen()?"true":"false")+'" isHidden="'+(this.getHidden()?"true":"false")+'" targetClassName="'+this.getSpecSubType()+'">'+valueTag+'</slc:ref-spec-attribute>';
 			}
 			return '<slc:value key="'+this.getKey()+'">'+specAttribute+'</slc:value>';
@@ -128,7 +116,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 			var valueTag = '';
 			var specAttribute = '';
 			if(this.getSpecType() == "primitive"){
-				valueTag = '<slc:value>'+this.getValue()+'</slc:value>';
+				valueTag =  this.getValue();
 				specAttribute = '<slc:primitive-value type="'+this.getSpecSubType()+'">'+valueTag+'</slc:primitive-value>';
 			}else if(this.getSpecType() == "ref"){
 				valueTag = '<slc:label>'+this.getValue()+'</slc:label>';

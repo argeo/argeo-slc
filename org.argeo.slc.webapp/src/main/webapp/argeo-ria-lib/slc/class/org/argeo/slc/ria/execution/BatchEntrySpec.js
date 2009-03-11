@@ -55,9 +55,9 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 			
 			var execSpecDescXML = this.getOriginalSpec().toXml();
 			
-			var moduleData = '<slc:moduleName>'+this.getModule().getName()+'</slc:moduleName><slc:moduleVersion>'+this.getModule().getVersion()+'</slc:moduleVersion>';
+			var moduleData = '<slc:module-name>'+this.getModule().getName()+'</slc:module-name><slc:module-version>'+this.getModule().getVersion()+'</slc:module-version>';
 			
-			return '<slc:execution-object>'+moduleData + execFlowDescXML + execSpecDescXML +'</slc:execution-object>';
+			return '<slc:realized-flow>'+moduleData + execFlowDescXML + execSpecDescXML +'</slc:realized-flow>';
 			
 		},
 		

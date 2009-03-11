@@ -81,7 +81,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 		getValue: function(key, specType, specSubType){
 			var xpath;
 			if(specType == "primitive"){
-				xpath = 'slc:value[@key="'+key+'"]/slc:primitive-value[@type="'+specSubType+'"]/slc:value';
+				xpath = 'slc:value[@key="'+key+'"]/slc:primitive-value[@type="'+specSubType+'"]';
 			}else if(specType == "ref"){
 				xpath = 'slc:value[@key="'+key+'"]/slc:ref-value/slc:label';
 			}

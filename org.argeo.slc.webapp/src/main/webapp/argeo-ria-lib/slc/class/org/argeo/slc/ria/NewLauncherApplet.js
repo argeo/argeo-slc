@@ -499,30 +499,22 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		if(menu.length) command.setEnabled(true);
 	},
 		
-	/**
-	 * Create XMLString to send for execution 
-	 * @return {String}
-	 */
-	currentBatchToXml : function(){
-		var selection = this.list.getChildren();
-		var xmlString = "";
-		for(var i=0;i<selection.length;i++){
-			var batchEntrySpec = selection[i].getUserData("batchEntrySpec");
-			xmlString += batchEntrySpec.toXml();
-		}
-		return xmlString;
-	},
 	
 	/**
 	 * Called at execution
 	 * @param agentUuid {String} The id of the target agent
 	 */
 	executeBatchOnAgent : function(agentUuid){
-		//var xmlString = agentUuid + this.currentBatchToXml();
-		var xmlString = "<slc:execution-objects>"+this.currentBatchToXml()+"</slc:execution-objects>";
+		var selection = this.list.getChildren();
+		if(!selection.length) return;
+		var slcExecMessage = new org.argeo.slc.ria.execution.Message();
+		for(var i=0;i<selection.length;i++){
+			var batchEntrySpec = selection[i].getUserData("batchEntrySpec");
+			slcExecMessage.addBatchEntrySpec(batchEntrySpec);
+		}		
 		this._amqClient.sendMessage(
 			"topic://agent.newExecution", 
-			xmlString, 
+			slcExecMessage.toXml(), 
 			{"slc-agentId":agentUuid}
 		);
 		// Force logs refresh right now!
@@ -532,71 +524,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 				command.execute();
 			}
 		}, this, 2000);		
-	},
-	
-	/**
-	 * Make an SlcExecutionMessage from the currently displayed form.
-	 * @param crtPartId {String} The form part currently displayed
-	 * @param slcExec {org.argeo.slc.ria.SlcExecutionMessage} The message to fill.
-	 * @param fields {Map} The fields of the form
-	 * @param hiddenFields {Map} The hidden ones 
-	 * @param freeFields {Array} The free fields.
-	 */
-	_prepareSlcExecutionMessage : function(crtPartId, slcExec, fields, hiddenFields, freeFields){
-		if(crtPartId == "standard"){
-			slcExec.setStatus(fields.status.getValue());		
-			slcExec.setHost(fields.host.getValue());
-			slcExec.setUser(fields.user.getValue());
-		}else{
-			slcExec.addAttribute("ant.file", fields["ant.file"].getValue());
-		}
-		for(var i=0;i<freeFields.length;i++){
-			var fF = freeFields[i];
-			if(fF.labelEl.getValue() != "" && fF.valueEl.getValue() != ""){
-				slcExec.addAttribute(fF.labelEl.getValue(), fF.valueEl.getValue());
-			}
-		}		
-	},
-	
-	/**
-	 * Called when the user clicks the "Execute" button.
-	 */
-	submitForm : function(){
-		var currentUuid = this.agentSelector.getValue();
-		if(!currentUuid) return;
-		var slcExec = new org.argeo.slc.ria.SlcExecutionMessage();
-		
-		var fields = {};
-		var hiddenFields = {};
-		var freeFields = {};
-		var crtPartId = "";
-		if(this.parts){
-			if(this.partChooser){
-				crtPartId = this.partChooser.getValue();
-			}else{
-				crtPartId = qx.lang.Object.getKeys(this.parts)[0];
-			}
-			var crtPart = this.parts[crtPartId];
-			fields = crtPart.fields;
-			hiddenFields = crtPart.hiddenFields;
-			freeFields = crtPart.freeFields;
-		}
-		
-		this._prepareSlcExecutionMessage(crtPartId, slcExec, fields, hiddenFields, freeFields);
-				
-		this._amqClient.sendMessage(
-			"topic://agent.newExecution", 
-			slcExec.toXml(), 
-			{"slc-agentId":currentUuid}
-		);
-		// Force logs refresh right now!
-		qx.event.Timer.once(function(){
-			var command = org.argeo.ria.event.CommandsManager.getInstance().getCommandById("reloadlogs");
-			if(command){
-				command.execute();
-			}
-		}, this, 2000);
-	}
+	}	
 	  	
   }
 });
