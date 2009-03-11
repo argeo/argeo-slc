@@ -1,4 +1,4 @@
-package org.argeo.slc.process;
+package org.argeo.slc.execution;
 
 /** Any object which can perform processing */
 public interface Executable {

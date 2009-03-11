@@ -1,12 +1,17 @@
 package org.argeo.slc.castor;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
+import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
+import org.argeo.slc.unit.execution.ExecutionFlowDescriptorTestUtils;
 import org.argeo.slc.unit.process.SlcExecutionTestUtils;
 import org.springframework.xml.transform.StringResult;
 
@@ -62,5 +67,21 @@ public class SlcExecutionCastorTest extends AbstractCastorTestCase {
 
 		SlcExecutionRequest msgUpdateUnm = unmarshal(msgUpdateXml);
 		assertNotNull(msgUpdateUnm);
+	}
+
+	public void testMarshUnmarsh() throws Exception {
+		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
+		List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
+		RealizedFlow realizedFlow = new RealizedFlow();
+		ExecutionFlowDescriptor flowDescriptor = ExecutionFlowDescriptorTestUtils
+				.createSimpleExecutionFlowDescriptor();
+		realizedFlow.setModuleName("test.module");
+		realizedFlow.setModuleVersion("1.0.0");
+		realizedFlow.setFlowDescriptor(flowDescriptor);
+		realizedFlow.setExecutionSpec(flowDescriptor.getExecutionSpec());
+		realizedFlows.add(realizedFlow);
+		slcExec.setRealizedFlows(realizedFlows);
+
+		marshUnmarsh(slcExec, false);
 	}
 }

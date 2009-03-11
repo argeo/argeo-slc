@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.argeo.slc.core.execution.DefaultExecutionFlow;
+import org.argeo.slc.execution.Executable;
 import org.argeo.slc.execution.ExecutionFlow;
-import org.argeo.slc.process.Executable;
 
 public class ExecutionFlowFactory {
 	private List<Executable> executables = new ArrayList<Executable>();

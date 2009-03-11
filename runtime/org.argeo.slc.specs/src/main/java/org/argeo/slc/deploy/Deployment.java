@@ -1,7 +1,7 @@
 package org.argeo.slc.deploy;
 
 import org.argeo.slc.build.Distribution;
-import org.argeo.slc.process.Executable;
+import org.argeo.slc.execution.Executable;
 
 public interface Deployment extends Executable{
 	public DeployedSystem getDeployedSystem();

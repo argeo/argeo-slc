@@ -1,9 +1,10 @@
 package org.argeo.slc.core.execution;
 
-public class PrimitiveSpecAttribute extends AbstractSpecAttribute {
-//	public enum Type {
-//		string, integer
-//	}
+public class PrimitiveSpecAttribute extends AbstractSpecAttribute implements
+		PrimitiveAccessor {
+	// public enum Type {
+	// string, integer
+	// }
 
 	public final static String TYPE_STRING = "string";
 	public final static String TYPE_INTEGER = "integer";

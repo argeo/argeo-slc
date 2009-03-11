@@ -8,10 +8,10 @@ import java.util.UUID;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.Executable;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
-import org.argeo.slc.process.Executable;
 import org.argeo.slc.test.ExecutableTestRun;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;

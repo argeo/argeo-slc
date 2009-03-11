@@ -22,6 +22,15 @@ public class SlcExecution {
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
 	private List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
+	private List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
+
+	public List<RealizedFlow> getRealizedFlows() {
+		return realizedFlows;
+	}
+
+	public void setRealizedFlows(List<RealizedFlow> realizedFlows) {
+		this.realizedFlows = realizedFlows;
+	}
 
 	public List<SlcExecutionStep> getSteps() {
 		return steps;

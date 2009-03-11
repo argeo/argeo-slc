@@ -1,9 +1,19 @@
 package org.argeo.slc.core.execution;
 
-public class PrimitiveValue {
+public class PrimitiveValue extends AbstractExecutionValue implements
+		PrimitiveAccessor {
 	private String type;
 
 	private Object value;
+
+	public PrimitiveValue() {
+	}
+
+	public PrimitiveValue(String type, Object value) {
+		super();
+		this.type = type;
+		this.value = value;
+	}
 
 	public String getType() {
 		return type;
