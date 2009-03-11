@@ -103,10 +103,10 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 			var valueTag = '';
 			var specAttribute = '';
 			if(this.getSpecType() == "primitive"){
-				valueTag =  this.getValue();
+				valueTag =  (this.getValue()?this.getValue():'');
 				specAttribute = '<slc:primitive-spec-attribute isParameter="'+(this.getParameter()?"true":"false")+'" isFrozen="'+(this.getFrozen()?"true":"false")+'" isHidden="'+(this.getHidden()?"true":"false")+'" type="'+this.getSpecSubType()+'">'+valueTag+'</slc:primitive-spec-attribute>';
 			}else if(this.getSpecType() == "ref"){
-				valueTag = '<slc:label>'+this.getValue()+'</slc:label>';
+				valueTag = (this.getValue()?'<slc:label>'+this.getValue()+'</slc:label>':'');
 				specAttribute = '<slc:ref-spec-attribute isParameter="'+(this.getParameter()?"true":"false")+'" isFrozen="'+(this.getFrozen()?"true":"false")+'" isHidden="'+(this.getHidden()?"true":"false")+'" targetClassName="'+this.getSpecSubType()+'">'+valueTag+'</slc:ref-spec-attribute>';
 			}
 			return '<slc:value key="'+this.getKey()+'">'+specAttribute+'</slc:value>';
