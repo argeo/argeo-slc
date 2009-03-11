@@ -93,6 +93,13 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 		applicationContext.publishEvent(new NewExecutionEvent(this,
 				slcExecution));
 	}
+	
+	public void execute(ExecutionFlowDescriptor descriptor) {
+		ExecutionFlow flow = (ExecutionFlow) applicationContext.getBean(descriptor.getName(), 
+				ExecutionFlow.class);
+		flow.execute();
+	}
+	
 
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {

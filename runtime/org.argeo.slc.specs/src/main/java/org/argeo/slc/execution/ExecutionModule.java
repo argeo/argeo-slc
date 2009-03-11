@@ -9,5 +9,8 @@ public interface ExecutionModule {
 
 	public ExecutionModuleDescriptor getDescriptor();
 
+	//TODO: remove
 	public void execute(SlcExecution slcExecution);
+	
+	public void execute(ExecutionFlowDescriptor descriptor);
 }

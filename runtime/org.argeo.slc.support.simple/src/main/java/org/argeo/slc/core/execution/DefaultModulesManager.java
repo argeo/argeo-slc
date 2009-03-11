@@ -5,9 +5,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModule;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
+import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.springframework.util.Assert;
 
@@ -16,18 +19,21 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 			.getLog(DefaultModulesManager.class);
 
 	private List<ExecutionModule> executionModules = new ArrayList<ExecutionModule>();
-
-	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
-			String moduleName, String version) {
-		ExecutionModule module = null;
+	
+	protected ExecutionModule getExecutionModule(String moduleName, String version) {
 		for (ExecutionModule moduleT : executionModules) {
 			if (moduleT.getName().equals(moduleName)) {
 				// TODO: check version
-				module = moduleT;
-				break;
+				return moduleT;
 			}
 		}
-
+		return null;
+	}
+	
+	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
+			String moduleName, String version) {
+		ExecutionModule module = getExecutionModule(moduleName, version);
+		
 		Assert.notNull(module);
 
 		return module.getDescriptor();
@@ -44,6 +50,45 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 	public void process(SlcExecution slcExecution) {
 		log.info("SlcExecution " + slcExecution);
 
+		for(RealizedFlow flow : slcExecution.getRealizedFlows()) {
+			ExecutionModule module = getExecutionModule(flow.getModuleName(),
+					flow.getModuleVersion());
+			if(module != null) {
+				ExecutionContext executionContext = new ExecutionContext();
+				executionContext.addVariables(slcExecution.getAttributes());
+				ExecutionThread thread = new ExecutionThread(executionContext, flow.getFlowDescriptor(),
+						module);
+				thread.start();
+			}
+			else {
+				// throw exception ?
+			}
+		}
 	}
 
+	private class ExecutionThread extends Thread {
+		private final ExecutionFlowDescriptor executionFlowDescriptor;
+		private final ExecutionContext executionContext;
+		private final ExecutionModule executionModule;
+
+		public ExecutionThread(ExecutionContext executionContext,
+				ExecutionFlowDescriptor executionFlowDescriptor,
+				ExecutionModule executionModule) {
+			super("SLC Execution #" + executionContext.getUuid());
+			this.executionFlowDescriptor = executionFlowDescriptor;
+			this.executionContext = executionContext;
+			this.executionModule = executionModule;
+		}
+
+		public void run() {
+			ExecutionContext.registerExecutionContext(executionContext);				
+			try {
+				executionModule.execute(executionFlowDescriptor);
+			} catch (Exception e) {
+				log.error("Execution " + executionContext.getUuid()
+						+ " failed.", e);
+			}
+		}
+	}	
+	
 }

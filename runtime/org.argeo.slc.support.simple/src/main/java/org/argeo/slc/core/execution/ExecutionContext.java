@@ -30,6 +30,10 @@ public class ExecutionContext {
 			return null;
 		return executionContext.get().variables;
 	}
+	
+	public void addVariables(Map<? extends String, ? extends Object> variablesToAdd) {
+		variables.putAll(variablesToAdd);
+	}
 
 	public static ExecutionContext getCurrent() {
 		return executionContext.get();
