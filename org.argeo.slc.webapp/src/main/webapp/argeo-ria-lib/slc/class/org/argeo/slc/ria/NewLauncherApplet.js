@@ -297,11 +297,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		}
   		this._amqClient.addListener("agentregister", "topic://agent.register", reloadHandler, this);
 		this._amqClient.addListener("agentunregister", "topic://agent.unregister", reloadHandler, this);
-  		reloadHandler();
-  		
-  		this._amqClient.addListener("modulesResponse", "modulesManager.response", function(message){
-  			this.info(message);
-  		}, this);  		
+  		reloadHandler();  		
   	},
   	 
 	addScroll : function(){
