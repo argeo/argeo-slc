@@ -5,7 +5,30 @@
 	default-lazy-init="false">
 
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
+	
+	
+	<bean id="slcDefault.jms.listener.newExecution" parent="slcTemplate.jms.listenerContainer">
+		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
+		<property name="destination" ref="slcJms.destination.agent.newExecution" />
+		<property name="messageListener">
+			<bean parent="slcTemplate.jms.listenerAdapterCastor">
+				<constructor-arg ref="modulesManager" />
+				<property name="defaultListenerMethod" value="process" />
+			</bean>
+		</property>
+		<property name="messageSelector">
+			<bean factory-bean="slcDefault.jms.agent" factory-method="getMessageSelector"/>
+		</property>
+	</bean>
 
+	<bean id="slcDefault.jms.agent" class="org.argeo.slc.jms.JmsAgent">
+		<property name="jmsTemplate" ref="slcDefault.jms.jmsTemplateCastor" />
+		<property name="agentRegister" ref="slcJms.destination.agent.register" />
+		<property name="agentUnregister" ref="slcJms.destination.agent.unregister" />
+	</bean>
+
+	
+<!-- 
 	<bean id="modulesManager.listenerContainer" parent="slcTemplate.jms.listenerContainer">
 		<property name="destination" ref="slcJms.destination.modulesManager.request" />
 		<property name="messageListener">
@@ -27,6 +50,6 @@
 			</bean>
 		</property>
 	</bean>
-
+ -->
 
 </beans>

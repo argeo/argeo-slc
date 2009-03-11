@@ -12,11 +12,11 @@
 		<field name="version" />
 		<field name="executionFlows" collection="arraylist"
 			type="org.argeo.slc.execution.ExecutionFlowDescriptor">
-			<bind-xml auto-naming="deriveByClass" location="executionFlows" />
+			<bind-xml auto-naming="deriveByClass" location="execution-flows" />
 		</field>
 		<field name="executionSpecs" collection="arraylist"
 			type="org.argeo.slc.execution.ExecutionSpec">
-			<bind-xml auto-naming="deriveByClass" location="executionSpecs" />
+			<bind-xml auto-naming="deriveByClass" location="execution-specs" />
 		</field>
 	</class>
 
@@ -93,7 +93,7 @@
 		</field>
 		<field name="value" type="string"
 			handler="org.argeo.slc.castor.execution.PrimitiveFieldHandler">
-			<bind-xml node="element" />
+			<bind-xml node="text" />
 		</field>
 	</class>
 
@@ -121,7 +121,7 @@
 		</field>
 		<field name="value" type="string"
 			handler="org.argeo.slc.castor.execution.PrimitiveFieldHandler">
-			<bind-xml node="element" />
+			<bind-xml node="text" />
 		</field>
 	</class>
 
