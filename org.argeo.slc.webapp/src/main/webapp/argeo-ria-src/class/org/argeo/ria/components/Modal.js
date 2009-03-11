@@ -7,6 +7,13 @@ qx.Class.define("org.argeo.ria.components.Modal",
 {
 	extend : qx.ui.window.Window,
   
+	properties : {
+		persistent : {
+			check : "Boolean",
+			init : false
+		}
+	},
+	
 	events : {
 		/**
 		 * Triggered when the user clicks the "ok" button. 
@@ -36,6 +43,19 @@ qx.Class.define("org.argeo.ria.components.Modal",
 	},
 	
 	members : {
+		
+		addCenter : function(component){
+			if(!this.getPersistent()){
+				this.add(component, {edge : 'center', width:'100%'});
+			}else{
+				if(!this.centerScroller){
+					this.centerScroller = new qx.ui.container.Composite(new qx.ui.layout.VBox(1));					
+					this.add(new qx.ui.container.Scroll(this.centerScroller), {edge : 'center', width:'100%', height:'100%'});
+				}
+				this.centerScroller.add(component);
+			}
+		},
+		
 		/**
 		 * Display text inside the popup
 		 * @param text {String} A string content for the popup
@@ -44,7 +64,7 @@ qx.Class.define("org.argeo.ria.components.Modal",
 			var label = new qx.ui.basic.Label(text);
 			label.setRich(true);
 			label.setTextAlign("center");
-			this.add(label, {edge:'center', width:'100%'});
+			this.addCenter(label);
 			this.addCloseButton();
 		},
 		/**
@@ -55,7 +75,7 @@ qx.Class.define("org.argeo.ria.components.Modal",
 			var label = new qx.ui.basic.Label(text);
 			label.setRich(true);
 			label.setTextAlign("center");
-			this.add(label, {edge:'center', width:'100%'});
+			this.addCenter(label);
 			this.addOkCancel();
 		},
 		/**
@@ -63,14 +83,17 @@ qx.Class.define("org.argeo.ria.components.Modal",
 		 * @param panel {qx.ui.core.Widget} A gui component (will be set at width 100%).
 		 */
 		addContent: function(panel){
-			this.add(panel, {edge:'center', width:'100%'});
+			this.addCenter(panel);
 			this.addCloseButton();
 		},
 		/**
 		 * Automatically attach to the application root, then show.
 		 */
 		attachAndShow:function(){
-			org.argeo.ria.components.ViewsManager.getInstance().getApplicationRoot().add(this);			
+			if(!this.attached){
+				org.argeo.ria.components.ViewsManager.getInstance().getApplicationRoot().add(this);
+				this.attached = true;
+			}
 			this.show();
 		},
 		/**
@@ -128,7 +151,11 @@ qx.Class.define("org.argeo.ria.components.Modal",
 		 */
 		_closeAndDestroy : function(){
 			this.hide();
-			this.destroy();			
+			if(!this.getPersistent()){
+				this.destroy();
+			}else{
+				if(this.centerScroller) this.centerScroller.removeAll();
+			}
 		}
 	}
 });

@@ -75,9 +75,13 @@ qx.Class.define("org.argeo.ria.components.Logger",
 			var label = new qx.ui.basic.Label('<div class="messages"><div class="'+wrapper.className+'">'+wrapper.innerHTML.replace(",","<br/>")+'</div></div>');			
 			label.setRich(true);
 			if(entry.level == "error"){
-				var alert = new org.argeo.ria.components.Modal("Error");
-				alert.addContent(label.clone());				
-				alert.attachAndShow();
+				if(!this.alert){
+					this.alert = new org.argeo.ria.components.Modal("Error");
+					this.alert.setPersistent(true);
+					this.alert.addCloseButton();
+				}
+				this.alert.addCenter(label.clone());	
+				this.alert.attachAndShow();
 			}else if(entry.level == "info"){
 				this.showLogAsPopup(label.clone());
 			}
