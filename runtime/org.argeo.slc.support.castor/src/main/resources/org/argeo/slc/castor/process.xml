@@ -17,7 +17,7 @@
 		<field name="user" />
 		<field name="realizedFlows" collection="arraylist"
 			type="org.argeo.slc.process.RealizedFlow">
-			<bind-xml auto-naming="deriveByClass" location="steps" />
+			<bind-xml auto-naming="deriveByClass" location="realized-flows" />
 		</field>
 		<field name="steps" collection="arraylist"
 			type="org.argeo.slc.process.SlcExecutionStep">
