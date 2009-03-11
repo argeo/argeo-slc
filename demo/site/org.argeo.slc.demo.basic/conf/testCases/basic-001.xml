@@ -15,7 +15,7 @@
 					<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
 						<aop:scoped-proxy />
 						<property name="expected" value="tata101" />
-						<property name="reached" value="tata@{testKey}" />
+						<property name="reached" value="tata@{testedComponentId}" />
 					</bean>
 				</entry>
 			</map>

@@ -109,7 +109,7 @@
 	<!-- Active MQ -->
 	<context-param>
 		<param-name>org.apache.activemq.brokerURL</param-name>
-		<param-value>vm://localhost</param-value>
+		<param-value>tcp://localhost:61616</param-value>
 	</context-param>
 
 	<context-param>

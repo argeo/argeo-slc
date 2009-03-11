@@ -5,6 +5,9 @@ import java.net.UnknownHostException;
 import java.util.UUID;
 
 import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,16 +19,19 @@ import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.support.converter.MessageConverter;
 
 /** JMS based implementation of SLC Agent. */
 public class JmsAgent extends AbstractAgent implements SlcAgent,
-		InitializingBean, DisposableBean {
+		InitializingBean, DisposableBean, MessageListener {
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
 
 	private final SlcAgentDescriptor agentDescriptor;
 	private JmsTemplate jmsTemplate;
 	private Destination agentRegister;
 	private Destination agentUnregister;
+
+	private MessageConverter messageConverter;
 
 	public JmsAgent() {
 		try {
@@ -49,11 +55,6 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 				+ agentUnregister);
 	}
 
-	public void newExecution(SlcExecution slcExecution) {
-		log.info("Execute SlcExecution :" + slcExecution);
-		runSlcExecution(slcExecution);
-	}
-
 	public void setJmsTemplate(JmsTemplate jmsTemplate) {
 		this.jmsTemplate = jmsTemplate;
 	}
@@ -66,7 +67,33 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 		this.agentUnregister = agentUnregister;
 	}
 
-	public String getMessageSelector() {
-		return "slc-agentId=" + agentDescriptor.getUuid();
+	public void onMessage(Message message) {
+		// FIXME: we filter the messages on the client side, 
+		// because of a weird problem with selector since moving to OSGi
+		try {
+			if (message.getStringProperty("slc-agentId").equals(
+					agentDescriptor.getUuid())) {
+				runSlcExecution((SlcExecution) messageConverter
+						.fromMessage(message));
+			}
+		} catch (JMSException e) {
+			throw new SlcException("Cannot convert message " + message, e);
+		}
+
 	}
+
+	public String getMessageSelector() {
+		String messageSelector = "slc-agentId=" + agentDescriptor.getUuid()
+				+ "";
+		// String messageSelector = "slc-agentId LIKE '%'";
+		if (log.isDebugEnabled())
+			log.debug("Message selector: '" + messageSelector + "'");
+		return messageSelector;
+	}
+
+	public void setMessageConverter(MessageConverter messageConverter) {
+		this.messageConverter = messageConverter;
+	}
+	
+	
 }

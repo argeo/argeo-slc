@@ -34,7 +34,10 @@
 		<property name="executionSpec" ref="basic.spec" />
 		<property name="executables">
 			<list>
-				<ref bean="echo1" />
+				<bean parent="task.echo" scope="execution">
+					<property name="message" value="From basic @{testedComponentId}" />
+					<aop:scoped-proxy />
+				</bean>
 				<bean parent="testRun">
 					<property name="testDefinition" ref="testDef" />
 					<property name="testData">

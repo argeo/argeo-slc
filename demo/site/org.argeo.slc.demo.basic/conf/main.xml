@@ -35,7 +35,7 @@
 
 	<bean id="echo1" parent="task.echo" scope="execution">
 		<property name="message"
-			value="From main! @{testKey}, slc.flows=@{slc.flows}" />
+			value="From main! @{testKey}" />
 		<aop:scoped-proxy />
 	</bean>
 </beans>

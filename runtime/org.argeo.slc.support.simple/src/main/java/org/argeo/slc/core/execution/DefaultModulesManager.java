@@ -48,7 +48,7 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 	}
 
 	public void process(SlcExecution slcExecution) {
-		log.info("SlcExecution " + slcExecution);
+		log.info("##\n## Process SLC Execution " + slcExecution+"\n##");
 
 		for(RealizedFlow flow : slcExecution.getRealizedFlows()) {
 			ExecutionModule module = getExecutionModule(flow.getModuleName(),
