@@ -1,7 +1,9 @@
 package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
@@ -29,6 +31,10 @@ public class DefaultModulesMangerTest extends AbstractSpringTestCase {
 		flow.setModuleVersion("dummyversion");
 		ExecutionFlowDescriptor executionFlowDescriptor = new ExecutionFlowDescriptor();
 		executionFlowDescriptor.setName("main");
+		Map<String, Object> values = new HashMap<String, Object>();
+		values.put("testKey", new PrimitiveValue(
+				PrimitiveSpecAttribute.TYPE_INTEGER, 22));
+		executionFlowDescriptor.setValues(values);
 		flow.setFlowDescriptor(executionFlowDescriptor);
 		realizedFlows.add(flow);
 		execution.setRealizedFlows(realizedFlows);

@@ -19,14 +19,14 @@ public class ExecutionFlowTest extends AbstractSpringTestCase {
 		configureAndExecuteSlcFlow("canonic-001.xml", "canonic.001");
 		configureAndExecuteSlcFlow("canonic-002.xml", "canonic.002");
 
-/*		try {
+		try {
 			configureAndExecuteSlcFlow("canonic-003.error.xml", "canonic.003");
 			fail("Parameter not set - should be rejected.");
 		} catch (BeanCreationException e) {
 			// exception expected
 			logException(e);
 		}
-*/		
+		
 /*		try {
 			configureAndExecuteSlcFlow("canonic-004.error.xml", "canonic.004");
 			fail("Unknown parameter set - should be rejected.");

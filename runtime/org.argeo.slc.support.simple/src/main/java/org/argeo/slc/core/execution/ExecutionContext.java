@@ -100,17 +100,21 @@ public class ExecutionContext {
 
 	protected Object findVariable(String key) {
 		Object obj = null;
-		for (int i = stack.size() - 1; i >= 0; i--) {
-			if (stack.get(i).getLocalVariables().containsKey(key)) {
-				obj = stack.get(i).getLocalVariables().get(key);
-				break;
-			}
-		}
-
-		// Look into global execution variables
+		
+		// Look if the variable is set in the global execution variables
+		// (i.e. the variable was overridden)
+		if (variables.containsKey(key))
+			obj = variables.get(key);		
+		
+		// if the variable was not found, look in the stack starting at the
+		// upper flows
 		if (obj == null) {
-			if (variables.containsKey(key))
-				obj = variables.get(key);
+			for (int i = 0; i < stack.size(); i++) {
+				if (stack.get(i).getLocalVariables().containsKey(key)) {
+					obj = stack.get(i).getLocalVariables().get(key);
+					break;
+				}
+			}
 		}
 
 		return obj;

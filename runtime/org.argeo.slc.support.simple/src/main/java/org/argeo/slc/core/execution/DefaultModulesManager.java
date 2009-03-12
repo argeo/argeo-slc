@@ -1,10 +1,13 @@
 package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModule;
@@ -23,8 +26,9 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 	protected ExecutionModule getExecutionModule(String moduleName, String version) {
 		for (ExecutionModule moduleT : executionModules) {
 			if (moduleT.getName().equals(moduleName)) {
-				// TODO: check version
-				return moduleT;
+				if(moduleT.getVersion().equals(version)) {
+					return moduleT;
+				}
 			}
 		}
 		return null;
@@ -55,13 +59,35 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 					flow.getModuleVersion());
 			if(module != null) {
 				ExecutionContext executionContext = new ExecutionContext();
-				executionContext.addVariables(slcExecution.getAttributes());
+				
+				// convert the values of flow.getFlowDescriptor()
+				Map<String, Object> values = flow.getFlowDescriptor().getValues();
+				
+				Map<String, Object> convertedValues = new HashMap<String, Object>();
+				
+				for(String key : values.keySet()) {
+					Object value = values.get(key);
+					if(value instanceof PrimitiveValue) {
+						PrimitiveValue primitiveValue = (PrimitiveValue) value;
+
+						// TODO: check that the class of the the primitiveValue.value matches
+						// the primitiveValue.type
+						convertedValues.put(key, primitiveValue.getValue());
+					}
+					else if(value instanceof RefValue) {
+						RefValue refValue = (RefValue) value;
+						convertedValues.put(key, refValue.getLabel());
+					}
+				}
+				
+				executionContext.addVariables(convertedValues);
 				ExecutionThread thread = new ExecutionThread(executionContext, flow.getFlowDescriptor(),
 						module);
 				thread.start();
 			}
 			else {
-				// throw exception ?
+				throw new SlcException("ExecutionModule " + flow.getModuleName() + ", version " 
+						+ flow.getModuleVersion() + " not found.");
 			}
 		}
 	}
@@ -85,6 +111,7 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 			try {
 				executionModule.execute(executionFlowDescriptor);
 			} catch (Exception e) {
+				//TODO: re-throw exception ?
 				log.error("Execution " + executionContext.getUuid()
 						+ " failed.", e);
 			}
