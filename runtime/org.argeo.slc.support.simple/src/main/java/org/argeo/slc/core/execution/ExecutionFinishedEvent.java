@@ -1,5 +1,6 @@
 package org.argeo.slc.core.execution;
 
+import org.argeo.slc.execution.ExecutionContext;
 import org.springframework.context.ApplicationEvent;
 
 public class ExecutionFinishedEvent extends ApplicationEvent {

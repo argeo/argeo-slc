@@ -53,12 +53,12 @@ public class ExecutionFlowTest extends AbstractSpringTestCase {
 	}
 	
 	protected void initExecutionContext() {
-		// if an execution context was registered, unregister it
-		if(ExecutionContext.getCurrent() != null) {
-			ExecutionContext.unregisterExecutionContext();
+/*		// if an execution context was registered, unregister it
+		if(MapExecutionContext.getCurrent() != null) {
+			MapExecutionContext.unregisterExecutionContext();
 		}
 		// register a new ExecutionContext
-		ExecutionContext.registerExecutionContext(new ExecutionContext());		
+		MapExecutionContext.registerExecutionContext(new MapExecutionContext());		*/
 	}
 	
 	protected ConfigurableApplicationContext prepareExecution(String applicationContextSuffix) {

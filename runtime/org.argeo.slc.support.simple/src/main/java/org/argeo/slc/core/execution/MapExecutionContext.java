@@ -8,15 +8,15 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.process.SlcExecution;
 import org.springframework.beans.factory.ObjectFactory;
 
-public class ExecutionContext {
-	private final static Log log = LogFactory.getLog(ExecutionContext.class);
+public class MapExecutionContext implements ExecutionContext {
+	private final static Log log = LogFactory.getLog(MapExecutionContext.class);
 
-	private final static ThreadLocal<ExecutionContext> executionContext = new ThreadLocal<ExecutionContext>();
 
 	private final Stack<ExecutionFlowRuntime> stack = new Stack<ExecutionFlowRuntime>();
 
@@ -25,56 +25,21 @@ public class ExecutionContext {
 
 	private final String uuid = UUID.randomUUID().toString();
 
-	public static Map<String, Object> getVariables() {
-		if (executionContext.get() == null)
-			return null;
-		return executionContext.get().variables;
-	}
+/*	public Map<String, Object> getVariables() {
+		return variables;
+	}*/
 	
 	public void addVariables(Map<? extends String, ? extends Object> variablesToAdd) {
 		variables.putAll(variablesToAdd);
 	}
 
-	public static ExecutionContext getCurrent() {
-		return executionContext.get();
-	}
-
-	public static String getExecutionUuid() {
-		if (executionContext.get() == null)
-			return null;
-		return executionContext.get().getUuid();
-	}
-
-	public static void registerExecutionContext(ExecutionContext context) {
-		if (executionContext.get() != null)
-			throw new SlcException("Context #" + executionContext.get().uuid
-					+ " already registered.");
-		executionContext.set(context);
-	}
-	
-	/**
-	 * Unregisters the ExecutionContext for the current Thread
-	 * @throws a SlcException if no ExecutionContext was registered for the Thread
-	 * @return the unregistered ExecutionContext
-	 */
-	public static ExecutionContext unregisterExecutionContext() {
-		ExecutionContext current = executionContext.get();
-		if(current == null) {
-			throw new SlcException("No Context registered.");
-		}
-		executionContext.remove();
-		return current;
-	}
-
-	public static void enterFlow(ExecutionFlow executionFlow) {
-		Stack<ExecutionFlowRuntime> stack = executionContext.get().stack;
-
+	public void enterFlow(ExecutionFlow executionFlow) {
 		ExecutionFlowRuntime runtime = new ExecutionFlowRuntime(executionFlow);
 		stack.push(runtime);
 
 		if (log.isDebugEnabled())
 			log.debug(depthSpaces(stack.size()) + "=> " + executionFlow + " #"
-					+ getCurrentStackUuid() + ", depth=" + stack.size());
+					+ uuid + ", depth=" + stack.size());
 
 		Map<String, ExecutionSpecAttribute> specAttrs = executionFlow
 				.getExecutionSpec().getAttributes();
@@ -91,8 +56,8 @@ public class ExecutionContext {
 
 	}
 
-	public static Object getVariable(String key) {
-		Object obj = getWithCheck().findVariable(key);
+	public Object getVariable(String key) {
+		Object obj = findVariable(key);
 		if (obj == null)
 			throw new SlcException("Variable '" + key + "' not found.");
 		return obj;
@@ -127,11 +92,10 @@ public class ExecutionContext {
 		return buf.toString();
 	}
 
-	public static void leaveFlow(ExecutionFlow executionFlow) {
-		Stack<ExecutionFlowRuntime> stack = executionContext.get().stack;
+	public void leaveFlow(ExecutionFlow executionFlow) {
 		if (log.isDebugEnabled())
 			log.debug(depthSpaces(stack.size()) + "<= " + executionFlow + " #"
-					+ getCurrentStackUuid() + ", depth=" + stack.size());
+					+ uuid + ", depth=" + stack.size());
 
 		ExecutionFlowRuntime leftEf = stack.pop();
 		if (!leftEf.getExecutionFlow().getName()
@@ -144,41 +108,27 @@ public class ExecutionContext {
 
 	}
 
-	public static String getCurrentStackUuid() {
-		return getWithCheck().stack.peek().uuid;
-	}
-
-	// public static ExecutionFlow getCurrentFlow() {
-	// return getWithCheck().stack.peek().executionFlow;
-	// }
-
-	public static Boolean isExecuting() {
-		return executionContext.get() != null;
-	}
-
-	protected static ExecutionContext getWithCheck() {
-		if (executionContext.get() == null)
-			throw new SlcException("No execution context");
-		return executionContext.get();
-	}
-
-	public static Object findOrAddScopedObject(String name,
-			ObjectFactory objectFactory) {
-		ExecutionContext executionContext = getWithCheck();
-		Object obj = executionContext.findScopedObject(name);
+/*	public Object findOrAddScopedObject(String name, ObjectFactory objectFactory) {
+		Object obj = findScopedObject(name);
 		if (obj == null) {
 			obj = objectFactory.getObject();
-			executionContext.stack.peek().getScopedObjects().put(name, obj);
+			stack.peek().getScopedObjects().put(name, obj);
 		}
 		return obj;
-	}
+	}*/
 
+	
+	public void addScopedObject(String name, Object obj) {
+		//TODO: check that the object is not set yet ?
+		stack.peek().getScopedObjects().put(name, obj);
+	}
+	
 	/** return null if not found */
-	protected Object findScopedObject(String key) {
+	public Object findScopedObject(String name) {
 		Object obj = null;
 		for (int i = stack.size() - 1; i >= 0; i--) {
-			if (stack.get(i).getScopedObjects().containsKey(key)) {
-				obj = stack.get(i).getScopedObjects().get(key);
+			if (stack.get(i).getScopedObjects().containsKey(name)) {
+				obj = stack.get(i).getScopedObjects().get(name);
 				break;
 			}
 		}

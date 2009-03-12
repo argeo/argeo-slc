@@ -41,7 +41,8 @@ public class DefaultModulesMangerTest extends AbstractSpringTestCase {
 		
 		// create a module
 		ApplicationContext applicationContext = prepareExecution("applicationContext.xml");
-		ExecutionModule module = createExecutionModule(applicationContext);
+//		ExecutionModule module = createExecutionModule(applicationContext);
+		ExecutionModule module = (ExecutionModule) applicationContext.getBean("executionModule_1");
 		
 		// create an Execution Module Manager
 		DefaultModulesManager manager = new DefaultModulesManager();
@@ -57,6 +58,7 @@ public class DefaultModulesMangerTest extends AbstractSpringTestCase {
 			public String getName() {return "dummyname";}
 			public String getVersion() {return "dummyversion";}			
 		};
+		module.setExecutionContext(new MapExecutionContext());
 		module.setApplicationContext(applicationContext);
 		return module;
 	}

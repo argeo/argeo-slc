@@ -6,6 +6,8 @@ public interface ExecutionModule {
 	public String getName();
 
 	public String getVersion();
+	
+	public ExecutionContext getExecutionContext();
 
 	public ExecutionModuleDescriptor getDescriptor();
 

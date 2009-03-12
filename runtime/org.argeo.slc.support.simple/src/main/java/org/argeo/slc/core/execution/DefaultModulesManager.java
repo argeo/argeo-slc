@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModule;
@@ -51,6 +52,29 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 		this.executionModules = executionModules;
 	}
 
+	protected Map<String, Object> convertValues(ExecutionFlowDescriptor executionFlowDescriptor) {
+		// convert the values of flow.getFlowDescriptor()
+		Map<String, Object> values = executionFlowDescriptor.getValues();
+		
+		Map<String, Object> convertedValues = new HashMap<String, Object>();
+		
+		for(String key : values.keySet()) {
+			Object value = values.get(key);
+			if(value instanceof PrimitiveValue) {
+				PrimitiveValue primitiveValue = (PrimitiveValue) value;
+
+				// TODO: check that the class of the the primitiveValue.value matches
+				// the primitiveValue.type
+				convertedValues.put(key, primitiveValue.getValue());
+			}
+			else if(value instanceof RefValue) {
+				RefValue refValue = (RefValue) value;
+				convertedValues.put(key, refValue.getLabel());
+			}
+		}		
+		return convertedValues;
+	}
+	
 	public void process(SlcExecution slcExecution) {
 		log.info("##\n## Process SLC Execution " + slcExecution+"\n##");
 
@@ -58,31 +82,7 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 			ExecutionModule module = getExecutionModule(flow.getModuleName(),
 					flow.getModuleVersion());
 			if(module != null) {
-				ExecutionContext executionContext = new ExecutionContext();
-				
-				// convert the values of flow.getFlowDescriptor()
-				Map<String, Object> values = flow.getFlowDescriptor().getValues();
-				
-				Map<String, Object> convertedValues = new HashMap<String, Object>();
-				
-				for(String key : values.keySet()) {
-					Object value = values.get(key);
-					if(value instanceof PrimitiveValue) {
-						PrimitiveValue primitiveValue = (PrimitiveValue) value;
-
-						// TODO: check that the class of the the primitiveValue.value matches
-						// the primitiveValue.type
-						convertedValues.put(key, primitiveValue.getValue());
-					}
-					else if(value instanceof RefValue) {
-						RefValue refValue = (RefValue) value;
-						convertedValues.put(key, refValue.getLabel());
-					}
-				}
-				
-				executionContext.addVariables(convertedValues);
-				ExecutionThread thread = new ExecutionThread(executionContext, flow.getFlowDescriptor(),
-						module);
+				ExecutionThread thread = new ExecutionThread(flow.getFlowDescriptor(), module);
 				thread.start();
 			}
 			else {
@@ -94,20 +94,18 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 
 	private class ExecutionThread extends Thread {
 		private final ExecutionFlowDescriptor executionFlowDescriptor;
-		private final ExecutionContext executionContext;
 		private final ExecutionModule executionModule;
 
-		public ExecutionThread(ExecutionContext executionContext,
-				ExecutionFlowDescriptor executionFlowDescriptor,
+		public ExecutionThread(ExecutionFlowDescriptor executionFlowDescriptor,
 				ExecutionModule executionModule) {
-			super("SLC Execution #" + executionContext.getUuid());
+			super("SLC Execution #" /*+ executionContext.getUuid()*/);
 			this.executionFlowDescriptor = executionFlowDescriptor;
-			this.executionContext = executionContext;
 			this.executionModule = executionModule;
 		}
 
 		public void run() {
-			ExecutionContext.registerExecutionContext(executionContext);				
+			ExecutionContext executionContext = executionModule.getExecutionContext();
+			executionContext.addVariables(convertValues(executionFlowDescriptor));
 			try {
 				executionModule.execute(executionFlowDescriptor);
 			} catch (Exception e) {
@@ -116,6 +114,5 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 						+ " failed.", e);
 			}
 		}
-	}	
-	
+	}		
 }

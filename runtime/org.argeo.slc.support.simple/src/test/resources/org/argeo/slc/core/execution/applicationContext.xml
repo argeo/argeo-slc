@@ -7,6 +7,14 @@
 
 	<import resource="imports.xml" /> 
 
+	<bean id="executionModule_1" class="org.argeo.slc.core.execution.SimpleSpringExecutionModule" >
+		<property name="executionContext">
+			<ref bean="executionContext" />
+		</property>	
+		<property name="name" value="dummyname" />
+		<property name="version" value="dummyversion" />
+	</bean>
+ 
 	<bean id="main" parent="slcTemplate.simpleFlow">
 		<property name="executionSpec">
 			<bean parent="slcTemplate.simpleSpec">

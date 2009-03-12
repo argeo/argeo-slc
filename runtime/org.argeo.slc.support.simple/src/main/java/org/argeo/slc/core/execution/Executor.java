@@ -2,6 +2,7 @@ package org.argeo.slc.core.execution;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.springframework.beans.BeansException;
@@ -19,7 +20,7 @@ public class Executor implements ApplicationListener, ApplicationContextAware {
 		if (event instanceof NewExecutionEvent) {
 			SlcExecution slcExecution = ((NewExecutionEvent) event)
 					.getSlcExecution();
-			ExecutionContext executionContext = new ExecutionContext();
+			MapExecutionContext executionContext = new MapExecutionContext();
 			ExecutionThread thread = new ExecutionThread(executionContext,
 					slcExecution);
 			thread.start();
@@ -36,22 +37,22 @@ public class Executor implements ApplicationListener, ApplicationContextAware {
 		private final SlcExecution slcExecution;
 		private final ExecutionContext executionContext;
 
-		public ExecutionThread(ExecutionContext executionContext,
+		public ExecutionThread(MapExecutionContext executionContext,
 				SlcExecution slcExecution) {
 			super("SLC Execution #" + executionContext.getUuid());
 			this.slcExecution = slcExecution;
 			this.executionContext = executionContext;
 		}
 
-		public void run() {
+		public void run() {/*
 			// Initialize from SlcExecution
-			ExecutionContext.registerExecutionContext(executionContext);
-			ExecutionContext.getVariables()
+			MapExecutionContext.registerExecutionContext(executionContext);
+			MapExecutionContext.getVariables()
 					.putAll(slcExecution.getAttributes());
 
 			try {
 				log.info("Start execution #"
-						+ ExecutionContext.getExecutionUuid());
+						+ MapExecutionContext.getExecutionUuid());
 				String executionBean = slcExecution.getAttributes().get(
 						"slc.flows");
 				ExecutionFlow main = (ExecutionFlow) applicationContext
@@ -64,7 +65,7 @@ public class Executor implements ApplicationListener, ApplicationContextAware {
 				applicationContext.publishEvent(new ExecutionFinishedEvent(
 						this, executionContext));
 			}
-
+*/
 		}
 	}
 

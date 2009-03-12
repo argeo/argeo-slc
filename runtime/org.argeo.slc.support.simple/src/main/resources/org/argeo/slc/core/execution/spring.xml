@@ -14,19 +14,39 @@
 		<property name="scopes">
 			<map>
 				<entry key="execution">
-					<bean class="org.argeo.slc.core.execution.ExecutionScope" />
+					<ref local="executionScope"/>
 				</entry>
 			</map>
 		</property>
 	</bean>
 
+	<bean id="executionScope" class="org.argeo.slc.core.execution.ExecutionScope" />
+
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
 
-	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor" />
+	<bean id="executionContext" class="org.argeo.slc.core.execution.MapExecutionContext" scope="execution">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor" >
+		<property name="executionContext">
+			<ref local="executionContext" />
+		</property>
+		<property name="executionScope">
+			<ref local="executionScope"/>
+		</property>
+	</bean>
+	
 	<bean class="org.argeo.slc.core.execution.InstantiationPostProcessor" />
-	<bean class="org.argeo.slc.core.execution.Executor" />
-	<bean class="org.argeo.slc.core.execution.ExecutionAspect"/>
+	
+	<!-- <bean class="org.argeo.slc.core.execution.Executor" /> -->
+	
+	<bean class="org.argeo.slc.core.execution.ExecutionAspect">
+		<property name="executionContext">
+			<ref local="executionContext" />
+		</property>
+	</bean>
 
 	<aop:aspectj-autoproxy />
 

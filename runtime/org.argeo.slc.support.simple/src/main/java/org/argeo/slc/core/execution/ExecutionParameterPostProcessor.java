@@ -8,6 +8,7 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.ExecutionContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
@@ -17,8 +18,25 @@ import org.springframework.beans.factory.config.TypedStringValue;
 
 public class ExecutionParameterPostProcessor extends
 		InstantiationAwareBeanPostProcessorAdapter {
+	
 	private final static Log log = LogFactory
 			.getLog(ExecutionParameterPostProcessor.class);
+
+	private ExecutionContext executionContext;
+	
+	private ExecutionScope executionScope;
+	
+	public void setExecutionScope(ExecutionScope executionScope) {
+		this.executionScope = executionScope;
+	}
+
+	public ExecutionContext getExecutionContext() {
+		return executionContext;
+	}
+
+	public void setExecutionContext(ExecutionContext executionContext) {
+		this.executionContext = executionContext;
+	}
 
 	private String placeholderPrefix = "@{";
 	private String placeholderSuffix = "}";
@@ -28,7 +46,7 @@ public class ExecutionParameterPostProcessor extends
 	public PropertyValues postProcessPropertyValues(PropertyValues pvs,
 			PropertyDescriptor[] pds, Object bean, String beanName)
 			throws BeansException {
-		if (!ExecutionContext.isExecuting()){
+		if ((executionScope == null) || (!executionScope.hasExecutionContext())){
 				//&& !DefaultExecutionSpec.isInFlowInitialization()) {
 			//log.info("Skip parameter conversion for bean " + beanName);
 			return pvs;
@@ -97,14 +115,13 @@ public class ExecutionParameterPostProcessor extends
 		@Override
 		protected String resolvePlaceholder(String placeholder, Properties props) {
 			//log.info("Try convert placeholder " + placeholder);
-			if (ExecutionContext.isExecuting())
-				return ExecutionContext.getVariable(placeholder).toString();
+			if ((executionScope != null) && (executionScope.hasExecutionContext()))
+				return executionContext.getVariable(placeholder).toString();
 			else if (DefaultExecutionSpec.isInFlowInitialization())
 				return DefaultExecutionSpec.getInitializingFlowParameter(
 						placeholder).toString();
 			else
 				return super.resolvePlaceholder(placeholder, props);
 		}
-
 	}
 }

@@ -1,31 +1,21 @@
 package org.argeo.slc.execution.old;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.execution.ConsoleContextDescriber;
-import org.argeo.slc.core.execution.ExecutionContext;
 import org.argeo.slc.core.execution.ExecutionFinishedEvent;
 import org.argeo.slc.core.execution.NewExecutionEvent;
+import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.logging.Log4jUtils;
 import org.argeo.slc.process.SlcExecution;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.PropertyValue;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.SimpleBeanDefinitionRegistry;
-import org.springframework.beans.factory.xml.XmlBeanDefinitionParser;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.context.support.GenericApplicationContext;
 
 public class EfLauncher implements ApplicationListener {

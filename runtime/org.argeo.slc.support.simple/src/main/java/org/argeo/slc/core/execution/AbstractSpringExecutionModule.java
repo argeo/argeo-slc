@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModule;
@@ -21,7 +22,18 @@ import org.springframework.util.Assert;
 
 public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 		ApplicationContextAware {
+	
 	private ApplicationContext applicationContext;
+
+	private ExecutionContext executionContext;
+	
+	public ExecutionContext getExecutionContext() {
+		return executionContext;
+	}
+
+	public void setExecutionContext(ExecutionContext executionContext) {
+		this.executionContext = executionContext;
+	}
 
 	public ExecutionModuleDescriptor getDescriptor() {
 		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
