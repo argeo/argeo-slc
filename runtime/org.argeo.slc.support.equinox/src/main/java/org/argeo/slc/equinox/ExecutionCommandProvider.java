@@ -2,8 +2,8 @@ package org.argeo.slc.equinox;
 
 import java.util.List;
 
+import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModule;
-import org.argeo.slc.process.SlcExecution;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
@@ -14,9 +14,6 @@ public class ExecutionCommandProvider implements CommandProvider {
 		String moduleName = ci.nextArgument();
 		String executionName = ci.nextArgument();
 		
-		SlcExecution slcExecution = new SlcExecution();
-		slcExecution.getAttributes().put("slc.flows", executionName);
-
 		ExecutionModule module = null;
 		for (ExecutionModule moduleT : executionModules) {
 			if(moduleT.getName().equals(moduleName)){
@@ -26,8 +23,10 @@ public class ExecutionCommandProvider implements CommandProvider {
 			}
 		}
 
+		ExecutionFlowDescriptor descriptor = new ExecutionFlowDescriptor();
+		descriptor.setName(executionName);
 		if(module!=null)
-			module.execute(slcExecution);
+			module.execute(descriptor);
 		
 		return null;
 	}
