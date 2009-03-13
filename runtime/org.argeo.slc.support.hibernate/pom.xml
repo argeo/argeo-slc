@@ -33,6 +33,10 @@
 				<version>${version.maven-bundle-plugin}</version>
 				<configuration>
 					<instructions>
+						<Fragment-Host>org.argeo.slc.support.simple</Fragment-Host>
+						<Import-Package>*,org.hibernate.proxy</Import-Package>
+						
+					<!-- 
 						<Export-Package>
 							org.argeo.slc.hibernate.*
 						</Export-Package>
@@ -50,6 +54,7 @@
 						org.argeo.slc.msg.test.tree;resolution:=optional
 						</Import-Package>
 						<Fragment-Host>com.springsource.org.hibernate</Fragment-Host>
+						 -->
 					</instructions>
 				</configuration>
 			</plugin>

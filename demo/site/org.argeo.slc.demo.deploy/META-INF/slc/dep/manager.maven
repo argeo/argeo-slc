@@ -1,6 +1,5 @@
 
 The following files have been resolved:
-   com.jcraft.jzlib:com.springsource.com.jcraft.jzlib:jar:1.0.7:compile
    com.thoughtworks.xstream:com.springsource.com.thoughtworks.xstream:jar:1.2.2:compile
    javax.activation:com.springsource.javax.activation:jar:1.1.1:compile
    javax.ejb:com.springsource.javax.ejb:jar:3.0.0:compile
@@ -25,8 +24,7 @@ The following files have been resolved:
    org.apache.xerces:com.springsource.org.apache.xerces:jar:2.8.1:compile
    org.apache.xml:com.springsource.org.apache.xml.resolver:jar:1.2.0:compile
    org.apache.xmlcommons:com.springsource.org.apache.xmlcommons:jar:1.3.3:compile
-   org.argeo.dep.osgi:org.argeo.dep.osgi.activemq:jar:5.2.0.argeo.2:compile
-   org.argeo.dep.osgi:org.argeo.dep.osgi.maven.embedder:jar:2.0.4.argeo.1-SNAPSHOT:compile
+   org.argeo.dep.osgi:org.argeo.dep.osgi.activemq:jar:5.2.0.argeo.3:compile
    org.argeo.slc:org.argeo.slc.detached.launcher:jar:0.11.3-SNAPSHOT:compile
    org.argeo.slc.demo:org.argeo.slc.demo.basic:jar:0.11.3-SNAPSHOT:compile
    org.argeo.slc.demo:org.argeo.slc.demo.log4j:jar:0.11.3-SNAPSHOT:compile
@@ -42,8 +40,8 @@ The following files have been resolved:
    org.dbunit:com.springsource.org.dbunit:jar:2.2.0:compile
    org.eclipse.osgi:org.eclipse.osgi:jar:3.4.2.R34x_v20080826-1230:compile
    org.junit:com.springsource.junit:jar:3.8.2:compile
-   org.objectweb.asm:com.springsource.org.objectweb.asm:jar:2.2.0:compile
-   org.objectweb.asm:com.springsource.org.objectweb.asm.attrs:jar:2.2.0:compile
+   org.objectweb.asm:com.springsource.org.objectweb.asm:jar:1.5.3:compile
+   org.objectweb.asm:com.springsource.org.objectweb.asm.attrs:jar:1.5.3:compile
    org.springframework:org.springframework.aop:jar:2.5.6.A:compile
    org.springframework:org.springframework.beans:jar:2.5.6.A:compile
    org.springframework:org.springframework.context:jar:2.5.6.A:compile

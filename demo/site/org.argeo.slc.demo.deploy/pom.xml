@@ -5,85 +5,58 @@
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc-demo</artifactId>
 		<version>0.11.3-SNAPSHOT</version>
-		<relativePath>../..</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.demo</groupId>
 	<artifactId>org.argeo.slc.demo.deploy</artifactId>
 	<name>Argeo SLC Demo Deploy</name>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<properties></properties>
 	<build>
-		<resources>
-			<resource>
-				<directory>.</directory>
-				<includes>
-					<include>META-INF/**</include>
-				</includes>
-			</resource>
-		</resources>
+		<defaultGoal>antrun:run</defaultGoal>
 		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestFile>META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>manager</id>
-						<phase>initialize</phase>
 						<goals>
-							<goal>list</goal>
+							<goal>unpack</goal>
 						</goals>
-						<configuration>
-							<outputFile>META-INF/slc/dep/manager.maven</outputFile>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy</id>
 						<phase>initialize</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/equinox</outputDirectory>
-							<stripVersion>true</stripVersion>
+							<outputDirectory>target/equinox</outputDirectory>
 							<artifactItems>
 								<artifactItem>
-									<groupId>org.eclipse.osgi</groupId>
-									<artifactId>org.eclipse.osgi</artifactId>
-									<version>${version.equinox}</version>
-								</artifactItem>
-								<artifactItem>
 									<groupId>org.argeo.slc.runtime</groupId>
 									<artifactId>org.argeo.slc.osgiboot</artifactId>
 									<version>${project.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.argeo.slc.runtime</groupId>
-									<artifactId>org.argeo.slc.osgiboot</artifactId>
-									<version>${project.version}</version>
-									<type>xml</type>
+									<type>tar.gz</type>
 									<classifier>osgiboot</classifier>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>
+
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<configuration>
 					<tasks>
-						<property name="slc.osgi.locations" refid="maven.compile.classpath" />
+						<path id="slc.osgi.locations.raw">
+							<dirset dir="${user.dir}/..">
+								<include name="*" />
+								<exclude name=".svn" />
+								<exclude name="*.deploy" />
+							</dirset>
+							<path refid="maven.compile.classpath" />
+						</path>
+						<pathconvert dirsep="/" property="slc.osgi.locations"
+							refid="slc.osgi.locations.raw" />
+
 						<property name="slc.osgi.start"
 							value="org.springframework.osgi.extender,org.argeo.slc.demo.basic" />
-						<ant
-							antfile="${project.build.directory}/equinox/org.argeo.slc.osgiboot-osgiboot.xml" />
+						<ant antfile="target/equinox/osgiboot.xml" />
 
 					</tasks>
 				</configuration>
@@ -91,30 +64,28 @@
 
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>agent</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.argeo.slc.demo</groupId>
+					<artifactId>org.argeo.slc.demo.agent</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>com.thoughtworks.xstream</groupId>
+					<artifactId>com.springsource.com.thoughtworks.xstream</artifactId>
+					<version>1.2.2</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
 	<dependencies>
 
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.equinox</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.activemq</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.castor</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.maven</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.detached.launcher</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
@@ -124,29 +95,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.demo</groupId>
+			<artifactId>org.argeo.slc.demo.manager</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.demo</groupId>
 			<artifactId>org.argeo.slc.demo.log4j</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-
-		<dependency>
-			<groupId>com.thoughtworks.xstream</groupId>
-			<artifactId>com.springsource.com.thoughtworks.xstream</artifactId>
-			<version>1.2.2</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.xerces</groupId>
-			<artifactId>
-					com.springsource.org.apache.xerces
-				</artifactId>
-			<version>2.8.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xmlcommons</groupId>
-			<artifactId>com.springsource.org.apache.xmlcommons</artifactId>
-			<version>1.3.3</version>
-		</dependency>
-
 	</dependencies>
 </project>

@@ -1,27 +1,14 @@
 Manifest-Version: 1.0
-Export-Package: org.argeo.slc.demo.manager;uses:="org.apache.commons.l
- ogging";version="0.11.3.SNAPSHOT"
-Tool: Bnd-0.0.255
-Bundle-Name: Argeo SLC Demo Manager
-Created-By: 1.6.0_0 (Sun Microsystems Inc.)
-Require-Bundle: org.springframework.jms,
- com.springsource.org.castor,
- org.argeo.dep.osgi.activemq,
- org.argeo.slc.support.equinox,
- org.argeo.slc.support.activemq,
- org.argeo.slc.specs,
- org.argeo.slc.support.simple,
- org.springframework.aop,
- org.springframework.oxm,
- com.springsource.net.sf.cglib,
- com.springsource.org.aopalliance
-Bundle-Vendor: Argeo
-Bundle-Version: 0.11.3.SNAPSHOT
-Spring-Context: conf/*
 Bundle-ManifestVersion: 2
-Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Import-Package: org.apache.commons.logging;version="1.1",org.springfra
- mework.beans.factory.config;version="2.5.6.A"
+Bundle-Name: Manager Plug-in
 Bundle-SymbolicName: org.argeo.slc.demo.manager
+Bundle-Version: 1.0.0
+Spring-Context: conf/*
+Created-By: 1.6.0_0 (Sun Microsystems Inc.)
+Import-Package: org.apache.commons.logging;version="1.1",
+ org.argeo.slc.core.execution;version="0.11.3.SNAPSHOT",
+ org.argeo.slc.execution;version="0.11.3.SNAPSHOT",
+ org.springframework.beans.factory.config;version="2.5.6.A"
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-DocURL: http://www.argeo.org
-
+Tool: Bnd-0.0.255

@@ -11,8 +11,17 @@
 	<packaging>pom</packaging>
 	<name>Argeo SLC Site server</name>
 	<properties>
-		<spring-osgi.version>1.1.2</spring-osgi.version>
-		<spring.version>2.5.5</spring.version>
+		<bundlesToStart>
+			org.argeo.dep.osgi.catalina.start,
+			org.springframework.osgi.extender,
+			org.springframework.osgi.web.extender,
+			org.springframework.osgi.samples.simplewebapp,
+			org.argeo.slc.server.activemq,
+			org.argeo.slc.server.hibernate,
+			org.argeo.slc.webapp,
+			org.argeo.slc.demo.basic,
+			org.argeo.slc.demo.manager
+		</bundlesToStart>
 	</properties>
 	<build>
 		<plugins>
@@ -21,42 +30,19 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>copy</id>
-						<phase>initialize</phase>
 						<goals>
-							<goal>copy</goal>
+							<goal>unpack</goal>
 						</goals>
+						<phase>initialize</phase>
 						<configuration>
-							<outputDirectory>${project.build.directory}/equinox</outputDirectory>
-							<stripVersion>true</stripVersion>
+							<outputDirectory>target/equinox</outputDirectory>
 							<artifactItems>
 								<artifactItem>
-									<groupId>org.eclipse.osgi</groupId>
-									<artifactId>org.eclipse.osgi</artifactId>
-									<version>${version.equinox}</version>
-								</artifactItem>
-								<artifactItem>
 									<groupId>org.argeo.slc.runtime</groupId>
 									<artifactId>org.argeo.slc.osgiboot</artifactId>
 									<version>${project.version}</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.argeo.slc.runtime</groupId>
-									<artifactId>org.argeo.slc.osgiboot</artifactId>
-									<version>${project.version}</version>
-									<type>xml</type>
+									<type>tar.gz</type>
 									<classifier>osgiboot</classifier>
-								</artifactItem>
-								<!--  For Hibernate -->
-								<artifactItem>
-									<groupId>org.objectweb.asm</groupId>
-									<artifactId>com.springsource.org.objectweb.asm</artifactId>
-									<version>1.5.3</version>
-								</artifactItem>
-								<artifactItem>
-									<groupId>org.objectweb.asm</groupId>
-									<artifactId>com.springsource.org.objectweb.asm.attrs</artifactId>
-									<version>1.5.3</version>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
@@ -67,9 +53,6 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<configuration>
 					<tasks>
-
-						<property name="equinoxDir" location="${project.build.directory}/equinox" />
-
 						<path id="slc.osgi.locations.raw">
 							<dirset dir="${user.dir}/bundles">
 								<include name="*" />
@@ -79,11 +62,6 @@
 								<include name="*" />
 								<exclude name=".svn" />
 							</dirset>
-							<!-- Old ASM for Hibernate: -->
-							<pathelement
-								location="${equinoxDir}/com.springsource.org.objectweb.asm.jar" />
-							<pathelement
-								location="${equinoxDir}/com.springsource.org.objectweb.asm.attrs.jar" />
 							<!-- Dev for Argeo RIA: -->
 							<!--
 								<pathelement
@@ -92,38 +70,15 @@
 							<path refid="maven.compile.classpath" />
 						</path>
 						<pathconvert dirsep="/" property="slc.osgi.locations"
-							refid="slc.osgi.locations.raw">
-						</pathconvert>
+							refid="slc.osgi.locations.raw" />
 
-						<property name="slc.osgi.start"
-							value="org.argeo.dep.osgi.catalina.start,org.springframework.osgi.extender,org.springframework.osgi.web.extender,org.springframework.osgi.samples.simplewebapp,org.argeo.slc.server.activemq,org.argeo.slc.server.hibernate,org.argeo.slc.webapp,org.argeo.slc.demo.basic,org.argeo.slc.demo.manager" />
+						<property name="slc.osgi.start" value="${bundlesToStart}" />
 
 						<property name="javaCommand" value="java -Xmx256m" />
-						<ant antfile="${equinoxDir}/org.argeo.slc.osgiboot-osgiboot.xml" />
-
+						<ant antfile="target/equinox/osgiboot.xml" />
 					</tasks>
 				</configuration>
 			</plugin>
-
-			<!--
-				<plugin> <artifactId>maven-dependency-plugin</artifactId>
-				<executions> <execution> <id>manager</id> <phase>initialize</phase>
-				<goals> <goal>list</goal> </goals> <configuration>
-				<outputFile>target/server.maven</outputFile> </configuration>
-				</execution> </executions> </plugin>
-			-->
-			<!--
-				<plugin> <groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId> <configuration>
-				<webApp>${project.build.directory}/dependency/org.argeo.slc.webapp.war</webApp>
-				<scanIntervalSeconds>0</scanIntervalSeconds>
-				<webDefaultXml>../../org.argeo.slc.webapp/src/main/config/jetty/webdefault.xml</webDefaultXml>
-				<jettyConfig>src/test/config/jetty/jetty.xml</jettyConfig>
-				<systemProperties> <systemProperty> <name>appserver.base</name>
-				<value>target</value> </systemProperty> <systemProperty>
-				<name>appserver.home</name> <value>target</value> </systemProperty>
-				</systemProperties> </configuration> </plugin>
-			-->
 		</plugins>
 	</build>
 	<dependencies>
@@ -261,29 +216,10 @@
 
 		<!-- For demo -->
 		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.equinox</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.activemq</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.castor</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.maven</artifactId>
+			<groupId>org.argeo.slc.demo</groupId>
+			<artifactId>org.argeo.slc.demo.deploy</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
 	</dependencies>
-	<!--
-		<repositories> <repository> <id>spring-osgified-artifacts</id>
-		<snapshots> <enabled>true</enabled> </snapshots> <name>Springframework
-		Maven OSGified Artifacts Repository</name>
-		<url>http://maven.springframework.org/osgi</url> </repository>
-		</repositories>
-	-->
 </project>
