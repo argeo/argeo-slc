@@ -21,6 +21,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Message", {
 			s[8] = s[13] = s[18] = s[23] = '-';
 			this.setUuid(s.join('').toLowerCase());			
 		}
+		this.setBatchEntrySpecs([]);
 		this.setAttributes({});
 	},
 	properties : {
@@ -72,8 +73,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Message", {
 			check : "Map"
 		},
 		batchEntrySpecs : {
-			check : "Array",
-			init : []
+			check : "Array"
 		}
 	},
 	members : {
