@@ -11,7 +11,12 @@
 	<artifactId>org.argeo.slc.demo.deploy</artifactId>
 	<name>Argeo SLC Demo Deploy</name>
 	<packaging>pom</packaging>
-	<properties></properties>
+	<properties>
+		<bundlesToStart>
+			org.springframework.osgi.extender,
+			org.argeo.slc.demo.basic
+		</bundlesToStart>
+	</properties>
 	<build>
 		<defaultGoal>antrun:run</defaultGoal>
 		<plugins>
@@ -54,8 +59,7 @@
 						<pathconvert dirsep="/" property="slc.osgi.locations"
 							refid="slc.osgi.locations.raw" />
 
-						<property name="slc.osgi.start"
-							value="org.springframework.osgi.extender,org.argeo.slc.demo.basic" />
+						<property name="slc.osgi.start" value="${bundlesToStart}" />
 						<ant antfile="target/equinox/osgiboot.xml" />
 
 					</tasks>
@@ -67,16 +71,19 @@
 	<profiles>
 		<profile>
 			<id>agent</id>
+			<properties>
+				<bundlesToStart>
+					org.springframework.osgi.extender,
+					org.argeo.slc.demo.basic,
+					org.argeo.slc.demo.manager,
+					org.argeo.slc.demo.agent
+				</bundlesToStart>
+			</properties>
 			<dependencies>
 				<dependency>
 					<groupId>org.argeo.slc.demo</groupId>
 					<artifactId>org.argeo.slc.demo.agent</artifactId>
 					<version>${project.version}</version>
-				</dependency>
-				<dependency>
-					<groupId>com.thoughtworks.xstream</groupId>
-					<artifactId>com.springsource.com.thoughtworks.xstream</artifactId>
-					<version>1.2.2</version>
 				</dependency>
 			</dependencies>
 		</profile>

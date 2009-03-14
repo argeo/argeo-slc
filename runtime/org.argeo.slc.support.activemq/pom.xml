@@ -37,41 +37,9 @@
 						<Export-Package>
 							org.argeo.slc.jms.*,org.argeo.slc.activemq
 						</Export-Package>
-						<!-- 
-						<Import-Package>*,
-							org.springframework.beans.factory.xml,
-							org.apache.xbean.spring.context.v2,
-							com.thoughtworks.qdox;resolution:=optional,
-							com.thoughtworks.qdox.model;resolution:=optional,
-							org.apache.tools.ant;resolution:=optional,
-							org.apache.tools.ant.taskdefs;resolution:=optional,
-							org.apache.tools.ant.types;resolution:=optional
-						</Import-Package>
-						<Fragment-Host>com.springsource.org.apache.activemq</Fragment-Host>
-						<Embed-Dependency>com.springsource.org.apache.xbean.spring</Embed-Dependency>
-						 -->
 					</instructions>
 				</configuration>
 			</plugin>
-			<!-- 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeArtifactIds>com.springsource.org.apache.xbean.spring</includeArtifactIds>
-							<outputDirectory>${project.build.directory}/classes</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
- -->
 		</plugins>
 	</build>
 	<dependencies>
@@ -100,64 +68,35 @@
 			<groupId>javax.jms</groupId>
 			<artifactId>com.springsource.javax.jms</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.geronimo.specs</groupId>
-			<artifactId>com.springsource.javax.management.j2ee</artifactId>
-		</dependency>
 
-		<!-- ActiveMQ
-		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>com.springsource.org.apache.activemq</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.xbean</groupId>
-			<artifactId>com.springsource.org.apache.xbean.spring</artifactId>
-			
-		</dependency>
-		 -->
-		 
+		<!-- ActiveMQ -->
 		<dependency>
 			<groupId>org.argeo.dep.osgi</groupId>
 			<artifactId>org.argeo.dep.osgi.activemq</artifactId>
 		</dependency>
-		<!--
-			<dependency> <groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-pool</artifactId> </dependency> <dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-optional</artifactId> </dependency>
-		-->
-		
-				<dependency>
-			<groupId>javax.ejb</groupId>
-			<artifactId>com.springsource.javax.ejb</artifactId>
-			<version>3.0.0</version>
-		</dependency>
 		<dependency>
-			<groupId>javax.xml.rpc</groupId>
-			<artifactId>com.springsource.javax.xml.rpc</artifactId>
-			<version>1.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.soap</groupId>
-			<artifactId>com.springsource.javax.xml.soap</artifactId>
-			<version>1.3.0</version>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>com.springsource.javax.management.j2ee</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>javax.activation</groupId>
 			<artifactId>com.springsource.javax.activation</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>com.springsource.javax.servlet</artifactId>
 		</dependency>
-
 		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>com.springsource.org.apache.camel</artifactId>
+			<groupId>javax.ejb</groupId>
+			<artifactId>com.springsource.javax.ejb</artifactId>
 		</dependency>
-
-		
+		<dependency>
+			<groupId>javax.xml.rpc</groupId>
+			<artifactId>com.springsource.javax.xml.rpc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.soap</groupId>
+			<artifactId>com.springsource.javax.xml.soap</artifactId>
+		</dependency>
 	</dependencies>
 </project>

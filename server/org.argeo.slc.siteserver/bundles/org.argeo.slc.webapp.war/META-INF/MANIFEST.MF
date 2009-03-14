@@ -42,6 +42,6 @@ Require-Bundle: org.argeo.slc.server,
  com.springsource.org.hsqldb,
  com.springsource.org.hibernate,
  org.argeo.dep.osgi.activemq,
- com.springsource.org.apache.camel,
+ org.argeo.dep.osgi.activemq.web,
  com.springsource.org.mortbay.util
  

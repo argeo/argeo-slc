@@ -105,18 +105,28 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>com.springsource.javax.servlet</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.wsdl</groupId>
 			<artifactId>com.springsource.javax.wsdl</artifactId>
 		</dependency>
 
-		<!-- ActiveMQ
 		<dependency>
-			<groupId>org.apache.activemq</groupId>
-			<artifactId>com.springsource.org.apache.activemq.web</artifactId>
-		</dependency> -->
+			<groupId>javax.servlet</groupId>
+			<artifactId>com.springsource.javax.servlet.jsp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>com.springsource.javax.el</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>com.springsource.javax.servlet.jsp.jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.taglibs</groupId>
+			<artifactId>com.springsource.org.apache.taglibs.standard</artifactId>
+		</dependency>
 
 		<!-- Various -->
 		<dependency>

@@ -1,4 +1,0 @@
-Bundle-SymbolicName: org.argeo.slc.demo.deploy
-Bundle-Version: 1.0.0
-Require-Bundle: org.springframework.beans;bundle-version="2.5.6"
-Bundle-ManifestVersion: 2
