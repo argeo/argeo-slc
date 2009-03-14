@@ -22,11 +22,11 @@ import org.springframework.util.Assert;
 
 public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 		ApplicationContextAware {
-	
+
 	private ApplicationContext applicationContext;
 
 	private ExecutionContext executionContext;
-	
+
 	public ExecutionContext getExecutionContext() {
 		return executionContext;
 	}
@@ -93,7 +93,7 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 			// Add execution spec if necessary
 			if (!md.getExecutionSpecs().contains(executionSpec))
 				md.getExecutionSpecs().add(executionSpec);
-			
+
 			// Add execution flow
 			md.getExecutionFlows().add(efd);
 		}
@@ -101,17 +101,11 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 		return md;
 	}
 
-	public void execute(SlcExecution slcExecution) {
-		applicationContext.publishEvent(new NewExecutionEvent(this,
-				slcExecution));
-	}
-	
 	public void execute(ExecutionFlowDescriptor descriptor) {
-		ExecutionFlow flow = (ExecutionFlow) applicationContext.getBean(descriptor.getName(), 
-				ExecutionFlow.class);
+		ExecutionFlow flow = (ExecutionFlow) applicationContext.getBean(
+				descriptor.getName(), ExecutionFlow.class);
 		flow.execute();
 	}
-	
 
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
