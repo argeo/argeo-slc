@@ -4,6 +4,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.UUID;
 
+import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -27,6 +28,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
 
 	private final SlcAgentDescriptor agentDescriptor;
+	private ConnectionFactory connectionFactory;
 	private JmsTemplate jmsTemplate;
 	private Destination agentRegister;
 	private Destination agentUnregister;
@@ -44,6 +46,10 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	}
 
 	public void afterPropertiesSet() throws Exception {
+		// Initialize JMS Template
+		jmsTemplate = new JmsTemplate(connectionFactory);
+		jmsTemplate.setMessageConverter(messageConverter);
+
 		jmsTemplate.convertAndSend(agentRegister, agentDescriptor);
 		log.info("Agent #" + agentDescriptor.getUuid() + " registered to "
 				+ agentRegister);
@@ -55,10 +61,6 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 				+ agentUnregister);
 	}
 
-	public void setJmsTemplate(JmsTemplate jmsTemplate) {
-		this.jmsTemplate = jmsTemplate;
-	}
-
 	public void setAgentRegister(Destination agentRegister) {
 		this.agentRegister = agentRegister;
 	}
@@ -68,7 +70,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	}
 
 	public void onMessage(Message message) {
-		// FIXME: we filter the messages on the client side, 
+		// FIXME: we filter the messages on the client side,
 		// because of a weird problem with selector since moving to OSGi
 		try {
 			if (message.getStringProperty("slc-agentId").equals(
@@ -94,6 +96,9 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	public void setMessageConverter(MessageConverter messageConverter) {
 		this.messageConverter = messageConverter;
 	}
-	
-	
+
+	public void setConnectionFactory(ConnectionFactory connectionFactory) {
+		this.connectionFactory = connectionFactory;
+	}
+
 }

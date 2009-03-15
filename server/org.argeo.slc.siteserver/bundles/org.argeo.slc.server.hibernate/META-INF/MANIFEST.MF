@@ -1,14 +1,14 @@
 Bundle-SymbolicName: org.argeo.slc.server.hibernate
 Bundle-Version: 0.1.0
-Require-Bundle: org.argeo.slc.server,
+Import-Package: 
+ org.hibernate,
+ org.springframework.orm.hibernate3,
+ org.springframework.aop,
+ org.springframework.aop.framework,
+ org.aopalliance.aop,
+ org.hibernate.jdbc
+Require-Bundle: 
+ org.argeo.slc.server,
  org.argeo.slc.specs,
- org.argeo.slc.support.simple,
- org.springframework.orm,
- org.springframework.jdbc,
- org.springframework.context,
- org.springframework.context.support,
- com.springsource.net.sf.ehcache,
- com.springsource.org.hsqldb,
- com.springsource.org.hibernate
-Spring-Context: *;create-asynchronously:=false 
+ org.argeo.slc.support.simple
  

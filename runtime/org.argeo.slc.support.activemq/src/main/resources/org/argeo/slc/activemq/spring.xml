@@ -6,70 +6,11 @@
 
 	<import resource="classpath:org/argeo/slc/castor/spring.xml" />
 
+	<import resource="destinations.xml" />
+
 	<bean id="slcDefault.jms.castorMessageConverter" class="org.argeo.slc.jms.MarshallerMessageConverter">
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
 	</bean>
-
-	<bean id="slcDefault.jms.amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-		<property name="brokerURL">
-			<value>tcp://localhost:61616</value>
-		</property>
-	</bean>
-	<!--
-		<amq:connectionFactory id="slcDefault.jms.amqConnectionFactory"
-		brokerURL="${org.apache.activemq.brokerURL}" />
-	-->
-	<bean id="slcDefault.jms.connectionFactory"
-		class="org.springframework.jms.connection.SingleConnectionFactory">
-		<property name="targetConnectionFactory">
-			<ref local="slcDefault.jms.amqConnectionFactory" />
-		</property>
-	</bean>
-
-	<bean id="slcDefault.jms.jmsTemplateCastor" class="org.springframework.jms.core.JmsTemplate">
-		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-	</bean>
-
-
-	<!-- Destinations -->
-	<!--
-		<amq:topic id="slcJms.destination.agent.register"
-		physicalName="agent.register" /> <amq:topic
-		id="slcJms.destination.agent.unregister"
-		physicalName="agent.unregister" /> <amq:topic
-		id="slcJms.destination.agent.newExecution"
-		physicalName="agent.newExecution" />
-	-->
-	<bean id="slcJms.destination.agent.register" p:physicalName="agent.register"
-		parent="slcJms.amTopic" />
-	<bean id="slcJms.destination.agent.unregister" p:physicalName="agent.unregister"
-		parent="slcJms.amTopic" />
-	<bean id="slcJms.destination.agent.newExecution" p:physicalName="agent.newExecution"
-		parent="slcJms.amTopic" />
-
-	<bean id="slcJms.destination.modulesManager.request"
-		p:physicalName="modulesManager.request" parent="slcJms.amQueue" />
-	<bean id="slcJms.destination.modulesManager.response"
-		p:physicalName="modulesManager.response" parent="slcJms.amQueue" />
-
-	<!-- Templates -->
-	<bean id="slcTemplate.jms.listenerContainer"
-		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
-		abstract="true">
-		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
-	</bean>
-
-	<bean id="slcTemplate.jms.listenerAdapterCastor"
-		class="org.springframework.jms.listener.adapter.MessageListenerAdapter"
-		abstract="true">
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-	</bean>
-
-	<bean id="slcJms.amQueue" class="org.apache.activemq.command.ActiveMQQueue"
-		abstract="true" />
-	<bean id="slcJms.amTopic" class="org.apache.activemq.command.ActiveMQTopic"
-		abstract="true" />
 
 </beans>

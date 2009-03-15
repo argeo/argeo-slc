@@ -4,8 +4,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.dao.runtime.SlcAgentDescriptorDao;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
+import org.argeo.slc.services.runtime.AgentService;
 
-public class AgentServiceImpl {
+public class AgentServiceImpl implements AgentService {
 	private final static Log log = LogFactory.getLog(AgentServiceImpl.class);
 
 	private final SlcAgentDescriptorDao slcAgentDescriptorDao;

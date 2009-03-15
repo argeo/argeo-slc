@@ -5,55 +5,32 @@
 	default-lazy-init="false">
 
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
-	
-	
-	<bean id="slcDefault.jms.listener.newExecution" parent="slcTemplate.jms.listenerContainer">
-		<property name="connectionFactory" ref="slcDefault.jms.connectionFactory" />
+
+
+	<bean id="jmsAgent.listener.newExecution"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
 		<property name="destination" ref="slcJms.destination.agent.newExecution" />
-		<property name="messageListener" ref="slcDefault.jms.agent">
-<!-- 			<bean parent="slcTemplate.jms.listenerAdapterCastor">
-				<constructor-arg ref="slcDefault.jms.agent" />
-				<property name="defaultListenerMethod" value="newExecution" />
-			</bean> -->
+		<property name="messageListener" ref="jmsAgent">
+			<!--
+				<bean parent="slcTemplate.jms.listenerAdapterCastor">
+				<constructor-arg ref="slcDefault.jms.agent" /> <property
+				name="defaultListenerMethod" value="newExecution" /> </bean>
+			-->
 		</property>
-		<!-- 
-		<property name="messageSelector">
-			<bean factory-bean="slcDefault.jms.agent" factory-method="getMessageSelector"/>
-		</property>
-		 -->
+		<!--
+			<property name="messageSelector"> <bean
+			factory-bean="slcDefault.jms.agent"
+			factory-method="getMessageSelector"/> </property>
+		-->
 	</bean>
 
-	<bean id="slcDefault.jms.agent" class="org.argeo.slc.jms.JmsAgent">
-		<property name="jmsTemplate" ref="slcDefault.jms.jmsTemplateCastor" />
+	<bean id="jmsAgent" class="org.argeo.slc.jms.JmsAgent">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
 		<property name="agentRegister" ref="slcJms.destination.agent.register" />
 		<property name="agentUnregister" ref="slcJms.destination.agent.unregister" />
 		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 		<property name="modulesManager" ref="modulesManager" />
 	</bean>
-
-	
-<!-- 
-	<bean id="modulesManager.listenerContainer" parent="slcTemplate.jms.listenerContainer">
-		<property name="destination" ref="slcJms.destination.modulesManager.request" />
-		<property name="messageListener">
-			<bean class="org.argeo.slc.jms.ServiceMessageListenerAdapter">
-				<property name="methodArguments">
-					<map>
-						<entry key="getExecutionModuleDescriptor">
-							<list>
-								<value>name</value>
-								<value>version</value>
-							</list>
-						</entry>
-					</map>
-				</property>
-
-				<property name="delegate" ref="modulesManager" />
-				<property name="defaultResponseDestination" ref="slcJms.destination.modulesManager.response" />
-				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-			</bean>
-		</property>
-	</bean>
- -->
 
 </beans>

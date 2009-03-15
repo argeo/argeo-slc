@@ -1,14 +1,14 @@
+Bundle-SymbolicName: org.argeo.slc.demo.agent
+Bundle-Version: 0.11.3.SNAPSHOT
 Bundle-Name: Argeo SLC Demo Agent
-Require-Bundle: org.springframework.jms,
- com.springsource.org.castor,
- org.argeo.dep.osgi.activemq,
+Import-Package: 
+ javax.jms,
+ org.apache.activemq.command,
+ org.springframework.jms.listener,
+ org.springframework.oxm.castor
+Require-Bundle: 
  org.argeo.slc.support.activemq,
  org.argeo.slc.specs,
  org.argeo.slc.support.simple,
- org.springframework.oxm,
- com.springsource.net.sf.cglib,
- com.springsource.org.aopalliance
-Bundle-Vendor: Argeo
-Bundle-Version: 0.11.3.SNAPSHOT
-Bundle-SymbolicName: org.argeo.slc.demo.agent
+ com.springsource.org.castor
 

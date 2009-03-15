@@ -6,34 +6,20 @@
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-	<import resource="classpath:/org/argeo/slc/server/spring/transaction.xml" />
 
 	<!--
 		<import resource="classpath:/org/argeo/slc/server/spring/jmx.xml" />
 	-->
-	
-	<import resource="osgi.xml"/>
-	
-		<!--
-		Hibernate instrumentation--> <bean id="osivInterceptor"
-		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
-		<property name="sessionFactory" ref="sessionFactory" /> </bean>
-	
+
+	<import resource="osgi.xml" />
 
 	<!--
-		Transaction --> <bean id="transactionManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager"
-		lazy-init="false"> <property name="sessionFactory"
-		ref="sessionFactory" /> </bean>
-	
-	
-	
-	<!--
-	<bean id="activemqBroker" class="org.apache.activemq.xbean.BrokerFactoryBean">
-		<property name="config" value="WEB-INF/activemq.xml" />
-		<property name="start" value="true" />
+		Hibernate instrumentation-->
+	<bean id="osivInterceptor"
+		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
--->
+
 
 	<!--  Properties -->
 	<bean
@@ -49,50 +35,5 @@
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
-
-	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
-
-	<!-- ActiveMQ -->
-	<bean id="template.jms.listenerContainer" parent="slcTemplate.jms.listenerContainer"
-		abstract="true">
-	</bean>
-
-	<bean id="template.jms.listenerAdapter" parent="slcTemplate.jms.listenerAdapterCastor"
-		abstract="true">
-	</bean>
-
-
-	<!-- Services -->
-	<bean id="testManagerService" class="org.argeo.slc.services.impl.test.TestManagerServiceImpl">
-		<constructor-arg ref="testResultDao" />
-		<constructor-arg ref="testRunDescriptorDao" />
-		<constructor-arg ref="slcExecutionDao" />
-		<constructor-arg ref="testResultCollectionDao" />
-	</bean>
-
-	<bean id="agentService" class="org.argeo.slc.services.impl.runtime.AgentServiceImpl">
-		<constructor-arg ref="slcAgentDescriptorDao" />
-	</bean>
-
-	<bean id="agentService.jmsContainer.register" parent="template.jms.listenerContainer">
-		<property name="destination" ref="slcJms.destination.agent.register" />
-		<property name="messageListener">
-			<bean parent="template.jms.listenerAdapter">
-				<constructor-arg ref="agentService" />
-				<property name="defaultListenerMethod" value="register" />
-			</bean>
-		</property>
-	</bean>
-
-	<bean id="agentService.jmsContainer.unregister" parent="template.jms.listenerContainer">
-		<property name="destination" ref="slcJms.destination.agent.unregister" />
-		<property name="messageListener">
-			<bean parent="template.jms.listenerAdapter">
-				<constructor-arg ref="agentService" />
-				<property name="defaultListenerMethod" value="unregister" />
-			</bean>
-		</property>
-	</bean>
-
 
 </beans>

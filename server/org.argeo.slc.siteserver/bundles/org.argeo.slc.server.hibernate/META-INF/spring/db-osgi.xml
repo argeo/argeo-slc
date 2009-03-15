@@ -16,8 +16,7 @@
 		ref="slcExecutionDao" />
 	<service interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
 		ref="slcAgentDescriptorDao" />
-		 
-	<service interface="org.hibernate.SessionFactory"
-		ref="sessionFactory" />
-		 
+
+	<reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
+
 </beans:beans>

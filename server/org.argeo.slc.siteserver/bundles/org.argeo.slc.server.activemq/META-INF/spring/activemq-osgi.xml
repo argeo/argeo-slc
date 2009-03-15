@@ -6,9 +6,6 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<reference id="modulesManager"
-		interface="org.argeo.slc.execution.ExecutionModulesManager" />
-
-	<reference id="jmsConnectionFactory" interface="javax.jms.ConnectionFactory" />
+	<service ref="jmsConnectionFactory" interface="javax.jms.ConnectionFactory" />
 
 </beans:beans>

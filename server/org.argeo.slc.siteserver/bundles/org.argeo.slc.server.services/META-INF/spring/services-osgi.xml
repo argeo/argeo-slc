@@ -6,6 +6,9 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<service ref="testManagerService" interface="org.argeo.slc.services.test.TestManagerService" />
+	<service ref="agentService" interface="org.argeo.slc.services.runtime.AgentService" />
+
 	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
 		id="testResultDao" />
 	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
@@ -16,14 +19,5 @@
 		id="slcExecutionDao" />
 	<reference interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
 		id="slcAgentDescriptorDao" />
-
-	<reference interface="org.hibernate.SessionFactory" id="sessionFactory" />
-
-	<reference interface="org.argeo.slc.execution.ExecutionModulesManager"
-		id="modulesManager" />
-
-	<reference id="testManagerService"
-		interface="org.argeo.slc.services.test.TestManagerService" />
-	<reference id="agentService" interface="org.argeo.slc.services.runtime.AgentService" />
 
 </beans:beans>

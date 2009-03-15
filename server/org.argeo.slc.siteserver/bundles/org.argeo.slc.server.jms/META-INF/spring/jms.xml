@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
+
+	<!-- Agent Service -->
+	<bean id="agentService.jmsContainer.register" parent="listenerContainer">
+		<property name="destination" ref="slcJms.destination.agent.register" />
+		<property name="messageListener">
+			<bean parent="listenerAdapterCastor">
+				<constructor-arg ref="agentService" />
+				<property name="defaultListenerMethod" value="register" />
+			</bean>
+		</property>
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+	<bean id="agentService.jmsContainer.unregister" parent="listenerContainer">
+		<property name="destination" ref="slcJms.destination.agent.unregister" />
+		<property name="messageListener">
+			<bean parent="listenerAdapterCastor">
+				<constructor-arg ref="agentService" />
+				<property name="defaultListenerMethod" value="unregister" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- Templates -->
+	<bean id="listenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
+		abstract="true">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+	<bean id="listenerAdapterCastor"
+		class="org.springframework.jms.listener.adapter.MessageListenerAdapter"
+		abstract="true">
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+	</bean>
+
+</beans>
