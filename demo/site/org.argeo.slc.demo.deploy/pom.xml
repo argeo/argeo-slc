@@ -14,7 +14,9 @@
 	<properties>
 		<bundlesToStart>
 			org.springframework.osgi.extender,
-			org.argeo.slc.demo.basic
+			org.argeo.slc.demo.basic,
+			org.argeo.slc.demo.manager,
+			org.argeo.slc.support.equinox
 		</bundlesToStart>
 	</properties>
 	<build>

@@ -10,4 +10,9 @@
 		cardinality="0..N" />
 
 	<service ref="modulesManager" interface="org.argeo.slc.execution.ExecutionModulesManager" />
+
+	<service interface="org.argeo.slc.test.TestResultListener">
+		<beans:bean class="org.argeo.slc.core.test.tree.TreeTestResultLogger" />
+	</service>
+
 </beans:beans>

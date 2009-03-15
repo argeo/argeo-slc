@@ -2,10 +2,14 @@ package org.argeo.slc.core.test;
 
 import java.util.UUID;
 
+import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.deploy.DeployedSystem;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionRelated;
 import org.argeo.slc.process.SlcExecutionStep;
+import org.argeo.slc.structure.StructureAware;
+import org.argeo.slc.structure.StructureRegistry;
 import org.argeo.slc.test.ExecutableTestRun;
 import org.argeo.slc.test.TestData;
 import org.argeo.slc.test.TestDefinition;
@@ -16,11 +20,14 @@ import org.argeo.slc.test.WritableTestRun;
  * A basic bean implementation of a <code>WritableTestRun</code>, holding
  * references to the various parts of a test run.
  */
-public class SimpleTestRun implements WritableTestRun, ExecutableTestRun, SlcExecutionRelated {
+public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
+		SlcExecutionRelated {
 	private String uuid;
 
 	private String slcExecutionUuid;
 	private String slcExecutionStepUuid;
+
+	private String path;
 
 	private DeployedSystem deployedSystem;
 	private TestData testData;
@@ -29,9 +36,28 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun, SlcExe
 
 	/** Executes the underlying test definition. */
 	public void execute() {
+		TreeSPath basePath = null;
+		StructureRegistry<TreeSPath> registry = null;
+		if (path != null) {
+			// TODO: generalize
+			basePath = new TreeSPath(path);
+			registry = new TreeSRegistry();
+		}
+
 		uuid = UUID.randomUUID().toString();
 		if (testResult != null)
 			testResult.notifyTestRun(this);
+
+		// Structure
+		if (testResult != null && basePath != null
+				&& testResult instanceof StructureAware)
+			((StructureAware<TreeSPath>) testResult).notifyCurrentPath(
+					registry, basePath);
+
+		if (basePath != null && testDefinition instanceof StructureAware)
+			((StructureAware<TreeSPath>) testDefinition).notifyCurrentPath(
+					registry, basePath);
+
 		testDefinition.execute(this);
 	}
 
@@ -99,6 +125,10 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun, SlcExe
 				slcExecutionStepUuid = step.getUuid();
 			}
 		}
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 }

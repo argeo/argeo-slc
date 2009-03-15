@@ -15,7 +15,6 @@
 				<property name="defaultListenerMethod" value="register" />
 			</bean>
 		</property>
-		<property name="connectionFactory" ref="jmsConnectionFactory" />
 	</bean>
 
 	<bean id="agentService.jmsContainer.unregister" parent="listenerContainer">
@@ -27,6 +26,38 @@
 			</bean>
 		</property>
 	</bean>
+
+	<!-- Test Manager Service -->
+	<bean parent="listenerContainer">
+		<property name="destination" ref="slcJms.destination.test.create" />
+		<property name="messageListener">
+			<bean parent="listenerAdapterCastor">
+				<constructor-arg ref="testManagerService" />
+				<property name="defaultListenerMethod" value="createTreeTestResult" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean parent="listenerContainer">
+		<property name="destination" ref="slcJms.destination.test.addResultPart" />
+		<property name="messageListener">
+			<bean parent="listenerAdapterCastor">
+				<constructor-arg ref="testManagerService" />
+				<property name="defaultListenerMethod" value="addResultPart" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean parent="listenerContainer">
+		<property name="destination" ref="slcJms.destination.test.close" />
+		<property name="messageListener">
+			<bean parent="listenerAdapterCastor">
+				<constructor-arg ref="testManagerService" />
+				<property name="defaultListenerMethod" value="closeTreeTestResult" />
+			</bean>
+		</property>
+	</bean>
+
 
 	<!-- Templates -->
 	<bean id="listenerContainer"

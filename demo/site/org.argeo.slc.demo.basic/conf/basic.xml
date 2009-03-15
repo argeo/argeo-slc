@@ -39,6 +39,7 @@
 					<aop:scoped-proxy />
 				</bean>
 				<bean parent="testRun">
+					<property name="path" value="/test/basic" />
 					<property name="testDefinition" ref="testDef" />
 					<property name="testData">
 						<bean parent="basic.ref">

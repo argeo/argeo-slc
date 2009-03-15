@@ -5,7 +5,8 @@ Import-Package:
  javax.jms,
  org.apache.activemq.command,
  org.springframework.jms.listener,
- org.springframework.oxm.castor
+ org.springframework.oxm.castor,
+ org.springframework.jms.core
 Require-Bundle: 
  org.argeo.slc.support.activemq,
  org.argeo.slc.specs,

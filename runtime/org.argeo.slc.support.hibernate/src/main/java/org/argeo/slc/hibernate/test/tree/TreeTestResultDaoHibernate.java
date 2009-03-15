@@ -88,7 +88,8 @@ public class TreeTestResultDaoHibernate extends HibernateDaoSupport implements
 					treeTestResult.getResultParts().put(path, lst);
 				}
 				lst.getParts().add(resultPart);
-				treeTestResult.getElements().putAll(relatedElements);
+				if (relatedElements != null)
+					treeTestResult.getElements().putAll(relatedElements);
 
 				session.update(treeTestResult);
 				return treeTestResult;

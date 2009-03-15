@@ -20,4 +20,7 @@
 	<reference interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
 		id="slcAgentDescriptorDao" />
 
+	<reference id="transactionManager"
+		interface="org.springframework.transaction.PlatformTransactionManager" />
+
 </beans:beans>

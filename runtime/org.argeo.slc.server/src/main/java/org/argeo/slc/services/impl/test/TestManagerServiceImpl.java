@@ -2,11 +2,15 @@ package org.argeo.slc.services.impl.test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.dao.test.TestRunDescriptorDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
+import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
+import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
+import org.argeo.slc.msg.test.tree.ResultPartRequest;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.services.test.TestManagerService;
 import org.argeo.slc.test.TestRunDescriptor;
@@ -32,6 +36,9 @@ public class TestManagerServiceImpl implements TestManagerService {
 
 	public void registerTestRunDescriptor(TestRunDescriptor testRunDescriptor) {
 		if (testRunDescriptor != null) {
+			if (log.isTraceEnabled())
+				log.trace("Registering test run descriptor #"
+						+ testRunDescriptor.getTestRunUuid());
 			testRunDescriptorDao.saveOrUpdate(testRunDescriptor);
 
 			// Update tree test result collection
@@ -48,6 +55,12 @@ public class TestManagerServiceImpl implements TestManagerService {
 					addResultToCollection(collectionId, testRunDescriptor
 							.getTestResultUuid());
 				}
+			} else {
+//				log
+//						.trace("ResultUUID="
+//								+ testRunDescriptor.getTestResultUuid());
+//				addResultToCollection("default", testRunDescriptor
+//						.getTestResultUuid());
 			}
 		}
 	}
@@ -76,6 +89,37 @@ public class TestManagerServiceImpl implements TestManagerService {
 		if (ttrc.getResults().size() == 0) {
 			treeTestResultCollectionDao.delete(ttrc);
 		}
+	}
+
+	public void createTreeTestResult(CreateTreeTestResultRequest msg) {
+		TreeTestResult treeTestResult = msg.getTreeTestResult();
+
+		if (log.isTraceEnabled())
+			log.trace("Creating result #" + treeTestResult.getUuid());
+		treeTestResultDao.create(treeTestResult);
+
+		registerTestRunDescriptor(msg.getTestRunDescriptor());
+	}
+
+	public void addResultPart(ResultPartRequest msg) {
+		registerTestRunDescriptor(msg.getTestRunDescriptor());
+
+		if (log.isTraceEnabled())
+			log.trace("Adding result part to test result #"
+					+ msg.getResultUuid());
+
+		treeTestResultDao.addResultPart(msg.getResultUuid(), msg.getPath(), msg
+				.getResultPart(), msg.getRelatedElements());
+		// treeTestResultDao.updateAttributes(msg.getResultUuid(), msg
+		// .getAttributes());
+	}
+
+	public void closeTreeTestResult(CloseTreeTestResultRequest msg) {
+		if (log.isTraceEnabled())
+			log.trace("Closing result #" + msg.getResultUuid() + " at date "
+					+ msg.getCloseDate());
+
+		treeTestResultDao.close(msg.getResultUuid(), msg.getCloseDate());
 	}
 
 }

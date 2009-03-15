@@ -7,6 +7,8 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<reference id="agentService" interface="org.argeo.slc.services.runtime.AgentService" />
+	<reference id="testManagerService"
+		interface="org.argeo.slc.services.test.TestManagerService" />
 
 	<reference id="jmsConnectionFactory" interface="javax.jms.ConnectionFactory" />
 

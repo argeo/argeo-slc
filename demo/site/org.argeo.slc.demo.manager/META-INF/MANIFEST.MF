@@ -1,14 +1,7 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
 Bundle-Name: Manager Plug-in
 Bundle-SymbolicName: org.argeo.slc.demo.manager
 Bundle-Version: 1.0.0
 Spring-Context: conf/*
-Created-By: 1.6.0_0 (Sun Microsystems Inc.)
-Import-Package: org.apache.commons.logging;version="1.1",
- org.argeo.slc.core.execution;version="0.11.3.SNAPSHOT",
- org.argeo.slc.execution;version="0.11.3.SNAPSHOT",
- org.springframework.beans.factory.config;version="2.5.6.A"
-Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
-Bundle-DocURL: http://www.argeo.org
-Tool: Bnd-0.0.255
+Require-Bundle: 
+ org.argeo.slc.specs,
+ org.argeo.slc.support.simple

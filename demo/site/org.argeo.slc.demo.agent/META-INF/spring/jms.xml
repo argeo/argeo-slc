@@ -33,4 +33,16 @@
 		<property name="modulesManager" ref="modulesManager" />
 	</bean>
 
+	<!-- TreeTestResult Listener -->
+	<bean id="resultListener" class="org.argeo.slc.jms.JmsTreeTestResultListener">
+		<property name="createDestination" ref="slcJms.destination.test.create" />
+		<property name="addResultPartDestination" ref="slcJms.destination.test.addResultPart" />
+		<property name="closeDestination" ref="slcJms.destination.test.close" />
+		<property name="jmsTemplate">
+			<bean class="org.springframework.jms.core.JmsTemplate">
+				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+				<property name="connectionFactory" ref="jmsConnectionFactory" />
+			</bean>
+		</property>
+	</bean>
 </beans>
