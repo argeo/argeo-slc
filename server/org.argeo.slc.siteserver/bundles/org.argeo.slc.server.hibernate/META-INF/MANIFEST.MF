@@ -6,7 +6,8 @@ Import-Package:
  org.springframework.aop,
  org.springframework.aop.framework,
  org.aopalliance.aop,
- org.hibernate.jdbc
+ org.hibernate.jdbc,
+ org.springframework.transaction
 Require-Bundle: 
  org.argeo.slc.server,
  org.argeo.slc.specs,

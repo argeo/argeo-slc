@@ -13,8 +13,7 @@
 
 	<import resource="osgi.xml" />
 
-	<!--
-		Hibernate instrumentation-->
+	<!-- Hibernate instrumentation-->
 	<bean id="osivInterceptor"
 		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
 		<property name="sessionFactory" ref="sessionFactory" />
@@ -26,13 +25,6 @@
 		class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"
 		lazy-init="false">
 		<property name="contextOverride" value="true" />
-		<property name="properties">
-			<props>
-				<prop key="sessionFactoryParentBean">
-					slcServerDefault.sessionFactory.HSQL
-                </prop>
-			</props>
-		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 

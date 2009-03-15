@@ -190,6 +190,12 @@
 					com.springsource.org.apache.log4j
 				</artifactId>
 		</dependency>
+		
+		<!-- For WS -->
+		<dependency>
+			<groupId>com.sun.xml</groupId>
+			<artifactId>com.springsource.com.sun.xml.messaging.saaj</artifactId>
+		</dependency>
 
 		<!-- For ActiveMQ Web -->
 		<dependency>
