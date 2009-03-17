@@ -56,11 +56,11 @@ public class TestManagerServiceImpl implements TestManagerService {
 							.getTestResultUuid());
 				}
 			} else {
-//				log
-//						.trace("ResultUUID="
-//								+ testRunDescriptor.getTestResultUuid());
-//				addResultToCollection("default", testRunDescriptor
-//						.getTestResultUuid());
+				 log
+						.trace("ResultUUID="
+								+ testRunDescriptor.getTestResultUuid());
+				addResultToCollection("default", testRunDescriptor
+						.getTestResultUuid());
 			}
 		}
 	}
@@ -102,7 +102,7 @@ public class TestManagerServiceImpl implements TestManagerService {
 	}
 
 	public void addResultPart(ResultPartRequest msg) {
-		registerTestRunDescriptor(msg.getTestRunDescriptor());
+//		registerTestRunDescriptor(msg.getTestRunDescriptor());
 
 		if (log.isTraceEnabled())
 			log.trace("Adding result part to test result #"

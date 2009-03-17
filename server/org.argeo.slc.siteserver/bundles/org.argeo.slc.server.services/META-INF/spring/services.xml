@@ -23,7 +23,7 @@
 		<constructor-arg ref="slcExecutionDao" />
 	</bean>
 
-	<!-- Services transactions -->
+	<!-- Services transactions
 	<aop:config>
 		<aop:pointcut id="serviceMethods"
 			expression="execution(* org.argeo.slc.services.test.TestManagerService.*(..))" />
@@ -35,5 +35,5 @@
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
 	</tx:advice>
-
+ -->
 </beans>

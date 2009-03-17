@@ -11,5 +11,6 @@ Import-Package:
 Require-Bundle: 
  org.argeo.slc.server,
  org.argeo.slc.specs,
- org.argeo.slc.support.simple
+ org.argeo.slc.support.simple,
+ com.springsource.org.hibernate
  

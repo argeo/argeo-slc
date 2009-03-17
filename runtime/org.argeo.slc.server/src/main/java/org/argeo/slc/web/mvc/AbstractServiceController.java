@@ -24,6 +24,7 @@ public abstract class AbstractServiceController extends AbstractController {
 		try {
 			handleServiceRequest(request, response, mv);
 		} catch (Exception e) {
+			e.printStackTrace();
 			StringWriter writer = new StringWriter();
 			e.printStackTrace(new PrintWriter(writer));
 			ExecutionAnswer answer = ExecutionAnswer.error(writer.toString());
