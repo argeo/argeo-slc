@@ -8,6 +8,8 @@
 
 	<service ref="testManagerService" interface="org.argeo.slc.services.test.TestManagerService" />
 	<service ref="agentService" interface="org.argeo.slc.services.runtime.AgentService" />
+	<service ref="slcExecutionService"
+		interface="org.argeo.slc.services.process.SlcExecutionService" />
 
 	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
 		id="testResultDao" />

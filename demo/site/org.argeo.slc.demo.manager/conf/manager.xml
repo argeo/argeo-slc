@@ -6,5 +6,6 @@
 
 	<bean id="modulesManager" class="org.argeo.slc.core.execution.DefaultModulesManager">
 		<property name="executionModules" ref="executionModules" />
+		<property name="slcExecutionNotifiers" ref="slcExecutionListeners" />
 	</bean>
 </beans>

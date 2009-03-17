@@ -5,6 +5,8 @@
 	default-lazy-init="false">
 
 	<!-- Destinations -->
+
+	<!-- Agent service -->
 	<bean id="slcJms.destination.agent.register" p:physicalName="agent.register"
 		parent="slcJms.amTopic" />
 	<bean id="slcJms.destination.agent.unregister" p:physicalName="agent.unregister"
@@ -12,12 +14,17 @@
 	<bean id="slcJms.destination.agent.newExecution" p:physicalName="agent.newExecution"
 		parent="slcJms.amTopic" />
 
+	<!-- Test result service -->
 	<bean id="slcJms.destination.test.create" p:physicalName="test.create"
 		parent="slcJms.amTopic" />
 	<bean id="slcJms.destination.test.addResultPart" p:physicalName="test.addResultPart"
 		parent="slcJms.amTopic" />
 	<bean id="slcJms.destination.test.close" p:physicalName="test.close"
 		parent="slcJms.amTopic" />
+
+	<!-- TSLC Execution service -->
+	<bean id="slcJms.destination.slcExecution.updateStatus"
+		p:physicalName="slcExecution.updateStatus" parent="slcJms.amTopic" />
 
 	<!-- Templates -->
 	<bean id="slcJms.amQueue" class="org.apache.activemq.command.ActiveMQQueue"

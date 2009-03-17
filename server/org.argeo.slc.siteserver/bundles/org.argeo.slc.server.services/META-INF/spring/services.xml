@@ -19,6 +19,10 @@
 		<constructor-arg ref="slcAgentDescriptorDao" />
 	</bean>
 
+	<bean id="slcExecutionService" class="org.argeo.slc.services.impl.process.SlcExecutionServiceImpl">
+		<constructor-arg ref="slcExecutionDao" />
+	</bean>
+
 	<!-- Services transactions -->
 	<aop:config>
 		<aop:pointcut id="serviceMethods"

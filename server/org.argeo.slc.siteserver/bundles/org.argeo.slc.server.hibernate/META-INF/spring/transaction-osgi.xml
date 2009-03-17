@@ -6,20 +6,9 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<service interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
-		ref="testResultDao" />
-	<service interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
-		ref="testResultCollectionDao" />
-	<service interface="org.argeo.slc.dao.test.TestRunDescriptorDao"
-		ref="testRunDescriptorDao" />
-	<service interface="org.argeo.slc.dao.process.SlcExecutionDao"
-		ref="slcExecutionDao" />
-	<service interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
-		ref="slcAgentDescriptorDao" />
+
 	<service ref="transactionManager"
 		interface="org.springframework.transaction.PlatformTransactionManager" />
-
-	<reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
 
 
 </beans:beans>

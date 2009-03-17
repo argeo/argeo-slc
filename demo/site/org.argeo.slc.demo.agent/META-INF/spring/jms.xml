@@ -45,4 +45,15 @@
 			</bean>
 		</property>
 	</bean>
+	
+	<!-- SLC Execution Listener -->
+	<bean id="slcExecutionListener" class="org.argeo.slc.jms.JmsSlcExecutionNotifier">
+		<property name="updateStatusDestination" ref="slcJms.destination.slcExecution.updateStatus" />
+		<property name="jmsTemplate">
+			<bean class="org.springframework.jms.core.JmsTemplate">
+				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+				<property name="connectionFactory" ref="jmsConnectionFactory" />
+			</bean>
+		</property>
+	</bean>
 </beans>

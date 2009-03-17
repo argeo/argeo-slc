@@ -9,6 +9,8 @@
 	<reference id="agentService" interface="org.argeo.slc.services.runtime.AgentService" />
 	<reference id="testManagerService"
 		interface="org.argeo.slc.services.test.TestManagerService" />
+	<reference id="slcExecutionService"
+		interface="org.argeo.slc.services.process.SlcExecutionService" />
 
 	<reference id="jmsConnectionFactory" interface="javax.jms.ConnectionFactory" />
 

@@ -58,6 +58,27 @@
 		</property>
 	</bean>
 
+	<!-- SLC Execution Service -->
+	<bean parent="listenerContainer">
+		<property name="destination" ref="slcJms.destination.agent.newExecution" />
+		<property name="messageListener">
+			<bean parent="listenerAdapterCastor">
+				<constructor-arg ref="slcExecutionService" />
+				<property name="defaultListenerMethod" value="newExecution" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean parent="listenerContainer">
+		<property name="destination" ref="slcJms.destination.slcExecution.updateStatus" />
+		<property name="messageListener">
+			<bean parent="listenerAdapterCastor">
+				<constructor-arg ref="slcExecutionService" />
+				<property name="defaultListenerMethod" value="updateStatus" />
+			</bean>
+		</property>
+	</bean>
+
 
 	<!-- Templates -->
 	<bean id="listenerContainer"

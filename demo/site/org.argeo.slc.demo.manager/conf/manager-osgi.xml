@@ -15,4 +15,5 @@
 		<beans:bean class="org.argeo.slc.core.test.tree.TreeTestResultLogger" />
 	</service>
 
+	<list id="slcExecutionListeners" interface="org.argeo.slc.process.SlcExecutionNotifier" cardinality="0..N"/>
 </beans:beans>

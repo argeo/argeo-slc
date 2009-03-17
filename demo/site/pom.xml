@@ -17,4 +17,13 @@
 		<module>org.argeo.slc.demo.deploy</module>
 		<module>org.argeo.slc.demo.log4j</module>
 	</modules>
+	<dependencies>
+	<!-- 
+		<dependency>
+			<groupId>org.argeo.slc.demo</groupId>
+			<artifactId>org.argeo.slc.demo.basic</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		 -->
+	</dependencies>
 </project>
