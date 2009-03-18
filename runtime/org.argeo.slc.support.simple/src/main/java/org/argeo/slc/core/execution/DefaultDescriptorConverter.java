@@ -16,18 +16,21 @@ public class DefaultDescriptorConverter implements
 
 		Map<String, Object> convertedValues = new HashMap<String, Object>();
 
-		for (String key : values.keySet()) {
-			Object value = values.get(key);
-			if (value instanceof PrimitiveValue) {
-				PrimitiveValue primitiveValue = (PrimitiveValue) value;
+		if (values != null) {
+			for (String key : values.keySet()) {
+				Object value = values.get(key);
+				if (value instanceof PrimitiveValue) {
+					PrimitiveValue primitiveValue = (PrimitiveValue) value;
 
-				// TODO: check that the class of the the primitiveValue.value
-				// matches
-				// the primitiveValue.type
-				convertedValues.put(key, primitiveValue.getValue());
-			} else if (value instanceof RefValue) {
-				RefValue refValue = (RefValue) value;
-				convertedValues.put(key, refValue.getLabel());
+					// TODO: check that the class of the the
+					// primitiveValue.value
+					// matches
+					// the primitiveValue.type
+					convertedValues.put(key, primitiveValue.getValue());
+				} else if (value instanceof RefValue) {
+					RefValue refValue = (RefValue) value;
+					convertedValues.put(key, refValue.getLabel());
+				}
 			}
 		}
 		return convertedValues;

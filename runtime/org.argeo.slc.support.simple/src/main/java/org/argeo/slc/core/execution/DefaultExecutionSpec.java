@@ -2,6 +2,7 @@ package org.argeo.slc.core.execution;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,13 +13,14 @@ import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.springframework.beans.factory.BeanNameAware;
 
 public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware {
-	private final static Log log = LogFactory.getLog(DefaultExecutionSpec.class);
+	private final static Log log = LogFactory
+			.getLog(DefaultExecutionSpec.class);
 
 	private final static ThreadLocal<ExecutionFlow> initializingFlow = new ThreadLocal<ExecutionFlow>();
 
 	private Map<String, ExecutionSpecAttribute> attributes = new HashMap<String, ExecutionSpecAttribute>();
 
-	private String name = null;
+	private String name = getClass().getName() + "#" + UUID.randomUUID();
 
 	public Map<String, ExecutionSpecAttribute> getAttributes() {
 		return attributes;

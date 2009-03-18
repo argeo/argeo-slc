@@ -8,10 +8,14 @@ import java.util.UUID;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.execution.Executable;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
+import org.argeo.slc.structure.StructureAware;
+import org.argeo.slc.structure.StructureRegistry;
 import org.argeo.slc.test.ExecutableTestRun;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -23,6 +27,9 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	private String name = null;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<Executable> executables = new ArrayList<Executable>();
+
+	private String path;
+	private StructureRegistry<TreeSPath> registry = new TreeSRegistry();
 
 	public DefaultExecutionFlow() {
 
@@ -82,6 +89,17 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		if (errors.hasErrors())
 			throw new SlcException("Could not prepare execution flow: "
 					+ errors.toString());
+
+		if (path == null) {
+			path = "/" + executionSpec.getName() + "/" + name;
+		}
+
+		for (Executable executable : executables) {
+			if (executable instanceof StructureAware) {
+				((StructureAware<TreeSPath>) executable).notifyCurrentPath(
+						registry, new TreeSPath(path));
+			}
+		}
 	}
 
 	public void setBeanName(String name) {
