@@ -1,6 +1,5 @@
 package org.argeo.slc.core.execution;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -8,11 +7,11 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
+import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
 import org.argeo.slc.execution.ExecutionModule;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
-import org.argeo.slc.process.SlcExecution;
 import org.springframework.aop.scope.ScopedObject;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.generic.GenericBeanFactoryAccessor;
@@ -27,13 +26,7 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 
 	private ExecutionContext executionContext;
 
-	public ExecutionContext getExecutionContext() {
-		return executionContext;
-	}
-
-	public void setExecutionContext(ExecutionContext executionContext) {
-		this.executionContext = executionContext;
-	}
+	private ExecutionFlowDescriptorConverter descriptorConverter = new DefaultDescriptorConverter();
 
 	public ExecutionModuleDescriptor getDescriptor() {
 		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
@@ -101,15 +94,27 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 		return md;
 	}
 
-	public void execute(ExecutionFlowDescriptor descriptor) {
+	public void execute(ExecutionFlowDescriptor executionFlowDescriptor) {
+		if (descriptorConverter != null)
+			executionContext.addVariables(descriptorConverter
+					.convertValues(executionFlowDescriptor));
 		ExecutionFlow flow = (ExecutionFlow) applicationContext.getBean(
-				descriptor.getName(), ExecutionFlow.class);
+				executionFlowDescriptor.getName(), ExecutionFlow.class);
 		flow.execute();
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = applicationContext;
+	}
+
+	public void setExecutionContext(ExecutionContext executionContext) {
+		this.executionContext = executionContext;
+	}
+
+	public void setDescriptorConverter(
+			ExecutionFlowDescriptorConverter descriptorConverter) {
+		this.descriptorConverter = descriptorConverter;
 	}
 
 }
