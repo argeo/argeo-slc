@@ -1,5 +1,5 @@
 Bundle-SymbolicName: org.argeo.slc.server.jms
-Bundle-Version: 0.1.0
+Bundle-Version: 0.11.3.qualifier
 Import-Package: javax.jms,
  javax.management.j2ee.statistics,
  org.apache.commons.logging

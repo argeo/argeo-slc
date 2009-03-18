@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>argeo-slc</artifactId>
+		<version>0.11.3-SNAPSHOT</version>
+		<relativePath>../../../org.argeo.slc</relativePath>
+	</parent>
+	<groupId>org.argeo.slc.server</groupId>
+	<artifactId>org.argeo.slc.server.bundles</artifactId>
+	<packaging>pom</packaging>
+	<name>Argeo SLC Server Bundles</name>
+	<properties>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.argeo.slc.maven</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+				<version>0.1.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>simple-bundles</goal>
+						</goals>
+						<configuration>
+							<bundlesBase>.</bundlesBase>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-invoker-plugin</artifactId>
+				<version>1.3</version>
+				<configuration>
+					<goals>
+						<goal>install</goal>
+					</goals>
+					<projectsDirectory>target/bundles</projectsDirectory>
+					<pomIncludes>
+						<pomInclude>pom.xml</pomInclude>
+					</pomIncludes>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+	<dependencies>
+	</dependencies>
+</project>

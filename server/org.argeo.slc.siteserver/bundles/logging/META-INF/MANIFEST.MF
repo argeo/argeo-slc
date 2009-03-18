@@ -1,4 +1,5 @@
 Bundle-Name: Log4j configuration bundle
 Bundle-SymbolicName: server.logging
+Bundle-Version: 0.1.0.qualifier
 Fragment-Host: com.springsource.org.apache.log4j
 

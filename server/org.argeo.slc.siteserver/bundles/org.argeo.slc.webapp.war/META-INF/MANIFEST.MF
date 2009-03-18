@@ -1,7 +1,7 @@
 Web-ContextPath: org.argeo.slc.webapp
 Bundle-Name: SLC Webapp
 Bundle-SymbolicName: org.argeo.slc.webapp
-Bundle-Version: 1.0.0
+Bundle-Version: 0.11.3.qualifier
 Bundle-ClassPath: WEB-INF/classes
 Import-Package: com.sun.xml.messaging.saaj.soap;optional=true,
  javax.servlet,
@@ -19,8 +19,8 @@ Import-Package: com.sun.xml.messaging.saaj.soap;optional=true,
  org.apache.taglibs.standard.tei,
  org.apache.taglibs.standard.tlv,
  org.hibernate,
- org.hibernate.jdbc,
  org.hibernate.hql.ast,
+ org.hibernate.jdbc,
  org.springframework.aop,
  org.springframework.aop.framework,
  org.springframework.orm.hibernate3.support,
