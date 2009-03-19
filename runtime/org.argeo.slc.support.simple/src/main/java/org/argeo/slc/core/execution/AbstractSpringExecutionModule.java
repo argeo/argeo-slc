@@ -82,6 +82,8 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 
 			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(name,
 					values, executionSpec);
+			if (executionFlow.getPath() != null)
+				efd.setPath(executionFlow.getPath());
 
 			// Add execution spec if necessary
 			if (!md.getExecutionSpecs().contains(executionSpec))

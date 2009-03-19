@@ -158,4 +158,10 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	public boolean equals(Object obj) {
 		return ((ExecutionFlow) obj).getName().equals(name);
 	}
+
+	public String getPath() {
+		return path;
+	}
+	
+	
 }

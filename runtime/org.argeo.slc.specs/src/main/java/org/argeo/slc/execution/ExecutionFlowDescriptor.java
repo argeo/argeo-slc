@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class ExecutionFlowDescriptor {
 	private String name;
+	private String path;
 	private Map<String, Object> values;
 	private ExecutionSpec executionSpec;
 
@@ -19,6 +20,14 @@ public class ExecutionFlowDescriptor {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public Map<String, Object> getValues() {

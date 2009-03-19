@@ -9,4 +9,6 @@ public interface ExecutionFlow extends Executable {
 	public ExecutionSpec getExecutionSpec();
 
 	public String getName();
+	
+	public String getPath();
 }

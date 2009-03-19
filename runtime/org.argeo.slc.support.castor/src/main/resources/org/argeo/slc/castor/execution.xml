@@ -26,6 +26,9 @@
 		<field name="name" identity="true">
 			<bind-xml name="name" node="attribute" />
 		</field>
+		<field name="path">
+			<bind-xml name="path" node="attribute" />
+		</field>
 		<field name="executionSpec">
 			<bind-xml name="executionSpec" node="attribute" reference="true" />
 		</field>
