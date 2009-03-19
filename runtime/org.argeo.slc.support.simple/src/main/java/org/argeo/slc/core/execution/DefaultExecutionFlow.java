@@ -90,14 +90,16 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 			throw new SlcException("Could not prepare execution flow: "
 					+ errors.toString());
 
-//		if (path == null) {
-//			path = "/" + executionSpec.getName() + "/" + name;
-//		}
+		// if (path == null) {
+		// path = "/" + executionSpec.getName() + "/" + name;
+		// }
 
-		for (Executable executable : executables) {
-			if (executable instanceof StructureAware) {
-				((StructureAware<TreeSPath>) executable).notifyCurrentPath(
-						registry, new TreeSPath(path));
+		if (path != null) {
+			for (Executable executable : executables) {
+				if (executable instanceof StructureAware) {
+					((StructureAware<TreeSPath>) executable).notifyCurrentPath(
+							registry, new TreeSPath(path));
+				}
 			}
 		}
 	}
@@ -162,6 +164,5 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	public String getPath() {
 		return path;
 	}
-	
-	
+
 }
