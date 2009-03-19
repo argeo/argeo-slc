@@ -160,6 +160,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   					if(selected.classname == "org.argeo.ria.components.DynamicTreeFolder"){
   						if(selected.getUserData("moduleData")){
   							// It's a "module" node, first trigger the reloadBundle.service
+  							selected.setUserData("dataModel", {});
   							selected.setEnabled(false);
   							selected.setOpen(false);
   							var moduleData = selected.getUserData("moduleData");
@@ -211,21 +212,24 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   	 * @param folder {qx.ui.tree.TreeFolder} A Tree folder containing in the key "moduleData" of its user data a map containing the keys {name,version} 
   	 */
 	flowLoader : function(folder){
-		var moduleData = folder.getUserData("moduleData");
-  		//var req = org.argeo.ria.remote.RequestManager.getInstance().getRequest("../argeo-ria-src/stub.xml", "GET", "application/xml");
+		var moduleData = folder.getUserData("moduleData");  		
+		//var pathStub = ["", "/test/toto/zobi", "loop"];
+		//var indexStub = 0;
+		
 		var req = org.argeo.slc.ria.SlcApi.getLoadExecutionDescriptorService(moduleData.name, moduleData.version);
   		req.addListener("completed", function(response){
   			var executionModule = new org.argeo.slc.ria.execution.Module();			  			
   			executionModule.setXmlNode(response.getContent());
   			var execFlows = executionModule.getExecutionFlows();
   			for(var key in execFlows){
-  				if(execFlows[key].getPath()){
-  					// Build a more complex tree with the path
-  				}
   				var file = new qx.ui.tree.TreeFile(key);
+  				var path = execFlows[key].getPath();
+  				//path = pathStub[indexStub];
+  				//indexStub ++;
   				file.setUserData("executionModule", executionModule);
   				file.setUserData("executionFlow", execFlows[key]);
-  				folder.add(file);
+  				org.argeo.slc.ria.NewLauncherApplet.attachNodeByPath(folder, path, file);
+  				folder.appendDragData(file);
   			}
   			folder.setLoaded(true);
   		});
@@ -263,6 +267,40 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			}
 		});
 		req.send();		
+	},
+	
+	/**
+	 * Parse a string path and search if there is a root node.
+	 * @param rootNode {qx.ui.tree.AbstractTreeItem} The parent node (containing data model)
+	 * @param path {String} The path of the node to attach.
+	 */
+	attachNodeByPath : function(rootNode, path, childNode){
+		if(!path || path=="" || path == "/" ){
+			rootNode.add(childNode);
+			return;
+		}
+		var model = rootNode.getUserData("dataModel");
+		if(!model){
+			model = {};
+			rootNode.setUserData("dataModel", model);
+		}
+		var parts = path.split("/");		
+		var keys = qx.lang.Object.getKeys(model);
+		var crtPath = "/";
+		var crtFolder = rootNode;
+		for(var i=0;i<parts.length;i++){
+			if(parts[i] == "") continue;
+			crtPath += parts[i];
+			if(!model[parts[i]]) {
+				var virtualFolder = new qx.ui.tree.TreeFolder(parts[i]);
+				model[parts[i]] = virtualFolder;
+				crtFolder.add(virtualFolder);
+				crtFolder = virtualFolder;
+			}else{
+				crtFolder = model[parts[i]];
+			}
+		}
+		crtFolder.add(childNode);
 	}
   },
   
