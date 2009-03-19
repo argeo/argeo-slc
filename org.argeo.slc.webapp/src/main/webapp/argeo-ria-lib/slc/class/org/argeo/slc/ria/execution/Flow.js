@@ -14,6 +14,13 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 			init : ""
 		},
 		/**
+		 * An optional path describing this flow
+		 */
+		path : {
+			check : "String",
+			nullable : true
+		},
+		/**
 		 * Name of the associated spec, to be found in the module 
 		 */
 		executionSpecName : {
@@ -51,7 +58,11 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 		/**
 		 * XPath to the values
 		 */
-		XPATH_VALUES : "slc:values"
+		XPATH_VALUES : "slc:values",
+		/**
+		 * An optional hierarchical path
+		 */
+		XPATH_PATH : "@path"
 	},
 	
 	construct : function(){
@@ -66,6 +77,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 		_applyXmlNode : function(xmlNode){
 			this.set({
 				name : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_NAME),
+				path : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_PATH),
 				executionSpecName : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_EXEC_SPEC_NAME)
 			});
 			var values = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_VALUES);

@@ -158,7 +158,27 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				callback	: function(e){
   					var selected = this.tree.getSelectedItem();
   					if(selected.classname == "org.argeo.ria.components.DynamicTreeFolder"){
-	  					selected.reload();
+  						if(selected.getUserData("moduleData")){
+  							// It's a "module" node, first trigger the reloadBundle.service
+  							selected.setEnabled(false);
+  							selected.setOpen(false);
+  							var moduleData = selected.getUserData("moduleData");
+  							var bundleService = org.argeo.slc.ria.SlcApi.getReloadBundleService(moduleData.name, moduleData.version);
+  							bundleService.addListener("completed", function(response){
+  								selected.setEnabled(true);
+  								selected.setOpen(true);
+		  						selected.reload();
+  							}, this);
+  							//bundleService.send();
+  							//Do not send, not implemented yet, false timer instead.
+  							qx.event.Timer.once(function(response){
+  								selected.setEnabled(true);
+  								selected.setOpen(true);
+		  						selected.reload();
+  							}, this, 2000);
+  						}else{
+		  					selected.reload();
+  						}
   					}
   				},  
   				selectionChange : function(viewId, selection){
@@ -199,6 +219,9 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   			executionModule.setXmlNode(response.getContent());
   			var execFlows = executionModule.getExecutionFlows();
   			for(var key in execFlows){
+  				if(execFlows[key].getPath()){
+  					// Build a more complex tree with the path
+  				}
   				var file = new qx.ui.tree.TreeFile(key);
   				file.setUserData("executionModule", executionModule);
   				file.setUserData("executionFlow", execFlows[key]);
@@ -218,14 +241,6 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		req.addListener("completed", function(response){
 			var descriptors = org.argeo.ria.util.Element.selectNodes(response.getContent(), "slc:object-list/slc:execution-module-descriptor");
 			var mods = {};
-			// STUB
-			/*
-			var mods = {
-				"Module 1":["ver1.1", "ver1.2", "ver1.3"], 
-				"Module 2":["ver2.1", "ver2.2", "ver2.3", "ver2.4"], 
-				"Module 3":["ver3.1", "ver3.2"]
-			};
-			*/			
 			for(var i=0;i<descriptors.length; i++){
 				var name = org.argeo.ria.util.Element.getSingleNodeText(descriptors[i], "slc:name");
 				var version = org.argeo.ria.util.Element.getSingleNodeText(descriptors[i], "slc:version");
@@ -234,16 +249,14 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			}
 			var flowLoader = org.argeo.slc.ria.NewLauncherApplet.flowLoader;
 			for(var key in mods){
-				var moduleFolder = new qx.ui.tree.TreeFolder(key);
-				folder.add(moduleFolder);
 				for(var i=0;i<mods[key].length;i++){
 					var versionFolder = new org.argeo.ria.components.DynamicTreeFolder(
-						mods[key][i],
+						key + ' ('+mods[key][i]+')',
 						flowLoader,
 						"Loading Flows",
 						folder.getDragData()
 					);
-					moduleFolder.add(versionFolder);
+					folder.add(versionFolder);
 					versionFolder.setUserData("moduleData", {name:key, version:mods[key][i]});
 				}
 				folder.setLoaded(true);
@@ -458,6 +471,9 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		var label = batchEntry.getLabel();
 	  	var icon = target.getIcon();
 		var item = new qx.ui.form.ListItem(label, icon);
+		item.addListener("dblclick", function(e){
+			this.getCommands()["editexecutionspecs"].command.execute();
+		}, this);
 		item.setUserData("batchEntrySpec", batchEntry);
 		item.setPaddingTop(1);
 		item.setPaddingBottom(2);

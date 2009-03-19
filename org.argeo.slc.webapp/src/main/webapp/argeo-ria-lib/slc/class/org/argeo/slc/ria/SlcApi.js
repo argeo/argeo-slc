@@ -25,6 +25,7 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	LIST_AGENTS_SERVICE : "listAgents.service",
 	LIST_MODULES_SERVICE : "listModulesDescriptors.service",
 	GET_EXECUTION_DESC_SERVICE : "getExecutionDescriptor.service",
+	RELOAD_BUNDLE_SERVICE : "reloadBundle.service",
   	AMQ_SERVICE : "amq",
   	
   	/**
@@ -242,6 +243,25 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
 		req.setParameter("version", moduleVersion);
 		return req;
   	},
+
+  	/**
+  	 * Fire the reload of an OSGI bundle.
+  	 * @param fireReloadEventType {String} Event type to trigger (optionnal)
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update 
+  	 * @return {qx.io.remote.Request}
+  	 */
+  	getReloadBundleService : function(bundleName, bundleVersion, fireReloadEventType, iLoadStatusables){
+  		var req = org.argeo.slc.ria.SlcApi.getServiceRequest(
+  			org.argeo.slc.ria.SlcApi.RELOAD_BUNDLE_SERVICE,
+  			fireReloadEventType,
+  			iLoadStatusables
+  		);
+  		req.setParameter("bundleName", bundleName);
+  		req.setParameter("bundleVersion", bundleVersion);
+  		return req;
+  	},
+  	
+  	
   	
   	/**
   	 * Send a JMS message to the AMQ_CONTEXT

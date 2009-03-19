@@ -232,8 +232,16 @@ qx.Class.define("org.argeo.slc.ria.execution.SpecEditor",
 			}, this);
 			this.cancelButton = new qx.ui.form.Button("Close");
 			this.cancelButton.addListener("execute", this._closeAndDestroy, this);
+
+			this.saveCloseButton = new qx.ui.form.Button("Save & Close");
+			this.saveCloseButton.addListener("execute", function(e){
+				this.fireEvent("save");
+				this._closeAndDestroy();
+			}, this);
+			
 			buttonPane.add(this.okButton);
 			buttonPane.add(this.cancelButton);
+			buttonPane.add(this.saveCloseButton);
 		},
 		/**
 		 * Close this modal window and destroy it.
