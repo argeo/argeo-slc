@@ -24,15 +24,13 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 		 * All execution flows registered by their name
 		 */
 		executionFlows : {
-			check : "Map",
-			init : {}
+			check : "Map"
 		},
 		/**
 		 * All execution specs registered by their name
 		 */
 		executionSpecs : {
-			check : "Map", 
-			init : {}
+			check : "Map"
 		},
 		/**
 		 * XML description (castor)
@@ -51,6 +49,8 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 	
 	construct : function(){
 		this.base(arguments);
+		this.setExecutionFlows({});
+		this.setExecutionSpecs({});
 	},
 	
 	members : {

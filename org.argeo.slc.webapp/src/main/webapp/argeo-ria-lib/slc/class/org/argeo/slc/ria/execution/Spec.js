@@ -17,8 +17,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 		 * Defined parameters 
 		 */
 		values : {
-			check : "Map", 
-			init : {}
+			check : "Map"
 		},
 		/**
 		 * Castor representation of this object
@@ -35,6 +34,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 	
 	construct : function(){
 		this.base(arguments);
+		this.setValues({});
 	},
 	
 	members : {
