@@ -90,9 +90,9 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 			throw new SlcException("Could not prepare execution flow: "
 					+ errors.toString());
 
-		if (path == null) {
-			path = "/" + executionSpec.getName() + "/" + name;
-		}
+//		if (path == null) {
+//			path = "/" + executionSpec.getName() + "/" + name;
+//		}
 
 		for (Executable executable : executables) {
 			if (executable instanceof StructureAware) {
