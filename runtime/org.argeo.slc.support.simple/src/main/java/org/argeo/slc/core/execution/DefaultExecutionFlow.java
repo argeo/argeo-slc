@@ -22,7 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.validation.MapBindingResult;
 
 public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
-		BeanNameAware {
+		BeanNameAware, StructureAware<TreeSPath> {
 	private ExecutionSpec executionSpec = new DefaultExecutionSpec();
 	private String name = null;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
@@ -163,6 +163,21 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	public String getPath() {
 		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public void setRegistry(StructureRegistry<TreeSPath> registry) {
+		this.registry = registry;
+	}
+
+	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
+			TreeSPath path) {
+		if (this.path == null) {
+			this.path = path.toString();
+		}
 	}
 
 }

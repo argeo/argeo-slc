@@ -39,7 +39,8 @@ public class DefaultModulesManager implements ExecutionModulesManager {
 			String moduleName, String version) {
 		ExecutionModule module = getExecutionModule(moduleName, version);
 
-		Assert.notNull(module);
+		if(module==null)
+			throw new SlcException("Module "+moduleName+" ("+version+") not found");
 
 		return module.getDescriptor();
 	}

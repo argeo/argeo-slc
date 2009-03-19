@@ -9,6 +9,7 @@ import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionRelated;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.structure.StructureAware;
+import org.argeo.slc.structure.StructureElement;
 import org.argeo.slc.structure.StructureRegistry;
 import org.argeo.slc.test.ExecutableTestRun;
 import org.argeo.slc.test.TestData;
@@ -21,13 +22,14 @@ import org.argeo.slc.test.WritableTestRun;
  * references to the various parts of a test run.
  */
 public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
-		SlcExecutionRelated {
+		SlcExecutionRelated, StructureAware<TreeSPath> {
 	private String uuid;
 
 	private String slcExecutionUuid;
 	private String slcExecutionStepUuid;
 
-	private String path;
+	private TreeSPath path;
+	private StructureRegistry<TreeSPath> registry;
 
 	private DeployedSystem deployedSystem;
 	private TestData testData;
@@ -36,27 +38,19 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 
 	/** Executes the underlying test definition. */
 	public void execute() {
-		TreeSPath basePath = null;
-		StructureRegistry<TreeSPath> registry = null;
-		if (path != null) {
-			// TODO: generalize
-			basePath = new TreeSPath(path);
-			registry = new TreeSRegistry();
-		}
-
 		uuid = UUID.randomUUID().toString();
 		if (testResult != null)
 			testResult.notifyTestRun(this);
 
 		// Structure
-		if (testResult != null && basePath != null
+		if (testResult != null && path != null
 				&& testResult instanceof StructureAware)
 			((StructureAware<TreeSPath>) testResult).notifyCurrentPath(
-					registry, basePath);
+					registry, path);
 
-		if (basePath != null && testDefinition instanceof StructureAware)
+		if (path != null && testDefinition instanceof StructureAware)
 			((StructureAware<TreeSPath>) testDefinition).notifyCurrentPath(
-					registry, basePath);
+					registry, path);
 
 		testDefinition.execute(this);
 	}
@@ -127,7 +121,9 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 		}
 	}
 
-	public void setPath(String path) {
+	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
+			TreeSPath path) {
+		this.registry = registry;
 		this.path = path;
 	}
 
