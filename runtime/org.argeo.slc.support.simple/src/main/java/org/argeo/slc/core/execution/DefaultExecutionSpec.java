@@ -2,6 +2,7 @@ package org.argeo.slc.core.execution;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import java.util.UUID;
 
 import org.apache.commons.logging.Log;
@@ -15,8 +16,8 @@ import org.springframework.beans.factory.BeanNameAware;
 public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware {
 	private final static Log log = LogFactory
 			.getLog(DefaultExecutionSpec.class);
-
-	private final static ThreadLocal<ExecutionFlow> initializingFlow = new ThreadLocal<ExecutionFlow>();
+	
+//	private final static ThreadLocal<Stack<ExecutionFlow> > flowStack = new ThreadLocal<Stack<ExecutionFlow> >();
 
 	private Map<String, ExecutionSpecAttribute> attributes = new HashMap<String, ExecutionSpecAttribute>();
 
@@ -30,62 +31,12 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware {
 		this.attributes = attributes;
 	}
 
-	public Object createRef(String name) {
-		ExecutionFlow flow = initializingFlow.get();
-		if (flow == null)
-			throw new SlcException("No flow is currently initializing."
-					+ " Declare flow refs as inner beans or prototypes.");
-		/*
-		 * RefSpecAttribute refSpecAttribute = (RefSpecAttribute) attributes
-		 * .get(name); Class<?> targetClass = refSpecAttribute.getTargetClass();
-		 * ExecutionTargetSource targetSource = new ExecutionTargetSource(flow,
-		 * targetClass, name); ProxyFactory proxyFactory = new ProxyFactory();
-		 * proxyFactory.setTargetClass(targetClass);
-		 * proxyFactory.setProxyTargetClass(true);
-		 * proxyFactory.setTargetSource(targetSource);
-		 * 
-		 * return proxyFactory.getProxy();
-		 */
-		return flow.getParameter(name);
-	}
-
 	public void setBeanName(String name) {
 		this.name = name;
 	}
 
 	public String getName() {
 		return name;
-	}
-
-	// FLOWS INITIALIZATION SUPPORT
-
-	public static void flowInitializationStarted(ExecutionFlow flow) {
-		if (log.isTraceEnabled())
-			log.trace("Start initialization of " + flow.hashCode() + " ("
-					+ flow + " - " + flow.getClass() + ")");
-		initializingFlow.set(flow);
-	}
-
-	public static void flowInitializationFinished(ExecutionFlow flow) {
-		if (log.isTraceEnabled())
-			log.trace("Finish initialization of " + flow.hashCode() + " ("
-					+ flow + " - " + flow.getClass() + ")");
-		ExecutionFlow registeredFlow = initializingFlow.get();
-		if (registeredFlow != null) {
-			if (!flow.getName().equals(registeredFlow.getName()))
-				throw new SlcException("Current flow is " + flow);
-			initializingFlow.set(null);
-		}
-	}
-
-	public static Object getInitializingFlowParameter(String key) {
-		if (initializingFlow.get() == null)
-			throw new SlcException("No initializing flow available.");
-		return initializingFlow.get().getParameter(key);
-	}
-
-	public static Boolean isInFlowInitialization() {
-		return initializingFlow.get() != null;
 	}
 
 	public boolean equals(Object obj) {

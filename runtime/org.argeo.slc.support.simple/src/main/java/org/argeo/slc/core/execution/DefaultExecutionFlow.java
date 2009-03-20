@@ -30,13 +30,17 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	private String path;
 	private StructureRegistry<TreeSPath> registry = new TreeSRegistry();
-
+		
 	public DefaultExecutionFlow() {
-
+	}	
+	
+	public DefaultExecutionFlow(ExecutionSpec executionSpec) {
+		this.executionSpec = executionSpec;
 	}
-
-	public DefaultExecutionFlow(Map<String, Object> parameters) {
+	
+	public DefaultExecutionFlow(ExecutionSpec executionSpec, Map<String, Object> parameters) {
 		this.parameters.putAll(parameters);
+		this.executionSpec = executionSpec;
 	}
 
 	public void execute() {
@@ -112,9 +116,9 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		this.executables = executables;
 	}
 
-	public void setExecutionSpec(ExecutionSpec executionSpec) {
-		this.executionSpec = executionSpec;
-	}
+//	public void setExecutionSpec(ExecutionSpec executionSpec) {
+//		this.executionSpec = executionSpec;
+//	}
 
 	public void setParameters(Map<String, Object> attributes) {
 		this.parameters = attributes;

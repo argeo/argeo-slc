@@ -29,6 +29,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<bean id="instantiationManager" class="org.argeo.slc.core.execution.InstantiationManager" />
+	
+	<bean id="parameterRef" factory-bean="instantiationManager" factory-method="createRef"
+		abstract="true" />	
+
 	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor" >
 		<property name="executionContext">
 			<ref local="executionContext" />
@@ -36,12 +41,17 @@
 		<property name="executionScope">
 			<ref local="executionScope"/>
 		</property>
+		<property name="instantiationManager">
+			<ref local="instantiationManager" />
+		</property>		
 	</bean>
-	
-	<bean class="org.argeo.slc.core.execution.InstantiationPostProcessor" />
-	
-	<!-- <bean class="org.argeo.slc.core.execution.Executor" /> -->
-	
+
+	<bean class="org.argeo.slc.core.execution.InstantiationPostProcessor">
+		<property name="instantiationManager">
+			<ref local="instantiationManager" />
+		</property>
+	</bean>
+		
 	<bean class="org.argeo.slc.core.execution.ExecutionAspect">
 		<property name="executionContext">
 			<ref local="executionContext" />

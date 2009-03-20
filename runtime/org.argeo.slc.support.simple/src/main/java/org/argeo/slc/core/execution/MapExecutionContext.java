@@ -24,10 +24,6 @@ public class MapExecutionContext implements ExecutionContext {
 	private final Map<String, Object> variables = new HashMap<String, Object>();
 
 	private final String uuid = UUID.randomUUID().toString();
-
-/*	public Map<String, Object> getVariables() {
-		return variables;
-	}*/
 	
 	public void addVariables(Map<? extends String, ? extends Object> variablesToAdd) {
 		variables.putAll(variablesToAdd);
@@ -107,16 +103,6 @@ public class MapExecutionContext implements ExecutionContext {
 		leftEf.getLocalVariables().clear();
 
 	}
-
-/*	public Object findOrAddScopedObject(String name, ObjectFactory objectFactory) {
-		Object obj = findScopedObject(name);
-		if (obj == null) {
-			obj = objectFactory.getObject();
-			stack.peek().getScopedObjects().put(name, obj);
-		}
-		return obj;
-	}*/
-
 	
 	public void addScopedObject(String name, Object obj) {
 		//TODO: check that the object is not set yet ?

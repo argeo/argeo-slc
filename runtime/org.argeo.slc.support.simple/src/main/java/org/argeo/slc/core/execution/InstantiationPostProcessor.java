@@ -11,12 +11,22 @@ public class InstantiationPostProcessor extends
 	private final static Log log = LogFactory
 			.getLog(InstantiationPostProcessor.class);
 
+	private InstantiationManager instantiationManager;
+	
+	public InstantiationManager getInstantiationManager() {
+		return instantiationManager;
+	}
+
+	public void setInstantiationManager(InstantiationManager instantiationManager) {
+		this.instantiationManager = instantiationManager;
+	}
+
 	@Override
 	public boolean postProcessAfterInstantiation(Object bean, String beanName)
 			throws BeansException {
 		if (bean instanceof ExecutionFlow)
-			DefaultExecutionSpec
-					.flowInitializationStarted((ExecutionFlow) bean);
+			instantiationManager
+					.flowInitializationStarted((ExecutionFlow) bean, beanName);
 		return true;
 	}
 
@@ -30,8 +40,8 @@ public class InstantiationPostProcessor extends
 	public Object postProcessAfterInitialization(Object bean, String beanName)
 			throws BeansException {
 		if (bean instanceof ExecutionFlow)
-			DefaultExecutionSpec
-					.flowInitializationFinished((ExecutionFlow) bean);
+			instantiationManager
+					.flowInitializationFinished((ExecutionFlow) bean, beanName);
 		return bean;
 	}
 
