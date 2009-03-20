@@ -14,7 +14,7 @@
 	</bean>
 		
 	<bean id="main" parent="slcTemplate.simpleFlow">
-		<property name="executionSpec">
+		<constructor-arg>
 			<bean parent="slcTemplate.simpleSpec">
 				<property name="attributes">
 					<map>
@@ -24,7 +24,7 @@
 					</map>
 				</property>
 			</bean>
-		</property>
+		</constructor-arg>
 		<property name="executables">
 			<list>
 				<ref local="echo1" />

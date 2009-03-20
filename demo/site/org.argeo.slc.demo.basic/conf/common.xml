@@ -8,7 +8,7 @@
 		scope="prototype" />
 
 	<bean id="testResult" parent="slcDefault.test.basicTreeTestResult">
-		<property name="listeners" ref="resultListeners" />
+		<!-- <property name="listeners" ref="resultListeners" /> -->
 	</bean>
 
 	<bean id="testRun" class="org.argeo.slc.core.test.SimpleTestRun"

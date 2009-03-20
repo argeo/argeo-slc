@@ -9,5 +9,5 @@
 	<service interface="org.argeo.slc.execution.ExecutionModule"
 		ref="executionModule" />
 
-	<list id="resultListeners" interface="org.argeo.slc.test.TestResultListener" />
+	<!-- <list id="resultListeners" interface="org.argeo.slc.test.TestResultListener" /> -->
 </beans:beans>
