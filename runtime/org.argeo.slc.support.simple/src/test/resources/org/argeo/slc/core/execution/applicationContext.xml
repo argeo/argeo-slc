@@ -15,13 +15,8 @@
 		<property name="version" value="dummyversion" />
 	</bean>
  
-	<bean id="echoNonExecution" parent="task.echo" scope="prototype">
-		<property name="message"
-			value="echoNonExecution @{testKey}" />
-	</bean>
- 
-	<bean id="main_temp" parent="slcTemplate.simpleFlow" abstract="true">
-		<constructor-arg >
+	<bean id="main" parent="slcTemplate.simpleFlow">
+		<constructor-arg>
 			<bean parent="slcTemplate.simpleSpec">
 				<property name="attributes">
 					<map>
@@ -30,40 +25,18 @@
 						</entry>
 					</map>
 				</property>
-			</bean> 
+			</bean>
 		</constructor-arg>
-
 		<property name="executables">
 			<list>
-				<ref local="echoExecution" />
-				<ref local="echoNonExecution" />
-			 	<bean parent="task.echo">
-					<property name="message"
-						value="echoNonExecutionEmbedded @{testKey}" />
-				</bean>				
+				<ref local="echo1" />
 			</list>
 		</property>
 	</bean>
 
-	<bean id="main" parent="main_temp">
- 		<constructor-arg >
-			<map>
-				<entry key="testKey" value="666" />
-			</map>		
-		</constructor-arg>   
-	</bean>
-
-	<bean id="main_2" parent="main_temp">
- 		<constructor-arg >
-			<map>
-				<entry key="testKey" value="main_2" />
-			</map>		
-		</constructor-arg>   
-	</bean>
-
- 	<bean id="echoExecution" parent="task.echo" scope="execution">
+	<bean id="echo1" parent="task.echo" scope="execution">
 		<property name="message"
-			value="echoExecution @{testKey}" />
+			value="From main! @{testKey}" />
 		<aop:scoped-proxy />
 	</bean>
 

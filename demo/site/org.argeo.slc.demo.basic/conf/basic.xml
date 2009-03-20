@@ -26,8 +26,8 @@
 		</property>
 	</bean>
 
-	<bean id="basic.ref" factory-bean="basic.spec" factory-method="createRef"
-		abstract="true" />
+<!--  	<bean id="basic.ref" factory-bean="basic.spec" factory-method="createRef"
+		abstract="true" />-->
 
 	<bean id="basic.flowTemplate" parent="slcTemplate.simpleFlow"
 		abstract="true">
@@ -42,7 +42,7 @@
 				<bean parent="testRun">
 					<property name="testDefinition" ref="testDef" />
 					<property name="testData">
-						<bean parent="basic.ref">
+						<bean parent="parameterRef">
 							<constructor-arg value="testData1" />
 						</bean>
 					</property>
@@ -55,7 +55,7 @@
 		</property>
 	</bean>
 
-	<bean id="ref1" parent="basic.ref" scope="prototype">
+	<bean id="ref1" parent="parameterRef" scope="prototype">
 		<constructor-arg value="testData2" />
 	</bean>
 

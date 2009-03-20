@@ -31,7 +31,7 @@
 
 	<bean id="canonic.flowTemplate" parent="slcTemplate.simpleFlow"
 		abstract="true">
-		<constructor-arg ref="basic.spec" />
+		<constructor-arg ref="canonic.spec" />
 		<property name="executables">
 			<list>
 				<bean parent="task.echo"

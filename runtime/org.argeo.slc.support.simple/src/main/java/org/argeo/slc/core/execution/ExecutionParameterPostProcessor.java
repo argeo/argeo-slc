@@ -58,15 +58,15 @@ public class ExecutionParameterPostProcessor extends
 			throws BeansException {
 		
 		
-//		boolean inFlowInitialization = DefaultExecutionSpec.isInFlowInitialization();
+		boolean inFlowInitialization = instantiationManager.isInFlowInitialization();
 				
-//		if (((executionScope == null) || (!executionScope.hasExecutionContext()))
-//				&& !inFlowInitialization) {
-//			//log.info("Skip parameter conversion for bean " + beanName);
-//			return pvs;
-//		} else {
-//			//log.info("Execute parameter conversion for bean " + beanName);
-//		}
+		if (((executionScope == null) || (!executionScope.hasExecutionContext()))
+				&& !inFlowInitialization) {
+			//log.info("Skip parameter conversion for bean " + beanName);			
+			return pvs;
+		} else {
+			//log.info("Execute parameter conversion for bean " + beanName);
+		}
 
 		Properties props = new Properties();
 		CustomPpc ppc = new CustomPpc(props);
@@ -120,6 +120,7 @@ public class ExecutionParameterPostProcessor extends
 			setSystemPropertiesMode(SYSTEM_PROPERTIES_MODE_NEVER);
 		}
 
+		//TODO: could be removed as well as props
 		public String process(String strVal) {
 			String value = parseStringValue(strVal, this.props,
 					new HashSet<String>());
@@ -128,27 +129,14 @@ public class ExecutionParameterPostProcessor extends
 
 		@Override
 		protected String resolvePlaceholder(String placeholder, Properties props) {
-			if ((executionScope != null) && (executionScope.hasExecutionContext())) {
-				// if we have an execution context, look there for the placeholder
+			//log.info("Try convert placeholder " + placeholder);
+			if ((executionScope != null) && (executionScope.hasExecutionContext()))
 				return executionContext.getVariable(placeholder).toString();
-			}
-			else {
-				// TODO: check scope of the bean
-				// throw exception if trying to resolve placeholder on bean of scope singleton 
-				
-				if (instantiationManager.isInFlowInitialization()) {
-					String resolved = instantiationManager.getInitializingFlowParameter(
-							placeholder).toString();
-//					log.info("Initialization placeholder resolution " + placeholder 
-//							+ ">>" + resolved);
-					return resolved;
-				}
-				else {
-	//				return super.resolvePlaceholder(placeholder, props);
-					throw new SlcException("Placeholder '" + placeholder 
-							+ "' can not be resolved outside of Flow Initialization or Flow Execution.");
-				}
-			}
+			else if (instantiationManager.isInFlowInitialization())
+				return instantiationManager.getInitializingFlowParameter(
+						placeholder).toString();
+			else
+				return super.resolvePlaceholder(placeholder, props);
 		}
 	}
 }
