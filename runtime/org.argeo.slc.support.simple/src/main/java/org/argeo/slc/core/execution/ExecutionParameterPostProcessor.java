@@ -18,21 +18,22 @@ import org.springframework.beans.factory.config.TypedStringValue;
 
 public class ExecutionParameterPostProcessor extends
 		InstantiationAwareBeanPostProcessorAdapter {
-	
+
 	private final static Log log = LogFactory
 			.getLog(ExecutionParameterPostProcessor.class);
 
 	private ExecutionContext executionContext;
-	
+
 	private ExecutionScope executionScope;
-	
+
 	private InstantiationManager instantiationManager;
-	
+
 	public InstantiationManager getInstantiationManager() {
 		return instantiationManager;
 	}
 
-	public void setInstantiationManager(InstantiationManager instantiationManager) {
+	public void setInstantiationManager(
+			InstantiationManager instantiationManager) {
 		this.instantiationManager = instantiationManager;
 	}
 
@@ -56,24 +57,24 @@ public class ExecutionParameterPostProcessor extends
 	public PropertyValues postProcessPropertyValues(PropertyValues pvs,
 			PropertyDescriptor[] pds, Object bean, String beanName)
 			throws BeansException {
-		
-		
-		boolean inFlowInitialization = instantiationManager.isInFlowInitialization();
-				
-		if (((executionScope == null) || (!executionScope.hasExecutionContext()))
-				&& !inFlowInitialization) {
-			//log.info("Skip parameter conversion for bean " + beanName);			
-			return pvs;
-		} else {
-			//log.info("Execute parameter conversion for bean " + beanName);
-		}
+
+//		boolean inFlowInitialization = instantiationManager
+//				.isInFlowInitialization();
+//
+//		if (((executionScope == null) || (!executionScope.hasExecutionContext()))
+//				&& !inFlowInitialization) {
+//			// log.info("Skip parameter conversion for bean " + beanName);
+//			return pvs;
+//		} else {
+//			// log.info("Execute parameter conversion for bean " + beanName);
+//		}
 
 		Properties props = new Properties();
 		CustomPpc ppc = new CustomPpc(props);
 
 		for (PropertyValue pv : pvs.getPropertyValues()) {
-//			log.info("   PropertyValue pv " + pv.getValue() + " - "
-//					+ pv.getValue().getClass());
+			// log.info("   PropertyValue pv " + pv.getValue() + " - "
+			// + pv.getValue().getClass());
 			String originalValue = null;
 			String convertedValue = null;
 			if (pv.getValue() instanceof TypedStringValue) {
@@ -84,7 +85,8 @@ public class ExecutionParameterPostProcessor extends
 			} else if (pv.getValue() instanceof String) {
 				originalValue = pv.getValue().toString();
 				convertedValue = ppc.process(originalValue);
-				pv.setConvertedValue(convertedValue);
+				if (!convertedValue.equals(originalValue))
+					pv.setConvertedValue(convertedValue);
 			}
 			if (convertedValue != null && log.isTraceEnabled()) {
 				if (!originalValue.equals(convertedValue))
@@ -120,7 +122,7 @@ public class ExecutionParameterPostProcessor extends
 			setSystemPropertiesMode(SYSTEM_PROPERTIES_MODE_NEVER);
 		}
 
-		//TODO: could be removed as well as props
+		/** Public access to the internals of PropertyPlaceholderConfigurer*/
 		public String process(String strVal) {
 			String value = parseStringValue(strVal, this.props,
 					new HashSet<String>());
@@ -129,8 +131,9 @@ public class ExecutionParameterPostProcessor extends
 
 		@Override
 		protected String resolvePlaceholder(String placeholder, Properties props) {
-			//log.info("Try convert placeholder " + placeholder);
-			if ((executionScope != null) && (executionScope.hasExecutionContext()))
+			// log.info("Try convert placeholder " + placeholder);
+			if ((executionScope != null)
+					&& (executionScope.hasExecutionContext()))
 				return executionContext.getVariable(placeholder).toString();
 			else if (instantiationManager.isInFlowInitialization())
 				return instantiationManager.getInitializingFlowParameter(
