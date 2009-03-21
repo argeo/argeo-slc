@@ -133,7 +133,6 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 			for (TestResultListener<TreeTestResult> listener : listeners) {
 				listener.close(this);
 			}
-			listeners.clear();
 		}
 		isClosed = true;
 
