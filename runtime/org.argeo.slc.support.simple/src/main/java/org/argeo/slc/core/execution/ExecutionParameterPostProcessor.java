@@ -4,8 +4,11 @@ import java.beans.PropertyDescriptor;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,7 +21,10 @@ import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.config.TypedStringValue;
+import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
+import org.springframework.beans.factory.support.ManagedSet;
+import org.springframework.util.ObjectUtils;
 
 public class ExecutionParameterPostProcessor extends
 		InstantiationAwareBeanPostProcessorAdapter {
@@ -67,6 +73,57 @@ public class ExecutionParameterPostProcessor extends
 		else if (value instanceof String) {
 			return ppc.process(value.toString());
 		}		
+		else if (value instanceof Map) {
+			Map mapVal = (Map) value;
+			
+			Map newContent = new LinkedHashMap();
+			boolean entriesModified = false;
+			for (Iterator it = mapVal.entrySet().iterator(); it.hasNext();) {
+				Map.Entry entry = (Map.Entry) it.next();
+				Object key = entry.getKey();
+				int keyHash = (key != null ? key.hashCode() : 0);
+				Object newKey = resolveValue(key,ppc);
+				int newKeyHash = (newKey != null ? newKey.hashCode() : 0);
+				Object val = entry.getValue();
+				Object newVal = resolveValue(val,ppc);
+				newContent.put(newKey, newVal);
+				entriesModified = entriesModified || (newVal != val || newKey != key || newKeyHash != keyHash);
+			}
+			if (entriesModified) {
+				mapVal.clear();
+				mapVal.putAll(newContent);
+			}
+			return mapVal;
+		}
+		else if (value instanceof List) {
+			List listVal = (List) value;
+			for (int i = 0; i < listVal.size(); i++) {
+				Object elem = listVal.get(i);
+				Object newVal = resolveValue(elem,ppc);
+				if (!ObjectUtils.nullSafeEquals(newVal, elem)) {
+					listVal.set(i, newVal);
+				}
+			}			
+			return value;
+		}
+		else if (value instanceof Set) {
+			Set setVal = (Set) value;
+			Set newContent = new LinkedHashSet();
+			boolean entriesModified = false;
+			for (Iterator it = setVal.iterator(); it.hasNext();) {
+				Object elem = it.next();
+				int elemHash = (elem != null ? elem.hashCode() : 0);
+				Object newVal = resolveValue(elem,ppc);
+				int newValHash = (newVal != null ? newVal.hashCode() : 0);
+				newContent.add(newVal);
+				entriesModified = entriesModified || (newVal != elem || newValHash != elemHash);
+			}
+			if (entriesModified) {
+				setVal.clear();
+				setVal.addAll(newContent);
+			}	
+			return value;
+		}
 		else {
 			return value;
 		}
@@ -118,31 +175,10 @@ public class ExecutionParameterPostProcessor extends
 					pv.setConvertedValue(convertedValue);
 			}	
 			
-			else if (pv.getValue() instanceof ManagedMap) {
-				//debug
-				Object obj = pv.getValue();
-				String name = pv.getName();
-				
-//				log.info("##" + name + ":" + obj.getClass());
-				ManagedMap mapVal = (ManagedMap) pv.getValue();
-				
-				Map newContent = new LinkedHashMap();
-				boolean entriesModified = false;
-				for (Iterator it = mapVal.entrySet().iterator(); it.hasNext();) {
-					Map.Entry entry = (Map.Entry) it.next();
-					Object key = entry.getKey();
-					int keyHash = (key != null ? key.hashCode() : 0);
-					Object newKey = resolveValue(key,ppc);
-					int newKeyHash = (newKey != null ? newKey.hashCode() : 0);
-					Object val = entry.getValue();
-					Object newVal = resolveValue(val,ppc);
-					newContent.put(newKey, newVal);
-					entriesModified = entriesModified || (newVal != val || newKey != key || newKeyHash != keyHash);
-				}
-				if (entriesModified) {
-					mapVal.clear();
-					mapVal.putAll(newContent);
-				}				
+			else if ((pv.getValue() instanceof ManagedMap)
+					||(pv.getValue() instanceof ManagedList)
+					||(pv.getValue() instanceof ManagedSet)){
+				resolveValue(pv.getValue(),ppc);			
 			}
 			
 			if (convertedValue != null && log.isTraceEnabled()) {

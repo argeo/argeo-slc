@@ -21,21 +21,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ExecutionFlowTest extends TestCase {
 	
 	protected final Log log = LogFactory.getLog(getClass());
-	
-
-	public void testRecursive() throws Exception {
-		ConfigurableApplicationContext applicationContext = createApplicationContext("test.xml");
-		ExecutionFlow executionFlow = (ExecutionFlow) applicationContext.getBean("second");
-		executionFlow.execute();		
 		
-		BasicTestData res = (BasicTestData) applicationContext.getBean("basic.testData");
-		
-		log.info("res=" + res.getReached().toString());
-		
-		applicationContext.close();		
-	}	
-	
-	
 	/**
 	 * Test placeholder resolution in a context without scope execution or proxy
 	 * and with cascading flows (the flow A contains the flow B)
@@ -92,10 +78,6 @@ public class ExecutionFlowTest extends TestCase {
 		applicationContext.close();
 	}		
 	
-	public void testSimpleExecution() throws Exception {
-//		configureAndExecuteSlcFlow("applicationContext.xml", "main");
-	}
-	
 	public void testCanonicFlowParameters()  throws Exception {
 		configureAndExecuteSlcFlow("canonic-001.xml", "canonic.001");
 	}
@@ -123,7 +105,18 @@ public class ExecutionFlowTest extends TestCase {
 		}	
 	}	
 	
-	
+	public void testListSetMap() throws Exception {
+		ConfigurableApplicationContext applicationContext = createApplicationContext("listSetMap.xml");
+		ExecutionFlow executionFlow = (ExecutionFlow) applicationContext.getBean("myFlow");
+		executionFlow.execute();		
+		
+		validateTestResult((SimpleTestResult) applicationContext.getBean("myTestResult"));
+		
+		BasicTestData res = (BasicTestData) applicationContext.getBean("cascadingComplex.testData");
+		log.info("res=" + res.getReached().toString());
+		
+		applicationContext.close();		
+	}		
 
 
 	protected void logException(Throwable ex) {
