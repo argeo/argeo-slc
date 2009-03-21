@@ -8,7 +8,7 @@
 	<import resource="imports.xml" /> 
 
 	<bean id="second" parent="slcTemplate.simpleFlow">
-		<property name="executionSpec">
+		<constructor-arg>
 			<bean parent="slcTemplate.simpleSpec">
 				<property name="attributes">
 					<map>
@@ -18,7 +18,7 @@
 					</map>
 				</property>
 			</bean>
-		</property>
+		</constructor-arg>
 		<property name="executables">
 			<list>
 				<ref local="echo1" />
@@ -31,9 +31,9 @@
 		</property>
 	</bean>
 
-
+<!-- 
 	<bean id="first" parent="slcTemplate.simpleFlow">
-		<property name="executionSpec">
+		<constructor-arg>
 			<bean parent="slcTemplate.simpleSpec">
 				<property name="attributes">
 					<map>
@@ -43,29 +43,35 @@
 					</map>
 				</property>
 			</bean>
-		</property>
+		</constructor-arg>
 		<property name="executables">
 			<list>
 				<ref local="second" />
+				<ref local="echo1" />
 			</list>
 		</property>
 	</bean>
-
-	<bean id="basic.testData" class="org.argeo.slc.core.test.BasicTestData" scope="execution">
-		<aop:scoped-proxy />
-		<property name="expected" value="first" />
-		<property name="reached" value="@{testKey}" />
+ -->
+	<bean id="basic.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+		<property name="expected">
+			<map>
+				<entry key="test" value="second" />
+			</map>
+		</property>
+		<property name="reached">
+			<map>
+				<entry key="test" value="@{testKey}" />
+			</map>
+		</property>
 	</bean>
 	
 	<bean id="basic.testDef" class="org.argeo.slc.core.test.BasicTestDefinition">
-		<aop:scoped-proxy />
 	</bean>	
 
 
-	<bean id="echo1" parent="task.echo" scope="execution">
+	<bean id="echo1" parent="task.echo" scope="prototype">
 		<property name="message"
 			value="testKey=@{testKey}" />
-		<aop:scoped-proxy />
 	</bean>
 	
 	<bean id="basicTestResult" class="org.argeo.slc.core.test.SimpleTestResult" />

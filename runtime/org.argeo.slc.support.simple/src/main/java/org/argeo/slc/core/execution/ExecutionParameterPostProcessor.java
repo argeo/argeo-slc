@@ -2,6 +2,8 @@ package org.argeo.slc.core.execution;
 
 import java.beans.PropertyDescriptor;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -10,11 +12,13 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionContext;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.beans.factory.config.TypedStringValue;
+import org.springframework.beans.factory.support.ManagedMap;
 
 public class ExecutionParameterPostProcessor extends
 		InstantiationAwareBeanPostProcessorAdapter {
@@ -22,6 +26,8 @@ public class ExecutionParameterPostProcessor extends
 	private final static Log log = LogFactory
 			.getLog(ExecutionParameterPostProcessor.class);
 
+//	private CustomPpc ppc = new CustomPpc(new Properties());
+	
 	private ExecutionContext executionContext;
 
 	private ExecutionScope executionScope;
@@ -53,11 +59,26 @@ public class ExecutionParameterPostProcessor extends
 	private String placeholderSuffix = "}";
 	private String nullValue;
 
+	protected Object resolveValue(Object value, CustomPpc ppc) {		
+		if (value instanceof TypedStringValue) {
+			TypedStringValue tsv = (TypedStringValue) value;
+			return ppc.process(tsv.getValue());
+		}
+		else if (value instanceof String) {
+			return ppc.process(value.toString());
+		}		
+		else {
+			return value;
+		}
+	}
+	
 	@Override
 	public PropertyValues postProcessPropertyValues(PropertyValues pvs,
 			PropertyDescriptor[] pds, Object bean, String beanName)
 			throws BeansException {
 
+		//TODO: resolve at execution only if scope is execution
+		
 //		boolean inFlowInitialization = instantiationManager
 //				.isInFlowInitialization();
 //
@@ -69,6 +90,9 @@ public class ExecutionParameterPostProcessor extends
 //			// log.info("Execute parameter conversion for bean " + beanName);
 //		}
 
+		// copy the property values
+		//MutablePropertyValues newPv = new MutablePropertyValues(pvs);
+		
 		Properties props = new Properties();
 		CustomPpc ppc = new CustomPpc(props);
 
@@ -77,17 +101,50 @@ public class ExecutionParameterPostProcessor extends
 			// + pv.getValue().getClass());
 			String originalValue = null;
 			String convertedValue = null;
+						
 			if (pv.getValue() instanceof TypedStringValue) {
 				TypedStringValue tsv = (TypedStringValue) pv.getValue();
 				originalValue = tsv.getValue();
 				convertedValue = ppc.process(originalValue);
-				tsv.setValue(convertedValue);
-			} else if (pv.getValue() instanceof String) {
+				if (!convertedValue.equals(originalValue)) 
+					tsv.setValue(convertedValue);
+			}
+			else if (pv.getValue() instanceof String) {
 				originalValue = pv.getValue().toString();
 				convertedValue = ppc.process(originalValue);
+				// Setting the convertedValue can be problematic since
+				// calling setConvertedValue also sets a flag setConvertedValue
 				if (!convertedValue.equals(originalValue))
 					pv.setConvertedValue(convertedValue);
+			}	
+			
+			else if (pv.getValue() instanceof ManagedMap) {
+				//debug
+				Object obj = pv.getValue();
+				String name = pv.getName();
+				
+//				log.info("##" + name + ":" + obj.getClass());
+				ManagedMap mapVal = (ManagedMap) pv.getValue();
+				
+				Map newContent = new LinkedHashMap();
+				boolean entriesModified = false;
+				for (Iterator it = mapVal.entrySet().iterator(); it.hasNext();) {
+					Map.Entry entry = (Map.Entry) it.next();
+					Object key = entry.getKey();
+					int keyHash = (key != null ? key.hashCode() : 0);
+					Object newKey = resolveValue(key,ppc);
+					int newKeyHash = (newKey != null ? newKey.hashCode() : 0);
+					Object val = entry.getValue();
+					Object newVal = resolveValue(val,ppc);
+					newContent.put(newKey, newVal);
+					entriesModified = entriesModified || (newVal != val || newKey != key || newKeyHash != keyHash);
+				}
+				if (entriesModified) {
+					mapVal.clear();
+					mapVal.putAll(newContent);
+				}				
 			}
+			
 			if (convertedValue != null && log.isTraceEnabled()) {
 				if (!originalValue.equals(convertedValue))
 					log.trace("Converted field '" + pv.getName() + "': '"

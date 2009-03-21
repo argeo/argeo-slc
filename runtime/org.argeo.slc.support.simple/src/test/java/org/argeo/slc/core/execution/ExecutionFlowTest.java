@@ -1,77 +1,159 @@
 package org.argeo.slc.core.execution;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.core.test.BasicTestData;
 import org.argeo.slc.core.test.SimpleTestResult;
+import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestStatus;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class ExecutionFlowTest extends AbstractSpringTestCase {
+public class ExecutionFlowTest extends TestCase {
+	
+	protected final Log log = LogFactory.getLog(getClass());
+	
+
+	public void testRecursive() throws Exception {
+		ConfigurableApplicationContext applicationContext = createApplicationContext("test.xml");
+		ExecutionFlow executionFlow = (ExecutionFlow) applicationContext.getBean("second");
+		executionFlow.execute();		
+		
+		BasicTestData res = (BasicTestData) applicationContext.getBean("basic.testData");
+		
+		log.info("res=" + res.getReached().toString());
+		
+		applicationContext.close();		
+	}	
+	
+	
+	/**
+	 * Test placeholder resolution in a context without scope execution or proxy
+	 * and with cascading flows (the flow A contains the flow B)
+	 * @throws Exception
+	 */
+	public void testPlaceHolders() throws Exception {
+		ConfigurableApplicationContext applicationContext = createApplicationContext("placeHolders.cascading.xml");
+		((ExecutionFlow) applicationContext.getBean("flowA")).execute();
+		validateTestResult((SimpleTestResult) applicationContext.getBean("myTestResult"));
+		applicationContext.close();
+	}	
+	
+	/**
+	 * Test placeholder resolution in a context without scope execution or proxy
+	 * and with cascading flows (the flow A contains the flow B)
+	 * setting execution values (should have no effect)
+	 * @throws Exception
+	 */
+	public void testPlaceHoldersWithExecutionValues() throws Exception {
+		ConfigurableApplicationContext applicationContext = createApplicationContext("placeHolders.cascading.xml");
+		
+		ExecutionContext executionContext = (ExecutionContext)applicationContext.getBean("executionContext");
+		Map<String, String> executionParameters = new HashMap<String,String>();
+		executionParameters.put("p1", "e1");
+		executionParameters.put("p2", "e2");
+		executionParameters.put("p3", "e3");
+		executionParameters.put("p4", "e4");
+		executionParameters.put("p5", "e5");
+		executionParameters.put("p6", "e6");
+		executionParameters.put("p7", "e7");
+		executionParameters.put("p8", "e8");
+		executionContext.addVariables(executionParameters);
+		
+		((ExecutionFlow) applicationContext.getBean("flowA")).execute();
+		validateTestResult((SimpleTestResult) applicationContext.getBean("myTestResult"));
+		applicationContext.close();
+	}		
+	
+	public void testPlaceHoldersExec() throws Exception {
+		ConfigurableApplicationContext applicationContext = createApplicationContext("placeHolders.cascading.exec.xml");
+		
+		ExecutionContext executionContext = (ExecutionContext)applicationContext.getBean("executionContext");
+		Map<String, String> executionParameters = new HashMap<String,String>();
+		executionParameters.put("p1", "e1");
+		executionParameters.put("p2", "e2");
+		executionParameters.put("p3", "e3");
+		executionParameters.put("p4", "e4");
+		executionParameters.put("p5", "e5");
+		executionParameters.put("p6", "e6");
+		executionContext.addVariables(executionParameters);
+		
+		((ExecutionFlow) applicationContext.getBean("flowA")).execute();
+		validateTestResult((SimpleTestResult) applicationContext.getBean("myTestResult"));
+		applicationContext.close();
+	}		
 	
 	public void testSimpleExecution() throws Exception {
-		configureAndExecuteSlcFlow("applicationContext.xml", "main");
+//		configureAndExecuteSlcFlow("applicationContext.xml", "main");
 	}
 	
-	public void testCanonic() throws Exception {
-		// Parameter without default value in specification
-/*		configureAndExecuteSlcFlow("canonic-001.xml", "canonic.001");
-		configureAndExecuteSlcFlow("canonic-002.xml", "canonic.002");
+	public void testCanonicFlowParameters()  throws Exception {
+		configureAndExecuteSlcFlow("canonic-001.xml", "canonic.001");
+	}
 
+	public void testCanonicDefaultValues()  throws Exception {
+		configureAndExecuteSlcFlow("canonic-002.xml", "canonic.002");
+	}
+	
+	public void testCanonicMissingValues()  throws Exception {
 		try {
 			configureAndExecuteSlcFlow("canonic-003.error.xml", "canonic.003");
 			fail("Parameter not set - should be rejected.");
 		} catch (BeanCreationException e) {
 			// exception expected
 			logException(e);
-		}*/
-		
-/*		try {
+		}	}	
+	
+	public void testCanonicUnknownParameter() throws Exception {		
+		try {
 			configureAndExecuteSlcFlow("canonic-004.error.xml", "canonic.004");
 			fail("Unknown parameter set - should be rejected.");
 		} catch (BeanCreationException e) {
 			// exception expected
 			logException(e);
-		}	*/
+		}	
 	}	
 	
-/*	public void testRecursive() throws Exception {
-		ConfigurableApplicationContext applicationContext = prepareExecution("test.xml");
-		ExecutionFlow executionFlow = (ExecutionFlow) applicationContext.getBean("first");
-		executionFlow.execute();		
-		SimpleTestResult res = (SimpleTestResult) applicationContext.getBean("basicTestResult");
-		if(res.getParts().get(0).getStatus() != TestStatus.PASSED) {
-			fail("Unexpected string returned");
-		}
-		applicationContext.close();		
-	}*/
 	
+
+
 	protected void logException(Throwable ex) {
 		log.info("Got Exception of class " + ex.getClass().toString()
 				+ " with message '" + ex.getMessage() + "'.");
 	}
-	
-	protected void initExecutionContext() {
-/*		// if an execution context was registered, unregister it
-		if(MapExecutionContext.getCurrent() != null) {
-			MapExecutionContext.unregisterExecutionContext();
-		}
-		// register a new ExecutionContext
-		MapExecutionContext.registerExecutionContext(new MapExecutionContext());		*/
+		
+	protected void validateTestResult(SimpleTestResult testResult) {
+		for(TestResultPart part : testResult.getParts()) {
+			if(part.getStatus() != TestStatus.PASSED) {
+				fail("Error found in TestResult: " + part.getMessage());
+			}
+		}		
 	}
 	
-	protected ConfigurableApplicationContext prepareExecution(String applicationContextSuffix) {
+	protected ConfigurableApplicationContext createApplicationContext(String applicationContextSuffix) {
 		ConfigurableApplicationContext applicationContext = new ClassPathXmlApplicationContext(inPackage(applicationContextSuffix));
 		applicationContext.start();
-		initExecutionContext();
 		return applicationContext;
 	}
 	
 	protected void configureAndExecuteSlcFlow(String applicationContextSuffix, String beanName) {
-		ConfigurableApplicationContext applicationContext = prepareExecution(applicationContextSuffix);
+		ConfigurableApplicationContext applicationContext = createApplicationContext(applicationContextSuffix);
 		ExecutionFlow executionFlow = (ExecutionFlow) applicationContext.getBean(beanName);
 		executionFlow.execute();		
 		applicationContext.close();
+	}	
+	
+	protected String inPackage(String suffix) {
+		String prefix = getClass().getPackage().getName().replace('.', '/');
+		return prefix + '/' + suffix;
 	}	
 }

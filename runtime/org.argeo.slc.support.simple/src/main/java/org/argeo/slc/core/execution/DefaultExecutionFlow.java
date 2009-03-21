@@ -39,21 +39,20 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	}
 	
 	public DefaultExecutionFlow(ExecutionSpec executionSpec, Map<String, Object> parameters) {
-		this.parameters.putAll(parameters);
-		this.executionSpec = executionSpec;
-	}
-
-	public void execute() {
-		for (Executable executable : executables) {
-			executable.execute();
+		// be sure to have an execution spec
+		this.executionSpec = (executionSpec == null) ? new DefaultExecutionSpec() : executionSpec;
+		
+		//only parameters contained in the executionSpec can be set
+		for(String parameter : parameters.keySet()) {
+			if(!executionSpec.getAttributes().containsKey(parameter)) {
+				throw new SlcException("Parameter " + parameter + " is not defined in the ExecutionSpec");
+			}
 		}
-	}
-
-	public void afterPropertiesSet() throws Exception {
-		// Validate execution specs
-		if (executionSpec == null)
-			return;
-
+		
+		// set the parameters
+		this.parameters.putAll(parameters);		
+		
+		//check that all the required parameters are defined
 		MapBindingResult errors = new MapBindingResult(parameters, "execution#"
 				+ getName());
 		for (String key : executionSpec.getAttributes().keySet()) {
@@ -74,30 +73,22 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 				errors.rejectValue(key, "Hidden but not set as parameter");
 				break;
 			}
-
-			/*
-			 * if (!parameters.containsKey(key)) { Object defaultValue =
-			 * attr.getValue(); if (defaultValue == null)
-			 * errors.rejectValue(key, "Not set and no default value"); else
-			 * parameters.put(key, defaultValue); } else {// contains key Object
-			 * obj = parameters.get(key); if (attr instanceof RefSpecAttribute)
-			 * { RefSpecAttribute rsa = (RefSpecAttribute) attr; // TODO: make
-			 * sure this will not cause pb with OSGi Class targetClass =
-			 * rsa.getTargetClass(); if
-			 * (!targetClass.isAssignableFrom(obj.getClass())) {
-			 * errors.reject(key + " not compatible with target class " +
-			 * targetClass); } } }
-			 */
 		}
 
 		if (errors.hasErrors())
 			throw new SlcException("Could not prepare execution flow: "
-					+ errors.toString());
+					+ errors.toString());		
+		
+		
+	}
 
-		// if (path == null) {
-		// path = "/" + executionSpec.getName() + "/" + name;
-		// }
+	public void execute() {
+		for (Executable executable : executables) {
+			executable.execute();
+		}
+	}
 
+	public void afterPropertiesSet() throws Exception {
 		if (path != null) {
 			for (Executable executable : executables) {
 				if (executable instanceof StructureAware) {
@@ -115,10 +106,6 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	public void setExecutables(List<Executable> executables) {
 		this.executables = executables;
 	}
-
-//	public void setExecutionSpec(ExecutionSpec executionSpec) {
-//		this.executionSpec = executionSpec;
-//	}
 
 	public void setParameters(Map<String, Object> attributes) {
 		this.parameters = attributes;

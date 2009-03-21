@@ -35,27 +35,17 @@
 		abstract="true" />	
 
 	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor" >
-		<property name="executionContext">
-			<ref local="executionContext" />
-		</property>
-		<property name="executionScope">
-			<ref local="executionScope"/>
-		</property>
-		<property name="instantiationManager">
-			<ref local="instantiationManager" />
-		</property>		
+		<property name="executionContext" ref="executionContext" />
+		<property name="executionScope" ref="executionScope"/>
+		<property name="instantiationManager" ref="instantiationManager" />
 	</bean>
 
 	<bean class="org.argeo.slc.core.execution.InstantiationPostProcessor">
-		<property name="instantiationManager">
-			<ref local="instantiationManager" />
-		</property>
+		<property name="instantiationManager" ref="instantiationManager" />
 	</bean>
 		
 	<bean class="org.argeo.slc.core.execution.ExecutionAspect">
-		<property name="executionContext">
-			<ref local="executionContext" />
-		</property>
+		<property name="executionContext" ref="executionContext" />
 	</bean>
 
 	<aop:aspectj-autoproxy />

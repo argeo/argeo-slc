@@ -16,6 +16,7 @@
 				<entry key="displayWithoutControl" value="102" />
 				<entry key="displayWithControl" value="202" />
 				<entry key="hide" value="202" />
+				<entry key="notParameterAtInstantiation" value="202" />
 			</map>
 		</constructor-arg>
 	</bean>
