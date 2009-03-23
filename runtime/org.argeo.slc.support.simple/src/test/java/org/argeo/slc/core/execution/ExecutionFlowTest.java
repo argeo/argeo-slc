@@ -21,7 +21,25 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class ExecutionFlowTest extends TestCase {
 	
 	protected final Log log = LogFactory.getLog(getClass());
-		
+			
+	
+// to test: case with listener	
+	
+//	public void testMyTest() throws Exception {
+//		ConfigurableApplicationContext applicationContext = createApplicationContext("test.xml");
+//		log.info("Start Execution");
+//		((ExecutionFlow) applicationContext.getBean("fileDiff.SimulationView_Risk")).execute();
+//		applicationContext.close();		
+//	}
+//	
+	public void testMultipleFlows() throws Exception {
+		ConfigurableApplicationContext applicationContext = createApplicationContext("multipleFlow.xml");
+		log.info("Start Execution");
+		((ExecutionFlow) applicationContext.getBean("flow1")).execute();
+		((ExecutionFlow) applicationContext.getBean("flow2")).execute();
+		applicationContext.close();
+	}	
+	
 	/**
 	 * Test placeholder resolution in a context without scope execution or proxy
 	 * and with cascading flows (the flow A contains the flow B)
@@ -109,28 +127,42 @@ public class ExecutionFlowTest extends TestCase {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("listSetMap.xml");
 		ExecutionFlow executionFlow = (ExecutionFlow) applicationContext.getBean("myFlow");
 		executionFlow.execute();		
-		
+				
 		validateTestResult((SimpleTestResult) applicationContext.getBean("myTestResult"));
 		
-		BasicTestData res = (BasicTestData) applicationContext.getBean("cascadingComplex.testData");
-		log.info("res=" + res.getReached().toString());
+//		BasicTestData res = (BasicTestData) applicationContext.getBean("cascadingComplex.testData");
+//		log.info("res=" + res.getReached().toString());
 		
 		applicationContext.close();		
 	}		
 
-
+//	public void testListSetMapMultipleFlows() throws Exception {
+//		ConfigurableApplicationContext applicationContext = createApplicationContext("listSetMapMultipleFlow.xml");
+//		((ExecutionFlow) applicationContext.getBean("flow1")).execute();
+//		SimpleTestResult res = (SimpleTestResult) applicationContext.getBean("myTestResult");
+//		validateTestResult(res);		
+//		res.getParts().clear();
+//		((ExecutionFlow) applicationContext.getBean("flow2")).execute();
+//		validateTestResult(res, TestStatus.FAILED);
+//		applicationContext.close();		
+//	}			
+	
 	protected void logException(Throwable ex) {
 		log.info("Got Exception of class " + ex.getClass().toString()
 				+ " with message '" + ex.getMessage() + "'.");
 	}
 		
 	protected void validateTestResult(SimpleTestResult testResult) {
+		validateTestResult(testResult, TestStatus.PASSED);
+	}
+	
+	protected void validateTestResult(SimpleTestResult testResult, int expectedStatus) {
 		for(TestResultPart part : testResult.getParts()) {
-			if(part.getStatus() != TestStatus.PASSED) {
+			if(part.getStatus() != expectedStatus) {
 				fail("Error found in TestResult: " + part.getMessage());
 			}
 		}		
-	}
+	}	
 	
 	protected ConfigurableApplicationContext createApplicationContext(String applicationContextSuffix) {
 		ConfigurableApplicationContext applicationContext = new ClassPathXmlApplicationContext(inPackage(applicationContextSuffix));

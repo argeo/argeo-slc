@@ -1,6 +1,8 @@
 package org.argeo.slc.core.execution;
 
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -31,14 +33,14 @@ public class ExecutionParameterPostProcessor extends
 
 	private final static Log log = LogFactory
 			.getLog(ExecutionParameterPostProcessor.class);
-
-//	private CustomPpc ppc = new CustomPpc(new Properties());
 	
 	private ExecutionContext executionContext;
 
 	private ExecutionScope executionScope;
 
 	private InstantiationManager instantiationManager;
+	
+	private Map<String, PropertyValues> storedPvsMap = new HashMap<String, PropertyValues>();
 
 	public InstantiationManager getInstantiationManager() {
 		return instantiationManager;
@@ -65,131 +67,73 @@ public class ExecutionParameterPostProcessor extends
 	private String placeholderSuffix = "}";
 	private String nullValue;
 
-	protected Object resolveValue(Object value, CustomPpc ppc) {		
-		if (value instanceof TypedStringValue) {
-			TypedStringValue tsv = (TypedStringValue) value;
-			return ppc.process(tsv.getValue());
-		}
-		else if (value instanceof String) {
-			return ppc.process(value.toString());
-		}		
-		else if (value instanceof Map) {
-			Map mapVal = (Map) value;
-			
-			Map newContent = new LinkedHashMap();
-			boolean entriesModified = false;
-			for (Iterator it = mapVal.entrySet().iterator(); it.hasNext();) {
-				Map.Entry entry = (Map.Entry) it.next();
-				Object key = entry.getKey();
-				int keyHash = (key != null ? key.hashCode() : 0);
-				Object newKey = resolveValue(key,ppc);
-				int newKeyHash = (newKey != null ? newKey.hashCode() : 0);
-				Object val = entry.getValue();
-				Object newVal = resolveValue(val,ppc);
-				newContent.put(newKey, newVal);
-				entriesModified = entriesModified || (newVal != val || newKey != key || newKeyHash != keyHash);
-			}
-			if (entriesModified) {
-				mapVal.clear();
-				mapVal.putAll(newContent);
-			}
-			return mapVal;
-		}
-		else if (value instanceof List) {
-			List listVal = (List) value;
-			for (int i = 0; i < listVal.size(); i++) {
-				Object elem = listVal.get(i);
-				Object newVal = resolveValue(elem,ppc);
-				if (!ObjectUtils.nullSafeEquals(newVal, elem)) {
-					listVal.set(i, newVal);
-				}
-			}			
-			return value;
-		}
-		else if (value instanceof Set) {
-			Set setVal = (Set) value;
-			Set newContent = new LinkedHashSet();
-			boolean entriesModified = false;
-			for (Iterator it = setVal.iterator(); it.hasNext();) {
-				Object elem = it.next();
-				int elemHash = (elem != null ? elem.hashCode() : 0);
-				Object newVal = resolveValue(elem,ppc);
-				int newValHash = (newVal != null ? newVal.hashCode() : 0);
-				newContent.add(newVal);
-				entriesModified = entriesModified || (newVal != elem || newValHash != elemHash);
-			}
-			if (entriesModified) {
-				setVal.clear();
-				setVal.addAll(newContent);
-			}	
-			return value;
-		}
-		else {
-			return value;
-		}
-	}
-	
 	@Override
 	public PropertyValues postProcessPropertyValues(PropertyValues pvs,
 			PropertyDescriptor[] pds, Object bean, String beanName)
 			throws BeansException {
 
 		//TODO: resolve at execution only if scope is execution
+			
+		// if 
+		PropertyValues sourcePvs = pvs;
+		if(storedPvsMap.containsKey(beanName)) {
+			sourcePvs = storedPvsMap.get(beanName);
+			log.info("Use storedPvsMap for bean " + beanName);
+		}
 		
-//		boolean inFlowInitialization = instantiationManager
-//				.isInFlowInitialization();
-//
-//		if (((executionScope == null) || (!executionScope.hasExecutionContext()))
-//				&& !inFlowInitialization) {
-//			// log.info("Skip parameter conversion for bean " + beanName);
-//			return pvs;
-//		} else {
-//			// log.info("Execute parameter conversion for bean " + beanName);
-//		}
-
-		// copy the property values
-		//MutablePropertyValues newPv = new MutablePropertyValues(pvs);
+		MutablePropertyValues newPvs = new MutablePropertyValues();
 		
-		Properties props = new Properties();
-		CustomPpc ppc = new CustomPpc(props);
-
-		for (PropertyValue pv : pvs.getPropertyValues()) {
-			// log.info("   PropertyValue pv " + pv.getValue() + " - "
-			// + pv.getValue().getClass());
-			String originalValue = null;
-			String convertedValue = null;
-						
+		boolean changesOccured = false;
+				
+		CustomPpc ppc = new CustomPpc(beanName);
+		
+		for(int i=0; i<sourcePvs.getPropertyValues().length; i++) {
+			
+			PropertyValue pv = pvs.getPropertyValues()[i];
+			
 			if (pv.getValue() instanceof TypedStringValue) {
 				TypedStringValue tsv = (TypedStringValue) pv.getValue();
-				originalValue = tsv.getValue();
-				convertedValue = ppc.process(originalValue);
-				if (!convertedValue.equals(originalValue)) 
-					tsv.setValue(convertedValue);
+				String originalValue = tsv.getValue();
+				String convertedValue = ppc.resolveString(originalValue);
+				// add a new Property value to newPvs, identical to pv
+				// except for the value
+				newPvs.addPropertyValue(new PropertyValue(pv, new TypedStringValue(convertedValue)));
+				if (!convertedValue.equals(originalValue)) {
+					changesOccured = true;
+				}
 			}
 			else if (pv.getValue() instanceof String) {
-				originalValue = pv.getValue().toString();
-				convertedValue = ppc.process(originalValue);
-				// Setting the convertedValue can be problematic since
-				// calling setConvertedValue also sets a flag setConvertedValue
-				if (!convertedValue.equals(originalValue))
-					pv.setConvertedValue(convertedValue);
-			}	
-			
+				String originalValue = pv.getValue().toString();			
+				String convertedValue = ppc.resolveString(originalValue);
+				newPvs.addPropertyValue(new PropertyValue(pv, convertedValue));
+				if (!convertedValue.equals(originalValue)) {
+					changesOccured = true;
+				}
+			}		
 			else if ((pv.getValue() instanceof ManagedMap)
 					||(pv.getValue() instanceof ManagedList)
 					||(pv.getValue() instanceof ManagedSet)){
-				resolveValue(pv.getValue(),ppc);			
-			}
-			
-			if (convertedValue != null && log.isTraceEnabled()) {
-				if (!originalValue.equals(convertedValue))
-					log.trace("Converted field '" + pv.getName() + "': '"
-							+ originalValue + "' to '" + convertedValue
-							+ "' in bean " + beanName);
+
+				Object convertedValue = ppc.resolveValue(pv.getValue());
+				newPvs.addPropertyValue(new PropertyValue(pv, convertedValue));
+				if(convertedValue != pv.getValue()) {
+					changesOccured = true;
+				}
+			}		
+			else {
+				newPvs.addPropertyValue(new PropertyValue(pv));
 			}
 		}
-
-		return pvs;
+		
+		if(changesOccured) {
+			storedPvsMap.put(beanName, pvs);
+			log.info("Add storedPvsMap for Bean " + beanName);
+			return newPvs;
+		}
+		else {
+			// no change, return pvs
+			return pvs;
+		}
 	}
 
 	public void setPlaceholderPrefix(String placeholderPrefix) {
@@ -203,36 +147,108 @@ public class ExecutionParameterPostProcessor extends
 	public void setNullValue(String nullValue) {
 		this.nullValue = nullValue;
 	}
-
+	
 	private class CustomPpc extends PropertyPlaceholderConfigurer {
 		private final Properties props;
-
-		public CustomPpc(Properties props) {
+		String beanName;
+		
+		public CustomPpc(String beanName) {
 			super();
-			this.props = props;
+			this.props = new Properties();
+			this.beanName = beanName;
 			setPlaceholderPrefix(placeholderPrefix);
 			setPlaceholderSuffix(placeholderSuffix);
 			setSystemPropertiesMode(SYSTEM_PROPERTIES_MODE_NEVER);
 		}
 
 		/** Public access to the internals of PropertyPlaceholderConfigurer*/
-		public String process(String strVal) {
+		public String resolveString(String strVal) {
 			String value = parseStringValue(strVal, this.props,
 					new HashSet<String>());
 			return (value.equals(nullValue) ? null : value);
 		}
+		
+		public Object resolveValue(Object value) {
+			if (value instanceof TypedStringValue) {
+				TypedStringValue tsv = (TypedStringValue) value;
+				String originalValue = tsv.getValue();
+
+				String convertedValue = resolveString(originalValue);
+				return convertedValue.equals(originalValue) ? value : new TypedStringValue(convertedValue);
+			}
+			else if (value instanceof String) {
+				String originalValue = value.toString();			
+				String convertedValue = resolveString(originalValue);
+				return convertedValue.equals(originalValue) ? value : convertedValue;
+			}		
+			else if (value instanceof Map) {
+				Map mapVal = (Map) value;
+				
+				Map newContent = new ManagedMap();
+				boolean entriesModified = false;
+				for (Iterator it = mapVal.entrySet().iterator(); it.hasNext();) {
+					Map.Entry entry = (Map.Entry) it.next();
+					Object key = entry.getKey();
+					int keyHash = (key != null ? key.hashCode() : 0);
+					Object newKey = resolveValue(key);
+					int newKeyHash = (newKey != null ? newKey.hashCode() : 0);
+					Object val = entry.getValue();
+					Object newVal = resolveValue(val);
+					newContent.put(newKey, newVal);
+					entriesModified = entriesModified || (newVal != val || newKey != key || newKeyHash != keyHash);
+				}
+				
+				return entriesModified ? newContent : value;
+			}
+			else if (value instanceof List) {
+				List listVal = (List) value;
+				List newContent = new ManagedList();
+				boolean valueModified = false;
+				
+				for (int i = 0; i < listVal.size(); i++) {
+					Object elem = listVal.get(i);
+					Object newVal = resolveValue(elem);
+					newContent.add(newVal);
+					if (!ObjectUtils.nullSafeEquals(newVal, elem)) {
+						valueModified = true;
+					}
+				}			
+				return valueModified ? newContent : value;
+			}
+			else if (value instanceof Set) {
+				Set setVal = (Set) value;
+				Set newContent = new ManagedSet();
+				boolean entriesModified = false;
+				for (Iterator it = setVal.iterator(); it.hasNext();) {
+					Object elem = it.next();
+					int elemHash = (elem != null ? elem.hashCode() : 0);
+					Object newVal = resolveValue(elem);
+					int newValHash = (newVal != null ? newVal.hashCode() : 0);
+					newContent.add(newVal);
+					entriesModified = entriesModified || (newVal != elem || newValHash != elemHash);
+				}	
+				return entriesModified ? newContent : value;
+			}
+			else {
+				return value;
+			}			
+		}
 
 		@Override
-		protected String resolvePlaceholder(String placeholder, Properties props) {
-			// log.info("Try convert placeholder " + placeholder);
+		protected String resolvePlaceholder(String placeholder, Properties props) {						
 			if ((executionScope != null)
-					&& (executionScope.hasExecutionContext()))
-				return executionContext.getVariable(placeholder).toString();
-			else if (instantiationManager.isInFlowInitialization())
+					&& (executionScope.hasExecutionContext())) {
+				Object obj = executionContext.findVariable(placeholder);
+				if(obj != null) {
+					return obj.toString();
+				}
+			}
+			if (instantiationManager.isInFlowInitialization())
 				return instantiationManager.getInitializingFlowParameter(
 						placeholder).toString();
 			else
-				return super.resolvePlaceholder(placeholder, props);
+				throw new SlcException("Could not resolve placeholder '" 
+						+ placeholder + "' in bean '" + beanName + "'");
 		}
 	}
 }

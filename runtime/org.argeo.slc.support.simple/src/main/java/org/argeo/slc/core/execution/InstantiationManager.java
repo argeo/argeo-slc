@@ -9,7 +9,7 @@ import org.argeo.slc.execution.ExecutionFlow;
 
 public class InstantiationManager {
 
-	private final static Log log = LogFactory.getLog(DefaultExecutionSpec.class);
+	private final static Log log = LogFactory.getLog(InstantiationManager.class);
 	
 	private ThreadLocal<Stack<ExecutionFlow> > flowStack = new ThreadLocal<Stack<ExecutionFlow> >();
 	

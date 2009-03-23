@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<import resource="imports.xml" /> 
+
+	<bean id="fileDiff.spec" parent="slcTemplate.simpleSpec">
+		<property name="attributes">
+			<map>
+				<entry key="fileName">
+					<bean parent="specAttr.primitive" p:isParameter="true" p:type="string"
+						p:isFrozen="true" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+
+	<bean id="fileDiff.flowTemplate" parent="slcTemplate.simpleFlow"
+		abstract="true">
+		<property name="path" value="/fileDiff/testcases" />
+		<constructor-arg ref="fileDiff.spec" />
+		<property name="executables">
+			<list>			
+				<bean parent="task.echo">
+					<property name="message" value="fileName=@{fileName}" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="echo" parent="task.echo" scope="execution">
+		<property name="message" value="fileName=@{fileName}" />
+		<aop:scoped-proxy />
+	</bean>			
+	
+	<bean id="flow1" parent="fileDiff.flowTemplate" scope="prototype">
+		<constructor-arg>
+			<map>
+				<entry key="fileName" value="file1" />
+			</map>
+		</constructor-arg>
+	</bean>	
+
+	<bean id="flow2" parent="fileDiff.flowTemplate"  scope="prototype">
+		<constructor-arg>
+			<map>
+				<entry key="fileName" value="file2" />
+			</map>
+		</constructor-arg>
+	</bean>	
+ 
+ 
+ <!-- 
+	<bean id="flow1" parent="slcTemplate.simpleFlow">
+		<property name="path" value="/fileDiff/testcases" />
+		<constructor-arg ref="fileDiff.spec" />
+		<constructor-arg>
+			<map>
+				<entry key="fileName" value="file1" />
+			</map>
+		</constructor-arg>		
+		<property name="executables">
+			<list>			
+				<bean parent="task.echo" scope="execution">
+					<property name="message" value="fileName=@{fileName}" />
+					<aop:scoped-proxy />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="flow2" parent="slcTemplate.simpleFlow">
+		<property name="path" value="/fileDiff/testcases" />
+		<constructor-arg ref="fileDiff.spec" />
+		<constructor-arg>
+			<map>
+				<entry key="fileName" value="file2" />
+			</map>
+		</constructor-arg>		
+		<property name="executables">
+			<list>			
+				<bean parent="task.echo" scope="execution">
+					<property name="message" value="fileName=@{fileName}" />
+					<aop:scoped-proxy />
+				</bean>
+			</list>
+		</property>
+	</bean>
+ -->
+<!-- 
+	<bean id="main" parent="slcTemplate.simpleFlow">
+		<property name="executables">
+			<list>		
+				<ref bean="flow1"/>	
+				<ref bean="flow2"/>	
+			</list>
+		</property>
+	</bean>
+ -->
+</beans>

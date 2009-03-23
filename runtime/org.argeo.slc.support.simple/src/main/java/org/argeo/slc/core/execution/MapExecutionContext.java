@@ -59,7 +59,7 @@ public class MapExecutionContext implements ExecutionContext {
 		return obj;
 	}
 
-	protected Object findVariable(String key) {
+	public Object findVariable(String key) {
 		Object obj = null;
 		
 		// Look if the variable is set in the global execution variables

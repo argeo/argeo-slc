@@ -20,6 +20,8 @@ public interface ExecutionContext {
 	
 	public Object getVariable(String key);
 	
+	public Object findVariable(String key);
+	
 	//TODO: replace with setVariable(String Key, Object value)
 	public void addVariables(Map<? extends String, ? extends Object> variablesToAdd);
 }
