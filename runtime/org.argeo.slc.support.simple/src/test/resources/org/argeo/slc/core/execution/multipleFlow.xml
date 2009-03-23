@@ -7,6 +7,15 @@
 
 	<import resource="imports.xml" /> 
 
+	<bean id="myTestResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+
+	<bean id="myTestDef" class="org.argeo.slc.core.test.BasicTestDefinition" />
+
+	<bean id="myTestRunTemplate" class="org.argeo.slc.core.test.SimpleTestRun" abstract="true">
+		<property name="testDefinition" ref="myTestDef" />
+		<property name="testResult" ref="myTestResult"/>
+	</bean>		
+
 	<bean id="fileDiff.spec" parent="slcTemplate.simpleSpec">
 		<property name="attributes">
 			<map>
@@ -27,6 +36,14 @@
 			<list>			
 				<bean parent="task.echo">
 					<property name="message" value="fileName=@{fileName}" />
+				</bean>
+				<bean parent="myTestRunTemplate">
+					<property name="testData">
+						<bean class="org.argeo.slc.core.test.BasicTestData">
+							<property name="expected" value="file1" />
+							<property name="reached" value="@{fileName}" />
+						</bean>
+					</property>	
 				</bean>
 			</list>
 		</property>

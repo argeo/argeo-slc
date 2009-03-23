@@ -9,13 +9,17 @@
 
 	<import resource="imports.xml" /> 
 
-	<bean id="fileDiff.spec" parent="slcTemplate.simpleSpec">
+	<bean id="mySpec" parent="slcTemplate.simpleSpec">
 		<property name="attributes">
 			<map>
-				<entry key="fileName">
+				<entry key="key">
 					<bean parent="specAttr.primitive" p:isParameter="true" p:type="string"
 						p:isFrozen="true" />
 				</entry>
+				<entry key="testResult">
+					<bean parent="specAttr.ref" p:targetClass="slcDefault.test.basicTreeTestResult"
+						p:isParameter="true" p:isFrozen="true" />
+				</entry>				
 			</map>
 		</property>
 	</bean>
@@ -42,11 +46,15 @@
 								<value>myValue</value>
 							</property>
 							<property name="reached">
-								<value>myValue2</value>
+								<value>@{key}</value>
 							</property>
 						</bean>							
 					</property>
-					<property name="testResult" ref="fileDiff.testResult" />
+					<property name="testResult">
+						<bean parent="parameterRef">
+							<constructor-arg value="testResult" />
+						</bean>
+					</property>
 				</bean>
 
 				<bean class="org.argeo.slc.core.execution.tasks.CloseTestResultTask" scope="execution">

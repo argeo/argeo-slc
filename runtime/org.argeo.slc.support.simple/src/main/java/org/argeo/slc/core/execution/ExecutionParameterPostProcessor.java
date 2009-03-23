@@ -78,7 +78,6 @@ public class ExecutionParameterPostProcessor extends
 		PropertyValues sourcePvs = pvs;
 		if(storedPvsMap.containsKey(beanName)) {
 			sourcePvs = storedPvsMap.get(beanName);
-			log.info("Use storedPvsMap for bean " + beanName);
 		}
 		
 		MutablePropertyValues newPvs = new MutablePropertyValues();
@@ -127,7 +126,6 @@ public class ExecutionParameterPostProcessor extends
 		
 		if(changesOccured) {
 			storedPvsMap.put(beanName, pvs);
-			log.info("Add storedPvsMap for Bean " + beanName);
 			return newPvs;
 		}
 		else {

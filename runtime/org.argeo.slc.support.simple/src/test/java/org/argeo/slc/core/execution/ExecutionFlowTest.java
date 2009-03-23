@@ -32,12 +32,23 @@ public class ExecutionFlowTest extends TestCase {
 //		applicationContext.close();		
 //	}
 //	
+	
+	public void testSpecOverriding() throws Exception {
+		ConfigurableApplicationContext applicationContext = createApplicationContext("specOverriding.xml");
+		((ExecutionFlow) applicationContext.getBean("flow2")).execute();
+		SimpleTestResult res = (SimpleTestResult) applicationContext.getBean("myTestResult");
+		validateTestResult(res);
+	}
+	
 	public void testMultipleFlows() throws Exception {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("multipleFlow.xml");
-		log.info("Start Execution");
 		((ExecutionFlow) applicationContext.getBean("flow1")).execute();
+		SimpleTestResult res = (SimpleTestResult) applicationContext.getBean("myTestResult");
+		validateTestResult(res);
+		res.getParts().clear();
 		((ExecutionFlow) applicationContext.getBean("flow2")).execute();
-		applicationContext.close();
+		validateTestResult(res, TestStatus.FAILED);	
+		applicationContext.close();	
 	}	
 	
 	/**
@@ -136,16 +147,16 @@ public class ExecutionFlowTest extends TestCase {
 		applicationContext.close();		
 	}		
 
-//	public void testListSetMapMultipleFlows() throws Exception {
-//		ConfigurableApplicationContext applicationContext = createApplicationContext("listSetMapMultipleFlow.xml");
-//		((ExecutionFlow) applicationContext.getBean("flow1")).execute();
-//		SimpleTestResult res = (SimpleTestResult) applicationContext.getBean("myTestResult");
-//		validateTestResult(res);		
-//		res.getParts().clear();
-//		((ExecutionFlow) applicationContext.getBean("flow2")).execute();
-//		validateTestResult(res, TestStatus.FAILED);
-//		applicationContext.close();		
-//	}			
+	public void testListSetMapMultipleFlows() throws Exception {
+		ConfigurableApplicationContext applicationContext = createApplicationContext("listSetMapMultipleFlow.xml");
+		((ExecutionFlow) applicationContext.getBean("flow1")).execute();
+		SimpleTestResult res = (SimpleTestResult) applicationContext.getBean("myTestResult");
+		validateTestResult(res);		
+		res.getParts().clear();
+		((ExecutionFlow) applicationContext.getBean("flow2")).execute();
+		validateTestResult(res, TestStatus.FAILED);
+		applicationContext.close();		
+	}			
 	
 	protected void logException(Throwable ex) {
 		log.info("Got Exception of class " + ex.getClass().toString()

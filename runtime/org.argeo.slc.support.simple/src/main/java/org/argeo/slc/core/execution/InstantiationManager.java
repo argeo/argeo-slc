@@ -14,23 +14,26 @@ public class InstantiationManager {
 	private ThreadLocal<Stack<ExecutionFlow> > flowStack = new ThreadLocal<Stack<ExecutionFlow> >();
 	
 	public Object createRef(String name) {
-		if((flowStack.get() == null) ||  flowStack.get().empty()) {
-			throw new SlcException("No flow is currently initializing."
-					+ " Declare flow refs as inner beans or prototypes.");
-		}
-
-		/*
-		 * RefSpecAttribute refSpecAttribute = (RefSpecAttribute) attributes
-		 * .get(name); Class<?> targetClass = refSpecAttribute.getTargetClass();
-		 * ExecutionTargetSource targetSource = new ExecutionTargetSource(flow,
-		 * targetClass, name); ProxyFactory proxyFactory = new ProxyFactory();
-		 * proxyFactory.setTargetClass(targetClass);
-		 * proxyFactory.setProxyTargetClass(true);
-		 * proxyFactory.setTargetSource(targetSource);
-		 * 
-		 * return proxyFactory.getProxy();
-		 */
-		return flowStack.get().peek().getParameter(name);
+		
+//		if((flowStack.get() == null) ||  flowStack.get().empty()) {
+//			throw new SlcException("No flow is currently initializing."
+//					+ " Declare flow refs as inner beans or prototypes.");
+//		}
+//
+//		/*
+//		 * RefSpecAttribute refSpecAttribute = (RefSpecAttribute) attributes
+//		 * .get(name); Class<?> targetClass = refSpecAttribute.getTargetClass();
+//		 * ExecutionTargetSource targetSource = new ExecutionTargetSource(flow,
+//		 * targetClass, name); ProxyFactory proxyFactory = new ProxyFactory();
+//		 * proxyFactory.setTargetClass(targetClass);
+//		 * proxyFactory.setProxyTargetClass(true);
+//		 * proxyFactory.setTargetSource(targetSource);
+//		 * 
+//		 * return proxyFactory.getProxy();
+//		 */
+//		return flowStack.get().peek().getParameter(name);
+		
+		return getInitializingFlowParameter(name);
 	}	
 	
 	public void flowInitializationStarted(ExecutionFlow flow, String flowName) {
