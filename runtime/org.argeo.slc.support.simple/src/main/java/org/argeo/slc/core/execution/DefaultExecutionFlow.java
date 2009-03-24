@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import org.apache.commons.lang.math.RandomUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
@@ -16,13 +16,16 @@ import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.structure.StructureAware;
 import org.argeo.slc.structure.StructureRegistry;
-import org.argeo.slc.test.ExecutableTestRun;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.validation.MapBindingResult;
 
 public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		BeanNameAware, StructureAware<TreeSPath> {
+	
+	private final static Log log = LogFactory
+	.getLog(DefaultExecutionFlow.class);	
+	
 	private ExecutionSpec executionSpec = new DefaultExecutionSpec();
 	private String name = null;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
@@ -119,22 +122,23 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		return executionSpec;
 	}
 
-	public Object getParameter(String name) {
-		if (parameters.containsKey(name)) {
-			return parameters.get(name);
+	public Object getParameter(String parameterName) {
+		if (parameters.containsKey(parameterName)) {
+			return parameters.get(parameterName);
 		} else {
-			if (executionSpec.getAttributes().containsKey(name)) {
+			if (executionSpec.getAttributes().containsKey(parameterName)) {
 				ExecutionSpecAttribute esa = executionSpec.getAttributes().get(
-						name);
-				if (esa.getValue() != null)
+						parameterName);
+				if (esa.getValue() != null) {
 					return esa.getValue();
+				}
 			} else {
-				throw new SlcException("Key " + name
+				throw new SlcException("Key " + parameterName
 						+ " is not defined in the specifications of "
 						+ toString());
 			}
 		}
-		throw new SlcException("Key " + name + " is not set as parameter in "
+		throw new SlcException("Key " + parameterName + " is not set as parameter in "
 				+ toString());
 	}
 

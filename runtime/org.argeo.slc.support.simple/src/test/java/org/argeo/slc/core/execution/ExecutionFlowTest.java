@@ -7,13 +7,11 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.test.BasicTestData;
 import org.argeo.slc.core.test.SimpleTestResult;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestStatus;
-import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -23,15 +21,18 @@ public class ExecutionFlowTest extends TestCase {
 	protected final Log log = LogFactory.getLog(getClass());
 			
 	
-// to test: case with listener	
+
+	// TO TEST
+	// - post-processing for @{} replacement in beans with complex properties
+	// - bean of scope other than execution are not resolved at execution
 	
 //	public void testMyTest() throws Exception {
 //		ConfigurableApplicationContext applicationContext = createApplicationContext("test.xml");
 //		log.info("Start Execution");
-//		((ExecutionFlow) applicationContext.getBean("fileDiff.SimulationView_Risk")).execute();
+//		((ExecutionFlow) applicationContext.getBean("flow1")).execute();
 //		applicationContext.close();		
 //	}
-//	
+	
 	
 	public void testSpecOverriding() throws Exception {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("specOverriding.xml");

@@ -9,86 +9,67 @@
 
 	<import resource="imports.xml" /> 
 
-	<bean id="mySpec" parent="slcTemplate.simpleSpec">
+ 	<bean id="myTestResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+
+	<bean id="myTestDef" class="org.argeo.slc.core.test.BasicTestDefinition" />
+
+	<bean id="myTestRunTemplate" class="org.argeo.slc.core.test.SimpleTestRun" abstract="true">
+		<property name="testDefinition" ref="myTestDef" />
+		<property name="testResult" ref="myTestResult"/>
+	</bean>		
+ 
+	<bean id="spec1" parent="slcTemplate.simpleSpec">
 		<property name="attributes">
 			<map>
-				<entry key="key">
-					<bean parent="specAttr.primitive" p:isParameter="true" p:type="string"
-						p:isFrozen="true" />
+				<entry key="testedComponentId">
+					<bean parent="specAttr.primitive" p:isParameter="true"
+						p:type="integer" />
 				</entry>
-				<entry key="testResult">
-					<bean parent="specAttr.ref" p:targetClass="slcDefault.test.basicTreeTestResult"
+				<entry key="testData1">
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
 						p:isParameter="true" p:isFrozen="true" />
-				</entry>				
+				</entry>
 			</map>
 		</property>
 	</bean>
 
-	<bean id="fileDiff.flowTemplate" parent="slcTemplate.simpleFlow"
+	<bean id="flowTemplate1" parent="slcTemplate.simpleFlow"
 		abstract="true">
-		<property name="path" value="/fileDiff/testcases" />
-		<constructor-arg ref="fileDiff.spec" />
+		<constructor-arg ref="spec1" />
 		<property name="executables">
 			<list>
-				<bean parent="task.echo" scope="execution">
-					<property name="message" value="From FileDiff @{fileName}" />
-					<aop:scoped-proxy />
+				<bean parent="task.echo">
+					<property name="message" value="From basic @{testedComponentId}" />
 				</bean>
-
-
-				<bean class="org.argeo.slc.core.test.SimpleTestRun">
-					<property name="testDefinition">
-						<bean class="org.argeo.slc.core.test.BasicTestDefinition" />
-					</property>
+				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean id="simpleList.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
-							<property name="expected">
-								<value>myValue</value>
-							</property>
-							<property name="reached">
-								<value>@{key}</value>
-							</property>
-						</bean>							
-					</property>
-					<property name="testResult">
 						<bean parent="parameterRef">
-							<constructor-arg value="testResult" />
+							<constructor-arg value="testData1" />
 						</bean>
 					</property>
 				</bean>
-
-				<bean class="org.argeo.slc.core.execution.tasks.CloseTestResultTask" scope="execution">
-					<property name="testResult" ref="fileDiff.testResult" />
-				</bean>
+				<bean parent="task.echo">
+					<property name="message"><value>From basic @{testedComponentId}</value></property>
+				</bean>		
+				<bean parent="task.echo">
+					<property name="message"><value>testData1='@{testData1}'</value></property>
+				</bean>							
 			</list>
 		</property>
 	</bean>
 
-	<bean id="fileDiff.testResult" parent="slcDefault.test.basicTreeTestResult"
-		scope="execution">
-		<aop:scoped-proxy />
-		<property name="attributes">
-			<map>
-				<entry key="testCase" value="@{fileName}" />
-				<entry key="testCaseType" value="csvdiff" />
-			</map>
-		</property>
-		<property name="listeners" ref="resultListeners" /> 
-	</bean>
-
-	<bean id="fileDiff.SimulationView_Risk" parent="fileDiff.flowTemplate">
+	<bean id="flow1" parent="flowTemplate1" scope="prototype">
 		<constructor-arg>
 			<map>
-				<entry key="fileName" value="SimulationView_Risk" />
-			</map>
-		</constructor-arg>
-	</bean>
-
-	<bean id="fileDiff.SimulationView_Risk2" parent="fileDiff.flowTemplate">
-		<constructor-arg>
-			<map>
-				<entry key="fileName" value="SimulationView_Risk2" />
-			</map>
+				<entry key="testedComponentId" value="200" />
+				<entry key="testData1">
+					<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<aop:scoped-proxy/>
+						<property name="expected" value="tata101" />
+ 						<property name="reached" value="tata@{testedComponentId}" />
+					</bean>
+				</entry>
+			</map>			
 		</constructor-arg>
 	</bean>
 

@@ -15,23 +15,10 @@ public class InstantiationManager {
 	
 	public Object createRef(String name) {
 		
-//		if((flowStack.get() == null) ||  flowStack.get().empty()) {
-//			throw new SlcException("No flow is currently initializing."
-//					+ " Declare flow refs as inner beans or prototypes.");
-//		}
-//
-//		/*
-//		 * RefSpecAttribute refSpecAttribute = (RefSpecAttribute) attributes
-//		 * .get(name); Class<?> targetClass = refSpecAttribute.getTargetClass();
-//		 * ExecutionTargetSource targetSource = new ExecutionTargetSource(flow,
-//		 * targetClass, name); ProxyFactory proxyFactory = new ProxyFactory();
-//		 * proxyFactory.setTargetClass(targetClass);
-//		 * proxyFactory.setProxyTargetClass(true);
-//		 * proxyFactory.setTargetSource(targetSource);
-//		 * 
-//		 * return proxyFactory.getProxy();
-//		 */
-//		return flowStack.get().peek().getParameter(name);
+		if((flowStack.get() == null) ||  flowStack.get().empty()) {
+			throw new SlcException("No flow is currently initializing."
+					+ " Declare ParameterRef as inner beans or prototypes.");
+		}
 		
 		return getInitializingFlowParameter(name);
 	}	
@@ -40,6 +27,12 @@ public class InstantiationManager {
 		if (log.isTraceEnabled())
 			log.trace("Start initialization of " + flow.hashCode() + " ("
 					+ flow + " - " + flow.getClass() + ")");
+		
+		// set the flow name if it is DefaultExecutionFlow
+		if(flow instanceof DefaultExecutionFlow) {
+			((DefaultExecutionFlow) flow).setBeanName(flowName);
+		}
+		
 //		log.info("# flowInitializationStarted " + flowName);
 		// create a stack for this thread if there is none
 		if(flowStack.get() == null) {
@@ -72,9 +65,7 @@ public class InstantiationManager {
 			}
 		}
 		throw new SlcException("Key " + key + " is not set as parameter in "
-				+ flowStack.get().firstElement().toString());
-		
-//		return flowStack.get().peek().getParameter(key);
+				+ flowStack.get().firstElement().toString() + " (stack size="+flowStack.get().size()+")");		
 	}
 
 	public Boolean isInFlowInitialization() {

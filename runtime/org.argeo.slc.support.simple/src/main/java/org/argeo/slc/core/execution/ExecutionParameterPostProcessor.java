@@ -1,12 +1,8 @@
 package org.argeo.slc.core.execution;
 
 import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -40,8 +36,6 @@ public class ExecutionParameterPostProcessor extends
 
 	private InstantiationManager instantiationManager;
 	
-	private Map<String, PropertyValues> storedPvsMap = new HashMap<String, PropertyValues>();
-
 	public InstantiationManager getInstantiationManager() {
 		return instantiationManager;
 	}
@@ -73,65 +67,23 @@ public class ExecutionParameterPostProcessor extends
 			throws BeansException {
 
 		//TODO: resolve at execution only if scope is execution
-			
-		// if 
-		PropertyValues sourcePvs = pvs;
-		if(storedPvsMap.containsKey(beanName)) {
-			sourcePvs = storedPvsMap.get(beanName);
-		}
-		
+		//TODO: deal with placeholders in RuntimeBeanReference and RuntimeBeanNameReference
+					
 		MutablePropertyValues newPvs = new MutablePropertyValues();
 		
 		boolean changesOccured = false;
 				
 		CustomPpc ppc = new CustomPpc(beanName);
 		
-		for(int i=0; i<sourcePvs.getPropertyValues().length; i++) {
-			
-			PropertyValue pv = pvs.getPropertyValues()[i];
-			
-			if (pv.getValue() instanceof TypedStringValue) {
-				TypedStringValue tsv = (TypedStringValue) pv.getValue();
-				String originalValue = tsv.getValue();
-				String convertedValue = ppc.resolveString(originalValue);
-				// add a new Property value to newPvs, identical to pv
-				// except for the value
-				newPvs.addPropertyValue(new PropertyValue(pv, new TypedStringValue(convertedValue)));
-				if (!convertedValue.equals(originalValue)) {
-					changesOccured = true;
-				}
-			}
-			else if (pv.getValue() instanceof String) {
-				String originalValue = pv.getValue().toString();			
-				String convertedValue = ppc.resolveString(originalValue);
-				newPvs.addPropertyValue(new PropertyValue(pv, convertedValue));
-				if (!convertedValue.equals(originalValue)) {
-					changesOccured = true;
-				}
-			}		
-			else if ((pv.getValue() instanceof ManagedMap)
-					||(pv.getValue() instanceof ManagedList)
-					||(pv.getValue() instanceof ManagedSet)){
-
-				Object convertedValue = ppc.resolveValue(pv.getValue());
-				newPvs.addPropertyValue(new PropertyValue(pv, convertedValue));
-				if(convertedValue != pv.getValue()) {
-					changesOccured = true;
-				}
-			}		
-			else {
-				newPvs.addPropertyValue(new PropertyValue(pv));
+		for(PropertyValue pv : pvs.getPropertyValues()) {
+			Object convertedValue = ppc.resolveValue(pv.getValue());
+			newPvs.addPropertyValue(new PropertyValue(pv, convertedValue));
+			if(convertedValue != pv.getValue()) {
+				changesOccured = true;
 			}
 		}
 		
-		if(changesOccured) {
-			storedPvsMap.put(beanName, pvs);
-			return newPvs;
-		}
-		else {
-			// no change, return pvs
-			return pvs;
-		}
+		return changesOccured ? newPvs : pvs;
 	}
 
 	public void setPlaceholderPrefix(String placeholderPrefix) {
@@ -179,7 +131,7 @@ public class ExecutionParameterPostProcessor extends
 				String convertedValue = resolveString(originalValue);
 				return convertedValue.equals(originalValue) ? value : convertedValue;
 			}		
-			else if (value instanceof Map) {
+			else if (value instanceof ManagedMap) {
 				Map mapVal = (Map) value;
 				
 				Map newContent = new ManagedMap();
@@ -198,7 +150,7 @@ public class ExecutionParameterPostProcessor extends
 				
 				return entriesModified ? newContent : value;
 			}
-			else if (value instanceof List) {
+			else if (value instanceof ManagedList) {
 				List listVal = (List) value;
 				List newContent = new ManagedList();
 				boolean valueModified = false;
@@ -213,7 +165,7 @@ public class ExecutionParameterPostProcessor extends
 				}			
 				return valueModified ? newContent : value;
 			}
-			else if (value instanceof Set) {
+			else if (value instanceof ManagedSet) {
 				Set setVal = (Set) value;
 				Set newContent = new ManagedSet();
 				boolean entriesModified = false;

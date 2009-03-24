@@ -49,12 +49,11 @@
 		</property>
 	</bean>
 	
-	<bean id="echo" parent="task.echo" scope="execution">
+	<bean id="echo" parent="task.echo" scope="prototype">
 		<property name="message" value="fileName=@{fileName}" />
-		<aop:scoped-proxy />
 	</bean>			
 	
-	<bean id="flow1" parent="fileDiff.flowTemplate" scope="prototype">
+	<bean id="flow1" parent="fileDiff.flowTemplate">
 		<constructor-arg>
 			<map>
 				<entry key="fileName" value="file1" />
@@ -62,7 +61,7 @@
 		</constructor-arg>
 	</bean>	
 
-	<bean id="flow2" parent="fileDiff.flowTemplate"  scope="prototype">
+	<bean id="flow2" parent="fileDiff.flowTemplate">
 		<constructor-arg>
 			<map>
 				<entry key="fileName" value="file2" />
