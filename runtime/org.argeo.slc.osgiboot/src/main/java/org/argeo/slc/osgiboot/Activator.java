@@ -222,7 +222,7 @@ public class Activator implements BundleActivator {
 				try {
 					bundle.start();
 				} catch (Exception e) {
-					warn("Bundle name cannot be started: " + e.getMessage());
+					warn("Bundle " + name + " cannot be started: " + e.getMessage());
 				}
 			else
 				warn("Bundle " + name + " not installed.");
