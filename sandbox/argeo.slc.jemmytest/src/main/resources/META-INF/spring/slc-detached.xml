@@ -42,7 +42,7 @@
 	</bean>
 
 	<!-- Runtime -->
-	<bean id="slcDetached.driver" parent="slcTemplate.detached.fileDriver"
+	<bean id="driver.detached" parent="slcTemplate.detached.fileDriver"
 		init-method="start" destroy-method="stop">
 		<property name="baseDir" value="${user.dir}/local/detached" />
 		<property name="xmlConverter" ref="slcDefault.detached.xmlConverterCompat" />

@@ -16,14 +16,60 @@
 					<aop:scoped-proxy />
 				</bean>
 
-				<bean class="org.argeo.slc.core.test.SimpleTestRun">
-					<property name="testDefinition" ref="detachedTestDef" />
-					<property name="testData" ref="testData.mainFrameLabel1" />
-					<property name="testResult" ref="testResult" />
+				<bean parent="detachedAdminTask">
+					<property name="action" value="slcDefault.detached.admin.openSession" />
+					<property name="properties">
+						<props>
+							<prop key="slc.detached.refreshedBundles">org.argeo.slc.sandbox.jemmytest
+							</prop>
+						</props>
+					</property>
 				</bean>
 
+				<bean parent="stepTestRun">
+					<property name="testDefinition">
+						<bean parent="detachedTestDef">
+							<property name="step" ref="step.MainFrameLabel" />
+						</bean>
+					</property>
+					<property name="testData" ref="testData.mainFrameLabel1" />
+				</bean>
+
+				<bean parent="stepTestRun">
+					<property name="testDefinition">
+						<bean parent="detachedTestDef">
+							<property name="step" ref="step.MainFrameLabel" />
+						</bean>
+					</property>
+					<property name="testData" ref="testData.mainFrameLabel2" />
+				</bean>
+
+				<bean parent="stepTestRun">
+					<property name="testDefinition">
+						<bean parent="detachedTestDef">
+							<property name="step" ref="step.TestDialogOpen" />
+						</bean>
+					</property>
+				</bean>
+
+				<bean parent="stepTestRun">
+					<property name="testDefinition">
+						<bean parent="detachedTestDef">
+							<property name="step" ref="step.TestDialogLabel" />
+						</bean>
+					</property>
+					<property name="testData" ref="testData.testDialogLabel" />
+				</bean>
+
+				<bean parent="detachedAdminTask">
+					<property name="action" value="slcDefault.detached.admin.closeSession" />
+				</bean>
 			</list>
 		</property>
+	</bean>
+
+	<bean id="stepTestRun" class="org.argeo.slc.core.test.SimpleTestRun">
+		<property name="testResult" ref="testResult" />
 	</bean>
 
 	<bean id="testResult" parent="slcDefault.test.basicTreeTestResult">

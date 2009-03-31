@@ -27,9 +27,9 @@ public abstract class AbstractDriver implements DetachedDriver {
 								.executeRequest(request);
 						sendAnswer(answer);
 					} catch (Exception e) {
-						if (e instanceof RuntimeException)
-							throw (RuntimeException) e;
-						else
+//						if (e instanceof RuntimeException)
+//							throw (RuntimeException) e;
+//						else
 							e.printStackTrace();
 					}
 				}

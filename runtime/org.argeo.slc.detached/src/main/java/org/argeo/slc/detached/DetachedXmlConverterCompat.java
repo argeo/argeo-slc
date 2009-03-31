@@ -1,6 +1,7 @@
 package org.argeo.slc.detached;
 
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -10,18 +11,24 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-/** For compatibility with old JDKs (pre 1.5). Use Spring base one when possible. */
+/**
+ * For compatibility with old JDKs (pre 1.5). Use Spring base one when possible.
+ */
 public class DetachedXmlConverterCompat implements DetachedXmlConverter {
 	public final static String SLC_DETACHED_NAMESPACE_URI = "http://argeo.org/projects/slc/schemas/detached";
-	// private final static Log log = LogFactory
-	// .getLog(DetachedXmlConverterCompat.class);
+	private final static Log log = LogFactory
+			.getLog(DetachedXmlConverterCompat.class);
 
 	private final Transformer copy;
 
@@ -53,9 +60,23 @@ public class DetachedXmlConverterCompat implements DetachedXmlConverter {
 		} catch (TransformerException e) {
 			throw new DetachedException("Could not copy xml source", e);
 		}
+
+		if (log.isDebugEnabled()) {
+			try {
+				DOMSource domSource = new DOMSource(result.getNode());
+				StringWriter stringWriter = new StringWriter();
+				StreamResult streamResult = new StreamResult(stringWriter);
+				copy.transform(domSource, streamResult);
+				log.debug("Unmarshall communication:\n"
+						+ stringWriter.toString());
+				IOUtils.closeQuietly(stringWriter);
+			} catch (TransformerException e) {
+				log.warn("Could not log xml source", e);
+			}
+		}
 		Element root = (Element) ((Document) result.getNode())
 				.getDocumentElement();
-		
+
 		// Create objects
 		String requestType = root.getLocalName();
 		if (requestType.equals("detached-request")) {
