@@ -7,7 +7,9 @@
 	
 	<target name="generate-poms">
 
-		<property name="profilesTemplate" location="profiles-template.xml" />
+		<loadfile property="distributionManagement"
+		      srcFile="distributionManagement.xml"/>
+
 		<property name="targetDir" location="target" />
 		<mkdir dir="${targetDir}" />
 
@@ -59,9 +61,9 @@
 			<![CDATA[
 			<module>bundles</module>
 		</modules>
+		${distributionManagement}
 		</project>
 	]]></echo>
-	<copy file="${profilesTemplate}" tofile="${targetDir}/bundles/profiles.xml"/>
 
 		
 	<for list="${dirs}" param="dir">
@@ -84,10 +86,9 @@
 			<copy file="pom-template.xml" toFile="${bundleDir}/pom.xml">
 				<filterset>
 					<filtersfile file="${bundleDir}/target/bundle.properties" />
+					<filter token="distributionManagement" value="${distributionManagement}"/>
 				</filterset>
 			</copy>
-
-			<copy file="${profilesTemplate}" tofile="${bundleDir}/profiles.xml"/>
 		</sequential>
 	</for>
 
@@ -143,9 +144,8 @@
 	<echo file="${deployPomFile}" append="true">
 		<![CDATA[
 		</dependencies>
+		${distributionManagement}
 	</project>
 	]]></echo>
-	
-	<copy file="${profilesTemplate}" tofile="${targetDir}/bundles/bundles/profiles.xml"/>
 </target>
 </project>
