@@ -7,6 +7,7 @@
 	
 	<target name="generate-poms">
 
+		<property name="profilesTemplate" location="profiles-template.xml" />
 		<property name="targetDir" location="target" />
 		<mkdir dir="${targetDir}" />
 
@@ -60,7 +61,9 @@
 		</modules>
 		</project>
 	]]></echo>
+	<copy file="${profilesTemplate}" tofile="${targetDir}/bundles/profiles.xml"/>
 
+		
 	<for list="${dirs}" param="dir">
 
 		<sequential>
@@ -84,6 +87,7 @@
 				</filterset>
 			</copy>
 
+			<copy file="${profilesTemplate}" tofile="${bundleDir}/profiles.xml"/>
 		</sequential>
 	</for>
 
@@ -141,5 +145,7 @@
 		</dependencies>
 	</project>
 	]]></echo>
+	
+	<copy file="${profilesTemplate}" tofile="${targetDir}/bundles/bundles/profiles.xml"/>
 </target>
 </project>
