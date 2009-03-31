@@ -1,0 +1,24 @@
+<profiles>
+	<profile>
+		<id>distribution</id>
+		<activation>
+			<activeByDefault>true</activeByDefault>
+		</activation>
+		<distributionManagement>
+			<repository>
+				<uniqueVersion>false</uniqueVersion>
+				<id>argeo-restricted</id>
+				<name>Argeo FOSS Repository</name>
+				<url>file:///var/argeo/maven2/argeo
+				</url>
+			</repository>
+			<snapshotRepository>
+				<uniqueVersion>true</uniqueVersion>
+				<id>argeo-snapshots-restricted</id>
+				<name>Argeo FOSS Snapshots Repository</name>
+				<url>file:///var/argeo/maven2/argeo-snapshots
+				</url>
+			</snapshotRepository>
+		</distributionManagement>
+	</profile>
+</profiles>
