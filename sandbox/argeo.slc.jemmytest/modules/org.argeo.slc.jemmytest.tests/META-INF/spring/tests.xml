@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <import resource="classpath:/org/argeo/slc/lib/detached/spring.xml" />
+
+    <import resource="classpath:/META-INF/spring/slc-detached.xml" />
+
+    <bean id="detachedTestDef"
+        parent="slcTemplate.detached.testDefinition"
+        scope="prototype">
+        <property name="client" ref="slcDetached.driver" />
+    </bean>
+
+    <bean id="slcDetached.driver"
+        class="org.argeo.slc.detached.drivers.FileDriver" init-method="cleanPreviousRuns">
+        <property name="baseDir" value="${user.dir}/local/detached" />
+        <property name="xmlConverter"
+            ref="slcDefault.detached.xmlConverterCastor" />
+    </bean>
+
+    <bean id="testData.mainFrameLabel1"
+        class="org.argeo.slc.lib.detached.DetachedTestData"
+        scope="prototype">
+        <property name="values">
+            <map>
+                <entry key="jemmyTest.label" value="Hello World" />
+            </map>
+        </property>
+        <property name="expectedValues">
+            <map>
+                <entry key="jemmyTest.label" value="Pressed!!" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="testData.mainFrameLabel2"
+        class="org.argeo.slc.lib.detached.DetachedTestData"
+        scope="prototype">
+        <property name="values">
+            <map>
+                <entry key="jemmyTest.label" value="Pressed!!" />
+            </map>
+        </property>
+        <property name="expectedValues">
+            <map>
+                <entry key="jemmyTest.label" value="Hello World" />
+            </map>
+        </property>
+    </bean>
+
+    <bean id="testData.testDialogLabel"
+        class="org.argeo.slc.lib.detached.DetachedTestData"
+        scope="prototype">
+        <property name="expectedValues">
+            <map>
+                <entry key="jemmyTest.labelDialog" value="Dialog open" />
+            </map>
+        </property>
+    </bean>
+</beans>

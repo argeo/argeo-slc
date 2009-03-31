@@ -1,0 +1,23 @@
+Bundle-SymbolicName: org.argeo.slc.sandbox.jemmytest.tests
+Fragment-Host: org.argeo.slc.sandbox.jemmytest
+Bundle-Version: 0.11.3.SNAPSHOT
+Bundle-Name: SLC Sandbox JemmyTest Tests
+Require-Bundle: org.argeo.slc.detached,
+ org.argeo.slc.lib.detached,
+ org.argeo.slc.support.equinox,
+ org.argeo.slc.specs,
+ org.argeo.slc.support.simple
+Import-Package: org.springframework.oxm,
+ org.springframework.oxm.castor,
+ org.springframework.xml.xsd,
+ net.sf.cglib.core,
+ net.sf.cglib.proxy,
+ net.sf.cglib.reflect,
+ org.aopalliance.aop,
+ org.apache.commons.logging,
+ org.springframework.aop,
+ org.springframework.aop.framework,
+ org.springframework.aop.scope,
+ org.springframework.beans.factory.config,
+ org.springframework.core.io
+ 

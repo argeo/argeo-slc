@@ -44,7 +44,7 @@
 	<!-- Runtime -->
 	<bean id="slcDetached.driver" parent="slcTemplate.detached.fileDriver"
 		init-method="start" destroy-method="stop">
-		<property name="baseDir" value="${slc.workDir}/detached" />
+		<property name="baseDir" value="${user.dir}/local/detached" />
 		<property name="xmlConverter" ref="slcDefault.detached.xmlConverterCompat" />
 		<property name="executionServer" ref="executionServer.serviceref" />
 	</bean>

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModule;
@@ -17,6 +19,9 @@ import org.springframework.osgi.context.BundleContextAware;
 
 public class ExecutionCommandProvider implements CommandProvider,
 		BundleContextAware {
+	private final static Log log = LogFactory
+			.getLog(ExecutionCommandProvider.class);
+
 	private List<ExecutionModule> executionModules;
 	private BundleContext bundleContext;
 
@@ -47,24 +52,24 @@ public class ExecutionCommandProvider implements CommandProvider,
 
 		if (bundle != null) {
 			moduleName = bundle.getSymbolicName();
-//			try {
-//				bundle.stop();
-//				bundle.update();
-//				bundle.start();
-//
-//				// FIXME: potential infinite loop
-//				while (bundle.getState() == Bundle.STARTING) {
-//					try {
-//						Thread.sleep(500);
-//					} catch (InterruptedException e) {
-//						// silent
-//					}
-//				}
-//			} catch (BundleException e) {
-//				throw new SlcException(
-//						"Could not update the bundle for module " + moduleName,
-//						e);
-//			}
+			// try {
+			// bundle.stop();
+			// bundle.update();
+			// bundle.start();
+			//
+			// // FIXME: potential infinite loop
+			// while (bundle.getState() == Bundle.STARTING) {
+			// try {
+			// Thread.sleep(500);
+			// } catch (InterruptedException e) {
+			// // silent
+			// }
+			// }
+			// } catch (BundleException e) {
+			// throw new SlcException(
+			// "Could not update the bundle for module " + moduleName,
+			// e);
+			// }
 		}
 
 		// Find module
@@ -84,9 +89,12 @@ public class ExecutionCommandProvider implements CommandProvider,
 			ExecutionFlowDescriptor descriptor = new ExecutionFlowDescriptor();
 			descriptor.setName(executionName);
 			module.execute(descriptor);
-			return "Executed " + executionName + " from " + moduleName;
+			log.info("Executed " + executionName + " from " + moduleName);
 		} else
-			return "Could not find any execution module matching these requirements.";
+			log
+					.warn("Could not find any execution module matching these requirements.");
+
+		return null;
 	}
 
 	public String getHelp() {

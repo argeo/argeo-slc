@@ -11,7 +11,14 @@
 	<artifactId>org.argeo.slc.sandbox.jemmytest</artifactId>
 	<name>SLC Sandbox JemmyTest</name>
 	<packaging>jar</packaging>
-	<properties></properties>
+	<properties>
+		<bundlesToStart>
+			org.springframework.osgi.extender,
+			org.argeo.slc.detached,
+			org.argeo.slc.sandbox.jemmytest,
+			org.argeo.slc.support.equinox
+		</bundlesToStart>
+	</properties>
 	<build>
 		<plugins>
 			<plugin>
@@ -63,6 +70,51 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration></configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<phase>initialize</phase>
+						<configuration>
+							<outputDirectory>target/equinox</outputDirectory>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.argeo.slc.runtime</groupId>
+									<artifactId>org.argeo.slc.osgiboot</artifactId>
+									<version>${project.version}</version>
+									<type>tar.gz</type>
+									<classifier>osgiboot</classifier>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<configuration>
+					<tasks>
+						<path id="slc.osgi.locations.raw">
+							<dirset dir="${user.dir}/modules">
+								<include name="*" />
+								<exclude name=".svn" />
+							</dirset>
+							<path refid="maven.compile.classpath" />
+						</path>
+						<pathconvert dirsep="/" property="slc.osgi.locations"
+							refid="slc.osgi.locations.raw" />
+
+						<property name="slc.osgi.start" value="${bundlesToStart}" />
+						<ant antfile="target/equinox/osgiboot.xml" />
+
+					</tasks>
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 	<profiles></profiles>
@@ -87,6 +139,16 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached.launcher</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>org.springframework.osgi.extender</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.equinox</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
