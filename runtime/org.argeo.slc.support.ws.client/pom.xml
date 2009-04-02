@@ -39,6 +39,11 @@
 						<Export-Package>
 							org.argeo.slc.ws.*
 						</Export-Package>
+						<Import-Package>org.w3c.dom;version="0.0.0",
+							javax.xml.*;version="0.0.0",
+							org.xml.*;version="0.0.0",
+							*
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
