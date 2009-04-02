@@ -39,7 +39,7 @@
 						<Export-Package>
 							org.argeo.slc.*
 						</Export-Package>
-						<Import-Package>javax.xml.*;version="0.0.0",*</Import-Package>
+						<Import-Package>javax.xml.*;version="0.0.0",org.argeo.slc.ant.*;resolution:="optional",*</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
