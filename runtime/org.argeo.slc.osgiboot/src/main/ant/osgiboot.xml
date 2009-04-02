@@ -1,4 +1,5 @@
 <project default="launch">
+	<dirname property="baseDir" file="${ant.file}" />
 	<dirname property="equinoxDir" file="${ant.file}" />
 	<property name="equinoxJar" location="${equinoxDir}/org.eclipse.osgi.jar" />
 	<property name="equinoxArgs" value="-console -clean -noExit" />
@@ -6,14 +7,26 @@
 	<property name="configurationDir" location="${equinoxDir}/configuration" />
 	<property name="configurationFile" location="${configurationDir}/config.ini" />
 
-	<target name="launch" depends="writeConfiguration,start">
+	<path id="slc.osgi.locations.raw.default">
+		<fileset dir="${baseDir}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
 
+	<target name="launch" description="Launch Equinox" depends="prepareDefault,writeConfiguration,start">
+
+	</target>
+
+	<target name="prepareDefault" unless="noDefault">
+		<pathconvert dirsep="/" property="slc.osgi.locations" refid="slc.osgi.locations.raw.default" />
+
+		<property name="slc.osgi.start" value="org.springframework.osgi.extender" />
 	</target>
 
 	<target name="writeConfiguration" description="Generate configuration based on properties">
 		<echo message="equinoxJar=${equinoxJar}" />
 		<echo message="configurationDir=${configurationDir}" />
-		<mkdir dir="${configurationDir}"/>
+		<mkdir dir="${configurationDir}" />
 		<echo message="osgiBootBundle=${osgiBootBundle}" />
 		<echo file="${configurationFile}">
 			<![CDATA[
@@ -62,9 +75,9 @@ osgi.bundles=reference:file:${osgiBootBundle}@start
 		<property name="javaCommand" value="java" />
 		<property name="vmlauncher" value="true" />
 
-		<echo message="commandArgs=${commandArgs}"/>
-		<echo message="${javaCommand} ${commandArgs}" file="${equinoxDir}/launch.bat"/>
-		<echo message="${javaCommand} ${commandArgs}" file="${equinoxDir}/launch.sh"/>
+		<echo message="commandArgs=${commandArgs}" />
+		<echo message="${javaCommand} ${commandArgs}" file="${equinoxDir}/launch.bat" />
+		<echo message="${javaCommand} ${commandArgs}" file="${equinoxDir}/launch.sh" />
 		<exec executable="${starter}" dir="${equinoxDir}" vmlauncher="${vmlauncher}">
 			<arg line="${starterArgs}" />
 			<arg line="${javaCommand}" />
@@ -78,7 +91,8 @@ osgi.bundles=reference:file:${osgiBootBundle}@start
 			<property name="@{name}" value="" />
 			<echo message="@{name}=${@{name}}" />
 			<echo file="${configurationFile}" append="true">
-<![CDATA[@{name}=${@{name}}]]></echo>
+				<![CDATA[@{name}=${@{name}}]]>
+			</echo>
 		</sequential>
 	</macrodef>
 </project>
