@@ -212,13 +212,13 @@
 			<artifactId>org.argeo.dep.osgi.activemq.web</artifactId>
 		</dependency>
 
-		<!-- For demo -->
+		<!-- For demo
 		<dependency>
 			<groupId>org.argeo.slc.demo</groupId>
 			<artifactId>org.argeo.slc.demo.deploy</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
-
+ -->
 	</dependencies>
 </project>
