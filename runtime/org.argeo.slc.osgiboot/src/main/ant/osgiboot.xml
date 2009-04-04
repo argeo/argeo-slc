@@ -17,7 +17,7 @@
 
 	</target>
 
-	<target name="prepareDefault" unless="noDefault">
+	<target name="prepareDefault" unless="slc.osgi.locations">
 		<pathconvert dirsep="/" property="slc.osgi.locations" refid="slc.osgi.locations.raw.default" />
 
 		<property name="slc.osgi.start" value="org.springframework.osgi.extender" />
