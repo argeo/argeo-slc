@@ -3,6 +3,7 @@ package org.argeo.slc.osgiboot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.osgi.framework.BundleException;
 
 public class Activator implements BundleActivator {
 	public final static String PROP_SLC_OSGI_START = "slc.osgi.start";
+	public final static String PROP_SLC_OSGI_BUNDLES = "slc.osgi.bundles";
 	public final static String PROP_SLC_OSGI_DEV_BASES = "slc.osgi.devBases";
 	public final static String PROP_SLC_OSGI_DEV_PATTERNS = "slc.osgi.devPatterns";
 	public final static String PROP_SLC_OSGI_LOCATIONS = "slc.osgi.locations";
@@ -32,6 +34,7 @@ public class Activator implements BundleActivator {
 			installUrls(bundleContext, getDevLocationsUrls());
 
 			installUrls(bundleContext, getLocationsUrls());
+			installUrls(bundleContext, getBundlesUrls());
 
 			List<String> urls = getMavenUrls();
 			installUrls(bundleContext, urls);
@@ -129,6 +132,95 @@ public class Activator implements BundleActivator {
 		return urls;
 	}
 
+	protected List<String> getBundlesUrls() {
+		List<String> urls = new ArrayList<String>();
+
+		List<BundlesSet> bundlesSets = new ArrayList<BundlesSet>();
+		String bundles = getProperty(PROP_SLC_OSGI_BUNDLES);
+		if (bundles == null)
+			return urls;
+		info(PROP_SLC_OSGI_BUNDLES + "=" + bundles);
+
+		StringTokenizer st = new StringTokenizer(bundles, ",");
+		while (st.hasMoreTokens()) {
+			bundlesSets.add(new BundlesSet(st.nextToken()));
+		}
+
+		List<String> included = new ArrayList<String>();
+		PathMatcher matcher = new AntPathMatcher();
+		for (BundlesSet bundlesSet : bundlesSets)
+			for (String pattern : bundlesSet.getIncludes())
+				match(matcher, included, bundlesSet.getDir(), null, pattern);
+
+		List<String> excluded = new ArrayList<String>();
+		for (BundlesSet bundlesSet : bundlesSets)
+			for (String pattern : bundlesSet.getExcludes())
+				match(matcher, excluded, bundlesSet.getDir(), null, pattern);
+
+		for (String fullPath : included) {
+			if (!excluded.contains(fullPath))
+				urls.add("reference:file:" + fullPath);
+		}
+
+		return urls;
+	}
+
+	private class BundlesSet {
+		private String baseUrl = "reference:file";
+		private final String dir;
+		private List<String> includes = new ArrayList<String>();
+		private List<String> excludes = new ArrayList<String>();
+
+		public BundlesSet(String def) {
+			StringTokenizer st = new StringTokenizer(def, ";");
+
+			if (!st.hasMoreTokens())
+				throw new RuntimeException("Base dir not defined.");
+			try {
+				String dirPath = st.nextToken();
+				dir = new File(dirPath.replace('/', File.separatorChar))
+						.getCanonicalPath();
+				if (debug)
+					debug("Base dir: " + dir);
+			} catch (IOException e) {
+				throw new RuntimeException("Cannot convert to absolute path", e);
+			}
+
+			while (st.hasMoreTokens()) {
+				String tk = st.nextToken();
+				StringTokenizer stEq = new StringTokenizer(tk, "=");
+				String type = stEq.nextToken();
+				String pattern = stEq.nextToken();
+				if ("in".equals(type) || "include".equals(type)) {
+					includes.add(pattern);
+				} else if ("ex".equals(type) || "exclude".equals(type)) {
+					excludes.add(pattern);
+				} else if ("baseUrl".equals(type)) {
+					baseUrl = pattern;
+				} else {
+					System.err.println("Unkown bundles pattern type " + type);
+				}
+			}
+		}
+
+		public String getDir() {
+			return dir;
+		}
+
+		public List<String> getIncludes() {
+			return includes;
+		}
+
+		public List<String> getExcludes() {
+			return excludes;
+		}
+
+		public String getBaseUrl() {
+			return baseUrl;
+		}
+
+	}
+
 	protected void match(PathMatcher matcher, List<String> matched,
 			String base, String currentPath, String pattern) {
 		if (currentPath == null) {
@@ -144,10 +236,9 @@ public class Activator implements BundleActivator {
 			}
 
 			for (File file : files)
-				if (file.isDirectory())
 					match(matcher, matched, base, file.getName(), pattern);
 		} else {
-			String fullPath = base + currentPath;
+			String fullPath = base + '/' + currentPath;
 			if (matched.contains(fullPath))
 				return;// don't try deeper if already matched
 
@@ -159,24 +250,29 @@ public class Activator implements BundleActivator {
 				matched.add(fullPath);
 				return;
 			} else {
-				File[] files = new File((base + currentPath).replace('/',
-						File.separatorChar)).listFiles();
-				for (File file : files)
-					if (file.isDirectory()) {
-						String newCurrentPath = currentPath + '/'
-								+ file.getName();
-						if (matcher.matchStart(pattern, newCurrentPath)) {
-							// recurse only if start matches
-							match(matcher, matched, base, newCurrentPath,
-									pattern);
-						} else {
-							if (debug)
-								debug(newCurrentPath
-										+ " does not start match with "
-										+ pattern);
+				String newFullPath = (base + '/' + currentPath).replace('/',
+						File.separatorChar);
+				File[] files = new File(newFullPath).listFiles();
+				if (files != null) {
+					for (File file : files)
+						if (file.isDirectory()) {
+							String newCurrentPath = currentPath + '/'
+									+ file.getName();
+							if (matcher.matchStart(pattern, newCurrentPath)) {
+								// recurse only if start matches
+								match(matcher, matched, base, newCurrentPath,
+										pattern);
+							} else {
+								if (debug)
+									debug(newCurrentPath
+											+ " does not start match with "
+											+ pattern);
 
+							}
 						}
-					}
+				} else {
+					warn("Not a directory: " + newFullPath);
+				}
 			}
 		}
 	}
@@ -222,7 +318,8 @@ public class Activator implements BundleActivator {
 				try {
 					bundle.start();
 				} catch (Exception e) {
-					warn("Bundle " + name + " cannot be started: " + e.getMessage());
+					warn("Bundle " + name + " cannot be started: "
+							+ e.getMessage());
 				}
 			else
 				warn("Bundle " + name + " not installed.");

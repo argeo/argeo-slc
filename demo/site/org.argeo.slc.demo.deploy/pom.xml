@@ -51,17 +51,20 @@
 				<configuration>
 					<tasks>
 						<path id="slc.osgi.locations.raw">
+						<!-- 
 							<dirset dir="${user.dir}/..">
 								<include name="*" />
 								<exclude name=".svn" />
 								<exclude name="*.deploy" />
 							</dirset>
+							 -->
 							<path refid="maven.compile.classpath" />
 						</path>
 						<pathconvert dirsep="/" property="slc.osgi.locations"
 							refid="slc.osgi.locations.raw" />
 
 						<property name="slc.osgi.start" value="${bundlesToStart}" />
+						<property name="slc.osgi.bundles" value="${user.dir}/..;in=*;ex=.svn;ex=*.deploy;ex=.settings" />
 						<ant antfile="target/equinox/osgiboot.xml" />
 
 					</tasks>
@@ -128,7 +131,6 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.equinox</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>org.argeo.slc.demo</groupId>
 			<artifactId>org.argeo.slc.demo.basic</artifactId>

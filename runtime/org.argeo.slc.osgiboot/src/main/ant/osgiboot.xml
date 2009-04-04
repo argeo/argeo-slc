@@ -36,6 +36,7 @@ osgi.bundles=reference:file:${osgiBootBundle}@start
 
 		<addProperty name="slc.osgi.locations" />
 		<addProperty name="slc.osgi.start" />
+		<addProperty name="slc.osgi.bundles" />
 		<addProperty name="slc.osgi.devBases" />
 		<addProperty name="slc.osgi.devPatterns" />
 		<addProperty name="slc.maven.dependencyFile" />
