@@ -18,44 +18,53 @@ import org.argeo.slc.structure.StructureAware;
 import org.argeo.slc.structure.StructureRegistry;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.validation.MapBindingResult;
 
 public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
-		BeanNameAware, StructureAware<TreeSPath> {
-	
+		BeanNameAware, StructureAware<TreeSPath>, ResourceLoaderAware {
+
 	private final static Log log = LogFactory
-	.getLog(DefaultExecutionFlow.class);	
-	
-	private ExecutionSpec executionSpec = new DefaultExecutionSpec();
+			.getLog(DefaultExecutionFlow.class);
+
+	private final ExecutionSpec executionSpec;
 	private String name = null;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<Executable> executables = new ArrayList<Executable>();
 
 	private String path;
 	private StructureRegistry<TreeSPath> registry = new TreeSRegistry();
-		
+
+	private ResourceLoader resourceLoader = null;
+
 	public DefaultExecutionFlow() {
-	}	
-	
+		this.executionSpec = new DefaultExecutionSpec();
+	}
+
 	public DefaultExecutionFlow(ExecutionSpec executionSpec) {
 		this.executionSpec = executionSpec;
 	}
-	
-	public DefaultExecutionFlow(ExecutionSpec executionSpec, Map<String, Object> parameters) {
+
+	public DefaultExecutionFlow(ExecutionSpec executionSpec,
+			Map<String, Object> parameters) {
 		// be sure to have an execution spec
-		this.executionSpec = (executionSpec == null) ? new DefaultExecutionSpec() : executionSpec;
-		
-		//only parameters contained in the executionSpec can be set
-		for(String parameter : parameters.keySet()) {
-			if(!executionSpec.getAttributes().containsKey(parameter)) {
-				throw new SlcException("Parameter " + parameter + " is not defined in the ExecutionSpec");
+		this.executionSpec = (executionSpec == null) ? new DefaultExecutionSpec()
+				: executionSpec;
+
+		// only parameters contained in the executionSpec can be set
+		for (String parameter : parameters.keySet()) {
+			if (!executionSpec.getAttributes().containsKey(parameter)) {
+				throw new SlcException("Parameter " + parameter
+						+ " is not defined in the ExecutionSpec");
 			}
 		}
-		
+
 		// set the parameters
-		this.parameters.putAll(parameters);		
-		
-		//check that all the required parameters are defined
+		this.parameters.putAll(parameters);
+
+		// check that all the required parameters are defined
 		MapBindingResult errors = new MapBindingResult(parameters, "execution#"
 				+ getName());
 		for (String key : executionSpec.getAttributes().keySet()) {
@@ -80,9 +89,8 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 		if (errors.hasErrors())
 			throw new SlcException("Could not prepare execution flow: "
-					+ errors.toString());		
-		
-		
+					+ errors.toString());
+
 	}
 
 	public void execute() {
@@ -123,23 +131,31 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	}
 
 	public Object getParameter(String parameterName) {
-		if (parameters.containsKey(parameterName)) {
-			return parameters.get(parameterName);
+		// Verify that there is a spec attribute
+		ExecutionSpecAttribute specAttr = null;
+		if (executionSpec.getAttributes().containsKey(parameterName)) {
+			specAttr = executionSpec.getAttributes().get(parameterName);
 		} else {
-			if (executionSpec.getAttributes().containsKey(parameterName)) {
-				ExecutionSpecAttribute esa = executionSpec.getAttributes().get(
-						parameterName);
-				if (esa.getValue() != null) {
-					return esa.getValue();
-				}
+			throw new SlcException("Key " + parameterName
+					+ " is not defined in the specifications of " + toString());
+		}
+
+		if (parameters.containsKey(parameterName)) {
+			Object paramValue = parameters.get(parameterName);
+			if (specAttr instanceof ResourceSpecAttribute) {
+				// deal with resources
+				Resource resource = resourceLoader.getResource(paramValue.toString());
+				return ((ResourceSpecAttribute) specAttr).convertResource(resource);
 			} else {
-				throw new SlcException("Key " + parameterName
-						+ " is not defined in the specifications of "
-						+ toString());
+				return paramValue;
+			}
+		} else {
+			if (specAttr.getValue() != null) {
+				return specAttr.getValue();
 			}
 		}
-		throw new SlcException("Key " + parameterName + " is not set as parameter in "
-				+ toString());
+		throw new SlcException("Key " + parameterName
+				+ " is not set as parameter in " + toString());
 	}
 
 	public Boolean isSetAsParameter(String key) {
@@ -173,6 +189,10 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		if (this.path == null) {
 			this.path = path.toString();
 		}
+	}
+
+	public void setResourceLoader(ResourceLoader resourceLoader) {
+		this.resourceLoader = resourceLoader;
 	}
 
 }

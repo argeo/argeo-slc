@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<import resource="imports.xml" />
+
+	<bean id="resourceSimple" parent="slcTemplate.simpleFlow">
+		<constructor-arg>
+			<bean parent="slcTemplate.simpleSpec">
+				<property name="attributes">
+					<map>
+						<entry key="var">
+							<bean parent="specAttr.resource"
+								p:resource="classpath:/org/argeo/slc/core/execution/tasks/core.xml" />
+						</entry>
+					</map>
+				</property>
+			</bean>
+		</constructor-arg>
+		<property name="executables">
+			<list>
+				<bean parent="task.echo" scope="execution">
+					<property name="message" value="echo var=@{var}" />
+					<aop:scoped-proxy />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="resourceOverridden" parent="resourceSimple">
+		<constructor-arg>
+			<map>
+				<entry key="var" value="classpath:/org/argeo/slc/core/execution/specs.xml" />
+			</map>
+		</constructor-arg>
+	</bean>
+</beans>

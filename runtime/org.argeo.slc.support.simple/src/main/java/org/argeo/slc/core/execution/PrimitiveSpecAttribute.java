@@ -1,5 +1,6 @@
 package org.argeo.slc.core.execution;
 
+
 public class PrimitiveSpecAttribute extends AbstractSpecAttribute implements
 		PrimitiveAccessor {
 	// public enum Type {

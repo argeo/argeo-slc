@@ -6,6 +6,8 @@
 
 	<bean id="specAttr.primitive" class="org.argeo.slc.core.execution.PrimitiveSpecAttribute"
 		abstract="true" />
+	<bean id="specAttr.resource" class="org.argeo.slc.core.execution.ResourceSpecAttribute"
+		abstract="true" />
 	<bean id="specAttr.ref" class="org.argeo.slc.core.execution.RefSpecAttribute"
 		abstract="true" />
 
