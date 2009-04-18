@@ -48,7 +48,7 @@ public class SystemCall implements Executable {
 			// Execution directory
 			File dir = null;
 			if (execDir != null) {
-				// Replace '/' by local file separator, for portabiliy
+				// Replace '/' by local file separator, for portability
 				execDir.replace('/', File.separatorChar);
 				dir = new File(execDir).getCanonicalFile();
 			}
@@ -123,7 +123,7 @@ public class SystemCall implements Executable {
 	}
 
 	/**
-	 * Shortcut method returning teh current exec dir if the specified one is
+	 * Shortcut method returning the current exec dir if the specified one is
 	 * null.
 	 */
 	private String getUsedDir(File dir) {
@@ -132,7 +132,7 @@ public class SystemCall implements Executable {
 		else
 			return dir.getPath();
 	}
-
+	
 	protected void stdOutCallback(String line) {
 		log(stdOutLogLevel, line);
 	}

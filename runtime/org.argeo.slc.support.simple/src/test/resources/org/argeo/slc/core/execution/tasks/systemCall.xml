@@ -10,6 +10,9 @@
 	<bean id="systemCallSimple" parent="slcTemplate.simpleFlow">
 		<property name="executables">
 			<list>
+				<bean parent="task.echo">
+					<property name="message" value="os.name=${os.name}" />
+				</bean>
 				<bean parent="task.systemCall">
 					<property name="cmd" value="echo Hello World" />
 				</bean>
@@ -34,6 +37,7 @@
 	</bean>
 
 	<bean id="systemCallOsSpecific" parent="slcTemplate.simpleFlow">
+		<!-- Direct call to dir under Windows isnot working -->
 		<property name="executables">
 			<list>
 				<bean parent="task.systemCall">
@@ -60,20 +64,6 @@
 							</entry>
 						</map>
 					</property>
-				</bean>
-			</list>
-		</property>
-	</bean>
-
-
-	<bean id="systemCallExecDir" parent="slcTemplate.simpleFlow">
-		<property name="executables">
-			<list>
-				<bean parent="task.systemCall">
-					<property name="cmd" value="sh launch.sh agent" />
-					<property name="execDir"
-						value="/home/mbaudier/dev/work/SpartaDist/sparta-dist-0.9.3-SNAPSHOT" />
-					<property name="captureStdIn" value="true" />
 				</bean>
 			</list>
 		</property>
