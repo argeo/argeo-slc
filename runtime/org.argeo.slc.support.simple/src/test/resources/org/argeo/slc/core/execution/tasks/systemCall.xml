@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<import resource="../imports.xml" />
+
+	<bean id="systemCallSimple" parent="slcTemplate.simpleFlow">
+		<property name="executables">
+			<list>
+				<bean parent="task.systemCall">
+					<property name="cmd" value="echo Hello World" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="systemCallList" parent="slcTemplate.simpleFlow">
+		<property name="executables">
+			<list>
+				<bean parent="task.systemCall">
+					<property name="command">
+						<list>
+							<value>echo</value>
+							<value>Hello</value>
+							<value>World</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="systemCallOsSpecific" parent="slcTemplate.simpleFlow">
+		<property name="executables">
+			<list>
+				<bean parent="task.systemCall">
+					<property name="cmd" value="dir" />
+					<property name="execDir" value="../.." />
+					<property name="osCmds">
+						<map>
+							<entry key="Linux" value="ls" />
+						</map>
+					</property>
+				</bean>
+				<bean parent="task.systemCall">
+					<property name="command">
+						<list>
+							<value>dir</value>
+						</list>
+					</property>
+					<property name="osCommands">
+						<map>
+							<entry key="Linux">
+								<list>
+									<value>ls</value>
+								</list>
+							</entry>
+						</map>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+
+	<bean id="systemCallExecDir" parent="slcTemplate.simpleFlow">
+		<property name="executables">
+			<list>
+				<bean parent="task.systemCall">
+					<property name="cmd" value="sh launch.sh agent" />
+					<property name="execDir"
+						value="/home/mbaudier/dev/work/SpartaDist/sparta-dist-0.9.3-SNAPSHOT" />
+					<property name="captureStdIn" value="true" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="systemCallWithVar" parent="slcTemplate.simpleFlow">
+		<constructor-arg>
+			<bean parent="slcTemplate.simpleSpec">
+				<property name="attributes">
+					<map>
+						<entry key="var">
+							<bean parent="specAttr.primitive" p:value="660" />
+						</entry>
+					</map>
+				</property>
+			</bean>
+		</constructor-arg>
+		<property name="executables">
+			<list>
+				<bean parent="task.systemCall" scope="execution">
+					<property name="cmd" value="echo var=@{var}" />
+					<aop:scoped-proxy />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+
+</beans>

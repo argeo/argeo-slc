@@ -6,4 +6,6 @@
 
 	<bean id="task.echo" class="org.argeo.slc.core.execution.tasks.Echo"
 		abstract="true" />
+	<bean id="task.systemCall" class="org.argeo.slc.core.execution.tasks.SystemCall"
+		abstract="true" />
 </beans>
