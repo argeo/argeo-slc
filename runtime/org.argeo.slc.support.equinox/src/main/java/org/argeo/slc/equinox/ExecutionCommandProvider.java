@@ -24,6 +24,8 @@ public class ExecutionCommandProvider implements CommandProvider,
 	private final static Log log = LogFactory
 			.getLog(ExecutionCommandProvider.class);
 
+	private Long defaultTimeout = 10000l;
+
 	private BundleContext bundleContext;
 
 	private String lastModuleName = null;
@@ -98,6 +100,11 @@ public class ExecutionCommandProvider implements CommandProvider,
 			String filter = "(Bundle-SymbolicName=" + moduleName + ")";
 			// Wait for application context to be ready
 			getServiceRefSynchronous(ApplicationContext.class.getName(), filter);
+
+			if (log.isDebugEnabled())
+				log.debug("Bundle " + bundle.getSymbolicName()
+						+ " ready to be used at latest version.");
+
 			ServiceReference[] sfs = getServiceRefSynchronous(
 					ExecutionModule.class.getName(), filter);
 
@@ -139,7 +146,7 @@ public class ExecutionCommandProvider implements CommandProvider,
 
 	/** Updates bundle synchronously. */
 	protected void updateSynchronous(Bundle bundle) throws BundleException {
-//		int originalState = bundle.getState();
+		// int originalState = bundle.getState();
 		bundle.update();
 		boolean waiting = true;
 
@@ -151,13 +158,13 @@ public class ExecutionCommandProvider implements CommandProvider,
 				waiting = false;
 
 			sleep(100);
-			if (System.currentTimeMillis() - begin > 10000)
+			if (System.currentTimeMillis() - begin > defaultTimeout)
 				throw new SlcException("Update of bundle "
 						+ bundle.getSymbolicName()
 						+ " timed out. Bundle state = " + bundle.getState());
 		} while (waiting);
 
-		if (log.isDebugEnabled())
+		if (log.isTraceEnabled())
 			log.debug("Bundle " + bundle.getSymbolicName() + " updated.");
 	}
 
@@ -176,13 +183,13 @@ public class ExecutionCommandProvider implements CommandProvider,
 				waiting = false;
 
 			sleep(100);
-			if (System.currentTimeMillis() - begin > 30000)
+			if (System.currentTimeMillis() - begin > defaultTimeout)
 				throw new SlcException("Start of bundle "
 						+ bundle.getSymbolicName()
 						+ " timed out. Bundle state = " + bundle.getState());
 		} while (waiting);
 
-		if (log.isDebugEnabled())
+		if (log.isTraceEnabled())
 			log.debug("Bundle " + bundle.getSymbolicName() + " started.");
 	}
 
@@ -202,13 +209,13 @@ public class ExecutionCommandProvider implements CommandProvider,
 				waiting = false;
 
 			sleep(100);
-			if (System.currentTimeMillis() - begin > 30000)
+			if (System.currentTimeMillis() - begin > defaultTimeout)
 				throw new SlcException("Stop of bundle "
 						+ bundle.getSymbolicName()
 						+ " timed out. Bundle state = " + bundle.getState());
 		} while (waiting);
 
-		if (log.isDebugEnabled())
+		if (log.isTraceEnabled())
 			log.debug("Bundle " + bundle.getSymbolicName() + " stopped.");
 	}
 
@@ -223,15 +230,13 @@ public class ExecutionCommandProvider implements CommandProvider,
 
 		synchronized (refreshedPackageSem) {
 			try {
-				refreshedPackageSem.wait(30000);
-				log.debug("NOT INTERRUPTED");
+				refreshedPackageSem.wait(defaultTimeout);
 			} catch (InterruptedException e) {
-				log.debug("INTERRUPTED");
 				// silent
 			}
 		}
 
-		if (log.isDebugEnabled())
+		if (log.isTraceEnabled())
 			log.debug("Bundle " + bundle.getSymbolicName() + " refreshed.");
 	}
 
@@ -257,7 +262,7 @@ public class ExecutionCommandProvider implements CommandProvider,
 				waiting = false;
 
 			sleep(100);
-			if (System.currentTimeMillis() - begin > 30000)
+			if (System.currentTimeMillis() - begin > defaultTimeout)
 				throw new SlcException("Search of services " + clss
 						+ " with filter " + filter + " timed out.");
 		} while (waiting);
@@ -279,6 +284,10 @@ public class ExecutionCommandProvider implements CommandProvider,
 
 	public void afterPropertiesSet() throws Exception {
 		bundleContext.addFrameworkListener(this);
+	}
+
+	public void setDefaultTimeout(Long defaultTimeout) {
+		this.defaultTimeout = defaultTimeout;
 	}
 
 }
