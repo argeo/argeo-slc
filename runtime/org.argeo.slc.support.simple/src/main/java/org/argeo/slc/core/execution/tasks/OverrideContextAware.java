@@ -6,7 +6,7 @@ import org.argeo.slc.core.test.context.SimpleParentContextAware;
 import org.argeo.slc.execution.Executable;
 import org.argeo.slc.test.context.ContextAware;
 
-public class OverrideContextAwareTask implements Executable {
+public class OverrideContextAware implements Executable {
 
 	private ContextAware source;
 
