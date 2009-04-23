@@ -24,14 +24,13 @@ public class GenerateMojo extends AbstractMojo {
 	 * @required
 	 */
 	private String job;
-
+	
 	/**
 	 * Location of the qooxdoo sdk.
 	 * 
-	 * @parameter expression="${qooxdooSdk}"
+	 * @parameter expression="${qooxdooSdk}" default-value="src/qooxdoo-sdk"
 	 */
-	private String qooxdooSdk = "src" + File.separator + "main"
-			+ File.separator + "webapp" + File.separator + "qooxdoo-sdk";
+	private String qooxdooSdk;
 
 	/**
 	 * The build directory.
@@ -79,7 +78,7 @@ public class GenerateMojo extends AbstractMojo {
 
 		} catch (Exception e) {
 			throw new MojoExecutionException(
-					"Unexpected exception when running Jython", e);
+					"Unexpected exception when running Python", e);
 		}
 
 	}
