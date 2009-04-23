@@ -1,0 +1,4 @@
+Bundle-Name: SLC RIA
+Fragment-Host: org.argeo.slc.webapp
+Bundle-SymbolicName: org.argeo.slc.ria
+Bundle-Version: 1.0.0

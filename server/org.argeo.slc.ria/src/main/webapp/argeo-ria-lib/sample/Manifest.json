@@ -1,0 +1,34 @@
+{
+  "info" : 
+  {
+    "name" : "org.argeo.ria.sample",
+
+    "summary" : "Sample RIA Application",
+    "description" : "Basic RIA Implementation for documentation purposes",
+    
+    "homepage" : "http://www.argeo.org/",
+
+    "license" : "LGPL",
+    "authors" : 
+    [
+      {
+        "name" : "Charles du Jeu",
+        "email" : "charles.dujeu@gmail.com"
+      }
+    ],
+
+    "version" : "trunk",
+    "qooxdoo-versions": ["0.8"]
+  },
+  
+  "provides" : 
+  {
+    "namespace"   : "org.argeo.ria.sample",
+    "encoding"    : "utf-8",
+    "class"       : "class",
+    "resource"    : "resource",
+    "translation" : "translation",
+    "type"        : "library"
+  }
+}
+
