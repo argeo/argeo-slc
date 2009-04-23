@@ -13,10 +13,9 @@
 		<module>org.argeo.slc</module>
 		<module>runtime</module>
 		<module>demo/site</module>
-		<module>server/org.argeo.slc.siteserver</module>
+		<module>server</module>
 
 		<module>org.argeo.slc.detached.launcher</module>
-		<module>org.argeo.slc.webapp</module>
 	</modules>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
