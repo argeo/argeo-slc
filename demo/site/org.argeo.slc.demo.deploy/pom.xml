@@ -106,6 +106,7 @@
 					org.argeo.slc.server.services,
 					org.argeo.slc.server.jms,
 					org.argeo.slc.webapp,
+					org.argeo.slc.ria,
 					org.argeo.slc.demo.basic,
 					org.argeo.slc.demo.manager
 				</bundlesToStart>
