@@ -7,7 +7,7 @@
 	</formats>
 	<fileSets>
 		<fileSet>
-			<directory>src/main/webapp/argeo-ria-src</directory>
+			<directory>src/argeo-ria-src</directory>
 			<outputDirectory></outputDirectory>
 			<includes>
 				<include>*/**</include>

@@ -16,14 +16,14 @@
   "let" :
   {
     "APPLICATION"  : "org.argeo.ria",
-    "QOOXDOO_PATH" : "src/main/webapp/qooxdoo-sdk",
+    "QOOXDOO_PATH" : "src/qooxdoo-sdk",
     "QXTHEME"      : "qx.theme.Modern",
 	"QXICONTHEME"  : ["Tango"],
     "API_EXCLUDE"  : ["qx.legacy.*"],
     "LOCALES"      : [ "en" ],
-    "ROOT"         : "src/main/webapp/argeo-ria-src",
-	"BUILD_PATH"   : "src/main/webapp/argeo-ria",
-	"RIA_LIB_PATH" : "src/main/webapp/argeo-ria-lib",
+    "ROOT"         : "src/argeo-ria-src",
+	"BUILD_PATH"   : "src/argeo-ria",
+	"RIA_LIB_PATH" : "src/argeo-ria-lib",
 	"RIA_LIB_URI"  : "../argeo-ria-lib",
 	"CACHE"		   : "cache" ,
 	"CUSTOM_PACKAGE" : "org.argeo.slc.web"
