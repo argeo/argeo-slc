@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.argeo.slc</groupId>
-		<artifactId>argeo-slc</artifactId>
+		<groupId>org.argeo.slc.server</groupId>
+		<artifactId>argeo-slc-server</artifactId>
 		<version>0.11.3-SNAPSHOT</version>
-		<relativePath>../../org.argeo.slc</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.siteserver</artifactId>
 	<packaging>pom</packaging>
