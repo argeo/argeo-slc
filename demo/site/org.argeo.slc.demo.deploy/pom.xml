@@ -119,7 +119,7 @@
 				</dependency>
 				<dependency>
 					<groupId>org.argeo.slc.server</groupId>
-					<artifactId>deploy</artifactId>
+					<artifactId>bundles</artifactId>
 					<version>${project.version}</version>
 					<type>pom</type>
 				</dependency>

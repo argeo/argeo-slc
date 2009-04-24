@@ -84,21 +84,6 @@ limitations under the License.
 					</configuration>
 				</plugin>
 				<plugin>
-					<artifactId>maven-jar-plugin</artifactId>
-					<configuration>
-						<archive>
-							<manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
-						</archive>
-					</configuration>
-					<executions>
-						<execution>
-							<goals>
-								<goal>test-jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
 					<executions>
@@ -194,30 +179,6 @@ limitations under the License.
 							<version>2.3.0</version> </dependency>
 						-->
 					</dependencies>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-bundle-plugin</artifactId>
-					<version>${version.maven-bundle-plugin}</version>
-					<extensions>true</extensions>
-					<configuration>
-						<manifestLocation>target/classes/META-INF</manifestLocation>
-						<instructions>
-							<Bundle-SymbolicName>
-								${pom.artifactId}
-							</Bundle-SymbolicName>
-							<_removeheaders>Bnd-LastModified</_removeheaders>
-						</instructions>
-					</configuration>
-					<executions>
-						<execution>
-							<id>bundle-manifest</id>
-							<phase>process-classes</phase>
-							<goals>
-								<goal>manifest</goal>
-							</goals>
-						</execution>
-					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

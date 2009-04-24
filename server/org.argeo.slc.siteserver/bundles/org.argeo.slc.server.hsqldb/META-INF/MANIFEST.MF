@@ -1,12 +1,11 @@
 Bundle-SymbolicName: org.argeo.slc.server.hsqldb
 Bundle-Version: 0.11.3.qualifier
+Require-Bundle: org.argeo.slc.server,
+ org.argeo.slc.specs,
+ org.argeo.slc.support.simple
 Import-Package: 
  org.springframework.orm.hibernate3,
  org.springframework.cache.ehcache,
  net.sf.ehcache.hibernate,
  org.hsqldb.jdbc,
  org.hibernate
-Require-Bundle: org.argeo.slc.server,
- org.argeo.slc.specs,
- org.argeo.slc.support.simple
- 
