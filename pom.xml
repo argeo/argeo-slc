@@ -19,7 +19,7 @@
 	</modules>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
-		<url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc/argeo-slc-all</url>
+		<url>https://www.argeo.org/svn/slc/trunk</url>
 	</scm>
 	<build>
 		<plugins>
