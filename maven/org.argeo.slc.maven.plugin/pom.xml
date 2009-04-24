@@ -7,27 +7,18 @@
 		<version>0.1.1</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>maven-argeo-qooxdoo-plugin</artifactId>
-	<version>0.8.1.4</version>
-	<packaging>maven-plugin</packaging>
-	<name>Argeo Qooxdoo Plugin</name>
+	<artifactId>org.argeo.slc.maven.plugin</artifactId>
+	<packaging>jar</packaging>
+	<name>Argeo Maven Plugin Development Support</name>
 
 	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
-		<dependency>
-			<groupId>org.argeo.slc.maven</groupId>
-			<artifactId>org.argeo.slc.maven.plugin</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-plugin-api</artifactId>
