@@ -1,8 +1,8 @@
 <pluginMetadata>
 	<mojos>
 		<mojo>
-			<goal>simple-bundles</goal>
-			<call>simple-bundles</call>
+			<goal>simple-bundles-old</goal>
+			<call>simple-bundles-old</call>
 			<description>
 				Process a simple bundle (no Java)
 			</description>
