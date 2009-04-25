@@ -55,7 +55,7 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 	 */
 	protected String[] jvmArgs;
 
-	protected String[] defaultJvmArgs = { "-Xmx256m" };
+	protected String[] defaultJvmArgs = { "-Xmx128m" };
 
 	/**
 	 * Equinox args
@@ -64,8 +64,8 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 	 */
 	protected String[] args;
 
-	protected String[] defaultArgs = { "-clean", "-console", "-configuration",
-			"conf" };
+	protected String[] defaultArgs = { "-console", "-configuration", "conf",
+			"-data", "data" };
 
 	/**
 	 * JVM system properties
@@ -78,11 +78,18 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 	 * Execution directory
 	 * 
 	 * @parameter expression="${execDir}"
+	 *            default-value="${project.build.directory}/exec"
 	 * @required
 	 */
 	protected File execDir;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
+		if ("bundles".equals(project.getArtifact().getType())) {
+			System.out.println("Skip artifact of type bundles "
+					+ artifactToString(project.getArtifact()));
+			return;
+		}
+
 		try {
 			Artifact equinoxArtifact = null;
 			Artifact osgiBootArtifact = null;
@@ -128,6 +135,9 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 			if (systemProperties == null)
 				systemProperties = new HashMap();
 
+			if (!execDir.exists())
+				execDir.mkdirs();
+
 			// Build command
 			List cmdList = new ArrayList();
 			cmdList.add(jvm);
@@ -146,6 +156,7 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 				if (value != null) {
 					strValue = value.toString().trim();
 					strValue = strValue.replaceAll("\n", "");
+					strValue = strValue.replaceAll("\t", "");
 				}
 				cmdList.add("-D" + key + "=" + strValue);
 			}
@@ -155,9 +166,18 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 
 			String[] cmd = (String[]) cmdList.toArray(new String[0]);
 
-			for (int i = 0; i < cmd.length; i++)
+			System.out.println("\nExecute command:\n");
+			for (int i = 0; i < cmd.length; i++) {
+				boolean containsSpace = (cmd[i].indexOf(' ') >= 0)
+						|| (cmd[i].indexOf('\t') >= 0);
+				if (containsSpace)
+					System.out.print('\"');
 				System.out.print(cmd[i]);
-			System.out.print('\n');
+				if (containsSpace)
+					System.out.print('\"');
+				System.out.print(' ');
+			}
+			System.out.println("\n");
 
 			SystemCall systemCall = new SystemCall(execDir.getCanonicalPath(),
 					cmd, true);
@@ -170,10 +190,13 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 	}
 
 	protected static void printArtifact(Artifact artifact) {
-		System.out.println(artifact.getGroupId() + ":"
-				+ artifact.getArtifactId() + ":" + artifact.getType() + ":"
-				+ artifact.getClassifier() + ":" + artifact.getVersion() + " ("
-				+ artifact.getFile() + ")");
+		System.out.println(artifactToString(artifact));
+	}
+
+	protected static String artifactToString(Artifact artifact) {
+		return artifact.getGroupId() + ":" + artifact.getArtifactId() + ":"
+				+ artifact.getType() + ":" + artifact.getClassifier() + ":"
+				+ artifact.getVersion() + " (" + artifact.getFile() + ")";
 	}
 
 }
