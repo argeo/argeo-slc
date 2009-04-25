@@ -3,45 +3,24 @@ package org.argeo.slc.maven.plugins.osgi;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.argeo.slc.maven.plugin.MavenDependencyManager;
 import org.argeo.slc.maven.plugin.SystemCall;
 
 /**
- * @goal equinox-exec
+ * @goal equinox
  * */
 public class EquinoxExecMojo extends AbstractOsgiMojo {
-	/**
-	 * Used to look up Artifacts in the remote repository.
-	 * 
-	 * @parameter expression=
-	 *            "${component.org.apache.maven.artifact.resolver.ArtifactResolver}"
-	 * @required
-	 * @readonly
-	 */
-	protected org.apache.maven.artifact.resolver.ArtifactResolver resolver;
-
-	/**
-	 * Used to look up Artifacts in the remote repository.
-	 * 
-	 * @parameter expression=
-	 *            "${component.org.apache.maven.artifact.factory.ArtifactFactory}"
-	 * @required
-	 * @readonly
-	 */
-	protected org.apache.maven.artifact.factory.ArtifactFactory factory;
-
 	/** @component */
-	private ArtifactMetadataSource artifactMetadataSource;
+	private MavenDependencyManager mavenDependencyManager;
 
 	/**
 	 * Equinox artifact id
@@ -64,7 +43,7 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 	/**
 	 * Java executable
 	 * 
-	 * @parameter expression="${jvm}" default-value="java"
+	 * @parameter expression="${jvm}" default-value="${java.home}/bin/java"
 	 * @required
 	 */
 	protected String jvm;
@@ -89,6 +68,13 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 			"conf" };
 
 	/**
+	 * JVM system properties
+	 * 
+	 * @parameter alias="${systemProperties}"
+	 */
+	protected Map systemProperties;
+
+	/**
 	 * Execution directory
 	 * 
 	 * @parameter expression="${execDir}"
@@ -101,81 +87,78 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 			Artifact equinoxArtifact = null;
 			Artifact osgiBootArtifact = null;
 
-			Set artifacts = project.createArtifacts(this.factory, null, null);
-
-			ArtifactResolutionResult arr = resolver.resolveTransitively(
-					artifacts, project.getArtifact(), local, remoteRepos,
-					artifactMetadataSource, null);
-			// Order, just for display
-			Set dependencies = new TreeSet(new Comparator() {
-				public int compare(Object o1, Object o2) {
-					Artifact a1 = (Artifact) o1;
-					Artifact a2 = (Artifact) o2;
-
-					if (!a1.getGroupId().equals(a2.getGroupId()))
-						return a1.getGroupId().compareTo(a2.getGroupId());
-					else
-						return a1.getArtifactId().compareTo(a2.getArtifactId());
-				}
-			});
-			dependencies.addAll(arr.getArtifacts());
+			Set dependencies = mavenDependencyManager
+					.getTransitiveProjectDependencies(project, remoteRepos,
+							local);
 
 			StringBuffer osgiLocations = new StringBuffer();
 			List bundleArtifacts = new ArrayList();
 			boolean first = true;
-			// Set dependencies = project.getArtifacts();
 			for (Iterator it = dependencies.iterator(); it.hasNext();) {
 				Artifact depArtifact = (Artifact) it.next();
-				System.out.println(depArtifact.getGroupId() + ":"
-						+ depArtifact.getArtifactId() + ":"
-						+ depArtifact.getType() + ":"
-						+ depArtifact.getVersion() + " ("
-						+ depArtifact.getFile() + ")");
-				if (depArtifact.getArtifactId().equals(equinoxArtifactId))
+				printArtifact(depArtifact);
+
+				if (depArtifact.getArtifactId().equals(equinoxArtifactId)) {
 					equinoxArtifact = depArtifact;
-				else if (depArtifact.getArtifactId().equals(osgiBootArtifactId))
+				} else if (depArtifact.getArtifactId().equals(
+						osgiBootArtifactId)) {
 					osgiBootArtifact = depArtifact;
-				else {
+				} else {
 					bundleArtifacts.add(depArtifact);
 
-					if (first)
-						first = false;
-					else
-						osgiLocations.append(File.pathSeparatorChar);
-					osgiLocations.append(depArtifact.getFile()
-							.getCanonicalPath()
-							.replace(File.separatorChar, '/'));
+					if ("jar".equals(depArtifact.getType())) {
+						// Add to OSGi locations
+						if (first)
+							first = false;
+						else
+							osgiLocations.append(File.pathSeparatorChar);
+
+						osgiLocations.append(depArtifact.getFile()
+								.getCanonicalPath().replace(File.separatorChar,
+										'/'));
+					}
 				}
 			}
 
-
 			// Set defaults
-			if(jvmArgs==null)
-				jvmArgs=defaultJvmArgs;
-			if(args==null)
-				args=defaultArgs;
+			if (jvmArgs == null)
+				jvmArgs = defaultJvmArgs;
+			if (args == null)
+				args = defaultArgs;
+			if (systemProperties == null)
+				systemProperties = new HashMap();
 
-			
+			// Build command
 			List cmdList = new ArrayList();
 			cmdList.add(jvm);
 			cmdList.addAll(Arrays.asList(jvmArgs));
-			cmdList.add("-Dosgi.bundles="
-					+ osgiBootArtifact.getFile().getCanonicalPath() + "@start");
-			cmdList.add("-Dslc.osgi.locations=" + osgiLocations);
+			if (!systemProperties.containsKey("osgi.bundles"))
+				cmdList.add("-Dosgi.bundles="
+						+ osgiBootArtifact.getFile().getCanonicalPath()
+						+ "@start");
+			if (!systemProperties.containsKey("slc.osgi.locations"))
+				cmdList.add("-Dslc.osgi.locations=" + osgiLocations);
+			for (Iterator keys = systemProperties.keySet().iterator(); keys
+					.hasNext();) {
+				Object key = keys.next();
+				Object value = systemProperties.get(key);
+				String strValue = null;
+				if (value != null) {
+					strValue = value.toString().trim();
+					strValue = strValue.replaceAll("\n", "");
+				}
+				cmdList.add("-D" + key + "=" + strValue);
+			}
 			cmdList.add("-jar");
 			cmdList.add(equinoxArtifact.getFile().getCanonicalPath());
 			cmdList.addAll(Arrays.asList(args));
-			
-			String[] cmd = (String[])cmdList.toArray(new String[0]);
 
-//			String cmdOld = jvm + " " + jvmArgs + " " + "-Dosgi.bundles="
-//					+ osgiBootArtifact.getFile().getCanonicalPath() + "@start "
-//					+ "-Dslc.osgi.locations=" + osgiLocations + " -jar "
-//					+ equinoxArtifact.getFile().getCanonicalPath() + " " + args;
-			for(int i=0;i<cmd.length;i++)
+			String[] cmd = (String[]) cmdList.toArray(new String[0]);
+
+			for (int i = 0; i < cmd.length; i++)
 				System.out.print(cmd[i]);
 			System.out.print('\n');
-			
+
 			SystemCall systemCall = new SystemCall(execDir.getCanonicalPath(),
 					cmd, true);
 			systemCall.run();
@@ -185,4 +168,12 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 		}
 
 	}
+
+	protected static void printArtifact(Artifact artifact) {
+		System.out.println(artifact.getGroupId() + ":"
+				+ artifact.getArtifactId() + ":" + artifact.getType() + ":"
+				+ artifact.getClassifier() + ":" + artifact.getVersion() + " ("
+				+ artifact.getFile() + ")");
+	}
+
 }
