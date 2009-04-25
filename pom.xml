@@ -12,7 +12,7 @@
 	<modules>
 		<module>org.argeo.slc</module>
 		<module>runtime</module>
-		<module>demo/site</module>
+		<module>demo</module>
 		<module>server</module>
 
 		<module>org.argeo.slc.detached.launcher</module>
