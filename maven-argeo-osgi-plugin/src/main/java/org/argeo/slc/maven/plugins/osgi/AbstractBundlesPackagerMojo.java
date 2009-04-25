@@ -6,8 +6,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -17,15 +20,6 @@ import org.apache.maven.project.MavenProject;
  * 
  */
 public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
-
-	/**
-	 * The maven project.
-	 * 
-	 * @parameter expression="${project}"
-	 * @required
-	 * @readonly
-	 */
-	protected MavenProject project;
 
 	/**
 	 * Directory of the simple bundles
@@ -70,6 +64,14 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 			File destFile = new File(packagedBundlesDir.getPath()
 					+ File.separator + artifactId + ".jar");
 			try {
+				String manifestStr = FileUtils.readFileToString(manifestFile);
+				char lastChar = manifestStr.charAt(manifestStr.length() - 1);
+				if (lastChar != '\n')
+					throw new RuntimeException(
+							"Manifest "
+									+ manifestFile
+									+ " is not valid, it does not end with and endline character.");
+
 				Manifest manifest = readManifest(manifestFile);
 				// Symbolic name
 				String symbolicNameMf = manifest.getMainAttributes().getValue(
@@ -122,10 +124,13 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 
 				manifest.getMainAttributes().putValue("Bundle-Version",
 						newVersionMf);
+				manifest.getMainAttributes().put(
+						Attributes.Name.MANIFEST_VERSION, "1.0");
+
 				Artifact artifact = artifactFactory.createBuildArtifact(project
 						.getGroupId(), artifactId, newVersionArt, "jar");
 				BundlePackage bundlePackage = new BundlePackage(artifact, dir,
-						manifest, destFile);
+						new Manifest(manifest), destFile);
 				list.add(bundlePackage);
 			} catch (Exception e) {
 				throw new MojoExecutionException("Could not analyze " + dir, e);

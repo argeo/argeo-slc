@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>org.argeo.slc.maven</groupId>
 		<artifactId>slc-maven</artifactId>
-		<version>0.1.1</version>
+		<version>0.1.2</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>maven-argeo-qooxdoo-plugin</artifactId>
-	<version>0.8.1.4</version>
+	<version>0.8.1.5</version>
 	<packaging>maven-plugin</packaging>
 	<name>Argeo Qooxdoo Plugin</name>
 
@@ -27,6 +27,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.maven</groupId>
 			<artifactId>org.argeo.slc.maven.plugin</artifactId>
+			<version>0.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>

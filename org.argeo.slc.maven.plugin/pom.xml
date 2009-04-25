@@ -4,10 +4,11 @@
 	<parent>
 		<groupId>org.argeo.slc.maven</groupId>
 		<artifactId>slc-maven</artifactId>
-		<version>0.1.1</version>
+		<version>0.1.2</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.maven.plugin</artifactId>
+	<version>0.1.2</version>
 	<packaging>jar</packaging>
 	<name>Argeo Maven Plugin Development Support</name>
 
@@ -31,5 +32,10 @@
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-archiver</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>

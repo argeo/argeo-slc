@@ -4,11 +4,21 @@ import java.io.File;
 
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.project.MavenProject;
 
 /**
  * Factorize common configuration
  */
 public abstract class AbstractOsgiMojo extends AbstractMojo {
+	/**
+	 * The maven project.
+	 * 
+	 * @parameter expression="${project}"
+	 * @required
+	 * @readonly
+	 */
+	protected MavenProject project;
+
 	/**
 	 * List of Remote Repositories used by the resolver
 	 * 
