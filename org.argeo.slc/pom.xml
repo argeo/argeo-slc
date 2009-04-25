@@ -19,7 +19,8 @@
 		<version.tomcat>6.0.18</version.tomcat>
 		<version.equinox>3.4.2.R34x_v20080826-1230</version.equinox>
 		<version.maven-bundle-plugin>2.0.0</version.maven-bundle-plugin>
-		<version.activemq>5.2.0.0005</version.activemq>
+		<version.activemq>5.2.0.0006</version.activemq>
+		<version.activemq-web>5.2.0.0005</version.activemq-web>
 		<version.maven-argeo-osgi>0.1.7</version.maven-argeo-osgi>
 	</properties>
 	<scm>
@@ -764,7 +765,7 @@ limitations under the License.
 			<dependency>
 				<groupId>org.argeo.dep.osgi</groupId>
 				<artifactId>org.argeo.dep.osgi.activemq.web</artifactId>
-				<version>${version.activemq}</version>
+				<version>${version.activemq-web}</version>
 			</dependency>
 
 			<dependency>

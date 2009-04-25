@@ -7,12 +7,12 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="executionModule" class="org.argeo.slc.osgi.OsgiExecutionModule" >
+	<bean id="executionModule" class="org.argeo.slc.osgi.OsgiExecutionModule">
 		<property name="executionContext">
 			<ref bean="executionContext" />
-		</property>	
+		</property>
 	</bean>
-		
+
 	<bean id="main" parent="slcTemplate.simpleFlow">
 		<constructor-arg>
 			<bean parent="slcTemplate.simpleSpec">
@@ -37,9 +37,18 @@
 		</property>
 	</bean>
 
+	<bean id="noArg" parent="slcTemplate.simpleFlow">
+		<property name="executables">
+			<list>
+				<bean parent="task.echo">
+					<property name="message" value="No rg!" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
 	<bean id="echo1" parent="task.echo" scope="execution">
-		<property name="message"
-			value="From main! @{testKey}" />
+		<property name="message" value="From main! @{testKey}" />
 		<aop:scoped-proxy />
 	</bean>
 </beans>
