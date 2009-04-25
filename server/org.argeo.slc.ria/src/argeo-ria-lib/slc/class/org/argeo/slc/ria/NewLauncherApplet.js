@@ -73,10 +73,19 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   					if(!selection || selection.length != 1) return;
   					var item = selection[0];
   					this.setEnabled(false);
-  					if(qx.Class.isSubClassOf(qx.Class.getByName(item.classname), qx.ui.tree.TreeFile)){
-  						this.setEnabled(true);
+  					switch(item.classname){
+  						case "qx.ui.tree.TreeFile" : 
+  							this.setEnabled(true);
+  							break;
+  						case "qx.ui.tree.TreeFolder" :
+  							if(item.getTree().getRoot() == item) break;
+  							this.setEnabled(true);
+  							break;
+  						case "org.argeo.ria.components.DynamicTreeFolder":
+  							if(item.getTree().getRoot() == item) break;
+  							if(item.getState() == "loaded") this.setEnabled(true);
+  							break;
   					}
-  					
   				},  				
   				command 	: null
   			}, 
@@ -150,20 +159,6 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				},  				
   				command 	: null
   			},
-  			"reloadagents" : {
-  				label	 	: "Reload Agents", 
-  				icon 		: "resource/slc/view-refresh.png",
-  				shortcut 	: "Control+r",
-  				enabled  	: true,
-  				menu	   	: "Launcher",
-  				toolbar  	: "launcher",
-  				callback	: function(e){
-			  		//var req = org.argeo.slc.ria.SlcApi.getListAgentsService("agents");
-			  		//req.send();
-  					this.rootNode.reload();
-  				},
-  				command 	: null
-  			},
   			"reloadtree" : {
   				label	 	: "Reload", 
   				icon 		: "resource/slc/view-refresh.png",
@@ -172,7 +167,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				menu	   	: "Launcher",
   				toolbar  	: "launcher",
   				callback	: function(e){
-  					var selected = this.tree.getSelectedItem();
+  					var selected = this.tree.getSelection()[0];
   					if(selected.classname == "org.argeo.ria.components.DynamicTreeFolder"){
   						if(selected.getUserData("moduleData")){
   							// It's a "module" node, first trigger the reloadBundle.service
@@ -200,7 +195,11 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				},  
   				selectionChange : function(viewId, selection){
   					if(viewId != "form:tree") return;
-  					if(!selection || selection.length != 1) return;
+  					if(!selection) return;
+  					if(selection.length > 1){
+  						this.setEnabled(false);
+  						return;
+  					}
   					var item = selection[0];
   					if(!qx.Class.isSubClassOf(qx.Class.getByName(item.classname), qx.ui.tree.AbstractTreeItem)) return;
   					this.setEnabled(false);
@@ -386,10 +385,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		this._createLayout();
   		this.getView().setViewTitle("Execution Launcher");
   		var reloadHandler = function(message){
-  			// Delay reload to be sure the jms was first integrated by the db, then ask the db.
-  			qx.event.Timer.once(function(){
-  				org.argeo.ria.event.CommandsManager.getInstance().getCommandById("reloadagents").execute();
-  			}, this, 1000);	  		
+  			this.rootNode.reload();
   		}
   		this._amqClient.addListener("agentregister", "topic://agent.register", reloadHandler, this);
 		this._amqClient.addListener("agentunregister", "topic://agent.unregister", reloadHandler, this);
@@ -423,6 +419,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		
 		this.tree = new qx.ui.tree.Tree();
 		this.tree.setDecorator(null);
+		this.tree.setSelectionMode("multi");
 		var dragData = {
 			"file" : {
 				"type" : ["items"], 
@@ -531,8 +528,10 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			if(afterItem.classname != "qx.ui.form.ListItem") afterItem = null;
 			if(!target){
 				target = this.list.getSortedSelection()[0];
+				this._addFlowToBatch(target, afterItem);
+			}else{
+				this._addFlowToBatch(null, afterItem);
 			}
-			this._addFlowToBatch(target, afterItem);
 		}, this);		
 		this.listPane.add(this.list, {edge:"center"});		
 		
@@ -562,30 +561,36 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 	 * @param target {mixed} The dropped target, can be a TreeFile (add) or a ListItem (reorder).
 	 * @param after {qx.ui.form.ListItem} Optional list item : if set, the flow will be added as a new list item positionned after this one. 
 	 */
-	_addFlowToBatch : function(target, after){
-		
-		// Empty or list target
-		if(!target){
-			 target = this.tree.getSelectedItem();			 
-			 if(!target) return;			 
-		}else if(target.classname == "qx.ui.form.ListItem"){
+	_addFlowToBatch : function(target, after, skipAutoOpen){
+		if(target && target.classname == "qx.ui.form.ListItem"){
 			if(!after) return;
 			if(after == "first") this.list.addAt(target, 0);
 			else this.list.addAfter(target, after);
 			return;
 		}
-		// Folder case, not really working yet.
+		if(!target){
+			if(this.tree.isSelectionEmpty()){
+				return;
+			}
+			selection = this.tree.getSelection();
+			if(selection.length > 1){
+				for(var i=0;i<selection.length;i++){
+					this._addFlowToBatch(selection[i], null, true);
+				}
+				return;
+			}else{
+				target = selection[0];
+			}
+		}
+		
+		// Folder case
 		if(qx.Class.isSubClassOf(qx.Class.getByName(target.classname), qx.ui.tree.TreeFolder)){
-			// Cancel auto-open
-			var origAutoOpen = this.getAutoOpen();
-			this.setAutoOpen(false);
 			var allChildren = target.getItems(true);
 			for(var i=0;i<allChildren.length;i++){
 				if(allChildren[i].getUserData("executionFlow")){
-					this._addFlowToBatch(allChildren[i]); 
+					this._addFlowToBatch(allChildren[i], null, true); 
 				}
 			}
-			this.setAutoOpen(origAutoOpen);
 			return;
 		}
 		
@@ -618,7 +623,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			this.list.add(item);
 		}
 		this.list.select(item);
-		if(this.getAutoOpen()){
+		if(this.getAutoOpen() && !skipAutoOpen){
 			this.getCommands()["editexecutionspecs"].command.execute();
 		}
 	},
