@@ -32,8 +32,10 @@ public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 		bundlesPom.append("\t\t<artifactId>"
 				+ project.getParentArtifact().getArtifactId()
 				+ "</artifactId>\n");
-		bundlesPom.append("\t\t<version>"
-				+ project.getParentArtifact().getVersion() + "</version>\n");
+		bundlesPom
+				.append("\t\t<version>"
+						+ project.getParentArtifact().getBaseVersion()
+						+ "</version>\n");
 		bundlesPom.append("\t</parent>\n");
 		bundlesPom
 				.append("\t<groupId>" + project.getGroupId() + "</groupId>\n");

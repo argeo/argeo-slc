@@ -15,13 +15,32 @@
 			<plugin>
 				<groupId>org.argeo.slc.maven</groupId>
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
-				<version>0.1.5</version>
+				<version>0.1.6-SNAPSHOT</version>
 				<configuration>
 					<execDir>exec/server</execDir>
 					<jvmArgs>
 						<jvmArg>-Xmx256m</jvmArg>
-						<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg>
+						<!-- <jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg> -->
 					</jvmArgs>
+					<systemProperties>
+						<slc.osgi.bundles>../../site;in=*</slc.osgi.bundles>
+						<slc.osgi.start>
+							org.argeo.dep.osgi.catalina.start,
+							org.springframework.osgi.extender,
+							org.springframework.osgi.web.extender,
+							org.springframework.osgi.samples.simplewebapp,
+							org.argeo.slc.server.activemq,
+							org.argeo.slc.server.hsqldb,
+							org.argeo.slc.server.hibernate,
+							org.argeo.slc.server.services,
+							org.argeo.slc.server.jms,
+							org.argeo.slc.webapp,
+							org.argeo.slc.ria,
+							org.argeo.slc.support.equinox,
+							org.argeo.slc.demo.basic,
+							org.argeo.slc.demo.manager
+						</slc.osgi.start>
+					</systemProperties>
 				</configuration>
 			</plugin>
 			<!--

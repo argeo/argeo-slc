@@ -1,15 +1,22 @@
 package org.argeo.slc.maven.plugin;
 
 import java.io.File;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.versioning.InvalidVersionSpecificationException;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.archiver.manager.ArchiverManager;
@@ -48,6 +55,9 @@ public class DefaultMavenDependencyManager implements MavenDependencyManager {
 	 * @readonly
 	 */
 	protected ArchiverManager archiverManager;
+
+	/** @component */
+	protected ArtifactMetadataSource artifactMetadataSource;
 
 	public DefaultMavenDependencyManager() {
 	}
@@ -94,4 +104,33 @@ public class DefaultMavenDependencyManager implements MavenDependencyManager {
 					+ " to: " + location + "\r\n" + e.toString(), e);
 		}
 	}
+
+	public Set getTransitiveProjectDependencies(MavenProject project,
+			List remoteRepos, ArtifactRepository local)
+			throws InvalidDependencyVersionException,
+			ArtifactNotFoundException, ArtifactResolutionException {
+		Set artifacts = project.createArtifacts(this.factory, null, null);
+
+		ArtifactResolutionResult arr = resolver.resolveTransitively(artifacts,
+				project.getArtifact(), local, remoteRepos,
+				this.artifactMetadataSource, null);
+
+		// Order, just for display
+		Set dependencies = new TreeSet(new ArtifactComparator());
+		dependencies.addAll(arr.getArtifacts());
+		return dependencies;
+	}
+
+	protected static class ArtifactComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			Artifact a1 = (Artifact) o1;
+			Artifact a2 = (Artifact) o2;
+
+			if (!a1.getGroupId().equals(a2.getGroupId()))
+				return a1.getGroupId().compareTo(a2.getGroupId());
+			else
+				return a1.getArtifactId().compareTo(a2.getArtifactId());
+		}
+	}
+
 }
