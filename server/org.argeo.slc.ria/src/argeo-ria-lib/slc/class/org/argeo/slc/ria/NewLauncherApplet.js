@@ -399,8 +399,6 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 	close : function(){
   		this._amqClient.removeListener("agentregister", "topic://agent.register");
   		this._amqClient.removeListener("agentunregister", "topic://agent.unregister");
-  		this._amqClient.removeListener("modulesResponse", "topic://modulesManager.response");
-  		this.setRegisteredAgents({});
 		this._amqClient.stopPolling();
 	},
 	  	
