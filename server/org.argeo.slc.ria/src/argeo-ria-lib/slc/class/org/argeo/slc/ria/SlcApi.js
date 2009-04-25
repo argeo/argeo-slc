@@ -217,12 +217,14 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update 
   	 * @return {qx.io.remote.Request}
   	 */
-  	getListModulesService : function(fireReloadEventType, iLoadStatusables){
-  		return org.argeo.slc.ria.SlcApi.getServiceRequest(
+  	getListModulesService : function(agentId, fireReloadEventType, iLoadStatusables){
+  		var req = org.argeo.slc.ria.SlcApi.getServiceRequest(
   			org.argeo.slc.ria.SlcApi.LIST_MODULES_SERVICE,
   			fireReloadEventType,
   			iLoadStatusables
   		);
+  		req.setParameter("agentId", agentId);
+  		return req;
   	},
   	
   	/**

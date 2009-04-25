@@ -33,23 +33,28 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		init : true,
   		check : "Boolean"
   	},
+  	batchAgentId : {
+  		init : null,
+  		nullable : true,
+  		check : "String",
+  		event : "changeBatchAgentId"
+  	},
   	/**
   	 * Commands definition, see {@link org.argeo.ria.event.CommandsManager#definitions} 
   	 */
   	commands : {
   		init : {
   			"submitform" : {
-  				label	 	: "Execute Batch On...", 
+  				label	 	: "Execute Batch", 
   				icon 		: "resource/slc/media-playback-start.png",
   				shortcut 	: null,
-  				enabled  	: true,
+  				enabled  	: false,
   				menu	   	: "Launcher",
-  				toolbar  	: null,
-  				callback	: function(e){},
-  				submenu		: [],
-  				submenuCallback : function(commandId){
-  					//alert("Execute Batch on Agent "+commandId);
-  					this.executeBatchOnAgent(commandId);
+  				toolbar  	: "launcher",
+  				callback	: function(e){
+  					if(this.getBatchAgentId()){
+	  					this.executeBatchOnAgent(this.getBatchAgentId());
+  					}
   				},
   				command 	: null
   			},  			
@@ -99,14 +104,21 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				toolbar  	: null,
   				callback	: function(e){
   					var sel = this.list.getSortedSelection();
-  					var item = sel[0];
-  					 var specEditor = new org.argeo.slc.ria.execution.SpecEditor(item.getUserData("batchEntrySpec"));
-  					specEditor.attachAndShow();
+  					var spec = sel[0].getUserData("batchEntrySpec");
+  					if(spec.hasEditableValues()){
+	  					var specEditor = new org.argeo.slc.ria.execution.SpecEditor(spec);
+	  					specEditor.attachAndShow();
+  					}
   				},
   				selectionChange : function(viewId, selection){
   					if(viewId != "form:list") return;
   					this.setEnabled(false);
-  					if((selection && selection.length == 1)) this.setEnabled(true);
+  					if((selection && selection.length == 1)) {
+  						var selectedItemSpec = selection[0].getUserData("batchEntrySpec");
+  						if(selectedItemSpec.hasEditableValues()){
+	  						this.setEnabled(true);
+  						}
+  					}
   				},
   				command 	: null
   			},
@@ -124,6 +136,9 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   					modal.addListener("ok", function(){
 				  		for(var i=0;i<sel.length;i++){
 				  			this.list.remove(sel[i]);
+				  		}
+				  		if(!this.list.hasChildren()){
+				  			this.setBatchAgentId(null);
 				  		}
   					}, this);
   					modal.attachAndShow();  					
@@ -143,8 +158,9 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				menu	   	: "Launcher",
   				toolbar  	: "launcher",
   				callback	: function(e){
-			  		var req = org.argeo.slc.ria.SlcApi.getListAgentsService("agents");
-			  		req.send();
+			  		//var req = org.argeo.slc.ria.SlcApi.getListAgentsService("agents");
+			  		//req.send();
+  					this.rootNode.reload();
   				},
   				command 	: null
   			},
@@ -195,18 +211,81 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				command 	: null
   			}
   		}
-  	},
-  	/**
-  	 * A map containing all currently registered agents.
-  	 */
-  	registeredTopics : {
-  		init : {},
-  		check : "Map", 
-  		event : "changeRegisteredTopics"
   	}
   },
 
   statics : {
+  	/**
+  	 * Static loader for the "agent" level (first level)
+  	 * @param folder {qx.ui.tree.TreeFolder} The root Tree Folder.
+  	 */
+  	agentLoader : function(folder){
+  		
+  		var req = org.argeo.slc.ria.SlcApi.getListAgentsService("agents");
+  		var agents = {};
+  		req.addListener("completed", function(response){
+			var xmlDoc = response.getContent();
+			var nodes = org.argeo.ria.util.Element.selectNodes(xmlDoc, "//slc:slc-agent-descriptor");
+			//var newTopics = {};
+			var modulesLoader = org.argeo.slc.ria.NewLauncherApplet.modulesLoader;
+			for(var i=0;i<nodes.length;i++){
+				var uuid = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "@uuid");
+				var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host");
+				agents[uuid] = host;
+				var agentFolder = new org.argeo.ria.components.DynamicTreeFolder(
+					host + ' ('+uuid+')',
+					modulesLoader,
+					"Loading Modules...", 
+					folder.getDragData()
+				);
+				agentFolder.setUserData("agentUuid", uuid);
+				agentFolder.setIcon("resource/slc/mime-xsl.png");
+				folder.add(agentFolder);				
+			}
+			folder.setUserData("agentsMap", agents);
+			folder.setLoaded(true);
+  		});
+  		req.addListener("failed", function(response){folder.setLoaded(true);});
+  		req.send();
+		
+  	},
+  	
+	/**
+	 * Loader for the "modules" level : takes any tree folder, currently the root folder. 
+	 * @param folder {qx.ui.tree.TreeFolder} The root folder
+	 */
+	modulesLoader : function(folder){
+		var agentId = folder.getUserData("agentUuid");
+		var req = org.argeo.slc.ria.SlcApi.getListModulesService(agentId);
+		req.addListener("completed", function(response){
+			var descriptors = org.argeo.ria.util.Element.selectNodes(response.getContent(), "slc:object-list/slc:execution-module-descriptor");
+			var mods = {};
+			for(var i=0;i<descriptors.length; i++){
+				var name = org.argeo.ria.util.Element.getSingleNodeText(descriptors[i], "slc:name");
+				var version = org.argeo.ria.util.Element.getSingleNodeText(descriptors[i], "slc:version");
+				if(!mods[name]) mods[name] = [];
+				mods[name].push(version);
+			}
+			var flowLoader = org.argeo.slc.ria.NewLauncherApplet.flowLoader;
+			for(var key in mods){
+				for(var i=0;i<mods[key].length;i++){
+					var versionFolder = new org.argeo.ria.components.DynamicTreeFolder(
+						key + ' ('+mods[key][i]+')',
+						flowLoader,
+						"Loading Flows",
+						folder.getDragData()
+					);
+					folder.add(versionFolder);
+					versionFolder.setUserData("moduleData", {name:key, version:mods[key][i]});
+					versionFolder.setUserData("agentUuid", agentId);
+				}
+				folder.setLoaded(true);
+			}
+		});
+		req.addListener("failed", function(response){folder.setLoaded(true);});
+		req.send();		
+	},
+	
   	/**
   	 * Loader for the "flow" level : takes a folder containing "moduleData" and create its children. 
   	 * @param folder {qx.ui.tree.TreeFolder} A Tree folder containing in the key "moduleData" of its user data a map containing the keys {name,version} 
@@ -228,53 +307,29 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				//indexStub ++;
   				file.setUserData("executionModule", executionModule);
   				file.setUserData("executionFlow", execFlows[key]);
-  				org.argeo.slc.ria.NewLauncherApplet.attachNodeByPath(folder, path, file);
-  				folder.appendDragData(file);
+  				file.setUserData("agentUuid", folder.getUserData("agentUuid"));
+  				org.argeo.slc.ria.NewLauncherApplet.attachNodeByPath(
+  					folder, 
+  					path, 
+  					file, 
+  					{agentUuid:folder.getUserData("agentUuid")}
+  				);
+  				folder.appendDragData(file);  				
   			}
   			folder.setLoaded(true);
   		});
+  		req.addListener("failed", function(response){folder.setLoaded(true);});
   		req.send();		
 	},
 	
 	/**
-	 * Loader for the "modules" level : takes any tree folder, currently the root folder. 
-	 * @param folder {qx.ui.tree.TreeFolder} The root folder
-	 */
-	modulesLoader : function(folder){
-		var req = org.argeo.slc.ria.SlcApi.getListModulesService();
-		req.addListener("completed", function(response){
-			var descriptors = org.argeo.ria.util.Element.selectNodes(response.getContent(), "slc:object-list/slc:execution-module-descriptor");
-			var mods = {};
-			for(var i=0;i<descriptors.length; i++){
-				var name = org.argeo.ria.util.Element.getSingleNodeText(descriptors[i], "slc:name");
-				var version = org.argeo.ria.util.Element.getSingleNodeText(descriptors[i], "slc:version");
-				if(!mods[name]) mods[name] = [];
-				mods[name].push(version);
-			}
-			var flowLoader = org.argeo.slc.ria.NewLauncherApplet.flowLoader;
-			for(var key in mods){
-				for(var i=0;i<mods[key].length;i++){
-					var versionFolder = new org.argeo.ria.components.DynamicTreeFolder(
-						key + ' ('+mods[key][i]+')',
-						flowLoader,
-						"Loading Flows",
-						folder.getDragData()
-					);
-					folder.add(versionFolder);
-					versionFolder.setUserData("moduleData", {name:key, version:mods[key][i]});
-				}
-				folder.setLoaded(true);
-			}
-		});
-		req.send();		
-	},
-	
-	/**
 	 * Parse a string path and search if there is a root node.
-	 * @param rootNode {qx.ui.tree.AbstractTreeItem} The parent node (containing data model)
+	 * @param rootNode {org.argeo.ria.components.DynamicTreeFolder} The parent node (containing data model)
 	 * @param path {String} The path of the node to attach.
+	 * @param childNode {qx.ui.tree.TreeFile} The leaf node
+	 * @param userData {Map} User data to attach at all levels.
 	 */
-	attachNodeByPath : function(rootNode, path, childNode){
+	attachNodeByPath : function(rootNode, path, childNode, userData){
 		if(!path || path=="" || path == "/" ){
 			rootNode.add(childNode);
 			return;
@@ -293,6 +348,10 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			crtPath += parts[i];
 			if(!model[parts[i]]) {
 				var virtualFolder = new qx.ui.tree.TreeFolder(parts[i]);
+				if(userData && qx.lang.Object.getLength(userData)){
+					for(var key in userData){ virtualFolder.setUserData(key, userData[key]); }
+				}
+				rootNode.appendDragData(virtualFolder);
 				model[parts[i]] = virtualFolder;
 				crtFolder.add(virtualFolder);
 				crtFolder = virtualFolder;
@@ -316,6 +375,8 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		this._amqClient = org.argeo.ria.remote.JmsClient.getInstance();
   		this._amqClient.uri = "/org.argeo.slc.webapp/amq";
   		this._amqClient.startPolling();
+  		this._emptyAgentString = "Empty Batch";
+		this._crtAgentString = "Target Agent : ";  		
   	},
   	
   	/**
@@ -324,22 +385,6 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   	load : function(){
   		this._createLayout();
   		this.getView().setViewTitle("Execution Launcher");
-		org.argeo.ria.remote.RequestManager.getInstance().addListener("reload", function(reloadEvent){
-			if(reloadEvent.getDataType()!= "agents") return ;
-			var xmlDoc = reloadEvent.getContent();
-			var nodes = org.argeo.ria.util.Element.selectNodes(xmlDoc, "//slc:slc-agent-descriptor");
-			var newTopics = {};
-			for(var i=0;i<nodes.length;i++){
-				var uuid = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "@uuid");
-				var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host");
-				newTopics[uuid] = host+" ("+uuid+")";
-			}
-			this.setRegisteredTopics(newTopics);
-		}, this);
-  		this.addListener("changeRegisteredTopics", function(event){
-  			//this._refreshTopicsSubscriptions(event);
-  			this._feedSelector(event);
-  		}, this);
   		var reloadHandler = function(message){
   			// Delay reload to be sure the jms was first integrated by the db, then ask the db.
   			qx.event.Timer.once(function(){
@@ -348,7 +393,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		}
   		this._amqClient.addListener("agentregister", "topic://agent.register", reloadHandler, this);
 		this._amqClient.addListener("agentunregister", "topic://agent.unregister", reloadHandler, this);
-  		reloadHandler();  		
+  		//reloadHandler();    		
   	},
   	 
 	addScroll : function(){
@@ -359,7 +404,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   		this._amqClient.removeListener("agentregister", "topic://agent.register");
   		this._amqClient.removeListener("agentunregister", "topic://agent.unregister");
   		this._amqClient.removeListener("modulesResponse", "topic://modulesManager.response");
-  		this.setRegisteredTopics({});
+  		this.setRegisteredAgents({});
 		this._amqClient.stopPolling();
 	},
 	  	
@@ -382,17 +427,21 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			"file" : {
 				"type" : ["items"], 
 				"action":["move"]
-			}
+			}/*,
+			"folder" : {
+				"type" : ["items"], 
+				"action":["move"]
+			}*/		
 		};
 		
-		var root = new org.argeo.ria.components.DynamicTreeFolder(
-			"All Tests", 
-			this.self(arguments).modulesLoader,
-			"Loading Modules",
+		this.rootNode = new org.argeo.ria.components.DynamicTreeFolder(
+			"Tests", 
+			this.self(arguments).agentLoader,
+			"Loading Agents",
 			dragData
 		);
-		this.tree.setRoot(root);
-		root.setOpen(true);
+		this.tree.setRoot(this.rootNode);
+		this.rootNode.setOpen(true);
 		this.tree.setContextMenu(org.argeo.ria.event.CommandsManager.getInstance().createMenuFromIds(["addtobatch", "reloadtree"]));
 		
 		this.tree.addListener("changeSelection", function(e){
@@ -410,15 +459,29 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		var toolGroup = new qx.ui.toolbar.Part();		
 		listToolBar.add(toolGroup);
 		
-		var execButton = this.getCommands()["submitform"].command.getToolbarButton();
-		toolGroup.add(execButton);
-
+		this.batchLabel = new qx.ui.basic.Atom(this._emptyAgentString, "resource/slc/mime-xsl.png");
+		this.batchLabel.setPadding(6);
+		toolGroup.add(this.batchLabel);
+  		this.addListener("changeBatchAgentId", function(event){
+  			var value = event.getData();
+  			if(value == null){
+  				this.batchLabel.setLabel(this._emptyAgentString);
+  			}else{
+  				var agentsList = this.rootNode.getUserData("agentsMap");
+  				this.batchLabel.setLabel(this._crtAgentString + agentsList[value]);
+  			}
+  		}, this);
+		
 	    listToolBar.addSpacer();
 	    listToolBar.setPaddingRight(4);
+		var execButton = this.getCommands()["submitform"].command.getToolbarButton();	    
 	    var delButton = this.getCommands()["removefrombatch"].command.getToolbarButton();
 	    var formButton = this.getCommands()["editexecutionspecs"].command.getToolbarButton();
+	    execButton.setShow("icon");
 	    delButton.setShow("icon");
 	    formButton.setShow("icon");
+	    listToolBar.add(execButton);
+	    listToolBar.add(new qx.ui.toolbar.Separator());
 	    listToolBar.add(formButton);
 	    listToolBar.add(delButton);
 				
@@ -483,6 +546,13 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			}
 		}, this);
 		
+		listChangeListener = function(){
+			var command = org.argeo.ria.event.CommandsManager.getInstance().getCommandById("submitform");
+			command.setEnabled(this.list.hasChildren());
+		};
+		this.list.addListener("addItem", listChangeListener, this);
+		this.list.addListener("removeItem", listChangeListener, this);
+		
 		splitPane.add(this.tree, 0);
 		splitPane.add(this.listPane, 1);		
 	},
@@ -493,21 +563,45 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 	 * @param after {qx.ui.form.ListItem} Optional list item : if set, the flow will be added as a new list item positionned after this one. 
 	 */
 	_addFlowToBatch : function(target, after){
-		//this.debug(target);
+		
+		// Empty or list target
 		if(!target){
-			 target = this.tree.getSelectedItem();
-			 if(!target) return;
+			 target = this.tree.getSelectedItem();			 
+			 if(!target) return;			 
 		}else if(target.classname == "qx.ui.form.ListItem"){
 			if(!after) return;
 			if(after == "first") this.list.addAt(target, 0);
 			else this.list.addAfter(target, after);
 			return;
 		}
+		// Folder case, not really working yet.
+		if(qx.Class.isSubClassOf(qx.Class.getByName(target.classname), qx.ui.tree.TreeFolder)){
+			var allChildren = target.getItems(true);
+			for(var i=0;i<allChildren.length;i++){				
+				if(allChildren[i].classname == "qx.ui.tree.TreeFile"){
+					this._addFlowToBatch(allChildren[i]);
+				}else{
+					allChildren[i].setOpen(true);
+				}
+			}
+			return;
+		}
+		
+		// Check agent Uuid against current batch agent Id.
+		var agentUuid = target.getUserData("agentUuid");
+		if(!this.getBatchAgentId()){
+			this.setBatchAgentId(agentUuid);
+		}else if(this.getBatchAgentId() != agentUuid){
+			var modal = new org.argeo.ria.components.Modal("Wrong Agent!", null, "Batch can contain tests only of the same agent!");
+			modal.attachAndShow();
+			return;
+		}
+		
 		var executionModule = target.getUserData("executionModule");
 		var executionFlow = target.getUserData("executionFlow");
 		var batchEntry = new org.argeo.slc.ria.execution.BatchEntrySpec(executionModule, executionFlow);
 		var label = batchEntry.getLabel();
-	  	var icon = target.getIcon();
+	  	var icon = target.getIcon() || "mimetypes/office-document.png";
 		var item = new qx.ui.form.ListItem(label, icon);
 		item.addListener("dblclick", function(e){
 			this.getCommands()["editexecutionspecs"].command.execute();
@@ -526,30 +620,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			this.getCommands()["editexecutionspecs"].command.execute();
 		}
 	},
-			
-	/**
-	 * Refresh the selector when the topics are updated.
-	 * @param changeTopicsEvent {qx.event.type.DataEvent} The reload event.
-	 */
-	_feedSelector : function(changeTopicsEvent){
-		var topics = changeTopicsEvent.getData();
-		var command = this.getCommands()["submitform"].command;
-		command.setEnabled(false);
-		var menu = [];
-		for(var key in topics){
-			var submenu = {"label":topics[key],"icon":"resource/slc/mime-xsl.png", "commandId":key};
-			menu.push(submenu);
-		}
-		// FAKE!!
-		if(!menu.length){
-			menu.push({"label":"Fake Agent", "icon":"resource/slc/mime-xsl.png", "commandId":"fake_agent_uuid"});
-		}
-		command.clearMenus();
-		command.setMenu(menu);
-		if(menu.length) command.setEnabled(true);
-	},
-		
-	
+				
 	/**
 	 * Called at execution
 	 * @param agentUuid {String} The id of the target agent

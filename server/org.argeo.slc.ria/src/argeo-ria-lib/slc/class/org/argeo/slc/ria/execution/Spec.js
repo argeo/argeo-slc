@@ -38,6 +38,19 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 	},
 	
 	members : {
+		hasEditableValues : function(){
+			var values = this.getValues();
+			if(!values) return false;
+			var editables = 0;
+			for(var key in values){
+				var valueObj = values[key];
+				if(!valueObj.getHidden() && !valueObj.getFrozen()){
+					editables ++;
+				}
+			}
+			return (editables > 0);
+		},
+		
 		/**
 		 * Init the object from an XML representation
 		 * @param xmlNode {Node} Castor representation of this object
