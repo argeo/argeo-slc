@@ -66,10 +66,8 @@ public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 
 				// Write manifest
 				FileOutputStream out = new FileOutputStream(manifestFile);
-				bundlePackage.getManifest().getMainAttributes().put(
-						Attributes.Name.MANIFEST_VERSION, "1.0");
 
-				System.out.println("# BUNDLE "
+				System.out.println("\n# BUNDLE "
 						+ bundlePackage.getArtifact().getArtifactId());
 				Attributes mainAttrs = bundlePackage.getManifest()
 						.getMainAttributes();
