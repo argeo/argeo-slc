@@ -239,7 +239,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 					folder.getDragData()
 				);
 				agentFolder.setUserData("agentUuid", uuid);
-				agentFolder.setIcon("resource/slc/mime-xsl.png");
+				agentFolder.setIcon("resource/slc/mime-xsl-22.png");
 				folder.add(agentFolder);				
 			}
 			folder.setUserData("agentsMap", agents);
@@ -427,11 +427,11 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			"file" : {
 				"type" : ["items"], 
 				"action":["move"]
-			}/*,
+			},
 			"folder" : {
 				"type" : ["items"], 
 				"action":["move"]
-			}*/		
+			}		
 		};
 		
 		this.rootNode = new org.argeo.ria.components.DynamicTreeFolder(
@@ -459,7 +459,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		var toolGroup = new qx.ui.toolbar.Part();		
 		listToolBar.add(toolGroup);
 		
-		this.batchLabel = new qx.ui.basic.Atom(this._emptyAgentString, "resource/slc/mime-xsl.png");
+		this.batchLabel = new qx.ui.basic.Atom(this._emptyAgentString, "resource/slc/mime-xsl-22.png");
 		this.batchLabel.setPadding(6);
 		toolGroup.add(this.batchLabel);
   		this.addListener("changeBatchAgentId", function(event){
@@ -576,14 +576,16 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		}
 		// Folder case, not really working yet.
 		if(qx.Class.isSubClassOf(qx.Class.getByName(target.classname), qx.ui.tree.TreeFolder)){
+			// Cancel auto-open
+			var origAutoOpen = this.getAutoOpen();
+			this.setAutoOpen(false);
 			var allChildren = target.getItems(true);
-			for(var i=0;i<allChildren.length;i++){				
-				if(allChildren[i].classname == "qx.ui.tree.TreeFile"){
-					this._addFlowToBatch(allChildren[i]);
-				}else{
-					allChildren[i].setOpen(true);
+			for(var i=0;i<allChildren.length;i++){
+				if(allChildren[i].getUserData("executionFlow")){
+					this._addFlowToBatch(allChildren[i]); 
 				}
 			}
+			this.setAutoOpen(origAutoOpen);
 			return;
 		}
 		
@@ -601,7 +603,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		var executionFlow = target.getUserData("executionFlow");
 		var batchEntry = new org.argeo.slc.ria.execution.BatchEntrySpec(executionModule, executionFlow);
 		var label = batchEntry.getLabel();
-	  	var icon = target.getIcon() || "mimetypes/office-document.png";
+	  	var icon = target.getIcon() || "resource/slc/office-document.png";
 		var item = new qx.ui.form.ListItem(label, icon);
 		item.addListener("dblclick", function(e){
 			this.getCommands()["editexecutionspecs"].command.execute();
