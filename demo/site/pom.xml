@@ -7,23 +7,18 @@
 		<version>0.11.3-SNAPSHOT</version>
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
-	<artifactId>argeo-slc-demo</artifactId>
-	<packaging>pom</packaging>
-	<name>Argeo SLC Demo</name>
-	<modules>
-		<module>org.argeo.slc.demo.basic</module>
-		<module>org.argeo.slc.demo.manager</module>
-		<module>org.argeo.slc.demo.agent</module>
-		<module>org.argeo.slc.demo.deploy</module>
-		<module>org.argeo.slc.demo.log4j</module>
-	</modules>
-	<dependencies>
-	<!-- 
-		<dependency>
-			<groupId>org.argeo.slc.demo</groupId>
-			<artifactId>org.argeo.slc.demo.basic</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		 -->
-	</dependencies>
+	<groupId>org.argeo.slc.demo</groupId>
+	<artifactId>org.argeo.slc.demo.bundles</artifactId>
+	<packaging>bundles</packaging>
+	<name>Argeo SLC Demo Bundles</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.argeo.slc.maven</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+				<version>0.1.6</version>
+				<extensions>true</extensions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

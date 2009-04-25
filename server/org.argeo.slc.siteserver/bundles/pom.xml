@@ -11,8 +11,6 @@
 	<artifactId>org.argeo.slc.server.bundles</artifactId>
 	<packaging>bundles</packaging>
 	<name>Argeo SLC Server Bundles</name>
-	<properties>
-	</properties>
 	<build>
 		<plugins>
 			<plugin>

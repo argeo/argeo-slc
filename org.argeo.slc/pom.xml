@@ -20,6 +20,7 @@
 		<version.equinox>3.4.2.R34x_v20080826-1230</version.equinox>
 		<version.maven-bundle-plugin>2.0.0</version.maven-bundle-plugin>
 		<version.activemq>5.2.0.0005</version.activemq>
+		<version.maven-argeo-osgi>0.1.7</version.maven-argeo-osgi>
 	</properties>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc</connection>
@@ -179,6 +180,11 @@ limitations under the License.
 							<version>2.3.0</version> </dependency>
 						-->
 					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.argeo.slc.maven</groupId>
+					<artifactId>maven-argeo-osgi-plugin</artifactId>
+					<version>${version.maven-argeo-osgi}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -922,4 +928,17 @@ limitations under the License.
 			</url>
 		</site>
 	</distributionManagement>
+	<profiles>
+		<profile>
+			<id>developer</id>
+			<distributionManagement>
+				<snapshotRepository>
+					<uniqueVersion>true</uniqueVersion>
+					<id>argeo-snapshots-restricted</id>
+					<name>Argeo FOSS Snapshots Repository</name>
+					<url>scpexe://argeo.org/var/argeo/maven2/argeo-snapshots</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
 </project>

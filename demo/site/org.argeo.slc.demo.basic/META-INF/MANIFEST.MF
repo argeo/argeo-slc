@@ -1,6 +1,6 @@
 Bundle-Name: Basic Plug-in
 Bundle-SymbolicName: org.argeo.slc.demo.basic
-Bundle-Version: 1.0.0
+Bundle-Version: 0.11.3.qualifier
 Spring-Context: conf/*,conf/testCases/*
 Require-Bundle: 
  org.argeo.slc.support.equinox,

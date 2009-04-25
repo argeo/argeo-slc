@@ -7,64 +7,27 @@
 		<version>0.11.3-SNAPSHOT</version>
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
-	<artifactId>argeo-slc-demo</artifactId>
+	<groupId>org.argeo.slc.demo</groupId>
+	<artifactId>deploy</artifactId>
 	<packaging>pom</packaging>
-	<name>Argeo SLC Demo</name>
+	<name>Argeo SLC Demo Deploy</name>
+	<modules>
+		<module>site</module>
+	</modules>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.argeo.slc.maven</groupId>
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
-				<version>0.1.6</version>
 				<configuration>
-					<execDir>exec/server</execDir>
-					<jvmArgs>
-						<jvmArg>-Xmx256m</jvmArg>
-						<!-- <jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg> -->
-					</jvmArgs>
 					<systemProperties>
-						<slc.osgi.bundles>../../site;in=*</slc.osgi.bundles>
-						<slc.osgi.start>
-							org.argeo.dep.osgi.catalina.start,
-							org.springframework.osgi.extender,
-							org.springframework.osgi.web.extender,
-							org.springframework.osgi.samples.simplewebapp,
-							org.argeo.slc.server.activemq,
-							org.argeo.slc.server.hsqldb,
-							org.argeo.slc.server.hibernate,
-							org.argeo.slc.server.services,
-							org.argeo.slc.server.jms,
-							org.argeo.slc.webapp,
-							org.argeo.slc.ria,
-							org.argeo.slc.support.equinox,
-							org.argeo.slc.demo.basic,
-							org.argeo.slc.demo.manager
-						</slc.osgi.start>
+						<slc.osgi.bundles>${basedir}/site;in=*;ex=**/.svn/**</slc.osgi.bundles>
 					</systemProperties>
 				</configuration>
 			</plugin>
-			<!--
-				<plugin> <artifactId>maven-dependency-plugin</artifactId>
-				<executions> <execution> <goals> <goal>copy-dependencies</goal>
-				</goals> <phase>initialize</phase> <configuration>
-				<outputDirectory>lib</outputDirectory>
-				<includeTypes>jar</includeTypes> </configuration> </execution>
-				</executions> </plugin> <plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId> <version>1.1</version>
-				<configuration> <executable>java</executable>
-				<workingDirectory>exec/server</workingDirectory> <arguments>
-				<argument>-Dmyproperty=myvalue</argument> <argument>-jar</argument>
-				<argument>../../lib/org.eclipse.osgi-3.4.2.R34x_v20080826-1230.jar</argument>
-				<argument>-clean</argument> <argument>-console</argument>
-				<argument>-configuration</argument> <argument>conf</argument>
-				</arguments> </configuration> </plugin>
-			-->
-
 		</plugins>
 	</build>
 	<dependencies>
-
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.equinox</artifactId>
@@ -83,5 +46,67 @@
 		</dependency>
 	</dependencies>
 
-
+	<profiles>
+		<profile>
+			<id>server</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.argeo.slc.maven</groupId>
+						<artifactId>maven-argeo-osgi-plugin</artifactId>
+						<configuration>
+							<execDir>target/exec/server</execDir>
+							<jvmArgs>
+								<jvmArg>-Xmx256m</jvmArg>
+								<!--
+									<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg>
+								-->
+							</jvmArgs>
+							<systemProperties>
+								<slc.osgi.start>
+									org.argeo.dep.osgi.catalina.start,
+									org.springframework.osgi.extender,
+									org.springframework.osgi.web.extender,
+									org.springframework.osgi.samples.simplewebapp,
+									org.argeo.slc.server.activemq,
+									org.argeo.slc.server.hsqldb,
+									org.argeo.slc.server.hibernate,
+									org.argeo.slc.server.services,
+									org.argeo.slc.server.jms,
+									org.argeo.slc.webapp,
+									org.argeo.slc.ria,
+									org.argeo.slc.support.equinox,
+									org.argeo.slc.demo.basic,
+									org.argeo.slc.demo.manager
+								</slc.osgi.start>
+							</systemProperties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>agent</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.argeo.slc.maven</groupId>
+						<artifactId>maven-argeo-osgi-plugin</artifactId>
+						<configuration>
+							<execDir>target/exec/agent</execDir>
+							<systemProperties>
+								<slc.osgi.start>
+									org.springframework.osgi.extender,
+									org.argeo.slc.support.equinox,
+									org.argeo.slc.demo.basic,
+									org.argeo.slc.demo.agent,
+									org.argeo.slc.demo.manager
+								</slc.osgi.start>
+							</systemProperties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
