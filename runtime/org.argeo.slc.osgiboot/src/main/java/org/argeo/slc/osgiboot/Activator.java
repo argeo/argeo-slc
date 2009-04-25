@@ -236,7 +236,7 @@ public class Activator implements BundleActivator {
 			}
 
 			for (File file : files)
-					match(matcher, matched, base, file.getName(), pattern);
+				match(matcher, matched, base, file.getName(), pattern);
 		} else {
 			String fullPath = base + '/' + currentPath;
 			if (matched.contains(fullPath))
@@ -386,7 +386,10 @@ public class Activator implements BundleActivator {
 	}
 
 	private static void warn(Object obj) {
-		System.err.println("# WARN " + obj);
+		if (System.getProperty("os.name").contains("Windows"))
+			System.out.println("# WARN " + obj);
+		else
+			System.err.println("# WARN " + obj);
 	}
 
 	static class MavenFile {
