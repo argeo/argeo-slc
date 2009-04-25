@@ -4,11 +4,11 @@
 	<parent>
 		<groupId>org.argeo.slc.maven</groupId>
 		<artifactId>slc-maven</artifactId>
-		<version>0.1.3</version>
+		<version>0.1.4</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.maven.plugin</artifactId>
-	<version>0.1.3-SNAPSHOT</version>
+	<artifactId>org.argeo.slc.maven.shared</artifactId>
+	<version>0.1.3</version>
 	<packaging>jar</packaging>
 	<name>Argeo Maven Plugin Development Support</name>
 
