@@ -13,38 +13,34 @@
 	<build>
 		<plugins>
 			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<phase>initialize</phase>
-						<configuration>
-							<outputDirectory>lib</outputDirectory>
-							<includeTypes>jar</includeTypes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.1</version>
+				<groupId>org.argeo.slc.maven</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+				<version>0.1.5</version>
 				<configuration>
-					<executable>java</executable>
-					<workingDirectory>exec/server</workingDirectory>
-					<arguments>
-						<argument>-Dmyproperty=myvalue</argument>
-						<argument>-jar</argument>
-						<argument>../../lib/org.eclipse.osgi-3.4.2.R34x_v20080826-1230.jar</argument>
-						<argument>-clean</argument>
-						<argument>-console</argument>
-						<argument>-configuration</argument>
-						<argument>conf</argument>
-					</arguments>
+					<execDir>exec/server</execDir>
+					<jvmArgs>
+						<jvmArg>-Xmx256m</jvmArg>
+						<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg>
+					</jvmArgs>
 				</configuration>
 			</plugin>
+			<!--
+				<plugin> <artifactId>maven-dependency-plugin</artifactId>
+				<executions> <execution> <goals> <goal>copy-dependencies</goal>
+				</goals> <phase>initialize</phase> <configuration>
+				<outputDirectory>lib</outputDirectory>
+				<includeTypes>jar</includeTypes> </configuration> </execution>
+				</executions> </plugin> <plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId> <version>1.1</version>
+				<configuration> <executable>java</executable>
+				<workingDirectory>exec/server</workingDirectory> <arguments>
+				<argument>-Dmyproperty=myvalue</argument> <argument>-jar</argument>
+				<argument>../../lib/org.eclipse.osgi-3.4.2.R34x_v20080826-1230.jar</argument>
+				<argument>-clean</argument> <argument>-console</argument>
+				<argument>-configuration</argument> <argument>conf</argument>
+				</arguments> </configuration> </plugin>
+			-->
 
 		</plugins>
 	</build>
@@ -62,7 +58,7 @@
 		<!--  Server -->
 		<dependency>
 			<groupId>org.argeo.slc.server</groupId>
-			<artifactId>deploy</artifactId>
+			<artifactId>bundles</artifactId>
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>

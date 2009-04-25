@@ -34,7 +34,7 @@
 			<plugin>
 				<groupId>org.argeo.slc.maven</groupId>
 				<artifactId>maven-argeo-qooxdoo-plugin</artifactId>
-				<version>0.8.1.4</version>
+				<version>0.8.1.5</version>
 				<executions>
 					<execution>
 						<id>env</id>
