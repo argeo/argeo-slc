@@ -16,7 +16,6 @@
 			<plugin>
 				<groupId>org.argeo.slc.maven</groupId>
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
-				<version>0.1.6</version>
 				<extensions>true</extensions>
 			</plugin>
 		</plugins>

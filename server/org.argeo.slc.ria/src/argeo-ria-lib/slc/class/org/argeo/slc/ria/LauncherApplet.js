@@ -465,7 +465,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		this._amqClient.sendMessage(
 			"topic://agent.newExecution", 
 			slcExec.toXml(), 
-			{"slc-agentId":currentUuid}
+			{"slc_agentId":currentUuid}
 		);
 		// Force logs refresh right now!
 		qx.event.Timer.once(function(){

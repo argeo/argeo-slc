@@ -13,4 +13,10 @@
 		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
 	</bean>
 
+	<bean id="slcTemplate.jms.listenerAdapterCastor"
+		class="org.springframework.jms.listener.adapter.MessageListenerAdapter"
+		abstract="true">
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+	</bean>
+
 </beans>

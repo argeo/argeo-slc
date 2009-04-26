@@ -6,15 +6,11 @@ import java.util.UUID;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.runtime.AbstractAgent;
-import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.springframework.beans.factory.DisposableBean;
@@ -24,7 +20,7 @@ import org.springframework.jms.support.converter.MessageConverter;
 
 /** JMS based implementation of SLC Agent. */
 public class JmsAgent extends AbstractAgent implements SlcAgent,
-		InitializingBean, DisposableBean, MessageListener {
+		InitializingBean, DisposableBean {
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
 
 	private final SlcAgentDescriptor agentDescriptor;
@@ -69,27 +65,25 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 		this.agentUnregister = agentUnregister;
 	}
 
-	public void onMessage(Message message) {
-		// FIXME: we filter the messages on the client side,
-		// because of a weird problem with selector since moving to OSGi
-		try {
-			if (message.getStringProperty("slc-agentId").equals(
-					agentDescriptor.getUuid())) {
-				runSlcExecution((SlcExecution) messageConverter
-						.fromMessage(message));
-			}
-		} catch (JMSException e) {
-			throw new SlcException("Cannot convert message " + message, e);
-		}
-
-	}
+	/*
+	 * public void onMessage(Message message) { // FIXME: we filter the messages
+	 * on the client side, // because of a weird problem with selector since
+	 * moving to OSGi try { if (message.getStringProperty("slc-agentId").equals(
+	 * agentDescriptor.getUuid())) { runSlcExecution((SlcExecution)
+	 * messageConverter .fromMessage(message)); } else { if
+	 * (log.isDebugEnabled()) log.debug("Filtered out message " + message); } }
+	 * catch (JMSException e) { throw new SlcException("Cannot convert message "
+	 * + message, e); }
+	 * 
+	 * }
+	 */
 
 	public String getMessageSelector() {
-		String messageSelector = "slc-agentId=" + agentDescriptor.getUuid()
-				+ "";
+		String messageSelector = "slc_agentId='" + agentDescriptor.getUuid()
+				+ "'";
 		// String messageSelector = "slc-agentId LIKE '%'";
 		if (log.isDebugEnabled())
-			log.debug("Message selector: '" + messageSelector + "'");
+			log.debug("Message selector: " + messageSelector);
 		return messageSelector;
 	}
 

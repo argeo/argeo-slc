@@ -58,9 +58,7 @@
 							<execDir>target/exec/server</execDir>
 							<jvmArgs>
 								<jvmArg>-Xmx256m</jvmArg>
-								<!--
-									<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg>
-								-->
+								<!-- <jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg>-->
 							</jvmArgs>
 							<systemProperties>
 								<slc.osgi.start>
@@ -94,6 +92,10 @@
 						<artifactId>maven-argeo-osgi-plugin</artifactId>
 						<configuration>
 							<execDir>target/exec/agent</execDir>
+							<jvmArgs>
+								<jvmArg>-Xmx128m</jvmArg>
+								<!-- <jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8001</jvmArg> -->
+							</jvmArgs>
 							<systemProperties>
 								<slc.osgi.start>
 									org.springframework.osgi.extender,
