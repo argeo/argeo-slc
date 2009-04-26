@@ -17,9 +17,15 @@
 	<profiles>
 		<profile>
 			<id>withRia</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<modules>
 				<module>org.argeo.slc.ria</module>
 			</modules>
+		</profile>
+		<profile>
+			<id>withoutRia</id>
 		</profile>
 	</profiles>
 </project>
