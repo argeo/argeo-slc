@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc.runtime</groupId>
+		<artifactId>argeo-slc-runtime</artifactId>
+		<version>0.11.3-SNAPSHOT</version>
+		<relativePath>../../runtime/</relativePath>
+	</parent>
+	<groupId>org.argeo.slc.sandbox</groupId>
+	<artifactId>argeo.slc.activemq.selector</artifactId>
+	<name>Argeo SLC ActiveMQ Selector Tests</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${version.maven-bundle-plugin}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.argeo.slc.maven</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+				<configuration>
+					<systemProperties>
+						<slc.osgi.bundles>${basedir}/bundles;in=*;ex=**/.svn/**,${basedir}/target;in=*.jar;ex=*-sources.jar</slc.osgi.bundles>
+						<slc.osgi.start>
+							org.springframework.osgi.extender,
+							argeo.slc.activemq.selector.jms
+								</slc.osgi.start>
+					</systemProperties>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+	<dependencies>
+		<!--
+			Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.jms</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.transaction</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>org.springframework.osgi.extender</artifactId>
+		</dependency>
+
+		<!-- JMS -->
+		<dependency>
+			<groupId>javax.jms</groupId>
+			<artifactId>com.springsource.javax.jms</artifactId>
+		</dependency>
+
+		<!-- ActiveMQ -->
+		<dependency>
+			<groupId>org.argeo.dep.osgi</groupId>
+			<artifactId>org.argeo.dep.osgi.activemq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>com.springsource.javax.management.j2ee</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>com.springsource.javax.activation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>com.springsource.javax.servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.ejb</groupId>
+			<artifactId>com.springsource.javax.ejb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.rpc</groupId>
+			<artifactId>com.springsource.javax.xml.rpc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.soap</groupId>
+			<artifactId>com.springsource.javax.xml.soap</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.xml.stream</groupId>
+			<artifactId>
+					com.springsource.javax.xml.stream
+				</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xalan</groupId>
+			<artifactId>
+					com.springsource.org.apache.xalan
+				</artifactId>
+		</dependency>
+		
+		
+
+		<dependency>
+			<groupId>org.apache.log4j</groupId>
+			<artifactId>com.springsource.org.apache.log4j</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit</groupId>
+			<artifactId>com.springsource.junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.osgiboot</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

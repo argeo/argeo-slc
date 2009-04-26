@@ -1,0 +1,5 @@
+Bundle-Name: Log4j Configuration
+Bundle-SymbolicName: argeo.slc.activemq.selector.log4j
+Bundle-Version: 0.11.3.qualifier
+Fragment-Host: com.springsource.org.apache.log4j
+
