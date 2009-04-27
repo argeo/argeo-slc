@@ -290,11 +290,12 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   	 * @param folder {qx.ui.tree.TreeFolder} A Tree folder containing in the key "moduleData" of its user data a map containing the keys {name,version} 
   	 */
 	flowLoader : function(folder){
-		var moduleData = folder.getUserData("moduleData");  		
+		var moduleData = folder.getUserData("moduleData");
+		var agentUuid = folder.getUserData("agentUuid");
 		//var pathStub = ["", "/test/toto/zobi", "loop"];
 		//var indexStub = 0;
 		
-		var req = org.argeo.slc.ria.SlcApi.getLoadExecutionDescriptorService(moduleData.name, moduleData.version);
+		var req = org.argeo.slc.ria.SlcApi.getLoadExecutionDescriptorService(agentUuid,moduleData.name, moduleData.version);
   		req.addListener("completed", function(response){
   			var executionModule = new org.argeo.slc.ria.execution.Module();			  			
   			executionModule.setXmlNode(response.getContent());
@@ -306,7 +307,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   				//indexStub ++;
   				file.setUserData("executionModule", executionModule);
   				file.setUserData("executionFlow", execFlows[key]);
-  				file.setUserData("agentUuid", folder.getUserData("agentUuid"));
+  				file.setUserData("agentUuid", agentUuid);
   				org.argeo.slc.ria.NewLauncherApplet.attachNodeByPath(
   					folder, 
   					path, 

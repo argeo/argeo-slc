@@ -55,12 +55,12 @@
 
 	<bean name="/getExecutionDescriptor.service"
 		class="org.argeo.slc.web.mvc.execution.GetModuleDescriptor">
-		<property name="modulesManager" ref="modulesManager" />
+		<property name="agentFactory" ref="agentFactory" />
 	</bean>
 
 	<bean name="/listModulesDescriptors.service"
 		class="org.argeo.slc.web.mvc.execution.ListModulesDescriptors">
-		<property name="modulesManager" ref="modulesManager" />
+		<property name="agentFactory" ref="agentFactory" />
 	</bean>
 
 	<bean id="handlerMapping"

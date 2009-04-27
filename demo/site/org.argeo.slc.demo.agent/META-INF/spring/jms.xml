@@ -7,6 +7,16 @@
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
 
+	<bean
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="destination" ref="slcJms.destination.agent.request" />
+		<property name="messageListener" ref="jmsAgent" />
+		<property name="messageSelector">
+			<bean factory-bean="jmsAgent" factory-method="getMessageSelector" />
+		</property>
+	</bean>
+
 	<bean id="jmsAgent.listener.newExecution"
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
@@ -28,6 +38,7 @@
 		<property name="agentUnregister" ref="slcJms.destination.agent.unregister" />
 		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 		<property name="modulesManager" ref="modulesManager" />
+		<property name="responseDestination" ref="slcJms.destination.agent.response" />
 	</bean>
 
 	<!-- TreeTestResult Listener -->

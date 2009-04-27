@@ -4,6 +4,7 @@ Import-Package: javax.jms,
  javax.management.j2ee.statistics,
  org.apache.commons.logging
 Require-Bundle: 
+ org.argeo.slc.specs,
  org.argeo.slc.server,
  org.argeo.slc.support.activemq,
  org.springframework.core,

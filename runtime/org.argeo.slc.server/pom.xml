@@ -34,7 +34,7 @@
 						<Export-Package>
 							org.argeo.slc.*,org.argeo.slc.server,org.argeo.slc.server.spring
 						</Export-Package>
-						<Import-Package>org.w3c.dom;version="0.0.0",javax.xml.*;version="0.0.0",org.argeo.slc.activemq,*</Import-Package>
+						<Import-Package>org.w3c.dom;version="0.0.0",javax.xml.*;version="0.0.0",org.argeo.slc.activemq,org.argeo.slc.execution,*</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>

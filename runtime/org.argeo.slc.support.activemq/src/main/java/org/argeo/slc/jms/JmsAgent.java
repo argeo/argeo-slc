@@ -2,25 +2,36 @@ package org.argeo.slc.jms;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.runtime.AbstractAgent;
+import org.argeo.slc.execution.ExecutionModule;
+import org.argeo.slc.execution.ExecutionModuleDescriptor;
+import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.jms.support.converter.MessageConverter;
 
 /** JMS based implementation of SLC Agent. */
 public class JmsAgent extends AbstractAgent implements SlcAgent,
-		InitializingBean, DisposableBean {
+		InitializingBean, DisposableBean, SessionAwareMessageListener {
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
 
 	private final SlcAgentDescriptor agentDescriptor;
@@ -28,6 +39,9 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	private JmsTemplate jmsTemplate;
 	private Destination agentRegister;
 	private Destination agentUnregister;
+
+	// private Destination requestDestination;
+	private Destination responseDestination;
 
 	private MessageConverter messageConverter;
 
@@ -81,10 +95,47 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	public String getMessageSelector() {
 		String messageSelector = "slc_agentId='" + agentDescriptor.getUuid()
 				+ "'";
-		// String messageSelector = "slc-agentId LIKE '%'";
-		if (log.isDebugEnabled())
-			log.debug("Message selector: " + messageSelector);
+		// if (log.isDebugEnabled())
+		// log.debug("Message selector: " + messageSelector);
 		return messageSelector;
+	}
+
+	public void onMessage(Message message, Session session) throws JMSException {
+		MessageProducer producer = session.createProducer(responseDestination);
+		String query = message.getStringProperty("query");
+		String correlationId = message.getJMSCorrelationID();
+		if (log.isDebugEnabled())
+			log.debug("Received query " + query + " with correlationId "
+					+ correlationId);
+
+		Message responseMsg = null;
+		if ("getExecutionModuleDescriptor".equals(query)) {
+			String moduleName = message.getStringProperty("moduleName");
+			String version = message.getStringProperty("version");
+			ExecutionModuleDescriptor emd = getExecutionModuleDescriptor(
+					moduleName, version);
+			responseMsg = messageConverter.toMessage(emd, session);
+		} else if ("listExecutionModuleDescriptors".equals(query)) {
+
+			List<ExecutionModuleDescriptor> lst = listExecutionModuleDescriptors();
+			SlcAgentDescriptor agentDescriptorToSend = new SlcAgentDescriptor(
+					agentDescriptor);
+			agentDescriptorToSend.setModuleDescriptors(lst);
+			responseMsg = messageConverter.toMessage(agentDescriptorToSend,
+					session);
+		} else {
+			throw new SlcException("Unsupported query " + query);
+		}
+
+		if (responseMsg != null) {
+			responseMsg.setJMSCorrelationID(correlationId);
+			producer.send(responseMsg);
+			if (log.isDebugEnabled())
+				log.debug("Sent response to query " + query
+						+ " with correlationId " + correlationId + ": "
+						+ responseMsg);
+		}
+
 	}
 
 	public void setMessageConverter(MessageConverter messageConverter) {
@@ -93,6 +144,30 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 
 	public void setConnectionFactory(ConnectionFactory connectionFactory) {
 		this.connectionFactory = connectionFactory;
+	}
+
+	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
+			String moduleName, String version) {
+		return getModulesManager().getExecutionModuleDescriptor(moduleName,
+				version);
+	}
+
+	public List<ExecutionModuleDescriptor> listExecutionModuleDescriptors() {
+		List<ExecutionModule> modules = getModulesManager()
+				.listExecutionModules();
+
+		List<ExecutionModuleDescriptor> descriptors = new ArrayList<ExecutionModuleDescriptor>();
+		for (ExecutionModule module : modules) {
+			ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
+			md.setName(module.getName());
+			md.setVersion(module.getVersion());
+			descriptors.add(md);
+		}
+		return descriptors;
+	}
+
+	public void setResponseDestination(Destination responseDestination) {
+		this.responseDestination = responseDestination;
 	}
 
 }

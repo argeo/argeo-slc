@@ -44,7 +44,8 @@ public class MarshallerMessageConverter implements MessageConverter {
 				throw new SlcException("Could not unmarshall " + text, e);
 			}
 		} else {
-			throw new SlcException("Only JMS TextMessage are supported.");
+			throw new SlcException("This type of messages is not supported: "
+					+ message);
 		}
 	}
 

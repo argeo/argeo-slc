@@ -12,5 +12,9 @@
 			<bind-xml node="attribute" />
 		</field>
 		<field name="host" />
+		<field name="moduleDescriptors" collection="arraylist"
+			type="org.argeo.slc.execution.ExecutionModuleDescriptor">
+			<bind-xml auto-naming="deriveByClass" />
+		</field>
 	</class>
 </mapping>

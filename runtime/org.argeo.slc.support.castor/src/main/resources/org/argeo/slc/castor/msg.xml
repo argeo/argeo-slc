@@ -24,7 +24,7 @@
 	<class name="org.argeo.slc.msg.ObjectList">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
-		<field name="objects" collection="arraylist">
+		<field name="objects" collection="arraylist" type="java.lang.Object">
 			<bind-xml auto-naming="deriveByClass" />
 		</field>
 	</class>

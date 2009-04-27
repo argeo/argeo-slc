@@ -13,6 +13,10 @@
 		parent="slcJms.amTopic" />
 	<bean id="slcJms.destination.agent.newExecution" p:physicalName="agent.newExecution"
 		parent="slcJms.amTopic" />
+	<bean id="slcJms.destination.agent.request" p:physicalName="agent.request"
+		parent="slcJms.amTopic" />
+	<bean id="slcJms.destination.agent.response" p:physicalName="agent.response"
+		parent="slcJms.amTopic" />
 
 	<!-- Test result service -->
 	<bean id="slcJms.destination.test.create" p:physicalName="test.create"
