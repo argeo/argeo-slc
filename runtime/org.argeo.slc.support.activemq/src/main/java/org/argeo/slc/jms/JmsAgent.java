@@ -81,19 +81,6 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 		this.agentUnregister = agentUnregister;
 	}
 
-	/*
-	 * public void onMessage(Message message) { // FIXME: we filter the messages
-	 * on the client side, // because of a weird problem with selector since
-	 * moving to OSGi try { if (message.getStringProperty("slc-agentId").equals(
-	 * agentDescriptor.getUuid())) { runSlcExecution((SlcExecution)
-	 * messageConverter .fromMessage(message)); } else { if
-	 * (log.isDebugEnabled()) log.debug("Filtered out message " + message); } }
-	 * catch (JMSException e) { throw new SlcException("Cannot convert message "
-	 * + message, e); }
-	 * 
-	 * }
-	 */
-
 	public String getMessageSelector() {
 		String messageSelector = "slc_agentId='" + agentDescriptor.getUuid()
 				+ "'";
@@ -131,6 +118,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 			SlcExecution slcExecution = (SlcExecution) jmsTemplate
 					.getMessageConverter().fromMessage(message);
 			runSlcExecution(slcExecution);
+			return;
 		} else {
 			// try {
 			// // FIXME: generalize

@@ -72,6 +72,13 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 									+ value.getClass().getName());
 						}
 						values.put(key, refValue);
+					} else if (attribute instanceof ResourceSpecAttribute) {
+						PrimitiveValue primitiveValue = new PrimitiveValue();
+						primitiveValue
+								.setType(((ResourceSpecAttribute) attribute)
+										.getType());
+						primitiveValue.setValue(value);
+						values.put(key, primitiveValue);
 					} else {
 						throw new SlcException("Unkown spec attribute type "
 								+ attribute.getClass());

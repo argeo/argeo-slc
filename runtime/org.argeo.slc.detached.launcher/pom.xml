@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.argeo.slc</groupId>
-		<artifactId>argeo-slc</artifactId>
+		<groupId>org.argeo.slc.runtime</groupId>
+		<artifactId>argeo-slc-runtime</artifactId>
 		<version>0.11.3-SNAPSHOT</version>
-		<relativePath>../org.argeo.slc</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.detached.launcher</artifactId>
 	<name>Argeo SLC Detached Launcher</name>
@@ -48,93 +49,27 @@
 					</instructions>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>src/assembly/dist.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+			<!--
+				<plugin> <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId> <configuration>
+				<descriptors> <descriptor>src/assembly/dist.xml</descriptor>
+				</descriptors> </configuration> <executions> <execution>
+				<id>attach-assembly</id> <phase>package</phase> <goals>
+				<goal>single</goal> </goals> </execution> </executions> </plugin>
+			-->
 		</plugins>
 	</build>
 	<dependencies>
-		<!--
-			<dependency> <groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.main</artifactId> </dependency>
-		-->
 		<dependency>
 			<groupId>org.eclipse.osgi</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
 		</dependency>
-<!-- 
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
+
+		<!--
+			<dependency> <groupId>org.springframework.osgi</groupId>
 			<artifactId>org.springframework.osgi.extender</artifactId>
-		</dependency>
- -->
-
-		<!--
-			Old <dependency> <groupId>org.springframework</groupId>
-			<artifactId>spring-context</artifactId> <version>2.0.8</version>
-			</dependency> <dependency> <groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId> </dependency> <dependency>
-			<groupId>log4j</groupId> <artifactId>log4j</artifactId> </dependency>
-			<dependency> <groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId> </dependency>
-		-->
-
-		<!--
-			<dependency> <groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.detached.ext.log4j</artifactId>
-			<version>0.11.2</version> </dependency>
-		-->
-		<!-- Spring
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.context</artifactId>
-		</dependency>
- -->
-		<!--
-			<dependency> <groupId>org.apache.xerces</groupId>
-			<artifactId>com.springsource.org.apache.xerces</artifactId>
-			</dependency> <dependency> <groupId>org.apache.xalan</groupId>
-			<artifactId>com.springsource.org.apache.xalan</artifactId>
-			</dependency> <dependency>
-			<groupId>edu.emory.mathcs.backport</groupId> <artifactId>
-			com.springsource.edu.emory.mathcs.backport </artifactId>
-			</dependency>
-		-->
-		<!-- 
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>
-				com.springsource.org.apache.commons.io
-			</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.junit</groupId>
-			<artifactId>com.springsource.junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>com.springsource.org.apache.log4j</artifactId>
-		</dependency> -->
-		<!--
-			<dependency> <groupId>org.slf4j</groupId>
-			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
-			</dependency> <dependency> <groupId>org.slf4j</groupId>
-			<artifactId>com.springsource.slf4j.jcl</artifactId> </dependency>
+			</dependency> <dependency> <groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.detached</artifactId> </dependency>
 		-->
 	</dependencies>
 </project>

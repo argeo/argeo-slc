@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
@@ -20,6 +21,7 @@ import org.osgi.framework.BundleException;
 
 public class Main {
 	public final static String PROP_SLC_HOME = "slc.home";
+	public final static String PROP_SLC_DETACHED_PROEPRTIES = "slc.detached.properties";
 	public final static String PROP_SLC_OSGI_START = "slc.osgi.start";
 	public final static String PROP_SLC_OSGI_SCAN_CLASSPATH = "slc.osgi.scanClasspath";
 	public final static String PROP_SLC_OSGI_EQUINOX_ARGS = "slc.osgi.equinox.args";
@@ -30,7 +32,8 @@ public class Main {
 		info("Argeo SLC Detached launcher starting...");
 		try {
 			// Load properties
-			String propertyPath = "slc-detached.properties";
+			String propertyPath = System.getProperty("slc.detached.properties",
+					"slc-detached.properties");
 			Properties config = prepareConfig(propertyPath);
 
 			// Start app (in main class loader)
@@ -40,25 +43,17 @@ public class Main {
 			try {
 				startEquinox(config);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			info("Argeo SLC Detached launcher started.");
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.exit(-1);
+			System.exit(1);
 		}
 	}
 
 	protected static Properties prepareConfig(String propertyFilePath)
 			throws Exception {
-		// Format slc.home
-		String slcHome = System.getProperty(PROP_SLC_HOME);
-		if (slcHome != null) {
-			slcHome = new File(slcHome).getCanonicalPath();
-			System.setProperty(PROP_SLC_HOME, slcHome);
-		}
-
 		// Load config
 		Properties config = new Properties();
 		InputStream in = null;
@@ -73,8 +68,28 @@ public class Main {
 				in.close();
 		}
 
+		// Format slc.home
+		String slcHome = System.getProperty(Main.PROP_SLC_HOME);
+		if (slcHome == null) {
+			slcHome = config.getProperty(Main.PROP_SLC_HOME);
+		}
+		if (slcHome != null) {
+			slcHome = new File(slcHome).getCanonicalPath();
+			System.setProperty(Main.PROP_SLC_HOME, slcHome);
+		}
+
 		// System properties have priority.
 		config.putAll(System.getProperties());
+
+		// SET ALL PROPERTIES AS SYSTEM PROPERTIES
+		TreeMap ordered = new TreeMap(config);
+		for (Iterator it = ordered.keySet().iterator(); it.hasNext();) {
+			String key = it.next().toString();
+			String value = ordered.get(key).toString();
+			System.out.println(key + "=" + value);
+			System.setProperty(key, value);
+		}
+
 		return config;
 	}
 
@@ -196,7 +211,7 @@ public class Main {
 
 	private static void startBundle(BundleContext bundleContext,
 			String symbolicName) throws BundleException {
-		//info("Starting bundle " + symbolicName + "...");
+		// info("Starting bundle " + symbolicName + "...");
 		Bundle bundle = findBundleBySymbolicName(bundleContext, symbolicName);
 		if (bundle != null)
 			bundle.start();
@@ -296,6 +311,6 @@ public class Main {
 
 	private static void bundleInstallWarn(Object obj) {
 		System.err.println("[WARN] " + obj);
-		//Thread.dumpStack();
+		// Thread.dumpStack();
 	}
 }

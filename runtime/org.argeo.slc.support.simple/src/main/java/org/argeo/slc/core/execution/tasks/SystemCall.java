@@ -99,7 +99,7 @@ public class SystemCall implements Executable {
 			};
 			stdOutThread.start();
 			StreamReaderThread stdErrThread = new StreamReaderThread(process
-					.getInputStream()) {
+					.getErrorStream()) {
 				protected void callback(String line) {
 					stdErrCallback(line);
 				}
@@ -111,8 +111,10 @@ public class SystemCall implements Executable {
 			// Wait for the end of the process
 			if (synchronous) {
 				Integer exitCode = process.waitFor();
-				if (exitCode != 0)
+				if (exitCode != 0) {
+					Thread.sleep(5000);// leave the process a chance to log
 					log.warn("Process return exit code " + exitCode);
+				}
 			} else {
 				// asynchronous: return
 			}
@@ -132,7 +134,7 @@ public class SystemCall implements Executable {
 		else
 			return dir.getPath();
 	}
-	
+
 	protected void stdOutCallback(String line) {
 		log(stdOutLogLevel, line);
 	}

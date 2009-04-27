@@ -67,7 +67,7 @@
 									org.springframework.osgi.web.extender,
 									org.springframework.osgi.samples.simplewebapp,
 									org.argeo.slc.server.activemq,
-									org.argeo.slc.server.mysql,
+									org.argeo.slc.server.hsqldb,
 									org.argeo.slc.server.hibernate,
 									org.argeo.slc.server.services,
 									org.argeo.slc.server.jms,

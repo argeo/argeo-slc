@@ -41,4 +41,8 @@ public class ResourceSpecAttribute extends AbstractSpecAttribute {
 		this.type = type;
 	}
 
+	public String getType() {
+		return type;
+	}
+
 }
