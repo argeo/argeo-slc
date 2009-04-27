@@ -297,8 +297,12 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		
 		var req = org.argeo.slc.ria.SlcApi.getLoadExecutionDescriptorService(agentUuid,moduleData.name, moduleData.version);
   		req.addListener("completed", function(response){
-  			var executionModule = new org.argeo.slc.ria.execution.Module();			  			
-  			executionModule.setXmlNode(response.getContent());
+  			var executionModule = new org.argeo.slc.ria.execution.Module();
+  			try{
+	  			executionModule.setXmlNode(response.getContent());
+  			}catch(e){
+  				this.error(e);
+  			}
   			var execFlows = executionModule.getExecutionFlows();
   			for(var key in execFlows){
   				var file = new qx.ui.tree.TreeFile(key);

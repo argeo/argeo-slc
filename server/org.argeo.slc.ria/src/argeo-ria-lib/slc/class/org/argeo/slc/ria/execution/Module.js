@@ -99,7 +99,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 		 */
 		_applyXmlNode : function(xmlNode){
 			// Parse now
-			this.setName(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_NAME));
+			this.setName(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_NAME) || "Not Found");
 			this.setVersion(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_VERSION));
 			// Parse Specs first
 			var specs = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_EXECUTION_SPECS);

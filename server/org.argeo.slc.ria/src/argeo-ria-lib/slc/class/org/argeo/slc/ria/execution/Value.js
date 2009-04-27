@@ -79,13 +79,13 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 				if(child.nodeType != 1) continue;
 				if(child.nodeName == "slc:primitive-spec-attribute"){
 					this.setSpecType("primitive");
-					this.setSpecSubType(org.argeo.ria.util.Element.getSingleNodeText(child, "@type"));
+					this.setSpecSubType(org.argeo.ria.util.Element.getSingleNodeText(child, "@type")||"");
 					if(org.argeo.ria.util.Element.getSingleNodeText(child, ".")){
 						this.setValue(org.argeo.ria.util.Element.getSingleNodeText(child, "."));
 					}
 				}else if(child.nodeName == "slc:ref-spec-attribute"){
 					this.setSpecType("ref");
-					this.setSpecSubType(org.argeo.ria.util.Element.getSingleNodeText(child, "@targetClassName"));
+					this.setSpecSubType(org.argeo.ria.util.Element.getSingleNodeText(child, "@targetClassName")||"");
 				}
 				this.set({
 					parameter : (org.argeo.ria.util.Element.getSingleNodeText(child, "@isParameter")=="true"?true:false),

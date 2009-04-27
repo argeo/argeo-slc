@@ -36,7 +36,8 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 		 * The values to init the ExecutionSpec
 		 */
 		values : {
-			check : "Node"
+			check : "Node",
+			nullable : true
 		},
 		/**
 		 * Castor representation of the object 
@@ -81,7 +82,9 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 				executionSpecName : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_EXEC_SPEC_NAME)
 			});
 			var values = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_VALUES);
-			this.setValues(values[0]);
+			if(values[0]){
+				this.setValues(values[0]);
+			}
 		},
 		/**
 		 * Get a given value inside the values map
