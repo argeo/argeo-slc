@@ -1,4 +1,0 @@
-/**
- * Communication with server package. 
- *
- */
