@@ -6,20 +6,41 @@
 
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="locations">
+			<value>osgibundle:activemq.properties
+			</value>
+		</property>
+	</bean>
+
 	<!-- Embedded broker -->
 	<amq:broker useJmx="false" persistent="false">
 		<amq:transportConnectors>
-			<amq:transportConnector uri="tcp://localhost:61616" />
+			<amq:transportConnector uri="${slc.server.jms.url}" />
 		</amq:transportConnectors>
 	</amq:broker>
 
 	<!-- Connection Factory -->
-	<bean id="jmsConnectionFactory"
+	<!-- <bean id="jmsConnectionFactory"
 		class="org.springframework.jms.connection.SingleConnectionFactory">
 		<property name="targetConnectionFactory">
 			<bean id="slcDefault.jms.amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
 				<property name="brokerURL">
-					<value>tcp://localhost:61616</value>
+					<value>vm://localhost</value>
+				</property>
+			</bean>
+		</property>
+	</bean> -->
+
+	<bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		destroy-method="stop">
+		<property name="connectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL">
+					<value>vm://localhost</value>
 				</property>
 			</bean>
 		</property>

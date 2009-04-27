@@ -19,9 +19,10 @@
 
 	<reference interface="org.hibernate.SessionFactory" id="sessionFactory" />
 
+<!-- 
 	<reference interface="org.argeo.slc.execution.ExecutionModulesManager"
 		id="modulesManager" />
-
+ -->
 	<reference id="testManagerService"
 		interface="org.argeo.slc.services.test.TestManagerService" />
 	<reference id="agentService" interface="org.argeo.slc.services.runtime.AgentService" />

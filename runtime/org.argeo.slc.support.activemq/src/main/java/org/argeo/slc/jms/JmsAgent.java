@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -20,14 +19,14 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.core.runtime.AbstractAgent;
 import org.argeo.slc.execution.ExecutionModule;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
-import org.argeo.slc.msg.ObjectList;
+import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SessionAwareMessageListener;
-import org.springframework.jms.support.converter.MessageConverter;
+import org.springframework.jms.support.converter.MessageConversionException;
 
 /** JMS based implementation of SLC Agent. */
 public class JmsAgent extends AbstractAgent implements SlcAgent,
@@ -35,7 +34,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
 
 	private final SlcAgentDescriptor agentDescriptor;
-	private ConnectionFactory connectionFactory;
+	// private ConnectionFactory connectionFactory;
 	private JmsTemplate jmsTemplate;
 	private Destination agentRegister;
 	private Destination agentUnregister;
@@ -43,7 +42,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	// private Destination requestDestination;
 	private Destination responseDestination;
 
-	private MessageConverter messageConverter;
+	// private MessageConverter messageConverter;
 
 	public JmsAgent() {
 		try {
@@ -57,8 +56,8 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 
 	public void afterPropertiesSet() throws Exception {
 		// Initialize JMS Template
-		jmsTemplate = new JmsTemplate(connectionFactory);
-		jmsTemplate.setMessageConverter(messageConverter);
+		// jmsTemplate = new JmsTemplate(connectionFactory);
+		// jmsTemplate.setMessageConverter(messageConverter);
 
 		jmsTemplate.convertAndSend(agentRegister, agentDescriptor);
 		log.info("Agent #" + agentDescriptor.getUuid() + " registered to "
@@ -114,17 +113,27 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 			String version = message.getStringProperty("version");
 			ExecutionModuleDescriptor emd = getExecutionModuleDescriptor(
 					moduleName, version);
-			responseMsg = messageConverter.toMessage(emd, session);
+			responseMsg = jmsTemplate.getMessageConverter().toMessage(emd,
+					session);
 		} else if ("listExecutionModuleDescriptors".equals(query)) {
 
 			List<ExecutionModuleDescriptor> lst = listExecutionModuleDescriptors();
 			SlcAgentDescriptor agentDescriptorToSend = new SlcAgentDescriptor(
 					agentDescriptor);
 			agentDescriptorToSend.setModuleDescriptors(lst);
-			responseMsg = messageConverter.toMessage(agentDescriptorToSend,
-					session);
+			responseMsg = jmsTemplate.getMessageConverter().toMessage(
+					agentDescriptorToSend, session);
 		} else {
-			throw new SlcException("Unsupported query " + query);
+			try {
+				//FIXME: generalize
+				SlcExecution slcExecution = (SlcExecution) jmsTemplate
+						.getMessageConverter().fromMessage(message);
+				runSlcExecution(slcExecution);
+			} catch (MessageConversionException e) {
+				if (log.isDebugEnabled())
+					log.debug("Unsupported query " + query, e);
+			}
+			return;
 		}
 
 		if (responseMsg != null) {
@@ -136,14 +145,6 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 						+ responseMsg);
 		}
 
-	}
-
-	public void setMessageConverter(MessageConverter messageConverter) {
-		this.messageConverter = messageConverter;
-	}
-
-	public void setConnectionFactory(ConnectionFactory connectionFactory) {
-		this.connectionFactory = connectionFactory;
 	}
 
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
@@ -168,6 +169,10 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 
 	public void setResponseDestination(Destination responseDestination) {
 		this.responseDestination = responseDestination;
+	}
+
+	public void setJmsTemplate(JmsTemplate jmsTemplate) {
+		this.jmsTemplate = jmsTemplate;
 	}
 
 }

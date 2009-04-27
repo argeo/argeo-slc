@@ -10,7 +10,7 @@
 		<property name="jmsTemplate">
 			<bean class="org.springframework.jms.core.JmsTemplate">
 				<property name="connectionFactory" ref="jmsConnectionFactory" />
-				<property name="receiveTimeout" value="10000" />
+				<property name="receiveTimeout" value="20000" />
 			</bean>
 		</property>
 		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />

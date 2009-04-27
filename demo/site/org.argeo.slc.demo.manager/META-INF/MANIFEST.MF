@@ -1,7 +1,0 @@
-Bundle-Name: Manager Plug-in
-Bundle-SymbolicName: org.argeo.slc.demo.manager
-Bundle-Version: 0.11.3.qualifier
-Spring-Context: conf/*
-Require-Bundle: 
- org.argeo.slc.specs,
- org.argeo.slc.support.simple

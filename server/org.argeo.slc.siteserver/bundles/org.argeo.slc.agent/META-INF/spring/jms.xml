@@ -21,24 +21,24 @@
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
 		<property name="destination" ref="slcJms.destination.agent.newExecution" />
-		<property name="messageListener">
+		<property name="messageListener" ref="jmsAgent" />
+		<!-- <property name="messageListener">
 			<bean parent="slcTemplate.jms.listenerAdapterCastor">
 				<constructor-arg ref="jmsAgent" />
 				<property name="defaultListenerMethod" value="runSlcExecution" />
 			</bean>
-		</property>
+		</property> -->
 		<property name="messageSelector">
 			<bean factory-bean="jmsAgent" factory-method="getMessageSelector" />
 		</property>
 	</bean>
 
 	<bean id="jmsAgent" class="org.argeo.slc.jms.JmsAgent">
-		<property name="connectionFactory" ref="jmsConnectionFactory" />
 		<property name="agentRegister" ref="slcJms.destination.agent.register" />
 		<property name="agentUnregister" ref="slcJms.destination.agent.unregister" />
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 		<property name="modulesManager" ref="modulesManager" />
 		<property name="responseDestination" ref="slcJms.destination.agent.response" />
+		<property name="jmsTemplate" ref="jmsTemplate" />
 	</bean>
 
 	<!-- TreeTestResult Listener -->
@@ -46,22 +46,20 @@
 		<property name="createDestination" ref="slcJms.destination.test.create" />
 		<property name="addResultPartDestination" ref="slcJms.destination.test.addResultPart" />
 		<property name="closeDestination" ref="slcJms.destination.test.close" />
-		<property name="jmsTemplate">
-			<bean class="org.springframework.jms.core.JmsTemplate">
-				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-				<property name="connectionFactory" ref="jmsConnectionFactory" />
-			</bean>
-		</property>
+		<property name="jmsTemplate" ref="jmsTemplate" />
 	</bean>
 
 	<!-- SLC Execution Listener -->
 	<bean id="slcExecutionListener" class="org.argeo.slc.jms.JmsSlcExecutionNotifier">
 		<property name="updateStatusDestination" ref="slcJms.destination.slcExecution.updateStatus" />
-		<property name="jmsTemplate">
-			<bean class="org.springframework.jms.core.JmsTemplate">
-				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-				<property name="connectionFactory" ref="jmsConnectionFactory" />
-			</bean>
-		</property>
+		<property name="jmsTemplate" ref="jmsTemplate" />
 	</bean>
+
+	<!-- Common -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+
 </beans>

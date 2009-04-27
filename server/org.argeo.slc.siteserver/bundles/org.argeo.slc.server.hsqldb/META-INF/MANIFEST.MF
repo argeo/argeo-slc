@@ -8,4 +8,5 @@ Import-Package:
  org.springframework.cache.ehcache,
  net.sf.ehcache.hibernate,
  org.hsqldb.jdbc,
- org.hibernate
+ org.hibernate,
+ org.springframework.beans.factory.config

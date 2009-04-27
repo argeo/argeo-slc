@@ -8,9 +8,18 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
 	default-lazy-init="false">
 
-		<import
-		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml"
-		/>
+	<import
+		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="locations">
+			<value>osgibundle:hsqldb.properties
+			</value>
+		</property>
+	</bean>
 
 	<bean id="sessionFactory" parent="slcTemplates.sessionFactory.hibernateBasic">
 		<property name="dataSource" ref="dataSource" />
@@ -24,9 +33,9 @@
 	</bean>
 
 	<bean id="dataSource" class="org.hsqldb.jdbc.jdbcDataSource">
-		<property name="database" value="jdbc:hsqldb:mem:test"/>
-		<property name="user" value="sa"/>
-		<property name="password" value=""/>
-		
+		<property name="database" value="${slc.server.hsqldb.url}" />
+		<property name="user" value="sa" />
+		<property name="password" value="" />
+
 	</bean>
 </beans>

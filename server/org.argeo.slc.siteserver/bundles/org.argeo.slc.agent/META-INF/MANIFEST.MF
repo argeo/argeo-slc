@@ -1,10 +1,13 @@
-Bundle-SymbolicName: org.argeo.slc.demo.agent
+Bundle-SymbolicName: org.argeo.slc.agent
 Bundle-Version: 0.11.3.qualifier
-Bundle-Name: Argeo SLC Demo Agent
+Bundle-Name: Argeo SLC Agent
 Import-Package: 
  javax.jms,
  org.apache.activemq,
  org.apache.activemq.command,
+ org.apache.activemq.pool,
+ org.apache.commons.pool,
+ org.springframework.beans.factory.config,
  org.springframework.jms.connection,
  org.springframework.jms.core,
  org.springframework.jms.listener,

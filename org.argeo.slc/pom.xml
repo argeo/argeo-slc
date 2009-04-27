@@ -159,27 +159,6 @@ limitations under the License.
 							<artifactId>com.springsource.javax.mail</artifactId>
 							<version>1.4.1</version>
 						</dependency>
-						<!--
-							Required by ActiveMQ admin <dependency>
-							<groupId>org.springframework</groupId>
-							<artifactId>org.springframework.web</artifactId>
-							<version>${version.spring}</version> </dependency> <dependency>
-							<groupId>org.springframework</groupId>
-							<artifactId>org.springframework.web.servlet</artifactId>
-							<version>${version.spring}</version> </dependency> <dependency>
-							<groupId>org.apache.activemq</groupId>
-							<artifactId>com.springsource.org.apache.activemq.web</artifactId>
-							<version>${version.activemq}</version> </dependency> <dependency>
-							<groupId>javax.jms</groupId>
-							<artifactId>com.springsource.javax.jms</artifactId>
-							<version>1.1.0</version> </dependency> <dependency>
-							<groupId>org.apache.geronimo.specs</groupId>
-							<artifactId>com.springsource.javax.management.j2ee</artifactId>
-							<version>1.0.1</version> </dependency> <dependency>
-							<groupId>com.opensymphony.sitemesh</groupId>
-							<artifactId>com.springsource.com.opensymphony.sitemesh</artifactId>
-							<version>2.3.0</version> </dependency>
-						-->
 					</dependencies>
 				</plugin>
 				<plugin>
@@ -579,7 +558,11 @@ limitations under the License.
 				<artifactId>org.argeo.dep.osgi.commons.cli</artifactId>
 				<version>1.1</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>com.springsource.org.apache.commons.pool</artifactId>
+				<version>1.4.0</version>
+			</dependency>
 			<!-- DB Drivers -->
 			<dependency>
 				<groupId>org.hsqldb</groupId>
@@ -766,6 +749,11 @@ limitations under the License.
 				<groupId>org.argeo.dep.osgi</groupId>
 				<artifactId>org.argeo.dep.osgi.activemq</artifactId>
 				<version>${version.activemq}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.activemq</groupId>
+				<artifactId>com.springsource.org.apache.activemq.pool</artifactId>
+				<version>5.2.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.dep.osgi</groupId>
