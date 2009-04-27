@@ -1,0 +1,17 @@
+Bundle-SymbolicName: org.argeo.slc.demo.agent
+Bundle-Version: 0.11.3.qualifier
+Bundle-Name: Argeo SLC Demo Agent
+Import-Package: 
+ javax.jms,
+ org.apache.activemq,
+ org.apache.activemq.command,
+ org.springframework.jms.connection,
+ org.springframework.jms.core,
+ org.springframework.jms.listener,
+ org.springframework.jms.listener.adapter,
+ org.springframework.oxm.castor
+Require-Bundle: 
+ org.argeo.slc.support.activemq,
+ org.argeo.slc.specs,
+ org.argeo.slc.support.simple,
+ com.springsource.org.castor
