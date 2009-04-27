@@ -31,6 +31,9 @@ import org.springframework.jms.support.converter.MessageConversionException;
 /** JMS based implementation of SLC Agent. */
 public class JmsAgent extends AbstractAgent implements SlcAgent,
 		InitializingBean, DisposableBean, SessionAwareMessageListener {
+	public final static String PROPERTY_QUERY = "query";
+	public final static String PROPERTY_SLC_AGENT_ID = "slc_agentId";
+
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
 
 	private final SlcAgentDescriptor agentDescriptor;
@@ -101,7 +104,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 
 	public void onMessage(Message message, Session session) throws JMSException {
 		MessageProducer producer = session.createProducer(responseDestination);
-		String query = message.getStringProperty("query");
+		String query = message.getStringProperty(PROPERTY_QUERY);
 		String correlationId = message.getJMSCorrelationID();
 		if (log.isDebugEnabled())
 			log.debug("Received query " + query + " with correlationId "
@@ -123,16 +126,23 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 			agentDescriptorToSend.setModuleDescriptors(lst);
 			responseMsg = jmsTemplate.getMessageConverter().toMessage(
 					agentDescriptorToSend, session);
+		} else if ("newExecution".equals(query)) {
+
+			SlcExecution slcExecution = (SlcExecution) jmsTemplate
+					.getMessageConverter().fromMessage(message);
+			runSlcExecution(slcExecution);
 		} else {
-			try {
-				//FIXME: generalize
-				SlcExecution slcExecution = (SlcExecution) jmsTemplate
-						.getMessageConverter().fromMessage(message);
-				runSlcExecution(slcExecution);
-			} catch (MessageConversionException e) {
-				if (log.isDebugEnabled())
-					log.debug("Unsupported query " + query, e);
-			}
+			// try {
+			// // FIXME: generalize
+			// SlcExecution slcExecution = (SlcExecution) jmsTemplate
+			// .getMessageConverter().fromMessage(message);
+			// runSlcExecution(slcExecution);
+			// } catch (MessageConversionException e) {
+			// if (log.isDebugEnabled())
+			// log.debug("Unsupported query " + query, e);
+			// }
+			if (log.isDebugEnabled())
+				log.debug("Unsupported query " + query);
 			return;
 		}
 

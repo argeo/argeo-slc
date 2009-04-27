@@ -12,15 +12,11 @@ import javax.jms.TextMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.ExecutionModule;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
-import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
-import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
-import org.springframework.jms.support.converter.MessageConversionException;
 import org.springframework.jms.support.converter.MessageConverter;
 
 public class JmsAgentProxy implements SlcAgent {
@@ -102,8 +98,8 @@ public class JmsAgentProxy implements SlcAgent {
 			if (correlationId == null)
 				throw new SlcException("JMSCorrelationID not set");
 			TextMessage msg = session.createTextMessage();
-			msg.setStringProperty("slc_agentId", agentUuid);
-			msg.setStringProperty("query", query);
+			msg.setStringProperty(JmsAgent.PROPERTY_SLC_AGENT_ID, agentUuid);
+			msg.setStringProperty(JmsAgent.PROPERTY_QUERY, query);
 			msg.setJMSCorrelationID(correlationId);
 			setArguments(msg);
 			return msg;

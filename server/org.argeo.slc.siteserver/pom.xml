@@ -121,6 +121,15 @@
 				</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>net.sourceforge.jtds</groupId>
+			<artifactId>jtds</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mysql.jdbc</groupId>
+			<artifactId>com.springsource.com.mysql.jdbc</artifactId>
+		</dependency>
+
 		<!-- For WS -->
 		<dependency>
 			<groupId>com.sun.xml</groupId>

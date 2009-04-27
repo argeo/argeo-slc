@@ -17,21 +17,21 @@
 		</property>
 	</bean>
 
-	<bean id="jmsAgent.listener.newExecution"
+<!-- 	<bean id="jmsAgent.listener.newExecution"
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
 		<property name="destination" ref="slcJms.destination.agent.newExecution" />
-		<property name="messageListener" ref="jmsAgent" />
+		<property name="messageListener" ref="jmsAgent" /> -->
 		<!-- <property name="messageListener">
 			<bean parent="slcTemplate.jms.listenerAdapterCastor">
 				<constructor-arg ref="jmsAgent" />
 				<property name="defaultListenerMethod" value="runSlcExecution" />
 			</bean>
 		</property> -->
-		<property name="messageSelector">
+		<!-- <property name="messageSelector">
 			<bean factory-bean="jmsAgent" factory-method="getMessageSelector" />
 		</property>
-	</bean>
+	</bean> -->
 
 	<bean id="jmsAgent" class="org.argeo.slc.jms.JmsAgent">
 		<property name="agentRegister" ref="slcJms.destination.agent.register" />

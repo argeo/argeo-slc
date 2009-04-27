@@ -39,6 +39,15 @@
 		</property>
 	</bean>
 
+	<bean id="agentService.jmsContainer.newExecution" parent="listenerContainer">
+		<property name="destination" ref="slcJms.destination.agent.newExecution" />
+		<property name="messageListener">
+			<bean class="org.argeo.slc.jms.JmsTransferNewExecution">
+				<property name="requestDestination" ref="slcJms.destination.agent.request" />
+			</bean>
+		</property>
+	</bean>
+
 	<!-- Test Manager Service -->
 	<bean parent="listenerContainer">
 		<property name="destination" ref="slcJms.destination.test.create" />

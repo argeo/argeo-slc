@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc.runtime</groupId>
@@ -34,26 +35,24 @@
 					<instructions>
 						<Fragment-Host>org.argeo.slc.support.simple</Fragment-Host>
 						<Import-Package>*,org.hibernate.proxy</Import-Package>
-						
-					<!-- 
-						<Export-Package>
-							org.argeo.slc.hibernate.*
-						</Export-Package>
-						<Import-Package>*,org.argeo.slc.*;resolution:=optional,
-						org.argeo.slc.execution;resolution:=optional,
-						org.argeo.slc.runtime;resolution:=optional,
-						org.argeo.slc.structure;resolution:=optional,
-						org.argeo.slc.core.structure;resolution:=optional,
-						org.argeo.slc.core.structure.tree;resolution:=optional,
-						org.argeo.slc.core.test;resolution:=optional,
-						org.argeo.slc.core.test.tree;resolution:=optional,
-						org.argeo.slc.core.execution;resolution:=optional,
-						org.argeo.slc.msg;resolution:=optional,
-						org.argeo.slc.msg.process;resolution:=optional,
-						org.argeo.slc.msg.test.tree;resolution:=optional
-						</Import-Package>
-						<Fragment-Host>com.springsource.org.hibernate</Fragment-Host>
-						 -->
+
+						<!--
+							<Export-Package> org.argeo.slc.hibernate.* </Export-Package>
+							<Import-Package>*,org.argeo.slc.*;resolution:=optional,
+							org.argeo.slc.execution;resolution:=optional,
+							org.argeo.slc.runtime;resolution:=optional,
+							org.argeo.slc.structure;resolution:=optional,
+							org.argeo.slc.core.structure;resolution:=optional,
+							org.argeo.slc.core.structure.tree;resolution:=optional,
+							org.argeo.slc.core.test;resolution:=optional,
+							org.argeo.slc.core.test.tree;resolution:=optional,
+							org.argeo.slc.core.execution;resolution:=optional,
+							org.argeo.slc.msg;resolution:=optional,
+							org.argeo.slc.msg.process;resolution:=optional,
+							org.argeo.slc.msg.test.tree;resolution:=optional
+							</Import-Package>
+							<Fragment-Host>com.springsource.org.hibernate</Fragment-Host>
+						-->
 					</instructions>
 				</configuration>
 			</plugin>
@@ -100,6 +99,11 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.context.support</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.dbcp</artifactId>
 		</dependency>
 
 		<!-- Test dependencies -->
