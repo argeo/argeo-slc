@@ -24,16 +24,5 @@
             </includes>
             <fileMode>0755</fileMode>
         </dependencySet>
-        <dependencySet>
-            <unpack>true</unpack>
-            <outputDirectory></outputDirectory>
-            <outputFileNameMapping></outputFileNameMapping>
-            <includes>
-                <include>
-                    org.argeo.slc:org.argeo.slc.detached.launcher:tar.gz:dist
-                </include>
-            </includes>
-            <fileMode>0755</fileMode>
-        </dependencySet>
     </dependencySets>
 </assembly>
