@@ -44,7 +44,7 @@ public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 		bundlesPom.append("\t<packaging>pom</packaging>\n");
 		bundlesPom.append("\t<dependencies>\n");
 
-		List bundlePackages = analyze();
+		List bundlePackages = analyze(true);
 
 		for (int i = 0; i < bundlePackages.size(); i++) {
 			AbstractBundlesPackagerMojo.BundlePackage bundlePackage = (BundlePackage) bundlePackages

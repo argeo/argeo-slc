@@ -19,7 +19,7 @@ public class DeployBundlesMojo extends AbstractBundlesPackagerMojo {
 	private ArtifactDeployer deployer;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		List bundlePackages = analyze();
+		List bundlePackages = analyze(false);
 		for (int i = 0; i < bundlePackages.size(); i++) {
 			AbstractBundlesPackagerMojo.BundlePackage bundlePackage = (BundlePackage) bundlePackages
 					.get(i);
