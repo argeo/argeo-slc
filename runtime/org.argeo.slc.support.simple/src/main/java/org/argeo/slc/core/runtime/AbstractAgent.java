@@ -8,7 +8,7 @@ public abstract class AbstractAgent {
 
 	private ExecutionModulesManager modulesManager;
 
-	protected void runSlcExecution(final SlcExecution slcExecution) {
+	public void runSlcExecution(final SlcExecution slcExecution) {
 		modulesManager.process(slcExecution);
 	}
 

@@ -1,5 +1,5 @@
 Bundle-SymbolicName: org.argeo.slc.server.jdbc
-Bundle-Version: 1.0.0
+Bundle-Version: 0.11.3.qualifier
 Fragment-Host: org.springframework.jdbc
 Import-Package: 
  org.hsqldb;resolution:=optional,

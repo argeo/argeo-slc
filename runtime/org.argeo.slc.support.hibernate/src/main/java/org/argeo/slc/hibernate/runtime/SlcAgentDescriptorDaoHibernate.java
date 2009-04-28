@@ -17,6 +17,19 @@ public class SlcAgentDescriptorDaoHibernate extends HibernateDaoSupport
 		getHibernateTemplate().delete(slcAgentDescriptor);
 	}
 
+	public void delete(String agentId) {
+		Object obj = getHibernateTemplate().get(SlcAgentDescriptor.class,
+				agentId);
+		if (obj != null)
+			getHibernateTemplate().delete(obj);
+	}
+
+	public SlcAgentDescriptor getAgentDescriptor(String agentId) {
+
+		return (SlcAgentDescriptor) getHibernateTemplate().get(
+				SlcAgentDescriptor.class, agentId);
+	}
+
 	public List<SlcAgentDescriptor> listSlcAgentDescriptors() {
 		return (List<SlcAgentDescriptor>) getHibernateTemplate().loadAll(
 				SlcAgentDescriptor.class);

@@ -1,5 +1,9 @@
 package org.argeo.slc.msg;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
 
 /** Answer to an execution of a remote service which performed changes. */
@@ -42,6 +46,16 @@ public class ExecutionAnswer {
 
 	public static ExecutionAnswer error(String message) {
 		return new ExecutionAnswer(ERROR, message);
+	}
+
+	public static ExecutionAnswer error(Throwable e) {
+		StringWriter writer = new StringWriter();
+		try {
+			e.printStackTrace(new PrintWriter(writer));
+			return new ExecutionAnswer(ERROR, writer.toString());
+		} finally {
+			IOUtils.closeQuietly(writer);
+		}
 	}
 
 	public static ExecutionAnswer ok(String message) {

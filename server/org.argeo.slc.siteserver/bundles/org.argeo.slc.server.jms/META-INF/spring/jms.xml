@@ -6,18 +6,6 @@
 
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
-	<bean id="agentFactory" class="org.argeo.slc.jms.JmsAgentProxyFactory">
-		<property name="jmsTemplate">
-			<bean class="org.springframework.jms.core.JmsTemplate">
-				<property name="connectionFactory" ref="jmsConnectionFactory" />
-				<property name="receiveTimeout" value="20000" />
-			</bean>
-		</property>
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-		<property name="requestDestination" ref="slcJms.destination.agent.request" />
-		<property name="responseDestination" ref="slcJms.destination.agent.response" />
-	</bean>
-
 	<!-- Agent Service -->
 	<bean id="agentService.jmsContainer.register" parent="listenerContainer">
 		<property name="destination" ref="slcJms.destination.agent.register" />
@@ -43,7 +31,8 @@
 		<property name="destination" ref="slcJms.destination.agent.newExecution" />
 		<property name="messageListener">
 			<bean class="org.argeo.slc.jms.JmsTransferNewExecution">
-				<property name="requestDestination" ref="slcJms.destination.agent.request" />
+				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+				<property name="agentFactory" ref="agentFactory" />
 			</bean>
 		</property>
 	</bean>

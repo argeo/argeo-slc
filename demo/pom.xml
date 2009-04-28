@@ -58,7 +58,9 @@
 							<execDir>target/exec/server</execDir>
 							<jvmArgs>
 								<jvmArg>-Xmx256m</jvmArg>
-								<!-- <jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg> -->	
+								<!--
+									<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg>
+								-->
 							</jvmArgs>
 							<systemProperties>
 								<slc.osgi.start>
@@ -91,7 +93,9 @@
 							<execDir>target/exec/agent</execDir>
 							<jvmArgs>
 								<jvmArg>-Xmx128m</jvmArg>
-	<!-- 							<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8001</jvmArg> -->	
+								<!--
+									<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8001</jvmArg>
+								-->
 							</jvmArgs>
 							<systemProperties>
 								<slc.osgi.start>
@@ -100,6 +104,41 @@
 									org.argeo.slc.agent,
 									org.argeo.slc.demo.basic,
 									org.argeo.slc.demo.manager
+								</slc.osgi.start>
+							</systemProperties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>server_mysql</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.argeo.slc.maven</groupId>
+						<artifactId>maven-argeo-osgi-plugin</artifactId>
+						<configuration>
+							<execDir>target/exec/server</execDir>
+							<jvmArgs>
+								<jvmArg>-Xmx256m</jvmArg>
+								<!--
+									<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg>
+								-->
+							</jvmArgs>
+							<systemProperties>
+								<slc.osgi.start>
+									org.argeo.dep.osgi.catalina.start,
+									org.springframework.osgi.extender,
+									org.springframework.osgi.web.extender,
+									org.springframework.osgi.samples.simplewebapp,
+									org.argeo.slc.server.activemq,
+									org.argeo.slc.server.mysql,
+									org.argeo.slc.server.hibernate,
+									org.argeo.slc.server.services,
+									org.argeo.slc.server.jms,
+									org.argeo.slc.webapp,
+									org.argeo.slc.ria
 								</slc.osgi.start>
 							</systemProperties>
 						</configuration>

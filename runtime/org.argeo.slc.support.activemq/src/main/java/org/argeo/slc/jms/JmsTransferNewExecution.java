@@ -1,34 +1,43 @@
 package org.argeo.slc.jms;
 
-import java.util.UUID;
-
-import javax.jms.Destination;
-import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
-import javax.jms.TextMessage;
+import javax.jms.MessageListener;
 
-import org.springframework.jms.listener.SessionAwareMessageListener;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.runtime.SlcAgent;
+import org.argeo.slc.runtime.SlcAgentFactory;
+import org.springframework.jms.support.converter.MessageConverter;
 
-/** Temporary hack*/
-public class JmsTransferNewExecution implements SessionAwareMessageListener {
-	private Destination requestDestination;
+/** Temporary hack */
+public class JmsTransferNewExecution implements MessageListener {
+	private MessageConverter messageConverter;
+	private SlcAgentFactory agentFactory;
 
-	public void onMessage(Message message, Session session) throws JMSException {
-		TextMessage messageToSend = session
-				.createTextMessage(((TextMessage) message).getText());
-		messageToSend
-				.setStringProperty(JmsAgent.PROPERTY_QUERY, "newExecution");
-		messageToSend.setStringProperty(JmsAgent.PROPERTY_SLC_AGENT_ID, message
-				.getStringProperty(JmsAgent.PROPERTY_SLC_AGENT_ID));
-		messageToSend.setJMSCorrelationID(UUID.randomUUID().toString());
-		MessageProducer producer = session.createProducer(requestDestination);
-		producer.send(messageToSend);
+	public void onMessage(final Message message) {
+		try {
+			String agentId = message
+					.getStringProperty(JmsAgent.PROPERTY_SLC_AGENT_ID);
+			final SlcAgent agent = agentFactory.getAgent(agentId);
+			final SlcExecution slcExecution = (SlcExecution) messageConverter
+					.fromMessage(message);
+			new Thread() {
+				public void run() {
+					agent.runSlcExecution(slcExecution);
+				}
+			}.start();
+		} catch (Exception e) {
+			throw new SlcException("Could not transfer new execution "
+					+ message, e);
+		}
 	}
 
-	public void setRequestDestination(Destination requestDestination) {
-		this.requestDestination = requestDestination;
+	public void setMessageConverter(MessageConverter messageConverter) {
+		this.messageConverter = messageConverter;
+	}
+
+	public void setAgentFactory(SlcAgentFactory agentFactory) {
+		this.agentFactory = agentFactory;
 	}
 
 }

@@ -24,16 +24,15 @@
 	</amq:broker>
 
 	<!-- Connection Factory -->
-	<!-- <bean id="jmsConnectionFactory"
+	<!--
+		<bean id="jmsConnectionFactory"
 		class="org.springframework.jms.connection.SingleConnectionFactory">
-		<property name="targetConnectionFactory">
-			<bean id="slcDefault.jms.amqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-				<property name="brokerURL">
-					<value>vm://localhost</value>
-				</property>
-			</bean>
-		</property>
-	</bean> -->
+		<property name="targetConnectionFactory"> <bean
+		id="slcDefault.jms.amqConnectionFactory"
+		class="org.apache.activemq.ActiveMQConnectionFactory"> <property
+		name="brokerURL"> <value>vm://localhost</value> </property> </bean>
+		</property> </bean>
+	-->
 
 	<bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
 		destroy-method="stop">
@@ -52,4 +51,18 @@
 		<property name="config" value="classpath:activemq-conf.xml" />
 		<property name="start" value="true" /> </bean>
 	-->
+
+	<bean id="agentFactory" class="org.argeo.slc.jms.JmsAgentProxyFactory">
+		<property name="jmsTemplate">
+			<bean class="org.springframework.jms.core.JmsTemplate">
+				<property name="connectionFactory" ref="jmsConnectionFactory" />
+				<property name="receiveTimeout" value="20000" />
+			</bean>
+		</property>
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+		<property name="requestDestination" ref="slcJms.destination.agent.request" />
+		<property name="responseDestination" ref="slcJms.destination.agent.response" />
+	</bean>
+
+
 </beans>

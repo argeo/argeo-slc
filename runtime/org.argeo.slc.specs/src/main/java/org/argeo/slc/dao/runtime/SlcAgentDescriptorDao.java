@@ -9,6 +9,9 @@ public interface SlcAgentDescriptorDao {
 
 	public void delete(SlcAgentDescriptor slcAgentDescriptor);
 
+	public void delete(String agentId);
+
 	public List<SlcAgentDescriptor> listSlcAgentDescriptors();
 
+	public SlcAgentDescriptor getAgentDescriptor(String agentId);
 }

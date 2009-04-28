@@ -8,4 +8,6 @@
 
 	<service ref="jmsConnectionFactory" interface="javax.jms.ConnectionFactory" />
 
+	<service ref="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
+
 </beans:beans>

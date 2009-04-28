@@ -5,7 +5,9 @@ Import-Package: javax.jms,
  org.apache.commons.logging,
  org.apache.activemq.pool,
  org.apache.commons.pool
-Require-Bundle: org.argeo.slc.server,
+Require-Bundle: 
+ org.argeo.slc.specs,
+ org.argeo.slc.server,
  org.argeo.slc.support.activemq,
  org.springframework.core,
  org.springframework.context,
