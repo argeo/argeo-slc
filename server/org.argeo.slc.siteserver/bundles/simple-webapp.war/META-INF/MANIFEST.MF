@@ -1,7 +1,7 @@
 Web-ContextPath: simple-web-app
 Bundle-Name: Simple OSGi War
 Bundle-SymbolicName: org.springframework.osgi.samples.simplewebapp
-Bundle-Version: 0.1.0.qualifier
+Bundle-Version: 0.11.3.SNAPSHOT
 Bundle-ClassPath: WEB-INF/classes
 Import-Package: javax.servlet,
  javax.servlet.http,

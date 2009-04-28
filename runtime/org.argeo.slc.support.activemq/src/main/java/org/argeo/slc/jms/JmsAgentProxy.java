@@ -7,7 +7,6 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
-import javax.jms.TextMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +18,6 @@ import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
-import org.springframework.jms.support.converter.MessageConverter;
 
 public class JmsAgentProxy implements SlcAgent {
 	private final static Log log = LogFactory.getLog(JmsAgentProxy.class);
@@ -28,16 +26,13 @@ public class JmsAgentProxy implements SlcAgent {
 	private final Destination requestDestination;
 	private final Destination responseDestination;
 	private final JmsTemplate jmsTemplate;
-	private final MessageConverter messageConverter;
 
 	public JmsAgentProxy(String agentUuid, Destination requestDestination,
-			Destination responseDestination, JmsTemplate jmsTemplate,
-			MessageConverter messageConverter) {
+			Destination responseDestination, JmsTemplate jmsTemplate) {
 		this.agentUuid = agentUuid;
 		this.requestDestination = requestDestination;
 		this.responseDestination = responseDestination;
 		this.jmsTemplate = jmsTemplate;
-		this.messageConverter = messageConverter;
 	}
 
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
@@ -138,12 +133,21 @@ public class JmsAgentProxy implements SlcAgent {
 					+ agentUuid);
 
 		try {
-			return messageConverter.fromMessage(responseMsg);
+			return fromMessage(responseMsg);
 		} catch (Exception e) {
 			throw new SlcException("Could not convert response from agent "
 					+ agentUuid + " with correlationId " + correlationId
 					+ " (query '" + query + "')", e);
 		}
+	}
+
+	protected Object fromMessage(Message message) throws JMSException {
+		return jmsTemplate.getMessageConverter().fromMessage(message);
+	}
+
+	protected Message toMessage(Object obj, Session session)
+			throws JMSException {
+		return jmsTemplate.getMessageConverter().toMessage(obj, session);
 	}
 
 	protected class AgentMC implements MessageCreator {
@@ -169,7 +173,7 @@ public class JmsAgentProxy implements SlcAgent {
 			if (body == null)
 				msg = session.createTextMessage();
 			else
-				msg = messageConverter.toMessage(body, session);
+				msg = toMessage(body, session);
 			msg.setStringProperty(JmsAgent.PROPERTY_SLC_AGENT_ID, agentUuid);
 			msg.setStringProperty(JmsAgent.PROPERTY_QUERY, query);
 			msg.setJMSCorrelationID(correlationId);

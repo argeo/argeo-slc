@@ -1,5 +1,5 @@
 Bundle-SymbolicName: org.argeo.slc.server.hsqldb
-Bundle-Version: 0.11.3.qualifier
+Bundle-Version: 0.11.3.SNAPSHOT
 Require-Bundle: org.argeo.slc.server,
  org.argeo.slc.specs,
  org.argeo.slc.support.simple

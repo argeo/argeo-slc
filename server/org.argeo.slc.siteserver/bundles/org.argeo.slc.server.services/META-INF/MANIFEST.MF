@@ -1,6 +1,6 @@
 Bundle-Name: SLC Server Services
 Bundle-SymbolicName: org.argeo.slc.server.services
-Bundle-Version: 0.11.3.qualifier
+Bundle-Version: 0.11.3.SNAPSHOT
 Import-Package: org.hibernate.jdbc,
  org.springframework.transaction,
  org.springframework.aop,

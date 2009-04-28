@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-	<service ref="transactionManager"
+	<service ref="hibernateTransactionManager"
 		interface="org.springframework.transaction.PlatformTransactionManager" />
 
 

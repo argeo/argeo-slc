@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beansProjectDescription>
 	<version>1</version>
-	<pluginVersion><![CDATA[2.2.0.v200809261800]]></pluginVersion>
+	<pluginVersion><![CDATA[2.2.1.v200811281800]]></pluginVersion>
 	<configSuffixes>
 		<configSuffix><![CDATA[xml]]></configSuffix>
 	</configSuffixes>
 	<enableImports><![CDATA[true]]></enableImports>
 	<configs>
-		<config>src/main/resources/org/argeo/slc/server/spring/servletContext.xml</config>
 	</configs>
 	<configSets>
 	</configSets>

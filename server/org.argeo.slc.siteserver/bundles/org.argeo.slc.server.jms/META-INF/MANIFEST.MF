@@ -1,8 +1,9 @@
 Bundle-SymbolicName: org.argeo.slc.server.jms
-Bundle-Version: 0.11.3.qualifier
+Bundle-Version: 0.11.3.SNAPSHOT
 Import-Package: javax.jms,
  javax.management.j2ee.statistics,
- org.apache.commons.logging
+ org.apache.commons.logging,
+ org.springframework.transaction
 Require-Bundle: 
  org.argeo.slc.specs,
  org.argeo.slc.server,

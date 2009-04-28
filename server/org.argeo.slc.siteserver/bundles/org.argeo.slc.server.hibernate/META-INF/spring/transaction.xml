@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<!-- Transaction -->
-	<bean id="transactionManager"
+	<bean id="hibernateTransactionManager"
 		class="org.springframework.orm.hibernate3.HibernateTransactionManager"
 		lazy-init="false">
 		<property name="sessionFactory" ref="sessionFactory" />
@@ -39,7 +39,7 @@
 		<aop:advisor advice-ref="daoAdvice" pointcut-ref="daoTestTreeMethods" />
 	</aop:config>
 
-	<tx:advice id="daoAdvice" transaction-manager="transactionManager">
+	<tx:advice id="daoAdvice" transaction-manager="hibernateTransactionManager">
 		<tx:attributes>
 			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
 			<tx:method name="list*" propagation="REQUIRED" read-only="true" />

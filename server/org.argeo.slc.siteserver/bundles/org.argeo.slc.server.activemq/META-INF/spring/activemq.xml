@@ -17,25 +17,15 @@
 	</bean>
 
 	<!-- Embedded broker -->
-	<amq:broker useJmx="false" persistent="false">
+	<amq:broker id="broker" useJmx="false" persistent="false">
 		<amq:transportConnectors>
 			<amq:transportConnector uri="${slc.server.jms.url}" />
 		</amq:transportConnectors>
 	</amq:broker>
 
 	<!-- Connection Factory -->
-	<!--
-		<bean id="jmsConnectionFactory"
-		class="org.springframework.jms.connection.SingleConnectionFactory">
-		<property name="targetConnectionFactory"> <bean
-		id="slcDefault.jms.amqConnectionFactory"
-		class="org.apache.activemq.ActiveMQConnectionFactory"> <property
-		name="brokerURL"> <value>vm://localhost</value> </property> </bean>
-		</property> </bean>
-	-->
-
 	<bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
-		destroy-method="stop">
+		destroy-method="stop" depends-on="broker">
 		<property name="connectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
 				<property name="brokerURL">
@@ -45,16 +35,23 @@
 		</property>
 	</bean>
 
+	<bean id="jmsTransactionManager"
+		class="org.springframework.jms.connection.JmsTransactionManager">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+	<!-- Agent Factory -->
 	<bean id="agentFactory" class="org.argeo.slc.jms.JmsAgentProxyFactory">
 		<property name="jmsTemplate">
 			<bean class="org.springframework.jms.core.JmsTemplate">
 				<property name="connectionFactory" ref="jmsConnectionFactory" />
+				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 				<property name="receiveTimeout" value="${slc.server.jms.agentProxy.timeout}" />
 			</bean>
 		</property>
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 		<property name="requestDestination" ref="slcJms.destination.agent.request" />
 		<property name="responseDestination" ref="slcJms.destination.agent.response" />
+		<property name="pingAllDestination" ref="slcJms.destination.agent.pingAll" />
 	</bean>
 
 

@@ -17,6 +17,8 @@
 		parent="slcJms.amTopic" />
 	<bean id="slcJms.destination.agent.response" p:physicalName="agent.response"
 		parent="slcJms.amTopic" />
+	<bean id="slcJms.destination.agent.pingAll" p:physicalName="agent.pingAll"
+		parent="slcJms.amTopic" />
 
 	<!-- Test result service -->
 	<bean id="slcJms.destination.test.create" p:physicalName="test.create"

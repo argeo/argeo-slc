@@ -76,6 +76,8 @@
 									org.argeo.slc.webapp,
 									org.argeo.slc.ria
 								</slc.osgi.start>
+								<slc.server.services.pingCycle>0</slc.server.services.pingCycle>
+								<slc.osgiboot.debug>true</slc.osgiboot.debug>
 							</systemProperties>
 						</configuration>
 					</plugin>

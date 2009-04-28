@@ -24,20 +24,23 @@ public class Activator implements BundleActivator {
 	public final static String PROP_SLC_OSGI_DEV_BASES = "slc.osgi.devBases";
 	public final static String PROP_SLC_OSGI_DEV_PATTERNS = "slc.osgi.devPatterns";
 	public final static String PROP_SLC_OSGI_LOCATIONS = "slc.osgi.locations";
+	public final static String PROP_SLC_OSGI_BASE_URL = "slc.osgi.baseUrl";
 	public final static String PROP_SLC_MAVEN_DEPENDENCY_FILE = "slc.maven.dependencyFile";
+	public final static String PROP_SLC_OSGIBOOT_DEBUG = "slc.osgiboot.debug";
 
-	private static Boolean debug = false;
+	private static Boolean debug = Boolean.parseBoolean(System.getProperty(
+			PROP_SLC_OSGIBOOT_DEBUG, "false"));
 
 	public void start(BundleContext bundleContext) throws Exception {
 		try {
 			info("SLC OSGi bootstrap starting...");
-			installUrls(bundleContext, getDevLocationsUrls());
+//			installUrls(bundleContext, getDevLocationsUrls());
 
 			installUrls(bundleContext, getLocationsUrls());
+
 			installUrls(bundleContext, getBundlesUrls());
 
-			List<String> urls = getMavenUrls();
-			installUrls(bundleContext, urls);
+			installUrls(bundleContext, getMavenUrls());
 
 			startBundles(bundleContext);
 
@@ -56,13 +59,11 @@ public class Activator implements BundleActivator {
 		Map<String, Bundle> installedBundles = getInstalledBundles(bundleContext);
 		for (String url : urls) {
 			try {
-
 				if (installedBundles.containsKey(url)) {
 					Bundle bundle = installedBundles.get(url);
 					// bundle.update();
-					if (debug)
-						debug("Bundle " + bundle.getSymbolicName()
-								+ " already installed from " + url);
+					info("Bundle " + bundle.getSymbolicName()
+							+ " already installed from " + url);
 				} else {
 					Bundle bundle = bundleContext.installBundle(url);
 					if (debug)
@@ -80,6 +81,7 @@ public class Activator implements BundleActivator {
 	protected List<String> getLocationsUrls() {
 		List<String> urlsProvided = new ArrayList<String>();
 
+		String baseUrl = getProperty(PROP_SLC_OSGI_BASE_URL, "reference:file:");
 		String bundlesList = getProperty(PROP_SLC_OSGI_LOCATIONS);
 		if (bundlesList == null)
 			return urlsProvided;
@@ -88,7 +90,7 @@ public class Activator implements BundleActivator {
 		StringTokenizer st = new StringTokenizer(bundlesList,
 				File.pathSeparator);
 		while (st.hasMoreTokens()) {
-			urlsProvided.add("reference:file:" + st.nextToken().trim());
+			urlsProvided.add(baseUrl + st.nextToken().trim());
 		}
 		return urlsProvided;
 	}
@@ -330,8 +332,14 @@ public class Activator implements BundleActivator {
 	protected static Map<String, Bundle> getInstalledBundles(
 			BundleContext bundleContext) {
 		Map<String, Bundle> installedBundles = new HashMap<String, Bundle>();
-		for (Bundle bundle : bundleContext.getBundles())
-			installedBundles.put(bundle.getLocation(), bundle);
+
+		for (Bundle bundle : bundleContext.getBundles()) {
+			String key = bundle.getSymbolicName();
+			if (key == null) {
+				key = bundle.getLocation();
+			}
+			installedBundles.put(key, bundle);
+		}
 		return installedBundles;
 	}
 
@@ -368,12 +376,21 @@ public class Activator implements BundleActivator {
 		return component;
 	}
 
-	protected String getProperty(String name) {
-		String value = System.getProperty(name);
+	protected static String getProperty(String name, String defaultValue) {
+		final String value;
+		if (defaultValue != null)
+			value = System.getProperty(name, defaultValue);
+		else
+			value = System.getProperty(name);
+
 		if (value == null || value.equals(""))
 			return null;
 		else
 			return value;
+	}
+
+	protected static String getProperty(String name) {
+		return getProperty(name, null);
 	}
 
 	private static void info(Object obj) {
@@ -386,10 +403,11 @@ public class Activator implements BundleActivator {
 	}
 
 	private static void warn(Object obj) {
-		if (System.getProperty("os.name").contains("Windows"))
-			System.out.println("# WARN " + obj);
-		else
-			System.err.println("# WARN " + obj);
+		System.out.println("# WARN " + obj);
+		// if (System.getProperty("os.name").contains("Windows"))
+		// System.out.println("# WARN " + obj);
+		// else
+		// System.err.println("# WARN " + obj);
 	}
 
 	static class MavenFile {

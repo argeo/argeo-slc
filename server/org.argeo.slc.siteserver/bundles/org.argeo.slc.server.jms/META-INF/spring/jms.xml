@@ -95,6 +95,7 @@
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
 		abstract="true">
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="transactionManager" ref="jmsTransactionManager" />
 	</bean>
 
 	<bean id="listenerAdapterCastor"

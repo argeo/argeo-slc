@@ -1,7 +1,7 @@
 Web-ContextPath: org.argeo.slc.webapp
 Bundle-Name: SLC Webapp
 Bundle-SymbolicName: org.argeo.slc.webapp
-Bundle-Version: 0.11.3.qualifier
+Bundle-Version: 0.11.3.SNAPSHOT
 Bundle-ClassPath: WEB-INF/classes
 Import-Package: com.sun.xml.messaging.saaj.soap;optional=true,
  javax.servlet,

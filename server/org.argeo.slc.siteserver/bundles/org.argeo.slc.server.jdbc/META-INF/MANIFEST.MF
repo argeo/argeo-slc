@@ -1,5 +1,5 @@
 Bundle-SymbolicName: org.argeo.slc.server.jdbc
-Bundle-Version: 0.11.3.qualifier
+Bundle-Version: 0.11.3.SNAPSHOT
 Fragment-Host: org.springframework.jdbc
 Import-Package: 
  com.mysql.jdbc;resolution:=optional,

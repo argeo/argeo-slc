@@ -26,8 +26,10 @@
 		</property>
 	</bean>
 
-<!--  	<bean id="basic.ref" factory-bean="basic.spec" factory-method="createRef"
-		abstract="true" />-->
+	<!--
+		<bean id="basic.ref" factory-bean="basic.spec"
+		factory-method="createRef" abstract="true" />
+	-->
 
 	<bean id="basic.flowTemplate" parent="slcTemplate.simpleFlow"
 		abstract="true">
@@ -39,17 +41,21 @@
 					<property name="message" value="From basic @{testedComponentId}" />
 					<aop:scoped-proxy />
 				</bean>
-				<bean parent="testRun">
-					<property name="testDefinition" ref="testDef" />
+				<bean parent="basic.testRun">
+					<property name="testDefinition" ref="basic.testDef" />
 					<property name="testData">
 						<bean parent="parameterRef">
 							<constructor-arg value="testData1" />
 						</bean>
 					</property>
 				</bean>
-				<bean parent="testRun">
-					<property name="testDefinition" ref="testDef" />
+				<bean parent="basic.testRun">
+					<property name="testDefinition" ref="basic.testDef" />
 					<property name="testData" ref="ref1" />
+				</bean>
+
+				<bean parent="task.closeTestResult" scope="execution">
+					<property name="testResult" ref="basic.testResult" />
 				</bean>
 			</list>
 		</property>
@@ -65,5 +71,20 @@
 		<property name="expected" value="tata" />
 		<property name="reached" value="tata" />
 	</bean>
+
+	<bean id="basic.testDef" class="org.argeo.slc.core.test.BasicTestDefinition"
+		scope="prototype" />
+
+	<bean id="basic.testResult" parent="slcDefault.test.basicTreeTestResult"
+		scope="execution">
+		<property name="listeners" ref="resultListeners" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="basic.testRun" class="org.argeo.slc.core.test.SimpleTestRun"
+		abstract="true">
+		<property name="testResult" ref="basic.testResult" />
+	</bean>
+
 
 </beans>

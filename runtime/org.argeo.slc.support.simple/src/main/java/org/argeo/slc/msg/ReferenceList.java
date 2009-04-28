@@ -6,6 +6,13 @@ import java.util.List;
 public class ReferenceList {
 	private List<String> references = new ArrayList<String>();
 
+	public ReferenceList() {
+	}
+
+	public ReferenceList(List<String> references) {
+		this.references = references;
+	}
+
 	public List<String> getReferences() {
 		return references;
 	}

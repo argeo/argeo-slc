@@ -1,5 +1,5 @@
 Bundle-SymbolicName: org.argeo.slc.agent
-Bundle-Version: 0.11.3.qualifier
+Bundle-Version: 0.11.3.SNAPSHOT
 Bundle-Name: Argeo SLC Agent
 Import-Package: 
  javax.jms,

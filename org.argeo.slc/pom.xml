@@ -21,7 +21,7 @@
 		<version.maven-bundle-plugin>2.0.0</version.maven-bundle-plugin>
 		<version.activemq>5.2.0.0006</version.activemq>
 		<version.activemq-web>5.2.0.0005</version.activemq-web>
-		<version.maven-argeo-osgi>0.1.7</version.maven-argeo-osgi>
+		<version.maven-argeo-osgi>0.1.8</version.maven-argeo-osgi>
 	</properties>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc</connection>

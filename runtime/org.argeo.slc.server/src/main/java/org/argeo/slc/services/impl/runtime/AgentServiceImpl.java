@@ -74,6 +74,12 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 					}
 				}
 
+				lst = slcAgentDescriptorDao.listSlcAgentDescriptors();
+				agentIds = new ArrayList<String>();
+				for (SlcAgentDescriptor ad : lst)
+					agentIds.add(ad.getUuid());
+				agentFactory.pingAll(agentIds);
+
 				synchronized (AgentServiceImpl.this) {
 					try {
 						AgentServiceImpl.this.wait(pingCycle);
