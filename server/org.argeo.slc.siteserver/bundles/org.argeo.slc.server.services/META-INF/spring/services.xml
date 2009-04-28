@@ -7,6 +7,16 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="locations">
+			<value>osgibundle:services.properties
+			</value>
+		</property>
+	</bean>
+
 	<!-- Services -->
 	<bean id="testManagerService" class="org.argeo.slc.services.impl.test.TestManagerServiceImpl">
 		<constructor-arg ref="testResultDao" />
@@ -18,7 +28,7 @@
 	<bean id="agentService" class="org.argeo.slc.services.impl.runtime.AgentServiceImpl">
 		<constructor-arg ref="slcAgentDescriptorDao" />
 		<constructor-arg ref="agentFactory" />
-		<property name="pingCycle" value="0" />
+		<property name="pingCycle" value="${slc.server.services.pingCycle}" />
 	</bean>
 
 	<bean id="slcExecutionService"
