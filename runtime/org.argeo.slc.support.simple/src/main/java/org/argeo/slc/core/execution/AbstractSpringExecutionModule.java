@@ -109,7 +109,7 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 					.convertValues(executionFlowDescriptor));
 		ExecutionFlow flow = (ExecutionFlow) applicationContext.getBean(
 				executionFlowDescriptor.getName(), ExecutionFlow.class);
-		flow.execute();
+		flow.run();
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext)

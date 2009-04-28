@@ -2,15 +2,14 @@ package org.argeo.slc.core.execution.tasks;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.execution.Executable;
 
-public class Echo implements Executable {
+public class Echo implements Runnable {
 	private final static Log defaultLog = LogFactory.getLog(Echo.class);
 
 	private Log log;
 	private String message;
 
-	public void execute() {
+	public void run() {
 		log().info(message);
 	}
 

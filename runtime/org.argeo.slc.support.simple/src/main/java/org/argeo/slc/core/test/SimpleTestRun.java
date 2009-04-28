@@ -37,7 +37,7 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 	private TestResult testResult;
 
 	/** Executes the underlying test definition. */
-	public void execute() {
+	public void run() {
 		uuid = UUID.randomUUID().toString();
 		if (testResult != null)
 			testResult.notifyTestRun(this);

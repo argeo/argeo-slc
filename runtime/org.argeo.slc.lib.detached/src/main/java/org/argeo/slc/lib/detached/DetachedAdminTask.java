@@ -1,6 +1,5 @@
 package org.argeo.slc.lib.detached;
 
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -10,16 +9,15 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedClient;
 import org.argeo.slc.detached.DetachedRequest;
-import org.argeo.slc.execution.Executable;
 
-public class DetachedAdminTask implements Executable {
+public class DetachedAdminTask implements Runnable {
 	private final static Log log = LogFactory.getLog(DetachedAdminTask.class);
 
 	private String action;
 	private DetachedClient client;
 	private Properties properties;
 
-	public void execute() {
+	public void run() {
 		// Prepare and send request
 		DetachedRequest request = new DetachedRequest(UUID.randomUUID()
 				.toString());

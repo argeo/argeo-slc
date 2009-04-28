@@ -6,13 +6,12 @@ import java.util.UUID;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.deploy.DeployedSystem;
 import org.argeo.slc.deploy.DeployedSystemManager;
-import org.argeo.slc.execution.Executable;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionRelated;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.structure.StructureRegistry;
 
-public class SlcManagerTask implements Executable, SlcExecutionRelated {
+public class SlcManagerTask implements Runnable, SlcExecutionRelated {
 	private String uuid;
 	private String slcExecutionUuid;
 	private String slcExecutionStepUuid;
@@ -20,7 +19,7 @@ public class SlcManagerTask implements Executable, SlcExecutionRelated {
 	private String action;
 	private DeployedSystemManager<DeployedSystem> manager;
 
-	public final void execute() {
+	public final void run() {
 		uuid = UUID.randomUUID().toString();
 		executeActions(StructureRegistry.ALL);
 	}

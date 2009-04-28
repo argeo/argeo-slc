@@ -23,7 +23,7 @@ public class HttpdApplicationDeployment implements Deployment {
 
 	private DeployEnvironment deployEnvironment;
 
-	public void execute() {
+	public void run() {
 		try {
 			deployEnvironment.unpackTo(distribution, targetData
 					.getTargetRootLocation(), null);

@@ -41,7 +41,7 @@ public abstract class AbstractExecutionFlowTestCase extends TestCase {
 	protected void configureAndExecuteSlcFlow(String applicationContextSuffix, String beanName) {
 		ConfigurableApplicationContext applicationContext = createApplicationContext(applicationContextSuffix);
 		ExecutionFlow executionFlow = (ExecutionFlow) applicationContext.getBean(beanName);
-		executionFlow.execute();		
+		executionFlow.run();		
 		applicationContext.close();
 	}	
 	

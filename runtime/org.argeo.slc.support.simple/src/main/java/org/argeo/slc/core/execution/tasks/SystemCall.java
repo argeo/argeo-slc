@@ -16,9 +16,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.Executable;
 
-public class SystemCall implements Executable {
+public class SystemCall implements Runnable {
 	// TODO: specify environment variables
 
 	private final Log log = LogFactory.getLog(getClass());
@@ -37,7 +36,7 @@ public class SystemCall implements Executable {
 	private Map<String, List<String>> osCommands = new HashMap<String, List<String>>();
 	private Map<String, String> osCmds = new HashMap<String, String>();
 
-	public void execute() {
+	public void run() {
 		try {
 			if (log.isTraceEnabled()) {
 				log.debug("os.name=" + System.getProperty("os.name"));

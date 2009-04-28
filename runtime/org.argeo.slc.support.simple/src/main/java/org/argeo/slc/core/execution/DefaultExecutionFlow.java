@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
-import org.argeo.slc.execution.Executable;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
@@ -32,7 +31,7 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	private final ExecutionSpec executionSpec;
 	private String name = null;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
-	private List<Executable> executables = new ArrayList<Executable>();
+	private List<Runnable> executables = new ArrayList<Runnable>();
 
 	private String path;
 	private StructureRegistry<TreeSPath> registry = new TreeSRegistry();
@@ -93,15 +92,15 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	}
 
-	public void execute() {
-		for (Executable executable : executables) {
-			executable.execute();
+	public void run() {
+		for (Runnable executable : executables) {
+			executable.run();
 		}
 	}
 
 	public void afterPropertiesSet() throws Exception {
 		if (path != null) {
-			for (Executable executable : executables) {
+			for (Runnable executable : executables) {
 				if (executable instanceof StructureAware) {
 					((StructureAware<TreeSPath>) executable).notifyCurrentPath(
 							registry, new TreeSPath(path));
@@ -114,7 +113,7 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		this.name = name;
 	}
 
-	public void setExecutables(List<Executable> executables) {
+	public void setExecutables(List<Runnable> executables) {
 		this.executables = executables;
 	}
 
@@ -144,8 +143,10 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 			Object paramValue = parameters.get(parameterName);
 			if (specAttr instanceof ResourceSpecAttribute) {
 				// deal with resources
-				Resource resource = resourceLoader.getResource(paramValue.toString());
-				return ((ResourceSpecAttribute) specAttr).convertResource(resource);
+				Resource resource = resourceLoader.getResource(paramValue
+						.toString());
+				return ((ResourceSpecAttribute) specAttr)
+						.convertResource(resource);
 			} else {
 				return paramValue;
 			}

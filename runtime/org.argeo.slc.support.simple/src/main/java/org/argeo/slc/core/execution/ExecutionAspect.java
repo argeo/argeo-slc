@@ -43,7 +43,7 @@ public class ExecutionAspect {
 		executionContext.leaveFlow(executionFlow);
 	}
 
-	@Pointcut("execution(void org.argeo.slc.execution.ExecutionFlow.execute())")
+	@Pointcut("execution(void org.argeo.slc.execution.ExecutionFlow.run())")
 	public void flowExecution() {
 	}
 	

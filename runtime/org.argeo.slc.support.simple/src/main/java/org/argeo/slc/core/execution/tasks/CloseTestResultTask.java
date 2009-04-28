@@ -1,12 +1,11 @@
 package org.argeo.slc.core.execution.tasks;
 
-import org.argeo.slc.execution.Executable;
 import org.argeo.slc.test.TestResult;
 
-public class CloseTestResultTask implements Executable {
+public class CloseTestResultTask implements Runnable {
 	private TestResult testResult;
 
-	public void execute() {
+	public void run() {
 		testResult.close();
 	}
 

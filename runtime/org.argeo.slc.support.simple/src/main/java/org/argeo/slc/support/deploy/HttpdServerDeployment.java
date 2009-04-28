@@ -9,7 +9,7 @@ import org.argeo.slc.deploy.TargetData;
 public class HttpdServerDeployment implements Deployment {
 	private HttpdServerTargetData targetData;
 
-	public void execute() {
+	public void run() {
 		// TODO Auto-generated method stub
 
 	}

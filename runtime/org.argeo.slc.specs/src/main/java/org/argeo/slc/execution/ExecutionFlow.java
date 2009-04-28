@@ -1,7 +1,7 @@
 package org.argeo.slc.execution;
 
 
-public interface ExecutionFlow extends Executable {
+public interface ExecutionFlow extends Runnable {
 	public Object getParameter(String key);
 
 	public Boolean isSetAsParameter(String key);

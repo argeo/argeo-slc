@@ -112,7 +112,7 @@ public class SlcTestTask extends SAwareTask {
 		}
 
 		try {
-			((ExecutableTestRun) testRun).execute();
+			((ExecutableTestRun) testRun).run();
 		} catch (RuntimeException e) {
 			if (result != null) {
 				SimpleResultPart errorPart = new SimpleResultPart(

@@ -25,7 +25,7 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 
 	public void testSpecOverriding() throws Exception {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("specOverriding.xml");
-		((ExecutionFlow) applicationContext.getBean("flow2")).execute();
+		((ExecutionFlow) applicationContext.getBean("flow2")).run();
 		SimpleTestResult res = (SimpleTestResult) applicationContext
 				.getBean("myTestResult");
 		validateTestResult(res);
@@ -33,12 +33,12 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 
 	public void testMultipleFlows() throws Exception {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("multipleFlow.xml");
-		((ExecutionFlow) applicationContext.getBean("flow1")).execute();
+		((ExecutionFlow) applicationContext.getBean("flow1")).run();
 		SimpleTestResult res = (SimpleTestResult) applicationContext
 				.getBean("myTestResult");
 		validateTestResult(res);
 		res.getParts().clear();
-		((ExecutionFlow) applicationContext.getBean("flow2")).execute();
+		((ExecutionFlow) applicationContext.getBean("flow2")).run();
 		validateTestResult(res, TestStatus.FAILED);
 		applicationContext.close();
 	}
@@ -51,7 +51,7 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 	 */
 	public void testPlaceHolders() throws Exception {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("placeHolders.cascading.xml");
-		((ExecutionFlow) applicationContext.getBean("flowA")).execute();
+		((ExecutionFlow) applicationContext.getBean("flowA")).run();
 		validateTestResult((SimpleTestResult) applicationContext
 				.getBean("myTestResult"));
 		applicationContext.close();
@@ -80,7 +80,7 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 		executionParameters.put("p8", "e8");
 		executionContext.addVariables(executionParameters);
 
-		((ExecutionFlow) applicationContext.getBean("flowA")).execute();
+		((ExecutionFlow) applicationContext.getBean("flowA")).run();
 		validateTestResult((SimpleTestResult) applicationContext
 				.getBean("myTestResult"));
 		applicationContext.close();
@@ -100,7 +100,7 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 		executionParameters.put("p6", "e6");
 		executionContext.addVariables(executionParameters);
 
-		((ExecutionFlow) applicationContext.getBean("flowA")).execute();
+		((ExecutionFlow) applicationContext.getBean("flowA")).run();
 		validateTestResult((SimpleTestResult) applicationContext
 				.getBean("myTestResult"));
 		applicationContext.close();
@@ -138,7 +138,7 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("listSetMap.xml");
 		ExecutionFlow executionFlow = (ExecutionFlow) applicationContext
 				.getBean("myFlow");
-		executionFlow.execute();
+		executionFlow.run();
 
 		validateTestResult((SimpleTestResult) applicationContext
 				.getBean("myTestResult"));
@@ -152,12 +152,12 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 
 	public void testListSetMapMultipleFlows() throws Exception {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("listSetMapMultipleFlow.xml");
-		((ExecutionFlow) applicationContext.getBean("flow1")).execute();
+		((ExecutionFlow) applicationContext.getBean("flow1")).run();
 		SimpleTestResult res = (SimpleTestResult) applicationContext
 				.getBean("myTestResult");
 		validateTestResult(res);
 		res.getParts().clear();
-		((ExecutionFlow) applicationContext.getBean("flow2")).execute();
+		((ExecutionFlow) applicationContext.getBean("flow2")).run();
 		validateTestResult(res, TestStatus.FAILED);
 		applicationContext.close();
 	}

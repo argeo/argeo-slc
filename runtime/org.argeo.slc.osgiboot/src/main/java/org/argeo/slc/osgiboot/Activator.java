@@ -34,7 +34,7 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		try {
 			info("SLC OSGi bootstrap starting...");
-//			installUrls(bundleContext, getDevLocationsUrls());
+			// installUrls(bundleContext, getDevLocationsUrls());
 
 			installUrls(bundleContext, getLocationsUrls());
 
@@ -329,20 +329,18 @@ public class Activator implements BundleActivator {
 		}
 	}
 
+	/** Key is location */
 	protected static Map<String, Bundle> getInstalledBundles(
 			BundleContext bundleContext) {
 		Map<String, Bundle> installedBundles = new HashMap<String, Bundle>();
 
 		for (Bundle bundle : bundleContext.getBundles()) {
-			String key = bundle.getSymbolicName();
-			if (key == null) {
-				key = bundle.getLocation();
-			}
-			installedBundles.put(key, bundle);
+			installedBundles.put(bundle.getLocation(), bundle);
 		}
 		return installedBundles;
 	}
 
+	/** Key is symbolic name */
 	protected static Map<String, Bundle> getBundles(BundleContext bundleContext) {
 		Map<String, Bundle> installedBundles = new HashMap<String, Bundle>();
 		for (Bundle bundle : bundleContext.getBundles())

@@ -25,7 +25,7 @@ public class DbUnitDeployment implements Deployment {
 	private DbUnitDeploymentData deploymentData;
 	private DbModel dbModel;
 
-	public void execute() {
+	public void run() {
 		try {
 			IDatabaseTester databaseTester = new DataSourceDatabaseTester(
 					mxDatabase.getDataSource());

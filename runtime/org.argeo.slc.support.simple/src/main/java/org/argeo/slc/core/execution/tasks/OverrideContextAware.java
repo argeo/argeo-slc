@@ -2,11 +2,9 @@ package org.argeo.slc.core.execution.tasks;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.test.context.SimpleContextAware;
-import org.argeo.slc.core.test.context.SimpleParentContextAware;
-import org.argeo.slc.execution.Executable;
 import org.argeo.slc.test.context.ContextAware;
 
-public class OverrideContextAware implements Executable {
+public class OverrideContextAware implements Runnable {
 
 	private ContextAware source;
 
@@ -23,7 +21,7 @@ public class OverrideContextAware implements Executable {
 	}
 
 
-	public void execute() {
+	public void run() {
 		// override values
 		if(source.getValues() != null)
 			for(String key : source.getValues().keySet()) {

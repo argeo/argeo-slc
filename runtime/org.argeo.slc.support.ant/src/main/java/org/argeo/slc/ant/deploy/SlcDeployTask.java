@@ -41,7 +41,7 @@ public class SlcDeployTask extends SAwareTask {
 			log.trace("Overrides target data");
 		}
 
-		deployment.execute();
+		deployment.run();
 	}
 
 	/**
