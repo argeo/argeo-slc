@@ -134,29 +134,21 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 			destinationSend = responseDestination;
 		}
 
-		new Thread() {
-			public void run() {
-				// Send response
-				jmsTemplate.convertAndSend(destinationSend, response,
-						new MessagePostProcessor() {
-							public Message postProcessMessage(
-									Message messageToSend) throws JMSException {
-								messageToSend.setStringProperty(PROPERTY_QUERY,
-										query);
-								messageToSend.setStringProperty(
-										PROPERTY_SLC_AGENT_ID, agentDescriptor
-												.getUuid());
-								messageToSend
-										.setJMSCorrelationID(correlationId);
-								return messageToSend;
-							}
-						});
-				if (log.isDebugEnabled())
-					log.debug("Sent response to query '" + query
-							+ "' with correlationId " + correlationId);
-			}
-		}.start();
-
+		// Send response
+		jmsTemplate.convertAndSend(destinationSend, response,
+				new MessagePostProcessor() {
+					public Message postProcessMessage(Message messageToSend)
+							throws JMSException {
+						messageToSend.setStringProperty(PROPERTY_QUERY, query);
+						messageToSend.setStringProperty(PROPERTY_SLC_AGENT_ID,
+								agentDescriptor.getUuid());
+						messageToSend.setJMSCorrelationID(correlationId);
+						return messageToSend;
+					}
+				});
+		if (log.isTraceEnabled())
+			log.debug("Sent response to query '" + query
+					+ "' with correlationId " + correlationId);
 	}
 
 	/** @return response */
@@ -174,8 +166,12 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 				agentDescriptorToSend.setModuleDescriptors(lst);
 				return agentDescriptorToSend;
 			} else if ("runSlcExecution".equals(query)) {
-				SlcExecution slcExecution = (SlcExecution) convertFrom(message);
-				runSlcExecution(slcExecution);
+				final SlcExecution slcExecution = (SlcExecution) convertFrom(message);
+				new Thread() {
+					public void run() {
+						runSlcExecution(slcExecution);
+					}
+				}.start();
 				return ExecutionAnswer.ok("Execution started on agent "
 						+ agentDescriptor.getUuid());
 			} else if ("ping".equals(query)) {

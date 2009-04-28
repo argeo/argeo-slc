@@ -58,10 +58,8 @@
 							<execDir>target/exec/server</execDir>
 							<jvmArgs>
 								<jvmArg>-Xmx256m</jvmArg>
-								<!--
-									<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000</jvmArg>
-								-->
 							</jvmArgs>
+							<debug>0</debug>
 							<systemProperties>
 								<slc.osgi.start>
 									org.argeo.dep.osgi.catalina.start,
@@ -76,8 +74,7 @@
 									org.argeo.slc.webapp,
 									org.argeo.slc.ria
 								</slc.osgi.start>
-								<slc.server.services.pingCycle>0</slc.server.services.pingCycle>
-								<slc.osgiboot.debug>true</slc.osgiboot.debug>
+								<!--  <slc.osgiboot.debug>true</slc.osgiboot.debug>-->
 							</systemProperties>
 						</configuration>
 					</plugin>
@@ -104,8 +101,7 @@
 									org.springframework.osgi.extender,
 									org.argeo.slc.support.equinox,
 									org.argeo.slc.agent,
-									org.argeo.slc.demo.basic,
-									org.argeo.slc.demo.manager
+									org.argeo.slc.demo.basic
 								</slc.osgi.start>
 							</systemProperties>
 						</configuration>

@@ -36,9 +36,9 @@ public class Activator implements BundleActivator {
 			info("SLC OSGi bootstrap starting...");
 			// installUrls(bundleContext, getDevLocationsUrls());
 
-			installUrls(bundleContext, getLocationsUrls());
-
 			installUrls(bundleContext, getBundlesUrls());
+
+			installUrls(bundleContext, getLocationsUrls());
 
 			installUrls(bundleContext, getMavenUrls());
 
@@ -62,8 +62,9 @@ public class Activator implements BundleActivator {
 				if (installedBundles.containsKey(url)) {
 					Bundle bundle = installedBundles.get(url);
 					// bundle.update();
-					info("Bundle " + bundle.getSymbolicName()
-							+ " already installed from " + url);
+					if (debug)
+						debug("Bundle " + bundle.getSymbolicName()
+								+ " already installed from " + url);
 				} else {
 					Bundle bundle = bundleContext.installBundle(url);
 					if (debug)

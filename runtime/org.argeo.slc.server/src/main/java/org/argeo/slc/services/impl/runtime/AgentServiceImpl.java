@@ -63,7 +63,7 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 				for (SlcAgentDescriptor ad : lst)
 					agentIds.add(ad.getUuid());
 
-				if (log.isDebugEnabled())
+				if (log.isTraceEnabled())
 					log.debug("Ping " + agentIds.size() + " agent.");
 				for (String agentId : agentIds) {
 					SlcAgent agent = agentFactory.getAgent(agentId);

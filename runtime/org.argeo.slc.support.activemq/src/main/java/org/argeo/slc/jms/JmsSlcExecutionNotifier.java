@@ -16,13 +16,14 @@ public class JmsSlcExecutionNotifier implements SlcExecutionNotifier {
 
 	private JmsTemplate jmsTemplate;
 
-	private Destination updateStatusDestination;
+	private Destination executionEventDestination;
+	//private Destination updateStatusDestination;
 
 	public void updateStatus(SlcExecution slcExecution, String oldStatus,
 			String newStatus) {
 		SlcExecutionStatusRequest req = new SlcExecutionStatusRequest(
 				slcExecution.getUuid(), newStatus);
-		jmsTemplate.convertAndSend(updateStatusDestination, req);
+		jmsTemplate.convertAndSend(executionEventDestination, req);
 	}
 
 	public void addSteps(SlcExecution slcExecution,
@@ -42,8 +43,14 @@ public class JmsSlcExecutionNotifier implements SlcExecutionNotifier {
 		this.jmsTemplate = jmsTemplate;
 	}
 
-	public void setUpdateStatusDestination(Destination updateStatusDestination) {
-		this.updateStatusDestination = updateStatusDestination;
+	public void setExecutionEventDestination(Destination executionEventDestination) {
+		this.executionEventDestination = executionEventDestination;
 	}
+
+	
+	
+//	public void setUpdateStatusDestination(Destination updateStatusDestination) {
+//		this.updateStatusDestination = updateStatusDestination;
+//	}
 
 }

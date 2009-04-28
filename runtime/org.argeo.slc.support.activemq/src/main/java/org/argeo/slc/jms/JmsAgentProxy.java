@@ -98,7 +98,7 @@ public class JmsAgentProxy implements SlcAgent {
 
 	protected void send(AgentMC messageCreator) {
 		jmsTemplate.send(requestDestination, messageCreator);
-		if (log.isDebugEnabled())
+		if (log.isTraceEnabled())
 			log.debug("Sent query '" + messageCreator.getQuery()
 					+ "' with correlationId "
 					+ messageCreator.getCorrelationId() + " to agent "
@@ -127,7 +127,7 @@ public class JmsAgentProxy implements SlcAgent {
 			else
 				return null;
 		}
-		if (log.isDebugEnabled())
+		if (log.isTraceEnabled())
 			log.debug("Received response for query '" + query
 					+ "' with correlationId " + correlationId + " from agent "
 					+ agentUuid);

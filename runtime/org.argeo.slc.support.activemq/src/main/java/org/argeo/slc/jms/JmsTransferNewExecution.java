@@ -4,6 +4,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.msg.MsgHandler;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
@@ -13,6 +14,7 @@ import org.springframework.jms.support.converter.MessageConverter;
 public class JmsTransferNewExecution implements MessageListener {
 	private MessageConverter messageConverter;
 	private SlcAgentFactory agentFactory;
+	private MsgHandler serviceMsgHandler;
 
 	public void onMessage(final Message message) {
 		try {
@@ -26,6 +28,7 @@ public class JmsTransferNewExecution implements MessageListener {
 					agent.runSlcExecution(slcExecution);
 				}
 			}.start();
+			serviceMsgHandler.handleMsg(slcExecution);
 		} catch (Exception e) {
 			throw new SlcException("Could not transfer new execution "
 					+ message, e);
@@ -38,6 +41,10 @@ public class JmsTransferNewExecution implements MessageListener {
 
 	public void setAgentFactory(SlcAgentFactory agentFactory) {
 		this.agentFactory = agentFactory;
+	}
+
+	public void setServiceMsgHandler(MsgHandler serviceMsgHandler) {
+		this.serviceMsgHandler = serviceMsgHandler;
 	}
 
 }

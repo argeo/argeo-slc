@@ -33,69 +33,73 @@
 			<bean class="org.argeo.slc.jms.JmsTransferNewExecution">
 				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 				<property name="agentFactory" ref="agentFactory" />
-			</bean>
-		</property>
-	</bean>
-
-	<!-- Test Manager Service -->
-	<bean parent="listenerContainer">
-		<property name="destination" ref="slcJms.destination.test.create" />
-		<property name="messageListener">
-			<bean parent="listenerAdapterCastor">
-				<constructor-arg ref="testManagerService" />
-				<property name="defaultListenerMethod" value="createTreeTestResult" />
+				<property name="serviceMsgHandler">
+					<bean class="org.argeo.slc.services.ServiceMsgHandler">
+						<property name="slcExecutionService" ref="slcExecutionService" />
+					</bean>
+				</property>
 			</bean>
 		</property>
 	</bean>
 
 	<bean parent="listenerContainer">
-		<property name="destination" ref="slcJms.destination.test.addResultPart" />
+		<property name="destination" ref="slcJms.destination.execution.event" />
 		<property name="messageListener">
-			<bean parent="listenerAdapterCastor">
-				<constructor-arg ref="testManagerService" />
-				<property name="defaultListenerMethod" value="addResultPart" />
+			<bean class="org.argeo.slc.jms.JmsExecutionHandler">
+				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+				<property name="serviceMsgHandler">
+					<bean class="org.argeo.slc.services.ServiceMsgHandler">
+						<property name="slcExecutionService" ref="slcExecutionService" />
+						<property name="testManagerService" ref="testManagerService" />
+					</bean>
+				</property>
 			</bean>
 		</property>
 	</bean>
 
-	<bean parent="listenerContainer">
-		<property name="destination" ref="slcJms.destination.test.close" />
-		<property name="messageListener">
-			<bean parent="listenerAdapterCastor">
-				<constructor-arg ref="testManagerService" />
-				<property name="defaultListenerMethod" value="closeTreeTestResult" />
-			</bean>
-		</property>
-	</bean>
 
-	<!-- SLC Execution Service -->
-	<bean parent="listenerContainer">
-		<property name="destination" ref="slcJms.destination.agent.newExecution" />
-		<property name="messageListener">
-			<bean parent="listenerAdapterCastor">
-				<constructor-arg ref="slcExecutionService" />
-				<property name="defaultListenerMethod" value="newExecution" />
-			</bean>
-		</property>
-	</bean>
-
-	<bean parent="listenerContainer">
-		<property name="destination" ref="slcJms.destination.slcExecution.updateStatus" />
-		<property name="messageListener">
-			<bean parent="listenerAdapterCastor">
-				<constructor-arg ref="slcExecutionService" />
-				<property name="defaultListenerMethod" value="updateStatus" />
-			</bean>
-		</property>
-	</bean>
-
+	<!--
+		Test Manager Service <bean parent="listenerContainer"> <property
+		name="destination" ref="slcJms.destination.test.create" /> <property
+		name="messageListener"> <bean parent="listenerAdapterCastor">
+		<constructor-arg ref="testManagerService" /> <property
+		name="defaultListenerMethod" value="createTreeTestResult" /> </bean>
+		</property> </bean> <bean parent="listenerContainer"> <property
+		name="destination" ref="slcJms.destination.test.addResultPart" />
+		<property name="messageListener"> <bean
+		parent="listenerAdapterCastor"> <constructor-arg
+		ref="testManagerService" /> <property name="defaultListenerMethod"
+		value="addResultPart" /> </bean> </property> </bean> <bean
+		parent="listenerContainer"> <property name="destination"
+		ref="slcJms.destination.test.close" /> <property
+		name="messageListener"> <bean parent="listenerAdapterCastor">
+		<constructor-arg ref="testManagerService" /> <property
+		name="defaultListenerMethod" value="closeTreeTestResult" /> </bean>
+		</property> </bean>
+	-->
+	<!--
+		SLC Execution Service <bean parent="listenerContainer"> <property
+		name="destination" ref="slcJms.destination.agent.newExecution" />
+		<property name="messageListener"> <bean
+		parent="listenerAdapterCastor"> <constructor-arg
+		ref="slcExecutionService" /> <property name="defaultListenerMethod"
+		value="newExecution" /> </bean> </property> </bean> <bean
+		parent="listenerContainer"> <property name="destination"
+		ref="slcJms.destination.slcExecution.updateStatus" /> <property
+		name="messageListener"> <bean parent="listenerAdapterCastor">
+		<constructor-arg ref="slcExecutionService" /> <property
+		name="defaultListenerMethod" value="updateStatus" /> </bean>
+		</property> </bean>
+	-->
 
 	<!-- Templates -->
 	<bean id="listenerContainer"
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
 		abstract="true">
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
-		<property name="transactionManager" ref="jmsTransactionManager" />
+		<!--
+			<property name="transactionManager" ref="jmsTransactionManager" />
+		-->
 	</bean>
 
 	<bean id="listenerAdapterCastor"

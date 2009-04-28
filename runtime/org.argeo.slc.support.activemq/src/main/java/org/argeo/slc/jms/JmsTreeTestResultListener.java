@@ -20,9 +20,10 @@ public class JmsTreeTestResultListener implements
 	private Boolean onlyOnClose = false;
 	private JmsTemplate jmsTemplate;
 
-	private Destination createDestination;
-	private Destination addResultPartDestination;
-	private Destination closeDestination;
+	private Destination executionEventDestination;
+//	private Destination createDestination;
+//	private Destination addResultPartDestination;
+//	private Destination closeDestination;
 
 	public void resultPartAdded(TreeTestResult testResult,
 			TestResultPart testResultPart) {
@@ -40,7 +41,7 @@ public class JmsTreeTestResultListener implements
 					log.debug("Send create result request for result "
 							+ testResult.getUuid());
 
-				jmsTemplate.convertAndSend(createDestination, req);
+				jmsTemplate.convertAndSend(executionEventDestination, req);
 			} else {
 				ResultPartRequest req = new ResultPartRequest(testResult);
 
@@ -48,7 +49,7 @@ public class JmsTreeTestResultListener implements
 					log.debug("Send result parts for result "
 							+ testResult.getUuid());
 
-				jmsTemplate.convertAndSend(addResultPartDestination, req);
+				jmsTemplate.convertAndSend(executionEventDestination, req);
 			}
 		} catch (Exception e) {
 			throw new SlcException("Could not notify to JMS", e);
@@ -65,7 +66,7 @@ public class JmsTreeTestResultListener implements
 					log.debug("Send create result request for result "
 							+ testResult.getUuid());
 
-				jmsTemplate.convertAndSend(createDestination, req);
+				jmsTemplate.convertAndSend(executionEventDestination, req);
 			} else {
 				CloseTreeTestResultRequest req = new CloseTreeTestResultRequest(
 						testResult);
@@ -74,7 +75,7 @@ public class JmsTreeTestResultListener implements
 					log.debug("Send close result request for result "
 							+ testResult.getUuid());
 
-				jmsTemplate.convertAndSend(closeDestination, req);
+				jmsTemplate.convertAndSend(executionEventDestination, req);
 
 			}
 		} catch (Exception e) {
@@ -90,16 +91,22 @@ public class JmsTreeTestResultListener implements
 		this.jmsTemplate = jmsTemplate;
 	}
 
-	public void setCreateDestination(Destination createDestination) {
-		this.createDestination = createDestination;
+	public void setExecutionEventDestination(Destination executionEventDestination) {
+		this.executionEventDestination = executionEventDestination;
 	}
+	
+	
 
-	public void setAddResultPartDestination(Destination addResultPartDestination) {
-		this.addResultPartDestination = addResultPartDestination;
-	}
-
-	public void setCloseDestination(Destination closeDestination) {
-		this.closeDestination = closeDestination;
-	}
+//	public void setCreateDestination(Destination createDestination) {
+//		this.createDestination = createDestination;
+//	}
+//
+//	public void setAddResultPartDestination(Destination addResultPartDestination) {
+//		this.addResultPartDestination = addResultPartDestination;
+//	}
+//
+//	public void setCloseDestination(Destination closeDestination) {
+//		this.closeDestination = closeDestination;
+//	}
 
 }
