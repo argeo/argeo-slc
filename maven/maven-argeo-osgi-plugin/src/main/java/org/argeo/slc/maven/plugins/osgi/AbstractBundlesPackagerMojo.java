@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -46,7 +48,25 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 	 */
 	protected String bundlesPomArtifactId;
 
-	protected List analyze() throws MojoExecutionException {
+	/**
+	 * Whether should fail if MANIFEST version are not in line with pom version.
+	 * 
+	 * @parameter expression="${strictManifestVersion}" default-value="false"
+	 * @required
+	 */
+	protected boolean strictManifestVersion;
+
+	/**
+	 * Whether should fail if symbolic name does not match artifact id.
+	 * 
+	 * @parameter expression="${strictSymbolicName}" default-value="false"
+	 * @required
+	 */
+	protected boolean strictSymbolicName;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+
+	protected List analyze(boolean willGenerate) throws MojoExecutionException {
 		List list = new ArrayList();
 
 		File[] bundleDirs = bundlesDirectory.listFiles(new FileFilter() {
@@ -58,85 +78,111 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 			}
 		});
 		for (int i = 0; i < bundleDirs.length; i++) {
+
 			File dir = bundleDirs[i];
-			File manifestFile = manifestFileFromDir(dir);
-			String artifactId = dir.getName();
-			File destFile = new File(packagedBundlesDir.getPath()
-					+ File.separator + artifactId + ".jar");
+			BundlePackage bundlePackage;
 			try {
-				String manifestStr = FileUtils.readFileToString(manifestFile);
-				char lastChar = manifestStr.charAt(manifestStr.length() - 1);
-				if (lastChar != '\n')
-					throw new RuntimeException(
-							"Manifest "
-									+ manifestFile
-									+ " is not valid, it does not end with and endline character.");
-
-				Manifest manifest = readManifest(manifestFile);
-				// Symbolic name
-				String symbolicNameMf = manifest.getMainAttributes().getValue(
-						"Bundle-SymbolicName");
-				if (!artifactId.equals(symbolicNameMf))
-					getLog().warn(
-							"Symbolic name " + symbolicNameMf
-									+ " does not match with directory name "
-									+ artifactId);
-
-				// Version
-				String versionMf = manifest.getMainAttributes().getValue(
-						"Bundle-Version");
-				int qIndex = versionMf.lastIndexOf(".qualifier");
-				String versionMfMain;
-				if (qIndex >= 0)
-					versionMfMain = versionMf.substring(0, qIndex);
-				else
-					versionMfMain = versionMf;
-
-				int sIndex = project.getVersion().lastIndexOf("-SNAPSHOT");
-				String versionMain;
-				boolean isSnapshot = false;
-				if (sIndex >= 0) {// SNAPSHOT
-					versionMain = project.getVersion().substring(0, sIndex);
-					isSnapshot = true;
-				} else {
-					versionMain = project.getVersion();
-				}
-
-				if (!versionMain.equals(versionMfMain))
-					getLog()
-							.warn(
-									"Main manifest version "
-											+ versionMfMain
-											+ " of bundle "
-											+ artifactId
-											+ " do not match with main project version "
-											+ versionMain);
-
-				String newVersionMf;
-				String newVersionArt;
-				if (isSnapshot) {
-					newVersionMf = versionMfMain + ".SNAPSHOT";
-					newVersionArt = versionMfMain + "-SNAPSHOT";
-				} else {
-					newVersionMf = versionMfMain;
-					newVersionArt = versionMfMain;
-				}
-
-				manifest.getMainAttributes().putValue("Bundle-Version",
-						newVersionMf);
-				manifest.getMainAttributes().put(
-						Attributes.Name.MANIFEST_VERSION, "1.0");
-
-				Artifact artifact = artifactFactory.createBuildArtifact(project
-						.getGroupId(), artifactId, newVersionArt, "jar");
-				BundlePackage bundlePackage = new BundlePackage(artifact, dir,
-						new Manifest(manifest), destFile);
-				list.add(bundlePackage);
+				bundlePackage = processBundleDir(dir, willGenerate);
 			} catch (Exception e) {
 				throw new MojoExecutionException("Could not analyze " + dir, e);
 			}
+			list.add(bundlePackage);
+
 		}
 		return list;
+	}
+
+	protected BundlePackage processBundleDir(File dir, boolean willGenerate)
+			throws Exception {
+		File manifestFile = manifestFileFromDir(dir);
+		String artifactId = dir.getName();
+		File destFile = new File(packagedBundlesDir.getPath() + File.separator
+				+ artifactId + ".jar");
+
+		String manifestStr = FileUtils.readFileToString(manifestFile);
+		char lastChar = manifestStr.charAt(manifestStr.length() - 1);
+		if (lastChar != '\n')
+			throw new RuntimeException("Manifest " + manifestFile
+					+ " is not valid,"
+					+ " it does not end with and endline character.");
+
+		Manifest manifest = readManifest(manifestFile);
+		// Symbolic name
+		String symbolicNameMf = manifest.getMainAttributes().getValue(
+				"Bundle-SymbolicName");
+		if (!artifactId.equals(symbolicNameMf)) {
+			String msg = "Symbolic name " + symbolicNameMf
+					+ " does not match with directory name " + artifactId;
+			if (strictSymbolicName)
+				throw new RuntimeException(msg);
+			else
+				getLog().warn(msg);
+		}
+
+		// Version
+		String versionMf = manifest.getMainAttributes().getValue(
+				"Bundle-Version");
+		int qIndex = versionMf.lastIndexOf(".SNAPSHOT");
+		String versionMfMain;
+		if (qIndex >= 0)
+			versionMfMain = versionMf.substring(0, qIndex);
+		else
+			versionMfMain = versionMf;
+
+		int sIndex = project.getModel().getVersion().lastIndexOf("-SNAPSHOT");
+		String versionMain;
+		String buildId;
+		boolean isSnapshot = false;
+		if (sIndex >= 0) {// SNAPSHOT
+			versionMain = project.getVersion().substring(0, sIndex);
+			// buildId = "D_" + sdf.format(new Date());// D for dev
+			buildId = "SNAPSHOT";
+			isSnapshot = true;
+		} else {
+			versionMain = project.getVersion();
+			// buildId = "R_" + sdf.format(new Date());// R for release
+			buildId = "";
+		}
+
+		if (!versionMain.equals(versionMfMain)) {
+			String msg = "Main manifest version " + versionMfMain
+					+ " of bundle " + artifactId
+					+ " do not match with main project version " + versionMain;
+			if (strictManifestVersion)
+				throw new RuntimeException(msg);
+			else
+				getLog().warn(msg);
+		}
+
+		String newVersionMf = versionMfMain + "." + buildId;
+		String newVersionArt;
+		if (isSnapshot) {
+			newVersionArt = versionMfMain + "-SNAPSHOT";
+		} else {
+			newVersionArt = versionMfMain;
+		}
+
+		//boolean debug = true;
+		boolean debug = getLog().isDebugEnabled();
+		if (debug && willGenerate) {
+			getLog().info("\n## " + artifactId);
+			getLog().info("project.getVersion()=" + project.getVersion());
+			// getLog().info(
+			// "project.getModel().getVersion()="
+			// + project.getModel().getVersion());
+			// getLog().info("versionMf=" + versionMf);
+			// getLog().info("buildId=" + buildId);
+			getLog().info("newVersionMf=" + newVersionMf);
+		}
+
+		manifest.getMainAttributes().putValue("Bundle-Version", newVersionMf);
+		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION,
+				"1.0");
+
+		Artifact artifact = artifactFactory.createBuildArtifact(project
+				.getGroupId(), artifactId, newVersionArt, "jar");
+		return new BundlePackage(artifact, dir, new Manifest(manifest),
+				destFile);
 	}
 
 	protected File manifestFileFromDir(File dir) {

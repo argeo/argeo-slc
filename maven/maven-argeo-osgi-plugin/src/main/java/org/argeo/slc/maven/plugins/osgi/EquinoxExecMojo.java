@@ -55,7 +55,22 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 	 */
 	protected String[] jvmArgs;
 
+	/**
+	 * JVM arguments to append
+	 * 
+	 * @parameter alias="${jvmArgsToAppend}"
+	 */
+	protected String[] jvmArgsToAppend;
+
 	protected String[] defaultJvmArgs = { "-Xmx128m" };
+
+	/**
+	 * Debug port (0 deactivate)
+	 * 
+	 * @parameter expression="${debug}" default-value="0"
+	 * @required
+	 */
+	protected String debug;
 
 	/**
 	 * Equinox args
@@ -63,6 +78,13 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 	 * @parameter alias="${args}"
 	 */
 	protected String[] args;
+
+	/**
+	 * Equinox args to append
+	 * 
+	 * @parameter alias="${argsToAppend}"
+	 */
+	protected String[] argsToAppend;
 
 	protected String[] defaultArgs = { "-console", "-configuration", "conf",
 			"-data", "data" };
@@ -140,8 +162,20 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 
 			// Build command
 			List cmdList = new ArrayList();
+			// JVM
 			cmdList.add(jvm);
+			// JVM arguments
 			cmdList.addAll(Arrays.asList(jvmArgs));
+
+			if (!"0".equals(debug))
+				cmdList
+						.add("-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address="
+								+ debug);
+
+			if (jvmArgsToAppend != null)
+				cmdList.addAll(Arrays.asList(jvmArgsToAppend));
+
+			// System properties
 			if (!systemProperties.containsKey("osgi.bundles"))
 				cmdList.add("-Dosgi.bundles="
 						+ osgiBootArtifact.getFile().getCanonicalPath()
@@ -160,9 +194,15 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 				}
 				cmdList.add("-D" + key + "=" + strValue);
 			}
+
+			// Equinox jar
 			cmdList.add("-jar");
 			cmdList.add(equinoxArtifact.getFile().getCanonicalPath());
+
+			// Program arguments
 			cmdList.addAll(Arrays.asList(args));
+			if (argsToAppend != null)
+				cmdList.addAll(Arrays.asList(argsToAppend));
 
 			String[] cmd = (String[]) cmdList.toArray(new String[0]);
 
