@@ -27,6 +27,7 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 	private Boolean debug = false;
 
 	private String springOsgiExtenderId = "org.springframework.osgi.extender";
+	private String slcSupportEquinoxId = "org.argeo.slc.support.equinox";
 	// private String slcAgentId = "org.argeo.slc.agent";
 	// private String osgiBootId = "org.argeo.slc.osgiboot";
 
@@ -39,10 +40,10 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 	public SlcLaunchShortcut() {
 		super();
 		defaultBundlesToStart.add(springOsgiExtenderId);
+		defaultBundlesToStart.add(slcSupportEquinoxId);
 		// defaultBundlesToStart.add(slcAgentId);
 	}
 
-	@Override
 	public void launch(ISelection selection, String mode) {
 		this.selection = selection;
 		this.name = new StringBuffer();
@@ -62,7 +63,6 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 		bundlesToStart = null;
 	}
 
-	@Override
 	protected void initializeConfiguration(
 			ILaunchConfigurationWorkingCopy configuration) {
 		try {
@@ -179,9 +179,8 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 		}
 	}
 
-	@Override
 	protected String getName(ILaunchConfigurationType type) {
-		if (name != null)
+		if (name != null && !name.toString().trim().equals(""))
 			return name.toString();
 		else
 			return "SLC";
