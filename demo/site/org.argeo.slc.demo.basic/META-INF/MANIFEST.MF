@@ -5,7 +5,8 @@ Spring-Context: conf/*,conf/testCases/*
 Require-Bundle: 
  org.argeo.slc.support.equinox,
  org.argeo.slc.specs,
- org.argeo.slc.support.simple
+ org.argeo.slc.support.simple,
+ org.argeo.dep.jemmy.nb61;bundle-version="0.2.2"
 Import-Package: 
  net.sf.cglib.core,
  net.sf.cglib.proxy,
