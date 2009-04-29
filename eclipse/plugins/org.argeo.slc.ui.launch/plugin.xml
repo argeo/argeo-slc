@@ -12,6 +12,30 @@
 <extension
       point="org.eclipse.debug.ui.launchShortcuts">
    <shortcut
+         class="org.argeo.slc.ui.launch.osgi.SlcLaunchShortcut"
+         icon="icons/slcScriptLaunch.gif"
+         id="org.argeo.slc.ui.launch.slcOsgiLaunchShortcut"
+         label="SLC"
+         modes="run,debug">
+    
+         <contextualLaunch>
+            <enablement>
+               <with variable="selection">
+	                  <iterate>
+	                  	<and>
+		                  	<test property="org.eclipse.debug.ui.projectNature" value="org.eclipse.pde.PluginNature"/>
+                       		<or>
+                       		<adapt type="org.eclipse.core.resources.IProject"/>
+                       		<test property="org.eclipse.debug.ui.matchesPattern" value="MANIFEST.MF"/>
+                       		</or>
+                   		 </and>
+		              </iterate>
+               </with>
+           </enablement>
+         </contextualLaunch>         
+   </shortcut>
+   <!--
+   <shortcut
          class="org.argeo.slc.ui.launch.script.SlcScriptLaunchShortcut"
          icon="icons/slcScriptLaunch.gif"
          id="org.argeo.slc.ui.launch.slcScriptLaunchShortcut"
@@ -51,7 +75,9 @@
            </enablement>
   		 </contextualLaunch>
    </shortcut>
+-->
 </extension>
+<!--
 <extension
       point="org.eclipse.debug.ui.launchConfigurationTabGroups">
    <launchConfigurationTabGroup
@@ -60,13 +86,14 @@
          type="org.argeo.slc.launch.slcScriptLaunchType">
    </launchConfigurationTabGroup>
 </extension>
-
+-->
 <!-- See http://www.eclipseplugincentral.com/PNphpBB2-printview-t-4335-start-0.html -->
 <extension point="org.eclipse.core.runtime.adapters">
 <factory adaptableType="org.eclipse.core.resources.IResource" class="">
 <adapter type="org.eclipse.debug.ui.actions.ILaunchable "/>
 </factory>
 </extension>
+<!--
 <extension
       point="org.eclipse.ui.preferencePages">
    <page
@@ -75,6 +102,7 @@
          name="SLC">
    </page>
 </extension>
+-->
 <extension
       point="org.eclipse.debug.ui.launchConfigurationTypeImages">
    <launchConfigurationTypeImage
