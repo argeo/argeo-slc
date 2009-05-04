@@ -18,4 +18,7 @@
 		bean-name="jmsTransactionManager" />
 
 	<reference id="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
+
+	<service ref="jmsEventListener" interface="org.argeo.slc.msg.event.SlcEventListener" />
+	<service ref="jmsEventPublisher" interface="org.argeo.slc.msg.event.SlcEventPublisher" />
 </beans:beans>

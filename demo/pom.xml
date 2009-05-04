@@ -20,6 +20,9 @@
 				<groupId>org.argeo.slc.maven</groupId>
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
 				<configuration>
+					<argsToAppend>
+						<arg>-clean</arg>
+					</argsToAppend>
 					<systemProperties>
 						<slc.osgi.bundles>${basedir}/site;in=*;ex=**/.svn/**,${basedir}/../server/org.argeo.slc.siteserver/bundles;in=*;ex=**/.svn/**</slc.osgi.bundles>
 					</systemProperties>

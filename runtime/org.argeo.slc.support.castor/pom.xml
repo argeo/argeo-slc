@@ -47,6 +47,7 @@
 							org.argeo.slc.core.execution;resolution:=optional,
 							org.argeo.slc.msg;resolution:=optional,
 							org.argeo.slc.msg.process;resolution:=optional,
+							org.argeo.slc.msg.event;resolution:=optional,
 							org.argeo.slc.msg.test.tree;resolution:=optional,
 							org.argeo.slc.detached;resolution:=optional,
 							org.apache.xml.serialize

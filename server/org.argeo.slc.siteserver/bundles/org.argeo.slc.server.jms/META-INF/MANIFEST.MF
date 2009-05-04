@@ -7,6 +7,7 @@ Import-Package: javax.jms,
 Require-Bundle: 
  org.argeo.slc.specs,
  org.argeo.slc.server,
+ org.argeo.slc.support.simple,
  org.argeo.slc.support.activemq,
  org.springframework.core,
  org.springframework.context,

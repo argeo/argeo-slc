@@ -33,4 +33,6 @@
 
 	<reference id="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
 
+	<reference id="eventListener" interface="org.argeo.slc.msg.event.SlcEventListener" />
+
 </beans:beans>

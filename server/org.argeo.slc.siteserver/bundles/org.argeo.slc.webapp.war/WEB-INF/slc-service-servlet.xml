@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<import resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
 
@@ -60,6 +62,27 @@
 	<bean name="/listModulesDescriptors.service"
 		class="org.argeo.slc.web.mvc.execution.ListModulesDescriptors">
 		<property name="agentFactory" ref="agentFactory" />
+	</bean>
+
+	<!-- Events -->
+	<bean name="/addEventListener.service"
+		class="org.argeo.slc.web.mvc.event.AddEventListenerController">
+		<property name="eventListenerRegister" ref="eventListenerRegister" />
+	</bean>
+
+	<bean name="/removeEventListener.service"
+		class="org.argeo.slc.web.mvc.event.RemoveEventListenerController">
+		<property name="eventListenerRegister" ref="eventListenerRegister" />
+	</bean>
+
+	<bean name="/pollEvent.service" class="org.argeo.slc.web.mvc.event.PollEventController">
+		<property name="eventListenerRegister" ref="eventListenerRegister" />
+		<property name="eventListener" ref="eventListener" />
+	</bean>
+
+	<bean name="eventListenerRegister" class="org.argeo.slc.msg.event.SlcEventListenerRegister"
+		scope="session">
+		<aop:scoped-proxy />
 	</bean>
 
 	<bean id="handlerMapping"

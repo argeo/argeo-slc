@@ -12,6 +12,7 @@ import javax.jms.TextMessage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.runtime.AbstractAgent;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.msg.ExecutionAnswer;
 import org.argeo.slc.process.SlcExecution;
@@ -175,7 +176,7 @@ public class JmsAgentProxy implements SlcAgent {
 				msg = session.createTextMessage();
 			else
 				msg = toMessage(body, session);
-			msg.setStringProperty(JmsAgent.PROPERTY_SLC_AGENT_ID, agentUuid);
+			msg.setStringProperty(AbstractAgent.PROPERTY_SLC_AGENT_ID, agentUuid);
 			msg.setStringProperty(JmsAgent.PROPERTY_QUERY, query);
 			msg.setJMSCorrelationID(correlationId);
 			setArguments(msg);

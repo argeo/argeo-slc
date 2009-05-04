@@ -6,6 +6,18 @@
 
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
+	<!-- Events -->
+	<bean id="jmsEventListener" class="org.argeo.slc.jms.JmsSlcEventListener">
+		<property name="jmsConnectionFactory" ref="jmsConnectionFactory" />
+		<property name="eventsDestination" ref="slcJms.destination.events" />
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+	</bean>
+
+	<bean id="jmsEventPublisher" class="org.argeo.slc.jms.JmsSlcEventPublisher">
+		<property name="jmsTemplate" ref="jmsTemplate" />
+		<property name="eventsDestination" ref="slcJms.destination.events" />
+	</bean>
+
 	<!-- Agent Service -->
 	<bean id="agentService.jmsContainer.register" parent="listenerContainer">
 		<property name="destination" ref="slcJms.destination.agent.register" />
@@ -91,6 +103,12 @@
 		name="defaultListenerMethod" value="updateStatus" /> </bean>
 		</property> </bean>
 	-->
+
+	<!-- Common -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
 
 	<!-- Templates -->
 	<bean id="listenerContainer"

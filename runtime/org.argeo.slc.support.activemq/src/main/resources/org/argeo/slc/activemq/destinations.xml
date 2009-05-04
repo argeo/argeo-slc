@@ -4,8 +4,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-lazy-init="false">
 
-	<!-- Destinations -->
-
+	<!-- Events -->
+	<bean id="slcJms.destination.events" p:physicalName="events"
+		parent="slcJms.amTopic" />
+	
 	<!-- Agent service -->
 	<bean id="slcJms.destination.agent.register" p:physicalName="agent.register"
 		parent="slcJms.amTopic" />

@@ -17,6 +17,13 @@
 		</property>
 	</bean>
 
+	<!-- Events -->
+	<aop:aspectj-autoproxy />
+
+	<bean id="eventPublisherAspect" class="org.argeo.slc.services.EventPublisherAspect">
+		<property name="eventPublishers" ref="eventPublishers" />
+	</bean>
+
 	<!-- Services -->
 	<bean id="testManagerService" class="org.argeo.slc.services.impl.test.TestManagerServiceImpl">
 		<constructor-arg ref="testResultDao" />

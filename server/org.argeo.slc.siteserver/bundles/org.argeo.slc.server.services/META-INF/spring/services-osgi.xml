@@ -30,4 +30,7 @@
 
 	<reference id="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
 
+	<list id="eventPublishers" interface="org.argeo.slc.msg.event.SlcEventPublisher"
+		cardinality="0..N" />
+
 </beans:beans>

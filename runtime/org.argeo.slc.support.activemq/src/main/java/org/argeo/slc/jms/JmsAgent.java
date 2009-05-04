@@ -32,8 +32,6 @@ import org.springframework.jms.core.MessagePostProcessor;
 public class JmsAgent extends AbstractAgent implements SlcAgent,
 		InitializingBean, DisposableBean, MessageListener {
 	public final static String PROPERTY_QUERY = "query";
-	public final static String PROPERTY_SLC_AGENT_ID = "slc_agentId";
-
 	public final static String QUERY_PING_ALL = "pingAll";
 
 	private final static Log log = LogFactory.getLog(JmsAgent.class);
@@ -159,7 +157,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 					public Message postProcessMessage(Message messageToSend)
 							throws JMSException {
 						messageToSend.setStringProperty(PROPERTY_QUERY, query);
-						messageToSend.setStringProperty(PROPERTY_SLC_AGENT_ID,
+						messageToSend.setStringProperty(AbstractAgent.PROPERTY_SLC_AGENT_ID,
 								agentDescriptor.getUuid());
 						messageToSend.setJMSCorrelationID(correlationId);
 						return messageToSend;

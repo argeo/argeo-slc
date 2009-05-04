@@ -24,8 +24,13 @@ public class MarshallerMessageConverter implements MessageConverter {
 	private Marshaller marshaller;
 	private Unmarshaller unmarshaller;
 
+	/** @return the converted message or null if the message itself is null */
 	public Object fromMessage(Message message) throws JMSException,
 			MessageConversionException {
+		if (message == null) {
+			return null;
+		}
+
 		if (log.isTraceEnabled()) {
 			Enumeration<String> names = message.getPropertyNames();
 			while (names.hasMoreElements()) {
@@ -38,6 +43,11 @@ public class MarshallerMessageConverter implements MessageConverter {
 		if (message instanceof TextMessage) {
 
 			String text = ((TextMessage) message).getText();
+
+			if (text == null)
+				throw new SlcException(
+						"Cannot unmarshall message without body: " + message);
+
 			try {
 				return unmarshaller.unmarshal(new StringSource(text));
 			} catch (Exception e) {
