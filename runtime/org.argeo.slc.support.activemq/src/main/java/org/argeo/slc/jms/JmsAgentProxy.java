@@ -7,6 +7,7 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -178,6 +179,15 @@ public class JmsAgentProxy implements SlcAgent {
 			msg.setStringProperty(JmsAgent.PROPERTY_QUERY, query);
 			msg.setJMSCorrelationID(correlationId);
 			setArguments(msg);
+			if (msg instanceof TextMessage) {
+				TextMessage textMessage = (TextMessage) msg;
+				if (textMessage.getText() == null) {
+					// TODO: remove workaround when upgrading to ActiveMQ 5.3
+					// Workaround for
+					// https://issues.apache.org/activemq/browse/AMQ-2046
+					textMessage.setText("");
+				}
+			}
 			return msg;
 		}
 

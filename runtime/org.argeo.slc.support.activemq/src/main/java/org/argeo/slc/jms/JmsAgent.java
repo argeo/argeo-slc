@@ -24,6 +24,7 @@ import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessagePostProcessor;
 
@@ -55,15 +56,33 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		jmsTemplate.convertAndSend(agentRegister, agentDescriptor);
-		log.info("Agent #" + agentDescriptor.getUuid() + " registered to "
-				+ agentRegister);
+		try {
+			jmsTemplate.convertAndSend(agentRegister, agentDescriptor);
+			log.info("Agent #" + agentDescriptor.getUuid() + " registered to "
+					+ agentRegister);
+		} catch (JmsException e) {
+			log
+					.warn("Could not register agent "
+							+ agentDescriptor.getUuid()
+							+ " to server: "
+							+ e.getMessage()
+							+ ". The agent will stay offline but will keep listening for a ping all sent by server.");
+			if (log.isTraceEnabled())
+				log.debug("Original error.", e);
+		}
 	}
 
 	public void destroy() throws Exception {
-		jmsTemplate.convertAndSend(agentUnregister, agentDescriptor);
-		log.info("Agent #" + agentDescriptor.getUuid() + " unregistered from "
-				+ agentUnregister);
+		try {
+			jmsTemplate.convertAndSend(agentUnregister, agentDescriptor);
+			log.info("Agent #" + agentDescriptor.getUuid()
+					+ " unregistered from " + agentUnregister);
+		} catch (JmsException e) {
+			log.warn("Could not unregister agent " + agentDescriptor.getUuid()
+					+ ": " + e.getMessage());
+			if (log.isTraceEnabled())
+				log.debug("Original error.", e);
+		}
 	}
 
 	public void setAgentRegister(Destination agentRegister) {

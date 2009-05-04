@@ -56,6 +56,7 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 
 	protected class PingThread extends Thread {
 		public void run() {
+			log.info("Start pinging agents.");
 			while (pingThreadActive) {
 				List<SlcAgentDescriptor> lst = slcAgentDescriptorDao
 						.listSlcAgentDescriptors();
@@ -88,6 +89,7 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 					}
 				}
 			}
+			log.info("Stopped pinging agents.");
 		}
 
 	}
