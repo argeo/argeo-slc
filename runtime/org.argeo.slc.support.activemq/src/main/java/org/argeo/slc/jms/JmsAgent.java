@@ -18,6 +18,7 @@ import org.argeo.slc.core.runtime.AbstractAgent;
 import org.argeo.slc.execution.ExecutionModule;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.msg.ExecutionAnswer;
+import org.argeo.slc.msg.MsgConstants;
 import org.argeo.slc.msg.ReferenceList;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
@@ -157,7 +158,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 					public Message postProcessMessage(Message messageToSend)
 							throws JMSException {
 						messageToSend.setStringProperty(PROPERTY_QUERY, query);
-						messageToSend.setStringProperty(AbstractAgent.PROPERTY_SLC_AGENT_ID,
+						messageToSend.setStringProperty(MsgConstants.PROPERTY_SLC_AGENT_ID,
 								agentDescriptor.getUuid());
 						messageToSend.setJMSCorrelationID(correlationId);
 						return messageToSend;

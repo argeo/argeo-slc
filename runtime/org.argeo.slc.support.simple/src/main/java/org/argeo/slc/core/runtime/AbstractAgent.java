@@ -7,8 +7,6 @@ public abstract class AbstractAgent {
 //	private final static Log log = LogFactory.getLog(AbstractAgent.class);
 
 	private ExecutionModulesManager modulesManager;
-	public final static String PROPERTY_SLC_AGENT_ID = "slc_agentId";
-
 	public void runSlcExecution(final SlcExecution slcExecution) {
 		modulesManager.process(slcExecution);
 	}

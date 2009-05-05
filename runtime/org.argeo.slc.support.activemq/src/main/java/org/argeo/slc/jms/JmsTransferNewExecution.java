@@ -4,7 +4,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.core.runtime.AbstractAgent;
+import org.argeo.slc.msg.MsgConstants;
 import org.argeo.slc.msg.MsgHandler;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
@@ -20,7 +20,7 @@ public class JmsTransferNewExecution implements MessageListener {
 	public void onMessage(final Message message) {
 		try {
 			String agentId = message
-					.getStringProperty(AbstractAgent.PROPERTY_SLC_AGENT_ID);
+					.getStringProperty(MsgConstants.PROPERTY_SLC_AGENT_ID);
 			final SlcAgent agent = agentFactory.getAgent(agentId);
 			final SlcExecution slcExecution = (SlcExecution) messageConverter
 					.fromMessage(message);
