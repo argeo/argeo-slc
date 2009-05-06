@@ -45,7 +45,6 @@ public class NewSlcExecutionController extends AbstractServiceController {
 			String line = null;
 			while (((line = reader.readLine())!=null)) {
 				buffer.append(line);
-				buffer.append("\n");
 			}
 			answer = buffer.toString();
 		}
