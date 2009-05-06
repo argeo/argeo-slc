@@ -652,8 +652,7 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 		for(var i=0;i<selection.length;i++){
 			var batchEntrySpec = selection[i].getUserData("batchEntrySpec");
 			slcExecMessage.addBatchEntrySpec(batchEntrySpec);
-		}		
-		console.log(slcExecMessage.toXml());
+		}				
 		var req = org.argeo.slc.ria.SlcApi.getNewSlcExecutionService(agentUuid, slcExecMessage.toXml());
 		req.send();
 		// Force logs refresh right now!
