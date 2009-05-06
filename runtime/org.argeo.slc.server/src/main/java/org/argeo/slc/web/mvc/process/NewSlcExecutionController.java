@@ -28,20 +28,22 @@ public class NewSlcExecutionController extends AbstractServiceController {
 	protected void handleServiceRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView modelAndView)
 			throws Exception {
+		
+		if(log.isDebugEnabled()){
+			log.debug("Content-Type: "+request.getContentType());
+			log.debug("Content-Length: "+request.getContentLength());
+		}
 
 		String agentId = request
 				.getParameter(MsgConstants.PROPERTY_SLC_AGENT_ID);
 
 		String answer = request.getParameter("body");
-		if (answer == null && "text/xml".equals(request.getContentType())) {
+		if (answer == null) {
 			// lets read the message body instead
 			BufferedReader reader = request.getReader();
 			StringBuffer buffer = new StringBuffer();
-			while (true) {
-				String line = reader.readLine();
-				if (line == null) {
-					break;
-				}
+			String line = null;
+			while (((line = reader.readLine())!=null)) {
 				buffer.append(line);
 				buffer.append("\n");
 			}
