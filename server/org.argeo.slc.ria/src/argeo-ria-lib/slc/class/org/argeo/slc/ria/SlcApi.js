@@ -213,7 +213,7 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   			iLoadStatusables
   		);
   		req.setMethod("POST");
-  		req.setRequestHeader("Content-Type", "text/xml");
+  		//req.setRequestHeader("Content-Type", "text/xml");
   		req.setData("body=" + encodeURIComponent(xmlDescription));
   		return req;
   	},
