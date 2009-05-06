@@ -57,16 +57,16 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   		this.setView(viewPane);
   		this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));  		
   		this._createLayout();
+  		this.UIBus = org.argeo.ria.event.UIBus.getInstance();
   	},
   	
   	/**
   	 *  
   	 */
   	load : function(){
-		this._reloadLogger();  	
-		this.timer = new qx.event.Timer(15000);
-		this.timer.addListener("interval", this._reloadLogger, this);
-		this.timer.start();		
+		this._reloadLogger();
+  		this.UIBus.addListener("newSlcExecution", this._reloadLogger, this);
+  		this.UIBus.addListener("updateSlcExecutionStatus", this._reloadLogger, this);
   	},
   	 
 	addScroll : function(){
@@ -74,7 +74,8 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 	},
 	
 	close : function(){
-		this.timer.stop();
+  		this.UIBus.removeListener("newSlcExecution", this._reloadLogger, this);
+  		this.UIBus.removeListener("updateSlcExecutionStatus", this._reloadLogger, this);
 	},
 	  	
 	/**

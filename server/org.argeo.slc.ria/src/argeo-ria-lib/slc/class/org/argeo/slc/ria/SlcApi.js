@@ -21,6 +21,7 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	LIST_RESULTS_SERVICE : "listResultAttributes.service",
   	GET_RESULT_SERVICE : "getResult.service",
   	LIST_SLCEXEC_SERVICE : "listSlcExecutions.service",
+  	NEW_SLCEXEC_SERVICE : "newSlcExecution.service",
   	
   	LIST_AGENTS_SERVICE : "listAgents.service",
 	LIST_MODULES_SERVICE : "listModulesDescriptors.service",
@@ -194,6 +195,27 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   			fireReloadEventType,
   			iLoadStatusables
   		);
+  	},
+  	
+
+  	/**
+  	 * New SlcExecution
+  	 * @param agentId {String} Agent id target
+  	 * @param xmlDescription {String} XML of the Slc Execution
+  	 * @param fireReloadEventType {String} Event type to trigger (optionnal)
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update 
+  	 * @return {qx.io.remote.Request}
+  	 */
+  	getNewSlcExecutionService:function(agentId, xmlDescription, fireReloadEventType, iLoadStatusables){
+  		var req = org.argeo.slc.ria.SlcApi.getServiceRequest(
+  			org.argeo.slc.ria.SlcApi.NEW_SLCEXEC_SERVICE + "?slc_agentId="+agentId,
+  			fireReloadEventType,
+  			iLoadStatusables
+  		);
+  		req.setMethod("POST");
+  		req.setRequestHeader("Content-Type", "text/xml");
+  		req.setData("body=" + encodeURIComponent(xmlDescription));
+  		return req;
   	},
   	
   	

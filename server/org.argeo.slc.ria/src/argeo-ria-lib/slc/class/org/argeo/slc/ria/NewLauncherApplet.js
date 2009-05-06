@@ -376,9 +376,20 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   	init : function(viewPane){
   		this.setView(viewPane);
   		this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
-  		this._amqClient = org.argeo.ria.remote.JmsClient.getInstance();
-  		this._amqClient.uri = "/org.argeo.slc.webapp/amq";
-  		this._amqClient.startPolling();
+  		this.remoteNotifier = new org.argeo.ria.remote.RemoteNotifier(
+  			"/org.argeo.slc.webapp/",
+  			"pollEvent.service",
+  			"addEventListener.service",
+  			"removeEventListener.service"
+  		);
+  		this.remoteNotifier.setEventParamName("slc_eventType");
+  		this.remoteNotifier.setEventXPath("/slc:slc-event");
+  		this.remoteNotifier.setEventTypeXPath('slc:headers/slc:header[@name="slc_eventType"]');
+  		this.remoteNotifier.setEventDataXPath('slc:headers/slc:header[@name="slc_agentId"]');
+  		this.remoteNotifier.startPolling();
+  		this.UIBus = org.argeo.ria.event.UIBus.getInstance(); 
+  		this.UIBus.registerNotifier(this.remoteNotifier);
+  		
   		this._emptyAgentString = "Empty Batch";
 		this._crtAgentString = "Target Agent : ";  		
   	},
@@ -389,12 +400,11 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
   	load : function(){
   		this._createLayout();
   		this.getView().setViewTitle("Execution Launcher");
-  		var reloadHandler = function(message){
+  		this.reloadHandler = function(message){  			
   			this.rootNode.reload();
   		}
-  		this._amqClient.addListener("agentregister", "topic://agent.register", reloadHandler, this);
-		this._amqClient.addListener("agentunregister", "topic://agent.unregister", reloadHandler, this);
-  		//reloadHandler();    		
+  		this.UIBus.addListener("agentRegistered", this.reloadHandler, this);
+  		this.UIBus.addListener("agentUnregistered", this.reloadHandler, this);
   	},
   	 
 	addScroll : function(){
@@ -402,9 +412,9 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 	},
 	
 	close : function(){
-  		this._amqClient.removeListener("agentregister", "topic://agent.register");
-  		this._amqClient.removeListener("agentunregister", "topic://agent.unregister");
-		this._amqClient.stopPolling();
+		this.UIBus.removeListener("agentRegistered", this.reloadHandler, this);
+		this.UIBus.removeListener("agentUnregistered", this.reloadHandler, this);
+		this.remoteNotifier.stopPolling();
 	},
 	  	
 	/**
@@ -643,11 +653,9 @@ qx.Class.define("org.argeo.slc.ria.NewLauncherApplet",
 			var batchEntrySpec = selection[i].getUserData("batchEntrySpec");
 			slcExecMessage.addBatchEntrySpec(batchEntrySpec);
 		}		
-		this._amqClient.sendMessage(
-			"topic://agent.newExecution", 
-			slcExecMessage.toXml(), 
-			{"slc_agentId":agentUuid}
-		);
+		console.log(slcExecMessage.toXml());
+		var req = org.argeo.slc.ria.SlcApi.getNewSlcExecutionService(agentUuid, slcExecMessage.toXml());
+		req.send();
 		// Force logs refresh right now!
 		qx.event.Timer.once(function(){
 			var command = org.argeo.ria.event.CommandsManager.getInstance().getCommandById("reloadlogs");
