@@ -1,9 +1,12 @@
 package org.argeo.slc.web.mvc.process;
 
+import java.io.BufferedReader;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.msg.MsgConstants;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
@@ -11,9 +14,13 @@ import org.argeo.slc.runtime.SlcAgentFactory;
 import org.argeo.slc.web.mvc.AbstractServiceController;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.xml.transform.StringSource;
 
 /** Send a new SlcExecution. */
 public class NewSlcExecutionController extends AbstractServiceController {
+	private final static Log log = LogFactory
+			.getLog(NewSlcExecutionController.class);
+
 	private SlcAgentFactory agentFactory;
 	private Unmarshaller unmarshaller;
 
@@ -25,7 +32,26 @@ public class NewSlcExecutionController extends AbstractServiceController {
 		String agentId = request
 				.getParameter(MsgConstants.PROPERTY_SLC_AGENT_ID);
 
-		StreamSource source = new StreamSource(request.getInputStream());
+		String answer = request.getParameter("body");
+		if (answer == null && "text/xml".equals(request.getContentType())) {
+			// lets read the message body instead
+			BufferedReader reader = request.getReader();
+			StringBuffer buffer = new StringBuffer();
+			while (true) {
+				String line = reader.readLine();
+				if (line == null) {
+					break;
+				}
+				buffer.append(line);
+				buffer.append("\n");
+			}
+			answer = buffer.toString();
+		}
+
+		if (log.isDebugEnabled())
+			log.debug("Received message:\n" + answer);
+
+		StringSource source = new StringSource(answer);
 		SlcExecution slcExecution = (SlcExecution) unmarshaller
 				.unmarshal(source);
 
