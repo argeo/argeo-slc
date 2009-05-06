@@ -59,6 +59,7 @@
 		class="org.argeo.slc.web.mvc.process.NewSlcExecutionController">
 		<property name="agentFactory" ref="agentFactory" />
 		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
+		<property name="slcExecutionService" ref="slcExecutionService" />
 	</bean>
 
 	<bean name="/getExecutionDescriptor.service" class="org.argeo.slc.web.mvc.execution.GetModuleDescriptor">
