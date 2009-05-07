@@ -13,4 +13,7 @@
 			</value>
 		</property>
 	</bean>
+
+	<bean id="treeTestResultLogger" class="org.argeo.slc.core.test.tree.TreeTestResultLogger" />
+
 </beans>

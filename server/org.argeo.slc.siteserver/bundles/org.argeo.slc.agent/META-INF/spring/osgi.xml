@@ -6,8 +6,16 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<service ref="resultListener" interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
+	<!-- Deprecated -->
+	<service ref="resultListener"
+		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
 	<service ref="resultListener" interface="org.argeo.slc.test.TestResultListener" />
+
+	<!-- Deprecated -->
+	<service ref="treeTestResultLogger" interface="org.argeo.slc.test.TestResultListener" />
+	<service ref="treeTestResultLogger"
+		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
+
 	<service ref="slcExecutionListener" interface="org.argeo.slc.process.SlcExecutionNotifier" />
 
 	<!-- Manager -->
@@ -18,9 +26,6 @@
 
 	<service ref="jmsAgent.attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
 
-	<service interface="org.argeo.slc.core.test.tree.TreeTestResultListener">
-		<beans:bean class="org.argeo.slc.core.test.tree.TreeTestResultLogger" />
-	</service>
 
 	<list id="slcExecutionListeners" interface="org.argeo.slc.process.SlcExecutionNotifier"
 		cardinality="0..N" />

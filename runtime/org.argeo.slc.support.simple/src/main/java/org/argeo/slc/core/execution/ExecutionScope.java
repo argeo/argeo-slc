@@ -13,50 +13,51 @@ import org.springframework.beans.factory.config.Scope;
 public class ExecutionScope implements Scope {
 	private final static Log log = LogFactory.getLog(ExecutionScope.class);
 
-	private final ThreadLocal<ExecutionContext> executionContext 
-			= new ThreadLocal<ExecutionContext>();
-	
+	private final ThreadLocal<ExecutionContext> executionContext = new ThreadLocal<ExecutionContext>();
+
 	public final ThreadLocal<String> executionContextBeanName = new ThreadLocal<String>();
-	
+
 	public Object get(String name, ObjectFactory objectFactory) {
 
 		if (log.isTraceEnabled())
 			log.trace("Getting scoped bean " + name);
-		
+
 		// check if an execution context is defined for this thread
-		if(executionContext.get() == null) {
+		if (executionContext.get() == null) {
 			// if not, we expect objectFactory to produce an ExecutionContext
 			Object obj = objectFactory.getObject();
-			if(obj instanceof ExecutionContext) {
+			if (obj instanceof ExecutionContext) {
 				// store the ExecutionContext in the ThreadLocal
-				executionContext.set((ExecutionContext)obj);
+				executionContext.set((ExecutionContext) obj);
 				executionContextBeanName.set(name);
 				return obj;
+			} else {
+				throw new SlcException(
+						"Expected an ExecutionContext, got an object of class "
+								+ obj.getClass()
+								+ " for bean "
+								+ name
+								+ ": make sure that you have porperly set scope=\"execution\" where required");
 			}
-			else {
-				throw new SlcException("Expected an ExecutionContext, got an object of class "
-						+ obj.getClass() + " for bean " + name);
-			}			
 		}
-		
-		if(name.equals(executionContextBeanName.get())) {
+
+		if (name.equals(executionContextBeanName.get())) {
 			return executionContext.get();
-		}
-		else {
-			// see if the executionContext already knows the object 
+		} else {
+			// see if the executionContext already knows the object
 			Object obj = executionContext.get().findScopedObject(name);
-			if(obj == null) {
+			if (obj == null) {
 				obj = objectFactory.getObject();
-				if(!(obj instanceof ExecutionContext)) {
+				if (!(obj instanceof ExecutionContext)) {
 					executionContext.get().addScopedObject(name, obj);
-				}
-				else {
-					throw new SlcException("Only one ExecutionContext can be defined per Thread");
+				} else {
+					throw new SlcException(
+							"Only one ExecutionContext can be defined per Thread");
 				}
 			}
 			return obj;
 		}
-		
+
 		// if (ExecutionContext.getScopedObjects().containsKey(name)) {
 		// // returns cached instance
 		// Object obj = ExecutionContext.getScopedObjects().get(name);
@@ -74,18 +75,17 @@ public class ExecutionScope implements Scope {
 	}
 
 	public String getConversationId() {
-		
+
 		return executionContext.get().getUuid();
 	}
-	
+
 	public Boolean hasExecutionContext() {
 		return executionContext.get() != null;
 	}
-	
 
 	public void registerDestructionCallback(String name, Runnable callback) {
 		// TODO: implement it
-		//throw new UnsupportedOperationException();
+		// throw new UnsupportedOperationException();
 	}
 
 	public Object remove(String name) {
