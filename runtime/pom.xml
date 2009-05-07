@@ -19,7 +19,6 @@
 		<module>org.argeo.slc.support.activemq</module>
 		<module>org.argeo.slc.support.ant</module>
 		<module>org.argeo.slc.support.equinox</module>
-		<module>org.argeo.slc.support.ws.client</module>
 		<module>org.argeo.slc.support.hibernate</module>
 		<module>org.argeo.slc.support.maven</module>
 		<module>org.argeo.slc.server</module>
