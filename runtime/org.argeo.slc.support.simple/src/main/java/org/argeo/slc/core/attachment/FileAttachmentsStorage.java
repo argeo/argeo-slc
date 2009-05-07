@@ -11,9 +11,23 @@ import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
 
 public class FileAttachmentsStorage implements AttachmentsStorage {
-	private File attachmentsDirectory = new File(System
-			.getProperty("java.io.tmpdir")
-			+ File.separator + "slcAttachments");
+	private File attachmentsDirectory;
+
+	public FileAttachmentsStorage() {
+		String osgiInstanceArea = System.getProperty("osgi.instance.area");
+		if (osgiInstanceArea != null) {
+			if (osgiInstanceArea.startsWith("file:"))
+				osgiInstanceArea = osgiInstanceArea.substring("file:".length());
+			attachmentsDirectory = new File(osgiInstanceArea + File.separator
+					+ "executionResources");
+		}
+
+		if (attachmentsDirectory == null) {
+			String tempDir = System.getProperty("java.io.tmpdir");
+			attachmentsDirectory = new File(tempDir + File.separator
+					+ "slcAttachments");
+		}
+	}
 
 	public void retrieveAttachment(Attachment attachment,
 			OutputStream outputStream) {

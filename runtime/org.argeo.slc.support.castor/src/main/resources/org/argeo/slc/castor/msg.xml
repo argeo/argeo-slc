@@ -133,6 +133,10 @@
 				</class>
 			</bind-xml>
 		</field>
+		<field name="attachments" collection="arraylist"
+			type="org.argeo.slc.core.attachment.SimpleAttachment">
+			<bind-xml auto-naming="deriveByClass" location="attachments" />
+		</field>
 	</class>
 
 

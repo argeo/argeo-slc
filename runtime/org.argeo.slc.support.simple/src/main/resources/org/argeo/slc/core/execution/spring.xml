@@ -8,6 +8,7 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<import resource="specs.xml" />
+	<import resource="templates.xml" />
 	<import resource="tasks/core.xml" />
 
 	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">

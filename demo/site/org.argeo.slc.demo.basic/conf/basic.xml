@@ -54,16 +54,21 @@
 					<property name="testData" ref="ref1" />
 				</bean>
 
+				<!-- Attachments -->
+				<bean parent="task.echo">
+					<property name="message" value="DATA" />
+					<property name="writeTo" ref="basic.writeTo" />
+				</bean>
+
 				<bean parent="task.uploadAttachments">
 					<property name="attachmentUploader" ref="attachmentUploader" />
 					<property name="attachment">
 						<bean parent="taskArg.attachment">
 							<property name="name" value="myAttachment" />
-							<property name="contentType" value="text/xml" />
-							<property name="uuid" value="1" />
+							<property name="contentType" value="text/plain" />
 						</bean>
 					</property>
-					<property name="resource" value="osgibundle:/conf/main.xml" />
+					<property name="resource" ref="basic.writeTo" />
 					<property name="attachTo">
 						<list>
 							<ref bean="basic.testResult" />
@@ -102,6 +107,17 @@
 		abstract="true">
 		<property name="testResult" ref="basic.testResult" />
 	</bean>
+
+	<bean id="basic.writeTo" factory-bean="attachment.resourcesManager"
+		factory-method="getWritableResource" scope="execution">
+		<constructor-arg value="subdir/writeTo" />
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="basic.resourcesManager" parent="slcTemplate.fileResources">
+		<property name="executionContext" ref="executionContext" />
+	</bean>
+
 
 
 </beans>

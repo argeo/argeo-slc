@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.Attachment;
 import org.argeo.slc.core.attachment.AttachmentsEnabled;
+import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.structure.StructureAware;
 import org.argeo.slc.structure.StructureElement;
@@ -46,7 +47,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
-	private List<Attachment> attachments = new ArrayList<Attachment>();
+	private List<SimpleAttachment> attachments = new ArrayList<SimpleAttachment>();
 
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
@@ -219,16 +220,16 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		this.warnIfAlreadyClosed = warnIfAlreadyClosed;
 	}
 
-	public List<Attachment> getAttachments() {
+	public List<SimpleAttachment> getAttachments() {
 		return attachments;
 	}
 
-	public void setAttachments(List<Attachment> attachments) {
+	public void setAttachments(List<SimpleAttachment> attachments) {
 		this.attachments = attachments;
 	}
 
 	public void addAttachment(Attachment attachment) {
-		attachments.add(attachment);
+		attachments.add((SimpleAttachment) attachment);
 		synchronized (listeners) {
 			for (TestResultListener<TreeTestResult> listener : listeners) {
 				if (listener instanceof TreeTestResultListener)

@@ -1,7 +1,9 @@
 package org.argeo.slc.core.attachment;
 
+import java.util.UUID;
+
 public class SimpleAttachment implements Attachment {
-	private String uuid;
+	private String uuid = UUID.randomUUID().toString();
 	private String name;
 	private String contentType;
 
