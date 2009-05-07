@@ -2,8 +2,7 @@ package org.argeo.slc.core.test.tree;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.argeo.slc.test.TestResultListener;
+import org.argeo.slc.core.attachment.Attachment;
 import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestStatus;
 
@@ -13,7 +12,7 @@ import org.argeo.slc.test.TestStatus;
  * @see TreeTestResult
  * 
  */
-public class TreeTestResultLogger implements TestResultListener<TreeTestResult> {
+public class TreeTestResultLogger implements TreeTestResultListener {
 
 	private static Log log = LogFactory.getLog(TreeTestResultLogger.class);
 
@@ -47,6 +46,13 @@ public class TreeTestResultLogger implements TestResultListener<TreeTestResult> 
 
 	public void setLogExceptionMessages(Boolean logExceptionMessages) {
 		this.logExceptionMessages = logExceptionMessages;
+	}
+
+	public void addAttachment(TreeTestResult treeTestResult,
+			Attachment attachment) {
+		if (log.isDebugEnabled())
+			log.debug("Attachment " + attachment + " added to "
+					+ treeTestResult.getUuid());
 	}
 
 }

@@ -3,8 +3,7 @@
 <mapping>
 	<description>Test objects XML mapping</description>
 
-	<class name="org.argeo.slc.test.TestRunDescriptor"
-		auto-complete="false">
+	<class name="org.argeo.slc.test.TestRunDescriptor" auto-complete="false">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="testRunUuid" />
@@ -25,8 +24,8 @@
 		<field name="attributes" collection="map">
 			<bind-xml name="attribute" location="attributes">
 				<class name="org.exolab.castor.mapping.MapItem">
-					<map-to
-						ns-uri="http://argeo.org/projects/slc/schemas" ns-prefix="slc" />
+					<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+						ns-prefix="slc" />
 					<field name="key" type="string">
 						<bind-xml name="name" node="attribute" />
 					</field>
@@ -39,15 +38,13 @@
 		<field name="resultParts" collection="sortedmap">
 			<bind-xml name="result-part" location="result-parts">
 				<class name="org.exolab.castor.mapping.MapItem">
-					<map-to
-						ns-uri="http://argeo.org/projects/slc/schemas" ns-prefix="slc" />
-					<field name="key"
-						type="org.argeo.slc.core.structure.tree.TreeSPath"
+					<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+						ns-prefix="slc" />
+					<field name="key" type="org.argeo.slc.core.structure.tree.TreeSPath"
 						handler="org.argeo.slc.castor.structure.tree.TreeSPathFieldHandler">
 						<bind-xml name="path" node="attribute" />
 					</field>
-					<field name="value"
-						type="org.argeo.slc.core.test.tree.PartSubList">
+					<field name="value" type="org.argeo.slc.core.test.tree.PartSubList">
 						<bind-xml name="part-sub-list" />
 					</field>
 				</class>
@@ -56,19 +53,21 @@
 		<field name="elements" collection="sortedmap">
 			<bind-xml name="element" location="elements">
 				<class name="org.exolab.castor.mapping.MapItem">
-					<map-to
-						ns-uri="http://argeo.org/projects/slc/schemas" ns-prefix="slc" />
-					<field name="key"
-						type="org.argeo.slc.core.structure.tree.TreeSPath"
+					<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+						ns-prefix="slc" />
+					<field name="key" type="org.argeo.slc.core.structure.tree.TreeSPath"
 						handler="org.argeo.slc.castor.structure.tree.TreeSPathFieldHandler">
 						<bind-xml name="path" node="attribute" />
 					</field>
-					<field name="value"
-						type="org.argeo.slc.core.structure.SimpleSElement">
+					<field name="value" type="org.argeo.slc.core.structure.SimpleSElement">
 						<bind-xml auto-naming="deriveByClass" />
 					</field>
 				</class>
 			</bind-xml>
+		</field>
+		<field name="attachments" collection="arraylist"
+			type="org.argeo.slc.core.attachment.SimpleAttachment">
+			<bind-xml auto-naming="deriveByClass" location="attachments" />
 		</field>
 	</class>
 

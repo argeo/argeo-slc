@@ -92,6 +92,11 @@
 		<aop:scoped-proxy />
 	</bean>
 
+	<!-- Attachements -->
+	<bean name="/getAttachment.service" class="org.argeo.slc.web.mvc.attachment.GetAttachmentHandler">
+		<property name="attachmentsStorage" ref="attachmentsStorage" />
+	</bean>
+
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
 		<property name="interceptors">

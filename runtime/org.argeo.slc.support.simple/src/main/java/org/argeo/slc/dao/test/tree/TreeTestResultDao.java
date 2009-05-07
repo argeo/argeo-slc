@@ -3,6 +3,7 @@ package org.argeo.slc.dao.test.tree;
 import java.util.List;
 import java.util.Map;
 
+import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.tree.TreeTestResult;
@@ -26,4 +27,6 @@ public interface TreeTestResultDao extends TestResultDao<TreeTestResult> {
 	/** Update attributes */
 	public void updateAttributes(String testResultId,
 			Map<String, String> attributes);
+
+	public void addAttachment(String testResultId, SimpleAttachment attachment);
 }

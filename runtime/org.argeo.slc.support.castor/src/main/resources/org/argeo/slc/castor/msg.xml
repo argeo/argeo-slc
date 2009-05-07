@@ -52,6 +52,15 @@
 		<field name="resultUuid" />
 		<field name="closeDate" />
 	</class>
+	
+	<class name="org.argeo.slc.msg.test.tree.AddTreeTestResultAttachmentRequest">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="resultUuid" />
+		<field name="attachment" type="org.argeo.slc.core.attachment.SimpleAttachment">
+			<bind-xml auto-naming="deriveByClass" />
+		</field>
+	</class>
 
 	<class name="org.argeo.slc.msg.test.tree.ResultPartRequest">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"

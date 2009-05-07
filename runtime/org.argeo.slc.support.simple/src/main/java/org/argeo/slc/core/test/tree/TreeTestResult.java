@@ -1,5 +1,6 @@
 package org.argeo.slc.core.test.tree;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import java.util.Vector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.attachment.Attachment;
+import org.argeo.slc.core.attachment.AttachmentsEnabled;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.structure.StructureAware;
 import org.argeo.slc.structure.StructureElement;
@@ -25,7 +28,7 @@ import org.argeo.slc.test.TestRunAware;
  * structure.
  */
 public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
-		Comparable<TreeTestResult> {
+		Comparable<TreeTestResult>, AttachmentsEnabled {
 	private Log log = LogFactory.getLog(TreeTestResult.class);
 
 	private List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();
@@ -43,6 +46,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
+	private List<Attachment> attachments = new ArrayList<Attachment>();
 
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
@@ -213,6 +217,25 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	public void setWarnIfAlreadyClosed(Boolean warnIfAlreadyClosed) {
 		this.warnIfAlreadyClosed = warnIfAlreadyClosed;
+	}
+
+	public List<Attachment> getAttachments() {
+		return attachments;
+	}
+
+	public void setAttachments(List<Attachment> attachments) {
+		this.attachments = attachments;
+	}
+
+	public void addAttachment(Attachment attachment) {
+		attachments.add(attachment);
+		synchronized (listeners) {
+			for (TestResultListener<TreeTestResult> listener : listeners) {
+				if (listener instanceof TreeTestResultListener)
+					((TreeTestResultListener) listener).addAttachment(this,
+							attachment);
+			}
+		}
 	}
 
 }

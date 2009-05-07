@@ -13,6 +13,11 @@
 		</property>
 	</bean>
 
+	<bean id="jmsAgent.attachmentUploader" class="org.argeo.slc.jms.JmsAttachmentUploader">
+		<property name="destination" ref="slcJms.destination.attachment.add" />
+		<property name="jmsTemplate" ref="jmsTemplate" />
+	</bean>
+
 	<bean id="jmsAgent.listener.pingAll" parent="jmsAgent.listener.template">
 		<property name="destination" ref="slcJms.destination.agent.pingAll" />
 		<property name="messageListener" ref="jmsAgent" />
@@ -30,14 +35,16 @@
 	<bean id="resultListener" class="org.argeo.slc.jms.JmsTreeTestResultListener">
 		<!-- <property name="createDestination" ref="slcJms.destination.test.create" />
 		<property name="addResultPartDestination" ref="slcJms.destination.test.addResultPart" />
-		<property name="closeDestination" ref="slcJms.destination.test.close" /> -->
+		<property name="closeDestination" ref="slcJms.destination.test.close" />
+-->
 		<property name="executionEventDestination" ref="slcJms.destination.execution.event" />
 		<property name="jmsTemplate" ref="jmsTemplate" />
 	</bean>
 
 	<!-- SLC Execution Listener -->
 	<bean id="slcExecutionListener" class="org.argeo.slc.jms.JmsSlcExecutionNotifier">
-		<!-- <property name="updateStatusDestination" ref="slcJms.destination.slcExecution.updateStatus" /> -->
+		<!-- <property name="updateStatusDestination" ref="slcJms.destination.slcExecution.updateStatus" />
+-->
 		<property name="jmsTemplate" ref="jmsTemplate" />
 		<property name="executionEventDestination" ref="slcJms.destination.execution.event" />
 	</bean>

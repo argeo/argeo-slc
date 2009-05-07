@@ -1,5 +1,6 @@
 package org.argeo.slc.services.test;
 
+import org.argeo.slc.msg.test.tree.AddTreeTestResultAttachmentRequest;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
@@ -20,6 +21,8 @@ public interface TestManagerService {
 	public void createTreeTestResult(CreateTreeTestResultRequest msg);
 
 	public void addResultPart(ResultPartRequest msg);
+
+	public void addAttachment(AddTreeTestResultAttachmentRequest msg);
 
 	public void closeTreeTestResult(CloseTreeTestResultRequest msg);
 }

@@ -10,8 +10,8 @@
 		<property name="closeDate" column="CLOSE_DATE" type="timestamp"
 			not-null="false" />
 
-		<map name="attributes" table="TTR_ATTRS_MAP" cascade="all"
-			lazy="false" sort="natural">
+		<map name="attributes" table="TTR_ATTRS_MAP" cascade="all" lazy="false"
+			sort="natural">
 			<cache usage="read-write" />
 			<key column="PARENT_ID" />
 			<map-key column="ATTR_NAME" type="string" />
@@ -22,8 +22,7 @@
 			sort="natural">
 			<cache usage="nonstrict-read-write" />
 			<key column="PARENT_ID" />
-			<composite-map-key
-				class="org.argeo.slc.core.structure.tree.TreeSPath">
+			<composite-map-key class="org.argeo.slc.core.structure.tree.TreeSPath">
 				<key-property name="asUniqueString" column="PATH" />
 			</composite-map-key>
 			<many-to-many class="PartSubList" column="PART_SUB_LIST_ID"
@@ -34,13 +33,19 @@
 			sort="natural">
 			<cache usage="nonstrict-read-write" />
 			<key column="PARENT_ID" />
-			<composite-map-key
-				class="org.argeo.slc.core.structure.tree.TreeSPath">
+			<composite-map-key class="org.argeo.slc.core.structure.tree.TreeSPath">
 				<key-property name="asUniqueString" column="PATH" />
 			</composite-map-key>
-			<many-to-many
-				class="org.argeo.slc.core.structure.SimpleSElement"
+			<many-to-many class="org.argeo.slc.core.structure.SimpleSElement"
 				column="ELEMENT_ID" unique="true" />
 		</map>
+
+		<list name="attachments" table="RESULTS_ATTACHMENTS" cascade="all">
+			<cache usage="nonstrict-read-write" />
+			<key column="RESULT_ATTACHMENT_ID" />
+			<list-index column="INDX" />
+			<many-to-many class="org.argeo.slc.core.attachment.SimpleAttachment"
+				column="ATTACHMENT_ID" unique="true" />
+		</list>
 	</class>
 </hibernate-mapping>

@@ -3,6 +3,7 @@ package org.argeo.slc.services;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.msg.MsgHandler;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
+import org.argeo.slc.msg.test.tree.AddTreeTestResultAttachmentRequest;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
@@ -27,6 +28,9 @@ public class ServiceMsgHandler implements MsgHandler {
 		else if (msg instanceof CloseTreeTestResultRequest)
 			testManagerService
 					.closeTreeTestResult((CloseTreeTestResultRequest) msg);
+		else if (msg instanceof AddTreeTestResultAttachmentRequest)
+			testManagerService
+					.addAttachment((AddTreeTestResultAttachmentRequest) msg);
 		else
 			throw new SlcException("Unrecognized message type " + msg);
 		return null;

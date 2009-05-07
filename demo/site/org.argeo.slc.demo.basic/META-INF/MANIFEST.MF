@@ -15,4 +15,5 @@ Import-Package:
  org.springframework.aop,
  org.springframework.aop.framework,
  org.springframework.aop.scope,
- org.springframework.beans.factory.config
+ org.springframework.beans.factory.config,
+ org.springframework.core.io

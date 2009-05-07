@@ -8,6 +8,7 @@ import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.dao.test.TestRunDescriptorDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
+import org.argeo.slc.msg.test.tree.AddTreeTestResultAttachmentRequest;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
@@ -56,7 +57,7 @@ public class TestManagerServiceImpl implements TestManagerService {
 							.getTestResultUuid());
 				}
 			} else {
-				 log
+				log
 						.trace("ResultUUID="
 								+ testRunDescriptor.getTestResultUuid());
 				addResultToCollection("default", testRunDescriptor
@@ -102,7 +103,7 @@ public class TestManagerServiceImpl implements TestManagerService {
 	}
 
 	public void addResultPart(ResultPartRequest msg) {
-//		registerTestRunDescriptor(msg.getTestRunDescriptor());
+		// registerTestRunDescriptor(msg.getTestRunDescriptor());
 
 		if (log.isTraceEnabled())
 			log.trace("Adding result part to test result #"
@@ -120,6 +121,15 @@ public class TestManagerServiceImpl implements TestManagerService {
 					+ msg.getCloseDate());
 
 		treeTestResultDao.close(msg.getResultUuid(), msg.getCloseDate());
+	}
+
+	public void addAttachment(AddTreeTestResultAttachmentRequest msg) {
+		if (log.isTraceEnabled())
+			log.trace("Adding attachment " + msg.getAttachment()
+					+ " to result #" + msg.getResultUuid());
+		treeTestResultDao.addAttachment(msg.getResultUuid(), msg
+				.getAttachment());
+
 	}
 
 }

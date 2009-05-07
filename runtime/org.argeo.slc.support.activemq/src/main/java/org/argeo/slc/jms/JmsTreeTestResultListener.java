@@ -5,7 +5,11 @@ import javax.jms.Destination;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.attachment.Attachment;
+import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.core.test.tree.TreeTestResultListener;
+import org.argeo.slc.msg.test.tree.AddTreeTestResultAttachmentRequest;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
@@ -13,17 +17,17 @@ import org.argeo.slc.test.TestResultListener;
 import org.argeo.slc.test.TestResultPart;
 import org.springframework.jms.core.JmsTemplate;
 
-public class JmsTreeTestResultListener implements
-		TestResultListener<TreeTestResult> {
+public class JmsTreeTestResultListener implements TreeTestResultListener {
 	private final Log log = LogFactory.getLog(getClass());
 
 	private Boolean onlyOnClose = false;
 	private JmsTemplate jmsTemplate;
 
 	private Destination executionEventDestination;
-//	private Destination createDestination;
-//	private Destination addResultPartDestination;
-//	private Destination closeDestination;
+
+	// private Destination createDestination;
+	// private Destination addResultPartDestination;
+	// private Destination closeDestination;
 
 	public void resultPartAdded(TreeTestResult testResult,
 			TestResultPart testResultPart) {
@@ -83,6 +87,19 @@ public class JmsTreeTestResultListener implements
 		}
 	}
 
+	public void addAttachment(TreeTestResult testResult, Attachment attachment) {
+		try {
+			AddTreeTestResultAttachmentRequest req = new AddTreeTestResultAttachmentRequest();
+			req.setResultUuid(testResult.getUuid());
+			req.setAttachment((SimpleAttachment) attachment);
+			jmsTemplate.convertAndSend(executionEventDestination, req);
+
+		} catch (Exception e) {
+			throw new SlcException("Could not notify to JMS", e);
+		}
+
+	}
+
 	public void setOnlyOnClose(Boolean onlyOnClose) {
 		this.onlyOnClose = onlyOnClose;
 	}
@@ -91,22 +108,9 @@ public class JmsTreeTestResultListener implements
 		this.jmsTemplate = jmsTemplate;
 	}
 
-	public void setExecutionEventDestination(Destination executionEventDestination) {
+	public void setExecutionEventDestination(
+			Destination executionEventDestination) {
 		this.executionEventDestination = executionEventDestination;
 	}
-	
-	
-
-//	public void setCreateDestination(Destination createDestination) {
-//		this.createDestination = createDestination;
-//	}
-//
-//	public void setAddResultPartDestination(Destination addResultPartDestination) {
-//		this.addResultPartDestination = addResultPartDestination;
-//	}
-//
-//	public void setCloseDestination(Destination closeDestination) {
-//		this.closeDestination = closeDestination;
-//	}
 
 }

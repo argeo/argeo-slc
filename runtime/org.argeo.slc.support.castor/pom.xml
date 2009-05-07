@@ -39,6 +39,7 @@
 						</Export-Package>
 						<Import-Package>org.argeo.slc.*;resolution:=optional,
 							org.argeo.slc.execution;resolution:=optional,
+							org.argeo.slc.core.attachment;resolution:=optional,
 							org.argeo.slc.core.structure;resolution:=optional,
 							org.argeo.slc.core.structure.tree;resolution:=optional,
 							org.argeo.slc.core.test;resolution:=optional,

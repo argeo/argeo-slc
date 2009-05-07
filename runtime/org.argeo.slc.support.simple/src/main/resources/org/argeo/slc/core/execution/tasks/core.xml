@@ -14,4 +14,6 @@
 		abstract="true" />
 	<bean id="task.overrideContextAware" class="org.argeo.slc.core.execution.tasks.OverrideContextAware"
 		abstract="true" />
+	<bean id="task.uploadAttachments" class="org.argeo.slc.core.execution.tasks.UploadAttachments"
+		abstract="true" />
 </beans>

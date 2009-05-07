@@ -45,6 +45,9 @@
 				<value>
 					org/argeo/slc/hibernate/runtime/SlcAgentDescriptor.hbm.xml
 				</value>
+				<value>
+					org/argeo/slc/hibernate/attachment/SimpleAttachment.hbm.xml
+				</value>
 			</list>
 		</property>
 		<property name="cacheProvider" ref="slcDefault.cacheProvider.ehCache" />

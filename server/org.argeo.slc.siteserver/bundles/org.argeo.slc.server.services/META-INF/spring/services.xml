@@ -17,6 +17,9 @@
 		</property>
 	</bean>
 
+	<!-- Attachments -->
+	<bean id="attachmentsStorage" class="org.argeo.slc.core.attachment.FileAttachmentsStorage"></bean>
+
 	<!-- Events -->
 	<aop:aspectj-autoproxy />
 

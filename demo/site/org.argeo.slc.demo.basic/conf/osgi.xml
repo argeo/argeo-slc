@@ -9,5 +9,7 @@
 	<service interface="org.argeo.slc.execution.ExecutionModule"
 		ref="executionModule" />
 
-	<list id="resultListeners" interface="org.argeo.slc.test.TestResultListener" />
+	<reference id="attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
+
+	<list id="resultListeners" interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
 </beans:beans>

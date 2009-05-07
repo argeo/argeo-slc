@@ -10,6 +10,8 @@
 	<service ref="agentService" interface="org.argeo.slc.services.runtime.AgentService" />
 	<service ref="slcExecutionService"
 		interface="org.argeo.slc.services.process.SlcExecutionService" />
+	<service ref="attachmentsStorage"
+		interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
 
 	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
 		id="testResultDao" />

@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN" "http://castor.org/mapping.dtd">
+
+<mapping>
+	<description>Attachment objects XML mapping</description>
+
+	<class name="org.argeo.slc.core.attachment.SimpleAttachment">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="uuid" type="string" />
+		<field name="name" type="string" />
+		<field name="contentType" type="string" />
+	</class>
+
+</mapping>

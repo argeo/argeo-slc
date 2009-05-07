@@ -26,7 +26,8 @@
 	<reference id="testManagerService"
 		interface="org.argeo.slc.services.test.TestManagerService" />
 	<reference id="agentService" interface="org.argeo.slc.services.runtime.AgentService" />
-	<reference id="slcExecutionService" interface="org.argeo.slc.services.process.SlcExecutionService" />
+	<reference id="slcExecutionService"
+		interface="org.argeo.slc.services.process.SlcExecutionService" />
 
 	<reference id="hibernateTransactionManager"
 		interface="org.springframework.transaction.PlatformTransactionManager"
@@ -35,5 +36,8 @@
 	<reference id="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
 
 	<reference id="eventListener" interface="org.argeo.slc.msg.event.SlcEventListener" />
+
+	<reference id="attachmentsStorage"
+		interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
 
 </beans:beans>

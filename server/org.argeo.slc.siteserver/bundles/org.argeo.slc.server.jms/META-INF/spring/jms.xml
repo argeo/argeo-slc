@@ -6,6 +6,17 @@
 
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
+	<!-- Attachments -->
+
+	<bean id="attachmentStorage.jmsContainer.add" parent="listenerContainer">
+		<property name="destination" ref="slcJms.destination.attachment.add" />
+		<property name="messageListener">
+			<bean class="org.argeo.slc.jms.JmsAttachmentListener">
+				<property name="attachmentsStorage" ref="attachmentsStorage" />
+			</bean>
+		</property>
+	</bean>
+
 	<!-- Events -->
 	<bean id="jmsEventListener" class="org.argeo.slc.jms.JmsSlcEventListener"
 		init-method="init" destroy-method="close">

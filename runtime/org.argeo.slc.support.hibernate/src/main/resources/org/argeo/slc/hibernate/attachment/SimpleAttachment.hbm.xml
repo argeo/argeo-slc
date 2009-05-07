@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.argeo.slc.core.attachment">
+	<class name="SimpleAttachment" table="SIMPLE_ATTACHMENT">
+		<cache usage="nonstrict-read-write" />
+		<id name="uuid" column="UUID" />
+		<property name="name" column="NAME" not-null="true" />
+		<property name="contentType" column="CONTENT_TYPE" not-null="true" />
+	</class>
+</hibernate-mapping>

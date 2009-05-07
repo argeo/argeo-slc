@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.tree.PartSubList;
@@ -91,6 +92,22 @@ public class TreeTestResultDaoHibernate extends HibernateDaoSupport implements
 				if (relatedElements != null)
 					treeTestResult.getElements().putAll(relatedElements);
 
+				session.update(treeTestResult);
+				return treeTestResult;
+			}
+		});
+
+	}
+
+	public void addAttachment(final String testResultId,
+			final SimpleAttachment attachment) {
+		getHibernateTemplate().execute(new HibernateCallback() {
+
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				TreeTestResult treeTestResult = getTreeTestResult(session,
+						testResultId);
+				treeTestResult.getAttachments().add(attachment);
 				session.update(treeTestResult);
 				return treeTestResult;
 			}
