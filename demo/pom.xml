@@ -62,7 +62,7 @@
 							<jvmArgs>
 								<jvmArg>-Xmx256m</jvmArg>
 							</jvmArgs>
-							<debug>8000</debug>
+							<debug>0</debug>
 							<systemProperties>
 								<slc.osgi.start>
 									org.argeo.dep.osgi.catalina.start,
