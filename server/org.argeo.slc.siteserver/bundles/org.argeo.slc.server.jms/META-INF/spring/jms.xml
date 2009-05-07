@@ -61,21 +61,6 @@
 		</property>
 	</bean>
 
-	<bean id="agentService.jmsContainer.newExecution" parent="listenerContainer">
-		<property name="destination" ref="slcJms.destination.agent.newExecution" />
-		<property name="messageListener">
-			<bean class="org.argeo.slc.jms.JmsTransferNewExecution">
-				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
-				<property name="agentFactory" ref="agentFactory" />
-				<property name="serviceMsgHandler">
-					<bean class="org.argeo.slc.services.ServiceMsgHandler">
-						<property name="slcExecutionService" ref="slcExecutionService" />
-					</bean>
-				</property>
-			</bean>
-		</property>
-	</bean>
-
 	<bean parent="listenerContainer">
 		<property name="destination" ref="slcJms.destination.execution.event" />
 		<property name="messageListener">

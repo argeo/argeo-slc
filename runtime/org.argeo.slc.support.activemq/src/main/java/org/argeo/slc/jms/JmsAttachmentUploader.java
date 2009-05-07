@@ -1,8 +1,7 @@
 package org.argeo.slc.jms;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.jms.BytesMessage;
 import javax.jms.Destination;
@@ -10,6 +9,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 
+import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.Attachment;
 import org.argeo.slc.core.attachment.AttachmentUploader;
@@ -37,18 +37,21 @@ public class JmsAttachmentUploader implements AttachmentUploader {
 				message.setStringProperty(ATTACHMENT_CONTENT_TYPE, attachment
 						.getContentType());
 
+				InputStream in = null;
 				try {
-					BufferedInputStream in = new BufferedInputStream(resource
-							.getInputStream());
+					in = resource.getInputStream();
 					byte[] buffer = new byte[1024 * 1024];
-					while (in.read(buffer) > 0) {
-						message.writeBytes(buffer);
+					int read = -1;
+					while ((read = in.read(buffer)) > 0) {
+						message.writeBytes(buffer, 0, read);
 					}
 				} catch (IOException e) {
 					throw new SlcException(
 							"Cannot write into byte message for attachment "
 									+ attachment + " and resource " + resource,
 							e);
+				} finally {
+					IOUtils.closeQuietly(in);
 				}
 				return message;
 			}

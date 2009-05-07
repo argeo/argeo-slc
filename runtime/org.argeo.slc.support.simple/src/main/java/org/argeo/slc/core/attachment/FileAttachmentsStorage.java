@@ -39,8 +39,9 @@ public class FileAttachmentsStorage implements AttachmentsStorage {
 		try {
 			byte[] buffer = new byte[1024 * 1024];
 			out = new FileOutputStream(file);
-			while (inputStream.read(buffer) >= 0) {
-				out.write(buffer);
+			int read = -1;
+			while ((read = inputStream.read(buffer)) >= 0) {
+				out.write(buffer, 0, read);
 			}
 		} catch (IOException e) {
 			throw new SlcException("Cannot write attachment " + attachment

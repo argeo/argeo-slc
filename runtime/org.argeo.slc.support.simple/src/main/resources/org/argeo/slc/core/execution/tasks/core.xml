@@ -16,4 +16,7 @@
 		abstract="true" />
 	<bean id="task.uploadAttachments" class="org.argeo.slc.core.execution.tasks.UploadAttachments"
 		abstract="true" />
+
+	<bean id="taskArg.attachment" class="org.argeo.slc.core.attachment.SimpleAttachment"
+		abstract="true" />
 </beans>

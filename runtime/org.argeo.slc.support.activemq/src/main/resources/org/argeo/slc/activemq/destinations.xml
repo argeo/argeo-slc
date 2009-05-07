@@ -17,8 +17,6 @@
 		parent="slcJms.amTopic" />
 	<bean id="slcJms.destination.agent.unregister" p:physicalName="agent.unregister"
 		parent="slcJms.amTopic" />
-	<bean id="slcJms.destination.agent.newExecution" p:physicalName="agent.newExecution"
-		parent="slcJms.amTopic" />
 	<bean id="slcJms.destination.agent.request" p:physicalName="agent.request"
 		parent="slcJms.amQueue" />
 	<bean id="slcJms.destination.agent.response" p:physicalName="agent.response"
@@ -29,19 +27,6 @@
 	<bean id="slcJms.destination.execution.event" p:physicalName="execution.event"
 		parent="slcJms.amQueue" />
 
-	<!--
-		Test result service <bean id="slcJms.destination.test.create"
-		p:physicalName="test.create" parent="slcJms.amQueue" /> <bean
-		id="slcJms.destination.test.addResultPart"
-		p:physicalName="test.addResultPart" parent="slcJms.amQueue" /> <bean
-		id="slcJms.destination.test.close" p:physicalName="test.close"
-		parent="slcJms.amQueue" />
-	-->
-	<!--
-		TSLC Execution service <bean
-		id="slcJms.destination.slcExecution.updateStatus"
-		p:physicalName="slcExecution.updateStatus" parent="slcJms.amQueue" />
-	-->
 	<!-- Templates -->
 	<bean id="slcJms.amQueue" class="org.apache.activemq.command.ActiveMQQueue"
 		abstract="true" />

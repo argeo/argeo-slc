@@ -56,22 +56,14 @@
 
 				<bean parent="task.uploadAttachments">
 					<property name="attachmentUploader" ref="attachmentUploader" />
-					<property name="attachments">
-						<map>
-							<entry>
-								<key>
-									<bean class="org.argeo.slc.core.attachment.SimpleAttachment">
-										<property name="name" value="myAttachment" />
-										<property name="contentType" value="text/xml" />
-										<property name="uuid" value="1" />
-									</bean>
-								</key>
-								<bean class="org.springframework.core.io.FileSystemResource">
-									<constructor-arg value="/home/mbaudier/dev/work/tests/test.xml" />
-								</bean>
-							</entry>
-						</map>
+					<property name="attachment">
+						<bean parent="taskArg.attachment">
+							<property name="name" value="myAttachment" />
+							<property name="contentType" value="text/xml" />
+							<property name="uuid" value="1" />
+						</bean>
 					</property>
+					<property name="resource" value="osgibundle:/conf/main.xml" />
 					<property name="attachTo">
 						<list>
 							<ref bean="basic.testResult" />
