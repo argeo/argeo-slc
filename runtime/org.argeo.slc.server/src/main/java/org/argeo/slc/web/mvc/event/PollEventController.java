@@ -14,7 +14,8 @@ import org.springframework.web.servlet.ModelAndView;
 public class PollEventController extends AbstractServiceController {
 	private final static Log log = LogFactory.getLog(PollEventController.class);
 
-	private SlcEventListener eventListener;
+	private SlcEventListener eventListener = null;
+
 	private SlcEventListenerRegister eventListenerRegister;
 	private Long defaultTimeout = 10000l;
 
@@ -30,7 +31,7 @@ public class PollEventController extends AbstractServiceController {
 		else
 			timeout = defaultTimeout;
 
-		SlcEvent event = eventListener.listen(eventListenerRegister, timeout);
+		SlcEvent event = eventListenerRegister.listen(eventListener, timeout);
 		if (event != null) {
 			modelAndView.addObject("event", event);
 
@@ -40,10 +41,6 @@ public class PollEventController extends AbstractServiceController {
 		}
 	}
 
-	public void setEventListener(SlcEventListener slcEventListener) {
-		this.eventListener = slcEventListener;
-	}
-
 	public void setEventListenerRegister(
 			SlcEventListenerRegister eventListenerRegister) {
 		this.eventListenerRegister = eventListenerRegister;
@@ -51,6 +48,10 @@ public class PollEventController extends AbstractServiceController {
 
 	public void setDefaultTimeout(Long defaultTimeout) {
 		this.defaultTimeout = defaultTimeout;
+	}
+
+	public void setEventListener(SlcEventListener eventListener) {
+		this.eventListener = eventListener;
 	}
 
 }

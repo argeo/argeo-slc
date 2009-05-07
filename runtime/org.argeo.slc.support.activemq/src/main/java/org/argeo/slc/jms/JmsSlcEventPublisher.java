@@ -2,10 +2,12 @@ package org.argeo.slc.jms;
 
 import java.util.Map;
 
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 
+import org.argeo.slc.SlcException;
 import org.argeo.slc.msg.event.SlcEvent;
 import org.argeo.slc.msg.event.SlcEventPublisher;
 import org.springframework.jms.core.JmsTemplate;
@@ -16,6 +18,10 @@ public class JmsSlcEventPublisher implements SlcEventPublisher {
 	private JmsTemplate jmsTemplate;
 
 	public void publish(final SlcEvent event) {
+		if (jmsTemplate.getDeliveryMode() != DeliveryMode.PERSISTENT)
+			throw new SlcException(
+					"Delivery mode has to be persistent in order to have durable subscription");
+
 		jmsTemplate.convertAndSend(eventsDestination, event,
 				new MessagePostProcessor() {
 
@@ -28,17 +34,6 @@ public class JmsSlcEventPublisher implements SlcEventPublisher {
 						return message;
 					}
 				});
-		// jmsTemplate.send(eventsDestination, new MessageCreator() {
-		// public Message createMessage(Session session) throws JMSException {
-		// TextMessage msg = session.createTextMessage();
-		// // TODO: remove workaround when upgrading to ActiveMQ 5.3
-		// // Workaround for
-		// // https://issues.apache.org/activemq/browse/AMQ-2046
-		// msg.setText("");
-		//
-		// return msg;
-		// }
-		// });
 	}
 
 	public void setEventsDestination(Destination eventsDestination) {

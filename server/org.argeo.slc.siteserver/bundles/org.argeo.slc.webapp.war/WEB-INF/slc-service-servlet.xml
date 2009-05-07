@@ -87,8 +87,8 @@
 		<property name="eventListener" ref="eventListener" />
 	</bean>
 
-	<bean name="eventListenerRegister" class="org.argeo.slc.msg.event.SlcEventListenerRegister"
-		scope="session">
+	<bean name="eventListenerRegister" class="org.argeo.slc.web.mvc.WebSlcEventListenerRegister"
+		scope="session" init-method="init" destroy-method="close">
 		<aop:scoped-proxy />
 	</bean>
 

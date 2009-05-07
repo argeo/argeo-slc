@@ -8,7 +8,17 @@
 
 	<!-- Events -->
 	<bean id="jmsEventListener" class="org.argeo.slc.jms.JmsSlcEventListener">
-		<property name="jmsConnectionFactory" ref="jmsConnectionFactory" />
+		<property name="jmsConnectionFactory">
+			<!--
+				Need its own connection factory in order to set client ids (not
+				possible on pool)
+			-->
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL">
+					<value>vm://localhost</value>
+				</property>
+			</bean>
+		</property>
 		<property name="eventsDestination" ref="slcJms.destination.events" />
 		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
 	</bean>

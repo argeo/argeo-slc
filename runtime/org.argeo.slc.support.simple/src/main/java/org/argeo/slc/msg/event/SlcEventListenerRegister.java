@@ -1,29 +1,12 @@
 package org.argeo.slc.msg.event;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
 
-public class SlcEventListenerRegister implements Serializable {
-	static final long serialVersionUID = 1l;
+public interface SlcEventListenerRegister {
+	public void addEventListenerDescriptor(
+			SlcEventListenerDescriptor eventListenerDescriptor);
 
-	/** Synchronized */
-	private List<SlcEventListenerDescriptor> descriptors = new Vector<SlcEventListenerDescriptor>();
+	public void removeEventListenerDescriptor(
+			SlcEventListenerDescriptor eventListenerDescriptor);
 
-	public synchronized void addEventListenerDescriptor(
-			SlcEventListenerDescriptor eventListenerDescriptor) {
-		if (descriptors.contains(eventListenerDescriptor))
-			descriptors.remove(eventListenerDescriptor);
-		descriptors.add(eventListenerDescriptor);
-	}
-
-	public synchronized void removeEventListenerDescriptor(
-			SlcEventListenerDescriptor eventListenerDescriptor) {
-		descriptors.remove(eventListenerDescriptor);
-	}
-
-	public synchronized List<SlcEventListenerDescriptor> getDescriptorsCopy() {
-		return new ArrayList<SlcEventListenerDescriptor>(descriptors);
-	}
+	public SlcEvent listen(SlcEventListener eventListener, Long timeout);
 }

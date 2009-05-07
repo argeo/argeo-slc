@@ -24,10 +24,19 @@
 	</amq:broker>
 
 	<!-- Connection Factory -->
-	<!--  -->
-	<bean id="jmsConnectionFactory"
+	<!--
+		<bean id="jmsConnectionFactory"
 		class="org.springframework.jms.connection.CachingConnectionFactory">
-		<property name="targetConnectionFactory">
+		<property name="targetConnectionFactory"> <bean
+		class="org.apache.activemq.ActiveMQConnectionFactory"> <property
+		name="brokerURL"> <value>vm://localhost</value> </property> </bean>
+		</property> </bean>
+	-->
+
+	<!---->
+	<bean id="jmsConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		destroy-method="stop" depends-on="broker">
+		<property name="connectionFactory">
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
 				<property name="brokerURL">
 					<value>vm://localhost</value>
@@ -36,15 +45,6 @@
 		</property>
 	</bean>
 
-	<!--
-		<bean id="jmsConnectionFactory"
-		class="org.apache.activemq.pool.PooledConnectionFactory"
-		destroy-method="stop" depends-on="broker"> <property
-		name="connectionFactory"> <bean
-		class="org.apache.activemq.ActiveMQConnectionFactory"> <property
-		name="brokerURL"> <value>vm://localhost</value> </property> </bean>
-		</property> </bean>
-	-->
 
 	<bean id="jmsTransactionManager"
 		class="org.springframework.jms.connection.JmsTransactionManager">
