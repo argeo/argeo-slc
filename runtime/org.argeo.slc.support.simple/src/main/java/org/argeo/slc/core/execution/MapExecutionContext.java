@@ -1,5 +1,6 @@
 package org.argeo.slc.core.execution;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -17,15 +18,17 @@ import org.springframework.beans.factory.ObjectFactory;
 public class MapExecutionContext implements ExecutionContext {
 	private final static Log log = LogFactory.getLog(MapExecutionContext.class);
 
-
 	private final Stack<ExecutionFlowRuntime> stack = new Stack<ExecutionFlowRuntime>();
 
 	// TODO: make it thread safe?
 	private final Map<String, Object> variables = new HashMap<String, Object>();
 
 	private final String uuid = UUID.randomUUID().toString();
-	
-	public void addVariables(Map<? extends String, ? extends Object> variablesToAdd) {
+
+	private final Date creationDate = new Date();
+
+	public void addVariables(
+			Map<? extends String, ? extends Object> variablesToAdd) {
 		variables.putAll(variablesToAdd);
 	}
 
@@ -40,7 +43,7 @@ public class MapExecutionContext implements ExecutionContext {
 		Map<String, ExecutionSpecAttribute> specAttrs = executionFlow
 				.getExecutionSpec().getAttributes();
 		for (String key : specAttrs.keySet()) {
-			//ExecutionSpecAttribute esa = specAttrs.get(key);
+			// ExecutionSpecAttribute esa = specAttrs.get(key);
 			if (executionFlow.isSetAsParameter(key)) {
 				runtime.getLocalVariables().put(key,
 						executionFlow.getParameter(key));
@@ -61,12 +64,12 @@ public class MapExecutionContext implements ExecutionContext {
 
 	public Object findVariable(String key) {
 		Object obj = null;
-		
+
 		// Look if the variable is set in the global execution variables
 		// (i.e. the variable was overridden)
 		if (variables.containsKey(key))
-			obj = variables.get(key);		
-		
+			obj = variables.get(key);
+
 		// if the variable was not found, look in the stack starting at the
 		// upper flows
 		if (obj == null) {
@@ -103,12 +106,12 @@ public class MapExecutionContext implements ExecutionContext {
 		leftEf.getLocalVariables().clear();
 
 	}
-	
+
 	public void addScopedObject(String name, Object obj) {
-		//TODO: check that the object is not set yet ?
+		// TODO: check that the object is not set yet ?
 		stack.peek().getScopedObjects().put(name, obj);
 	}
-	
+
 	/** return null if not found */
 	public Object findScopedObject(String name) {
 		Object obj = null;
@@ -123,6 +126,10 @@ public class MapExecutionContext implements ExecutionContext {
 
 	public String getUuid() {
 		return uuid;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
 	}
 
 	private static class ExecutionFlowRuntime {

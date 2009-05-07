@@ -64,8 +64,7 @@
 					<property name="attachmentUploader" ref="attachmentUploader" />
 					<property name="attachment">
 						<bean parent="taskArg.attachment">
-							<property name="name" value="myAttachment" />
-							<property name="contentType" value="text/plain" />
+							<property name="name" value="myAttachment.txt" />
 						</bean>
 					</property>
 					<property name="resource" ref="basic.writeTo" />

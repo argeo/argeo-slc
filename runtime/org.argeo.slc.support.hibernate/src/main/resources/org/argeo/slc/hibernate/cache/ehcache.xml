@@ -46,4 +46,9 @@
 	<cache name="org.argeo.slc.runtime.SlcAgentDescriptor"
 		maxElementsInMemory="100" />
 
+	<cache name="org.argeo.slc.core.attachment.SimpleAttachment"
+		maxElementsInMemory="100000" />
+	<cache name="org.argeo.slc.core.test.tree.TreeTestResult.attachments"
+		maxElementsInMemory="100000" />
+
 </ehcache>
