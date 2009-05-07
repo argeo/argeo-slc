@@ -19,7 +19,7 @@ public class FileAttachmentsStorage implements AttachmentsStorage {
 			if (osgiInstanceArea.startsWith("file:"))
 				osgiInstanceArea = osgiInstanceArea.substring("file:".length());
 			attachmentsDirectory = new File(osgiInstanceArea + File.separator
-					+ "executionResources");
+					+ "slcAttachments");
 		}
 
 		if (attachmentsDirectory == null) {
