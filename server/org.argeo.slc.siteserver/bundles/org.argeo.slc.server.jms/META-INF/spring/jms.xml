@@ -7,7 +7,8 @@
 	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
 
 	<!-- Events -->
-	<bean id="jmsEventListener" class="org.argeo.slc.jms.JmsSlcEventListener">
+	<bean id="jmsEventListener" class="org.argeo.slc.jms.JmsSlcEventListener"
+		init-method="init" destroy-method="close">
 		<property name="jmsConnectionFactory">
 			<!--
 				Need its own connection factory in order to set client ids (not
