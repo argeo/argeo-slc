@@ -7,6 +7,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<service ref="resultListener" interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
+	<service ref="resultListener" interface="org.argeo.slc.test.TestResultListener" />
 	<service ref="slcExecutionListener" interface="org.argeo.slc.process.SlcExecutionNotifier" />
 
 	<!-- Manager -->

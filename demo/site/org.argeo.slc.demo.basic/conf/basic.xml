@@ -108,7 +108,7 @@
 		<property name="testResult" ref="basic.testResult" />
 	</bean>
 
-	<bean id="basic.writeTo" factory-bean="attachment.resourcesManager"
+	<bean id="basic.writeTo" factory-bean="basic.resourcesManager"
 		factory-method="getWritableResource" scope="execution">
 		<constructor-arg value="subdir/writeTo" />
 		<aop:scoped-proxy />
