@@ -20,6 +20,7 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	COPY_COLLECTION_TO_COLL_SERVICE : "copyCollectionToCollection.service",
   	LIST_RESULTS_SERVICE : "listResultAttributes.service",
   	GET_RESULT_SERVICE : "getResult.service",
+  	GET_ATTACHEMENT_SERVICE : "getAttachment.service",
   	LIST_SLCEXEC_SERVICE : "listSlcExecutions.service",
   	NEW_SLCEXEC_SERVICE : "newSlcExecution.service",
   	
@@ -183,6 +184,11 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   		return request;
   	},
 
+  	buildGetAttachmentUrl : function(attachmentId, contentType){
+  		return org.argeo.slc.ria.SlcApi.DEFAULT_CONTEXT + "/" + org.argeo.slc.ria.SlcApi.GET_ATTACHEMENT_SERVICE
+  			+ "?uuid=" + attachmentId + "&contentType=" + contentType;
+  	},
+  	
   	/**
   	 * List currently registered SlcExecutions.
   	 * @param fireReloadEventType {String} Event type to trigger (optionnal)

@@ -166,6 +166,47 @@ qx.Class.define("org.argeo.slc.web.TestList",
   					this.setEnabled(true);
   				}
   			},
+  			"attachments" : {
+  				label	 	: "Attachments", 
+  				icon 		: "resource/slc/document-save-as.png",
+  				shortcut 	: null,
+  				enabled  	: false,
+  				menu	   	: "Selection",
+  				toolbar  	: "selection",
+  				callback	: function(e){ },
+  				command 	: null,
+  				submenu 	: [],
+  				submenuCallback : function(commandId){  					
+  					var split = commandId.split("__commandseparator__");
+  					var uuid = split[0];
+  					var contentType = split[1];
+  					var url = org.argeo.slc.ria.SlcApi.buildGetAttachmentUrl(uuid, contentType);
+  					var win = window.open(url);
+  				},
+  				selectionChange : function(viewId, xmlNodes){
+  					if(viewId!="list")return;
+  					this.clearMenus();
+  					this.setEnabled(false);
+  					if(xmlNodes == null || !xmlNodes.length || xmlNodes.length != 1) return;
+  					// Check slc:simple-attachment tags
+  					var attachs = org.argeo.ria.util.Element.selectNodes(xmlNodes[0], "slc:attachments/slc:simple-attachment");
+  					if(attachs && attachs.length){
+  						var submenus = [];
+  						for(var i=0;i<attachs.length;i++){
+  							var uuid = org.argeo.ria.util.Element.getSingleNodeText(attachs[i], "slc:uuid");
+  							var contentType = org.argeo.ria.util.Element.getSingleNodeText(attachs[i], "slc:content-type");
+  							var name = org.argeo.ria.util.Element.getSingleNodeText(attachs[i], "slc:name");
+  							submenus.push({
+  								label:name, 
+  								icon : 'resource/slc/mime-text-plain.png', 
+  								commandId:uuid+'__commandseparator__'+contentType
+  							});
+  						}
+  						this.setMenu(submenus);
+	  					this.setEnabled(true);
+  					}
+  				}
+  			},
   			"copytocollection" : {
   				label	 	: "Copy to...", 
   				icon 		: "resource/slc/edit-copy.png",
