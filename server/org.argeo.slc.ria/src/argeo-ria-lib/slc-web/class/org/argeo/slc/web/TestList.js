@@ -180,7 +180,8 @@ qx.Class.define("org.argeo.slc.web.TestList",
   					var split = commandId.split("__commandseparator__");
   					var uuid = split[0];
   					var contentType = split[1];
-  					var url = org.argeo.slc.ria.SlcApi.buildGetAttachmentUrl(uuid, contentType);
+  					var name = split[2];
+  					var url = org.argeo.slc.ria.SlcApi.buildGetAttachmentUrl(uuid, contentType, name);
   					var win = window.open(url);
   				},
   				selectionChange : function(viewId, xmlNodes){
@@ -194,12 +195,12 @@ qx.Class.define("org.argeo.slc.web.TestList",
   						var submenus = [];
   						for(var i=0;i<attachs.length;i++){
   							var uuid = org.argeo.ria.util.Element.getSingleNodeText(attachs[i], "slc:uuid");
-  							var contentType = org.argeo.ria.util.Element.getSingleNodeText(attachs[i], "slc:content-type");
+  							var contentType = (org.argeo.ria.util.Element.getSingleNodeText(attachs[i], "slc:content-type")||'');
   							var name = org.argeo.ria.util.Element.getSingleNodeText(attachs[i], "slc:name");
   							submenus.push({
   								label:name, 
   								icon : 'resource/slc/mime-text-plain.png', 
-  								commandId:uuid+'__commandseparator__'+contentType
+  								commandId:uuid+'__commandseparator__'+contentType+'__commandseparator__'+name
   							});
   						}
   						this.setMenu(submenus);

@@ -25,8 +25,12 @@ qx.Class.define("org.argeo.ria.remote.RemoteNotifier",
 		eventXPath : {check : "String", init:"//event"},
 		eventTypeXPath : {check : "String", init:"@type"},
 		eventDataXPath : {check : "String", init:"@data"},
+		answerStatusXPath : {check : "String", init:"slc:execution-answer/slc:status"},
 		timeout : {			
 			init : 20000
+		},
+		errorTimeout : {
+			init : 5000
 		},
 		interrupt : {
 			check : "Boolean",
@@ -60,10 +64,18 @@ qx.Class.define("org.argeo.ria.remote.RemoteNotifier",
 			req.setParameter("timeout", this.getTimeout());
 			req.setTimeout(this.getTimeout() + 5000);
 			req.addListener("completed", this._pollHandler, this);
+			req.addListener("failed", this._errorHandler, this);
+			req.addListener("timeout", this._errorHandler, this);
+			req.addListener("aborted", this._errorHandler, this);
 			req.send();
 		},
 		_pollHandler : function(response){
 			// Parse response
+			var status = org.argeo.ria.util.Element.getSingleNodeText(response.getContent(), this.getAnswerStatusXPath());
+			if(status && status == "ERROR"){
+				this._errorHandler();
+				return;
+			}
 			var messages = org.argeo.ria.util.Element.selectNodes(response.getContent(), this.getEventXPath());
 			if(messages){
 				for(var i=0;i<messages.length;i++){
@@ -77,6 +89,10 @@ qx.Class.define("org.argeo.ria.remote.RemoteNotifier",
 				}
 			}
 			this._poll();
+		},
+		_errorHandler : function(){
+			// Wait an try again later
+			qx.event.Timer.once(this._poll, this, this.getErrorTimeout());
 		},
 		_getRequest : function(service, method, type){
 			return new qx.io.remote.Request(

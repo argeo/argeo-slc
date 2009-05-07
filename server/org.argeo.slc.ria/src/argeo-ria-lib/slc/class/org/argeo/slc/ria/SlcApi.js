@@ -184,9 +184,9 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   		return request;
   	},
 
-  	buildGetAttachmentUrl : function(attachmentId, contentType){
+  	buildGetAttachmentUrl : function(attachmentId, contentType, name){
   		return org.argeo.slc.ria.SlcApi.DEFAULT_CONTEXT + "/" + org.argeo.slc.ria.SlcApi.GET_ATTACHEMENT_SERVICE
-  			+ "?uuid=" + attachmentId + "&contentType=" + contentType;
+  			+ "?uuid=" + attachmentId + "&contentType=" + contentType + "&name=" + name;
   	},
   	
   	/**
