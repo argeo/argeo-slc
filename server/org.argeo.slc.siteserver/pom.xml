@@ -136,11 +136,11 @@
 			<artifactId>com.springsource.com.sun.xml.messaging.saaj</artifactId>
 		</dependency>
 
-		<!-- For ActiveMQ Web -->
+		<!-- For ActiveMQ Web
 		<dependency>
 			<groupId>org.argeo.dep.osgi</groupId>
 			<artifactId>org.argeo.dep.osgi.activemq.web</artifactId>
-		</dependency>
+		</dependency> -->
 
 	</dependencies>
 </project>

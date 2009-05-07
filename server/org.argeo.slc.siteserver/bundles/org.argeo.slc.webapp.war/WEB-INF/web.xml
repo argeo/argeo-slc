@@ -21,22 +21,6 @@
 		<url-pattern>*.service</url-pattern>
 	</servlet-mapping>
 
-	<!-- WS servlet -->
-	<servlet>
-		<servlet-name>slc-ws</servlet-name>
-		<servlet-class>
-			org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextClass</param-name>
-			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
-		</init-param>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>slc-ws</servlet-name>
-		<url-pattern>/slcService/*</url-pattern>
-	</servlet-mapping>
-
 	<!-- XSLT servlet -->
 	<servlet>
 		<servlet-name>xslt</servlet-name>
@@ -86,13 +70,6 @@
 		<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
 	</context-param>
 
-	<!--
-		Env refs <resource-env-ref>
-		<resource-env-ref-name>jdbc/mainDs</resource-env-ref-name>
-		<resource-env-ref-type>javax.sql.DataSource</resource-env-ref-type>
-		</resource-env-ref>
-	-->
-
 	<!-- Log4j configContext loader config -->
 	<listener>
 		<display-name>Log4j</display-name>
@@ -108,35 +85,22 @@
 	</context-param>
 
 
-	<!-- Active MQ -->
-	<context-param>
+	<!--
+		Active MQ <context-param>
 		<param-name>org.apache.activemq.brokerURL</param-name>
-		<param-value>vm://localhost</param-value>
-	</context-param>
+		<param-value>vm://localhost</param-value> </context-param>
 
-	<context-param>
+		<context-param>
 		<param-name>org.apache.activemq.embeddedBroker</param-name>
-		<param-value>false</param-value>
-	</context-param>
-
-	<servlet>
+		<param-value>false</param-value> </context-param> <servlet>
 		<servlet-name>MessageListenerServlet</servlet-name>
 		<servlet-class>org.apache.activemq.web.MessageListenerServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-
-	<servlet-mapping>
+		<load-on-startup>1</load-on-startup> </servlet> <servlet-mapping>
 		<servlet-name>MessageListenerServlet</servlet-name>
-		<url-pattern>/amq/*</url-pattern>
-	</servlet-mapping>
-
-	<filter>
+		<url-pattern>/amq/*</url-pattern> </servlet-mapping> <filter>
 		<filter-name>session</filter-name>
 		<filter-class>org.apache.activemq.web.SessionFilter</filter-class>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>session</filter-name>
-		<url-pattern>/amq/*</url-pattern>
-	</filter-mapping>
+		</filter> <filter-mapping> <filter-name>session</filter-name>
+		<url-pattern>/amq/*</url-pattern> </filter-mapping>
+	-->
 </web-app>

@@ -20,7 +20,7 @@
 		<version.equinox>3.4.2.R34x_v20080826-1230</version.equinox>
 		<version.maven-bundle-plugin>2.0.0</version.maven-bundle-plugin>
 		<version.activemq>5.2.0.0006</version.activemq>
-		<version.activemq-web>5.2.0.0005</version.activemq-web>
+		<!-- <version.activemq-web>5.2.0.0005</version.activemq-web> -->
 		<version.maven-argeo-osgi>0.1.8</version.maven-argeo-osgi>
 	</properties>
 	<scm>
@@ -441,12 +441,13 @@ limitations under the License.
 				<artifactId>org.springframework.jms</artifactId>
 				<version>${version.spring}</version>
 			</dependency>
-
+			<!-- 
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>org.springframework.ws</artifactId>
 				<version>${version.spring-ws}</version>
 			</dependency>
+			 -->
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>org.springframework.oxm</artifactId>
@@ -770,13 +771,18 @@ limitations under the License.
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>com.springsource.org.apache.activemq.pool</artifactId>
 				<version>5.2.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.activemq</groupId>
+						<artifactId>com.springsource.org.apache.activemq</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
-			<dependency>
-				<groupId>org.argeo.dep.osgi</groupId>
+			<!--
+				<dependency> <groupId>org.argeo.dep.osgi</groupId>
 				<artifactId>org.argeo.dep.osgi.activemq.web</artifactId>
-				<version>${version.activemq-web}</version>
-			</dependency>
-
+				<version>${version.activemq-web}</version> </dependency>
+			-->
 			<dependency>
 				<groupId>javax.xml.soap</groupId>
 				<artifactId>com.springsource.javax.xml.soap</artifactId>
