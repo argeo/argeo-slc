@@ -31,7 +31,8 @@ public class PollEventController extends AbstractServiceController {
 		else
 			timeout = defaultTimeout;
 
-		SlcEvent event = eventListenerRegister.listen(eventListener, timeout);
+		SlcEvent event = eventListener.listen(eventListenerRegister.getId(),
+				eventListenerRegister.getDescriptorsCopy(), timeout);
 		if (event != null) {
 			modelAndView.addObject("event", event);
 

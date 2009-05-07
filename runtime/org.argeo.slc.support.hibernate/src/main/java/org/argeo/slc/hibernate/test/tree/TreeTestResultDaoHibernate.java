@@ -19,6 +19,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.util.Assert;
 
 /**
  * The Hibernate implementation for tree-based result of the test result dao.
@@ -107,6 +108,17 @@ public class TreeTestResultDaoHibernate extends HibernateDaoSupport implements
 					throws HibernateException, SQLException {
 				TreeTestResult treeTestResult = getTreeTestResult(session,
 						testResultId);
+
+				// Check is there is already such an attachment
+				Assert.notNull(attachment, "attachment is null");
+				Assert.notNull(session, "session is null");
+				SimpleAttachment att = (SimpleAttachment) session.get(
+						attachment.getClass(), attachment.getUuid());
+				if (att != null)
+					throw new SlcException(
+							"There is already an attachement with id "
+									+ attachment.getUuid());
+
 				treeTestResult.getAttachments().add(attachment);
 				session.update(treeTestResult);
 				return treeTestResult;

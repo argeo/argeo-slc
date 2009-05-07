@@ -9,8 +9,6 @@ public interface SlcEventListener {
 	 * @return the event received or null if timeout was reached before
 	 *         receiving one
 	 */
-	public SlcEvent listen(String clientId,
+	public SlcEvent listen(String subscriberId,
 			List<SlcEventListenerDescriptor> descriptors, Long timeout);
-
-	public void close(String clientId);
 }

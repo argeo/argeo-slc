@@ -7,6 +7,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.argeo.slc.core.attachment.AttachmentsStorage;
 import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.springframework.web.HttpRequestHandler;
@@ -23,19 +25,37 @@ public class GetAttachmentHandler implements HttpRequestHandler {
 		String contentType = request.getParameter("contentType");
 		String name = request.getParameter("name");
 		if (contentType == null || "".equals(contentType.trim())) {
-			contentType = FORCE_DOWNLOAD;
+			if (name != null) {
+				contentType = FORCE_DOWNLOAD;
+				String ext = FilenameUtils.getExtension(name);
+				// cf. http://en.wikipedia.org/wiki/Internet_media_type
+				if ("csv".equals(ext))
+					contentType = "text/csv";
+				else if ("pdf".equals(ext))
+					contentType = "application/pdf";
+				else if ("zip".equals(ext))
+					contentType = "application/zip";
+				else if ("html".equals(ext))
+					contentType = "application/html";
+				else if ("txt".equals(ext))
+					contentType = "text/plain";
+				else if ("doc".equals(ext) || "docx".equals(ext))
+					contentType = "application/msword";
+				else if ("xls".equals(ext) || "xlsx".equals(ext))
+					contentType = "application/vnd.ms-excel";
+				else if ("xml".equals(ext))
+					contentType = "text/xml";
+			}
 		}
 
-		if (contentType.trim().equals(FORCE_DOWNLOAD)) {
-			if (name != null) {
-				contentType = contentType + ";name=\"" + name + "\"";
-				response.setHeader("Content-Disposition",
-						"attachment; filename=\"" + name + "\"");
-			}
-			response.setHeader("Expires", "0");
-			response.setHeader("Cache-Control", "no-cache, must-revalidate");
-			response.setHeader("Pragma", "no-cache");
+		if (name != null) {
+			contentType = contentType + ";name=\"" + name + "\"";
+			response.setHeader("Content-Disposition", "attachment; filename=\""
+					+ name + "\"");
 		}
+		response.setHeader("Expires", "0");
+		response.setHeader("Cache-Control", "no-cache, must-revalidate");
+		response.setHeader("Pragma", "no-cache");
 
 		SimpleAttachment resourceDescriptor = new SimpleAttachment();
 		resourceDescriptor.setUuid(uuid);

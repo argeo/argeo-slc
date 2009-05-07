@@ -30,15 +30,23 @@ public class JmsAttachmentListener implements MessageListener {
 					.setContentType(msg
 							.getStringProperty(JmsAttachmentUploader.ATTACHMENT_CONTENT_TYPE));
 
-			byte[] buffer = new byte[(int) message.getBodyLength()];
+			// Check body length
+			Long bodyLength = message.getBodyLength();
+			if (bodyLength > Integer.MAX_VALUE)
+				throw new SlcException("Attachment cannot be bigger than "
+						+ Integer.MAX_VALUE
+						+ " bytes with this transport. Use another transport.");
+
+			byte[] buffer = new byte[bodyLength.intValue()];
 			message.readBytes(buffer);
 			in = new ByteArrayInputStream(buffer);
 			attachmentsStorage.storeAttachment(attachment, in);
 		} catch (JMSException e) {
 			throw new SlcException("Could not process attachment message "
 					+ msg, e);
+		} finally {
+			IOUtils.closeQuietly(in);
 		}
-		IOUtils.closeQuietly(in);
 	}
 
 	public void setAttachmentsStorage(AttachmentsStorage attachmentsStorage) {

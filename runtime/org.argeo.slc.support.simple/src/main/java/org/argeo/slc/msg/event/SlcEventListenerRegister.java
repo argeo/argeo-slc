@@ -1,5 +1,6 @@
 package org.argeo.slc.msg.event;
 
+import java.util.List;
 
 public interface SlcEventListenerRegister {
 	public void addEventListenerDescriptor(
@@ -8,5 +9,9 @@ public interface SlcEventListenerRegister {
 	public void removeEventListenerDescriptor(
 			SlcEventListenerDescriptor eventListenerDescriptor);
 
-	public SlcEvent listen(SlcEventListener eventListener, Long timeout);
+	public List<SlcEventListenerDescriptor> getDescriptorsCopy();
+
+	public String getId();
+
+	// public SlcEvent listen(SlcEventListener eventListener, Long timeout);
 }

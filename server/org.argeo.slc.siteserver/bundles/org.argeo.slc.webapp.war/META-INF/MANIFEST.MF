@@ -38,6 +38,7 @@ Import-Package: com.sun.xml.messaging.saaj.soap;optional=true,
  org.springframework.web.servlet.handler,
  org.springframework.web.servlet.view,
  org.springframework.web.util,
+ org.springframework.web.servlet.mvc,
  org.springframework.xml.xsd
 Require-Bundle: org.argeo.slc.server,
  org.argeo.slc.specs,

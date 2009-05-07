@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.Attachment;
@@ -17,6 +18,7 @@ public class UploadAttachments implements Runnable {
 	private Resource resource = null;
 	private Map<Attachment, Resource> attachments = new HashMap<Attachment, Resource>();
 	private List<AttachmentsEnabled> attachTo = new ArrayList<AttachmentsEnabled>();
+	private Boolean newUuidPerExecution = true;
 
 	public void run() {
 		if (attachment != null) {
@@ -33,6 +35,8 @@ public class UploadAttachments implements Runnable {
 	}
 
 	protected void uploadAndAdd(Attachment attachment, Resource resource) {
+		if (newUuidPerExecution)
+			attachment.setUuid(UUID.randomUUID().toString());
 		attachmentUploader.upload(attachment, resource);
 		for (AttachmentsEnabled attachmentsEnabled : attachTo) {
 			attachmentsEnabled.addAttachment(attachment);
@@ -57,6 +61,10 @@ public class UploadAttachments implements Runnable {
 
 	public void setResource(Resource resource) {
 		this.resource = resource;
+	}
+
+	public void setNewUuidPerExecution(Boolean newUuidPerExecution) {
+		this.newUuidPerExecution = newUuidPerExecution;
 	}
 
 }
