@@ -19,13 +19,17 @@ public class FileExecutionResourcesTest extends TestCase {
 		try {
 			// Resource
 			Resource resource = executionResources
-					.getWritableResource("subdir/textRes.txt");
+					.getWritableResource("subdir1/textRes.txt");
+			assertTrue(resource.getFile().getParentFile().exists());
+			assertFalse(resource.getFile().exists());
 			FileUtils.writeStringToFile(resource.getFile(), expected);
 			reached = FileUtils.readFileToString(resource.getFile());
 			assertEquals(expected, reached);
 
 			// File
-			File file = executionResources.getFile("subdir/textFile.txt");
+			File file = executionResources.getFile("subdir2/textFile.txt");
+			assertFalse(file.getParentFile().exists());
+			assertFalse(file.exists());
 			FileUtils.writeStringToFile(file, expected);
 			reached = FileUtils.readFileToString(file);
 			assertEquals(expected, reached);

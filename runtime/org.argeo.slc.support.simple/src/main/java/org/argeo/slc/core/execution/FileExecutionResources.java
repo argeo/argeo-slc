@@ -53,7 +53,9 @@ public class FileExecutionResources implements ExecutionResources {
 	public Resource getWritableResource(String relativePath) {
 		File file = getFile(relativePath);
 		File parentDir = file.getParentFile();
+
 		if (!parentDir.exists()) {
+			// Creates if necessary
 			if (log.isTraceEnabled())
 				log.trace("Creating parent directory " + parentDir);
 			parentDir.mkdirs();
@@ -71,13 +73,6 @@ public class FileExecutionResources implements ExecutionResources {
 				+ sdf().format(executionContext.getCreationDate())
 				+ executionContext.getUuid();
 		File executionDir = new File(path);
-
-		// Creates if necessary
-		if (!executionDir.exists()) {
-			if (log.isDebugEnabled())
-				log.debug("Creating execution directory " + executionDir);
-			executionDir.mkdirs();
-		}
 
 		return new File(executionDir.getPath() + File.separator
 				+ relativePath.replace('/', File.separatorChar));
