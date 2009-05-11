@@ -7,4 +7,8 @@
 	<bean id="slcTemplate.fileResources" class="org.argeo.slc.core.execution.FileExecutionResources"
 		abstract="true" />
 
+	<bean id="slcTemplate.resourcesFactoryBean"
+		class="org.argeo.slc.core.execution.ExecutionResourcesFactoryBean"
+		abstract="true" />
+
 </beans>

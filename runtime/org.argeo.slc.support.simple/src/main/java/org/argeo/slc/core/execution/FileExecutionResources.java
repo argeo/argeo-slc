@@ -14,11 +14,19 @@ public class FileExecutionResources implements ExecutionResources {
 	private final static Log log = LogFactory
 			.getLog(FileExecutionResources.class);
 	protected final static String DEFAULT_EXECUTION_RESOURCES_DIRNAME = "executionResources";
+	public final static String DEFAULT_EXECUTION_RESOURCES_TMP_PATH = System
+			.getProperty("java.io.tmpdir")
+			+ File.separator
+			+ "slc"
+			+ File.separator
+			+ DEFAULT_EXECUTION_RESOURCES_DIRNAME;
 
 	private File baseDir;
 	private ExecutionContext executionContext;
 	private String prefixDatePattern = "yyyyMMdd_HHmmss_";
 	private SimpleDateFormat sdf = null;
+
+	private Boolean withExecutionSubdirectory = true;
 
 	public FileExecutionResources() {
 		// Default base directory
@@ -38,8 +46,7 @@ public class FileExecutionResources implements ExecutionResources {
 			baseDir = new File(osgiInstanceAreaDefault + File.separator
 					+ DEFAULT_EXECUTION_RESOURCES_DIRNAME);
 		} else {// outside OSGi
-			baseDir = new File(tempDir + File.separator + "slc"
-					+ File.separator + DEFAULT_EXECUTION_RESOURCES_DIRNAME);
+			baseDir = new File(DEFAULT_EXECUTION_RESOURCES_TMP_PATH);
 		}
 	}
 
@@ -61,6 +68,7 @@ public class FileExecutionResources implements ExecutionResources {
 			parentDir.mkdirs();
 		}
 		Resource resource = new FileSystemResource(file);
+
 		if (log.isTraceEnabled())
 			log.trace("Returns writable resource " + resource);
 		return resource;
@@ -69,13 +77,18 @@ public class FileExecutionResources implements ExecutionResources {
 	public File getFile(String relativePath) {
 		Assert.notNull(executionContext, "execution context is null");
 
-		String path = baseDir.getPath() + File.separator
-				+ sdf().format(executionContext.getCreationDate())
-				+ executionContext.getUuid();
-		File executionDir = new File(path);
+		if (withExecutionSubdirectory) {
+			String path = baseDir.getPath() + File.separator
+					+ sdf().format(executionContext.getCreationDate())
+					+ executionContext.getUuid();
+			File executionDir = new File(path);
 
-		return new File(executionDir.getPath() + File.separator
-				+ relativePath.replace('/', File.separatorChar));
+			return new File(executionDir.getPath() + File.separator
+					+ relativePath.replace('/', File.separatorChar));
+		} else {
+			return new File(baseDir.getPath() + File.separator
+					+ relativePath.replace('/', File.separatorChar));
+		}
 	}
 
 	protected String removeFilePrefix(String url) {
@@ -110,4 +123,9 @@ public class FileExecutionResources implements ExecutionResources {
 	public String getPrefixDatePattern() {
 		return prefixDatePattern;
 	}
+
+	public void setWithExecutionSubdirectory(Boolean withExecutionSubdirectory) {
+		this.withExecutionSubdirectory = withExecutionSubdirectory;
+	}
+
 }

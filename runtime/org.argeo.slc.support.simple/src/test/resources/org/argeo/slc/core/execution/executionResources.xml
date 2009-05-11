@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<import resource="imports.xml" />
+
+	<bean id="executionResources.spec" parent="slcTemplate.simpleSpec">
+		<property name="attributes">
+			<map>
+				<entry key="var">
+					<bean parent="specAttr.primitive" p:isParameter="false"
+						p:type="integer" p:value="60" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="executionResources.placeholderPass" parent="slcTemplate.simpleFlow">
+		<constructor-arg ref="executionResources.spec" />
+		<property name="executables">
+			<list>
+				<bean parent="task.echo">
+					<property name="message" value="DATA" />
+					<property name="writeTo">
+						<bean parent="slcTemplate.resourcesFactoryBean" scope="execution">
+							<property name="executionResources" ref="executionResources" />
+							<property name="relativePath" value="subdir/@{var}" />
+							<aop:scoped-proxy />
+						</bean>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="executionResources.placeholderFail" parent="slcTemplate.simpleFlow">
+		<constructor-arg ref="executionResources.spec" />
+		<property name="executables">
+			<list>
+				<bean parent="task.echo">
+					<property name="message" value="DATA" />
+					<property name="writeTo">
+						<bean factory-bean="executionResources" factory-method="getWritableResource"
+							scope="execution">
+							<constructor-arg value="subdir/@{var}" />
+							<aop:scoped-proxy />
+						</bean>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="executionResources.simple" parent="slcTemplate.simpleFlow">
+		<property name="executables">
+			<list>
+				<bean parent="task.echo">
+					<property name="message" value="DATA" />
+					<property name="writeTo">
+						<bean factory-bean="executionResources" factory-method="getWritableResource"
+							scope="execution">
+							<constructor-arg value="subdir/writeTo" />
+							<aop:scoped-proxy />
+						</bean>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="executionResources" parent="slcTemplate.fileResources">
+		<property name="executionContext" ref="executionContext" />
+		<property name="withExecutionSubdirectory" value="false" />
+	</bean>
+
+</beans>
