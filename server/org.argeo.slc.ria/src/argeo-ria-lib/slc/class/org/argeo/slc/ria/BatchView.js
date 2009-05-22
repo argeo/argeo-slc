@@ -28,6 +28,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 					},
 					command : null
 				},
+				/*
 				"toggleopenonadd" : {
 					label : "Auto edit on Add",
 					icon : "resource/slc/document-open.png",
@@ -59,7 +60,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 						}
 					},
 					selectionChange : function(viewId, selection) {
-						if (viewId != "form:list")
+						if (viewId != "batch:list")
 							return;
 						this.setEnabled(false);
 						if ((selection && selection.length == 1)) {
@@ -71,6 +72,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 					},
 					command : null
 				},
+				*/
 				"removefrombatch" : {
 					label : "Remove from batch",
 					icon : "resource/slc/edit-delete.png",
@@ -95,7 +97,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 						modal.attachAndShow();
 					},
 					selectionChange : function(viewId, selection) {
-						if (viewId != "form:list")
+						if (viewId != "batch:list")
 							return;
 						this.setEnabled(false);
 						if ((selection && selection.length > 0))
@@ -198,8 +200,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			this.list.setDroppable(true);
 			this.list.setDraggable(true);
 			this.list.setContextMenu(org.argeo.ria.event.CommandsManager
-					.getInstance().createMenuFromIds(["editexecutionspecs",
-							"removefrombatch"]));
+					.getInstance().createMenuFromIds(["removefrombatch"]));
 
 			this.list.addListener("dragstart", function(e) {
 						e.addType(["items"]);
@@ -242,7 +243,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 
 			this.list.addListener("changeSelection", function(e) {
 						var viewSelection = this.getViewSelection();
-						viewSelection.setViewId("form:list");
+						viewSelection.setViewId("batch:list");
 						viewSelection.clear();
 						var listSel = this.list.getSortedSelection();
 						for (var i = 0; i < listSel.length; i++) {
@@ -319,10 +320,12 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			var label = batchEntry.getLabel();
 			var icon = target.getIcon() || "resource/slc/office-document.png";
 			var item = new qx.ui.form.ListItem(label, icon);
+			/*
 			item.addListener("dblclick", function(e) {
 						this.getCommands()["editexecutionspecs"].command
 								.execute();
 					}, this);
+			*/
 			item.setUserData("batchEntrySpec", batchEntry);
 			item.setPaddingTop(1);
 			item.setPaddingBottom(2);
@@ -335,9 +338,11 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				this.list.add(item);
 			}
 			this.list.select(item);
+			/*
 			if (this.getAutoOpen() && !skipAutoOpen) {
 				this.getCommands()["editexecutionspecs"].command.execute();
 			}
+			*/
 		},
 
 		/**

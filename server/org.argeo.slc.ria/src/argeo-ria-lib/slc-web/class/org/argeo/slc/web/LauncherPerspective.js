@@ -23,20 +23,29 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
       this._splitPane = new qx.ui.splitpane.Pane("horizontal");      
       this._secondSplit = new qx.ui.splitpane.Pane("vertical");
       this._secondSplit.setDecorator(null);
+      this._thirdSplit = new qx.ui.splitpane.Pane("horizontal");
+      this._thirdSplit.setDecorator(null);
             
 	  var selectorPane = new org.argeo.ria.components.ViewPane("selector", "Available Scripts");
 	  selectorPane.set({width:290});
 	  viewsManager.registerViewPane(selectorPane);
 	  
 	  var batchPane = new org.argeo.ria.components.ViewPane("batch", "Batch");
-  	  batchPane.set({height:300});
+  	  batchPane.set({width: 600, height:300});
 	  viewsManager.registerViewPane(batchPane);
 	  
   	  var logPane = new org.argeo.ria.components.ViewPane("main", "Executions Log");
-  	  viewsManager.registerViewPane(logPane);  	  
+  	  viewsManager.registerViewPane(logPane);
   	  
-	  this._secondSplit.add(batchPane, 0);	  
+  	  var specEditorPane = new org.argeo.ria.components.ViewPane("editor", "Specs Editor");
+  	  specEditorPane.set({width:200});
+  	  viewsManager.registerViewPane(specEditorPane);
+  	  
+	  this._secondSplit.add(this._thirdSplit, 0);	  
 	  this._secondSplit.add(logPane, 1);	  
+	  
+	  this._thirdSplit.add(batchPane, 0);
+	  this._thirdSplit.add(specEditorPane, 1);
 	  
 	  this._splitPane.add(selectorPane, 0);	  
 	  this._splitPane.add(this._secondSplit, 1);
@@ -52,6 +61,9 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
 	  
 	  var batchApplet = viewsManager.initIViewClass(org.argeo.slc.ria.BatchView, "batch");
 	  batchApplet.load();
+	  
+	  var editor = viewsManager.initIViewClass(org.argeo.slc.ria.SpecsEditorView, "editor");
+	  editor.load();
 	  
 	  var logger = viewsManager.initIViewClass(org.argeo.slc.ria.SlcExecLoggerApplet, "main");
 	  logger.load();
