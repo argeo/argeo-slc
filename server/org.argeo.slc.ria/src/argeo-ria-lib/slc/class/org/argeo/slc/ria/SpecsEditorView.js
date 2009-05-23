@@ -25,9 +25,11 @@ qx.Class.define("org.argeo.slc.ria.SpecsEditorView",
 					selectionChange : function(viewId, selection) {
 						if (viewId != "batch:list")
 							return;
+						var view = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("editor").getContent();
 						if ((selection && selection.length == 1)) {
-							var view = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("editor").getContent();
 							view.setBatchEntrySpec(selection[0].getUserData("batchEntrySpec"));
+						}else{
+							view.setBatchEntrySpec(null);
 						}
 					},
 					command : null					
@@ -69,7 +71,9 @@ qx.Class.define("org.argeo.slc.ria.SpecsEditorView",
 			this.setView(viewPane);			
 			this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
 						
-			this.addListener("changeBatchEntrySpec", this.updateData, this);			
+			this.addListener("changeBatchEntrySpec", this.updateData, this);
+			this._emptyTitleString = "Script Parameters (select a script to edit)";
+			this._editorTitleString = "Script '%1' Parameters";
 		},
 		/**
 		 * The implementation should contain the real data loading (i.o. query...)
@@ -77,7 +81,7 @@ qx.Class.define("org.argeo.slc.ria.SpecsEditorView",
 		 */
 		load : function(){
 			this._createLayout();
-			this.getView().setViewTitle("Specs Editor");
+			this.getView().setViewTitle(this._emptyTitleString);
 		},
 		
 		/**
@@ -88,8 +92,10 @@ qx.Class.define("org.argeo.slc.ria.SpecsEditorView",
 			var batchEntry = event.getData();
 			if(batchEntry == null){
 				this.tableModel.setData([]);
+				this.getView().setViewTitle(this._emptyTitleString);
 				return;
 			}
+			this.getView().setViewTitle(qx.lang.String.format(this._editorTitleString, [batchEntry.getFlow().getName()]));
 			var values = batchEntry.getValues();
 			var data = [];
 			for(var key in values){
@@ -140,7 +146,7 @@ qx.Class.define("org.argeo.slc.ria.SpecsEditorView",
 			var factory = new org.argeo.slc.ria.execution.CellEditorFactory();
 			columnModel.setCellEditorFactory(1, factory);
 			columnModel.setDataCellRenderer(1, factory);
-			columnModel.getBehavior().setWidth(0, "70%");
+			columnModel.getBehavior().setWidth(0, "40%");
 			this.add(this.table, {edge:"center"});
 		},		
 		

@@ -31,7 +31,7 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
 	  viewsManager.registerViewPane(selectorPane);
 	  
 	  var batchPane = new org.argeo.ria.components.ViewPane("batch", "Batch");
-  	  batchPane.set({width: 600, height:300});
+  	  batchPane.set({width: 500, height:500});
 	  viewsManager.registerViewPane(batchPane);
 	  
   	  var logPane = new org.argeo.ria.components.ViewPane("main", "Executions Log");
@@ -73,6 +73,7 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
   		viewsManager.getViewPaneById("main").empty();
   		viewsManager.getViewPaneById("batch").empty();
   		viewsManager.getViewPaneById("selector").empty();
+  		viewsManager.getViewPaneById("editor").empty();
 		viewsManager.getViewPanesContainer().remove(this._splitPane);  		
   	}  	
   	

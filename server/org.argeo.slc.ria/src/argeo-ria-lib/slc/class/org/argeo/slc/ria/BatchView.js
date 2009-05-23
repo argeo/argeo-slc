@@ -104,7 +104,23 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 							this.setEnabled(true);
 					},
 					command : null
-				}				
+				},
+				"clearbatch" : {
+					label : "Clear batch",
+					icon : "resource/slc/user-trash-full.png",
+					shortcut : null,
+					enabled : true,
+					menu : "Launcher",
+					toolbar : "batch",
+					callback : function(e) {
+						if(!this.list.hasChildren()) return;
+						this.list.selectAll();
+						this.getCommands()["removefrombatch"].command.execute();
+					},
+					selectionChange : function(viewId, selection) {
+					},
+					command : null
+				}								
 			}
 		},
 		view : {
@@ -251,15 +267,27 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 						}
 					}, this);
 
+			this.dropDecorator = new qx.ui.decoration.Background();			
+			this.dropDecorator.set({
+				backgroundImage : "resource/slc/drophere.gif",
+				backgroundRepeat : "no-repeat"
+			});
+
+					
 			listChangeListener = function() {
 				var command = org.argeo.ria.event.CommandsManager.getInstance()
 						.getCommandById("submitform");
 				command.setEnabled(this.list.hasChildren());
+				var command2 = org.argeo.ria.event.CommandsManager.getInstance()
+						.getCommandById("clearbatch");
+				command2.setEnabled(this.list.hasChildren());
+				this.list.setDecorator((this.list.hasChildren()?null:this.dropDecorator));
 			};
 			this.list.addListener("addItem", listChangeListener, this);
 			this.list.addListener("removeItem", listChangeListener, this);
-
-			
+				
+			this.list.setDecorator(this.dropDecorator);
+						
 			this.add(this.listPane);
 		},		
 		
