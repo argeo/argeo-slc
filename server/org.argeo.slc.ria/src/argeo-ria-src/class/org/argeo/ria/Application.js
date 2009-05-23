@@ -259,7 +259,9 @@ qx.Class.define("org.argeo.ria.Application",
     javascriptDownloadLocation: function(hrefValue){
     	this.interruptClose = true;
     	document.location.href = hrefValue;
-    	this.interruptClose = false;
+    	qx.event.Timer.once(function(){
+    		this.interruptClose = false;
+    	}, this, 2000);
     },
     
     /**
