@@ -1,6 +1,7 @@
 package org.argeo.slc.hibernate.test.tree;
 
 import java.sql.SQLException;
+import java.util.Date;
 
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
@@ -44,6 +45,7 @@ public class TreeTestResultCollectionDaoHibernateTest extends HibernateTestCase 
 		final TreeTestResultCollection ttrcPersist = ttrcDao
 				.getTestResultCollection(ttrcName);
 
+		// Because of lazy initialization
 		getHibernateTemplate().execute(new HibernateCallback() {
 
 			public Object doInHibernate(Session session)
@@ -52,6 +54,46 @@ public class TreeTestResultCollectionDaoHibernateTest extends HibernateTestCase 
 				assertEquals(1, ttrcPersist.getResults().size());
 				UnitTestTreeUtil.assertTreeTestResult(ttr2, ttrcPersist
 						.getResults().iterator().next());
+				return null;
+			}
+		});
+	}
+
+	public void testResultsWithSameCloseDate() {
+		TreeTestResultDao ttrDao = getBean(TreeTestResultDao.class);
+		TreeTestResultCollectionDao ttrcDao = getBean(TreeTestResultCollectionDao.class);
+
+		String ttrcName = "testCollection";
+
+		Date closeDate = new Date();
+
+		// TTR1
+		TreeTestResult ttr1 = TreeTestResultTestUtils
+				.createCompleteTreeTestResult();
+		ttr1.setCloseDate(closeDate);
+		ttrDao.create(ttr1);
+
+		// TTR2
+		TreeTestResult ttr2 = TreeTestResultTestUtils
+				.createCompleteTreeTestResult();
+		ttr2.setCloseDate(closeDate);
+		ttrDao.create(ttr2);
+
+		// TTRC
+		TreeTestResultCollection ttrc = new TreeTestResultCollection(ttrcName);
+		ttrc.getResults().add(ttr1);
+		ttrc.getResults().add(ttr2);
+		ttrcDao.create(ttrc);
+
+		final TreeTestResultCollection ttrcPersist = ttrcDao
+				.getTestResultCollection(ttrcName);
+		// Because of lazy initialization
+		getHibernateTemplate().execute(new HibernateCallback() {
+
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				session.refresh(ttrcPersist);
+				assertEquals(2, ttrcPersist.getResults().size());
 				return null;
 			}
 		});

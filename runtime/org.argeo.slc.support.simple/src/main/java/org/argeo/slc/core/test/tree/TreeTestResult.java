@@ -198,14 +198,42 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	public int compareTo(TreeTestResult ttr2) {
 		TreeTestResult ttr1 = this;
 		if (ttr1.getCloseDate() != null && ttr2.getCloseDate() != null) {
-			return -ttr1.getCloseDate().compareTo(ttr2.getCloseDate());
+			if (ttr1.getCloseDate().equals(ttr2.getCloseDate()))
+				return compareUuid(ttr1, ttr2);
+			else
+				return -ttr1.getCloseDate().compareTo(ttr2.getCloseDate());
 		} else if (ttr1.getCloseDate() != null && ttr2.getCloseDate() == null) {
 			return 1;
 		} else if (ttr1.getCloseDate() == null && ttr2.getCloseDate() != null) {
 			return -1;
 		} else {
+			return compareUuid(ttr1, ttr2);
+		}
+	}
+
+	protected int compareUuid(TestResult ttr1, TestResult ttr2) {
+		if (ttr1.getUuid() == null || ttr2.getUuid() == null)
+			throw new SlcException(
+					"Cannot compare tree test result with null uuid");
+		else {
+			if (ttr1.getUuid().equals(ttr2.getUuid()))
+				return 0;
 			return ttr1.getUuid().compareTo(ttr2.getUuid());
 		}
+	}
+
+	public boolean equals(Object obj) {
+		if (obj instanceof TestResult)
+			return compareUuid(this, ((TestResult) obj)) == 0;
+		else
+			return false;
+	}
+
+	public int hashCode() {
+		if (uuid != null)
+			return uuid.hashCode();
+		else
+			return super.hashCode();
 	}
 
 	public Map<String, String> getAttributes() {
