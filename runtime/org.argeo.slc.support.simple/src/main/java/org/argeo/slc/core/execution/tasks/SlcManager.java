@@ -11,7 +11,7 @@ import org.argeo.slc.process.SlcExecutionRelated;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.structure.StructureRegistry;
 
-public class SlcManagerTask implements Runnable, SlcExecutionRelated {
+public class SlcManager implements Runnable, SlcExecutionRelated {
 	private String uuid;
 	private String slcExecutionUuid;
 	private String slcExecutionStepUuid;

@@ -8,9 +8,9 @@
 		abstract="true" />
 	<bean id="task.systemCall" class="org.argeo.slc.core.execution.tasks.SystemCall"
 		abstract="true" />
-	<bean id="task.closeTestResult" class="org.argeo.slc.core.execution.tasks.CloseTestResultTask"
+	<bean id="task.closeTestResult" class="org.argeo.slc.core.execution.tasks.CloseTestResult"
 		abstract="true" />
-	<bean id="task.slcManager" class="org.argeo.slc.core.execution.tasks.SlcManagerTask"
+	<bean id="task.slcManager" class="org.argeo.slc.core.execution.tasks.SlcManager"
 		abstract="true" />
 	<bean id="task.overrideContextAware" class="org.argeo.slc.core.execution.tasks.OverrideContextAware"
 		abstract="true" />
