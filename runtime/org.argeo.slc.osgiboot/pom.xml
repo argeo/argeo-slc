@@ -89,5 +89,13 @@
 			<artifactId>org.eclipse.osgi</artifactId>
 		</dependency>
 
+		<!-- TEST -->
+		<dependency>
+			<groupId>org.junit</groupId>
+			<artifactId>com.springsource.junit</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
+
+
 </project>

@@ -265,6 +265,13 @@ limitations under the License.
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.support.equinox</artifactId>
+				<classifier>tests</classifier>
+				<scope>test</scope>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.ws.client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -441,13 +448,11 @@ limitations under the License.
 				<artifactId>org.springframework.jms</artifactId>
 				<version>${version.spring}</version>
 			</dependency>
-			<!-- 
-			<dependency>
-				<groupId>org.springframework.ws</groupId>
+			<!--
+				<dependency> <groupId>org.springframework.ws</groupId>
 				<artifactId>org.springframework.ws</artifactId>
-				<version>${version.spring-ws}</version>
-			</dependency>
-			 -->
+				<version>${version.spring-ws}</version> </dependency>
+			-->
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>org.springframework.oxm</artifactId>
@@ -472,6 +477,11 @@ limitations under the License.
 			<dependency>
 				<groupId>org.springframework.osgi</groupId>
 				<artifactId>org.springframework.osgi.web</artifactId>
+				<version>${version.spring-osgi}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.osgi</groupId>
+				<artifactId>org.springframework.osgi.test</artifactId>
 				<version>${version.spring-osgi}</version>
 			</dependency>
 			<dependency>

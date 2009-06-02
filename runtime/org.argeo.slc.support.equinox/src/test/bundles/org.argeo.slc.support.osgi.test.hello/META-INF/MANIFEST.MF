@@ -1,0 +1,2 @@
+Bundle-SymbolicName: org.argeo.slc.support.osgi.test.hello
+Bundle-Version: 0.1.0

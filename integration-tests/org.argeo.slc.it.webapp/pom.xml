@@ -2,16 +2,33 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.argeo.slc</groupId>
-		<artifactId>argeo-slc</artifactId>
+		<groupId>org.argeo.slc.it</groupId>
+		<artifactId>argeo-slc-it</artifactId>
 		<version>0.11.3-SNAPSHOT</version>
-		<relativePath>../../org.argeo.slc</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.it.webapp</artifactId>
 	<packaging>jar</packaging>
 	<name>Argeo SLC Web Application Integration Tests</name>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -34,5 +51,31 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!--  Server -->
+		<dependency>
+			<groupId>org.argeo.slc.server</groupId>
+			<artifactId>bundles</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<!-- TEST -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.equinox</artifactId>
+			<classifier>tests</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.osgi</groupId>
+			<artifactId>org.springframework.osgi.test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.osgiboot</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 </project>
