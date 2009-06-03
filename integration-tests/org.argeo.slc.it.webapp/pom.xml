@@ -12,20 +12,57 @@
 	<name>Argeo SLC Web Application Integration Tests</name>
 	<build>
 		<plugins>
+			<!--
+				<plugin> <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId> <executions>
+				<execution> <id>copy-dependencies</id>
+				<phase>pre-integration-test</phase> <goals>
+				<goal>copy-dependencies</goal> </goals> <configuration>
+				<overWriteReleases>true</overWriteReleases>
+				<overWriteSnapshots>true</overWriteSnapshots> </configuration>
+				</execution> </executions> </plugin>
+			-->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
+				<groupId>org.argeo.slc.maven</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+				<version>${version.maven-argeo-osgi}</version>
 				<executions>
 					<execution>
-						<id>copy-dependencies</id>
+						<id>equinox-start</id>
 						<phase>pre-integration-test</phase>
 						<goals>
-							<goal>copy-dependencies</goal>
+							<goal>equinox</goal>
 						</goals>
 						<configuration>
-							<overWriteReleases>true</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
+							<wait>false</wait>
+							<pause>5000</pause>
+							<argsToAppend>
+								<arg>-clean</arg>
+							</argsToAppend>
+							<systemProperties>
+								<slc.osgi.bundles>${basedir}/../../demo/site;in=*;ex=target</slc.osgi.bundles>
+								<slc.osgi.start>
+									org.argeo.dep.osgi.catalina.start,
+									org.springframework.osgi.extender,
+									org.springframework.osgi.web.extender,
+									org.springframework.osgi.samples.simplewebapp,
+									org.argeo.slc.server.activemq,
+									org.argeo.slc.server.hsqldb,
+									org.argeo.slc.server.hibernate,
+									org.argeo.slc.server.services,
+									org.argeo.slc.server.jms,
+									org.argeo.slc.webapp,
+									org.argeo.slc.ria
+								</slc.osgi.start>
+							</systemProperties>
 						</configuration>
+					</execution>
+					<execution>
+						<id>equinox-shutdown</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>equinox-shutdown</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -58,6 +95,11 @@
 			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.equinox</artifactId>
+		</dependency>
+
 
 		<!-- TEST -->
 		<dependency>
