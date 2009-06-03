@@ -6,6 +6,7 @@
 		<version>0.11.3-SNAPSHOT</version>
 		<relativePath>../../org.argeo.slc</relativePath>
 	</parent>
+	<groupId>org.argeo.slc.it</groupId>
 	<artifactId>argeo-slc-it</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC Integration Tests</name>
