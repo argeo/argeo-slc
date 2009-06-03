@@ -1,6 +1,5 @@
 package org.argeo.slc.spring;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
@@ -15,6 +14,7 @@ import org.springframework.core.io.Resource;
 public class SpringUtils {
 	private final static Log log = LogFactory.getLog(SpringUtils.class);
 
+	@SuppressWarnings(value = { "unchecked" })
 	public static <T> T loadSingleFromContext(ListableBeanFactory context,
 			Class<T> clss) {
 		// Map<String, T> beans = context.getBeansOfType(clss);

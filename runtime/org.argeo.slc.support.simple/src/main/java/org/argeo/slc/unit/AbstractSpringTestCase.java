@@ -35,6 +35,7 @@ public abstract class AbstractSpringTestCase extends TestCase {
 	}
 
 	/** Returns a bean from the underlying context */
+	@SuppressWarnings(value = { "unchecked" })
 	protected <T> T getBean(String beanId) {
 		return (T) getContext().getBean(beanId);
 	}

@@ -23,9 +23,12 @@ public class OsgiBoot {
 	public final static String PROP_SLC_OSGIBOOT_DEBUG = "slc.osgiboot.debug";
 
 	public final static String DEFAULT_BASE_URL = "reference:file:";
+	public final static String EXCLUDES_SVN_PATTERN = "**/.svn/**";
 
 	private Boolean debug = Boolean.parseBoolean(System.getProperty(
 			PROP_SLC_OSGIBOOT_DEBUG, "false"));
+
+	private boolean excludeSvn = true;
 
 	private final BundleContext bundleContext;
 
@@ -115,6 +118,8 @@ public class OsgiBoot {
 			return urls;
 		bundleLocations = SystemPropertyUtils
 				.resolvePlaceholders(bundleLocations);
+		if (debug)
+			debug(PROP_SLC_OSGI_LOCATIONS + "=" + bundleLocations);
 
 		StringTokenizer st = new StringTokenizer(bundleLocations,
 				File.pathSeparator);
@@ -136,8 +141,11 @@ public class OsgiBoot {
 		List<BundlesSet> bundlesSets = new ArrayList<BundlesSet>();
 		if (bundlePatterns == null)
 			return urls;
-		// TODO: resolve placeholders
-		info(PROP_SLC_OSGI_BUNDLES + "=" + bundlePatterns);
+		bundlePatterns = SystemPropertyUtils
+				.resolvePlaceholders(bundlePatterns);
+		if (debug)
+			debug(PROP_SLC_OSGI_BUNDLES + "=" + bundlePatterns
+					+ " (excludeSvn=" + excludeSvn + ")");
 
 		StringTokenizer st = new StringTokenizer(bundlePatterns, ",");
 		while (st.hasMoreTokens()) {
@@ -266,7 +274,16 @@ public class OsgiBoot {
 		return bundleContext;
 	}
 
-	private class BundlesSet {
+	/** Whether to exclude Subversion directories (true by default) */
+	public boolean isExcludeSvn() {
+		return excludeSvn;
+	}
+
+	public void setExcludeSvn(boolean excludeSvn) {
+		this.excludeSvn = excludeSvn;
+	}
+
+	protected class BundlesSet {
 		private String baseUrl = "reference:file";// not used yet
 		private final String dir;
 		private List<String> includes = new ArrayList<String>();
@@ -301,6 +318,10 @@ public class OsgiBoot {
 				} else {
 					System.err.println("Unkown bundles pattern type " + type);
 				}
+			}
+
+			if (excludeSvn && !excludes.contains(EXCLUDES_SVN_PATTERN)) {
+				excludes.add(EXCLUDES_SVN_PATTERN);
 			}
 		}
 
