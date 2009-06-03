@@ -4,7 +4,7 @@ import org.argeo.slc.osgiboot.OsgiBoot;
 
 public class HelloTest extends AbstractOsgiRuntimeTest {
 	public void testHello() throws Exception {
-		Thread.sleep(5000);
+		Thread.sleep(2000);
 	}
 
 	protected void postStart() throws Exception {

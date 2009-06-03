@@ -1,5 +1,7 @@
 package org.argeo.slc.osgi.test;
 
+import java.util.Properties;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
@@ -19,7 +21,14 @@ public abstract class AbstractOsgiRuntimeTest extends TestCase {
 	protected OsgiPlatform osgiPlatform = null;
 
 	protected OsgiPlatform createOsgiPlatform() {
-		return new EquinoxPlatform();
+		return new EquinoxPlatform() {
+
+			public Properties getConfigurationProperties() {
+				Properties props = super.getConfigurationProperties();
+				props.setProperty("osgi.configuration.area", "target/slc/conf");
+				return props;
+			}
+		};
 	}
 
 	protected void postStart() throws Exception {
