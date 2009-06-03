@@ -14,7 +14,7 @@
 		<module>runtime</module>
 		<module>demo</module>
 		<module>server</module>
-		<module>integration-tests</module>
+		<!-- <module>integration-tests</module> -->
 	</modules>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
