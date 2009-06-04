@@ -14,7 +14,6 @@
 		<module>runtime</module>
 		<module>demo</module>
 		<module>server</module>
-		<!-- <module>integration-tests</module> -->
 	</modules>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
@@ -42,12 +41,16 @@
 	</build>
 	<profiles>
 		<profile>
-			<id>fullBuild</id>
+			<id>withIT</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<modules>
-				<!--<module>eclipse/features/org.argeo.slc.ui.launch.feature</module>-->
-				<module>examples</module>
 				<module>integration-tests</module>
 			</modules>
+		</profile>
+		<profile>
+			<id>withoutIT</id>
 		</profile>
 	</profiles>
 	<distributionManagement>
