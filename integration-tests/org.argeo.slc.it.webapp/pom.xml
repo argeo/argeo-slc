@@ -35,7 +35,7 @@
 						</goals>
 						<configuration>
 							<wait>false</wait>
-							<pause>5000</pause>
+							<pause>30000</pause>
 							<argsToAppend>
 								<arg>-clean</arg>
 							</argsToAppend>
