@@ -127,12 +127,11 @@ public abstract class AbstractOsgiRuntimeTestCase extends TestCase {
 				if (bundlesToStart.contains(bundle.getSymbolicName())
 						&& bundle.getState() != Bundle.ACTIVE) {
 					allBundlesOk = false;
-					badBundles
-							.append(OsgiStringUtils
-									.nullSafeSymbolicName(bundle)
-									+ " ["
-									+ OsgiStringUtils
-											.bundleStateAsString(bundle) + "]\n");
+					badBundles.append(OsgiStringUtils
+							.nullSafeSymbolicName(bundle)
+							+ " ["
+							+ OsgiStringUtils.bundleStateAsString(bundle)
+							+ "]\n");
 				}
 			}
 
@@ -213,9 +212,9 @@ public abstract class AbstractOsgiRuntimeTestCase extends TestCase {
 		return osgiBoot.getBundleContext();
 	}
 
-	/** Default is 120s */
+	/** Default is 30s */
 	protected long getResolvedTimeout() {
-		return 120 * 1000l;
+		return 30 * 1000l;
 	}
 
 	/** Default is 10s */
