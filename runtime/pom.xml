@@ -29,15 +29,11 @@
 	</modules>
 	<build>
 		<plugins>
-		<!-- 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<aggregate>true</aggregate>
-				</configuration>
-			</plugin>
-			 -->
+			<!--
+				<plugin> <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId> <configuration>
+				<aggregate>true</aggregate> </configuration> </plugin>
+			-->
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -58,9 +54,7 @@
 					<configuration>
 						<manifestLocation>target/classes/META-INF</manifestLocation>
 						<instructions>
-							<Bundle-SymbolicName>
-								${pom.artifactId}
-							</Bundle-SymbolicName>
+							<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 							<_removeheaders>Bnd-LastModified</_removeheaders>
 						</instructions>
 					</configuration>
