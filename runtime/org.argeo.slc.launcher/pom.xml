@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc.runtime</groupId>
 		<artifactId>argeo-slc-runtime</artifactId>
-		<version>0.11.3</version>
+		<version>0.11.4-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.launcher</artifactId>

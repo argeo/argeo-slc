@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>0.11.3</version>
+		<version>0.11.4-SNAPSHOT</version>
 		<relativePath>org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-all</artifactId>
@@ -16,8 +16,8 @@
 		<module>demo</module>
 	</modules>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.11.3</connection>
-		<url>https://www.argeo.org/svn/slc/tags/argeo-slc-all-0.11.3</url>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
+		<url>https://www.argeo.org/svn/slc/trunk</url>
 	</scm>
 	<build>
 		<plugins>
