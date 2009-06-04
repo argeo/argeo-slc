@@ -164,7 +164,7 @@ public abstract class AbstractOsgiRuntimeTestCase extends TestCase {
 						+ bundleSymbolicName);
 		} catch (InvalidSyntaxException e) {
 			throw new SlcException(
-					"Unexpected exception when looking for applicaiton context for bundle "
+					"Unexpected exception when looking for application context for bundle "
 							+ bundleSymbolicName, e);
 		}
 		log.info("Application context of bundle " + bundleSymbolicName
