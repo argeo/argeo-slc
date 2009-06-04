@@ -7,5 +7,12 @@
 	 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-lazy-init="true">
 
-	<import resource="classpath:org/argeo/slc/server/client/spring.xml" />
+	<import resource="classpath:org/argeo/slc/castor/spring.xml" />
+
+	<!-- Http client -->
+	<bean id="slcDefault.serverHttpClient" class="org.argeo.slc.server.client.SlcServerHttpClient"
+		lazy-init="true">
+		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
+		<property name="baseUrl" value="http://localhost:7070/org.argeo.slc.webapp/" />
+	</bean>
 </beans>

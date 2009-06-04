@@ -35,7 +35,7 @@
 						</goals>
 						<configuration>
 							<wait>false</wait>
-							<pause>30000</pause>
+							<!--  <pause>30000</pause>-->
 							<argsToAppend>
 								<arg>-clean</arg>
 							</argsToAppend>
@@ -104,13 +104,8 @@
 		<!-- TEST -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.equinox</artifactId>
+			<artifactId>org.argeo.slc.server</artifactId>
 			<classifier>tests</classifier>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -118,6 +113,5 @@
 			<artifactId>org.argeo.slc.osgiboot</artifactId>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 </project>

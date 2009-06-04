@@ -44,6 +44,14 @@ public class ExecutionAnswer {
 		this.message = message;
 	}
 
+	public Boolean isOk() {
+		return status.equals(OK);
+	}
+
+	public Boolean isError() {
+		return status.equals(ERROR);
+	}
+
 	public static ExecutionAnswer error(String message) {
 		return new ExecutionAnswer(ERROR, message);
 	}

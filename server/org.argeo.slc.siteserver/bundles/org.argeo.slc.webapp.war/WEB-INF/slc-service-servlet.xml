@@ -7,6 +7,9 @@
 
 	<import resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
 
+	<bean name="/isServerReady.service" class="org.argeo.slc.web.mvc.management.IsServerReady">
+	</bean>
+
 	<bean name="/getResult.service" class="org.argeo.slc.web.mvc.result.GetResultController">
 		<constructor-arg ref="testResultDao" />
 	</bean>

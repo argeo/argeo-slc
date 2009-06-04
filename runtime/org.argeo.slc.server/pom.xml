@@ -24,6 +24,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -75,12 +82,10 @@
 		</dependency>
 
 		<!-- Spring -->
-		<!-- 
-		<dependency>
-			<groupId>org.springframework.ws</groupId>
-			<artifactId>org.springframework.ws</artifactId>
-		</dependency>
-		 -->
+		<!--
+			<dependency> <groupId>org.springframework.ws</groupId>
+			<artifactId>org.springframework.ws</artifactId> </dependency>
+		-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.web.servlet</artifactId>
