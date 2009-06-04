@@ -80,7 +80,7 @@
 		<!--  Server -->
 		<dependency>
 			<groupId>org.argeo.slc.server</groupId>
-			<artifactId>bundles</artifactId>
+			<artifactId>deploy</artifactId>
 			<type>pom</type>
 		</dependency>
 

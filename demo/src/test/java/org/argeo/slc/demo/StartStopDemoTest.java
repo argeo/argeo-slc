@@ -20,6 +20,8 @@ public class StartStopDemoTest extends AbstractOsgiRuntimeTestCase {
 						.getProperty("java.class.path")));
 		osgiBoot.installUrls(osgiBoot.getBundlesUrls(OsgiBoot.DEFAULT_BASE_URL,
 				"site;in=*"));
+		osgiBoot.installUrls(osgiBoot.getBundlesUrls(OsgiBoot.DEFAULT_BASE_URL,
+				"../server/org.argeo.slc.siteserver/bundles;in=*"));
 	}
 
 	protected List<String> getBundlesToStart() {
