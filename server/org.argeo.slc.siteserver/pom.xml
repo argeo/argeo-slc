@@ -23,7 +23,6 @@
 		<dependency>
 			<groupId>org.argeo.slc.server</groupId>
 			<artifactId>org.argeo.slc.ria</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 
 

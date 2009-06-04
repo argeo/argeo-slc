@@ -256,16 +256,27 @@ limitations under the License.
 				<artifactId>org.argeo.slc.support.equinox</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.argeo.slc.runtime</groupId>
+			<!--
+				<dependency> <groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.ws.client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
+				<version>${project.version}</version> </dependency>
+			-->
 			<dependency>
 				<groupId>org.argeo.slc</groupId>
 				<artifactId>org.argeo.slc.webapp</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.server</groupId>
+				<artifactId>org.argeo.slc.ria</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.server</groupId>
+				<artifactId>bundles</artifactId>
+				<version>${project.version}</version>
+				<type>pom</type>
 			</dependency>
 
 			<!-- SLC dubious -->

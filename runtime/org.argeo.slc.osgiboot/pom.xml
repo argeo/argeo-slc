@@ -53,7 +53,6 @@
 				<configuration>
 					<instructions>
 						<Bundle-Activator>org.argeo.slc.osgiboot.Activator</Bundle-Activator>
-						<Private-Package>org.argeo.slc.osgiboot.internal.*</Private-Package>
 					</instructions>
 				</configuration>
 			</plugin>

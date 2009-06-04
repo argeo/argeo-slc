@@ -76,13 +76,11 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.osgiboot</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 		<!--  Server -->
 		<dependency>
 			<groupId>org.argeo.slc.server</groupId>
 			<artifactId>bundles</artifactId>
-			<version>${project.version}</version>
 			<type>pom</type>
 		</dependency>
 
@@ -90,14 +88,10 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.equinox</artifactId>
-			<version>${project.version}</version>
-			<classifier>tests</classifier>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.osgiboot</artifactId>
-			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
