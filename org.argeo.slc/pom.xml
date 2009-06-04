@@ -20,7 +20,7 @@
 		<version.equinox>3.4.2.R34x_v20080826-1230</version.equinox>
 		<version.maven-bundle-plugin>2.0.0</version.maven-bundle-plugin>
 		<version.activemq>5.2.0.0006</version.activemq>
-		<version.maven-argeo-osgi>0.1.11-SNAPSHOT</version.maven-argeo-osgi>
+		<version.maven-argeo-osgi>0.1.11</version.maven-argeo-osgi>
 	</properties>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc</connection>
