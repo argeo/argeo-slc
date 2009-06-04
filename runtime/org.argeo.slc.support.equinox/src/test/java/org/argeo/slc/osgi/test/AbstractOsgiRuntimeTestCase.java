@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.BadBinaryOpValueExpException;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
@@ -101,7 +103,9 @@ public abstract class AbstractOsgiRuntimeTestCase extends TestCase {
 		long begin = System.currentTimeMillis();
 		long duration = 0;
 		boolean allBundlesOk = true;
+		StringBuffer badBundles = null;
 		while (duration < getResolvedTimeout()) {
+			badBundles = new StringBuffer();
 			for (Bundle bundle : bundleContext.getBundles()) {
 				if (bundle.getSymbolicName() != null
 						&& bundle.getSymbolicName().startsWith(
@@ -112,13 +116,23 @@ public abstract class AbstractOsgiRuntimeTestCase extends TestCase {
 
 				if (bundle.getState() == Bundle.INSTALLED) {
 					allBundlesOk = false;
-					break;// for
+					badBundles
+							.append(OsgiStringUtils
+									.nullSafeSymbolicName(bundle)
+									+ " ["
+									+ OsgiStringUtils
+											.bundleStateAsString(bundle) + "]");
 				}
 
 				if (bundlesToStart.contains(bundle.getSymbolicName())
 						&& bundle.getState() != Bundle.ACTIVE) {
 					allBundlesOk = false;
-					break;// for
+					badBundles
+							.append(OsgiStringUtils
+									.nullSafeSymbolicName(bundle)
+									+ " ["
+									+ OsgiStringUtils
+											.bundleStateAsString(bundle) + "]\n");
 				}
 			}
 
@@ -132,7 +146,8 @@ public abstract class AbstractOsgiRuntimeTestCase extends TestCase {
 
 		if (!allBundlesOk) {
 			listInstalledBundles();
-			throw new SlcException("Some bundles are in INSTALLED status");
+			throw new SlcException(
+					"Some bundles are not at the proper status:\n" + badBundles);
 		}
 	}
 
