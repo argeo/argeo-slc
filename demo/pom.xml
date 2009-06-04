@@ -77,12 +77,6 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.osgiboot</artifactId>
 		</dependency>
-		<!--  Server -->
-		<dependency>
-			<groupId>org.argeo.slc.server</groupId>
-			<artifactId>deploy</artifactId>
-			<type>pom</type>
-		</dependency>
 
 		<!--  TESTS -->
 		<dependency>
@@ -129,6 +123,14 @@
 					</plugin>
 				</plugins>
 			</build>
+			<dependencies>
+				<!--  Server -->
+				<dependency>
+					<groupId>org.argeo.slc.server</groupId>
+					<artifactId>deploy</artifactId>
+					<type>pom</type>
+				</dependency>
+			</dependencies>
 		</profile>
 		<profile>
 			<id>agent</id>
