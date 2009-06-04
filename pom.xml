@@ -12,8 +12,8 @@
 	<modules>
 		<module>org.argeo.slc</module>
 		<module>runtime</module>
-		<module>demo</module>
 		<module>server</module>
+		<module>demo</module>
 	</modules>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
