@@ -275,7 +275,7 @@ limitations under the License.
 			<dependency>
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>bundles</artifactId>
-				<version>${project.version}</version>
+				<version>0.11.3-SNAPSHOT</version>
 				<type>pom</type>
 			</dependency>
 
