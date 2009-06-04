@@ -1,4 +1,4 @@
 Bundle-SymbolicName: org.argeo.slc.demo.agent
-Bundle-Version: 0.11.3.qualifier
+Bundle-Version: 0.11.3.SNAPSHOT
 Fragment-Host: org.argeo.slc.agent
 Bundle-Name: Argeo SLC Demo Agent

@@ -1,5 +1,5 @@
 Bundle-Name: Log4j Configuration
 Bundle-SymbolicName: org.argeo.slc.demo.log4j
-Bundle-Version: 0.11.3.qualifier
+Bundle-Version: 0.11.3.SNAPSHOT
 Fragment-Host: com.springsource.org.apache.log4j
 
