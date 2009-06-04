@@ -227,11 +227,13 @@ limitations under the License.
 				<version>${project.version}</version>
 				<classifier>tests</classifier>
 			</dependency>
+			<!-- 
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.ant</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			 -->
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.hibernate</artifactId>
