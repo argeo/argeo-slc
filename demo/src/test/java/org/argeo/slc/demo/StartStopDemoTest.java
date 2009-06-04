@@ -3,7 +3,7 @@ package org.argeo.slc.demo;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.argeo.slc.osgi.test.AbstractOsgiRuntimeTestCase;
+import org.argeo.slc.equinox.unit.AbstractOsgiRuntimeTestCase;
 import org.argeo.slc.osgiboot.OsgiBoot;
 
 public class StartStopDemoTest extends AbstractOsgiRuntimeTestCase {

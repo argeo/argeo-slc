@@ -24,6 +24,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<!-- 
 				<executions>
 					<execution>
 						<goals>
@@ -31,6 +32,7 @@
 						</goals>
 					</execution>
 				</executions>
+				 -->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>

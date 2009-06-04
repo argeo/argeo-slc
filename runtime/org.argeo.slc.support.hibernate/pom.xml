@@ -35,24 +35,6 @@
 					<instructions>
 						<Fragment-Host>org.argeo.slc.support.simple</Fragment-Host>
 						<Import-Package>*,org.hibernate.proxy</Import-Package>
-
-						<!--
-							<Export-Package> org.argeo.slc.hibernate.* </Export-Package>
-							<Import-Package>*,org.argeo.slc.*;resolution:=optional,
-							org.argeo.slc.execution;resolution:=optional,
-							org.argeo.slc.runtime;resolution:=optional,
-							org.argeo.slc.structure;resolution:=optional,
-							org.argeo.slc.core.structure;resolution:=optional,
-							org.argeo.slc.core.structure.tree;resolution:=optional,
-							org.argeo.slc.core.test;resolution:=optional,
-							org.argeo.slc.core.test.tree;resolution:=optional,
-							org.argeo.slc.core.execution;resolution:=optional,
-							org.argeo.slc.msg;resolution:=optional,
-							org.argeo.slc.msg.process;resolution:=optional,
-							org.argeo.slc.msg.test.tree;resolution:=optional
-							</Import-Package>
-							<Fragment-Host>com.springsource.org.hibernate</Fragment-Host>
-						-->
 					</instructions>
 				</configuration>
 			</plugin>
@@ -62,12 +44,6 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.simple</artifactId>
-			<classifier>tests</classifier>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>

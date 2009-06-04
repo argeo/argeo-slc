@@ -12,16 +12,6 @@
 	<name>Argeo SLC Web Application Integration Tests</name>
 	<build>
 		<plugins>
-			<!--
-				<plugin> <groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId> <executions>
-				<execution> <id>copy-dependencies</id>
-				<phase>pre-integration-test</phase> <goals>
-				<goal>copy-dependencies</goal> </goals> <configuration>
-				<overWriteReleases>true</overWriteReleases>
-				<overWriteSnapshots>true</overWriteSnapshots> </configuration>
-				</execution> </executions> </plugin>
-			-->
 			<plugin>
 				<groupId>org.argeo.slc.maven</groupId>
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
@@ -104,7 +94,6 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.server</artifactId>
-			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

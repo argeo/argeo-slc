@@ -221,12 +221,6 @@ limitations under the License.
 				<artifactId>org.argeo.slc.support.simple</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.argeo.slc.runtime</groupId>
-				<artifactId>org.argeo.slc.support.simple</artifactId>
-				<version>${project.version}</version>
-				<classifier>tests</classifier>
-			</dependency>
 			<!--
 				<dependency> <groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.ant</artifactId>
@@ -254,25 +248,12 @@ limitations under the License.
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
-				<artifactId>org.argeo.slc.server</artifactId>
-				<version>${project.version}</version>
-				<classifier>tests</classifier>
-			</dependency>
-			<dependency>
-				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.osgiboot</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.equinox</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.argeo.slc.runtime</groupId>
-				<artifactId>org.argeo.slc.support.equinox</artifactId>
-				<classifier>tests</classifier>
-				<scope>test</scope>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

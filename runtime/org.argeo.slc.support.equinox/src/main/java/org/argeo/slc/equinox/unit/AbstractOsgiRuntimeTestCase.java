@@ -1,4 +1,4 @@
-package org.argeo.slc.osgi.test;
+package org.argeo.slc.equinox.unit;
 
 import java.util.ArrayList;
 import java.util.HashMap;

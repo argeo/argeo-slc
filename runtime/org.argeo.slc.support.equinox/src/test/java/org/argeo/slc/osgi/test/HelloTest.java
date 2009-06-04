@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.argeo.slc.equinox.unit.AbstractOsgiRuntimeTestCase;
 import org.argeo.slc.osgiboot.OsgiBoot;
 
 public class HelloTest extends AbstractOsgiRuntimeTestCase {

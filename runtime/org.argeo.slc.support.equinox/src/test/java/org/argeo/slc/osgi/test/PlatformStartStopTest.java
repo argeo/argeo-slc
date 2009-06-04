@@ -1,5 +1,6 @@
 package org.argeo.slc.osgi.test;
 
+import org.argeo.slc.equinox.unit.AbstractOsgiRuntimeTestCase;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
