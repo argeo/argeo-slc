@@ -62,6 +62,15 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 	protected boolean strictManifestVersion;
 
 	/**
+	 * Whether the manifest should be updated with the release version.
+	 * 
+	 * @parameter expression="${updateManifestWhenReleasing}"
+	 *            default-value="true"
+	 * @required
+	 */
+	protected boolean updateManifestWhenReleasing;
+
+	/**
 	 * Whether should fail if symbolic name does not match artifact id.
 	 * 
 	 * @parameter expression="${strictSymbolicName}" default-value="false"
@@ -146,7 +155,7 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 		} else {
 			versionMain = project.getVersion();
 			// buildId = "R_" + sdf.format(new Date());// R for release
-			buildId = "";
+			buildId = "R" + sdf.format(new Date());
 		}
 
 		if (!versionMain.equals(versionMfMain)) {
@@ -220,20 +229,21 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 		pom.append("\t<artifactId>" + artifactId + "</artifactId>\n");
 		pom.append("\t<packaging>" + packaging + "</packaging>\n");
 		return pom;
-		
+
 		// TODO: use the Model object e.g.: (from install plugin)
-//        Model model = new Model();
-//        model.setModelVersion( "4.0.0" );
-//        model.setGroupId( groupId );
-//        model.setArtifactId( artifactId );
-//        model.setVersion( version );
-//        model.setPackaging( packaging );
-//        model.setDescription( "POM was created from install:install-file" );
-//        fw = new FileWriter( tempFile );
-//        tempFile.deleteOnExit();
-//        new MavenXpp3Writer().write( fw, model );
-//        ArtifactMetadata metadata = new ProjectArtifactMetadata( artifact, tempFile );
-//        artifact.addMetadata( metadata );
+		// Model model = new Model();
+		// model.setModelVersion( "4.0.0" );
+		// model.setGroupId( groupId );
+		// model.setArtifactId( artifactId );
+		// model.setVersion( version );
+		// model.setPackaging( packaging );
+		// model.setDescription( "POM was created from install:install-file" );
+		// fw = new FileWriter( tempFile );
+		// tempFile.deleteOnExit();
+		// new MavenXpp3Writer().write( fw, model );
+		// ArtifactMetadata metadata = new ProjectArtifactMetadata( artifact,
+		// tempFile );
+		// artifact.addMetadata( metadata );
 
 	}
 
