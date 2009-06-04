@@ -227,13 +227,11 @@ limitations under the License.
 				<version>${project.version}</version>
 				<classifier>tests</classifier>
 			</dependency>
-			<!-- 
-			<dependency>
-				<groupId>org.argeo.slc.runtime</groupId>
+			<!--
+				<dependency> <groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.ant</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			 -->
+				<version>${project.version}</version> </dependency>
+			-->
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.hibernate</artifactId>
@@ -531,9 +529,9 @@ limitations under the License.
 
 			<!-- Ant -->
 			<dependency>
-				<groupId>org.argeo.dep.osgi</groupId>
-				<artifactId>org.argeo.dep.osgi.ant</artifactId>
-				<version>1.7.1</version>
+				<groupId>org.apache.ant</groupId>
+				<artifactId>com.springsource.org.apache.tools.ant</artifactId>
+				<version>1.7.0</version>
 			</dependency>
 
 			<!-- Required by specific Ant tasks -->
