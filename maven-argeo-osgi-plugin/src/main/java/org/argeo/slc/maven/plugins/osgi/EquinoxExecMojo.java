@@ -205,13 +205,18 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 		List cmdList = new ArrayList();
 
 		// System properties
-		if (!systemProperties.containsKey("osgi.bundles"))
+		if (!systemProperties.containsKey("osgi.bundles")) {
+			if (locationsStruct.osgiBootArtifact == null)
+				throw new Exception("No SLC OSGi boot bundle available.");
 			System.setProperty("osgi.bundles", locationsStruct.osgiBootArtifact
 					.getFile().getCanonicalPath()
 					+ "@start");
+		}
+
 		if (!systemProperties.containsKey("slc.osgi.locations"))
 			System.setProperty("slc.osgi.locations",
 					locationsStruct.osgiLocations);
+
 		for (Iterator keys = systemProperties.keySet().iterator(); keys
 				.hasNext();) {
 			Object key = keys.next();

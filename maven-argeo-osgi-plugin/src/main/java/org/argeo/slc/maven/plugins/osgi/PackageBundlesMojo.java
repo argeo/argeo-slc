@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.jar.Attributes;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
@@ -44,12 +45,14 @@ public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 			String[] excludes = { "**/.svn", "**/.svn/**" };
 			fileSet.setIncludes(includes);
 			fileSet.setExcludes(excludes);
+			
+			FileOutputStream manifestOut = null;
 			try {
 				File manifestFile = bundlePackage.getManifestFile();
 				jarArchiver.addFileSet(fileSet);
 
 				// Write manifest
-				FileOutputStream out = new FileOutputStream(manifestFile);
+				manifestOut = new FileOutputStream(manifestFile);
 
 				System.out.println("\n# BUNDLE "
 						+ bundlePackage.getArtifact().getArtifactId());
@@ -61,14 +64,16 @@ public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 					System.out.println(key + ": " + value);
 				}
 
-				bundlePackage.getManifest().write(out);
-				out.close();
-				jarArchiver.setManifest(manifestFile);
+				bundlePackage.getManifest().write(manifestOut);
 
+				// Write jar
+				jarArchiver.setManifest(manifestFile);
 				jarArchiver.createArchive();
 			} catch (Exception e) {
 				throw new MojoExecutionException("Could not package bundle "
 						+ bundlePackage.getBundleDir(), e);
+			}finally{
+				IOUtils.closeQuietly(manifestOut);
 			}
 
 			// Write bundle POM
