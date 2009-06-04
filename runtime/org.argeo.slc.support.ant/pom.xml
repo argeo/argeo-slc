@@ -51,6 +51,7 @@
 		<dependency>
 			<groupId>org.argeo.dep.osgi</groupId>
 			<artifactId>org.argeo.dep.osgi.ant</artifactId>
+			<version>1.7.1</version>
 		</dependency>
 
 		<dependency>
