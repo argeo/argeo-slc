@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.jar.Attributes;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
@@ -22,26 +23,10 @@ import org.codehaus.plexus.archiver.util.DefaultFileSet;
 public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		StringBuffer bundlesPom = new StringBuffer();
-		// not using append() systematically for the sake of clarity
-		bundlesPom.append("<project>\n");
-		bundlesPom.append("\t<modelVersion>4.0.0</modelVersion>\n");
-		bundlesPom.append("\t<parent>\n");
-		bundlesPom.append("\t\t<groupId>"
-				+ project.getParentArtifact().getGroupId() + "</groupId>\n");
-		bundlesPom.append("\t\t<artifactId>"
-				+ project.getParentArtifact().getArtifactId()
-				+ "</artifactId>\n");
-		bundlesPom
-				.append("\t\t<version>"
-						+ project.getParentArtifact().getBaseVersion()
-						+ "</version>\n");
-		bundlesPom.append("\t</parent>\n");
-		bundlesPom
-				.append("\t<groupId>" + project.getGroupId() + "</groupId>\n");
-		bundlesPom.append("\t<artifactId>" + bundlesPomArtifactId
-				+ "</artifactId>\n");
-		bundlesPom.append("\t<packaging>pom</packaging>\n");
+		StringBuffer bundlesPom = createPomFileHeader(project
+				.getParentArtifact().getGroupId(), project.getParentArtifact()
+				.getArtifactId(), project.getParentArtifact().getBaseVersion(),
+				project.getGroupId(), bundlesPomArtifactId, "pom");
 		bundlesPom.append("\t<dependencies>\n");
 
 		List bundlePackages = analyze(true);
@@ -49,10 +34,6 @@ public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 		for (int i = 0; i < bundlePackages.size(); i++) {
 			AbstractBundlesPackagerMojo.BundlePackage bundlePackage = (BundlePackage) bundlePackages
 					.get(i);
-
-			File manifestFile = new File(bundlePackage.getPackageFile()
-					.getPath()
-					+ ".MF");
 
 			// Package as jar
 			JarArchiver jarArchiver = new JarArchiver();
@@ -64,6 +45,7 @@ public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 			fileSet.setIncludes(includes);
 			fileSet.setExcludes(excludes);
 			try {
+				File manifestFile = bundlePackage.getManifestFile();
 				jarArchiver.addFileSet(fileSet);
 
 				// Write manifest
@@ -89,6 +71,24 @@ public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 						+ bundlePackage.getBundleDir(), e);
 			}
 
+			// Write bundle POM
+			File pomFile = bundlePackage.getPomFile();
+			StringBuffer pomBuf = createPomFileHeader(project
+					.getParentArtifact().getGroupId(), project
+					.getParentArtifact().getArtifactId(), project
+					.getParentArtifact().getBaseVersion(), bundlePackage
+					.getArtifact().getGroupId(), bundlePackage.getArtifact()
+					.getArtifactId(), "jar");
+			String pomStr = closePomFile(pomBuf);
+			try {
+				FileUtils.writeStringToFile(pomFile, pomStr);
+			} catch (IOException e) {
+				throw new MojoExecutionException(
+						"Could not write pom for bundle "
+								+ bundlePackage.getArtifact().getArtifactId(),
+						e);
+			}
+
 			// update dependencies POM
 			bundlesPom.append("\t\t<dependency>\n");
 			bundlesPom
@@ -107,16 +107,13 @@ public class PackageBundlesMojo extends AbstractBundlesPackagerMojo {
 		}
 
 		bundlesPom.append("\t</dependencies>\n");
-		bundlesPom.append("</project>\n");
+		String bundlePomStr = closePomFile(bundlesPom);
 
 		try {
-			FileWriter writer = new FileWriter(bundlesPomFile());
-			writer.write(bundlesPom.toString());
-			writer.close();
+			FileUtils.writeStringToFile(bundlesPomFile(), bundlePomStr);
 		} catch (IOException e) {
 			throw new MojoExecutionException("Could not write dependency pom",
 					e);
 		}
 	}
-
 }

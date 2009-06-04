@@ -3,6 +3,7 @@ package org.argeo.slc.maven.plugins.osgi;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,8 +15,12 @@ import java.util.jar.Manifest;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.metadata.ArtifactMetadata;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 
 /**
  * @author mbaudier
@@ -162,7 +167,7 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 			newVersionArt = versionMfMain;
 		}
 
-		//boolean debug = true;
+		// boolean debug = true;
 		boolean debug = getLog().isDebugEnabled();
 		if (debug && willGenerate) {
 			getLog().info("\n## " + artifactId);
@@ -199,6 +204,45 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 				bundlesPomArtifactId, project.getVersion(), "pom");
 	}
 
+	protected StringBuffer createPomFileHeader(String parentGroupId,
+			String parentArtifactId, String parentBaseVersion, String groupId,
+			String artifactId, String packaging) {
+		StringBuffer pom = new StringBuffer();
+		// not using append() systematically for the sake of clarity
+		pom.append("<project>\n");
+		pom.append("\t<modelVersion>4.0.0</modelVersion>\n");
+		pom.append("\t<parent>\n");
+		pom.append("\t\t<groupId>" + parentGroupId + "</groupId>\n");
+		pom.append("\t\t<artifactId>" + parentArtifactId + "</artifactId>\n");
+		pom.append("\t\t<version>" + parentBaseVersion + "</version>\n");
+		pom.append("\t</parent>\n");
+		pom.append("\t<groupId>" + groupId + "</groupId>\n");
+		pom.append("\t<artifactId>" + artifactId + "</artifactId>\n");
+		pom.append("\t<packaging>" + packaging + "</packaging>\n");
+		return pom;
+		
+		// TODO: use the Model object e.g.: (from install plugin)
+//        Model model = new Model();
+//        model.setModelVersion( "4.0.0" );
+//        model.setGroupId( groupId );
+//        model.setArtifactId( artifactId );
+//        model.setVersion( version );
+//        model.setPackaging( packaging );
+//        model.setDescription( "POM was created from install:install-file" );
+//        fw = new FileWriter( tempFile );
+//        tempFile.deleteOnExit();
+//        new MavenXpp3Writer().write( fw, model );
+//        ArtifactMetadata metadata = new ProjectArtifactMetadata( artifact, tempFile );
+//        artifact.addMetadata( metadata );
+
+	}
+
+	/** Simple close the project tag */
+	protected String closePomFile(StringBuffer pom) {
+		pom.append("</project>\n");
+		return pom.toString();
+	}
+
 	protected static class BundlePackage {
 		private final Artifact artifact;
 		private final File bundleDir;
@@ -228,6 +272,14 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 
 		public Manifest getManifest() {
 			return manifest;
+		}
+
+		public File getManifestFile() {
+			return new File(getPackageFile().getPath() + ".MF");
+		}
+
+		public File getPomFile() {
+			return new File(getPackageFile().getPath() + ".pom.xml");
 		}
 	}
 

@@ -3,10 +3,12 @@ package org.argeo.slc.maven.plugins.osgi;
 import java.io.File;
 import java.util.List;
 
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.deployer.ArtifactDeployer;
 import org.apache.maven.artifact.deployer.ArtifactDeploymentException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 
 /**
  * @goal deploy-bundles
@@ -24,8 +26,12 @@ public class DeployBundlesMojo extends AbstractBundlesPackagerMojo {
 			AbstractBundlesPackagerMojo.BundlePackage bundlePackage = (BundlePackage) bundlePackages
 					.get(i);
 			try {
-				deployer.deploy(bundlePackage.getPackageFile(), bundlePackage
-						.getArtifact(), deploymentRepository, local);
+				Artifact artifact = bundlePackage.getArtifact();
+				ProjectArtifactMetadata metadata = new ProjectArtifactMetadata(
+						artifact, bundlePackage.getPomFile());
+				artifact.addMetadata(metadata);
+				deployer.deploy(bundlePackage.getPackageFile(), artifact,
+						deploymentRepository, local);
 			} catch (ArtifactDeploymentException e) {
 				throw new MojoExecutionException("Could not deploy bundle "
 						+ bundlePackage.getBundleDir(), e);
