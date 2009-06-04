@@ -65,14 +65,26 @@ public class OsgiBoot {
 		startBundles(bundlesToStart);
 	}
 
-	public void startBundles(String bundlesToStart) throws Exception {
-		if (bundlesToStart == null)
+	public void startBundles(String bundlesToStartStr) throws Exception {
+		if (bundlesToStartStr == null)
 			return;
 
-		StringTokenizer st = new StringTokenizer(bundlesToStart, ",");
-		Map<String, Bundle> bundles = getBundles();
+		StringTokenizer st = new StringTokenizer(bundlesToStartStr, ",");
+		List bundlesToStart = new ArrayList();
 		while (st.hasMoreTokens()) {
 			String name = st.nextToken().trim();
+			bundlesToStart.add(name);
+		}
+		startBundles(bundlesToStart);
+	}
+
+	public void startBundles(List bundlesToStart) throws Exception {
+		if (bundlesToStart.size() == 0)
+			return;
+
+		Map<String, Bundle> bundles = getBundles();
+		for (int i = 0; i < bundlesToStart.size(); i++) {
+			String name = bundlesToStart.get(i).toString();
 			Bundle bundle = bundles.get(name);
 			if (bundle != null)
 				try {
@@ -221,7 +233,7 @@ public class OsgiBoot {
 							}
 						}
 				} else {
-					warn("Not a directory: " + newFullPath);
+					//warn("Not a directory: " + newFullPath);
 				}
 			}
 		}

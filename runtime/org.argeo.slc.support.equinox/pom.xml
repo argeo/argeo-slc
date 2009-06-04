@@ -54,11 +54,6 @@
 			<groupId>org.springframework.osgi</groupId>
 			<artifactId>org.springframework.osgi.core</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.eclipse.osgi</groupId>
-			<artifactId>org.eclipse.osgi</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.osgi</groupId>
@@ -73,18 +68,11 @@
 			<groupId>org.objectweb.asm</groupId>
 			<artifactId>com.springsource.org.objectweb.asm.attrs</artifactId>
 		</dependency>
-		
-		<!-- TEST -->
-		<dependency>
-			<groupId>org.springframework.osgi</groupId>
-			<artifactId>org.springframework.osgi.test</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.osgiboot</artifactId>
-			<scope>test</scope>
 		</dependency>
-		
+
 	</dependencies>
 </project>

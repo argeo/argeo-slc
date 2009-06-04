@@ -44,7 +44,7 @@ public class OsgiBootRuntimeTest extends TestCase {
 	}
 
 	protected BundleContext startRuntime() throws Exception {
-		String[] args = { "-console" };
+		String[] args = { "-console", "-clean" };
 		BundleContext bundleContext = EclipseStarter.startup(args, null);
 		return bundleContext;
 	}
@@ -53,12 +53,12 @@ public class OsgiBootRuntimeTest extends TestCase {
 		EclipseStarter.shutdown();
 	}
 
-	public void setUp() throws Exception{
+	public void setUp() throws Exception {
 		BundleContext bundleContext = startRuntime();
 		osgiBoot = new OsgiBoot(bundleContext);
 	}
-	
-	public void tearDown() throws Exception{
+
+	public void tearDown() throws Exception {
 		osgiBoot = null;
 		stopRuntime();
 	}

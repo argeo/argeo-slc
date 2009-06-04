@@ -31,5 +31,11 @@ public class OsgiBootNoRuntimeTest extends TestCase {
 		for (int i = 0; i < urls.size(); i++)
 			System.out.println(urls.get(i));
 		assertEquals(3, urls.size());
+
+		List jarUrls = osgiBoot.getBundlesUrls(baseUrl,
+				"src/test/bundles/jars;in=*.jar");
+		for (int i = 0; i < jarUrls.size(); i++)
+			System.out.println(jarUrls.get(i));
+		assertEquals(1, jarUrls.size());
 	}
 }

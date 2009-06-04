@@ -3,10 +3,10 @@ package org.argeo.slc.osgi.test;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
-public class PlatformStartStopTest extends AbstractOsgiRuntimeTest {
+public class PlatformStartStopTest extends AbstractOsgiRuntimeTestCase {
 
 	public void testStartStop() {
-		BundleContext bundleContext = osgiPlatform.getBundleContext();
+		BundleContext bundleContext = osgiBoot.getBundleContext();
 		System.out.println(bundleContext
 				.getProperty(Constants.FRAMEWORK_VENDOR));
 		System.out.println(bundleContext

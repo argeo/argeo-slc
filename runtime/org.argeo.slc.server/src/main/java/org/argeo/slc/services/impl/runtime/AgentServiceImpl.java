@@ -56,6 +56,15 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 
 	protected class PingThread extends Thread {
 		public void run() {
+
+			// FIXME: temporary hack so that the ping starts after the server
+			// has been properly started.
+			try {
+				Thread.sleep(5 * 1000);
+			} catch (InterruptedException e1) {
+				// silent
+			}
+
 			log.info("Start pinging agents.");
 			while (pingThreadActive) {
 				List<SlcAgentDescriptor> lst = slcAgentDescriptorDao

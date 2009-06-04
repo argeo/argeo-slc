@@ -35,7 +35,6 @@
 						</goals>
 						<configuration>
 							<wait>false</wait>
-							<!--  <pause>30000</pause>-->
 							<argsToAppend>
 								<arg>-clean</arg>
 							</argsToAppend>
@@ -52,7 +51,7 @@
 									org.argeo.slc.server.services,
 									org.argeo.slc.server.jms,
 									org.argeo.slc.webapp,
-									org.argeo.slc.ria
+									org.argeo.slc.ria								
 								</slc.osgi.start>
 							</systemProperties>
 						</configuration>
