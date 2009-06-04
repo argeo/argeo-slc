@@ -23,7 +23,7 @@
 						</goals>
 						<configuration>
 							<archive>
-								<manifestFile>target/test-classes/META-INF/MANIFEST.MF</manifestFile>
+								<manifestFile>src/test/resources/META-INF/MANIFEST.MF</manifestFile>
 							</archive>
 						</configuration>
 					</execution>

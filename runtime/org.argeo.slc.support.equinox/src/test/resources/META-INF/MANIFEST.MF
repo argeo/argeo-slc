@@ -1,0 +1,2 @@
+Bundle-SymbolicName: org.argeo.slc.support.equinox.tests
+Fragment-Host: org.argeo.slc.support.equinox

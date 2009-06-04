@@ -1,0 +1,3 @@
+Bundle-SymbolicName: org.argeo.slc.support.simple.tests
+Fragment-Host: org.argeo.slc.support.simple
+
