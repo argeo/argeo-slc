@@ -134,9 +134,9 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 	protected long pause;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		if ("bundles".equals(project.getArtifact().getType())) {
-			System.out.println("Skip artifact of type bundles "
-					+ artifactToString(project.getArtifact()));
+		if (PACKAGING_BUNDLE.equals(project.getArtifact().getType())) {
+			System.out.println("Skip artifact of type " + PACKAGING_BUNDLE
+					+ " " + artifactToString(project.getArtifact()));
 			return;
 		}
 

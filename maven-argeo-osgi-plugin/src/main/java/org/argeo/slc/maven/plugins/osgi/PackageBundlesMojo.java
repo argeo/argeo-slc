@@ -2,7 +2,6 @@ package org.argeo.slc.maven.plugins.osgi;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +14,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 import org.codehaus.plexus.archiver.util.DefaultFileSet;
 
-/**
+/** Build the bundle jars
  * @goal package-bundles
  * @phase package
  * @author mbaudier

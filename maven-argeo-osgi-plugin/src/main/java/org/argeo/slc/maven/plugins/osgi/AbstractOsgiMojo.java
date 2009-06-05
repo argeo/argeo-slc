@@ -10,6 +10,8 @@ import org.apache.maven.project.MavenProject;
  * Factorize common configuration
  */
 public abstract class AbstractOsgiMojo extends AbstractMojo {
+	public final static String PACKAGING_BUNDLE = "bundle";
+
 	/**
 	 * The maven project.
 	 * 
