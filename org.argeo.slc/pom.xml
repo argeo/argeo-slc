@@ -1,13 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC</name>
 	<version>0.11.4-SNAPSHOT</version>
+	<!-- 
 	<url>
 		http://www.argeo.org/projects/slc/${project.artifactId}/${project.version}
 	</url>
+	 -->
+	<url>file:///home/mbaudier/dev/work/slcSite/${project.version}/</url>
 	<properties>
 		<version.spring>2.5.6.A</version.spring>
 		<version.spring-ws>1.5.5.A</version.spring-ws>
@@ -22,8 +26,8 @@
 		<version.maven-argeo-osgi>0.1.12</version.maven-argeo-osgi>
 	</properties>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk/org.argeo.slc</connection>
-		<url>https://www.argeo.org/svn/slc/trunk/org.argeo.slc</url>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
+		<url>https://www.argeo.org/svn/slc/trunk</url>
 	</scm>
 	<issueManagement>
 		<system>Bugzilla</system>
@@ -96,19 +100,12 @@ limitations under the License.
 						</execution>
 					</executions>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>attach-javadoc</id>
-							<phase>package</phase>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
+				<!--
+					<plugin> <groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId> <executions>
+					<execution> <id>attach-javadoc</id> <phase>package</phase> <goals>
+					<goal>jar</goal> </goals> </execution> </executions> </plugin>
+				-->
 				<plugin>
 					<groupId>org.mortbay.jetty</groupId>
 					<artifactId>maven-jetty-plugin</artifactId>
@@ -169,34 +166,42 @@ limitations under the License.
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<inherited>false</inherited>
+				<artifactId>maven-resources-plugin</artifactId>
 				<configuration>
-					<descriptors>
-						<descriptor>
-							src/assembly/with-dependencies.xml
-						</descriptor>
-					</descriptors>
+					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>2.0-beta-5</version>
+				<!--
+					The site plugin is buggy with multi modules.
+					http://jira.codehaus.org/browse/MSITE-276
+				-->
+			</plugin>
+
+
+			<!--
+				<plugin> <groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<inherited>false</inherited> <configuration> <descriptors>
+				<descriptor> src/assembly/with-dependencies.xml </descriptor>
+				</descriptors> </configuration> </plugin>
+			-->
 		</plugins>
+
 	</build>
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-report-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</reporting>
+	<!--
+		<reporting> <plugins> <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-surefire-report-plugin</artifactId> </plugin>
+		<plugin> <groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-javadoc-plugin</artifactId> </plugin> <plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>cobertura-maven-plugin</artifactId> </plugin> </plugins>
+		</reporting>
+	-->
 	<dependencyManagement>
 		<dependencies>
 			<!-- SLC (itself) -->
@@ -258,27 +263,21 @@ limitations under the License.
 			<!--
 				<dependency> <groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.ws.client</artifactId>
-				<version>${project.version}</version> </dependency>
-			-->
-			<dependency>
+				<version>${project.version}</version> </dependency> <dependency>
 				<groupId>org.argeo.slc</groupId>
 				<artifactId>org.argeo.slc.webapp</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-			</dependency>
+				<version>${project.version}</version> <type>war</type> </dependency>
+			-->
 			<dependency>
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>org.argeo.slc.ria</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<!-- 
-			<dependency>
-				<groupId>org.argeo.slc.server</groupId>
-				<artifactId>bundles</artifactId>
-				<version>0.11.3-SNAPSHOT</version>
-				<type>pom</type>
-			</dependency>
-			 -->
+			<!--
+				<dependency> <groupId>org.argeo.slc.server</groupId>
+				<artifactId>bundles</artifactId> <version>0.11.3-SNAPSHOT</version>
+				<type>pom</type> </dependency>
+			-->
 			<dependency>
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>deploy</artifactId>
@@ -288,7 +287,7 @@ limitations under the License.
 
 			<!-- SLC dubious -->
 			<dependency>
-				<groupId>org.argeo.slc</groupId>
+				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.detached.launcher</artifactId>
 				<version>${project.version}</version>
 				<type>tar.gz</type>
@@ -950,12 +949,15 @@ limitations under the License.
 			<name>Argeo FOSS Snapshots Repository</name>
 			<url>file:///var/argeo/maven2/argeo-snapshots</url>
 		</snapshotRepository>
+		<!--
+			<site> <id>argeo-slc-site</id> <name>SLC Site</name> <url>
+			file:///var/argeo/projects/SLC/www/site/${project.version} </url>
+			</site>
+		-->
 		<site>
 			<id>argeo-slc-site</id>
 			<name>SLC Site</name>
-			<url>
-				file:///var/argeo/projects/SLC/www/site/${project.version}
-			</url>
+			<url>file:///home/mbaudier/dev/work/slcSite/${project.version}/</url>
 		</site>
 	</distributionManagement>
 	<profiles>
@@ -971,4 +973,5 @@ limitations under the License.
 			</distributionManagement>
 		</profile>
 	</profiles>
+	
 </project>
