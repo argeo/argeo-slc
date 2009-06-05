@@ -7,10 +7,10 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
-	<artifactId>integration-tests</artifactId>
+	<artifactId>dep</artifactId>
 	<packaging>pom</packaging>
-	<name>Argeo SLC Integration Tests</name>
+	<name>Argeo SLC Dependencies</name>
 	<modules>
-		<module>org.argeo.slc.it.webapp</module>
+		<module>org.argeo.slc.dep.server</module>
 	</modules>
 </project>

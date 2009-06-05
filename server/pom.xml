@@ -4,7 +4,7 @@
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
 		<version>0.11.4-SNAPSHOT</version>
-		<relativePath>../org.argeo.slc</relativePath>
+		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.server</groupId>
 	<artifactId>argeo-slc-server</artifactId>
