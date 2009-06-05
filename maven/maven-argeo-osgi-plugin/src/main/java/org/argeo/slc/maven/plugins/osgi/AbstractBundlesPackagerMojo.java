@@ -3,7 +3,6 @@ package org.argeo.slc.maven.plugins.osgi;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,16 +12,12 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.metadata.ArtifactMetadata;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.artifact.ProjectArtifactMetadata;
 
 /**
+ * Base class for MoJo analyzing a set of bundles directories.
+ * 
  * @author mbaudier
  * 
  */
@@ -83,14 +78,7 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 	protected List analyze(boolean willGenerate) throws MojoExecutionException {
 		List list = new ArrayList();
 
-		File[] bundleDirs = bundlesDirectory.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				if (!file.isDirectory())
-					return false;
-
-				return manifestFileFromDir(file).exists();
-			}
-		});
+		File[] bundleDirs = bundlesDirectory.listFiles(bundleFileFilter());
 		for (int i = 0; i < bundleDirs.length; i++) {
 
 			File dir = bundleDirs[i];
@@ -143,12 +131,12 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 		else
 			versionMfMain = versionMf;
 
-		int sIndex = project.getModel().getVersion().lastIndexOf("-SNAPSHOT");
+		int sIndex = snapshotIndex();
 		String versionMain;
 		String buildId;
 		boolean isSnapshot = false;
 		if (sIndex >= 0) {// SNAPSHOT
-			versionMain = project.getVersion().substring(0, sIndex);
+			versionMain = versionMain(sIndex);
 			// buildId = "D_" + sdf.format(new Date());// D for dev
 			buildId = "SNAPSHOT";
 			isSnapshot = true;
@@ -181,11 +169,6 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 		if (debug && willGenerate) {
 			getLog().info("\n## " + artifactId);
 			getLog().info("project.getVersion()=" + project.getVersion());
-			// getLog().info(
-			// "project.getModel().getVersion()="
-			// + project.getModel().getVersion());
-			// getLog().info("versionMf=" + versionMf);
-			// getLog().info("buildId=" + buildId);
 			getLog().info("newVersionMf=" + newVersionMf);
 		}
 
@@ -253,6 +236,37 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 		return pom.toString();
 	}
 
+	protected Manifest readManifest(File file) throws IOException {
+		Manifest manifest = new Manifest();
+		FileInputStream in = new FileInputStream(file);
+		manifest.read(in);
+		in.close();
+		return manifest;
+	}
+
+	protected int snapshotIndex() {
+		return project.getModel().getVersion().lastIndexOf("-SNAPSHOT");
+	}
+
+	protected String versionMain(int sIndex) {
+		return project.getVersion().substring(0, sIndex);
+	}
+
+	protected File getBundleDirectory() {
+		return bundlesDirectory;
+	}
+
+	protected FileFilter bundleFileFilter() {
+		return new FileFilter() {
+			public boolean accept(File file) {
+				if (!file.isDirectory())
+					return false;
+
+				return manifestFileFromDir(file).exists();
+			}
+		};
+	}
+
 	protected static class BundlePackage {
 		private final Artifact artifact;
 		private final File bundleDir;
@@ -291,13 +305,11 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 		public File getPomFile() {
 			return new File(getPackageFile().getPath() + ".pom.xml");
 		}
+
+		public String toString() {
+			return "Bundle: " + bundleDir;
+		}
+
 	}
 
-	protected Manifest readManifest(File file) throws IOException {
-		Manifest manifest = new Manifest();
-		FileInputStream in = new FileInputStream(file);
-		manifest.read(in);
-		in.close();
-		return manifest;
-	}
 }
