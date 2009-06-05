@@ -1,15 +1,9 @@
+Manifest-Version: 1.0
+Require-Bundle: org.argeo.slc.server,org.argeo.slc.specs,org.argeo.slc
+ .support.simple,com.springsource.org.hibernate
+Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.hibernate
-Bundle-Version: 0.11.3.SNAPSHOT
-Import-Package: 
- org.aopalliance.aop,
- org.hibernate,
- org.hibernate.jdbc,
- org.springframework.aop,
- org.springframework.aop.framework,
- org.springframework.orm.hibernate3,
- org.springframework.transaction
-Require-Bundle: 
- org.argeo.slc.server,
- org.argeo.slc.specs,
- org.argeo.slc.support.simple,
- com.springsource.org.hibernate
+Import-Package: org.aopalliance.aop,org.hibernate,org.hibernate.jdbc,o
+ rg.springframework.aop,org.springframework.aop.framework,org.springfr
+ amework.orm.hibernate3,org.springframework.transaction
+

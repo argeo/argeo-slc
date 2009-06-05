@@ -1,12 +1,10 @@
+Manifest-Version: 1.0
+Require-Bundle: org.argeo.slc.server,org.argeo.slc.specs,org.argeo.slc
+ .support.simple
+Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: SLC Server Services
 Bundle-SymbolicName: org.argeo.slc.server.services
-Bundle-Version: 0.11.3.SNAPSHOT
-Import-Package: org.hibernate.jdbc,
- org.springframework.transaction,
- org.springframework.aop,
- org.springframework.aop.framework,
- org.aopalliance.aop,
- org.springframework.beans.factory.config
-Require-Bundle: org.argeo.slc.server,
- org.argeo.slc.specs,
- org.argeo.slc.support.simple
+Import-Package: org.hibernate.jdbc,org.springframework.transaction,org
+ .springframework.aop,org.springframework.aop.framework,org.aopallianc
+ e.aop,org.springframework.beans.factory.config
+

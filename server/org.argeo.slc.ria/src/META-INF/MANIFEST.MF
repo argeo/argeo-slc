@@ -1,12 +1,10 @@
-Web-ContextPath: org.argeo.slc.ria
+Manifest-Version: 1.0
 Bundle-Classpath: .
+Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: SLC RIA
+Import-Package: javax.servlet,javax.servlet.http,javax.servlet.jsp,jav
+ ax.servlet.jsp.jstl.core,javax.servlet.jsp.jstl.fmt,javax.servlet.jsp
+ .jstl.tlv,javax.servlet.resources
 Bundle-SymbolicName: org.argeo.slc.ria
-Bundle-Version: 0.11.3.qualifier
-Import-Package: javax.servlet,
- javax.servlet.http,
- javax.servlet.jsp,
- javax.servlet.jsp.jstl.core,
- javax.servlet.jsp.jstl.fmt,
- javax.servlet.jsp.jstl.tlv,
- javax.servlet.resources
+Web-ContextPath: org.argeo.slc.ria
+

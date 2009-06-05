@@ -1,17 +1,13 @@
-Web-ContextPath: simple-web-app
-Bundle-Name: Simple OSGi War
-Bundle-SymbolicName: org.springframework.osgi.samples.simplewebapp
-Bundle-Version: 0.11.3.SNAPSHOT
+Manifest-Version: 1.0
 Bundle-ClassPath: WEB-INF/classes
-Import-Package: javax.servlet,
- javax.servlet.http,
- javax.servlet.jsp,
- javax.servlet.jsp.jstl.core,
- javax.servlet.jsp.jstl.fmt,
- javax.servlet.jsp.jstl.tlv,
- javax.servlet.resources,
- org.apache.taglibs.standard.resources,
- org.apache.taglibs.standard.tag.common.core,
- org.apache.taglibs.standard.tag.rt.core,
- org.apache.taglibs.standard.tei,
- org.apache.taglibs.standard.tlv
+Bundle-Version: 0.11.4.SNAPSHOT
+Bundle-Name: Simple OSGi War
+Web-ContextPath: simple-web-app
+Bundle-SymbolicName: org.springframework.osgi.samples.simplewebapp
+Import-Package: javax.servlet,javax.servlet.http,javax.servlet.jsp,jav
+ ax.servlet.jsp.jstl.core,javax.servlet.jsp.jstl.fmt,javax.servlet.jsp
+ .jstl.tlv,javax.servlet.resources,org.apache.taglibs.standard.resourc
+ es,org.apache.taglibs.standard.tag.common.core,org.apache.taglibs.sta
+ ndard.tag.rt.core,org.apache.taglibs.standard.tei,org.apache.taglibs.
+ standard.tlv
+
