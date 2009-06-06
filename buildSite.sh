@@ -15,8 +15,7 @@ DATE=`date -u`
 
 # BUILD
 mvn --fail-at-end deploy -P$PROFILES 2>&1 | tee deploy.log
-
-if [ $? != 0 ] ; then
+if [ $? != "0" ] ; then
 	mail -s "Build@$HOSTNAME FAILURE - $DATE - $BUILD_DIR" $TO < deploy.log
 else
 	mail -s "Build@$HOSTNAME SUCCESS - $DATE - $BUILD_DIR" $TO < pom.xml
@@ -24,7 +23,6 @@ fi
 
 # SITE
 mvn --fail-at-end site-deploy -P$PROFILES 2>&1 | tee siteGeneration.log
-
 if [ $? != 0 ] ; then
 	mail -s "SiteGeneration@$HOSTNAME FAILURE - $DATE - $BUILD_DIR" $TO < siteGeneration.log
 else
