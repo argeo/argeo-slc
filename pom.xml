@@ -29,7 +29,7 @@
 		<version.activemq>5.2.0.0006</version.activemq>
 		<version.maven-argeo-osgi>0.1.12</version.maven-argeo-osgi>
 		<site.repoBase>file:///var/argeo/projects/SLC/www/site</site.repoBase>
-		<site.urlBase>http://www.argeo.org/projects/slc</site.urlBase>
+		<site.urlBase>http://www.argeo.org/projects/slc/site</site.urlBase>
 	</properties>
 	<url>${site.urlBase}/${developmentCycle}</url>
 	<scm>

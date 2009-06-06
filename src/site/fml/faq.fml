@@ -1,14 +1,12 @@
-<faqs id="faqs1">
+<faqs id="slcFaq">
 	<part id="general">
 		<title>General</title>
 
 		<faq id="slcName">
-			<question>What does SLC mean?</question>
+			<question>What is SLC for?</question>
 			<answer>
 				<p>
-					Any valid XHTML can be placed in the
-					<code>answer</code>
-					element
+					It provides QA tools.
 				</p>
 			</answer>
 		</faq>
@@ -24,11 +22,11 @@
 					<code>cd demo</code>
 					) of the source distribution (or workingcopy) run:
 					<br />
-					<code>mvn argeo:osgi:equinox -Pserver</code>
+					<code>mvn argeo-osgi:equinox -Pserver</code>
 					<br />
 					then, in another console, also in the demo directory:
 					<br />
-					<code>mvn argeo:osgi:equinox -Pagent</code>
+					<code>mvn argeo-osgi:equinox -Pagent</code>
 					<br />
 					Then open
 					<a href="http://localhost:7070/org.argeo.slc.ria">http://localhost:7070/org.argeo.slc.ria
