@@ -31,9 +31,9 @@
 					</execution>
 					<execution>
 						<id>env</id>
-						<phase>initialize</phase>
+						<phase>pre-site</phase>
 						<goals>
-							<goal>pre-site</goal>
+							<goal>env</goal>
 						</goals>
 					</execution>
 					<execution>
