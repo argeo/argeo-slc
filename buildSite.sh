@@ -14,7 +14,7 @@ HOSTNAME=`hostname -f`
 DATE=`date -u`
 
 # BUILD
-mvn --fail-at-end deploy -P$PROFILES 2>&1 | tee deploy.log
+mvn --fail-at-end deploy $PROFILES 2>&1 | tee deploy.log
 if [ $? eq 0 ] ; then
 	mail -s "Build@$HOSTNAME SUCCESS - $DATE - $BUILD_DIR" $TO < pom.xml
 else
@@ -22,7 +22,7 @@ else
 fi
 
 # SITE
-mvn --fail-at-end site-deploy -P$PROFILES 2>&1 | tee siteGeneration.log
+mvn --fail-at-end site-deploy $PROFILES 2>&1 | tee siteGeneration.log
 if [ $? eq 0 ] ; then
 	echo No need to send email for successful site generation
 else
