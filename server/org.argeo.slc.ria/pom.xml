@@ -30,6 +30,13 @@
 						</goals>
 					</execution>
 					<execution>
+						<id>env</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>pre-site</goal>
+						</goals>
+					</execution>
+					<execution>
 						<id>slc-source</id>
 						<phase>test</phase>
 						<goals>
