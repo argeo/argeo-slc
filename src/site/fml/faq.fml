@@ -1,0 +1,40 @@
+<faqs id="faqs1">
+	<part id="general">
+		<title>General</title>
+
+		<faq id="slcName">
+			<question>What does SLC mean?</question>
+			<answer>
+				<p>
+					Any valid XHTML can be placed in the
+					<code>answer</code>
+					element
+				</p>
+			</answer>
+		</faq>
+	</part>
+	
+	<part id="techBasic">
+		<title>Technical</title>
+		<faq id="startDemo">
+			<question>How do I start the demo?</question>
+			<answer>
+				<p>
+					From the demo directory (
+					<code>cd demo</code>
+					) of the source distribution (or workingcopy) run:
+					<br />
+					<code>mvn argeo:osgi:equinox -Pserver</code>
+					<br />
+					then, in another console, also in the demo directory:
+					<br />
+					<code>mvn argeo:osgi:equinox -Pagent</code>
+					<br />
+					Then open
+					<a href="http://localhost:7070/org.argeo.slc.ria">http://localhost:7070/org.argeo.slc.ria
+					</a>
+				</p>
+			</answer>
+		</faq>
+	</part>
+</faqs>

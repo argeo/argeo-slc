@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+	<version />
+	<body>
+		<menu id="overview" name="Overview">
+			<item name="Home" href="${project.url}/index.html" />
+			<item name="Getting Started" href="${project.url}/gettingStarted.html" />
+			<item name="FAQ" href="${project.url}/faq.html" />
+			<item name="Runtime" href="${project.url}/runtime/index.html">
+				<item name="API (Javadoc)"
+					href="${project.url}/apidocs/index.html" />
+				<item name="Code"
+					href="${project.url}/xref/index.html" />
+				<item name="Unit Tests Results"
+					href="${project.url}/surefire-report.html" />
+			</item>
+			<item name="Argeo RIA (Web UI)"  href="${project.url}/server/org.argeo.slc.ria/index.html">
+				<item name="API"
+					href="${project.url}/server/org.argeo.slc.ria/argeo-ria-api/index.html" />
+				<item name="Browser Support"
+					href="${project.url}/server/org.argeo.slc.ria/argeo-ria-test/index.html" />
+			</item>
+		</menu>
+		<menu ref="parent" />
+		<menu ref="modules" />
+		<menu ref="reports" />
+	</body>
+	<poweredBy>
+		<logo name="Maven" href="http://maven.apache.org/"
+			img="http://maven.apache.org/images/logos/maven-feather.png" />
+	</poweredBy>
+</project>
+
