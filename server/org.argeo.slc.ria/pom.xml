@@ -30,7 +30,7 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>env</id>
+						<id>env-site</id>
 						<phase>pre-site</phase>
 						<goals>
 							<goal>env</goal>
