@@ -1,0 +1,13 @@
+<archetype>
+  <id>org.argeo.slc.archetype.basic</id>
+  <resources>
+  <!-- 
+    <resource>src/assembly/slcapp.xml</resource>
+    <resource>src/slc/conf/runtime/default.xml</resource>
+    <resource>src/slc/conf/applicationContext.xml</resource>
+    <resource>src/slc/conf/slc.properties</resource>
+    <resource>src/slc/root/slcRoot.properties</resource>
+    <resource>src/slc/work/log/slcApp.log</resource>
+     -->
+  </resources>
+ </archetype>
