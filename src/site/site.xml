@@ -2,8 +2,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
 	<version />
+	<publishDate format="yyyy-MM-dd HHmm"/>
 	<body>
-		<menu id="overview" name="Overview">
+		<menu name="Overview">
 			<item name="Home" href="${project.url}/index.html" />
 			<item name="Getting Started" href="${project.url}/gettingStarted.html" />
 			<item name="FAQ" href="${project.url}/faq.html" />
