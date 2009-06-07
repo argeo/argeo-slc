@@ -3,7 +3,13 @@ package org.argeo.slc.core.test.tree;
 import java.util.ArrayList;
 import java.util.List;
 
-/** List of results. Used for marshaling. */
+import org.argeo.slc.msg.ObjectList;
+
+/**
+ * List of results. Used for marshaling.
+ * 
+ * @deprecated Should be replaced by a standard {@link ObjectList}.
+ */
 public class TreeTestResultList {
 	private List<TreeTestResult> list = new ArrayList<TreeTestResult>();
 

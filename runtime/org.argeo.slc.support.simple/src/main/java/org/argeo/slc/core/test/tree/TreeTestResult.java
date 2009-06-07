@@ -1,5 +1,6 @@
 package org.argeo.slc.core.test.tree;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +30,9 @@ import org.argeo.slc.test.TestRunAware;
  * structure.
  */
 public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
-		Comparable<TreeTestResult>, AttachmentsEnabled {
+		Comparable<TreeTestResult>, AttachmentsEnabled, Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private Log log = LogFactory.getLog(TreeTestResult.class);
 
 	private List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();
