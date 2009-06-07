@@ -1,11 +1,13 @@
 package org.argeo.slc.runtime;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 
-public class SlcAgentDescriptor implements Cloneable {
+public class SlcAgentDescriptor implements Cloneable, Serializable {
+	private static final long serialVersionUID = 1L;
 	private String uuid;
 	private String host;
 	private List<ExecutionModuleDescriptor> moduleDescriptors = new ArrayList<ExecutionModuleDescriptor>();

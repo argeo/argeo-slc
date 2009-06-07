@@ -1,11 +1,13 @@
 package org.argeo.slc.process;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class SlcExecution {
+public class SlcExecution implements Serializable {
+	private static final long serialVersionUID = 1L;
 	public final static String STATUS_SCHEDULED = "SCHEDULED";
 	public final static String STATUS_RUNNING = "RUNNING";
 	public final static String STATUS_FINISHED = "FINISHED";

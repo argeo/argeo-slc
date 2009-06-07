@@ -3,17 +3,15 @@ package org.argeo.slc.castor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
-import org.argeo.slc.execution.ExecutionSpec;
-import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
-import org.argeo.slc.unit.execution.ExecutionFlowDescriptorTestUtils;
 
 public class SlcAgentDescriptorCastorTest extends AbstractCastorTestCase {
 	public void testMarshUnmarshMini() throws Exception {
 		SlcAgentDescriptor agentDescriptor = createMiniAgentDescriptor();
-		marshUnmarsh(agentDescriptor, false);
+		SlcAgentDescriptor agentDescriptorUnm = marshUnmarsh(agentDescriptor,
+				false);
+		assertSlcAgentDescriptor(agentDescriptor, agentDescriptorUnm);
 	}
 
 	public void testMarshUnmarshWithModuleDescriptor() throws Exception {
@@ -26,13 +24,24 @@ public class SlcAgentDescriptorCastorTest extends AbstractCastorTestCase {
 		lst.add(moduleDescriptor);
 		agentDescriptor.setModuleDescriptors(lst);
 
-		marshUnmarsh(agentDescriptor, false);
+		SlcAgentDescriptor agentDescriptorUnm = marshUnmarsh(agentDescriptor,
+				false);
+		assertSlcAgentDescriptor(agentDescriptor, agentDescriptorUnm);
 	}
-	
-	protected static SlcAgentDescriptor createMiniAgentDescriptor(){
+
+	protected static SlcAgentDescriptor createMiniAgentDescriptor() {
 		SlcAgentDescriptor agentDescriptor = new SlcAgentDescriptor();
 		agentDescriptor.setHost("localhost");
 		agentDescriptor.setUuid("555");
 		return agentDescriptor;
+	}
+
+	protected static void assertSlcAgentDescriptor(SlcAgentDescriptor expected,
+			SlcAgentDescriptor reached) {
+		assertNotNull(reached);
+		assertEquals(expected.getHost(), reached.getHost());
+		assertEquals(expected.getUuid(), expected.getUuid());
+		assertEquals(expected.getModuleDescriptors().size(), reached
+				.getModuleDescriptors().size());
 	}
 }
