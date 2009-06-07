@@ -13,11 +13,12 @@ public abstract class AbstractHttpClientTestCase extends AbstractSpringTestCase 
 	protected void setUp() throws Exception {
 		super.setUp();
 		httpClient = createHttpClient();
+		waitForServerToBeReady();
 	}
 
 	protected void waitForServerToBeReady() {
 		ExecutionAnswer answer = httpClient.callServiceSafe(
-				isServerReadyService, null, getServerReadyTimeout());
+				isServerReadyService, null, null, getServerReadyTimeout());
 		if (!answer.isOk())
 			throw new SlcException("Server is not ready: " + answer);
 	}

@@ -10,7 +10,7 @@
 	<import resource="classpath:org/argeo/slc/castor/spring.xml" />
 
 	<!-- Http client -->
-	<bean id="slcDefault.serverHttpClient" class="org.argeo.slc.server.client.SlcServerHttpClient"
+	<bean id="slcDefault.serverHttpClient" class="org.argeo.slc.server.client.impl.SlcServerHttpClientImpl"
 		lazy-init="true">
 		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
 		<property name="baseUrl" value="http://localhost:7070/org.argeo.slc.webapp/" />

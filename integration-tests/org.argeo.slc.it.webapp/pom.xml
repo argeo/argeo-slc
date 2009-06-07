@@ -2,12 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-	<!-- 
-		<groupId>org.argeo.slc.server</groupId>
-		<artifactId>deploy</artifactId>
-		<version>0.11.4-SNAPSHOT</version>
-		<relativePath>../../server/org.argeo.slc.siteserver</relativePath>
-		 -->
+		<!--
+			<groupId>org.argeo.slc.server</groupId>
+			<artifactId>deploy</artifactId> <version>0.11.4-SNAPSHOT</version>
+			<relativePath>../../server/org.argeo.slc.siteserver</relativePath>
+		-->
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>integration-tests</artifactId>
 		<version>0.11.4-SNAPSHOT</version>
@@ -22,6 +21,31 @@
 				<groupId>org.argeo.slc.maven</groupId>
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
 				<version>${version.maven-argeo-osgi}</version>
+				<configuration>
+					<argsToAppend>
+						<arg>-clean</arg>
+					</argsToAppend>
+					<systemProperties>
+						<slc.osgi.bundles>
+							${basedir}/../../demo/site;in=*;ex=target,
+							${basedir}/../../server/org.argeo.slc.siteserver/bundles;in=*
+								</slc.osgi.bundles>
+						<slc.osgi.start>
+							org.argeo.dep.osgi.catalina.start,
+							org.springframework.osgi.extender,
+							org.springframework.osgi.web.extender,
+							org.springframework.osgi.samples.simplewebapp,
+							org.argeo.slc.server.activemq,
+							org.argeo.slc.server.hsqldb,
+							org.argeo.slc.server.hibernate,
+							org.argeo.slc.server.services,
+							org.argeo.slc.server.jms,
+							org.argeo.slc.webapp,
+							org.argeo.slc.ria,
+							org.argeo.slc.agent								
+								</slc.osgi.start>
+					</systemProperties>
+				</configuration>
 				<executions>
 					<execution>
 						<id>equinox-start</id>
@@ -31,28 +55,6 @@
 						</goals>
 						<configuration>
 							<wait>false</wait>
-							<argsToAppend>
-								<arg>-clean</arg>
-							</argsToAppend>
-							<systemProperties>
-								<slc.osgi.bundles>
-									${basedir}/../../demo/site;in=*;ex=target,
-									${basedir}/../../server/org.argeo.slc.siteserver/bundles;in=*
-								</slc.osgi.bundles>
-								<slc.osgi.start>
-									org.argeo.dep.osgi.catalina.start,
-									org.springframework.osgi.extender,
-									org.springframework.osgi.web.extender,
-									org.springframework.osgi.samples.simplewebapp,
-									org.argeo.slc.server.activemq,
-									org.argeo.slc.server.hsqldb,
-									org.argeo.slc.server.hibernate,
-									org.argeo.slc.server.services,
-									org.argeo.slc.server.jms,
-									org.argeo.slc.webapp,
-									org.argeo.slc.ria								
-								</slc.osgi.start>
-							</systemProperties>
 						</configuration>
 					</execution>
 					<execution>
