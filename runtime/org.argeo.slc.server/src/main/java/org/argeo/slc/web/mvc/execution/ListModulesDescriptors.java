@@ -21,7 +21,9 @@ public class ListModulesDescriptors extends AbstractServiceController {
 			HttpServletResponse response, ModelAndView modelAndView)
 			throws Exception {
 
+		// TODO: use centralized agentId property (from MsgConstants)?
 		String agentId = request.getParameter("agentId");
+		
 		SlcAgent slcAgent = agentFactory.getAgent(agentId);
 
 		List<ExecutionModuleDescriptor> descriptors = slcAgent.listExecutionModuleDescriptors();

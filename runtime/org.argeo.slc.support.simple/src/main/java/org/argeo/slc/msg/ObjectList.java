@@ -14,6 +14,13 @@ public class ObjectList {
 		this.objects.addAll(objects);
 	}
 
+	@SuppressWarnings(value = { "unchecked" })
+	public <T extends Serializable> void fill(List<T> objects) {
+		for (Serializable o : this.objects){
+			objects.add((T) o);
+		}
+	}
+
 	public List<Serializable> getObjects() {
 		return objects;
 	}

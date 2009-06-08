@@ -34,7 +34,7 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 	private String encoding = "UTF-8";
 
 	private Long retryPeriod = 1000l;
-	private Long defaultTimeout = 30 * 1000l;
+	private Long defaultTimeout = 10 * 1000l;
 
 	public <T> T callService(String path, Map<String, String> parameters) {
 		return callService(path, parameters, null);
