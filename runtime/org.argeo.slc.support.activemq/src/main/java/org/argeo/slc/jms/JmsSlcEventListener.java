@@ -45,6 +45,8 @@ public class JmsSlcEventListener implements SlcEventListener {
 		if (descriptors.size() == 0) {
 			// No listeners, just waiting
 			try {
+				if(log.isTraceEnabled())
+					log.trace("No event listener registered, sleeping...");
 				Thread.sleep(timeout);
 			} catch (InterruptedException e) {
 				// silent

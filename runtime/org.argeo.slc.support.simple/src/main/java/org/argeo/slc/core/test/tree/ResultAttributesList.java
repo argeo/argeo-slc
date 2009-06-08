@@ -3,6 +3,9 @@ package org.argeo.slc.core.test.tree;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.argeo.slc.msg.ObjectList;
+
+/** @deprecated user {@link ObjectList} instead. */
 public class ResultAttributesList {
 	private List<ResultAttributes> list = new ArrayList<ResultAttributes>();
 

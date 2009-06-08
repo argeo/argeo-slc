@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 public class SlcExecution implements Serializable {
 	private static final long serialVersionUID = 1L;
+	public final static String STATUS_NONE = "DEFAULT";
 	public final static String STATUS_SCHEDULED = "SCHEDULED";
 	public final static String STATUS_RUNNING = "RUNNING";
 	public final static String STATUS_FINISHED = "FINISHED";
@@ -20,7 +21,7 @@ public class SlcExecution implements Serializable {
 	private String host;
 	private String user;
 	private String type;
-	private String status;
+	private String status = STATUS_NONE;
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
 	private List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();

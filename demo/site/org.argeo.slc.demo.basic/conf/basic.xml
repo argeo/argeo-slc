@@ -99,6 +99,11 @@
 	<bean id="basic.testResult" parent="slcDefault.test.basicTreeTestResult"
 		scope="execution">
 		<property name="listeners" ref="resultListeners" />
+		<property name="attributes">
+			<map>
+				<entry key="testedComponentId" value="@{testedComponentId}" />
+			</map>
+		</property>
 		<aop:scoped-proxy />
 	</bean>
 

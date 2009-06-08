@@ -8,7 +8,6 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.transform.Source;
@@ -34,7 +33,7 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 	private String encoding = "UTF-8";
 
 	private Long retryPeriod = 1000l;
-	private Long defaultTimeout = 10 * 1000l;
+	private Long defaultTimeout = 30 * 1000l;
 
 	public <T> T callService(String path, Map<String, String> parameters) {
 		return callService(path, parameters, null);
@@ -54,14 +53,11 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 	@SuppressWarnings(value = { "unchecked" })
 	public <T> T callServiceSafe(String path, Map<String, String> parameters,
 			Condition<T> condition, Long timeout) {
-		if (timeout == null)
-			timeout = defaultTimeout;
 
 		long begin = System.currentTimeMillis();
 		try {
 			Object obj = null;
-			long duration = System.currentTimeMillis() - begin;
-			while (duration < timeout) {
+			while (System.currentTimeMillis() - begin < timeout(timeout)) {
 				try {
 					obj = callServiceLowLevel(path, parameters, null);
 				} catch (IOException e) {
@@ -93,7 +89,7 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 								+ " on "
 								+ baseUrl
 								+ " did not return an answer after calling it safely for "
-								+ duration + " ms.");
+								+ timeout(timeout) + " ms.");
 			return (T) obj;
 		} catch (Exception e) {
 			throw new SlcException(
@@ -157,16 +153,19 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 		try {
 			if (parameters != null && parameters.size() != 0) {
 				buf.append('?');
-				Iterator<String> it = parameters.keySet().iterator();
-				String key = null;
-				while (it.hasNext()) {
-					if (key != null)
-						buf.append('&');
-					key = it.next();
-					String keyEncoded = URLEncoder.encode(key, urlEncoding);
-					String valueEncoded = URLEncoder.encode(
-							parameters.get(key), urlEncoding);
-					buf.append(keyEncoded).append('=').append(valueEncoded);
+				boolean first = true;
+				for (String key : parameters.keySet()) {
+					String value = parameters.get(key);
+					if (value != null) {
+						if (first)
+							first = false;
+						else
+							buf.append('&');
+						String keyEncoded = URLEncoder.encode(key, urlEncoding);
+						String valueEncoded = URLEncoder.encode(value,
+								urlEncoding);
+						buf.append(keyEncoded).append('=').append(valueEncoded);
+					}
 				}
 			}
 
@@ -174,6 +173,12 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 		} catch (Exception e) {
 			throw new SlcException("Cannot create URL: " + buf, e);
 		}
+	}
+
+	public Long timeout(Long timeout) {
+		if (timeout == null)
+			timeout = getDefaultTimeout();
+		return timeout;
 	}
 
 	public void setUnmarshaller(Unmarshaller unmarshaller) {
@@ -202,9 +207,13 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 		this.encoding = encoding;
 	}
 
-	/** Default is 30s*/
+	/** Default is 30s */
 	public void setDefaultTimeout(Long defaultTimeout) {
 		this.defaultTimeout = defaultTimeout;
+	}
+
+	public Long getDefaultTimeout() {
+		return defaultTimeout;
 	}
 
 }
