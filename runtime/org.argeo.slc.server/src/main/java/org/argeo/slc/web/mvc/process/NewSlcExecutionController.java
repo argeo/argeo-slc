@@ -14,6 +14,7 @@ import org.argeo.slc.runtime.SlcAgentFactory;
 import org.argeo.slc.services.process.SlcExecutionService;
 import org.argeo.slc.web.mvc.AbstractServiceController;
 import org.springframework.oxm.Unmarshaller;
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.xml.transform.StringSource;
 
@@ -38,6 +39,7 @@ public class NewSlcExecutionController extends AbstractServiceController {
 
 		String agentId = request
 				.getParameter(MsgConstants.PROPERTY_SLC_AGENT_ID);
+		Assert.notNull(agentId, "agent id");
 
 		String answer = request.getParameter("body");
 		if (answer == null) {

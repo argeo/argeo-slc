@@ -13,6 +13,7 @@
 	<bean id="slcDefault.serverHttpClient" class="org.argeo.slc.server.client.impl.SlcServerHttpClientImpl"
 		lazy-init="true">
 		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 		<property name="baseUrl" value="http://localhost:7070/org.argeo.slc.webapp/" />
 	</bean>
 </beans>

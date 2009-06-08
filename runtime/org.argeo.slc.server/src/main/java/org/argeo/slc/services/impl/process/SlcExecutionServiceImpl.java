@@ -4,7 +4,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.dao.process.SlcExecutionDao;
-import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.services.process.SlcExecutionService;

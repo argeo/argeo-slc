@@ -33,6 +33,7 @@ public class SlcExecutionDaoHibernate extends HibernateDaoSupport implements
 				uuid);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<SlcExecution> listSlcExecutions() {
 		return (List<SlcExecution>) getHibernateTemplate().loadAll(
 				SlcExecution.class);

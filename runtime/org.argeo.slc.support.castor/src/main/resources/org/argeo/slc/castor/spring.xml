@@ -3,8 +3,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-lazy-init="true">
 
-	<bean id="slcDefault.castor.marshaller"
-		class="org.springframework.oxm.castor.CastorMarshaller">
+	<bean id="slcDefault.castor.marshaller" class="org.springframework.oxm.castor.CastorMarshaller">
 		<property name="mappingLocations">
 			<list>
 				<value>
@@ -31,10 +30,10 @@
 			</list>
 		</property>
 		<property name="whitespacePreserve" value="true" />
+		<property name="encoding" value="UTF-8" />
 	</bean>
 
-	<bean id="slcDefault.castor.xsltReportGenerator"
-		class="org.argeo.slc.xml.test.tree.XsltReportGenerator"
+	<bean id="slcDefault.castor.xsltReportGenerator" class="org.argeo.slc.xml.test.tree.XsltReportGenerator"
 		init-method="init">
 		<property name="xsltStyleSheet"
 			value="classpath:/org/argeo/slc/core/test/tree/basicReport.xslt" />
@@ -43,8 +42,7 @@
 		<property name="outputDir" value="${slc.workDir}/results/html" />
 	</bean>
 
-	<bean name="slcDefault.castor.fileSlcExecutionNotifier"
-		class="org.argeo.slc.xml.process.FileSlcExecutionNotifier">
+	<bean name="slcDefault.castor.fileSlcExecutionNotifier" class="org.argeo.slc.xml.process.FileSlcExecutionNotifier">
 		<property name="basePath" value="${slc.workDir}/process" />
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 	</bean>
