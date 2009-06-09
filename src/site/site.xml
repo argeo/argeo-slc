@@ -16,6 +16,12 @@
 				<item name="Unit Tests Results"
 					href="${project.url}/surefire-report.html" />
 			</item>
+			<item name="How-To">
+				<item name="Execution Resources"
+					href="${project.url}/howtos/howto-executionResources.html" />
+				<item name="Attachments"
+					href="${project.url}/howtos/howto-attachments.html" />
+			</item>
 			<item name="Argeo RIA (Web UI)"  href="${project.url}/server/org.argeo.slc.ria/index.html">
 				<item name="API"
 					href="${project.url}/server/org.argeo.slc.ria/argeo-ria-api/index.html" />

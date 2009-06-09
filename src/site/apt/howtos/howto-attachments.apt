@@ -1,0 +1,94 @@
+Upload of attachments to a test result
+
+	This allows to attach ANY Spring resource (for example the one created above but not only, since it can also be classpath: or osgibundle: Resources or ANY file on the file system where the agent is running (e.g. Mx *.mxres files on a server...))
+	
+	In order to use it:
+	
+	[[1]] First reference an attachment uploader service via OSGi (it is provided by the standard agent):
+	
++-------------------------------+
+<reference id="attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
++-------------------------------+
+	
+	[[1]] Then use an UploadAttachment task:
+	
++-------------------------------+
+<bean parent="task.uploadAttachments">
+    <property name="attachmentUploader" ref="attachmentUploader" />
+    <property name="attachment">
+        <bean parent="taskArg.attachment">
+            <property name="name" value="myAttachment.txt" />
+        </bean>
+    </property>
+    <property name="resource" ref="basic.writeTo" />
+    <property name="attachTo">
+        <list>
+            <ref bean="basic.testResult" />
+        </list>
+    </property>
+</bean>
++-------------------------------+
+	
+	You have to specify an Attachment object with at least a 'name', you can also specify a 'contentType', but the server will recognize common extension of the name.
+	You have to specify a (Spring) Resource, for example the one that you created before (the name of the attachment doesn't have to be the name of the file).
+	Just doing this will already upload a file to the server, but if you want to access it you need to bind it to some object, typically a TreeTestResult. You can provide a list of AttachmentEnabled objects (only TreeTestResult implements it so far).
+	
+	You could use directly Spring Resource URL, e.g.:
+	
++-------------------------------+
+<property name="resource" value="osgibundle:/conf/main.xml" />
++-------------------------------+
+	 
+	You can also upload and attach many attachments in one shot. In that case provide a Map with the keys being Attachment objects and the values Resource objects. E.g.:
+	
++-------------------------------+
+<bean parent="task.uploadAttachments">
+    <property name="attachmentUploader" ref="attachmentUploader" />
+    <property name="attachments">
+        <map>
+            <entry>
+                <key>
+                    <bean parent="taskArg.attachment">
+                        <property name="name" value="Reached.csv" />
+                    </bean>
+                </key>
+                <bean factory-bean="fileDiff.testData" factory-method="getReached"
+                    scope="execution">
+                    <aop:scoped-proxy />
+                </bean>
+            </entry>
+            <entry>
+                <key>
+                    <bean parent="taskArg.attachment">
+                        <property name="name" value="Expected.csv" />
+                    </bean>
+                </key>
+                <bean factory-bean="fileDiff.testData" factory-method="getExpected"
+                    scope="execution">
+                    <aop:scoped-proxy />
+                </bean>
+            </entry>
+        </map>
+    </property>
+    <property name="attachTo">
+        <list>
+            <ref bean="fileDiff.testResult" />
+        </list>
+    </property>
+</bean>
++-------------------------------+
+	
+	Retrieving the resources from this bean:
+	
++-------------------------------+
+<bean id="fileDiff.testData" parent="testData.reachedExpected"
+    scope="execution">
+    <aop:scoped-proxy />
+    <property name="expected" value="osgibundle:/inputs/csvdiff/@{fileName}.csv" />
+    <property name="reached"
+        value="osgibundle:/inputs/csvdiff/@{fileName}_mod.csv" />
+</bean>
++-------------------------------+
+	
+	[[1]] You can access the attachments from the Web UI by selecting a result in the list in the results perspective.
+	You will see that a new button 'Attachment' in the toolbar get activated (if there are any attachments).

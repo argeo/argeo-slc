@@ -27,7 +27,7 @@
 		<version.equinox>3.4.2.R34x_v20080826-1230</version.equinox>
 		<version.maven-bundle-plugin>2.0.0</version.maven-bundle-plugin>
 		<version.activemq>5.2.0.0006</version.activemq>
-		<version.maven-argeo-osgi>0.1.12</version.maven-argeo-osgi>
+		<version.maven-argeo-osgi>0.1.13</version.maven-argeo-osgi>
 		<site.repoBase>file:///var/argeo/projects/SLC/www/site</site.repoBase>
 		<site.urlBase>http://www.argeo.org/projects/slc/site</site.urlBase>
 	</properties>
@@ -603,6 +603,11 @@ limitations under the License.
 				<groupId>org.argeo.dep.osgi</groupId>
 				<artifactId>org.argeo.dep.osgi.commons.cli</artifactId>
 				<version>1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.dep.osgi</groupId>
+				<artifactId>org.argeo.dep.osgi.commons.exec</artifactId>
+				<version>1.0.0.argeo1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
