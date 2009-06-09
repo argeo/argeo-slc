@@ -12,8 +12,6 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
-import org.argeo.slc.process.SlcExecution;
-import org.springframework.beans.factory.ObjectFactory;
 
 public class MapExecutionContext implements ExecutionContext {
 	private final static Log log = LogFactory.getLog(MapExecutionContext.class);
@@ -23,9 +21,15 @@ public class MapExecutionContext implements ExecutionContext {
 	// TODO: make it thread safe?
 	private final Map<String, Object> variables = new HashMap<String, Object>();
 
-	private final String uuid = UUID.randomUUID().toString();
+	private final String uuid;
 
 	private final Date creationDate = new Date();
+
+	public MapExecutionContext() {
+		uuid = UUID.randomUUID().toString();
+		if (log.isDebugEnabled())
+			log.debug("Execution context #" + uuid + " instantiated.");
+	}
 
 	public void addVariables(
 			Map<? extends String, ? extends Object> variablesToAdd) {

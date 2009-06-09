@@ -1,10 +1,16 @@
 package org.argeo.slc.core.execution;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -72,6 +78,43 @@ public class FileExecutionResources implements ExecutionResources {
 		if (log.isTraceEnabled())
 			log.trace("Returns writable resource " + resource);
 		return resource;
+	}
+
+	public String getAsOsPath(Resource resource, Boolean overwrite) {
+		File file = null;
+		try {
+			file = resource.getFile();
+			return file.getCanonicalPath();
+		} catch (IOException e) {
+			if (log.isTraceEnabled())
+				log
+						.trace("Resource "
+								+ resource
+								+ " is not available on the file system. Retrieving it...");
+		}
+
+		InputStream in = null;
+		OutputStream out = null;
+		try {
+			String path = resource.getURL().getPath();
+			file = getFile(path);
+			if (file.exists() && !overwrite)
+				return file.getCanonicalPath();
+
+			file.getParentFile().mkdirs();
+			in = resource.getInputStream();
+			out = new FileOutputStream(file);
+			IOUtils.copy(in, out);
+			if (log.isDebugEnabled())
+				log.debug("Retrieved " + resource + " to OS file " + file);
+			return file.getCanonicalPath();
+		} catch (IOException e) {
+			throw new SlcException("Could not make resource " + resource
+					+ " an OS file.", e);
+		} finally {
+			IOUtils.closeQuietly(in);
+			IOUtils.closeQuietly(out);
+		}
 	}
 
 	public File getFile(String relativePath) {

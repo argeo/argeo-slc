@@ -1,13 +1,6 @@
 package org.argeo.slc.core.execution.tasks;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,17 +14,13 @@ import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.LogOutputStream;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
-import org.apache.commons.exec.launcher.CommandLauncher;
-import org.apache.commons.exec.launcher.CommandLauncherFactory;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 
+/** Execute and OS system call. */
 public class SystemCall implements Runnable {
-	// TODO: specify environment variables
-
 	private final Log log = LogFactory.getLog(getClass());
 
 	private String execDir;
@@ -40,7 +29,6 @@ public class SystemCall implements Runnable {
 	private List<String> command = null;
 
 	private Boolean synchronous = true;
-	// private Boolean captureStdIn = false;
 
 	private String stdErrLogLevel = "ERROR";
 	private String stdOutLogLevel = "INFO";
@@ -66,8 +54,6 @@ public class SystemCall implements Runnable {
 				execDir.replace('/', File.separatorChar);
 				dir = new File(execDir).getCanonicalFile();
 			}
-
-			// Process process = null;
 
 			// Check if an OS specific command overrides
 			String osName = System.getProperty("os.name");
@@ -117,7 +103,6 @@ public class SystemCall implements Runnable {
 							+ getUsedDir(dir));
 
 				commandLine = CommandLine.parse(cmdToUse);
-				// process = Runtime.getRuntime().exec(cmdToUse, null, dir);
 			} else if (commandToUse != null) {
 				if (log.isTraceEnabled())
 					log.trace("Execute '" + commandToUse + "' in "
@@ -128,10 +113,6 @@ public class SystemCall implements Runnable {
 				commandLine = new CommandLine(commandToUse.get(0));
 				for (int i = 1; i < commandToUse.size(); i++)
 					commandLine.addArgument(commandToUse.get(i));
-				// ProcessBuilder processBuilder = new
-				// ProcessBuilder(commandToUse);
-				// processBuilder.directory(dir);
-				// process = processBuilder.start();
 			} else {
 				// all cases covered previously
 				throw new NotImplementedException();
@@ -145,7 +126,9 @@ public class SystemCall implements Runnable {
 			ExecuteResultHandler executeResultHandler = new ExecuteResultHandler() {
 
 				public void onProcessComplete(int exitValue) {
-					log.info("Process " + commandLine + " properly completed.");
+					if (log.isDebugEnabled())
+						log.debug("Process " + commandLine
+								+ " properly completed.");
 				}
 
 				public void onProcessFailed(ExecuteException e) {
@@ -165,35 +148,6 @@ public class SystemCall implements Runnable {
 			else
 				executor.execute(commandLine, environmentVariablesToUse,
 						executeResultHandler);
-
-			// Manage standard streams
-			// StreamReaderThread stdOutThread = new StreamReaderThread(process
-			// .getInputStream()) {
-			// protected void callback(String line) {
-			// stdOutCallback(line);
-			// }
-			// };
-			// stdOutThread.start();
-			// StreamReaderThread stdErrThread = new StreamReaderThread(process
-			// .getErrorStream()) {
-			// protected void callback(String line) {
-			// stdErrCallback(line);
-			// }
-			// };
-			// stdErrThread.start();
-			// if (captureStdIn)
-			// new StdInThread(process.getOutputStream()).start();
-			//
-			// // Wait for the end of the process
-			// if (synchronous) {
-			// Integer exitCode = process.waitFor();
-			// if (exitCode != 0) {
-			// Thread.sleep(5000);// leave the process a chance to log
-			// log.warn("Process return exit code " + exitCode);
-			// }
-			// } else {
-			// // asynchronous: return
-			// }
 		} catch (Exception e) {
 			throw new SlcException("Could not execute command " + cmd, e);
 		}
@@ -211,14 +165,6 @@ public class SystemCall implements Runnable {
 			return dir.getPath();
 	}
 
-	// protected void stdOutCallback(String line) {
-	// log(stdOutLogLevel, line);
-	// }
-	//
-	// protected void stdErrCallback(String line) {
-	// log(stdErrLogLevel, line);
-	// }
-	//
 	protected void log(String logLevel, String line) {
 		if ("ERROR".equals(logLevel))
 			log.error(line);
@@ -254,10 +200,6 @@ public class SystemCall implements Runnable {
 		this.synchronous = synchronous;
 	}
 
-	// public void setCaptureStdIn(Boolean captureStdIn) {
-	// this.captureStdIn = captureStdIn;
-	// }
-
 	public void setCommand(List<String> command) {
 		this.command = command;
 	}
@@ -270,69 +212,12 @@ public class SystemCall implements Runnable {
 		this.osCmds = osCmds;
 	}
 
-	// protected abstract class StreamReaderThread extends Thread {
-	// private final InputStream stream;
-	//
-	// public StreamReaderThread(InputStream stream) {
-	// this.stream = stream;
-	// }
-	//
-	// @Override
-	// public void run() {
-	// BufferedReader in = null;
-	// try {
-	// in = new BufferedReader(new InputStreamReader(stream));
-	// String line = null;
-	// while ((line = in.readLine()) != null) {
-	// stdOutCallback(line);
-	// }
-	// } catch (IOException e) {
-	// if (log.isTraceEnabled()) {
-	// log.trace("Could not read stream", e);
-	// // catch silently
-	// // because the other methods
-	// // to check whether the stream
-	// // is closed would probably
-	// // be to costly
-	// }
-	// } finally {
-	// if (synchronous)
-	// IOUtils.closeQuietly(in);
-	// }
-	// }
-	//
-	// protected abstract void callback(String line);
-	// }
-	//
-	// protected class StdInThread extends Thread {
-	// private final OutputStream stream;
-	//
-	// public StdInThread(OutputStream stream) {
-	// this.stream = stream;
-	// }
-	//
-	// @Override
-	// public void run() {
-	// BufferedReader in = null;
-	// Writer out = null;
-	// try {
-	// out = new OutputStreamWriter(stream);
-	// in = new BufferedReader(new InputStreamReader(System.in));
-	// String line = null;
-	// while ((line = in.readLine()) != null) {
-	// out.write(line);
-	// out.write("\n");
-	// out.flush();
-	// }
-	// } catch (IOException e) {
-	// throw new SlcException("Could not write to stdin stream", e);
-	// } finally {
-	// if (synchronous) {
-	// IOUtils.closeQuietly(in);
-	// IOUtils.closeQuietly(out);
-	// }
-	// }
-	// }
-	//
-	// }
+	public void setEnvironmentVariables(Map<String, String> environmentVariables) {
+		this.environmentVariables = environmentVariables;
+	}
+
+	public void setWatchdogTimeout(Long watchdogTimeout) {
+		this.watchdogTimeout = watchdogTimeout;
+	}
+
 }

@@ -2,10 +2,12 @@ package org.argeo.slc.core.execution;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.springframework.core.io.Resource;
 
-// TODO: offer the ability to read the resource
+/** @deprecated */
 public class ResourceSpecAttribute extends AbstractSpecAttribute {
 	public final static String TYPE_PATH = "path";
 	public final static String TYPE_URL = "url";
@@ -13,6 +15,15 @@ public class ResourceSpecAttribute extends AbstractSpecAttribute {
 
 	private Resource resource;
 	private String type = TYPE_PATH;
+
+	private final static Log log = LogFactory
+			.getLog(ResourceSpecAttribute.class);
+
+	public ResourceSpecAttribute() {
+		log
+				.warn(getClass()
+						+ " is deprecated and will soon be removed. Please use slcDefault.executionResources instead.");
+	}
 
 	public Object getValue() {
 		return convertResource(resource);

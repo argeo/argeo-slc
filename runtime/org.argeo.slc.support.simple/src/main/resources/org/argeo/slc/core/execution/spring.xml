@@ -9,6 +9,7 @@
 
 	<import resource="specs.xml" />
 	<import resource="templates.xml" />
+	<import resource="defaults.xml" />
 	<import resource="tasks/core.xml" />
 
 	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
