@@ -35,8 +35,9 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 	private Long retryPeriod = 1000l;
 	private Long defaultTimeout = 30 * 1000l;
 
+	@SuppressWarnings(value = { "unchecked" })
 	public <T> T callService(String path, Map<String, String> parameters) {
-		return callService(path, parameters, null);
+		return (T)callService(path, parameters, null);
 	}
 
 	@SuppressWarnings(value = { "unchecked" })
