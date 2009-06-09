@@ -194,8 +194,14 @@ public class EquinoxExecMojo extends AbstractOsgiMojo {
 	protected void execNonForked(LocationsStruct locationsStruct)
 			throws Exception {
 		// Set defaults
-		if (args == null)
-			args = defaultArgs;
+		if (args == null) {
+			if (fork)
+				args = defaultArgs;
+			else
+				args = new String[] { "-console", "-configuration",
+						execDir.getPath() + File.separator + "conf", "-data",
+						execDir.getPath() + File.separator + "data" };
+		}
 
 		// if (!execDir.exists())
 		// execDir.mkdirs();
