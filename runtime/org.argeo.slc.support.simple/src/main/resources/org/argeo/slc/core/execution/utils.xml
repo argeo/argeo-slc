@@ -6,18 +6,7 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="slcDefault.executionResources" parent="slcTemplate.fileResources"
-		scope="execution" lazy-init="true">
-		<aop:scoped-proxy />
-		<property name="executionContext" ref="executionContext" />
-	</bean>
-
-	<bean id="slcDefault.writableResource" parent="slcTemplate.writableResource"
+	<bean id="mergedLists" class="org.argeo.slc.core.execution.tasks.MergedLists"
 		abstract="true">
-		<property name="executionResources" ref="slcDefault.executionResources" />
-	</bean>
-
-	<bean id="slcDefault.osFile" parent="slcTemplate.osFile" abstract="true">
-		<property name="executionResources" ref="slcDefault.executionResources" />
 	</bean>
 </beans>

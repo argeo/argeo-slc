@@ -28,8 +28,10 @@ public class DefaultDescriptorConverter implements
 					// the primitiveValue.type
 					convertedValues.put(key, primitiveValue.getValue());
 				} else if (value instanceof RefValue) {
-					RefValue refValue = (RefValue) value;
-					convertedValues.put(key, refValue.getLabel());
+					// not yet implemented
+					
+//					RefValue refValue = (RefValue) value;
+//					convertedValues.put(key, refValue.getLabel());
 				}
 			}
 		}

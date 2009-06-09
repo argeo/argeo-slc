@@ -22,7 +22,6 @@
 				<configuration>
 					<argsToAppend>
 						<arg>-clean</arg>
-						<arg>-noExit</arg>
 					</argsToAppend>
 					<systemProperties>
 						<slc.osgi.bundles>${basedir}/site;in=*;ex=**/.svn/**,${basedir}/../server/org.argeo.slc.siteserver/bundles;in=*;ex=**/.svn/**</slc.osgi.bundles>

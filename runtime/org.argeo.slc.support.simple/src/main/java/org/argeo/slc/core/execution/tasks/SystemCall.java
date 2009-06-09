@@ -26,14 +26,14 @@ public class SystemCall implements Runnable {
 	private String execDir;
 
 	private String cmd = null;
-	private List<String> command = null;
+	private List<Object> command = null;
 
 	private Boolean synchronous = true;
 
 	private String stdErrLogLevel = "ERROR";
 	private String stdOutLogLevel = "INFO";
 
-	private Map<String, List<String>> osCommands = new HashMap<String, List<String>>();
+	private Map<String, List<Object>> osCommands = new HashMap<String, List<Object>>();
 	private Map<String, String> osCmds = new HashMap<String, String>();
 	private Map<String, String> environmentVariables = new HashMap<String, String>();
 
@@ -57,7 +57,7 @@ public class SystemCall implements Runnable {
 
 			// Check if an OS specific command overrides
 			String osName = System.getProperty("os.name");
-			List<String> commandToUse = null;
+			List<Object> commandToUse = null;
 			if (osCommands.containsKey(osName))
 				commandToUse = osCommands.get(osName);
 			else
@@ -110,9 +110,9 @@ public class SystemCall implements Runnable {
 				if (commandToUse.size() == 0)
 					throw new SlcException("Command line is empty.");
 
-				commandLine = new CommandLine(commandToUse.get(0));
+				commandLine = new CommandLine(commandToUse.get(0).toString());
 				for (int i = 1; i < commandToUse.size(); i++)
-					commandLine.addArgument(commandToUse.get(i));
+					commandLine.addArgument(commandToUse.get(i).toString());
 			} else {
 				// all cases covered previously
 				throw new NotImplementedException();
@@ -200,11 +200,11 @@ public class SystemCall implements Runnable {
 		this.synchronous = synchronous;
 	}
 
-	public void setCommand(List<String> command) {
+	public void setCommand(List<Object> command) {
 		this.command = command;
 	}
 
-	public void setOsCommands(Map<String, List<String>> osCommands) {
+	public void setOsCommands(Map<String, List<Object>> osCommands) {
 		this.osCommands = osCommands;
 	}
 

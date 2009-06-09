@@ -6,25 +6,26 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
-/** Workaround when execution placedholders needs to be passed. */
+/** Retrieve an OS File from the given resource. */
 public class OsFileFactoryBean implements FactoryBean {
 	private ExecutionResources executionResources;
 	private Resource resource;
 	private Boolean overwrite = false;
 
-	/** Return an existing file on the fiel system. */
+	/** Return an existing file on the file system. */
 	public Object getObject() throws Exception {
 		Assert.notNull(executionResources, "executionResources is null");
 		Assert.notNull(resource, "relativePath is null");
 		return executionResources.getAsOsPath(resource, overwrite);
 	}
 
+	/** Return {@link Object} because CGLIB is unable to proxy {@link File}.*/
 	public Class<? extends Object> getObjectType() {
-		return File.class;
+		return CharSequence.class;
 	}
 
 	public boolean isSingleton() {
-		return true;
+		return false;
 	}
 
 	/** The execution resources object. */

@@ -110,6 +110,8 @@ public class SlcServerHttpClientImpl extends AbstractHttpServicesClient
 				.getUuid());
 		ExecutionModuleDescriptor moduleDescMinimal = findModule(lst,
 				moduleName);
+		if (moduleDescMinimal == null)
+			throw new SlcException("Cannot find module " + moduleName);
 		String moduleVersion = moduleDescMinimal.getVersion();
 
 		ExecutionModuleDescriptor moduleDesc = getModuleDescriptor(

@@ -27,8 +27,6 @@ public class MapExecutionContext implements ExecutionContext {
 
 	public MapExecutionContext() {
 		uuid = UUID.randomUUID().toString();
-		if (log.isDebugEnabled())
-			log.debug("Execution context #" + uuid + " instantiated.");
 	}
 
 	public void addVariables(

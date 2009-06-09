@@ -27,9 +27,25 @@ public class ExecutionScope implements Scope {
 			// if not, we expect objectFactory to produce an ExecutionContext
 			Object obj = objectFactory.getObject();
 			if (obj instanceof ExecutionContext) {
+				// Check whether we are in an execution
+				// FIXME: do it more properly (not static)
+				// see https://www.argeo.org/bugzilla/show_bug.cgi?id=82
+				if (!ExecutionAspect.inModuleExecution.get())
+					log
+							.error("An execution context is being instatiated outside an execution."
+									+ " Please check that your references to execution contexts."
+									+ " This may lead to unexpected behaviour and will be rejected in the future.");
+
 				// store the ExecutionContext in the ThreadLocal
 				executionContext.set((ExecutionContext) obj);
 				executionContextBeanName.set(name);
+				if (log.isDebugEnabled()) {
+					log.debug("Execution context #"
+							+ executionContext.get().getUuid()
+							+ " instantiated. (beanName="
+							+ executionContextBeanName.get() + ")");
+//					Thread.dumpStack();
+				}
 				return obj;
 			} else {
 				throw new SlcException(
