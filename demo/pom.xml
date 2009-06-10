@@ -146,6 +146,13 @@
 					</plugin>
 				</plugins>
 			</build>
+			<dependencies>
+				<dependency>
+					<groupId>org.argeo.slc.dep</groupId>
+					<artifactId>org.argeo.slc.dep.server</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+			</dependencies>
 		</profile>
 		<profile>
 			<id>server_mysql</id>

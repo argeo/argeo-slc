@@ -1,5 +1,6 @@
 package org.argeo.slc.msg.process;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -7,7 +8,7 @@ import org.argeo.slc.process.SlcExecutionStep;
 
 public class SlcExecutionStepsRequest {
 	private String slcExecutionUuid;
-	private List<SlcExecutionStep> steps = new Vector<SlcExecutionStep>();
+	private List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
 
 	public SlcExecutionStepsRequest() {
 

@@ -2,7 +2,6 @@ package org.argeo.slc.process;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,21 +10,29 @@ import java.util.UUID;
 import org.apache.commons.io.IOUtils;
 
 public class SlcExecutionStep {
+	public final static String TYPE_START = "START";
+	public final static String TYPE_END = "END";
+	public final static String TYPE_PHASE_START = "PHASE_START";
+	public final static String TYPE_PHASE_END = "PHASE_END";
 	public final static String TYPE_LOG = "LOG";
 
-	private String uuid;
+	private String uuid = UUID.randomUUID().toString();
 	private String type;
-	private Date begin;
+	private Date begin = new Date();
 	private List<String> logLines = new ArrayList<String>();
 
 	/** Empty constructor */
 	public SlcExecutionStep() {
 	}
 
+	/** Creates a step of type LOG. */
 	public SlcExecutionStep(String log) {
-		this.type = TYPE_LOG;
-		this.begin = new Date();
-		this.uuid = UUID.randomUUID().toString();
+		this(TYPE_LOG, log);
+	}
+
+	/** Creates a step of the given type. */
+	public SlcExecutionStep(String type, String log) {
+		this.type = type;
 		addLog(log);
 	}
 
@@ -61,13 +68,7 @@ public class SlcExecutionStep {
 		this.logLines = logLines;
 	}
 
-	public String logAsString() {
-		StringWriter writer = new StringWriter();
-		String log = writer.toString();
-		IOUtils.closeQuietly(writer);
-		return log;
-	}
-
+	@SuppressWarnings(value = { "unchecked" })
 	public void addLog(String log) {
 		if (log == null)
 			return;

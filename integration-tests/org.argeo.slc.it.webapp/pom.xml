@@ -31,19 +31,12 @@
 							${basedir}/../../server/org.argeo.slc.siteserver/bundles;in=*
 								</slc.osgi.bundles>
 						<slc.osgi.start>
-							org.argeo.dep.osgi.catalina.start,
 							org.springframework.osgi.extender,
-							org.springframework.osgi.web.extender,
-							org.springframework.osgi.samples.simplewebapp,
-							org.argeo.slc.server.activemq,
+							org.argeo.slc.server.main,
 							org.argeo.slc.server.hsqldb,
-							org.argeo.slc.server.hibernate,
-							org.argeo.slc.server.services,
-							org.argeo.slc.server.jms,
-							org.argeo.slc.webapp,
 							org.argeo.slc.ria,
 							org.argeo.slc.agent								
-								</slc.osgi.start>
+						</slc.osgi.start>
 					</systemProperties>
 				</configuration>
 				<executions>

@@ -39,7 +39,6 @@ public class FileExecutionResources implements ExecutionResources {
 		String osgiInstanceArea = System.getProperty("osgi.instance.area");
 		String osgiInstanceAreaDefault = System
 				.getProperty("osgi.instance.area.default");
-		String tempDir = System.getProperty("java.io.tmpdir");
 
 		if (osgiInstanceArea != null) {
 			// within OSGi with -data specified
@@ -118,9 +117,9 @@ public class FileExecutionResources implements ExecutionResources {
 	}
 
 	public File getFile(String relativePath) {
-		Assert.notNull(executionContext, "execution context is null");
 
 		if (withExecutionSubdirectory) {
+			Assert.notNull(executionContext, "execution context is null");
 			String path = baseDir.getPath() + File.separator
 					+ sdf().format(executionContext.getCreationDate())
 					+ executionContext.getUuid();
@@ -167,6 +166,7 @@ public class FileExecutionResources implements ExecutionResources {
 		return prefixDatePattern;
 	}
 
+	/** Default is true. */
 	public void setWithExecutionSubdirectory(Boolean withExecutionSubdirectory) {
 		this.withExecutionSubdirectory = withExecutionSubdirectory;
 	}

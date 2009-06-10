@@ -13,8 +13,8 @@ import org.argeo.slc.msg.test.tree.AddTreeTestResultAttachmentRequest;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
-import org.argeo.slc.test.TestResultListener;
 import org.argeo.slc.test.TestResultPart;
+import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 
 public class JmsTreeTestResultListener implements TreeTestResultListener {
@@ -24,10 +24,6 @@ public class JmsTreeTestResultListener implements TreeTestResultListener {
 	private JmsTemplate jmsTemplate;
 
 	private Destination executionEventDestination;
-
-	// private Destination createDestination;
-	// private Destination addResultPartDestination;
-	// private Destination closeDestination;
 
 	public void resultPartAdded(TreeTestResult testResult,
 			TestResultPart testResultPart) {
@@ -55,6 +51,11 @@ public class JmsTreeTestResultListener implements TreeTestResultListener {
 
 				jmsTemplate.convertAndSend(executionEventDestination, req);
 			}
+		} catch (JmsException e) {
+			log.warn("Could not notify result part to server: "
+					+ e.getMessage());
+			if (log.isTraceEnabled())
+				log.debug("Original error.", e);
 		} catch (Exception e) {
 			throw new SlcException("Could not notify to JMS", e);
 		}
@@ -82,6 +83,11 @@ public class JmsTreeTestResultListener implements TreeTestResultListener {
 				jmsTemplate.convertAndSend(executionEventDestination, req);
 
 			}
+		} catch (JmsException e) {
+			log.warn("Could not notify result close to server: "
+					+ e.getMessage());
+			if (log.isTraceEnabled())
+				log.debug("Original error.", e);
 		} catch (Exception e) {
 			throw new SlcException("Could not notify to JMS", e);
 		}
@@ -94,6 +100,12 @@ public class JmsTreeTestResultListener implements TreeTestResultListener {
 			req.setAttachment((SimpleAttachment) attachment);
 			jmsTemplate.convertAndSend(executionEventDestination, req);
 
+		} catch (JmsException e) {
+			log
+					.warn("Could not notify attachment to server: "
+							+ e.getMessage());
+			if (log.isTraceEnabled())
+				log.debug("Original error.", e);
 		} catch (Exception e) {
 			throw new SlcException("Could not notify to JMS", e);
 		}

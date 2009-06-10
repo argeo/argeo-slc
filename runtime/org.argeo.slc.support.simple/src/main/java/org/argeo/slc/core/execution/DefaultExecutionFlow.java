@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
@@ -24,9 +22,6 @@ import org.springframework.validation.MapBindingResult;
 
 public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		BeanNameAware, StructureAware<TreeSPath>, ResourceLoaderAware {
-
-	private final static Log log = LogFactory
-			.getLog(DefaultExecutionFlow.class);
 
 	private final ExecutionSpec executionSpec;
 	private String name = null;

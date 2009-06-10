@@ -145,7 +145,7 @@
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="slcExecutionUuid" />
-		<field name="steps" collection="vector"
+		<field name="steps" collection="arraylist"
 			type="org.argeo.slc.process.SlcExecutionStep">
 			<bind-xml auto-naming="deriveByClass" location="steps" />
 		</field>

@@ -3,6 +3,7 @@ package org.argeo.slc.services;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.msg.MsgHandler;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
+import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.msg.test.tree.AddTreeTestResultAttachmentRequest;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
@@ -18,6 +19,8 @@ public class ServiceMsgHandler implements MsgHandler {
 	public Object handleMsg(Object msg) {
 		if (msg instanceof SlcExecution)
 			slcExecutionService.newExecution((SlcExecution) msg);
+		else if (msg instanceof SlcExecutionStepsRequest)
+			slcExecutionService.addSteps((SlcExecutionStepsRequest) msg);
 		else if (msg instanceof SlcExecutionStatusRequest)
 			slcExecutionService.updateStatus((SlcExecutionStatusRequest) msg);
 		else if (msg instanceof CreateTreeTestResultRequest)

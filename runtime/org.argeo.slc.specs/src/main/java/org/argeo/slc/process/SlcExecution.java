@@ -2,6 +2,7 @@ package org.argeo.slc.process;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,6 +25,7 @@ public class SlcExecution implements Serializable {
 	private String status = STATUS_NONE;
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
+	/** TODO: Synchronize */
 	private List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
 	private List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
 
@@ -84,10 +86,12 @@ public class SlcExecution implements Serializable {
 	}
 
 	public SlcExecutionStep currentStep() {
-		if (steps.size() > 0)
-			return steps.get(steps.size() - 1);
-		else
-			return null;
+		synchronized (steps) {
+			if (steps.size() > 0)
+				return steps.get(steps.size() - 1);
+			else
+				return null;
+		}
 	}
 
 	@Override
@@ -117,5 +121,26 @@ public class SlcExecution implements Serializable {
 		buf.append(" status=").append(status);
 		buf.append(" attributes=").append(attributes);
 		return buf.toString();
+	}
+
+	public Date getStartDate() {
+		synchronized (steps) {
+			if (steps.size() == 0)
+				return null;
+			else
+				return steps.get(0).getBegin();
+		}
+	}
+
+	public Date getEndDate() {
+		if (!status.equals(STATUS_FINISHED) && !status.equals(STATUS_ERROR))
+			return null;
+
+		synchronized (steps) {
+			if (steps.size() == 0)
+				return null;
+			else
+				return steps.get(steps.size() - 1).getBegin();
+		}
 	}
 }

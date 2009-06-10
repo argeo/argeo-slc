@@ -1,6 +1,9 @@
 package org.argeo.slc.core.execution.tasks;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +17,22 @@ import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.LogOutputStream;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
+import org.argeo.slc.core.test.SimpleResultPart;
+import org.argeo.slc.structure.StructureAware;
+import org.argeo.slc.test.TestResult;
+import org.argeo.slc.test.TestStatus;
+import org.springframework.core.io.Resource;
 
 /** Execute and OS system call. */
-public class SystemCall implements Runnable {
+public class SystemCall extends TreeSRelatedHelper implements Runnable,
+		StructureAware<TreeSPath> {
 	private final Log log = LogFactory.getLog(getClass());
 
 	private String execDir;
@@ -33,13 +45,34 @@ public class SystemCall implements Runnable {
 	private String stdErrLogLevel = "ERROR";
 	private String stdOutLogLevel = "INFO";
 
+	private Resource stdOutFile = null;
+	private Resource stdErrFile = null;
+
 	private Map<String, List<Object>> osCommands = new HashMap<String, List<Object>>();
 	private Map<String, String> osCmds = new HashMap<String, String>();
 	private Map<String, String> environmentVariables = new HashMap<String, String>();
 
 	private Long watchdogTimeout = 24 * 60 * 60 * 1000l;
 
+	private TestResult testResult;
+
 	public void run() {
+		// Log writers
+		final Writer stdOutWriter;
+		final Writer stdErrWriter;
+		if (stdOutFile != null) {
+			stdOutWriter = createWriter(stdOutFile);
+		} else
+			stdOutWriter = null;
+		if (stdErrFile != null) {
+			stdErrWriter = createWriter(stdErrFile);
+		} else {
+			if (stdOutFile != null) {
+				stdErrWriter = createWriter(stdOutFile);
+			} else
+				stdErrWriter = null;
+		}
+
 		try {
 			if (log.isTraceEnabled()) {
 				log.debug("os.name=" + System.getProperty("os.name"));
@@ -76,14 +109,19 @@ public class SystemCall implements Runnable {
 
 			Executor executor = new DefaultExecutor();
 			executor.setWatchdog(new ExecuteWatchdog(watchdogTimeout));
+
 			PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(
 					new LogOutputStream() {
 						protected void processLine(String line, int level) {
 							log(stdOutLogLevel, line);
+							if (stdOutWriter != null)
+								appendLineToFile(stdOutWriter, line);
 						}
 					}, new LogOutputStream() {
 						protected void processLine(String line, int level) {
 							log(stdErrLogLevel, line);
+							if (stdErrWriter != null)
+								appendLineToFile(stdErrWriter, line);
 						}
 					}, null);
 			executor.setStreamHandler(pumpStreamHandler);
@@ -129,11 +167,24 @@ public class SystemCall implements Runnable {
 					if (log.isDebugEnabled())
 						log.debug("Process " + commandLine
 								+ " properly completed.");
+					if (testResult != null) {
+						forwardPath(testResult, null);
+						testResult.addResultPart(new SimpleResultPart(
+								TestStatus.PASSED, "Process " + commandLine
+										+ " properly completed."));
+					}
 				}
 
 				public void onProcessFailed(ExecuteException e) {
-					throw new SlcException("Process " + commandLine
-							+ " failed.", e);
+					if (testResult != null) {
+						forwardPath(testResult, null);
+						testResult.addResultPart(new SimpleResultPart(
+								TestStatus.ERROR, "Process " + commandLine
+										+ " failed.", e));
+					} else {
+						throw new SlcException("Process " + commandLine
+								+ " failed.", e);
+					}
 				}
 			};
 
@@ -150,6 +201,9 @@ public class SystemCall implements Runnable {
 						executeResultHandler);
 		} catch (Exception e) {
 			throw new SlcException("Could not execute command " + cmd, e);
+		} finally {
+			IOUtils.closeQuietly(stdOutWriter);
+			IOUtils.closeQuietly(stdErrWriter);
 		}
 
 	}
@@ -178,6 +232,26 @@ public class SystemCall implements Runnable {
 			log.trace(line);
 		else
 			throw new SlcException("Unknown log level " + logLevel);
+	}
+
+	protected void appendLineToFile(Writer writer, String line) {
+		try {
+			writer.append(line).append('\n');
+		} catch (IOException e) {
+			log.error("Cannot write to log file", e);
+		}
+	}
+
+	protected Writer createWriter(Resource target) {
+		FileWriter writer = null;
+		try {
+			File file = target.getFile();
+			writer = new FileWriter(file, true);
+		} catch (IOException e) {
+			log.error("Cannot create log file " + target, e);
+			IOUtils.closeQuietly(writer);
+		}
+		return writer;
 	}
 
 	public void setCmd(String command) {
@@ -218,6 +292,18 @@ public class SystemCall implements Runnable {
 
 	public void setWatchdogTimeout(Long watchdogTimeout) {
 		this.watchdogTimeout = watchdogTimeout;
+	}
+
+	public void setStdOutFile(Resource stdOutFile) {
+		this.stdOutFile = stdOutFile;
+	}
+
+	public void setStdErrFile(Resource stdErrFile) {
+		this.stdErrFile = stdErrFile;
+	}
+
+	public void setTestResult(TestResult testResult) {
+		this.testResult = testResult;
 	}
 
 }

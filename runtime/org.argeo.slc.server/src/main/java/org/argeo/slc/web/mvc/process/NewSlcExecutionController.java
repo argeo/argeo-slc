@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.msg.MsgConstants;
 import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
 import org.argeo.slc.services.process.SlcExecutionService;
@@ -61,6 +62,9 @@ public class NewSlcExecutionController extends AbstractServiceController {
 				.unmarshal(source);
 
 		slcExecution.setStatus(SlcExecution.STATUS_SCHEDULED);
+		slcExecution.getSteps().add(
+				new SlcExecutionStep(SlcExecutionStep.TYPE_START,
+						"Process started from the Web UI"));
 		slcExecutionService.newExecution(slcExecution);
 
 		SlcAgent agent = agentFactory.getAgent(agentId);

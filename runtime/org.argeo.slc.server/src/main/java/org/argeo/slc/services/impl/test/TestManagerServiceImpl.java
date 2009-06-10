@@ -16,7 +16,9 @@ import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.services.test.TestManagerService;
 import org.argeo.slc.test.TestRunDescriptor;
 
-/** Implementation of complex operations impacting the underlying data. */
+/**
+ * Implementation of complex operations impacting the underlying data.
+ */
 public class TestManagerServiceImpl implements TestManagerService {
 	private Log log = LogFactory.getLog(getClass());
 
@@ -57,9 +59,9 @@ public class TestManagerServiceImpl implements TestManagerService {
 							.getTestResultUuid());
 				}
 			} else {
-				log
-						.trace("ResultUUID="
-								+ testRunDescriptor.getTestResultUuid());
+				if (log.isTraceEnabled())
+					log.trace("ResultUUID="
+							+ testRunDescriptor.getTestResultUuid());
 				addResultToCollection("default", testRunDescriptor
 						.getTestResultUuid());
 			}
@@ -67,6 +69,7 @@ public class TestManagerServiceImpl implements TestManagerService {
 	}
 
 	public void addResultToCollection(String collectionId, String resultUuid) {
+		// TODO: improve collections
 		TreeTestResultCollection ttrc = treeTestResultCollectionDao
 				.getTestResultCollection(collectionId);
 		if (ttrc == null) {
@@ -100,6 +103,11 @@ public class TestManagerServiceImpl implements TestManagerService {
 		treeTestResultDao.create(treeTestResult);
 
 		registerTestRunDescriptor(msg.getTestRunDescriptor());
+
+		// FIXME: temporary hack before better collection management is found
+		if (msg.getTestRunDescriptor() == null) {
+			addResultToCollection("default", treeTestResult.getUuid());
+		}
 	}
 
 	public void addResultPart(ResultPartRequest msg) {

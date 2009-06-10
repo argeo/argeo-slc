@@ -5,7 +5,9 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
+import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.services.process.SlcExecutionService;
 
 public class SlcExecutionServiceImpl implements SlcExecutionService {
@@ -27,11 +29,14 @@ public class SlcExecutionServiceImpl implements SlcExecutionService {
 
 			slcExecutionDao.create(slcExecutionMsg);
 		} else {
-			if (log.isTraceEnabled())
-				log.trace("Updating SLC execution #"
-						+ slcExecutionMsg.getUuid());
-
-			slcExecutionDao.merge(slcExecutionMsg);
+			throw new SlcException(
+					"There is already an SlcExecution registered with id "
+							+ slcExecutionMsg.getUuid());
+			// if (log.isTraceEnabled())
+			// log.trace("Updating SLC execution #"
+			// + slcExecutionMsg.getUuid());
+			//
+			// slcExecutionDao.merge(slcExecutionMsg);
 		}
 	}
 
@@ -44,10 +49,21 @@ public class SlcExecutionServiceImpl implements SlcExecutionService {
 
 		slcExecution.setStatus(msg.getNewStatus());
 
+		if (msg.getNewStatus().equals(SlcExecution.STATUS_FINISHED))
+			slcExecution.getSteps().add(
+					new SlcExecutionStep(SlcExecutionStep.TYPE_END,
+							"Process finished."));
+
 		if (log.isTraceEnabled())
 			log.trace("Updating status for SLC execution #"
-					+ slcExecution.getUuid());
+					+ slcExecution.getUuid() + " to status "
+					+ msg.getNewStatus());
 
 		slcExecutionDao.update(slcExecution);
 	}
+
+	public void addSteps(SlcExecutionStepsRequest msg) {
+		slcExecutionDao.addSteps(msg.getSlcExecutionUuid(), msg.getSteps());
+	}
+
 }

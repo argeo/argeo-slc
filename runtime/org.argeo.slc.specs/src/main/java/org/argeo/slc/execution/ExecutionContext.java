@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.Map;
 
 public interface ExecutionContext {
+	public final static String VAR_PROCESS_ID = "slcVar.process.id";
+	public final static String VAR_EXECUTION_CONTEXT_ID = "slcVar.executionContext.id";
+	public final static String VAR_FLOW_ID = "slcVar.flow.id";
+	public final static String VAR_FLOW_NAME = "slcVar.flow.name";
 
 	/**
 	 * @param name

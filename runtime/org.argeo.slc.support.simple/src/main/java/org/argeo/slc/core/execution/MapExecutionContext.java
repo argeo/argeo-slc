@@ -14,6 +14,7 @@ import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 
 public class MapExecutionContext implements ExecutionContext {
+
 	private final static Log log = LogFactory.getLog(MapExecutionContext.class);
 
 	private final Stack<ExecutionFlowRuntime> stack = new Stack<ExecutionFlowRuntime>();
@@ -27,6 +28,7 @@ public class MapExecutionContext implements ExecutionContext {
 
 	public MapExecutionContext() {
 		uuid = UUID.randomUUID().toString();
+		variables.put(VAR_EXECUTION_CONTEXT_ID, uuid);
 	}
 
 	public void addVariables(
@@ -37,6 +39,8 @@ public class MapExecutionContext implements ExecutionContext {
 	public void enterFlow(ExecutionFlow executionFlow) {
 		ExecutionFlowRuntime runtime = new ExecutionFlowRuntime(executionFlow);
 		stack.push(runtime);
+		variables.put(VAR_FLOW_ID, runtime.getUuid());
+		variables.put(VAR_FLOW_NAME, runtime.getExecutionFlow().getName());
 
 		if (log.isDebugEnabled())
 			log.debug(depthSpaces(stack.size()) + "=> " + executionFlow + " #"
