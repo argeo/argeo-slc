@@ -1,6 +1,7 @@
 package org.argeo.slc.web.mvc.process;
 
 import java.io.BufferedReader;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,6 +61,11 @@ public class NewSlcExecutionController extends AbstractServiceController {
 		StringSource source = new StringSource(answer);
 		SlcExecution slcExecution = (SlcExecution) unmarshaller
 				.unmarshal(source);
+
+		// Workaround for https://www.argeo.org/bugzilla/show_bug.cgi?id=86
+		if (slcExecution.getUuid() == null
+				|| slcExecution.getUuid().length() < 8)
+			slcExecution.setUuid(UUID.randomUUID().toString());
 
 		slcExecution.setStatus(SlcExecution.STATUS_SCHEDULED);
 		slcExecution.getSteps().add(
