@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -24,15 +25,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<!-- 
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				 -->
+				<!--
+					<executions> <execution> <goals> <goal>test-jar</goal> </goals>
+					</execution> </executions>
+				-->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -72,22 +68,10 @@
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.hibernate</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.castor</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.activemq</artifactId>
+			<artifactId>org.argeo.slc.support.simple</artifactId>
 		</dependency>
 
 		<!-- Spring -->
-		<!--
-			<dependency> <groupId>org.springframework.ws</groupId>
-			<artifactId>org.springframework.ws</artifactId> </dependency>
-		-->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.web.servlet</artifactId>
@@ -96,51 +80,24 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.aop</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>org.springframework.oxm</artifactId>
+		</dependency>
 
 		<!-- J2EE -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>
-				com.springsource.javax.servlet.jsp.jstl
-			</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.taglibs</groupId>
-			<artifactId>
-				com.springsource.org.apache.taglibs.standard
-			</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
 			<artifactId>com.springsource.javax.servlet</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>javax.wsdl</groupId>
-			<artifactId>com.springsource.javax.wsdl</artifactId>
-		</dependency>
 
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>com.springsource.javax.servlet.jsp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.el</groupId>
-			<artifactId>com.springsource.javax.el</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>com.springsource.javax.servlet.jsp.jstl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.taglibs</groupId>
-			<artifactId>com.springsource.org.apache.taglibs.standard</artifactId>
-		</dependency>
-
-		<!-- Various -->
+		<!-- AOP -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>com.springsource.org.aspectj.weaver</artifactId>
 		</dependency>
+
+		<!-- Docs -->
 		<dependency>
 			<groupId>net.sourceforge.jexcelapi</groupId>
 			<artifactId>com.springsource.jxl</artifactId>
@@ -149,14 +106,5 @@
 			<groupId>com.lowagie.text</groupId>
 			<artifactId>com.springsource.com.lowagie.text</artifactId>
 		</dependency>
-
-		<!-- Required in JDK 1.5 -->
-		<dependency>
-			<groupId>com.sun.xml</groupId>
-			<artifactId>
-				com.springsource.com.sun.xml.messaging.saaj
-				</artifactId>
-		</dependency>
-
 	</dependencies>
 </project>

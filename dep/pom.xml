@@ -13,6 +13,7 @@
 	<name>Argeo SLC Dependencies</name>
 	<modules>
 		<module>org.argeo.slc.dep.server</module>
+		<module>org.argeo.slc.dep.agent</module>
 	</modules>
 	<build>
 		<resources>

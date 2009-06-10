@@ -483,11 +483,6 @@ limitations under the License.
 				<artifactId>org.springframework.jms</artifactId>
 				<version>${version.spring}</version>
 			</dependency>
-			<!--
-				<dependency> <groupId>org.springframework.ws</groupId>
-				<artifactId>org.springframework.ws</artifactId>
-				<version>${version.spring-ws}</version> </dependency>
-			-->
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>org.springframework.oxm</artifactId>

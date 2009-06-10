@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -9,7 +10,7 @@
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>demo</artifactId>
 	<packaging>pom</packaging>
-	<name>Argeo SLC Demo Deploy</name>
+	<name>Argeo SLC Demo</name>
 	<modules>
 		<module>site</module>
 	</modules>
@@ -23,9 +24,6 @@
 					<argsToAppend>
 						<arg>-clean</arg>
 					</argsToAppend>
-					<systemProperties>
-						<slc.osgi.bundles>${basedir}/site;in=*;ex=**/.svn/**,${basedir}/../server/org.argeo.slc.siteserver/bundles;in=*;ex=**/.svn/**</slc.osgi.bundles>
-					</systemProperties>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -69,10 +67,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.equinox</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.osgiboot</artifactId>
 		</dependency>
 	</dependencies>
@@ -87,25 +81,17 @@
 						<artifactId>maven-argeo-osgi-plugin</artifactId>
 						<configuration>
 							<execDir>target/exec/server</execDir>
-							<jvmArgs>
-								<jvmArg>-Xmx256m</jvmArg>
-							</jvmArgs>
-							<debug>0</debug>
 							<systemProperties>
 								<slc.osgi.start>
-									org.argeo.dep.osgi.catalina.start,
 									org.springframework.osgi.extender,
-									org.springframework.osgi.web.extender,
-									org.springframework.osgi.samples.simplewebapp,
-									org.argeo.slc.server.activemq,
 									org.argeo.slc.server.hsqldb,
-									org.argeo.slc.server.hibernate,
-									org.argeo.slc.server.services,
-									org.argeo.slc.server.jms,
-									org.argeo.slc.webapp,
+									org.argeo.slc.server.main,
 									org.argeo.slc.ria
 								</slc.osgi.start>
-								<!--  <slc.osgiboot.debug>true</slc.osgiboot.debug>-->
+								<slc.osgi.bundles>
+									${basedir}/site;in=*;ex=pom.xml;ex=target,
+									${basedir}/../server/org.argeo.slc.siteserver/bundles;in=*;ex=pom.xml;ex=target
+								</slc.osgi.bundles>
 							</systemProperties>
 						</configuration>
 					</plugin>
@@ -116,6 +102,10 @@
 					<groupId>org.argeo.slc.dep</groupId>
 					<artifactId>org.argeo.slc.dep.server</artifactId>
 					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>org.argeo.slc.server</groupId>
+					<artifactId>org.argeo.slc.ria</artifactId>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -128,19 +118,16 @@
 						<artifactId>maven-argeo-osgi-plugin</artifactId>
 						<configuration>
 							<execDir>target/exec/agent</execDir>
-							<jvmArgs>
-								<jvmArg>-Xmx128m</jvmArg>
-								<!--
-									<jvmArg>-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8001</jvmArg>
-								-->
-							</jvmArgs>
 							<systemProperties>
 								<slc.osgi.start>
 									org.springframework.osgi.extender,
 									org.argeo.slc.support.equinox,
-									org.argeo.slc.agent,
-									org.argeo.slc.demo.basic
+									org.argeo.slc.agent
 								</slc.osgi.start>
+								<slc.osgi.bundles>
+									${basedir}/site;in=*;ex=pom.xml;ex=target,
+									${basedir}/../server/org.argeo.slc.siteserver/bundles;in=org.argeo.slc.agent;ex=pom.xml;ex=target
+								</slc.osgi.bundles>
 							</systemProperties>
 						</configuration>
 					</plugin>
@@ -149,7 +136,7 @@
 			<dependencies>
 				<dependency>
 					<groupId>org.argeo.slc.dep</groupId>
-					<artifactId>org.argeo.slc.dep.server</artifactId>
+					<artifactId>org.argeo.slc.dep.agent</artifactId>
 					<version>${project.version}</version>
 				</dependency>
 			</dependencies>
@@ -193,6 +180,10 @@
 					<groupId>org.argeo.slc.dep</groupId>
 					<artifactId>org.argeo.slc.dep.server</artifactId>
 					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>org.argeo.slc.server</groupId>
+					<artifactId>org.argeo.slc.ria</artifactId>
 				</dependency>
 			</dependencies>
 		</profile>
