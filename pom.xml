@@ -1071,6 +1071,7 @@ limitations under the License.
 						<configuration>
 							<linkXref>true</linkXref>
 							<targetJdk>1.5</targetJdk>
+							<aggregate>true</aggregate>
 							<excludes>
 								<exclude>**/springutil/*.java</exclude>
 							</excludes>
