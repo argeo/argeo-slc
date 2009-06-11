@@ -1029,7 +1029,7 @@ limitations under the License.
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<inherited>false</inherited>
-  				<configuration>
+				<configuration>
 					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
@@ -1050,16 +1050,33 @@ limitations under the License.
 				</configuration>
 			</plugin>
 			<!--
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
+				<plugin> <groupId>org.codehaus.mojo</groupId>
 				<artifactId>clirr-maven-plugin</artifactId>
-				<inherited>false</inherited>
-			</plugin>
-			  -->
+				<inherited>false</inherited> </plugin>
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changelog-plugin</artifactId>
 				<inherited>false</inherited>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.3</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>cpd</report>
+						</reports>
+						<configuration>
+							<linkXref>true</linkXref>
+							<targetJdk>1.5</targetJdk>
+							<excludes>
+								<exclude>**/springutil/*.java</exclude>
+							</excludes>
+						</configuration>
+					</reportSet>
+				</reportSets>
 			</plugin>
 		</plugins>
 	</reporting>
