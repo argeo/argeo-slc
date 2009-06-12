@@ -11,6 +11,7 @@
 		<module>maven-argeo-qooxdoo-plugin</module>
 		<module>maven-argeo-osgi-plugin</module>
 	</modules>
+	<url>http://www.argeo.org/projects/maven-plugins/site</url>
 	<build>
 		<plugins>
 			<plugin>
@@ -79,6 +80,14 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-plugin-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
 	<repositories>
 		<repository>
 			<id>central</id>
@@ -162,7 +171,7 @@
 			<id>argeo-slc-site</id>
 			<name>SLC Site</name>
 			<url>
-				file:///var/argeo/projects/maven-plugins/www/site/${project.version}
+				file:///var/argeo/projects/maven-plugins/www/site/
 			</url>
 		</site>
 	</distributionManagement>
