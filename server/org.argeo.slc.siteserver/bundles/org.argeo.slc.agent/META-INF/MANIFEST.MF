@@ -9,7 +9,7 @@ Bundle-Name: Argeo SLC Agent
 Bundle-SymbolicName: org.argeo.slc.agent
 Import-Package: javax.jms,
  org.apache.activemq,
- org.apache.activemq.comm and,
+ org.apache.activemq.command,
  org.apache.activemq.pool,
  org.apache.commons.pool,
  org.springframework.beans.factory.config,
