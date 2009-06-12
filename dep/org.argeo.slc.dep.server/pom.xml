@@ -29,6 +29,10 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.hibernate</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.equinox</artifactId>
+		</dependency>
 
 		<!-- OSGi integration -->
 		<dependency>
