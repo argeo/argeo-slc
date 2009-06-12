@@ -7,6 +7,10 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<service interface="org.eclipse.osgi.framework.console.CommandProvider">
-		<beans:bean class="org.argeo.slc.equinox.ExecutionCommandProvider" />
+		<beans:bean class="org.argeo.slc.equinox.ExecutionCommandProvider">
+			<beans:property name="bundlesManager" ref="bundlesManager" />
+		</beans:bean>
 	</service>
+
+	<beans:bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager" />
 </beans:beans>
