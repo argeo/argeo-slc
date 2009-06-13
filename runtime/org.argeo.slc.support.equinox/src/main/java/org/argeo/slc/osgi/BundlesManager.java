@@ -1,5 +1,8 @@
 package org.argeo.slc.osgi;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
@@ -12,8 +15,10 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
 import org.springframework.osgi.context.BundleContextAware;
 
+/** Wraps access to a {@link BundleContext} */
 public class BundlesManager implements BundleContextAware, FrameworkListener,
 		InitializingBean {
 	private final static Log log = LogFactory.getLog(BundlesManager.class);
@@ -124,6 +129,24 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 			synchronized (refreshedPackageSem) {
 				refreshedPackageSem.notifyAll();
 			}
+		}
+	}
+
+	public List<ApplicationContext> listPublishedApplicationContexts(
+			String filter) {
+		try {
+			List<ApplicationContext> lst = new ArrayList<ApplicationContext>();
+			ServiceReference[] sfs = bundleContext.getServiceReferences(
+					ApplicationContext.class.getName(), filter);
+			for (int i = 0; i < sfs.length; i++) {
+				ApplicationContext applicationContext = (ApplicationContext) bundleContext
+						.getService(sfs[i]);
+				lst.add(applicationContext);
+			}
+			return lst;
+		} catch (InvalidSyntaxException e) {
+			throw new SlcException(
+					"Cannot list published application contexts", e);
 		}
 	}
 
