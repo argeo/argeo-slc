@@ -13,7 +13,7 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.argeo.slc.maven</groupId>
+				<groupId>org.argeo.maven.plugins</groupId>
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>

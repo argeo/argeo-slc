@@ -109,5 +109,11 @@
 			<artifactId>com.springsource.org.apache.commons.collections</artifactId>
 		</dependency>
 
+		<!-- SSH -->
+		<dependency>
+			<groupId>com.jcraft.jsch</groupId>
+			<artifactId>com.springsource.com.jcraft.jsch</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>

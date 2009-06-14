@@ -56,6 +56,15 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 
 	private TestResult testResult;
 
+	public SystemCall() {
+
+	}
+
+	public SystemCall(List<Object> command) {
+		super();
+		this.command = command;
+	}
+
 	public void run() {
 		// Log writers
 		final Writer stdOutWriter;
