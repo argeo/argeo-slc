@@ -10,13 +10,13 @@
 			<configuration>
 				<phases>
 					<package>
-						org.argeo.slc.maven:maven-argeo-osgi-plugin:package-bundles
+						org.argeo.maven.plugins:maven-argeo-osgi-plugin:package-bundles
 					</package>
 					<install>
-						org.argeo.slc.maven:maven-argeo-osgi-plugin:install-bundles
+						org.argeo.maven.plugins:maven-argeo-osgi-plugin:install-bundles
 					</install>
 					<deploy>
-						org.argeo.slc.maven:maven-argeo-osgi-plugin:deploy-bundles
+						org.argeo.maven.plugins:maven-argeo-osgi-plugin:deploy-bundles
 					</deploy>
 				</phases>
 			</configuration>

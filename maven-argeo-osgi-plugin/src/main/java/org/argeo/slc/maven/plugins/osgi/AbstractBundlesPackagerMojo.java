@@ -73,6 +73,14 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 	 */
 	protected boolean strictSymbolicName;
 
+	/**
+	 * Build number (provided by the build number plugin in general).
+	 * 
+	 * @parameter expression="${buildNumber}"
+	 * @required
+	 */
+	protected String buildNumber;
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
 
 	protected List analyze(boolean willGenerate) throws MojoExecutionException {
@@ -138,12 +146,13 @@ public abstract class AbstractBundlesPackagerMojo extends AbstractOsgiMojo {
 		if (sIndex >= 0) {// SNAPSHOT
 			versionMain = versionMain(sIndex);
 			// buildId = "D_" + sdf.format(new Date());// D for dev
-			buildId = "SNAPSHOT";
+			buildId = "SNAPSHOT-r" + buildNumber;
 			isSnapshot = true;
 		} else {
 			versionMain = project.getVersion();
 			// buildId = "R_" + sdf.format(new Date());// R for release
-			buildId = "R" + sdf.format(new Date());
+			//buildId = "R" + sdf.format(new Date());
+			buildId = "r" + buildNumber;
 		}
 
 		if (!versionMain.equals(versionMfMain)) {
