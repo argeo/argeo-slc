@@ -15,7 +15,7 @@ public class OsFileFactoryBean implements FactoryBean {
 	/** Return an existing file on the file system. */
 	public Object getObject() throws Exception {
 		Assert.notNull(executionResources, "executionResources is null");
-		Assert.notNull(resource, "relativePath is null");
+		Assert.notNull(resource, "resource is null");
 		return executionResources.getAsOsPath(resource, overwrite);
 	}
 

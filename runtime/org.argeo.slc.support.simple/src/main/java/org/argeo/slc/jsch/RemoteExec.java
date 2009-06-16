@@ -21,8 +21,7 @@ public class RemoteExec extends AbstractJschTask {
 	private List<String> commands = new ArrayList<String>();
 	private String command;
 
-	public void run() {
-		Session session = openSession();
+	public void run(Session session) {
 		if (command != null) {
 			if (commands.size() != 0)
 				throw new SlcException(
@@ -37,7 +36,6 @@ public class RemoteExec extends AbstractJschTask {
 				remoteExec(session, cmd);
 			}
 		}
-		session.disconnect();
 	}
 
 	protected void remoteExec(Session session, String command) {
@@ -61,7 +59,9 @@ public class RemoteExec extends AbstractJschTask {
 			InputStream in = channel.getInputStream();
 
 			if (log.isDebugEnabled())
-				log.debug("Exec '" + command + "' on " + getSshTarget() + "...");
+				log
+						.debug("Exec '" + command + "' on " + getSshTarget()
+								+ "...");
 
 			channel.connect();
 

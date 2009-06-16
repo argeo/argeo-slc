@@ -27,6 +27,17 @@ public abstract class AbstractJschTask implements Runnable {
 		}
 	}
 
+	public final void run() {
+		Session session = openSession();
+		try {
+			run(session);
+		} finally {
+			session.disconnect();
+		}
+	}
+
+	abstract void run(Session session);
+
 	protected void checkAck(InputStream in) throws IOException {
 		int b = in.read();
 		// b may be 0 for success,

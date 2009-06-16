@@ -233,7 +233,7 @@ public class OsgiBoot {
 							}
 						}
 				} else {
-					//warn("Not a directory: " + newFullPath);
+					// warn("Not a directory: " + newFullPath);
 				}
 			}
 		}
@@ -308,6 +308,10 @@ public class OsgiBoot {
 				throw new RuntimeException("Base dir not defined.");
 			try {
 				String dirPath = st.nextToken();
+
+				if (dirPath.startsWith("file:"))
+					dirPath = dirPath.substring("file:".length());
+
 				dir = new File(dirPath.replace('/', File.separatorChar))
 						.getCanonicalPath();
 				if (debug)
