@@ -816,6 +816,13 @@ limitations under the License.
 				<artifactId>com.springsource.com.jcraft.jsch</artifactId>
 				<version>0.1.25</version>
 			</dependency>
+
+			<!-- Scheduling -->
+			<dependency>
+				<groupId>com.opensymphony.quartz</groupId>
+				<artifactId>com.springsource.org.quartz</artifactId>
+				<version>1.6.2</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>

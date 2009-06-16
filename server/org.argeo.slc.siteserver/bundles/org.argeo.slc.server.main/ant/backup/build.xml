@@ -1,0 +1,98 @@
+<project>
+	<property name="tempdir" location="/tmp/spartaBackup" />
+	<property name="svnBase" location="/srv/sparta/svnrepos/" />
+	<property name="backupsBase" location="/srv/sparta/backups" />
+
+	<target name="backupServer">
+		<tstamp>
+			<format property="startTime" pattern="yyMMdd_hhmm" />
+		</tstamp>
+
+		<delete dir="${tempdir}" />
+		<mkdir dir="${tempdir}" />
+
+		<!-- SVN REPOS -->
+		<property name="svndumpDir" location="${tempdir}/svndump" />
+		<mkdir dir="${svndumpDir}" />
+		<svnDump from="${svnBase}/site" to="${svndumpDir}/site" />
+		<svnDump from="${svnBase}/code" to="${svndumpDir}/code" />
+
+		<!-- LINUX CONFIGS -->
+		<property name="linux" location="${tempdir}/linux" />
+		<mkdir dir="${linux}" />
+		<copy todir="${linux}" verbose="true">
+			<fileset dir="/">
+				<include name="etc/httpd/conf/httpd.conf" />
+				<include name="etc/httpd/conf.d/sparta.conf" />
+				<include name="home/sparta/bin/*" />
+			</fileset>
+		</copy>
+
+		<!-- MySQL DUMPS -->
+		<property name="mysqldir" location="${tempdir}/mysql" />
+		<mkdir dir="${mysqldir}" />
+		<mysqlDump dbname="sparta" todir="${mysqldir}" />
+
+		<!-- ARCHIVE -->
+		<property name="backupDir" location="${backupsBase}/${startTime}" />
+		<mkdir dir="${backupDir}" />
+		<property name="dataBackupFile" location="${backupDir}/dataBackup-${startTime}.tar.gz" />
+		<tar longfile="gnu" destfile="${dataBackupFile}" compression="gzip">
+			<tarfileset dir="${tempdir}" includes="**" />
+		</tar>
+
+		<!-- SITE WC -->
+		<property name="siteBackupFile" location="${backupDir}/site-${startTime}.tar.gz" />
+		<tar longfile="gnu" destfile="${siteBackupFile}" compression="gzip">
+			<tarfileset dir="/var/sparta/site/">
+				<include name="**" />
+				<exclude name="customer/**" />
+			</tarfileset>
+		</tar>
+
+		<!-- LATEST -->
+		<property name="latestDir" location="${backupsBase}/_LATEST" />
+		<delete dir="${latestDir}" />
+		<mkdir dir="${latestDir}" />
+		<copy todir="${latestDir}" verbose="true">
+			<fileset dir="${backupDir}" includes="**" />
+		</copy>
+	</target>
+
+	<macrodef name="svnHotcopy">
+		<attribute name="from" />
+		<attribute name="to" />
+		<sequential>
+			<echo message="SVN hot copy from @{from}" />
+			<mkdir dir="@{to}" />
+			<exec executable="/usr/bin/svnadmin">
+				<arg value="hotcopy" />
+				<arg value="@{from}" />
+				<arg value="@{to}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="svnDump">
+		<attribute name="from" />
+		<attribute name="to" />
+		<sequential>
+			<echo message="SVN dump from @{from}" />
+			<exec executable="/usr/bin/svnadmin" output="@{to}" error="@{to}.log">
+				<arg line="dump @{from}" />
+			</exec>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="mysqlDump">
+		<attribute name="dbName" />
+		<attribute name="toDir" />
+		<sequential>
+			<echo message="MySQL dump from @{dbName}" />
+			<exec executable="/usr/bin/mysqldump" output="@{toDir}/@{dbName}.sql">
+				<arg line="--lock-tables --add-locks --add-drop-table -u root" />
+				<arg line="--databases @{dbName}" />
+			</exec>
+		</sequential>
+	</macrodef>
+</project>

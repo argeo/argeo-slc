@@ -115,5 +115,10 @@
 			<artifactId>com.springsource.com.jcraft.jsch</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.opensymphony.quartz</groupId>
+			<artifactId>com.springsource.org.quartz</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>

@@ -70,7 +70,7 @@
 		<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
 	</context-param>
 
-	<!-- Log4j configContext loader config -->
+	<!-- Log4j configContext loader config
 	<listener>
 		<display-name>Log4j</display-name>
 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
@@ -83,7 +83,7 @@
 		<param-name>log4jRefreshInterval</param-name>
 		<param-value>5000</param-value>
 	</context-param>
-
+ -->
 
 	<!--
 		Active MQ <context-param>

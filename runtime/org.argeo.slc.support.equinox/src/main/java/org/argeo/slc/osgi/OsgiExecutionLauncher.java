@@ -98,7 +98,7 @@ public class OsgiExecutionLauncher implements BundleContextAware {
 				descriptor.setName(launch.getExecutionName());
 				module.execute(descriptor);
 				log.info("Executed " + launch.getExecutionName() + " from "
-						+ launch.getExecutionName());
+						+ launch.getModuleName());
 			}
 
 		} catch (Exception e) {
