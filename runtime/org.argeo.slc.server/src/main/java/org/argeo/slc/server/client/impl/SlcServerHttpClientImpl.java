@@ -1,6 +1,5 @@
 package org.argeo.slc.server.client.impl;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.argeo.slc.server.client.SlcServerHttpClient;
-import org.argeo.slc.services.EventPublisherAspect;
 
 public class SlcServerHttpClientImpl extends AbstractHttpServicesClient
 		implements SlcServerHttpClient {
@@ -62,7 +60,7 @@ public class SlcServerHttpClientImpl extends AbstractHttpServicesClient
 				ExecutionAnswer answer = (ExecutionAnswer) obj;
 				if (answer.isError())
 					throw new SlcException(
-							"Unexpected exception when pollign event: "
+							"Unexpected exception when polling event: "
 									+ answer.getMessage());
 			} else {
 				return (SlcEvent) obj;

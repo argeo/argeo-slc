@@ -100,6 +100,12 @@
 		<property name="attachmentsStorage" ref="attachmentsStorage" />
 	</bean>
 
+	<!-- Management -->
+	<bean name="/shutdownRuntime.service" class="org.argeo.slc.web.mvc.management.ShutdownRuntime">
+		<property name="dynamicRuntime" ref="dynamicRuntime" />
+	</bean>
+
+	<!-- MVC -->
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
 		<property name="interceptors">
@@ -112,6 +118,5 @@
 	<bean id="viewResolver" class="org.argeo.slc.web.mvc.MarshallerViewResolver">
 		<constructor-arg ref="slcDefault.castor.marshaller" />
 	</bean>
-
 
 </beans>

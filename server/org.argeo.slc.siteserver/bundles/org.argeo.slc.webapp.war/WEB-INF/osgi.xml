@@ -40,4 +40,8 @@
 	<reference id="attachmentsStorage"
 		interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
 
+	<!-- Runtime -->
+	<reference id="dynamicRuntime" interface="org.argeo.slc.deploy.DynamicRuntime" />
+
+
 </beans:beans>
