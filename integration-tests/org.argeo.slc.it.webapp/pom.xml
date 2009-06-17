@@ -91,5 +91,12 @@
 			<groupId>org.argeo.slc.server</groupId>
 			<artifactId>org.argeo.slc.ria</artifactId>
 		</dependency>
+
+		<!-- Test -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.launcher</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

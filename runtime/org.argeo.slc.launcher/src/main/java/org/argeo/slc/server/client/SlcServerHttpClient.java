@@ -9,20 +9,10 @@ import org.argeo.slc.msg.event.SlcEvent;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
+import org.argeo.slc.server.HttpServices;
 
 /** Abstraction of the access to HTTP services of an SLC Server. */
-public interface SlcServerHttpClient extends HttpServicesClient {
-	public final static String LIST_AGENTS = "listAgents.service";
-	public final static String IS_SERVER_READY = "isServerReady.service";
-	public final static String NEW_SLC_EXECUTION = "newSlcExecution.service";
-	public final static String LIST_SLC_EXECUTIONS = "listSlcExecutions.service";
-	public final static String GET_MODULE_DESCRIPTOR = "getExecutionDescriptor.service";
-	public final static String LIST_MODULE_DESCRIPTORS = "listModulesDescriptors.service";
-	public final static String LIST_RESULTS = "listResults.service";
-	public final static String ADD_EVENT_LISTENER = "addEventListener.service";
-	public final static String REMOVE_EVENT_LISTENER = "removeEventListener.service";
-	public final static String POLL_EVENT = "pollEvent.service";
-
+public interface SlcServerHttpClient extends HttpServicesClient,HttpServices {
 	/** Wait for the provided SlcExecution to be finished. */
 	public void waitForSlcExecutionFinished(SlcExecution slcExecution,
 			Long timeout);

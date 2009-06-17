@@ -111,7 +111,23 @@ public class AntRun implements Runnable {
 		}
 
 		public void messageLogged(BuildEvent event) {
-			log.info(event.getMessage());
+			if (event.getPriority() == Project.MSG_DEBUG) {
+				if (log.isTraceEnabled())
+					log.trace(event.getMessage());
+			} else if (event.getPriority() == Project.MSG_VERBOSE) {
+				if (log.isDebugEnabled())
+					log.debug(event.getMessage());
+			} else if (event.getPriority() == Project.MSG_INFO) {
+				log.info(event.getMessage());
+
+			} else if (event.getPriority() == Project.MSG_WARN) {
+				log.warn(event.getMessage());
+
+			} else if (event.getPriority() == Project.MSG_ERR) {
+				log.error(event.getMessage());
+			} else {
+				log.error(event.getMessage());
+			}
 		}
 
 		public void targetFinished(BuildEvent event) {

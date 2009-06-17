@@ -12,29 +12,23 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.runtime.SlcExecutionContext;
-import org.argeo.slc.runtime.SlcRuntime;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.argeo.slc.server.client.SlcServerHttpClient;
+import org.argeo.slc.server.client.impl.SlcServerHttpClientImpl;
 
 public class SlcMain {
-	public enum Mode {
-		single, agent, osgi
+	public enum Type {
+		standalone, agent, server
 	}
 
-	private static Log log = null;
+	private static Boolean debug = true;
 
 	private final static String BOOTSTRAP_LOG4J_CONFIG = "org/argeo/slc/cli/bootstrapLog4j.properties";
 	private final static String DEFAULT_AGENT_CONTEXT = "classpath:org/argeo/slc/cli/spring-agent-default.xml";
 
-	private final static Option modeOpt = OptionBuilder.withLongOpt("mode")
+	private final static Option typeOpt = OptionBuilder.withLongOpt("mode")
 			.withArgName("mode").hasArg().withDescription(
-					"SLC execution mode, one of: " + listModeValues()).create(
-					'm');
+					"Execution type, one of: " + listTypeValues()).create('t');
 
 	private final static Option propertyOpt = OptionBuilder.withLongOpt(
 			"property").withArgName("prop1=val1,prop2=val2").hasArgs()
@@ -46,18 +40,17 @@ public class SlcMain {
 			.withValueSeparator(',').withDescription(
 					"load properties from file (-p has priority)").create('P');
 
-	private final static Option scriptOpt = OptionBuilder.withLongOpt("script")
-			.withArgName("script").hasArg().withDescription(
-					"SLC script to execute").create('s');
+	private final static Option moduleOpt = OptionBuilder.withLongOpt("module")
+			.withArgName("module").hasArg().withDescription("Execution module")
+			.create('m');
 
-	private final static Option targetsOpt = OptionBuilder.withLongOpt(
-			"targets").withArgName("targets").hasArg().withDescription(
-			"Targets to execute").create('t');
+	private final static Option flowsOpt = OptionBuilder.withLongOpt("flows")
+			.withArgName("flows").hasArg().withDescription("Flows to execute")
+			.create('f');
 
 	private final static Option runtimeOpt = OptionBuilder.withLongOpt(
 			"runtime").withArgName("runtime").hasArg().withDescription(
-			"Runtime to use, either a full path or relative to slc app conf dir: "
-					+ "<conf dir>/runtime/<runtime>/.xml").create('r');
+			"Runtime URL").create('r');
 
 	private final static Options options;
 
@@ -65,20 +58,20 @@ public class SlcMain {
 
 	static {
 		options = new Options();
-		options.addOption(modeOpt);
-		options.addOption(scriptOpt);
-		options.addOption(targetsOpt);
+		options.addOption(typeOpt);
+		options.addOption(moduleOpt);
+		options.addOption(flowsOpt);
 		options.addOption(propertyOpt);
 		options.addOption(propertiesOpt);
 		options.addOption(runtimeOpt);
 	}
 
 	public static void main(String[] args) {
-		Mode mode = null;
+		Type type = null;
 		Properties properties = new Properties();
-		String script = null;
-		String targets = null;
-		String runtimeStr = null;
+		String module = null;
+		String flows = null;
+		String urlStr = null;
 
 		try {
 
@@ -86,29 +79,29 @@ public class SlcMain {
 			CommandLine cl = clParser.parse(options, args);
 
 			// Mode
-			String modeStr = cl.getOptionValue(modeOpt.getOpt());
-			if (modeStr == null) {
-				mode = Mode.single;
+			String typeStr = cl.getOptionValue(typeOpt.getOpt());
+			if (typeStr == null) {
+				type = Type.standalone;
 			} else {
 				try {
-					mode = Mode.valueOf(modeStr);
+					type = Type.valueOf(typeStr);
 				} catch (IllegalArgumentException e) {
-					throw new SlcException("Unrecognized mode '" + modeStr
+					throw new SlcException("Unrecognized mode '" + typeStr
 							+ "'", e);
 				}
 			}
 
 			// Script
-			if (mode.equals(Mode.single)) {
-				if (!cl.hasOption(scriptOpt.getOpt()))
-					throw new SlcException("Mode " + Mode.single
-							+ " requires option '" + scriptOpt.getLongOpt()
+			if (type.equals(Type.standalone)) {
+				if (!cl.hasOption(moduleOpt.getOpt()))
+					throw new SlcException("Type " + Type.standalone
+							+ " requires option '" + moduleOpt.getLongOpt()
 							+ "'");
-				script = cl.getOptionValue(scriptOpt.getOpt());
+				module = cl.getOptionValue(moduleOpt.getOpt());
 
 				// Targets
-				if (cl.hasOption(targetsOpt.getOpt()))
-					targets = cl.getOptionValue(targetsOpt.getOpt());
+				if (cl.hasOption(flowsOpt.getOpt()))
+					flows = cl.getOptionValue(flowsOpt.getOpt());
 			}
 
 			// Properties
@@ -126,7 +119,7 @@ public class SlcMain {
 
 			// Runtime
 			if (cl.hasOption(runtimeOpt.getOpt())) {
-				runtimeStr = cl.getOptionValue(runtimeOpt.getOpt());
+				urlStr = cl.getOptionValue(runtimeOpt.getOpt());
 			}
 		} catch (ParseException e) {
 			System.err.println("Problem with command line arguments. "
@@ -141,52 +134,27 @@ public class SlcMain {
 			badExit();
 		}
 
-		// Initializes logging and log arguments
-		initLogging(properties);
-		if (log.isDebugEnabled()) {
-			log.debug("Mode: " + mode);
-			if (runtimeStr != null)
-				log.debug("Runtime: " + runtimeStr);
-			log.debug("User properties: " + properties);
-			if (script != null)
-				log.debug("Script: " + script);
-			if (targets != null)
-				log.debug("Targets: " + targets);
+		if (debug) {
+			debug("Mode: " + type);
+			if (urlStr != null)
+				debug("Runtime: " + urlStr);
+			debug("User properties: " + properties);
+			if (module != null)
+				debug("Module: " + module);
+			if (flows != null)
+				debug("Flows: " + flows);
 		}
 
-		// Execution
-		if (mode.equals(Mode.single)) {
-			try {
-				// DefaultSlcRuntime runtime = new DefaultSlcRuntime();
-				// FIXME: inject this more cleanly
-				ClassLoader cl = Thread.currentThread().getContextClassLoader();
-				Class clss = cl.loadClass("org.argeo.slc.ant.AntSlcRuntime");
-				SlcRuntime<? extends SlcExecutionContext> runtime = (SlcRuntime<? extends SlcExecutionContext>) clss
-						.newInstance();
-				runtime.executeScript(runtimeStr, script, targets, properties,
-						null, null);
-				// System.exit(0);
-			} catch (Exception e) {
-				log.error("SLC client terminated with an error: ", e);
-				System.exit(1);
-			}
+		// Standalone
+		if (type.equals(Type.standalone)) {
 		}
 		// Agent
-		else if (mode.equals(Mode.agent)) {
-			final ConfigurableApplicationContext applicationContext;
-			if (runtimeStr == null) {
-				applicationContext = new ClassPathXmlApplicationContext(
-						DEFAULT_AGENT_CONTEXT);
-			} else {
-				applicationContext = new FileSystemXmlApplicationContext(
-						runtimeStr);
-			}
-			applicationContext.registerShutdownHook();
-			applicationContext.start();
-			log.info("SLC Agent context started.");
+		else if (type.equals(Type.agent)) {
 		}
-		// OSGi
-		else if (mode.equals(Mode.osgi)) {
+		// Server
+		else if (type.equals(Type.server)) {
+			SlcServerHttpClientImpl slcServerHttpClient = new SlcServerHttpClientImpl();
+			slcServerHttpClient.setBaseUrl(urlStr);
 		}
 	}
 
@@ -194,9 +162,9 @@ public class SlcMain {
 		new HelpFormatter().printHelp(commandName, options, true);
 	}
 
-	private static String listModeValues() {
+	private static String listTypeValues() {
 		StringBuffer buf = new StringBuffer("");
-		for (Mode mode : Mode.values()) {
+		for (Type mode : Type.values()) {
 			buf.append(mode).append(", ");
 		}
 		String str = buf.toString();
@@ -233,24 +201,16 @@ public class SlcMain {
 		}
 	}
 
-	private static void initLogging(Properties userProperties) {
-		System.setProperty("log4j.defaultInitOverride", "true");
-
-		// Add log4j user properties to System properties
-		for (Object obj : userProperties.keySet()) {
-			String key = obj.toString();
-			if (key.startsWith("log4j.")) {
-				System.setProperty(key, userProperties.getProperty(key));
-			}
-		}
-		Log4jUtils.initLog4j(System.getProperty("log4j.configuration",
-				"classpath:" + BOOTSTRAP_LOG4J_CONFIG));
-		log = LogFactory.getLog(SlcMain.class);
-
-	}
-
 	private static void badExit() {
 		printUsage();
 		System.exit(1);
+	}
+
+	protected static void info(Object msg) {
+		System.out.println(msg);
+	}
+
+	protected static void debug(Object msg) {
+		System.out.println(msg);
 	}
 }
