@@ -11,6 +11,11 @@
 		<module>maven-argeo-qooxdoo-plugin</module>
 		<module>maven-argeo-osgi-plugin</module>
 	</modules>
+	<scm>
+		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
+		<developerConnection>scm:svn:https://www.argeo.org/svn/slc/trunk</developerConnection>
+		<url>https://www.argeo.org/svn/slc/trunk</url>
+	</scm>
 	<url>http://www.argeo.org/projects/maven-plugins/site</url>
 	<build>
 		<plugins>
