@@ -17,7 +17,7 @@
 		<property name="scopes">
 			<map>
 				<entry key="execution">
-					<ref local="executionScope"/>
+					<ref local="executionScope" />
 				</entry>
 			</map>
 		</property>
@@ -26,27 +26,31 @@
 	<bean id="executionScope" class="org.argeo.slc.core.execution.ExecutionScope" />
 
 	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" />
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
 
-	<bean id="executionContext" class="org.argeo.slc.core.execution.MapExecutionContext" scope="execution">
+	<bean id="executionContext" class="org.argeo.slc.core.execution.MapExecutionContext"
+		scope="execution">
 		<aop:scoped-proxy />
 	</bean>
 
 	<bean id="instantiationManager" class="org.argeo.slc.core.execution.InstantiationManager" />
-	
-	<bean id="parameterRef" factory-bean="instantiationManager" factory-method="createRef"
-		abstract="true" />	
 
-	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor" >
+	<bean id="parameterRef" factory-bean="instantiationManager"
+		factory-method="createRef" abstract="true" />
+
+	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor">
 		<property name="executionContext" ref="executionContext" />
-		<property name="executionScope" ref="executionScope"/>
+		<property name="executionScope" ref="executionScope" />
 		<property name="instantiationManager" ref="instantiationManager" />
 	</bean>
 
 	<bean class="org.argeo.slc.core.execution.InstantiationPostProcessor">
 		<property name="instantiationManager" ref="instantiationManager" />
 	</bean>
-		
+
 	<bean class="org.argeo.slc.core.execution.ExecutionAspect">
 		<property name="executionContext" ref="executionContext" />
 	</bean>
