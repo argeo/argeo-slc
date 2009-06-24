@@ -188,4 +188,8 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 		bundleContext.addFrameworkListener(this);
 	}
 
+	public void setDefaultTimeout(Long defaultTimeout) {
+		this.defaultTimeout = defaultTimeout;
+	}
+
 }
