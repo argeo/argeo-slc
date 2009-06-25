@@ -17,8 +17,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import junit.framework.TestCase;
 
-public class DefaultModulesManagerTest extends AbstractSpringTestCase {
-
+public class DefaultModulesManagerTest {//extends AbstractSpringTestCase {
+/*
 	public void testSimpleExecution() throws Exception {
 		//do nothing
 		
@@ -68,5 +68,5 @@ public class DefaultModulesManagerTest extends AbstractSpringTestCase {
 		applicationContext.start();
 		return applicationContext;
 	}	
-	
+	*/
 }

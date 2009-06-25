@@ -30,11 +30,13 @@ public class ExecutionScope implements Scope {
 				// Check whether we are in an execution
 				// FIXME: do it more properly (not static)
 				// see https://www.argeo.org/bugzilla/show_bug.cgi?id=82
-				if (!ExecutionAspect.inModuleExecution.get())
+				if (!ExecutionAspect.inModuleExecution.get()) {
 					log
-							.error("An execution context is being instatiated outside an execution."
-									+ " Please check that your references to execution contexts."
+							.error("An execution context is being instantiated outside a module execution."
+									+ " Please check your references to execution contexts."
 									+ " This may lead to unexpected behaviour and will be rejected in the future.");
+					//Thread.dumpStack();
+				}
 
 				// store the ExecutionContext in the ThreadLocal
 				executionContext.set((ExecutionContext) obj);
@@ -44,7 +46,7 @@ public class ExecutionScope implements Scope {
 							+ executionContext.get().getUuid()
 							+ " instantiated. (beanName="
 							+ executionContextBeanName.get() + ")");
-//					Thread.dumpStack();
+					// Thread.dumpStack();
 				}
 				return obj;
 			} else {

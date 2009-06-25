@@ -8,4 +8,6 @@
 
 	<bundle id="basic" symbolic-name="org.argeo.slc.demo.basic"
 		action="start" />
+	<bundle id="minimal" symbolic-name="org.argeo.slc.demo.minimal"
+		action="start" />
 </beans:beans>

@@ -4,8 +4,11 @@
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="modulesManager" class="org.argeo.slc.core.execution.DefaultModulesManager">
-		<property name="executionModules" ref="executionModules" />
+	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager">
 		<property name="slcExecutionNotifiers" ref="slcExecutionListeners" />
+		<property name="bundlesManager" ref="bundlesManager" />
 	</bean>
+
+	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager" />
+
 </beans>

@@ -1,23 +1,28 @@
 package org.argeo.slc.demo;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class StartStopDemoTest {//extends AbstractOsgiRuntimeTestCase {
-	/*
+import org.argeo.slc.equinox.unit.AbstractOsgiRuntimeTestCase;
+import org.argeo.slc.osgiboot.OsgiBoot;
+
+public class StartStopDemoTest extends AbstractOsgiRuntimeTestCase {
+
 	public void testStartStop() throws Exception {
 		assertBundleApplicationContext("org.argeo.slc.agent");
 		assertStartedBundlesApplicationContext("org.argeo.slc.demo");
 	}
 
 	protected void installBundles() throws Exception {
-		osgiBoot.installUrls(osgiBoot.getBundlesUrls(OsgiBoot.DEFAULT_BASE_URL,
-				"target/dependency;in=*.jar"));
+		// osgiBoot.installUrls(osgiBoot.getBundlesUrls(OsgiBoot.DEFAULT_BASE_URL,
+		// "target/dependency;in=*.jar"));
 		osgiBoot.installUrls(osgiBoot.getLocationsUrls(
 				OsgiBoot.DEFAULT_BASE_URL, System
 						.getProperty("java.class.path")));
 		osgiBoot.installUrls(osgiBoot.getBundlesUrls(OsgiBoot.DEFAULT_BASE_URL,
 				"site;in=*"));
-//		osgiBoot.installUrls(osgiBoot.getBundlesUrls(OsgiBoot.DEFAULT_BASE_URL,
-//				"../server/org.argeo.slc.siteserver/bundles;in=*"));
+		osgiBoot.installUrls(osgiBoot.getBundlesUrls(OsgiBoot.DEFAULT_BASE_URL,
+				"../server/org.argeo.slc.siteserver/bundles;in=*"));
 	}
 
 	protected List<String> getBundlesToStart() {
@@ -27,5 +32,5 @@ public class StartStopDemoTest {//extends AbstractOsgiRuntimeTestCase {
 		bundlesToStart.add("org.argeo.slc.demo.basic");
 		return bundlesToStart;
 	}
-*/
+
 }

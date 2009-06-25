@@ -2,7 +2,6 @@ package org.argeo.slc.jms;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,7 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.runtime.AbstractAgent;
-import org.argeo.slc.execution.ExecutionModule;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.msg.ExecutionAnswer;
 import org.argeo.slc.msg.MsgConstants;
@@ -107,17 +105,7 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 	}
 
 	public List<ExecutionModuleDescriptor> listExecutionModuleDescriptors() {
-		List<ExecutionModule> modules = getModulesManager()
-				.listExecutionModules();
-
-		List<ExecutionModuleDescriptor> descriptors = new ArrayList<ExecutionModuleDescriptor>();
-		for (ExecutionModule module : modules) {
-			ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
-			md.setName(module.getName());
-			md.setVersion(module.getVersion());
-			descriptors.add(md);
-		}
-		return descriptors;
+		return getModulesManager().listExecutionModules();
 	}
 
 	public boolean ping() {
@@ -158,7 +146,8 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 					public Message postProcessMessage(Message messageToSend)
 							throws JMSException {
 						messageToSend.setStringProperty(PROPERTY_QUERY, query);
-						messageToSend.setStringProperty(MsgConstants.PROPERTY_SLC_AGENT_ID,
+						messageToSend.setStringProperty(
+								MsgConstants.PROPERTY_SLC_AGENT_ID,
 								agentDescriptor.getUuid());
 						messageToSend.setJMSCorrelationID(correlationId);
 						return messageToSend;

@@ -18,10 +18,6 @@
 
 	<service ref="slcExecutionListener" interface="org.argeo.slc.process.SlcExecutionNotifier" />
 
-	<!-- Manager -->
-	<list id="executionModules" interface="org.argeo.slc.execution.ExecutionModule"
-		cardinality="0..N" />
-
 	<service ref="modulesManager" interface="org.argeo.slc.execution.ExecutionModulesManager" />
 
 	<service ref="jmsAgent.attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />

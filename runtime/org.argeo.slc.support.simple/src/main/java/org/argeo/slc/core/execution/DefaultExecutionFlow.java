@@ -136,15 +136,7 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 		if (parameters.containsKey(parameterName)) {
 			Object paramValue = parameters.get(parameterName);
-			if (specAttr instanceof ResourceSpecAttribute) {
-				// deal with resources
-				Resource resource = resourceLoader.getResource(paramValue
-						.toString());
-				return ((ResourceSpecAttribute) specAttr)
-						.convertResource(resource);
-			} else {
-				return paramValue;
-			}
+			return paramValue;
 		} else {
 			if (specAttr.getValue() != null) {
 				return specAttr.getValue();

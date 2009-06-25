@@ -5,12 +5,16 @@ import org.argeo.slc.core.deploy.ResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.Module;
 import org.argeo.slc.deploy.TargetData;
+import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 
 public class OsgiBundle implements Module<ResourceDistribution> {
 	private String name;
 	private String version;
 	private Distribution distribution;
+
+	private Long internalBundleId;
 
 	public OsgiBundle() {
 
@@ -18,7 +22,13 @@ public class OsgiBundle implements Module<ResourceDistribution> {
 
 	public OsgiBundle(Bundle bundle) {
 		name = bundle.getSymbolicName();
-		version = bundle.getHeaders().get("Bundle-Version").toString();
+		version = bundle.getHeaders().get(Constants.BUNDLE_VERSION).toString();
+		internalBundleId = bundle.getBundleId();
+	}
+
+	public OsgiBundle(RealizedFlow realizedFlow) {
+		name = realizedFlow.getModuleName();
+		version = realizedFlow.getModuleVersion();
 	}
 
 	public String getDeployedSystemId() {
@@ -26,8 +36,7 @@ public class OsgiBundle implements Module<ResourceDistribution> {
 	}
 
 	public DeploymentData getDeploymentData() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public Distribution getDistribution() {
@@ -35,8 +44,7 @@ public class OsgiBundle implements Module<ResourceDistribution> {
 	}
 
 	public TargetData getTargetData() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	public String getName() {
@@ -57,6 +65,19 @@ public class OsgiBundle implements Module<ResourceDistribution> {
 
 	public void setDistribution(Distribution distribution) {
 		this.distribution = distribution;
+	}
+
+	/**
+	 * To be used for optimization when looking in the bundle context. Can
+	 * therefore be null.
+	 */
+	public Long getInternalBundleId() {
+		return internalBundleId;
+	}
+
+	/** Only package access for the time being. e.g. from {@link BundlesManager} */
+	void setInternalBundleId(Long internalBundleId) {
+		this.internalBundleId = internalBundleId;
 	}
 
 }

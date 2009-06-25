@@ -7,7 +7,10 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="executionLauncher" class="org.argeo.slc.osgi.OsgiExecutionLauncher"
-		p:bundlesManager-ref="bundlesManager" />
 	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager" />
+
+	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager">
+		<property name="bundlesManager" ref="bundlesManager" />
+	</bean>
+
 </beans>

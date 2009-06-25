@@ -15,11 +15,11 @@
 		<module>bundles</module>
 	</modules>
 	<dependencies>
-	<!-- 
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.server</artifactId>
 			<version>${project.version}</version>
-		</dependency> -->
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

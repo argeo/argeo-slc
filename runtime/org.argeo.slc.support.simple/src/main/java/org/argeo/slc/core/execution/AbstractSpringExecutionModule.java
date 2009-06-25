@@ -19,25 +19,22 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.Assert;
 
-public abstract class AbstractSpringExecutionModule implements ExecutionModule,
-		ApplicationContextAware {
+@Deprecated
+public abstract class AbstractSpringExecutionModule implements ExecutionModule
+		 {
+/*
+	protected ApplicationContext applicationContext;
 
-	private ApplicationContext applicationContext;
+	protected ExecutionContext executionContext;
 
-	private ExecutionContext executionContext;
-
-	private ExecutionFlowDescriptorConverter descriptorConverter = new DefaultDescriptorConverter();
+	protected ExecutionFlowDescriptorConverter descriptorConverter = new DefaultDescriptorConverter();
 
 	public ExecutionModuleDescriptor getDescriptor() {
 		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
 		md.setName(getName());
 		md.setVersion(getVersion());
 
-		GenericBeanFactoryAccessor accessor = new GenericBeanFactoryAccessor(
-				applicationContext);
-		Map<String, ExecutionFlow> executionFlows = accessor
-				.getBeansOfType(ExecutionFlow.class);
-
+		Map<String, ExecutionFlow> executionFlows = listFlows();
 		for (String name : executionFlows.keySet()) {
 			ExecutionFlow executionFlow = executionFlows.get(name);
 
@@ -103,6 +100,14 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 		return md;
 	}
 
+	protected Map<String, ExecutionFlow> listFlows() {
+		GenericBeanFactoryAccessor accessor = new GenericBeanFactoryAccessor(
+				applicationContext);
+		Map<String, ExecutionFlow> executionFlows = accessor
+				.getBeansOfType(ExecutionFlow.class);
+		return executionFlows;
+	}
+
 	public void execute(ExecutionFlowDescriptor executionFlowDescriptor) {
 		if (descriptorConverter != null)
 			executionContext.addVariables(descriptorConverter
@@ -124,6 +129,6 @@ public abstract class AbstractSpringExecutionModule implements ExecutionModule,
 	public void setDescriptorConverter(
 			ExecutionFlowDescriptorConverter descriptorConverter) {
 		this.descriptorConverter = descriptorConverter;
-	}
+	}*/
 
 }
