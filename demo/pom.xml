@@ -75,6 +75,14 @@
 			<artifactId>org.argeo.slc.dep.agent</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<!-- Unit Tests -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<profiles>

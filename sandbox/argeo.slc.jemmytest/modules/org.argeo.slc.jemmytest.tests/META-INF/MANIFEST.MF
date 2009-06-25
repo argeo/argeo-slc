@@ -4,7 +4,7 @@ Bundle-Version: 0.11.3.SNAPSHOT
 Bundle-Name: SLC Sandbox JemmyTest Tests
 Require-Bundle: org.argeo.slc.detached,
  org.argeo.slc.lib.detached,
- org.argeo.slc.support.equinox,
+ org.argeo.slc.support.osgi,
  org.argeo.slc.specs,
  org.argeo.slc.support.simple
 Import-Package: org.springframework.oxm,

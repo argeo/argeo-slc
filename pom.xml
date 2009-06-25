@@ -205,6 +205,16 @@ limitations under the License.
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.unit</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.launcher</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -218,11 +228,11 @@ limitations under the License.
 				<artifactId>org.argeo.slc.support.simple</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<!--
-				<dependency> <groupId>org.argeo.slc.runtime</groupId>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.ant</artifactId>
-				<version>${project.version}</version> </dependency>
-			-->
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.hibernate</artifactId>
@@ -246,6 +256,11 @@ limitations under the License.
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.osgiboot</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.support.osgi</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

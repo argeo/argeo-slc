@@ -47,7 +47,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<artifactId>org.argeo.slc.core</artifactId>
 		</dependency>
 
 		<dependency>

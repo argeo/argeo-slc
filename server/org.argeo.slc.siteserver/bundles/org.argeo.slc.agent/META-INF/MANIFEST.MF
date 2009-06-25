@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Require-Bundle: org.argeo.slc.support.activemq,
  org.argeo.slc.specs,
- org.argeo.slc.support.simple,
+ org.argeo.slc.core,
  com.springsource.org.castor,
- org.argeo.slc.support.equinox
+ org.argeo.slc.support.osgi
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: Argeo SLC Agent
 Bundle-SymbolicName: org.argeo.slc.agent

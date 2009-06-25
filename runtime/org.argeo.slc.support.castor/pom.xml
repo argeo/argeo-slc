@@ -54,16 +54,6 @@
 							org.apache.xml.serialize
 						</Import-Package>
 						<Fragment-Host>com.springsource.org.castor</Fragment-Host>
-						<!--
-							<Import-Package>*,org.argeo.slc.msg, org.argeo.slc.msg.process,
-							org.argeo.slc.msg.test.tree,
-							javax.xml.parsers;resolution:=optional,
-							javax.xml.transform;resolution:=optional,
-							javax.xml.transform.dom;resolution:=optional,
-							javax.xml.transform.stream;resolution:=optional,
-							org.w3c.dom;resolution:=optional,
-							org.xml.sax;resolution:=optional </Import-Package>
-						-->
 					</instructions>
 				</configuration>
 			</plugin>
@@ -74,7 +64,7 @@
 
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<artifactId>org.argeo.slc.core</artifactId>
 		</dependency>
 
 		<dependency>
@@ -100,6 +90,13 @@
 		<dependency>
 			<groupId>javax.xml.stream</groupId>
 			<artifactId>com.springsource.javax.xml.stream</artifactId>
+		</dependency>
+		
+		<!-- Unit Tests -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

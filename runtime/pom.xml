@@ -14,12 +14,15 @@
 	<modules>
 		<module>org.argeo.slc.osgiboot</module>
 		<module>org.argeo.slc.specs</module>
+		<module>org.argeo.slc.core</module>
+		<module>org.argeo.slc.unit</module>
 		<module>org.argeo.slc.support.simple</module>
 		<module>org.argeo.slc.support.castor</module>
 		<module>org.argeo.slc.support.activemq</module>
-		<module>org.argeo.slc.support.ant</module>
+		<module>org.argeo.slc.support.osgi</module>
 		<module>org.argeo.slc.support.equinox</module>
 		<module>org.argeo.slc.support.hibernate</module>
+		<module>org.argeo.slc.support.ant</module>
 		<module>org.argeo.slc.support.maven</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.detached</module>

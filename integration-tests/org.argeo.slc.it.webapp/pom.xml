@@ -92,10 +92,10 @@
 			<artifactId>org.argeo.slc.ria</artifactId>
 		</dependency>
 
-		<!-- Test -->
+		<!-- Unit Tests -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.launcher</artifactId>
+			<artifactId>org.argeo.slc.unit</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

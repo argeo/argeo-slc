@@ -1,6 +1,9 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.server,org.argeo.slc.specs,org.argeo.slc
- .support.simple,com.springsource.org.castor
+Require-Bundle: 
+ org.argeo.slc.server,
+ org.argeo.slc.specs,
+ org.argeo.slc.core,
+ com.springsource.org.castor
 Bundle-ClassPath: WEB-INF/classes
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: SLC Webapp

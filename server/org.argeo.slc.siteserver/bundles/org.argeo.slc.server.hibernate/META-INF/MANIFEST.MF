@@ -1,6 +1,9 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.server,org.argeo.slc.specs,org.argeo.slc
- .support.simple,com.springsource.org.hibernate
+Require-Bundle: 
+ org.argeo.slc.specs,
+ org.argeo.slc.core,
+ org.argeo.slc.server,
+ com.springsource.org.hibernate
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.hibernate
 Import-Package: org.aopalliance.aop,org.hibernate,org.hibernate.jdbc,o

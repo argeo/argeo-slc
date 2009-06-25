@@ -33,7 +33,7 @@
 				<version>${version.maven-bundle-plugin}</version>
 				<configuration>
 					<instructions>
-						<Fragment-Host>org.argeo.slc.support.simple</Fragment-Host>
+						<Fragment-Host>org.argeo.slc.core</Fragment-Host>
 						<Import-Package>*,org.hibernate.proxy</Import-Package>
 					</instructions>
 				</configuration>
@@ -43,7 +43,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<artifactId>org.argeo.slc.core</artifactId>
 		</dependency>
 
 		<dependency>
@@ -82,7 +82,13 @@
 			<artifactId>com.springsource.org.apache.commons.dbcp</artifactId>
 		</dependency>
 
-		<!-- Test dependencies -->
+		<!-- Unit Tests -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.castor</artifactId>
@@ -94,5 +100,6 @@
 			<artifactId>com.springsource.org.hsqldb</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
 </project>

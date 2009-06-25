@@ -1,2 +1,2 @@
-Bundle-SymbolicName: org.argeo.slc.support.equinox.tests
-Fragment-Host: org.argeo.slc.support.equinox
+Bundle-SymbolicName: org.argeo.slc.support.osgi.tests
+Fragment-Host: org.argeo.slc.support.osgi

@@ -16,18 +16,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-						<configuration>
-							<archive>
-								<manifestFile>src/test/resources/META-INF/MANIFEST.MF</manifestFile>
-							</archive>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -48,7 +36,7 @@
 
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<artifactId>org.argeo.slc.core</artifactId>
 		</dependency>
 
 		<dependency>

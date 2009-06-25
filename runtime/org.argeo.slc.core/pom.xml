@@ -95,34 +95,15 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.dbunit</groupId>
-			<artifactId>com.springsource.org.dbunit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.junit</groupId>
-			<artifactId>com.springsource.junit</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>net.sourceforge.cglib</groupId>
 			<artifactId>com.springsource.net.sf.cglib</artifactId>
 		</dependency>
-
-		<!-- Required by DB Unit -->
+		
+		<!-- Test -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.collections</artifactId>
+			<groupId>org.junit</groupId>
+			<artifactId>com.springsource.junit</artifactId>
+			<scope>test</scope>
 		</dependency>
-
-		<!-- SSH -->
-		<dependency>
-			<groupId>com.jcraft.jsch</groupId>
-			<artifactId>com.springsource.com.jcraft.jsch</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.opensymphony.quartz</groupId>
-			<artifactId>com.springsource.org.quartz</artifactId>
-		</dependency>
-
 	</dependencies>
 </project>

@@ -1,9 +1,16 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.specs,org.argeo.slc.server,org.argeo.slc
- .support.simple,org.argeo.slc.support.activemq,org.springframework.co
- re,org.springframework.context,org.springframework.beans,org.springfr
- amework.oxm,org.springframework.jms,com.springsource.org.castor,org.a
- rgeo.dep.osgi.activemq
+Require-Bundle: 
+ org.argeo.slc.specs,
+ org.argeo.slc.core,
+ org.argeo.slc.server,
+ org.argeo.slc.support.activemq,
+ org.springframework.core,
+ org.springframework.context,
+ org.springframework.beans,
+ org.springframework.oxm,
+ org.springframework.jms,
+ com.springsource.org.castor,
+ org.argeo.dep.osgi.activemq
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.jms
 Import-Package: javax.jms,javax.management.j2ee.statistics,org.apache.

@@ -1,12 +1,14 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.support.equinox,
- org.argeo.slc.specs,
- org.argeo.slc.support.simple
+Bundle-SymbolicName: org.argeo.slc.demo.minimal
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: SLC Demo Minimal Execution Module
 Spring-Context: slc/*
-Bundle-SymbolicName: org.argeo.slc.demo.minimal
-Import-Package: net.sf.cglib.core,
+Require-Bundle: 
+ org.argeo.slc.specs,
+ org.argeo.slc.core,
+ org.argeo.slc.support.osgi
+Import-Package: 
+ net.sf.cglib.core,
  net.sf.cglib.proxy,
  net.sf.cglib.reflect,
  org.aopalliance.aop,

@@ -60,57 +60,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.specs</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>com.springsource.org.aspectj.runtime</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>com.springsource.org.aspectj.weaver</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.io</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.dep.osgi</groupId>
-			<artifactId>org.argeo.dep.osgi.commons.exec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>com.springsource.org.apache.log4j</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.context</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.dbunit</groupId>
-			<artifactId>com.springsource.org.dbunit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.junit</groupId>
-			<artifactId>com.springsource.junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.cglib</groupId>
-			<artifactId>com.springsource.net.sf.cglib</artifactId>
-		</dependency>
-
-		<!-- Required by DB Unit -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.collections</artifactId>
+			<artifactId>org.argeo.slc.core</artifactId>
 		</dependency>
 
 		<!-- SSH -->
@@ -122,6 +72,13 @@
 		<dependency>
 			<groupId>com.opensymphony.quartz</groupId>
 			<artifactId>com.springsource.org.quartz</artifactId>
+		</dependency>
+
+		<!-- Unit Tests -->
+		<dependency>
+			<groupId>org.junit</groupId>
+			<artifactId>com.springsource.junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
