@@ -3,4 +3,4 @@ Bundle-SymbolicName: org.argeo.slc.server.main
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: SLC Server Main
 Require-Bundle: org.argeo.slc.specs,
- org.argeo.slc.support.osgi
+ org.argeo.slc.support.equinox
