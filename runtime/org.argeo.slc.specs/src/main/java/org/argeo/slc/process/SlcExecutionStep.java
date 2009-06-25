@@ -1,13 +1,10 @@
 package org.argeo.slc.process;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.StringTokenizer;
 import java.util.UUID;
-
-import org.apache.commons.io.IOUtils;
 
 public class SlcExecutionStep {
 	public final static String TYPE_START = "START";
@@ -68,17 +65,13 @@ public class SlcExecutionStep {
 		this.logLines = logLines;
 	}
 
-	@SuppressWarnings(value = { "unchecked" })
 	public void addLog(String log) {
 		if (log == null)
 			return;
 
-		try {
-			List<String> lines = IOUtils.readLines(new StringReader(log));
-			logLines.addAll(lines);
-		} catch (IOException e) {
-			throw new RuntimeException("Cannot add log", e);
-		}
+		StringTokenizer st = new StringTokenizer(log, "\n");
+		while (st.hasMoreTokens())
+			logLines.add(st.nextToken());
 	}
 
 	@Override

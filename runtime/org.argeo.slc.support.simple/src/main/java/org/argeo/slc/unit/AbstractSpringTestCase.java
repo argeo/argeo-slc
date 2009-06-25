@@ -1,11 +1,14 @@
 package org.argeo.slc.unit;
 
+import java.util.Map;
+
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.spring.SpringUtils;
+import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -23,14 +26,14 @@ public abstract class AbstractSpringTestCase extends TestCase {
 		if (context == null) {
 			context = new ClassPathXmlApplicationContext(
 					getApplicationContextLocation());
-			if(getIsStartContext())
+			if (getIsStartContext())
 				context.start();
 		}
 		return context;
 	}
-	
+
 	/** Whether the context should be started after being created. */
-	protected Boolean getIsStartContext(){
+	protected Boolean getIsStartContext() {
 		return false;
 	}
 
@@ -41,7 +44,7 @@ public abstract class AbstractSpringTestCase extends TestCase {
 	}
 
 	protected <T> T getBean(Class<? extends T> clss) {
-		T bean = SpringUtils.loadSingleFromContext(getContext(), clss);
+		T bean = loadSingleFromContext(getContext(), clss);
 		if (bean == null) {
 			throw new SlcException("Cannot retrieve a unique bean of type "
 					+ clss);
@@ -67,4 +70,24 @@ public abstract class AbstractSpringTestCase extends TestCase {
 		String prefix = getClass().getPackage().getName().replace('.', '/');
 		return prefix + '/' + suffix;
 	}
+
+	@SuppressWarnings(value = { "unchecked" })
+	protected <T> T loadSingleFromContext(ListableBeanFactory context,
+			Class<T> clss) {
+		Map<String, T> beans = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+				context, clss, false, false);
+		if (beans.size() == 1) {
+			return beans.values().iterator().next();
+		} else if (beans.size() > 1) {
+			if (log.isDebugEnabled()) {
+				log
+						.debug(("Found more that on bean for type " + clss
+								+ ": " + beans.keySet()));
+			}
+			return null;
+		} else {
+			return null;
+		}
+	}
+
 }
