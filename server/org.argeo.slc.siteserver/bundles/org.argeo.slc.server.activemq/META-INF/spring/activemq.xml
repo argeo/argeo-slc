@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="locations">
+			<value>osgibundle:activemq.properties
+			</value>
+		</property>
+	</bean>
+
+	<!-- Embedded broker -->
+	<amq:broker id="broker" useJmx="false" persistent="false">
+		<amq:transportConnectors>
+			<amq:transportConnector uri="${slc.server.jms.url}" />
+		</amq:transportConnectors>
+	</amq:broker>
+
+	<!-- Connection Factory -->
+	<!---->
+	<bean id="jmsConnectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<property name="targetConnectionFactory">
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL">
+					<value>vm://localhost</value>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+
+	<!--
+		<bean id="jmsConnectionFactory"
+		class="org.apache.activemq.pool.PooledConnectionFactory"
+		destroy-method="stop" depends-on="broker"> <property
+		name="connectionFactory"> <bean
+		class="org.apache.activemq.ActiveMQConnectionFactory"> <property
+		name="brokerURL"> <value>vm://localhost</value> </property> </bean>
+		</property> </bean>
+	-->
+
+	<bean id="jmsTransactionManager"
+		class="org.springframework.jms.connection.JmsTransactionManager">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+	<!-- Agent Factory -->
+	<bean id="agentFactory" class="org.argeo.slc.jms.JmsAgentProxyFactory">
+		<property name="jmsTemplate">
+			<bean class="org.springframework.jms.core.JmsTemplate">
+				<property name="connectionFactory" ref="jmsConnectionFactory" />
+				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+				<property name="receiveTimeout" value="${slc.server.jms.agentProxy.timeout}" />
+			</bean>
+		</property>
+		<property name="requestDestination" ref="slcJms.destination.agent.request" />
+		<property name="responseDestination" ref="slcJms.destination.agent.response" />
+		<property name="pingAllDestination" ref="slcJms.destination.agent.pingAll" />
+	</bean>
+
+
+</beans>
