@@ -492,7 +492,7 @@ limitations under the License.
 				<version>${version.spring-osgi}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.argeo.slc.dep.osgi</groupId>
+				<groupId>org.argeo.dep.osgi</groupId>
 				<artifactId>org.argeo.dep.osgi.catalina.start</artifactId>
 				<version>1.0.0.argeo4</version>
 			</dependency>

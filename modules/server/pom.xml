@@ -18,6 +18,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<strictManifestVersion>true</strictManifestVersion>
+					<bundlesPomArtifactId>org.argeo.slc.modules.server.bundles</bundlesPomArtifactId>
 				</configuration>
 			</plugin>
 		</plugins>

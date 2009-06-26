@@ -11,7 +11,6 @@
 	<packaging>pom</packaging>
 	<name>Argeo SLC Server</name>
 	<modules>
-		<module>org.argeo.slc.siteserver</module>
 	</modules>
 	<profiles>
 		<profile>

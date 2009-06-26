@@ -2,27 +2,23 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
 	<version />
-	<publishDate format="yyyy-MM-dd HH:mm"/>
+	<publishDate format="yyyy-MM-dd HH:mm" />
 	<body>
 		<menu name="Overview">
 			<item name="Home" href="${project.url}/index.html" />
 			<item name="Getting Started" href="${project.url}/gettingStarted.html" />
 			<item name="FAQ" href="${project.url}/faq.html" />
 			<item name="Runtime" href="${project.url}/runtime/index.html">
-				<item name="API (Javadoc)"
-					href="${project.url}/apidocs/index.html" />
-				<item name="Code"
-					href="${project.url}/xref/index.html" />
-				<item name="Unit Tests Results"
-					href="${project.url}/surefire-report.html" />
+				<item name="API (Javadoc)" href="${project.url}/apidocs/index.html" />
+				<item name="Code" href="${project.url}/xref/index.html" />
+				<item name="Unit Tests Results" href="${project.url}/surefire-report.html" />
 			</item>
 			<item name="How-To">
 				<item name="Execution Resources"
 					href="${project.url}/howtos/howto-executionResources.html" />
-				<item name="Attachments"
-					href="${project.url}/howtos/howto-attachments.html" />
+				<item name="Attachments" href="${project.url}/howtos/howto-attachments.html" />
 			</item>
-			<item name="Argeo RIA (Web UI)"  href="${project.url}/server/org.argeo.slc.ria/index.html">
+			<item name="Argeo RIA (Web UI)" href="${project.url}/server/org.argeo.slc.ria/index.html">
 				<item name="API"
 					href="${project.url}/server/org.argeo.slc.ria/argeo-ria-api/index.html" />
 				<item name="Browser Support"
@@ -37,5 +33,10 @@
 		<logo name="Maven" href="http://maven.apache.org/"
 			img="http://maven.apache.org/images/logos/maven-feather.png" />
 	</poweredBy>
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-default-skin</artifactId>
+		<version>1.0</version>
+	</skin>
 </project>
 
