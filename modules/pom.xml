@@ -12,5 +12,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>agent</module>
+		<module>server</module>
 	</modules>
 </project>
