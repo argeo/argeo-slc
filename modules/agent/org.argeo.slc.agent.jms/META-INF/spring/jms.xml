@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="false">
+
+	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
+
+	<bean id="jmsAgent.listener.request" parent="jmsAgent.listener.template">
+		<property name="destination" ref="slcJms.destination.agent.request" />
+		<property name="messageSelector">
+			<bean factory-bean="jmsAgent" factory-method="getMessageSelector" />
+		</property>
+	</bean>
+
+	<bean id="jmsAgent.attachmentUploader" class="org.argeo.slc.jms.JmsAttachmentUploader">
+		<property name="destination" ref="slcJms.destination.attachment.add" />
+		<property name="jmsTemplate" ref="jmsTemplate" />
+	</bean>
+
+	<bean id="jmsAgent.listener.pingAll" parent="jmsAgent.listener.template">
+		<property name="destination" ref="slcJms.destination.agent.pingAll" />
+		<property name="messageListener" ref="jmsAgent" />
+	</bean>
+
+	<bean id="jmsAgent" class="org.argeo.slc.jms.JmsAgent">
+		<property name="agentRegister" ref="slcJms.destination.agent.register" />
+		<property name="agentUnregister" ref="slcJms.destination.agent.unregister" />
+		<property name="modulesManager" ref="modulesManager" />
+		<property name="responseDestination" ref="slcJms.destination.agent.response" />
+		<property name="jmsTemplate" ref="jmsTemplate" />
+	</bean>
+
+	<!-- TreeTestResult Listener -->
+	<bean id="resultListener" class="org.argeo.slc.jms.JmsTreeTestResultListener">
+		<!-- <property name="createDestination" ref="slcJms.destination.test.create" />
+		<property name="addResultPartDestination" ref="slcJms.destination.test.addResultPart" />
+		<property name="closeDestination" ref="slcJms.destination.test.close" />
+-->
+		<property name="executionEventDestination" ref="slcJms.destination.execution.event" />
+		<property name="jmsTemplate" ref="jmsTemplate" />
+	</bean>
+
+	<!-- SLC Execution Listener -->
+	<bean id="slcExecutionListener" class="org.argeo.slc.jms.JmsSlcExecutionNotifier">
+		<!-- <property name="updateStatusDestination" ref="slcJms.destination.slcExecution.updateStatus" />
+-->
+		<property name="jmsTemplate" ref="jmsTemplate" />
+		<property name="executionEventDestination" ref="slcJms.destination.execution.event" />
+	</bean>
+
+	<!-- Common -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+	<bean id="jmsTransactionManager"
+		class="org.springframework.jms.connection.JmsTransactionManager">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+	</bean>
+
+	<bean id="jmsAgent.listener.template"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
+		abstract="true">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="messageListener" ref="jmsAgent" />
+		<property name="transactionManager" ref="jmsTransactionManager" />
+	</bean>
+
+
+</beans>
