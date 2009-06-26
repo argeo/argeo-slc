@@ -103,8 +103,7 @@
 									org.argeo.slc.ria
 								</slc.osgi.start>
 								<slc.osgi.bundles>
-									${basedir}/site;in=*;ex=pom.xml;ex=target,
-									${basedir}/../server/org.argeo.slc.siteserver/bundles;in=*;ex=pom.xml;ex=target
+									${basedir}/../modules/server;in=*;ex=pom.xml;ex=target
 								</slc.osgi.bundles>
 							</systemProperties>
 						</configuration>
