@@ -22,9 +22,10 @@
 					</argsToAppend>
 					<systemProperties>
 						<slc.osgi.bundles>
-							${basedir}/../../demo/site;in=*;ex=target,
-							${basedir}/../../server/org.argeo.slc.siteserver/bundles;in=*
-								</slc.osgi.bundles>
+							${basedir}/../../demo/site;in=*;ex=target,ex=pom.xml,
+							${basedir}/../../server/org.argeo.slc.siteserver/bundles;in=*;ex=target,ex=pom.xml,
+							${basedir}/../../modules/agent;in=*;ex=target,ex=pom.xml
+						</slc.osgi.bundles>
 						<slc.osgi.start>
 							org.springframework.osgi.extender,
 							org.argeo.slc.server.main,

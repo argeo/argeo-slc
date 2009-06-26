@@ -136,11 +136,12 @@
 								<slc.osgi.start>
 									org.springframework.osgi.extender,
 									org.argeo.slc.support.equinox,
-									org.argeo.slc.agent
+									org.argeo.slc.agent,
+									org.argeo.slc.agent.jms
 								</slc.osgi.start>
 								<slc.osgi.bundles>
 									${basedir}/site;in=*;ex=pom.xml;ex=target,
-									${basedir}/../server/org.argeo.slc.siteserver/bundles;in=org.argeo.slc.agent;ex=pom.xml;ex=target
+									${basedir}/../modules/agent;in=*;ex=pom.xml;ex=target
 								</slc.osgi.bundles>
 							</systemProperties>
 						</configuration>
