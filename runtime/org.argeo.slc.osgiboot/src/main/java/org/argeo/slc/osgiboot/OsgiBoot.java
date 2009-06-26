@@ -25,8 +25,9 @@ public class OsgiBoot {
 	public final static String DEFAULT_BASE_URL = "reference:file:";
 	public final static String EXCLUDES_SVN_PATTERN = "**/.svn/**";
 
-	private Boolean debug = Boolean.parseBoolean(System.getProperty(
-			PROP_SLC_OSGIBOOT_DEBUG, "false"));
+	private boolean debug = Boolean.valueOf(
+			System.getProperty(PROP_SLC_OSGIBOOT_DEBUG, "false"))
+			.booleanValue();
 
 	private boolean excludeSvn = true;
 
@@ -36,12 +37,13 @@ public class OsgiBoot {
 		this.bundleContext = bundleContext;
 	}
 
-	public void installUrls(List<String> urls) {
-		Map<String, Bundle> installedBundles = getInstalledBundles();
-		for (String url : urls) {
+	public void installUrls(List urls) {
+		Map installedBundles = getInstalledBundles();
+		for (int i = 0; i < urls.size(); i++) {
+			String url = (String) urls.get(i);
 			try {
 				if (installedBundles.containsKey(url)) {
-					Bundle bundle = installedBundles.get(url);
+					Bundle bundle = (Bundle) installedBundles.get(url);
 					// bundle.update();
 					if (debug)
 						debug("Bundle " + bundle.getSymbolicName()
@@ -82,10 +84,10 @@ public class OsgiBoot {
 		if (bundlesToStart.size() == 0)
 			return;
 
-		Map<String, Bundle> bundles = getBundles();
+		Map bundles = getBundles();
 		for (int i = 0; i < bundlesToStart.size(); i++) {
 			String name = bundlesToStart.get(i).toString();
-			Bundle bundle = bundles.get(name);
+			Bundle bundle = (Bundle) bundles.get(name);
 			if (bundle != null)
 				try {
 					bundle.start();
@@ -100,31 +102,34 @@ public class OsgiBoot {
 	}
 
 	/** Key is location */
-	public Map<String, Bundle> getInstalledBundles() {
-		Map<String, Bundle> installedBundles = new HashMap<String, Bundle>();
+	public Map getInstalledBundles() {
+		Map installedBundles = new HashMap();
 
-		for (Bundle bundle : bundleContext.getBundles()) {
-			installedBundles.put(bundle.getLocation(), bundle);
+		Bundle[] bundles = bundleContext.getBundles();
+		for (int i = 0; i < bundles.length; i++) {
+			installedBundles.put(bundles[i].getLocation(), bundles[i]);
 		}
 		return installedBundles;
 	}
 
 	/** Key is symbolic name */
-	public Map<String, Bundle> getBundles() {
-		Map<String, Bundle> installedBundles = new HashMap<String, Bundle>();
-		for (Bundle bundle : bundleContext.getBundles())
-			installedBundles.put(bundle.getSymbolicName(), bundle);
-		return installedBundles;
+	public Map getBundles() {
+		Map namedBundles = new HashMap();
+		Bundle[] bundles = bundleContext.getBundles();
+		for (int i = 0; i < bundles.length; i++) {
+			namedBundles.put(bundles[i].getSymbolicName(), bundles[i]);
+		}
+		return namedBundles;
 	}
 
-	public List<String> getLocationsUrls() {
+	public List getLocationsUrls() {
 		String baseUrl = getProperty(PROP_SLC_OSGI_BASE_URL, DEFAULT_BASE_URL);
 		String bundleLocations = getProperty(PROP_SLC_OSGI_LOCATIONS);
 		return getLocationsUrls(baseUrl, bundleLocations);
 	}
 
-	public List<String> getLocationsUrls(String baseUrl, String bundleLocations) {
-		List<String> urls = new ArrayList<String>();
+	public List getLocationsUrls(String baseUrl, String bundleLocations) {
+		List urls = new ArrayList();
 
 		if (bundleLocations == null)
 			return urls;
@@ -141,16 +146,16 @@ public class OsgiBoot {
 		return urls;
 	}
 
-	public List<String> getBundlesUrls() {
+	public List getBundlesUrls() {
 		String baseUrl = getProperty(PROP_SLC_OSGI_BASE_URL, DEFAULT_BASE_URL);
 		String bundlePatterns = getProperty(PROP_SLC_OSGI_BUNDLES);
 		return getBundlesUrls(baseUrl, bundlePatterns);
 	}
 
-	public List<String> getBundlesUrls(String baseUrl, String bundlePatterns) {
-		List<String> urls = new ArrayList<String>();
+	public List getBundlesUrls(String baseUrl, String bundlePatterns) {
+		List urls = new ArrayList();
 
-		List<BundlesSet> bundlesSets = new ArrayList<BundlesSet>();
+		List bundlesSets = new ArrayList();
 		if (bundlePatterns == null)
 			return urls;
 		bundlePatterns = SystemPropertyUtils
@@ -164,18 +169,27 @@ public class OsgiBoot {
 			bundlesSets.add(new BundlesSet(st.nextToken()));
 		}
 
-		List<String> included = new ArrayList<String>();
+		List included = new ArrayList();
 		PathMatcher matcher = new AntPathMatcher();
-		for (BundlesSet bundlesSet : bundlesSets)
-			for (String pattern : bundlesSet.getIncludes())
+		for (int i = 0; i < bundlesSets.size(); i++) {
+			BundlesSet bundlesSet = (BundlesSet) bundlesSets.get(i);
+			for (int j = 0; j < bundlesSet.getIncludes().size(); j++) {
+				String pattern = (String) bundlesSet.getIncludes().get(j);
 				match(matcher, included, bundlesSet.getDir(), null, pattern);
+			}
+		}
 
-		List<String> excluded = new ArrayList<String>();
-		for (BundlesSet bundlesSet : bundlesSets)
-			for (String pattern : bundlesSet.getExcludes())
+		List excluded = new ArrayList();
+		for (int i = 0; i < bundlesSets.size(); i++) {
+			BundlesSet bundlesSet = (BundlesSet) bundlesSets.get(i);
+			for (int j = 0; j < bundlesSet.getExcludes().size(); j++) {
+				String pattern = (String) bundlesSet.getExcludes().get(j);
 				match(matcher, excluded, bundlesSet.getDir(), null, pattern);
+			}
+		}
 
-		for (String fullPath : included) {
+		for (int i = 0; i < included.size(); i++) {
+			String fullPath = (String) included.get(i);
 			if (!excluded.contains(fullPath))
 				urls.add(baseUrl + fullPath);
 		}
@@ -183,8 +197,8 @@ public class OsgiBoot {
 		return urls;
 	}
 
-	protected void match(PathMatcher matcher, List<String> matched,
-			String base, String currentPath, String pattern) {
+	protected void match(PathMatcher matcher, List matched, String base,
+			String currentPath, String pattern) {
 		if (currentPath == null) {
 			// Init
 			File baseDir = new File(base.replace('/', File.separatorChar));
@@ -197,8 +211,8 @@ public class OsgiBoot {
 				return;
 			}
 
-			for (File file : files)
-				match(matcher, matched, base, file.getName(), pattern);
+			for (int i = 0; i < files.length; i++)
+				match(matcher, matched, base, files[i].getName(), pattern);
 		} else {
 			String fullPath = base + '/' + currentPath;
 			if (matched.contains(fullPath))
@@ -212,14 +226,14 @@ public class OsgiBoot {
 				matched.add(fullPath);
 				return;
 			} else {
-				String newFullPath = (base + '/' + currentPath).replace('/',
-						File.separatorChar);
-				File[] files = new File(newFullPath).listFiles();
+				String newFullPath = relativeToFullPath(base, currentPath);
+				File newFile = new File(newFullPath);
+				File[] files = newFile.listFiles();
 				if (files != null) {
-					for (File file : files)
-						if (file.isDirectory()) {
-							String newCurrentPath = currentPath + '/'
-									+ file.getName();
+					for (int i = 0; i < files.length; i++) {
+						String newCurrentPath = currentPath + '/'
+								+ files[i].getName();
+						if (files[i].isDirectory()) {
 							if (matcher.matchStart(pattern, newCurrentPath)) {
 								// recurse only if start matches
 								match(matcher, matched, base, newCurrentPath,
@@ -231,12 +245,25 @@ public class OsgiBoot {
 											+ pattern);
 
 							}
+						} else {
+							boolean nonDirectoryOk = matcher.match(pattern,
+									newCurrentPath);
+							if (debug)
+								debug(currentPath + " " + (ok ? "" : " not ")
+										+ " matched with " + pattern);
+							if (nonDirectoryOk)
+								matched.add(relativeToFullPath(base,
+										newCurrentPath));
 						}
-				} else {
-					// warn("Not a directory: " + newFullPath);
+					}
 				}
 			}
 		}
+	}
+
+	/** Transforms a relative path in a full system path. */
+	protected String relativeToFullPath(String basePath, String relativePath) {
+		return (basePath + '/' + relativePath).replace('/', File.separatorChar);
 	}
 
 	protected void info(Object obj) {
@@ -274,11 +301,11 @@ public class OsgiBoot {
 		return getProperty(name, null);
 	}
 
-	public Boolean getDebug() {
+	public boolean getDebug() {
 		return debug;
 	}
 
-	public void setDebug(Boolean debug) {
+	public void setDebug(boolean debug) {
 		this.debug = debug;
 	}
 
@@ -298,8 +325,8 @@ public class OsgiBoot {
 	protected class BundlesSet {
 		private String baseUrl = "reference:file";// not used yet
 		private final String dir;
-		private List<String> includes = new ArrayList<String>();
-		private List<String> excludes = new ArrayList<String>();
+		private List includes = new ArrayList();
+		private List excludes = new ArrayList();
 
 		public BundlesSet(String def) {
 			StringTokenizer st = new StringTokenizer(def, ";");
@@ -345,11 +372,11 @@ public class OsgiBoot {
 			return dir;
 		}
 
-		public List<String> getIncludes() {
+		public List getIncludes() {
 			return includes;
 		}
 
-		public List<String> getExcludes() {
+		public List getExcludes() {
 			return excludes;
 		}
 
