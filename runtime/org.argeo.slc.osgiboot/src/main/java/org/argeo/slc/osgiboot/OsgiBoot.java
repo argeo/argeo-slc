@@ -266,13 +266,13 @@ public class OsgiBoot {
 		return (basePath + '/' + relativePath).replace('/', File.separatorChar);
 	}
 
-	protected void info(Object obj) {
-		System.out.println("# INFO " + obj);
+	protected static void info(Object obj) {
+		System.out.println("#OSGiBOOT# " + obj);
 	}
 
 	protected void debug(Object obj) {
 		if (debug)
-			System.out.println("# DBUG " + obj);
+			System.out.println("#OSGiBOOT DEBUG# " + obj);
 	}
 
 	protected void warn(Object obj) {
