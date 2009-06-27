@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.build.Distribution;
-import org.argeo.slc.core.deploy.ResourceDistribution;
+import org.argeo.slc.core.build.ResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.ModularDeployedSystem;
 import org.argeo.slc.deploy.TargetData;

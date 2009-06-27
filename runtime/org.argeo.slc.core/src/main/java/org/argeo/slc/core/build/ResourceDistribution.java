@@ -1,4 +1,4 @@
-package org.argeo.slc.core.deploy;
+package org.argeo.slc.core.build;
 
 import org.argeo.slc.build.Distribution;
 import org.springframework.core.io.Resource;

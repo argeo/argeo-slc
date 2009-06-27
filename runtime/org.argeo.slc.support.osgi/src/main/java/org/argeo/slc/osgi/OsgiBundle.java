@@ -1,7 +1,7 @@
 package org.argeo.slc.osgi;
 
 import org.argeo.slc.build.Distribution;
-import org.argeo.slc.core.deploy.ResourceDistribution;
+import org.argeo.slc.core.build.ResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.Module;
 import org.argeo.slc.deploy.TargetData;
