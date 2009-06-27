@@ -6,8 +6,7 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<service interface="org.argeo.slc.execution.ExecutionModule"
-		ref="executionModule" />
+	<beans:import resource="classpath:org/argeo/slc/osgi/execution/spring.xml" />
 
 	<reference id="attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
 

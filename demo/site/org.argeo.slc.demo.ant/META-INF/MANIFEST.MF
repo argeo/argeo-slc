@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.support.equinox,
+Require-Bundle: org.argeo.slc.support.osgi,
  org.argeo.slc.specs,
- org.argeo.slc.support.simple,
+ org.argeo.slc.core,
  org.argeo.slc.support.ant
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: Basic Plug-in

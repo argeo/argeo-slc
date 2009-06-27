@@ -7,10 +7,12 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="executionModule" class="org.argeo.slc.osgi.OsgiExecutionModule">
-		<property name="executionContext">
-			<ref bean="executionContext" />
+	<bean class="org.argeo.slc.ant.AntFlowGenerator">
+		<property name="antFiles">
+			<list>
+				<value>osgibundle:/ant/hello/build.xml
+				</value>
+			</list>
 		</property>
 	</bean>
-
 </beans>
