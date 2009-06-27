@@ -20,6 +20,9 @@ public class BasicTestDefinition extends TreeSRelatedHelper implements
 			BasicTestData testData = testRun.getTestData();
 			TestResult result = testRun.getTestResult();
 
+			if (result == null)
+				throw new SlcException("No test result defined.");
+
 			try {
 				if (testData.getExpected().equals(testData.getReached())) {
 					result.addResultPart(new SimpleResultPart(

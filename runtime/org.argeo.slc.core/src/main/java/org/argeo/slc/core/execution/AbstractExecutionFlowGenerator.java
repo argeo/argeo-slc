@@ -24,7 +24,6 @@ public abstract class AbstractExecutionFlowGenerator implements
 	protected abstract Map<String, BeanDefinition> createExecutionFlowDefinitions(
 			ConfigurableListableBeanFactory beanFactory);
 
-	@Override
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		if (!(beanFactory instanceof BeanDefinitionRegistry)) {
@@ -54,7 +53,6 @@ public abstract class AbstractExecutionFlowGenerator implements
 		return bd;
 	}
 
-	@Override
 	public int getOrder() {
 		return Ordered.HIGHEST_PRECEDENCE;
 	}
