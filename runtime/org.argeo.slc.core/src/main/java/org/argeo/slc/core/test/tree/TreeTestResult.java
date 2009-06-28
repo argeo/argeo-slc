@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.UUID;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
@@ -46,7 +47,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private Boolean warnIfAlreadyClosed = true;
 
-	private String uuid;
+	private String uuid = UUID.randomUUID().toString();
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
