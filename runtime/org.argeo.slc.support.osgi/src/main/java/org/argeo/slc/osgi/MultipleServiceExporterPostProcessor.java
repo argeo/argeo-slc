@@ -52,7 +52,7 @@ public class MultipleServiceExporterPostProcessor implements
 					osgiServiceFactoryClass, mpv);
 
 			String exporterBeanName = "osgiService." + beanName;
-			if (log.isDebugEnabled())
+			if (log.isTraceEnabled())
 				log.debug("Registering OSGi service exporter "
 						+ exporterBeanName);
 			((BeanDefinitionRegistry) beanFactory).registerBeanDefinition(
@@ -68,7 +68,6 @@ public class MultipleServiceExporterPostProcessor implements
 		this.osgiServiceFactoryClass = osgiServiceFactoryClass;
 	}
 
-	@Override
 	public int getOrder() {
 		return Ordered.LOWEST_PRECEDENCE;
 	}
