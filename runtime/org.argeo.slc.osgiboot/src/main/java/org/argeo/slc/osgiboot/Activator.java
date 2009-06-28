@@ -11,6 +11,7 @@ public class Activator implements BundleActivator {
 			OsgiBoot osgiBoot = new OsgiBoot(bundleContext);
 			osgiBoot.installUrls(osgiBoot.getBundlesUrls());
 			osgiBoot.installUrls(osgiBoot.getLocationsUrls());
+			osgiBoot.installUrls(osgiBoot.getModulesUrls());
 			osgiBoot.startBundles();
 			OsgiBoot.info("SLC OSGi bootstrap completed");
 		} catch (Exception e) {

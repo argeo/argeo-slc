@@ -56,7 +56,7 @@ public class DbUnitDeployment implements Deployment {
 		}
 	}
 
-	public DeployedSystem<?> getDeployedSystem() {
+	public DeployedSystem getDeployedSystem() {
 		throw new UnsupportedOperationException();
 	}
 

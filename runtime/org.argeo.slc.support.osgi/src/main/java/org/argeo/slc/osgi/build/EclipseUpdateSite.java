@@ -1,4 +1,4 @@
-package org.argeo.slc.web.mvc.provisioning;
+package org.argeo.slc.osgi.build;
 
 import java.util.ArrayList;
 import java.util.List;

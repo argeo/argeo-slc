@@ -103,7 +103,9 @@
 									org.argeo.slc.ria
 								</slc.osgi.start>
 								<slc.osgi.bundles>
-									${basedir}/../modules/server;in=*;ex=pom.xml;ex=target
+									${user.home}/dev/src/sparta/dist/runtime/target;in=*.jar,
+									${basedir}/site;in=*;ex=pom.xml;ex=target,
+									${basedir}/../modules/server;in=*;ex=pom.xml;ex=target;ex=.*
 								</slc.osgi.bundles>
 							</systemProperties>
 						</configuration>

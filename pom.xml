@@ -574,7 +574,7 @@ limitations under the License.
 			<dependency>
 				<groupId>org.argeo.dep.osgi</groupId>
 				<artifactId>org.argeo.dep.osgi.commons.cli</artifactId>
-				<version>1.1</version>
+				<version>1.1.0.argeo1</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.dep.osgi</groupId>

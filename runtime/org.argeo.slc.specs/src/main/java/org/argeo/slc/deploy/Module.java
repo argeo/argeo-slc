@@ -1,9 +1,6 @@
 package org.argeo.slc.deploy;
 
-import org.argeo.slc.build.Distribution;
+import org.argeo.slc.build.NameVersion;
 
-public interface Module<D extends Distribution> extends DeployedSystem<D> {
-	public String getName();
-
-	public String getVersion();
+public interface Module extends DeployedSystem, NameVersion {
 }

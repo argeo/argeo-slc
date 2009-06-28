@@ -1,9 +1,14 @@
 package org.argeo.slc.osgiboot;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -14,12 +19,14 @@ import org.argeo.slc.osgiboot.internal.springutil.SystemPropertyUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 
 public class OsgiBoot {
 	public final static String PROP_SLC_OSGI_START = "slc.osgi.start";
 	public final static String PROP_SLC_OSGI_BUNDLES = "slc.osgi.bundles";
 	public final static String PROP_SLC_OSGI_LOCATIONS = "slc.osgi.locations";
 	public final static String PROP_SLC_OSGI_BASE_URL = "slc.osgi.baseUrl";
+	public final static String PROP_SLC_OSGI_MODULES_URL = "slc.osgi.modulesUrl";
 	public final static String PROP_SLC_OSGIBOOT_DEBUG = "slc.osgiboot.debug";
 
 	public final static String DEFAULT_BASE_URL = "reference:file:";
@@ -30,6 +37,7 @@ public class OsgiBoot {
 			.booleanValue();
 
 	private boolean excludeSvn = true;
+	private String modulesUrlSeparator = ";";
 
 	private final BundleContext bundleContext;
 
@@ -62,6 +70,45 @@ public class OsgiBoot {
 
 	}
 
+	public void installOrUpdateUrls(Map urls) {
+		Map installedBundles = getBundles();
+
+		for (Iterator modules = urls.keySet().iterator(); modules.hasNext();) {
+			String moduleName = (String) modules.next();
+			String urlStr = (String) urls.get(moduleName);
+			if (installedBundles.containsKey(moduleName)) {
+				Bundle bundle = (Bundle) installedBundles.get(moduleName);
+				InputStream in;
+				try {
+					URL url = new URL(urlStr);
+					in = url.openStream();
+					bundle.update(in);
+					info("Updated bundle " + moduleName + " from " + urlStr);
+				} catch (Exception e) {
+					throw new RuntimeException("Cannot update " + moduleName
+							+ " from " + urlStr);
+				}
+				if (in != null)
+					try {
+						in.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+			} else {
+				try {
+					Bundle bundle = bundleContext.installBundle(urlStr);
+					if (debug)
+						debug("Installed bundle " + bundle.getSymbolicName()
+								+ " from " + urlStr);
+				} catch (BundleException e) {
+					warn("Could not install bundle from " + urlStr + ": "
+							+ e.getMessage());
+				}
+			}
+		}
+
+	}
+
 	public void startBundles() throws Exception {
 		String bundlesToStart = getProperty(PROP_SLC_OSGI_START);
 		startBundles(bundlesToStart);
@@ -84,21 +131,24 @@ public class OsgiBoot {
 		if (bundlesToStart.size() == 0)
 			return;
 
-		Map bundles = getBundles();
-		for (int i = 0; i < bundlesToStart.size(); i++) {
-			String name = bundlesToStart.get(i).toString();
-			Bundle bundle = (Bundle) bundles.get(name);
-			if (bundle != null)
+		List notStartedBundles = new ArrayList(bundlesToStart);
+		Bundle[] bundles = bundleContext.getBundles();
+		for (int i = 0; i < bundles.length; i++) {
+			Bundle bundle = bundles[i];
+			String symbolicName = bundle.getSymbolicName();
+			if (bundlesToStart.contains(symbolicName))
 				try {
 					bundle.start();
+					notStartedBundles.remove(symbolicName);
 				} catch (Exception e) {
-					warn("Bundle " + name + " cannot be started: "
+					warn("Bundle " + symbolicName + " cannot be started: "
 							+ e.getMessage());
 				}
-			else
-				warn("Bundle " + name + " not installed.");
-
 		}
+
+		for (int i = 0; i < notStartedBundles.size(); i++)
+			warn("Bundle " + notStartedBundles.get(i)
+					+ " not started because it was not found.");
 	}
 
 	/** Key is location */
@@ -126,6 +176,114 @@ public class OsgiBoot {
 		String baseUrl = getProperty(PROP_SLC_OSGI_BASE_URL, DEFAULT_BASE_URL);
 		String bundleLocations = getProperty(PROP_SLC_OSGI_LOCATIONS);
 		return getLocationsUrls(baseUrl, bundleLocations);
+	}
+
+	public List getModulesUrls() {
+		List urls = new ArrayList();
+		String modulesUrlStr = getProperty(PROP_SLC_OSGI_MODULES_URL);
+		if (modulesUrlStr == null)
+			return urls;
+
+		Map installedBundles = getBundles();
+
+		BufferedReader reader = null;
+		try {
+			URL modulesUrl = new URL(modulesUrlStr);
+			reader = new BufferedReader(new InputStreamReader(modulesUrl
+					.openStream()));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				StringTokenizer st = new StringTokenizer(line,
+						modulesUrlSeparator);
+				String moduleName = st.nextToken();
+				String moduleVersion = st.nextToken();
+				String url = st.nextToken();
+
+				if (installedBundles.containsKey(moduleName)) {
+					Bundle bundle = (Bundle) installedBundles.get(moduleName);
+					String bundleVersion = bundle.getHeaders().get(
+							Constants.BUNDLE_VERSION).toString();
+					int comp = compareVersions(bundleVersion, moduleVersion);
+					if (comp > 0) {
+						warn("Installed version " + bundleVersion
+								+ " of bundle " + moduleName
+								+ " is newer than  provided version "
+								+ moduleVersion);
+					} else if (comp < 0) {
+						urls.add(url);
+						info("Updated bundle " + moduleName + " with version "
+								+ moduleVersion + " (old version was "
+								+ bundleVersion + ")");
+					} else {
+						// do nothing
+					}
+				} else {
+					urls.add(url);
+				}
+			}
+		} catch (Exception e1) {
+			throw new RuntimeException("Cannot read url " + modulesUrlStr, e1);
+		} finally {
+			if (reader != null)
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+		return urls;
+	}
+
+	/**
+	 * @return ==0: versions are identical, <0: tested version is newer, >0:
+	 *         currentVersion is newer.
+	 */
+	protected int compareVersions(String currentVersion, String testedVersion) {
+		List cToks = new ArrayList();
+		StringTokenizer cSt = new StringTokenizer(currentVersion, ".");
+		while (cSt.hasMoreTokens())
+			cToks.add(cSt.nextToken());
+		List tToks = new ArrayList();
+		StringTokenizer tSt = new StringTokenizer(currentVersion, ".");
+		while (tSt.hasMoreTokens())
+			tToks.add(tSt.nextToken());
+
+		int comp = 0;
+		comp: for (int i = 0; i < cToks.size(); i++) {
+			if (tToks.size() <= i) {
+				// equals until then, tested shorter
+				comp = 1;
+				break comp;
+			}
+
+			String c = (String) cToks.get(i);
+			String t = (String) tToks.get(i);
+
+			try {
+				int cInt = Integer.parseInt(c);
+				int tInt = Integer.parseInt(t);
+				if (cInt == tInt)
+					continue comp;
+				else {
+					comp = (cInt - tInt);
+					break comp;
+				}
+			} catch (NumberFormatException e) {
+				if (c.equals(t))
+					continue comp;
+				else {
+					comp = c.compareTo(t);
+					break comp;
+				}
+			}
+		}
+
+		if (comp == 0 && tToks.size() > cToks.size()) {
+			// equals until then, current shorter
+			comp = -1;
+		}
+
+		return comp;
 	}
 
 	public List getLocationsUrls(String baseUrl, String bundleLocations) {

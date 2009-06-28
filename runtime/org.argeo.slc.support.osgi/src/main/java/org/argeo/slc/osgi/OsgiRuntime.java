@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.build.Distribution;
-import org.argeo.slc.core.build.ResourceDistribution;
+import org.argeo.slc.core.build.VersionedResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.ModularDeployedSystem;
 import org.argeo.slc.deploy.TargetData;
@@ -32,7 +32,10 @@ public class OsgiRuntime implements ModularDeployedSystem<OsgiBundle>,
 			String location = bundle.getLocation();
 			if (location != null) {
 				Resource resource = resourceLoader.getResource(location);
-				osgiBundle.setDistribution(new ResourceDistribution(resource));
+				osgiBundle
+						.setDistribution(new VersionedResourceDistribution(
+								osgiBundle.getName(), osgiBundle.getVersion(),
+								resource));
 			}
 		}
 		return modules;

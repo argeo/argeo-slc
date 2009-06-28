@@ -43,5 +43,8 @@
 	<!-- Runtime -->
 	<reference id="dynamicRuntime" interface="org.argeo.slc.deploy.DynamicRuntime" />
 
+	<!-- Provisioning -->
+	<set id="modularDistributions" interface="org.argeo.slc.build.ModularDistribution"
+		cardinality="0..N" />
 
 </beans:beans>

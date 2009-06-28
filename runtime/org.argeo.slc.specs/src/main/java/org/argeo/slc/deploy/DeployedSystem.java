@@ -3,7 +3,7 @@ package org.argeo.slc.deploy;
 import org.argeo.slc.build.Distribution;
 
 /** An instance of a software system. */
-public interface DeployedSystem<D extends Distribution> extends TargetData {
+public interface DeployedSystem extends TargetData {
 	/** Unique ID for this system instance. */
 	public String getDeployedSystemId();
 

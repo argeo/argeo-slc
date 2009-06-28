@@ -32,5 +32,9 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.castor</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.ant</artifactId>
+		</dependency>
 	</dependencies>
 </project>

@@ -1,7 +1,6 @@
 package org.argeo.slc.osgi;
 
 import org.argeo.slc.build.Distribution;
-import org.argeo.slc.core.build.ResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.Module;
 import org.argeo.slc.deploy.TargetData;
@@ -9,7 +8,7 @@ import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
-public class OsgiBundle implements Module<ResourceDistribution> {
+public class OsgiBundle implements Module {
 	private String name;
 	private String version;
 	private Distribution distribution;
@@ -18,6 +17,11 @@ public class OsgiBundle implements Module<ResourceDistribution> {
 
 	public OsgiBundle() {
 
+	}
+
+	public OsgiBundle(String name, String version) {
+		this.name = name;
+		this.version = version;
 	}
 
 	public OsgiBundle(Bundle bundle) {

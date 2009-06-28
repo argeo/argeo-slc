@@ -1,4 +1,4 @@
-package org.argeo.slc.web.mvc.provisioning;
+package org.argeo.slc.osgi.build;
 
 public class EclipseUpdateSiteCategory {
 	private String name;
