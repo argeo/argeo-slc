@@ -10,7 +10,7 @@ qx.Class.define("org.argeo.ria.components.Logger",
 	extend : qx.ui.window.Window,
   
 	construct : function(){
-	  	this.base(arguments, "Logs", "resource/slc/help-contents.png");
+	  	this.base(arguments, "Logs", "resource/ria/help-contents.png");
 		this.set({
 			showMaximize : true,
 			showMinimize : false,

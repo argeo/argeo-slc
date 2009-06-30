@@ -25,7 +25,7 @@ qx.Class.define("org.argeo.ria.remote.RemoteNotifier",
 		eventXPath : {check : "String", init:"//event"},
 		eventTypeXPath : {check : "String", init:"@type"},
 		eventDataXPath : {check : "String", init:"@data"},
-		answerStatusXPath : {check : "String", init:"slc:execution-answer/slc:status"},
+		answerStatusXPath : {check : "String", init:"execution-answer/status"},
 		timeout : {			
 			init : 20000
 		},

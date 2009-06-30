@@ -156,14 +156,14 @@
   	_registerToggleButtonListeners : function(button){
 		button.addListener("changeChecked", function(event){
 			if(button.getUserData("disableListener")) return;
-			this.setUserData("slc.command.toggleState", event.getData());
-			this.setUserData("slc.command.toggleStateSource", button);
+			this.setUserData("ria.command.toggleState", event.getData());
+			this.setUserData("ria.command.toggleStateSource", button);
 			this.fireEvent("execute");
 		}, this);
 		this.addListener("execute", function(event){
-			if(this.getUserData("slc.command.toggleStateSource") == button) return;
+			if(this.getUserData("ria.command.toggleStateSource") == button) return;
 			button.setUserData("disableListener", true);
-			button.setChecked(this.getUserData("slc.command.toggleState"));
+			button.setChecked(this.getUserData("ria.command.toggleState"));
 			button.setUserData("disableListener", false);
 		}, this);  		
   	},

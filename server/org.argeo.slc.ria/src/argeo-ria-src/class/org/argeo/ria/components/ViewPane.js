@@ -89,7 +89,7 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		this.setLayout(new qx.ui.layout.VBox());
 		this.header = new qx.ui.container.Composite();
 		this.header.setLayout(new qx.ui.layout.Dock());
-		this.loadImage = new qx.ui.basic.Image('resource/slc/ajax-loader.gif');
+		this.loadImage = new qx.ui.basic.Image('resource/ria/ajax-loader.gif');
 		this.header.set({appearance:"app-header", height:34});
 		this.headerLabel = new qx.ui.basic.Label(this.getViewTitle()); 
 		this.header.add(this.headerLabel, {edge:"west"});
@@ -111,7 +111,7 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 		if(this.getSplitPaneData()){
 			var data = this.getSplitPaneData();
 			var imgName = (data.orientation=="horizontal"?"go-left":"go-bottom");
-			var image = new qx.ui.basic.Image("resource/slc/"+imgName+".png");
+			var image = new qx.ui.basic.Image("resource/ria/"+imgName+".png");
 			image.addListener("click", function(e){
 				var image = e.getTarget();
 				var data = this.getSplitPaneData();
@@ -122,12 +122,12 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 				var maximize = (data.orientation=="horizontal"?"go-left":"go-bottom");
 				if(crtDim > data.min){
 					objectToResize["set"+functionDim](data.min);
-					image.setSource("resource/slc/"+minimize+".png");
+					image.setSource("resource/ria/"+minimize+".png");
 					this.origDimension = crtDim;
 				}else{
 					if(this.origDimension){
 						objectToResize["set"+functionDim](this.origDimension);
-						image.setSource("resource/slc/"+maximize+".png");
+						image.setSource("resource/ria/"+maximize+".png");
 					}
 				}
 			}, this);
@@ -220,7 +220,7 @@ qx.Class.define("org.argeo.ria.components.ViewPane",
 			this.remove(this.guiContent);
 		}
 		if(this.getCommands()){
-			org.argeo.ria.event.CommandsManager.getInstance().removeCommands(this.getCommands());
+			org.argeo.ria.event.CommandsManager.getInstance().removeCommands(this.getCommands(), this.getViewId());
 			this.setCommands(null);
 		}
 		if(this.getContent()){			

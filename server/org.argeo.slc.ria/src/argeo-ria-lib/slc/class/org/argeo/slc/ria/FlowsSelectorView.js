@@ -391,6 +391,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					.setEventTypeXPath('slc:headers/slc:header[@name="slc_eventType"]');
 			this.remoteNotifier
 					.setEventDataXPath('slc:headers/slc:header[@name="slc_agentId"]');
+			this.remoteNotifier.setAnswerStatusXPath("slc:execution-answer/slc:status");
 			this.remoteNotifier.startPolling();
 			this.UIBus = org.argeo.ria.event.UIBus.getInstance();
 			this.UIBus.registerNotifier(this.remoteNotifier);

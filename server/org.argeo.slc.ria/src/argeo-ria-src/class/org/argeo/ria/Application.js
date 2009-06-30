@@ -10,7 +10,7 @@
 
 /* ************************************************************************
 
-#asset(slc/*)
+#asset(ria/*)
 
 ************************************************************************ */
 
@@ -53,7 +53,7 @@ qx.Class.define("org.argeo.ria.Application",
   		init : {
   			"stop" : {
   				label 		: "Stop", 
-  				icon		: "resource/slc/process-stop.png",
+  				icon		: "resource/ria/process-stop.png",
   				shortcut	: "Control+s",
   				enabled		: false,
   				menu		: null,
@@ -63,7 +63,7 @@ qx.Class.define("org.argeo.ria.Application",
   			},
   			"switchperspective" : {
   				label 		: "Switch Perspective", 
-  				icon		: "resource/slc/view-pane-tree.png",
+  				icon		: "resource/ria/view-pane-tree.png",
   				shortcut	: "",
   				enabled		: true,
   				menu		: "View",
@@ -81,7 +81,7 @@ qx.Class.define("org.argeo.ria.Application",
   			},  			
   			"log" : {
   				label		: "Show Console", 
-  				icon 		: "resource/slc/help-contents.png",
+  				icon 		: "resource/ria/help-contents.png",
   				shortcut 	: "",
   				enabled  	: true,
   				menu	   	: "View",
@@ -94,13 +94,13 @@ qx.Class.define("org.argeo.ria.Application",
   			},
   			"help" : {
   				label		: "About...", 
-  				icon 		: "resource/slc/help-about.png",
+  				icon 		: "resource/ria/help-about.png",
   				shortcut 	: "Control+h",
   				enabled  	: true,
   				menu	   	: "View",
   				toolbar  	: false,
   				callback 	: function(e){
-					var win = new org.argeo.ria.components.Modal("About SLC", null, "SLC is a product from Argeo.");
+					var win = new org.argeo.ria.components.Modal("About ArgeoRIA", null, "ArgeoRIA is a product from Argeo.");
 					win.attachAndShow();
   				}, 
   				command 	: null

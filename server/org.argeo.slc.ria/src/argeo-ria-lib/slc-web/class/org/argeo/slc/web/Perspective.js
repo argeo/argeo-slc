@@ -1,6 +1,12 @@
 /**
  * IPerspective Implementation : Horizontal split pane defining two panes, "list" and "applet".
  */
+ 
+/* ************************************************************************
+
+#asset(slc/*)
+
+************************************************************************ */ 
 qx.Class.define("org.argeo.slc.web.Perspective",
 {
   extend : qx.core.Object,
