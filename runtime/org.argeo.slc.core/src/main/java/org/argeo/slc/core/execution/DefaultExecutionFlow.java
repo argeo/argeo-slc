@@ -15,13 +15,10 @@ import org.argeo.slc.structure.StructureAware;
 import org.argeo.slc.structure.StructureRegistry;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.validation.MapBindingResult;
 
 public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
-		BeanNameAware, StructureAware<TreeSPath>, ResourceLoaderAware {
+		BeanNameAware, StructureAware<TreeSPath> {
 
 	private final ExecutionSpec executionSpec;
 	private String name = null;
@@ -30,8 +27,6 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	private String path;
 	private StructureRegistry<TreeSPath> registry = new TreeSRegistry();
-
-	private ResourceLoader resourceLoader = null;
 
 	public DefaultExecutionFlow() {
 		this.executionSpec = new DefaultExecutionSpec();
@@ -93,6 +88,7 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		}
 	}
 
+	@SuppressWarnings(value = { "unchecked" })
 	public void afterPropertiesSet() throws Exception {
 		if (path != null) {
 			for (Runnable executable : executables) {
@@ -177,10 +173,6 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		if (this.path == null) {
 			this.path = path.toString();
 		}
-	}
-
-	public void setResourceLoader(ResourceLoader resourceLoader) {
-		this.resourceLoader = resourceLoader;
 	}
 
 }

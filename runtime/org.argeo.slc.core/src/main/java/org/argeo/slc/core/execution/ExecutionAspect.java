@@ -1,59 +1,84 @@
 package org.argeo.slc.core.execution;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
-import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
+import org.argeo.slc.execution.ExecutionStack;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 
 @Aspect
 public class ExecutionAspect {
-	static ThreadLocal<Boolean> inModuleExecution = new ThreadLocal<Boolean>() {
-		protected Boolean initialValue() {
-			return false;
-		}
-	};
+	private final static Log log = LogFactory.getLog(ExecutionAspect.class);
 
+	private ExecutionStack executionStack;
 	private ExecutionContext executionContext;
 
-	public ExecutionContext getExecutionContext() {
-		return executionContext;
+	@Around("flowExecution()")
+	public void aroundFlow(ProceedingJoinPoint pjp) throws Throwable {
+		// IMPORTANT: Make sure that the execution context is called before the execution stack
+		executionContext.getUuid();
+		
+		ExecutionFlow executionFlow = (ExecutionFlow) pjp.getTarget();
+		executionStack.enterFlow(executionFlow);
+		executionContext.setVariable(ExecutionContext.VAR_FLOW_ID,
+				executionStack.getCurrentStackLevelUuid());
+		executionContext.setVariable(ExecutionContext.VAR_FLOW_NAME,
+				executionFlow.getName());
+
+		if (log.isDebugEnabled())
+			logStackEvent("=> ", executionFlow);
+		// Actually execute the flow
+		pjp.proceed();
+		if (log.isDebugEnabled())
+			logStackEvent("<= ", executionFlow);
+
+		executionStack.leaveFlow(executionFlow);
 	}
 
-	public void setExecutionContext(ExecutionContext executionContext) {
-		this.executionContext = executionContext;
-	}
-
-	@Before("flowExecution()")
-	public void beforeFlow(JoinPoint jp) throws Throwable {
-		ExecutionFlow executionFlow = (ExecutionFlow) jp.getTarget();
-		executionContext.enterFlow(executionFlow);
-	}
-
-	@After("flowExecution()")
-	public void afterFlow(JoinPoint jp) throws Throwable {
-		ExecutionFlow executionFlow = (ExecutionFlow) jp.getTarget();
-		executionContext.leaveFlow(executionFlow);
-	}
-
-	@Before("moduleExecution()")
-	public void beforeModuleExecution(JoinPoint jp) throws Throwable {
-		inModuleExecution.set(true);
-	}
-
-	@After("moduleExecution()")
-	public void afterModuleExecution(JoinPoint jp) throws Throwable {
-		inModuleExecution.set(false);
+	@Around("getVariable()")
+	public Object aroundGetVariable(ProceedingJoinPoint pjp) throws Throwable {
+		Object obj = pjp.proceed();
+		// if the variable was not found, look in the stack starting at the
+		// upper flows
+		if (obj == null) {
+			String key = pjp.getArgs()[0].toString();
+			obj = executionStack.findLocalVariable(key);
+		}
+		return obj;
 	}
 
 	@Pointcut("execution(void org.argeo.slc.execution.ExecutionFlow.run())")
 	public void flowExecution() {
 	}
 
-	@Pointcut("execution(void org.argeo.slc.execution.ExecutionModule.execute(..))")
-	public void moduleExecution() {
+	@Pointcut("execution(* org.argeo.slc.execution.ExecutionContext.getVariable(..))")
+	public void getVariable() {
+	}
+
+	public void setExecutionStack(ExecutionStack executionStack) {
+		this.executionStack = executionStack;
+	}
+
+	public void setExecutionContext(ExecutionContext executionContext) {
+		this.executionContext = executionContext;
+	}
+
+	protected void logStackEvent(String symbol, ExecutionFlow executionFlow) {
+		Integer stackSize = executionStack.getStackSize();
+		log.debug(depthSpaces(stackSize) + symbol + executionFlow + " #"
+				+ executionStack.getCurrentStackLevelUuid() + ", depth="
+				+ stackSize);
+	}
+
+	private String depthSpaces(int depth) {
+		StringBuffer buf = new StringBuffer(depth * 2);
+		for (int i = 0; i < depth; i++)
+			buf.append("  ");
+		return buf.toString();
 	}
 
 }

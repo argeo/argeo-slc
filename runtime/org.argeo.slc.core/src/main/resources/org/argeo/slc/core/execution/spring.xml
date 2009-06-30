@@ -35,6 +35,10 @@
 		scope="execution">
 		<aop:scoped-proxy />
 	</bean>
+	<bean id="executionStack" class="org.argeo.slc.core.execution.DefaultExecutionStack"
+		scope="execution">
+		<aop:scoped-proxy />
+	</bean>
 
 	<bean id="instantiationManager" class="org.argeo.slc.core.execution.InstantiationManager" />
 
@@ -43,15 +47,11 @@
 
 	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor">
 		<property name="executionContext" ref="executionContext" />
-		<property name="executionScope" ref="executionScope" />
-		<property name="instantiationManager" ref="instantiationManager" />
-	</bean>
-
-	<bean class="org.argeo.slc.core.execution.InstantiationPostProcessor">
 		<property name="instantiationManager" ref="instantiationManager" />
 	</bean>
 
 	<bean class="org.argeo.slc.core.execution.ExecutionAspect">
+		<property name="executionStack" ref="executionStack" />
 		<property name="executionContext" ref="executionContext" />
 	</bean>
 

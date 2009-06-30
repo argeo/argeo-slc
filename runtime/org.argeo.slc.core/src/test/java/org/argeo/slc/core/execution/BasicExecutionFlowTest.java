@@ -78,7 +78,7 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 		executionParameters.put("p6", "e6");
 		executionParameters.put("p7", "e7");
 		executionParameters.put("p8", "e8");
-		executionContext.addVariables(executionParameters);
+		addVariables(executionContext, executionParameters);
 
 		((ExecutionFlow) applicationContext.getBean("flowA")).run();
 		validateTestResult((SimpleTestResult) applicationContext
@@ -98,7 +98,7 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 		executionParameters.put("p4", "e4");
 		executionParameters.put("p5", "e5");
 		executionParameters.put("p6", "e6");
-		executionContext.addVariables(executionParameters);
+		addVariables(executionContext, executionParameters);
 
 		((ExecutionFlow) applicationContext.getBean("flowA")).run();
 		validateTestResult((SimpleTestResult) applicationContext
@@ -160,5 +160,11 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 		((ExecutionFlow) applicationContext.getBean("flow2")).run();
 		validateTestResult(res, TestStatus.FAILED);
 		applicationContext.close();
+	}
+
+	protected void addVariables(ExecutionContext executionContext,
+			Map<String, String> vars) {
+		for (String key : vars.keySet())
+			executionContext.setVariable(key, vars.get(key));
 	}
 }

@@ -1,104 +1,114 @@
 package org.argeo.slc.core.execution;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.execution.ExecutionContext;
+import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.execution.ExecutionSpec;
+import org.argeo.slc.execution.ExecutionStack;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.Scope;
 
 public class ExecutionScope implements Scope {
 	private final static Log log = LogFactory.getLog(ExecutionScope.class);
 
-	private final ThreadLocal<ExecutionContext> executionContext = new ThreadLocal<ExecutionContext>();
+	private final ThreadLocal<ExecutionStack> executionStack = new ThreadLocal<ExecutionStack>();
+	public final ThreadLocal<String> executionStackBeanName = new ThreadLocal<String>();
 
-	public final ThreadLocal<String> executionContextBeanName = new ThreadLocal<String>();
+	private final ThreadLocal<ExecutionContext> executionContext = new ThreadLocal<ExecutionContext>();
+	private final ThreadLocal<String> executionContextBeanName = new ThreadLocal<String>();
 
 	public Object get(String name, ObjectFactory objectFactory) {
-
 		if (log.isTraceEnabled())
-			log.trace("Getting scoped bean " + name);
+			log.debug("Get execution scoped bean " + name);
 
-		// check if an execution context is defined for this thread
+		// shortcuts
+		if (executionStackBeanName.get() != null
+				&& name.equals(executionStackBeanName.get())) {
+			return executionStack.get();
+		}
+
+		if (executionContextBeanName.get() != null
+				&& name.equals(executionContextBeanName.get())) {
+			return executionContext.get();
+		}
+
+		// execution context must be defined first
 		if (executionContext.get() == null) {
-			// if not, we expect objectFactory to produce an ExecutionContext
 			Object obj = objectFactory.getObject();
 			if (obj instanceof ExecutionContext) {
-				// Check whether we are in an execution
-				// FIXME: do it more properly (not static)
-				// see https://www.argeo.org/bugzilla/show_bug.cgi?id=82
-				if (!ExecutionAspect.inModuleExecution.get()) {
-					log
-							.error("An execution context is being instantiated outside a module execution."
-									+ " Please check your references to execution contexts."
-									+ " This may lead to unexpected behaviour and will be rejected in the future.");
-					//Thread.dumpStack();
-				}
-
-				// store the ExecutionContext in the ThreadLocal
-				executionContext.set((ExecutionContext) obj);
-				executionContextBeanName.set(name);
-				if (log.isDebugEnabled()) {
-					log.debug("Execution context #"
-							+ executionContext.get().getUuid()
-							+ " instantiated. (beanName="
-							+ executionContextBeanName.get() + ")");
-					// Thread.dumpStack();
-				}
-				return obj;
+				return dealWithSpecialScopedObject(name, executionContext,
+						executionContextBeanName, (ExecutionContext) obj);
 			} else {
-				throw new SlcException(
-						"Expected an ExecutionContext, got an object of class "
-								+ obj.getClass()
-								+ " for bean "
-								+ name
-								+ ": make sure that you have porperly set scope=\"execution\" where required");
+				// TODO: use execution context wrapper
+				throw new SlcException("No execution context has been defined.");
 			}
 		}
 
-		if (name.equals(executionContextBeanName.get())) {
-			return executionContext.get();
-		} else {
-			// see if the executionContext already knows the object
-			Object obj = executionContext.get().findScopedObject(name);
-			if (obj == null) {
-				obj = objectFactory.getObject();
-				if (!(obj instanceof ExecutionContext)) {
-					executionContext.get().addScopedObject(name, obj);
-				} else {
-					throw new SlcException(
-							"Only one ExecutionContext can be defined per Thread");
-				}
+		// for other scoped objects, an executions stack must be available
+		if (executionStack.get() == null) {
+			Object obj = objectFactory.getObject();
+			if (obj instanceof ExecutionStack) {
+				return dealWithSpecialScopedObject(name, executionStack,
+						executionStackBeanName, (ExecutionStack) obj);
+			} else {
+				throw new SlcException("No execution stack has been defined.");
+			}
+		}
+
+		// see if the execution stack already knows the object
+		Object obj = executionStack.get().findScopedObject(name);
+		if (obj == null) {
+			obj = objectFactory.getObject();
+			if (obj instanceof ExecutionContext)
+				throw new SlcException(
+						"Only one execution context can be defined per thread");
+			if (obj instanceof ExecutionStack)
+				throw new SlcException(
+						"Only one execution stack can be defined per thread");
+
+			checkForbiddenClasses(obj);
+
+			executionStack.get().addScopedObject(name, obj);
+		}
+		return obj;
+
+	}
+
+	protected <T> T dealWithSpecialScopedObject(String name,
+			ThreadLocal<T> threadLocal,
+			ThreadLocal<String> threadLocalBeanName, T newObj) {
+
+		T obj = threadLocal.get();
+		if (obj == null) {
+			obj = newObj;
+			threadLocal.set(obj);
+			threadLocalBeanName.set(name);
+			if (log.isDebugEnabled()) {
+				log.debug(obj.getClass() + " instantiated. (beanName=" + name
+						+ ")");
 			}
 			return obj;
+		} else {
+			throw new SlcException("Only one scoped " + obj.getClass()
+					+ " can be defined per thread");
 		}
 
-		// if (ExecutionContext.getScopedObjects().containsKey(name)) {
-		// // returns cached instance
-		// Object obj = ExecutionContext.getScopedObjects().get(name);
-		// if (log.isTraceEnabled())
-		// log.trace("Return cached scoped object " + obj);
-		// return obj;
-		// } else {
-		// // creates instance
-		// Object obj = objectFactory.getObject();
-		// ExecutionContext.getScopedObjects().put(name, obj);
-		// if (log.isTraceEnabled())
-		// log.trace("Created regular scoped object " + obj);
-		// return obj;
-		// }
+	}
+
+	protected void checkForbiddenClasses(Object obj) {
+		Class<?> clss = obj.getClass();
+		if (ExecutionFlow.class.isAssignableFrom(clss)
+				|| ExecutionSpec.class.isAssignableFrom(clss)) {
+			throw new UnsupportedException("Execution scoped object", clss);
+		}
 	}
 
 	public String getConversationId() {
-
+		// TODO: is it the most relevant?
 		return executionContext.get().getUuid();
-	}
-
-	public Boolean hasExecutionContext() {
-		return executionContext.get() != null;
 	}
 
 	public void registerDestructionCallback(String name, Runnable callback) {
@@ -107,7 +117,8 @@ public class ExecutionScope implements Scope {
 	}
 
 	public Object remove(String name) {
-		log.debug("Remove object " + name);
+		if (log.isDebugEnabled())
+			log.debug("Remove object " + name);
 		throw new UnsupportedOperationException();
 	}
 

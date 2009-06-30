@@ -120,8 +120,12 @@ public class FileExecutionResources implements ExecutionResources {
 
 		if (withExecutionSubdirectory) {
 			Assert.notNull(executionContext, "execution context is null");
-			String path = baseDir.getPath() + File.separator
-					+ sdf().format(executionContext.getCreationDate())
+			String path = baseDir.getPath()
+					+ File.separator
+					+ sdf()
+							.format(
+									executionContext
+											.getVariable(ExecutionContext.VAR_EXECUTION_CONTEXT_CREATION_DATE))
 					+ executionContext.getUuid();
 			File executionDir = new File(path);
 

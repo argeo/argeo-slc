@@ -22,9 +22,11 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
-public class OsgiExecutionModulesManager extends AbstractExecutionModulesManager implements
-		InitializingBean, DisposableBean {
-	private final static Log log = LogFactory.getLog(OsgiExecutionModulesManager.class);
+public class OsgiExecutionModulesManager extends
+		AbstractExecutionModulesManager implements InitializingBean,
+		DisposableBean {
+	private final static Log log = LogFactory
+			.getLog(OsgiExecutionModulesManager.class);
 
 	private BundlesManager bundlesManager;
 	private ServiceTracker executionContexts;
@@ -169,9 +171,6 @@ public class OsgiExecutionModulesManager extends AbstractExecutionModulesManager
 		String moduleName = realizedFlow.getModuleName();
 		String moduleVersion = realizedFlow.getModuleVersion();
 
-		ExecutionContext executionContext = findExecutionContext(moduleName,
-				moduleVersion);
-
 		// Check whether a descriptor converter is published by this module
 		ExecutionFlowDescriptorConverter descriptorConverter = findExecutionFlowDescriptorConverter(
 				moduleName, moduleVersion);
@@ -184,7 +183,10 @@ public class OsgiExecutionModulesManager extends AbstractExecutionModulesManager
 			variablesToAdd = defaultDescriptorConverter
 					.convertValues(realizedFlow.getFlowDescriptor());
 
-		executionContext.addVariables(variablesToAdd);
+		ExecutionContext executionContext = findExecutionContext(moduleName,
+				moduleVersion);
+		for (String key : variablesToAdd.keySet())
+			executionContext.setVariable(key, variablesToAdd.get(key));
 
 		ExecutionFlow flow = findExecutionFlow(moduleName, moduleVersion,
 				realizedFlow.getFlowDescriptor().getName());
