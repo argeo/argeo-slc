@@ -4,22 +4,20 @@
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
-	
+
 	<description>Minimal configuration</description>
-	
+
 	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
 		<property name="scopes">
 			<map>
 				<entry key="execution">
-					<ref local="executionScope" />
+					<bean class="org.argeo.slc.core.execution.ExecutionScope" />
 				</entry>
 			</map>
 		</property>
 	</bean>
 
-	<bean id="executionScope" class="org.argeo.slc.core.execution.ExecutionScope" />
 
 	<bean id="executionStack" class="org.argeo.slc.core.execution.DefaultExecutionStack"
 		scope="execution">
@@ -27,9 +25,6 @@
 	</bean>
 
 	<bean id="instantiationManager" class="org.argeo.slc.core.execution.InstantiationManager" />
-
-	<bean id="parameterRef" factory-bean="instantiationManager"
-		factory-method="createRef" abstract="true" />
 
 	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor">
 		<property name="executionContext" ref="executionContext" />

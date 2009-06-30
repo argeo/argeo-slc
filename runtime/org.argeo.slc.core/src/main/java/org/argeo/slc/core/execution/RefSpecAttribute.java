@@ -1,7 +1,7 @@
 package org.argeo.slc.core.execution;
 
 public class RefSpecAttribute extends AbstractSpecAttribute {
-	private Class targetClass;
+	private Class<?> targetClass;
 	/** Read only. */
 	private String targetClassName;
 	private Object value = null;
@@ -14,11 +14,11 @@ public class RefSpecAttribute extends AbstractSpecAttribute {
 		this.value = value;
 	}
 
-	public Class getTargetClass() {
+	public Class<?> getTargetClass() {
 		return targetClass;
 	}
 
-	public void setTargetClass(Class targetClass) {
+	public void setTargetClass(Class<?> targetClass) {
 		this.targetClass = targetClass;
 		this.targetClassName = targetClass.getName();
 	}

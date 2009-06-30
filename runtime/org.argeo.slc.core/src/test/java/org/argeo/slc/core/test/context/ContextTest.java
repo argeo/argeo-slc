@@ -6,9 +6,8 @@ import org.argeo.slc.core.test.SimpleTestResult;
 import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestStatus;
 import org.argeo.slc.test.context.ContextAware;
-import org.argeo.slc.unit.internal.AbstractSpringTestCase;
 
-public class ContextTest extends AbstractSpringTestCase {
+public class ContextTest extends AbstractInternalSpringTestCase {
 
 	public void testComplexContext() {
 		SimpleTestResult testResult = new SimpleTestResult();

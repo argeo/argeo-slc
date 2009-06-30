@@ -1,4 +1,4 @@
-package org.argeo.slc.core.execution;
+package org.argeo.slc.core.execution.doc;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;

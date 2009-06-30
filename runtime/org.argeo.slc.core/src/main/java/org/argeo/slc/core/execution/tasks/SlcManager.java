@@ -11,11 +11,13 @@ import org.argeo.slc.process.SlcExecutionRelated;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.structure.StructureRegistry;
 
+/** Use {@link MethodCall} instead. */
+@Deprecated
 public class SlcManager implements Runnable, SlcExecutionRelated {
 	private String uuid;
 	private String slcExecutionUuid;
 	private String slcExecutionStepUuid;
-	
+
 	private String action;
 	private DeployedSystemManager<DeployedSystem> manager;
 
@@ -23,17 +25,19 @@ public class SlcManager implements Runnable, SlcExecutionRelated {
 		uuid = UUID.randomUUID().toString();
 		executeActions(StructureRegistry.ALL);
 	}
-	
+
 	protected void executeActions(String mode) {
 		try {
-			Method method = manager.getClass().getMethod(action, null);
-			method.invoke(manager, null);
+			Class<?>[] argClasses = null;
+			Method method = manager.getClass().getMethod(action, argClasses);
+			Object[] argObjects = null;
+			method.invoke(manager, argObjects);
 		} catch (Exception e) {
 			throw new SlcException("Cannot execute action " + action
 					+ " for manager " + manager, e);
 		}
 	}
-	
+
 	public void setAction(String action) {
 		this.action = action;
 	}
@@ -65,7 +69,7 @@ public class SlcManager implements Runnable, SlcExecutionRelated {
 	public void setSlcExecutionStepUuid(String slcExecutionStepUuid) {
 		this.slcExecutionStepUuid = slcExecutionStepUuid;
 	}
-	
+
 	public void notifySlcExecution(SlcExecution slcExecution) {
 		if (slcExecution != null) {
 			slcExecutionUuid = slcExecution.getUuid();

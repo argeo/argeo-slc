@@ -1,16 +1,11 @@
-package org.argeo.slc.core.execution;
+package org.argeo.slc.core.execution.doc;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 public class ConsoleContextDescriber implements ContextDescriber {
-	private final static Log log = LogFactory
-			.getLog(ConsoleContextDescriber.class);
-
 	public void describeContext(BeanDefinitionRegistry registry) {
 		String[] beanNames = registry.getBeanDefinitionNames();
 		for (String beanName : beanNames) {

@@ -86,7 +86,7 @@ public class ExecutionScope implements Scope {
 			obj = newObj;
 			threadLocal.set(obj);
 			threadLocalBeanName.set(name);
-			if (log.isDebugEnabled()) {
+			if (log.isTraceEnabled()) {
 				log.debug(obj.getClass() + " instantiated. (beanName=" + name
 						+ ")");
 			}

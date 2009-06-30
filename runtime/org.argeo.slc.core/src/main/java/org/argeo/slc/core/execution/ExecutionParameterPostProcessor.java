@@ -86,7 +86,6 @@ public class ExecutionParameterPostProcessor extends
 					placeholder).toString();
 
 		else {// execution
-			log.debug("Bean class: " + bean.getClass());
 			// next call fail if no execution context available
 			Object obj = executionContext.getVariable(placeholder);
 			if (obj != null) {
@@ -159,7 +158,7 @@ public class ExecutionParameterPostProcessor extends
 			}
 			return entriesModified ? newContent : value;
 		} else {
-			//log.debug(beanName + ": " + value.getClass() + " : " + value);
+			// log.debug(beanName + ": " + value.getClass() + " : " + value);
 			return value;
 		}
 

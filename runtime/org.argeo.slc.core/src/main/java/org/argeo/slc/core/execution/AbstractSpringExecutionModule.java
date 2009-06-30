@@ -1,23 +1,6 @@
 package org.argeo.slc.core.execution;
 
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.ExecutionContext;
-import org.argeo.slc.execution.ExecutionFlow;
-import org.argeo.slc.execution.ExecutionFlowDescriptor;
-import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
 import org.argeo.slc.execution.ExecutionModule;
-import org.argeo.slc.execution.ExecutionModuleDescriptor;
-import org.argeo.slc.execution.ExecutionSpec;
-import org.argeo.slc.execution.ExecutionSpecAttribute;
-import org.springframework.aop.scope.ScopedObject;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.generic.GenericBeanFactoryAccessor;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.util.Assert;
 
 @Deprecated
 public abstract class AbstractSpringExecutionModule implements ExecutionModule

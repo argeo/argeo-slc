@@ -1,4 +1,4 @@
-package org.argeo.slc.unit.internal;
+package org.argeo.slc.core.test.context;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /** Helper for tests using a Spring application co,text. */
-public abstract class AbstractSpringTestCase extends TestCase {
+abstract class AbstractInternalSpringTestCase extends TestCase {
 	protected final Log log = LogFactory.getLog(getClass());
 	private ConfigurableApplicationContext context;
 
@@ -26,15 +26,8 @@ public abstract class AbstractSpringTestCase extends TestCase {
 		if (context == null) {
 			context = new ClassPathXmlApplicationContext(
 					getApplicationContextLocation());
-			if (getIsStartContext())
-				context.start();
 		}
 		return context;
-	}
-
-	/** Whether the context should be started after being created. */
-	protected Boolean getIsStartContext() {
-		return false;
 	}
 
 	/** Returns a bean from the underlying context */
