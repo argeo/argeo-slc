@@ -17,6 +17,7 @@
 	</modules>
 	<properties>
 		<developmentCycle>0.11</developmentCycle>
+		<version.argeo-ria>0.11.4-SNAPSHOT</version.argeo-ria>
 		<version.spring>2.5.6.SEC01</version.spring>
 		<version.spring-ws>1.5.7.A</version.spring-ws>
 		<version.spring-osgi>1.2.0</version.spring-osgi>
@@ -281,6 +282,12 @@ limitations under the License.
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>org.argeo.slc.ria</artifactId>
 				<version>${project.version}</version>
+			</dependency>
+			
+			<dependency>
+				<groupId>org.argeo.ria</groupId>
+				<artifactId>org.argeo.ria.core</artifactId>
+				<version>${version.argeo-ria}</version>
 			</dependency>
 			<!--
 				<dependency> <groupId>org.argeo.slc.server</groupId>

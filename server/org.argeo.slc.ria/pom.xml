@@ -95,20 +95,34 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>assembly-ria</id>
-						<phase>package</phase>
+						<id>unpack-argeo-ria-sdk</id>
+						<phase>initialize</phase>
 						<goals>
-							<goal>single</goal>
+							<goal>unpack</goal>
 						</goals>
 						<configuration>
-							<descriptors>
-								<descriptor>assembly/ria.xml</descriptor>
-							</descriptors>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.argeo.ria</groupId>
+									<artifactId>org.argeo.ria.core</artifactId>
+									<classifier>ria</classifier>
+									<type>zip</type>
+									<outputDirectory>src/argeo-ria-src</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>
 					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
 					<execution>
 						<id>assembly-ria-slc</id>
 						<phase>package</phase>
