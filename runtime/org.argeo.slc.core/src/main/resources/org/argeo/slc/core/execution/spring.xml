@@ -7,23 +7,19 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
+	<description>Default Capabilities</description>
+
+	<import resource="runtime.xml" />
 	<import resource="specs.xml" />
 	<import resource="templates.xml" />
 	<import resource="defaults.xml" />
 	<import resource="utils.xml" />
 	<import resource="tasks/core.xml" />
 
-	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
-		<property name="scopes">
-			<map>
-				<entry key="execution">
-					<ref local="executionScope" />
-				</entry>
-			</map>
-		</property>
+	<bean id="executionContext" class="org.argeo.slc.core.execution.MapExecutionContext"
+		scope="execution">
+		<aop:scoped-proxy />
 	</bean>
-
-	<bean id="executionScope" class="org.argeo.slc.core.execution.ExecutionScope" />
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -31,30 +27,7 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
-	<bean id="executionContext" class="org.argeo.slc.core.execution.MapExecutionContext"
-		scope="execution">
-		<aop:scoped-proxy />
-	</bean>
-	<bean id="executionStack" class="org.argeo.slc.core.execution.DefaultExecutionStack"
-		scope="execution">
-		<aop:scoped-proxy />
-	</bean>
-
-	<bean id="instantiationManager" class="org.argeo.slc.core.execution.InstantiationManager" />
-
 	<bean id="parameterRef" factory-bean="instantiationManager"
 		factory-method="createRef" abstract="true" />
-
-	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor">
-		<property name="executionContext" ref="executionContext" />
-		<property name="instantiationManager" ref="instantiationManager" />
-	</bean>
-
-	<bean class="org.argeo.slc.core.execution.ExecutionAspect">
-		<property name="executionStack" ref="executionStack" />
-		<property name="executionContext" ref="executionContext" />
-	</bean>
-
-	<aop:aspectj-autoproxy />
 
 </beans>

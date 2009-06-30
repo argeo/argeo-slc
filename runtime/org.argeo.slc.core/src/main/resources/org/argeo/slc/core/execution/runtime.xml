@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	
+	<description>Minimal configuration</description>
+	
+	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+		<property name="scopes">
+			<map>
+				<entry key="execution">
+					<ref local="executionScope" />
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="executionScope" class="org.argeo.slc.core.execution.ExecutionScope" />
+
+	<bean id="executionStack" class="org.argeo.slc.core.execution.DefaultExecutionStack"
+		scope="execution">
+		<aop:scoped-proxy />
+	</bean>
+
+	<bean id="instantiationManager" class="org.argeo.slc.core.execution.InstantiationManager" />
+
+	<bean id="parameterRef" factory-bean="instantiationManager"
+		factory-method="createRef" abstract="true" />
+
+	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor">
+		<property name="executionContext" ref="executionContext" />
+		<property name="instantiationManager" ref="instantiationManager" />
+	</bean>
+
+	<bean class="org.argeo.slc.core.execution.ExecutionAspect">
+		<property name="executionStack" ref="executionStack" />
+		<property name="executionContext" ref="executionContext" />
+	</bean>
+
+	<aop:aspectj-autoproxy />
+
+</beans>
