@@ -16,7 +16,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			init : {
 				"submitform" : {
 					label : "Execute Batch",
-					icon : "resource/slc/media-playback-start.png",
+					icon : "org.argeo.slc.ria/media-playback-start.png",
 					shortcut : null,
 					enabled : false,
 					menu : "Launcher",
@@ -31,7 +31,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				/*
 				"toggleopenonadd" : {
 					label : "Auto edit on Add",
-					icon : "resource/slc/document-open.png",
+					icon : "org.argeo.slc.ria/document-open.png",
 					shortcut : null,
 					enabled : true,
 					toggle : true,
@@ -46,7 +46,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				},
 				"editexecutionspecs" : {
 					label : "Edit Execution Specs",
-					icon : "resource/slc/document-open.png",
+					icon : "org.argeo.slc.ria/document-open.png",
 					shortcut : null,
 					enabled : false,
 					menu : "Launcher",
@@ -75,7 +75,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				*/
 				"removefrombatch" : {
 					label : "Remove from batch",
-					icon : "resource/slc/edit-delete.png",
+					icon : "org.argeo.slc.ria/edit-delete.png",
 					shortcut : null,
 					enabled : false,
 					menu : "Launcher",
@@ -107,7 +107,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				},
 				"clearbatch" : {
 					label : "Clear batch",
-					icon : "resource/slc/user-trash-full.png",
+					icon : "org.argeo.slc.ria/user-trash-full.png",
 					shortcut : null,
 					enabled : true,
 					menu : "Launcher",
@@ -269,7 +269,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 
 			this.dropDecorator = new qx.ui.decoration.Background();			
 			this.dropDecorator.set({
-				backgroundImage : "resource/slc/drophere.gif",
+				backgroundImage : "org.argeo.slc.ria/drophere.gif",
 				backgroundRepeat : "no-repeat"
 			});
 
@@ -346,7 +346,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			var batchEntry = new org.argeo.slc.ria.execution.BatchEntrySpec(
 					executionModule, executionFlow);
 			var label = batchEntry.getLabel();
-			var icon = target.getIcon() || "resource/slc/office-document.png";
+			var icon = target.getIcon() || "org.argeo.slc.ria/office-document.png";
 			var item = new qx.ui.form.ListItem(label, icon);
 			/*
 			item.addListener("dblclick", function(e) {

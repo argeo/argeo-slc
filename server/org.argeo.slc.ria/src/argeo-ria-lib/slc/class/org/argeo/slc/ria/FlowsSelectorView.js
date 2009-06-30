@@ -36,7 +36,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			init : {
 				"addtobatch" : {
 					label : "Add to batch",
-					icon : "resource/slc/list-add.png",
+					icon : "org.argeo.slc.ria/list-add.png",
 					shortcut : null,
 					enabled : true,
 					menu : null,
@@ -93,7 +93,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				},
 				"reloadtree" : {
 					label : "Reload",
-					icon : "resource/slc/view-refresh.png",
+					icon : "org.argeo.slc.ria/view-refresh.png",
 					shortcut : "Control+m",
 					enabled : false,
 					menu : "Launcher",
@@ -196,7 +196,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 							host + ' (' + uuid + ')', modulesLoader,
 							"Loading Modules...", folder.getDragData());
 					agentFolder.setUserData("agentUuid", uuid);
-					agentFolder.setIcon("resource/slc/mime-xsl-22.png");
+					agentFolder.setIcon("org.argeo.slc.ria/mime-xsl-22.png");
 					folder.add(agentFolder);
 				}
 				if(newAgents){

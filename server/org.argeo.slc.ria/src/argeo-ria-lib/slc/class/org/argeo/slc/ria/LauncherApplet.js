@@ -37,7 +37,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
   		init : {
   			"submitform" : {
   				label	 	: "Execute", 
-  				icon 		: "resource/slc/media-playback-start.png",
+  				icon 		: "resource/org.argeo.slc.ria/media-playback-start.png",
   				shortcut 	: "Control+e",
   				enabled  	: true,
   				menu	   	: "Launcher",
@@ -49,7 +49,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
   			},  			
   			"reloadagents" : {
   				label	 	: "Reload Agents", 
-  				icon 		: "resource/slc/view-refresh.png",
+  				icon 		: "org.argeo.slc.ria/view-refresh.png",
   				shortcut 	: "Control+r",
   				enabled  	: true,
   				menu	   	: "Launcher",
@@ -141,7 +141,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		var execButtonPane = new qx.ui.container.Composite(new qx.ui.layout.Dock());
 		var execButton = new qx.ui.form.Button(
 			"Execute", 
-			"resource/slc/media-playback-start-32.png"			
+			"org.argeo.slc.riamedia-playback-start-32.png"			
 		)
 		execButton.addListener("click", function(){
 			this.submitForm();
@@ -243,7 +243,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 	_createSimpleForm : function(formObject){
 
 		this._addFormInputText(formObject, "ant.file", "File", "Category1/SubCategory2/build.xml");
-		var moreButton = new qx.ui.basic.Image("resource/slc/list-add.png");
+		var moreButton = new qx.ui.basic.Image("org.argeo.slc.ria/list-add.png");
 		moreButton.setToolTip(new qx.ui.tooltip.ToolTip("Add a parameter"));
 		moreButton.setCursor("pointer");
 		moreButton.addListener("click", function(){
@@ -266,7 +266,7 @@ qx.Class.define("org.argeo.slc.ria.LauncherApplet",
 		this._addFormInputText(formObject, "host", "Host", "localhost");
 		this._addFormInputText(formObject, "user", "User", "user");
 		
-		var moreButton = new qx.ui.basic.Image("resource/slc/list-add.png");
+		var moreButton = new qx.ui.basic.Image("org.argeo.slc.ria/list-add.png");
 		moreButton.setToolTip(new qx.ui.tooltip.ToolTip("Add a parameter"));
 		moreButton.setCursor("pointer");
 		moreButton.addListener("click", function(){

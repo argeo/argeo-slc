@@ -16,7 +16,7 @@ qx.Class.define("org.argeo.slc.ria.SpecsEditorView",
 			init : {
 				"updateData" : {
 					label : "Edit Execution Specs",
-					icon : "resource/slc/document-open.png",
+					icon : "org.argeo.slc.riadocument-open.png",
 					shortcut : null,
 					enabled : false,
 					menu : null,

@@ -33,7 +33,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   		init : {
   			"reloadlogs" : {
   				label	 	: "Reload Logs", 
-  				icon 		: "resource/slc/view-refresh.png",
+  				icon 		: "org.argeo.slc.ria/view-refresh.png",
   				shortcut 	: "Control+r",
   				enabled  	: true,
   				menu	   	: null,

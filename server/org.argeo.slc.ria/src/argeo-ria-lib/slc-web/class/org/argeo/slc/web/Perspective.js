@@ -4,7 +4,7 @@
  
 /* ************************************************************************
 
-#asset(slc/*)
+#asset(org.argeo.slc.ria/*)
 
 ************************************************************************ */ 
 qx.Class.define("org.argeo.slc.web.Perspective",
@@ -19,7 +19,7 @@ qx.Class.define("org.argeo.slc.web.Perspective",
   
   statics : {
   	LABEL : "Test Results",
-  	ICON : "resource/slc/office-chart.png"
+  	ICON : "org.argeo.slc.ria/office-chart.png"
   },
   
   members : {
