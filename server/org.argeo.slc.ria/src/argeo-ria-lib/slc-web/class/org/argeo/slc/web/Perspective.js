@@ -4,7 +4,7 @@
  
 /* ************************************************************************
 
-#asset(org.argeo.slc.ria/*)
+#asset(argeo-ria-lib/slc/resource/org.argeo.slc.ria/*)
 
 ************************************************************************ */ 
 qx.Class.define("org.argeo.slc.web.Perspective",
