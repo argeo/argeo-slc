@@ -1,0 +1,26 @@
+New naming for Argeo Maven Plugins
+
+	Update your maven plugin shortcut in ~/.m2/settings.xml
+	
++-------------------------------+
+<settings xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+	<pluginGroups>
+	  <pluginGroup>org.argeo.maven.plugins</pluginGroup>
+	</pluginGroups>
+
+</settings>
++-------------------------------+
+	
+Execution Modules Setup
+
+	The following modules needs to be renamed in the Required-Bundle header of the MANIFEST.MF :
+*-----------------------------------+-------------------------------+
+|0.11.3								|0.11.4							|
+*-----------------------------------+-------------------------------+
+|org.argeo.slc.support.simple		|org.argeo.slc.core				|
+*-----------------------------------+-------------------------------+
+|org.argeoslc.support.equinox		|org.argeo.slc.support.osgi		|
+*-----------------------------------+-------------------------------+
