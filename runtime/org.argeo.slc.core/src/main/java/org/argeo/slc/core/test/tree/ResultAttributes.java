@@ -1,5 +1,6 @@
 package org.argeo.slc.core.test.tree;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
@@ -8,7 +9,9 @@ import java.util.Map;
 
 import org.argeo.slc.core.attachment.SimpleAttachment;
 
-public class ResultAttributes {
+public class ResultAttributes implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String uuid = null;
 	private Date closeDate = null;
 	private Map<String, String> attributes = new Hashtable<String, String>();

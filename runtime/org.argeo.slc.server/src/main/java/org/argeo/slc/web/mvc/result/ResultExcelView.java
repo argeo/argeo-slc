@@ -18,6 +18,7 @@ import org.argeo.slc.test.TestResultPart;
 import org.springframework.web.servlet.view.document.AbstractJExcelView;
 
 public class ResultExcelView extends AbstractJExcelView {
+	@SuppressWarnings(value={"unchecked"})
 	protected void buildExcelDocument(Map model, WritableWorkbook workbook,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {

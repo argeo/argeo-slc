@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.argeo.slc.core.test.tree.TreeTestResult;
-import org.argeo.slc.core.test.tree.TreeTestResultList;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
+import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.web.mvc.AbstractServiceController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,6 +23,7 @@ public class ListResultsController extends AbstractServiceController {
 	}
 
 	@Override
+	@SuppressWarnings(value={"unchecked"})
 	protected void handleServiceRequest(HttpServletRequest request,
 			HttpServletResponse response, ModelAndView modelAndView)
 			throws Exception {
@@ -41,7 +42,7 @@ public class ListResultsController extends AbstractServiceController {
 		List<TreeTestResult> resultAttributes = testResultCollectionDao
 				.listResults(collectionId, attributes);
 
-		modelAndView.addObject("resultList", new TreeTestResultList(
+		modelAndView.addObject("resultList", new ObjectList(
 				resultAttributes));
 	}
 }

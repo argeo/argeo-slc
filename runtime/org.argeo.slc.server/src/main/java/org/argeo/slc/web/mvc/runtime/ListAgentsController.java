@@ -1,7 +1,6 @@
 package org.argeo.slc.web.mvc.runtime;
 
 import java.util.List;
-import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

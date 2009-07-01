@@ -29,15 +29,6 @@
 		</field>
 	</class>
 
-	<class name="org.argeo.slc.core.test.tree.TreeTestResultList">
-		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
-			ns-prefix="slc" />
-		<field name="list" collection="arraylist"
-			type="org.argeo.slc.core.test.tree.TreeTestResult">
-			<bind-xml auto-naming="deriveByClass" />
-		</field>
-	</class>
-
 	<!-- TESTS -->
 	<class name="org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
@@ -102,15 +93,6 @@
 					</field>
 				</class>
 			</bind-xml>
-		</field>
-	</class>
-
-	<class name="org.argeo.slc.core.test.tree.ResultAttributesList">
-		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
-			ns-prefix="slc" />
-		<field name="list" collection="arraylist"
-			type="org.argeo.slc.core.test.tree.ResultAttributes">
-			<bind-xml auto-naming="deriveByClass" />
 		</field>
 	</class>
 

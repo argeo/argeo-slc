@@ -25,6 +25,7 @@ public class MarshallerView extends AbstractView {
 	}
 
 	@Override
+	@SuppressWarnings(value={"unchecked"})
 	protected void renderMergedOutputModel(Map model,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {

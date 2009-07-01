@@ -5,16 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.msg.event.SlcEventListenerDescriptor;
 import org.argeo.slc.msg.event.SlcEventListenerRegister;
 import org.springframework.web.context.request.RequestContextHolder;
 
 public class WebSlcEventListenerRegister implements SlcEventListenerRegister,
 		Serializable {
-	private final static Log log = LogFactory
-			.getLog(WebSlcEventListenerRegister.class);
 	public final static String ATTR_EVENT_LISTENER = "slcEventListener";
 
 	static final long serialVersionUID = 1l;

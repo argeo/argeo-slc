@@ -6,8 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.argeo.slc.core.test.tree.ResultAttributes;
-import org.argeo.slc.core.test.tree.ResultAttributesList;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
+import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.web.mvc.AbstractServiceController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,7 +28,7 @@ public class ListResultAttributesController extends AbstractServiceController {
 		List<ResultAttributes> resultAttributes = testResultCollectionDao
 				.listResultAttributes(collectionId);
 
-		modelAndView.addObject("resultAttributesList",
-				new ResultAttributesList(resultAttributes));
+		modelAndView.addObject("resultAttributesList", new ObjectList(
+				resultAttributes));
 	}
 }
