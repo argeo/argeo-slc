@@ -76,7 +76,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 							case "qx.ui.tree.TreeFile" :
 								this.setEnabled(true);
 								break;
-							case "qx.ui.tree.TreeFolder" :
+							case "org.argeo.ria.components.PersistentTreeFolder" :
 								if (item.getTree().getRoot() == item)
 									break;
 								this.setEnabled(true);
@@ -165,7 +165,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 		 * Static loader for the "agent" level (first level)
 		 * 
 		 * @param folder
-		 *            {qx.ui.tree.TreeFolder} The root Tree Folder.
+		 *            {org.argeo.ria.components.PersistentTreeFolder} The root Tree Folder.
 		 */
 		agentLoader : function(folder) {
 
@@ -183,13 +183,12 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				var modulesLoader = org.argeo.slc.ria.FlowsSelectorView.modulesLoader;
 				
 				for (var i = 0; i < nodes.length; i++) {
-					var uuid = org.argeo.ria.util.Element.getSingleNodeText(
-							nodes[i], "@uuid");
+					var uuid = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "@uuid");
+					var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host");
 					if(agents[uuid]){
 						newAgents[uuid] = host;
 						continue;
 					}
-					var host = org.argeo.ria.util.Element.getSingleNodeText(nodes[i], "slc:host");
 					agents[uuid] = host;
 					if(newAgents) newAgents[uuid] = host;
 					var agentFolder = new org.argeo.ria.components.DynamicTreeFolder(
@@ -227,7 +226,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 		 * root folder.
 		 * 
 		 * @param folder
-		 *            {qx.ui.tree.TreeFolder} The root folder
+		 *            {org.argeo.ria.components.PersistentTreeFolder} The root folder
 		 */
 		modulesLoader : function(folder) {
 			var agentId = folder.getUserData("agentUuid");
@@ -252,12 +251,14 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 						var versionFolder = new org.argeo.ria.components.DynamicTreeFolder(
 								key + ' (' + mods[key][i] + ')', flowLoader,
 								"Loading Flows", folder.getDragData());
-						folder.add(versionFolder);
 						versionFolder.setUserData("moduleData", {
 									name : key,
 									version : mods[key][i]
 								});
 						versionFolder.setUserData("agentUuid", agentId);
+						// Warning, we must add it AFTER setting the user data, 
+						// because of the persistent loading mechanism.
+						folder.add(versionFolder);
 					}
 				}
 				folder.setLoaded(true);
@@ -274,7 +275,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 		 * and create its children.
 		 * 
 		 * @param folder
-		 *            {qx.ui.tree.TreeFolder} A Tree folder containing in the
+		 *            {org.argeo.ria.components.PersistentTreeFolder} A Tree folder containing in the
 		 *            key "moduleData" of its user data a map containing the
 		 *            keys {name,version}
 		 */
@@ -345,7 +346,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					continue;
 				crtPath += "/" + parts[i];				
 				if (!model[crtPath]) {
-					var virtualFolder = new qx.ui.tree.TreeFolder(parts[i]);
+					var virtualFolder = new org.argeo.ria.components.PersistentTreeFolder(parts[i]);
 					if (userData && qx.lang.Object.getLength(userData)) {
 						for (var key in userData) {
 							virtualFolder.setUserData(key, userData[key]);

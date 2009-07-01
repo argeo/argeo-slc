@@ -52,8 +52,6 @@ qx.Class.define("org.argeo.slc.web.Perspective",
   	},
   	
   	remove : function(viewsManager){
-  		viewsManager.getViewPaneById("list").empty();
-  		viewsManager.getViewPaneById("applet").empty();
   		viewsManager.getViewPanesContainer().remove(this._splitPane);  		
   	}
   	

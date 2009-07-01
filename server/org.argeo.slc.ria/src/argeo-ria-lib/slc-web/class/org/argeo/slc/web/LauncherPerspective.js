@@ -70,10 +70,6 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
   	},
   	
   	remove : function(viewsManager){
-  		viewsManager.getViewPaneById("main").empty();
-  		viewsManager.getViewPaneById("batch").empty();
-  		viewsManager.getViewPaneById("selector").empty();
-  		viewsManager.getViewPaneById("editor").empty();
 		viewsManager.getViewPanesContainer().remove(this._splitPane);  		
   	}  	
   	
