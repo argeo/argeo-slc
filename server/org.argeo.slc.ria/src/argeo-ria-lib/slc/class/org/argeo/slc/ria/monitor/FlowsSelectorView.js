@@ -2,95 +2,22 @@
  * The selector view
  * 
  */
-qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
-	extend : qx.ui.container.Composite,
+qx.Class.define("org.argeo.slc.ria.monitor.FlowsSelectorView", {
+	extend : org.argeo.slc.ria.FlowsSelectorView,
 	implement : [org.argeo.ria.components.IView],
 
 	construct : function() {
 		this.base(arguments);
-		this.setLayout(new qx.ui.layout.Dock());
 	},
 
 	properties : {
-		/**
-		 * The viewPane inside which this applet is added.
-		 */
-		view : {
-			init : null
-		},
-		viewSelection : {
-			nullable : false,
-			check : "org.argeo.ria.components.ViewSelection"
-		},
-		instanceId : {
-			init : ""
-		},
-		instanceLabel : {
-			init : ""
-		},
 		/**
 		 * Commands definition, see
 		 * {@link org.argeo.ria.event.CommandsManager#definitions}
 		 */
 		commands : {
+			refine : true,
 			init : {
-				"addtobatch" : {
-					label : "Add to batch",
-					icon : "org.argeo.slc.ria/list-add.png",
-					shortcut : null,
-					enabled : true,
-					menu : null,
-					toolbar : null,
-					callback : function(e) {
-						if (this.tree.isSelectionEmpty()) {
-							return;
-						}
-						var batchView = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("batch").getContent();
-						if(!batchView) return;
-						selection = this.tree.getSelection();
-						if (selection.length > 1) {
-							for (var i = 0; i < selection.length; i++) {
-								try{
-									batchView.addFlowToBatch(selection[i], null, true);
-								}catch(e){
-									return;
-								}
-							}
-							return;
-						} else {
-							try{
-								batchView.addFlowToBatch(selection[0], null);
-							}catch(e){
-								return;
-							}
-						}
-					},
-					selectionChange : function(viewId, selection) {
-						if (viewId != "form:tree")
-							return;
-						if (!selection || selection.length != 1)
-							return;
-						var item = selection[0];
-						this.setEnabled(false);
-						switch (item.classname) {
-							case "qx.ui.tree.TreeFile" :
-								this.setEnabled(true);
-								break;
-							case "org.argeo.ria.components.PersistentTreeFolder" :
-								if (item.getTree().getRoot() == item)
-									break;
-								this.setEnabled(true);
-								break;
-							case "org.argeo.ria.components.DynamicTreeFolder" :
-								if (item.getTree().getRoot() == item)
-									break;	
-								if (item.getState() == "loaded")
-									this.setEnabled(true);
-								break;
-						}
-					},
-					command : null
-				},
 				"reloadtree" : {
 					label : "Reload",
 					icon : "org.argeo.slc.ria/view-refresh.png",
@@ -312,130 +239,19 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				folder.setLoaded(true);
 			});
 			req.send();
-		},
-
-		/**
-		 * Parse a string path and search if there is a root node.
-		 * 
-		 * @param rootNode
-		 *            {org.argeo.ria.components.DynamicTreeFolder} The parent
-		 *            node (containing data model)
-		 * @param path
-		 *            {String} The path of the node to attach.
-		 * @param childNode
-		 *            {qx.ui.tree.TreeFile} The leaf node
-		 * @param userData
-		 *            {Map} User data to attach at all levels.
-		 */
-		attachNodeByPath : function(rootNode, path, childNode, userData) {
-			if (!path || path == "" || path == "/") {
-				rootNode.add(childNode);
-				return;
-			}
-			var model = rootNode.getUserData("dataModel");
-			if (!model) {
-				model = {};
-				rootNode.setUserData("dataModel", model);
-			}
-			var parts = path.split("/");
-			var keys = qx.lang.Object.getKeys(model);
-			var crtPath = "";
-			var crtFolder = rootNode;			
-			for (var i = 0; i < parts.length; i++) {
-				if (parts[i] == "")
-					continue;
-				crtPath += "/" + parts[i];				
-				if (!model[crtPath]) {
-					var virtualFolder = new org.argeo.ria.components.PersistentTreeFolder(parts[i]);
-					if (userData && qx.lang.Object.getLength(userData)) {
-						for (var key in userData) {
-							virtualFolder.setUserData(key, userData[key]);
-						}
-					}
-					rootNode.appendDragData(virtualFolder);
-					model[crtPath] = virtualFolder;
-					crtFolder.add(virtualFolder);
-					crtFolder = virtualFolder;
-				} else {
-					crtFolder = model[crtPath];
-				}
-			}
-			crtFolder.add(childNode);
-		},
-		
-		findAgentNodeById : function(node, agentId){
-			var nodeAgents = node.getItems();
-			for(var i=0;i<nodeAgents.length;i++){
-				if(nodeAgents[i].getUserData("agentUuid") == agentId){
-					return nodeAgents[i];
-				}
-			}
 		}		
 	},
 
 	members : {
-		/**
-		 * Called at applet creation. Just registers viewPane.
-		 * 
-		 * @param viewPane
-		 *            {org.argeo.ria.components.ViewPane} The viewPane.
-		 */
-		init : function(viewPane) {
-			this.setView(viewPane);
-			this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
-			this.remoteNotifier = new org.argeo.ria.remote.RemoteNotifier(
-					"/org.argeo.slc.webapp/", "pollEvent.service",
-					"addEventListener.service", "removeEventListener.service");
-			this.remoteNotifier.setEventParamName("slc_eventType");
-			this.remoteNotifier.setEventXPath("/slc:slc-event");
-			this.remoteNotifier
-					.setEventTypeXPath('slc:headers/slc:header[@name="slc_eventType"]');
-			this.remoteNotifier
-					.setEventDataXPath('slc:headers/slc:header[@name="slc_agentId"]');
-			this.remoteNotifier.setAnswerStatusXPath("slc:execution-answer/slc:status");
-			this.remoteNotifier.startPolling();
-			this.UIBus = org.argeo.ria.event.UIBus.getInstance();
-			this.UIBus.registerNotifier(this.remoteNotifier);
-		},
-
+		
 		/**
 		 * 
 		 */
 		load : function() {
 			this._createLayout();
-			this.getView().setViewTitle("Available Scripts");
 			this.UIBus.addListener("agentRegistered", this._addAgentHandler, this);
 			this.UIBus.addListener("agentUnregistered", this._removeAgentHandler,	this);
-		},
-
-		_addAgentHandler : function(agentId){
-			this.rootNode.load();
-		},
-		
-		_removeAgentHandler : function(agentId){
-			var treeNode = this.self(arguments).findAgentNodeById(this.rootNode, agentId);
-			if(treeNode){
-				this.rootNode.remove(treeNode);
-			}
-			var agentsMap = this.getAgentsMap();
-			if(agentsMap[agentId]){				
-				delete agentsMap[agentId];
-			}
-			var batchView = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("batch").getContent();
-			if(batchView){
-				batchView.clearBatchForAgentId(agentId);
-			}
-		},
-		
-		addScroll : function() {
-			return false;
-		},
-
-		close : function() {
-			this.UIBus.removeListener("agentRegistered", this._addAgentHandler, this);
-			this.UIBus.removeListener("agentUnregistered", this._removeAgentHandler, this);
-			this.remoteNotifier.stopPolling();
-		},
+		},		
 
 		/**
 		 * Creates the main applet layout.
@@ -445,26 +261,15 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			this.tree = new qx.ui.tree.Tree();
 			this.tree.setDecorator(null);
 			this.tree.setSelectionMode("multi");
-			var dragData = {
-				"file" : {
-					"type" : ["items"],
-					"action" : ["move"]
-				},
-				"folder" : {
-					"type" : ["items"],
-					"action" : ["move"]
-				}
-			};
 
 			this.rootNode = new org.argeo.ria.components.DynamicTreeFolder(
 					"Tests", this.self(arguments).agentLoader,
-					"Loading Agents", dragData);
+					"Loading Agents");
 			this.tree.setRoot(this.rootNode);
-			this.rootNode.setPersistentTreeID("org.argeo.slc.ria.FlowsSelector")
+			this.rootNode.setPersistentTreeID("org.argeo.slc.ria.monitor.FlowsSelector")
 			this.rootNode.setOpen(true);
 			this.tree.setContextMenu(org.argeo.ria.event.CommandsManager
-					.getInstance().createMenuFromIds(["addtobatch",
-							"reloadtree"]));
+					.getInstance().createMenuFromIds(["reloadtree"]));
 
 			this.tree.addListener("changeSelection", function(e) {
 				var viewSelection = this.getViewSelection();
@@ -474,14 +279,14 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				for (var i = 0; i < sel.length; i++) {
 					viewSelection.addNode(sel[i]);
 				}
+				if(sel && sel[0]){
+					var propViewPane = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("properties");
+					propViewPane.getContent().updateData(sel[0]);
+				}
 			}, this);
 
 
 			this.add(this.tree);
-		},
-		
-		getAgentsMap : function(){
-			return this.rootNode.getUserData("agentsMap");
 		}		
 	}
 });

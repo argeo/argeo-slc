@@ -31,7 +31,8 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
 	  viewsManager.registerViewPane(selectorPane);
 	  
 	  var batchPane = new org.argeo.ria.components.ViewPane("batch", "Batch");
-  	  batchPane.set({width: 500, height:500});
+	  
+  	  batchPane.set({width: 500, height:parseInt(qx.bom.Viewport.getHeight()*60/100)});
 	  viewsManager.registerViewPane(batchPane);
 	  
   	  var logPane = new org.argeo.ria.components.ViewPane("main", "Executions Log");

@@ -9,7 +9,19 @@ qx.Class.define("org.argeo.slc.web.TestList",
 {
   extend : qx.ui.container.Composite,
   implement : [org.argeo.ria.components.IView], 
+  include : [org.argeo.ria.session.MPrefHolder],
 
+  statics : {
+  	riaPreferences : {
+  		"slc.web.TestList.DefaultAction" : {
+  			label : "Test List : Double Click default action",
+  			type : "list",
+  			list : ["Open","Download Xls"],
+  			defaultValue : "Open"
+  		}
+  	}
+  },
+  
   construct : function(){
   	this.base(arguments, new qx.ui.layout.VBox());  	
   	var model = new qx.ui.table.model.Simple();
@@ -287,7 +299,14 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  });
 	  var viewPane = this.getView();
 	  this.table.addListener("dblclick", function(e){
-		org.argeo.ria.event.CommandsManager.getInstance().executeCommand("opentest");
+	  	var pref = this.getRiaPreferenceValue("slc.web.TestList.DefaultAction");
+	  	if(pref == "Open"){
+			org.argeo.ria.event.CommandsManager.getInstance().executeCommand("opentest");
+	  	}else{
+	  		var uuid = this.extractTestUuid();
+			var url = "../resultView.xslt?uuid="+uuid;
+			alert('Should download : '+url);
+	  	}
 	  }, this);
 	  var columnModel = this.table.getTableColumnModel(); 
 	  columnModel.getBehavior().setWidth(0, "60%");
