@@ -5,7 +5,16 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 {
 	extend : qx.ui.container.Composite,
 	implement : [org.argeo.ria.components.IView], 
-
+  	include : [org.argeo.ria.session.MPrefHolder],
+  	statics : {
+		riaPreferences : {
+			"slc.batch.delete.confirm" : {
+				label : "Confirm on batch deletion",
+				type  : "boolean",
+				defaultValue  : true
+			}
+		}
+  	},
 	properties : 
 	{
 		/**
@@ -82,19 +91,27 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 					toolbar : "batch",
 					callback : function(e) {
 						var sel = this.list.getSortedSelection();
-						var modal = new org.argeo.ria.components.Modal("Confirm", null);
-						modal.addConfirm("Are you sure you want to remove<br> the selected test"
-										+ (sel.length > 1 ? "s" : "")
-										+ " from the Batch?");
-						modal.addListener("ok", function() {
-									for (var i = 0; i < sel.length; i++) {
-										this.list.remove(sel[i]);
-									}
-									if (!this.list.hasChildren()) {
-										this.setBatchAgentId(null);
-									}
-								}, this);
-						modal.attachAndShow();
+						var confirmPref = this.getRiaPreferenceValue("slc.batch.delete.confirm");
+						this.debug(confirmPref);
+						var execution = function() {
+							for (var i = 0; i < sel.length; i++) {
+								this.list.remove(sel[i]);
+							}
+							if (!this.list.hasChildren()) {
+								this.setBatchAgentId(null);
+							}
+						}
+						if(confirmPref){
+							var modal = new org.argeo.ria.components.Modal("Confirm", null);
+							modal.addConfirm("Are you sure you want to remove<br> the selected test"
+											+ (sel.length > 1 ? "s" : "")
+											+ " from the Batch?");
+							modal.addListener("ok", execution, this);
+							modal.attachAndShow();
+						}else{
+							execution = qx.lang.Function.bind(execution, this);
+							execution();
+						}
 					},
 					selectionChange : function(viewId, selection) {
 						if (viewId != "batch:list")
