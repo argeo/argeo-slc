@@ -100,6 +100,7 @@
 				<version>${version.maven-bundle-plugin}</version>
 				<configuration>
 					<instructions>
+						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Version>${project.version}-r${buildNumber}</Bundle-Version>
 						<Export-Package></Export-Package>
 						<Import-Package>

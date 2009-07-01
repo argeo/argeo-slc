@@ -5,8 +5,6 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<import resource="classpath:/org/argeo/slc/castor/spring/applicationContext.xml" />
-
 	<bean name="/isServerReady.service" class="org.argeo.slc.web.mvc.management.IsServerReady">
 	</bean>
 
@@ -61,7 +59,7 @@
 	<bean name="/newSlcExecution.service"
 		class="org.argeo.slc.web.mvc.process.NewSlcExecutionController">
 		<property name="agentFactory" ref="agentFactory" />
-		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
+		<property name="unmarshaller" ref="unmarshaller" />
 		<property name="slcExecutionService" ref="slcExecutionService" />
 	</bean>
 
@@ -116,7 +114,7 @@
 	</bean>
 
 	<bean id="viewResolver" class="org.argeo.slc.web.mvc.MarshallerViewResolver">
-		<constructor-arg ref="slcDefault.castor.marshaller" />
+		<constructor-arg ref="marshaller" />
 	</bean>
 
 </beans>

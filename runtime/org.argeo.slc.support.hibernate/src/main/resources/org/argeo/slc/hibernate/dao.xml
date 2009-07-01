@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-lazy-init="true">
+
+	<bean id="slcTemplates.dao.testResultDao"
+		class="org.argeo.slc.hibernate.test.tree.TreeTestResultDaoHibernate"
+		abstract="true">
+	</bean>
+
+	<bean id="slcTemplates.dao.testResultCollectionDao"
+		class="org.argeo.slc.hibernate.test.tree.TreeTestResultCollectionDaoHibernate"
+		abstract="true">
+	</bean>
+
+	<bean id="slcTemplates.dao.testRunDescriptorDao"
+		class="org.argeo.slc.hibernate.test.TestRunDescriptorDaoHibernate"
+		abstract="true">
+	</bean>
+
+	<bean id="slcTemplates.dao.slcExecutionDao"
+		class="org.argeo.slc.hibernate.process.SlcExecutionDaoHibernate"
+		abstract="true">
+	</bean>
+
+	<bean id="slcTemplates.dao.slcAgentDescriptorDao"
+		class="org.argeo.slc.hibernate.runtime.SlcAgentDescriptorDaoHibernate"
+		abstract="true">
+	</bean>
+</beans>

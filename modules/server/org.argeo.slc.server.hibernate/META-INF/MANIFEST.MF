@@ -1,12 +1,26 @@
 Manifest-Version: 1.0
-Require-Bundle: 
- org.argeo.slc.specs,
- org.argeo.slc.core,
- org.argeo.slc.server,
- com.springsource.org.hibernate
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.hibernate
-Import-Package: org.aopalliance.aop,org.hibernate,org.hibernate.jdbc,o
- rg.springframework.aop,org.springframework.aop.framework,org.springfr
- amework.orm.hibernate3,org.springframework.transaction
-
+Import-Package: org.argeo.slc.hibernate,
+ org.hibernate,
+ org.springframework.orm.hibernate3,
+ org.argeo.slc.runtime,
+ org.argeo.slc.process,
+ org.argeo.slc.test,
+ org.argeo.slc.core.attachment,
+ org.argeo.slc.core.test,
+ org.argeo.slc.core.test.tree,
+ org.argeo.slc.core.structure,
+ org.argeo.slc.core.structure.tree,
+ org.argeo.slc.dao.runtime,
+ org.argeo.slc.dao.process,
+ org.argeo.slc.dao.test,
+ org.argeo.slc.dao.test.tree,
+ org.argeo.slc.hibernate.test.tree,
+ org.argeo.slc.hibernate.runtime,
+ org.argeo.slc.hibernate.process,
+ org.argeo.slc.hibernate.test,
+ org.springframework.aop,
+ org.springframework.aop.framework,
+ org.aopalliance.aop,
+ org.springframework.transaction

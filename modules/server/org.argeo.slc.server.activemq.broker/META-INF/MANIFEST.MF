@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.11.4.SNAPSHOT
+Bundle-SymbolicName: org.argeo.slc.server.activemq.broker
+Import-Package: org.apache.activemq.broker,org.apache.activemq.xbean,org.springframework.beans.factory.config

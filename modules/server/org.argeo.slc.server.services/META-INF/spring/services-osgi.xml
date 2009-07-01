@@ -6,10 +6,10 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<service ref="testManagerService" interface="org.argeo.slc.services.test.TestManagerService" />
-	<service ref="agentService" interface="org.argeo.slc.services.runtime.AgentService" />
+	<service ref="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
+	<service ref="agentService" interface="org.argeo.slc.services.AgentService" />
 	<service ref="slcExecutionService"
-		interface="org.argeo.slc.services.process.SlcExecutionService" />
+		interface="org.argeo.slc.services.SlcExecutionService" />
 	<service ref="attachmentsStorage"
 		interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
 

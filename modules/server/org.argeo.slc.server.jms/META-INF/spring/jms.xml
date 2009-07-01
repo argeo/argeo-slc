@@ -4,7 +4,7 @@
 	xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<import resource="classpath:org/argeo/slc/activemq/spring.xml" />
+	<import resource="classpath:org/argeo/slc/activemq/destinations.xml" />
 
 	<!-- Attachments -->
 
@@ -32,7 +32,7 @@
 			</bean>
 		</property>
 		<property name="eventsDestination" ref="slcJms.destination.events" />
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+		<property name="messageConverter" ref="jmsMessageConverter" />
 	</bean>
 
 	<bean id="jmsEventPublisher" class="org.argeo.slc.jms.JmsSlcEventPublisher">
@@ -65,7 +65,7 @@
 		<property name="destination" ref="slcJms.destination.execution.event" />
 		<property name="messageListener">
 			<bean class="org.argeo.slc.jms.JmsExecutionHandler">
-				<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+				<property name="messageConverter" ref="jmsMessageConverter" />
 				<property name="serviceMsgHandler">
 					<bean class="org.argeo.slc.services.ServiceMsgHandler">
 						<property name="slcExecutionService" ref="slcExecutionService" />
@@ -76,44 +76,9 @@
 		</property>
 	</bean>
 
-
-	<!--
-		Test Manager Service <bean parent="listenerContainer"> <property
-		name="destination" ref="slcJms.destination.test.create" /> <property
-		name="messageListener"> <bean parent="listenerAdapterCastor">
-		<constructor-arg ref="testManagerService" /> <property
-		name="defaultListenerMethod" value="createTreeTestResult" /> </bean>
-		</property> </bean> <bean parent="listenerContainer"> <property
-		name="destination" ref="slcJms.destination.test.addResultPart" />
-		<property name="messageListener"> <bean
-		parent="listenerAdapterCastor"> <constructor-arg
-		ref="testManagerService" /> <property name="defaultListenerMethod"
-		value="addResultPart" /> </bean> </property> </bean> <bean
-		parent="listenerContainer"> <property name="destination"
-		ref="slcJms.destination.test.close" /> <property
-		name="messageListener"> <bean parent="listenerAdapterCastor">
-		<constructor-arg ref="testManagerService" /> <property
-		name="defaultListenerMethod" value="closeTreeTestResult" /> </bean>
-		</property> </bean>
-	-->
-	<!--
-		SLC Execution Service <bean parent="listenerContainer"> <property
-		name="destination" ref="slcJms.destination.agent.newExecution" />
-		<property name="messageListener"> <bean
-		parent="listenerAdapterCastor"> <constructor-arg
-		ref="slcExecutionService" /> <property name="defaultListenerMethod"
-		value="newExecution" /> </bean> </property> </bean> <bean
-		parent="listenerContainer"> <property name="destination"
-		ref="slcJms.destination.slcExecution.updateStatus" /> <property
-		name="messageListener"> <bean parent="listenerAdapterCastor">
-		<constructor-arg ref="slcExecutionService" /> <property
-		name="defaultListenerMethod" value="updateStatus" /> </bean>
-		</property> </bean>
-	-->
-
 	<!-- Common -->
 	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+		<property name="messageConverter" ref="jmsMessageConverter" />
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
 	</bean>
 
@@ -130,7 +95,7 @@
 	<bean id="listenerAdapterCastor"
 		class="org.springframework.jms.listener.adapter.MessageListenerAdapter"
 		abstract="true">
-		<property name="messageConverter" ref="slcDefault.jms.castorMessageConverter" />
+		<property name="messageConverter" ref="jmsMessageConverter" />
 	</bean>
 
 </beans>

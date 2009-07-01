@@ -9,8 +9,6 @@ import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
 import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.services.process.SlcExecutionService;
-import org.argeo.slc.services.test.TestManagerService;
 
 public class ServiceMsgHandler implements MsgHandler {
 	private TestManagerService testManagerService;

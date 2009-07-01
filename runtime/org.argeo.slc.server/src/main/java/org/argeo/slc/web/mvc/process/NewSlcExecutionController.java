@@ -13,7 +13,7 @@ import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
-import org.argeo.slc.services.process.SlcExecutionService;
+import org.argeo.slc.services.SlcExecutionService;
 import org.argeo.slc.web.mvc.AbstractServiceController;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.util.Assert;

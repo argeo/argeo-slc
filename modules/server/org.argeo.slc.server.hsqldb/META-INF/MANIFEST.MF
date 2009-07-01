@@ -1,11 +1,25 @@
 Manifest-Version: 1.0
-Require-Bundle: 
- org.argeo.slc.specs,
- org.argeo.slc.core,
- org.argeo.slc.server
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.hsqldb
-Import-Package: org.springframework.orm.hibernate3,org.springframework
- .cache.ehcache,net.sf.ehcache.hibernate,org.hsqldb.jdbc,org.hibernate
- ,org.springframework.beans.factory.config
-
+Import-Package: org.argeo.slc.hibernate,
+ org.hibernate,
+ org.springframework.orm.hibernate3,
+ org.argeo.slc.runtime,
+ org.argeo.slc.process,
+ org.argeo.slc.test,
+ org.argeo.slc.core.attachment,
+ org.argeo.slc.core.test.tree,
+ org.argeo.slc.core.structure,
+ org.argeo.slc.core.structure.tree,
+ org.argeo.slc.hibernate.test.tree,
+ org.argeo.slc.hibernate.runtime,
+ org.argeo.slc.hibernate.process,
+ org.argeo.slc.hibernate.test,
+ org.argeo.slc.hibernate.structure,
+ org.argeo.slc.hibernate.attachment,
+ org.aopalliance.aop,
+ org.argeo.slc.core.test,
+ org.springframework.cache.ehcache,
+ net.sf.ehcache.hibernate,
+ org.hsqldb.jdbc,
+ org.springframework.beans.factory.config

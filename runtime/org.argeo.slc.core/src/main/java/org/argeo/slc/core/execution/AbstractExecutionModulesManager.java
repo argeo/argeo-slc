@@ -142,13 +142,6 @@ public abstract class AbstractExecutionModulesManager implements
 		public void run() {
 			log.info("\n##\n## Process SLC Execution " + slcProcess + "\n##\n");
 
-			// FIXME: hack to let the SlcExecution be registered on server
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e1) {
-				// silent
-			}
-
 			slcProcess.setStatus(SlcExecution.STATUS_RUNNING);
 			dispatchUpdateStatus(slcProcess, SlcExecution.STATUS_SCHEDULED,
 					SlcExecution.STATUS_RUNNING);

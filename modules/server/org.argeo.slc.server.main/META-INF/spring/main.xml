@@ -6,11 +6,13 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bundle id="spring.osgi.web.extender" symbolic-name="org.springframework.osgi.web.extender"
+	<bundle id="activemq.broker" symbolic-name="org.argeo.slc.server.activemq.broker"
 		action="start" />
-	<bundle id="catalina" symbolic-name="org.argeo.dep.osgi.catalina.start"
+	<bundle id="castor" symbolic-name="org.argeo.slc.server.castor"
 		action="start" />
 	<bundle id="activemq" symbolic-name="org.argeo.slc.server.activemq"
+		action="start" />
+	<bundle id="agentProxy" symbolic-name="org.argeo.slc.server.agentproxy"
 		action="start" />
 	<bundle id="hibernate" symbolic-name="org.argeo.slc.server.hibernate"
 		action="start" />
@@ -18,5 +20,11 @@
 		action="start" />
 	<bundle id="jms" symbolic-name="org.argeo.slc.server.jms"
 		action="start" />
+
+	<bundle id="spring.osgi.web.extender" symbolic-name="org.springframework.osgi.web.extender"
+		action="start" />
+	<bundle id="catalina" symbolic-name="org.argeo.dep.osgi.catalina.start"
+		action="start" />
 	<bundle id="webapp" symbolic-name="org.argeo.slc.webapp" action="start" />
+
 </beans:beans>

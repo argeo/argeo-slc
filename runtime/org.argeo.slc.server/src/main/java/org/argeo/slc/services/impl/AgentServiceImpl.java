@@ -1,4 +1,4 @@
-package org.argeo.slc.services.impl.runtime;
+package org.argeo.slc.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.argeo.slc.dao.runtime.SlcAgentDescriptorDao;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.argeo.slc.runtime.SlcAgentFactory;
-import org.argeo.slc.services.runtime.AgentService;
+import org.argeo.slc.services.AgentService;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 

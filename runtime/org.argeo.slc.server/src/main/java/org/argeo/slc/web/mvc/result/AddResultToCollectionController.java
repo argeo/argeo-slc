@@ -3,7 +3,7 @@ package org.argeo.slc.web.mvc.result;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.argeo.slc.services.test.TestManagerService;
+import org.argeo.slc.services.TestManagerService;
 import org.argeo.slc.web.mvc.AbstractServiceController;
 import org.springframework.web.servlet.ModelAndView;
 

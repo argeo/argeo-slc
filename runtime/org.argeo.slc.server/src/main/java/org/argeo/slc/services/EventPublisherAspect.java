@@ -27,7 +27,7 @@ public class EventPublisherAspect {
 
 	private List<SlcEventPublisher> eventPublishers;
 
-	@After("execution(void org.argeo.slc.services.runtime.AgentService.register(..))")
+	@After("execution(void org.argeo.slc.services.AgentService.register(..))")
 	public void registerAgent(JoinPoint jp) throws Throwable {
 		SlcAgentDescriptor agentDescriptor = (SlcAgentDescriptor) jp.getArgs()[0];
 		SlcEvent event = new SlcEvent(EVT_AGENT_REGISTERED);
@@ -36,7 +36,7 @@ public class EventPublisherAspect {
 		publishEvent(event);
 	}
 
-	@After("execution(void org.argeo.slc.services.runtime.AgentService.unregister(..))")
+	@After("execution(void org.argeo.slc.services.AgentService.unregister(..))")
 	public void unregisterAgent(JoinPoint jp) throws Throwable {
 		SlcAgentDescriptor agentDescriptor = (SlcAgentDescriptor) jp.getArgs()[0];
 		SlcEvent event = new SlcEvent(EVT_AGENT_UNREGISTERED);
@@ -45,7 +45,7 @@ public class EventPublisherAspect {
 		publishEvent(event);
 	}
 
-	@After("execution(void org.argeo.slc.services.process.SlcExecutionService.newExecution(..))")
+	@After("execution(void org.argeo.slc.services.SlcExecutionService.newExecution(..))")
 	public void newSlcExecution(JoinPoint jp) throws Throwable {
 		SlcExecution slcExecution = (SlcExecution) jp.getArgs()[0];
 		SlcEvent event = new SlcEvent(EVT_NEW_SLC_EXECUTION);
@@ -54,7 +54,7 @@ public class EventPublisherAspect {
 		publishEvent(event);
 	}
 
-	@After("execution(void org.argeo.slc.services.process.SlcExecutionService.updateStatus(..))")
+	@After("execution(void org.argeo.slc.services.SlcExecutionService.updateStatus(..))")
 	public void updateSlcExecutionStatus(JoinPoint jp) throws Throwable {
 		SlcExecutionStatusRequest msg = (SlcExecutionStatusRequest) jp
 				.getArgs()[0];

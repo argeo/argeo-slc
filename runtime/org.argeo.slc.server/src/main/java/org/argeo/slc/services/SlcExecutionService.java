@@ -1,4 +1,4 @@
-package org.argeo.slc.services.process;
+package org.argeo.slc.services;
 
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;

@@ -1,4 +1,4 @@
-package org.argeo.slc.services.runtime;
+package org.argeo.slc.services;
 
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 

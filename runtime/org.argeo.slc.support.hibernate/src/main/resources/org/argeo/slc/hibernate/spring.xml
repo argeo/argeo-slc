@@ -3,9 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-lazy-init="true">
-	
-	<description>Deprecated, use
-		classpath:/org/argeo/slc/hibernate/spring.xml instead</description>
-		
-	<import resource="classpath:/org/argeo/slc/hibernate/spring.xml" />
+
+	<import resource="dao.xml" />
+	<import resource="sessionFactories.xml" />
 </beans>

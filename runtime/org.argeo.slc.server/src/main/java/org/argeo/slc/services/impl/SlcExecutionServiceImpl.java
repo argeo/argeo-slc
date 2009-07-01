@@ -1,4 +1,4 @@
-package org.argeo.slc.services.impl.process;
+package org.argeo.slc.services.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,7 +8,7 @@ import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
-import org.argeo.slc.services.process.SlcExecutionService;
+import org.argeo.slc.services.SlcExecutionService;
 
 public class SlcExecutionServiceImpl implements SlcExecutionService {
 	private final Log log = LogFactory.getLog(getClass());

@@ -1,4 +1,4 @@
-package org.argeo.slc.services.impl.test;
+package org.argeo.slc.services.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,7 +13,7 @@ import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.CreateTreeTestResultRequest;
 import org.argeo.slc.msg.test.tree.ResultPartRequest;
 import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.services.test.TestManagerService;
+import org.argeo.slc.services.TestManagerService;
 import org.argeo.slc.test.TestRunDescriptor;
 
 /**

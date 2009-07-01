@@ -7,7 +7,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
-import org.argeo.slc.services.test.TestManagerService;
+import org.argeo.slc.services.TestManagerService;
 import org.argeo.slc.web.mvc.AbstractServiceController;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.servlet.ModelAndView;

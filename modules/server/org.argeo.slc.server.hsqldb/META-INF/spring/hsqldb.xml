@@ -9,7 +9,7 @@
 	default-lazy-init="false">
 
 	<import
-		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
+		resource="classpath:/org/argeo/slc/hibernate/sessionFactories.xml" />
 
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">

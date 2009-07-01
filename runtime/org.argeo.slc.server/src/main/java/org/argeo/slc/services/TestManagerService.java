@@ -1,4 +1,4 @@
-package org.argeo.slc.services.test;
+package org.argeo.slc.services;
 
 import org.argeo.slc.msg.test.tree.AddTreeTestResultAttachmentRequest;
 import org.argeo.slc.msg.test.tree.CloseTreeTestResultRequest;

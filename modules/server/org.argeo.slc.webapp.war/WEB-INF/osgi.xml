@@ -6,6 +6,9 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<reference id="marshaller" interface="org.springframework.oxm.Marshaller" />
+	<reference id="unmarshaller" interface="org.springframework.oxm.Unmarshaller" />
+
 	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
 		id="testResultDao" />
 	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
@@ -24,10 +27,10 @@
 		id="modulesManager" />
 	-->
 	<reference id="testManagerService"
-		interface="org.argeo.slc.services.test.TestManagerService" />
-	<reference id="agentService" interface="org.argeo.slc.services.runtime.AgentService" />
+		interface="org.argeo.slc.services.TestManagerService" />
+	<reference id="agentService" interface="org.argeo.slc.services.AgentService" />
 	<reference id="slcExecutionService"
-		interface="org.argeo.slc.services.process.SlcExecutionService" />
+		interface="org.argeo.slc.services.SlcExecutionService" />
 
 	<reference id="hibernateTransactionManager"
 		interface="org.springframework.transaction.PlatformTransactionManager"
