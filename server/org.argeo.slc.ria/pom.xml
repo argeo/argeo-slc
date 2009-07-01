@@ -12,11 +12,16 @@
 	<packaging>jar</packaging>
 	<name>Argeo SLC RIA</name>
 	<build>
+		<resources>
+			<resource>
+				<directory>src</directory>
+				<includes>
+					<include>index.jsp</include>
+					<include>WEB-INF/*</include>
+				</includes>
+			</resource>
+		</resources>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
 			<plugin>
 				<groupId>org.argeo.maven.plugins</groupId>
 				<artifactId>maven-argeo-qooxdoo-plugin</artifactId>
@@ -85,16 +90,39 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
-						<compress>false</compress>
-						<manifestFile>src/META-INF/MANIFEST.MF</manifestFile>
+						<manifestFile>target/classes/META-INF/MANIFEST.MF</manifestFile>
 					</archive>
-					<classesDirectory>src/</classesDirectory>
-					<includes>
-						<include>index.jsp</include>
-						<include>argeo-ria/**</include>
-						<include>WEB-INF/*</include>
-					</includes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>${version.maven-bundle-plugin}</version>
+				<configuration>
+					<instructions>
+						<Bundle-Version>${project.version}-r${buildNumber}</Bundle-Version>
+						<Export-Package></Export-Package>
+						<Import-Package>
+							javax.servlet,
+							javax.servlet.http,
+							javax.servlet.jsp,
+							javax.servlet.jsp.jstl.core,
+							javax.servlet.jsp.jstl.fmt,
+							javax.servlet.jsp.jstl.tlv,
+							javax.servlet.resources
+						</Import-Package>
+						<Web-ContextPath>org.argeo.slc.ria</Web-ContextPath>
+					</instructions>
+				</configuration>
+				<executions>
+					<execution>
+						<id>bundle-manifest</id>
+						<phase>process-classes</phase>
+						<goals>
+							<goal>manifest</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

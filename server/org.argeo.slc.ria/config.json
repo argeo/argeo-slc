@@ -22,7 +22,7 @@
     "API_EXCLUDE"  : ["qx.legacy.*"],
     "LOCALES"      : [ "en" ],
     "ROOT"         : "src/argeo-ria-src",
-	"BUILD_PATH"   : "src/argeo-ria",
+	"BUILD_PATH"   : "target/classes/argeo-ria",
 	"RIA_LIB_PATH" : "src/argeo-ria-lib",
 	"RIA_LIB_URI"  : "../argeo-ria-lib",
 	"CACHE"		   : "cache" ,
