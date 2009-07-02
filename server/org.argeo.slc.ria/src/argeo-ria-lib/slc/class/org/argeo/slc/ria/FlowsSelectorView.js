@@ -195,7 +195,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 							host + ' (' + uuid + ')', modulesLoader,
 							"Loading Modules...", folder.getDragData());
 					agentFolder.setUserData("agentUuid", uuid);
-					agentFolder.setIcon("org.argeo.slc.ria/mime-xsl-22.png");
+					agentFolder.setIcon("org.argeo.slc.ria/computer.png");
 					folder.add(agentFolder);
 				}
 				if(newAgents){
@@ -255,6 +255,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 									name : key,
 									version : mods[key][i]
 								});
+						versionFolder.setIcon("org.argeo.slc.ria/archive.png");
 						versionFolder.setUserData("agentUuid", agentId);
 						// Warning, we must add it AFTER setting the user data, 
 						// because of the persistent loading mechanism.
@@ -296,6 +297,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				var execFlows = executionModule.getExecutionFlows();
 				for (var key in execFlows) {
 					var file = new qx.ui.tree.TreeFile(key);
+					file.setIcon("org.argeo.slc.ria/system.png");
 					var path = execFlows[key].getPath();
 					file.setUserData("executionModule",	executionModule);
 					file.setUserData("executionFlow", execFlows[key]);
@@ -460,6 +462,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					"Tests", this.self(arguments).agentLoader,
 					"Loading Agents", dragData);
 			this.tree.setRoot(this.rootNode);
+			this.tree.setHideRoot(true);
 			this.rootNode.setPersistentTreeID("org.argeo.slc.ria.FlowsSelector")
 			this.rootNode.setOpen(true);
 			this.tree.setContextMenu(org.argeo.ria.event.CommandsManager
