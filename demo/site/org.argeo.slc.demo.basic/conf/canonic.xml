@@ -25,6 +25,14 @@
 					<bean parent="specAttr.primitive" p:value="300" p:isParameter="true"
 						p:isFrozen="false" p:isHidden="true" p:type="integer" />
 				</entry>
+				<entry key="refWithValue">
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+						p:value-ref="testDataNok" p:isParameter="true" p:isFrozen="false" />
+				</entry>
+				<entry key="refWithoutValue">
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+						p:isParameter="false" p:isFrozen="false" />
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -42,4 +50,18 @@
 			</list>
 		</property>
 	</bean>
+
+	<bean id="testDataOk" class="org.argeo.slc.core.test.BasicTestData">
+		<aop:scoped-proxy />
+		<property name="expected" value="tata" />
+		<property name="reached" value="tata" />
+	</bean>
+
+	<bean id="testDataNok" class="org.argeo.slc.core.test.BasicTestData">
+		<aop:scoped-proxy />
+		<property name="expected" value="tata" />
+		<property name="reached" value="toto" />
+	</bean>
+
+
 </beans>
