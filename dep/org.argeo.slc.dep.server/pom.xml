@@ -136,12 +136,13 @@
 			<artifactId>com.springsource.com.mysql.jdbc</artifactId>
 		</dependency>
 
-		<!-- Spring Security
+		<!--
+			Spring Security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>org.springframework.security</artifactId>
-		</dependency> -->
-		
+		</dependency>
+
 		<!-- Required in JDK 1.5 -->
 		<dependency>
 			<groupId>com.sun.xml</groupId>

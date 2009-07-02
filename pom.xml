@@ -504,6 +504,19 @@ limitations under the License.
 				<version>1.0.0.argeo4</version>
 			</dependency>
 
+			<!-- Security -->
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>org.springframework.security</artifactId>
+				<version>2.0.4.A</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>org.springframework.web</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
 			<!-- AOP -->
 			<dependency>
 				<groupId>org.aspectj</groupId>
@@ -685,13 +698,6 @@ limitations under the License.
 				<version>2.0.8</version>
 			</dependency>
 
-			<!-- Security
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>org.springframework.security</artifactId>
-				<version>2.0.4.A</version>
-			</dependency>
- -->
 			<!-- Tomcat -->
 			<dependency>
 				<groupId>org.apache.catalina</groupId>
