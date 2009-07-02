@@ -12,13 +12,12 @@
       "as"   : "testrunner"
     }    
   ],
-
+  
   "let" :
   {
     "APPLICATION"  : "org.argeo.ria",
     "QOOXDOO_PATH" : "src/qooxdoo-sdk",
-    "QXTHEME"      : "qx.theme.Modern",
-	"QXICONTHEME"  : ["Tango"],
+    "QXTHEME"      : "org.argeo.ria.theme.RiaTheme",
     "API_EXCLUDE"  : ["qx.legacy.*"],
     "LOCALES"      : [ "en" ],
     "ROOT"         : "src/argeo-ria-src",
@@ -166,9 +165,9 @@
     {
       "run" :
       [
-        "build-resources",
         "build-script",
-        "my-build-files"
+        "my-build-files",
+        "build-resources"
       ]
     },
     
