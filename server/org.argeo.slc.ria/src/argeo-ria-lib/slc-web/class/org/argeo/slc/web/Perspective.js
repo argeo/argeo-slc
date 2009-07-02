@@ -35,10 +35,10 @@ qx.Class.define("org.argeo.slc.web.Perspective",
 	  topLeft.set({width:300});
 	  viewsManager.registerViewPane(topLeft);
 	    
-	  this._splitPane.add(topLeft, 0);
+	  this._splitPane.add(topLeft, 1);
   	  var rightPane = new org.argeo.ria.components.TabbedViewPane("applet", "Test Detail");  	  
   	  viewsManager.registerViewPane(rightPane);
-	  this._splitPane.add(rightPane, 1);
+	  this._splitPane.add(rightPane, 3);
       
       viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1});
   		

@@ -27,29 +27,26 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
       this._thirdSplit.setDecorator(null);
             
 	  var selectorPane = new org.argeo.ria.components.ViewPane("selector", "Available Scripts");
-	  selectorPane.set({width:290});
 	  viewsManager.registerViewPane(selectorPane);
 	  
 	  var batchPane = new org.argeo.ria.components.ViewPane("batch", "Batch");
-	  
-  	  batchPane.set({width: 500, height:parseInt(qx.bom.Viewport.getHeight()*60/100)});
 	  viewsManager.registerViewPane(batchPane);
 	  
   	  var logPane = new org.argeo.ria.components.ViewPane("main", "Executions Log");
   	  viewsManager.registerViewPane(logPane);
+  	  logPane.setMinHeight(120);
   	  
   	  var specEditorPane = new org.argeo.ria.components.ViewPane("editor", "Specs Editor");
-  	  specEditorPane.set({width:200});
   	  viewsManager.registerViewPane(specEditorPane);
   	  
-	  this._secondSplit.add(this._thirdSplit, 0);	  
-	  this._secondSplit.add(logPane, 1);	  
+	  this._secondSplit.add(this._thirdSplit, 3);	  
+	  this._secondSplit.add(logPane, 2);	  
 	  
-	  this._thirdSplit.add(batchPane, 0);
-	  this._thirdSplit.add(specEditorPane, 1);
+	  this._thirdSplit.add(batchPane, 4);
+	  this._thirdSplit.add(specEditorPane, 3);
 	  
-	  this._splitPane.add(selectorPane, 0);	  
-	  this._splitPane.add(this._secondSplit, 1);
+	  this._splitPane.add(selectorPane, 1);	  
+	  this._splitPane.add(this._secondSplit, 3);
 
 	  
       viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1});

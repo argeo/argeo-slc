@@ -30,12 +30,12 @@ qx.Class.define("org.argeo.slc.web.MonitorPerspective",
       this._splitPane = new qx.ui.splitpane.Pane("horizontal");
       
       this._secondSplitPane = new qx.ui.splitpane.Pane("vertical");
-      this._splitPane.add(this._secondSplitPane, 0);
+      this._splitPane.add(this._secondSplitPane, 1);
       
 	  var topLeft = new org.argeo.ria.components.ViewPane("selector", "Fows and Modules");
 	  topLeft.set({width:300, height:400});
 	  viewsManager.registerViewPane(topLeft);
-	  this._secondSplitPane.add(topLeft, 0);
+	  this._secondSplitPane.add(topLeft, 4);
 	  this._secondSplitPane.setDecorator(null);
 	  
 	  var bottomLeft = new org.argeo.ria.components.ViewPane("properties", "Properties");	  
@@ -48,7 +48,7 @@ qx.Class.define("org.argeo.slc.web.MonitorPerspective",
   	  
   	  
   	  
-	  this._splitPane.add(rightPane, 1);
+	  this._splitPane.add(rightPane, 2);
       
       viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1});
   		
