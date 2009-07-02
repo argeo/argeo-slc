@@ -12,8 +12,8 @@ qx.Class.define("org.argeo.slc.web.LauncherPerspective",
   },
 
   statics : {
-  	LABEL : "Slc Execution",
-  	ICON : "org.argeo.slc.ria/utilities-terminal.png"
+  	LABEL : "SLC Execution",
+  	ICON : "ria/system-run.png"
   },
     
   members : {

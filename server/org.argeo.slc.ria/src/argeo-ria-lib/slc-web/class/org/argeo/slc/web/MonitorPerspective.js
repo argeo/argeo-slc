@@ -19,7 +19,7 @@ qx.Class.define("org.argeo.slc.web.MonitorPerspective",
   
   statics : {
   	LABEL : "SLC Monitoring",
-  	ICON : "ria/system-run.png"
+  	ICON : "org.argeo.slc.ria/utilities-terminal.png"
   },
   
   members : {
