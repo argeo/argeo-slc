@@ -6,4 +6,6 @@ public interface ExecutionSpec {
 	public Map<String, ExecutionSpecAttribute> getAttributes();
 
 	public String getName();
+	
+	public String getDescription();
 }

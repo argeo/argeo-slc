@@ -6,14 +6,15 @@ import java.util.List;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionSpec;
-import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.unit.execution.ExecutionFlowDescriptorTestUtils;
 
 public class ExecutionModuleDescriptorCastorTest extends AbstractCastorTestCase {
 	public void testMarshUnmarsh() throws Exception {
 		ExecutionModuleDescriptor moduleDescriptor = new ExecutionModuleDescriptor();
-		moduleDescriptor.setName("test.moodule");
+		moduleDescriptor.setName("test.module");
 		moduleDescriptor.setVersion("1.0.0");
+		moduleDescriptor.setLabel("Test Module");
+		moduleDescriptor.setDescription("module descriptor");
 
 		ExecutionFlowDescriptor flowDescriptor = ExecutionFlowDescriptorTestUtils
 				.createSimpleExecutionFlowDescriptor();

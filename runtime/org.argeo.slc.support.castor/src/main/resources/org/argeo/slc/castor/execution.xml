@@ -10,6 +10,8 @@
 			ns-prefix="slc" />
 		<field name="name" />
 		<field name="version" />
+		<field name="label" />
+		<field name="description" />
 		<field name="executionFlows" collection="arraylist"
 			type="org.argeo.slc.execution.ExecutionFlowDescriptor">
 			<bind-xml auto-naming="deriveByClass" location="execution-flows" />
@@ -107,6 +109,10 @@
 		<field name="targetClassName">
 			<bind-xml name="targetClassName" node="attribute" />
 		</field>
+		<field name="choices" collection="arraylist"
+			type="org.argeo.slc.core.execution.RefValueChoice">
+			<bind-xml auto-naming="deriveByClass" location="choices" />
+		</field>
 	</class>
 
 	<!-- Values -->
@@ -131,6 +137,17 @@
 	<class name="org.argeo.slc.core.execution.RefValue" extends="org.argeo.slc.core.execution.AbstractExecutionValue">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
-		<field name="label" />
+		<field name="ref">
+			<bind-xml name="ref" node="attribute" />
+		</field>
+	</class>
+
+	<class name="org.argeo.slc.core.execution.RefValueChoice">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="name">
+			<bind-xml name="name" node="attribute" />
+		</field>
+		<field name="description" />
 	</class>
 </mapping>

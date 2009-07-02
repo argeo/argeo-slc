@@ -1,15 +1,13 @@
 package org.argeo.slc.execution;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.argeo.slc.SlcException;
+import org.argeo.slc.deploy.ModuleDescriptor;
 
-public class ExecutionModuleDescriptor implements Serializable {
+public class ExecutionModuleDescriptor extends ModuleDescriptor {
 	private static final long serialVersionUID = 1L;
-	private String name;
-	private String version;
+
 	private List<ExecutionSpec> executionSpecs = new ArrayList<ExecutionSpec>();
 	private List<ExecutionFlowDescriptor> executionFlows = new ArrayList<ExecutionFlowDescriptor>();
 
@@ -28,21 +26,4 @@ public class ExecutionModuleDescriptor implements Serializable {
 	public void setExecutionFlows(List<ExecutionFlowDescriptor> executionFlows) {
 		this.executionFlows = executionFlows;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
 }

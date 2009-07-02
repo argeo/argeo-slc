@@ -9,13 +9,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.AbstractExecutionModulesManager;
-import org.argeo.slc.core.execution.DefaultDescriptorConverter;
+import org.argeo.slc.core.execution.DefaultExecutionFlowDescriptorConverter;
+import org.argeo.slc.deploy.ModuleDescriptor;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.process.RealizedFlow;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -30,12 +33,17 @@ public class OsgiExecutionModulesManager extends
 
 	private BundlesManager bundlesManager;
 	private ServiceTracker executionContexts;
-	private ExecutionFlowDescriptorConverter defaultDescriptorConverter = new DefaultDescriptorConverter();
+	private ExecutionFlowDescriptorConverter defaultDescriptorConverter = new DefaultExecutionFlowDescriptorConverter();
 
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version) {
-		return createDescriptor(moduleName, version, listFlows(moduleName,
-				version));
+		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
+		md.setName(moduleName);
+		md.setVersion(version);
+		setMetadataFromBundle(md, null);
+		getExecutionFlowDescriptorConverter(moduleName, version)
+				.addFlowsToDescriptor(md, listFlows(moduleName, version));
+		return md;
 	}
 
 	public List<ExecutionModuleDescriptor> listExecutionModules() {
@@ -43,12 +51,8 @@ public class OsgiExecutionModulesManager extends
 
 		ServiceReference[] srs = executionContexts.getServiceReferences();
 		for (ServiceReference sr : srs) {
-			String moduleName = sr.getBundle().getSymbolicName();
-			String moduleVersion = sr.getBundle().getHeaders().get(
-					"Bundle-Version").toString();
 			ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
-			md.setName(moduleName);
-			md.setVersion(moduleVersion);
+			setMetadataFromBundle(md, sr.getBundle());
 			descriptors.add(md);
 		}
 		return descriptors;
@@ -164,6 +168,17 @@ public class OsgiExecutionModulesManager extends
 		execute(realizedFlow);
 	}
 
+	protected ExecutionFlowDescriptorConverter getExecutionFlowDescriptorConverter(
+			String moduleName, String moduleVersion) {
+		// Check whether a descriptor converter is published by this module
+		ExecutionFlowDescriptorConverter descriptorConverter = findExecutionFlowDescriptorConverter(
+				moduleName, moduleVersion);
+		if (descriptorConverter == null)
+			return defaultDescriptorConverter;
+		else
+			return descriptorConverter;
+	}
+
 	public void execute(RealizedFlow realizedFlow) {
 		if (log.isTraceEnabled())
 			log.trace("Executing " + realizedFlow);
@@ -171,18 +186,9 @@ public class OsgiExecutionModulesManager extends
 		String moduleName = realizedFlow.getModuleName();
 		String moduleVersion = realizedFlow.getModuleVersion();
 
-		// Check whether a descriptor converter is published by this module
-		ExecutionFlowDescriptorConverter descriptorConverter = findExecutionFlowDescriptorConverter(
-				moduleName, moduleVersion);
-
-		final Map<? extends String, ? extends Object> variablesToAdd;
-		if (descriptorConverter != null)
-			variablesToAdd = descriptorConverter.convertValues(realizedFlow
-					.getFlowDescriptor());
-		else
-			variablesToAdd = defaultDescriptorConverter
-					.convertValues(realizedFlow.getFlowDescriptor());
-
+		Map<? extends String, ? extends Object> variablesToAdd = getExecutionFlowDescriptorConverter(
+				moduleName, moduleVersion).convertValues(
+				realizedFlow.getFlowDescriptor());
 		ExecutionContext executionContext = findExecutionContext(moduleName,
 				moduleVersion);
 		for (String key : variablesToAdd.keySet())
@@ -200,4 +206,54 @@ public class OsgiExecutionModulesManager extends
 		//
 	}
 
+	public ModuleDescriptor getModuleDescriptor(String moduleName,
+			String version) {
+		return getExecutionModuleDescriptor(moduleName, version);
+	}
+
+	public List<ModuleDescriptor> listModules() {
+		Bundle[] bundles = bundlesManager.getBundleContext().getBundles();
+		List<ModuleDescriptor> lst = new ArrayList<ModuleDescriptor>();
+		for (Bundle bundle : bundles) {
+			ModuleDescriptor moduleDescriptor = new ModuleDescriptor();
+			setMetadataFromBundle(moduleDescriptor, bundle);
+			lst.add(moduleDescriptor);
+		}
+		return lst;
+	}
+
+	protected void setMetadataFromBundle(ModuleDescriptor md, Bundle bundle) {
+		Bundle bdl = bundle;
+		if (bdl == null) {
+			if (md.getName() == null || md.getVersion() == null)
+				throw new SlcException("Name and version not available.");
+
+			Bundle[] bundles = bundlesManager.getBundleContext().getBundles();
+			for (Bundle b : bundles) {
+				if (b.getSymbolicName().equals(md.getName())
+						&& md.getVersion().equals(
+								getHeaderSafe(b, Constants.BUNDLE_VERSION))) {
+					bdl = b;
+					break;
+				}
+			}
+
+		}
+
+		if (bdl == null)
+			throw new SlcException("Cannot find bundle.");
+
+		md.setName(bdl.getSymbolicName());
+		md.setVersion(getHeaderSafe(bdl, Constants.BUNDLE_VERSION));
+		md.setLabel(getHeaderSafe(bdl, Constants.BUNDLE_NAME));
+		md.setDescription(getHeaderSafe(bdl, Constants.BUNDLE_DESCRIPTION));
+	}
+
+	private String getHeaderSafe(Bundle bundle, Object key) {
+		Object obj = bundle.getHeaders().get(key);
+		if (obj == null)
+			return null;
+		else
+			return obj.toString();
+	}
 }

@@ -1,22 +1,23 @@
 package org.argeo.slc.core.execution;
 
+
 public class RefValue extends AbstractExecutionValue {
-	private String label;
+	private String ref;
 
 	public RefValue() {
 	}
 
-	public RefValue(String label) {
+	public RefValue(String ref) {
 		super();
-		this.label = label;
+		this.ref = ref;
 	}
 
-	public String getLabel() {
-		return label;
+	public String getRef() {
+		return ref;
 	}
 
-	public void setLabel(String label) {
-		this.label = label;
+	public void setRef(String ref) {
+		this.ref = ref;
 	}
 
 }

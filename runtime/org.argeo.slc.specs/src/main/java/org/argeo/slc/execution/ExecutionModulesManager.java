@@ -2,11 +2,12 @@ package org.argeo.slc.execution;
 
 import java.util.List;
 
+import org.argeo.slc.deploy.ModulesManager;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 
 /** Provides access to the execution modules */
-public interface ExecutionModulesManager {
+public interface ExecutionModulesManager extends ModulesManager {
 	/** @return a full fledged module descriptor. */
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version);

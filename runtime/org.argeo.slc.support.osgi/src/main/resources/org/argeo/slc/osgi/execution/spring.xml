@@ -8,6 +8,8 @@
 
 	<osgi:service interface="org.argeo.slc.execution.ExecutionContext"
 		ref="executionContext" />
+	<osgi:service interface="org.argeo.slc.execution.ExecutionFlowDescriptorConverter"
+		ref="executionFlowDescriptorConverter" />
 
 	<bean class="org.argeo.slc.osgi.MultipleServiceExporterPostProcessor">
 		<property name="interfaces">
