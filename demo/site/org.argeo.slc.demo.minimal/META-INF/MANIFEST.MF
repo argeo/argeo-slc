@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Bundle-SymbolicName: org.argeo.slc.demo.minimal
 Bundle-Version: 0.11.4.SNAPSHOT
-Bundle-Name: SLC Demo Minimal Execution Module
+Bundle-Name: SLC Demo Minimal Module
+Bundle-Description: Minimal functioning execution module
 Spring-Context: slc/*
 Require-Bundle: 
  org.argeo.slc.specs,

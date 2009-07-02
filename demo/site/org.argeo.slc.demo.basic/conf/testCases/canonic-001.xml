@@ -8,6 +8,7 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<bean id="canonic.001" parent="canonic.flowTemplate">
+		<description>Canonic 001</description>
 		<constructor-arg>
 			<map>
 				<entry key="parameterAtInstantiation" value="1" />

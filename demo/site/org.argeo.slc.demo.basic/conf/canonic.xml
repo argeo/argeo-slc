@@ -8,6 +8,7 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<bean id="canonic.spec" parent="slcTemplate.simpleSpec">
+		<description>Covers various combinations of specs</description>
 		<property name="attributes">
 			<map>
 				<entry key="parameterAtInstantiation">

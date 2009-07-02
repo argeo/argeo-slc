@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Bundle-SymbolicName: org.argeo.slc.demo.basic
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: SLC Demo Basic
+Bundle-Description: Test of basic features
 Spring-Context: conf/*,conf/testCases/*
 Require-Bundle: 
  org.argeo.slc.specs,

@@ -10,4 +10,5 @@
 		action="start" />
 	<bundle id="minimal" symbolic-name="org.argeo.slc.demo.minimal"
 		action="start" />
+	<bundle id="ant" symbolic-name="org.argeo.slc.demo.ant" action="start" />
 </beans:beans>
