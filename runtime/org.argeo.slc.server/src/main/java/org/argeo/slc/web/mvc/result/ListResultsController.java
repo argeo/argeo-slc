@@ -32,12 +32,12 @@ public class ListResultsController extends AbstractServiceController {
 			HttpServletResponse response, ModelAndView modelAndView)
 			throws Exception {
 
-		log.debug("userPrincipal=" + request.getUserPrincipal());
-		log.debug("authType=" + request.getAuthType());
-		log.debug("remoteUser=" + request.getRemoteUser());
-		log.debug("cookies=" + request.getCookies());
-		log.debug("requestedSessionId=" + request.getRequestedSessionId());
-		log.debug("session.id=" + request.getSession().getId());
+//		log.debug("userPrincipal=" + request.getUserPrincipal());
+//		log.debug("authType=" + request.getAuthType());
+//		log.debug("remoteUser=" + request.getRemoteUser());
+//		log.debug("cookies=" + request.getCookies());
+//		log.debug("requestedSessionId=" + request.getRequestedSessionId());
+//		log.debug("session.id=" + request.getSession().getId());
 
 		String collectionId = request.getParameter("collectionId");
 
