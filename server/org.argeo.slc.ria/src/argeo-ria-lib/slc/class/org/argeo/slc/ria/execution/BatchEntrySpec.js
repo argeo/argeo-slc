@@ -87,8 +87,7 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 				}
 				instanceValues[key] = instValue;
 			}
-			this.setValues(instanceValues);
-			this.debug(instanceValues);
+			this.setValues(instanceValues);			
 		}
 	}
 });

@@ -88,6 +88,14 @@ qx.Class.define("org.argeo.slc.ria.monitor.FlowsSelectorView", {
 	},
 
 	statics : {
+		
+		riaPreferences : {
+			"flowSelector.monitor.preferred.hosts" : {
+				label : "Preferred Hosts (Monitoring View)",
+				type  : "string"
+			}
+		},
+		
 		/**
 		 * Static loader for the "agent" level (first level)
 		 * 

@@ -5,6 +5,7 @@
 qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 	extend : qx.ui.container.Composite,
 	implement : [org.argeo.ria.components.IView],
+	include : [org.argeo.ria.session.MPrefHolder],
 
 	construct : function() {
 		this.base(arguments);
@@ -91,6 +92,36 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					},
 					command : null
 				},
+				"preferredHost" : {
+					label : "Toggle 'Preferred Host'",
+					icon : "ria/bookmark.png",
+					shortcut : null,
+					enabled : true,
+					menu : null,
+					toolbar : null,
+					callback : function(e) {
+						if (this.tree.isSelectionEmpty()) {
+							return;
+						}
+						var selection = this.tree.getSelection();
+						if(selection.length != 1) return;
+						var agentNode = selection[0];
+						if(!agentNode.getUserData("agentHost")) return;
+						this.togglePreferredHost(agentNode);
+					},
+					selectionChange : function(viewId, selection) {
+						if (viewId != "form:tree")
+							return;
+						if (!selection || selection.length != 1)
+							return;
+						var item = selection[0];
+						this.setEnabled(false);
+						if(item.getUserData("agentHost")){
+							this.setEnabled(true);
+						}
+					},
+					command : null
+				},
 				"reloadfull" : {
 					label : "Reload Agents",
 					icon : "org.argeo.slc.ria/view-refresh.png",
@@ -173,6 +204,14 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 	},
 
 	statics : {		
+		
+		riaPreferences : {
+			"flowSelector.preferred.hosts" : {
+				label : "Preferred Hosts (Execution View)",
+				type  : "string"
+			}
+		},
+		
 		/**
 		 * Static loader for the "agent" level (first level)
 		 * 
@@ -181,6 +220,10 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 		 */
 		agentLoader : function(folder) {
 
+			var preferredHosts = org.argeo.ria.session.MPrefHolder.loadRiaPreferenceValue("flowSelector.preferred.hosts");
+			if(preferredHosts && preferredHosts!=""){
+				preferredHosts = preferredHosts.split(",");
+			}
 			var req = org.argeo.slc.ria.SlcApi.getListAgentsService("agents");			
 			var agents = {};
 			if(folder.getState() == "loaded" && folder.getUserData("agentsMap")){
@@ -207,9 +250,17 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 							host, modulesLoader, "Loading Modules...", folder.getDragData());
 					org.argeo.slc.ria.FlowsSelectorView.attachToolTip(agentFolder, uuid);
 					agentFolder.setPersistentTreeID(folder.getPersistentTreeID()+"_"+uuid);
+					agentFolder.setUserData("agentHost", host); // Used by bookmark system
 					agentFolder.setUserData("agentUuid", uuid);
-					agentFolder.setIcon("org.argeo.slc.ria/computer.png");
-					folder.add(agentFolder);
+					if(preferredHosts && preferredHosts instanceof Array && qx.lang.Array.contains(preferredHosts, uuid)){
+						folder.addAtBegin(agentFolder);
+						agentFolder.setIcon("org.argeo.slc.ria/computer_bookmarked.png");
+						agentFolder.setUserData("preferredHost", true);
+					}else{
+						folder.add(agentFolder);
+						agentFolder.setIcon("org.argeo.slc.ria/computer.png");
+						agentFolder.setUserData("preferredHost", false);
+					}
 				}
 				if(newAgents){
 					// Make sure some agents should not be removed
@@ -468,6 +519,32 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 		},
 
 		/**
+		 * 
+		 * @param agentNode {qx.ui.tree.AbstractTreeItem}
+		 */
+		togglePreferredHost : function(agentNode){
+			var hostName = agentNode.getUserData("agentUuid");
+			var pref = this.getRiaPreferenceValue("flowSelector.preferred.hosts");
+			var prefArray = [];
+			if(pref){
+				prefArray = pref.split(",");
+			}
+			if(qx.lang.Array.contains(prefArray, hostName)){
+				qx.lang.Array.remove(prefArray, hostName);
+				agentNode.setIcon("org.argeo.slc.ria/computer.png");
+				agentFolder.setUserData("preferredHost", false);
+			}else{
+				prefArray.push(hostName);
+				agentNode.setIcon("org.argeo.slc.ria/computer_bookmarked.png");
+				agentFolder.setUserData("preferredHost", true);
+				var parent = agentNode.getParent();
+				parent.remove(agentNode);
+				parent.addAtBegin(agentNode);
+			}
+			this.setRiaPreferenceValue("flowSelector.preferred.hosts", prefArray.join(","));
+		},
+		
+		/**
 		 * Creates the main applet layout.
 		 */
 		_createLayout : function() {
@@ -495,7 +572,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			this.rootNode.setOpen(true);
 			this.tree.setContextMenu(org.argeo.ria.event.CommandsManager
 					.getInstance().createMenuFromIds(["addtobatch",
-							"reloadtree"]));
+							"reloadtree", "preferredHost"]));
 
 			this.tree.addListener("changeSelection", function(e) {
 				var viewSelection = this.getViewSelection();
