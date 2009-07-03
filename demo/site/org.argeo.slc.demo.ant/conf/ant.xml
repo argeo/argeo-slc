@@ -7,7 +7,7 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="hello" parent="slcTemplate.simpleFlow">
+	<bean id="main" parent="slcTemplate.simpleFlow">
 		<property name="executables">
 			<list>
 				<bean class="org.argeo.slc.ant.AntRun">

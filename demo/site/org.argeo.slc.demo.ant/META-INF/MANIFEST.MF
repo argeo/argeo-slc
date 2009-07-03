@@ -1,8 +1,4 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.support.osgi,
- org.argeo.slc.specs,
- org.argeo.slc.core,
- org.argeo.slc.support.ant
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: SLC Demo Ant
 Bundle-Description: Demonstrate Ant support
@@ -13,6 +9,13 @@ Import-Package: net.sf.cglib.core,
  net.sf.cglib.reflect,
  org.aopalliance.aop,
  org.apache.commons.logging,
+ org.argeo.slc.ant,
+ org.argeo.slc.core.execution,
+ org.argeo.slc.core.execution.tasks,
+ org.argeo.slc.execution,
+ org.argeo.slc.osgi,
+ org.argeo.slc.osgi.execution,
+ org.argeo.slc.structure,
  org.springframework.aop,
  org.springframework.aop.framework,
  org.springframework.aop.scope,

@@ -4,16 +4,18 @@ Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: SLC Demo Minimal Module
 Bundle-Description: Minimal functioning execution module
 Spring-Context: slc/*
-Require-Bundle: 
- org.argeo.slc.specs,
- org.argeo.slc.core,
- org.argeo.slc.support.osgi
 Import-Package: 
  net.sf.cglib.core,
  net.sf.cglib.proxy,
  net.sf.cglib.reflect,
  org.aopalliance.aop,
  org.apache.commons.logging,
+ org.argeo.slc.core.execution,
+ org.argeo.slc.core.execution.tasks,
+ org.argeo.slc.execution,
+ org.argeo.slc.osgi,
+ org.argeo.slc.osgi.execution,
+ org.argeo.slc.structure,
  org.springframework.aop,
  org.springframework.aop.framework,
  org.springframework.aop.scope,
