@@ -6,7 +6,6 @@
 	<http realm="User Interface">
 		<intercept-url pattern="/**" access="ROLE_USER" />
 		<http-basic />
-		<anonymous />
 	</http>
 
 	<authentication-provider>
@@ -14,6 +13,7 @@
 			<user name="mbaudier" password="mbaudier" authorities="ROLE_USER,ROLE_ADMIN" />
 			<user name="cdujeu" password="cdujeu" authorities="ROLE_USER" />
 			<user name="test" password="test" authorities="ROLE_USER" />
+			<user name="demo" password="demo" authorities="ROLE_USER" />
 		</user-service>
 	</authentication-provider>
 
