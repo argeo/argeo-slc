@@ -516,6 +516,11 @@ limitations under the License.
 					</exclusion>
 				</exclusions>
 			</dependency>
+			<dependency>
+				<groupId>org.antlr</groupId>
+				<artifactId>com.springsource.org.antlr</artifactId>
+				<version>3.0.1</version>
+			</dependency>
 
 			<!-- AOP -->
 			<dependency>
