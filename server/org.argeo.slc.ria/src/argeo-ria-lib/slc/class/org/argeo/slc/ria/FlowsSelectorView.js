@@ -77,12 +77,12 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 								this.setEnabled(true);
 								break;
 							case "org.argeo.ria.components.PersistentTreeFolder" :
-								if (item.getTree().getRoot() == item)
+								if (item.getTree() && item.getTree().getRoot() == item)
 									break;
 								this.setEnabled(true);
 								break;
 							case "org.argeo.ria.components.DynamicTreeFolder" :
-								if (item.getTree().getRoot() == item)
+								if (item.getTree() && item.getTree().getRoot() == item)
 									break;	
 								if (item.getState() == "loaded")
 									this.setEnabled(true);
@@ -91,13 +91,25 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					},
 					command : null
 				},
-				"reloadtree" : {
-					label : "Reload",
+				"reloadfull" : {
+					label : "Reload Agents",
 					icon : "org.argeo.slc.ria/view-refresh.png",
-					shortcut : "Control+m",
-					enabled : false,
+					shortcut : "control+h",
+					enabled : true,
 					menu : "Launcher",
-					toolbar : "launcher",
+					toolbar : "list",
+					callback : function(e) {
+						this.rootNode.reload();
+					},
+					command : null
+				},				
+				"reloadtree" : {
+					label : "Reload Node",
+					icon : "org.argeo.slc.ria/view-refresh.png",
+					shortcut : null,
+					enabled : false,
+					menu : null,
+					toolbar : null,
 					callback : function(e) {
 						if (this.tree.isSelectionEmpty()) {	return;	}						
 						var selected = this.tree.getSelection()[0];
@@ -160,7 +172,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 		}
 	},
 
-	statics : {
+	statics : {		
 		/**
 		 * Static loader for the "agent" level (first level)
 		 * 
@@ -179,7 +191,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			req.addListener("completed", function(response) {
 				var xmlDoc = response.getContent();
 				var nodes = org.argeo.ria.util.Element.selectNodes(xmlDoc,
-						"//slc:slc-agent-descriptor");
+						"/slc:object-list/slc:slc-agent-descriptor");
 				var modulesLoader = org.argeo.slc.ria.FlowsSelectorView.modulesLoader;
 				
 				for (var i = 0; i < nodes.length; i++) {
@@ -192,8 +204,9 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					agents[uuid] = host;
 					if(newAgents) newAgents[uuid] = host;
 					var agentFolder = new org.argeo.ria.components.DynamicTreeFolder(
-							host + ' (' + uuid + ')', modulesLoader,
-							"Loading Modules...", folder.getDragData());
+							host, modulesLoader, "Loading Modules...", folder.getDragData());
+					org.argeo.slc.ria.FlowsSelectorView.attachToolTip(agentFolder, uuid);
+					agentFolder.setPersistentTreeID(folder.getPersistentTreeID()+"_"+uuid);
 					agentFolder.setUserData("agentUuid", uuid);
 					agentFolder.setIcon("org.argeo.slc.ria/computer.png");
 					folder.add(agentFolder);
@@ -234,29 +247,35 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			req.addListener("completed", function(response) {
 				var descriptors = org.argeo.ria.util.Element.selectNodes(
 						response.getContent(),
-						"slc:object-list/slc:execution-module-descriptor");
+						"slc:object-list/" + org.argeo.slc.ria.execution.Module.XPATH_ROOT);
 				var mods = {};
 				for (var i = 0; i < descriptors.length; i++) {
-					var name = org.argeo.ria.util.Element.getSingleNodeText(
-							descriptors[i], "slc:name");
-					var version = org.argeo.ria.util.Element.getSingleNodeText(
-							descriptors[i], "slc:version");
+					var tmpModule = new org.argeo.slc.ria.execution.Module();
+					try{						
+						tmpModule.setXmlNode(descriptors[i]);
+					}catch(e){
+						qx.log.Logger.error(e);
+					}
+					var name = tmpModule.getName();
+					var version = tmpModule.getVersion();
 					if (!mods[name])
 						mods[name] = [];
-					mods[name].push(version);
+					mods[name].push(tmpModule);
 				}
 				var flowLoader = org.argeo.slc.ria.FlowsSelectorView.flowLoader;
 				for (var key in mods) {
 					for (var i = 0; i < mods[key].length; i++) {
+						var module = mods[key][i];
 						var versionFolder = new org.argeo.ria.components.DynamicTreeFolder(
-								key + ' (' + mods[key][i] + ')', flowLoader,
+								module.getDescription(), flowLoader,
 								"Loading Flows", folder.getDragData());
 						versionFolder.setUserData("moduleData", {
 									name : key,
-									version : mods[key][i]
+									version : module.getVersion()
 								});
 						versionFolder.setIcon("org.argeo.slc.ria/archive.png");
 						versionFolder.setUserData("agentUuid", agentId);
+						org.argeo.slc.ria.FlowsSelectorView.attachToolTip(versionFolder, key + ' (' + module.getVersion() + ')');
 						// Warning, we must add it AFTER setting the user data, 
 						// because of the persistent loading mechanism.
 						folder.add(versionFolder);
@@ -297,6 +316,9 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				var execFlows = executionModule.getExecutionFlows();
 				for (var key in execFlows) {
 					var file = new qx.ui.tree.TreeFile(key);
+					if(execFlows[key].getDescription() != ""){
+						org.argeo.slc.ria.FlowsSelectorView.attachToolTip(file, execFlows[key].getDescription());
+					}
 					file.setIcon("org.argeo.slc.ria/system.png");
 					var path = execFlows[key].getPath();
 					file.setUserData("executionModule",	executionModule);
@@ -316,6 +338,12 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			req.send();
 		},
 
+		attachToolTip : function(nodeItem, description){
+			var tt = new qx.ui.tooltip.ToolTip(description);
+			tt.setShowTimeout(0);
+			nodeItem.setToolTip(tt);			
+		},
+		
 		/**
 		 * Parse a string path and search if there is a root node.
 		 * 

@@ -13,6 +13,10 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 			check : "String",
 			init : ""
 		},
+		description : {
+			check : "String",
+			init : ""
+		},
 		/**
 		 * An optional path describing this flow
 		 */
@@ -53,6 +57,10 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 		 */
 		XPATH_NAME : "@name",
 		/**
+		 * Path to the description
+		 */
+		XPATH_DESCRIPTION : "slc:description",
+		/**
 		 * XPath to the ExecutionSpec name
 		 */
 		XPATH_EXEC_SPEC_NAME : "@executionSpec",
@@ -79,6 +87,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 			this.set({
 				name : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_NAME),
 				path : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_PATH),
+				description : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_DESCRIPTION) || "",
 				executionSpecName : org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_EXEC_SPEC_NAME)
 			});
 			var values = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_VALUES);
@@ -98,7 +107,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Flow", {
 			if(specType == "primitive"){
 				xpath = 'slc:value[@key="'+key+'"]/slc:primitive-value[@type="'+specSubType+'"]';
 			}else if(specType == "ref"){
-				xpath = 'slc:value[@key="'+key+'"]/slc:ref-value/slc:label';
+				xpath = 'slc:value[@key="'+key+'"]/slc:ref-value/@ref';
 			}
 			return org.argeo.ria.util.Element.getSingleNodeText(this.getValues(), xpath);
 		}

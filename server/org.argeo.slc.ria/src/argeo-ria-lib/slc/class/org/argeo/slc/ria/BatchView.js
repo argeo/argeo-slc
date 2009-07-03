@@ -405,17 +405,22 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				var batchEntrySpec = selection[i].getUserData("batchEntrySpec");
 				slcExecMessage.addBatchEntrySpec(batchEntrySpec);
 			}
-			var req = org.argeo.slc.ria.SlcApi.getNewSlcExecutionService(
-					agentUuid, slcExecMessage.toXml());
-			req.send();
-			// Force logs refresh right now!
-			qx.event.Timer.once(function() {
-						var command = org.argeo.ria.event.CommandsManager
-								.getInstance().getCommandById("reloadlogs");
-						if (command) {
-							command.execute();
-						}
-					}, this, 2000);
+			try{
+				var xmlMessage = slcExecMessage.toXml();
+				var req = org.argeo.slc.ria.SlcApi.getNewSlcExecutionService(
+						agentUuid, xmlMessage);
+				req.send();
+				// Force logs refresh right now!
+				qx.event.Timer.once(function() {
+							var command = org.argeo.ria.event.CommandsManager
+									.getInstance().getCommandById("reloadlogs");
+							if (command) {
+								command.execute();
+							}
+						}, this, 2000);
+			}catch(e){
+				this.error(e);				
+			}
 		},
 		
 		clearBatchForAgentId : function(agentId){

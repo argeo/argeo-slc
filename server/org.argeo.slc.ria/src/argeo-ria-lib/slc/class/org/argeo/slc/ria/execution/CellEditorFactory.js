@@ -73,34 +73,83 @@ qx.Class.define("org.argeo.slc.ria.execution.CellEditorFactory",
 			var metaData = rowData[2];
 			if (metaData.disabled) {
 				return null; // var cellEditor = new
-								// qx.ui.table.celleditor.TextField();
+							 // qx.ui.table.celleditor.TextField();
 			}
-
-			var cellEditor = new qx.ui.form.TextField;
-			cellEditor.setAppearance("table-editor-textfield");
-			cellEditor.originalValue = cellInfo.value;			
-			if (cellInfo.value === null) {
-				cellInfo.value = "";
-			}
-			cellEditor.setValue("" + cellInfo.value);
-
-			cellEditor.addListener("appear", function() {
-				cellEditor.selectAll();
-			});
-
-			var validationFunc;
-			if (metaData.subType == "integer") {
-				validationFunc = function(newValue, oldValue){
-					var isNum = !isNaN(newValue * 1);
-					if (!isNum) {
-						alert("Warning, this field only accepts Integers!");
-						return oldValue;
-					}
-					return newValue;
-				};
-			}
+			if(metaData.type == "primitive"){
+				var cellEditor = new qx.ui.form.TextField;
+				cellEditor.setAppearance("table-editor-textfield");
+				cellEditor.originalValue = cellInfo.value;			
+				if (cellInfo.value === null) {
+					cellInfo.value = "";
+				}
+				cellEditor.setValue("" + cellInfo.value);
+	
+				cellEditor.addListener("appear", function() {
+					cellEditor.selectAll();
+				});
+	
+				var validationFunc;
+				if (metaData.subType == "integer") {
+					validationFunc = function(newValue, oldValue){
+						var isNum = !isNaN(newValue * 1);
+						if (!isNum) {
+							alert("Warning, this field only accepts Integers!");
+							return oldValue;
+						}
+						return newValue;
+					};
+				}
+				cellEditor.setUserData("validationFunc", validationFunc);
+			}else if(metaData.type == "ref"){
+			      var cellEditor = new qx.ui.form.SelectBox().set({
+			        appearance: "table-editor-selectbox"
+			      });
+			      cellEditor.setUserData("validationFunc", function(value, oldValue){
+			      		if(value == "__empty__"){
+			      			alert("Warning, value cannot be empty! You must select at least one option below.");
+			      			return oldValue;
+			      		}
+			      		return value;
+			      });
 			
-			cellEditor.setUserData("validationFunc", validationFunc);
+			      var value = cellInfo.value;
+			      cellEditor.originalValue = value;
+			      // replace null values
+			      if ( value === null ) {
+			        value = "";
+			      }
+				  if(value == ""){
+				  	cellEditor.add(new qx.ui.form.ListItem("", null, "__empty__"));
+				  }
+			      var list = metaData.refList;
+			      if (list)
+			      {
+			        var item;
+			
+			        for (var i=0,l=list.length; i<l; i++)
+			        {
+			          var row = list[i];
+			          if ( row instanceof Array ) {
+			          	// Array [key, description] where description can be null
+			            item = new qx.ui.form.ListItem(row[0], null, row[0]);
+			            if(row[1]){
+			            	item.setToolTip(new qx.ui.tooltip.ToolTip(row[1]));
+			            }
+			          } else {
+			            item = new qx.ui.form.ListItem(row, null, row)
+			          }
+			          if(value == item.getValue()){
+			          	cellEditor.setSelected(item);
+			          }
+			          cellEditor.add(item);
+			        };
+			      }
+			
+			      cellEditor.setValue("" + value);
+			      cellEditor.addListener("appear", function() {
+			        cellEditor.open();
+			      });
+			}
 			
 			return cellEditor;
 		},

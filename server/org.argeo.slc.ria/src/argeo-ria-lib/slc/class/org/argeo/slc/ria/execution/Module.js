@@ -13,6 +13,14 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 			check : "String",
 			init : ""
 		},
+		label : {
+			check : "String",
+			init : ""			
+		},
+		description : {
+			check : "String",
+			init : ""			
+		},
 		/**
 		 * The version of the module
 		 */
@@ -41,10 +49,13 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 	},
 	
 	statics : {
-		XPATH_NAME : "slc:execution-module-descriptor/slc:name",
-		XPATH_VERSION : "slc:execution-module-descriptor/slc:version",
-		XPATH_EXECUTION_FLOWS : "slc:execution-module-descriptor/slc:execution-flows/slc:execution-flow-descriptor",
-		XPATH_EXECUTION_SPECS : "slc:execution-module-descriptor/slc:execution-specs/slc:default-execution-spec"
+		XPATH_ROOT : "slc:execution-module-descriptor",		
+		XPATH_NAME : "slc:name",
+		XPATH_LABEL : "slc:label",
+		XPATH_DESCRIPTION : "slc:description",
+		XPATH_VERSION : "slc:version",
+		XPATH_EXECUTION_FLOWS : "slc:execution-flows/slc:execution-flow-descriptor",
+		XPATH_EXECUTION_SPECS : "slc:execution-specs/slc:default-execution-spec"
 	},
 	
 	construct : function(){
@@ -93,27 +104,44 @@ qx.Class.define("org.argeo.slc.ria.execution.Module", {
 			return this.getExecutionFlows()[name];
 		},
 		
+		moduleDataToXml : function(){
+			var xmlData = '<slc:module-name>'+this.getName()+'</slc:module-name>';
+			xmlData += '<slc:module-version>'+this.getVersion()+'</slc:module-version>';
+			return xmlData;
+		},
+		
 		/**
 		 * An xml node containing the castor mapped description of this object
 		 * @param xmlNode {Node}
 		 */
 		_applyXmlNode : function(xmlNode){
-			// Parse now
-			this.setName(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_NAME) || "Not Found");
-			this.setVersion(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_VERSION));
-			// Parse Specs first
-			var specs = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_EXECUTION_SPECS);
-			for(i=0; i< specs.length;i++){
-				var execSpec = new org.argeo.slc.ria.execution.Spec();
-				execSpec.setXmlNode(specs[i]);
-				this.addExecutionSpec(execSpec);
+			var appendRoot = "";
+			if(xmlNode.nodeName != this.self(arguments).XPATH_ROOT){
+				appendRoot = this.self(arguments).XPATH_ROOT+"/";
 			}
-			// Now parse Flows : to do AFTER specs
-			var flows = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_EXECUTION_FLOWS);
-			for(var i=0;i<flows.length;i++){
-				var execFlow = new org.argeo.slc.ria.execution.Flow();
-				execFlow.setXmlNode(flows[i]);
-				this.addExecutionFlow(execFlow);
+			// Parse now			
+			this.setName(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, appendRoot + this.self(arguments).XPATH_NAME) || "Not Found");
+			this.setVersion(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, appendRoot + this.self(arguments).XPATH_VERSION));
+			this.setLabel(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, appendRoot + this.self(arguments).XPATH_LABEL) || this.getName());
+			this.setDescription(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, appendRoot + this.self(arguments).XPATH_DESCRIPTION) || "");
+			
+			// Parse Specs first
+			var specs = org.argeo.ria.util.Element.selectNodes(xmlNode, appendRoot + this.self(arguments).XPATH_EXECUTION_SPECS);
+			if(specs){
+				for(i=0; i< specs.length;i++){
+					var execSpec = new org.argeo.slc.ria.execution.Spec();
+					execSpec.setXmlNode(specs[i]);
+					this.addExecutionSpec(execSpec);
+				}
+			}
+				// Now parse Flows : to do AFTER specs
+			var flows = org.argeo.ria.util.Element.selectNodes(xmlNode, appendRoot + this.self(arguments).XPATH_EXECUTION_FLOWS);
+			if(flows){
+				for(var i=0;i<flows.length;i++){
+					var execFlow = new org.argeo.slc.ria.execution.Flow();
+					execFlow.setXmlNode(flows[i]);
+					this.addExecutionFlow(execFlow);
+				}
 			}
 		}
 		

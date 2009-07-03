@@ -56,7 +56,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 		 * @param xmlNode {Node} Castor representation of this object
 		 */		
 		_applyXmlNode : function(xmlNode){
-			// Parse now
+			// Parse now			
 			this.setName(org.argeo.ria.util.Element.getSingleNodeText(xmlNode, this.self(arguments).XPATH_NAME));
 			var values = org.argeo.ria.util.Element.selectNodes(xmlNode, this.self(arguments).XPATH_VALUES);
 			var parsedValues = {};
@@ -73,12 +73,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Spec", {
 		 * @return {String} An XML String
 		 */
 		toXml : function(){
-			var valuesXml = '';
-			var values = this.getValues();
-			for(var key in values){
-				valuesXml += values[key].toAttributeXml();
-			}
-			return '<slc:default-execution-spec name="'+this.getName()+'"><slc:values>'+valuesXml+'</slc:values></slc:default-execution-spec>';
+			return org.argeo.ria.util.Element.getXMLString(this.getXmlNode());
 		}
 	}	
 	

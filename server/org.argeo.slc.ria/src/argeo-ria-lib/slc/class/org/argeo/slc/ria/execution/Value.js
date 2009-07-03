@@ -55,6 +55,9 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 		 */
 		xmlSpecNode : {
 			apply : "_applyXmlSpecNode"
+		},
+		refList : {
+			check : "Array"
 		}
 	},
 	
@@ -63,7 +66,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 	},
 	
 	construct : function(){
-		this.base(arguments);
+		this.base(arguments);		
 	},
 	
 	members : {		
@@ -86,6 +89,15 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 				}else if(child.nodeName == "slc:ref-spec-attribute"){
 					this.setSpecType("ref");
 					this.setSpecSubType(org.argeo.ria.util.Element.getSingleNodeText(child, "@targetClassName")||"");
+					var choices = org.argeo.ria.util.Element.selectNodes(child, "slc:choices/slc:ref-value-choice");
+					var refList = []; 
+					for(var k=0;k<choices.length;k++){
+						var choice = choices[k];
+						var name = org.argeo.ria.util.Element.getSingleNodeText(choice, "@name");
+						var description = org.argeo.ria.util.Element.getSingleNodeText(choice, "slc:description");
+						refList.push([name, (description||"")]);
+					}
+					this.setRefList(refList);
 				}
 				this.set({
 					parameter : (org.argeo.ria.util.Element.getSingleNodeText(child, "@isParameter")=="true"?true:false),
@@ -94,24 +106,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 				});				
 			}
 		},
-				
-		/**
-		 * Create an XML Representation of this value
-		 * @return {String} The XML String
-		 */
-		toAttributeXml : function(){
-			var valueTag = '';
-			var specAttribute = '';
-			if(this.getSpecType() == "primitive"){
-				valueTag =  (this.getValue()?this.getValue():'');
-				specAttribute = '<slc:primitive-spec-attribute isParameter="'+(this.getParameter()?"true":"false")+'" isFrozen="'+(this.getFrozen()?"true":"false")+'" isHidden="'+(this.getHidden()?"true":"false")+'" type="'+this.getSpecSubType()+'">'+valueTag+'</slc:primitive-spec-attribute>';
-			}else if(this.getSpecType() == "ref"){
-				valueTag = (this.getValue()?'<slc:label>'+this.getValue()+'</slc:label>':'');
-				specAttribute = '<slc:ref-spec-attribute isParameter="'+(this.getParameter()?"true":"false")+'" isFrozen="'+(this.getFrozen()?"true":"false")+'" isHidden="'+(this.getHidden()?"true":"false")+'" targetClassName="'+this.getSpecSubType()+'">'+valueTag+'</slc:ref-spec-attribute>';
-			}
-			return '<slc:value key="'+this.getKey()+'">'+specAttribute+'</slc:value>';
-		},
-		
+						
 		toValueXml : function(){
 			var valueTag = '';
 			var specAttribute = '';
@@ -119,8 +114,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 				valueTag =  this.getValue();
 				specAttribute = '<slc:primitive-value type="'+this.getSpecSubType()+'">'+valueTag+'</slc:primitive-value>';
 			}else if(this.getSpecType() == "ref"){
-				valueTag = '<slc:label>'+this.getValue()+'</slc:label>';
-				specAttribute = '<slc:ref-value >'+valueTag+'</slc:ref-value>';
+				specAttribute = '<slc:ref-value ref="'+this.getValue()+'" />';
 			}
 			return '<slc:value key="'+this.getKey()+'">'+specAttribute+'</slc:value>';			
 		}

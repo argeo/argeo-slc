@@ -102,12 +102,13 @@ qx.Class.define("org.argeo.slc.ria.SpecsEditorView",
 				var valueObj = values[key];
 				var hidden = valueObj.getHidden();
 				var type = valueObj.getSpecType();
-				if(type == "primitive" && !hidden){
+				if((type == "primitive" || type== "ref")&& !hidden){
 					metadata = {
 						key : key,
 						disabled : valueObj.getFrozen(),
 						type : type,
-						subType : valueObj.getSpecSubType() 
+						subType : valueObj.getSpecSubType(),
+						refList : (type=="ref"?valueObj.getRefList():[])
 					}
 					data.push([key, valueObj.getValue(), metadata]);
 				}

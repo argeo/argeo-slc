@@ -49,13 +49,20 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 			var valuesXml = '';
 			var values = this.getValues();
 			for(var key in values){
+				if(values[key].getValue() == null){
+					throw new Error("Cannot send empty values! (Parameter "+key+")");
+				}
 				valuesXml += values[key].toValueXml();
 			}
-			var execFlowDescXML = '<slc:execution-flow-descriptor name="'+this.getFlow().getName()+'" executionSpec="'+this.getName()+'"><slc:values>'+valuesXml+'</slc:values></slc:execution-flow-descriptor>';
+			var execFlowDescXML = '<slc:execution-flow-descriptor name="'+this.getFlow().getName()+'" executionSpec="'+this.getName()+'">';
+			if(this.getFlow().getDescription()!=""){
+				execFlowDescXML += '<slc:description>'+this.getFlow().getDescription()+'</slc:description>';
+			}
+			execFlowDescXML += '<slc:values>'+valuesXml+'</slc:values></slc:execution-flow-descriptor>';
 			
 			var execSpecDescXML = this.getOriginalSpec().toXml();
 			
-			var moduleData = '<slc:module-name>'+this.getModule().getName()+'</slc:module-name><slc:module-version>'+this.getModule().getVersion()+'</slc:module-version>';
+			var moduleData = this.getModule().moduleDataToXml();
 			
 			return '<slc:realized-flow>'+moduleData + execFlowDescXML + execSpecDescXML +'</slc:realized-flow>';
 			
@@ -81,7 +88,7 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 				instanceValues[key] = instValue;
 			}
 			this.setValues(instanceValues);
-			//this.debug(instanceValues);
+			this.debug(instanceValues);
 		}
 	}
 });
