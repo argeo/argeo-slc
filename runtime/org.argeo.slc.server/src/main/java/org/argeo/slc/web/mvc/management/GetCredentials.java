@@ -18,6 +18,8 @@ public class GetCredentials implements HttpRequestHandler {
 
 	public void handleRequest(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("application/json");
+
 		Authentication authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
 

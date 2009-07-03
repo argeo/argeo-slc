@@ -6,5 +6,36 @@
 
 	<description>Deprecated</description>
 
-	<import resource="../spring.xml" />
+	<bean id="slcDefault.test.resultLogger" class="org.argeo.slc.core.test.tree.TreeTestResultLogger">
+	</bean>
+
+	<bean name="slcDefault.test.testRun" class="org.argeo.slc.core.test.SimpleTestRun"
+		scope="prototype">
+	</bean>
+
+	<bean name="slcDefault.test.uuid" class="java.util.UUID"
+		factory-method="randomUUID" scope="prototype">
+	</bean>
+
+	<bean id="slcDefault.test.basicTreeTestResult" class="org.argeo.slc.core.test.tree.TreeTestResult"
+		abstract="true" destroy-method="close">
+		<property name="uuid">
+			<bean factory-bean="slcDefault.test.uuid" factory-method="toString">
+			</bean>
+		</property>
+		<property name="listeners">
+			<list>
+				<ref bean="slcDefault.test.resultLogger" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="slcDefault.test.basicSimpleTestResult" class="org.argeo.slc.core.test.SimpleTestResult"
+		abstract="true">
+		<property name="uuid">
+			<bean factory-bean="slcDefault.test.uuid" factory-method="toString">
+			</bean>
+		</property>
+	</bean>
+
 </beans>
