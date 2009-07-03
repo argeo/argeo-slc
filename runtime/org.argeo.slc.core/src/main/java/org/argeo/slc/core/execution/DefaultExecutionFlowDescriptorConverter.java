@@ -158,10 +158,11 @@ public class DefaultExecutionFlowDescriptorConverter implements
 					}
 				}
 			}
-			if (ref == null)
-				log.warn("Cannot define reference for ref spec attribute "
-						+ key + " in " + executionFlow + " (" + rsa + ")");
-			else if (log.isDebugEnabled())
+			if (ref == null) {
+				if (log.isTraceEnabled())
+					log.warn("Cannot define reference for ref spec attribute "
+							+ key + " in " + executionFlow + " (" + rsa + ")");
+			} else if (log.isDebugEnabled())
 				log.debug(ref + " is the reference for ref spec attribute "
 						+ key + " in " + executionFlow + " (" + rsa + ")");
 			refValue.setRef(ref);
