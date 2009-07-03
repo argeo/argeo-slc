@@ -316,7 +316,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					for (var i = 0; i < mods[key].length; i++) {
 						var module = mods[key][i];
 						var versionFolder = new org.argeo.ria.components.DynamicTreeFolder(
-								module.getDescription(), flowLoader,
+								module.getLabel(), flowLoader,
 								"Loading Flows", folder.getDragData());
 						versionFolder.setUserData("moduleData", {
 									name : key,
@@ -324,7 +324,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 								});
 						versionFolder.setIcon("org.argeo.slc.ria/archive.png");
 						versionFolder.setUserData("agentUuid", agentId);
-						org.argeo.slc.ria.FlowsSelectorView.attachToolTip(versionFolder, key + ' (' + module.getVersion() + ')');
+						org.argeo.slc.ria.FlowsSelectorView.attachToolTip(versionFolder, key + ' (' + module.getVersion() + ') - '+module.getDescription());
 						// Warning, we must add it AFTER setting the user data, 
 						// because of the persistent loading mechanism.
 						folder.add(versionFolder);
