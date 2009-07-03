@@ -65,6 +65,10 @@
         "qx.version"     : "${QXVERSION}",
         "qx.theme"       : "${QXTHEME}",
         "qx.application" : "${APPLICATION}.Application",
+        "ria.auth.enableAuth"		: "false",
+        "ria.auth.credentialsURI"	: "authService.ria?getCredentials=true",
+        "ria.auth.loginURI"			: "authService.ria",
+        "ria.auth.logoutURI"		: "authService.ria?logout=true",
         "ria.StartupPerspective":"org.argeo.slc.web.Perspective"		
       }
     },
