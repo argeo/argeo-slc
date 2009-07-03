@@ -255,11 +255,9 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					if(preferredHosts && preferredHosts instanceof Array && qx.lang.Array.contains(preferredHosts, host)){
 						folder.addAtBegin(agentFolder);
 						agentFolder.setIcon("org.argeo.slc.ria/computer_bookmarked.png");
-						agentFolder.setUserData("preferredHost", true);
 					}else{
 						folder.add(agentFolder);
 						agentFolder.setIcon("org.argeo.slc.ria/computer.png");
-						agentFolder.setUserData("preferredHost", false);
 					}
 				}
 				if(newAgents){
@@ -532,11 +530,9 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			if(qx.lang.Array.contains(prefArray, hostName)){
 				qx.lang.Array.remove(prefArray, hostName);
 				agentNode.setIcon("org.argeo.slc.ria/computer.png");
-				agentFolder.setUserData("preferredHost", false);
 			}else{
 				prefArray.push(hostName);
 				agentNode.setIcon("org.argeo.slc.ria/computer_bookmarked.png");
-				agentFolder.setUserData("preferredHost", true);
 				var parent = agentNode.getParent();
 				parent.remove(agentNode);
 				parent.addAtBegin(agentNode);
