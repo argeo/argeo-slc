@@ -1,4 +1,4 @@
-package org.argeo.slc.core.execution.internal;
+package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
 import java.util.Iterator;

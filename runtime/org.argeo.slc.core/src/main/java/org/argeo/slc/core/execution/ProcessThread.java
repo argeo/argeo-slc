@@ -1,4 +1,4 @@
-package org.argeo.slc.core.execution.internal;
+package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.execution.AbstractExecutionModulesManager;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionNotifier;

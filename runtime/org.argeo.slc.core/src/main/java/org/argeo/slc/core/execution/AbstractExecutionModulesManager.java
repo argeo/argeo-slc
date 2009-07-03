@@ -3,7 +3,6 @@ package org.argeo.slc.core.execution;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.argeo.slc.core.execution.internal.ProcessThread;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionNotifier;
