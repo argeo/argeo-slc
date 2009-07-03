@@ -324,7 +324,8 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 								});
 						versionFolder.setIcon("org.argeo.slc.ria/archive.png");
 						versionFolder.setUserData("agentUuid", agentId);
-						org.argeo.slc.ria.FlowsSelectorView.attachToolTip(versionFolder, key + ' (' + module.getVersion() + ') - '+module.getDescription());
+						var sep = (module.getDescription()!=""?" - ":"");
+						org.argeo.slc.ria.FlowsSelectorView.attachToolTip(versionFolder, key + ' (' + module.getVersion() + ')'+sep+module.getDescription());
 						// Warning, we must add it AFTER setting the user data, 
 						// because of the persistent loading mechanism.
 						folder.add(versionFolder);
