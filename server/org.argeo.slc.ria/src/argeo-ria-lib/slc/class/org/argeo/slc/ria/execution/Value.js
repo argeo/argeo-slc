@@ -114,7 +114,7 @@ qx.Class.define("org.argeo.slc.ria.execution.Value", {
 				valueTag =  this.getValue();
 				specAttribute = '<slc:primitive-value type="'+this.getSpecSubType()+'">'+valueTag+'</slc:primitive-value>';
 			}else if(this.getSpecType() == "ref"){
-				specAttribute = '<slc:ref-value ref="'+this.getValue()+'" />';
+				specAttribute = '<slc:ref-value ref="'+this.getValue()+'" type="beanName" />';
 			}
 			return '<slc:value key="'+this.getKey()+'">'+specAttribute+'</slc:value>';			
 		}
