@@ -35,7 +35,7 @@ public class TreeSPathFieldHandler extends AbstractFieldHandler {
 	public void setValue(Object object, Object value)
 			throws IllegalStateException, IllegalArgumentException {
 		MapItem part = (MapItem) object;
-		part.setKey(TreeSPath.parseToCreatePath(value.toString()));
+		part.setKey(new TreeSPath(value.toString()));
 	}
 
 }

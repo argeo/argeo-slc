@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.argeo.slc.process">
+	<class name="RealizedFlow" table="REALIZED_FLOW">
+		<cache usage="read-write" />
+
+		<id column="ID" />
+		<property name="moduleName" column="MODULE_NAME" />
+		<property name="moduleVersion" column="MODULE_VERSION" />
+
+	</class>
+</hibernate-mapping>

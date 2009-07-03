@@ -1,14 +1,13 @@
 package org.argeo.slc.core.execution;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
@@ -26,6 +25,8 @@ import org.springframework.util.Assert;
 
 public class DefaultExecutionFlowDescriptorConverter implements
 		ExecutionFlowDescriptorConverter, ApplicationContextAware {
+	public final static String REF_VALUE_TYPE_BEAN_NAME = "beanName";
+
 	private final static Log log = LogFactory
 			.getLog(DefaultExecutionFlowDescriptorConverter.class);
 
@@ -33,9 +34,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 
 	public Map<String, Object> convertValues(
 			ExecutionFlowDescriptor executionFlowDescriptor) {
-		// convert the values of flow.getFlowDescriptor()
 		Map<String, Object> values = executionFlowDescriptor.getValues();
-
 		Map<String, Object> convertedValues = new HashMap<String, Object>();
 
 		if (values != null) {
@@ -43,17 +42,22 @@ public class DefaultExecutionFlowDescriptorConverter implements
 				Object value = values.get(key);
 				if (value instanceof PrimitiveValue) {
 					PrimitiveValue primitiveValue = (PrimitiveValue) value;
-
-					// TODO: check that the class of the the
-					// primitiveValue.value
-					// matches
-					// the primitiveValue.type
+					// TODO: check class <=> type
 					convertedValues.put(key, primitiveValue.getValue());
 				} else if (value instanceof RefValue) {
-					// not yet implemented
+					RefValue refValue = (RefValue) value;
 
-					// RefValue refValue = (RefValue) value;
-					// convertedValues.put(key, refValue.getLabel());
+					if (REF_VALUE_TYPE_BEAN_NAME.equals(refValue.getType()))
+						if (refValue.getRef() != null) {
+							Object obj = applicationContext.getBean(refValue
+									.getRef());
+							convertedValues.put(key, obj);
+						} else {
+							log.warn("Cannot interpret " + refValue);
+						}
+					else
+						throw new UnsupportedException("Ref value type",
+								refValue.getType());
 				}
 			}
 		}
@@ -105,6 +109,10 @@ public class DefaultExecutionFlowDescriptorConverter implements
 			if (executionFlow.getPath() != null)
 				efd.setPath(executionFlow.getPath());
 
+			// Takes description from spring
+			BeanDefinition bd = getBeanFactory().getBeanDefinition(name);
+			efd.setDescription(bd.getDescription());
+
 			// Add execution spec if necessary
 			if (!md.getExecutionSpecs().contains(executionSpec))
 				md.getExecutionSpecs().add(executionSpec);
@@ -118,6 +126,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 	protected RefValue buildRefValue(RefSpecAttribute rsa,
 			ExecutionFlow executionFlow, String key) {
 		RefValue refValue = new RefValue();
+		refValue.setType(REF_VALUE_TYPE_BEAN_NAME);
 
 		if (executionFlow.isSetAsParameter(key)) {
 			String ref = null;
@@ -151,7 +160,10 @@ public class DefaultExecutionFlowDescriptorConverter implements
 			}
 			if (ref == null)
 				log.warn("Cannot define reference for ref spec attribute "
-						+ key);
+						+ key + " in " + executionFlow + " (" + rsa + ")");
+			else if (log.isDebugEnabled())
+				log.debug(ref + " is the reference for ref spec attribute "
+						+ key + " in " + executionFlow + " (" + rsa + ")");
 			refValue.setRef(ref);
 		}
 		return refValue;

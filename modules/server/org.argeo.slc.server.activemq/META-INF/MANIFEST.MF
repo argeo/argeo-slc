@@ -6,4 +6,5 @@ Import-Package: javax.jms,
  org.springframework.jms.connection,
  org.springframework.oxm,
  org.argeo.slc.jms,
- org.springframework.jms.support.converter
+ org.springframework.jms.support.converter,
+ org.springframework.beans.factory.config

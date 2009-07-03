@@ -49,4 +49,9 @@ public class RefSpecAttribute extends AbstractSpecAttribute implements
 		return rsa;
 	}
 
+	@Override
+	public String toString() {
+		return "Ref spec attribute [" + targetClass + "]";
+	}
+
 }

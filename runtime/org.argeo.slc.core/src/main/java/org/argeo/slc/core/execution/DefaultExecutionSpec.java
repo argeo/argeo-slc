@@ -78,7 +78,12 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 			if (attr instanceof RefSpecAttribute) {
 				RefSpecAttribute rsa = (RefSpecAttribute) attr;
 				if (rsa.getChoices() == null) {
-					rsa.setChoices(buildRefValueChoices(rsa));
+					List<RefValueChoice> choices = buildRefValueChoices(rsa);
+					if (log.isDebugEnabled())
+						log.debug("Found " + choices.size() + " choices for "
+								+ rsa + " in spec " + name);
+
+					rsa.setChoices(choices);
 				}
 			}
 		}
@@ -98,6 +103,11 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 			RefValueChoice choice = new RefValueChoice();
 			choice.setName(beanName);
 			choice.setDescription(bd.getDescription());
+			if (log.isTraceEnabled())
+				log.debug("Found choice " + beanName + " for " + rsa);
+
+			choices.add(choice);
+
 		}
 		return choices;
 	}

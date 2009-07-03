@@ -140,6 +140,9 @@
 		<field name="ref">
 			<bind-xml name="ref" node="attribute" />
 		</field>
+		<field name="type">
+			<bind-xml name="type" node="attribute" />
+		</field>
 	</class>
 
 	<class name="org.argeo.slc.core.execution.RefValueChoice">
