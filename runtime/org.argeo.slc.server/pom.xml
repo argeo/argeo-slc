@@ -106,5 +106,22 @@
 			<groupId>com.lowagie.text</groupId>
 			<artifactId>com.springsource.com.lowagie.text</artifactId>
 		</dependency>
+
+		<!-- Security -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>org.springframework.security</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.springsource.json</groupId>
+			<artifactId>com.springsource.json</artifactId>
+			<version>1.0.1.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>com.springsource.org.antlr</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>

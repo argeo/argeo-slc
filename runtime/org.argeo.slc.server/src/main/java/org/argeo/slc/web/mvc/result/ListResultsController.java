@@ -33,7 +33,7 @@ public class ListResultsController extends AbstractServiceController {
 			throws Exception {
 
 		log.debug("userPrincipal=" + request.getUserPrincipal());
-		log.debug("authType= " + request.getAuthType());
+		log.debug("authType=" + request.getAuthType());
 		log.debug("remoteUser=" + request.getRemoteUser());
 		log.debug("cookies=" + request.getCookies());
 		log.debug("requestedSessionId=" + request.getRequestedSessionId());
