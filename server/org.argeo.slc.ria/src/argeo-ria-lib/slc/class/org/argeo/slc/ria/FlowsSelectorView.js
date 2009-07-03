@@ -252,7 +252,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					agentFolder.setPersistentTreeID(folder.getPersistentTreeID()+"_"+uuid);
 					agentFolder.setUserData("agentHost", host); // Used by bookmark system
 					agentFolder.setUserData("agentUuid", uuid);
-					if(preferredHosts && preferredHosts instanceof Array && qx.lang.Array.contains(preferredHosts, uuid)){
+					if(preferredHosts && preferredHosts instanceof Array && qx.lang.Array.contains(preferredHosts, host)){
 						folder.addAtBegin(agentFolder);
 						agentFolder.setIcon("org.argeo.slc.ria/computer_bookmarked.png");
 						agentFolder.setUserData("preferredHost", true);
@@ -523,7 +523,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 		 * @param agentNode {qx.ui.tree.AbstractTreeItem}
 		 */
 		togglePreferredHost : function(agentNode){
-			var hostName = agentNode.getUserData("agentUuid");
+			var hostName = agentNode.getUserData("agentHost");
 			var pref = this.getRiaPreferenceValue("flowSelector.preferred.hosts");
 			var prefArray = [];
 			if(pref){
