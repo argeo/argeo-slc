@@ -115,7 +115,8 @@
 							org.springframework.security.userdetails.memory,
 							org.springframework.web.context,
 							org.springframework.osgi.web.context.support,
-							org.springframework.web.filter
+							org.springframework.web.filter,
+							org.springframework.security.context
 						</Import-Package>
 						<Web-ContextPath>org.argeo.slc.ria</Web-ContextPath>
 					</instructions>
