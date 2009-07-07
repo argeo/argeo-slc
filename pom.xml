@@ -386,12 +386,15 @@ limitations under the License.
 				</artifactId>
 				<version>1.2.15</version>
 			</dependency>
+			<!--
+				<dependency> <groupId>org.apache.commons</groupId> <artifactId>
+				com.springsource.org.apache.commons.logging </artifactId>
+				<version>1.1.1</version> </dependency>
+			-->
 			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>
-					com.springsource.org.apache.commons.logging
-				</artifactId>
-				<version>1.1.1</version>
+				<groupId>org.slf4j</groupId>
+				<artifactId>com.springsource.slf4j.api</artifactId>
+				<version>${version.slf4j}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -400,12 +403,7 @@ limitations under the License.
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
-				<artifactId>com.springsource.slf4j.jcl</artifactId>
-				<version>${version.slf4j}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>com.springsource.slf4j.org.apache.log4j</artifactId>
+				<artifactId>com.springsource.slf4j.log4j</artifactId>
 				<version>${version.slf4j}</version>
 			</dependency>
 
@@ -414,16 +412,34 @@ limitations under the License.
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.core</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.beans</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.context</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
@@ -431,77 +447,168 @@ limitations under the License.
 					org.springframework.context.support
 				</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.orm</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.jdbc</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.transaction</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.web</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.web.servlet</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.aop</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>org.springframework.jms</artifactId>
 				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.ws</groupId>
 				<artifactId>org.springframework.oxm</artifactId>
 				<version>${version.spring-ws}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
+			<!--  Spring DM (OSGi) -->
 			<dependency>
 				<groupId>org.springframework.osgi</groupId>
 				<artifactId>org.springframework.osgi.extender</artifactId>
 				<version>${version.spring-osgi}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.osgi</groupId>
 				<artifactId>org.springframework.osgi.core</artifactId>
 				<version>${version.spring-osgi}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.osgi</groupId>
 				<artifactId>org.springframework.osgi.web.extender</artifactId>
 				<version>${version.spring-osgi}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.osgi</groupId>
 				<artifactId>org.springframework.osgi.web</artifactId>
 				<version>${version.spring-osgi}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.osgi</groupId>
 				<artifactId>org.springframework.osgi.test</artifactId>
 				<version>${version.spring-osgi}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.dep.osgi</groupId>
 				<artifactId>org.argeo.dep.osgi.catalina.start</artifactId>
 				<version>1.0.0.argeo4</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- Security -->
@@ -513,6 +620,10 @@ limitations under the License.
 					<exclusion>
 						<groupId>org.springframework</groupId>
 						<artifactId>org.springframework.web</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -576,6 +687,12 @@ limitations under the License.
 				<groupId>org.apache.bsf</groupId>
 				<artifactId>com.springsource.org.apache.bsf</artifactId>
 				<version>2.4.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.beanshell</groupId>
@@ -632,6 +749,12 @@ limitations under the License.
 				<groupId>com.mysql.jdbc</groupId>
 				<artifactId>com.springsource.com.mysql.jdbc</artifactId>
 				<version>5.1.6</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- XML -->
@@ -639,6 +762,12 @@ limitations under the License.
 				<groupId>org.codehaus.castor</groupId>
 				<artifactId>com.springsource.org.castor</artifactId>
 				<version>1.2.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.xerces</groupId>
@@ -772,6 +901,12 @@ limitations under the License.
 				<artifactId>com.springsource.org.hibernate</artifactId>
 				<version>3.2.6.ga</version>
 				<!-- <version>3.3.1.GA</version> TODO: fix issues with logging -->
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>net.sourceforge.jexcelapi</groupId>
@@ -782,6 +917,12 @@ limitations under the License.
 				<groupId>net.sourceforge.ehcache</groupId>
 				<artifactId>com.springsource.net.sf.ehcache</artifactId>
 				<version>1.4.1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>edu.emory.mathcs.backport</groupId>
@@ -822,6 +963,10 @@ limitations under the License.
 					<exclusion>
 						<groupId>org.apache.activemq</groupId>
 						<artifactId>com.springsource.org.apache.activemq</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -864,6 +1009,64 @@ limitations under the License.
 				<groupId>com.opensymphony.quartz</groupId>
 				<artifactId>com.springsource.org.quartz</artifactId>
 				<version>1.6.2</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<!-- Merged (temp title) -->
+			<dependency>
+				<groupId>org.argeo.dep.jemmy</groupId>
+				<artifactId>org.argeo.dep.jemmy.nb61</artifactId>
+				<version>0.2.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.dep.jacob</groupId>
+				<artifactId>org.argeo.dep.jacob</artifactId>
+				<version>1.14.3.argeo4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.dep.jacob</groupId>
+				<artifactId>org.argeo.dep.jacob.win32.x86</artifactId>
+				<version>1.14.3.argeo4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>org.springframework.jdbc</artifactId>
+				<version>${version.spring}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.custommonkey.xmlunit</groupId>
+				<artifactId>com.springsource.org.custommonkey.xmlunit</artifactId>
+				<version>1.2.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.beanshell</groupId>
+				<artifactId>com.springsource.bsh</artifactId>
+				<version>2.0.0.b4</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>com.springsource.org.apache.commons.beanutils</artifactId>
+				<version>1.7.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.commons</groupId>
+						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

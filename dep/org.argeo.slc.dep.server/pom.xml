@@ -112,16 +112,6 @@
 			<artifactId>com.springsource.javax.xml.bind</artifactId>
 		</dependency>
 
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.log4j</groupId>
-			<artifactId>com.springsource.org.apache.log4j</artifactId>
-		</dependency>
-
 		<!-- DB Drivers -->
 		<dependency>
 			<groupId>org.hsqldb</groupId>
