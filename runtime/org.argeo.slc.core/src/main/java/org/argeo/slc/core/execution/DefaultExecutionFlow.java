@@ -18,7 +18,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.validation.MapBindingResult;
 
 public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
-		BeanNameAware, StructureAware<TreeSPath> {
+		BeanNameAware {
 
 	private final ExecutionSpec executionSpec;
 	private String name = null;
@@ -95,6 +95,11 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 				if (executable instanceof StructureAware) {
 					((StructureAware<TreeSPath>) executable).notifyCurrentPath(
 							registry, new TreeSPath(path));
+				} else if (executable instanceof DefaultExecutionFlow) {
+					// so we don't need to have DefaultExecutionFlow
+					// implementing StructureAware
+					DefaultExecutionFlow flow = (DefaultExecutionFlow) executable;
+					flow.setPath(path + '/' + flow.getName());
 				}
 			}
 		}
@@ -166,13 +171,6 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	public void setRegistry(StructureRegistry<TreeSPath> registry) {
 		this.registry = registry;
-	}
-
-	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
-			TreeSPath path) {
-		if (this.path == null) {
-			this.path = path.toString();
-		}
 	}
 
 }

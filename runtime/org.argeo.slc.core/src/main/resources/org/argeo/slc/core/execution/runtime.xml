@@ -21,7 +21,7 @@
 
 	<bean id="executionStack" class="org.argeo.slc.core.execution.DefaultExecutionStack"
 		scope="execution">
-		<aop:scoped-proxy />
+		<aop:scoped-proxy proxy-target-class="false" />
 	</bean>
 
 	<bean id="instantiationManager" class="org.argeo.slc.core.execution.InstantiationManager" />

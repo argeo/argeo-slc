@@ -31,12 +31,8 @@ public class Echo implements Runnable {
 		}
 	}
 
-	protected Log log() {
+	private Log log() {
 		return log != null ? log : defaultLog;
-	}
-
-	public void setLog(Log log) {
-		this.log = log;
 	}
 
 	public void setMessage(String message) {

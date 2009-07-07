@@ -6,9 +6,10 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<beans:import resource="classpath:org/argeo/slc/osgi/execution/spring.xml" />
+	<beans:import resource="classpath:org/argeo/slc/osgi/execution.xml" />
 
-	<reference id="attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
+	<reference id="attachmentUploader"
+		interface="org.argeo.slc.core.attachment.AttachmentUploader" />
 
 	<list id="resultListeners" interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
 </beans:beans>

@@ -4,13 +4,12 @@
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean id="main" parent="slcTemplate.simpleFlow">
+	<bean id="main" class="org.argeo.slc.core.execution.DefaultExecutionFlow">
 		<property name="executables">
 			<list>
-				<bean p:message="Hello World!" parent="task.echo" />
+				<bean p:message="Hello World!" class="org.argeo.slc.core.execution.tasks.Echo" />
 			</list>
 		</property>
 	</bean>

@@ -18,8 +18,7 @@ import org.springframework.core.PriorityOrdered;
 
 public abstract class AbstractExecutionFlowGenerator implements
 		BeanFactoryPostProcessor, PriorityOrdered {
-	private final static Log log = LogFactory
-			.getLog(AbstractExecutionFlowGenerator.class);
+	private final Log log = LogFactory.getLog(getClass());
 
 	protected abstract Map<String, BeanDefinition> createExecutionFlowDefinitions(
 			ConfigurableListableBeanFactory beanFactory);
@@ -34,7 +33,7 @@ public abstract class AbstractExecutionFlowGenerator implements
 		Map<String, BeanDefinition> definitions = createExecutionFlowDefinitions(beanFactory);
 
 		for (String beanName : definitions.keySet()) {
-			if (log.isDebugEnabled())
+			if (log.isTraceEnabled())
 				log.debug("Registering execution flow " + beanName);
 			((BeanDefinitionRegistry) beanFactory).registerBeanDefinition(
 					beanName, definitions.get(beanName));

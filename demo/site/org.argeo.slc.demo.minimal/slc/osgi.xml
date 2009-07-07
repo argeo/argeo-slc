@@ -6,5 +6,5 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<beans:import resource="classpath:org/argeo/slc/osgi/execution/spring.xml" />
+	<beans:import resource="classpath:org/argeo/slc/osgi/execution.xml" />
 </beans:beans>

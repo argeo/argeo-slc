@@ -8,7 +8,7 @@
 
 	<bean id="slcDefault.executionResources" parent="slcTemplate.fileResources"
 		scope="execution" lazy-init="true">
-		<aop:scoped-proxy />
+		<aop:scoped-proxy proxy-target-class="false" />
 		<property name="executionContext" ref="executionContext" />
 	</bean>
 

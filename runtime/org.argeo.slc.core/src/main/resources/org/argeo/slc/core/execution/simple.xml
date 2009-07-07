@@ -10,12 +10,22 @@
 	<description>Default Capabilities</description>
 
 	<import resource="runtime.xml" />
-	<import resource="simple.xml" />
 
-	<import resource="specs.xml" />
-	<import resource="templates.xml" />
-	<import resource="defaults.xml" />
-	<import resource="utils.xml" />
-	<import resource="tasks/core.xml" />
+	<bean id="executionContext" class="org.argeo.slc.core.execution.MapExecutionContext"
+		scope="execution">
+		<aop:scoped-proxy proxy-target-class="false" />
+	</bean>
+
+	<bean id="executionFlowDescriptorConverter"
+		class="org.argeo.slc.core.execution.DefaultExecutionFlowDescriptorConverter"></bean>
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+
+	<bean id="parameterRef" factory-bean="instantiationManager"
+		factory-method="createRef" abstract="true" />
 
 </beans>
