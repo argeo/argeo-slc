@@ -3,4 +3,3 @@ Fragment-Host: com.springsource.org.apache.log4j
 Bundle-Version: 0.11.4.SNAPSHOT
 Bundle-Name: Log4j Configuration
 Bundle-SymbolicName: org.argeo.slc.demo.log4j
-

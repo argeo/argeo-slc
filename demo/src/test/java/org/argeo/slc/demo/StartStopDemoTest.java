@@ -1,13 +1,8 @@
 package org.argeo.slc.demo;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import org.argeo.slc.equinox.unit.AbstractOsgiRuntimeTestCase;
-import org.argeo.slc.osgiboot.OsgiBoot;
-
-public class StartStopDemoTest extends AbstractOsgiRuntimeTestCase {
-
+public class StartStopDemoTest {//extends AbstractOsgiRuntimeTestCase {
+/*
 	public void testStartStop() throws Exception {
 		assertBundleApplicationContext("org.argeo.slc.agent");
 		assertStartedBundlesApplicationContext("org.argeo.slc.demo");
@@ -31,6 +26,6 @@ public class StartStopDemoTest extends AbstractOsgiRuntimeTestCase {
 		bundlesToStart.add("org.argeo.slc.agent");
 		bundlesToStart.add("org.argeo.slc.demo.basic");
 		return bundlesToStart;
-	}
+	}*/
 
 }

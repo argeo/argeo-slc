@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.argeo.slc.demo.det
+Bundle-Version: 0.11.4.SNAPSHOT
+Bundle-Name: SLC Demo Detached (Detached Bundle)
+Bundle-Description: Detached Bundle
+Import-Package: org.argeo.slc.detached,
+ org.argeo.slc.detached.admin,
+ org.springframework.beans.factory.config,
+ org.argeo.slc.detached.drivers,
+ org.apache.xerces.jaxp,
+ org.w3c.dom;version="0.0.0"

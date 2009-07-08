@@ -70,18 +70,11 @@
 			<artifactId>org.argeo.slc.osgiboot</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.agent</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<!-- Unit Tests -->
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.unit</artifactId>
-			<scope>test</scope>
-		</dependency>
+		<!--
+			Unit Tests <dependency> <groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId> <scope>test</scope>
+			</dependency>
+		-->
 
 	</dependencies>
 
@@ -159,6 +152,50 @@
 					<groupId>org.argeo.slc.runtime</groupId>
 					<artifactId>org.argeo.slc.support.ant</artifactId>
 					<version>${project.version}</version>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>detached</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.argeo.maven.plugins</groupId>
+						<artifactId>maven-argeo-osgi-plugin</artifactId>
+						<configuration>
+							<execDir>target/exec/detached</execDir>
+							<fork>false</fork>
+							<systemProperties>
+								<slc.osgi.start>
+									org.springframework.osgi.extender,
+									org.argeo.slc.detached,
+									org.argeo.slc.demo.det
+								</slc.osgi.start>
+								<slc.osgi.bundles>
+									${basedir}/site;in=org.argeo.slc.demo.det;ex=pom.xml;ex=target,
+									${basedir}/site;in=org.argeo.slc.demo.log4j;ex=pom.xml;ex=target,
+								</slc.osgi.bundles>
+								<javax.xml.parsers.DocumentBuilderFactory>org.apache.xerces.jaxp.DocumentBuilderFactoryImpl</javax.xml.parsers.DocumentBuilderFactory>
+							</systemProperties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<dependencies>
+				<dependency>
+					<groupId>org.argeo.slc.dep</groupId>
+					<artifactId>org.argeo.slc.dep.detached</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>net.sourceforge.mx4j</groupId>
+					<artifactId>com.springsource.mx4j</artifactId>
+					<version>3.0.2</version>
+				</dependency>
+				<dependency>
+					<groupId>org.apache.xerces</groupId>
+					<artifactId>com.springsource.org.apache.xerces</artifactId>
+					<version>2.8.1</version>
 				</dependency>
 			</dependencies>
 		</profile>

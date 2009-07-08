@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.management.BadBinaryOpValueExpException;
-
 import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;

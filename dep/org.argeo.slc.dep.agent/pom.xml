@@ -32,9 +32,15 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.castor</artifactId>
 		</dependency>
+		
+		<!-- Additional -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.ant</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.lib.detached</artifactId>
 		</dependency>
 	</dependencies>
 </project>

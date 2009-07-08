@@ -13,13 +13,14 @@ import org.argeo.slc.detached.DetachedRequest;
 import org.argeo.slc.detached.DetachedSession;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 
 public class OpenSession implements DetachedAdminCommand {
 	private final static Log log = LogFactory.getLog(OpenSession.class);
 
 	public DetachedSession execute(DetachedRequest request,
 			BundleContext bundleContext) {
+		MinimalBundlesManager bundlesManager = new MinimalBundlesManager(bundleContext);
+		
 		DetachedSession session = new DetachedSession();
 		session.setUuid(Long.toString(System.currentTimeMillis()));
 
@@ -49,11 +50,19 @@ public class OpenSession implements DetachedAdminCommand {
 			for (int i = 0; i < bundlesToRefresh.size(); i++) {
 				Bundle bundle = (Bundle) bundlesToRefresh.get(i);
 				try {
-					bundle.stop();
-					bundle.update();
-					bundle.start();
+					bundlesManager.upgradeSynchronous(bundle);
+//					bundle.stop();
+//					bundle.update();
+//					bundle.start();
 					log.info("Refreshed bundle " + bundle.getSymbolicName());
-				} catch (BundleException e) {
+					
+//					try {
+//						Thread.sleep(2000);
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
+					
+				} catch (Exception e) {
 					throw new DetachedException("Could not refresh bundle "
 							+ bundle.getSymbolicName(), e);
 				}

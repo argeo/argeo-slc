@@ -13,6 +13,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.osgi.context.BundleContextAware;
@@ -21,7 +22,7 @@ import org.springframework.util.Assert;
 
 /** Wraps low-level access to a {@link BundleContext} */
 public class BundlesManager implements BundleContextAware, FrameworkListener,
-		InitializingBean {
+		InitializingBean, DisposableBean {
 	private final static Log log = LogFactory.getLog(BundlesManager.class);
 
 	private BundleContext bundleContext;
@@ -272,6 +273,10 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 
 	public void afterPropertiesSet() throws Exception {
 		bundleContext.addFrameworkListener(this);
+	}
+
+	public void destroy() throws Exception {
+		bundleContext.removeFrameworkListener(this);
 	}
 
 	public void setDefaultTimeout(Long defaultTimeout) {

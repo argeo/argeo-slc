@@ -1,7 +1,5 @@
 package org.argeo.slc.lib.detached;
 
-import java.io.IOException;
-
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 
@@ -13,9 +11,6 @@ import org.argeo.slc.detached.DetachedRequest;
 import org.argeo.slc.detached.DetachedXmlConverter;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
-import org.springframework.oxm.XmlMappingException;
-import org.springframework.xml.validation.XmlValidator;
-import org.xml.sax.InputSource;
 
 public class DetachedXmlConverterSpring implements DetachedXmlConverter {
 	private Marshaller marshaller;
