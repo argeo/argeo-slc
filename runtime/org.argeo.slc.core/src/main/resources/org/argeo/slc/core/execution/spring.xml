@@ -9,7 +9,6 @@
 
 	<description>Default Capabilities</description>
 
-	<import resource="runtime.xml" />
 	<import resource="simple.xml" />
 
 	<import resource="specs.xml" />
