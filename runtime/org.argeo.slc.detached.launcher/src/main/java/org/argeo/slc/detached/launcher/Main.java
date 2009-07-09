@@ -40,11 +40,7 @@ public class Main {
 			startApp(config);
 
 			// Start OSGi framework
-			try {
-				startEquinox(config);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			startEquinox(config);
 			info("Argeo SLC Detached launcher started.");
 		} catch (Exception e) {
 			e.printStackTrace();

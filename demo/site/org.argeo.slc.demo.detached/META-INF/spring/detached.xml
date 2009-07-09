@@ -8,7 +8,7 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<bean id="detachedTest" parent="slcTemplate.simpleFlow">
-		<property name="path" value="/autoui/testcases" />
+		<property name="path" value="/detached" />
 		<property name="executables">
 			<list>
 				<bean parent="task.echo" scope="execution">

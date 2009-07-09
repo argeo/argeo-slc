@@ -71,10 +71,13 @@
 		</dependency>
 
 		<!--
-			Unit Tests <dependency> <groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.unit</artifactId> <scope>test</scope>
-			</dependency>
-		-->
+			Unit Tests -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 
 	</dependencies>
 

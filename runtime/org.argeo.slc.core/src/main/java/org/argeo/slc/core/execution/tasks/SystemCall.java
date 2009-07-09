@@ -96,28 +96,17 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 				dir = new File(execDir).getCanonicalFile();
 			}
 
-			// Check if an OS specific command overrides
-			String osName = System.getProperty("os.name");
-			List<Object> commandToUse = null;
-			if (osCommands.containsKey(osName))
-				commandToUse = osCommands.get(osName);
-			else
-				commandToUse = command;
-			String cmdToUse = null;
-			if (osCmds.containsKey(osName))
-				cmdToUse = osCmds.get(osName);
-			else
-				cmdToUse = cmd;
-
 			// Prepare executor
 			if (dir == null)
 				dir = new File(getUsedDir(dir));
 			if (!dir.exists())
 				dir.mkdirs();
 
+			// Watchdog to check for lost processes
 			Executor executor = new DefaultExecutor();
 			executor.setWatchdog(new ExecuteWatchdog(watchdogTimeout));
 
+			// Redirect standard streams
 			PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(
 					new LogOutputStream() {
 						protected void processLine(String line, int level) {
@@ -135,34 +124,9 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			executor.setStreamHandler(pumpStreamHandler);
 			executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
 			executor.setWorkingDirectory(dir);
-			final CommandLine commandLine;
 
-			// Which command definition to use
-			if (commandToUse == null && cmdToUse == null)
-				throw new SlcException("Please specify a command.");
-			else if (commandToUse != null && cmdToUse != null)
-				throw new SlcException(
-						"Specify the command either as a line or as a list.");
-			else if (cmdToUse != null) {
-				if (log.isTraceEnabled())
-					log.trace("Execute '" + cmdToUse + "' in "
-							+ getUsedDir(dir));
-
-				commandLine = CommandLine.parse(cmdToUse);
-			} else if (commandToUse != null) {
-				if (log.isTraceEnabled())
-					log.trace("Execute '" + commandToUse + "' in "
-							+ getUsedDir(dir));
-				if (commandToUse.size() == 0)
-					throw new SlcException("Command line is empty.");
-
-				commandLine = new CommandLine(commandToUse.get(0).toString());
-				for (int i = 1; i < commandToUse.size(); i++)
-					commandLine.addArgument(commandToUse.get(i).toString());
-			} else {
-				// all cases covered previously
-				throw new UnsupportedOperationException();
-			}
+			// Command line to use
+			final CommandLine commandLine = createCommandLine();
 
 			// Env variables
 			Map<String, String> environmentVariablesToUse = environmentVariables
@@ -214,6 +178,45 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			IOUtils.closeQuietly(stdErrWriter);
 		}
 
+	}
+
+	/** Can be overridden by specific command wrapper*/
+	protected CommandLine createCommandLine() {
+		// Check if an OS specific command overrides
+		String osName = System.getProperty("os.name");
+		List<Object> commandToUse = null;
+		if (osCommands.containsKey(osName))
+			commandToUse = osCommands.get(osName);
+		else
+			commandToUse = command;
+		String cmdToUse = null;
+		if (osCmds.containsKey(osName))
+			cmdToUse = osCmds.get(osName);
+		else
+			cmdToUse = cmd;
+
+		final CommandLine commandLine;
+
+		// Which command definition to use
+		if (commandToUse == null && cmdToUse == null)
+			throw new SlcException("Please specify a command.");
+		else if (commandToUse != null && cmdToUse != null)
+			throw new SlcException(
+					"Specify the command either as a line or as a list.");
+		else if (cmdToUse != null) {
+			commandLine = CommandLine.parse(cmdToUse);
+		} else if (commandToUse != null) {
+			if (commandToUse.size() == 0)
+				throw new SlcException("Command line is empty.");
+
+			commandLine = new CommandLine(commandToUse.get(0).toString());
+			for (int i = 1; i < commandToUse.size(); i++)
+				commandLine.addArgument(commandToUse.get(i).toString());
+		} else {
+			// all cases covered previously
+			throw new UnsupportedOperationException();
+		}
+		return commandLine;
 	}
 
 	/**
