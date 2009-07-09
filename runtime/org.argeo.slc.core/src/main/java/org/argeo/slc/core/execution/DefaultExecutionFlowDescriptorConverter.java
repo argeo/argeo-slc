@@ -27,6 +27,9 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		ExecutionFlowDescriptorConverter, ApplicationContextAware {
 	public final static String REF_VALUE_TYPE_BEAN_NAME = "beanName";
 
+	/** Workaround for https://www.spartadn.com/bugzilla/show_bug.cgi?id=206 */
+	private final static String REF_VALUE_IS_FROZEN = "__frozen";
+
 	private final static Log log = LogFactory
 			.getLog(DefaultExecutionFlowDescriptorConverter.class);
 
@@ -38,7 +41,13 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		Map<String, Object> convertedValues = new HashMap<String, Object>();
 
 		if (values != null) {
-			for (String key : values.keySet()) {
+			values: for (String key : values.keySet()) {
+				ExecutionSpecAttribute attribute = executionFlowDescriptor
+						.getExecutionSpec().getAttributes().get(key);
+
+				if (attribute.getIsFrozen())
+					continue values;
+
 				Object value = values.get(key);
 				if (value instanceof PrimitiveValue) {
 					PrimitiveValue primitiveValue = (PrimitiveValue) value;
@@ -77,7 +86,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 			Assert.notNull(executionSpec.getName());
 
 			Map<String, Object> values = new TreeMap<String, Object>();
-			for (String key : executionSpec.getAttributes().keySet()) {
+			attrs: for (String key : executionSpec.getAttributes().keySet()) {
 				ExecutionSpecAttribute attribute = executionSpec
 						.getAttributes().get(key);
 
@@ -95,8 +104,12 @@ public class DefaultExecutionFlowDescriptorConverter implements
 						// all necessary information is in the spec
 					}
 				} else if (attribute instanceof RefSpecAttribute) {
-					values.put(key, buildRefValue((RefSpecAttribute) attribute,
-							executionFlow, key));
+					if (attribute.getIsFrozen()) {
+						values.put(key, new RefValue(REF_VALUE_IS_FROZEN));
+					} else
+						values.put(key, buildRefValue(
+								(RefSpecAttribute) attribute, executionFlow,
+								key));
 				} else {
 					throw new SlcException("Unkown spec attribute type "
 							+ attribute.getClass());
