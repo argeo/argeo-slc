@@ -24,6 +24,7 @@
 		<module>org.argeo.slc.support.hibernate</module>
 		<module>org.argeo.slc.support.ant</module>
 		<module>org.argeo.slc.support.maven</module>
+		<module>org.argeo.slc.support.jemmy</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.detached</module>
 		<module>org.argeo.slc.detached.launcher</module>

@@ -275,6 +275,11 @@ limitations under the License.
 				<artifactId>org.argeo.slc.support.equinox</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.argeo.slc.runtime</groupId>
+				<artifactId>org.argeo.slc.support.jemmy</artifactId>
+				<version>${project.version}</version>
+			</dependency>      
 			<!--
 				<dependency> <groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.ws.client</artifactId>
