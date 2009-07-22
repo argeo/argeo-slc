@@ -86,7 +86,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 			Assert.notNull(executionSpec.getName());
 
 			Map<String, Object> values = new TreeMap<String, Object>();
-			attrs: for (String key : executionSpec.getAttributes().keySet()) {
+			for (String key : executionSpec.getAttributes().keySet()) {
 				ExecutionSpecAttribute attribute = executionSpec
 						.getAttributes().get(key);
 

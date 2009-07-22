@@ -45,6 +45,15 @@ public class OsgiBoot {
 		this.bundleContext = bundleContext;
 	}
 
+	public void bootstrap() {
+		info("SLC OSGi bootstrap starting...");
+		installUrls(getBundlesUrls());
+		installUrls(getLocationsUrls());
+		installUrls(getModulesUrls());
+		startBundles();
+		info("SLC OSGi bootstrap completed");
+	}
+
 	public void installUrls(List urls) {
 		Map installedBundles = getInstalledBundles();
 		for (int i = 0; i < urls.size(); i++) {
@@ -109,12 +118,12 @@ public class OsgiBoot {
 
 	}
 
-	public void startBundles() throws Exception {
+	public void startBundles() {
 		String bundlesToStart = getProperty(PROP_SLC_OSGI_START);
 		startBundles(bundlesToStart);
 	}
 
-	public void startBundles(String bundlesToStartStr) throws Exception {
+	public void startBundles(String bundlesToStartStr) {
 		if (bundlesToStartStr == null)
 			return;
 
@@ -127,7 +136,7 @@ public class OsgiBoot {
 		startBundles(bundlesToStart);
 	}
 
-	public void startBundles(List bundlesToStart) throws Exception {
+	public void startBundles(List bundlesToStart) {
 		if (bundlesToStart.size() == 0)
 			return;
 
@@ -299,7 +308,7 @@ public class OsgiBoot {
 		StringTokenizer st = new StringTokenizer(bundleLocations,
 				File.pathSeparator);
 		while (st.hasMoreTokens()) {
-			urls.add(baseUrl + st.nextToken().trim());
+			urls.add(locationToUrl(baseUrl, st.nextToken().trim()));
 		}
 		return urls;
 	}
@@ -349,7 +358,7 @@ public class OsgiBoot {
 		for (int i = 0; i < included.size(); i++) {
 			String fullPath = (String) included.get(i);
 			if (!excluded.contains(fullPath))
-				urls.add(baseUrl + fullPath);
+				urls.add(locationToUrl(baseUrl, fullPath));
 		}
 
 		return urls;
@@ -417,6 +426,18 @@ public class OsgiBoot {
 				}
 			}
 		}
+	}
+
+	protected String locationToUrl(String baseUrl, String location) {
+		int extInd = location.lastIndexOf('.');
+		String ext = null;
+		if (extInd > 0)
+			ext = location.substring(extInd);
+
+		if (baseUrl.startsWith("reference:") && ".jar".equals(ext))
+			return "file:" + location;
+		else
+			return baseUrl + location;
 	}
 
 	/** Transforms a relative path in a full system path. */
