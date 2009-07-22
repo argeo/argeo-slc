@@ -1,5 +1,7 @@
 package org.argeo.slc.lib.detached;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
@@ -48,9 +50,11 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 		else
 			getClasspath().add(osgiFramework);
 
+		StringBuffer osgiBundles = new StringBuffer("");
 		StringBuffer osgiLocations = new StringBuffer("");
 		bundles: for (Bundle bundle : bundleContext.getBundles()) {
 			String name = bundle.getSymbolicName();
+			String location = bundle.getLocation();
 
 			// Special bundles
 			if (osgibootBundleName.equals(name))
@@ -62,12 +66,22 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 			else if (xercesBundleName.equals(name) && prependXmlJars)
 				getPBootClasspath().add(asResource(bundle.getLocation()));
 
-			if (osgiLocations.length() != 0)
-				osgiLocations.append(',');
-			osgiLocations.append(bundle.getLocation());
+			if (location.startsWith("file:")) {
+				File file = new File(location.substring("file:".length()));
+				if (osgiLocations.length() != 0)
+					osgiLocations.append(File.pathSeparatorChar);
+				osgiLocations.append(file.getPath().replace('/',
+						File.separatorChar));
+			} else {
+				if (osgiBundles.length() != 0)
+					osgiBundles.append(',');
+				osgiBundles.append(location.replace('/', File.separatorChar));
+			}
 		}
 
 		getSystemProperties().setProperty("osgi.bundles",
+				osgiBundles.toString());
+		getSystemProperties().setProperty("slc.osgi.locations",
 				osgiLocations.toString());
 	}
 
