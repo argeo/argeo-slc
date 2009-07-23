@@ -18,7 +18,7 @@ qx.Class.define("org.argeo.slc.web.MonitorPerspective",
   },
   
   statics : {
-  	LABEL : "SLC Monitoring",
+  	LABEL : "SLC Administration",
   	ICON : "org.argeo.slc.ria/utilities-terminal.png",
   	ROLES_RESTRICTION : ["ADMIN_ROLE"]
   },
@@ -28,38 +28,22 @@ qx.Class.define("org.argeo.slc.web.MonitorPerspective",
   	
   	initViewPanes : function(viewsManager){
   		
-      this._splitPane = new qx.ui.splitpane.Pane("horizontal");
-      
-      this._secondSplitPane = new qx.ui.splitpane.Pane("vertical");
-      this._splitPane.add(this._secondSplitPane, 1);
-      
-	  var topLeft = new org.argeo.ria.components.ViewPane("selector", "Fows and Modules");
-	  topLeft.set({width:300, height:400});
-	  viewsManager.registerViewPane(topLeft);
-	  this._secondSplitPane.add(topLeft, 4);
-	  this._secondSplitPane.setDecorator(null);
-	  
-	  var bottomLeft = new org.argeo.ria.components.ViewPane("properties", "Properties");	  
-	  viewsManager.registerViewPane(bottomLeft);
-	  this._secondSplitPane.add(bottomLeft, 1);
-	    
-  	  var rightPane = new org.argeo.ria.components.TabbedViewPane("applet", "Detail");  	  
-  	  viewsManager.registerViewPane(rightPane);
-  	  
-  	  
-  	  
-  	  
-	  this._splitPane.add(rightPane, 2);
-      
-      viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1});
+  		this._splitPane = new qx.ui.splitpane.Pane("vertical");
+		var mainPane = new org.argeo.ria.components.ViewPane("distrib", "Bundles");
+		this._splitPane.add(mainPane, 5);
+		var uploadPane = new org.argeo.ria.components.ViewPane("upload", "Upload a distribution");
+		this._splitPane.add(uploadPane, 1);
+		viewsManager.registerViewPane(mainPane);      
+		viewsManager.registerViewPane(uploadPane);      
+		viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1});
   		
   	},
   	
   	initViews : function(viewsManager){
-	  var view = viewsManager.initIViewClass(org.argeo.slc.ria.monitor.FlowsSelectorView, "selector");
-	  view.load();
-	  var pView = viewsManager.initIViewClass(org.argeo.slc.ria.monitor.PropertiesView, "properties");
+	  var pView = viewsManager.initIViewClass(org.argeo.slc.ria.monitor.DistListView, "distrib");
 	  pView.load();
+	  var view = viewsManager.initIViewClass(org.argeo.slc.ria.monitor.UploadView, "upload");
+	  view.load();
   	},
   	
   	remove : function(viewsManager){
