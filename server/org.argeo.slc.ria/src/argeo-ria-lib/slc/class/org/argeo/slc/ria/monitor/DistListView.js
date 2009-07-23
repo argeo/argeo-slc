@@ -20,6 +20,26 @@ qx.Class.define("org.argeo.slc.ria.monitor.DistListView", {
 						this.load();
 					},
 					command : null
+				},
+				"uninstall" : {
+					label 	: "Uninstall",
+					icon	: "org.argeo.slc.ria/window-close.png",
+					shortcut: null,
+					enabled : false,
+					menu	: "Distributions",
+					toolbar	: "list",
+					callback: function(e){
+						var selection = this.getViewSelection();
+						var node = selection.getNodes()[0];
+						var request = org.argeo.slc.ria.SlcApi.getUninstallModuleService(node[0], node[1]);
+						request.addListener("completed", this.load, this);
+						request.send();
+					},
+					selectionChange : function(viewId, selection){
+						if(viewId != "distrib") return;
+						this.setEnabled((selection!=null && selection.length==1));
+					},
+					command	: null
 				}
 			}
 		},
@@ -86,6 +106,16 @@ qx.Class.define("org.argeo.slc.ria.monitor.DistListView", {
 			};
 			columnModel.setCellEditorFactory(2, new qx.ui.table.celleditor.Dynamic(factory));
 			columnModel.setCellEditorFactory(3, new qx.ui.table.celleditor.Dynamic(factory));
+			
+			var selectionModel = this.list.getSelectionModel();
+			selectionModel.addListener("changeSelection", function(e){
+				var viewSelection = this.getViewSelection();
+				viewSelection.clear();
+				selectionModel.iterateSelection(function(index){
+					viewSelection.addNode(this.tableModel.getRowData(index));
+				}, this);
+			}, this);			
+			
 			this.add(this.list, {top:0,left:0,width:'100%',height:'100%'});			
 		},
 		/**

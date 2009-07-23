@@ -31,7 +31,8 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	AMQ_SERVICE : "amq",
   	
   	LIST_MODULAR_DISTRIB_SERVICE : "listModularDistributions.service",
-  	UPLOAD_MODULAR_DISTRIB_SERVICE : "uploadModularDistrib.service",
+  	INSTALL_MODULE_SERVICE : "installModule.service",
+  	UNINSTALL_MODULE_SERVICE : "uninstallModule.service",
   	
   	/**
   	 * Standard Request getter
@@ -220,10 +221,30 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   		);
   	},
   	
-  	getUploadModularDistributionsService : function(){
-  		return org.argeo.slc.ria.SlcApi.UPLOAD_MODULAR_DISTRIB_SERVICE;
+  	getInstallModuleService : function(){
+  		return org.argeo.slc.ria.SlcApi.DEFAULT_CONTEXT +"/"+ org.argeo.slc.ria.SlcApi.INSTALL_MODULE_SERVICE;
   	},
 
+  	/**
+  	 * Load a result test
+  	 * @param resultId {String} Id of the test result to load
+  	 * @param fireReloadEventType {String} Whether query should trigger a ReloadEvent
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update
+  	 * @return {qx.io.remote.Request}
+  	 */
+  	getUninstallModuleService : function(moduleName, moduleVersion, fireReloadEventType, iLoadStatusables){
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+	  		org.argeo.slc.ria.SlcApi.UNINSTALL_MODULE_SERVICE, 
+	  		fireReloadEventType, 
+	  		iLoadStatusables
+  		);
+  		request.setParameter("name", moduleName);
+  		request.setParameter("version", moduleVersion);
+  		return request;
+  	},
+
+  	
+  	
   	/**
   	 * New SlcExecution
   	 * @param agentId {String} Agent id target

@@ -38,7 +38,7 @@ qx.Class.define("org.argeo.slc.ria.monitor.UploadView", {
 		init : function(viewPane, data){
 			this.setView(viewPane);			
 			this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
-			this.form = new org.argeo.ria.components.upload.UploadForm("uploadFrm", org.argeo.slc.ria.SlcApi.getUploadModularDistributionsService());
+			this.form = new org.argeo.ria.components.upload.UploadForm("uploadFrm", org.argeo.slc.ria.SlcApi.getInstallModuleService());
 			this.form.setLayout(new qx.ui.layout.HBox(5));
 			this.fileWidget = new org.argeo.ria.components.upload.UploadField("uploadFile", "Choose a file");
 			
