@@ -34,7 +34,8 @@
 							org.argeo.slc.*
 						</Export-Package>
 						<Import-Package>*,
-							org.hibernate.proxy;resolution:="optional"
+							org.hibernate.proxy;resolution:="optional",
+							javassist.util.proxy;resolution:="optional"
 						</Import-Package>
 					</instructions>
 				</configuration>

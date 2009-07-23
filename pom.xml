@@ -939,14 +939,22 @@ limitations under the License.
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>com.springsource.org.hibernate</artifactId>
-				<version>3.2.6.ga</version>
-				<!-- <version>3.3.1.GA</version> TODO: fix issues with logging -->
+				<version>3.3.1.GA</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.apache.commons</groupId>
 						<artifactId>com.springsource.org.apache.commons.logging</artifactId>
 					</exclusion>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>com.springsource.slf4j.api</artifactId>
+					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.javassist</groupId>
+				<artifactId>com.springsource.javassist</artifactId>
+				<version>3.9.0.GA</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sourceforge.jexcelapi</groupId>
@@ -956,7 +964,7 @@ limitations under the License.
 			<dependency>
 				<groupId>net.sourceforge.ehcache</groupId>
 				<artifactId>com.springsource.net.sf.ehcache</artifactId>
-				<version>1.4.1</version>
+				<version>1.6.0</version>
 				<exclusions>
 					<exclusion>
 						<groupId>org.apache.commons</groupId>

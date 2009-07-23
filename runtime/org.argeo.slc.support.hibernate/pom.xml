@@ -34,7 +34,7 @@
 				<configuration>
 					<instructions>
 						<Fragment-Host>org.argeo.slc.core</Fragment-Host>
-						<Import-Package>*,org.hibernate.proxy</Import-Package>
+						<Import-Package>*,org.hibernate.proxy,javassist.util.proxy</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
