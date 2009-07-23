@@ -102,7 +102,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		var CHECK_HOST = false;
 		
 		var uuid = logData[2];
-		var host = "charlie";//  logData[1];
+		var host = logData[1];
 		
 		
 		// 1. Check that both associated views are here
@@ -171,11 +171,11 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 			}
 		});
 		var selectionModel = this.logPane.getSelectionModel();
-		selectionModel.addListener("changeSelection", function(e){
-			var viewSelection = this.getViewSelection();
-			viewSelection.setViewId("logger");
-			viewSelection.clear();
-			selectionModel.iterateSelection(function(index){
+		selectionModel.addListener("changeSelection", function(e){			
+			var viewSelection = this.getViewSelection();			
+			viewSelection.setViewId("logger");			
+			viewSelection.clear();			
+			selectionModel.iterateSelection(function(index){				
 				viewSelection.addNode(this.logModel.getRowData(index));
 			}, this);
 		}, this);
