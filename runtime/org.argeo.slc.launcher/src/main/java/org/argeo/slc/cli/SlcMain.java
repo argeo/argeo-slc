@@ -13,9 +13,9 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.server.client.SlcServerHttpClient;
 import org.argeo.slc.server.client.impl.SlcServerHttpClientImpl;
 
+@SuppressWarnings("static-access")
 public class SlcMain {
 	public enum Type {
 		standalone, agent, server
@@ -23,8 +23,10 @@ public class SlcMain {
 
 	private static Boolean debug = true;
 
-	private final static String BOOTSTRAP_LOG4J_CONFIG = "org/argeo/slc/cli/bootstrapLog4j.properties";
-	private final static String DEFAULT_AGENT_CONTEXT = "classpath:org/argeo/slc/cli/spring-agent-default.xml";
+	// private final static String BOOTSTRAP_LOG4J_CONFIG =
+	// "org/argeo/slc/cli/bootstrapLog4j.properties";
+	// private final static String DEFAULT_AGENT_CONTEXT =
+	// "classpath:org/argeo/slc/cli/spring-agent-default.xml";
 
 	private final static Option typeOpt = OptionBuilder.withLongOpt("mode")
 			.withArgName("mode").hasArg().withDescription(

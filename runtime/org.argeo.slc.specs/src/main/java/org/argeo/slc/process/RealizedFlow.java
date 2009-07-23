@@ -1,9 +1,13 @@
 package org.argeo.slc.process;
 
+import java.io.Serializable;
+
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionSpec;
 
-public class RealizedFlow {
+public class RealizedFlow implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String moduleName;
 	private String moduleVersion;
 	private ExecutionFlowDescriptor flowDescriptor;

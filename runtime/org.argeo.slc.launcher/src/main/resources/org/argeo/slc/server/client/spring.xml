@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
 	 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
@@ -10,8 +9,11 @@
 	<import resource="classpath:org/argeo/slc/castor/spring.xml" />
 
 	<!-- Http client -->
-	<bean id="slcDefault.serverHttpClient" class="org.argeo.slc.server.client.impl.SlcServerHttpClientImpl"
-		lazy-init="true">
+	<bean id="slcTemplate.serverHttpClient"
+		class="org.argeo.slc.server.client.impl.SlcServerHttpClientImpl"
+		init-method="init" abstract="true">
+		<property name="user" value="demo" />
+		<property name="password" value="demo" />
 		<property name="unmarshaller" ref="slcDefault.castor.marshaller" />
 		<property name="marshaller" ref="slcDefault.castor.marshaller" />
 		<property name="baseUrl" value="http://localhost:7070/org.argeo.slc.webapp/" />

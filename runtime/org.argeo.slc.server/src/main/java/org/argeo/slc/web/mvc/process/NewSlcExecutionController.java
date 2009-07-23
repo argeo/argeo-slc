@@ -9,15 +9,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.msg.MsgConstants;
+import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
 import org.argeo.slc.services.SlcExecutionService;
 import org.argeo.slc.web.mvc.AbstractServiceController;
+import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.xml.transform.StringResult;
 import org.springframework.xml.transform.StringSource;
 
 /** Send a new SlcExecution. */
@@ -27,6 +30,7 @@ public class NewSlcExecutionController extends AbstractServiceController {
 
 	private SlcAgentFactory agentFactory;
 	private Unmarshaller unmarshaller;
+	private Marshaller marshaller;
 	private SlcExecutionService slcExecutionService;
 
 	@Override
@@ -71,6 +75,12 @@ public class NewSlcExecutionController extends AbstractServiceController {
 		slcExecution.getSteps().add(
 				new SlcExecutionStep(SlcExecutionStep.TYPE_START,
 						"Process started from the Web UI"));
+
+		ObjectList ol = new ObjectList(slcExecution.getRealizedFlows());
+		StringResult result = new StringResult();
+		marshaller.marshal(ol, result);
+		slcExecution.setRealizedFlowsXml(result.toString());
+
 		slcExecutionService.newExecution(slcExecution);
 
 		SlcAgent agent = agentFactory.getAgent(agentId);
@@ -87,6 +97,10 @@ public class NewSlcExecutionController extends AbstractServiceController {
 
 	public void setSlcExecutionService(SlcExecutionService slcExecutionService) {
 		this.slcExecutionService = slcExecutionService;
+	}
+
+	public void setMarshaller(Marshaller marshaller) {
+		this.marshaller = marshaller;
 	}
 
 }

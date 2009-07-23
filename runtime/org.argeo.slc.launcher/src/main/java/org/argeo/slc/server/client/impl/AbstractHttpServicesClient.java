@@ -5,7 +5,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.Authenticator;
 import java.net.HttpURLConnection;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -27,6 +29,10 @@ import org.springframework.util.Assert;
 public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 	private final static Log log = LogFactory
 			.getLog(AbstractHttpServicesClient.class);
+
+	private String user;
+	private String password;
+
 	private Unmarshaller unmarshaller;
 	private Marshaller marshaller;
 	private String baseUrl;
@@ -35,9 +41,19 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 	private Long retryPeriod = 1000l;
 	private Long defaultTimeout = 30 * 1000l;
 
+	public void init() {
+		if (user != null && password != null)
+			Authenticator.setDefault(new Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(user, password
+							.toCharArray());
+				}
+			});
+	}
+
 	@SuppressWarnings(value = { "unchecked" })
 	public <T> T callService(String path, Map<String, String> parameters) {
-		return (T)callService(path, parameters, null);
+		return (T) callService(path, parameters, null);
 	}
 
 	@SuppressWarnings(value = { "unchecked" })
@@ -101,6 +117,7 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 
 	protected Object callServiceLowLevel(String path,
 			Map<String, String> parameters, Object body) throws IOException {
+
 		Assert.notNull(baseUrl, "base url");
 		HttpURLConnection connection = null;
 		Writer writer = null;
@@ -215,6 +232,14 @@ public abstract class AbstractHttpServicesClient implements HttpServicesClient {
 
 	public Long getDefaultTimeout() {
 		return defaultTimeout;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

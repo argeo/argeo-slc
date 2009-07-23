@@ -8,4 +8,7 @@
 
 	<import resource="classpath:org/argeo/slc/server/client/spring.xml" />
 
+	<bean id="serverHttpClient" parent="slcTemplate.serverHttpClient">
+	</bean>
+
 </beans>

@@ -56,10 +56,16 @@
 		<constructor-arg ref="slcExecutionDao" />
 	</bean>
 
+	<bean name="/getSlcExecution.service" class="org.argeo.slc.web.mvc.process.GetSlcExecution">
+		<property name="slcExecutionDao" ref="slcExecutionDao" />
+		<property name="unmarshaller" ref="unmarshaller" />
+	</bean>
+
 	<bean name="/newSlcExecution.service"
 		class="org.argeo.slc.web.mvc.process.NewSlcExecutionController">
 		<property name="agentFactory" ref="agentFactory" />
 		<property name="unmarshaller" ref="unmarshaller" />
+		<property name="marshaller" ref="marshaller" />
 		<property name="slcExecutionService" ref="slcExecutionService" />
 	</bean>
 

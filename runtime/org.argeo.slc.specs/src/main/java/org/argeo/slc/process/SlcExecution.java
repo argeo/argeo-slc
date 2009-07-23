@@ -28,6 +28,7 @@ public class SlcExecution implements Serializable {
 	/** TODO: Synchronize */
 	private List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
 	private List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
+	private String realizedFlowsXml = null;
 
 	public List<RealizedFlow> getRealizedFlows() {
 		return realizedFlows;
@@ -143,4 +144,13 @@ public class SlcExecution implements Serializable {
 				return steps.get(steps.size() - 1).getBegin();
 		}
 	}
+
+	public String getRealizedFlowsXml() {
+		return realizedFlowsXml;
+	}
+
+	public void setRealizedFlowsXml(String realizedFlowsXml) {
+		this.realizedFlowsXml = realizedFlowsXml;
+	}
+
 }

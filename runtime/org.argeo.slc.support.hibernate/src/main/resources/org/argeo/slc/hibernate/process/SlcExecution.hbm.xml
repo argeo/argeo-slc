@@ -11,7 +11,8 @@
 		<property name="user" column="USER" />
 		<property name="type" column="TYPE" />
 		<property name="status" column="STATUS" />
-
+		<property name="realizedFlowsXml" column="REALIZED_FLOWS_XML"
+			type="text" />
 		<list name="steps" cascade="all" table="SLC_EXECUTIONS_STEPS"
 			lazy="false">
 			<cache usage="read-write" />

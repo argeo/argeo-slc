@@ -39,11 +39,16 @@ public class DefaultExecutionFlowDescriptorConverter implements
 			ExecutionFlowDescriptor executionFlowDescriptor) {
 		Map<String, Object> values = executionFlowDescriptor.getValues();
 		Map<String, Object> convertedValues = new HashMap<String, Object>();
+		ExecutionSpec executionSpec = executionFlowDescriptor
+				.getExecutionSpec();
 
-		if (values != null) {
+		if (executionSpec == null)
+			log.warn("Execution spec is null for " + executionFlowDescriptor);
+
+		if (values != null && executionSpec != null) {
 			values: for (String key : values.keySet()) {
-				ExecutionSpecAttribute attribute = executionFlowDescriptor
-						.getExecutionSpec().getAttributes().get(key);
+				ExecutionSpecAttribute attribute = executionSpec
+						.getAttributes().get(key);
 
 				if (attribute.getIsFrozen())
 					continue values;
