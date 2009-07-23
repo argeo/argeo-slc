@@ -1,4 +1,4 @@
-qx.Class.define("org.argeo.slc.ria.monitor.DistListView", {
+qx.Class.define("org.argeo.slc.ria.monitor.UploadView", {
 	extend : qx.ui.container.Composite,
 	implement : [org.argeo.ria.components.IView], 
 	
@@ -24,16 +24,6 @@ qx.Class.define("org.argeo.slc.ria.monitor.DistListView", {
 	construct : function(){
 		this.base(arguments);
 		this.setLayout(new qx.ui.layout.Dock());	
-		this.xmlStub = '<slc:object-list xmlns:slc="http://argeo.org/projects/slc/schemas">' +
-				'<slc:modular-distribution-descriptor name="name" version="0.1.0">' +
-				'<slc:modulesDescriptors><slc:modulesDescriptor type="modularDistribution" url="http://localhost/modularDistribution" />' +
-				'<slc:modulesDescriptor type="eclipse" url="http://localhost/updateSite" />' +
-				'</slc:modulesDescriptors></slc:modular-distribution-descriptor>' +
-				'<slc:modular-distribution-descriptor name="name2" version="0.1.1">' +
-				'<slc:modulesDescriptors><slc:modulesDescriptor type="modularDistribution" url="http://localhost/modularDistribution2" />' +
-				'<slc:modulesDescriptor type="eclipse" url="http://localhost/updateSite2" />' +
-				'</slc:modulesDescriptors></slc:modular-distribution-descriptor>' +
-				'</slc:object-list>';
 	},	
 	
 	members : {
@@ -48,7 +38,7 @@ qx.Class.define("org.argeo.slc.ria.monitor.DistListView", {
 		init : function(viewPane, data){
 			this.setView(viewPane);			
 			this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));
-			this.label = new qx.ui.basic.Label("Properties");
+			this.label = new qx.ui.basic.Label("Upoad");
 			this.add(this.label, {edge : "center"});
 		},
 		/**
