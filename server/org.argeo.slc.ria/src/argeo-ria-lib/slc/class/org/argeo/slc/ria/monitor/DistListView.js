@@ -24,6 +24,16 @@ qx.Class.define("org.argeo.slc.ria.monitor.PropertiesView", {
 	construct : function(){
 		this.base(arguments);
 		this.setLayout(new qx.ui.layout.Dock());	
+		this.xmlStub = '<slc:object-list xmlns:slc="http://argeo.org/projects/slc/schemas">' +
+				'<slc:modular-distribution-descriptor name="name" version="0.1.0">' +
+				'<slc:modulesDescriptors><slc:modulesDescriptor type="modularDistribution" url="http://localhost/modularDistribution" />' +
+				'<slc:modulesDescriptor type="eclipse" url="http://localhost/updateSite" />' +
+				'</slc:modulesDescriptors></slc:modular-distribution-descriptor>' +
+				'<slc:modular-distribution-descriptor name="name2" version="0.1.1">' +
+				'<slc:modulesDescriptors><slc:modulesDescriptor type="modularDistribution" url="http://localhost/modularDistribution2" />' +
+				'<slc:modulesDescriptor type="eclipse" url="http://localhost/updateSite2" />' +
+				'</slc:modulesDescriptors></slc:modular-distribution-descriptor>' +
+				'</slc:object-list>';
 	},	
 	
 	members : {
