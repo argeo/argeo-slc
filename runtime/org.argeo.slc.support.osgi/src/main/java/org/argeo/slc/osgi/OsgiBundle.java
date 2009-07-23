@@ -2,6 +2,7 @@ package org.argeo.slc.osgi;
 
 import org.argeo.slc.build.BasicNameVersion;
 import org.argeo.slc.build.Distribution;
+import org.argeo.slc.core.build.ResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.Module;
 import org.argeo.slc.deploy.TargetData;
@@ -10,7 +11,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
 public class OsgiBundle extends BasicNameVersion implements Module {
-	private Distribution distribution;
+	private ResourceDistribution distribution;
 
 	private Long internalBundleId;
 
@@ -51,11 +52,15 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 		return distribution;
 	}
 
+	public ResourceDistribution getResourceDistribution() {
+		return distribution;
+	}
+
 	public TargetData getTargetData() {
 		throw new UnsupportedOperationException();
 	}
 
-	public void setDistribution(Distribution distribution) {
+	public void setResourceDistribution(ResourceDistribution distribution) {
 		this.distribution = distribution;
 	}
 

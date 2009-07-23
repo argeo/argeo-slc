@@ -22,7 +22,7 @@ public class AvailableModulesHtml extends AbstractAvailableModules {
 			String moduleUrl = null;
 			if (distribution instanceof ResourceDistribution) {
 				String url = ((ResourceDistribution) distribution)
-						.getLocation().getURL().toString();
+						.getResource().getURL().toString();
 				if (url.startsWith("reference:"))
 					moduleUrl = url;
 			}

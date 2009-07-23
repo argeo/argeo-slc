@@ -109,6 +109,13 @@
 		<property name="modularDistributions" ref="modularDistributions" />
 	</bean>
 
+	<bean name="/installModule.service" class="org.argeo.slc.web.mvc.management.InstallModule">
+		<property name="dynamicRuntime" ref="dynamicRuntime" />
+	</bean>
+
+	<bean name="/uninstallModule.service" class="org.argeo.slc.web.mvc.management.UninstallModule">
+		<property name="dynamicRuntime" ref="dynamicRuntime" />
+	</bean>
 
 	<!-- MVC -->
 	<bean id="handlerMapping"

@@ -85,6 +85,12 @@
 			<artifactId>org.springframework.oxm</artifactId>
 		</dependency>
 
+		<!-- Web -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.fileupload</artifactId>
+		</dependency>
+
 		<!-- J2EE -->
 		<dependency>
 			<groupId>javax.servlet</groupId>

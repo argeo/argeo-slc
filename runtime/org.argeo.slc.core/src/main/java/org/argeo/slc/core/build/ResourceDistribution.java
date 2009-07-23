@@ -9,33 +9,38 @@ import org.argeo.slc.build.Distribution;
 import org.springframework.core.io.Resource;
 
 public class ResourceDistribution implements Distribution, StreamReadable {
-	private Resource location;
+	private Resource resource;
 
 	public ResourceDistribution() {
 	}
 
 	public ResourceDistribution(Resource location) {
-		this.location = location;
+		this.resource = location;
 	}
 
 	public String getDistributionId() {
-		return location.toString();
+		return resource.toString();
 	}
 
-	public Resource getLocation() {
-		return location;
+	public Resource getResource() {
+		return resource;
 	}
 
-	public void setLocation(Resource location) {
-		this.location = location;
+	public void setResource(Resource resource) {
+		this.resource = resource;
 	}
 
 	public InputStream getInputStream() {
 		try {
-			return location.getInputStream();
+			return resource.getInputStream();
 		} catch (IOException e) {
 			throw new SlcException("Cannot get input stream", e);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return resource.toString();
 	}
 
 }
