@@ -29,8 +29,8 @@ qx.Class.define("org.argeo.slc.web.MonitorPerspective",
   	initViewPanes : function(viewsManager){
   		
   		this._splitPane = new qx.ui.splitpane.Pane("vertical");
-		var mainPane = new org.argeo.ria.components.ViewPane("distrib", "Bundles");
-		this._splitPane.add(mainPane, 5);
+		var mainPane = new org.argeo.ria.components.ViewPane("distrib", "Modular Distributions");
+		this._splitPane.add(mainPane, 10);
 		var uploadPane = new org.argeo.ria.components.ViewPane("upload", "Upload a distribution");
 		this._splitPane.add(uploadPane, 1);
 		viewsManager.registerViewPane(mainPane);      
@@ -41,8 +41,8 @@ qx.Class.define("org.argeo.slc.web.MonitorPerspective",
   	
   	initViews : function(viewsManager){
 	  var pView = viewsManager.initIViewClass(org.argeo.slc.ria.monitor.DistListView, "distrib");
-	  pView.load();
 	  var view = viewsManager.initIViewClass(org.argeo.slc.ria.monitor.UploadView, "upload");
+	  pView.load();
 	  view.load();
   	},
   	

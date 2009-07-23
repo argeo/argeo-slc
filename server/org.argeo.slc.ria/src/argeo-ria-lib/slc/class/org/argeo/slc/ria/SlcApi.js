@@ -30,6 +30,9 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
 	RELOAD_BUNDLE_SERVICE : "reloadBundle.service",
   	AMQ_SERVICE : "amq",
   	
+  	LIST_MODULAR_DISTRIB_SERVICE : "listModularDistributions.service",
+  	UPLOAD_MODULAR_DISTRIB_SERVICE : "uploadModularDistrib.service",
+  	
   	/**
   	 * Standard Request getter
   	 * @param serviceName {String} The name of the service to call (without base context)
@@ -203,6 +206,23 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   		);
   	},
   	
+  	/**
+  	 * List currently registered SlcExecutions.
+  	 * @param fireReloadEventType {String} Event type to trigger (optionnal)
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update 
+  	 * @return {qx.io.remote.Request}
+  	 */
+  	getListModularDistributionsService:function(fireReloadEventType, iLoadStatusables){
+  		return org.argeo.slc.ria.SlcApi.getServiceRequest(
+  			org.argeo.slc.ria.SlcApi.LIST_MODULAR_DISTRIB_SERVICE,
+  			fireReloadEventType,
+  			iLoadStatusables
+  		);
+  	},
+  	
+  	getUploadModularDistributionsService : function(){
+  		return org.argeo.slc.ria.SlcApi.UPLOAD_MODULAR_DISTRIB_SERVICE;
+  	},
 
   	/**
   	 * New SlcExecution
