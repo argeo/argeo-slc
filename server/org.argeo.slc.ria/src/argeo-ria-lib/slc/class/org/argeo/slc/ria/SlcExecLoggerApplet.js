@@ -137,7 +137,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		}
 		
 		// 3. Call service to load execution message
-		var req = org.argeo.slc.ria.SlcApi.getRealizedFlowsService(uuid);
+		var req = org.argeo.slc.ria.SlcApi.getSlcExecutionService(uuid);
 		var handler = function(xmlDoc){			
 			var realizedFlows = org.argeo.ria.util.Element.selectNodes(xmlDoc, "slc:slc-execution/realized-flows/slc:realized-flow");
 			for(var i=0;i<realizedFlows.length;i++){
