@@ -11,8 +11,6 @@ import org.argeo.slc.build.ModularDistribution;
 import org.argeo.slc.build.NameVersion;
 import org.springframework.web.HttpRequestHandler;
 
-import common.BaseUnit;
-
 /** List of modules for a distribution. */
 public abstract class AbstractAvailableModules implements HttpRequestHandler {
 	protected abstract void print(Writer out, String baseUrl,

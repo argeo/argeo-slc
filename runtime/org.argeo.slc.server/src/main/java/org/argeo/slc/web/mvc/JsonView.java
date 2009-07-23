@@ -4,10 +4,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.transform.stream.StreamResult;
 
 import org.argeo.slc.SlcException;
-import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.AbstractView;
 
 import com.springsource.json.writer.JSONObject;

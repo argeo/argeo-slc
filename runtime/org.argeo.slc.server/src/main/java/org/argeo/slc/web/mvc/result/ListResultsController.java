@@ -7,8 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.argeo.slc.msg.ObjectList;
@@ -17,8 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 /** Lists results possibly filtering them. */
 public class ListResultsController extends AbstractServiceController {
-	private final static Log log = LogFactory
-			.getLog(ListResultsController.class);
 	private final TreeTestResultCollectionDao testResultCollectionDao;
 
 	public ListResultsController(
@@ -32,12 +28,12 @@ public class ListResultsController extends AbstractServiceController {
 			HttpServletResponse response, ModelAndView modelAndView)
 			throws Exception {
 
-//		log.debug("userPrincipal=" + request.getUserPrincipal());
-//		log.debug("authType=" + request.getAuthType());
-//		log.debug("remoteUser=" + request.getRemoteUser());
-//		log.debug("cookies=" + request.getCookies());
-//		log.debug("requestedSessionId=" + request.getRequestedSessionId());
-//		log.debug("session.id=" + request.getSession().getId());
+		// log.debug("userPrincipal=" + request.getUserPrincipal());
+		// log.debug("authType=" + request.getAuthType());
+		// log.debug("remoteUser=" + request.getRemoteUser());
+		// log.debug("cookies=" + request.getCookies());
+		// log.debug("requestedSessionId=" + request.getRequestedSessionId());
+		// log.debug("session.id=" + request.getSession().getId());
 
 		String collectionId = request.getParameter("collectionId");
 
