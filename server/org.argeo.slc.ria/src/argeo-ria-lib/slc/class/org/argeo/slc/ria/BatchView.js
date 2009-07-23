@@ -12,6 +12,11 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				label : "Confirm on batch deletion",
 				type  : "boolean",
 				defaultValue  : true
+			},
+			"slc.batch.autoclear" : {
+				label : "Autoclear batch on execution",
+				type : "boolean",
+				defaultValue : false
 			}
 		}
   	},
@@ -31,9 +36,25 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 					menu : "Launcher",
 					toolbar : "batch",
 					callback : function(e) {
-						if (this.getBatchAgentId()) {
-							this.executeBatchOnAgent(this.getBatchAgentId());
+						var batchAgentId = this.getBatchAgentId();
+						if (!batchAgentId) {
+							return;							
 						}
+						var prefName = "slc.batch.autoclear";
+						var prefValue = this.getRiaPreferenceValue(prefName);
+						if(prefValue !== null){
+							this.executeBatchOnAgent(batchAgentId, prefValue);
+							return;
+						}
+						var modal = new org.argeo.ria.components.Modal("Clear?", null);
+						modal.addYesNoReminder("Do you want to clear the batch automatically after execution?", prefName);
+						modal.addListener("cancel", function(e){
+							this.executeBatchOnAgent(batchAgentId, false);
+						}, this);
+						modal.addListener("ok", function(e){
+							this.executeBatchOnAgent(batchAgentId, true);
+						}, this);
+						modal.attachAndShow();						
 					},
 					command : null
 				},
@@ -396,7 +417,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 		 * @param agentUuid
 		 *            {String} The id of the target agent
 		 */
-		executeBatchOnAgent : function(agentUuid) {
+		executeBatchOnAgent : function(agentUuid, clearBatch) {
 			var selection = this.list.getChildren();
 			if (!selection.length)
 				return;
@@ -418,6 +439,11 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 								command.execute();
 							}
 						}, this, 2000);
+				if(clearBatch){
+					req.addListener("completed", function(e){
+						this.list.removeAll();
+					}, this);
+				}						
 			}catch(e){
 				this.error(e);				
 			}

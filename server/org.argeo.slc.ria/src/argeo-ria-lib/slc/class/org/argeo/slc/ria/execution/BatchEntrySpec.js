@@ -49,7 +49,7 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 			var valuesXml = '';
 			var values = this.getValues();
 			for(var key in values){
-				if(values[key].getValue() == null){
+				if(values[key].getValue() == null && !values[key].isFrozen() && !values[key].isHidden()){
 					throw new Error("Cannot send empty values! (Parameter "+key+")");
 				}
 				valuesXml += values[key].toValueXml();
