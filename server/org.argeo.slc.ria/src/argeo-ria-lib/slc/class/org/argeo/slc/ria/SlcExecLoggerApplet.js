@@ -137,18 +137,26 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		}
 		
 		// 3. Call service to load execution message
-		if(!window.xmlExecStub || !window.xmlExecStub[uuid]){
-			throw new Error("Cannot find window.xmlExecStub['"+uuid+"']");
-			return;
-		}
-		var xmlDoc = window.xmlExecStub[uuid];
-		
-		// 4. Now send all realized flows to the batch
-		var realizedFlows = org.argeo.ria.util.Element.selectNodes(xmlDoc, "slc:slc-execution/realized-flows/slc:realized-flow");
-		for(var i=0;i<realizedFlows.length;i++){
-			var newEntrySpec = new org.argeo.slc.ria.execution.BatchEntrySpec(null, null, realizedFlows[i]);	
-			batchView.appendBatchEntrySpec(newEntrySpec);
-		}
+		var req = org.argeo.slc.ria.SlcApi.getRealizedFlowsService(uuid);
+		var handler = function(xmlDoc){			
+			var realizedFlows = org.argeo.ria.util.Element.selectNodes(xmlDoc, "slc:slc-execution/realized-flows/slc:realized-flow");
+			for(var i=0;i<realizedFlows.length;i++){
+				var newEntrySpec = new org.argeo.slc.ria.execution.BatchEntrySpec(null, null, realizedFlows[i]);	
+				batchView.appendBatchEntrySpec(newEntrySpec);
+			}			
+		};
+		req.addListener("completed", function(response){
+			handler(response.getContent());
+		});
+		// STUB CASE
+		req.addListener("failed", function(){
+			if(!window.xmlExecStub || !window.xmlExecStub[uuid]){				
+				return;
+			}
+			var xmlDoc = window.xmlExecStub[uuid];
+			handler(xmlDoc);
+		});	
+		req.send();
 	},
 	
 	/**

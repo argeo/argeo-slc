@@ -27,6 +27,7 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	LIST_AGENTS_SERVICE : "listAgents.service",
 	LIST_MODULES_SERVICE : "listModulesDescriptors.service",
 	GET_EXECUTION_DESC_SERVICE : "getExecutionDescriptor.service",
+	REALIZED_FLOWS_SERVICE : "getRealizedFlows.service",
 	RELOAD_BUNDLE_SERVICE : "reloadBundle.service",
   	AMQ_SERVICE : "amq",
   	
@@ -265,6 +266,15 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   		return req;
   	},
   	
+  	getRealizedFlowsService :function(executionMessageId, fireReloadEventType, iLoadStatusables){
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+  			org.argeo.slc.ria.SlcApi.REALIZED_FLOWS_SERVICE,
+  			fireReloadEventType,
+  			iLoadStatusables
+  		);
+  		request.setParameter("executionMessageId", executionMessageId);
+  		return request;
+  	},
   	
   	/**
   	 * List currently available agents queues.
