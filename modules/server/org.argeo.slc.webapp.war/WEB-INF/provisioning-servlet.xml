@@ -35,7 +35,7 @@
 			<value>
 				/*/*/modules.html=availableModulesHtml
 				/*/*/modules=availableModulesPlain
-				/*/*/osgiBoot=availableModulesOsgiBoot
+				/*/*/modularDistribution=availableModulesOsgiBoot
 				/*/*/site.xml=updateSiteHandler
 			</value>
 		</property>

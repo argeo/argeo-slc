@@ -103,6 +103,13 @@
 		<property name="dynamicRuntime" ref="dynamicRuntime" />
 	</bean>
 
+	<!-- Provisioning -->
+	<bean name="/listModularDistributions.service"
+		class="org.argeo.slc.web.mvc.provisioning.ListModularDistributions">
+		<property name="modularDistributions" ref="modularDistributions" />
+	</bean>
+
+
 	<!-- MVC -->
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">

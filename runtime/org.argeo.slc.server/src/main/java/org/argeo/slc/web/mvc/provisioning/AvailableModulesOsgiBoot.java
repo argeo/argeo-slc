@@ -8,7 +8,7 @@ import org.argeo.slc.build.NameVersion;
 
 /** List of modules for a distribution. */
 public class AvailableModulesOsgiBoot extends AbstractAvailableModules {
-	private String separator = ";";
+	private String separator = ",";
 
 	@Override
 	protected void print(Writer out, String baseUrl, ModularDistribution md)

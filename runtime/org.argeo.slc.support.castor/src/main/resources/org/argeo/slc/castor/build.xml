@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<mapping>
+	<description>Build objects XML mapping</description>
+
+	<class name="org.argeo.slc.build.BasicNameVersion">
+		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
+			ns-prefix="slc" />
+		<field name="name">
+			<bind-xml name="name" node="attribute" />
+		</field>
+		<field name="version">
+			<bind-xml name="version" node="attribute" />
+		</field>
+	</class>
+</mapping>

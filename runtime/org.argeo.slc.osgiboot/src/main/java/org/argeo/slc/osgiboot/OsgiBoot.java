@@ -37,7 +37,7 @@ public class OsgiBoot {
 			.booleanValue();
 
 	private boolean excludeSvn = true;
-	private String modulesUrlSeparator = ";";
+	private String modulesUrlSeparator = ",";
 
 	private final BundleContext bundleContext;
 

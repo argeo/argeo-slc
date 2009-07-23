@@ -17,6 +17,6 @@ public class EclipseUpdateSiteHandler implements HttpRequestHandler {
 		ModularDistribution modularDistribution = (ModularDistribution) request
 				.getAttribute("modularDistribution");
 		response.getWriter().write(
-				modularDistribution.getDescriptor("eclipse").toString());
+				modularDistribution.getModulesDescriptor("eclipse").toString());
 	}
 }

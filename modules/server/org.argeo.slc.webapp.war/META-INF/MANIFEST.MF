@@ -48,4 +48,5 @@ Import-Package: net.sf.cglib.core,
  org.springframework.web.servlet,
  org.springframework.web.servlet.handler,
  org.springframework.web.servlet.mvc,
- org.springframework.security.context
+ org.springframework.security.context,
+ org.springframework.security.providers

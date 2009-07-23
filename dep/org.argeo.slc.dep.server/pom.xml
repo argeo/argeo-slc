@@ -12,6 +12,18 @@
 	<packaging>jar</packaging>
 	<name>Argeo SLC Dependencies Server</name>
 	<dependencies>
+		<!-- Other deps -->
+		<dependency>
+			<groupId>org.argeo.slc.dep</groupId>
+			<artifactId>org.argeo.slc.dep.agent</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.dep</groupId>
+			<artifactId>org.argeo.slc.dep.detached</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>

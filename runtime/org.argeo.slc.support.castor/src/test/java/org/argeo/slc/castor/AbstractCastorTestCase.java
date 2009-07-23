@@ -35,7 +35,7 @@ public abstract class AbstractCastorTestCase extends AbstractSpringTestCase {
 		StringResult xml = new StringResult();
 		marshaller.marshal(obj, xml);
 
-		log.info("Marshalled ResultPart Request: " + xml);
+		log.info("Marshalled " + obj.getClass() + ": " + xml + "\n");
 
 		if (validate)
 			UnitXmlUtils.assertXmlValidation(getBean(XmlValidator.class),

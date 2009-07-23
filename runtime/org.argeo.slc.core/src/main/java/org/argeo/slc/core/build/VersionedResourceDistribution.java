@@ -12,6 +12,11 @@ public class VersionedResourceDistribution extends ResourceDistribution
 		super();
 	}
 
+	public VersionedResourceDistribution(NameVersion nameVersion,
+			Resource resource) {
+		this(nameVersion.getName(), nameVersion.getVersion(), resource);
+	}
+
 	public VersionedResourceDistribution(String name, String version,
 			Resource resource) {
 		super(resource);

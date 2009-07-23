@@ -8,5 +8,5 @@ public interface ModularDistribution extends Distribution, NameVersion {
 
 	public Set<NameVersion> listModulesNameVersions();
 
-	public Object getDescriptor(String descriptorType);
+	public Object getModulesDescriptor(String descriptorType);
 }

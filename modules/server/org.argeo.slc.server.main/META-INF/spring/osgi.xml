@@ -7,4 +7,5 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<service ref="dynamicRuntime" interface="org.argeo.slc.deploy.DynamicRuntime" />
+	<service ref="modularDistribution" interface="org.argeo.slc.build.ModularDistribution" />
 </beans:beans>

@@ -27,6 +27,9 @@
 				<value>
 					classpath:org/argeo/slc/castor/attachment.xml
 				</value>
+				<value>
+					classpath:org/argeo/slc/castor/build.xml
+				</value>
 			</list>
 		</property>
 		<property name="whitespacePreserve" value="true" />

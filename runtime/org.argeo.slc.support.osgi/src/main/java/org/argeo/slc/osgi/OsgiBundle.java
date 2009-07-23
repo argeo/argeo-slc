@@ -1,5 +1,6 @@
 package org.argeo.slc.osgi;
 
+import org.argeo.slc.build.BasicNameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.Module;
@@ -8,9 +9,7 @@ import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 
-public class OsgiBundle implements Module {
-	private String name;
-	private String version;
+public class OsgiBundle extends BasicNameVersion implements Module {
 	private Distribution distribution;
 
 	private Long internalBundleId;
@@ -20,23 +19,28 @@ public class OsgiBundle implements Module {
 	}
 
 	public OsgiBundle(String name, String version) {
-		this.name = name;
-		this.version = version;
+		super(name, version);
 	}
 
 	public OsgiBundle(Bundle bundle) {
-		name = bundle.getSymbolicName();
-		version = bundle.getHeaders().get(Constants.BUNDLE_VERSION).toString();
+		super(bundle.getSymbolicName(), getVersionSafe(bundle));
 		internalBundleId = bundle.getBundleId();
 	}
 
+	private static String getVersionSafe(Bundle bundle) {
+		Object versionObj = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
+		if (versionObj != null)
+			return versionObj.toString();
+		else
+			return null;
+	}
+
 	public OsgiBundle(RealizedFlow realizedFlow) {
-		name = realizedFlow.getModuleName();
-		version = realizedFlow.getModuleVersion();
+		super(realizedFlow.getModuleName(), realizedFlow.getModuleVersion());
 	}
 
 	public String getDeployedSystemId() {
-		return name + ":" + version;
+		return getName() + ":" + getVersion();
 	}
 
 	public DeploymentData getDeploymentData() {
@@ -49,22 +53,6 @@ public class OsgiBundle implements Module {
 
 	public TargetData getTargetData() {
 		throw new UnsupportedOperationException();
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getVersion() {
-		return version;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
 	}
 
 	public void setDistribution(Distribution distribution) {
