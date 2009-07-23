@@ -112,8 +112,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 					toolbar : "batch",
 					callback : function(e) {
 						var sel = this.list.getSortedSelection();
-						var confirmPref = this.getRiaPreferenceValue("slc.batch.delete.confirm");
-						this.debug(confirmPref);
+						var confirmPref = this.getRiaPreferenceValue("slc.batch.delete.confirm");						
 						var execution = function() {
 							for (var i = 0; i < sel.length; i++) {
 								this.list.remove(sel[i]);
@@ -383,16 +382,14 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			var executionFlow = target.getUserData("executionFlow");
 			var batchEntry = new org.argeo.slc.ria.execution.BatchEntrySpec(
 					executionModule, executionFlow);
-			var label = batchEntry.getLabel();
-			var icon = target.getIcon() || "org.argeo.slc.ria/office-document.png";
-			var item = new qx.ui.form.ListItem(label, icon);
-			/*
-			item.addListener("dblclick", function(e) {
-						this.getCommands()["editexecutionspecs"].command
-								.execute();
-					}, this);
-			*/
-			item.setUserData("batchEntrySpec", batchEntry);
+
+			this.appendBatchEntrySpec(batchEntry, target.getIcon(), after);		
+		},
+		
+		appendBatchEntrySpec: function(batchEntrySpec, icon, after){
+						
+			var item = new qx.ui.form.ListItem(batchEntrySpec.getLabel(), icon || "org.argeo.slc.ria/system.png");
+			item.setUserData("batchEntrySpec", batchEntrySpec);
 			item.setPaddingTop(1);
 			item.setPaddingBottom(2);
 			if (after) {
@@ -404,11 +401,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				this.list.add(item);
 			}
 			this.list.select(item);
-			/*
-			if (this.getAutoOpen() && !skipAutoOpen) {
-				this.getCommands()["editexecutionspecs"].command.execute();
-			}
-			*/
+			
 		},
 
 		/**
@@ -428,6 +421,10 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			}
 			try{
 				var xmlMessage = slcExecMessage.toXml();
+				if(!window.xmlExecStub){
+					window.xmlExecStub = {};
+				}
+				window.xmlExecStub[slcExecMessage.getUuid()] = qx.xml.Document.fromString(xmlMessage);
 				var req = org.argeo.slc.ria.SlcApi.getNewSlcExecutionService(
 						agentUuid, xmlMessage);
 				req.send();
@@ -442,6 +439,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				if(clearBatch){
 					req.addListener("completed", function(e){
 						this.list.removeAll();
+						this.setBatchAgentId(null);
 					}, this);
 				}						
 			}catch(e){

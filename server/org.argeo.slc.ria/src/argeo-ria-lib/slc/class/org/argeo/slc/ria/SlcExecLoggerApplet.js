@@ -42,7 +42,25 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 			  		this._reloadLogger();
   				},
   				command 	: null
-  			}  			
+  			},
+  			"openrealized" : {
+  				label		: "Re-open",
+  				icon		: "org.argeo.slc.ria/document-open.png",
+  				shortcut	: "Control+o",
+  				enabled		: false,
+  				menu		: null,
+  				toolbar		: "realized",
+  				callback	: function(e){
+  					var selection = this.getViewSelection();
+  					var rowData = selection.getNodes()[0];
+  					this.openRealized(rowData);
+  				},
+  				selectionChange : function(viewId, selection){
+  					if(viewId != "logger") return;
+  					this.setEnabled((selection!=null && selection.length==1));
+  				},
+  				command		: null
+  			}
   		}
   	}
   },
@@ -78,6 +96,61 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   		this.UIBus.removeListener("updateSlcExecutionStatus", this._reloadLogger, this);
 	},
 	  	
+	openRealized : function(logData){
+		
+		// DEBUG PURPOSE
+		var CHECK_HOST = false;
+		
+		var uuid = logData[2];
+		var host = "charlie";//  logData[1];
+		
+		
+		// 1. Check that both associated views are here
+		var batchView;
+		var flowsView;
+		try{
+			batchView = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("batch").getContent();
+			flowsView = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("selector").getContent();
+		}catch(e){
+			this.debug("Cannot find either bath or flows IView!");
+		}
+		if(!batchView || !flowsView) return;		
+		
+		// 2. Check that at least a host with the same name exists.
+		var agentsMap = flowsView.getAgentsMap();		
+		var currentBatchId = batchView.getBatchAgentId();
+		if(currentBatchId != null){
+			var currentHost = agentsMap[currentBatchId];
+			if(currentHost != host){
+				this.error("Cannot re-open these flows on a different host. Please clear the batch first.");
+				return;
+			}
+		}				
+		if(!qx.lang.Object.contains(agentsMap, host)){
+			this.error("Cannot find any agent running on '"+host+"'! Please start an agent on this host.");
+			return;
+		}
+		//console.log(currentBatchId);
+		if(currentBatchId == null){
+			var defaultId = qx.lang.Object.getKeyFromValue(agentsMap, host);
+			batchView.setBatchAgentId(defaultId);
+		}
+		
+		// 3. Call service to load execution message
+		if(!window.xmlExecStub || !window.xmlExecStub[uuid]){
+			throw new Error("Cannot find window.xmlExecStub['"+uuid+"']");
+			return;
+		}
+		var xmlDoc = window.xmlExecStub[uuid];
+		
+		// 4. Now send all realized flows to the batch
+		var realizedFlows = org.argeo.ria.util.Element.selectNodes(xmlDoc, "slc:slc-execution/realized-flows/slc:realized-flow");
+		for(var i=0;i<realizedFlows.length;i++){
+			var newEntrySpec = new org.argeo.slc.ria.execution.BatchEntrySpec(null, null, realizedFlows[i]);	
+			batchView.appendBatchEntrySpec(newEntrySpec);
+		}
+	},
+	
 	/**
 	 * Creates the applet layout
 	 */
@@ -89,16 +162,18 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 				return new qx.ui.table.columnmodel.Resize(obj)
 			}
 		});
-		this.logPane.setDecorator(null);
-		this._initLogger();
-		this.add(this.logPane, {edge:'center'});
-	},
-	
-	/**
-	 * Initialize the log table.
-	 */
-	_initLogger : function(){
-		this.logPane.set({	  	
+		var selectionModel = this.logPane.getSelectionModel();
+		selectionModel.addListener("changeSelection", function(e){
+			var viewSelection = this.getViewSelection();
+			viewSelection.setViewId("logger");
+			viewSelection.clear();
+			selectionModel.iterateSelection(function(index){
+				viewSelection.addNode(this.logModel.getRowData(index));
+			}, this);
+		}, this);
+		
+		this.logPane.set({	
+			decorator : null,
 		  	statusBarVisible: false,
 			showCellFocusIndicator:false
 		});
@@ -106,6 +181,8 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		columnModel.getBehavior().setWidth(0, "30%");
 		columnModel.getBehavior().setWidth(1, "15%");
 		columnModel.getBehavior().setWidth(3, "12%");		
+		
+		this.add(this.logPane, {edge:'center'});
 	},
 	
 	/**

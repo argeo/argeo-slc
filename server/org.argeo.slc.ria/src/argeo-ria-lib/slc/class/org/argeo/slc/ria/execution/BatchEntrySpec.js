@@ -24,12 +24,16 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 	 * @param module {org.argeo.slc.ria.execution.Module} Reference module
 	 * @param flow {org.argeo.slc.ria.execution.Flow} Reference flow
 	 */
-	construct : function(module, flow){
+	construct : function(module, flow, xmlElement){
 		this.base(arguments);
-		this.setModule(module);
-		this.setFlow(flow);
-		this.setOriginalSpec(flow.getExecutionSpec());
-		this.setName(flow.getExecutionSpec().getName());
+		if(xmlElement){
+			this.fromXml(xmlElement);
+		}else{
+			this.setModule(module);
+			this.setFlow(flow);
+			this.setOriginalSpec(flow.getExecutionSpec());
+			this.setName(flow.getExecutionSpec().getName());
+		}
 		this.fetchInstanceValues();
 	},
 	
@@ -65,6 +69,24 @@ qx.Class.define("org.argeo.slc.ria.execution.BatchEntrySpec", {
 			var moduleData = this.getModule().moduleDataToXml();
 			
 			return '<slc:realized-flow>'+moduleData + execFlowDescXML + execSpecDescXML +'</slc:realized-flow>';
+			
+		},
+		
+		fromXml : function(xmlElement){
+			var parser = org.argeo.ria.util.Element;
+			var simpleModule = new org.argeo.slc.ria.execution.Module();
+			simpleModule.setName(parser.getSingleNodeText(xmlElement, "slc:module-name"));
+			simpleModule.setVersion(parser.getSingleNodeText(xmlElement, "slc:module-version"));
+			this.setModule(simpleModule);
+			
+			var spec = new org.argeo.slc.ria.execution.Spec();
+			var flow = new org.argeo.slc.ria.execution.Flow();
+			spec.setXmlNode(parser.selectSingleNode(xmlElement, "slc:default-execution-spec"));
+			flow.setXmlNode(parser.selectSingleNode(xmlElement, "slc:execution-flow-descriptor"));
+			flow.setExecutionSpec(spec);
+			this.setOriginalSpec(spec);
+			this.setFlow(flow);
+			this.setName(spec.getName());
 			
 		},
 		
