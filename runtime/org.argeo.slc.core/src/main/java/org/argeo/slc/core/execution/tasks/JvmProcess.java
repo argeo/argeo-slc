@@ -36,9 +36,14 @@ public class JvmProcess extends SystemCall {
 			cl = new CommandLine("java");
 
 		if (pBootClasspath.size() > 0) {
-			StringBuffer buf = new StringBuffer("-Xbootclasspath/p");
+			StringBuffer buf = new StringBuffer("-Xbootclasspath/p:");
+			Boolean first = true;
 			for (Resource res : pBootClasspath) {
-				buf.append(File.pathSeparatorChar);
+				if (first)
+					first = false;
+				else
+					buf.append(File.pathSeparatorChar);
+
 				buf.append(asFile(res));
 			}
 			cl.addArgument(buf.toString());
