@@ -414,7 +414,11 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			var selection = this.list.getChildren();
 			if (!selection.length)
 				return;
+			// Get Host
+			var agentsMap = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("selector").getContent().getAgentsMap();
+			var host = agentsMap[agentUuid];
 			var slcExecMessage = new org.argeo.slc.ria.execution.Message();
+			slcExecMessage.setHost(host);
 			for (var i = 0; i < selection.length; i++) {
 				var batchEntrySpec = selection[i].getUserData("batchEntrySpec");
 				slcExecMessage.addBatchEntrySpec(batchEntrySpec);
