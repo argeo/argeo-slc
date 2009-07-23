@@ -107,11 +107,11 @@ qx.Class.define("org.argeo.slc.ria.execution.Message", {
 			builder.add('<slc:user>'+this.getUser()+'</slc:user>');
 			var flows = this.getBatchEntrySpecs();
 			if(flows.length){
-				builder.add('<realized-flows>');
+				builder.add('<slc:realized-flows>');
 				for(var i=0;i<flows.length;i++){
 					builder.add(flows[i].toXml());	
 				}
-				builder.add('</realized-flows>');
+				builder.add('</slc:realized-flows>');
 			}			
 			var attr = this.getAttributes();
 			if(qx.lang.Object.getLength(attr)){

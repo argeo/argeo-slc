@@ -138,14 +138,14 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		
 		// 3. Call service to load execution message
 		var req = org.argeo.slc.ria.SlcApi.getSlcExecutionService(uuid);
-		var handler = function(xmlDoc){			
-			var realizedFlows = org.argeo.ria.util.Element.selectNodes(xmlDoc, "slc:slc-execution/realized-flows/slc:realized-flow");
-			for(var i=0;i<realizedFlows.length;i++){
-				var newEntrySpec = new org.argeo.slc.ria.execution.BatchEntrySpec(null, null, realizedFlows[i]);	
+		var handler = function(xmlDoc){						
+			var realizedFlows = org.argeo.ria.util.Element.selectNodes(xmlDoc, "slc:slc-execution/slc:realized-flows/slc:realized-flow");
+			for(var i=0;i<realizedFlows.length;i++){				
+				var newEntrySpec = new org.argeo.slc.ria.execution.BatchEntrySpec(null, null, realizedFlows[i]);
 				batchView.appendBatchEntrySpec(newEntrySpec);
 			}			
 		};
-		req.addListener("completed", function(response){
+		req.addListener("completed", function(response){			
 			handler(response.getContent());
 		});
 		// STUB CASE
