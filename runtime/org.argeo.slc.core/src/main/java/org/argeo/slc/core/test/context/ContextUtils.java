@@ -107,7 +107,7 @@ public class ContextUtils {
 				parent.getExpectedValues());
 		synchronize(parent, expectedValuesCommon);
 		if (log.isDebugEnabled())
-			log.debug("Synchonized context " + parent);
+			log.debug("Synchronized context " + parent);
 
 	}
 

@@ -1,5 +1,6 @@
 package org.argeo.slc.core.execution;
 
+import org.argeo.slc.SlcException;
 
 public class PrimitiveSpecAttribute extends AbstractSpecAttribute implements
 		PrimitiveAccessor {
@@ -29,8 +30,33 @@ public class PrimitiveSpecAttribute extends AbstractSpecAttribute implements
 		return type;
 	}
 
+	public Class<?> getTypeAsClass() {
+		return typeAsClass(type);
+	}
+
 	public void setType(String type) {
 		this.type = type;
+
+		// check whether type is recognized.
+		// TODO: make validation cleaner
+		typeAsClass(type);
+	}
+
+	public static Class<?> typeAsClass(String type) {
+		if (TYPE_STRING.equals(type))
+			return String.class;
+		else if (TYPE_INTEGER.equals(type))
+			return Integer.class;
+		else if (TYPE_LONG.equals(type))
+			return Long.class;
+		else if (TYPE_FLOAT.equals(type))
+			return Float.class;
+		else if (TYPE_DOUBLE.equals(type))
+			return Double.class;
+		else if (TYPE_BOOLEAN.equals(type))
+			return Boolean.class;
+		else
+			throw new SlcException("Unrecognized type " + type);
 	}
 
 }

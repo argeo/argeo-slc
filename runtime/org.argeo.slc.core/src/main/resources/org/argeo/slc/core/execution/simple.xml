@@ -25,7 +25,12 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
-	<bean id="parameterRef" factory-bean="instantiationManager"
+	<bean id="parameterRef" class="org.argeo.slc.core.execution.ParameterRef"
+		abstract="true">
+		<property name="instantiationManager" ref="instantiationManager" />
+	</bean>
+	<!--
+		<bean id="parameterRef" factory-bean="instantiationManager"
 		factory-method="createRef" abstract="true" />
-
+	-->
 </beans>

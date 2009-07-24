@@ -14,7 +14,7 @@ public class Echo implements Runnable {
 	private Resource writeTo = null;
 
 	private Log log;
-	private String message;
+	private Object message;
 
 	public void run() {
 		log().info(message);
@@ -24,7 +24,8 @@ public class Echo implements Runnable {
 				File file = writeTo.getFile();
 				if (log().isDebugEnabled())
 					log().debug("Write to " + file);
-				FileUtils.writeStringToFile(file, message);
+				if (message != null)
+					FileUtils.writeStringToFile(file, message.toString());
 			} catch (IOException e) {
 				throw new SlcException("Could not write to " + writeTo, e);
 			}
@@ -35,7 +36,7 @@ public class Echo implements Runnable {
 		return log != null ? log : defaultLog;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(Object message) {
 		this.message = message;
 	}
 
