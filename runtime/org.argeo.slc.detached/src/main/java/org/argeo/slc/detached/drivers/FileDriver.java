@@ -77,7 +77,8 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 		return answer;
 	}
 
-	public synchronized void sendRequest(DetachedRequest request) throws Exception {
+	public synchronized void sendRequest(DetachedRequest request)
+			throws Exception {
 		sendFile(requestsDir, request);
 		if (log.isTraceEnabled())
 			log.trace("Sent     detached request #" + request.getUuid()
@@ -242,7 +243,8 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 		createIfNotExist(processedAnswersDir);
 		createIfNotExist(cleanedRequestsDir);
 		createIfNotExist(cleanedAnswersDir);
-		log.info("Detached File Driver initialized on " + baseDir);
+		if (log.isDebugEnabled())
+			log.debug("Detached File Driver initialized on " + baseDir);
 	}
 
 	public void cleanPreviousRuns() throws Exception {

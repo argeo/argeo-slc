@@ -23,32 +23,15 @@ public class Launcher {
 		OsgiBoot osgiBoot = new OsgiBoot(bundleContext);
 		osgiBoot.bootstrap();
 	}
-//
-//	protected static void startEquinox(Properties config) throws Exception {
-//		info("java.home=" + System.getProperty("java.home"));
-//		info("java.class.path=" + System.getProperty("java.class.path"));
-//
-//		File baseDir = new File(System.getProperty("user.dir"))
-//				.getCanonicalFile();
-//		String equinoxConfigurationPath = baseDir.getPath() + File.separator
-//				+ "slc-detached" + File.separator + "equinoxConfiguration";
-//
-//		String equinoxArgsLineDefault = "-console -noExit -clean -debug -configuration "
-//				+ equinoxConfigurationPath;
-//		String equinoxArgsLine = config.getProperty(PROP_SLC_OSGI_EQUINOX_ARGS,
-//				equinoxArgsLineDefault);
-//		// String[] equinoxArgs = { "-console", "-noExit", "-clean", "-debug",
-//		// "-configuration", equinoxConfigurationPath };
-//		String[] equinoxArgs = equinoxArgsLine.split(" ");
-//
-//		BundleContext context = EclipseStarter.startup(equinoxArgs, null);
-//	}
 
 	protected static void startMainClass() {
 		Properties config = System.getProperties();
-		String className = config.getProperty("slc.detached.appclass");
+		String className = config.getProperty("slc.osgiboot.appclass");
+		if (className == null)
+			return;
+
 		String[] uiArgs = readArgumentsFromLine(config.getProperty(
-				"slc.detached.appargs", ""));
+				"slc.osgiboot.appargs", ""));
 		try {
 			// Launch main method using reflection
 			Class clss = Class.forName(className);

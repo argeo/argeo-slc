@@ -20,6 +20,7 @@ public class TreeSRegistry implements StructureRegistry<TreeSPath> {
 
 	private List<TreeSPath> activePaths;
 
+	@SuppressWarnings("unchecked")
 	public <T extends StructureElement> T getElement(TreeSPath path) {
 		return (T) elements.get(path);
 	}

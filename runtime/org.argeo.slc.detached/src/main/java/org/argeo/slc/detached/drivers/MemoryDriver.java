@@ -1,13 +1,10 @@
 package org.argeo.slc.detached.drivers;
 
-import java.util.Stack;
-
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedClient;
 import org.argeo.slc.detached.DetachedRequest;
 
 public class MemoryDriver extends AbstractDriver implements DetachedClient {
-	private final static Stack stack = new Stack();
 
 	// DRIVER
 	public DetachedRequest receiveRequest() throws Exception {

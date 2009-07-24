@@ -3,13 +3,11 @@ package org.argeo.slc.core.test;
 import java.util.UUID;
 
 import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.deploy.DeployedSystem;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionRelated;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.structure.StructureAware;
-import org.argeo.slc.structure.StructureElement;
 import org.argeo.slc.structure.StructureRegistry;
 import org.argeo.slc.test.ExecutableTestRun;
 import org.argeo.slc.test.TestData;
@@ -37,6 +35,7 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 	private TestResult testResult;
 
 	/** Executes the underlying test definition. */
+	@SuppressWarnings("unchecked")
 	public void run() {
 		uuid = UUID.randomUUID().toString();
 		if (testResult != null)
@@ -55,6 +54,7 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 		testDefinition.execute(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends DeployedSystem> T getDeployedSystem() {
 		return (T) deployedSystem;
 	}
@@ -63,6 +63,7 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 		this.deployedSystem = deployedSystem;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends TestData> T getTestData() {
 		return (T) testData;
 	}
@@ -71,6 +72,7 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 		this.testData = testData;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends TestDefinition> T getTestDefinition() {
 		return (T) testDefinition;
 	}
@@ -79,6 +81,7 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 		this.testDefinition = testDefinition;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T extends TestResult> T getTestResult() {
 		return (T) testResult;
 	}

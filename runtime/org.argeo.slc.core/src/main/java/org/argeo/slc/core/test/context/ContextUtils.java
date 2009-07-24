@@ -63,6 +63,7 @@ public class ContextUtils {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void registerInStructure(TestResult testResult,
 			TreeSRelated treeSRelated, String key) {
 		if (treeSRelated != null) {
@@ -83,6 +84,7 @@ public class ContextUtils {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private static void resetStructure(TestResult testResult,
 			TreeSRelated treeSRelated) {
 		if (treeSRelated != null) {

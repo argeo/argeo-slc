@@ -30,6 +30,7 @@ public class TestDataUtils {
 	 * Returns it self after making the proper checks. Used for test data being
 	 * their own data providers.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T extends TestData> T getItSelf(Class<T> clss,
 			TestData testDataObject) {
 		if (clss.isAssignableFrom(testDataObject.getClass())) {

@@ -28,6 +28,7 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 	private TreeSPath path;
 	private StructureRegistry<TreeSPath> registry;
 
+	@SuppressWarnings("unchecked")
 	public void execute(TestRun testRun) {
 		if (log.isTraceEnabled())
 			log.trace("Execute sequence of test definitions...");
@@ -58,6 +59,7 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
 			TreeSPath path) {
 		this.path = path;

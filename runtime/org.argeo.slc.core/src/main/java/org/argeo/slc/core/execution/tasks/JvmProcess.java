@@ -73,7 +73,7 @@ public class JvmProcess extends SystemCall {
 			cl.addArgument(arg);
 		}
 
-		if (log.isDebugEnabled())
+		if (log.isTraceEnabled())
 			log.debug("Command line:\n" + cl.toString() + "\n");
 
 		return cl;
