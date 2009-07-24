@@ -2,6 +2,7 @@ package org.argeo.slc.msg;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class ObjectList {
@@ -10,7 +11,7 @@ public class ObjectList {
 	public ObjectList() {
 	}
 
-	public ObjectList(List<? extends Serializable> objects) {
+	public ObjectList(Collection<? extends Serializable> objects) {
 		this.objects.addAll(objects);
 	}
 

@@ -11,14 +11,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.build.BasicNameVersion;
+import org.argeo.slc.build.BuildConstants;
 import org.argeo.slc.build.ModularDistribution;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class ModularDistributionInterceptor extends HandlerInterceptorAdapter {
 	private Set<ModularDistribution> modularDistributions;
-
-	public final static String RELEASE = "RELEASE";
-	public final static String LATEST = "LATEST";
 
 	@Override
 	public boolean preHandle(HttpServletRequest request,
@@ -33,11 +31,11 @@ public class ModularDistributionInterceptor extends HandlerInterceptorAdapter {
 				.iterator(); it.hasNext();) {
 			ModularDistribution md = it.next();
 			if (md.getName().equals(distributionName)) {
-				if (distributionVersion.equals(RELEASE)
-						&& md.getVersion().contains("SNAPSHOT"))
+				if (distributionVersion.equals(BuildConstants.RELEASE)
+						&& md.getVersion().contains(BuildConstants.SNAPSHOT))
 					continue distribs;
 
-				else if (distributionVersion.equals(LATEST))
+				else if (distributionVersion.equals(BuildConstants.LATEST))
 					choices.put(md.getVersion(), md);
 				else if (distributionVersion.equals(md.getVersion())) {
 					choices.put(md.getVersion(), md);
