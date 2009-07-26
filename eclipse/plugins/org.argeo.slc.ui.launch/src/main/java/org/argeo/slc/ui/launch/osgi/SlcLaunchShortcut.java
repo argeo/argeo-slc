@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.argeo.slc.ui.launch.SlcUiLaunchPlugin;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -21,6 +21,8 @@ import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.ui.launcher.IPDELauncherConstants;
 import org.eclipse.pde.ui.launcher.OSGiLaunchShortcut;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public class SlcLaunchShortcut extends OSGiLaunchShortcut {
@@ -82,10 +84,28 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 			// Update other default information
 			configuration.setAttribute(
 					IPDELauncherConstants.DEFAULT_AUTO_START, false);
+			configuration.setAttribute(IPDELauncherConstants.CONFIG_CLEAR_AREA,
+					true);
+			String defaultVmArgs = configuration.getAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
+			configuration.setAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
+					defaultVmArgs + " -Xmx256m");
+
+			// Choose working directory
+			Shell shell = Display.getCurrent().getActiveShell();
+			DirectoryDialog dirDialog = new DirectoryDialog(shell);
+			dirDialog.setText("Working Directory");
+			dirDialog.setMessage("Choose the working directory");
+			String dir = dirDialog.open();
+			if (dir != null)
+				configuration
+						.setAttribute(
+								IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
+								dir);
 
 		} catch (CoreException e) {
-			Shell shell = SlcUiLaunchPlugin.getDefault().getWorkbench()
-					.getActiveWorkbenchWindow().getShell();
+			Shell shell = Display.getCurrent().getActiveShell();
 			ErrorDialog.openError(shell, "Error",
 					"Cannot execute SLC launch shortcut", e.getStatus());
 		}
