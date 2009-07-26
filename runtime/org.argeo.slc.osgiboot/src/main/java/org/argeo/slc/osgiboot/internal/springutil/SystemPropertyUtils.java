@@ -58,7 +58,8 @@ public abstract class SystemPropertyUtils {
 					String propVal = System.getProperty(placeholder);
 					if (propVal == null) {
 						// Fall back to searching the system environment.
-						propVal = System.getenv(placeholder);
+						//propVal = System.getenv(placeholder);// mbaudier - 2009-07-26
+						throw new Error("getenv no longer supported, use properties and -D instead: " + placeholder);
 					}
 					if (propVal != null) {
 						buf.replace(startIndex, endIndex + PLACEHOLDER_SUFFIX.length(), propVal);
