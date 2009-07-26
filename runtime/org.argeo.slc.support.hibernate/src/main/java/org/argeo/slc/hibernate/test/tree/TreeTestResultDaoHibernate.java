@@ -4,7 +4,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.SimpleAttachment;
@@ -48,11 +47,13 @@ public class TreeTestResultDaoHibernate extends HibernateDaoSupport implements
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<TreeTestResult> listTestResults() {
 		return (List<TreeTestResult>) getHibernateTemplate().find(
 				"from TreeTestResult");
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<TreeTestResult> listResults(TreeSPath path) {
 		List<TreeTestResult> list = getHibernateTemplate().find(
 				"from TreeTestResult res where ? in indices(res.resultParts)",

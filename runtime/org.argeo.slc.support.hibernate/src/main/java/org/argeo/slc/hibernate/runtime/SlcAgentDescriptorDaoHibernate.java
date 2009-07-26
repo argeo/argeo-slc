@@ -30,6 +30,7 @@ public class SlcAgentDescriptorDaoHibernate extends HibernateDaoSupport
 				SlcAgentDescriptor.class, agentId);
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<SlcAgentDescriptor> listSlcAgentDescriptors() {
 		return (List<SlcAgentDescriptor>) getHibernateTemplate().loadAll(
 				SlcAgentDescriptor.class);
