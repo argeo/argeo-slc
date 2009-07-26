@@ -17,12 +17,17 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.osgi.context.BundleContextAware;
+import org.springframework.osgi.context.event.OsgiBundleApplicationContextEvent;
+import org.springframework.osgi.context.event.OsgiBundleApplicationContextListener;
+import org.springframework.osgi.context.event.OsgiBundleContextClosedEvent;
+import org.springframework.osgi.context.event.OsgiBundleContextFailedEvent;
+import org.springframework.osgi.context.event.OsgiBundleContextRefreshedEvent;
 import org.springframework.osgi.util.OsgiFilterUtils;
 import org.springframework.util.Assert;
 
 /** Wraps low-level access to a {@link BundleContext} */
 public class BundlesManager implements BundleContextAware, FrameworkListener,
-		InitializingBean, DisposableBean {
+		InitializingBean, DisposableBean, OsgiBundleApplicationContextListener {
 	private final static Log log = LogFactory.getLog(BundlesManager.class);
 
 	private BundleContext bundleContext;
@@ -72,7 +77,9 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 					+ ")";
 			// Wait for application context to be ready
 			// TODO: use service tracker
-			getServiceRefSynchronous(ApplicationContext.class.getName(), filter);
+			ServiceReference[] srs = getServiceRefSynchronous(
+					ApplicationContext.class.getName(), filter);
+			ServiceReference sr = srs[0];
 			long aAppContext = System.currentTimeMillis();
 			long end = aAppContext;
 
@@ -83,11 +90,23 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 				log.debug(" TOTAL\t: " + (aAppContext - bAppContext) + "ms");
 			}
 
-			if (log.isDebugEnabled())
+			if (log.isDebugEnabled()) {
 				log.debug("Bundle " + bundle.getSymbolicName()
 						+ " ready to be used at latest version."
 						+ " (upgrade performed in " + (end - begin) + "ms).");
-			log.debug(" TOTAL\t: " + (end - begin) + "ms");
+				log.debug(" TOTAL\t: " + (end - begin) + "ms");
+
+				ApplicationContext applicationContext = (ApplicationContext) bundleContext
+						.getService(sr);
+				int beanDefCount = applicationContext.getBeanDefinitionCount();
+				log.debug(" " + beanDefCount + " beans in app context of "
+						+ bundle.getSymbolicName()
+						+ ", average init time per bean=" + (end - begin)
+						/ beanDefCount + "ms");
+			}
+
+			bundleContext.ungetService(sr);
+
 		} catch (Exception e) {
 			throw new SlcException("Cannot update bundle " + osgiBundle, e);
 		}
@@ -337,6 +356,18 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 
 	public void setPollingPeriod(Long pollingPeriod) {
 		this.pollingPeriod = pollingPeriod;
+	}
+
+	public void onOsgiApplicationEvent(OsgiBundleApplicationContextEvent event) {
+		if (event instanceof OsgiBundleContextRefreshedEvent) {
+			log.debug("App context refreshed: " + event);
+		} else if (event instanceof OsgiBundleContextFailedEvent) {
+			log.debug("App context failed: " + event);
+		}
+		if (event instanceof OsgiBundleContextClosedEvent) {
+			log.debug("App context closed: " + event);
+		}
+
 	}
 
 }

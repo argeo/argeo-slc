@@ -41,7 +41,8 @@
 							org.argeo.slc.*
 						</Export-Package>
 						<Import-Package>*,
-							org.springframework.beans.factory.config
+							org.springframework.beans.factory.config,
+							org.springframework.osgi.context.event
 						</Import-Package>
 					</instructions>
 				</configuration>

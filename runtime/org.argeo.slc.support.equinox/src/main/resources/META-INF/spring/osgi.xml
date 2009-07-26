@@ -9,4 +9,9 @@
 	<service interface="org.eclipse.osgi.framework.console.CommandProvider"
 		ref="commandProvider" />
 
+<!-- 
+	<service
+		interface="org.springframework.osgi.context.event.OsgiBundleApplicationContextListener"
+		ref="bundlesManager" />
+ -->
 </beans:beans>

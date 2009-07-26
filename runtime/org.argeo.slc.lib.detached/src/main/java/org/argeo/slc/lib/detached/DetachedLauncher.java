@@ -1,6 +1,7 @@
 package org.argeo.slc.lib.detached;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,6 +11,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.osgi.context.BundleContextAware;
@@ -88,7 +90,7 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 	protected Resource findOsgiboot(Bundle bundle) {
 		String location = bundle.getLocation();
 		if (location.startsWith("initial@reference:file:"))
-			location = System.getProperty("osgi.install.area") + "/../"
+			location = System.getProperty("osgi.install.area")
 					+ location.substring("initial@reference:file:".length());
 		if (location.charAt(location.length() - 1) == '/')
 			location.substring(0, location.length() - 1);
@@ -96,7 +98,23 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 	}
 
 	protected Resource asResource(String location) {
-		Resource res = resourceLoader.getResource(location);
+		// Resource res = resourceLoader.getResource(location);
+
+		final Resource res;
+		if (location.startsWith("file:")) {
+			File file = new File(location.substring("file:".length()));
+			if (!file.exists())
+				throw new SlcException("File " + file + " does not exist");
+
+			try {
+				res = new FileSystemResource(file.getCanonicalFile());
+			} catch (IOException e) {
+				throw new SlcException("Cannot create resource based on "
+						+ file, e);
+			}
+		} else
+			res = resourceLoader.getResource(location);
+
 		if (log.isDebugEnabled())
 			log.debug("Converted " + location + " to " + res);
 		return res;
