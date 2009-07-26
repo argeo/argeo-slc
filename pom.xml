@@ -999,6 +999,11 @@ limitations under the License.
 				<version>${version.activemq}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.argeo.dep.osgi</groupId>
+				<artifactId>org.argeo.dep.osgi.activemq.optional</artifactId>
+				<version>5.2.0.0001</version>
+			</dependency>
+			<dependency>
 				<groupId>org.apache.activemq</groupId>
 				<artifactId>com.springsource.org.apache.activemq.pool</artifactId>
 				<version>5.2.0</version>
