@@ -214,9 +214,8 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 				waiting = false;
 
 			sleepWhenPolling();
-			if (System.currentTimeMillis() - begin > defaultTimeout)
-				throw new SlcException("Search of services " + clss
-						+ " with filter " + filter + " timed out.");
+			checkTimeout(begin, "Search of services " + clss + " with filter "
+					+ filter + " timed out.");
 		} while (waiting);
 
 		return sfs;
