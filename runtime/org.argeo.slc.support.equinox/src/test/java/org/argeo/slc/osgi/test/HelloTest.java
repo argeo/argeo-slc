@@ -12,16 +12,19 @@ public class HelloTest extends AbstractOsgiRuntimeTestCase {
 	}
 
 	protected void installBundles() throws Exception {
+//		System.out.println("java.class.path="
+//				+ System.getProperty("java.class.path"));
+
 		osgiBoot.installUrls(osgiBoot.getLocationsUrls(
 				OsgiBoot.DEFAULT_BASE_URL, System
 						.getProperty("java.class.path")));
 		osgiBoot.installUrls(osgiBoot.getBundlesUrls(OsgiBoot.DEFAULT_BASE_URL,
 				"src/test/bundles;in=*"));
 
-//		Map<String, String> sysProps = new TreeMap(System.getProperties());
-//		for (String key : sysProps.keySet()) {
-//			System.out.println(key + "=" + sysProps.get(key));
-//		}
+		// Map<String, String> sysProps = new TreeMap(System.getProperties());
+		// for (String key : sysProps.keySet()) {
+		// System.out.println(key + "=" + sysProps.get(key));
+		// }
 	}
 
 	protected List<String> getBundlesToStart() {
