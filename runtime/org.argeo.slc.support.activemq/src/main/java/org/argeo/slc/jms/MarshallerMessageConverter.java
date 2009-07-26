@@ -25,6 +25,7 @@ public class MarshallerMessageConverter implements MessageConverter {
 	private Unmarshaller unmarshaller;
 
 	/** @return the converted message or null if the message itself is null */
+	@SuppressWarnings("unchecked")
 	public Object fromMessage(Message message) throws JMSException,
 			MessageConversionException {
 		if (message == null) {

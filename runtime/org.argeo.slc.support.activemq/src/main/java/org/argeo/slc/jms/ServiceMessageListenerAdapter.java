@@ -76,10 +76,10 @@ public class ServiceMessageListenerAdapter extends MessageListenerAdapter {
 	protected class ExtractedMessage {
 		private final String methodName;
 		private final Object[] arguments;
-		private final Message originalMessage;
+//		private final Message originalMessage;
 
 		public ExtractedMessage(Message originalMessage) throws JMSException {
-			this.originalMessage = originalMessage;
+//			this.originalMessage = originalMessage;
 
 			if (!originalMessage.propertyExists(methodNameParameter))
 				throw new SlcException("No property " + methodNameParameter
