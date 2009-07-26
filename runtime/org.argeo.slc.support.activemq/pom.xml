@@ -78,6 +78,12 @@
 			<groupId>org.argeo.dep.osgi</groupId>
 			<artifactId>org.argeo.dep.osgi.activemq.optional</artifactId>
 		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>org.argeo.dep.osgi</groupId>
+			<artifactId>org.argeo.dep.osgi.activemq.xmpp</artifactId>
+		</dependency>
+		 -->
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
 			<artifactId>com.springsource.org.apache.activemq.pool</artifactId>
