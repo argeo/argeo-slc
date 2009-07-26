@@ -68,6 +68,7 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 			else if (xercesBundleName.equals(name) && prependXmlJars)
 				getPBootClasspath().add(asResource(bundle.getLocation()));
 
+			location = removeInitialReference(location);
 			if (location.startsWith("file:")) {
 				File file = new File(location.substring("file:".length()));
 				if (osgiLocations.length() != 0)
@@ -89,12 +90,17 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 
 	protected Resource findOsgiboot(Bundle bundle) {
 		String location = bundle.getLocation();
+		location = removeInitialReference(location);
+		return asResource(location);
+	}
+	
+	protected String removeInitialReference(String location){
 		if (location.startsWith("initial@reference:file:"))
 			location = System.getProperty("osgi.install.area")
 					+ location.substring("initial@reference:file:".length());
 		if (location.charAt(location.length() - 1) == '/')
 			location.substring(0, location.length() - 1);
-		return asResource(location);
+		return location;
 	}
 
 	protected Resource asResource(String location) {
