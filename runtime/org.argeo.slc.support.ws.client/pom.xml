@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>org.argeo.slc.support.ws.client</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC Support Web Services Client</name>
+	<name>SLC Support Web Services Client</name>
 	<build>
 		<plugins>
 			<!-- Look to parent pom for inheritances -->

@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.jemmy</artifactId>
-	<name>Argeo SLC Support Jemmy</name>
+	<name>SLC Support Jemmy</name>
 	<description>Helper classes for the Jemmy framework</description>
 	<build>
 		<plugins>

@@ -9,5 +9,5 @@
 	</parent>
 	<groupId>org.argeo.slc.archetypes</groupId>
 	<artifactId>org.argeo.slc.archetype.basic</artifactId>
-	<name>Argeo SLC Basic Project Archetype</name>
+	<name>SLC Basic Project Archetype</name>
 </project>

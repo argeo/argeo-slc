@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>runtime</artifactId>
 	<packaging>pom</packaging>
-	<name>Argeo SLC Runtime</name>
+	<name>SLC Runtime</name>
 	<modules>
 		<module>org.argeo.slc.osgiboot</module>
 		<module>org.argeo.slc.specs</module>

@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.sandbox</groupId>
 	<artifactId>argeo.slc.activemq.selector</artifactId>
-	<name>Argeo SLC ActiveMQ Selector Tests</name>
+	<name>SLC ActiveMQ Selector Tests</name>
 	<build>
 		<plugins>
 			<plugin>

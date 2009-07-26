@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.server</groupId>
 	<artifactId>org.argeo.slc.ria</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC RIA</name>
+	<name>SLC RIA</name>
 	<build>
 		<resources>
 			<resource>

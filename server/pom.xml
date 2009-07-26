@@ -9,7 +9,7 @@
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>server</artifactId>
 	<packaging>pom</packaging>
-	<name>Argeo SLC Server</name>
+	<name>SLC Server</name>
 	<modules>
 	</modules>
 	<profiles>

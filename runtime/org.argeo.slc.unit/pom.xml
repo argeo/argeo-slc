@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.unit</artifactId>
-	<name>Argeo SLC Unit Tests Helpers</name>
+	<name>SLC Unit Tests Helpers</name>
 	<build>
 		<plugins>
 			<plugin>

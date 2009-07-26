@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.detached</artifactId>
-	<name>Argeo SLC Detached</name>
+	<name>SLC Detached</name>
 	<packaging>jar</packaging>
 	<build>
 		<plugins>

@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.activemq</artifactId>
-	<name>Argeo SLC Support ActiveMQ</name>
+	<name>SLC Support ActiveMQ</name>
 	<build>
 		<plugins>
 			<plugin>

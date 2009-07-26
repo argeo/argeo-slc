@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.server</artifactId>
-	<name>Argeo SLC Server</name>
+	<name>SLC Server</name>
 	<description>SLC Server</description>
 	<build>
 		<plugins>

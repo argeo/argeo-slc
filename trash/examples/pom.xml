@@ -8,7 +8,7 @@
 	</parent>
 	<artifactId>argeo-slc-examples</artifactId>
 	<packaging>pom</packaging>
-	<name>Argeo SLC Examples</name>
+	<name>SLC Examples</name>
 	<modules>
 		<module>org.argeo.slc.example01</module>
 	</modules>

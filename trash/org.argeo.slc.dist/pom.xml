@@ -8,7 +8,7 @@
 		<relativePath>../org.argeo.slc</relativePath>
 	</parent>
 	<artifactId>argeo-slc-dist</artifactId>
-	<name>Argeo SLC Dist</name>
+	<name>SLC Dist</name>
 	<packaging>pom</packaging>
 	<description />
 	<build>

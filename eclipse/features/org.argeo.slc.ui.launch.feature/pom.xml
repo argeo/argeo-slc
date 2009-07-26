@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.eclipse</groupId>
 	<artifactId>org.argeo.slc.ui.launch.feature</artifactId>
 	<packaging>zip</packaging>
-	<name>Argeo SLC Launch Eclipse Feature</name>
+	<name>SLCh Eclipse Feature</name>
 	<description>Simplify running scripts based on Argeo SLC</description>
 	<build>
 		<plugins>

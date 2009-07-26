@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.hibernate</artifactId>
-	<name>Argeo SLC Support Hibernate</name>
+	<name>SLC Support Hibernate</name>
 	<build>
 		<plugins>
 			<plugin>

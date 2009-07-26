@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.castor</artifactId>
-	<name>Argeo SLC Support Castor</name>
+	<name>SLC Support Castor</name>
 	<description>Implementations of SLC Specs using Castor</description>
 	<build>
 		<plugins>

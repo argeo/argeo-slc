@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.maven</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC Support Maven</name>
+	<name>SLC Support Maven</name>
 	<build>
 		<plugins>
 			<!-- Look to parent pom for inheritances -->

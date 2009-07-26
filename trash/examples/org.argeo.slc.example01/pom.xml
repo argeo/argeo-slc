@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.examples</groupId>
 	<artifactId>org.argeo.slc.example01</artifactId>
-	<name>Argeo SLC Example 01</name>
+	<name>SLC Example 01</name>
 	<packaging>jar</packaging>
 	<description>An Example SLC application</description>
 	<build>

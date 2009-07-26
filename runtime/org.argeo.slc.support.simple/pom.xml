@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.simple</artifactId>
-	<name>Argeo SLC Support Simple</name>
+	<name>SLC Support Simple</name>
 	<description>Basic implementations of SLC Specifications</description>
 	<build>
 		<plugins>

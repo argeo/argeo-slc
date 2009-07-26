@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.dep</groupId>
 	<artifactId>org.argeo.slc.dep.server</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC Dependencies Server</name>
+	<name>SLC Dependencies Server</name>
 	<dependencies>
 		<!-- Other deps -->
 		<dependency>

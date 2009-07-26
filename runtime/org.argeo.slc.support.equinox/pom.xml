@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.equinox</artifactId>
-	<name>Argeo SLC Support Equinox OSGi</name>
+	<name>SLC Support Equinox OSGi</name>
 	<packaging>jar</packaging>
 	<properties />
 	<build>

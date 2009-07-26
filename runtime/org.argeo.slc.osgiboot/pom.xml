@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.osgiboot</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC OSGi Boot</name>
+	<name>SLC OSGi Boot</name>
 	<build>
 		<plugins>
 			<plugin>

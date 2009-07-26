@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.lib.detached</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC Lib Detached</name>
+	<name>SLC Lib Detached</name>
 	<build>
 		<plugins>
 			<!-- Look to parent pom for inheritances -->

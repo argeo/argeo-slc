@@ -9,7 +9,7 @@
 	<groupId>org.argeo.slc.demo</groupId>
 	<artifactId>org.argeo.slc.demo.bundles</artifactId>
 	<packaging>bundles</packaging>
-	<name>Argeo SLC Demo Bundles</name>
+	<name>SLC Demo Bundles</name>
 	<build>
 		<plugins>
 			<plugin>

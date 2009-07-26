@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>integration-tests</artifactId>
 	<packaging>pom</packaging>
-	<name>Argeo SLC Integration Tests</name>
+	<name>SLC Integration Tests</name>
 	<profiles>
 		<profile>
 			<id>withIT</id>

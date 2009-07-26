@@ -9,7 +9,7 @@
 	<groupId>org.argeo.slc.it</groupId>
 	<artifactId>org.argeo.slc.it.webapp</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC Integration Tests Web Application</name>
+	<name>SLC Integration Tests Web Application</name>
 	<build>
 		<plugins>
 			<plugin>

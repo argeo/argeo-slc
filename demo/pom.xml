@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>demo</artifactId>
 	<packaging>pom</packaging>
-	<name>Argeo SLC Demo</name>
+	<name>SLC Demo</name>
 	<modules>
 		<module>site</module>
 	</modules>

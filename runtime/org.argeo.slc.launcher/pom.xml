@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.launcher</artifactId>
 	<packaging>jar</packaging>
-	<name>Argeo SLC Launcher</name>
+	<name>SLC Launcher</name>
 	<build>
 		<plugins>
 			<plugin>

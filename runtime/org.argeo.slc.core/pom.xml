@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.core</artifactId>
-	<name>Argeo SLC Core</name>
+	<name>SLC Core</name>
 	<description>Basic implementations of SLC Specifications</description>
 	<build>
 		<plugins>
