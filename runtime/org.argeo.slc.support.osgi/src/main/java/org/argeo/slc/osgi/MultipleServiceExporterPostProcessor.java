@@ -36,6 +36,8 @@ public class MultipleServiceExporterPostProcessor implements
 					+ BeanDefinitionRegistry.class);
 		}
 
+		long begin = System.currentTimeMillis();
+
 		// Merge all beans implementing these interfaces
 		Set<String> beanNames = new HashSet<String>();
 		for (Class clss : interfaces) {
@@ -58,6 +60,12 @@ public class MultipleServiceExporterPostProcessor implements
 			((BeanDefinitionRegistry) beanFactory).registerBeanDefinition(
 					exporterBeanName, bd);
 		}
+
+		long end = System.currentTimeMillis();
+		if (log.isTraceEnabled())
+			log.debug("Multiple services exported in " + (end - begin)
+					+ " ms in bundle.");
+
 	}
 
 	public void setInterfaces(List<Class> interfaces) {
@@ -71,5 +79,4 @@ public class MultipleServiceExporterPostProcessor implements
 	public int getOrder() {
 		return Ordered.LOWEST_PRECEDENCE;
 	}
-
 }
