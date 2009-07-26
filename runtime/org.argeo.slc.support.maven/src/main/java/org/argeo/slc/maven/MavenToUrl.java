@@ -35,7 +35,7 @@ public class MavenToUrl implements FactoryBean {
 		return asUrls();
 	}
 
-	public Class getObjectType() {
+	public Class<?> getObjectType() {
 		return List.class;
 	}
 

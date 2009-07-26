@@ -1,17 +1,5 @@
 package org.argeo.slc.maven;
 
-import java.io.File;
-import java.util.List;
-import java.util.Vector;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-//import org.apache.maven.artifact.Artifact;
-//import org.apache.maven.artifact.repository.ArtifactRepository;
-//import org.apache.maven.embedder.MavenEmbedder;
-//import org.apache.maven.embedder.MavenEmbedderException;
-
-import org.argeo.slc.SlcException;
 
 public class MavenManager {
 	/*

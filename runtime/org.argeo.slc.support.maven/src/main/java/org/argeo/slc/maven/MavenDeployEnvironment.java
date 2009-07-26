@@ -1,14 +1,5 @@
 package org.argeo.slc.maven;
 
-import java.io.File;
-import java.net.URL;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.SlcException;
 import org.argeo.slc.deploy.DeployEnvironment;
 
 public abstract class MavenDeployEnvironment implements DeployEnvironment {

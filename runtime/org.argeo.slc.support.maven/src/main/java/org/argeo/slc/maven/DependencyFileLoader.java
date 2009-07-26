@@ -17,6 +17,7 @@ public class DependencyFileLoader implements FactoryBean{
 
 	private Resource dependenciesResource;
 
+	@SuppressWarnings("unchecked")
 	public List<MavenFile> loadMavenFiles() {
 		try {
 			List<MavenFile> mavenFiles = new ArrayList<MavenFile>();
@@ -63,6 +64,7 @@ public class DependencyFileLoader implements FactoryBean{
 		return loadMavenFiles();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Class<List> getObjectType() {
 		return List.class;
 	}
