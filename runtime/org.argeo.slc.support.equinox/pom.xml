@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -16,18 +17,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test-jar</goal>
-						</goals>
-						<configuration>
-							<archive>
-								<manifestFile>src/test/resources/META-INF/MANIFEST.MF</manifestFile>
-							</archive>
-						</configuration>
-					</execution>
-				</executions>
+				<!--
+					<executions> <execution> <goals> <goal>test-jar</goal> </goals>
+					<configuration> <archive>
+					<manifestFile>src/test/resources/META-INF/MANIFEST.MF</manifestFile>
+					</archive> </configuration> </execution> </executions>
+				-->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -38,6 +33,9 @@
 						<Export-Package>
 							org.argeo.slc.*
 						</Export-Package>
+						<Import-Package>*,
+							org.springframework.beans.factory.config
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -48,7 +46,7 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.osgi</artifactId>
 		</dependency>
-		
+
 		<!-- Unit Tests -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>

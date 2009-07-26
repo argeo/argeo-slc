@@ -28,7 +28,11 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	private BundleContext bundleContext;
 
 	private Long defaultTimeout = 10000l;
+	private Long pollingPeriod = 100l;
+
+	// Refresh sync objects
 	private final Object refreshedPackageSem = new Object();
+	private Boolean packagesRefreshed = false;
 
 	/**
 	 * Stop the module, update it, refresh it and restart it. All synchronously.
@@ -36,21 +40,54 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	public void upgradeSynchronous(OsgiBundle osgiBundle) {
 		try {
 			Bundle bundle = findRelatedBundle(osgiBundle);
+
+			long begin = System.currentTimeMillis();
+
+			long bStop = begin;
 			stopSynchronous(bundle);
+
+			long bUpdate = System.currentTimeMillis();
 			updateSynchronous(bundle);
+
 			// Refresh in case there are fragments
+			long bRefresh = System.currentTimeMillis();
 			refreshSynchronous(bundle);
+
+			long bStart = System.currentTimeMillis();
 			startSynchronous(bundle);
 
+			long aStart = System.currentTimeMillis();
+			if (log.isDebugEnabled()) {
+				log.debug("OSGi upgrade performed in " + (aStart - begin)
+						+ "ms for bundle " + osgiBundle);
+				log.debug(" stop \t: " + (bUpdate - bStop) + "ms");
+				log.debug(" update\t: " + (bRefresh - bUpdate) + "ms");
+				log.debug(" refresh\t: " + (bStart - bRefresh) + "ms");
+				log.debug(" start\t: " + (aStart - bStart) + "ms");
+				log.debug(" TOTAL\t: " + (aStart - begin) + "ms");
+			}
+
+			long bAppContext = System.currentTimeMillis();
 			String filter = "(Bundle-SymbolicName=" + bundle.getSymbolicName()
 					+ ")";
 			// Wait for application context to be ready
 			// TODO: use service tracker
 			getServiceRefSynchronous(ApplicationContext.class.getName(), filter);
+			long aAppContext = System.currentTimeMillis();
+			long end = aAppContext;
+
+			if (log.isDebugEnabled()) {
+				log.debug("Application context refresh performed in "
+						+ (aAppContext - bAppContext) + "ms for bundle "
+						+ osgiBundle);
+				log.debug(" TOTAL\t: " + (aAppContext - bAppContext) + "ms");
+			}
 
 			if (log.isDebugEnabled())
 				log.debug("Bundle " + bundle.getSymbolicName()
-						+ " ready to be used at latest version.");
+						+ " ready to be used at latest version."
+						+ " (upgrade performed in " + (end - begin) + "ms).");
+			log.debug(" TOTAL\t: " + (end - begin) + "ms");
 		} catch (Exception e) {
 			throw new SlcException("Cannot update bundle " + osgiBundle, e);
 		}
@@ -58,7 +95,6 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 
 	/** Updates bundle synchronously. */
 	protected void updateSynchronous(Bundle bundle) throws BundleException {
-		// int originalState = bundle.getState();
 		bundle.update();
 		boolean waiting = true;
 
@@ -69,11 +105,9 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 					|| state == Bundle.RESOLVED)
 				waiting = false;
 
-			sleep(100);
-			if (System.currentTimeMillis() - begin > defaultTimeout)
-				throw new SlcException("Update of bundle "
-						+ bundle.getSymbolicName()
-						+ " timed out. Bundle state = " + bundle.getState());
+			sleepWhenPolling();
+			checkTimeout(begin, "Update of bundle " + bundle.getSymbolicName()
+					+ " timed out. Bundle state = " + bundle.getState());
 		} while (waiting);
 
 		if (log.isTraceEnabled())
@@ -94,11 +128,9 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 			if (bundle.getState() == Bundle.ACTIVE)
 				waiting = false;
 
-			sleep(100);
-			if (System.currentTimeMillis() - begin > defaultTimeout)
-				throw new SlcException("Start of bundle "
-						+ bundle.getSymbolicName()
-						+ " timed out. Bundle state = " + bundle.getState());
+			sleepWhenPolling();
+			checkTimeout(begin, "Start of bundle " + bundle.getSymbolicName()
+					+ " timed out. Bundle state = " + bundle.getState());
 		} while (waiting);
 
 		if (log.isTraceEnabled())
@@ -120,11 +152,9 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 					&& bundle.getState() != Bundle.STOPPING)
 				waiting = false;
 
-			sleep(100);
-			if (System.currentTimeMillis() - begin > defaultTimeout)
-				throw new SlcException("Stop of bundle "
-						+ bundle.getSymbolicName()
-						+ " timed out. Bundle state = " + bundle.getState());
+			sleepWhenPolling();
+			checkTimeout(begin, "Stop of bundle " + bundle.getSymbolicName()
+					+ " timed out. Bundle state = " + bundle.getState());
 		} while (waiting);
 
 		if (log.isTraceEnabled())
@@ -138,13 +168,22 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 		PackageAdmin packageAdmin = (PackageAdmin) bundleContext
 				.getService(packageAdminRef);
 		Bundle[] bundles = { bundle };
-		packageAdmin.refreshPackages(bundles);
 
+		long begin = System.currentTimeMillis();
 		synchronized (refreshedPackageSem) {
+			packagesRefreshed = false;
+			packageAdmin.refreshPackages(bundles);
 			try {
 				refreshedPackageSem.wait(defaultTimeout);
 			} catch (InterruptedException e) {
 				// silent
+			}
+			if (!packagesRefreshed) {
+				long now = System.currentTimeMillis();
+				throw new SlcException("Packages not refreshed after "
+						+ (now - begin) + "ms");
+			} else {
+				packagesRefreshed = false;
 			}
 		}
 
@@ -155,6 +194,7 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	public void frameworkEvent(FrameworkEvent event) {
 		if (event.getType() == FrameworkEvent.PACKAGES_REFRESHED) {
 			synchronized (refreshedPackageSem) {
+				packagesRefreshed = true;
 				refreshedPackageSem.notifyAll();
 			}
 		}
@@ -173,7 +213,7 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 			if (sfs != null)
 				waiting = false;
 
-			sleep(100);
+			sleepWhenPolling();
 			if (System.currentTimeMillis() - begin > defaultTimeout)
 				throw new SlcException("Search of services " + clss
 						+ " with filter " + filter + " timed out.");
@@ -182,9 +222,17 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 		return sfs;
 	}
 
-	protected void sleep(long ms) {
+	protected void checkTimeout(long begin, String msg) {
+		long now = System.currentTimeMillis();
+		if (now - begin > defaultTimeout)
+			throw new SlcException(msg + " (timeout after " + (now - begin)
+					+ "ms)");
+
+	}
+
+	protected void sleepWhenPolling() {
 		try {
-			Thread.sleep(ms);
+			Thread.sleep(pollingPeriod);
 		} catch (InterruptedException e) {
 			// silent
 		}
@@ -286,6 +334,10 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	/** Temporary internal access for {@link OsgiExecutionModulesManager} */
 	BundleContext getBundleContext() {
 		return bundleContext;
+	}
+
+	public void setPollingPeriod(Long pollingPeriod) {
+		this.pollingPeriod = pollingPeriod;
 	}
 
 }

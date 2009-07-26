@@ -8,24 +8,33 @@ import org.argeo.slc.process.RealizedFlow;
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
-import org.springframework.beans.factory.InitializingBean;
 
-public class ExecutionCommandProvider implements CommandProvider,
-		InitializingBean {
+public class ExecutionCommandProvider implements CommandProvider {
 	private final static Log log = LogFactory
 			.getLog(ExecutionCommandProvider.class);
+
+	private final static String SLC_WITH_REFRESH = "slc";
+	private final static String SLC_NO_REFRESH = "slcnr";
 
 	private OsgiExecutionModulesManager modulesManager;
 
 	private RealizedFlow lastLaunch = null;
 
 	public Object _slc(CommandInterpreter ci) {
+		return exec(SLC_WITH_REFRESH, ci);
+	}
+
+	public Object _slcnr(CommandInterpreter ci) {
+		return exec(SLC_NO_REFRESH, ci);
+	}
+
+	protected Object exec(String slcCommand, CommandInterpreter ci) {
 		// TODO: check version
 		String firstArg = ci.nextArgument();
 		if (firstArg == null) {
 			if (lastLaunch != null) {
-				String cmd = "slc " + lastLaunch.getModuleName() + " "
-						+ lastLaunch.getFlowDescriptor().getName();
+				String cmd = slcCommand + " " + lastLaunch.getModuleName()
+						+ " " + lastLaunch.getFlowDescriptor().getName();
 				if (log.isDebugEnabled())
 					log.debug("Execute again last command: " + cmd);
 				return ci.execute(cmd);
@@ -36,25 +45,35 @@ public class ExecutionCommandProvider implements CommandProvider,
 		}
 		String executionName = ci.nextArgument();
 
-		launch(firstArg, executionName);
+		launch(slcCommand, firstArg, executionName);
 		return "COMMAND COMPLETED";
 	}
 
-	protected void launch(String firstArg, String executionName) {
+	protected void launch(String slcCommand, String firstArg,
+			String executionName) {
 		lastLaunch = modulesManager.findRealizedFlow(firstArg, executionName);
 		if (lastLaunch == null)
 			throw new SlcException("Cannot find launch for " + firstArg + " "
 					+ executionName);
 
-		modulesManager.updateAndExecute(lastLaunch);
-
+		// Execute
+		if (SLC_WITH_REFRESH.equals(slcCommand))
+			modulesManager.updateAndExecute(lastLaunch);
+		else if (SLC_NO_REFRESH.equals(slcCommand))
+			modulesManager.execute(lastLaunch);
+		else
+			throw new SlcException("Unrecognized SLC command " + slcCommand);
 	}
 
 	public String getHelp() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("---SLC Execution Commands---\n");
 		buf
-				.append("\tslc (<id>|<segment of bsn>) <execution bean>  - execute an execution flow (without arg, execute last)\n");
+				.append("\tslc (<id>|<segment of bsn>) <execution bean>"
+						+ "  - refresh the bundle, execute an execution flow (without arg, execute last)\n");
+		buf
+				.append("\tslcnr (<id>|<segment of bsn>) <execution bean>"
+						+ "  - execute an execution flow (without arg, execute last)\n");
 		return buf.toString();
 
 	}
@@ -63,7 +82,7 @@ public class ExecutionCommandProvider implements CommandProvider,
 		this.modulesManager = osgiModulesManager;
 	}
 
-	public void afterPropertiesSet() throws Exception {
+	public void init() throws Exception {
 		final String module = System.getProperty("slc.launch.module");
 		final String executionName = System.getProperty("slc.launch.execution");
 		if (module != null) {
@@ -72,7 +91,7 @@ public class ExecutionCommandProvider implements CommandProvider,
 				@Override
 				public void run() {
 					try {
-						launch(module, executionName);
+						launch(SLC_NO_REFRESH, module, executionName);
 						// in case of failure OSGi runtime stays up and last
 						// launch can be used to debug by calling 'slc'
 					} catch (Exception e) {
