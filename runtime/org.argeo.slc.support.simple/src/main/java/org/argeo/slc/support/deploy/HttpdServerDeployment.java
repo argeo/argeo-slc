@@ -7,7 +7,7 @@ import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.TargetData;
 
 public class HttpdServerDeployment implements Deployment {
-	private HttpdServerTargetData targetData;
+//	private HttpdServerTargetData targetData;
 
 	public void run() {
 		// TODO Auto-generated method stub
@@ -28,7 +28,7 @@ public class HttpdServerDeployment implements Deployment {
 	}
 
 	public void setTargetData(TargetData targetData) {
-		this.targetData = (HttpdServerTargetData) targetData;
+//		this.targetData = (HttpdServerTargetData) targetData;
 	}
 
 }
