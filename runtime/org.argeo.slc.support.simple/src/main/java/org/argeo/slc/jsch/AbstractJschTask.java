@@ -38,16 +38,16 @@ public abstract class AbstractJschTask implements Runnable {
 
 	abstract void run(Session session);
 
-	protected void checkAck(InputStream in) throws IOException {
+	protected int checkAck(InputStream in) throws IOException {
 		int b = in.read();
 		// b may be 0 for success,
 		// 1 for error,
 		// 2 for fatal error,
 		// -1
 		if (b == 0)
-			return;
+			return b;
 		else if (b == -1)
-			throw new SlcException("SSH ack returned -1");
+			return b;//throw new SlcException("SSH ack returned -1");
 		else if (b == 1 || b == 2) {
 			StringBuffer sb = new StringBuffer();
 			int c;
@@ -62,6 +62,7 @@ public abstract class AbstractJschTask implements Runnable {
 				throw new SlcException("SSH fatal error: " + sb.toString());
 			}
 		}
+		return b;
 	}
 
 	public SshTarget getSshTarget() {
