@@ -62,11 +62,17 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 		bundles: for (Bundle bundle : bundleContext.getBundles()) {
 			String name = bundle.getSymbolicName();
 
-			if (excludeBundleNames.contains(name))
+			if (excludeBundleNames.contains(name)) {
+				if (log.isDebugEnabled())
+					log.debug("Exclude bundle " + name);
 				continue bundles;// skip excluded
+			}
 
-			String location = bundle.getLocation();
-			location = removeInitialReference(location);
+			String originalLocation = bundle.getLocation();
+			if (log.isTraceEnabled())
+				log.trace("Original location of bundle " + name + ": "
+						+ originalLocation);
+			String location = removeInitialReference(originalLocation);
 
 			// Special bundles
 			if (osgibootBundleName.equals(name))
@@ -82,12 +88,19 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 				File file = new File(location.substring("file:".length()));
 				if (osgiLocations.length() != 0)
 					osgiLocations.append(File.pathSeparatorChar);
-				osgiLocations.append(file.getPath().replace('/',
-						File.separatorChar));
+				location = file.getPath().replace('/', File.separatorChar);
+				osgiLocations.append(location);
+				if (log.isTraceEnabled())
+					log.trace("Added bundle " + name
+							+ " to slc.osgi.locations: " + location);
 			} else {
 				if (osgiBundles.length() != 0)
 					osgiBundles.append(',');
-				osgiBundles.append(location.replace('/', File.separatorChar));
+				location = location.replace('/', File.separatorChar);
+				osgiBundles.append(location);
+				if (log.isTraceEnabled())
+					log.trace("Added bundle " + name + " to osgi.bundles: "
+							+ location);
 			}
 		}
 
@@ -95,6 +108,8 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 			if (osgiBundles.length() != 0)
 				osgiBundles.append(',');
 			osgiBundles.append(url);
+			if (log.isDebugEnabled())
+				log.debug("Include url" + url);
 		}
 
 		getSystemProperties().setProperty("osgi.bundles",
