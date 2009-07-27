@@ -6,10 +6,13 @@ import org.argeo.slc.deploy.DeployedSystem;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.TargetData;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.InitializingBean;
 
-public class VBoxMachine implements DeployedSystem, BeanNameAware {
+public class VBoxMachine implements DeployedSystem, BeanNameAware,
+		InitializingBean {
 	private String deployedSystemId = null;
 	private String name;
+	private String beanName;
 
 	public String getDeployedSystemId() {
 		return deployedSystemId;
@@ -39,8 +42,13 @@ public class VBoxMachine implements DeployedSystem, BeanNameAware {
 		this.deployedSystemId = deployedSystemId;
 	}
 
-	public void setBeanName(String name) {
-		this.name = name;
+	public void setBeanName(String beanName) {
+		this.beanName = name;
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		if (name == null)
+			name = beanName;
 	}
 
 }
