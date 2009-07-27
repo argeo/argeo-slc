@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>runtime</artifactId>
-		<version>0.11.4-SNAPSHOT</version>
+		<version>0.11.4</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
