@@ -1,20 +1,12 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.specs,
- org.argeo.slc.core,
- org.argeo.slc.support.activemq,
- com.springsource.org.castor
-Bundle-Version: 0.11.4.SNAPSHOT
+Require-Bundle: org.argeo.slc.specs,org.argeo.slc.core,org.argeo.slc.s
+ upport.activemq,com.springsource.org.castor
+Bundle-Version: 0.11.5.SNAPSHOT
 Bundle-Name: SLC Agent JMS
 Bundle-SymbolicName: org.argeo.slc.agent.jms
-Import-Package: javax.jms,
- org.apache.activemq,
- org.apache.activemq.command,
- org.apache.activemq.pool,
- org.apache.commons.pool,
- org.springframework.beans.factory.config,
- org.springframework.jms.connection,
- org.springframework.jms.core,
- org.springframework.jms.listener,
- org.springframework.jms.listener.adapter,
- org.springframework.oxm.castor
+Import-Package: javax.jms,org.apache.activemq,org.apache.activemq.comm
+ and,org.apache.activemq.pool,org.apache.commons.pool,org.springframew
+ ork.beans.factory.config,org.springframework.jms.connection,org.sprin
+ gframework.jms.core,org.springframework.jms.listener,org.springframew
+ ork.jms.listener.adapter,org.springframework.oxm.castor
 

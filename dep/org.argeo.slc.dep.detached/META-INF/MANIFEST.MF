@@ -1,2 +1,4 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.11.5.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.dep.detached
-Bundle-Version: 0.11.4.SNAPSHOT
+

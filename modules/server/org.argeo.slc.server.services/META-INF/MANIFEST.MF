@@ -1,20 +1,12 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.11.4.SNAPSHOT
+Bundle-Version: 0.11.5.SNAPSHOT
 Bundle-Name: SLC Server Services
 Bundle-SymbolicName: org.argeo.slc.server.services
-Import-Package: org.aopalliance.aop,
- org.argeo.slc.core.attachment,
- org.argeo.slc.dao.process,
- org.argeo.slc.dao.runtime,
- org.argeo.slc.dao.test,
- org.argeo.slc.dao.test.tree,
- org.argeo.slc.msg.event,
- org.argeo.slc.msg.process,
- org.argeo.slc.process,
- org.argeo.slc.runtime,
- org.argeo.slc.services,
- org.argeo.slc.services.impl,
- org.hibernate.jdbc,
- org.springframework.aop,
- org.springframework.aop.framework,
- org.springframework.beans.factory.config
+Import-Package: org.aopalliance.aop,org.argeo.slc.core.attachment,org.
+ argeo.slc.dao.process,org.argeo.slc.dao.runtime,org.argeo.slc.dao.tes
+ t,org.argeo.slc.dao.test.tree,org.argeo.slc.msg.event,org.argeo.slc.m
+ sg.process,org.argeo.slc.process,org.argeo.slc.runtime,org.argeo.slc.
+ services,org.argeo.slc.services.impl,org.hibernate.jdbc,org.springfra
+ mework.aop,org.springframework.aop.framework,org.springframework.bean
+ s.factory.config
+
