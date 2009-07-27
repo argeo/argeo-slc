@@ -15,7 +15,7 @@ DATE=`date -u`
 EXIT_STATUS=0
 
 # BUILD
-mvn --fail-at-end deploy $PROFILES 2>&1 | tee deploy.log
+mvn -up --fail-at-end deploy $PROFILES 2>&1 | tee deploy.log
 EXIT_STATUS=$PIPESTATUS
 if [ $EXIT_STATUS -eq 0 ]
 then
@@ -25,7 +25,7 @@ else
 fi
 
 # SITE
-mvn --fail-at-end site-deploy $PROFILES 2>&1 | tee siteGeneration.log
+mvn -up --fail-at-end site-deploy $PROFILES 2>&1 | tee siteGeneration.log
 if [ $PIPESTATUS -eq 0 ]
 then
 	echo No need to send email for successful site generation
