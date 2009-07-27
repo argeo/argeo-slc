@@ -17,7 +17,7 @@
 	</modules>
 	<properties>
 		<developmentCycle>0.11</developmentCycle>
-		<version.argeo-ria>0.11.4-SNAPSHOT</version.argeo-ria>
+		<version.argeo-ria>0.11.4</version.argeo-ria>
 		<version.spring>2.5.6.SEC01</version.spring>
 		<version.spring-ws>1.5.7.A</version.spring-ws>
 		<version.spring-osgi>1.2.0</version.spring-osgi>
@@ -29,8 +29,8 @@
 		<version.slf4j>1.5.6</version.slf4j>
 		<version.maven-bundle-plugin>2.0.0</version.maven-bundle-plugin>
 		<version.activemq>5.2.0.0006</version.activemq>
-		<version.maven-argeo-osgi>0.1.15-SNAPSHOT</version.maven-argeo-osgi>
-		<version.maven-argeo-qooxdoo>0.8.2-SNAPSHOT</version.maven-argeo-qooxdoo>
+		<version.maven-argeo-osgi>0.1.15</version.maven-argeo-osgi>
+		<version.maven-argeo-qooxdoo>0.8.2.1</version.maven-argeo-qooxdoo>
 		<site.repoBase>file:///var/argeo/projects/SLC/www/site</site.repoBase>
 		<site.urlBase>http://www.argeo.org/projects/slc/site</site.urlBase>
 	</properties>
