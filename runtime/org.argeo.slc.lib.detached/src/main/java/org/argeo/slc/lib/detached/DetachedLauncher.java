@@ -2,6 +2,8 @@ package org.argeo.slc.lib.detached;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +30,9 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 	private String equinoxBundleName = "org.eclipse.osgi";
 	private String xmlapisBundleName = "com.springsource.org.apache.xmlcommons";
 	private String xercesBundleName = "com.springsource.org.apache.xerces";
+
+	private List<String> excludeBundleNames = new ArrayList<String>();
+	private List<String> includeBundleUrls = new ArrayList<String>();
 
 	/**
 	 * Required by Spring for JDK 1.4. see
@@ -56,6 +61,10 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 		StringBuffer osgiLocations = new StringBuffer("");
 		bundles: for (Bundle bundle : bundleContext.getBundles()) {
 			String name = bundle.getSymbolicName();
+
+			if (excludeBundleNames.contains(name))
+				continue bundles;// skip excluded
+
 			String location = bundle.getLocation();
 			location = removeInitialReference(location);
 
@@ -82,13 +91,19 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 			}
 		}
 
+		for (String url : includeBundleUrls) {
+			if (osgiBundles.length() != 0)
+				osgiBundles.append(',');
+			osgiBundles.append(url);
+		}
+
 		getSystemProperties().setProperty("osgi.bundles",
 				osgiBundles.toString());
 		getSystemProperties().setProperty("slc.osgi.locations",
 				osgiLocations.toString());
 	}
 
-	protected String removeInitialReference(String location){
+	protected String removeInitialReference(String location) {
 		if (location.startsWith("initial@reference:file:"))
 			location = System.getProperty("osgi.install.area")
 					+ location.substring("initial@reference:file:".length());
@@ -150,6 +165,14 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 
 	public void setPrependXmlJars(Boolean prependXmlJars) {
 		this.prependXmlJars = prependXmlJars;
+	}
+
+	public void setExcludeBundleNames(List<String> excludeBundleNames) {
+		this.excludeBundleNames = excludeBundleNames;
+	}
+
+	public void setIncludeBundleUrls(List<String> includeBundleUrls) {
+		this.includeBundleUrls = includeBundleUrls;
 	}
 
 }
