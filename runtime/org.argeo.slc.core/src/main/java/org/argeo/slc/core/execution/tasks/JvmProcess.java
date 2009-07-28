@@ -30,7 +30,7 @@ public class JvmProcess extends SystemCall implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		List<Object> command = new ArrayList<Object>();
 		if (jvm != null)
-			command.add(asFile(jvm).getAbsolutePath());
+			command.add(asFile(jvm).getPath());
 		else
 			command.add("java");
 
@@ -108,7 +108,7 @@ public class JvmProcess extends SystemCall implements InitializingBean {
 
 	protected File asFile(Resource res) {
 		try {
-			return res.getFile().getCanonicalFile();
+			return res.getFile();
 		} catch (FileNotFoundException e) {
 			return copyToTempFile(res);
 		} catch (IOException e) {

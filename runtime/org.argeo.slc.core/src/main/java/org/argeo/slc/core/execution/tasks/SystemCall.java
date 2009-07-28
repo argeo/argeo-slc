@@ -198,7 +198,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 					+ generateScript);
 			try {
 				FileUtils.writeStringToFile(scriptFile,
-						(osConsole != null ? osConsole : "")
+						(osConsole != null ? osConsole + " " : "")
 								+ commandLine.toString());
 			} catch (IOException e) {
 				throw new SlcException("Could not generate script "
