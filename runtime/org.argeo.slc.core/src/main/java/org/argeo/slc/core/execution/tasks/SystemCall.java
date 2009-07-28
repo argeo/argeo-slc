@@ -20,6 +20,7 @@ import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.LogOutputStream;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,6 +59,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 	private Boolean logCommand = false;
 	private Boolean redirectStreams = true;
 	private String osConsole = null;
+	private String generateScript = null;
 
 	private Long watchdogTimeout = 24 * 60 * 60 * 1000l;
 
@@ -165,7 +167,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 		else
 			cmdToUse = cmd;
 
-		final CommandLine commandLine;
+		CommandLine commandLine = null;
 
 		// Which command definition to use
 		if (commandToUse == null && cmdToUse == null)
@@ -174,27 +176,39 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			throw new SlcException(
 					"Specify the command either as a line or as a list.");
 		else if (cmdToUse != null) {
-			if (osConsole != null)
-				cmdToUse = osConsole + " " + cmdToUse;
 			commandLine = CommandLine.parse(cmdToUse);
 		} else if (commandToUse != null) {
 			if (commandToUse.size() == 0)
 				throw new SlcException("Command line is empty.");
 
-			if (osConsole != null) {
-				commandLine = CommandLine.parse(osConsole);
-			} else {
-				commandLine = new CommandLine(commandToUse.get(0).toString());
-			}
+			commandLine = new CommandLine(commandToUse.get(0).toString());
 
-			for (int i = (osConsole != null ? 0 : 1); i < commandToUse.size(); i++) {
-				log.debug(commandToUse.get(i));
+			for (int i = 1; i < commandToUse.size(); i++) {
+				if (log.isTraceEnabled())
+					log.debug(commandToUse.get(i));
 				commandLine.addArgument(commandToUse.get(i).toString());
 			}
 		} else {
 			// all cases covered previously
 			throw new UnsupportedException();
 		}
+
+		if (osConsole != null)
+			commandLine = CommandLine.parse(osConsole + " "
+					+ commandLine.toString());
+
+		if (generateScript != null) {
+			File scriptFile = new File(getExecDirToUse() + File.separator
+					+ generateScript);
+			try {
+				FileUtils.writeStringToFile(scriptFile, commandLine.toString());
+			} catch (IOException e) {
+				throw new SlcException("Could not generate script "
+						+ scriptFile, e);
+			}
+			commandLine = new CommandLine(scriptFile);
+		}
+
 		return commandLine;
 	}
 
@@ -368,6 +382,10 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 
 	public void setOsConsole(String osConsole) {
 		this.osConsole = osConsole;
+	}
+
+	public void setGenerateScript(String generateScript) {
+		this.generateScript = generateScript;
 	}
 
 	private class DummyexecuteStreamHandler implements ExecuteStreamHandler {
