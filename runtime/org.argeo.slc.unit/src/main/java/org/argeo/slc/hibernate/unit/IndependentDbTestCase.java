@@ -64,15 +64,7 @@ public abstract class IndependentDbTestCase extends AbstractSpringTestCase {
 	 * {@link #getDataSourceBeanName}
 	 */
 	protected DataSource getDataSource() {
-		return (DataSource) getContext().getBean(getDataSourceBeanName());
-	}
-
-	/**
-	 * The name of the data source bean to use. The default implementation
-	 * returns <i>dataSource</i>.
-	 */
-	protected String getDataSourceBeanName() {
-		return "slcDefault.dataSource.inMemoryTestHSQL";
+		return getBean(DataSource.class);
 	}
 
 	/**
