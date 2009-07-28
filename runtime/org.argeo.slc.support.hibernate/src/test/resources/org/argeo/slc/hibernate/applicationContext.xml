@@ -3,24 +3,39 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<import
-		resource="classpath:/org/argeo/slc/hibernate/spring/applicationContext.xml" />
+	<import resource="classpath:/org/argeo/slc/hibernate/spring.xml" />
 
-	<bean id="sessionFactory"
-		parent="slcDefault.sessionFactory.hibernateTestHSQL">
+	<bean id="sessionFactory" parent="slcTemplates.sessionFactory.hibernateBasic">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<value><![CDATA[
+				hibernate.dialect=org.hibernate.dialect.HSQLDialect
+				hibernate.hbm2ddl.auto=create
+				hibernate.current_session_context_class=thread
+			]]></value>
+		</property>
 	</bean>
 
-	<bean id="testResultDao"
-		parent="slcTemplates.dao.testResultDao">
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+		destroy-method="destroy" lazy-init="true">
+		<property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+		<property name="url" value="jdbc:hsqldb:mem:test" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+		<property name="suppressClose" value="true" />
+	</bean>
+
+
+
+	<bean id="testResultDao" parent="slcTemplates.dao.testResultDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
-	<bean id="testResultCollectionDao"
-		parent="slcTemplates.dao.testResultCollectionDao">
+	<bean id="testResultCollectionDao" parent="slcTemplates.dao.testResultCollectionDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 
-	<bean id="slcExecutionDao"
-		parent="slcTemplates.dao.slcExecutionDao">
+	<bean id="slcExecutionDao" parent="slcTemplates.dao.slcExecutionDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 </beans>
