@@ -27,7 +27,10 @@ public class OsgiBoot {
 	public final static String PROP_SLC_OSGI_LOCATIONS = "slc.osgi.locations";
 	public final static String PROP_SLC_OSGI_BASE_URL = "slc.osgi.baseUrl";
 	public final static String PROP_SLC_OSGI_MODULES_URL = "slc.osgi.modulesUrl";
+
 	public final static String PROP_SLC_OSGIBOOT_DEBUG = "slc.osgiboot.debug";
+	public final static String PROP_SLC_OSGIBOOT_DEFAULT_TIMEOUT = "slc.osgiboot.defaultTimeout";
+	public final static String PROP_SLC_OSGIBOOT_MODULES_URL_SEPARATOR = "slc.osgiboot.modulesUrlSeparator";
 
 	public final static String DEFAULT_BASE_URL = "reference:file:";
 	public final static String EXCLUDES_SVN_PATTERN = "**/.svn/**";
@@ -35,14 +38,21 @@ public class OsgiBoot {
 	private boolean debug = Boolean.valueOf(
 			System.getProperty(PROP_SLC_OSGIBOOT_DEBUG, "false"))
 			.booleanValue();
+	/** Default is 10s (set in constructor) */
+	private long defaultTimeout;
 
 	private boolean excludeSvn = true;
+	/** Default is ',' (set in constructor) */
 	private String modulesUrlSeparator = ",";
 
 	private final BundleContext bundleContext;
 
 	public OsgiBoot(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
+		defaultTimeout = Long.parseLong(getProperty(
+				PROP_SLC_OSGIBOOT_DEFAULT_TIMEOUT, "10000"));
+		modulesUrlSeparator = getProperty(
+				PROP_SLC_OSGIBOOT_MODULES_URL_SEPARATOR, ",");
 	}
 
 	public void bootstrap() {
@@ -147,7 +157,14 @@ public class OsgiBoot {
 			String symbolicName = bundle.getSymbolicName();
 			if (bundlesToStart.contains(symbolicName))
 				try {
-					bundle.start();
+					try {
+						bundle.start();
+					} catch (Exception e) {
+						// start failed, maybe bundle is not yet resolved
+						waitForBundleResolvedOrActive(bundle);
+						bundle.start();
+					}
+
 					notStartedBundles.remove(symbolicName);
 				} catch (Exception e) {
 					warn("Bundle " + symbolicName + " cannot be started: "
@@ -158,6 +175,53 @@ public class OsgiBoot {
 		for (int i = 0; i < notStartedBundles.size(); i++)
 			warn("Bundle " + notStartedBundles.get(i)
 					+ " not started because it was not found.");
+	}
+
+	protected void waitForBundleResolvedOrActive(Bundle bundle)
+			throws Exception {
+		int originalState = bundle.getState();
+		if ((originalState == Bundle.RESOLVED)
+				|| (originalState == Bundle.ACTIVE))
+			return;
+
+		String originalStateStr = stateAsString(originalState);
+
+		long begin = System.currentTimeMillis();
+		while ((bundle.getState() != Bundle.RESOLVED)
+				|| (bundle.getState() != Bundle.ACTIVE)) {
+			long now = System.currentTimeMillis();
+			if ((now - begin) > defaultTimeout)
+				throw new Exception("Bundle " + bundle.getSymbolicName()
+						+ " was not RESOLVED or ACTIVE after " + (now - begin)
+						+ "ms (originalState=" + originalStateStr
+						+ ", currentState=" + stateAsString(bundle.getState())
+						+ ")");
+
+			try {
+				Thread.sleep(100l);
+			} catch (InterruptedException e) {
+				// silent
+			}
+		}
+	}
+
+	public static String stateAsString(int state) {
+		switch (state) {
+		case Bundle.UNINSTALLED:
+			return "UNINSTALLED";
+		case Bundle.INSTALLED:
+			return "INSTALLED";
+		case Bundle.RESOLVED:
+			return "RESOLVED";
+		case Bundle.STARTING:
+			return "STARTING";
+		case Bundle.ACTIVE:
+			return "ACTIVE";
+		case Bundle.STOPPING:
+			return "STOPPING";
+		default:
+			return Integer.toString(state);
+		}
 	}
 
 	/** Key is location */
@@ -567,6 +631,14 @@ public class OsgiBoot {
 			return baseUrl;
 		}
 
+	}
+
+	public void setDefaultTimeout(long defaultTimeout) {
+		this.defaultTimeout = defaultTimeout;
+	}
+
+	public void setModulesUrlSeparator(String modulesUrlSeparator) {
+		this.modulesUrlSeparator = modulesUrlSeparator;
 	}
 
 }
