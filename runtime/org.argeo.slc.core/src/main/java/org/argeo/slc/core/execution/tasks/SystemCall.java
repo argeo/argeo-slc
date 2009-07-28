@@ -3,6 +3,8 @@ package org.argeo.slc.core.execution.tasks;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.ExecuteResultHandler;
+import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.LogOutputStream;
@@ -21,6 +24,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.SimpleResultPart;
@@ -51,9 +55,15 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 	private Map<String, String> osCmds = new HashMap<String, String>();
 	private Map<String, String> environmentVariables = new HashMap<String, String>();
 
+	private Boolean logCommand = false;
+	private Boolean redirectStreams = true;
+	private String osConsole = null;
+
 	private Long watchdogTimeout = 24 * 60 * 60 * 1000l;
 
 	private TestResult testResult;
+
+	// Internal use
 
 	public SystemCall() {
 
@@ -65,7 +75,6 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 	}
 
 	public void run() {
-		// Log writers
 		final Writer stdOutWriter;
 		final Writer stdErrWriter;
 		if (stdOutFile != null) {
@@ -89,16 +98,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			}
 
 			// Execution directory
-			File dir = null;
-			if (execDir != null) {
-				// Replace '/' by local file separator, for portability
-				execDir.replace('/', File.separatorChar);
-				dir = new File(execDir).getCanonicalFile();
-			}
-
-			// Prepare executor
-			if (dir == null)
-				dir = new File(getUsedDir(dir));
+			File dir = new File(getExecDirToUse());
 			if (!dir.exists())
 				dir.mkdirs();
 
@@ -106,59 +106,29 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			Executor executor = new DefaultExecutor();
 			executor.setWatchdog(new ExecuteWatchdog(watchdogTimeout));
 
-			// Redirect standard streams
-			PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(
-					new LogOutputStream() {
-						protected void processLine(String line, int level) {
-							log(stdOutLogLevel, line);
-							if (stdOutWriter != null)
-								appendLineToFile(stdOutWriter, line);
-						}
-					}, new LogOutputStream() {
-						protected void processLine(String line, int level) {
-							log(stdErrLogLevel, line);
-							if (stdErrWriter != null)
-								appendLineToFile(stdErrWriter, line);
-						}
-					}, null);
-			executor.setStreamHandler(pumpStreamHandler);
+			if (redirectStreams) {
+				// Redirect standard streams
+				executor.setStreamHandler(createExecuteStreamHandler(
+						stdOutWriter, stdErrWriter));
+			} else {
+				// Dummy stream handler (otherwise pump is used)
+				executor.setStreamHandler(new DummyexecuteStreamHandler());
+			}
+
 			executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
 			executor.setWorkingDirectory(dir);
 
 			// Command line to use
 			final CommandLine commandLine = createCommandLine();
+			if (logCommand)
+				log.info("Execute command:\n" + commandLine + "\n");
 
 			// Env variables
 			Map<String, String> environmentVariablesToUse = environmentVariables
 					.size() > 0 ? environmentVariables : null;
 
 			// Execute
-			ExecuteResultHandler executeResultHandler = new ExecuteResultHandler() {
-
-				public void onProcessComplete(int exitValue) {
-					if (log.isDebugEnabled())
-						log.debug("Process " + commandLine
-								+ " properly completed.");
-					if (testResult != null) {
-						forwardPath(testResult, null);
-						testResult.addResultPart(new SimpleResultPart(
-								TestStatus.PASSED, "Process " + commandLine
-										+ " properly completed."));
-					}
-				}
-
-				public void onProcessFailed(ExecuteException e) {
-					if (testResult != null) {
-						forwardPath(testResult, null);
-						testResult.addResultPart(new SimpleResultPart(
-								TestStatus.ERROR, "Process " + commandLine
-										+ " failed.", e));
-					} else {
-						throw new SlcException("Process " + commandLine
-								+ " failed.", e);
-					}
-				}
-			};
+			ExecuteResultHandler executeResultHandler = createExecuteResultHandler(commandLine);
 
 			if (synchronous)
 				try {
@@ -180,7 +150,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 
 	}
 
-	/** Can be overridden by specific command wrapper*/
+	/** Can be overridden by specific command wrapper */
 	protected CommandLine createCommandLine() {
 		// Check if an OS specific command overrides
 		String osName = System.getProperty("os.name");
@@ -204,30 +174,101 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			throw new SlcException(
 					"Specify the command either as a line or as a list.");
 		else if (cmdToUse != null) {
+			if (osConsole != null)
+				cmdToUse = osConsole + " " + cmdToUse;
 			commandLine = CommandLine.parse(cmdToUse);
 		} else if (commandToUse != null) {
 			if (commandToUse.size() == 0)
 				throw new SlcException("Command line is empty.");
 
-			commandLine = new CommandLine(commandToUse.get(0).toString());
-			for (int i = 1; i < commandToUse.size(); i++)
+			if (osConsole != null) {
+				commandLine = CommandLine.parse(osConsole);
+			} else {
+				commandLine = new CommandLine(commandToUse.get(0).toString());
+			}
+
+			for (int i = (osConsole != null ? 0 : 1); i < commandToUse.size(); i++) {
+				log.debug(commandToUse.get(i));
 				commandLine.addArgument(commandToUse.get(i).toString());
+			}
 		} else {
 			// all cases covered previously
-			throw new UnsupportedOperationException();
+			throw new UnsupportedException();
 		}
 		return commandLine;
 	}
 
+	protected ExecuteStreamHandler createExecuteStreamHandler(
+			final Writer stdOutWriter, final Writer stdErrWriter) {
+		// Log writers
+
+		PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(
+				new LogOutputStream() {
+					protected void processLine(String line, int level) {
+						log(stdOutLogLevel, line);
+						if (stdOutWriter != null)
+							appendLineToFile(stdOutWriter, line);
+					}
+				}, new LogOutputStream() {
+					protected void processLine(String line, int level) {
+						log(stdErrLogLevel, line);
+						if (stdErrWriter != null)
+							appendLineToFile(stdErrWriter, line);
+					}
+				}, null);
+		return pumpStreamHandler;
+	}
+
+	protected ExecuteResultHandler createExecuteResultHandler(
+			final CommandLine commandLine) {
+		return new ExecuteResultHandler() {
+
+			public void onProcessComplete(int exitValue) {
+				if (log.isDebugEnabled())
+					log
+							.debug("Process " + commandLine
+									+ " properly completed.");
+				if (testResult != null) {
+					forwardPath(testResult, null);
+					testResult.addResultPart(new SimpleResultPart(
+							TestStatus.PASSED, "Process " + commandLine
+									+ " properly completed."));
+				}
+			}
+
+			public void onProcessFailed(ExecuteException e) {
+				if (testResult != null) {
+					forwardPath(testResult, null);
+					testResult.addResultPart(new SimpleResultPart(
+							TestStatus.ERROR, "Process " + commandLine
+									+ " failed.", e));
+				} else {
+					throw new SlcException("Process " + commandLine
+							+ " failed.", e);
+				}
+			}
+		};
+	}
+
 	/**
-	 * Shortcut method returning the current exec dir if the specified one is
-	 * null.
+	 * Shortcut method getting the execDir to use
 	 */
-	private String getUsedDir(File dir) {
-		if (dir == null)
-			return System.getProperty("user.dir");
-		else
-			return dir.getPath();
+	protected String getExecDirToUse() {
+		try {
+			File dir = null;
+			if (execDir != null) {
+				// Replace '/' by local file separator, for portability
+				execDir.replace('/', File.separatorChar);
+				dir = new File(execDir).getCanonicalFile();
+			}
+
+			if (dir == null)
+				return System.getProperty("user.dir");
+			else
+				return dir.getPath();
+		} catch (Exception e) {
+			throw new SlcException("Cannot find exec dir", e);
+		}
 	}
 
 	protected void log(String logLevel, String line) {
@@ -315,6 +356,37 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 
 	public void setTestResult(TestResult testResult) {
 		this.testResult = testResult;
+	}
+
+	public void setLogCommand(Boolean logCommand) {
+		this.logCommand = logCommand;
+	}
+
+	public void setRedirectStreams(Boolean redirectStreams) {
+		this.redirectStreams = redirectStreams;
+	}
+
+	public void setOsConsole(String osConsole) {
+		this.osConsole = osConsole;
+	}
+
+	private class DummyexecuteStreamHandler implements ExecuteStreamHandler {
+
+		public void setProcessErrorStream(InputStream is) throws IOException {
+		}
+
+		public void setProcessInputStream(OutputStream os) throws IOException {
+		}
+
+		public void setProcessOutputStream(InputStream is) throws IOException {
+		}
+
+		public void start() throws IOException {
+		}
+
+		public void stop() {
+		}
+
 	}
 
 }

@@ -31,6 +31,7 @@ public class OsgiBoot {
 	public final static String PROP_SLC_OSGIBOOT_DEBUG = "slc.osgiboot.debug";
 	public final static String PROP_SLC_OSGIBOOT_DEFAULT_TIMEOUT = "slc.osgiboot.defaultTimeout";
 	public final static String PROP_SLC_OSGIBOOT_MODULES_URL_SEPARATOR = "slc.osgiboot.modulesUrlSeparator";
+	public final static String PROP_SLC_OSGIBOOT_SYSTEM_PROPERTIES_FILE = "slc.osgiboot.systemPropertiesFile";
 
 	public final static String DEFAULT_BASE_URL = "reference:file:";
 	public final static String EXCLUDES_SVN_PATTERN = "**/.svn/**";

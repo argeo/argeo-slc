@@ -116,6 +116,8 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 				osgiBundles.toString());
 		getSystemProperties().setProperty("slc.osgi.locations",
 				osgiLocations.toString());
+		
+		super.afterPropertiesSet();
 	}
 
 	protected String removeInitialReference(String location) {

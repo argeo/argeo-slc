@@ -1,5 +1,7 @@
 package org.argeo.slc.osgiboot;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Properties;
@@ -11,8 +13,32 @@ import org.osgi.framework.BundleContext;
 public class Launcher {
 
 	public static void main(String[] args) {
+		// Try to load system properties
+		String systemPropertiesFilePath = System
+				.getProperty(OsgiBoot.PROP_SLC_OSGIBOOT_SYSTEM_PROPERTIES_FILE);
+		if (systemPropertiesFilePath != null) {
+			FileInputStream in;
+			try {
+				in = new FileInputStream(systemPropertiesFilePath);
+				System.getProperties().load(in);
+			} catch (IOException e1) {
+				throw new RuntimeException(
+						"Cannot load system properties from "
+								+ systemPropertiesFilePath, e1);
+			}
+			if (in != null) {
+				try {
+					in.close();
+				} catch (Exception e) {
+					// silent
+				}
+			}
+		}
+
+		// Start main class
 		startMainClass();
 
+		// Start Equinox
 		BundleContext bundleContext = null;
 		try {
 			bundleContext = EclipseStarter.startup(args, null);
@@ -20,6 +46,7 @@ public class Launcher {
 			throw new RuntimeException("Cannot start Equinox.", e);
 		}
 
+		// OSGi bootstrap
 		OsgiBoot osgiBoot = new OsgiBoot(bundleContext);
 		osgiBoot.bootstrap();
 	}
