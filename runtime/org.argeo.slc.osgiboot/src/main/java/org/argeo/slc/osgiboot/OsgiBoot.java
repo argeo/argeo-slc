@@ -193,6 +193,8 @@ public class OsgiBoot {
 		if (modulesUrlStr == null)
 			return urls;
 
+		String baseUrl = getProperty(PROP_SLC_OSGI_BASE_URL);
+
 		Map installedBundles = getBundles();
 
 		BufferedReader reader = null;
@@ -207,6 +209,8 @@ public class OsgiBoot {
 				String moduleName = st.nextToken();
 				String moduleVersion = st.nextToken();
 				String url = st.nextToken();
+				if (baseUrl != null)
+					url = baseUrl + url;
 
 				if (installedBundles.containsKey(moduleName)) {
 					Bundle bundle = (Bundle) installedBundles.get(moduleName);

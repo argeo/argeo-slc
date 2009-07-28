@@ -28,14 +28,20 @@ public class OsgiRuntimeModularDistribution extends
 		for (Bundle bundle : getBundleContext().getBundles()) {
 			OsgiBundle osgiBundle = new OsgiBundle(bundle);
 
-			String location = bundle.getLocation();
-			if (location.startsWith("reference:file:"))
-				location = location.substring("reference:".length());
+			String originalLocation = bundle.getLocation();
+			String location = originalLocation;
+			if (originalLocation.startsWith("reference:file:"))
+				location = originalLocation.substring("reference:".length());
+
 			try {
 				URL url = new URL(location);
 				Resource res = resourceLoader.getResource(url.toString());
 				distributions.put(osgiBundle,
 						new VersionedResourceDistribution(osgiBundle, res));
+
+				if (log.isTraceEnabled())
+					log.debug("Added url " + url + " from original location "
+							+ originalLocation);
 			} catch (Exception e) {
 				log.warn("Cannot interpret location " + location
 						+ " of bundle " + bundle + ": " + e);
