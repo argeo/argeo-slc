@@ -193,20 +193,22 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			throw new UnsupportedException();
 		}
 
-		if (osConsole != null)
-			commandLine = CommandLine.parse(osConsole + " "
-					+ commandLine.toString());
-
 		if (generateScript != null) {
 			File scriptFile = new File(getExecDirToUse() + File.separator
 					+ generateScript);
 			try {
-				FileUtils.writeStringToFile(scriptFile, commandLine.toString());
+				FileUtils.writeStringToFile(scriptFile,
+						(osConsole != null ? osConsole : "")
+								+ commandLine.toString());
 			} catch (IOException e) {
 				throw new SlcException("Could not generate script "
 						+ scriptFile, e);
 			}
 			commandLine = new CommandLine(scriptFile);
+		} else {
+			if (osConsole != null)
+				commandLine = CommandLine.parse(osConsole + " "
+						+ commandLine.toString());
 		}
 
 		return commandLine;
