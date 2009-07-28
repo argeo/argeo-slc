@@ -150,8 +150,11 @@ public class OsgiBoot {
 		if (bundlesToStart.size() == 0)
 			return;
 
-		List notStartedBundles = new ArrayList(bundlesToStart);
+		// used to log the bundles not found
+		List notFoundBundles = new ArrayList(bundlesToStart);
+
 		Bundle[] bundles = bundleContext.getBundles();
+		long startBegin = System.currentTimeMillis();
 		for (int i = 0; i < bundles.length; i++) {
 			Bundle bundle = bundles[i];
 			String symbolicName = bundle.getSymbolicName();
@@ -160,24 +163,28 @@ public class OsgiBoot {
 					try {
 						bundle.start();
 					} catch (Exception e) {
-						// start failed, maybe bundle is not yet resolved
-						waitForBundleResolvedOrActive(bundle);
+						warn("Start of bundle " + symbolicName
+								+ " failed because of " + e
+								+ ", maybe bundle is not yet resolved,"
+								+ " waiting and trying again.");
+						waitForBundleResolvedOrActive(startBegin, bundle);
 						bundle.start();
 					}
-
-					notStartedBundles.remove(symbolicName);
+					notFoundBundles.remove(symbolicName);
 				} catch (Exception e) {
 					warn("Bundle " + symbolicName + " cannot be started: "
 							+ e.getMessage());
+					// was found even if start failed
+					notFoundBundles.remove(symbolicName);
 				}
 		}
 
-		for (int i = 0; i < notStartedBundles.size(); i++)
-			warn("Bundle " + notStartedBundles.get(i)
+		for (int i = 0; i < notFoundBundles.size(); i++)
+			warn("Bundle " + notFoundBundles.get(i)
 					+ " not started because it was not found.");
 	}
 
-	protected void waitForBundleResolvedOrActive(Bundle bundle)
+	protected void waitForBundleResolvedOrActive(long startBegin, Bundle bundle)
 			throws Exception {
 		int originalState = bundle.getState();
 		if ((originalState == Bundle.RESOLVED)
@@ -186,22 +193,22 @@ public class OsgiBoot {
 
 		String originalStateStr = stateAsString(originalState);
 
-		long begin = System.currentTimeMillis();
-		while ((bundle.getState() != Bundle.RESOLVED)
-				|| (bundle.getState() != Bundle.ACTIVE)) {
+		int currentState = bundle.getState();
+		while (!(currentState == Bundle.RESOLVED || currentState == Bundle.ACTIVE)) {
 			long now = System.currentTimeMillis();
-			if ((now - begin) > defaultTimeout)
+			if ((now - startBegin) > defaultTimeout)
 				throw new Exception("Bundle " + bundle.getSymbolicName()
-						+ " was not RESOLVED or ACTIVE after " + (now - begin)
-						+ "ms (originalState=" + originalStateStr
-						+ ", currentState=" + stateAsString(bundle.getState())
-						+ ")");
+						+ " was not RESOLVED or ACTIVE after "
+						+ (now - startBegin) + "ms (originalState="
+						+ originalStateStr + ", currentState="
+						+ stateAsString(currentState) + ")");
 
 			try {
 				Thread.sleep(100l);
 			} catch (InterruptedException e) {
 				// silent
 			}
+			currentState = bundle.getState();
 		}
 	}
 
