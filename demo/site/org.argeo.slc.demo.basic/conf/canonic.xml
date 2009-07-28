@@ -34,6 +34,18 @@
 					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
 						p:isParameter="false" p:isFrozen="false" />
 				</entry>
+				<entry key="refWithoutValueFrozen">
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+						p:isParameter="true" p:isFrozen="true">
+						<property name="value">
+							<bean class="org.argeo.slc.core.test.BasicTestData">
+								<aop:scoped-proxy />
+								<property name="expected" value="tata" />
+								<property name="reached" value="tata" />
+							</bean>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>

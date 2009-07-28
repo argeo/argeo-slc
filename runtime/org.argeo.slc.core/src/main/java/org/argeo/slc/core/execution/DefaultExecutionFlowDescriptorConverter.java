@@ -28,7 +28,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 	public final static String REF_VALUE_TYPE_BEAN_NAME = "beanName";
 
 	/** Workaround for https://www.spartadn.com/bugzilla/show_bug.cgi?id=206 */
-	private final static String REF_VALUE_IS_FROZEN = "__frozen";
+	private final static String REF_VALUE_IS_FROZEN = "[internal]";
 
 	private final static Log log = LogFactory
 			.getLog(DefaultExecutionFlowDescriptorConverter.class);
@@ -177,12 +177,14 @@ public class DefaultExecutionFlowDescriptorConverter implements
 				}
 			}
 			if (ref == null) {
-				if (log.isTraceEnabled())
-					log.warn("Cannot define reference for ref spec attribute "
+				log.warn("Cannot define reference for ref spec attribute "
+						+ key + " in " + executionFlow + " (" + rsa + ")."
+						+ " If it is an inner bean consider put it frozen.");
+			} else {
+				if (log.isDebugEnabled())
+					log.debug(ref + " is the reference for ref spec attribute "
 							+ key + " in " + executionFlow + " (" + rsa + ")");
-			} else if (log.isDebugEnabled())
-				log.debug(ref + " is the reference for ref spec attribute "
-						+ key + " in " + executionFlow + " (" + rsa + ")");
+			}
 			refValue.setRef(ref);
 		}
 		return refValue;
