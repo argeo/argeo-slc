@@ -90,12 +90,11 @@ public class DetachedAnswer implements DetachedCommunication {
 	}
 
 	public String toString() {
-		StringBuffer buf = new StringBuffer(getClass().getName());
+		StringBuffer buf = new StringBuffer("detached answer ");
 		buf.append('#').append(uuid);
 		buf.append(" status=").append(convertStatus(status));
 		buf.append(" properties=").append(properties);
 		buf.append(" log=").append(log);
 		return buf.toString();
 	}
-
 }

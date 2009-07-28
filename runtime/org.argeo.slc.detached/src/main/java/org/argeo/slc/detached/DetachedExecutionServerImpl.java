@@ -2,7 +2,11 @@ package org.argeo.slc.detached;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.io.IOUtils;
@@ -11,13 +15,18 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.detached.admin.CloseSession;
 import org.argeo.slc.detached.admin.OpenSession;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
+import org.osgi.framework.Constants;
+import org.osgi.util.tracker.ServiceTracker;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.osgi.context.BundleContextAware;
 
 /** Default implementation of a detached server. */
 public class DetachedExecutionServerImpl implements DetachedExecutionServer,
-		BundleContextAware {
+		BundleContextAware, InitializingBean, DisposableBean,
+		ApplicationContextAware {
 	private final static Log log = LogFactory
 			.getLog(DetachedExecutionServerImpl.class);
 
@@ -28,6 +37,12 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 	// always an open session
 
 	private BundleContext bundleContext;
+	private ApplicationContext applicationContext;
+
+	private final static String ALL_APP_CONTEXTS_KEY = "__allApplicationContexts";
+
+	private Map/* <String,ServiceTracker> */appContextServiceTrackers = Collections
+			.synchronizedMap(new HashMap());
 
 	public DetachedExecutionServerImpl() {
 		detachedContext = new DetachedContextImpl();
@@ -35,28 +50,11 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 	}
 
 	public synchronized DetachedAnswer executeRequest(DetachedRequest request) {
-		log.info("Received request " + request);
+		log.info("Received " + request);
 
 		DetachedAnswer answer = null;
 		try {
-			// Find action
-			ServiceReference[] refs = bundleContext.getAllServiceReferences(
-					ApplicationContext.class.getName(), null);
-			Object obj = null;
-			for (int i = 0; i < refs.length; i++) {
-				ApplicationContext appContext = (ApplicationContext) bundleContext
-						.getService(refs[i]);
-				try {
-					obj = appContext.getBean(request.getRef());
-				} catch (Exception e) {
-					// silent
-					if (log.isTraceEnabled())
-						log.trace("Could not find ref " + request.getRef(), e);
-				}
-				if (obj != null) {
-					break;
-				}
-			}
+			Object obj = retrieveStep(request);
 
 			if (obj == null)
 				throw new DetachedException("Could not find action with ref "
@@ -85,7 +83,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 			IOUtils.closeQuietly(writer);
 		}
 
-		// Case where current session is unexpectly null
+		// Case where current session is unexpectedly null
 		if (getCurrentSession() == null) {
 			log
 					.error("CURRENT SESSION IS NULL."
@@ -106,8 +104,120 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 
 		getCurrentSession().getRequests().add(request);
 		getCurrentSession().getAnswers().add(answer);
-		log.info("Sent answer " + answer);
+		log.info("Sent " + answer);
 		return answer;
+	}
+
+	protected synchronized Object retrieveStep(DetachedRequest request)
+			throws Exception {
+
+		// Check whether there is a cached object
+		if (request.getCachedObject() != null) {
+			Object cachedObj = request.getCachedObject();
+			if (log.isTraceEnabled())
+				log.trace("Use cached object " + cachedObj + " for request "
+						+ request);
+			return cachedObj;
+		}
+
+		// Check its own app context (typically for admin steps)
+		if (applicationContext.containsBean(request.getRef())) {
+			try {
+				Object obj = applicationContext.getBean(request.getRef());
+				if (log.isTraceEnabled())
+					log.trace("Retrieve from server app context " + obj
+							+ " for request " + request);
+				return obj;
+			} catch (Exception e) {
+				if (log.isTraceEnabled())
+					log.trace("Could not retrieve " + request.getRef()
+							+ " from server app context: " + e);
+			}
+		}
+
+		// Check whether the source bundle is set
+		String bundleName = request.getProperties().getProperty(
+				Constants.BUNDLE_SYMBOLICNAME);
+
+		ApplicationContext sourceAppContext = null;
+		if (bundleName != null) {
+			if (!appContextServiceTrackers.containsKey(bundleName)) {
+				ServiceTracker nSt = new ServiceTracker(bundleContext,
+						bundleContext.createFilter("(Bundle-SymbolicName="
+								+ bundleName + ")"), null);
+				nSt.open();
+				appContextServiceTrackers.put(bundleName, nSt);
+			}
+			ServiceTracker st = (ServiceTracker) appContextServiceTrackers
+					.get(bundleName);
+			sourceAppContext = (ApplicationContext) st.getService();
+			if (log.isTraceEnabled())
+				log.trace("Use source application context from bundle "
+						+ bundleName);
+
+			Object obj = null;
+			try {
+				obj = sourceAppContext.getBean(request.getRef());
+			} catch (Exception e) {
+				if (log.isTraceEnabled())
+					log.trace("Could not retrieve " + request.getRef()
+							+ " from app context of " + bundleName + ": " + e);
+			}
+			return obj;
+		}
+
+		// no bundle name specified or it failed
+		if (!appContextServiceTrackers.containsKey(ALL_APP_CONTEXTS_KEY)) {
+			ServiceTracker nSt = new ServiceTracker(bundleContext,
+					ApplicationContext.class.getName(), null);
+			nSt.open();
+			appContextServiceTrackers.put(ALL_APP_CONTEXTS_KEY, nSt);
+		}
+		ServiceTracker st = (ServiceTracker) appContextServiceTrackers
+				.get(ALL_APP_CONTEXTS_KEY);
+		Object[] arr = st.getServices();
+		for (int i = 0; i < arr.length; i++) {
+			ApplicationContext appC = (ApplicationContext) arr[i];
+			if (appC.containsBean(request.getRef())) {
+				sourceAppContext = appC;
+				if (log.isTraceEnabled())
+					log
+							.trace("Retrieved source application context "
+									+ "by scanning all published application contexts.");
+				try {
+					Object obj = sourceAppContext.getBean(request.getRef());
+					return obj;
+				} catch (Exception e) {
+					if (log.isTraceEnabled())
+						log.trace("Could not retrieve " + request.getRef()
+								+ " from app context " + appC + ": " + e);
+				}
+			}
+		}
+
+		// ServiceReference[] refs = bundleContext.getAllServiceReferences(
+		// ApplicationContext.class.getName(), null);
+		// Object obj = null;
+		// for (int i = 0; i < refs.length; i++) {
+		// ApplicationContext appContext = (ApplicationContext)
+		// bundleContext
+		// .getService(refs[i]);
+		// try {
+		// obj = appContext.getBean(request.getRef());
+		// } catch (Exception e) {
+		// // silent
+		// if (log.isTraceEnabled())
+		// log.trace("Could not find ref " + request.getRef(), e);
+		// }
+		// if (obj != null) {
+		// break;
+		// }
+		// }
+		// return obj;
+
+		throw new Exception(
+				"Сannot find any published application context containing bean "
+						+ request.getRef());
 	}
 
 	protected synchronized DetachedAnswer processStep(DetachedStep obj,
@@ -229,7 +339,8 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 
 	protected synchronized String dumpSessionsHistory(
 			DetachedRequest requestCurrent, DetachedAnswer answerCurrent) {
-		StringBuffer buf = new StringBuffer("## SESSIONS HISTORY DUMP\n");
+		StringBuffer buf = new StringBuffer(
+				"##\n## SESSIONS HISTORY DUMP\n##\n");
 		buf.append("# CURRENT\n");
 		buf.append("Current session: ").append(getCurrentSession())
 				.append('\n');
@@ -258,6 +369,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 		buf.append("# DETACHED CONTEXT\n");
 		buf.append(detachedContext).append('\n');
 
+		buf.append("##\n## END OF SESSIONS HISTORY DUMP\n##\n");
 		return buf.toString();
 	}
 
@@ -270,6 +382,27 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 
 	public void setBundleContext(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		log.info("Detached execution server initialized.");
+	}
+
+	public synchronized void destroy() throws Exception {
+		Iterator/* <String> */keys = appContextServiceTrackers.keySet()
+				.iterator();
+		while (keys.hasNext()) {
+			ServiceTracker st = (ServiceTracker) appContextServiceTrackers
+					.get(keys.next());
+			st.close();
+		}
+		appContextServiceTrackers.clear();
+
+		log.info("Detached execution server closed.");
+	}
+
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
 	}
 
 }
