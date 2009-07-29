@@ -132,4 +132,21 @@ public class FileAttachmentsStorage implements AttachmentsStorage,
 				+ attachment.getUuid());
 		return file;
 	}
+
+	public void setAttachmentsDirectory(File attachmentsDirectory) {
+		this.attachmentsDirectory = attachmentsDirectory;
+	}
+
+	public void setAttachmentsTocFileName(String attachmentsTocFileName) {
+		this.attachmentsTocFileName = attachmentsTocFileName;
+	}
+
+	public void setDateFormatDay(DateFormat dateFormatDay) {
+		this.dateFormatDay = dateFormatDay;
+	}
+
+	public void setDateFormatTime(DateFormat dateFormatTime) {
+		this.dateFormatTime = dateFormatTime;
+	}
+
 }
