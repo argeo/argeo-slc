@@ -85,6 +85,8 @@ public class OsgiBoot {
 			} catch (BundleException e) {
 				warn("Could not install bundle from " + url + ": "
 						+ e.getMessage());
+				if (debug)
+					e.printStackTrace();
 			}
 		}
 
@@ -175,6 +177,8 @@ public class OsgiBoot {
 				} catch (Exception e) {
 					warn("Bundle " + symbolicName + " cannot be started: "
 							+ e.getMessage());
+					if (debug)
+						e.printStackTrace();
 					// was found even if start failed
 					notFoundBundles.remove(symbolicName);
 				}
