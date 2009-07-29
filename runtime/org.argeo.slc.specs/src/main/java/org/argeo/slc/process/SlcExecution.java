@@ -28,6 +28,8 @@ public class SlcExecution implements Serializable {
 	/** TODO: Synchronize */
 	private List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
 	private List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
+
+	/** Attachment uuid. */
 	private String realizedFlowsXml = null;
 
 	public List<RealizedFlow> getRealizedFlows() {
@@ -145,10 +147,16 @@ public class SlcExecution implements Serializable {
 		}
 	}
 
+	/**
+	 * Not (yet) a stable API, should not be relied upon!
+	 * 
+	 * @return an id or an url allowing to retrieve the XML, not the XML itself!
+	 */
 	public String getRealizedFlowsXml() {
 		return realizedFlowsXml;
 	}
 
+	/** Not (yet) a stable API, should not be relied upon! */
 	public void setRealizedFlowsXml(String realizedFlowsXml) {
 		this.realizedFlowsXml = realizedFlowsXml;
 	}

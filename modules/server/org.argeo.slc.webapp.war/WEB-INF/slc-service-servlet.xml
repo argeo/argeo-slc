@@ -59,6 +59,7 @@
 	<bean name="/getSlcExecution.service" class="org.argeo.slc.web.mvc.process.GetSlcExecution">
 		<property name="slcExecutionDao" ref="slcExecutionDao" />
 		<property name="unmarshaller" ref="unmarshaller" />
+		<property name="attachmentsStorage" ref="attachmentsStorage" />
 	</bean>
 
 	<bean name="/newSlcExecution.service"
@@ -67,6 +68,7 @@
 		<property name="unmarshaller" ref="unmarshaller" />
 		<property name="marshaller" ref="marshaller" />
 		<property name="slcExecutionService" ref="slcExecutionService" />
+		<property name="attachmentsStorage" ref="attachmentsStorage" />
 	</bean>
 
 	<bean name="/getExecutionDescriptor.service" class="org.argeo.slc.web.mvc.execution.GetModuleDescriptor">

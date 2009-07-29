@@ -7,6 +7,16 @@ public class SimpleAttachment implements Attachment {
 	private String name;
 	private String contentType = "";
 
+	public SimpleAttachment() {
+	}
+
+	public SimpleAttachment(String uuid, String name, String contentType) {
+		super();
+		this.uuid = uuid;
+		this.name = name;
+		this.contentType = contentType;
+	}
+
 	public String getUuid() {
 		return uuid;
 	}

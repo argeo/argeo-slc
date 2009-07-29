@@ -1,13 +1,19 @@
 package org.argeo.slc.web.mvc.process;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.core.attachment.Attachment;
+import org.argeo.slc.core.attachment.AttachmentsStorage;
+import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.msg.MsgConstants;
 import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.process.SlcExecution;
@@ -32,6 +38,8 @@ public class NewSlcExecutionController extends AbstractServiceController {
 	private Unmarshaller unmarshaller;
 	private Marshaller marshaller;
 	private SlcExecutionService slcExecutionService;
+
+	private AttachmentsStorage attachmentsStorage;
 
 	@Override
 	protected void handleServiceRequest(HttpServletRequest request,
@@ -76,15 +84,39 @@ public class NewSlcExecutionController extends AbstractServiceController {
 				new SlcExecutionStep(SlcExecutionStep.TYPE_START,
 						"Process started from the Web UI"));
 
-		ObjectList ol = new ObjectList(slcExecution.getRealizedFlows());
-		StringResult result = new StringResult();
-		marshaller.marshal(ol, result);
-		slcExecution.setRealizedFlowsXml(result.toString());
+		// ObjectList ol = new ObjectList(slcExecution.getRealizedFlows());
+		// StringResult result = new StringResult();
+		// marshaller.marshal(ol, result);
+		// slcExecution.setRealizedFlowsXml(result.toString());
+		storeRealizedFlows(slcExecution);
 
 		slcExecutionService.newExecution(slcExecution);
 
 		SlcAgent agent = agentFactory.getAgent(agentId);
 		agent.runSlcExecution(slcExecution);
+	}
+
+	protected void storeRealizedFlows(SlcExecution slcExecution) {
+		Attachment attachment = realizedFlowsAttachment(UUID.randomUUID()
+				.toString(), slcExecution);
+		InputStream in = null;
+		try {
+
+			ObjectList ol = new ObjectList(slcExecution.getRealizedFlows());
+			StringResult result = new StringResult();
+			marshaller.marshal(ol, result);
+
+			in = new ByteArrayInputStream(result.toString().getBytes());
+			attachmentsStorage.storeAttachment(attachment, in);
+
+			slcExecution.setRealizedFlowsXml(attachment.getUuid());
+
+		} catch (Exception e) {
+			log.error("Could not store realized flows as attachment #"
+					+ attachment.getUuid(), e);
+		} finally {
+			IOUtils.closeQuietly(in);
+		}
 	}
 
 	public void setUnmarshaller(Unmarshaller unmarshaller) {
@@ -103,4 +135,15 @@ public class NewSlcExecutionController extends AbstractServiceController {
 		this.marshaller = marshaller;
 	}
 
+	public void setAttachmentsStorage(AttachmentsStorage attachmentsStorage) {
+		this.attachmentsStorage = attachmentsStorage;
+	}
+
+	/** Unify labelling in the package */
+	static Attachment realizedFlowsAttachment(String attachmentUuid,
+			SlcExecution slcExecution) {
+		return new SimpleAttachment(attachmentUuid,
+				"RealizedFlows of SlcExecution #" + slcExecution.getUuid(),
+				"text/xml");
+	}
 }

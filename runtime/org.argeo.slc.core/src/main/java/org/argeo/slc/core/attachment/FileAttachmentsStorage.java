@@ -3,30 +3,55 @@ package org.argeo.slc.core.attachment;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.springframework.beans.factory.InitializingBean;
 
-public class FileAttachmentsStorage implements AttachmentsStorage {
+public class FileAttachmentsStorage implements AttachmentsStorage,
+		InitializingBean {
+	private final static Log log = LogFactory
+			.getLog(FileAttachmentsStorage.class);
+
 	private File attachmentsDirectory;
 
-	public FileAttachmentsStorage() {
-		String osgiInstanceArea = System.getProperty("osgi.instance.area");
-		if (osgiInstanceArea != null) {
-			if (osgiInstanceArea.startsWith("file:"))
-				osgiInstanceArea = osgiInstanceArea.substring("file:".length());
-			attachmentsDirectory = new File(osgiInstanceArea + File.separator
-					+ "slcAttachments");
-		}
+	private String attachmentsTocFileName = "attachmentsToc.csv";
 
+	private DateFormat dateFormatDay = new SimpleDateFormat("yyyy-MM-dd");
+	private DateFormat dateFormatTime = new SimpleDateFormat("HH:mm:ss");
+
+	public void afterPropertiesSet() {
 		if (attachmentsDirectory == null) {
-			String tempDir = System.getProperty("java.io.tmpdir");
-			attachmentsDirectory = new File(tempDir + File.separator
-					+ "slcAttachments");
+
+			String osgiInstanceArea = System.getProperty("osgi.instance.area");
+			if (osgiInstanceArea != null) {
+				if (osgiInstanceArea.startsWith("file:"))
+					osgiInstanceArea = osgiInstanceArea.substring("file:"
+							.length());
+				attachmentsDirectory = new File(osgiInstanceArea
+						+ File.separator + "slcAttachments");
+			}
+
+			if (attachmentsDirectory == null) {
+				String tempDir = System.getProperty("java.io.tmpdir");
+				attachmentsDirectory = new File(tempDir + File.separator
+						+ "slcAttachments");
+			}
 		}
+		if (!attachmentsDirectory.exists())
+			attachmentsDirectory.mkdirs();
+		if (log.isDebugEnabled())
+			log.debug("File attachment storage initialized in directory "
+					+ attachmentsDirectory);
 	}
 
 	public void retrieveAttachment(Attachment attachment,
@@ -40,6 +65,8 @@ public class FileAttachmentsStorage implements AttachmentsStorage {
 			while ((read = in.read(buffer)) >= 0) {
 				outputStream.write(buffer, 0, read);
 			}
+			if (log.isTraceEnabled())
+				log.trace("Read " + attachment + " from " + file);
 		} catch (IOException e) {
 			throw new SlcException("Cannot write attachment " + attachment
 					+ " to " + file, e);
@@ -58,6 +85,9 @@ public class FileAttachmentsStorage implements AttachmentsStorage {
 			while ((read = inputStream.read(buffer)) >= 0) {
 				out.write(buffer, 0, read);
 			}
+			if (log.isTraceEnabled())
+				log.trace("Wrote " + attachment + " to " + file);
+			updateAttachmentToc(attachment, file);
 		} catch (IOException e) {
 			throw new SlcException("Cannot write attachment " + attachment
 					+ " to " + file, e);
@@ -67,9 +97,37 @@ public class FileAttachmentsStorage implements AttachmentsStorage {
 
 	}
 
+	/** For monitoring purposes only */
+	protected void updateAttachmentToc(Attachment attachment, File file) {
+		Date date = new Date(file.lastModified());
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter(attachmentsDirectory + File.separator
+					+ attachmentsTocFileName, true);
+			writer.append(dateFormatDay.format(date));
+			writer.append(',');
+			writer.append(dateFormatTime.format(date));
+			writer.append(',');
+			writer.append(attachment.getUuid());
+			writer.append(',');
+			writer.append(attachment.getName());
+			writer.append(',');
+			writer.append(attachment.getContentType());
+			writer.append(',');
+			writer.append(Long.toString(file.length()));
+			writer.append(',');
+			writer.append(file.getCanonicalPath());
+			writer.append('\n');
+		} catch (IOException e) {
+			log.warn("Could not update attachments TOC for " + attachment
+					+ " and file " + file, e);
+		} finally {
+			IOUtils.closeQuietly(writer);
+		}
+
+	}
+
 	protected File getFile(Attachment attachment) {
-		if (!attachmentsDirectory.exists())
-			attachmentsDirectory.mkdirs();
 		File file = new File(attachmentsDirectory + File.separator
 				+ attachment.getUuid());
 		return file;
