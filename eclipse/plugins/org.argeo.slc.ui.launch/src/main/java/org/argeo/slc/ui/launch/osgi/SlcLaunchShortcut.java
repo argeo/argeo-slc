@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.jdt.internal.debug.ui.jres.VMInstallWizard;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMInstall2;
@@ -98,52 +99,32 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 			vmArgs.append(" -Xmx256m");
 
 			// Add locations of JVMs
-			vmArgs.append(" -D" + VMS_PROPERTY_PREFIX + ".default="
-					+ JavaRuntime.getDefaultVMInstall().getInstallLocation());
+			addVmSysProperty(vmArgs, "default", JavaRuntime
+					.getDefaultVMInstall());
 			IVMInstallType[] vmTypes = JavaRuntime.getVMInstallTypes();
 			for (IVMInstallType vmType : vmTypes) {
-				System.out.println("vmType: id=" + vmType.getId() + ", name="
-						+ vmType.getName() + ", toString=" + vmType);
+				// System.out.println("vmType: id=" + vmType.getId() + ", name="
+				// + vmType.getName() + ", toString=" + vmType);
 				for (IVMInstall vmInstall : vmType.getVMInstalls()) {
-					printVm("", vmInstall);
+					// printVm("", vmInstall);
 					// properties based on name
-					vmArgs.append(" -D" + VMS_PROPERTY_PREFIX + "."
-							+ vmInstall.getName() + "="
-							+ vmInstall.getInstallLocation());
+					addVmSysProperty(vmArgs, vmInstall.getName(), vmInstall);
 					if (vmInstall instanceof IVMInstall2) {
 						// properties based on version
 						IVMInstall2 vmInstall2 = (IVMInstall2) vmInstall;
 						String version = vmInstall2.getJavaVersion();
-						vmArgs.append(" -D" + VMS_PROPERTY_PREFIX + "."
-								+ version + "="
-								+ vmInstall.getInstallLocation());
+						addVmSysProperty(vmArgs, version, vmInstall);
 
 						List<String> tokens = new ArrayList<String>();
 						StringTokenizer st = new StringTokenizer(version, ".");
 						while (st.hasMoreTokens())
 							tokens.add(st.nextToken());
 						if (tokens.size() >= 2)
-							vmArgs.append(" -D" + VMS_PROPERTY_PREFIX + "."
-									+ tokens.get(0) + "." + tokens.get(1) + "="
-									+ vmInstall.getInstallLocation());
-
+							addVmSysProperty(vmArgs, tokens.get(0) + "."
+									+ tokens.get(1), vmInstall);
 					}
 				}
 			}
-			// printVm("Default", JavaRuntime.getDefaultVMInstall());
-			// IExecutionEnvironment[] execEnvs = JavaRuntime
-			// .getExecutionEnvironmentsManager()
-			// .getExecutionEnvironments();
-			// for (IExecutionEnvironment execEnv : execEnvs) {
-			// System.out.println("execEnv: id=" + execEnv.getId() + ", desc="
-			// + execEnv.getDescription());
-			// if (execEnv.getId().startsWith("J2SE")
-			// || execEnv.getId().startsWith("Java")) {
-			// IVMInstall vmInstall = execEnv.getDefaultVM();
-			// printVm("", vmInstall);
-			// }
-			// }
-
 			configuration.setAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs
 							.toString());
@@ -168,7 +149,20 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 
 	}
 
-	private void printVm(String prefix, IVMInstall vmInstall) {
+	protected void addVmSysProperty(StringBuffer vmArgs, String suffix,
+			IVMInstall vmInstall) {
+		addSysProperty(vmArgs, VMS_PROPERTY_PREFIX + "." + suffix, vmInstall
+				.getInstallLocation().getPath());
+	}
+
+	protected void addSysProperty(StringBuffer vmArgs, String key, String value) {
+		String str = "-D" + key + "=" + value;
+		if (str.contains(" "))
+			str = "\"" + str + "\"";
+		vmArgs.append(" " + str);
+	}
+
+	protected void printVm(String prefix, IVMInstall vmInstall) {
 		System.out.println(prefix + " vmInstall: id=" + vmInstall.getId()
 				+ ", name=" + vmInstall.getName() + ", installLocation="
 				+ vmInstall.getInstallLocation() + ", toString=" + vmInstall);
@@ -177,6 +171,20 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 			System.out.println("  vmInstall: javaVersion="
 					+ vmInstall2.getJavaVersion());
 		}
+		// printVm("Default", JavaRuntime.getDefaultVMInstall());
+		// IExecutionEnvironment[] execEnvs = JavaRuntime
+		// .getExecutionEnvironmentsManager()
+		// .getExecutionEnvironments();
+		// for (IExecutionEnvironment execEnv : execEnvs) {
+		// System.out.println("execEnv: id=" + execEnv.getId() + ", desc="
+		// + execEnv.getDescription());
+		// if (execEnv.getId().startsWith("J2SE")
+		// || execEnv.getId().startsWith("Java")) {
+		// IVMInstall vmInstall = execEnv.getDefaultVM();
+		// printVm("", vmInstall);
+		// }
+		// }
+
 	}
 
 	protected String convertBundleList(List<String> bundlesToStart,
