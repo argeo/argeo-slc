@@ -1,6 +1,9 @@
 package org.argeo.slc.web.mvc.execution;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,12 +26,26 @@ public class ListModulesDescriptors extends AbstractServiceController {
 
 		// TODO: use centralized agentId property (from MsgConstants)?
 		String agentId = request.getParameter("agentId");
-		
+
 		SlcAgent slcAgent = agentFactory.getAgent(agentId);
 
-		List<ExecutionModuleDescriptor> descriptors = slcAgent.listExecutionModuleDescriptors();
+		List<ExecutionModuleDescriptor> descriptors = slcAgent
+				.listExecutionModuleDescriptors();
+		SortedSet<ExecutionModuleDescriptor> set = new TreeSet<ExecutionModuleDescriptor>(
+				new Comparator<ExecutionModuleDescriptor>() {
 
-		modelAndView.addObject(new ObjectList(descriptors));
+					public int compare(ExecutionModuleDescriptor md1,
+							ExecutionModuleDescriptor md2) {
+						String str1 = md1.getLabel() != null ? md1.getLabel()
+								: md1.getName();
+						String str2 = md2.getLabel() != null ? md2.getLabel()
+								: md2.getName();
+						return str1.compareTo(str2);
+					}
+				});
+		set.addAll(descriptors);
+
+		modelAndView.addObject(new ObjectList(set));
 	}
 
 	public void setAgentFactory(SlcAgentFactory agentFactory) {
