@@ -13,6 +13,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.IVMInstall2;
+import org.eclipse.jdt.launching.IVMInstallType;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -26,6 +30,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public class SlcLaunchShortcut extends OSGiLaunchShortcut {
+	public final static String VMS_PROPERTY_PREFIX = "slc.launch.vm";
+
 	private Boolean debug = false;
 
 	private String springOsgiExtenderId = "org.springframework.osgi.extender";
@@ -88,9 +94,59 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 					true);
 			String defaultVmArgs = configuration.getAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
+			StringBuffer vmArgs = new StringBuffer(defaultVmArgs);
+			vmArgs.append(" -Xmx256m");
+
+			// Add locations of JVMs
+			vmArgs.append(" -D" + VMS_PROPERTY_PREFIX + ".default="
+					+ JavaRuntime.getDefaultVMInstall().getInstallLocation());
+			IVMInstallType[] vmTypes = JavaRuntime.getVMInstallTypes();
+			for (IVMInstallType vmType : vmTypes) {
+				System.out.println("vmType: id=" + vmType.getId() + ", name="
+						+ vmType.getName() + ", toString=" + vmType);
+				for (IVMInstall vmInstall : vmType.getVMInstalls()) {
+					printVm("", vmInstall);
+					// properties based on name
+					vmArgs.append(" -D" + VMS_PROPERTY_PREFIX + "."
+							+ vmInstall.getName() + "="
+							+ vmInstall.getInstallLocation());
+					if (vmInstall instanceof IVMInstall2) {
+						// properties based on version
+						IVMInstall2 vmInstall2 = (IVMInstall2) vmInstall;
+						String version = vmInstall2.getJavaVersion();
+						vmArgs.append(" -D" + VMS_PROPERTY_PREFIX + "."
+								+ version + "="
+								+ vmInstall.getInstallLocation());
+
+						List<String> tokens = new ArrayList<String>();
+						StringTokenizer st = new StringTokenizer(version, ".");
+						while (st.hasMoreTokens())
+							tokens.add(st.nextToken());
+						if (tokens.size() >= 2)
+							vmArgs.append(" -D" + VMS_PROPERTY_PREFIX + "."
+									+ tokens.get(0) + "." + tokens.get(1) + "="
+									+ vmInstall.getInstallLocation());
+
+					}
+				}
+			}
+			// printVm("Default", JavaRuntime.getDefaultVMInstall());
+			// IExecutionEnvironment[] execEnvs = JavaRuntime
+			// .getExecutionEnvironmentsManager()
+			// .getExecutionEnvironments();
+			// for (IExecutionEnvironment execEnv : execEnvs) {
+			// System.out.println("execEnv: id=" + execEnv.getId() + ", desc="
+			// + execEnv.getDescription());
+			// if (execEnv.getId().startsWith("J2SE")
+			// || execEnv.getId().startsWith("Java")) {
+			// IVMInstall vmInstall = execEnv.getDefaultVM();
+			// printVm("", vmInstall);
+			// }
+			// }
+
 			configuration.setAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
-					defaultVmArgs + " -Xmx256m");
+					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs
+							.toString());
 
 			// Choose working directory
 			Shell shell = Display.getCurrent().getActiveShell();
@@ -110,6 +166,17 @@ public class SlcLaunchShortcut extends OSGiLaunchShortcut {
 					"Cannot execute SLC launch shortcut", e.getStatus());
 		}
 
+	}
+
+	private void printVm(String prefix, IVMInstall vmInstall) {
+		System.out.println(prefix + " vmInstall: id=" + vmInstall.getId()
+				+ ", name=" + vmInstall.getName() + ", installLocation="
+				+ vmInstall.getInstallLocation() + ", toString=" + vmInstall);
+		if (vmInstall instanceof IVMInstall2) {
+			IVMInstall2 vmInstall2 = (IVMInstall2) vmInstall;
+			System.out.println("  vmInstall: javaVersion="
+					+ vmInstall2.getJavaVersion());
+		}
 	}
 
 	protected String convertBundleList(List<String> bundlesToStart,
