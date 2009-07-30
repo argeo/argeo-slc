@@ -6,12 +6,14 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<beans:import resource="classpath:org/argeo/slc/osgi/manager.xml" />
+
 	<service interface="org.eclipse.osgi.framework.console.CommandProvider"
 		ref="commandProvider" />
 
-<!-- 
-	<service
+	<!--
+		<service
 		interface="org.springframework.osgi.context.event.OsgiBundleApplicationContextListener"
 		ref="bundlesManager" />
- -->
+	-->
 </beans:beans>

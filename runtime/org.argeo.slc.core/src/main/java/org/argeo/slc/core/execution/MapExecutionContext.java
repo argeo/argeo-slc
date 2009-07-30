@@ -8,8 +8,7 @@ import java.util.UUID;
 
 import org.argeo.slc.execution.ExecutionContext;
 
-public class MapExecutionContext implements
-		ExecutionContext {
+public class MapExecutionContext implements ExecutionContext {
 	private final Map<String, Object> variables = Collections
 			.synchronizedMap(new HashMap<String, Object>());
 
@@ -32,4 +31,17 @@ public class MapExecutionContext implements
 	public String getUuid() {
 		return uuid;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ExecutionContext)
+			return uuid.equals(((ExecutionContext) obj).getUuid());
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName()+"#"+uuid;
+	}
+
 }

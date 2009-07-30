@@ -299,16 +299,23 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 			Assert.isTrue(
 					osgiBundle.getName().equals(bundle.getSymbolicName()),
 					"symbolic name consistent");
-			Assert.isTrue(osgiBundle.getVersion().equals(
-					bundle.getHeaders().get(Constants.BUNDLE_VERSION)),
-					"version consistent");
+			if (osgiBundle.getVersion() != null)
+				Assert.isTrue(osgiBundle.getVersion().equals(
+						bundle.getHeaders().get(Constants.BUNDLE_VERSION)),
+						"version consistent");
 		} else {
-			for (Bundle b : bundleContext.getBundles()) {
+			bundles: for (Bundle b : bundleContext.getBundles()) {
 				if (b.getSymbolicName().equals(osgiBundle.getName())) {
+					if (osgiBundle.getVersion() == null) {
+						bundle = b;
+						break bundles;
+					}
+
 					if (b.getHeaders().get(Constants.BUNDLE_VERSION).equals(
 							osgiBundle.getVersion())) {
 						bundle = b;
 						osgiBundle.setInternalBundleId(b.getBundleId());
+						break bundles;
 					}
 				}
 			}
