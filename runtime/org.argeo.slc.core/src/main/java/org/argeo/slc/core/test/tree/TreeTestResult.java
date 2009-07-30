@@ -34,7 +34,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		Comparable<TreeTestResult>, AttachmentsEnabled, Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Log log = LogFactory.getLog(TreeTestResult.class);
+	private final static Log log = LogFactory.getLog(TreeTestResult.class);
 
 	private List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();
 
@@ -55,6 +55,8 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
+	private Boolean strictChecks = false;
+
 	/** Sets the list of listeners. */
 	public void setListeners(List<TestResultListener<TreeTestResult>> listeners) {
 		this.listeners = listeners;
@@ -62,8 +64,12 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	public void addResultPart(TestResultPart part) {
 		if (isClosed)
-			throw new SlcException("Cannot result parts to a closed result");
-
+			notifyIssue(
+					"Trying to add result parts to an already closed result,"
+							+ " consider changing the scope of this test result:"
+							+ " you are referencing the same stored data with each new call.",
+					null);
+		
 		if (currentPath == null)
 			throw new SlcException("No current path set.");
 
@@ -83,6 +89,13 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 				listener.resultPartAdded(this, part);
 			}
 		}
+	}
+
+	protected void notifyIssue(String msg, Exception e) {
+		if (strictChecks)
+			throw new SlcException(msg, e);
+		else
+			log.error(msg, e);
 	}
 
 	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
@@ -269,6 +282,10 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 							attachment);
 			}
 		}
+	}
+
+	public void setStrictChecks(Boolean strictChecks) {
+		this.strictChecks = strictChecks;
 	}
 
 }
