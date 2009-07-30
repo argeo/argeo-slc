@@ -15,6 +15,9 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 
 	private Long internalBundleId;
 
+	private String label;
+	private String description;
+
 	public OsgiBundle() {
 
 	}
@@ -75,6 +78,22 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 	/** Only package access for the time being. e.g. from {@link BundlesManager} */
 	void setInternalBundleId(Long internalBundleId) {
 		this.internalBundleId = internalBundleId;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }

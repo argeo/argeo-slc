@@ -12,6 +12,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.build.BasicNameVersion;
 import org.argeo.slc.core.execution.AbstractExecutionModulesManager;
 import org.argeo.slc.core.execution.DefaultExecutionFlowDescriptorConverter;
 import org.argeo.slc.deploy.ModuleDescriptor;
@@ -48,12 +49,33 @@ public class OsgiExecutionModulesManager extends
 	private Boolean useCachedServices = Boolean.parseBoolean(System
 			.getProperty(PROPERTY_CACHE_SERVICES, "true"));
 
-	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
+	public synchronized ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version) {
 		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
-		md.setName(moduleName);
-		md.setVersion(version);
-		setMetadataFromBundle(md, null);
+		if (useCachedServices) {
+			OsgiBundle osgiBundle = null;
+			BasicNameVersion nameVersion = new BasicNameVersion(moduleName,
+					version);
+			bundles: for (Iterator<OsgiBundle> iterator = executionContexts
+					.keySet().iterator(); iterator.hasNext();) {
+				OsgiBundle ob = iterator.next();
+				if (ob.equals(nameVersion)) {
+					osgiBundle = ob;
+					break bundles;
+				}
+			}
+			if (osgiBundle == null)
+				throw new SlcException("No execution module registered for "
+						+ nameVersion);
+			md.setName(osgiBundle.getName());
+			md.setVersion(osgiBundle.getVersion());
+			md.setLabel(osgiBundle.getLabel());
+			md.setDescription(osgiBundle.getDescription());
+		} else {
+			md.setName(moduleName);
+			md.setVersion(version);
+			setMetadataFromBundle(md, null);
+		}
 		ExecutionFlowDescriptorConverter executionFlowDescriptorConverter = getExecutionFlowDescriptorConverter(
 				moduleName, version);
 		if (executionFlowDescriptorConverter == null)
@@ -321,6 +343,10 @@ public class OsgiExecutionModulesManager extends
 		if (service instanceof ExecutionContext) {
 			ExecutionContext executionContext = (ExecutionContext) service;
 			OsgiBundle osgiBundle = asOsgiBundle(properties);
+			Bundle bundle = bundlesManager.findRelatedBundle(osgiBundle);
+			osgiBundle.setLabel(getHeaderSafe(bundle, Constants.BUNDLE_NAME));
+			osgiBundle.setDescription(getHeaderSafe(bundle,
+					Constants.BUNDLE_DESCRIPTION));
 			executionContexts.put(osgiBundle, executionContext);
 			if (log.isTraceEnabled())
 				log.debug("Registered execution context from " + osgiBundle);
@@ -364,10 +390,16 @@ public class OsgiExecutionModulesManager extends
 			ExecutionFlow executionFlow = (ExecutionFlow) service;
 			OsgiBundle osgiBundle = asOsgiBundle(properties);
 			if (executionFlows.containsKey(osgiBundle)) {
-				executionFlows.get(osgiBundle).remove(executionFlow);
+				Set flows = executionFlows.get(osgiBundle);
+				flows.remove(executionFlow);
 				if (log.isTraceEnabled())
 					log.debug("Removed " + executionFlow + " from "
 							+ osgiBundle);
+				if (flows.size() == 0) {
+					executionFlows.remove(osgiBundle);
+					if (log.isTraceEnabled())
+						log.debug("Removed flows set from " + osgiBundle);
+				}
 			}
 		} else if (service instanceof ExecutionFlowDescriptorConverter) {
 			OsgiBundle osgiBundle = asOsgiBundle(properties);
