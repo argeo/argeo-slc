@@ -14,7 +14,6 @@
 	<bean
 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
-		<property name="ignoreUnresolvablePlaceholders" value="true" />
 		<property name="locations">
 			<value>osgibundle:mysql.properties
 			</value>
@@ -31,29 +30,28 @@
             ]]></value>
 		</property>
 	</bean>
-<!-- 
-	<bean id="dataSource"
+	<!--
+		<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
-		<property name="targetDataSource">
-			<bean
-				class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
-				destroy-method="destroy">
-				<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-				<property name="url" value="jdbc:mysql://localhost/sparta_prod" />
-				<property name="username" value="root" />
-				<property name="password" value="" />
-				<property name="suppressClose" value="true" />
-				<property name="autoCommit" value="false" />
-			</bean>
-		</property>
-	</bean>
- -->
+		<property name="targetDataSource"> <bean
+		class="org.springframework.jdbc.datasource.SingleConnectionDataSource"
+		destroy-method="destroy"> <property name="driverClassName"
+		value="com.mysql.jdbc.Driver" /> <property name="url"
+		value="jdbc:mysql://localhost/sparta_prod" /> <property
+		name="username" value="root" /> <property name="password" value="" />
+		<property name="suppressClose" value="true" /> <property
+		name="autoCommit" value="false" /> </bean> </property> </bean>
+	-->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url" value="${jdbc.url}" />
 		<property name="username" value="${jdbc.username}" />
 		<property name="password" value="${jdbc.password}" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="SELECT 1" />
+		<property name="maxActive" value="10" />
+		<property name="maxIdle" value="2" />
 	</bean>
 
 
