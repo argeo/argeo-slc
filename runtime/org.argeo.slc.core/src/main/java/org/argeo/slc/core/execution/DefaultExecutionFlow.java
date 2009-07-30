@@ -100,7 +100,7 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 				log.error("Execution flow failed,"
 						+ " but process did not fail"
 						+ " because failOnError property"
-						+ " is set to false: " + e, e);
+						+ " is set to false: " + e);
 				if (log.isTraceEnabled())
 					e.printStackTrace();
 			}
