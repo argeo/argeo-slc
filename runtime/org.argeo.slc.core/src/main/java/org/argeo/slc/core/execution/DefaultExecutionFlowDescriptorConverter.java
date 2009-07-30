@@ -1,8 +1,11 @@
 package org.argeo.slc.core.execution;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +25,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 public class DefaultExecutionFlowDescriptorConverter implements
 		ExecutionFlowDescriptorConverter, ApplicationContextAware {
@@ -82,6 +86,8 @@ public class DefaultExecutionFlowDescriptorConverter implements
 
 	public void addFlowsToDescriptor(ExecutionModuleDescriptor md,
 			Map<String, ExecutionFlow> executionFlows) {
+		SortedSet<ExecutionFlowDescriptor> set = new TreeSet<ExecutionFlowDescriptor>(
+				new ExecutionFlowDescriptorComparator());
 		for (String name : executionFlows.keySet()) {
 			ExecutionFlow executionFlow = executionFlows.get(name);
 
@@ -128,6 +134,8 @@ public class DefaultExecutionFlowDescriptorConverter implements
 					values, executionSpec);
 			if (executionFlow.getPath() != null)
 				efd.setPath(executionFlow.getPath());
+			else
+				efd.setPath("");
 
 			// Takes description from spring
 			BeanDefinition bd = getBeanFactory().getBeanDefinition(name);
@@ -138,8 +146,10 @@ public class DefaultExecutionFlowDescriptorConverter implements
 				md.getExecutionSpecs().add(executionSpec);
 
 			// Add execution flow
-			md.getExecutionFlows().add(efd);
+			set.add(efd);
+			// md.getExecutionFlows().add(efd);
 		}
+		md.getExecutionFlows().addAll(set);
 	}
 
 	@SuppressWarnings(value = { "unchecked" })
@@ -204,4 +214,26 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		this.applicationContext = applicationContext;
 	}
 
+	private static class ExecutionFlowDescriptorComparator implements
+			Comparator<ExecutionFlowDescriptor> {
+		public int compare(ExecutionFlowDescriptor o1,
+				ExecutionFlowDescriptor o2) {
+			if (StringUtils.hasText(o1.getPath())
+					&& StringUtils.hasText(o2.getPath())) {
+				return o1.getPath().compareTo(o2.getPath());
+			} else if (!StringUtils.hasText(o1.getPath())
+					&& StringUtils.hasText(o2.getPath())) {
+				return 1;
+			} else if (StringUtils.hasText(o1.getPath())
+					&& !StringUtils.hasText(o2.getPath())) {
+				return -1;
+			} else if (!StringUtils.hasText(o1.getPath())
+					&& !StringUtils.hasText(o2.getPath())) {
+				return o1.getName().compareTo(o2.getName());
+			} else {
+				return 0;
+			}
+		}
+
+	}
 }
