@@ -43,6 +43,7 @@ public class ExecutionThread extends Thread {
 			log.error(msg, e);
 			dispatchAddStep(processThread.getSlcProcess(),
 					new SlcExecutionStep(msg + " " + e.getMessage()));
+			processThread.notifyError();
 		} finally {
 			processThread.flowCompleted();
 			dispatchAddStep(processThread.getSlcProcess(),

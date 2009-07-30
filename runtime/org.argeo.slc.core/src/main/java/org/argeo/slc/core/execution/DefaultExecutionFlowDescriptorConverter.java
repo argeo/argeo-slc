@@ -28,7 +28,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 	public final static String REF_VALUE_TYPE_BEAN_NAME = "beanName";
 
 	/** Workaround for https://www.spartadn.com/bugzilla/show_bug.cgi?id=206 */
-	private final static String REF_VALUE_IS_FROZEN = "[internal]";
+	private final static String REF_VALUE_INTERNAL = "[internal]";
 
 	private final static Log log = LogFactory
 			.getLog(DefaultExecutionFlowDescriptorConverter.class);
@@ -61,17 +61,19 @@ public class DefaultExecutionFlowDescriptorConverter implements
 				} else if (value instanceof RefValue) {
 					RefValue refValue = (RefValue) value;
 
-					if (REF_VALUE_TYPE_BEAN_NAME.equals(refValue.getType()))
-						if (refValue.getRef() != null) {
+					if (REF_VALUE_TYPE_BEAN_NAME.equals(refValue.getType())) {
+						String ref = refValue.getRef();
+						if (ref != null && !ref.equals(REF_VALUE_INTERNAL)) {
 							Object obj = applicationContext.getBean(refValue
 									.getRef());
 							convertedValues.put(key, obj);
 						} else {
 							log.warn("Cannot interpret " + refValue);
 						}
-					else
+					} else {
 						throw new UnsupportedException("Ref value type",
 								refValue.getType());
+					}
 				}
 			}
 		}
@@ -110,7 +112,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 					}
 				} else if (attribute instanceof RefSpecAttribute) {
 					if (attribute.getIsFrozen()) {
-						values.put(key, new RefValue(REF_VALUE_IS_FROZEN));
+						values.put(key, new RefValue(REF_VALUE_INTERNAL));
 					} else
 						values.put(key, buildRefValue(
 								(RefSpecAttribute) attribute, executionFlow,
@@ -180,6 +182,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 				log.warn("Cannot define reference for ref spec attribute "
 						+ key + " in " + executionFlow + " (" + rsa + ")."
 						+ " If it is an inner bean consider put it frozen.");
+				ref = REF_VALUE_INTERNAL;
 			} else {
 				if (log.isDebugEnabled())
 					log.debug(ref + " is the reference for ref spec attribute "

@@ -19,6 +19,8 @@ public class ProcessThread extends Thread {
 	private final ThreadGroup processThreadGroup;
 	private final List<RealizedFlow> flowsToProcess = new ArrayList<RealizedFlow>();
 
+	private Boolean hadAnError = false;
+
 	public ProcessThread(
 			AbstractExecutionModulesManager executionModulesManager,
 			SlcExecution slcExecution) {
@@ -53,9 +55,12 @@ public class ProcessThread extends Thread {
 			}
 		}
 
-		slcProcess.setStatus(SlcExecution.STATUS_FINISHED);
+		if (hadAnError)
+			slcProcess.setStatus(SlcExecution.STATUS_ERROR);
+		else
+			slcProcess.setStatus(SlcExecution.STATUS_FINISHED);
 		dispatchUpdateStatus(slcProcess, SlcExecution.STATUS_RUNNING,
-				SlcExecution.STATUS_FINISHED);
+				slcProcess.getStatus());
 	}
 
 	protected void dispatchUpdateStatus(SlcExecution slcExecution,
@@ -64,6 +69,10 @@ public class ProcessThread extends Thread {
 				.getSlcExecutionNotifiers().iterator(); it.hasNext();) {
 			it.next().updateStatus(slcExecution, oldStatus, newStatus);
 		}
+	}
+
+	public void notifyError() {
+		hadAnError = true;
 	}
 
 	public synchronized void flowCompleted() {
