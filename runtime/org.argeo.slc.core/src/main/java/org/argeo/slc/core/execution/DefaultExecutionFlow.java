@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
@@ -19,6 +21,8 @@ import org.springframework.validation.MapBindingResult;
 
 public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		BeanNameAware {
+	private final static Log log = LogFactory
+			.getLog(DefaultExecutionFlow.class);
 
 	private final ExecutionSpec executionSpec;
 	private String name = null;
@@ -27,6 +31,8 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	private String path;
 	private StructureRegistry<TreeSPath> registry = new TreeSRegistry();
+
+	private Boolean failOnError = true;
 
 	public DefaultExecutionFlow() {
 		this.executionSpec = new DefaultExecutionSpec();
@@ -83,8 +89,21 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	}
 
 	public void run() {
-		for (Runnable executable : executables) {
-			executable.run();
+		try {
+			for (Runnable executable : executables) {
+				executable.run();
+			}
+		} catch (RuntimeException e) {
+			if (failOnError)
+				throw e;
+			else {
+				log.error("Execution flow failed,"
+						+ " but process did not fail"
+						+ " because failOnError property"
+						+ " is set to false: " + e, e);
+				if (log.isTraceEnabled())
+					e.printStackTrace();
+			}
 		}
 	}
 
@@ -171,6 +190,14 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	public void setRegistry(StructureRegistry<TreeSPath> registry) {
 		this.registry = registry;
+	}
+
+	public Boolean getFailOnError() {
+		return failOnError;
+	}
+
+	public void setFailOnError(Boolean failOnError) {
+		this.failOnError = failOnError;
 	}
 
 }
