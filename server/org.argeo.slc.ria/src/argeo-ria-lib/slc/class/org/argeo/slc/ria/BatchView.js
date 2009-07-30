@@ -42,10 +42,12 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 						}
 						var prefName = "slc.batch.autoclear";
 						var prefValue = this.getRiaPreferenceValue(prefName);
-						if(prefValue !== null){
-							this.executeBatchOnAgent(batchAgentId, prefValue);
-							return;
+						if(prefValue !== null && prefValue === true){
+							this.executeBatchOnAgent(batchAgentId, true);							
+						}else{
+							this.executeBatchOnAgent(batchAgentId, false);
 						}
+						return;
 						var modal = new org.argeo.ria.components.Modal("Clear?", null);
 						modal.addYesNoReminder("Do you want to clear the batch automatically after execution?", prefName);
 						modal.addListener("cancel", function(e){
