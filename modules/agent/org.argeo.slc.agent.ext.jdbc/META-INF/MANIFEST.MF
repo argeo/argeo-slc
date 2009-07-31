@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Fragment-Host: org.springframework.jdbc
+Bundle-Version: 0.11.5.SNAPSHOT
+Bundle-SymbolicName: org.argeo.slc.agent.ext.jdbc
+Import-Package: com.mysql.jdbc;resolution:=optional,
+ net.sourceforge.jtds.jdbc;resolution:=optional,
+ org.hsqldb;resolution:=optional

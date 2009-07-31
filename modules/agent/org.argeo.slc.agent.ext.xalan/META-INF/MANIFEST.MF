@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Fragment-Host: com.springsource.org.apache.xalan
+Bundle-Version: 0.9.5.SNAPSHOT
+Bundle-SymbolicName: org.argeo.slc.agent.ext.xalan
+Import-Package: org.w3c.dom.traversal;resolution:=optional
