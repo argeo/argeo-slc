@@ -30,7 +30,7 @@
 		<version.asm>2.2.3</version.asm>
 		<version.maven-bundle-plugin>2.0.0</version.maven-bundle-plugin>
 		<version.activemq>5.2.0.0006</version.activemq>
-		<version.maven-argeo-osgi>0.1.15</version.maven-argeo-osgi>
+		<version.maven-argeo-osgi>0.1.16</version.maven-argeo-osgi>
 		<version.maven-argeo-qooxdoo>0.8.2.1</version.maven-argeo-qooxdoo>
 		<site.repoBase>file:///var/argeo/projects/SLC/www/site</site.repoBase>
 		<site.urlBase>http://www.argeo.org/projects/slc/site</site.urlBase>
