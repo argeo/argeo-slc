@@ -218,9 +218,17 @@ public class DefaultExecutionFlowDescriptorConverter implements
 			Comparator<ExecutionFlowDescriptor> {
 		public int compare(ExecutionFlowDescriptor o1,
 				ExecutionFlowDescriptor o2) {
+			// TODO: write unit tests for this
 			if (StringUtils.hasText(o1.getPath())
 					&& StringUtils.hasText(o2.getPath())) {
-				return o1.getPath().compareTo(o2.getPath());
+				if (o1.getPath().equals(o2.getPath()))
+					return o1.getName().compareTo(o2.getName());
+				else if (o1.getPath().startsWith(o2.getPath()))
+					return -1;
+				else if (o2.getPath().startsWith(o1.getPath()))
+					return 1;
+				else
+					return o1.getPath().compareTo(o2.getPath());
 			} else if (!StringUtils.hasText(o1.getPath())
 					&& StringUtils.hasText(o2.getPath())) {
 				return 1;

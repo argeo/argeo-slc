@@ -172,12 +172,19 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 						.getAttributes().get(key).getValue() != null);
 	}
 
+	@Override
 	public String toString() {
-		return new StringBuffer("Flow ").append(name).toString();
+		return new StringBuffer("Execution flow ").append(name).toString();
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		return ((ExecutionFlow) obj).getName().equals(name);
+	}
+
+	@Override
+	public int hashCode() {
+		return name.hashCode();
 	}
 
 	public String getPath() {

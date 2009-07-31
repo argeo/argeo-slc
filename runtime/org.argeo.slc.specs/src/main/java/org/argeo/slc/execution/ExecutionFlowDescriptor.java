@@ -59,4 +59,16 @@ public class ExecutionFlowDescriptor {
 		this.description = description;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ExecutionFlowDescriptor)
+			return name.equals(((ExecutionFlowDescriptor) obj).getName());
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
+
 }
