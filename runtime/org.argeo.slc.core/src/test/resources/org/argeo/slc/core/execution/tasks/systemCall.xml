@@ -46,6 +46,7 @@
 					<property name="osCmds">
 						<map>
 							<entry key="Linux" value="ls" />
+							<entry key="Mac OS X" value="ls" />
 						</map>
 					</property>
 				</bean>
@@ -58,6 +59,11 @@
 					<property name="osCommands">
 						<map>
 							<entry key="Linux">
+								<list>
+									<value>ls</value>
+								</list>
+							</entry>
+							<entry key="Mac OS X">
 								<list>
 									<value>ls</value>
 								</list>
