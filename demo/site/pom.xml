@@ -17,7 +17,6 @@
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
-					<strictManifestVersion>true</strictManifestVersion>
 				</configuration>
 			</plugin>
 		</plugins>
