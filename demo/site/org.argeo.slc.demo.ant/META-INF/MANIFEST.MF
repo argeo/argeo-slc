@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.12.1.SNAPSHOT
+Bundle-Version: 0.11.5.SNAPSHOT
 Spring-Context: conf/*,conf/testCases/*
 Bundle-Name: SLC Demo Ant
 Bundle-Description: Demonstrate Ant support
@@ -9,3 +9,4 @@ Import-Package: org.aopalliance.aop,org.argeo.slc.ant,org.argeo.slc.co
  scope,org.springframework.beans.factory.config,org.springframework.co
  re.io
 Bundle-SymbolicName: org.argeo.slc.demo.ant
+

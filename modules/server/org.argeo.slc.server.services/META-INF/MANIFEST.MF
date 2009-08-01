@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.12.1.SNAPSHOT
+Bundle-Version: 0.11.5.SNAPSHOT
 Bundle-Name: SLC Server Services
 Bundle-SymbolicName: org.argeo.slc.server.services
 Import-Package: org.aopalliance.aop,org.argeo.slc.core.attachment,org.
@@ -9,3 +9,4 @@ Import-Package: org.aopalliance.aop,org.argeo.slc.core.attachment,org.
  services,org.argeo.slc.services.impl,org.hibernate.jdbc,org.springfra
  mework.aop,org.springframework.aop.framework,org.springframework.bean
  s.factory.config
+

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ClassPath: WEB-INF/classes
-Bundle-Version: 0.12.1.SNAPSHOT
+Bundle-Version: 0.11.5.SNAPSHOT
 Bundle-Name: SLC Webapp
 Web-ContextPath: org.argeo.slc.webapp
 Bundle-SymbolicName: org.argeo.slc.webapp
@@ -24,3 +24,4 @@ Import-Package: net.sf.cglib.core,net.sf.cglib.proxy,net.sf.cglib.refl
  amework.web.context.request,org.springframework.web.context.support,o
  rg.springframework.web.filter,org.springframework.web.servlet,org.spr
  ingframework.web.servlet.handler,org.springframework.web.servlet.mvc
+

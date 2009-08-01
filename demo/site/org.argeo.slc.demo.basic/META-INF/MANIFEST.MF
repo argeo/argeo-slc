@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.12.1.SNAPSHOT
+Bundle-Version: 0.11.5.SNAPSHOT
 Spring-Context: conf/*,conf/testCases/*
 Bundle-Name: SLC Demo Basic
 Bundle-Description: Test of basic features
@@ -12,3 +12,4 @@ Import-Package: net.sf.cglib.core,net.sf.cglib.proxy,net.sf.cglib.refl
  p,org.springframework.aop.framework,org.springframework.aop.scope,org
  .springframework.beans.factory.config,org.springframework.core.io
 Bundle-SymbolicName: org.argeo.slc.demo.basic
+
