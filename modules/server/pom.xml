@@ -17,7 +17,7 @@
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
-					<strictManifestVersion>true</strictManifestVersion>
+					<strictManifestVersion>false</strictManifestVersion>
 					<bundlesPomArtifactId>org.argeo.slc.modules.server.bundles</bundlesPomArtifactId>
 				</configuration>
 			</plugin>
