@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.11.5.SNAPSHOT
+Bundle-Version: 0.12.1.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.activemq.broker
 Import-Package: jabber.client;resolution:=optional,jabber.iq._private;
  resolution:=optional,jabber.iq.auth;resolution:=optional,jabber.iq.ro
@@ -13,4 +13,3 @@ Import-Package: jabber.client;resolution:=optional,jabber.iq._private;
  pache.activemq.broker,org.apache.activemq.command;resolution:=optiona
  l,org.apache.activemq.transport.http;resolution:=optional,org.apache.
  activemq.xbean,org.springframework.beans.factory.config
-

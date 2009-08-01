@@ -1,6 +1,5 @@
 Manifest-Version: 1.0
 Fragment-Host: org.argeo.slc.agent
-Bundle-Version: 0.11.5.SNAPSHOT
+Bundle-Version: 0.12.1.SNAPSHOT
 Bundle-Name: Argeo SLC Demo Agent
 Bundle-SymbolicName: org.argeo.slc.demo.agent
-
