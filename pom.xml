@@ -16,8 +16,8 @@
 		<module>archetypes</module>
 	</modules>
 	<properties>
-		<developmentCycle>0.11</developmentCycle>
-		<version.argeo-ria>0.11.4</version.argeo-ria>
+		<developmentCycle>0.12</developmentCycle>
+		<version.argeo-ria>0.12.0</version.argeo-ria>
 		<version.spring>2.5.6.SEC01</version.spring>
 		<version.spring-ws>1.5.7.A</version.spring-ws>
 		<version.spring-osgi>1.2.0</version.spring-osgi>
