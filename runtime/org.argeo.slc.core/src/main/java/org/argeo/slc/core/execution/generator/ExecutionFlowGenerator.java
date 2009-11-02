@@ -26,10 +26,6 @@ import org.springframework.core.PriorityOrdered;
  * Application Context after configuring the <code>ExecutionContext</code>, 
  * and outputs of a <code>RunnableFactory</code>.
  */
-/**
- * @author Olivier Capillon
- *
- */
 public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
 		PriorityOrdered {
 	
@@ -63,6 +59,12 @@ public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
 	 * <code>RunnableCallFlow</code> beans.
 	 */
 	private String contextValuesBeanName = "executionFlowGenerator.contextValues";
+	
+	/**
+	 * Prefix added to the bean names defined in each 
+	 * <code>RunnableCallFlowDescriptor</code>
+	 */
+	private String flowBeanNamesPrefix = "";
 		
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -100,11 +102,13 @@ public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
 		GenericBeanDefinition flowBean = new GenericBeanDefinition();
 		flowBean.setBeanClass(RunnableCallFlow.class);
 		
+		String beanName = flowBeanNamesPrefix + flowDescriptor.getBeanName();
+		
 		MutablePropertyValues mpv = new MutablePropertyValues();		
 		mpv.addPropertyValue("runnableCalls", flowDescriptor.getRunnableCalls());
 		mpv.addPropertyValue("sharedContextValuesMap", new RuntimeBeanReference(contextValuesBeanName));
 		
-		mpv.addPropertyValue("name", flowDescriptor.getBeanName());
+		mpv.addPropertyValue("name", beanName);
 		mpv.addPropertyValue("path", flowDescriptor.getPath());
 
 		mpv.addPropertyValue("executionContext", new RuntimeBeanReference(executionContextBeanName));
@@ -113,9 +117,9 @@ public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
 		
 		// register it
 		if(log.isDebugEnabled()) {
-			log.debug("Registering bean definition for RunnableCallFlow " + flowDescriptor.getBeanName());
+			log.debug("Registering bean definition for RunnableCallFlow " + beanName);
 		}
-		registry.registerBeanDefinition(flowDescriptor.getBeanName(), flowBean);
+		registry.registerBeanDefinition(beanName, flowBean);
 	}
 	
 	/**
@@ -151,5 +155,7 @@ public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
 		this.contextValuesBeanName = contextValuesBeanName;
 	}
 
-
+	public void setFlowBeanNamesPrefix(String flowBeanNamesPrefix) {
+		this.flowBeanNamesPrefix = flowBeanNamesPrefix;
+	}
 }
