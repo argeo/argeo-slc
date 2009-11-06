@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Argeo IDE
+Bundle-SymbolicName: org.argeo.slc.ide;singleton:=true
+Bundle-Version: 0.12.1.SNAPSHOT
+Bundle-Vendor: Argeo.org
