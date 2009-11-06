@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.argeo.slc.ide.java"
+      label="Argeo Java IDE"
+      version="0.12.1.SNAPSHOT"
+      provider-name="Argeo">
+
+   <description url="http://www.argeo.org/projects/slc/org.argeo.slc.ui.launch.feature/0.11.3-SNAPSHOT/org.argeo.slc.ui.launch.feature">
+      Simplify running scripts based on Argeo SLC
+   </description>
+
+   <copyright url="http://www.argeo.org">
+      Copyright 2008 Mathieu Baudier
+   </copyright>
+
+   <license url="http://www.apache.org/licenses/LICENSE-2.0.txt">
+      SLC - Software LifeCycle framework
+      
+Copyright 2008 Mathieu Baudier - Argeo e.U.
+
+Licensed under the Apache License, Version 2.0 (the &amp;quot;License&amp;quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &amp;quot;AS IS&amp;quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+   </license>
+
+   <url>
+      <update url="http://www.argeo.org/projects/SLC/update"/>
+   </url>
+
+   <plugin
+         id="org.argeo.slc.ui.launch"
+         download-size="0"
+         install-size="0"
+         version="0.11.3.D20090429_1550"
+         unpack="false"/>
+
+</feature>
