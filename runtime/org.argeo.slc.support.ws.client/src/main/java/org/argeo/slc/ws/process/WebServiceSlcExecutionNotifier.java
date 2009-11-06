@@ -87,7 +87,7 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 		req.setSteps(additionalSteps);
 		if (log.isTraceEnabled()) {
 			for (SlcExecutionStep step : additionalSteps) {
-				log.trace("Step " + step.getUuid() + ": " + step.logAsString());
+				log.trace("Step " + step.getUuid() + ": " + step);
 			}
 		}
 

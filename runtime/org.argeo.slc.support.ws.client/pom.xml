@@ -2,11 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.argeo.slc.runtime</groupId>
-		<artifactId>argeo-slc-runtime</artifactId>
-		<version>0.11.3-SNAPSHOT</version>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>runtime</artifactId>
+		<version>0.12.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
+	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.ws.client</artifactId>
 	<packaging>jar</packaging>
 	<name>SLC Support Web Services Client</name>
@@ -61,6 +62,7 @@
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>org.springframework.ws</artifactId>
+			<version>1.5.8.A</version>
 		</dependency>
 
 		<dependency>
