@@ -36,10 +36,9 @@ limitations under the License.
    </url>
 
    <plugin
-         id="org.argeo.slc.ui.launch"
+         id="org.argeo.slc.ide"
          download-size="0"
          install-size="0"
-         version="0.11.3.D20090429_1550"
-         unpack="false"/>
+         version="0.0.0"/>
 
 </feature>
