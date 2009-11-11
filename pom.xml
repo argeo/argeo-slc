@@ -341,6 +341,13 @@ limitations under the License.
 			</snapshots>
 		</repository>
 	</repositories>
+	<distributionManagement>
+		<site>
+			<id>argeo-slc-site</id>
+			<name>SLC Site</name>
+			<url>file://${site.repoBase}/${developmentCycle}/</url>
+		</site>
+	</distributionManagement>
 	<reporting>
 		<plugins>
 			<plugin>
