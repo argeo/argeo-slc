@@ -216,7 +216,7 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 		// return obj;
 
 		throw new Exception(
-				"Сannot find any published application context containing bean "
+				"Cannot find any published application context containing bean "
 						+ request.getRef());
 	}
 
