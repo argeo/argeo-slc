@@ -19,6 +19,7 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   	LIST_COLLECTIONS_SERVICE : "listCollectionRefs.service",
   	COPY_COLLECTION_TO_COLL_SERVICE : "copyCollectionToCollection.service",
   	LIST_RESULTS_SERVICE : "listResultAttributes.service",
+  	LIST_RESULTS_LONG_SERVICE : "listResults.service",
   	GET_RESULT_SERVICE : "getResult.service",
   	GET_ATTACHEMENT_SERVICE : "getAttachment.service",
   	LIST_SLCEXEC_SERVICE : "listSlcExecutions.service",
@@ -149,6 +150,25 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   		if(patternAttribute && patternValue){
   			request.setParameter("attrName", patternAttribute);
   			request.setParameter("attrPattern", patternValue);
+  		}
+  		return request;
+  	},
+  	
+  	/**
+  	 * List all results or results of a given collection with all details 
+  	 * @param collectionId {String} Id of the collection to load
+  	 * @param fireReloadEventType {String} Whether query should trigger a ReloadEvent
+  	 * @param iLoadStatusables {org.argeo.ria.components.ILoadStatusables[]} Gui parts to update
+  	 * @return {qx.io.remote.Request}
+  	 */
+  	getListResultsLongService : function(collectionId, fireReloadEventType, iLoadStatusables){
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+	  		org.argeo.slc.ria.SlcApi.LIST_RESULTS_LONG_SERVICE, 
+	  		fireReloadEventType, 
+	  		iLoadStatusables
+  		);
+  		if(collectionId){
+  			request.setParameter("id", collectionId);
   		}
   		return request;
   	},
