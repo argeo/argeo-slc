@@ -402,7 +402,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			} else {
 				this.list.add(item);
 			}
-			this.list.select(item);
+			this.list.setSelection([item]);
 			
 		},
 
