@@ -85,7 +85,7 @@ qx.Class.define("org.argeo.slc.ria.execution.CellEditorFactory",
 				cellEditor.setValue("" + cellInfo.value);
 	
 				cellEditor.addListener("appear", function() {
-					cellEditor.selectAll();
+					cellEditor.selectAllText();
 				});
 	
 				var validationFunc;
