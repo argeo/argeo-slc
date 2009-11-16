@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -65,6 +66,15 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.osgiboot</artifactId>
+		</dependency>
+
+		<!--
+			Xalan and Xerces are implicitly required since the JDK provided
+			implementations are overridden in the execution modules manager
+		-->
+		<dependency>
+			<groupId>org.apache.xalan</groupId>
+			<artifactId>com.springsource.org.apache.xalan</artifactId>
 		</dependency>
 
 	</dependencies>

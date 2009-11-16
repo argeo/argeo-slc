@@ -28,6 +28,13 @@ public class ExecutionThread extends Thread {
 	}
 
 	public void run() {
+		if (getContextClassLoader() != null) {
+			if (log.isTraceEnabled())
+				log.debug("Context class loader set to "
+						+ getContextClassLoader());
+		}
+
+		// Retrieve execution flow descriptor
 		ExecutionFlowDescriptor executionFlowDescriptor = realizedFlow
 				.getFlowDescriptor();
 		String flowName = executionFlowDescriptor.getName();
@@ -63,5 +70,4 @@ public class ExecutionThread extends Thread {
 			it.next().addSteps(slcExecution, steps);
 		}
 	}
-
 }

@@ -3,4 +3,5 @@ Bundle-ManifestVersion: 2
 Fragment-Host: com.springsource.org.apache.xalan
 Bundle-Version: 0.12.1.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.agent.ext.xalan
-Import-Package: org.w3c.dom.traversal;resolution:=optional
+Import-Package: com.sun.org.apache.xml.internal.dtm;resolution:=optional,
+ org.w3c.dom.traversal;resolution:=optional

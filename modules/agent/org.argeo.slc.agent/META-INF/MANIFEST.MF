@@ -4,3 +4,5 @@ Require-Bundle: org.argeo.slc.specs,org.argeo.slc.core,org.argeo.slc.s
 Bundle-Version: 0.12.1.SNAPSHOT
 Bundle-Name: Argeo SLC Agent
 Bundle-SymbolicName: org.argeo.slc.agent
+Import-Package: org.apache.xalan.processor,
+ org.apache.xerces.jaxp

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.Ordered;
 import org.springframework.core.PriorityOrdered;
+import org.springframework.osgi.service.exporter.support.ExportContextClassLoader;
 import org.springframework.osgi.service.exporter.support.OsgiServiceFactoryBean;
 
 @SuppressWarnings(value = { "unchecked" })
@@ -28,6 +29,8 @@ public class MultipleServiceExporterPostProcessor implements
 	private List<Class> interfaces = new ArrayList<Class>();
 
 	private Class osgiServiceFactoryClass = OsgiServiceFactoryBean.class;
+
+	private Boolean useServiceProviderContextClassLoader = false;
 
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -50,6 +53,9 @@ public class MultipleServiceExporterPostProcessor implements
 			MutablePropertyValues mpv = new MutablePropertyValues();
 			mpv.addPropertyValue("interfaces", interfaces.toArray());
 			mpv.addPropertyValue("targetBeanName", beanName);
+			if (useServiceProviderContextClassLoader)
+				mpv.addPropertyValue("contextClassLoader",
+						ExportContextClassLoader.SERVICE_PROVIDER);
 			RootBeanDefinition bd = new RootBeanDefinition(
 					osgiServiceFactoryClass, mpv);
 
@@ -79,4 +85,10 @@ public class MultipleServiceExporterPostProcessor implements
 	public int getOrder() {
 		return Ordered.LOWEST_PRECEDENCE;
 	}
+
+	public void setUseServiceProviderContextClassLoader(
+			Boolean useServiceProviderContextClassLoader) {
+		this.useServiceProviderContextClassLoader = useServiceProviderContextClassLoader;
+	}
+
 }

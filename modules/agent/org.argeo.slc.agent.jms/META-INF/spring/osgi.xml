@@ -18,5 +18,6 @@
 	<service ref="jmsAgent.attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
 
 	<reference id="modulesManager"
-		interface="org.argeo.slc.execution.ExecutionModulesManager" />
+		interface="org.argeo.slc.execution.ExecutionModulesManager"
+		context-class-loader="service-provider" />
 </beans:beans>

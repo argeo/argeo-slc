@@ -53,7 +53,8 @@
 							org.argeo.slc.msg.event;resolution:=optional,
 							org.argeo.slc.msg.test.tree;resolution:=optional,
 							org.argeo.slc.detached;resolution:=optional,
-							org.apache.xml.serialize
+							org.apache.xml.serialize;resolution:=optional,
+							org.apache.xerces.jaxp;resolution:=optional
 						</Import-Package>
 						<Fragment-Host>com.springsource.org.castor</Fragment-Host>
 					</instructions>
