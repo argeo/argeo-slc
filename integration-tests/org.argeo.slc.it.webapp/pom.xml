@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -20,19 +21,19 @@
 						<arg>-clean</arg>
 					</argsToAppend>
 					<systemProperties>
-						<slc.osgi.bundles>
+						<argeo.osgi.bundles>
 							${basedir}/../../demo/site;in=*;ex=target;ex=pom.xml,
 							${basedir}/../../modules/server;in=*;ex=target;ex=pom.xml,
 							${basedir}/../../modules/agent;in=*;ex=target;ex=pom.xml
-						</slc.osgi.bundles>
-						<slc.osgi.start>
+						</argeo.osgi.bundles>
+						<argeo.osgi.start>
 							org.springframework.osgi.extender,
 							org.argeo.slc.server.main,
 							org.argeo.slc.server.hsqldb,
 							org.argeo.slc.ria,
-							org.argeo.slc.agent,								
+							org.argeo.slc.agent,
 							org.argeo.slc.agent.jms							
-						</slc.osgi.start>
+						</argeo.osgi.start>
 					</systemProperties>
 				</configuration>
 				<executions>
@@ -78,6 +79,12 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>org.argeo.commons.osgi</groupId>
+			<artifactId>org.argeo.osgi.boot</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.server</artifactId>
 			<version>${project.version}</version>
@@ -87,6 +94,15 @@
 			<artifactId>org.argeo.slc.dep.agent</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<!-- Security -->
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.dep.ads</artifactId>
+			<version>${version.argeo-commons}</version>
+			<type>pom</type>
+		</dependency>
+
 		<!-- RIA -->
 		<dependency>
 			<groupId>org.argeo.slc.server</groupId>

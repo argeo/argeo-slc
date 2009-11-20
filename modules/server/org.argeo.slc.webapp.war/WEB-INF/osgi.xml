@@ -26,11 +26,9 @@
 		<reference interface="org.argeo.slc.execution.ExecutionModulesManager"
 		id="modulesManager" />
 	-->
-	<reference id="testManagerService"
-		interface="org.argeo.slc.services.TestManagerService" />
+	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 	<reference id="agentService" interface="org.argeo.slc.services.AgentService" />
-	<reference id="slcExecutionService"
-		interface="org.argeo.slc.services.SlcExecutionService" />
+	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
 
 	<reference id="hibernateTransactionManager"
 		interface="org.springframework.transaction.PlatformTransactionManager"
@@ -49,5 +47,11 @@
 	<!-- Provisioning -->
 	<set id="modularDistributions" interface="org.argeo.slc.build.ModularDistribution"
 		cardinality="0..N" />
+
+	<!-- Security -->
+	<!-- <reference id="authenticationEntryPoint"
+		interface="org.springframework.security.ui.AuthenticationEntryPoint" />-->
+	<reference id="_authenticationManager"
+		interface="org.springframework.security.AuthenticationManager" />
 
 </beans:beans>

@@ -54,6 +54,11 @@ public class OsgiBoot {
 				PROP_SLC_OSGIBOOT_DEFAULT_TIMEOUT, "10000"));
 		modulesUrlSeparator = getProperty(
 				PROP_SLC_OSGIBOOT_MODULES_URL_SEPARATOR, ",");
+		
+		warn("############################################################################################################");
+		warn("########################## THIS COMPONENT IS DEPRECATED AND WILL BE REMOVED SOON  ##########################");
+		warn("########################## USE org.argeo.commons.osgi:org.argeo.osgi.boot INSTEAD ##########################");
+		warn("############################################################################################################");
 	}
 
 	public void bootstrap() {

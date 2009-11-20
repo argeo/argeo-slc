@@ -6,7 +6,14 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bundle id="activemq.broker" symbolic-name="org.argeo.slc.server.activemq.broker"
+	<!-- Security -->
+	<bundle id="security.ldap" symbolic-name="org.argeo.security.manager.ldap"
+		action="start" />
+	<bundle id="security.services" symbolic-name="org.argeo.security.core"
+		action="start" />
+
+	<!-- SLC Middleware -->
+	<bundle id="activemq.broker" symbolic-name="org.argeo.server.activemq.broker"
 		action="start" />
 	<bundle id="castor" symbolic-name="org.argeo.slc.server.castor"
 		action="start" />
@@ -21,10 +28,16 @@
 	<bundle id="jms" symbolic-name="org.argeo.slc.server.jms"
 		action="start" />
 
+	<!-- Web -->
 	<bundle id="spring.osgi.web.extender" symbolic-name="org.springframework.osgi.web.extender"
 		action="start" />
 	<bundle id="catalina" symbolic-name="org.argeo.dep.osgi.catalina.start"
 		action="start" />
-	<bundle id="webapp" symbolic-name="org.argeo.slc.webapp" action="start" />
+
+	<!--  Web app start order is important! Security should be first -->
+	<bundle id="security.webapp" symbolic-name="org.argeo.security.webapp"
+		action="start" />
+	<bundle id="slc.webapp" symbolic-name="org.argeo.slc.webapp"
+		action="start" />
 
 </beans:beans>

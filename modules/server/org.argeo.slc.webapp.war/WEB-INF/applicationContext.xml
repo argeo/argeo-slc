@@ -10,9 +10,8 @@
 	<!--
 		<import resource="classpath:/org/argeo/slc/server/spring/jmx.xml" />
 	-->
-	<import resource="security.xml" />
-
 	<import resource="osgi.xml" />
+	<import resource="security.xml" />
 
 	<!-- Hibernate instrumentation-->
 	<bean id="osivInterceptor"

@@ -1,21 +1,21 @@
-<beans:beans xmlns="http://www.springframework.org/schema/security"
-	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
-              http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
 
-	<http realm="User Interface" >
-		<intercept-url pattern="/**" access="ROLE_USER,ROLE_ADMIN" />
-		<http-basic />
-		<anonymous />
-	</http>
+	<bean id="authenticationEntryPoint"
+		class="org.springframework.security.ui.webapp.AuthenticationProcessingFilterEntryPoint">
+		<property name="loginFormUrl"
+			value="http://localhost/org.argeo.security.webapp/getCredentials.ria" />
+		<property name="forceHttps" value="false" />
+	</bean>
 
-	<authentication-provider>
-		<user-service>
-			<user name="mbaudier" password="mbaudier" authorities="ROLE_USER,ROLE_ADMIN" />
-			<user name="cdujeu" password="cdujeu" authorities="ROLE_USER" />
-			<user name="test" password="test" authorities="ROLE_USER" />
-			<user name="demo" password="demo" authorities="ROLE_USER" />
-		</user-service>
-	</authentication-provider>
-
-</beans:beans>
+	<security:http entry-point-ref="authenticationEntryPoint">
+		<security:intercept-url pattern="**"
+			access="ROLE_USER,ROLE_ADMIN" />
+		<!-- <security:http-basic /> -->
+	</security:http>
+</beans>

@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.support.equinox</artifactId>
-	<name>SLC Support Equinox OSGi</name>
+	<name>SLC Support Equinox</name>
 	<packaging>jar</packaging>
 	<properties />
 	<build>
@@ -52,6 +52,11 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.osgi</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.osgi</groupId>
+			<artifactId>org.eclipse.osgi</artifactId>
 		</dependency>
 
 		<!-- Unit Tests -->

@@ -109,13 +109,7 @@
 							javax.servlet.jsp.jstl.core,
 							javax.servlet.jsp.jstl.fmt,
 							javax.servlet.jsp.jstl.tlv,
-							javax.servlet.resources,
-							org.springframework.security.ui.webapp,
-							org.springframework.security.userdetails.memory,
-							org.springframework.web.context,
-							org.springframework.osgi.web.context.support,
-							org.springframework.web.filter,
-							org.springframework.security.context
+							javax.servlet.resources
 						</Import-Package>
 						<Web-ContextPath>org.argeo.slc.ria</Web-ContextPath>
 					</instructions>

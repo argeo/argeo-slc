@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -65,18 +66,16 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.osgiboot</artifactId>
+			<groupId>org.argeo.commons.osgi</groupId>
+			<artifactId>org.argeo.osgi.boot</artifactId>
+			<version>${version.argeo-commons}</version>
 		</dependency>
 
 		<!--
-			Unit Tests -->
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.unit</artifactId>
-			<scope>test</scope>
-		</dependency>
-
+			Unit Tests <dependency> <groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId> <scope>test</scope>
+			</dependency>
+		-->
 
 	</dependencies>
 
@@ -91,17 +90,18 @@
 						<configuration>
 							<execDir>target/exec/server</execDir>
 							<systemProperties>
-								<slc.osgi.start>
+								<argeo.osgi.start>
 									org.springframework.osgi.extender,
+									org.argeo.server.ads.server,
 									org.argeo.slc.server.hsqldb,
 									org.argeo.slc.server.main,
 									org.argeo.slc.ria
-								</slc.osgi.start>
-								<slc.osgi.bundles>
+								</argeo.osgi.start>
+								<argeo.osgi.bundles>
 									${basedir}/site;in=*;ex=pom.xml;ex=target,
 									${basedir}/../modules/server;in=*;ex=pom.xml;ex=target;ex=.*,
 									${basedir}/../modules/agent;in=*;ex=pom.xml;ex=target
-								</slc.osgi.bundles>
+								</argeo.osgi.bundles>
 							</systemProperties>
 						</configuration>
 					</plugin>
@@ -117,6 +117,14 @@
 					<groupId>org.argeo.slc.server</groupId>
 					<artifactId>org.argeo.slc.ria</artifactId>
 				</dependency>
+
+				<!-- Security -->
+				<dependency>
+					<groupId>org.argeo.commons.security</groupId>
+					<artifactId>org.argeo.security.dep.ads</artifactId>
+					<version>${version.argeo-commons}</version>
+					<type>pom</type>
+				</dependency>
 			</dependencies>
 		</profile>
 		<profile>
@@ -129,16 +137,16 @@
 						<configuration>
 							<execDir>target/exec/agent</execDir>
 							<systemProperties>
-								<slc.osgi.start>
+								<argeo.osgi.start>
 									org.springframework.osgi.extender,
 									org.argeo.slc.support.equinox,
 									org.argeo.slc.agent,
 									org.argeo.slc.agent.jms
-								</slc.osgi.start>
-								<slc.osgi.bundles>
+								</argeo.osgi.start>
+								<argeo.osgi.bundles>
 									${basedir}/site;in=*;ex=pom.xml;ex=target,
 									${basedir}/../modules/agent;in=*;ex=pom.xml;ex=target
-								</slc.osgi.bundles>
+								</argeo.osgi.bundles>
 							</systemProperties>
 						</configuration>
 					</plugin>
@@ -168,15 +176,15 @@
 							<execDir>target/exec/detached</execDir>
 							<fork>true</fork>
 							<systemProperties>
-								<slc.osgi.start>
+								<argeo.osgi.start>
 									org.springframework.osgi.extender,
 									org.argeo.slc.detached,
 									org.argeo.slc.demo.det
-								</slc.osgi.start>
-								<slc.osgi.bundles>
+								</argeo.osgi.start>
+								<argeo.osgi.bundles>
 									${basedir}/site;in=org.argeo.slc.demo.det;ex=pom.xml;ex=target,
 									${basedir}/site;in=org.argeo.slc.demo.log4j;ex=pom.xml;ex=target,
-								</slc.osgi.bundles>
+								</argeo.osgi.bundles>
 								<javax.xml.parsers.DocumentBuilderFactory>org.apache.xerces.jaxp.DocumentBuilderFactoryImpl</javax.xml.parsers.DocumentBuilderFactory>
 							</systemProperties>
 						</configuration>
@@ -210,15 +218,15 @@
 						<configuration>
 							<execDir>target/exec/agent</execDir>
 							<systemProperties>
-								<slc.osgi.start>
+								<argeo.osgi.start>
 									org.springframework.osgi.extender,
 									org.argeo.slc.support.equinox,
 									org.argeo.slc.agent
-								</slc.osgi.start>
-								<slc.osgi.bundles>
+								</argeo.osgi.start>
+								<argeo.osgi.bundles>
 									${basedir}/site;in=*;ex=pom.xml;ex=target,
 									${basedir}/../modules/agent;in=*;ex=pom.xml;ex=target
-								</slc.osgi.bundles>
+								</argeo.osgi.bundles>
 							</systemProperties>
 						</configuration>
 					</plugin>
@@ -253,7 +261,7 @@
 								-->
 							</jvmArgs>
 							<systemProperties>
-								<slc.osgi.start>
+								<argeo.osgi.start>
 									org.argeo.dep.osgi.catalina.start,
 									org.springframework.osgi.extender,
 									org.springframework.osgi.web.extender,
@@ -265,7 +273,7 @@
 									org.argeo.slc.server.jms,
 									org.argeo.slc.webapp,
 									org.argeo.slc.ria
-								</slc.osgi.start>
+								</argeo.osgi.start>
 							</systemProperties>
 						</configuration>
 					</plugin>
