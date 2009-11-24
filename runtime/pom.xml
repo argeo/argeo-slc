@@ -29,6 +29,7 @@
 		<module>org.argeo.slc.detached.launcher</module>
 		<module>org.argeo.slc.launcher</module>
 		<module>org.argeo.slc.lib.detached</module>
+		<module>org.argeo.slc.support.ws.client</module>
 	</modules>
 	<build>
 		<pluginManagement>

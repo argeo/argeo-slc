@@ -12,9 +12,11 @@
 	<bundle id="security.services" symbolic-name="org.argeo.security.core"
 		action="start" />
 
-	<!-- SLC Middleware -->
+	<!-- Servers -->
 	<bundle id="activemq.broker" symbolic-name="org.argeo.server.activemq.broker"
 		action="start" />
+
+	<!-- SLC Middleware -->
 	<bundle id="castor" symbolic-name="org.argeo.slc.server.castor"
 		action="start" />
 	<bundle id="activemq" symbolic-name="org.argeo.slc.server.activemq"
