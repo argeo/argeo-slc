@@ -113,10 +113,6 @@
 		</dependency>
 
 		<!-- Security -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>org.springframework.security</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>com.springsource.json</groupId>

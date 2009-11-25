@@ -70,21 +70,6 @@
 		<url-pattern>/dist/*</url-pattern>
 	</servlet-mapping>
 
-	<!-- RIA servlet -->
-	<servlet>
-		<servlet-name>ria</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextClass</param-name>
-			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>ria</servlet-name>
-		<url-pattern>*.ria</url-pattern>
-	</servlet-mapping>
-
 	<!-- General -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
