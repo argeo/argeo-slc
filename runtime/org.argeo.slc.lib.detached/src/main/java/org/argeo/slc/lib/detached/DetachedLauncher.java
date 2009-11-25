@@ -26,7 +26,7 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 	private ResourceLoader resourceLoader = null;
 
 	private Resource osgiFramework = null;
-	private String osgibootBundleName = "org.argeo.slc.osgiboot";
+	private String osgibootBundleName = "org.argeo.osgi.boot";	
 	private String equinoxBundleName = "org.eclipse.osgi";
 	private String xmlapisBundleName = "com.springsource.org.apache.xmlcommons";
 	private String xercesBundleName = "com.springsource.org.apache.xerces";
