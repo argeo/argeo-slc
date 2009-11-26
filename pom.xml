@@ -333,6 +333,22 @@ limitations under the License.
 				<artifactId>org.argeo.osgi.boot</artifactId>
 				<version>${version.argeo-commons}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.argeo.commons.server</groupId>
+				<artifactId>org.argeo.server.ads</artifactId>
+				<version>${version.argeo-commons}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.commons.server</groupId>
+				<artifactId>org.argeo.server.dep.jackrabbit.server</artifactId>
+				<version>${version.argeo-commons}</version>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.argeo.commons.server</groupId>
+				<artifactId>org.argeo.server.jackrabbit</artifactId>
+				<version>${version.argeo-commons}</version>
+			</dependency>
 
 		</dependencies>
 	</dependencyManagement>

@@ -104,19 +104,25 @@
 		</dependency>
 
 		<!-- Apache Directory -->
-
-		<!-- Apache DS -->
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
 			<artifactId>org.argeo.security.dep.ads</artifactId>
 			<type>pom</type>
 		</dependency>
-
-		<!-- Used to start the Apache Directory server -->
 		<dependency>
 			<groupId>org.argeo.commons.server</groupId>
 			<artifactId>org.argeo.server.ads</artifactId>
-			<version>0.1.2-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Jackrabbit -->
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.dep.jackrabbit.server</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.jackrabbit</artifactId>
 		</dependency>
 
 		<!-- DB Drivers -->
