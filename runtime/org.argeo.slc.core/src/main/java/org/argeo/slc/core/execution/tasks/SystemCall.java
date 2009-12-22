@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,17 +27,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
-import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.structure.StructureAware;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestStatus;
 import org.springframework.core.io.Resource;
 
-/** Execute and OS system call. */
-public class SystemCall extends TreeSRelatedHelper implements Runnable,
-		StructureAware<TreeSPath> {
+/** Execute an OS specific system call. */
+public class SystemCall extends TreeSRelatedHelper implements Runnable {
 	private final Log log = LogFactory.getLog(getClass());
 
 	private String execDir;
@@ -58,6 +56,9 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 
 	private Boolean logCommand = false;
 	private Boolean redirectStreams = true;
+	private Boolean exceptionOnFailed = true;
+	private Boolean mergeEnvironmentVariables = true;
+
 	private String osConsole = null;
 	private String generateScript = null;
 
@@ -65,17 +66,39 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 
 	private TestResult testResult;
 
-	// Internal use
-
+	/** Empty constructor */
 	public SystemCall() {
 
 	}
 
+	/**
+	 * Constructor based on the provided command list.
+	 * 
+	 * @param command
+	 *            the command list
+	 */
 	public SystemCall(List<Object> command) {
-		super();
 		this.command = command;
 	}
 
+	/**
+	 * Constructor based on the provided command.
+	 * 
+	 * @param cmd
+	 *            the command. If the provided string contains no space a
+	 *            command list is initialized with the argument as first
+	 *            component (useful for chained construction)
+	 */
+	public SystemCall(String cmd) {
+		if (cmd.indexOf(' ') < 0) {
+			command = new ArrayList<Object>();
+			command.add(cmd);
+		} else {
+			this.cmd = cmd;
+		}
+	}
+
+	/** Executes the system call. */
 	public void run() {
 		final Writer stdOutWriter;
 		final Writer stdErrWriter;
@@ -92,46 +115,52 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 				stdErrWriter = null;
 		}
 
+		if (log.isTraceEnabled()) {
+			log.debug("os.name=" + System.getProperty("os.name"));
+			log.debug("os.arch=" + System.getProperty("os.arch"));
+			log.debug("os.version=" + System.getProperty("os.version"));
+		}
+
+		// Execution directory
+		File dir = new File(getExecDirToUse());
+		if (!dir.exists())
+			dir.mkdirs();
+
+		// Watchdog to check for lost processes
+		Executor executor = new DefaultExecutor();
+		executor.setWatchdog(new ExecuteWatchdog(watchdogTimeout));
+
+		if (redirectStreams) {
+			// Redirect standard streams
+			executor.setStreamHandler(createExecuteStreamHandler(stdOutWriter,
+					stdErrWriter));
+		} else {
+			// Dummy stream handler (otherwise pump is used)
+			executor.setStreamHandler(new DummyexecuteStreamHandler());
+		}
+
+		executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
+		executor.setWorkingDirectory(dir);
+
+		// Command line to use
+		final CommandLine commandLine = createCommandLine();
+		if (logCommand)
+			log.info("Execute command:\n" + commandLine
+					+ "\n in working directory: \n" + dir + "\n");
+
+		// Env variables
+		Map<String, String> environmentVariablesToUse = null;
+		if (environmentVariables.size() > 0) {
+			environmentVariablesToUse = new HashMap<String, String>();
+			if (mergeEnvironmentVariables)
+				environmentVariablesToUse.putAll(System.getenv());
+			environmentVariablesToUse.putAll(environmentVariables);
+		}
+
+		// Execute
+		ExecuteResultHandler executeResultHandler = createExecuteResultHandler(commandLine);
+
 		try {
-			if (log.isTraceEnabled()) {
-				log.debug("os.name=" + System.getProperty("os.name"));
-				log.debug("os.arch=" + System.getProperty("os.arch"));
-				log.debug("os.version=" + System.getProperty("os.version"));
-			}
-
-			// Execution directory
-			File dir = new File(getExecDirToUse());
-			if (!dir.exists())
-				dir.mkdirs();
-
-			// Watchdog to check for lost processes
-			Executor executor = new DefaultExecutor();
-			executor.setWatchdog(new ExecuteWatchdog(watchdogTimeout));
-
-			if (redirectStreams) {
-				// Redirect standard streams
-				executor.setStreamHandler(createExecuteStreamHandler(
-						stdOutWriter, stdErrWriter));
-			} else {
-				// Dummy stream handler (otherwise pump is used)
-				executor.setStreamHandler(new DummyexecuteStreamHandler());
-			}
-
-			executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
-			executor.setWorkingDirectory(dir);
-
-			// Command line to use
-			final CommandLine commandLine = createCommandLine();
-			if (logCommand)
-				log.info("Execute command:\n" + commandLine + "\n");
-
-			// Env variables
-			Map<String, String> environmentVariablesToUse = environmentVariables
-					.size() > 0 ? environmentVariables : null;
-
-			// Execute
-			ExecuteResultHandler executeResultHandler = createExecuteResultHandler(commandLine);
-
 			if (synchronous)
 				try {
 					int exitValue = executor.execute(commandLine,
@@ -143,8 +172,11 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			else
 				executor.execute(commandLine, environmentVariablesToUse,
 						executeResultHandler);
+		} catch (SlcException e) {
+			throw e;
 		} catch (Exception e) {
-			throw new SlcException("Could not execute command " + cmd, e);
+			throw new SlcException("Could not execute command " + commandLine,
+					e);
 		} finally {
 			IOUtils.closeQuietly(stdOutWriter);
 			IOUtils.closeQuietly(stdErrWriter);
@@ -152,7 +184,10 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 
 	}
 
-	/** Can be overridden by specific command wrapper */
+	/**
+	 * Build a command line based on the properties. Can be overridden by
+	 * specific command wrappers.
+	 */
 	protected CommandLine createCommandLine() {
 		// Check if an OS specific command overrides
 		String osName = System.getProperty("os.name");
@@ -214,6 +249,10 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 		return commandLine;
 	}
 
+	/**
+	 * Creates a {@link PumpStreamHandler} which redirects streams to the custom
+	 * logging mechanism.
+	 */
 	protected ExecuteStreamHandler createExecuteStreamHandler(
 			final Writer stdOutWriter, final Writer stdErrWriter) {
 		// Log writers
@@ -235,6 +274,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 		return pumpStreamHandler;
 	}
 
+	/** Creates the default {@link ExecuteResultHandler}. */
 	protected ExecuteResultHandler createExecuteResultHandler(
 			final CommandLine commandLine) {
 		return new ExecuteResultHandler() {
@@ -253,14 +293,16 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			}
 
 			public void onProcessFailed(ExecuteException e) {
+				String msg = "Process " + commandLine + " failed.";
 				if (testResult != null) {
 					forwardPath(testResult, null);
 					testResult.addResultPart(new SimpleResultPart(
-							TestStatus.ERROR, "Process " + commandLine
-									+ " failed.", e));
+							TestStatus.ERROR, msg, e));
 				} else {
-					throw new SlcException("Process " + commandLine
-							+ " failed.", e);
+					if (exceptionOnFailed)
+						throw new SlcException(msg, e);
+					else
+						log.error(msg, e);
 				}
 			}
 		};
@@ -287,6 +329,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 		}
 	}
 
+	/** Log from the underlying streams. */
 	protected void log(String logLevel, String line) {
 		if ("ERROR".equals(logLevel))
 			log.error(line);
@@ -298,10 +341,15 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 			log.debug(line);
 		else if ("TRACE".equals(logLevel))
 			log.trace(line);
+		else if ("System.out".equals(logLevel))
+			System.out.println(line);
+		else if ("System.err".equals(logLevel))
+			System.err.println(line);
 		else
 			throw new SlcException("Unknown log level " + logLevel);
 	}
 
+	/** Append line to a log file. */
 	protected void appendLineToFile(Writer writer, String line) {
 		try {
 			writer.append(line).append('\n');
@@ -310,6 +358,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 		}
 	}
 
+	/** Creates the writer for the log files. */
 	protected Writer createWriter(Resource target) {
 		FileWriter writer = null;
 		try {
@@ -322,8 +371,26 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 		return writer;
 	}
 
+	/** Append the argument (for chaining) */
+	public SystemCall arg(String arg) {
+		command.add(arg);
+		return this;
+	}
+
+	/** Append the argument (for chaining) */
+	public SystemCall arg(String arg, String value) {
+		command.add(arg);
+		command.add(value);
+		return this;
+	}
+
+	/** */
 	public void setCmd(String command) {
 		this.cmd = command;
+	}
+
+	public void setCommand(List<Object> command) {
+		this.command = command;
 	}
 
 	public void setExecDir(String execdir) {
@@ -340,10 +407,6 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 
 	public void setSynchronous(Boolean synchronous) {
 		this.synchronous = synchronous;
-	}
-
-	public void setCommand(List<Object> command) {
-		this.command = command;
 	}
 
 	public void setOsCommands(Map<String, List<Object>> osCommands) {
@@ -380,6 +443,14 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable,
 
 	public void setRedirectStreams(Boolean redirectStreams) {
 		this.redirectStreams = redirectStreams;
+	}
+
+	public void setExceptionOnFailed(Boolean exceptionOnFailed) {
+		this.exceptionOnFailed = exceptionOnFailed;
+	}
+
+	public void setMergeEnvironmentVariables(Boolean mergeEnvironmentVariables) {
+		this.mergeEnvironmentVariables = mergeEnvironmentVariables;
 	}
 
 	public void setOsConsole(String osConsole) {
