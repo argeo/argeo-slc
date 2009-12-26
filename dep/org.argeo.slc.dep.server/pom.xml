@@ -31,14 +31,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.activemq</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.castor</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.hibernate</artifactId>
 		</dependency>
 		<dependency>
@@ -53,6 +45,7 @@
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>
 		</dependency>
+
 		<!-- Security -->
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
@@ -137,6 +130,10 @@
 		<dependency>
 			<groupId>com.mysql.jdbc</groupId>
 			<artifactId>com.springsource.com.mysql.jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>com.springsource.org.postgresql.jdbc3</artifactId>
 		</dependency>
 
 		<!-- Required in JDK 1.5 -->

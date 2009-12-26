@@ -86,6 +86,12 @@
 			<artifactId>com.springsource.javax.mail</artifactId>
 		</dependency>
 
+		<!-- SVN -->
+		<dependency>
+			<groupId>com.svnkit</groupId>
+			<artifactId>com.springsource.org.tmatesoft.svn</artifactId>
+		</dependency>
+
 		<!-- TODO: check if necessary here -->
 		<dependency>
 			<groupId>org.springframework</groupId>

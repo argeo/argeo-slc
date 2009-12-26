@@ -12,6 +12,13 @@
 	<packaging>jar</packaging>
 	<name>SLC Dependencies Agent</name>
 	<dependencies>
+		<!--  Commons -->
+		<dependency>
+			<groupId>org.argeo.commons.osgi</groupId>
+			<artifactId>org.argeo.osgi.boot</artifactId>
+		</dependency>
+
+		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
@@ -32,8 +39,6 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.castor</artifactId>
 		</dependency>
-
-		<!-- Additional -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.ant</artifactId>

@@ -20,6 +20,7 @@
 			<resource>
 				<directory>.</directory>
 				<includes>
+					<include>*.inf</include>
 					<include>META-INF/MANIFEST.MF</include>
 				</includes>
 			</resource>
