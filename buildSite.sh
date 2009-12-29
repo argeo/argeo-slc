@@ -25,6 +25,11 @@ else
 	mail -s "Build@$HOSTNAME FAILURE - $DATE - $BUILD_DIR" $TO < deploy.log
 fi
 
+# SDK
+cd dist/org.argeo.slc.sdk
+mvn deploy
+cd ../..
+
 # SITE
 mvn -up --fail-at-end site-deploy $PROFILES 2>&1 | tee siteGeneration.log
 if [ $PIPESTATUS -eq 0 ]
@@ -34,7 +39,5 @@ else
 	mail -s "SiteGeneration@$HOSTNAME FAILURE - $DATE - $BUILD_DIR" $TO < siteGeneration.log
 fi
 
-cd dist/org.argeo.slc.sdk
-mvn deploy
 
 exit $EXIT_STATUS
