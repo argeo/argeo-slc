@@ -123,9 +123,9 @@
 <extension
       point="org.eclipse.pde.core.targets">
    <target
-         definition="slc-sdk.target"
+         definition="slc-sdk-dev.target"
          id="org.argeo.slc.ui.launch.targetSlcSdk"
-         name="SLC SDK">
+         name="SLC SDK (devpt)">
    </target>
 </extension> 
 </plugin>
