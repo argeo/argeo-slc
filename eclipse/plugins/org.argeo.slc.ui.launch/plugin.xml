@@ -119,5 +119,13 @@
          id="org.argeo.slc.ui.slcPerspective"
          name="SLC">
    </perspective>
+</extension>
+<extension
+      point="org.eclipse.pde.core.targets">
+   <target
+         definition="slc-sdk.target"
+         id="org.argeo.slc.ui.launch.targetSlcSdk"
+         name="SLC SDK">
+   </target>
 </extension> 
 </plugin>
