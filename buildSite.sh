@@ -34,4 +34,7 @@ else
 	mail -s "SiteGeneration@$HOSTNAME FAILURE - $DATE - $BUILD_DIR" $TO < siteGeneration.log
 fi
 
+cd dist/org.argeo.slc.sdk
+mvn deploy
+
 exit $EXIT_STATUS

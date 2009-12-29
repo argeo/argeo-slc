@@ -11,6 +11,5 @@
 	<packaging>pom</packaging>
 	<name>SLC Distribution</name>
 	<modules>
-		<module>slc-sdk</module>
 	</modules>
 </project>
