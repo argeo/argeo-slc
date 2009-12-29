@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.argeo.slc.ui"
-      label="SLC IDE"
+      label="SLC UI"
       version="0.12.1.D20091229_2012">
 
    <url>
-      <update label="SLC IDE" url="http://www.argeo.org/projects/slc/update/"/>
+      <update label="SLC UI" url="http://www.argeo.org/projects/slc/update/"/>
    </url>
 
    <plugin
