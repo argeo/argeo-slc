@@ -189,12 +189,6 @@
 <unit id="org.argeo.slc.server" version="0.12.1.SNAPSHOT-r3239"/>
 <repository location="http://www.argeo.org/projects/slc/sdk-dev/"/>
 </location>
-<location includeAllPlatforms="true" includeMode="slicer" type="InstallableUnit">
-<unit id="org.springframework.ide.eclipse.feature.feature.group" version="2.2.7.200910141010-RELEASE"/>
-<repository location="http://www.springsource.org/milestone/e3.4"/>
-<includeBundles>
-<plugin id="com.springsource.org.apache.commons.collections"/>
-</includeBundles>
-</location>
+<location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.collections/3.2.1" type="Directory"/>
 </locations>
 </target>
