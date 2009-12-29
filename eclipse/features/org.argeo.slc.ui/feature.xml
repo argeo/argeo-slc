@@ -2,7 +2,7 @@
 <feature
       id="org.argeo.slc.ui"
       label="SLC UI"
-      version="0.12.1.D20091229_2046">
+      version="0.12.1.D20091229_2113">
 
    <url>
       <update label="SLC UI" url="http://www.argeo.org/projects/slc/update/"/>
@@ -12,7 +12,7 @@
          id="org.argeo.slc.ui.launch"
          download-size="0"
          install-size="0"
-         version="0.12.1.D20091229_2046"
+         version="0.12.1.D20091229_2113"
          unpack="false"/>
 
 </feature>

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SLC UI Launch
 Bundle-SymbolicName: org.argeo.slc.ui.launch;singleton:=true
-Bundle-Version: 0.12.1.D20091229_2046
+Bundle-Version: 0.12.1.D20091229_2113
 Bundle-Activator: org.argeo.slc.ui.launch.SlcUiLaunchPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
