@@ -10,7 +10,7 @@ import org.argeo.slc.ui.launch.DeployedSlcSystem;
 import org.argeo.slc.ui.launch.EmbeddedSlcSystem;
 import org.argeo.slc.ui.launch.SlcSystem;
 import org.argeo.slc.ui.launch.SlcUiLaunchPlugin;
-import org.argeo.slc.ui.launch.preferences.SlcPreferencePage;
+import org.argeo.slc.ui.launch.preferences.SlcLaunchPreferencePage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -43,6 +43,7 @@ public class SlcScriptLaunchDelegate extends
 	public final static String ANT_MAIN = "org.apache.tools.ant.Main";
 	public final static String SLC_MAIN = "org.argeo.slc.cli.SlcMain";
 
+	@SuppressWarnings("deprecation")
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		if (!saveBeforeLaunch(configuration, mode, monitor))
@@ -100,7 +101,7 @@ public class SlcScriptLaunchDelegate extends
 		if (slcSystem == null) {
 			String slcRuntimePath = SlcUiLaunchPlugin.getDefault()
 					.getPreferenceStore().getString(
-							SlcPreferencePage.PREF_SLC_RUNTIME_LOCATION);
+							SlcLaunchPreferencePage.PREF_SLC_RUNTIME_LOCATION);
 			if (slcRuntimePath == null || slcRuntimePath.equals("")) {
 				showError("SLC Runtime path is not set. Set it in Windows > Preferences > SLC");
 				return null;

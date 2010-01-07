@@ -1,6 +1,6 @@
 package org.argeo.slc.ui.launch;
 
-import org.argeo.slc.ui.launch.preferences.SlcPreferencePage;
+import org.argeo.slc.ui.launch.preferences.SlcLaunchPreferencePage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.IVMInstall;
@@ -20,7 +20,7 @@ public class EmbeddedSlcSystem implements SlcSystem {
 	public String getJavaLibraryPath() {
 		String javaLibPath = SlcUiLaunchPlugin.getDefault()
 				.getPreferenceStore().getString(
-						SlcPreferencePage.PREF_SLC_RUNTIME_LOCATION);
+						SlcLaunchPreferencePage.PREF_SLC_RUNTIME_LOCATION);
 		if (javaLibPath == null || javaLibPath.equals(""))
 			return null;
 		else

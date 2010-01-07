@@ -87,12 +87,12 @@
    </launchConfigurationTabGroup>
 </extension>
 -->
-<!-- See http://www.eclipseplugincentral.com/PNphpBB2-printview-t-4335-start-0.html -->
+<!-- See http://www.eclipseplugincentral.com/PNphpBB2-printview-t-4335-start-0.html
 <extension point="org.eclipse.core.runtime.adapters">
 <factory adaptableType="org.eclipse.core.resources.IResource" class="">
-<adapter type="org.eclipse.debug.ui.actions.ILaunchable "/>
+<adapter type="org.eclipse.debug.ui.actions.ILaunchable"/>
 </factory>
-</extension>
+</extension> -->
 <!--
 <extension
       point="org.eclipse.ui.preferencePages">
@@ -111,21 +111,13 @@
          id="org.argeo.slc.launch.slcScriptLaunchTypeImage">
    </launchConfigurationTypeImage>
 </extension>
-<extension
-      point="org.eclipse.ui.perspectives">
-   <perspective
-         class="org.argeo.slc.ui.launch.SlcPerspectiveFactory"
-         icon="icons/slcScriptLaunch.gif"
-         id="org.argeo.slc.ui.slcPerspective"
-         name="SLC">
-   </perspective>
-</extension>
-<extension
-      point="org.eclipse.pde.core.targets">
-   <target
-         definition="slc-sdk-dev.target"
-         id="org.argeo.slc.ui.launch.targetSlcSdk"
-         name="SLC SDK (devpt)">
-   </target>
+<extension 
+       point="org.eclipse.ui.preferencePages"> 
+      <page 
+         id="org.argeo.slc.ui.launch.mainPreferencePage" 
+         name="Launching" 
+         class="org.argeo.slc.ui.launch.preferences.SlcLaunchPreferencePage" 
+         category="org.argeo.slc.ide.mainPreferencePage"> 
+       </page> 
 </extension> 
 </plugin>

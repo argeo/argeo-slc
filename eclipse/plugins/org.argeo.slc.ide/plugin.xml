@@ -10,7 +10,7 @@
             name="Argeo Java IDE">
          <property
                name="windowImages"
-               value="eclipse.gif,eclipse32.gif,eclipse48.gif,eclipse.png,eclipse32.png">
+               value="icons/argeo-icon-100104-256.png,icons/argeo-icon-100104-256.png,icons/argeo-icon-100104-256.png,icons/argeo-icon-100104-256.png,icons/argeo-icon-100104-256.png">
          </property>
          <property
                name="aboutText"
@@ -22,7 +22,7 @@
          </property>
          <property
                name="startupForegroundColor"
-               value="C8D5EA">
+               value="0066D0">
          </property>
          <property
                name="startupProgressRect"
@@ -42,5 +42,30 @@
          </property>
       </product>
    </extension>
+<extension
+      point="org.eclipse.ui.perspectives">
+   <perspective
+         class="org.argeo.slc.ide.SlcPerspectiveFactory"
+         icon="icons/argeo-icon-100104-256.png"
+         id="org.argeo.slc.ide.slcPerspective"
+         name="SLC">
+   </perspective>
+</extension>
+<extension
+      point="org.eclipse.pde.core.targets">
+   <target
+         definition="slc-sdk-dev.target"
+         id="org.argeo.slc.ide.targetSlcSdkDev"
+         name="SLC SDK (devpt)">
+   </target>
+</extension> 
+<extension 
+       point="org.eclipse.ui.preferencePages"> 
+      <page 
+         id="org.argeo.slc.ide.mainPreferencePage" 
+         name="SLC" 
+         class="org.argeo.slc.ide.preferences.SlcMainPreferencePage"> 
+       </page> 
+</extension> 
 
 </plugin>

@@ -1,4 +1,4 @@
-package org.argeo.slc.ui.launch;
+package org.argeo.slc.ide;
 
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IFolderLayout;
