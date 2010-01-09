@@ -47,7 +47,7 @@ public abstract class AbstractJschTask implements Runnable {
 		if (b == 0)
 			return b;
 		else if (b == -1)
-			return b;//throw new SlcException("SSH ack returned -1");
+			return b;// throw new SlcException("SSH ack returned -1");
 		else if (b == 1 || b == 2) {
 			StringBuffer sb = new StringBuffer();
 			int c;
@@ -66,6 +66,8 @@ public abstract class AbstractJschTask implements Runnable {
 	}
 
 	public SshTarget getSshTarget() {
+		if (sshTarget == null)
+			throw new SlcException("No SSH target defined.");
 		return sshTarget;
 	}
 

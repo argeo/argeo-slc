@@ -4,7 +4,7 @@ import com.jcraft.jsch.UserInfo;
 
 public class SshTarget {
 	private String host;
-	private Integer port;
+	private Integer port = 22;
 	private String user;
 	private UserInfo userInfo;
 
