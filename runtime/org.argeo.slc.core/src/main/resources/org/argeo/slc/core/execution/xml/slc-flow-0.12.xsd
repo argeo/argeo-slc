@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	targetNamespace="http://www.argeo.org/schema/slc-flow"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xsd:import namespace="http://www.springframework.org/schema/beans" />
+
+
+	<xsd:element name="flow">
+		<xsd:complexType>
+			<xsd:complexContent>
+				<xsd:extension base="beans:identifiedType">
+					<xsd:sequence>
+						<xsd:any minOccurs="1" maxOccurs="unbounded" />
+					</xsd:sequence>
+					<xsd:attribute name="path" type="xsd:string" />
+				</xsd:extension>
+			</xsd:complexContent>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:attribute name="as-flow" type="xsd:string" />
+
+</xsd:schema>
