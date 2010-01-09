@@ -2,7 +2,7 @@
 <feature
       id="org.argeo.slc.ide"
       label="Argeo Java IDE"
-      version="0.12.1.D20100109_1757"
+      version="0.12.1.qualifier"
       provider-name="Argeo"
       plugin="org.argeo.slc.ide.branding"
       image="icons/argeo-icon-100104-256.png">
@@ -12,24 +12,23 @@
    </description>
 
    <copyright url="http://www.argeo.org">
-      Copyright 2010 Mathieu Baudier
+      Copyright 2010 Mathieu Baudier - Argeo SASU
    </copyright>
 
    <license url="http://www.apache.org/licenses/LICENSE-2.0.txt">
       SLC - Software LifeCycle framework
-      
-Copyright 2008 Mathieu Baudier - Argeo e.U.
-
+Copyright 2010 Mathieu Baudier - Argeo SASU
 Licensed under the Apache License, Version 2.0 (the &amp;quot;License&amp;quot;);
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
+http://www.apache.org/licenses/LICENSE-2.0
 Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an &amp;quot;AS IS&amp;quot; BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
+distributed under the License is distributed on an &amp;quot;AS IS&amp;quot;
+BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+or implied.
+See the License for the specific language governing permissions
+and
 limitations under the License.
    </license>
 
@@ -62,14 +61,14 @@ limitations under the License.
          id="org.argeo.slc.ide.ui"
          download-size="0"
          install-size="0"
-         version="0.12.1.D20100109_1757"
+         version="0.12.1.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.argeo.slc.ide.branding"
          download-size="0"
          install-size="0"
-         version="0.12.1.D20100109_1757"
+         version="0.12.1.qualifier"
          unpack="false"/>
 
 </feature>
