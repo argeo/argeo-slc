@@ -2,15 +2,17 @@
 <feature
       id="org.argeo.slc.ide"
       label="Argeo Java IDE"
-      version="0.12.1.D20100107_1516"
-      provider-name="Argeo">
+      version="0.12.1.D20100109_1757"
+      provider-name="Argeo"
+      plugin="org.argeo.slc.ide.branding"
+      image="icons/argeo-icon-100104-256.png">
 
-   <description url="http://www.argeo.org/projects/slc/org.argeo.slc.ui.launch.feature/0.11.3-SNAPSHOT/org.argeo.slc.ui.launch.feature">
-      Simplify running scripts based on Argeo SLC
+   <description url="http://www.argeo.org/projects/slc/">
+      Argeo SLC IDE
    </description>
 
    <copyright url="http://www.argeo.org">
-      Copyright 2008 Mathieu Baudier
+      Copyright 2010 Mathieu Baudier
    </copyright>
 
    <license url="http://www.apache.org/licenses/LICENSE-2.0.txt">
@@ -32,28 +34,42 @@ limitations under the License.
    </license>
 
    <url>
-      <update url="http://www.argeo.org/projects/SLC/update"/>
+      <update label="Argeo SLC IDE (Devpt)" url="http://www.argeo.org/projects/slc/update/ide-dev"/>
    </url>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.pde.build"/>
+      <import plugin="org.eclipse.pde.ui" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.4.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.jdt.ui" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.console" version="3.4.0" match="greaterOrEqual"/>
+   </requires>
 
    <plugin
          id="org.argeo.slc.ide.ui"
          download-size="0"
          install-size="0"
-         version="0.12.1.D20100107_1516"
+         version="0.12.1.D20100109_1757"
          unpack="false"/>
 
    <plugin
          id="org.argeo.slc.ide.branding"
          download-size="0"
          install-size="0"
-         version="0.12.1.D20100107_1516"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.wst.xml.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
+         version="0.12.1.D20100109_1757"
          unpack="false"/>
 
 </feature>
