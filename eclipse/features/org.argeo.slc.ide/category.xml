@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.argeo.slc.ide_0.12.1.D20100109_1757.jar" id="org.argeo.slc.ide" version="0.12.1.D20100109_1757">
+   <feature url="features/org.argeo.slc.ide_0.12.1.D20100109_1851.jar" id="org.argeo.slc.ide" version="0.12.1.D20100109_1851">
       <category name="slcIDE"/>
    </feature>
    <category-def name="slcIDE" label="SLC IDE">
