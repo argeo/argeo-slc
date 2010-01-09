@@ -9,7 +9,9 @@
 	<beans:import resource="classpath:org/argeo/slc/osgi/execution.xml" />
 
 	<reference id="attachmentUploader"
-		interface="org.argeo.slc.core.attachment.AttachmentUploader" />
+		interface="org.argeo.slc.core.attachment.AttachmentUploader"
+		cardinality="0..1" />
 
-	<list id="resultListeners" interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
+	<list id="resultListeners" interface="org.argeo.slc.core.test.tree.TreeTestResultListener"
+		cardinality="0..N" />
 </beans:beans>
