@@ -13,12 +13,12 @@
 	<version>0.12.1-SNAPSHOT</version>
 	<properties>
 		<developmentCycle>0.12</developmentCycle>
-		<version.argeo-distribution>1.0.2</version.argeo-distribution>
+		<version.argeo-distribution>1.0.3-SNAPSHOT</version.argeo-distribution>
 		<version.argeo-ria>0.12.2</version.argeo-ria>
 		<version.argeo-commons>0.1.2</version.argeo-commons>
 		<version.equinox>3.5.1.R35x_v20090827</version.equinox>
 		<version.maven-bundle-plugin>2.0.1</version.maven-bundle-plugin>
-		<version.maven-argeo-osgi>0.1.25</version.maven-argeo-osgi>
+		<version.maven-argeo-osgi>0.1.26-SNAPSHOT</version.maven-argeo-osgi>
 		<version.maven-argeo-qooxdoo>0.8.3.0</version.maven-argeo-qooxdoo>
 		<site.repoBase>file:///var/argeo/projects/SLC/www/site</site.repoBase>
 		<site.urlBase>http://www.argeo.org/projects/slc/site</site.urlBase>
@@ -30,7 +30,8 @@
 		<module>server</module>
 		<module>demo</module>
 		<module>integration-tests</module>
-		<module>archetypes</module>
+		<!-- <module>archetypes</module>-->
+		<module>dist</module>
 	</modules>
 	<url>${site.urlBase}/${developmentCycle}</url>
 	<scm>
