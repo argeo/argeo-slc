@@ -26,9 +26,9 @@ else
 fi
 
 # SDK
-cd dist/org.argeo.slc.sdk
-/usr/local/bin/mvn deploy
-cd ../..
+#cd dist/org.argeo.slc.sdk
+#/usr/local/bin/mvn deploy
+#cd ../..
 
 # SITE
 /usr/local/bin/mvn -up --fail-at-end site-deploy $PROFILES 2>&1 | tee siteGeneration.log

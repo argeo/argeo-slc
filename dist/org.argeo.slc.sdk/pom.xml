@@ -34,6 +34,22 @@
 				</executions>
 			</plugin>
 			<plugin>
+				<groupId>org.argeo.maven.plugins</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<id>pde-source</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>pde-sources</goal>
+						</goals>
+						<configuration>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
