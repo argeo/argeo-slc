@@ -43,13 +43,31 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   				},
   				command 	: null
   			},
-  			"openrealized" : {
+  			"opendetail" : {
+  				label		: "Logs Detail",
+  				icon		: "org.argeo.slc.ria/mime-xls.png",
+  				shortcut	: null,
+  				enabled		: false,
+  				menu		: null,
+  				toolbar		: "slc_logs",
+  				callback	: function(e){
+  					var selection = this.getViewSelection();
+  					var rowData = selection.getNodes()[0];
+  					this.openDetail(rowData);
+  				},
+  				selectionChange : function(viewId, selection){
+  					if(viewId != "logger") return;
+  					this.setEnabled((selection!=null && selection.length==1));
+  				},
+  				command		: null  				
+  			},
+  			"reopenrealized" : {
   				label		: "Re-open",
   				icon		: "org.argeo.slc.ria/document-open.png",
   				shortcut	: "Control+o",
   				enabled		: false,
   				menu		: null,
-  				toolbar		: "realized",
+  				toolbar		: "slc_logs",
   				callback	: function(e){
   					var selection = this.getViewSelection();
   					var rowData = selection.getNodes()[0];
@@ -159,6 +177,67 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		req.send();
 	},
 	
+	openDetail : function(logData){
+				
+		var uuid = logData[2];
+		var window = new qx.ui.window.Window("Logs Detail", "org.argeo.slc.ria/mime-xls.png");
+		window.setLayout(new qx.ui.layout.VBox(0));
+		window.setContentPadding(0);		
+		window.open();
+		org.argeo.ria.components.ViewsManager.getInstance().getApplicationRoot().add(window, {
+			top : '20%',
+			left : '20%',
+			width: '60%',
+			height: '60%'
+		});
+		
+		var tBar = new qx.ui.toolbar.ToolBar();
+		window.add(tBar);
+		var menuButton = new qx.ui.toolbar.Button("Close", "org.argeo.slc.ria/window-close.png");
+		tBar.add(menuButton);
+		menuButton.addListener("execute", function(e){
+			window.close();
+		});
+		
+		var tableModel = new qx.ui.table.model.Simple();
+		var table = new org.argeo.ria.components.ui.Table(tableModel, {
+			"date":{NAME : "Date", WIDTH:180}, 
+			"type":{NAME : "Type", WIDTH:90, ALIGN:"CENTER"}, 
+			"log":"Log"
+		});
+		table.setStatusBarVisible(true);
+		window.add(table, {flex:1});
+		window.setAllowMinimize(false);
+		
+		// Call service to load execution message
+		var req = org.argeo.slc.ria.SlcApi.getSlcExecutionService(uuid);
+		req.addListener("completed", function(response){			
+			var xmlDoc = response.getContent();
+			var tableLines = [];
+			var parser = org.argeo.ria.util.Element;
+			var slcSteps = parser.selectNodes(xmlDoc, "slc:slc-execution/slc:steps/slc:slc-execution-step");
+			for(var i=0;i<slcSteps.length;i++){				
+				var step = slcSteps[i];
+				var date = parser.getSingleNodeText(step, "slc:begin");
+				var type = parser.getSingleNodeText(step, "slc:type");
+				var logLines = parser.selectNodes(step, "slc:log-lines/slc:log-line");
+				if(logLines.length > 0){
+					tableLines.push([date, type, parser.getSingleNodeText(logLines[0], ".")]);
+					if(logLines.length>1){
+						for(var j=1;j<logLines.length;j++){
+							tableLines.push(["", "", parser.getSingleNodeText(logLines[j], ".")]);	
+						}
+					}
+				}else{
+					tableLines.push([date, type, ""]);
+				}
+			}
+			tableModel.setData(tableLines);
+		});
+		req.send();
+		
+	},	
+	
 	/**
 	 * Creates the applet layout
 	 */
@@ -170,6 +249,10 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 				return new qx.ui.table.columnmodel.Resize(obj)
 			}
 		});
+		this.logPane.addListener("cellDblclick", function(e){
+			this.getCommands()["opendetail"].command.execute();
+		}, this);
+		
 		var selectionModel = this.logPane.getSelectionModel();
 		selectionModel.addListener("changeSelection", function(e){			
 			var viewSelection = this.getViewSelection();			
