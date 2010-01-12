@@ -51,6 +51,12 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
 		</dependency>
+		
+		<!--  Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.jdbc</artifactId>
+		</dependency>
 
 		<!-- Various third parties -->
 		<dependency>
