@@ -42,69 +42,16 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 						}
 						var prefName = "slc.batch.autoclear";
 						var prefValue = this.getRiaPreferenceValue(prefName);
-						if(prefValue !== null && prefValue === true){
+						if(( prefValue !== null && prefValue === true ) || this.getForceClearPreference()){
 							this.executeBatchOnAgent(batchAgentId, true);							
 						}else{
 							this.executeBatchOnAgent(batchAgentId, false);
 						}
+						this.setForceClearPreference(false);
 						return;
-						var modal = new org.argeo.ria.components.Modal("Clear?", null);
-						modal.addYesNoReminder("Do you want to clear the batch automatically after execution?", prefName);
-						modal.addListener("cancel", function(e){
-							this.executeBatchOnAgent(batchAgentId, false);
-						}, this);
-						modal.addListener("ok", function(e){
-							this.executeBatchOnAgent(batchAgentId, true);
-						}, this);
-						modal.attachAndShow();						
 					},
 					command : null
 				},
-				/*
-				"toggleopenonadd" : {
-					label : "Auto edit on Add",
-					icon : "org.argeo.slc.ria/document-open.png",
-					shortcut : null,
-					enabled : true,
-					toggle : true,
-					toggleInitialState : true,
-					menu : "Launcher",
-					toolbar : "launcher",
-					callback : function(event) {
-						var state = event.getTarget().getUserData("slc.command.toggleState");
-						this.setAutoOpen(state);
-					},
-					command : null
-				},
-				"editexecutionspecs" : {
-					label : "Edit Execution Specs",
-					icon : "org.argeo.slc.ria/document-open.png",
-					shortcut : null,
-					enabled : false,
-					menu : "Launcher",
-					toolbar : "batch",
-					callback : function(e) {
-						var sel = this.list.getSortedSelection();
-						var spec = sel[0].getUserData("batchEntrySpec");
-						if (spec.hasEditableValues()) {
-							var specEditor = new org.argeo.slc.ria.execution.SpecEditor(spec);
-							specEditor.attachAndShow();
-						}
-					},
-					selectionChange : function(viewId, selection) {
-						if (viewId != "batch:list")
-							return;
-						this.setEnabled(false);
-						if ((selection && selection.length == 1)) {
-							var selectedItemSpec = selection[0].getUserData("batchEntrySpec");
-							if (selectedItemSpec.hasEditableValues()) {
-								this.setEnabled(true);
-							}
-						}
-					},
-					command : null
-				},
-				*/
 				"removefrombatch" : {
 					label : "Remove from batch",
 					icon : "org.argeo.slc.ria/edit-delete.png",
@@ -184,7 +131,11 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			nullable : true,
 			check : "String",
 			event : "changeBatchAgentId"
-		}	  	
+		},
+		forceClearPreference : {
+			init : false,
+			check : "Boolean"
+		}
 	},
 	  
 	construct : function(){

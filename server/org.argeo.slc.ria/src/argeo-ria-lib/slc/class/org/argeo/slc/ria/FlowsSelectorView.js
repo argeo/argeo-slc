@@ -29,6 +29,10 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 		instanceLabel : {
 			init : ""
 		},
+		executeAfterAdd : {
+			init : false,
+			check : "Boolean"
+		},
 		/**
 		 * Commands definition, see
 		 * {@link org.argeo.ria.event.CommandsManager#definitions}
@@ -65,6 +69,11 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 								return;
 							}
 						}
+						if(this.getExecuteAfterAdd() && batchView.getCommands()){
+							batchView.setForceClearPreference(true);
+							batchView.getCommands()["submitform"].command.execute();
+						}
+						this.setExecuteAfterAdd(false);
 					},
 					selectionChange : function(viewId, selection) {
 						if (viewId != "form:tree")
@@ -581,6 +590,15 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				}
 			}, this);
 
+			this.tree.addListener("dblclick", function(e){
+				var sel = this.tree.getSortedSelection();
+				if(sel && sel.length!=1)  return;
+				var origin = sel[0];
+				if(origin.classname == "qx.ui.tree.TreeFile"){
+					this.setExecuteAfterAdd(true);
+					this.getCommands()["addtobatch"].command.execute();
+				}
+			}, this);
 
 			this.add(this.tree);
 		},
