@@ -16,5 +16,14 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.detached</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.jemmy</artifactId>
+		</dependency>
+		<!-- For JDK 1.4 -->
+		<dependency>
+			<groupId>net.sourceforge.mx4j</groupId>
+			<artifactId>com.springsource.mx4j</artifactId>
+		</dependency>
 	</dependencies>
 </project>

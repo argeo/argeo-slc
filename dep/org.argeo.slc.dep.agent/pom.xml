@@ -47,6 +47,36 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.lib.detached</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.launcher</artifactId>
+		</dependency>
+
+		<!-- Various third parties -->
+		<dependency>
+			<groupId>org.custommonkey.xmlunit</groupId>
+			<artifactId>com.springsource.org.custommonkey.xmlunit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.dep.jacob</groupId>
+			<artifactId>org.argeo.dep.jacob</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.dep.jacob</groupId>
+			<artifactId>org.argeo.dep.jacob.win32.x86</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.bsf</groupId>
+			<artifactId>com.springsource.org.apache.bsf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.beanshell</groupId>
+			<artifactId>com.springsource.bsh</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>com.springsource.jxl</artifactId>
+		</dependency>
 
 		<!-- DB Drivers -->
 		<dependency>
@@ -68,6 +98,11 @@
 		<dependency>
 			<groupId>com.oracle.jdbc</groupId>
 			<artifactId>com.springsource.oracle.jdbc</artifactId>
+		</dependency>
+		<!--  Required by the Oracle JDBC driver -->
+		<dependency>
+			<groupId>javax.resource</groupId>
+			<artifactId>com.springsource.javax.resource</artifactId>
 		</dependency>
 
 		<!--

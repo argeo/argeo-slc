@@ -131,6 +131,11 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.argeo.slc.dep</groupId>
+			<artifactId>org.argeo.slc.dep.detached</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.argeo.slc.server</groupId>
 			<artifactId>org.argeo.slc.ria</artifactId>
 		</dependency>
