@@ -51,7 +51,7 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
 		</dependency>
-		
+
 		<!--  Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -62,14 +62,6 @@
 		<dependency>
 			<groupId>org.custommonkey.xmlunit</groupId>
 			<artifactId>com.springsource.org.custommonkey.xmlunit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.dep.jacob</groupId>
-			<artifactId>org.argeo.dep.jacob</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.dep.jacob</groupId>
-			<artifactId>org.argeo.dep.jacob.win32.x86</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.bsf</groupId>
@@ -111,6 +103,15 @@
 			<artifactId>com.springsource.javax.resource</artifactId>
 		</dependency>
 
+		<!-- Jacob (will be removed soon) -->
+		<dependency>
+			<groupId>org.argeo.dep.jacob</groupId>
+			<artifactId>org.argeo.dep.jacob</artifactId>
+		</dependency>
+		<!--
+			<dependency> <groupId>org.argeo.dep.jacob</groupId>
+			<artifactId>org.argeo.dep.jacob.win32.x86</artifactId> </dependency>
+		-->
 		<!--
 			Languages <dependency> <groupId>org.codehaus.groovy</groupId>
 			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
