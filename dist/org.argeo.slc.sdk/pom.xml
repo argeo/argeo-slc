@@ -36,7 +36,7 @@
 			<plugin>
 				<groupId>org.argeo.maven.plugins</groupId>
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
-				<extensions>true</extensions>
+				<version>${version.maven-argeo-osgi}</version>
 				<executions>
 					<execution>
 						<id>pde-source</id>
@@ -45,6 +45,25 @@
 							<goal>pde-sources</goal>
 						</goals>
 						<configuration>
+						</configuration>
+					</execution>
+					<execution>
+						<id>check-osgi</id>
+						<phase>test</phase>
+						<goals>
+							<goal>equinox</goal>
+						</goals>
+						<configuration>
+							<useDependencies>false</useDependencies>
+							<onlyCheck>true</onlyCheck>
+							<argsToAppend>
+								<arg>-clean</arg>
+							</argsToAppend>
+							<systemProperties>
+								<argeo.osgi.bundles>
+									${basedir}/target;in=*.jar,
+								</argeo.osgi.bundles>
+							</systemProperties>
 						</configuration>
 					</execution>
 				</executions>
@@ -120,32 +139,6 @@
 						<argument>-publishArtifacts</argument>
 					</arguments>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.argeo.maven.plugins</groupId>
-				<artifactId>maven-argeo-osgi-plugin</artifactId>
-				<version>${version.maven-argeo-osgi}</version>
-				<executions>
-					<execution>
-						<id>check-osgi</id>
-						<phase>test</phase>
-						<goals>
-							<goal>equinox</goal>
-						</goals>
-						<configuration>
-							<useDependencies>false</useDependencies>
-							<onlyCheck>true</onlyCheck>
-							<argsToAppend>
-								<arg>-clean</arg>
-							</argsToAppend>
-							<systemProperties>
-								<argeo.osgi.bundles>
-									${basedir}/target;in=*.jar,
-								</argeo.osgi.bundles>
-							</systemProperties>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
