@@ -12,6 +12,7 @@
 	<name>SLC Core</name>
 	<description>Basic implementations of SLC Specifications</description>
 	<build>
+		<outputDirectory>bin</outputDirectory>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>

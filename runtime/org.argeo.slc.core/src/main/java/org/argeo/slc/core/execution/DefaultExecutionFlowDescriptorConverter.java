@@ -46,7 +46,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		ExecutionSpec executionSpec = executionFlowDescriptor
 				.getExecutionSpec();
 
-		if (executionSpec == null)
+		if (executionSpec == null && log.isTraceEnabled())
 			log.warn("Execution spec is null for " + executionFlowDescriptor);
 
 		if (values != null && executionSpec != null) {
