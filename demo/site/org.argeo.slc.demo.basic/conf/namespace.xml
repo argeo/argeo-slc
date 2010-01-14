@@ -22,4 +22,19 @@
 	-->
 	<bean id="standaloneRunnable" flow:as-flow="implicitFlow"
 		p:message="TEST in implicit flow" class="org.argeo.slc.core.execution.tasks.Echo" />
+
+	<!-- Specs definition is also simplified -->
+	<flow:spec id="namespaceSpec">
+		<flow:primitive name="primitive" value="100"
+			isParameter="true" type="integer" />
+	</flow:spec>
+
+	<flow:flow id="flowSpec" spec="namespaceSpec" path="/namespace">
+		<bean p:message="TEST in flow @{primitive}" class="org.argeo.slc.core.execution.tasks.Echo"
+			scope="execution">
+			<aop:scoped-proxy />
+		</bean>
+		<ref bean="referencedRunnable" />
+	</flow:flow>
+
 </beans>
