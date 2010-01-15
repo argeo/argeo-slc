@@ -7,7 +7,7 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
 
-	<flow:flow id="canonic-ns.002" parent="canonic.flowTemplate">
+	<flow:flow id="canonic-ns.002" parent="canonic-ns.flowTemplate">
 		<flow:arg name="parameterAtInstantiation" value="2" />
 		<flow:arg name="displayWithoutControl" value="102" />
 		<flow:arg name="displayWithControl" value="202" />

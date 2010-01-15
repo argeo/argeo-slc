@@ -18,7 +18,7 @@
 		<flow:primitive name="hide" value="300" isParameter="true"
 			type="integer" isHidden="true" />
 		<flow:ref name="refWithValue" targetClass="org.argeo.slc.core.test.BasicTestData"
-			isParameter="true" value-ref="testDataNok" />
+			isParameter="true" ref="testDataNok" />
 		<flow:ref name="refWithoutValue" targetClass="org.argeo.slc.core.test.BasicTestData" />
 		<flow:ref name="refWithoutValueFrozen" targetClass="org.argeo.slc.core.test.BasicTestData"
 			isParameter="true" isFrozen="true">
