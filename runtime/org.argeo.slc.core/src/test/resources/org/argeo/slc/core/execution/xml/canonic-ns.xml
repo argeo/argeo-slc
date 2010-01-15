@@ -14,6 +14,9 @@
 	<beans:import resource="canonic-ns-002.xml" />
 	<beans:import resource="tests.xml" />
 
+	<!--
+		Specifications definition is greatly simplified by the flow namespace
+	-->
 	<spec id="canonic-ns.spec">
 		<primitive name="parameterAtInstantiation" isParameter="true"
 			type="integer" />
