@@ -65,7 +65,7 @@
 		</xsd:choice>
 		<xsd:attribute name="name" use="required" type="xsd:string" />
 		<xsd:attribute name="value" use="optional" type="xsd:string" />
-		<xsd:attribute name="value-ref" use="optional" type="xsd:string" />
+		<xsd:attribute name="ref" use="optional" type="xsd:string" />
 		<xsd:attribute name="isParameter" use="optional" type="xsd:boolean"
 			default="false" />
 		<xsd:attribute name="isFrozen" use="optional" type="xsd:boolean"
@@ -117,11 +117,23 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="argType">
+		<xsd:choice minOccurs="0" maxOccurs="1">
+			<xsd:element ref="beans:bean" />
+			<xsd:element ref="beans:ref" />
+		</xsd:choice>
 		<xsd:attribute name="name" use="required" type="xsd:string" />
 		<xsd:attribute name="value" type="xsd:string" />
 		<xsd:attribute name="ref" type="xsd:string" />
 	</xsd:complexType>
 
 	<xsd:attribute name="as-flow" type="xsd:string" />
+
+	<xsd:element name="param">
+		<xsd:complexType>
+			<xsd:attribute name="name" type="xsd:string" use="required" />
+			<xsd:attribute name="instantiationManager" type="xsd:string"
+				use="optional" default="instantiationManager" />
+		</xsd:complexType>
+	</xsd:element>
 
 </xsd:schema>

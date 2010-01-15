@@ -1,4 +1,5 @@
-#Tue Jan 12 18:56:33 CET 2010
+#Fri Jan 15 10:53:00 CET 2010
 eclipse.preferences.version=1
 pluginProject.equinox=false
 pluginProject.extensions=false
+resolve.requirebundle=false

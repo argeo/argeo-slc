@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionSpec;
 import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
 import org.argeo.slc.core.execution.RefSpecAttribute;
 import org.argeo.slc.core.execution.RefValueChoice;
-import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class SpecBeanDefinitionParser extends
@@ -29,24 +27,21 @@ public class SpecBeanDefinitionParser extends
 	@Override
 	protected void doParse(Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
-		ManagedMap specAttrs = new ManagedMap();
+		ManagedMap attributes = new ManagedMap();
 
 		// Primitives
 		for (Element child : (List<Element>) DomUtils
 				.getChildElementsByTagName(element, "primitive")) {
 			BeanDefinitionBuilder childBuilder = BeanDefinitionBuilder
 					.genericBeanDefinition(PrimitiveSpecAttribute.class);
-			addAbstractSpecAttributeProperties(childBuilder, child);
-			addValue(childBuilder, child, parserContext);
+			addCommonProperties(child, parserContext, childBuilder);
 
 			String type = child.getAttribute("type");
 			if (StringUtils.hasText(type))
 				childBuilder.addPropertyValue("type", type);
 
-			String name = child.getAttribute("name");
-			specAttrs.put(name, childBuilder.getBeanDefinition());
-			if (log.isTraceEnabled())
-				log.debug("Added primitive attribute " + name);
+			putInAttributes(attributes, child,
+					childBuilder.getBeanDefinition(), "primitive");
 		}
 
 		// Refs
@@ -54,8 +49,7 @@ public class SpecBeanDefinitionParser extends
 				.getChildElementsByTagName(element, "ref")) {
 			BeanDefinitionBuilder childBuilder = BeanDefinitionBuilder
 					.genericBeanDefinition(RefSpecAttribute.class);
-			addAbstractSpecAttributeProperties(childBuilder, child);
-			addValue(childBuilder, child, parserContext);
+			addCommonProperties(child, parserContext, childBuilder);
 
 			String targetClassName = child.getAttribute("targetClass");
 			if (StringUtils.hasText(targetClassName))
@@ -82,56 +76,34 @@ public class SpecBeanDefinitionParser extends
 
 			}
 
-			String name = child.getAttribute("name");
-			specAttrs.put(name, childBuilder.getBeanDefinition());
-			if (log.isTraceEnabled())
-				log.debug("Added spec attribute " + name);
+			putInAttributes(attributes, child,
+					childBuilder.getBeanDefinition(), "ref");
 		}
 
-		builder.addPropertyValue("attributes", specAttrs);
+		builder.addPropertyValue("attributes", attributes);
 	}
 
-	protected void addAbstractSpecAttributeProperties(
-			BeanDefinitionBuilder specAttr, Element element) {
-
+	protected void addCommonProperties(Element element,
+			ParserContext parserContext, BeanDefinitionBuilder specAttr) {
 		addBooleanProperty("isParameter", specAttr, element);
 		addBooleanProperty("isFrozen", specAttr, element);
 		addBooleanProperty("isHidden", specAttr, element);
+
+		Object value = NamespaceUtils.parseValue(element, parserContext,
+				specAttr.getBeanDefinition(), "value");
+		if (value != null)
+			specAttr.addPropertyValue("value", value);
+
 	}
 
-	protected void addValue(BeanDefinitionBuilder specAttr, Element element,
-			ParserContext parserContext) {
-		Boolean alreadySet = false;
-		if (element.hasAttribute("value")) {
-			specAttr.addPropertyValue("value", element.getAttribute("value"));
-			alreadySet = true;
-		}
+	@SuppressWarnings("unchecked")
+	protected void putInAttributes(ManagedMap attributes, Element child,
+			BeanDefinition beanDefinition, String nature) {
+		String name = child.getAttribute("name");
+		attributes.put(name, beanDefinition);
+		if (log.isTraceEnabled())
+			log.debug("Added " + nature + " attribute " + name);
 
-		if (element.hasAttribute("value-ref")) {
-			if (alreadySet)
-				throw new SlcException("Multiple value definition for "
-						+ specAttr);
-			specAttr.addPropertyValue("value", new RuntimeBeanReference(element
-					.getAttribute("value-ref")));
-		}
-
-		Element valueElem = DomUtils.getChildElementByTagName(element, "value");
-		if (valueElem != null) {
-			if (alreadySet)
-				throw new SlcException("Multiple value definition for "
-						+ specAttr);
-
-			NodeList valueChildNd = valueElem.getChildNodes();
-
-			for (int i = 0; i < valueChildNd.getLength(); i++) {
-				Node node = valueChildNd.item(i);
-				if (node != null && node instanceof Element) {
-					specAttr.addPropertyValue("value", parseBeanReference(
-							(Element) node, parserContext, specAttr));
-					break;
-				}
-			}
-		}
 	}
 
 	private void addBooleanProperty(String name,
@@ -145,13 +117,6 @@ public class SpecBeanDefinitionParser extends
 	@Override
 	protected Class<DefaultExecutionSpec> getBeanClass(Element element) {
 		return DefaultExecutionSpec.class;
-	}
-
-	// parse nested bean definition
-	private Object parseBeanReference(Element element,
-			ParserContext parserContext, BeanDefinitionBuilder builder) {
-		return parserContext.getDelegate().parsePropertySubElement(element,
-				builder.getBeanDefinition());
 	}
 
 	protected boolean shouldGenerateIdAsFallback() {
