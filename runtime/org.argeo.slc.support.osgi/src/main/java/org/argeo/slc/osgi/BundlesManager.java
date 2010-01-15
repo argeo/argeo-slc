@@ -62,7 +62,7 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 			startSynchronous(bundle);
 
 			long aStart = System.currentTimeMillis();
-			if (log.isDebugEnabled()) {
+			if (log.isTraceEnabled()) {
 				log.debug("OSGi upgrade performed in " + (aStart - begin)
 						+ "ms for bundle " + osgiBundle);
 				log.debug(" stop \t: " + (bUpdate - bStop) + "ms");
@@ -83,19 +83,18 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 			long aAppContext = System.currentTimeMillis();
 			long end = aAppContext;
 
-			if (log.isDebugEnabled()) {
+			if (log.isTraceEnabled()) {
 				log.debug("Application context refresh performed in "
 						+ (aAppContext - bAppContext) + "ms for bundle "
 						+ osgiBundle);
-				log.debug(" TOTAL\t: " + (aAppContext - bAppContext) + "ms");
 			}
 
-			if (log.isDebugEnabled()) {
+			if (log.isDebugEnabled())
 				log.debug("Bundle " + bundle.getSymbolicName()
 						+ " ready to be used at latest version."
 						+ " (upgrade performed in " + (end - begin) + "ms).");
-				log.debug(" TOTAL\t: " + (end - begin) + "ms");
 
+			if (log.isTraceEnabled()) {
 				ApplicationContext applicationContext = (ApplicationContext) bundleContext
 						.getService(sr);
 				int beanDefCount = applicationContext.getBeanDefinitionCount();
