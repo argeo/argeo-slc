@@ -304,6 +304,11 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 						"version consistent");
 		} else {
 			bundles: for (Bundle b : bundleContext.getBundles()) {
+				if (b.getSymbolicName() == null) {
+					log.warn("Bundle " + b + " has no symbolic name defined.");
+					continue bundles;
+				}
+
 				if (b.getSymbolicName().equals(osgiBundle.getName())) {
 					if (osgiBundle.getVersion() == null) {
 						bundle = b;
