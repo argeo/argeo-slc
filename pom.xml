@@ -190,7 +190,7 @@ limitations under the License.
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<releaseProfiles>release</releaseProfiles>
 					<goals>deploy</goals>
-					<preparationGoals>clean argeo-osgi:update-manifests install scm:checkin</preparationGoals>
+					<preparationGoals>clean argeo-osgi:update-manifests install</preparationGoals>
 				</configuration>
 			</plugin>
 		</plugins>
