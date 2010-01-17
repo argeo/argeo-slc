@@ -12,6 +12,19 @@
 	<packaging>pom</packaging>
 	<name>SLC Distribution</name>
 	<modules>
-		<module>org.argeo.slc.sdk</module>
 	</modules>
+	<profiles>
+		<profile>
+			<id>withSdk</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>org.argeo.slc.sdk</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>withoutSdk</id>
+		</profile>
+	</profiles>
 </project>
