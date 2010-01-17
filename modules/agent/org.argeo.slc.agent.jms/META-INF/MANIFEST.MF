@@ -3,7 +3,7 @@ Require-Bundle: org.argeo.slc.specs,
  org.argeo.slc.core,
  org.argeo.slc.support.activemq,
  com.springsource.org.castor
-Bundle-Version: 0.12.1.SNAPSHOT
+Bundle-Version: 0.12.1
 Bundle-Name: SLC Agent JMS
 Bundle-SymbolicName: org.argeo.slc.agent.jms
 Import-Package: bsh.util;resolution:=optional,
