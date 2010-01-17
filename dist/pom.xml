@@ -26,5 +26,11 @@
 		<profile>
 			<id>withoutSdk</id>
 		</profile>
+		<profile>
+			<id>release</id>
+			<modules>
+				<module>org.argeo.slc.sdk</module>
+			</modules>
+		</profile>
 	</profiles>
 </project>
