@@ -164,18 +164,6 @@
 		</dependency>
 
 		<!-- Modules -->
-		<dependency>
-			<groupId>org.argeo.slc.modules</groupId>
-			<artifactId>org.argeo.slc.modules.agent.bundles</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.modules</groupId>
-			<artifactId>org.argeo.slc.modules.server.bundles</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
 
 		<!-- Launcher -->
 		<dependency>
@@ -189,10 +177,47 @@
 	</dependencies>
 	<profiles>
 		<profile>
+			<id>sdkWithModules</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.argeo.slc.modules</groupId>
+					<artifactId>org.argeo.slc.modules.agent.bundles</artifactId>
+					<version>${project.version}</version>
+					<type>pom</type>
+				</dependency>
+				<dependency>
+					<groupId>org.argeo.slc.modules</groupId>
+					<artifactId>org.argeo.slc.modules.server.bundles</artifactId>
+					<version>${project.version}</version>
+					<type>pom</type>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>sdkWithoutModules</id>
+		</profile>
+		<profile>
 			<id>release</id>
 			<properties>
 				<argeo.p2.repository>/var/argeo/projects/SLC/www/sdk</argeo.p2.repository>
 			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.argeo.slc.modules</groupId>
+					<artifactId>org.argeo.slc.modules.agent.bundles</artifactId>
+					<version>${project.version}</version>
+					<type>pom</type>
+				</dependency>
+				<dependency>
+					<groupId>org.argeo.slc.modules</groupId>
+					<artifactId>org.argeo.slc.modules.server.bundles</artifactId>
+					<version>${project.version}</version>
+					<type>pom</type>
+				</dependency>
+			</dependencies>
 		</profile>
 	</profiles>
 </project>
