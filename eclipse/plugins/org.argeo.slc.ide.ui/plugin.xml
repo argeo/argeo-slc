@@ -23,7 +23,12 @@
    <target
          definition="slc-sdk-dev.target"
          id="org.argeo.slc.ide.ui.targetSlcSdkDev"
-         name="SLC SDK (devpt)">
+         name="SLC SDK Dev">
+   </target>
+   <target
+         definition="slc-sdk-0.12.target"
+         id="org.argeo.slc.ide.ui.targetSlcSdk0_12"
+         name="SLC SDK v0.12.x">
    </target>
 </extension> 
 <extension
