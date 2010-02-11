@@ -12,8 +12,8 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-/** Helper for tests using a Spring application co,text. */
-abstract class AbstractInternalSpringTestCase extends TestCase {
+/** Helper for tests using a Spring application context. */
+public abstract class AbstractInternalSpringTestCase extends TestCase {
 	protected final Log log = LogFactory.getLog(getClass());
 	private ConfigurableApplicationContext context;
 

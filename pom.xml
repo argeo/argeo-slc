@@ -12,7 +12,7 @@
 	<version>0.12.2-SNAPSHOT</version>
 	<properties>
 		<developmentCycle>0.12</developmentCycle>
-		<version.argeo-distribution>1.0.3</version.argeo-distribution>
+		<version.argeo-distribution>1.0.4-SNAPSHOT</version.argeo-distribution>
 		<version.argeo-ria>0.12.3</version.argeo-ria>
 		<version.argeo-commons>0.1.2</version.argeo-commons>
 		<version.equinox>3.5.1.R35x_v20090827</version.equinox>
