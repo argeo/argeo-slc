@@ -1,11 +1,12 @@
 package org.argeo.slc.jsch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jcraft.jsch.Session;
 
 public class JschMultiTasks extends AbstractJschTask {
-	private List<AbstractJschTask> tasks;
+	private List<AbstractJschTask> tasks = new ArrayList<AbstractJschTask>();
 
 	@Override
 	protected void run(Session session) {
@@ -17,6 +18,10 @@ public class JschMultiTasks extends AbstractJschTask {
 
 	public void setTasks(List<AbstractJschTask> tasks) {
 		this.tasks = tasks;
+	}
+
+	public List<AbstractJschTask> getTasks() {
+		return tasks;
 	}
 
 }

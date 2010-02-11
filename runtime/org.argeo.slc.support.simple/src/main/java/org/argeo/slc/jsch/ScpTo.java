@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,19 +49,35 @@ public class ScpTo extends AbstractJschTask {
 			if (pathMatcher == null)
 				pathMatcher = new AntPathMatcher();
 
-			log.info("Start multiple scp based on "+dirOs);
+			log.info("Start multiple scp based on " + dirOs);
 			scanDir(session, dirOs, "", includes, excludes);
 		}
 
 		if (localResource != null) {
-			File lFile;
 			try {
-				lFile = localResource.getFile();
+				File lFile = localResource.getFile();
+				uploadFile(session, lFile, remotePath);
 			} catch (IOException e) {
-				throw new SlcException("Cannot interpret resource "
-						+ localResource + " as file.", e);
+				OutputStream out = null;
+				InputStream in = null;
+				File tempFile = null;
+				try {
+					tempFile = File.createTempFile(getClass().getSimpleName()
+							+ "-" + localResource.getFilename(), null);
+					out = FileUtils.openOutputStream(tempFile);
+					in = localResource.getInputStream();
+					IOUtils.copy(in, out);
+					uploadFile(session, tempFile, remotePath);
+				} catch (IOException e1) {
+					throw new SlcException("Can neither interpret resource "
+							+ localResource
+							+ " as file, nor create a temporary file", e1);
+				} finally {
+					IOUtils.closeQuietly(in);
+					IOUtils.closeQuietly(out);
+					FileUtils.deleteQuietly(tempFile);
+				}
 			}
-			uploadFile(session, lFile, remotePath);
 		}
 	}
 
