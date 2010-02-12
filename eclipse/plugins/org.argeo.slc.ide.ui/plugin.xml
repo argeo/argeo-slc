@@ -56,6 +56,27 @@
            </enablement>
          </contextualLaunch>         
    </shortcut>
+   <shortcut
+         class="org.argeo.slc.ide.ui.launch.osgi.OsgiBootLaunchShortcut"
+         icon="icons/slc-launch.gif"
+         id="org.argeo.slc.ide.ui.osgiBootLaunchShortcut"
+         label="OSGiBoot"
+         modes="run,debug">
+    
+         <contextualLaunch>
+            <enablement>
+            <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.properties"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="config.ini"/>
+                 </or>
+                </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>         
+   </shortcut>
    <!--
    <shortcut
          class="org.argeo.slc.ui.launch.script.SlcScriptLaunchShortcut"
@@ -99,6 +120,32 @@
    </shortcut>
 -->
 </extension>
+  <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            id="org.argeo.slc.ide.ui.OsgiBootEquinoxLauncher"
+            name="OSGi Boot Equinox"
+            delegate="org.argeo.slc.ide.ui.launch.osgi.OsgiBootEquinoxLaunchConfiguration"
+            modes="run, debug"
+            sourceLocatorId="org.eclipse.pde.ui.launcher.PDESourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
+   </extension>
+  <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.argeo.slc.ide.ui.OsgiBootEquinoxLauncher"
+            class="org.argeo.slc.ide.ui.launch.osgi.OsgiBootLauncherTabGroup"
+            id="org.argeo.slc.ide.ui.OsgiBootLauncherTabGroup">
+      </launchConfigurationTabGroup>
+  </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/slc-launch.gif"
+            configTypeID="org.argeo.slc.ide.ui.OsgiBootEquinoxLauncher"
+            id="org.argeo.slc.ide.ui.OsgiBootEquinoxLauncherImage">
+      </launchConfigurationTypeImage>
+   </extension>
 <!--
 <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
    <launchConfigurationType
