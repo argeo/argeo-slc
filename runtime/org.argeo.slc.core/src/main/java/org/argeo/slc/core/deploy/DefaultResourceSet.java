@@ -19,9 +19,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
-public class RelativeResourceSet implements ResourceLoaderAware,
-		InitializingBean {
-	private final static Log log = LogFactory.getLog(RelativeResourceSet.class);
+public class DefaultResourceSet implements ResourceLoaderAware,
+		InitializingBean, ResourceSet {
+	private final static Log log = LogFactory.getLog(DefaultResourceSet.class);
 	public final static String DEFAULT_EXCLUDES = "**/.svn/**";
 
 	private String base;
@@ -38,8 +38,8 @@ public class RelativeResourceSet implements ResourceLoaderAware,
 	/** List the resources, identified by their relative path. */
 	public Map<String, Resource> listResources() {
 		try {
-			String baseResUrl = resourceLoader.getResource(base).getURL()
-					.toString();
+			String baseResUrl = getResourceLoaderToUse().getResource(base)
+					.getURL().toString();
 			Map<String, Resource> res = new TreeMap<String, Resource>();
 			for (String includePattern : includes)
 				processInclude(res, includePattern, baseResUrl);
@@ -53,15 +53,19 @@ public class RelativeResourceSet implements ResourceLoaderAware,
 			String baseResUrl) throws IOException {
 		String pattern = base + "/" + include;
 		if (log.isDebugEnabled())
-			log.debug("Look for resources with pattern '" + pattern + "'");
+			log.debug("Look for resources with pattern '" + pattern
+					+ "' in base url " + baseResUrl);
 		Resource[] resources = resourcePatternResolver.getResources(pattern);
 		resources: for (Resource resource : resources) {
 			String url = resource.getURL().toString();
 			String relPath = url.substring(baseResUrl.length());
 
 			// skip dir
-			if (relPath.charAt(relPath.length() - 1) == '/')
+			if (relPath.charAt(relPath.length() - 1) == '/') {
+				if (log.isTraceEnabled())
+					log.debug("Skip directory " + relPath + "=" + resource);
 				continue resources;
+			}
 
 			// make sure there is not starting '/'
 			if (relPath.charAt(0) == '/')
@@ -69,8 +73,11 @@ public class RelativeResourceSet implements ResourceLoaderAware,
 
 			// skip excludes
 			for (String exclude : excludes)
-				if (excludePathMatcher.match(exclude, relPath))
+				if (excludePathMatcher.match(exclude, relPath)) {
+					if (log.isTraceEnabled())
+						log.debug("Exclude " + relPath + "=" + resource);
 					continue resources;
+				}
 
 			// check if already exists
 			if (res.containsKey(relPath))
@@ -88,7 +95,7 @@ public class RelativeResourceSet implements ResourceLoaderAware,
 	public void afterPropertiesSet() throws Exception {
 		if (resourcePatternResolver == null)
 			resourcePatternResolver = new PathMatchingResourcePatternResolver(
-					resourceLoader);
+					getResourceLoaderToUse());
 		if (include != null)
 			addCommaSeparatedToList(include, includes);
 		if (exclude != null)
@@ -112,6 +119,14 @@ public class RelativeResourceSet implements ResourceLoaderAware,
 
 	public void setResourceLoader(ResourceLoader resourceLoader) {
 		this.resourceLoader = resourceLoader;
+	}
+
+	/**
+	 * Can be overridden in order to provide the proper resource loader used to
+	 * resolve resources.
+	 */
+	public ResourceLoader getResourceLoaderToUse() {
+		return resourceLoader;
 	}
 
 	public void setBase(String base) {
