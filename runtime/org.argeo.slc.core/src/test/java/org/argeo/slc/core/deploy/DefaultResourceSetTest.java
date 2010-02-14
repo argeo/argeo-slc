@@ -7,12 +7,12 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.test.context.AbstractInternalSpringTestCase;
 import org.springframework.core.io.Resource;
 
-public class RelativeResourceSetTest extends AbstractInternalSpringTestCase {
+public class DefaultResourceSetTest extends AbstractInternalSpringTestCase {
 	private final static Log log = LogFactory
-			.getLog(RelativeResourceSetTest.class);
+			.getLog(DefaultResourceSetTest.class);
 
 	public void testListResources() {
-		RelativeResourceSet rrs = getBean("relativeResourceSet");
+		DefaultResourceSet rrs = getBean("relativeResourceSet");
 		Map<String, Resource> res = rrs.listResources();
 		for (String relativePath : res.keySet())
 			log.debug(relativePath + "=" + res.get(relativePath));
