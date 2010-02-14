@@ -91,7 +91,7 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	public void run() {
 		try {
 			for (Runnable executable : executables) {
-				executable.run();
+				doExecuteRunnable(executable);
 			}
 		} catch (RuntimeException e) {
 			if (failOnError)
@@ -105,6 +105,10 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 					e.printStackTrace();
 			}
 		}
+	}
+
+	public void doExecuteRunnable(Runnable runnable) {
+		runnable.run();
 	}
 
 	@SuppressWarnings(value = { "unchecked" })

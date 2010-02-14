@@ -19,9 +19,10 @@ public class ExecutionAspect {
 
 	@Around("flowExecution()")
 	public void aroundFlow(ProceedingJoinPoint pjp) throws Throwable {
-		// IMPORTANT: Make sure that the execution context is called before the execution stack
+		// IMPORTANT: Make sure that the execution context is called before the
+		// execution stack
 		executionContext.getUuid();
-		
+
 		ExecutionFlow executionFlow = (ExecutionFlow) pjp.getTarget();
 		executionStack.enterFlow(executionFlow);
 		executionContext.setVariable(ExecutionContext.VAR_FLOW_ID,
@@ -39,6 +40,16 @@ public class ExecutionAspect {
 		executionStack.leaveFlow(executionFlow);
 	}
 
+	@Around("runnableExecution()")
+	public void aroundRunnable(ProceedingJoinPoint pjp) throws Throwable {
+		ExecutionFlow executionFlow = (ExecutionFlow) pjp.getTarget();
+		Runnable runnable = (Runnable) pjp.getArgs()[0];
+		if (log.isDebugEnabled())
+			logRunnableExecution(executionFlow, runnable);
+		// Actually execute the runnable
+		pjp.proceed();
+	}
+
 	@Around("getVariable()")
 	public Object aroundGetVariable(ProceedingJoinPoint pjp) throws Throwable {
 		Object obj = pjp.proceed();
@@ -53,6 +64,10 @@ public class ExecutionAspect {
 
 	@Pointcut("execution(void org.argeo.slc.execution.ExecutionFlow.run())")
 	public void flowExecution() {
+	}
+
+	@Pointcut("execution(void org.argeo.slc.execution.ExecutionFlow.doExecuteRunnable(..))")
+	public void runnableExecution() {
 	}
 
 	@Pointcut("execution(* org.argeo.slc.execution.ExecutionContext.getVariable(..))")
@@ -72,6 +87,13 @@ public class ExecutionAspect {
 		log.debug(depthSpaces(stackSize) + symbol + executionFlow + " #"
 				+ executionStack.getCurrentStackLevelUuid() + ", depth="
 				+ stackSize);
+	}
+
+	protected void logRunnableExecution(ExecutionFlow executionFlow,
+			Runnable runnable) {
+		Integer stackSize = executionStack.getStackSize();
+		log.debug(depthSpaces(stackSize + 1)
+				+ runnable.getClass().getSimpleName() + " in " + executionFlow);
 	}
 
 	private String depthSpaces(int depth) {

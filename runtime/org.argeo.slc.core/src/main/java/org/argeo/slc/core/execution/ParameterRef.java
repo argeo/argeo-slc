@@ -19,6 +19,9 @@ public class ParameterRef implements FactoryBean {
 	/** @deprecated for backward compatibility with pre v0.11.4 approach. */
 	public ParameterRef(String name) {
 		this.name = name;
+		log
+				.warn("Using constructor in parameter ref is deprecated"
+						+ " and will be removed in a later version. Set with property 'name'.");
 	}
 
 	public Object getObject() throws Exception {
