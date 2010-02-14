@@ -27,8 +27,8 @@ public class OsgiLaunchHelper {
 	public static void updateLaunchConfiguration(
 			ILaunchConfigurationWorkingCopy configuration,
 			List<String> bundlesToStart,
-			Map<String, String> systemPropertiesToAppend, String dir)
-			throws CoreException {
+			Map<String, String> systemPropertiesToAppend, String workingDir,
+			String dataDir) throws CoreException {
 		// Convert bundle lists
 		String targetBundles = configuration.getAttribute(
 				IPDELauncherConstants.TARGET_BUNDLES, "");
@@ -79,15 +79,31 @@ public class OsgiLaunchHelper {
 		for (String key : systemPropertiesToAppend.keySet())
 			addSysProperty(vmArgs, key, systemPropertiesToAppend.get(key));
 
+		if (dataDir != null)
+			addSysProperty(vmArgs, OsgiLauncherConstants.ARGEO_OSGI_DATA_DIR,
+					dataDir);
+
 		configuration.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs
 						.toString());
 
+		// Program arguments
+		String defaultProgArgs = configuration.getAttribute(
+				OsgiLauncherConstants.ATTR_DEFAULT_PROGRAM_ARGS, "");
+		StringBuffer progArgs = new StringBuffer(defaultProgArgs);
+		if (dataDir != null) {
+			progArgs.append(" -data ");
+			progArgs.append(surroundSpaces(dataDir));
+		}
+		configuration.setAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
+				progArgs.toString());
+
 		// String dir = findWorkingDirectory();
-		if (dir != null)
+		if (workingDir != null)
 			configuration.setAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
-					dir);
+					workingDir);
 
 	}
 
@@ -100,9 +116,15 @@ public class OsgiLaunchHelper {
 	protected static void addSysProperty(StringBuffer vmArgs, String key,
 			String value) {
 		String str = "-D" + key + "=" + value;
-		if (str.contains(" "))
-			str = "\"" + str + "\"";
+		surroundSpaces(str);
 		vmArgs.append(" " + str);
+	}
+
+	protected static String surroundSpaces(String str) {
+		if (str.contains(" "))
+			return "\"" + str + "\"";
+		else
+			return str;
 	}
 
 	protected static String convertBundleList(List<String> bundlesToStart,
@@ -110,29 +132,34 @@ public class OsgiLaunchHelper {
 		StringBuffer bufBundles = new StringBuffer(1024);
 		StringTokenizer stComa = new StringTokenizer(original, ",");
 		boolean first = true;
-		while (stComa.hasMoreTokens()) {
+		bundles: while (stComa.hasMoreTokens()) {
 			if (first)
 				first = false;
 			else
 				bufBundles.append(',');
 
-			String tkComa = stComa.nextToken();
-			int indexAt = tkComa.indexOf('@');
+			String bundleId = stComa.nextToken();
+			int indexAt = bundleId.indexOf('@');
 			boolean modified = false;
 			if (indexAt >= 0) {
-				String bundelId = tkComa.substring(0, indexAt);
+				bundleId = bundleId.substring(0, indexAt);
+			}
 
-				if (bundlesToStart.contains(bundelId)) {
-					bufBundles.append(bundelId).append('@').append(
-							"default:true");
-					modified = true;
-					if (debug)
-						System.out.println("Will start " + bundelId);
-				}
+			if (bundleId.endsWith(".source")) {
+				if (debug)
+					System.out.println("Skip source bundle " + bundleId);
+				continue bundles;
+			}
+
+			if (bundlesToStart.contains(bundleId)) {
+				bufBundles.append(bundleId).append('@').append("default:true");
+				modified = true;
+				if (debug)
+					System.out.println("Will start " + bundleId);
 			}
 
 			if (!modified)
-				bufBundles.append(tkComa);
+				bufBundles.append(bundleId);
 		}
 		String output = bufBundles.toString();
 		return output;

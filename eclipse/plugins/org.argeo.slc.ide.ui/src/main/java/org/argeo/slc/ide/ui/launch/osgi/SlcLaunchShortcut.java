@@ -47,8 +47,6 @@ public class SlcLaunchShortcut extends AbstractOsgiLaunchShortcut {
 
 		// Reset
 		this.selection = null;
-		this.name = null;
-		bundlesToStart = null;
 	}
 
 	protected void addSelectedProjects(List<String> bundlesToStart) {

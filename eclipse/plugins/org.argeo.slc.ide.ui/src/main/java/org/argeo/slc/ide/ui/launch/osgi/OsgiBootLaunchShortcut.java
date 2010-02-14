@@ -25,7 +25,7 @@ public class OsgiBootLaunchShortcut extends AbstractOsgiLaunchShortcut {
 
 	@Override
 	public void launch(ISelection selection, String mode) {
-		System.out.println("Launch shortcut... " + selection);
+		// System.out.println("Launch shortcut... " + selection);
 
 		// we assume that:
 		// - only one
@@ -49,6 +49,8 @@ public class OsgiBootLaunchShortcut extends AbstractOsgiLaunchShortcut {
 		OsgiLaunchHelper.interpretProperties(properties, bundlesToStart,
 				systemPropertiesToAppend);
 		super.launch(selection, mode);
+		
+		propertiesFile = null;
 	}
 
 	@Override
@@ -62,17 +64,19 @@ public class OsgiBootLaunchShortcut extends AbstractOsgiLaunchShortcut {
 	@Override
 	protected String findWorkingDirectory() {
 		try {
-			//String relPath = "exec/" + extractName(propertiesFile);
+			// String relPath = "exec/" + extractName(propertiesFile);
 
 			IProject project = propertiesFile.getProject();
 			IPath parent = propertiesFile.getProjectRelativePath()
 					.removeLastSegments(1);
 			IFolder execFolder = project.getFolder(parent.append("exec"));
-			execFolder.create(true, true, null);
+			if (!execFolder.exists())
+				execFolder.create(true, true, null);
 			IFolder launchFolder = project.getFolder(execFolder
 					.getProjectRelativePath().append(
 							extractName(propertiesFile)));
-			launchFolder.create(true, true, null);
+			if (!launchFolder.exists())
+				launchFolder.create(true, true, null);
 
 			// IPath execDirPath = propertiesFile.getFullPath()
 			// .removeLastSegments(1).append(relPath);
@@ -89,7 +93,7 @@ public class OsgiBootLaunchShortcut extends AbstractOsgiLaunchShortcut {
 					+ launchFolder.getFullPath().toString().substring(1) + "}";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			throw new RuntimeException("Cannot create working directory", e);
 		}
 	}
 
