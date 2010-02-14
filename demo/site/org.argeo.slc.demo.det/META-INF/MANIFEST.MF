@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.12.1.SNAPSHOT
+Bundle-Version: 0.12.2.SNAPSHOT
 Bundle-Name: SLC Demo Detached (Detached Bundle)
 Bundle-Description: Detached Bundle
 Import-Package: org.argeo.slc.detached,org.argeo.slc.detached.admin,or
