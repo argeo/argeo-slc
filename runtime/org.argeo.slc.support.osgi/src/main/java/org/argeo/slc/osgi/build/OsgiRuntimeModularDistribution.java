@@ -13,6 +13,7 @@ import org.osgi.framework.Bundle;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.osgi.util.OsgiBundleUtils;
 
 public class OsgiRuntimeModularDistribution extends
 		AbstractOsgiModularDistribution implements ResourceLoaderAware {
@@ -25,13 +26,31 @@ public class OsgiRuntimeModularDistribution extends
 			SortedMap<NameVersion, Distribution> distributions)
 			throws Exception {
 
-		for (Bundle bundle : getBundleContext().getBundles()) {
+		String frameworkUrl = System.getProperty("osgi.framework");
+		String frameworkBaseUrl = null;
+		if (frameworkUrl != null)
+			frameworkBaseUrl = frameworkUrl.substring(0, frameworkUrl
+					.lastIndexOf('/'));
+		bundles: for (Bundle bundle : getBundleContext().getBundles()) {
 			OsgiBundle osgiBundle = new OsgiBundle(bundle);
 
 			String originalLocation = bundle.getLocation();
+
+			if (OsgiBundleUtils.isSystemBundle(bundle)) {
+				continue bundles;
+			}
+
 			String location = originalLocation;
 			if (originalLocation.startsWith("reference:file:"))
 				location = originalLocation.substring("reference:".length());
+
+			if (frameworkBaseUrl != null
+					&& originalLocation.startsWith("initial@reference:file:")) {
+				location = frameworkBaseUrl
+						+ '/'
+						+ originalLocation.substring("initial@reference:file:"
+								.length());
+			}
 
 			try {
 				URL url = new URL(location);

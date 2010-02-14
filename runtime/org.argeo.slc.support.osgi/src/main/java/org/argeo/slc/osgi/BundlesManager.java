@@ -22,6 +22,7 @@ import org.springframework.osgi.context.event.OsgiBundleApplicationContextListen
 import org.springframework.osgi.context.event.OsgiBundleContextClosedEvent;
 import org.springframework.osgi.context.event.OsgiBundleContextFailedEvent;
 import org.springframework.osgi.context.event.OsgiBundleContextRefreshedEvent;
+import org.springframework.osgi.util.OsgiBundleUtils;
 import org.springframework.osgi.util.OsgiFilterUtils;
 import org.springframework.util.Assert;
 
@@ -302,7 +303,10 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 				Assert.isTrue(osgiBundle.getVersion().equals(
 						bundle.getHeaders().get(Constants.BUNDLE_VERSION)),
 						"version consistent");
-		} else {
+		} else if (osgiBundle.getVersion() == null) {
+			bundle = OsgiBundleUtils.findBundleBySymbolicName(bundleContext,
+					osgiBundle.getName());
+		} else {// scan all bundles
 			bundles: for (Bundle b : bundleContext.getBundles()) {
 				if (b.getSymbolicName() == null) {
 					log.warn("Bundle " + b + " has no symbolic name defined.");
