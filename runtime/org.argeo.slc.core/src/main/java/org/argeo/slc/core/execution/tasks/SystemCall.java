@@ -49,6 +49,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 
 	private Resource stdOutFile = null;
 	private Resource stdErrFile = null;
+	private Resource stdInFile = null;
 
 	private Map<String, List<Object>> osCommands = new HashMap<String, List<Object>>();
 	private Map<String, String> osCmds = new HashMap<String, String>();
@@ -100,20 +101,35 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 
 	/** Executes the system call. */
 	public void run() {
+		// Manage streams
 		final Writer stdOutWriter;
 		final Writer stdErrWriter;
+		final InputStream stdInStream;
 		if (stdOutFile != null) {
 			stdOutWriter = createWriter(stdOutFile);
-		} else
+		} else {
 			stdOutWriter = null;
+		}
+
 		if (stdErrFile != null) {
 			stdErrWriter = createWriter(stdErrFile);
 		} else {
 			if (stdOutFile != null) {
 				stdErrWriter = createWriter(stdOutFile);
-			} else
+			} else {
 				stdErrWriter = null;
+			}
 		}
+
+		if (stdInFile != null)
+			try {
+				stdInStream = stdInFile.getInputStream();
+			} catch (IOException e2) {
+				throw new SlcException("Cannot open a stream for " + stdInFile,
+						e2);
+			}
+		else
+			stdInStream = null;
 
 		if (log.isTraceEnabled()) {
 			log.debug("os.name=" + System.getProperty("os.name"));
@@ -133,7 +149,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 		if (redirectStreams) {
 			// Redirect standard streams
 			executor.setStreamHandler(createExecuteStreamHandler(stdOutWriter,
-					stdErrWriter));
+					stdErrWriter, stdInStream));
 		} else {
 			// Dummy stream handler (otherwise pump is used)
 			executor.setStreamHandler(new DummyexecuteStreamHandler());
@@ -180,6 +196,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 		} finally {
 			IOUtils.closeQuietly(stdOutWriter);
 			IOUtils.closeQuietly(stdErrWriter);
+			IOUtils.closeQuietly(stdInStream);
 		}
 
 	}
@@ -254,7 +271,9 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 	 * logging mechanism.
 	 */
 	protected ExecuteStreamHandler createExecuteStreamHandler(
-			final Writer stdOutWriter, final Writer stdErrWriter) {
+			final Writer stdOutWriter, final Writer stdErrWriter,
+			final InputStream stdInStream) {
+
 		// Log writers
 
 		PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(
@@ -270,7 +289,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 						if (stdErrWriter != null)
 							appendLineToFile(stdErrWriter, line);
 					}
-				}, null);
+				}, stdInStream);
 		return pumpStreamHandler;
 	}
 
@@ -431,6 +450,10 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 
 	public void setStdErrFile(Resource stdErrFile) {
 		this.stdErrFile = stdErrFile;
+	}
+
+	public void setStdInFile(Resource stdInFile) {
+		this.stdInFile = stdInFile;
 	}
 
 	public void setTestResult(TestResult testResult) {
