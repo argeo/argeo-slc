@@ -21,6 +21,7 @@ public class AntRun implements Runnable {
 	private final static Log log = LogFactory.getLog(AntRun.class);
 
 	private Resource buildFile;
+	private File baseDir;
 
 	private List<String> targets = new ArrayList<String>();
 	private Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -67,6 +68,9 @@ public class AntRun implements Runnable {
 	}
 
 	private File extractBaseDir(String path) {
+		if(this.baseDir!=null)
+			return this.baseDir;
+		
 		String baseDir = null;
 		if (path.length() > 1) {
 			int indx = path.lastIndexOf('/', path.length() - 1);
@@ -96,6 +100,10 @@ public class AntRun implements Runnable {
 
 	public void setProperties(Map<Object, Object> properties) {
 		this.properties = properties;
+	}
+
+	public void setBaseDir(File baseDir) {
+		this.baseDir = baseDir;
 	}
 
 	protected static class LoggingListener implements BuildListener {
