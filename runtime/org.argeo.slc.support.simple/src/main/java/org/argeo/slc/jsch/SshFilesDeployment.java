@@ -2,12 +2,12 @@ package org.argeo.slc.jsch;
 
 import java.util.Map;
 
-import org.argeo.slc.core.deploy.RelativeResourceSet;
+import org.argeo.slc.core.deploy.ResourceSet;
 import org.springframework.core.io.Resource;
 
 public class SshFilesDeployment implements Runnable {
 	private String targetBase = "";
-	private RelativeResourceSet resourceSet;
+	private ResourceSet resourceSet;
 	private SshTarget sshTarget;
 
 	public void run() {
@@ -30,7 +30,7 @@ public class SshFilesDeployment implements Runnable {
 		this.targetBase = targetBase;
 	}
 
-	public void setResourceSet(RelativeResourceSet resourceSet) {
+	public void setResourceSet(ResourceSet resourceSet) {
 		this.resourceSet = resourceSet;
 	}
 
