@@ -19,6 +19,7 @@ import org.osgi.framework.ServiceReference;
 import org.springframework.context.ApplicationContext;
 import org.springframework.osgi.util.OsgiStringUtils;
 
+@SuppressWarnings("restriction")
 public abstract class AbstractOsgiRuntimeTestCase extends TestCase {
 	private final static Log log = LogFactory
 			.getLog(AbstractOsgiRuntimeTestCase.class);

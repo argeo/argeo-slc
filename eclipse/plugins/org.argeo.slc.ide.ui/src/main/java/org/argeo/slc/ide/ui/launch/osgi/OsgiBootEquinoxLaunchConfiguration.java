@@ -34,8 +34,10 @@ public class OsgiBootEquinoxLaunchConfiguration extends
 		// refresh resources
 
 		IFile propertiesFile = (IFile) configuration.getMappedResources()[0];
-		propertiesFile.getProject().refreshLocal(IResource.DEPTH_INFINITE,
+		propertiesFile.getParent().refreshLocal(IResource.DEPTH_INFINITE,
 				monitor);
+//		propertiesFile.getProject().refreshLocal(IResource.DEPTH_INFINITE,
+//				monitor);
 	}
 
 	@Override

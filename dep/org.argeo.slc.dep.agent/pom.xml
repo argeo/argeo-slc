@@ -44,6 +44,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.jcr</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.lib.detached</artifactId>
 		</dependency>
 		<dependency>

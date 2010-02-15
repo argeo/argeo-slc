@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -12,23 +13,6 @@
 	<description>SLC Server</description>
 	<build>
 		<plugins>
-			<!-- Look to parent pom for inheritances -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<!--
-					<executions> <execution> <goals> <goal>test-jar</goal> </goals>
-					</execution> </executions>
-				-->
-			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
@@ -38,27 +22,14 @@
 						<Export-Package>
 							org.argeo.slc.*,org.argeo.slc.server,org.argeo.slc.server.spring
 						</Export-Package>
-						<Import-Package>org.w3c.dom;version="0.0.0",javax.xml.*;version="0.0.0",org.argeo.slc.activemq,org.argeo.slc.execution,*</Import-Package>
+						<Import-Package>org.w3c.dom;version="0.0.0",
+							javax.xml.*;version="0.0.0",
+							org.argeo.slc.activemq,
+							org.argeo.slc.execution,
+							org.springframework.context.support,
+							*
+						</Import-Package>
 					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<configuration>
-					<webAppSourceDirectory>
-						../../org.argeo.slc.webapp/src/main/webapp
-					</webAppSourceDirectory>
-					<jettyConfig>
-						../../org.argeo.slc.webapp/src/main/config/jetty/jetty-test-local.xml
-					</jettyConfig>
-					<webDefaultXml>../../org.argeo.slc.webapp/src/main/config/jetty/webdefault.xml</webDefaultXml>
-					<systemProperties>
-						<systemProperty>
-							<name>activemq.base</name>
-							<value>${user.home}/share/apache-activemq-5.2.0</value>
-						</systemProperty>
-					</systemProperties>
 				</configuration>
 			</plugin>
 		</plugins>

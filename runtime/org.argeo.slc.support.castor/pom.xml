@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -13,22 +14,6 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>${version.maven-bundle-plugin}</version>
@@ -37,7 +22,9 @@
 						<Export-Package>
 							org.argeo.slc.*
 						</Export-Package>
-						<Import-Package>org.argeo.slc.*;resolution:=optional,
+						<Import-Package>
+							org.argeo.slc.*;resolution:=optional,
+							org.argeo.slc.deploy;resolution:=optional,
 							org.argeo.slc.build;resolution:=optional,
 							org.argeo.slc.execution;resolution:=optional,
 							org.argeo.slc.core.attachment;resolution:=optional,
@@ -56,13 +43,21 @@
 							org.apache.xml.serialize;resolution:=optional,
 							org.apache.xerces.jaxp;resolution:=optional,
 							javax.naming;resolution:=optional,
-							javax.naming.directory;resolution:=optional
+							javax.naming.directory;resolution:=optional,
+							javax.xml.transform;resolution:=optional,
+							javax.xml.transform.stream;resolution:=optional,
+							javax.xml.transform.dom;resolution:=optional,
+							org.springframework.xml.validation;resolution:=optional,
+							org.apache.commons.io,
+							org.springframework.oxm,
+							org.springframework.core,
+							org.springframework.xml.transform,
+							org.springframework.core.io
 						</Import-Package>
 						<Fragment-Host>com.springsource.org.castor</Fragment-Host>
 					</instructions>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 	<dependencies>

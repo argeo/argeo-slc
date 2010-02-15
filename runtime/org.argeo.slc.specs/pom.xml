@@ -10,41 +10,12 @@
 	<artifactId>org.argeo.slc.specs</artifactId>
 	<name>SLC Specifications</name>
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<directory>.</directory>
-				<includes>
-					<include>META-INF/**</include>
-				</includes>
-			</resource>
-		</resources>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestFile>META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<version>${version.maven-bundle-plugin}</version>
 				<configuration>
-					<manifestLocation>META-INF</manifestLocation>
 					<instructions>
 						<Export-Package>
 							org.argeo.slc.*
@@ -56,9 +27,6 @@
 					</instructions>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
-	<dependencies>
-	</dependencies>
 </project>

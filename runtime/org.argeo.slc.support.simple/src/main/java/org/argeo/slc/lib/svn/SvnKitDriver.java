@@ -26,6 +26,7 @@ public class SvnKitDriver implements VersioningDriver {
 		manager = SVNClientManager.newInstance();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void updateToHead(File fileOrDir) {
 		try {
 			manager.getUpdateClient().doUpdate(fileOrDir, SVNRevision.HEAD,
@@ -35,6 +36,7 @@ public class SvnKitDriver implements VersioningDriver {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void importFileOrDir(String repositoryUrl, File fileOrDir) {
 		try {
 			manager.getCommitClient().doImport(fileOrDir,
@@ -46,6 +48,7 @@ public class SvnKitDriver implements VersioningDriver {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void checkout(String repositoryUrl, File destDir, Boolean recursive) {
 		try {
 			manager.getUpdateClient().doCheckout(
@@ -119,6 +122,7 @@ public class SvnKitDriver implements VersioningDriver {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void commit(File fileOrDir, String commitMessage) {
 		try {
 			manager.getCommitClient().doCommit(new File[] { fileOrDir }, true,
