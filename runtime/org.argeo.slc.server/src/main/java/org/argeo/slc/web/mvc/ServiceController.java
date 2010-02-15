@@ -191,10 +191,6 @@ public class ServiceController {
 	protected ObjectList listResults(
 			@RequestParam(value = "collectionId", required = false) String collectionId,
 			HttpServletRequest request) {
-
-		if (log.isDebugEnabled())
-			log.debug("In ServiceController :: listResults.service");
-
 		Map<String, String[]> parameterMap = request.getParameterMap();
 		Map<String, String> attributes = new HashMap<String, String>();
 		for (String parameter : parameterMap.keySet()) {
