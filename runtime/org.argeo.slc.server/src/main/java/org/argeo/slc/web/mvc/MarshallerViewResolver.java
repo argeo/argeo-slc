@@ -22,7 +22,7 @@ public class MarshallerViewResolver extends AbstractCachingViewResolver {
 	 * Caches a marshaller view.
 	 * 
 	 * @param viewName
-	 *            van be null, default marshaller view behavior is then used
+	 *            can be null, default marshaller view behavior is then used
 	 */
 	@Override
 	protected View loadView(String viewName, Locale locale) throws Exception {

@@ -10,6 +10,7 @@
 	<!--
 		<import resource="classpath:/org/argeo/slc/server/spring/jmx.xml" />
 	-->
+
 	<import resource="osgi.xml" />
 	<import resource="security.xml" />
 

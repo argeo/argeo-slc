@@ -6,6 +6,9 @@
 	<display-name>SLC Web Application</display-name>
 
 	<!-- SERVICE servlet -->
+	
+	<!-- refactoring with annotation
+		
 	<servlet>
 		<servlet-name>slc-service</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -21,6 +24,21 @@
 		<url-pattern>*.service</url-pattern>
 	</servlet-mapping>
 
+ -->
+ 	<servlet>
+		<servlet-name>slcservice</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>slcservice</servlet-name>
+		<url-pattern>*.service</url-pattern>
+	</servlet-mapping>
+ 
 	<!-- XSLT servlet -->
 	<servlet>
 		<servlet-name>xslt</servlet-name>
