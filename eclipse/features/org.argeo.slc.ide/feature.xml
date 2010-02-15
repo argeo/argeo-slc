@@ -2,7 +2,7 @@
 <feature
       id="org.argeo.slc.ide"
       label="Argeo Java IDE"
-      version="0.12.1.D20100118_1306"
+      version="0.12.1.D20100215_2148"
       provider-name="Argeo"
       plugin="org.argeo.slc.ide.branding"
       image="icons/argeo-icon-100104-256.png">
@@ -64,14 +64,14 @@ and limitations under the License.
          id="org.argeo.slc.ide.ui"
          download-size="0"
          install-size="0"
-         version="0.12.1.D20100118_1306"
+         version="0.12.1.D20100215_2148"
          unpack="false"/>
 
    <plugin
          id="org.argeo.slc.ide.branding"
          download-size="0"
          install-size="0"
-         version="0.12.1.D20100118_1306"
+         version="0.12.1.D20100215_2148"
          unpack="false"/>
 
 </feature>
