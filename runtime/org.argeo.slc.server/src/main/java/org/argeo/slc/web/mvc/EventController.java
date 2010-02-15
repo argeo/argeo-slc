@@ -8,7 +8,6 @@ import org.argeo.slc.msg.event.SlcEventListener;
 import org.argeo.slc.msg.event.SlcEventListenerDescriptor;
 import org.argeo.slc.msg.event.SlcEventListenerRegister;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -25,16 +24,14 @@ public class EventController {
 	private SlcEventListener eventListener = null;
 
 	public EventController() {
-		if (log.isDebugEnabled())
-			log.debug("In EventController Constructor");
 	}
 
 	// Business Methods
 
 	@RequestMapping("/addEventListener.service")
-	public String addEventListener(
+	public ExecutionAnswer addEventListener(
 			@RequestParam(SlcEvent.EVENT_TYPE) String eventType,
-			@RequestParam(value=SlcEvent.EVENT_FILTER, required=false) String eventFilter, Model model) {
+			@RequestParam(value = SlcEvent.EVENT_FILTER, required = false) String eventFilter) {
 
 		eventListenerRegister
 				.addEventListenerDescriptor(new SlcEventListenerDescriptor(
@@ -43,16 +40,14 @@ public class EventController {
 			log.trace("Registered listener on register "
 					+ eventListenerRegister.getId() + " for type " + eventType
 					+ ", filter=" + eventFilter);
-		model.addAttribute(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
-		return KEY_ANSWER;
+		return ExecutionAnswer.ok("Execution completed properly");
 
 	}
 
 	@RequestMapping("/removeEventListener.service")
-	public String removeEventListener(
+	public ExecutionAnswer removeEventListener(
 			@RequestParam(SlcEvent.EVENT_TYPE) String eventType,
-			@RequestParam(value=SlcEvent.EVENT_FILTER, required=false) String eventFilter, Model model) {
+			@RequestParam(value = SlcEvent.EVENT_FILTER, required = false) String eventFilter) {
 
 		eventListenerRegister
 				.removeEventListenerDescriptor(new SlcEventListenerDescriptor(
@@ -61,14 +56,12 @@ public class EventController {
 			log.trace("Removed listener from register "
 					+ eventListenerRegister.getId() + " for type " + eventType
 					+ ", filter=" + eventFilter);
-		model.addAttribute(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
-		return KEY_ANSWER;
+		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
 	@RequestMapping("/pollEvent.service")
-	public String pollEvent(@RequestParam("timeout") String timeoutStr,
-			Model model) {
+	public Object pollEvent(
+			@RequestParam(value = "timeout", required = false) String timeoutStr) {
 		final Long timeout;
 		if (timeoutStr != null)
 			timeout = Long.parseLong(timeoutStr);
@@ -78,14 +71,10 @@ public class EventController {
 		SlcEvent event = eventListener.listen(eventListenerRegister.getId(),
 				eventListenerRegister.getDescriptorsCopy(), timeout);
 		if (event != null) {
-			model.addAttribute("event", event);
-			if (log.isTraceEnabled())
-				log.debug("Received event: "
-						+ event.getHeaders().get(SlcEvent.EVENT_TYPE));
+			return event;
+		} else {
+			return ExecutionAnswer.ok("Execution completed properly");
 		}
-		model.addAttribute(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
-		return KEY_ANSWER;
 	}
 
 	public void setEventListenerRegister(

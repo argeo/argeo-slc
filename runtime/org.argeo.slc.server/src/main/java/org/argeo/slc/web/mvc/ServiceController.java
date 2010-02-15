@@ -57,8 +57,6 @@ public class ServiceController {
 			TreeTestResultCollectionDao testResultCollectionDao,
 			TestManagerService testManagerService,
 			SlcAgentDescriptorDao slcAgentDescriptorDao) {
-		if (log.isDebugEnabled())
-			log.debug("In SlcServiceController Constructor");
 
 		this.testManagerService = testManagerService;
 		this.treeTestResultDao = treeTestResultDao;
@@ -67,22 +65,14 @@ public class ServiceController {
 	}
 
 	// Business Methods
-
 	@RequestMapping("/isServerReady.service")
-	protected String isServerReady(Model model) {
-		if (log.isDebugEnabled())
-			log.debug("SlcServiceController :: isServerReady ");
+	protected ExecutionAnswer isServerReady(Model model) {
 		// Does nothing for now, it will return an OK answer.
-		model.addAttribute(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
-		return KEY_ANSWER;
+		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
 	@RequestMapping("/shutdownRuntime.service")
-	protected String shutdownRuntime(Model model) {
-		if (log.isDebugEnabled())
-			log.debug("SlcServiceController :: shutdownRuntime");
-
+	protected ExecutionAnswer shutdownRuntime(Model model) {
 		new Thread() {
 			public void run() {
 				// wait in order to let call return
@@ -94,44 +84,29 @@ public class ServiceController {
 				dynamicRuntime.shutdown();
 			}
 		}.start();
-		ExecutionAnswer answer = ExecutionAnswer.ok("Server shutting down...");
-		model.addAttribute(answer);
-		return KEY_ANSWER;
+		return ExecutionAnswer.ok("Server shutting down...");
 	}
 
 	@RequestMapping("/getResult.service")
-	protected String getResult(
-			@RequestParam(value = "uuid", required = false) String uuid,
-			Model model) {
-		if (log.isDebugEnabled())
-			log.debug("In SlcServiceController In GetResultMethod");
+	protected TreeTestResult getResult(
+			@RequestParam(value = "uuid", required = false) String uuid) {
 
 		TreeTestResult result = treeTestResultDao.getTestResult(uuid);
 		if (result == null)
 			throw new SlcException("No result found for uuid " + uuid);
-		model.addAttribute("result", result);
-		return "result";
+		return result;
 	}
 
 	@RequestMapping("/addResultToCollection.service")
-	protected String addResultToCollection(@RequestParam String collectionId,
-			@RequestParam String resultUuid, Model model) {
-		if (log.isDebugEnabled())
-			log.debug("In SlcServiceController :: addResultToCollection");
-
+	protected ExecutionAnswer addResultToCollection(
+			@RequestParam String collectionId, @RequestParam String resultUuid) {
 		testManagerService.addResultToCollection(collectionId, resultUuid);
-		model.addAttribute(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
-		return KEY_ANSWER;
+		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
 	@RequestMapping("/removeResultFromCollection.service")
-	protected String removeResultFromCollection(HttpServletRequest request,
-			Model model) {
-		if (log.isDebugEnabled())
-			log
-					.debug("In SlcServiceController :: removeResultFromCollection.service");
-
+	protected ExecutionAnswer removeResultFromCollection(
+			HttpServletRequest request) {
 		String collectionId = request.getParameter("collectionId");
 		String[] resultUuids = request.getParameterValues("resultUuid");
 		String[] attrNames = request.getParameterValues("attrName");
@@ -185,17 +160,12 @@ public class ServiceController {
 
 			}
 		}
-		model.addAttribute(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
-		return KEY_ANSWER;
+		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
 	@RequestMapping("/listCollectionRefs.service")
-	protected String listCollectionRefs(HttpServletRequest request,
-			HttpServletResponse response, Model model) {
-
-		if (log.isDebugEnabled())
-			log.debug("In SlcServiceController :: listCollectionRefs.service");
+	protected ReferenceList listCollectionRefs(HttpServletRequest request,
+			HttpServletResponse response) {
 
 		SortedSet<TreeTestResultCollection> results = testResultCollectionDao
 				.listCollections();
@@ -204,36 +174,28 @@ public class ServiceController {
 		for (TreeTestResultCollection collection : results) {
 			referenceList.getReferences().add(collection.getId());
 		}
-
-		model.addAttribute("referenceList", referenceList);
-		return "referenceList";
+		return referenceList;
 	}
 
 	@RequestMapping("/listResultAttributes.service")
-	protected String listResultAttributes(@RequestParam String id, Model model) {
-
-		if (log.isDebugEnabled())
-			log
-					.debug("In SlcServiceController :: listResultAttributes.service");
+	protected ObjectList listResultAttributes(@RequestParam String id, Model model) {
 
 		List<ResultAttributes> resultAttributes = testResultCollectionDao
 				.listResultAttributes(id);
-
-		model.addAttribute("resultAttributesList", new ObjectList(
-				resultAttributes));
-		return "resultAttributesList";
+		return new ObjectList(
+				resultAttributes);
 	}
 
 	@RequestMapping("/listResults.service")
 	@SuppressWarnings(value = { "unchecked" })
-	protected String listResults(@RequestParam (value = "collectionId", required = false)String collectionId,
-			HttpServletRequest request, Model model) {
+	protected ObjectList listResults(
+			@RequestParam(value = "collectionId", required = false) String collectionId,
+			HttpServletRequest request) {
 
 		if (log.isDebugEnabled())
-			log.debug("In SlcServiceController :: listResults.service");
+			log.debug("In ServiceController :: listResults.service");
 
 		Map<String, String[]> parameterMap = request.getParameterMap();
-
 		Map<String, String> attributes = new HashMap<String, String>();
 		for (String parameter : parameterMap.keySet()) {
 			if (parameter.startsWith("attr.")) {
@@ -244,20 +206,14 @@ public class ServiceController {
 
 		List<TreeTestResult> resultAttributes = testResultCollectionDao
 				.listResults(collectionId, attributes);
-
-		model.addAttribute("resultList", new ObjectList(resultAttributes));
-		return "resultList";
+		return new ObjectList(resultAttributes);
 	}
 
 	@RequestMapping("/copyCollectionToCollection.service")
-	protected String copyCollectionToCollection(
+	protected ExecutionAnswer copyCollectionToCollection(
 			@RequestParam String sourceCollectionId,
 			@RequestParam String targetCollectionId,
-			HttpServletRequest request, Model model) {
-
-		if (log.isDebugEnabled())
-			log
-					.debug("In SlcServiceController :: copyCollectionToCollection.service");
+			HttpServletRequest request) {
 
 		String[] attrNames = request.getParameterValues("attrName");
 		String[] attrPatterns = request.getParameterValues("attrPattern");
@@ -296,45 +252,33 @@ public class ServiceController {
 						treeTestResult.getUuid());
 			}
 		}
-		model.addAttribute(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
-		return KEY_ANSWER;
+		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
 	@RequestMapping("/listAgents.service")
-	protected String listAgents(Model model) {
+	protected ObjectList listAgents() {
 		if (log.isDebugEnabled())
-			log.debug("In SlcServiceController :: listAgents.service");
-
+			log.debug("In ServiceController :: listAgents.service");
 		List<SlcAgentDescriptor> list = slcAgentDescriptorDao
 				.listSlcAgentDescriptors();
-		model.addAttribute("list", new ObjectList(list));
-		return "list";
+		return new ObjectList(list);
 	}
 
 	@RequestMapping("/cleanAgents.service")
-	protected String cleanAgents(Model model) {
-
-		if (log.isDebugEnabled())
-			log.debug("In SlcServiceController :: cleanAgents.service");
+	protected ExecutionAnswer cleanAgents() {
 
 		List<SlcAgentDescriptor> list = slcAgentDescriptorDao
 				.listSlcAgentDescriptors();
 		for (SlcAgentDescriptor t : new Vector<SlcAgentDescriptor>(list)) {
 			slcAgentDescriptorDao.delete(t);
 		}
-		model.addAttribute(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
-		return KEY_ANSWER;
+		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
 	@RequestMapping("/getAttachment.service")
-	protected String getAttachment(@RequestParam String uuid,
+	protected void getAttachment(@RequestParam String uuid,
 			@RequestParam String contentType, @RequestParam String name,
-			HttpServletResponse response, Model model) throws Exception {
-		if (log.isDebugEnabled())
-			log.debug("In SlcServiceController :: getAttachment");
-
+			HttpServletResponse response) throws Exception {
 		if (contentType == null || "".equals(contentType.trim())) {
 			if (name != null) {
 				contentType = FORCE_DOWNLOAD;
@@ -375,7 +319,6 @@ public class ServiceController {
 		response.setContentType(contentType);
 		ServletOutputStream outputStream = response.getOutputStream();
 		attachmentsStorage.retrieveAttachment(resourceDescriptor, outputStream);
-		return null;
 	}
 
 	// IoC

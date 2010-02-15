@@ -29,7 +29,6 @@ import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.xml.transform.StringSource;
 
 @Controller
@@ -49,39 +48,25 @@ public class ExecutionServiceController {
 	private SlcExecutionManager slcExecutionManager;
 
 	@RequestMapping("/listSlcExecutions.service")
-	protected String listSlcExecutions(Model model) {
-
-		if (log.isDebugEnabled())
-			log.debug("In SlcServiceController :: listSlcExecutions.service");
-
+	protected ObjectList listSlcExecutions() {
 		List<SlcExecution> list = slcExecutionDao.listSlcExecutions();
-		model.addAttribute("list", new ObjectList(list));
-		return "list";
+		return new ObjectList(list);
 	}
 
 	@RequestMapping("/getExecutionDescriptor.service")
-	protected String getExecutionDescriptor(@RequestParam String agentId,
-			@RequestParam String moduleName, @RequestParam String version,
-			Model model) {
+	protected ExecutionModuleDescriptor getExecutionDescriptor(
+			@RequestParam String agentId, @RequestParam String moduleName,
+			@RequestParam String version) {
 
-		if (log.isDebugEnabled())
-			log.debug(":: SlcServiceController :: getExecutionDescriptor");
-		
 		SlcAgent slcAgent = agentFactory.getAgent(agentId);
 
 		ExecutionModuleDescriptor md = slcAgent.getExecutionModuleDescriptor(
 				moduleName, version);
-		model.addAttribute(md);
-		return "executionModuleDescriptor";
+		return md;
 	}
 
 	@RequestMapping("/listModulesDescriptors.service")
-	protected String listModulesDescriptors(@RequestParam String agentId,
-			Model model) {
-
-		if (log.isDebugEnabled())
-			log.debug(":: SlcServiceController :: listModulesDescriptors");
-		
+	protected ObjectList listModulesDescriptors(@RequestParam String agentId) {
 		// TODO: use centralized agentId property (from MsgConstants)?
 		SlcAgent slcAgent = agentFactory.getAgent(agentId);
 
@@ -100,32 +85,20 @@ public class ExecutionServiceController {
 					}
 				});
 		set.addAll(descriptors);
-
-		model.addAttribute(new ObjectList(set));
-		return "objectList";
+		return new ObjectList(set);
 	}
 
 	@RequestMapping("/getSlcExecution.service")
-	protected void getSlcExecution(@RequestParam String uuid,
-			ModelAndView modelAndView) {
-		if (log.isDebugEnabled())
-			log.debug("In ExecutionServiceController :: getSlcExecution.service");
-
+	protected SlcExecution getSlcExecution(@RequestParam String uuid) {
 		SlcExecution slcExecution = slcExecutionDao.getSlcExecution(uuid);
-
 		initializeSEM();
 		slcExecutionManager.retrieveRealizedFlows(slcExecution);
-		modelAndView.addObject(slcExecution);
-		modelAndView.addObject(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
+		return slcExecution;
 	}
 
 	@RequestMapping("/newSlcExecution.service")
-	protected String newSlcExecution(HttpServletRequest request,
+	protected ExecutionAnswer newSlcExecution(HttpServletRequest request,
 			Model model) throws Exception {
-
-		if (log.isDebugEnabled())
-			log.debug("In ExecutionServiceController :: newSlcExecution.service");
 
 		String agentId = request
 				.getParameter(MsgConstants.PROPERTY_SLC_AGENT_ID);
@@ -166,11 +139,7 @@ public class ExecutionServiceController {
 		SlcAgent agent = agentFactory.getAgent(agentId);
 		agent.runSlcExecution(slcExecution);
 
-		log.debug("After Everything has been done !");
-		
-		model.addAttribute(KEY_ANSWER, ExecutionAnswer
-				.ok("Execution completed properly"));
-		return KEY_ANSWER;
+		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
 	private void initializeSEM() {
