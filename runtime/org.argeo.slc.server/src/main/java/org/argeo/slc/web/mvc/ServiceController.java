@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.AttachmentsStorage;
 import org.argeo.slc.core.attachment.SimpleAttachment;
@@ -38,7 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ServiceController {
 
-	private final static Log log = LogFactory.getLog(ServiceController.class);
+//	private final static Log log = LogFactory.getLog(ServiceController.class);
 
 	// Constants
 	public final static String KEY_ANSWER = "__answer";
@@ -253,8 +251,6 @@ public class ServiceController {
 
 	@RequestMapping("/listAgents.service")
 	protected ObjectList listAgents() {
-		if (log.isDebugEnabled())
-			log.debug("In ServiceController :: listAgents.service");
 		List<SlcAgentDescriptor> list = slcAgentDescriptorDao
 				.listSlcAgentDescriptors();
 		return new ObjectList(list);
