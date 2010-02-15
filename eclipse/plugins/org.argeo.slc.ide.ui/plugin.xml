@@ -18,6 +18,7 @@
          name="SLC">
    </perspective>
 </extension>
+<!--
 <extension
       point="org.eclipse.pde.core.targets">
    <target
@@ -31,6 +32,7 @@
          name="SLC SDK v0.12.x">
    </target>
 </extension> 
+-->
 <extension
       point="org.eclipse.debug.ui.launchShortcuts">
    <shortcut
