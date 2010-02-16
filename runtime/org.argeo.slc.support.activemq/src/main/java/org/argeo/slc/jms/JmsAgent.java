@@ -13,13 +13,12 @@ import javax.jms.MessageListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.core.runtime.AbstractAgent;
+import org.argeo.slc.core.runtime.DefaultAgent;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.msg.ExecutionAnswer;
 import org.argeo.slc.msg.MsgConstants;
 import org.argeo.slc.msg.ReferenceList;
 import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -28,8 +27,8 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessagePostProcessor;
 
 /** JMS based implementation of SLC Agent. */
-public class JmsAgent extends AbstractAgent implements SlcAgent,
-		InitializingBean, DisposableBean, MessageListener {
+public class JmsAgent extends DefaultAgent implements InitializingBean,
+		DisposableBean, MessageListener {
 	public final static String PROPERTY_QUERY = "query";
 	public final static String QUERY_PING_ALL = "pingAll";
 
@@ -96,20 +95,6 @@ public class JmsAgent extends AbstractAgent implements SlcAgent,
 		// if (log.isDebugEnabled())
 		// log.debug("Message selector: " + messageSelector);
 		return messageSelector;
-	}
-
-	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
-			String moduleName, String version) {
-		return getModulesManager().getExecutionModuleDescriptor(moduleName,
-				version);
-	}
-
-	public List<ExecutionModuleDescriptor> listExecutionModuleDescriptors() {
-		return getModulesManager().listExecutionModules();
-	}
-
-	public boolean ping() {
-		return true;
 	}
 
 	public void onMessage(final Message message) {
