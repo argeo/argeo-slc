@@ -22,6 +22,7 @@ import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
+import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
@@ -43,13 +44,14 @@ public class OsgiExecutionModulesManager extends
 		// makes it very difficult
 		// Suggestions welcome!
 		Properties systemProperties = System.getProperties();
-//		if (!systemProperties
-//				.containsKey("javax.xml.parsers.DocumentBuilderFactory"))
-//			System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
-//					"org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-//		if (!systemProperties.containsKey("javax.xml.parsers.SAXParserFactory"))
-//			System.setProperty("javax.xml.parsers.SAXParserFactory",
-//					"org.apache.xerces.jaxp.SAXParserFactoryImpl");
+		// if (!systemProperties
+		// .containsKey("javax.xml.parsers.DocumentBuilderFactory"))
+		// System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
+		// "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+		// if
+		// (!systemProperties.containsKey("javax.xml.parsers.SAXParserFactory"))
+		// System.setProperty("javax.xml.parsers.SAXParserFactory",
+		// "org.apache.xerces.jaxp.SAXParserFactoryImpl");
 		if (!systemProperties
 				.containsKey("javax.xml.transform.TransformerFactory"))
 			System.setProperty("javax.xml.transform.TransformerFactory",
@@ -372,6 +374,10 @@ public class OsgiExecutionModulesManager extends
 			executionContexts.put(osgiBundle, executionContext);
 			if (log.isTraceEnabled())
 				log.debug("Registered execution context from " + osgiBundle);
+			// Notify
+			for (ExecutionModulesListener listener : getExecutionModulesListeners())
+				listener.executionModuleAdded(osgiBundle, executionContext);
+
 		} else if (service instanceof ExecutionFlow) {
 			ExecutionFlow executionFlow = (ExecutionFlow) service;
 			OsgiBundle osgiBundle = asOsgiBundle(properties);
@@ -383,6 +389,8 @@ public class OsgiExecutionModulesManager extends
 				log
 						.debug("Registered " + executionFlow + " from "
 								+ osgiBundle);
+			for (ExecutionModulesListener listener : getExecutionModulesListeners())
+				listener.executionFlowAdded(osgiBundle, executionFlow);
 
 		} else if (service instanceof ExecutionFlowDescriptorConverter) {
 			ExecutionFlowDescriptorConverter executionFlowDescriptorConverter = (ExecutionFlowDescriptorConverter) service;
@@ -404,9 +412,14 @@ public class OsgiExecutionModulesManager extends
 		if (service instanceof ExecutionContext) {
 			OsgiBundle osgiBundle = asOsgiBundle(properties);
 			if (executionContexts.containsKey(osgiBundle)) {
-				executionContexts.remove(osgiBundle);
+				ExecutionContext executionContext = executionContexts
+						.remove(osgiBundle);
 				if (log.isTraceEnabled())
 					log.debug("Removed execution context from " + osgiBundle);
+				// Notify
+				for (ExecutionModulesListener listener : getExecutionModulesListeners())
+					listener.executionModuleRemoved(osgiBundle,
+							executionContext);
 			}
 		} else if (service instanceof ExecutionFlow) {
 			ExecutionFlow executionFlow = (ExecutionFlow) service;
@@ -422,6 +435,8 @@ public class OsgiExecutionModulesManager extends
 					if (log.isTraceEnabled())
 						log.debug("Removed flows set from " + osgiBundle);
 				}
+				for (ExecutionModulesListener listener : getExecutionModulesListeners())
+					listener.executionFlowRemoved(osgiBundle, executionFlow);
 			}
 		} else if (service instanceof ExecutionFlowDescriptorConverter) {
 			OsgiBundle osgiBundle = asOsgiBundle(properties);
