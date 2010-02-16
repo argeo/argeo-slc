@@ -1,6 +1,7 @@
 package org.argeo.slc.core.execution.tasks;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
+import org.argeo.slc.core.execution.ExecutionResources;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.test.TestResult;
@@ -50,6 +52,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 	private Resource stdOutFile = null;
 	private Resource stdErrFile = null;
 	private Resource stdInFile = null;
+	private Boolean redirectStdOut = false;
 
 	private Map<String, List<Object>> osCommands = new HashMap<String, List<Object>>();
 	private Map<String, String> osCmds = new HashMap<String, String>();
@@ -66,6 +69,8 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 	private Long watchdogTimeout = 24 * 60 * 60 * 1000l;
 
 	private TestResult testResult;
+
+	private ExecutionResources executionResources;
 
 	/** Empty constructor */
 	public SystemCall() {
@@ -102,23 +107,21 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 	/** Executes the system call. */
 	public void run() {
 		// Manage streams
-		final Writer stdOutWriter;
-		final Writer stdErrWriter;
-		final InputStream stdInStream;
-		if (stdOutFile != null) {
-			stdOutWriter = createWriter(stdOutFile);
-		} else {
-			stdOutWriter = null;
-		}
+		Writer stdOutWriter = null;
+		OutputStream stdOutputStream = null;
+		Writer stdErrWriter = null;
+		InputStream stdInStream = null;
+		if (stdOutFile != null)
+			if (redirectStdOut)
+				stdOutputStream = createOutputStream(stdOutFile);
+			else
+				stdOutWriter = createWriter(stdOutFile, true);
 
 		if (stdErrFile != null) {
-			stdErrWriter = createWriter(stdErrFile);
+			stdErrWriter = createWriter(stdErrFile, true);
 		} else {
-			if (stdOutFile != null) {
-				stdErrWriter = createWriter(stdOutFile);
-			} else {
-				stdErrWriter = null;
-			}
+			if (stdOutFile != null && !redirectStdOut)
+				stdErrWriter = createWriter(stdOutFile, true);
 		}
 
 		if (stdInFile != null)
@@ -128,8 +131,6 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 				throw new SlcException("Cannot open a stream for " + stdInFile,
 						e2);
 			}
-		else
-			stdInStream = null;
 
 		if (log.isTraceEnabled()) {
 			log.debug("os.name=" + System.getProperty("os.name"));
@@ -149,7 +150,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 		if (redirectStreams) {
 			// Redirect standard streams
 			executor.setStreamHandler(createExecuteStreamHandler(stdOutWriter,
-					stdErrWriter, stdInStream));
+					stdOutputStream, stdErrWriter, stdInStream));
 		} else {
 			// Dummy stream handler (otherwise pump is used)
 			executor.setStreamHandler(new DummyexecuteStreamHandler());
@@ -271,19 +272,20 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 	 * logging mechanism.
 	 */
 	protected ExecuteStreamHandler createExecuteStreamHandler(
-			final Writer stdOutWriter, final Writer stdErrWriter,
-			final InputStream stdInStream) {
+			final Writer stdOutWriter, final OutputStream stdOutputStream,
+			final Writer stdErrWriter, final InputStream stdInStream) {
 
 		// Log writers
 
 		PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(
-				new LogOutputStream() {
-					protected void processLine(String line, int level) {
-						log(stdOutLogLevel, line);
-						if (stdOutWriter != null)
-							appendLineToFile(stdOutWriter, line);
-					}
-				}, new LogOutputStream() {
+				stdOutputStream != null ? stdOutputStream
+						: new LogOutputStream() {
+							protected void processLine(String line, int level) {
+								log(stdOutLogLevel, line);
+								if (stdOutWriter != null)
+									appendLineToFile(stdOutWriter, line);
+							}
+						}, new LogOutputStream() {
 					protected void processLine(String line, int level) {
 						log(stdErrLogLevel, line);
 						if (stdErrWriter != null)
@@ -377,17 +379,40 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 		}
 	}
 
-	/** Creates the writer for the log files. */
-	protected Writer createWriter(Resource target) {
+	/** Creates the writer for the output/err files. */
+	protected Writer createWriter(Resource target, Boolean append) {
 		FileWriter writer = null;
 		try {
-			File file = target.getFile();
-			writer = new FileWriter(file, true);
+
+			final File file;
+			if (executionResources != null)
+				file = new File(executionResources.getAsOsPath(target, true));
+			else
+				file = target.getFile();
+			writer = new FileWriter(file, append);
 		} catch (IOException e) {
-			log.error("Cannot create log file " + target, e);
+			log.error("Cannot get file for " + target, e);
 			IOUtils.closeQuietly(writer);
 		}
 		return writer;
+	}
+
+	/** Creates an outputstream for the output/err files. */
+	protected OutputStream createOutputStream(Resource target) {
+		FileOutputStream OutputStream = null;
+		try {
+
+			final File file;
+			if (executionResources != null)
+				file = new File(executionResources.getAsOsPath(target, true));
+			else
+				file = target.getFile();
+			OutputStream = new FileOutputStream(file, false);
+		} catch (IOException e) {
+			log.error("Cannot get file for " + target, e);
+			IOUtils.closeQuietly(OutputStream);
+		}
+		return OutputStream;
 	}
 
 	/** Append the argument (for chaining) */
@@ -482,6 +507,14 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 
 	public void setGenerateScript(String generateScript) {
 		this.generateScript = generateScript;
+	}
+
+	public void setExecutionResources(ExecutionResources executionResources) {
+		this.executionResources = executionResources;
+	}
+
+	public void setRedirectStdOut(Boolean redirectStdOut) {
+		this.redirectStdOut = redirectStdOut;
 	}
 
 	private class DummyexecuteStreamHandler implements ExecuteStreamHandler {

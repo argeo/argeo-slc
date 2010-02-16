@@ -80,17 +80,17 @@ public class FileExecutionResources implements ExecutionResources {
 	}
 
 	public String getAsOsPath(Resource resource, Boolean overwrite) {
-		File file = null;
-		try {
-			file = resource.getFile();
-			return file.getCanonicalPath();
-		} catch (IOException e) {
-			if (log.isTraceEnabled())
-				log
-						.trace("Resource "
-								+ resource
-								+ " is not available on the file system. Retrieving it...");
-		}
+		File file = fileFromResource(resource);
+		if (file != null)
+			try {
+				return file.getCanonicalPath();
+			} catch (IOException e1) {
+				// silent
+			}
+
+		if (log.isTraceEnabled())
+			log.trace("Resource " + resource
+					+ " is not available on the file system. Retrieving it...");
 
 		InputStream in = null;
 		OutputStream out = null;
@@ -114,6 +114,20 @@ public class FileExecutionResources implements ExecutionResources {
 			IOUtils.closeQuietly(in);
 			IOUtils.closeQuietly(out);
 		}
+	}
+
+	/**
+	 * Extract the underlying file from the resource.
+	 * 
+	 * @return the file or null if no files support this resource.
+	 */
+	protected File fileFromResource(Resource resource) {
+		try {
+			return resource.getFile();
+		} catch (IOException e) {
+			return null;
+		}
+
 	}
 
 	public File getFile(String relativePath) {
