@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Bundle-Version: 0.12.2.SNAPSHOT
+Bundle-Name: SLC Agent JMX
+Bundle-SymbolicName: org.argeo.slc.agent.jmx
