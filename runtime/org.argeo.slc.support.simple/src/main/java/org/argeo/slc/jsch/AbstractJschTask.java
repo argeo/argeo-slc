@@ -15,6 +15,10 @@ public abstract class AbstractJschTask implements Runnable {
 	protected Session openSession() {
 		try {
 			JSch jsch = new JSch();
+			if (sshTarget.getUsePrivateKey()
+					&& sshTarget.getLocalPrivateKey().exists())
+				jsch.addIdentity(sshTarget.getLocalPrivateKey()
+						.getAbsolutePath());
 			Session session = jsch.getSession(getSshTarget().getUser(),
 					getSshTarget().getHost(), getSshTarget().getPort());
 

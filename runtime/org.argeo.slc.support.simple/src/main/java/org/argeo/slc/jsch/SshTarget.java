@@ -1,5 +1,7 @@
 package org.argeo.slc.jsch;
 
+import java.io.File;
+
 import com.jcraft.jsch.UserInfo;
 
 public class SshTarget {
@@ -7,6 +9,10 @@ public class SshTarget {
 	private Integer port = 22;
 	private String user;
 	private UserInfo userInfo;
+
+	private Boolean usePrivateKey = true;
+	private File localPrivateKey = new File(System.getProperty("user.home")
+			+ File.separator + ".ssh" + File.separator + "id_rsa");
 
 	public String getHost() {
 		return host;
@@ -38,6 +44,22 @@ public class SshTarget {
 
 	public void setUserInfo(UserInfo userInfo) {
 		this.userInfo = userInfo;
+	}
+
+	public void setLocalPrivateKey(File localPrivateKey) {
+		this.localPrivateKey = localPrivateKey;
+	}
+
+	public File getLocalPrivateKey() {
+		return localPrivateKey;
+	}
+
+	public Boolean getUsePrivateKey() {
+		return usePrivateKey;
+	}
+
+	public void setUsePrivateKey(Boolean usePrivateKey) {
+		this.usePrivateKey = usePrivateKey;
 	}
 
 	public String toString() {

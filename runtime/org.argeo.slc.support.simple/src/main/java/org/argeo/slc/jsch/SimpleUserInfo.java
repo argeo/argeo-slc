@@ -13,17 +13,27 @@ import com.jcraft.jsch.UserInfo;
 
 public class SimpleUserInfo implements UserInfo {
 	private Boolean permissive = true;
+	private Boolean verbose = false;
+
 	private final static Log log = LogFactory.getLog(SimpleUserInfo.class);
 
 	private String password;
 	private char[] passwordSafe;
+	private String passphrase;
+	private char[] passphraseSafe;
 
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
+	public void setPassphrase(String passphrase) {
+		this.passphrase = passphrase;
+	}
+
 	public String getPassphrase() {
-		return null;
+		if (passphraseSafe != null)
+			return new String(passphraseSafe);
+		return passphrase;
 	}
 
 	public String getPassword() {
@@ -33,14 +43,20 @@ public class SimpleUserInfo implements UserInfo {
 	}
 
 	public boolean promptPassphrase(String message) {
-		return true;
-	}
-
-	public boolean promptPassword(String message) {
-		log.info(message);
 		if (permissive)
 			return true;
 		else {
+			log.info(message);
+			passwordSafe = readPassword(System.in);
+			return passwordSafe != null;
+		}
+	}
+
+	public boolean promptPassword(String message) {
+		if (permissive)
+			return true;
+		else {
+			log.info(message);
 			passwordSafe = readPassword(System.in);
 			return passwordSafe != null;
 		}
@@ -49,7 +65,8 @@ public class SimpleUserInfo implements UserInfo {
 	public boolean promptYesNo(String message) {
 		String msg = message + " (y/n): ";
 		if (permissive) {
-			log.info(msg + "y");
+			if (verbose)
+				log.info(msg + "y");
 			return true;
 		} else {
 			log.info(msg);
@@ -74,12 +91,16 @@ public class SimpleUserInfo implements UserInfo {
 		this.permissive = permissive;
 	}
 
+	public void setVerbose(Boolean verbose) {
+		this.verbose = verbose;
+	}
+
 	protected char[] readPassword(InputStream in) {
 
 		try {
 			char[] lineBuffer;
 			char[] buf;
-			//int i;
+			// int i;
 
 			buf = lineBuffer = new char[128];
 

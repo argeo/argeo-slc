@@ -161,7 +161,7 @@ public class ScpTo extends AbstractJschTask {
 			channelOut.flush();
 			checkAck(channelIn);
 
-			if (log.isDebugEnabled())
+			if (log.isTraceEnabled())
 				log.debug("Start copy of " + localFile + " to " + remoteFile
 						+ " on " + getSshTarget() + "...");
 
@@ -177,9 +177,10 @@ public class ScpTo extends AbstractJschTask {
 				if (len <= 0)
 					break;
 				channelOut.write(buf, 0, len); // out.flush();
-				if ((cycleCount % oneMB) == 0)// each 1 MB
+				if (((cycleCount % oneMB) == 0) && cycleCount != 0)// each 1 MB
 					System.out.print('#');
-				if ((cycleCount % (tenMB)) == 0)// each 10 MB
+				if (((cycleCount % (tenMB)) == 0) && cycleCount != 0)// each 10
+					// MB
 					System.out.print(" - " + cycleCount / tenMB + "0 MB\n");
 				cycleCount++;
 			}
@@ -189,8 +190,9 @@ public class ScpTo extends AbstractJschTask {
 			channelOut.flush();
 			checkAck(channelIn);
 
-			log.info("\n" + (cycleCount) + " KB sent to server. ("
-					+ (cycleCount / oneMB + " MB)"));
+			if (log.isDebugEnabled())
+				log.info((cycleCount) + " KB sent to server. ("
+						+ (cycleCount / oneMB + " MB)"));
 
 			if (log.isDebugEnabled())
 				log.debug("Finished copy of " + localFile + " to " + remoteFile

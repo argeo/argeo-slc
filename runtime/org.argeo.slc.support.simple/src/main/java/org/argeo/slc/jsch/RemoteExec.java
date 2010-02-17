@@ -18,6 +18,8 @@ import com.jcraft.jsch.Session;
 public class RemoteExec extends AbstractJschTask {
 	private final static Log log = LogFactory.getLog(RemoteExec.class);
 
+	private Boolean failOnBadExitStatus = true;
+
 	private List<String> commands = new ArrayList<String>();
 	private String command;
 
@@ -50,18 +52,12 @@ public class RemoteExec extends AbstractJschTask {
 			// channel.setInputStream(System.in);
 			channel.setInputStream(null);
 
-			// channel.setOutputStream(System.out);
-
-			// FileOutputStream fos=new FileOutputStream("/tmp/stderr");
-			// ((ChannelExec)channel).setErrStream(fos);
 			((ChannelExec) channel).setErrStream(System.err);
 
 			InputStream in = channel.getInputStream();
 
 			if (log.isDebugEnabled())
-				log
-						.debug("Exec '" + command + "' on " + getSshTarget()
-								+ "...");
+				log.debug("Run '" + command + "' on " + getSshTarget() + "...");
 
 			channel.connect();
 
@@ -70,17 +66,25 @@ public class RemoteExec extends AbstractJschTask {
 				execIn = new BufferedReader(new InputStreamReader(in));
 				String line = null;
 				while ((line = execIn.readLine()) != null) {
-					log.info(line);
+					if (!line.trim().equals(""))
+						log.info(line);
 				}
-				// while (in.available() > 0) {
-				// int i = in.read(tmp, 0, 1024);
-				// if (i < 0)
-				// break;
-				// log.info(new String(tmp, 0, i));
-				// }
+
 				if (channel.isClosed()) {
-					log.info("Remote execution exit status: "
-							+ channel.getExitStatus());
+					int exitStatus = channel.getExitStatus();
+					if (exitStatus == 0) {
+						if (log.isTraceEnabled())
+							log.trace("Remote execution exit status: "
+									+ exitStatus);
+					} else {
+						String msg = "Remote execution failed with "
+								+ " exit status: " + exitStatus;
+						if (failOnBadExitStatus)
+							throw new SlcException(msg);
+						else
+							log.error(msg);
+					}
+
 					break;
 				}
 				try {
@@ -103,6 +107,10 @@ public class RemoteExec extends AbstractJschTask {
 
 	public void setCommands(List<String> commands) {
 		this.commands = commands;
+	}
+
+	public void setFailOnBadExitStatus(Boolean failOnBadExitStatus) {
+		this.failOnBadExitStatus = failOnBadExitStatus;
 	}
 
 }
