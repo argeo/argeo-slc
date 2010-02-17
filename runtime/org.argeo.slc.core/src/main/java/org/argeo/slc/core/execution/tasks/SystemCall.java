@@ -281,13 +281,15 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 				stdOutputStream != null ? stdOutputStream
 						: new LogOutputStream() {
 							protected void processLine(String line, int level) {
-								log(stdOutLogLevel, line);
+								if (line != null && !line.trim().equals(""))
+									log(stdOutLogLevel, line);
 								if (stdOutWriter != null)
 									appendLineToFile(stdOutWriter, line);
 							}
 						}, new LogOutputStream() {
 					protected void processLine(String line, int level) {
-						log(stdErrLogLevel, line);
+						if (line != null && !line.trim().equals(""))
+							log(stdErrLogLevel, line);
 						if (stdErrWriter != null)
 							appendLineToFile(stdErrWriter, line);
 					}
@@ -301,20 +303,19 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 		return new ExecuteResultHandler() {
 
 			public void onProcessComplete(int exitValue) {
+				String msg = "System call '" + commandLine
+						+ "' properly completed.";
 				if (log.isDebugEnabled())
-					log
-							.debug("Process " + commandLine
-									+ " properly completed.");
+					log.debug(msg);
 				if (testResult != null) {
 					forwardPath(testResult, null);
 					testResult.addResultPart(new SimpleResultPart(
-							TestStatus.PASSED, "Process " + commandLine
-									+ " properly completed."));
+							TestStatus.PASSED, msg));
 				}
 			}
 
 			public void onProcessFailed(ExecuteException e) {
-				String msg = "Process " + commandLine + " failed.";
+				String msg = "System call '" + commandLine + "' failed.";
 				if (testResult != null) {
 					forwardPath(testResult, null);
 					testResult.addResultPart(new SimpleResultPart(

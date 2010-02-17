@@ -14,6 +14,8 @@ import org.argeo.slc.process.SlcExecutionStep;
 
 /** Thread of a single execution */
 public class ExecutionThread extends Thread {
+	public final static String SYSPROP_EXECUTION_AUTO_UPGRADE = "slc.execution.autoupgrade";
+
 	private final static Log log = LogFactory.getLog(ExecutionThread.class);
 
 	private final RealizedFlow realizedFlow;
@@ -43,6 +45,11 @@ public class ExecutionThread extends Thread {
 				SlcExecutionStep.TYPE_PHASE_START, "Flow " + flowName));
 
 		try {
+			String autoUpgrade = System
+					.getProperty(SYSPROP_EXECUTION_AUTO_UPGRADE);
+			if (autoUpgrade != null && autoUpgrade.equals("true"))
+				processThread.getExecutionModulesManager().upgrade(
+						realizedFlow.getModuleNameVersion());
 			processThread.getExecutionModulesManager().execute(realizedFlow);
 		} catch (Exception e) {
 			// TODO: re-throw exception ?

@@ -91,9 +91,9 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 			}
 
 			if (log.isDebugEnabled())
-				log.debug("Bundle " + bundle.getSymbolicName()
-						+ " ready to be used at latest version."
-						+ " (upgrade performed in " + (end - begin) + "ms).");
+				log.debug("Bundle '" + bundle.getSymbolicName()
+						+ "' upgraded and ready " + " (upgrade performed in "
+						+ (end - begin) + "ms).");
 
 			if (log.isTraceEnabled()) {
 				ApplicationContext applicationContext = (ApplicationContext) bundleContext

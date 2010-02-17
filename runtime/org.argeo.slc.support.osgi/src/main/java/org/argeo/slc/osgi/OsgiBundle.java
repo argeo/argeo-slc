@@ -2,6 +2,7 @@ package org.argeo.slc.osgi;
 
 import org.argeo.slc.build.BasicNameVersion;
 import org.argeo.slc.build.Distribution;
+import org.argeo.slc.build.NameVersion;
 import org.argeo.slc.core.build.ResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.Module;
@@ -24,6 +25,10 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 
 	public OsgiBundle(String name, String version) {
 		super(name, version);
+	}
+
+	public OsgiBundle(NameVersion nameVersion) {
+		super(nameVersion);
 	}
 
 	public OsgiBundle(Bundle bundle) {

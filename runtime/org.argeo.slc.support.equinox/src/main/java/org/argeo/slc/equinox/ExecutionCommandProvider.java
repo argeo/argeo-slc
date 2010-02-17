@@ -58,9 +58,10 @@ public class ExecutionCommandProvider implements CommandProvider {
 					+ executionName);
 
 		// Execute
-		if (SLC_WITH_REFRESH.equals(slcCommand))
-			modulesManager.updateAndExecute(lastLaunch);
-		else if (SLC_NO_REFRESH.equals(slcCommand))
+		if (SLC_WITH_REFRESH.equals(slcCommand)) {
+			modulesManager.upgrade(lastLaunch.getModuleNameVersion());
+			modulesManager.execute(lastLaunch);
+		} else if (SLC_NO_REFRESH.equals(slcCommand))
 			modulesManager.execute(lastLaunch);
 		else
 			throw new SlcException("Unrecognized SLC command " + slcCommand);

@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.build.BasicNameVersion;
+import org.argeo.slc.build.NameVersion;
 import org.argeo.slc.core.execution.AbstractExecutionModulesManager;
 import org.argeo.slc.core.execution.DefaultExecutionFlowDescriptorConverter;
 import org.argeo.slc.deploy.ModuleDescriptor;
@@ -258,10 +259,9 @@ public class OsgiExecutionModulesManager extends
 		}
 	}
 
-	public void updateAndExecute(RealizedFlow realizedFlow) {
-		OsgiBundle osgiBundle = new OsgiBundle(realizedFlow);
+	public void upgrade(NameVersion nameVersion) {
+		OsgiBundle osgiBundle = new OsgiBundle(nameVersion);
 		bundlesManager.upgradeSynchronous(osgiBundle);
-		execute(realizedFlow);
 	}
 
 	protected synchronized ExecutionFlowDescriptorConverter getExecutionFlowDescriptorConverter(
@@ -281,33 +281,6 @@ public class OsgiExecutionModulesManager extends
 			else
 				return descriptorConverter;
 		}
-	}
-
-	public void execute(RealizedFlow realizedFlow) {
-		if (log.isTraceEnabled())
-			log.trace("Executing " + realizedFlow);
-
-		String moduleName = realizedFlow.getModuleName();
-		String moduleVersion = realizedFlow.getModuleVersion();
-
-		Map<? extends String, ? extends Object> variablesToAdd = getExecutionFlowDescriptorConverter(
-				moduleName, moduleVersion).convertValues(
-				realizedFlow.getFlowDescriptor());
-		ExecutionContext executionContext = findExecutionContext(moduleName,
-				moduleVersion);
-		for (String key : variablesToAdd.keySet())
-			executionContext.setVariable(key, variablesToAdd.get(key));
-
-		ExecutionFlow flow = findExecutionFlow(moduleName, moduleVersion,
-				realizedFlow.getFlowDescriptor().getName());
-
-		//
-		// Actually runs the flow, IN THIS THREAD
-		//
-		flow.run();
-		//
-		//
-		//
 	}
 
 	public ModuleDescriptor getModuleDescriptor(String moduleName,
