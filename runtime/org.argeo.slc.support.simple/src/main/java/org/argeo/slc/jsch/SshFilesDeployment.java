@@ -7,14 +7,15 @@ import java.util.Map;
 import org.argeo.slc.core.deploy.ResourceSet;
 import org.springframework.core.io.Resource;
 
-public class SshFilesDeployment implements Runnable {
+import com.jcraft.jsch.Session;
+
+public class SshFilesDeployment extends AbstractJschTask implements Runnable {
 	private String targetBase = "";
 	private ResourceSet resourceSet;
-	private SshTarget sshTarget;
 
-	public void run() {
+	@Override
+	void run(Session session) {
 		JschMultiTasks multiTasks = new JschMultiTasks();
-		multiTasks.setSshTarget(sshTarget);
 
 		List<String> subDirs = new ArrayList<String>();
 		Map<String, Resource> resources = resourceSet.listResources();
@@ -39,9 +40,12 @@ public class SshFilesDeployment implements Runnable {
 			scpTo.setLocalResource(resource);
 			scpTo.setRemotePath(targetBase + "/" + relPath);
 			multiTasks.getTasks().add(scpTo);
+
+			// TODO: set permissions
 		}
 
-		multiTasks.run();
+		multiTasks.setSshTarget(getSshTarget());
+		multiTasks.run(session);
 	}
 
 	public void setTargetBase(String targetBase) {
@@ -51,9 +55,4 @@ public class SshFilesDeployment implements Runnable {
 	public void setResourceSet(ResourceSet resourceSet) {
 		this.resourceSet = resourceSet;
 	}
-
-	public void setSshTarget(SshTarget sshTarget) {
-		this.sshTarget = sshTarget;
-	}
-
 }
