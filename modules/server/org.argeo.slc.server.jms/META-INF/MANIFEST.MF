@@ -1,11 +1,19 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.specs,org.argeo.slc.core,org.argeo.slc.s
- erver,org.argeo.slc.support.activemq,org.springframework.core,org.spr
- ingframework.context,org.springframework.beans,org.springframework.ox
- m,org.springframework.jms,com.springsource.org.castor,org.argeo.dep.o
- sgi.activemq
 Bundle-Version: 0.12.2.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.jms
-Import-Package: javax.jms,javax.management.j2ee.statistics,org.apache.
- commons.logging,org.springframework.transaction
+Import-Package: javax.jms,
+ javax.management.j2ee.statistics,
+ org.apache.activemq,
+ org.apache.activemq.command,
+ org.apache.commons.logging,
+ org.argeo.slc.activemq,
+ org.argeo.slc.core.attachment,
+ org.argeo.slc.jms,
+ org.argeo.slc.msg.event,
+ org.argeo.slc.services,
+ org.springframework.jms.core,
+ org.springframework.jms.listener,
+ org.springframework.jms.listener.adapter,
+ org.springframework.jms.support.converter,
+ org.springframework.transaction
 Bundle-Name: Server JMS
