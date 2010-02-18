@@ -23,3 +23,4 @@ Import-Package: net.sf.ehcache.hibernate,
  org.springframework.beans.factory.config,
  org.springframework.cache.ehcache,
  org.springframework.orm.hibernate3
+Bundle-Name: Server HSQLDB

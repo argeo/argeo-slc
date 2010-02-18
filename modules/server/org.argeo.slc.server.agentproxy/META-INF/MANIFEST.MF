@@ -9,3 +9,4 @@ Import-Package: javax.jms,
  org.springframework.beans.factory.config,
  org.springframework.jms.core,
  org.springframework.jms.support.converter
+Bundle-Name: Agent Proxy

@@ -8,3 +8,4 @@ Bundle-Version: 0.12.2.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.jms
 Import-Package: javax.jms,javax.management.j2ee.statistics,org.apache.
  commons.logging,org.springframework.transaction
+Bundle-Name: Server JMS
