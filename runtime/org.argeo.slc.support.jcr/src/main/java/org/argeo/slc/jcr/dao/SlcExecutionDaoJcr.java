@@ -1,6 +1,5 @@
 package org.argeo.slc.jcr.dao;
 
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -14,20 +13,15 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
-import org.apache.commons.io.IOUtils;
 import org.argeo.jcr.BeanNodeMapper;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
-import org.springframework.oxm.Marshaller;
-import org.springframework.xml.transform.StringResult;
 
 public class SlcExecutionDaoJcr implements SlcExecutionDao {
 	private Session session;
-
-	private Marshaller marshaller;
 
 	private BeanNodeMapper beanNodeMapper = new BeanNodeMapper();
 
@@ -38,28 +32,12 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 	}
 
 	public void create(SlcExecution slcExecution) {
-		StringResult result = new StringResult();
-		InputStream in = null;
 		try {
 			beanNodeMapper.saveOrUpdate(getSession(), basePath(slcExecution),
 					slcExecution);
-
-			// TODO: optimize with piped streams
-			// marshaller.marshal(slcExecution, result);
-			// in = new ByteArrayInputStream(result.toString().getBytes());
-			//
-			// String basePath = basePath(slcExecution);
-			// JcrUtils.mkdirs(getSession(), basePath);
-			//
-			// session.importXML(basePath(slcExecution), in,
-			// ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING);
-
-			JcrUtils.debug(session.getRootNode());
 			session.save();
 		} catch (Exception e) {
 			throw new SlcException("Cannot import " + slcExecution, e);
-		} finally {
-			IOUtils.closeQuietly(in);
 		}
 	}
 
@@ -112,10 +90,6 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 
 	public void setSession(Session session) {
 		this.session = session;
-	}
-
-	public void setMarshaller(Marshaller marshaller) {
-		this.marshaller = marshaller;
 	}
 
 	protected Session getSession() {
