@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jackrabbit-ocm PUBLIC "-//The Apache Software Foundation//DTD Repository//EN" "http://jackrabbit.apache.org/dtd/jackrabbit-ocm-1.5.dtd">
+<jackrabbit-ocm>
+	<class-descriptor className="Type" jcrType="my:type"
+		jcrSuperTypes="nt:base" jcrMixinTypes="mix:referenceable">
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="uuid" uuid="true" />
+		<field-descriptor fieldName="name" jcrName="my:name"
+			jcrMandatory="true" />
+		<field-descriptor fieldName="description" jcrName="my:description" />
+	</class-descriptor>
+	<class-descriptor className="Element" jcrType="my:element"
+		jcrSuperTypes="nt:base" jcrMixinTypes="mix:versionable">
+		<field-descriptor fieldName="path" path="true" />
+		<field-descriptor fieldName="uuid" uuid="true" />
+		<field-descriptor fieldName="name" jcrName="my:name"
+			jcrMandatory="true" />
+		<field-descriptor fieldName="description" jcrName="my:description" />
+		<bean-descriptor fieldName="type" jcrName="my:type"
+			proxy="false" jcrType="my:type" jcrMandatory="true"
+			jcrOnParentVersion="IGNORE"
+			converter="org.apache.jackrabbit.ocm.manager.beanconverter.impl.ReferenceBeanConverterImpl" />
+	</class-descriptor>
+</jackrabbit-ocm> 

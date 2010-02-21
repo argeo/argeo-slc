@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<import resource="classpath:/org/argeo/slc/castor/spring.xml" />
+
+	<bean id="slcExecutionDao" class="org.argeo.slc.jcr.dao.SlcExecutionDaoJcr">
+		<property name="marshaller" ref="slcDefault.castor.marshaller" />
+		<property name="session" ref="argeo.jcr.session.inMemory" />
+	</bean>
+
+	<bean id="argeo.jcr.session.inMemory" factory-bean="argeo.jcr.repository.inMemory"
+		factory-method="login">
+		<constructor-arg>
+			<bean class="javax.jcr.SimpleCredentials">
+				<constructor-arg value="demo" />
+				<constructor-arg value="demo" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<bean id="argeo.jcr.repository.inMemory" class="org.argeo.server.jackrabbit.JackrabbitContainer">
+		<property name="homeDirectory" value="${java.io.tmpdir}/jackrabbit-slc-unit" />
+		<property name="configuration"
+			value="classpath:/org/argeo/server/jackrabbit/repository-inMemory.xml" />
+	</bean>
+
+</beans>
