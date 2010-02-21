@@ -6,42 +6,4 @@
 <!-- DEPRECATED, USE classpath:org/argeo/slc/castor/spring.xml instead -->
 
 	<import resource="classpath:org/argeo/slc/castor/spring.xml"/>
-<!-- 
-	<bean id="slcDefault.castor.marshaller"
-		class="org.springframework.oxm.castor.CastorMarshaller">
-		<property name="mappingLocations">
-			<list>
-				<value>
-					classpath:org/argeo/slc/castor/msg.xml
-				</value>
-				<value>
-					classpath:org/argeo/slc/castor/process.xml
-				</value>
-				<value>
-					classpath:org/argeo/slc/castor/structure.xml
-				</value>
-				<value>
-					classpath:org/argeo/slc/castor/test.xml
-				</value>
-			</list>
-		</property>
-		<property name="whitespacePreserve" value="true" />
-	</bean>
-
-	<bean id="slcDefault.castor.xsltReportGenerator"
-		class="org.argeo.slc.xml.test.tree.XsltReportGenerator"
-		init-method="init">
-		<property name="xsltStyleSheet"
-			value="classpath:/org/argeo/slc/core/test/tree/basicReport.xslt" />
-		<property name="marshaller" ref="slcDefault.castor.marshaller" />
-		<property name="logXml" value="false" />
-		<property name="outputDir" value="${slc.workDir}/results/html" />
-	</bean>
-
-	<bean name="slcDefault.castor.fileSlcExecutionNotifier"
-		class="org.argeo.slc.xml.process.FileSlcExecutionNotifier">
-		<property name="basePath" value="${slc.workDir}/process" />
-		<property name="marshaller" ref="slcDefault.castor.marshaller" />
-	</bean>
- -->
 </beans>
