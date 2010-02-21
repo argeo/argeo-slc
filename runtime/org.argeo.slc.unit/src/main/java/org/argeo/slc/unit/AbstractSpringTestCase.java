@@ -32,6 +32,13 @@ public abstract class AbstractSpringTestCase extends TestCase {
 		return context;
 	}
 
+	@Override
+	protected void tearDown() throws Exception {
+		if (context != null && context.isActive())
+			context.close();
+		super.tearDown();
+	}
+
 	/** Whether the context should be started after being created. */
 	protected Boolean getIsStartContext() {
 		return false;

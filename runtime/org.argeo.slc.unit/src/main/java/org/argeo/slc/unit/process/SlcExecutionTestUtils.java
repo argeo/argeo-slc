@@ -66,6 +66,11 @@ public abstract class SlcExecutionTestUtils {
 			SlcExecutionStep stepReached = reached.getSteps().get(i);
 			assertSlcExecutionStep(stepExpected, stepReached);
 		}
+
+		// FIXME: compare realized flows
+//		assertEquals(expected.getRealizedFlows().size(), reached
+//				.getRealizedFlows().size());
+
 	}
 
 	public static void assertSlcExecutionStep(SlcExecutionStep expected,

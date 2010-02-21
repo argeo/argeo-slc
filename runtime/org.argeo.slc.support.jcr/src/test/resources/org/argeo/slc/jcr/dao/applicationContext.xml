@@ -9,12 +9,13 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
-	<bean id="slcExecutionDao" class="org.argeo.slc.jcr.dao.SlcExecutionDaoJcr">
+	<bean id="slcExecutionDao" class="org.argeo.slc.jcr.dao.SlcExecutionDaoJcr"
+		init-method="init">
 		<property name="session" ref="argeo.jcr.session.inMemory" />
 	</bean>
 
 	<bean id="argeo.jcr.session.inMemory" factory-bean="argeo.jcr.repository.inMemory"
-		factory-method="login">
+		factory-method="login" destroy-method="logout">
 		<constructor-arg>
 			<bean class="javax.jcr.SimpleCredentials">
 				<constructor-arg value="demo" />
