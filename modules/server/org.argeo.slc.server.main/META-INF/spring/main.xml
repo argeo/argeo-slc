@@ -9,7 +9,7 @@
 	<!-- Security -->
 	<bundle id="security.ldap" symbolic-name="org.argeo.security.manager.ldap"
 		action="start" />
-	<bundle id="security.services" symbolic-name="org.argeo.security.core"
+	<bundle id="security.services" symbolic-name="org.argeo.security.services"
 		action="start" />
 
 	<!-- Servers -->
