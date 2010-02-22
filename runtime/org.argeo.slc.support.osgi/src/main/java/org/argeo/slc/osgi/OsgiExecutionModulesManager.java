@@ -147,8 +147,11 @@ public class OsgiExecutionModulesManager extends
 
 		Map<String, ExecutionFlow> flows = new HashMap<String, ExecutionFlow>();
 		if (useCachedServices) {
-			Set<ExecutionFlow> flowsT = executionFlows.get(new OsgiBundle(
-					moduleName, moduleVersion));
+			OsgiBundle key = new OsgiBundle(
+					moduleName, moduleVersion);
+			if(!executionFlows.containsKey(key))
+				return flows;
+			Set<ExecutionFlow> flowsT = executionFlows.get(key);
 			for (ExecutionFlow flow : flowsT)
 				flows.put(flow.getName(), flow);
 		} else {
