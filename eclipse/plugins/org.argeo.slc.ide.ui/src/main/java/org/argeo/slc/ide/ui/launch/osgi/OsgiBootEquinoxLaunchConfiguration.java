@@ -36,8 +36,8 @@ public class OsgiBootEquinoxLaunchConfiguration extends
 		IFile propertiesFile = (IFile) configuration.getMappedResources()[0];
 		propertiesFile.getParent().refreshLocal(IResource.DEPTH_INFINITE,
 				monitor);
-//		propertiesFile.getProject().refreshLocal(IResource.DEPTH_INFINITE,
-//				monitor);
+		// propertiesFile.getProject().refreshLocal(IResource.DEPTH_INFINITE,
+		// monitor);
 	}
 
 	@Override
@@ -83,6 +83,14 @@ public class OsgiBootEquinoxLaunchConfiguration extends
 		wc.doSave();
 
 		super.preLaunchCheck(configuration, launch, monitor);
+
+		// Note that if a Java project contains a build.properties it has to
+		// declare the sources otherwise it will be skipped in the generation of
+		// the dev.properties file!
+
+		// for(Object bundleId:fAllBundles.keySet()){
+		// System.out.println(bundleId+"="+fAllBundles.get(bundleId));
+		// }
 	}
 
 }

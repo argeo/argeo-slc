@@ -2,3 +2,13 @@ Manifest-Version: 1.0
 Bundle-Version: 0.12.2.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.jcr
 Bundle-Name: Server JCR
+Import-Package: javax.jcr,
+ org.argeo.jcr,
+ org.argeo.server.jackrabbit,
+ org.argeo.slc.core.execution,
+ org.argeo.slc.dao.process,
+ org.argeo.slc.execution,
+ org.argeo.slc.jcr.dao,
+ org.argeo.slc.process,
+ org.springframework.beans.factory.config,
+ org.springframework.osgi.util

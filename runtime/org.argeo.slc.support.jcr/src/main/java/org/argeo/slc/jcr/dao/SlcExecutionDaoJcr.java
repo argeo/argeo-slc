@@ -15,6 +15,8 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.BeanNodeMapper;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -23,6 +25,7 @@ import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
 
 public class SlcExecutionDaoJcr implements SlcExecutionDao {
+	private final static Log log = LogFactory.getLog(SlcExecutionDaoJcr.class);
 	private Session session;
 	private Workspace workspace;
 	private QueryManager queryManager;
@@ -48,6 +51,9 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 	}
 
 	public void create(SlcExecution slcExecution) {
+		if (log.isDebugEnabled())
+			log.debug("create");
+
 		try {
 			beanNodeMapper.save(getSession(), basePath(slcExecution),
 					slcExecution);
@@ -66,6 +72,9 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 	}
 
 	public SlcExecution getSlcExecution(String uuid) {
+		if (log.isDebugEnabled())
+			log.debug("getSlcExecution");
+
 		try {
 			// TODO: optimize query
 			String queryString = "//process[@uuid='" + uuid + "']";
@@ -80,6 +89,9 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 	}
 
 	public List<SlcExecution> listSlcExecutions() {
+		if (log.isDebugEnabled())
+			log.debug("listSlcExecutions");
+		
 		List<SlcExecution> res = new ArrayList<SlcExecution>();
 		// TODO: optimize query
 		String queryString = "//process";
@@ -104,6 +116,9 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 	}
 
 	public void update(SlcExecution slcExecution) {
+		if (log.isDebugEnabled())
+			log.debug("update");
+
 		// TODO: optimize query
 		String queryString = "//process[@uuid='" + slcExecution.getUuid()
 				+ "']";
@@ -111,6 +126,7 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 			Query query = queryManager.createQuery(queryString, Query.XPATH);
 			Node node = JcrUtils.querySingleNode(query);
 			beanNodeMapper.update(node, slcExecution);
+			session.save();
 		} catch (Exception e) {
 			throw new SlcException("Cannot update " + slcExecution, e);
 		}

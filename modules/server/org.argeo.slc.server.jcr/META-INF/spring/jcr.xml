@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+
+	<bean id="beanNodeMapper" class="org.argeo.jcr.BeanNodeMapper">
+		<property name="classLoader">
+			<bean class="org.springframework.osgi.util.BundleDelegatingClassLoader"
+				factory-method="createBundleClassLoaderFor">
+				<constructor-arg>
+					<bean factory-bean="bundleContext" factory-method="getBundle" />
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="slcExecutionDao" class="org.argeo.slc.jcr.dao.SlcExecutionDaoJcr"
+		init-method="init">
+		<property name="session" ref="argeo.jcr.session.inMemory" />
+		<property name="beanNodeMapper" ref="beanNodeMapper"/>
+	</bean>
+
+	<bean id="argeo.jcr.session.inMemory" factory-bean="argeo.jcr.repository.inMemory"
+		factory-method="login" destroy-method="logout">
+		<constructor-arg>
+			<bean class="javax.jcr.SimpleCredentials">
+				<constructor-arg value="demo" />
+				<constructor-arg value="demo" />
+			</bean>
+		</constructor-arg>
+	</bean>
+
+	<bean id="argeo.jcr.repository.inMemory" class="org.argeo.server.jackrabbit.JackrabbitContainer">
+		<property name="homeDirectory" value="${java.io.tmpdir}/jackrabbit-slc-unit" />
+		<property name="configuration"
+			value="classpath:/org/argeo/server/jackrabbit/repository-inMemory.xml" />
+	</bean>
+
+</beans>

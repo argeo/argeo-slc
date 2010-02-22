@@ -42,6 +42,7 @@
 									org.springframework.osgi.extender,
 									org.argeo.server.ads.server,
 									org.argeo.slc.server.hsqldb,
+									org.argeo.slc.server.jcr,
 									org.argeo.slc.server.main,
 									org.argeo.slc.ria
 								</argeo.osgi.start>
