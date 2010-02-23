@@ -190,13 +190,13 @@ public class ScpTo extends AbstractJschTask {
 			channelOut.flush();
 			checkAck(channelIn);
 
-			if (log.isDebugEnabled())
-				log.info((cycleCount) + " KB sent to server. ("
+			if (log.isTraceEnabled())
+				log.debug((cycleCount) + " KB sent to server. ("
 						+ (cycleCount / oneMB + " MB)"));
 
 			if (log.isDebugEnabled())
-				log.debug("Finished copy of " + localFile + " to " + remoteFile
-						+ " on " + getSshTarget() + "...");
+				log.debug("Finished copy to " + remoteFile + " on "
+						+ getSshTarget() + " from " + localFile);
 
 			IOUtils.closeQuietly(channelOut);
 

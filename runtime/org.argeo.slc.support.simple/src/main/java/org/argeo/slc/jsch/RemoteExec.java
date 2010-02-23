@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.execution.tasks.SystemCall;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
@@ -22,8 +23,26 @@ public class RemoteExec extends AbstractJschTask {
 
 	private List<String> commands = new ArrayList<String>();
 	private String command;
+	private SystemCall systemCall;
+	private List<SystemCall> systemCalls = new ArrayList<SystemCall>();
 
 	public void run(Session session) {
+		// convert system calls
+		if (systemCall != null) {
+			if (command != null)
+				throw new SlcException("Cannot specify command AND systemCall");
+			command = convertSystemCall(systemCall);
+		}
+
+		if (systemCalls.size() != 0) {
+			if (commands.size() != 0)
+				throw new SlcException(
+						"Cannot specify commands AND systemCalls");
+			for (SystemCall systemCall : systemCalls)
+				commands.add(convertSystemCall(systemCall));
+		}
+
+		// execute command(s)
 		if (command != null) {
 			if (commands.size() != 0)
 				throw new SlcException(
@@ -38,6 +57,12 @@ public class RemoteExec extends AbstractJschTask {
 				remoteExec(session, cmd);
 			}
 		}
+	}
+
+	protected String convertSystemCall(SystemCall systemCall) {
+		// TODO: prepend environemnt variables
+		// TODO: deal with exec dir
+		return systemCall.asCommand();
 	}
 
 	protected void remoteExec(Session session, String command) {
@@ -111,6 +136,14 @@ public class RemoteExec extends AbstractJschTask {
 
 	public void setFailOnBadExitStatus(Boolean failOnBadExitStatus) {
 		this.failOnBadExitStatus = failOnBadExitStatus;
+	}
+
+	public void setSystemCall(SystemCall systemCall) {
+		this.systemCall = systemCall;
+	}
+
+	public void setSystemCalls(List<SystemCall> systemCalls) {
+		this.systemCalls = systemCalls;
 	}
 
 }

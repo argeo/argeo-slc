@@ -202,6 +202,15 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 
 	}
 
+	public String asCommand() {
+		return createCommandLine().toString();
+	}
+
+	@Override
+	public String toString() {
+		return asCommand();
+	}
+
 	/**
 	 * Build a command line based on the properties. Can be overridden by
 	 * specific command wrappers.

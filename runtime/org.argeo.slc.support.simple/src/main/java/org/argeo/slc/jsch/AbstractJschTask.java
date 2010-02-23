@@ -3,6 +3,8 @@ package org.argeo.slc.jsch;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 
 import com.jcraft.jsch.JSch;
@@ -10,9 +12,21 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 public abstract class AbstractJschTask implements Runnable {
+	private final static Log log = LogFactory.getLog(AbstractJschTask.class);
+
 	private SshTarget sshTarget;
 
 	protected Session openSession() {
+		if (sshTarget.getSession() != null) {
+			Session session = sshTarget.getSession();
+			if (session.isConnected()) {
+				if (log.isDebugEnabled())
+					log.debug("Using cached sesison to " + getSshTarget()
+							+ " via SSH");
+				return session;
+			}
+		}
+
 		try {
 			JSch jsch = new JSch();
 			if (sshTarget.getUsePrivateKey()
@@ -24,6 +38,14 @@ public abstract class AbstractJschTask implements Runnable {
 
 			session.setUserInfo(getSshTarget().getUserInfo());
 			session.connect();
+			if (log.isDebugEnabled())
+				log.debug("Connected to " + getSshTarget() + " via SSH");
+			if (sshTarget.getSession() != null) {
+				if (log.isDebugEnabled())
+					log.debug("The cached session to " + getSshTarget()
+							+ " was disconnected and was reste.");
+				sshTarget.setSession(session);
+			}
 			return session;
 		} catch (JSchException e) {
 			throw new SlcException("Could not open session to "
@@ -36,7 +58,12 @@ public abstract class AbstractJschTask implements Runnable {
 		try {
 			run(session);
 		} finally {
-			session.disconnect();
+			if (sshTarget.getSession() == null) {
+				session.disconnect();
+				if (log.isDebugEnabled())
+					log.debug("Disconnected from " + getSshTarget()
+							+ " via SSH");
+			}
 		}
 	}
 

@@ -104,8 +104,6 @@ public class ScpFrom extends AbstractJschTask {
 				String localPath = localFile.isDirectory() ? localFile
 						.getPath()
 						+ File.separator + remoteFileName : localFile.getPath();
-				if (log.isDebugEnabled())
-					log.debug("Download " + remoteFile + " to " + localPath);
 
 				out = new FileOutputStream(localPath);
 				int foo;
@@ -131,6 +129,10 @@ public class ScpFrom extends AbstractJschTask {
 				buf[0] = 0;
 				channelOut.write(buf, 0, 1);
 				channelOut.flush();
+
+				if (log.isDebugEnabled())
+					log.debug("Finished downloading " + remoteFile + " on "
+							+ getSshTarget() + " to " + localPath);
 			}
 
 			channel.disconnect();
