@@ -64,7 +64,7 @@ public class OsgiExecutionResources extends FileExecutionResources implements
 			throw new SlcException("Cannot determine canonical path for "
 					+ path, e);
 		}
-		if (log.isDebugEnabled())
+		if (log.isTraceEnabled())
 			log.debug("OSGi local resource: " + file + " from " + resource);
 		return file;
 	}

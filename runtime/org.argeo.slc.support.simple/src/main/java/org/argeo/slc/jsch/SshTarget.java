@@ -67,7 +67,7 @@ public class SshTarget {
 	}
 
 	public String toString() {
-		return "ssh:" + getUser() + "@" + getHost() + ":" + getPort();
+		return getUser() + "@" + getHost() + ":" + getPort();
 	}
 
 	public Session getSession() {

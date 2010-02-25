@@ -1,14 +1,16 @@
 package org.argeo.slc.jsch;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,30 +56,7 @@ public class ScpTo extends AbstractJschTask {
 		}
 
 		if (localResource != null) {
-			try {
-				File lFile = localResource.getFile();
-				uploadFile(session, lFile, remotePath);
-			} catch (IOException e) {
-				OutputStream out = null;
-				InputStream in = null;
-				File tempFile = null;
-				try {
-					tempFile = File.createTempFile(getClass().getSimpleName()
-							+ "-" + localResource.getFilename(), null);
-					out = FileUtils.openOutputStream(tempFile);
-					in = localResource.getInputStream();
-					IOUtils.copy(in, out);
-					uploadFile(session, tempFile, remotePath);
-				} catch (IOException e1) {
-					throw new SlcException("Can neither interpret resource "
-							+ localResource
-							+ " as file, nor create a temporary file", e1);
-				} finally {
-					IOUtils.closeQuietly(in);
-					IOUtils.closeQuietly(out);
-					FileUtils.deleteQuietly(tempFile);
-				}
-			}
+			uploadResource(session, localResource, remoteDir);
 		}
 	}
 
@@ -127,8 +106,46 @@ public class ScpTo extends AbstractJschTask {
 		return false;
 	}
 
-	protected void uploadFile(Session session, File localFile, String remoteFile) {
-		InputStream in = null;
+	protected void uploadFile(Session session, File file, String remoteFile) {
+		try {
+			uploadFile(session, new FileInputStream(file), file.length(), file
+					.getPath(), file.toString(), remoteFile);
+		} catch (FileNotFoundException e) {
+			throw new SlcException("Cannot upload " + file, e);
+		}
+	}
+
+	protected void uploadResource(Session session, Resource resource,
+			String remoteFile) {
+		try {
+			File lFile = resource.getFile();
+			uploadFile(session, lFile, remotePath);
+		} catch (IOException e) {
+			// no underlying file found
+			// load the resource in memory before transferring it
+			InputStream in = null;
+			try {
+				in = resource.getInputStream();
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				IOUtils.copy(in, out);
+				byte[] arr = out.toByteArray();
+				ByteArrayInputStream content = new ByteArrayInputStream(arr);
+				uploadFile(session, content, arr.length, resource.getURL()
+						.getPath(), resource.toString(), remotePath);
+				arr = null;
+			} catch (IOException e1) {
+				throw new SlcException("Can neither interpret resource "
+						+ localResource
+						+ " as file, nor create a temporary file", e1);
+			} finally {
+				IOUtils.closeQuietly(in);
+				// no need to close byte arrays streams
+			}
+		}
+	}
+
+	protected void uploadFile(Session session, InputStream in, long size,
+			String path, String sourceDesc, String remoteFile) {
 		OutputStream channelOut;
 		InputStream channelIn;
 		try {
@@ -147,13 +164,13 @@ public class ScpTo extends AbstractJschTask {
 
 			// send "C0644 filesize filename", where filename should not include
 			// '/'
-			long filesize = localFile.length();
+			long filesize = size;
 			command = "C0644 " + filesize + " ";
-			int index = localFile.getPath().lastIndexOf('/');
+			int index = path.lastIndexOf('/');
 			if (index > 0) {
-				command += localFile.getPath().substring(index + 1);
+				command += path.substring(index + 1);
 			} else {
-				command += localFile.getPath();
+				command += path;
 			}
 			command += "\n";
 
@@ -162,21 +179,22 @@ public class ScpTo extends AbstractJschTask {
 			checkAck(channelIn);
 
 			if (log.isTraceEnabled())
-				log.debug("Start copy of " + localFile + " to " + remoteFile
+				log.debug("Start copy of " + sourceDesc + " to " + remoteFile
 						+ " on " + getSshTarget() + "...");
 
 			final long oneMB = 1024l;// in KB
 			final long tenMB = 10 * oneMB;// in KB
 
 			// send a content of lfile
-			in = new FileInputStream(localFile);
 			byte[] buf = new byte[1024];
 			long cycleCount = 0;
+			long nbrOfBytes = 0;
 			while (true) {
 				int len = in.read(buf, 0, buf.length);
 				if (len <= 0)
 					break;
 				channelOut.write(buf, 0, len); // out.flush();
+				nbrOfBytes = nbrOfBytes + len;
 				if (((cycleCount % oneMB) == 0) && cycleCount != 0)// each 1 MB
 					System.out.print('#');
 				if (((cycleCount % (tenMB)) == 0) && cycleCount != 0)// each 10
@@ -190,23 +208,29 @@ public class ScpTo extends AbstractJschTask {
 			channelOut.flush();
 			checkAck(channelIn);
 
-			if (log.isTraceEnabled())
-				log.debug((cycleCount) + " KB sent to server. ("
-						+ (cycleCount / oneMB + " MB)"));
-
 			if (log.isDebugEnabled())
-				log.debug("Finished copy to " + remoteFile + " on "
-						+ getSshTarget() + " from " + localFile);
+				log.debug("Transferred to " + remoteFile + " ("
+						+ sizeDesc(nbrOfBytes) + ") on " + getSshTarget()
+						+ " from " + sourceDesc);
 
 			IOUtils.closeQuietly(channelOut);
 
 			channel.disconnect();
 		} catch (Exception e) {
-			throw new SlcException("Cannot copy " + localFile + " to "
-					+ remoteFile, e);
+			throw new SlcException("Cannot copy " + path + " to " + remoteFile,
+					e);
 		} finally {
 			IOUtils.closeQuietly(in);
 		}
+	}
+
+	protected String sizeDesc(Long nbrOfBytes) {
+		if (nbrOfBytes < 1024)
+			return nbrOfBytes + " B";
+		else if (nbrOfBytes < 1024 * 1024)
+			return (nbrOfBytes / 1024) + " KB";
+		else
+			return nbrOfBytes / (1024 * 1024) + " MB";
 	}
 
 	public void setLocalResource(Resource localFile) {

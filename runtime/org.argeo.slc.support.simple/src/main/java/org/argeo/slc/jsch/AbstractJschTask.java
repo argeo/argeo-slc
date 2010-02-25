@@ -20,8 +20,8 @@ public abstract class AbstractJschTask implements Runnable {
 		if (sshTarget.getSession() != null) {
 			Session session = sshTarget.getSession();
 			if (session.isConnected()) {
-				if (log.isDebugEnabled())
-					log.debug("Using cached sesison to " + getSshTarget()
+				if (log.isTraceEnabled())
+					log.debug("Using cached session to " + getSshTarget()
 							+ " via SSH");
 				return session;
 			}

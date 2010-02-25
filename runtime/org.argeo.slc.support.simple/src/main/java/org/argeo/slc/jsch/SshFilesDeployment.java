@@ -27,11 +27,9 @@ public class SshFilesDeployment extends AbstractJschTask implements Runnable {
 				dir = targetBase + '/' + relPath.substring(0, lastIndexSubDir);
 			else
 				dir = targetBase;
+
 			if (!subDirs.contains(dir)) {
-				RemoteExec remoteExec = new RemoteExec();
-				remoteExec.setCommand("mkdir -p " + dir);
 				subDirs.add(dir);
-				multiTasks.getTasks().add(remoteExec);
 			}
 
 			// Copy resource
@@ -43,6 +41,12 @@ public class SshFilesDeployment extends AbstractJschTask implements Runnable {
 
 			// TODO: set permissions
 		}
+
+		RemoteExec remoteExec = new RemoteExec();
+		for (String dir : subDirs) {
+			remoteExec.getCommands().add("mkdir -p " + dir);
+		}
+		multiTasks.getTasks().add(0, remoteExec);
 
 		multiTasks.setSshTarget(getSshTarget());
 		multiTasks.run(session);
