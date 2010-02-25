@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -125,18 +126,25 @@ public class ScpTo extends AbstractJschTask {
 			// load the resource in memory before transferring it
 			InputStream in = null;
 			try {
-				in = resource.getInputStream();
-				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				IOUtils.copy(in, out);
-				byte[] arr = out.toByteArray();
+				byte[] arr;
+				String path;
+				if (resource instanceof ByteArrayResource) {
+					arr = ((ByteArrayResource) resource).getByteArray();
+					path = "bytearray";
+				} else {
+					in = resource.getInputStream();
+					ByteArrayOutputStream out = new ByteArrayOutputStream();
+					IOUtils.copy(in, out);
+					arr = out.toByteArray();
+					path = resource.getURL().getPath();
+				}
 				ByteArrayInputStream content = new ByteArrayInputStream(arr);
-				uploadFile(session, content, arr.length, resource.getURL()
-						.getPath(), resource.toString(), remotePath);
+				uploadFile(session, content, arr.length, path, resource
+						.toString(), remotePath);
 				arr = null;
 			} catch (IOException e1) {
-				throw new SlcException("Can neither interpret resource "
-						+ localResource
-						+ " as file, nor create a temporary file", e1);
+				throw new SlcException("Can not interpret resource "
+						+ localResource, e1);
 			} finally {
 				IOUtils.closeQuietly(in);
 				// no need to close byte arrays streams
