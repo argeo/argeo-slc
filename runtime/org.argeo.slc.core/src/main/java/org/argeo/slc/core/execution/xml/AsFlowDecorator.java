@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionFlow;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
+import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
@@ -44,12 +45,20 @@ public class AsFlowDecorator implements BeanDefinitionDecorator {
 		BeanDefinitionBuilder flow = BeanDefinitionBuilder
 				.rootBeanDefinition(DefaultExecutionFlow.class);
 		ManagedList executables = new ManagedList(1);
-		executables.add(bean.getBeanDefinition());
+
+		String beanName = bean.getBeanName();
+		if (beanName == null)
+			executables.add(bean.getBeanDefinition());
+		else
+			executables.add(new RuntimeBeanReference(beanName));
+
 		if (path != null)
 			flow.addPropertyValue("path", path);
 		flow.addPropertyValue("executables", executables);
-		ctx.getRegistry().registerBeanDefinition(flowBeanName,
-				flow.getBeanDefinition());
+
+		if (beanName != null)
+			ctx.getRegistry().registerBeanDefinition(flowBeanName,
+					flow.getBeanDefinition());
 		return bean;
 	}
 

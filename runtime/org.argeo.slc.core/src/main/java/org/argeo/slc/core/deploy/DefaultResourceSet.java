@@ -52,8 +52,8 @@ public class DefaultResourceSet implements ResourceLoaderAware,
 	protected void processInclude(Map<String, Resource> res, String include,
 			String baseResUrl) throws IOException {
 		String pattern = base + "/" + include;
-		if (log.isDebugEnabled())
-			log.debug("Look for resources with pattern '" + pattern
+		if (log.isTraceEnabled())
+			log.trace("Look for resources with pattern '" + pattern
 					+ "' in base url " + baseResUrl);
 		Resource[] resources = resourcePatternResolver.getResources(pattern);
 		resources: for (Resource resource : resources) {
@@ -63,7 +63,7 @@ public class DefaultResourceSet implements ResourceLoaderAware,
 			// skip dir
 			if (relPath.charAt(relPath.length() - 1) == '/') {
 				if (log.isTraceEnabled())
-					log.debug("Skip directory " + relPath + "=" + resource);
+					log.trace("Skip directory " + relPath + "=" + resource);
 				continue resources;
 			}
 
@@ -75,7 +75,7 @@ public class DefaultResourceSet implements ResourceLoaderAware,
 			for (String exclude : excludes)
 				if (excludePathMatcher.match(exclude, relPath)) {
 					if (log.isTraceEnabled())
-						log.debug("Exclude " + relPath + "=" + resource);
+						log.trace("Exclude " + relPath + "=" + resource);
 					continue resources;
 				}
 
@@ -86,8 +86,8 @@ public class DefaultResourceSet implements ResourceLoaderAware,
 
 			// store the marched resource
 			res.put(relPath, resource);
-			if (log.isDebugEnabled())
-				log.debug(relPath + "=" + resource);
+			if (log.isTraceEnabled())
+				log.trace(relPath + "=" + resource);
 		}
 
 	}

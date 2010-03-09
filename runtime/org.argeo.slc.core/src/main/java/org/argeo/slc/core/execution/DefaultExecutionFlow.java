@@ -113,6 +113,12 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	@SuppressWarnings(value = { "unchecked" })
 	public void afterPropertiesSet() throws Exception {
+		if (path == null) {
+			if (name.charAt(0) == '/') {
+				path = name.substring(0, name.lastIndexOf('/'));
+			}
+		}
+
 		if (path != null) {
 			for (Runnable executable : executables) {
 				if (executable instanceof StructureAware) {
@@ -121,8 +127,11 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 				} else if (executable instanceof DefaultExecutionFlow) {
 					// so we don't need to have DefaultExecutionFlow
 					// implementing StructureAware
+					// FIXME: probably has side effects
 					DefaultExecutionFlow flow = (DefaultExecutionFlow) executable;
-					flow.setPath(path + '/' + flow.getName());
+					String newPath = path + '/' + flow.getName();
+					flow.setPath(newPath);
+					log.warn(newPath + " was forcibly set on " + flow);
 				}
 			}
 		}

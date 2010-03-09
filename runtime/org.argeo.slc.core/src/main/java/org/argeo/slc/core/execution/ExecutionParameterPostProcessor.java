@@ -103,11 +103,15 @@ public class ExecutionParameterPostProcessor extends
 			String originalValue = tsv.getValue();
 
 			String convertedValue = resolveString(beanName, bean, originalValue);
+			if (convertedValue == null)
+				return null;
 			return convertedValue.equals(originalValue) ? value
 					: new TypedStringValue(convertedValue);
 		} else if (value instanceof String) {
 			String originalValue = value.toString();
 			String convertedValue = resolveString(beanName, bean, originalValue);
+			if (convertedValue == null)
+				return null;
 			return convertedValue.equals(originalValue) ? value
 					: convertedValue;
 		} else if (value instanceof ManagedMap) {
@@ -165,6 +169,10 @@ public class ExecutionParameterPostProcessor extends
 	}
 
 	private String resolveString(String beanName, Object bean, String strVal) {
+		// in case <null/> is passed
+		if (strVal == null)
+			return null;
+
 		String value = parseStringValue(bean, strVal, new HashSet<String>());
 
 		if (value == null)
@@ -203,6 +211,10 @@ public class ExecutionParameterPostProcessor extends
 	protected String parseStringValue(Object bean, String strVal,
 			Set<String> visitedPlaceholders)
 			throws BeanDefinitionStoreException {
+
+		// in case <null/> is passed
+		if (strVal == null)
+			return null;
 
 		StringBuffer buf = new StringBuffer(strVal);
 
