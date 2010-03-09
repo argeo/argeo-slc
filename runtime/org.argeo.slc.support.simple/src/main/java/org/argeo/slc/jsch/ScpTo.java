@@ -57,7 +57,7 @@ public class ScpTo extends AbstractJschTask {
 		}
 
 		if (localResource != null) {
-			uploadResource(session, localResource, remoteDir);
+			uploadResource(session, localResource);
 		}
 	}
 
@@ -109,18 +109,19 @@ public class ScpTo extends AbstractJschTask {
 
 	protected void uploadFile(Session session, File file, String remoteFile) {
 		try {
-			uploadFile(session, new FileInputStream(file), file.length(), file
+			upload(session, new FileInputStream(file), file.length(), file
 					.getPath(), file.toString(), remoteFile);
 		} catch (FileNotFoundException e) {
 			throw new SlcException("Cannot upload " + file, e);
 		}
 	}
 
-	protected void uploadResource(Session session, Resource resource,
-			String remoteFile) {
+	protected void uploadResource(Session session, Resource resource) {
+		String targetPath = remotePath != null ? remotePath : remoteDir + '/'
+				+ resource.getFilename();
 		try {
 			File lFile = resource.getFile();
-			uploadFile(session, lFile, remotePath);
+			uploadFile(session, lFile, targetPath);
 		} catch (IOException e) {
 			// no underlying file found
 			// load the resource in memory before transferring it
@@ -139,8 +140,8 @@ public class ScpTo extends AbstractJschTask {
 					path = resource.getURL().getPath();
 				}
 				ByteArrayInputStream content = new ByteArrayInputStream(arr);
-				uploadFile(session, content, arr.length, path, resource
-						.toString(), remotePath);
+				upload(session, content, arr.length, path, resource.toString(),
+						targetPath);
 				arr = null;
 			} catch (IOException e1) {
 				throw new SlcException("Can not interpret resource "
@@ -152,7 +153,7 @@ public class ScpTo extends AbstractJschTask {
 		}
 	}
 
-	protected void uploadFile(Session session, InputStream in, long size,
+	protected void upload(Session session, InputStream in, long size,
 			String path, String sourceDesc, String remoteFile) {
 		OutputStream channelOut;
 		InputStream channelIn;

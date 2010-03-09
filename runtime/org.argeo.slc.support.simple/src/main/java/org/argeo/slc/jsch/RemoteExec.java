@@ -5,19 +5,20 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
 
@@ -26,7 +27,7 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.Session;
 
-public class RemoteExec extends AbstractJschTask implements InitializingBean {
+public class RemoteExec extends AbstractJschTask {
 	private final static Log log = LogFactory.getLog(RemoteExec.class);
 
 	private Boolean failOnBadExitStatus = true;
@@ -40,6 +41,15 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 	private Boolean agentForwarding = false;
 	private Boolean forceShell = false;
 	private Map<String, String> env = new HashMap<String, String>();
+	private Resource stdIn = null;
+
+	/**
+	 * If set, stdout is written to it as a list of lines. Cleared before each
+	 * run.
+	 */
+	private List<String> stdOutLines = null;
+	private Boolean logEvenIfStdOutLines = false;
+	private Boolean quiet = false;
 
 	public void run(Session session) {
 		List<String> commandsToUse = new ArrayList<String>(commands);
@@ -60,6 +70,7 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 		}
 
 		if (script != null) {
+			// TODO: simply pass the script as a string command
 			if (commandsToUse.size() != 0)
 				throw new SlcException("Cannot specify commands and script");
 			BufferedReader reader = null;
@@ -80,7 +91,16 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 		}
 
 		if (forceShell) {
-			commandsToUse.add(commandToUse);
+			if (commandToUse.indexOf(';') >= 0
+					|| commandToUse.indexOf('\n') >= 0) {
+				StringTokenizer st = new StringTokenizer(commandToUse, ";\n");
+				while (st.hasMoreTokens()) {
+					String cmd = st.nextToken();
+					commandsToUse.add(cmd);
+				}
+			} else {
+				commandsToUse.add(commandToUse);
+			}
 			commandToUse = null;
 		}
 
@@ -95,7 +115,8 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 				throw new SlcException(
 						"Neither a single command or a list of commands has been specified.");
 
-			remoteExec(session, commandsToUse);
+			remoteExec(session, commandsToUse, script != null ? "script "
+					+ script.getFilename() : commandsToUse.size() + " commands");
 		}
 	}
 
@@ -105,7 +126,8 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 		return systemCall.asCommand();
 	}
 
-	protected void remoteExec(Session session, final List<String> commands) {
+	protected void remoteExec(Session session, final List<String> commands,
+			String description) {
 		try {
 			final ChannelShell channel = (ChannelShell) session
 					.openChannel("shell");
@@ -122,6 +144,9 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 			final BufferedWriter writer = new BufferedWriter(
 					new OutputStreamWriter(channel.getOutputStream()));
 
+			if (log.isDebugEnabled())
+				log.debug("Run " + description + " on " + getSshTarget()
+						+ "...");
 			channel.connect();
 
 			// write commands to shell
@@ -178,6 +203,27 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 			if (log.isDebugEnabled())
 				log.debug("Run '" + command + "' on " + getSshTarget() + "...");
 			channel.connect();
+
+			// write commands to shell
+			if (stdIn != null) {
+				Thread stdInThread = new Thread("Stdin " + getSshTarget()) {
+					@Override
+					public void run() {
+						OutputStream out = null;
+						try {
+							out = channel.getOutputStream();
+							IOUtils.copy(stdIn.getInputStream(), channel
+									.getOutputStream());
+						} catch (IOException e) {
+							throw new SlcException("Cannot write stdin on "
+									+ getSshTarget(), e);
+						} finally {
+							IOUtils.closeQuietly(out);
+						}
+					}
+				};
+				stdInThread.start();
+			}
 			readStdOut(channel);
 			checkExitStatus(channel);
 			channel.disconnect();
@@ -217,8 +263,16 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 			stdOut = new BufferedReader(new InputStreamReader(in));
 			String line = null;
 			while ((line = stdOut.readLine()) != null) {
-				if (!line.trim().equals(""))
-					log.info(line);
+				if (!line.trim().equals("")) {
+					if (stdOutLines != null) {
+						stdOutLines.add(line);
+						if (logEvenIfStdOutLines && !quiet)
+							log.info(line);
+					} else {
+						if (!quiet)
+							log.info(line);
+					}
+				}
 			}
 		} catch (IOException e) {
 			if (log.isDebugEnabled())
@@ -243,11 +297,6 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 					log.error(msg);
 			}
 		}
-
-	}
-
-	public void afterPropertiesSet() throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -293,6 +342,22 @@ public class RemoteExec extends AbstractJschTask implements InitializingBean {
 
 	public List<String> getCommands() {
 		return commands;
+	}
+
+	public void setStdOutLines(List<String> stdOutLines) {
+		this.stdOutLines = stdOutLines;
+	}
+
+	public void setLogEvenIfStdOutLines(Boolean logEvenIfStdOutLines) {
+		this.logEvenIfStdOutLines = logEvenIfStdOutLines;
+	}
+
+	public void setQuiet(Boolean quiet) {
+		this.quiet = quiet;
+	}
+
+	public void setStdIn(Resource stdIn) {
+		this.stdIn = stdIn;
 	}
 
 }

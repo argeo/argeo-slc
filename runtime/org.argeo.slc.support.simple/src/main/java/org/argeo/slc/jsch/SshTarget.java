@@ -16,7 +16,7 @@ public class SshTarget {
 			+ File.separator + ".ssh" + File.separator + "id_rsa");
 
 	/** cached session */
-	private Session session;
+	private transient Session session;
 
 	public String getHost() {
 		return host;
@@ -70,11 +70,11 @@ public class SshTarget {
 		return getUser() + "@" + getHost() + ":" + getPort();
 	}
 
-	public Session getSession() {
+	public synchronized Session getSession() {
 		return session;
 	}
 
-	public void setSession(Session session) {
+	public synchronized void setSession(Session session) {
 		this.session = session;
 	}
 }

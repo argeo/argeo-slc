@@ -2,6 +2,7 @@ package org.argeo.slc.jsch;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -9,21 +10,30 @@ import com.jcraft.jsch.Session;
 
 /** Caches a JSCH session in the the ssh target. */
 public class JschContextSession extends AbstractJschTask implements
-		InitializingBean, DisposableBean {
+		InitializingBean, DisposableBean, BeanNameAware {
 	private final static Log log = LogFactory.getLog(JschContextSession.class);
 	private Boolean autoconnect = false;
 
+	private String beanName;
+
 	@Override
 	void run(Session session) {
-		clear();
+		// clear();
 		getSshTarget().setSession(session);
 		if (log.isDebugEnabled())
 			log.debug("Cached SSH context session to " + getSshTarget());
 	}
 
 	public void afterPropertiesSet() throws Exception {
+		if (log.isDebugEnabled())
+			log.debug(getClass() + ".afterPropertiesSet(), " + beanName + ", "
+					+ this);
 		if (autoconnect)
 			run();
+	}
+
+	public void setBeanName(String name) {
+		this.beanName = name;
 	}
 
 	public void destroy() throws Exception {

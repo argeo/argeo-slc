@@ -12,7 +12,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 public abstract class AbstractJschTask implements Runnable {
-	private final static Log log = LogFactory.getLog(AbstractJschTask.class);
+	private final Log log = LogFactory.getLog(getClass());
 
 	private SshTarget sshTarget;
 
@@ -43,7 +43,7 @@ public abstract class AbstractJschTask implements Runnable {
 			if (sshTarget.getSession() != null) {
 				if (log.isDebugEnabled())
 					log.debug("The cached session to " + getSshTarget()
-							+ " was disconnected and was reste.");
+							+ " was disconnected and was reset.");
 				sshTarget.setSession(session);
 			}
 			return session;
