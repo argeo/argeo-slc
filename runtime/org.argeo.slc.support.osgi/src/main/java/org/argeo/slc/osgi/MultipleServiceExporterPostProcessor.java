@@ -16,13 +16,12 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.core.Ordered;
-import org.springframework.core.PriorityOrdered;
 import org.springframework.osgi.service.exporter.support.ExportContextClassLoader;
 import org.springframework.osgi.service.exporter.support.OsgiServiceFactoryBean;
 
 @SuppressWarnings(value = { "unchecked" })
 public class MultipleServiceExporterPostProcessor implements
-		BeanFactoryPostProcessor, PriorityOrdered {
+		BeanFactoryPostProcessor, Ordered {
 	private final static Log log = LogFactory
 			.getLog(MultipleServiceExporterPostProcessor.class);
 
@@ -31,6 +30,8 @@ public class MultipleServiceExporterPostProcessor implements
 	private Class osgiServiceFactoryClass = OsgiServiceFactoryBean.class;
 
 	private Boolean useServiceProviderContextClassLoader = false;
+	
+	private int order = Ordered.LOWEST_PRECEDENCE;
 
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -83,7 +84,11 @@ public class MultipleServiceExporterPostProcessor implements
 	}
 
 	public int getOrder() {
-		return Ordered.LOWEST_PRECEDENCE;
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 	public void setUseServiceProviderContextClassLoader(

@@ -15,7 +15,6 @@ import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.core.Ordered;
-import org.springframework.core.PriorityOrdered;
 
 /**
  * Generates <code>ExecutionFlows</code> and <code>Runnables</code> as
@@ -27,7 +26,7 @@ import org.springframework.core.PriorityOrdered;
  * and outputs of a <code>RunnableFactory</code>.
  */
 public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
-		PriorityOrdered {
+		Ordered {
 	
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -65,6 +64,8 @@ public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
 	 * <code>RunnableCallFlowDescriptor</code>
 	 */
 	private String flowBeanNamesPrefix = "";
+	
+	private int order = Ordered.HIGHEST_PRECEDENCE;
 		
 	public void postProcessBeanFactory(
 			ConfigurableListableBeanFactory beanFactory) throws BeansException {
@@ -136,7 +137,11 @@ public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
 	}
 	
 	public int getOrder() {
-		return Ordered.HIGHEST_PRECEDENCE;
+		return order;
+	}
+
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 	public void setSource(ExecutionFlowGeneratorSource source) {
