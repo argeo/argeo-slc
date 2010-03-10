@@ -8,7 +8,6 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
@@ -21,12 +20,14 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
+/** Experimental and suboptimal */
 public class SedFilteredResource implements FactoryBean, InitializingBean {
 	private Resource source;
 
@@ -42,7 +43,7 @@ public class SedFilteredResource implements FactoryBean, InitializingBean {
 		if (filters.size() == 0)
 			return source;
 
-		int capacity = 100 * 1024;// 100 KB
+		//int capacity = 100 * 1024;// 100 KB
 		ByteBuffer bb;
 		if (source instanceof ByteArrayResource) {
 			bb = ByteBuffer.wrap(((ByteArrayResource) source).getByteArray());
@@ -56,22 +57,29 @@ public class SedFilteredResource implements FactoryBean, InitializingBean {
 				int sz = (int) fc.size();
 				bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, sz);
 			} catch (IOException e) {
-				ReadableByteChannel channel = Channels.newChannel(source
-						.getInputStream());
-				bb = ByteBuffer.allocateDirect(capacity);
-				channel.read(bb);
+				// ReadableByteChannel channel = Channels.newChannel(source
+				// .getInputStream());
+				// bb = ByteBuffer.allocateDirect(capacity);
+				// int read = 0;
+				// do {
+				// read = channel.read(bb);
+				// } while (read > 0);
+				// FIXME : use nio to parse the stream as it goes
+				bb = ByteBuffer.wrap(IOUtils.toByteArray(source
+						.getInputStream()));
 			}
 		}
 		CharBuffer cb = decoder.decode(bb);
 		for (Pattern pattern : patterns.keySet()) {
 			Matcher matcher = pattern.matcher(cb);
-			matcher.replaceAll(patterns.get(pattern));
+			String output = matcher.replaceAll(patterns.get(pattern));
+			cb = CharBuffer.wrap(output);
 		}
-		ByteBuffer bbout = encoder.encode(cb);
-		ByteArrayOutputStream out = new ByteArrayOutputStream(capacity);
-		WritableByteChannel wchannel = Channels.newChannel(out);
-		wchannel.write(bbout);
-		ByteArrayResource res = new ByteArrayResource(out.toByteArray());
+//		ByteBuffer bbout = encoder.encode(cb);
+//		ByteArrayOutputStream out = new ByteArrayOutputStream(capacity);
+//		WritableByteChannel wchannel = Channels.newChannel(out);
+//		wchannel.write(bbout);
+		ByteArrayResource res = new ByteArrayResource(cb.toString().getBytes());
 		return res;
 	}
 

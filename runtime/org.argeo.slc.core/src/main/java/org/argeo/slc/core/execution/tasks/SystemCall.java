@@ -409,7 +409,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 
 	/** Creates an outputstream for the output/err files. */
 	protected OutputStream createOutputStream(Resource target) {
-		FileOutputStream OutputStream = null;
+		FileOutputStream out = null;
 		try {
 
 			final File file;
@@ -417,12 +417,12 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 				file = new File(executionResources.getAsOsPath(target, true));
 			else
 				file = target.getFile();
-			OutputStream = new FileOutputStream(file, false);
+			out = new FileOutputStream(file, false);
 		} catch (IOException e) {
 			log.error("Cannot get file for " + target, e);
-			IOUtils.closeQuietly(OutputStream);
+			IOUtils.closeQuietly(out);
 		}
-		return OutputStream;
+		return out;
 	}
 
 	/** Append the argument (for chaining) */
