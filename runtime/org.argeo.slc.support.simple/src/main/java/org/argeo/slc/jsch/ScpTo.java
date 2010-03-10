@@ -138,6 +138,8 @@ public class ScpTo extends AbstractJschTask {
 					IOUtils.copy(in, out);
 					arr = out.toByteArray();
 					path = resource.getURL().getPath();
+					if (path.startsWith("/"))
+						path = path.substring(1);
 				}
 				ByteArrayInputStream content = new ByteArrayInputStream(arr);
 				upload(session, content, arr.length, path, resource.toString(),

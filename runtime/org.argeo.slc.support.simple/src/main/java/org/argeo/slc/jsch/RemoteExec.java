@@ -2,6 +2,8 @@ package org.argeo.slc.jsch;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,6 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.execution.ExecutionResources;
 import org.argeo.slc.core.execution.tasks.SystemCall;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
@@ -42,6 +45,8 @@ public class RemoteExec extends AbstractJschTask {
 	private Boolean forceShell = false;
 	private Map<String, String> env = new HashMap<String, String>();
 	private Resource stdIn = null;
+	private Resource stdOut = null;
+	private ExecutionResources executionResources;
 
 	/**
 	 * If set, stdout is written to it as a list of lines. Cleared before each
@@ -204,7 +209,6 @@ public class RemoteExec extends AbstractJschTask {
 				log.debug("Run '" + command + "' on " + getSshTarget() + "...");
 			channel.connect();
 
-			// write commands to shell
 			if (stdIn != null) {
 				Thread stdInThread = new Thread("Stdin " + getSshTarget()) {
 					@Override
@@ -212,8 +216,7 @@ public class RemoteExec extends AbstractJschTask {
 						OutputStream out = null;
 						try {
 							out = channel.getOutputStream();
-							IOUtils.copy(stdIn.getInputStream(), channel
-									.getOutputStream());
+							IOUtils.copy(stdIn.getInputStream(), out);
 						} catch (IOException e) {
 							throw new SlcException("Cannot write stdin on "
 									+ getSshTarget(), e);
@@ -257,28 +260,40 @@ public class RemoteExec extends AbstractJschTask {
 	}
 
 	protected void readStdOut(Channel channel) {
-		BufferedReader stdOut = null;
-		try {
-			InputStream in = channel.getInputStream();
-			stdOut = new BufferedReader(new InputStreamReader(in));
-			String line = null;
-			while ((line = stdOut.readLine()) != null) {
-				if (!line.trim().equals("")) {
-					if (stdOutLines != null) {
-						stdOutLines.add(line);
-						if (logEvenIfStdOutLines && !quiet)
-							log.info(line);
-					} else {
-						if (!quiet)
-							log.info(line);
+		if (stdOut != null) {
+			OutputStream localStdOut = createOutputStream(stdOut);
+			try {
+				IOUtils.copy(channel.getInputStream(), localStdOut);
+			} catch (IOException e) {
+				throw new SlcException("Cannot redirect stdout", e);
+			} finally {
+				IOUtils.closeQuietly(localStdOut);
+			}
+		} else {
+			BufferedReader stdOut = null;
+			try {
+				InputStream in = channel.getInputStream();
+				stdOut = new BufferedReader(new InputStreamReader(in));
+				String line = null;
+				while ((line = stdOut.readLine()) != null) {
+					if (!line.trim().equals("")) {
+
+						if (stdOutLines != null) {
+							stdOutLines.add(line);
+							if (logEvenIfStdOutLines && !quiet)
+								log.info(line);
+						} else {
+							if (!quiet)
+								log.info(line);
+						}
 					}
 				}
+			} catch (IOException e) {
+				if (log.isDebugEnabled())
+					log.error("Cannot read stdout from " + getSshTarget(), e);
+			} finally {
+				IOUtils.closeQuietly(stdOut);
 			}
-		} catch (IOException e) {
-			if (log.isDebugEnabled())
-				log.error("Cannot read stdout from " + getSshTarget(), e);
-		} finally {
-			IOUtils.closeQuietly(stdOut);
 		}
 	}
 
@@ -298,6 +313,23 @@ public class RemoteExec extends AbstractJschTask {
 			}
 		}
 
+	}
+
+	protected OutputStream createOutputStream(Resource target) {
+		FileOutputStream out = null;
+		try {
+
+			final File file;
+			if (executionResources != null)
+				file = new File(executionResources.getAsOsPath(target, true));
+			else
+				file = target.getFile();
+			out = new FileOutputStream(file, false);
+		} catch (IOException e) {
+			log.error("Cannot get file for " + target, e);
+			IOUtils.closeQuietly(out);
+		}
+		return out;
 	}
 
 	public void setCommand(String command) {
@@ -358,6 +390,14 @@ public class RemoteExec extends AbstractJschTask {
 
 	public void setStdIn(Resource stdIn) {
 		this.stdIn = stdIn;
+	}
+
+	public void setStdOut(Resource stdOut) {
+		this.stdOut = stdOut;
+	}
+
+	public void setExecutionResources(ExecutionResources executionResources) {
+		this.executionResources = executionResources;
 	}
 
 }
