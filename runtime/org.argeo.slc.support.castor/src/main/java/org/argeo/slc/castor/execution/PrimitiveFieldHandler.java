@@ -1,7 +1,7 @@
 package org.argeo.slc.castor.execution;
 
 import org.argeo.slc.core.execution.PrimitiveAccessor;
-import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
+import org.argeo.slc.core.execution.PrimitiveUtils;
 import org.exolab.castor.mapping.AbstractFieldHandler;
 
 public class PrimitiveFieldHandler extends AbstractFieldHandler {
@@ -37,24 +37,7 @@ public class PrimitiveFieldHandler extends AbstractFieldHandler {
 		PrimitiveAccessor primitiveAccessor = (PrimitiveAccessor) object;
 		String type = primitiveAccessor.getType();
 		String str = value.toString();
-		primitiveAccessor.setValue(convert(type, str));
+		primitiveAccessor.setValue(PrimitiveUtils.convert(type, str));
 	}
 
-	protected Object convert(String type, String str) {
-		if (PrimitiveSpecAttribute.TYPE_STRING.equals(type)) {
-			return str;
-		} else if (PrimitiveSpecAttribute.TYPE_INTEGER.equals(type)) {
-			return (Integer.parseInt(str));
-		} else if (PrimitiveSpecAttribute.TYPE_LONG.equals(type)) {
-			return (Long.parseLong(str));
-		} else if (PrimitiveSpecAttribute.TYPE_FLOAT.equals(type)) {
-			return (Float.parseFloat(str));
-		} else if (PrimitiveSpecAttribute.TYPE_DOUBLE.equals(type)) {
-			return (Double.parseDouble(str));
-		} else if (PrimitiveSpecAttribute.TYPE_BOOLEAN.equals(type)) {
-			return (Boolean.parseBoolean(str));
-		} else {
-			return str;
-		}
-	}
 }
