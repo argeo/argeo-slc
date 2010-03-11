@@ -81,9 +81,14 @@ public class InstantiationManager {
 				.getExecutionSpec().getAttributes().get(key);
 		if (attr instanceof RefSpecAttribute)
 			return ((RefSpecAttribute) attr).getTargetClass();
-		else if (attr instanceof PrimitiveSpecAttribute)
-			return ((PrimitiveSpecAttribute) attr).getTypeAsClass();
-		else
+		else if (attr instanceof PrimitiveSpecAttribute) {
+			String type = ((PrimitiveSpecAttribute) attr).getType();
+			Class<?> clss = PrimitiveUtils.typeAsClass(type);
+			if (clss == null)
+				throw new SlcException("Cannot convert type " + type
+						+ " to class.");
+			return clss;
+		} else
 			return null;
 	}
 

@@ -17,7 +17,6 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 public class SpecBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
@@ -45,24 +44,24 @@ public class SpecBeanDefinitionParser extends
 		}
 
 		// Refs
-		for (Element child : (List<Element>) DomUtils
+		for (Element refAttrElem : (List<Element>) DomUtils
 				.getChildElementsByTagName(element, "ref")) {
-			BeanDefinitionBuilder childBuilder = BeanDefinitionBuilder
+			BeanDefinitionBuilder refAttrBuilder = BeanDefinitionBuilder
 					.genericBeanDefinition(RefSpecAttribute.class);
-			addCommonProperties(child, parserContext, childBuilder);
+			addCommonProperties(refAttrElem, parserContext, refAttrBuilder);
 
-			String targetClassName = child.getAttribute("targetClass");
+			String targetClassName = refAttrElem.getAttribute("targetClass");
 			if (StringUtils.hasText(targetClassName))
-				childBuilder.addPropertyValue("targetClass", targetClassName);
+				refAttrBuilder.addPropertyValue("targetClass", targetClassName);
 
 			// Choices
-			NodeList choicesNd = child.getElementsByTagName("choices");
-			if (choicesNd.getLength() > 0) {
-				Element choicesElem = (Element) choicesNd.item(0);
-				List choices = DomUtils.getChildElementsByTagName(choicesElem,
-						"choice");
+			Element choicesElem = DomUtils.getChildElementByTagName(
+					refAttrElem, "choices");
+			if (choicesElem != null) {
+				List<Element> choices = DomUtils.getChildElementsByTagName(
+						choicesElem, "choice");
 				ManagedList choiceBeans = new ManagedList(choices.size());
-				for (Element choiceElem : (List<Element>) choices) {
+				for (Element choiceElem : choices) {
 					BeanDefinitionBuilder choiceBuilder = BeanDefinitionBuilder
 							.genericBeanDefinition(RefValueChoice.class);
 					choiceBuilder.addPropertyValue("name", choiceElem
@@ -73,11 +72,11 @@ public class SpecBeanDefinitionParser extends
 
 					choiceBeans.add(choiceBuilder.getBeanDefinition());
 				}
-
+				refAttrBuilder.addPropertyValue("choices", choiceBeans);
 			}
 
-			putInAttributes(attributes, child,
-					childBuilder.getBeanDefinition(), "ref");
+			putInAttributes(attributes, refAttrElem, refAttrBuilder
+					.getBeanDefinition(), "ref");
 		}
 
 		builder.addPropertyValue("attributes", attributes);

@@ -80,7 +80,7 @@ public class FlowBeanDefinitionParser extends
 						|| DomUtils.nodeNameEquals(child, "ref")) {
 					// Object target = parseBeanReference((Element) child,
 					// parserContext, builder);
-					executables.add(NamespaceUtils.parseBeanReference(child,
+					executables.add(NamespaceUtils.parseBeanOrReference(child,
 							parserContext, builder.getBeanDefinition()));
 				} else if (DomUtils.nodeNameEquals(child, "flow")) {
 					throw new SlcException(

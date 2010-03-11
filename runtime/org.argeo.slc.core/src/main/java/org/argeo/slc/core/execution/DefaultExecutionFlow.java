@@ -15,6 +15,7 @@ import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.structure.StructureAware;
 import org.argeo.slc.structure.StructureRegistry;
+import org.springframework.aop.scope.ScopedObject;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.validation.MapBindingResult;
@@ -121,7 +122,8 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 		if (path != null) {
 			for (Runnable executable : executables) {
-				if (executable instanceof StructureAware) {
+				if (executable instanceof StructureAware
+						&& !(executable instanceof ScopedObject)) {
 					((StructureAware<TreeSPath>) executable).notifyCurrentPath(
 							registry, new TreeSPath(path));
 				} else if (executable instanceof DefaultExecutionFlow) {

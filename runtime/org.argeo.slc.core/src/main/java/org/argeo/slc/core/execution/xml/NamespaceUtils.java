@@ -3,6 +3,7 @@ package org.argeo.slc.core.execution.xml;
 import org.argeo.slc.SlcException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
@@ -14,6 +15,8 @@ import org.w3c.dom.NodeList;
  * converting it into bean definitions.
  */
 public class NamespaceUtils {
+	// private final static Log log = LogFactory.getLog(NamespaceUtils.class);
+
 	/**
 	 * Returns the value defined either: directly by the the 'value' attribute,
 	 * as reference by the 'ref' attribute or as a nested bean.
@@ -51,7 +54,7 @@ public class NamespaceUtils {
 			if (value != null)
 				throw new SlcException("Multiple value definition for "
 						+ element);
-			value = parseBeanReference(uniqueSubElem, parserContext,
+			value = parseBeanOrReference(uniqueSubElem, parserContext,
 					containingBeanDefintion);
 		}
 		return value;
@@ -75,10 +78,15 @@ public class NamespaceUtils {
 		return uniqueSubElem;
 	}
 
-	public static Object parseBeanReference(Element element,
+	public static Object parseBeanOrReference(Element element,
 			ParserContext parserContext, BeanDefinition beanDefinition) {
-		return parserContext.getDelegate().parsePropertySubElement(element,
-				beanDefinition);
-	}
+		// return parserContext.getDelegate().parsePropertySubElement(element,
+		// beanDefinition);
 
+		BeanDefinitionParserDelegate deleg = parserContext.getDelegate();
+		// if ("bean".equals(element.getNodeName()))
+		// return deleg.parseBeanDefinitionElement(element, beanDefinition);
+		// else
+		return deleg.parsePropertySubElement(element, beanDefinition);
+	}
 }

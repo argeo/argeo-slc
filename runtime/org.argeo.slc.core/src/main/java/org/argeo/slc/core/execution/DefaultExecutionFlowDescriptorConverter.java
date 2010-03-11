@@ -64,16 +64,48 @@ public class DefaultExecutionFlowDescriptorConverter implements
 					convertedValues.put(key, primitiveValue.getValue());
 				} else if (value instanceof RefValue) {
 					RefValue refValue = (RefValue) value;
-
-					if (REF_VALUE_TYPE_BEAN_NAME.equals(refValue.getType())) {
-						String ref = refValue.getRef();
-						if (ref != null && !ref.equals(REF_VALUE_INTERNAL)) {
-							Object obj = applicationContext.getBean(refValue
-									.getRef());
+					String type = refValue.getType();
+					if (REF_VALUE_TYPE_BEAN_NAME.equals(type)) {
+						// FIXME: UI should send all information about spec
+						// - targetClass
+						// - name
+						// String executionSpecName = executionSpec.getName();
+						// ExecutionSpec localSpec = (ExecutionSpec)
+						// applicationContext
+						// .getBean(executionSpecName);
+						// RefSpecAttribute localAttr = (RefSpecAttribute)
+						// localSpec
+						// .getAttributes().get(key);
+						// Class<?> targetClass = localAttr.getTargetClass();
+						//
+						// String primitiveType = PrimitiveUtils
+						// .classAsType(targetClass);
+						String primitiveType = null;
+						if (primitiveType != null) {
+							// not active
+							String ref = refValue.getRef();
+							Object obj = PrimitiveUtils.convert(primitiveType,
+									ref);
 							convertedValues.put(key, obj);
 						} else {
-							log.warn("Cannot interpret " + refValue);
+							String ref = refValue.getRef();
+							if (ref != null && !ref.equals(REF_VALUE_INTERNAL)) {
+								Object obj = null;
+								if (applicationContext.containsBean(ref)) {
+									obj = applicationContext.getBean(ref);
+								} else {
+									// FIXME: hack in order to pass primitive
+									obj = ref;
+								}
+								convertedValues.put(key, obj);
+							} else {
+								log.warn("Cannot interpret " + refValue);
+							}
 						}
+					} else if (PrimitiveUtils.typeAsClass(type) != null) {
+						String ref = refValue.getRef();
+						Object obj = PrimitiveUtils.convert(type, ref);
+						convertedValues.put(key, obj);
 					} else {
 						throw new UnsupportedException("Ref value type",
 								refValue.getType());
@@ -156,51 +188,71 @@ public class DefaultExecutionFlowDescriptorConverter implements
 	protected RefValue buildRefValue(RefSpecAttribute rsa,
 			ExecutionFlow executionFlow, String key) {
 		RefValue refValue = new RefValue();
+		// FIXME: UI should be able to deal with other types
 		refValue.setType(REF_VALUE_TYPE_BEAN_NAME);
+		Class targetClass = rsa.getTargetClass();
+		String primitiveType = PrimitiveUtils.classAsType(targetClass);
+		if (primitiveType != null) {
+			if (executionFlow.isSetAsParameter(key)) {
+				Object value = executionFlow.getParameter(key);
+				refValue.setRef(value.toString());
+			}
+			refValue.setType(primitiveType);
+			return refValue;
+		} else {
 
-		if (executionFlow.isSetAsParameter(key)) {
-			String ref = null;
-			Object value = executionFlow.getParameter(key);
-			if (applicationContext == null) {
-				log
-						.warn("No application context declared, cannot scan ref value.");
-				ref = value.toString();
-			} else {
+			if (executionFlow.isSetAsParameter(key)) {
+				String ref = null;
+				Object value = executionFlow.getParameter(key);
+				if (applicationContext == null) {
+					log
+							.warn("No application context declared, cannot scan ref value.");
+					ref = value.toString();
+				} else {
 
-				// look for a ref to the value
-				Map<String, Object> beans = getBeanFactory().getBeansOfType(
-						rsa.getTargetClass(), false, false);
-				// TODO: also check scoped beans
-				beans: for (String beanName : beans.keySet()) {
-					Object obj = beans.get(beanName);
-					if (value instanceof ScopedObject) {
-						// don't call methods of the target of the scope
-						if (obj instanceof ScopedObject)
-							if (value == obj) {
+					// look for a ref to the value
+					Map<String, Object> beans = getBeanFactory()
+							.getBeansOfType(targetClass, false, false);
+					// TODO: also check scoped beans
+					beans: for (String beanName : beans.keySet()) {
+						Object obj = beans.get(beanName);
+						if (value instanceof ScopedObject) {
+							// don't call methods of the target of the scope
+							if (obj instanceof ScopedObject)
+								if (value == obj) {
+									ref = beanName;
+									break beans;
+								}
+						} else {
+							if (obj.equals(value)) {
 								ref = beanName;
 								break beans;
 							}
-					} else {
-						if (obj.equals(value)) {
-							ref = beanName;
-							break beans;
 						}
 					}
 				}
+				if (ref == null) {
+					log
+							.warn("Cannot define reference for ref spec attribute "
+									+ key
+									+ " in "
+									+ executionFlow
+									+ " ("
+									+ rsa
+									+ ")."
+									+ " If it is an inner bean consider put it frozen.");
+					ref = REF_VALUE_INTERNAL;
+				} else {
+					if (log.isDebugEnabled())
+						log.debug(ref
+								+ " is the reference for ref spec attribute "
+								+ key + " in " + executionFlow + " (" + rsa
+								+ ")");
+				}
+				refValue.setRef(ref);
 			}
-			if (ref == null) {
-				log.warn("Cannot define reference for ref spec attribute "
-						+ key + " in " + executionFlow + " (" + rsa + ")."
-						+ " If it is an inner bean consider put it frozen.");
-				ref = REF_VALUE_INTERNAL;
-			} else {
-				if (log.isDebugEnabled())
-					log.debug(ref + " is the reference for ref spec attribute "
-							+ key + " in " + executionFlow + " (" + rsa + ")");
-			}
-			refValue.setRef(ref);
+			return refValue;
 		}
-		return refValue;
 	}
 
 	private ConfigurableListableBeanFactory getBeanFactory() {
