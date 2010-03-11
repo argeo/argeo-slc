@@ -29,7 +29,11 @@ public class JschContextSession extends AbstractJschTask implements
 			log.debug(getClass() + ".afterPropertiesSet(), " + beanName + ", "
 					+ this);
 		if (autoconnect)
-			run();
+			try {
+				run();
+			} catch (Exception e) {
+				log.error("Could not automatically open session", e);
+			}
 	}
 
 	public void setBeanName(String name) {
