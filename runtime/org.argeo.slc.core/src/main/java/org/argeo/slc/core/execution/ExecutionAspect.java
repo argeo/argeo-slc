@@ -32,12 +32,16 @@ public class ExecutionAspect {
 
 		if (log.isDebugEnabled())
 			logStackEvent("=> ", executionFlow);
-		// Actually execute the flow
-		pjp.proceed();
-		if (log.isDebugEnabled())
-			logStackEvent("<= ", executionFlow);
-
-		executionStack.leaveFlow(executionFlow);
+		
+		try {
+			// Actually execute the flow
+			pjp.proceed();
+		} finally {
+			if (log.isDebugEnabled())
+				logStackEvent("<= ", executionFlow);
+	
+			executionStack.leaveFlow(executionFlow);
+		}
 	}
 
 	@Around("runnableExecution()")

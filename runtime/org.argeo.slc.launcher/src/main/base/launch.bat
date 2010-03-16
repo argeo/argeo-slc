@@ -1,6 +1,9 @@
 @echo off
-set SLC_HOME=%~dp0..
+set ROOT_DIR=%~dp0
+set WORK_DIR=%ROOT_DIR%\work\%1
 
 TITLE %1
 
-java %JAVA_OPTS% -jar lib\org.eclipse.osgi-${version.equinox}.jar -clean -console -configuration work\%1\conf -data work\%1\data
+cd %WORK_DIR%
+
+java %JAVA_OPTS% -jar "%ROOT_DIR%\lib\org.eclipse.osgi-${version.equinox}.jar" -clean -console -configuration "%WORK_DIR%\conf" -data "%WORK_DIR%\data"
