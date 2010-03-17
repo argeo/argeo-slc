@@ -48,6 +48,8 @@ public class RemoteExec extends AbstractJschTask {
 	private Resource stdOut = null;
 	private ExecutionResources executionResources;
 
+	private String user;
+
 	/**
 	 * If set, stdout is written to it as a list of lines. Cleared before each
 	 * run.
@@ -96,9 +98,17 @@ public class RemoteExec extends AbstractJschTask {
 		}
 
 		if (forceShell) {
-			if (commandToUse.indexOf(';') >= 0
-					|| commandToUse.indexOf('\n') >= 0) {
-				StringTokenizer st = new StringTokenizer(commandToUse, ";\n");
+			// for the time being do not interpret both \n and ;
+			// priority to \n
+			// until we know how to parse ; within ""
+			if (commandToUse.indexOf('\n') >= 0) {
+				StringTokenizer st = new StringTokenizer(commandToUse, "\n");
+				while (st.hasMoreTokens()) {
+					String cmd = st.nextToken();
+					commandsToUse.add(cmd);
+				}
+			} else if (commandToUse.indexOf(';') >= 0) {
+				StringTokenizer st = new StringTokenizer(commandToUse, ";");
 				while (st.hasMoreTokens()) {
 					String cmd = st.nextToken();
 					commandsToUse.add(cmd);
@@ -107,6 +117,19 @@ public class RemoteExec extends AbstractJschTask {
 				commandsToUse.add(commandToUse);
 			}
 			commandToUse = null;
+		}
+
+		// run as user
+		if (user != null) {
+			if (commandsToUse.size() > 0) {
+				commandsToUse.add(0, "su - " + user);
+				commandsToUse.add("exit");
+			} else {
+				if (command.indexOf('\"') >= 0)
+					throw new SlcException(
+							"Don't know how to su a command with \", use shell instead.");
+				commandToUse = "su - " + user + " -c \"" + command + "\"";
+			}
 		}
 
 		// execute command(s)
@@ -398,6 +421,10 @@ public class RemoteExec extends AbstractJschTask {
 
 	public void setExecutionResources(ExecutionResources executionResources) {
 		this.executionResources = executionResources;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 }
