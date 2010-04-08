@@ -374,12 +374,24 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				}
 				var execFlows = executionModule.getExecutionFlows();
 				for (var key in execFlows) {
-					var file = new qx.ui.tree.TreeFile(key);
+					var path = execFlows[key].getPath();
+					var name = execFlows[key].getName();
+					var nodeLabel = key;
+					var sep = "\/";
+					if(name && name.indexOf(sep)>-1 && !path){
+						// Use given name to build the path.
+						// split dirname and basename
+						var parts = name.split(sep);
+						var basename = parts.pop();
+						var dirname = parts.join("/");
+						path = dirname;
+						nodeLabel = basename;
+					}
+					var file = new qx.ui.tree.TreeFile(nodeLabel);
 					if(execFlows[key].getDescription() != ""){
 						org.argeo.slc.ria.FlowsSelectorView.attachToolTip(file, execFlows[key].getDescription());
 					}
 					file.setIcon("org.argeo.slc.ria/system.png");
-					var path = execFlows[key].getPath();
 					file.setUserData("executionModule",	executionModule);
 					file.setUserData("executionFlow", execFlows[key]);
 					file.setUserData("agentUuid", agentUuid);
