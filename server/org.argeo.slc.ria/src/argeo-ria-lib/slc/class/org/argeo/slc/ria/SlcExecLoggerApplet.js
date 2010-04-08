@@ -292,6 +292,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 					[slcExec.getDate(), slcExec.getHost(), slcExec.getUuid(), slcExec.getStatus()]
 				]);				
 			}
+			this.logModel.sortByColumn(0, false);
 		}, this);
 		request.send();		
 	}
