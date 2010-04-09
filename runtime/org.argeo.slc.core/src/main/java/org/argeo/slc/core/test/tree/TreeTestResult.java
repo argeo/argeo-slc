@@ -32,30 +32,30 @@ import org.argeo.slc.test.TestRunAware;
  */
 public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		Comparable<TreeTestResult>, AttachmentsEnabled, Serializable {
-	private static final long serialVersionUID = 1L;
 
+	private static final long serialVersionUID = 1L;
 	private final static Log log = LogFactory.getLog(TreeTestResult.class);
 
-	private List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();
-
-	private TreeSPath currentPath;
-	private TestRun currentTestRun;
-
-	private Date closeDate;
-
-	private Boolean isClosed = false;
-
-	private Boolean warnIfAlreadyClosed = true;
-
+	// Persistence data
 	private String uuid = UUID.randomUUID().toString();
+	private Date closeDate;
 
 	private SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 	private SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
 	private List<SimpleAttachment> attachments = new ArrayList<SimpleAttachment>();
 
+	// Headers. Used to accelerate request on a specific test result.
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
+	// Runtime Data
+	private TreeSPath currentPath;
+	private TestRun currentTestRun;
+	private Boolean warnIfAlreadyClosed = true;
 	private Boolean strictChecks = false;
+	// TODO is it really necessary closeDate == null ?
+	private Boolean isClosed = false;
+
+	private List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();
 
 	/** Sets the list of listeners. */
 	public void setListeners(List<TestResultListener<TreeTestResult>> listeners) {
@@ -69,7 +69,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 							+ " consider changing the scope of this test result:"
 							+ " you are referencing the same stored data with each new call.",
 					null);
-		
+
 		if (currentPath == null)
 			throw new SlcException("No current path set.");
 
@@ -129,8 +129,11 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		return resultParts;
 	}
 
-	/** Used by ORM systems. */
-	void setResultParts(SortedMap<TreeSPath, PartSubList> resultParts) {
+	/**
+	 * Used by ORM systems. 
+	 * Changed to public in order to enable jcr persistence
+	 */
+	public void setResultParts(SortedMap<TreeSPath, PartSubList> resultParts) {
 		this.resultParts = resultParts;
 	}
 
