@@ -9,10 +9,42 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
+	<bean id="slcAgentDescriptorDao" class="org.argeo.slc.jcr.dao.SlcAgentDescriptorDaoJcr"
+		init-method="init">
+		<property name="session" ref="argeo.jcr.session.inMemory" />
+		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
+	</bean>
+
 	<bean id="slcExecutionDao" class="org.argeo.slc.jcr.dao.SlcExecutionDaoJcr"
 		init-method="init">
 		<property name="session" ref="argeo.jcr.session.inMemory" />
+		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
 	</bean>
+
+	<bean id="nodeMapperProvider" class="org.argeo.slc.jcr.dao.SlcNodeMapperProvider"
+		init-method="init">
+		<property name="defaultNodeMapper" ref="nodeMapper" />
+		<property name="treeTestResultNodeMapper" ref="treeTestResultNodeMapper" />
+	</bean>
+
+	<bean id="treeTestResultDao" class="org.argeo.slc.jcr.dao.TreeTestResultDaoJcr"
+		init-method="init">
+		<property name="session" ref="argeo.jcr.session.inMemory" />
+		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
+	</bean>
+
+	<bean id="treeTestResultCollectionDao" class="org.argeo.slc.jcr.dao.TreeTestResultCollectionDaoJcr"
+		init-method="init">
+		<property name="session" ref="argeo.jcr.session.inMemory" />
+		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
+	</bean>
+
+	<bean id="nodeMapper" class="org.argeo.jcr.BeanNodeMapper">
+	</bean>
+
+	<bean id="treeTestResultNodeMapper" class="org.argeo.slc.jcr.dao.TreeTestResultNodeMapper">
+	</bean>
+
 
 	<bean id="argeo.jcr.session.inMemory" factory-bean="argeo.jcr.repository.inMemory"
 		factory-method="login" destroy-method="logout">

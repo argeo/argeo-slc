@@ -9,7 +9,6 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.Workspace;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -17,25 +16,28 @@ import javax.jcr.query.QueryResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.jcr.BeanNodeMapper;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.jcr.NodeMapper;
+import org.argeo.jcr.NodeMapperProvider;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
 
-public class SlcExecutionDaoJcr implements SlcExecutionDao {
+public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements SlcExecutionDao {
 	private final static Log log = LogFactory.getLog(SlcExecutionDaoJcr.class);
-	private Session session;
 	private Workspace workspace;
 	private QueryManager queryManager;
 
-	private BeanNodeMapper beanNodeMapper = new BeanNodeMapper();
+	private NodeMapper nodeMapper; 
+	private NodeMapperProvider nodeMapperProvider;
 
 	public void init() {
 		try {
-			workspace = session.getWorkspace();
+			workspace = getSession().getWorkspace();
 			queryManager = workspace.getQueryManager();
+			nodeMapper = nodeMapperProvider.findNodeMapper(null);
+			
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot initialize DAO", e);
 		}
@@ -55,11 +57,11 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 			log.debug("create");
 
 		try {
-			beanNodeMapper.save(getSession(), basePath(slcExecution),
+			nodeMapper.save(getSession(), basePath(slcExecution),
 					slcExecution);
-			session.save();
+			getSession().save();
 		} catch (Exception e) {
-			throw new SlcException("Cannot import " + slcExecution, e);
+			throw new SlcException("Cannot create slcExecution" + slcExecution, e);
 		}
 	}
 
@@ -67,9 +69,10 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(new Date());
 		// cal.setTime(slcExecution.getStartDate());
-		return "/slc/processes/" + slcExecution.getHost().replace('.', '/')
-				+ '/' + JcrUtils.dateAsPath(cal) + "process";
+		return "/slc/processes/" + JcrUtils.hostAsPath(slcExecution.getHost())
+		+ '/' + JcrUtils.dateAsPath(cal) + "process";
 	}
+
 
 	public SlcExecution getSlcExecution(String uuid) {
 		if (log.isDebugEnabled())
@@ -82,7 +85,7 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 			Node node = JcrUtils.querySingleNode(query);
 			if (node == null)
 				return null;
-			return (SlcExecution) beanNodeMapper.nodeToBean(node);
+			return (SlcExecution) nodeMapper.load(node);
 		} catch (Exception e) {
 			throw new SlcException("Cannot load SLC execution " + uuid, e);
 		}
@@ -101,8 +104,8 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 			NodeIterator iterator = qr.getNodes();
 			while (iterator.hasNext()) {
 				Node node = iterator.nextNode();
-				SlcExecution slcExecution = (SlcExecution) beanNodeMapper
-						.nodeToBean(node);
+				SlcExecution slcExecution = (SlcExecution) nodeMapper
+						.load(node);
 				res.add(slcExecution);
 			}
 			return res;
@@ -125,23 +128,15 @@ public class SlcExecutionDaoJcr implements SlcExecutionDao {
 		try {
 			Query query = queryManager.createQuery(queryString, Query.XPATH);
 			Node node = JcrUtils.querySingleNode(query);
-			beanNodeMapper.update(node, slcExecution);
-			session.save();
+			nodeMapper.update(node, slcExecution);
+			getSession().save();
 		} catch (Exception e) {
 			throw new SlcException("Cannot update " + slcExecution, e);
 		}
 	}
 
-	public void setSession(Session session) {
-		this.session = session;
+	//IoC
+	public void setNodeMapperProvider(NodeMapperProvider nodeMapperProvider) {
+		this.nodeMapperProvider = nodeMapperProvider;
 	}
-
-	protected Session getSession() {
-		return session;
-	}
-
-	public void setBeanNodeMapper(BeanNodeMapper beanNodeMapper) {
-		this.beanNodeMapper = beanNodeMapper;
-	}
-
 }

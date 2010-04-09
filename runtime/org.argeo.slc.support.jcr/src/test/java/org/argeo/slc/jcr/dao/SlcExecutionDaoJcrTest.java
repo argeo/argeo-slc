@@ -63,4 +63,14 @@ public class SlcExecutionDaoJcrTest extends AbstractSpringTestCase {
 		SlcExecutionTestUtils.assertSlcExecution(slcExecution,
 				slcExecutionPersist);
 	}
+
+//	// FIXME
+//	protected void tearDown() {
+//		try {
+//			super.tearDown();
+//		} catch (Exception e) {
+//			log.debug("pbs Remain while closing jcr test env.");
+//			log.debug("Exc Name : " + e.getClass().getName());
+//		}
+//	}
 }

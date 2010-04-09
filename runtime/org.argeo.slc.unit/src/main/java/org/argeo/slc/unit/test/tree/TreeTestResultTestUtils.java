@@ -2,7 +2,9 @@ package org.argeo.slc.unit.test.tree;
 
 import java.util.UUID;
 
+
 import org.argeo.slc.build.Distribution;
+import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.structure.tree.TreeSRegistry;
@@ -41,11 +43,32 @@ public abstract class TreeTestResultTestUtils {
 		return ttr;
 	}
 
+	public static TreeTestResult createComplexeTreeTestResult() {
+		SlcExecution slcExecution = SlcExecutionTestUtils
+				.createSimpleSlcExecution();
+		SlcExecutionStep step = new SlcExecutionStep("JUnit step");
+		slcExecution.getSteps().add(step);
+
+		TreeTestResult ttr = createMinimalConsistentTreeTestResult(slcExecution);
+
+		ttr.addResultPart(createSimpleResultPartPassed());
+		ttr.addResultPart(createSimpleResultPartFailed());
+		//ttr.addResultPart(createSimpleResultPartError());
+		
+		SimpleAttachment sa = new SimpleAttachment(UUID.randomUUID().toString(),"AnAttachment","UTF8");
+		SimpleAttachment sa2 = new SimpleAttachment(UUID.randomUUID().toString(),"AnOtherAttachment","UTF8");
+		ttr.addAttachment(sa);
+		ttr.addAttachment(sa2);
+		return ttr;
+	}
+
 	public static TreeTestResult createMinimalConsistentTreeTestResult(
 			SlcExecution slcExecution) {
 		SimpleTestRun testRun = new SimpleTestRun();
 		testRun.setUuid(UUID.randomUUID().toString());
 
+		// Doesn't work in hibernate with such a path.
+		//String pathStr = "/fileDiff/testcases/issue";
 		String pathStr = "/test";
 		TreeSPath path = new TreeSPath(pathStr);
 
