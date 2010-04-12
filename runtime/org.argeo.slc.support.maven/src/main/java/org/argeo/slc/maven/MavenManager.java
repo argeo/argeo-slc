@@ -2,15 +2,25 @@ package org.argeo.slc.maven;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
+import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
+import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 import org.argeo.slc.SlcException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.codehaus.plexus.embed.Embedder;
 
 public class MavenManager {
 
@@ -23,14 +33,15 @@ public class MavenManager {
 	private List<ArtifactRepository> remoteRepositoriesInternal;
 	private List<RemoteRepository> remoteRepositories = new Vector<RemoteRepository>();
 
-	private MavenEmbedder mavenEmbedder;
+	private SlcMavenEmbedder mavenEmbedder;
 	private ClassLoader classLoader;
 	private Boolean offline = false;
 
 	public void init() {
 		try {
-			mavenEmbedder = new MavenEmbedder();
+			mavenEmbedder = new SlcMavenEmbedder();
 			mavenEmbedder.setOffline(offline);
+			//mavenEmbedder.setAlignWithUserInstallation(true);
 			if (classLoader != null)
 				mavenEmbedder.setClassLoader(classLoader);
 			else
@@ -60,14 +71,57 @@ public class MavenManager {
 			mavenFile.setType("pom");
 			Artifact artifact = resolve(mavenFile);
 			log.debug("Location of " + artifact + " : " + artifact.getFile());
-//			log.debug("Dependencies of " + artifact);
-//			for (Object obj : artifact.getDependencyTrail()) {
-//				log.debug("  " + obj);
-//			}
+			// log.debug("Dependencies of " + artifact);
+			// for (Object obj : artifact.getDependencyTrail()) {
+			// log.debug("  " + obj);
+			// }
+
+			MavenProject project = mavenEmbedder
+					.readProjectWithDependencies(new File(
+							"/home/mbaudier/dev/src/slc/dist/org.argeo.slc.sdk/pom.xml"));
+			// MavenProject project = mavenEmbedder
+			// .readProjectWithDependencies(artifact.getFile());
+
+			log.debug("Dependencies of " + artifact);
+			for (Object obj : getTransitiveProjectDependencies(project,
+					remoteRepositoriesInternal, localRepository)) {
+				log.debug("  " + obj);
+			}
 
 		} catch (Exception e) {
 			throw new SlcException("Cannot initialize Maven manager", e);
 		}
+	}
+
+	public Set getTransitiveProjectDependencies(MavenProject project,
+			List remoteRepos, ArtifactRepository local) {
+		Embedder embedder = mavenEmbedder.getEmbedder();
+		try {
+			ArtifactFactory artifactFactory = (ArtifactFactory) embedder
+					.lookup(ArtifactFactory.ROLE);
+
+			ArtifactResolver artifactResolver = (ArtifactResolver) embedder
+					.lookup(ArtifactResolver.ROLE);
+
+			ArtifactMetadataSource artifactMetadataSource = (ArtifactMetadataSource) embedder
+					.lookup(ArtifactMetadataSource.ROLE);
+
+			Set artifacts = project
+					.createArtifacts(artifactFactory, null, null);
+
+			ArtifactResolutionResult arr = artifactResolver
+					.resolveTransitively(artifacts, project.getArtifact(),
+							local, remoteRepos, artifactMetadataSource, null);
+
+			return arr.getArtifacts();
+		} catch (Exception e) {
+			throw new SlcException("Cannot resolve dependency for " + project,
+					e);
+		}
+		// Order, just for display
+		// Set dependencies = new TreeSet(new ArtifactComparator());
+		// dependencies.addAll(arr.getArtifacts());
+		// return dependencies;
 	}
 
 	private Artifact resolve(MavenFile mavenDistribution) {
