@@ -11,6 +11,8 @@
 	<bundle id="basic" symbolic-name="org.argeo.slc.demo.basic"
 		action="start" />
 	<bundle id="ant" symbolic-name="org.argeo.slc.demo.ant" action="start" />
+	<bundle id="maven" symbolic-name="org.argeo.slc.demo.maven"
+		action="start" />
 	<!--
 		<bundle id="detached" symbolic-name="org.argeo.slc.demo.detached"
 		action="start" /> <bundle id="det"

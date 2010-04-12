@@ -1,9 +1,18 @@
 package org.argeo.slc.maven;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.deploy.DeployEnvironment;
 
 public abstract class MavenDeployEnvironment implements DeployEnvironment {
-/*	private static final Log log = LogFactory
+	private static final Log log = LogFactory
 			.getLog(MavenDeployEnvironment.class);
 	private MavenManager mavenManager;
 
@@ -41,13 +50,13 @@ public abstract class MavenDeployEnvironment implements DeployEnvironment {
 			URL antUrl = getClass().getClassLoader().getResource(
 					"org/argeo/slc/support/deploy/ant/build.xml");
 
-//			if (type == null || type.equals("zip")) {
-//				new AntRunner(antUrl, "deployZip", props).run();
-//			} else if (type.equals("tar.gz")) {
-//				new AntRunner(antUrl, "deployTarGz", props).run();
-//			} else {
-//				throw new SlcException("Unknow package type " + type);
-//			}
+			// if (type == null || type.equals("zip")) {
+			// new AntRunner(antUrl, "deployZip", props).run();
+			// } else if (type.equals("tar.gz")) {
+			// new AntRunner(antUrl, "deployTarGz", props).run();
+			// } else {
+			// throw new SlcException("Unknow package type " + type);
+			// }
 			throw new SlcException("Not implemented.");
 		} catch (SlcException e) {
 			throw e;
@@ -60,5 +69,5 @@ public abstract class MavenDeployEnvironment implements DeployEnvironment {
 	public void setMavenManager(MavenManager mavenManager) {
 		this.mavenManager = mavenManager;
 	}
-*/
+
 }

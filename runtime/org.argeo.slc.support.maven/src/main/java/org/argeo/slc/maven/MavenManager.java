@@ -1,8 +1,19 @@
 package org.argeo.slc.maven;
 
+import java.io.File;
+import java.util.List;
+import java.util.Vector;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.embedder.MavenEmbedderException;
+import org.argeo.slc.SlcException;
 
 public class MavenManager {
-	/*
+
 	private final Log log = LogFactory.getLog(getClass());
 
 	private String localRepositoryPath = System.getProperty("user.home")
@@ -13,13 +24,20 @@ public class MavenManager {
 	private List<RemoteRepository> remoteRepositories = new Vector<RemoteRepository>();
 
 	private MavenEmbedder mavenEmbedder;
+	private ClassLoader classLoader;
+	private Boolean offline = false;
 
 	public void init() {
 		try {
 			mavenEmbedder = new MavenEmbedder();
-			mavenEmbedder.setOffline(true);
-			mavenEmbedder.setClassLoader(Thread.currentThread()
-					.getContextClassLoader());
+			mavenEmbedder.setOffline(offline);
+			if (classLoader != null)
+				mavenEmbedder.setClassLoader(classLoader);
+			else
+				mavenEmbedder.setClassLoader(getClass().getClassLoader());
+			// else
+			// mavenEmbedder.setClassLoader(Thread.currentThread()
+			// .getContextClassLoader());
 			mavenEmbedder.start();
 
 			mavenEmbedder.setLocalRepositoryDirectory(new File(
@@ -34,16 +52,18 @@ public class MavenManager {
 						remoteRepository.getUrl(), remoteRepository.getId());
 				remoteRepositoriesInternal.add(repository);
 			}
-			
+
 			MavenFile mavenFile = new MavenFile();
-			mavenFile.setGroupId("org.argeo.slc.runtime");
-			mavenFile.setArtifactId("org.argeo.slc.specs");
-			mavenFile.setVersion("0.11.3-SNAPSHOT");
+			mavenFile.setGroupId("org.argeo.slc.dist");
+			mavenFile.setArtifactId("org.argeo.slc.sdk");
+			mavenFile.setVersion("0.12.2-SNAPSHOT");
+			mavenFile.setType("pom");
 			Artifact artifact = resolve(mavenFile);
-			log.debug("Dependencies of "+artifact);
-			for(Object obj : artifact.getDependencyTrail()){
-				log.debug("  "+obj);
-			}
+			log.debug("Location of " + artifact + " : " + artifact.getFile());
+//			log.debug("Dependencies of " + artifact);
+//			for (Object obj : artifact.getDependencyTrail()) {
+//				log.debug("  " + obj);
+//			}
 
 		} catch (Exception e) {
 			throw new SlcException("Cannot initialize Maven manager", e);
@@ -100,5 +120,13 @@ public class MavenManager {
 	public void setRemoteRepositories(List<RemoteRepository> remoteRepositories) {
 		this.remoteRepositories = remoteRepositories;
 	}
-*/
+
+	public void setClassLoader(ClassLoader classLoader) {
+		this.classLoader = classLoader;
+	}
+
+	public void setOffline(Boolean offline) {
+		this.offline = offline;
+	}
+
 }
