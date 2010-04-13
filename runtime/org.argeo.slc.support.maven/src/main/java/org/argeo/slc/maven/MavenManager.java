@@ -11,15 +11,11 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.artifact.InvalidDependencyVersionException;
 import org.argeo.slc.SlcException;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.argeo.slc.maven.embedder.MavenEmbedderException;
 import org.codehaus.plexus.embed.Embedder;
 
 public class MavenManager {
@@ -41,7 +37,7 @@ public class MavenManager {
 		try {
 			mavenEmbedder = new SlcMavenEmbedder();
 			mavenEmbedder.setOffline(offline);
-			//mavenEmbedder.setAlignWithUserInstallation(true);
+			// mavenEmbedder.setAlignWithUserInstallation(true);
 			if (classLoader != null)
 				mavenEmbedder.setClassLoader(classLoader);
 			else
@@ -76,15 +72,40 @@ public class MavenManager {
 			// log.debug("  " + obj);
 			// }
 
+			File pomFile = new File(
+					"/home/mbaudier/dev/src/slc/dist/org.argeo.slc.sdk/pom.xml");
 			MavenProject project = mavenEmbedder
-					.readProjectWithDependencies(new File(
-							"/home/mbaudier/dev/src/slc/dist/org.argeo.slc.sdk/pom.xml"));
+					.readProjectWithDependencies(pomFile);
 			// MavenProject project = mavenEmbedder
 			// .readProjectWithDependencies(artifact.getFile());
 
-			log.debug("Dependencies of " + artifact);
-			for (Object obj : getTransitiveProjectDependencies(project,
-					remoteRepositoriesInternal, localRepository)) {
+			// EventMonitor eventMonitor = new EventMonitor() {
+			//
+			// public void startEvent(String eventName, String target,
+			// long timestamp) {
+			// log.debug(eventName + ", " + target + ", " + timestamp);
+			// }
+			//
+			// public void errorEvent(String eventName, String target,
+			// long timestamp, Throwable cause) {
+			// log.debug(eventName + ", " + target + ", " + timestamp);
+			// }
+			//
+			// public void endEvent(String eventName, String target,
+			// long timestamp) {
+			// log.debug(eventName + ", " + target + ", " + timestamp);
+			// }
+			// };
+			//
+			// String[] goals = { "clean", "install" };
+			// mavenEmbedder.execute(project, Arrays.asList(goals),
+			// eventMonitor,
+			// null, null, pomFile.getParentFile());
+
+			Set<Artifact> transitDeps = getTransitiveProjectDependencies(
+					project, remoteRepositoriesInternal, localRepository);
+			log.debug(transitDeps.size() + " dependencies for " + artifact);
+			for (Object obj : transitDeps) {
 				log.debug("  " + obj);
 			}
 
@@ -93,8 +114,9 @@ public class MavenManager {
 		}
 	}
 
-	public Set getTransitiveProjectDependencies(MavenProject project,
-			List remoteRepos, ArtifactRepository local) {
+	@SuppressWarnings("unchecked")
+	public Set<Artifact> getTransitiveProjectDependencies(MavenProject project,
+			List<ArtifactRepository> remoteRepos, ArtifactRepository local) {
 		Embedder embedder = mavenEmbedder.getEmbedder();
 		try {
 			ArtifactFactory artifactFactory = (ArtifactFactory) embedder
@@ -106,8 +128,8 @@ public class MavenManager {
 			ArtifactMetadataSource artifactMetadataSource = (ArtifactMetadataSource) embedder
 					.lookup(ArtifactMetadataSource.ROLE);
 
-			Set artifacts = project
-					.createArtifacts(artifactFactory, null, null);
+			Set<Artifact> artifacts = project.createArtifacts(artifactFactory,
+					null, null);
 
 			ArtifactResolutionResult arr = artifactResolver
 					.resolveTransitively(artifacts, project.getArtifact(),
