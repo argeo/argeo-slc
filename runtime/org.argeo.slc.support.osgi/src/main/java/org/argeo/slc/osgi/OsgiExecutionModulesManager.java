@@ -38,26 +38,26 @@ public class OsgiExecutionModulesManager extends
 		AbstractExecutionModulesManager implements InitializingBean,
 		DisposableBean, OsgiServiceLifecycleListener {
 
-	static {
-		// Force usage of vanilla Xalan when in OSGi
-		// We would like to do it in a cleaner way
-		// but the integration of Xalan and Xerces in the JRE
-		// makes it very difficult
-		// Suggestions welcome!
-		Properties systemProperties = System.getProperties();
-		// if (!systemProperties
-		// .containsKey("javax.xml.parsers.DocumentBuilderFactory"))
-		// System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
-		// "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-		// if
-		// (!systemProperties.containsKey("javax.xml.parsers.SAXParserFactory"))
-		// System.setProperty("javax.xml.parsers.SAXParserFactory",
-		// "org.apache.xerces.jaxp.SAXParserFactoryImpl");
-		if (!systemProperties
-				.containsKey("javax.xml.transform.TransformerFactory"))
-			System.setProperty("javax.xml.transform.TransformerFactory",
-					"org.apache.xalan.processor.TransformerFactoryImpl");
-	}
+//	static {
+//		// Force usage of vanilla Xalan when in OSGi
+//		// We would like to do it in a cleaner way
+//		// but the integration of Xalan and Xerces in the JRE
+//		// makes it very difficult
+//		// Suggestions welcome!
+//		Properties systemProperties = System.getProperties();
+//		// if (!systemProperties
+//		// .containsKey("javax.xml.parsers.DocumentBuilderFactory"))
+//		// System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
+//		// "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+//		// if
+//		// (!systemProperties.containsKey("javax.xml.parsers.SAXParserFactory"))
+//		// System.setProperty("javax.xml.parsers.SAXParserFactory",
+//		// "org.apache.xerces.jaxp.SAXParserFactoryImpl");
+//		if (!systemProperties
+//				.containsKey("javax.xml.transform.TransformerFactory"))
+//			System.setProperty("javax.xml.transform.TransformerFactory",
+//					"org.apache.xalan.processor.TransformerFactoryImpl");
+//	}
 
 	private final static String PROPERTY_CACHE_SERVICES = "slc.osgi.execution.cacheServices";
 

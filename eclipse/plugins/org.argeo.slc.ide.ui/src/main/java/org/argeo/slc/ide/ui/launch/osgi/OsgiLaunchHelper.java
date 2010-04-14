@@ -191,10 +191,12 @@ public class OsgiLaunchHelper {
 			Map<String, String> systemPropertiesToAppend) {
 		String argeoOsgiStart = properties
 				.getProperty(OsgiLauncherConstants.ARGEO_OSGI_START);
-		StringTokenizer st = new StringTokenizer(argeoOsgiStart, ",");
-		while (st.hasMoreTokens())
-			bundlesToStart.add(st.nextToken());
-
+		if (argeoOsgiStart != null) {
+			StringTokenizer st = new StringTokenizer(argeoOsgiStart, ",");
+			while (st.hasMoreTokens())
+				bundlesToStart.add(st.nextToken());
+		}
+		
 		propKeys: for (Object keyObj : properties.keySet()) {
 			String key = keyObj.toString();
 			if (OsgiLauncherConstants.ARGEO_OSGI_START.equals(key))
