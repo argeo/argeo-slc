@@ -161,14 +161,20 @@
 	<profiles>
 		<profile>
 			<id>rpmbuild</id>
-			<!--
-				<activation> <os> <name>Linux</name> </os> <file>
-				<exists>/usr/bin/rpmbuild</exists> </file> </activation>
-			-->
+
+			<activation>
+				<os>
+					<name>Linux</name>
+				</os>
+				<file>
+					<exists>/usr/bin/rpmbuild</exists>
+				</file>
+			</activation>
+
 			<properties>
 				<package.version>${project.version}</package.version>
 				<distribution.label>argeo</distribution.label>
-				<distribution.root>/net/cash/srv/yumrepos/argeo-el/5/argeo-testing/</distribution.root>
+				<distribution.root>/var/argeo/linux/argeo-el/5/argeo/testing/</distribution.root>
 			</properties>
 			<build>
 				<plugins>
@@ -328,7 +334,6 @@
 											<groupname>root</groupname>
 											<filemode>644</filemode>
 											<directoryIncluded>false</directoryIncluded>
-											<configuration>true</configuration>
 											<sources>
 												<source>
 													<location>../../demo/site</location>
@@ -336,7 +341,9 @@
 														<include>**</include>
 													</includes>
 													<excludes>
-														<exclude>*.pom.xml</exclude>
+														<exclude>pom.xml</exclude>
+														<exclude>target</exclude>
+														<exclude>target/**</exclude>
 														<exclude>.svn</exclude>
 														<exclude>**/.svn/**</exclude>
 													</excludes>
