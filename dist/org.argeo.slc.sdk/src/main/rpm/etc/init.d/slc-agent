@@ -1,0 +1,56 @@
+#!/bin/bash
+#
+# slc-agent	SLC Agent
+#
+# chkconfig: 3 92 92
+# description: SLC Agent
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+RETVAL=0
+
+start() {
+	EXECDIR=/var/lib/slc-agent
+	cd $EXECDIR
+	export JAVA_OPTS=-Xmx128m
+	/usr/bin/slc -console 3030 &
+	action $"Start SLC agent" /bin/true
+	return $RETVAL
+}
+
+stop() {
+	telnet localhost 3030  << EOF
+close
+EOF
+	action $"Stop SLC agent" /bin/true
+	return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  restart|reload)
+        stop
+        start
+        RETVAL=$?
+        ;;
+  condrestart)
+  		echo Not implemented
+  		exit 1
+        ;;
+  status)
+  		echo Not implemented
+  		exit 1
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|restart}"
+        exit 1
+esac
+
+exit $RETVAL

@@ -1,0 +1,23 @@
+if [ ! -L /usr/share/osgi/org.eclipse.osgi.jar ];then
+	ln -s /usr/share/osgi/org.eclipse.osgi-*.jar /usr/share/osgi/org.eclipse.osgi.jar
+fi
+
+if [ ! -L /usr/share/osgi/org.argeo.osgi.boot.jar ];then
+	ln -s /usr/share/osgi/org.argeo.osgi.boot-*.jar /usr/share/osgi/org.argeo.osgi.boot.jar
+fi
+
+if [ $1 = "1" ];then
+	APP=slc-agent
+	mkdir -p /var/lib/$APP/{conf,data}
+	ln -s /etc/$APP/config.ini /var/lib/$APP/conf
+	mkdir -p /var/lib/$APP/lib
+	ln -s /usr/share/osgi/* /var/lib/$APP/lib
+	/sbin/chkconfig --add $APP
+
+	APP=slc-server
+	mkdir -p /var/lib/$APP/{conf,data}
+	ln -s /etc/$APP/config.ini /var/lib/$APP/conf
+	mkdir -p /var/lib/$APP/lib
+	ln -s /usr/share/osgi/* /var/lib/$APP/lib
+	/sbin/chkconfig --add $APP
+fi

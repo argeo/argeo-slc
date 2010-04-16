@@ -1,0 +1,16 @@
+echo Remove symbolic links
+rm -f /usr/share/osgi/org.argeo.osgi.boot.jar
+rm -f /usr/share/osgi/org.eclipse.osgi.jar
+
+if [ $1 = "0" ];then
+	APP=slc-agent
+	/sbin/chkconfig --del $APP
+	rm -f /var/lib/$APP/conf/config.ini
+	rm -rf /var/lib/$APP/lib
+
+	APP=slc-server
+	/sbin/chkconfig --del $APP
+	rm -f /var/lib/$APP/conf/config.ini
+	rm -rf /var/lib/$APP/lib
+
+fi

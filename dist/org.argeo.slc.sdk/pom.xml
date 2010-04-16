@@ -74,6 +74,7 @@
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>filter-base</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -88,6 +89,14 @@
 							</resources>
 						</configuration>
 					</execution>
+					<!--
+						<execution> <id>filter-rpm</id> <phase>validate</phase> <goals>
+						<goal>copy-resources</goal> </goals> <configuration>
+						<outputDirectory>${basedir}/target/rpmfiltered</outputDirectory>
+						<resources> <resource> <directory>src/main/rpm</directory>
+						<filtering>true</filtering> </resource> </resources>
+						</configuration> </execution>
+					-->
 				</executions>
 			</plugin>
 			<plugin>
@@ -220,6 +229,195 @@
 					<type>pom</type>
 				</dependency>
 			</dependencies>
+		</profile>
+		<profile>
+			<id>rpmbuild</id><!--
+			<activation>
+				<os>
+					<name>Linux</name>
+				</os>
+				<file>
+					<exists>/usr/bin/rpmbuild</exists>
+				</file>
+			</activation>
+			--><properties>
+				<package.version>${project.version}</package.version>
+				<distribution.label>argeo</distribution.label>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>rpm-maven-plugin</artifactId>
+						<version>2.0.1</version>
+						<extensions>true</extensions>
+						<executions>
+							<execution>
+								<id>rpm</id>
+								<phase>package</phase>
+								<goals>
+									<goal>rpm</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<version>${package.version}</version>
+							<release>r${buildNumber}.${distribution.label}</release>
+							<copyright>2010 Argeo</copyright>
+							<distribution>${distribution.label}</distribution>
+							<packager>mbaudier@argeo.org</packager>
+							<group>Applications/System</group>
+							<prefix>/usr</prefix>
+							<mappings>
+								<mapping>
+									<directory>/usr/bin</directory>
+									<username>root</username>
+									<groupname>root</groupname>
+									<filemode>755</filemode>
+									<directoryIncluded>false</directoryIncluded>
+									<sources>
+										<source>
+											<location>src/main/rpm/usr/bin</location>
+											<includes>
+												<include>*</include>
+											</includes>
+										</source>
+									</sources>
+								</mapping>
+								<mapping>
+									<directory>/etc/init.d</directory>
+									<username>root</username>
+									<groupname>root</groupname>
+									<filemode>755</filemode>
+									<directoryIncluded>false</directoryIncluded>
+									<sources>
+										<source>
+											<location>src/main/rpm/etc/init.d</location>
+											<includes>
+												<include>*</include>
+											</includes>
+										</source>
+									</sources>
+								</mapping>
+								<mapping>
+									<directory>/etc/slc-agent</directory>
+									<username>root</username>
+									<groupname>root</groupname>
+									<filemode>644</filemode>
+									<configuration>true</configuration>
+									<sources>
+										<source>
+											<location>src/main/rpm/etc/slc-agent</location>
+											<includes>
+												<include>*</include>
+											</includes>
+										</source>
+									</sources>
+								</mapping>
+								<mapping>
+									<directory>/etc/slc-server</directory>
+									<username>root</username>
+									<groupname>root</groupname>
+									<filemode>644</filemode>
+									<configuration>true</configuration>
+									<sources>
+										<source>
+											<location>src/main/rpm/etc/slc-server</location>
+											<includes>
+												<include>*</include>
+											</includes>
+										</source>
+									</sources>
+								</mapping>
+								<mapping>
+									<directory>/usr/share/osgi</directory>
+									<username>root</username>
+									<groupname>root</groupname>
+									<filemode>644</filemode>
+									<directoryIncluded>false</directoryIncluded>
+									<sources>
+										<source>
+											<location>target</location>
+											<includes>
+												<include>*.jar</include>
+											</includes>
+										</source>
+									</sources>
+								</mapping>
+								<mapping>
+									<directory>/usr/src/osgi/pde</directory>
+									<username>root</username>
+									<groupname>root</groupname>
+									<filemode>644</filemode>
+									<directoryIncluded>false</directoryIncluded>
+									<sources>
+										<source>
+											<location>target/libsrc</location>
+											<includes>
+												<include>*.jar</include>
+											</includes>
+										</source>
+									</sources>
+								</mapping>
+							</mappings>
+							<postinstallScriptlet>
+								<scriptFile>src/main/scripts/postinstall</scriptFile>
+							</postinstallScriptlet>
+							<preremoveScriptlet>
+								<scriptFile>src/main/scripts/preremove</scriptFile>
+							</preremoveScriptlet>
+							<requires>
+								<require>java-1.6.0-openjdk</require>
+							</requires>
+						</configuration>
+					</plugin>
+					<!--
+						<plugin> <groupId>org.codehaus.mojo</groupId>
+						<artifactId>buildnumber-maven-plugin</artifactId> <executions>
+						<execution> <id>buildNumber-create</id> <phase>validate</phase>
+						<goals> <goal>create</goal> </goals> </execution> </executions>
+						<configuration> <format>{0,number}</format> <items>
+						<item>buildNumber0</item> </items> </configuration> </plugin>
+					-->
+					<!--
+						<plugin> <artifactId>maven-scm-plugin</artifactId> <executions>
+						<execution> <id>buildNumber-commit</id> <phase>verify</phase>
+						<goals> <goal>checkin</goal> </goals> </execution> </executions>
+						<configuration> <username>${username}</username>
+						<password>${password}</password> <message> Update buildNumber to
+						${buildNumber} </message> </configuration> </plugin>
+					-->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>rpm-copyToRepo</id>
+								<phase>deploy</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<property name="repo.base"
+											location="${distributions.root}/${distribution.label}/i386/os" />
+										<copy todir="${repo.base}/Packages" verbose="true">
+											<fileset dir="target">
+												<include name="rpm/RPMS/*/*.rpm" />
+											</fileset>
+											<flattenmapper />
+										</copy>
+										<exec executable="/usr/bin/createrepo">
+											<arg value="${repo.base}" />
+										</exec>
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+
 		</profile>
 	</profiles>
 </project>
