@@ -15,13 +15,6 @@
 				<include>**</include>
 			</includes>
 		</fileSet>
-		<fileSet>
-			<directory>target/libsrc</directory>
-			<outputDirectory>libsrc</outputDirectory>
-			<includes>
-				<include>*</include>
-			</includes>
-		</fileSet>
 	</fileSets>
 	<dependencySets>
 		<dependencySet>

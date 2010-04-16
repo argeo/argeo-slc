@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
-		<artifactId>dep</artifactId>
+		<artifactId>dist</artifactId>
 		<version>0.12.2-SNAPSHOT</version>
 	</parent>
 	<groupId>org.argeo.slc.dist</groupId>
@@ -28,7 +28,7 @@
 						</goals>
 						<configuration>
 							<includeTypes>jar</includeTypes>
-							<outputDirectory>${project.build.directory}</outputDirectory>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
@@ -63,7 +63,7 @@
 								<!-- Make sure that no bundle will be started -->
 								<argeo.osgi.start>XXX</argeo.osgi.start>
 								<argeo.osgi.bundles>
-									${basedir}/target;in=*.jar,
+									${project.build.directory}/lib;in=*.jar,
 								</argeo.osgi.bundles>
 							</systemProperties>
 						</configuration>
@@ -75,7 +75,7 @@
 				<executions>
 					<execution>
 						<id>filter-base</id>
-						<phase>validate</phase>
+						<phase>process-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
@@ -89,14 +89,6 @@
 							</resources>
 						</configuration>
 					</execution>
-					<!--
-						<execution> <id>filter-rpm</id> <phase>validate</phase> <goals>
-						<goal>copy-resources</goal> </goals> <configuration>
-						<outputDirectory>${basedir}/target/rpmfiltered</outputDirectory>
-						<resources> <resource> <directory>src/main/rpm</directory>
-						<filtering>true</filtering> </resource> </resources>
-						</configuration> </execution>
-					-->
 				</executions>
 			</plugin>
 			<plugin>
@@ -105,6 +97,7 @@
 				<configuration>
 					<descriptors>
 						<descriptor>src/assembly/dist.xml</descriptor>
+						<descriptor>src/assembly/devel.xml</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
@@ -161,77 +154,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.detached</artifactId>
+			<artifactId>org.argeo.slc.dep.sdk</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.unit</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.server</groupId>
-			<artifactId>org.argeo.slc.ria</artifactId>
-		</dependency>
-
-		<!-- Modules -->
-
-		<!-- Launcher -->
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.launcher</artifactId>
-			<version>${project.version}</version>
-			<type>tar.gz</type>
-			<classifier>base</classifier>
-		</dependency>
-
 	</dependencies>
 	<profiles>
 		<profile>
-			<id>sdkWithModules</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>org.argeo.slc.modules</groupId>
-					<artifactId>org.argeo.slc.modules.agent.bundles</artifactId>
-					<version>${project.version}</version>
-					<type>pom</type>
-				</dependency>
-				<dependency>
-					<groupId>org.argeo.slc.modules</groupId>
-					<artifactId>org.argeo.slc.modules.server.bundles</artifactId>
-					<version>${project.version}</version>
-					<type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>sdkWithoutModules</id>
-		</profile>
-		<profile>
-			<id>release</id>
-			<properties>
-				<argeo.p2.repository>/var/argeo/projects/SLC/www/sdk</argeo.p2.repository>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>org.argeo.slc.modules</groupId>
-					<artifactId>org.argeo.slc.modules.agent.bundles</artifactId>
-					<version>${project.version}</version>
-					<type>pom</type>
-				</dependency>
-				<dependency>
-					<groupId>org.argeo.slc.modules</groupId>
-					<artifactId>org.argeo.slc.modules.server.bundles</artifactId>
-					<version>${project.version}</version>
-					<type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>rpmbuild</id><!--
+			<id>rpmbuild</id>
 			<activation>
 				<os>
 					<name>Linux</name>
@@ -240,26 +169,17 @@
 					<exists>/usr/bin/rpmbuild</exists>
 				</file>
 			</activation>
-			--><properties>
+			<properties>
 				<package.version>${project.version}</package.version>
 				<distribution.label>argeo</distribution.label>
+				<distribution.root>/net/cash/srv/yumrepos/argeo-el/5/argeo-testing/</distribution.root>
 			</properties>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>rpm-maven-plugin</artifactId>
-						<version>2.0.1</version>
 						<extensions>true</extensions>
-						<executions>
-							<execution>
-								<id>rpm</id>
-								<phase>package</phase>
-								<goals>
-									<goal>rpm</goal>
-								</goals>
-							</execution>
-						</executions>
 						<configuration>
 							<version>${package.version}</version>
 							<release>r${buildNumber}.${distribution.label}</release>
@@ -268,147 +188,197 @@
 							<packager>mbaudier@argeo.org</packager>
 							<group>Applications/System</group>
 							<prefix>/usr</prefix>
-							<mappings>
-								<mapping>
-									<directory>/usr/bin</directory>
-									<username>root</username>
-									<groupname>root</groupname>
-									<filemode>755</filemode>
-									<directoryIncluded>false</directoryIncluded>
-									<sources>
-										<source>
-											<location>src/main/rpm/usr/bin</location>
-											<includes>
-												<include>*</include>
-											</includes>
-										</source>
-									</sources>
-								</mapping>
-								<mapping>
-									<directory>/etc/init.d</directory>
-									<username>root</username>
-									<groupname>root</groupname>
-									<filemode>755</filemode>
-									<directoryIncluded>false</directoryIncluded>
-									<sources>
-										<source>
-											<location>src/main/rpm/etc/init.d</location>
-											<includes>
-												<include>*</include>
-											</includes>
-										</source>
-									</sources>
-								</mapping>
-								<mapping>
-									<directory>/etc/slc-agent</directory>
-									<username>root</username>
-									<groupname>root</groupname>
-									<filemode>644</filemode>
-									<configuration>true</configuration>
-									<sources>
-										<source>
-											<location>src/main/rpm/etc/slc-agent</location>
-											<includes>
-												<include>*</include>
-											</includes>
-										</source>
-									</sources>
-								</mapping>
-								<mapping>
-									<directory>/etc/slc-server</directory>
-									<username>root</username>
-									<groupname>root</groupname>
-									<filemode>644</filemode>
-									<configuration>true</configuration>
-									<sources>
-										<source>
-											<location>src/main/rpm/etc/slc-server</location>
-											<includes>
-												<include>*</include>
-											</includes>
-										</source>
-									</sources>
-								</mapping>
-								<mapping>
-									<directory>/usr/share/osgi</directory>
-									<username>root</username>
-									<groupname>root</groupname>
-									<filemode>644</filemode>
-									<directoryIncluded>false</directoryIncluded>
-									<sources>
-										<source>
-											<location>target</location>
-											<includes>
-												<include>*.jar</include>
-											</includes>
-										</source>
-									</sources>
-								</mapping>
-								<mapping>
-									<directory>/usr/src/osgi/pde</directory>
-									<username>root</username>
-									<groupname>root</groupname>
-									<filemode>644</filemode>
-									<directoryIncluded>false</directoryIncluded>
-									<sources>
-										<source>
-											<location>target/libsrc</location>
-											<includes>
-												<include>*.jar</include>
-											</includes>
-										</source>
-									</sources>
-								</mapping>
-							</mappings>
-							<postinstallScriptlet>
-								<scriptFile>src/main/scripts/postinstall</scriptFile>
-							</postinstallScriptlet>
-							<preremoveScriptlet>
-								<scriptFile>src/main/scripts/preremove</scriptFile>
-							</preremoveScriptlet>
-							<requires>
-								<require>java-1.6.0-openjdk</require>
-							</requires>
 						</configuration>
+						<executions>
+							<execution>
+								<id>rpm-sdk</id>
+								<phase>package</phase>
+								<goals>
+									<goal>rpm</goal>
+								</goals>
+								<configuration>
+									<mappings>
+										<mapping>
+											<directory>/usr/bin</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>755</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<sources>
+												<source>
+													<location>src/main/rpm/usr/bin</location>
+													<includes>
+														<include>*</include>
+													</includes>
+												</source>
+											</sources>
+										</mapping>
+										<mapping>
+											<directory>/etc/init.d</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>755</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<sources>
+												<source>
+													<location>src/main/rpm/etc/init.d</location>
+													<includes>
+														<include>*</include>
+													</includes>
+												</source>
+											</sources>
+										</mapping>
+										<mapping>
+											<directory>/etc/slc-agent</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<configuration>true</configuration>
+											<sources>
+												<source>
+													<location>src/main/rpm/etc/slc-agent</location>
+													<includes>
+														<include>*</include>
+													</includes>
+												</source>
+											</sources>
+										</mapping>
+										<mapping>
+											<directory>/etc/slc-server</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<configuration>true</configuration>
+											<sources>
+												<source>
+													<location>src/main/rpm/etc/slc-server</location>
+													<includes>
+														<include>*</include>
+													</includes>
+												</source>
+											</sources>
+										</mapping>
+										<mapping>
+											<directory>/usr/share/osgi</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<sources>
+												<source>
+													<location>target/lib</location>
+													<includes>
+														<include>*.jar</include>
+													</includes>
+												</source>
+											</sources>
+										</mapping>
+									</mappings>
+									<postinstallScriptlet>
+										<scriptFile>src/main/scripts/postinstall</scriptFile>
+									</postinstallScriptlet>
+									<preremoveScriptlet>
+										<scriptFile>src/main/scripts/preremove</scriptFile>
+									</preremoveScriptlet>
+									<requires>
+										<require>java</require>
+									</requires>
+								</configuration>
+							</execution>
+							<execution>
+								<id>rpm-devel</id>
+								<phase>package</phase>
+								<goals>
+									<goal>rpm</goal>
+								</goals>
+								<configuration>
+									<name>${project.artifactId}-pdesources</name>
+									<mappings>
+										<mapping>
+											<directory>/usr/src/osgi/pde</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<sources>
+												<source>
+													<location>target/libsrc</location>
+													<includes>
+														<include>*.jar</include>
+													</includes>
+												</source>
+											</sources>
+										</mapping>
+									</mappings>
+								</configuration>
+							</execution>
+							<execution>
+								<id>rpm-demo</id>
+								<phase>package</phase>
+								<goals>
+									<goal>rpm</goal>
+								</goals>
+								<configuration>
+									<name>${project.artifactId}-demo</name>
+									<mappings>
+										<mapping>
+											<directory>/var/lib/slc-agent/modules</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<configuration>true</configuration>
+											<sources>
+												<source>
+													<location>../../demo/site</location>
+													<includes>
+														<include>**</include>
+													</includes>
+													<excludes>
+														<exclude>*.pom.xml</exclude>
+														<exclude>.svn</exclude>
+														<exclude>**/.svn/**</exclude>
+													</excludes>
+												</source>
+											</sources>
+										</mapping>
+									</mappings>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
-					<!--
-						<plugin> <groupId>org.codehaus.mojo</groupId>
-						<artifactId>buildnumber-maven-plugin</artifactId> <executions>
-						<execution> <id>buildNumber-create</id> <phase>validate</phase>
-						<goals> <goal>create</goal> </goals> </execution> </executions>
-						<configuration> <format>{0,number}</format> <items>
-						<item>buildNumber0</item> </items> </configuration> </plugin>
-					-->
-					<!--
-						<plugin> <artifactId>maven-scm-plugin</artifactId> <executions>
-						<execution> <id>buildNumber-commit</id> <phase>verify</phase>
-						<goals> <goal>checkin</goal> </goals> </execution> </executions>
-						<configuration> <username>${username}</username>
-						<password>${password}</password> <message> Update buildNumber to
-						${buildNumber} </message> </configuration> </plugin>
-					-->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<executions>
 							<execution>
 								<id>rpm-copyToRepo</id>
-								<phase>deploy</phase>
+								<phase>install</phase>
 								<goals>
 									<goal>run</goal>
 								</goals>
 								<configuration>
 									<tasks>
-										<property name="repo.base"
-											location="${distributions.root}/${distribution.label}/i386/os" />
-										<copy todir="${repo.base}/Packages" verbose="true">
+										<delete>
+											<fileset dir="${distribution.root}" includes="*/org.argeo.slc.sdk-*.rpm" />
+										</delete>
+										<copy todir="${distribution.root}/x86_64" verbose="true">
 											<fileset dir="target">
-												<include name="rpm/RPMS/*/*.rpm" />
+												<include name="rpm/*/RPMS/*/*.rpm" />
 											</fileset>
 											<flattenmapper />
 										</copy>
 										<exec executable="/usr/bin/createrepo">
-											<arg value="${repo.base}" />
+											<arg value="${distribution.root}/x86_64" />
+										</exec>
+										<copy todir="${distribution.root}/i386" verbose="true">
+											<fileset dir="target">
+												<include name="rpm/*/RPMS/*/*.rpm" />
+											</fileset>
+											<flattenmapper />
+										</copy>
+										<exec executable="/usr/bin/createrepo">
+											<arg value="${distribution.root}/i386" />
 										</exec>
 									</tasks>
 								</configuration>
