@@ -282,6 +282,8 @@
 									</preremoveScriptlet>
 									<requires>
 										<require>java</require>
+										<!-- For the start/stop scripts -->
+										<require>expect</require>
 									</requires>
 								</configuration>
 							</execution>

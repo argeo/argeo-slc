@@ -20,8 +20,10 @@ start() {
 }
 
 stop() {
-	telnet localhost 3030  << EOF
-close
+	/usr/bin/expect  << EOF
+spawn telnet localhost 3030
+expect "osgi>"
+send "close\r"
 EOF
 	action $"Stop SLC agent" /bin/true
 	return $RETVAL
