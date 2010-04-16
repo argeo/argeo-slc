@@ -359,7 +359,7 @@
 								</goals>
 								<configuration>
 									<tasks>
-										<delete>
+										<delete verbose="true">
 											<fileset dir="${distribution.root}" includes="*/org.argeo.slc.sdk-*.rpm" />
 										</delete>
 										<copy todir="${distribution.root}/x86_64" verbose="true">
