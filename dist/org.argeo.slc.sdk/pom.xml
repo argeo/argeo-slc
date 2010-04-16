@@ -338,12 +338,11 @@
 												<source>
 													<location>../../demo/site</location>
 													<includes>
-														<include>**</include>
+														<include>org.argeo.*/**</include>
 													</includes>
 													<excludes>
 														<exclude>pom.xml</exclude>
 														<exclude>target</exclude>
-														<exclude>target/*</exclude>
 														<exclude>.svn</exclude>
 														<exclude>**/.svn/**</exclude>
 													</excludes>
