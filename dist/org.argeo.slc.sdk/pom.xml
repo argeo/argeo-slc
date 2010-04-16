@@ -160,7 +160,7 @@
 	</dependencies>
 	<profiles>
 		<profile>
-			<id>rpmbuild</id>
+			<id>rpmbuild</id><!--
 			<activation>
 				<os>
 					<name>Linux</name>
@@ -169,7 +169,7 @@
 					<exists>/usr/bin/rpmbuild</exists>
 				</file>
 			</activation>
-			<properties>
+			--><properties>
 				<package.version>${project.version}</package.version>
 				<distribution.label>argeo</distribution.label>
 				<distribution.root>/net/cash/srv/yumrepos/argeo-el/5/argeo-testing/</distribution.root>
