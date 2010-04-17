@@ -174,7 +174,7 @@
 			<properties>
 				<package.version>${project.version}</package.version>
 				<distribution.label>argeo</distribution.label>
-				<distribution.root>/var/argeo/linux/argeo-el/5/argeo/testing/</distribution.root>
+				<distribution.root>/var/argeo/linux/argeo-el/5/argeo-testing</distribution.root>
 			</properties>
 			<build>
 				<plugins>
@@ -369,6 +369,8 @@
 								</goals>
 								<configuration>
 									<tasks>
+										<mkdir dir="${distribution.root}/i386" />
+										<mkdir dir="${distribution.root}/x86_64" />
 										<delete verbose="true">
 											<fileset dir="${distribution.root}" includes="*/org.argeo.slc.sdk-*.rpm" />
 										</delete>
