@@ -8,40 +8,19 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Workspace;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.jcr.NodeMapper;
-import org.argeo.jcr.NodeMapperProvider;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
 
-public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements SlcExecutionDao {
-	private final static Log log = LogFactory.getLog(SlcExecutionDaoJcr.class);
-	private Workspace workspace;
-	private QueryManager queryManager;
-
-	private NodeMapper nodeMapper; 
-	private NodeMapperProvider nodeMapperProvider;
-
-	public void init() {
-		try {
-			workspace = getSession().getWorkspace();
-			queryManager = workspace.getQueryManager();
-			nodeMapper = nodeMapperProvider.findNodeMapper(null);
-			
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot initialize DAO", e);
-		}
-	}
+public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements
+		SlcExecutionDao {
+	// private final static Log log =
+	// LogFactory.getLog(SlcExecutionDaoJcr.class);
 
 	public void addSteps(String slcExecutionId,
 			List<SlcExecutionStep> additionalSteps) {
@@ -53,15 +32,12 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements SlcExecutio
 	}
 
 	public void create(SlcExecution slcExecution) {
-		if (log.isDebugEnabled())
-			log.debug("create");
-
 		try {
-			nodeMapper.save(getSession(), basePath(slcExecution),
-					slcExecution);
+			nodeMapper.save(getSession(), basePath(slcExecution), slcExecution);
 			getSession().save();
 		} catch (Exception e) {
-			throw new SlcException("Cannot create slcExecution" + slcExecution, e);
+			throw new SlcException("Cannot create slcExecution" + slcExecution,
+					e);
 		}
 	}
 
@@ -70,14 +46,10 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements SlcExecutio
 		cal.setTime(new Date());
 		// cal.setTime(slcExecution.getStartDate());
 		return "/slc/processes/" + JcrUtils.hostAsPath(slcExecution.getHost())
-		+ '/' + JcrUtils.dateAsPath(cal) + "process";
+				+ '/' + JcrUtils.dateAsPath(cal) + "process";
 	}
 
-
 	public SlcExecution getSlcExecution(String uuid) {
-		if (log.isDebugEnabled())
-			log.debug("getSlcExecution");
-
 		try {
 			// TODO: optimize query
 			String queryString = "//process[@uuid='" + uuid + "']";
@@ -92,9 +64,6 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements SlcExecutio
 	}
 
 	public List<SlcExecution> listSlcExecutions() {
-		if (log.isDebugEnabled())
-			log.debug("listSlcExecutions");
-		
 		List<SlcExecution> res = new ArrayList<SlcExecution>();
 		// TODO: optimize query
 		String queryString = "//process";
@@ -119,9 +88,6 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements SlcExecutio
 	}
 
 	public void update(SlcExecution slcExecution) {
-		if (log.isDebugEnabled())
-			log.debug("update");
-
 		// TODO: optimize query
 		String queryString = "//process[@uuid='" + slcExecution.getUuid()
 				+ "']";
@@ -135,8 +101,4 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements SlcExecutio
 		}
 	}
 
-	//IoC
-	public void setNodeMapperProvider(NodeMapperProvider nodeMapperProvider) {
-		this.nodeMapperProvider = nodeMapperProvider;
-	}
 }

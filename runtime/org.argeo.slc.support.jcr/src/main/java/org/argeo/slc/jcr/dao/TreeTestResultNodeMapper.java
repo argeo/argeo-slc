@@ -14,7 +14,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
@@ -95,7 +94,12 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 			// We add the tags
 			Map<String, String> tags = elements.get(key).getTags();
 			for (String tag : tags.keySet()) {
-				childNode.setProperty(tag, tags.get(tag));
+				// remove forbidden characters
+				String cleanTag = JcrUtils.removeForbiddenCharacters(tag);
+				if (!cleanTag.equals(tag))
+					log.warn("Tag '" + tag + "' persisted as '" + cleanTag
+							+ "'");
+				childNode.setProperty(cleanTag, tags.get(tag));
 			}
 
 			// We set the class in order to be able to retrieve
@@ -135,7 +139,7 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 			Node listNode;
 			int i;
 			for (i = 0; i < list.size(); i++) {
-				TestResultPart trp = list.get(i);
+				// TestResultPart trp = list.get(i);
 				// FIXME : ResultParts are systematicaly added.
 				// There no check to see if already exists.
 				listNode = childNode.addNode("resultpart");
@@ -190,8 +194,7 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 		if (log.isTraceEnabled())
 			log.debug("Map node " + node.getPath() + " to bean " + clssName);
 
-		
-		// It's a very specific implementation, 
+		// It's a very specific implementation,
 		// We don't need to use a bean wrapper.
 		TreeTestResult ttr = new TreeTestResult();
 
@@ -210,7 +213,7 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 		props: while (propIt.hasNext()) {
 			Property prop = propIt.nextProperty();
 
-			//TODO Define a rule to generalize it (Namespace ??)
+			// TODO Define a rule to generalize it (Namespace ??)
 			// Get rid of specific case. mainly uuid
 			if ("uuid".equals(prop.getName())
 					|| prop.getName().equals(getClassProperty())
@@ -238,8 +241,8 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 			ttr.setAttachments(attachments);
 		}
 
-		// STRUCTURED ELEMENTS 
-		
+		// STRUCTURED ELEMENTS
+
 		String basePath = node.getPath();
 		SortedMap<TreeSPath, PartSubList> resultParts = new TreeMap<TreeSPath, PartSubList>();
 		SortedMap<TreeSPath, StructureElement> elements = new TreeMap<TreeSPath, StructureElement>();
@@ -271,9 +274,9 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 			PropertyIterator tagIt = curNode.getProperties();
 			tags: while (tagIt.hasNext()) {
 				Property prop = tagIt.nextProperty();
-				log.debug("Handling property named : " + prop.getName());
+				//log.debug("Handling property named : " + prop.getName());
 
-				//TODO Define a rule to generalize it
+				// TODO Define a rule to generalize it
 				// Specific case. mainly uuid
 				if ("uuid".equals(prop.getName())
 						|| prop.getName().equals(getClassProperty())
@@ -293,7 +296,7 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 		ttr.setElements(elements);
 
 		// RESULTPARTS
-		
+
 		// We have to had the uuid of the current node to be sure that we are in
 		// its sub tree
 		queryString = "//testresult[@uuid='" + uuid + "']";

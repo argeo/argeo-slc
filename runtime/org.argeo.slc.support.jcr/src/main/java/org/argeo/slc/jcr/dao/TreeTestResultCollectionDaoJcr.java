@@ -1,20 +1,19 @@
 package org.argeo.slc.jcr.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Workspace;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.jcr.NodeMapper;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.test.tree.ResultAttributes;
 import org.argeo.slc.core.test.tree.TreeTestResult;
@@ -32,20 +31,6 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 	private final static Log log = LogFactory
 			.getLog(TreeTestResultCollectionDaoJcr.class);
 
-	private Workspace workspace;
-	private QueryManager queryManager;
-	private NodeMapper nodeMapper;
-
-	public void init() {
-		try {
-			workspace = getSession().getWorkspace();
-			queryManager = workspace.getQueryManager();
-			nodeMapper = getNodeMapperProvider().findNodeMapper(null);
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot initialize DAO", e);
-		}
-	}
-
 	public void create(TreeTestResultCollection ttrCollection) {
 		try {
 			Node curNode;
@@ -62,26 +47,21 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 	}
 
 	public TreeTestResultCollection getTestResultCollection(String id) {
-		try {
-			TreeTestResultCollection res = new TreeTestResultCollection();
-			res.setId(id);
+		TreeTestResultCollection res = new TreeTestResultCollection();
+		res.setId(id);
 
-			String queryString = "//*[@" + ttrColProp + "='" + id + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
-			log.debug("retrieving all nodes of a col - " + queryString);
-			int i = 0;
-			NodeIterator ni = query.execute().getNodes();
-			while (ni.hasNext()) {
-				i++;
-				res.getResults().add(
-						(TreeTestResult) nodeMapper.load(ni.nextNode()));
-			}
-			log.debug(i + " nodes found");
-			return res;
-		} catch (RepositoryException e) {
-			throw new SlcException(
-					"Cannot get TreeTestResultCollection for id " + id, e);
+		// String queryString = "//*[@" + ttrColProp + "='" + id + "']";
+		// Query query = queryManager.createQuery(queryString, Query.XPATH);
+		// log.debug("retrieving all nodes of a col - " + queryString);
+		int i = 0;
+		NodeIterator ni = resultNodesInCollection(id);
+		while (ni.hasNext()) {
+			i++;
+			res.getResults().add(
+					(TreeTestResult) nodeMapper.load(ni.nextNode()));
 		}
+		// log.debug(i + " nodes found");
+		return res;
 	}
 
 	/**
@@ -111,7 +91,8 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 					nodeMapper.update(curNode, ttr);
 					log.debug("Node updated");
 				}
-				log.debug("-----------------------------------------------------------------");
+				log
+						.debug("-----------------------------------------------------------------");
 				curNode.setProperty(ttrColProp, colId);
 				JcrUtils.debug(curNode.getSession().getRootNode());
 			}
@@ -147,11 +128,10 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 
 	public void delete(TreeTestResultCollection ttrCollection) {
 		try {
+			// FIXME: should not delete sub nodes
 			Node curNode;
 			String colId = ttrCollection.getId();
-			String queryString = "//*[@" + ttrColProp + "='" + colId + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
-			NodeIterator ni = query.execute().getNodes();
+			NodeIterator ni = resultNodesInCollection(colId);
 			while (ni.hasNext()) {
 				curNode = ni.nextNode();
 				curNode.remove();
@@ -163,11 +143,21 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 		}
 	}
 
-	// FIXME Implement this method
 	public SortedSet<TreeTestResultCollection> listCollections() {
-		// return new TreeSet<TreeTestResultCollection>(getHibernateTemplate()
-		// .find("from TreeTestResultCollection"));
-		return null;
+		// FIXME: optimize
+		Map<String, TreeTestResultCollection> lst = new HashMap<String, TreeTestResultCollection>();
+		NodeIterator nodeIterator = query("//testresult");
+		while (nodeIterator.hasNext()) {
+			Node node = nodeIterator.nextNode();
+			String colId = property(node, ttrColProp);
+			if (colId != null) {
+				if (!lst.containsKey(colId))
+					lst.put(colId, new TreeTestResultCollection(colId));
+				TreeTestResultCollection ttrc = lst.get(colId);
+				ttrc.getResults().add((TreeTestResult) nodeMapper.load(node));
+			}
+		}
+		return new TreeSet<TreeTestResultCollection>(lst.values());
 	}
 
 	public void addResultToCollection(final TreeTestResultCollection ttrc,
@@ -221,51 +211,127 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 
 	// FIXME specify and implement this method
 	public List<ResultAttributes> listResultAttributes(String collectionId) {
-		/**
-		 * List<ResultAttributes> list; if (collectionId == null) list =
-		 * getHibernateTemplate().find(
-		 * "select new org.argeo.slc.core.test.tree.ResultAttributes(ttr)" +
-		 * " from TreeTestResult ttr"); else list = getHibernateTemplate()
-		 * .find(
-		 * "select new org.argeo.slc.core.test.tree.ResultAttributes(ttr) " +
-		 * " from TreeTestResult ttr, TreeTestResultCollection ttrc " +
-		 * " where ttr in elements(ttrc.results) and ttrc.id=?", collectionId);
-		 * 
-		 * return list;
-		 */
-		return null;
-	}
+		// FIXME: optimize
+		List<ResultAttributes> list = new ArrayList<ResultAttributes>();
+		if (collectionId == null) {
+			List<TreeTestResult> results = asTreeTestResultList(resultNodes(
+					null, null));
 
-	// FIXME specify and implement this method
+			for (TreeTestResult ttr : results) {
+				list.add(new ResultAttributes(ttr));
+			}
+		} else {
+			NodeIterator nodeIterator = resultNodesInCollection(collectionId);
+			while (nodeIterator.hasNext()) {
+				list.add(new ResultAttributes((TreeTestResult) nodeMapper
+						.load(nodeIterator.nextNode())));
+			}
+		}
+
+		return list;
+		// throw new UnsupportedOperationException();
+		// List<ResultAttributes> list;
+		// if (collectionId == null)
+		// list = getHibernateTemplate().find(
+		// "select new org.argeo.slc.core.test.tree.ResultAttributes(ttr)"
+		// + " from TreeTestResult ttr");
+		// else
+		// list = getHibernateTemplate()
+		// .find(
+		// "select new org.argeo.slc.core.test.tree.ResultAttributes(ttr) "
+		// + " from TreeTestResult ttr, TreeTestResultCollection ttrc "
+		// + " where ttr in elements(ttrc.results) and ttrc.id=?",
+		// collectionId);
+		//
+		// return list;
+	}
 
 	public List<TreeTestResult> listResults(String collectionId,
 			Map<String, String> attributes) {
-		/**
-		 * List<TreeTestResult> list;
-		 * 
-		 * if (collectionId == null) { if (attributes == null ||
-		 * attributes.size() == 0) list =
-		 * getHibernateTemplate().find("from TreeTestResult"); else if
-		 * (attributes.size() == 1) { Map.Entry<String, String> entry =
-		 * attributes.entrySet() .iterator().next(); Object[] args = {
-		 * entry.getKey(), entry.getValue() }; list =
-		 * getHibernateTemplate().find( "select ttr from TreeTestResult ttr" +
-		 * " where attributes[?]=?", args); } else { throw new SlcException(
-		 * "Multiple attributes filter are currently not supported."); } } else
-		 * { if (attributes == null || attributes.size() == 0) list =
-		 * getHibernateTemplate() .find( "select ttr " +
-		 * " from TreeTestResult ttr, TreeTestResultCollection ttrc " +
-		 * " where ttr in elements(ttrc.results) and ttrc.id=?", collectionId);
-		 * else if (attributes.size() == 1) { Map.Entry<String, String> entry =
-		 * attributes.entrySet() .iterator().next(); Object[] args = {
-		 * collectionId, entry.getKey(), entry.getValue() }; list =
-		 * getHibernateTemplate() .find(
-		 * "select ttr from TreeTestResult ttr, TreeTestResultCollection ttrc "
-		 * + " where ttr in elements(ttrc.results) and ttrc.id=?" +
-		 * " and attributes[?]=?", args); } else { throw new SlcException(
-		 * "Multiple attributes filter are currently not supported."); } }
-		 * return list;
-		 */
-		return null;
+		List<TreeTestResult> list;
+
+		if (collectionId == null) {
+			if (attributes == null || attributes.size() == 0)
+				list = asTreeTestResultList(resultNodes(null, null));
+			else if (attributes.size() == 1) {
+				Map.Entry<String, String> entry = attributes.entrySet()
+						.iterator().next();
+				list = asTreeTestResultList(resultNodes(entry.getKey(), entry
+						.getValue()));
+			} else {
+				throw new SlcException(
+						"Multiple attributes filter are currently not supported.");
+			}
+		} else {
+			if (attributes == null || attributes.size() == 0)
+				list = asTreeTestResultList(resultNodesInCollection(collectionId));
+			else if (attributes.size() == 1) {
+				Map.Entry<String, String> entry = attributes.entrySet()
+						.iterator().next();
+				list = asTreeTestResultList(resultNodesInCollection(
+						collectionId, entry.getKey(), entry.getValue()));
+			} else {
+				throw new SlcException(
+						"Multiple attributes filter are currently not supported.");
+			}
+		}
+		return list;
 	}
+
+	// UTILITIES
+
+	protected NodeIterator resultNodesInCollection(String collectionId,
+			String attributeKey, String attributeValue) {
+		String queryString = "//testresult[@" + ttrColProp + "='"
+				+ collectionId + "' and @" + attributeKey + "='"
+				+ attributeValue + "']";
+		return query(queryString);
+	}
+
+	protected NodeIterator resultNodesInCollection(String collectionId) {
+		String queryString = "//testresult[@" + ttrColProp + "='"
+				+ collectionId + "']";
+		return query(queryString);
+	}
+
+	protected NodeIterator resultNodes(String attributeKey,
+			String attributeValue) {
+		String queryString;
+		if (attributeKey != null)
+			queryString = "//testResult[@" + attributeKey + "='"
+					+ attributeValue + "']";
+		else
+			queryString = "//testResult";
+		return query(queryString);
+	}
+
+	protected List<TreeTestResult> asTreeTestResultList(
+			NodeIterator nodeIterator) {
+		List<TreeTestResult> lst = new ArrayList<TreeTestResult>();
+		while (nodeIterator.hasNext()) {
+			lst.add((TreeTestResult) nodeMapper.load(nodeIterator.nextNode()));
+		}
+		return lst;
+	}
+
+	private NodeIterator query(String query) {
+		try {
+			if (log.isDebugEnabled())
+				log.debug("Retrieve nodes from query: " + query);
+			Query q = queryManager.createQuery(query, Query.XPATH);
+			return q.execute().getNodes();
+		} catch (Exception e) {
+			throw new SlcException("Cannot load nodes from query: " + query);
+		}
+	}
+
+	private String property(Node node, String key) {
+		try {
+			return node.getProperty(key).getString();
+		} catch (Exception e) {
+			log.warn("Cannot retrieve property " + key + " of node " + node, e);
+			return null;
+		}
+	}
+
 }

@@ -9,9 +9,7 @@ import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Workspace;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
@@ -19,7 +17,6 @@ import javax.jcr.query.QueryResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.jcr.NodeMapper;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.core.structure.tree.TreeSPath;
@@ -41,35 +38,16 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 	private final static Log log = LogFactory
 			.getLog(TreeTestResultDaoJcr.class);
 
-	private Workspace workspace;
-	private QueryManager queryManager;
-	private NodeMapper nodeMapper;
-
-	
-	public TreeTestResultDaoJcr() {
-	}
-
-	public void init() {
-		try {
-			workspace = getSession().getWorkspace();
-			queryManager = workspace.getQueryManager();
-			nodeMapper = getNodeMapperProvider().findNodeMapper(null);
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot initialize DAO", e);
-		}
-	}
-
-	public void create(TestResult testResult) {
+	public synchronized void create(TestResult testResult) {
 		try {
 			nodeMapper.save(getSession(), basePath(testResult), testResult);
 			getSession().save();
-			//JcrUtils.debug(getSession().getRootNode());
 		} catch (Exception e) {
 			throw new SlcException("Cannot create testResult " + testResult, e);
 		}
 	}
 
-	public void update(TestResult testResult) {
+	public synchronized void update(TestResult testResult) {
 		try {
 			nodeMapper.save(getSession(), basePath(testResult), testResult);
 			getSession().save();
@@ -143,15 +121,20 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 		}
 	}
 
-	public void close(final String testResultId, final Date closeDate) {
+	public synchronized void close(final String testResultId,
+			final Date closeDate) {
 		try {
 			// TODO: optimize query
-			String queryString = "//testresult[@uiid='" + testResultId + "']";
+			String queryString = "//testresult[@uuid='" + testResultId + "']";
 			Query query = queryManager.createQuery(queryString, Query.XPATH);
 			Node resNode = JcrUtils.querySingleNode(query);
 			Calendar cal = new GregorianCalendar();
 			cal.setTime(closeDate);
-			resNode.setProperty("closeDate", cal);
+			if (resNode != null)
+				resNode.setProperty("closeDate", cal);
+			else if (log.isDebugEnabled())
+				log.debug("Cannot close because a node for test result # "
+						+ testResultId + " was not found");
 			getSession().save();
 		} catch (Exception e) {
 			throw new SlcException("Cannot close TestResult " + testResultId, e);
@@ -168,13 +151,13 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 	 */
 	// TODO do we load objects, do treatment and persist them or do we work
 	// directly in JCR
-	public void addResultPart(final String testResultId, final TreeSPath path,
-			final SimpleResultPart resultPart,
+	public synchronized void addResultPart(final String testResultId,
+			final TreeSPath path, final SimpleResultPart resultPart,
 			final Map<TreeSPath, StructureElement> relatedElements) {
 
 		try {
 			// TODO: optimize query
-			String queryString = "//*[@uuid='" + testResultId + "']";
+			String queryString = "//testresult[@uuid='" + testResultId + "']";
 			Query query = queryManager.createQuery(queryString, Query.XPATH);
 			Node resNode = JcrUtils.querySingleNode(query);
 
@@ -226,7 +209,12 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 					Map<String, String> tags = relatedElements.get(key)
 							.getTags();
 					for (String tag : tags.keySet()) {
-						curNode.setProperty(tag, tags.get(tag));
+						String cleanTag = JcrUtils
+								.removeForbiddenCharacters(tag);
+						if (!cleanTag.equals(tag))
+							log.warn("Tag '" + tag + "' persisted as '"
+									+ cleanTag + "'");
+						curNode.setProperty(cleanTag, tags.get(tag));
 					}
 
 					// We set the class in order to be able to retrieve
@@ -241,7 +229,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 		}
 	}
 
-	public void addAttachment(final String testResultId,
+	public synchronized void addAttachment(final String testResultId,
 			final SimpleAttachment attachment) {
 
 		try {
@@ -299,24 +287,22 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 		}
 	}
 
-	public void updateAttributes(final String testResultId,
+	public synchronized void updateAttributes(final String testResultId,
 			final Map<String, String> attributes) {
 		try {
 			String queryString = "//testresult[@uuid='" + testResultId + "']";
 			Query query = queryManager.createQuery(queryString, Query.XPATH);
 			Node node = JcrUtils.querySingleNode(query);
 
-			for (String key: attributes.keySet()){
-					node.setProperty(key, attributes.get(key));
+			for (String key : attributes.keySet()) {
+				node.setProperty(key, attributes.get(key));
 			}
 			getSession().save();
 		} catch (Exception e) {
-			throw new SlcException("Cannot update Attributes on TestResult with ID "
-					+ testResultId , e);
+			throw new SlcException(
+					"Cannot update Attributes on TestResult with ID "
+							+ testResultId, e);
 		}
 	}
-
-	
-	
 
 }
