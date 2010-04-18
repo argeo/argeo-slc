@@ -8,7 +8,6 @@
 
 	<service interface="org.argeo.slc.dao.process.SlcExecutionDao"
 		ref="slcExecutionDao" />
-		<!-- 
 	<service interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
 		ref="testResultDao" />
 	<service interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
@@ -17,7 +16,4 @@
 		ref="testRunDescriptorDao" />
 	<service interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
 		ref="slcAgentDescriptorDao" />
-
-	<reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
- -->
 </beans:beans>

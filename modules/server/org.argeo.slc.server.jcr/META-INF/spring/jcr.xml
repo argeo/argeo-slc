@@ -9,21 +9,57 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
-	<bean id="beanNodeMapper" class="org.argeo.jcr.BeanNodeMapper">
-		<property name="classLoader">
-			<bean class="org.springframework.osgi.util.BundleDelegatingClassLoader"
-				factory-method="createBundleClassLoaderFor">
-				<constructor-arg>
-					<bean factory-bean="bundleContext" factory-method="getBundle" />
-				</constructor-arg>
-			</bean>
-		</property>
+	<bean id="slcAgentDescriptorDao" class="org.argeo.slc.jcr.dao.SlcAgentDescriptorDaoJcr"
+		init-method="init">
+		<property name="session" ref="argeo.jcr.session.inMemory" />
+		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
+	</bean>
+
+	<bean id="testRunDescriptorDao" class="org.argeo.slc.jcr.dao.TestRunDescriptorDaoJcr"
+		init-method="init">
+		<property name="session" ref="argeo.jcr.session.inMemory" />
+		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
 	</bean>
 
 	<bean id="slcExecutionDao" class="org.argeo.slc.jcr.dao.SlcExecutionDaoJcr"
 		init-method="init">
 		<property name="session" ref="argeo.jcr.session.inMemory" />
-		<property name="beanNodeMapper" ref="beanNodeMapper"/>
+		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
+	</bean>
+
+	<bean id="nodeMapperProvider" class="org.argeo.slc.jcr.dao.SlcNodeMapperProvider"
+		init-method="init">
+		<property name="defaultNodeMapper" ref="nodeMapper" />
+		<property name="treeTestResultNodeMapper" ref="treeTestResultNodeMapper" />
+	</bean>
+
+	<bean id="testResultDao" class="org.argeo.slc.jcr.dao.TreeTestResultDaoJcr"
+		init-method="init">
+		<property name="session" ref="argeo.jcr.session.inMemory" />
+		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
+	</bean>
+
+	<bean id="testResultCollectionDao" class="org.argeo.slc.jcr.dao.TreeTestResultCollectionDaoJcr"
+		init-method="init">
+		<property name="session" ref="argeo.jcr.session.inMemory" />
+		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
+	</bean>
+
+	<!--  JCR node mappers -->
+	<bean id="bundleClassLoader"
+		class="org.springframework.osgi.util.BundleDelegatingClassLoader"
+		factory-method="createBundleClassLoaderFor">
+		<constructor-arg>
+			<bean factory-bean="bundleContext" factory-method="getBundle" />
+		</constructor-arg>
+	</bean>
+
+	<bean id="nodeMapper" class="org.argeo.jcr.BeanNodeMapper">
+		<property name="classLoader" ref="bundleClassLoader" />
+	</bean>
+
+	<bean id="treeTestResultNodeMapper" class="org.argeo.slc.jcr.dao.TreeTestResultNodeMapper">
+		<property name="classLoader" ref="bundleClassLoader" />
 	</bean>
 
 	<bean id="argeo.jcr.session.inMemory" factory-bean="argeo.jcr.repository.inMemory"
