@@ -36,4 +36,8 @@
 		<property name="hibernateTemplate" ref="hibernateTemplate" />
 	</bean>
 
+	<bean id="osivInterceptor"
+		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 </beans>

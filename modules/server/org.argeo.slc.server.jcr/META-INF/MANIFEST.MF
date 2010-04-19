@@ -17,8 +17,10 @@ Import-Package: javax.jcr,
  org.argeo.slc.dao.test.tree,
  org.argeo.slc.execution,
  org.argeo.slc.jcr.dao,
+ org.argeo.slc.jcr.mvc,
  org.argeo.slc.process,
  org.argeo.slc.runtime;specification-version="0.12.2.SNAPSHOT-r3445",
  org.argeo.slc.test,
  org.springframework.beans.factory.config,
- org.springframework.osgi.util
+ org.springframework.osgi.util,
+ org.springframework.web.context.request;specification-version="2.5.6.SEC01"

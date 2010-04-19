@@ -57,7 +57,9 @@
 	</bean>
 
 	<bean id="argeo.jcr.repository.inMemory" class="org.argeo.server.jackrabbit.JackrabbitContainer">
-		<property name="homeDirectory" value="${java.io.tmpdir}/jackrabbit-slc-unit" />
+		<property name="homeDirectory"
+			value="${java.io.tmpdir}/jackrabbit-slc-unit-${user.name}" />
+		<property name="inMemory" value="true" />
 		<property name="configuration"
 			value="classpath:/org/argeo/server/jackrabbit/repository-inMemory.xml" />
 	</bean>

@@ -9,7 +9,10 @@ import java.util.TreeSet;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,7 +29,7 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 
 	// FIXME : we handle testResultCollection by adding a property called
 	// "TestResultCollectionId "
-	final private String ttrColProp = "TestResultCollectionId";
+	final private String ttrColProp = "collectionId";
 
 	private final static Log log = LogFactory
 			.getLog(TreeTestResultCollectionDaoJcr.class);
@@ -49,18 +52,11 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 	public TreeTestResultCollection getTestResultCollection(String id) {
 		TreeTestResultCollection res = new TreeTestResultCollection();
 		res.setId(id);
-
-		// String queryString = "//*[@" + ttrColProp + "='" + id + "']";
-		// Query query = queryManager.createQuery(queryString, Query.XPATH);
-		// log.debug("retrieving all nodes of a col - " + queryString);
-		int i = 0;
 		NodeIterator ni = resultNodesInCollection(id);
 		while (ni.hasNext()) {
-			i++;
 			res.getResults().add(
 					(TreeTestResult) nodeMapper.load(ni.nextNode()));
 		}
-		// log.debug(i + " nodes found");
 		return res;
 	}
 
@@ -75,15 +71,12 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 	public void update(TreeTestResultCollection ttrCollection) {
 		try {
 			log.debug("Update ");
-			String queryString;
-			Query query;
-			Node curNode;
 			String colId = ttrCollection.getId();
 			// We add or update existing ones
 			for (TreeTestResult ttr : ttrCollection.getResults()) {
-				queryString = "//*[@uuid='" + ttr.getUuid() + "']";
-				query = queryManager.createQuery(queryString, Query.XPATH);
-				curNode = JcrUtils.querySingleNode(query);
+				String queryString = "//testresult[@uuid='" + ttr.getUuid()
+						+ "']";
+				Node curNode = singleNode(queryString, Query.XPATH);
 				if (curNode == null) {
 					curNode = nodeMapper.save(getSession(), basePath(ttr), ttr);
 					log.debug("New Node added");
@@ -97,14 +90,14 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 				JcrUtils.debug(curNode.getSession().getRootNode());
 			}
 			// We remove those who are not part of the collection anymore
-			queryString = "//*[@" + ttrColProp + "='" + colId + "']";
-			query = queryManager.createQuery(queryString, Query.XPATH);
+			String queryString = "//*[@" + ttrColProp + "='" + colId + "']";
+			Query query = queryManager.createQuery(queryString, Query.XPATH);
 			log.debug("Query :" + queryString);
 			NodeIterator ni = query.execute().getNodes();
 			int i = 0;
 			while (ni.hasNext()) {
 				log.debug("Node " + (++i));
-				curNode = ni.nextNode();
+				Node curNode = ni.nextNode();
 				String uuid = curNode.getProperty("uuid").getString();
 				boolean isPartOfTheSet = false;
 				for (TreeTestResult ttr : ttrCollection.getResults()) {
@@ -166,12 +159,10 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 			String queryString;
 			Node curNode;
 			String colId = ttrc.getId();
-			queryString = "//*[@uuid='" + resultUuid + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
-			curNode = JcrUtils.querySingleNode(query);
+			queryString = "//testresult[@uuid='" + resultUuid + "']";
+			curNode = singleNode(queryString, Query.XPATH);
 			if (curNode == null) {
-				throw new SlcException("Cannot add TreeTestResult of Id "
-						+ resultUuid + " to collection " + colId);
+				throw new SlcException("Cannot find test result #" + resultUuid);
 			} else
 				curNode.setProperty(ttrColProp, colId);
 			getSession().save();
@@ -185,22 +176,16 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 	public void removeResultFromCollection(final TreeTestResultCollection ttrc,
 			final String resultUuid) {
 		try {
-			log.debug("remove result");
 			String queryString;
 			Node curNode;
-			String colId = ttrc.getId();
-			queryString = "//*[@uuid='" + resultUuid + "']";
+			queryString = "//testresult[@uuid='" + resultUuid + "' and "
+					+ ttrColProp + "='" + ttrc.getId() + "']";
 			Query query = queryManager.createQuery(queryString, Query.XPATH);
 			curNode = JcrUtils.querySingleNode(query);
-			log.debug("Query : " + queryString + " - Node retrieved "
-					+ curNode.getPath());
 			if (curNode == null) {
-				throw new SlcException("Cannot remove TreeTestResult of Id "
-						+ resultUuid + " from collection " + colId);
+				throw new SlcException("Cannot find test result #" + resultUuid);
 			} else {
 				curNode.getProperty(ttrColProp).remove();
-				log.debug("Property removed : "
-						+ curNode.getProperty(ttrColProp).getString());
 			}
 			getSession().save();
 		} catch (Exception e) {
@@ -229,21 +214,6 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 		}
 
 		return list;
-		// throw new UnsupportedOperationException();
-		// List<ResultAttributes> list;
-		// if (collectionId == null)
-		// list = getHibernateTemplate().find(
-		// "select new org.argeo.slc.core.test.tree.ResultAttributes(ttr)"
-		// + " from TreeTestResult ttr");
-		// else
-		// list = getHibernateTemplate()
-		// .find(
-		// "select new org.argeo.slc.core.test.tree.ResultAttributes(ttr) "
-		// + " from TreeTestResult ttr, TreeTestResultCollection ttrc "
-		// + " where ttr in elements(ttrc.results) and ttrc.id=?",
-		// collectionId);
-		//
-		// return list;
 	}
 
 	public List<TreeTestResult> listResults(String collectionId,
@@ -298,10 +268,10 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 			String attributeValue) {
 		String queryString;
 		if (attributeKey != null)
-			queryString = "//testResult[@" + attributeKey + "='"
+			queryString = "//testresult[@" + attributeKey + "='"
 					+ attributeValue + "']";
 		else
-			queryString = "//testResult";
+			queryString = "//testresult";
 		return query(queryString);
 	}
 
@@ -331,6 +301,16 @@ public class TreeTestResultCollectionDaoJcr extends AbstractSlcJcrDao implements
 		} catch (Exception e) {
 			log.warn("Cannot retrieve property " + key + " of node " + node, e);
 			return null;
+		}
+	}
+
+	private Node singleNode(String query, String queryType) {
+		try {
+			Query q = queryManager.createQuery(query, queryType);
+			return JcrUtils.querySingleNode(q);
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot retrieve single node with query "
+					+ query, e);
 		}
 	}
 

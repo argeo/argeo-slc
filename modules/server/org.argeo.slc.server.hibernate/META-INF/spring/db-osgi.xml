@@ -18,6 +18,10 @@
 	<service interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
 		ref="slcAgentDescriptorDao" />
 
+	<service
+		interface="org.springframework.web.context.request.WebRequestInterceptor"
+		ref="osivInterceptor" />
+
 	<reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
 
 </beans:beans>

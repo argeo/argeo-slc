@@ -149,11 +149,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.server</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.sdk</artifactId>
 			<version>${project.version}</version>
 		</dependency>

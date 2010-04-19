@@ -23,5 +23,7 @@ Import-Package: org.aopalliance.aop,
  org.springframework.aop,
  org.springframework.aop.framework,
  org.springframework.orm.hibernate3,
- org.springframework.transaction
+ org.springframework.orm.hibernate3.support,
+ org.springframework.transaction,
+ org.springframework.web.context.request
 Bundle-Name: Server Hibernate

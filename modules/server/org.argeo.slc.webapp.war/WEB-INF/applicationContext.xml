@@ -14,11 +14,11 @@
 	<import resource="osgi.xml" />
 	<import resource="security.xml" />
 
-	<!-- Hibernate instrumentation-->
+	<!-- Hibernate instrumentation
 	<bean id="osivInterceptor"
 		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
 		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
+	</bean>-->
 
 
 	<!--  Properties -->
@@ -29,7 +29,7 @@
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
 	</bean>
 
-	<!-- Web Services transactions -->
+	<!-- Web Services transactions
 	<aop:config>
 		<aop:pointcut id="epMethods"
 			expression="execution(* org.springframework.web.servlet.mvc.Controller.handleRequest(..))" />
@@ -40,6 +40,6 @@
 		<tx:attributes>
 			<tx:method name="*" propagation="REQUIRED" />
 		</tx:attributes>
-	</tx:advice>
+	</tx:advice> -->
 
 </beans>

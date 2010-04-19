@@ -23,13 +23,26 @@
 					<systemProperties>
 						<argeo.osgi.bundles>
 							${basedir}/../../demo/site;in=*;ex=target;ex=pom.xml;ex=.*,
+						</argeo.osgi.bundles><!--						
+						<argeo.osgi.bundles>
+							${basedir}/../../demo/site;in=*;ex=target;ex=pom.xml;ex=.*,
 							${basedir}/../../modules/server;in=*;ex=target;ex=pom.xml;ex=.*,
 							${basedir}/../../modules/agent;in=*;ex=target;ex=pom.xml;ex=.*
 						</argeo.osgi.bundles>
+						--><!--
 						<argeo.osgi.start>
 							org.springframework.osgi.extender,
 							org.argeo.slc.server.main,
 							org.argeo.slc.server.hsqldb,
+							org.argeo.slc.server.hibernate,
+							org.argeo.slc.ria,
+							org.argeo.slc.agent,
+							org.argeo.slc.agent.jms							
+						</argeo.osgi.start>
+						--><argeo.osgi.start>
+							org.springframework.osgi.extender,
+							org.argeo.slc.server.jcr,
+							org.argeo.slc.server.main,
 							org.argeo.slc.ria,
 							org.argeo.slc.agent,
 							org.argeo.slc.agent.jms							
@@ -79,36 +92,10 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.argeo.commons.osgi</groupId>
-			<artifactId>org.argeo.osgi.boot</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.server</artifactId>
+			<artifactId>org.argeo.slc.dep.sdk</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.agent</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<!-- Security -->
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.dep.ads</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-		</dependency>
-
-		<!-- RIA -->
-		<dependency>
-			<groupId>org.argeo.slc.server</groupId>
-			<artifactId>org.argeo.slc.ria</artifactId>
-		</dependency>
-
 		<!-- Unit Tests -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>

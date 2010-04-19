@@ -94,12 +94,28 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 			// We add the tags
 			Map<String, String> tags = elements.get(key).getTags();
 			for (String tag : tags.keySet()) {
+				NodeIterator tagIt = childNode.getNodes("tag");
+				Node tagNode = null;
+				while (tagIt.hasNext()) {
+					Node n = tagIt.nextNode();
+					if (n.getProperty("name").getString().equals(tag)) {
+						tagNode = n;
+					}
+				}
+
+				if (tagNode == null) {
+					tagNode = childNode.addNode("tag");
+					tagNode.setProperty("name", tag);
+				}
+
+				tagNode.setProperty("value", tags.get(tag));
+
 				// remove forbidden characters
-				String cleanTag = JcrUtils.removeForbiddenCharacters(tag);
-				if (!cleanTag.equals(tag))
-					log.warn("Tag '" + tag + "' persisted as '" + cleanTag
-							+ "'");
-				childNode.setProperty(cleanTag, tags.get(tag));
+				// String cleanTag = JcrUtils.removeForbiddenCharacters(tag);
+				// if (!cleanTag.equals(tag))
+				// log.warn("Tag '" + tag + "' persisted as '" + cleanTag
+				// + "'");
+				// childNode.setProperty(cleanTag, tags.get(tag));
 			}
 
 			// We set the class in order to be able to retrieve
@@ -271,22 +287,29 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 			se.setLabel(curNode.getProperty("label").getString());
 
 			Map<String, String> tagMap = new TreeMap<String, String>();
-			PropertyIterator tagIt = curNode.getProperties();
-			tags: while (tagIt.hasNext()) {
-				Property prop = tagIt.nextProperty();
-				//log.debug("Handling property named : " + prop.getName());
+			NodeIterator tagIt = node.getNodes("tag");
+			while (tagIt.hasNext()) {
+				Node tagNode = tagIt.nextNode();
+				tagMap.put(tagNode.getProperty("name").getString(), tagNode
+						.getProperty("value").getString());
 
-				// TODO Define a rule to generalize it
-				// Specific case. mainly uuid
-				if ("uuid".equals(prop.getName())
-						|| prop.getName().equals(getClassProperty())
-						|| prop.getName().startsWith("jcr")) {
-					continue tags;
-				}
-
-				// else it's an attribute, we retrieve it
-				tagMap.put(prop.getName(), prop.getString());
 			}
+			// PropertyIterator tagIt = curNode.getProperties();
+			// tags: while (tagIt.hasNext()) {
+			// Property prop = tagIt.nextProperty();
+			// //log.debug("Handling property named : " + prop.getName());
+			//
+			// // TODO Define a rule to generalize it
+			// // Specific case. mainly uuid
+			// if ("uuid".equals(prop.getName())
+			// || prop.getName().equals(getClassProperty())
+			// || prop.getName().startsWith("jcr")) {
+			// continue tags;
+			// }
+			//
+			// // else it's an attribute, we retrieve it
+			// tagMap.put(prop.getName(), prop.getString());
+			// }
 
 			se.setTags(tagMap);
 			elements.put(tsp, se);

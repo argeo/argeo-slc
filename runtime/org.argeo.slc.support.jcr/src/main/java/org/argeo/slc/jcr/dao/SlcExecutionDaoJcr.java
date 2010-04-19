@@ -45,8 +45,11 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(new Date());
 		// cal.setTime(slcExecution.getStartDate());
-		return "/slc/processes/" + JcrUtils.hostAsPath(slcExecution.getHost())
-				+ '/' + JcrUtils.dateAsPath(cal) + "process";
+		String host = slcExecution.getHost();
+		if (host == null)
+			host = "UNKOWNHOST";
+		return "/slc/processes/" + JcrUtils.hostAsPath(host) + '/'
+				+ JcrUtils.dateAsPath(cal) + "process";
 	}
 
 	public SlcExecution getSlcExecution(String uuid) {

@@ -56,23 +56,16 @@ public abstract class AbstractSlcJcrDao {
 	protected String basePath(TestResult testResult) {
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(new Date());
-		// cal.setTime(slcExecution.getStartDate());
-		return "/slc/testresult/" + JcrUtils.dateAsPath(cal) + "testresult";
+		return "/slc/testresults/" + JcrUtils.dateAsPath(cal) + "testresult";
 	}
 
 	protected String basePath(SlcAgentDescriptor slcAgentDescriptor) {
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(new Date());
-		// cal.setTime(slcExecution.getStartDate());
 		return "/slc/agents/"
-				+ JcrUtils.hostAsPath(slcAgentDescriptor.getHost() + "/agent");
+				+ JcrUtils.hostAsPath(slcAgentDescriptor.getHost()) + "/agent";
 	}
 
 	protected String basePath(TestRunDescriptor testRunDescriptor) {
-		Calendar cal = new GregorianCalendar();
-		cal.setTime(new Date());
-		// cal.setTime(slcExecution.getStartDate());
-		return "/slc/testruns/" + testRunDescriptor.getTestRunUuid()
+		return "/slc/testruns/" + testRunDescriptor.getSlcExecutionUuid()
 				+ "/testrun";
 	}
 

@@ -45,6 +45,9 @@
 		<property name="nodeMapperProvider" ref="nodeMapperProvider" />
 	</bean>
 
+	<bean id="osivInterceptor" class="org.argeo.slc.jcr.mvc.OpenSessionInViewJcrInterceptor">
+	</bean>
+
 	<!--  JCR node mappers -->
 	<bean id="bundleClassLoader"
 		class="org.springframework.osgi.util.BundleDelegatingClassLoader"
@@ -73,9 +76,8 @@
 	</bean>
 
 	<bean id="argeo.jcr.repository.inMemory" class="org.argeo.server.jackrabbit.JackrabbitContainer">
-		<property name="homeDirectory" value="${java.io.tmpdir}/jackrabbit-slc-unit" />
-		<property name="configuration"
-			value="classpath:/org/argeo/server/jackrabbit/repository-inMemory.xml" />
+		<property name="homeDirectory" value="${argeo.osgi.data.dir}/jackrabbit" />
+		<property name="configuration" value="osgibundle:/repository.xml" />
 	</bean>
 
 </beans>

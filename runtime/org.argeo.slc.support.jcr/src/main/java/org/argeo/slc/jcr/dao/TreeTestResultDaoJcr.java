@@ -208,14 +208,41 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 					// We add the tags
 					Map<String, String> tags = relatedElements.get(key)
 							.getTags();
+
 					for (String tag : tags.keySet()) {
-						String cleanTag = JcrUtils
-								.removeForbiddenCharacters(tag);
-						if (!cleanTag.equals(tag))
-							log.warn("Tag '" + tag + "' persisted as '"
-									+ cleanTag + "'");
-						curNode.setProperty(cleanTag, tags.get(tag));
+						NodeIterator tagIt = curNode.getNodes("tag");
+						Node tagNode = null;
+						while (tagIt.hasNext()) {
+							Node n = tagIt.nextNode();
+							if (n.getProperty("name").getString().equals(tag)) {
+								tagNode = n;
+							}
+						}
+
+						if (tagNode == null) {
+							tagNode = curNode.addNode("tag");
+							tagNode.setProperty("name", tag);
+						}
+
+						tagNode.setProperty("value", tags.get(tag));
+
+						// remove forbidden characters
+						// String cleanTag =
+						// JcrUtils.removeForbiddenCharacters(tag);
+						// if (!cleanTag.equals(tag))
+						// log.warn("Tag '" + tag + "' persisted as '" +
+						// cleanTag
+						// + "'");
+						// childNode.setProperty(cleanTag, tags.get(tag));
 					}
+					// for (String tag : tags.keySet()) {
+					// String cleanTag = JcrUtils
+					// .removeForbiddenCharacters(tag);
+					// if (!cleanTag.equals(tag))
+					// log.warn("Tag '" + tag + "' persisted as '"
+					// + cleanTag + "'");
+					// curNode.setProperty(cleanTag, tags.get(tag));
+					// }
 
 					// We set the class in order to be able to retrieve
 					curNode.setProperty("class", StructureElement.class

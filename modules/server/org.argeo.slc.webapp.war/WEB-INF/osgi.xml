@@ -20,8 +20,14 @@
 	<reference interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
 		id="slcAgentDescriptorDao" />
 
-	<reference interface="org.hibernate.SessionFactory" id="sessionFactory" />
+	<reference id="osivInterceptor"
+		interface="org.springframework.web.context.request.WebRequestInterceptor" />
+	<!--
 
+
+		<reference interface="org.hibernate.SessionFactory"
+		id="sessionFactory" />
+	-->
 	<!--
 		<reference interface="org.argeo.slc.execution.ExecutionModulesManager"
 		id="modulesManager" />
@@ -29,11 +35,12 @@
 	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 	<reference id="agentService" interface="org.argeo.slc.services.AgentService" />
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
+	<!--
 
-	<reference id="hibernateTransactionManager"
+		<reference id="hibernateTransactionManager"
 		interface="org.springframework.transaction.PlatformTransactionManager"
 		bean-name="hibernateTransactionManager" />
-
+	-->
 	<reference id="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
 
 	<reference id="eventListener" interface="org.argeo.slc.msg.event.SlcEventListener" />
@@ -49,8 +56,11 @@
 		cardinality="0..N" />
 
 	<!-- Security -->
-	<!-- <reference id="authenticationEntryPoint"
-		interface="org.springframework.security.ui.AuthenticationEntryPoint" />-->
+	<!--
+		<reference id="authenticationEntryPoint"
+		interface="org.springframework.security.ui.AuthenticationEntryPoint"
+		/>
+	-->
 	<reference id="_authenticationManager"
 		interface="org.springframework.security.AuthenticationManager" />
 
