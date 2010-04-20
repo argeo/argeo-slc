@@ -6,7 +6,6 @@ import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 import org.eclipse.pde.ui.launcher.BundlesTab;
 import org.eclipse.pde.ui.launcher.OSGiLauncherTabGroup;
 import org.eclipse.pde.ui.launcher.OSGiSettingsTab;
@@ -16,6 +15,25 @@ public class OsgiBootLauncherTabGroup extends OSGiLauncherTabGroup {
 
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
+//		JavaArgumentsTab javaArgumentsTab = new JavaArgumentsTab() {
+//			private boolean initializing = false;
+//
+//			@Override
+//			public void performApply(
+//					ILaunchConfigurationWorkingCopy configuration) {
+//				if (initializing)
+//					return;
+//				initializing = true;
+//				initializeFrom(configuration);
+//				initializing = false;
+//			}
+//
+//			@Override
+//			public boolean isValid(ILaunchConfiguration config) {
+//				return true;
+//			}
+//		};
+
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 				new OsgiBootMainTab(),
 				new BundlesTab() {
@@ -41,19 +59,7 @@ public class OsgiBootLauncherTabGroup extends OSGiLauncherTabGroup {
 						activating = true;
 					}
 				}, new OSGiSettingsTab(), new EnvironmentTab(),
-				new JavaArgumentsTab() {
-					private boolean initializing = false;
-
-					@Override
-					public void performApply(
-							ILaunchConfigurationWorkingCopy configuration) {
-						if (initializing)
-							return;
-						initializing = true;
-						initializeFrom(configuration);
-						initializing = false;
-					}
-				}, new TracingTab(), new CommonTab() };
+				new TracingTab(), new CommonTab() };
 		setTabs(tabs);
 	}
 
