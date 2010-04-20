@@ -48,13 +48,15 @@ public abstract class AbstractOsgiLaunchShortcut extends OSGiLaunchShortcut {
 			String defaultProgArgs = configuration.getAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
 					"");
-			configuration.setAttribute(
-					OsgiLauncherConstants.ATTR_DEFAULT_PROGRAM_ARGS,
-					defaultProgArgs);
+			// configuration.setAttribute(
+			// OsgiLauncherConstants.ATTR_DEFAULT_PROGRAM_ARGS,
+			// defaultProgArgs);
 
+			configuration.setAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
+					findWorkingDirectory());
 			OsgiLaunchHelper.updateLaunchConfiguration(configuration,
-					bundlesToStart, systemPropertiesToAppend,
-					findWorkingDirectory(), null);
+					bundlesToStart, systemPropertiesToAppend, null);
 		} catch (CoreException e) {
 			Shell shell = Display.getCurrent().getActiveShell();
 			ErrorDialog.openError(shell, "Error",

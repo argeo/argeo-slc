@@ -1,5 +1,10 @@
 package org.argeo.slc.ide.ui;
 
+import java.net.URL;
+
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -41,4 +46,16 @@ public class SlcIdeUiPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	public Image getImage(String relativeURL) {
+		ImageRegistry imageRegistry = getImageRegistry();
+		Image image = imageRegistry.get(relativeURL);
+		if (image == null) {
+			URL imageURL = getBundle().getEntry(relativeURL);
+			ImageDescriptor descriptor = ImageDescriptor
+					.createFromURL(imageURL);
+			image = descriptor.createImage();
+			imageRegistry.put(relativeURL, image);
+		}
+		return image;
+	}
 }
