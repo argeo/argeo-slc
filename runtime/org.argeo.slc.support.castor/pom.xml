@@ -42,8 +42,6 @@
 							org.argeo.slc.detached;resolution:=optional,
 							org.apache.xml.serialize;resolution:=optional,
 							org.apache.xerces.jaxp;resolution:=optional,
-							javax.naming;resolution:=optional,
-							javax.naming.directory;resolution:=optional,
 							javax.xml.transform;resolution:=optional,
 							javax.xml.transform.stream;resolution:=optional,
 							javax.xml.transform.dom;resolution:=optional,
