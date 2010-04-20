@@ -1,10 +1,6 @@
 package org.argeo.slc.ide.ui.launch.osgi;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -12,6 +8,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -26,10 +23,8 @@ import org.eclipse.swt.widgets.Shell;
 
 public class OsgiBootLaunchShortcut extends OSGiLaunchShortcut implements
 		OsgiLauncherConstants {
-	protected StringBuffer name = null;
-	protected IFile propertiesFile = null;
-	protected List<String> bundlesToStart = new ArrayList<String>();
-	protected Map<String, String> systemPropertiesToAppend = new HashMap<String, String>();
+	private StringBuffer name = null;
+	private IFile propertiesFile = null;
 
 	@Override
 	protected String getLaunchConfigurationTypeName() {
@@ -50,23 +45,7 @@ public class OsgiBootLaunchShortcut extends OSGiLaunchShortcut implements
 
 		name = new StringBuffer(extractName(propertiesFile));
 
-		// Properties properties = null;
-		// try {
-		// properties = OsgiLaunchHelper.readProperties(propertiesFile);
-		// } catch (CoreException e) {
-		// ErrorDialog.openError(Display.getCurrent().getActiveShell(),
-		// "Error", "Cannot execute launch shortcut", e.getStatus());
-		// return;
-		// }
-		//
-		// OsgiLaunchHelper.interpretProperties(properties, bundlesToStart,
-		// systemPropertiesToAppend);
 		super.launch(selection, mode);
-		// name = null;
-		// bundlesToStart.clear();
-		// systemPropertiesToAppend.clear();
-		//
-		// propertiesFile = null;
 	}
 
 	@Override
@@ -131,9 +110,11 @@ public class OsgiBootLaunchShortcut extends OSGiLaunchShortcut implements
 
 	protected String getName(ILaunchConfigurationType type) {
 		if (name != null && !name.toString().trim().equals(""))
-			return name.toString();
+			return DebugPlugin.getDefault().getLaunchManager()
+					.generateUniqueLaunchConfigurationNameFrom(name.toString());
 		else
-			return "SLC";
+			return DebugPlugin.getDefault().getLaunchManager()
+					.generateUniqueLaunchConfigurationNameFrom("SLC");
 	}
 
 	@Override

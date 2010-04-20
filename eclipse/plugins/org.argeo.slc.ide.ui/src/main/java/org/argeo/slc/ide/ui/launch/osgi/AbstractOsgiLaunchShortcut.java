@@ -45,12 +45,12 @@ public abstract class AbstractOsgiLaunchShortcut extends OSGiLaunchShortcut {
 									.getAttribute(
 											IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
 											""));
-			String defaultProgArgs = configuration.getAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
-					"");
-			// configuration.setAttribute(
-			// OsgiLauncherConstants.ATTR_DEFAULT_PROGRAM_ARGS,
-			// defaultProgArgs);
+//			String defaultProgArgs = configuration.getAttribute(
+//					IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
+//					"");
+//			configuration.setAttribute(
+//					OsgiLauncherConstants.ATTR_DEFAULT_PROGRAM_ARGS,
+//					defaultProgArgs);
 
 			configuration.setAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,

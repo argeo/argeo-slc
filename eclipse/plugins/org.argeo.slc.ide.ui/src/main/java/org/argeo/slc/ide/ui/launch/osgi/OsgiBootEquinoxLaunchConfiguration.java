@@ -19,15 +19,10 @@ public class OsgiBootEquinoxLaunchConfiguration extends
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		super.launch(configuration, mode, launch, monitor);
-
-		// TODO: add launch listener to be notified when is terminated and
-		// refresh resources
-
-		IFile propertiesFile = (IFile) configuration.getMappedResources()[0];
+		// Refresh resources before launching
+		final IFile propertiesFile = (IFile) configuration.getMappedResources()[0];
 		propertiesFile.getParent().refreshLocal(IResource.DEPTH_INFINITE,
 				monitor);
-		// propertiesFile.getProject().refreshLocal(IResource.DEPTH_INFINITE,
-		// monitor);
 	}
 
 	@Override

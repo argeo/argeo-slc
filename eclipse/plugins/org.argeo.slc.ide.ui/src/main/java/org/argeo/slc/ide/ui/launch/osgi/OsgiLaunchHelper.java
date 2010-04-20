@@ -12,6 +12,7 @@ import java.util.StringTokenizer;
 
 import org.argeo.slc.ide.ui.SlcIdeUiPlugin;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -26,7 +27,6 @@ import org.eclipse.jdt.launching.IVMInstallType;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.pde.ui.launcher.IPDELauncherConstants;
-import org.eclipse.pde.ui.launcher.OSGiLaunchConfigurationInitializer;
 import org.eclipse.swt.widgets.Display;
 
 public class OsgiLaunchHelper implements OsgiLauncherConstants {
@@ -37,6 +37,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			ILaunchConfigurationWorkingCopy configuration) {
 		try {
 			IFile propertiesFile = (IFile) configuration.getMappedResources()[0];
+			propertiesFile.refreshLocal(IResource.DEPTH_ONE, null);
 
 			Properties properties = OsgiLaunchHelper
 					.readProperties(propertiesFile);
@@ -45,23 +46,6 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			Map<String, String> systemPropertiesToAppend = new HashMap<String, String>();
 			OsgiLaunchHelper.interpretProperties(properties, bundlesToStart,
 					systemPropertiesToAppend);
-
-			// Reinitialize using standard OSGi launch shortcut
-			// Kind of a hack but it lacks extension capabilities and it is
-			// still
-			// cleaner than forking the code (which would imply a lot of fork
-			// indeed
-			// because of all the internal classes)
-			// new OSGiLaunchShortcut() {
-			// @Override
-			// public void initializeConfiguration(
-			// ILaunchConfigurationWorkingCopy configuration) {
-			// // TODO Auto-generated method stub
-			// super.initializeConfiguration(configuration);
-			// }
-			// }.initializeConfiguration(configuration);
-
-			// initializeConfiguration(configuration);
 
 			File workingDir = getWorkingDirectory(configuration);
 			File dataDir = new File(workingDir, "data");
@@ -78,7 +62,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		}
 	}
 
-	public static void updateLaunchConfiguration(
+	static void updateLaunchConfiguration(
 			ILaunchConfigurationWorkingCopy configuration,
 			List<String> bundlesToStart,
 			Map<String, String> systemPropertiesToAppend, String dataDir)
@@ -97,12 +81,16 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		// Update other default information
 		configuration.setAttribute(IPDELauncherConstants.DEFAULT_AUTO_START,
 				false);
+
+		// VM arguments (system properties)
 		String defaultVmArgs = configuration.getAttribute(
 				OsgiLauncherConstants.ATTR_DEFAULT_VM_ARGS, "");
 		StringBuffer vmArgs = new StringBuffer(defaultVmArgs);
-		vmArgs.append(" "
-				+ configuration.getAttribute(ATTR_ADDITIONAL_VM_ARGS, ""));
 
+		// Data dir system property
+		if (dataDir != null)
+			addSysProperty(vmArgs, OsgiLauncherConstants.ARGEO_OSGI_DATA_DIR,
+					dataDir);
 		// Add locations of JVMs
 		if (configuration.getAttribute(ATTR_ADD_JVM_PATHS, false))
 			addVms(vmArgs);
@@ -111,27 +99,25 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		for (String key : systemPropertiesToAppend.keySet())
 			addSysProperty(vmArgs, key, systemPropertiesToAppend.get(key));
 
-		if (dataDir != null)
-			addSysProperty(vmArgs, OsgiLauncherConstants.ARGEO_OSGI_DATA_DIR,
-					dataDir);
+		vmArgs.append(" ").append(
+				configuration.getAttribute(ATTR_ADDITIONAL_VM_ARGS, ""));
 
 		configuration.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs
 						.toString());
 
 		// Program arguments
-		StringBuffer progArgs = new StringBuffer(configuration.getAttribute(
-				OsgiLauncherConstants.ATTR_ADDITIONAL_PROGRAM_ARGS, ""));
+		StringBuffer progArgs = new StringBuffer("");
 		if (dataDir != null) {
-			progArgs.append(" -data ");
+			progArgs.append("-data ");
 			progArgs.append(surroundSpaces(dataDir));
 		}
+		String additionalProgramArgs = configuration.getAttribute(
+				OsgiLauncherConstants.ATTR_ADDITIONAL_PROGRAM_ARGS, "");
+		progArgs.append(' ').append(additionalProgramArgs);
 		configuration.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
 				progArgs.toString());
-
-		// String dir = findWorkingDirectory();
-
 	}
 
 	protected static void addVms(StringBuffer vmArgs) {
@@ -172,7 +158,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		surroundSpaces(value);
 		String str = "-D" + key + "=" + value;
 		// surroundSpaces(str);
-		vmArgs.append(" " + str);
+		vmArgs.append(' ').append(str);
 	}
 
 	protected static String surroundSpaces(String str) {
@@ -297,9 +283,9 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		return mgr.performStringSubstitution(text);
 	}
 
-	static void initializeConfiguration(
-			ILaunchConfigurationWorkingCopy configuration) {
-		new OSGiLaunchConfigurationInitializer().initialize(configuration);
-	}
+	// static void initializeConfiguration(
+	// ILaunchConfigurationWorkingCopy configuration) {
+	// new OSGiLaunchConfigurationInitializer().initialize(configuration);
+	// }
 
 }

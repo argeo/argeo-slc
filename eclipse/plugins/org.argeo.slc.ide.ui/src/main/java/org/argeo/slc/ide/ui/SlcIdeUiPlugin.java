@@ -2,6 +2,13 @@ package org.argeo.slc.ide.ui;
 
 import java.net.URL;
 
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.DebugEvent;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.IDebugEventSetListener;
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
@@ -29,6 +36,8 @@ public class SlcIdeUiPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		DebugPlugin.getDefault()
+				.addDebugEventListener(new DebugEventListener());
 	}
 
 	@Override
@@ -58,4 +67,40 @@ public class SlcIdeUiPlugin extends AbstractUIPlugin {
 		}
 		return image;
 	}
+
+	protected static class DebugEventListener implements IDebugEventSetListener {
+		public void handleDebugEvents(DebugEvent[] events) {
+			for (int i = 0; i < events.length; i++) {
+				DebugEvent event = events[i];
+				Object source = event.getSource();
+				if (source instanceof IProcess
+						&& event.getKind() == DebugEvent.TERMINATE) {
+					IProcess process = (IProcess) source;
+					ILaunch launch = process.getLaunch();
+					if (launch != null) {
+						refreshOsgiBootLaunch(launch);
+					}
+				}
+			}
+		}
+
+		protected void refreshOsgiBootLaunch(ILaunch launch) {
+			try {
+				IResource[] resources = launch.getLaunchConfiguration()
+						.getMappedResources();
+				if (resources.length > 0) {
+					IResource propertiesFile = resources[0];
+					propertiesFile.getParent().refreshLocal(
+							IResource.DEPTH_INFINITE, null);
+//					System.out.println("Refreshed "
+//							+ propertiesFile.getParent());
+				}
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+
 }
