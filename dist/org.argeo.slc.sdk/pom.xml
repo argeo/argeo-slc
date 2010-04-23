@@ -109,7 +109,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin><!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -125,7 +125,7 @@
 				</executions>
 				<configuration>
 					<executable>${argeo.p2.cmd}</executable>
-					<!-- optional -->
+					 optional 
 					<workingDirectory>/tmp</workingDirectory>
 					<arguments>
 						<argument>-noSplash</argument>
@@ -144,12 +144,58 @@
 					</arguments>
 				</configuration>
 			</plugin>
+			--><plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>p2-copyToRepo</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<mkdir dir="${project.build.directory}/repobase" />
+								<copy todir="${project.build.directory}/repobase">
+									<fileset dir="${project.build.directory}">
+										<include name="lib/*.jar" />
+										<include name="libsrc/*.jar" />
+									</fileset>
+								</copy>
+								<exec executable="${argeo.p2.cmd}">
+									<arg value="-noSplash" />
+									<arg value="-application" />
+									<arg
+										value="org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
+									<arg value="-metadataRepository" />
+									<arg value="file:${argeo.p2.repository}" />
+									<arg value="-artifactRepository" />
+									<arg value="file:${argeo.p2.repository}" />
+									<arg value="-bundles" />
+									<arg value="${project.build.directory}/repobase" />
+									<arg value="-features" />
+									<arg value="${project.build.directory}/repobase" />
+									<arg value="-compress" />
+									<arg value="-publishArtifacts" />
+								</exec>
+
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.sdk</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.dep</groupId>
+			<artifactId>org.argeo.slc.dep.sdk.sources</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>

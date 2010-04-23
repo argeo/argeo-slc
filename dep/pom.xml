@@ -16,6 +16,7 @@
 		<module>org.argeo.slc.dep.agent</module>
 		<module>org.argeo.slc.dep.detached</module>
 		<module>org.argeo.slc.dep.sdk</module>
+		<module>org.argeo.slc.dep.sdk.sources</module>
 	</modules>
 	<build>
 		<resources>
@@ -74,7 +75,7 @@
 						<phase>generate-resources</phase>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin><!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -97,6 +98,6 @@
 					</execution>
 				</executions>
 			</plugin>
-		</plugins>
+		--></plugins>
 	</build>
 </project>
