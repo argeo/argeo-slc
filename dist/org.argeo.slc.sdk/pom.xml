@@ -109,42 +109,30 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin><!--
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.1</version>
-				<executions>
-					<execution>
-						<id>create-repository</id>
-						<phase>deploy</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<executable>${argeo.p2.cmd}</executable>
-					 optional 
-					<workingDirectory>/tmp</workingDirectory>
-					<arguments>
-						<argument>-noSplash</argument>
-						<argument>-application</argument>
-						<argument>org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher</argument>
-						<argument>-metadataRepository</argument>
-						<argument>file:${argeo.p2.repository}</argument>
-						<argument>-artifactRepository</argument>
-						<argument>file:${argeo.p2.repository}</argument>
-						<argument>-bundles</argument>
-						<argument>${project.build.directory}</argument>
-						<argument>-features</argument>
-						<argument>${project.build.directory}</argument>
-						<argument>-compress</argument>
-						<argument>-publishArtifacts</argument>
-					</arguments>
-				</configuration>
 			</plugin>
-			--><plugin>
+			<!--
+				<plugin> <groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId> <version>1.1</version>
+				<executions> <execution> <id>create-repository</id>
+				<phase>deploy</phase> <goals> <goal>exec</goal> </goals>
+				</execution> </executions> <configuration>
+				<executable>${argeo.p2.cmd}</executable> optional
+				<workingDirectory>/tmp</workingDirectory> <arguments>
+				<argument>-noSplash</argument> <argument>-application</argument>
+				<argument>org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher</argument>
+				<argument>-metadataRepository</argument>
+				<argument>file:${argeo.p2.repository}</argument>
+				<argument>-artifactRepository</argument>
+				<argument>file:${argeo.p2.repository}</argument>
+				<argument>-bundles</argument>
+				<argument>${project.build.directory}</argument>
+				<argument>-features</argument>
+				<argument>${project.build.directory}</argument>
+				<argument>-compress</argument>
+				<argument>-publishArtifacts</argument> </arguments> </configuration>
+				</plugin>
+			-->
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
@@ -158,9 +146,11 @@
 							<tasks>
 								<mkdir dir="${project.build.directory}/repobase" />
 								<copy todir="${project.build.directory}/repobase">
-									<fileset dir="${project.build.directory}">
-										<include name="lib/*.jar" />
-										<include name="libsrc/*.jar" />
+									<fileset dir="${project.build.directory}/lib">
+										<include name="*.jar" />
+									</fileset>
+									<fileset dir="${project.build.directory}/libsrc">
+										<include name="*.jar" />
 									</fileset>
 								</copy>
 								<exec executable="${argeo.p2.cmd}">
@@ -404,7 +394,7 @@
 						<executions>
 							<execution>
 								<id>rpm-copyToRepo</id>
-								<phase>install</phase>
+								<phase>deploy</phase>
 								<goals>
 									<goal>run</goal>
 								</goals>
