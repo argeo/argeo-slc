@@ -15,6 +15,13 @@ public class LocalFilesDeployment implements Runnable {
 	private String targetBase = "";
 	private ResourceSet resourceSet;
 
+	public LocalFilesDeployment() {
+	}
+
+	public LocalFilesDeployment(ResourceSet resourceSet) {
+		this.resourceSet = resourceSet;
+	}
+
 	public void run() {
 		Map<String, Resource> resources = resourceSet.listResources();
 		for (String relPath : resources.keySet()) {

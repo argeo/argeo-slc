@@ -46,13 +46,18 @@ public class OsgiExecutionResources extends FileExecutionResources implements
 			// TODO: Equinox specific?
 			String relPath = location.substring("initial@reference:file:"
 					.length());
-			if (relPath.startsWith("../"))// relative to the framework jar
-				relPath = relPath.substring("../".length());
-			String framework = System.getProperty("osgi.framework").substring(
-					"file:".length());
-			int sepIndex = framework.lastIndexOf(File.separatorChar);
-			framework = framework.substring(0, sepIndex);
-			base = framework + '/' + relPath;
+//			if (relPath.startsWith("../"))// relative to the framework jar
+//				relPath = relPath.substring("../".length());
+//			String framework = System.getProperty("osgi.framework").substring(
+//					"file:".length());
+//			log.debug(framework);
+			String installArea = System.getProperty("osgi.install.area")
+					.substring("file:".length());
+//			log.debug(installArea);
+			base = installArea + '/' + relPath;
+			// int sepIndex = framework.lastIndexOf(File.separatorChar);
+			// framework = framework.substring(0, sepIndex);
+			// base = framework + '/' + relPath;
 		} else {
 			return null;
 		}
@@ -64,6 +69,12 @@ public class OsgiExecutionResources extends FileExecutionResources implements
 			throw new SlcException("Cannot determine canonical path for "
 					+ path, e);
 		}
+
+		if (!file.exists())
+			throw new SlcException(file
+					+ " was retrieved in bundle located at '" + location
+					+ "' for resource " + resource + " but it does not exist");
+
 		if (log.isTraceEnabled())
 			log.debug("OSGi local resource: " + file + " from " + resource);
 		return file;

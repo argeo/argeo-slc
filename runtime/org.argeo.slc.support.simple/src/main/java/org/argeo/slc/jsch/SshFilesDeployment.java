@@ -26,6 +26,14 @@ public class SshFilesDeployment extends AbstractJschTask implements Runnable {
 	private String checksum = "MD5";
 	private int remoteChecksumsPerCall = 20;
 
+	public SshFilesDeployment() {
+	}
+
+	public SshFilesDeployment(SshTarget sshTarget, ResourceSet resourceSet) {
+		setSshTarget(sshTarget);
+		this.resourceSet = resourceSet;
+	}
+
 	@Override
 	void run(Session session) {
 		JschMultiTasks multiTasks = new JschMultiTasks();

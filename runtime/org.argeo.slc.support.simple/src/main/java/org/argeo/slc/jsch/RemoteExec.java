@@ -58,6 +58,14 @@ public class RemoteExec extends AbstractJschTask {
 	private Boolean logEvenIfStdOutLines = false;
 	private Boolean quiet = false;
 
+	public RemoteExec() {
+	}
+
+	public RemoteExec(SshTarget sshTarget, String cmd) {
+		setSshTarget(sshTarget);
+		setCommand(cmd);
+	}
+
 	public void run(Session session) {
 		List<String> commandsToUse = new ArrayList<String>(commands);
 		String commandToUse = command;

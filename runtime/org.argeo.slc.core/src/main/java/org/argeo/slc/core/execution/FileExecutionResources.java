@@ -83,6 +83,9 @@ public class FileExecutionResources implements ExecutionResources {
 		File file = fileFromResource(resource);
 		if (file != null)
 			try {
+				if (log.isTraceEnabled())
+					log.debug("Directly interpret " + resource + " as OS file "
+							+ file);
 				return file.getCanonicalPath();
 			} catch (IOException e1) {
 				// silent

@@ -23,4 +23,8 @@ public class MultiResourceSet implements ResourceSet {
 		this.resourceSets = resourceSets;
 	}
 
+	public List<ResourceSet> getResourceSets() {
+		return resourceSets;
+	}
+
 }
