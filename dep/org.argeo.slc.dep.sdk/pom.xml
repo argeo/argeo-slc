@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.dep</groupId>
 	<artifactId>org.argeo.slc.dep.sdk</artifactId>
 	<packaging>jar</packaging>
-	<name>SLC Dependencies SDK</name>
+	<name>SLC SDK Dependencies</name>
 	<dependencies>
 		<!--
 			HACK because of dependencies pb with Maven: version 2.4.0 is required

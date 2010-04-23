@@ -10,7 +10,7 @@
 	<groupId>org.argeo.slc.dep</groupId>
 	<artifactId>org.argeo.slc.dep.sdk.sources</artifactId>
 	<packaging>jar</packaging>
-	<name>SLC Dependencies SDK Sources</name>
+	<name>SLC SDK Sources</name>
 	<build>
 		<plugins>
 			<plugin>

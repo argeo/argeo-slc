@@ -9,7 +9,7 @@
 	<groupId>org.argeo.slc.dep</groupId>
 	<artifactId>org.argeo.slc.dep.detached</artifactId>
 	<packaging>jar</packaging>
-	<name>SLC Dependencies Detached</name>
+	<name>SLC Detached Dependencies</name>
 	<dependencies>
 
 		<dependency>
