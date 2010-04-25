@@ -58,15 +58,13 @@
 		</AccessManager>
 
 		<LoginModule
-			class="org.apache.jackrabbit.core.security.simple.SimpleLoginModule">
+			class="org.springframework.security.providers.jaas.SecurityContextLoginModule">
 			<!--
 				anonymous user name ('anonymous' is the default value)
-			-->
 			<param name="anonymousId" value="anonymous" />
-			<!--
 				administrator user id (default value if param is missing is 'admin')
-			-->
 			<param name="adminId" value="admin" />
+			-->
 		</LoginModule>
 	</Security>
 

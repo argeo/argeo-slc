@@ -144,10 +144,10 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 						tmpNode = tmpNode.addNode(pathes[i]);
 				}
 				childNode = tmpNode;
-				log.debug("Node created " + childNode.getPath());
+				//log.debug("Node created " + childNode.getPath());
 			} else {
 				childNode = node.getNode(relPath);
-				log.debug("Node already existing " + childNode.getPath());
+				//log.debug("Node already existing " + childNode.getPath());
 			}
 
 			List<TestResultPart> list = resultParts.get(key).getParts();
@@ -314,7 +314,7 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 			se.setTags(tagMap);
 			elements.put(tsp, se);
 		}
-		log.debug("We added " + elements.size() + " elements");
+		//log.debug("We added " + elements.size() + " elements");
 
 		ttr.setElements(elements);
 

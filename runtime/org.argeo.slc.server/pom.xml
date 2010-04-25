@@ -35,6 +35,13 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- Commons -->
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.core</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>

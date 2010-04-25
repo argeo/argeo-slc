@@ -14,8 +14,30 @@
 	</bean>
 
 	<security:http entry-point-ref="authenticationEntryPoint">
-		<security:intercept-url pattern="**"
-			access="ROLE_USER,ROLE_ADMIN" />
-		<!-- <security:http-basic /> -->
+		<security:intercept-url pattern="/*.service"
+			access="ROLE_USER,ROLE_ADMIN,ROLE_ANONYMOUS" />
+		<security:anonymous username="anonymous"
+			granted-authority="ROLE_ANONYMOUS" />
+		<security:remember-me key="argeo" services-ref="rememberMeServices" />
 	</security:http>
+
+	<bean id="rememberMeServices" class="org.argeo.security.mvc.ArgeoRememberMeServices">
+		<property name="alwaysRemember" value="true" />
+		<property name="userDetailsService" ref="userDetailsService" />
+		<property name="key" value="${argeo.security.systemKey}" />
+	</bean>
+
+	<!--
+
+
+		<bean id="authenticationProcessingFilter"
+		class="org.springframework.security.ui.webapp.AuthenticationProcessingFilter">
+		<security:custom-filter position="AUTHENTICATION_PROCESSING_FILTER" />
+		<property name="authenticationManager" ref="_authenticationManager" />
+		<property name="authenticationFailureUrl" value="/getCredentials.ria"
+		/> <property name="defaultTargetUrl" value="/getCredentials.ria" />
+		<property name="filterProcessesUrl" value="/login.ria" /> <property
+		name="usernameParameter" value="username" /> <property
+		name="passwordParameter" value="password" /> </bean>
+	-->
 </beans>

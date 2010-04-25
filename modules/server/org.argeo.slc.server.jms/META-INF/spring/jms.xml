@@ -90,6 +90,11 @@
 		<!--
 			<property name="transactionManager" ref="jmsTransactionManager" />
 		-->
+		<property name="taskExecutor">
+			<bean class="org.argeo.security.core.SystemAuthenticatedTaskExecutor">
+				<property name="securityService" ref="securityService" />
+			</bean>
+		</property>
 	</bean>
 
 	<bean id="listenerAdapterCastor"

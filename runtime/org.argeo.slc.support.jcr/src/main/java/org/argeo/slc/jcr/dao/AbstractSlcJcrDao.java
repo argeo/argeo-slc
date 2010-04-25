@@ -6,13 +6,12 @@ import java.util.GregorianCalendar;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Workspace;
-import javax.jcr.query.QueryManager;
+import javax.jcr.query.Query;
 
+import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.NodeMapper;
 import org.argeo.jcr.NodeMapperProvider;
-import org.argeo.slc.SlcException;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestRunDescriptor;
@@ -21,8 +20,8 @@ public abstract class AbstractSlcJcrDao {
 
 	private Session session;
 
-	protected Workspace workspace;
-	protected QueryManager queryManager;
+	// protected Workspace workspace;
+	// protected QueryManager queryManager;
 	protected NodeMapper nodeMapper;
 
 	// We inject the nodeMapperProvider that define a default node mapper as an
@@ -30,13 +29,7 @@ public abstract class AbstractSlcJcrDao {
 	private NodeMapperProvider nodeMapperProvider;
 
 	public void init() {
-		try {
-			workspace = getSession().getWorkspace();
-			queryManager = workspace.getQueryManager();
-			nodeMapper = getNodeMapperProvider().findNodeMapper(null);
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot initialize DAO", e);
-		}
+		nodeMapper = getNodeMapperProvider().findNodeMapper(null);
 	}
 
 	public void setSession(Session session) {
@@ -73,4 +66,12 @@ public abstract class AbstractSlcJcrDao {
 		return this.nodeMapperProvider;
 	}
 
+	protected Query createQuery(String query, String type) {
+		try {
+			return getSession().getWorkspace().getQueryManager().createQuery(
+					query, type);
+		} catch (RepositoryException e) {
+			throw new ArgeoException("Cannot create query " + query, e);
+		}
+	}
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -57,18 +58,12 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 	}
 
 	public TreeTestResult getTestResult(String uuid) {
-
-		try {
-			String queryString = "//testresult[@uuid='" + uuid + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
-			Node node = JcrUtils.querySingleNode(query);
-			if (node == null)
-				return null;
-			return (TreeTestResult) nodeMapper.load(node);
-
-		} catch (Exception e) {
-			throw new SlcException("Cannot load TestResult with ID " + uuid, e);
-		}
+		String queryString = "//testresult[@uuid='" + uuid + "']";
+		Query query = createQuery(queryString, Query.XPATH);
+		Node node = JcrUtils.querySingleNode(query);
+		if (node == null)
+			return null;
+		return (TreeTestResult) nodeMapper.load(node);
 
 	}
 
@@ -76,7 +71,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 		try {
 			// TODO: optimize query
 			String queryString = "//testresult";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			QueryResult queryResult = query.execute();
 			NodeIterator nodeIterator = queryResult.getNodes();
 			if (nodeIterator.hasNext()) {
@@ -94,7 +89,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 			} else
 				return null;
 
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot load list of TestResult ", e);
 		}
 	}
@@ -103,7 +98,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 		try {
 			// TODO: optimize query
 			String queryString = "//testresult" + path.getAsUniqueString();
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			QueryResult queryResult = query.execute();
 			NodeIterator nodeIterator = queryResult.getNodes();
 			if (nodeIterator.hasNext()) {
@@ -116,7 +111,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 			} else
 				return null;
 
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot load list of TestResult ", e);
 		}
 	}
@@ -126,7 +121,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 		try {
 			// TODO: optimize query
 			String queryString = "//testresult[@uuid='" + testResultId + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			Node resNode = JcrUtils.querySingleNode(query);
 			Calendar cal = new GregorianCalendar();
 			cal.setTime(closeDate);
@@ -136,7 +131,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 				log.debug("Cannot close because a node for test result # "
 						+ testResultId + " was not found");
 			getSession().save();
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot close TestResult " + testResultId, e);
 		}
 
@@ -158,7 +153,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 		try {
 			// TODO: optimize query
 			String queryString = "//testresult[@uuid='" + testResultId + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			Node resNode = JcrUtils.querySingleNode(query);
 
 			Node curNode;
@@ -251,7 +246,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 			}
 			getSession().save();
 
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot add resultPart", e);
 		}
 	}
@@ -267,11 +262,11 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 
 			// Check if attachment already exists
 			String queryString = "//testresult[@uuid='" + testResultId + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			Node resNode = JcrUtils.querySingleNode(query);
 
 			queryString = ".//*[@uuid='" + attachment.getUuid() + "']";
-			query = queryManager.createQuery(queryString, Query.XPATH);
+			query = createQuery(queryString, Query.XPATH);
 			Node atNode = JcrUtils.querySingleNode(query);
 
 			if (atNode != null) {
@@ -291,7 +286,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 				getSession().save();
 			}
 
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot Add Attachment to " + testResultId,
 					e);
 		}
@@ -308,7 +303,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 				return null;
 			return (TreeTestResult) nodeMapper.load(node);
 
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot load TestResult with ID "
 					+ testResultId + " For Session " + session, e);
 		}
@@ -318,14 +313,14 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 			final Map<String, String> attributes) {
 		try {
 			String queryString = "//testresult[@uuid='" + testResultId + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			Node node = JcrUtils.querySingleNode(query);
 
 			for (String key : attributes.keySet()) {
 				node.setProperty(key, attributes.get(key));
 			}
 			getSession().save();
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException(
 					"Cannot update Attributes on TestResult with ID "
 							+ testResultId, e);

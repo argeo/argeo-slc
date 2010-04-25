@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
@@ -35,7 +36,7 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements
 		try {
 			nodeMapper.save(getSession(), basePath(slcExecution), slcExecution);
 			getSession().save();
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot create slcExecution" + slcExecution,
 					e);
 		}
@@ -53,17 +54,13 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements
 	}
 
 	public SlcExecution getSlcExecution(String uuid) {
-		try {
-			// TODO: optimize query
-			String queryString = "//process[@uuid='" + uuid + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
-			Node node = JcrUtils.querySingleNode(query);
-			if (node == null)
-				return null;
-			return (SlcExecution) nodeMapper.load(node);
-		} catch (Exception e) {
-			throw new SlcException("Cannot load SLC execution " + uuid, e);
-		}
+		// TODO: optimize query
+		String queryString = "//process[@uuid='" + uuid + "']";
+		Query query = createQuery(queryString, Query.XPATH);
+		Node node = JcrUtils.querySingleNode(query);
+		if (node == null)
+			return null;
+		return (SlcExecution) nodeMapper.load(node);
 	}
 
 	public List<SlcExecution> listSlcExecutions() {
@@ -71,7 +68,7 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements
 		// TODO: optimize query
 		String queryString = "//process";
 		try {
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			QueryResult qr = query.execute();
 			NodeIterator iterator = qr.getNodes();
 			while (iterator.hasNext()) {
@@ -81,7 +78,7 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements
 				res.add(slcExecution);
 			}
 			return res;
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot list SLC executions", e);
 		}
 	}
@@ -95,11 +92,11 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements
 		String queryString = "//process[@uuid='" + slcExecution.getUuid()
 				+ "']";
 		try {
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			Node node = JcrUtils.querySingleNode(query);
 			nodeMapper.update(node, slcExecution);
 			getSession().save();
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot update " + slcExecution, e);
 		}
 	}

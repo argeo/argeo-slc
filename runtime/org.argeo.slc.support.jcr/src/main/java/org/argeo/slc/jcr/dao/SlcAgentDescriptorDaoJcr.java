@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 
 import org.apache.commons.logging.Log;
@@ -24,30 +25,26 @@ public class SlcAgentDescriptorDaoJcr extends AbstractSlcJcrDao implements
 			nodeMapper.save(getSession(), basePath(slcAgentDescriptor),
 					slcAgentDescriptor);
 			getSession().save();
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot import " + slcAgentDescriptor, e);
 		}
 	}
 
 	public SlcAgentDescriptor getAgentDescriptor(String agentId) {
-		try {
-			// TODO: optimize query
-			String queryString = "//agent[@uuid='" + agentId + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
-			Node node = JcrUtils.querySingleNode(query);
-			if (node == null)
-				return null;
-			return (SlcAgentDescriptor) nodeMapper.load(node);
-		} catch (Exception e) {
-			throw new SlcException("Cannot load Agent Descriptor" + agentId, e);
-		}
+		// TODO: optimize query
+		String queryString = "//agent[@uuid='" + agentId + "']";
+		Query query = createQuery(queryString, Query.XPATH);
+		Node node = JcrUtils.querySingleNode(query);
+		if (node == null)
+			return null;
+		return (SlcAgentDescriptor) nodeMapper.load(node);
 	}
 
 	public void delete(SlcAgentDescriptor slcAgentDescriptor) {
 		try {
 			String queryString = "//agent[@uuid='"
 					+ slcAgentDescriptor.getUuid() + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			Node node = JcrUtils.querySingleNode(query);
 			if (node != null) {
 				node.remove();
@@ -55,7 +52,7 @@ public class SlcAgentDescriptorDaoJcr extends AbstractSlcJcrDao implements
 			} else
 				log.warn("No node found for agent descriptor: "
 						+ slcAgentDescriptor);
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot delete " + slcAgentDescriptor, e);
 		}
 
@@ -65,11 +62,11 @@ public class SlcAgentDescriptorDaoJcr extends AbstractSlcJcrDao implements
 		try {
 			// TODO: optimize query
 			String queryString = "//agent[@uuid='" + agentId + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 			Node node = JcrUtils.querySingleNode(query);
 			if (node != null)
 				node.remove();
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot find AgentDescriptor" + agentId, e);
 		}
 
@@ -78,7 +75,7 @@ public class SlcAgentDescriptorDaoJcr extends AbstractSlcJcrDao implements
 	public List<SlcAgentDescriptor> listSlcAgentDescriptors() {
 		try {
 			String queryString = "//agent";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
+			Query query = createQuery(queryString, Query.XPATH);
 
 			List<SlcAgentDescriptor> listSad = new ArrayList<SlcAgentDescriptor>();
 

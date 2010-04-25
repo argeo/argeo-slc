@@ -8,10 +8,8 @@
 
 	<service ref="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 	<service ref="agentService" interface="org.argeo.slc.services.AgentService" />
-	<service ref="slcExecutionService"
-		interface="org.argeo.slc.services.SlcExecutionService" />
-	<service ref="attachmentsStorage"
-		interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
+	<service ref="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
+	<service ref="attachmentsStorage" interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
 
 	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
 		id="testResultDao" />
@@ -34,5 +32,7 @@
 
 	<list id="eventPublishers" interface="org.argeo.slc.msg.event.SlcEventPublisher"
 		cardinality="0..N" />
+
+	<reference id="securityService" interface="org.argeo.security.ArgeoSecurityService" />
 
 </beans:beans>

@@ -1,6 +1,7 @@
 package org.argeo.slc.jcr.dao;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 
 import org.argeo.jcr.JcrUtils;
@@ -12,17 +13,13 @@ public class TestRunDescriptorDaoJcr extends AbstractSlcJcrDao implements
 		TestRunDescriptorDao {
 
 	public TestRunDescriptor getTestRunDescriptor(String id) {
-		try {
-			// TODO: optimize query
-			String queryString = "//testrun[@testRunUuid='" + id + "']";
-			Query query = queryManager.createQuery(queryString, Query.XPATH);
-			Node node = JcrUtils.querySingleNode(query);
-			if (node == null)
-				return null;
-			return (TestRunDescriptor) nodeMapper.load(node);
-		} catch (Exception e) {
-			throw new SlcException("Cannot load test run descriptor" + id, e);
-		}
+		// TODO: optimize query
+		String queryString = "//testrun[@testRunUuid='" + id + "']";
+		Query query = createQuery(queryString, Query.XPATH);
+		Node node = JcrUtils.querySingleNode(query);
+		if (node == null)
+			return null;
+		return (TestRunDescriptor) nodeMapper.load(node);
 	}
 
 	public void saveOrUpdate(TestRunDescriptor testRunDescriptor) {
@@ -30,7 +27,7 @@ public class TestRunDescriptorDaoJcr extends AbstractSlcJcrDao implements
 			nodeMapper.save(getSession(), basePath(testRunDescriptor),
 					testRunDescriptor);
 			getSession().save();
-		} catch (Exception e) {
+		} catch (RepositoryException e) {
 			throw new SlcException("Cannot import " + testRunDescriptor, e);
 		}
 	}

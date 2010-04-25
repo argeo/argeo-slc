@@ -63,5 +63,7 @@
 	-->
 	<reference id="_authenticationManager"
 		interface="org.springframework.security.AuthenticationManager" />
+	<reference id="userDetailsService"
+		interface="org.springframework.security.userdetails.UserDetailsService" />
 
 </beans:beans>

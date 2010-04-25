@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.security.ArgeoSecurityService;
 import org.argeo.slc.dao.runtime.SlcAgentDescriptorDao;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
@@ -20,7 +21,9 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 	private final SlcAgentDescriptorDao slcAgentDescriptorDao;
 	private final SlcAgentFactory agentFactory;
 
-	private Long pingCycle = 60000l;
+	private ArgeoSecurityService securityService;
+
+	private Long pingCycle = 20000l;
 
 	private Boolean pingThreadActive = true;
 
@@ -31,7 +34,9 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 	}
 
 	public void register(SlcAgentDescriptor slcAgentDescriptor) {
-		slcAgentDescriptorDao.create(slcAgentDescriptor);
+		if (slcAgentDescriptorDao.getAgentDescriptor(slcAgentDescriptor
+				.getUuid()) == null)
+			slcAgentDescriptorDao.create(slcAgentDescriptor);
 		log.info("Registered agent #" + slcAgentDescriptor.getUuid());
 	}
 
@@ -41,8 +46,15 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		if (pingCycle > 0)
-			new PingThread().start();
+		// if (pingCycle > 0)
+		// new PingThread().start();
+		if (pingCycle > 0) {
+			Thread authenticatedThread = new Thread(securityService
+					.wrapWithSystemAuthentication(new AgentsPing()),
+					"SLC Agents Ping");
+			authenticatedThread.start();
+
+		}
 	}
 
 	public synchronized void destroy() throws Exception {
@@ -54,13 +66,17 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 		this.pingCycle = pingCycle;
 	}
 
-	protected class PingThread extends Thread {
+	public void setSecurityService(ArgeoSecurityService securityService) {
+		this.securityService = securityService;
+	}
+
+	protected class AgentsPing implements Runnable {
 		public void run() {
 
 			// FIXME: temporary hack so that the ping starts after the server
 			// has been properly started.
 			try {
-				Thread.sleep(5 * 1000);
+				Thread.sleep(10 * 1000);
 			} catch (InterruptedException e1) {
 				// silent
 			}
@@ -102,4 +118,5 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 		}
 
 	}
+
 }
