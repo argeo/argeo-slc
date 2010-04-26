@@ -1,8 +1,11 @@
 package org.argeo.slc.jcr.dao;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+
+import javax.jcr.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +31,17 @@ public class TreeTestResultDaoJcrTest extends AbstractSpringTestCase {
 		log.debug("Context Initialized");
 	}
 
-	@SuppressWarnings("restriction")
+	public void testExportXml() throws Exception {
+		TreeTestResult ttr = TreeTestResultTestUtils
+				.createComplexeTreeTestResult();
+		ttrDao.create(ttr);
+
+		Session session = getBean(Session.class);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		session.exportDocumentView("/slc", out, true, false);
+		log.debug("\n\n"+new String(out.toByteArray())+"\n\n");
+	}
+
 	public void testCreate() {
 		TreeTestResult ttr = TreeTestResultTestUtils
 				.createComplexeTreeTestResult();
@@ -38,7 +51,6 @@ public class TreeTestResultDaoJcrTest extends AbstractSpringTestCase {
 		UnitTestTreeUtil.assertTreeTestResult(ttr, ttrPersisted);
 	}
 
-	@SuppressWarnings("restriction")
 	public void testUpdate() {
 		TreeTestResult ttr = TreeTestResultTestUtils
 				.createCompleteTreeTestResult();
@@ -78,20 +90,19 @@ public class TreeTestResultDaoJcrTest extends AbstractSpringTestCase {
 				.size());
 
 	}
-	@SuppressWarnings("restriction")
+
 	public void testResultPartOnly() {
-		
+
 		TreeTestResult ttr = TreeTestResultTestUtils
 				.createComplexeTreeTestResult();
 
 		SimpleResultPart resultPart = TreeTestResultTestUtils
-		.createSimpleResultPartPassed();
+				.createSimpleResultPartPassed();
 		ttr.addResultPart(resultPart);
 		ttrDao.create(ttr);
 		TreeTestResult ttr2;
 		ttr2 = ttrDao.getTestResult(ttr.getUuid());
-		assertEquals(ttr.getResultParts().size(), ttr2.getResultParts()
-				.size());
+		assertEquals(ttr.getResultParts().size(), ttr2.getResultParts().size());
 	}
 
 	public static void compareTestResult(final TreeTestResult t1,
@@ -102,10 +113,9 @@ public class TreeTestResultDaoJcrTest extends AbstractSpringTestCase {
 		assertEquals(t1.getAttachments().size(), t2.getAttachments().size());
 		assertEquals(t1.getAttributes().size(), t2.getAttributes().size());
 		assertEquals(t1.getElements().size(), t2.getElements().size());
-		// resultParts 
+		// resultParts
 		assertEquals(t1.getResultParts().size(), t2.getResultParts().size());
-		
-		
+
 		// TODO Add more check.
 	}
 

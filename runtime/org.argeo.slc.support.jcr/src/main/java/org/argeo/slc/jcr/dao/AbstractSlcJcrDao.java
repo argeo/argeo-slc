@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
@@ -30,6 +31,9 @@ public abstract class AbstractSlcJcrDao {
 
 	public void init() {
 		nodeMapper = getNodeMapperProvider().findNodeMapper(null);
+		// JcrUtils.registerNamespaceSafely(session, "slc",
+		// "http://www.argeo.org/slc/0.12");
+
 	}
 
 	public void setSession(Session session) {

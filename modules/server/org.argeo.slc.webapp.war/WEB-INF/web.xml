@@ -81,6 +81,21 @@
 		<url-pattern>/dist/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- JCR servlet -->
+	<servlet>
+		<servlet-name>jcr</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>jcr</servlet-name>
+		<url-pattern>*.jcr</url-pattern>
+	</servlet-mapping>
+
 	<!-- General -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -111,7 +126,7 @@
 		<param-name>argeo.security.systemKey</param-name>
 		<param-value>argeo</param-value>
 	</context-param>
-	
+
 	<!--
 		Log4j configContext loader config <listener>
 		<display-name>Log4j</display-name>

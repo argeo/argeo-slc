@@ -1,7 +1,10 @@
 package org.argeo.slc.jcr.dao;
 
+import java.io.ByteArrayOutputStream;
 import java.net.InetAddress;
 import java.util.UUID;
+
+import javax.jcr.Session;
 
 import org.argeo.slc.dao.runtime.SlcAgentDescriptorDao;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
@@ -13,7 +16,6 @@ public class SlcAgentDescriptorDaoJcrTest extends AbstractSpringTestCase {
 
 	private SlcAgentDescriptorDao slcAgentDescriptorDao;
 	private String host;
-	
 
 	@Override
 	protected void setUp() throws Exception {
@@ -28,6 +30,21 @@ public class SlcAgentDescriptorDaoJcrTest extends AbstractSpringTestCase {
 		slcAgentDescriptor0.setUuid(UUID.randomUUID().toString());
 	}
 
+	public void testExportXml() throws Exception {
+		SlcAgentDescriptor slcAgentDescriptor0 = new SlcAgentDescriptor();
+		slcAgentDescriptor0.setHost(host);
+
+		String agentID = UUID.randomUUID().toString();
+		slcAgentDescriptor0.setUuid(agentID);
+		slcAgentDescriptorDao.create(slcAgentDescriptor0);
+
+		Session session = getBean(Session.class);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		session.exportDocumentView("/slc", out, true, false);
+		log.debug("\n\n"+new String(out.toByteArray())+"\n\n");
+
+	}
+
 	public void testCreate() throws Exception {
 		SlcAgentDescriptor slcAgentDescriptor0 = new SlcAgentDescriptor();
 		slcAgentDescriptor0.setHost(host);
@@ -36,22 +53,24 @@ public class SlcAgentDescriptorDaoJcrTest extends AbstractSpringTestCase {
 		slcAgentDescriptor0.setUuid(agentID);
 		slcAgentDescriptorDao.create(slcAgentDescriptor0);
 
-		//JcrUtils.debug(session.getRootNode());
-		
-		SlcAgentDescriptor slcAgentDescriptor1 = slcAgentDescriptorDao.getAgentDescriptor(agentID);
-		//log.debug("expected agentID :"+agentID+ " . Retrieved one : "+slcAgentDescriptor1.getUuid());
-		//TODO : compare retrieved AgentDescriptor with expected one.
+		// JcrUtils.debug(session.getRootNode());
+
+		SlcAgentDescriptor slcAgentDescriptor1 = slcAgentDescriptorDao
+				.getAgentDescriptor(agentID);
+		// log.debug("expected agentID :"+agentID+
+		// " . Retrieved one : "+slcAgentDescriptor1.getUuid());
+		// TODO : compare retrieved AgentDescriptor with expected one.
 		assertEquals(agentID, slcAgentDescriptor1.getUuid());
 
 		slcAgentDescriptorDao.delete(agentID);
-		
+
 	}
 
 	public void testList() throws Exception {
 		SlcAgentDescriptor slcAgentDescriptor0 = new SlcAgentDescriptor();
 		SlcAgentDescriptor slcAgentDescriptor1 = new SlcAgentDescriptor();
 		SlcAgentDescriptor slcAgentDescriptor2 = new SlcAgentDescriptor();
-		
+
 		slcAgentDescriptor0.setHost(host);
 		slcAgentDescriptor1.setHost(host);
 		slcAgentDescriptor2.setHost(host);
@@ -59,7 +78,7 @@ public class SlcAgentDescriptorDaoJcrTest extends AbstractSpringTestCase {
 		String agentID = UUID.randomUUID().toString();
 		String agentID1 = UUID.randomUUID().toString();
 		String agentID2 = UUID.randomUUID().toString();
-		
+
 		slcAgentDescriptor0.setUuid(agentID);
 		slcAgentDescriptor1.setUuid(agentID1);
 		slcAgentDescriptor2.setUuid(agentID2);
@@ -68,7 +87,8 @@ public class SlcAgentDescriptorDaoJcrTest extends AbstractSpringTestCase {
 		slcAgentDescriptorDao.create(slcAgentDescriptor1);
 		slcAgentDescriptorDao.create(slcAgentDescriptor2);
 
-		//List<SlcAgentDescriptor> list = slcAgentDescriptorDao.listSlcAgentDescriptors();
+		// List<SlcAgentDescriptor> list =
+		// slcAgentDescriptorDao.listSlcAgentDescriptors();
 	}
 
 }
