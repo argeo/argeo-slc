@@ -1,0 +1,34 @@
+{
+  "info" : 
+  {
+    "name" : "org.argeo.jcr.ria",
+
+    "summary" : "Jcr Ria library",
+    "description" : "Utilities for JCR RIA",
+    
+    "homepage" : "http://www.argeo.org/",
+
+    "license" : "LGPL",
+    "authors" : 
+    [
+      {
+        "name" : "Charles du Jeu",
+        "email" : "charles.dujeu@gmail.com"
+      }
+    ],
+
+    "version" : "trunk",
+    "qooxdoo-versions": ["0.8"]
+  },
+  
+  "provides" : 
+  {
+    "namespace"   : "org.argeo.jcr.ria",
+    "encoding"    : "utf-8",
+    "class"       : "class",
+    "resource"    : "resource",
+    "translation" : "translation",
+    "type"        : "library"
+  }
+}
+
