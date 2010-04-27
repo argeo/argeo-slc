@@ -12,4 +12,5 @@
 
 	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager" />
 
+	<bean class="org.argeo.slc.log4j.SlcExecutionAppender" />
 </beans>

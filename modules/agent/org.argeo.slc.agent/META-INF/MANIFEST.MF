@@ -5,4 +5,5 @@ Bundle-Version: 0.12.2.SNAPSHOT
 Bundle-Name: Argeo SLC Agent
 Bundle-SymbolicName: org.argeo.slc.agent
 Import-Package: org.apache.xalan.processor,
- org.apache.xerces.jaxp
+ org.apache.xerces.jaxp,
+ org.argeo.slc.log4j

@@ -8,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.process.RealizedFlow;
-import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionNotifier;
 import org.argeo.slc.process.SlcExecutionStep;
 
@@ -41,8 +40,8 @@ public class ExecutionThread extends Thread {
 				.getFlowDescriptor();
 		String flowName = executionFlowDescriptor.getName();
 
-		dispatchAddStep(processThread.getSlcProcess(), new SlcExecutionStep(
-				SlcExecutionStep.TYPE_PHASE_START, "Flow " + flowName));
+		dispatchAddStep(new SlcExecutionStep(SlcExecutionStep.TYPE_PHASE_START,
+				"Flow " + flowName));
 
 		try {
 			String autoUpgrade = System
@@ -55,26 +54,24 @@ public class ExecutionThread extends Thread {
 			// TODO: re-throw exception ?
 			String msg = "Execution of flow " + flowName + " failed.";
 			log.error(msg, e);
-			dispatchAddStep(processThread.getSlcProcess(),
-					new SlcExecutionStep(msg + " " + e.getMessage()));
+			dispatchAddStep(new SlcExecutionStep(msg + " " + e.getMessage()));
 			processThread.notifyError();
 		} finally {
 			processThread.flowCompleted();
-			dispatchAddStep(processThread.getSlcProcess(),
-					new SlcExecutionStep(SlcExecutionStep.TYPE_PHASE_END,
-							"Flow " + flowName));
+			dispatchAddStep(new SlcExecutionStep(
+					SlcExecutionStep.TYPE_PHASE_END, "Flow " + flowName));
 		}
 	}
 
-	protected void dispatchAddStep(SlcExecution slcExecution,
-			SlcExecutionStep step) {
-		slcExecution.getSteps().add(step);
+	public void dispatchAddStep(SlcExecutionStep step) {
+		processThread.getSlcProcess().getSteps().add(step);
 		List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
 		steps.add(step);
 		for (Iterator<SlcExecutionNotifier> it = processThread
 				.getExecutionModulesManager().getSlcExecutionNotifiers()
 				.iterator(); it.hasNext();) {
-			it.next().addSteps(slcExecution, steps);
+			it.next().addSteps(processThread.getSlcProcess(), steps);
 		}
 	}
+
 }
