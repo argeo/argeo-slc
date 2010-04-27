@@ -70,6 +70,46 @@
 			</dependencies>
 		</profile>
 		<profile>
+			<id>server_jcr</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.argeo.maven.plugins</groupId>
+						<artifactId>maven-argeo-osgi-plugin</artifactId>
+						<configuration>
+							<execDir>target/exec/server</execDir>
+							<systemProperties>
+								<argeo.osgi.start>
+									org.springframework.osgi.extender,
+									org.argeo.server.ads.server,
+									org.argeo.slc.server.jcr,
+									org.argeo.slc.server.main,
+									org.argeo.slc.ria
+								</argeo.osgi.start>
+								<argeo.osgi.bundles>
+									${basedir}/site;in=*;ex=pom.xml;ex=target,
+									${basedir}/../modules/server;in=*;ex=pom.xml;ex=target;ex=.*,
+									${basedir}/../modules/agent;in=*;ex=pom.xml;ex=target
+								</argeo.osgi.bundles>
+							</systemProperties>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<dependencies>
+				<dependency>
+					<groupId>org.argeo.slc.dep</groupId>
+					<artifactId>org.argeo.slc.dep.server</artifactId>
+					<version>${project.version}</version>
+				</dependency>
+				<dependency>
+					<groupId>org.argeo.slc.server</groupId>
+					<artifactId>org.argeo.slc.ria</artifactId>
+				</dependency>
+
+			</dependencies>
+		</profile>
+		<profile>
 			<id>agent</id>
 			<build>
 				<plugins>
