@@ -14,8 +14,9 @@ qx.Class.define("org.argeo.jcr.ria.model.DataModel", {
 			check : "org.argeo.jcr.ria.model.Node"
 		},
 		selection : {
-			check : "org.argeo.jcr.ria.model.Node[]",
-			event : "changeSelection"
+			check : "Array",
+			event : "changeSelection",
+			init : []
 		}
 	},
 	
@@ -28,6 +29,7 @@ qx.Class.define("org.argeo.jcr.ria.model.DataModel", {
 		requireContextChange : function(path){
 			var targetNode;
 			var rootNode = this.getRootNode();
+			this.setSelection([]);
 			if(!path){
 				targetNode = rootNode;
 			}else{
@@ -36,9 +38,8 @@ qx.Class.define("org.argeo.jcr.ria.model.DataModel", {
 					path = path.substring(0, path.length-1);
 				}
 				var base = path.substring(path.lastIndexOf("/")+1);
-				targetNode = new org.argeo.jcr.ria.model.Node(base);
+				targetNode = new org.argeo.jcr.ria.model.Node(base, rootNode.getNodeProvider());
 				rootNode.addChild(targetNode);
-				targetNode.setNodeProvider(rootNode.getNodeProvider());
 				targetNode.setPath(path);				
 			}
 			var observer = function(event){

@@ -18,15 +18,19 @@ qx.Class.define("org.argeo.jcr.ria.model.Node", {
 			event : "changeLoadState"
 		},
 		nodeProvider : {
-			check : "org.argeo.jcr.ria.provider.INodeProvider"			
+			check : "org.argeo.jcr.ria.provider.INodeProvider",
+			nullable : true
 		}
 	},
 	
-	construct : function(nodeName, isRoot){
+	construct : function(nodeName, nodeProvider, isRoot){
 		this.base(arguments);
 		this._children = {};
 		this._properties = {};	
 		this.setName(nodeName);
+		if(nodeProvider){
+			this.setNodeProvider(nodeProvider);			
+		}
 		if(isRoot){
 			this.setPath("");
 			this.setRoot(this);
@@ -63,11 +67,11 @@ qx.Class.define("org.argeo.jcr.ria.model.Node", {
 			for(var i=0;i<domElement.childNodes.length;i++){
 				var child = domElement.childNodes[i];
 				if(child.nodeType != 1) continue;
-				var jcrChild = new org.argeo.jcr.ria.model.Node(child.nodeName);
+				var jcrChild = new org.argeo.jcr.ria.model.Node(child.nodeName, this.getNodeProvider());
 				this.addChild(jcrChild);
 				jcrChild.fromDomElement(child);
 			}
-			this.setLoadState("loaded");
+			//this.setLoadState("loaded");
 		},
 		
 		toXmlString : function(recurse, childrenWriter){

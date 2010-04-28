@@ -44,14 +44,10 @@ qx.Class.define("org.argeo.jcr.ria.views.PlainXmlViewer", {
 			this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));	  			
 			this.setLayout(new qx.ui.layout.VBox());
 			this.setDataModel(dataModel);
-			
-			this.input = new qx.ui.form.TextField();
-			this.add(this.input);
-			
-			this._attachInputToDM();
-			
+						
 			this.htmlPane = new qx.ui.embed.Html();
 			this.htmlPane.setOverflow("auto", "auto");
+			this.htmlPane.setDecorator("input");
 			this.add(this.htmlPane, {flex:1});
 			
 		},
@@ -61,12 +57,17 @@ qx.Class.define("org.argeo.jcr.ria.views.PlainXmlViewer", {
 		 */
 		load : function(){
 			var dataModel = this.getDataModel();
-			dataModel.addListener("changeContextNode", function(event){
-				var xmlString = event.getData().toXmlString(true);
+			dataModel.addListener("changeSelection", function(event){
+				var selection = event.getData();
+				if(!selection.length) {
+					this.htmlPane.setHtml("");
+					return;
+				}
+				var xmlString = selection[0].toXmlString(true);
 			    var TAG_START_PATTERN = new RegExp("<([0-9a-zA-Z\.]+)([^>]*)>", "gi");
 			    var TAG_END_PATTERN = new RegExp("</([0-9a-zA-Z\.]+)>", "gi");
 			    var TAG_CLOSE_PATTERN = new RegExp("(/?>)", "gi");
-			    var TAG_ATTRIBUTE = new RegExp("\\s([0-9a-zA-Z:]+)\\=\"([^\"]*)\"", "gi");
+			    var TAG_ATTRIBUTE = new RegExp("\\s([0-9a-zA-Z:_]+)\\=\"([^\"]*)\"", "gi");
 			    // Not implemented yet
 			    var TAG_COMMENT = new RegExp("(<!--.*-->)", "gi");
 			    var TAG_CDATA_START = new RegExp("(\\<!\\[CDATA\\[).*", "gi");
@@ -111,21 +112,7 @@ qx.Class.define("org.argeo.jcr.ria.views.PlainXmlViewer", {
 			var input = qx.bom.Element.create("input", {value:value, style:'width:'+width+'px;'});
 			qx.dom.Element.insertAfter(input, span);			
 		},
-		
-		_attachInputToDM : function(){
-			var dm = this.getDataModel();
-			this.input.addListener("keypress", function(event){
-				if(event.getKeyIdentifier() != "Enter") return;
-				var path = this.input.getValue();
-				dm.requireContextChange(path);
-			}, this);
-			dm.addListener("changeContextNode", function(event){
-				var ctxtNode = event.getData();
-				this.input.setValue(ctxtNode.getPath());
-			}, this);
-			
-		},
-		
+				
 		/**
 		 * Whether this component is already contained in a scroller (return false) or not (return true).
 		 * @return {Boolean}

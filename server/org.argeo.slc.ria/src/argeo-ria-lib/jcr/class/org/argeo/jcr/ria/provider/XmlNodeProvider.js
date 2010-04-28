@@ -33,9 +33,8 @@ qx.Class.define("org.argeo.jcr.ria.provider.XmlNodeProvider", {
 			if(this.getXmlDocLoaded()){
 				// Parse document and load
 				node.setName(this._xmlDoc.documentElement.nodeName);
-				var properties = this.getSettings();				
+				var properties = this.getSettings();					
 				// STUB : prune sub children, load only level 1
-				/*
 				var children = this._xmlDoc.documentElement.childNodes;
 				for(var i=0;i<children.length;i++){
 					var subchildren = children[i].childNodes;
@@ -43,9 +42,9 @@ qx.Class.define("org.argeo.jcr.ria.provider.XmlNodeProvider", {
 						children[i].removeChild(subchildren[j]);
 					}
 				}
-				*/
 				// END STUB
 				node.fromDomElement(this._xmlDoc.documentElement);
+				node.setLoadState("loaded");
 				if(properties.dynamic){
 					this.setXmlDocLoaded(false);
 				}

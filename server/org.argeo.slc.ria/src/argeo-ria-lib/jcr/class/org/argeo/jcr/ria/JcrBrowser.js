@@ -26,15 +26,18 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   	
   	initViewPanes : function(viewsManager){
   		
+  		this._tBar = new org.argeo.ria.components.ViewPane("toolbar", "");
+  		this._tBar.header.setVisibility("excluded");
+  		viewsManager.getViewPanesContainer().add(this._tBar);
+  		
   		this._splitPane = new qx.ui.splitpane.Pane("horizontal");
-		var mainPane = new org.argeo.ria.components.ViewPane("fulltree", "Full Tree");
-		this._splitPane.add(mainPane, 1);
+		var leftPane = new org.argeo.ria.components.ViewPane("treeview", "Tree View");
+		this._splitPane.add(leftPane, 1);
+		var mainPane = new org.argeo.ria.components.ViewPane("fulltree", "Editor View");
+		this._splitPane.add(mainPane, 2);
+  		viewsManager.registerViewPane(this._tBar);
 		viewsManager.registerViewPane(mainPane);      
-  		/*
-		var uploadPane = new org.argeo.ria.components.ViewPane("upload", "Upload a distribution");
-		this._splitPane.add(uploadPane, 1);
-		viewsManager.registerViewPane(uploadPane);   
-		*/   
+		viewsManager.registerViewPane(leftPane);   
 		viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1});
   		
   	},
@@ -46,16 +49,23 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   			dynamic : true,
   			pathParameter:"path"
   			});  		
-  		var rootNode = new org.argeo.jcr.ria.model.Node("Root", true);
+  		var rootNode = new org.argeo.jcr.ria.model.Node("Root", nodeProvider, true);
   		rootNode.setPath('/slc');
-  		rootNode.setNodeProvider(nodeProvider);
   		var dataModel = new org.argeo.jcr.ria.model.DataModel(rootNode);
+  		
+  		var inputView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.ContextNodeInputView, "toolbar", dataModel);
+  		inputView.load();
+  		
 		var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.PlainXmlViewer, "fulltree", dataModel);
 		testView.load();
+		
+		var treeView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.TreeView, "treeview", dataModel);
+		treeView.load();
   	},
   	
   	remove : function(viewsManager){
   		viewsManager.getViewPanesContainer().remove(this._splitPane);  		
+  		viewsManager.getViewPanesContainer().remove(this._tBar);
   	}
   	
   }
