@@ -50,7 +50,7 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   		rootNode.setPath('/slc');
   		rootNode.setNodeProvider(nodeProvider);
   		var dataModel = new org.argeo.jcr.ria.model.DataModel(rootNode);
-		var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.XmlNodeEditor, "fulltree", dataModel);
+		var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.PlainXmlViewer, "fulltree", dataModel);
 		testView.load();
   	},
   	

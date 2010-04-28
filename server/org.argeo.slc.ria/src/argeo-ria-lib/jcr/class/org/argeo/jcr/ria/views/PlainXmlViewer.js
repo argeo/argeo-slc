@@ -1,4 +1,4 @@
-qx.Class.define("org.argeo.jcr.ria.views.XmlNodeEditor", {
+qx.Class.define("org.argeo.jcr.ria.views.PlainXmlViewer", {
 	extend : qx.ui.container.Composite,
 	implement : [org.argeo.ria.components.IView], 
 
