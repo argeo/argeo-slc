@@ -41,12 +41,17 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   	
   	initViews : function(viewsManager){
   		var nodeProvider = new org.argeo.jcr.ria.provider.XmlNodeProvider();
-  		nodeProvider.initProvider({xmlSrc : "/org.argeo.slc.webapp/getJcrItem.jcr?path=/slc/testresults"})  		
-  		var rootNode = new org.argeo.jcr.ria.model.Node("Root", true);  		
+  		nodeProvider.initProvider({
+  			xmlSrc : "/org.argeo.slc.webapp/getJcrItem.jcr?",
+  			dynamic : true,
+  			pathParameter:"path"
+  			});  		
+  		var rootNode = new org.argeo.jcr.ria.model.Node("Root", true);
+  		rootNode.setPath('/slc');
   		rootNode.setNodeProvider(nodeProvider);
-  		//rootNode.load();
-		var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.XmlNodeEditor, "fulltree");
-		testView.load(rootNode);
+  		var dataModel = new org.argeo.jcr.ria.model.DataModel(rootNode);
+		var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.XmlNodeEditor, "fulltree", dataModel);
+		testView.load();
   	},
   	
   	remove : function(viewsManager){

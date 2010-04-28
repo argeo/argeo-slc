@@ -66,7 +66,8 @@ qx.Class.define("org.argeo.jcr.ria.model.Node", {
 				var jcrChild = new org.argeo.jcr.ria.model.Node(child.nodeName);
 				this.addChild(jcrChild);
 				jcrChild.fromDomElement(child);
-			}			
+			}
+			this.setLoadState("loaded");
 		},
 		
 		toXmlString : function(recurse, childrenWriter){

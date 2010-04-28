@@ -21,15 +21,14 @@ qx.Class.define("org.argeo.jcr.ria.views.XmlNodeEditor", {
 	  	instanceLabel : {
 	  		init:"Xml Editor",
 	  		event : "changeInstanceLabel"
+	  	},
+	  	dataModel : {
+	  		
 	  	}
 	},
 	
 	construct : function(){
 		this.base(arguments);
-		this.setLayout(new qx.ui.layout.VBox());
-		this.htmlPane = new qx.ui.embed.Html();
-		this.htmlPane.setOverflow("auto", "auto");
-		this.add(this.htmlPane, {flex:1});
 	},
 	
 	members : {
@@ -41,17 +40,29 @@ qx.Class.define("org.argeo.jcr.ria.views.XmlNodeEditor", {
 		 * @param data {Mixed} Any object or data passed by the initiator of the view
 		 * @return {Boolean}
 		 */
-		init : function(viewPane, data){
+		init : function(viewPane, dataModel){
 			this.setViewSelection(new org.argeo.ria.components.ViewSelection(viewPane.getViewId()));	  			
+			this.setLayout(new qx.ui.layout.VBox());
+			this.setDataModel(dataModel);
+			
+			this.input = new qx.ui.form.TextField();
+			this.add(this.input);
+			
+			this._attachInputToDM();
+			
+			this.htmlPane = new qx.ui.embed.Html();
+			this.htmlPane.setOverflow("auto", "auto");
+			this.add(this.htmlPane, {flex:1});
+			
 		},
 		/**
 		 * The implementation should contain the real data loading (i.o. query...)
 		 * @return {Boolean}
 		 */
-		load : function(rootNode){
-			rootNode.load();
-			rootNode.addListener("changeLoadState", function(){
-				var xmlString = rootNode.toXmlString(true);
+		load : function(){
+			var dataModel = this.getDataModel();
+			dataModel.addListener("changeContextNode", function(event){
+				var xmlString = event.getData().toXmlString(true);
 			    var TAG_START_PATTERN = new RegExp("<([0-9a-zA-Z\.]+)([^>]*)>", "gi");
 			    var TAG_END_PATTERN = new RegExp("</([0-9a-zA-Z\.]+)>", "gi");
 			    var TAG_CLOSE_PATTERN = new RegExp("(/?>)", "gi");
@@ -68,7 +79,7 @@ qx.Class.define("org.argeo.jcr.ria.views.XmlNodeEditor", {
 			    xmlString = xmlString.replace(TAG_ATTRIBUTE, ' xml_attname_begin$1xml_attname_end="xml_attvalue_begin$2xml_attvalue_end"');
 				
 				//xmlString = qx.xml.String.escape(xmlString);
-				xmlString = xmlString.replace(new RegExp("(xml_div_begin)", "g"), '<div style="padding-top:2px;padding-left:15px;">');
+				xmlString = xmlString.replace(new RegExp("(xml_div_begin)", "g"), '<div style="padding:1px;line-height:17px;padding-left:15px;">');
 				xmlString = xmlString.replace(new RegExp("(xml_div_end)", "g"), '</div>');
 				xmlString = xmlString.replace(new RegExp("(xml_tagname_begin)", "g"), '<b style="color:rgb(63,127,127);">');
 				xmlString = xmlString.replace(new RegExp("(xml_tagname_end)", "g"), '</b>');
@@ -78,8 +89,43 @@ qx.Class.define("org.argeo.jcr.ria.views.XmlNodeEditor", {
 				xmlString = xmlString.replace(new RegExp("(xml_attvalue_end)", "g"), '</span>');
 				xmlString = '<div style="margin-left:-10px;">' + xmlString + '</div>';
 				this.htmlPane.setHtml(xmlString);
+				/*
+				var call = new qx.util.DeferredCall(function(){
+					var htmlDom = this.htmlPane.getContentElement().getDomElement();
+					var spans = qx.bom.Selector.query("span", htmlDom);
+					for(var i=0;i<spans.length;i++){
+						var oThis = this;
+						spans[i].onclick = function(){oThis._setAttributesSpanEditable(this)};
+					}
+				}, this);
+				call.schedule();
+				*/
 			}, this);
+			dataModel.requireContextChange();			
 		},
+		
+		_setAttributesSpanEditable : function(span){
+			var width = qx.bom.element.Dimension.getWidth(span);
+			var value = span.innerHTML;
+			qx.bom.element.Style.set(span, "display", "none");
+			var input = qx.bom.Element.create("input", {value:value, style:'width:'+width+'px;'});
+			qx.dom.Element.insertAfter(input, span);			
+		},
+		
+		_attachInputToDM : function(){
+			var dm = this.getDataModel();
+			this.input.addListener("keypress", function(event){
+				if(event.getKeyIdentifier() != "Enter") return;
+				var path = this.input.getValue();
+				dm.requireContextChange(path);
+			}, this);
+			dm.addListener("changeContextNode", function(event){
+				var ctxtNode = event.getData();
+				this.input.setValue(ctxtNode.getPath());
+			}, this);
+			
+		},
+		
 		/**
 		 * Whether this component is already contained in a scroller (return false) or not (return true).
 		 * @return {Boolean}

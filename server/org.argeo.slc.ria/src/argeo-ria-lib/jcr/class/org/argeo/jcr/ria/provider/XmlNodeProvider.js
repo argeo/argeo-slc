@@ -33,22 +33,39 @@ qx.Class.define("org.argeo.jcr.ria.provider.XmlNodeProvider", {
 			if(this.getXmlDocLoaded()){
 				// Parse document and load
 				node.setName(this._xmlDoc.documentElement.nodeName);
+				var properties = this.getSettings();				
+				// STUB : prune sub children, load only level 1
+				/*
+				var children = this._xmlDoc.documentElement.childNodes;
+				for(var i=0;i<children.length;i++){
+					var subchildren = children[i].childNodes;
+					for(var j=0;j<subchildren.length;j++){
+						children[i].removeChild(subchildren[j]);
+					}
+				}
+				*/
+				// END STUB
 				node.fromDomElement(this._xmlDoc.documentElement);
-				node.setLoadState("loaded");
+				if(properties.dynamic){
+					this.setXmlDocLoaded(false);
+				}
 			}else{
 				this.addListenerOnce("changeXmlDocLoaded", function(){
 					this.loadNode(node, nodeCallback, childCallback);
 				}, this);
 				node.setLoadState("loading");
-				this.loadXmlDoc();
+				this.loadXmlDoc(node);
 			}
 		},
 				
-		loadXmlDoc : function(){
+		loadXmlDoc : function(node){
 			var properties = this.getSettings();
 			if(!properties.xmlSrc && !properties.xmlString) return;
 			if(properties.xmlSrc){
 				var request = new org.argeo.ria.remote.Request(properties.xmlSrc, 'GET', 'application/xml');
+				if(properties.dynamic && properties.pathParameter){
+					request.setParameter(properties.pathParameter, (node.getPath()|| "/"));
+				}
 				request.addListener("completed", function(response){
 					this._xmlDoc = response.getContent();
 					this.setXmlDocLoaded(true);
