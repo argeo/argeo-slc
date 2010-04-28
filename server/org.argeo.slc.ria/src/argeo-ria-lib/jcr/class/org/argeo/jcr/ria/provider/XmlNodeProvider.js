@@ -34,15 +34,6 @@ qx.Class.define("org.argeo.jcr.ria.provider.XmlNodeProvider", {
 				// Parse document and load
 				node.setName(this._xmlDoc.documentElement.nodeName);
 				var properties = this.getSettings();					
-				// STUB : prune sub children, load only level 1
-				var children = this._xmlDoc.documentElement.childNodes;
-				for(var i=0;i<children.length;i++){
-					var subchildren = children[i].childNodes;
-					for(var j=0;j<subchildren.length;j++){
-						children[i].removeChild(subchildren[j]);
-					}
-				}
-				// END STUB
 				node.fromDomElement(this._xmlDoc.documentElement);
 				node.setLoadState("loaded");
 				if(properties.dynamic){
@@ -64,6 +55,7 @@ qx.Class.define("org.argeo.jcr.ria.provider.XmlNodeProvider", {
 				var request = new org.argeo.ria.remote.Request(properties.xmlSrc, 'GET', 'application/xml');
 				if(properties.dynamic && properties.pathParameter){
 					request.setParameter(properties.pathParameter, (node.getPath()|| "/"));
+					request.setParameter("depth", 1);
 				}
 				request.addListener("completed", function(response){
 					this._xmlDoc = response.getContent();
