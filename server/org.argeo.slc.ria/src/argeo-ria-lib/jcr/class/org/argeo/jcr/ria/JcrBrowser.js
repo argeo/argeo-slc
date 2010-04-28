@@ -12,7 +12,18 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   
   construct : function(){
 	  	this.base(arguments);
-	  	org.argeo.ria.util.Element.DEFAULT_NAMESPACE_MAP = {slc:"http://argeo.org/projects/slc/schemas"};
+	  	org.argeo.ria.util.Element.DEFAULT_NAMESPACE_MAP = 
+  		{
+	  		slc:"http://argeo.org/projects/slc/schemas",
+	  		fn:"http://www.w3.org/2005/xpath-functions", 
+			fn_old:"http://www.w3.org/2004/10/xpath-functions", 
+			xs:"http://www.w3.org/2001/XMLSchema" ,
+			jcr:"http://www.jcp.org/jcr/1.0" ,
+			mix:"http://www.jcp.org/jcr/mix/1.0", 
+			sv:"http://www.jcp.org/jcr/sv/1.0" ,
+			rep:"internal" ,
+			nt:"http://www.jcp.org/jcr/nt/1.0"
+  		};
   },
   
   statics : {

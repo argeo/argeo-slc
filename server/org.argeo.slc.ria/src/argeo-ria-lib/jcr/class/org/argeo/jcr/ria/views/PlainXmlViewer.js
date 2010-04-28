@@ -64,8 +64,8 @@ qx.Class.define("org.argeo.jcr.ria.views.PlainXmlViewer", {
 					return;
 				}
 				var xmlString = selection[0].toXmlString(true);
-			    var TAG_START_PATTERN = new RegExp("<([0-9a-zA-Z\.]+)([^>]*)>", "gi");
-			    var TAG_END_PATTERN = new RegExp("</([0-9a-zA-Z\.]+)>", "gi");
+			    var TAG_START_PATTERN = new RegExp("<([0-9a-zA-Z\.:]+)([^>]*)>", "gi");
+			    var TAG_END_PATTERN = new RegExp("</([0-9a-zA-Z\.:]+)>", "gi");
 			    var TAG_CLOSE_PATTERN = new RegExp("(/?>)", "gi");
 			    var TAG_ATTRIBUTE = new RegExp("\\s([0-9a-zA-Z:_]+)\\=\"([^\"]*)\"", "gi");
 			    // Not implemented yet
@@ -90,7 +90,6 @@ qx.Class.define("org.argeo.jcr.ria.views.PlainXmlViewer", {
 				xmlString = xmlString.replace(new RegExp("(xml_attvalue_end)", "g"), '</span>');
 				xmlString = '<div style="margin-left:-10px;">' + xmlString + '</div>';
 				this.htmlPane.setHtml(xmlString);
-				/*
 				var call = new qx.util.DeferredCall(function(){
 					var htmlDom = this.htmlPane.getContentElement().getDomElement();
 					var spans = qx.bom.Selector.query("span", htmlDom);
@@ -100,7 +99,6 @@ qx.Class.define("org.argeo.jcr.ria.views.PlainXmlViewer", {
 					}
 				}, this);
 				call.schedule();
-				*/
 			}, this);
 			dataModel.requireContextChange();			
 		},
@@ -109,8 +107,11 @@ qx.Class.define("org.argeo.jcr.ria.views.PlainXmlViewer", {
 			var width = qx.bom.element.Dimension.getWidth(span);
 			var value = span.innerHTML;
 			qx.bom.element.Style.set(span, "display", "none");
-			var input = qx.bom.Element.create("input", {value:value, style:'width:'+width+'px;'});
-			qx.dom.Element.insertAfter(input, span);			
+			var input = qx.bom.Element.create("input", {value:value, style:'width:'+width+'px;height:14px;border-width:1px;padding:0px;font-size:11px;'});
+			//var input = new qx.html.Input("text");
+			//input.setStyles({width:width+'px', height:'14px', borderWidth:'1px', padding:'0px', fontSize:'11px'});			
+			qx.dom.Element.insertAfter(input, span);
+			//input.setTextSelection(0);
 		},
 				
 		/**

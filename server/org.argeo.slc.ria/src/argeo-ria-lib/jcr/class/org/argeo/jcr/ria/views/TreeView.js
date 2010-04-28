@@ -60,7 +60,8 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 						var pathes = [];
 						parts.pop();
 						if(parts.length > 1){
-							for(var i=0;i<parts.length;i++){
+							var initLength = parts.length; 
+							for(var i=0;i<initLength;i++){
 								var newPath = parts.join("/");
 								pathes.push({label:newPath,icon:'', commandId:newPath});
 								parts.pop();

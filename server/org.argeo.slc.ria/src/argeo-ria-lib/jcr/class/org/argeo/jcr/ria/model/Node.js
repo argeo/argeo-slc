@@ -50,16 +50,13 @@ qx.Class.define("org.argeo.jcr.ria.model.Node", {
 			this.getParent().removeChild(this.getName());
 		},
 		
-		fromXmlString : function(xmlString){
-			var domDocument = qx.xml.Document.fromString(xmlString);
-			var root = domDocument.documentElement;
-			this.fromDomElement(root);
-		},
-		
 		fromDomElement : function(domElement){
 			if(domElement.nodeType != 1) return;
 			for(var i=0;i<domElement.attributes.length;i++){
 				var att = domElement.attributes[i];
+				if(!this.itemIsRoot() && att.nodeName.substring(0,5) == "xmlns"){
+					continue;
+				}
 				var property = new org.argeo.jcr.ria.model.Property(att.nodeName);
 				this.addProperty(property);
 				property.fromDomElement(att);
@@ -72,6 +69,12 @@ qx.Class.define("org.argeo.jcr.ria.model.Node", {
 				jcrChild.fromDomElement(child);
 			}
 			//this.setLoadState("loaded");
+		},
+		
+		fromXmlString : function(xmlString){
+			var domDocument = qx.xml.Document.fromString(xmlString);
+			var root = domDocument.documentElement;
+			this.fromDomElement(root);
 		},
 		
 		toXmlString : function(recurse, childrenWriter){
