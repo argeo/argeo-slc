@@ -27,9 +27,9 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   },
   
   statics : {
-  	LABEL : "JCR Browser",
-  	ICON : "org.argeo.slc.ria/utilities-terminal.png"
-  	//ROLES_RESTRICTION : ["ROLE_ADMIN"]
+  	LABEL : "JCR Browser (Tech Preview)",
+  	ICON : "org.argeo.slc.ria/utilities-terminal.png"/*,
+  	ACCESS : "!ROLE_ANONYMOUS"*/
   },
   
   members : {
