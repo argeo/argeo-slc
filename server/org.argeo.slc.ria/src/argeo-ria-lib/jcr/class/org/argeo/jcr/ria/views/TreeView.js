@@ -89,7 +89,25 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 					selectionChange : function(viewId, selection){
 						
 					}
-				}				
+				},
+				"dl" : {
+					label : "Download",
+					icon : "org.argeo.slc.ria/media-playback-start.png",
+					shortcut : null,
+					enabled : true,
+					menu : "Selection",
+					toolbar : "selection",
+					callback : function(e) {
+						var selection = this.tree.getSelection();
+						if(!selection.length) return;
+						var jcrNode = selection[0].getJcrNode();
+						var url = '/org.argeo.slc.webapp/getJcrItem.jcr?path=' + jcrNode.getPath() + '&download=true';
+						org.argeo.ria.Application.INSTANCE.javascriptDownloadLocation(url);
+					},
+					selectionChange : function(viewId, selection){
+						
+					}
+				}								
 			}
 		},
 	  	viewSelection : {
