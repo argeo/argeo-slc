@@ -27,7 +27,7 @@ qx.Class.define("org.argeo.jcr.ria.provider.XmlNodeProvider", {
 		 * @param nodeCallback Function
 		 * @param childCallback Function
 		 */
-		loadNode : function(node, nodeCallback, childCallback){
+		loadNode : function(node, depth, filter){
 			if(node.getLoadState() == "loaded") return;
 			
 			if(this.getXmlDocLoaded()){
@@ -41,21 +41,23 @@ qx.Class.define("org.argeo.jcr.ria.provider.XmlNodeProvider", {
 				}
 			}else{
 				this.addListenerOnce("changeXmlDocLoaded", function(){
-					this.loadNode(node, nodeCallback, childCallback);
+					this.loadNode(node, depth, filter);
 				}, this);
 				node.setLoadState("loading");
-				this.loadXmlDoc(node);
+				this.loadXmlDoc(node, depth, filter);
 			}
 		},
 				
-		loadXmlDoc : function(node){
+		loadXmlDoc : function(node, depth, filter){
 			var properties = this.getSettings();
 			if(!properties.xmlSrc && !properties.xmlString) return;
 			if(properties.xmlSrc){
 				var request = new org.argeo.ria.remote.Request(properties.xmlSrc, 'GET', 'application/xml');
 				if(properties.dynamic && properties.pathParameter){
 					request.setParameter(properties.pathParameter, (node.getPath()|| "/"));
-					request.setParameter("depth", 1);
+					if(depth && depth != -1){
+						request.setParameter("depth", depth);
+					}
 				}
 				request.addListener("completed", function(response){
 					this._xmlDoc = response.getContent();

@@ -45,7 +45,7 @@ qx.Class.define("org.argeo.jcr.ria.views.ContextNodeInputView", {
 			this.set({
 				layout : new qx.ui.layout.HBox(),
 				dataModel : dataModel,
-				padding: 10, 
+				padding: 5, 
 				decorator : 'toolbar'
 			});			
 			
@@ -60,6 +60,7 @@ qx.Class.define("org.argeo.jcr.ria.views.ContextNodeInputView", {
 			
 			this.selectionInput = new qx.ui.form.TextField();
 			this.selectionInput.setWidth(300);
+			this.selectionInput.setReadOnly(true);
 			this.add(this.selectionInput);
 			
 			this._attachInputsToDM();			

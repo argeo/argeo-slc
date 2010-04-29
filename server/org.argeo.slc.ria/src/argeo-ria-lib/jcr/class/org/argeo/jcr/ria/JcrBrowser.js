@@ -42,9 +42,9 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   		viewsManager.getViewPanesContainer().add(this._tBar);
   		
   		this._splitPane = new qx.ui.splitpane.Pane("horizontal");
-		var leftPane = new org.argeo.ria.components.ViewPane("treeview", "Tree View");
+		var leftPane = new org.argeo.ria.components.TabbedViewPane("treeview", "Tree View");
 		this._splitPane.add(leftPane, 1);
-		var mainPane = new org.argeo.ria.components.ViewPane("fulltree", "Editor View");
+		var mainPane = new org.argeo.ria.components.TabbedViewPane("editor", "Editor View", true);
 		this._splitPane.add(mainPane, 2);
   		viewsManager.registerViewPane(this._tBar);
 		viewsManager.registerViewPane(mainPane);      
@@ -67,11 +67,17 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   		var inputView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.ContextNodeInputView, "toolbar", dataModel);
   		inputView.load();
   		
+  		/*
 		var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.PlainXmlViewer, "fulltree", dataModel);
 		testView.load();
+		*/
+		var listView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.ListView, "editor", dataModel);
+		listView.load();
 		
 		var treeView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.TreeView, "treeview", dataModel);
 		treeView.load();
+		
+		dataModel.requireContextChange();
   	},
   	
   	remove : function(viewsManager){

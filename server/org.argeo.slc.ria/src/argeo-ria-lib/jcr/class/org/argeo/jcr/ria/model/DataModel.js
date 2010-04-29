@@ -17,6 +17,11 @@ qx.Class.define("org.argeo.jcr.ria.model.DataModel", {
 			check : "Array",
 			event : "changeSelection",
 			init : []
+		},
+		selectionSource : {
+			check : "Object",
+			init : null,
+			nullable : true
 		}
 	},
 	
@@ -58,7 +63,11 @@ qx.Class.define("org.argeo.jcr.ria.model.DataModel", {
 				this.fireDataEvent("changeContextNode", targetNode);
 			};
 			targetNode.addListener("changeLoadState", observer, this);
-			targetNode.load();
+			targetNode.load(1);
+		},
+		setSelectionWithSource : function(selection, source){
+			this.setSelectionSource(source);
+			this.setSelection(selection);
 		}
 	}
 	

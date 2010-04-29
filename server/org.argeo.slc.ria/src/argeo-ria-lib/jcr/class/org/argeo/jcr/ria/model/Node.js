@@ -41,8 +41,10 @@ qx.Class.define("org.argeo.jcr.ria.model.Node", {
 		_children : null,
 		_properties : null,
 		
-		load : function(){
-			this.getNodeProvider().loadNode(this);
+		load : function(depth, filter){
+			if(!depth) depth = 1;
+			if(!filter) filter = '';
+			this.getNodeProvider().loadNode(this, depth, filter);
 		},
 		
 		remove : function(){
