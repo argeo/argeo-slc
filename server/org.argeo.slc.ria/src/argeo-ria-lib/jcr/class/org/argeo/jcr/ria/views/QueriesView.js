@@ -9,12 +9,32 @@ qx.Class.define("org.argeo.jcr.ria.views.QueriesView", {
 		 */
 		commands : {
 			init : {
+				"refresh_query" : {
+					label : "Refresh",
+					icon : "org.argeo.slc.ria/media-playback-start.png",
+					shortcut : null,
+					enabled : true,
+					menu : "Query",
+					toolbar : null,
+					callback : function(e) {
+						var selection = this.tree.getSelection();
+						if(!selection.length) return;
+						var treeNode = selection[0];
+						this._submitQuery(treeNode);
+					},
+					selectionChange : function(viewId, selection){
+						this.setEnabled(false);
+						if(selection && selection.length && !selection[0].getJcrNode){
+							this.setEnabled(true);
+						}
+					}
+				},
 				"remove_query" : {
 					label : "Remove",
 					icon : "org.argeo.slc.ria/media-playback-start.png",
 					shortcut : null,
 					enabled : true,
-					menu : "Queries",
+					menu : "Query",
 					toolbar : null,
 					callback : function(e) {
 						var selection = this.tree.getSelection();
@@ -142,31 +162,48 @@ qx.Class.define("org.argeo.jcr.ria.views.QueriesView", {
 							return;
 						}
 					}
-				}else if(crtTreeSel.getParent() && crtTreeSel.getJcrNode().getParent().getPath() == selection[0].getPath()){
+				}else if(crtTreeSel.getJcrNode().getParent() && crtTreeSel.getJcrNode().getParent().getPath() == selection[0].getPath()){
 					this.tree.setSelection([crtTreeSel.getParent()]);
 				}
 				
 			}, this);
 			this.tree.setContextMenu(org.argeo.ria.event.CommandsManager
-					.getInstance().createMenuFromIds(["open", "remove_query"]));
+					.getInstance().createMenuFromIds(["open", "refresh_query", "remove_query"]));
 					
 		},
 		
-		_submitQuery : function(){
-			var query = this.textarea.getValue();
-			var language = this.radio.getModelSelection()[0];
+		_submitQuery : function(existingQueryFolder){
+			var query;
+			var language;
+			if(existingQueryFolder){
+				var model = existingQueryFolder.getModel();
+				query = model.query;
+				language = model.language;
+				existingQueryFolder.removeAll();
+			}else{
+				query = this.textarea.getValue();
+				language = this.radio.getModelSelection()[0];
+			}
 			var src = "/org.argeo.slc.webapp/queryJcrNodes.jcr?language="+language+"&statement="+query;
 			var conn = new org.argeo.ria.remote.Request(src, "GET", "application/json");
 			conn.addListener("completed", function(response){
 				var json = response.getContent();
-				this._addQueryResult(language, query, json);
+				this._addQueryResult(language, query, json, existingQueryFolder);
 			}, this);
 			conn.send();
 		},
 		
-		_addQueryResult : function(language, query, results){
-			var treeQuery = new qx.ui.tree.TreeFolder((language=="xpath"?"XPath":"SQL") + " query : '"+query+"' ("+results.length+")");
-			this.treeBase.add(treeQuery);			
+		_addQueryResult : function(language, query, results, queryFolder){
+			
+			var label = (language=="xpath"?"XPath":"SQL") + " query : '"+query+"' ("+results.length+")";
+			if(queryFolder){
+				queryFolder.setLabel(label);
+				var treeQuery = queryFolder;
+			}else{
+				var treeQuery = new qx.ui.tree.TreeFolder(label);
+				treeQuery.setModel({language:language, query:query});
+				this.treeBase.add(treeQuery);
+			}
 			var realRoot = this.getDataModel().getRootNode();
 			var provider = realRoot.getNodeProvider();
 			for(var i=0;i<results.length;i++){
@@ -176,7 +213,7 @@ qx.Class.define("org.argeo.jcr.ria.views.QueriesView", {
 				treeQuery.add(childTree);
 			}			
 		},
-		
+				
 		/**
 		 * Whether this component is already contained in a scroller (return false) or not (return true).
 		 * @return {Boolean}
