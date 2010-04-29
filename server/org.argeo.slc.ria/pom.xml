@@ -189,4 +189,13 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.argeo.commons.security</groupId>
+				<artifactId>org.argeo.security.ria</artifactId>
+				<version>${version.argeo-commons}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>	
 </project>

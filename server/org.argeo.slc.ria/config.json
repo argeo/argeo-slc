@@ -77,7 +77,7 @@
         "ria.auth.credentialsURI"	: "/org.argeo.security.webapp/getCredentials.ria",
         "ria.auth.loginURI"			: "/org.argeo.security.webapp/login.ria",
         "ria.auth.logoutURI"		: "/org.argeo.security.webapp/logout.ria",
-        "ria.StartupPerspective":"org.argeo.slc.web.Perspective"		
+        "ria.StartupPerspective":"org.argeo.slc.web.LauncherPerspective"		
       }
     },
 
