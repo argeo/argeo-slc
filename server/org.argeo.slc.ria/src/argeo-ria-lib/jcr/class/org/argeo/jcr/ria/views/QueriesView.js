@@ -1,4 +1,4 @@
-qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
+qx.Class.define("org.argeo.jcr.ria.views.QueriesView", {
 	extend : qx.ui.container.Composite,
 	implement : [org.argeo.ria.components.IView], 
 
@@ -9,111 +9,26 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 		 */
 		commands : {
 			init : {
-				"zoom_in" : {
-					label : "Zoom To Node",
+				"remove_query" : {
+					label : "Remove",
 					icon : "org.argeo.slc.ria/media-playback-start.png",
 					shortcut : null,
 					enabled : true,
-					menu : "Zoom",
-					toolbar : "zoom",
+					menu : "Queries",
+					toolbar : null,
 					callback : function(e) {
 						var selection = this.tree.getSelection();
 						if(!selection.length) return;
-						var path = selection[0].getJcrNode().getPath();
-						this.getDataModel().requireContextChange(path);
-					},
-					selectionChange : function(viewId, selection){
-						if(viewId != "treeview") return;
-						if(!selection || !selection.length) return;
 						var treeNode = selection[0];
-						if(treeNode.getParent()!=null){
-							this.setEnabled(true);
-						}else{
-							this.setEnabled(false);
-						}
-					}
-				},
-				"zoom_out" : {
-					label : "Zoom Out",
-					icon : "org.argeo.slc.ria/media-playback-start.png",
-					shortcut : null,
-					enabled : true,
-					menu : "Zoom",
-					toolbar : "zoom",
-					submenu : [],
-					callback : function(e) {
-					},
-					submenuCallback : function(commandId){
-						this.getDataModel().requireContextChange(commandId);
-					},
-					selectionChange : function(viewId, selection){
-						if(viewId != "treeview") return;
-						if(!selection || !selection.length) return;
-						var treeNode = selection[0];
-						if(treeNode.getParent()!=null || treeNode.getJcrNode().itemIsRoot()){
-							this.setEnabled(false);
-							return;
-						}
-						this.setEnabled(true);
-						var nodePath = treeNode.getJcrNode().getPath();
-						var parts = nodePath.split("\/");
-						var pathes = [];
-						parts.pop();
-						if(parts.length > 1){
-							var initLength = parts.length; 
-							for(var i=0;i<initLength;i++){
-								var newPath = parts.join("/");
-								pathes.push({label:newPath,icon:'', commandId:newPath});
-								parts.pop();
-							}
-						}
-						this.setMenu(pathes);
-					}
-				},
-				"open" : {
-					label : "Open",
-					icon : "org.argeo.slc.ria/media-playback-start.png",
-					shortcut : null,
-					enabled : true,
-					menu : "Selection",
-					toolbar : "selection",
-					callback : function(e) {
-						var selection = this.tree.getSelection();
-						if(!selection.length) return;
-						var jcrNode = selection[0].getJcrNode();
-						var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();						
-						var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.PlainXmlViewer, "editor", jcrNode);
-						testView.load(jcrNode);
-						
+						treeNode.getParent().remove(treeNode);
 					},
 					selectionChange : function(viewId, selection){
 						this.setEnabled(false);
-						if(selection && selection.length && selection[0].getJcrNode){
+						if(selection && selection.length && !selection[0].getJcrNode){
 							this.setEnabled(true);
 						}
 					}
-				},
-				"dl" : {
-					label : "Download",
-					icon : "org.argeo.slc.ria/media-playback-start.png",
-					shortcut : null,
-					enabled : true,
-					menu : "Selection",
-					toolbar : "selection",
-					callback : function(e) {
-						var selection = this.tree.getSelection();
-						if(!selection.length) return;
-						var jcrNode = selection[0].getJcrNode();
-						var url = '/org.argeo.slc.webapp/getJcrItem.jcr?path=' + jcrNode.getPath() + '&download=true';
-						org.argeo.ria.Application.INSTANCE.javascriptDownloadLocation(url);
-					},
-					selectionChange : function(viewId, selection){
-						this.setEnabled(false);
-						if(selection && selection.length && selection[0].getJcrNode){
-							this.setEnabled(true);
-						}
-					}
-				}								
+				}												
 			}
 		},
 	  	viewSelection : {
@@ -121,11 +36,11 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 	  		check:"org.argeo.ria.components.ViewSelection"
 	  	},
 	  	instanceId : {
-	  		init:"treeView",
+	  		init:"queriesView",
 	  		event : "changeInstanceId"
 	  	},
 	  	instanceLabel : {
-	  		init:"Full Tree",
+	  		init:"Queries",
 	  		event : "changeInstanceLabel"
 	  	},
 	  	dataModel : {
@@ -151,6 +66,36 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 			this.setLayout(new qx.ui.layout.VBox());
 			this.setDataModel(dataModel);
 			
+			this.radio = new qx.ui.form.RadioButtonGroup(new qx.ui.layout.HBox(5));
+			var xPath = new qx.ui.form.RadioButton("XPath");
+			xPath.setModel("xpath");
+			var sql = new qx.ui.form.RadioButton("SQL");
+			sql.setModel("sql");
+			this.radio.add(xPath);
+			this.radio.add(sql);
+			
+			var topLayout = new qx.ui.container.Composite(new qx.ui.layout.HBox(5));
+			topLayout.add(new qx.ui.basic.Label("Query (Ctrl+Enter to submit):"));
+			topLayout.add(new qx.ui.core.Spacer(), {flex:1});
+			topLayout.add(this.radio);
+			topLayout.setPadding(0,2,2,2);
+			this.add(topLayout);
+			
+			this.textarea = new qx.ui.form.TextArea();
+			this.textarea.setHeight(60);
+			this.textarea.setMarginBottom(5);
+			this.add(this.textarea);
+			this.textarea.addListener("keypress", function(e){
+				if(e.getKeyIdentifier() == "Enter" && e.isCtrlOrCommandPressed()){
+					this._submitQuery();
+				}
+			}, this);
+			
+			
+			var resLabel = new qx.ui.basic.Label("Results");
+			resLabel.setPadding(0, 2, 2, 2);
+			this.add(resLabel);
+			
 			this.tree = new qx.ui.tree.Tree();			
 			this.add(this.tree, {flex:1});
 		},
@@ -160,19 +105,21 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 		 */
 		load : function(){
 			var dataModel = this.getDataModel();
-			dataModel.addListener("changeContextNode", function(event){
-				var contextNode = event.getData();
-				var newRoot = new org.argeo.jcr.ria.views.JcrTreeFolder(contextNode);
-				this.tree.setRoot(newRoot);
-				this.tree.setSelection([newRoot]);
-			}, this);
+			
+			this.treeBase = new qx.ui.tree.TreeFolder("Queries");
+			this.tree.setRoot(this.treeBase);
+			this.tree.setHideRoot(true);
+			this.treeBase.setOpen(true);
+			
 			this.tree.addListener("changeSelection", function(e){
 				var sel = this.tree.getSelection();
 				var selection = [];
 				var viewSelection = this.getViewSelection();
 				viewSelection.clear();				
 				for(var i=0;i<sel.length;i++){
-					selection.push(sel[i].getJcrNode());
+					if(sel[i].getJcrNode){
+						selection.push(sel[i].getJcrNode());
+					}
 					viewSelection.addNode(sel[i]);
 				}
 				this.getDataModel().setSelectionWithSource(selection, this);
@@ -185,6 +132,7 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 				var crtSel = this.tree.getSelection();
 				if(!crtSel.length || !selection.length) return;
 				var crtTreeSel = crtSel[0];
+				if(!crtTreeSel.getJcrNode) return;
 				if(selection[0].getParent() && crtTreeSel.getJcrNode().getPath() == selection[0].getParent().getPath()){
 					crtTreeSel.setOpen(true);
 					var crtChildren =crtTreeSel.getChildren(); 
@@ -200,7 +148,33 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 				
 			}, this);
 			this.tree.setContextMenu(org.argeo.ria.event.CommandsManager
-					.getInstance().createMenuFromIds(["open", "zoom_in", "zoom_out"]));				
+					.getInstance().createMenuFromIds(["open", "remove_query"]));
+					
+		},
+		
+		_submitQuery : function(){
+			var query = this.textarea.getValue();
+			var language = this.radio.getModelSelection()[0];
+			var src = "/org.argeo.slc.webapp/queryJcrNodes.jcr?language="+language+"&statement="+query;
+			var conn = new org.argeo.ria.remote.Request(src, "GET", "application/json");
+			conn.addListener("completed", function(response){
+				var json = response.getContent();
+				this._addQueryResult(language, query, json);
+			}, this);
+			conn.send();
+		},
+		
+		_addQueryResult : function(language, query, results){
+			var treeQuery = new qx.ui.tree.TreeFolder((language=="xpath"?"XPath":"SQL") + " query : '"+query+"' ("+results.length+")");
+			this.treeBase.add(treeQuery);			
+			var realRoot = this.getDataModel().getRootNode();
+			var provider = realRoot.getNodeProvider();
+			for(var i=0;i<results.length;i++){
+				var child = new org.argeo.jcr.ria.model.Node(results[i], provider, true);
+				child.setPath(results[i]);
+				var childTree = new org.argeo.jcr.ria.views.JcrTreeFolder(child);
+				treeQuery.add(childTree);
+			}			
 		},
 		
 		/**

@@ -67,15 +67,14 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   		var inputView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.ContextNodeInputView, "toolbar", dataModel);
   		inputView.load();
   		
-  		/*
-		var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.PlainXmlViewer, "fulltree", dataModel);
-		testView.load();
-		*/
 		var listView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.ListView, "editor", dataModel);
 		listView.load();
 		
 		var treeView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.TreeView, "treeview", dataModel);
 		treeView.load();
+		
+		var queriesView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.QueriesView, "treeview", dataModel);
+		queriesView.load();
 		
 		dataModel.requireContextChange();
   	},
