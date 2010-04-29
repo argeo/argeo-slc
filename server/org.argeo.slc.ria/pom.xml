@@ -143,7 +143,14 @@
 									<type>zip</type>
 									<outputDirectory>src/argeo-ria-src</outputDirectory>
 								</artifactItem>
-							</artifactItems>
+								<artifactItem>
+									<groupId>org.argeo.commons.security</groupId>
+									<artifactId>org.argeo.security.ria</artifactId>
+									<classifier>ria-security</classifier>
+									<type>zip</type>
+									<outputDirectory>src/argeo-ria-lib/security</outputDirectory>
+								</artifactItem>								
+							</artifactItems>							
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>

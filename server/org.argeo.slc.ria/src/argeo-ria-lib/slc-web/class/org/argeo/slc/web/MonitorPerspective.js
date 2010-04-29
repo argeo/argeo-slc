@@ -4,6 +4,7 @@
  
 /* ************************************************************************
 #require(org.argeo.jcr.ria.JcrBrowser)
+#require(org.argeo.security.ria.Perspective)
 #asset(argeo-ria-lib/slc/resource/org.argeo.slc.ria/*)
 
 ************************************************************************ */ 
