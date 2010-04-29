@@ -45,7 +45,8 @@ qx.Class.define("org.argeo.jcr.ria.views.ContextNodeInputView", {
 			this.set({
 				layout : new qx.ui.layout.HBox(),
 				dataModel : dataModel,
-				padding: 5, 
+				paddingTop: 5, 
+				paddingLeft: 5, 
 				decorator : 'toolbar'
 			});			
 			

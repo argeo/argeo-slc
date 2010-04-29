@@ -11,7 +11,7 @@ qx.Class.define("org.argeo.jcr.ria.views.QueriesView", {
 			init : {
 				"refresh_query" : {
 					label : "Refresh",
-					icon : "org.argeo.slc.ria/media-playback-start.png",
+					icon : "org.argeo.jcr.ria/view-refresh.png",
 					shortcut : null,
 					enabled : true,
 					menu : "Query",
@@ -31,7 +31,7 @@ qx.Class.define("org.argeo.jcr.ria.views.QueriesView", {
 				},
 				"remove_query" : {
 					label : "Remove",
-					icon : "org.argeo.slc.ria/media-playback-start.png",
+					icon : "org.argeo.jcr.ria/edit-delete.png",
 					shortcut : null,
 					enabled : true,
 					menu : "Query",
@@ -201,6 +201,7 @@ qx.Class.define("org.argeo.jcr.ria.views.QueriesView", {
 				var treeQuery = queryFolder;
 			}else{
 				var treeQuery = new qx.ui.tree.TreeFolder(label);
+				treeQuery.setIcon("org.argeo.jcr.ria/system-search.png");
 				treeQuery.setModel({language:language, query:query});
 				this.treeBase.add(treeQuery);
 			}

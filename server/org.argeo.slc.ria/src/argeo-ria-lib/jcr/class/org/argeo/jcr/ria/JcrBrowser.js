@@ -4,6 +4,8 @@
  
 /* ************************************************************************
 
+#assets(org.argeo.jcr.ria/*)
+
 ************************************************************************ */ 
 qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
 {
@@ -42,14 +44,19 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   		viewsManager.getViewPanesContainer().add(this._tBar);
   		
   		this._splitPane = new qx.ui.splitpane.Pane("horizontal");
-		var leftPane = new org.argeo.ria.components.TabbedViewPane("treeview", "Tree View");
-		this._splitPane.add(leftPane, 1);
+		this.leftPane = new org.argeo.ria.components.TabbedViewPane("treeview", "Tree View");
+		this._splitPane.add(this.leftPane, 1);
 		var mainPane = new org.argeo.ria.components.TabbedViewPane("editor", "Editor View", true);
 		this._splitPane.add(mainPane, 2);
   		viewsManager.registerViewPane(this._tBar);
 		viewsManager.registerViewPane(mainPane);      
-		viewsManager.registerViewPane(leftPane);   
-		viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1});
+		viewsManager.registerViewPane(this.leftPane);   
+		viewsManager.getViewPanesContainer().add(this._splitPane, {flex:1000});
+		
+		new qx.util.DeferredCall(function(){
+			this._tBar.setHeight(32);
+		}, this).schedule();
+  		
   		
   	},
   	
@@ -75,6 +82,9 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
 		
 		var queriesView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.QueriesView, "treeview", dataModel);
 		queriesView.load();
+		
+		var pages = this.leftPane.getSelectables();
+		this.leftPane.setSelection([pages[0]]);
 		
 		dataModel.requireContextChange();
   	},

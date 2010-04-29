@@ -110,7 +110,7 @@ qx.Class.define("org.argeo.jcr.ria.views.ListView", {
 		},
 		
 		_initListItem : function(jcrNode, label){
-			var li = new qx.ui.form.ListItem((label?label:jcrNode.getName()));
+			var li = new qx.ui.form.ListItem((label?label:jcrNode.getName()), "org.argeo.jcr.ria/folder.png");
 			li.setModel(jcrNode);
 			li.addListener("dblclick", function(){
 				this.getDataModel().setSelectionWithSource([jcrNode], this);
