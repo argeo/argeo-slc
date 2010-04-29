@@ -44,6 +44,9 @@
           "manifest" : "${RIA_LIB_PATH}/slc-web/Manifest.json"
         },
         {
+          "manifest" : "${RIA_LIB_PATH}/jcr/Manifest.json"
+        },
+        {
           "manifest" : "${ROOT}/Manifest.json"
         }
       ],
@@ -196,6 +199,10 @@
         {
           "manifest" : "${RIA_LIB_PATH}/slc-web/Manifest.json",
           "uri"      : "${RIA_LIB_URI}/slc-web"
+        },
+        {
+          "manifest" : "${RIA_LIB_PATH}/jcr/Manifest.json",
+          "uri"      : "${RIA_LIB_URI}/jcr"
         },
         {
           "manifest" : "${RIA_LIB_PATH}/slc/Manifest.json",
