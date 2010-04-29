@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.argeo.slc.server.jcr.repo.derby</name>
+	<name>org.argeo.slc.server.jackrabbit.derby</name>
 	<comment></comment>
 	<projects>
 	</projects>
