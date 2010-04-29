@@ -208,8 +208,66 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		table.setStatusBarVisible(true);
 		window.add(table, {flex:1});
 		window.setAllowMinimize(false);
+		window.setResizable(true, true, true, true);
+		
+		tableModel.addListener("dataChanged", function(event){
+			if(!event.getData()) return;
+			var dataMap = event.getData();
+			table.scrollCellVisible(0, dataMap.lastRow);
+		});
+		
+		
+		var tA = new qx.ui.container.Composite(new qx.ui.layout.Canvas());		
+		tA.setHeight(120);
+		
+		var textArea = new qx.ui.form.TextArea();		
+		tA.add(textArea, {left:0,top:0, right:0,bottom:0});
+		
+		var okButton = new qx.ui.form.Button("Done");
+		okButton.setZIndex(2000);
+		tA.add(okButton, {bottom:20,right:20});
+		okButton.addListener("execute", function(){
+			tA.setVisibility("excluded");
+		});
+		
+		textArea.setNativeContextMenu(true);
+		window.add(tA);
+		var cpButton = new qx.ui.toolbar.Button("Copy As Text", "org.argeo.slc.ria/edit-copy.png");
+		tBar.add(cpButton);
+		cpButton.addListener("execute", function(e){
+			var all = tableModel.getData();
+			var string = "";
+			for(var i=0;i<all.length;i++){
+				for(var j=0;j<all[i].length;j++){
+					string += all[i][j] + "\t";
+				}
+				string += "\n";
+			}
+			tA.setVisibility("visible");
+			textArea.setValue(string);
+			new qx.util.DeferredCall(function(){
+				textArea.setSelection(0, string.length);
+			}).schedule();			
+		});
+		tA.setVisibility("excluded");
+		
+		
 		
 		// Call service to load execution message
+		this._loadSlcExecution(uuid, tableModel);
+		
+		var poller = new qx.event.Timer(3000);
+		poller.addListener("interval", function(e){
+			this._loadSlcExecution(uuid, tableModel);
+		}, this);
+		
+		window.addListener("close", function(){
+			poller.stop();
+		}, this);
+		poller.start();
+	},	
+
+	_loadSlcExecution : function(uuid, tableModel){
 		var req = org.argeo.slc.ria.SlcApi.getSlcExecutionService(uuid);
 		req.addListener("completed", function(response){			
 			var xmlDoc = response.getContent();
@@ -236,7 +294,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		});
 		req.send();
 		
-	},	
+	},
 	
 	/**
 	 * Creates the applet layout
