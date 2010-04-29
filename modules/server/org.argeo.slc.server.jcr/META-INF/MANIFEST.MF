@@ -4,7 +4,6 @@ Bundle-SymbolicName: org.argeo.slc.server.jcr
 Bundle-Name: Server JCR
 Import-Package: javax.jcr,
  org.argeo.jcr,
- org.argeo.server.jackrabbit,
  org.argeo.server.jcr;specification-version="0.1.3.SNAPSHOT-r3478",
  org.argeo.server.jcr.mvc;specification-version="0.1.3.SNAPSHOT-r3478",
  org.argeo.slc.core.attachment,

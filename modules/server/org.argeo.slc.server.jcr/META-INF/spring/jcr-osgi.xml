@@ -6,6 +6,8 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<reference id="jcrRepository" interface="javax.jcr.Repository" />
+
 	<service interface="org.argeo.slc.dao.process.SlcExecutionDao"
 		ref="slcExecutionDao" />
 	<service interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"

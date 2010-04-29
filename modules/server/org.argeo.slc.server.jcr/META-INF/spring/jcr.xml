@@ -78,10 +78,4 @@
 		class="org.argeo.jcr.ThreadBoundJcrSessionFactory">
 		<property name="repository" ref="jcrRepository" />
 	</bean>
-
-	<bean id="jcrRepository" class="org.argeo.server.jackrabbit.JackrabbitContainer">
-		<property name="homeDirectory" value="${argeo.osgi.data.dir}/jackrabbit" />
-		<property name="configuration" value="osgibundle:/repository.xml" />
-	</bean>
-
 </beans>

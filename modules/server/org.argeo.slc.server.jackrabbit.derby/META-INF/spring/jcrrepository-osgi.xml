@@ -6,5 +6,5 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<service interface="javax.jcr.repository" ref="jcrRepository" />
+	<service interface="javax.jcr.Repository" ref="jcrRepository" />
 </beans:beans>
