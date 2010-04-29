@@ -1,114 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
-	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<bean name="/isServerReady.service" class="org.argeo.slc.web.mvc.management.IsServerReady">
-	</bean>
+	<context:component-scan
+		base-package="org.argeo.slc.web.mvc, org.argeo.slc.web.mvc.process" />
 
-	<bean name="/getResult.service" class="org.argeo.slc.web.mvc.result.GetResultController">
-		<constructor-arg ref="testResultDao" />
-	</bean>
-
-	<bean name="/addResultToCollection.service"
-		class="org.argeo.slc.web.mvc.result.AddResultToCollectionController">
-		<constructor-arg ref="testManagerService" />
-	</bean>
-
-	<bean name="/removeResultFromCollection.service"
-		class="org.argeo.slc.web.mvc.result.RemoveResultFromCollectionController">
-		<constructor-arg ref="testResultCollectionDao" />
-		<constructor-arg ref="testManagerService" />
-	</bean>
-
-	<bean name="/listCollectionRefs.service"
-		class="org.argeo.slc.web.mvc.result.ResultCollectionReferencesController">
-		<constructor-arg ref="testResultCollectionDao" />
-	</bean>
-
-	<bean name="/listResultAttributes.service"
-		class="org.argeo.slc.web.mvc.result.ListResultAttributesController">
-		<constructor-arg ref="testResultCollectionDao" />
-	</bean>
-
-	<bean name="/listResults.service" class="org.argeo.slc.web.mvc.result.ListResultsController">
-		<constructor-arg ref="testResultCollectionDao" />
-	</bean>
-
-	<bean name="/copyCollectionToCollection.service"
-		class="org.argeo.slc.web.mvc.result.CopyCollectionToCollectionController">
-		<constructor-arg ref="testResultCollectionDao" />
-		<constructor-arg ref="testManagerService" />
-	</bean>
-
-	<bean name="/listAgents.service" class="org.argeo.slc.web.mvc.runtime.ListAgentsController">
-		<constructor-arg ref="slcAgentDescriptorDao" />
-	</bean>
-
-	<bean name="/cleanAgents.service" class="org.argeo.slc.web.mvc.runtime.CleanAgentsController">
-		<constructor-arg ref="slcAgentDescriptorDao" />
-	</bean>
-
-	<bean name="/listSlcExecutions.service"
-		class="org.argeo.slc.web.mvc.process.ListSlcExecutionsController">
-		<constructor-arg ref="slcExecutionDao" />
-	</bean>
-
-	<bean name="/getSlcExecution.service" class="org.argeo.slc.web.mvc.process.GetSlcExecution">
+	<!--  Execution  -->
+	<bean name="/*Execution*.service, /*Modules*.service"
+		class="org.argeo.slc.web.mvc.process.ExecutionServiceController">
+		<property name="agentFactory" ref="agentFactory" />
 		<property name="slcExecutionDao" ref="slcExecutionDao" />
-		<property name="unmarshaller" ref="unmarshaller" />
-		<property name="attachmentsStorage" ref="attachmentsStorage" />
-	</bean>
-
-	<bean name="/newSlcExecution.service"
-		class="org.argeo.slc.web.mvc.process.NewSlcExecutionController">
-		<property name="agentFactory" ref="agentFactory" />
-		<property name="unmarshaller" ref="unmarshaller" />
-		<property name="marshaller" ref="marshaller" />
 		<property name="slcExecutionService" ref="slcExecutionService" />
+		<property name="marshaller" ref="marshaller" />
+		<property name="unmarshaller" ref="unmarshaller" />
 		<property name="attachmentsStorage" ref="attachmentsStorage" />
 	</bean>
 
-	<bean name="/getExecutionDescriptor.service" class="org.argeo.slc.web.mvc.execution.GetModuleDescriptor">
-		<property name="agentFactory" ref="agentFactory" />
-	</bean>
-
-	<bean name="/listModulesDescriptors.service"
-		class="org.argeo.slc.web.mvc.execution.ListModulesDescriptors">
-		<property name="agentFactory" ref="agentFactory" />
-	</bean>
-
-	<!-- Events -->
-	<bean name="/addEventListener.service"
-		class="org.argeo.slc.web.mvc.event.AddEventListenerController">
-		<property name="eventListenerRegister" ref="eventListenerRegister" />
-	</bean>
-
-	<bean name="/removeEventListener.service"
-		class="org.argeo.slc.web.mvc.event.RemoveEventListenerController">
-		<property name="eventListenerRegister" ref="eventListenerRegister" />
-	</bean>
-
-	<bean name="/pollEvent.service" class="org.argeo.slc.web.mvc.event.PollEventController">
+	<!--  Events  -->
+	<bean name="/*Event*.service" class="org.argeo.slc.web.mvc.EventController">
 		<property name="eventListenerRegister" ref="eventListenerRegister" />
 		<property name="eventListener" ref="eventListener" />
-	</bean>
-
-	<bean name="eventListenerRegister" class="org.argeo.slc.web.mvc.WebSlcEventListenerRegister"
-		scope="session">
-		<aop:scoped-proxy />
-	</bean>
-
-	<!-- Attachements -->
-	<bean name="/getAttachment.service" class="org.argeo.slc.web.mvc.attachment.GetAttachmentHandler">
-		<property name="attachmentsStorage" ref="attachmentsStorage" />
-	</bean>
-
-	<!-- Management -->
-	<bean name="/shutdownRuntime.service" class="org.argeo.slc.web.mvc.management.ShutdownRuntime">
-		<property name="dynamicRuntime" ref="dynamicRuntime" />
 	</bean>
 
 	<!-- Provisioning -->
@@ -125,6 +41,21 @@
 		<property name="dynamicRuntime" ref="dynamicRuntime" />
 	</bean>
 
+	<!--  All that remains -->
+	<bean name="/*.service" class="org.argeo.slc.web.mvc.ServiceController">
+		<constructor-arg ref="testResultDao" />
+		<constructor-arg ref="testResultCollectionDao" />
+		<constructor-arg ref="testManagerService" />
+		<constructor-arg ref="slcAgentDescriptorDao" />
+		<property name="dynamicRuntime" ref="dynamicRuntime" />
+		<property name="attachmentsStorage" ref="attachmentsStorage" />
+	</bean>
+
+	<bean name="eventListenerRegister" class="org.argeo.slc.web.mvc.WebSlcEventListenerRegister"
+		scope="session">
+		<aop:scoped-proxy />
+	</bean>
+
 	<!-- MVC -->
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
@@ -135,8 +66,11 @@
 		</property>
 	</bean>
 
-	<bean id="viewResolver" class="org.argeo.slc.web.mvc.MarshallerViewResolver">
-		<constructor-arg ref="marshaller" />
+	<bean id="viewResolver" class="org.argeo.server.mvc.SerializingViewResolver">
+		<property name="serializer">
+			<bean class="org.argeo.server.MarshallerServerSerializer">
+				<property name="marshaller" ref="marshaller" />
+			</bean>
+		</property>
 	</bean>
-
 </beans>

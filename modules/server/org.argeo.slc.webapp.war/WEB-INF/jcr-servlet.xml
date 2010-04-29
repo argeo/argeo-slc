@@ -9,9 +9,25 @@
 
 	<context:component-scan base-package="org.argeo.server.jcr.mvc" />
 
-	<bean name="/*.jcr" class="org.argeo.server.jcr.mvc.JcrBrowserController">
+	<bean name="/*.jcr" class="org.argeo.server.jcr.mvc.JcrBrowserController" />
+
+	<!-- Views -->
+	<bean name="getJcrItem" class="org.argeo.server.mvc.SerializingView">
+		<property name="serializer">
+			<bean class="org.argeo.server.jcr.mvc.JcrXmlServerSerializer" />
+		</property>
 	</bean>
 
+	<bean name="queryJcrNodes" class="org.argeo.server.mvc.SerializingView">
+		<property name="serializer" ref="jsonSerializer" />
+	</bean>
+
+	<bean name="queryJcrTable" class="org.argeo.server.mvc.SerializingView">
+		<property name="serializer" ref="jsonSerializer" />
+	</bean>
+
+	<!-- Serializers -->
+	<bean id="jsonSerializer" class="org.argeo.server.json.JsonServerSerializer" />
 
 	<!-- MVC -->
 	<bean id="handlerMapping"
@@ -23,9 +39,6 @@
 		</property>
 	</bean>
 
-	<bean id="viewResolver" class="org.argeo.server.mvc.SerializingViewResolver">
-		<property name="serializer">
-			<bean class="org.argeo.server.jcr.mvc.JcrXmlServerSerializer" />
-		</property>
-	</bean>
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.BeanNameViewResolver" />
 </beans>

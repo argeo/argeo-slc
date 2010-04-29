@@ -6,20 +6,8 @@
 	<display-name>SLC Web Application</display-name>
 
 	<!-- SERVICE servlet -->
-
-	<!--
-		refactoring with annotation <servlet>
-		<servlet-name>slc-service</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<init-param> <param-name>contextClass</param-name>
-		<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
-		</init-param> <load-on-startup>1</load-on-startup> </servlet>
-
-		<servlet-mapping> <servlet-name>slc-service</servlet-name>
-		<url-pattern>*.service</url-pattern> </servlet-mapping>
-	-->
 	<servlet>
-		<servlet-name>slcservice</servlet-name>
+		<servlet-name>slc-service</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextClass</param-name>
@@ -28,7 +16,7 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>slcservice</servlet-name>
+		<servlet-name>slc-service</servlet-name>
 		<url-pattern>*.service</url-pattern>
 	</servlet-mapping>
 
@@ -126,16 +114,4 @@
 		<param-name>argeo.security.systemKey</param-name>
 		<param-value>argeo</param-value>
 	</context-param>
-
-	<!--
-		Log4j configContext loader config <listener>
-		<display-name>Log4j</display-name>
-		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-		</listener> <context-param>
-		<param-name>log4jConfigLocation</param-name>
-		<param-value>/WEB-INF/classes/log4j.properties</param-value>
-		</context-param> <context-param>
-		<param-name>log4jRefreshInterval</param-name>
-		<param-value>5000</param-value> </context-param>
-	-->
 </web-app>
