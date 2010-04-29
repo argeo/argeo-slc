@@ -17,12 +17,14 @@ qx.Class.define("org.argeo.jcr.ria.views.JcrTreeFolder", {
 			jcrNode.addListener("changeLoadState", function(event){
 				if(event.getData() == "loaded"){
 					org.argeo.jcr.ria.views.JcrTreeFolder.jcrNodeToTreeFolder(jcrNode, treeFolder);
+				}else if(event.getData() == "empty"){
+					treeFolder.removeAll();
+					treeFolder.setOpen(false);
 				}
 			});
 			if(jcrNode.getLoadState()=="loaded"){
 				org.argeo.jcr.ria.views.JcrTreeFolder.jcrNodeToTreeFolder(jcrNode, treeFolder);
-			}else if(jcrNode.getLoadState() == "empty"){
-				//treeFolder.removeAll();
+			}else if(jcrNode.getLoadState() == "empty"){				
 				jcrNode.load();
 			}
 		},
@@ -34,6 +36,7 @@ qx.Class.define("org.argeo.jcr.ria.views.JcrTreeFolder", {
 				parentTreeFolder.add(newFolder);
 			}
 			parentTreeFolder.setState("loaded");
+			parentTreeFolder.setOpen(true);
 		}		
 	},
 	members : {

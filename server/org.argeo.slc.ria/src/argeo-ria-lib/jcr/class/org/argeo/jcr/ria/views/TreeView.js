@@ -15,7 +15,7 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 					shortcut : null,
 					enabled : true,
 					menu : "Zoom",
-					toolbar : "zoom",
+					toolbar : null,
 					callback : function(e) {
 						var selection = this.tree.getSelection();
 						if(!selection.length) return;
@@ -39,7 +39,7 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 					shortcut : null,
 					enabled : true,
 					menu : "Zoom",
-					toolbar : "zoom",
+					toolbar : null,
 					submenu : [],
 					callback : function(e) {
 					},
@@ -70,6 +70,31 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 						this.setMenu(pathes);
 					}
 				},
+				"refresh" : {
+					label : "Refresh",
+					icon : "org.argeo.slc.ria/media-playback-start.png",
+					shortcut : null,
+					enabled : true,
+					menu : "Selection",
+					toolbar : "selection",
+					callback : function(e) {
+						var selection = this.tree.getSelection();
+						if(!selection.length) return;
+						var jcrNode = selection[0].getJcrNode();
+						var children = jcrNode.getChildren();
+						for(var i=0;i<children.length;i++){
+							jcrNode.removeChild(children[i]);
+						}
+						jcrNode.setLoadState("empty");
+						jcrNode.load();
+					},
+					selectionChange : function(viewId, selection){
+						this.setEnabled(false);
+						if(selection && selection.length && selection[0].getJcrNode){
+							this.setEnabled(true);
+						}
+					}
+				},
 				"open" : {
 					label : "Open",
 					icon : "org.argeo.slc.ria/media-playback-start.png",
@@ -82,7 +107,7 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 						if(!selection.length) return;
 						var jcrNode = selection[0].getJcrNode();
 						var viewsManager = org.argeo.ria.components.ViewsManager.getInstance();						
-						var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.PlainXmlViewer, "editor", jcrNode);
+						var testView = viewsManager.initIViewClass(org.argeo.jcr.ria.views.PlainXmlViewer, "editor", jcrNode, "close");
 						testView.load(jcrNode);
 						
 					},
@@ -125,7 +150,7 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 	  		event : "changeInstanceId"
 	  	},
 	  	instanceLabel : {
-	  		init:"Full Tree",
+	  		init:"JCR Tree",
 	  		event : "changeInstanceLabel"
 	  	},
 	  	dataModel : {
@@ -172,7 +197,9 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 				var viewSelection = this.getViewSelection();
 				viewSelection.clear();				
 				for(var i=0;i<sel.length;i++){
-					selection.push(sel[i].getJcrNode());
+					if(sel[i].getJcrNode){
+						selection.push(sel[i].getJcrNode());
+					}
 					viewSelection.addNode(sel[i]);
 				}
 				this.getDataModel().setSelectionWithSource(selection, this);
@@ -200,7 +227,7 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 				
 			}, this);
 			this.tree.setContextMenu(org.argeo.ria.event.CommandsManager
-					.getInstance().createMenuFromIds(["open", "zoom_in", "zoom_out"]));				
+					.getInstance().createMenuFromIds(["open", "dl", "zoom_in", "zoom_out"]));				
 		},
 		
 		/**

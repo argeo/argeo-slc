@@ -15,10 +15,10 @@ qx.Class.define("org.argeo.jcr.ria.views.PlainXmlViewer", {
 	  				icon 		: "org.argeo.slc.ria/window-close.png",
 	  				shortcut 	: "Control+w",
 	  				enabled  	: true,
-	  				menu	   	: "Test",
-	  				toolbar  	: "result",
+	  				menu	   	: null,
+	  				toolbar  	: null,
 	  				callback	: function(e){
-	  					this._viewPane.closeCurrent();
+	  					org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("editor").closeCurrent();
 	  				},
 	  				command 	: null
 	  			}				

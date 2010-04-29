@@ -18,7 +18,7 @@ qx.Class.define("org.argeo.jcr.ria.views.ListView", {
 	  		event : "changeInstanceId"
 	  	},
 	  	instanceLabel : {
-	  		init:"List",
+	  		init:"Nodes List",
 	  		event : "changeInstanceLabel"
 	  	},
 	  	dataModel : {
