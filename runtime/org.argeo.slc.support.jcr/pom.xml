@@ -35,8 +35,15 @@
 
 		<dependency>
 			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.jcr</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
 			<artifactId>org.argeo.server.jackrabbit</artifactId>
 			<version>${version.argeo-commons}</version>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Unit Tests -->
