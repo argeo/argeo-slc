@@ -68,8 +68,8 @@ public abstract class SlcExecutionTestUtils {
 		}
 
 		// FIXME: compare realized flows
-//		assertEquals(expected.getRealizedFlows().size(), reached
-//				.getRealizedFlows().size());
+		// assertEquals(expected.getRealizedFlows().size(), reached
+		// .getRealizedFlows().size());
 
 	}
 
@@ -79,6 +79,12 @@ public abstract class SlcExecutionTestUtils {
 		assertEquals(expected.getUuid(), reached.getUuid());
 		assertEquals(expected.getType(), reached.getType());
 		assertDateSec(expected.getBegin(), reached.getBegin());
+		assertEquals(expected.getLogLines().size(), reached.getLogLines()
+				.size());
+		for (int i = 0; i < expected.getLogLines().size(); i++) {
+			assertEquals(expected.getLogLines().get(i), reached.getLogLines()
+					.get(i));
+		}
 	}
 
 	private SlcExecutionTestUtils() {

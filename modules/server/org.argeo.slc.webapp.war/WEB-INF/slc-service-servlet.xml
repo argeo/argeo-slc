@@ -73,4 +73,7 @@
 			</bean>
 		</property>
 	</bean>
+
+	<bean class="org.argeo.server.mvc.DefaultHandlerExceptionResolver" />
+
 </beans>

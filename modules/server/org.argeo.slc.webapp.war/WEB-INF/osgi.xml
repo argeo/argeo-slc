@@ -66,4 +66,8 @@
 	<reference id="userDetailsService"
 		interface="org.springframework.security.userdetails.UserDetailsService" />
 
+	<!-- Optional reference to JCR repository -->
+	<reference id="jcrRepository" interface="javax.jcr.Repository"
+		cardinality="0..1" />
+
 </beans:beans>

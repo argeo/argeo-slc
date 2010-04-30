@@ -26,6 +26,10 @@
 		<property name="serializer" ref="jsonSerializer" />
 	</bean>
 
+	<bean name="500" class="org.argeo.server.mvc.SerializingView">
+		<property name="serializer" ref="jsonSerializer" />
+	</bean>
+
 	<!-- Serializers -->
 	<bean id="jsonSerializer" class="org.argeo.server.json.JsonServerSerializer" />
 
@@ -41,4 +45,7 @@
 
 	<bean id="viewResolver"
 		class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+
+	<bean class="org.argeo.server.mvc.DefaultHandlerExceptionResolver" />
+
 </beans>
