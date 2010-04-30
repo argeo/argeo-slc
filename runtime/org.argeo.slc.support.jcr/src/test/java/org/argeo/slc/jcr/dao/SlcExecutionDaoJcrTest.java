@@ -7,6 +7,7 @@ import javax.jcr.Session;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.unit.AbstractSpringTestCase;
 import org.argeo.slc.unit.process.SlcExecutionTestUtils;
 
@@ -45,15 +46,16 @@ public class SlcExecutionDaoJcrTest extends AbstractSpringTestCase {
 
 	public void testUpdate() throws Exception {
 		SlcExecution slcExecution0 = SlcExecutionTestUtils
-				.createSlcExecutionWithRealizedFlows();
+				.createSimpleSlcExecution();
 		slcExecution0.setHost(host);
 		slcExecutionDao.create(slcExecution0);
 		String uuid = slcExecution0.getUuid();
 
 		SlcExecution slcExecution = SlcExecutionTestUtils
-				.createSimpleSlcExecution();
+				.createSlcExecutionWithRealizedFlows();
 		slcExecution.setUuid(uuid);
 		slcExecution.setHost(host);
+		slcExecution.getSteps().add(new SlcExecutionStep("My log"));
 		slcExecutionDao.update(slcExecution);
 
 		JcrUtils.debug(session.getRootNode());
@@ -64,13 +66,13 @@ public class SlcExecutionDaoJcrTest extends AbstractSpringTestCase {
 				slcExecutionPersist);
 	}
 
-//	// FIXME
-//	protected void tearDown() {
-//		try {
-//			super.tearDown();
-//		} catch (Exception e) {
-//			log.debug("pbs Remain while closing jcr test env.");
-//			log.debug("Exc Name : " + e.getClass().getName());
-//		}
-//	}
+	// // FIXME
+	// protected void tearDown() {
+	// try {
+	// super.tearDown();
+	// } catch (Exception e) {
+	// log.debug("pbs Remain while closing jcr test env.");
+	// log.debug("Exc Name : " + e.getClass().getName());
+	// }
+	// }
 }
