@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,8 @@ import org.springframework.core.io.Resource;
 
 /** Execute an OS specific system call. */
 public class SystemCall extends TreeSRelatedHelper implements Runnable {
+	public final static String LOG_STDOUT = "System.out";
+
 	private final Log log = LogFactory.getLog(getClass());
 
 	private String execDir;
@@ -53,6 +56,9 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 	private Resource stdErrFile = null;
 	private Resource stdInFile = null;
 	private Boolean redirectStdOut = false;
+
+	private List<SystemCallOutputListener> outputListeners = Collections
+			.synchronizedList(new ArrayList<SystemCallOutputListener>());
 
 	private Map<String, List<Object>> osCommands = new HashMap<String, List<Object>>();
 	private Map<String, String> osCmds = new HashMap<String, String>();
@@ -177,6 +183,9 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 		// Execute
 		ExecuteResultHandler executeResultHandler = createExecuteResultHandler(commandLine);
 
+		//
+		// THE EXECUTION PROPER
+		// 
 		try {
 			if (synchronous)
 				try {
@@ -200,6 +209,21 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 			IOUtils.closeQuietly(stdInStream);
 		}
 
+	}
+
+	public synchronized String function() {
+		final StringBuffer buf = new StringBuffer("");
+		SystemCallOutputListener tempOutputListener = new SystemCallOutputListener() {
+			public void newLine(SystemCall systemCall, String line,
+					Boolean isError) {
+				if (!isError)
+					buf.append(line);
+			}
+		};
+		addOutputListener(tempOutputListener);
+		run();
+		removeOutputListener(tempOutputListener);
+		return buf.toString();
 	}
 
 	public String asCommand() {
@@ -291,14 +315,14 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 						: new LogOutputStream() {
 							protected void processLine(String line, int level) {
 								if (line != null && !line.trim().equals(""))
-									log(stdOutLogLevel, line);
+									logStdOut(line);
 								if (stdOutWriter != null)
 									appendLineToFile(stdOutWriter, line);
 							}
 						}, new LogOutputStream() {
 					protected void processLine(String line, int level) {
 						if (line != null && !line.trim().equals(""))
-							log(stdErrLogLevel, line);
+							logStdErr(line);
 						if (stdErrWriter != null)
 							appendLineToFile(stdErrWriter, line);
 					}
@@ -314,8 +338,8 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 			public void onProcessComplete(int exitValue) {
 				String msg = "System call '" + commandLine
 						+ "' properly completed.";
-				if (log.isDebugEnabled())
-					log.debug(msg);
+				if (log.isTraceEnabled())
+					log.trace(msg);
 				if (testResult != null) {
 					forwardPath(testResult, null);
 					testResult.addResultPart(new SimpleResultPart(
@@ -360,6 +384,18 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 		}
 	}
 
+	protected void logStdOut(String line) {
+		for (SystemCallOutputListener outputListener : outputListeners)
+			outputListener.newLine(this, line, false);
+		log(stdOutLogLevel, line);
+	}
+
+	protected void logStdErr(String line) {
+		for (SystemCallOutputListener outputListener : outputListeners)
+			outputListener.newLine(this, line, true);
+		log(stdErrLogLevel, line);
+	}
+
 	/** Log from the underlying streams. */
 	protected void log(String logLevel, String line) {
 		if ("ERROR".equals(logLevel))
@@ -372,7 +408,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 			log.debug(line);
 		else if ("TRACE".equals(logLevel))
 			log.trace(line);
-		else if ("System.out".equals(logLevel))
+		else if (LOG_STDOUT.equals(logLevel))
 			System.out.println(line);
 		else if ("System.err".equals(logLevel))
 			System.err.println(line);
@@ -525,6 +561,19 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 
 	public void setRedirectStdOut(Boolean redirectStdOut) {
 		this.redirectStdOut = redirectStdOut;
+	}
+
+	public void addOutputListener(SystemCallOutputListener outputListener) {
+		outputListeners.add(outputListener);
+	}
+
+	public void removeOutputListener(SystemCallOutputListener outputListener) {
+		outputListeners.remove(outputListener);
+	}
+
+	public void setOutputListeners(
+			List<SystemCallOutputListener> outputListeners) {
+		this.outputListeners = outputListeners;
 	}
 
 	private class DummyexecuteStreamHandler implements ExecuteStreamHandler {

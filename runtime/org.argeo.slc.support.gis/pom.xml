@@ -23,6 +23,7 @@
 						</Export-Package>
 						<Import-Package>*,
 							org.opengis.feature.simple,
+							org.argeo.slc.structure
 						</Import-Package>
 					</instructions>
 				</configuration>
@@ -30,11 +31,18 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- SLC -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.core</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
 		</dependency>
 
+		<!-- GIS -->
 		<dependency>
 			<groupId>org.argeo.dep.osgi</groupId>
 			<artifactId>org.argeo.dep.osgi.jts</artifactId>

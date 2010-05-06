@@ -9,6 +9,7 @@
  */
 package org.argeo.slc.geotools;
 
+import java.awt.Color;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
@@ -18,18 +19,28 @@ import javax.swing.SwingUtilities;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.geotools.data.FeatureSource;
-import org.geotools.data.FileDataStore;
+import org.argeo.slc.gpsbabel.GpsBabelPositionProvider;
+import org.argeo.slc.jts.PositionProvider;
 import org.geotools.data.FileDataStoreFactorySpi;
 import org.geotools.data.FileDataStoreFinder;
+import org.geotools.feature.DefaultFeatureCollection;
+import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.simple.SimpleFeatureBuilder;
+import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.geometry.jts.ReferencedEnvelope;
 import org.geotools.map.DefaultMapContext;
+import org.geotools.map.DefaultMapLayer;
 import org.geotools.map.MapContext;
+import org.geotools.map.MapLayer;
+import org.geotools.referencing.crs.DefaultGeographicCRS;
+import org.geotools.styling.SLD;
+import org.geotools.styling.Style;
 import org.geotools.swing.JMapFrame;
 import org.geotools.swing.JMapPane;
-import org.geotools.swing.event.MapMouseAdapter;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
+
+import com.vividsolutions.jts.geom.Point;
 
 /**
  * GeoTools Quickstart demo application. Prompts the user for a shapefile and
@@ -62,18 +73,19 @@ public class Quickstart {
 		File dir = new File(
 				"/home/mbaudier/gis/projects/100122-EasternBalkans2010/data");
 
-		FeatureSource<SimpleFeatureType, SimpleFeature> featureSource = FileDataStoreFinder
-				.getDataStore(new File(dir, "countries-EuroMed-NEarth.shp"))
-				.getFeatureSource();
+		// FeatureSource<SimpleFeatureType, SimpleFeature> featureSource =
+		// FileDataStoreFinder
+		// .getDataStore(new File(dir, "countries-EuroMed-NEarth.shp"))
+		// .getFeatureSource();
 
 		// Create a map context and add our shapefile to it
-		MapContext map = new DefaultMapContext();
-		map.setTitle("Quickstart");
+		MapContext mapContext = new DefaultMapContext();
+		mapContext.setTitle("Quickstart");
 
 		// Now display the map
 		// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-		final JMapFrame frame = new JMapFrame(map);
+		final JMapFrame frame = new JMapFrame(mapContext);
 		frame.enableStatusBar(true);
 		frame.enableToolBar(true);
 		frame.enableLayerTable(true);
@@ -122,15 +134,61 @@ public class Quickstart {
 			}
 		});
 
-		map.addLayer(FileDataStoreFinder.getDataStore(
-				new File(dir, "cities-EuroMed-NEarth.shp")).getFeatureSource(),
-				null);
-		map.addLayer(FileDataStoreFinder.getDataStore(
+		// Create position type
+		SimpleFeatureTypeBuilder builder = new SimpleFeatureTypeBuilder();
+		builder.setName("Position");
+		builder.setNamespaceURI("http://localhost/");
+		builder.setCRS(DefaultGeographicCRS.WGS84);
+
+		// add attributes in order
+		builder.add("Location", Point.class);
+		builder.add("ID", Integer.class);
+		builder.add("Name", String.class);
+
+		// build the type
+		final SimpleFeatureType POSITION = builder.buildFeatureType();
+
+		PositionProvider positionProvider = new GpsBabelPositionProvider();
+
+		// FeatureSource<SimpleFeatureType, SimpleFeature> fs =
+		// FileDataStoreFinder
+		// .getDataStore(new File(dir, "countries-EuroMed-NEarth.shp"))
+		// .getFeatureSource();
+
+		// mapContext.addLayer(FileDataStoreFinder.getDataStore(
+		// new File(dir, "cities-EuroMed-NEarth.shp")).getFeatureSource(),
+		// null);
+		mapContext.addLayer(FileDataStoreFinder.getDataStore(
 				new File(dir, "countries-EuroMed-NEarth.shp"))
 				.getFeatureSource(), null);
-		map.addLayer(FileDataStoreFinder.getDataStore(
-				new File(dir, "highways-EastBalkan-OSM.shp"))
-				.getFeatureSource(), null);
+		 mapContext.addLayer(FileDataStoreFinder.getDataStore(
+		 new File(dir, "highways-EastBalkan-OSM.shp"))
+		 .getFeatureSource(), null);
 
+		MapLayer mapLayer = null;
+		while (true) {
+			SimpleFeatureBuilder featureBuilder = new SimpleFeatureBuilder(
+					POSITION);
+
+			// add the attributes
+			featureBuilder.add(positionProvider.currentPosition());
+			featureBuilder.add(12);
+			featureBuilder.add("My Name");
+
+			// build the feature
+			SimpleFeature feature = featureBuilder.buildFeature("Flag.12");
+			FeatureCollection<SimpleFeatureType, SimpleFeature> collection = new DefaultFeatureCollection(
+					"testCollection", POSITION);
+			collection.add(feature);
+			if (mapLayer != null)
+				mapContext.removeLayer(mapLayer);
+			Style style = SLD.createSimpleStyle(POSITION, Color.RED);
+			mapLayer = new DefaultMapLayer(collection, style, "");
+			mapContext.addLayer(mapLayer);
+			// mapContext.addLayer(collection,null);
+
+			Thread.sleep(1000);
+		}
 	}
+
 }
