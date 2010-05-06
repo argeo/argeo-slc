@@ -15,6 +15,7 @@
 		<module>org.argeo.slc.dep.server</module>
 		<module>org.argeo.slc.dep.agent</module>
 		<module>org.argeo.slc.dep.detached</module>
+		<module>org.argeo.slc.dep.gis</module>
 		<module>org.argeo.slc.dep.sdk</module>
 		<module>org.argeo.slc.dep.sdk.sources</module>
 	</modules>
