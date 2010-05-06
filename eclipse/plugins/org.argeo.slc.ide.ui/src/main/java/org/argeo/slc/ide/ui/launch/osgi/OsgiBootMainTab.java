@@ -23,6 +23,10 @@ import org.eclipse.swt.widgets.Text;
 public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 		OsgiLauncherConstants {
 	private Listener listener = new Listener();
+
+	private Button syncBundles;
+	private Button clearDataDirectory;
+
 	private Button addJvmPaths;
 	private Text additionalVmArgs;
 
@@ -32,10 +36,30 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout());
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
+
+		createGeneral(container);
 		createAdditionalProgramArgs(container);
 		createAdditionalVmArgumentBlock(container);
 		Dialog.applyDialogFont(container);
 		setControl(container);
+	}
+
+	protected void createGeneral(Composite parent) {
+		Group container = new Group(parent, SWT.NONE);
+		container.setText("General");
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		container.setLayout(layout);
+		container.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		syncBundles = new Button(container, SWT.CHECK);
+		syncBundles.addSelectionListener(listener);
+		new Label(container, SWT.NONE)
+				.setText("Always keep bundle in line with the target platform");
+		clearDataDirectory = new Button(container, SWT.CHECK);
+		clearDataDirectory.addSelectionListener(listener);
+		new Label(container, SWT.NONE)
+				.setText("Clear data directory before launch");
 	}
 
 	protected void createAdditionalProgramArgs(Composite parent) {
@@ -92,6 +116,11 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		// System.out.println("initializeFrom");
 		try {
+			syncBundles.setSelection(configuration.getAttribute(
+					ATTR_SYNC_BUNDLES, true));
+			clearDataDirectory.setSelection(configuration.getAttribute(
+					ATTR_CLEAR_DATA_DIRECTORY, false));
+
 			additionalProgramArgs.setText(configuration.getAttribute(
 					ATTR_ADDITIONAL_PROGRAM_ARGS, ""));
 			addJvmPaths.setSelection(configuration.getAttribute(
@@ -106,6 +135,11 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		// System.out.println("performApply");
+		configuration.setAttribute(ATTR_SYNC_BUNDLES, syncBundles
+				.getSelection());
+		configuration.setAttribute(ATTR_CLEAR_DATA_DIRECTORY,
+				clearDataDirectory.getSelection());
+
 		configuration.setAttribute(ATTR_ADDITIONAL_PROGRAM_ARGS,
 				additionalProgramArgs.getText());
 		configuration.setAttribute(ATTR_ADDITIONAL_VM_ARGS, additionalVmArgs
@@ -119,6 +153,8 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
 		// System.out.println("setDefaults");
+		configuration.setAttribute(ATTR_SYNC_BUNDLES, true);
+		configuration.setAttribute(ATTR_CLEAR_DATA_DIRECTORY, false);
 		configuration.setAttribute(ATTR_ADD_JVM_PATHS, false);
 		configuration.setAttribute(ATTR_ADDITIONAL_VM_ARGS, "-Xmx128m");
 		configuration.setAttribute(ATTR_ADDITIONAL_PROGRAM_ARGS, "-console");

@@ -26,6 +26,8 @@ import org.eclipse.jdt.launching.IVMInstall2;
 import org.eclipse.jdt.launching.IVMInstallType;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.pde.core.plugin.IPluginModelBase;
+import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.ui.launcher.IPDELauncherConstants;
 import org.eclipse.swt.widgets.Display;
 
@@ -68,8 +70,17 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			Map<String, String> systemPropertiesToAppend, String dataDir)
 			throws CoreException {
 		// Convert bundle lists
-		String targetBundles = configuration.getAttribute(
-				IPDELauncherConstants.TARGET_BUNDLES, "");
+		final String targetBundles;
+		if (configuration.getAttribute(ATTR_SYNC_BUNDLES, true)) {
+			StringBuffer buf = new StringBuffer();
+			for (IPluginModelBase model : PluginRegistry.getExternalModels()) {
+				buf.append(model.getBundleDescription().getSymbolicName());
+				buf.append(',');
+			}
+			targetBundles = buf.toString();
+		} else
+			targetBundles = configuration.getAttribute(
+					IPDELauncherConstants.TARGET_BUNDLES, "");
 		configuration.setAttribute(IPDELauncherConstants.TARGET_BUNDLES,
 				convertBundleList(bundlesToStart, targetBundles));
 
@@ -111,6 +122,12 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		if (dataDir != null) {
 			progArgs.append("-data ");
 			progArgs.append(surroundSpaces(dataDir));
+
+			if (configuration.getAttribute(ATTR_CLEAR_DATA_DIRECTORY, false)) {
+				File dataDirFile = new File(dataDir);
+				deleteDir(dataDirFile);
+				dataDirFile.mkdirs();
+			}
 		}
 		String additionalProgramArgs = configuration.getAttribute(
 				OsgiLauncherConstants.ATTR_ADDITIONAL_PROGRAM_ARGS, "");
@@ -118,6 +135,17 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		configuration.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
 				progArgs.toString());
+	}
+
+	private static void deleteDir(File dir) {
+		File[] files = dir.listFiles();
+		for (File file : files) {
+			if (file.isDirectory())
+				deleteDir(file);
+			else
+				file.delete();
+		}
+		dir.delete();
 	}
 
 	protected static void addVms(StringBuffer vmArgs) {
@@ -180,6 +208,12 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 				bufBundles.append(',');
 
 			String bundleId = stComa.nextToken();
+			if (bundleId.indexOf('*') >= 0)
+				throw new RuntimeException(
+						"Bundle id "
+								+ bundleId
+								+ " not properly formatted, clean your workspace projects");
+
 			int indexAt = bundleId.indexOf('@');
 			boolean modified = false;
 			if (indexAt >= 0) {

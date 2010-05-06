@@ -70,30 +70,43 @@ public class SlcIdeUiPlugin extends AbstractUIPlugin {
 
 	protected static class DebugEventListener implements IDebugEventSetListener {
 		public void handleDebugEvents(DebugEvent[] events) {
+			if (events == null)
+				return;
+
 			for (int i = 0; i < events.length; i++) {
 				DebugEvent event = events[i];
+				if (event == null)
+					continue;
 				Object source = event.getSource();
 				if (source instanceof IProcess
 						&& event.getKind() == DebugEvent.TERMINATE) {
 					IProcess process = (IProcess) source;
+					if (process == null)
+						continue;
 					ILaunch launch = process.getLaunch();
-					if (launch != null) {
+					if (launch != null)
 						refreshOsgiBootLaunch(launch);
-					}
+
 				}
 			}
 		}
 
 		protected void refreshOsgiBootLaunch(ILaunch launch) {
 			try {
+				if (launch == null)
+					return;
 				IResource[] resources = launch.getLaunchConfiguration()
 						.getMappedResources();
+				if (resources == null)
+					return;
 				if (resources.length > 0) {
 					IResource propertiesFile = resources[0];
+					if (propertiesFile.getParent() == null)
+						return;
 					propertiesFile.getParent().refreshLocal(
 							IResource.DEPTH_INFINITE, null);
-//					System.out.println("Refreshed "
-//							+ propertiesFile.getParent());
+					// System.out.println("Refreshed "
+					// + propertiesFile.getParent());
 				}
 			} catch (CoreException e) {
 				e.printStackTrace();

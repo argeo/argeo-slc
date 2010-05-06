@@ -14,6 +14,11 @@ public interface OsgiLauncherConstants {
 	// + ".defaultProgramArgs";
 
 	// Configuration
+	public final static String ATTR_SYNC_BUNDLES = SlcIdeUiPlugin.ID
+			+ ".syncBundles";
+	public final static String ATTR_CLEAR_DATA_DIRECTORY = SlcIdeUiPlugin.ID
+			+ ".clearDataDirectory";
+
 	public final static String ATTR_DEFAULT_VM_ARGS = SlcIdeUiPlugin.ID
 			+ ".defaultVmArgs";
 	public final static String ATTR_ADDITIONAL_PROGRAM_ARGS = SlcIdeUiPlugin.ID
