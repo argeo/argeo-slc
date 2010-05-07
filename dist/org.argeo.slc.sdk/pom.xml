@@ -225,7 +225,7 @@
 						<executions>
 							<execution>
 								<id>rpm-sdk</id>
-								<phase>package</phase>
+								<phase>deploy</phase>
 								<goals>
 									<goal>rpm</goal>
 								</goals>
@@ -322,7 +322,7 @@
 							</execution>
 							<execution>
 								<id>rpm-devel</id>
-								<phase>package</phase>
+								<phase>deploy</phase>
 								<goals>
 									<goal>rpm</goal>
 								</goals>
@@ -352,7 +352,7 @@
 							</execution>
 							<execution>
 								<id>rpm-demo</id>
-								<phase>package</phase>
+								<phase>deploy</phase>
 								<goals>
 									<goal>rpm</goal>
 								</goals>
