@@ -84,6 +84,20 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.beanutils</artifactId>
 		</dependency>
+		<!-- JAI -->
+		<dependency>
+			<groupId>javax.media.jai</groupId>
+			<artifactId>com.springsource.javax.media.jai.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.media.jai</groupId>
+			<artifactId>com.springsource.javax.media.jai.codec</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.dep.osgi</groupId>
+			<artifactId>org.argeo.dep.osgi.jai.imageio</artifactId>
+		</dependency>
+
 	</dependencies>
 	<repositories>
 		<repository>

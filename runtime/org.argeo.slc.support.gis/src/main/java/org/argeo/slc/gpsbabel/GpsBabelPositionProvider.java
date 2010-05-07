@@ -34,4 +34,12 @@ public class GpsBabelPositionProvider implements PositionProvider {
 		return position;
 	}
 
+	public void setInputFormat(String inputFormat) {
+		this.inputFormat = inputFormat;
+	}
+
+	public void setInputFile(String inputFile) {
+		this.inputFile = inputFile;
+	}
+
 }
