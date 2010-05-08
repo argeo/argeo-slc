@@ -3,6 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Ui
 Bundle-SymbolicName: org.argeo.slc.gis.position.ui
 Bundle-Version: 1.0.0.qualifier
-Import-Package: org.argeo.slc.geotools;version="0.12.2.SNAPSHOT-r3562",
+Import-Package: org.argeo.slc.core.deploy;version="0.12.2.SNAPSHOT-r3503",
+ org.argeo.slc.geotools;version="0.12.2.SNAPSHOT-r3562",
+ org.argeo.slc.geotools.swing;version="0.12.2.SNAPSHOT-r3565",
  org.argeo.slc.jts;version="0.12.2.SNAPSHOT-r3562",
  org.springframework.osgi.util;version="1.2.1"

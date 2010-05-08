@@ -2,6 +2,7 @@ package org.argeo.slc.gpsbabel;
 
 import java.util.StringTokenizer;
 
+import org.argeo.slc.gis.model.Position;
 import org.argeo.slc.jts.PositionProvider;
 
 import com.vividsolutions.jts.geom.Coordinate;
@@ -20,7 +21,7 @@ public class GpsBabelPositionProvider implements PositionProvider {
 		gpsBabelCall = new GpsBabelCall(inputFormat, inputFile, "csv", "-");
 	}
 
-	public Point currentPosition() {
+	public Position currentPosition() {
 		// lazy init
 		if (gpsBabelCall == null)
 			init();
@@ -31,7 +32,7 @@ public class GpsBabelPositionProvider implements PositionProvider {
 		Double longitude = Double.parseDouble(st.nextToken());
 		Point position = geometryFactory.createPoint(new Coordinate(longitude,
 				latitude));
-		return position;
+		return new Position(position);
 	}
 
 	public void setInputFormat(String inputFormat) {

@@ -1,22 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="
-	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/osgi  
+	http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd
+    ">
 
-	<bean id="ui" class="org.argeo.slc.geotools.SimpleGisFieldViewer"
-		init-method="run">
+	<bean id="ui" class="org.argeo.slc.geotools.swing.GisFieldViewer">
 		<property name="positionProvider" ref="positionProvider" />
-		<property name="jaiImageIoClassLoader">
-			<bean class="org.springframework.osgi.util.BundleDelegatingClassLoader"
-				factory-method="createBundleClassLoaderFor">
-				<constructor-arg>
-					<ref bean="jai.imageio" />
-					<!--
-						<bean factory-bean="bundleContext" factory-method="getBundle" />
-					-->
-				</constructor-arg>
+		<property name="jaiImageIoClassLoader" ref="jai.imageio.bdClassLoader" />
+		<property name="vectors">
+			<bean class="org.argeo.slc.core.deploy.DefaultResourceSet">
+				<property name="base"
+					value="file:/home/mbaudier/gis/projects/100122-EasternBalkans2010/data" />
+				<property name="include" value="*.shp" />
+			</bean>
+			<!--
+				<list>
+				<value>file:/home/mbaudier/gis/projects/100122-EasternBalkans2010/data/countries-EuroMed-NEarth.shp
+				</value>
+				<value>file:/home/mbaudier/gis/projects/100122-EasternBalkans2010/data/highways-EastBalkan-OSM.shp
+				</value> </list>
+			-->
+		</property>
+		<property name="rasters">
+			<bean class="org.argeo.slc.core.deploy.DefaultResourceSet">
+				<property name="base"
+					value="file:/home/mbaudier/gis/data/100501-Poehali" />
+				<property name="include" value="*.gif" />
 			</bean>
 		</property>
 	</bean>
+
+	<bean id="jai.imageio.bdClassLoader"
+		class="org.springframework.osgi.util.BundleDelegatingClassLoader"
+		factory-method="createBundleClassLoaderFor">
+		<constructor-arg>
+			<osgi:bundle symbolic-name="org.argeo.dep.osgi.jai.imageio" />
+		</constructor-arg>
+	</bean>
+
 </beans>

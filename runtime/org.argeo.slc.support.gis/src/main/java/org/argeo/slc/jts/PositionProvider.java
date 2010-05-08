@@ -1,7 +1,7 @@
 package org.argeo.slc.jts;
 
-import com.vividsolutions.jts.geom.Point;
+import org.argeo.slc.gis.model.Position;
 
 public interface PositionProvider {
-	public Point currentPosition();
+	public Position currentPosition();
 }

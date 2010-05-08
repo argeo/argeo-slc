@@ -6,8 +6,8 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<reference id="positionProvider" interface="org.argeo.slc.jts.PositionProvider" />
+	<reference id="positionProvider" interface="org.argeo.slc.jts.PositionProvider" /><!--
 
 	<bundle id="geotools" symbolic-name="org.argeo.dep.osgi.geotools" />
 	<bundle id="jai.imageio" symbolic-name="org.argeo.dep.osgi.jai.imageio" />
-</beans:beans>
+--></beans:beans>
