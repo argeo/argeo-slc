@@ -12,11 +12,57 @@
 	<packaging>jar</packaging>
 	<name>SLC GIS Dependencies</name>
 	<dependencies>
+		<!-- Standard runtime -->
+		<dependency>
+			<groupId>org.argeo.commons.osgi</groupId>
+			<artifactId>org.argeo.osgi.dep.stdruntime</artifactId>
+			<version>${version.argeo-commons}</version>
+			<type>pom</type>
+		</dependency>
+
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.gis</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<!--  Needed by Geotools -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.pool</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.dbcp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>com.springsource.org.postgresql.jdbc3</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>com.springsource.org.hsqldb</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Needed by beanutils -->
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.collections</artifactId>
+		</dependency>
+		<!-- Hibernate spatial -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>com.springsource.org.hibernate</artifactId>
+		</dependency>
+		<dependency>
+			<!-- Needed by DOM4j -->
+			<groupId>javax.xml.stream</groupId>
+			<artifactId>com.springsource.javax.xml.stream</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>
