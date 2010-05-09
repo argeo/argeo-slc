@@ -4,20 +4,20 @@ import java.util.Date;
 
 import com.vividsolutions.jts.geom.Point;
 
-public class Position {
+public class FieldPosition {
 	private Point location;
 	private Date timestamp;
 	private String comment;
 
-	public Position() {
+	public FieldPosition() {
 	}
 
-	public Position(Point location) {
+	public FieldPosition(Point location) {
 		this.location = location;
 		this.timestamp = new Date();
 	}
 
-	public Position(Point location, Date timestamp, String comment) {
+	public FieldPosition(Point location, Date timestamp, String comment) {
 		this.location = location;
 		this.timestamp = timestamp;
 		this.comment = comment;

@@ -46,6 +46,7 @@ public class GpsBabelCall extends SystemCall implements InitializingBean {
 		setCommand(command);
 
 		setStdOutLogLevel(LOG_STDOUT);
+		setExceptionOnFailed(true);
 	}
 
 	public final static void main(String[] args) {

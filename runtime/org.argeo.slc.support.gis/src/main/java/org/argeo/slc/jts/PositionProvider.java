@@ -1,7 +1,8 @@
 package org.argeo.slc.jts;
 
-import org.argeo.slc.gis.model.Position;
+import org.argeo.slc.gis.model.FieldPosition;
 
 public interface PositionProvider {
-	public Position currentPosition();
+	/** @return the position or null if it cannot be retrieved */
+	public FieldPosition currentPosition();
 }

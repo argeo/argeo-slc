@@ -37,6 +37,8 @@ public class VersatileZoomTool extends AbstractZoomTool {
 	private boolean computingZoomBox;
 	private boolean panning;
 
+	private Point2D fieldPosition;
+
 	/**
 	 * Constructor
 	 */
@@ -69,19 +71,32 @@ public class VersatileZoomTool extends AbstractZoomTool {
 	 */
 	@Override
 	public void onMouseClicked(MapMouseEvent e) {
-		centerMapToEvent(e);
+		if (SwingUtilities.isLeftMouseButton(e))
+			centerMapToEvent(e, getZoom());
+		else if (SwingUtilities.isRightMouseButton(e))
+			centerMapToEvent(e, 1 / getZoom());
+		else if (SwingUtilities.isMiddleMouseButton(e)) {
+			if (fieldPosition != null) {
+				Envelope2D env = new Envelope2D();
+				final double increment = 1d;
+				env.setFrameFromDiagonal(fieldPosition.getX() - increment,
+						fieldPosition.getY() - increment, fieldPosition.getX()
+								+ increment, fieldPosition.getY() + increment);
+				getMapPane().setDisplayArea(env);
+			}
+		}
 	}
 
-	protected void centerMapToEvent(MapMouseEvent e) {
+	protected void centerMapToEvent(MapMouseEvent e, Double zoomArg) {
 		Rectangle paneArea = getMapPane().getVisibleRect();
 		DirectPosition2D mapPos = e.getMapPosition();
 
 		double scale = getMapPane().getWorldToScreenTransform().getScaleX();
-		// double newScale = scale * zoom;
-		//
+		double newScale = scale * zoomArg;
+
 		DirectPosition2D corner = new DirectPosition2D(mapPos.getX() - 0.5d
-				* paneArea.getWidth() / scale, mapPos.getY() + 0.5d
-				* paneArea.getHeight() / scale);
+				* paneArea.getWidth() / newScale, mapPos.getY() + 0.5d
+				* paneArea.getHeight() / newScale);
 
 		Envelope2D newMapArea = new Envelope2D();
 		newMapArea.setFrameFromCenter(mapPos, corner);
@@ -100,7 +115,8 @@ public class VersatileZoomTool extends AbstractZoomTool {
 		if (SwingUtilities.isLeftMouseButton(ev)) {
 			startDragPos = new DirectPosition2D();
 			startDragPos.setLocation(ev.getMapPosition());
-		} else if (SwingUtilities.isMiddleMouseButton(ev)) {
+		} else if (SwingUtilities.isMiddleMouseButton(ev)
+				|| SwingUtilities.isRightMouseButton(ev)) {
 			panePos = ev.getPoint();
 			panning = true;
 		}
@@ -193,6 +209,10 @@ public class VersatileZoomTool extends AbstractZoomTool {
 				getMapPane().repaint();
 			}
 		});
+	}
+
+	public void setFieldPosition(Point2D fieldPosition) {
+		this.fieldPosition = fieldPosition;
 	}
 
 	/**
