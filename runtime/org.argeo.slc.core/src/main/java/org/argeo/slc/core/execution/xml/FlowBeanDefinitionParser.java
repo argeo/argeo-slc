@@ -42,6 +42,10 @@ public class FlowBeanDefinitionParser extends
 		if (StringUtils.hasText(parent))
 			builder.setParentName(parent);
 
+		
+		builder.getBeanDefinition().setDescription(DomUtils.getChildElementValueByTagName(element, 
+				"description"));
+		
 		List<Element> execElems = new ArrayList<Element>();
 		List<Element> argsElems = new ArrayList<Element>();
 		NodeList nodeList = element.getChildNodes();
@@ -50,7 +54,7 @@ public class FlowBeanDefinitionParser extends
 			if (node instanceof Element) {
 				if (DomUtils.nodeNameEquals(node, "arg"))
 					argsElems.add((Element) node);
-				else
+				else if(!DomUtils.nodeNameEquals(node, "description"))
 					execElems.add((Element) node);
 			}
 		}
@@ -73,21 +77,10 @@ public class FlowBeanDefinitionParser extends
 		// Executables
 		if (execElems.size() != 0) {
 			ManagedList executables = new ManagedList(execElems.size());
-			for (int i = 0; i < execElems.size(); i++) {
-				Element child = execElems.get(i);
-				String name = child.getLocalName();
-				if (DomUtils.nodeNameEquals(child, "bean")
-						|| DomUtils.nodeNameEquals(child, "ref")) {
-					// Object target = parseBeanReference((Element) child,
-					// parserContext, builder);
-					executables.add(NamespaceUtils.parseBeanOrReference(child,
-							parserContext, builder.getBeanDefinition()));
-				} else if (DomUtils.nodeNameEquals(child, "flow")) {
-					throw new SlcException(
-							"Nested flows are not yet supported, use a standard ref to another flow.");
-				} else {
-					throw new SlcException("Unsupported child '" + name + "'");
-				}
+			for(Element child : execElems) {
+				// child validity check is performed in xsd  
+				executables.add(NamespaceUtils.parseBeanOrReference(child,
+						parserContext, builder.getBeanDefinition()));				
 			}
 			builder.addPropertyValue("executables", executables);
 		}

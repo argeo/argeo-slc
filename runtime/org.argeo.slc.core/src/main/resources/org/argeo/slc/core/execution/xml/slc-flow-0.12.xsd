@@ -26,6 +26,7 @@
 			<xsd:complexContent>
 				<xsd:extension base="beans:identifiedType">
 					<xsd:sequence>
+						<xsd:element ref="beans:description" minOccurs="0"/>
 						<xsd:sequence>
 							<xsd:element name="arg" minOccurs="0" maxOccurs="unbounded"
 								type="flow:argType">
@@ -41,6 +42,7 @@
 							<xsd:choice minOccurs="0" maxOccurs="unbounded">
 								<xsd:element ref="beans:bean" />
 								<xsd:element ref="beans:ref" />
+								<xsd:element ref="flow:flow" />
 							</xsd:choice>
 							<!--
 								<xsd:any namespace="##other" processContents="strict"
@@ -94,6 +96,7 @@
 			<xsd:complexContent>
 				<xsd:extension base="beans:identifiedType">
 					<xsd:sequence>
+						<xsd:element ref="beans:description" minOccurs="0"/>
 						<xsd:choice minOccurs="0" maxOccurs="unbounded">
 							<xsd:element name="primitive" type="flow:primitiveSpecAttributeType"
 								minOccurs="0" maxOccurs="unbounded">
@@ -266,6 +269,7 @@
 		<xsd:choice minOccurs="0" maxOccurs="1">
 			<xsd:element ref="beans:bean" />
 			<xsd:element ref="beans:ref" />
+			<xsd:element ref="flow:param" />
 		</xsd:choice>
 		<xsd:attribute name="name" use="required" type="xsd:string">
 			<xsd:annotation>
@@ -298,7 +302,15 @@
 			]]></xsd:documentation>
 		</xsd:annotation>
 	</xsd:attribute>
-
+<!--
+	<xsd:attribute name="var" type="xsd:boolean">
+		<xsd:annotation>
+			<xsd:documentation><![CDATA[
+	If true, the decorated bean is set to scope execution and proxied.
+			]]></xsd:documentation>
+		</xsd:annotation>
+	</xsd:attribute>
+-->
 	<xsd:element name="param">
 		<xsd:annotation>
 			<xsd:documentation><![CDATA[
@@ -325,5 +337,8 @@
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
+
+	<!-- for description tags, beans or current namespace are valid -->
+	<xsd:element name="description" substitutionGroup="beans:description"/>
 
 </xsd:schema>

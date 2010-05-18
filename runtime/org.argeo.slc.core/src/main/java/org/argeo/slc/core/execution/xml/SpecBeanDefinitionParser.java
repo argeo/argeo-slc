@@ -26,6 +26,9 @@ public class SpecBeanDefinitionParser extends
 	@Override
 	protected void doParse(Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
+		builder.getBeanDefinition().setDescription(DomUtils.getChildElementValueByTagName(element, 
+		"description"));		
+		
 		ManagedMap attributes = new ManagedMap();
 
 		// Primitives

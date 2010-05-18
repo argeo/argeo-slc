@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:flow="http://www.argeo.org/schema/slc-flow"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
+
+	<import resource="classpath:org/argeo/slc/core/execution/spring.xml" />
+	<import resource="classpath:/org/argeo/slc/core/test/spring.xml" />
+
+	<flow:spec id="advanced.spec">
+		<flow:description>spec description</flow:description>
+		<flow:primitive name="param1" isParameter="true"
+			type="integer" />
+		<flow:ref name="param2" targetClass="org.argeo.slc.core.test.BasicTestData"
+			isParameter="true">
+			<flow:value>
+				<bean class="org.argeo.slc.core.test.BasicTestData">
+					<property name="expected" value="tata" />
+					<property name="reached" value="tata" />
+				</bean>				
+			</flow:value>
+		</flow:ref>	
+	</flow:spec>
+
+
+	<flow:flow id="advanced.flowTemplate" abstract="true" spec="advanced.spec"
+		path="/path">
+		<description>flow description</description>
+ 		<bean parent="task.echo"
+			scope="execution">
+			<property name="message" value="Advanced: param1=@{param1}" />
+			<aop:scoped-proxy/>
+		</bean> 
+ 		<flow:flow>
+ 			<bean parent="task.echo" p:message="Flow in Flow - param1=@{param1}" />
+ 		</flow:flow>
+ 
+	 	<bean class="org.argeo.slc.core.test.SimpleTestRun">
+			<property name="testDefinition">
+				<bean class="org.argeo.slc.core.test.BasicTestDefinition" />
+			</property>
+			<property name="testData">
+				<flow:param name="param2" />
+			</property>
+
+			<property name="testResult">
+				<bean parent="slcDefault.test.basicTreeTestResult" scope="execution">
+					<property name="attributes">
+						<map>
+							<entry key="param1" value="@{param1}" />
+						</map>
+					</property>
+					<aop:scoped-proxy />
+				</bean>
+			</property>
+		</bean>
+ 
+	</flow:flow>
+
+	<flow:flow id="advanced.flowTemplate2" abstract="true" spec="advanced.spec"
+		path="/path">
+ 		<bean parent="task.echo"
+			scope="execution">
+			<property name="message" value="Advanced2: param1=@{param1}" />
+			<aop:scoped-proxy/>
+		</bean>
+		<flow:flow parent="advanced.flowTemplate">
+			<flow:arg name="param1" value="@{param1}"/>
+			<flow:arg name="param2">
+				<!-- flow:param in flow:arg -->
+				<flow:param name="param2" />
+			</flow:arg>
+		</flow:flow>
+	</flow:flow>
+
+	
+	<flow:flow id="flow1" parent="advanced.flowTemplate">
+		<flow:arg name="param1" value="1" />
+	</flow:flow>
+	
+	<flow:flow id="flow2">
+		<flow:flow parent="advanced.flowTemplate">
+			<flow:arg name="param1" value="2" />
+		</flow:flow>
+	</flow:flow>
+
+	<flow:flow id="flow3" parent="advanced.flowTemplate2">
+		<flow:arg name="param1" value="3" />
+		<flow:arg name="param2">
+			<bean class="org.argeo.slc.core.test.BasicTestData">
+				<property name="expected" value="tata" />
+				<property name="reached" value="toto" />
+			</bean>		
+		</flow:arg>
+	</flow:flow>
+
+</beans>

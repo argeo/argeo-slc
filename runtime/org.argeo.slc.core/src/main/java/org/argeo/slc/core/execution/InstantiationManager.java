@@ -26,14 +26,14 @@ public class InstantiationManager {
 	}
 
 	public void flowInitializationStarted(ExecutionFlow flow, String flowName) {
-		if (log.isTraceEnabled())
-			log.trace("Start initialization of " + flow.hashCode() + " ("
-					+ flow + " - " + flow.getClass() + ")");
-
 		// set the flow name if it is DefaultExecutionFlow
 		if (flow instanceof DefaultExecutionFlow) {
 			((DefaultExecutionFlow) flow).setBeanName(flowName);
 		}
+		
+		if (log.isTraceEnabled())
+			log.trace("Start initialization of " + flow.hashCode() + " ("
+					+ flow + " - " + flow.getClass() + ")");
 
 		// log.info("# flowInitializationStarted " + flowName);
 		// create a stack for this thread if there is none
@@ -47,12 +47,19 @@ public class InstantiationManager {
 		if (log.isTraceEnabled())
 			log.trace("Finish initialization of " + flow.hashCode() + " ("
 					+ flow + " - " + flow.getClass() + ")");
-		ExecutionFlow registeredFlow = flowStack.get().pop();
-		if (registeredFlow != null) {
-			if (!flow.getName().equals(registeredFlow.getName()))
-				throw new SlcException("Current flow is " + flow);
-			// log.info("# flowInitializationFinished " + flowName);
-			// initializingFlow.set(null);
+		
+		if(flowStack.get() != null) {
+			ExecutionFlow registeredFlow = flowStack.get().pop();
+			if (registeredFlow != null) {
+				if (!flow.getName().equals(registeredFlow.getName()))
+					throw new SlcException("Current flow is " + flow);
+				// log.info("# flowInitializationFinished " + flowName);
+				// initializingFlow.set(null);
+			}
+		}
+		else {
+			// happens for flows imported as services
+			log.warn("flowInitializationFinished - Flow Stack is null");
 		}
 	}
 

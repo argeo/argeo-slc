@@ -10,6 +10,7 @@ public class FlowNamespaceHandler extends NamespaceHandlerSupport {
 		registerBeanDefinitionDecoratorForAttribute("as-flow",
 				new AsFlowDecorator());
 		registerBeanDefinitionParser("param", new ParamDecorator());
+//		registerBeanDefinitionDecoratorForAttribute("var", new ExecutionScopeDecorator());
 	}
 
 }
