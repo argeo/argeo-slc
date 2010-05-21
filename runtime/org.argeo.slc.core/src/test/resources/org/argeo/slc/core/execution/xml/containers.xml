@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:flow="http://www.argeo.org/schema/slc-flow" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
+
+	<import resource="classpath:org/argeo/slc/core/execution/spring.xml" />
+	<import resource="classpath:/org/argeo/slc/core/test/spring.xml" />
+
+	<bean id="testResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+
+	<bean id="testDef" class="org.argeo.slc.core.test.BasicTestDefinition" />
+
+	<bean id="testRunTemplate" class="org.argeo.slc.core.test.SimpleTestRun" abstract="true">
+		<property name="testDefinition" ref="testDef" />
+		<property name="testResult" ref="testResult"/>
+	</bean>	
+
+	<flow:spec id="test.list.spec">
+		<flow:ref name="list1" targetClass="java.util.List">
+			<flow:value>
+				<!-- a list element can be used directly as default value-->
+				<list>
+					<value>val1</value>
+				</list>
+			</flow:value>
+		</flow:ref>
+		<flow:ref name="list2" targetClass="java.util.List" />
+		<!-- following parameters are not used in flow -->
+		<flow:ref name="dummyMap" targetClass="java.util.Map">
+			<flow:value>
+				<map></map>
+			</flow:value>
+		</flow:ref>
+		<flow:ref name="dummySet" targetClass="java.util.Set">
+			<flow:value>
+				<set></set>
+			</flow:value>
+		</flow:ref>
+		<flow:ref name="dummyProperties" targetClass="java.util.Properties">
+			<flow:value>
+				<props></props>
+			</flow:value>
+		</flow:ref>
+		
+	</flow:spec>
+
+
+	<flow:flow id="test.list.flowTemplate" abstract="true" spec="test.list.spec"
+		path="/path">
+ 		<bean parent="task.echo">
+			<property name="message" value="list1=@{list1}, list2=@{list2}" />
+			<flow:variable/>
+		</bean> 
+
+		<bean parent="testRunTemplate">
+			<property name="testData">
+				<bean class="org.argeo.slc.core.test.BasicTestData">
+					<property name="expected">
+						<flow:param name="list1"/>
+					</property>
+					<property name="reached">
+						<flow:param name="list2"/>
+					</property>
+				</bean>
+			</property>					
+		</bean>
+ 
+	</flow:flow>
+
+	<flow:flow id="test.list.flow1" parent="test.list.flowTemplate">
+		<flow:arg name="list1">
+			<list>
+				<value>val1</value>
+				<value>val2</value>			
+			</list>
+		</flow:arg>
+		<flow:arg name="list2">
+			<list>
+				<value>val1</value>
+				<value>val2</value>			
+			</list>
+		</flow:arg>
+		
+		<!-- not used in flow (just to test that the syntax is accepted): -->
+		<flow:arg name="dummyMap">
+			<map></map>
+		</flow:arg>
+		<flow:arg name="dummySet">
+			<set></set>
+		</flow:arg>
+		<flow:arg name="dummyProperties">
+			<props></props>
+		</flow:arg>		
+		
+	</flow:flow>
+	
+	<flow:flow id="test.list.flow2" parent="test.list.flowTemplate">
+		<description>use default value for parameter "list1"</description>
+		<flow:arg name="list2">
+			<list>
+				<value>val1</value>
+			</list>
+		</flow:arg>
+	</flow:flow>
+
+
+</beans>
