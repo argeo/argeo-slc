@@ -6,13 +6,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionContext;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-public class MapExecutionContext implements ExecutionContext {
+public class MapExecutionContext implements ExecutionContext,
+		ApplicationContextAware {
 	private final Map<String, Object> variables = Collections
 			.synchronizedMap(new HashMap<String, Object>());
 
 	private final String uuid;
+
+	private ApplicationContext applicationContext;
 
 	public MapExecutionContext() {
 		uuid = UUID.randomUUID().toString();
@@ -21,10 +30,41 @@ public class MapExecutionContext implements ExecutionContext {
 	}
 
 	public void setVariable(String key, Object value) {
+		// check if we do not refer to a bean
+		int lastInd = key.lastIndexOf('.');
+		if (applicationContext != null && lastInd > 0) {
+			String beanName = key.substring(0, lastInd);
+			String propertyName = key.substring(lastInd + 1);
+			if (applicationContext.containsBean(beanName)) {
+				BeanWrapper beanWrapper = new BeanWrapperImpl(
+						applicationContext.getBean(beanName));
+				if (!beanWrapper.isWritableProperty(propertyName))
+					throw new SlcException("No writable property "
+							+ propertyName + " in bean " + beanName);
+				beanWrapper.setPropertyValue(propertyName, value);
+			}
+		}
+
 		variables.put(key, value);
 	}
 
 	public Object getVariable(String key) {
+		// check if we do not refer to a bean
+		int lastInd = key.lastIndexOf('.');
+		if (applicationContext != null && lastInd > 0) {
+			String beanName = key.substring(0, lastInd);
+			String propertyName = key.substring(lastInd + 1);
+			if (applicationContext.containsBean(beanName)) {
+				BeanWrapper beanWrapper = new BeanWrapperImpl(
+						applicationContext.getBean(beanName));
+				if (!beanWrapper.isReadableProperty(propertyName))
+					throw new SlcException("No readable property "
+							+ propertyName + " in bean " + beanName);
+				Object obj = beanWrapper.getPropertyValue(propertyName);
+				return obj;
+			}
+		}
+
 		return variables.get(key);
 	}
 
@@ -41,7 +81,12 @@ public class MapExecutionContext implements ExecutionContext {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()+"#"+uuid;
+		return getClass().getSimpleName() + "#" + uuid;
+	}
+
+	public void setApplicationContext(ApplicationContext applicationContext)
+			throws BeansException {
+		this.applicationContext = applicationContext;
 	}
 
 }
