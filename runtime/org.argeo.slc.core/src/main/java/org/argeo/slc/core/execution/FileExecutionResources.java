@@ -79,6 +79,18 @@ public class FileExecutionResources implements ExecutionResources {
 		return resource;
 	}
 
+	public String getWritableOsPath(String relativePath) {
+		try {
+			return getFile(relativePath).getCanonicalPath();
+		} catch (IOException e) {
+			throw new SlcException("Cannot find canonical path", e);
+		}
+	}
+
+	public File getWritableOsFile(String relativePath) {
+		return getFile(relativePath);
+	}
+
 	public String getAsOsPath(Resource resource, Boolean overwrite) {
 		File file = fileFromResource(resource);
 		if (file != null)
@@ -133,8 +145,13 @@ public class FileExecutionResources implements ExecutionResources {
 
 	}
 
-	public File getFile(String relativePath) {
+	protected File getFile(String relativePath) {
+		File writableBaseDir = getWritableBaseDir();
+		return new File(writableBaseDir.getPath() + File.separator
+				+ relativePath.replace('/', File.separatorChar));
+	}
 
+	public File getWritableBaseDir() {
 		if (withExecutionSubdirectory) {
 			Assert.notNull(executionContext, "execution context is null");
 			String path = baseDir.getPath()
@@ -144,13 +161,9 @@ public class FileExecutionResources implements ExecutionResources {
 									executionContext
 											.getVariable(ExecutionContext.VAR_EXECUTION_CONTEXT_CREATION_DATE))
 					+ executionContext.getUuid();
-			File executionDir = new File(path);
-
-			return new File(executionDir.getPath() + File.separator
-					+ relativePath.replace('/', File.separatorChar));
+			return new File(path);
 		} else {
-			return new File(baseDir.getPath() + File.separator
-					+ relativePath.replace('/', File.separatorChar));
+			return baseDir;
 		}
 	}
 

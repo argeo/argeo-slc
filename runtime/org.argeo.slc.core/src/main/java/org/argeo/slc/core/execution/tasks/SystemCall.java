@@ -30,14 +30,13 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.core.execution.ExecutionResources;
-import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestStatus;
 import org.springframework.core.io.Resource;
 
 /** Execute an OS specific system call. */
-public class SystemCall extends TreeSRelatedHelper implements Runnable {
+public class SystemCall implements Runnable {
 	public final static String LOG_STDOUT = "System.out";
 
 	private final Log log = LogFactory.getLog(getClass());
@@ -341,7 +340,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 				if (log.isTraceEnabled())
 					log.trace(msg);
 				if (testResult != null) {
-					forwardPath(testResult, null);
+					forwardPath(testResult);
 					testResult.addResultPart(new SimpleResultPart(
 							TestStatus.PASSED, msg));
 				}
@@ -350,7 +349,7 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 			public void onProcessFailed(ExecuteException e) {
 				String msg = "System call '" + commandLine + "' failed.";
 				if (testResult != null) {
-					forwardPath(testResult, null);
+					forwardPath(testResult);
 					testResult.addResultPart(new SimpleResultPart(
 							TestStatus.ERROR, msg, e));
 				} else {
@@ -361,6 +360,10 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 				}
 			}
 		};
+	}
+
+	protected void forwardPath(TestResult testResult) {
+		// TODO: allocate a TreeSPath
 	}
 
 	/**
@@ -463,12 +466,16 @@ public class SystemCall extends TreeSRelatedHelper implements Runnable {
 
 	/** Append the argument (for chaining) */
 	public SystemCall arg(String arg) {
+		if (command == null)
+			command = new ArrayList<Object>();
 		command.add(arg);
 		return this;
 	}
 
 	/** Append the argument (for chaining) */
 	public SystemCall arg(String arg, String value) {
+		if (command == null)
+			command = new ArrayList<Object>();
 		command.add(arg);
 		command.add(value);
 		return this;

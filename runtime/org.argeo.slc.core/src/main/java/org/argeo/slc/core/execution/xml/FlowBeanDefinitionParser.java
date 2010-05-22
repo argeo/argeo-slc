@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionFlow;
+import org.argeo.slc.execution.ExecutionFlow;
+import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.ManagedList;
 import org.springframework.beans.factory.support.ManagedMap;
@@ -42,10 +45,9 @@ public class FlowBeanDefinitionParser extends
 		if (StringUtils.hasText(parent))
 			builder.setParentName(parent);
 
-		
-		builder.getBeanDefinition().setDescription(DomUtils.getChildElementValueByTagName(element, 
-				"description"));
-		
+		builder.getBeanDefinition().setDescription(
+				DomUtils.getChildElementValueByTagName(element, "description"));
+
 		List<Element> execElems = new ArrayList<Element>();
 		List<Element> argsElems = new ArrayList<Element>();
 		NodeList nodeList = element.getChildNodes();
@@ -54,7 +56,7 @@ public class FlowBeanDefinitionParser extends
 			if (node instanceof Element) {
 				if (DomUtils.nodeNameEquals(node, "arg"))
 					argsElems.add((Element) node);
-				else if(!DomUtils.nodeNameEquals(node, "description"))
+				else if (!DomUtils.nodeNameEquals(node, "description"))
 					execElems.add((Element) node);
 			}
 		}
@@ -77,18 +79,36 @@ public class FlowBeanDefinitionParser extends
 		// Executables
 		if (execElems.size() != 0) {
 			ManagedList executables = new ManagedList(execElems.size());
-			for(Element child : execElems) {
-				// child validity check is performed in xsd  
+			for (Element child : execElems) {
+				// child validity check is performed in xsd
 				executables.add(NamespaceUtils.parseBeanOrReference(child,
-						parserContext, builder.getBeanDefinition()));				
+						parserContext, builder.getBeanDefinition()));
 			}
-			builder.addPropertyValue("executables", executables);
+			if (executables.size() > 0)
+				builder.addPropertyValue("executables", executables);
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected Class<DefaultExecutionFlow> getBeanClass(Element element) {
-		return DefaultExecutionFlow.class;
+	protected Class<? extends ExecutionFlow> getBeanClass(Element element) {
+		String clss = element.getAttribute("class");
+		if (StringUtils.hasText(clss))
+			// TODO: check that it actually works
+			try {
+				return (Class<? extends ExecutionFlow>) getClass()
+						.getClassLoader().loadClass(clss);
+			} catch (ClassNotFoundException e) {
+				try {
+					return (Class<? extends ExecutionFlow>) Thread
+							.currentThread().getContextClassLoader().loadClass(
+									clss);
+				} catch (ClassNotFoundException e1) {
+					throw new SlcException("Cannot load class " + clss, e);
+				}
+			}
+		else
+			return DefaultExecutionFlow.class;
 	}
 
 	// parse nested bean definition
@@ -97,6 +117,18 @@ public class FlowBeanDefinitionParser extends
 	// return parserContext.getDelegate().parsePropertySubElement(element,
 	// builder.getBeanDefinition());
 	// }
+
+	@Override
+	protected String resolveId(Element element,
+			AbstractBeanDefinition definition, ParserContext parserContext)
+			throws BeanDefinitionStoreException {
+		String name = element.getAttribute("name");
+		if (StringUtils.hasText(name)) {
+			return name;
+		} else {
+			return super.resolveId(element, definition, parserContext);
+		}
+	}
 
 	protected boolean shouldGenerateIdAsFallback() {
 		return true;

@@ -92,7 +92,7 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	public void run() {
 		try {
 			for (Runnable executable : executables) {
-				doExecuteRunnable(executable);
+				this.doExecuteRunnable(executable);
 			}
 		} catch (RuntimeException e) {
 			if (failOnError)
