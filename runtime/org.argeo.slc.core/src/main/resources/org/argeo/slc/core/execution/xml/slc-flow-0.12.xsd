@@ -4,7 +4,8 @@
 	targetNamespace="http://www.argeo.org/schema/slc-flow"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 
-	<xsd:import namespace="http://www.springframework.org/schema/beans" />
+	<xsd:import namespace="http://www.springframework.org/schema/beans"
+		schemaLocation="http://www.springframework.org/schema/beans/spring-beans-2.5.xsd" />
 
 	<xsd:annotation>
 		<xsd:documentation><![CDATA[
@@ -50,6 +51,20 @@
 							-->
 						</xsd:sequence>
 					</xsd:sequence>
+					<xsd:attribute name="name" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[
+	Name of the flow (alternative to ID).
+							]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
+					<xsd:attribute name="class" type="xsd:string">
+						<xsd:annotation>
+							<xsd:documentation><![CDATA[
+	Another implementation of execution flow.
+							]]></xsd:documentation>
+						</xsd:annotation>
+					</xsd:attribute>
 					<xsd:attribute name="path" type="xsd:string">
 						<xsd:annotation>
 							<xsd:documentation><![CDATA[
@@ -134,10 +149,10 @@
 					<xsd:choice minOccurs="1" maxOccurs="1">
 						<xsd:element ref="beans:bean" />
 						<xsd:element ref="beans:ref" />
-						<xsd:element ref="beans:list"/>
-						<xsd:element ref="beans:set"/>
-						<xsd:element ref="beans:map"/>
-						<xsd:element ref="beans:props"/>							
+						<xsd:element ref="beans:list" />
+						<xsd:element ref="beans:set" />
+						<xsd:element ref="beans:map" />
+						<xsd:element ref="beans:props" />
 					</xsd:choice>
 				</xsd:complexType>
 			</xsd:element>
@@ -274,10 +289,10 @@
 			<xsd:element ref="beans:bean" />
 			<xsd:element ref="beans:ref" />
 			<xsd:element ref="flow:param" />
-			<xsd:element ref="beans:list"/>
-			<xsd:element ref="beans:set"/>
-			<xsd:element ref="beans:map"/>
-			<xsd:element ref="beans:props"/>			
+			<xsd:element ref="beans:list" />
+			<xsd:element ref="beans:set" />
+			<xsd:element ref="beans:map" />
+			<xsd:element ref="beans:props" />
 		</xsd:choice>
 		<xsd:attribute name="name" use="required" type="xsd:string">
 			<xsd:annotation>
@@ -338,7 +353,7 @@
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
-	
+
 	<xsd:element name="param">
 		<xsd:annotation>
 			<xsd:documentation><![CDATA[
@@ -365,8 +380,5 @@
 			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
-
-	<!-- for description tags, beans or current namespace are valid -->
-	<xsd:element name="description" substitutionGroup="beans:description" />
 
 </xsd:schema>
