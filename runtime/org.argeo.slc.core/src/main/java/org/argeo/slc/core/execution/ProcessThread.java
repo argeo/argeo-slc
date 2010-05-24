@@ -16,7 +16,7 @@ public class ProcessThread extends Thread {
 
 	private final AbstractExecutionModulesManager executionModulesManager;
 	private final SlcExecution slcProcess;
-	private final ThreadGroup processThreadGroup;
+	private final ProcessThreadGroup processThreadGroup;
 	private final List<RealizedFlow> flowsToProcess = new ArrayList<RealizedFlow>();
 
 	private Boolean hadAnError = false;
@@ -28,8 +28,7 @@ public class ProcessThread extends Thread {
 				"SLC Process #" + slcExecution.getUuid());
 		this.executionModulesManager = executionModulesManager;
 		this.slcProcess = slcExecution;
-		processThreadGroup = new ThreadGroup("SLC Process #"
-				+ slcExecution.getUuid() + " thread group");
+		processThreadGroup = new ProcessThreadGroup(this);
 	}
 
 	public void run() {
@@ -83,7 +82,7 @@ public class ProcessThread extends Thread {
 		return slcProcess;
 	}
 
-	public ThreadGroup getProcessThreadGroup() {
+	public ProcessThreadGroup getProcessThreadGroup() {
 		return processThreadGroup;
 	}
 

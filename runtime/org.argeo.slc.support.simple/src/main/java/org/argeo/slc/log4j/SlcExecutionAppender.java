@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.argeo.slc.core.execution.ExecutionThread;
+import org.argeo.slc.core.execution.ProcessThreadGroup;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -16,6 +17,7 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 
 	private Layout layout = null;
 	private String pattern = "%m - %c%n";
+	private Boolean onlyExecutionThread = true;
 
 	public void afterPropertiesSet() {
 		if (layout != null)
@@ -27,13 +29,14 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 
 	@Override
 	protected void append(LoggingEvent event) {
-		if (!(Thread.currentThread() instanceof ExecutionThread))
-			return;
-
-		ExecutionThread executionThread = (ExecutionThread) Thread
-				.currentThread();
-		executionThread.dispatchAddStep(new SlcExecutionStep(layout
-				.format(event)));
+		Thread currentThread = Thread.currentThread();
+		if (currentThread.getThreadGroup() instanceof ProcessThreadGroup) {
+			if (onlyExecutionThread
+					&& !(currentThread instanceof ExecutionThread))
+				return;
+			((ProcessThreadGroup) currentThread.getThreadGroup())
+					.dispatchAddStep(new SlcExecutionStep(layout.format(event)));
+		}
 	}
 
 	public void destroy() throws Exception {
@@ -53,6 +56,10 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 
 	public void setPattern(String pattern) {
 		this.pattern = pattern;
+	}
+
+	public void setOnlyExecutionThread(Boolean onlyExecutionThread) {
+		this.onlyExecutionThread = onlyExecutionThread;
 	}
 
 }

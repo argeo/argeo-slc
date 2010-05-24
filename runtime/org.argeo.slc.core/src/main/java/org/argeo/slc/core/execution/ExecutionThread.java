@@ -1,14 +1,9 @@
 package org.argeo.slc.core.execution;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.process.RealizedFlow;
-import org.argeo.slc.process.SlcExecutionNotifier;
 import org.argeo.slc.process.SlcExecutionStep;
 
 /** Thread of a single execution */
@@ -63,15 +58,8 @@ public class ExecutionThread extends Thread {
 		}
 	}
 
-	public void dispatchAddStep(SlcExecutionStep step) {
-		processThread.getSlcProcess().getSteps().add(step);
-		List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
-		steps.add(step);
-		for (Iterator<SlcExecutionNotifier> it = processThread
-				.getExecutionModulesManager().getSlcExecutionNotifiers()
-				.iterator(); it.hasNext();) {
-			it.next().addSteps(processThread.getSlcProcess(), steps);
-		}
+	private void dispatchAddStep(SlcExecutionStep step) {
+		processThread.getProcessThreadGroup().dispatchAddStep(step);
 	}
 
 }
