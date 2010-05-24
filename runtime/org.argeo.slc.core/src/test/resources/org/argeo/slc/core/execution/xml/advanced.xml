@@ -20,7 +20,7 @@
 	</bean>	
 
 	<flow:spec id="advanced.spec">
-		<flow:description>spec description</flow:description>
+		<description>spec description</description>
 		<flow:primitive name="param1" isParameter="true"
 			type="integer" />
 		<flow:primitive name="param2" isParameter="true"
