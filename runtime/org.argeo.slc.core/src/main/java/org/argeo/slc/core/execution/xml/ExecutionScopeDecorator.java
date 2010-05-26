@@ -19,7 +19,8 @@ public class ExecutionScopeDecorator implements BeanDefinitionDecorator {
 		
 		definition.getBeanDefinition().setScope("execution");
 		
-		boolean proxyTargetClass = true;
+		// Default: CGLib not used
+		boolean proxyTargetClass = false;
 		if (node instanceof Element) {
 			Element ele = (Element) node;
 			if (ele.hasAttribute(PROXY_TARGET_CLASS)) {
