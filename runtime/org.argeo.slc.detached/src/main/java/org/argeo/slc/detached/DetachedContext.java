@@ -1,6 +1,7 @@
 package org.argeo.slc.detached;
 
 import java.util.List;
+import java.util.Set;
 
 public interface DetachedContext {
 	public Object getDynamicRef(String ref);
@@ -10,4 +11,6 @@ public interface DetachedContext {
 	public String getCurrentPath();
 
 	public List getExecutedPaths();
+	
+	public Set getDynamicRefKeys();
 }

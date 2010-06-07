@@ -3,6 +3,7 @@ package org.argeo.slc.detached;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -35,5 +36,9 @@ public class DetachedContextImpl implements DetachedContext {
 		buf.append(" currentPath=").append(currentPath);
 		buf.append(" executedPaths=").append(executedPaths);
 		return buf.toString();
+	}
+	
+	public Set getDynamicRefKeys() {
+		return dynamicRefs.keySet();
 	}
 }
