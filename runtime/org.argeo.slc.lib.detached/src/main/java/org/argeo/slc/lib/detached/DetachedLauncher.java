@@ -92,7 +92,7 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 				osgiLocations.append(location);
 				if (log.isTraceEnabled())
 					log.trace("Added bundle " + name
-							+ " to slc.osgi.locations: " + location);
+							+ " to argeo.osgi.locations: " + location);
 			} else {
 				if (osgiBundles.length() != 0)
 					osgiBundles.append(',');
@@ -114,7 +114,7 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 
 		getSystemProperties().setProperty("osgi.bundles",
 				osgiBundles.toString());
-		getSystemProperties().setProperty("slc.osgi.locations",
+		getSystemProperties().setProperty("argeo.osgi.locations",
 				osgiLocations.toString());
 		
 		super.afterPropertiesSet();

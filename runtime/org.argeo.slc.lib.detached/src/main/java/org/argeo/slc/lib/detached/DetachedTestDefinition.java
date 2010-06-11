@@ -10,6 +10,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.context.ContextUtils;
+import org.argeo.slc.core.test.context.DefaultContextTestData;
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedClient;
 import org.argeo.slc.detached.DetachedRequest;
@@ -69,7 +70,7 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 		request.setUuid(UUID.randomUUID().toString());
 		request.setRef(stepBeanNameT);
 
-		DetachedTestData testData = testRun.getTestData();
+		DefaultContextTestData testData = testRun.getTestData();
 		if (testData != null) {
 			Map<String, Object> values = testData.getValues();
 			Properties inputParameters = new Properties();
@@ -84,25 +85,28 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 					+ stepBeanNameT, e);
 		}
 
+		DetachedAnswer answer;
 		try {
-			DetachedAnswer answer = client.receiveAnswer();
-			if (answer.getStatus() == DetachedAnswer.ERROR)
-				throw new SlcException("Error when executing step "
-						+ answer.getUuid() + ": " + answer.getLog());
-			else
-				log.info("Received answer for '" + request.getRef() + "' ("
-						+ answer.getStatusAsString() + "):" + answer.getLog());
-
-			if (testData != null) {
-				Properties outputParameters = answer.getProperties();
-				for (Object key : outputParameters.keySet())
-					testData.getValues().put(key.toString(),
-							outputParameters.get(key));
-			}
+			answer = client.receiveAnswer();
 		} catch (Exception e) {
 			throw new SlcException("Could not receive answer #"
 					+ request.getUuid() + " for step " + stepBeanNameT, e);
+		}			
+			
+		if (answer.getStatus() == DetachedAnswer.ERROR)
+			throw new SlcException("Error when executing step "
+					+ answer.getUuid() + ": " + answer.getLog());
+		else
+			log.info("Received answer for '" + request.getRef() + "' ("
+					+ answer.getStatusAsString() + "):" + answer.getLog());
+
+		if (testData != null) {
+			Properties outputParameters = answer.getProperties();
+			for (Object key : outputParameters.keySet())
+				testData.getValues().put(key.toString(),
+						outputParameters.get(key));
 		}
+
 
 		if (testData != null) {
 			ContextUtils.compareReachedExpected(testData, testRun

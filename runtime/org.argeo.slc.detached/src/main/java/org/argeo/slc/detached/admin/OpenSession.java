@@ -1,7 +1,7 @@
 package org.argeo.slc.detached.admin;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -19,7 +19,6 @@ public class OpenSession implements DetachedAdminCommand {
 
 	public DetachedSession execute(DetachedRequest request,
 			BundleContext bundleContext) {
-		MinimalBundlesManager bundlesManager = new MinimalBundlesManager(bundleContext);
 		
 		DetachedSession session = new DetachedSession();
 		session.setUuid(Long.toString(System.currentTimeMillis()));
@@ -32,43 +31,36 @@ public class OpenSession implements DetachedAdminCommand {
 		String refreshedBundles = props
 				.getProperty("slc.detached.refreshedBundles");
 		if (refreshedBundles != null) {
+			
 			List refreshedBundleNames = new ArrayList();
 			StringTokenizer st = new StringTokenizer(refreshedBundles, ",");
 			while (st.hasMoreTokens()) {
 				refreshedBundleNames.add(st.nextElement());
+			}			
+
+			Bundle[] allBundles = bundleContext.getBundles();
+			Bundle[] bundlesToRefresh = new Bundle[refreshedBundleNames.size()];						
+
+			log.debug("Bundles to refresh for DetachedSession:");
+			
+			for(int i = 0; i < bundlesToRefresh.length; ++i) {
+				bundlesToRefresh[i] = getBundleForName((String)refreshedBundleNames.get(i), allBundles);
+				if(log.isDebugEnabled())
+					log.debug(" " + refreshedBundleNames.get(i));
 			}
 
-			Bundle[] bundles = bundleContext.getBundles();
-
-			List bundlesToRefresh = new ArrayList();
-			for (int i = 0; i < bundles.length; i++) {
-				if (refreshedBundleNames.contains(bundles[i].getSymbolicName())) {
-					bundlesToRefresh.add(bundles[i]);
-				}
-			}
-
-			for (int i = 0; i < bundlesToRefresh.size(); i++) {
-				Bundle bundle = (Bundle) bundlesToRefresh.get(i);
-				try {
-					bundlesManager.upgradeSynchronous(bundle);
-//					bundle.stop();
-//					bundle.update();
-//					bundle.start();
-					log.info("Refreshed bundle " + bundle.getSymbolicName());
-					
-//					try {
-//						Thread.sleep(2000);
-//					} catch (InterruptedException e) {
-//						e.printStackTrace();
-//					}
-					
-				} catch (Exception e) {
-					throw new DetachedException("Could not refresh bundle "
-							+ bundle.getSymbolicName(), e);
-				}
-			}
+			(new MinimalBundlesManager(bundleContext)).upgradeSynchronous(bundlesToRefresh);
 		}
 
 		return session;
+	}
+	
+	private Bundle getBundleForName(String symbolicName, Bundle[] bundles) {
+		for (int i = 0; i < bundles.length; i++) {
+			if (symbolicName.equals(bundles[i].getSymbolicName())) {
+				return bundles[i];
+			}
+		}
+		throw new DetachedException("No Bundle found for symbolic name " + symbolicName);
 	}
 }

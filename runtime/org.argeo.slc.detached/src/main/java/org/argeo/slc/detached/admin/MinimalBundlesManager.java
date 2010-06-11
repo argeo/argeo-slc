@@ -1,5 +1,7 @@
 package org.argeo.slc.detached.admin;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -14,12 +16,13 @@ import org.osgi.service.packageadmin.PackageAdmin;
  * class in org.argeo.slc.support.osgi.
  */
 class MinimalBundlesManager implements FrameworkListener {
+	private final static Log log = LogFactory
+			.getLog(MinimalBundlesManager.class);
+
 	private final BundleContext bundleContext;
 
 	private long defaultTimeout = 10000l;
 	private final Object refreshedPackageSem = new Object();
-
-	private boolean debug = true;
 
 	public MinimalBundlesManager(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
@@ -31,35 +34,64 @@ class MinimalBundlesManager implements FrameworkListener {
 	}
 
 	/**
-	 * Stop the module, update it, refresh it and restart it. All synchronously.
+	 * @see #upgradeSynchronous(Bundle[])
 	 */
 	public void upgradeSynchronous(Bundle bundle) {
+		upgradeSynchronous(new Bundle[] { bundle });
+	}
+
+	/**
+	 * Stop the active bundles, update them, refresh them and restart the
+	 * initially active bundles. All synchronously.
+	 */
+	public void upgradeSynchronous(Bundle[] bundles) {
 		try {
-			stopSynchronous(bundle);
-			updateSynchronous(bundle);
-			// Refresh in case there are fragments
-			refreshSynchronous(bundle);
-			startSynchronous(bundle);
+			// State (ACTIVE or other) before upgrading
+			int[] initialStates = new int[bundles.length];
 
-			String filter = "(Bundle-SymbolicName=" + bundle.getSymbolicName()
-					+ ")";
-			// Wait for application context to be ready
-			// TODO: use service tracker
-			getServiceRefSynchronous(
-					"org.springframework.context.ApplicationContext", filter);
+			// store initial state and stop active bundles
+			for (int i = 0; i < bundles.length; ++i) {
+				initialStates[i] = bundles[i].getState();
+				if (initialStates[i] == Bundle.ACTIVE) {
+					stopSynchronous(bundles[i]);
+				}
+			}
 
-			if (debug)
-				debug("Bundle " + bundle.getSymbolicName()
-						+ " ready to be used at latest version.");
+			// update the bundles
+			for (int i = 0; i < bundles.length; ++i) {
+				updateSynchronous(bundles[i]);
+			}
+
+			// refresh the bundles
+			refreshSynchronous(bundles);
+
+			// restart the bundles that were ACTIVE before upgrading
+			for (int i = 0; i < bundles.length; ++i) {
+				if (initialStates[i] == Bundle.ACTIVE) {
+					startSynchronous(bundles[i]);
+
+					String filter = "(Bundle-SymbolicName="
+							+ bundles[i].getSymbolicName() + ")";
+					// Wait for application context to be ready
+					// TODO: use service tracker
+					try {
+						getServiceRefSynchronous(
+								"org.springframework.context.ApplicationContext",
+								filter);
+					}
+					// in case of exception, catch and go on
+					catch (Exception e) {
+						log.error("getServiceRefSynchronous failed", e);
+					}
+				}
+			}
 		} catch (Exception e) {
-			throw new RuntimeException("Cannot update bundle "
-					+ bundle.getSymbolicName(), e);
+			throw new RuntimeException("Cannot update bundles", e);
 		}
 	}
 
 	/** Updates bundle synchronously. */
 	protected void updateSynchronous(Bundle bundle) throws BundleException {
-		// int originalState = bundle.getState();
 		bundle.update();
 		boolean waiting = true;
 
@@ -77,8 +109,8 @@ class MinimalBundlesManager implements FrameworkListener {
 						+ " timed out. Bundle state = " + bundle.getState());
 		} while (waiting);
 
-		if (debug)
-			debug("Bundle " + bundle.getSymbolicName() + " updated.");
+		if (log.isDebugEnabled())
+			log.debug("Bundle " + bundle.getSymbolicName() + " updated.");
 	}
 
 	/** Starts bundle synchronously. Does nothing if already started. */
@@ -102,8 +134,8 @@ class MinimalBundlesManager implements FrameworkListener {
 						+ " timed out. Bundle state = " + bundle.getState());
 		} while (waiting);
 
-		if (debug)
-			debug("Bundle " + bundle.getSymbolicName() + " started.");
+		if (log.isDebugEnabled())
+			log.debug("Bundle " + bundle.getSymbolicName() + " started.");
 	}
 
 	/** Stops bundle synchronously. Does nothing if already started. */
@@ -128,17 +160,16 @@ class MinimalBundlesManager implements FrameworkListener {
 						+ " timed out. Bundle state = " + bundle.getState());
 		} while (waiting);
 
-		if (debug)
-			debug("Bundle " + bundle.getSymbolicName() + " stopped.");
+		if (log.isDebugEnabled())
+			log.debug("Bundle " + bundle.getSymbolicName() + " stopped.");
 	}
 
 	/** Refresh bundle synchronously. Does nothing if already started. */
-	protected void refreshSynchronous(Bundle bundle) throws BundleException {
+	protected void refreshSynchronous(Bundle[] bundles) throws BundleException {
 		ServiceReference packageAdminRef = bundleContext
 				.getServiceReference(PackageAdmin.class.getName());
 		PackageAdmin packageAdmin = (PackageAdmin) bundleContext
 				.getService(packageAdminRef);
-		Bundle[] bundles = { bundle };
 		packageAdmin.refreshPackages(bundles);
 
 		synchronized (refreshedPackageSem) {
@@ -149,8 +180,8 @@ class MinimalBundlesManager implements FrameworkListener {
 			}
 		}
 
-		if (debug)
-			debug("Bundle " + bundle.getSymbolicName() + " refreshed.");
+		if (log.isDebugEnabled())
+			log.debug("Bundles refreshed.");
 	}
 
 	public void frameworkEvent(FrameworkEvent event) {
@@ -163,8 +194,8 @@ class MinimalBundlesManager implements FrameworkListener {
 
 	public ServiceReference[] getServiceRefSynchronous(String clss,
 			String filter) throws InvalidSyntaxException {
-		if (debug)
-			debug("Filter: '" + filter + "'");
+		if (log.isTraceEnabled())
+			log.trace("Filter: '" + filter + "'");
 		ServiceReference[] sfs = null;
 		boolean waiting = true;
 		long begin = System.currentTimeMillis();
@@ -181,70 +212,6 @@ class MinimalBundlesManager implements FrameworkListener {
 		} while (waiting);
 
 		return sfs;
-	}
-
-	/*
-	 * protected void sleep(long ms) { try { Thread.sleep(ms); } catch
-	 * (InterruptedException e) { // silent } }
-	 * 
-	 * public ServiceTracker newTracker(Class<?> clss) { ServiceTracker st = new
-	 * ServiceTracker(bundleContext, clss.getName(), null); st.open(); return
-	 * st; }
-	 * 
-	 * @SuppressWarnings(value = { "unchecked" }) public <T> T
-	 * getSingleService(Class<T> clss, String filter) {
-	 * Assert.isTrue(OsgiFilterUtils.isValidFilter(filter), "valid filter");
-	 * ServiceReference[] sfs; try { sfs =
-	 * bundleContext.getServiceReferences(clss.getName(), filter); } catch
-	 * (InvalidSyntaxException e) { throw new
-	 * SlcException("Cannot retrieve service reference for " + filter, e); }
-	 * 
-	 * if (sfs == null || sfs.length == 0) return null; else if (sfs.length > 1)
-	 * throw new SlcException("More than one execution flow found for " +
-	 * filter); return (T) bundleContext.getService(sfs[0]); }
-	 * 
-	 * public <T> T getSingleServiceStrict(Class<T> clss, String filter) { T
-	 * service = getSingleService(clss, filter); if (service == null) throw new
-	 * SlcException("No execution flow found for " + filter); else return
-	 * service; }
-	 * 
-	 * public Bundle findRelatedBundle(OsgiBundle osgiBundle) { Bundle bundle =
-	 * null; if (osgiBundle.getInternalBundleId() != null) { bundle =
-	 * bundleContext.getBundle(osgiBundle.getInternalBundleId()); Assert.isTrue(
-	 * osgiBundle.getName().equals(bundle.getSymbolicName()),
-	 * "symbolic name consistent");
-	 * Assert.isTrue(osgiBundle.getVersion().equals(
-	 * bundle.getHeaders().get(Constants.BUNDLE_VERSION)),
-	 * "version consistent"); } else { for (Bundle b :
-	 * bundleContext.getBundles()) { if
-	 * (b.getSymbolicName().equals(osgiBundle.getName())) { if
-	 * (b.getHeaders().get(Constants.BUNDLE_VERSION).equals(
-	 * osgiBundle.getVersion())) { bundle = b;
-	 * osgiBundle.setInternalBundleId(b.getBundleId()); } } } } return bundle; }
-	 * 
-	 * public OsgiBundle findFromPattern(String pattern) { OsgiBundle osgiBundle
-	 * = null; for (Bundle b : bundleContext.getBundles()) { if
-	 * (b.getSymbolicName().contains(pattern)) { osgiBundle = new OsgiBundle(b);
-	 * break; } } return osgiBundle; }
-	 * 
-	 * public OsgiBundle getBundle(Long bundleId) { Bundle bundle =
-	 * bundleContext.getBundle(bundleId); return new OsgiBundle(bundle); }
-	 * 
-	 * public void setBundleContext(BundleContext bundleContext) {
-	 * this.bundleContext = bundleContext; }
-	 * 
-	 * public void afterPropertiesSet() throws Exception {
-	 * bundleContext.addFrameworkListener(this); }
-	 * 
-	 * public void setDefaultTimeout(Long defaultTimeout) { this.defaultTimeout
-	 * = defaultTimeout; }
-	 * 
-	 * BundleContext getBundleContext() { return bundleContext; }
-	 */
-
-	protected void debug(Object obj) {
-		if (debug)
-			System.out.println("#OSGiMANAGER DEBUG# " + obj);
 	}
 
 	protected void sleep(long ms) {

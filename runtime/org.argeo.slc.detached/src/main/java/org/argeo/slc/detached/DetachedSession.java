@@ -1,5 +1,6 @@
 package org.argeo.slc.detached;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -12,7 +13,8 @@ public class DetachedSession {
 	private String uuid = null;
 	private List requests = new Vector();
 	private List answers = new Vector();
-	private String doItAgainPolicy = SKIP_UNTIL_ERROR;
+	private String doItAgainPolicy = REPLAY;
+	private List refreshedBundleNames = new ArrayList();
 
 	public boolean isClosed() {
 		if (answers.size() > 0) {
@@ -22,6 +24,23 @@ public class DetachedSession {
 		} else {
 			return false;
 		}
+	}
+	
+	public boolean lastActionIsError() {
+		if (answers.size() > 0) {
+			DetachedAnswer answer = (DetachedAnswer) answers
+					.get(answers.size() - 1);
+			return answer.getStatus() == DetachedAnswer.ERROR;
+		} else {
+			return false;
+		}
+	}
+	
+	public int getExecutedStepCount() {
+		if(requests.size() != answers.size()) {
+			throw new DetachedException("requests.size() != answers.size() in DetachedSession");
+		}
+		return answers.size();
 	}
 
 	public String getDoItAgainPolicy() {
@@ -46,6 +65,10 @@ public class DetachedSession {
 
 	public List getAnswers() {
 		return answers;
+	}
+
+	public List getRefreshedBundleNames() {
+		return refreshedBundleNames;
 	}
 
 	public String toString() {

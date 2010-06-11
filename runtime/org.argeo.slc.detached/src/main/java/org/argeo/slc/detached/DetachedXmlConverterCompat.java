@@ -61,13 +61,13 @@ public class DetachedXmlConverterCompat implements DetachedXmlConverter {
 			throw new DetachedException("Could not copy xml source", e);
 		}
 
-		if (log.isDebugEnabled()) {
+		if (log.isTraceEnabled()) {
 			try {
 				DOMSource domSource = new DOMSource(result.getNode());
 				StringWriter stringWriter = new StringWriter();
 				StreamResult streamResult = new StreamResult(stringWriter);
 				copy.transform(domSource, streamResult);
-				log.debug("Unmarshall communication:\n"
+				log.trace("Unmarshall communication:\n"
 						+ stringWriter.toString());
 				IOUtils.closeQuietly(stringWriter);
 			} catch (TransformerException e) {
