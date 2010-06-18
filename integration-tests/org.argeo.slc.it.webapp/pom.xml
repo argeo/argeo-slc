@@ -45,7 +45,10 @@
 							org.argeo.slc.server.main,
 							org.argeo.slc.ria,
 							org.argeo.slc.agent,
-							org.argeo.slc.agent.jms							
+							org.argeo.slc.agent.jms,
+							org.argeo.slc.demo.minimal,
+							org.argeo.slc.demo.basic,
+							org.argeo.slc.demo.ant						
 						</argeo.osgi.start>
 					</systemProperties>
 				</configuration>
