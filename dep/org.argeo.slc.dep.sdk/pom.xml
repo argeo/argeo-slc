@@ -42,6 +42,7 @@
 			<artifactId>org.argeo.slc.dep.gis</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<!-- SLC non deps -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
@@ -50,6 +51,10 @@
 		<dependency>
 			<groupId>org.argeo.slc.server</groupId>
 			<artifactId>org.argeo.slc.ria</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.maven</artifactId>
 		</dependency>
 
 		<!-- Modules (see profiles below) -->
