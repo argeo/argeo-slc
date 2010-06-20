@@ -29,6 +29,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
+			<artifactId>org.argeo.slc.dep.agent.extras</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -51,10 +56,6 @@
 		<dependency>
 			<groupId>org.argeo.slc.server</groupId>
 			<artifactId>org.argeo.slc.ria</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.maven</artifactId>
 		</dependency>
 
 		<!-- Modules (see profiles below) -->

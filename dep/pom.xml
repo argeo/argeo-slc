@@ -12,8 +12,9 @@
 	<packaging>pom</packaging>
 	<name>SLC Dependencies</name>
 	<modules>
-		<module>org.argeo.slc.dep.server</module>
 		<module>org.argeo.slc.dep.agent</module>
+		<module>org.argeo.slc.dep.agent.extras</module>
+		<module>org.argeo.slc.dep.server</module>
 		<module>org.argeo.slc.dep.detached</module>
 		<module>org.argeo.slc.dep.gis</module>
 		<module>org.argeo.slc.dep.sdk</module>
