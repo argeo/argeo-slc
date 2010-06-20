@@ -61,6 +61,10 @@ qx.Class.define("org.argeo.slc.web.TestList",
   		init : 'My Collection',
   		check : "String"
   	},
+  	currentOpenInstanceId : {
+  		check : "String",
+  		nullable:true
+  	},
   	/**
   	 * The applet commands.
   	 */
@@ -130,6 +134,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   					var classObj = org.argeo.slc.ria.Applet;
   					var xmlNodes = viewsManager.getViewPaneSelection("list").getNodes();
 					var iView = viewsManager.initIViewClass(classObj, "applet", xmlNodes[0]);
+					this.setCurrentOpenInstanceId(iView.getInstanceId());
 					iView.load(xmlNodes[0]);
   				},
   				selectionChange : function(viewId, xmlNodes){
@@ -260,10 +265,16 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				toolbar  	: "selection",
   				callback	: function(e){
   					var modal = new org.argeo.ria.components.Modal("Confirm", null);
-  					modal.addConfirm("Are you sure you want to delete<br> test " + this.extractTestUuid() + "?");
+  					var testUuid = this.extractTestUuid();
+  					modal.addConfirm("Are you sure you want to delete<br> test " + testUuid + "?");
   					modal.addListener("ok", function(){
 	  					var request = org.argeo.slc.ria.SlcApi.getRemoveResultService(this.getCollectionId(), this.extractTestUuid());
 						request.addListener("completed", function(response){
+							if(this.getCurrentOpenInstanceId() == "test:"+testUuid){
+								var appletView = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("applet");
+								appletView.closeCurrent();
+								this.setCurrentOpenInstanceId(null);
+							}
 							this.loadCollections();
 							this.loadList();
 							this.info("Test was successfully deleted");
