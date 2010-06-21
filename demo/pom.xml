@@ -72,6 +72,7 @@
 							<execDir>target/exec/server</execDir>
 							<systemPropertiesFile>server_jcr.properties</systemPropertiesFile>
 							<systemProperties>
+								<log4j.configuration>file:${basedir}/log4j.properties</log4j.configuration>
 								<argeo.osgi.bundles>
 									${basedir}/../modules/server;in=*;ex=pom.xml;ex=target;ex=.*,
 								</argeo.osgi.bundles>
