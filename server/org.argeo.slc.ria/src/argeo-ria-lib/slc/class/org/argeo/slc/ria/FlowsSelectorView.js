@@ -139,7 +139,8 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					menu : "Launcher",
 					toolbar : "list",
 					callback : function(e) {
-						this.rootNode.reload();
+						this.rootNode.setState("loading");
+						this.rootNode.load();
 					},
 					command : null
 				},				
@@ -235,7 +236,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			}
 			var req = org.argeo.slc.ria.SlcApi.getListAgentsService("agents");			
 			var agents = {};
-			if(folder.getState() == "loaded" && folder.getUserData("agentsMap")){
+			if(folder.getUserData("agentsMap")){
 				// Diff loading, just add new nodes.
 				agents = folder.getUserData("agentsMap");
 				var newAgents = {};
