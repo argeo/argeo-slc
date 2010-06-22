@@ -272,7 +272,9 @@ qx.Class.define("org.argeo.slc.web.TestList",
 						request.addListener("completed", function(response){
 							if(this.getCurrentOpenInstanceId() == "test:"+testUuid){
 								var appletView = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("applet");
-								appletView.closeCurrent();
+								if(appletView.contentExists(this.getCurrentOpenInstanceId())){
+									appletView.closeCurrent();
+								}
 								this.setCurrentOpenInstanceId(null);
 							}
 							this.loadCollections();

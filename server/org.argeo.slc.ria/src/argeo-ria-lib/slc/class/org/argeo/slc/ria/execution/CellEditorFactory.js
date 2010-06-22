@@ -119,7 +119,9 @@ qx.Class.define("org.argeo.slc.ria.execution.CellEditorFactory",
 			        value = "";
 			      }
 				  if(value == ""){
-				  	cellEditor.add(new qx.ui.form.ListItem("", null, "__empty__"));
+				  	var li = new qx.ui.form.ListItem("");
+				  	li.setModel("__empty__");
+				  	cellEditor.add(li);
 				  }
 			      var list = metaData.refList;
 			      if (list)
@@ -131,21 +133,23 @@ qx.Class.define("org.argeo.slc.ria.execution.CellEditorFactory",
 			          var row = list[i];
 			          if ( row instanceof Array ) {
 			          	// Array [key, description] where description can be null
-			            item = new qx.ui.form.ListItem(row[0], null, row[0]);
+			            item = new qx.ui.form.ListItem(row[0]);
+			            item.setModel(row[0]);
 			            if(row[1]){
 			            	item.setToolTip(new qx.ui.tooltip.ToolTip(row[1]));
 			            }
 			          } else {
-			            item = new qx.ui.form.ListItem(row, null, row)
-			          }
-			          if(value == item.getValue()){
-			          	cellEditor.setSelected(item);
+			            item = new qx.ui.form.ListItem(row);
+			            item.setModel(row);
 			          }
 			          cellEditor.add(item);
+			          if(value == item.getModel()){
+			          	cellEditor.setSelection([item]);
+			          }
 			        };
 			      }
 			
-			      cellEditor.setValue("" + value);
+			      cellEditor.setModelSelection(["" + value]);
 			      cellEditor.addListener("appear", function() {
 			        cellEditor.open();
 			      });
@@ -156,7 +160,13 @@ qx.Class.define("org.argeo.slc.ria.execution.CellEditorFactory",
 		
     	// interface implementation
 		getCellEditorValue : function(cellEditor) {
-			var value = cellEditor.getValue();
+			var value;
+			if(cellEditor.classname == "qx.ui.form.TextField"){
+				value = cellEditor.getValue();
+			}else{
+				var sel = cellEditor.getModelSelection();
+				value = sel[0];
+			}
 			var validationFunc = cellEditor.getUserData("validationFunc");
 			
 			// validation function will be called with new and old value
