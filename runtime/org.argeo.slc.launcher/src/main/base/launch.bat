@@ -7,4 +7,4 @@ TITLE %1
 
 cd %WORK_DIR%
 
-java %JAVA_OPTS% -jar "%LIB_DIR%\lib\org.eclipse.osgi-${version.equinox}.jar" -clean -console -configuration "%WORK_DIR%\conf" -data "%WORK_DIR%\data"
+java %JAVA_OPTS% -jar "%LIB_DIR%\org.eclipse.osgi-${version.equinox}.jar" -clean -console -configuration "%WORK_DIR%\conf" -data "%WORK_DIR%\data"
