@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo</groupId>
@@ -35,7 +36,8 @@
 	<url>${site.urlBase}/${developmentCycle}</url>
 	<scm>
 		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
-		<developerConnection>scm:svn:https://www.argeo.org/svn/slc/trunk</developerConnection>
+		<developerConnection>scm:svn:https://www.argeo.org/svn/slc/trunk
+		</developerConnection>
 		<url>https://www.argeo.org/svn/slc/trunk</url>
 	</scm>
 	<issueManagement>
@@ -189,8 +191,38 @@ limitations under the License.
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<releaseProfiles>release</releaseProfiles>
 					<goals>deploy</goals>
-					<preparationGoals>clean argeo-osgi:update-manifests install</preparationGoals>
+					<preparationGoals>clean argeo-osgi:update-manifests install
+					</preparationGoals>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+				<configuration>
+					<header>license-apache2-header.txt</header>
+					<failIfMissing>true</failIfMissing>
+					<aggregate>true</aggregate>
+					<includes>
+						<include>src/**/*.java</include>
+						<include>src/**/*.xml</include>
+					</includes>
+					<excludes>
+						<exclude>**/springutil/**</exclude>
+						<exclude>**/qooxdoo-sdk/**</exclude>
+					</excludes>
+					<useDefaultExcludes>true</useDefaultExcludes>
+					<mapping>
+						<java>SLASHSTAR_STYLE</java>
+						<xml>XML_STYLE</xml>
+					</mapping>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 
