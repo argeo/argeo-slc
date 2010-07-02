@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dist</artifactId>
-		<version>0.12.2-SNAPSHOT</version>
+		<version>0.12.2</version>
 	</parent>
 	<groupId>org.argeo.slc.dist</groupId>
 	<artifactId>org.argeo.slc.sdk</artifactId>
@@ -156,8 +155,7 @@
 								<exec executable="${argeo.p2.cmd}">
 									<arg value="-noSplash" />
 									<arg value="-application" />
-									<arg
-										value="org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
+									<arg value="org.eclipse.equinox.p2.publisher.FeaturesAndBundlesPublisher" />
 									<arg value="-metadataRepository" />
 									<arg value="file:${argeo.p2.repository}" />
 									<arg value="-artifactRepository" />
