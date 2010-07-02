@@ -191,8 +191,7 @@ limitations under the License.
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<releaseProfiles>release</releaseProfiles>
 					<goals>deploy</goals>
-					<preparationGoals>clean argeo-osgi:update-manifests install
-					</preparationGoals>
+					<preparationGoals>clean install</preparationGoals>
 				</configuration>
 			</plugin>
 			<plugin>
