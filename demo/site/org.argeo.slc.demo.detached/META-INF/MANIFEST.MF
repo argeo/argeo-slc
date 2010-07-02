@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-SymbolicName: org.argeo.slc.demo.detached
-Bundle-Version: 0.12.2.SNAPSHOT
+Bundle-Version: 0.12.2
 Bundle-Name: SLC Demo Detached (Test)
 Import-Package: net.sf.cglib.core,
  net.sf.cglib.proxy,
