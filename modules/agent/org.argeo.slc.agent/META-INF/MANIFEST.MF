@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Require-Bundle: org.argeo.slc.specs,org.argeo.slc.core,org.argeo.slc.s
  upport.osgi
-Bundle-Version: 0.12.2
+Bundle-Version: 0.13.0.SNAPSHOT
 Bundle-Name: Argeo SLC Agent
 Bundle-SymbolicName: org.argeo.slc.agent
 Import-Package: org.apache.xalan.processor,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SLC Demo Maven
 Bundle-SymbolicName: org.argeo.slc.demo.maven
-Bundle-Version: 0.12.2
+Bundle-Version: 0.13.0.SNAPSHOT
 Bundle-Description: Demonstrate Maven support
 Import-Package: org.aopalliance.aop;version="1.0.0",
  org.apache.maven.project,

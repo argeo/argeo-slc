@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Fragment-Host: com.springsource.org.apache.xalan
-Bundle-Version: 0.12.2
+Bundle-Version: 0.13.0.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.agent.ext.xalan
 Import-Package: com.sun.org.apache.xml.internal.dtm;resolution:=optional,
  org.w3c.dom.traversal;resolution:=optional
