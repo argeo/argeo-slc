@@ -104,6 +104,10 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 		}
 	}
 
+	/**
+	 * Generates a list of ref value choices based on the bean available in the
+	 * application ocntext.
+	 */
 	protected List<RefValueChoice> buildRefValueChoices(RefSpecAttribute rsa) {
 		List<RefValueChoice> choices = new ArrayList<RefValueChoice>();
 		if (applicationContext == null) {
@@ -112,8 +116,14 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 			return choices;
 		}
 
-		for (String beanName : getBeanFactory().getBeanNamesForType(
+		beanNames: for (String beanName : getBeanFactory().getBeanNamesForType(
 				rsa.getTargetClass(), true, false)) {
+
+			// Since Spring 3, systemProperties is implicitly defined but has no
+			// bean definition
+//			if (beanName.equals("systemProperties"))
+//				continue beanNames;
+
 			BeanDefinition bd = getBeanFactory().getBeanDefinition(beanName);
 			RefValueChoice choice = new RefValueChoice();
 			choice.setName(beanName);

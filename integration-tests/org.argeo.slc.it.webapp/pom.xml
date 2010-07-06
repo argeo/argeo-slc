@@ -16,12 +16,14 @@
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
 				<version>${version.maven-argeo-osgi}</version>
 				<configuration>
+					<useDependencies>false</useDependencies>
 					<argsToAppend>
 						<arg>-clean</arg>
 					</argsToAppend>
 					<systemProperties>
 						<argeo.osgi.bundles>
 							${basedir}/../../demo/site;in=*;ex=target;ex=pom.xml;ex=.*,
+							${project.build.directory}/lib;in=*.jar,
 						</argeo.osgi.bundles>
 						<!--
 							<argeo.osgi.bundles>
@@ -86,6 +88,23 @@
 						</goals>
 						<configuration>
 							<skipTests>false</skipTests>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeTypes>jar</includeTypes>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>

@@ -138,4 +138,8 @@ public class ExecutionScope implements Scope {
 		throw new UnsupportedOperationException();
 	}
 
+	public Object resolveContextualObject(String key) {
+		return executionContext.get().getVariable(key);
+	}
+
 }

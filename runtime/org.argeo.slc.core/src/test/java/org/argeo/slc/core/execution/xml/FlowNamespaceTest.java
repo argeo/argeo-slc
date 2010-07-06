@@ -52,6 +52,7 @@ public class FlowNamespaceTest extends AbstractExecutionFlowTestCase {
 				.getBean("testResult"));		
 	}	
 	
+	// THis tests causes pb when using Spring 3
 	public void testContainers() throws Exception {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("containers.xml");
 		((ExecutionFlow) applicationContext.getBean("test.list.flow1")).run();
