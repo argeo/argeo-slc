@@ -16,13 +16,22 @@
 
 package org.argeo.slc.lib.linux;
 
-import org.argeo.slc.core.deploy.ResourceSet;
-import org.argeo.slc.deploy.DeploymentData;
+import java.util.List;
 
-public interface RedhatDeploymentData extends DeploymentData {
-	public ResourceSet getConfigurationFiles();
+public class DefaultRpmDistribution implements RpmDistribution {
+	private List<String> additionalPackages;
 
-	public String getRunlevelsScript();
+	public String getDistributionId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-	public String getPermissionsScript();
+	public List<String> getAdditionalPackages() {
+		return additionalPackages;
+	}
+
+	public void setAdditionalPackages(List<String> additionalPackages) {
+		this.additionalPackages = additionalPackages;
+	}
+
 }

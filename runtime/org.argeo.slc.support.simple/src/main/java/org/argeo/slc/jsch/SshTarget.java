@@ -25,7 +25,7 @@ public class SshTarget {
 	private String host;
 	private Integer port = 22;
 	private String user;
-	private UserInfo userInfo;
+	private UserInfo userInfo = new SimpleUserInfo();
 
 	private Boolean usePrivateKey = true;
 	private File localPrivateKey = new File(System.getProperty("user.home")

@@ -62,9 +62,14 @@ public class RedhatHostManager {
 	}
 
 	protected void executeCommand(String command) {
-		if (useSsh)
-			new RemoteExec(getSshTarget(), command).run();
-		else
+		if (command == null)
+			return;
+
+		if (useSsh) {
+			RemoteExec rExec = new RemoteExec(getSshTarget(), command);
+			rExec.setFailOnBadExitStatus(false);
+			rExec.run();
+		} else
 			new SystemCall(command).run();
 	}
 
