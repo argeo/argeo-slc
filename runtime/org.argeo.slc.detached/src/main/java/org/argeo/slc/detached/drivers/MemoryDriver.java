@@ -18,9 +18,14 @@ package org.argeo.slc.detached.drivers;
 
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedClient;
+import org.argeo.slc.detached.DetachedDriver;
 import org.argeo.slc.detached.DetachedRequest;
 
-public class MemoryDriver extends AbstractDriver implements DetachedClient {
+/**
+ * Implements both <code>DetachedClient</code> and <code>DetachedDriver</code>
+ * using memory access
+ */
+public class MemoryDriver implements DetachedClient, DetachedDriver {
 	private DetachedRequest currentRequest = null;
 	private DetachedAnswer currentAnswer = null;
 
@@ -52,4 +57,7 @@ public class MemoryDriver extends AbstractDriver implements DetachedClient {
 		this.notify();
 	}
 
+	public void stop() {
+		// NOTHING
+	}
 }

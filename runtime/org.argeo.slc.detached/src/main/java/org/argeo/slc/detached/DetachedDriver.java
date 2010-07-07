@@ -16,6 +16,10 @@
 
 package org.argeo.slc.detached;
 
+/**
+ * Receives Request and sends answers. Meant to be used on detached side to
+ * communicate with the runtime.
+ */
 public interface DetachedDriver {
 	/** Blocks until it receives a request. */
 	public DetachedRequest receiveRequest() throws Exception;

@@ -16,6 +16,10 @@
 
 package org.argeo.slc.detached;
 
+/**
+ * Sends Request and receives answers. Meant to be used on runtime side to
+ * communicate with a Detached.
+ */
 public interface DetachedClient {
 	public void sendRequest(DetachedRequest request) throws Exception;
 

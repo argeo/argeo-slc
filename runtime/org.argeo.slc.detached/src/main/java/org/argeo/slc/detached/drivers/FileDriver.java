@@ -40,11 +40,17 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.detached.DetachedAnswer;
 import org.argeo.slc.detached.DetachedClient;
 import org.argeo.slc.detached.DetachedCommunication;
+import org.argeo.slc.detached.DetachedDriver;
 import org.argeo.slc.detached.DetachedException;
 import org.argeo.slc.detached.DetachedRequest;
+import org.argeo.slc.detached.DetachedXmlConverter;
 import org.springframework.beans.factory.InitializingBean;
 
-public class FileDriver extends AbstractDriver implements DetachedClient,
+/**
+ * Implements both <code>DetachedClient</code> and <code>DetachedDriver</code>
+ * using File protocol
+ */
+public class FileDriver implements DetachedClient, DetachedDriver,
 		InitializingBean {
 	private final static Log log = LogFactory.getLog(FileDriver.class);
 	private final static SimpleDateFormat sdf = new SimpleDateFormat(
@@ -66,6 +72,12 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 	// Counters to avoid naming files with same prefix
 	private long lastSentTime = 0;
 	private int counter = 0;
+	
+	private DetachedXmlConverter xmlConverter = null;	
+	
+	private long receiveAnswerTimeout = 10000l;
+	
+	private boolean active = true; 
 
 	public synchronized DetachedRequest receiveRequest() throws Exception {
 		DetachedRequest request = (DetachedRequest) receiveFile(requestsDir,
@@ -179,8 +191,10 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 			}
 		}
 
-		if (!isActive())
+		if (!isActive()) {
+			log.debug("DetachedDriver is not active. Leaving receiveFile");
 			return null;
+		}
 
 		File lockFile = nameLockFile(file);
 		while (lockFile.exists())
@@ -211,6 +225,16 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 		// Move to processed dir
 		FileUtils.moveFileToDirectory(file, processedDir, false);
 		return detCom;
+	}
+	
+	public synchronized void stop() {
+		log.debug("Stopping Detached Driver");
+		active = false;
+		notifyAll();
+	}	
+	
+	private synchronized boolean isActive() {
+		return active;
 	}
 
 	protected File createLockFile(File file) {
@@ -281,4 +305,19 @@ public class FileDriver extends AbstractDriver implements DetachedClient,
 
 	}
 
+	public long getReceiveAnswerTimeout() {
+		return receiveAnswerTimeout;
+	}
+
+	public void setReceiveAnswerTimeout(long receiveAnswerTimeout) {
+		this.receiveAnswerTimeout = receiveAnswerTimeout;
+	}
+
+	public DetachedXmlConverter getXmlConverter() {
+		return xmlConverter;
+	}
+
+	public void setXmlConverter(DetachedXmlConverter xmlConverter) {
+		this.xmlConverter = xmlConverter;
+	}
 }
