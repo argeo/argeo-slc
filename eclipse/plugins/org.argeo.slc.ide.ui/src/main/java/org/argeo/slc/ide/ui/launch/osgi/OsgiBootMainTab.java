@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
+/** Main tab of OSGiBoot launch configuration UI. */
 public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 		OsgiLauncherConstants {
 	private Listener listener = new Listener();
@@ -55,7 +56,7 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 		syncBundles = new Button(container, SWT.CHECK);
 		syncBundles.addSelectionListener(listener);
 		new Label(container, SWT.NONE)
-				.setText("Always keep bundle in line with the target platform");
+				.setText("Keep bundles in line with target platform and workspace (recommended)");
 		clearDataDirectory = new Button(container, SWT.CHECK);
 		clearDataDirectory.addSelectionListener(listener);
 		new Label(container, SWT.NONE)

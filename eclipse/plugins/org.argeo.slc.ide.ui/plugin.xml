@@ -36,29 +36,6 @@
 <extension
       point="org.eclipse.debug.ui.launchShortcuts">
    <shortcut
-         class="org.argeo.slc.ide.ui.launch.osgi.SlcLaunchShortcut"
-         icon="icons/slc-launch.gif"
-         id="org.argeo.slc.ide.ui.slcOsgiLaunchShortcut"
-         label="SLC"
-         modes="run,debug">
-    
-         <contextualLaunch>
-            <enablement>
-               <with variable="selection">
-	                  <iterate>
-	                  	<and>
-		                  	<test property="org.eclipse.debug.ui.projectNature" value="org.eclipse.pde.PluginNature"/>
-                       		<or>
-                       		<adapt type="org.eclipse.core.resources.IProject"/>
-                       		<test property="org.eclipse.debug.ui.matchesPattern" value="MANIFEST.MF"/>
-                       		</or>
-                   		 </and>
-		              </iterate>
-               </with>
-           </enablement>
-         </contextualLaunch>         
-   </shortcut>
-   <shortcut
          class="org.argeo.slc.ide.ui.launch.osgi.OsgiBootLaunchShortcut"
          icon="icons/slc-launch.gif"
          id="org.argeo.slc.ide.ui.osgiBootLaunchShortcut"

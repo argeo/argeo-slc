@@ -11,28 +11,29 @@ import org.eclipse.pde.ui.launcher.OSGiLauncherTabGroup;
 import org.eclipse.pde.ui.launcher.OSGiSettingsTab;
 import org.eclipse.pde.ui.launcher.TracingTab;
 
+/** Definition of the set of tabs used in OSGiBoot launch configuration UI. */
 public class OsgiBootLauncherTabGroup extends OSGiLauncherTabGroup {
 
 	@Override
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-//		JavaArgumentsTab javaArgumentsTab = new JavaArgumentsTab() {
-//			private boolean initializing = false;
-//
-//			@Override
-//			public void performApply(
-//					ILaunchConfigurationWorkingCopy configuration) {
-//				if (initializing)
-//					return;
-//				initializing = true;
-//				initializeFrom(configuration);
-//				initializing = false;
-//			}
-//
-//			@Override
-//			public boolean isValid(ILaunchConfiguration config) {
-//				return true;
-//			}
-//		};
+		// JavaArgumentsTab javaArgumentsTab = new JavaArgumentsTab() {
+		// private boolean initializing = false;
+		//
+		// @Override
+		// public void performApply(
+		// ILaunchConfigurationWorkingCopy configuration) {
+		// if (initializing)
+		// return;
+		// initializing = true;
+		// initializeFrom(configuration);
+		// initializing = false;
+		// }
+		//
+		// @Override
+		// public boolean isValid(ILaunchConfiguration config) {
+		// return true;
+		// }
+		// };
 
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 				new OsgiBootMainTab(),

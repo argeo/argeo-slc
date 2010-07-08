@@ -21,6 +21,7 @@ import org.eclipse.pde.ui.launcher.OSGiLaunchShortcut;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+/** OSGiBoot launch shortcut. */
 public class OsgiBootLaunchShortcut extends OSGiLaunchShortcut implements
 		OsgiLauncherConstants {
 	private StringBuffer name = null;

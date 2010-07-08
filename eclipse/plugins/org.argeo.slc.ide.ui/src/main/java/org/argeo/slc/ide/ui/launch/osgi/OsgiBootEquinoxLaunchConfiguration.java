@@ -10,6 +10,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.pde.ui.launcher.EquinoxLaunchConfiguration;
 
+/** OSGiBoot launch configuration. */
 public class OsgiBootEquinoxLaunchConfiguration extends
 		EquinoxLaunchConfiguration {
 	public final static String ID = SlcIdeUiPlugin.ID

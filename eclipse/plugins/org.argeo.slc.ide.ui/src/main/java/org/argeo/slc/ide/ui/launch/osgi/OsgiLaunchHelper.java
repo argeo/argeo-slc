@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -12,7 +13,9 @@ import java.util.StringTokenizer;
 
 import org.argeo.slc.ide.ui.SlcIdeUiPlugin;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -26,6 +29,9 @@ import org.eclipse.jdt.launching.IVMInstall2;
 import org.eclipse.jdt.launching.IVMInstallType;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.ui.launcher.IPDELauncherConstants;
@@ -34,27 +40,28 @@ import org.eclipse.swt.widgets.Display;
 public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	private static Boolean debug = false;
 
-	/** Expect properties file to be set as mapped resources */
+	/** Expects properties file to be set as mapped resources */
 	public static void updateLaunchConfiguration(
 			ILaunchConfigurationWorkingCopy configuration) {
 		try {
+			// Finds the properties file and load it
 			IFile propertiesFile = (IFile) configuration.getMappedResources()[0];
 			propertiesFile.refreshLocal(IResource.DEPTH_ONE, null);
+			Properties properties = readProperties(propertiesFile);
 
-			Properties properties = OsgiLaunchHelper
-					.readProperties(propertiesFile);
-
+			// Extract information from the properties file
 			List<String> bundlesToStart = new ArrayList<String>();
 			Map<String, String> systemPropertiesToAppend = new HashMap<String, String>();
-			OsgiLaunchHelper.interpretProperties(properties, bundlesToStart,
+			interpretProperties(properties, bundlesToStart,
 					systemPropertiesToAppend);
 
+			// Define directories
 			File workingDir = getWorkingDirectory(configuration);
 			File dataDir = new File(workingDir, "data");
 
-			OsgiLaunchHelper.updateLaunchConfiguration(configuration,
-					bundlesToStart, systemPropertiesToAppend, dataDir
-							.getAbsolutePath());
+			// Update the launch configuration accordingly
+			updateLaunchConfiguration(configuration, bundlesToStart,
+					systemPropertiesToAppend, dataDir.getAbsolutePath());
 		} catch (Exception e) {
 			ErrorDialog.openError(Display.getCurrent().getActiveShell(),
 					"Error", "Cannot read properties",
@@ -64,28 +71,41 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		}
 	}
 
-	static void updateLaunchConfiguration(
+	/**
+	 * Actually modifies the launch configuration in order to reflect the
+	 * current state read from the properties file and the launch configuration
+	 * UI.
+	 */
+	protected static void updateLaunchConfiguration(
 			ILaunchConfigurationWorkingCopy configuration,
 			List<String> bundlesToStart,
 			Map<String, String> systemPropertiesToAppend, String dataDir)
 			throws CoreException {
 		// Convert bundle lists
 		final String targetBundles;
+		final String wkSpaceBundles;
 		if (configuration.getAttribute(ATTR_SYNC_BUNDLES, true)) {
-			StringBuffer buf = new StringBuffer();
+			StringBuffer tBuf = new StringBuffer();
 			for (IPluginModelBase model : PluginRegistry.getExternalModels()) {
-				buf.append(model.getBundleDescription().getSymbolicName());
-				buf.append(',');
+				tBuf.append(model.getBundleDescription().getSymbolicName());
+				tBuf.append(',');
 			}
-			targetBundles = buf.toString();
-		} else
+			targetBundles = tBuf.toString();
+			StringBuffer wBuf = new StringBuffer();
+			for (IPluginModelBase model : PluginRegistry.getWorkspaceModels()) {
+				wBuf.append(model.getBundleDescription().getSymbolicName());
+				wBuf.append(',');
+			}
+			wkSpaceBundles = wBuf.toString();
+		} else {
 			targetBundles = configuration.getAttribute(
 					IPDELauncherConstants.TARGET_BUNDLES, "");
+			wkSpaceBundles = configuration.getAttribute(
+					IPDELauncherConstants.WORKSPACE_BUNDLES, "");
+		}
 		configuration.setAttribute(IPDELauncherConstants.TARGET_BUNDLES,
 				convertBundleList(bundlesToStart, targetBundles));
 
-		String wkSpaceBundles = configuration.getAttribute(
-				IPDELauncherConstants.WORKSPACE_BUNDLES, "");
 		configuration.setAttribute(IPDELauncherConstants.WORKSPACE_BUNDLES,
 				convertBundleList(bundlesToStart, wkSpaceBundles));
 
@@ -137,17 +157,47 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 				progArgs.toString());
 	}
 
-	private static void deleteDir(File dir) {
-		File[] files = dir.listFiles();
-		for (File file : files) {
-			if (file.isDirectory())
-				deleteDir(file);
-			else
-				file.delete();
+	/**
+	 * Interprets special properties and register the others as system
+	 * properties to append.
+	 */
+	protected static void interpretProperties(Properties properties,
+			List<String> bundlesToStart,
+			Map<String, String> systemPropertiesToAppend) {
+		String argeoOsgiStart = properties
+				.getProperty(OsgiLauncherConstants.ARGEO_OSGI_START);
+		if (argeoOsgiStart != null) {
+			StringTokenizer st = new StringTokenizer(argeoOsgiStart, ",");
+			while (st.hasMoreTokens())
+				bundlesToStart.add(st.nextToken());
 		}
-		dir.delete();
+
+		propKeys: for (Object keyObj : properties.keySet()) {
+			String key = keyObj.toString();
+			if (OsgiLauncherConstants.ARGEO_OSGI_START.equals(key))
+				continue propKeys;
+			else if (OsgiLauncherConstants.ARGEO_OSGI_BUNDLES.equals(key))
+				continue propKeys;
+			else if (OsgiLauncherConstants.ARGEO_OSGI_LOCATIONS.equals(key))
+				continue propKeys;
+			else if (OsgiLauncherConstants.OSGI_BUNDLES.equals(key))
+				continue propKeys;
+			else
+				systemPropertiesToAppend.put(key, properties.getProperty(key));
+		}
+
 	}
 
+	/** Adds a regular system property. */
+	protected static void addSysProperty(StringBuffer vmArgs, String key,
+			String value) {
+		surroundSpaces(value);
+		String str = "-D" + key + "=" + value;
+		// surroundSpaces(str);
+		vmArgs.append(' ').append(str);
+	}
+
+	/** Adds JVMS registered in the workspace as special system properties. */
 	protected static void addVms(StringBuffer vmArgs) {
 		addVmSysProperty(vmArgs, "default", JavaRuntime.getDefaultVMInstall());
 		IVMInstallType[] vmTypes = JavaRuntime.getVMInstallTypes();
@@ -175,20 +225,14 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 
 	}
 
+	/** Adds a special system property pointing to one of the registered JVMs. */
 	protected static void addVmSysProperty(StringBuffer vmArgs, String suffix,
 			IVMInstall vmInstall) {
 		addSysProperty(vmArgs, OsgiLauncherConstants.VMS_PROPERTY_PREFIX + "."
 				+ suffix, vmInstall.getInstallLocation().getPath());
 	}
 
-	protected static void addSysProperty(StringBuffer vmArgs, String key,
-			String value) {
-		surroundSpaces(value);
-		String str = "-D" + key + "=" + value;
-		// surroundSpaces(str);
-		vmArgs.append(' ').append(str);
-	}
-
+	/** Surround the string with quotes if it contains spaces. */
 	protected static String surroundSpaces(String str) {
 		if (str.indexOf(' ') >= 0)
 			return '\"' + str + '\"';
@@ -196,8 +240,15 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			return str;
 	}
 
+	/**
+	 * Reformat the bundle list in order to reflect which bundles have to be
+	 * started.
+	 */
 	protected static String convertBundleList(List<String> bundlesToStart,
 			String original) {
+		if (debug)
+			System.out.println("Original bundle list: " + original);
+
 		StringBuffer bufBundles = new StringBuffer(1024);
 		StringTokenizer stComa = new StringTokenizer(original, ",");
 		boolean first = true;
@@ -240,7 +291,21 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		return output;
 	}
 
-	protected static Properties readProperties(IFile file) throws CoreException {
+	// UTILITIES
+	/** Recursively deletes a directory tree. */
+	private static void deleteDir(File dir) {
+		File[] files = dir.listFiles();
+		for (File file : files) {
+			if (file.isDirectory())
+				deleteDir(file);
+			else
+				file.delete();
+		}
+		dir.delete();
+	}
+
+	/** Loads a properties file. */
+	private static Properties readProperties(IFile file) throws CoreException {
 		Properties props = new Properties();
 
 		InputStream in = null;
@@ -261,36 +326,9 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		return props;
 	}
 
-	protected static void interpretProperties(Properties properties,
-			List<String> bundlesToStart,
-			Map<String, String> systemPropertiesToAppend) {
-		String argeoOsgiStart = properties
-				.getProperty(OsgiLauncherConstants.ARGEO_OSGI_START);
-		if (argeoOsgiStart != null) {
-			StringTokenizer st = new StringTokenizer(argeoOsgiStart, ",");
-			while (st.hasMoreTokens())
-				bundlesToStart.add(st.nextToken());
-		}
-
-		propKeys: for (Object keyObj : properties.keySet()) {
-			String key = keyObj.toString();
-			if (OsgiLauncherConstants.ARGEO_OSGI_START.equals(key))
-				continue propKeys;
-			else if (OsgiLauncherConstants.ARGEO_OSGI_BUNDLES.equals(key))
-				continue propKeys;
-			else if (OsgiLauncherConstants.ARGEO_OSGI_LOCATIONS.equals(key))
-				continue propKeys;
-			else if (OsgiLauncherConstants.OSGI_BUNDLES.equals(key))
-				continue propKeys;
-			else
-				systemPropertiesToAppend.put(key, properties.getProperty(key));
-		}
-
-	}
-
 	// Hacked from
 	// org.eclipse.pde.internal.ui.launcher.LaunchArgumentsHelper.getWorkingDirectory(ILaunchConfiguration)
-	public static File getWorkingDirectory(ILaunchConfiguration configuration)
+	private static File getWorkingDirectory(ILaunchConfiguration configuration)
 			throws CoreException {
 		String working;
 		try {
@@ -317,9 +355,63 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		return mgr.performStringSubstitution(text);
 	}
 
-	// static void initializeConfiguration(
-	// ILaunchConfigurationWorkingCopy configuration) {
-	// new OSGiLaunchConfigurationInitializer().initialize(configuration);
-	// }
+	/**
+	 * Not used anymore, but kept because this routine may be useful in the
+	 * future.
+	 */
+	protected void addSelectedProjects(StringBuffer name, ISelection selection,
+			List<String> bundlesToStart) {
+		Assert.isNotNull(selection);
+
+		Map<String, IPluginModelBase> bundleProjects = new HashMap<String, IPluginModelBase>();
+		for (IPluginModelBase modelBase : PluginRegistry.getWorkspaceModels()) {
+			IProject bundleProject = modelBase.getUnderlyingResource()
+					.getProject();
+			bundleProjects.put(bundleProject.getName(), modelBase);
+		}
+
+		IStructuredSelection sSelection = (IStructuredSelection) selection;
+		for (Iterator<?> it = sSelection.iterator(); it.hasNext();) {
+			Object obj = it.next();
+			if (obj instanceof IProject) {
+				IProject project = (IProject) obj;
+				if (bundleProjects.containsKey(project.getName())) {
+					IPluginModelBase modelBase = bundleProjects.get(project
+							.getName());
+
+					BundleDescription bundleDescription = null;
+					if (modelBase.isFragmentModel()) {
+						BundleDescription[] hosts = modelBase
+								.getBundleDescription().getHost().getHosts();
+						for (BundleDescription bd : hosts) {
+							if (debug)
+								System.out.println("Host for "
+										+ modelBase.getBundleDescription()
+												.getSymbolicName() + ": "
+										+ bd.getSymbolicName());
+							bundleDescription = bd;
+						}
+					} else {
+						bundleDescription = modelBase.getBundleDescription();
+					}
+
+					if (bundleDescription != null) {
+						String symbolicName = bundleDescription
+								.getSymbolicName();
+						String bundleName = bundleDescription.getName();
+
+						bundlesToStart.add(symbolicName);
+
+						if (name.length() > 0)
+							name.append(" ");
+						if (bundleName != null)
+							name.append(bundleName);
+						else
+							name.append(symbolicName);
+					}
+				}
+			}
+		}
+	}
 
 }

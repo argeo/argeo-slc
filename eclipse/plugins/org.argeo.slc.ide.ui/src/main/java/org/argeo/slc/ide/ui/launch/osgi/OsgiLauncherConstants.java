@@ -2,6 +2,7 @@ package org.argeo.slc.ide.ui.launch.osgi;
 
 import org.argeo.slc.ide.ui.SlcIdeUiPlugin;
 
+/** Constants used by OSGi launch. */
 public interface OsgiLauncherConstants {
 
 	public final static String ARGEO_OSGI_START = "argeo.osgi.start";
