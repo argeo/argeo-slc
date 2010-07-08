@@ -28,7 +28,8 @@
 							org.dbunit.dataset.xml;resolution:="optional",
 							org.dbunit.operation;resolution:="optional",
 							junit.framework;resolution:="optional",
-							org.apache.commons.vfs.*
+							org.apache.commons.vfs.*,
+							javax.swing.plaf.metal
 						</Import-Package>
 					</instructions>
 				</configuration>

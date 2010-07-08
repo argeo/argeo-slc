@@ -38,6 +38,15 @@ public class SimpleUserInfo implements UserInfo {
 	protected String passphrase;
 	protected char[] passphraseSafe;
 
+	public void reset() {
+		if (passwordSafe != null)
+			Arrays.fill(passwordSafe, (char) 0);
+		passwordSafe = null;
+		if (passphraseSafe != null)
+			Arrays.fill(passphraseSafe, (char) 0);
+		passphraseSafe = null;
+	}
+
 	public void setPassword(String password) {
 		this.password = password;
 	}

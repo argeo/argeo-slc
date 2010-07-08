@@ -30,7 +30,10 @@ public class UiUserInfo extends SimpleUserInfo {
 
 			@Override
 			protected void useCredentials(char[] password) {
-				passphraseSafe = Arrays.copyOf(password, password.length);
+				passphraseSafe = new char[password.length];
+				System.arraycopy(password, 0, passphraseSafe, 0,
+						password.length);
+				// passphraseSafe = Arrays.copyOf(password, password.length);
 			}
 		};
 		dialog.setVisible(true);
@@ -49,7 +52,9 @@ public class UiUserInfo extends SimpleUserInfo {
 
 			@Override
 			protected void useCredentials(char[] password) {
-				passwordSafe = Arrays.copyOf(password, password.length);
+				// passwordSafe = Arrays.copyOf(password, password.length);
+				passwordSafe = new char[password.length];
+				System.arraycopy(password, 0, passwordSafe, 0, password.length);
 			}
 		};
 		dialog.setVisible(true);

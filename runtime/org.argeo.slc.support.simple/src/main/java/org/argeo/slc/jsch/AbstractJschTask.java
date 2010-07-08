@@ -64,6 +64,8 @@ public abstract class AbstractJschTask implements Runnable {
 			}
 			return session;
 		} catch (JSchException e) {
+			if (sshTarget.getUserInfo() instanceof SimpleUserInfo)
+				((SimpleUserInfo) sshTarget.getUserInfo()).reset();
 			throw new SlcException("Could not open session to "
 					+ getSshTarget(), e);
 		}
