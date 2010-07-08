@@ -259,8 +259,8 @@ public class DefaultExecutionFlowDescriptorConverter implements
 									+ " If it is an inner bean consider put it frozen.");
 					ref = REF_VALUE_INTERNAL;
 				} else {
-					if (log.isDebugEnabled())
-						log.debug(ref
+					if (log.isTraceEnabled())
+						log.trace(ref
 								+ " is the reference for ref spec attribute "
 								+ key + " in " + executionFlow + " (" + rsa
 								+ ")");
