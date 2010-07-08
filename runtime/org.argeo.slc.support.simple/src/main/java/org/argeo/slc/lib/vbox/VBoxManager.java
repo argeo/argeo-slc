@@ -55,6 +55,10 @@ public class VBoxManager {
 		startVm("gui");
 	}
 
+	public void startVmHeadless() {
+		startVm("vrdp");
+	}
+
 	public void startVm(String type) {
 		List<Object> cmd = new ArrayList<Object>();
 		cmd.add(executable);
@@ -70,16 +74,48 @@ public class VBoxManager {
 		for (VBoxNat vBoxNat : nats) {
 			for (String id : vBoxNat.getMappings().keySet()) {
 				VBoxPortMapping mapping = vBoxNat.getMappings().get(id);
-				new SystemCall(createNatCommand(id, vBoxNat.getDevice(),
-						"Protocol", mapping.getProtocol(), script)).run();
-				script.append('\n');
-				new SystemCall(createNatCommand(id, vBoxNat.getDevice(),
-						"GuestPort", mapping.getGuest(), script)).run();
-				script.append('\n');
-				new SystemCall(createNatCommand(id, vBoxNat.getDevice(),
-						"HostPort", mapping.getHost(), script)).run();
-				script.append('\n');
-				script.append('\n');
+
+				// Try to delete rule first
+				try {
+					StringBuffer delCmd = new StringBuffer(
+							"VBoxManage modifyvm");
+					delCmd.append(" \"").append(vm.getName()).append("\"");
+					delCmd.append(" --natpf").append(vBoxNat.getDevice())
+							.append(" ");
+					delCmd.append(" delete ");
+					delCmd.append("\"").append(id).append("\"");
+					new SystemCall(delCmd.toString()).run();
+					script.append(delCmd).append("\n");
+				} catch (Exception e) {
+					// silent
+				}
+
+				StringBuffer cmd = new StringBuffer("VBoxManage modifyvm");
+				cmd.append(" \"").append(vm.getName()).append("\"");
+				cmd.append(" --natpf").append(vBoxNat.getDevice()).append(" ");
+				cmd.append("\"");
+				cmd.append(id).append(",");
+				cmd.append(mapping.getProtocol()).append(",");
+				cmd.append(",");
+				cmd.append(mapping.getHostPort()).append(",");
+				cmd.append(vBoxNat.getGuestIp()).append(",");
+				cmd.append(mapping.getGuestPort());
+				cmd.append("\"");
+
+				new SystemCall(cmd.toString()).run();
+				script.append(cmd).append("\n");
+
+				// Older VirtualBox
+				// new SystemCall(createNatCommand(id, vBoxNat.getDevice(),
+				// "Protocol", mapping.getProtocol(), script)).run();
+				// script.append('\n');
+				// new SystemCall(createNatCommand(id, vBoxNat.getDevice(),
+				// "GuestPort", mapping.getGuest(), script)).run();
+				// script.append('\n');
+				// new SystemCall(createNatCommand(id, vBoxNat.getDevice(),
+				// "HostPort", mapping.getHost(), script)).run();
+				// script.append('\n');
+				// script.append('\n');
 			}
 			script.append('\n');
 		}

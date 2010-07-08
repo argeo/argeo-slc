@@ -16,11 +16,11 @@
 
 package org.argeo.slc.lib.vbox;
 
-/** The mapping of one port.*/
+/** The mapping of one port. */
 public class VBoxPortMapping {
 	private String protocol = "TCP";
-	private String guest;
-	private String host;
+	private String guestPort;
+	private String hostPort;
 
 	public String getProtocol() {
 		return protocol;
@@ -30,20 +30,20 @@ public class VBoxPortMapping {
 		this.protocol = type;
 	}
 
-	public String getGuest() {
-		return guest;
+	public String getGuestPort() {
+		return guestPort;
 	}
 
-	public void setGuest(String guest) {
-		this.guest = guest;
+	public void setGuestPort(String guestPort) {
+		this.guestPort = guestPort;
 	}
 
-	public String getHost() {
-		return host;
+	public String getHostPort() {
+		return hostPort;
 	}
 
-	public void setHost(String host) {
-		this.host = host;
+	public void setHostPort(String hostPort) {
+		this.hostPort = hostPort;
 	}
 
 }

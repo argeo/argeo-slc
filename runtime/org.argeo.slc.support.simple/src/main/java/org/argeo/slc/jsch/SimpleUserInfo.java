@@ -33,10 +33,10 @@ public class SimpleUserInfo implements UserInfo {
 
 	private final static Log log = LogFactory.getLog(SimpleUserInfo.class);
 
-	private String password;
-	private char[] passwordSafe;
-	private String passphrase;
-	private char[] passphraseSafe;
+	protected String password;
+	protected char[] passwordSafe;
+	protected String passphrase;
+	protected char[] passphraseSafe;
 
 	public void setPassword(String password) {
 		this.password = password;
