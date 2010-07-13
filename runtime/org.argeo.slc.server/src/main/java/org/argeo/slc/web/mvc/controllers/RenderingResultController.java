@@ -16,8 +16,6 @@
 
 package org.argeo.slc.web.mvc.controllers;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
@@ -34,7 +32,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class RenderingResultController {
-	private final static Log log = LogFactory.getLog(RenderingResultController.class);
 
 	public final static String KEY_ANSWER = "__answer";
 	public final static String MODELKEY_RESULT = "result";
