@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.web.mvc.process;
+package org.argeo.slc.web.mvc.controllers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -31,8 +31,6 @@ import org.argeo.slc.core.attachment.AttachmentsStorage;
 import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.runtime.SlcAgentFactory;
-import org.argeo.slc.services.SlcExecutionService;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.xml.transform.StringResult;
@@ -40,25 +38,19 @@ import org.springframework.xml.transform.StringResult;
 public class SlcExecutionManager {
 	private final static Log log = LogFactory.getLog(SlcExecutionManager.class);
 
-	private SlcAgentFactory agentFactory;
 	private Unmarshaller unmarshaller;
 	private Marshaller marshaller;
-	private SlcExecutionService slcExecutionService;
 	private AttachmentsStorage attachmentsStorage;
 
-	public SlcExecutionManager(SlcAgentFactory agentFactory,
-			Unmarshaller unmarshaller, Marshaller marshaller,
-			SlcExecutionService slcExecutionService,
-			AttachmentsStorage attachmentsStorage) {
+	public SlcExecutionManager(Unmarshaller unmarshaller,
+			Marshaller marshaller, AttachmentsStorage attachmentsStorage) {
 
-		this.agentFactory = agentFactory;
 		this.unmarshaller = unmarshaller;
 		this.marshaller = marshaller;
-		this.slcExecutionService = slcExecutionService;
 		this.attachmentsStorage = attachmentsStorage;
 	}
 
-	public void storeRealizedFlows(SlcExecution slcExecution) {
+	void storeRealizedFlows(SlcExecution slcExecution) {
 
 		Attachment attachment = realizedFlowsAttachment(UUID.randomUUID()
 				.toString(), slcExecution);
@@ -79,7 +71,7 @@ public class SlcExecutionManager {
 		}
 	}
 
-	public void retrieveRealizedFlows(SlcExecution slcExecution) {
+	void retrieveRealizedFlows(SlcExecution slcExecution) {
 		Attachment attachment = realizedFlowsAttachment(slcExecution
 				.getRealizedFlowsXml(), slcExecution);
 

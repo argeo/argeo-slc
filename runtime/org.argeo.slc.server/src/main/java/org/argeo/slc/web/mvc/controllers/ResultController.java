@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.web.mvc;
+package org.argeo.slc.web.mvc.controllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
-import java.util.Vector;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -34,14 +33,11 @@ import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.core.test.tree.ResultAttributes;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultCollection;
-import org.argeo.slc.dao.runtime.SlcAgentDescriptorDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
-import org.argeo.slc.deploy.DynamicRuntime;
 import org.argeo.slc.msg.ExecutionAnswer;
 import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.msg.ReferenceList;
-import org.argeo.slc.runtime.SlcAgentDescriptor;
 import org.argeo.slc.services.TestManagerService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,57 +46,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-public class ServiceController {
+public class ResultController {
 
-//	private final static Log log = LogFactory.getLog(ServiceController.class);
+	// private final static Log log =
+	// LogFactory.getLog(ServiceController.class);
 
 	// Constants
 	public final static String KEY_ANSWER = "__answer";
 	protected final String FORCE_DOWNLOAD = "Content-Type: application/force-download";
 
 	// IoC
-	// FIXME : why must this be final ??
-	private final TreeTestResultDao treeTestResultDao;
-	private final TestManagerService testManagerService;
-	private final TreeTestResultCollectionDao testResultCollectionDao;
-	private final SlcAgentDescriptorDao slcAgentDescriptorDao;
+	private TreeTestResultDao treeTestResultDao;
+	private TreeTestResultCollectionDao treeTestResultCollectionDao;
+	private TestManagerService testManagerService;
 	private AttachmentsStorage attachmentsStorage;
-	private DynamicRuntime<?> dynamicRuntime;
-
-	public ServiceController(TreeTestResultDao treeTestResultDao,
-			TreeTestResultCollectionDao testResultCollectionDao,
-			TestManagerService testManagerService,
-			SlcAgentDescriptorDao slcAgentDescriptorDao) {
-
-		this.testManagerService = testManagerService;
-		this.treeTestResultDao = treeTestResultDao;
-		this.testResultCollectionDao = testResultCollectionDao;
-		this.slcAgentDescriptorDao = slcAgentDescriptorDao;
-	}
 
 	// Business Methods
-	@RequestMapping("/isServerReady.service")
-	protected ExecutionAnswer isServerReady(Model model) {
-		// Does nothing for now, it will return an OK answer.
-		return ExecutionAnswer.ok("Execution completed properly");
-	}
-
-	@RequestMapping("/shutdownRuntime.service")
-	protected ExecutionAnswer shutdownRuntime(Model model) {
-		new Thread() {
-			public void run() {
-				// wait in order to let call return
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// silent
-				}
-				dynamicRuntime.shutdown();
-			}
-		}.start();
-		return ExecutionAnswer.ok("Server shutting down...");
-	}
-
 	@RequestMapping("/getResult.service")
 	protected TreeTestResult getResult(
 			@RequestParam(value = "uuid", required = false) String uuid) {
@@ -141,7 +102,7 @@ public class ServiceController {
 						resultUuid);
 
 		if (attrNames != null) {
-			TreeTestResultCollection sourceCollection = testResultCollectionDao
+			TreeTestResultCollection sourceCollection = treeTestResultCollectionDao
 					.getTestResultCollection(collectionId);
 
 			int index = 0;
@@ -163,7 +124,7 @@ public class ServiceController {
 			if (resultUuids == null) {// no specs
 				// remove all
 				// TODO: optimize
-				TreeTestResultCollection sourceCollection = testResultCollectionDao
+				TreeTestResultCollection sourceCollection = treeTestResultCollectionDao
 						.getTestResultCollection(collectionId);
 				List<TreeTestResult> results = new ArrayList<TreeTestResult>(
 						sourceCollection.getResults());
@@ -181,7 +142,7 @@ public class ServiceController {
 	protected ReferenceList listCollectionRefs(HttpServletRequest request,
 			HttpServletResponse response) {
 
-		SortedSet<TreeTestResultCollection> results = testResultCollectionDao
+		SortedSet<TreeTestResultCollection> results = treeTestResultCollectionDao
 				.listCollections();
 
 		ReferenceList referenceList = new ReferenceList();
@@ -192,12 +153,12 @@ public class ServiceController {
 	}
 
 	@RequestMapping("/listResultAttributes.service")
-	protected ObjectList listResultAttributes(@RequestParam String id, Model model) {
+	protected ObjectList listResultAttributes(@RequestParam String id,
+			Model model) {
 
-		List<ResultAttributes> resultAttributes = testResultCollectionDao
+		List<ResultAttributes> resultAttributes = treeTestResultCollectionDao
 				.listResultAttributes(id);
-		return new ObjectList(
-				resultAttributes);
+		return new ObjectList(resultAttributes);
 	}
 
 	@RequestMapping("/listResults.service")
@@ -214,7 +175,7 @@ public class ServiceController {
 			}
 		}
 
-		List<TreeTestResult> resultAttributes = testResultCollectionDao
+		List<TreeTestResult> resultAttributes = treeTestResultCollectionDao
 				.listResults(collectionId, attributes);
 		return new ObjectList(resultAttributes);
 	}
@@ -222,8 +183,7 @@ public class ServiceController {
 	@RequestMapping("/copyCollectionToCollection.service")
 	protected ExecutionAnswer copyCollectionToCollection(
 			@RequestParam String sourceCollectionId,
-			@RequestParam String targetCollectionId,
-			HttpServletRequest request) {
+			@RequestParam String targetCollectionId, HttpServletRequest request) {
 
 		String[] attrNames = request.getParameterValues("attrName");
 		String[] attrPatterns = request.getParameterValues("attrPattern");
@@ -237,7 +197,7 @@ public class ServiceController {
 			throw new SlcException(
 					"There must be as many attrName as attrPatterns");
 
-		TreeTestResultCollection sourceCollection = testResultCollectionDao
+		TreeTestResultCollection sourceCollection = treeTestResultCollectionDao
 				.getTestResultCollection(sourceCollectionId);
 		if (attrNames != null) {
 			int index = 0;
@@ -265,24 +225,6 @@ public class ServiceController {
 		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
-	@RequestMapping("/listAgents.service")
-	protected ObjectList listAgents() {
-		List<SlcAgentDescriptor> list = slcAgentDescriptorDao
-				.listSlcAgentDescriptors();
-		return new ObjectList(list);
-	}
-
-	@RequestMapping("/cleanAgents.service")
-	protected ExecutionAnswer cleanAgents() {
-
-		List<SlcAgentDescriptor> list = slcAgentDescriptorDao
-				.listSlcAgentDescriptors();
-		for (SlcAgentDescriptor t : new Vector<SlcAgentDescriptor>(list)) {
-			slcAgentDescriptorDao.delete(t);
-		}
-		return ExecutionAnswer.ok("Execution completed properly");
-	}
-
 	@RequestMapping("/getAttachment.service")
 	protected void getAttachment(@RequestParam String uuid,
 			@RequestParam String contentType, @RequestParam String name,
@@ -291,7 +233,7 @@ public class ServiceController {
 			if (name != null) {
 				contentType = FORCE_DOWNLOAD;
 				String ext = FilenameUtils.getExtension(name);
-				// cf. http://en.wikipedia.org/wiki/Internet_media_type
+				// cf. http://en.wikipedia.org/wikServicei/Internet_media_type
 				if ("csv".equals(ext))
 					contentType = "text/csv";
 				else if ("pdf".equals(ext))
@@ -331,8 +273,17 @@ public class ServiceController {
 
 	// IoC
 
-	public void setDynamicRuntime(DynamicRuntime<?> dynamicRuntime) {
-		this.dynamicRuntime = dynamicRuntime;
+	public void setTreeTestResultDao(TreeTestResultDao treeTestResultDao) {
+		this.treeTestResultDao = treeTestResultDao;
+	}
+
+	public void setTestManagerService(TestManagerService testManagerService) {
+		this.testManagerService = testManagerService;
+	}
+
+	public void setTreeTestResultCollectionDao(
+			TreeTestResultCollectionDao treeTestResultCollectionDao) {
+		this.treeTestResultCollectionDao = treeTestResultCollectionDao;
 	}
 
 	public void setAttachmentsStorage(AttachmentsStorage attachmentsStorage) {

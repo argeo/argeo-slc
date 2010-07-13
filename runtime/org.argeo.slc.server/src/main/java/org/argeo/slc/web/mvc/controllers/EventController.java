@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.web.mvc;
+package org.argeo.slc.web.mvc.controllers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,11 +39,7 @@ public class EventController {
 	private SlcEventListenerRegister eventListenerRegister;
 	private SlcEventListener eventListener = null;
 
-	public EventController() {
-	}
-
 	// Business Methods
-
 	@RequestMapping("/addEventListener.service")
 	public ExecutionAnswer addEventListener(
 			@RequestParam(SlcEvent.EVENT_TYPE) String eventType,

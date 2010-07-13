@@ -37,14 +37,14 @@ import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class ResultPdfView extends AbstractPdfView {
+	public final static String MODELKEY_RESULT = "result";
 
 	@Override
-	@SuppressWarnings(value={"unchecked"})
+	@SuppressWarnings(value = { "unchecked" })
 	protected void buildPdfDocument(Map model, Document document,
 			PdfWriter writer, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
-		TreeTestResult ttr = (TreeTestResult) model
-				.get(GetResultController.MODELKEY_RESULT);
+		TreeTestResult ttr = (TreeTestResult) model.get(MODELKEY_RESULT);
 
 		document.addTitle("Result " + ttr.getUuid());
 		document.add(new Paragraph("Result " + ttr.getUuid()));

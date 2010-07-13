@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.web.mvc;
+package org.argeo.slc.web.mvc.controllers;
 
 import java.io.BufferedReader;
 import java.util.Comparator;
@@ -38,7 +38,6 @@ import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
 import org.argeo.slc.services.SlcExecutionService;
-import org.argeo.slc.web.mvc.process.SlcExecutionManager;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Controller;
@@ -49,11 +48,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.xml.transform.StringSource;
 
 @Controller
-public class ExecutionServiceController {
+public class ProcessController {
 
 	public final static String KEY_ANSWER = "__answer";
-	private final static Log log = LogFactory
-			.getLog(ExecutionServiceController.class);
+	private final static Log log = LogFactory.getLog(ProcessController.class);
 
 	private SlcExecutionDao slcExecutionDao;
 	private SlcAgentFactory agentFactory;
@@ -160,10 +158,8 @@ public class ExecutionServiceController {
 	}
 
 	private void initializeSEM() {
-		slcExecutionManager = new SlcExecutionManager(agentFactory,
-				unmarshaller, marshaller, slcExecutionService,
+		slcExecutionManager = new SlcExecutionManager(unmarshaller, marshaller,
 				attachmentsStorage);
-
 	}
 
 	public void setSlcExecutionDao(SlcExecutionDao slcExecutionDao) {

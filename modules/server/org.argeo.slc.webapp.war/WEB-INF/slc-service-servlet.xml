@@ -7,10 +7,15 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<context:component-scan base-package="org.argeo.slc.web.mvc" />
+	<context:component-scan base-package="org.argeo.slc.web.mvc.controllers" />
+
+	<!-- Server Handling -->
+	<bean class="org.argeo.slc.web.mvc.controllers.ServerController">
+		<property name="dynamicRuntime" ref="dynamicRuntime" />
+	</bean>
 
 	<!--  Execution  -->
-	<bean name="/*Execution*.service, /*Modules*.service" class="org.argeo.slc.web.mvc.ExecutionServiceController">
+	<bean class="org.argeo.slc.web.mvc.controllers.ProcessController">
 		<property name="agentFactory" ref="agentFactory" />
 		<property name="slcExecutionDao" ref="slcExecutionDao" />
 		<property name="slcExecutionService" ref="slcExecutionService" />
@@ -20,33 +25,28 @@
 	</bean>
 
 	<!--  Events  -->
-	<bean name="/*Event*.service" class="org.argeo.slc.web.mvc.EventController">
+	<bean class="org.argeo.slc.web.mvc.controllers.EventController">
 		<property name="eventListenerRegister" ref="eventListenerRegister" />
 		<property name="eventListener" ref="eventListener" />
+	</bean>
+
+	<!--  Results Handling -->
+	<bean class="org.argeo.slc.web.mvc.controllers.ResultController">
+		<property name="treeTestResultDao" ref="testResultDao" />
+		<property name="treeTestResultCollectionDao" ref="testResultCollectionDao" />
+		<property name="testManagerService" ref="testManagerService" />
+		<property name="attachmentsStorage" ref="attachmentsStorage" />
+	</bean>
+
+	<!-- Agent Handling -->
+	<bean class="org.argeo.slc.web.mvc.controllers.AgentController">
+		<property name="slcAgentDescriptorDao" ref="slcAgentDescriptorDao" />
 	</bean>
 
 	<!-- Provisioning -->
 	<bean name="/listModularDistributions.service"
 		class="org.argeo.slc.web.mvc.provisioning.ListModularDistributions">
 		<property name="modularDistributions" ref="modularDistributions" />
-	</bean>
-
-	<bean name="/installModule.service" class="org.argeo.slc.web.mvc.management.InstallModule">
-		<property name="dynamicRuntime" ref="dynamicRuntime" />
-	</bean>
-
-	<bean name="/uninstallModule.service" class="org.argeo.slc.web.mvc.management.UninstallModule">
-		<property name="dynamicRuntime" ref="dynamicRuntime" />
-	</bean>
-
-	<!--  All that remains -->
-	<bean name="/*.service" class="org.argeo.slc.web.mvc.ServiceController">
-		<constructor-arg ref="testResultDao" />
-		<constructor-arg ref="testResultCollectionDao" />
-		<constructor-arg ref="testManagerService" />
-		<constructor-arg ref="slcAgentDescriptorDao" />
-		<property name="dynamicRuntime" ref="dynamicRuntime" />
-		<property name="attachmentsStorage" ref="attachmentsStorage" />
 	</bean>
 
 	<bean name="eventListenerRegister" class="org.argeo.slc.web.mvc.WebSlcEventListenerRegister"

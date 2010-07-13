@@ -34,7 +34,10 @@ import org.argeo.slc.test.TestResultPart;
 import org.springframework.web.servlet.view.document.AbstractJExcelView;
 
 public class ResultExcelView extends AbstractJExcelView {
-	@SuppressWarnings(value={"unchecked"})
+	public final static String MODELKEY_RESULT = "result";
+
+	
+	@SuppressWarnings(value = { "unchecked" })
 	protected void buildExcelDocument(Map model, WritableWorkbook workbook,
 			HttpServletRequest request, HttpServletResponse response) {
 		try {
@@ -44,7 +47,7 @@ public class ResultExcelView extends AbstractJExcelView {
 			WritableSheet sheet = workbook.getSheet("SLC");
 
 			TreeTestResult ttr = (TreeTestResult) model
-					.get(GetResultController.MODELKEY_RESULT);
+					.get(MODELKEY_RESULT);
 
 			sheet.addCell(new Label(0, 0, "Result " + ttr.getUuid()));
 

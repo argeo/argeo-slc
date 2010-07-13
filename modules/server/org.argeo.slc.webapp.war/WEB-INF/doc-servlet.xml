@@ -3,24 +3,26 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean name="/resultView.xls" class="org.argeo.slc.web.mvc.result.GetResultController">
-		<constructor-arg ref="testResultDao" />
-		<property name="viewName" value="resultExcelView" />
+
+	<bean class="org.argeo.slc.web.mvc.controllers.RenderingResultController">
+		<property name="testResultDao" ref="testResultDao" />
+		<property name="resultExcelView" ref="resultExcelView" />
+		<property name="resultPdfView" ref="resultPdfView" />
 	</bean>
+
 
 	<bean name="resultExcelView" class="org.argeo.slc.web.mvc.result.ResultExcelView">
-	</bean>
-
-	<bean name="/resultView.pdf" class="org.argeo.slc.web.mvc.result.GetResultController">
-		<constructor-arg ref="testResultDao" />
-		<property name="viewName" value="resultPdfView" />
 	</bean>
 
 	<bean name="resultPdfView" class="org.argeo.slc.web.mvc.result.ResultPdfView">
 	</bean>
 
-	<bean
-		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+	<!--
+		bean
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"
+	-->
+	<bean id="handlerMapping"
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
 		<property name="interceptors">
 			<list>
 				<ref bean="osivInterceptor" />
@@ -28,10 +30,8 @@
 		</property>
 	</bean>
 
-
 	<bean id="viewResolverXls"
 		class="org.springframework.web.servlet.view.BeanNameViewResolver">
 	</bean>
-
 
 </beans>

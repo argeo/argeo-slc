@@ -3,16 +3,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean
-		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
-		<property name="interceptors">
-			<list>
-				<ref bean="osivInterceptor" />
-			</list>
-		</property>
-	</bean>
-
-
 	<bean id="viewResolverXslt" class="org.argeo.slc.web.mvc.XsltMarshallerViewResolver">
 		<property name="viewClass">
 			<value>org.argeo.slc.web.mvc.XsltMarshallerView
@@ -44,5 +34,13 @@
 		<property name="viewName" value="viewXml" />
 	</bean>
 
+	<bean
+		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="osivInterceptor" />
+			</list>
+		</property>
+	</bean>
 
 </beans>
