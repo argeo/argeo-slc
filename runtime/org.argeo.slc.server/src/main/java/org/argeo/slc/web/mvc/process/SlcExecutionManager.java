@@ -16,14 +16,11 @@
 
 package org.argeo.slc.web.mvc.process;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.UUID;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.IOUtils;
@@ -32,20 +29,13 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.attachment.Attachment;
 import org.argeo.slc.core.attachment.AttachmentsStorage;
 import org.argeo.slc.core.attachment.SimpleAttachment;
-import org.argeo.slc.msg.MsgConstants;
 import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.process.SlcExecutionStep;
-import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
 import org.argeo.slc.services.SlcExecutionService;
-import org.argeo.slc.web.mvc.AbstractServiceController;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
-import org.springframework.util.Assert;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.xml.transform.StringResult;
-import org.springframework.xml.transform.StringSource;
 
 public class SlcExecutionManager {
 	private final static Log log = LogFactory
@@ -94,8 +84,7 @@ public class SlcExecutionManager {
 	}
 
 	protected void retrieveRealizedFlows(SlcExecution slcExecution) {
-		Attachment attachment = NewSlcExecutionController
-				.realizedFlowsAttachment(slcExecution.getRealizedFlowsXml(),
+		Attachment attachment = realizedFlowsAttachment(slcExecution.getRealizedFlowsXml(),
 						slcExecution);
 
 		ByteArrayOutputStream out = null;
