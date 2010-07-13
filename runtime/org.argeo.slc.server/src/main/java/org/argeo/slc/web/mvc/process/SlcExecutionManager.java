@@ -38,8 +38,7 @@ import org.springframework.oxm.Unmarshaller;
 import org.springframework.xml.transform.StringResult;
 
 public class SlcExecutionManager {
-	private final static Log log = LogFactory
-			.getLog(SlcExecutionManager.class);
+	private final static Log log = LogFactory.getLog(SlcExecutionManager.class);
 
 	private SlcAgentFactory agentFactory;
 	private Unmarshaller unmarshaller;
@@ -47,22 +46,19 @@ public class SlcExecutionManager {
 	private SlcExecutionService slcExecutionService;
 	private AttachmentsStorage attachmentsStorage;
 
-	public SlcExecutionManager(
-			SlcAgentFactory agentFactory,
-			Unmarshaller unmarshaller,
-			Marshaller marshaller,
+	public SlcExecutionManager(SlcAgentFactory agentFactory,
+			Unmarshaller unmarshaller, Marshaller marshaller,
 			SlcExecutionService slcExecutionService,
-			AttachmentsStorage attachmentsStorage){
-		
-	this.agentFactory = agentFactory;
-	this.unmarshaller = unmarshaller;
-	this.marshaller = marshaller;
-	this.slcExecutionService = slcExecutionService;
-	this.attachmentsStorage = attachmentsStorage;
-	}
-	
+			AttachmentsStorage attachmentsStorage) {
 
-	protected void storeRealizedFlows(SlcExecution slcExecution) {
+		this.agentFactory = agentFactory;
+		this.unmarshaller = unmarshaller;
+		this.marshaller = marshaller;
+		this.slcExecutionService = slcExecutionService;
+		this.attachmentsStorage = attachmentsStorage;
+	}
+
+	public void storeRealizedFlows(SlcExecution slcExecution) {
 
 		Attachment attachment = realizedFlowsAttachment(UUID.randomUUID()
 				.toString(), slcExecution);
@@ -83,9 +79,9 @@ public class SlcExecutionManager {
 		}
 	}
 
-	protected void retrieveRealizedFlows(SlcExecution slcExecution) {
-		Attachment attachment = realizedFlowsAttachment(slcExecution.getRealizedFlowsXml(),
-						slcExecution);
+	public void retrieveRealizedFlows(SlcExecution slcExecution) {
+		Attachment attachment = realizedFlowsAttachment(slcExecution
+				.getRealizedFlowsXml(), slcExecution);
 
 		ByteArrayOutputStream out = null;
 		ByteArrayInputStream in = null;

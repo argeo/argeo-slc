@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.web.mvc.process;
+package org.argeo.slc.web.mvc;
 
 import java.io.BufferedReader;
 import java.util.Comparator;
@@ -38,6 +38,7 @@ import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
 import org.argeo.slc.services.SlcExecutionService;
+import org.argeo.slc.web.mvc.process.SlcExecutionManager;
 import org.springframework.oxm.Marshaller;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Controller;
