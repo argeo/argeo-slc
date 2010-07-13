@@ -26,7 +26,7 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.osgiboot.OsgiBoot;
+import org.argeo.osgi.boot.OsgiBoot;
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

@@ -59,7 +59,7 @@ public class DetachedLauncher extends JvmProcess implements BundleContextAware,
 	public DetachedLauncher() {
 		// Override defaults
 		setSynchronous(false);
-		setMainClass("org.argeo.slc.osgiboot.Launcher");
+		setMainClass("org.argeo.osgi.boot.Launcher");
 	}
 
 	public void afterPropertiesSet() throws Exception {

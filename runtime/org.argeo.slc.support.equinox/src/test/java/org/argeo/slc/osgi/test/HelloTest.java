@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.argeo.slc.equinox.unit.AbstractOsgiRuntimeTestCase;
-import org.argeo.slc.osgiboot.OsgiBoot;
+import org.argeo.osgi.boot.OsgiBoot;
 
 public class HelloTest extends AbstractOsgiRuntimeTestCase {
 	public void testHello() throws Exception {
