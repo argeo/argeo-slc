@@ -157,6 +157,22 @@ public class ProcessController {
 		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
+	@RequestMapping("/tailSlcExecutionSteps.service")
+	protected ObjectList tailSlcExecutionSteps(@RequestParam String uuid,
+			@RequestParam Integer stepCount) {
+		List<SlcExecutionStep> list = slcExecutionDao
+				.tailSteps(uuid, stepCount);
+		return new ObjectList(list);
+	}
+
+	@RequestMapping("/tailSlcExecutionSteps.service")
+	protected ObjectList tailSlcExecutionSteps(@RequestParam String uuid,
+			@RequestParam String stepOffsetUuid) {
+		List<SlcExecutionStep> list = slcExecutionDao.tailSteps(uuid,
+				stepOffsetUuid);
+		return new ObjectList(list);
+	}
+
 	private void initializeSEM() {
 		slcExecutionManager = new SlcExecutionManager(unmarshaller, marshaller,
 				attachmentsStorage);

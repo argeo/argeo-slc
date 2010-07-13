@@ -16,13 +16,16 @@
 
 package org.argeo.slc.process;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
-public class SlcExecutionStep {
+public class SlcExecutionStep implements Serializable {
+	private static final long serialVersionUID = -7308643628104726471L;
+
 	public final static String START = "START";
 	public final static String END = "END";
 	public final static String PHASE_START = "PHASE_START";
