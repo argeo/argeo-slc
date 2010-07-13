@@ -94,7 +94,7 @@ public abstract class SlcExecutionTestUtils {
 		assertNotNull(reached);
 		assertEquals(expected.getUuid(), reached.getUuid());
 		assertEquals(expected.getType(), reached.getType());
-		assertDateSec(expected.getBegin(), reached.getBegin());
+		assertDateSec(expected.getTimestamp(), reached.getTimestamp());
 		assertEquals(expected.getLogLines().size(), reached.getLogLines()
 				.size());
 		for (int i = 0; i < expected.getLogLines().size(); i++) {

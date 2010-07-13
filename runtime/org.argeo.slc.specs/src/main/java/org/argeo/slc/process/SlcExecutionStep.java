@@ -23,29 +23,47 @@ import java.util.StringTokenizer;
 import java.util.UUID;
 
 public class SlcExecutionStep {
-	public final static String TYPE_START = "START";
-	public final static String TYPE_END = "END";
-	public final static String TYPE_PHASE_START = "PHASE_START";
-	public final static String TYPE_PHASE_END = "PHASE_END";
-	public final static String TYPE_LOG = "LOG";
+	public final static String START = "START";
+	public final static String END = "END";
+	public final static String PHASE_START = "PHASE_START";
+	public final static String PHASE_END = "PHASE_END";
+	public final static String ERROR = "ERROR";
+	public final static String WARNING = "WARNING";
+	public final static String INFO = "INFO";
+	public final static String DEBUG = "DEBUG";
+	public final static String TRACE = "TRACE";
 
 	private String uuid = UUID.randomUUID().toString();
 	private String type;
-	private Date begin = new Date();
+	private String thread;
+	private Date timestamp = new Date();
 	private List<String> logLines = new ArrayList<String>();
 
 	/** Empty constructor */
 	public SlcExecutionStep() {
+		thread = Thread.currentThread().getName();
 	}
 
-	/** Creates a step of type LOG. */
+	/** Creates a step at the current date of type INFO */
 	public SlcExecutionStep(String log) {
-		this(TYPE_LOG, log);
+		this(new Date(), INFO, log);
+	}
+
+	/** Creates a step at the current date */
+	public SlcExecutionStep(String type, String log) {
+		this(new Date(), type, log);
 	}
 
 	/** Creates a step of the given type. */
-	public SlcExecutionStep(String type, String log) {
+	public SlcExecutionStep(Date timestamp, String type, String log) {
+		this(timestamp, type, log, Thread.currentThread().getName());
+	}
+
+	public SlcExecutionStep(Date timestamp, String type, String log,
+			String thread) {
 		this.type = type;
+		this.timestamp = timestamp;
+		this.thread = thread;
 		addLog(log);
 	}
 
@@ -65,12 +83,20 @@ public class SlcExecutionStep {
 		this.type = type;
 	}
 
-	public Date getBegin() {
-		return begin;
+	public Date getTimestamp() {
+		return timestamp;
 	}
 
-	public void setBegin(Date begin) {
-		this.begin = begin;
+	public void setTimestamp(Date begin) {
+		this.timestamp = begin;
+	}
+
+	public String getThread() {
+		return thread;
+	}
+
+	public void setThread(String thread) {
+		this.thread = thread;
 	}
 
 	public List<String> getLogLines() {

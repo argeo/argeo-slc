@@ -145,7 +145,7 @@ public class ProcessController {
 
 		slcExecution.setStatus(SlcExecution.STATUS_SCHEDULED);
 		slcExecution.getSteps().add(
-				new SlcExecutionStep(SlcExecutionStep.TYPE_START,
+				new SlcExecutionStep(SlcExecutionStep.START,
 						"Process started from the Web UI"));
 
 		initializeSEM();

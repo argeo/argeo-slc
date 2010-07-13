@@ -147,7 +147,7 @@ public class SlcExecution implements Serializable {
 			if (steps.size() == 0)
 				return null;
 			else
-				return steps.get(0).getBegin();
+				return steps.get(0).getTimestamp();
 		}
 	}
 
@@ -159,7 +159,7 @@ public class SlcExecution implements Serializable {
 			if (steps.size() == 0)
 				return null;
 			else
-				return steps.get(steps.size() - 1).getBegin();
+				return steps.get(steps.size() - 1).getTimestamp();
 		}
 	}
 

@@ -1,6 +1,9 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.13.0.SNAPSHOT
-Bundle-SymbolicName: org.argeo.slc.server.hsqldb
+Bundle-ManifestVersion: 2
+Bundle-Name: Server H2
+Bundle-SymbolicName: org.argeo.slc.server.h2
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Argeo
 Import-Package: net.sf.ehcache.hibernate,
  org.aopalliance.aop,
  org.argeo.slc.core.attachment,
@@ -18,10 +21,11 @@ Import-Package: net.sf.ehcache.hibernate,
  org.argeo.slc.process,
  org.argeo.slc.runtime,
  org.argeo.slc.test,
+ org.h2,
+ org.h2.jdbcx,
  org.hibernate,
  org.hibernate.hql.ast,
- org.hsqldb.jdbc,
  org.springframework.beans.factory.config,
  org.springframework.cache.ehcache,
+ org.springframework.jdbc.datasource,
  org.springframework.orm.hibernate3
-Bundle-Name: Server HSQLDB

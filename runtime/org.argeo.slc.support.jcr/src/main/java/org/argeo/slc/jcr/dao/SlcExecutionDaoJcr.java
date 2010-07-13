@@ -28,6 +28,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.dao.process.SlcExecutionDao;
@@ -36,8 +38,7 @@ import org.argeo.slc.process.SlcExecutionStep;
 
 public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements
 		SlcExecutionDao {
-	// private final static Log log =
-	// LogFactory.getLog(SlcExecutionDaoJcr.class);
+	private final static Log log = LogFactory.getLog(SlcExecutionDaoJcr.class);
 
 	public void addSteps(String slcExecutionId,
 			List<SlcExecutionStep> additionalSteps) {
@@ -115,6 +116,18 @@ public class SlcExecutionDaoJcr extends AbstractSlcJcrDao implements
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot update " + slcExecution, e);
 		}
+	}
+
+	public List<SlcExecutionStep> tailSteps(String slcExecutionId,
+			Integer nbrOfSteps) {
+		log.error("Method not implemented, returning an empty list.");
+		return new ArrayList<SlcExecutionStep>();
+	}
+
+	public List<SlcExecutionStep> tailSteps(String slcExecutionId,
+			String slcExecutionStepId) {
+		log.error("Method not implemented, returning an empty list.");
+		return new ArrayList<SlcExecutionStep>();
 	}
 
 }

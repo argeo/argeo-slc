@@ -77,7 +77,8 @@
 			<bind-xml node="attribute" />
 		</field>
 		<field name="type" />
-		<field name="begin" />
+		<field name="thread" />
+		<field name="timestamp" />
 		<field name="logLines" collection="arraylist" type="string">
 			<bind-xml name="log-line" location="log-lines" />
 		</field>

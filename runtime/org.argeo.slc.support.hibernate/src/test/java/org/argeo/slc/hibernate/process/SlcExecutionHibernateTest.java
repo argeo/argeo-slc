@@ -17,6 +17,7 @@
 package org.argeo.slc.hibernate.process;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.argeo.slc.dao.process.SlcExecutionDao;
@@ -41,6 +42,35 @@ public class SlcExecutionHibernateTest extends HibernateTestCase {
 
 		SlcExecution slcExecPersisted = dao.getSlcExecution(slcExec.getUuid());
 		assertSlcExecution(slcExec, slcExecPersisted);
+	}
+
+	public void testTailSteps() {
+		SlcExecutionDao dao = getBean(SlcExecutionDao.class);
+
+		SlcExecution slcExec = SlcExecutionTestUtils.createSimpleSlcExecution();
+		int totalStepCount = 20;
+		for (int i = 0; i < totalStepCount; i++) {
+			slcExec.getSteps().add(new SlcExecutionStep("Log " + i));
+		}
+		dao.create(slcExec);
+
+		int lastStepsCount = 7;
+		List<SlcExecutionStep> firstSteps = dao.tailSteps(slcExec.getUuid(),
+				lastStepsCount);
+		assertEquals(lastStepsCount, firstSteps.size());
+
+		SlcExecutionStep lastStep = firstSteps.get(lastStepsCount - 1);
+
+		List<SlcExecutionStep> additionalSteps = new ArrayList<SlcExecutionStep>();
+		int additionalStepsCount = 13;
+		for (int i = 0; i < additionalStepsCount; i++) {
+			additionalSteps.add(new SlcExecutionStep("Additonal log " + i));
+		}
+		dao.addSteps(slcExec.getUuid(), additionalSteps);
+
+		List<SlcExecutionStep> lastSteps = dao.tailSteps(slcExec.getUuid(),
+				lastStep.getUuid());
+		assertEquals(additionalStepsCount, lastSteps.size());
 	}
 
 	public void testModify() {

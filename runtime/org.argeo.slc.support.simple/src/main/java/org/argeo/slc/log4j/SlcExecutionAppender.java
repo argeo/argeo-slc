@@ -16,8 +16,11 @@
 
 package org.argeo.slc.log4j;
 
+import java.util.Date;
+
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Layout;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
@@ -50,8 +53,27 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 			if (onlyExecutionThread
 					&& !(currentThread instanceof ExecutionThread))
 				return;
+			
+			final String type;
+			if (event.getLevel().equals(Level.ERROR)
+					|| event.getLevel().equals(Level.FATAL))
+				type = SlcExecutionStep.ERROR;
+			else if (event.getLevel().equals(Level.WARN))
+				type = SlcExecutionStep.WARNING;
+			else if (event.getLevel().equals(Level.INFO))
+				type = SlcExecutionStep.INFO;
+			else if (event.getLevel().equals(Level.DEBUG))
+				type = SlcExecutionStep.DEBUG;
+			else if (event.getLevel().equals(Level.TRACE))
+				type = SlcExecutionStep.TRACE;
+			else
+				type = SlcExecutionStep.INFO;
+
+			SlcExecutionStep step = new SlcExecutionStep(new Date(event
+					.getTimeStamp()), type, layout.format(event));
+
 			((ProcessThreadGroup) currentThread.getThreadGroup())
-					.dispatchAddStep(new SlcExecutionStep(layout.format(event)));
+					.dispatchAddStep(step);
 		}
 	}
 

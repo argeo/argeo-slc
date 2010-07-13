@@ -213,7 +213,8 @@
     <xs:complexType name="SlcExecutionStepType">
         <xs:all>
             <xs:element name="type" type="xs:string" />
-            <xs:element name="begin" type="xs:dateTime" />
+            <xs:element name="thread" type="xs:string" />
+            <xs:element name="timestamp" type="xs:dateTime" />
             <xs:element name="log-lines" minOccurs="0">
                 <xs:complexType>
                     <xs:sequence>

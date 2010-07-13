@@ -1,21 +1,16 @@
 <?xml version="1.0"?>
-<!--
+	<!--
 
-    Copyright (C) 2010 Mathieu Baudier <mbaudier@argeo.org>
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-            http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
--->
+		Copyright (C) 2010 Mathieu Baudier <mbaudier@argeo.org> Licensed under
+		the Apache License, Version 2.0 (the "License"); you may not use this
+		file except in compliance with the License. You may obtain a copy of
+		the License at http://www.apache.org/licenses/LICENSE-2.0 Unless
+		required by applicable law or agreed to in writing, software
+		distributed under the License is distributed on an "AS IS" BASIS,
+		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+		implied. See the License for the specific language governing
+		permissions and limitations under the License.
+	-->
 
 <!DOCTYPE hibernate-mapping PUBLIC
 	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
@@ -26,14 +21,30 @@
 
 		<id name="uuid" column="UUID" />
 		<property name="type" column="TYPE" />
-		<property name="begin" column="BEGIN" />
+		<property name="thread" column="THREAD" />
+		<property name="timestamp" column="TSTAMP" type="imm_timestamp" />
 
 		<list name="logLines" cascade="all" lazy="false"
 			table="SLC_EXECUTION_STEP_LOG_LINE">
 			<cache usage="nonstrict-read-write" />
 			<key column="SLC_EXECUTION_STEP_ID" />
 			<list-index column="INDX" />
-			<element column="LOG_LINE" type="text" />
+			<element column="LOG_LINE" type="string" />
 		</list>
+
+		<query name="stepIndex"><![CDATA[
+select index(step)
+ from SlcExecution process
+  join process.steps step
+  	with step.uuid = ?
+ where process.uuid = ? 
+		]]></query>
+		<query name="stepsAfter"><![CDATA[
+select step
+ from SlcExecution process
+  join process.steps step
+ where process.uuid = ? 
+ 	and index(step) > ?
+		]]></query>
 	</class>
 </hibernate-mapping>

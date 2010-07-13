@@ -35,4 +35,10 @@ public interface SlcExecutionDao {
 
 	public void addSteps(String slcExecutionId,
 			List<SlcExecutionStep> additionalSteps);
+
+	public List<SlcExecutionStep> tailSteps(final String slcExecutionId,
+			final Integer nbrOfSteps);
+
+	public List<SlcExecutionStep> tailSteps(final String slcExecutionId,
+			final String slcExecutionStepId);
 }

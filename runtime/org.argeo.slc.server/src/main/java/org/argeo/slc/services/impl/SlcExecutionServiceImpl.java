@@ -16,6 +16,9 @@
 
 package org.argeo.slc.services.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
@@ -65,10 +68,12 @@ public class SlcExecutionServiceImpl implements SlcExecutionService {
 
 		slcExecution.setStatus(msg.getNewStatus());
 
-		if (msg.getNewStatus().equals(SlcExecution.STATUS_FINISHED))
-			slcExecution.getSteps().add(
-					new SlcExecutionStep(SlcExecutionStep.TYPE_END,
-							"Process finished."));
+		if (msg.getNewStatus().equals(SlcExecution.STATUS_FINISHED)) {
+			List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
+			steps.add(new SlcExecutionStep(SlcExecutionStep.END,
+					"Process finished."));
+			slcExecutionDao.addSteps(slcExecution.getUuid(), steps);
+		}
 
 		if (log.isTraceEnabled())
 			log.trace("Updating status for SLC execution #"

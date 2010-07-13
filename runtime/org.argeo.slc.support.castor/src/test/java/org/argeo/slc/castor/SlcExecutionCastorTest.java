@@ -38,13 +38,13 @@ public class SlcExecutionCastorTest extends AbstractCastorTestCase {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		SlcExecutionStep step0 = new SlcExecutionStep();
 		step0.setUuid(UUID.randomUUID().toString());
-		step0.setBegin(sdf.parse("2008-04-17 18:21"));
+		step0.setTimestamp(sdf.parse("2008-04-17 18:21"));
 		step0.setType("LOG");
 		step0.addLog("A log message\nand another line");
 
 		SlcExecutionStep step1 = new SlcExecutionStep();
 		step1.setUuid(UUID.randomUUID().toString());
-		step1.setBegin(sdf.parse("2008-04-17 18:25"));
+		step1.setTimestamp(sdf.parse("2008-04-17 18:25"));
 		step1.setType("LOG");
 		step1.addLog("A nother log message");
 

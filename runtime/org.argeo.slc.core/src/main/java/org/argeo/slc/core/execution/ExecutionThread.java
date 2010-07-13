@@ -51,7 +51,7 @@ public class ExecutionThread extends Thread {
 				.getFlowDescriptor();
 		String flowName = executionFlowDescriptor.getName();
 
-		dispatchAddStep(new SlcExecutionStep(SlcExecutionStep.TYPE_PHASE_START,
+		dispatchAddStep(new SlcExecutionStep(SlcExecutionStep.PHASE_START,
 				"Flow " + flowName));
 
 		try {
@@ -65,12 +65,13 @@ public class ExecutionThread extends Thread {
 			// TODO: re-throw exception ?
 			String msg = "Execution of flow " + flowName + " failed.";
 			log.error(msg, e);
-			dispatchAddStep(new SlcExecutionStep(msg + " " + e.getMessage()));
+			dispatchAddStep(new SlcExecutionStep(SlcExecutionStep.ERROR, msg
+					+ " " + e.getMessage()));
 			processThread.notifyError();
 		} finally {
 			processThread.flowCompleted();
-			dispatchAddStep(new SlcExecutionStep(
-					SlcExecutionStep.TYPE_PHASE_END, "Flow " + flowName));
+			dispatchAddStep(new SlcExecutionStep(SlcExecutionStep.PHASE_END,
+					"Flow " + flowName));
 		}
 	}
 
