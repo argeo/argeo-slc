@@ -16,10 +16,13 @@
 
 package org.argeo.slc.test;
 
+import java.io.Serializable;
+
 import org.argeo.slc.deploy.DeployedSystem;
 import org.argeo.slc.process.SlcExecutionRelated;
 
-public class TestRunDescriptor {
+public class TestRunDescriptor implements Serializable {
+	private static final long serialVersionUID = -6488010128523489018L;
 	private String testRunUuid;
 	private String slcExecutionUuid;
 	private String slcExecutionStepUuid;

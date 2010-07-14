@@ -16,6 +16,7 @@
 
 package org.argeo.slc.core.structure.tree;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -27,7 +28,10 @@ import org.argeo.slc.structure.StructureRegistry;
 /**
  * Path for tree based <code>StructureRegistry</code> implementations.
  */
-public class TreeSPath implements StructurePath, Comparable<StructurePath> {
+public class TreeSPath implements StructurePath, Comparable<StructurePath>,
+		Serializable {
+	private static final long serialVersionUID = -110121029180848183L;
+
 	/** Default character to use a separator: /. */
 	private static Character DEFAULT_SEPARATOR = '/';
 

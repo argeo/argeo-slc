@@ -16,6 +16,8 @@
 
 package org.argeo.slc.core.test;
 
+import java.io.Serializable;
+
 import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestRun;
 import org.argeo.slc.test.TestRunAware;
@@ -30,7 +32,8 @@ import org.argeo.slc.test.TestStatus;
  * @see TestStatus
  */
 public class SimpleResultPart implements TestResultPart, TestStatus,
-		TestRunAware {
+		TestRunAware, Serializable {
+	private static final long serialVersionUID = 6669675957685071901L;
 
 	private Long tid;
 

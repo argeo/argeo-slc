@@ -1,8 +1,7 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
 Bundle-Name: ActiveMQ Ext
 Bundle-SymbolicName: org.argeo.slc.ext.activemq
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.13.0.SNAPSHOT
 Fragment-Host: org.argeo.dep.osgi.activemq
 Import-Package: org.argeo.slc.runtime,
  org.argeo.slc.execution,
@@ -27,5 +26,6 @@ Import-Package: org.argeo.slc.runtime,
  org.argeo.slc.runtime,
  org.argeo.slc.test,
  org.argeo.slc.xml.process,
- org.argeo.slc.xml.test.tree
+ org.argeo.slc.xml.test.tree,
+ org.hibernate.collection
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -65,13 +65,13 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	// Runtime Data
 	private TreeSPath currentPath;
-	private TestRun currentTestRun;
+	private transient TestRun currentTestRun;
 	private Boolean warnIfAlreadyClosed = true;
 	private Boolean strictChecks = false;
 	// TODO is it really necessary closeDate == null ?
 	private Boolean isClosed = false;
 
-	private List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();
+	private transient List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();
 
 	/** Sets the list of listeners. */
 	public void setListeners(List<TestResultListener<TreeTestResult>> listeners) {
@@ -146,8 +146,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	}
 
 	/**
-	 * Used by ORM systems. 
-	 * Changed to public in order to enable jcr persistence
+	 * Used by ORM systems. Changed to public in order to enable jcr persistence
 	 */
 	public void setResultParts(SortedMap<TreeSPath, PartSubList> resultParts) {
 		this.resultParts = resultParts;

@@ -16,6 +16,7 @@
 
 package org.argeo.slc.core.test.tree;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
@@ -30,7 +31,8 @@ import org.argeo.slc.test.TestStatus;
  * 
  * @see TreeTestResult
  */
-public class PartSubList {
+public class PartSubList implements Serializable {
+	private static final long serialVersionUID = -5308754827565759844L;
 
 	/** For ORM */
 	private Long tid;
