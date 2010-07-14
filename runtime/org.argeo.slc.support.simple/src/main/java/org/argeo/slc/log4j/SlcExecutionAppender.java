@@ -45,7 +45,7 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 
 	private Layout layout = null;
 	private String pattern = "%m - %c%n";
-	private Boolean onlyExecutionThread = true;
+	private Boolean onlyExecutionThread = false;
 
 	public void afterPropertiesSet() {
 		if (layout != null)

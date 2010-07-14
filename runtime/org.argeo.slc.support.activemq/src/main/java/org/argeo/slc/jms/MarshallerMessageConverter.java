@@ -103,8 +103,8 @@ public class MarshallerMessageConverter implements MessageConverter {
 			msg = session.createTextMessage();
 			((TextMessage) msg).setText(result.toString());
 		}
-		if (log.isDebugEnabled())
-			log.debug("To message in " + (System.currentTimeMillis() - begin)
+		if (log.isTraceEnabled())
+			log.trace("To message in " + (System.currentTimeMillis() - begin)
 					+ " ms");
 		return msg;
 	}

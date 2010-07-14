@@ -17,6 +17,7 @@
 package org.argeo.slc.web.mvc.controllers;
 
 import java.io.BufferedReader;
+import java.text.SimpleDateFormat;
 import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
@@ -24,9 +25,11 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.AttachmentsStorage;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
@@ -171,6 +174,78 @@ public class ProcessController {
 		List<SlcExecutionStep> list = slcExecutionDao.tailSteps(uuid,
 				stepOffsetUuid);
 		return new ObjectList(list);
+	}
+
+	@RequestMapping("/downloadSlcExecution.service")
+	protected void downloadSlcExecution(@RequestParam String uuid,
+			@RequestParam String ext, HttpServletResponse response)
+			throws Exception {
+		String contentType;
+		// cf. http://en.wikipedia.org/wikServicei/Internet_media_type
+		if ("csv".equals(ext))
+			contentType = "text/csv";
+		else if ("pdf".equals(ext))
+			contentType = "application/pdf";
+		else if ("zip".equals(ext))
+			contentType = "application/zip";
+		else if ("html".equals(ext))
+			contentType = "application/html";
+		else if ("txt".equals(ext) || "log".equals(ext))
+			contentType = "text/plain";
+		else if ("doc".equals(ext) || "docx".equals(ext))
+			contentType = "application/msword";
+		else if ("xls".equals(ext) || "xlsx".equals(ext))
+			contentType = "application/vnd.ms-excel";
+		else if ("xml".equals(ext))
+			contentType = "text/xml";
+		else
+			contentType = "Content-Type: application/force-download";
+
+		String name = "Process-" + uuid + "." + ext;
+
+		SlcExecution process = slcExecutionDao.getSlcExecution(uuid);
+
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+		// TODO: put it in a separate view
+		if ("log".equals(ext)) {
+			StringBuffer buf = new StringBuffer("");
+			buf.append("#\n# PROCESS " + process.getUuid() + "\n#\n\n");
+			buf
+					.append("Started at " + df.format(process.getStartDate())
+							+ "\n");
+			buf.append("Ended at " + df.format(process.getEndDate()) + "\n");
+			buf.append("On host " + process.getHost() + "\n");
+			buf.append("\n# LOG\n\n");
+			for (SlcExecutionStep step : process.getSteps()) {
+				buf.append(df.format(step.getTimestamp()));
+				buf.append(" ");
+				for (int i = 0; i < step.getLogLines().size(); i++) {
+					if (i > 0)
+						buf.append('\n');
+					buf.append(step.getLogLines().get(i));
+				}
+				buf.append(" - ");
+				buf.append(step.getType());
+				buf.append(" - ");
+				buf.append('[').append(step.getThread()).append(']');
+				buf.append('\n');
+			}
+			prepareDownloadResponse(name, contentType, response);
+			response.getWriter().print(buf);
+		} else {
+			throw new SlcException("Unsupported content type " + contentType);
+		}
+	}
+
+	protected void prepareDownloadResponse(String name, String contentType,
+			HttpServletResponse response) {
+		response.setHeader("Content-Disposition", "attachment; filename=\""
+				+ name + "\"");
+		response.setContentType(contentType + ";name=\"" + name + "\"");
+		response.setHeader("Expires", "0");
+		response.setHeader("Cache-Control", "no-cache, must-revalidate");
+		response.setHeader("Pragma", "no-cache");
 	}
 
 	private void initializeSEM() {
