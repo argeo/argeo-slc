@@ -16,18 +16,14 @@
 
 package org.argeo.slc.core.execution;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
-import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +49,7 @@ public class SedFilteredResource implements FactoryBean, InitializingBean {
 	private String charset = "UTF-8";
 	private Charset cs;
 	private CharsetDecoder decoder;
-	private CharsetEncoder encoder;
+	//private CharsetEncoder encoder;
 
 	public Object getObject() throws Exception {
 		if (filters.size() == 0)
@@ -110,7 +106,7 @@ public class SedFilteredResource implements FactoryBean, InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		cs = Charset.forName(charset);
 		decoder = cs.newDecoder();
-		encoder = cs.newEncoder();
+		//encoder = cs.newEncoder();
 
 		for (String sedStr : filters) {
 			sedStr = sedStr.trim();

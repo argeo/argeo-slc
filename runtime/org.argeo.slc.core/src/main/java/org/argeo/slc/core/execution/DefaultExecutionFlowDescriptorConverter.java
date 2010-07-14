@@ -43,6 +43,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+/**
+ * Performs conversion in both direction between data exchanged with the agent
+ * and the data in the application context.
+ */
 public class DefaultExecutionFlowDescriptorConverter implements
 		ExecutionFlowDescriptorConverter, ApplicationContextAware {
 	public final static String REF_VALUE_TYPE_BEAN_NAME = "beanName";
@@ -287,25 +291,45 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		public int compare(ExecutionFlowDescriptor o1,
 				ExecutionFlowDescriptor o2) {
 			// TODO: write unit tests for this
-			if (StringUtils.hasText(o1.getPath())
-					&& StringUtils.hasText(o2.getPath())) {
-				if (o1.getPath().equals(o2.getPath()))
-					return o1.getName().compareTo(o2.getName());
-				else if (o1.getPath().startsWith(o2.getPath()))
+
+			String name1 = o1.getName();
+			String name2 = o2.getName();
+
+			String path1 = o1.getPath();
+			String path2 = o2.getPath();
+
+			// Check whether name include path
+			int lastIndex1 = name1.lastIndexOf('/');
+			if (!StringUtils.hasText(path1) && lastIndex1 >= 0) {
+				name1 = name1.substring(lastIndex1 + 1);
+				path1 = name1.substring(0, lastIndex1);
+			}
+
+			int lastIndex2 = name2.lastIndexOf('/');
+			if (!StringUtils.hasText(path2) && lastIndex2 >= 0) {
+				name2 = name2.substring(lastIndex2 + 1);
+				path2 = name2.substring(0, lastIndex2);
+			}
+
+			// Perform the actual comparison
+			if (StringUtils.hasText(path1) && StringUtils.hasText(path2)) {
+				if (path1.equals(path2))
+					return name1.compareTo(name2);
+				else if (path1.startsWith(path2))
 					return -1;
-				else if (o2.getPath().startsWith(o1.getPath()))
+				else if (path2.startsWith(path1))
 					return 1;
 				else
-					return o1.getPath().compareTo(o2.getPath());
-			} else if (!StringUtils.hasText(o1.getPath())
-					&& StringUtils.hasText(o2.getPath())) {
+					return path1.compareTo(path2);
+			} else if (!StringUtils.hasText(path1)
+					&& StringUtils.hasText(path2)) {
 				return 1;
-			} else if (StringUtils.hasText(o1.getPath())
-					&& !StringUtils.hasText(o2.getPath())) {
+			} else if (StringUtils.hasText(path1)
+					&& !StringUtils.hasText(path2)) {
 				return -1;
-			} else if (!StringUtils.hasText(o1.getPath())
-					&& !StringUtils.hasText(o2.getPath())) {
-				return o1.getName().compareTo(o2.getName());
+			} else if (!StringUtils.hasText(path1)
+					&& !StringUtils.hasText(path2)) {
+				return name1.compareTo(name2);
 			} else {
 				return 0;
 			}

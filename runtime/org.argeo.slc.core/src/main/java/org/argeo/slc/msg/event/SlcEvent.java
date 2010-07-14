@@ -16,10 +16,12 @@
 
 package org.argeo.slc.msg.event;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SlcEvent {
+public class SlcEvent implements Serializable {
+	private static final long serialVersionUID = 1566174832839931036L;
 	public final static String EVENT_TYPE = "slc_eventType";
 	public final static String EVENT_FILTER = "slc_eventFilter";
 

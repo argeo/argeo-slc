@@ -16,9 +16,12 @@
 
 package org.argeo.slc.msg.test.tree;
 
+import java.io.Serializable;
+
 import org.argeo.slc.core.attachment.SimpleAttachment;
 
-public class AddTreeTestResultAttachmentRequest {
+public class AddTreeTestResultAttachmentRequest implements Serializable {
+	private static final long serialVersionUID = -3193110972587429882L;
 	private String resultUuid;
 	private SimpleAttachment attachment;
 

@@ -16,9 +16,12 @@
 
 package org.argeo.slc.msg.process;
 
+import java.io.Serializable;
+
 import org.argeo.slc.process.SlcExecution;
 
-public class SlcExecutionRequest {
+public class SlcExecutionRequest implements Serializable {
+	private static final long serialVersionUID = 4448081961875614441L;
 	private SlcExecution slcExecution;
 
 	public SlcExecutionRequest() {

@@ -16,6 +16,7 @@
 
 package org.argeo.slc.msg.test.tree;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -27,7 +28,8 @@ import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.structure.StructureElement;
 import org.argeo.slc.test.TestRunDescriptor;
 
-public class ResultPartRequest {
+public class ResultPartRequest implements Serializable {
+	private static final long serialVersionUID = -6430135988577074226L;
 	private String resultUuid;
 	private SimpleResultPart resultPart;
 	private TreeSPath path;

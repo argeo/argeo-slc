@@ -18,6 +18,8 @@ package org.argeo.slc.core.execution;
 
 public class PrimitiveValue extends AbstractExecutionValue implements
 		PrimitiveAccessor {
+	private static final long serialVersionUID = 533414290998374166L;
+
 	private String type;
 
 	private Object value;

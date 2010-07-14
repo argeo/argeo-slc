@@ -16,10 +16,12 @@
 
 package org.argeo.slc.jms;
 
+import java.io.Serializable;
 import java.util.Enumeration;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
@@ -40,14 +42,16 @@ public class MarshallerMessageConverter implements MessageConverter {
 	private Marshaller marshaller;
 	private Unmarshaller unmarshaller;
 
+	/** Use unmarshalled ObjectMessages instead of TextMessages */
+	private Boolean disableMarshalling = false;
+
 	/** @return the converted message or null if the message itself is null */
 	@SuppressWarnings("unchecked")
 	public Object fromMessage(Message message) throws JMSException,
 			MessageConversionException {
-		if (message == null) {
+		long begin = System.currentTimeMillis();
+		if (message == null)
 			return null;
-		}
-
 		if (log.isTraceEnabled()) {
 			Enumeration<String> names = message.getPropertyNames();
 			while (names.hasMoreElements()) {
@@ -57,35 +61,51 @@ public class MarshallerMessageConverter implements MessageConverter {
 			}
 		}
 
+		Object res;
 		if (message instanceof TextMessage) {
-
 			String text = ((TextMessage) message).getText();
-
 			if (text == null)
 				throw new SlcException(
 						"Cannot unmarshall message without body: " + message);
-
 			try {
-				return unmarshaller.unmarshal(new StringSource(text));
+				res = unmarshaller.unmarshal(new StringSource(text));
 			} catch (Exception e) {
 				throw new SlcException("Could not unmarshall " + text, e);
 			}
+		} else if (message instanceof ObjectMessage) {
+			res = ((ObjectMessage) message).getObject();
+			if (res == null)
+				throw new SlcException("Message without body: " + message);
 		} else {
 			throw new SlcException("This type of messages is not supported: "
 					+ message);
 		}
+		if (log.isTraceEnabled())
+			log.trace("From message in " + (System.currentTimeMillis() - begin)
+					+ " ms");
+		return res;
 	}
 
 	public Message toMessage(Object object, Session session)
 			throws JMSException, MessageConversionException {
-		StringResult result = new StringResult();
-		try {
-			marshaller.marshal(object, result);
-		} catch (Exception e) {
-			throw new SlcException("Could not marshall " + object, e);
+		long begin = System.currentTimeMillis();
+		Message msg;
+		if (disableMarshalling) {
+			msg = session.createObjectMessage();
+			((ObjectMessage) msg).setObject((Serializable) object);
+		} else {
+			StringResult result = new StringResult();
+			try {
+				marshaller.marshal(object, result);
+			} catch (Exception e) {
+				throw new SlcException("Could not marshall " + object, e);
+			}
+			msg = session.createTextMessage();
+			((TextMessage) msg).setText(result.toString());
 		}
-		TextMessage msg = session.createTextMessage();
-		msg.setText(result.toString());
+		if (log.isDebugEnabled())
+			log.debug("To message in " + (System.currentTimeMillis() - begin)
+					+ " ms");
 		return msg;
 	}
 
@@ -95,6 +115,10 @@ public class MarshallerMessageConverter implements MessageConverter {
 
 	public void setUnmarshaller(Unmarshaller unmarshaller) {
 		this.unmarshaller = unmarshaller;
+	}
+
+	public void setDisableMarshalling(Boolean disableMarshalling) {
+		this.disableMarshalling = disableMarshalling;
 	}
 
 }

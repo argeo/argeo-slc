@@ -16,7 +16,11 @@
 
 package org.argeo.slc.build;
 
-public class BasicNameVersion implements NameVersion, Comparable<NameVersion> {
+import java.io.Serializable;
+
+public class BasicNameVersion implements NameVersion, Comparable<NameVersion>,
+		Serializable {
+	private static final long serialVersionUID = -5127304279136195127L;
 	private String name;
 	private String version;
 

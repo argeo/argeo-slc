@@ -22,8 +22,7 @@ import java.util.List;
 import org.argeo.slc.deploy.ModuleDescriptor;
 
 public class ExecutionModuleDescriptor extends ModuleDescriptor {
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = -2394473464513029512L;
 	private List<ExecutionSpec> executionSpecs = new ArrayList<ExecutionSpec>();
 	private List<ExecutionFlowDescriptor> executionFlows = new ArrayList<ExecutionFlowDescriptor>();
 

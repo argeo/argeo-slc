@@ -34,6 +34,15 @@ import org.springframework.beans.factory.InitializingBean;
 public class SlcExecutionAppender extends AppenderSkeleton implements
 		InitializingBean, DisposableBean {
 
+	/** Marker to prevent stack overflow */
+	private ThreadLocal<Boolean> dispatching = new ThreadLocal<Boolean>() {
+
+		@Override
+		protected Boolean initialValue() {
+			return false;
+		}
+	};
+
 	private Layout layout = null;
 	private String pattern = "%m - %c%n";
 	private Boolean onlyExecutionThread = true;
@@ -48,12 +57,15 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 
 	@Override
 	protected void append(LoggingEvent event) {
+		if (dispatching.get())
+			return;
+
 		Thread currentThread = Thread.currentThread();
 		if (currentThread.getThreadGroup() instanceof ProcessThreadGroup) {
 			if (onlyExecutionThread
 					&& !(currentThread instanceof ExecutionThread))
 				return;
-			
+
 			final String type;
 			if (event.getLevel().equals(Level.ERROR)
 					|| event.getLevel().equals(Level.FATAL))
@@ -72,8 +84,13 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 			SlcExecutionStep step = new SlcExecutionStep(new Date(event
 					.getTimeStamp()), type, layout.format(event));
 
-			((ProcessThreadGroup) currentThread.getThreadGroup())
-					.dispatchAddStep(step);
+			try {
+				dispatching.set(true);
+				((ProcessThreadGroup) currentThread.getThreadGroup())
+						.dispatchAddStep(step);
+			} finally {
+				dispatching.set(false);
+			}
 		}
 	}
 

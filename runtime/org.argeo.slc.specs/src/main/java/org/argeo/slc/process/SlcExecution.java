@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class SlcExecution implements Serializable {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -7607457971382118466L;
 	public final static String STATUS_NONE = "DEFAULT";
 	public final static String STATUS_SCHEDULED = "SCHEDULED";
 	public final static String STATUS_RUNNING = "RUNNING";

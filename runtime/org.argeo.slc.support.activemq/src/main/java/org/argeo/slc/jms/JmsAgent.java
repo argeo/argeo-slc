@@ -142,6 +142,8 @@ public class JmsAgent extends DefaultAgent implements InitializingBean,
 		}
 
 		// Send response
+		if (log.isTraceEnabled())
+			log.trace("About to send response " + response.getClass());
 		jmsTemplate.convertAndSend(destinationSend, response,
 				new MessagePostProcessor() {
 					public Message postProcessMessage(Message messageToSend)

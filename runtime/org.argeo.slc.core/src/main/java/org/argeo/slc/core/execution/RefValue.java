@@ -17,6 +17,7 @@
 package org.argeo.slc.core.execution;
 
 public class RefValue extends AbstractExecutionValue {
+	private static final long serialVersionUID = -8951231456757181687L;
 	private String ref;
 	private String type;
 

@@ -16,11 +16,13 @@
 
 package org.argeo.slc.msg.test.tree;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.argeo.slc.core.test.tree.TreeTestResult;
 
-public class CloseTreeTestResultRequest {
+public class CloseTreeTestResultRequest implements Serializable {
+	private static final long serialVersionUID = 7384136025920047977L;
 	private String resultUuid;
 	private Date closeDate;
 

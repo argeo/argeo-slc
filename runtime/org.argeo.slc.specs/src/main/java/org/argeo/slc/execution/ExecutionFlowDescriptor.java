@@ -16,9 +16,11 @@
 
 package org.argeo.slc.execution;
 
+import java.io.Serializable;
 import java.util.Map;
 
-public class ExecutionFlowDescriptor {
+public class ExecutionFlowDescriptor implements Serializable {
+	private static final long serialVersionUID = 7101944857038041216L;
 	private String name;
 	private String description;
 	private String path;

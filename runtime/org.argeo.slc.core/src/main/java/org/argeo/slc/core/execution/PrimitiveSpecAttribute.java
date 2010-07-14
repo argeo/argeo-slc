@@ -20,6 +20,7 @@ import org.argeo.slc.SlcException;
 
 public class PrimitiveSpecAttribute extends AbstractSpecAttribute implements
 		PrimitiveAccessor {
+	private static final long serialVersionUID = -566676381839825483L;
 	private String type = "string";
 	private Object value = null;
 

@@ -84,7 +84,16 @@ public class JmsAgentProxy implements SlcAgent {
 	}
 
 	protected Object sendReceive(AgentMC messageCreator) {
-		return sendReceive(messageCreator, true);
+		long begin = System.currentTimeMillis();
+		Object res;
+		try {
+			res = sendReceive(messageCreator, true);
+		} finally {
+			if (log.isTraceEnabled())
+				log.trace("Agend proxy send/receive in "
+						+ (System.currentTimeMillis() - begin) + " ms");
+		}
+		return res;
 	}
 
 	/**
@@ -192,7 +201,9 @@ public class JmsAgentProxy implements SlcAgent {
 				msg = session.createTextMessage();
 			else
 				msg = toMessage(body, session);
-			msg.setStringProperty(MsgConstants.PROPERTY_SLC_AGENT_ID, agentUuid);
+			msg
+					.setStringProperty(MsgConstants.PROPERTY_SLC_AGENT_ID,
+							agentUuid);
 			msg.setStringProperty(JmsAgent.PROPERTY_QUERY, query);
 			msg.setJMSCorrelationID(correlationId);
 			setArguments(msg);

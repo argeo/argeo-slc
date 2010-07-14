@@ -16,9 +16,13 @@
 
 package org.argeo.slc.core.execution;
 
+import java.io.Serializable;
+
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 
-public abstract class AbstractSpecAttribute implements ExecutionSpecAttribute {
+public abstract class AbstractSpecAttribute implements ExecutionSpecAttribute,
+		Serializable {
+	private static final long serialVersionUID = 6494963738891709440L;
 	private Boolean isParameter = false;
 	private Boolean isFrozen = false;
 	private Boolean isHidden = false;

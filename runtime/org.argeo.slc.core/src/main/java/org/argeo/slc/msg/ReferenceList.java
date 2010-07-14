@@ -16,10 +16,12 @@
 
 package org.argeo.slc.msg;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReferenceList {
+public class ReferenceList implements Serializable{
+	private static final long serialVersionUID = -6852393203700925723L;
 	private List<String> references = new ArrayList<String>();
 
 	public ReferenceList() {

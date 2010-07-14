@@ -16,6 +16,7 @@
 
 package org.argeo.slc.core.execution;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,10 +37,11 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
 public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
-		ApplicationContextAware, InitializingBean {
+		ApplicationContextAware, InitializingBean, Serializable {
+	private static final long serialVersionUID = 5159882223926926539L;
 	private final static Log log = LogFactory
 			.getLog(DefaultExecutionSpec.class);
-	private ApplicationContext applicationContext;
+	private transient ApplicationContext applicationContext;
 
 	private String description;
 	private Map<String, ExecutionSpecAttribute> attributes = new HashMap<String, ExecutionSpecAttribute>();
@@ -116,13 +118,13 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 			return choices;
 		}
 
-		beanNames: for (String beanName : getBeanFactory().getBeanNamesForType(
+		for (String beanName : getBeanFactory().getBeanNamesForType(
 				rsa.getTargetClass(), true, false)) {
 
 			// Since Spring 3, systemProperties is implicitly defined but has no
 			// bean definition
-//			if (beanName.equals("systemProperties"))
-//				continue beanNames;
+			// if (beanName.equals("systemProperties"))
+			// continue beanNames;
 
 			BeanDefinition bd = getBeanFactory().getBeanDefinition(beanName);
 			RefValueChoice choice = new RefValueChoice();

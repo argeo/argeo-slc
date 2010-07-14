@@ -16,13 +16,15 @@
 
 package org.argeo.slc.msg.process;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import org.argeo.slc.process.SlcExecutionStep;
 
-public class SlcExecutionStepsRequest {
+public class SlcExecutionStepsRequest implements Serializable {
+	private static final long serialVersionUID = 6243880315234605390L;
 	private String slcExecutionUuid;
 	private List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
 

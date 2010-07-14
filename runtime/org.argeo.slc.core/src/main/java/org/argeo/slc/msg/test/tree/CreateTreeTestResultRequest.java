@@ -16,10 +16,13 @@
 
 package org.argeo.slc.msg.test.tree;
 
+import java.io.Serializable;
+
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.test.TestRunDescriptor;
 
-public class CreateTreeTestResultRequest {
+public class CreateTreeTestResultRequest implements Serializable {
+	private static final long serialVersionUID = 7443906609434527687L;
 	private TreeTestResult treeTestResult;
 	private TestRunDescriptor testRunDescriptor;
 

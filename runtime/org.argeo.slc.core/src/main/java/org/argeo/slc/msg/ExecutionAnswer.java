@@ -17,13 +17,15 @@
 package org.argeo.slc.msg;
 
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.StringWriter;
 
 import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
 
 /** Answer to an execution of a remote service which performed changes. */
-public class ExecutionAnswer {
+public class ExecutionAnswer implements Serializable {
+	private static final long serialVersionUID = -3268867743181316160L;
 	public final static String OK = "OK";
 	public final static String ERROR = "ERROR";
 

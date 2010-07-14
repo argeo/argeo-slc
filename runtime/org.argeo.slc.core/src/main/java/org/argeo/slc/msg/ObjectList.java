@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ObjectList {
+public class ObjectList implements Serializable{
+	private static final long serialVersionUID = -7200599279369084551L;
 	private List<Serializable> objects = new ArrayList<Serializable>();
 
 	public ObjectList() {

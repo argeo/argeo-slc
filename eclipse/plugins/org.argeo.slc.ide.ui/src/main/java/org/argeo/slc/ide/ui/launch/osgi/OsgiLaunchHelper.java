@@ -35,7 +35,7 @@ import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.ui.launcher.IPDELauncherConstants;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	private static Boolean debug = false;
@@ -63,8 +63,11 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			updateLaunchConfiguration(configuration, bundlesToStart,
 					systemPropertiesToAppend, dataDir.getAbsolutePath());
 		} catch (Exception e) {
-			ErrorDialog.openError(Display.getCurrent().getActiveShell(),
-					"Error", "Cannot read properties",
+			e.printStackTrace();
+			Shell shell = SlcIdeUiPlugin.getDefault().getWorkbench()
+					.getActiveWorkbenchWindow().getShell();
+			// Shell shell= Display.getCurrent().getActiveShell();
+			ErrorDialog.openError(shell, "Error", "Cannot read properties",
 					new Status(IStatus.ERROR, SlcIdeUiPlugin.ID,
 							e.getMessage(), e));
 			return;
@@ -92,7 +95,12 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			}
 			targetBundles = tBuf.toString();
 			StringBuffer wBuf = new StringBuffer();
-			for (IPluginModelBase model : PluginRegistry.getWorkspaceModels()) {
+			models: for (IPluginModelBase model : PluginRegistry
+					.getWorkspaceModels()) {
+				if (model.getBundleDescription() == null) {
+					System.err.println("No bundle description for " + model);
+					continue models;
+				}
 				wBuf.append(model.getBundleDescription().getSymbolicName());
 				wBuf.append(',');
 			}
