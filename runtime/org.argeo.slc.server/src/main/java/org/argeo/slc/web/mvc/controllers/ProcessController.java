@@ -157,7 +157,7 @@ public class ProcessController {
 		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
-	@RequestMapping("/tailSlcExecutionSteps.service")
+	@RequestMapping("/tailSlcExecutionStepsCount.service")
 	protected ObjectList tailSlcExecutionSteps(@RequestParam String uuid,
 			@RequestParam Integer stepCount) {
 		List<SlcExecutionStep> list = slcExecutionDao
@@ -165,7 +165,7 @@ public class ProcessController {
 		return new ObjectList(list);
 	}
 
-	@RequestMapping("/tailSlcExecutionSteps.service")
+	@RequestMapping("/tailSlcExecutionStepsOffset.service")
 	protected ObjectList tailSlcExecutionSteps(@RequestParam String uuid,
 			@RequestParam String stepOffsetUuid) {
 		List<SlcExecutionStep> list = slcExecutionDao.tailSteps(uuid,
