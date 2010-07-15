@@ -36,7 +36,6 @@ import javax.jcr.query.QueryManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.BeanNodeMapper;
-import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
@@ -240,7 +239,7 @@ public class TreeTestResultNodeMapper extends BeanNodeMapper {
 		}
 
 		// ATTRIBUTES
-		Map attributes = new TreeMap<String, String>();
+		SortedMap attributes = new TreeMap<String, String>();
 		PropertyIterator propIt = node.getProperties();
 		props: while (propIt.hasNext()) {
 			Property prop = propIt.nextProperty();

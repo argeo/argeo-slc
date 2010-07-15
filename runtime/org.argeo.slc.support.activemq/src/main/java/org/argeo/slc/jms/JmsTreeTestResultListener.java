@@ -33,6 +33,7 @@ import org.argeo.slc.test.TestResultPart;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 
+/** JMS based tree test result listener implementation. */
 public class JmsTreeTestResultListener implements TreeTestResultListener {
 	private final Log log = LogFactory.getLog(getClass());
 
@@ -128,6 +129,7 @@ public class JmsTreeTestResultListener implements TreeTestResultListener {
 
 	}
 
+	/** Publishes the test result only when it gets closed. */
 	public void setOnlyOnClose(Boolean onlyOnClose) {
 		this.onlyOnClose = onlyOnClose;
 	}

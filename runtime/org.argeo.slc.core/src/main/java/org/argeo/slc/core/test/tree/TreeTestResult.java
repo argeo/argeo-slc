@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -61,7 +60,7 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	private List<SimpleAttachment> attachments = new ArrayList<SimpleAttachment>();
 
 	// Headers. Used to accelerate request on a specific test result.
-	private Map<String, String> attributes = new TreeMap<String, String>();
+	private SortedMap<String, String> attributes = new TreeMap<String, String>();
 
 	// Runtime Data
 	private TreeSPath currentPath;
@@ -271,11 +270,11 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 			return super.hashCode();
 	}
 
-	public Map<String, String> getAttributes() {
+	public SortedMap<String, String> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(Map<String, String> attributes) {
+	public void setAttributes(SortedMap<String, String> attributes) {
 		this.attributes = attributes;
 	}
 

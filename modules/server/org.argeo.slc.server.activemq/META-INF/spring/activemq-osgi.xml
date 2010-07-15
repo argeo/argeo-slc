@@ -6,12 +6,9 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<!-- SERVICES -->
 	<service ref="jmsConnectionFactory" interface="javax.jms.ConnectionFactory" />
 
-<!-- 
-	<service ref="jmsTransactionManager"
-		interface="org.springframework.transaction.PlatformTransactionManager" />
- -->
 	<service ref="jmsCastorMessageConverter"
 		interface="org.springframework.jms.support.converter.MessageConverter" />
 

@@ -90,8 +90,10 @@ public class JmsAgentProxy implements SlcAgent {
 			res = sendReceive(messageCreator, true);
 		} finally {
 			if (log.isTraceEnabled())
-				log.trace("Agend proxy send/receive in "
-						+ (System.currentTimeMillis() - begin) + " ms");
+				log.trace("To agent #" + agentUuid + " in "
+						+ (System.currentTimeMillis() - begin) + " ms, query '"
+						+ messageCreator.getQuery() + "', correlationId "
+						+ messageCreator.getCorrelationId());
 		}
 		return res;
 	}
@@ -125,11 +127,6 @@ public class JmsAgentProxy implements SlcAgent {
 
 	protected void send(AgentMC messageCreator) {
 		jmsTemplate.send(requestDestination, messageCreator);
-		if (log.isTraceEnabled())
-			log.debug("Sent query '" + messageCreator.getQuery()
-					+ "' with correlationId "
-					+ messageCreator.getCorrelationId() + " to agent "
-					+ agentUuid);
 	}
 
 	protected Object processResponse(AgentMC messageCreator,
@@ -154,10 +151,6 @@ public class JmsAgentProxy implements SlcAgent {
 			else
 				return null;
 		}
-		if (log.isTraceEnabled())
-			log.debug("Received response for query '" + query
-					+ "' with correlationId " + correlationId + " from agent "
-					+ agentUuid);
 
 		try {
 			return fromMessage(responseMsg);

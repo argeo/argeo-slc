@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -326,7 +327,7 @@ public class TreeTestResultDaoJcr extends AbstractSlcJcrDao implements
 	}
 
 	public synchronized void updateAttributes(final String testResultId,
-			final Map<String, String> attributes) {
+			final SortedMap<String, String> attributes) {
 		try {
 			String queryString = "//testresult[@uuid='" + testResultId + "']";
 			Query query = createQuery(queryString, Query.XPATH);

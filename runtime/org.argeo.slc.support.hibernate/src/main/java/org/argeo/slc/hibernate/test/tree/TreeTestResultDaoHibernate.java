@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.SimpleAttachment;
@@ -154,7 +155,7 @@ public class TreeTestResultDaoHibernate extends HibernateDaoSupport implements
 	}
 
 	public void updateAttributes(final String testResultId,
-			final Map<String, String> attributes) {
+			final SortedMap<String, String> attributes) {
 		getHibernateTemplate().execute(new HibernateCallback() {
 
 			public Object doInHibernate(Session session)

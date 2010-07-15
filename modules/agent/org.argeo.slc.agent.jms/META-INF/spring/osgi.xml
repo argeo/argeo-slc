@@ -8,6 +8,12 @@
 
 	<bundle id="agent" action="start" symbolic-name="org.argeo.slc.agent" />
 
+	<!-- REFERENCES -->
+	<reference id="modulesManager"
+		interface="org.argeo.slc.execution.ExecutionModulesManager"
+		context-class-loader="service-provider" />
+
+	<!-- SERVICES -->
 	<!-- Deprecated -->
 	<service ref="resultListener"
 		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
@@ -15,9 +21,6 @@
 
 	<service ref="slcExecutionListener" interface="org.argeo.slc.process.SlcExecutionNotifier" />
 
-	<service ref="jmsAgent.attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
+	<service ref="attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
 
-	<reference id="modulesManager"
-		interface="org.argeo.slc.execution.ExecutionModulesManager"
-		context-class-loader="service-provider" />
 </beans:beans>

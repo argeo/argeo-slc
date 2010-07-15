@@ -17,7 +17,7 @@
 package org.argeo.slc.jcr.dao;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -90,7 +90,7 @@ public class TreeTestResultDaoJcrTest extends AbstractSpringTestCase {
 		ttrDao.addResultPart(ttr.getUuid(), path, resultPart, null);
 
 		// TestAdd Attribute
-		Map<String, String> newAtt = new TreeMap<String, String>();
+		SortedMap<String, String> newAtt = new TreeMap<String, String>();
 		newAtt.put("NewTestCase", "NonSortedView");
 		newAtt.put("NewTestCaseType", "csvdiff");
 		ttrDao.updateAttributes(ttr.getUuid(), newAtt);
