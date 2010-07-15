@@ -164,13 +164,13 @@ qx.Class.define("org.argeo.slc.web.TestList",
   					var uuid = this.extractTestUuid();
   					var urls = {
   						xsl : "resultView.xslt",
-  						xml : "resultViewXml.xslt",
+  						xml : "resultView.xml",
   						xls : "resultView.xls",
   						pdf : "resultView.pdf"
   					};
   					var url = org.argeo.slc.ria.SlcApi.DEFAULT_CONTEXT + "/"+urls[commandId]+"?uuid="+uuid;
   					if(commandId == "xls" || commandId == "pdf"){
-	  					document.location.href = url;
+	  					org.argeo.ria.Application.INSTANCE.javascriptDownloadLocation(url);
   					}else{
   						var win = window.open(url);
   					}
