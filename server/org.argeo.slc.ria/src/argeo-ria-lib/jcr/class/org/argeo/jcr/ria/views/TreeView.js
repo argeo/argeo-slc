@@ -35,7 +35,7 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 				},
 				"zoom_out" : {
 					label : "Zoom Out",
-					icon : "org.argeo.jcr.ria/zoom-out.png",
+					icon : "org/argeo/jcr/ria/zoom-out.png",
 					shortcut : null,
 					enabled : true,
 					menu : "Zoom",
@@ -67,12 +67,12 @@ qx.Class.define("org.argeo.jcr.ria.views.TreeView", {
 								parts.pop();
 							}
 						}
-						this.setMenu(pathes);
+						this.setMenuDef(pathes);
 					}
 				},
 				"refresh" : {
 					label : "Refresh",
-					icon : "org.argeo.jcr.ria/view-refresh.png",
+					icon : "org/argeo/jcr/ria/view-refresh.png",
 					shortcut : null,
 					enabled : true,
 					menu : "Selection",

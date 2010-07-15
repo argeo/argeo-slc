@@ -4,7 +4,7 @@
  
 /* ************************************************************************
 
-#assets(org.argeo.jcr.ria/*)
+#asset(org/argeo/jcr/ria/*)
 
 ************************************************************************ */ 
 qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
@@ -30,7 +30,7 @@ qx.Class.define("org.argeo.jcr.ria.JcrBrowser",
   
   statics : {
   	LABEL : "JCR Browser (Tech Preview)",
-  	ICON : "org.argeo.slc.ria/utilities-terminal.png"/*,
+  	ICON : "org/argeo/slc/ria/utilities-terminal.png"/*,
   	ACCESS : "!ROLE_ANONYMOUS"*/
   },
   
