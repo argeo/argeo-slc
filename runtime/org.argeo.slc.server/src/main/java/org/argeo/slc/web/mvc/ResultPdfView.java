@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.web.mvc.result;
+package org.argeo.slc.web.mvc;
 
 import java.awt.Color;
 import java.util.Map;
@@ -22,6 +22,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.SlcTestUtils;
 import org.argeo.slc.core.test.tree.PartSubList;
@@ -37,6 +39,8 @@ import com.lowagie.text.Table;
 import com.lowagie.text.pdf.PdfWriter;
 
 public class ResultPdfView extends AbstractPdfView {
+	private static final Log log = LogFactory.getLog(ResultPdfView.class);
+
 	public final static String MODELKEY_RESULT = "result";
 
 	@Override
@@ -72,5 +76,4 @@ public class ResultPdfView extends AbstractPdfView {
 		}
 
 	}
-
 }

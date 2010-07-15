@@ -16,15 +16,17 @@
 
 package org.argeo.slc.web.mvc.controllers;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
-import org.argeo.slc.web.mvc.result.ResultExcelView;
-import org.argeo.slc.web.mvc.result.ResultPdfView;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Sends back the results, rendered or as collection.
@@ -32,41 +34,43 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class RenderingResultController {
+	private static final Log log = LogFactory
+			.getLog(RenderingResultController.class);
 
-	public final static String KEY_ANSWER = "__answer";
 	public final static String MODELKEY_RESULT = "result";
 
 	// IoC
-	private TreeTestResultDao testResultDao;
-	private ResultExcelView resultExcelView;
-	private ResultPdfView resultPdfView;
+	private TreeTestResultDao treeTestResultDao;
 
-	@RequestMapping("/resultView.pdf")
-	public void getPdfResultView(@RequestParam(value = "uuid") String uuid,
-			ModelAndView modelAndView) {
-		TreeTestResult result = testResultDao.getTestResult(uuid);
+	@RequestMapping("/resultView.*")
+	public String getPdfResultView(@RequestParam("uuid") String uuid,
+			ModelMap model, HttpServletRequest request) {
+
+		TreeTestResult result = treeTestResultDao.getTestResult(uuid);
 		if (result == null)
 			throw new SlcException("No result found for uuid " + uuid);
-		modelAndView.getModelMap().addAttribute(MODELKEY_RESULT, result);
-		modelAndView.setView(resultPdfView);
+		model.addAttribute(MODELKEY_RESULT, result);
+
+		String docType = request.getRequestURI().substring(
+				request.getRequestURI().lastIndexOf(".") + 1);
+
+		if ("pdf".equals(docType))
+			return "resultPdfView";
+		if ("xls".equals(docType))
+			return "resultExcelView";
+		if ("xslt".equals(docType))
+			return "resultXsltView";
+		if ("xml".equals(docType))
+			return "resultXmlView";
+
+		throw new SlcException("No renderer found for files of extension "
+				+ docType);
 	}
 
-	@RequestMapping("/resultView.xls")
-	public void getXlsResultView(@RequestParam(value = "uuid") String uuid,
-			ModelAndView modelAndView) {
-		TreeTestResult result = testResultDao.getTestResult(uuid);
-		if (result == null)
-			throw new SlcException("No result found for uuid " + uuid);
-		modelAndView.getModelMap().addAttribute(MODELKEY_RESULT, result);
-		modelAndView.setView(resultExcelView);
-	}
+	// IoC
 
-	public void setResultExcelView(ResultExcelView resultExcelView) {
-		this.resultExcelView = resultExcelView;
-	}
-
-	public void setResultPdfView(ResultPdfView resultPdfView) {
-		this.resultPdfView = resultPdfView;
+	public void setTreeTestResultDao(TreeTestResultDao treeTestResultDao) {
+		this.treeTestResultDao = treeTestResultDao;
 	}
 
 }

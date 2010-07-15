@@ -20,22 +20,7 @@
 		<url-pattern>*.service</url-pattern>
 	</servlet-mapping>
 
-	<!-- XSLT servlet -->
-	<servlet>
-		<servlet-name>xslt</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextClass</param-name>
-			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
-		</init-param>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>xslt</servlet-name>
-		<url-pattern>*.xslt</url-pattern>
-	</servlet-mapping>
-
-	<!-- DOC servlet -->
+	<!-- DOC servlet : Rendering result view  -->
 	<servlet>
 		<servlet-name>doc</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -52,6 +37,14 @@
 	<servlet-mapping>
 		<servlet-name>doc</servlet-name>
 		<url-pattern>*.pdf</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>doc</servlet-name>
+		<url-pattern>*.xslt</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>doc</servlet-name>
+		<url-pattern>*.xml</url-pattern>
 	</servlet-mapping>
 
 	<!-- PROVISIONING servlet -->

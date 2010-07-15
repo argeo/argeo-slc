@@ -5,22 +5,35 @@
 
 
 	<bean class="org.argeo.slc.web.mvc.controllers.RenderingResultController">
-		<property name="testResultDao" ref="testResultDao" />
-		<property name="resultExcelView" ref="resultExcelView" />
-		<property name="resultPdfView" ref="resultPdfView" />
-	</bean>
-
-
-	<bean name="resultExcelView" class="org.argeo.slc.web.mvc.result.ResultExcelView">
-	</bean>
-
-	<bean name="resultPdfView" class="org.argeo.slc.web.mvc.result.ResultPdfView">
+		<property name="treeTestResultDao" ref="testResultDao" />
 	</bean>
 
 	<!--
-		bean
-		class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping"
+		Bean views for pdf & xls, resolved by the BeanNameViewResolver
 	-->
+	<bean name="resultExcelView" class="org.argeo.slc.web.mvc.ResultExcelView" />
+	<bean name="resultPdfView" class="org.argeo.slc.web.mvc.ResultPdfView" />
+
+	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+
+	<!--
+		.xml & .xslt URI files doesn't have a bean : the
+		XsltMarshallerViewResolver handle the views
+	-->
+	<bean id="viewResolverXslt" class="org.argeo.slc.web.mvc.XsltMarshallerViewResolver">
+		<property name="viewClass">
+			<value>org.argeo.slc.web.mvc.XsltMarshallerView
+			</value>
+		</property>
+		<property name="prefix">
+			<value>WEB-INF/xslt/</value>
+		</property>
+		<property name="suffix">
+			<value>.xsl</value>
+		</property>
+		<property name="marshaller" ref="marshaller" />
+	</bean>
+
 	<bean id="handlerMapping"
 		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
 		<property name="interceptors">
@@ -28,10 +41,6 @@
 				<ref bean="osivInterceptor" />
 			</list>
 		</property>
-	</bean>
-
-	<bean id="viewResolverXls"
-		class="org.springframework.web.servlet.view.BeanNameViewResolver">
 	</bean>
 
 </beans>

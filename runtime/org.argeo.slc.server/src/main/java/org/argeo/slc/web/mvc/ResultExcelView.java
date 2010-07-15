@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.web.mvc.result;
+package org.argeo.slc.web.mvc;
 
 import java.util.Map;
 
