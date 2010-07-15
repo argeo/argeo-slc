@@ -13,7 +13,7 @@
 	<properties>
 		<developmentCycle>0.13</developmentCycle>
 		<version.argeo-distribution>1.1.0-SNAPSHOT</version.argeo-distribution>
-		<version.argeo-ria>0.12.4</version.argeo-ria>
+		<version.argeo-ria>0.12.5-SNAPSHOT</version.argeo-ria>
 		<version.argeo-commons>0.2.1-SNAPSHOT</version.argeo-commons>
 		<version.equinox>3.5.1.R35x_v20090827</version.equinox>
 		<version.maven-bundle-plugin>2.0.1</version.maven-bundle-plugin>
