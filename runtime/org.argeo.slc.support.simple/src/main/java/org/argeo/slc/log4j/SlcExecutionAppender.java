@@ -34,6 +34,12 @@ import org.springframework.beans.factory.InitializingBean;
 public class SlcExecutionAppender extends AppenderSkeleton implements
 		InitializingBean, DisposableBean {
 
+	private Boolean disabled = false;
+
+	private String level = null;
+
+	private Level log4jLevel = null;
+
 	/** Marker to prevent stack overflow */
 	private ThreadLocal<Boolean> dispatching = new ThreadLocal<Boolean>() {
 
@@ -57,8 +63,29 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 
 	@Override
 	protected void append(LoggingEvent event) {
+		if (disabled)
+			return;
+
 		if (dispatching.get())
 			return;
+
+		if (level != null && !level.trim().equals("")) {
+			if (log4jLevel == null || !log4jLevel.toString().equals(level))
+				try {
+					log4jLevel = Level.toLevel(level);
+				} catch (Exception e) {
+					System.err
+							.println("Log4j level could not be set for level '"
+									+ level + "', resetting it to null.");
+					e.printStackTrace();
+					level = null;
+				}
+
+			if (log4jLevel != null
+					&& !event.getLevel().isGreaterOrEqual(log4jLevel)) {
+				return;
+			}
+		}
 
 		Thread currentThread = Thread.currentThread();
 		if (currentThread.getThreadGroup() instanceof ProcessThreadGroup) {
@@ -115,6 +142,14 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 
 	public void setOnlyExecutionThread(Boolean onlyExecutionThread) {
 		this.onlyExecutionThread = onlyExecutionThread;
+	}
+
+	public void setDisabled(Boolean disabled) {
+		this.disabled = disabled;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
 	}
 
 }

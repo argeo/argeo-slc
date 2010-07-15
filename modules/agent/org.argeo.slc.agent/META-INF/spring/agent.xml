@@ -4,6 +4,7 @@
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<!-- Manager -->
 	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager">
 		<property name="slcExecutionNotifiers" ref="slcExecutionListeners" />
 		<property name="executionModulesListeners" ref="executionModulesListeners" />
@@ -12,5 +13,15 @@
 
 	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager" />
 
-	<bean class="org.argeo.slc.log4j.SlcExecutionAppender" />
+	<!-- Logging -->
+	<bean id="log4Notification" class="org.argeo.slc.log4j.SlcExecutionAppender">
+		<property name="disabled" value="${slc.agent.log4Notification.disabled}" />
+		<property name="level" value="${slc.agent.log4Notification.level}" />
+		<property name="onlyExecutionThread"
+			value="${slc.agent.log4Notification.onlyExecutionThread}" />
+	</bean>
+
+	<bean id="treeTestResultLogger" class="org.argeo.slc.core.test.tree.TreeTestResultLogger" />
+
+
 </beans>
