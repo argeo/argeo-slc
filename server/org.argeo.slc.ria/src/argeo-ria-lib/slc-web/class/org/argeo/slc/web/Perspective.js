@@ -19,7 +19,7 @@ qx.Class.define("org.argeo.slc.web.Perspective",
   
   statics : {
   	LABEL : "Test Results",
-  	ICON : "org.argeo.slc.ria/office-chart.png"
+  	ICON : "org/argeo/slc/ria/office-chart.png"
   },
   
   members : {

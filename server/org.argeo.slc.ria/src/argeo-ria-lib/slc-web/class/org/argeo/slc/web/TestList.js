@@ -72,7 +72,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   		init : {
   			"loadtestlist" : {
   				label		: "Load Collection", 
-  				icon 		: "org.argeo.slc.ria/view-refresh.png",
+  				icon 		: "org/argeo/slc/ria/view-refresh.png",
   				shortcut 	: "Control+l",
   				enabled  	: true,
   				menu	   	: "Collection",
@@ -84,7 +84,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   			},
   			"polllistloading" : {
   				label		: "Auto load", 
-  				icon 		: "org.argeo.slc.ria/document-open-recent.png",
+  				icon 		: "org/argeo/slc/ria/document-open-recent.png",
   				shortcut 	: "Control+l",
   				enabled  	: true,
   				toggle		: true,
@@ -98,7 +98,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   			/*
   			"copyfullcollection" : {
   				label	 	: "Copy to...", 
-  				icon 		: "org.argeo.slc.ria/edit-copy.png",
+  				icon 		: "org/argeo/slc/ria/edit-copy.png",
   				shortcut 	: null,
   				enabled  	: false,
   				menu	   	: "Collection",
@@ -124,7 +124,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   			*/
   			"opentest" : {
   				label	 	: "Open", 
-  				icon 		: "org.argeo.slc.ria/media-playback-start.png",
+  				icon 		: "org/argeo/slc/ria/media-playback-start.png",
   				shortcut 	: "Control+o",
   				enabled  	: false,
   				menu	   	: "Selection",
@@ -147,7 +147,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   			},
   			"download" : {
   				label	 	: "Download as...", 
-  				icon 		: "org.argeo.slc.ria/go-down.png",
+  				icon 		: "org/argeo/slc/ria/go-down.png",
   				shortcut 	: null,
   				enabled  	: false,
   				menu	   	: "Selection",
@@ -155,10 +155,10 @@ qx.Class.define("org.argeo.slc.web.TestList",
   				callback	: function(e){ },
   				command 	: null,
   				submenu 	: [
-  						{'label':"Xsl", 'icon':'org.argeo.slc.ria/mime-xsl.png', 'commandId':'xsl'},
-  						{'label':"Xml", 'icon':'org.argeo.slc.ria/mime-xml.png', 'commandId':'xml'},
-  						{'label':"Excel", 'icon':'org.argeo.slc.ria/mime-xls.png', 'commandId':'xls'},
-  						{'label':"Pdf", 'icon':'org.argeo.slc.ria/mime-pdf.png', 'commandId':'pdf'}
+  						{'label':"Xsl", 'icon':'org/argeo/slc/ria/mime-xsl.png', 'commandId':'xsl'},
+  						{'label':"Xml", 'icon':'org/argeo/slc/ria/mime-xml.png', 'commandId':'xml'},
+  						{'label':"Excel", 'icon':'org/argeo/slc/ria/mime-xls.png', 'commandId':'xls'},
+  						{'label':"Pdf", 'icon':'org/argeo/slc/ria/mime-pdf.png', 'commandId':'pdf'}
   					],
   				submenuCallback : function(commandId){
   					var uuid = this.extractTestUuid();
@@ -168,7 +168,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   						xls : "resultView.xls",
   						pdf : "resultView.pdf"
   					};
-  					var url = "../"+urls[commandId]+"?uuid="+uuid;
+  					var url = org.argeo.slc.ria.SlcApi.DEFAULT_CONTEXT + "/"+urls[commandId]+"?uuid="+uuid;
   					if(commandId == "xls" || commandId == "pdf"){
 	  					document.location.href = url;
   					}else{
@@ -185,7 +185,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   			},
   			"attachments" : {
   				label	 	: "Attachments", 
-  				icon 		: "org.argeo.slc.ria/document-save-as.png",
+  				icon 		: "org/argeo/slc/ria/document-save-as.png",
   				shortcut 	: null,
   				enabled  	: false,
   				menu	   	: "Selection",
@@ -220,14 +220,14 @@ qx.Class.define("org.argeo.slc.web.TestList",
   								commandId:uuid+'__commandseparator__'+contentType+'__commandseparator__'+name
   							});
   						}
-  						this.setMenu(submenus);
+  						this.setMenuDef(submenus);
 	  					this.setEnabled(true);
   					}
   				}
   			},
   			"copytocollection" : {
   				label	 	: "Copy to...", 
-  				icon 		: "org.argeo.slc.ria/edit-copy.png",
+  				icon 		: "org/argeo/slc/ria/edit-copy.png",
   				shortcut 	: "Control+c",
   				enabled  	: false,
   				menu	   	: "Selection",
@@ -258,7 +258,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
   			},
   			"deletetest" : {
   				label	 	: "Delete", 
-  				icon 		: "org.argeo.slc.ria/edit-delete.png",
+  				icon 		: "org/argeo/slc/ria/edit-delete.png",
   				shortcut 	: "Control+d",
   				enabled  	: false,
   				menu	   	: "Selection",
@@ -345,24 +345,26 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	  this.getView().setViewTitle("");
 	  this.add(this.table, {flex:1});
 
-  	  select.addListener("changeValue", this.collectionSelectorListener, this);
+  	  select.addListener("changeSelection", this.collectionSelectorListener, this);
 
 	  org.argeo.ria.remote.RequestManager.getInstance().addListener("reload", function(event){
 	  	 if(event.getDataType()!="collection") return;
-	  	 select.removeListener("changeValue", this.collectionSelectorListener, this);
+	  	 select.removeListener("changeSelection", this.collectionSelectorListener, this);
 	  	 var collectionList = event.getContent();
 	  	 select.removeAll();
 	  	 for(key in collectionList){
-	  	 	var item = new qx.ui.form.ListItem(collectionList[key], "org.argeo.slc.ria/folder.png", key);
+	  	 	var item = new qx.ui.form.ListItem(collectionList[key], "org/argeo/slc/ria/folder.png", key);
 	  	 	select.add(item);
 	  	 	if(key == this.getCollectionId()){
-	  	 		select.setSelected(item);
+	  	 		select.setSelection([item]);
 	  	 	}
 	  	 }
 	  	 if(qx.lang.Object.getLength(collectionList)){
-		  	 this.setCollectionId(select.getSelected().getValue());
+	  	 	var selection = select.getSelection();
+	  	 	var value = selection[0].getModel();
+		  	 this.setCollectionId(value);
 	  	 }
-	  	 select.addListener("changeValue", this.collectionSelectorListener, this);
+	  	 select.addListener("changeSelection", this.collectionSelectorListener, this);
 	  }, this);
 	  	  
 	},
@@ -429,7 +431,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	
 	/**
 	 * Creates a menu gui component from the currently loaded collectionList.
-	 * @param command {qx.event.Command} The command on which to attach the created menu. 
+	 * @param command {qx.ui.core.Command} The command on which to attach the created menu. 
 	 * @param checkSelection {Boolean} Whether at the end, we must check the current viewSelection to enable/disable the command accordingly. 
 	 */
 	collectionListToMenu : function(command, checkSelection){
@@ -442,13 +444,13 @@ qx.Class.define("org.argeo.slc.web.TestList",
 			if(this.getCollectionId() && key == this.getCollectionId()) continue;
 			submenus.push({
 				"label":collectionList[key], 
-				"icon":"org.argeo.slc.ria/folder.png", 
+				"icon":"org/argeo/slc/ria/folder.png", 
 				"commandId":key
 			});
 		}		
 		submenus.push({'separator':true});
-		submenus.push({"label":"New...", "icon":"org.argeo.slc.ria/folder-new.png", "commandId":"slc.client.create"});
-		command.setMenu(submenus);
+		submenus.push({"label":"New...", "icon":"org/argeo/slc/ria/folder-new.png", "commandId":"slc.client.create"});
+		command.setMenuDef(submenus);
 		if(checkSelection){
 			var viewSelection = this.getView().getViewSelection();
 			if(viewSelection.getCount()) command.setEnabled(true);
@@ -464,7 +466,7 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	 */
 	copySelectionToCollection:function(collectionId, selectionType){
 		if(collectionId == "slc.client.create"){
-			var modal = new org.argeo.ria.components.Modal("Create collection", "org.argeo.slc.ria/folder-new.png");
+			var modal = new org.argeo.ria.components.Modal("Create collection", "org/argeo/slc/ria/folder-new.png");
 			modal.makePromptForm("Enter the new collection name", function(value){
 				if(value == ""){
 					alert("Please enter a name for the new collection!");
@@ -515,7 +517,8 @@ qx.Class.define("org.argeo.slc.web.TestList",
 	 * @param event {qx.event.type.Event} The event.
 	 */
 	 collectionSelectorListener : function(event){
-	  	this.setCollectionId(event.getData());
+	 	var selection = event.getData();
+	  	this.setCollectionId(selection[0].getModel());
 	  	this.loadList();		
 	},
 	

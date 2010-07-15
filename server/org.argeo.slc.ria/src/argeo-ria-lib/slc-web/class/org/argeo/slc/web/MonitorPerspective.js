@@ -5,7 +5,7 @@
 /* ************************************************************************
 #require(org.argeo.jcr.ria.JcrBrowser)
 #require(org.argeo.security.ria.Perspective)
-#asset(argeo-ria-lib/slc/resource/org.argeo.slc.ria/*)
+#asset(org/argeo/slc/ria/*)
 
 ************************************************************************ */ 
 qx.Class.define("org.argeo.slc.web.MonitorPerspective",
@@ -20,7 +20,7 @@ qx.Class.define("org.argeo.slc.web.MonitorPerspective",
   
   statics : {
   	LABEL : "SLC Administration",
-  	ICON : "org.argeo.slc.ria/utilities-terminal.png"
+  	ICON : "org/argeo/slc/ria/utilities-terminal.png"
   	//ROLES_RESTRICTION : ["ROLE_ADMIN"]
   },
   
