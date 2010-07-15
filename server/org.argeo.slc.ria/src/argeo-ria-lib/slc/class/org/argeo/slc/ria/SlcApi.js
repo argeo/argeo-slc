@@ -29,6 +29,10 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
 	LIST_MODULES_SERVICE : "listModulesDescriptors.service",
 	GET_EXECUTION_DESC_SERVICE : "getExecutionDescriptor.service",
 	GET_SLC_EXECUTION_SERVICE : "getSlcExecution.service",
+	TAIL_SLCEXEC_STEP_COUNT : "tailSlcExecutionStepsCount.service",
+	TAIL_SLCEXEC_STEP_OFFSET : "tailSlcExecutionStepsOffset.service",
+	DOWNLOAD_SLCEXEC_STEPS : "downloadSlcExecution.service",
+		
 	RELOAD_BUNDLE_SERVICE : "reloadBundle.service",
   	AMQ_SERVICE : "amq",
   	
@@ -295,6 +299,21 @@ qx.Class.define("org.argeo.slc.ria.SlcApi",
   		request.setParameter("uuid", executionMessageId);
   		return request;
   	},
+  	
+  	getTailSlcExecutionStepService : function(executionUuid, stepCount, offset, fireReloadEventType, iLoadStatusables){  		
+  		var request = org.argeo.slc.ria.SlcApi.getServiceRequest(
+  			(offset?org.argeo.slc.ria.SlcApi.TAIL_SLCEXEC_STEP_OFFSET:org.argeo.slc.ria.SlcApi.TAIL_SLCEXEC_STEP_COUNT),
+  			fireReloadEventType,
+  			iLoadStatusables
+  		);
+  		request.setParameter("uuid", executionUuid);
+  		if(offset){
+  			request.setParameter("stepOffsetUuid", offset);
+  		}else{
+  			request.setParameter("stepCount", stepCount);
+  		}
+  		return request;
+  	},  	
   	
   	/**
   	 * List currently available agents queues.

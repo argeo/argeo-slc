@@ -33,7 +33,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   		init : {
   			"reloadlogs" : {
   				label	 	: "Reload Logs", 
-  				icon 		: "org.argeo.slc.ria/view-refresh.png",
+  				icon 		: "org/argeo/slc/ria/view-refresh.png",
   				shortcut 	: "Control+r",
   				enabled  	: true,
   				menu	   	: null,
@@ -45,7 +45,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   			},
   			"opendetail" : {
   				label		: "Logs Detail",
-  				icon		: "org.argeo.slc.ria/mime-xls.png",
+  				icon		: "org/argeo/slc/ria/mime-xls.png",
   				shortcut	: null,
   				enabled		: false,
   				menu		: null,
@@ -63,7 +63,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   			},
   			"reopenrealized" : {
   				label		: "Re-open",
-  				icon		: "org.argeo.slc.ria/document-open.png",
+  				icon		: "org/argeo/slc/ria/document-open.png",
   				shortcut	: "Control+o",
   				enabled		: false,
   				menu		: null,
@@ -180,7 +180,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 	openDetail : function(logData){
 				
 		var uuid = logData[2];
-		var window = new qx.ui.window.Window("Logs Detail", "org.argeo.slc.ria/mime-xls.png");
+		var window = new qx.ui.window.Window("Logs Detail", "org/argeo/slc/ria/mime-xls.png");
 		window.setLayout(new qx.ui.layout.VBox(0));
 		window.setContentPadding(0);		
 		window.open();
@@ -193,7 +193,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		
 		var tBar = new qx.ui.toolbar.ToolBar();
 		window.add(tBar);
-		var menuButton = new qx.ui.toolbar.Button("Close", "org.argeo.slc.ria/window-close.png");
+		var menuButton = new qx.ui.toolbar.Button("Close", "org/argeo/slc/ria/window-close.png");
 		tBar.add(menuButton);
 		menuButton.addListener("execute", function(e){
 			window.close();
@@ -203,6 +203,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		var table = new org.argeo.ria.components.ui.Table(tableModel, {
 			"date":{NAME : "Date", WIDTH:180}, 
 			"type":{NAME : "Type", WIDTH:90, ALIGN:"CENTER"}, 
+			"thread":{NAME : "Thread", WIDTH:90, ALIGN:"CENTER"}, 
 			"log":"Log"
 		});
 		table.setStatusBarVisible(true);
@@ -216,49 +217,19 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 			table.scrollCellVisible(0, dataMap.lastRow);
 		});
 		
-		
-		var tA = new qx.ui.container.Composite(new qx.ui.layout.Canvas());		
-		tA.setHeight(120);
-		
-		var textArea = new qx.ui.form.TextArea();		
-		tA.add(textArea, {left:0,top:0, right:0,bottom:0});
-		
-		var okButton = new qx.ui.form.Button("Done");
-		okButton.setZIndex(2000);
-		tA.add(okButton, {bottom:20,right:20});
-		okButton.addListener("execute", function(){
-			tA.setVisibility("excluded");
-		});
-		
-		textArea.setNativeContextMenu(true);
-		window.add(tA);
-		var cpButton = new qx.ui.toolbar.Button("Copy As Text", "org.argeo.slc.ria/edit-copy.png");
+		var cpButton = new qx.ui.toolbar.Button("Download", "org/argeo/slc/ria/document-save-as.png");
 		tBar.add(cpButton);
 		cpButton.addListener("execute", function(e){
-			var all = tableModel.getData();
-			var string = "";
-			for(var i=0;i<all.length;i++){
-				for(var j=0;j<all[i].length;j++){
-					string += all[i][j] + "\t";
-				}
-				string += "\n";
-			}
-			tA.setVisibility("visible");
-			textArea.setValue(string);
-			new qx.util.DeferredCall(function(){
-				textArea.setSelection(0, string.length);
-			}).schedule();			
+			var downloadUrl = org.argeo.slc.ria.SlcApi.DEFAULT_CONTEXT+"/"+org.argeo.slc.ria.SlcApi.DOWNLOAD_SLCEXEC_STEPS + "?ext=log&uuid=" + uuid;
+			org.argeo.ria.Application.INSTANCE.javascriptDownloadLocation(downloadUrl);
 		});
-		tA.setVisibility("excluded");
-		
-		
 		
 		// Call service to load execution message
-		this._loadSlcExecution(uuid, tableModel);
+		this._loadSlcExecutionSteps(uuid, tableModel, false);
 		
 		var poller = new qx.event.Timer(3000);
 		poller.addListener("interval", function(e){
-			this._loadSlcExecution(uuid, tableModel);
+			this._loadSlcExecutionSteps(uuid, tableModel, true);
 		}, this);
 		
 		window.addListener("close", function(){
@@ -267,28 +238,39 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 		poller.start();
 	},	
 
-	_loadSlcExecution : function(uuid, tableModel){
-		var req = org.argeo.slc.ria.SlcApi.getSlcExecutionService(uuid);
+	_loadSlcExecutionSteps : function(uuid, tableModel, poller){
+		var req;
+		var lastUuid = tableModel.getUserData("lastStepUuid");
+		if(!poller || !lastUuid){
+			req = org.argeo.slc.ria.SlcApi.getTailSlcExecutionStepService(uuid, 200, null);
+		}else{
+			req = org.argeo.slc.ria.SlcApi.getTailSlcExecutionStepService(uuid, null, lastUuid);
+		}
 		req.addListener("completed", function(response){			
 			var xmlDoc = response.getContent();
-			var tableLines = [];
+			var tableLines = (poller?tableModel.getData():[]);
 			var parser = org.argeo.ria.util.Element;
-			var slcSteps = parser.selectNodes(xmlDoc, "slc:slc-execution/slc:steps/slc:slc-execution-step");
+			var slcSteps = parser.selectNodes(xmlDoc, "slc:object-list/slc:slc-execution-step");
 			for(var i=0;i<slcSteps.length;i++){				
 				var step = slcSteps[i];
-				var date = parser.getSingleNodeText(step, "slc:begin");
+				var stepUuid = parser.getSingleNodeText(step, "@uuid");
+				var date = parser.getSingleNodeText(step, "slc:timestamp");
 				var type = parser.getSingleNodeText(step, "slc:type");
+				var thread = parser.getSingleNodeText(step, "slc:thread");
 				var logLines = parser.selectNodes(step, "slc:log-lines/slc:log-line");
 				if(logLines.length > 0){
-					tableLines.push([date, type, parser.getSingleNodeText(logLines[0], ".")]);
+					tableLines.push([date, type, thread, parser.getSingleNodeText(logLines[0], ".")]);
 					if(logLines.length>1){
 						for(var j=1;j<logLines.length;j++){
-							tableLines.push(["", "", parser.getSingleNodeText(logLines[j], ".")]);	
+							tableLines.push(["", "", "", parser.getSingleNodeText(logLines[j], ".")]);	
 						}
 					}
 				}else{
-					tableLines.push([date, type, ""]);
+					tableLines.push([date, type, thread, ""]);
 				}
+			}
+			if(slcSteps.length){
+				tableModel.setUserData("lastStepUuid", stepUuid);
 			}
 			tableModel.setData(tableLines);
 		});

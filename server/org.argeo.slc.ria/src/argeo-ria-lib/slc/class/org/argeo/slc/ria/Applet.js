@@ -43,7 +43,7 @@ qx.Class.define("org.argeo.slc.ria.Applet",
   		init : {
   			"close" : {
   				label	 	: "Close Current", 
-  				icon 		: "org.argeo.slc.ria/window-close.png",
+  				icon 		: "org/argeo/slc/ria/window-close.png",
   				shortcut 	: "Control+w",
   				enabled  	: true,
   				menu	   	: "Test",

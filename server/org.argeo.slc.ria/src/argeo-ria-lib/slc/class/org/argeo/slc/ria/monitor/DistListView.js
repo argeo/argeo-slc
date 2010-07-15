@@ -11,7 +11,7 @@ qx.Class.define("org.argeo.slc.ria.monitor.DistListView", {
 			init : {
 				"reload" : {
 					label : "Reload",
-					icon : "org.argeo.slc.ria/view-refresh.png",
+					icon : "org/argeo/slc/ria/view-refresh.png",
 					shortcut : "control+h",
 					enabled : true,
 					menu : "Distributions",
@@ -23,7 +23,7 @@ qx.Class.define("org.argeo.slc.ria.monitor.DistListView", {
 				},
 				"uninstall" : {
 					label 	: "Uninstall",
-					icon	: "org.argeo.slc.ria/window-close.png",
+					icon	: "org/argeo/slc/ria/window-close.png",
 					shortcut: null,
 					enabled : false,
 					menu	: "Distributions",

@@ -165,7 +165,7 @@ qx.Class.define("org.argeo.slc.ria.execution.CellEditorFactory",
 				value = cellEditor.getValue();
 			}else{
 				var sel = cellEditor.getModelSelection();
-				value = sel[0];
+				value = sel.getItem(0);
 			}
 			var validationFunc = cellEditor.getUserData("validationFunc");
 			

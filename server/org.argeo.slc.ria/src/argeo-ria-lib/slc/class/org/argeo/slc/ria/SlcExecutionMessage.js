@@ -122,7 +122,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecutionMessage", {
 			for(var i=0;i<attributes.length;i++){
 				this.addAttribute(attribute.getAttribute("name"), attribute.firstChild);
 			}
-			var stepsDates = org.argeo.ria.util.Element.selectNodes(slcExecXml, "slc:steps/slc:slc-execution-step/slc:begin", NSMap);
+			var stepsDates = org.argeo.ria.util.Element.selectNodes(slcExecXml, "slc:steps/slc:slc-execution-step/slc:timestamp", NSMap);
 			if(stepsDates.length){
 				this.setDate(org.argeo.ria.util.Element.getSingleNodeText(stepsDates[stepsDates.length-1], ".", NSMap));
 			}

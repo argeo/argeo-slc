@@ -41,7 +41,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			init : {
 				"addtobatch" : {
 					label : "Add to batch",
-					icon : "org.argeo.slc.ria/list-add.png",
+					icon : "org/argeo/slc/ria/list-add.png",
 					shortcut : null,
 					enabled : true,
 					menu : null,
@@ -133,7 +133,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				},
 				"reloadfull" : {
 					label : "Reload Agents",
-					icon : "org.argeo.slc.ria/view-refresh.png",
+					icon : "org/argeo/slc/ria/view-refresh.png",
 					shortcut : "control+h",
 					enabled : true,
 					menu : "Launcher",
@@ -146,7 +146,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				},				
 				"reloadtree" : {
 					label : "Reload Node",
-					icon : "org.argeo.slc.ria/view-refresh.png",
+					icon : "org/argeo/slc/ria/view-refresh.png",
 					shortcut : null,
 					enabled : false,
 					menu : null,
@@ -264,10 +264,10 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					agentFolder.setUserData("agentUuid", uuid);
 					if(preferredHosts && preferredHosts instanceof Array && qx.lang.Array.contains(preferredHosts, host)){
 						folder.addAtBegin(agentFolder);
-						agentFolder.setIcon("org.argeo.slc.ria/computer_bookmarked.png");
+						agentFolder.setIcon("org/argeo/slc/ria/computer_bookmarked.png");
 					}else{
 						folder.add(agentFolder);
-						agentFolder.setIcon("org.argeo.slc.ria/computer.png");
+						agentFolder.setIcon("org/argeo/slc/ria/computer.png");
 					}
 				}
 				if(newAgents){
@@ -284,7 +284,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 				}
 				folder.setUserData("agentsMap", agents);
 				folder.setLoaded(true);
-				folder.getTree().fireEvent("changeSelection");				
+				folder.getTree().fireDataEvent("changeSelection", folder.getTree().getSelection());				
 			});
 			req.addListener("failed", function(response) {
 						folder.setLoaded(true);
@@ -332,7 +332,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 									name : key,
 									version : module.getVersion()
 								});
-						versionFolder.setIcon("org.argeo.slc.ria/archive.png");
+						versionFolder.setIcon("org/argeo/slc/ria/archive.png");
 						versionFolder.setUserData("agentUuid", agentId);
 						var sep = (module.getDescription()!=""?" - ":"");
 						org.argeo.slc.ria.FlowsSelectorView.attachToolTip(versionFolder, key + ' (' + module.getVersion() + ')'+sep+module.getDescription());
@@ -342,7 +342,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					}
 				}
 				folder.setLoaded(true);
-				folder.getTree().fireEvent("changeSelection");
+				folder.getTree().fireDataEvent("changeSelection", folder.getTree().getSelection());
 			});
 			req.addListener("failed", function(response) {
 				folder.setLoaded(true);
@@ -392,7 +392,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					if(execFlows[key].getDescription() != ""){
 						org.argeo.slc.ria.FlowsSelectorView.attachToolTip(file, execFlows[key].getDescription());
 					}
-					file.setIcon("org.argeo.slc.ria/system.png");
+					file.setIcon("org/argeo/slc/ria/system.png");
 					file.setUserData("executionModule",	executionModule);
 					file.setUserData("executionFlow", execFlows[key]);
 					file.setUserData("agentUuid", agentUuid);
@@ -402,7 +402,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					folder.appendDragData(file);
 				}
 				folder.setLoaded(true);
-				folder.getTree().fireEvent("changeSelection");
+				folder.getTree().fireDataEvent("changeSelection", folder.getTree().getSelection());
 			});
 			req.addListener("failed", function(response) {
 				folder.setLoaded(true);
@@ -552,10 +552,10 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 			}
 			if(qx.lang.Array.contains(prefArray, hostName)){
 				qx.lang.Array.remove(prefArray, hostName);
-				agentNode.setIcon("org.argeo.slc.ria/computer.png");
+				agentNode.setIcon("org/argeo/slc/ria/computer.png");
 			}else{
 				prefArray.push(hostName);
-				agentNode.setIcon("org.argeo.slc.ria/computer_bookmarked.png");
+				agentNode.setIcon("org/argeo/slc/ria/computer_bookmarked.png");
 				var parent = agentNode.getParent();
 				parent.remove(agentNode);
 				parent.addAtBegin(agentNode);
@@ -587,7 +587,7 @@ qx.Class.define("org.argeo.slc.ria.FlowsSelectorView", {
 					"Loading Agents", dragData);
 			this.tree.setRoot(this.rootNode);
 			this.tree.setHideRoot(true);
-			this.rootNode.setPersistentTreeID("org.argeo.slc.ria.FlowsSelector")
+			this.rootNode.setPersistentTreeID("org/argeo/slc/ria.FlowsSelector")
 			this.rootNode.setOpen(true);
 			this.tree.setContextMenu(org.argeo.ria.event.CommandsManager
 					.getInstance().createMenuFromIds(["addtobatch",

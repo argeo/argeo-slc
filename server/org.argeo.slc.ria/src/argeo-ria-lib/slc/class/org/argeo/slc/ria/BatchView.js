@@ -30,7 +30,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			init : {
 				"submitform" : {
 					label : "Execute Batch",
-					icon : "org.argeo.slc.ria/media-playback-start.png",
+					icon : "org/argeo/slc/ria/media-playback-start.png",
 					shortcut : null,
 					enabled : false,
 					menu : "Launcher",
@@ -54,7 +54,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				},
 				"removefrombatch" : {
 					label : "Remove from batch",
-					icon : "org.argeo.slc.ria/edit-delete.png",
+					icon : "org/argeo/slc/ria/edit-delete.png",
 					shortcut : null,
 					enabled : false,
 					menu : "Launcher",
@@ -93,7 +93,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				},
 				"clearbatch" : {
 					label : "Clear batch",
-					icon : "org.argeo.slc.ria/user-trash-full.png",
+					icon : "org/argeo/slc/ria/user-trash-full.png",
 					shortcut : null,
 					enabled : true,
 					menu : "Launcher",
@@ -259,7 +259,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 
 			this.dropDecorator = new qx.ui.decoration.Background();			
 			this.dropDecorator.set({
-				backgroundImage : "org.argeo.slc.ria/drophere.gif",
+				backgroundImage : "org/argeo/slc/ria/drophere.gif",
 				backgroundRepeat : "no-repeat"
 			});
 
@@ -341,7 +341,7 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 		
 		appendBatchEntrySpec: function(batchEntrySpec, icon, after){
 						
-			var item = new qx.ui.form.ListItem(batchEntrySpec.getLabel(), icon || "org.argeo.slc.ria/system.png");
+			var item = new qx.ui.form.ListItem(batchEntrySpec.getLabel(), icon || "org/argeo/slc/ria/system.png");
 			item.setUserData("batchEntrySpec", batchEntrySpec);
 			item.setPaddingTop(1);
 			item.setPaddingBottom(2);
