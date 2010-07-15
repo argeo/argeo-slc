@@ -53,7 +53,6 @@ import org.springframework.xml.transform.StringSource;
 @Controller
 public class ProcessController {
 
-	public final static String KEY_ANSWER = "__answer";
 	private final static Log log = LogFactory.getLog(ProcessController.class);
 
 	private SlcExecutionDao slcExecutionDao;

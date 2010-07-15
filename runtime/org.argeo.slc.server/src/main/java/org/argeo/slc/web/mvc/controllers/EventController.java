@@ -32,7 +32,6 @@ public class EventController {
 
 	private final static Log log = LogFactory.getLog(EventController.class);
 
-	public final static String KEY_ANSWER = "__answer";
 	private Long defaultTimeout = 10000l;
 
 	// IoC

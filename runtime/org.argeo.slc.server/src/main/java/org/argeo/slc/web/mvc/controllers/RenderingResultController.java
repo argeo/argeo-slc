@@ -18,8 +18,6 @@ package org.argeo.slc.web.mvc.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.dao.test.tree.TreeTestResultDao;
@@ -34,8 +32,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RenderingResultController {
-	private static final Log log = LogFactory
-			.getLog(RenderingResultController.class);
+	// private static final Log log = LogFactory
+	// .getLog(RenderingResultController.class);
 
 	public final static String MODELKEY_RESULT = "result";
 

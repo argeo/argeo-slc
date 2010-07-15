@@ -42,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ServerController {
-	public final static String KEY_ANSWER = "__answer";
 
 	// IoC
 	private DynamicRuntime<?> dynamicRuntime;

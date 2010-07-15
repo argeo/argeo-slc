@@ -52,7 +52,6 @@ public class ResultController {
 	// LogFactory.getLog(ServiceController.class);
 
 	// Constants
-	public final static String KEY_ANSWER = "__answer";
 	protected final String FORCE_DOWNLOAD = "Content-Type: application/force-download";
 
 	// IoC
