@@ -15,6 +15,8 @@ DATE=`date -u`
 EXIT_STATUS=0
 
 export MAVEN_OPTS=-Xmx256m
+export PATH=$PATH:/usr/local/bin
+
 # BUILD
 /usr/local/bin/mvn -up --fail-at-end deploy $PROFILES 2>&1 | tee deploy.log
 EXIT_STATUS=$PIPESTATUS
