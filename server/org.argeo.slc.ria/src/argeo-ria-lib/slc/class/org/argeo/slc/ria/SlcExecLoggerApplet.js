@@ -39,7 +39,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   				menu	   	: null,
   				toolbar  	: null,
   				callback	: function(e){
-			  		this._reloadLogger();
+			  		this.reloadLogger();
   				},
   				command 	: null
   			},
@@ -62,7 +62,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   				command		: null  				
   			},
   			"reopenrealized" : {
-  				label		: "Re-open",
+  				label		: "Re-open Process",
   				icon		: "org/argeo/slc/ria/document-open.png",
   				shortcut	: "Control+o",
   				enabled		: false,
@@ -100,9 +100,9 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
   	 *  
   	 */
   	load : function(){
-		this._reloadLogger();
-  		this.UIBus.addListener("newSlcExecution", this._reloadLogger, this);
-  		this.UIBus.addListener("updateSlcExecutionStatus", this._reloadLogger, this);
+		this.reloadLogger();
+  		this.UIBus.addListener("newSlcExecution", this.reloadLogger, this);
+  		this.UIBus.addListener("updateSlcExecutionStatus", this.reloadLogger, this);
   	},
   	 
 	addScroll : function(){
@@ -110,8 +110,8 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 	},
 	
 	close : function(){
-  		this.UIBus.removeListener("newSlcExecution", this._reloadLogger, this);
-  		this.UIBus.removeListener("updateSlcExecutionStatus", this._reloadLogger, this);
+  		this.UIBus.removeListener("newSlcExecution", this.reloadLogger, this);
+  		this.UIBus.removeListener("updateSlcExecutionStatus", this.reloadLogger, this);
 	},
 	  	
 	openRealized : function(logData){
@@ -167,6 +167,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 			handler(response.getContent());
 		});
 		// STUB CASE
+		/*
 		req.addListener("failed", function(){
 			if(!window.xmlExecStub || !window.xmlExecStub[uuid]){				
 				return;
@@ -174,6 +175,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 			var xmlDoc = window.xmlExecStub[uuid];
 			handler(xmlDoc);
 		});	
+		*/
 		req.send();
 	},
 	
@@ -223,6 +225,12 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 			var downloadUrl = org.argeo.slc.ria.SlcApi.DEFAULT_CONTEXT+"/"+org.argeo.slc.ria.SlcApi.DOWNLOAD_SLCEXEC_STEPS + "?ext=log&uuid=" + uuid;
 			org.argeo.ria.Application.INSTANCE.javascriptDownloadLocation(downloadUrl);
 		});
+		
+		var reopButton = new qx.ui.toolbar.Button("Re-open Process", "org/argeo/slc/ria/document-open.png");
+		tBar.add(reopButton);
+		reopButton.addListener("execute", function(e){
+			this.openRealized(logData);
+		}, this);
 		
 		// Call service to load execution message
 		this._loadSlcExecutionSteps(uuid, tableModel, false);
@@ -319,7 +327,7 @@ qx.Class.define("org.argeo.slc.ria.SlcExecLoggerApplet",
 	/**
 	 * Refresh the data model.
 	 */
-	_reloadLogger : function(){
+	reloadLogger : function(){
 		var request = org.argeo.slc.ria.SlcApi.getListSlcExecutionsService();
 		request.addListener("completed", function(response){			
 			var messages = org.argeo.ria.util.Element.selectNodes(response.getContent(), "//slc:slc-execution");

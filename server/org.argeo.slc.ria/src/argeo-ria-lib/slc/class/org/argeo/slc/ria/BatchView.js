@@ -17,6 +17,11 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 				label : "Autoclear batch on execution",
 				type : "boolean",
 				defaultValue : false
+			},
+			"slc.batch.autoOpenLog" : {
+				label : "Auto open log on execution",
+				type  : "boolean",
+				defaultValue  : true				
 			}
 		}
   	},
@@ -372,27 +377,23 @@ qx.Class.define("org.argeo.slc.ria.BatchView",
 			var host = agentsMap[agentUuid];
 			var slcExecMessage = new org.argeo.slc.ria.execution.Message();
 			slcExecMessage.setHost(host);
+			var execUuid = slcExecMessage.getUuid();
 			for (var i = 0; i < selection.length; i++) {
 				var batchEntrySpec = selection[i].getUserData("batchEntrySpec");
 				slcExecMessage.addBatchEntrySpec(batchEntrySpec);
 			}
 			try{
 				var xmlMessage = slcExecMessage.toXml();
-				if(!window.xmlExecStub){
-					window.xmlExecStub = {};
-				}
-				window.xmlExecStub[slcExecMessage.getUuid()] = qx.xml.Document.fromString(xmlMessage);
 				var req = org.argeo.slc.ria.SlcApi.getNewSlcExecutionService(
 						agentUuid, xmlMessage);
+				req.addListener("completed", function(response){
+					var loggerView = org.argeo.ria.components.ViewsManager.getInstance().getViewPaneById("main").getContent();
+					loggerView.reloadLogger();
+					if(this.getRiaPreferenceValue("slc.batch.autoOpenLog")){
+						loggerView.openDetail([0,host,execUuid,0]);
+					}
+				}, this);
 				req.send();
-				// Force logs refresh right now!
-				qx.event.Timer.once(function() {
-							var command = org.argeo.ria.event.CommandsManager
-									.getInstance().getCommandById("reloadlogs");
-							if (command) {
-								command.execute();
-							}
-						}, this, 2000);
 				if(clearBatch){
 					req.addListener("completed", function(e){
 						this.list.removeAll();
