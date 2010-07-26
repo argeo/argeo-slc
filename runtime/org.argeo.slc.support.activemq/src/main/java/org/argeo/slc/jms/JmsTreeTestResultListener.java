@@ -54,16 +54,16 @@ public class JmsTreeTestResultListener implements TreeTestResultListener {
 				CreateTreeTestResultRequest req = new CreateTreeTestResultRequest(
 						testResult);
 
-				if (log.isDebugEnabled())
-					log.debug("Send create result request for result "
+				if (log.isTraceEnabled())
+					log.trace("Send create result request for result "
 							+ testResult.getUuid());
 
 				jmsTemplate.convertAndSend(executionEventDestination, req);
 			} else {
 				ResultPartRequest req = new ResultPartRequest(testResult);
 
-				if (log.isDebugEnabled())
-					log.debug("Send result parts for result "
+				if (log.isTraceEnabled())
+					log.trace("Send result parts for result "
 							+ testResult.getUuid());
 
 				jmsTemplate.convertAndSend(executionEventDestination, req);
@@ -84,8 +84,8 @@ public class JmsTreeTestResultListener implements TreeTestResultListener {
 				CreateTreeTestResultRequest req = new CreateTreeTestResultRequest(
 						testResult);
 
-				if (log.isDebugEnabled())
-					log.debug("Send create result request for result "
+				if (log.isTraceEnabled())
+					log.trace("Send onClose create result request for result "
 							+ testResult.getUuid());
 
 				jmsTemplate.convertAndSend(executionEventDestination, req);
@@ -93,8 +93,8 @@ public class JmsTreeTestResultListener implements TreeTestResultListener {
 				CloseTreeTestResultRequest req = new CloseTreeTestResultRequest(
 						testResult);
 
-				if (log.isDebugEnabled())
-					log.debug("Send close result request for result "
+				if (log.isTraceEnabled())
+					log.trace("Send close result request for result "
 							+ testResult.getUuid());
 
 				jmsTemplate.convertAndSend(executionEventDestination, req);
@@ -111,6 +111,9 @@ public class JmsTreeTestResultListener implements TreeTestResultListener {
 	}
 
 	public void addAttachment(TreeTestResult testResult, Attachment attachment) {
+		if (onlyOnClose)
+			return;
+
 		try {
 			AddTreeTestResultAttachmentRequest req = new AddTreeTestResultAttachmentRequest();
 			req.setResultUuid(testResult.getUuid());

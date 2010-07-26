@@ -21,7 +21,7 @@ import java.util.List;
 public class RefSpecAttribute extends AbstractSpecAttribute implements
 		Cloneable {
 	private static final long serialVersionUID = -3427797452955753574L;
-	private Class<?> targetClass;
+	private transient Class<?> targetClass;
 	/** Read only. */
 	private String targetClassName;
 	private transient Object value = null;

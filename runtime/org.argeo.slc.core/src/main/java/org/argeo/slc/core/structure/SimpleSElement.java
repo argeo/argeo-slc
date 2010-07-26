@@ -16,6 +16,7 @@
 
 package org.argeo.slc.core.structure;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -27,7 +28,8 @@ import org.argeo.slc.structure.StructureElement;
  * 
  * @see TreeSPath
  */
-public class SimpleSElement implements StructureElement {
+public class SimpleSElement implements StructureElement, Serializable {
+	private static final long serialVersionUID = -7012193125005818900L;
 	/** For ORM */
 	private Long tid;
 	private String label;
