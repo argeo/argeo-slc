@@ -53,6 +53,10 @@ public class JmsAgentProxy implements SlcAgent {
 		this.jmsTemplate = jmsTemplate;
 	}
 
+	public String getAgentUuid() {
+		return agentUuid;
+	}
+
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			final String moduleName, final String version) {
 		return (ExecutionModuleDescriptor) sendReceive(new AgentMC(

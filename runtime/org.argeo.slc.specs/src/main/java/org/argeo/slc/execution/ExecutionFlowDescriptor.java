@@ -89,4 +89,10 @@ public class ExecutionFlowDescriptor implements Serializable {
 		return name.hashCode();
 	}
 
+	@Override
+	public String toString() {
+		return (path != null && !path.trim().equals("") ? path + "/" : "")
+				+ name;
+	}
+
 }

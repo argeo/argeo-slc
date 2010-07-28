@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+   <view
+         id="org.argeo.slc.client.ui.executionModulesView"
+         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+         name="Execution Modules"
+         restorable="true">
+   </view>
+    </extension>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="SLC Action Set"
+            visible="true"
+            id="org.argeo.slc.client.ui.actionSet">
+         <menu
+               label="SLC"
+               id="slcMenu">
+            <separator
+                  name="slcGroup">
+            </separator>
+         </menu>
+         <action
+               label="Refresh"
+               icon="icons/refresh.png"
+               class="org.argeo.slc.client.ui.actions.RefreshAction"
+               tooltip="Refresh"
+               menubarPath="slcMenu/slcGroup"
+               toolbarPath="slcGroup"
+               id="org.argeo.slc.client.ui.actions.RefreshAction">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>

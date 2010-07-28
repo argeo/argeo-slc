@@ -62,4 +62,9 @@ public class SlcAgentDescriptor implements Cloneable, Serializable {
 			List<ExecutionModuleDescriptor> modulesDescriptors) {
 		this.moduleDescriptors = modulesDescriptors;
 	}
+
+	@Override
+	public String toString() {
+		return host + " #" + uuid;
+	}
 }

@@ -23,6 +23,9 @@ import org.argeo.slc.process.SlcExecution;
 
 /** A local agent, able to run SLC Execution locally. */
 public interface SlcAgent {
+	/** Agent unique identifier */
+	public String getAgentUuid();
+
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version);
 

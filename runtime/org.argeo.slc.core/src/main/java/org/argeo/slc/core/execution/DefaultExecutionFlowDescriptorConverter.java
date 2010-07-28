@@ -300,15 +300,16 @@ public class DefaultExecutionFlowDescriptorConverter implements
 
 			// Check whether name include path
 			int lastIndex1 = name1.lastIndexOf('/');
+			//log.debug(name1+", "+lastIndex1);
 			if (!StringUtils.hasText(path1) && lastIndex1 >= 0) {
-				name1 = name1.substring(lastIndex1 + 1);
 				path1 = name1.substring(0, lastIndex1);
+				name1 = name1.substring(lastIndex1 + 1);
 			}
 
 			int lastIndex2 = name2.lastIndexOf('/');
 			if (!StringUtils.hasText(path2) && lastIndex2 >= 0) {
-				name2 = name2.substring(lastIndex2 + 1);
 				path2 = name2.substring(0, lastIndex2);
+				name2 = name2.substring(lastIndex2 + 1);
 			}
 
 			// Perform the actual comparison
