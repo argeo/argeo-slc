@@ -34,9 +34,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
+import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.ui.launcher.IPDELauncherConstants;
 import org.eclipse.swt.widgets.Shell;
 
+@SuppressWarnings("restriction")
 public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	private static Boolean debug = false;
 
@@ -279,9 +281,15 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 				bundleId = bundleId.substring(0, indexAt);
 			}
 
+			// We can now rely on bundleId value
+
 			if (bundleId.endsWith(".source")) {
 				if (debug)
 					System.out.println("Skip source bundle " + bundleId);
+				continue bundles;
+			} else if (bundleId
+					.equals(IPDEBuildConstants.BUNDLE_SIMPLE_CONFIGURATOR)) {
+				// skip simple configurator in order to avoid side-effects
 				continue bundles;
 			}
 

@@ -9,6 +9,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.pde.ui.launcher.EquinoxLaunchConfiguration;
+import org.eclipse.pde.ui.launcher.IPDELauncherConstants;
 
 /** OSGiBoot launch configuration. */
 public class OsgiBootEquinoxLaunchConfiguration extends
@@ -20,6 +21,14 @@ public class OsgiBootEquinoxLaunchConfiguration extends
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		super.launch(configuration, mode, launch, monitor);
+
+		System.out.println("targetBundles="
+				+ configuration.getAttribute(
+						IPDELauncherConstants.TARGET_BUNDLES, ""));
+		System.out.println("workspaceBundles="
+				+ configuration.getAttribute(
+						IPDELauncherConstants.WORKSPACE_BUNDLES, ""));
+
 		// Refresh resources before launching
 		final IFile propertiesFile = (IFile) configuration.getMappedResources()[0];
 		propertiesFile.getParent().refreshLocal(IResource.DEPTH_INFINITE,
