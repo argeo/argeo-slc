@@ -23,6 +23,8 @@ import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.Message;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.msg.event.SlcEvent;
 import org.argeo.slc.msg.event.SlcEventPublisher;
@@ -30,6 +32,8 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessagePostProcessor;
 
 public class JmsSlcEventPublisher implements SlcEventPublisher {
+	private static final Log log = LogFactory
+			.getLog(JmsSlcEventPublisher.class);
 	private Destination eventsDestination;
 	private JmsTemplate jmsTemplate;
 
@@ -50,6 +54,11 @@ public class JmsSlcEventPublisher implements SlcEventPublisher {
 						return message;
 					}
 				});
+		if (log.isTraceEnabled()) {
+			log.trace("Event " + event.toString() + " sent to "
+					+ eventsDestination.toString());
+		}
+
 	}
 
 	public void setEventsDestination(Destination eventsDestination) {

@@ -81,7 +81,7 @@ public class MarshallerMessageConverter implements MessageConverter {
 					+ message);
 		}
 		if (log.isTraceEnabled())
-			log.trace("From message in " + (System.currentTimeMillis() - begin)
+			log.trace("'From' message processed in " + (System.currentTimeMillis() - begin)
 					+ " ms");
 		return res;
 	}
@@ -104,7 +104,7 @@ public class MarshallerMessageConverter implements MessageConverter {
 			((TextMessage) msg).setText(result.toString());
 		}
 		if (log.isTraceEnabled())
-			log.trace("To message in " + (System.currentTimeMillis() - begin)
+			log.trace("'To' message processed in " + (System.currentTimeMillis() - begin)
 					+ " ms");
 		return msg;
 	}

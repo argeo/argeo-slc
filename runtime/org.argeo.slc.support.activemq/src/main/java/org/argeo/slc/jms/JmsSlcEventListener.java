@@ -41,17 +41,20 @@ import org.springframework.jms.support.converter.MessageConverter;
 public class JmsSlcEventListener implements SlcEventListener {
 	private final static Log log = LogFactory.getLog(JmsSlcEventListener.class);
 
+	// IoC
 	private Topic eventsDestination;
 	private ConnectionFactory jmsConnectionFactory;
 	private MessageConverter messageConverter;
 
+	// Initialized with init() method, released with close()
 	private Connection connection = null;
+
+	// One by instance
 	private String connectionClientId = getClass() + "#"
 			+ UUID.randomUUID().toString();
+	private Boolean isClosed = false;
 
 	private List<String> subscriberIds = new ArrayList<String>();
-
-	private Boolean isClosed = false;
 
 	// private Map<String, ListeningClient> clients = Collections
 	// .synchronizedMap(new HashMap<String, ListeningClient>());
@@ -59,9 +62,9 @@ public class JmsSlcEventListener implements SlcEventListener {
 	public SlcEvent listen(String subscriberId,
 			List<SlcEventListenerDescriptor> descriptors, Long timeout) {
 		if (descriptors.size() == 0) {
-			// No listeners, just waiting
+			// No listener, just waiting
 			try {
-				if(log.isTraceEnabled())
+				if (log.isTraceEnabled())
 					log.trace("No event listener registered, sleeping...");
 				Thread.sleep(timeout);
 			} catch (InterruptedException e) {
@@ -69,10 +72,6 @@ public class JmsSlcEventListener implements SlcEventListener {
 			}
 			return null;
 		} else {
-			String selector = createSelector(descriptors);
-			if (log.isTraceEnabled())
-				log.debug("Selector: " + selector);
-
 			Object obj = null;
 			synchronized (subscriberIds) {
 				while (subscriberIds.contains(subscriberId)) {
@@ -84,7 +83,6 @@ public class JmsSlcEventListener implements SlcEventListener {
 						// silent
 					}
 				}
-
 				subscriberIds.add(subscriberId);
 				Session session = null;
 				TopicSubscriber topicSubscriber = null;
@@ -139,9 +137,16 @@ public class JmsSlcEventListener implements SlcEventListener {
 			}
 			buf.append(')');
 		}
+		if (log.isTraceEnabled())
+			log.trace("selector created : " + buf.toString());
 		return buf.toString();
 	}
 
+	public boolean isClosed() {
+		return isClosed;
+	}
+
+	// Ioc
 	public void setEventsDestination(Topic eventsDestination) {
 		this.eventsDestination = eventsDestination;
 	}
@@ -154,6 +159,7 @@ public class JmsSlcEventListener implements SlcEventListener {
 		this.messageConverter = messageConverter;
 	}
 
+	// Life Cycle
 	public void init() {
 		try {
 			connection = jmsConnectionFactory.createConnection();
@@ -171,10 +177,6 @@ public class JmsSlcEventListener implements SlcEventListener {
 		synchronized (subscriberIds) {
 			subscriberIds.notifyAll();
 		}
-	}
-
-	public boolean isClosed() {
-		return isClosed;
 	}
 
 	// public void close(String clientId) {
