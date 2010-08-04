@@ -31,7 +31,7 @@ public class WebSlcEventListenerRegister implements SlcEventListenerRegister,
 
 	static final long serialVersionUID = 1l;
 
-	//private String clientId = UUID.randomUUID().toString();
+	// private String clientId = UUID.randomUUID().toString();
 
 	/** Synchronized */
 	private List<SlcEventListenerDescriptor> descriptors = new Vector<SlcEventListenerDescriptor>();
@@ -50,6 +50,10 @@ public class WebSlcEventListenerRegister implements SlcEventListenerRegister,
 
 	public synchronized List<SlcEventListenerDescriptor> getDescriptorsCopy() {
 		return new ArrayList<SlcEventListenerDescriptor>(descriptors);
+	}
+
+	public String getId() {
+		return RequestContextHolder.currentRequestAttributes().getSessionId();
 	}
 
 	// public SlcEvent listen(SlcEventListener eventListener, Long timeout) {
@@ -81,8 +85,4 @@ public class WebSlcEventListenerRegister implements SlcEventListenerRegister,
 	// return RequestContextHolder.currentRequestAttributes().getSessionId();
 	// }
 	//
-	public String getId() {
-		return RequestContextHolder.currentRequestAttributes().getSessionId();
-	}
-
 }

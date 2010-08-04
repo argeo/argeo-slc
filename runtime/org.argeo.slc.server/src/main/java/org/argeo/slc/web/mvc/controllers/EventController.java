@@ -35,8 +35,9 @@ public class EventController {
 	private Long defaultTimeout = 10000l;
 
 	// IoC
-	private SlcEventListenerRegister eventListenerRegister;
 	private SlcEventListener eventListener = null;
+	// the following bean as a Session scope.
+	private SlcEventListenerRegister eventListenerRegister;
 
 	// Business Methods
 	@RequestMapping("/addEventListener.service")
@@ -47,10 +48,13 @@ public class EventController {
 		eventListenerRegister
 				.addEventListenerDescriptor(new SlcEventListenerDescriptor(
 						eventType, eventFilter));
-		if (log.isTraceEnabled())
+		if (log.isTraceEnabled()) {
 			log.trace("Registered listener on register "
 					+ eventListenerRegister.getId() + " for type " + eventType
 					+ ", filter=" + eventFilter);
+			log.trace("Nb of registered descriptors : "
+					+ eventListenerRegister.getDescriptorsCopy().size());
+		}
 		return ExecutionAnswer.ok("Execution completed properly");
 
 	}
@@ -63,10 +67,13 @@ public class EventController {
 		eventListenerRegister
 				.removeEventListenerDescriptor(new SlcEventListenerDescriptor(
 						eventType, eventFilter));
-		if (log.isTraceEnabled())
+		if (log.isTraceEnabled()) {
 			log.trace("Removed listener from register "
 					+ eventListenerRegister.getId() + " for type " + eventType
 					+ ", filter=" + eventFilter);
+			log.trace("Nb of registered descriptors : "
+					+ eventListenerRegister.getDescriptorsCopy().size());
+		}
 		return ExecutionAnswer.ok("Execution completed properly");
 	}
 
@@ -78,14 +85,23 @@ public class EventController {
 			timeout = Long.parseLong(timeoutStr);
 		else
 			timeout = defaultTimeout;
-
+		if (log.isTraceEnabled()) {
+			log.trace("Begin poolEvent.service :"
+					+ " Nb of registered descriptors : "
+					+ eventListenerRegister.getDescriptorsCopy().size());
+		}
 		SlcEvent event = eventListener.listen(eventListenerRegister.getId(),
 				eventListenerRegister.getDescriptorsCopy(), timeout);
 		if (event != null) {
+			if (log.isTraceEnabled())
+				log.trace("Event heard : " + event.toString());
 			return event;
 		} else {
+			if (log.isTraceEnabled())
+				log.trace("No Event heard - Time out: ");
 			return ExecutionAnswer.ok("Execution completed properly");
 		}
+
 	}
 
 	public void setEventListenerRegister(
