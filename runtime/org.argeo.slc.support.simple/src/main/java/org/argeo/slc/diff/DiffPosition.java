@@ -25,6 +25,10 @@ public abstract class DiffPosition implements Comparable<DiffPosition> {
 		this.relatedFile = relatedFile;
 	}
 
+	// For Hibernate
+	DiffPosition() {
+	}
+
 	public RelatedFile getRelatedFile() {
 		return relatedFile;
 	}

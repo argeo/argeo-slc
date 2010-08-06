@@ -44,4 +44,10 @@ public abstract class DiffIssueKey extends DiffIssue {
 			return "";
 		}
 	}
+
+	// Hibernate
+	@SuppressWarnings("unused")
+	private void setKey(DiffKey key) {
+		this.key = key;
+	}
 }

@@ -37,6 +37,10 @@ public class TableDiffPosition extends DiffPosition {
 		this.columnName = columnName;
 	}
 
+	@SuppressWarnings("unused")
+	private TableDiffPosition() {
+	}
+
 	public Integer getLine() {
 		return line;
 	}
@@ -77,6 +81,22 @@ public class TableDiffPosition extends DiffPosition {
 		}
 		buf.append(']');
 		return buf.toString();
+	}
+
+	// Hibernate
+	@SuppressWarnings("unused")
+	private void setLine(Integer line) {
+		this.line = line;
+	}
+
+	@SuppressWarnings("unused")
+	private void setColumn(Integer column) {
+		this.column = column;
+	}
+
+	@SuppressWarnings("unused")
+	private void setColumnName(String columnName) {
+		this.columnName = columnName;
 	}
 
 }
