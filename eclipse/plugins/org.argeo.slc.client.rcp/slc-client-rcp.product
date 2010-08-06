@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="SLC" id="org.argeo.slc.client.rcp.product" application="org.argeo.slc.client.rcp.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <programArgs>-console</programArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="icons/argeo-icon-256.png"/>
+
+
+   <launcher>
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+   </vm>
+
+   <plugins>
+      <plugin id="com.ibm.icu"/>
+      <plugin id="com.springsource.antlr"/>
+      <plugin id="com.springsource.bsh"/>
+      <plugin id="com.springsource.com.jcraft.jsch"/>
+      <plugin id="com.springsource.com.jcraft.jzlib"/>
+      <plugin id="com.springsource.com.mysql.jdbc"/>
+      <plugin id="com.springsource.edu.oswego.cs.dl.util.concurrent"/>
+      <plugin id="com.springsource.javassist"/>
+      <plugin id="com.springsource.javax.activation"/>
+      <plugin id="com.springsource.javax.annotation"/>
+      <plugin id="com.springsource.javax.ejb"/>
+      <plugin id="com.springsource.javax.el"/>
+      <plugin id="com.springsource.javax.jms"/>
+      <plugin id="com.springsource.javax.mail"/>
+      <plugin id="com.springsource.javax.persistence"/>
+      <plugin id="com.springsource.javax.resource"/>
+      <plugin id="com.springsource.javax.servlet"/>
+      <plugin id="com.springsource.javax.servlet.jsp"/>
+      <plugin id="com.springsource.javax.servlet.jsp.jstl"/>
+      <plugin id="com.springsource.javax.transaction"/>
+      <plugin id="com.springsource.javax.xml.bind"/>
+      <plugin id="com.springsource.javax.xml.rpc"/>
+      <plugin id="com.springsource.javax.xml.soap"/>
+      <plugin id="com.springsource.javax.xml.stream"/>
+      <plugin id="com.springsource.javax.xml.ws"/>
+      <plugin id="com.springsource.jcifs"/>
+      <plugin id="com.springsource.junit"/>
+      <plugin id="com.springsource.net.sf.cglib"/>
+      <plugin id="com.springsource.net.sf.ehcache"/>
+      <plugin id="com.springsource.net.sourceforge.jtds"/>
+      <plugin id="com.springsource.oracle.jdbc"/>
+      <plugin id="com.springsource.org.aopalliance"/>
+      <plugin id="com.springsource.org.apache.bsf"/>
+      <plugin id="com.springsource.org.apache.commons.codec"/>
+      <plugin id="com.springsource.org.apache.commons.collections"/>
+      <plugin id="com.springsource.org.apache.commons.httpclient"/>
+      <plugin id="com.springsource.org.apache.commons.io"/>
+      <plugin id="com.springsource.org.apache.commons.lang"/>
+      <plugin id="com.springsource.org.apache.commons.pool"/>
+      <plugin id="com.springsource.org.apache.commons.vfs"/>
+      <plugin id="com.springsource.org.apache.derby"/>
+      <plugin id="com.springsource.org.apache.log4j"/>
+      <plugin id="com.springsource.org.apache.lucene"/>
+      <plugin id="com.springsource.org.apache.taglibs.standard"/>
+      <plugin id="com.springsource.org.apache.tools.ant"/>
+      <plugin id="com.springsource.org.apache.tools.ant.launch"/>
+      <plugin id="com.springsource.org.apache.xalan"/>
+      <plugin id="com.springsource.org.apache.xerces" fragment="true"/>
+      <plugin id="com.springsource.org.apache.xml.resolver"/>
+      <plugin id="com.springsource.org.apache.xml.serializer"/>
+      <plugin id="com.springsource.org.apache.xmlcommons"/>
+      <plugin id="com.springsource.org.aspectj.runtime"/>
+      <plugin id="com.springsource.org.aspectj.weaver"/>
+      <plugin id="com.springsource.org.dbunit"/>
+      <plugin id="com.springsource.org.dom4j"/>
+      <plugin id="com.springsource.org.h2"/>
+      <plugin id="com.springsource.org.hibernate"/>
+      <plugin id="com.springsource.org.hsqldb"/>
+      <plugin id="com.springsource.org.jaxen"/>
+      <plugin id="com.springsource.org.jdom"/>
+      <plugin id="com.springsource.org.jgroups"/>
+      <plugin id="com.springsource.org.postgresql.jdbc3"/>
+      <plugin id="com.springsource.org.tmatesoft.svn"/>
+      <plugin id="com.springsource.org.xmlpull"/>
+      <plugin id="com.springsource.slf4j.api"/>
+      <plugin id="com.springsource.slf4j.log4j" fragment="true"/>
+      <plugin id="com.springsource.slf4j.org.apache.commons.logging"/>
+      <plugin id="org.argeo.dep.osgi.commons.exec"/>
+      <plugin id="org.argeo.eclipse.ui"/>
+      <plugin id="org.argeo.server.jdbc" fragment="true"/>
+      <plugin id="org.argeo.slc.agent"/>
+      <plugin id="org.argeo.slc.agent.ext.bsf" fragment="true"/>
+      <plugin id="org.argeo.slc.agent.ext.jdbc" fragment="true"/>
+      <plugin id="org.argeo.slc.agent.ext.xalan" fragment="true"/>
+      <plugin id="org.argeo.slc.client.rcp"/>
+      <plugin id="org.argeo.slc.client.ui"/>
+      <plugin id="org.argeo.slc.core"/>
+      <plugin id="org.argeo.slc.demo.agent" fragment="true"/>
+      <plugin id="org.argeo.slc.demo.ant"/>
+      <plugin id="org.argeo.slc.demo.basic"/>
+      <plugin id="org.argeo.slc.demo.log4j" fragment="true"/>
+      <plugin id="org.argeo.slc.specs"/>
+      <plugin id="org.argeo.slc.support.ant"/>
+      <plugin id="org.argeo.slc.support.hibernate" fragment="true"/>
+      <plugin id="org.argeo.slc.support.osgi"/>
+      <plugin id="org.argeo.slc.support.simple"/>
+      <plugin id="org.eclipse.core.commands"/>
+      <plugin id="org.eclipse.core.contenttype"/>
+      <plugin id="org.eclipse.core.databinding"/>
+      <plugin id="org.eclipse.core.databinding.observable"/>
+      <plugin id="org.eclipse.core.databinding.property"/>
+      <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.jobs"/>
+      <plugin id="org.eclipse.core.runtime"/>
+      <plugin id="org.eclipse.equinox.app"/>
+      <plugin id="org.eclipse.equinox.common"/>
+      <plugin id="org.eclipse.equinox.preferences"/>
+      <plugin id="org.eclipse.equinox.registry"/>
+      <plugin id="org.eclipse.help"/>
+      <plugin id="org.eclipse.jface"/>
+      <plugin id="org.eclipse.jface.databinding"/>
+      <plugin id="org.eclipse.osgi"/>
+      <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
+      <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
+      <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.workbench"/>
+      <plugin id="org.springframework.aop"/>
+      <plugin id="org.springframework.beans"/>
+      <plugin id="org.springframework.context"/>
+      <plugin id="org.springframework.core"/>
+      <plugin id="org.springframework.jdbc"/>
+      <plugin id="org.springframework.orm"/>
+      <plugin id="org.springframework.osgi.core"/>
+      <plugin id="org.springframework.osgi.extender"/>
+      <plugin id="org.springframework.osgi.io"/>
+      <plugin id="org.springframework.transaction"/>
+      <plugin id="org.springframework.web"/>
+   </plugins>
+
+   <configurations>
+      <plugin id="org.argeo.slc.agent" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.slc.client.ui" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.slc.demo.ant" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.slc.demo.basic" autoStart="true" startLevel="0" />
+   </configurations>
+
+</product>

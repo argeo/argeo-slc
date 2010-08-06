@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         id="application"
+         id="org.argeo.slc.client.rcp.application"
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
@@ -20,6 +20,22 @@
       </perspective>
    </extension>
    <extension
+         id="org.argeo.slc.client.rcp.product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.argeo.slc.client.rcp.application"
+            name="SLC">
+         <property
+               name="windowImages"
+               value="icons/argeo-icon-256.png">
+         </property>
+         <property
+               name="appName"
+               value="SLC">
+         </property>
+      </product>
+   </extension>
+   <extension
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
@@ -28,6 +44,10 @@
          <property
                name="windowImages"
                value="icons/argeo-icon-256.png">
+         </property>
+         <property
+               name="appName"
+               value="SLC">
          </property>
       </product>
    </extension>

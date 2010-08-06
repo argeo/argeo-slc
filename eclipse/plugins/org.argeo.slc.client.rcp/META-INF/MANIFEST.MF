@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Rcp
 Bundle-SymbolicName: org.argeo.slc.client.rcp; singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.argeo.slc.client.rcp.Activator
+Bundle-Activator: org.argeo.slc.client.rcp.ClientRcpPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.argeo.slc.client.ui.views

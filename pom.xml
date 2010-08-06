@@ -25,6 +25,7 @@
 	<modules>
 		<module>runtime</module>
 		<module>modules</module>
+		<module>eclipse</module>
 		<module>dep</module>
 		<module>server</module>
 		<module>demo</module>

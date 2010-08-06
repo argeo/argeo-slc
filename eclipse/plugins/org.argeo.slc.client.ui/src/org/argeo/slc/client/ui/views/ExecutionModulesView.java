@@ -60,7 +60,6 @@ public class ExecutionModulesView extends ViewPart {
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 
-			@Override
 			public void doubleClick(DoubleClickEvent evt) {
 				Object obj = ((IStructuredSelection) evt.getSelection())
 						.getFirstElement();

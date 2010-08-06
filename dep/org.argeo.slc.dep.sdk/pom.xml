@@ -46,6 +46,11 @@
 			<artifactId>org.argeo.slc.dep.gis</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.dep</groupId>
+			<artifactId>org.argeo.slc.dep.eclipse</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<!-- SLC non deps -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
