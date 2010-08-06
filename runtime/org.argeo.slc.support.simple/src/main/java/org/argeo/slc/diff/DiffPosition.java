@@ -29,4 +29,16 @@ public abstract class DiffPosition implements Comparable<DiffPosition> {
 		return relatedFile;
 	}
 
+	// Added to enable the new data model for persisting TabularDiffTestResult
+	@SuppressWarnings("unused")
+	private Boolean getIsReached() {
+		return relatedFile.equals(RelatedFile.REACHED);
+	}
+
+	@SuppressWarnings("unused")
+	private void setIsReached(Boolean isReached) {
+		this.relatedFile = (isReached ? RelatedFile.REACHED
+				: RelatedFile.EXPECTED);
+	}
+
 }
