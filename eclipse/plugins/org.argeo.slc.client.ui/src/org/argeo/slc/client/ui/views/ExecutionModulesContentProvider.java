@@ -130,25 +130,35 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 
 			SortedMap<String, FolderNode> folderNodes = new TreeMap<String, FolderNode>();
 
-			// SortedMap<String, FlowNode> directChildren = new TreeMap<String,
-			// FlowNode>();
-
 			flowDescriptors = new HashMap<String, ExecutionFlowDescriptor>();
 			for (ExecutionFlowDescriptor fd : descriptor.getExecutionFlows()) {
-				if (log.isTraceEnabled())
-					log
-							.trace("path=" + fd.getPath() + ", name="
-									+ fd.getName());
+				// if (log.isTraceEnabled())
+				// log.trace("fd.path=" + fd.getPath() + ", fd.name="
+				// + fd.getName());
 
-				String path = fd.getPath();
-				String name = fd.getName();
+				// find path and label
+				String path;
+				String label;
+				int lastSlash = fd.getName().lastIndexOf('/');
+				if ((fd.getPath() == null || fd.getPath().trim().equals(""))
+						&& lastSlash >= 0) {
+					path = fd.getName().substring(0, lastSlash);
+					label = fd.getName().substring(lastSlash + 1);
+				} else {
+					path = fd.getPath();
+					label = fd.getName();
+				}
+				// if (log.isTraceEnabled())
+				// log.trace("path=" + path + ", label=" + label);
 
-				if (path == null || path.trim().equals("")) {
+				if (path == null || path.trim().equals("")
+						|| path.trim().equals("/")) {
 					// directChildren.put(name, new FlowNode(name, this));
-					addChild(new FlowNode(name, this));
+					addChild(new FlowNode(label, fd.getName(), this));
 				} else {
 					FolderNode folderNode = mkdirs(this, path, folderNodes);
-					folderNode.addChild(new FlowNode(name, this));
+					folderNode
+							.addChild(new FlowNode(label, fd.getName(), this));
 				}
 
 				flowDescriptors.put(fd.getName(), fd);
@@ -158,6 +168,9 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 
 		protected FolderNode mkdirs(TreeParent root, String path,
 				SortedMap<String, FolderNode> folderNodes) {
+			// Normalize
+			if (path.charAt(0) != '/')
+				path = '/' + path;
 			if (path.charAt(path.length() - 1) == '/')
 				path = path.substring(0, path.length() - 1);
 
@@ -165,8 +178,15 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 				return folderNodes.get(path);
 
 			int lastIndx = path.lastIndexOf('/');
-			String folderName = path.substring(lastIndx + 1);
-			String parentPath = path.substring(0, lastIndx);
+			String folderName;
+			String parentPath;
+			if (lastIndx >= 0) {
+				folderName = path.substring(lastIndx + 1);
+				parentPath = path.substring(0, lastIndx);
+			} else {
+				folderName = path;
+				parentPath = "";
+			}
 
 			TreeParent parent;
 			if (parentPath.equals(""))
@@ -189,8 +209,9 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 		private final String flowName;
 		private final ExecutionModuleNode executionModuleNode;
 
-		public FlowNode(String flowName, ExecutionModuleNode executionModuleNode) {
-			super(flowName);
+		public FlowNode(String label, String flowName,
+				ExecutionModuleNode executionModuleNode) {
+			super(label);
 			this.flowName = flowName;
 			this.executionModuleNode = executionModuleNode;
 		}
