@@ -38,19 +38,22 @@ public class AsFlowDecorator implements BeanDefinitionDecorator {
 		String attrValue = ((Attr) node).getValue();
 		if (attrValue.charAt(attrValue.length() - 1) == '/')
 			throw new SlcException(attrValue + " cannot end with a path");
-		int lastSlash = attrValue.lastIndexOf('/');
-		String path;
-		String flowBeanName;
-		if (lastSlash > 0) {
-			flowBeanName = attrValue.substring(lastSlash + 1);
-			path = attrValue.substring(0, lastSlash);
-		} else if (lastSlash == 0) {
-			flowBeanName = attrValue.substring(lastSlash + 1);
-			path = null;
-		} else {
-			flowBeanName = attrValue;
-			path = null;
-		}
+		// int lastSlash = attrValue.lastIndexOf('/');
+		// String path;
+		// String flowBeanName;
+		// if (lastSlash > 0) {
+		// flowBeanName = attrValue.substring(lastSlash + 1);
+		// path = attrValue.substring(0, lastSlash);
+		// } else if (lastSlash == 0) {
+		// flowBeanName = attrValue.substring(lastSlash + 1);
+		// path = null;
+		// } else {
+		// flowBeanName = attrValue;
+		// path = null;
+		// }
+		//
+		final String flowBeanName = attrValue;
+		final String path = null;
 
 		if (log.isTraceEnabled())
 			log.debug("path=" + path + ", flowBeanName=" + flowBeanName);
