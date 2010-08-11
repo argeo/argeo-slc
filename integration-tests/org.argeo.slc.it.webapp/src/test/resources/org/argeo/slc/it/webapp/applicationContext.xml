@@ -26,7 +26,9 @@
 
 	<import resource="classpath:org/argeo/slc/server/client/spring.xml" />
 
+	<!-- Http client -->
 	<bean id="serverHttpClient" parent="slcTemplate.serverHttpClient">
+		<property name="baseUrl" value="http://localhost:7080/org.argeo.slc.webapp/" />
 	</bean>
 
 </beans>
