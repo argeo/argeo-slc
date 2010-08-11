@@ -41,26 +41,22 @@
 							org.argeo.slc.server.hibernate,
 							org.argeo.slc.ria,
 							org.argeo.slc.agent,
-							org.argeo.slc.agent.jms, 
-							org.argeo.slc.demo.minimal,
-							org.argeo.slc.demo.basic,
-							org.argeo.slc.demo.ant						
-						</argeo.osgi.start>
-
-						<!--<argeo.osgi.start>
-							org.springframework.osgi.extender,
-							org.argeo.server.ads.server,
-							org.argeo.slc.server.jackrabbit.derby,
-							org.argeo.slc.server.jcr,
-							org.argeo.slc.server.main,
-							org.argeo.slc.ria,
-							org.argeo.slc.agent,
 							org.argeo.slc.agent.jms,
 							org.argeo.slc.demo.minimal,
 							org.argeo.slc.demo.basic,
 							org.argeo.slc.demo.ant						
 						</argeo.osgi.start>
-					--></systemProperties>
+						<argeo.server.port.http>7080</argeo.server.port.http>
+						<!--
+							<argeo.osgi.start> org.springframework.osgi.extender,
+							org.argeo.server.ads.server,
+							org.argeo.slc.server.jackrabbit.derby, org.argeo.slc.server.jcr,
+							org.argeo.slc.server.main, org.argeo.slc.ria,
+							org.argeo.slc.agent, org.argeo.slc.agent.jms,
+							org.argeo.slc.demo.minimal, org.argeo.slc.demo.basic,
+							org.argeo.slc.demo.ant </argeo.osgi.start>
+						-->
+					</systemProperties>
 				</configuration>
 				<executions>
 					<execution>
