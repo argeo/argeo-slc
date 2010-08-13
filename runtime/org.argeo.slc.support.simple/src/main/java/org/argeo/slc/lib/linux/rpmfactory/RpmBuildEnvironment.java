@@ -18,6 +18,12 @@ public class RpmBuildEnvironment {
 	private String defaultMacroFiles = "/usr/lib/rpm/macros:/usr/lib/rpm/ia32e-linux/macros:/usr/lib/rpm/redhat/macros:/etc/rpm/macros.*:/etc/rpm/macros:/etc/rpm/ia32e-linux/macros:~/.rpmmacros";
 	private Map<String, String> rpmmacros = new HashMap<String, String>();
 
+	/** Write (topdir)/rpmmacros and (topdir)/rpmrc */
+	public void writeRpmbuildConfigFiles(File topdir) {
+		writeRpmbuildConfigFiles(topdir, new File(topdir, "rpmmacros"),
+				new File(topdir, "rpmrc"));
+	}
+
 	public void writeRpmbuildConfigFiles(File topdir, File rpmmacroFile,
 			File rpmrcFile) {
 		try {

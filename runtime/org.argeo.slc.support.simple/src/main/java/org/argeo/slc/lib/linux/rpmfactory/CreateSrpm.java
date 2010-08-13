@@ -50,17 +50,14 @@ public class CreateSrpm implements Runnable {
 			copyResourceToFile(specFile, targetFile);
 
 			// Generate rpmbuild config files
-			File rpmmacroFile = new File(topdir, "rpmmacros");
-			File rpmrcFile = new File(topdir, "rpmrc");
-			rpmBuildEnvironment.writeRpmbuildConfigFiles(topdir, rpmmacroFile,
-					rpmrcFile);
+			rpmBuildEnvironment.writeRpmbuildConfigFiles(topdir);
 
 			// Build SRPM
 			srpmsDir.mkdirs();
 			SystemCall packageSrpm = new SystemCall();
 			packageSrpm.arg("rpmbuild");
 			packageSrpm.arg("-bs").arg("--nodeps");
-			packageSrpm.arg("--rcfile=" + rpmrcFile.getName());
+			packageSrpm.arg("--rcfile=rpmrc");
 			// buildSrpm.arg("-D", "_topdir " + topdir.getCanonicalPath() + "");
 			packageSrpm.arg("SPECS/" + specFile.getFilename());
 			packageSrpm.setExecDir(topdir.getCanonicalPath());
@@ -82,6 +79,7 @@ public class CreateSrpm implements Runnable {
 	protected void copyToSources(RpmSpecFile spec, File sourcesDir) {
 		try {
 			List<Resource> toCopyToSources = new ArrayList<Resource>();
+			List<Resource> toDownload = new ArrayList<Resource>();
 			for (String file : spec.getSources().values()) {
 				try {
 					Resource res;
@@ -92,6 +90,7 @@ public class CreateSrpm implements Runnable {
 
 					} catch (Exception e) {
 						res = new UrlResource(file);
+						toDownload.add(res);
 					}
 					toCopyToSources.add(res);
 				} catch (Exception e) {
@@ -108,6 +107,7 @@ public class CreateSrpm implements Runnable {
 						}
 					} catch (Exception e) {
 						res = new UrlResource(file);
+						toDownload.add(res);
 					}
 					toCopyToSources.add(res);
 				} catch (Exception e) {
@@ -116,9 +116,9 @@ public class CreateSrpm implements Runnable {
 			}
 
 			// FIXME: we may have missed some files here
-			copySources: for (Resource res : toCopyToSources) {
+			for (Resource res : toCopyToSources) {
 				File targetDir;
-				if (distributionCache != null) {
+				if (distributionCache != null && toDownload.contains(res)) {
 					if (distributionCache.exists())
 						distributionCache.mkdirs();
 					targetDir = distributionCache;
