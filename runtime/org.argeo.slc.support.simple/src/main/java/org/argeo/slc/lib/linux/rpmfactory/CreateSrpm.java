@@ -119,9 +119,11 @@ public class CreateSrpm implements Runnable {
 			for (Resource res : toCopyToSources) {
 				File targetDir;
 				if (distributionCache != null && toDownload.contains(res)) {
-					if (distributionCache.exists())
+					if (!distributionCache.exists())
 						distributionCache.mkdirs();
 					targetDir = distributionCache;
+					if (log.isDebugEnabled())
+						log.debug("Cache " + res + " in " + targetDir);
 				} else
 					targetDir = sourcesDir;
 				File targetFile = new File(targetDir, res.getFilename())
