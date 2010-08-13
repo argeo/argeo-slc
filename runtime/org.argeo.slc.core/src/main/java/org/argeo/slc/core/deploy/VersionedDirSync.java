@@ -22,6 +22,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.deploy.VersioningDriver;
 
+/**
+ * Synchronizes an URL to a local directory, taking into account versioning
+ * information if possible.
+ */
 public class VersionedDirSync implements Runnable {
 	private final static Log log = LogFactory.getLog(VersionedDirSync.class);
 
