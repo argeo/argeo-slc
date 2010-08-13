@@ -10,6 +10,10 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.argeo.slc.SlcException;
 
+/**
+ * Defines a build environment. This information is typically used by other
+ * components performing the various actions related to RPM build.
+ */
 public class RpmBuildEnvironment {
 	private String defaultMacroFiles = "/usr/lib/rpm/macros:/usr/lib/rpm/ia32e-linux/macros:/usr/lib/rpm/redhat/macros:/etc/rpm/macros.*:/etc/rpm/macros:/etc/rpm/ia32e-linux/macros:~/.rpmmacros";
 	private Map<String, String> rpmmacros = new HashMap<String, String>();
@@ -30,8 +34,7 @@ public class RpmBuildEnvironment {
 					+ rpmmacroFile.getCanonicalPath());
 			FileUtils.writeLines(rpmrcFile, rpmrcLines);
 		} catch (IOException e) {
-			throw new SlcException("Cannot write rpmbuild config files",
-					e);
+			throw new SlcException("Cannot write rpmbuild config files", e);
 		}
 
 	}

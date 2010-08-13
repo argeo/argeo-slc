@@ -22,6 +22,9 @@ public class CreateSrpm implements Runnable {
 
 	private File topdir;
 
+	/** Directory where to cache downloaded dsitributions. */
+	private File distributionCache;
+
 	private Resource specFile;
 
 	private RpmBuildEnvironment rpmBuildEnvironment;
@@ -114,11 +117,25 @@ public class CreateSrpm implements Runnable {
 
 			// FIXME: we may have missed some files here
 			copySources: for (Resource res : toCopyToSources) {
-				File targetFile = new File(sourcesDir, res.getFilename())
+				File targetDir;
+				if (distributionCache != null) {
+					if (distributionCache.exists())
+						distributionCache.mkdirs();
+					targetDir = distributionCache;
+				} else
+					targetDir = sourcesDir;
+				File targetFile = new File(targetDir, res.getFilename())
 						.getCanonicalFile();
-				if (targetFile.exists() && !overwriteSources)
-					continue copySources;
-				copyResourceToFile(res, targetFile);
+				if (!targetFile.exists() || overwriteSources)
+					copyResourceToFile(res, targetFile);
+				if (!targetDir.equals(sourcesDir)) {
+					File fileInSourcesDir = new File(sourcesDir, targetFile
+							.getName());
+					if (!fileInSourcesDir.exists()
+							|| !(fileInSourcesDir.length() == targetFile
+									.length()))
+						FileUtils.copyFile(targetFile, fileInSourcesDir);
+				}
 			}
 		} catch (Exception e) {
 			throw new SlcException("Cannot copy to " + sourcesDir, e);
@@ -173,6 +190,10 @@ public class CreateSrpm implements Runnable {
 
 	public void setRpmBuildEnvironment(RpmBuildEnvironment rpmBuildEnvironment) {
 		this.rpmBuildEnvironment = rpmBuildEnvironment;
+	}
+
+	public void setDistributionCache(File distributionCache) {
+		this.distributionCache = distributionCache;
 	}
 
 }
