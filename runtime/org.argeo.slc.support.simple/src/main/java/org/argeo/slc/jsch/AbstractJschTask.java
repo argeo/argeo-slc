@@ -76,7 +76,7 @@ public abstract class AbstractJschTask implements Runnable {
 		try {
 			run(session);
 		} finally {
-			if (sshTarget.getSession() == null) {
+			if (sshTarget != null && sshTarget.getSession() == null) {
 				session.disconnect();
 				if (log.isDebugEnabled())
 					log.debug("Disconnected from " + getSshTarget()
