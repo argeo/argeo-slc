@@ -27,6 +27,8 @@ public interface DynamicRuntime<M extends Module> extends
 
 	public void uninstallModule(NameVersion nameVersion);
 
+	public void updateModule(NameVersion nameVersion);
+
 	public void startModule(NameVersion nameVersion);
 
 }

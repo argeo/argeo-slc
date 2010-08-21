@@ -77,6 +77,15 @@ public class OsgiRuntime implements BundleContextAware, ResourceLoaderAware,
 		return new OsgiBundle(bundle);
 	}
 
+	public void updateModule(NameVersion nameVersion) {
+		Bundle bundle = findBundle(nameVersion);
+		try {
+			bundle.update();
+		} catch (BundleException e) {
+			throw new SlcException("Cannot update " + bundle, e);
+		}
+	}
+
 	public void uninstallModule(NameVersion nameVersion) {
 		Bundle bundle = findBundle(nameVersion);
 		try {
