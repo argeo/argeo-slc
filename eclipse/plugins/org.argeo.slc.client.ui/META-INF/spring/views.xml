@@ -9,6 +9,11 @@
 		<property name="contentProvider" ref="executionModulesContentProvider" />
 	</bean>
 
+	<bean id="org.argeo.slc.client.ui.resultListView" class="org.argeo.slc.client.ui.views.ResultListView"
+		scope="prototype">
+		<property name="testResultCollectionDao" ref="testResultCollectionDao" />
+	</bean>
+
 	<bean id="executionModulesContentProvider"
 		class="org.argeo.slc.client.ui.views.ExecutionModulesContentProvider">
 		<property name="slcAgent" ref="slcAgent" />
@@ -16,4 +21,12 @@
 
 	<bean id="slcAgent" class="org.argeo.slc.core.runtime.DefaultAgent"
 		p:modulesManager-ref="modulesManager" />
+		
+	<bean id="slcAgentFactory" class="org.argeo.slc.core.runtime.SimpleAgentFactory">
+		<property name="agents">
+			<list>
+				<ref bean="slcAgent" />
+			</list>
+		</property>
+	</bean>
 </beans>

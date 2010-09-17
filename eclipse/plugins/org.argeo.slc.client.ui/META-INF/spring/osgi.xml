@@ -8,4 +8,8 @@
 
 	<reference id="modulesManager"
 		interface="org.argeo.slc.execution.ExecutionModulesManager" />
+	<reference id="testResultCollectionDao"
+		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao" />
+
+	<service ref="slcAgentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
 </beans:beans>

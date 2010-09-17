@@ -6,7 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.argeo.slc.client.ui.ClientUiPlugin
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime;resolution:=optional,
+ com.springsource.org.hibernate;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.argeo.slc.client.ui,
@@ -17,10 +18,14 @@ Import-Package: org.apache.commons.logging;version="1.1.1",
  org.argeo.eclipse.ui,
  org.argeo.slc.build;version="0.13.0.SNAPSHOT-r3685",
  org.argeo.slc.core.runtime;version="0.13.0.SNAPSHOT-r3701",
+ org.argeo.slc.core.test.tree;version="0.13.0.SNAPSHOT-r3768",
+ org.argeo.slc.dao.test.tree;version="0.13.0.SNAPSHOT-r3768",
  org.argeo.slc.deploy;version="0.13.0.SNAPSHOT-r3724",
  org.argeo.slc.execution;version="0.13.0.SNAPSHOT-r3685",
  org.argeo.slc.process;version="0.13.0.SNAPSHOT-r3685",
  org.argeo.slc.runtime;version="0.13.0.SNAPSHOT-r3685",
  org.springframework.beans.factory,
  org.springframework.context,
- org.springframework.core.io.support
+ org.springframework.core.io.support,
+ org.hibernate.jdbc,
+ org.hibernate.hql.ast

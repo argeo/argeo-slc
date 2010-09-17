@@ -1,8 +1,9 @@
 package org.argeo.slc.client.ui.actions;
 
-import org.argeo.slc.client.ui.views.ExecutionModulesView;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.client.ui.views.ResultListView;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
@@ -16,6 +17,7 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  * @see IWorkbenchWindowActionDelegate
  */
 public class RefreshAction implements IWorkbenchWindowActionDelegate {
+	private final static Log log = LogFactory.getLog(RefreshAction.class);
 	private IWorkbenchWindow window;
 
 	/**
@@ -31,11 +33,16 @@ public class RefreshAction implements IWorkbenchWindowActionDelegate {
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
 	public void run(IAction action) {
-		ExecutionModulesView view = (ExecutionModulesView) window
-				.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-				.findView(ExecutionModulesView.ID);
-		view.getViewer().refresh();
-		MessageDialog.openInformation(window.getShell(), "Ui", "Refreshed");
+		// ExecutionModulesView view = (ExecutionModulesView) window
+		// .getWorkbench().getActiveWorkbenchWindow().getActivePage()
+		// .findView(ExecutionModulesView.ID);
+		// view.getViewer().refresh();
+		// MessageDialog.openInformation(window.getShell(), "Ui", "Refreshed");
+		log.info("command");
+		ResultListView view = (ResultListView) window.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage().findView(
+						ResultListView.ID);
+		view.retrieveResults();
 	}
 
 	/**

@@ -32,9 +32,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.io.Resource;
 
 public class FileAttachmentsStorage implements AttachmentsStorage,
-		InitializingBean {
+		AttachmentUploader, InitializingBean {
 	private final static Log log = LogFactory
 			.getLog(FileAttachmentsStorage.class);
 
@@ -111,6 +112,14 @@ public class FileAttachmentsStorage implements AttachmentsStorage,
 			IOUtils.closeQuietly(out);
 		}
 
+	}
+
+	public void upload(Attachment attachment, Resource resource) {
+		try {
+			storeAttachment(attachment, resource.getInputStream());
+		} catch (IOException e) {
+			throw new SlcException("Cannot upload attachment " + attachment, e);
+		}
 	}
 
 	/** For monitoring purposes only */

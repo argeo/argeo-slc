@@ -71,7 +71,7 @@ public abstract class AbstractJschTask implements Runnable {
 		}
 	}
 
-	public final void run() {
+	public void run() {
 		Session session = openSession();
 		try {
 			run(session);

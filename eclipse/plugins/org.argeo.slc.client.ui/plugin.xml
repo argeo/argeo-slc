@@ -10,6 +10,12 @@
          name="Execution Modules"
          restorable="true">
    </view>
+   <view
+         id="org.argeo.slc.client.ui.resultListView"
+         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+         name="Results"
+         restorable="true">
+   </view>
     </extension>
 
    <extension

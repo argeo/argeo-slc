@@ -9,7 +9,14 @@
 	<service ref="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 	<service ref="agentService" interface="org.argeo.slc.services.AgentService" />
 	<service ref="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
-	<service ref="attachmentsStorage" interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
+	<service ref="attachmentsStorage">
+		<interfaces>
+			<beans:value>org.argeo.slc.core.attachment.AttachmentsStorage
+			</beans:value>
+			<beans:value>org.argeo.slc.core.attachment.AttachmentUploader
+			</beans:value>
+		</interfaces>
+	</service>
 
 	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
 		id="testResultDao" />
