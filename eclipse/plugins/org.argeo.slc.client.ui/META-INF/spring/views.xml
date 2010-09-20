@@ -14,6 +14,11 @@
 		scope="prototype">
 		<property name="testResultCollectionDao" ref="testResultCollectionDao" />
 	</bean>
+	
+	<bean id="org.argeo.slc.client.ui.SlcExecutionListView" class="org.argeo.slc.client.ui.views.SlcExecutionListView"
+		scope="prototype">
+		<property name="slcExecutionDao" ref="slcExecutionDao" />
+	</bean>
 
 	<bean id="executionModulesContentProvider"
 		class="org.argeo.slc.client.ui.views.ExecutionModulesContentProvider">

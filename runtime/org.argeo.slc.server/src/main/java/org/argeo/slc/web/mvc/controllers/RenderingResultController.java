@@ -32,8 +32,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class RenderingResultController {
-	// private static final Log log = LogFactory
-	// .getLog(RenderingResultController.class);
+	// private static final Log log =
+	// LogFactory.getLog(RenderingResultController.class);
 
 	public final static String MODELKEY_RESULT = "result";
 

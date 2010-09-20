@@ -16,6 +16,12 @@
          name="Results"
          restorable="true">
    </view>
+   <view
+         id="org.argeo.slc.client.ui.SlcExecutionListView"
+         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+         name="Slc Executions"
+         restorable="true">
+   </view>
     </extension>
 
    <extension
@@ -41,6 +47,14 @@
                id="org.argeo.slc.client.ui.actions.RefreshAction">
          </action>
       </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.argeo.slc.client.ui.commands.RefreshHandler"
+            id="org.argeo.slc.client.ui.RefreshResultList"
+            name="RefreshResultList ">
+      </command>
    </extension>
 
 </plugin>

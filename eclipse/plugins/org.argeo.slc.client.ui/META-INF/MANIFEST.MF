@@ -7,24 +7,29 @@ Bundle-Activator: org.argeo.slc.client.ui.ClientUiPlugin
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.core.runtime;resolution:=optional,
- com.springsource.org.hibernate;resolution:=optional
+ com.springsource.org.hibernate;resolution:=optional,
+ org.argeo.slc.specs
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.argeo.slc.client.ui,
  org.argeo.slc.client.ui.actions,
+ org.argeo.slc.client.ui.services,
  org.argeo.slc.client.ui.views
 Import-Package: org.apache.commons.logging;version="1.1.1",
  org.argeo.eclipse.spring,
  org.argeo.eclipse.ui,
  org.argeo.slc.build;version="0.13.0.SNAPSHOT-r3685",
+ org.argeo.slc.core.attachment,
  org.argeo.slc.core.runtime;version="0.13.0.SNAPSHOT-r3701",
  org.argeo.slc.core.test.tree;version="0.13.0.SNAPSHOT-r3768",
  org.argeo.slc.dao.test.tree;version="0.13.0.SNAPSHOT-r3768",
  org.argeo.slc.deploy;version="0.13.0.SNAPSHOT-r3724",
  org.argeo.slc.execution;version="0.13.0.SNAPSHOT-r3685",
+ org.argeo.slc.msg.test.tree,
  org.argeo.slc.process;version="0.13.0.SNAPSHOT-r3685",
  org.argeo.slc.runtime;version="0.13.0.SNAPSHOT-r3685",
  org.argeo.slc.services;version="0.13.0.SNAPSHOT-r3773",
+ org.argeo.slc.test,
  org.hibernate.hql.ast,
  org.hibernate.jdbc,
  org.springframework.beans.factory,
