@@ -1,7 +1,5 @@
 package org.argeo.slc.client.ui.views;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.test.tree.ResultAttributes;
@@ -64,34 +62,32 @@ public class ResultListView extends ViewPart {
 	}
 
 	protected class ViewContentProvider implements IStructuredContentProvider {
-		private List<ResultAttributes> lst;
+		// private List<ResultAttributes> lst;
 
-		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-			if (arg2 instanceof List) {
-				lst = (List<ResultAttributes>) arg2;
-				log.trace("result count: " + lst.size());
-			}
+			// if (arg2 instanceof List) {
+			// lst = (List<ResultAttributes>) arg2;
+			// log.trace("result count: " + lst.size());
+			// }
 		}
 
 		public void dispose() {
 		}
 
 		public Object[] getElements(Object obj) {
-			if (lst == null)
-				return new Object[0];
-			else
-				return lst.toArray();
-			// return
-			// testResultCollectionDao.listResultAttributes(null).toArray();
+			// if (lst == null)
+			// return new Object[0];
+			// else
+			// return lst.toArray();
+			return testResultCollectionDao.listResultAttributes(null).toArray();
 		}
 	}
 
 	protected class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
-			ResultAttributes ra = (ResultAttributes)obj;
-			switch(index){
+			ResultAttributes ra = (ResultAttributes) obj;
+			switch (index) {
 			case 0:
 				return getText(ra.getCloseDate());
 			case 1:
@@ -112,10 +108,11 @@ public class ResultListView extends ViewPart {
 
 	public void retrieveResults() {
 		try {
-			List<ResultAttributes> lst = testResultCollectionDao
-					.listResultAttributes(null);
-			log.info("result count: " + lst.size());
-			viewer.setInput(lst);
+			// List<ResultAttributes> lst = testResultCollectionDao
+			// .listResultAttributes(null);
+			// log.info("result count: " + lst.size());
+			// viewer.setInput(lst);
+			viewer.refresh();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
