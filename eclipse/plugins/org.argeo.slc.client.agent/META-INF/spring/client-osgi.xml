@@ -6,8 +6,10 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<reference id="testResultCollectionDao"
-		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao" />
-	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
-	<list id="slcAgents" interface="org.argeo.slc.runtime.SlcAgent" />
+	<reference id="modulesManager"
+		interface="org.argeo.slc.execution.ExecutionModulesManager" />
+
+	<service ref="slcAgentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
+	<service ref="slcAgent" interface="org.argeo.slc.runtime.SlcAgent" />
+
 </beans:beans>

@@ -1,6 +1,8 @@
 package org.argeo.slc.client.ui.views;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -19,7 +21,7 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 	private final static Log log = LogFactory
 			.getLog(ExecutionModulesContentProvider.class);
 
-	private SlcAgent slcAgent;
+	private List<SlcAgent> slcAgents;
 
 	public Object[] getChildren(Object parent) {
 		if (parent instanceof ExecutionModuleNode) {
@@ -53,9 +55,11 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 		} else if (parent instanceof FlowNode) {
 			return new Object[0];
 		} else {
-			log.trace(parent);
-			Object[] arr = { new AgentNode(slcAgent) };
-			return arr;
+			List<AgentNode> agentNodes = new ArrayList<AgentNode>();
+			for (SlcAgent slcAgent : slcAgents) {
+				agentNodes.add(new AgentNode(slcAgent));
+			}
+			return agentNodes.toArray();
 		}
 	}
 
@@ -87,8 +91,8 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 		return getChildren(parent);
 	}
 
-	public void setSlcAgent(SlcAgent slcAgent) {
-		this.slcAgent = slcAgent;
+	public void setSlcAgents(List<SlcAgent> slcAgents) {
+		this.slcAgents = slcAgents;
 	}
 
 	public class AgentNode extends TreeParent {

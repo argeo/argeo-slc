@@ -147,6 +147,7 @@
       <plugin id="org.argeo.slc.agent.ext.bsf" fragment="true"/>
       <plugin id="org.argeo.slc.agent.ext.jdbc" fragment="true"/>
       <plugin id="org.argeo.slc.agent.ext.xalan" fragment="true"/>
+      <plugin id="org.argeo.slc.client.agent"/>
       <plugin id="org.argeo.slc.client.rcp"/>
       <plugin id="org.argeo.slc.client.ui"/>
       <plugin id="org.argeo.slc.core"/>
@@ -213,6 +214,7 @@
       <plugin id="org.argeo.security.manager.ldap" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.security.services" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.agent" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.slc.client.agent" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.ui" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.demo.ant" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.demo.basic" autoStart="true" startLevel="0" />

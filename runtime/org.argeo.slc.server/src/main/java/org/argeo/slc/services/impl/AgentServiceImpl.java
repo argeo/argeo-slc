@@ -106,7 +106,7 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 					agentIds.add(ad.getUuid());
 
 				if (log.isTraceEnabled())
-					log.debug("Ping " + agentIds.size() + " agent.");
+					log.trace("Ping " + agentIds.size() + " agent(s).");
 				for (String agentId : agentIds) {
 					SlcAgent agent = agentFactory.getAgent(agentId);
 					if (!agent.ping()) {

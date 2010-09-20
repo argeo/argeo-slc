@@ -17,9 +17,7 @@
 
 	<bean id="executionModulesContentProvider"
 		class="org.argeo.slc.client.ui.views.ExecutionModulesContentProvider">
-		<property name="slcAgent" ref="slcAgent" />
+		<property name="slcAgents" ref="slcAgents" />
 	</bean>
-	<bean id="slcAgent" class="org.argeo.slc.core.runtime.DefaultAgent"
-		p:modulesManager-ref="modulesManager" />
 
 </beans>

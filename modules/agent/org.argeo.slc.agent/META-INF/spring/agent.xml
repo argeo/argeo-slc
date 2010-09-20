@@ -22,14 +22,4 @@
 	</bean>
 
 	<bean id="treeTestResultLogger" class="org.argeo.slc.core.test.tree.TreeTestResultLogger" />
-
-	<!-- Temporary -->
-	<bean id="slcAgentFactory" class="org.argeo.slc.core.runtime.SimpleAgentFactory">
-		<property name="agents">
-			<list>
-			</list>
-		</property>
-	</bean>
-
-
 </beans>

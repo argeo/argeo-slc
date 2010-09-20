@@ -13,6 +13,7 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>org.argeo.slc.client.ui</module>
+		<module>org.argeo.slc.client.agent</module>
 		<module>org.argeo.slc.client.rcp</module>
 	</modules>
 	<build>
