@@ -1,5 +1,7 @@
 package org.argeo.slc.client.ui.views;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.test.tree.ResultAttributes;
@@ -61,7 +63,7 @@ public class ResultListView extends ViewPart {
 		return table;
 	}
 
-	protected class ViewContentProvider implements IStructuredContentProvider {
+	protected static class ViewContentProvider implements IStructuredContentProvider {
 		// private List<ResultAttributes> lst;
 
 		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
@@ -74,12 +76,19 @@ public class ResultListView extends ViewPart {
 		public void dispose() {
 		}
 
+		@SuppressWarnings("unchecked")
 		public Object[] getElements(Object obj) {
 			// if (lst == null)
 			// return new Object[0];
 			// else
 			// return lst.toArray();
-			return testResultCollectionDao.listResultAttributes(null).toArray();
+			if (obj instanceof List) {
+				return ((List<ResultAttributes>) obj).toArray();
+			} else {
+				return new Object[0];
+			}
+			// return
+			// testResultCollectionDao.listResultAttributes(null).toArray();
 		}
 	}
 
@@ -108,11 +117,12 @@ public class ResultListView extends ViewPart {
 
 	public void retrieveResults() {
 		try {
-			// List<ResultAttributes> lst = testResultCollectionDao
-			// .listResultAttributes(null);
-			// log.info("result count: " + lst.size());
-			// viewer.setInput(lst);
-			viewer.refresh();
+			List<ResultAttributes> lst = testResultCollectionDao
+					.listResultAttributes(null);
+			if (log.isTraceEnabled())
+				log.trace("Result attributes count: " + lst.size());
+			viewer.setInput(lst);
+			// viewer.refresh();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
