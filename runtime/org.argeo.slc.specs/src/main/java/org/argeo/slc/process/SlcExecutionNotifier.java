@@ -19,11 +19,13 @@ package org.argeo.slc.process;
 import java.util.List;
 
 public interface SlcExecutionNotifier {
+	@Deprecated
 	public void newExecution(SlcExecution slcExecution);
 
 	public void addSteps(SlcExecution slcExecution,
 			List<SlcExecutionStep> additionalSteps);
 
+	@Deprecated
 	public void updateExecution(SlcExecution slcExecution);
 
 	public void updateStatus(SlcExecution slcExecution, String oldStatus,

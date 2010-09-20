@@ -2,8 +2,10 @@ package org.argeo.slc.client.ui.views;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.argeo.slc.client.ui.ClientUiPlugin;
+import org.argeo.slc.client.ui.controllers.ProcessController;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
@@ -27,6 +29,8 @@ public class ExecutionModulesView extends ViewPart {
 	private TreeViewer viewer;
 
 	private IContentProvider contentProvider;
+
+	private ProcessController processController;
 
 	class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
@@ -89,9 +93,10 @@ public class ExecutionModulesView extends ViewPart {
 					realizedFlows.add(realizedFlow);
 
 					SlcExecution slcExecution = new SlcExecution();
+					slcExecution.setUuid(UUID.randomUUID().toString());
 					slcExecution.setRealizedFlows(realizedFlows);
-					fn.getExecutionModuleNode().getAgentNode().getAgent()
-							.runSlcExecution(slcExecution);
+					processController.execute(fn.getExecutionModuleNode()
+							.getAgentNode().getAgent(), slcExecution);
 				}
 			}
 		});
@@ -110,6 +115,10 @@ public class ExecutionModulesView extends ViewPart {
 
 	public void setContentProvider(IContentProvider contentProvider) {
 		this.contentProvider = contentProvider;
+	}
+
+	public void setProcessController(ProcessController processController) {
+		this.processController = processController;
 	}
 
 }

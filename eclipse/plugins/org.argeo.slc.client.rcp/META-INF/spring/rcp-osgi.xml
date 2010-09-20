@@ -7,9 +7,14 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
+	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
+
+	<reference id="modulesManager"
+		interface="org.argeo.slc.execution.ExecutionModulesManager" />
 
 	<service ref="testManagerServiceAdapter"
 		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
+	<service ref="slcExecutionServiceAdapter" interface="org.argeo.slc.process.SlcExecutionNotifier" />
 
 	<!-- Bundles to start -->
 	<bundle id="security.manager.ldap" symbolic-name="org.argeo.security.manager.ldap"

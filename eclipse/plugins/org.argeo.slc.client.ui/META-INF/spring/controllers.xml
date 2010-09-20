@@ -4,12 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="testManagerServiceAdapter" class="org.argeo.slc.services.impl.TestManagerServiceAdapter">
-		<property name="testManagerService" ref="testManagerService" />
-	</bean>
-	<bean id="slcExecutionServiceAdapter" class="org.argeo.slc.services.impl.SlcExecutionServiceAdapter">
+	<bean id="processController" class="org.argeo.slc.client.ui.controllers.ProcessController">
 		<property name="slcExecutionService" ref="slcExecutionService" />
 	</bean>
-
-
 </beans>

@@ -7,6 +7,7 @@
 	<bean id="org.argeo.slc.client.ui.executionModulesView" class="org.argeo.slc.client.ui.views.ExecutionModulesView"
 		scope="prototype">
 		<property name="contentProvider" ref="executionModulesContentProvider" />
+		<property name="processController" ref="processController" />
 	</bean>
 
 	<bean id="org.argeo.slc.client.ui.resultListView" class="org.argeo.slc.client.ui.views.ResultListView"
@@ -18,15 +19,7 @@
 		class="org.argeo.slc.client.ui.views.ExecutionModulesContentProvider">
 		<property name="slcAgent" ref="slcAgent" />
 	</bean>
-
 	<bean id="slcAgent" class="org.argeo.slc.core.runtime.DefaultAgent"
 		p:modulesManager-ref="modulesManager" />
-		
-	<bean id="slcAgentFactory" class="org.argeo.slc.core.runtime.SimpleAgentFactory">
-		<property name="agents">
-			<list>
-				<ref bean="slcAgent" />
-			</list>
-		</property>
-	</bean>
+
 </beans>

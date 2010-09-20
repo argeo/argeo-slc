@@ -24,8 +24,9 @@ Import-Package: org.apache.commons.logging;version="1.1.1",
  org.argeo.slc.execution;version="0.13.0.SNAPSHOT-r3685",
  org.argeo.slc.process;version="0.13.0.SNAPSHOT-r3685",
  org.argeo.slc.runtime;version="0.13.0.SNAPSHOT-r3685",
+ org.argeo.slc.services;version="0.13.0.SNAPSHOT-r3773",
+ org.hibernate.hql.ast,
+ org.hibernate.jdbc,
  org.springframework.beans.factory,
  org.springframework.context,
- org.springframework.core.io.support,
- org.hibernate.jdbc,
- org.hibernate.hql.ast
+ org.springframework.core.io.support

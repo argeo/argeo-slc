@@ -10,6 +10,5 @@
 		interface="org.argeo.slc.execution.ExecutionModulesManager" />
 	<reference id="testResultCollectionDao"
 		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao" />
-
-	<service ref="slcAgentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
+	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
 </beans:beans>

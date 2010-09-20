@@ -20,4 +20,9 @@
 	<list id="executionModulesListeners" interface="org.argeo.slc.execution.ExecutionModulesListener"
 		cardinality="0..N" />
 
+
+
+	<!-- Temporary -->
+	<service ref="slcAgentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
+
 </beans:beans>
