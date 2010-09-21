@@ -15,9 +15,14 @@
 		<property name="testResultCollectionDao" ref="testResultCollectionDao" />
 	</bean>
 
-	<bean id="org.argeo.slc.client.ui.ProcessListView" class="org.argeo.slc.client.ui.views.ProcessListView"
+	<bean id="org.argeo.slc.client.ui.processListView" class="org.argeo.slc.client.ui.views.ProcessListView"
 		scope="prototype">
 		<property name="slcExecutionDao" ref="slcExecutionDao" />
+	</bean>
+
+	<bean id="org.argeo.slc.client.ui.processBuilderView" class="org.argeo.slc.client.ui.views.ProcessBuilderView"
+		scope="prototype">
+		<property name="processController" ref="processController" />
 	</bean>
 
 	<bean id="executionModulesContentProvider"

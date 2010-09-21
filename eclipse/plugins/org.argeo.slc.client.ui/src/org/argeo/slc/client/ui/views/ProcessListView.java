@@ -24,7 +24,7 @@ public class ProcessListView extends ViewPart {
 	private final static Log log = LogFactory
 			.getLog(ProcessListView.class);
 
-	public static final String ID = "org.argeo.slc.client.ui.ProcessListView";
+	public static final String ID = "org.argeo.slc.client.ui.processListView";
 
 	private TableViewer viewer;
 
