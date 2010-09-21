@@ -72,12 +72,12 @@ public class ProcessBuilderView extends ViewPart {
 		table.setHeaderVisible(true);
 
 		TableColumn column = new TableColumn(table, SWT.LEFT, 0);
-		column.setText("Date");
+		column.setText("Module");
 		column.setWidth(200);
 
 		column = new TableColumn(table, SWT.LEFT, 1);
-		column.setText("UUID");
-		column.setWidth(300);
+		column.setText("Flow");
+		column.setWidth(200);
 
 		return table;
 	}
