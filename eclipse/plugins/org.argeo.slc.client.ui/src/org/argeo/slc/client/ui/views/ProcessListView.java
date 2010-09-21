@@ -20,11 +20,11 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
-public class SlcExecutionListView extends ViewPart {
+public class ProcessListView extends ViewPart {
 	private final static Log log = LogFactory
-			.getLog(SlcExecutionListView.class);
+			.getLog(ProcessListView.class);
 
-	public static final String ID = "org.argeo.slc.client.ui.SlcExecutionListView";
+	public static final String ID = "org.argeo.slc.client.ui.ProcessListView";
 
 	private TableViewer viewer;
 

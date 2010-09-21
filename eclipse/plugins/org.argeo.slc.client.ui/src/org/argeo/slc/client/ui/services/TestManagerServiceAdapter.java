@@ -1,7 +1,5 @@
 package org.argeo.slc.client.ui.services;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.core.attachment.Attachment;
@@ -18,8 +16,8 @@ import org.eclipse.ui.handlers.IHandlerService;
 
 /** In memory access to a test manager service */
 public class TestManagerServiceAdapter implements TreeTestResultListener {
-	private static final Log log = LogFactory
-			.getLog(TestManagerServiceAdapter.class);
+	// private static final Log log = LogFactory
+	// .getLog(TestManagerServiceAdapter.class);
 
 	private Boolean onlyOnClose = false;
 

@@ -2,7 +2,7 @@ package org.argeo.slc.client.rcp;
 
 import org.argeo.slc.client.ui.views.ExecutionModulesView;
 import org.argeo.slc.client.ui.views.ResultListView;
-import org.argeo.slc.client.ui.views.SlcExecutionListView;
+import org.argeo.slc.client.ui.views.ProcessListView;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -22,7 +22,7 @@ public class Perspective implements IPerspectiveFactory {
 		topRight.addView(ResultListView.ID);
 		IFolderLayout bottomRight = layout.createFolder("bottomRight",
 				IPageLayout.BOTTOM, 0.5f, "topRight");
-		bottomRight.addView(SlcExecutionListView.ID);
+		bottomRight.addView(ProcessListView.ID);
 		// layout.addStandaloneView(SlcExecutionListView.ID, false,
 		// IPageLayout.BOTTOM, 0.5f, editorArea);
 	}
