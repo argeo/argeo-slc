@@ -63,7 +63,8 @@ public class ResultListView extends ViewPart {
 		return table;
 	}
 
-	protected static class ViewContentProvider implements IStructuredContentProvider {
+	protected static class ViewContentProvider implements
+			IStructuredContentProvider {
 		// private List<ResultAttributes> lst;
 
 		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
@@ -129,6 +130,7 @@ public class ResultListView extends ViewPart {
 		}
 	}
 
+	// Ioc
 	public void setTestResultCollectionDao(
 			TreeTestResultCollectionDao testResultCollectionDao) {
 		this.testResultCollectionDao = testResultCollectionDao;

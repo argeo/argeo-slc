@@ -6,12 +6,19 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<!--  DAO -->
+	<!-- DAO -->
 	<reference id="testResultCollectionDao"
 		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao" />
 	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao" />
 
-	<!--  Services -->
+	<!-- Services -->
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
+
+	<!-- Session (to insure transactional management) -->
+	<!--  <reference id="sessionFactory" interface="org.hibernate.SessionFactory" /> -->
+
+	<!-- TODO : what is it for ? -->
 	<list id="slcAgents" interface="org.argeo.slc.runtime.SlcAgent" />
+
+
 </beans:beans>
