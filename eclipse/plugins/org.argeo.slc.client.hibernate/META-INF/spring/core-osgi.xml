@@ -8,5 +8,5 @@
 
 	<!-- DAO <reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao" 
 		/> -->
-	<service id="processListTableContent" interface="org.argeo.slc.client.core.TableContent" />
+	<service ref="processListTableContent" interface="org.argeo.slc.client.core.TableContent" />
 </beans:beans>
