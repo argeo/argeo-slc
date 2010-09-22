@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="processListTableContent" class="org.argeo.slc.client.core.ProcessListTableContent" />
+	<bean id="processListTableContent" class="org.argeo.slc.client.core.ProcessListTableContent">
+		<property name="slcExecutionDao" ref="slcExecutionDao" />
+	</bean>
 
 </beans>

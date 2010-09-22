@@ -1,5 +1,6 @@
 package org.argeo.slc.client.ui.commands;
 
+import org.argeo.slc.client.ui.views.ProcessListView;
 import org.argeo.slc.client.ui.views.ResultListView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -13,10 +14,10 @@ public class RefreshHandler extends AbstractHandler {
 				.getActiveWorkbenchWindow(event).getActivePage().findView(
 						ResultListView.ID);
 		view.retrieveResults();
-		// ProcessListView pView = (ProcessListView) HandlerUtil
-		// .getActiveWorkbenchWindow(event).getActivePage().findView(
-		// ProcessListView.ID);
-		// pView.retrieveResults();
+		ProcessListView pView = (ProcessListView) HandlerUtil
+				.getActiveWorkbenchWindow(event).getActivePage()
+				.findView(ProcessListView.ID);
+		pView.retrieveResults();
 		return null;
 	}
 

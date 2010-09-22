@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.client.core.TableContent;
-import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.process.SlcExecution;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -28,8 +27,10 @@ public class ProcessListView extends ViewPart {
 	private TableViewer viewer;
 
 	// IoC
-	private SlcExecutionDao slcExecutionDao;
 	private TableContent tableContent;
+
+	// tests
+	private List<SlcExecution> slcExecutions;
 
 	public void createPartControl(Composite parent) {
 		Table table = createTable(parent);
@@ -96,20 +97,7 @@ public class ProcessListView extends ViewPart {
 	protected class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
-			SlcExecution se = (SlcExecution) obj;
-			// switch (index) {
-			//
-			// case 0:
-			// return getText(se.getStartDate());
-			// case 1:
-			// return se.getHost();
-			// case 2:
-			// return se.getUuid();
-			// case 3:
-			// return se.currentStep().getType();
-			// }
-			// return getText(obj);
-			return tableContent.getLabel(null, 0);
+			return tableContent.getLabel(obj, index);
 		}
 
 		public Image getColumnImage(Object obj, int index) {
@@ -124,11 +112,8 @@ public class ProcessListView extends ViewPart {
 
 	public void retrieveResults() {
 		try {
-			List<SlcExecution> lst = slcExecutionDao.listSlcExecutions();
-
-			if (log.isTraceEnabled())
-				log.trace("Slc Execution count: " + lst.size());
-			viewer.setInput(lst);
+			tableContent.setContent();
+			viewer.setInput(tableContent.getContent());
 			// viewer.refresh();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -136,8 +121,9 @@ public class ProcessListView extends ViewPart {
 		}
 	}
 
-	public void setSlcExecutionDao(SlcExecutionDao slcExecutionDao) {
-		this.slcExecutionDao = slcExecutionDao;
+	// IoC
+	public void setTableContent(TableContent tableContent) {
+		this.tableContent = tableContent;
 	}
 
 }

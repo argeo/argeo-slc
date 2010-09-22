@@ -6,7 +6,10 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<!-- DAO <reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao" 
-		/> -->
+	<!-- References Needed -->
+	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao"
+		context-class-loader="null" />
+
+	<!-- Services exposed by the bundle -->
 	<service ref="processListTableContent" interface="org.argeo.slc.client.core.TableContent" />
 </beans:beans>

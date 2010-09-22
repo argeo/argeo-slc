@@ -9,8 +9,7 @@
 	<!-- DAO -->
 	<reference id="testResultCollectionDao"
 		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao" />
-	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao" />
-
+	
 	<!-- Services -->
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
 	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />

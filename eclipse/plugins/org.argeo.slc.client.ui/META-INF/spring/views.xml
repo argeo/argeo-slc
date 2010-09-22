@@ -17,7 +17,7 @@
 
 	<bean id="org.argeo.slc.client.ui.processListView" class="org.argeo.slc.client.ui.views.ProcessListView"
 		scope="prototype">
-		<property name="slcExecutionDao" ref="slcExecutionDao" />
+		<property name="tableContent" ref="processListTableContent" />
 		<!-- <property name="sessionFactory" ref="sessionFactory" /> -->
 	</bean>
 
