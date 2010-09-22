@@ -8,7 +8,7 @@
 
 	<!-- References Needed -->
 	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao"
-		context-class-loader="null" />
+	context-class-loader="service-provider" />
 
 	<!-- Services exposed by the bundle -->
 	<service ref="processListTableContent" interface="org.argeo.slc.client.core.TableContent" />
