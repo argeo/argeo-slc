@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.client.core.TableContent;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.process.SlcExecution;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -26,7 +27,9 @@ public class ProcessListView extends ViewPart {
 
 	private TableViewer viewer;
 
+	// IoC
 	private SlcExecutionDao slcExecutionDao;
+	private TableContent tableContent;
 
 	public void createPartControl(Composite parent) {
 		Table table = createTable(parent);
@@ -94,18 +97,19 @@ public class ProcessListView extends ViewPart {
 			ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
 			SlcExecution se = (SlcExecution) obj;
-			switch (index) {
-
-			case 0:
-				return getText(se.getStartDate());
-			case 1:
-				return se.getHost();
-			case 2:
-				return se.getUuid();
-			case 3:
-				return se.currentStep().getType();
-			}
-			return getText(obj);
+			// switch (index) {
+			//
+			// case 0:
+			// return getText(se.getStartDate());
+			// case 1:
+			// return se.getHost();
+			// case 2:
+			// return se.getUuid();
+			// case 3:
+			// return se.currentStep().getType();
+			// }
+			// return getText(obj);
+			return tableContent.getLabel(null, 0);
 		}
 
 		public Image getColumnImage(Object obj, int index) {

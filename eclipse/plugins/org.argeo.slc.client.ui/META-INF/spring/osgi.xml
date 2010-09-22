@@ -15,10 +15,14 @@
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
 
 	<!-- Session (to insure transactional management) -->
-	<!--  <reference id="sessionFactory" interface="org.hibernate.SessionFactory" /> -->
+	<!-- <reference id="sessionFactory" interface="org.hibernate.SessionFactory" 
+		/> -->
 
 	<!-- TODO : what is it for ? -->
 	<list id="slcAgents" interface="org.argeo.slc.runtime.SlcAgent" />
 
+	<!-- Proxy object to try solving transaction & session problem caused by 
+		using hibernate -->
+	<reference id="processListTableContent" interface="org.argeo.slc.client.core.TableContent" />
 
 </beans:beans>
