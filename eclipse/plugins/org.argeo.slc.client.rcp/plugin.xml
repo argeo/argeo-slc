@@ -59,6 +59,18 @@
             name="Exit">
       </command>
    </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.argeo.slc.client.rcp.application"
+            name="SLC">
+         <property
+               name="windowImages"
+               value="icons/argeo-icon-256.png">
+         </property>
+      </product>
+   </extension>
    <!-- <extension
          id="product"
          point="org.eclipse.core.runtime.products">

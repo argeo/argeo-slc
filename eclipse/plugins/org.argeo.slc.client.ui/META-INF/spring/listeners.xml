@@ -5,7 +5,7 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="testManagerServiceAdapter"
-		class="org.argeo.slc.client.ui.services.TestManagerServiceAdapter">
+		class="org.argeo.slc.client.ui.listeners.TestManagerServiceAdapter">
 		<property name="testManagerService" ref="testManagerService" />
 	</bean>
 

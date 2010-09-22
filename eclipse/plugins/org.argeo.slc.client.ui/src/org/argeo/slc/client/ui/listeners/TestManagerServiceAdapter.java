@@ -1,4 +1,4 @@
-package org.argeo.slc.client.ui.services;
+package org.argeo.slc.client.ui.listeners;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;

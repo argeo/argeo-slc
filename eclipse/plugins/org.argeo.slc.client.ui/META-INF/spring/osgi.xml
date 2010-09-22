@@ -13,6 +13,7 @@
 
 	<!-- Services -->
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
+	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 
 	<!-- Session (to insure transactional management) -->
 	<!-- <reference id="sessionFactory" interface="org.hibernate.SessionFactory" 
@@ -24,4 +25,10 @@
 	<!-- Proxy object to try solving transaction & session problem caused by 
 		using hibernate -->
 	<reference id="processListTableContent" interface="org.argeo.slc.client.core.TableContent" />
+
+	<!-- Listeners used by the execution modules -->
+	<service ref="testManagerServiceAdapter"
+		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
+	<service ref="slcExecutionServiceAdapter" interface="org.argeo.slc.process.SlcExecutionNotifier" />
+
 </beans:beans>
