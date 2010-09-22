@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.test.tree.ResultAttributes;
 import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.argeo.slc.process.SlcExecution;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -21,8 +20,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 
 public class ProcessListView extends ViewPart {
-	private final static Log log = LogFactory
-			.getLog(ProcessListView.class);
+	private final static Log log = LogFactory.getLog(ProcessListView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.processListView";
 
@@ -85,7 +83,7 @@ public class ProcessListView extends ViewPart {
 		@SuppressWarnings("unchecked")
 		public Object[] getElements(Object obj) {
 			if (obj instanceof List) {
-				return ((List<ResultAttributes>) obj).toArray();
+				return ((List<SlcExecution>) obj).toArray();
 			} else {
 				return new Object[0];
 			}
@@ -95,17 +93,17 @@ public class ProcessListView extends ViewPart {
 	protected class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
-			SlcExecution ra = (SlcExecution) obj;
+			SlcExecution se = (SlcExecution) obj;
 			switch (index) {
 
 			case 0:
-				return getText(ra.getStartDate());
+				return getText(se.getStartDate());
 			case 1:
-				return ra.getHost();
+				return se.getHost();
 			case 2:
-				return ra.getUuid();
+				return se.getUuid();
 			case 3:
-				return ra.currentStep().getType();
+				return se.currentStep().getType();
 			}
 			return getText(obj);
 		}
@@ -125,7 +123,7 @@ public class ProcessListView extends ViewPart {
 			List<SlcExecution> lst = slcExecutionDao.listSlcExecutions();
 
 			if (log.isTraceEnabled())
-				log.trace("Result attributes count: " + lst.size());
+				log.trace("Slc Execution count: " + lst.size());
 			viewer.setInput(lst);
 			// viewer.refresh();
 		} catch (Exception e) {
