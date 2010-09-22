@@ -1,5 +1,6 @@
 package org.argeo.slc.client.core;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,7 +13,7 @@ public class ProcessListTableContent implements TableContent {
 	private static final Log log = LogFactory
 			.getLog(ProcessListTableContent.class);
 
-	private List<SlcExecution> slcExecutions;
+	private List<SlcExecution> slcExecutions = new ArrayList<SlcExecution>();
 
 	// IoC
 	private SlcExecutionDao slcExecutionDao;
@@ -29,24 +30,38 @@ public class ProcessListTableContent implements TableContent {
 	}
 
 	@Override
-	public String getLabel(Object o, int i) {
-		// TODO Auto-generated method stub
+	public synchronized String getLabel(Object o, int i) {
+		SlcExecution se = (SlcExecution) o;
+		switch (i) {
+
+		case 0:
+			return "DATE";
+		case 1:
+			return se.getHost();
+		case 2:
+			return se.getUuid();
+		case 3:
+			return "TYPE";
+		}
 		return "test";
 	}
 
-	public List<SlcExecution> getContent() {
+	public synchronized List<SlcExecution> getContent() {
 		return this.slcExecutions;
 	}
 
-	public void setContent() {
+	public synchronized void setContent() {
+		// Thread.currentThread().setContextClassLoader(null);
 		List<SlcExecution> lst = slcExecutionDao.listSlcExecutions();
 		if (lst.get(0) != null) {
-			log.debug(lst.get(0).getStartDate());
+			// log.debug(lst.get(0).getStartDate());
 			log.debug(lst.get(0).getHost());
 			log.debug(lst.get(0).getStatus());
 			log.debug(lst.get(0).getUuid());
 		}
-		Iterator<SlcExecution> it = slcExecutions.iterator();
+
+		slcExecutions.clear();
+		Iterator<SlcExecution> it = lst.iterator();
 		while (it.hasNext()) {
 			slcExecutions.add(it.next());
 		}
