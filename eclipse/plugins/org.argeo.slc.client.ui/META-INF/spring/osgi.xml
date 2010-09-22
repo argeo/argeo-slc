@@ -24,5 +24,4 @@
 	<!-- Proxy object to try solving transaction & session problem caused by 
 		using hibernate -->
 	<reference id="processListTableContent" interface="org.argeo.slc.client.core.TableContent" />
-
 </beans:beans>
