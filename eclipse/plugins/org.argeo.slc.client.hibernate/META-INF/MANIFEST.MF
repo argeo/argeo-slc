@@ -3,5 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hibernate Interface for RCP Client
 Bundle-SymbolicName: org.argeo.slc.client.hibernate
 Bundle-Version: 1.0.0.qualifier
-Import-Package: org.argeo.slc.client.core,
- org.argeo.slc.dao.process;version="0.13.0.SNAPSHOT-r3777"
+Import-Package: org.aopalliance.aop;version="1.0.0",
+ org.argeo.slc.client.core,
+ org.argeo.slc.dao.process;version="0.13.0.SNAPSHOT-r3777",
+ org.springframework.aop;version="2.5.6.SEC01",
+ org.springframework.aop.framework;version="2.5.6.SEC01",
+ org.springframework.transaction;version="2.5.6.SEC01"

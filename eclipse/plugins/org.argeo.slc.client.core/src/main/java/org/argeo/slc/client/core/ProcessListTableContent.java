@@ -19,14 +19,8 @@ public class ProcessListTableContent implements TableContent {
 	private SlcExecutionDao slcExecutionDao;
 
 	@Override
-	public SlcExecution getLine(int i) {
-
-		// SlcExecution se = new SlcExecution();
-		// se.setHost("Marshall");
-		// se.setUuid("a very long uuid");
-		// se.setStatus(SlcExecution.STATUS_RUNNING);
-		// return se;
-		return null;
+	public SlcExecution getLine(int index) {
+		return slcExecutions.get(index);
 	}
 
 	@Override
@@ -35,13 +29,13 @@ public class ProcessListTableContent implements TableContent {
 		switch (i) {
 
 		case 0:
-			return "DATE";
+			return se.getStartDate().toString();
 		case 1:
 			return se.getHost();
 		case 2:
 			return se.getUuid();
 		case 3:
-			return "TYPE";
+			return se.getStatus();
 		}
 		return "test";
 	}
@@ -54,10 +48,12 @@ public class ProcessListTableContent implements TableContent {
 		// Thread.currentThread().setContextClassLoader(null);
 		List<SlcExecution> lst = slcExecutionDao.listSlcExecutions();
 		if (lst.get(0) != null) {
-			// log.debug(lst.get(0).getStartDate());
-			log.debug(lst.get(0).getHost());
-			log.debug(lst.get(0).getStatus());
-			log.debug(lst.get(0).getUuid());
+			log.debug("======================== set CONTENT =====================");
+			log.debug("Lst Size : " + lst.size());
+			log.debug("Date : " + lst.get(0).getStartDate());
+			log.debug("Host : " + lst.get(0).getHost());
+			log.debug("Status : " + lst.get(0).getStatus());
+			log.debug("UUID : " + lst.get(0).getUuid());
 		}
 
 		slcExecutions.clear();

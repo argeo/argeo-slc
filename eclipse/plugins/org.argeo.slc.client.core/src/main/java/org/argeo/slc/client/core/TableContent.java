@@ -6,9 +6,9 @@ import org.argeo.slc.process.SlcExecution;
 
 public interface TableContent {
 
-	public Object getLine(int i);
+	public Object getLine(int index);
 
-	public String getLabel(Object o, int i);
+	public String getLabel(Object o, int index);
 
 	public void setContent();
 
