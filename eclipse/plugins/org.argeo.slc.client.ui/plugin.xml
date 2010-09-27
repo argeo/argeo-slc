@@ -39,6 +39,11 @@
             id="org.argeo.slc.client.ui.RefreshResultList"
             name="RefreshResultList ">
       </command>
+      <command
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.client.ui.RefreshProcessList"
+            name="RefreshProcessList ">
+      </command>
    </extension>
    <extension
         point="org.eclipse.ui.bindings">

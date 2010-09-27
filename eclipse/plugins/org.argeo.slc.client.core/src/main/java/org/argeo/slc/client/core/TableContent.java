@@ -10,7 +10,5 @@ public interface TableContent {
 
 	public String getLabel(Object o, int index);
 
-	public void setContent();
-
 	public List<SlcExecution> getContent();
 }

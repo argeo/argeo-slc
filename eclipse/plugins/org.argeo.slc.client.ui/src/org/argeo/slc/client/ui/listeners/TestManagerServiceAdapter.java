@@ -54,17 +54,22 @@ public class TestManagerServiceAdapter implements TreeTestResultListener {
 
 		// TODO : clean this -> pb of thread && commandID hardCoded.
 		// We force the refresh of the list view.
-		ClientUiPlugin.getDefault().getWorkbench().getDisplay().syncExec(
-				new Runnable() {
+		ClientUiPlugin.getDefault().getWorkbench().getDisplay()
+				.syncExec(new Runnable() {
 					public void run() {
 						IHandlerService handlerService = (IHandlerService) ClientUiPlugin
-								.getDefault().getWorkbench().getService(
-										IHandlerService.class);
+								.getDefault().getWorkbench()
+								.getService(IHandlerService.class);
 						try {
 							handlerService
 									.executeCommand(
 											"org.argeo.slc.client.ui.RefreshResultList",
 											null);
+							handlerService
+									.executeCommand(
+											"org.argeo.slc.client.ui.RefreshProcessList",
+											null);
+
 						} catch (Exception e) {
 							e.printStackTrace();
 							throw new SlcException(
@@ -74,7 +79,7 @@ public class TestManagerServiceAdapter implements TreeTestResultListener {
 					}
 				}
 
-		);
+				);
 
 	}
 
