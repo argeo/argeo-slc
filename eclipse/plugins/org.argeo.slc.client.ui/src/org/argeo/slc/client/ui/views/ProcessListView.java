@@ -1,16 +1,10 @@
 package org.argeo.slc.client.ui.views;
 
-import java.util.List;
-
-import org.argeo.slc.client.core.TableContent;
-import org.argeo.slc.process.SlcExecution;
+import org.argeo.slc.dao.process.SlcExecutionDao;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -25,14 +19,15 @@ public class ProcessListView extends ViewPart {
 	private TableViewer viewer;
 
 	// IoC
-	private TableContent tableContent;
+	private SlcExecutionDao slcExecutionDao;
+	private ITableLabelProvider tableLabelProvider;
+	private IStructuredContentProvider structuredContentProvider;
 
 	public void createPartControl(Composite parent) {
 		Table table = createTable(parent);
 		viewer = new TableViewer(table);
-		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setContentProvider(new ViewContentProvider());
-
+		viewer.setLabelProvider(tableLabelProvider);
+		viewer.setContentProvider(structuredContentProvider);
 		viewer.setInput(getViewSite());
 	}
 
@@ -70,48 +65,26 @@ public class ProcessListView extends ViewPart {
 		return table;
 	}
 
-	protected static class ViewContentProvider implements
-			IStructuredContentProvider {
-
-		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-		}
-
-		public void dispose() {
-		}
-
-		@SuppressWarnings("unchecked")
-		public Object[] getElements(Object obj) {
-			if (obj instanceof List) {
-				return ((List<SlcExecution>) obj).toArray();
-			} else {
-				return new Object[0];
-			}
-		}
-	}
-
-	protected class ViewLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
-		public String getColumnText(Object obj, int index) {
-			return tableContent.getLabel(obj, index);
-		}
-
-		public Image getColumnImage(Object obj, int index) {
-			return null;
-		}
-
-	}
-
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
 
 	public void retrieveResults() {
-		viewer.setInput(tableContent.getContent());
+		viewer.setInput(slcExecutionDao.listSlcExecutions());
 	}
 
 	// IoC
-	public void setTableContent(TableContent tableContent) {
-		this.tableContent = tableContent;
+	public void setSlcExecutionDao(SlcExecutionDao slcExecutionDao) {
+		this.slcExecutionDao = slcExecutionDao;
+	}
+
+	public void setTableLabelProvider(ITableLabelProvider tableLabelProvider) {
+		this.tableLabelProvider = tableLabelProvider;
+	}
+
+	public void setStructuredContentProvider(
+			IStructuredContentProvider structuredContentProvider) {
+		this.structuredContentProvider = structuredContentProvider;
 	}
 
 }

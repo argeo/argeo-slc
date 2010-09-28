@@ -1,10 +1,16 @@
-package org.argeo.slc.client.ui.views;
+package org.argeo.slc.client.contentprovider;
 
 import org.argeo.slc.process.SlcExecution;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+/**
+ * @author bsinou
+ * 
+ *         Fill ProcessList view. Deported in an external bundle so that main
+ *         slc ui bundle does not depend on DB implementation.
+ */
 public class ProcessListTableLabelProvider extends LabelProvider implements
 		ITableLabelProvider {
 	public String getColumnText(Object obj, int index) {

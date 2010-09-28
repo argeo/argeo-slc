@@ -8,16 +8,10 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<!-- AOP Configuration -->
-	<aop:config>
-		<aop:pointcut id="tableContentMethods"
-			expression="execution(* 
-		org.argeo.slc.client.core.TableContent.*(..))" />
-		<aop:advisor advice-ref="daoAdvice" pointcut-ref="tableContentMethods" />
-	</aop:config>
-	<tx:advice id="daoAdvice" transaction-manager="transactionManager">
-		<tx:attributes>
-			<tx:method name="get*" propagation="REQUIRED" read-only="true" />
-			<tx:method name="*" propagation="REQUIRED" />
-		</tx:attributes>
-	</tx:advice>
+	<!-- <aop:config> <aop:pointcut id="tableContentMethods" expression="execution(* 
+		org.argeo.slc.client.core.TableContent.*(..))" /> <aop:advisor advice-ref="daoAdvice" 
+		pointcut-ref="tableContentMethods" /> </aop:config> <tx:advice id="daoAdvice" 
+		transaction-manager="transactionManager"> <tx:attributes> <tx:method name="get*" 
+		propagation="REQUIRED" read-only="true" /> <tx:method name="*" propagation="REQUIRED" 
+		/> </tx:attributes> </tx:advice> -->
 </beans>

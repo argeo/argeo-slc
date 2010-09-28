@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
+       http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<beans:description>
+		This bundle is the bridge between the slc RCP
+		client
+		and hibernate implementation of the model.
+
+		Corresponding java classes
+		are implemented
+		in the org.client.slc.client.core bundle.
+	</beans:description>
+
+	<!-- Services exposed by the bundle -->
+	<service ref="processListTableLabelProvider" interface="org.eclipse.jface.viewers.ITableLabelProvider" />
+	<service ref="processListStructuredContentProvider"
+		interface="org.eclipse.jface.viewers.IStructuredContentProvider" />
+
+
+	<!-- References Needed -->
+	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao"
+		context-class-loader="service-provider" />
+
+	<reference id="transactionManager"
+		interface="org.springframework.transaction.PlatformTransactionManager"
+		context-class-loader="service-provider" />
+
+	<reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
+
+
+</beans:beans>

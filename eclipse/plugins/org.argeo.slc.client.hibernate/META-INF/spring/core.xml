@@ -6,14 +6,15 @@
 	       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 	       ">
 
-	<bean id="processListTableContent" class="org.argeo.slc.client.core.ProcessListTableContent">
-		<property name="slcExecutionDao" ref="slcExecutionDao" />
-	</bean>
+	<bean id="processListTableLabelProvider"
+		class="org.argeo.slc.client.contentprovider.ProcessListTableLabelProvider" />
+	<bean id="processListStructuredContentProvider"
+		class="org.argeo.slc.client.contentprovider.ProcessListStructuredContentProvider" />
 
-	<!-- Events -->
+	<!-- Aspects -->
 	<aop:aspectj-autoproxy />
 	<bean id="contentProviderAspect" class="org.argeo.slc.client.aspects.ContentProviderAspect">
 		<property name="sessionFactory" ref="sessionFactory" />
-		<property name="transactionManager" ref="transactionManager" />
+		<!-- <property name="transactionManager" ref="transactionManager" /> -->
 	</bean>
 </beans>

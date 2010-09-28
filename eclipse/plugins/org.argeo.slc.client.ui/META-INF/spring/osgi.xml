@@ -6,29 +6,36 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<!-- DAO -->
-	<reference id="testResultCollectionDao"
-		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
-		context-class-loader="service-provider" />
+	<beans:description> Implements SLC specific rcp uis.
+	</beans:description>
 
-	<!-- Services -->
-	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
-	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
-
-	<!-- Session (to insure transactional management) -->
-	<!-- <reference id="sessionFactory" interface="org.hibernate.SessionFactory" 
-		/> -->
-
-	<!-- TODO : what is it for ? -->
-	<list id="slcAgents" interface="org.argeo.slc.runtime.SlcAgent" />
-
-	<!-- Proxy object to try solving transaction & session problem caused by 
-		using hibernate -->
-	<reference id="processListTableContent" interface="org.argeo.slc.client.core.TableContent" />
+	<!-- Services exposed by the current bundle -->
 
 	<!-- Listeners used by the execution modules -->
 	<service ref="testManagerServiceAdapter"
 		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
 	<service ref="slcExecutionServiceAdapter" interface="org.argeo.slc.process.SlcExecutionNotifier" />
 
+
+	<!-- References needed by the current bundle -->
+	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
+	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
+
+	<!-- DAO -->
+	<reference id="testResultCollectionDao"
+		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
+		context-class-loader="service-provider" />
+	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao"
+		context-class-loader="service-provider" />
+
+	<!-- Content providers are deported in an other bundle for UI not to depend 
+		on DB used implementation -->
+	<reference id="processListTableLabelProvider" interface="org.eclipse.jface.viewers.ITableLabelProvider"
+		bean-name="processListTableLabelProvider" />
+	<reference id="processListStructuredContentProvider"
+		interface="org.eclipse.jface.viewers.IStructuredContentProvider"
+		bean-name="processListStructuredContentProvider" />
+
+	<!-- TODO : what is it for ? -->
+	<list id="slcAgents" interface="org.argeo.slc.runtime.SlcAgent" />
 </beans:beans>

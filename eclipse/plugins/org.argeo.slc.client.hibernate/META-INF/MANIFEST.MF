@@ -3,9 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Hibernate Interface for RCP Client
 Bundle-SymbolicName: org.argeo.slc.client.hibernate
 Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.ui;resolution:=optional
 Import-Package: org.aopalliance.aop;version="1.0.0",
  org.argeo.slc.client.aspects,
- org.argeo.slc.client.core,
+ org.argeo.slc.client.contentprovider,
  org.argeo.slc.dao.process;version="0.13.0.SNAPSHOT-r3777",
  org.hibernate,
  org.hibernate.classic,
