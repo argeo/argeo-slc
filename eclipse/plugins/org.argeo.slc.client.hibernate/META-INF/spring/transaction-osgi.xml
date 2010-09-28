@@ -9,6 +9,5 @@
 	<reference id="transactionManager"
 		interface="org.springframework.transaction.PlatformTransactionManager"
 		context-class-loader="service-provider" />
-	<!-- <reference id="sessionFactory" interface="org.hibernate.SessionFactory" 
-		/> -->
+	<reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
 </beans:beans>

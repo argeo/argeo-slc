@@ -28,10 +28,11 @@ public class ProcessListTableContent implements TableContent {
 		switch (i) {
 
 		case 0:
-			// return se.getStartDate().toString();
+			return se.getStartDate().toString();
 			// Workaround to insure that we have no Lazy Init PB
-			return slcExecutionDao.getSlcExecution(se.getUuid()).getStartDate()
-					.toString();
+			// return
+			// slcExecutionDao.getSlcExecution(se.getUuid()).getStartDate()
+			// .toString();
 		case 1:
 			return se.getHost();
 		case 2:
