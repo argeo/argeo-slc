@@ -31,7 +31,8 @@
 						</Export-Package>
 						<Import-Package>*,
 							org.springframework.beans.factory.config,
-							org.springframework.osgi.context.event
+							org.springframework.osgi.context.event,
+							org.springframework.core.io
 						</Import-Package>
 					</instructions>
 				</configuration>
