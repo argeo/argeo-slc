@@ -90,20 +90,20 @@ public class ExecutionModulesView extends ViewPart {
 
 		public Image getImage(Object obj) {
 			if (obj instanceof ExecutionModulesContentProvider.AgentNode)
-				return ClientUiPlugin.getDefault().getImageRegistry().get(
-						"agent");
+				return ClientUiPlugin.getDefault().getImageRegistry()
+						.get("agent");
 			else if (obj instanceof ExecutionModulesContentProvider.ExecutionModuleNode)
-				return ClientUiPlugin.getDefault().getImageRegistry().get(
-						"executionModule");
+				return ClientUiPlugin.getDefault().getImageRegistry()
+						.get("executionModule");
 			else if (obj instanceof ExecutionModulesContentProvider.FolderNode)
-				return ClientUiPlugin.getDefault().getImageRegistry().get(
-						"folder");
+				return ClientUiPlugin.getDefault().getImageRegistry()
+						.get("folder");
 			else if (obj instanceof ExecutionModulesContentProvider.FlowNode)
-				return ClientUiPlugin.getDefault().getImageRegistry().get(
-						"flow");
+				return ClientUiPlugin.getDefault().getImageRegistry()
+						.get("flow");
 			else
-				return PlatformUI.getWorkbench().getSharedImages().getImage(
-						ISharedImages.IMG_OBJ_ELEMENT);
+				return PlatformUI.getWorkbench().getSharedImages()
+						.getImage(ISharedImages.IMG_OBJ_ELEMENT);
 		}
 	}
 
@@ -127,6 +127,8 @@ public class ExecutionModulesView extends ViewPart {
 				SlcExecution slcExecution = new SlcExecution();
 				slcExecution.setUuid(UUID.randomUUID().toString());
 				slcExecution.setRealizedFlows(realizedFlows);
+				slcExecution.setHost(fn.getExecutionModuleNode().getAgentNode()
+						.getAgent().toString());
 				processController.execute(fn.getExecutionModuleNode()
 						.getAgentNode().getAgent(), slcExecution);
 			}

@@ -29,12 +29,17 @@
 		context-class-loader="service-provider" />
 
 	<!-- Content providers are deported in an other bundle for UI not to depend 
-		on DB used implementation -->
+		on DB used implementation. We use bean-name reference because interface is 
+		not enough to choose between various been with same interface -->
 	<reference id="processListTableLabelProvider" interface="org.eclipse.jface.viewers.ITableLabelProvider"
 		bean-name="processListTableLabelProvider" />
 	<reference id="processListStructuredContentProvider"
 		interface="org.eclipse.jface.viewers.IStructuredContentProvider"
 		bean-name="processListStructuredContentProvider" />
+	<reference id="processDetailContentProvider"
+		interface="org.eclipse.jface.viewers.ITreeContentProvider" bean-name="processDetailContentProvider" />
+
+
 
 	<!-- TODO : what is it for ? -->
 	<list id="slcAgents" interface="org.argeo.slc.runtime.SlcAgent" />

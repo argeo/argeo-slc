@@ -69,6 +69,10 @@
                name="windowImages"
                value="icons/argeo-icon-256.png">
          </property>
+         <property
+               name="appName"
+               value="SLC">
+         </property>
       </product>
    </extension>
    <!-- <extension

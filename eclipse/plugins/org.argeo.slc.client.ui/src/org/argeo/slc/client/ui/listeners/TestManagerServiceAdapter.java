@@ -63,11 +63,11 @@ public class TestManagerServiceAdapter implements TreeTestResultListener {
 						try {
 							handlerService
 									.executeCommand(
-											"org.argeo.slc.client.ui.RefreshResultList",
+											"org.argeo.slc.client.ui.refreshResultList",
 											null);
 							handlerService
 									.executeCommand(
-											"org.argeo.slc.client.ui.RefreshProcessList",
+											"org.argeo.slc.client.ui.refreshProcessList",
 											null);
 
 						} catch (Exception e) {

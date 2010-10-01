@@ -9,7 +9,7 @@ public class Perspective implements IPerspectiveFactory {
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
 		layout.setEditorAreaVisible(false);
-		layout.setFixed(true);
+		layout.setFixed(false);
 
 		IFolderLayout topLeft = layout.createFolder("topLeft",
 				IPageLayout.LEFT, 0.5f, editorArea);
@@ -22,6 +22,11 @@ public class Perspective implements IPerspectiveFactory {
 		IFolderLayout bottomRight = layout.createFolder("bottomRight",
 				IPageLayout.BOTTOM, 0.6f, "topRight");
 		bottomRight.addView("org.argeo.slc.client.ui.processListView");
+		// bottomRight.addView("org.argeo.slc.client.ui.processDetailView");
+		bottomRight
+				.addPlaceholder("org.argeo.slc.client.ui.processDetailView:UUID-*");
+
+		// bottomRight.addView("org.argeo.slc.client.ui.resultListView");
 
 		IFolderLayout bottomLeft = layout.createFolder("bottomLeft",
 				IPageLayout.BOTTOM, 0.6f, "topLeft");

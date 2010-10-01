@@ -4,12 +4,16 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="org.argeo.slc.client.ui.RefreshResultList"
+	<bean id="org.argeo.slc.client.ui.refreshResultList"
 		class="org.argeo.slc.client.ui.commands.ResultListViewRefreshHandler"
 		scope="prototype">
 	</bean>
-	<bean id="org.argeo.slc.client.ui.RefreshProcessList"
+	<bean id="org.argeo.slc.client.ui.refreshProcessList"
 		class="org.argeo.slc.client.ui.commands.ProcessListViewRefreshHandler"
+		scope="prototype">
+	</bean>
+	<bean id="org.argeo.slc.client.ui.displayProcessDetails"
+		class="org.argeo.slc.client.ui.commands.ProcessDetailsDisplayHandler"
 		scope="prototype">
 	</bean>
 </beans>

@@ -24,6 +24,13 @@
          restorable="true">
    </view>
    <view
+         id="org.argeo.slc.client.ui.processDetailView"
+         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+         name="Process Details"
+         allowMultiple="true"
+         restorable="true">
+   </view>
+   <view
          id="org.argeo.slc.client.ui.processBuilderView"
          class="org.argeo.eclipse.spring.SpringExtensionFactory"
          name="Process Builder"
@@ -33,22 +40,30 @@
 
    <extension
          point="org.eclipse.ui.commands">
-       <!--defaultHandler="org.argeo.slc.client.ui.commands.RefreshHandler" -->
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            id="org.argeo.slc.client.ui.RefreshResultList"
+            id="org.argeo.slc.client.ui.refreshResultList"
             name="RefreshResultList ">
       </command>
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            id="org.argeo.slc.client.ui.RefreshProcessList"
+            id="org.argeo.slc.client.ui.refreshProcessList"
             name="RefreshProcessList ">
       </command>
+   	 <command 
+      		defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+      		id="org.argeo.slc.client.ui.displayProcessDetails"
+      		name="DisplayProcessDetails">
+   			<commandParameter
+         		id="org.argeo.slc.client.commands.processUuid"
+         		name="Process UUID">
+  	 		</commandParameter>
+	</command>
    </extension>
    <extension
         point="org.eclipse.ui.bindings">
      <key
-           commandId="org.argeo.slc.client.ui.RefreshResultList"
+           commandId="org.argeo.slc.client.ui.refreshResultList"
            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
            sequence="CTRL+R">
      </key>
@@ -63,7 +78,7 @@
                id="slcMenu"
                label="SLC">
             <command
-                  commandId="org.argeo.slc.client.ui.RefreshResultList"
+                  commandId="org.argeo.slc.client.ui.refreshResultList"
                   label="Refresh"
                   style="push"
                   tooltip="Refresh  the result list">
@@ -75,7 +90,7 @@
          <toolbar
                id="org.argeo.slc.client.ui.ResultViewToolbar">
             <command
-                  commandId="org.argeo.slc.client.ui.RefreshResultList"
+                  commandId="org.argeo.slc.client.ui.refreshResultList"
                   icon="icons/refresh.png"
                   label="Refresh"
                   style="toggle"

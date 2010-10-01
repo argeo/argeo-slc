@@ -20,7 +20,7 @@
 	<service ref="processListTableLabelProvider" interface="org.eclipse.jface.viewers.ITableLabelProvider" />
 	<service ref="processListStructuredContentProvider"
 		interface="org.eclipse.jface.viewers.IStructuredContentProvider" />
-
+	<service ref="processDetailContentProvider" interface="org.eclipse.jface.viewers.ITreeContentProvider" />
 
 	<!-- References Needed -->
 	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao"
