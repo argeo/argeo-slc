@@ -18,6 +18,13 @@
          restorable="true">
    </view>
    <view
+         id="org.argeo.slc.client.ui.resultDetailView"
+         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+         name="Result Detail"
+         allowMultiple="true"
+         restorable="true">
+   </view>
+   <view
          id="org.argeo.slc.client.ui.processListView"
          class="org.argeo.eclipse.spring.SpringExtensionFactory"
          name="Process List"
@@ -57,6 +64,15 @@
    			<commandParameter
          		id="org.argeo.slc.client.commands.processUuid"
          		name="Process UUID">
+  	 		</commandParameter>
+	</command>
+   <command 
+      		defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+      		id="org.argeo.slc.client.ui.displayResultDetails"
+      		name="DisplayResultDetails">
+   			<commandParameter
+         		id="org.argeo.slc.client.commands.resultUuid"
+         		name="Result UUID">
   	 		</commandParameter>
 	</command>
    </extension>

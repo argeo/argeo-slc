@@ -2,8 +2,6 @@ package org.argeo.slc.client.ui.views;
 
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.dao.process.SlcExecutionDao;
@@ -37,7 +35,7 @@ import org.eclipse.ui.part.ViewPart;
  * 
  */
 public class ProcessListView extends ViewPart {
-	private final static Log log = LogFactory.getLog(ProcessListView.class);
+	// private final static Log log = LogFactory.getLog(ProcessListView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.processListView";
 
@@ -108,11 +106,7 @@ public class ProcessListView extends ViewPart {
 
 			if (obj instanceof SlcExecution) {
 				SlcExecution se = (SlcExecution) obj;
-				log.debug("DOUBLE CLICK ON process d'UUID" + se.getUuid());
 
-				// ClientUiPlugin.getDefault().getWorkbench().getDisplay()
-				// .syncExec(new Runnable() {
-				// public void run() {
 				IWorkbench iw = ClientUiPlugin.getDefault().getWorkbench();
 				IHandlerService handlerService = (IHandlerService) iw
 						.getService(IHandlerService.class);
@@ -124,14 +118,13 @@ public class ProcessListView extends ViewPart {
 					Command cmd = cmdService
 							.getCommand("org.argeo.slc.client.ui.displayProcessDetails");
 
-					// log.debug("cmd : " + cmd);
 					ArrayList<Parameterization> parameters = new ArrayList<Parameterization>();
 
 					// get the parameter
 					IParameter iparam = cmd
 							.getParameter("org.argeo.slc.client.commands.processUuid");
-					Parameterization params = new Parameterization(iparam,
-							se.getUuid()); // "testUUID");//
+					Parameterization params = new Parameterization(iparam, se
+							.getUuid()); // "testUUID");//
 					parameters.add(params);
 
 					// build the parameterized command

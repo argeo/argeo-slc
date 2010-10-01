@@ -29,7 +29,8 @@ public class ContentProviderAspect {
 
 	// PointCuts
 	@Pointcut("(execution (* org.argeo.slc.client.contentprovider.ProcessListTableLabelProvider.get*(..)) && args(o,..))"
-			+ " || (execution (* org.argeo.slc.client.contentprovider.ProcessDetailContentProvider.get*(..)) && args(o,..))")
+			+ " || (execution (* org.argeo.slc.client.contentprovider.ProcessDetailContentProvider.get*(..)) && args(o,..))"
+			+ " || (execution (* org.argeo.slc.client.contentprovider.ResultDetailContentProvider.get*(..)) && args(o,..))")
 	void contentProviderGetterWrapper(Object o) {
 	}
 

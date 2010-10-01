@@ -1,43 +1,37 @@
 package org.argeo.slc.client.contentprovider;
 
-import java.util.List;
+import java.util.SortedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.process.RealizedFlow;
-import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.process.SlcExecutionStep;
+import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.core.test.tree.PartSubList;
+import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
  * Basic tree view of the chosen process details
  */
-public class ProcessDetailContentProvider implements ITreeContentProvider {
+public class ResultDetailContentProvider implements ITreeContentProvider {
 	private final static Log log = LogFactory
-			.getLog(ProcessDetailContentProvider.class);
+			.getLog(ResultDetailContentProvider.class);
 
-	private SlcExecution slcExecution;
-
-	// private List<SlcAgent> slcAgents;
+	private TreeTestResult treeTestResult;
 
 	public Object[] getChildren(Object parent) {
-		if (parent instanceof SlcExecution) {
-			slcExecution = (SlcExecution) parent;
+		if (parent instanceof TreeTestResult) {
+			treeTestResult = (TreeTestResult) parent;
 
-			List<SlcExecutionStep> steps = slcExecution.getSteps();
-			List<RealizedFlow> realizedFlows = slcExecution.getRealizedFlows();
+			SortedMap<TreeSPath, PartSubList> parts = treeTestResult
+					.getResultParts();
 
-			for (int i = 0; i < steps.size(); i++) {
-				log.debug("step[" + i + "] : " + steps.get(i).getType());
-			}
-			for (int i = 0; i < realizedFlows.size(); i++) {
-				log.debug("step[" + i + "] : "
-						+ realizedFlows.get(i).toString());
+			for (TreeSPath key : parts.keySet()) {
+				log.debug("Test[" + key.toString() + "] isPassed = "
+						+ parts.get(key).getIsPassed());
 			}
 
-			log.debug(" Realized flows : ");
-			return steps.toArray();
+			return parts.keySet().toArray();
 		}
 		// if (parent instanceof ExecutionModuleNode) {
 		// ExecutionModuleNode executionModuleNode = (ExecutionModuleNode)
@@ -108,26 +102,20 @@ public class ProcessDetailContentProvider implements ITreeContentProvider {
 	}
 
 	public Object[] getElements(Object parent) {
-		// return getChildren(parent);
-		// Here we must dupplicate the code otherwise the inner call to method
-		// getChildren(parent); is not intercepted by AspectJ
-		if (parent instanceof SlcExecution) {
-			slcExecution = (SlcExecution) parent;
+		if (parent instanceof TreeTestResult) {
+			treeTestResult = (TreeTestResult) parent;
 
-			List<SlcExecutionStep> steps = slcExecution.getSteps();
-			List<RealizedFlow> realizedFlows = slcExecution.getRealizedFlows();
+			SortedMap<TreeSPath, PartSubList> parts = treeTestResult
+					.getResultParts();
 
-			for (int i = 0; i < steps.size(); i++) {
-				log.debug("step[" + i + "] : " + steps.get(i).getType());
-			}
-			for (int i = 0; i < realizedFlows.size(); i++) {
-				log.debug("step[" + i + "] : "
-						+ realizedFlows.get(i).toString());
+			for (TreeSPath key : parts.keySet()) {
+				log.debug("Test[" + key.toString() + "] isPassed = "
+						+ parts.get(key).getIsPassed());
 			}
 
-			log.debug(" Realized flows : ");
-			return steps.toArray();
+			return parts.keySet().toArray();
 		}
+		// return getChildren(parent);
 		return null;
 	}
 

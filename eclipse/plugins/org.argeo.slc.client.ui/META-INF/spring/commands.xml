@@ -16,4 +16,8 @@
 		class="org.argeo.slc.client.ui.commands.ProcessDetailsDisplayHandler"
 		scope="prototype">
 	</bean>
+	<bean id="org.argeo.slc.client.ui.displayResultDetails"
+		class="org.argeo.slc.client.ui.commands.ResultDetailsDisplayHandler"
+		scope="prototype">
+	</bean>
 </beans>

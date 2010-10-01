@@ -1,7 +1,5 @@
 package org.argeo.slc.client.ui.commands;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.client.ui.views.ProcessDetailView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -17,8 +15,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 
 public class ProcessDetailsDisplayHandler extends AbstractHandler {
-	private static final Log log = LogFactory
-			.getLog(ProcessDetailsDisplayHandler.class);
+	// private static final Log log = LogFactory
+	// .getLog(ProcessDetailsDisplayHandler.class);
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
@@ -27,15 +25,14 @@ public class ProcessDetailsDisplayHandler extends AbstractHandler {
 		String uuid = event
 				.getParameter("org.argeo.slc.client.commands.processUuid");
 
-		// mode = 2 : VIEW_VISIBLE, Show view mode that indicates the view
-		// should be created or made visible if already created .
+		// mode = 1 : VIEW_ACTIVATE, Show view mode that indicates the view
+		// should be made visible and activated. Use of this mode has the same
+		// effect as calling showView.
 		try {
 			ProcessDetailView pView = (ProcessDetailView) HandlerUtil
 					.getActiveWorkbenchWindow(event).getActivePage()
-					.showView(ProcessDetailView.ID, "UUID-" + uuid, 2);
-			log.debug("Newly created pView :  " + pView);
+					.showView(ProcessDetailView.ID, "UUID-" + uuid, 1);
 			pView.setUuid(uuid);
-			log.debug("uuid set");
 			pView.retrieveResults();
 		} catch (Exception e) {
 			e.printStackTrace();

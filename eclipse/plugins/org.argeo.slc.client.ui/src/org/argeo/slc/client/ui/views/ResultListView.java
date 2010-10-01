@@ -1,12 +1,22 @@
 package org.argeo.slc.client.ui.views;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.core.test.tree.ResultAttributes;
 import org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.IParameter;
+import org.eclipse.core.commands.Parameterization;
+import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -17,6 +27,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
 public class ResultListView extends ViewPart {
@@ -33,8 +47,8 @@ public class ResultListView extends ViewPart {
 		viewer = new TableViewer(table);
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setContentProvider(new ViewContentProvider());
-
 		viewer.setInput(getViewSite());
+		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 	}
 
 	protected Table createTable(Composite parent) {
@@ -63,15 +77,11 @@ public class ResultListView extends ViewPart {
 		return table;
 	}
 
+	// View Specific inner class
 	protected static class ViewContentProvider implements
 			IStructuredContentProvider {
-		// private List<ResultAttributes> lst;
 
 		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-			// if (arg2 instanceof List) {
-			// lst = (List<ResultAttributes>) arg2;
-			// log.trace("result count: " + lst.size());
-			// }
 		}
 
 		public void dispose() {
@@ -79,17 +89,11 @@ public class ResultListView extends ViewPart {
 
 		@SuppressWarnings("unchecked")
 		public Object[] getElements(Object obj) {
-			// if (lst == null)
-			// return new Object[0];
-			// else
-			// return lst.toArray();
 			if (obj instanceof List) {
 				return ((List<ResultAttributes>) obj).toArray();
 			} else {
 				return new Object[0];
 			}
-			// return
-			// testResultCollectionDao.listResultAttributes(null).toArray();
 		}
 	}
 
@@ -127,6 +131,61 @@ public class ResultListView extends ViewPart {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	// Handle Events
+	/**
+	 * The ResultAttributes expose a part of the information contained in the
+	 * TreeTestResult, It has the same UUID as the corresponding treeTestResult.
+	 */
+	class ViewDoubleClickListener implements IDoubleClickListener {
+		public void doubleClick(DoubleClickEvent evt) {
+			Object obj = ((IStructuredSelection) evt.getSelection())
+					.getFirstElement();
+
+			if (obj instanceof ResultAttributes) {
+				ResultAttributes ra = (ResultAttributes) obj;
+				log.debug("Double-clic on result with UUID" + ra.getUuid());
+
+				IWorkbench iw = ClientUiPlugin.getDefault().getWorkbench();
+				IHandlerService handlerService = (IHandlerService) iw
+						.getService(IHandlerService.class);
+				try {
+					// get the command from plugin.xml
+					IWorkbenchWindow window = iw.getActiveWorkbenchWindow();
+					ICommandService cmdService = (ICommandService) window
+							.getService(ICommandService.class);
+					Command cmd = cmdService
+							.getCommand("org.argeo.slc.client.ui.displayResultDetails");
+
+					// log.debug("cmd : " + cmd);
+					ArrayList<Parameterization> parameters = new ArrayList<Parameterization>();
+
+					// get the parameter
+					IParameter iparam = cmd
+							.getParameter("org.argeo.slc.client.commands.resultUuid");
+
+					Parameterization params = new Parameterization(iparam,
+							ra.getUuid());
+					parameters.add(params);
+
+					// build the parameterized command
+					ParameterizedCommand pc = new ParameterizedCommand(cmd,
+							parameters.toArray(new Parameterization[parameters
+									.size()]));
+
+					// execute the command
+					handlerService = (IHandlerService) window
+							.getService(IHandlerService.class);
+					handlerService.executeCommand(pc, null);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new SlcException("Problem while rendering result. "
+							+ e.getMessage());
+				}
+			}
 		}
 	}
 

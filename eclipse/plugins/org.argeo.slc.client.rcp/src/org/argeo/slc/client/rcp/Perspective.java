@@ -18,15 +18,14 @@ public class Perspective implements IPerspectiveFactory {
 		IFolderLayout topRight = layout.createFolder("topRight",
 				IPageLayout.RIGHT, 0.5f, editorArea);
 		topRight.addView("org.argeo.slc.client.ui.resultListView");
+		topRight
+				.addPlaceholder("org.argeo.slc.client.ui.resultDetailView:UUID-*");
 
 		IFolderLayout bottomRight = layout.createFolder("bottomRight",
 				IPageLayout.BOTTOM, 0.6f, "topRight");
 		bottomRight.addView("org.argeo.slc.client.ui.processListView");
-		// bottomRight.addView("org.argeo.slc.client.ui.processDetailView");
 		bottomRight
 				.addPlaceholder("org.argeo.slc.client.ui.processDetailView:UUID-*");
-
-		// bottomRight.addView("org.argeo.slc.client.ui.resultListView");
 
 		IFolderLayout bottomLeft = layout.createFolder("bottomLeft",
 				IPageLayout.BOTTOM, 0.6f, "topLeft");

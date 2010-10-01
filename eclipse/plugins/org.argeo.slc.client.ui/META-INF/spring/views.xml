@@ -15,6 +15,14 @@
 		<property name="testResultCollectionDao" ref="testResultCollectionDao" />
 	</bean>
 
+	<bean id="org.argeo.slc.client.ui.resultDetailView" class="org.argeo.slc.client.ui.views.ResultDetailView"
+		scope="prototype">
+		<property name="treeTestResultDao" ref="treeTestResultDao" />
+		<property name="contentProvider" ref="resultDetailContentProvider" />
+		<property name="labelProvider" ref="resultDetailLabelProvider" />
+	</bean>
+
+
 	<bean id="org.argeo.slc.client.ui.processListView" class="org.argeo.slc.client.ui.views.ProcessListView"
 		scope="prototype">
 		<property name="slcExecutionDao" ref="slcExecutionDao" />

@@ -16,7 +16,6 @@
 		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
 	<service ref="slcExecutionServiceAdapter" interface="org.argeo.slc.process.SlcExecutionNotifier" />
 
-
 	<!-- References needed by the current bundle -->
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
 	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
@@ -25,6 +24,12 @@
 	<reference id="testResultCollectionDao"
 		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
 		context-class-loader="service-provider" />
+
+	<reference id="treeTestResultDao"
+		interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
+		context-class-loader="service-provider" />
+		
+		
 	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao"
 		context-class-loader="service-provider" />
 
@@ -38,7 +43,10 @@
 		bean-name="processListStructuredContentProvider" />
 	<reference id="processDetailContentProvider"
 		interface="org.eclipse.jface.viewers.ITreeContentProvider" bean-name="processDetailContentProvider" />
-
+	<reference id="resultDetailContentProvider"
+		interface="org.eclipse.jface.viewers.ITreeContentProvider" bean-name="resultDetailContentProvider" />
+	<reference id="resultDetailLabelProvider" interface="org.eclipse.jface.viewers.ITableLabelProvider"
+		bean-name="resultDetailLabelProvider" />
 
 
 	<!-- TODO : what is it for ? -->

@@ -14,6 +14,12 @@
 	<bean id="processDetailContentProvider"
 		class="org.argeo.slc.client.contentprovider.ProcessDetailContentProvider"
 		scope="prototype" />
+	<bean id="resultDetailContentProvider"
+		class="org.argeo.slc.client.contentprovider.ResultDetailContentProvider"
+		scope="prototype" />
+	<bean id="resultDetailLabelProvider"
+		class="org.argeo.slc.client.contentprovider.ResultDetailLabelProvider"
+		scope="prototype" />
 
 	<!-- Aspects -->
 	<aop:aspectj-autoproxy />
