@@ -31,7 +31,7 @@ public class WorldFileTest {
 		WorldImageReader worldImageReader = worldImageFormat
 				.getReader(new File(dir, "500k--l36-1--(1984).gif"));
 		GridCoverage2D gridCoverage2D = worldImageReader.read(null);
-		gridCoverage2D.show();
+		//gridCoverage2D.show();
 	}
 
 }
