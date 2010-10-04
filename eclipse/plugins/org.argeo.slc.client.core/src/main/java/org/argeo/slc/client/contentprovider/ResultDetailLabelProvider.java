@@ -1,6 +1,9 @@
 package org.argeo.slc.client.contentprovider;
 
-import org.argeo.slc.process.SlcExecution;
+import org.argeo.eclipse.ui.TreeParent;
+import org.argeo.slc.client.contentprovider.ResultDetailContentProvider.ResultPartNode;
+import org.argeo.slc.client.contentprovider.ResultDetailContentProvider.StatusAware;
+import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -13,25 +16,51 @@ import org.eclipse.swt.graphics.Image;
  */
 public class ResultDetailLabelProvider extends LabelProvider implements
 		ITableLabelProvider {
+	// private static final Log log = LogFactory
+	// .getLog(ResultDetailLabelProvider.class);
+
 	public String getColumnText(Object obj, int index) {
-		
-		SlcExecution se = (SlcExecution) obj;
-		switch (index) {
 
-		case 0:
-			return getText(se.getStartDate());
-		case 1:
-			return se.getHost();
-		case 2:
-			return se.getUuid();
-		case 3:
-			return se.currentStep().getType();
+		if (obj instanceof TreeParent) {
+			if (index == 0)
+				return ((TreeParent) obj).getName();
+			else
+				return null;
 		}
-		return getText(obj);
-	}
 
-	public Image getColumnImage(Object obj, int index) {
+		if (obj instanceof ResultPartNode) {
+			ResultPartNode rpn = (ResultPartNode) obj;
+			switch (index) {
+			case 0:
+				return rpn.toString();
+			case 1:
+				return rpn.getStatus().toString();
+			case 2:
+				return rpn.getMessage();
+			case 3:
+				return rpn.getExceptionMessage();
+			}
+			return getText(obj);
+		}
 		return null;
 	}
 
+	public Image getImage(Object element) {
+		if (element instanceof StatusAware) {
+			if (((StatusAware) element).isPassed())
+				return ClientUiPlugin.getDefault().getImageRegistry()
+						.get("passedTest");
+			else
+				return ClientUiPlugin.getDefault().getImageRegistry()
+						.get("failedTest");
+		}
+		return null;
+	}
+
+	public Image getColumnImage(Object obj, int index) {
+		if (index == 0)
+			return getImage(obj);
+		else
+			return null;
+	}
 }

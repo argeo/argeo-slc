@@ -1,12 +1,16 @@
 package org.argeo.slc.client.contentprovider;
 
+import java.util.List;
 import java.util.SortedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.eclipse.ui.TreeObject;
+import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
+import org.argeo.slc.test.TestResultPart;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -21,77 +25,32 @@ public class ResultDetailContentProvider implements ITreeContentProvider {
 
 	public Object[] getChildren(Object parent) {
 		if (parent instanceof TreeTestResult) {
-			treeTestResult = (TreeTestResult) parent;
-
-			SortedMap<TreeSPath, PartSubList> parts = treeTestResult
-					.getResultParts();
-
-			for (TreeSPath key : parts.keySet()) {
-				log.debug("Test[" + key.toString() + "] isPassed = "
-						+ parts.get(key).getIsPassed());
-			}
-
-			return parts.keySet().toArray();
+			log.error("We should not reach this point.");
+			return null;
 		}
-		// if (parent instanceof ExecutionModuleNode) {
-		// ExecutionModuleNode executionModuleNode = (ExecutionModuleNode)
-		// parent;
-		// ExecutionModuleDescriptor emd =
-		// executionModuleNode.getDescriptor();
-		// emd = executionModuleNode.getAgentNode().getAgent()
-		// .getExecutionModuleDescriptor(emd.getName(),
-		// emd.getVersion());
-		// executionModuleNode.cacheDescriptor(emd);
-		// // for (String flowName :
-		// executionModuleNode.getFlowDescriptors()
-		// // .keySet()) {
-		// // executionModuleNode.addChild(new FlowNode(flowName,
-		// // executionModuleNode));
-		// // }
-		// return executionModuleNode.getChildren();
-		// } else if (parent instanceof AgentNode) {
-		// AgentNode agentNode = (AgentNode) parent;
-		//
-		// if (log.isTraceEnabled())
-		// log.trace("Scan agent " + agentNode);
-		//
-		// agentNode.clearChildren();
-		// for (ExecutionModuleDescriptor desc : agentNode.getAgent()
-		// .listExecutionModuleDescriptors()) {
-		// agentNode.addChild(new ExecutionModuleNode(agentNode, desc));
-		// }
-		//
-		// return agentNode.getChildren();
-		// } else if (parent instanceof TreeParent) {
-		// return ((TreeParent) parent).getChildren();
-		// } else if (parent instanceof FlowNode) {
-		// return new Object[0];
-		// } else {
-		// List<AgentNode> agentNodes = new ArrayList<AgentNode>();
-		// for (SlcAgent slcAgent : slcAgents) {
-		// agentNodes.add(new AgentNode(slcAgent));
-		// }
-		// return agentNodes.toArray();
-		// }
+
+		if (parent instanceof TreeParent) {
+			return ((TreeParent) parent).getChildren();
+		}
+
+		if (parent instanceof ResultPartNode) {
+			// we reached a leaf
+			return null;
+		}
 		return null;
 	}
 
 	public Object getParent(Object node) {
-		// if (node instanceof TreeObject) {
-		// return ((TreeObject) node).getParent();
-		// }
+		if (node instanceof TreeObject) {
+			return ((TreeObject) node).getParent();
+		}
 		return null;
 	}
 
 	public boolean hasChildren(Object parent) {
-		// if (parent instanceof TreeParent && ((TreeParent) parent).isLoaded())
-		// {
-		// return ((TreeParent) parent).hasChildren();
-		// } else if (parent instanceof AgentNode) {
-		// return true;
-		// } else if (parent instanceof ExecutionModuleNode) {
-		// return true;
-		// }
+		if (parent instanceof TreeParent && ((TreeParent) parent).isLoaded()) {
+			return ((TreeParent) parent).hasChildren();
+		}
 		return false;
 	}
 
@@ -105,161 +64,166 @@ public class ResultDetailContentProvider implements ITreeContentProvider {
 		if (parent instanceof TreeTestResult) {
 			treeTestResult = (TreeTestResult) parent;
 
-			SortedMap<TreeSPath, PartSubList> parts = treeTestResult
+			// We wrap domain object in ViewSpecificObjects.
+			ResultTreeParent root = new ResultTreeParent("Test "
+					+ treeTestResult.getUuid());
+			SortedMap<TreeSPath, PartSubList> partSubLists = treeTestResult
 					.getResultParts();
 
-			for (TreeSPath key : parts.keySet()) {
-				log.debug("Test[" + key.toString() + "] isPassed = "
-						+ parts.get(key).getIsPassed());
+			for (TreeSPath key : partSubLists.keySet()) {
+				String relPath = key.getAsUniqueString();
+
+				// get rid of '/' that begins every TreeSPath Unique string
+				relPath = relPath.substring(1);
+				String[] pathes = relPath.split("/"); // parse the TreeSPath
+				ResultTreeParent curTreeParent = root;
+
+				// We create intermediate folders if needed
+				for (int i = 0; i < pathes.length; i++) {
+					if (log.isDebugEnabled())
+						log.debug("i = " + i + " - " + pathes[i]);
+
+					if (curTreeParent.getChildByName(pathes[i]) == null) {
+						ResultTreeParent child = new ResultTreeParent(pathes[i]);
+						curTreeParent.addChild(child);
+						curTreeParent = child;
+					} else
+						curTreeParent = (ResultTreeParent) curTreeParent
+								.getChildByName(pathes[i]);
+				}
+
+				// We create leafs
+				List<TestResultPart> parts = partSubLists.get(key).getParts();
+				for (TestResultPart part : parts) {
+					ResultPartNode node = new ResultPartNode(part.toString(),
+							part.getStatus(), part.getMessage(),
+							part.getExceptionMessage());
+					curTreeParent.addChild(node);
+				}
 			}
 
-			return parts.keySet().toArray();
+			// We must set status isPassed for each node.
+			setIsPassed(root);
+			return root.getChildren();
 		}
-		// return getChildren(parent);
 		return null;
 	}
 
-	// public class AgentNode extends TreeParent {
-	// private final SlcAgent agent;
-	//
-	// public AgentNode(SlcAgent agent) {
-	// super(agent.toString());
-	// this.agent = agent;
-	// }
+	public void setIsPassed(StatusAware node) {
 
-	// public SlcAgent getAgent() {
-	// return agent;
-	// }
-	// }
+		if (node instanceof ResultTreeObject) {
+			ResultTreeObject rto = (ResultTreeObject) node;
+			rto.isPassed = rto.isPassed();
+			return;
+		}
+		if (node instanceof ResultTreeParent) {
+			ResultTreeParent rtp = (ResultTreeParent) node;
+			// we dig the tree recursivly
+			for (TreeObject to : rtp.getChildren())
+				setIsPassed((StatusAware) to);
+			// we set is passed
+			for (TreeObject to : rtp.getChildren()) {
+				if (!((StatusAware) to).isPassed()) {
+					rtp.isPassed = false;
+					return;
+				}
+			}
+			return;
+		}
+	}
 
-	// public class ExecutionModuleNode extends TreeParent {
-	// private final AgentNode agentNode;
-	// private ExecutionModuleDescriptor descriptor;
-	// private Map<String, ExecutionFlowDescriptor> flowDescriptors;
-	//
-	// public ExecutionModuleNode(AgentNode agentNode,
-	// ExecutionModuleDescriptor descriptor) {
-	// super(descriptor.toString());
-	// this.agentNode = agentNode;
-	// this.descriptor = descriptor;
-	//
-	// }
-	//
-	// public AgentNode getAgentNode() {
-	// return agentNode;
-	// }
-	//
-	// public ExecutionModuleDescriptor getDescriptor() {
-	// return descriptor;
-	// }
-	// Object o = thisJoinPoint.getArgs()[0];
+	// To enable display of color to show if a test is passed or not even when
+	// hidden. We say a test is in error if its status is FAILED or ERROR (e.g,
+	// if it has not executed completely due to technical problems).
+	public interface StatusAware {
+		public void setPassed(boolean isPassed);
 
-	// public void cacheDescriptor(ExecutionModuleDescriptor descriptor) {
-	// this.descriptor = descriptor;
-	//
-	// SortedMap<String, FolderNode> folderNodes = new TreeMap<String,
-	// FolderNode>();
-	//
-	// flowDescriptors = new HashMap<String, ExecutionFlowDescriptor>();
-	// for (ExecutionFlowDescriptor fd : descriptor.getExecutionFlows()) {
-	// // if (log.isTraceEnabled())
-	// // log.trace("fd.path=" + fd.getPath() + ", fd.name="
-	// // + fd.getName());
-	//
-	// // find path and label
-	// String path;
-	// String label;
-	// int lastSlash = fd.getName().lastIndexOf('/');
-	// if ((fd.getPath() == null || fd.getPath().trim().equals(""))
-	// && lastSlash >= 0) {
-	// path = fd.getName().substring(0, lastSlash);
-	// label = fd.getName().substring(lastSlash + 1);
-	// } else {
-	// path = fd.getPath();
-	// label = fd.getName();
-	// }
-	// // if (log.isTraceEnabled())
-	// // log.trace("path=" + path + ", label=" + label);
-	//
-	// if (path == null || path.trim().equals("")
-	// || path.trim().equals("/")) {
-	// // directChildren.put(name, new FlowNode(name, this));
-	// addChild(new FlowNode(label, fd.getName(), this));
-	// } else {
-	// FolderNode folderNode = mkdirs(this, path, folderNodes);
-	// folderNode
-	// .addChild(new FlowNode(label, fd.getName(), this));
-	// }
-	//
-	// flowDescriptors.put(fd.getName(), fd);
-	// }
-	// // TODO: make it readonly
-	// }
-	//
-	// protected FolderNode mkdirs(TreeParent root, String path,
-	// SortedMap<String, FolderNode> folderNodes) {
-	// // Normalize
-	// if (path.charAt(0) != '/')
-	// path = '/' + path;
-	// if (path.charAt(path.length() - 1) == '/')
-	// path = path.substring(0, path.length() - 1);
-	//
-	// if (folderNodes.containsKey(path))
-	// return folderNodes.get(path);
-	//
-	// int lastIndx = path.lastIndexOf('/');
-	// String folderName;
-	// String parentPath;
-	// if (lastIndx >= 0) {
-	// folderName = path.substring(lastIndx + 1);
-	// parentPath = path.substring(0, lastIndx);
-	// } else {
-	// folderName = path;
-	// parentPath = "";
-	// }
-	//
-	// TreeParent parent;
-	// if (parentPath.equals(""))
-	// parent = root;
-	// else
-	// parent = mkdirs(root, parentPath, folderNodes);
-	// FolderNode newFolder = new FolderNode(folderName);
-	// parent.addChild(newFolder);
-	// folderNodes.put(path, newFolder);
-	// return newFolder;
-	// }
-	//
-	// public Map<String, ExecutionFlowDescriptor> getFlowDescriptors() {
-	// return flowDescriptors;
-	// }
-	//
-	// }
-	//
-	// public class FlowNode extends TreeObject {
-	// private final String flowName;
-	// private final ExecutionModuleNode executionModuleNode;
-	//
-	// public FlowNode(String label, String flowName,
-	// ExecutionModuleNode executionModuleNode) {
-	// super(label);
-	// this.flowName = flowName;
-	// this.executionModuleNode = executionModuleNode;
-	// }
-	//
-	// public String getFlowName() {
-	// return flowName;
-	// }
-	//
-	// public ExecutionModuleNode getExecutionModuleNode() {
-	// return executionModuleNode;
-	// }
-	//
-	// }
-	//
-	// public class FolderNode extends TreeParent {
-	// public FolderNode(String name) {
-	// super(name);
-	// }
-	//
-	// }
+		public boolean isPassed();
+	}
+
+	public class ResultTreeParent extends TreeParent implements StatusAware {
+
+		public ResultTreeParent(String name) {
+			super(name);
+		}
+
+		private boolean isPassed = true;
+
+		public void setPassed(boolean isPassed) {
+			this.isPassed = isPassed;
+		}
+
+		public boolean isPassed() {
+			return isPassed;
+		}
+	}
+
+	public class ResultTreeObject extends TreeObject implements StatusAware {
+
+		public ResultTreeObject(String name) {
+			super(name);
+		}
+
+		private boolean isPassed = true;
+
+		public void setPassed(boolean isPassed) {
+			this.isPassed = isPassed;
+		}
+
+		public boolean isPassed() {
+			return isPassed;
+		}
+	}
+
+	// Specific inner classes
+	public class ResultPartNode extends ResultTreeObject {
+
+		private String status;
+		private String message;
+		private String exceptionMessage;
+
+		public ResultPartNode(String label, Integer status, String message) {
+			super(label);
+			handleStatus(status);
+			this.message = message;
+		}
+
+		public ResultPartNode(String label, Integer status, String message,
+				String exceptionMessage) {
+			super(label);
+			handleStatus(status);
+			this.message = message;
+			this.exceptionMessage = exceptionMessage;
+		}
+
+		private void handleStatus(Integer status) {
+			switch (status) {
+			case 0:
+				this.status = "PASSED";
+				setPassed(true);
+				break;
+			case 1:
+				this.status = "FAILED";
+				setPassed(false);
+				break;
+			case 2:
+				this.status = "ERROR";
+				setPassed(false);
+				break;
+			}
+			// for the moment being we don't have a relevant label
+		}
+
+		public String getStatus() {
+			return status;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public String getExceptionMessage() {
+			return exceptionMessage;
+		}
+	}
 }

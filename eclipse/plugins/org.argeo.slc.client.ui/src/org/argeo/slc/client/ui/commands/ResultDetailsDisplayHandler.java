@@ -36,8 +36,6 @@ public class ResultDetailsDisplayHandler extends AbstractHandler {
 			ResultDetailView rView = (ResultDetailView) HandlerUtil
 					.getActiveWorkbenchWindow(event).getActivePage()
 					.showView(ResultDetailView.ID, "UUID-" + uuid, 1);
-			if (log.isTraceEnabled())
-				log.trace("Newly created rView :  " + rView);
 			rView.setUuid(uuid);
 			rView.retrieveResults();
 		} catch (Exception e) {

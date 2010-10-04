@@ -8,6 +8,8 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.controllers.ProcessController;
@@ -35,6 +37,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 public class ExecutionModulesView extends ViewPart {
+	private final static Log log = LogFactory
+			.getLog(ExecutionModulesView.class);
+
 	public static final String ID = "org.argeo.slc.client.ui.executionModulesView";
 
 	private TreeViewer viewer;

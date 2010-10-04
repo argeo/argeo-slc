@@ -7,6 +7,7 @@ Require-Bundle: org.eclipse.ui;resolution:=optional
 Import-Package: org.aopalliance.aop;version="1.0.0",
  org.argeo.slc.client.aspects,
  org.argeo.slc.client.contentprovider,
+ org.argeo.slc.client.ui,
  org.argeo.slc.core.structure.tree,
  org.argeo.slc.core.test.tree,
  org.argeo.slc.dao.process,

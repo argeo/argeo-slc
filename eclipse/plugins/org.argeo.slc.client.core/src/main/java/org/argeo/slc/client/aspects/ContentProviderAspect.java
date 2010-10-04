@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.eclipse.ui.internal.ViewSite;
 import org.hibernate.LockMode;
 import org.hibernate.SessionFactory;
 
@@ -30,7 +31,7 @@ public class ContentProviderAspect {
 	// PointCuts
 	@Pointcut("(execution (* org.argeo.slc.client.contentprovider.ProcessListTableLabelProvider.get*(..)) && args(o,..))"
 			+ " || (execution (* org.argeo.slc.client.contentprovider.ProcessDetailContentProvider.get*(..)) && args(o,..))"
-			+ " || (execution (* org.argeo.slc.client.contentprovider.ResultDetailContentProvider.get*(..)) && args(o,..))")
+			+ " || (execution (* org.argeo.slc.client.contentprovider.ResultDetailContentProvider.getElements(..)) && args(o,..))")
 	void contentProviderGetterWrapper(Object o) {
 	}
 
@@ -38,6 +39,10 @@ public class ContentProviderAspect {
 	@Around("contentProviderGetterWrapper(o)")
 	public Object aroundGetWrapper(ProceedingJoinPoint thisJoinPoint, Object o)
 			throws Throwable {
+
+//		if (o instanceof ViewSite) {
+//			return thisJoinPoint.proceed();
+//		}
 
 		// TODO : find a mean to handle session & manager with txManager
 		// in order to not have to re-begin a transaction here.

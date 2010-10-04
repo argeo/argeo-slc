@@ -77,6 +77,8 @@ public class ClientUiPlugin extends AbstractUIPlugin {
 		reg.put("folder", getImageDescriptor("icons/folder.png"));
 		// reg.put("flow", getImageDescriptor("icons/slc-launch.gif"));
 		reg.put("flow", getImageDescriptor("icons/system.png"));
+		reg.put("passedTest", getImageDescriptor("icons/OK.png"));
+		reg.put("failedTest", getImageDescriptor("icons/error.png"));
 	}
 
 	public BundleContext getBundleContext() {
