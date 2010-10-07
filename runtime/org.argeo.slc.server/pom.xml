@@ -26,6 +26,7 @@
 							org.argeo.slc.activemq,
 							org.argeo.slc.execution,
 							org.springframework.context.support,
+							org.tmatesoft.svn.*;resolution:=optional,
 							*
 						</Import-Package>
 					</instructions>
@@ -100,6 +101,19 @@
 			<groupId>org.antlr</groupId>
 			<artifactId>com.springsource.org.antlr</artifactId>
 		</dependency>
+
+		<!-- SVN -->
+		<dependency>
+			<groupId>com.svnkit</groupId>
+			<artifactId>com.springsource.org.tmatesoft.svn</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<!--  Commons VFS
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>com.springsource.org.apache.commons.vfs</artifactId>
+		</dependency> -->
 
 	</dependencies>
 </project>

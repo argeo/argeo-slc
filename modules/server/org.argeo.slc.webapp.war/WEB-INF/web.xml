@@ -113,6 +113,22 @@
 		<url-pattern>/jcr-manager/*</url-pattern>
 	</servlet-mapping>
 
+	<!-- AjaXplorer servlet -->
+	<servlet>
+		<servlet-name>ajaxplorer</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextClass</param-name>
+			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ajaxplorer</servlet-name>
+		<url-pattern>/ajaxplorer/*</url-pattern>
+	</servlet-mapping>
+
 	<!-- General -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
