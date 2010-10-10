@@ -11,21 +11,17 @@
 
 	<bean id="ui" class="org.argeo.slc.geotools.swing.GisFieldViewer">
 		<property name="positionProvider" ref="positionProvider" />
-		<property name="jaiImageIoClassLoader" ref="jai.imageio.bdClassLoader" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="jaiImageIoClassLoader" ref="jai.imageio.bdClassLoader" /><!--
 		<property name="vectors">
 			<bean class="org.argeo.slc.core.deploy.DefaultResourceSet">
 				<property name="base"
 					value="file:/home/mbaudier/gis/projects/100122-EasternBalkans2010/data" />
 				<property name="include" value="*.shp" />
 			</bean>
-			<!--
-				<list>
-				<value>file:/home/mbaudier/gis/projects/100122-EasternBalkans2010/data/countries-EuroMed-NEarth.shp
-				</value>
-				<value>file:/home/mbaudier/gis/projects/100122-EasternBalkans2010/data/highways-EastBalkan-OSM.shp
-				</value> </list>
-			-->
+			
 		</property>
+		--><!--
 		<property name="rasters">
 			<bean class="org.argeo.slc.core.deploy.DefaultResourceSet">
 				<property name="base"
@@ -33,7 +29,7 @@
 				<property name="include" value="*.gif" />
 			</bean>
 		</property>
-	</bean>
+	--></bean>
 
 	<bean id="jai.imageio.bdClassLoader"
 		class="org.springframework.osgi.util.BundleDelegatingClassLoader"
@@ -41,6 +37,18 @@
 		<constructor-arg>
 			<osgi:bundle symbolic-name="org.argeo.dep.osgi.jai.imageio" />
 		</constructor-arg>
+	</bean>
+
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://air/test_berlin" />
+		<property name="username" value="argeo" />
+		<property name="password" value="argeo" />
+		<property name="testOnBorrow" value="true" />
+		<property name="validationQuery" value="SELECT 1" />
+		<property name="maxActive" value="10" />
+		<property name="maxIdle" value="2" />
 	</bean>
 
 </beans>

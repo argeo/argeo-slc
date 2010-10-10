@@ -18,16 +18,17 @@ package org.argeo.slc.geotools.swing;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.media.jai.JAI;
+import javax.sql.DataSource;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
@@ -38,21 +39,33 @@ import org.argeo.slc.core.deploy.ResourceSet;
 import org.argeo.slc.geotools.BeanFeatureTypeBuilder;
 import org.argeo.slc.gis.model.FieldPosition;
 import org.argeo.slc.jts.PositionProvider;
+import org.geotools.data.DataStore;
+import org.geotools.data.DataStoreFinder;
+import org.geotools.data.FeatureSource;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.WorldFileReader;
+import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.gce.image.WorldImageFormat;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.geometry.Envelope2D;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
+import org.geotools.styling.FeatureTypeStyle;
+import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.RasterSymbolizer;
+import org.geotools.styling.Rule;
+import org.geotools.styling.Stroke;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
+import org.geotools.styling.StyleFactory;
 import org.geotools.swing.JMapFrame;
 import org.geotools.swing.JMapPane;
 import org.geotools.swing.event.MapPaneAdapter;
 import org.geotools.swing.event.MapPaneEvent;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.filter.FilterFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
@@ -72,6 +85,11 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 
 	protected final static BeanFeatureTypeBuilder<FieldPosition> POSITION = new BeanFeatureTypeBuilder<FieldPosition>(
 			FieldPosition.class);
+
+	static StyleFactory styleFactory = CommonFactoryFinder
+			.getStyleFactory(null);
+	static FilterFactory filterFactory = CommonFactoryFinder
+			.getFilterFactory(null);
 
 	private DateFormat fieldPositionDateFormat = new SimpleDateFormat(
 			"yyyyMMdd-HHmmss");
@@ -93,6 +111,8 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 	private Boolean positionProviderDisconnected = false;
 	private VersatileZoomTool versatileZoomTool;
 
+	private DataSource dataSource;
+
 	public static void main(String[] args) throws Exception {
 		new GisFieldViewer().afterPropertiesSet();
 	}
@@ -100,7 +120,16 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 	public void afterPropertiesSet() {
 		new Thread(new PositionUpdater()).start();
 
+		// CoordinateReferenceSystem sphericalMercator;
+		// try {
+		// sphericalMercator = CRS.decode("EPSG:3785");
+		// // sphericalMercator = CRS.decode("EPSG:900913");
+		// } catch (Exception e1) {
+		// throw new SlcException("Cannot create CRS", e1);
+		// }
+
 		// Create map context
+		// MapContext mapContext = new DefaultMapContext(sphericalMercator);
 		MapContext mapContext = new DefaultMapContext();
 		mapContext.setTitle("GIS Field Viewer");
 
@@ -116,6 +145,9 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 		mapFrame.setSize(800, 600);
 
 		mapPane = mapFrame.getMapPane();
+		// ReferencedEnvelope referencedEnvelope = new
+		// ReferencedEnvelope(sphericalMercator);
+		// mapFrame.getMapContext().setAreaOfInterest(referencedEnvelope);
 		versatileZoomTool = new VersatileZoomTool();
 		mapPane.setCursorTool(versatileZoomTool);
 
@@ -163,8 +195,9 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 		// Vectors
 		for (Resource vector : vectors.listResources().values()) {
 			try {
-				mapContext.addLayer(FileDataStoreFinder.getDataStore(
-						vector.getURL()).getFeatureSource(), null);
+				mapContext.addLayer(
+						FileDataStoreFinder.getDataStore(vector.getURL())
+								.getFeatureSource(), null);
 			} catch (Exception e) {
 				log.error("Could not load vector " + vector + ": " + e);
 				if (log.isTraceEnabled())
@@ -172,6 +205,54 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 			}
 		}
 
+		try {
+			Map params = new HashMap();
+			params.put("dbtype", "postgis");
+			params.put("host", "air");
+			params.put("port", new Integer(5432));
+			params.put("database", "test_berlin");
+			params.put("user", "argeo");
+			params.put("passwd", "argeo");
+
+			DataStore pgDatastore = DataStoreFinder.getDataStore(params);
+
+			// JDBCDataStore pgDatastore = new JDBCDataStore();
+			// pgDatastore.setDataSource(dataSource);
+			// pgDatastore.setSQLDialect(new PostGISDialect(pgDatastore));
+
+			FeatureSource<SimpleFeatureType, SimpleFeature> source = pgDatastore
+					.getFeatureSource("ways");
+			// log.debug("source CRS: "+source.getBounds().getCoordinateReferenceSystem());
+			// log.debug("context CRS: "+mapContext.getCoordinateReferenceSystem());
+
+			mapContext.addLayer(source, createLineStyle());
+		} catch (Exception e) {
+			log.error("Could not load db " + "" + ": " + e);
+			e.printStackTrace();
+			if (log.isTraceEnabled())
+				log.trace("Stack", e);
+		}
+
+	}
+
+	private Style createLineStyle() {
+		Stroke stroke = styleFactory.createStroke(
+				filterFactory.literal(Color.BLUE), filterFactory.literal(1));
+
+		/*
+		 * Setting the geometryPropertyName arg to null signals that we want to
+		 * draw the default geomettry of features
+		 */
+		LineSymbolizer sym = styleFactory.createLineSymbolizer(stroke, null);
+
+		Rule rule = styleFactory.createRule();
+		rule.symbolizers().add(sym);
+		FeatureTypeStyle fts = styleFactory
+				.createFeatureTypeStyle(new Rule[] { rule });
+		Style style = styleFactory.createStyle();
+		style.featureTypeStyles().add(fts);
+
+		return style;
 	}
 
 	public void destroy() throws Exception {
@@ -183,7 +264,8 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 		if (jaiImageIoClassLoader != null) {
 			Thread.currentThread().setContextClassLoader(jaiImageIoClassLoader);
 			try {
-				JAI.getDefaultInstance().getOperationRegistry()
+				JAI.getDefaultInstance()
+						.getOperationRegistry()
 						.registerServices(
 								WorldFileReader.class.getClassLoader());
 			} catch (IOException e) {
@@ -298,15 +380,16 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 				DirectPosition2D geoCoords = new DirectPosition2D(
 						currentPosition.getLocation().getCoordinate().x,
 						currentPosition.getLocation().getCoordinate().y);
+				if (tr == null)
+					return;
 				tr.transform(geoCoords, geoCoords);
 				geoCoords.setCoordinateReferenceSystem(getMapPane()
 						.getMapContext().getCoordinateReferenceSystem());
 
 				final int halfRefSize = 3;
 				Rectangle rect = new Rectangle((int) Math.round(geoCoords
-						.getX()
-						- halfRefSize), (int) Math.round(geoCoords.getY()
-						- halfRefSize), halfRefSize * 2 + 1,
+						.getX() - halfRefSize), (int) Math.round(geoCoords
+						.getY() - halfRefSize), halfRefSize * 2 + 1,
 						halfRefSize * 2 + 1);
 				Graphics2D g2D = (Graphics2D) getMapPane().getGraphics();
 				if (g2D == null)
@@ -321,6 +404,10 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 						rect.height + 2);
 			}
 		});
+	}
+
+	public void setDataSource(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	private class CustomMapPaneListener extends MapPaneAdapter {

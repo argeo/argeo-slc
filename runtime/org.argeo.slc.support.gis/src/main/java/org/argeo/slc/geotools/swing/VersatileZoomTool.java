@@ -94,7 +94,7 @@ public class VersatileZoomTool extends AbstractZoomTool {
 		else if (SwingUtilities.isMiddleMouseButton(e)) {
 			if (fieldPosition != null) {
 				Envelope2D env = new Envelope2D();
-				final double increment = 1d;
+				final double increment = 0.1d;
 				env.setFrameFromDiagonal(fieldPosition.getX() - increment,
 						fieldPosition.getY() - increment, fieldPosition.getX()
 								+ increment, fieldPosition.getY() + increment);
