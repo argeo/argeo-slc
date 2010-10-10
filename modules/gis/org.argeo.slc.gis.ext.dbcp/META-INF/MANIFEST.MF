@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Dbcp
+Bundle-SymbolicName: org.argeo.slc.gis.ext.dbcp
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: com.springsource.org.apache.commons.dbcp
+Import-Package: org.postgresql
