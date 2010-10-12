@@ -54,9 +54,11 @@ public class DefaultResourceSet implements ResourceLoaderAware,
 	/** List the resources, identified by their relative path. */
 	public Map<String, Resource> listResources() {
 		try {
+			Map<String, Resource> res = new TreeMap<String, Resource>();
+			if (base == null)
+				return res;
 			String baseResUrl = getResourceLoaderToUse().getResource(base)
 					.getURL().toString();
-			Map<String, Resource> res = new TreeMap<String, Resource>();
 			for (String includePattern : includes)
 				processInclude(res, includePattern, baseResUrl);
 			return res;
