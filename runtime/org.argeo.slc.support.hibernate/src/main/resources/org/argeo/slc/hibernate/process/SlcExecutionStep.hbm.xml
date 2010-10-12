@@ -29,7 +29,7 @@
 			<cache usage="nonstrict-read-write" />
 			<key column="SLC_EXECUTION_STEP_ID" />
 			<list-index column="INDX" />
-			<element column="LOG_LINE" type="string" />
+			<element column="LOG_LINE" type="text" />
 		</list>
 
 		<query name="stepIndex"><![CDATA[
