@@ -7,4 +7,5 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<service ref="postGisDataStore" interface="org.geotools.data.DataStore" />
+	<service ref="backend" interface="org.argeo.slc.geotools.Backend" />
 </beans:beans>

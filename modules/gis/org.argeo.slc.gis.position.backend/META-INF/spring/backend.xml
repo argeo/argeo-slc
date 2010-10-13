@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:p="http://www.springframework.org/schema/p" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:osgi="http://www.springframework.org/schema/osgi"
 	xsi:schemaLocation="
-	http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-	http://www.springframework.org/schema/util 
-	http://www.springframework.org/schema/util/spring-util-2.5.xsd
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util-2.5.xsd
+       	http://www.springframework.org/schema/osgi  
+		http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd
     ">
+
+	<bean id="backend" class="org.argeo.slc.gis.field.FieldBackend"
+		init-method="afterPropertiesSet">
+		<property name="dataSources">
+			<set>
+				<ref bean="dataSource" />
+			</set>
+		</property>
+		<!-- <property name="vectors"> <bean class="org.argeo.slc.core.deploy.DefaultResourceSet"> 
+			<property name="base" value="file:/home/mbaudier/gis/projects/100122-EasternBalkans2010/data" 
+			/> <property name="include" value="*.shp" /> </bean> </property> <property 
+			name="rasters"> <bean class="org.argeo.slc.core.deploy.DefaultResourceSet"> 
+			<property name="base" value="file:/home/mbaudier/gis/data/100501-Poehali" 
+			/> <property name="include" value="*.gif" /> </bean> </property> -->
+		<property name="jaiImageIoClassLoader" ref="jai.imageio.bdClassLoader" />
+	</bean>
 
 
 	<bean id="postGisDataStore" factory-bean="postGisDataStoreFactory"
 		factory-method="createDataStore">
 		<constructor-arg>
 			<map>
-				<!-- Cannot access the .key property, wait for Spring 3.0 to do it properly 
-					<entry key-ref="JDBCDataStore.DATASOURCE" value-ref="dataSource" /> -->
-					<entry key="Data Source" value-ref="dataSource" />
+				<!-- Cannot access the .key property, wait for Spring 3.0 EL to do it 
+					properly <entry key-ref="JDBCDataStore.DATASOURCE" value-ref="dataSource" 
+					/> -->
+				<entry key="Data Source" value-ref="dataSource" />
 			</map>
 		</constructor-arg>
 	</bean>
@@ -37,5 +56,14 @@
 		<property name="maxActive" value="10" />
 		<property name="maxIdle" value="2" />
 	</bean>
+
+	<bean id="jai.imageio.bdClassLoader"
+		class="org.springframework.osgi.util.BundleDelegatingClassLoader"
+		factory-method="createBundleClassLoaderFor">
+		<constructor-arg>
+			<osgi:bundle symbolic-name="org.argeo.dep.osgi.jai.imageio" />
+		</constructor-arg>
+	</bean>
+
 
 </beans>

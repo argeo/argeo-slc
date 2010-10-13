@@ -217,6 +217,8 @@ public class VersatileZoomTool extends AbstractZoomTool {
 				int sign = (clicks < 0 ? -1 : 1);
 
 				ReferencedEnvelope env = getMapPane().getDisplayArea();
+				if (env == null)
+					return;
 				double width = env.getWidth();
 				double delta = width * clickToZoom * sign;
 

@@ -25,8 +25,6 @@ import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.media.jai.JAI;
 import javax.sql.DataSource;
@@ -44,7 +42,6 @@ import org.geotools.data.DataStore;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.WorldFileReader;
-import org.geotools.data.postgis.PostgisNGDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.gce.image.WorldImageFormat;
 import org.geotools.geometry.DirectPosition2D;
@@ -226,30 +223,8 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 		}
 
 		try {
-			Map params = new HashMap();
-			// params.put("dbtype", "postgis");
-			// params.put("host", "air");
-			// params.put("port", new Integer(5432));
-			// params.put("database", "test_berlin");
-			// params.put("user", "argeo");
-			// params.put("passwd", "argeo");
-			//
-			// DataStore pgDatastore = DataStoreFinder.getDataStore(params);
-
-			PostgisNGDataStoreFactory factory = new PostgisNGDataStoreFactory();
-			// JDBCDataStore pgDatastore = new JDBCDataStore();
-			// pgDatastore.setDataSource(dataSource);
-			// pgDatastore.setSQLDialect(new PostGISDialect(pgDatastore));
-
-			params.put(PostgisNGDataStoreFactory.DATASOURCE.key, dataSource);
-
-			//JDBCDataStore pgDatastore = factory.createDataStore(params);
-
 			FeatureSource<SimpleFeatureType, SimpleFeature> source = postGisDataStore
 					.getFeatureSource("ways");
-			// log.debug("source CRS: "+source.getBounds().getCoordinateReferenceSystem());
-			// log.debug("context CRS: "+mapContext.getCoordinateReferenceSystem());
-
 			mapContext.addLayer(source, createLineStyle());
 		} catch (Exception e) {
 			log.error("Could not load db " + "" + ": " + e);
@@ -358,32 +333,8 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 						.currentPosition();
 
 				receiveNewPosition(currentPosition);
-				// versatileZoomTool.setFieldPosition(new
-				// Point2D(currentPosition
-				// .getLocation().getX(), currentPosition.getLocation()
-				// .getY()));
 
 				if (currentPosition != null) {
-
-					// if (mapPane.getDisplayArea().contains(
-					// currentPosition.getLocation().getCoordinate())) {
-					// SimpleFeature feature = POSITION
-					// .buildFeature(currentPosition);
-					// FeatureCollection<SimpleFeatureType, SimpleFeature>
-					// collection = new DefaultFeatureCollection(
-					// "Field Position "
-					// + fieldPositionDateFormat
-					// .format(currentPosition
-					// .getTimestamp()),
-					// POSITION.getFeatureType());
-					// collection.add(feature);
-					// if (mapLayer != null)
-					// mapPane.getMapContext().removeLayer(mapLayer);
-					// Style style = SLD.createSimpleStyle(POSITION
-					// .getFeatureType(), Color.RED);
-					// mapLayer = new DefaultMapLayer(collection, style, "");
-					// mapPane.getMapContext().addLayer(mapLayer);
-					// }
 				}
 
 				try {
