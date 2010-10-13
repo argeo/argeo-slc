@@ -20,22 +20,6 @@
       </perspective>
    </extension>
    <extension
-         id="org.argeo.slc.client.rcp.product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.argeo.slc.client.rcp.application"
-            name="SLC">
-         <property
-               name="windowImages"
-               value="icons/argeo-icon-256.png">
-         </property>
-         <property
-               name="appName"
-               value="SLC">
-         </property>
-      </product>
-   </extension>
-   <extension
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu">
@@ -72,6 +56,10 @@
          <property
                name="appName"
                value="SLC">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
          </property>
       </product>
    </extension>

@@ -17,6 +17,7 @@
 package org.argeo.slc.geotools.swing;
 
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
@@ -40,10 +41,10 @@ import org.argeo.slc.geotools.BeanFeatureTypeBuilder;
 import org.argeo.slc.gis.model.FieldPosition;
 import org.argeo.slc.jts.PositionProvider;
 import org.geotools.data.DataStore;
-import org.geotools.data.DataStoreFinder;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.WorldFileReader;
+import org.geotools.data.postgis.PostgisNGDataStoreFactory;
 import org.geotools.factory.CommonFactoryFinder;
 import org.geotools.gce.image.WorldImageFormat;
 import org.geotools.geometry.DirectPosition2D;
@@ -51,6 +52,7 @@ import org.geotools.geometry.Envelope2D;
 import org.geotools.map.DefaultMapContext;
 import org.geotools.map.MapContext;
 import org.geotools.map.MapLayer;
+import org.geotools.renderer.lite.StreamingRenderer;
 import org.geotools.styling.FeatureTypeStyle;
 import org.geotools.styling.LineSymbolizer;
 import org.geotools.styling.RasterSymbolizer;
@@ -103,6 +105,7 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 
 	private JMapPane mapPane;
 	private JMapFrame mapFrame;
+	private Frame awtFrame = null;
 
 	/** in s */
 	private Integer positionRefreshPeriod = 1;
@@ -112,6 +115,16 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 	private VersatileZoomTool versatileZoomTool;
 
 	private DataSource dataSource;
+
+	private DataStore postGisDataStore;
+
+	public GisFieldViewer() {
+		super();
+	}
+
+	public GisFieldViewer(Frame awtFrame) {
+		this.awtFrame = awtFrame;
+	}
 
 	public static void main(String[] args) throws Exception {
 		new GisFieldViewer().afterPropertiesSet();
@@ -133,18 +146,24 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 		MapContext mapContext = new DefaultMapContext();
 		mapContext.setTitle("GIS Field Viewer");
 
-		// Now display the map
-		// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		mapFrame = new JMapFrame(mapContext);
-		mapFrame.enableStatusBar(true);
-		mapFrame.enableToolBar(false);
-		mapFrame.enableLayerTable(true);
-		mapFrame.initComponents();
-		mapFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		if (awtFrame == null) {
+			// Now display the map
+			// UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			mapFrame = new JMapFrame(mapContext);
+			mapFrame.enableStatusBar(true);
+			mapFrame.enableToolBar(false);
+			mapFrame.enableLayerTable(true);
+			mapFrame.initComponents();
+			mapFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		mapFrame.setSize(800, 600);
+			mapFrame.setSize(800, 600);
 
-		mapPane = mapFrame.getMapPane();
+			mapPane = mapFrame.getMapPane();
+		} else {
+			mapPane = new JMapPane(new StreamingRenderer(), mapContext);
+			awtFrame.add(mapPane);
+		}
+
 		// ReferencedEnvelope referencedEnvelope = new
 		// ReferencedEnvelope(sphericalMercator);
 		// mapFrame.getMapContext().setAreaOfInterest(referencedEnvelope);
@@ -153,22 +172,23 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 
 		mapPane.addMapPaneListener(new CustomMapPaneListener());
 
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				// Fullscreen
-				// GraphicsEnvironment ge = GraphicsEnvironment
-				// .getLocalGraphicsEnvironment();
-				// GraphicsDevice[] devices = ge.getScreenDevices();
-				// if (devices.length < 1)
-				// throw new RuntimeException("No device available");
-				// GraphicsDevice gd = devices[0];
-				// mapFrame.setUndecorated(true);
-				// // http://ubuntuforums.org/showthread.php?t=820924
-				// mapFrame.setResizable(true);
-				// gd.setFullScreenWindow(mapFrame);
-				mapFrame.setVisible(true);
-			}
-		});
+		if (mapFrame != null)
+			SwingUtilities.invokeLater(new Runnable() {
+				public void run() {
+					// Fullscreen
+					// GraphicsEnvironment ge = GraphicsEnvironment
+					// .getLocalGraphicsEnvironment();
+					// GraphicsDevice[] devices = ge.getScreenDevices();
+					// if (devices.length < 1)
+					// throw new RuntimeException("No device available");
+					// GraphicsDevice gd = devices[0];
+					// mapFrame.setUndecorated(true);
+					// // http://ubuntuforums.org/showthread.php?t=820924
+					// mapFrame.setResizable(true);
+					// gd.setFullScreenWindow(mapFrame);
+					mapFrame.setVisible(true);
+				}
+			});
 
 		// Center on position in order to facten first rendering
 		centerOnPosition();
@@ -207,20 +227,25 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 
 		try {
 			Map params = new HashMap();
-			params.put("dbtype", "postgis");
-			params.put("host", "air");
-			params.put("port", new Integer(5432));
-			params.put("database", "test_berlin");
-			params.put("user", "argeo");
-			params.put("passwd", "argeo");
+			// params.put("dbtype", "postgis");
+			// params.put("host", "air");
+			// params.put("port", new Integer(5432));
+			// params.put("database", "test_berlin");
+			// params.put("user", "argeo");
+			// params.put("passwd", "argeo");
+			//
+			// DataStore pgDatastore = DataStoreFinder.getDataStore(params);
 
-			DataStore pgDatastore = DataStoreFinder.getDataStore(params);
-
+			PostgisNGDataStoreFactory factory = new PostgisNGDataStoreFactory();
 			// JDBCDataStore pgDatastore = new JDBCDataStore();
 			// pgDatastore.setDataSource(dataSource);
 			// pgDatastore.setSQLDialect(new PostGISDialect(pgDatastore));
 
-			FeatureSource<SimpleFeatureType, SimpleFeature> source = pgDatastore
+			params.put(PostgisNGDataStoreFactory.DATASOURCE.key, dataSource);
+
+			//JDBCDataStore pgDatastore = factory.createDataStore(params);
+
+			FeatureSource<SimpleFeatureType, SimpleFeature> source = postGisDataStore
 					.getFeatureSource("ways");
 			// log.debug("source CRS: "+source.getBounds().getCoordinateReferenceSystem());
 			// log.debug("context CRS: "+mapContext.getCoordinateReferenceSystem());
@@ -408,6 +433,10 @@ public class GisFieldViewer implements InitializingBean, DisposableBean {
 
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
+	}
+
+	public void setPostGisDataStore(DataStore postGisDataStore) {
+		this.postGisDataStore = postGisDataStore;
 	}
 
 	private class CustomMapPaneListener extends MapPaneAdapter {

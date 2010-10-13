@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.argeo.slc.gis.position.ui</name>
+	<name>org.argeo.slc.gis.position.backend</name>
 	<comment></comment>
 	<projects>
 	</projects>
