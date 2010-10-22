@@ -8,7 +8,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: org.argeo.slc.core.test.tree;version="0.13.0.SNAPSHOT-r3768",
+Import-Package: org.argeo.slc.client.ui.perspectives,
+ org.argeo.slc.core.test.tree;version="0.13.0.SNAPSHOT-r3768",
  org.argeo.slc.execution;version="0.13.0.SNAPSHOT-r3770",
  org.argeo.slc.process;version="0.13.0.SNAPSHOT-r3770",
  org.argeo.slc.runtime;version="0.13.0.SNAPSHOT-r3770",

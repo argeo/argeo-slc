@@ -32,7 +32,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		configurer.setInitialSize(new Point(1024, 800));
+		configurer.setInitialSize(new Point(1600, 800));
 		configurer.setShowCoolBar(true);
 		configurer.setShowStatusLine(true);
 		configurer.setShowPerspectiveBar(true);
@@ -61,8 +61,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			return;
 
 		// image
-		Image trayImage = ClientRcpPlugin.getDefault().getImageRegistry().get(
-				"argeoTrayIcon");
+		Image trayImage = ClientRcpPlugin.getDefault().getImageRegistry()
+				.get("argeoTrayIcon");
 		trayItem.setImage(trayImage);
 		trayItem.setToolTipText("Argeo SLC");
 

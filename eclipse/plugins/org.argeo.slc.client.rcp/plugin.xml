@@ -15,8 +15,8 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             name="Perspective"
-            class="org.argeo.slc.client.rcp.Perspective"
-            id="org.argeo.slc.client.rcp.perspective">
+            class="org.argeo.slc.client.ui.perspectives.SlcExecution"
+            id="org.argeo.slc.client.ui.perspectives.slcExecution">
       </perspective>
    </extension>
    <extension

@@ -4,12 +4,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.controllers.ProcessController;
@@ -37,8 +36,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 public class ExecutionModulesView extends ViewPart {
-	private final static Log log = LogFactory
-			.getLog(ExecutionModulesView.class);
+	// private final static Log log = LogFactory
+	// .getLog(ExecutionModulesView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.executionModulesView";
 
@@ -142,15 +141,19 @@ public class ExecutionModulesView extends ViewPart {
 	}
 
 	class ViewDragListener implements DragSourceListener {
-		public void dragFinished(DragSourceEvent event) {
-			System.out.println("Finished Drag");
+
+		public void dragStart(DragSourceEvent event) {
+			System.out.println("Start Drag");
 		}
 
 		public void dragSetData(DragSourceEvent event) {
 			System.out.println("dragSetData: " + event);
+			// System.out.println("dataType: " + event.dataType);
+
 			IStructuredSelection selection = (IStructuredSelection) viewer
 					.getSelection();
 			if (selection.getFirstElement() instanceof ExecutionModulesContentProvider.FlowNode) {
+				
 				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 					ExecutionModulesContentProvider.FlowNode flowNode = (ExecutionModulesContentProvider.FlowNode) selection
 							.getFirstElement();
@@ -166,8 +169,8 @@ public class ExecutionModulesView extends ViewPart {
 						props.store(out, "");
 						event.data = new String(out.toByteArray());
 					} catch (IOException e) {
-						throw new SlcException("Cannot transfor realized flow",
-								e);
+						throw new SlcException(
+								"Cannot transform realized flow", e);
 					} finally {
 						IOUtils.closeQuietly(out);
 					}
@@ -175,8 +178,8 @@ public class ExecutionModulesView extends ViewPart {
 			}
 		}
 
-		public void dragStart(DragSourceEvent event) {
-			System.out.println("Start Drag");
+		public void dragFinished(DragSourceEvent event) {
+			System.out.println("Finished Drag");
 		}
 
 		private RealizedFlow nodeAsRealizedFlow(
@@ -188,6 +191,7 @@ public class ExecutionModulesView extends ViewPart {
 					.getDescriptor().getVersion());
 			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor();
 			efd.setName(flowNode.getFlowName());
+			efd.setValues(flowNode.getValues());
 			rf.setFlowDescriptor(efd);
 			return rf;
 		}
@@ -196,6 +200,11 @@ public class ExecutionModulesView extends ViewPart {
 			props.setProperty("moduleName", rf.getModuleName());
 			props.setProperty("moduleVersion", rf.getModuleVersion());
 			props.setProperty("flowName", rf.getFlowDescriptor().getName());
+			Map<String, Object> values = rf.getFlowDescriptor().getValues();
+			if (values != null && values.size() > 0)
+				for (String key : values.keySet())
+					props.setProperty("values-" + key, values.get(key)
+							.toString());
 		}
 
 	}

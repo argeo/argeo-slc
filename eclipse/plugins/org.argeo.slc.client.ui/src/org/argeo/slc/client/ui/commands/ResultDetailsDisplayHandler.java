@@ -1,7 +1,5 @@
 package org.argeo.slc.client.ui.commands;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.client.ui.views.ResultDetailView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -17,8 +15,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 
 public class ResultDetailsDisplayHandler extends AbstractHandler {
-	private static final Log log = LogFactory
-			.getLog(ResultDetailsDisplayHandler.class);
+	// private static final Log log = LogFactory
+	// .getLog(ResultDetailsDisplayHandler.class);
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 

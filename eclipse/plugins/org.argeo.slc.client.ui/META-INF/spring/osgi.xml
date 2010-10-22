@@ -6,7 +6,7 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<beans:description> Implements SLC specific rcp uis.
+	<beans:description> Implements SLC specific RCP UIs.
 	</beans:description>
 
 	<!-- Services exposed by the current bundle -->

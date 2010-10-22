@@ -10,6 +10,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.argeo.slc.client.ui,
  org.argeo.slc.client.ui.listeners,
+ org.argeo.slc.client.ui.perspectives,
  org.argeo.slc.client.ui.views
 Import-Package: org.apache.commons.io;version="1.4.0",
  org.apache.commons.logging;version="1.1.1",
@@ -22,6 +23,7 @@ Import-Package: org.apache.commons.io;version="1.4.0",
  org.argeo.slc.core.structure.tree,
  org.argeo.slc.core.test.tree;version="0.13.0.SNAPSHOT-r3768",
  org.argeo.slc.dao.process,
+ org.argeo.slc.dao.test,
  org.argeo.slc.dao.test.tree;version="0.13.0.SNAPSHOT-r3768",
  org.argeo.slc.deploy;version="0.13.0.SNAPSHOT-r3724",
  org.argeo.slc.execution;version="0.13.0.SNAPSHOT-r3685",
@@ -33,6 +35,5 @@ Import-Package: org.apache.commons.io;version="1.4.0",
  org.argeo.slc.test,
  org.springframework.beans.factory,
  org.springframework.context,
- org.springframework.core.io.support,
- org.argeo.slc.dao.test
+ org.springframework.core.io.support
 

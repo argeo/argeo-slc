@@ -1,10 +1,10 @@
-package org.argeo.slc.client.rcp;
+package org.argeo.slc.client.ui.perspectives;
 
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-public class Perspective implements IPerspectiveFactory {
+public class SlcExecution implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
@@ -12,14 +12,13 @@ public class Perspective implements IPerspectiveFactory {
 		layout.setFixed(false);
 
 		IFolderLayout topLeft = layout.createFolder("topLeft",
-				IPageLayout.LEFT, 0.5f, editorArea);
+				IPageLayout.LEFT, 0.7f, editorArea);
 		topLeft.addView("org.argeo.slc.client.ui.executionModulesView");
 
 		IFolderLayout topRight = layout.createFolder("topRight",
-				IPageLayout.RIGHT, 0.5f, editorArea);
+				IPageLayout.RIGHT, 0.3f, editorArea);
 		topRight.addView("org.argeo.slc.client.ui.resultListView");
-		topRight
-				.addPlaceholder("org.argeo.slc.client.ui.resultDetailView:UUID-*");
+		topRight.addPlaceholder("org.argeo.slc.client.ui.resultDetailView:UUID-*");
 
 		IFolderLayout bottomRight = layout.createFolder("bottomRight",
 				IPageLayout.BOTTOM, 0.6f, "topRight");
@@ -30,6 +29,10 @@ public class Perspective implements IPerspectiveFactory {
 		IFolderLayout bottomLeft = layout.createFolder("bottomLeft",
 				IPageLayout.BOTTOM, 0.6f, "topLeft");
 		bottomLeft.addView("org.argeo.slc.client.ui.processBuilderView");
+		IFolderLayout paramsEditor = layout.createFolder("paramsEditor",
+				IPageLayout.RIGHT, 0.6f, "bottomLeft");
+		paramsEditor.addView("org.argeo.slc.client.ui.processParametersView");
+
 	}
 
 }

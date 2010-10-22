@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.eclipse.ui.TreeObject;
 import org.argeo.eclipse.ui.TreeParent;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.runtime.SlcAgent;
@@ -24,18 +25,23 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 	private List<SlcAgent> slcAgents;
 
 	public Object[] getChildren(Object parent) {
+
 		if (parent instanceof ExecutionModuleNode) {
 			ExecutionModuleNode executionModuleNode = (ExecutionModuleNode) parent;
 			ExecutionModuleDescriptor emd = executionModuleNode.getDescriptor();
-			emd = executionModuleNode.getAgentNode().getAgent()
+
+			// Terminate the building of UI specific object emd
+			emd = executionModuleNode
+					.getAgentNode()
+					.getAgent()
 					.getExecutionModuleDescriptor(emd.getName(),
 							emd.getVersion());
 			executionModuleNode.cacheDescriptor(emd);
-			// for (String flowName : executionModuleNode.getFlowDescriptors()
-			// .keySet()) {
-			// executionModuleNode.addChild(new FlowNode(flowName,
-			// executionModuleNode));
-			// }
+
+			// This is not recursive, e.g. ExecutionModuleNode build a Tree of
+			// specific
+			// treeObject and cache it in the cacheDescriptor.
+			// Then we only have TreeObjects
 			return executionModuleNode.getChildren();
 		} else if (parent instanceof AgentNode) {
 			AgentNode agentNode = (AgentNode) parent;
@@ -92,7 +98,13 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 	}
 
 	public void setSlcAgents(List<SlcAgent> slcAgents) {
-		this.slcAgents = slcAgents;
+		this.slcAgents = slcAgents// for (String flowName :
+									// executionModuleNode.getFlowDescriptors()
+		// .keySet()) {
+		// executionModuleNode.addChild(new FlowNode(flowName,
+		// executionModuleNode));
+		// }
+		;
 	}
 
 	public class AgentNode extends TreeParent {
@@ -136,9 +148,16 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 
 			flowDescriptors = new HashMap<String, ExecutionFlowDescriptor>();
 			for (ExecutionFlowDescriptor fd : descriptor.getExecutionFlows()) {
-				// if (log.isTraceEnabled())
-				// log.trace("fd.path=" + fd.getPath() + ", fd.name="
-				// + fd.getName());
+				if (log.isTraceEnabled())
+					log.trace("fd.path=" + fd.getPath() + ", fd.name="
+							+ fd.getName());
+				Map<String, Object> values = fd.getValues();
+
+				if (values == null)
+					log.debug("No attribute for " + fd.getName());
+				else
+					for (String key : values.keySet())
+						log.debug(key + " - " + values.get(key));
 
 				// find path and label
 				String path;
@@ -158,11 +177,16 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 				if (path == null || path.trim().equals("")
 						|| path.trim().equals("/")) {
 					// directChildren.put(name, new FlowNode(name, this));
-					addChild(new FlowNode(label, fd.getName(), this));
+					addChild(new FlowNode(label, fd.getName(), fd.getValues(),
+							this));
 				} else {
 					FolderNode folderNode = mkdirs(this, path, folderNodes);
-					folderNode
-							.addChild(new FlowNode(label, fd.getName(), this));
+					// TODO : why do we add a reference to the parent ?
+					// Probably to differentiate 2 flow nodes with same name but
+					// distinct execution Node. TBC
+					folderNode.addChild(new FlowNode(label, fd.getName(), fd
+							.getValues(), this));
+
 				}
 
 				flowDescriptors.put(fd.getName(), fd);
@@ -213,11 +237,33 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 		private final String flowName;
 		private final ExecutionModuleNode executionModuleNode;
 
+		// TODO : handle casting from various object type to String and reverse.
+		private final Map<String, Object> values;
+
 		public FlowNode(String label, String flowName,
-				ExecutionModuleNode executionModuleNode) {
+				Map<String, Object> values, ExecutionModuleNode parent) {
 			super(label);
 			this.flowName = flowName;
-			this.executionModuleNode = executionModuleNode;
+			this.values = values;
+			this.executionModuleNode = parent;
+		}
+
+		public Map<String, Object> getValues() {
+			return values;
+		}
+
+		public Object getValueByKey(String key) {
+			return values.get(key);
+		}
+
+		public void setValueByKey(String key, Object value) {
+			if (values.get(key) == null)
+				throw new SlcException("Unsupported Parameter " + key
+						+ " for FlowNode " + flowName);
+			else {
+				values.remove(key);
+				values.put(key, value);
+			}
 		}
 
 		public String getFlowName() {

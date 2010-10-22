@@ -7,6 +7,8 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class ExitHandler extends AbstractHandler {
 
+	// TODO: Could be implemented using default RCP commands.
+
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		HandlerUtil.getActiveWorkbenchWindow(event).close();
 		return null;

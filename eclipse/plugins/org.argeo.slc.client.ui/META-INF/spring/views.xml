@@ -46,6 +46,11 @@
 		<property name="processController" ref="processController" />
 	</bean>
 
+	<bean id="org.argeo.slc.client.ui.processParametersView" class="org.argeo.slc.client.ui.views.ProcessParametersView"
+		scope="prototype">
+	</bean>
+
+
 	<bean id="executionModulesContentProvider"
 		class="org.argeo.slc.client.ui.views.ExecutionModulesContentProvider">
 		<property name="slcAgents" ref="slcAgents" />

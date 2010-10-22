@@ -154,11 +154,27 @@ public class ProcessBuilderView extends ViewPart {
 			String agentId = props.getProperty("agentId");
 			if (currentAgentUuid == null)
 				currentAgentUuid = agentId;
-			else if (currentAgentUuid.equals(agentId))
-				return false;
+			else if (!currentAgentUuid.equals(agentId)) {
+				// TODO: as for now, we can only construct batch on a single
+				// Agent,
+				// must be upgraded to enable batch on various agent.
+				throw new SlcException(
+						"Cannot create batch on two (or more) distinct agents",
+						null);
+				// return false;
+			}
 
 			RealizedFlow rf = realizedFlowFromProperties(props);
 			realizedFlows.add(rf);
+
+			// Map<String, Object> descriptors = rf.getFlowDescriptor()
+			// .getValues();
+			// if (descriptors != null && descriptors.size() > 0 ){
+			// for (String key : descriptors.keySet()) {
+			// System.out.println("[" + key + "] "
+			// + descriptors.get(key).toString());
+			// }}
+
 			getViewer().refresh();
 			return true;
 		}
