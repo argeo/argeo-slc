@@ -21,10 +21,10 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 	private final static Log log = LogFactory
 			.getLog(ExecutionModulesContentProvider.class);
 
+	// IoC
 	private List<SlcAgent> slcAgents;
 
 	public Object[] getChildren(Object parent) {
-
 		if (parent instanceof ExecutionModuleNode) {
 			ExecutionModuleNode executionModuleNode = (ExecutionModuleNode) parent;
 			ExecutionModuleDescriptor emd = executionModuleNode.getDescriptor();
@@ -96,16 +96,8 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 		return getChildren(parent);
 	}
 
-	public void setSlcAgents(List<SlcAgent> slcAgents) {
-		this.slcAgents = slcAgents// for (String flowName :
-									// executionModuleNode.getFlowDescriptors()
-		// .keySet()) {
-		// executionModuleNode.addChild(new FlowNode(flowName,
-		// executionModuleNode));
-		// }
-		;
-	}
-
+	
+	
 	public class AgentNode extends TreeParent {
 		private final SlcAgent agent;
 
@@ -260,5 +252,10 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 			super(name);
 		}
 
+	}
+	
+	// IoC
+	public void setSlcAgents(List<SlcAgent> slcAgents) {
+		this.slcAgents = slcAgents;
 	}
 }

@@ -26,8 +26,19 @@ import org.eclipse.jface.viewers.TextCellEditor;
 
 public class ProcessParametersEditingSupport extends EditingSupport {
 
-	private CellEditor editor;
-	private int column;
+	// private final static Log log = LogFactory
+	// .getLog(ProcessParametersEditingSupport.class);
+
+	private CellEditor strEditor;
+	private CellEditor nbEditor;
+	// private int column;
+
+	private final static String strType = "string", intType = "integer";
+
+	// different type of primitive
+	private static enum primitiveType {
+		strType, intType
+	};
 
 	// So that we can update corresponding process
 	private int curProcessIndex;
@@ -35,13 +46,15 @@ public class ProcessParametersEditingSupport extends EditingSupport {
 
 	public ProcessParametersEditingSupport(ColumnViewer viewer, int column) {
 		super(viewer);
-		editor = new TextCellEditor(((TableViewer) viewer).getTable());
-		this.column = column;
+		strEditor = new TextCellEditor(((TableViewer) viewer).getTable());
+		// nbEditor = new NumberCellEditor(((TableViewer) viewer).getTable());
+		// this.column = column;
 	}
 
 	@Override
 	protected CellEditor getCellEditor(Object element) {
-		return editor;
+		// TODO return specific editor depending on the parameter type.
+		return strEditor;
 	}
 
 	@Override
@@ -55,9 +68,12 @@ public class ProcessParametersEditingSupport extends EditingSupport {
 
 		if (objectWithName.obj instanceof PrimitiveAccessor) {
 			PrimitiveAccessor pv = (PrimitiveAccessor) objectWithName.obj;
-			// we only handle string parameter in a first time
-			if ("string".equals(pv.getType())) {
+			// we only handle string & integer parameter in a first time
+			if (strType.equals(pv.getType())) {
 				return pv.getValue();
+			}
+			if (intType.equals(pv.getType())) {
+				return ((Integer) pv.getValue()).toString();
 			}
 		}
 		return "unsupported param type";
@@ -67,16 +83,22 @@ public class ProcessParametersEditingSupport extends EditingSupport {
 	@Override
 	protected void setValue(Object element, Object value) {
 		ProcessParametersView.ObjectWithName objectWithName = (ProcessParametersView.ObjectWithName) element;
-
 		if (objectWithName.obj instanceof PrimitiveAccessor) {
 			PrimitiveAccessor pv = (PrimitiveAccessor) objectWithName.obj;
 			// we only handle string parameter in a first time
-			if ("string".equals(pv.getType())) {
+			if (strType.equals(pv.getType())) {
 				pv.setValue(value);
 				pbView.updateParameter(curProcessIndex, objectWithName.name,
 						objectWithName.obj);
-				getViewer().update(element, null);
+			} else if (intType.equals(pv.getType())) {
+
+				String stVal = (String) value;
+				Integer val = ("".equals(stVal)) ? new Integer(0)
+						: new Integer(stVal);
+				pv.setValue(val);
+				pbView.updateParameter(curProcessIndex, objectWithName.name, pv);
 			}
+			getViewer().update(element, null);
 		}
 
 	}

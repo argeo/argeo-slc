@@ -152,13 +152,13 @@ public class ExecutionModulesView extends ViewPart {
 					ExecutionModulesContentProvider.FlowNode flowNode = (ExecutionModulesContentProvider.FlowNode) selection
 							.getFirstElement();
 
-					// we still use property because the marshaller bean does
-					// not know the FlowNode Class
 					Properties props = new Properties();
 					flowNodeAsProperties(props, flowNode);
 					props.setProperty("agentId", flowNode
 							.getExecutionModuleNode().getAgentNode().getAgent()
 							.getAgentUuid());
+					props.setProperty("host", flowNode.getExecutionModuleNode().getAgentNode()
+							.getAgent().toString());
 
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 					try {
@@ -178,20 +178,23 @@ public class ExecutionModulesView extends ViewPart {
 			System.out.println("Finished Drag");
 		}
 
-		private void flowNodeAsProperties(Properties props, FlowNode fn) {
-			props.setProperty("moduleName", fn.getExecutionModuleNode()
-					.getDescriptor().getName());
-			props.setProperty("moduleVersion", fn.getExecutionModuleNode()
-					.getDescriptor().getVersion());
-			props.setProperty("flowName", fn.getFlowName());
+		protected void flowNodeAsProperties(Properties props, FlowNode fn) {
 
-			System.out.println("Execution Spec avant marshalling ??? ");
-			System.out.println(fn.getExecutionFlowDescriptor());
-			System.out.println(fn.getExecutionFlowDescriptor()
+			RealizedFlow realizedFlow = new RealizedFlow();
+			realizedFlow.setModuleName(fn.getExecutionModuleNode()
+					.getDescriptor().getName());
+			realizedFlow.setModuleVersion(fn.getExecutionModuleNode()
+					.getDescriptor().getVersion());
+			realizedFlow.setFlowDescriptor(fn.getExecutionFlowDescriptor());
+
+			// As we want to have the effective ExecutionSpec and not a
+			// reference; we store it at the RealizeFlow level : thus the
+			// marshaller will store the object and not only a reference.
+			realizedFlow.setExecutionSpec(fn.getExecutionFlowDescriptor()
 					.getExecutionSpec());
 
-			props.setProperty("FlowDescriptorAsXml",
-					oxmBean.marshal(fn.getExecutionFlowDescriptor()));
+			props.setProperty("RealizedFlowAsXml",
+					oxmBean.marshal(realizedFlow));
 			System.out
 					.println(oxmBean.marshal(fn.getExecutionFlowDescriptor()));
 

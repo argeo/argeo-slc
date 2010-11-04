@@ -43,6 +43,7 @@
 		scope="prototype">
 		<property name="processController" ref="processController" />
 		<property name="oxmBean" ref="oxmBean" />
+		<property name="slcAgents" ref="slcAgents" />
 	</bean>
 
 	<bean id="org.argeo.slc.client.ui.processParametersView" class="org.argeo.slc.client.ui.views.ProcessParametersView"

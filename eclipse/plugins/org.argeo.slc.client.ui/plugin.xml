@@ -56,7 +56,22 @@
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             id="org.argeo.slc.client.ui.refreshResultList"
-            name="RefreshResultList ">
+            name="RefreshResultList">
+      </command>
+      <command
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.client.ui.launchBatch"
+            name="LaunchBatch">
+      </command>
+      <command
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.client.ui.removeSelectedFromBatch"
+            name="RemoveSelectedFromBatch">
+      </command>
+      <command
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.client.ui.clearBatch"
+            name="ClearBatch">
       </command>
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
@@ -136,6 +151,23 @@
             </separator>
          </toolbar>
       </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.argeo.slc.client.ui.processBuilderView">
+         <command
+               commandId="org.argeo.slc.client.ui.launchBatch"
+               label="Launch Batch"
+               tooltip="Launch the batch built in the process builder view.">
+         </command>
+         <command
+               commandId="org.argeo.slc.client.ui.clearBatch"
+               label="Clear Batch"
+               tooltip="Clear the batch built in the process builder view.">
+         </command>
+         <command
+               commandId="org.argeo.slc.client.ui.removeSelectedFromBatch"
+               label="Remove Selected From Batch"
+               tooltip="Remove selected process from process builder view.">
+         </command>
+      </menuContribution>
    </extension>
-
 </plugin>

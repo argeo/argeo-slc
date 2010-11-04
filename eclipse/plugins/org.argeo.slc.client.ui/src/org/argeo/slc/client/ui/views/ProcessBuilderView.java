@@ -8,11 +8,12 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.oxm.OxmInterface;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.controllers.ProcessController;
-import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
@@ -55,7 +56,12 @@ import org.eclipse.ui.part.ViewPart;
  * 
  */
 public class ProcessBuilderView extends ViewPart {
+	private final static Log log = LogFactory.getLog(ProcessBuilderView.class);
+
 	public static final String ID = "org.argeo.slc.client.ui.processBuilderView";
+	private static final String EDIT_CMD = "org.argeo.slc.client.ui.editRealizedFlowDetails";
+	private static final String FLOWASXML_PARAM = "org.argeo.slc.client.commands.realizedFlowAsXml";
+	private static final String INDEX_PARAM = "org.argeo.slc.client.commands.realizedFlowIndex";
 
 	// private final static Log log =
 	// LogFactory.getLog(ProcessBuilderView.class);
@@ -63,10 +69,16 @@ public class ProcessBuilderView extends ViewPart {
 	private TableViewer viewer;
 	private List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
 	private String currentAgentUuid = null;
+	private String host = null;
+
+	// TODO find a better way to get index of the current selected row
+	// used in removeSelected
+	private int curSelectedRow = -1;
 
 	// IoC
 	private OxmInterface oxmBean;
 	private ProcessController processController;
+	private List<SlcAgent> slcAgents;
 
 	public void createPartControl(Composite parent) {
 		Table table = createTable(parent);
@@ -128,6 +140,97 @@ public class ProcessBuilderView extends ViewPart {
 		curRealizedFlow.getFlowDescriptor().getValues().put(paramName, value);
 	}
 
+	// clear the realizedFlow<List>
+	public void clearBatch() {
+		// we clear the list
+		realizedFlows = new ArrayList<RealizedFlow>();
+		curSelectedRow = -1;
+		refreshParameterview(null);
+		viewer.refresh();
+	}
+
+	// Remove the selected process from the batch
+	public void removeSelected() {
+		if (curSelectedRow == -1)
+			return;
+		else
+			realizedFlows.remove(curSelectedRow);
+		curSelectedRow = -1;
+		refreshParameterview(null);
+		viewer.refresh();
+	}
+
+	// calling this method with index =-1 will cause the reset of the view.
+	private void refreshParameterview(RealizedFlow rf) {
+		IWorkbench iw = ClientUiPlugin.getDefault().getWorkbench();
+		IHandlerService handlerService = (IHandlerService) iw
+				.getService(IHandlerService.class);
+		try {
+			// get the command from plugin.xml
+			IWorkbenchWindow window = iw.getActiveWorkbenchWindow();
+			ICommandService cmdService = (ICommandService) window
+					.getService(ICommandService.class);
+			Command cmd = cmdService.getCommand(EDIT_CMD);
+
+			ArrayList<Parameterization> parameters = new ArrayList<Parameterization>();
+
+			IParameter iparam;
+			Parameterization params;
+
+			// The current index to be able to records changes on
+			// parameters
+			iparam = cmd.getParameter(INDEX_PARAM);
+			params = new Parameterization(iparam,
+					(new Integer(curSelectedRow)).toString());
+			parameters.add(params);
+
+			if (curSelectedRow != -1) {
+				// The current Realized flow marshalled as XML
+				String result = oxmBean.marshal(rf);
+				iparam = cmd.getParameter(FLOWASXML_PARAM);
+				params = new Parameterization(iparam, result);
+				parameters.add(params);
+			}
+			// build the parameterized command
+			ParameterizedCommand pc = new ParameterizedCommand(cmd,
+					parameters.toArray(new Parameterization[parameters.size()]));
+
+			// execute the command
+			handlerService = (IHandlerService) window
+					.getService(IHandlerService.class);
+			handlerService.executeCommand(pc, null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new SlcException("Problem while rendering result. "
+					+ e.getMessage());
+		}
+
+	}
+
+	// Return the list of the processes to execute.
+	public void launchBatch() {
+		SlcExecution slcExecution = new SlcExecution();
+		slcExecution.setUuid(UUID.randomUUID().toString());
+
+		slcExecution.setRealizedFlows(realizedFlows);
+		slcExecution.setHost(host);
+
+		// TODO : insure that the concept has been well understood & the
+		// specification respected
+		SlcAgent curAgent;
+		for (int i = 0; i < slcAgents.size(); i++) {
+			if (currentAgentUuid == null)
+				throw new SlcException(
+						"Cannot launch a batch if no agent is specified");
+			if (currentAgentUuid.equals(slcAgents.get(i).getAgentUuid())) {
+				curAgent = slcAgents.get(i);
+				processController.execute(curAgent, slcExecution);
+				break;
+			}
+		}
+	}
+
 	// Specific Providers for the current view.
 	protected class ViewContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
@@ -170,65 +273,8 @@ public class ProcessBuilderView extends ViewPart {
 
 			if (obj instanceof RealizedFlow) {
 				RealizedFlow rf = (RealizedFlow) obj;
-
-				IWorkbench iw = ClientUiPlugin.getDefault().getWorkbench();
-				IHandlerService handlerService = (IHandlerService) iw
-						.getService(IHandlerService.class);
-
-				// TODO :
-				// WARNING :
-				// when marshalling an ExecutionFlowDescriptor, the Execution
-				// Spec is set correctly,
-				// but
-				// when marshalling directly a realized flow, paramters are
-				// stored under ExecutionFlowDescriptor.values
-				String result = oxmBean.marshal(rf);
-
-				// Passing parameters to the command
-				try {
-					// get the command from plugin.xml
-					IWorkbenchWindow window = iw.getActiveWorkbenchWindow();
-					ICommandService cmdService = (ICommandService) window
-							.getService(ICommandService.class);
-					Command cmd = cmdService
-							.getCommand("org.argeo.slc.client.ui.editRealizedFlowDetails");
-
-					ArrayList<Parameterization> parameters = new ArrayList<Parameterization>();
-
-					IParameter iparam;
-					Parameterization params;
-
-					// The current index to be able to records changes on
-					// parameters
-					iparam = cmd
-							.getParameter("org.argeo.slc.client.commands.realizedFlowIndex");
-					params = new Parameterization(iparam, (new Integer(
-							realizedFlows.indexOf(rf))).toString());
-
-					parameters.add(params);
-
-					// The current Realized flow marshalled as XML
-					// See warning above
-					iparam = cmd
-							.getParameter("org.argeo.slc.client.commands.realizedFlowAsXml");
-					params = new Parameterization(iparam, result);
-					parameters.add(params);
-
-					// build the parameterized command
-					ParameterizedCommand pc = new ParameterizedCommand(cmd,
-							parameters.toArray(new Parameterization[parameters
-									.size()]));
-
-					// execute the command
-					handlerService = (IHandlerService) window
-							.getService(IHandlerService.class);
-					handlerService.executeCommand(pc, null);
-
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new SlcException("Problem while rendering result. "
-							+ e.getMessage());
-				}
+				curSelectedRow = realizedFlows.indexOf(rf);
+				refreshParameterview(rf);
 			}
 		}
 	}
@@ -257,49 +303,26 @@ public class ProcessBuilderView extends ViewPart {
 			}
 
 			String agentId = props.getProperty("agentId");
-			if (currentAgentUuid == null)
+			if (currentAgentUuid == null) {
 				currentAgentUuid = agentId;
-			else if (!currentAgentUuid.equals(agentId)) {
+				host = props.getProperty("host");
+			} else if (!currentAgentUuid.equals(agentId)) {
 				// TODO: as for now, we can only construct batch on a single
-				// Agent,
-				// must be upgraded to enable batch on various agent.
+				// Agent, must be upgraded to enable batch on various agent.
 				throw new SlcException(
 						"Cannot create batch on two (or more) distinct agents",
 						null);
 				// return false;
 			}
 
-			RealizedFlow rf = realizedFlowFromProperties(props);
+			String fdXml = props.getProperty("RealizedFlowAsXml");
+			if (fdXml == null)
+				return false;
+			RealizedFlow rf = (RealizedFlow) oxmBean.unmarshal(fdXml);
 			realizedFlows.add(rf);
 
 			getViewer().refresh();
 			return true;
-		}
-
-		private RealizedFlow realizedFlowFromProperties(Properties props) {
-			RealizedFlow rf = new RealizedFlow();
-			rf.setModuleName(props.getProperty("moduleName"));
-			rf.setModuleVersion(props.getProperty("moduleVersion"));
-			String fdXml = props.getProperty("FlowDescriptorAsXml");
-			if (fdXml != null) {
-				Object o = oxmBean.unmarshal(fdXml);
-				if (o instanceof ExecutionFlowDescriptor) {
-					rf.setFlowDescriptor((ExecutionFlowDescriptor) o);
-					System.out.println("instance of EFD !!!"
-							+ rf.getFlowDescriptor().toString());
-					System.out.println(rf.getFlowDescriptor()
-							.getExecutionSpec());
-					return rf;
-				}
-			}
-			// Else
-			System.out
-					.println("***** WARNING : we should not be here; corresponding flow name"
-							+ props.getProperty("flowName"));
-			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor();
-			efd.setName(props.getProperty("flowName"));
-			rf.setFlowDescriptor(efd);
-			return rf;
 		}
 
 		@Override
@@ -310,6 +333,10 @@ public class ProcessBuilderView extends ViewPart {
 	}
 
 	// IoC
+	public void setSlcAgents(List<SlcAgent> slcAgents) {
+		this.slcAgents = slcAgents;
+	}
+
 	public void setOxmBean(OxmInterface oxmBean) {
 		this.oxmBean = oxmBean;
 	}

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.providers.ProcessParametersEditingSupport;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
@@ -32,14 +34,17 @@ import org.eclipse.ui.part.ViewPart;
  *         attribute to recall (and update ??) the various parameters.
  */
 public class ProcessParametersView extends ViewPart {
+	private static final Log log = LogFactory
+			.getLog(ProcessParametersView.class);
+
 	public static final String ID = "org.argeo.slc.client.ui.processParametersView";
 
-	// class attribute
-	private Map<String, ExecutionSpecAttribute> parameters;
-	private RealizedFlow curRealizedFlow;
-
-	// we should be using executionspecAttribute but for now we uses values.
+	// This map stores actual values set to default if existing at the begining
+	// and then the ones computed by the end user
 	private Map<String, Object> values;
+	// This map stores the spec of the attributes used to offer the end user
+	// some choices.
+	private Map<String, ExecutionSpecAttribute> specAttributes;
 
 	// We must keep a reference to the current EditingSupport so that we can
 	// update the index of the process being updated
@@ -54,18 +59,17 @@ public class ProcessParametersView extends ViewPart {
 		createColumns(viewer);
 
 		// WARNING
-		// for the moment being, we support only one process builder at a time 
+		// for the moment being, we support only one process builder at a time
 		// we set the corresponding view in the editor here.
 		ProcessBuilderView pbView = (ProcessBuilderView) ClientUiPlugin
 				.getDefault().getWorkbench().getActiveWorkbenchWindow()
 				.getActivePage().findView(ProcessBuilderView.ID);
 		ppEditingSupport.setCurrentProcessBuilderView(pbView);
-		
+
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setInput(getViewSite());
-		
-		
+
 	}
 
 	// This will create the columns for the table
@@ -91,22 +95,23 @@ public class ProcessParametersView extends ViewPart {
 		Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		
+
 	}
 
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
 
-	// save and update a field when it looses the focus
-	// TODO implement this method.
-
 	// set class attributes, refresh the lists of process paramaters to edit.
 	public void setRealizedFlow(int index, RealizedFlow rf) {
-
-		// this.processIndex = index;
+		// force the cleaning of the view
+		if (index == -1) {
+			viewer.setInput(null);
+			return;
+		}
+		// we store the index of the edited Process in the editor so that it can
+		// save computed values.
 		ppEditingSupport.setCurrentProcessIndex(index);
-		curRealizedFlow = rf;
 
 		// TODO :
 		// We should handle ExecutionSpec here. need to be improved.
@@ -117,6 +122,9 @@ public class ProcessParametersView extends ViewPart {
 		// viewer.setInput(parameters);
 
 		values = rf.getFlowDescriptor().getValues();
+		specAttributes = rf.getFlowDescriptor().getExecutionSpec()
+				.getAttributes();
+
 		if (values != null)
 			viewer.setInput(values);
 		else
@@ -167,6 +175,8 @@ public class ProcessParametersView extends ViewPart {
 						PrimitiveAccessor pa = (PrimitiveAccessor) own.obj;
 						if ("string".equals(pa.getType()))
 							return (String) pa.getValue();
+						else if ("integer".equals(pa.getType()))
+							return ((Integer) pa.getValue()).toString();
 						else
 							return "Type " + pa.getType()
 									+ " not yet supported";
@@ -197,71 +207,4 @@ public class ProcessParametersView extends ViewPart {
 		}
 
 	}
-
-	// protected class ViewContentProvider implements IStructuredContentProvider
-	// {
-	// public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-	// }
-	//
-	// public void dispose() {
-	// }
-	//
-	// // we cast the Map<String, ExecutionSpecAttribute> to List<Object>
-	// public Object[] getElements(Object obj) {
-	// if (obj instanceof Map && ((Map) obj).size() != 0) {
-	// List<ExecutionSpecAttributeWithName> list = new
-	// ArrayList<ExecutionSpecAttributeWithName>();
-	// Map<String, ExecutionSpecAttribute> map = (Map<String,
-	// ExecutionSpecAttribute>) obj;
-	// for (String key : map.keySet()) {
-	// list.add(new ExecutionSpecAttributeWithName(key, map
-	// .get(key)));
-	// }
-	// return list.toArray();
-	// } else {
-	// return new Object[0];
-	// }
-	// }
-	// }
-	//
-	// protected class ViewLabelProvider extends LabelProvider implements
-	// ITableLabelProvider {
-	//
-	// public String getColumnText(Object obj, int index) {
-	// // NOTE : the passed object is a line of the table !!!
-	//
-	// if (obj instanceof ExecutionSpecAttributeWithName) {
-	// ExecutionSpecAttributeWithName esaw = (ExecutionSpecAttributeWithName)
-	// obj;
-	// switch (index) {
-	// case 0:
-	// return esaw.name;
-	// case 1:
-	// return esaw.esa.getValue().toString();
-	// default:
-	// return getText(obj);
-	// }
-	// } else
-	// return getText(obj);
-	// }
-	//
-	// public Image getColumnImage(Object obj, int index) {
-	// return null;
-	// }
-	//
-	// }
-	//
-	// // We add an inner class to enrich the ExecutionSpecAttribute with a name
-	// // so that we can display it.
-	// private class ExecutionSpecAttributeWithName {
-	// public ExecutionSpecAttribute esa;
-	// public String name;
-	//
-	// public ExecutionSpecAttributeWithName(String name,
-	// ExecutionSpecAttribute esa) {
-	// this.name = name;
-	// this.esa = esa;
-	// }
-
-	// }
 }

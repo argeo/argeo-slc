@@ -9,12 +9,16 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * Command handler to display and edit the attributes of a given Realizedflow.
- * The corresponding RealizedFlow is passed via command parameters and
- * unmarshalled with the oxmBean which is injected by Spring.
  * 
  * @author bsinou
  * 
+ *         Command handler to display and edit the attributes of a given
+ *         Realizedflow. The corresponding RealizedFlow is passed via command
+ *         parameters and unmarshalled with the oxmBean which is injected by
+ *         Spring.
+ * 
+ *         Note thet passing an index of -1 will cause the reset of the View
+ *         (used among others when removing processes from the batch).
  */
 
 public class EditRealizedFlowDetailsHandler extends AbstractHandler {
@@ -29,13 +33,18 @@ public class EditRealizedFlowDetailsHandler extends AbstractHandler {
 		int index = new Integer(
 				event.getParameter("org.argeo.slc.client.commands.realizedFlowIndex"))
 				.intValue();
-		RealizedFlow rf = (RealizedFlow) oxmBean.unmarshal(rfAsXml);
-
 		try {
 			ProcessParametersView ppView = (ProcessParametersView) HandlerUtil
 					.getActiveWorkbenchWindow(event).getActivePage()
 					.showView(ProcessParametersView.ID);
-			ppView.setRealizedFlow(index, rf);
+
+			if (index == -1)
+				ppView.setRealizedFlow(-1, null);
+			else {
+				RealizedFlow rf = (RealizedFlow) oxmBean.unmarshal(rfAsXml);
+				ppView.setRealizedFlow(index, rf);
+
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
