@@ -19,17 +19,22 @@
 	<!-- References needed by the current bundle -->
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
 	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
+	<reference id="oxmBean" interface="org.argeo.slc.client.oxm.OxmInterface" />
+
+	<!-- References Needed -->
+	<!-- <reference id="marshaller" interface="org.springframework.oxm.Marshaller" 
+		/> <reference id="unmarshaller" interface="org.springframework.oxm.Unmarshaller" 
+		/> -->
 
 	<!-- DAO -->
 	<reference id="testResultCollectionDao"
 		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
 		context-class-loader="service-provider" />
 
-	<reference id="treeTestResultDao"
-		interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
+	<reference id="treeTestResultDao" interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
 		context-class-loader="service-provider" />
-		
-		
+
+
 	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao"
 		context-class-loader="service-provider" />
 

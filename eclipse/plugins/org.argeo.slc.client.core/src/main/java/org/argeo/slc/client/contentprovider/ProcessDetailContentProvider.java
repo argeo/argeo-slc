@@ -11,7 +11,8 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Basic tree view of the chosen process details
+ * Basic tree view of the chosen process details. For now, only a basic list of
+ * details is displayed, not a tree.
  */
 public class ProcessDetailContentProvider implements ITreeContentProvider {
 	private final static Log log = LogFactory
@@ -90,14 +91,6 @@ public class ProcessDetailContentProvider implements ITreeContentProvider {
 	}
 
 	public boolean hasChildren(Object parent) {
-		// if (parent instanceof TreeParent && ((TreeParent) parent).isLoaded())
-		// {
-		// return ((TreeParent) parent).hasChildren();
-		// } else if (parent instanceof AgentNode) {
-		// return true;
-		// } else if (parent instanceof ExecutionModuleNode) {
-		// return true;
-		// }
 		return false;
 	}
 
@@ -109,7 +102,7 @@ public class ProcessDetailContentProvider implements ITreeContentProvider {
 
 	public Object[] getElements(Object parent) {
 		// return getChildren(parent);
-		// Here we must dupplicate the code otherwise the inner call to method
+		// Here we must duplicate the code otherwise the inner call to method
 		// getChildren(parent); is not intercepted by AspectJ
 		if (parent instanceof SlcExecution) {
 			slcExecution = (SlcExecution) parent;
@@ -130,148 +123,4 @@ public class ProcessDetailContentProvider implements ITreeContentProvider {
 		}
 		return null;
 	}
-
-	// public class AgentNode extends TreeParent {
-	// private final SlcAgent agent;
-	//
-	// public AgentNode(SlcAgent agent) {
-	// super(agent.toString());
-	// this.agent = agent;
-	// }
-
-	// public SlcAgent getAgent() {
-	// return agent;
-	// }
-	// }
-
-	// public class ExecutionModuleNode extends TreeParent {
-	// private final AgentNode agentNode;
-	// private ExecutionModuleDescriptor descriptor;
-	// private Map<String, ExecutionFlowDescriptor> flowDescriptors;
-	//
-	// public ExecutionModuleNode(AgentNode agentNode,
-	// ExecutionModuleDescriptor descriptor) {
-	// super(descriptor.toString());
-	// this.agentNode = agentNode;
-	// this.descriptor = descriptor;
-	//
-	// }
-	//
-	// public AgentNode getAgentNode() {
-	// return agentNode;
-	// }
-	//
-	// public ExecutionModuleDescriptor getDescriptor() {
-	// return descriptor;
-	// }
-	// Object o = thisJoinPoint.getArgs()[0];
-
-	// public void cacheDescriptor(ExecutionModuleDescriptor descriptor) {
-	// this.descriptor = descriptor;
-	//
-	// SortedMap<String, FolderNode> folderNodes = new TreeMap<String,
-	// FolderNode>();
-	//
-	// flowDescriptors = new HashMap<String, ExecutionFlowDescriptor>();
-	// for (ExecutionFlowDescriptor fd : descriptor.getExecutionFlows()) {
-	// // if (log.isTraceEnabled())
-	// // log.trace("fd.path=" + fd.getPath() + ", fd.name="
-	// // + fd.getName());
-	//
-	// // find path and label
-	// String path;
-	// String label;
-	// int lastSlash = fd.getName().lastIndexOf('/');
-	// if ((fd.getPath() == null || fd.getPath().trim().equals(""))
-	// && lastSlash >= 0) {
-	// path = fd.getName().substring(0, lastSlash);
-	// label = fd.getName().substring(lastSlash + 1);
-	// } else {
-	// path = fd.getPath();
-	// label = fd.getName();
-	// }
-	// // if (log.isTraceEnabled())
-	// // log.trace("path=" + path + ", label=" + label);
-	//
-	// if (path == null || path.trim().equals("")
-	// || path.trim().equals("/")) {
-	// // directChildren.put(name, new FlowNode(name, this));
-	// addChild(new FlowNode(label, fd.getName(), this));
-	// } else {
-	// FolderNode folderNode = mkdirs(this, path, folderNodes);
-	// folderNode
-	// .addChild(new FlowNode(label, fd.getName(), this));
-	// }
-	//
-	// flowDescriptors.put(fd.getName(), fd);
-	// }
-	// // TODO: make it readonly
-	// }
-	//
-	// protected FolderNode mkdirs(TreeParent root, String path,
-	// SortedMap<String, FolderNode> folderNodes) {
-	// // Normalize
-	// if (path.charAt(0) != '/')
-	// path = '/' + path;
-	// if (path.charAt(path.length() - 1) == '/')
-	// path = path.substring(0, path.length() - 1);
-	//
-	// if (folderNodes.containsKey(path))
-	// return folderNodes.get(path);
-	//
-	// int lastIndx = path.lastIndexOf('/');
-	// String folderName;
-	// String parentPath;
-	// if (lastIndx >= 0) {
-	// folderName = path.substring(lastIndx + 1);
-	// parentPath = path.substring(0, lastIndx);
-	// } else {
-	// folderName = path;
-	// parentPath = "";
-	// }
-	//
-	// TreeParent parent;
-	// if (parentPath.equals(""))
-	// parent = root;
-	// else
-	// parent = mkdirs(root, parentPath, folderNodes);
-	// FolderNode newFolder = new FolderNode(folderName);
-	// parent.addChild(newFolder);
-	// folderNodes.put(path, newFolder);
-	// return newFolder;
-	// }
-	//
-	// public Map<String, ExecutionFlowDescriptor> getFlowDescriptors() {
-	// return flowDescriptors;
-	// }
-	//
-	// }
-	//
-	// public class FlowNode extends TreeObject {
-	// private final String flowName;
-	// private final ExecutionModuleNode executionModuleNode;
-	//
-	// public FlowNode(String label, String flowName,
-	// ExecutionModuleNode executionModuleNode) {
-	// super(label);
-	// this.flowName = flowName;
-	// this.executionModuleNode = executionModuleNode;
-	// }
-	//
-	// public String getFlowName() {
-	// return flowName;
-	// }
-	//
-	// public ExecutionModuleNode getExecutionModuleNode() {
-	// return executionModuleNode;
-	// }
-	//
-	// }
-	//
-	// public class FolderNode extends TreeParent {
-	// public FolderNode(String name) {
-	// super(name);
-	// }
-	//
-	// }
 }

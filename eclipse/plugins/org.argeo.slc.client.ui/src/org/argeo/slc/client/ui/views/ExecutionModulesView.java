@@ -4,15 +4,16 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.client.oxm.OxmInterface;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.controllers.ProcessController;
-import org.argeo.slc.execution.ExecutionFlowDescriptor;
+import org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider;
+import org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider.FlowNode;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
@@ -43,8 +44,9 @@ public class ExecutionModulesView extends ViewPart {
 
 	private TreeViewer viewer;
 
+	// Ioc
 	private IContentProvider contentProvider;
-
+	private OxmInterface oxmBean;
 	private ProcessController processController;
 
 	public void createPartControl(Composite parent) {
@@ -64,14 +66,6 @@ public class ExecutionModulesView extends ViewPart {
 
 	public TreeViewer getViewer() {
 		return viewer;
-	}
-
-	public void setContentProvider(IContentProvider contentProvider) {
-		this.contentProvider = contentProvider;
-	}
-
-	public void setProcessController(ProcessController processController) {
-		this.processController = processController;
 	}
 
 	class ViewLabelProvider extends LabelProvider implements
@@ -153,13 +147,15 @@ public class ExecutionModulesView extends ViewPart {
 			IStructuredSelection selection = (IStructuredSelection) viewer
 					.getSelection();
 			if (selection.getFirstElement() instanceof ExecutionModulesContentProvider.FlowNode) {
-				
+
 				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 					ExecutionModulesContentProvider.FlowNode flowNode = (ExecutionModulesContentProvider.FlowNode) selection
 							.getFirstElement();
-					RealizedFlow rf = nodeAsRealizedFlow(flowNode);
+
+					// we still use property because the marshaller bean does
+					// not know the FlowNode Class
 					Properties props = new Properties();
-					realizedFlowAsProperties(props, rf);
+					flowNodeAsProperties(props, flowNode);
 					props.setProperty("agentId", flowNode
 							.getExecutionModuleNode().getAgentNode().getAgent()
 							.getAgentUuid());
@@ -182,31 +178,38 @@ public class ExecutionModulesView extends ViewPart {
 			System.out.println("Finished Drag");
 		}
 
-		private RealizedFlow nodeAsRealizedFlow(
-				ExecutionModulesContentProvider.FlowNode flowNode) {
-			RealizedFlow rf = new RealizedFlow();
-			rf.setModuleName(flowNode.getExecutionModuleNode().getDescriptor()
-					.getName());
-			rf.setModuleVersion(flowNode.getExecutionModuleNode()
+		private void flowNodeAsProperties(Properties props, FlowNode fn) {
+			props.setProperty("moduleName", fn.getExecutionModuleNode()
+					.getDescriptor().getName());
+			props.setProperty("moduleVersion", fn.getExecutionModuleNode()
 					.getDescriptor().getVersion());
-			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor();
-			efd.setName(flowNode.getFlowName());
-			efd.setValues(flowNode.getValues());
-			rf.setFlowDescriptor(efd);
-			return rf;
+			props.setProperty("flowName", fn.getFlowName());
+
+			System.out.println("Execution Spec avant marshalling ??? ");
+			System.out.println(fn.getExecutionFlowDescriptor());
+			System.out.println(fn.getExecutionFlowDescriptor()
+					.getExecutionSpec());
+
+			props.setProperty("FlowDescriptorAsXml",
+					oxmBean.marshal(fn.getExecutionFlowDescriptor()));
+			System.out
+					.println(oxmBean.marshal(fn.getExecutionFlowDescriptor()));
+
 		}
 
-		private void realizedFlowAsProperties(Properties props, RealizedFlow rf) {
-			props.setProperty("moduleName", rf.getModuleName());
-			props.setProperty("moduleVersion", rf.getModuleVersion());
-			props.setProperty("flowName", rf.getFlowDescriptor().getName());
-			Map<String, Object> values = rf.getFlowDescriptor().getValues();
-			if (values != null && values.size() > 0)
-				for (String key : values.keySet())
-					props.setProperty("values-" + key, values.get(key)
-							.toString());
-		}
+	}
 
+	// IoC
+	public void setContentProvider(IContentProvider contentProvider) {
+		this.contentProvider = contentProvider;
+	}
+
+	public void setProcessController(ProcessController processController) {
+		this.processController = processController;
+	}
+
+	public void setOxmBean(OxmInterface oxmBean) {
+		this.oxmBean = oxmBean;
 	}
 
 }

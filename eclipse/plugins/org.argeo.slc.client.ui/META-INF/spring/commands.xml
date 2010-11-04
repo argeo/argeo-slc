@@ -20,4 +20,9 @@
 		class="org.argeo.slc.client.ui.commands.ResultDetailsDisplayHandler"
 		scope="prototype">
 	</bean>
+	<bean id="org.argeo.slc.client.ui.editRealizedFlowDetails"
+		class="org.argeo.slc.client.ui.commands.EditRealizedFlowDetailsHandler"
+		scope="prototype">
+		<property name="oxmBean" ref="oxmBean" />
+	</bean>
 </beans>

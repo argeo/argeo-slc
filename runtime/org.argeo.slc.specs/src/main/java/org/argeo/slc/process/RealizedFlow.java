@@ -38,8 +38,8 @@ public class RealizedFlow implements Serializable {
 	public void setModuleName(String moduleName) {
 		this.moduleName = moduleName;
 	}
-	
-	public NameVersion getModuleNameVersion(){
+
+	public NameVersion getModuleNameVersion() {
 		return new BasicNameVersion(getModuleName(), getModuleVersion());
 	}
 
@@ -66,5 +66,4 @@ public class RealizedFlow implements Serializable {
 	public void setExecutionSpec(ExecutionSpec executionSpec) {
 		this.executionSpec = executionSpec;
 	}
-
 }

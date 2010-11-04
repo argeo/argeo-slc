@@ -9,14 +9,23 @@ import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.client.oxm.OxmInterface;
+import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.controllers.ProcessController;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.IParameter;
+import org.eclipse.core.commands.Parameterization;
+import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
@@ -30,8 +39,21 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
 
+/**
+ * Display a list of processes that are to be launched as batch. For the moment
+ * being, only one agent by batch is enabled. The batch is contructed by
+ * dropping process from the ExecutionModuleView. Wrong type of data dropped in
+ * this view might raise errors.
+ * 
+ * @author bsinou
+ * 
+ */
 public class ProcessBuilderView extends ViewPart {
 	public static final String ID = "org.argeo.slc.client.ui.processBuilderView";
 
@@ -39,10 +61,11 @@ public class ProcessBuilderView extends ViewPart {
 	// LogFactory.getLog(ProcessBuilderView.class);
 
 	private TableViewer viewer;
-
 	private List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
-
 	private String currentAgentUuid = null;
+
+	// IoC
+	private OxmInterface oxmBean;
 	private ProcessController processController;
 
 	public void createPartControl(Composite parent) {
@@ -50,9 +73,12 @@ public class ProcessBuilderView extends ViewPart {
 		viewer = new TableViewer(table);
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setContentProvider(new ViewContentProvider());
+		viewer.addSelectionChangedListener(new SelectionChangedListener());
+
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
 		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
 		viewer.addDropSupport(operations, tt, new ViewDropListener(viewer));
+
 		viewer.setInput(getViewSite());
 	}
 
@@ -88,7 +114,6 @@ public class ProcessBuilderView extends ViewPart {
 		SlcExecution slcExecution = new SlcExecution();
 		slcExecution.setUuid(UUID.randomUUID().toString());
 		slcExecution.setRealizedFlows(realizedFlows);
-
 		processController.execute(agent, slcExecution);
 	}
 
@@ -96,10 +121,14 @@ public class ProcessBuilderView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	public void setProcessController(ProcessController processController) {
-		this.processController = processController;
+	// update one of the parameter of a given RealizedFlow
+	public void updateParameter(int realizedFlowIndex, String paramName,
+			Object value) {
+		RealizedFlow curRealizedFlow = realizedFlows.get(realizedFlowIndex);
+		curRealizedFlow.getFlowDescriptor().getValues().put(paramName, value);
 	}
 
+	// Specific Providers for the current view.
 	protected class ViewContentProvider implements IStructuredContentProvider {
 		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
 		}
@@ -131,6 +160,80 @@ public class ProcessBuilderView extends ViewPart {
 
 	}
 
+	// Handle Events
+	class SelectionChangedListener implements ISelectionChangedListener {
+		public void selectionChanged(SelectionChangedEvent evt) {
+
+			IStructuredSelection curSelection = (IStructuredSelection) evt
+					.getSelection();
+			Object obj = curSelection.getFirstElement();
+
+			if (obj instanceof RealizedFlow) {
+				RealizedFlow rf = (RealizedFlow) obj;
+
+				IWorkbench iw = ClientUiPlugin.getDefault().getWorkbench();
+				IHandlerService handlerService = (IHandlerService) iw
+						.getService(IHandlerService.class);
+
+				// TODO :
+				// WARNING :
+				// when marshalling an ExecutionFlowDescriptor, the Execution
+				// Spec is set correctly,
+				// but
+				// when marshalling directly a realized flow, paramters are
+				// stored under ExecutionFlowDescriptor.values
+				String result = oxmBean.marshal(rf);
+
+				// Passing parameters to the command
+				try {
+					// get the command from plugin.xml
+					IWorkbenchWindow window = iw.getActiveWorkbenchWindow();
+					ICommandService cmdService = (ICommandService) window
+							.getService(ICommandService.class);
+					Command cmd = cmdService
+							.getCommand("org.argeo.slc.client.ui.editRealizedFlowDetails");
+
+					ArrayList<Parameterization> parameters = new ArrayList<Parameterization>();
+
+					IParameter iparam;
+					Parameterization params;
+
+					// The current index to be able to records changes on
+					// parameters
+					iparam = cmd
+							.getParameter("org.argeo.slc.client.commands.realizedFlowIndex");
+					params = new Parameterization(iparam, (new Integer(
+							realizedFlows.indexOf(rf))).toString());
+
+					parameters.add(params);
+
+					// The current Realized flow marshalled as XML
+					// See warning above
+					iparam = cmd
+							.getParameter("org.argeo.slc.client.commands.realizedFlowAsXml");
+					params = new Parameterization(iparam, result);
+					parameters.add(params);
+
+					// build the parameterized command
+					ParameterizedCommand pc = new ParameterizedCommand(cmd,
+							parameters.toArray(new Parameterization[parameters
+									.size()]));
+
+					// execute the command
+					handlerService = (IHandlerService) window
+							.getService(IHandlerService.class);
+					handlerService.executeCommand(pc, null);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new SlcException("Problem while rendering result. "
+							+ e.getMessage());
+				}
+			}
+		}
+	}
+
+	// Implementation of the Drop Listener
 	protected class ViewDropListener extends ViewerDropAdapter {
 
 		public ViewDropListener(Viewer viewer) {
@@ -139,14 +242,16 @@ public class ProcessBuilderView extends ViewPart {
 
 		@Override
 		public boolean performDrop(Object data) {
-			System.out.println(data);
+
 			Properties props = new Properties();
+
+			// TODO : Handle wrong type of dropped data
 			ByteArrayInputStream in = new ByteArrayInputStream(data.toString()
 					.getBytes());
 			try {
 				props.load(in);
 			} catch (IOException e) {
-				throw new SlcException("Cannot create read realized flow", e);
+				throw new SlcException("Cannot create read flow node", e);
 			} finally {
 				IOUtils.closeQuietly(in);
 			}
@@ -167,14 +272,6 @@ public class ProcessBuilderView extends ViewPart {
 			RealizedFlow rf = realizedFlowFromProperties(props);
 			realizedFlows.add(rf);
 
-			// Map<String, Object> descriptors = rf.getFlowDescriptor()
-			// .getValues();
-			// if (descriptors != null && descriptors.size() > 0 ){
-			// for (String key : descriptors.keySet()) {
-			// System.out.println("[" + key + "] "
-			// + descriptors.get(key).toString());
-			// }}
-
 			getViewer().refresh();
 			return true;
 		}
@@ -183,6 +280,22 @@ public class ProcessBuilderView extends ViewPart {
 			RealizedFlow rf = new RealizedFlow();
 			rf.setModuleName(props.getProperty("moduleName"));
 			rf.setModuleVersion(props.getProperty("moduleVersion"));
+			String fdXml = props.getProperty("FlowDescriptorAsXml");
+			if (fdXml != null) {
+				Object o = oxmBean.unmarshal(fdXml);
+				if (o instanceof ExecutionFlowDescriptor) {
+					rf.setFlowDescriptor((ExecutionFlowDescriptor) o);
+					System.out.println("instance of EFD !!!"
+							+ rf.getFlowDescriptor().toString());
+					System.out.println(rf.getFlowDescriptor()
+							.getExecutionSpec());
+					return rf;
+				}
+			}
+			// Else
+			System.out
+					.println("***** WARNING : we should not be here; corresponding flow name"
+							+ props.getProperty("flowName"));
 			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor();
 			efd.setName(props.getProperty("flowName"));
 			rf.setFlowDescriptor(efd);
@@ -193,9 +306,16 @@ public class ProcessBuilderView extends ViewPart {
 		public boolean validateDrop(Object target, int operation,
 				TransferData transferType) {
 			return true;
-
 		}
+	}
 
+	// IoC
+	public void setOxmBean(OxmInterface oxmBean) {
+		this.oxmBean = oxmBean;
+	}
+
+	public void setProcessController(ProcessController processController) {
+		this.processController = processController;
 	}
 
 }

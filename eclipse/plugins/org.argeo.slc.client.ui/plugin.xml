@@ -81,6 +81,19 @@
          		name="Result UUID">
   	 		</commandParameter>
 	</command>
+   <command 
+      		defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+      		id="org.argeo.slc.client.ui.editRealizedFlowDetails"
+      		name="EditRealizedFlowDetails">
+   			<commandParameter
+         		id="org.argeo.slc.client.commands.realizedFlowAsXml"
+         		name="RealizedFlowAsXml">
+  	 		</commandParameter>
+  	 		<commandParameter
+         		id="org.argeo.slc.client.commands.realizedFlowIndex"
+         		name="realizedFlowIndex">
+  	 		</commandParameter>
+	</command>
    </extension>
    <extension
         point="org.eclipse.ui.bindings">

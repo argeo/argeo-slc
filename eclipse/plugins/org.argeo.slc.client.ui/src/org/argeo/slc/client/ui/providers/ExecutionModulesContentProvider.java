@@ -1,4 +1,4 @@
-package org.argeo.slc.client.ui.views;
+package org.argeo.slc.client.ui.providers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.eclipse.ui.TreeObject;
 import org.argeo.eclipse.ui.TreeParent;
-import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.runtime.SlcAgent;
@@ -145,21 +144,14 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 			this.descriptor = descriptor;
 
 			SortedMap<String, FolderNode> folderNodes = new TreeMap<String, FolderNode>();
-
 			flowDescriptors = new HashMap<String, ExecutionFlowDescriptor>();
+
 			for (ExecutionFlowDescriptor fd : descriptor.getExecutionFlows()) {
-				if (log.isTraceEnabled())
-					log.trace("fd.path=" + fd.getPath() + ", fd.name="
-							+ fd.getName());
-				Map<String, Object> values = fd.getValues();
+				// Find, format and store path and label values for each flow
+				// descritor:
 
-				if (values == null)
-					log.debug("No attribute for " + fd.getName());
-				else
-					for (String key : values.keySet())
-						log.debug(key + " - " + values.get(key));
-
-				// find path and label
+				// we format name of type path="" & name="path/toTest/Test" to :
+				// path="path/toTest/" name="Test"
 				String path;
 				String label;
 				int lastSlash = fd.getName().lastIndexOf('/');
@@ -171,22 +163,15 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 					path = fd.getPath();
 					label = fd.getName();
 				}
-				// if (log.isTraceEnabled())
-				// log.trace("path=" + path + ", label=" + label);
 
 				if (path == null || path.trim().equals("")
 						|| path.trim().equals("/")) {
 					// directChildren.put(name, new FlowNode(name, this));
-					addChild(new FlowNode(label, fd.getName(), fd.getValues(),
-							this));
+					addChild(new FlowNode(label, fd.getName(), fd, this));
 				} else {
 					FolderNode folderNode = mkdirs(this, path, folderNodes);
-					// TODO : why do we add a reference to the parent ?
-					// Probably to differentiate 2 flow nodes with same name but
-					// distinct execution Node. TBC
-					folderNode.addChild(new FlowNode(label, fd.getName(), fd
-							.getValues(), this));
-
+					folderNode.addChild(new FlowNode(label, fd.getName(), fd,
+							this));
 				}
 
 				flowDescriptors.put(fd.getName(), fd);
@@ -233,37 +218,27 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 
 	}
 
+	/**
+	 * 
+	 * @author bsinou
+	 * 
+	 *         The implementation of a vernice of a given slc process. Note that
+	 *         we store the parent node (execution module node) & the
+	 *         ExecutionFlowDescriptor.
+	 */
 	public class FlowNode extends TreeObject {
+
 		private final String flowName;
 		private final ExecutionModuleNode executionModuleNode;
-
-		// TODO : handle casting from various object type to String and reverse.
-		private final Map<String, Object> values;
+		private final ExecutionFlowDescriptor executionFlowDescriptor;
 
 		public FlowNode(String label, String flowName,
-				Map<String, Object> values, ExecutionModuleNode parent) {
+				ExecutionFlowDescriptor executionFlowDescriptor,
+				ExecutionModuleNode parent) {
 			super(label);
 			this.flowName = flowName;
-			this.values = values;
+			this.executionFlowDescriptor = executionFlowDescriptor;
 			this.executionModuleNode = parent;
-		}
-
-		public Map<String, Object> getValues() {
-			return values;
-		}
-
-		public Object getValueByKey(String key) {
-			return values.get(key);
-		}
-
-		public void setValueByKey(String key, Object value) {
-			if (values.get(key) == null)
-				throw new SlcException("Unsupported Parameter " + key
-						+ " for FlowNode " + flowName);
-			else {
-				values.remove(key);
-				values.put(key, value);
-			}
 		}
 
 		public String getFlowName() {
@@ -272,6 +247,10 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 
 		public ExecutionModuleNode getExecutionModuleNode() {
 			return executionModuleNode;
+		}
+
+		public ExecutionFlowDescriptor getExecutionFlowDescriptor() {
+			return executionFlowDescriptor;
 		}
 
 	}

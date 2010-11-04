@@ -4,10 +4,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<!-- Views -->
 	<bean id="org.argeo.slc.client.ui.executionModulesView" class="org.argeo.slc.client.ui.views.ExecutionModulesView"
 		scope="prototype">
 		<property name="contentProvider" ref="executionModulesContentProvider" />
 		<property name="processController" ref="processController" />
+		<property name="oxmBean" ref="oxmBean" />
 	</bean>
 
 	<bean id="org.argeo.slc.client.ui.resultListView" class="org.argeo.slc.client.ui.views.ResultListView"
@@ -37,23 +39,19 @@
 		<property name="labelProvider" ref="processDetailLabelProvider" />
 	</bean>
 
-	<bean id="processDetailLabelProvider"
-		class="org.argeo.slc.client.ui.views.ProcessDetailLabelProvider"
-		scope="prototype" />
-
 	<bean id="org.argeo.slc.client.ui.processBuilderView" class="org.argeo.slc.client.ui.views.ProcessBuilderView"
 		scope="prototype">
 		<property name="processController" ref="processController" />
+		<property name="oxmBean" ref="oxmBean" />
 	</bean>
 
 	<bean id="org.argeo.slc.client.ui.processParametersView" class="org.argeo.slc.client.ui.views.ProcessParametersView"
 		scope="prototype">
 	</bean>
 
-
+	<!-- Providers. -->
 	<bean id="executionModulesContentProvider"
-		class="org.argeo.slc.client.ui.views.ExecutionModulesContentProvider">
+		class="org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider">
 		<property name="slcAgents" ref="slcAgents" />
 	</bean>
-
 </beans>

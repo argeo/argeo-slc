@@ -34,5 +34,9 @@
 
 	<reference id="sessionFactory" interface="org.hibernate.SessionFactory" />
 
+	<!-- Castor marshalling & un marshalling -->
+	<!-- <reference id="marshaller" interface="org.springframework.oxm.Marshaller" 
+		/> <reference id="unmarshaller" interface="org.springframework.oxm.Unmarshaller" 
+		/> -->
 
 </beans:beans>

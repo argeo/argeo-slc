@@ -19,6 +19,18 @@ package org.argeo.slc.execution;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * 
+ * @author bsinou
+ * 
+ *         This class implements the archetype of a given process.
+ * 
+ *         WARNING : for now both <code>values</code> and
+ *         <code>executionSpec</code> which are rundundant are used. Should be
+ *         improved in further version. Note also that a third redundant field,
+ *         <code>RealizedFlow.executionSpec</code> is also to be cleaned.
+ * 
+ */
 public class ExecutionFlowDescriptor implements Serializable {
 	private static final long serialVersionUID = 7101944857038041216L;
 	private String name;
