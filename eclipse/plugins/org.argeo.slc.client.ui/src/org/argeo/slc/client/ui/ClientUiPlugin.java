@@ -75,10 +75,10 @@ public class ClientUiPlugin extends AbstractUIPlugin {
 		reg.put("agent", getImageDescriptor("icons/computer.png"));
 		reg.put("executionModule", getImageDescriptor("icons/archive.png"));
 		reg.put("folder", getImageDescriptor("icons/folder.png"));
-		// reg.put("flow", getImageDescriptor("icons/slc-launch.gif"));
 		reg.put("flow", getImageDescriptor("icons/system.png"));
-		reg.put("passedTest", getImageDescriptor("icons/OK.png"));
-		reg.put("failedTest", getImageDescriptor("icons/error.png"));
+		reg.put("processes", getImageDescriptor("icons/processes.gif"));
+		reg.put("passedTest", getImageDescriptor("icons/passed.gif"));
+		reg.put("failedTest", getImageDescriptor("icons/error.gif"));
 	}
 
 	public BundleContext getBundleContext() {

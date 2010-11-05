@@ -11,17 +11,19 @@ import org.eclipse.jface.viewers.TextCellEditor;
 
 /**
  * 
- * @author bsinou
  * 
- *         This class implements the ability to edit and save various type of
+ *         Implements the ability to edit and save various type of
  *         parameter of a given process. Parameter values are directly saved as
  *         soon as the focus on a given field is lost.
  * 
  * 
- *         Note that this EditingSupport is tightly coupled with both
+ *         Note that EditingSupport is tightly coupled with both
  *         ProcessParametersView and ProcessBuilderView; it cannot serve as a
  *         generic EditingSupport as is. Note also that it assumes that the
  *         processes in ProcessBuilderView as stored as an ordered list.
+ 
+ @author bsinou
+ * 
  */
 
 public class ProcessParametersEditingSupport extends EditingSupport {

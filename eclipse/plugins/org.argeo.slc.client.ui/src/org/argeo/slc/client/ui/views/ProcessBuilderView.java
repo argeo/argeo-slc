@@ -17,10 +17,6 @@ import org.argeo.slc.client.ui.controllers.ProcessController;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.commands.IParameter;
-import org.eclipse.core.commands.Parameterization;
-import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -40,10 +36,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.commands.ICommandService;
-import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -145,7 +138,7 @@ public class ProcessBuilderView extends ViewPart {
 		// we clear the list
 		realizedFlows = new ArrayList<RealizedFlow>();
 		curSelectedRow = -1;
-		refreshParameterview(null);
+		refreshParameterview();
 		viewer.refresh();
 	}
 
@@ -156,56 +149,30 @@ public class ProcessBuilderView extends ViewPart {
 		else
 			realizedFlows.remove(curSelectedRow);
 		curSelectedRow = -1;
-		refreshParameterview(null);
+		refreshParameterview();
 		viewer.refresh();
 	}
 
 	// calling this method with index =-1 will cause the reset of the view.
-	private void refreshParameterview(RealizedFlow rf) {
-		IWorkbench iw = ClientUiPlugin.getDefault().getWorkbench();
-		IHandlerService handlerService = (IHandlerService) iw
-				.getService(IHandlerService.class);
+	private void refreshParameterview() {
+		// We choose to directly access the view rather than going through
+		// commands.
+		ProcessParametersView ppView;
 		try {
-			// get the command from plugin.xml
-			IWorkbenchWindow window = iw.getActiveWorkbenchWindow();
-			ICommandService cmdService = (ICommandService) window
-					.getService(ICommandService.class);
-			Command cmd = cmdService.getCommand(EDIT_CMD);
+			ppView = (ProcessParametersView) ClientUiPlugin.getDefault()
+					.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+					.showView(ProcessParametersView.ID);
 
-			ArrayList<Parameterization> parameters = new ArrayList<Parameterization>();
-
-			IParameter iparam;
-			Parameterization params;
-
-			// The current index to be able to records changes on
-			// parameters
-			iparam = cmd.getParameter(INDEX_PARAM);
-			params = new Parameterization(iparam,
-					(new Integer(curSelectedRow)).toString());
-			parameters.add(params);
-
-			if (curSelectedRow != -1) {
-				// The current Realized flow marshalled as XML
-				String result = oxmBean.marshal(rf);
-				iparam = cmd.getParameter(FLOWASXML_PARAM);
-				params = new Parameterization(iparam, result);
-				parameters.add(params);
-			}
-			// build the parameterized command
-			ParameterizedCommand pc = new ParameterizedCommand(cmd,
-					parameters.toArray(new Parameterization[parameters.size()]));
-
-			// execute the command
-			handlerService = (IHandlerService) window
-					.getService(IHandlerService.class);
-			handlerService.executeCommand(pc, null);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new SlcException("Problem while rendering result. "
-					+ e.getMessage());
+			if (curSelectedRow == -1)
+				ppView.setRealizedFlow(-1, null);
+			else
+				ppView.setRealizedFlow(curSelectedRow,
+						realizedFlows.get(curSelectedRow));
+		} catch (PartInitException e) {
+			throw new SlcException(
+					"Cannot Retrieve ProcessParameterView to edit parameters of selected process",
+					e);
 		}
-
 	}
 
 	// Return the list of the processes to execute.
@@ -274,7 +241,7 @@ public class ProcessBuilderView extends ViewPart {
 			if (obj instanceof RealizedFlow) {
 				RealizedFlow rf = (RealizedFlow) obj;
 				curSelectedRow = realizedFlows.indexOf(rf);
-				refreshParameterview(rf);
+				refreshParameterview();
 			}
 		}
 	}
@@ -320,7 +287,8 @@ public class ProcessBuilderView extends ViewPart {
 				return false;
 			RealizedFlow rf = (RealizedFlow) oxmBean.unmarshal(fdXml);
 			realizedFlows.add(rf);
-
+			curSelectedRow = realizedFlows.indexOf(rf);
+			refreshParameterview();
 			getViewer().refresh();
 			return true;
 		}

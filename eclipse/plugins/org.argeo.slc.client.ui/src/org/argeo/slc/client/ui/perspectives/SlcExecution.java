@@ -11,28 +11,34 @@ public class SlcExecution implements IPerspectiveFactory {
 		layout.setEditorAreaVisible(false);
 		layout.setFixed(false);
 
-		IFolderLayout topLeft = layout.createFolder("topLeft",
-				IPageLayout.LEFT, 0.7f, editorArea);
-		topLeft.addView("org.argeo.slc.client.ui.executionModulesView");
+		// Create the main ui layout
+
+		// For a vertical split, the part on top gets the specified ratio of the
+		// current space and the part on bottom gets the rest. Likewise, for a
+		// horizontal split, the part at left gets the specified ratio of the
+		// current space.
+		IFolderLayout main = layout.createFolder("main", IPageLayout.RIGHT,
+				0.3f, editorArea);
+		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT,
+				0.3f, editorArea);
+
+		IFolderLayout bottom = layout.createFolder("bottom",
+				IPageLayout.BOTTOM, 0.65f, "main");
 
 		IFolderLayout topRight = layout.createFolder("topRight",
-				IPageLayout.RIGHT, 0.3f, editorArea);
-		topRight.addView("org.argeo.slc.client.ui.resultListView");
-		topRight.addPlaceholder("org.argeo.slc.client.ui.resultDetailView:UUID-*");
+				IPageLayout.RIGHT, 0.6f, "main");
 
-		IFolderLayout bottomRight = layout.createFolder("bottomRight",
-				IPageLayout.BOTTOM, 0.6f, "topRight");
-		bottomRight.addView("org.argeo.slc.client.ui.processListView");
-		bottomRight
-				.addPlaceholder("org.argeo.slc.client.ui.processDetailView:UUID-*");
+		// add the views to the corresponding place holder
+		left.addView("org.argeo.slc.client.ui.executionModulesView");
+		left.addView("org.argeo.slc.client.ui.resultListView");
 
-		IFolderLayout bottomLeft = layout.createFolder("bottomLeft",
-				IPageLayout.BOTTOM, 0.6f, "topLeft");
-		bottomLeft.addView("org.argeo.slc.client.ui.processBuilderView");
-		IFolderLayout paramsEditor = layout.createFolder("paramsEditor",
-				IPageLayout.RIGHT, 0.6f, "bottomLeft");
-		paramsEditor.addView("org.argeo.slc.client.ui.processParametersView");
+		main.addView("org.argeo.slc.client.ui.processBuilderView");
+		main.addPlaceholder("org.argeo.slc.client.ui.resultDetailView:UUID-*");
+		main.addPlaceholder("org.argeo.slc.client.ui.processDetailView:UUID-*");
 
+		bottom.addView("org.argeo.slc.client.ui.processListView");
+
+		topRight.addView("org.argeo.slc.client.ui.processParametersView");
 	}
 
 }

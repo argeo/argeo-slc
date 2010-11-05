@@ -30,9 +30,4 @@
 	<bean id="org.argeo.slc.client.ui.clearBatch" class="org.argeo.slc.client.ui.commands.ClearBatchHandler"
 		scope="prototype">
 	</bean>
-	<bean id="org.argeo.slc.client.ui.editRealizedFlowDetails"
-		class="org.argeo.slc.client.ui.commands.EditRealizedFlowDetailsHandler"
-		scope="prototype">
-		<property name="oxmBean" ref="oxmBean" />
-	</bean>
 </beans>
