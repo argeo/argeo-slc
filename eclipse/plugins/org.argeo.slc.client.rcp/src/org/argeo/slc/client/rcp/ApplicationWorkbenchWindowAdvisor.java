@@ -16,6 +16,12 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
+/**
+ * Set here initial default size of the UI
+ * 
+ * @author bsinou
+ * 
+ */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	private TrayItem trayItem;
@@ -32,10 +38,14 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	public void preWindowOpen() {
 		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		configurer.setInitialSize(new Point(1600, 800));
+
+		configurer.getWorkbenchConfigurer().restoreState();
+		// set default window size
+		configurer.setInitialSize(new Point(1200, 900));
 		configurer.setShowCoolBar(true);
 		configurer.setShowStatusLine(true);
 		configurer.setShowPerspectiveBar(true);
+
 	}
 
 	public void postWindowOpen() {
