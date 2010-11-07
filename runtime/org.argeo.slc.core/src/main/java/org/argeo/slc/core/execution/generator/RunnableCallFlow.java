@@ -165,6 +165,11 @@ public class RunnableCallFlow implements ExecutionFlow, ApplicationContextAware 
 		}
 	}
 
+	@Override
+	public String toString() {
+		return new StringBuffer("RunnableCallFlow ").append(name).toString();
+	}	
+	
 	public ExecutionSpec getExecutionSpec() {
 		return executionSpec;
 	}

@@ -43,6 +43,8 @@ public class TestManagerServiceImpl implements TestManagerService {
 	private final SlcExecutionDao slcExecutionDao;
 	private final TreeTestResultCollectionDao treeTestResultCollectionDao;
 
+	private String defaultCollectionId = "default";
+	
 	public TestManagerServiceImpl(TreeTestResultDao treeTestResultDao,
 			TestRunDescriptorDao testRunDescriptorDao,
 			SlcExecutionDao slcExecutionDao,
@@ -68,9 +70,10 @@ public class TestManagerServiceImpl implements TestManagerService {
 						.getSlcExecution(testRunDescriptor
 								.getSlcExecutionUuid());
 				if (slcExecution != null) {
-					String collectionId = slcExecution.getUser() != null ? slcExecution
-							.getUser()
-							: "default";
+					// Use Host as collection ID if host is available
+					String collectionId = slcExecution.getHost() != null ? slcExecution
+							.getHost()
+							: defaultCollectionId;
 					addResultToCollection(collectionId, testRunDescriptor
 							.getTestResultUuid());
 				}
@@ -78,7 +81,7 @@ public class TestManagerServiceImpl implements TestManagerService {
 				if (log.isTraceEnabled())
 					log.trace("ResultUUID="
 							+ testRunDescriptor.getTestResultUuid());
-				addResultToCollection("default", testRunDescriptor
+				addResultToCollection(defaultCollectionId, testRunDescriptor
 						.getTestResultUuid());
 			}
 		}
@@ -154,6 +157,10 @@ public class TestManagerServiceImpl implements TestManagerService {
 		treeTestResultDao.addAttachment(msg.getResultUuid(), msg
 				.getAttachment());
 
+	}
+
+	public void setDefaultCollectionId(String defaultCollectionId) {
+		this.defaultCollectionId = defaultCollectionId;
 	}
 
 }
