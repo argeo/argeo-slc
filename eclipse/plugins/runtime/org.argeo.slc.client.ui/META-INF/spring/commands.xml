@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="org.argeo.slc.client.ui.refreshResultList"
+		class="org.argeo.slc.client.ui.commands.ResultListViewRefreshHandler"
+		scope="prototype">
+	</bean>
+	<bean id="org.argeo.slc.client.ui.refreshProcessList"
+		class="org.argeo.slc.client.ui.commands.ProcessListViewRefreshHandler"
+		scope="prototype">
+	</bean>
+	<bean id="org.argeo.slc.client.ui.displayProcessDetails"
+		class="org.argeo.slc.client.ui.commands.ProcessDetailsDisplayHandler"
+		scope="prototype">
+	</bean>
+	<bean id="org.argeo.slc.client.ui.displayResultDetails"
+		class="org.argeo.slc.client.ui.commands.ResultDetailsDisplayHandler"
+		scope="prototype">
+	</bean>
+	<bean id="org.argeo.slc.client.ui.launchBatch" class="org.argeo.slc.client.ui.commands.LaunchBatchHandler"
+		scope="prototype">
+	</bean>
+	<bean id="org.argeo.slc.client.ui.removeSelectedFromBatch"
+		class="org.argeo.slc.client.ui.commands.RemoveSelectedProcessFromBatchHandler"
+		scope="prototype">
+	</bean>
+	<bean id="org.argeo.slc.client.ui.clearBatch" class="org.argeo.slc.client.ui.commands.ClearBatchHandler"
+		scope="prototype">
+	</bean>
+</beans>
