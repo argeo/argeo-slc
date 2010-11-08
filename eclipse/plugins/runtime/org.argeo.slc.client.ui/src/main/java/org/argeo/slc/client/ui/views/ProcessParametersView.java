@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.providers.ProcessParametersEditingSupport;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
@@ -34,8 +32,8 @@ import org.eclipse.ui.part.ViewPart;
  *         attribute to recall (and update ??) the various parameters.
  */
 public class ProcessParametersView extends ViewPart {
-	private static final Log log = LogFactory
-			.getLog(ProcessParametersView.class);
+	// private static final Log log = LogFactory
+	// .getLog(ProcessParametersView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.processParametersView";
 
@@ -142,7 +140,7 @@ public class ProcessParametersView extends ViewPart {
 		public void dispose() {
 		}
 
-		@SuppressWarnings("unchecked")
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		// we cast the Map<String, Object> to List<Object>
 		public Object[] getElements(Object obj) {
 

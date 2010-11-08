@@ -32,15 +32,15 @@ public class ProcessParametersEditingSupport extends EditingSupport {
 	// .getLog(ProcessParametersEditingSupport.class);
 
 	private CellEditor strEditor;
-	private CellEditor nbEditor;
+	//private CellEditor nbEditor;
 	// private int column;
 
 	private final static String strType = "string", intType = "integer";
 
 	// different type of primitive
-	private static enum primitiveType {
-		strType, intType
-	};
+	// private static enum primitiveType {
+	// strType, intType
+	// };
 
 	// So that we can update corresponding process
 	private int curProcessIndex;

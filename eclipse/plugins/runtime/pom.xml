@@ -8,7 +8,7 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.eclipse</groupId>
-	<artifactId>Runtime</artifactId>
+	<artifactId>runtime</artifactId>
 	<name>Argeo Eclipse plugins runtime</name>
 	<packaging>pom</packaging>
 	<modules>

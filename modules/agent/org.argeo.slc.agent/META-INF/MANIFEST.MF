@@ -1,6 +1,7 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.specs,org.argeo.slc.core,org.argeo.slc.s
- upport.osgi
+Require-Bundle: org.argeo.slc.specs,
+ org.argeo.slc.core,
+ org.argeo.slc.support.osgi
 Bundle-Version: 0.13.0.SNAPSHOT
 Bundle-Name: Argeo SLC Agent
 Bundle-SymbolicName: org.argeo.slc.agent

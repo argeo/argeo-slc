@@ -8,8 +8,6 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.oxm.OxmInterface;
 import org.argeo.slc.client.ui.ClientUiPlugin;
@@ -49,12 +47,10 @@ import org.eclipse.ui.part.ViewPart;
  * 
  */
 public class ProcessBuilderView extends ViewPart {
-	private final static Log log = LogFactory.getLog(ProcessBuilderView.class);
+	// private final static Log log =
+	// LogFactory.getLog(ProcessBuilderView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.processBuilderView";
-	private static final String EDIT_CMD = "org.argeo.slc.client.ui.editRealizedFlowDetails";
-	private static final String FLOWASXML_PARAM = "org.argeo.slc.client.commands.realizedFlowAsXml";
-	private static final String INDEX_PARAM = "org.argeo.slc.client.commands.realizedFlowIndex";
 
 	// private final static Log log =
 	// LogFactory.getLog(ProcessBuilderView.class);
