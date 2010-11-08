@@ -143,7 +143,7 @@
       <plugin id="org.argeo.dep.osgi.mina.filter.ssl" fragment="true"/>
       <plugin id="org.argeo.dep.osgi.springframework.ldap"/>
       <plugin id="org.argeo.eclipse.ui"/>
-      <plugin id="org.argeo.infra.core"/>
+      <plugin id="org.argeo.infra.core" fragment=""/>
       <plugin id="org.argeo.infra.security.services" fragment="true"/>
       <plugin id="org.argeo.security.core"/>
       <plugin id="org.argeo.security.manager.ldap"/>
@@ -158,7 +158,7 @@
       <plugin id="org.argeo.slc.client.agent"/>
       <plugin id="org.argeo.slc.client.commons"/>
       <plugin id="org.argeo.slc.client.core"/>
-      <plugin id="org.argeo.slc.client.gis"/>
+      <plugin id="org.argeo.slc.client.gis" fragment=""/>
       <plugin id="org.argeo.slc.client.hibernate"/>
       <plugin id="org.argeo.slc.client.oxm"/>
       <plugin id="org.argeo.slc.client.rcp"/>
@@ -171,8 +171,8 @@
       <plugin id="org.argeo.slc.detached"/>
       <plugin id="org.argeo.slc.ext.activemq" fragment="true"/>
       <plugin id="org.argeo.slc.gis.ext.dbcp" fragment="true"/>
-      <plugin id="org.argeo.slc.gis.position.backend"/>
-      <plugin id="org.argeo.slc.gis.position.gpsbabel"/>
+      <plugin id="org.argeo.slc.gis.position.backend" fragment=""/>
+      <plugin id="org.argeo.slc.gis.position.gpsbabel" fragment=""/>
       <plugin id="org.argeo.slc.server"/>
       <plugin id="org.argeo.slc.server.castor"/>
       <plugin id="org.argeo.slc.server.h2"/>
