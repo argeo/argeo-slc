@@ -21,14 +21,26 @@ import java.util.Map;
 
 /**
  * 
+ *         Implements both archetype and implementation of a given
+ *         process.
+ * 
+ *         At specification time, <code>executionSpec</code> represents the spec
+ *         of the parameters accepted by the process, with, among others: type,
+ *         default value and, optionally, possible values for each parameter. Thus
+ *         ExecutionSpec might be a huge object. Note that when marshalling only
+ *         a reference to a specific ExecutionSpec is stored in the XML to
+ *         optimize performance and avoid redundancy between various
+ *         ExecutionFlowDesciptor that might have the same ExecutionSpec.
+ * 
+ *         At runtime, we build a RealizedFlow which references an
+ *         ExecutionFlowDescriptor. As it happens AFTER marshalling /
+ *         unmarshalling process, the ExecutionSpec is null but we manage to
+ *         retrieve the ExecutionSpec and store it in the RealizedFlow, whereas
+ *         set values of the parameters are stored in the <code>values</code>
+ *         map.
+ * 
  * @author bsinou
  * 
- *         This class implements the archetype of a given process.
- * 
- *         WARNING : for now both <code>values</code> and
- *         <code>executionSpec</code> which are rundundant are used. Should be
- *         improved in further version. Note also that a third redundant field,
- *         <code>RealizedFlow.executionSpec</code> is also to be cleaned.
  * 
  */
 public class ExecutionFlowDescriptor implements Serializable {
