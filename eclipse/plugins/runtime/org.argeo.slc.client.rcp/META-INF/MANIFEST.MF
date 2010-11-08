@@ -9,9 +9,9 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.argeo.slc.client.ui.perspectives,
- org.argeo.slc.core.test.tree;version="0.13.0.SNAPSHOT-r3768",
- org.argeo.slc.execution;version="0.13.0.SNAPSHOT-r3770",
- org.argeo.slc.process;version="0.13.0.SNAPSHOT-r3770",
- org.argeo.slc.runtime;version="0.13.0.SNAPSHOT-r3770",
- org.argeo.slc.services;version="0.13.0.SNAPSHOT-r3753",
- org.argeo.slc.services.impl;version="0.13.0.SNAPSHOT-r3753"
+ org.argeo.slc.core.test.tree,
+ org.argeo.slc.execution,
+ org.argeo.slc.process,
+ org.argeo.slc.runtime,
+ org.argeo.slc.services,
+ org.argeo.slc.services.impl
