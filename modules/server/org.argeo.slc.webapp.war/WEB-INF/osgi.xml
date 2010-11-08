@@ -9,44 +9,24 @@
 	<reference id="marshaller" interface="org.springframework.oxm.Marshaller" />
 	<reference id="unmarshaller" interface="org.springframework.oxm.Unmarshaller" />
 
-	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
-		id="testResultDao" />
-	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
-		id="testResultCollectionDao" />
-	<reference interface="org.argeo.slc.dao.test.TestRunDescriptorDao"
-		id="testRunDescriptorDao" />
-	<reference interface="org.argeo.slc.dao.process.SlcExecutionDao"
-		id="slcExecutionDao" />
-	<reference interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
-		id="slcAgentDescriptorDao" />
+	<!-- DAO -->
+	<reference id="testResultDao" interface="org.argeo.slc.dao.test.tree.TreeTestResultDao" />
+	<reference id="testResultCollectionDao"
+		interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao" />
+	<reference id="testRunDescriptorDao" interface="org.argeo.slc.dao.test.TestRunDescriptorDao" />
+	<reference id="slcExecutionDao" interface="org.argeo.slc.dao.process.SlcExecutionDao" />
+	<reference id="slcAgentDescriptorDao"
+		interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao" />
 
-	<reference id="osivInterceptor"
-		interface="org.springframework.web.context.request.WebRequestInterceptor" />
-	<!--
-
-
-		<reference interface="org.hibernate.SessionFactory"
-		id="sessionFactory" />
-	-->
-	<!--
-		<reference interface="org.argeo.slc.execution.ExecutionModulesManager"
-		id="modulesManager" />
-	-->
-	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
-	<reference id="agentService" interface="org.argeo.slc.services.AgentService" />
+	<!--  Services -->
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
-	<!--
-
-		<reference id="hibernateTransactionManager"
-		interface="org.springframework.transaction.PlatformTransactionManager"
-		bean-name="hibernateTransactionManager" />
-	-->
+	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 	<reference id="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
-
-	<reference id="eventListener" interface="org.argeo.slc.msg.event.SlcEventListener" />
-
 	<reference id="attachmentsStorage"
 		interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
+	
+	<!-- Events -->
+	<reference id="eventListener" interface="org.argeo.slc.msg.event.SlcEventListener" />
 
 	<!-- Runtime -->
 	<reference id="dynamicRuntime" interface="org.argeo.slc.deploy.DynamicRuntime" />
@@ -56,11 +36,6 @@
 		cardinality="0..N" />
 
 	<!-- Security -->
-	<!--
-		<reference id="authenticationEntryPoint"
-		interface="org.springframework.security.ui.AuthenticationEntryPoint"
-		/>
-	-->
 	<reference id="_authenticationManager"
 		interface="org.springframework.security.AuthenticationManager" />
 	<reference id="userDetailsService"
@@ -69,5 +44,35 @@
 	<!-- Optional reference to JCR repository -->
 	<reference id="jcrRepository" interface="javax.jcr.Repository"
 		cardinality="0..1" />
+
+	<reference id="osivInterceptor"
+		interface="org.springframework.web.context.request.WebRequestInterceptor" />
+
+	<!--
+		<reference id="authenticationEntryPoint"
+		interface="org.springframework.security.ui.AuthenticationEntryPoint"
+		/>
+	-->
+
+	<!--
+		<reference id="agentService"
+		interface="org.argeo.slc.services.AgentService" />
+	-->
+	<!--
+
+		<reference id="hibernateTransactionManager"
+		interface="org.springframework.transaction.PlatformTransactionManager"
+		bean-name="hibernateTransactionManager" />
+	-->
+
+	<!--
+		<reference interface="org.hibernate.SessionFactory"
+		id="sessionFactory" />
+	-->
+	<!--
+		<reference interface="org.argeo.slc.execution.ExecutionModulesManager"
+		id="modulesManager" />
+	-->
+
 
 </beans:beans>
