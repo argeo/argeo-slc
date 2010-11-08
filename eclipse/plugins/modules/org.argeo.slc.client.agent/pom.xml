@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc.eclipse</groupId>
+		<artifactId>plugins</artifactId>
+		<version>0.13.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>org.argeo.slc.client.agent</artifactId>
+	<name>SLC Client Agent</name>
+	<packaging>jar</packaging>
+	<dependencies>
+		<!-- SLC -->
+		<dependency>
+			<groupId>org.argeo.slc.eclipse</groupId>
+			<artifactId>org.argeo.slc.client.ui</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<!-- Eclipse -->
+		<dependency>
+			<groupId>org.eclipse.ui</groupId>
+			<artifactId>org.eclipse.ui</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>org.eclipse.core.runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.swt</groupId>
+			<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.swt</groupId>
+			<artifactId>org.eclipse.swt.gtk.linux.x86</artifactId>
+		</dependency>
+
+	</dependencies>
+</project>
