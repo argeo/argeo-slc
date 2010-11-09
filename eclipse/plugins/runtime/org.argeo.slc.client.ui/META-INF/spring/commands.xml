@@ -20,6 +20,8 @@
 		class="org.argeo.slc.client.ui.commands.ResultDetailsDisplayHandler"
 		scope="prototype">
 	</bean>
+	<!-- <bean id="org.argeo.slc.client.ui.displayResultDetailsWithExcel" class="org.argeo.slc.client.ui.commands.ResultDetailsExcelHandler" 
+		scope="prototype"> </bean> -->
 	<bean id="org.argeo.slc.client.ui.launchBatch" class="org.argeo.slc.client.ui.commands.LaunchBatchHandler"
 		scope="prototype">
 	</bean>

@@ -13,6 +13,7 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IParameter;
 import org.eclipse.core.commands.Parameterization;
 import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -25,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
@@ -49,6 +51,15 @@ public class ResultListView extends ViewPart {
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
+
+		// Context Menu for the end user to choose what kind of display he wants
+		// Problem to dynamically add parameters linked with the current
+		// selected object
+		MenuManager menuManager = new MenuManager();
+		Menu menu = menuManager.createContextMenu(viewer.getControl());
+		viewer.getControl().setMenu(menu);
+		getSite().registerContextMenu(menuManager, viewer);
+
 	}
 
 	protected Table createTable(Composite parent) {
@@ -56,7 +67,7 @@ public class ResultListView extends ViewPart {
 				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
 
 		Table table = new Table(parent, style);
-
+		// table.addMouseListener(new RightClickListener());
 		GridData gridData = new GridData(GridData.FILL_BOTH);
 		gridData.grabExcessVerticalSpace = true;
 		gridData.grabExcessHorizontalSpace = true;
@@ -75,6 +86,17 @@ public class ResultListView extends ViewPart {
 		column.setWidth(300);
 
 		return table;
+	}
+
+	// TODO : Improve this method.
+	public String getSelectedResult() {
+		Object obj = ((IStructuredSelection) viewer.getSelection())
+				.getFirstElement();
+
+		if (obj == null || !(obj instanceof ResultAttributes))
+			return null;
+		else
+			return ((ResultAttributes) obj).getUuid();
 	}
 
 	// View Specific inner class
@@ -135,6 +157,7 @@ public class ResultListView extends ViewPart {
 	}
 
 	// Handle Events
+
 	/**
 	 * The ResultAttributes expose a part of the information contained in the
 	 * TreeTestResult, It has the same UUID as the corresponding treeTestResult.
@@ -189,7 +212,7 @@ public class ResultListView extends ViewPart {
 		}
 	}
 
-	// Ioc
+	// IoC
 	public void setTestResultCollectionDao(
 			TreeTestResultCollectionDao testResultCollectionDao) {
 		this.testResultCollectionDao = testResultCollectionDao;

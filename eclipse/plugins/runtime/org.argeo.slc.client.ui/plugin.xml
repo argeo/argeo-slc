@@ -27,6 +27,14 @@
          name="Result details"
          restorable="true">
    </view>
+ <!--  <view
+         allowMultiple="true"
+         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+         icon="icons/excel.png"
+         id="org.argeo.slc.client.ui.resultExcelView"
+         name="Result details (Excel)"
+         restorable="true">
+   </view> -->
    <view
          id="org.argeo.slc.client.ui.processListView"
          class="org.argeo.eclipse.spring.SpringExtensionFactory"
@@ -103,7 +111,7 @@
          		name="Result UUID">
   	 		</commandParameter>
 	</command>
-   </extension>
+    </extension>
    <extension
         point="org.eclipse.ui.bindings">
      <key
@@ -116,6 +124,8 @@
    <extension
          id="menu:org.eclipse.ui.main.menu"
          point="org.eclipse.ui.menus">
+      <!-- commented menu so that it does not show up on sparta
+      		TODO : add a specific bundle with only a pluggin.xml for SLC / no sparta specific menus
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=fileMenu">
          <menu
@@ -129,6 +139,7 @@
             </command>
          </menu>
       </menuContribution>
+      -->
       <menuContribution
             locationURI="toolbar:org.eclipse.ui.main.toolbar">
          <toolbar
@@ -166,5 +177,5 @@
                tooltip="Remove selected process from process builder view.">
          </command>
       </menuContribution>
-   </extension>
+  </extension>
 </plugin>

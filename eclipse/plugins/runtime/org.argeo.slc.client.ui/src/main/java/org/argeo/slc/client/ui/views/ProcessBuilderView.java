@@ -138,6 +138,7 @@ public class ProcessBuilderView extends ViewPart {
 		viewer.refresh();
 	}
 
+	
 	// Remove the selected process from the batch
 	public void removeSelected() {
 		if (curSelectedRow == -1)

@@ -57,7 +57,7 @@ public class ResultDetailView extends ViewPart {
 			// 0 and it will look as if the column didn't exist.
 			switch (i) {
 			case 0:
-				column.setWidth(130);
+				column.setWidth(230);
 			case 1:
 				column.setWidth(200);
 			default:

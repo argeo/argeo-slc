@@ -1,9 +1,11 @@
 package org.argeo.slc.client.ui.commands;
 
 import org.argeo.slc.client.ui.views.ResultDetailView;
+import org.argeo.slc.client.ui.views.ResultListView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
@@ -24,6 +26,20 @@ public class ResultDetailsDisplayHandler extends AbstractHandler {
 		// parameters.
 		String uuid = event
 				.getParameter("org.argeo.slc.client.commands.resultUuid");
+
+		// TODO : remove this.
+		if (uuid == null || "".equals(uuid)) {
+			try {
+				ResultListView pbv = (ResultListView) HandlerUtil
+						.getActiveWorkbenchWindow(event).getActivePage()
+						.showView(ResultListView.ID);
+				uuid = pbv.getSelectedResult();
+			} catch (PartInitException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
 
 		// mode = 2 : VIEW_VISIBLE, Show view mode that indicates the view
 		// should be created or made visible if already created .
