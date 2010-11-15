@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo</groupId>
@@ -30,7 +31,7 @@
 		<module>server</module>
 		<module>demo</module>
 		<module>integration-tests</module>
-		<!-- <module>archetypes</module>-->
+		<!-- <module>archetypes</module> -->
 		<module>dist</module>
 	</modules>
 	<url>${site.urlBase}/${developmentCycle}</url>
@@ -179,10 +180,7 @@ limitations under the License.
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>2.0-beta-5</version>
-				<!--
-					The site plugin is buggy with multi modules.
-					http://jira.codehaus.org/browse/MSITE-276
-				-->
+				<!-- The site plugin is buggy with multi modules. http://jira.codehaus.org/browse/MSITE-276 -->
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -316,14 +314,10 @@ limitations under the License.
 				<artifactId>org.argeo.slc.support.jemmy</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<!--
-				<dependency> <groupId>org.argeo.slc.runtime</groupId>
-				<artifactId>org.argeo.slc.support.ws.client</artifactId>
-				<version>${project.version}</version> </dependency> <dependency>
-				<groupId>org.argeo.slc</groupId>
-				<artifactId>org.argeo.slc.webapp</artifactId>
-				<version>${project.version}</version> <type>war</type> </dependency>
-			-->
+			<!-- <dependency> <groupId>org.argeo.slc.runtime</groupId> <artifactId>org.argeo.slc.support.ws.client</artifactId> 
+				<version>${project.version}</version> </dependency> <dependency> <groupId>org.argeo.slc</groupId> 
+				<artifactId>org.argeo.slc.webapp</artifactId> <version>${project.version}</version> 
+				<type>war</type> </dependency> -->
 			<dependency>
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>org.argeo.slc.ria</artifactId>
@@ -335,11 +329,8 @@ limitations under the License.
 				<artifactId>org.argeo.ria.core</artifactId>
 				<version>${version.argeo-ria}</version>
 			</dependency>
-			<!--
-				<dependency> <groupId>org.argeo.slc.server</groupId>
-				<artifactId>bundles</artifactId> <version>0.11.3-SNAPSHOT</version>
-				<type>pom</type> </dependency>
-			-->
+			<!-- <dependency> <groupId>org.argeo.slc.server</groupId> <artifactId>bundles</artifactId> 
+				<version>0.11.3-SNAPSHOT</version> <type>pom</type> </dependency> -->
 			<dependency>
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>deploy</artifactId>
@@ -387,6 +378,22 @@ limitations under the License.
 
 		</dependencies>
 	</dependencyManagement>
+	<repositories>
+		<repository>
+			<id>argeo</id>
+			<url>http://maven.argeo.org/argeo</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 	<distributionManagement>
 		<site>
 			<id>argeo-slc-site</id>
