@@ -33,7 +33,7 @@ public class ResultDetailsDisplayHandler extends AbstractHandler {
 				ResultListView pbv = (ResultListView) HandlerUtil
 						.getActiveWorkbenchWindow(event).getActivePage()
 						.showView(ResultListView.ID);
-				uuid = pbv.getSelectedResult();
+				uuid = pbv.getSelectedResult()[0];
 			} catch (PartInitException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

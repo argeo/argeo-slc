@@ -27,9 +27,9 @@
 		<module>runtime</module>
 		<module>modules</module>
 		<module>eclipse</module>
-		<module>dep</module>
 		<module>server</module>
 		<module>demo</module>
+		<module>dep</module>
 		<module>integration-tests</module>
 		<!-- <module>archetypes</module> -->
 		<module>dist</module>

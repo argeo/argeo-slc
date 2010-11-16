@@ -88,15 +88,22 @@ public class ResultListView extends ViewPart {
 		return table;
 	}
 
-	// TODO : Improve this method.
-	public String getSelectedResult() {
+	// TODO : Improve this methods.
+	public String[] getSelectedResult() {
 		Object obj = ((IStructuredSelection) viewer.getSelection())
 				.getFirstElement();
 
+		String[] attributes = new String[2];
+
 		if (obj == null || !(obj instanceof ResultAttributes))
 			return null;
-		else
-			return ((ResultAttributes) obj).getUuid();
+		else {
+			ResultAttributes ra = (ResultAttributes) obj;
+			attributes[0] = ra.getUuid();
+			attributes[1] = (ra.getAttributes().get("testCase") == null) ? null
+					: ra.getAttributes().get("testCase");
+			return attributes;
+		}
 	}
 
 	// View Specific inner class
