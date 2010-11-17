@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
@@ -57,9 +58,16 @@ public class ResultListView extends ViewPart {
 		// selected object
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getControl());
+
+		// unable excel commands if not on windows
+		MenuItem[] items = menu.getItems();
+		String platform = SWT.getPlatform();
+		if (!(platform.equals("win32") || platform.equals("wpf"))) {
+			items[1].setEnabled(false);
+		}
+
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuManager, viewer);
-
 	}
 
 	protected Table createTable(Composite parent) {
@@ -89,6 +97,8 @@ public class ResultListView extends ViewPart {
 	}
 
 	// TODO : Improve this methods.
+	// For now it is a workaround because we cannot dynamically update context
+	// menu to pass the UUID as command parameter
 	public String[] getSelectedResult() {
 		Object obj = ((IStructuredSelection) viewer.getSelection())
 				.getFirstElement();
@@ -176,7 +186,6 @@ public class ResultListView extends ViewPart {
 
 			if (obj instanceof ResultAttributes) {
 				ResultAttributes ra = (ResultAttributes) obj;
-				log.debug("Double-clic on result with UUID" + ra.getUuid());
 
 				IWorkbench iw = ClientUiPlugin.getDefault().getWorkbench();
 				IHandlerService handlerService = (IHandlerService) iw
@@ -224,5 +233,4 @@ public class ResultListView extends ViewPart {
 			TreeTestResultCollectionDao testResultCollectionDao) {
 		this.testResultCollectionDao = testResultCollectionDao;
 	}
-
 }
