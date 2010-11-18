@@ -80,8 +80,8 @@ public class ResultDetailContentProvider implements ITreeContentProvider {
 
 				// We create intermediate folders if needed
 				for (int i = 0; i < pathes.length; i++) {
-					if (log.isDebugEnabled())
-						log.debug("i = " + i + " - " + pathes[i]);
+					// if (log.isDebugEnabled())
+					// log.debug("i = " + i + " - " + pathes[i]);
 
 					if (curTreeParent.getChildByName(pathes[i]) == null) {
 						ResultTreeParent child = new ResultTreeParent(pathes[i]);

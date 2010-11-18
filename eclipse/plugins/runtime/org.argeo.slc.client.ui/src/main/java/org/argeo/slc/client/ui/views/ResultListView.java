@@ -1,7 +1,10 @@
 package org.argeo.slc.client.ui.views;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,13 +16,18 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.IParameter;
 import org.eclipse.core.commands.Parameterization;
 import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -27,23 +35,36 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.services.IServiceLocator;
 
 public class ResultListView extends ViewPart {
 	private final static Log log = LogFactory.getLog(ResultListView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.resultListView";
 
-	private TableViewer viewer;
+	private final static String DISPLAY_CMD_ID = "org.argeo.slc.client.ui.displayResultDetails";
+	private final static String DISPLAY_AS_XLS_CMD_ID = "com.capco.sparta.client.ui.displayResultDetailsWithExcel";
+	private final static String SAVE_AS_XLS_CMD_ID = "com.capco.sparta.client.ui.saveResultAsExcelFile";
+	private final static String UUID_PARAM_ID = "org.argeo.slc.client.commands.resultUuid";
+	private final static String NAME_PARAM_ID = "org.argeo.slc.client.commands.resultName";
+	private final static String PLATFORM = SWT.getPlatform();
 
+	private final static SimpleDateFormat dateFormatter = new SimpleDateFormat(
+			"MM/dd/yyyy 'at' HH:mm:ss");
+
+	private TableViewer viewer;
 	private TreeTestResultCollectionDao testResultCollectionDao;
+
+	private ResultAttributes selectedRa;
 
 	public void createPartControl(Composite parent) {
 		Table table = createTable(parent);
@@ -52,19 +73,17 @@ public class ResultListView extends ViewPart {
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
+		viewer.addSelectionChangedListener(new SelectionChangedListener());
 
-		// Context Menu for the end user to choose what kind of display he wants
-		// Problem to dynamically add parameters linked with the current
-		// selected object
+		// create the context menu
+
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getControl());
-
-		// unable excel commands if not on windows
-		MenuItem[] items = menu.getItems();
-		String platform = SWT.getPlatform();
-		if (!(platform.equals("win32") || platform.equals("wpf"))) {
-			items[1].setEnabled(false);
-		}
+		menuManager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				contextMenuAboutToShow(manager);
+			}
+		});
 
 		viewer.getControl().setMenu(menu);
 		getSite().registerContextMenu(menuManager, viewer);
@@ -86,10 +105,14 @@ public class ResultListView extends ViewPart {
 		table.setHeaderVisible(true);
 
 		TableColumn column = new TableColumn(table, SWT.LEFT, 0);
-		column.setText("Date");
+		column.setText("Test Case");
 		column.setWidth(200);
 
 		column = new TableColumn(table, SWT.LEFT, 1);
+		column.setText("Close Date");
+		column.setWidth(120);
+
+		column = new TableColumn(table, SWT.LEFT, 2);
 		column.setText("UUID");
 		column.setWidth(300);
 
@@ -99,24 +122,84 @@ public class ResultListView extends ViewPart {
 	// TODO : Improve this methods.
 	// For now it is a workaround because we cannot dynamically update context
 	// menu to pass the UUID as command parameter
-	public String[] getSelectedResult() {
-		Object obj = ((IStructuredSelection) viewer.getSelection())
-				.getFirstElement();
+	// public String[] getSelectedResult() {
+	// Object obj = ((IStructuredSelection) viewer.getSelection())
+	// .getFirstElement();
+	//
+	// String[] attributes = new String[2];
+	//
+	// if (obj == null || !(obj instanceof ResultAttributes))
+	// return null;
+	// else {
+	// ResultAttributes ra = (ResultAttributes) obj;
+	// attributes[0] = ra.getUuid();
+	// attributes[1] = (ra.getAttributes().get("testCase") == null) ? null
+	// : ra.getAttributes().get("testCase");
+	// return attributes;
+	// }
+	// }
 
-		String[] attributes = new String[2];
+	// View Specific inner class
 
-		if (obj == null || !(obj instanceof ResultAttributes))
-			return null;
-		else {
-			ResultAttributes ra = (ResultAttributes) obj;
-			attributes[0] = ra.getUuid();
-			attributes[1] = (ra.getAttributes().get("testCase") == null) ? null
-					: ra.getAttributes().get("testCase");
-			return attributes;
+	// Handle Events
+	class SelectionChangedListener implements ISelectionChangedListener {
+		public void selectionChanged(SelectionChangedEvent evt) {
+
+			IStructuredSelection curSelection = (IStructuredSelection) evt
+					.getSelection();
+			Object obj = curSelection.getFirstElement();
+
+			if (obj instanceof ResultAttributes) {
+				selectedRa = (ResultAttributes) obj;
+			}
 		}
 	}
 
-	// View Specific inner class
+	private void refreshCommand(IMenuManager menuManager,
+			IServiceLocator locator, String cmdId, String label, String iconPath) {
+		IContributionItem ici = menuManager.find(cmdId);
+		if (ici != null)
+			menuManager.remove(ici);
+		CommandContributionItemParameter contributionItemParameter = new CommandContributionItemParameter(
+				locator, null, cmdId, SWT.PUSH);
+
+		// Set Params
+		contributionItemParameter.label = label;
+		contributionItemParameter.icon = ClientUiPlugin
+				.getImageDescriptor(iconPath);
+
+		Map<String, String> params = new HashMap<String, String>();
+		params.put(UUID_PARAM_ID, selectedRa.getUuid());
+		params.put(NAME_PARAM_ID,
+				(selectedRa.getAttributes().get("testCase") == null) ? null
+						: selectedRa.getAttributes().get("testCase"));
+		contributionItemParameter.parameters = params;
+
+		CommandContributionItem cci = new CommandContributionItem(
+				contributionItemParameter);
+		cci.setId(cmdId);
+		menuManager.add(cci);
+	}
+
+	private void contextMenuAboutToShow(IMenuManager menuManager) {
+
+		IContributionItem[] items = menuManager.getItems();
+		IWorkbenchWindow window = ClientUiPlugin.getDefault().getWorkbench()
+				.getActiveWorkbenchWindow();
+
+		refreshCommand(menuManager, window, DISPLAY_CMD_ID,
+				"Display as a tree", "icons/result_details.gif");
+		// We only show this command on windows OS
+		if (PLATFORM.equals("win32") || PLATFORM.equals("wpf")) {
+			refreshCommand(menuManager, window, DISPLAY_AS_XLS_CMD_ID,
+					"Display with Excel", "icons/excel.png");
+		}
+		refreshCommand(menuManager, window, SAVE_AS_XLS_CMD_ID,
+				"Save as Excel file", "icons/excel.png");
+	}
+
+	// Providers
+
 	protected static class ViewContentProvider implements
 			IStructuredContentProvider {
 
@@ -142,8 +225,11 @@ public class ResultListView extends ViewPart {
 			ResultAttributes ra = (ResultAttributes) obj;
 			switch (index) {
 			case 0:
-				return getText(ra.getCloseDate());
+				return (ra.getAttributes().get("testCase") == null) ? null : ra
+						.getAttributes().get("testCase");
 			case 1:
+				return dateFormatter.format(ra.getCloseDate());
+			case 2:
 				return ra.getUuid();
 			}
 			return getText(obj);
@@ -186,7 +272,6 @@ public class ResultListView extends ViewPart {
 
 			if (obj instanceof ResultAttributes) {
 				ResultAttributes ra = (ResultAttributes) obj;
-
 				IWorkbench iw = ClientUiPlugin.getDefault().getWorkbench();
 				IHandlerService handlerService = (IHandlerService) iw
 						.getService(IHandlerService.class);
