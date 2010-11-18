@@ -68,6 +68,10 @@ public class ExecutionModulesView extends ViewPart {
 		return viewer;
 	}
 
+	public void refreshView() {
+		viewer.setInput(getViewSite());
+	}
+
 	class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
@@ -157,8 +161,8 @@ public class ExecutionModulesView extends ViewPart {
 					props.setProperty("agentId", flowNode
 							.getExecutionModuleNode().getAgentNode().getAgent()
 							.getAgentUuid());
-					props.setProperty("host", flowNode.getExecutionModuleNode().getAgentNode()
-							.getAgent().toString());
+					props.setProperty("host", flowNode.getExecutionModuleNode()
+							.getAgentNode().getAgent().toString());
 
 					ByteArrayOutputStream out = new ByteArrayOutputStream();
 					try {

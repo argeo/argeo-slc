@@ -8,6 +8,10 @@
 		class="org.argeo.slc.client.ui.commands.ResultListViewRefreshHandler"
 		scope="prototype">
 	</bean>
+	<bean id="org.argeo.slc.client.ui.refreshExecutionModulesView"
+		class="org.argeo.slc.client.ui.commands.ExecutionModulesViewRefreshHandler"
+		scope="prototype">
+	</bean>
 	<bean id="org.argeo.slc.client.ui.refreshProcessList"
 		class="org.argeo.slc.client.ui.commands.ProcessListViewRefreshHandler"
 		scope="prototype">

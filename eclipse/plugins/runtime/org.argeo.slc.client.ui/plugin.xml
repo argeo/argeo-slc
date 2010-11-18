@@ -75,6 +75,11 @@
       </command>
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.client.ui.refreshExecutionModulesView"
+            name="refreshExecutionModulesView">
+      </command>
+      <command
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             id="org.argeo.slc.client.ui.launchBatch"
             name="LaunchBatch">
       </command>
@@ -139,15 +144,13 @@
                   commandId="org.argeo.slc.client.ui.refreshResultList"
                   label="Refresh"
                   style="push"
-                  tooltip="Refresh  the result list">
+                  tooltip="Refresh the result list">
             </command>
          </menu>
       </menuContribution>
       -->
       <menuContribution
-            locationURI="toolbar:org.eclipse.ui.main.toolbar">
-         <toolbar
-               id="org.argeo.slc.client.ui.ResultViewToolbar">
+            locationURI="toolbar:org.argeo.slc.client.ui.resultListView">
             <command
                   commandId="org.argeo.slc.client.ui.refreshResultList"
                   icon="icons/refresh.png"
@@ -155,11 +158,16 @@
                   style="toggle"
                   tooltip="Refresh the result list">
             </command>
-            <separator
-                  name="resultListViewGroup">
-            </separator>
-         </toolbar>
-      </menuContribution>
+        </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.argeo.slc.client.ui.executionModulesView">
+         <command
+               commandId="org.argeo.slc.client.ui.refreshExecutionModulesView"
+               icon="icons/refresh.png"
+               label="Refresh"
+               tooltip="Refresh the execution modules view.">
+         </command>
+	</menuContribution>   
       <menuContribution
             locationURI="toolbar:org.argeo.slc.client.ui.processBuilderView">
          <command

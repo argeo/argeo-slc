@@ -228,7 +228,10 @@ public class ResultListView extends ViewPart {
 				return (ra.getAttributes().get("testCase") == null) ? null : ra
 						.getAttributes().get("testCase");
 			case 1:
-				return dateFormatter.format(ra.getCloseDate());
+				// otherwise we get null pointer exception when the test is not
+				// closed yet.
+				return (ra.getCloseDate() == null) ? null : dateFormatter
+						.format(ra.getCloseDate());
 			case 2:
 				return ra.getUuid();
 			}

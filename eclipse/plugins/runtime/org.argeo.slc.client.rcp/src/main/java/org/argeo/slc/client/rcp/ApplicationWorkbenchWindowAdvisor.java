@@ -42,7 +42,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.getWorkbenchConfigurer().restoreState();
 		// set default window size
 		configurer.setInitialSize(new Point(1200, 900));
-		configurer.setShowCoolBar(true);
+		configurer.setShowCoolBar(false);
 		configurer.setShowStatusLine(true);
 		configurer.setShowPerspectiveBar(true);
 
