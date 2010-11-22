@@ -120,6 +120,11 @@
          		name="Result Name">
   	 		</commandParameter>
 	</command>
+   <command 
+      		defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+      		id="org.argeo.slc.client.ui.manageBundles"
+      		name="ManageBundles">
+   	</command>
     </extension>
    <extension
         point="org.eclipse.ui.bindings">
@@ -149,13 +154,22 @@
          </menu>
       </menuContribution>
       -->
+       <menuContribution
+            locationURI="menu:fileMenu">
+            <!-- Should be implemented in later version.
+            <command
+                  commandId="org.argeo.slc.client.ui.manageBundles"
+                  label="Manage Bundles"
+                  style="push"
+                  tooltip="Add or remove plugins at run time">
+            </command> -->
+      </menuContribution>
       <menuContribution
             locationURI="toolbar:org.argeo.slc.client.ui.resultListView">
             <command
                   commandId="org.argeo.slc.client.ui.refreshResultList"
                   icon="icons/refresh.png"
                   label="Refresh"
-                  style="toggle"
                   tooltip="Refresh the result list">
             </command>
         </menuContribution>

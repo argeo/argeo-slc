@@ -138,7 +138,6 @@ public class ProcessBuilderView extends ViewPart {
 		viewer.refresh();
 	}
 
-	
 	// Remove the selected process from the batch
 	public void removeSelected() {
 		if (curSelectedRow == -1)
@@ -239,6 +238,7 @@ public class ProcessBuilderView extends ViewPart {
 				RealizedFlow rf = (RealizedFlow) obj;
 				curSelectedRow = realizedFlows.indexOf(rf);
 				refreshParameterview();
+				setFocus();
 			}
 		}
 	}

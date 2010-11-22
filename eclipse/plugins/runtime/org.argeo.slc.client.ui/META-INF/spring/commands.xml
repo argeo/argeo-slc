@@ -36,4 +36,7 @@
 	<bean id="org.argeo.slc.client.ui.clearBatch" class="org.argeo.slc.client.ui.commands.ClearBatchHandler"
 		scope="prototype">
 	</bean>
+	<bean id="org.argeo.slc.client.ui.manageBundles" class="org.argeo.slc.client.ui.commands.ManageBundlesHandler"
+	scope="prototype">
+	</bean>
 </beans>

@@ -34,7 +34,6 @@
 		scope="prototype">
 		<property name="slcExecutionDao" ref="slcExecutionDao" />
 		<property name="contentProvider" ref="processDetailContentProvider" />
-		<property name="labelProvider" ref="processDetailLabelProvider" />
 	</bean>
 
 	<bean id="org.argeo.slc.client.ui.processBuilderView" class="org.argeo.slc.client.ui.views.ProcessBuilderView"

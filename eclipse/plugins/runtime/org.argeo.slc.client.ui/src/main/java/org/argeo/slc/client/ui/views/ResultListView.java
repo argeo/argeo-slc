@@ -183,7 +183,6 @@ public class ResultListView extends ViewPart {
 
 	private void contextMenuAboutToShow(IMenuManager menuManager) {
 
-		IContributionItem[] items = menuManager.getItems();
 		IWorkbenchWindow window = ClientUiPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
 

@@ -7,7 +7,6 @@ import java.util.Map;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.providers.ProcessParametersEditingSupport;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
-import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.process.RealizedFlow;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -42,7 +41,7 @@ public class ProcessParametersView extends ViewPart {
 	private Map<String, Object> values;
 	// This map stores the spec of the attributes used to offer the end user
 	// some choices.
-	private Map<String, ExecutionSpecAttribute> specAttributes;
+	//private Map<String, ExecutionSpecAttribute> specAttributes;
 
 	// We must keep a reference to the current EditingSupport so that we can
 	// update the index of the process being updated
@@ -120,8 +119,8 @@ public class ProcessParametersView extends ViewPart {
 		// viewer.setInput(parameters);
 
 		values = rf.getFlowDescriptor().getValues();
-		specAttributes = rf.getFlowDescriptor().getExecutionSpec()
-				.getAttributes();
+		// specAttributes = rf.getFlowDescriptor().getExecutionSpec()
+		// .getAttributes();
 
 		if (values != null)
 			viewer.setInput(values);

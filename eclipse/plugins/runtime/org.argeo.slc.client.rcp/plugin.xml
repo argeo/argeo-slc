@@ -28,6 +28,7 @@
                id="fileMenu"
                label="File">
             <command
+                  id="exitCommand"
                   commandId="org.argeo.slc.client.rcp.commands.Exit"
                   label="Exit"
                   style="push"

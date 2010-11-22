@@ -36,7 +36,6 @@ public class ProcessDetailView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(contentProvider);
-		// viewer.setLabelProvider(labelProvider);
 		viewer.setLabelProvider(new ProcessDetailLabelProvider());
 		// viewer.setInput(getViewSite());
 	}
