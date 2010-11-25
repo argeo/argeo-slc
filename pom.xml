@@ -9,7 +9,7 @@
 	<artifactId>argeo-slc</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC</name>
-	<version>0.13.0</version>
+	<version>0.13.1-SNAPSHOT</version>
 	<properties>
 		<developmentCycle>0.13</developmentCycle>
 		<version.argeo-distribution>1.1.0</version.argeo-distribution>
@@ -35,9 +35,9 @@
 	</modules>
 	<url>${site.urlBase}/${developmentCycle}</url>
 	<scm>
-		<connection>scm:svn:https://svn.argeo.org/slc/tags/argeo-slc-0.13.0</connection>
-		<developerConnection>scm:svn:https://svn.argeo.org/slc/tags/argeo-slc-0.13.0</developerConnection>
-		<url>https://svn.argeo.org/slc/tags/argeo-slc-0.13.0</url>
+		<connection>scm:svn:https://svn.argeo.org/slc/trunk</connection>
+		<developerConnection>scm:svn:https://svn.argeo.org/slc/trunk</developerConnection>
+		<url>https://svn.argeo.org/slc/trunk</url>
 	</scm>
 	<issueManagement>
 		<system>Bugzilla</system>
