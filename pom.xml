@@ -13,15 +13,15 @@
 	<version>0.13.0-SNAPSHOT</version>
 	<properties>
 		<developmentCycle>0.13</developmentCycle>
-		<version.argeo-distribution>1.1.0-SNAPSHOT</version.argeo-distribution>
-		<version.argeo-ria>0.12.5-SNAPSHOT</version.argeo-ria>
-		<version.argeo-commons>0.2.1-SNAPSHOT</version.argeo-commons>
+		<version.argeo-distribution>1.1.0</version.argeo-distribution>
+		<version.argeo-ria>0.12.5</version.argeo-ria>
+		<version.argeo-commons>0.2.1</version.argeo-commons>
 		<version.equinox>3.6.1</version.equinox>
 		<version.maven-bundle-plugin>2.0.1</version.maven-bundle-plugin>
-		<version.maven-argeo-osgi>0.1.29-SNAPSHOT</version.maven-argeo-osgi>
-		<version.maven-argeo-qooxdoo>1.1.0-SNAPSHOT</version.maven-argeo-qooxdoo>
-		<site.repoBase>file:///var/argeo/projects/SLC/www/site</site.repoBase>
-		<site.urlBase>http://www.argeo.org/projects/slc/site</site.urlBase>
+		<version.maven-argeo-osgi>0.1.29</version.maven-argeo-osgi>
+		<version.maven-argeo-qooxdoo>1.1.0</version.maven-argeo-qooxdoo>
+		<site.repoBase>file:///srv/projects/www/site</site.repoBase>
+		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
 	</properties>
 	<modules>
 		<module>runtime</module>
@@ -36,14 +36,13 @@
 	</modules>
 	<url>${site.urlBase}/${developmentCycle}</url>
 	<scm>
-		<connection>scm:svn:https://www.argeo.org/svn/slc/trunk</connection>
-		<developerConnection>scm:svn:https://www.argeo.org/svn/slc/trunk
-		</developerConnection>
-		<url>https://www.argeo.org/svn/slc/trunk</url>
+		<connection>scm:svn:https://svn.argeo.org/slc/trunk</connection>
+		<developerConnection>scm:svn:https://svn.argeo.org/slc/trunk</developerConnection>
+		<url>https://svn.argeo.org/slc/trunk</url>
 	</scm>
 	<issueManagement>
 		<system>Bugzilla</system>
-		<url>https://www.argeo.org/bugzilla/</url>
+		<url>https://bugzilla.argeo.org</url>
 	</issueManagement>
 	<licenses>
 		<license>
@@ -53,7 +52,7 @@
 			<comments><![CDATA[
 SLC - Software LifeCycle framework
 			   
-Copyright 2010 Mathieu Baudier - Argeo SASU.
+Copyright 2010 Mathieu Baudier
 
 Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
 you may not use this file except in compliance with the License.
@@ -179,8 +178,7 @@ limitations under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
-				<version>2.0-beta-5</version>
-				<!-- The site plugin is buggy with multi modules. http://jira.codehaus.org/browse/MSITE-276 -->
+				<version>2.1.1</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -188,7 +186,6 @@ limitations under the License.
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<releaseProfiles>release</releaseProfiles>
-					<goals>deploy</goals>
 					<preparationGoals>clean install</preparationGoals>
 				</configuration>
 			</plugin>
@@ -314,10 +311,6 @@ limitations under the License.
 				<artifactId>org.argeo.slc.support.jemmy</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-			<!-- <dependency> <groupId>org.argeo.slc.runtime</groupId> <artifactId>org.argeo.slc.support.ws.client</artifactId> 
-				<version>${project.version}</version> </dependency> <dependency> <groupId>org.argeo.slc</groupId> 
-				<artifactId>org.argeo.slc.webapp</artifactId> <version>${project.version}</version> 
-				<type>war</type> </dependency> -->
 			<dependency>
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>org.argeo.slc.ria</artifactId>
@@ -329,8 +322,6 @@ limitations under the License.
 				<artifactId>org.argeo.ria.core</artifactId>
 				<version>${version.argeo-ria}</version>
 			</dependency>
-			<!-- <dependency> <groupId>org.argeo.slc.server</groupId> <artifactId>bundles</artifactId> 
-				<version>0.11.3-SNAPSHOT</version> <type>pom</type> </dependency> -->
 			<dependency>
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>deploy</artifactId>
