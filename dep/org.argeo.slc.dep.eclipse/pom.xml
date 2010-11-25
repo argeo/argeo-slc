@@ -22,10 +22,5 @@
 			<artifactId>org.argeo.slc.client.ui</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.agent</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 	</dependencies>
 </project>

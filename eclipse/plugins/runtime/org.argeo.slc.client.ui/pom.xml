@@ -24,11 +24,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.hibernate</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
