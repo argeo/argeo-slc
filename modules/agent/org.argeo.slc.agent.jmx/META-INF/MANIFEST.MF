@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.13.0.SNAPSHOT
+Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-Name: SLC Agent JMX
 Bundle-SymbolicName: org.argeo.slc.agent.jmx
 Import-Package: org.argeo.slc.core.execution;specification-version="0.12.2.SNAPSHOT-r3341",

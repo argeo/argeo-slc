@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SLC Integration Tests
 Bundle-SymbolicName: org.argeo.slc.it.webapp
-Bundle-Version: 0.13.0.SNAPSHOT
+Bundle-Version: 0.13.1.SNAPSHOT
 Import-Package: junit.framework;version="3.8.2",
  org.argeo.slc;version="0.13.0.SNAPSHOT-r3650",
  org.argeo.slc.msg;version="0.13.0.SNAPSHOT-r3653",

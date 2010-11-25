@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Agent
 Bundle-SymbolicName: org.argeo.slc.client.agent
-Bundle-Version: 0.13.0.SNAPSHOT
+Bundle-Version: 0.13.1.SNAPSHOT
 Import-Package: org.argeo.slc.core.runtime,
  org.argeo.slc.execution;version="0.13.0.SNAPSHOT-r3770",
  org.argeo.slc.runtime;version="0.13.0.SNAPSHOT-r3770"

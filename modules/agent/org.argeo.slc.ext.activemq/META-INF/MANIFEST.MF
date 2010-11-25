@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-Name: ActiveMQ Ext
 Bundle-SymbolicName: org.argeo.slc.ext.activemq
-Bundle-Version: 0.13.0.SNAPSHOT
+Bundle-Version: 0.13.1.SNAPSHOT
 Fragment-Host: org.argeo.dep.osgi.activemq
 Import-Package: org.argeo.slc.runtime,
  org.argeo.slc.execution,

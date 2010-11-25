@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.13.0.SNAPSHOT
+Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.hsqldb
 Import-Package: net.sf.ehcache.hibernate,
  org.aopalliance.aop,

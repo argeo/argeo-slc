@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Core
 Bundle-SymbolicName: org.argeo.slc.client.core
-Bundle-Version: 0.13.0.SNAPSHOT
+Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.argeo.slc.client.aspects,
  org.argeo.slc.client.contentprovider

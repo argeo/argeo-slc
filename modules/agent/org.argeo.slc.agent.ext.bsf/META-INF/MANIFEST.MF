@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Fragment-Host: com.springsource.org.apache.bsf
-Bundle-Version: 0.13.0.SNAPSHOT
+Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.agent.ext.bsf
 Import-Package: bsh.util;resolution:=optional,
  org.codehaus.groovy.bsf;resolution:=optional

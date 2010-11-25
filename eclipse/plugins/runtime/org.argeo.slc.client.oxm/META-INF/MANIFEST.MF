@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Version: 0.13.0.SNAPSHOT
+Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-Name: Test Bundle to solve use case issues
 Bundle-SymbolicName: org.argeo.slc.client.oxm
 Export-Package: org.argeo.slc.client.oxm

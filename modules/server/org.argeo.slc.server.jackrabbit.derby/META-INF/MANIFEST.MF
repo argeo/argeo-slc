@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jackrabbit JCR Repository Derby
 Bundle-SymbolicName: org.argeo.slc.server.jackrabbit.derby
-Bundle-Version: 0.13.0.SNAPSHOT
+Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-Vendor: Argeo
 Import-Package: javax.jcr;version="1.0.0",
  org.argeo.server.jackrabbit;version="0.1.3.SNAPSHOT-r3516",
