@@ -19,7 +19,7 @@
 		<version.maven-bundle-plugin>2.0.1</version.maven-bundle-plugin>
 		<version.maven-argeo-osgi>0.1.29</version.maven-argeo-osgi>
 		<version.maven-argeo-qooxdoo>1.1.0</version.maven-argeo-qooxdoo>
-		<site.repoBase>file:///srv/projects/www/site</site.repoBase>
+		<site.repoBase>file:///srv/projects/www/slc/site</site.repoBase>
 		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
 	</properties>
 	<modules>
