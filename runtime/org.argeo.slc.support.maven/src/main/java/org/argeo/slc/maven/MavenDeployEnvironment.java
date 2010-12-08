@@ -34,14 +34,15 @@ public abstract class MavenDeployEnvironment implements DeployEnvironment {
 
 	public void unpackTo(Object packg, File targetLocation,
 			Map<String, String> filter) {
-		File packageLocation;
+		File packageLocation=null;
 		String type = null;
 		String removeRootDir = "enabled";
-		if (packg instanceof MavenFile) {
-			packageLocation = mavenManager
-					.getPackageLocation((MavenFile) packg);
-			type = ((MavenFile) packg).getType();
-		} else if (packg instanceof File) {
+//		if (packg instanceof MavenFile) {
+//			packageLocation = mavenManager
+//					.getPackageLocation((MavenFile) packg);
+//			type = ((MavenFile) packg).getType();
+//		} else 
+		if (packg instanceof File) {
 			packageLocation = (File) packg;
 			// TODO: type based on extension
 		} else {

@@ -25,6 +25,7 @@
 							javax.xml.*;version="0.0.0",
 							org.xml.*;version="0.0.0",
 							org.springframework.ws.*;resolution:="optional",
+							org.springframework.core;resolution:="optional",
 							*
 						</Import-Package>
 					</instructions>
@@ -45,7 +46,6 @@
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>org.springframework.ws</artifactId>
-			<version>1.5.8.A</version>
 		</dependency>
 
 		<dependency>

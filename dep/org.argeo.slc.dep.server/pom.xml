@@ -40,6 +40,11 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.jcr</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.ws.client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- Commons -->
 		<dependency>

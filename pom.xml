@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.argeo</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.2.0</version>
+		<groupId>org.argeo.commons</groupId>
+		<artifactId>argeo-commons</artifactId>
+		<version>0.2.2-SNAPSHOT</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -12,13 +13,6 @@
 	<version>0.13.1-SNAPSHOT</version>
 	<properties>
 		<developmentCycle>0.13</developmentCycle>
-		<version.argeo-distribution>1.1.0</version.argeo-distribution>
-		<version.argeo-ria>0.12.5</version.argeo-ria>
-		<version.argeo-commons>0.2.1</version.argeo-commons>
-		<version.equinox>3.6.1</version.equinox>
-		<version.maven-bundle-plugin>2.0.1</version.maven-bundle-plugin>
-		<version.maven-argeo-osgi>0.1.29</version.maven-argeo-osgi>
-		<version.maven-argeo-qooxdoo>1.1.0</version.maven-argeo-qooxdoo>
 		<site.repoBase>file:///srv/projects/www/slc/site</site.repoBase>
 		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
 	</properties>
@@ -39,10 +33,6 @@
 		<developerConnection>scm:svn:https://svn.argeo.org/slc/trunk</developerConnection>
 		<url>https://svn.argeo.org/slc/trunk</url>
 	</scm>
-	<issueManagement>
-		<system>Bugzilla</system>
-		<url>https://bugzilla.argeo.org</url>
-	</issueManagement>
 	<licenses>
 		<license>
 			<name>Apache 2</name>
@@ -68,10 +58,6 @@ limitations under the License.
 			</comments>
 		</license>
 	</licenses>
-	<organization>
-		<name>Argeo</name>
-		<url>http://www.argeo.org</url>
-	</organization>
 	<developers>
 		<developer>
 			<id>mbaudier</id>
@@ -118,112 +104,8 @@ limitations under the License.
 			</roles>
 		</contributor>
 	</contributors>
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<source>1.5</source>
-						<target>1.5</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-source-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>attach-sources</id>
-							<phase>package</phase>
-							<goals>
-								<goal>jar</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.argeo.maven.plugins</groupId>
-					<artifactId>maven-argeo-osgi-plugin</artifactId>
-					<version>${version.maven-argeo-osgi}</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>validate</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<doCheck>false</doCheck>
-					<doUpdate>false</doUpdate>
-					<useLastCommittedRevision>true</useLastCommittedRevision>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>2.1.1</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<releaseProfiles>release</releaseProfiles>
-					<preparationGoals>clean install</preparationGoals>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>com.mycila.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<configuration>
-					<header>license-apache2-header.txt</header>
-					<failIfMissing>true</failIfMissing>
-					<aggregate>true</aggregate>
-					<includes>
-						<include>src/**/*.java</include>
-						<include>src/**/*.xml</include>
-					</includes>
-					<excludes>
-						<exclude>**/springutil/**</exclude>
-						<exclude>**/qooxdoo-sdk/**</exclude>
-					</excludes>
-					<useDefaultExcludes>true</useDefaultExcludes>
-					<mapping>
-						<java>SLASHSTAR_STYLE</java>
-						<xml>XML_STYLE</xml>
-					</mapping>
-				</configuration>
-			</plugin>
-		</plugins>
-
-	</build>
 	<dependencyManagement>
 		<dependencies>
-			<!-- Third Parties -->
-			<dependency>
-				<groupId>org.argeo.dep</groupId>
-				<artifactId>versions-all</artifactId>
-				<version>${version.argeo-distribution}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
 			<!-- SLC (itself) -->
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
@@ -380,6 +262,20 @@ limitations under the License.
 			<snapshots>
 				<enabled>false</enabled>
 				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>argeo-snapshots</id>
+			<url>http://dev.argeo.org/maven/argeo-snapshots</url>
+			<releases>
+				<enabled>false</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>fail</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
 				<checksumPolicy>fail</checksumPolicy>
 			</snapshots>
 		</repository>

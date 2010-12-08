@@ -7,7 +7,7 @@
 	</parent>
 	<groupId>org.argeo.slc.dist</groupId>
 	<artifactId>org.argeo.slc.sdk</artifactId>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 	<name>SLC SDK</name>
 	<properties>
 		<argeo.p2.cmd>/opt/equinox-p2-agent/eclipse</argeo.p2.cmd>

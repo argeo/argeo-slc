@@ -16,26 +16,36 @@
 
 package org.argeo.slc.maven;
 
-import java.io.File;
-import java.util.List;
-import java.util.Set;
-import java.util.Vector;
+import org.apache.maven.cli.MavenCli;
+import org.codehaus.plexus.PlexusContainer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
-import org.apache.maven.project.MavenProject;
-import org.argeo.slc.SlcException;
-import org.argeo.slc.maven.embedder.MavenEmbedderException;
-import org.codehaus.plexus.embed.Embedder;
+
 
 public class MavenManager {
+	
+	public static void main(String[] args){
+		//CustomCli mavenCli = new CustomCli();
+		MavenCli mavenCli = new MavenCli();
+		String[] goals = { "-e","dependency:tree" };
+		mavenCli.doMain(goals, "/home/mbaudier/dev/src/slc/dist/org.argeo.slc.sdk", System.out, System.err);
+	}
+	
+	static class CustomCli extends MavenCli{
+		private PlexusContainer container;
 
+		@Override
+		protected void customizeContainer(PlexusContainer container) {
+			this.container = container;
+		}
+
+		public PlexusContainer getContainer() {
+			return container;
+		}
+		
+		
+		
+	}
+/*
 	private final Log log = LogFactory.getLog(getClass());
 
 	private String localRepositoryPath = System.getProperty("user.home")
@@ -45,7 +55,7 @@ public class MavenManager {
 	private List<ArtifactRepository> remoteRepositoriesInternal;
 	private List<RemoteRepository> remoteRepositories = new Vector<RemoteRepository>();
 
-	private SlcMavenEmbedder mavenEmbedder;
+	private MavenEmbedder mavenEmbedder;
 	private ClassLoader classLoader;
 	private Boolean offline = false;
 
@@ -220,5 +230,5 @@ public class MavenManager {
 	public void setOffline(Boolean offline) {
 		this.offline = offline;
 	}
-
+*/
 }
