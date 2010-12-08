@@ -16,35 +16,31 @@
 
 package org.argeo.slc.maven;
 
-import org.apache.maven.cli.MavenCli;
-import org.codehaus.plexus.PlexusContainer;
-
-
 
 public class MavenManager {
 	
-	public static void main(String[] args){
-		//CustomCli mavenCli = new CustomCli();
-		MavenCli mavenCli = new MavenCli();
-		String[] goals = { "-e","dependency:tree" };
-		mavenCli.doMain(goals, "/home/mbaudier/dev/src/slc/dist/org.argeo.slc.sdk", System.out, System.err);
-	}
-	
-	static class CustomCli extends MavenCli{
-		private PlexusContainer container;
-
-		@Override
-		protected void customizeContainer(PlexusContainer container) {
-			this.container = container;
-		}
-
-		public PlexusContainer getContainer() {
-			return container;
-		}
-		
-		
-		
-	}
+//	public static void main(String[] args){
+//		//CustomCli mavenCli = new CustomCli();
+//		MavenCli mavenCli = new MavenCli();
+//		String[] goals = { "-e","dependency:tree" };
+//		mavenCli.doMain(goals, "/home/mbaudier/dev/src/slc/dist/org.argeo.slc.sdk", System.out, System.err);
+//	}
+//	
+//	static class CustomCli extends MavenCli{
+//		private PlexusContainer container;
+//
+//		@Override
+//		protected void customizeContainer(PlexusContainer container) {
+//			this.container = container;
+//		}
+//
+//		public PlexusContainer getContainer() {
+//			return container;
+//		}
+//		
+//		
+//		
+//	}
 /*
 	private final Log log = LogFactory.getLog(getClass());
 
