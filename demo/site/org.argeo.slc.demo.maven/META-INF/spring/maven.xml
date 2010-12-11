@@ -9,11 +9,13 @@
 
 	<bean id="mavenManager" class="org.argeo.slc.maven.MavenManager"
 		init-method="init">
+		<!--  
 		<property name="remoteRepositories">
 			<list>
 				<bean p:id="central" p:url="http://repo1.maven.org/maven2"
 					class="org.argeo.slc.maven.RemoteRepository" />
 			</list>
 		</property>
+		-->
 	</bean>
 </beans>

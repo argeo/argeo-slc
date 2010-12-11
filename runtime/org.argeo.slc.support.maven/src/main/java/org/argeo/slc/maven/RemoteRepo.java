@@ -16,7 +16,7 @@
 
 package org.argeo.slc.maven;
 
-public class RemoteRepository {
+public class RemoteRepo {
 	private String id;
 	private String url;
 

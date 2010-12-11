@@ -5,10 +5,9 @@ Bundle-SymbolicName: org.argeo.slc.demo.maven
 Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-Description: Demonstrate Maven support
 Import-Package: org.aopalliance.aop;version="1.0.0",
- org.apache.maven.project,
  org.argeo.slc.core.execution;version="0.12.2.SNAPSHOT-r3445",
  org.argeo.slc.execution;version="0.12.2.SNAPSHOT-r3445",
- org.argeo.slc.maven;version="0.12.2.SNAPSHOT-r3353",
+ org.argeo.slc.maven,
  org.argeo.slc.osgi;version="0.12.2.SNAPSHOT-r3424",
  org.springframework.aop;version="2.5.6.SEC01",
  org.springframework.aop.framework;version="2.5.6.SEC01",
