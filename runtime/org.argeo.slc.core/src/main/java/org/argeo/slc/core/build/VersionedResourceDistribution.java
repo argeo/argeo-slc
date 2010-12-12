@@ -19,6 +19,10 @@ package org.argeo.slc.core.build;
 import org.argeo.slc.build.NameVersion;
 import org.springframework.core.io.Resource;
 
+/**
+ * The distribution of a software package (jar, zip, RPM, etc.) which is
+ * versioned. The archive itself is accessible via a {@link Resource}.
+ */
 public class VersionedResourceDistribution extends ResourceDistribution
 		implements NameVersion {
 	private String name;

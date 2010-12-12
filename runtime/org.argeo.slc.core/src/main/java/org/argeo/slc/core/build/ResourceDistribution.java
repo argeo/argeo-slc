@@ -24,6 +24,7 @@ import org.argeo.slc.StreamReadable;
 import org.argeo.slc.build.Distribution;
 import org.springframework.core.io.Resource;
 
+/** A software distribution archive accessible via a {@link Resource}. */
 public class ResourceDistribution implements Distribution, StreamReadable {
 	private Resource resource;
 

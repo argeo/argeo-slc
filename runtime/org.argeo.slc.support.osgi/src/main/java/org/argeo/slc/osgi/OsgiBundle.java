@@ -26,8 +26,12 @@ import org.argeo.slc.deploy.TargetData;
 import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
+import org.springframework.core.io.Resource;
 
+/** A deployed OSGi bundle. */
 public class OsgiBundle extends BasicNameVersion implements Module {
+	private static final long serialVersionUID = -1970854723780452072L;
+
 	private ResourceDistribution distribution;
 
 	private Long internalBundleId;
@@ -52,6 +56,17 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 		internalBundleId = bundle.getBundleId();
 	}
 
+	/**
+	 * Initialize from a {@link RealizedFlow}.
+	 * 
+	 * @deprecated introduce an unnecessary dependency. TODO: create a separate
+	 *             helper.
+	 */
+	public OsgiBundle(RealizedFlow realizedFlow) {
+		super(realizedFlow.getModuleName(), realizedFlow.getModuleVersion());
+	}
+
+	/** Utility to avoid NPE. */
 	private static String getVersionSafe(Bundle bundle) {
 		Object versionObj = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
 		if (versionObj != null)
@@ -60,26 +75,35 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 			return null;
 	}
 
-	public OsgiBundle(RealizedFlow realizedFlow) {
-		super(realizedFlow.getModuleName(), realizedFlow.getModuleVersion());
-	}
-
+	/** Unique deployed system id. TODO: use internal bundle id when available? */
 	public String getDeployedSystemId() {
 		return getName() + ":" + getVersion();
 	}
 
+	/**
+	 * OSGi bundle are self-contained and do not require additional deployment
+	 * data.
+	 * 
+	 * @return always null
+	 */
 	public DeploymentData getDeploymentData() {
-		throw new UnsupportedOperationException();
+		return null;
 	}
 
+	/** The related distribution. */
 	public Distribution getDistribution() {
 		return distribution;
 	}
 
+	/**
+	 * The related distribution, a jar file with OSGi metadata referenced by a
+	 * {@link Resource}.
+	 */
 	public ResourceDistribution getResourceDistribution() {
 		return distribution;
 	}
 
+	/** TODO: reference the {@link OsgiRuntime} as target data? */
 	public TargetData getTargetData() {
 		throw new UnsupportedOperationException();
 	}
@@ -89,8 +113,8 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 	}
 
 	/**
-	 * To be used for optimization when looking in the bundle context. Can
-	 * therefore be null.
+	 * Bundle ID used by the OSGi runtime. To be used for optimization when
+	 * looking in the bundle context. Can therefore be null.
 	 */
 	public Long getInternalBundleId() {
 		return internalBundleId;
@@ -101,6 +125,7 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 		this.internalBundleId = internalBundleId;
 	}
 
+	/** Value of the <code>Bundle-Name</code> directive. */
 	public String getLabel() {
 		return label;
 	}
@@ -109,6 +134,7 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 		this.label = label;
 	}
 
+	/** Value of the <code>Bundle-Description</code> directive. */
 	public String getDescription() {
 		return description;
 	}
