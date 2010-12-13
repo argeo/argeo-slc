@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-Name: SLC Server Main for RAP applications
+Bundle-Description: List all Slc components needed  by SLC to run with a RAP UI.
+Bundle-SymbolicName: org.argeo.slc.server.main.rap
+Bundle-Version: 0.13.0.SNAPSHOT
+Require-Bundle: org.argeo.slc.specs,
+ org.argeo.slc.support.equinox
+Import-Package: org.argeo.slc.build,
+ org.argeo.slc.osgi.build
