@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="org.argeo.slc.client.rap.entrypoint"
+         point="org.eclipse.rap.ui.entrypoint">
+      <entrypoint
+            class="org.argeo.slc.client.rap.SlcClientRapApplication"
+            parameter="home"
+            id="org.argeo.slc.client.rap.SlcClientRapApplication">
+      </entrypoint>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Slc Execution"
+            class="org.argeo.slc.client.ui.perspectives.SlcExecution"
+			id="org.argeo.slc.client.ui.perspectives.slcExecution"
+            icon="icons/slc_execution_perspective.gif">
+      </perspective>
+   </extension>
+	<extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu">
+         <menu
+               id="fileMenu"
+               label="File">
+            <command
+                  id="exitCommand"
+                  commandId="org.eclipse.ui.file.exit"
+                  label="Exit"
+                  style="push"
+                  tooltip="Exits the application">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+  <!-- <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.ui.internal.handlers.QuitHandler"
+            id="org.eclipse.ui.file.exit"
+            name="Exit">
+      </command> 
+   </extension> -->
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            name="SLC">
+         <property
+               name="windowImages"
+               value="icons/argeo-icon-256.png">
+         </property>
+         <property
+               name="appName"
+               value="SLC">
+         </property>
+      </product>
+   </extension>
+</plugin>
