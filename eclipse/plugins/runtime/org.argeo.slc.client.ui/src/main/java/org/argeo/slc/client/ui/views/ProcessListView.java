@@ -62,11 +62,11 @@ public class ProcessListView extends ViewPart {
 
 		Table table = new Table(parent, style);
 
-		GridData gridData = new GridData(GridData.FILL_BOTH);
-		gridData.grabExcessVerticalSpace = true;
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.horizontalSpan = 3;
-		table.setLayoutData(gridData);
+//		GridData gridData = new GridData(GridData.FILL_BOTH);
+//		gridData.grabExcessVerticalSpace = true;
+//		gridData.grabExcessHorizontalSpace = true;
+//		gridData.horizontalSpan = 3;
+//		table.setLayoutData(gridData);
 
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);

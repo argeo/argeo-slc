@@ -8,7 +8,6 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -43,9 +42,9 @@ public class ResultDetailView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		resultDetailTree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.horizontalSpan = 3;
-		resultDetailTree.setLayoutData(gd);
+		// GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		// gd.horizontalSpan = 3;
+		// resultDetailTree.setLayoutData(gd);
 		resultDetailTree.setLinesVisible(true);
 		resultDetailTree.setHeaderVisible(true);
 
