@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Distribution"
+            class="org.argeo.slc.client.ui.dist.DistributionPerspective"
+            id="org.argeo.slc.client.ui.dist.distributionPerspective"
+            icon="icons/distribution_perspective.gif">
+      </perspective>
+   </extension>
+</plugin>
