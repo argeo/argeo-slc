@@ -3,7 +3,6 @@
 <plugin>
 
    <extension
-         id="org.argeo.slc.client.rap.entrypoint"
          point="org.eclipse.rap.ui.entrypoint">
       <entrypoint
             class="org.argeo.slc.client.rap.SlcClientRapApplication"
@@ -11,6 +10,7 @@
             id="org.argeo.slc.client.rap.SlcClientRapApplication">
       </entrypoint>
    </extension>
+     
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
