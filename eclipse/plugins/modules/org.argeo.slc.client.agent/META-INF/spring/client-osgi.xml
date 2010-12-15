@@ -4,7 +4,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
        http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd
        http://www.springframework.org/schema/beans   
-       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	xmlns:osgi="http://www.springframework.org/schema/osgi"
+	osgi:default-timeout="30000">
 
 	<reference id="modulesManager"
 		interface="org.argeo.slc.execution.ExecutionModulesManager" />
