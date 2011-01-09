@@ -4,4 +4,8 @@ Bundle-Name: Dist
 Bundle-SymbolicName: org.argeo.slc.client.ui.dist;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.eclipse.ui;bundle-version="3.6.1"
+Require-Bundle: org.eclipse.ui;bundle-version="3.6.1",
+ org.eclipse.core.runtime;bundle-version="3.6.0"
+Bundle-Activator: org.argeo.slc.client.ui.dist.DistPlugin
+Import-Package: org.argeo.eclipse.ui
+Bundle-ActivationPolicy: lazy

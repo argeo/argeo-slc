@@ -1,13 +1,20 @@
 package org.argeo.slc.client.ui.dist;
 
+import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-public class DistributionPerspective  implements IPerspectiveFactory{
+public class DistributionPerspective implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) {
-		// TODO Auto-generated method stub
-		
+		String editorArea = layout.getEditorArea();
+		layout.setEditorAreaVisible(false);
+		layout.setFixed(false);
+
+		IFolderLayout main = layout.createFolder("main", IPageLayout.RIGHT,
+				0.3f, editorArea);
+		main.addView("org.argeo.slc.client.ui.dist.modulesView");
+
 	}
 
 }

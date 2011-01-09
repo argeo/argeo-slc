@@ -10,4 +10,13 @@
             icon="icons/distribution_perspective.gif">
       </perspective>
    </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.argeo.slc.client.ui.dist.views.ModulesView"
+            id="org.argeo.slc.client.ui.dist.modulesView"
+            name="Modules"
+            restorable="true">
+      </view>
+   </extension>
 </plugin>

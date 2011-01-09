@@ -14,6 +14,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	private static final String PERSPECTIVE_ID = "org.argeo.slc.client.ui.perspectives.slcExecution";
+//	private static final String PERSPECTIVE_ID = "org.argeo.slc.client.ui.dist.distributionPerspective";
 
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
 			IWorkbenchWindowConfigurer configurer) {
