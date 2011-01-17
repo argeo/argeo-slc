@@ -53,6 +53,12 @@
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.modules</artifactId>
+			<version>${version.argeo-commons}</version>
+			<type>pom</type>
+		</dependency>
 
 		<!-- Security -->
 		<dependency>
@@ -112,18 +118,6 @@
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
 			<artifactId>org.argeo.security.dep.ads</artifactId>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons.server</groupId>
-			<artifactId>org.argeo.server.modules</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.modules</artifactId>
-			<version>${version.argeo-commons}</version>
 			<type>pom</type>
 		</dependency>
 		<dependency>

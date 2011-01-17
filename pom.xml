@@ -292,6 +292,7 @@ limitations under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.3.1</version>
 				<reportSets>
 					<reportSet>
 						<reports>
@@ -300,6 +301,7 @@ limitations under the License.
 							<report>license</report>
 							<report>scm</report>
 							<report>issue-tracking</report>
+							<report>dependencies</report>
 						</reports>
 					</reportSet>
 					<reportSet>
@@ -313,6 +315,7 @@ limitations under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
 				<inherited>false</inherited>
 				<configuration>
 					<aggregate>true</aggregate>
@@ -322,6 +325,7 @@ limitations under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.2</version>
 				<configuration>
 					<aggregate>true</aggregate>
 				</configuration>
@@ -329,6 +333,7 @@ limitations under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.7.1</version>
 				<inherited>false</inherited>
 				<configuration>
 					<aggregate>true</aggregate>
@@ -337,6 +342,7 @@ limitations under the License.
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<aggregate>true</aggregate>
 					<tags>
@@ -349,6 +355,7 @@ limitations under the License.
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changelog-plugin</artifactId>
+				<version>2.2</version>
 				<inherited>false</inherited>
 			</plugin>
 			<plugin>
