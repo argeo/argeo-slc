@@ -3,7 +3,7 @@ Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-Name: SLC Server Services
 Bundle-SymbolicName: org.argeo.slc.server.services
 Import-Package: org.aopalliance.aop,
- org.argeo.security;specification-version="0.1.3.SNAPSHOT-r3430",
+ org.argeo.security,
  org.argeo.slc.core.attachment,
  org.argeo.slc.dao.process,
  org.argeo.slc.dao.runtime,
