@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Repo
+Bundle-SymbolicName: org.argeo.slc.server.repo
+Bundle-Version: 1.0.0.qualifier
