@@ -7,10 +7,11 @@
 		<version>0.13.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
+
 	<groupId>org.argeo.slc.dep</groupId>
-	<artifactId>org.argeo.slc.dep.sdk</artifactId>
-	<packaging>jar</packaging>
-	<name>SLC SDK Dependencies</name>
+	<artifactId>org.argeo.slc.backend</artifactId>
+	<name>SLC BACKEND Dependencies</name>
+
 	<dependencies>
 		<!-- HACK because of dependencies pb with Maven: version 2.4.0 is required 
 			by Spring-LDAP while Apache Directory takes 2.1.0 -->
@@ -45,17 +46,16 @@
 			<artifactId>org.argeo.slc.dep.gis</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.eclipse</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+
 		<!-- SLC non deps -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<!-- TO BE DELETED <dependency> <groupId>org.argeo.slc.dep</groupId> <artifactId>org.argeo.slc.dep.eclipse</artifactId> 
+			<version>${project.version}</version> </dependency> -->
 		<dependency>
 			<groupId>org.argeo.slc.server</groupId>
 			<artifactId>org.argeo.slc.ria</artifactId>

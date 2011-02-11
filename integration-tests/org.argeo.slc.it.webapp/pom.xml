@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -25,13 +26,9 @@
 							${basedir}/../../demo/site;in=*;ex=target;ex=pom.xml;ex=.*,
 							${project.build.directory}/lib;in=*.jar,
 						</argeo.osgi.bundles>
-						<!--
-							<argeo.osgi.bundles>
-							${basedir}/../../demo/site;in=*;ex=target;ex=pom.xml;ex=.*,
-							${basedir}/../../modules/server;in=*;ex=target;ex=pom.xml;ex=.*,
-							${basedir}/../../modules/agent;in=*;ex=target;ex=pom.xml;ex=.*
-							</argeo.osgi.bundles>
-						-->
+						<!-- <argeo.osgi.bundles> ${basedir}/../../demo/site;in=*;ex=target;ex=pom.xml;ex=.*, 
+							${basedir}/../../modules/server;in=*;ex=target;ex=pom.xml;ex=.*, ${basedir}/../../modules/agent;in=*;ex=target;ex=pom.xml;ex=.* 
+							</argeo.osgi.bundles> -->
 
 						<argeo.osgi.start>
 							org.springframework.osgi.extender,
@@ -46,15 +43,10 @@
 							org.argeo.slc.demo.ant						
 						</argeo.osgi.start>
 						<argeo.server.port.http>7080</argeo.server.port.http>
-						<!--
-							<argeo.osgi.start> org.springframework.osgi.extender,
-							org.argeo.server.ads.server,
-							org.argeo.slc.server.jackrabbit.derby, org.argeo.slc.server.jcr,
-							org.argeo.slc.server.main, org.argeo.slc.ria,
-							org.argeo.slc.agent, org.argeo.slc.agent.jms,
-							org.argeo.slc.demo.minimal, org.argeo.slc.demo.basic,
-							org.argeo.slc.demo.ant </argeo.osgi.start>
-						-->
+						<!-- <argeo.osgi.start> org.springframework.osgi.extender, org.argeo.server.ads.server, 
+							org.argeo.slc.server.jackrabbit.derby, org.argeo.slc.server.jcr, org.argeo.slc.server.main, 
+							org.argeo.slc.ria, org.argeo.slc.agent, org.argeo.slc.agent.jms, org.argeo.slc.demo.minimal, 
+							org.argeo.slc.demo.basic, org.argeo.slc.demo.ant </argeo.osgi.start> -->
 					</systemProperties>
 				</configuration>
 				<executions>
@@ -113,14 +105,14 @@
 					</execution>
 				</executions>
 			</plugin>
-				<plugin>
-					<artifactId>maven-jar-plugin</artifactId>
-					<configuration>
-						<archive>
-							<manifestFile>META-INF/MANIFEST.MF</manifestFile>
-						</archive>
-					</configuration>
-				</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestFile>META-INF/MANIFEST.MF</manifestFile>
+					</archive>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
@@ -134,6 +126,7 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
 			<scope>test</scope>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 </project>

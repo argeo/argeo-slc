@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -11,51 +12,61 @@
 	<packaging>jar</packaging>
 	<name>SLC Agent Dependencies</name>
 	<dependencies>
-		<!--  Commons -->
+		<!-- Commons -->
 		<dependency>
 			<groupId>org.argeo.commons.osgi</groupId>
 			<artifactId>org.argeo.osgi.boot</artifactId>
+			<version>${version.argeo-commons}</version>
 		</dependency>
 
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.equinox</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.activemq</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.castor</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.ant</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.jcr</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.lib.detached</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
-		<!--  Spring -->
+		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>org.springframework.jdbc</artifactId>
@@ -100,7 +111,7 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>com.springsource.org.postgresql.jdbc3</artifactId>
 		</dependency>
-		<!--  Required by the Oracle JDBC driver -->
+		<!-- Required by the Oracle JDBC driver -->
 		<dependency>
 			<groupId>javax.resource</groupId>
 			<artifactId>com.springsource.javax.resource</artifactId>
@@ -111,15 +122,10 @@
 			<groupId>org.argeo.dep.jacob</groupId>
 			<artifactId>org.argeo.dep.jacob</artifactId>
 		</dependency>
-		<!--
-			<dependency> <groupId>org.argeo.dep.jacob</groupId>
-			<artifactId>org.argeo.dep.jacob.win32.x86</artifactId> </dependency>
-		-->
-		<!--
-			Languages <dependency> <groupId>org.codehaus.groovy</groupId>
-			<artifactId>com.springsource.org.codehaus.groovy</artifactId>
-			</dependency>
-		-->
+		<!-- <dependency> <groupId>org.argeo.dep.jacob</groupId> <artifactId>org.argeo.dep.jacob.win32.x86</artifactId> 
+			</dependency> -->
+		<!-- Languages <dependency> <groupId>org.codehaus.groovy</groupId> <artifactId>com.springsource.org.codehaus.groovy</artifactId> 
+			</dependency> -->
 		<!-- ASM -->
 		<dependency>
 			<groupId>org.objectweb.asm</groupId>

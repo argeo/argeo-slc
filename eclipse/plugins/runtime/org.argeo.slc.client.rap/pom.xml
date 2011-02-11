@@ -7,41 +7,30 @@
 		<version>0.13.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.client.rcp</artifactId>
-	<name>SLC Client RCP</name>
+	<artifactId>org.argeo.slc.client.rap</artifactId>
+	<name>SLC Client RAP</name>
 	<packaging>jar</packaging>
 	<dependencies>
-		
+
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.ui</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-		<!-- Argeo common distribution for RCP projects -->
+
+		<!-- Argeo common distribution for RAP projects -->
 		<dependency>
 			<groupId>org.argeo.commons.eclipse</groupId>
-			<artifactId>org.argeo.eclipse.dep.rcp</artifactId>
+			<artifactId>org.argeo.eclipse.dep.rap</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
-		
+
 		<!-- Eclipse -->
-		<!--   <dependency>
-			<groupId>org.eclipse.ui</groupId>
-			<artifactId>org.eclipse.ui</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.swt</groupId>
-			<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.swt</groupId>
-			<artifactId>org.eclipse.swt.gtk.linux.x86</artifactId>
-		</dependency> -->
+		<!-- <dependency> <groupId>org.eclipse.ui</groupId> <artifactId>org.eclipse.ui</artifactId> 
+			</dependency> <dependency> <groupId>org.eclipse.core</groupId> <artifactId>org.eclipse.core.runtime</artifactId> 
+			</dependency> <dependency> <groupId>org.eclipse.swt</groupId> <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId> 
+			</dependency> <dependency> <groupId>org.eclipse.swt</groupId> <artifactId>org.eclipse.swt.gtk.linux.x86</artifactId> 
+			</dependency> -->
 	</dependencies>
 </project>

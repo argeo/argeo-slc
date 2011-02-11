@@ -10,13 +10,10 @@
 	<artifactId>org.argeo.slc.client.ui</artifactId>
 	<name>SLC Client UI</name>
 	<packaging>jar</packaging>
+
+
 	<dependencies>
 		<!-- SLC Client UI -->
-		<dependency>
-			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.commons</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.oxm</artifactId>
@@ -40,29 +37,38 @@
 			<artifactId>org.argeo.slc.server</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- Commons -->
+
+		<!-- Spring -->
+	<!-- <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.context</artifactId>
+		</dependency>
+ -->	
+		<!-- Commons (with all dependencies that are commons for both RCP and RAP) -->
 		<dependency>
 			<groupId>org.argeo.commons.eclipse</groupId>
 			<artifactId>org.argeo.eclipse.ui</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
-		<!-- Spring -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.context</artifactId>
-		</dependency>
+
+
+		<!-- Eclipse - Only used at compile time. so that it is compatible with 
+			RCP runtime -->
+		<!-- TO BE DELETED <dependency> <groupId>org.argeo.slc.eclipse</groupId> 
+			<artifactId>org.argeo.slc.client.rap</artifactId> <version>${project.version}</version> 
+			<scope>provided</scope> </dependency> -->
+
+		<!-- Commons -->
+		<!-- TO BE DELETED <dependency> <groupId>org.argeo.slc.eclipse</groupId> 
+			<artifactId>org.argeo.slc.client.commons</artifactId> <version>${project.version}</version> 
+			</dependency> <dependency> <groupId>org.argeo.commons.eclipse</groupId> <artifactId>org.argeo.eclipse.ui</artifactId> 
+			<version>${version.argeo-commons}</version> </dependency> -->
 		<!-- Eclipse -->
-		<dependency>
-			<groupId>org.eclipse.ui</groupId>
-			<artifactId>org.eclipse.ui</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.core</groupId>
-			<artifactId>org.eclipse.core.runtime</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.swt</groupId>
-			<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
-		</dependency>
+		<!-- TO BE DELETED <dependency> <groupId>org.eclipse.ui</groupId> <artifactId>org.eclipse.ui</artifactId> 
+			</dependency> <dependency> <groupId>org.eclipse.core</groupId> <artifactId>org.eclipse.core.runtime</artifactId> 
+			</dependency> <dependency> <groupId>org.eclipse.swt</groupId> <artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId> 
+			</dependency> -->
+
+
 	</dependencies>
 </project>

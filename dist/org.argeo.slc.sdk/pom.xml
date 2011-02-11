@@ -91,25 +91,25 @@
 					</execution>
 				</executions>
 			</plugin>
-<!--			<plugin>-->
-<!--				<groupId>org.apache.maven.plugins</groupId>-->
-<!--				<artifactId>maven-assembly-plugin</artifactId>-->
-<!--				<configuration>-->
-<!--					<descriptors>-->
-<!--						<descriptor>src/assembly/dist.xml</descriptor>-->
-<!--						<descriptor>src/assembly/devel.xml</descriptor>-->
-<!--					</descriptors>-->
-<!--				</configuration>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<id>attach-assembly</id>-->
-<!--						<phase>package</phase>-->
-<!--						<goals>-->
-<!--							<goal>single</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-assembly-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- <descriptors> -->
+			<!-- <descriptor>src/assembly/dist.xml</descriptor> -->
+			<!-- <descriptor>src/assembly/devel.xml</descriptor> -->
+			<!-- </descriptors> -->
+			<!-- </configuration> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>attach-assembly</id> -->
+			<!-- <phase>package</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>single</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
 			<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>exec-maven-plugin</artifactId> 
 				<version>1.1</version> <executions> <execution> <id>create-repository</id> 
 				<phase>deploy</phase> <goals> <goal>exec</goal> </goals> </execution> </executions> 
@@ -140,14 +140,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.sdk</artifactId>
+			<artifactId>org.argeo.slc.dep.sdk.rcp</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.sdk.sources</artifactId>
-			<version>${project.version}</version>
-		</dependency>
+		<!-- TO BE DELETED <dependency> <groupId>org.argeo.slc.dep</groupId> <artifactId>org.argeo.slc.dep.sdk.sources</artifactId> 
+			<version>${project.version}</version> </dependency> -->
 	</dependencies>
 	<profiles>
 		<profile>
@@ -344,6 +341,7 @@
 									</mappings>
 									<requires>
 										<require>org.argeo.slc.sdk</require>
+										<!-- <require> org.argeo.slc.dep.sdk.rcp</require> -->
 									</requires>
 								</configuration>
 							</execution>

@@ -7,19 +7,18 @@
 		<version>0.13.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<groupId>org.argeo.slc</groupId>
 	<artifactId>dep</artifactId>
-	<packaging>pom</packaging>
 	<name>SLC Dependencies</name>
+	<packaging>pom</packaging>
 	<modules>
 		<module>org.argeo.slc.dep.agent</module>
 		<module>org.argeo.slc.dep.agent.extras</module>
 		<module>org.argeo.slc.dep.server</module>
 		<module>org.argeo.slc.dep.detached</module>
 		<module>org.argeo.slc.dep.gis</module>
-		<module>org.argeo.slc.dep.eclipse</module>
-		<module>org.argeo.slc.dep.sdk</module>
-		<module>org.argeo.slc.dep.sdk.sources</module>
+		<module>org.argeo.slc.dep.backend</module>
+		<module>org.argeo.slc.dep.sdk.rcp</module>
+		<module>org.argeo.slc.dep.sdk.rap</module>
 	</modules>
 	<build>
 		<resources>
@@ -67,33 +66,59 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.argeo.maven.plugins</groupId>
-				<artifactId>maven-argeo-osgi-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>resolve-pde-sources</id>
-						<goals>
-							<goal>pde-sources</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<copyArtifacts>true</copyArtifacts>
-						</configuration>
-					</execution>
-					<execution>
-						<goals>
-							<goal>descriptors</goal>
-						</goals>
-						<phase>generate-resources</phase>
-					</execution>
-				</executions>
-			</plugin><!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> 
-				<executions> <execution> <id>attach-artifacts</id> <phase>package</phase> 
-				<goals> <goal>attach-artifact</goal> </goals> <configuration> <artifacts> 
-				<artifact> <file>target/classes/modularDistribution.csv</file> <type>csv</type> 
-				<classifier>modularDistribution</classifier> </artifact> </artifacts> </configuration> 
-				</execution> </executions> </plugin> -->
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.argeo.maven.plugins</groupId>
+					<artifactId>maven-argeo-osgi-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>resolve-pde-sources</id>
+							<goals>
+								<goal>pde-sources</goal>
+							</goals>
+							<phase>generate-resources</phase>
+							<configuration>
+								<copyArtifacts>false</copyArtifacts>
+							</configuration>
+						</execution>
+						<execution>
+							<id>generate-descriptors</id>
+							<goals>
+								<goal>descriptors</goal>
+							</goals>
+							<phase>generate-resources</phase>
+						</execution>
+						<execution>
+							<id>check-osgi</id>
+							<phase>test</phase>
+							<goals>
+								<goal>equinox</goal>
+							</goals>
+							<configuration>
+								<onlyCheck>true</onlyCheck>
+								<argsToAppend>
+									<arg>-clean</arg>
+								</argsToAppend>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<!-- TO BE DELETED <plugin> <groupId>org.argeo.maven.plugins</groupId> 
+			<artifactId>maven-argeo-osgi-plugin</artifactId> <executions> <execution> 
+			<id>resolve-pde-sources</id> <goals> <goal>pde-sources</goal> </goals> <phase>generate-resources</phase> 
+			<configuration> <copyArtifacts>true</copyArtifacts> </configuration> </execution> 
+			<execution> <goals> <goal>descriptors</goal> </goals> <phase>generate-resources</phase> 
+			</execution> </executions> </plugin> -->
+		<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> 
+			<executions> <execution> <id>attach-artifacts</id> <phase>package</phase> 
+			<goals> <goal>attach-artifact</goal> </goals> <configuration> <artifacts> 
+			<artifact> <file>target/classes/modularDistribution.csv</file> <type>csv</type> 
+			<classifier>modularDistribution</classifier> </artifact> </artifacts> </configuration> 
+			</execution> </executions> </plugin> -->
+		<!-- </plugins> -->
 	</build>
 </project>

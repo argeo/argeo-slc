@@ -2,11 +2,29 @@
 <?eclipse version="3.4"?>
 <plugin>
 
+ <extension
+         id="SlcRapProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            name="ArgeoSlcProduct"
+            application="org.eclipse.ui.ide.workbench"
+            >
+         <property
+               name="windowImages"
+               value="icons/argeo-icon-256.png">
+         </property>
+         <property
+               name="appName"
+               value="SLC">
+         </property>
+      </product>
+   </extension>
+
    <extension
          point="org.eclipse.rap.ui.entrypoint">
       <entrypoint
             class="org.argeo.slc.client.rap.SlcClientRapApplication"
-            parameter="home"
+            parameter="slc"
             id="org.argeo.slc.client.rap.SlcClientRapApplication">
       </entrypoint>
    </extension>
@@ -45,20 +63,5 @@
             name="Exit">
       </command> 
    </extension> -->
-   <extension
-         id="product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.eclipse.ui.ide.workbench"
-            name="SLC">
-         <property
-               name="windowImages"
-               value="icons/argeo-icon-256.png">
-         </property>
-         <property
-               name="appName"
-               value="SLC">
-         </property>
-      </product>
-   </extension>
+  
 </plugin>

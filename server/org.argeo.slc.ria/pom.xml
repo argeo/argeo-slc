@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -119,6 +120,7 @@
 								<artifactItem>
 									<groupId>org.argeo.ria</groupId>
 									<artifactId>org.argeo.ria.core</artifactId>
+									<version>${version.argeo-ria}</version>
 									<classifier>ria</classifier>
 									<type>zip</type>
 									<outputDirectory>src/argeo-ria-src</outputDirectory>
@@ -129,8 +131,8 @@
 									<classifier>ria-security</classifier>
 									<type>zip</type>
 									<outputDirectory>src/argeo-ria-lib/security</outputDirectory>
-								</artifactItem>								
-							</artifactItems>							
+								</artifactItem>
+							</artifactItems>
 							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
 						</configuration>
@@ -164,7 +166,7 @@
 								<descriptor>assembly/ria-slc-web.xml</descriptor>
 							</descriptors>
 						</configuration>
-					</execution>				
+					</execution>
 					<execution>
 						<id>assembly-ria-jcr</id>
 						<phase>package</phase>
@@ -176,7 +178,7 @@
 								<descriptor>assembly/ria-jcr.xml</descriptor>
 							</descriptors>
 						</configuration>
-					</execution>				
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
@@ -189,5 +191,5 @@
 				<version>${version.argeo-commons}</version>
 			</dependency>
 		</dependencies>
-	</dependencyManagement>	
+	</dependencyManagement>
 </project>
