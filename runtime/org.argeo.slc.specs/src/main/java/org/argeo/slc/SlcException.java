@@ -18,7 +18,7 @@ package org.argeo.slc;
 
 /** Basis for all SLC exceptions. This is an unchecked exception. */
 public class SlcException extends RuntimeException {
-	static final long serialVersionUID = 1l;
+	private static final long serialVersionUID = 6373738619304106445L;
 
 	/** Constructor. */
 	public SlcException(String message) {
@@ -26,8 +26,8 @@ public class SlcException extends RuntimeException {
 	}
 
 	/** Constructor. */
-	public SlcException(String message, Throwable cause) {
-		super(message, cause);
+	public SlcException(String message, Throwable e) {
+		super(message, e);
 	}
 
 }

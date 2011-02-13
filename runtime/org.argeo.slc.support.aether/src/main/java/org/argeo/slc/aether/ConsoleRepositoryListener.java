@@ -1,4 +1,4 @@
-package org.argeo.slc.maven;
+package org.argeo.slc.aether;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,7 +29,7 @@ public class ConsoleRepositoryListener extends AbstractRepositoryListener {
 	}
 
 	public void artifactDescriptorMissing(RepositoryEvent event) {
-		if (log.isDebugEnabled())
+		if (log.isTraceEnabled())
 			log.warn("Missing artifact descriptor for " + event.getArtifact());
 	}
 

@@ -21,6 +21,7 @@
 		<module>org.argeo.slc.support.equinox</module>
 		<module>org.argeo.slc.support.hibernate</module>
 		<module>org.argeo.slc.support.ant</module>
+		<module>org.argeo.slc.support.aether</module>
 		<module>org.argeo.slc.support.maven</module>
 		<module>org.argeo.slc.support.jemmy</module>
 		<module>org.argeo.slc.support.jcr</module>
@@ -31,6 +32,7 @@
 		<module>org.argeo.slc.launcher</module>
 		<module>org.argeo.slc.lib.detached</module>
 		<module>org.argeo.slc.support.ws.client</module>
+		<module>org.argeo.slc.repo</module>
 	</modules>
 	<build>
 		<resources>
