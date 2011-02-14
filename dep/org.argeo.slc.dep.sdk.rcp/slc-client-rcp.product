@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SLC" uid="org.argeo.slc.client.rcp.product" id="org.argeo.slc.client.rcp.product" application="org.argeo.slc.client.rcp.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="SLC" uid="org.argeo.slc.client.rcp.product" id="org.argeo.slc.client.rcp.product" application="org.argeo.slc.client.rcp.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="false">
 
    <configIni use="default">
    </configIni>
@@ -178,7 +178,7 @@
       <plugin id="org.argeo.slc.client.ui"/>
       <plugin id="org.argeo.slc.core"/>
       <plugin id="org.argeo.slc.demo.agent" fragment="true"/>
-      <plugin id="org.argeo.slc.demo.ant" fragment=""/>
+      <plugin id="org.argeo.slc.demo.ant"/>
       <plugin id="org.argeo.slc.demo.basic"/>
       <plugin id="org.argeo.slc.demo.log4j" fragment="true"/>
       <plugin id="org.argeo.slc.detached"/>
@@ -190,6 +190,7 @@
       <plugin id="org.argeo.slc.server.services"/>
       <plugin id="org.argeo.slc.specs"/>
       <plugin id="org.argeo.slc.support.activemq"/>
+      <plugin id="org.argeo.slc.support.aether"/>
       <plugin id="org.argeo.slc.support.ant"/>
       <plugin id="org.argeo.slc.support.castor" fragment="true"/>
       <plugin id="org.argeo.slc.support.gis"/>
@@ -244,8 +245,12 @@
       <plugin id="org.argeo.security.services" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.agent" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.agent" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.slc.client.commons" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.slc.client.core" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.hibernate" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.oxm" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.slc.client.rcp" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.slc.client.ui" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.demo.ant" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.demo.basic" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.server.castor" autoStart="true" startLevel="0" />

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc.eclipse</groupId>
@@ -7,7 +8,7 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.client.commons</artifactId>
-	<name>SLC Client Commons</name>
+	<name>SLC Eclipse Commons</name>
 	<packaging>jar</packaging>
 	<dependencies>
 		<!-- SLC -->
@@ -28,11 +29,16 @@
 			<artifactId>org.argeo.eclipse.ui</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
-		<!-- Eclipse -->
+		<!-- Eclipse <dependency> <groupId>org.eclipse.ui</groupId> <artifactId>org.eclipse.ui</artifactId> 
+			</dependency> -->
+		<!-- Eclipse and RCP only dependency, needed at compile time -->
 		<dependency>
-			<groupId>org.eclipse.ui</groupId>
-			<artifactId>org.eclipse.ui</artifactId>
+			<groupId>org.argeo.commons.eclipse</groupId>
+			<artifactId>org.argeo.eclipse.dep.rcp</artifactId>
+			<version>${version.argeo-commons}</version>
+			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.runtime</artifactId>

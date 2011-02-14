@@ -2,21 +2,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.argeo.slc.eclipse</groupId>
-		<artifactId>plugins</artifactId>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>eclipse</artifactId>
 		<version>0.13.1-SNAPSHOT</version>
-		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.eclipse</groupId>
 	<artifactId>runtime</artifactId>
-	<name>Argeo Eclipse plugins runtime</name>
+	<name>SLC Eclipse Runtime</name>
 	<packaging>pom</packaging>
 	<modules>
 		<module>org.argeo.slc.client.commons</module>
 		<module>org.argeo.slc.client.oxm</module>
 		<module>org.argeo.slc.client.core</module>
-		<module>org.argeo.slc.client.ui</module>
-		<module>org.argeo.slc.client.rcp</module>
-		<module>org.argeo.slc.client.rap</module>
 	</modules>
 </project>

@@ -1,7 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
+   <extension
+         id="org.argeo.slc.client.rcp.product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.argeo.slc.client.rcp.application"
+            name="SLC">
+         <property
+               name="windowImages"
+               value="icons/argeo-icon-256.png">
+         </property>
+         <property
+               name="appName"
+               value="SLC">
+         </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+      </product>
+   </extension>
    <extension
          id="org.argeo.slc.client.rcp.application"
          point="org.eclipse.core.runtime.applications">
@@ -59,12 +78,9 @@
                name="appName"
                value="SLC">
          </property>
-         <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
-         </property>
       </product>
    </extension>
+
    <!-- <extension
          id="product"
          point="org.eclipse.core.runtime.products">
