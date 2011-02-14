@@ -63,7 +63,6 @@
       <plugin id="com.springsource.net.sf.cglib"/>
       <plugin id="com.springsource.net.sf.ehcache"/>
       <plugin id="com.springsource.net.sourceforge.jtds"/>
-      <plugin id="com.springsource.oracle.jdbc" fragment=""/>
       <plugin id="com.springsource.org.antlr"/>
       <plugin id="com.springsource.org.aopalliance"/>
       <plugin id="com.springsource.org.apache.bsf"/>

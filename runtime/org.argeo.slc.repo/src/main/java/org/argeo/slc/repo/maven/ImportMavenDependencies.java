@@ -2,14 +2,13 @@ package org.argeo.slc.repo.maven;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.jcr.Session;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -17,11 +16,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherTemplate;
-import org.argeo.slc.aether.AetherUtils;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.graph.DependencyNode;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -34,23 +31,15 @@ public class ImportMavenDependencies implements Runnable {
 	private String rootCoordinates;
 	private Set<String> excludedArtifacts = new HashSet<String>();
 
+	private Session jcrSession;
+
 	public void run() {
+		Set<Artifact> artifacts = resolveDistribution();
+	}
+
+	public Set<Artifact> resolveDistribution() {
 		try {
 			Artifact pomArtifact = new DefaultArtifact(rootCoordinates);
-
-			// {
-			// DependencyNode node = aetherTemplate
-			// .resolveDependencies(pomArtifact);
-			//
-			// PreorderNodeListGenerator nlg = new PreorderNodeListGenerator();
-			// node.accept(nlg);
-			//
-			// for (Artifact artifact : nlg.getArtifacts(true)) {
-			// log.debug(artifact);
-			// }
-			// AetherUtils.logDependencyNode(0, node);
-			// }
-
 			Comparator<Artifact> artifactComparator = new Comparator<Artifact>() {
 				public int compare(Artifact o1, Artifact o2) {
 					return o1.getArtifactId().compareTo(o2.getArtifactId());
@@ -93,9 +82,15 @@ public class ImportMavenDependencies implements Runnable {
 			distributionDescriptor.store(out, "");
 			log.debug(new String(out.toByteArray()));
 			out.close();
+
+			return artifacts;
 		} catch (Exception e) {
-			throw new SlcException("Cannot resolve", e);
+			throw new SlcException("Cannot resolve distribution", e);
 		}
+	}
+
+	protected void syncDistribution(Set<Artifact> artifacts) {
+
 	}
 
 	/** Recursively adds non optional dependencies */
@@ -195,6 +190,10 @@ public class ImportMavenDependencies implements Runnable {
 
 	public void setRootCoordinates(String rootCoordinates) {
 		this.rootCoordinates = rootCoordinates;
+	}
+
+	public void setJcrSession(Session jcrSession) {
+		this.jcrSession = jcrSession;
 	}
 
 }

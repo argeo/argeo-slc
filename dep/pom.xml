@@ -79,6 +79,9 @@
 								<goal>pde-sources</goal>
 							</goals>
 							<phase>generate-resources</phase>
+							<configuration>
+								<copyArtifacts>false</copyArtifacts>
+							</configuration>
 						</execution>
 						<execution>
 							<id>generate-descriptors</id>

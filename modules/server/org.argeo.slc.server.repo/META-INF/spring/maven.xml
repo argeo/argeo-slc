@@ -8,8 +8,7 @@
 	">
 
 
-	<bean class="org.argeo.slc.repo.maven.ImportMavenDependencies"
-		init-method="run">
+	<bean class="org.argeo.slc.repo.maven.ImportMavenDependencies">
 		<property name="rootCoordinates"
 			value="org.argeo.dep:versions-all:pom:1.1.3-SNAPSHOT" />
 		<property name="aetherTemplate" ref="mavenAetherTemplate" />
