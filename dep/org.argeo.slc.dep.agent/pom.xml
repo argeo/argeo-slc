@@ -65,6 +65,11 @@
 			<artifactId>org.argeo.slc.launcher</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.maven</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- Spring -->
 		<dependency>

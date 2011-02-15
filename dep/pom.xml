@@ -12,7 +12,6 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>org.argeo.slc.dep.agent</module>
-		<module>org.argeo.slc.dep.agent.extras</module>
 		<module>org.argeo.slc.dep.server</module>
 		<module>org.argeo.slc.dep.detached</module>
 		<module>org.argeo.slc.dep.gis</module>
@@ -36,35 +35,6 @@
 				<configuration>
 					<useLastCommittedRevision>false</useLastCommittedRevision>
 				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifestFile>META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${version.maven-bundle-plugin}</version>
-				<configuration>
-					<manifestLocation>META-INF</manifestLocation>
-					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Version>${project.version}-r${buildNumber}</Bundle-Version>
-					</instructions>
-				</configuration>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 		<pluginManagement>
@@ -107,18 +77,5 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<!-- TO BE DELETED <plugin> <groupId>org.argeo.maven.plugins</groupId> 
-			<artifactId>maven-argeo-osgi-plugin</artifactId> <executions> <execution> 
-			<id>resolve-pde-sources</id> <goals> <goal>pde-sources</goal> </goals> <phase>generate-resources</phase> 
-			<configuration> <copyArtifacts>true</copyArtifacts> </configuration> </execution> 
-			<execution> <goals> <goal>descriptors</goal> </goals> <phase>generate-resources</phase> 
-			</execution> </executions> </plugin> -->
-		<!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>build-helper-maven-plugin</artifactId> 
-			<executions> <execution> <id>attach-artifacts</id> <phase>package</phase> 
-			<goals> <goal>attach-artifact</goal> </goals> <configuration> <artifacts> 
-			<artifact> <file>target/classes/modularDistribution.csv</file> <type>csv</type> 
-			<classifier>modularDistribution</classifier> </artifact> </artifacts> </configuration> 
-			</execution> </executions> </plugin> -->
-		<!-- </plugins> -->
 	</build>
 </project>

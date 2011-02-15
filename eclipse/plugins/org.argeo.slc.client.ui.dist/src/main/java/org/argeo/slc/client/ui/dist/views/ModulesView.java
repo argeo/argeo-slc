@@ -3,6 +3,7 @@ package org.argeo.slc.client.ui.dist.views;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.argeo.eclipse.ui.TreeObject;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -16,6 +17,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 public class ModulesView extends ViewPart {
 	private TreeViewer viewer;
@@ -49,6 +51,8 @@ public class ModulesView extends ViewPart {
 						moduleNodes.add(new ModuleNode(bundle));
 				}
 				return moduleNodes.toArray();
+			} else if (parentElement instanceof TreeParent) {
+				return ((TreeParent) parentElement).getChildren();
 			} else {
 				return null;
 			}
@@ -60,6 +64,9 @@ public class ModulesView extends ViewPart {
 		}
 
 		public boolean hasChildren(Object element) {
+			if (element instanceof TreeParent) {
+				return ((TreeParent) element).hasChildren();
+			}
 			return false;
 		}
 
@@ -89,16 +96,74 @@ public class ModulesView extends ViewPart {
 
 	}
 
-	private class ModuleNode extends TreeParent {
+	class ModuleNode extends TreeParent {
 		private final Bundle bundle;
 
 		public ModuleNode(Bundle bundle) {
 			super(bundle.getSymbolicName());
 			this.bundle = bundle;
+
+			// Registered services
+			ServiceReference[] registeredServices = bundle
+					.getRegisteredServices();
+			if (registeredServices != null) {
+				TreeParent registeredServicesNode = new TreeParent(
+						"Registered Services");
+				addChild(registeredServicesNode);
+				for (ServiceReference sr : registeredServices) {
+					if (sr != null)
+						registeredServicesNode
+								.addChild(new ServiceReferenceNode(sr));
+				}
+			}
+
+			// Used services
+			ServiceReference[] usedServices = bundle.getRegisteredServices();
+			if (usedServices != null) {
+				TreeParent usedServicesNode = new TreeParent("Used Services");
+				addChild(usedServicesNode);
+				for (ServiceReference sr : usedServices) {
+					if (sr != null)
+						usedServicesNode.addChild(new ServiceReferenceNode(sr));
+				}
+			}
 		}
 
 		public Bundle getBundle() {
 			return bundle;
+		}
+
+	}
+
+	class ServiceReferenceNode extends TreeParent {
+		private final ServiceReference serviceReference;
+
+		public ServiceReferenceNode(ServiceReference serviceReference) {
+			super(serviceReference.toString());
+			this.serviceReference = serviceReference;
+
+			Bundle[] usedBundles = serviceReference.getUsingBundles();
+			if (usedBundles != null) {
+				TreeParent usingBundles = new TreeParent("Using Bundles");
+				addChild(usingBundles);
+				for (Bundle b : usedBundles) {
+					if (b != null)
+						usingBundles.addChild(new TreeObject(b
+								.getSymbolicName()));
+				}
+			}
+
+			TreeParent properties = new TreeParent("Properties");
+			addChild(properties);
+			for (String key : serviceReference.getPropertyKeys()) {
+				properties.addChild(new TreeObject(key + "="
+						+ serviceReference.getProperty(key)));
+			}
+
+		}
+
+		public ServiceReference getServiceReference() {
+			return serviceReference;
 		}
 
 	}

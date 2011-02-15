@@ -15,4 +15,16 @@
 		<module>org.argeo.slc.client.oxm</module>
 		<module>org.argeo.slc.client.core</module>
 	</modules>
+	<build>
+		<resources>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>plugin.xml</include>
+					<include>META-INF/**</include>
+					<include>icons/**</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 </project>
