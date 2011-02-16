@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
-	
    <extension
          point="org.eclipse.ui.views">
    <view
@@ -71,32 +69,32 @@
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             id="org.argeo.slc.client.ui.refreshResultList"
-            name="RefreshResultList">
+            name="Refresh Result List">
       </command>
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             id="org.argeo.slc.client.ui.refreshExecutionModulesView"
-            name="refreshExecutionModulesView">
+            name="Refresh Execution Modules View">
       </command>
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             id="org.argeo.slc.client.ui.launchBatch"
-            name="LaunchBatch">
+            name="Launch Batch">
       </command>
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             id="org.argeo.slc.client.ui.removeSelectedFromBatch"
-            name="RemoveSelectedFromBatch">
+            name="Remove Selected From Batch">
       </command>
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             id="org.argeo.slc.client.ui.clearBatch"
-            name="ClearBatch">
+            name="Clear Batch">
       </command>
       <command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             id="org.argeo.slc.client.ui.refreshProcessList"
-            name="RefreshProcessList ">
+            name="Refresh Process List ">
       </command>
    	 <command 
       		defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
@@ -110,7 +108,7 @@
    <command 
       		defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
       		id="org.argeo.slc.client.ui.displayResultDetails"
-      		name="DisplayResultDetails">
+      		name="Display Result Details">
    			<commandParameter
          		id="org.argeo.slc.client.commands.resultUuid"
          		name="Result UUID">
@@ -123,37 +121,13 @@
    <command 
       		defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
       		id="org.argeo.slc.client.ui.manageBundles"
-      		name="ManageBundles">
+      		name="Manage Bundles">
    	</command>
     </extension>
-   <extension
-        point="org.eclipse.ui.bindings">
-     <key
-           commandId="org.argeo.slc.client.ui.refreshResultList"
-           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-           sequence="CTRL+R">
-     </key>
-  </extension>
    
    <extension
          id="menu:org.eclipse.ui.main.menu"
          point="org.eclipse.ui.menus">
-      <!-- commented menu so that it does not show up on sparta
-      		TODO : add a specific bundle with only a pluggin.xml for SLC / no sparta specific menus
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=fileMenu">
-         <menu
-               id="slcMenu"
-               label="SLC">
-            <command
-                  commandId="org.argeo.slc.client.ui.refreshResultList"
-                  label="Refresh"
-                  style="push"
-                  tooltip="Refresh the result list">
-            </command>
-         </menu>
-      </menuContribution>
-      -->
        <menuContribution
             locationURI="menu:fileMenu">
             <!-- Should be implemented in later version.

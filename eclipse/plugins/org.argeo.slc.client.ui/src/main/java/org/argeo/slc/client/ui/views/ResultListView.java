@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
@@ -91,15 +90,17 @@ public class ResultListView extends ViewPart {
 
 	protected Table createTable(Composite parent) {
 		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+				| SWT.FULL_SELECTION;
+		// does not function with RAP, commented for the moment being
+		// | SWT.HIDE_SELECTION;
 
 		Table table = new Table(parent, style);
 		// table.addMouseListener(new RightClickListener());
-		//GridData gridData = new GridData(GridData.FILL_BOTH);
-		//gridData.grabExcessVerticalSpace = true;
-		//gridData.grabExcessHorizontalSpace = true;
-		//gridData.horizontalSpan = 3;
-		//table.setLayoutData(gridData);
+		// GridData gridData = new GridData(GridData.FILL_BOTH);
+		// gridData.grabExcessVerticalSpace = true;
+		// gridData.grabExcessHorizontalSpace = true;
+		// gridData.horizontalSpan = 3;
+		// table.setLayoutData(gridData);
 
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);

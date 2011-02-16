@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.providers.ProcessParametersEditingSupport;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
+import org.argeo.slc.core.execution.RefValue;
 import org.argeo.slc.process.RealizedFlow;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -27,21 +30,31 @@ import org.eclipse.ui.part.ViewPart;
  *         This view, directly linked with the <code> ProcessBuilderView </code>
  *         enables the display and editing the parameters of a given process.
  * 
- *         Note that for now we use <code>ExecutionFlowDescriptor.values</code>
- *         attribute to recall (and update ??) the various parameters.
+ * 
+ *         Note that for a given RealizedFlow :
+ * 
+ *         + paramaters value are set using
+ *         <code>RealizedFlow.ExecutionFlowDescriptor.values</code>, that might
+ *         have default values
+ * 
+ *         + possible "values" for a given parameters are stored in
+ *         <code>RealizedFlow.ExecutionSpec.</code>
+ * 
  */
 public class ProcessParametersView extends ViewPart {
-	// private static final Log log = LogFactory
-	// .getLog(ProcessParametersView.class);
+	private static final Log log = LogFactory
+			.getLog(ProcessParametersView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.processParametersView";
 
-	// This map stores actual values set to default if existing at the begining
-	// and then the ones computed by the end user
+	// This map stores actual values :
+	// * default values (if defined) at instantiation time
+	// * values filled-in or modified by the end-user
 	private Map<String, Object> values;
+
 	// This map stores the spec of the attributes used to offer the end user
 	// some choices.
-	//private Map<String, ExecutionSpecAttribute> specAttributes;
+	// private Map<String, ExecutionSpecAttribute> specAttributes;
 
 	// We must keep a reference to the current EditingSupport so that we can
 	// update the index of the process being updated
@@ -107,11 +120,12 @@ public class ProcessParametersView extends ViewPart {
 			return;
 		}
 		// we store the index of the edited Process in the editor so that it can
-		// save computed values.
+		// save entries modified by the end user.
 		ppEditingSupport.setCurrentProcessIndex(index);
 
-		// TODO :
-		// We should handle ExecutionSpec here. need to be improved.
+		// We also store corresponding ExecutionSpec to be able to retrieve
+		// possible values for dropdown lists
+		ppEditingSupport.setCurrentExecutionSpec(rf.getExecutionSpec());
 		// ExecutionSpec es = rf.getExecutionSpec();
 		// if (es != null && es.getAttributes() != null)
 		// parameters = es.getAttributes();
@@ -170,20 +184,25 @@ public class ProcessParametersView extends ViewPart {
 				case 1:
 					if (own.obj instanceof PrimitiveAccessor) {
 						PrimitiveAccessor pa = (PrimitiveAccessor) own.obj;
-						if ("string".equals(pa.getType()))
-							return (String) pa.getValue();
-						else if ("integer".equals(pa.getType()))
-							return ((Integer) pa.getValue()).toString();
-						else
-							return "Type " + pa.getType()
-									+ " not yet supported";
-					} else
+						return pa.getValue().toString();
+					} else if (own.obj instanceof RefValue) {
+						RefValue refValue = (RefValue) own.obj;
+						return refValue.getRef();
+					} else {
+						if (log.isTraceEnabled()) {
+							log.warn("Not a Primitive accessor neither a ref Value : "
+									+ own.obj.toString()
+									+ " and class : "
+									+ own.obj.getClass().toString());
+						}
 						return own.obj.toString();
+					}
 				default:
 					return getText(obj);
 				}
-			} else
+			} else {
 				return getText(obj);
+			}
 		}
 
 		public Image getColumnImage(Object obj, int index) {
@@ -202,6 +221,5 @@ public class ProcessParametersView extends ViewPart {
 			this.name = name;
 			this.obj = obj;
 		}
-
 	}
 }

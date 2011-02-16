@@ -64,38 +64,14 @@
             name="Exit">
       </command>
    </extension>
+   
+    <!-- RCP Specific, does not function with RAP --> 
    <extension
-         id="product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.argeo.slc.client.rcp.application"
-            name="SLC">
-         <property
-               name="windowImages"
-               value="icons/argeo-icon-256.png">
-         </property>
-         <property
-               name="appName"
-               value="SLC">
-         </property>
-      </product>
-   </extension>
-
-   <!-- <extension
-         id="product"
-         point="org.eclipse.core.runtime.products">
-      <product
-            application="org.argeo.slc.client.rcp.application"
-            name="SLC">
-         <property
-               name="windowImages"
-               value="icons/argeo-icon-256.png">
-         </property>
-         <property
-               name="appName"
-               value="SLC">
-         </property>
-      </product>
-   </extension> -->
-
+        point="org.eclipse.ui.bindings">
+     <key
+           commandId="org.argeo.slc.client.ui.refreshExecutionModulesView"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="CTRL+R">
+     </key>
+  </extension>
 </plugin>

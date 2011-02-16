@@ -7,7 +7,6 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -35,14 +34,15 @@ public class ManageBundlesHandler extends AbstractHandler {
 		tad.setTitle("Manage Bundles");
 		tad.open();
 
-		DirectoryDialog dialog2 = new DirectoryDialog(shell);
-		String path = dialog2.open();
-
-		if (path == null)
-			// action canceled by user
-			return null;
-		log.debug("Path chosen by user : " + path);
-
+		
+		// RCP Specific, commented for now.
+		// DirectoryDialog dialog2 = new DirectoryDialog(shell);
+		// String path = dialog2.open();
+		//
+		// if (path == null)
+		// // action canceled by user
+		// return null;
+		// log.debug("Path chosen by user : " + path);
 		
 		// the following does not work : it doesn't display anything.
 		// Label label = new Label(shell, SWT.WRAP);

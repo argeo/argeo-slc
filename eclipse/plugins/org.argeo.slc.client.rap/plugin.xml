@@ -3,10 +3,10 @@
 <plugin>
 
  <extension
-         id="SlcRapProduct"
+         id="org.argeo.slc.client.rcp.product"
          point="org.eclipse.core.runtime.products">
       <product
-            name="ArgeoSlcProduct"
+            name="Slc RAP Product"
             application="org.eclipse.ui.ide.workbench"
             >
          <property

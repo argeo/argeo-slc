@@ -30,7 +30,6 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -39,9 +38,9 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * Display a list of processes that are to be launched as batch. For the moment
- * being, only one agent by batch is enabled. The batch is contructed by
+ * being, only one agent by batch is enabled. The batch is constructed by
  * dropping process from the ExecutionModuleView. Wrong type of data dropped in
- * this view might raise errors.
+ * this view raises an error.
  * 
  * @author bsinou
  * 
@@ -51,9 +50,6 @@ public class ProcessBuilderView extends ViewPart {
 	// LogFactory.getLog(ProcessBuilderView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.processBuilderView";
-
-	// private final static Log log =
-	// LogFactory.getLog(ProcessBuilderView.class);
 
 	private TableViewer viewer;
 	private List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
@@ -85,15 +81,9 @@ public class ProcessBuilderView extends ViewPart {
 
 	protected Table createTable(Composite parent) {
 		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+				| SWT.FULL_SELECTION;
 
 		Table table = new Table(parent, style);
-
-//		GridData gridData = new GridData(GridData.FILL_BOTH);
-//		gridData.grabExcessVerticalSpace = true;
-//		gridData.grabExcessHorizontalSpace = true;
-//		gridData.horizontalSpan = 3;
-//		table.setLayoutData(gridData);
 
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
@@ -171,7 +161,7 @@ public class ProcessBuilderView extends ViewPart {
 		}
 	}
 
-	// Return the list of the processes to execute.
+	// Launches the execution of listed realized flow with specified parameters.
 	public void launchBatch() {
 		SlcExecution slcExecution = new SlcExecution();
 		slcExecution.setUuid(UUID.randomUUID().toString());
@@ -226,7 +216,7 @@ public class ProcessBuilderView extends ViewPart {
 
 	}
 
-	// Handle Events
+	// Parameter view is updated each time a new line is selected
 	class SelectionChangedListener implements ISelectionChangedListener {
 		public void selectionChanged(SelectionChangedEvent evt) {
 
@@ -276,7 +266,6 @@ public class ProcessBuilderView extends ViewPart {
 				throw new SlcException(
 						"Cannot create batch on two (or more) distinct agents",
 						null);
-				// return false;
 			}
 
 			String fdXml = props.getProperty("RealizedFlowAsXml");

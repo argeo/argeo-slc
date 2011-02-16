@@ -8,6 +8,8 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.oxm.OxmInterface;
 import org.argeo.slc.client.ui.ClientUiPlugin;
@@ -37,8 +39,8 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 public class ExecutionModulesView extends ViewPart {
-	// private final static Log log = LogFactory
-	// .getLog(ExecutionModulesView.class);
+	private final static Log log = LogFactory
+			.getLog(ExecutionModulesView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.executionModulesView";
 
@@ -78,10 +80,16 @@ public class ExecutionModulesView extends ViewPart {
 			if (obj instanceof ExecutionModulesContentProvider.ExecutionModuleNode) {
 				ExecutionModuleDescriptor emd = ((ExecutionModulesContentProvider.ExecutionModuleNode) obj)
 						.getDescriptor();
-				if (emd.getLabel() != null)
+				System.out
+						.println("obj instanceof ExecutionModulesContentProvider.ExecutionModuleNode");
+				log.debug("obj instanceof ExecutionModulesContentProvider.ExecutionModuleNode");
+				if (emd.getLabel() != null) {
+					log.debug("and label is : " + emd.getLabel());
 					return emd.getLabel();
-				else
+				} else {
+					log.debug("label is null and text is : " + getText(emd));
 					return getText(emd);
+				}
 			} else
 				return getText(obj);
 		}
@@ -145,8 +153,8 @@ public class ExecutionModulesView extends ViewPart {
 		}
 
 		public void dragSetData(DragSourceEvent event) {
-			System.out.println("dragSetData: " + event);
-			// System.out.println("dataType: " + event.dataType);
+
+			// System.out.println("dragSetData: " + event);
 
 			IStructuredSelection selection = (IStructuredSelection) viewer
 					.getSelection();

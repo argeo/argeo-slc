@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -58,15 +57,17 @@ public class ProcessListView extends ViewPart {
 
 	protected Table createTable(Composite parent) {
 		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
+				| SWT.FULL_SELECTION;
+		// does not function with RAP, commented for the moment being
+		// | SWT.HIDE_SELECTION;
 
 		Table table = new Table(parent, style);
 
-//		GridData gridData = new GridData(GridData.FILL_BOTH);
-//		gridData.grabExcessVerticalSpace = true;
-//		gridData.grabExcessHorizontalSpace = true;
-//		gridData.horizontalSpan = 3;
-//		table.setLayoutData(gridData);
+		// GridData gridData = new GridData(GridData.FILL_BOTH);
+		// gridData.grabExcessVerticalSpace = true;
+		// gridData.grabExcessHorizontalSpace = true;
+		// gridData.horizontalSpan = 3;
+		// table.setLayoutData(gridData);
 
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
@@ -123,8 +124,8 @@ public class ProcessListView extends ViewPart {
 					// get the parameter
 					IParameter iparam = cmd
 							.getParameter("org.argeo.slc.client.commands.processUuid");
-					Parameterization params = new Parameterization(iparam, se
-							.getUuid()); // "testUUID");//
+					Parameterization params = new Parameterization(iparam,
+							se.getUuid()); // "testUUID");//
 					parameters.add(params);
 
 					// build the parameterized command
