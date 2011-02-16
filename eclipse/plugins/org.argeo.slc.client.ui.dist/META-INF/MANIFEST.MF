@@ -4,9 +4,11 @@ Bundle-Name: Dist
 Bundle-SymbolicName: org.argeo.slc.client.ui.dist;singleton:=true
 Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.eclipse.ui;bundle-version="3.6.1",
- org.eclipse.core.runtime;bundle-version="3.6.0"
+Require-Bundle: org.eclipse.ui;resolution:=optional,
+ org.eclipse.rap.ui;resolution:=optional,
+ org.eclipse.core.runtime
 Bundle-Activator: org.argeo.slc.client.ui.dist.DistPlugin
-Import-Package: aQute.lib.osgi,
+Import-Package: aQute.lib.osgi;resolution:=optional,
+ org.apache.commons.logging;version="1.1.1",
  org.argeo.eclipse.ui
 Bundle-ActivationPolicy: lazy

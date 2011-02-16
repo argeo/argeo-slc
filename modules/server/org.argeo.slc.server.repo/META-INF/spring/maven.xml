@@ -18,6 +18,7 @@
 				</value>
 				<value>org.osgi:org.osgi.core</value>
 				<value>org.easymock:easymock</value>
+				<value>com.springsource.org.apache.xmlcommons</value>
 			</set>
 		</property>
 	</bean>

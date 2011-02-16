@@ -33,10 +33,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>com.springsource.javax.transaction</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>com.springsource.org.hibernate</artifactId>
 		</dependency>
@@ -91,6 +87,12 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>com.springsource.org.h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.transaction</groupId>
+			<artifactId>com.springsource.javax.transaction</artifactId>
 			<scope>test</scope>
 		</dependency>
 

@@ -17,7 +17,7 @@
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
-					<bundlesPomArtifactId>org.argeo.slc.eclipse.plugins.modules.bundles</bundlesPomArtifactId>
+					<bundlesPomArtifactId>org.argeo.slc.eclipse.modules.bundles</bundlesPomArtifactId>
 				</configuration>
 			</plugin>
 		</plugins>

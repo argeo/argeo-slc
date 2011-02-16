@@ -47,11 +47,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.ws.client</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.repo</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -68,6 +63,11 @@
 			<artifactId>org.argeo.security.modules</artifactId>
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.ldap</artifactId>
+			<version>${version.argeo-commons}</version>
 		</dependency>
 
 		<!-- Security -->
@@ -101,10 +101,6 @@
 		</dependency>
 
 		<!-- JEE -->
-		<dependency>
-			<groupId>javax.annotation</groupId>
-			<artifactId>com.springsource.javax.annotation</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>com.springsource.javax.persistence</artifactId>

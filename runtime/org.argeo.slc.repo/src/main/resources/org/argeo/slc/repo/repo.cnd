@@ -1,49 +1,39 @@
-<sebi = 'http://www.agfa.com/sebi'>
+<slc = 'http://www.argeo.org/slc'>
 
-[sebi:ebi] > nt:base
-//
-// GENERIC
-//
-- sebi:ebiTag (STRING) primary m
-- sebi:ebiName (STRING) m
-- sebi:ebiUniqueId (LONG) m
-- sebi:ebiRpStatus (STRING) m
-- sebi:ebiRpAssociatedVersion (STRING) m
-- sebi:ebiOrbisModule (STRING) m
-- sebi:ebiTracedTo (STRING) m
+[slc:artifact] > nt:base
+mixin
+- slc:artifactId (STRING) primary m
+- slc:groupId (STRING) m
+- slc:artifactVersion (STRING) m
+- slc:artifactExtension (STRING) m
+- slc:artifactClassifier (STRING) ='' m a
 
-// BPR are sometimes missing
-- sebi:ebiBpr (STRING)
-- sebi:bprProcessCode (STRING)
-- sebi:appendixBRef (STRING)
+[slc:jarArtifact] > slc:artifact
+mixin
 
-- sebi:ebiRequirementText (STRING) m
-- sebi:ebiRpDate (DATE) m
-- sebi:sebiCreationDate (DATE) m
-- sebi:sebiLastUpdate (DATE) m
-- sebi:sebiLastUpdateUser (STRING)
+[slc:bundleArtifact] > slc:jarArtifact, slc:bundle
+mixin
+- slc:Bundle-Version (STRING) m
+- slc:Bundle-Name (STRING)
+- slc:Bundle-Description (STRING)
+- slc:Bundle-Vendor (STRING)
+- slc:Bundle-License (STRING)
++ slc:Import-Package (slc:importedPackage) multiple
++ slc:Export-Package (slc:exportedPackage) multiple
++ slc:Require-Bundle (slc:bundle) multiple
 
-// 'TWIN' FIELDS
-- sebi:bprProcessCodeSebi (STRING)
-- sebi:appendixBRefSebi (STRING)
+[slc:bundle] > nt:base
+mixin
+- slc:Bundle-SymbolicName (STRING) primary m
 
-//
-// AP-HP specific
-//
-- sebi:ebiRpVersionLastUpdate (STRING)
-- sebi:isOutsideAphp (BOOLEAN) = 'false' m a
-- sebi:forseenDelivSprint (DATE)
-- sebi:forseenDelivSprintLastUpdate (DATE)
-- sebi:projectStatus (STRING)
-- sebi:aphpDelivDate (DATE)
-- sebi:effectiveDelivSprint (STRING)
-- sebi:effectiveDelivSprintLastUpdate (DATE)
-- sebi:ebiNameFr (STRING) = '' m a
-- sebi:ebiDescLastUpdate (DATE)
-- sebi:ebiDescFr (STRING) = '' m a
-- sebi:ebiDescFrLastUpdate (DATE)
-- sebi:consultant (STRING)
-- sebi:solutionManager (STRING)
-- sebi:productOwner (STRING)
-- sebi:tpoRef (STRING)
-- sebi:comments (STRING) = '' m a
+[slc:javaPackage] > nt:base
+mixin
+- slc:name (STRING) m
+
+[slc:exportedPackage] > slc:javaPackage
+mixin
++ slc:uses (slc:javaPackage) multiple
+
+[slc:importedPackage] > slc:javaPackage
+mixin
++ slc:version (STRING) ='0.0.0' m a

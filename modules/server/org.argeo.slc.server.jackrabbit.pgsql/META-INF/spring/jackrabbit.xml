@@ -20,10 +20,10 @@
 				<entry key="slc" value="http://www.argeo.org/slc" />
 			</map>
 		</property>
-		<!-- <property name="cndFiles"> -->
-		<!-- <list> -->
-		<!-- <value>classpath:/org/argeo/slc/repo/repo.cnd</value> -->
-		<!-- </list> -->
-		<!-- </property> -->
+		<property name="cndFiles">
+			<list>
+				<value>classpath:/org/argeo/slc/repo/repo.cnd</value>
+			</list>
+		</property>
 	</bean>
 </beans>

@@ -143,8 +143,6 @@
 			<artifactId>org.argeo.slc.dep.sdk.rcp</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<!-- TO BE DELETED <dependency> <groupId>org.argeo.slc.dep</groupId> <artifactId>org.argeo.slc.dep.sdk.sources</artifactId> 
-			<version>${project.version}</version> </dependency> -->
 	</dependencies>
 	<profiles>
 		<profile>

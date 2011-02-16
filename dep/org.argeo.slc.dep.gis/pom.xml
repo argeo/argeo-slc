@@ -57,11 +57,6 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>com.springsource.org.hibernate</artifactId>
 		</dependency>
-		<dependency>
-			<!-- Needed by DOM4j -->
-			<groupId>javax.xml.stream</groupId>
-			<artifactId>com.springsource.javax.xml.stream</artifactId>
-		</dependency>
 
 	</dependencies>
 </project>

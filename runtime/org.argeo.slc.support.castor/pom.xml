@@ -86,11 +86,6 @@
 			<artifactId>com.springsource.org.apache.xalan</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>javax.xml.stream</groupId>
-			<artifactId>com.springsource.javax.xml.stream</artifactId>
-		</dependency>
-
 		<!-- Unit Tests -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>

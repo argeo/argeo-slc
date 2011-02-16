@@ -25,20 +25,20 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- Back-end Dependencies -->
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.backend</artifactId>
+			<artifactId>org.argeo.slc.dep.sdk.rcp</artifactId>
 			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.argeo.commons.eclipse</groupId>
+					<artifactId>org.argeo.eclipse.dep.rcp</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.argeo.slc.eclipse</groupId>
+					<artifactId>org.argeo.slc.client.rcp</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-
-		<!-- <dependency> <groupId>org.argeo.slc.eclipse</groupId> <artifactId>org.argeo.slc.client.ui</artifactId> 
-			<version>${project.version}</version> </dependency> -->
-
-		<!-- Commons RAP -->
-		<!-- TO BE DELETED <dependency> <groupId>org.argeo.commons.eclipse</groupId> 
-			<artifactId>org.argeo.eclipse.dep.rap</artifactId> <version>${version.argeo-commons}</version> 
-			</dependency> -->
-
 	</dependencies>
 </project>

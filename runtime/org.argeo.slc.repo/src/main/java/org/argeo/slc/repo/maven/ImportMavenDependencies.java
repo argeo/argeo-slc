@@ -2,18 +2,24 @@ package org.argeo.slc.repo.maven;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.jcr.Binary;
+import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherTemplate;
 import org.sonatype.aether.artifact.Artifact;
@@ -32,9 +38,11 @@ public class ImportMavenDependencies implements Runnable {
 	private Set<String> excludedArtifacts = new HashSet<String>();
 
 	private Session jcrSession;
+	private String artifactBasePath = "/slc/repo/artifacts";
 
 	public void run() {
 		Set<Artifact> artifacts = resolveDistribution();
+		syncDistribution(artifacts);
 	}
 
 	public Set<Artifact> resolveDistribution() {
@@ -90,7 +98,57 @@ public class ImportMavenDependencies implements Runnable {
 	}
 
 	protected void syncDistribution(Set<Artifact> artifacts) {
+		Long begin = System.currentTimeMillis();
+		try {
+			JcrUtils.mkdirs(jcrSession, artifactBasePath);
+			for (Artifact artifact : artifacts) {
+				String parentPath = artifactBasePath + '/'
+						+ artifactParentPath(artifact);
+				Node parentNode;
+				if (!jcrSession.itemExists(parentPath)) {
+					parentNode = JcrUtils.mkdirs(jcrSession, parentPath,
+							NodeType.NT_FOLDER, false);
+				} else {
+					parentNode = jcrSession.getNode(parentPath);
+				}
 
+				File file = artifact.getFile();
+				Node fileNode;
+				if (!parentNode.hasNode(file.getName())) {
+					fileNode = createFileNode(parentNode, file);
+				} else {
+					fileNode = parentNode.getNode(file.getName());
+				}
+			}
+
+			Long duration = (System.currentTimeMillis() - begin) / 1000;
+			if (log.isDebugEnabled())
+				log.debug("Synchronized distribution in " + duration + "s");
+		} catch (Exception e) {
+			throw new SlcException("Cannot synchronize distribution", e);
+		}
+	}
+
+	protected String artifactParentPath(Artifact artifact) {
+		return artifact.getGroupId().replace('.', '/') + '/'
+				+ artifact.getArtifactId() + '/' + artifact.getVersion();
+	}
+
+	protected Node createFileNode(Node parentNode, File file) {
+		try {
+			Node fileNode = parentNode
+					.addNode(file.getName(), NodeType.NT_FILE);
+			Node contentNode = fileNode.addNode(Node.JCR_CONTENT,
+					NodeType.NT_RESOURCE);
+			Binary binary = jcrSession.getValueFactory().createBinary(
+					new FileInputStream(file));
+			contentNode.setProperty(Property.JCR_DATA, binary);
+			binary.dispose();
+			return fileNode;
+		} catch (Exception e) {
+			throw new SlcException("Cannot create file node based on " + file
+					+ " under " + parentNode, e);
+		}
 	}
 
 	/** Recursively adds non optional dependencies */

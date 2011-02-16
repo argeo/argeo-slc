@@ -9,16 +9,16 @@
 	</parent>
 
 	<groupId>org.argeo.slc.dep</groupId>
-	<artifactId>org.argeo.slc.backend</artifactId>
+	<artifactId>org.argeo.slc.dep.backend</artifactId>
 	<name>SLC BACKEND Dependencies</name>
-<!--	<build>-->
-<!--		<plugins>-->
-<!--			<plugin>-->
-<!--				<groupId>org.argeo.maven.plugins</groupId>-->
-<!--				<artifactId>maven-argeo-osgi-plugin</artifactId>-->
-<!--			</plugin>-->
-<!--		</plugins>-->
-<!--	</build>-->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.argeo.maven.plugins</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<!-- HACK because of dependencies pb with Maven: version 2.4.0 is required 
 			by Spring-LDAP while Apache Directory takes 2.1.0 -->
@@ -46,6 +46,11 @@
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.gis</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.dep</groupId>
+			<artifactId>org.argeo.slc.dep.provided</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -105,12 +110,6 @@
 					<version>${project.version}</version>
 					<type>pom</type>
 				</dependency>
-				<dependency>
-					<groupId>org.argeo.slc.eclipse</groupId>
-					<artifactId>org.argeo.slc.eclipse.plugins.modules.bundles</artifactId>
-					<version>${project.version}</version>
-					<type>pom</type>
-				</dependency>
 			</dependencies>
 		</profile>
 		<profile>
@@ -131,12 +130,6 @@
 				<dependency>
 					<groupId>org.argeo.slc.modules</groupId>
 					<artifactId>org.argeo.slc.modules.server.bundles</artifactId>
-					<version>${project.version}</version>
-					<type>pom</type>
-				</dependency>
-				<dependency>
-					<groupId>org.argeo.slc.eclipse</groupId>
-					<artifactId>org.argeo.slc.eclipse.plugins.modules.bundles</artifactId>
 					<version>${project.version}</version>
 					<type>pom</type>
 				</dependency>
