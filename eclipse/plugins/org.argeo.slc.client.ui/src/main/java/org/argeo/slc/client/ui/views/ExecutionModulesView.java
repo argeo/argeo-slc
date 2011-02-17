@@ -80,14 +80,9 @@ public class ExecutionModulesView extends ViewPart {
 			if (obj instanceof ExecutionModulesContentProvider.ExecutionModuleNode) {
 				ExecutionModuleDescriptor emd = ((ExecutionModulesContentProvider.ExecutionModuleNode) obj)
 						.getDescriptor();
-				System.out
-						.println("obj instanceof ExecutionModulesContentProvider.ExecutionModuleNode");
-				log.debug("obj instanceof ExecutionModulesContentProvider.ExecutionModuleNode");
 				if (emd.getLabel() != null) {
-					log.debug("and label is : " + emd.getLabel());
 					return emd.getLabel();
 				} else {
-					log.debug("label is null and text is : " + getText(emd));
 					return getText(emd);
 				}
 			} else

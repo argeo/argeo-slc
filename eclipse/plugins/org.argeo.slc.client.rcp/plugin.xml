@@ -26,7 +26,7 @@
          point="org.eclipse.core.runtime.applications">
       <application>
          <run
-               class="org.argeo.slc.client.rcp.SlcClientRcpApplication">
+               class="org.argeo.slc.client.rcp.SlcSecureClientApplication">
          </run>
       </application>
    </extension>
@@ -74,4 +74,16 @@
            sequence="CTRL+R">
      </key>
   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.argeo.slc.client.rcp.application"
+            name="SLC">
+         <property
+               name="windowImages"
+               value="icons/argeo-icon-256.png">
+         </property>
+      </product>
+   </extension>
 </plugin>

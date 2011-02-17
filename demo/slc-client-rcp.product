@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SLC" uid="org.argeo.slc.client.rcp.product" application="org.argeo.security.ui.application.secureUi" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="false">
+<product name="SLC" uid="org.argeo.slc.client.rcp.product" id="org.argeo.slc.client.rcp.product" application="org.argeo.slc.client.rcp.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="false">
 
    <configIni use="default">
    </configIni>
@@ -186,7 +186,7 @@
       <plugin id="org.argeo.slc.client.ui.dist"/>
       <plugin id="org.argeo.slc.core"/>
       <plugin id="org.argeo.slc.demo.agent" fragment="true"/>
-      <plugin id="org.argeo.slc.demo.ant"/>
+      <plugin id="org.argeo.slc.demo.ant" fragment=""/>
       <plugin id="org.argeo.slc.demo.basic"/>
       <plugin id="org.argeo.slc.demo.log4j" fragment="true"/>
       <plugin id="org.argeo.slc.detached"/>

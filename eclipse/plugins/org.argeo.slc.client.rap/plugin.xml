@@ -3,7 +3,7 @@
 <plugin>
 
  <extension
-         id="org.argeo.slc.client.rcp.product"
+         id="org.argeo.slc.client.rap.product"
          point="org.eclipse.core.runtime.products">
       <product
             name="Slc RAP Product"
@@ -23,9 +23,9 @@
    <extension
          point="org.eclipse.rap.ui.entrypoint">
       <entrypoint
-            class="org.argeo.slc.client.rap.SlcClientRapApplication"
+            class="org.argeo.slc.client.rap.SlcSecureRap"
             parameter="slc"
-            id="org.argeo.slc.client.rap.SlcClientRapApplication">
+            id="org.argeo.slc.client.rap.slcSecureRap">
       </entrypoint>
    </extension>
      
@@ -63,5 +63,4 @@
             name="Exit">
       </command> 
    </extension> -->
-  
 </plugin>

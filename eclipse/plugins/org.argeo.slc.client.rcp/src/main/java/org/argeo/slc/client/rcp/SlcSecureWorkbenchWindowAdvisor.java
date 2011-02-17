@@ -1,5 +1,6 @@
 package org.argeo.slc.client.rcp;
 
+import org.argeo.security.ui.application.SecureWorkbenchWindowAdvisor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -14,7 +15,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
-import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
 /**
  * Set here initial default size of the UI
@@ -22,31 +22,20 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  * @author bsinou
  * 
  */
-public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
+public class SlcSecureWorkbenchWindowAdvisor extends
+		SecureWorkbenchWindowAdvisor {
 
 	private TrayItem trayItem;
 
-	public ApplicationWorkbenchWindowAdvisor(
-			IWorkbenchWindowConfigurer configurer) {
+	public SlcSecureWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
 		super(configurer);
 	}
 
-	public ActionBarAdvisor createActionBarAdvisor(
-			IActionBarConfigurer configurer) {
-		return new ApplicationActionBarAdvisor(configurer);
-	}
+//	public ActionBarAdvisor createActionBarAdvisor(
+//			IActionBarConfigurer configurer) {
+//		return new ApplicationActionBarAdvisor(configurer);
+//	}
 
-	public void preWindowOpen() {
-		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-
-		configurer.getWorkbenchConfigurer().restoreState();
-		// set default window size
-		configurer.setInitialSize(new Point(1200, 900));
-		configurer.setShowCoolBar(false);
-		configurer.setShowStatusLine(true);
-		configurer.setShowPerspectiveBar(true);
-
-	}
 
 	public void postWindowOpen() {
 		initTray();

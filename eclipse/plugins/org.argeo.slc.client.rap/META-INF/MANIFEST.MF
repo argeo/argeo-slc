@@ -10,4 +10,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet;version="2.4.0",
  javax.servlet.http;version="2.4.0",
+ org.argeo.security.ui.application,
  org.argeo.slc.client.ui.perspectives

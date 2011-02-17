@@ -13,5 +13,6 @@ Import-Package: org.argeo.slc.client.ui.perspectives,
  org.argeo.slc.execution,
  org.argeo.slc.process,
  org.argeo.slc.runtime,
+ org.argeo.security.ui.application,
  org.argeo.slc.services,
  org.argeo.slc.services.impl

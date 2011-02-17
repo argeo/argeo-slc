@@ -130,8 +130,6 @@ public class ProcessParametersEditingSupport extends EditingSupport {
 		} else if (own.obj instanceof RefValue) {
 			RefValue rv = (RefValue) own.obj;
 			List<String> values = comboBoxes.get(own.name);
-			log.debug("Get Value : " + rv.getRef() + " & index : "
-					+ values.indexOf(rv.getRef()));
 			return values.indexOf(rv.getRef());
 		} else
 			return "unsupported param type";

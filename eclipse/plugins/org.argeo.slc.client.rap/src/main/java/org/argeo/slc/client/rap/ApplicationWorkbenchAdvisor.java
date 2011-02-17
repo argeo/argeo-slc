@@ -13,7 +13,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	private static final String PERSPECTIVE_ID = "org.argeo.slc.client.ui.perspectives.slcExecution";
 
     public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-        return new ApplicationWorkbenchWindowAdvisor(configurer);
+        return new SlcRapSecureWorkbenchWindowAdvisor(configurer);
     }
 
 	public String getInitialWindowPerspectiveId() {

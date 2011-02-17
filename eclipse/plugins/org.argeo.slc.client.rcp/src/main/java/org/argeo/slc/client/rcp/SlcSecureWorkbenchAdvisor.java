@@ -11,18 +11,24 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  * @author bsinou
  * 
  */
-public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
+public class SlcSecureWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	private static final String PERSPECTIVE_ID = "org.argeo.slc.client.ui.perspectives.slcExecution";
-//	private static final String PERSPECTIVE_ID = "org.argeo.slc.client.ui.dist.distributionPerspective";
+	// private static final String PERSPECTIVE_ID =
+	// "org.argeo.slc.client.ui.perspectives.slcExecution";
+	static final String DEFAULT_PERSPECTIVE_ID = "org.argeo.security.ui.securityPerspective"; //$NON-NLS-1$
+
+	public final static String INITIAL_PERSPECTIVE_PROPERTY = "org.argeo.security.ui.initialPerspective";
+	private String initialPerspective = System.getProperty(
+			INITIAL_PERSPECTIVE_PROPERTY, DEFAULT_PERSPECTIVE_ID);
 
 	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
 			IWorkbenchWindowConfigurer configurer) {
-		return new ApplicationWorkbenchWindowAdvisor(configurer);
+		return new SlcSecureWorkbenchWindowAdvisor(configurer);
 	}
 
 	public String getInitialWindowPerspectiveId() {
-		return PERSPECTIVE_ID;
+		// return PERSPECTIVE_ID;
+		return initialPerspective;
 	}
 
 	@Override
@@ -33,5 +39,4 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		// starts the application
 		// configurer.setSaveAndRestore(true);
 	}
-
 }
