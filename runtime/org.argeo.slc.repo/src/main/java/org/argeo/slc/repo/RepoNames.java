@@ -8,6 +8,7 @@ public interface RepoNames {
 	public final static String SLC_NAME = "slc:name";
 	public final static String SLC_VERSION = "slc:version";
 	public final static String SLC_OPTIONAL = "slc:optional";
+	public final static String SLC_AS_STRING = "slc:asString";
 
 	// slc:artifact
 	public final static String SLC_ARTIFACT_ID = "slc:artifactId";
@@ -20,7 +21,7 @@ public interface RepoNames {
 	public final static String SLC_MANIFEST = "slc:manifest";
 
 	// shared OSGi
-	public final static String SLC_SYMBOLIC_NAME = "slc:symbolicName";
+	public final static String SLC_SYMBOLIC_NAME = "slc:symbolic-name";
 	public final static String SLC_BUNDLE_VERSION = "slc:bundle-version";
 
 	// slc:osgiBaseVersion

@@ -13,6 +13,7 @@ public class DistributionPerspective implements IPerspectiveFactory {
 
 		IFolderLayout main = layout.createFolder("main", IPageLayout.RIGHT,
 				0.3f, editorArea);
+		main.addView("org.argeo.slc.client.ui.dist.distributionView");
 		main.addView("org.argeo.slc.client.ui.dist.modulesView");
 
 	}

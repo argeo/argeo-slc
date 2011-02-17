@@ -15,8 +15,12 @@
       <view
             class="org.argeo.slc.client.ui.dist.views.ModulesView"
             id="org.argeo.slc.client.ui.dist.modulesView"
-            name="Modules"
-            restorable="true">
+            name="Modules">
       </view>
+	   <view
+	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+	         id="org.argeo.slc.client.ui.dist.distributionView"
+	         name="Distribution">
+	   </view>
    </extension>
 </plugin>

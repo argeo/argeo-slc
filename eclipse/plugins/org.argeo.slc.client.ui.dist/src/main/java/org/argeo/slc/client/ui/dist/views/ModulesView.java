@@ -137,31 +137,35 @@ public class ModulesView extends ViewPart {
 					}
 				}
 
-				Map<String, Set<String>> traces1 = new TreeMap<String, Set<String>>();
-				Map<String, ExportedPackage> space1 = dependencySpace(bundle1,
-						importedPackages, traces1);
-				Map<String, Set<String>> traces2 = new TreeMap<String, Set<String>>();
-				Map<String, ExportedPackage> space2 = dependencySpace(bundle2,
-						importedPackages, traces2);
-				for (String key : space1.keySet()) {
-					if (space2.containsKey(key)) {
-						ExportedPackage pkg1 = space1.get(key);
-						ExportedPackage pkg2 = space2.get(key);
-						if (!pkg1.getVersion().equals(pkg2.getVersion())) {
-							log.debug("\n##" + pkg1 + " <> " + pkg2);
-							log.debug("# Traces for "
-									+ bundle1.getSymbolicName());
-							for (String trace : traces1.get(pkg1.getName())) {
-								log.debug(trace);
-							}
-							log.debug("# Traces for "
-									+ bundle2.getSymbolicName());
-							for (String trace : traces2.get(pkg2.getName())) {
-								log.debug(trace);
-							}
-						}
-					}
-				}
+				// Map<String, Set<String>> traces1 = new TreeMap<String,
+				// Set<String>>();
+				// Map<String, ExportedPackage> space1 =
+				// dependencySpace(bundle1,
+				// importedPackages, traces1);
+				// Map<String, Set<String>> traces2 = new TreeMap<String,
+				// Set<String>>();
+				// Map<String, ExportedPackage> space2 =
+				// dependencySpace(bundle2,
+				// importedPackages, traces2);
+				// for (String key : space1.keySet()) {
+				// if (space2.containsKey(key)) {
+				// ExportedPackage pkg1 = space1.get(key);
+				// ExportedPackage pkg2 = space2.get(key);
+				// if (!pkg1.getVersion().equals(pkg2.getVersion())) {
+				// log.debug("\n##" + pkg1 + " <> " + pkg2);
+				// log.debug("# Traces for "
+				// + bundle1.getSymbolicName());
+				// for (String trace : traces1.get(pkg1.getName())) {
+				// log.debug(trace);
+				// }
+				// log.debug("# Traces for "
+				// + bundle2.getSymbolicName());
+				// for (String trace : traces2.get(pkg2.getName())) {
+				// log.debug(trace);
+				// }
+				// }
+				// }
+				// }
 
 				return new Object[] { bundlesNode, mPackageNode, aPackageNode };
 			} else if (parentElement instanceof TreeParent) {

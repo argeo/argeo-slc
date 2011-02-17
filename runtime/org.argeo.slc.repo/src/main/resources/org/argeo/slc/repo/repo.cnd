@@ -30,9 +30,10 @@ mixin
 // see http://www.osgi.org/Specifications/Reference
 
 [slc:javaPackage] > nt:base
-- slc:name (STRING) m
+- slc:name (STRING) primary m
 
 [slc:osgiBaseVersion] > nt:base
+- slc:asString (STRING) primary m
 - slc:major (LONG) m
 - slc:minor (LONG) m
 - slc:micro (LONG) m
@@ -53,23 +54,25 @@ mixin
 - slc:optional (BOOLEAN) ='false' m a
 
 [slc:requiredBundle] > nt:base
-- slc:symbolicName (STRING) m
+- 'slc:symbolic-name' (STRING) primary m
 - 'slc:bundle-version' (STRING) ='0.0.0' m a
 - slc:optional (BOOLEAN) ='false' m a
 
 [slc:fragmentHost] > nt:base
-- slc:symbolicName (STRING) m
+- 'slc:symbolic-name' (STRING) m
 - 'slc:bundle-version' (STRING) ='0.0.0' m a
 
 [slc:bundleNativeCode] > nt:base
-- slc:path (STRING) m
+- slc:path (STRING) primary m
 - slc:osname (STRING)
 - slc:processor (STRING)
 
 // see http://www.osgi.org/Specifications/ReferenceHeaders
 [slc:bundle] > nt:base
 mixin
-- 'slc:Bundle-SymbolicName' (STRING) primary m
+- 'slc:symbolic-name' (STRING) primary m
+- 'slc:bundle-version' (STRING) m
+- 'slc:Bundle-SymbolicName' (STRING) m
 - 'slc:Bundle-Name' (STRING)
 - 'slc:Bundle-Description' (STRING)
 - 'slc:Bundle-ManifestVersion' (STRING)

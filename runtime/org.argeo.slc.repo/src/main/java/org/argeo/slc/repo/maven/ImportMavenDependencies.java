@@ -20,6 +20,7 @@ import java.util.jar.Manifest;
 import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -55,6 +56,8 @@ public class ImportMavenDependencies implements Runnable {
 
 	private Session jcrSession;
 	private String artifactBasePath = "/slc/repo/artifacts";
+	private String distributionsBasePath = "/slc/repo/distributions";
+	private String distributionName;
 
 	public void run() {
 		log.debug(jcrSession.getUserID());
@@ -118,30 +121,14 @@ public class ImportMavenDependencies implements Runnable {
 		Long begin = System.currentTimeMillis();
 		try {
 			JcrUtils.mkdirs(jcrSession, artifactBasePath);
+			JcrUtils.mkdirs(jcrSession, distributionsBasePath + '/'
+					+ distributionName);
 			artifacts: for (Artifact artifact : artifacts) {
 				File file = artifact.getFile();
 				if (file == null) {
 					log.warn("File not found for " + artifact);
 
-					file = new File(System.getProperty("user.home")
-							+ File.separator
-							+ ".m2"
-							+ File.separator
-							+ "repository"
-							+ File.separator
-							+ artifact.getGroupId().replace('.',
-									File.separatorChar)
-							+ File.separator
-							+ artifact.getArtifactId()
-							+ File.separator
-							+ artifact.getVersion()
-							+ File.separator
-							+ artifact.getArtifactId()
-							+ '-'
-							+ artifact.getVersion()
-							+ (artifact.getClassifier().equals("") ? ""
-									: '-' + artifact.getClassifier()) + '.'
-							+ artifact.getExtension());
+					file = artifactToFile(artifact);
 
 					if (!file.exists()) {
 						log.warn("Generated file " + file + " for " + artifact
@@ -172,6 +159,16 @@ public class ImportMavenDependencies implements Runnable {
 						processOsgiBundle(fileNode);
 					}
 					jcrSession.save();
+
+					if (!jcrSession
+							.itemExists(bundleDistributionPath(fileNode))
+							&& fileNode
+									.isNodeType(RepoTypes.SLC_BUNDLE_ARTIFACT))
+						jcrSession.getWorkspace().clone(
+								jcrSession.getWorkspace().getName(),
+								fileNode.getPath(),
+								bundleDistributionPath(fileNode), false);
+
 					if (log.isDebugEnabled())
 						log.debug("Synchronized " + fileNode);
 				} catch (Exception e) {
@@ -194,6 +191,23 @@ public class ImportMavenDependencies implements Runnable {
 				+ artifact.getArtifactId() + '/' + artifact.getVersion();
 	}
 
+	protected String bundleDistributionPath(Node fileNode) {
+		try {
+			return distributionsBasePath
+					+ '/'
+					+ distributionName
+					+ '/'
+					+ fileNode.getProperty(RepoNames.SLC_SYMBOLIC_NAME)
+							.getString()
+					+ '_'
+					+ fileNode.getProperty(RepoNames.SLC_BUNDLE_VERSION)
+							.getString();
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot create distribution path for "
+					+ fileNode, e);
+		}
+	}
+
 	protected void processArtifact(Node fileNode, Artifact artifact) {
 		try {
 			fileNode.addMixin(RepoTypes.SLC_ARTIFACT);
@@ -211,6 +225,27 @@ public class ImportMavenDependencies implements Runnable {
 					+ " on node " + fileNode, e);
 		}
 
+	}
+
+	protected File artifactToFile(Artifact artifact) {
+		return new File(System.getProperty("user.home")
+				+ File.separator
+				+ ".m2"
+				+ File.separator
+				+ "repository"
+				+ File.separator
+				+ artifact.getGroupId().replace('.', File.separatorChar)
+				+ File.separator
+				+ artifact.getArtifactId()
+				+ File.separator
+				+ artifact.getVersion()
+				+ File.separator
+				+ artifact.getArtifactId()
+				+ '-'
+				+ artifact.getVersion()
+				+ (artifact.getClassifier().equals("") ? ""
+						: '-' + artifact.getClassifier()) + '.'
+				+ artifact.getExtension());
 	}
 
 	protected void processOsgiBundle(Node fileNode) {
@@ -233,6 +268,14 @@ public class ImportMavenDependencies implements Runnable {
 			}
 
 			fileNode.addMixin(RepoTypes.SLC_BUNDLE_ARTIFACT);
+
+			// symbolic name
+			String symbolicName = attrs.getValue(Constants.BUNDLE_SYMBOLICNAME);
+			// make sure there is no directive
+			symbolicName = symbolicName.split(";")[0];
+			fileNode.setProperty(RepoNames.SLC_SYMBOLIC_NAME, symbolicName);
+
+			// direct mapping
 			addAttr(Constants.BUNDLE_SYMBOLICNAME, fileNode, attrs);
 			addAttr(Constants.BUNDLE_NAME, fileNode, attrs);
 			addAttr(Constants.BUNDLE_DESCRIPTION, fileNode, attrs);
@@ -267,6 +310,8 @@ public class ImportMavenDependencies implements Runnable {
 			// version
 			Version version = new Version(
 					attrs.getValue(Constants.BUNDLE_VERSION));
+			fileNode.setProperty(RepoNames.SLC_BUNDLE_VERSION,
+					version.toString());
 			cleanSubNodes(fileNode, RepoNames.SLC_ + Constants.BUNDLE_VERSION);
 			Node bundleVersionNode = fileNode.addNode(RepoNames.SLC_
 					+ Constants.BUNDLE_VERSION, RepoTypes.SLC_OSGI_VERSION);
@@ -294,7 +339,7 @@ public class ImportMavenDependencies implements Runnable {
 			if (attrs.containsKey(new Name(Constants.IMPORT_PACKAGE))) {
 				String importPackages = attrs
 						.getValue(Constants.IMPORT_PACKAGE);
-				String[] packages = importPackages.split(",");
+				List<String> packages = parsePackages(importPackages);
 				for (String pkg : packages) {
 					String[] tokens = pkg.split(";");
 					Node node = fileNode.addNode(RepoNames.SLC_
@@ -322,7 +367,7 @@ public class ImportMavenDependencies implements Runnable {
 			if (attrs.containsKey(new Name(Constants.DYNAMICIMPORT_PACKAGE))) {
 				String importPackages = attrs
 						.getValue(Constants.DYNAMICIMPORT_PACKAGE);
-				String[] packages = importPackages.split(",");
+				List<String> packages = parsePackages(importPackages);
 				for (String pkg : packages) {
 					String[] tokens = pkg.split(";");
 					Node node = fileNode.addNode(RepoNames.SLC_
@@ -343,7 +388,7 @@ public class ImportMavenDependencies implements Runnable {
 			if (attrs.containsKey(new Name(Constants.EXPORT_PACKAGE))) {
 				String exportPackages = attrs
 						.getValue(Constants.EXPORT_PACKAGE);
-				List<String> packages = parseExportPackage(exportPackages);
+				List<String> packages = parsePackages(exportPackages);
 				for (String pkg : packages) {
 					String[] tokens = pkg.split(";");
 					Node node = fileNode.addNode(RepoNames.SLC_
@@ -413,7 +458,8 @@ public class ImportMavenDependencies implements Runnable {
 		}
 	}
 
-	private List<String> parseExportPackage(String str) {
+	/** Parse package list with nested directive with ',' */
+	private List<String> parsePackages(String str) {
 		List<String> res = new ArrayList<String>();
 		StringBuffer curr = new StringBuffer("");
 		boolean in = false;
@@ -441,8 +487,10 @@ public class ImportMavenDependencies implements Runnable {
 
 	private void addAttr(Name key, Node node, Attributes attrs)
 			throws RepositoryException {
-		if (attrs.containsKey(key))
-			node.setProperty(RepoNames.SLC_ + key, attrs.getValue(key));
+		if (attrs.containsKey(key)) {
+			String value = attrs.getValue(key);
+			node.setProperty(RepoNames.SLC_ + key, value);
+		}
 	}
 
 	private void cleanSubNodes(Node node, String name)
@@ -456,6 +504,7 @@ public class ImportMavenDependencies implements Runnable {
 
 	protected void mapOsgiVersion(Version version, Node versionNode)
 			throws RepositoryException {
+		versionNode.setProperty(RepoNames.SLC_AS_STRING, version.toString());
 		versionNode.setProperty(RepoNames.SLC_MAJOR, version.getMajor());
 		versionNode.setProperty(RepoNames.SLC_MINOR, version.getMinor());
 		versionNode.setProperty(RepoNames.SLC_MICRO, version.getMicro());
@@ -648,6 +697,10 @@ public class ImportMavenDependencies implements Runnable {
 
 	public void setJcrSession(Session jcrSession) {
 		this.jcrSession = jcrSession;
+	}
+
+	public void setDistributionName(String distributionName) {
+		this.distributionName = distributionName;
 	}
 
 }
