@@ -5,5 +5,7 @@
 
 	<bean id="jcrSession" class="org.argeo.jcr.ThreadBoundJcrSessionFactory">
 		<property name="repository" ref="jcrRepository" />
+		<property name="workspace" value="slc_repo" />
+		<property name="forceDefaultCredentials" value="true"/>
 	</bean>
 </beans>

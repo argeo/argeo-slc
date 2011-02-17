@@ -3,7 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Repo
 Bundle-SymbolicName: org.argeo.slc.server.repo
 Bundle-Version: 1.0.0.qualifier
-Import-Package: org.argeo.jcr,
+Import-Package: javax.jcr;version="2.0.0",
+ org.argeo.jcr,
  org.argeo.server.jackrabbit,
  org.argeo.slc.aether,
  org.argeo.slc.aether.spring,

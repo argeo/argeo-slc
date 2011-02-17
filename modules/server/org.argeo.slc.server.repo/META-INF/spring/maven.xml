@@ -8,10 +8,11 @@
 	">
 
 
-	<bean class="org.argeo.slc.repo.maven.ImportMavenDependencies">
+	<bean class="org.argeo.slc.repo.maven.ImportMavenDependencies" init-method="run">
 		<property name="rootCoordinates"
 			value="org.argeo.dep:versions-all:pom:1.1.3-SNAPSHOT" />
 		<property name="aetherTemplate" ref="mavenAetherTemplate" />
+		<property name="jcrSession" ref="jcrSession" />
 		<property name="excludedArtifacts">
 			<set>
 				<value>org.apache.commons:com.springsource.org.apache.commons.logging

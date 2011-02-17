@@ -1,6 +1,7 @@
 <slc = 'http://www.argeo.org/slc'>
 
-[slc:artifact] > nt:base
+// AETHER
+[slc:artifact] > nt:base, mix:shareable
 mixin
 - slc:artifactId (STRING) primary m
 - slc:groupId (STRING) m
@@ -8,32 +9,91 @@ mixin
 - slc:artifactExtension (STRING) m
 - slc:artifactClassifier (STRING) ='' m a
 
-[slc:jarArtifact] > slc:artifact
+[slc:jarFile] > nt:base
 mixin
+- 'slc:manifest' (BINARY) m
+- 'slc:Manifest-Version' (STRING)
+- 'slc:Signature-Version' (STRING)
+- 'slc:Class-Path'  (STRING)
+- 'slc:Main-Class' (STRING)
+- 'slc:Extension-Name' (STRING)
+- 'slc:Implementation-Version' (STRING)
+- 'slc:Implementation-Vendor' (STRING)
+- 'slc:Implementation-Vendor-Id' (STRING)
+- 'slc:Implementation-URL' (STRING)
+- 'slc:Specification-Title' (STRING)
+- 'slc:Specification-Version' (STRING)
+- 'slc:Specification-Vendor' (STRING)
+- 'slc:Sealed' (STRING)
 
-[slc:bundleArtifact] > slc:jarArtifact, slc:bundle
-mixin
-- slc:Bundle-Version (STRING) m
-- slc:Bundle-Name (STRING)
-- slc:Bundle-Description (STRING)
-- slc:Bundle-Vendor (STRING)
-- slc:Bundle-License (STRING)
-+ slc:Import-Package (slc:importedPackage) multiple
-+ slc:Export-Package (slc:exportedPackage) multiple
-+ slc:Require-Bundle (slc:bundle) multiple
-
-[slc:bundle] > nt:base
-mixin
-- slc:Bundle-SymbolicName (STRING) primary m
+// OSGi
+// see http://www.osgi.org/Specifications/Reference
 
 [slc:javaPackage] > nt:base
-mixin
 - slc:name (STRING) m
 
+[slc:osgiBaseVersion] > nt:base
+- slc:major (LONG) m
+- slc:minor (LONG) m
+- slc:micro (LONG) m
+
+[slc:osgiVersion] > slc:osgiBaseVersion
+- slc:qualifier (STRING)
+
 [slc:exportedPackage] > slc:javaPackage
-mixin
 + slc:uses (slc:javaPackage) multiple
++ slc:version (slc:osgiVersion)
 
 [slc:importedPackage] > slc:javaPackage
+- slc:version (STRING) ='0.0.0' m a
+- slc:optional (BOOLEAN) ='false' m a
+
+[slc:dynamicImportedPackage] > slc:javaPackage
+- slc:version (STRING) ='0.0.0' m a
+- slc:optional (BOOLEAN) ='false' m a
+
+[slc:requiredBundle] > nt:base
+- slc:symbolicName (STRING) m
+- 'slc:bundle-version' (STRING) ='0.0.0' m a
+- slc:optional (BOOLEAN) ='false' m a
+
+[slc:fragmentHost] > nt:base
+- slc:symbolicName (STRING) m
+- 'slc:bundle-version' (STRING) ='0.0.0' m a
+
+[slc:bundleNativeCode] > nt:base
+- slc:path (STRING) m
+- slc:osname (STRING)
+- slc:processor (STRING)
+
+// see http://www.osgi.org/Specifications/ReferenceHeaders
+[slc:bundle] > nt:base
 mixin
-+ slc:version (STRING) ='0.0.0' m a
+- 'slc:Bundle-SymbolicName' (STRING) primary m
+- 'slc:Bundle-Name' (STRING)
+- 'slc:Bundle-Description' (STRING)
+- 'slc:Bundle-ManifestVersion' (STRING)
+- 'slc:Bundle-Category' (STRING)
+- 'slc:Bundle-ActivationPolicy' (STRING)
+- 'slc:Bundle-Copyright' (STRING)
+- 'slc:Bundle-Vendor' (STRING)
+- 'slc:Bundle-License' (STRING)
+- 'slc:Bundle-DocURL' (STRING)
+- 'slc:Bundle-ContactAddress' (STRING)
+- 'slc:Bundle-Activator' (STRING)
+- 'slc:Bundle-UpdateLocation' (STRING)
+- 'slc:Bundle-Localization' (STRING)
+- 'slc:Bundle-ClassPath' (STRING) *
+// see http://wiki.eclipse.org/EE  < 'OSGi/Minimum-1.0','OSGi/Minimum-1.1','CDC-1.0/Foundation-1.0','CDC-1.1/Foundation-1.1','JRE-1.1','J2SE-1.2','J2SE-1.3','J2SE-1.4','J2SE-1.5','JavaSE-1.6','JavaSE-1.7'
+- 'slc:Bundle-RequiredExecutionEnvironment' (STRING) *
++ 'slc:Bundle-Version' (slc:osgiVersion) m
++ 'slc:Fragment-Host' (slc:fragmentHost)
++ 'slc:Import-Package' (slc:importedPackage) multiple
++ 'slc:Export-Package' (slc:exportedPackage) multiple
++ 'slc:Require-Bundle' (slc:requiredBundle) multiple
++ 'slc:Bundle-NativeCode' (slc:bundleNativeCode) multiple
++ 'slc:DynamicImport-Package' (slc:dynamicImportedPackage) multiple
+
+[slc:bundleArtifact] > slc:artifact,slc:jarFile,slc:bundle
+mixin
+
