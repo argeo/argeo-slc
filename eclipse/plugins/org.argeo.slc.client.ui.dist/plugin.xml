@@ -23,4 +23,43 @@
 	         name="Distribution">
 	   </view>
    </extension>
+   <extension
+           point="org.eclipse.ui.editors">
+	     <editor
+	          class="org.argeo.eclipse.spring.SpringExtensionFactory"
+              id="org.argeo.slc.client.ui.dist.genericJcrQueryEditor"
+              name="JCR Query"
+              icon="icons/distribution_perspective.gif"
+              default="false">
+        </editor>
+     </extension>
+   	<extension
+         point="org.eclipse.ui.commands">
+		<command
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.client.ui.dist.openGenericJcrQueryEditor"
+            name="OpenGenericJcrQueryEditor ">
+    	</command>
+    </extension>
+	<extension
+         id="menu:org.eclipse.ui.main.menu"
+         point="org.eclipse.ui.menus">
+        <!-- Queries --> 
+		<menuContribution
+                allPopups="false"
+                locationURI="menu:org.eclipse.ui.main.menu?after=edit">
+        	<menu label="Queries"
+              mnemonic="Queries"
+              id="com.agfa.sebi.ui.queryMenu">
+                <command
+                      commandId="org.argeo.slc.client.ui.dist.openGenericJcrQueryEditor"
+                      disabledIcon="icons/saveDisabled.gif"
+                      icon="icons/results.gif"
+                      label="JCR Query"
+                      style="push"
+                      tooltip="Open JCR query editor">
+                </command>
+             </menu>
+          </menuContribution>
+	</extension>
 </plugin>

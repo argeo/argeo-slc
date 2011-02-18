@@ -3,5 +3,5 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SLC GIS Position GpsBabel
 Bundle-SymbolicName: org.argeo.slc.gis.position.gpsbabel
 Bundle-Version: 1.0.0.qualifier
-Import-Package: org.argeo.slc.gpsbabel;version="0.12.2.SNAPSHOT-r3562",
- org.argeo.slc.jts;version="0.12.2.SNAPSHOT-r3562"
+Import-Package: org.argeo.slc.gpsbabel,
+ org.argeo.slc.jts

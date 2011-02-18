@@ -477,6 +477,7 @@ public class ImportMavenDependencies implements Runnable {
 			}
 		}
 		res.add(curr.toString());
+		log.debug(res);
 		return res;
 	}
 

@@ -25,6 +25,11 @@
 			<artifactId>org.argeo.eclipse.ui</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.eclipse</groupId>
+			<artifactId>org.argeo.eclipse.ui.jcr</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.argeo.dep.osgi</groupId>

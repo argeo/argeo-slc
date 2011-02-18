@@ -13,6 +13,8 @@ Import-Package: aQute.lib.osgi;resolution:=optional,
  org.apache.commons.logging;version="1.1.1",
  org.argeo.eclipse.spring,
  org.argeo.eclipse.ui,
+ org.argeo.eclipse.ui.jcr.commands,
+ org.argeo.eclipse.ui.jcr.editors,
  org.argeo.eclipse.ui.jcr.views,
  org.argeo.jcr
 Bundle-ActivationPolicy: lazy

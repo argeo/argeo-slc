@@ -8,11 +8,11 @@ public class DistributionPerspective implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
-		layout.setEditorAreaVisible(false);
+		layout.setEditorAreaVisible(true);
 		layout.setFixed(false);
 
-		IFolderLayout main = layout.createFolder("main", IPageLayout.RIGHT,
-				0.3f, editorArea);
+		IFolderLayout main = layout.createFolder("main", IPageLayout.LEFT,
+				0.5f, editorArea);
 		main.addView("org.argeo.slc.client.ui.dist.distributionView");
 		main.addView("org.argeo.slc.client.ui.dist.modulesView");
 
