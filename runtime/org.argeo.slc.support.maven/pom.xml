@@ -67,12 +67,12 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.specs</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.aether</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		
 		<!-- <dependency> <groupId>org.argeo.dep.osgi</groupId> <artifactId>org.argeo.dep.osgi.maven.embedder</artifactId> 

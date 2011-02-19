@@ -22,12 +22,12 @@
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.ui</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.ui.dist</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<!-- Secure Application -->
 		<dependency>
@@ -39,14 +39,14 @@
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.rcp</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 
 		<!-- Back-end Dependencies -->
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.backend</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 	</dependencies>
 	<profiles>
@@ -59,7 +59,7 @@
 				<dependency>
 					<groupId>org.argeo.slc.eclipse</groupId>
 					<artifactId>org.argeo.slc.eclipse.modules.bundles</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 					<type>pom</type>
 				</dependency>
 			</dependencies>
@@ -76,7 +76,7 @@
 				<dependency>
 					<groupId>org.argeo.slc.eclipse</groupId>
 					<artifactId>org.argeo.slc.eclipse.modules.bundles</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 					<type>pom</type>
 				</dependency>
 			</dependencies>

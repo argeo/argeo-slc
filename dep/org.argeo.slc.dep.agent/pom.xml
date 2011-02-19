@@ -23,52 +23,52 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.equinox</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.activemq</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.castor</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.ant</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.jcr</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.lib.detached</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.maven</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 
 		<dependency>

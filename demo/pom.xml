@@ -52,7 +52,7 @@
 				<dependency>
 					<groupId>org.argeo.slc.dep</groupId>
 					<artifactId>org.argeo.slc.dep.server</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 				</dependency>
 				<dependency>
 					<groupId>org.argeo.slc.server</groupId>
@@ -85,7 +85,7 @@
 				<dependency>
 					<groupId>org.argeo.slc.dep</groupId>
 					<artifactId>org.argeo.slc.dep.server</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 				</dependency>
 				<dependency>
 					<groupId>org.argeo.slc.server</groupId>
@@ -118,12 +118,12 @@
 				<dependency>
 					<groupId>org.argeo.slc.dep</groupId>
 					<artifactId>org.argeo.slc.dep.agent</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 				</dependency>
 				<dependency>
 					<groupId>org.argeo.slc.dep</groupId>
 					<artifactId>org.argeo.slc.dep.agent.extras</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -150,7 +150,7 @@
 				<dependency>
 					<groupId>org.argeo.slc.dep</groupId>
 					<artifactId>org.argeo.slc.dep.gis</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 				</dependency>
 			</dependencies>
 		</profile>
@@ -184,7 +184,7 @@
 				<dependency>
 					<groupId>org.argeo.slc.dep</groupId>
 					<artifactId>org.argeo.slc.dep.detached</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 				</dependency>
 				<dependency>
 					<groupId>net.sourceforge.mx4j</groupId>
@@ -233,7 +233,7 @@
 			<dependencies>
 				<dependency>
 					<groupId>org.argeo.slc.dep</groupId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 				</dependency>
 				<dependency>
 					<groupId>org.argeo.slc.server</groupId>

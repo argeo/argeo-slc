@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.commons</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		
 		<!-- Commons For Eclipse -->
@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<!-- Spring -->
 		<dependency>

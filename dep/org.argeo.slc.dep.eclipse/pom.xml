@@ -14,12 +14,12 @@
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.rcp</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.ui</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 	</dependencies>
 </project>

@@ -141,7 +141,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.sdk.rcp</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 	</dependencies>
 	<profiles>
@@ -158,7 +158,7 @@
 			</activation>
 
 			<properties>
-				<package.version>${project.version}</package.version>
+				<package.version>${version.slc}</package.version>
 				<distribution.label>argeo</distribution.label>
 				<distribution.root>/var/argeo/linux/argeo-el/5/argeo-testing</distribution.root>
 			</properties>

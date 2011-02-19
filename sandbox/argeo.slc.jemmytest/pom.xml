@@ -84,7 +84,7 @@
 								<artifactItem>
 									<groupId>org.argeo.slc.runtime</groupId>
 									<artifactId>org.argeo.slc.osgiboot</artifactId>
-									<version>${project.version}</version>
+									<version>${version.slc}</version>
 									<type>tar.gz</type>
 									<classifier>osgiboot</classifier>
 								</artifactItem>
@@ -124,12 +124,12 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.lib.detached</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.dep.jemmy</groupId>
@@ -139,7 +139,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached.launcher</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 
 		<dependency>
@@ -149,13 +149,13 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.equinox</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 
 		<!--
 			<dependency> <groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached</artifactId>
-			<version>${project.version}</version> <exclusions> <exclusion>
+			<version>${version.slc}</version> <exclusions> <exclusion>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
 			</exclusion> </exclusions> </dependency> <dependency>
@@ -164,13 +164,13 @@
 
 			<dependency> <groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached.launcher</artifactId>
-			<version>${project.version}</version> <exclusions> <exclusion>
+			<version>${version.slc}</version> <exclusions> <exclusion>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
 			</exclusion> </exclusions> </dependency> <dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>${project.version}</version> <exclusions> <exclusion>
+			<version>${version.slc}</version> <exclusions> <exclusion>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.logging</artifactId>
 			</exclusion> </exclusions> </dependency>

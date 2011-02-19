@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.ui</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 
 		<!-- Argeo common distribution for RCP projects -->

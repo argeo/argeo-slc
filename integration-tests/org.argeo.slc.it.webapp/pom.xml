@@ -115,14 +115,14 @@
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.sdk.rcp</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<!-- Unit Tests -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
 			<scope>test</scope>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 	</dependencies>
 </project>

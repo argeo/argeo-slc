@@ -12,10 +12,10 @@
 	<name>Argeo SLC</name>
 	<version>0.13.1-SNAPSHOT</version>
 	<properties>
-		<developmentCycle>0.13</developmentCycle>
+		<developmentCycle.slc>0.13</developmentCycle.slc>
 		<site.repoBase>file:///srv/projects/www/slc/site</site.repoBase>
 		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
-		<version.argeo-slc>0.13.1-SNAPSHOT</version.argeo-slc>
+		<version.slc>${developmentCycle.slc}.1-SNAPSHOT</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
@@ -28,7 +28,7 @@
 		<!-- <module>archetypes</module> -->
 		<module>dist</module>
 	</modules>
-	<url>${site.urlBase}/${developmentCycle}</url>
+	<url>${site.urlBase}/${developmentCycle.slc}</url>
 	<scm>
 		<connection>scm:svn:https://svn.argeo.org/slc/trunk</connection>
 		<developerConnection>scm:svn:https://svn.argeo.org/slc/trunk</developerConnection>
@@ -204,7 +204,7 @@ limitations under the License.
 		</archive> </configuration> </plugin> <plugin> <groupId>org.apache.felix</groupId> 
 		<artifactId>maven-bundle-plugin</artifactId> <version>${version.maven-bundle-plugin}</version> 
 		<extensions>true</extensions> <configuration> <manifestLocation>target/classes/META-INF</manifestLocation> 
-		<instructions> <Bundle-Version>${project.version}-r${buildNumber}</Bundle-Version> 
+		<instructions> <Bundle-Version>${version.slc}-r${buildNumber}</Bundle-Version> 
 		<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName> <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment> 
 		<_removeheaders>Bnd-LastModified</_removeheaders> </instructions> </configuration> 
 		<executions> <execution> <id>bundle-manifest</id> <phase>process-classes</phase> 
@@ -244,92 +244,92 @@ limitations under the License.
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.specs</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.core</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.unit</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.launcher</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.detached</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.lib.detached</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.simple</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.ant</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.maven</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.hibernate</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.castor</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.activemq</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.jcr</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.server</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.osgi</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.equinox</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.support.jemmy</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>org.argeo.slc.ria</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.argeo.ria</groupId>
@@ -339,14 +339,14 @@ limitations under the License.
 			<dependency>
 				<groupId>org.argeo.slc.server</groupId>
 				<artifactId>deploy</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 				<type>pom</type>
 			</dependency>
 			<!-- SLC dubious -->
 			<dependency>
 				<groupId>org.argeo.slc.runtime</groupId>
 				<artifactId>org.argeo.slc.detached.launcher</artifactId>
-				<version>${project.version}</version>
+				<version>${version.slc}</version>
 				<type>tar.gz</type>
 				<classifier>dist</classifier>
 			</dependency>
@@ -415,7 +415,7 @@ limitations under the License.
 		<site>
 			<id>argeo-slc-site</id>
 			<name>SLC Site</name>
-			<url>file://${site.repoBase}/${developmentCycle}/</url>
+			<url>file://${site.repoBase}/${developmentCycle.slc}/</url>
 		</site>
 	</distributionManagement>
 	<reporting>
@@ -534,7 +534,7 @@ limitations under the License.
 				<site>
 					<id>argeo-slc-site</id>
 					<name>SLC Site</name>
-					<url>file://${site.repoBase}/${project.version}</url>
+					<url>file://${site.repoBase}/${version.slc}</url>
 				</site>
 			</distributionManagement>
 		</profile>

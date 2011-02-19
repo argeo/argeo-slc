@@ -31,42 +31,42 @@
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.agent</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.server</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.detached</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.gis</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.provided</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 
 		<!-- SLC non deps -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 
 		<!-- TO BE DELETED <dependency> <groupId>org.argeo.slc.dep</groupId> <artifactId>org.argeo.slc.dep.eclipse</artifactId> 
-			<version>${project.version}</version> </dependency> -->
+			<version>${version.slc}</version> </dependency> -->
 		<dependency>
 			<groupId>org.argeo.slc.server</groupId>
 			<artifactId>org.argeo.slc.ria</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 		</dependency>
 
 		<!-- Modules (see profiles below) -->
@@ -75,7 +75,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
-			<version>${project.version}</version>
+			<version>${version.slc}</version>
 			<type>tar.gz</type>
 			<classifier>base</classifier>
 		</dependency>
@@ -101,13 +101,13 @@
 				<dependency>
 					<groupId>org.argeo.slc.modules</groupId>
 					<artifactId>org.argeo.slc.modules.agent.bundles</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 					<type>pom</type>
 				</dependency>
 				<dependency>
 					<groupId>org.argeo.slc.modules</groupId>
 					<artifactId>org.argeo.slc.modules.server.bundles</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 					<type>pom</type>
 				</dependency>
 			</dependencies>
@@ -124,13 +124,13 @@
 				<dependency>
 					<groupId>org.argeo.slc.modules</groupId>
 					<artifactId>org.argeo.slc.modules.agent.bundles</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 					<type>pom</type>
 				</dependency>
 				<dependency>
 					<groupId>org.argeo.slc.modules</groupId>
 					<artifactId>org.argeo.slc.modules.server.bundles</artifactId>
-					<version>${project.version}</version>
+					<version>${version.slc}</version>
 					<type>pom</type>
 				</dependency>
 			</dependencies>
