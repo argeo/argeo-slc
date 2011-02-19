@@ -45,6 +45,7 @@
 							<goal>pde-sources</goal>
 						</goals>
 						<configuration>
+							<copyArtifacts>true</copyArtifacts>
 						</configuration>
 					</execution>
 					<execution>
