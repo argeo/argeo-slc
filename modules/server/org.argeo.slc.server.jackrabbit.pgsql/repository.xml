@@ -74,13 +74,13 @@
 		<AccessManager
 			class="org.apache.jackrabbit.core.security.simple.SimpleAccessManager">
 		</AccessManager>
-		<!-- <LoginModule -->
-		<!-- class="org.springframework.security.providers.jaas.SecurityContextLoginModule"> -->
-		<!-- </LoginModule> -->
-		<LoginModule
-			class="org.apache.jackrabbit.core.security.simple.SimpleLoginModule">
-			<param name="anonymousId" value="anonymous" />
-			<param name="adminId" value="admin" />
-		</LoginModule>
+		 <LoginModule 
+		 class="org.springframework.security.providers.jaas.SecurityContextLoginModule"> 
+		 </LoginModule> 
+<!--		<LoginModule-->
+<!--			class="org.apache.jackrabbit.core.security.simple.SimpleLoginModule">-->
+<!--			<param name="anonymousId" value="anonymous" />-->
+<!--			<param name="adminId" value="admin" />-->
+<!--		</LoginModule>-->
 	</Security>
 </Repository>

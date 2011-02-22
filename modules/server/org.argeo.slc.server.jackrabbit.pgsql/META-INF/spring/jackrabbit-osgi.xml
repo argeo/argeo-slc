@@ -6,6 +6,10 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<service ref="jcrRepository" interface="javax.jcr.Repository"/>
+	<service ref="jcrRepository" interface="javax.jcr.Repository">
+		<service-properties>
+			<beans:entry key="argeo.jcr.repository.name" value="repo" />
+		</service-properties>
+	</service>
 
 </beans:beans>

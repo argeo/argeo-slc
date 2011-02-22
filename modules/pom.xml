@@ -12,5 +12,6 @@
 	<modules>
 		<module>agent</module>
 		<module>server</module>
+		<module>gis</module>
 	</modules>
 </project>

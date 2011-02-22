@@ -100,27 +100,4 @@
 		</dependency>
 
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>com.springsource.repository.bundles.external</id>
-			<name>
-				SpringSource Enterprise Bundle Repository - External
-				Bundle
-				Releases
-			</name>
-			<url>
-				http://repository.springsource.com/maven/bundles/external
-			</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
-		</repository>
-	</repositories>
 </project>

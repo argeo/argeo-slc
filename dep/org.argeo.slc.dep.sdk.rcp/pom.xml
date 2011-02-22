@@ -67,19 +67,5 @@
 		<profile>
 			<id>sdkWithoutModules</id>
 		</profile>
-		<profile>
-			<id>release</id>
-			<properties>
-				<argeo.p2.repository>/srv/projects/slc/www/sdk</argeo.p2.repository>
-			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>org.argeo.slc.eclipse</groupId>
-					<artifactId>org.argeo.slc.eclipse.modules.bundles</artifactId>
-					<version>${version.slc}</version>
-					<type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
 	</profiles>
 </project>

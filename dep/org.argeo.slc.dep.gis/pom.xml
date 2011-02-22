@@ -59,4 +59,23 @@
 		</dependency>
 
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>sdkWithModules</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>org.argeo.slc.modules</groupId>
+					<artifactId>org.argeo.slc.modules.gis.bundles</artifactId>
+					<version>${version.slc}</version>
+					<type>pom</type>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>sdkWithoutModules</id>
+		</profile>
+	</profiles>
 </project>
