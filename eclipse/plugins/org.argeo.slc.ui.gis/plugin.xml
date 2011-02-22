@@ -4,18 +4,37 @@
 
    <extension
          point="org.eclipse.ui.views">
-      <category
-            name="GIS"
-            id="org.argeo.slc.client.gis">
-      </category>
       <view
-            name="Map"
+            name="Layers"
             icon="icons/sample.gif"
-            category="org.argeo.slc.client.gis"
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
-            id="org.argeo.slc.client.gis.mapView">
+            id="org.argeo.slc.ui.gis.layersView">
       </view>
    </extension>
+   	<extension
+         point="org.eclipse.ui.commands">
+		<command
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.ui.gis.loadLayersFromBackend"
+            name="loadLayersFromBackend ">
+    	</command>
+    </extension>
+	<extension
+         point="org.eclipse.ui.menus">
+        <!-- Queries --> 
+		<menuContribution
+                allPopups="false"
+                locationURI="toolbar:org.argeo.slc.ui.gis.layersView">
+             <command
+                  commandId="org.argeo.slc.ui.gis.loadLayersFromBackend"
+                  disabledIcon="icons/sample.gif"
+                  icon="icons/sample.gif"
+                  label="Load Layers"
+                  style="push"
+                  tooltip="Load layers from backend">
+            </command>
+        </menuContribution>
+	</extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
       <perspectiveExtension
@@ -24,14 +43,14 @@
                ratio="0.5"
                relative="org.eclipse.ui.editorss"
                relationship="right"
-               id="org.argeo.slc.client.gis.mapView">
+               id="org.argeo.slc.ui.gis.mapView">
          </view>
       </perspectiveExtension>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.argeo.slc.client.gis.GisPerspectiveFactory"
+            class="org.argeo.slc.ui.gis.GisPerspectiveFactory"
             id="org.argeo.slc.client.gis.perspective"
             name="GIS">
       </perspective>
