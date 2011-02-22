@@ -6,13 +6,7 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd
 	">
 
-	<bean id="org.argeo.slc.client.gis.mapView" class="org.argeo.slc.client.gis.views.GeoToolsMapView"
+	<bean id="org.argeo.slc.ui.gis.mapView" class="org.argeo.slc.ui.gis.rcp.views.SwingMapView"
 		scope="prototype">
-		<property name="positionProvider" ref="positionProvider" />
-		<property name="backend" ref="backend" />
-		<property name="mapContext" ref="mapContext" />
 	</bean>
-
-	<bean id="mapContext" class="org.geotools.map.DefaultMapContext" />
-
 </beans>

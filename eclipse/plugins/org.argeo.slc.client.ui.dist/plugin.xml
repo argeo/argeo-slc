@@ -50,7 +50,7 @@
                 locationURI="menu:org.eclipse.ui.main.menu?after=edit">
         	<menu label="Queries"
               mnemonic="Queries"
-              id="com.agfa.sebi.ui.queryMenu">
+              id="org.argeo.slc.client.ui.dist.queryMenu">
                 <command
                       commandId="org.argeo.slc.client.ui.dist.openGenericJcrQueryEditor"
                       disabledIcon="icons/saveDisabled.gif"

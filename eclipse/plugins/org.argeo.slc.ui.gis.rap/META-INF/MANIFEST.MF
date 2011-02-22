@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Rap
+Bundle-SymbolicName: org.argeo.slc.ui.gis.rap
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Argeo
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

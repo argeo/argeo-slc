@@ -7,13 +7,13 @@
 	<!-- Views -->
 	<bean id="org.argeo.slc.client.ui.dist.distributionView" class="org.argeo.slc.client.ui.dist.views.DistributionView"
 		scope="prototype">
-		<property name="jcrSession" ref="jcrSession" />
+		<property name="repositoryRegister" ref="repositoryRegister" />
 	</bean>
 
-	<bean id="jcrSession" class="org.argeo.jcr.ThreadBoundJcrSessionFactory">
-		<property name="repository" ref="jcrRepository" />
-		<property name="workspace" value="slc_repo" />
-		<property name="forceDefaultCredentials" value="true" />
-	</bean>
+<!--	<bean id="jcrSession" class="org.argeo.jcr.ThreadBoundJcrSessionFactory">-->
+<!--		<property name="repository" ref="jcrRepository" />-->
+<!--		<property name="workspace" value="slc_repo" />-->
+<!--		<property name="forceDefaultCredentials" value="true" />-->
+<!--	</bean>-->
 
 </beans>
