@@ -18,6 +18,11 @@
 			<artifactId>org.argeo.osgi.boot</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.modeshape</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
 
 		<!-- SLC -->
 		<dependency>
@@ -77,6 +82,8 @@
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>
 		</dependency>
+		
+		<!-- JCR -->
 
 		<!-- Spring -->
 		<dependency>
