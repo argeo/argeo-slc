@@ -51,6 +51,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.argeo.slc.ui.gis.GisPerspectiveFactory"
+            icon="icons/gis.gif"
             id="org.argeo.slc.client.gis.perspective"
             name="GIS">
       </perspective>

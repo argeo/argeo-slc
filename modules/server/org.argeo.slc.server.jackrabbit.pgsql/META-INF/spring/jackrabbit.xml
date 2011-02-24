@@ -11,7 +11,7 @@
 		</property>
 	</bean>
 
-	<bean id="jcrRepository" class="org.argeo.server.jackrabbit.JackrabbitContainer">
+	<bean id="jcrRepository" class="org.argeo.jackrabbit.JackrabbitContainer">
 		<property name="homeDirectory" value="${slc.jackrabbit.home}" />
 		<property name="configuration" value="${slc.jackrabbit.configuration}" />
 		<property name="variables" value="osgibundle:/jackrabbit.properties" />

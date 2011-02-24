@@ -72,10 +72,10 @@ public class ClientUiPlugin extends AbstractUIPlugin {
 
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
-		reg.put("agent", getImageDescriptor("icons/computer.png"));
-		reg.put("executionModule", getImageDescriptor("icons/archive.png"));
-		reg.put("folder", getImageDescriptor("icons/folder.png"));
-		reg.put("flow", getImageDescriptor("icons/system.png"));
+		reg.put("agent", getImageDescriptor("icons/agent.gif"));
+		reg.put("executionModule", getImageDescriptor("icons/module.png"));
+		reg.put("folder", getImageDescriptor("icons/folder.gif"));
+		reg.put("flow", getImageDescriptor("icons/flow.png"));
 		reg.put("processes", getImageDescriptor("icons/processes.gif"));
 		reg.put("passedTest", getImageDescriptor("icons/passed.gif"));
 		reg.put("failedTest", getImageDescriptor("icons/error.gif"));
