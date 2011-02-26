@@ -7,14 +7,14 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
-	<context:component-scan base-package="org.argeo.server.jcr.mvc" />
+	<context:component-scan base-package="org.argeo.jcr.mvc" />
 
-	<bean name="/*.jcr" class="org.argeo.server.jcr.mvc.JcrBrowserController" />
+	<bean name="/*.jcr" class="org.argeo.jcr.mvc.JcrBrowserController" />
 
 	<!-- Views -->
 	<bean name="getJcrItem" class="org.argeo.server.mvc.SerializingView">
 		<property name="serializer">
-			<bean class="org.argeo.server.jcr.mvc.JcrXmlServerSerializer" />
+			<bean class="org.argeo.jcr.mvc.JcrXmlServerSerializer" />
 		</property>
 	</bean>
 

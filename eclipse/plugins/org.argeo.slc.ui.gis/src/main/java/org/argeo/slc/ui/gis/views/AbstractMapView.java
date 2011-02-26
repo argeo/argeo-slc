@@ -18,7 +18,7 @@ public abstract class AbstractMapView extends ViewPart {
 
 //	protected abstract void drawOverlayLocation(Point point, Boolean stale);
 
-	protected abstract void centerMap(Coordinate coordinate);
+//	protected abstract void centerMap(Coordinate coordinate);
 
 //	public void createPartControl(Composite parent) {
 //		createMapWidget(parent, mapContext);

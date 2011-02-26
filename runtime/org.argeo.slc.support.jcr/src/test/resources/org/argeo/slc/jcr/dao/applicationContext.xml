@@ -79,7 +79,7 @@
 			value="${java.io.tmpdir}/jackrabbit-slc-unit-${user.name}" />
 		<property name="inMemory" value="true" />
 		<property name="configuration"
-			value="classpath:/org/argeo/server/jackrabbit/repository-inMemory.xml" />
+			value="classpath:/org/argeo/jackrabbit/repository-inMemory.xml" />
 	</bean>
 
 </beans>

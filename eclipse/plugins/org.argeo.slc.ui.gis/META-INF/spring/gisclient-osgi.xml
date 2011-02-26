@@ -9,7 +9,7 @@
 	<!-- <reference id="positionProvider" interface="org.argeo.slc.jts.PositionProvider" 
 		/> -->
 
-	<reference id="backend" interface="org.argeo.slc.geotools.Backend" />
-	<list id="dataStores" interface="org.geotools.data.DataStore" />
+	<reference id="backend" interface="org.argeo.slc.geotools.Backend" cardinality="0..1"/>
+	<list id="dataStores" interface="org.geotools.data.DataStore" cardinality="0..N"/>
 
 </beans:beans>
