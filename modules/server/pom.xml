@@ -22,12 +22,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.server</artifactId>
-			<version>${version.slc}</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
 </project>
