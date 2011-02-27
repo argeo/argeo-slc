@@ -9,7 +9,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.eclipse.ui.TreeObject;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
@@ -218,7 +217,7 @@ public class ExecutionModulesContentProvider implements ITreeContentProvider {
 	 *         we store the parent node (execution module node) & the
 	 *         ExecutionFlowDescriptor.
 	 */
-	public class FlowNode extends TreeObject {
+	public class FlowNode extends TreeParent {
 
 		private final String flowName;
 		private final ExecutionModuleNode executionModuleNode;

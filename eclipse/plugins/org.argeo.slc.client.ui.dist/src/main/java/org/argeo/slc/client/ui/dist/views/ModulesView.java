@@ -10,7 +10,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.eclipse.ui.TreeObject;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -299,7 +298,7 @@ public class ModulesView extends ViewPart {
 				addChild(usingBundles);
 				for (Bundle b : usedBundles) {
 					if (b != null)
-						usingBundles.addChild(new TreeObject(b
+						usingBundles.addChild(new TreeParent(b
 								.getSymbolicName()));
 				}
 			}
@@ -307,7 +306,7 @@ public class ModulesView extends ViewPart {
 			TreeParent properties = new TreeParent("Properties");
 			addChild(properties);
 			for (String key : serviceReference.getPropertyKeys()) {
-				properties.addChild(new TreeObject(key + "="
+				properties.addChild(new TreeParent(key + "="
 						+ serviceReference.getProperty(key)));
 			}
 

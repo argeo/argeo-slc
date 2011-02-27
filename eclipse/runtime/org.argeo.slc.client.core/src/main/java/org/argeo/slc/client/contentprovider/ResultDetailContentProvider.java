@@ -5,7 +5,6 @@ import java.util.SortedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.eclipse.ui.TreeObject;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.tree.PartSubList;
@@ -41,8 +40,8 @@ public class ResultDetailContentProvider implements ITreeContentProvider {
 	}
 
 	public Object getParent(Object node) {
-		if (node instanceof TreeObject) {
-			return ((TreeObject) node).getParent();
+		if (node instanceof TreeParent) {
+			return ((TreeParent) node).getParent();
 		}
 		return null;
 	}
@@ -119,10 +118,10 @@ public class ResultDetailContentProvider implements ITreeContentProvider {
 		if (node instanceof ResultTreeParent) {
 			ResultTreeParent rtp = (ResultTreeParent) node;
 			// we dig the tree recursivly
-			for (TreeObject to : rtp.getChildren())
+			for (TreeParent to : rtp.getChildren())
 				setIsPassed((StatusAware) to);
 			// we set is passed
-			for (TreeObject to : rtp.getChildren()) {
+			for (TreeParent to : rtp.getChildren()) {
 				if (!((StatusAware) to).isPassed()) {
 					rtp.isPassed = false;
 					return;
@@ -158,7 +157,7 @@ public class ResultDetailContentProvider implements ITreeContentProvider {
 		}
 	}
 
-	public class ResultTreeObject extends TreeObject implements StatusAware {
+	public class ResultTreeObject extends TreeParent implements StatusAware {
 
 		public ResultTreeObject(String name) {
 			super(name);
