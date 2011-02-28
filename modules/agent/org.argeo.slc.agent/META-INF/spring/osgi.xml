@@ -8,11 +8,6 @@
 
 	<beans:import resource="classpath:org/argeo/slc/osgi/manager.xml" />
 
-	<!-- Deprecated -->
-	<service ref="treeTestResultLogger" interface="org.argeo.slc.test.TestResultListener" />
-	<service ref="treeTestResultLogger"
-		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
-
 	<service ref="modulesManager" interface="org.argeo.slc.execution.ExecutionModulesManager" />
 
 	<list id="slcExecutionListeners" interface="org.argeo.slc.process.SlcExecutionNotifier"
