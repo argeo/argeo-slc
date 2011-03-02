@@ -24,6 +24,11 @@
 			<artifactId>org.argeo.slc.client.rap</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.ui.rap</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
