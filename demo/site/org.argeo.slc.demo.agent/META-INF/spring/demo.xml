@@ -6,8 +6,8 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<service ref="treeTestResultLogger"
-		interface="org.argeo.slc.core.test.tree.TreeTestResultListener">
-		<beans:bean id="treeTestResultLogger" class="org.argeo.slc.core.test.tree.TreeTestResultLogger" />
+	<service interface="org.argeo.slc.core.test.tree.TreeTestResultListener">
+		<beans:bean id="treeTestResultLogger"
+			class="org.argeo.slc.core.test.tree.TreeTestResultLogger" />
 	</service>
 </beans:beans>
