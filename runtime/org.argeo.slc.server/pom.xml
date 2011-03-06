@@ -24,10 +24,11 @@
 						</Export-Package>
 						<Import-Package>org.w3c.dom;version="0.0.0",
 							javax.xml.*;version="0.0.0",
-							org.argeo.slc.activemq,
+							org.argeo.slc.activemq;resolution:=optional,
 							org.argeo.slc.execution,
 							org.springframework.context.support,
 							org.tmatesoft.svn.*;resolution:=optional,
+							com.lowagie.*;resolution:=optional,
 							*
 						</Import-Package>
 					</instructions>

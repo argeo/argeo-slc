@@ -118,10 +118,10 @@ public class ResultDetailContentProvider implements ITreeContentProvider {
 		if (node instanceof ResultTreeParent) {
 			ResultTreeParent rtp = (ResultTreeParent) node;
 			// we dig the tree recursivly
-			for (TreeParent to : rtp.getChildren())
+			for (Object to : rtp.getChildren())
 				setIsPassed((StatusAware) to);
 			// we set is passed
-			for (TreeParent to : rtp.getChildren()) {
+			for (Object to : rtp.getChildren()) {
 				if (!((StatusAware) to).isPassed()) {
 					rtp.isPassed = false;
 					return;
