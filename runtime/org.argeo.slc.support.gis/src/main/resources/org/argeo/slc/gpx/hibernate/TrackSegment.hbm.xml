@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="org.argeo.slc.gpx">
+	<class name="TrackSegment" table="TRACK_SEGMENTS">
+		<!-- <cache usage="read-write" /> -->
+		<id name="tid" column="TID" type="integer">
+			<generator class="increment" />
+		</id>
+		<property name="segment" type="org.hibernatespatial.GeometryUserType">
+			<column name="SEGMENT" />
+		</property>
+		<property name="uuid" column="UUID" />
+		<property name="sensor" column="SENSOR" />
+		<property name="startUtc" column="START_UTC" />
+		<property name="endUtc" column="END_UTC" />
+		<list name="trackPoints" cascade="all" table="TRACK_SEGMENTS_POINTS"
+			lazy="true">
+			<key column="SEGMENT_ID" />
+			<list-index column="INDX" />
+			<many-to-many class="TrackPoint" column="TRACK_POINT_ID"
+				unique="true" />
+		</list>
+		<list name="trackSpeeds" cascade="all" table="TRACK_SEGMENTS_SPEEDS"
+			lazy="true">
+			<key column="SEGMENT_ID" />
+			<list-index column="INDX" />
+			<many-to-many class="TrackSpeed" column="TRACK_SPEED_ID"
+				unique="true" />
+		</list>
+	</class>
+</hibernate-mapping>
