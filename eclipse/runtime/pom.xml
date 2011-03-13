@@ -11,7 +11,6 @@
 	<name>SLC Eclipse Runtime</name>
 	<packaging>pom</packaging>
 	<modules>
-		<module>org.argeo.slc.client.commons</module>
 		<module>org.argeo.slc.client.oxm</module>
 		<module>org.argeo.slc.client.core</module>
 	</modules>

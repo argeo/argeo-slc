@@ -3,7 +3,6 @@ package org.argeo.slc.client.contentprovider;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.client.contentprovider.ResultDetailContentProvider.ResultPartNode;
 import org.argeo.slc.client.contentprovider.ResultDetailContentProvider.StatusAware;
-import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
@@ -47,12 +46,13 @@ public class ResultDetailLabelProvider extends LabelProvider implements
 
 	public Image getImage(Object element) {
 		if (element instanceof StatusAware) {
-			if (((StatusAware) element).isPassed())
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("passedTest");
-			else
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("failedTest");
+			// FIXME: fin icons somewhere
+//			if (((StatusAware) element).isPassed())
+//				return ClientUiPlugin.getDefault().getImageRegistry()
+//						.get("passedTest");
+//			else
+//				return ClientUiPlugin.getDefault().getImageRegistry()
+//						.get("failedTest");
 		}
 		return null;
 	}

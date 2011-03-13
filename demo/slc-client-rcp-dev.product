@@ -166,11 +166,13 @@
       <plugin id="org.argeo.dep.osgi.tika"/>
       <plugin id="org.argeo.eclipse.ui"/>
       <plugin id="org.argeo.eclipse.ui.jcr"/>
+      <plugin id="org.argeo.eclipse.ui.rap"/>
       <plugin id="org.argeo.jcr.ui.explorer"/>
       <plugin id="org.argeo.node.repo.jackrabbit"/>
       <plugin id="org.argeo.security.activemq"/>
       <plugin id="org.argeo.security.core"/>
       <plugin id="org.argeo.security.equinox"/>
+      <plugin id="org.argeo.security.jackrabbit" fragment="true"/>
       <plugin id="org.argeo.security.ldap"/>
       <plugin id="org.argeo.security.manager.ldap"/>
       <plugin id="org.argeo.security.services"/>
@@ -183,6 +185,7 @@
       <plugin id="org.argeo.server.ext.jackrabbit" fragment="true"/>
       <plugin id="org.argeo.server.jackrabbit"/>
       <plugin id="org.argeo.server.jcr"/>
+      <plugin id="org.argeo.server.jcr.mvc"/>
       <plugin id="org.argeo.server.jdbc" fragment="true"/>
       <plugin id="org.argeo.server.json"/>
       <plugin id="org.argeo.server.tika.jackrabbit" fragment="true"/>
@@ -202,8 +205,8 @@
       <plugin id="org.argeo.slc.client.ui.dist"/>
       <plugin id="org.argeo.slc.core"/>
       <plugin id="org.argeo.slc.demo.agent" fragment="true"/>
-      <plugin id="org.argeo.slc.demo.ant"/>
-      <plugin id="org.argeo.slc.demo.basic"/>
+      <plugin id="org.argeo.slc.demo.ant" fragment=""/>
+      <plugin id="org.argeo.slc.demo.basic" fragment=""/>
       <plugin id="org.argeo.slc.demo.log4j" fragment="true"/>
       <plugin id="org.argeo.slc.detached"/>
       <plugin id="org.argeo.slc.ext.activemq" fragment="true"/>
@@ -228,8 +231,8 @@
       <plugin id="org.argeo.slc.support.maven"/>
       <plugin id="org.argeo.slc.support.osgi"/>
       <plugin id="org.argeo.slc.support.simple"/>
-      <plugin id="org.argeo.slc.ui.gis"/>
-      <plugin id="org.argeo.slc.ui.gis.rcp"/>
+      <plugin id="org.argeo.slc.ui.gis" fragment=""/>
+      <plugin id="org.argeo.slc.ui.gis.rcp" fragment=""/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
