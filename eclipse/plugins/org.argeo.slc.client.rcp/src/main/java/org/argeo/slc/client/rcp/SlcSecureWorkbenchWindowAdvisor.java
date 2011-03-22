@@ -1,6 +1,6 @@
 package org.argeo.slc.client.rcp;
 
-import org.argeo.security.ui.application.SecureWorkbenchWindowAdvisor;
+import org.argeo.security.ui.rcp.SecureWorkbenchWindowAdvisor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;

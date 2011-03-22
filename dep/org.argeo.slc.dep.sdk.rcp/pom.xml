@@ -19,6 +19,7 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- Perspectives -->
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.ui</artifactId>
@@ -32,16 +33,14 @@
 		<!-- Secure Application -->
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.ui.application</artifactId>
+			<artifactId>org.argeo.security.ui.rcp</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.rcp</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
-
 		<!-- Back-end Dependencies -->
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>

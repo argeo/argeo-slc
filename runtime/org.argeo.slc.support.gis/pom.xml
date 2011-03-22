@@ -31,6 +31,13 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- Commons -->
+		<dependency>
+			<groupId>org.argeo.commons.basic</groupId>
+			<artifactId>org.argeo.basic.nodeps</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
@@ -41,6 +48,12 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
+		</dependency>
+
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.orm</artifactId>
 		</dependency>
 
 		<!-- GIS -->
@@ -99,5 +112,12 @@
 			<artifactId>org.argeo.dep.osgi.jai.imageio</artifactId>
 		</dependency>
 
+		<!-- TEST -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId>
+			<scope>test</scope>
+			<version>${version.slc}</version>
+		</dependency>
 	</dependencies>
 </project>

@@ -1,6 +1,6 @@
 package org.argeo.slc.client.rap;
 
-import org.argeo.security.ui.application.RapSecureWorkbenchWindowAdvisor;
+import org.argeo.security.ui.rap.RapSecureWorkbenchWindowAdvisor;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 
 /**

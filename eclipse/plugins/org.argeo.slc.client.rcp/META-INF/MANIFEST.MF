@@ -8,11 +8,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: org.argeo.slc.client.ui.perspectives,
+Import-Package: org.argeo.security.ui.rcp,
+ org.argeo.slc.client.ui.perspectives,
  org.argeo.slc.core.test.tree,
  org.argeo.slc.execution,
  org.argeo.slc.process,
  org.argeo.slc.runtime,
- org.argeo.security.ui.application,
  org.argeo.slc.services,
  org.argeo.slc.services.impl

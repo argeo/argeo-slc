@@ -159,6 +159,9 @@
       <plugin id="org.argeo.eclipse.ui"/>
       <plugin id="org.argeo.eclipse.ui.jcr"/>
       <plugin id="org.argeo.eclipse.ui.rcp"/>
+      <plugin id="org.argeo.infra.core"/>
+      <plugin id="org.argeo.infra.security.services" fragment="true"/>
+      <plugin id="org.argeo.jcr.ui.explorer"/>
       <plugin id="org.argeo.security.activemq"/>
       <plugin id="org.argeo.security.core"/>
       <plugin id="org.argeo.security.equinox"/>
@@ -181,7 +184,6 @@
       <plugin id="org.argeo.slc.agent.ext.jdbc" fragment="true"/>
       <plugin id="org.argeo.slc.agent.ext.xalan" fragment="true"/>
       <plugin id="org.argeo.slc.client.agent"/>
-      <plugin id="org.argeo.slc.client.commons" fragment=""/>
       <plugin id="org.argeo.slc.client.core"/>
       <plugin id="org.argeo.slc.client.hibernate"/>
       <plugin id="org.argeo.slc.client.oxm"/>

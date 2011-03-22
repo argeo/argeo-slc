@@ -19,35 +19,33 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- Perspectives -->
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.rap</artifactId>
+			<artifactId>org.argeo.slc.client.ui</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.eclipse</groupId>
+			<artifactId>org.argeo.slc.client.ui.dist</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
+		<!-- Secure Application -->
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
 			<artifactId>org.argeo.security.ui.rap</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.argeo.slc.eclipse</groupId>
+			<artifactId>org.argeo.slc.client.rap</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
+		<!-- Back-end Dependencies -->
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.sdk.rcp</artifactId>
+			<artifactId>org.argeo.slc.dep.backend</artifactId>
 			<version>${version.slc}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.argeo.commons.eclipse</groupId>
-					<artifactId>org.argeo.eclipse.dep.rcp</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.argeo.slc.eclipse</groupId>
-					<artifactId>org.argeo.slc.client.rcp</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.argeo.commons.eclipse</groupId>
-					<artifactId>org.argeo.eclipse.ui.rcp</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 	</dependencies>
 </project>

@@ -18,6 +18,7 @@ package org.argeo.slc.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,7 +38,7 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 	private final SlcAgentDescriptorDao slcAgentDescriptorDao;
 	private final SlcAgentFactory agentFactory;
 
-	private ArgeoSecurityService securityService;
+	private Executor securityService;
 
 	private Long pingCycle = 20000l;
 
@@ -65,9 +66,11 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 		// if (pingCycle > 0)
 		// new PingThread().start();
 		if (pingCycle > 0) {
-			Thread authenticatedThread = new Thread(securityService
-					.wrapWithSystemAuthentication(new AgentsPing()),
-					"SLC Agents Ping");
+			Thread authenticatedThread = new Thread("SLC Agents Ping") {
+				public void run() {
+					securityService.execute(new AgentsPing());
+				}
+			};
 			authenticatedThread.start();
 
 		}
@@ -82,7 +85,7 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 		this.pingCycle = pingCycle;
 	}
 
-	public void setSecurityService(ArgeoSecurityService securityService) {
+	public void setSecurityService(Executor securityService) {
 		this.securityService = securityService;
 	}
 

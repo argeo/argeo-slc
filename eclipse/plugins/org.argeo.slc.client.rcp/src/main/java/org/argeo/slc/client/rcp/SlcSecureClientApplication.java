@@ -1,6 +1,6 @@
 package org.argeo.slc.client.rcp;
 
-import org.argeo.security.ui.application.SecureRcp;
+import org.argeo.security.ui.rcp.SecureRcp;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 
 /**
