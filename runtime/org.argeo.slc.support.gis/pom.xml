@@ -23,7 +23,8 @@
 						</Export-Package>
 						<Import-Package>*,
 							org.opengis.feature.simple,
-							org.argeo.slc.structure
+							org.argeo.slc.structure,
+							org.springframework.dao.support
 						</Import-Package>
 					</instructions>
 				</configuration>

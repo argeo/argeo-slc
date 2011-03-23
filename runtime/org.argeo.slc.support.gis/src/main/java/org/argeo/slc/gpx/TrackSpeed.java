@@ -2,6 +2,8 @@ package org.argeo.slc.gpx;
 
 import java.util.Date;
 
+import org.geotools.referencing.GeodeticCalculator;
+
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 
@@ -10,29 +12,41 @@ public class TrackSpeed {
 	private String segmentUuid;
 	private String sensor;
 	private Date utcTimestamp;
-	private Point location;
+	private Point position;
 	private LineString line;
-	private Double length;
+	/** Orthodromic distance */
+	private Double distance;
+	private Double azimuth;
 	private Long duration;
-	// length(line)/(duration in h)
+	// orthodromicDistance(line) in km/(duration in h)
 	private Double speed;
 	// can be null
 	private Double acceleration;
+	// can be null
+	private Double azimuthVariation;
 
 	public TrackSpeed() {
 	}
 
-	public TrackSpeed(TrackPoint ref, LineString line, Long duration) {
+	public TrackSpeed(TrackPoint ref, LineString line, Long duration,
+			GeodeticCalculator geodeticCalculator) {
 		segmentUuid = ref.getSegmentUuid();
 		sensor = ref.getSensor();
 		utcTimestamp = ref.getUtcTimestamp();
-		location = ref.getLocation();
+		position = ref.getLocation();
 		this.line = line;
 		this.duration = duration;
 
-		this.length = Math.abs(line.getLength());
+		Point startPoint = line.getStartPoint();
+		Point endPoint = line.getEndPoint();
+		geodeticCalculator.setStartingGeographicPoint(startPoint.getX(),
+				startPoint.getY());
+		geodeticCalculator.setDestinationGeographicPoint(endPoint.getX(),
+				endPoint.getY());
+		this.distance = geodeticCalculator.getOrthodromicDistance();
+		this.azimuth = geodeticCalculator.getAzimuth();
 		// in km/h
-		this.speed = (this.length * 60 * 60) / this.duration;
+		this.speed = (this.distance * 60 * 60) / this.duration;
 	}
 
 	public Integer getTid() {
@@ -67,12 +81,12 @@ public class TrackSpeed {
 		this.utcTimestamp = ts;
 	}
 
-	public Point getLocation() {
-		return location;
+	public Point getPosition() {
+		return position;
 	}
 
-	public void setLocation(Point location) {
-		this.location = location;
+	public void setPosition(Point location) {
+		this.position = location;
 	}
 
 	public LineString getLine() {
@@ -99,12 +113,12 @@ public class TrackSpeed {
 		this.speed = speed;
 	}
 
-	public Double getLength() {
-		return length;
+	public Double getDistance() {
+		return distance;
 	}
 
-	public void setLength(Double length) {
-		this.length = length;
+	public void setDistance(Double length) {
+		this.distance = length;
 	}
 
 	public Double getAcceleration() {
@@ -113,6 +127,22 @@ public class TrackSpeed {
 
 	public void setAcceleration(Double acceleration) {
 		this.acceleration = acceleration;
+	}
+
+	public Double getAzimuth() {
+		return azimuth;
+	}
+
+	public void setAzimuth(Double azimut) {
+		this.azimuth = azimut;
+	}
+
+	public Double getAzimuthVariation() {
+		return azimuthVariation;
+	}
+
+	public void setAzimuthVariation(Double azimuthVariation) {
+		this.azimuthVariation = azimuthVariation;
 	}
 
 }

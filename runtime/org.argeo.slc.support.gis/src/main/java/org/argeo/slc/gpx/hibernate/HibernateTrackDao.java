@@ -21,6 +21,7 @@ import org.argeo.slc.gpx.TrackSegment;
 import org.argeo.slc.gpx.TrackSpeed;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.CRS;
+import org.geotools.referencing.GeodeticCalculator;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -36,6 +37,12 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.PrecisionModel;
 
+/**
+ * Parses a GPX track file and import the data
+ * 
+ * On PostGIS, a useful index is:
+ * <code>CREATE INDEX track_speeds_line ON track_speeds USING GIST (line)</code>
+ */
 public class HibernateTrackDao extends HibernateDaoSupport implements TrackDao {
 	private final static Log log = LogFactory.getLog(HibernateTrackDao.class);
 	private final static DateFormat ISO8601 = new SimpleDateFormat(
@@ -43,15 +50,19 @@ public class HibernateTrackDao extends HibernateDaoSupport implements TrackDao {
 
 	private Long batchSize = 100l;
 	private Integer targetSrid = 4326;
-	private Float maxSpeed = 250f;
+	private Float maxSpeed = 200f;
 
-	public Object importTrackPoints(String sensor, InputStream in) {
+	private GeodeticCalculator geodeticCalculator;
+
+	public Object importTrackPoints(String source, String sensor, InputStream in) {
 		long begin = System.currentTimeMillis();
 		try {
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			spf.setValidating(false);
 			SAXParser sp = spf.newSAXParser();
 			InputSource input = new InputSource(in);
+			geodeticCalculator = new GeodeticCalculator(CRS.decode("EPSG:"
+					+ targetSrid));
 			TrackGpxHandler handler = new TrackGpxHandler(sensor, targetSrid);
 			sp.parse(input, handler);
 			return null;
@@ -60,8 +71,8 @@ public class HibernateTrackDao extends HibernateDaoSupport implements TrackDao {
 		} finally {
 			long duration = System.currentTimeMillis() - begin;
 			if (log.isDebugEnabled())
-				log.debug("Imported from sensor '" + sensor + "' in "
-						+ (duration) + " ms");
+				log.debug("Imported " + source + " from sensor '" + sensor
+						+ "' in " + (duration) + " ms");
 		}
 	}
 
@@ -80,7 +91,7 @@ public class HibernateTrackDao extends HibernateDaoSupport implements TrackDao {
 			if (i == trackSegment.getTrackPoints().size() - 1)
 				trackSegment.setEndUtc(trackPoint.getUtcTimestamp());
 			else {
-				// SPEED
+				// order 1 coefficients (speed)
 				TrackPoint next = trackSegment.getTrackPoints().get(i + 1);
 
 				Coordinate[] crds = { trackPoint.getLocation().getCoordinate(),
@@ -97,7 +108,7 @@ public class HibernateTrackDao extends HibernateDaoSupport implements TrackDao {
 					continue trackPoints;
 				}
 				TrackSpeed trackSpeed = new TrackSpeed(trackPoint, line,
-						duration);
+						duration, geodeticCalculator);
 				if (trackSpeed.getSpeed() > maxSpeed) {
 					log.warn("Speed " + trackSpeed.getSpeed() + " is above "
 							+ maxSpeed + " between " + trackPoint.getLocation()
@@ -107,15 +118,25 @@ public class HibernateTrackDao extends HibernateDaoSupport implements TrackDao {
 					continue trackPoints;
 				}
 
+				// order 2 coefficients (acceleration, azimuth variation)
 				if (currentTrackSpeed != null) {
-					// in m/s²
-					Double speed1 = trackSpeed.getLength()
+					// compute acceleration (in m/s²)
+					Double speed1 = trackSpeed.getDistance()
 							/ (trackSpeed.getDuration() / 1000);
-					Double speed2 = currentTrackSpeed.getLength()
+					Double speed2 = currentTrackSpeed.getDistance()
 							/ (currentTrackSpeed.getDuration() / 1000);
 					Double acceleration = (speed1 - speed2)
 							/ (currentTrackSpeed.getDuration() / 1000);
 					trackSpeed.setAcceleration(acceleration);
+
+					Double azimuthVariation = convertAzimuth(trackSpeed
+							.getAzimuth())
+							- convertAzimuth(currentTrackSpeed.getAzimuth());
+					if (azimuthVariation > 180)
+						azimuthVariation = -(360 - azimuthVariation);
+					else if (azimuthVariation < -180)
+						azimuthVariation = (360 + azimuthVariation);
+					trackSpeed.setAzimuthVariation(azimuthVariation);
 				}
 				trackSegment.getTrackSpeeds().add(trackSpeed);
 				currentTrackSpeed = trackSpeed;
@@ -126,6 +147,14 @@ public class HibernateTrackDao extends HibernateDaoSupport implements TrackDao {
 				.toArray(new Coordinate[coords.size()]));
 		trackSegment.setSegment(segment);
 
+	}
+
+	/** Normalize from [-180°,180°] to [0°,360°] */
+	private Double convertAzimuth(Double azimuth) {
+		if (azimuth < 0)
+			return 360d + azimuth;
+		else
+			return azimuth;
 	}
 
 	public void setBatchSize(Long batchSize) {

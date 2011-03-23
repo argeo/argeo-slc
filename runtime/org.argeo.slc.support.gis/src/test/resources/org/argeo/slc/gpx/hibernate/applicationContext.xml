@@ -46,6 +46,7 @@ hibernate.jdbc.batch_size=100
 	<bean id="trackDao" class="org.argeo.slc.gpx.hibernate.HibernateTrackDao">
 		<property name="sessionFactory" ref="sessionFactory" />
 		<property name="batchSize" value="100" />
-		<property name="targetSrid" value="3857" />
+<!-- 		<property name="targetSrid" value="3857" /> -->
+		<property name="targetSrid" value="4326" />
 	</bean>
 </beans>
