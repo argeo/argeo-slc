@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Pgsql
 Bundle-SymbolicName: org.argeo.slc.server.jackrabbit.pgsql
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-Vendor: Argeo
 Import-Package: javax.jcr;version="[2.0.0,3.0.0)",
  org.argeo.jackrabbit,

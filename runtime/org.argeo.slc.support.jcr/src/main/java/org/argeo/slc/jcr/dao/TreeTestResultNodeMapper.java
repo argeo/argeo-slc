@@ -35,7 +35,7 @@ import javax.jcr.query.QueryManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.jcr.BeanNodeMapper;
+import org.argeo.jcr.spring.BeanNodeMapper;
 import org.argeo.slc.core.attachment.SimpleAttachment;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;

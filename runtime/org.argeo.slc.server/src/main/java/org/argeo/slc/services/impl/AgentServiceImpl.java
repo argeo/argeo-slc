@@ -22,7 +22,6 @@ import java.util.concurrent.Executor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.security.ArgeoSecurityService;
 import org.argeo.slc.dao.runtime.SlcAgentDescriptorDao;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
@@ -38,7 +37,7 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 	private final SlcAgentDescriptorDao slcAgentDescriptorDao;
 	private final SlcAgentFactory agentFactory;
 
-	private Executor securityService;
+	private Executor systemExecutor;
 
 	private Long pingCycle = 20000l;
 
@@ -68,7 +67,7 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 		if (pingCycle > 0) {
 			Thread authenticatedThread = new Thread("SLC Agents Ping") {
 				public void run() {
-					securityService.execute(new AgentsPing());
+					systemExecutor.execute(new AgentsPing());
 				}
 			};
 			authenticatedThread.start();
@@ -85,8 +84,8 @@ public class AgentServiceImpl implements AgentService, InitializingBean,
 		this.pingCycle = pingCycle;
 	}
 
-	public void setSecurityService(Executor securityService) {
-		this.securityService = securityService;
+	public void setSystemExecutor(Executor securityService) {
+		this.systemExecutor = securityService;
 	}
 
 	protected class AgentsPing implements Runnable {

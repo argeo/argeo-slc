@@ -69,7 +69,7 @@
 		<dependency>
 			<groupId>org.argeo.commons.basic</groupId>
 			<artifactId>org.argeo.basic.dep.log4j</artifactId>
-			<version>0.2.3-SNAPSHOT</version>
+			<version>${version.argeo-commons}</version>
 			<type>pom</type>
 		</dependency>
 

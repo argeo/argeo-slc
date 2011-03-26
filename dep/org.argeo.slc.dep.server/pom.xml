@@ -85,12 +85,6 @@
 
 		<!-- Security -->
 		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.dep.ldap</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>org.springframework.security.taglibs</artifactId>
 		</dependency>
@@ -147,12 +141,6 @@
 		</dependency>
 
 		<!-- Jackrabbit -->
-		<dependency>
-			<groupId>org.argeo.commons.server</groupId>
-			<artifactId>org.argeo.server.dep.jackrabbit.server</artifactId>
-			<type>pom</type>
-			<version>${version.argeo-commons}</version>
-		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons.server</groupId>
 			<artifactId>org.argeo.server.jackrabbit</artifactId>

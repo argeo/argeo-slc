@@ -40,6 +40,6 @@
 	<list id="eventPublishers" interface="org.argeo.slc.msg.event.SlcEventPublisher"
 		cardinality="0..N" />
 
-	<reference id="securityService" interface="org.argeo.security.ArgeoSecurityService" />
+	<reference id="systemExecutor" interface="org.argeo.security.SystemExecutionService" />
 
 </beans:beans>

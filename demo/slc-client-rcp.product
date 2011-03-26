@@ -31,7 +31,6 @@
       <plugin id="com.springsource.com.jcraft.jsch"/>
       <plugin id="com.springsource.com.lowagie.text"/>
       <plugin id="com.springsource.com.mysql.jdbc"/>
-      <plugin id="com.springsource.com.sun.syndication"/>
       <plugin id="com.springsource.com.thoughtworks.xstream"/>
       <plugin id="com.springsource.edu.emory.mathcs.backport"/>
       <plugin id="com.springsource.edu.oswego.cs.dl.util.concurrent"/>
@@ -79,7 +78,7 @@
       <plugin id="com.springsource.org.apache.commons.net"/>
       <plugin id="com.springsource.org.apache.commons.pool"/>
       <plugin id="com.springsource.org.apache.commons.vfs"/>
-      <plugin id="com.springsource.org.apache.derby"/>
+      <plugin id="com.springsource.org.apache.derby" fragment=""/>
       <plugin id="com.springsource.org.apache.directory.server.changepw"/>
       <plugin id="com.springsource.org.apache.directory.server.core" fragment="true"/>
       <plugin id="com.springsource.org.apache.directory.server.core.shared"/>
@@ -111,7 +110,6 @@
       <plugin id="com.springsource.org.castor"/>
       <plugin id="com.springsource.org.codehaus.jackson"/>
       <plugin id="com.springsource.org.codehaus.jackson.mapper"/>
-      <plugin id="com.springsource.org.cyberneko.html"/>
       <plugin id="com.springsource.org.dbunit"/>
       <plugin id="com.springsource.org.dom4j"/>
       <plugin id="com.springsource.org.h2"/>
@@ -135,12 +133,9 @@
       <plugin id="org.argeo.dep.osgi.activemq"/>
       <plugin id="org.argeo.dep.osgi.activemq.optional" fragment="true"/>
       <plugin id="org.argeo.dep.osgi.aether"/>
-      <plugin id="org.argeo.dep.osgi.boilerpipe"/>
-      <plugin id="org.argeo.dep.osgi.bouncycastle.jdk15"/>
       <plugin id="org.argeo.dep.osgi.commons.cli"/>
       <plugin id="org.argeo.dep.osgi.commons.exec"/>
       <plugin id="org.argeo.dep.osgi.directory.shared.asn.codec" fragment="true"/>
-      <plugin id="org.argeo.dep.osgi.drewnoakes.metadata_extractor"/>
       <plugin id="org.argeo.dep.osgi.geoapi"/>
       <plugin id="org.argeo.dep.osgi.geotools"/>
       <plugin id="org.argeo.dep.osgi.jackrabbit"/>
@@ -150,35 +145,33 @@
       <plugin id="org.argeo.dep.osgi.jsr275"/>
       <plugin id="org.argeo.dep.osgi.jts"/>
       <plugin id="org.argeo.dep.osgi.mina.filter.ssl" fragment="true"/>
-      <plugin id="org.argeo.dep.osgi.netcdf"/>
-      <plugin id="org.argeo.dep.osgi.pdfbox"/>
-      <plugin id="org.argeo.dep.osgi.poi"/>
       <plugin id="org.argeo.dep.osgi.springframework.ldap"/>
-      <plugin id="org.argeo.dep.osgi.tagsoup"/>
       <plugin id="org.argeo.dep.osgi.tika"/>
       <plugin id="org.argeo.eclipse.ui"/>
       <plugin id="org.argeo.eclipse.ui.jcr"/>
       <plugin id="org.argeo.eclipse.ui.rcp"/>
-      <plugin id="org.argeo.infra.core"/>
-      <plugin id="org.argeo.infra.security.services" fragment="true"/>
+      <plugin id="org.argeo.ext.jackrabbit.sybase" fragment="true"/>
       <plugin id="org.argeo.jcr.ui.explorer"/>
+      <plugin id="org.argeo.node.repo.jackrabbit"/>
+      <plugin id="org.argeo.node.repofactory.jackrabbit"/>
       <plugin id="org.argeo.security.activemq"/>
       <plugin id="org.argeo.security.core"/>
+      <plugin id="org.argeo.security.dao.jackrabbit"/>
+      <plugin id="org.argeo.security.dao.ldap"/>
       <plugin id="org.argeo.security.equinox"/>
       <plugin id="org.argeo.security.jackrabbit" fragment="true"/>
       <plugin id="org.argeo.security.ldap"/>
-      <plugin id="org.argeo.security.manager.ldap"/>
       <plugin id="org.argeo.security.services"/>
       <plugin id="org.argeo.security.ui"/>
-      <plugin id="org.argeo.security.ui.application"/>
+      <plugin id="org.argeo.security.ui.rcp"/>
       <plugin id="org.argeo.server.ads"/>
       <plugin id="org.argeo.server.ads.server"/>
       <plugin id="org.argeo.server.core"/>
-      <plugin id="org.argeo.server.ext.jackrabbit" fragment="true"/>
+      <plugin id="org.argeo.server.jackrabbit"/>
       <plugin id="org.argeo.server.jcr"/>
+      <plugin id="org.argeo.server.jcr.mvc"/>
       <plugin id="org.argeo.server.jdbc" fragment="true"/>
       <plugin id="org.argeo.server.json"/>
-      <plugin id="org.argeo.server.tika.jackrabbit" fragment="true"/>
       <plugin id="org.argeo.slc.agent"/>
       <plugin id="org.argeo.slc.agent.ext.bsf" fragment="true"/>
       <plugin id="org.argeo.slc.agent.ext.jdbc" fragment="true"/>
@@ -231,6 +224,7 @@
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
@@ -257,10 +251,11 @@
    </plugins>
 
    <configurations>
+      <plugin id="org.argeo.node.repo.jackrabbit" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.node.repofactory.jackrabbit" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.security.dao.jackrabbit" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.security.equinox" autoStart="true" startLevel="0" />
-      <plugin id="org.argeo.security.manager.ldap" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.security.services" autoStart="true" startLevel="0" />
-      <plugin id="org.argeo.server.ads.server" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.agent" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.agent" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.core" autoStart="true" startLevel="0" />

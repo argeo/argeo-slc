@@ -39,7 +39,7 @@
 		<constructor-arg ref="slcAgentDescriptorDao" />
 		<constructor-arg ref="agentFactory" />
 		<property name="pingCycle" value="${slc.server.services.pingCycle}" />
-		<property name="securityService" ref="securityService" />
+		<property name="systemExecutor" ref="systemExecutor" />
 	</bean>
 
 	<bean id="slcExecutionService" class="org.argeo.slc.services.impl.SlcExecutionServiceImpl">

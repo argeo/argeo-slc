@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ui
 Bundle-SymbolicName: org.argeo.slc.gis.position.backend
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.13.1.SNAPSHOT
 Import-Package: org.apache.commons.dbcp,
  org.argeo.slc.core.deploy,
  org.argeo.slc.geotools,
