@@ -4,9 +4,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<bean id="org.argeo.slc.ui.gis.loadLayersFromBackend"
-		class="org.argeo.slc.ui.gis.commands.LoadLayersFromBackend"
+	<bean id="importGpx" class="org.argeo.slc.ui.gis.commands.ImportGpx"
 		scope="prototype">
-		<property name="backend" ref="backend" />
+		<property name="trackDao" ref="trackDao" />
 	</bean>
 </beans>

@@ -9,4 +9,5 @@
 	<service ref="shapeFileDataStore" interface="org.geotools.data.DataStore" />
 	<service ref="postGisDataStore" interface="org.geotools.data.DataStore" />
 	<service ref="backend" interface="org.argeo.slc.geotools.Backend" />
+	<service ref="trackDao" interface="org.argeo.slc.gpx.TrackDao" />
 </beans:beans>

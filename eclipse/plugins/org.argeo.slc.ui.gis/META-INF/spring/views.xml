@@ -6,7 +6,13 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd
 	">
 
-	<bean id="org.argeo.slc.ui.gis.layersView" class="org.argeo.slc.ui.gis.views.LayersView"
+
+	<bean id="gpsBrowserView" class="org.argeo.slc.ui.gis.views.GpsView"
+		scope="prototype">
+		<property name="session" ref="session" />
+	</bean>
+
+	<bean id="layersView" class="org.argeo.slc.ui.gis.views.LayersView"
 		scope="prototype">
 		<property name="dataStores" ref="dataStores" />
 	</bean>

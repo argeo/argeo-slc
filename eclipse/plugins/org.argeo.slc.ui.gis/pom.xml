@@ -25,6 +25,13 @@
 			<version>${version.slc}</version>
 		</dependency>
 
+		<!-- JCR explorer -->
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.jcr.ui.explorer</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.argeo.commons.eclipse</groupId>

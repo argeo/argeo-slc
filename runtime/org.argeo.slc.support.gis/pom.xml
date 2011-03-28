@@ -21,10 +21,13 @@
 						<Export-Package>
 							org.argeo.slc.*
 						</Export-Package>
-						<Import-Package>*,
+						<Import-Package>
 							org.opengis.feature.simple,
 							org.argeo.slc.structure,
-							org.springframework.dao.support
+							org.springframework.dao.support,
+							org.hibernate.proxy;resolution:=optional,
+							javassist.util.proxy;resolution:=optional,
+							*
 						</Import-Package>
 					</instructions>
 				</configuration>
@@ -97,10 +100,6 @@
 		<dependency>
 			<groupId>org.argeo.dep.osgi</groupId>
 			<artifactId>org.argeo.dep.osgi.java3d</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.dep.osgi</groupId>
-			<artifactId>org.argeo.dep.osgi.geoapi</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

@@ -9,8 +9,8 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 public class SlcSecureClientApplication extends SecureRcp {
 
 	@Override
-	protected WorkbenchAdvisor createWorkbenchAdvisor() {
-		return new SlcSecureWorkbenchAdvisor();
+	protected WorkbenchAdvisor createWorkbenchAdvisor(String username) {
+		return new SlcSecureWorkbenchAdvisor(username);
 	}
 
 }

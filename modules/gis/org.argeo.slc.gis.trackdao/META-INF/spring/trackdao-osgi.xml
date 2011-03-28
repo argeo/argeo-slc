@@ -6,17 +6,5 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<!-- <reference id="positionProvider" interface="org.argeo.slc.jts.PositionProvider" 
-		/> -->
-
-	<reference id="nodeRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=node)" />
-	<reference id="trackDao" interface="org.argeo.slc.gpx.TrackDao"
-		cardinality="0..1" />
-
-	<!-- <reference id="backend" interface="org.argeo.slc.geotools.Backend" 
-		cardinality="0..1"/> -->
-	<list id="dataStores" interface="org.geotools.data.DataStore"
-		cardinality="0..N" />
-
+	<service ref="trackDao" interface="org.argeo.slc.gpx.TrackDao" />
 </beans:beans>

@@ -33,7 +33,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Slc Execution"
+            name="SLC Execution"
             class="org.argeo.slc.client.ui.perspectives.SlcExecution"
             id="org.argeo.slc.client.ui.perspectives.slcExecution"
             icon="icons/slc_execution_perspective.gif">

@@ -22,6 +22,7 @@ import org.argeo.slc.gpx.TrackSpeed;
 import org.geotools.geometry.DirectPosition2D;
 import org.geotools.referencing.CRS;
 import org.geotools.referencing.GeodeticCalculator;
+import org.hibernatespatial.HBSpatialExtension;
 import org.opengis.geometry.DirectPosition;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -44,6 +45,11 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * <code>CREATE INDEX track_speeds_line ON track_speeds USING GIST (line)</code>
  */
 public class HibernateTrackDao extends HibernateDaoSupport implements TrackDao {
+	static {
+		// TODO: put in in init method and make it configurable
+		HBSpatialExtension.getConfiguration();
+	}
+
 	private final static Log log = LogFactory.getLog(HibernateTrackDao.class);
 	private final static DateFormat ISO8601 = new SimpleDateFormat(
 			"yyyy-MM-dd'T'HH:mm:ss");

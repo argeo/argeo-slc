@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-console</programArgs>
-      <vmArgs>-Dlog4j.configuration=file:${system_property:user.home}/dev/src/slc/demo/log4j.properties -Dorg.argeo.security.ui.initialPerspective=org.argeo.slc.client.ui.perspectives.slcExecution</vmArgs>
+      <vmArgs>-Dlog4j.configuration=file:${system_property:user.home}/dev/src/slc/demo/log4j.properties -Dorg.argeo.security.ui.initialPerspective=org.argeo.slc.client.gis.gpsPerspective</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
@@ -31,7 +31,6 @@
       <plugin id="com.springsource.com.jcraft.jsch"/>
       <plugin id="com.springsource.com.lowagie.text"/>
       <plugin id="com.springsource.com.mysql.jdbc"/>
-      <plugin id="com.springsource.com.sun.syndication"/>
       <plugin id="com.springsource.com.thoughtworks.xstream"/>
       <plugin id="com.springsource.edu.emory.mathcs.backport"/>
       <plugin id="com.springsource.edu.oswego.cs.dl.util.concurrent"/>
@@ -67,7 +66,6 @@
       <plugin id="com.springsource.org.antlr"/>
       <plugin id="com.springsource.org.aopalliance"/>
       <plugin id="com.springsource.org.apache.bsf"/>
-      <plugin id="com.springsource.org.apache.catalina"/>
       <plugin id="com.springsource.org.apache.commons.beanutils"/>
       <plugin id="com.springsource.org.apache.commons.codec"/>
       <plugin id="com.springsource.org.apache.commons.collections"/>
@@ -80,8 +78,6 @@
       <plugin id="com.springsource.org.apache.commons.net"/>
       <plugin id="com.springsource.org.apache.commons.pool"/>
       <plugin id="com.springsource.org.apache.commons.vfs"/>
-      <plugin id="com.springsource.org.apache.coyote" fragment="true"/>
-      <plugin id="com.springsource.org.apache.derby"/>
       <plugin id="com.springsource.org.apache.directory.server.changepw"/>
       <plugin id="com.springsource.org.apache.directory.server.core" fragment="true"/>
       <plugin id="com.springsource.org.apache.directory.server.core.shared"/>
@@ -93,13 +89,8 @@
       <plugin id="com.springsource.org.apache.directory.server.protocol.shared"/>
       <plugin id="com.springsource.org.apache.directory.shared.asn1"/>
       <plugin id="com.springsource.org.apache.directory.shared.ldap"/>
-      <plugin id="com.springsource.org.apache.el"/>
-      <plugin id="com.springsource.org.apache.jasper" fragment="true"/>
-      <plugin id="com.springsource.org.apache.jasper.org.eclipse.jdt"/>
-      <plugin id="com.springsource.org.apache.juli.extras"/>
       <plugin id="com.springsource.org.apache.log4j"/>
       <plugin id="com.springsource.org.apache.lucene"/>
-      <plugin id="com.springsource.org.apache.lucene.search" fragment="true"/>
       <plugin id="com.springsource.org.apache.mina"/>
       <plugin id="com.springsource.org.apache.oro"/>
       <plugin id="com.springsource.org.apache.regexp"/>
@@ -118,7 +109,6 @@
       <plugin id="com.springsource.org.castor"/>
       <plugin id="com.springsource.org.codehaus.jackson"/>
       <plugin id="com.springsource.org.codehaus.jackson.mapper"/>
-      <plugin id="com.springsource.org.cyberneko.html"/>
       <plugin id="com.springsource.org.dbunit"/>
       <plugin id="com.springsource.org.dom4j"/>
       <plugin id="com.springsource.org.h2"/>
@@ -142,15 +132,11 @@
       <plugin id="org.argeo.dep.osgi.activemq"/>
       <plugin id="org.argeo.dep.osgi.activemq.optional" fragment="true"/>
       <plugin id="org.argeo.dep.osgi.aether"/>
-      <plugin id="org.argeo.dep.osgi.boilerpipe"/>
-      <plugin id="org.argeo.dep.osgi.bouncycastle.jdk15"/>
-      <plugin id="org.argeo.dep.osgi.catalina.start"/>
       <plugin id="org.argeo.dep.osgi.commons.cli"/>
       <plugin id="org.argeo.dep.osgi.commons.exec"/>
       <plugin id="org.argeo.dep.osgi.directory.shared.asn.codec" fragment="true"/>
-      <plugin id="org.argeo.dep.osgi.drewnoakes.metadata_extractor"/>
-      <plugin id="org.argeo.dep.osgi.geoapi"/>
       <plugin id="org.argeo.dep.osgi.geotools"/>
+      <plugin id="org.argeo.dep.osgi.hibernatespatial"/>
       <plugin id="org.argeo.dep.osgi.jackrabbit"/>
       <plugin id="org.argeo.dep.osgi.jai.imageio"/>
       <plugin id="org.argeo.dep.osgi.java3d"/>
@@ -158,45 +144,35 @@
       <plugin id="org.argeo.dep.osgi.jsr275"/>
       <plugin id="org.argeo.dep.osgi.jts"/>
       <plugin id="org.argeo.dep.osgi.mina.filter.ssl" fragment="true"/>
-      <plugin id="org.argeo.dep.osgi.netcdf"/>
-      <plugin id="org.argeo.dep.osgi.pdfbox"/>
-      <plugin id="org.argeo.dep.osgi.poi"/>
+      <plugin id="org.argeo.dep.osgi.postgis.jdbc"/>
       <plugin id="org.argeo.dep.osgi.springframework.ldap"/>
-      <plugin id="org.argeo.dep.osgi.tagsoup"/>
       <plugin id="org.argeo.dep.osgi.tika"/>
       <plugin id="org.argeo.eclipse.ui"/>
       <plugin id="org.argeo.eclipse.ui.jcr"/>
-      <plugin id="org.argeo.eclipse.ui.rap"/>
+      <plugin id="org.argeo.eclipse.ui.rcp"/>
+      <plugin id="org.argeo.ext.jackrabbit.sybase" fragment="true"/>
       <plugin id="org.argeo.jcr.ui.explorer"/>
       <plugin id="org.argeo.node.repo.jackrabbit"/>
+      <plugin id="org.argeo.node.repofactory.jackrabbit"/>
       <plugin id="org.argeo.security.activemq"/>
       <plugin id="org.argeo.security.core"/>
+      <plugin id="org.argeo.security.dao.jackrabbit"/>
       <plugin id="org.argeo.security.equinox"/>
       <plugin id="org.argeo.security.jackrabbit" fragment="true"/>
       <plugin id="org.argeo.security.ldap"/>
-      <plugin id="org.argeo.security.manager.ldap"/>
-      <plugin id="org.argeo.security.services"/>
       <plugin id="org.argeo.security.ui"/>
-      <plugin id="org.argeo.security.ui.application"/>
-      <plugin id="org.argeo.server.ads"/>
-      <plugin id="org.argeo.server.ads.server"/>
-      <plugin id="org.argeo.server.catalina" fragment="true"/>
+      <plugin id="org.argeo.security.ui.rcp"/>
       <plugin id="org.argeo.server.core"/>
-      <plugin id="org.argeo.server.ext.jackrabbit" fragment="true"/>
       <plugin id="org.argeo.server.jackrabbit"/>
       <plugin id="org.argeo.server.jcr"/>
       <plugin id="org.argeo.server.jcr.mvc"/>
       <plugin id="org.argeo.server.jdbc" fragment="true"/>
       <plugin id="org.argeo.server.json"/>
-      <plugin id="org.argeo.server.tika.jackrabbit" fragment="true"/>
-      <plugin id="org.argeo.server.tomcat" fragment="true"/>
-      <plugin id="org.argeo.server.webextender" fragment="true"/>
       <plugin id="org.argeo.slc.agent"/>
       <plugin id="org.argeo.slc.agent.ext.bsf" fragment="true"/>
       <plugin id="org.argeo.slc.agent.ext.jdbc" fragment="true"/>
       <plugin id="org.argeo.slc.agent.ext.xalan" fragment="true"/>
       <plugin id="org.argeo.slc.client.agent"/>
-      <plugin id="org.argeo.slc.client.commons"/>
       <plugin id="org.argeo.slc.client.core"/>
       <plugin id="org.argeo.slc.client.hibernate"/>
       <plugin id="org.argeo.slc.client.oxm"/>
@@ -205,21 +181,17 @@
       <plugin id="org.argeo.slc.client.ui.dist"/>
       <plugin id="org.argeo.slc.core"/>
       <plugin id="org.argeo.slc.demo.agent" fragment="true"/>
-      <plugin id="org.argeo.slc.demo.ant" fragment=""/>
-      <plugin id="org.argeo.slc.demo.basic" fragment=""/>
+      <plugin id="org.argeo.slc.demo.ant"/>
+      <plugin id="org.argeo.slc.demo.basic"/>
       <plugin id="org.argeo.slc.demo.log4j" fragment="true"/>
       <plugin id="org.argeo.slc.detached"/>
       <plugin id="org.argeo.slc.ext.activemq" fragment="true"/>
       <plugin id="org.argeo.slc.gis.ext.dbcp" fragment="true"/>
-      <plugin id="org.argeo.slc.gis.position.backend"/>
-      <plugin id="org.argeo.slc.gis.position.gpsbabel"/>
-      <plugin id="org.argeo.slc.repo"/>
+      <plugin id="org.argeo.slc.gis.trackdao"/>
       <plugin id="org.argeo.slc.server"/>
       <plugin id="org.argeo.slc.server.castor"/>
       <plugin id="org.argeo.slc.server.h2"/>
       <plugin id="org.argeo.slc.server.hibernate"/>
-      <plugin id="org.argeo.slc.server.jackrabbit.pgsql"/>
-      <plugin id="org.argeo.slc.server.repo"/>
       <plugin id="org.argeo.slc.server.services"/>
       <plugin id="org.argeo.slc.specs"/>
       <plugin id="org.argeo.slc.support.activemq"/>
@@ -231,8 +203,7 @@
       <plugin id="org.argeo.slc.support.maven"/>
       <plugin id="org.argeo.slc.support.osgi"/>
       <plugin id="org.argeo.slc.support.simple"/>
-      <plugin id="org.argeo.slc.ui.gis" fragment=""/>
-      <plugin id="org.argeo.slc.ui.gis.rcp" fragment=""/>
+      <plugin id="org.argeo.slc.ui.gis"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.databinding"/>
@@ -251,6 +222,7 @@
       <plugin id="org.eclipse.jface.databinding"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.eclipse.swt"/>
+      <plugin id="org.eclipse.swt.gtk.linux.x86" fragment="true"/>
       <plugin id="org.eclipse.swt.gtk.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
@@ -267,8 +239,6 @@
       <plugin id="org.springframework.osgi.core"/>
       <plugin id="org.springframework.osgi.extender"/>
       <plugin id="org.springframework.osgi.io"/>
-      <plugin id="org.springframework.osgi.web"/>
-      <plugin id="org.springframework.osgi.web.extender"/>
       <plugin id="org.springframework.oxm"/>
       <plugin id="org.springframework.security.acls" fragment="true"/>
       <plugin id="org.springframework.security.core"/>
@@ -279,15 +249,12 @@
    </plugins>
 
    <configurations>
-      <plugin id="org.argeo.dep.osgi.catalina.start" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.node.repo.jackrabbit" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.node.repofactory.jackrabbit" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.security.dao.jackrabbit" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.security.equinox" autoStart="true" startLevel="0" />
-      <plugin id="org.argeo.security.manager.ldap" autoStart="true" startLevel="0" />
-      <plugin id="org.argeo.security.services" autoStart="true" startLevel="0" />
-      <plugin id="org.argeo.server.ads.server" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.agent" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.agent" autoStart="true" startLevel="0" />
-      <plugin id="org.argeo.slc.client.commons" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.core" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.hibernate" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.client.oxm" autoStart="true" startLevel="0" />
@@ -295,15 +262,12 @@
       <plugin id="org.argeo.slc.client.ui" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.demo.ant" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.demo.basic" autoStart="true" startLevel="0" />
-      <plugin id="org.argeo.slc.gis.position.backend" autoStart="true" startLevel="0" />
-      <plugin id="org.argeo.slc.gis.position.gpsbabel" autoStart="true" startLevel="0" />
+      <plugin id="org.argeo.slc.gis.trackdao" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.server.castor" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.server.h2" autoStart="true" startLevel="0" />
       <plugin id="org.argeo.slc.server.hibernate" autoStart="true" startLevel="0" />
-      <plugin id="org.argeo.slc.server.jackrabbit.pgsql" autoStart="false" startLevel="0" />
       <plugin id="org.argeo.slc.server.services" autoStart="true" startLevel="0" />
       <plugin id="org.springframework.osgi.extender" autoStart="true" startLevel="0" />
-      <plugin id="org.springframework.osgi.web.extender" autoStart="true" startLevel="0" />
    </configurations>
 
 </product>

@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Distribution"
+            name="SLC Distribution"
             class="org.argeo.slc.client.ui.dist.DistributionPerspective"
             id="org.argeo.slc.client.ui.dist.distributionPerspective"
             icon="icons/distribution_perspective.gif">

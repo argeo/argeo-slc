@@ -10,50 +10,64 @@
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
             id="org.argeo.slc.ui.gis.layersView">
       </view>
+      <view
+            name="GPS"
+            icon="icons/gis.gif"
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.ui.gis.gpsBrowserView">
+      </view>
    </extension>
    	<extension
          point="org.eclipse.ui.commands">
 		<command
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            id="org.argeo.slc.ui.gis.loadLayersFromBackend"
-            name="loadLayersFromBackend ">
+            id="org.argeo.slc.ui.gis.importGpx"
+            name="ImportGPX ">
     	</command>
     </extension>
 	<extension
          point="org.eclipse.ui.menus">
         <!-- Queries --> 
-		<menuContribution
-                allPopups="false"
-                locationURI="toolbar:org.argeo.slc.ui.gis.layersView">
+  <menuContribution
+        locationURI="popup:org.argeo.slc.ui.gis.gpsBrowserView">
+     <command
+           commandId="org.argeo.jcr.ui.explorer.refresh"
+           icon="icons/refresh.png"
+           style="push">
+     </command>
+     <command
+           commandId="org.argeo.jcr.ui.explorer.addFileFolder"
+           icon="icons/add.gif"
+           style="push">
+     </command>
+     <command
+           commandId="org.argeo.jcr.ui.explorer.deleteNode"
+           icon="icons/remove.gif"
+           style="push">
+     </command>
+     <command
+           commandId="org.argeo.jcr.ui.explorer.importFileSystem"
+           icon="icons/import_fs.png"
+           style="push"
+           tooltip="Import files from the files sytem to the repository">
+     </command>
              <command
-                  commandId="org.argeo.slc.ui.gis.loadLayersFromBackend"
-                  disabledIcon="icons/sample.gif"
-                  icon="icons/sample.gif"
-                  label="Load Layers"
+                  commandId="org.argeo.slc.ui.gis.importGpx"
+                  disabledIcon="icons/gis_add_data.gif"
+                  icon="icons/gis_add_data.gif"
+                  label="Import GPX"
                   style="push"
-                  tooltip="Load layers from backend">
+                  tooltip="Import GPX">
             </command>
-        </menuContribution>
+  </menuContribution>
 	</extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-      <perspectiveExtension
-            targetID="org.argeo.slc.client.gis.perspective">
-         <view
-               ratio="0.5"
-               relative="org.eclipse.ui.editorss"
-               relationship="right"
-               id="org.argeo.slc.ui.gis.mapView">
-         </view>
-      </perspectiveExtension>
-   </extension>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            class="org.argeo.slc.ui.gis.GisPerspectiveFactory"
+            class="org.argeo.slc.ui.gis.GpsPerspective"
             icon="icons/gis.gif"
-            id="org.argeo.slc.client.gis.perspective"
-            name="GIS">
+            id="org.argeo.slc.client.gis.gpsPerspective"
+            name="SLC GPS">
       </perspective>
    </extension>
 

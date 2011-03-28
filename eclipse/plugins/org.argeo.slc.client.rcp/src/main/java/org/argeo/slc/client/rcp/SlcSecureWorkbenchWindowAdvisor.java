@@ -27,8 +27,8 @@ public class SlcSecureWorkbenchWindowAdvisor extends
 
 	private TrayItem trayItem;
 
-	public SlcSecureWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
-		super(configurer);
+	public SlcSecureWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer, String username) {
+		super(configurer, username);
 	}
 
 //	public ActionBarAdvisor createActionBarAdvisor(
