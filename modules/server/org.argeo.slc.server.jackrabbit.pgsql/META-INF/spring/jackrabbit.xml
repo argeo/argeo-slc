@@ -17,14 +17,17 @@
 		<property name="variables" value="osgibundle:/jackrabbit.properties" />
 		<property name="namespaces">
 			<map>
+				<entry key="argeo" value="http://www.argeo.org/ns/argeo" />
 				<entry key="slc" value="http://www.argeo.org/slc" />
 			</map>
 		</property>
 		<property name="cndFiles">
 			<list>
+				<value>classpath:/org/argeo/jcr/argeo.cnd</value>
 				<value>classpath:/org/argeo/slc/repo/repo.cnd</value>
 			</list>
 		</property>
+		<property name="systemExecutor" ref="systemExecutionService" />
 	</bean>
 	
 </beans>

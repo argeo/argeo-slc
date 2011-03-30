@@ -48,6 +48,11 @@
 			<artifactId>org.argeo.basic.nodeps</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.gis</groupId>
+			<artifactId>org.argeo.gis.geotools</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
 
 		<!-- SLC -->
 		<dependency>

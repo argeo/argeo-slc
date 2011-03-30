@@ -33,8 +33,14 @@
 		<!-- Secure Application -->
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.ui.rcp</artifactId>
+			<artifactId>org.argeo.security.dep.node.rcp</artifactId>
 			<version>${version.argeo-commons}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.argeo.commons.security</groupId>
+					<artifactId>org.argeo.security.ui.admin</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
