@@ -12,9 +12,7 @@
 	<!-- REFERENCES -->
 	<reference id="systemExecutionService" interface="org.argeo.security.SystemExecutionService" />
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=${argeo.node.repo.alias})"
-		cardinality="0..1">
-	</reference>
+		filter="(argeo.jcr.repository.alias=${argeo.node.repo.alias})" />
 
 	<!-- SERVICES -->
 	<service ref="jcrRepository" interface="javax.jcr.Repository">

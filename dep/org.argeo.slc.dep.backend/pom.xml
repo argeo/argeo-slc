@@ -29,28 +29,60 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.agent</artifactId>
-			<version>${version.slc}</version>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.dep.node</artifactId>
+			<version>${version.argeo-commons}</version>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.server</artifactId>
-			<version>${version.slc}</version>
+			<artifactId>org.argeo.slc.dep.agent</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.detached</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+		<!-- Provided -->
+		<dependency>
+			<groupId>org.apache.xmlcommons</groupId>
+			<artifactId>com.springsource.org.apache.xmlcommons</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.gis</artifactId>
-			<version>${version.slc}</version>
+			<groupId>javax.xml.stream</groupId>
+			<artifactId>com.springsource.javax.xml.stream</artifactId>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc.dep</groupId> -->
+		<!-- <artifactId>org.argeo.slc.dep.gis</artifactId> -->
+		<!-- <version>${version.slc}</version> -->
+		<!-- </dependency> -->
+
+		<!-- SLC -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.server</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.provided</artifactId>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.hibernate</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.equinox</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.jcr</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.repo</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
 
@@ -58,15 +90,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-
-		<!-- TO BE DELETED <dependency> <groupId>org.argeo.slc.dep</groupId> <artifactId>org.argeo.slc.dep.eclipse</artifactId> 
-			<version>${version.slc}</version> </dependency> -->
-		<dependency>
-			<groupId>org.argeo.slc.server</groupId>
-			<artifactId>org.argeo.slc.ria</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Modules (see profiles below) -->
@@ -75,20 +99,20 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 			<type>tar.gz</type>
 			<classifier>base</classifier>
 		</dependency>
 
 		<!-- Felix -->
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.osgi.service.obr</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.felix</groupId>
-			<artifactId>org.apache.felix.bundlerepository</artifactId>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.felix</groupId> -->
+		<!-- <artifactId>org.osgi.service.obr</artifactId> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.felix</groupId> -->
+		<!-- <artifactId>org.apache.felix.bundlerepository</artifactId> -->
+		<!-- </dependency> -->
 
 	</dependencies>
 </project>

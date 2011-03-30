@@ -50,8 +50,18 @@
 		<!-- Back-end Dependencies -->
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.backend</artifactId>
+			<artifactId>org.argeo.slc.dep.server</artifactId>
 			<version>${version.slc}</version>
+		</dependency>
+
+		<!-- TEST and target platform generation -->
+		<!-- Apache Directory -->
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.dep.ads</artifactId>
+			<type>pom</type>
+			<version>${version.argeo-commons}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 </project>

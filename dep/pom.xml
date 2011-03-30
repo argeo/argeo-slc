@@ -15,7 +15,6 @@
 		<module>org.argeo.slc.dep.server</module>
 		<module>org.argeo.slc.dep.detached</module>
 		<module>org.argeo.slc.dep.gis</module>
-		<module>org.argeo.slc.dep.provided</module>
 		<module>org.argeo.slc.dep.backend</module>
 		<module>org.argeo.slc.dep.sdk.rcp</module>
 		<module>org.argeo.slc.dep.sdk.rap</module>

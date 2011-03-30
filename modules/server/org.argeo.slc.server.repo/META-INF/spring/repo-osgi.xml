@@ -8,7 +8,8 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
 
-	<reference id="jcrRepository" interface="javax.jcr.Repository" />
+	<reference id="jcrRepository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=slc)" />
 
 	<!-- Maven -->
 	<reference id="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem"

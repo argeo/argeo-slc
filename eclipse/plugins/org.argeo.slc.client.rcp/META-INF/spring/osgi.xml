@@ -6,17 +6,13 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<beans:description> Implements All RCP basic classes that are not SLC
-		dependent.
-	</beans:description>
+	<beans:description>Starts required bundles</beans:description>
 
 	<!-- BUNDLES TO START -->
 	<!-- Node repository -->
 	<bundle id="node.repo.jackrabbit" symbolic-name="org.argeo.node.repo.jackrabbit"
 		action="start" />
 	<bundle id="node.repofactory.jackrabbit" symbolic-name="org.argeo.node.repofactory.jackrabbit"
-		action="start" />
-	<bundle id="slc.node.jackrabbit" symbolic-name="org.argeo.slc.node.jackrabbit"
 		action="start" />
 	<bundle id="security.dao.jackrabbit" symbolic-name="org.argeo.security.dao.jackrabbit"
 		action="start" />
@@ -34,6 +30,8 @@
 		action="start" />
 
 	<!-- UI Components -->
+	<bundle id="slc.node.jackrabbit" symbolic-name="org.argeo.slc.node.jackrabbit"
+		action="start" />
 	<bundle id="slc.client.agent" symbolic-name="org.argeo.slc.client.agent"
 		action="start" />
 	<bundle id="slc.client.hibernate" symbolic-name="org.argeo.slc.client.hibernate"

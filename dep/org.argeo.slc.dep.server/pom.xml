@@ -15,40 +15,14 @@
 		<!-- Other deps -->
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.agent</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.detached</artifactId>
-			<version>${version.slc}</version>
+			<artifactId>org.argeo.slc.dep.backend</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- SLC -->
 		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.server</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.hibernate</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.equinox</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.jcr</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>${version.slc}</version>
+			<groupId>org.argeo.slc.server</groupId>
+			<artifactId>org.argeo.slc.ria</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Commons -->
@@ -57,30 +31,6 @@
 			<artifactId>org.argeo.security.dep.node</artifactId>
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>
-		</dependency>
-		<!-- TODO: select only what is really necessary -->
-		<dependency>
-			<groupId>org.argeo.commons.server</groupId>
-			<artifactId>org.argeo.server.modules</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-			<exclusions>
-				<exclusion>
-					<groupId>org.argeo.commons.server</groupId>
-					<artifactId>org.argeo.server.osgi.webapp</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.modules</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.ldap</artifactId>
-			<version>${version.argeo-commons}</version>
 		</dependency>
 
 		<!-- Security -->
@@ -127,23 +77,16 @@
 			<type>pom</type>
 		</dependency>
 
-		<!-- Apache Directory -->
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.dep.ads</artifactId>
-			<type>pom</type>
-			<version>${version.argeo-commons}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons.server</groupId>
-			<artifactId>org.argeo.server.ads</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
 
 		<!-- Jackrabbit -->
 		<dependency>
 			<groupId>org.argeo.commons.server</groupId>
 			<artifactId>org.argeo.server.jackrabbit</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.json</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
