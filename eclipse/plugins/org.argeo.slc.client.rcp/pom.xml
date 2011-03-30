@@ -51,11 +51,6 @@
 			<artifactId>org.argeo.slc.client.oxm</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.rcp</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
