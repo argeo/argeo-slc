@@ -4,10 +4,18 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<!-- Result list view commands -->
 	<bean id="org.argeo.slc.client.ui.refreshResultList"
 		class="org.argeo.slc.client.ui.commands.ResultListViewRefreshHandler"
 		scope="prototype">
 	</bean>
+
+	<bean id="org.argeo.slc.client.ui.removeSelectedResultFromResultList"
+		class="org.argeo.slc.client.ui.commands.RemoveSelectedResultFromResultList"
+		scope="prototype">
+	</bean>
+
+
 	<bean id="org.argeo.slc.client.ui.refreshExecutionModulesView"
 		class="org.argeo.slc.client.ui.commands.ExecutionModulesViewRefreshHandler"
 		scope="prototype">
@@ -37,6 +45,6 @@
 		scope="prototype">
 	</bean>
 	<bean id="org.argeo.slc.client.ui.manageBundles" class="org.argeo.slc.client.ui.commands.ManageBundlesHandler"
-	scope="prototype">
+		scope="prototype">
 	</bean>
 </beans>

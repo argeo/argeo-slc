@@ -1,6 +1,10 @@
 package org.argeo.slc.client.ui.commands;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.argeo.slc.client.ui.views.ResultDetailView;
+import org.argeo.slc.client.ui.views.ResultListView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -18,20 +22,21 @@ public class ResultDetailsDisplayHandler extends AbstractHandler {
 	// private static final Log log = LogFactory
 	// .getLog(ResultDetailsDisplayHandler.class);
 
+	public final static String ID = "org.argeo.slc.client.ui.displayResultDetails";
+
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+		// We rather directly retrieve the corresponding view than use command
+		// parameters.
 
 		// We pass the UUID of the test result we want to display via command
 		// parameters.
-		String uuid = event
-				.getParameter("org.argeo.slc.client.commands.resultUuid");
+		// String uuid = event
+		// .getParameter("org.argeo.slc.client.commands.resultUuid");
 
 		// TODO : remove this.
 		// if (uuid == null || "".equals(uuid)) {
 		// try {
-		// ResultListView pbv = (ResultListView) HandlerUtil
-		// .getActiveWorkbenchWindow(event).getActivePage()
-		// .showView(ResultListView.ID);
-		// uuid = pbv.getSelectedResult()[0];
 		// } catch (PartInitException e) {
 		// // TODO Auto-generated catch block
 		// e.printStackTrace();
@@ -45,11 +50,21 @@ public class ResultDetailsDisplayHandler extends AbstractHandler {
 		// should be made visible and activated. Use of this mode has the same
 		// effect as calling
 		try {
-			ResultDetailView rView = (ResultDetailView) HandlerUtil
+			ResultListView rlv = (ResultListView) HandlerUtil
 					.getActiveWorkbenchWindow(event).getActivePage()
-					.showView(ResultDetailView.ID, "UUID-" + uuid, 1);
-			rView.setUuid(uuid);
-			rView.retrieveResults();
+					.findView(ResultListView.ID);
+			List<String> ids = rlv.getSelectedResultsId();
+
+			ResultDetailView rView;
+			Iterator<String> it = ids.iterator();
+			while (it.hasNext()) {
+				String uuid = it.next();
+				rView = (ResultDetailView) HandlerUtil
+						.getActiveWorkbenchWindow(event).getActivePage()
+						.showView(ResultDetailView.ID, "UUID-" + uuid, 1);
+				rView.setUuid(uuid);
+				rView.retrieveResults();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

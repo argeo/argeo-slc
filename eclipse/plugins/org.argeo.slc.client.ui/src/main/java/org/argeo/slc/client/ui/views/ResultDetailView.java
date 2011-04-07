@@ -25,8 +25,8 @@ public class ResultDetailView extends ViewPart {
 	private final static Log log = LogFactory.getLog(ResultDetailView.class);
 	public static final String ID = "org.argeo.slc.client.ui.resultDetailView";
 
-	protected String[] columnNames = new String[] { "Test", "State", "Message",
-			"Id" };
+	protected String[] columnNames = new String[] { "Test", "Message",
+			"Exception Msg" };
 
 	private TreeViewer viewer;
 	private Tree resultDetailTree;
@@ -56,9 +56,14 @@ public class ResultDetailView extends ViewPart {
 			// 0 and it will look as if the column didn't exist.
 			switch (i) {
 			case 0:
-				column.setWidth(230);
+				column.setWidth(180);
+				break;
 			case 1:
-				column.setWidth(200);
+				column.setWidth(150);
+				break;
+			case 2:
+				column.setWidth(150);
+				break;
 			default:
 				column.setWidth(70);
 			}
@@ -68,17 +73,18 @@ public class ResultDetailView extends ViewPart {
 
 		viewer.setContentProvider(contentProvider);
 		// viewer.setLabelProvider(new ResultDetailLabelProvider());
-		log.debug("Injected LabelProvider :" + labelProvider.toString());
+		if (log.isTraceEnabled())
+			log.debug("Injected LabelProvider :" + labelProvider.toString());
 
 		// TIP: It seems, that if the table has not defined any TreeColumns then
 		// a plain LabelProvider will be used. Since, we don't provide an
 		// instance of LabelProvider, a default one will be used and
-		// the TableLableProvider is ignored without notice. Took me quite
+		// the TableLabelProvider is ignored without notice. Took me quite
 		// a while to find that one out.
 		viewer.setLabelProvider(labelProvider);
-		log.debug("Persisted labelProvider :"
-				+ viewer.getLabelProvider().toString());
-		// viewer.setInput(getViewSite());
+		if (log.isTraceEnabled())
+			log.debug("Persisted labelProvider :"
+					+ viewer.getLabelProvider().toString());
 
 		// viewer.expandAll();
 
