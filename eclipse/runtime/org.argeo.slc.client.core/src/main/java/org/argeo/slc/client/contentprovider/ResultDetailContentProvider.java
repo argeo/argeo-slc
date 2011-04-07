@@ -24,7 +24,9 @@ public class ResultDetailContentProvider implements ITreeContentProvider {
 
 	public Object[] getChildren(Object parent) {
 		if (parent instanceof TreeTestResult) {
-			log.error("We should not reach this point.");
+			if (log.isErrorEnabled())
+				log.error("Trying to get children for parent object of type TreeTestResult. "
+						+ "We should not reach this point.");
 			return null;
 		}
 
@@ -183,6 +185,7 @@ public class ResultDetailContentProvider implements ITreeContentProvider {
 
 		public ResultPartNode(String label, Integer status, String message) {
 			super(label);
+			log.debug("Creating new leaf with label : " + label);
 			handleStatus(status);
 			this.message = message;
 		}
