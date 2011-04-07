@@ -43,7 +43,7 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu">
-         <menu
+<!--         <menu
                id="fileMenu"
                label="File">
             <command
@@ -53,14 +53,14 @@
                   style="push"
                   tooltip="Exits the application">
             </command>
-         </menu>
+         </menu> -->
       </menuContribution>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
       <command
             defaultHandler="org.argeo.slc.client.rcp.commands.ExitHandler"
-            id="org.argeo.slc.client.rcp.commands.Exit"
+            id="org.argeo.slc.client.rcp.commands.exit"
             name="Exit">
       </command>
    </extension>
