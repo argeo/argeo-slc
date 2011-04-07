@@ -2,10 +2,8 @@ package org.argeo.slc.client.ui.views;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,8 +63,8 @@ public class ResultListView extends ViewPart {
 
 	private final static String DISPLAY_CMD_ID = ResultDetailsDisplayHandler.ID;
 	private final static String REMOVE_CMD_ID = RemoveSelectedResultFromResultList.ID;
-	private final static String UUID_PARAM_ID = "org.argeo.slc.client.commands.resultUuid";
-	private final static String NAME_PARAM_ID = "org.argeo.slc.client.commands.resultName";
+//	private final static String UUID_PARAM_ID = "org.argeo.slc.client.commands.resultUuid";
+//	private final static String NAME_PARAM_ID = "org.argeo.slc.client.commands.resultName";
 
 	private final static SimpleDateFormat dateFormatter = new SimpleDateFormat(
 			"MM/dd/yy', 'HH:mm:ss");
@@ -241,14 +239,16 @@ public class ResultListView extends ViewPart {
 		contributionItemParameter.label = label;
 		contributionItemParameter.icon = ClientUiPlugin
 				.getImageDescriptor(iconPath);
-		if (!REMOVE_CMD_ID.equals(cmdId)) {
-			Map<String, String> params = new HashMap<String, String>();
-			params.put(UUID_PARAM_ID, selectedRa.getUuid());
-			params.put(NAME_PARAM_ID,
-					(selectedRa.getAttributes().get("testCase") == null) ? null
-							: selectedRa.getAttributes().get("testCase"));
-			contributionItemParameter.parameters = params;
-		}
+		
+
+		// if (!REMOVE_CMD_ID.equals(cmdId)) {
+		// Map<String, String> params = new HashMap<String, String>();
+		// params.put(UUID_PARAM_ID, selectedRa.getUuid());
+		// params.put(NAME_PARAM_ID,
+		// (selectedRa.getAttributes().get("testCase") == null) ? null
+		// : selectedRa.getAttributes().get("testCase"));
+		// contributionItemParameter.parameters = params;
+		// }
 
 		CommandContributionItem cci = new CommandContributionItem(
 				contributionItemParameter);

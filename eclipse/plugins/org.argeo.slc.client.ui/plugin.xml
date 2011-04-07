@@ -84,14 +84,14 @@
 	      	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
 	      	id="org.argeo.slc.client.ui.displayResultDetails"
 	      	name="Display Result Details">
-			<commandParameter
+			<!-- <commandParameter
 	         	id="org.argeo.slc.client.commands.resultUuid"
 	        	name="Result UUID">
 	  	 	</commandParameter>
 	   		<commandParameter
 	         	id="org.argeo.slc.client.commands.resultName"
 	        	name="Result Name">
-			</commandParameter>
+			</commandParameter> -->
 		</command>
 	
 	    <!-- Execution Modules -->
