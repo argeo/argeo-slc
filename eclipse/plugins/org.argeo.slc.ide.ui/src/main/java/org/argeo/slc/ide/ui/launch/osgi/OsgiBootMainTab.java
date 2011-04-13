@@ -33,6 +33,13 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 
 	private Text additionalProgramArgs;
 
+	private final Boolean isEclipse;
+
+	public OsgiBootMainTab(Boolean isEclipse) {
+		super();
+		this.isEclipse = isEclipse;
+	}
+
 	public void createControl(Composite parent) {
 		Composite container = new Composite(parent, SWT.NONE);
 		container.setLayout(new GridLayout());
@@ -136,20 +143,20 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
 		// System.out.println("performApply");
-		configuration.setAttribute(ATTR_SYNC_BUNDLES, syncBundles
-				.getSelection());
+		configuration.setAttribute(ATTR_SYNC_BUNDLES,
+				syncBundles.getSelection());
 		configuration.setAttribute(ATTR_CLEAR_DATA_DIRECTORY,
 				clearDataDirectory.getSelection());
 
 		configuration.setAttribute(ATTR_ADDITIONAL_PROGRAM_ARGS,
 				additionalProgramArgs.getText());
-		configuration.setAttribute(ATTR_ADDITIONAL_VM_ARGS, additionalVmArgs
-				.getText());
-		configuration.setAttribute(ATTR_ADD_JVM_PATHS, addJvmPaths
-				.getSelection());
+		configuration.setAttribute(ATTR_ADDITIONAL_VM_ARGS,
+				additionalVmArgs.getText());
+		configuration.setAttribute(ATTR_ADD_JVM_PATHS,
+				addJvmPaths.getSelection());
 		// writeProperties(configuration);
 
-		OsgiLaunchHelper.updateLaunchConfiguration(configuration);
+		OsgiLaunchHelper.updateLaunchConfiguration(configuration, isEclipse);
 	}
 
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {

@@ -13,10 +13,12 @@ import java.util.StringTokenizer;
 
 import org.argeo.slc.ide.ui.SlcIdeUiPlugin;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.variables.IStringVariableManager;
@@ -35,41 +37,120 @@ import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
 import org.eclipse.pde.internal.build.IPDEBuildConstants;
-import org.eclipse.pde.ui.launcher.IPDELauncherConstants;
+import org.eclipse.pde.launching.IPDELauncherConstants;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
+/**
+ * Most of the actual logic is concentrated in this class which manipulates
+ * {@link ILaunchConfigurationWorkingCopy}. Static method are used since the
+ * shortcut and launch configuration classes are already extending PDE classes.
+ */
 @SuppressWarnings("restriction")
 public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	private static Boolean debug = false;
 
+	private final static String DEFAULT_DATA_DIR = "data";
+	private final static String DEFAULT_EXEC_DIR = "exec";
+	private final static String DEFAULT_VMARGS = "-Xmx128m";
+	private final static String DEFAULT_PROGRAM_ARGS = "-console";
+
+	/** Sets default values on this configuration. */
+	public static void setDefaults(ILaunchConfigurationWorkingCopy wc,
+			Boolean isEclipse) {
+		try {
+			if (isEclipse) {
+				wc.setAttribute(IPDELauncherConstants.USE_DEFAULT, false);
+				wc.setAttribute(IPDELauncherConstants.USE_PRODUCT, false);
+			}
+
+			wc.setAttribute(ATTR_ADD_JVM_PATHS, false);
+			wc.setAttribute(ATTR_ADDITIONAL_VM_ARGS, DEFAULT_VMARGS);
+			wc.setAttribute(ATTR_ADDITIONAL_PROGRAM_ARGS, DEFAULT_PROGRAM_ARGS);
+
+			// Defaults
+			String originalVmArgs = wc.getAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
+			wc.setAttribute(ATTR_DEFAULT_VM_ARGS, originalVmArgs);
+			wc.setAttribute(IPDELauncherConstants.CONFIG_CLEAR_AREA, true);
+		} catch (CoreException e) {
+			Shell shell = Display.getCurrent().getActiveShell();
+			ErrorDialog.openError(shell, "Error",
+					"Cannot execute initalize configuration", e.getStatus());
+		}
+	}
+
+	/** Find the working directory based on this properties file. */
+	public static String findWorkingDirectory(IFile propertiesFile) {
+		try {
+			IProject project = propertiesFile.getProject();
+			IPath parent = propertiesFile.getProjectRelativePath()
+					.removeLastSegments(1);
+			IFolder execFolder = project.getFolder(parent
+					.append(DEFAULT_EXEC_DIR));
+			if (!execFolder.exists())
+				execFolder.create(true, true, null);
+			IFolder launchFolder = project.getFolder(execFolder
+					.getProjectRelativePath().append(
+							extractName(propertiesFile)));
+			if (!launchFolder.exists())
+				launchFolder.create(true, true, null);
+			return "${workspace_loc:"
+					+ launchFolder.getFullPath().toString().substring(1) + "}";
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Cannot create working directory", e);
+		}
+	}
+
+	/** Extract the launch configuration name from the properties file. */
+	public static String extractName(IFile propertiesFile) {
+		IPath path = propertiesFile.getFullPath();
+		IPath pathNoExt = path.removeFileExtension();
+		return pathNoExt.segment(pathNoExt.segmentCount() - 1);
+
+	}
+
 	/** Expects properties file to be set as mapped resources */
 	public static void updateLaunchConfiguration(
-			ILaunchConfigurationWorkingCopy configuration) {
+			ILaunchConfigurationWorkingCopy wc, Boolean isEclipse) {
 		try {
 			// Finds the properties file and load it
-			IFile propertiesFile = (IFile) configuration.getMappedResources()[0];
+			IFile propertiesFile = (IFile) wc.getMappedResources()[0];
 			propertiesFile.refreshLocal(IResource.DEPTH_ONE, null);
 			Properties properties = readProperties(propertiesFile);
 
 			// Extract information from the properties file
 			List<String> bundlesToStart = new ArrayList<String>();
 			Map<String, String> systemPropertiesToAppend = new HashMap<String, String>();
-			interpretProperties(properties, bundlesToStart,
-					systemPropertiesToAppend);
+			String applicationId = interpretProperties(properties,
+					bundlesToStart, systemPropertiesToAppend);
+
+			if (applicationId != null)
+				wc.setAttribute(IPDELauncherConstants.APPLICATION,
+						applicationId);
+			else {
+				if (isEclipse)
+					throw new Exception("No application defined,"
+							+ " please set the 'eclipse.application' property"
+							+ " in the properties file");
+			}
 
 			// Define directories
-			File workingDir = getWorkingDirectory(configuration);
-			File dataDir = new File(workingDir, "data");
+			File workingDir = getWorkingDirectory(wc);
+			File dataDir = new File(workingDir, DEFAULT_DATA_DIR);
 
 			// Update the launch configuration accordingly
-			updateLaunchConfiguration(configuration, bundlesToStart,
-					systemPropertiesToAppend, dataDir.getAbsolutePath());
+			updateLaunchConfiguration(wc, bundlesToStart,
+					systemPropertiesToAppend, dataDir.getAbsolutePath(),
+					isEclipse);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Shell shell = SlcIdeUiPlugin.getDefault().getWorkbench()
 					.getActiveWorkbenchWindow().getShell();
 			// Shell shell= Display.getCurrent().getActiveShell();
-			ErrorDialog.openError(shell, "Error", "Cannot read properties",
+			ErrorDialog.openError(shell, "Error",
+					"Cannot prepare launch configuration",
 					new Status(IStatus.ERROR, SlcIdeUiPlugin.ID,
 							e.getMessage(), e));
 			return;
@@ -82,14 +163,13 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	 * UI.
 	 */
 	protected static void updateLaunchConfiguration(
-			ILaunchConfigurationWorkingCopy configuration,
-			List<String> bundlesToStart,
-			Map<String, String> systemPropertiesToAppend, String dataDir)
-			throws CoreException {
+			ILaunchConfigurationWorkingCopy wc, List<String> bundlesToStart,
+			Map<String, String> systemPropertiesToAppend, String dataDir,
+			Boolean isEclipse) throws CoreException {
 		// Convert bundle lists
 		final String targetBundles;
 		final String wkSpaceBundles;
-		if (configuration.getAttribute(ATTR_SYNC_BUNDLES, true)) {
+		if (wc.getAttribute(ATTR_SYNC_BUNDLES, true)) {
 			StringBuffer tBuf = new StringBuffer();
 			for (IPluginModelBase model : PluginRegistry.getExternalModels()) {
 				tBuf.append(model.getBundleDescription().getSymbolicName());
@@ -108,44 +188,45 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			}
 			wkSpaceBundles = wBuf.toString();
 		} else {
-			targetBundles = configuration.getAttribute(
-					IPDELauncherConstants.TARGET_BUNDLES, "");
-			wkSpaceBundles = configuration.getAttribute(
-					IPDELauncherConstants.WORKSPACE_BUNDLES, "");
+			targetBundles = wc.getAttribute(targetBundlesAttr(isEclipse), "");
+			wkSpaceBundles = wc.getAttribute(workspaceBundlesAttr(isEclipse),
+					"");
 		}
-		configuration.setAttribute(IPDELauncherConstants.TARGET_BUNDLES,
+		wc.setAttribute(targetBundlesAttr(isEclipse),
 				convertBundleList(bundlesToStart, targetBundles));
 
-		configuration.setAttribute(IPDELauncherConstants.WORKSPACE_BUNDLES,
+		wc.setAttribute(workspaceBundlesAttr(isEclipse),
 				convertBundleList(bundlesToStart, wkSpaceBundles));
 
 		// Update other default information
-		configuration.setAttribute(IPDELauncherConstants.DEFAULT_AUTO_START,
-				false);
+		wc.setAttribute(IPDELauncherConstants.DEFAULT_AUTO_START, false);
 
 		// VM arguments (system properties)
-		String defaultVmArgs = configuration.getAttribute(
+		String defaultVmArgs = wc.getAttribute(
 				OsgiLauncherConstants.ATTR_DEFAULT_VM_ARGS, "");
 		StringBuffer vmArgs = new StringBuffer(defaultVmArgs);
 
 		// Data dir system property
-		if (dataDir != null)
+		if (dataDir != null) {
 			addSysProperty(vmArgs, OsgiLauncherConstants.ARGEO_OSGI_DATA_DIR,
 					dataDir);
+			if (isEclipse) {
+				wc.setAttribute(IPDELauncherConstants.LOCATION, dataDir);
+			}
+		}
+
 		// Add locations of JVMs
-		if (configuration.getAttribute(ATTR_ADD_JVM_PATHS, false))
+		if (wc.getAttribute(ATTR_ADD_JVM_PATHS, false))
 			addVms(vmArgs);
 
 		// Add other system properties
 		for (String key : systemPropertiesToAppend.keySet())
 			addSysProperty(vmArgs, key, systemPropertiesToAppend.get(key));
 
-		vmArgs.append(" ").append(
-				configuration.getAttribute(ATTR_ADDITIONAL_VM_ARGS, ""));
+		vmArgs.append(" ").append(wc.getAttribute(ATTR_ADDITIONAL_VM_ARGS, ""));
 
-		configuration.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, vmArgs
-						.toString());
+		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS,
+				vmArgs.toString());
 
 		// Program arguments
 		StringBuffer progArgs = new StringBuffer("");
@@ -153,25 +234,41 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			progArgs.append("-data ");
 			progArgs.append(surroundSpaces(dataDir));
 
-			if (configuration.getAttribute(ATTR_CLEAR_DATA_DIRECTORY, false)) {
+			if (wc.getAttribute(ATTR_CLEAR_DATA_DIRECTORY, false)) {
 				File dataDirFile = new File(dataDir);
 				deleteDir(dataDirFile);
 				dataDirFile.mkdirs();
 			}
 		}
-		String additionalProgramArgs = configuration.getAttribute(
+		String additionalProgramArgs = wc.getAttribute(
 				OsgiLauncherConstants.ATTR_ADDITIONAL_PROGRAM_ARGS, "");
 		progArgs.append(' ').append(additionalProgramArgs);
-		configuration.setAttribute(
+		wc.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
 				progArgs.toString());
+	}
+
+	/** The launch configuration attribute to use for target bundles */
+	protected static String targetBundlesAttr(Boolean isEclipse) {
+		return isEclipse ? IPDELauncherConstants.SELECTED_TARGET_PLUGINS
+				: IPDELauncherConstants.TARGET_BUNDLES;
+	}
+
+	/** The launch configuration attribute to use for workspace bundles */
+	protected static String workspaceBundlesAttr(Boolean isEclipse) {
+		return isEclipse ? IPDELauncherConstants.SELECTED_WORKSPACE_PLUGINS
+				: IPDELauncherConstants.WORKSPACE_BUNDLES;
 	}
 
 	/**
 	 * Interprets special properties and register the others as system
 	 * properties to append.
+	 * 
+	 * @return the application id defined by
+	 *         {@link OsgiLauncherConstants#ECLIPSE_APPLICATION}, or null if not
+	 *         found
 	 */
-	protected static void interpretProperties(Properties properties,
+	protected static String interpretProperties(Properties properties,
 			List<String> bundlesToStart,
 			Map<String, String> systemPropertiesToAppend) {
 		String argeoOsgiStart = properties
@@ -182,6 +279,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 				bundlesToStart.add(st.nextToken());
 		}
 
+		String applicationId = null;
 		propKeys: for (Object keyObj : properties.keySet()) {
 			String key = keyObj.toString();
 			if (OsgiLauncherConstants.ARGEO_OSGI_START.equals(key))
@@ -192,10 +290,12 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 				continue propKeys;
 			else if (OsgiLauncherConstants.OSGI_BUNDLES.equals(key))
 				continue propKeys;
+			else if (OsgiLauncherConstants.ECLIPSE_APPLICATION.equals(key))
+				applicationId = properties.getProperty(key);
 			else
 				systemPropertiesToAppend.put(key, properties.getProperty(key));
 		}
-
+		return applicationId;
 	}
 
 	/** Adds a regular system property. */
@@ -203,7 +303,6 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			String value) {
 		surroundSpaces(value);
 		String str = "-D" + key + "=" + value;
-		// surroundSpaces(str);
 		vmArgs.append(' ').append(str);
 	}
 
@@ -227,8 +326,8 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 					while (st.hasMoreTokens())
 						tokens.add(st.nextToken());
 					if (tokens.size() >= 2)
-						addVmSysProperty(vmArgs, tokens.get(0) + "."
-								+ tokens.get(1), vmInstall);
+						addVmSysProperty(vmArgs,
+								tokens.get(0) + "." + tokens.get(1), vmInstall);
 				}
 			}
 		}
@@ -354,7 +453,15 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		} catch (IOException e) {
 			working = "${workspace_loc}/../"; //$NON-NLS-1$
 		}
-		File dir = new File(getSubstitutedString(working));
+		File dir;
+		try {
+			dir = new File(getSubstitutedString(working));
+		} catch (Exception e) {
+			// the directory was most probably deleted
+			IFile propertiesFile = (IFile) configuration.getMappedResources()[0];
+			working = findWorkingDirectory(propertiesFile);
+			dir = new File(getSubstitutedString(working));
+		}
 		if (!dir.exists())
 			dir.mkdirs();
 		return dir;

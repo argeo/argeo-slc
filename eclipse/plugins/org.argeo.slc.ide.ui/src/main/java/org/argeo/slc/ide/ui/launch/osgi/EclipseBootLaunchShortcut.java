@@ -11,17 +11,20 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.pde.ui.launcher.OSGiLaunchShortcut;
+import org.eclipse.pde.ui.launcher.EclipseLaunchShortcut;
 
-/** Launch shortcut simplifying the launch of a pure OSGi runtime */
-public class OsgiBootLaunchShortcut extends OSGiLaunchShortcut implements
+/**
+ * Launch shortcut simplifying the launch of an Eclipse application (typically
+ * an RCP).
+ */
+public class EclipseBootLaunchShortcut extends EclipseLaunchShortcut implements
 		OsgiLauncherConstants {
 	private StringBuffer name = null;
 	private IFile propertiesFile = null;
 
 	@Override
 	protected String getLaunchConfigurationTypeName() {
-		return OsgiBootEquinoxLaunchConfiguration.ID;
+		return EclipseBootLaunchConfiguration.ID;
 	}
 
 	@Override
@@ -43,12 +46,11 @@ public class OsgiBootLaunchShortcut extends OSGiLaunchShortcut implements
 		super.initializeConfiguration(wc);
 
 		OsgiLaunchHelper.setDefaults(wc, true);
-
 		wc.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
 				OsgiLaunchHelper.findWorkingDirectory(propertiesFile));
 
-		OsgiLaunchHelper.updateLaunchConfiguration(wc, false);
+		OsgiLaunchHelper.updateLaunchConfiguration(wc, true);
 	}
 
 	protected String getName(ILaunchConfigurationType type) {
@@ -67,5 +69,4 @@ public class OsgiBootLaunchShortcut extends OSGiLaunchShortcut implements
 		}
 		return super.isGoodMatch(configuration);
 	}
-
 }
