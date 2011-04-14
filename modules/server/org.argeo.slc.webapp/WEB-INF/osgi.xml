@@ -18,13 +18,13 @@
 	<reference id="slcAgentDescriptorDao"
 		interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao" />
 
-	<!--  Services -->
+	<!-- Services -->
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
 	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 	<reference id="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
 	<reference id="attachmentsStorage"
 		interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
-	
+
 	<!-- Events -->
 	<reference id="eventListener" interface="org.argeo.slc.msg.event.SlcEventListener" />
 
@@ -38,8 +38,9 @@
 	<!-- Security -->
 	<reference id="_authenticationManager"
 		interface="org.springframework.security.AuthenticationManager" />
-	<reference id="userDetailsService"
-		interface="org.springframework.security.userdetails.UserDetailsService" />
+	<!-- <reference id="userDetailsService" -->
+	<!-- interface="org.springframework.security.userdetails.UserDetailsService" 
+		/> -->
 
 	<!-- Optional reference to JCR repository -->
 	<reference id="jcrRepository" interface="javax.jcr.Repository"
@@ -47,32 +48,4 @@
 
 	<reference id="osivInterceptor"
 		interface="org.springframework.web.context.request.WebRequestInterceptor" />
-
-	<!--
-		<reference id="authenticationEntryPoint"
-		interface="org.springframework.security.ui.AuthenticationEntryPoint"
-		/>
-	-->
-
-	<!--
-		<reference id="agentService"
-		interface="org.argeo.slc.services.AgentService" />
-	-->
-	<!--
-
-		<reference id="hibernateTransactionManager"
-		interface="org.springframework.transaction.PlatformTransactionManager"
-		bean-name="hibernateTransactionManager" />
-	-->
-
-	<!--
-		<reference interface="org.hibernate.SessionFactory"
-		id="sessionFactory" />
-	-->
-	<!--
-		<reference interface="org.argeo.slc.execution.ExecutionModulesManager"
-		id="modulesManager" />
-	-->
-
-
 </beans:beans>

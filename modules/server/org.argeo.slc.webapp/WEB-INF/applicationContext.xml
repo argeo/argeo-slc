@@ -15,7 +15,7 @@
 		security.xml has to be before osgi.xml, otherwise namespace parsing
 		fails
 	-->
-	<import resource="security.xml" />
+<!-- 	<import resource="security.xml" /> -->
 	<import resource="osgi.xml" />
 
 	<!--

@@ -75,7 +75,7 @@
         "qx.application" : "${APPLICATION}.Application",
         "ria.branding.splashScreen"		: "org.argeo.security.ria/ArgeoLogo.png",
         "ria.branding.applicationTitle" : "Slc RIA",
-        "ria.auth.enableAuth"		: "true",
+        "ria.auth.enableAuth"		: "false",
         "ria.auth.credentialsURI"	: "/org.argeo.security.webapp/getCredentials.ria",
         "ria.auth.loginURI"			: "/org.argeo.security.webapp/login.ria",
         "ria.auth.logoutURI"		: "/org.argeo.security.webapp/logout.ria",

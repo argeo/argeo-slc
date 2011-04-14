@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/osgi"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:osgi="http://www.springframework.org/schema/osgi" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
 	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
        http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd
        http://www.springframework.org/schema/beans   
-       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	osgi:default-timeout="5000">
 
+	<!-- REFERENCES -->
 	<reference id="agentService" interface="org.argeo.slc.services.AgentService" />
 	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
@@ -16,15 +19,11 @@
 
 	<reference id="attachmentsStorage"
 		interface="org.argeo.slc.core.attachment.AttachmentsStorage" />
+	<reference id="systemExecutionService" interface="org.argeo.security.SystemExecutionService" />
 
+	<!-- SERVICES -->
 	<service ref="jmsEventListener" interface="org.argeo.slc.msg.event.SlcEventListener" />
 	<service ref="jmsEventPublisher" interface="org.argeo.slc.msg.event.SlcEventPublisher" />
 
-	<!--
-		<reference id="jmsTransactionManager"
-		interface="org.springframework.transaction.PlatformTransactionManager"
-		bean-name="jmsTransactionManager" />
-	-->
-	<reference id="securityService" interface="org.argeo.security.ArgeoSecurityService" />
 
 </beans:beans>

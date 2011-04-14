@@ -6,6 +6,26 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<!-- REFERENCES -->
+	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
+		id="testResultDao" />
+	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
+		id="testResultCollectionDao" />
+	<reference interface="org.argeo.slc.dao.test.TestRunDescriptorDao"
+		id="testRunDescriptorDao" />
+	<reference interface="org.argeo.slc.dao.process.SlcExecutionDao"
+		id="slcExecutionDao" />
+	<reference interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
+		id="slcAgentDescriptorDao" />
+
+	<reference id="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
+
+	<list id="eventPublishers" interface="org.argeo.slc.msg.event.SlcEventPublisher"
+		cardinality="0..N" />
+
+	<reference id="systemExecutor" interface="org.argeo.security.SystemExecutionService" />
+
+	<!-- SERVICES -->
 	<service ref="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 	<service ref="agentService" interface="org.argeo.slc.services.AgentService" />
 	<service ref="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
@@ -18,28 +38,5 @@
 		</interfaces>
 	</service>
 
-	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
-		id="testResultDao" />
-	<reference interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
-		id="testResultCollectionDao" />
-	<reference interface="org.argeo.slc.dao.test.TestRunDescriptorDao"
-		id="testRunDescriptorDao" />
-	<reference interface="org.argeo.slc.dao.process.SlcExecutionDao"
-		id="slcExecutionDao" />
-	<reference interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
-		id="slcAgentDescriptorDao" />
-
-	<!--
-		<reference id="transactionManager"
-		interface="org.springframework.transaction.PlatformTransactionManager"
-		/>
-	-->
-
-	<reference id="agentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
-
-	<list id="eventPublishers" interface="org.argeo.slc.msg.event.SlcEventPublisher"
-		cardinality="0..N" />
-
-	<reference id="systemExecutor" interface="org.argeo.security.SystemExecutionService" />
 
 </beans:beans>

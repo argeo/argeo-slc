@@ -77,26 +77,6 @@
 		<url-pattern>*.jcr</url-pattern>
 	</servlet-mapping>
 
-	<!-- WEBDAV servlet -->
-	<servlet>
-		<servlet-name>webdav</servlet-name>
-		<servlet-class>org.argeo.server.jackrabbit.webdav.ExtendedDispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextClass</param-name>
-			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
-		</init-param>
-		<init-param>
-			<param-name>dispatchOptionsRequest</param-name>
-			<param-value>true</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>webdav</servlet-name>
-		<url-pattern>/default/*</url-pattern>
-	</servlet-mapping>
-
 	<!-- JCR-MANAGER servlet -->
 	<servlet>
 		<servlet-name>jcr-manager</servlet-name>
@@ -144,7 +124,7 @@
 		<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
 	</context-param>
 
-	<!--  Security -->
+	<!--  Security
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -158,5 +138,6 @@
 	<context-param>
 		<param-name>argeo.security.systemKey</param-name>
 		<param-value>argeo</param-value>
-	</context-param>
+	</context-param> 
+	-->
 </web-app>

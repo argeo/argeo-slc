@@ -28,15 +28,13 @@
 	<bean id="jmsEventListener" class="org.argeo.slc.jms.JmsSlcEventListener"
 		init-method="init" destroy-method="close">
 		<property name="jmsConnectionFactory">
-			<!--
-				Need its own connection factory in order to set client ids (not
-				possible on pool)
-			-->
+			<!-- Need its own connection factory in order to set client ids (not possible 
+				on pool) -->
 			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
 				<property name="brokerURL">
 					<value>${slc.server.jms.url}</value>
-					<!--<value>vm://localhost</value>
-				--></property>
+					<!--<value>vm://localhost</value> -->
+				</property>
 			</bean>
 		</property>
 		<property name="eventsDestination" ref="slcJms.destination.events" />
@@ -95,12 +93,10 @@
 		class="org.springframework.jms.listener.DefaultMessageListenerContainer"
 		abstract="true">
 		<property name="connectionFactory" ref="jmsConnectionFactory" />
-		<!--
-			<property name="transactionManager" ref="jmsTransactionManager" />
-		-->
+		<!-- <property name="transactionManager" ref="jmsTransactionManager" /> -->
 		<property name="taskExecutor">
-			<bean class="org.argeo.security.core.SystemAuthenticatedTaskExecutor">
-				<property name="securityService" ref="securityService" />
+			<bean class="org.argeo.security.core.AsyncSystemTaskExecutor">
+				<property name="systemExecutionService" ref="systemExecutionService" />
 			</bean>
 		</property>
 	</bean>

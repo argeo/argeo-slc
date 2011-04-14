@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<!-- Security -->
-	<bundle id="security.ldap" symbolic-name="org.argeo.security.manager.ldap"
+	<bundle id="security.ldap" symbolic-name="org.argeo.security.dao.ldap"
 		action="start" />
 	<bundle id="security.services" symbolic-name="org.argeo.security.services"
 		action="start" />
@@ -34,9 +34,9 @@
 	<bundle id="catalina" symbolic-name="org.argeo.dep.osgi.catalina.start"
 		action="start" />
 
-	<!--  Web app start order is important! Security should be first -->
-	<bundle id="security.webapp" symbolic-name="org.argeo.security.webapp"
-		action="start" />
+	<!-- Web app start order is important! Security should be first -->
+	<!-- <bundle id="security.webapp" symbolic-name="org.argeo.security.webapp" -->
+	<!-- action="start" /> -->
 	<bundle id="slc.webapp" symbolic-name="org.argeo.slc.webapp"
 		action="start" />
 
