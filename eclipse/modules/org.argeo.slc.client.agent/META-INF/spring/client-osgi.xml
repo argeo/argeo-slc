@@ -11,7 +11,7 @@
 	<reference id="modulesManager"
 		interface="org.argeo.slc.execution.ExecutionModulesManager" />
 
-<!-- 	<service ref="slcAgentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" /> -->
+	<service ref="slcAgentFactory" interface="org.argeo.slc.runtime.SlcAgentFactory" />
 	<service ref="slcAgent" interface="org.argeo.slc.runtime.SlcAgent" />
 
 </beans:beans>

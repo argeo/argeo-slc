@@ -1,10 +1,10 @@
-package org.argeo.slc.client.ui.perspectives;
+package org.argeo.slc.client.ui;
 
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-public class SlcExecution implements IPerspectiveFactory {
+public class SlcExecutionPerspective implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();

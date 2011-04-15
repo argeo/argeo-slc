@@ -3,10 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Rap Client for SLC
 Bundle-SymbolicName: org.argeo.slc.client.rap;singleton:=true
 Bundle-Version: 0.13.1.SNAPSHOT
-Bundle-Activator: org.argeo.slc.client.rap.SlcClientRapPlugin
 Bundle-Vendor: Argeo SASU
 Require-Bundle: org.eclipse.rap.ui;resolution:=optional
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet;version="2.4.0",
  javax.servlet.http;version="2.4.0",
