@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.dao.test;
+package org.argeo.slc.dao;
 
 import java.util.Date;
 import java.util.List;
@@ -22,13 +22,13 @@ import java.util.List;
 import org.argeo.slc.test.TestResult;
 
 /**
- * @deprecated will be removed in SLC 2.0, use
- *             {@link org.argeo.slc.dao.TestResultDao} instead. The dao for
- *             <code>TestResult</code>.
+ * The dao for <code>TestResult</code>.
  * 
  * @see TestResult
  */
-public interface TestResultDao<T extends TestResult> {
+@SuppressWarnings("deprecation")
+public interface TestResultDao<T extends TestResult> extends
+		org.argeo.slc.dao.test.TestResultDao<T> {
 	/** Gets a test result based on its id. */
 	public T getTestResult(String uuid);
 

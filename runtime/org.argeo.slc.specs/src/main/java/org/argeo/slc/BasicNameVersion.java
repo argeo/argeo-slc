@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.build;
+package org.argeo.slc;
 
 import java.io.Serializable;
+
 
 public class BasicNameVersion implements NameVersion, Comparable<NameVersion>,
 		Serializable {

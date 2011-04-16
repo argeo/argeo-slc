@@ -21,8 +21,8 @@ import java.util.SortedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
-import org.argeo.slc.build.NameVersion;
 import org.argeo.slc.core.build.VersionedResourceDistribution;
 import org.argeo.slc.osgi.OsgiBundle;
 import org.osgi.framework.Bundle;

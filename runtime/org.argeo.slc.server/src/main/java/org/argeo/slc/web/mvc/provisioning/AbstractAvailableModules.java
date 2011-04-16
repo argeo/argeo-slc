@@ -23,8 +23,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.ModularDistribution;
-import org.argeo.slc.build.NameVersion;
 import org.springframework.web.HttpRequestHandler;
 
 /** List of modules for a distribution. */

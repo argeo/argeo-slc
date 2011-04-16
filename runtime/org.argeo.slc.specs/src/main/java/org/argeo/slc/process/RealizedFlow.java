@@ -18,8 +18,8 @@ package org.argeo.slc.process;
 
 import java.io.Serializable;
 
-import org.argeo.slc.build.BasicNameVersion;
-import org.argeo.slc.build.NameVersion;
+import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionSpec;
 

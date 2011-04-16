@@ -24,9 +24,9 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.apache.commons.io.IOUtils;
-import org.argeo.slc.build.BasicNameVersion;
+import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
-import org.argeo.slc.build.NameVersion;
 import org.argeo.slc.core.build.VersionedResourceDistribution;
 import org.osgi.framework.Constants;
 import org.springframework.context.ResourceLoaderAware;

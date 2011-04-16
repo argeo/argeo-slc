@@ -16,7 +16,7 @@
 
 package org.argeo.slc.deploy;
 
-import org.argeo.slc.build.NameVersion;
+import org.argeo.slc.NameVersion;
 
 public interface Module extends DeployedSystem, NameVersion {
 }

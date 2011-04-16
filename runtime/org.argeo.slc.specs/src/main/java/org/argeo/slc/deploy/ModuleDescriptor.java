@@ -16,7 +16,7 @@
 
 package org.argeo.slc.deploy;
 
-import org.argeo.slc.build.BasicNameVersion;
+import org.argeo.slc.BasicNameVersion;
 
 public class ModuleDescriptor extends BasicNameVersion {
 	private static final long serialVersionUID = 3703329250058821882L;

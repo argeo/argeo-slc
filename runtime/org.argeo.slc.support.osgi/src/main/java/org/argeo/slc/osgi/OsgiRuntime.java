@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.StreamReadable;
 import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.build.Distribution;
-import org.argeo.slc.build.NameVersion;
 import org.argeo.slc.core.build.VersionedResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.DynamicRuntime;

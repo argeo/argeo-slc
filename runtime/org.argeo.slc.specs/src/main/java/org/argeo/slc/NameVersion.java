@@ -14,23 +14,16 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.deploy;
+package org.argeo.slc;
 
-import java.util.List;
+/**
+ * Abstraction of a name / version pair, typically used as coordinates for a
+ * software module either deployed or packaged as an archive.
+ */
+public interface NameVersion {
+	/** The name of the component. */
+	public String getName();
 
-import org.argeo.slc.NameVersion;
-
-/** Provides access to modules */
-public interface ModulesManager {
-	/** @return a full fledged module descriptor. */
-	public ModuleDescriptor getModuleDescriptor(String moduleName,
-			String version);
-
-	/**
-	 * @return a list of minimal module descriptors
-	 */
-	public List<ModuleDescriptor> listModules();
-
-	/** Synchronously upgrades the module referenced by this name version */
-	public void upgrade(NameVersion nameVersion);
+	/** The version of the component. */
+	public String getVersion();
 }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.dao.test;
+package org.argeo.slc.dao;
 
-import org.argeo.slc.dao.TestResultDao;
 import org.argeo.slc.test.TestRunDescriptor;
 
-/** @deprecated will be removed in SLC 2.0, use {@link TestResultDao} instead. */
-public interface TestRunDescriptorDao {
+@SuppressWarnings("deprecation")
+public interface TestRunDescriptorDao extends
+		org.argeo.slc.dao.test.TestRunDescriptorDao {
 	public TestRunDescriptor getTestRunDescriptor(String id);
 
 	public void saveOrUpdate(TestRunDescriptor testRunDescriptor);

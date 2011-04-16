@@ -20,6 +20,10 @@ import java.util.List;
 
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 
+/**
+ * @deprecated will be removed in SLC 2.0, use
+ *             {@link org.argeo.slc.dao.SlcAgentDescriptorDao} instead.
+ */
 public interface SlcAgentDescriptorDao {
 	public void create(SlcAgentDescriptor slcAgentDescriptor);
 

@@ -18,6 +18,8 @@ package org.argeo.slc.build;
 
 import java.util.Set;
 
+import org.argeo.slc.NameVersion;
+
 public interface ModularDistribution extends Distribution, NameVersion {
 	public Distribution getModuleDistribution(String moduleName,
 			String moduleVersion);

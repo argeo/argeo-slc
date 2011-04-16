@@ -23,6 +23,10 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
+/**
+ * An atomic step to be notified in during an {@link SlcExecution}. Can be a log
+ * or the start/end of a phase, etc.
+ */
 public class SlcExecutionStep implements Serializable {
 	private static final long serialVersionUID = -7308643628104726471L;
 

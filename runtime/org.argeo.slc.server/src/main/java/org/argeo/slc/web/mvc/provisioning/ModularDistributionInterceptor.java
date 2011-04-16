@@ -25,8 +25,8 @@ import java.util.TreeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.build.BasicNameVersion;
 import org.argeo.slc.build.BuildConstants;
 import org.argeo.slc.build.ModularDistribution;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

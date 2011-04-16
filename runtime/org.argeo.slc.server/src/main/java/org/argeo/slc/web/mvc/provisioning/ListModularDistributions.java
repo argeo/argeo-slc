@@ -26,10 +26,10 @@ import java.util.TreeSet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.argeo.slc.build.BasicNameVersion;
+import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.BuildConstants;
 import org.argeo.slc.build.ModularDistribution;
-import org.argeo.slc.build.NameVersion;
 import org.argeo.slc.msg.ObjectList;
 import org.argeo.slc.msg.build.ModularDistributionDescriptor;
 import org.argeo.slc.web.mvc.AbstractServiceController;

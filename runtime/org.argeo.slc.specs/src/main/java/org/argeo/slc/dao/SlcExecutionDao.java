@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.dao.process;
+package org.argeo.slc.dao;
 
 import java.util.List;
 
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
 
-/**
- * @deprecated will be removed in SLC 2.x, use
- *             {@link org.argeo.slc.dao.SlcExecutionDao}
- */
-public interface SlcExecutionDao {
+@SuppressWarnings("deprecation")
+public interface SlcExecutionDao extends
+		org.argeo.slc.dao.process.SlcExecutionDao {
 	public void create(SlcExecution slcExecution);
 
 	public void update(SlcExecution slcExecution);

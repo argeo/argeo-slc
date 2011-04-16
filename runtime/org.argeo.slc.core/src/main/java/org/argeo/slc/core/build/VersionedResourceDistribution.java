@@ -16,7 +16,7 @@
 
 package org.argeo.slc.core.build;
 
-import org.argeo.slc.build.NameVersion;
+import org.argeo.slc.NameVersion;
 import org.springframework.core.io.Resource;
 
 /**

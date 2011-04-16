@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package org.argeo.slc.build;
+package org.argeo.slc.dao;
 
-/**
- * Abstraction of a name / version pair, typically used as coordinates for a
- * software module either deployed or packaged as an archive.
- */
-public interface NameVersion {
-	/** The name of the component. */
-	public String getName();
+import java.util.List;
 
-	/** The version of teh component. */
-	public String getVersion();
+import org.argeo.slc.runtime.SlcAgentDescriptor;
+
+@SuppressWarnings("deprecation")
+public interface SlcAgentDescriptorDao extends
+		org.argeo.slc.dao.runtime.SlcAgentDescriptorDao {
+	public void create(SlcAgentDescriptor slcAgentDescriptor);
+
+	public void delete(SlcAgentDescriptor slcAgentDescriptor);
+
+	public void delete(String agentId);
+
+	public List<SlcAgentDescriptor> listSlcAgentDescriptors();
+
+	public SlcAgentDescriptor getAgentDescriptor(String agentId);
 }

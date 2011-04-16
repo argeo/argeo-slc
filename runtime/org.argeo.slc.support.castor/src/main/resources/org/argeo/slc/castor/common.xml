@@ -21,7 +21,7 @@
 <mapping>
 	<description>Build objects XML mapping</description>
 
-	<class name="org.argeo.slc.build.BasicNameVersion">
+	<class name="org.argeo.slc.BasicNameVersion">
 		<map-to ns-uri="http://argeo.org/projects/slc/schemas"
 			ns-prefix="slc" />
 		<field name="name">

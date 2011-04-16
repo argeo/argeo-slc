@@ -19,9 +19,9 @@ package org.argeo.slc.web.mvc.provisioning;
 import java.io.IOException;
 import java.io.Writer;
 
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.build.ModularDistribution;
-import org.argeo.slc.build.NameVersion;
 import org.argeo.slc.core.build.ResourceDistribution;
 
 /** List of modules for a distribution. */

@@ -25,12 +25,12 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
-import org.argeo.slc.build.BasicNameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.build.ModularDistribution;
-import org.argeo.slc.build.NameVersion;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.springframework.beans.factory.InitializingBean;
