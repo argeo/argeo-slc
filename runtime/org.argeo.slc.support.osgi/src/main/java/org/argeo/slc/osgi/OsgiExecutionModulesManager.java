@@ -17,13 +17,11 @@
 package org.argeo.slc.osgi;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -43,8 +41,6 @@ import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -75,7 +71,7 @@ public class OsgiExecutionModulesManager extends
 //					"org.apache.xalan.processor.TransformerFactoryImpl");
 //	}
 
-	private final static String PROPERTY_CACHE_SERVICES = "slc.osgi.execution.cacheServices";
+//	private final static String PROPERTY_CACHE_SERVICES = "slc.osgi.execution.cacheServices";
 
 	private final static Log log = LogFactory
 			.getLog(OsgiExecutionModulesManager.class);
@@ -87,13 +83,13 @@ public class OsgiExecutionModulesManager extends
 	private Map<OsgiBundle, Set<ExecutionFlow>> executionFlows = new HashMap<OsgiBundle, Set<ExecutionFlow>>();
 	private ExecutionFlowDescriptorConverter defaultDescriptorConverter = new DefaultExecutionFlowDescriptorConverter();
 
-	private Boolean useCachedServices = Boolean.parseBoolean(System
-			.getProperty(PROPERTY_CACHE_SERVICES, "true"));
+//	private Boolean useCachedServices = Boolean.parseBoolean(System
+//			.getProperty(PROPERTY_CACHE_SERVICES, "true"));
 
 	public synchronized ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version) {
 		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
-		if (useCachedServices) {
+//		if (useCachedServices) {
 			OsgiBundle osgiBundle = null;
 			BasicNameVersion nameVersion = new BasicNameVersion(moduleName,
 					version);
@@ -112,11 +108,11 @@ public class OsgiExecutionModulesManager extends
 			md.setVersion(osgiBundle.getVersion());
 			md.setLabel(osgiBundle.getLabel());
 			md.setDescription(osgiBundle.getDescription());
-		} else {
-			md.setName(moduleName);
-			md.setVersion(version);
-			setMetadataFromBundle(md, null);
-		}
+//		} else {
+//			md.setName(moduleName);
+//			md.setVersion(version);
+//			setMetadataFromBundle(md, null);
+//		}
 		ExecutionFlowDescriptorConverter executionFlowDescriptorConverter = getExecutionFlowDescriptorConverter(
 				moduleName, version);
 		if (executionFlowDescriptorConverter == null)
@@ -129,7 +125,7 @@ public class OsgiExecutionModulesManager extends
 	public synchronized List<ExecutionModuleDescriptor> listExecutionModules() {
 		List<ExecutionModuleDescriptor> descriptors = new ArrayList<ExecutionModuleDescriptor>();
 
-		if (useCachedServices) {
+//		if (useCachedServices) {
 			for (Iterator<OsgiBundle> iterator = executionContexts.keySet()
 					.iterator(); iterator.hasNext();) {
 				OsgiBundle osgiBundle = iterator.next();
@@ -138,23 +134,23 @@ public class OsgiExecutionModulesManager extends
 						.findRelatedBundle(osgiBundle));
 				descriptors.add(md);
 			}
-		} else {
-			ServiceReference[] arr = executionContextsTracker
-					.getServiceReferences();
-			if (arr == null) {
-				log.error("Tracker returned null.");
-				return descriptors;
-			}
-
-			List<ServiceReference> srs = Arrays.asList(arr);
-			// ServiceReference[] srs =
-			// executionContexts.getServiceReferences();
-			for (ServiceReference sr : srs) {
-				ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
-				setMetadataFromBundle(md, sr.getBundle());
-				descriptors.add(md);
-			}
-		}
+//		} else {
+//			ServiceReference[] arr = executionContextsTracker
+//					.getServiceReferences();
+//			if (arr == null) {
+//				log.error("Tracker returned null.");
+//				return descriptors;
+//			}
+//
+//			List<ServiceReference> srs = Arrays.asList(arr);
+//			// ServiceReference[] srs =
+//			// executionContexts.getServiceReferences();
+//			for (ServiceReference sr : srs) {
+//				ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
+//				setMetadataFromBundle(md, sr.getBundle());
+//				descriptors.add(md);
+//			}
+//		}
 		return descriptors;
 	}
 
@@ -162,7 +158,7 @@ public class OsgiExecutionModulesManager extends
 			String moduleName, String moduleVersion) {
 
 		Map<String, ExecutionFlow> flows = new HashMap<String, ExecutionFlow>();
-		if (useCachedServices) {
+//		if (useCachedServices) {
 			OsgiBundle key = new OsgiBundle(
 					moduleName, moduleVersion);
 			if(!executionFlows.containsKey(key))
@@ -170,29 +166,29 @@ public class OsgiExecutionModulesManager extends
 			Set<ExecutionFlow> flowsT = executionFlows.get(key);
 			for (ExecutionFlow flow : flowsT)
 				flows.put(flow.getName(), flow);
-		} else {
-
-			// TODO: use service trackers?
-			// String filter = OsgiFilterUtils.unifyFilter(ExecutionFlow.class,
-			// null);
-
-			String filter = "(Bundle-SymbolicName=" + moduleName + ")";
-			ServiceReference[] sfs;
-			try {
-				sfs = bundlesManager.getBundleContext().getServiceReferences(
-						ExecutionFlow.class.getName(), filter);
-			} catch (InvalidSyntaxException e) {
-				throw new SlcException(
-						"Cannot retrieve service reference for flow " + filter,
-						e);
-			}
-
-			for (ServiceReference sf : sfs) {
-				ExecutionFlow flow = (ExecutionFlow) bundlesManager
-						.getBundleContext().getService(sf);
-				flows.put(flow.getName(), flow);
-			}
-		}
+//		} else {
+//
+//			// TODO: use service trackers?
+//			// String filter = OsgiFilterUtils.unifyFilter(ExecutionFlow.class,
+//			// null);
+//
+//			String filter = "(Bundle-SymbolicName=" + moduleName + ")";
+//			ServiceReference[] sfs;
+//			try {
+//				sfs = bundlesManager.getBundleContext().getServiceReferences(
+//						ExecutionFlow.class.getName(), filter);
+//			} catch (InvalidSyntaxException e) {
+//				throw new SlcException(
+//						"Cannot retrieve service reference for flow " + filter,
+//						e);
+//			}
+//
+//			for (ServiceReference sf : sfs) {
+//				ExecutionFlow flow = (ExecutionFlow) bundlesManager
+//						.getBundleContext().getService(sf);
+//				flows.put(flow.getName(), flow);
+//			}
+//		}
 		return flows;
 	}
 
@@ -226,9 +222,9 @@ public class OsgiExecutionModulesManager extends
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		if (!useCachedServices)
-			executionContextsTracker = bundlesManager
-					.newTracker(ExecutionContext.class);
+//		if (!useCachedServices)
+//			executionContextsTracker = bundlesManager
+//					.newTracker(ExecutionContext.class);
 	}
 
 	public void destroy() throws Exception {
@@ -285,21 +281,21 @@ public class OsgiExecutionModulesManager extends
 
 	protected synchronized ExecutionFlowDescriptorConverter getExecutionFlowDescriptorConverter(
 			String moduleName, String moduleVersion) {
-		if (useCachedServices) {
+//		if (useCachedServices) {
 			OsgiBundle osgiBundle = new OsgiBundle(moduleName, moduleVersion);
 			if (executionFlowDescriptorConverters.containsKey(osgiBundle))
 				return executionFlowDescriptorConverters.get(osgiBundle);
 			else
 				return defaultDescriptorConverter;
-		} else {
-			// Check whether a descriptor converter is published by this module
-			ExecutionFlowDescriptorConverter descriptorConverter = findExecutionFlowDescriptorConverter(
-					moduleName, moduleVersion);
-			if (descriptorConverter == null)
-				return defaultDescriptorConverter;
-			else
-				return descriptorConverter;
-		}
+//		} else {
+//			// Check whether a descriptor converter is published by this module
+//			ExecutionFlowDescriptorConverter descriptorConverter = findExecutionFlowDescriptorConverter(
+//					moduleName, moduleVersion);
+//			if (descriptorConverter == null)
+//				return defaultDescriptorConverter;
+//			else
+//				return descriptorConverter;
+//		}
 	}
 
 	public ModuleDescriptor getModuleDescriptor(String moduleName,
