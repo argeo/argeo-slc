@@ -16,20 +16,20 @@
 
 package org.argeo.slc.core.execution;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
+import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.process.SlcExecutionNotifier;
 import org.argeo.slc.process.SlcExecutionStep;
 
+/** The thread group attached to a given {@link SlcExecution}. */
 public class ProcessThreadGroup extends ThreadGroup {
+	private final ExecutionModulesManager executionModulesManager;
 	private final ProcessThread processThread;
 
-	public ProcessThreadGroup(ProcessThread processThread) {
+	public ProcessThreadGroup(ExecutionModulesManager executionModulesManager,
+			ProcessThread processThread) {
 		super("SLC Process #" + processThread.getSlcProcess().getUuid()
 				+ " thread group");
+		this.executionModulesManager = executionModulesManager;
 		this.processThread = processThread;
 	}
 
@@ -38,14 +38,9 @@ public class ProcessThreadGroup extends ThreadGroup {
 	}
 
 	public void dispatchAddStep(SlcExecutionStep step) {
-		processThread.getSlcProcess().getSteps().add(step);
-		List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
-		steps.add(step);
-		for (Iterator<SlcExecutionNotifier> it = processThread
-				.getExecutionModulesManager().getSlcExecutionNotifiers()
-				.iterator(); it.hasNext();) {
-			it.next().addSteps(processThread.getSlcProcess(), steps);
-		}
+		SlcExecution slcProcess = processThread.getSlcProcess();
+		slcProcess.getSteps().add(step);
+		executionModulesManager.dispatchAddStep(slcProcess, step);
 	}
 
 }

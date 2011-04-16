@@ -48,14 +48,14 @@ public class ExecutionAspect {
 
 		if (log.isDebugEnabled())
 			logStackEvent("=> ", executionFlow);
-		
+
 		try {
 			// Actually execute the flow
 			pjp.proceed();
 		} finally {
 			if (log.isDebugEnabled())
 				logStackEvent("<= ", executionFlow);
-	
+
 			executionStack.leaveFlow(executionFlow);
 		}
 	}
@@ -104,16 +104,21 @@ public class ExecutionAspect {
 
 	protected void logStackEvent(String symbol, ExecutionFlow executionFlow) {
 		Integer stackSize = executionStack.getStackSize();
-		log.debug(depthSpaces(stackSize) + symbol + executionFlow + " #"
-				+ executionStack.getCurrentStackLevelUuid() + ", depth="
-				+ stackSize);
+		if (log.isTraceEnabled())
+			log.debug(depthSpaces(stackSize) + symbol + executionFlow + " #"
+					+ executionStack.getCurrentStackLevelUuid() + ", depth="
+					+ stackSize);
+		else if (log.isDebugEnabled())
+			log.debug(depthSpaces(stackSize) + symbol + executionFlow);
 	}
 
 	protected void logRunnableExecution(ExecutionFlow executionFlow,
 			Runnable runnable) {
 		Integer stackSize = executionStack.getStackSize();
-		log.debug(depthSpaces(stackSize + 1)
-				+ runnable.getClass().getSimpleName() + " in " + executionFlow);
+		if (log.isDebugEnabled())
+			log.debug(depthSpaces(stackSize + 1)
+					+ runnable.getClass().getSimpleName() + " in "
+					+ executionFlow);
 	}
 
 	private String depthSpaces(int depth) {

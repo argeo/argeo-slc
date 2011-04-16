@@ -17,42 +17,41 @@
 package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.process.SlcExecutionNotifier;
 
 /** Thread of the SLC Process, starting the sub executions. */
 public class ProcessThread extends Thread {
 	private final static Log log = LogFactory.getLog(ProcessThread.class);
 
-	private final AbstractExecutionModulesManager executionModulesManager;
+	private final ExecutionModulesManager executionModulesManager;
 	private final SlcExecution slcProcess;
 	private final ProcessThreadGroup processThreadGroup;
 	private final List<RealizedFlow> flowsToProcess = new ArrayList<RealizedFlow>();
 
 	private Boolean hadAnError = false;
 
-	public ProcessThread(
-			AbstractExecutionModulesManager executionModulesManager,
+	public ProcessThread(ExecutionModulesManager executionModulesManager,
 			SlcExecution slcExecution) {
 		super(executionModulesManager.getProcessesThreadGroup(),
 				"SLC Process #" + slcExecution.getUuid());
 		this.executionModulesManager = executionModulesManager;
 		this.slcProcess = slcExecution;
-		processThreadGroup = new ProcessThreadGroup(this);
+		processThreadGroup = new ProcessThreadGroup(executionModulesManager,
+				this);
 	}
 
 	public void run() {
-		log.info("\n##\n## Process SLC Execution " + slcProcess + "\n##\n");
+		log.info("\n##\n## SLC Process " + slcProcess + " STARTED\n##");
 
 		slcProcess.setStatus(SlcExecution.STATUS_RUNNING);
-		dispatchUpdateStatus(slcProcess, SlcExecution.STATUS_SCHEDULED,
-				SlcExecution.STATUS_RUNNING);
+		executionModulesManager.dispatchUpdateStatus(slcProcess,
+				SlcExecution.STATUS_SCHEDULED, SlcExecution.STATUS_RUNNING);
 
 		flowsToProcess.addAll(slcProcess.getRealizedFlows());
 
@@ -61,29 +60,30 @@ public class ProcessThread extends Thread {
 			ExecutionThread thread = new ExecutionThread(this, flow);
 			thread.start();
 
-			synchronized (this) {
-				try {
-					wait();
-				} catch (InterruptedException e) {
-					// silent
-				}
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				log.error("Flow " + flow + " was interrupted", e);
 			}
+
+			// synchronized (this) {
+			// try {
+			// wait();
+			// } catch (InterruptedException e) {
+			// // silent
+			// }
+			// }
 		}
 
+		// TODO: error management at flow level?
 		if (hadAnError)
 			slcProcess.setStatus(SlcExecution.STATUS_ERROR);
 		else
 			slcProcess.setStatus(SlcExecution.STATUS_FINISHED);
-		dispatchUpdateStatus(slcProcess, SlcExecution.STATUS_RUNNING,
-				slcProcess.getStatus());
-	}
+		executionModulesManager.dispatchUpdateStatus(slcProcess,
+				SlcExecution.STATUS_RUNNING, slcProcess.getStatus());
 
-	protected void dispatchUpdateStatus(SlcExecution slcExecution,
-			String oldStatus, String newStatus) {
-		for (Iterator<SlcExecutionNotifier> it = executionModulesManager
-				.getSlcExecutionNotifiers().iterator(); it.hasNext();) {
-			it.next().updateStatus(slcExecution, oldStatus, newStatus);
-		}
+		log.info("## SLC Process " + slcProcess + " COMPLETED");
 	}
 
 	public void notifyError() {
@@ -91,7 +91,7 @@ public class ProcessThread extends Thread {
 	}
 
 	public synchronized void flowCompleted() {
-		notifyAll();
+		// notifyAll();
 	}
 
 	public SlcExecution getSlcProcess() {
@@ -102,7 +102,7 @@ public class ProcessThread extends Thread {
 		return processThreadGroup;
 	}
 
-	public AbstractExecutionModulesManager getExecutionModulesManager() {
+	public ExecutionModulesManager getExecutionModulesManager() {
 		return executionModulesManager;
 	}
 }

@@ -18,6 +18,7 @@ package org.argeo.slc.execution;
 
 import org.argeo.slc.deploy.Module;
 
+/** Listen to events on execution modules. */
 public interface ExecutionModulesListener {
 	public void executionModuleAdded(Module module,
 			ExecutionContext executionContext);

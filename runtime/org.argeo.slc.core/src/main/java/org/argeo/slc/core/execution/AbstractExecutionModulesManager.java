@@ -17,6 +17,7 @@
 package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,9 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionNotifier;
+import org.argeo.slc.process.SlcExecutionStep;
 
+/** Provides the base feature of an execution module manager. */
 public abstract class AbstractExecutionModulesManager implements
 		ExecutionModulesManager {
 	private final static Log log = LogFactory
@@ -81,6 +84,23 @@ public abstract class AbstractExecutionModulesManager implements
 		//
 	}
 
+	public void dispatchUpdateStatus(SlcExecution slcExecution,
+			String oldStatus, String newStatus) {
+		for (Iterator<SlcExecutionNotifier> it = getSlcExecutionNotifiers()
+				.iterator(); it.hasNext();) {
+			it.next().updateStatus(slcExecution, oldStatus, newStatus);
+		}
+	}
+
+	public void dispatchAddStep(SlcExecution slcExecution, SlcExecutionStep step) {
+		List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
+		steps.add(step);
+		for (Iterator<SlcExecutionNotifier> it = getSlcExecutionNotifiers()
+				.iterator(); it.hasNext();) {
+			it.next().addSteps(slcExecution, steps);
+		}
+	}
+
 	public void setSlcExecutionNotifiers(
 			List<SlcExecutionNotifier> slcExecutionNotifiers) {
 		this.slcExecutionNotifiers = slcExecutionNotifiers;
@@ -94,7 +114,7 @@ public abstract class AbstractExecutionModulesManager implements
 		return processesThreadGroup;
 	}
 
-	public List<ExecutionModulesListener> getExecutionModulesListeners() {
+	protected List<ExecutionModulesListener> getExecutionModulesListeners() {
 		return executionModulesListeners;
 	}
 
