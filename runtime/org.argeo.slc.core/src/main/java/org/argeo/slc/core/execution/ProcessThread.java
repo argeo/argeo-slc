@@ -47,7 +47,8 @@ public class ProcessThread extends Thread {
 	}
 
 	public void run() {
-		log.info("\n##\n## SLC Process " + slcProcess + " STARTED\n##");
+		log.info("\n##\n## SLC Process #" + slcProcess.getUuid()
+				+ " STARTED\n##\n");
 
 		slcProcess.setStatus(SlcExecution.STATUS_RUNNING);
 		executionModulesManager.dispatchUpdateStatus(slcProcess,
@@ -83,7 +84,7 @@ public class ProcessThread extends Thread {
 		executionModulesManager.dispatchUpdateStatus(slcProcess,
 				SlcExecution.STATUS_RUNNING, slcProcess.getStatus());
 
-		log.info("## SLC Process " + slcProcess + " COMPLETED");
+		log.info("\n## SLC Process #" + slcProcess.getUuid() + " COMPLETED\n");
 	}
 
 	public void notifyError() {

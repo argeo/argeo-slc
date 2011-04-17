@@ -26,7 +26,6 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
-import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
@@ -40,7 +39,6 @@ public abstract class AbstractExecutionModulesManager implements
 			.getLog(AbstractExecutionModulesManager.class);
 
 	private List<SlcExecutionNotifier> slcExecutionNotifiers = new ArrayList<SlcExecutionNotifier>();
-	private List<ExecutionModulesListener> executionModulesListeners = new ArrayList<ExecutionModulesListener>();
 
 	private ThreadGroup processesThreadGroup = new ThreadGroup("Processes");
 
@@ -112,15 +110,6 @@ public abstract class AbstractExecutionModulesManager implements
 
 	public ThreadGroup getProcessesThreadGroup() {
 		return processesThreadGroup;
-	}
-
-	protected List<ExecutionModulesListener> getExecutionModulesListeners() {
-		return executionModulesListeners;
-	}
-
-	public void setExecutionModulesListeners(
-			List<ExecutionModulesListener> executionModulesListeners) {
-		this.executionModulesListeners = executionModulesListeners;
 	}
 
 }

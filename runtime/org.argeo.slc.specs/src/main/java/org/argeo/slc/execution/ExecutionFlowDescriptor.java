@@ -39,10 +39,6 @@ import java.util.Map;
  * 
  * Generally, values object are either a <code>PrimitiveAccessor</code> or a
  * <code>RefValue</code> but can be other objects.
- * 
- * @author bsinou
- * 
- * 
  */
 public class ExecutionFlowDescriptor implements Serializable {
 	private static final long serialVersionUID = 7101944857038041216L;
@@ -66,10 +62,18 @@ public class ExecutionFlowDescriptor implements Serializable {
 		return name;
 	}
 
+	/**
+	 * @deprecated will be removed in SLC 2.0, the path should be the part of
+	 *             the name with '/'
+	 */
 	public String getPath() {
 		return path;
 	}
 
+	/**
+	 * @deprecated will be removed in SLC 2.0, the path should be the part of
+	 *             the name with '/'
+	 */
 	public void setPath(String path) {
 		this.path = path;
 	}

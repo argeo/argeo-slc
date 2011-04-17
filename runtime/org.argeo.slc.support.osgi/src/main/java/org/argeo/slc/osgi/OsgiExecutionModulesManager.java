@@ -43,6 +43,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.springframework.osgi.service.importer.OsgiServiceLifecycleListener;
 
+/** Execution modules manager implementation based on an OSGi runtime. */
 public class OsgiExecutionModulesManager extends
 		AbstractExecutionModulesManager implements OsgiServiceLifecycleListener {
 
@@ -54,6 +55,8 @@ public class OsgiExecutionModulesManager extends
 	private Map<OsgiBundle, ExecutionFlowDescriptorConverter> executionFlowDescriptorConverters = new HashMap<OsgiBundle, ExecutionFlowDescriptorConverter>();
 	private Map<OsgiBundle, Set<ExecutionFlow>> executionFlows = new HashMap<OsgiBundle, Set<ExecutionFlow>>();
 	private ExecutionFlowDescriptorConverter defaultDescriptorConverter = new DefaultExecutionFlowDescriptorConverter();
+
+	private List<ExecutionModulesListener> executionModulesListeners = new ArrayList<ExecutionModulesListener>();
 
 	public synchronized ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version) {
@@ -135,10 +138,6 @@ public class OsgiExecutionModulesManager extends
 				+ ")(Bundle-Version=" + moduleVersion + "))";
 		return bundlesManager.getSingleService(
 				ExecutionFlowDescriptorConverter.class, filter);
-	}
-
-	public void setBundlesManager(BundlesManager bundlesManager) {
-		this.bundlesManager = bundlesManager;
 	}
 
 	/**
@@ -247,36 +246,102 @@ public class OsgiExecutionModulesManager extends
 			return obj.toString();
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	/*
+	 * REGISTRATION
+	 */
+
+	/** Registers an execution context. */
+	public synchronized void register(ExecutionContext executionContext,
+			Map<String, String> properties) {
+		OsgiBundle osgiBundle = asOsgiBundle(properties);
+		Bundle bundle = bundlesManager.findRelatedBundle(osgiBundle);
+		osgiBundle.setLabel(getHeaderSafe(bundle, Constants.BUNDLE_NAME));
+		osgiBundle.setDescription(getHeaderSafe(bundle,
+				Constants.BUNDLE_DESCRIPTION));
+		executionContexts.put(osgiBundle, executionContext);
+		if (log.isTraceEnabled())
+			log.trace("Registered execution context from " + osgiBundle);
+		// Notify
+		for (ExecutionModulesListener listener : executionModulesListeners)
+			listener.executionModuleAdded(osgiBundle, executionContext);
+	}
+
+	/** Unregisters an execution context. */
+	public synchronized void unregister(ExecutionContext executionContext,
+			Map<String, String> properties) {
+		OsgiBundle osgiBundle = asOsgiBundle(properties);
+		if (executionContexts.containsKey(osgiBundle)) {
+			executionContexts.remove(osgiBundle);
+			if (log.isTraceEnabled())
+				log.trace("Removed execution context from " + osgiBundle);
+			// Notify
+			for (ExecutionModulesListener listener : executionModulesListeners)
+				listener.executionModuleRemoved(osgiBundle, executionContext);
+		}
+	}
+
+	/** Registers an execution flow. */
+	public synchronized void register(ExecutionFlow executionFlow,
+			Map<String, String> properties) {
+		OsgiBundle osgiBundle = asOsgiBundle(properties);
+		if (!executionFlows.containsKey(osgiBundle)) {
+			executionFlows.put(osgiBundle, new HashSet<ExecutionFlow>());
+		}
+		executionFlows.get(osgiBundle).add(executionFlow);
+		if (log.isTraceEnabled())
+			log.trace("Registered " + executionFlow + " from " + osgiBundle);
+
+		for (ExecutionModulesListener listener : executionModulesListeners)
+			listener.executionFlowAdded(osgiBundle, executionFlow);
+	}
+
+	/** Unregisters an execution flow. */
+	public synchronized void unregister(ExecutionFlow executionFlow,
+			Map<String, String> properties) {
+		OsgiBundle osgiBundle = asOsgiBundle(properties);
+		if (executionFlows.containsKey(osgiBundle)) {
+			Set<ExecutionFlow> flows = executionFlows.get(osgiBundle);
+			flows.remove(executionFlow);
+			if (log.isTraceEnabled())
+				log.debug("Removed " + executionFlow + " from " + osgiBundle);
+			if (flows.size() == 0) {
+				executionFlows.remove(osgiBundle);
+				if (log.isTraceEnabled())
+					log.trace("Removed flows set from " + osgiBundle);
+			}
+			for (ExecutionModulesListener listener : executionModulesListeners)
+				listener.executionFlowRemoved(osgiBundle, executionFlow);
+		}
+	}
+
+	/** Registers an execution module listener. */
+	public synchronized void register(
+			ExecutionModulesListener executionModulesListener,
+			Map<String, String> properties) {
+		// sync with current state
+		for (OsgiBundle osgiBundle : executionContexts.keySet()) {
+			executionModulesListener.executionModuleAdded(osgiBundle,
+					executionContexts.get(osgiBundle));
+		}
+		for (OsgiBundle osgiBundle : executionFlows.keySet()) {
+			for (ExecutionFlow executionFlow : executionFlows.get(osgiBundle))
+				executionModulesListener.executionFlowAdded(osgiBundle,
+						executionFlow);
+		}
+		executionModulesListeners.add(executionModulesListener);
+	}
+
+	/** Unregisters an execution module listener. */
+	public synchronized void unregister(
+			ExecutionModulesListener executionModulesListener,
+			Map<String, String> properties) {
+		executionModulesListeners.remove(executionModulesListener);
+	}
+
+	@SuppressWarnings({ "rawtypes" })
 	public synchronized void bind(Object service, Map properties)
 			throws Exception {
-		if (service instanceof ExecutionContext) {
-			ExecutionContext executionContext = (ExecutionContext) service;
-			OsgiBundle osgiBundle = asOsgiBundle(properties);
-			Bundle bundle = bundlesManager.findRelatedBundle(osgiBundle);
-			osgiBundle.setLabel(getHeaderSafe(bundle, Constants.BUNDLE_NAME));
-			osgiBundle.setDescription(getHeaderSafe(bundle,
-					Constants.BUNDLE_DESCRIPTION));
-			executionContexts.put(osgiBundle, executionContext);
-			if (log.isTraceEnabled())
-				log.debug("Registered execution context from " + osgiBundle);
-			// Notify
-			for (ExecutionModulesListener listener : getExecutionModulesListeners())
-				listener.executionModuleAdded(osgiBundle, executionContext);
-
-		} else if (service instanceof ExecutionFlow) {
-			ExecutionFlow executionFlow = (ExecutionFlow) service;
-			OsgiBundle osgiBundle = asOsgiBundle(properties);
-			if (!executionFlows.containsKey(osgiBundle)) {
-				executionFlows.put(osgiBundle, new HashSet());
-			}
-			executionFlows.get(osgiBundle).add(executionFlow);
-			if (log.isTraceEnabled())
-				log.debug("Registered " + executionFlow + " from " + osgiBundle);
-			for (ExecutionModulesListener listener : getExecutionModulesListeners())
-				listener.executionFlowAdded(osgiBundle, executionFlow);
-
-		} else if (service instanceof ExecutionFlowDescriptorConverter) {
+		if (service instanceof ExecutionFlowDescriptorConverter) {
 			ExecutionFlowDescriptorConverter executionFlowDescriptorConverter = (ExecutionFlowDescriptorConverter) service;
 			OsgiBundle osgiBundle = asOsgiBundle(properties);
 			executionFlowDescriptorConverters.put(osgiBundle,
@@ -292,36 +357,7 @@ public class OsgiExecutionModulesManager extends
 	@SuppressWarnings("rawtypes")
 	public synchronized void unbind(Object service, Map properties)
 			throws Exception {
-		if (service instanceof ExecutionContext) {
-			OsgiBundle osgiBundle = asOsgiBundle(properties);
-			if (executionContexts.containsKey(osgiBundle)) {
-				ExecutionContext executionContext = executionContexts
-						.remove(osgiBundle);
-				if (log.isTraceEnabled())
-					log.debug("Removed execution context from " + osgiBundle);
-				// Notify
-				for (ExecutionModulesListener listener : getExecutionModulesListeners())
-					listener.executionModuleRemoved(osgiBundle,
-							executionContext);
-			}
-		} else if (service instanceof ExecutionFlow) {
-			ExecutionFlow executionFlow = (ExecutionFlow) service;
-			OsgiBundle osgiBundle = asOsgiBundle(properties);
-			if (executionFlows.containsKey(osgiBundle)) {
-				Set flows = executionFlows.get(osgiBundle);
-				flows.remove(executionFlow);
-				if (log.isTraceEnabled())
-					log.debug("Removed " + executionFlow + " from "
-							+ osgiBundle);
-				if (flows.size() == 0) {
-					executionFlows.remove(osgiBundle);
-					if (log.isTraceEnabled())
-						log.debug("Removed flows set from " + osgiBundle);
-				}
-				for (ExecutionModulesListener listener : getExecutionModulesListeners())
-					listener.executionFlowRemoved(osgiBundle, executionFlow);
-			}
-		} else if (service instanceof ExecutionFlowDescriptorConverter) {
+		if (service instanceof ExecutionFlowDescriptorConverter) {
 			OsgiBundle osgiBundle = asOsgiBundle(properties);
 			if (executionFlowDescriptorConverters.containsKey(osgiBundle)) {
 				executionFlowDescriptorConverters.remove(osgiBundle);
@@ -350,8 +386,13 @@ public class OsgiExecutionModulesManager extends
 			return properties.get(key).toString();
 	}
 
+	public void setBundlesManager(BundlesManager bundlesManager) {
+		this.bundlesManager = bundlesManager;
+	}
+
 	public void setDefaultDescriptorConverter(
 			ExecutionFlowDescriptorConverter defaultDescriptorConverter) {
 		this.defaultDescriptorConverter = defaultDescriptorConverter;
 	}
+
 }

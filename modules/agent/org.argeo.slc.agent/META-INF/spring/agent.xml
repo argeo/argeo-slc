@@ -7,7 +7,6 @@
 	<!-- Manager -->
 	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager">
 		<property name="slcExecutionNotifiers" ref="slcExecutionListeners" />
-		<property name="executionModulesListeners" ref="executionModulesListeners" />
 		<property name="bundlesManager" ref="bundlesManager" />
 	</bean>
 

@@ -16,22 +16,26 @@
 
 package org.argeo.slc.execution;
 
+/** Abstraction of an execution that can be identified and configured. */
 public interface ExecutionFlow extends Runnable {
+	/** Retrieve an immutable parameter */
 	public Object getParameter(String key);
 
+	/** Whether this immutable parameter is set */
 	public Boolean isSetAsParameter(String key);
 
+	/** The specifications of the execution flow. */
 	public ExecutionSpec getExecutionSpec();
 
+	/**
+	 * The name of this execution flow. Can contains '/' which will be
+	 * interpreted by UIs as a hierarchy;
+	 */
 	public String getName();
 
-	public String getPath();
-
 	/**
-	 * Actually performs the execution of the Runnable. This method should never
-	 * be called directly. The implementation should provide a reasonable
-	 * default, but it is meant to be intercepted either to analyze what is run
-	 * or to override the default behavior.
+	 * @deprecated will be removed in SLC 2.0, the path should be the part of
+	 *             the name with '/'
 	 */
-	public void doExecuteRunnable(Runnable runnable);
+	public String getPath();
 }

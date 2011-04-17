@@ -6,20 +6,27 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<reference id="jcrRepository" interface="javax.jcr.Repository" />
+	<!-- REFERENCES -->
+	<reference id="nodeRepository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=slc)" />
+	<reference id="systemExecutionService" interface="org.argeo.security.SystemExecutionService" />
 
-	<service interface="org.argeo.slc.dao.process.SlcExecutionDao"
-		ref="slcExecutionDao" />
-	<service interface="org.argeo.slc.dao.test.tree.TreeTestResultDao"
-		ref="testResultDao" />
-	<service interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao"
-		ref="testResultCollectionDao" />
-	<service interface="org.argeo.slc.dao.test.TestRunDescriptorDao"
-		ref="testRunDescriptorDao" />
-	<service interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao"
-		ref="slcAgentDescriptorDao" />
+	<!-- SERVICES -->
+	<service interface="org.argeo.slc.execution.ExecutionModulesListener"
+		ref="executionModulesListener" />
 
-	<service
-		interface="org.springframework.web.context.request.WebRequestInterceptor"
-		ref="osivInterceptor" />
+	<!-- <service interface="org.argeo.slc.dao.process.SlcExecutionDao" -->
+	<!-- ref="slcExecutionDao" /> -->
+	<!-- <service interface="org.argeo.slc.dao.test.tree.TreeTestResultDao" -->
+	<!-- ref="testResultDao" /> -->
+	<!-- <service interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao" -->
+	<!-- ref="testResultCollectionDao" /> -->
+	<!-- <service interface="org.argeo.slc.dao.test.TestRunDescriptorDao" -->
+	<!-- ref="testRunDescriptorDao" /> -->
+	<!-- <service interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao" -->
+	<!-- ref="slcAgentDescriptorDao" /> -->
+
+	<!-- <service -->
+	<!-- interface="org.springframework.web.context.request.WebRequestInterceptor" -->
+	<!-- ref="osivInterceptor" /> -->
 </beans:beans>

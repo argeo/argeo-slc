@@ -27,6 +27,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
 @Aspect
+/** Aspect intercepting calls on execution flows and contexts. */
 public class ExecutionAspect {
 	private final static Log log = LogFactory.getLog(ExecutionAspect.class);
 
@@ -60,16 +61,6 @@ public class ExecutionAspect {
 		}
 	}
 
-	@Around("runnableExecution()")
-	public void aroundRunnable(ProceedingJoinPoint pjp) throws Throwable {
-		ExecutionFlow executionFlow = (ExecutionFlow) pjp.getTarget();
-		Runnable runnable = (Runnable) pjp.getArgs()[0];
-		if (log.isDebugEnabled())
-			logRunnableExecution(executionFlow, runnable);
-		// Actually execute the runnable
-		pjp.proceed();
-	}
-
 	@Around("getVariable()")
 	public Object aroundGetVariable(ProceedingJoinPoint pjp) throws Throwable {
 		Object obj = pjp.proceed();
@@ -84,10 +75,6 @@ public class ExecutionAspect {
 
 	@Pointcut("execution(void org.argeo.slc.execution.ExecutionFlow.run())")
 	public void flowExecution() {
-	}
-
-	@Pointcut("execution(void org.argeo.slc.execution.ExecutionFlow.doExecuteRunnable(..))")
-	public void runnableExecution() {
 	}
 
 	@Pointcut("execution(* org.argeo.slc.execution.ExecutionContext.getVariable(..))")
