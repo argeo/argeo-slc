@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
@@ -18,8 +19,6 @@ import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
 import org.argeo.eclipse.ui.jcr.NodesWrapper;
@@ -35,6 +34,7 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -52,8 +52,8 @@ import org.eclipse.ui.part.ViewPart;
 
 public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		SlcNames {
-	private final static Log log = LogFactory
-			.getLog(JcrExecutionModulesView.class);
+	// private final static Log log = LogFactory
+	// .getLog(JcrExecutionModulesView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.jcrExecutionModulesView";
 
@@ -65,11 +65,13 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+		ColumnViewerToolTipSupport.enableFor(viewer);
 
 		ViewContentProvider contentProvider = new ViewContentProvider(session);
 
 		viewer.setContentProvider(contentProvider);
-		viewer.setLabelProvider(new ViewLabelProvider());
+		final ViewLabelProvider viewLabelProvider = new ViewLabelProvider();
+		viewer.setLabelProvider(viewLabelProvider);
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
@@ -215,6 +217,14 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 				return ClientUiPlugin.getDefault().getImageRegistry()
 						.get("folder");
 		}
+
+		public String getToolTipText(Node node) throws RepositoryException {
+			if (node.isNodeType(SlcTypes.SLC_MODULE)
+					&& node.hasProperty(Property.JCR_DESCRIPTION))
+				return node.getProperty(Property.JCR_DESCRIPTION).getString();
+			return super.getToolTipText(node);
+		}
+
 	}
 
 	class ViewDoubleClickListener implements IDoubleClickListener {
