@@ -6,5 +6,6 @@ public interface SlcNames {
 	public final static String SLC_NAME = "slc:name";
 	public final static String SLC_VERSION = "slc:version";
 	public final static String SLC_FLOWS = "slc:flows";
+	public final static String SLC_EXECUTION_MODULES = "slc:executionModules";
 
 }

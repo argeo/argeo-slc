@@ -32,8 +32,8 @@
 	<!-- UI Components -->
 	<bundle id="slc.node.jackrabbit" symbolic-name="org.argeo.slc.node.jackrabbit"
 		action="start" />
-	<bundle id="slc.client.agent" symbolic-name="org.argeo.slc.client.agent"
-		action="start" />
+<!-- 	<bundle id="slc.client.agent" symbolic-name="org.argeo.slc.client.agent" -->
+<!-- 		action="start" /> -->
 	<bundle id="slc.client.hibernate" symbolic-name="org.argeo.slc.client.hibernate"
 		action="start" />
 	<bundle id="slc.client.oxm" symbolic-name="org.argeo.slc.client.oxm"

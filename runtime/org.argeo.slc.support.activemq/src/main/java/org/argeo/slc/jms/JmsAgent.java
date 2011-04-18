@@ -33,15 +33,12 @@ import org.argeo.slc.msg.MsgConstants;
 import org.argeo.slc.msg.ReferenceList;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessagePostProcessor;
 
-/** JMS based implementation of SLC Agent. */
-public class JmsAgent extends DefaultAgent implements InitializingBean,
-		DisposableBean, MessageListener {
+/** JMS based implementation of an SLC Agent. */
+public class JmsAgent extends DefaultAgent implements MessageListener {
 	public final static String PROPERTY_QUERY = "query";
 	public final static String QUERY_PING_ALL = "pingAll";
 
@@ -53,24 +50,24 @@ public class JmsAgent extends DefaultAgent implements InitializingBean,
 
 	private Destination responseDestination;
 
-	public void afterPropertiesSet() throws Exception {
+	public void init() {
+		super.init();
 		try {
 			jmsTemplate.convertAndSend(agentRegister, getAgentDescriptor());
 			log.info("Agent #" + getAgentUuid() + " registered to "
 					+ agentRegister);
 		} catch (JmsException e) {
-			log
-					.warn("Could not register agent "
-							+ getAgentDescriptor().getUuid()
-							+ " to server: "
-							+ e.getMessage()
-							+ ". The agent will stay offline but will keep listening for a ping all sent by server.");
+			log.warn("Could not register agent "
+					+ getAgentDescriptor().getUuid()
+					+ " to server: "
+					+ e.getMessage()
+					+ ". The agent will stay offline but will keep listening for a ping all sent by server.");
 			if (log.isTraceEnabled())
 				log.debug("Original error.", e);
 		}
 	}
 
-	public void destroy() throws Exception {
+	public void dispose() {
 		try {
 			jmsTemplate.convertAndSend(agentUnregister, getAgentDescriptor());
 			log.info("Agent #" + getAgentUuid() + " unregistered from "
@@ -81,6 +78,7 @@ public class JmsAgent extends DefaultAgent implements InitializingBean,
 			if (log.isTraceEnabled())
 				log.debug("Original error.", e);
 		}
+		super.dispose();
 	}
 
 	public void setAgentRegister(Destination agentRegister) {

@@ -28,22 +28,39 @@ import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 
+/** Implements the base methods of an SLC agent. */
 public class DefaultAgent implements SlcAgent {
-	// private final static Log log = LogFactory.getLog(AbstractAgent.class);
-
-	private final SlcAgentDescriptor agentDescriptor;
+	private SlcAgentDescriptor agentDescriptor;
 	private ExecutionModulesManager modulesManager;
 
-	public DefaultAgent() {
+	/*
+	 * LIFECYCLE
+	 */
+	public void init() {
 		try {
 			agentDescriptor = new SlcAgentDescriptor();
-			agentDescriptor.setUuid(UUID.randomUUID().toString());
+			agentDescriptor.setUuid(initAgentUuid());
 			agentDescriptor.setHost(InetAddress.getLocalHost().getHostName());
 		} catch (UnknownHostException e) {
 			throw new SlcException("Unable to create agent descriptor.", e);
 		}
 	}
 
+	public void dispose() {
+
+	}
+
+	/**
+	 * Called during initialization in order to determines the agent UUID. To be
+	 * overridden. By default creates a new one per instance.
+	 */
+	protected String initAgentUuid() {
+		return UUID.randomUUID().toString();
+	}
+
+	/*
+	 * SLC AGENT
+	 */
 	public void runSlcExecution(final SlcExecution slcExecution) {
 		modulesManager.process(slcExecution);
 	}
@@ -61,12 +78,11 @@ public class DefaultAgent implements SlcAgent {
 		return true;
 	}
 
+	/*
+	 * BEAN
+	 */
 	public void setModulesManager(ExecutionModulesManager modulesManager) {
 		this.modulesManager = modulesManager;
-	}
-
-	public ExecutionModulesManager getModulesManager() {
-		return modulesManager;
 	}
 
 	protected SlcAgentDescriptor getAgentDescriptor() {
@@ -74,7 +90,7 @@ public class DefaultAgent implements SlcAgent {
 	}
 
 	public String getAgentUuid() {
-		return getAgentDescriptor().getUuid();
+		return agentDescriptor.getUuid();
 	}
 
 	@Override

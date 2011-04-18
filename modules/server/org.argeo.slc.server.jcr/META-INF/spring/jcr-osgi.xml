@@ -9,11 +9,17 @@
 	<!-- REFERENCES -->
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=slc)" />
-	<reference id="systemExecutionService" interface="org.argeo.security.SystemExecutionService" />
+
+	<reference id="modulesManager"
+		interface="org.argeo.slc.execution.ExecutionModulesManager" />
+	<reference id="authenticationManager"
+		interface="org.springframework.security.AuthenticationManager" />
 
 	<!-- SERVICES -->
 	<service interface="org.argeo.slc.execution.ExecutionModulesListener"
 		ref="executionModulesListener" />
+	<service ref="agent" interface="org.argeo.slc.runtime.SlcAgentFactory" />
+	<service ref="agent" interface="org.argeo.slc.runtime.SlcAgent" />
 
 	<!-- <service interface="org.argeo.slc.dao.process.SlcExecutionDao" -->
 	<!-- ref="slcExecutionDao" /> -->

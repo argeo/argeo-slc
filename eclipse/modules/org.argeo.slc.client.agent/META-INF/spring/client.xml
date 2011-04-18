@@ -9,12 +9,12 @@
 	<bean id="slcAgentFactory" class="org.argeo.slc.core.runtime.SimpleAgentFactory">
 		<property name="agents">
 			<list>
-			<ref bean="slcAgent"/>
+				<ref bean="slcAgent" />
 			</list>
 		</property>
 	</bean>
 
 	<bean id="slcAgent" class="org.argeo.slc.core.runtime.DefaultAgent"
-		p:modulesManager-ref="modulesManager" />
+		init-method="init" destroy-method="dispose" p:modulesManager-ref="modulesManager" />
 
 </beans>

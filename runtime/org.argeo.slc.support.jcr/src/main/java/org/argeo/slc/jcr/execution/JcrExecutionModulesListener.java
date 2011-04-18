@@ -15,21 +15,24 @@ import org.argeo.slc.deploy.Module;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionModulesListener;
+import org.argeo.slc.jcr.SlcJcrConstants;
+import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.runtime.SlcAgent;
 
 /**
- * Synchronizes the execution runtime with JCR. For the time being the state is
- * completely reset from one start to another.
+ * Synchronizes the local execution runtime with a JCR repository. For the time
+ * being the state is completely reset from one start to another.
  */
 public class JcrExecutionModulesListener implements ExecutionModulesListener {
 	private final static Log log = LogFactory
 			.getLog(JcrExecutionModulesListener.class);
 
-	private String modulesPath = "/slc/modules";
-
 	private Session session;
+	private SlcAgent agent;
 
 	public void init() {
 		try {
+			String modulesPath = getExecutionModulesPath();
 			// clean up previous state
 			if (session.nodeExists(modulesPath))
 				session.getNode(modulesPath).remove();
@@ -45,6 +48,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 
 	public void dispose() {
 		try {
+			String modulesPath = getExecutionModulesPath();
 			// clean up previous state
 			if (session.nodeExists(modulesPath))
 				session.getNode(modulesPath).remove();
@@ -60,7 +64,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 	public void executionModuleAdded(Module module,
 			ExecutionContext executionContext) {
 		try {
-			Node base = session.getNode(modulesPath);
+			Node base = session.getNode(getExecutionModulesPath());
 			Node moduleName = base.hasNode(module.getName()) ? base
 					.getNode(module.getName()) : base.addNode(module.getName());
 			Node moduleVersion = moduleName.hasNode(module.getVersion()) ? moduleName
@@ -76,7 +80,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 	public void executionModuleRemoved(Module module,
 			ExecutionContext executionContext) {
 		try {
-			Node base = session.getNode(modulesPath);
+			Node base = session.getNode(getExecutionModulesPath());
 			if (base.hasNode(module.getName())) {
 				Node moduleName = base.getNode(module.getName());
 				if (moduleName.hasNode(module.getVersion()))
@@ -96,7 +100,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 		try {
 			Node flowNode;
 			if (!session.nodeExists(path)) {
-				Node base = session.getNode(modulesPath);
+				Node base = session.getNode(getExecutionModulesPath());
 				Node moduleNode = base.getNode(module.getName() + '/'
 						+ module.getVersion());
 				String relativePath = getExecutionFlowRelativePath(executionFlow);
@@ -143,8 +147,8 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 	protected String getExecutionFlowPath(Module module,
 			ExecutionFlow executionFlow) {
 		String relativePath = getExecutionFlowRelativePath(executionFlow);
-		return modulesPath + '/' + module.getName() + '/' + module.getVersion()
-				+ '/' + relativePath;
+		return getExecutionModulesPath() + '/' + module.getName() + '/'
+				+ module.getVersion() + '/' + relativePath;
 	}
 
 	/** @return the relative path, never starts with '/' */
@@ -159,8 +163,17 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 		return relativePath;
 	}
 
+	protected String getExecutionModulesPath() {
+		return SlcJcrConstants.VM_AGENT_FACTORY_PATH + '/'
+				+ agent.getAgentUuid() + '/' + SlcNames.SLC_EXECUTION_MODULES;
+	}
+
 	public void setSession(Session session) {
 		this.session = session;
+	}
+
+	public void setAgent(SlcAgent agent) {
+		this.agent = agent;
 	}
 
 }

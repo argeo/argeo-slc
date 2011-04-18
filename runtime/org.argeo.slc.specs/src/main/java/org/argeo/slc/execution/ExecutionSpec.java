@@ -21,8 +21,6 @@ import java.util.Map;
 /**
  * The class implementing this interface defines the map of attributes that are
  * necessary for the corresponding ExecutionFlow.
- * 
- * @author bsinou
  */
 public interface ExecutionSpec {
 	public Map<String, ExecutionSpecAttribute> getAttributes();

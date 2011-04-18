@@ -8,7 +8,8 @@
 	<import resource="classpath:org/argeo/slc/activemq/destinations.xml" />
 
 	<!-- Agent implementation -->
-	<bean id="jmsAgent" class="org.argeo.slc.jms.JmsAgent">
+	<bean id="jmsAgent" class="org.argeo.slc.jms.JmsAgent"
+		init-method="init" destroy-method="dispose">
 		<property name="agentRegister" ref="slcJms.destination.agent.register" />
 		<property name="agentUnregister" ref="slcJms.destination.agent.unregister" />
 		<property name="modulesManager" ref="modulesManager" />
@@ -16,7 +17,7 @@
 		<property name="jmsTemplate" ref="jmsTemplate" />
 	</bean>
 
-	<!--  Listeners -->
+	<!-- Listeners -->
 	<bean id="jmsAgent.listener.request" parent="listenerTemplate">
 		<property name="destination" ref="slcJms.destination.agent.request" />
 		<property name="messageSelector">
@@ -32,7 +33,7 @@
 	<!-- Services -->
 	<bean id="resultListener" class="org.argeo.slc.jms.JmsTreeTestResultListener">
 		<property name="executionEventDestination" ref="slcJms.destination.execution.event" />
-		<property name="onlyOnClose" value="${slc.agent.jms.resultListener.onlyOnClose}"/>
+		<property name="onlyOnClose" value="${slc.agent.jms.resultListener.onlyOnClose}" />
 		<property name="jmsTemplate" ref="jmsTemplate" />
 	</bean>
 	<bean id="attachmentUploader" class="org.argeo.slc.jms.JmsAttachmentUploader">

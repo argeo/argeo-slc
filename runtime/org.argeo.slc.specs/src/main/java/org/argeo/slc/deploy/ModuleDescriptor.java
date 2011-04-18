@@ -18,17 +18,18 @@ package org.argeo.slc.deploy;
 
 import org.argeo.slc.BasicNameVersion;
 
+/** The description of a versioned module. */
 public class ModuleDescriptor extends BasicNameVersion {
-	private static final long serialVersionUID = 3703329250058821882L;
-	private String label;
+	private static final long serialVersionUID = 4310820315478645419L;
+	private String title;
 	private String description;
 
-	public String getLabel() {
-		return label;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setLabel(String label) {
-		this.label = label;
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 	public String getDescription() {
@@ -37,6 +38,16 @@ public class ModuleDescriptor extends BasicNameVersion {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/** @deprecated use {@link #getTitle()} instead */
+	public String getLabel() {
+		return title;
+	}
+
+	/** @deprecated use {@link #setTitle(String)} instead */
+	public void setLabel(String label) {
+		this.title = label;
 	}
 
 }

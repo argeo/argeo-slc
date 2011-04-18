@@ -17,7 +17,6 @@
 package org.argeo.slc.execution;
 
 /**
- * 
  * This interface stands for one attribute of a given flow.
  * 
  * We mainly have two implementations :
@@ -29,13 +28,10 @@ package org.argeo.slc.execution;
  * the application context + the display of some choices among which the end
  * user can choose.
  * 
- * Note :
- * 
+ * @see org.argeo.slc.core.execution.PrimitiveSpecAttribute
+ * @see org.argeo.slc.core.execution.RefSpecAttribute
  * @see org.argeo.slc.core.execution.PrimitiveUtils : this class offers some
  *      helper, among others to cast the various type of primitive attribute.
- * 
- * @author bsinou
- * 
  */
 public interface ExecutionSpecAttribute {
 	public Object getValue();
