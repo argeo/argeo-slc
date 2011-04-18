@@ -1,0 +1,19 @@
+<slc = 'http://www.argeo.org/ns/slc'>
+
+[slc:nameVersion] > nt:base
+mixin
+- slc:name (STRING) m
+- slc:version (STRING) m
+
+[slc:agentProxy] > mix:title
+mixin
+
+[slc:module] > slc:nameVersion,mix:title
+mixin
+
+[slc:executionFlow] > mix:title
+mixin
+- slc:name (STRING) m
+
+
+

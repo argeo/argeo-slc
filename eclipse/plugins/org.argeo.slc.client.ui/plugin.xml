@@ -14,6 +14,13 @@
 	   </view>
 	   <view
 	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+	         icon="icons/execution_module.gif"
+	         id="org.argeo.slc.client.ui.jcrExecutionModulesView"
+	         name="Execution Modules"
+	         restorable="true">
+	   </view>
+	   <view
+	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
 	         icon="icons/results.gif"
 	         id="org.argeo.slc.client.ui.resultListView"
 	         name="Results"
@@ -202,6 +209,7 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             class="org.argeo.slc.client.ui.SlcExecutionPerspective"
+            icon="icons/slc_execution_perspective.gif"
             id="org.argeo.slc.client.ui.slcExecutionPerspective"
             name="SLC Execution">
       </perspective>

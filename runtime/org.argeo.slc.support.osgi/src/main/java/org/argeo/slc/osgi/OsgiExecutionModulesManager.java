@@ -322,7 +322,7 @@ public class OsgiExecutionModulesManager extends
 			Set<ExecutionFlow> flows = executionFlows.get(osgiBundle);
 			flows.remove(executionFlow);
 			if (log.isTraceEnabled())
-				log.debug("Removed " + executionFlow + " from " + osgiBundle);
+				log.trace("Removed " + executionFlow + " from " + osgiBundle);
 			if (flows.size() == 0) {
 				executionFlows.remove(osgiBundle);
 				if (log.isTraceEnabled())

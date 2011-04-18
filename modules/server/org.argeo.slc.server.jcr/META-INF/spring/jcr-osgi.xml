@@ -7,7 +7,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<!-- REFERENCES -->
-	<reference id="nodeRepository" interface="javax.jcr.Repository"
+	<reference id="repository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=slc)" />
 
 	<reference id="modulesManager"

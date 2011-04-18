@@ -25,7 +25,7 @@
 	</bean>
 
 	<bean id="session" class="org.argeo.security.jcr.SecureThreadBoundSession">
-		<property name="repository" ref="nodeRepository" />
+		<property name="repository" ref="repository" />
 	</bean>
 
 	<bean class="org.argeo.security.core.SystemExecutionBeanPostProcessor">

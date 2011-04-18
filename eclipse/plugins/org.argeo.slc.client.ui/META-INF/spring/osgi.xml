@@ -19,6 +19,10 @@
 	<service ref="slcExecutionServiceAdapter" interface="org.argeo.slc.process.SlcExecutionNotifier" />
 
 	<!-- References needed by the current bundle -->
+	<reference id="repository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=slc)" />
+
+
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />
 	<reference id="testManagerService" interface="org.argeo.slc.services.TestManagerService" />
 	<reference id="oxmBean" interface="org.argeo.slc.client.oxm.OxmInterface" />

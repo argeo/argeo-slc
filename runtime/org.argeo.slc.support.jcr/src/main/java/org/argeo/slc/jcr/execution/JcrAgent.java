@@ -11,6 +11,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.runtime.DefaultAgent;
 import org.argeo.slc.jcr.SlcJcrConstants;
+import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
 
@@ -25,6 +26,7 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory {
 		try {
 			Node vmAgentFactoryNode = JcrUtils.mkdirs(session,
 					SlcJcrConstants.VM_AGENT_FACTORY_PATH);
+			vmAgentFactoryNode.addMixin(SlcTypes.SLC_AGENT_PROXY);
 			if (!vmAgentFactoryNode.hasNodes()) {
 				String uuid = UUID.randomUUID().toString();
 				vmAgentFactoryNode.addNode(uuid);

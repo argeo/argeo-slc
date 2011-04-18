@@ -7,7 +7,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +17,7 @@ import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.runtime.SlcAgent;
 
 /**
@@ -72,7 +72,11 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 					.getVersion()) ? moduleName.getNode(moduleDescriptor
 					.getVersion()) : moduleName.addNode(moduleDescriptor
 					.getVersion());
-			moduleVersion.addMixin(NodeType.MIX_TITLE);
+			moduleVersion.addMixin(SlcTypes.SLC_MODULE);
+			moduleVersion.setProperty(SlcNames.SLC_NAME,
+					moduleDescriptor.getName());
+			moduleVersion.setProperty(SlcNames.SLC_VERSION,
+					moduleDescriptor.getVersion());
 			moduleVersion.setProperty(Property.JCR_TITLE,
 					moduleDescriptor.getTitle());
 			moduleVersion.setProperty(Property.JCR_DESCRIPTION,
@@ -105,7 +109,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 			ExecutionFlowDescriptor executionFlow) {
 		String path = getExecutionFlowPath(module, executionFlow);
 		try {
-			Node flowNode;
+			Node flowNode = null;
 			if (!session.nodeExists(path)) {
 				Node base = session.getNode(getExecutionModulesPath());
 				Node moduleNode = base.getNode(module.getName() + '/'
@@ -125,10 +129,15 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 							flowNode = currNode.addNode(name);
 					}
 				}
+				flowNode.addMixin(SlcTypes.SLC_EXECUTION_FLOW);
+				flowNode.setProperty(SlcNames.SLC_NAME, executionFlow.getName());
 				session.save();
 			} else {
 				flowNode = session.getNode(path);
 			}
+
+			if (log.isTraceEnabled())
+				log.trace("Flow " + executionFlow + " added to JCR");
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot add flow " + executionFlow
 					+ " from module " + module, e);

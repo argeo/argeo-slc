@@ -1,4 +1,4 @@
-<slc = 'http://www.argeo.org/slc'>
+<slc = 'http://www.argeo.org/ns/slc'>
 
 // AETHER
 [slc:artifact] > nt:base, mix:shareable

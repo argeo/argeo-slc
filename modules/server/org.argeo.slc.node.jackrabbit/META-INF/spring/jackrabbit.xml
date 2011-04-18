@@ -15,11 +15,12 @@
 		<property name="repository" ref="nodeRepository" />
 		<property name="namespaces">
 			<map>
-				<entry key="slc" value="http://www.argeo.org/slc" />
+				<entry key="slc" value="http://www.argeo.org/ns/slc" />
 			</map>
 		</property>
 		<property name="cndFiles">
 			<list>
+				<value>classpath:/org/argeo/slc/jcr/slc.cnd</value>
 				<value>classpath:/org/argeo/slc/repo/repo.cnd</value>
 			</list>
 		</property>
