@@ -20,14 +20,14 @@ import java.util.List;
 
 import org.argeo.slc.NameVersion;
 
-/** Provides access to modules */
+/** Provides access to deployed modules */
 public interface ModulesManager {
 	/** @return a full fledged module descriptor. */
 	public ModuleDescriptor getModuleDescriptor(String moduleName,
 			String version);
 
 	/**
-	 * @return a list of minimal module descriptors
+	 * @return a list of minimal module descriptors of the deployed modules
 	 */
 	public List<ModuleDescriptor> listModules();
 

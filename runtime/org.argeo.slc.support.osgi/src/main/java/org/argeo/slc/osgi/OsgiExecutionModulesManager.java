@@ -16,6 +16,7 @@
 
 package org.argeo.slc.osgi;
 
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import javax.management.StandardMBean;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.BasicNameVersion;
@@ -31,6 +36,7 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.AbstractExecutionModulesManager;
 import org.argeo.slc.core.execution.DefaultExecutionFlowDescriptorConverter;
+import org.argeo.slc.deploy.Module;
 import org.argeo.slc.deploy.ModuleDescriptor;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
@@ -58,6 +64,8 @@ public class OsgiExecutionModulesManager extends
 
 	private List<ExecutionModulesListener> executionModulesListeners = new ArrayList<ExecutionModulesListener>();
 
+	private Boolean registerFlowsToJmx = true;
+
 	public synchronized ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version) {
 		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
@@ -76,7 +84,7 @@ public class OsgiExecutionModulesManager extends
 					+ nameVersion);
 		md.setName(osgiBundle.getName());
 		md.setVersion(osgiBundle.getVersion());
-		md.setLabel(osgiBundle.getLabel());
+		md.setTitle(osgiBundle.getTitle());
 		md.setDescription(osgiBundle.getDescription());
 
 		ExecutionFlowDescriptorConverter executionFlowDescriptorConverter = getExecutionFlowDescriptorConverter(
@@ -189,6 +197,11 @@ public class OsgiExecutionModulesManager extends
 	protected synchronized ExecutionFlowDescriptorConverter getExecutionFlowDescriptorConverter(
 			String moduleName, String moduleVersion) {
 		OsgiBundle osgiBundle = new OsgiBundle(moduleName, moduleVersion);
+		return getExecutionFlowDescriptorConverter(osgiBundle);
+	}
+
+	protected synchronized ExecutionFlowDescriptorConverter getExecutionFlowDescriptorConverter(
+			OsgiBundle osgiBundle) {
 		if (executionFlowDescriptorConverters.containsKey(osgiBundle))
 			return executionFlowDescriptorConverters.get(osgiBundle);
 		else
@@ -234,7 +247,7 @@ public class OsgiExecutionModulesManager extends
 
 		md.setName(bdl.getSymbolicName());
 		md.setVersion(getHeaderSafe(bdl, Constants.BUNDLE_VERSION));
-		md.setLabel(getHeaderSafe(bdl, Constants.BUNDLE_NAME));
+		md.setTitle(getHeaderSafe(bdl, Constants.BUNDLE_NAME));
 		md.setDescription(getHeaderSafe(bdl, Constants.BUNDLE_DESCRIPTION));
 	}
 
@@ -255,7 +268,7 @@ public class OsgiExecutionModulesManager extends
 			Map<String, String> properties) {
 		OsgiBundle osgiBundle = asOsgiBundle(properties);
 		Bundle bundle = bundlesManager.findRelatedBundle(osgiBundle);
-		osgiBundle.setLabel(getHeaderSafe(bundle, Constants.BUNDLE_NAME));
+		osgiBundle.setTitle(getHeaderSafe(bundle, Constants.BUNDLE_NAME));
 		osgiBundle.setDescription(getHeaderSafe(bundle,
 				Constants.BUNDLE_DESCRIPTION));
 		executionContexts.put(osgiBundle, executionContext);
@@ -263,7 +276,7 @@ public class OsgiExecutionModulesManager extends
 			log.trace("Registered execution context from " + osgiBundle);
 		// Notify
 		for (ExecutionModulesListener listener : executionModulesListeners)
-			listener.executionModuleAdded(osgiBundle, executionContext);
+			listener.executionModuleAdded(osgiBundle.getModuleDescriptor());
 	}
 
 	/** Unregisters an execution context. */
@@ -276,7 +289,8 @@ public class OsgiExecutionModulesManager extends
 				log.trace("Removed execution context from " + osgiBundle);
 			// Notify
 			for (ExecutionModulesListener listener : executionModulesListeners)
-				listener.executionModuleRemoved(osgiBundle, executionContext);
+				listener.executionModuleRemoved(osgiBundle
+						.getModuleDescriptor());
 		}
 	}
 
@@ -291,8 +305,13 @@ public class OsgiExecutionModulesManager extends
 		if (log.isTraceEnabled())
 			log.trace("Registered " + executionFlow + " from " + osgiBundle);
 
+		// notifications
+		if (registerFlowsToJmx)
+			registerMBean(osgiBundle, executionFlow);
+		ExecutionFlowDescriptorConverter efdc = getExecutionFlowDescriptorConverter(osgiBundle);
 		for (ExecutionModulesListener listener : executionModulesListeners)
-			listener.executionFlowAdded(osgiBundle, executionFlow);
+			listener.executionFlowAdded(osgiBundle.getModuleDescriptor(),
+					efdc.getExecutionFlowDescriptor(executionFlow));
 	}
 
 	/** Unregisters an execution flow. */
@@ -309,8 +328,14 @@ public class OsgiExecutionModulesManager extends
 				if (log.isTraceEnabled())
 					log.trace("Removed flows set from " + osgiBundle);
 			}
+
+			// notifications
+			if (registerFlowsToJmx)
+				unregisterMBean(osgiBundle, executionFlow);
+			ExecutionFlowDescriptorConverter efdc = getExecutionFlowDescriptorConverter(osgiBundle);
 			for (ExecutionModulesListener listener : executionModulesListeners)
-				listener.executionFlowRemoved(osgiBundle, executionFlow);
+				listener.executionFlowRemoved(osgiBundle.getModuleDescriptor(),
+						efdc.getExecutionFlowDescriptor(executionFlow));
 		}
 	}
 
@@ -320,13 +345,15 @@ public class OsgiExecutionModulesManager extends
 			Map<String, String> properties) {
 		// sync with current state
 		for (OsgiBundle osgiBundle : executionContexts.keySet()) {
-			executionModulesListener.executionModuleAdded(osgiBundle,
-					executionContexts.get(osgiBundle));
+			executionModulesListener.executionModuleAdded(osgiBundle
+					.getModuleDescriptor());
 		}
 		for (OsgiBundle osgiBundle : executionFlows.keySet()) {
+			ExecutionFlowDescriptorConverter efdc = getExecutionFlowDescriptorConverter(osgiBundle);
 			for (ExecutionFlow executionFlow : executionFlows.get(osgiBundle))
-				executionModulesListener.executionFlowAdded(osgiBundle,
-						executionFlow);
+				executionModulesListener.executionFlowAdded(
+						osgiBundle.getModuleDescriptor(),
+						efdc.getExecutionFlowDescriptor(executionFlow));
 		}
 		executionModulesListeners.add(executionModulesListener);
 	}
@@ -370,6 +397,76 @@ public class OsgiExecutionModulesManager extends
 		}
 	}
 
+	/*
+	 * JMX
+	 */
+	protected MBeanServer getMBeanServer() {
+		return ManagementFactory.getPlatformMBeanServer();
+	}
+
+	public void registerMBean(Module module, ExecutionFlow executionFlow) {
+		try {
+			StandardMBean mbean = new StandardMBean(executionFlow,
+					ExecutionFlow.class);
+			getMBeanServer().registerMBean(mbean,
+					flowMBeanName(module, executionFlow));
+		} catch (Exception e) {
+			String msg = "Cannot register execution flow " + executionFlow
+					+ " as mbean";
+			throw new SlcException(msg, e);
+		}
+	}
+
+	public void unregisterMBean(Module module, ExecutionFlow executionFlow) {
+		try {
+			getMBeanServer().unregisterMBean(
+					flowMBeanName(module, executionFlow));
+		} catch (Exception e) {
+			String msg = "Cannot unregister execution flow " + executionFlow
+					+ " as mbean";
+			throw new SlcException(msg, e);
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	protected ObjectName flowMBeanName(Module module,
+			ExecutionFlow executionFlow) {
+		String executionModulesPrefix = "SLCExecutionModules";
+		String path = executionFlow.getPath();
+		String name = executionFlow.getName();
+		if (path == null && name.indexOf('/') >= 0) {
+			path = name.substring(0, name.lastIndexOf('/') - 1);
+			name = name.substring(name.lastIndexOf('/'));
+		}
+
+		StringBuffer buf = new StringBuffer(executionModulesPrefix + ":"
+				+ "module=" + module.getName() + " [" + module.getVersion()
+				+ "],");
+
+		if (path != null && !path.equals("")) {
+			int depth = 0;
+			for (String token : path.split("/")) {
+				if (!token.equals("")) {
+					buf.append("path").append(depth).append('=');
+					// in order to have directories first
+					buf.append('/');
+					buf.append(token).append(',');
+					depth++;
+				}
+			}
+		}
+		buf.append("name=").append(name);
+		try {
+			return new ObjectName(buf.toString());
+		} catch (Exception e) {
+			throw new SlcException("Cannot generate object name based on "
+					+ buf, e);
+		}
+	}
+
+	/*
+	 * UTILITIES
+	 */
 	@SuppressWarnings("rawtypes")
 	private OsgiBundle asOsgiBundle(Map properties) {
 		String bundleSymbolicName = checkAndGet(Constants.BUNDLE_SYMBOLICNAME,
@@ -393,6 +490,10 @@ public class OsgiExecutionModulesManager extends
 	public void setDefaultDescriptorConverter(
 			ExecutionFlowDescriptorConverter defaultDescriptorConverter) {
 		this.defaultDescriptorConverter = defaultDescriptorConverter;
+	}
+
+	public void setRegisterFlowsToJmx(Boolean registerFlowsToJmx) {
+		this.registerFlowsToJmx = registerFlowsToJmx;
 	}
 
 }

@@ -143,55 +143,8 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		for (String name : executionFlows.keySet()) {
 			ExecutionFlow executionFlow = executionFlows.get(name);
 
-			Assert.notNull(executionFlow.getName());
-			Assert.state(name.equals(executionFlow.getName()));
-
-			ExecutionSpec executionSpec = executionFlow.getExecutionSpec();
-			Assert.notNull(executionSpec);
-			Assert.notNull(executionSpec.getName());
-
-			Map<String, Object> values = new TreeMap<String, Object>();
-			for (String key : executionSpec.getAttributes().keySet()) {
-				ExecutionSpecAttribute attribute = executionSpec
-						.getAttributes().get(key);
-
-				if (attribute instanceof PrimitiveSpecAttribute) {
-					if (executionFlow.isSetAsParameter(key)) {
-						Object value = executionFlow.getParameter(key);
-						PrimitiveValue primitiveValue = new PrimitiveValue();
-						primitiveValue
-								.setType(((PrimitiveSpecAttribute) attribute)
-										.getType());
-						primitiveValue.setValue(value);
-						values.put(key, primitiveValue);
-					} else {
-						// no need to add a primitive value if it is not set,
-						// all necessary information is in the spec
-					}
-				} else if (attribute instanceof RefSpecAttribute) {
-					if (attribute.getIsFrozen()) {
-						values.put(key, new RefValue(REF_VALUE_INTERNAL));
-					} else
-						values.put(key, buildRefValue(
-								(RefSpecAttribute) attribute, executionFlow,
-								key));
-				} else {
-					throw new SlcException("Unkown spec attribute type "
-							+ attribute.getClass());
-				}
-
-			}
-
-			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(name,
-					values, executionSpec);
-			if (executionFlow.getPath() != null)
-				efd.setPath(executionFlow.getPath());
-			else
-				efd.setPath("");
-
-			// Takes description from spring
-			BeanDefinition bd = getBeanFactory().getBeanDefinition(name);
-			efd.setDescription(bd.getDescription());
+			ExecutionFlowDescriptor efd = getExecutionFlowDescriptor(executionFlow);
+			ExecutionSpec executionSpec = efd.getExecutionSpec();
 
 			// Add execution spec if necessary
 			if (!md.getExecutionSpecs().contains(executionSpec))
@@ -202,6 +155,60 @@ public class DefaultExecutionFlowDescriptorConverter implements
 			// md.getExecutionFlows().add(efd);
 		}
 		md.getExecutionFlows().addAll(set);
+	}
+
+	public ExecutionFlowDescriptor getExecutionFlowDescriptor(
+			ExecutionFlow executionFlow) {
+		Assert.notNull(executionFlow.getName());
+		String name = executionFlow.getName();
+
+		ExecutionSpec executionSpec = executionFlow.getExecutionSpec();
+		Assert.notNull(executionSpec);
+		Assert.notNull(executionSpec.getName());
+
+		Map<String, Object> values = new TreeMap<String, Object>();
+		for (String key : executionSpec.getAttributes().keySet()) {
+			ExecutionSpecAttribute attribute = executionSpec.getAttributes()
+					.get(key);
+
+			if (attribute instanceof PrimitiveSpecAttribute) {
+				if (executionFlow.isSetAsParameter(key)) {
+					Object value = executionFlow.getParameter(key);
+					PrimitiveValue primitiveValue = new PrimitiveValue();
+					primitiveValue.setType(((PrimitiveSpecAttribute) attribute)
+							.getType());
+					primitiveValue.setValue(value);
+					values.put(key, primitiveValue);
+				} else {
+					// no need to add a primitive value if it is not set,
+					// all necessary information is in the spec
+				}
+			} else if (attribute instanceof RefSpecAttribute) {
+				if (attribute.getIsFrozen()) {
+					values.put(key, new RefValue(REF_VALUE_INTERNAL));
+				} else
+					values.put(
+							key,
+							buildRefValue((RefSpecAttribute) attribute,
+									executionFlow, key));
+			} else {
+				throw new SlcException("Unkown spec attribute type "
+						+ attribute.getClass());
+			}
+
+		}
+
+		ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(name, values,
+				executionSpec);
+		if (executionFlow.getPath() != null)
+			efd.setPath(executionFlow.getPath());
+		else
+			efd.setPath("");
+
+		// Takes description from spring
+		BeanDefinition bd = getBeanFactory().getBeanDefinition(name);
+		efd.setDescription(bd.getDescription());
+		return efd;
 	}
 
 	@SuppressWarnings(value = { "unchecked" })
@@ -225,8 +232,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 				String ref = null;
 				Object value = executionFlow.getParameter(key);
 				if (applicationContext == null) {
-					log
-							.warn("No application context declared, cannot scan ref value.");
+					log.warn("No application context declared, cannot scan ref value.");
 					ref = value.toString();
 				} else {
 
@@ -252,15 +258,9 @@ public class DefaultExecutionFlowDescriptorConverter implements
 					}
 				}
 				if (ref == null) {
-					log
-							.warn("Cannot define reference for ref spec attribute "
-									+ key
-									+ " in "
-									+ executionFlow
-									+ " ("
-									+ rsa
-									+ ")."
-									+ " If it is an inner bean consider put it frozen.");
+					log.warn("Cannot define reference for ref spec attribute "
+							+ key + " in " + executionFlow + " (" + rsa + ")."
+							+ " If it is an inner bean consider put it frozen.");
 					ref = REF_VALUE_INTERNAL;
 				} else {
 					if (log.isTraceEnabled())
@@ -300,7 +300,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 
 			// Check whether name include path
 			int lastIndex1 = name1.lastIndexOf('/');
-			//log.debug(name1+", "+lastIndex1);
+			// log.debug(name1+", "+lastIndex1);
 			if (!StringUtils.hasText(path1) && lastIndex1 >= 0) {
 				path1 = name1.substring(0, lastIndex1);
 				name1 = name1.substring(lastIndex1 + 1);

@@ -16,17 +16,17 @@
 
 package org.argeo.slc.execution;
 
-import org.argeo.slc.deploy.Module;
+import org.argeo.slc.deploy.ModuleDescriptor;
 
 /** Listen to events on execution modules. */
 public interface ExecutionModulesListener {
-	public void executionModuleAdded(Module module,
-			ExecutionContext executionContext);
+	public void executionModuleAdded(ModuleDescriptor moduleDescriptor);
 
-	public void executionModuleRemoved(Module module,
-			ExecutionContext executionContext);
+	public void executionModuleRemoved(ModuleDescriptor moduleDescriptor);
 
-	public void executionFlowAdded(Module module, ExecutionFlow executionFlow);
+	public void executionFlowAdded(ModuleDescriptor moduleDescriptor,
+			ExecutionFlowDescriptor executionFlowDescriptor);
 
-	public void executionFlowRemoved(Module module, ExecutionFlow executionFlow);
+	public void executionFlowRemoved(ModuleDescriptor moduleDescriptor,
+			ExecutionFlowDescriptor executionFlowDescriptor);
 }

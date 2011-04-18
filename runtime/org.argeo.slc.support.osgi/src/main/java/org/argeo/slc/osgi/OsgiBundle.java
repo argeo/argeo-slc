@@ -22,6 +22,7 @@ import org.argeo.slc.build.Distribution;
 import org.argeo.slc.core.build.ResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.Module;
+import org.argeo.slc.deploy.ModuleDescriptor;
 import org.argeo.slc.deploy.TargetData;
 import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
@@ -30,13 +31,13 @@ import org.springframework.core.io.Resource;
 
 /** A deployed OSGi bundle. */
 public class OsgiBundle extends BasicNameVersion implements Module {
-	private static final long serialVersionUID = -1970854723780452072L;
+	private static final long serialVersionUID = 35073826504550477L;
 
 	private ResourceDistribution distribution;
 
 	private Long internalBundleId;
 
-	private String label;
+	private String title;
 	private String description;
 
 	public OsgiBundle() {
@@ -126,12 +127,12 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 	}
 
 	/** Value of the <code>Bundle-Name</code> directive. */
-	public String getLabel() {
-		return label;
+	public String getTitle() {
+		return title;
 	}
 
-	public void setLabel(String label) {
-		this.label = label;
+	public void setTitle(String label) {
+		this.title = label;
 	}
 
 	/** Value of the <code>Bundle-Description</code> directive. */
@@ -143,4 +144,12 @@ public class OsgiBundle extends BasicNameVersion implements Module {
 		this.description = description;
 	}
 
+	public ModuleDescriptor getModuleDescriptor() {
+		ModuleDescriptor moduleDescriptor = new ModuleDescriptor();
+		moduleDescriptor.setName(getName());
+		moduleDescriptor.setVersion(getVersion());
+		moduleDescriptor.setDescription(description);
+		moduleDescriptor.setTitle(title);
+		return moduleDescriptor;
+	}
 }

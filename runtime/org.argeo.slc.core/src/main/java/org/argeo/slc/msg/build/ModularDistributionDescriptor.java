@@ -22,10 +22,10 @@ import java.util.Map;
 
 import org.argeo.slc.BasicNameVersion;
 
+/** Describes a distribution of modules. */
 public class ModularDistributionDescriptor extends BasicNameVersion implements
 		Serializable {
-	private static final long serialVersionUID = 1L;
-
+	private static final long serialVersionUID = 6076494586594591185L;
 	/** key is type, value the URL */
 	private Map<String, String> modulesDescriptors = new HashMap<String, String>();
 

@@ -16,10 +16,12 @@
 
 package org.argeo.slc.deploy;
 
+import java.io.Serializable;
+
 import org.argeo.slc.BasicNameVersion;
 
 /** The description of a versioned module. */
-public class ModuleDescriptor extends BasicNameVersion {
+public class ModuleDescriptor extends BasicNameVersion implements Serializable {
 	private static final long serialVersionUID = 4310820315478645419L;
 	private String title;
 	private String description;

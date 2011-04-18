@@ -4,16 +4,17 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.deploy.Module;
-import org.argeo.slc.execution.ExecutionContext;
-import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.deploy.ModuleDescriptor;
+import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
@@ -61,42 +62,48 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 		}
 	}
 
-	public void executionModuleAdded(Module module,
-			ExecutionContext executionContext) {
+	public void executionModuleAdded(ModuleDescriptor moduleDescriptor) {
 		try {
 			Node base = session.getNode(getExecutionModulesPath());
-			Node moduleName = base.hasNode(module.getName()) ? base
-					.getNode(module.getName()) : base.addNode(module.getName());
-			Node moduleVersion = moduleName.hasNode(module.getVersion()) ? moduleName
-					.getNode(module.getVersion()) : moduleName.addNode(module
+			Node moduleName = base.hasNode(moduleDescriptor.getName()) ? base
+					.getNode(moduleDescriptor.getName()) : base
+					.addNode(moduleDescriptor.getName());
+			Node moduleVersion = moduleName.hasNode(moduleDescriptor
+					.getVersion()) ? moduleName.getNode(moduleDescriptor
+					.getVersion()) : moduleName.addNode(moduleDescriptor
 					.getVersion());
+			moduleVersion.addMixin(NodeType.MIX_TITLE);
+			moduleVersion.setProperty(Property.JCR_TITLE,
+					moduleDescriptor.getTitle());
+			moduleVersion.setProperty(Property.JCR_DESCRIPTION,
+					moduleDescriptor.getDescription());
 			session.save();
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot add module " + module, e);
+			throw new SlcException("Cannot add module " + moduleDescriptor, e);
 		}
 
 	}
 
-	public void executionModuleRemoved(Module module,
-			ExecutionContext executionContext) {
+	public void executionModuleRemoved(ModuleDescriptor moduleDescriptor) {
 		try {
 			Node base = session.getNode(getExecutionModulesPath());
-			if (base.hasNode(module.getName())) {
-				Node moduleName = base.getNode(module.getName());
-				if (moduleName.hasNode(module.getVersion()))
-					moduleName.getNode(module.getVersion()).remove();
+			if (base.hasNode(moduleDescriptor.getName())) {
+				Node moduleName = base.getNode(moduleDescriptor.getName());
+				if (moduleName.hasNode(moduleDescriptor.getVersion()))
+					moduleName.getNode(moduleDescriptor.getVersion()).remove();
 				if (!moduleName.hasNodes())
 					moduleName.remove();
 				session.save();
 			}
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot remove module " + module, e);
+			throw new SlcException("Cannot remove module " + moduleDescriptor,
+					e);
 		}
 	}
 
-	public void executionFlowAdded(Module module, ExecutionFlow executionFlow) {
+	public void executionFlowAdded(ModuleDescriptor module,
+			ExecutionFlowDescriptor executionFlow) {
 		String path = getExecutionFlowPath(module, executionFlow);
-		log.debug("path=" + path);
 		try {
 			Node flowNode;
 			if (!session.nodeExists(path)) {
@@ -104,7 +111,6 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 				Node moduleNode = base.getNode(module.getName() + '/'
 						+ module.getVersion());
 				String relativePath = getExecutionFlowRelativePath(executionFlow);
-				log.debug("relativePath='" + relativePath + "'");
 				Iterator<String> names = Arrays.asList(relativePath.split("/"))
 						.iterator();
 				Node currNode = moduleNode;
@@ -130,7 +136,8 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 
 	}
 
-	public void executionFlowRemoved(Module module, ExecutionFlow executionFlow) {
+	public void executionFlowRemoved(ModuleDescriptor module,
+			ExecutionFlowDescriptor executionFlow) {
 		String path = getExecutionFlowPath(module, executionFlow);
 		try {
 			if (session.nodeExists(path)) {
@@ -144,8 +151,8 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 		}
 	}
 
-	protected String getExecutionFlowPath(Module module,
-			ExecutionFlow executionFlow) {
+	protected String getExecutionFlowPath(ModuleDescriptor module,
+			ExecutionFlowDescriptor executionFlow) {
 		String relativePath = getExecutionFlowRelativePath(executionFlow);
 		return getExecutionModulesPath() + '/' + module.getName() + '/'
 				+ module.getVersion() + '/' + relativePath;
@@ -153,7 +160,8 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 
 	/** @return the relative path, never starts with '/' */
 	@SuppressWarnings("deprecation")
-	protected String getExecutionFlowRelativePath(ExecutionFlow executionFlow) {
+	protected String getExecutionFlowRelativePath(
+			ExecutionFlowDescriptor executionFlow) {
 		String relativePath = executionFlow.getPath() == null ? executionFlow
 				.getName() : executionFlow.getPath() + '/'
 				+ executionFlow.getName();
