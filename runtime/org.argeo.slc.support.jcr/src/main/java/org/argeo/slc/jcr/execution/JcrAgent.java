@@ -9,7 +9,10 @@ import javax.jcr.Session;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.core.runtime.DefaultAgent;
+import org.argeo.slc.execution.ExecutionModulesManager;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.runtime.SlcAgent;
@@ -39,6 +42,13 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory {
 		} finally {
 			JcrUtils.discardQuietly(session);
 		}
+	}
+
+	@Override
+	protected ProcessThread createProcessThread(
+			ExecutionModulesManager modulesManager, ExecutionProcess process) {
+		return new JcrProcessThread(modulesManager,
+				(JcrExecutionProcess) process);
 	}
 
 	public void dispose() {

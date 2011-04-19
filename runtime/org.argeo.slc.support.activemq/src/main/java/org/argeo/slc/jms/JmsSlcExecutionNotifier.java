@@ -23,6 +23,7 @@ import javax.jms.Destination;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.UnsupportedException;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.process.SlcExecution;
@@ -31,6 +32,7 @@ import org.argeo.slc.process.SlcExecutionStep;
 import org.springframework.jms.JmsException;
 import org.springframework.jms.core.JmsTemplate;
 
+@SuppressWarnings("deprecation")
 public class JmsSlcExecutionNotifier implements SlcExecutionNotifier {
 	private final static Log log = LogFactory
 			.getLog(JmsSlcExecutionNotifier.class);
@@ -41,14 +43,14 @@ public class JmsSlcExecutionNotifier implements SlcExecutionNotifier {
 
 	// private Destination updateStatusDestination;
 
-	public void updateStatus(SlcExecution slcExecution, String oldStatus,
+	public void updateStatus(ExecutionProcess slcExecution, String oldStatus,
 			String newStatus) {
 		SlcExecutionStatusRequest req = new SlcExecutionStatusRequest(
 				slcExecution.getUuid(), newStatus);
 		convertAndSend(req);
 	}
 
-	public void addSteps(SlcExecution slcExecution,
+	public void addSteps(ExecutionProcess slcExecution,
 			List<SlcExecutionStep> additionalSteps) {
 		SlcExecutionStepsRequest req = new SlcExecutionStepsRequest(
 				slcExecution.getUuid(), additionalSteps);

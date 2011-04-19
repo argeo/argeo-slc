@@ -39,9 +39,10 @@ public class SlcSecureWorkbenchAdvisor extends WorkbenchAdvisor {
 	@Override
 	public void initialize(IWorkbenchConfigurer configurer) {
 		super.initialize(configurer);
-
 		// To remember the user's layout and window size for the next time he
 		// starts the application
 		// configurer.setSaveAndRestore(true);
 	}
+	
+	
 }

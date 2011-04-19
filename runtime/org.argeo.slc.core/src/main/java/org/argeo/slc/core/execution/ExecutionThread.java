@@ -60,7 +60,10 @@ public class ExecutionThread extends Thread {
 			if (autoUpgrade != null && autoUpgrade.equals("true"))
 				processThread.getExecutionModulesManager().upgrade(
 						realizedFlow.getModuleNameVersion());
+
+			// START FLOW
 			processThread.getExecutionModulesManager().execute(realizedFlow);
+			// END FLOW
 		} catch (Exception e) {
 			// TODO: re-throw exception ?
 			String msg = "Execution of flow " + flowName + " failed.";

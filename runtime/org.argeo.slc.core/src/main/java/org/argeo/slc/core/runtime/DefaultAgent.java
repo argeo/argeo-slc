@@ -22,8 +22,10 @@ import java.util.List;
 import java.util.UUID;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
@@ -61,8 +63,25 @@ public class DefaultAgent implements SlcAgent {
 	/*
 	 * SLC AGENT
 	 */
-	public void runSlcExecution(final SlcExecution slcExecution) {
-		modulesManager.process(slcExecution);
+	public void runSlcExecution(SlcExecution slcExecution) {
+		process(slcExecution);
+	}
+
+	public void process(ExecutionProcess process) {
+		ProcessThread processThread = createProcessThread(modulesManager,
+				process);
+		processThread.start();
+	}
+
+	/** Creates the thread which will coordinate the execution for this agent. */
+	protected ProcessThread createProcessThread(
+			ExecutionModulesManager modulesManager, ExecutionProcess process) {
+		if (!(process instanceof SlcExecution))
+			throw new SlcException("Unsupported process type "
+					+ process.getClass());
+		ProcessThread processThread = new ProcessThread(modulesManager,
+				(SlcExecution) process);
+		return processThread;
 	}
 
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(

@@ -23,14 +23,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class SlcExecution implements Serializable {
+import org.argeo.slc.execution.ExecutionProcess;
+
+public class SlcExecution implements ExecutionProcess, Serializable {
 	private static final long serialVersionUID = -7607457971382118466L;
-	public final static String STATUS_NONE = "DEFAULT";
-	public final static String STATUS_SCHEDULED = "SCHEDULED";
-	public final static String STATUS_RUNNING = "RUNNING";
-	public final static String STATUS_FINISHED = "FINISHED";
-	public final static String STATUS_ERROR = "ERROR";
-	public final static String STATUS_CLEANED = "CLEANED";
 
 	public final static String UNKOWN_HOST = "UNKOWN_HOST";
 
@@ -38,7 +34,7 @@ public class SlcExecution implements Serializable {
 	private String host;
 	private String user;
 	private String type;
-	private String status = STATUS_NONE;
+	private String status = UNINITIALIZED;
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
 	/** TODO: Synchronize */
@@ -152,7 +148,7 @@ public class SlcExecution implements Serializable {
 	}
 
 	public Date getEndDate() {
-		if (!status.equals(STATUS_FINISHED) && !status.equals(STATUS_ERROR))
+		if (!status.equals(COMPLETED) && !status.equals(ERROR))
 			return null;
 
 		synchronized (steps) {

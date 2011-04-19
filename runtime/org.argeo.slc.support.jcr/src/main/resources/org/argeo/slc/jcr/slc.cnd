@@ -15,5 +15,16 @@ mixin
 mixin
 - slc:name (STRING) m
 
+[slc:process] > nt:unstructured, mix:created, mix:lastModified
+- slc:uuid (STRING) m
+- slc:status (STRING) m
++ slc:flow (slc:realizedFlow)
+
+[slc:realizedFlow] > nt:base
+mixin
+- slc:started (DATE)
+- slc:completed (DATE)
++ slc:address (nt:address)
++ slc:flow (slc:realizedFlow) *
 
 

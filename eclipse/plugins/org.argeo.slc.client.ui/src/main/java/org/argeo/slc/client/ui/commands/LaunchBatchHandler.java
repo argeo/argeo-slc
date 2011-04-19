@@ -7,13 +7,10 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
+ * Launch the batch built in the ProcessBuilderView
  * 
- * @author bsinou
- * 
- *         Launch the batch built in the ProcessBuilderView
- * 
- *         NOTE : only one batch is supported with this command, if more than
- *         one batch is planned, this class must be updated with parameter.
+ * NOTE : only one batch is supported with this command, if more than one batch
+ * is planned, this class must be updated with parameter.
  */
 public class LaunchBatchHandler extends AbstractHandler {
 	// private final static Log log =

@@ -27,12 +27,13 @@ import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
 import org.argeo.slc.execution.ExecutionModulesManager;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.process.RealizedFlow;
-import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionNotifier;
 import org.argeo.slc.process.SlcExecutionStep;
 
 /** Provides the base feature of an execution module manager. */
+@SuppressWarnings("deprecation")
 public abstract class AbstractExecutionModulesManager implements
 		ExecutionModulesManager {
 	private final static Log log = LogFactory
@@ -50,10 +51,6 @@ public abstract class AbstractExecutionModulesManager implements
 
 	protected abstract ExecutionFlowDescriptorConverter getExecutionFlowDescriptorConverter(
 			String moduleName, String moduleVersion);
-
-	public void process(SlcExecution slcExecution) {
-		new ProcessThread(this, slcExecution).start();
-	}
 
 	public void execute(RealizedFlow realizedFlow) {
 		if (log.isTraceEnabled())
@@ -82,7 +79,7 @@ public abstract class AbstractExecutionModulesManager implements
 		//
 	}
 
-	public void dispatchUpdateStatus(SlcExecution slcExecution,
+	public void dispatchUpdateStatus(ExecutionProcess slcExecution,
 			String oldStatus, String newStatus) {
 		for (Iterator<SlcExecutionNotifier> it = getSlcExecutionNotifiers()
 				.iterator(); it.hasNext();) {
@@ -90,7 +87,8 @@ public abstract class AbstractExecutionModulesManager implements
 		}
 	}
 
-	public void dispatchAddStep(SlcExecution slcExecution, SlcExecutionStep step) {
+	public void dispatchAddStep(ExecutionProcess slcExecution,
+			SlcExecutionStep step) {
 		List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
 		steps.add(step);
 		for (Iterator<SlcExecutionNotifier> it = getSlcExecutionNotifiers()

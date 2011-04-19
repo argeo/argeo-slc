@@ -24,21 +24,18 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * 
- * @author bsinou
- * 
- *         This view, directly linked with the <code> ProcessBuilderView </code>
- *         enables the display and editing the parameters of a given process.
+ * This view, directly linked with the <code> ProcessBuilderView </code> enables
+ * the display and editing the parameters of a given process.
  * 
  * 
- *         Note that for a given RealizedFlow :
+ * Note that for a given RealizedFlow :
  * 
- *         + paramaters value are set using
- *         <code>RealizedFlow.ExecutionFlowDescriptor.values</code>, that might
- *         have default values
+ * + parameters value are set using
+ * <code>RealizedFlow.ExecutionFlowDescriptor.values</code>, that might have
+ * default values
  * 
- *         + possible "values" for a given parameters are stored in
- *         <code>RealizedFlow.ExecutionSpec.</code>
+ * + possible "values" for a given parameters are stored in
+ * <code>RealizedFlow.ExecutionSpec.</code>
  * 
  */
 public class ProcessParametersView extends ViewPart {

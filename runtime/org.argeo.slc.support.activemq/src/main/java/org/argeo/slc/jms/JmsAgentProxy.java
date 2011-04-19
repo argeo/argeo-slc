@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.msg.ExecutionAnswer;
 import org.argeo.slc.msg.MsgConstants;
 import org.argeo.slc.process.SlcExecution;
@@ -74,7 +75,15 @@ public class JmsAgentProxy implements SlcAgent {
 	}
 
 	public void runSlcExecution(SlcExecution slcExecution) {
-		sendReceive(new AgentMC("runSlcExecution", slcExecution));
+		process(slcExecution);
+	}
+
+	public void process(ExecutionProcess executionProcess) {
+		if (!(executionProcess instanceof SlcExecution))
+			throw new SlcException("Unsupported process type "
+					+ executionProcess.getClass());
+		sendReceive(new AgentMC("runSlcExecution",
+				(SlcExecution) executionProcess));
 	}
 
 	public boolean ping() {
@@ -198,9 +207,7 @@ public class JmsAgentProxy implements SlcAgent {
 				msg = session.createTextMessage();
 			else
 				msg = toMessage(body, session);
-			msg
-					.setStringProperty(MsgConstants.PROPERTY_SLC_AGENT_ID,
-							agentUuid);
+			msg.setStringProperty(MsgConstants.PROPERTY_SLC_AGENT_ID, agentUuid);
 			msg.setStringProperty(JmsAgent.PROPERTY_QUERY, query);
 			msg.setJMSCorrelationID(correlationId);
 			setArguments(msg);

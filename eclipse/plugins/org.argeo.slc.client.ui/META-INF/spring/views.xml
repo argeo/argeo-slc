@@ -5,45 +5,45 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- Views -->
-	<bean id="org.argeo.slc.client.ui.executionModulesView" class="org.argeo.slc.client.ui.views.ExecutionModulesView"
+	<bean id="executionModulesView" class="org.argeo.slc.client.ui.views.ExecutionModulesView"
 		scope="prototype">
 		<property name="contentProvider" ref="executionModulesContentProvider" />
 		<property name="processController" ref="processController" />
 		<property name="oxmBean" ref="oxmBean" />
 	</bean>
 
-	<bean id="org.argeo.slc.client.ui.resultListView" class="org.argeo.slc.client.ui.views.ResultListView"
+	<bean id="resultListView" class="org.argeo.slc.client.ui.views.ResultListView"
 		scope="prototype">
 		<property name="testResultCollectionDao" ref="testResultCollectionDao" />
 	</bean>
 
-	<bean id="org.argeo.slc.client.ui.resultDetailView" class="org.argeo.slc.client.ui.views.ResultDetailView"
+	<bean id="resultDetailView" class="org.argeo.slc.client.ui.views.ResultDetailView"
 		scope="prototype">
 		<property name="treeTestResultDao" ref="treeTestResultDao" />
 		<property name="contentProvider" ref="resultDetailContentProvider" />
 		<property name="labelProvider" ref="resultDetailLabelProvider" />
 	</bean>
-	<bean id="org.argeo.slc.client.ui.processListView" class="org.argeo.slc.client.ui.views.ProcessListView"
+	<bean id="processListView" class="org.argeo.slc.client.ui.views.ProcessListView"
 		scope="prototype">
 		<property name="slcExecutionDao" ref="slcExecutionDao" />
 		<property name="structuredContentProvider" ref="processListStructuredContentProvider" />
 		<property name="tableLabelProvider" ref="processListTableLabelProvider" />
 	</bean>
 
-	<bean id="org.argeo.slc.client.ui.processDetailView" class="org.argeo.slc.client.ui.views.ProcessDetailView"
+	<bean id="processDetailView" class="org.argeo.slc.client.ui.views.ProcessDetailView"
 		scope="prototype">
 		<property name="slcExecutionDao" ref="slcExecutionDao" />
 		<property name="contentProvider" ref="processDetailContentProvider" />
 	</bean>
 
-	<bean id="org.argeo.slc.client.ui.processBuilderView" class="org.argeo.slc.client.ui.views.ProcessBuilderView"
+	<bean id="processBuilderView" class="org.argeo.slc.client.ui.views.ProcessBuilderView"
 		scope="prototype">
 		<property name="processController" ref="processController" />
 		<property name="oxmBean" ref="oxmBean" />
 		<property name="slcAgents" ref="slcAgents" />
 	</bean>
 
-	<bean id="org.argeo.slc.client.ui.processParametersView" class="org.argeo.slc.client.ui.views.ProcessParametersView"
+	<bean id="processParametersView" class="org.argeo.slc.client.ui.views.ProcessParametersView"
 		scope="prototype">
 	</bean>
 

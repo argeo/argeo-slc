@@ -11,6 +11,15 @@
 	<beans:description> Implements SLC specific RCP UIs.
 	</beans:description>
 
+	<!-- REFERENCES -->
+	<reference id="repository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=slc)" />
+	<list id="agentFactories" interface="org.argeo.slc.runtime.SlcAgentFactory">
+		<osgi:listener ref="processController" bind-method="register"
+			unbind-method="unregister" />
+	</list>
+
+
 	<!-- Services exposed by the current bundle -->
 
 	<!-- Listeners used by the execution modules -->
@@ -18,9 +27,6 @@
 		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
 	<service ref="slcExecutionServiceAdapter" interface="org.argeo.slc.process.SlcExecutionNotifier" />
 
-	<!-- References needed by the current bundle -->
-	<reference id="repository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=slc)" />
 
 
 	<reference id="slcExecutionService" interface="org.argeo.slc.services.SlcExecutionService" />

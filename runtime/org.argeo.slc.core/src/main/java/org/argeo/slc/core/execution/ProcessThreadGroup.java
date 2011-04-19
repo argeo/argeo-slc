@@ -17,6 +17,7 @@
 package org.argeo.slc.core.execution;
 
 import org.argeo.slc.execution.ExecutionModulesManager;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
 
@@ -27,19 +28,20 @@ public class ProcessThreadGroup extends ThreadGroup {
 
 	public ProcessThreadGroup(ExecutionModulesManager executionModulesManager,
 			ProcessThread processThread) {
-		super("SLC Process #" + processThread.getSlcProcess().getUuid()
+		super("SLC Process #" + processThread.getProcess().getUuid()
 				+ " thread group");
 		this.executionModulesManager = executionModulesManager;
 		this.processThread = processThread;
 	}
 
-	public SlcExecution getSlcProcess() {
-		return processThread.getSlcProcess();
-	}
+	// public SlcExecution getSlcProcess() {
+	// return processThread.getSlcProcess();
+	// }
 
 	public void dispatchAddStep(SlcExecutionStep step) {
-		SlcExecution slcProcess = processThread.getSlcProcess();
-		slcProcess.getSteps().add(step);
+		ExecutionProcess slcProcess = processThread.getProcess();
+		if (slcProcess instanceof SlcExecution)
+			((SlcExecution) slcProcess).getSteps().add(step);
 		executionModulesManager.dispatchAddStep(slcProcess, step);
 	}
 

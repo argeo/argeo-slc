@@ -1,88 +1,35 @@
 package org.argeo.slc.client.ui;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-/**
- * The activator class controls the plug-in life cycle
- */
+/** The activator class controls the plug-in life cycle */
 public class ClientUiPlugin extends AbstractUIPlugin {
-
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.argeo.slc.client.ui";
-
-	// The shared instance
+	public static final String ID = "org.argeo.slc.client.ui";
 	private static ClientUiPlugin plugin;
 
-	private BundleContext bundleContext;
-
-	/**
-	 * The constructor
-	 */
-	public ClientUiPlugin() {
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
-	 * )
-	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		this.bundleContext = context;
 		plugin = this;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
-	 * )
-	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		super.stop(context);
 	}
 
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
 	public static ClientUiPlugin getDefault() {
 		return plugin;
 	}
 
-	/**
-	 * Returns an image descriptor for the image file at the given plug-in
-	 * relative path
-	 * 
-	 * @param path
-	 *            the path
-	 * @return the image descriptor
-	 */
+	/** Creates the image */
+	public static Image img(String path) {
+		return getImageDescriptor(path).createImage();
+	}
+
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+		return imageDescriptorFromPlugin(ID, path);
 	}
-
-	@Override
-	protected void initializeImageRegistry(ImageRegistry reg) {
-		reg.put("agent", getImageDescriptor("icons/agent.gif"));
-		reg.put("executionModule", getImageDescriptor("icons/module.png"));
-		reg.put("folder", getImageDescriptor("icons/folder.gif"));
-		reg.put("flow", getImageDescriptor("icons/flow.png"));
-		reg.put("processes", getImageDescriptor("icons/processes.gif"));
-		reg.put("passedTest", getImageDescriptor("icons/passed.gif"));
-		reg.put("failedTest", getImageDescriptor("icons/error.gif"));
-	}
-
-	public BundleContext getBundleContext() {
-		return bundleContext;
-	}
-
 }

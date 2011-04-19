@@ -214,4 +214,21 @@
             name="SLC Execution">
       </perspective>
    </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            default="false"
+            icon="icons/batch.gif"
+            id="org.argeo.slc.client.ui.processEditor"
+            name="Process">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="org.argeo.slc.client.ui.editors.ProcessEditorInputFactory"
+            id="org.argeo.slc.client.ui.processEditorInputFactory">
+      </factory>
+   </extension>
 </plugin>

@@ -18,8 +18,6 @@ package org.argeo.slc.xml.process;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,46 +26,37 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionNotifier;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.springframework.oxm.Marshaller;
 
+/** @deprecated Probably not even working anymore */
 public class FileSlcExecutionNotifier implements SlcExecutionNotifier {
-	private final static SimpleDateFormat sdf = new SimpleDateFormat(
-			"yyyyMMdd-HHmmss");
-
-	private String basePath;
+//	private final static SimpleDateFormat sdf = new SimpleDateFormat(
+//			"yyyyMMdd-HHmmss");
+//
+//	private String basePath;
 	private Marshaller marshaller;
 
 	private Map<String, String> uuidToDir = new HashMap<String, String>();
 
-	public void addSteps(SlcExecution slcExecution,
+	public void addSteps(ExecutionProcess slcExecution,
 			List<SlcExecutionStep> additionalSteps) {
 		writeSlcExecution(slcExecution);
 	}
 
-	public void newExecution(SlcExecution slcExecution) {
-		String dirPath = basePath + File.separator + sdf.format(new Date())
-				+ '-' + slcExecution.getUuid();
-		File dir = new File(dirPath);
-		dir.mkdirs();
-
-		uuidToDir.put(slcExecution.getUuid(), dirPath);
-
-		writeSlcExecution(slcExecution);
-	}
-
-	public void updateExecution(SlcExecution slcExecution) {
-		writeSlcExecution(slcExecution);
-	}
-
-	public void updateStatus(SlcExecution slcExecution, String oldStatus,
+	public void updateStatus(ExecutionProcess slcExecution, String oldStatus,
 			String newStatus) {
 		writeSlcExecution(slcExecution);
 	}
 
-	protected void writeSlcExecution(SlcExecution slcExecution) {
+	protected void writeSlcExecution(ExecutionProcess process) {
+		if (!(process instanceof SlcExecution))
+			throw new SlcException("Unsupported process type "
+					+ process.getClass());
+		SlcExecution slcExecution = (SlcExecution) process;
 		FileWriter out = null;
 		try {
 			out = new FileWriter(getFilePath(slcExecution));
@@ -91,7 +80,7 @@ public class FileSlcExecutionNotifier implements SlcExecutionNotifier {
 	}
 
 	public void setBasePath(String basePath) {
-		this.basePath = basePath;
+		//this.basePath = basePath;
 	}
 
 	public void setMarshaller(Marshaller marshaller) {

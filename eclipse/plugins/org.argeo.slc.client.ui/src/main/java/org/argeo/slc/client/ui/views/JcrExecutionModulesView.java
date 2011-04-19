@@ -1,13 +1,10 @@
 package org.argeo.slc.client.ui.views;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Properties;
-import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -18,22 +15,23 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
 import org.argeo.eclipse.ui.jcr.NodesWrapper;
 import org.argeo.eclipse.ui.jcr.SimpleNodeContentProvider;
 import org.argeo.eclipse.ui.jcr.WrappedNode;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.client.ui.ClientUiPlugin;
+import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.controllers.ProcessController;
-import org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider;
+import org.argeo.slc.client.ui.editors.ProcessEditor;
+import org.argeo.slc.client.ui.editors.ProcessEditorInput;
 import org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider.FlowNode;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.process.RealizedFlow;
-import org.argeo.slc.process.SlcExecution;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -42,18 +40,19 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		SlcNames {
-	// private final static Log log = LogFactory
-	// .getLog(JcrExecutionModulesView.class);
+	private final static Log log = LogFactory
+			.getLog(JcrExecutionModulesView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.jcrExecutionModulesView";
 
@@ -74,8 +73,10 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		viewer.setLabelProvider(viewLabelProvider);
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
-		int operations = DND.DROP_COPY | DND.DROP_MOVE;
+
 		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
+		// Transfer[] tt = new Transfer[] { EditorInputTransfer.getInstance() };
+		int operations = DND.DROP_COPY | DND.DROP_MOVE;
 		viewer.addDragSupport(operations, tt, new ViewDragListener());
 
 		try {
@@ -205,17 +206,13 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 		public Image getImage(Node node) throws RepositoryException {
 			if (node.getParent().isNodeType(SlcTypes.SLC_AGENT_PROXY))
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("agent");
+				return SlcImages.AGENT;
 			else if (node.isNodeType(SlcTypes.SLC_MODULE))
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("executionModule");
+				return SlcImages.MODULE;
 			else if (node.isNodeType(SlcTypes.SLC_EXECUTION_FLOW))
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("flow");
+				return SlcImages.FLOW;
 			else
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("folder");
+				return SlcImages.FOLDER;
 		}
 
 		public String getToolTipText(Node node) throws RepositoryException {
@@ -231,35 +228,57 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		public void doubleClick(DoubleClickEvent evt) {
 			Object obj = ((IStructuredSelection) evt.getSelection())
 					.getFirstElement();
-			if (obj instanceof ExecutionModulesContentProvider.FlowNode) {
-				ExecutionModulesContentProvider.FlowNode fn = (ExecutionModulesContentProvider.FlowNode) obj;
-
-				List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
-				RealizedFlow realizedFlow = new RealizedFlow();
-				realizedFlow.setModuleName(fn.getExecutionModuleNode()
-						.getDescriptor().getName());
-				realizedFlow.setModuleVersion(fn.getExecutionModuleNode()
-						.getDescriptor().getVersion());
-				realizedFlow.setFlowDescriptor(fn.getExecutionModuleNode()
-						.getFlowDescriptors().get(fn.getFlowName()));
-				realizedFlows.add(realizedFlow);
-
-				SlcExecution slcExecution = new SlcExecution();
-				slcExecution.setUuid(UUID.randomUUID().toString());
-				slcExecution.setRealizedFlows(realizedFlows);
-				slcExecution.setHost(fn.getExecutionModuleNode().getAgentNode()
-						.getAgent().toString());
-				processController.execute(fn.getExecutionModuleNode()
-						.getAgentNode().getAgent(), slcExecution);
+			try {
+				if (obj instanceof Node) {
+					Node node = (Node) obj;
+					if (node.isNodeType(SLC_EXECUTION_FLOW)) {
+						List<String> paths = new ArrayList<String>();
+						paths.add(node.getPath());
+						PlatformUI
+								.getWorkbench()
+								.getActiveWorkbenchWindow()
+								.getActivePage()
+								.openEditor(
+										new ProcessEditorInput(paths, true),
+										ProcessEditor.ID);
+					}
+				}
+			} catch (Exception e) {
+				throw new SlcException("Cannot open " + obj, e);
 			}
+
+			// if (obj instanceof ExecutionModulesContentProvider.FlowNode) {
+			// ExecutionModulesContentProvider.FlowNode fn =
+			// (ExecutionModulesContentProvider.FlowNode) obj;
+			//
+			// List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
+			// RealizedFlow realizedFlow = new RealizedFlow();
+			// realizedFlow.setModuleName(fn.getExecutionModuleNode()
+			// .getDescriptor().getName());
+			// realizedFlow.setModuleVersion(fn.getExecutionModuleNode()
+			// .getDescriptor().getVersion());
+			// realizedFlow.setFlowDescriptor(fn.getExecutionModuleNode()
+			// .getFlowDescriptors().get(fn.getFlowName()));
+			// realizedFlows.add(realizedFlow);
+			//
+			// SlcExecution slcExecution = new SlcExecution();
+			// slcExecution.setUuid(UUID.randomUUID().toString());
+			// slcExecution.setRealizedFlows(realizedFlows);
+			// slcExecution.setHost(fn.getExecutionModuleNode().getAgentNode()
+			// .getAgent().toString());
+			// processController.execute(fn.getExecutionModuleNode()
+			// .getAgentNode().getAgent(), slcExecution);
+			// }
 		}
 
 	}
 
-	class ViewDragListener implements DragSourceListener {
+	class ViewDragListener extends DragSourceAdapter {
 
 		public void dragStart(DragSourceEvent event) {
-			System.out.println("Start Drag");
+			if (log.isDebugEnabled())
+				log.debug("Start Drag " + event);
+			super.dragStart(event);
 		}
 
 		public void dragSetData(DragSourceEvent event) {
@@ -268,36 +287,65 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 			IStructuredSelection selection = (IStructuredSelection) viewer
 					.getSelection();
-			if (selection.getFirstElement() instanceof ExecutionModulesContentProvider.FlowNode) {
+			if (selection.getFirstElement() instanceof Node) {
+				Node node = (Node) selection.getFirstElement();
+				// try {
+				// if (node.isNodeType(SLC_EXECUTION_FLOW)) {
+				// if (EditorInputTransfer.getInstance().isSupportedType(
+				// event.dataType)) {
+				// ProcessEditorInput pei = new ProcessEditorInput(
+				// node.getPath());
+				// EditorInputData eid = EditorInputTransfer
+				// .createEditorInputData(ProcessEditor.ID,
+				// pei);
+				// event.data = new EditorInputTransfer.EditorInputData[] { eid
+				// };
+				//
+				// }
+				// }
+				// } catch (RepositoryException e1) {
+				// throw new SlcException("Cannot drag " + node, e1);
+				// }
 
 				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-					ExecutionModulesContentProvider.FlowNode flowNode = (ExecutionModulesContentProvider.FlowNode) selection
-							.getFirstElement();
-
-					Properties props = new Properties();
-					flowNodeAsProperties(props, flowNode);
-					props.setProperty("agentId", flowNode
-							.getExecutionModuleNode().getAgentNode().getAgent()
-							.getAgentUuid());
-					props.setProperty("host", flowNode.getExecutionModuleNode()
-							.getAgentNode().getAgent().toString());
-
-					ByteArrayOutputStream out = new ByteArrayOutputStream();
 					try {
-						props.store(out, "");
-						event.data = new String(out.toByteArray());
-					} catch (IOException e) {
-						throw new SlcException(
-								"Cannot transform realized flow", e);
-					} finally {
-						IOUtils.closeQuietly(out);
+						event.data = node.getPath();
+					} catch (RepositoryException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
+					//
+					// // ExecutionModulesContentProvider.FlowNode flowNode =
+					// (ExecutionModulesContentProvider.FlowNode) selection
+					// // .getFirstElement();
+					// //
+					// // Properties props = new Properties();
+					// // flowNodeAsProperties(props, flowNode);
+					// // props.setProperty("agentId", flowNode
+					// // .getExecutionModuleNode().getAgentNode().getAgent()
+					// // .getAgentUuid());
+					// // props.setProperty("host",
+					// flowNode.getExecutionModuleNode()
+					// // .getAgentNode().getAgent().toString());
+					// //
+					// // ByteArrayOutputStream out = new
+					// ByteArrayOutputStream();
+					// // try {
+					// // props.store(out, "");
+					// // event.data = new String(out.toByteArray());
+					// // } catch (IOException e) {
+					// // throw new SlcException(
+					// // "Cannot transform realized flow", e);
+					// // } finally {
+					// // IOUtils.closeQuietly(out);
+					// // }
 				}
 			}
 		}
 
 		public void dragFinished(DragSourceEvent event) {
-			System.out.println("Finished Drag");
+			if (log.isDebugEnabled())
+				log.debug("Finished Drag " + event);
 		}
 
 		protected void flowNodeAsProperties(Properties props, FlowNode fn) {

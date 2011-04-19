@@ -16,18 +16,12 @@
 
 package org.argeo.slc.process;
 
-import java.util.List;
+import org.argeo.slc.execution.ExecutionProcessNotifier;
 
-public interface SlcExecutionNotifier {
-	@Deprecated
-	public void newExecution(SlcExecution slcExecution);
-
-	public void addSteps(SlcExecution slcExecution,
-			List<SlcExecutionStep> additionalSteps);
-
-	@Deprecated
-	public void updateExecution(SlcExecution slcExecution);
-
-	public void updateStatus(SlcExecution slcExecution, String oldStatus,
-			String newStatus);
+/**
+ * Notifies of changes in the current process
+ * 
+ * @deprecated use {@link ExecutionProcessNotifier} instead.
+ */
+public interface SlcExecutionNotifier extends ExecutionProcessNotifier {
 }

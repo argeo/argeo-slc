@@ -145,7 +145,7 @@ public class ProcessController {
 				|| slcExecution.getUuid().length() < 8)
 			slcExecution.setUuid(UUID.randomUUID().toString());
 
-		slcExecution.setStatus(SlcExecution.STATUS_SCHEDULED);
+		slcExecution.setStatus(SlcExecution.SCHEDULED);
 		slcExecution.getSteps().add(
 				new SlcExecutionStep(SlcExecutionStep.START,
 						"Process started from the Web UI"));

@@ -68,7 +68,7 @@ public class SlcExecutionServiceImpl implements SlcExecutionService {
 
 		slcExecution.setStatus(msg.getNewStatus());
 
-		if (msg.getNewStatus().equals(SlcExecution.STATUS_FINISHED)) {
+		if (msg.getNewStatus().equals(SlcExecution.COMPLETED)) {
 			List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
 			steps.add(new SlcExecutionStep(SlcExecutionStep.END,
 					"Process finished."));

@@ -12,7 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.oxm.OxmInterface;
-import org.argeo.slc.client.ui.ClientUiPlugin;
+import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.controllers.ProcessController;
 import org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider;
 import org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider.FlowNode;
@@ -95,17 +95,13 @@ public class ExecutionModulesView extends ViewPart {
 
 		public Image getImage(Object obj) {
 			if (obj instanceof ExecutionModulesContentProvider.AgentNode)
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("agent");
+				return SlcImages.AGENT;
 			else if (obj instanceof ExecutionModulesContentProvider.ExecutionModuleNode)
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("executionModule");
+				return SlcImages.MODULE;
 			else if (obj instanceof ExecutionModulesContentProvider.FolderNode)
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("folder");
+				return SlcImages.FOLDER;
 			else if (obj instanceof ExecutionModulesContentProvider.FlowNode)
-				return ClientUiPlugin.getDefault().getImageRegistry()
-						.get("flow");
+				return SlcImages.FLOW;
 			else
 				return PlatformUI.getWorkbench().getSharedImages()
 						.getImage(ISharedImages.IMG_OBJ_ELEMENT);

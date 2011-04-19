@@ -18,39 +18,43 @@ package org.argeo.slc.services.impl;
 
 import java.util.List;
 
-import org.argeo.slc.UnsupportedException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
-import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionNotifier;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.services.SlcExecutionService;
 
 /** In memory bridge between SLC execution notifier and service. */
+@SuppressWarnings("deprecation")
 public class SlcExecutionServiceAdapter implements SlcExecutionNotifier {
+	private final static Log log = LogFactory
+			.getLog(SlcExecutionServiceAdapter.class);
+
 	private SlcExecutionService slcExecutionService;
 
-	public void updateStatus(SlcExecution slcExecution, String oldStatus,
+	public void updateStatus(ExecutionProcess slcExecution, String oldStatus,
 			String newStatus) {
 		SlcExecutionStatusRequest req = new SlcExecutionStatusRequest(
 				slcExecution.getUuid(), newStatus);
-		slcExecutionService.updateStatus(req);
+		try {
+			slcExecutionService.updateStatus(req);
+		} catch (Exception e) {
+			log.trace("Cannot update process status " + e);
+		}
 	}
 
-	public void addSteps(SlcExecution slcExecution,
+	public void addSteps(ExecutionProcess slcExecution,
 			List<SlcExecutionStep> additionalSteps) {
 		SlcExecutionStepsRequest req = new SlcExecutionStepsRequest(
 				slcExecution.getUuid(), additionalSteps);
-		slcExecutionService.addSteps(req);
-	}
-
-	public void newExecution(SlcExecution slcExecution) {
-		throw new UnsupportedException();
-		//slcExecutionService.newExecution(slcExecution);
-	}
-
-	public void updateExecution(SlcExecution slcExecution) {
-		throw new UnsupportedException();
+		try {
+			slcExecutionService.addSteps(req);
+		} catch (Exception e) {
+			log.trace("Cannot add steps " + e);
+		}
 	}
 
 	public void setSlcExecutionService(SlcExecutionService slcExecutionService) {
