@@ -50,6 +50,13 @@
 	         restorable="true">
 	   </view>
 	   <view
+	         id="org.argeo.slc.client.ui.jcrProcessListView"
+	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+	         name="Processes"
+	         icon="icons/processes.gif"
+	         restorable="true">
+	   </view>
+	   <view
 	         allowMultiple="true"
 	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
 	         icon="icons/process_details.gif"

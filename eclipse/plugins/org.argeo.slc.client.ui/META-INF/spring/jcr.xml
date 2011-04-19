@@ -7,10 +7,13 @@
 	<!-- Views -->
 	<bean id="jcrExecutionModulesView" class="org.argeo.slc.client.ui.views.JcrExecutionModulesView"
 		scope="prototype">
-		<property name="processController" ref="processController" />
 		<property name="session" ref="session" />
 	</bean>
 
+	<bean id="jcrProcessListView" class="org.argeo.slc.client.ui.views.JcrProcessListView"
+		scope="prototype">
+		<property name="session" ref="session" />
+	</bean>
 
 	<bean id="session" class="org.argeo.jcr.spring.ThreadBoundSession">
 		<property name="repository" ref="repository" />

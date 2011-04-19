@@ -14,9 +14,8 @@ import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.execution.ExecutionProcess;
@@ -48,7 +47,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.AbstractFormPart;
@@ -59,7 +57,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 	public final static String ID = "processBuilderPage";
-	private final static Log log = LogFactory.getLog(ProcessBuilderPage.class);
+	//private final static Log log = LogFactory.getLog(ProcessBuilderPage.class);
 
 	private Node processNode;
 
@@ -259,14 +257,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 
 	@Override
 	public void dispose() {
-		try {
-			if (statusObserver != null) {
-				processNode.getSession().getWorkspace().getObservationManager()
-						.removeEventListener(statusObserver);
-			}
-		} catch (Exception e) {
-			log.error("Cannot dispose observer for " + processNode + ": " + e);
-		}
+		JcrUtils.unregisterQuietly(processNode, statusObserver);
 		super.dispose();
 	}
 

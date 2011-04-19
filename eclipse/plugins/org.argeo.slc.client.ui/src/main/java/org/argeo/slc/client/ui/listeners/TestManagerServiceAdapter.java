@@ -1,6 +1,7 @@
 package org.argeo.slc.client.ui.listeners;
 
-import org.argeo.slc.SlcException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.core.attachment.Attachment;
 import org.argeo.slc.core.attachment.SimpleAttachment;
@@ -16,8 +17,8 @@ import org.eclipse.ui.handlers.IHandlerService;
 
 /** In memory access to a test manager service */
 public class TestManagerServiceAdapter implements TreeTestResultListener {
-	// private static final Log log = LogFactory
-	// .getLog(TestManagerServiceAdapter.class);
+	private static final Log log = LogFactory
+			.getLog(TestManagerServiceAdapter.class);
 
 	private Boolean onlyOnClose = false;
 
@@ -71,10 +72,7 @@ public class TestManagerServiceAdapter implements TreeTestResultListener {
 											null);
 
 						} catch (Exception e) {
-							e.printStackTrace();
-							throw new SlcException(
-									"Problem while rendering result. "
-											+ e.getMessage());
+							log.error("Cannot refresh views: " + e);
 						}
 					}
 				}

@@ -24,7 +24,7 @@ public class SlcExecutionPerspective implements IPerspectiveFactory {
 
 		IFolderLayout bottom = layout.createFolder("bottom",
 				IPageLayout.BOTTOM, 0.65f, editorArea);
-		bottom.addView("org.argeo.slc.client.ui.processListView");
+		bottom.addView("org.argeo.slc.client.ui.jcrProcessListView");
 
 //		IFolderLayout topRight = layout.createFolder("topRight",
 //				IPageLayout.RIGHT, 0.6f, "main");
