@@ -49,7 +49,7 @@ public class SlcServerHttpClientImpl extends AbstractHttpServicesClient
 
 	public void waitForSlcExecutionFinished(SlcExecution slcExecution,
 			Long timeout) {
-		if (slcExecution.getStatus().equals(SlcExecution.STATUS_FINISHED))
+		if (slcExecution.getStatus().equals(SlcExecution.COMPLETED))
 			return;
 
 		long begin = System.currentTimeMillis();
@@ -60,7 +60,7 @@ public class SlcServerHttpClientImpl extends AbstractHttpServicesClient
 			String status = event.getHeaders().get(
 					MsgConstants.PROPERTY_SLC_EXECUTION_STATUS);
 			if (slcExecutionId.equals(slcExecution.getUuid())
-					&& status.equals(SlcExecution.STATUS_FINISHED)) {
+					&& status.equals(SlcExecution.COMPLETED)) {
 				return;
 			}
 		}

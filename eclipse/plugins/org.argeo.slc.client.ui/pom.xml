@@ -31,6 +31,11 @@
 			<artifactId>org.argeo.slc.core</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.jcr</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
@@ -38,10 +43,15 @@
 			<version>${version.slc}</version>
 		</dependency>
 
-		<!-- Spring -->
+		<!-- Argeo Eclipse -->
 		<dependency>
 			<groupId>org.argeo.commons.eclipse</groupId>
 			<artifactId>org.argeo.eclipse.ui</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.eclipse</groupId>
+			<artifactId>org.argeo.eclipse.ui.jcr</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
