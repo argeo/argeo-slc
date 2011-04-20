@@ -3,7 +3,13 @@ package org.argeo.slc.jcr;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.core.execution.PrimitiveAccessor;
+import org.argeo.slc.core.execution.PrimitiveUtils;
 import org.argeo.slc.deploy.ModuleDescriptor;
 
 /**
@@ -59,6 +65,41 @@ public class SlcJcrUtils {
 		return SlcJcrConstants.PROCESSES_BASE_PATH + '/'
 				+ JcrUtils.dateAsPath(now, true) + uuid;
 
+	}
+
+	/**
+	 * Set the value of the primitive accessor as a JCR property. Does nothing
+	 * if the value is null.
+	 */
+	public static void setPrimitiveAsProperty(Node node, String propertyName,
+			PrimitiveAccessor primitiveAccessor) {
+		String type = primitiveAccessor.getType();
+		Object value = primitiveAccessor.getValue();
+		if (value == null)
+			return;
+		if (value instanceof CharSequence)
+			value = PrimitiveUtils.convert(type,
+					((CharSequence) value).toString());
+
+		try {
+			if (type.equals(PrimitiveUtils.TYPE_STRING))
+				node.setProperty(propertyName, value.toString());
+			else if (type.equals(PrimitiveUtils.TYPE_INTEGER))
+				node.setProperty(propertyName, (long) ((Integer) value));
+			else if (type.equals(PrimitiveUtils.TYPE_LONG))
+				node.setProperty(propertyName, ((Long) value));
+			else if (type.equals(PrimitiveUtils.TYPE_FLOAT))
+				node.setProperty(propertyName, (double) ((Float) value));
+			else if (type.equals(PrimitiveUtils.TYPE_DOUBLE))
+				node.setProperty(propertyName, ((Double) value));
+			else if (type.equals(PrimitiveUtils.TYPE_BOOLEAN))
+				node.setProperty(propertyName, ((Boolean) value));
+			else
+				throw new SlcException("Unsupported type " + type);
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot set primitive " + primitiveAccessor
+					+ " as property " + propertyName + " on " + node, e);
+		}
 	}
 
 	/** Prevents instantiation */

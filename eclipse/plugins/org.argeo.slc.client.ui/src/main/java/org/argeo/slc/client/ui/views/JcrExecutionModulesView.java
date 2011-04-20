@@ -9,6 +9,7 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
@@ -103,17 +104,19 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 					new String[] { SlcJcrConstants.VM_AGENT_FACTORY_PATH });
 		}
 
-//		@Override
-//		protected Object[] getChildren(Node node) throws RepositoryException {
-//			if (node.isNodeType(SlcTypes.SLC_AGENT_FACTORY)) {
-//				List<AgentNodesWrapper> wrappers = new ArrayList<AgentNodesWrapper>();
-//				for (NodeIterator nit = node.getNodes(); nit.hasNext();) {
-//					wrappers.add(new AgentNodesWrapper(nit.nextNode()));
-//				}
-//				return wrappers.toArray();
-//			}
-//			return super.getChildren(node);
-//		}
+		// @Override
+		// protected Object[] getChildren(Node node) throws RepositoryException
+		// {
+		// if (node.isNodeType(SlcTypes.SLC_AGENT_FACTORY)) {
+		// List<AgentNodesWrapper> wrappers = new
+		// ArrayList<AgentNodesWrapper>();
+		// for (NodeIterator nit = node.getNodes(); nit.hasNext();) {
+		// wrappers.add(new AgentNodesWrapper(nit.nextNode()));
+		// }
+		// return wrappers.toArray();
+		// }
+		// return super.getChildren(node);
+		// }
 
 		@Override
 		protected Object[] sort(Object parent, Object[] children) {
@@ -131,6 +134,12 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 				if (o1 instanceof Node && o2 instanceof Node) {
 					Node node1 = (Node) o1;
 					Node node2 = (Node) o2;
+
+					if (node1.getName().equals(SLC_EXECUTION_SPECS))
+						return -100;
+					if (node2.getName().equals(SLC_EXECUTION_SPECS))
+						return 100;
+
 					if (node1.isNodeType(SLC_EXECUTION_FLOW)
 							&& node2.isNodeType(SLC_EXECUTION_FLOW)) {
 						return node1.getName().compareTo(node2.getName());
@@ -154,27 +163,27 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	}
 
-//	/** Wraps the execution modules of an agent. */
-//	static class AgentNodesWrapper extends NodesWrapper {
-//
-//		public AgentNodesWrapper(Node node) {
-//			super(node);
-//		}
-//
-//		protected List<WrappedNode> getWrappedNodes()
-//				throws RepositoryException {
-//			List<WrappedNode> children = new ArrayList<WrappedNode>();
-//			Node executionModules = getNode();
-//			for (NodeIterator nit = executionModules.getNodes(); nit.hasNext();) {
-//				for (NodeIterator nitVersions = nit.nextNode().getNodes(); nitVersions
-//						.hasNext();) {
-//					children.add(new WrappedNode(this, nitVersions.nextNode()));
-//				}
-//			}
-//			return children;
-//		}
-//
-//	}
+	// /** Wraps the execution modules of an agent. */
+	// static class AgentNodesWrapper extends NodesWrapper {
+	//
+	// public AgentNodesWrapper(Node node) {
+	// super(node);
+	// }
+	//
+	// protected List<WrappedNode> getWrappedNodes()
+	// throws RepositoryException {
+	// List<WrappedNode> children = new ArrayList<WrappedNode>();
+	// Node executionModules = getNode();
+	// for (NodeIterator nit = executionModules.getNodes(); nit.hasNext();) {
+	// for (NodeIterator nitVersions = nit.nextNode().getNodes(); nitVersions
+	// .hasNext();) {
+	// children.add(new WrappedNode(this, nitVersions.nextNode()));
+	// }
+	// }
+	// return children;
+	// }
+	//
+	// }
 
 	class VmAgentObserver extends AsyncUiEventListener {
 		protected void onEventInUiThread(EventIterator events) {
@@ -184,30 +193,54 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	class ViewLabelProvider extends DefaultNodeLabelProvider implements
 			ITableLabelProvider {
+
+		@Override
+		protected String getText(Node node) throws RepositoryException {
+			if (node.getName().equals(SLC_EXECUTION_SPECS))
+				return "Execution Specifications";
+			else if (node.getPath().equals(
+					SlcJcrConstants.VM_AGENT_FACTORY_PATH))
+				return "Internal Agents";
+			return super.getText(node);
+		}
+
+		@Override
+		public Image getImage(Node node) throws RepositoryException {
+			// we try to optimize a bit by putting deeper nodes first
+			if (node.getParent().isNodeType(
+					SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE))
+				return SlcImages.CHOICES;
+			else if (node.isNodeType(SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE))
+				return SlcImages.EXECUTION_SPEC_ATTRIBUTE;
+			else if (node.isNodeType(SlcTypes.SLC_EXECUTION_SPEC))
+				return SlcImages.EXECUTION_SPEC;
+			else if (node.getName().equals(SLC_EXECUTION_SPECS))
+				return SlcImages.EXECUTION_SPECS;
+			else if (node.isNodeType(SlcTypes.SLC_EXECUTION_FLOW))
+				return SlcImages.FLOW;
+			else if (node.isNodeType(SlcTypes.SLC_MODULE))
+				return SlcImages.MODULE;
+			else if (node.isNodeType(SlcTypes.SLC_AGENT))
+				return SlcImages.AGENT;
+			else if (node.isNodeType(SlcTypes.SLC_AGENT_FACTORY))
+				return SlcImages.AGENT_FACTORY;
+			else
+				return SlcImages.FOLDER;
+		}
+
+		public String getToolTipText(Node node) throws RepositoryException {
+			if (node.isNodeType(NodeType.MIX_TITLE)
+					&& node.hasProperty(Property.JCR_DESCRIPTION))
+				return node.getProperty(Property.JCR_DESCRIPTION).getString();
+			return super.getToolTipText(node);
+		}
+
 		public String getColumnText(Object obj, int index) {
 			return getText(obj);
 		}
 
 		public Image getColumnImage(Object obj, int index) {
 			return getImage(obj);
-		}
-
-		public Image getImage(Node node) throws RepositoryException {
-			if (node.isNodeType(SlcTypes.SLC_AGENT))
-				return SlcImages.AGENT;
-			else if (node.isNodeType(SlcTypes.SLC_MODULE))
-				return SlcImages.MODULE;
-			else if (node.isNodeType(SlcTypes.SLC_EXECUTION_FLOW))
-				return SlcImages.FLOW;
-			else
-				return SlcImages.FOLDER;
-		}
-
-		public String getToolTipText(Node node) throws RepositoryException {
-			if (node.isNodeType(SlcTypes.SLC_MODULE)
-					&& node.hasProperty(Property.JCR_DESCRIPTION))
-				return node.getProperty(Property.JCR_DESCRIPTION).getString();
-			return super.getToolTipText(node);
 		}
 
 	}

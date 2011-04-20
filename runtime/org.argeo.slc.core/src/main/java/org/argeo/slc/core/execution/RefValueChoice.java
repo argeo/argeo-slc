@@ -18,6 +18,7 @@ package org.argeo.slc.core.execution;
 
 import java.io.Serializable;
 
+/** A choice of ref value to be shown to the end user. */
 public class RefValueChoice implements Serializable {
 	private static final long serialVersionUID = -1133645722307507774L;
 	private String name;

@@ -16,7 +16,7 @@
 
 package org.argeo.slc.core.execution;
 
-
+/** Converts to and from primitive types. */
 public class PrimitiveUtils {
 	public final static String TYPE_STRING = "string";
 	public final static String TYPE_INTEGER = "integer";

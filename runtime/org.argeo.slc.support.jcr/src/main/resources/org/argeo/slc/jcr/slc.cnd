@@ -22,8 +22,34 @@ mixin
 [slc:executionModule] > slc:activableModule
 mixin
 
+[slc:executionSpec] > nt:unstructured, mix:referenceable, mix:title
+- slc:name (STRING)
++ * (slc:executionSpecAttribute) *
+
+[slc:executionSpecAttribute] > nt:base
+mixin abstract
+- slc:isImmutable (BOOLEAN) m
+- slc:isConstant (BOOLEAN) m
+- slc:isHidden (BOOLEAN) m
+
+[slc:primitiveSpecAttribute] > slc:executionSpecAttribute
+mixin
+- slc:type (STRING) m
+- slc:value (UNDEFINED)
+
+[slc:refSpecAttribute] > slc:executionSpecAttribute
+mixin
+// typically a class name
+- slc:type (STRING)
++ slc:value
++ * (mix:title)
+
 [slc:executionFlow] > nt:unstructured, mix:title
 - slc:name (STRING) m
+// if the execution spec is a referenceable node
+- slc:executionSpec (REFERENCE)
+// if the execution spec is internal (without name)
++ * (slc:executionSpecAttribute) *
 
 // PROCESS
 [slc:process] > nt:unstructured, mix:created, mix:lastModified

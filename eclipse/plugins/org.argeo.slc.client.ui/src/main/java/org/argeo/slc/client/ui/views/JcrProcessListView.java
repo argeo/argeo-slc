@@ -19,8 +19,10 @@ import javax.jcr.query.Query;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
 import org.argeo.slc.client.ui.editors.ProcessEditorInput;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -68,6 +70,7 @@ public class JcrProcessListView extends ViewPart {
 
 		processesObserver = new AsyncUiEventListener() {
 			protected void onEventInUiThread(EventIterator events) {
+				// TODO optimize by updating only the changed process
 				viewer.refresh();
 			}
 		};
@@ -157,8 +160,29 @@ public class JcrProcessListView extends ViewPart {
 	class LabelProvider extends ColumnLabelProvider implements
 			ITableLabelProvider {
 
-		public Image getColumnImage(Object element, int columnIndex) {
-			return null;
+		public Image getColumnImage(Object obj, int columnIndex) {
+			if (columnIndex != 0)
+				return null;
+			try {
+				Node node = (Node) obj;
+				String status = node.getProperty(SlcNames.SLC_STATUS)
+						.getString();
+				if (status.equals(ExecutionProcess.NEW)
+						|| status.equals(ExecutionProcess.INITIALIZED)
+						|| status.equals(ExecutionProcess.SCHEDULED))
+					return SlcImages.PROCESS_SCHEDULED;
+				else if (status.equals(ExecutionProcess.ERROR)
+						|| status.equals(ExecutionProcess.UNKOWN))
+					return SlcImages.PROCESS_ERROR;
+				else if (status.equals(ExecutionProcess.COMPLETED))
+					return SlcImages.PROCESS_COMPLETED;
+				else if (status.equals(ExecutionProcess.RUNNING))
+					return SlcImages.PROCESS_RUNNING;
+				else
+					throw new SlcException("Unkown status " + status);
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get column text", e);
+			}
 		}
 
 		public String getColumnText(Object obj, int index) {

@@ -18,7 +18,7 @@ package org.argeo.slc.core.execution;
 
 import java.io.Serializable;
 
-public abstract class AbstractExecutionValue implements Serializable{
+/** Value to be used by an execution */
+public abstract class AbstractExecutionValue implements Serializable {
 	private static final long serialVersionUID = 1558444746120706961L;
-
 }

@@ -20,29 +20,30 @@ import java.io.Serializable;
 
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 
+/** Canonical implementation of the execution spec attribute booleans. */
 public abstract class AbstractSpecAttribute implements ExecutionSpecAttribute,
 		Serializable {
 	private static final long serialVersionUID = 6494963738891709440L;
-	private Boolean isParameter = false;
-	private Boolean isFrozen = false;
+	private Boolean isImmutable = false;
+	private Boolean isConstant = false;
 	private Boolean isHidden = false;
 
 	/** Has to be set at instantiation */
-	public Boolean getIsParameter() {
-		return isParameter;
+	public Boolean getIsImmutable() {
+		return isImmutable;
 	}
 
-	public void setIsParameter(Boolean isParameter) {
-		this.isParameter = isParameter;
+	public void setIsImmutable(Boolean isImmutable) {
+		this.isImmutable = isImmutable;
 	}
 
 	/** Cannot be overridden at runtime */
-	public Boolean getIsFrozen() {
-		return isFrozen;
+	public Boolean getIsConstant() {
+		return isConstant;
 	}
 
-	public void setIsFrozen(Boolean isFinal) {
-		this.isFrozen = isFinal;
+	public void setIsConstant(Boolean isConstant) {
+		this.isConstant = isConstant;
 	}
 
 	/** Should not be shown to the end user */
@@ -52,6 +53,29 @@ public abstract class AbstractSpecAttribute implements ExecutionSpecAttribute,
 
 	public void setIsHidden(Boolean isHidden) {
 		this.isHidden = isHidden;
+	}
+
+	/*
+	 * DEPRECATED
+	 */
+	/** @deprecated use {@link #getIsImmutable()} instead */
+	public Boolean getIsParameter() {
+		return isImmutable;
+	}
+
+	/** @deprecated use {@link #getIsConstant()} instead */
+	public Boolean getIsFrozen() {
+		return isConstant;
+	}
+
+	/** @deprecated use {@link #setIsImmutable(Boolean)} instead */
+	public void setIsParameter(Boolean isParameter) {
+		this.isImmutable = isParameter;
+	}
+
+	/** @deprecated use {@link #setIsConstant(Boolean)} instead */
+	public void setIsFrozen(Boolean isFrozen) {
+		this.isConstant = isFrozen;
 	}
 
 }

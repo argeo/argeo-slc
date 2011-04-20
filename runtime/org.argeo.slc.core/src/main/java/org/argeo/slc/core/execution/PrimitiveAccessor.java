@@ -16,6 +16,7 @@
 
 package org.argeo.slc.core.execution;
 
+/** Abstraction of access to primitive values */
 public interface PrimitiveAccessor {
 	public String getType();
 

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,6 +35,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
+/** Spring based implementation of execution specifications. */
 public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 		ApplicationContextAware, InitializingBean, Serializable {
 	private static final long serialVersionUID = 5159882223926926539L;
@@ -46,7 +46,7 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 	private String description;
 	private Map<String, ExecutionSpecAttribute> attributes = new HashMap<String, ExecutionSpecAttribute>();
 
-	private String name = getClass().getName() + "#" + UUID.randomUUID();
+	private String name = INTERNAL_NAME;
 
 	public Map<String, ExecutionSpecAttribute> getAttributes() {
 		return attributes;
@@ -60,6 +60,10 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 		this.name = name;
 	}
 
+	/**
+	 * The Spring bean name (only relevant for specs declared has high-level
+	 * beans)
+	 */
 	public String getName() {
 		return name;
 	}
@@ -68,6 +72,10 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 		return ((ExecutionSpec) obj).getName().equals(name);
 	}
 
+	/**
+	 * The Spring bean description (only relevant for specs declared has
+	 * high-level beans)
+	 */
 	public String getDescription() {
 		return description;
 	}
