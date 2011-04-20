@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
+       http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd
+       http://www.springframework.org/schema/beans   
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!-- REFERENCES -->
+	<reference id="repository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=slc)" />
+
+	<reference id="modulesManager"
+		interface="org.argeo.slc.execution.ExecutionModulesManager" />
+	<reference id="authenticationManager"
+		interface="org.springframework.security.AuthenticationManager" />
+
+	<!-- SERVICES -->
+	<service interface="org.argeo.slc.execution.ExecutionModulesListener"
+		ref="executionModulesListener" />
+	<service ref="agent" interface="org.argeo.slc.runtime.SlcAgentFactory">
+		<service-properties>
+			<beans:entry>
+				<beans:key>
+					<util:constant static-field="org.argeo.slc.jcr.SlcJcrConstants.PROPERTY_PATH" />
+				</beans:key>
+				<util:constant
+					static-field="org.argeo.slc.jcr.SlcJcrConstants.VM_AGENT_FACTORY_PATH" />
+			</beans:entry>
+		</service-properties>
+	</service>
+	<service ref="agent" interface="org.argeo.slc.runtime.SlcAgent" />
+
+	<!-- <service interface="org.argeo.slc.dao.process.SlcExecutionDao" -->
+	<!-- ref="slcExecutionDao" /> -->
+	<!-- <service interface="org.argeo.slc.dao.test.tree.TreeTestResultDao" -->
+	<!-- ref="testResultDao" /> -->
+	<!-- <service interface="org.argeo.slc.dao.test.tree.TreeTestResultCollectionDao" -->
+	<!-- ref="testResultCollectionDao" /> -->
+	<!-- <service interface="org.argeo.slc.dao.test.TestRunDescriptorDao" -->
+	<!-- ref="testRunDescriptorDao" /> -->
+	<!-- <service interface="org.argeo.slc.dao.runtime.SlcAgentDescriptorDao" -->
+	<!-- ref="slcAgentDescriptorDao" /> -->
+
+	<!-- <service -->
+	<!-- interface="org.springframework.web.context.request.WebRequestInterceptor" -->
+	<!-- ref="osivInterceptor" /> -->
+</beans:beans>
