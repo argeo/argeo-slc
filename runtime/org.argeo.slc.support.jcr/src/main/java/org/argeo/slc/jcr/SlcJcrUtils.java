@@ -1,5 +1,10 @@
 package org.argeo.slc.jcr;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+import org.argeo.jcr.JcrUtils;
+
 /** Utilities around the SLC JCR model. Note that it relies on fixed base paths. */
 public class SlcJcrUtils {
 	public final static Integer AGENT_FACTORY_DEPTH = 3;
@@ -37,6 +42,14 @@ public class SlcJcrUtils {
 			buf.append('/').append(tokens[i]);
 		}
 		return buf.toString();
+	}
+
+	/** Create a new execution process path based on the current time */
+	public static String createExecutionProcessPath(String uuid) {
+		Calendar now = new GregorianCalendar();
+		return SlcJcrConstants.PROCESSES_BASE_PATH + '/'
+				+ JcrUtils.dateAsPath(now, true) + uuid;
+
 	}
 
 	/** Prevents instantiation */

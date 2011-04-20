@@ -34,7 +34,7 @@ public class SlcExecution implements ExecutionProcess, Serializable {
 	private String host;
 	private String user;
 	private String type;
-	private String status = UNINITIALIZED;
+	private String status = NEW;
 	private Map<String, String> attributes = new TreeMap<String, String>();
 
 	/** TODO: Synchronize */

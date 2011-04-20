@@ -3,11 +3,13 @@ package org.argeo.slc.client.ui.editors;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
@@ -15,6 +17,7 @@ import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
 import org.argeo.ArgeoException;
+import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.SlcImages;
@@ -44,6 +47,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -57,20 +61,23 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 	public final static String ID = "processBuilderPage";
-	//private final static Log log = LogFactory.getLog(ProcessBuilderPage.class);
+	// private final static Log log =
+	// LogFactory.getLog(ProcessBuilderPage.class);
 
 	private Node processNode;
 
 	private TreeViewer flowsViewer;
-	private Label status;
+	private Label statusLabel;
+	private Button run;
+	private Button remove;
+	private Button clear;
 
 	private AbstractFormPart formPart;
-	private StatusObserver statusObserver;
+	private EventListener statusObserver;
 
 	public ProcessBuilderPage(ProcessEditor editor, Node processNode) {
 		super(editor, ID, "Definition");
 		this.processNode = processNode;
-
 	}
 
 	@Override
@@ -89,11 +96,13 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 
 			};
 			getManagedForm().addPart(formPart);
-			if (getProcessStatus().equals(ExecutionProcess.UNINITIALIZED))
-				formPart.markDirty();
 
 			// observation
-			statusObserver = new StatusObserver();
+			statusObserver = new AsyncUiEventListener() {
+				protected void onEventInUiThread(EventIterator events) {
+					statusChanged();
+				}
+			};
 			ObservationManager observationManager = processNode.getSession()
 					.getWorkspace().getObservationManager();
 			observationManager.addEventListener(statusObserver,
@@ -112,12 +121,16 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		controls.setLayout(new RowLayout());
 		controls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-		Button run = tk.createButton(controls, null, SWT.PUSH);
+		run = tk.createButton(controls, null, SWT.PUSH);
 		run.setToolTipText("Run");
 		run.setImage(SlcImages.LAUNCH);
 		run.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
-				((ProcessEditor) getEditor()).process();
+				if (isFinished(getProcessStatus())) {
+					relaunch();
+				} else {
+					((ProcessEditor) getEditor()).process();
+				}
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -125,7 +138,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 			}
 		});
 
-		Button remove = tk.createButton(controls, null, SWT.PUSH);
+		remove = tk.createButton(controls, null, SWT.PUSH);
 		remove.setImage(SlcImages.REMOVE_ONE);
 		remove.setToolTipText("Remove selected flows");
 		remove.addSelectionListener(new SelectionListener() {
@@ -138,7 +151,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 			}
 		});
 
-		Button clear = tk.createButton(controls, null, SWT.PUSH);
+		clear = tk.createButton(controls, null, SWT.PUSH);
 		clear.setImage(SlcImages.REMOVE_ALL);
 		clear.setToolTipText("Clear all flows");
 		clear.addSelectionListener(new SelectionListener() {
@@ -151,7 +164,53 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 			}
 		});
 
-		status = tk.createLabel(controls, getProcessStatus());
+		Composite statusComposite = tk.createComposite(controls);
+		RowData rowData = new RowData();
+		rowData.width = 100;
+		rowData.height = 16;
+		statusComposite.setLayoutData(rowData);
+		statusComposite.setLayout(new FillLayout());
+		statusLabel = tk.createLabel(statusComposite, getProcessStatus());
+
+		// make sure all controls are in line with status
+		statusChanged();
+	}
+
+	protected void relaunch() {
+		try {
+			Node duplicatedNode = duplicateProcess();
+			PlatformUI
+					.getWorkbench()
+					.getActiveWorkbenchWindow()
+					.getActivePage()
+					.openEditor(
+							new ProcessEditorInput(duplicatedNode.getPath()),
+							ProcessEditor.ID);
+			getEditor().close(false);
+		} catch (Exception e1) {
+			throw new SlcException("Cannot relaunch " + processNode, e1);
+		}
+	}
+
+	protected Node duplicateProcess() {
+		try {
+			Session session = processNode.getSession();
+			String uuid = UUID.randomUUID().toString();
+			String destPath = SlcJcrUtils.createExecutionProcessPath(uuid);
+			Node newNode = JcrUtils.mkdirs(session, destPath, SLC_PROCESS);
+			JcrUtils.copy(processNode, newNode);
+//			session.getWorkspace().copy(processNode.getPath(), destPath);
+//			Node newNode = session.getNode(destPath);
+			// make sure that we kept the mixins
+//			newNode.addMixin(NodeType.MIX_CREATED);
+//			newNode.addMixin(NodeType.MIX_LAST_MODIFIED);
+			newNode.setProperty(SLC_UUID, uuid);
+			newNode.setProperty(SLC_STATUS, ExecutionProcess.INITIALIZED);
+			session.save();
+			return newNode;
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot duplicate process", e);
+		}
 	}
 
 	protected String getProcessStatus() {
@@ -161,6 +220,33 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 			throw new SlcException("Cannot retrieve status for " + processNode,
 					e);
 		}
+	}
+
+	protected void statusChanged() {
+		String status = getProcessStatus();
+		statusLabel.setText(status);
+		Boolean isEditable = isEditable(status);
+		run.setEnabled(isEditable);
+		remove.setEnabled(isEditable);
+		clear.setEnabled(isEditable);
+		// flowsViewer.getTree().setEnabled(isEditable);
+		if (status.equals(ExecutionProcess.COMPLETED)
+				|| status.equals(ExecutionProcess.ERROR)) {
+			run.setEnabled(true);
+			run.setImage(SlcImages.RELAUNCH);
+			run.setToolTipText("Relaunch");
+		}
+	}
+
+	/** Optimization so that we don't call the node each time */
+	protected Boolean isEditable(String status) {
+		return status.equals(ExecutionProcess.NEW)
+				|| status.equals(ExecutionProcess.INITIALIZED);
+	}
+
+	protected Boolean isFinished(String status) {
+		return status.equals(ExecutionProcess.COMPLETED)
+				|| status.equals(ExecutionProcess.ERROR);
 	}
 
 	protected void createBuilder(Composite parent) {
@@ -247,12 +333,9 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 	}
 
 	public void commit(Boolean onSave) {
+		if (onSave)
+			statusLabel.setText(getProcessStatus());
 		formPart.commit(onSave);
-	}
-
-	@Override
-	public void setFocus() {
-		flowsViewer.getTree().setFocus();
 	}
 
 	@Override
@@ -367,20 +450,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		@Override
 		public boolean validateDrop(Object target, int operation,
 				TransferData transferType) {
-			return true;
+			return isEditable(getProcessStatus());
 		}
-	}
-
-	class StatusObserver implements EventListener {
-
-		public void onEvent(EventIterator events) {
-			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
-				public void run() {
-					status.setText(getProcessStatus());
-				}
-			});
-			// flowsViewer.refresh();
-		}
-
 	}
 }

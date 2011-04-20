@@ -1,5 +1,7 @@
 package org.argeo.slc.client.ui.views;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +53,10 @@ public class JcrProcessListView extends ViewPart {
 	private Session session;
 
 	private EventListener processesObserver;
+
+	private DateFormat dateFormat = new SimpleDateFormat(
+			"EEE, dd MMM yyyy HH:mm:ss");
+	private Integer queryLimit = 100;
 
 	public void createPartControl(Composite parent) {
 		Table table = createTable(parent);
@@ -127,6 +133,8 @@ public class JcrProcessListView extends ViewPart {
 				String sql = "SELECT * from [slc:process] ORDER BY [jcr:lastModified] DESC";
 				Query query = session.getWorkspace().getQueryManager()
 						.createQuery(sql, Query.JCR_SQL2);
+				// TODO paging
+				query.setLimit(queryLimit);
 				List<Node> nodes = new ArrayList<Node>();
 				for (NodeIterator nit = query.execute().getNodes(); nit
 						.hasNext();) {
@@ -150,7 +158,6 @@ public class JcrProcessListView extends ViewPart {
 			ITableLabelProvider {
 
 		public Image getColumnImage(Object element, int columnIndex) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -160,7 +167,9 @@ public class JcrProcessListView extends ViewPart {
 				switch (index) {
 
 				case 0:
-					return node.getProperty(Property.JCR_CREATED).getString();
+					return dateFormat.format(node
+							.getProperty(Property.JCR_LAST_MODIFIED).getDate()
+							.getTime());
 				case 1:
 					return "local";
 				case 2:

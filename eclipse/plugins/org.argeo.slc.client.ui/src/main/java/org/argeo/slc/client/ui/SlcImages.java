@@ -13,6 +13,7 @@ public class SlcImages {
 	public final static Image PASSED = img("icons/passed.gif");
 	public final static Image ERROR = img("icons/error.gif");
 	public final static Image LAUNCH = img("icons/launch.gif");
+	public final static Image RELAUNCH = img("icons/relaunch.gif");
 	public final static Image REMOVE_ONE = img("icons/remove_one.gif");
 	public final static Image REMOVE_ALL = img("icons/removeAll.png");
 }

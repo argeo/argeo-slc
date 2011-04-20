@@ -35,6 +35,9 @@ public class JcrExecutionProcess implements ExecutionProcess {
 	public void setStatus(String status) {
 		try {
 			node.setProperty(SlcNames.SLC_STATUS, status);
+			// last modified properties needs to be manually updated
+			// see https://issues.apache.org/jira/browse/JCR-2233
+			JcrUtils.updateLastModified(node);
 			node.getSession().save();
 		} catch (RepositoryException e) {
 			try {

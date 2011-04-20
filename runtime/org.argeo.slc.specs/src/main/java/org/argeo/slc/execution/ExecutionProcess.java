@@ -9,7 +9,7 @@ package org.argeo.slc.execution;
  */
 public interface ExecutionProcess {
 	/** The process is not yet usable. */
-	public final static String UNINITIALIZED = "UNINITIALIZED";
+	public final static String NEW = "NEW";
 	/** The process is usable but not yet scheduled to run. */
 	public final static String INITIALIZED = "INITIALIZED";
 	/** The process is usable and scheduled to run, but not yet running. */

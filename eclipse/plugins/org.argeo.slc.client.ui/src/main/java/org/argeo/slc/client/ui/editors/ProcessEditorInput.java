@@ -74,4 +74,14 @@ public class ProcessEditorInput implements IEditorInput, IPersistableElement {
 		return launchImmediately;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ProcessEditorInput))
+			return false;
+		ProcessEditorInput pei = (ProcessEditorInput) obj;
+		if (processPath != null && pei.processPath != null)
+			return processPath.equals(pei.processPath);
+		return false;
+	}
+
 }
