@@ -11,6 +11,7 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
@@ -34,15 +35,20 @@ public class ProcessController {
 	}
 
 	public void process(Node processNode) {
+		JcrExecutionProcess process = new JcrExecutionProcess(processNode);
 		try {
 			// we currently only deal with single agents
-			Node flowNode = processNode.getNode(SlcNames.SLC_FLOW);
-			NodeIterator nit = flowNode.getNodes();
+			Node realizedFlowNode = processNode.getNode(SlcNames.SLC_FLOW);
+			NodeIterator nit = realizedFlowNode.getNodes();
 			if (nit.hasNext()) {
-				Node firstFlow = nit.nextNode();
+				// FIXME find a better way to determine which agent to use
+				// currently we check the agent of the first registered flow
+				Node firstRealizedFlow = nit.nextNode();
 				// we assume there is an nt:address
-				String firstFlowPath = firstFlow.getNode(SlcNames.SLC_ADDRESS)
+				String firstFlowPath = firstRealizedFlow
+						.getNode(SlcNames.SLC_ADDRESS)
 						.getProperty(Property.JCR_PATH).getString();
+				Node flowNode = processNode.getSession().getNode(firstFlowPath);
 				String agentFactoryPath = SlcJcrUtils
 						.flowAgentFactoryPath(firstFlowPath);
 				if (!agentFactories.containsKey(agentFactoryPath))
@@ -50,15 +56,18 @@ public class ProcessController {
 							+ agentFactoryPath);
 				SlcAgentFactory agentFactory = agentFactories
 						.get(agentFactoryPath);
-				String agentUuid = ((Node) processNode
-						.getAncestor(SlcJcrUtils.AGENT_FACTORY_DEPTH + 1))
-						.getName();
+				Node agentNode = ((Node) flowNode
+						.getAncestor(SlcJcrUtils.AGENT_FACTORY_DEPTH + 1));
+				String agentUuid = agentNode.getProperty(SlcNames.SLC_UUID)
+						.getString();
 
 				// process
 				SlcAgent slcAgent = agentFactory.getAgent(agentUuid);
-				slcAgent.process(new JcrExecutionProcess(processNode));
+				slcAgent.process(process);
 			}
-		} catch (RepositoryException e) {
+		} catch (Exception e) {
+			if (!process.getStatus().equals(ExecutionProcess.ERROR))
+				process.setStatus(ExecutionProcess.ERROR);
 			throw new SlcException("Cannot execute " + processNode, e);
 		}
 	}

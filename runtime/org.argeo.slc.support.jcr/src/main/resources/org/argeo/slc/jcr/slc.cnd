@@ -1,20 +1,31 @@
 <slc = 'http://www.argeo.org/ns/slc'>
 
+// COMMON
 [slc:nameVersion] > nt:base
 mixin
 - slc:name (STRING) m
 - slc:version (STRING) m
 
-[slc:agentProxy] > mix:title
+// AGENT
+[slc:agentFactory] > nt:unstructured, mix:title
++ * (slc:agent)
+
+[slc:agent] > nt:unstructured, mix:title
++ * (slc:module)
+
+[slc:module] > slc:nameVersion, mix:title
 mixin
 
-[slc:module] > slc:nameVersion,mix:title
+[slc:activableModule] > slc:module
 mixin
 
-[slc:executionFlow] > mix:title
+[slc:executionModule] > slc:activableModule
 mixin
+
+[slc:executionFlow] > nt:unstructured, mix:title
 - slc:name (STRING) m
 
+// PROCESS
 [slc:process] > nt:unstructured, mix:created, mix:lastModified
 - slc:uuid (STRING) m
 - slc:status (STRING) m

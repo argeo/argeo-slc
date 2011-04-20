@@ -3,6 +3,8 @@ package org.argeo.slc.jcr.execution;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionProcess;
@@ -10,6 +12,7 @@ import org.argeo.slc.jcr.SlcNames;
 
 /** Execution process implementation based on a JCR node. */
 public class JcrExecutionProcess implements ExecutionProcess {
+	private Log log = LogFactory.getLog(JcrExecutionProcess.class);
 	private final Node node;
 
 	public JcrExecutionProcess(Node node) {
@@ -28,7 +31,11 @@ public class JcrExecutionProcess implements ExecutionProcess {
 		try {
 			return node.getProperty(SlcNames.SLC_STATUS).getString();
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot get uuid for " + node, e);
+			log.error("Cannot get status: " + e);
+			// we should re-throw exception because this information can
+			// probably used for monitoring in case there are already unexpected
+			// exceptions
+			return UNKOWN;
 		}
 	}
 
@@ -45,7 +52,10 @@ public class JcrExecutionProcess implements ExecutionProcess {
 			} catch (RepositoryException e1) {
 				// silent
 			}
-			throw new SlcException("Cannot get uuid for " + node, e);
+			// we should re-throw exception because this information can
+			// probably used for monitoring in case there are already unexpected
+			// exceptions
+			log.error("Cannot set status " + status + ": " + e);
 		}
 	}
 

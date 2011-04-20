@@ -20,6 +20,9 @@ public interface ExecutionProcess {
 	public final static String COMPLETED = "COMPLETED";
 	/** The process failed because of an unexpected error. */
 	public final static String ERROR = "ERROR";
+	/** The status cannot be retrieved (probably because of unexpected errors). */
+	public final static String UNKOWN = "UNKOWN";
+
 	/**
 	 * Only a reference to the process has been kept, all monitoring data such
 	 * as logs have been purged.

@@ -8,6 +8,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
+import org.argeo.eclipse.ui.Error;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
@@ -105,7 +106,11 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 			throw new SlcException("Cannot update status of " + processNode, e);
 		}
 		doSave(null);
-		processController.process(processNode);
+		try {
+			processController.process(processNode);
+		} catch (Exception e) {
+			Error.show("Execution of " + processNode + " failed", e);
+		}
 	}
 
 	@Override

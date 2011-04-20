@@ -4,33 +4,42 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.deploy.ModuleDescriptor;
 
-/** Utilities around the SLC JCR model. Note that it relies on fixed base paths. */
+/**
+ * Utilities around the SLC JCR model. Note that it relies on fixed base paths
+ * (convention over configuration) for optimization purposes.
+ */
 public class SlcJcrUtils {
 	public final static Integer AGENT_FACTORY_DEPTH = 3;
-	public final static Integer EXECUTION_MODULES_DEPTH = AGENT_FACTORY_DEPTH + 2;
-	public final static Integer EXECUTION_FLOWS_DEPTH = EXECUTION_MODULES_DEPTH + 3;
 
 	/** Extracts the path of a flow relative to its execution module */
 	public static String flowRelativePath(String fullFlowPath) {
 		String[] tokens = fullFlowPath.split("/");
 		StringBuffer buf = new StringBuffer(fullFlowPath.length());
-		for (int i = EXECUTION_FLOWS_DEPTH; i < tokens.length; i++) {
+		for (int i = AGENT_FACTORY_DEPTH + 3; i < tokens.length; i++) {
 			buf.append('/').append(tokens[i]);
 		}
 		return buf.toString();
 	}
 
+	/** Module node name based on module name and version */
+	public static String getModuleNodeName(ModuleDescriptor moduleDescriptor) {
+		return moduleDescriptor.getName() + "_" + moduleDescriptor.getVersion();
+	}
+
 	/** Extracts the execution module name of a flow */
 	public static String flowExecutionModuleName(String fullFlowPath) {
 		String[] tokens = fullFlowPath.split("/");
-		return tokens[EXECUTION_MODULES_DEPTH + 1];
+		String moduleNodeName = tokens[AGENT_FACTORY_DEPTH + 2];
+		return moduleNodeName.substring(0, moduleNodeName.lastIndexOf('_'));
 	}
 
 	/** Extracts the execution module version of a flow */
 	public static String flowExecutionModuleVersion(String fullFlowPath) {
 		String[] tokens = fullFlowPath.split("/");
-		return tokens[EXECUTION_MODULES_DEPTH + 2];
+		String moduleNodeName = tokens[AGENT_FACTORY_DEPTH + 2];
+		return moduleNodeName.substring(moduleNodeName.lastIndexOf('_') + 1);
 	}
 
 	/** Extracts the agent factory of a flow */
@@ -57,11 +66,14 @@ public class SlcJcrUtils {
 
 	}
 
-	// public static void main(String[] args) {
-	// String path =
-	// "/slc/agents/vm/54654654654/executionModules/org.argeo/1.2.3/myFlow";
-	// System.out.println(flowRelativePath(path));
-	// System.out.println(flowExecutionModuleName(path));
-	// System.out.println(flowAgentFactoryPath(path));
-	// }
+	public static void main(String[] args) {
+		String path = "/slc/agents/vm/default/org.argeo_1.2.3/myPath/myFlow";
+		System.out.println("Flow relative path: " + flowRelativePath(path));
+		System.out.println("Execution Module Name: "
+				+ flowExecutionModuleName(path));
+		System.out.println("Execution Module Version: "
+				+ flowExecutionModuleVersion(path));
+		System.out.println("Agent Factory path: " + flowAgentFactoryPath(path));
+	}
+
 }

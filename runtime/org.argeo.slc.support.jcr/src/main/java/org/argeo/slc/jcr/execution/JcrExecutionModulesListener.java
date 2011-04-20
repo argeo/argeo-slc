@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -15,10 +16,9 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.deploy.ModuleDescriptor;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesListener;
-import org.argeo.slc.jcr.SlcJcrConstants;
+import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.argeo.slc.runtime.SlcAgent;
 
 /**
  * Synchronizes the local execution runtime with a JCR repository. For the time
@@ -27,96 +27,94 @@ import org.argeo.slc.runtime.SlcAgent;
 public class JcrExecutionModulesListener implements ExecutionModulesListener {
 	private final static Log log = LogFactory
 			.getLog(JcrExecutionModulesListener.class);
+	private JcrAgent agent;
 
+	/**
+	 * We don't use a thread bound session because many different threads will
+	 * call this critical component and we don't want to login each time. We
+	 * therefore rather protect access to this session via synchronized.
+	 */
 	private Session session;
-	private SlcAgent agent;
 
+	/*
+	 * LIFECYCLE
+	 */
 	public void init() {
-		try {
-			String modulesPath = getExecutionModulesPath();
-			// clean up previous state
-			if (session.nodeExists(modulesPath))
-				session.getNode(modulesPath).remove();
-			JcrUtils.mkdirs(session, modulesPath);
-			session.save();
-		} catch (RepositoryException e) {
-			throw new SlcException(
-					"Cannot initialize JCR execution module listener", e);
-		} finally {
-			JcrUtils.discardQuietly(session);
-		}
+		clearAgent();
 	}
 
 	public void dispose() {
+		clearAgent();
+		session.logout();
+	}
+
+	protected synchronized void clearAgent() {
 		try {
-			String modulesPath = getExecutionModulesPath();
-			// clean up previous state
-			if (session.nodeExists(modulesPath))
-				session.getNode(modulesPath).remove();
+			Node agentNode = session.getNode(agent.getNodePath());
+			for (NodeIterator nit = agentNode.getNodes(); nit.hasNext();)
+				nit.nextNode().remove();
 			session.save();
 		} catch (RepositoryException e) {
-			throw new SlcException(
-					"Cannot dispose JCR execution module listener", e);
-		} finally {
 			JcrUtils.discardQuietly(session);
+			throw new SlcException("Cannot clear agent " + agent, e);
 		}
 	}
 
-	public void executionModuleAdded(ModuleDescriptor moduleDescriptor) {
+	/*
+	 * EXECUTION MODULES LISTENER
+	 */
+	public synchronized void executionModuleAdded(
+			ModuleDescriptor moduleDescriptor) {
 		try {
-			Node base = session.getNode(getExecutionModulesPath());
-			Node moduleName = base.hasNode(moduleDescriptor.getName()) ? base
-					.getNode(moduleDescriptor.getName()) : base
-					.addNode(moduleDescriptor.getName());
-			Node moduleVersion = moduleName.hasNode(moduleDescriptor
-					.getVersion()) ? moduleName.getNode(moduleDescriptor
-					.getVersion()) : moduleName.addNode(moduleDescriptor
-					.getVersion());
-			moduleVersion.addMixin(SlcTypes.SLC_MODULE);
-			moduleVersion.setProperty(SlcNames.SLC_NAME,
+			Node agentNode = session.getNode(agent.getNodePath());
+			String moduleNodeName = SlcJcrUtils
+					.getModuleNodeName(moduleDescriptor);
+			Node moduleNode = agentNode.hasNode(moduleNodeName) ? agentNode
+					.getNode(moduleNodeName) : agentNode
+					.addNode(moduleNodeName);
+			moduleNode.addMixin(SlcTypes.SLC_EXECUTION_MODULE);
+			moduleNode.setProperty(SlcNames.SLC_NAME,
 					moduleDescriptor.getName());
-			moduleVersion.setProperty(SlcNames.SLC_VERSION,
+			moduleNode.setProperty(SlcNames.SLC_VERSION,
 					moduleDescriptor.getVersion());
-			moduleVersion.setProperty(Property.JCR_TITLE,
+			moduleNode.setProperty(Property.JCR_TITLE,
 					moduleDescriptor.getTitle());
-			moduleVersion.setProperty(Property.JCR_DESCRIPTION,
+			moduleNode.setProperty(Property.JCR_DESCRIPTION,
 					moduleDescriptor.getDescription());
 			session.save();
 		} catch (RepositoryException e) {
+			JcrUtils.discardQuietly(session);
 			throw new SlcException("Cannot add module " + moduleDescriptor, e);
 		}
 
 	}
 
-	public void executionModuleRemoved(ModuleDescriptor moduleDescriptor) {
+	public synchronized void executionModuleRemoved(
+			ModuleDescriptor moduleDescriptor) {
 		try {
-			Node base = session.getNode(getExecutionModulesPath());
-			if (base.hasNode(moduleDescriptor.getName())) {
-				Node moduleName = base.getNode(moduleDescriptor.getName());
-				if (moduleName.hasNode(moduleDescriptor.getVersion()))
-					moduleName.getNode(moduleDescriptor.getVersion()).remove();
-				if (!moduleName.hasNodes())
-					moduleName.remove();
-				session.save();
-			}
+			String moduleName = SlcJcrUtils.getModuleNodeName(moduleDescriptor);
+			Node agentNode = session.getNode(agent.getNodePath());
+			if (agentNode.hasNode(moduleName))
+				agentNode.getNode(moduleName).remove();
+			agentNode.getSession().save();
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot remove module " + moduleDescriptor,
 					e);
 		}
 	}
 
-	public void executionFlowAdded(ModuleDescriptor module,
+	public synchronized void executionFlowAdded(ModuleDescriptor module,
 			ExecutionFlowDescriptor executionFlow) {
-		String path = getExecutionFlowPath(module, executionFlow);
 		try {
+			Node agentNode = session.getNode(agent.getNodePath());
+			Node moduleNode = agentNode.getNode(SlcJcrUtils
+					.getModuleNodeName(module));
+			String relativePath = getExecutionFlowRelativePath(executionFlow);
 			Node flowNode = null;
-			if (!session.nodeExists(path)) {
-				Node base = session.getNode(getExecutionModulesPath());
-				Node moduleNode = base.getNode(module.getName() + '/'
-						+ module.getVersion());
-				String relativePath = getExecutionFlowRelativePath(executionFlow);
+			if (!moduleNode.hasNode(relativePath)) {
 				Iterator<String> names = Arrays.asList(relativePath.split("/"))
 						.iterator();
+				// create intermediary paths
 				Node currNode = moduleNode;
 				while (names.hasNext()) {
 					String name = names.next();
@@ -126,47 +124,45 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 						if (names.hasNext())
 							currNode = currNode.addNode(name);
 						else
-							flowNode = currNode.addNode(name);
+							flowNode = currNode.addNode(name,
+									SlcTypes.SLC_EXECUTION_FLOW);
 					}
 				}
-				flowNode.addMixin(SlcTypes.SLC_EXECUTION_FLOW);
 				flowNode.setProperty(SlcNames.SLC_NAME, executionFlow.getName());
 				session.save();
 			} else {
-				flowNode = session.getNode(path);
+				flowNode = moduleNode.getNode(relativePath);
 			}
 
 			if (log.isTraceEnabled())
 				log.trace("Flow " + executionFlow + " added to JCR");
 		} catch (RepositoryException e) {
+			JcrUtils.discardQuietly(session);
 			throw new SlcException("Cannot add flow " + executionFlow
 					+ " from module " + module, e);
 		}
 
 	}
 
-	public void executionFlowRemoved(ModuleDescriptor module,
+	public synchronized void executionFlowRemoved(ModuleDescriptor module,
 			ExecutionFlowDescriptor executionFlow) {
-		String path = getExecutionFlowPath(module, executionFlow);
 		try {
-			if (session.nodeExists(path)) {
-				Node flowNode = session.getNode(path);
-				flowNode.remove();
-				session.save();
-			}
+			Node agentNode = session.getNode(agent.getNodePath());
+			Node moduleNode = agentNode.getNode(SlcJcrUtils
+					.getModuleNodeName(module));
+			String relativePath = getExecutionFlowRelativePath(executionFlow);
+			if (!moduleNode.hasNode(relativePath))
+				moduleNode.getNode(relativePath).remove();
+			agentNode.getSession().save();
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot remove flow " + executionFlow
 					+ " from module " + module, e);
 		}
 	}
 
-	protected String getExecutionFlowPath(ModuleDescriptor module,
-			ExecutionFlowDescriptor executionFlow) {
-		String relativePath = getExecutionFlowRelativePath(executionFlow);
-		return getExecutionModulesPath() + '/' + module.getName() + '/'
-				+ module.getVersion() + '/' + relativePath;
-	}
-
+	/*
+	 * UTILITIES
+	 */
 	/** @return the relative path, never starts with '/' */
 	@SuppressWarnings("deprecation")
 	protected String getExecutionFlowRelativePath(
@@ -180,17 +176,16 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener {
 		return relativePath;
 	}
 
-	protected String getExecutionModulesPath() {
-		return SlcJcrConstants.VM_AGENT_FACTORY_PATH + '/'
-				+ agent.getAgentUuid() + '/' + SlcNames.SLC_EXECUTION_MODULES;
+	/*
+	 * BEAN
+	 */
+	public void setAgent(JcrAgent agent) {
+		this.agent = agent;
 	}
 
+	/** Expects a non-shared session with admin authorization */
 	public void setSession(Session session) {
 		this.session = session;
-	}
-
-	public void setAgent(SlcAgent agent) {
-		this.agent = agent;
 	}
 
 }

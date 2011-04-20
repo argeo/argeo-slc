@@ -14,13 +14,17 @@ import org.argeo.slc.core.runtime.DefaultAgent;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrConstants;
+import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
 
-/** SLC agent synchronizing with a JCR repository. */
-public class JcrAgent extends DefaultAgent implements SlcAgentFactory {
+/** SLC VM agent synchronizing with a JCR repository. */
+public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames {
 	private Session session;
+
+	/** only one agent per VM is currently supported */
+	private final String agentNodeName = "default";
 
 	/*
 	 * LIFECYCLE
@@ -28,27 +32,21 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory {
 	protected String initAgentUuid() {
 		try {
 			Node vmAgentFactoryNode = JcrUtils.mkdirs(session,
-					SlcJcrConstants.VM_AGENT_FACTORY_PATH);
-			vmAgentFactoryNode.addMixin(SlcTypes.SLC_AGENT_PROXY);
-			if (!vmAgentFactoryNode.hasNodes()) {
+					SlcJcrConstants.VM_AGENT_FACTORY_PATH,
+					SlcTypes.SLC_AGENT_FACTORY);
+			if (!vmAgentFactoryNode.hasNode(agentNodeName)) {
 				String uuid = UUID.randomUUID().toString();
-				vmAgentFactoryNode.addNode(uuid);
+				Node agentNode = vmAgentFactoryNode.addNode(agentNodeName,
+						SlcTypes.SLC_AGENT);
+				agentNode.setProperty(SLC_UUID, uuid);
 			}
 			session.save();
-
-			return vmAgentFactoryNode.getNodes().nextNode().getName();
+			return vmAgentFactoryNode.getNode(agentNodeName)
+					.getProperty(SLC_UUID).getString();
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot find JCR agent UUID", e);
-		} finally {
 			JcrUtils.discardQuietly(session);
+			throw new SlcException("Cannot find JCR agent UUID", e);
 		}
-	}
-
-	@Override
-	protected ProcessThread createProcessThread(
-			ExecutionModulesManager modulesManager, ExecutionProcess process) {
-		return new JcrProcessThread(modulesManager,
-				(JcrExecutionProcess) process);
 	}
 
 	public void dispose() {
@@ -56,9 +54,22 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory {
 	}
 
 	/*
+	 * SLC AGENT
+	 */
+	@Override
+	protected ProcessThread createProcessThread(
+			ExecutionModulesManager modulesManager, ExecutionProcess process) {
+		return new JcrProcessThread(modulesManager,
+				(JcrExecutionProcess) process);
+	}
+
+	/*
 	 * SLC AGENT FACTORY
 	 */
 	public SlcAgent getAgent(String uuid) {
+		if (!uuid.equals(getAgentUuid()))
+			throw new SlcException("Internal UUID " + getAgentUuid()
+					+ " is different from argument UUID " + uuid);
 		return this;
 	}
 
@@ -67,10 +78,21 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory {
 	}
 
 	/*
-	 * BEAN METHODS
+	 * UTILITIES
+	 */
+	public String getNodePath() {
+		return SlcJcrConstants.VM_AGENT_FACTORY_PATH + '/' + getAgentNodeName();
+	}
+
+	/*
+	 * BEAN
 	 */
 	public void setSession(Session session) {
 		this.session = session;
+	}
+
+	public String getAgentNodeName() {
+		return agentNodeName;
 	}
 
 }

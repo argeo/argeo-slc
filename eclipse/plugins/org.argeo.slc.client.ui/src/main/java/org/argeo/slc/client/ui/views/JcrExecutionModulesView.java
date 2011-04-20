@@ -6,21 +6,16 @@ import java.util.Comparator;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-import javax.jcr.observation.EventListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
+import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
-import org.argeo.eclipse.ui.jcr.NodesWrapper;
 import org.argeo.eclipse.ui.jcr.SimpleNodeContentProvider;
-import org.argeo.eclipse.ui.jcr.WrappedNode;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
@@ -46,10 +41,11 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+/** JCR based view of the execution modules. */
 public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		SlcNames {
-	private final static Log log = LogFactory
-			.getLog(JcrExecutionModulesView.class);
+	// private final static Log log = LogFactory
+	// .getLog(JcrExecutionModulesView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.jcrExecutionModulesView";
 
@@ -107,17 +103,17 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 					new String[] { SlcJcrConstants.VM_AGENT_FACTORY_PATH });
 		}
 
-		@Override
-		protected Object[] getChildren(Node node) throws RepositoryException {
-			if (node.isNodeType(SlcTypes.SLC_AGENT_PROXY)) {
-				List<AgentNodesWrapper> wrappers = new ArrayList<AgentNodesWrapper>();
-				for (NodeIterator nit = node.getNodes(); nit.hasNext();) {
-					wrappers.add(new AgentNodesWrapper(nit.nextNode()));
-				}
-				return wrappers.toArray();
-			}
-			return super.getChildren(node);
-		}
+//		@Override
+//		protected Object[] getChildren(Node node) throws RepositoryException {
+//			if (node.isNodeType(SlcTypes.SLC_AGENT_FACTORY)) {
+//				List<AgentNodesWrapper> wrappers = new ArrayList<AgentNodesWrapper>();
+//				for (NodeIterator nit = node.getNodes(); nit.hasNext();) {
+//					wrappers.add(new AgentNodesWrapper(nit.nextNode()));
+//				}
+//				return wrappers.toArray();
+//			}
+//			return super.getChildren(node);
+//		}
 
 		@Override
 		protected Object[] sort(Object parent, Object[] children) {
@@ -158,35 +154,32 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	}
 
-	/** Wraps the execution modules of an agent. */
-	static class AgentNodesWrapper extends NodesWrapper {
+//	/** Wraps the execution modules of an agent. */
+//	static class AgentNodesWrapper extends NodesWrapper {
+//
+//		public AgentNodesWrapper(Node node) {
+//			super(node);
+//		}
+//
+//		protected List<WrappedNode> getWrappedNodes()
+//				throws RepositoryException {
+//			List<WrappedNode> children = new ArrayList<WrappedNode>();
+//			Node executionModules = getNode();
+//			for (NodeIterator nit = executionModules.getNodes(); nit.hasNext();) {
+//				for (NodeIterator nitVersions = nit.nextNode().getNodes(); nitVersions
+//						.hasNext();) {
+//					children.add(new WrappedNode(this, nitVersions.nextNode()));
+//				}
+//			}
+//			return children;
+//		}
+//
+//	}
 
-		public AgentNodesWrapper(Node node) {
-			super(node);
-		}
-
-		protected List<WrappedNode> getWrappedNodes()
-				throws RepositoryException {
-			List<WrappedNode> children = new ArrayList<WrappedNode>();
-			Node executionModules = getNode().getNode(
-					SlcNames.SLC_EXECUTION_MODULES);
-			for (NodeIterator nit = executionModules.getNodes(); nit.hasNext();) {
-				for (NodeIterator nitVersions = nit.nextNode().getNodes(); nitVersions
-						.hasNext();) {
-					children.add(new WrappedNode(this, nitVersions.nextNode()));
-				}
-			}
-			return children;
-		}
-
-	}
-
-	class VmAgentObserver implements EventListener {
-
-		public void onEvent(EventIterator events) {
+	class VmAgentObserver extends AsyncUiEventListener {
+		protected void onEventInUiThread(EventIterator events) {
 			viewer.refresh();
 		}
-
 	}
 
 	class ViewLabelProvider extends DefaultNodeLabelProvider implements
@@ -200,7 +193,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		}
 
 		public Image getImage(Node node) throws RepositoryException {
-			if (node.getParent().isNodeType(SlcTypes.SLC_AGENT_PROXY))
+			if (node.isNodeType(SlcTypes.SLC_AGENT))
 				return SlcImages.AGENT;
 			else if (node.isNodeType(SlcTypes.SLC_MODULE))
 				return SlcImages.MODULE;
@@ -243,17 +236,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 	}
 
 	class ViewDragListener extends DragSourceAdapter {
-
-		public void dragStart(DragSourceEvent event) {
-			if (log.isDebugEnabled())
-				log.debug("Start Drag " + event);
-			super.dragStart(event);
-		}
-
 		public void dragSetData(DragSourceEvent event) {
-
-			// System.out.println("dragSetData: " + event);
-
 			IStructuredSelection selection = (IStructuredSelection) viewer
 					.getSelection();
 			if (selection.getFirstElement() instanceof Node) {
@@ -286,12 +269,6 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 				}
 			}
 		}
-
-		public void dragFinished(DragSourceEvent event) {
-			if (log.isDebugEnabled())
-				log.debug("Finished Drag " + event);
-		}
-
 	}
 
 	public void setSession(Session session) {

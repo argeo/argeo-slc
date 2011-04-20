@@ -12,7 +12,9 @@
 	<bean id="executionModulesListener" class="org.argeo.slc.jcr.execution.JcrExecutionModulesListener"
 		init-method="init" destroy-method="dispose">
 		<property name="agent" ref="agent" />
-		<property name="session" ref="session" />
+		<property name="session">
+			<bean factory-bean="repository" factory-method="login" />
+		</property>
 	</bean>
 
 	<bean id="session" class="org.argeo.security.jcr.SecureThreadBoundSession">
