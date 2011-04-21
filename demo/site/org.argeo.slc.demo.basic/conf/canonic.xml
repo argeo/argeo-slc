@@ -15,11 +15,11 @@
 					<bean parent="specAttr.primitive" p:isParameter="true" p:type="integer" />
 				</entry>
 				<entry key="displayWithoutControl">
-					<bean parent="specAttr.primitive" p:value="100" p:isParameter="true"
+					<bean parent="specAttr.primitive" p:value="100" p:isParameter="false"
 						p:isFrozen="true" p:type="integer" />
 				</entry>
 				<entry key="displayWithControl">
-					<bean parent="specAttr.primitive" p:value="200" p:isParameter="true"
+					<bean parent="specAttr.primitive" p:value="200" p:isParameter="false"
 						p:isFrozen="false" p:type="integer" />
 				</entry>
 				<entry key="hide">

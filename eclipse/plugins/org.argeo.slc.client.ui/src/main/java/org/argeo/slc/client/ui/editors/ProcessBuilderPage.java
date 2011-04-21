@@ -16,6 +16,8 @@ import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
@@ -70,8 +72,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 	public final static String ID = "processBuilderPage";
-	// private final static Log log =
-	// LogFactory.getLog(ProcessBuilderPage.class);
+	private final static Log log = LogFactory.getLog(ProcessBuilderPage.class);
 
 	private Node processNode;
 
@@ -460,6 +461,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 				// TODO optimize based on data type?
 				Object value = PrimitiveUtils.convert(type, specAttrNode
 						.getProperty(SLC_VALUE).getString());
+				log.debug(specAttrNode + ", type=" + type + ", value=" + value);
 				return value;
 			}
 			return null;
@@ -611,7 +613,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		}
 	}
 
-	static class ValuesEditingSupport extends EditingSupport {
+	class ValuesEditingSupport extends EditingSupport {
 		private final TableViewer tableViewer;
 
 		public ValuesEditingSupport(ColumnViewer viewer) {
@@ -638,7 +640,9 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 				Node specAttrNode = (Node) element;
 				return !(specAttrNode.getProperty(SLC_IS_IMMUTABLE)
 						.getBoolean() || specAttrNode.getProperty(
-						SLC_IS_CONSTANT).getBoolean());
+						SLC_IS_CONSTANT).getBoolean())
+						&& specAttrNode
+								.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE);
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot check canEdit", e);
 			}
@@ -646,7 +650,18 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 
 		@Override
 		protected Object getValue(Object element) {
-			return getAttributeSpecValue((Node) element);
+			Node specAttrNode = (Node) element;
+			try {
+				Object value = getAttributeSpecValue(specAttrNode);
+				if (value == null)
+					throw new SlcException("Unsupported attribute " + element);
+				if (specAttrNode
+						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE))
+					return value.toString();
+				return value;
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get value for " + element, e);
+			}
 		}
 
 		@Override
@@ -659,6 +674,8 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 							.getString();
 					SlcJcrUtils.setPrimitiveAsProperty(specAttrNode, SLC_VALUE,
 							type, value);
+					valuesViewer.refresh();
+					formPart.markDirty();
 				}
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot get celle editor", e);
