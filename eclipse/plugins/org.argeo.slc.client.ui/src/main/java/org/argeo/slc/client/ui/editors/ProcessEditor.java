@@ -64,15 +64,6 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		processNode.setProperty(SLC_STATUS, ExecutionProcess.NEW);
 		Node processFlow = processNode.addNode(SLC_FLOW);
 		processFlow.addMixin(SLC_REALIZED_FLOW);
-
-		// add initial flows
-		for (String path : pei.getInitialFlowPaths()) {
-			Node realizedFlow = processFlow.addNode(SLC_FLOW);
-			realizedFlow.addMixin(SLC_REALIZED_FLOW);
-			Node address = realizedFlow.addNode(SLC_ADDRESS,
-					NodeType.NT_ADDRESS);
-			address.setProperty(Property.JCR_PATH, path);
-		}
 		return processNode;
 	}
 

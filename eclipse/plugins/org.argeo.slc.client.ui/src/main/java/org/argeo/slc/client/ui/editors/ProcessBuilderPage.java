@@ -21,17 +21,24 @@ import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.SlcImages;
+import org.argeo.slc.core.execution.PrimitiveUtils;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.argeo.slc.process.RealizedFlow;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
@@ -52,6 +59,8 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IManagedForm;
@@ -67,6 +76,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 	private Node processNode;
 
 	private TreeViewer flowsViewer;
+	private TableViewer valuesViewer;
 	private Label statusLabel;
 	private Button run;
 	private Button remove;
@@ -84,6 +94,8 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 	protected void createFormContent(IManagedForm mf) {
 		try {
 			ScrolledForm form = mf.getForm();
+			form.setExpandHorizontal(true);
+			form.setExpandVertical(true);
 			form.setText("Process " + processNode.getName());
 			GridLayout mainLayout = new GridLayout(1, true);
 			form.getBody().setLayout(mainLayout);
@@ -108,6 +120,9 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 			observationManager.addEventListener(statusObserver,
 					Event.PROPERTY_CHANGED, processNode.getPath(), true, null,
 					null, false);
+
+			// add initial flows
+			addInitialFlows();
 
 		} catch (RepositoryException e) {
 			throw new ArgeoException("Cannot create form content", e);
@@ -176,22 +191,106 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		statusChanged();
 	}
 
+	protected void createBuilder(Composite parent) {
+		FormToolkit tk = getManagedForm().getToolkit();
+		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
+		sashForm.setSashWidth(4);
+		GridData sahFormGd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		sahFormGd.widthHint = 400;
+		sashForm.setLayoutData(sahFormGd);
+
+		Composite flowsComposite = tk.createComposite(sashForm);
+		flowsComposite.setLayout(new GridLayout(1, false));
+
+		flowsViewer = new TreeViewer(flowsComposite);
+		flowsViewer.getTree().setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, true));
+		flowsViewer.setLabelProvider(new FlowsLabelProvider());
+		flowsViewer.setContentProvider(new FlowsContentProvider());
+		flowsViewer.addSelectionChangedListener(new FlowsSelectionListener());
+
+		int operations = DND.DROP_COPY | DND.DROP_MOVE;
+		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
+		flowsViewer.addDropSupport(operations, tt, new FlowsDropListener(
+				flowsViewer));
+
+		flowsViewer.setInput(getEditorSite());
+		flowsViewer.setInput(processNode);
+
+		Composite valuesComposite = tk.createComposite(sashForm);
+		valuesComposite.setLayout(new GridLayout(1, false));
+
+		valuesViewer = new TableViewer(valuesComposite);
+		GridData valuedGd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		// valuedGd.widthHint = 200;
+		valuesViewer.getTable().setLayoutData(valuedGd);
+		valuesViewer.setContentProvider(new ValuesContentProvider());
+		initializeValuesViewer(valuesViewer);
+		sashForm.setWeights(getWeights());
+		valuesViewer.setInput(getEditorSite());
+	}
+
+	/** Creates the columns of the values viewer */
+	protected void initializeValuesViewer(TableViewer viewer) {
+		String[] titles = { "Name", "Value" };
+		int[] bounds = { 200, 100 };
+
+		for (int i = 0; i < titles.length; i++) {
+			TableViewerColumn column = new TableViewerColumn(viewer, SWT.NONE);
+			column.getColumn().setText(titles[i]);
+			column.getColumn().setWidth(bounds[i]);
+			column.getColumn().setResizable(true);
+			column.getColumn().setMoveable(true);
+			if (i == 0) {
+				column.setLabelProvider(new ColumnLabelProvider() {
+					public String getText(Object element) {
+						try {
+							Node specAttrNode = (Node) element;
+							return specAttrNode.getName();
+						} catch (RepositoryException e) {
+							throw new SlcException("Cannot get value", e);
+						}
+					}
+				});
+			} else if (i == 1) {
+				column.setLabelProvider(new ColumnLabelProvider() {
+					public String getText(Object element) {
+						Object obj = getAttributeSpecValue((Node) element);
+						return obj != null ? obj.toString() : "";
+					}
+				});
+				column.setEditingSupport(new ValuesEditingSupport(viewer));
+			}
+
+		}
+		Table table = viewer.getTable();
+		table.setHeaderVisible(false);
+		table.setLinesVisible(true);
+	}
+
+	protected int[] getWeights() {
+		return new int[] { 50, 50 };
+	}
+
+	/*
+	 * CONTROLLERS
+	 */
+	/** Opens a new editor with a copy of this process */
 	protected void relaunch() {
 		try {
 			Node duplicatedNode = duplicateProcess();
-			PlatformUI
-					.getWorkbench()
-					.getActiveWorkbenchWindow()
-					.getActivePage()
-					.openEditor(
-							new ProcessEditorInput(duplicatedNode.getPath()),
-							ProcessEditor.ID);
+			IWorkbenchPage activePage = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage();
+			activePage.openEditor(
+					new ProcessEditorInput(duplicatedNode.getPath()),
+					ProcessEditor.ID);
 			getEditor().close(false);
 		} catch (Exception e1) {
 			throw new SlcException("Cannot relaunch " + processNode, e1);
 		}
 	}
 
+	/** Duplicates the process */
 	protected Node duplicateProcess() {
 		try {
 			Session session = processNode.getSession();
@@ -199,11 +298,11 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 			String destPath = SlcJcrUtils.createExecutionProcessPath(uuid);
 			Node newNode = JcrUtils.mkdirs(session, destPath, SLC_PROCESS);
 			JcrUtils.copy(processNode, newNode);
-//			session.getWorkspace().copy(processNode.getPath(), destPath);
-//			Node newNode = session.getNode(destPath);
+			// session.getWorkspace().copy(processNode.getPath(), destPath);
+			// Node newNode = session.getNode(destPath);
 			// make sure that we kept the mixins
-//			newNode.addMixin(NodeType.MIX_CREATED);
-//			newNode.addMixin(NodeType.MIX_LAST_MODIFIED);
+			// newNode.addMixin(NodeType.MIX_CREATED);
+			// newNode.addMixin(NodeType.MIX_LAST_MODIFIED);
 			newNode.setProperty(SLC_UUID, uuid);
 			newNode.setProperty(SLC_STATUS, ExecutionProcess.INITIALIZED);
 			session.save();
@@ -213,15 +312,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		}
 	}
 
-	protected String getProcessStatus() {
-		try {
-			return processNode.getProperty(SLC_STATUS).getString();
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot retrieve status for " + processNode,
-					e);
-		}
-	}
-
+	/** Reflects a status change */
 	protected void statusChanged() {
 		String status = getProcessStatus();
 		statusLabel.setText(status);
@@ -238,61 +329,48 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		}
 	}
 
-	/** Optimization so that we don't call the node each time */
-	protected Boolean isEditable(String status) {
-		return status.equals(ExecutionProcess.NEW)
-				|| status.equals(ExecutionProcess.INITIALIZED);
+	/** Adds initial flows from the editor input if any */
+	protected void addInitialFlows() {
+		for (String path : ((ProcessEditorInput) getEditorInput())
+				.getInitialFlowPaths()) {
+			addFlow(path);
+		}
 	}
 
-	protected Boolean isFinished(String status) {
-		return status.equals(ExecutionProcess.COMPLETED)
-				|| status.equals(ExecutionProcess.ERROR);
-	}
-
-	protected void createBuilder(Composite parent) {
-		FormToolkit tk = getManagedForm().getToolkit();
-		SashForm sashForm = new SashForm(parent, SWT.HORIZONTAL);
-		sashForm.setSashWidth(4);
-		sashForm.setLayout(new FillLayout());
-		sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-		Composite top = tk.createComposite(sashForm);
-		GridLayout gl = new GridLayout(1, false);
-		top.setLayout(gl);
-
-		flowsViewer = new TreeViewer(top);
-		flowsViewer.getTree().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true));
-		flowsViewer.setLabelProvider(new ViewLabelProvider());
-		flowsViewer.setContentProvider(new ViewContentProvider());
-		flowsViewer.addSelectionChangedListener(new SelectionChangedListener());
-
-		int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
-		flowsViewer.addDropSupport(operations, tt, new ViewDropListener(
-				flowsViewer));
-
-		flowsViewer.setInput(getEditorSite());
-		flowsViewer.setInput(processNode);
-
-		Composite bottom = tk.createComposite(sashForm);
-		bottom.setLayout(new GridLayout(1, false));
-		sashForm.setWeights(getWeights());
-	}
-
-	protected int[] getWeights() {
-		return new int[] { 70, 30 };
-	}
-
-	/*
-	 * CONTROLLERS
+	/**
+	 * Adds a new flow.
+	 * 
+	 * @param path
+	 *            the path of the flow
 	 */
-	protected void addFlow(String path) {
+	public void addFlow(String path) {
 		try {
-			Node flowNode = processNode.getNode(SLC_FLOW).addNode(SLC_FLOW);
-			flowNode.addMixin(SLC_REALIZED_FLOW);
-			Node address = flowNode.addNode(SLC_ADDRESS, NodeType.NT_ADDRESS);
+			Node flowNode = processNode.getSession().getNode(path);
+			Node realizedFlowNode = processNode.getNode(SLC_FLOW).addNode(
+					SLC_FLOW);
+			realizedFlowNode.addMixin(SLC_REALIZED_FLOW);
+			Node address = realizedFlowNode.addNode(SLC_ADDRESS,
+					NodeType.NT_ADDRESS);
 			address.setProperty(Property.JCR_PATH, path);
+
+			// copy spec attributes
+			Node specAttrsBase;
+			if (flowNode.hasProperty(SLC_SPEC))
+				specAttrsBase = flowNode.getProperty(SLC_SPEC).getNode();
+			else
+				specAttrsBase = flowNode;
+
+			specAttrs: for (NodeIterator nit = specAttrsBase.getNodes(); nit
+					.hasNext();) {
+				Node specAttrNode = nit.nextNode();
+				if (!specAttrNode
+						.isNodeType(SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE))
+					continue specAttrs;
+				Node realizedAttrNode = realizedFlowNode.addNode(specAttrNode
+						.getName());
+				JcrUtils.copy(specAttrNode, realizedAttrNode);
+			}
+
 			flowsViewer.refresh();
 			formPart.markDirty();
 		} catch (RepositoryException e) {
@@ -338,20 +416,63 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		formPart.commit(onSave);
 	}
 
+	/*
+	 * STATE
+	 */
+	protected String getProcessStatus() {
+		try {
+			return processNode.getProperty(SLC_STATUS).getString();
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot retrieve status for " + processNode,
+					e);
+		}
+	}
+
+	/** Optimization so that we don't call the node each time */
+	protected Boolean isEditable(String status) {
+		return status.equals(ExecutionProcess.NEW)
+				|| status.equals(ExecutionProcess.INITIALIZED);
+	}
+
+	protected Boolean isFinished(String status) {
+		return status.equals(ExecutionProcess.COMPLETED)
+				|| status.equals(ExecutionProcess.ERROR);
+	}
+
+	/*
+	 * LIFECYCLE
+	 */
 	@Override
 	public void dispose() {
 		JcrUtils.unregisterQuietly(processNode, statusObserver);
 		super.dispose();
 	}
 
-	// Specific Providers for the current view.
-	protected class ViewContentProvider implements ITreeContentProvider {
-		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+	/*
+	 * UTILITIES
+	 */
+	protected static Object getAttributeSpecValue(Node specAttrNode) {
+		try {
+			if (specAttrNode.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
+				if (!specAttrNode.hasProperty(SLC_VALUE))
+					return null;
+				String type = specAttrNode.getProperty(SLC_TYPE).getString();
+				// TODO optimize based on data type?
+				Object value = PrimitiveUtils.convert(type, specAttrNode
+						.getProperty(SLC_VALUE).getString());
+				return value;
+			}
+			return null;
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot get value", e);
 		}
 
-		public void dispose() {
-		}
+	}
 
+	/*
+	 * FLOWS SUBCLASSES
+	 */
+	static class FlowsContentProvider implements ITreeContentProvider {
 		public Object[] getElements(Object obj) {
 			if (!(obj instanceof Node))
 				return new Object[0];
@@ -368,7 +489,14 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 			}
 		}
 
+		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
+		}
+
+		public void dispose() {
+		}
+
 		public Object[] getChildren(Object parentElement) {
+			// no children for the time being
 			return null;
 		}
 
@@ -382,7 +510,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 
 	}
 
-	protected class ViewLabelProvider extends ColumnLabelProvider {
+	static class FlowsLabelProvider extends ColumnLabelProvider {
 
 		@Override
 		public String getText(Object element) {
@@ -417,26 +545,22 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 
 	}
 
-	// Parameter view is updated each time a new line is selected
-	class SelectionChangedListener implements ISelectionChangedListener {
+	/** Parameter view is updated each time a new line is selected */
+	class FlowsSelectionListener implements ISelectionChangedListener {
 		public void selectionChanged(SelectionChangedEvent evt) {
-
-			IStructuredSelection curSelection = (IStructuredSelection) evt
-					.getSelection();
-			Object obj = curSelection.getFirstElement();
-
-			if (obj instanceof RealizedFlow) {
-				// RealizedFlow rf = (RealizedFlow) obj;
-				// curSelectedRow = realizedFlows.indexOf(rf);
-				// refreshParameterview();
-				// setFocus();
+			if (evt.getSelection().isEmpty()) {
+				valuesViewer.setInput(getEditorSite());
+				return;
 			}
+			Node realizedFlowNode = (Node) ((IStructuredSelection) evt
+					.getSelection()).getFirstElement();
+			valuesViewer.setInput(realizedFlowNode);
 		}
 	}
 
-	protected class ViewDropListener extends ViewerDropAdapter {
+	class FlowsDropListener extends ViewerDropAdapter {
 
-		public ViewDropListener(Viewer viewer) {
+		public FlowsDropListener(Viewer viewer) {
 			super(viewer);
 		}
 
@@ -452,5 +576,94 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 				TransferData transferType) {
 			return isEditable(getProcessStatus());
 		}
+	}
+
+	/*
+	 * VALUES SUBCLASSES
+	 */
+	static class ValuesContentProvider implements IStructuredContentProvider {
+
+		public Object[] getElements(Object inputElement) {
+			if (!(inputElement instanceof Node))
+				return new Object[0];
+
+			try {
+				Node realizedFlowNode = (Node) inputElement;
+				List<Node> specAttributes = new ArrayList<Node>();
+				specAttrs: for (NodeIterator nit = realizedFlowNode.getNodes(); nit
+						.hasNext();) {
+					Node specAttrNode = nit.nextNode();
+					if (!specAttrNode
+							.isNodeType(SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE))
+						continue specAttrs;
+					specAttributes.add(specAttrNode);
+				}
+				return specAttributes.toArray();
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get elements", e);
+			}
+		}
+
+		public void dispose() {
+		}
+
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		}
+	}
+
+	static class ValuesEditingSupport extends EditingSupport {
+		private final TableViewer tableViewer;
+
+		public ValuesEditingSupport(ColumnViewer viewer) {
+			super(viewer);
+			tableViewer = (TableViewer) viewer;
+		}
+
+		@Override
+		protected CellEditor getCellEditor(Object element) {
+			try {
+				Node specAttrNode = (Node) element;
+				if (specAttrNode
+						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE))
+					return new TextCellEditor(tableViewer.getTable());
+				return null;
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get celle editor", e);
+			}
+		}
+
+		@Override
+		protected boolean canEdit(Object element) {
+			try {
+				Node specAttrNode = (Node) element;
+				return !(specAttrNode.getProperty(SLC_IS_IMMUTABLE)
+						.getBoolean() || specAttrNode.getProperty(
+						SLC_IS_CONSTANT).getBoolean());
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot check canEdit", e);
+			}
+		}
+
+		@Override
+		protected Object getValue(Object element) {
+			return getAttributeSpecValue((Node) element);
+		}
+
+		@Override
+		protected void setValue(Object element, Object value) {
+			try {
+				Node specAttrNode = (Node) element;
+				if (specAttrNode
+						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
+					String type = specAttrNode.getProperty(SLC_TYPE)
+							.getString();
+					SlcJcrUtils.setPrimitiveAsProperty(specAttrNode, SLC_VALUE,
+							type, value);
+				}
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get celle editor", e);
+			}
+		}
+
 	}
 }

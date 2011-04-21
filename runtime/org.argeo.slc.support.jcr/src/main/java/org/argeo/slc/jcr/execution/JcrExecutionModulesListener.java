@@ -177,6 +177,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 				executionSpecNode.setProperty(Property.JCR_DESCRIPTION,
 						executionSpec.getDescription());
 			mapExecutionSpec(executionSpecNode, executionSpec);
+			flowNode.setProperty(SLC_SPEC, executionSpecNode);
 		} else {
 			mapExecutionSpec(flowNode, executionSpec);
 		}

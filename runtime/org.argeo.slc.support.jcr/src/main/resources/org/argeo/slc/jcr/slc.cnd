@@ -47,7 +47,7 @@ mixin
 [slc:executionFlow] > nt:unstructured, mix:title
 - slc:name (STRING) m
 // if the execution spec is a referenceable node
-- slc:executionSpec (REFERENCE)
+- slc:spec (REFERENCE)
 // if the execution spec is internal (without name)
 + * (slc:executionSpecAttribute) *
 

@@ -11,6 +11,7 @@ public interface SlcNames {
 	public final static String SLC_VALUE = "slc:value";
 	public final static String SLC_ADDRESS = "slc:address";
 
+	public final static String SLC_SPEC = "slc:spec";
 	public final static String SLC_EXECUTION_SPECS = "slc:executionSpecs";
 	public final static String SLC_FLOW = "slc:flow";
 

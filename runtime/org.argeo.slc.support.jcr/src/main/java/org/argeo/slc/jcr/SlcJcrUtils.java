@@ -75,6 +75,12 @@ public class SlcJcrUtils {
 			PrimitiveAccessor primitiveAccessor) {
 		String type = primitiveAccessor.getType();
 		Object value = primitiveAccessor.getValue();
+		setPrimitiveAsProperty(node, propertyName, type, value);
+	}
+
+	/** Map a primitive value to JCR ptoperty value. */
+	public static void setPrimitiveAsProperty(Node node, String propertyName,
+			String type, Object value) {
 		if (value == null)
 			return;
 		if (value instanceof CharSequence)
@@ -97,7 +103,7 @@ public class SlcJcrUtils {
 			else
 				throw new SlcException("Unsupported type " + type);
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot set primitive " + primitiveAccessor
+			throw new SlcException("Cannot set primitive of " + type
 					+ " as property " + propertyName + " on " + node, e);
 		}
 	}
