@@ -255,6 +255,8 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		// we assume that it is more than one char long
 		if (relativePath.charAt(0) == '/')
 			relativePath = relativePath.substring(1);
+		// FIXME quick hack to avoid duplicate '/'
+		relativePath = relativePath.replaceAll("//", "/");
 		return relativePath;
 	}
 
