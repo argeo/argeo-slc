@@ -23,18 +23,18 @@ mixin
 mixin
 
 [slc:executionSpec] > nt:unstructured, mix:referenceable, mix:title
-- slc:name (STRING)
+- slc:name (STRING) m
 + * (slc:executionSpecAttribute) *
 
 [slc:executionSpecAttribute] > nt:base
 mixin abstract
-- slc:isImmutable (BOOLEAN) m
-- slc:isConstant (BOOLEAN) m
-- slc:isHidden (BOOLEAN) m
+- slc:isImmutable (BOOLEAN) 
+- slc:isConstant (BOOLEAN) 
+- slc:isHidden (BOOLEAN) 
 
 [slc:primitiveSpecAttribute] > slc:executionSpecAttribute
 mixin
-- slc:type (STRING) m
+- slc:type (STRING) 
 - slc:value (UNDEFINED)
 
 [slc:refSpecAttribute] > slc:executionSpecAttribute
@@ -59,9 +59,15 @@ mixin
 
 [slc:realizedFlow] > nt:base
 mixin
+// the name of the flow
+// - slc:flow (STRING)
+// the name of the execution spec
+// - slc:spec (STRING)
 - slc:started (DATE)
 - slc:completed (DATE)
 + slc:address (nt:address)
 + slc:flow (slc:realizedFlow) *
+// the realized execution spec attributes
++ * (slc:executionSpecAttribute) *
 
 

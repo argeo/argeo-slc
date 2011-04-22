@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
-import javax.jcr.RepositoryException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -21,6 +20,10 @@ import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
 import org.argeo.slc.services.SlcExecutionService;
 
+/**
+ * We use a separate class (not in UI components) so that it can be a singleton
+ * in an application context.
+ */
 public class ProcessController {
 	private final static Log log = LogFactory.getLog(ProcessController.class);
 	private SlcExecutionService slcExecutionService;
@@ -30,7 +33,7 @@ public class ProcessController {
 		slcExecutionService.newExecution(slcExecution);
 		agent.process(slcExecution);
 		if (log.isDebugEnabled())
-			log.debug("SlcExcution " + slcExecution.getUuid()
+			log.debug("SlcExecution " + slcExecution.getUuid()
 					+ " launched on Agent " + agent.toString());
 	}
 
@@ -41,7 +44,7 @@ public class ProcessController {
 			Node realizedFlowNode = processNode.getNode(SlcNames.SLC_FLOW);
 			NodeIterator nit = realizedFlowNode.getNodes();
 			if (nit.hasNext()) {
-				// FIXME find a better way to determine which agent to use
+				// TODO find a better way to determine which agent to use
 				// currently we check the agent of the first registered flow
 				Node firstRealizedFlow = nit.nextNode();
 				// we assume there is an nt:address

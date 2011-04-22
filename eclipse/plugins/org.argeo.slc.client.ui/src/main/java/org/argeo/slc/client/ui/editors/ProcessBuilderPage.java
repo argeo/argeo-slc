@@ -15,6 +15,8 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,7 +72,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
+public class ProcessBuilderPage extends FormPage implements SlcNames {
 	public final static String ID = "processBuilderPage";
 	private final static Log log = LogFactory.getLog(ProcessBuilderPage.class);
 
@@ -297,7 +299,8 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 			Session session = processNode.getSession();
 			String uuid = UUID.randomUUID().toString();
 			String destPath = SlcJcrUtils.createExecutionProcessPath(uuid);
-			Node newNode = JcrUtils.mkdirs(session, destPath, SLC_PROCESS);
+			Node newNode = JcrUtils.mkdirs(session, destPath,
+					SlcTypes.SLC_PROCESS);
 			JcrUtils.copy(processNode, newNode);
 			// session.getWorkspace().copy(processNode.getPath(), destPath);
 			// Node newNode = session.getNode(destPath);
@@ -344,21 +347,26 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 	 * @param path
 	 *            the path of the flow
 	 */
-	public void addFlow(String path) {
+	protected void addFlow(String path) {
 		try {
 			Node flowNode = processNode.getSession().getNode(path);
 			Node realizedFlowNode = processNode.getNode(SLC_FLOW).addNode(
 					SLC_FLOW);
-			realizedFlowNode.addMixin(SLC_REALIZED_FLOW);
+			realizedFlowNode.addMixin(SlcTypes.SLC_REALIZED_FLOW);
 			Node address = realizedFlowNode.addNode(SLC_ADDRESS,
 					NodeType.NT_ADDRESS);
 			address.setProperty(Property.JCR_PATH, path);
 
 			// copy spec attributes
 			Node specAttrsBase;
-			if (flowNode.hasProperty(SLC_SPEC))
-				specAttrsBase = flowNode.getProperty(SLC_SPEC).getNode();
-			else
+			if (flowNode.hasProperty(SLC_SPEC)) {
+				Node executionSpecNode = flowNode.getProperty(SLC_SPEC)
+						.getNode();
+				specAttrsBase = executionSpecNode;
+				String executionSpecName = executionSpecNode.getProperty(
+						SLC_NAME).getString();
+				realizedFlowNode.setProperty(SLC_SPEC, executionSpecName);
+			} else
 				specAttrsBase = flowNode;
 
 			specAttrs: for (NodeIterator nit = specAttrsBase.getNodes(); nit
@@ -370,6 +378,14 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 				Node realizedAttrNode = realizedFlowNode.addNode(specAttrNode
 						.getName());
 				JcrUtils.copy(specAttrNode, realizedAttrNode);
+
+				// for (PropertyIterator pit = realizedAttrNode.getProperties();
+				// pit
+				// .hasNext();) {
+				// Property p = pit.nextProperty();
+				// if (!p.isMultiple())
+				// log.debug(p.getName() + "=" + p.getValue().getString());
+				// }
 			}
 
 			flowsViewer.refresh();
@@ -461,7 +477,8 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 				// TODO optimize based on data type?
 				Object value = PrimitiveUtils.convert(type, specAttrNode
 						.getProperty(SLC_VALUE).getString());
-				log.debug(specAttrNode + ", type=" + type + ", value=" + value);
+				// log.debug(specAttrNode + ", type=" + type + ", value=" +
+				// value);
 				return value;
 			}
 			return null;
@@ -518,7 +535,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		public String getText(Object element) {
 			Node node = (Node) element;
 			try {
-				if (node.isNodeType(SLC_REALIZED_FLOW)) {
+				if (node.isNodeType(SlcTypes.SLC_REALIZED_FLOW)) {
 					if (node.hasNode(SLC_ADDRESS)) {
 						String path = node.getNode(SLC_ADDRESS)
 								.getProperty(Property.JCR_PATH).getString();
@@ -536,7 +553,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		public Image getImage(Object element) {
 			Node node = (Node) element;
 			try {
-				if (node.isNodeType(SLC_REALIZED_FLOW)) {
+				if (node.isNodeType(SlcTypes.SLC_REALIZED_FLOW)) {
 					return SlcImages.FLOW;
 				}
 			} catch (RepositoryException e) {
@@ -560,6 +577,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		}
 	}
 
+	/** Manages drop event. */
 	class FlowsDropListener extends ViewerDropAdapter {
 
 		public FlowsDropListener(Viewer viewer) {
@@ -569,8 +587,24 @@ public class ProcessBuilderPage extends FormPage implements SlcNames, SlcTypes {
 		@Override
 		public boolean performDrop(Object data) {
 			String path = data.toString();
-			addFlow(path);
-			return true;
+			try {
+				// either a node or a whole directory was dragged
+				QueryManager qm = processNode.getSession().getWorkspace()
+						.getQueryManager();
+				String statement = "SELECT * FROM ["
+						+ SlcTypes.SLC_EXECUTION_FLOW
+						+ "] WHERE ISDESCENDANTNODE(['" + path
+						+ "']) OR ISSAMENODE(['" + path + "'])";
+				//log.debug(statement);
+				Query query = qm.createQuery(statement, Query.JCR_SQL2);
+				for (NodeIterator nit = query.execute().getNodes(); nit
+						.hasNext();) {
+					addFlow(nit.nextNode().getPath());
+				}
+				return true;
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot query flows under " + path, e);
+			}
 		}
 
 		@Override

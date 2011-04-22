@@ -18,12 +18,30 @@ package org.argeo.slc.core.execution;
 
 /** Converts to and from primitive types. */
 public class PrimitiveUtils {
-	public final static String TYPE_STRING = "string";
-	public final static String TYPE_INTEGER = "integer";
-	public final static String TYPE_LONG = "long";
-	public final static String TYPE_FLOAT = "float";
-	public final static String TYPE_DOUBLE = "double";
-	public final static String TYPE_BOOLEAN = "boolean";
+	/**
+	 * @deprecated Use {@link PrimitiveAccessor#TYPE_STRING} instead
+	 */
+	public final static String TYPE_STRING = PrimitiveAccessor.TYPE_STRING;
+	/**
+	 * @deprecated Use {@link PrimitiveAccessor#TYPE_INTEGER} instead
+	 */
+	public final static String TYPE_INTEGER = PrimitiveAccessor.TYPE_INTEGER;
+	/**
+	 * @deprecated Use {@link PrimitiveAccessor#TYPE_LONG} instead
+	 */
+	public final static String TYPE_LONG = PrimitiveAccessor.TYPE_LONG;
+	/**
+	 * @deprecated Use {@link PrimitiveAccessor#TYPE_FLOAT} instead
+	 */
+	public final static String TYPE_FLOAT = PrimitiveAccessor.TYPE_FLOAT;
+	/**
+	 * @deprecated Use {@link PrimitiveAccessor#TYPE_DOUBLE} instead
+	 */
+	public final static String TYPE_DOUBLE = PrimitiveAccessor.TYPE_DOUBLE;
+	/**
+	 * @deprecated Use {@link PrimitiveAccessor#TYPE_BOOLEAN} instead
+	 */
+	public final static String TYPE_BOOLEAN = PrimitiveAccessor.TYPE_BOOLEAN;
 
 	private PrimitiveUtils() {
 
@@ -31,17 +49,17 @@ public class PrimitiveUtils {
 
 	/** @return the class or null if the provided type is not a primitive */
 	public static Class<?> typeAsClass(String type) {
-		if (TYPE_STRING.equals(type))
+		if (PrimitiveAccessor.TYPE_STRING.equals(type))
 			return String.class;
-		else if (TYPE_INTEGER.equals(type))
+		else if (PrimitiveAccessor.TYPE_INTEGER.equals(type))
 			return Integer.class;
-		else if (TYPE_LONG.equals(type))
+		else if (PrimitiveAccessor.TYPE_LONG.equals(type))
 			return Long.class;
-		else if (TYPE_FLOAT.equals(type))
+		else if (PrimitiveAccessor.TYPE_FLOAT.equals(type))
 			return Float.class;
-		else if (TYPE_DOUBLE.equals(type))
+		else if (PrimitiveAccessor.TYPE_DOUBLE.equals(type))
 			return Double.class;
-		else if (TYPE_BOOLEAN.equals(type))
+		else if (PrimitiveAccessor.TYPE_BOOLEAN.equals(type))
 			return Boolean.class;
 		else
 			return null;
@@ -50,33 +68,33 @@ public class PrimitiveUtils {
 	/** @return the type or null if the provided class is not a primitive */
 	public static String classAsType(Class<?> clss) {
 		if (String.class.isAssignableFrom(clss))
-			return TYPE_STRING;
+			return PrimitiveAccessor.TYPE_STRING;
 		else if (Integer.class.isAssignableFrom(clss))
-			return TYPE_INTEGER;
+			return PrimitiveAccessor.TYPE_INTEGER;
 		else if (Long.class.isAssignableFrom(clss))
-			return TYPE_LONG;
+			return PrimitiveAccessor.TYPE_LONG;
 		else if (Float.class.isAssignableFrom(clss))
-			return TYPE_FLOAT;
+			return PrimitiveAccessor.TYPE_FLOAT;
 		else if (Double.class.isAssignableFrom(clss))
-			return TYPE_DOUBLE;
+			return PrimitiveAccessor.TYPE_DOUBLE;
 		else if (Boolean.class.isAssignableFrom(clss))
-			return TYPE_BOOLEAN;
+			return PrimitiveAccessor.TYPE_BOOLEAN;
 		else
 			return null;
 	}
 
 	public static Object convert(String type, String str) {
-		if (TYPE_STRING.equals(type)) {
+		if (PrimitiveAccessor.TYPE_STRING.equals(type)) {
 			return str;
-		} else if (TYPE_INTEGER.equals(type)) {
+		} else if (PrimitiveAccessor.TYPE_INTEGER.equals(type)) {
 			return (Integer.parseInt(str));
-		} else if (TYPE_LONG.equals(type)) {
+		} else if (PrimitiveAccessor.TYPE_LONG.equals(type)) {
 			return (Long.parseLong(str));
-		} else if (TYPE_FLOAT.equals(type)) {
+		} else if (PrimitiveAccessor.TYPE_FLOAT.equals(type)) {
 			return (Float.parseFloat(str));
-		} else if (TYPE_DOUBLE.equals(type)) {
+		} else if (PrimitiveAccessor.TYPE_DOUBLE.equals(type)) {
 			return (Double.parseDouble(str));
-		} else if (TYPE_BOOLEAN.equals(type)) {
+		} else if (PrimitiveAccessor.TYPE_BOOLEAN.equals(type)) {
 			return (Boolean.parseBoolean(str));
 		} else {
 			return str;

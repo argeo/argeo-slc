@@ -165,12 +165,13 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		// execution spec
 		ExecutionSpec executionSpec = efd.getExecutionSpec();
 		String esName = executionSpec.getName();
-		if (esName != null && !esName.equals(ExecutionSpec.INTERNAL_NAME)) {
+		if (!(esName == null || esName.equals(ExecutionSpec.INTERNAL_NAME))) {
 			Node executionSpecsNode = moduleNode.hasNode(SLC_EXECUTION_SPECS) ? moduleNode
 					.getNode(SLC_EXECUTION_SPECS) : moduleNode
 					.addNode(SLC_EXECUTION_SPECS);
 			Node executionSpecNode = executionSpecsNode.addNode(esName,
 					SlcTypes.SLC_EXECUTION_SPEC);
+			executionSpecNode.setProperty(SLC_NAME, esName);
 			executionSpecNode.setProperty(Property.JCR_TITLE, esName);
 			if (executionSpec.getDescription() != null
 					&& !executionSpec.getDescription().trim().equals(""))

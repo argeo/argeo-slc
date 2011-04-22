@@ -18,11 +18,24 @@ package org.argeo.slc.core.execution;
 
 import org.argeo.slc.SlcException;
 
+/**
+ * A spec attribute wrapping a primitive value.
+ * 
+ * @see PrimitiveAccessor
+ */
 public class PrimitiveSpecAttribute extends AbstractSpecAttribute implements
 		PrimitiveAccessor {
 	private static final long serialVersionUID = -566676381839825483L;
 	private String type = "string";
 	private Object value = null;
+
+	public PrimitiveSpecAttribute() {
+	}
+
+	public PrimitiveSpecAttribute(String type, Object value) {
+		this.type = type;
+		this.value = value;
+	}
 
 	public Object getValue() {
 		return value;

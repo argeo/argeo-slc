@@ -21,8 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.argeo.slc.core.execution.DefaultExecutionSpec;
+import org.argeo.slc.core.execution.PrimitiveAccessor;
 import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
-import org.argeo.slc.core.execution.PrimitiveUtils;
 import org.argeo.slc.core.execution.PrimitiveValue;
 import org.argeo.slc.core.execution.RefSpecAttribute;
 import org.argeo.slc.core.execution.RefValue;
@@ -39,7 +39,7 @@ public class ExecutionFlowDescriptorTestUtils {
 
 		Map<String, Object> values = new HashMap<String, Object>();
 		values.put("primitiveInteger", new PrimitiveValue(
-				PrimitiveUtils.TYPE_INTEGER, 100));
+				PrimitiveAccessor.TYPE_INTEGER, 100));
 
 		RefValue refValue = new RefValue("002");
 		values.put("ref1", refValue);
@@ -55,7 +55,7 @@ public class ExecutionFlowDescriptorTestUtils {
 		Map<String, ExecutionSpecAttribute> attributes = new HashMap<String, ExecutionSpecAttribute>();
 
 		PrimitiveSpecAttribute primitiveInteger = new PrimitiveSpecAttribute();
-		primitiveInteger.setType(PrimitiveUtils.TYPE_INTEGER);
+		primitiveInteger.setType(PrimitiveAccessor.TYPE_INTEGER);
 		primitiveInteger.setValue(50);
 		attributes.put("primitiveInteger", primitiveInteger);
 

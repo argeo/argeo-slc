@@ -88,17 +88,17 @@ public class SlcJcrUtils {
 					((CharSequence) value).toString());
 
 		try {
-			if (type.equals(PrimitiveUtils.TYPE_STRING))
+			if (type.equals(PrimitiveAccessor.TYPE_STRING))
 				node.setProperty(propertyName, value.toString());
-			else if (type.equals(PrimitiveUtils.TYPE_INTEGER))
+			else if (type.equals(PrimitiveAccessor.TYPE_INTEGER))
 				node.setProperty(propertyName, (long) ((Integer) value));
-			else if (type.equals(PrimitiveUtils.TYPE_LONG))
+			else if (type.equals(PrimitiveAccessor.TYPE_LONG))
 				node.setProperty(propertyName, ((Long) value));
-			else if (type.equals(PrimitiveUtils.TYPE_FLOAT))
+			else if (type.equals(PrimitiveAccessor.TYPE_FLOAT))
 				node.setProperty(propertyName, (double) ((Float) value));
-			else if (type.equals(PrimitiveUtils.TYPE_DOUBLE))
+			else if (type.equals(PrimitiveAccessor.TYPE_DOUBLE))
 				node.setProperty(propertyName, ((Double) value));
-			else if (type.equals(PrimitiveUtils.TYPE_BOOLEAN))
+			else if (type.equals(PrimitiveAccessor.TYPE_BOOLEAN))
 				node.setProperty(propertyName, ((Boolean) value));
 			else
 				throw new SlcException("Unsupported type " + type);

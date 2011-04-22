@@ -130,6 +130,8 @@ public class DefaultExecutionFlowDescriptorConverter implements
 						throw new UnsupportedException("Ref value type",
 								refValue.getType());
 					}
+				}else{
+					convertedValues.put(key, value);
 				}
 			}
 		}

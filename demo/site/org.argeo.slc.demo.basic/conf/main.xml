@@ -8,6 +8,7 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
 	<bean id="main" parent="slcTemplate.simpleFlow">
+		<description>The Main Flow</description>
 		<constructor-arg>
 			<bean parent="slcTemplate.simpleSpec">
 				<property name="attributes">

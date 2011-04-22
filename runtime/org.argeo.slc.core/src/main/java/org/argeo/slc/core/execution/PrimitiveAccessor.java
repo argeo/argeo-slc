@@ -18,6 +18,13 @@ package org.argeo.slc.core.execution;
 
 /** Abstraction of access to primitive values */
 public interface PrimitiveAccessor {
+	public final static String TYPE_STRING = "string";
+	public final static String TYPE_INTEGER = "integer";
+	public final static String TYPE_LONG = "long";
+	public final static String TYPE_FLOAT = "float";
+	public final static String TYPE_DOUBLE = "double";
+	public final static String TYPE_BOOLEAN = "boolean";
+
 	public String getType();
 
 	public Object getValue();

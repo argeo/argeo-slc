@@ -103,7 +103,8 @@ public class ProcessThread extends Thread {
 		}
 	}
 
-	protected void execute(RealizedFlow realizedFlow, Boolean synchronous) {
+	/** @return the (distinct) thread used for this execution */
+	protected Thread execute(RealizedFlow realizedFlow, Boolean synchronous) {
 		ExecutionThread thread = new ExecutionThread(this, realizedFlow);
 		executionThreads.add(thread);
 		thread.start();
@@ -115,6 +116,7 @@ public class ProcessThread extends Thread {
 				log.error("Flow " + realizedFlow + " was interrupted", e);
 			}
 		}
+		return thread;
 
 		// synchronized (this) {
 		// try {
