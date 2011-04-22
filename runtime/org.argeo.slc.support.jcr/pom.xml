@@ -21,6 +21,7 @@
 						<Export-Package>
 							org.argeo.slc.jcr.*
 						</Export-Package>
+						<Import-Package>org.springframework.context,javax.jcr.nodetype,*</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
