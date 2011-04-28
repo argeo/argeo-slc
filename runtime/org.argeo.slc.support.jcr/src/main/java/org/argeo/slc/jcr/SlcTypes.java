@@ -16,4 +16,7 @@ public interface SlcTypes {
 	public final static String SLC_PRIMITIVE_SPEC_ATTRIBUTE = "slc:primitiveSpecAttribute";
 	public final static String SLC_REF_SPEC_ATTRIBUTE = "slc:refSpecAttribute";
 
+	public final static String SLC_RESULT = "slc:result";
+	public final static String SLC_CHECK = "slc:check";
+
 }

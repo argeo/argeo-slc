@@ -45,7 +45,7 @@ mixin
 + * (mix:title)
 
 [slc:executionFlow] > nt:unstructured, mix:title
-- slc:name (STRING) m
+- slc:name (STRING) ! m
 // if the execution spec is a referenceable node
 - slc:spec (REFERENCE)
 // if the execution spec is internal (without name)
@@ -53,7 +53,7 @@ mixin
 
 // PROCESS
 [slc:process] > nt:unstructured, mix:created, mix:lastModified
-- slc:uuid (STRING) m
+- slc:uuid (STRING) ! m
 - slc:status (STRING) m
 + slc:flow (slc:realizedFlow)
 
@@ -70,4 +70,15 @@ mixin
 // the realized execution spec attributes
 + * (slc:executionSpecAttribute) *
 
+// RESULT
+[slc:result] > nt:unstructured, mix:created, mix:lastModified
+- slc:uuid (STRING) ! m
+- slc:completed (DATE)
+
+[slc:check] > nt:unstructured, mix:created
+// true for PASSED, false for FAILED or ERROR
+- slc:success (BOOLEAN) ! m
+- slc:message (STRING)
+// ERROR if set, the check could not be performed because of an unexpected exception
+- slc:errorMessage (STRING)
 

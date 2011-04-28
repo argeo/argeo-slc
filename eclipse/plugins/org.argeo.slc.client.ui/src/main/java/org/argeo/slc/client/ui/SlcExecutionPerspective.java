@@ -31,7 +31,7 @@ public class SlcExecutionPerspective implements IPerspectiveFactory {
 
 		// add the views to the corresponding place holder
 		left.addView("org.argeo.slc.client.ui.jcrExecutionModulesView");
-		left.addView("org.argeo.slc.client.ui.resultListView");
+		left.addView("org.argeo.slc.client.ui.jcrResultListView");
 
 //		main.addView("org.argeo.slc.client.ui.processBuilderView");
 //		main.addPlaceholder("org.argeo.slc.client.ui.resultDetailView:UUID-*");

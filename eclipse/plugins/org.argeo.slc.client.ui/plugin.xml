@@ -27,6 +27,13 @@
 	         restorable="true">
 	   </view>
 	   <view
+	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+	         icon="icons/results.gif"
+	         id="org.argeo.slc.client.ui.jcrResultListView"
+	         name="Results"
+	         restorable="true">
+	   </view>
+	   <view
 	         allowMultiple="true"
 	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
 	         icon="icons/result_details.gif"

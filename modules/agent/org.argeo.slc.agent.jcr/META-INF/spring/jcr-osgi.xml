@@ -19,6 +19,11 @@
 		interface="org.springframework.security.AuthenticationManager" />
 
 	<!-- SERVICES -->
+	<!-- Deprecated -->
+	<service ref="resultListener"
+		interface="org.argeo.slc.core.test.tree.TreeTestResultListener" />
+	<service ref="resultListener" interface="org.argeo.slc.test.TestResultListener" />
+	
 	<service interface="org.argeo.slc.execution.ExecutionModulesListener"
 		ref="executionModulesListener" />
 	<service ref="agent" interface="org.argeo.slc.runtime.SlcAgentFactory">

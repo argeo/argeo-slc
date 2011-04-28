@@ -64,7 +64,13 @@ public class SlcJcrUtils {
 		Calendar now = new GregorianCalendar();
 		return SlcJcrConstants.PROCESSES_BASE_PATH + '/'
 				+ JcrUtils.dateAsPath(now, true) + uuid;
+	}
 
+	/** Create a new execution result path based on the current time */
+	public static String createResultPath(String uuid) {
+		Calendar now = new GregorianCalendar();
+		return SlcJcrConstants.RESULTS_BASE_PATH + '/'
+				+ JcrUtils.dateAsPath(now, true) + uuid;
 	}
 
 	/**

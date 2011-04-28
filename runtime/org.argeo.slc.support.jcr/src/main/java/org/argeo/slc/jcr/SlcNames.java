@@ -11,12 +11,21 @@ public interface SlcNames {
 	public final static String SLC_VALUE = "slc:value";
 	public final static String SLC_ADDRESS = "slc:address";
 
+	public final static String SLC_STARTED = "slc:started";
+	public final static String SLC_COMPLETED = "slc:completed";
+
 	public final static String SLC_SPEC = "slc:spec";
 	public final static String SLC_EXECUTION_SPECS = "slc:executionSpecs";
 	public final static String SLC_FLOW = "slc:flow";
 
+	// spec attribute
 	public final static String SLC_IS_IMMUTABLE = "slc:isImmutable";
 	public final static String SLC_IS_CONSTANT = "slc:isConstant";
 	public final static String SLC_IS_HIDDEN = "slc:isHidden";
+
+	// result
+	public final static String SLC_SUCCESS = "slc:success";
+	public final static String SLC_MESSAGE = "slc:message";
+	public final static String SLC_ERROR_MESSAGE = "slc:errorMessage";
 
 }

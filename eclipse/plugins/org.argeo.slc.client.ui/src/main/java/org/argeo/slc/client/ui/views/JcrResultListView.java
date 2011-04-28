@@ -19,10 +19,8 @@ import javax.jcr.query.Query;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
 import org.argeo.slc.client.ui.editors.ProcessEditorInput;
-import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -43,15 +41,15 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-/** Displays processes. */
-public class JcrProcessListView extends ViewPart {
-	public static final String ID = "org.argeo.slc.client.ui.jcrProcessListView";
+/** Displays results. */
+public class JcrResultListView extends ViewPart implements SlcNames {
+	public static final String ID = "org.argeo.slc.client.ui.jcrResultListView";
 
 	private TableViewer viewer;
 
 	private Session session;
 
-	private EventListener processesObserver;
+	private EventListener resultsObserver;
 
 	private DateFormat dateFormat = new SimpleDateFormat(
 			"EEE, dd MMM yyyy HH:mm:ss");
@@ -65,19 +63,19 @@ public class JcrProcessListView extends ViewPart {
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 
-		processesObserver = new AsyncUiEventListener() {
+		resultsObserver = new AsyncUiEventListener() {
 			protected void onEventInUiThread(EventIterator events) {
-				// TODO optimize by updating only the changed process
+				// TODO optimize by updating only the changed result
 				viewer.refresh();
 			}
 		};
 		try {
 			ObservationManager observationManager = session.getWorkspace()
 					.getObservationManager();
-			observationManager.addEventListener(processesObserver,
+			observationManager.addEventListener(resultsObserver,
 					Event.NODE_ADDED | Event.NODE_REMOVED
 							| Event.PROPERTY_CHANGED,
-					SlcJcrConstants.PROCESSES_BASE_PATH, true, null, null,
+					SlcJcrConstants.RESULTS_BASE_PATH, true, null, null,
 					false);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot register listeners", e);
@@ -101,16 +99,8 @@ public class JcrProcessListView extends ViewPart {
 		column.setWidth(200);
 
 		column = new TableColumn(table, SWT.LEFT, 1);
-		column.setText("Host");
-		column.setWidth(100);
-
-		column = new TableColumn(table, SWT.LEFT, 2);
 		column.setText("Id");
 		column.setWidth(300);
-
-		column = new TableColumn(table, SWT.LEFT, 3);
-		column.setText("Status");
-		column.setWidth(100);
 
 		return table;
 	}
@@ -121,7 +111,7 @@ public class JcrProcessListView extends ViewPart {
 
 	@Override
 	public void dispose() {
-		JcrUtils.unregisterQuietly(session.getWorkspace(), processesObserver);
+		JcrUtils.unregisterQuietly(session.getWorkspace(), resultsObserver);
 		super.dispose();
 	}
 
@@ -130,7 +120,7 @@ public class JcrProcessListView extends ViewPart {
 		public Object[] getElements(Object inputElement) {
 			try {
 				// TODO filter, optimize with virtual table, ...
-				String sql = "SELECT * from [slc:process] ORDER BY [jcr:lastModified] DESC";
+				String sql = "SELECT * from [slc:result] ORDER BY [jcr:lastModified] DESC";
 				Query query = session.getWorkspace().getQueryManager()
 						.createQuery(sql, Query.JCR_SQL2);
 				// TODO paging
@@ -162,21 +152,10 @@ public class JcrProcessListView extends ViewPart {
 				return null;
 			try {
 				Node node = (Node) obj;
-				String status = node.getProperty(SlcNames.SLC_STATUS)
-						.getString();
-				if (status.equals(ExecutionProcess.NEW)
-						|| status.equals(ExecutionProcess.INITIALIZED)
-						|| status.equals(ExecutionProcess.SCHEDULED))
-					return SlcImages.PROCESS_SCHEDULED;
-				else if (status.equals(ExecutionProcess.ERROR)
-						|| status.equals(ExecutionProcess.UNKOWN))
-					return SlcImages.PROCESS_ERROR;
-				else if (status.equals(ExecutionProcess.COMPLETED))
-					return SlcImages.PROCESS_COMPLETED;
-				else if (status.equals(ExecutionProcess.RUNNING))
-					return SlcImages.PROCESS_RUNNING;
-				else
-					throw new SlcException("Unkown status " + status);
+				if(node.hasProperty(SLC_COMPLETED)){
+					// TODO
+				}
+				return null;
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot get column text", e);
 			}
@@ -192,11 +171,7 @@ public class JcrProcessListView extends ViewPart {
 							.getProperty(Property.JCR_LAST_MODIFIED).getDate()
 							.getTime());
 				case 1:
-					return "local";
-				case 2:
 					return node.getProperty(SlcNames.SLC_UUID).getString();
-				case 3:
-					return node.getProperty(SlcNames.SLC_STATUS).getString();
 				}
 				return getText(obj);
 			} catch (RepositoryException e) {

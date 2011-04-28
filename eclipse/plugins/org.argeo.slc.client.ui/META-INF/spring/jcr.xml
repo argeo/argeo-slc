@@ -15,6 +15,11 @@
 		<property name="session" ref="session" />
 	</bean>
 
+	<bean id="jcrResultListView" class="org.argeo.slc.client.ui.views.JcrResultListView"
+		scope="prototype">
+		<property name="session" ref="session" />
+	</bean>
+
 	<bean id="session" class="org.argeo.jcr.spring.ThreadBoundSession">
 		<property name="repository" ref="repository" />
 	</bean>
