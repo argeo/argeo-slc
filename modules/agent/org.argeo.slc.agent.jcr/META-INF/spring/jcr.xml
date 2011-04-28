@@ -12,16 +12,18 @@
 	<bean id="executionModulesListener" class="org.argeo.slc.jcr.execution.JcrExecutionModulesListener"
 		init-method="init" destroy-method="dispose">
 		<property name="agent" ref="agent" />
-		<property name="session">
-			<bean factory-bean="repository" factory-method="login" />
+		<property name="session" ref="session2">
 		</property>
 	</bean>
+
+	<bean id="session2" factory-bean="repository" factory-method="login" />
 
 	<bean id="session" class="org.argeo.security.jcr.SecureThreadBoundSession">
 		<property name="repository" ref="repository" />
 	</bean>
 
-	<bean class="org.argeo.security.core.SystemExecutionBeanPostProcessor">
+	<bean
+		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
 		<property name="authenticationManager" ref="authenticationManager" />
 	</bean>
 </beans>
