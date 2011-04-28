@@ -4,47 +4,45 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<!-- Result list view commands -->
-	<bean id="org.argeo.slc.client.ui.refreshResultList"
-		class="org.argeo.slc.client.ui.commands.ResultListViewRefreshHandler"
-		scope="prototype">
-	</bean>
+	<!-- Result list view commands-->
+<!-- 	<bean id="org.argeo.slc.client.ui.refreshResultList" -->
+<!-- 		class="org.argeo.slc.client.ui.commands.ResultListViewRefreshHandler" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
 
-	<bean id="org.argeo.slc.client.ui.removeSelectedResultFromResultList"
-		class="org.argeo.slc.client.ui.commands.RemoveSelectedResultFromResultList"
-		scope="prototype">
-	</bean>
+<!-- 	<bean id="org.argeo.slc.client.ui.removeSelectedResultFromResultList" -->
+<!-- 		class="org.argeo.slc.client.ui.commands.RemoveSelectedResultFromResultList" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
 
 
-	<bean id="org.argeo.slc.client.ui.refreshExecutionModulesView"
-		class="org.argeo.slc.client.ui.commands.ExecutionModulesViewRefreshHandler"
-		scope="prototype">
-	</bean>
-	<bean id="org.argeo.slc.client.ui.refreshProcessList"
-		class="org.argeo.slc.client.ui.commands.ProcessListViewRefreshHandler"
-		scope="prototype">
-	</bean>
-	<bean id="org.argeo.slc.client.ui.displayProcessDetails"
-		class="org.argeo.slc.client.ui.commands.ProcessDetailsDisplayHandler"
-		scope="prototype">
-	</bean>
-	<bean id="org.argeo.slc.client.ui.displayResultDetails"
-		class="org.argeo.slc.client.ui.commands.ResultDetailsDisplayHandler"
-		scope="prototype">
-	</bean>
-	<!-- <bean id="org.argeo.slc.client.ui.displayResultDetailsWithExcel" class="org.argeo.slc.client.ui.commands.ResultDetailsExcelHandler" 
-		scope="prototype"> </bean> -->
-	<bean id="org.argeo.slc.client.ui.launchBatch" class="org.argeo.slc.client.ui.commands.LaunchBatchHandler"
-		scope="prototype">
-	</bean>
-	<bean id="org.argeo.slc.client.ui.removeSelectedFromBatch"
-		class="org.argeo.slc.client.ui.commands.RemoveSelectedProcessFromBatchHandler"
-		scope="prototype">
-	</bean>
-	<bean id="org.argeo.slc.client.ui.clearBatch" class="org.argeo.slc.client.ui.commands.ClearBatchHandler"
-		scope="prototype">
-	</bean>
-	<bean id="org.argeo.slc.client.ui.manageBundles" class="org.argeo.slc.client.ui.commands.ManageBundlesHandler"
-		scope="prototype">
-	</bean>
+<!-- 	<bean id="org.argeo.slc.client.ui.refreshExecutionModulesView" -->
+<!-- 		class="org.argeo.slc.client.ui.commands.ExecutionModulesViewRefreshHandler" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="org.argeo.slc.client.ui.refreshProcessList" -->
+<!-- 		class="org.argeo.slc.client.ui.commands.ProcessListViewRefreshHandler" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="org.argeo.slc.client.ui.displayProcessDetails" -->
+<!-- 		class="org.argeo.slc.client.ui.commands.ProcessDetailsDisplayHandler" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="org.argeo.slc.client.ui.displayResultDetails" -->
+<!-- 		class="org.argeo.slc.client.ui.commands.ResultDetailsDisplayHandler" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="org.argeo.slc.client.ui.launchBatch" class="org.argeo.slc.client.ui.commands.LaunchBatchHandler" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="org.argeo.slc.client.ui.removeSelectedFromBatch" -->
+<!-- 		class="org.argeo.slc.client.ui.commands.RemoveSelectedProcessFromBatchHandler" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="org.argeo.slc.client.ui.clearBatch" class="org.argeo.slc.client.ui.commands.ClearBatchHandler" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="org.argeo.slc.client.ui.manageBundles" class="org.argeo.slc.client.ui.commands.ManageBundlesHandler" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean>  -->
 </beans>

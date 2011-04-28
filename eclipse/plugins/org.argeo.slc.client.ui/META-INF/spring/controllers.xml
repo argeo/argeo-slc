@@ -5,6 +5,6 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="processController" class="org.argeo.slc.client.ui.controllers.ProcessController">
-		<property name="slcExecutionService" ref="slcExecutionService" />
+<!-- 		<property name="slcExecutionService" ref="slcExecutionService" /> -->
 	</bean>
 </beans>

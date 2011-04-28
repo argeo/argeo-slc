@@ -6,16 +6,31 @@
    <extension
          point="org.eclipse.ui.views">
 	   <view
+	         id="org.argeo.slc.client.ui.jcrExecutionModulesView"
 	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
 	         icon="icons/execution_module.gif"
-	         id="org.argeo.slc.client.ui.executionModulesView"
 	         name="Execution Modules"
 	         restorable="true">
 	   </view>
 	   <view
+	         id="org.argeo.slc.client.ui.jcrResultListView"
+	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+	         icon="icons/results.gif"
+	         name="Results"
+	         restorable="true">
+	   </view>
+	   <view
+	         id="org.argeo.slc.client.ui.jcrProcessListView"
+	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+	         name="Processes"
+	         icon="icons/processes.gif"
+	         restorable="true">
+	   </view>
+	   <!--
+	   <view
+	         id="org.argeo.slc.client.ui.executionModulesView"
 	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
 	         icon="icons/execution_module.gif"
-	         id="org.argeo.slc.client.ui.jcrExecutionModulesView"
 	         name="Execution Modules"
 	         restorable="true">
 	   </view>
@@ -27,13 +42,6 @@
 	         restorable="true">
 	   </view>
 	   <view
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         icon="icons/results.gif"
-	         id="org.argeo.slc.client.ui.jcrResultListView"
-	         name="Results"
-	         restorable="true">
-	   </view>
-	   <view
 	         allowMultiple="true"
 	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
 	         icon="icons/result_details.gif"
@@ -41,23 +49,8 @@
 	         name="Result details"
 	         restorable="true">
 	   </view>
-	 <!--  <view
-	         allowMultiple="true"
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         icon="icons/excel.png"
-	         id="org.argeo.slc.client.ui.resultExcelView"
-	         name="Result details (Excel)"
-	         restorable="true">
-	   </view> -->
 	   <view
 	         id="org.argeo.slc.client.ui.processListView"
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         name="Processes"
-	         icon="icons/processes.gif"
-	         restorable="true">
-	   </view>
-	   <view
-	         id="org.argeo.slc.client.ui.jcrProcessListView"
 	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
 	         name="Processes"
 	         icon="icons/processes.gif"
@@ -85,12 +78,13 @@
 	         name="Batch"
 	         restorable="true">
 	   </view>
+	   -->
    </extension>
 	
 	<!-- Commands definitions --> 
    	<extension
     	point="org.eclipse.ui.commands">
-	    <!-- Result List -->
+	    <!-- Result List
 		<command
 	        defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
 	        id="org.argeo.slc.client.ui.refreshResultList"
@@ -105,23 +99,16 @@
 	      	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
 	      	id="org.argeo.slc.client.ui.displayResultDetails"
 	      	name="Display Result Details">
-			<!-- <commandParameter
-	         	id="org.argeo.slc.client.commands.resultUuid"
-	        	name="Result UUID">
-	  	 	</commandParameter>
-	   		<commandParameter
-	         	id="org.argeo.slc.client.commands.resultName"
-	        	name="Result Name">
-			</commandParameter> -->
 		</command>
-	
-	    <!-- Execution Modules -->
+	 -->
+	    <!-- Execution Modules
 	    <command
 	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
 	        id="org.argeo.slc.client.ui.refreshExecutionModulesView"
 	        name="Refresh Execution Modules View">
 		</command>
-	    <!-- Batch -->
+		 -->
+	    <!-- Batch
 	    <command
 	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
 	        id="org.argeo.slc.client.ui.launchBatch"
@@ -137,7 +124,8 @@
 	        id="org.argeo.slc.client.ui.clearBatch"
 	        name="Clear Batch">
 		</command>
-	    <!-- Process List -->
+		 -->
+	    <!-- Process List
 	    <command
 	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
 	        id="org.argeo.slc.client.ui.refreshProcessList"
@@ -157,21 +145,16 @@
 	      	id="org.argeo.slc.client.ui.manageBundles"
 	      	name="Manage Bundles">
 		</command>
+		 -->
     </extension>
    
 	<!-- Menu definitions -->
 	<extension
     	id="menu:org.eclipse.ui.main.menu"
         point="org.eclipse.ui.menus">
+        <!--
 		<menuContribution
         	locationURI="menu:fileMenu">
-            <!-- Should be implemented in later version.
-            <command
-                  commandId="org.argeo.slc.client.ui.manageBundles"
-                  label="Manage Bundles"
-                  style="push"
-                  tooltip="Add or remove plugins at run time">
-            </command> -->
 		</menuContribution>
 		<menuContribution
 			locationURI="toolbar:org.argeo.slc.client.ui.resultListView">
@@ -218,6 +201,7 @@
 				tooltip="Remove selected process from process builder view.">
 			</command>
 		</menuContribution>
+		-->
 	</extension>
    <extension
          point="org.eclipse.ui.perspectives">

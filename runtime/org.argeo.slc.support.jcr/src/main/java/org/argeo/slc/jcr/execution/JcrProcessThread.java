@@ -13,7 +13,6 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionSpec;
 import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
 import org.argeo.slc.core.execution.PrimitiveUtils;
-import org.argeo.slc.core.execution.PrimitiveValue;
 import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;

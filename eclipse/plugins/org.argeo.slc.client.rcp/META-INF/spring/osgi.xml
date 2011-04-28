@@ -20,24 +20,22 @@
 	<!-- SLC Runtime -->
 	<bundle id="slc.agent" symbolic-name="org.argeo.slc.agent"
 		action="start" />
-	<bundle id="slc.server.castor" symbolic-name="org.argeo.slc.server.castor"
-		action="start" />
-	<bundle id="slc.server.h2" symbolic-name="org.argeo.slc.server.h2"
-		action="start" />
-	<bundle id="slc.server.hibernate" symbolic-name="org.argeo.slc.server.hibernate"
-		action="start" />
-	<bundle id="slc.server.services" symbolic-name="org.argeo.slc.server.services"
-		action="start" />
+<!-- 	<bundle id="slc.server.castor" symbolic-name="org.argeo.slc.server.castor" -->
+<!-- 		action="start" /> -->
+<!-- 	<bundle id="slc.server.h2" symbolic-name="org.argeo.slc.server.h2" -->
+<!-- 		action="start" /> -->
+<!-- 	<bundle id="slc.server.hibernate" symbolic-name="org.argeo.slc.server.hibernate" -->
+<!-- 		action="start" /> -->
+<!-- 	<bundle id="slc.server.services" symbolic-name="org.argeo.slc.server.services" -->
+<!-- 		action="start" /> -->
 
 	<!-- UI Components -->
 	<bundle id="slc.node.jackrabbit" symbolic-name="org.argeo.slc.node.jackrabbit"
 		action="start" />
-<!-- 	<bundle id="slc.client.agent" symbolic-name="org.argeo.slc.client.agent" -->
+<!-- 	<bundle id="slc.client.hibernate" symbolic-name="org.argeo.slc.client.hibernate" -->
 <!-- 		action="start" /> -->
-	<bundle id="slc.client.hibernate" symbolic-name="org.argeo.slc.client.hibernate"
-		action="start" />
-	<bundle id="slc.client.oxm" symbolic-name="org.argeo.slc.client.oxm"
-		action="start" />
+<!-- 	<bundle id="slc.client.oxm" symbolic-name="org.argeo.slc.client.oxm" -->
+<!-- 		action="start" /> -->
 	<bundle id="slc.client.rcp" symbolic-name="org.argeo.slc.client.rcp"
 		action="start" />
 	<bundle id="slc.client.ui" symbolic-name="org.argeo.slc.client.ui"

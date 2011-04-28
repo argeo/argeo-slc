@@ -21,6 +21,10 @@
 		<property name="session" ref="session" />
 	</bean>
 
+	<bean id="attachmentUploader" class="org.argeo.slc.jcr.execution.JcrAttachmentUploader">
+		<property name="session" ref="session" />
+	</bean>
+
 
 	<bean id="session" class="org.argeo.security.jcr.SecureThreadBoundSession">
 		<property name="repository" ref="repository" />

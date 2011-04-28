@@ -5,51 +5,51 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- Views -->
-	<bean id="executionModulesView" class="org.argeo.slc.client.ui.views.ExecutionModulesView"
-		scope="prototype">
-		<property name="contentProvider" ref="executionModulesContentProvider" />
-		<property name="processController" ref="processController" />
-		<property name="oxmBean" ref="oxmBean" />
-	</bean>
+<!-- 	<bean id="executionModulesView" class="org.argeo.slc.client.ui.views.ExecutionModulesView" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="contentProvider" ref="executionModulesContentProvider" /> -->
+<!-- 		<property name="processController" ref="processController" /> -->
+<!-- 		<property name="oxmBean" ref="oxmBean" /> -->
+<!-- 	</bean> -->
 
-	<bean id="resultListView" class="org.argeo.slc.client.ui.views.ResultListView"
-		scope="prototype">
-		<property name="testResultCollectionDao" ref="testResultCollectionDao" />
-	</bean>
+<!-- 	<bean id="resultListView" class="org.argeo.slc.client.ui.views.ResultListView" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="testResultCollectionDao" ref="testResultCollectionDao" /> -->
+<!-- 	</bean> -->
 
-	<bean id="resultDetailView" class="org.argeo.slc.client.ui.views.ResultDetailView"
-		scope="prototype">
-		<property name="treeTestResultDao" ref="treeTestResultDao" />
-		<property name="contentProvider" ref="resultDetailContentProvider" />
-		<property name="labelProvider" ref="resultDetailLabelProvider" />
-	</bean>
-	<bean id="processListView" class="org.argeo.slc.client.ui.views.ProcessListView"
-		scope="prototype">
-		<property name="slcExecutionDao" ref="slcExecutionDao" />
-		<property name="structuredContentProvider" ref="processListStructuredContentProvider" />
-		<property name="tableLabelProvider" ref="processListTableLabelProvider" />
-	</bean>
+<!-- 	<bean id="resultDetailView" class="org.argeo.slc.client.ui.views.ResultDetailView" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="treeTestResultDao" ref="treeTestResultDao" /> -->
+<!-- 		<property name="contentProvider" ref="resultDetailContentProvider" /> -->
+<!-- 		<property name="labelProvider" ref="resultDetailLabelProvider" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="processListView" class="org.argeo.slc.client.ui.views.ProcessListView" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="slcExecutionDao" ref="slcExecutionDao" /> -->
+<!-- 		<property name="structuredContentProvider" ref="processListStructuredContentProvider" /> -->
+<!-- 		<property name="tableLabelProvider" ref="processListTableLabelProvider" /> -->
+<!-- 	</bean> -->
 
-	<bean id="processDetailView" class="org.argeo.slc.client.ui.views.ProcessDetailView"
-		scope="prototype">
-		<property name="slcExecutionDao" ref="slcExecutionDao" />
-		<property name="contentProvider" ref="processDetailContentProvider" />
-	</bean>
+<!-- 	<bean id="processDetailView" class="org.argeo.slc.client.ui.views.ProcessDetailView" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="slcExecutionDao" ref="slcExecutionDao" /> -->
+<!-- 		<property name="contentProvider" ref="processDetailContentProvider" /> -->
+<!-- 	</bean> -->
 
-	<bean id="processBuilderView" class="org.argeo.slc.client.ui.views.ProcessBuilderView"
-		scope="prototype">
-		<property name="processController" ref="processController" />
-		<property name="oxmBean" ref="oxmBean" />
-		<property name="slcAgents" ref="slcAgents" />
-	</bean>
+<!-- 	<bean id="processBuilderView" class="org.argeo.slc.client.ui.views.ProcessBuilderView" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="processController" ref="processController" /> -->
+<!-- 		<property name="oxmBean" ref="oxmBean" /> -->
+<!-- 		<property name="slcAgents" ref="slcAgents" /> -->
+<!-- 	</bean> -->
 
-	<bean id="processParametersView" class="org.argeo.slc.client.ui.views.ProcessParametersView"
-		scope="prototype">
-	</bean>
+<!-- 	<bean id="processParametersView" class="org.argeo.slc.client.ui.views.ProcessParametersView" -->
+<!-- 		scope="prototype"> -->
+<!-- 	</bean> -->
 
 	<!-- Providers. -->
-	<bean id="executionModulesContentProvider"
-		class="org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider">
-		<property name="slcAgents" ref="slcAgents" />
-	</bean>
+<!-- 	<bean id="executionModulesContentProvider" -->
+<!-- 		class="org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider"> -->
+<!-- 		<property name="slcAgents" ref="slcAgents" /> -->
+<!-- 	</bean> -->
 </beans>
