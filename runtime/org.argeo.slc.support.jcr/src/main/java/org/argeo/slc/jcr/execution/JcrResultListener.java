@@ -21,6 +21,8 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.Attachment;
 import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
+import org.argeo.slc.core.test.SimpleResultPart;
+import org.argeo.slc.core.test.tree.PartSubList;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultListener;
 import org.argeo.slc.jcr.SlcJcrUtils;
@@ -66,7 +68,6 @@ public class JcrResultListener implements TreeTestResultListener, SlcNames {
 				// session.save();
 			}
 			// create part node
-			// TODO find a better name
 			SimpleSElement element = null;
 			if (testResult.getElements().containsKey(currentPath)) {
 				element = (SimpleSElement) testResult.getElements().get(
@@ -224,7 +225,20 @@ public class JcrResultListener implements TreeTestResultListener, SlcNames {
 						resultPath.length());
 				TreeSPath tsp = new TreeSPath(relPath);
 
-				// TODO result part
+				// result part
+				SimpleResultPart srp = new SimpleResultPart();
+				if (checkNode.getProperty(SLC_SUCCESS).getBoolean())
+					srp.setStatus(TestStatus.PASSED);
+				else if (checkNode.hasProperty(SLC_ERROR_MESSAGE))
+					srp.setStatus(TestStatus.ERROR);
+				else
+					srp.setStatus(TestStatus.FAILED);
+				if (checkNode.hasProperty(SLC_MESSAGE))
+					srp.setMessage(checkNode.getProperty(SLC_MESSAGE)
+							.getString());
+				if (!ttr.getResultParts().containsKey(tsp))
+					ttr.getResultParts().put(tsp, new PartSubList());
+				ttr.getResultParts().get(tsp).getParts().add(srp);
 
 				// element
 				SimpleSElement elem = new SimpleSElement();
