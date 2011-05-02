@@ -15,6 +15,7 @@
 		<property name="session">
 			<bean factory-bean="repository" factory-method="login" />
 		</property>
+		<property name="modulesManager" ref="modulesManager" />
 	</bean>
 
 	<bean id="resultListener" class="org.argeo.slc.jcr.execution.JcrResultListener">

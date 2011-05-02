@@ -8,6 +8,7 @@ public class SlcImages {
 	public final static Image AGENT = img("icons/agent.gif");
 	public final static Image AGENT_FACTORY = img("icons/agentFactory.gif");
 	public final static Image MODULE = img("icons/module.png");
+	public final static Image MODULE_STOPPED = img("icons/module_stopped.gif");
 	public final static Image FOLDER = img("icons/folder.gif");
 	public final static Image FLOW = img("icons/flow.png");
 	public final static Image PROCESSES = img("icons/processes.gif");

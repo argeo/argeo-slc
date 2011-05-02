@@ -46,6 +46,7 @@ import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.springframework.osgi.service.importer.OsgiServiceLifecycleListener;
 
@@ -222,6 +223,26 @@ public class OsgiExecutionModulesManager extends
 			lst.add(moduleDescriptor);
 		}
 		return lst;
+	}
+
+	public void start(NameVersion nameVersion) {
+		try {
+			Bundle bundle = bundlesManager.findRelatedBundle(new OsgiBundle(
+					nameVersion));
+			bundlesManager.startSynchronous(bundle);
+		} catch (BundleException e) {
+			throw new SlcException("Cannot start " + nameVersion, e);
+		}
+	}
+
+	public void stop(NameVersion nameVersion) {
+		try {
+			Bundle bundle = bundlesManager.findRelatedBundle(new OsgiBundle(
+					nameVersion));
+			bundlesManager.stopSynchronous(bundle);
+		} catch (BundleException e) {
+			throw new SlcException("Cannot stop " + nameVersion, e);
+		}
 	}
 
 	protected void setMetadataFromBundle(ModuleDescriptor md, Bundle bundle) {

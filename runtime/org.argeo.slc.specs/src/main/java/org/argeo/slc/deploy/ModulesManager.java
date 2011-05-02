@@ -33,4 +33,10 @@ public interface ModulesManager {
 
 	/** Synchronously upgrades the module referenced by this name version */
 	public void upgrade(NameVersion nameVersion);
+
+	/** Starts the module */
+	public void start(NameVersion nameVersion);
+
+	/** Stops the module */
+	public void stop(NameVersion nameVersion);
 }

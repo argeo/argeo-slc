@@ -8,6 +8,7 @@
 	<bean id="jcrExecutionModulesView" class="org.argeo.slc.client.ui.views.JcrExecutionModulesView"
 		scope="prototype">
 		<property name="session" ref="session" />
+		<property name="modulesManager" ref="modulesManager"/>
 	</bean>
 
 	<bean id="jcrProcessListView" class="org.argeo.slc.client.ui.views.JcrProcessListView"

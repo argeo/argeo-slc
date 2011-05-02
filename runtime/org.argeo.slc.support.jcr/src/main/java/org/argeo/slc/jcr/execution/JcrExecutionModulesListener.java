@@ -2,6 +2,7 @@ package org.argeo.slc.jcr.execution;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -20,6 +21,7 @@ import org.argeo.slc.core.execution.RefValueChoice;
 import org.argeo.slc.deploy.ModuleDescriptor;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesListener;
+import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.jcr.SlcJcrUtils;
@@ -32,9 +34,13 @@ import org.argeo.slc.jcr.SlcTypes;
  */
 public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		SlcNames {
+	private final static String SLC_EXECUTION_MODRULES_PROPERTY = "slc.executionModules";
+
 	private final static Log log = LogFactory
 			.getLog(JcrExecutionModulesListener.class);
 	private JcrAgent agent;
+
+	private ExecutionModulesManager modulesManager;
 
 	/**
 	 * We don't use a thread bound session because many different threads will
@@ -48,6 +54,45 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 	 */
 	public void init() {
 		clearAgent();
+		if (modulesManager != null) {
+			List<ModuleDescriptor> moduleDescriptors = modulesManager
+					.listModules();
+			String executionModules = System
+					.getProperty(SLC_EXECUTION_MODRULES_PROPERTY);
+			if (executionModules != null)
+				try {
+					Node agentNode = session.getNode(agent.getNodePath());
+					for (String executionModule : executionModules.split(",")) {
+						for (ModuleDescriptor moduleDescriptor : moduleDescriptors) {
+							String moduleNodeName = SlcJcrUtils
+									.getModuleNodeName(moduleDescriptor);
+							if (moduleDescriptor.getName().equals(
+									executionModule)) {
+								Node moduleNode = agentNode
+										.hasNode(moduleNodeName) ? agentNode
+										.getNode(moduleNodeName) : agentNode
+										.addNode(moduleNodeName);
+								moduleNode
+										.addMixin(SlcTypes.SLC_EXECUTION_MODULE);
+								moduleNode.setProperty(SLC_NAME,
+										moduleDescriptor.getName());
+								moduleNode.setProperty(SLC_VERSION,
+										moduleDescriptor.getVersion());
+								moduleNode.setProperty(Property.JCR_TITLE,
+										moduleDescriptor.getTitle());
+								moduleNode.setProperty(
+										Property.JCR_DESCRIPTION,
+										moduleDescriptor.getDescription());
+								moduleNode.setProperty(SLC_STARTED, false);
+							}
+						}
+					}
+					session.save();
+				} catch (RepositoryException e) {
+					JcrUtils.discardQuietly(session);
+					throw new SlcException("Cannot initialize modules", e);
+				}
+		}
 	}
 
 	public void dispose() {
@@ -86,6 +131,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 					moduleDescriptor.getTitle());
 			moduleNode.setProperty(Property.JCR_DESCRIPTION,
 					moduleDescriptor.getDescription());
+			moduleNode.setProperty(SLC_STARTED, true);
 			session.save();
 		} catch (RepositoryException e) {
 			JcrUtils.discardQuietly(session);
@@ -99,10 +145,16 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		try {
 			String moduleName = SlcJcrUtils.getModuleNodeName(moduleDescriptor);
 			Node agentNode = session.getNode(agent.getNodePath());
-			if (agentNode.hasNode(moduleName))
-				agentNode.getNode(moduleName).remove();
-			agentNode.getSession().save();
+			if (agentNode.hasNode(moduleName)) {
+				Node moduleNode = agentNode.getNode(moduleName);
+				for (NodeIterator nit = moduleNode.getNodes(); nit.hasNext();) {
+					nit.nextNode().remove();
+				}
+				moduleNode.setProperty(SLC_STARTED, false);
+			}
+			session.save();
 		} catch (RepositoryException e) {
+			JcrUtils.discardQuietly(session);
 			throw new SlcException("Cannot remove module " + moduleDescriptor,
 					e);
 		}
@@ -270,6 +322,10 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 	/** Expects a non-shared session with admin authorization */
 	public void setSession(Session session) {
 		this.session = session;
+	}
+
+	public void setModulesManager(ExecutionModulesManager modulesManager) {
+		this.modulesManager = modulesManager;
 	}
 
 }

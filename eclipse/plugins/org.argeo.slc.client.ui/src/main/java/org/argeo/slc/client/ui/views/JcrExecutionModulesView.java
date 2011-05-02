@@ -14,17 +14,23 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
 import org.argeo.eclipse.ui.jcr.SimpleNodeContentProvider;
+import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
 import org.argeo.slc.client.ui.editors.ProcessEditorInput;
+import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.eclipse.jface.fieldassist.SimpleContentProposalProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -46,14 +52,16 @@ import org.eclipse.ui.part.ViewPart;
 /** JCR based view of the execution modules. */
 public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		SlcNames {
-	// private final static Log log = LogFactory
-	// .getLog(JcrExecutionModulesView.class);
+	private final static Log log = LogFactory
+			.getLog(JcrExecutionModulesView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.jcrExecutionModulesView";
 
 	private TreeViewer viewer;
 
 	private Session session;
+
+	private ExecutionModulesManager modulesManager;
 
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -200,6 +208,46 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	class VmAgentObserver extends AsyncUiEventListener {
 		protected void onEventInUiThread(EventIterator events) {
+//			List<Node> baseNodes = ((SimpleNodeContentProvider) viewer
+//					.getContentProvider()).getBaseNodes();
+//			Node baseNode = baseNodes.get(0);
+//
+//			while (events.hasNext()) {
+//				Event event = events.nextEvent();
+//				try {
+//					String path = event.getPath();
+//					String baseNodePath = baseNode.getPath();
+//					if (path.startsWith(baseNodePath)) {
+//						String relPath = path
+//								.substring(baseNodePath.length() + 1);
+//						log.debug("relPath: " + relPath);
+//						if (baseNode.hasNode(relPath)) {
+//							Node refreshNode = baseNode.getNode(relPath);
+//							log.debug("refreshNode: " + refreshNode);
+//							viewer.refresh(refreshNode);
+//						}
+//
+//					}
+//					// if (log.isDebugEnabled())
+//					// log.debug("Process " + path + ": " + event);
+//
+//					// if (session.itemExists(path)) {
+//					// Node parentNode = session.getNode(path).getParent();
+//					// log.debug("Parent: " + parentNode);
+//					// viewer.refresh(parentNode);
+//					// }
+//				} catch (RepositoryException e) {
+//					log.warn("Cannot process event " + event + ": " + e);
+//				}
+//			}
+
+			// try {
+			// Node vmAgentNode = session
+			// .getNode(SlcJcrConstants.VM_AGENT_FACTORY_PATH);
+			// viewer.refresh(vmAgentNode);
+			// } catch (RepositoryException e) {
+			// log.warn("Cannot process event : " + e);
+			// }
 			// TODO: optimize based on event
 			viewer.refresh();
 		}
@@ -232,9 +280,12 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 				return SlcImages.EXECUTION_SPECS;
 			else if (node.isNodeType(SlcTypes.SLC_EXECUTION_FLOW))
 				return SlcImages.FLOW;
-			else if (node.isNodeType(SlcTypes.SLC_MODULE))
-				return SlcImages.MODULE;
-			else if (node.isNodeType(SlcTypes.SLC_AGENT))
+			else if (node.isNodeType(SlcTypes.SLC_MODULE)) {
+				if (node.getProperty(SLC_STARTED).getBoolean())
+					return SlcImages.MODULE;
+				else
+					return SlcImages.MODULE_STOPPED;
+			} else if (node.isNodeType(SlcTypes.SLC_AGENT))
 				return SlcImages.AGENT;
 			else if (node.isNodeType(SlcTypes.SLC_AGENT_FACTORY))
 				return SlcImages.AGENT_FACTORY;
@@ -273,6 +324,19 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 								.getActiveWorkbenchWindow().getActivePage();
 						activePage.openEditor(new ProcessEditorInput(paths,
 								true), ProcessEditor.ID);
+					} else if (node.isNodeType(SLC_EXECUTION_MODULE)) {
+						String name = node.getProperty(SLC_NAME).getString();
+						String version = node.getProperty(SLC_VERSION)
+								.getString();
+						NameVersion nameVersion = new BasicNameVersion(name,
+								version);
+						Boolean started = node.getProperty(SLC_STARTED)
+								.getBoolean();
+						if (started) {
+							modulesManager.stop(nameVersion);
+						} else {
+							modulesManager.start(nameVersion);
+						}
 					}
 				}
 			} catch (Exception e) {
@@ -320,6 +384,10 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	public void setSession(Session session) {
 		this.session = session;
+	}
+
+	public void setModulesManager(ExecutionModulesManager modulesManager) {
+		this.modulesManager = modulesManager;
 	}
 
 }
