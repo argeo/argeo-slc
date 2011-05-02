@@ -66,6 +66,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		viewer.setLabelProvider(viewLabelProvider);
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
+		getViewSite().setSelectionProvider(viewer);
 
 		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
 		// Transfer[] tt = new Transfer[] { EditorInputTransfer.getInstance() };
@@ -199,6 +200,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	class VmAgentObserver extends AsyncUiEventListener {
 		protected void onEventInUiThread(EventIterator events) {
+			// TODO: optimize based on event
 			viewer.refresh();
 		}
 	}

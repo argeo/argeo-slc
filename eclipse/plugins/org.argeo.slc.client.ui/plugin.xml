@@ -84,6 +84,11 @@
 	<!-- Commands definitions --> 
    	<extension
     	point="org.eclipse.ui.commands">
+		<command
+	        defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+	        id="org.argeo.slc.client.ui.updateModule"
+	    	name="Update Module">
+	    </command>
 	    <!-- Result List
 		<command
 	        defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
@@ -152,6 +157,15 @@
 	<extension
     	id="menu:org.eclipse.ui.main.menu"
         point="org.eclipse.ui.menus">
+		<menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.jcrExecutionModulesView">
+			<command
+				commandId="org.argeo.slc.client.ui.updateModule"
+				icon="icons/refresh.png"
+				label="Update module"
+				tooltip="Update module">
+			</command>
+		</menuContribution>   
         <!--
 		<menuContribution
         	locationURI="menu:fileMenu">

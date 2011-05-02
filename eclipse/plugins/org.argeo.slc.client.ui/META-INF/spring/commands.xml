@@ -4,6 +4,12 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<bean id="updateModule"
+		class="org.argeo.slc.client.ui.commands.UpdateModule"
+		scope="prototype">
+		<property name="modulesManager" ref="modulesManager"/>
+	</bean>
+
 	<!-- Result list view commands-->
 <!-- 	<bean id="org.argeo.slc.client.ui.refreshResultList" -->
 <!-- 		class="org.argeo.slc.client.ui.commands.ResultListViewRefreshHandler" -->
