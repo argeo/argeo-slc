@@ -57,12 +57,15 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	private Integer queryLimit = 100;
 
 	public void createPartControl(Composite parent) {
+
 		Table table = createTable(parent);
 		viewer = new TableViewer(table);
 		viewer.setLabelProvider(createLabelProvider());
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
+
+		getViewSite().setSelectionProvider(viewer);
 
 		resultsObserver = new AsyncUiEventListener() {
 			protected void onEventInUiThread(EventIterator events) {
@@ -84,8 +87,8 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	}
 
 	protected Table createTable(Composite parent) {
-		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.FULL_SELECTION;
+		int style = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.FULL_SELECTION | SWT.MULTI;
 		// does not work with RAP, commented for the time being
 		// | SWT.HIDE_SELECTION;
 
@@ -104,6 +107,10 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 
 		return table;
 	}
+
+	// public void refresh() {
+	// viewer.refresh();
+	// }
 
 	/*
 	 * METHODS TO BE OVERRIDDEN
