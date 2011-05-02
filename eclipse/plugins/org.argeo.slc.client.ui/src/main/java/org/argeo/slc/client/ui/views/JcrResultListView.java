@@ -26,6 +26,7 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IBaseLabelProvider;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -58,8 +59,8 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	public void createPartControl(Composite parent) {
 		Table table = createTable(parent);
 		viewer = new TableViewer(table);
-		viewer.setLabelProvider(new LabelProvider());
-		viewer.setContentProvider(new ContentProvider());
+		viewer.setLabelProvider(createLabelProvider());
+		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 
@@ -75,8 +76,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 			observationManager.addEventListener(resultsObserver,
 					Event.NODE_ADDED | Event.NODE_REMOVED
 							| Event.PROPERTY_CHANGED,
-					SlcJcrConstants.RESULTS_BASE_PATH, true, null, null,
-					false);
+					SlcJcrConstants.RESULTS_BASE_PATH, true, null, null, false);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot register listeners", e);
 		}
@@ -86,7 +86,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	protected Table createTable(Composite parent) {
 		int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION;
-		// does not function with RAP, commented for the time being
+		// does not work with RAP, commented for the time being
 		// | SWT.HIDE_SELECTION;
 
 		Table table = new Table(parent, style);
@@ -105,6 +105,32 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 		return table;
 	}
 
+	/*
+	 * METHODS TO BE OVERRIDDEN
+	 */
+	protected IBaseLabelProvider createLabelProvider() {
+		return new ViewLabelProvider();
+	}
+
+	protected void processDoubleClick(DoubleClickEvent evt) {
+		Object obj = ((IStructuredSelection) evt.getSelection())
+				.getFirstElement();
+		try {
+			if (obj instanceof Node) {
+				Node node = (Node) obj;
+				if (node.isNodeType(SlcTypes.SLC_PROCESS)) {
+					IWorkbenchPage activePage = PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage();
+					activePage.openEditor(
+							new ProcessEditorInput(node.getPath()),
+							ProcessEditor.ID);
+				}
+			}
+		} catch (Exception e) {
+			throw new SlcException("Cannot open " + obj, e);
+		}
+	}
+
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
@@ -115,7 +141,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 		super.dispose();
 	}
 
-	class ContentProvider implements IStructuredContentProvider {
+	class ViewContentProvider implements IStructuredContentProvider {
 
 		public Object[] getElements(Object inputElement) {
 			try {
@@ -144,7 +170,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 
 	}
 
-	class LabelProvider extends ColumnLabelProvider implements
+	class ViewLabelProvider extends ColumnLabelProvider implements
 			ITableLabelProvider {
 
 		public Image getColumnImage(Object obj, int columnIndex) {
@@ -152,7 +178,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 				return null;
 			try {
 				Node node = (Node) obj;
-				if(node.hasProperty(SLC_COMPLETED)){
+				if (node.hasProperty(SLC_COMPLETED)) {
 					// TODO
 				}
 				return null;
@@ -183,22 +209,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 
 	class ViewDoubleClickListener implements IDoubleClickListener {
 		public void doubleClick(DoubleClickEvent evt) {
-			Object obj = ((IStructuredSelection) evt.getSelection())
-					.getFirstElement();
-			try {
-				if (obj instanceof Node) {
-					Node node = (Node) obj;
-					if (node.isNodeType(SlcTypes.SLC_PROCESS)) {
-						IWorkbenchPage activePage = PlatformUI.getWorkbench()
-								.getActiveWorkbenchWindow().getActivePage();
-						activePage.openEditor(
-								new ProcessEditorInput(node.getPath()),
-								ProcessEditor.ID);
-					}
-				}
-			} catch (Exception e) {
-				throw new SlcException("Cannot open " + obj, e);
-			}
+			processDoubleClick(evt);
 		}
 
 	}

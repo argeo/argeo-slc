@@ -6,14 +6,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.Attachment;
+import org.argeo.slc.core.structure.SimpleSElement;
 import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.core.test.tree.TreeTestResult;
 import org.argeo.slc.core.test.tree.TreeTestResultListener;
@@ -61,11 +67,25 @@ public class JcrResultListener implements TreeTestResultListener, SlcNames {
 			}
 			// create part node
 			// TODO find a better name
-			String partNodeName = Long.toString(System.currentTimeMillis());
+			SimpleSElement element = null;
+			if (testResult.getElements().containsKey(currentPath)) {
+				element = (SimpleSElement) testResult.getElements().get(
+						currentPath);
+			}
+
+			String elementLabel = element != null && element.getLabel() != null
+					&& !element.getLabel().trim().equals("") ? element
+					.getLabel() : null;
+			String partNodeName = elementLabel != null ? JcrUtils
+					.replaceInvalidChars(elementLabel, '_') : Long
+					.toString(System.currentTimeMillis());
+
 			Node resultPartNode = partParentNode.addNode(partNodeName,
 					SlcTypes.SLC_CHECK);
 			resultPartNode.setProperty(SLC_SUCCESS,
 					testResultPart.getStatus() == TestStatus.PASSED);
+			if (elementLabel != null)
+				resultPartNode.setProperty(Property.JCR_TITLE, elementLabel);
 			if (testResultPart.getMessage() != null)
 				resultPartNode.setProperty(SLC_MESSAGE,
 						testResultPart.getMessage());
@@ -73,9 +93,28 @@ public class JcrResultListener implements TreeTestResultListener, SlcNames {
 				resultPartNode.setProperty(SLC_ERROR_MESSAGE,
 						testResultPart.getExceptionMessage());
 			// JcrUtils.debug(resultPartNode);
-			
+
 			JcrUtils.updateLastModified(resultNode);
-			
+
+			if (element != null) {
+				element = (SimpleSElement) testResult.getElements().get(
+						currentPath);
+				if (log.isTraceEnabled())
+					log.trace("  Path= " + currentPath + ", part="
+							+ testResultPart.getMessage());
+				for (Map.Entry<String, String> tag : element.getTags()
+						.entrySet()) {
+					String tagNodeName = JcrUtils.replaceInvalidChars(
+							tag.getKey(), '_');
+					// log.debug("key=" + tag.getKey() + ", tagNodeName="
+					// + tagNodeName);
+					Node tagNode = resultPartNode.addNode(tagNodeName,
+							SlcTypes.SLC_PROPERTY);
+					tagNode.setProperty(SLC_NAME, tag.getKey());
+					tagNode.setProperty(SLC_VALUE, tag.getValue());
+				}
+			}
+
 			session.save();
 		} catch (RepositoryException e) {
 			JcrUtils.discardQuietly(session);
@@ -150,4 +189,62 @@ public class JcrResultListener implements TreeTestResultListener, SlcNames {
 		this.session = session;
 	}
 
+	/**
+	 * Creates and populates a {@link TreeTestResult} from the related result
+	 * node. Meant to simplify migration of legacy applications. This is no
+	 * stable API.
+	 */
+	public static TreeTestResult nodeToTreeTestResult(Node resultNode) {
+		try {
+			String resultPath = resultNode.getPath();
+			TreeTestResult ttr = new TreeTestResult();
+			// base properties
+			ttr.setUuid(resultNode.getProperty(SLC_UUID).getString());
+			if (resultNode.hasProperty(SLC_COMPLETED))
+				ttr.setCloseDate(resultNode.getProperty(SLC_COMPLETED)
+						.getDate().getTime());
+			// attributes
+			for (PropertyIterator pit = resultNode.getProperties(); pit
+					.hasNext();) {
+				Property p = pit.nextProperty();
+				if (p.getName().indexOf(':') < 0) {
+					ttr.getAttributes().put(p.getName(), p.getString());
+				}
+			}
+
+			QueryManager qm = resultNode.getSession().getWorkspace()
+					.getQueryManager();
+			String statement = "SELECT * FROM [" + SlcTypes.SLC_CHECK
+					+ "] WHERE ISDESCENDANTNODE(['" + resultPath + "'])";
+			NodeIterator nit = qm.createQuery(statement, Query.JCR_SQL2)
+					.execute().getNodes();
+			while (nit.hasNext()) {
+				Node checkNode = nit.nextNode();
+				String relPath = checkNode.getPath().substring(
+						resultPath.length());
+				TreeSPath tsp = new TreeSPath(relPath);
+
+				// TODO result part
+
+				// element
+				SimpleSElement elem = new SimpleSElement();
+				if (checkNode.hasProperty(Property.JCR_TITLE))
+					elem.setLabel(checkNode.getProperty(Property.JCR_TITLE)
+							.getString());
+				else
+					elem.setLabel("");// some legacy code expect it to be set
+				for (NodeIterator tagIt = checkNode.getNodes(); tagIt.hasNext();) {
+					Node tagNode = tagIt.nextNode();
+					elem.getTags().put(
+							tagNode.getProperty(SLC_NAME).getString(),
+							tagNode.getProperty(SLC_VALUE).getString());
+				}
+				ttr.getElements().put(tsp, elem);
+			}
+			return ttr;
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot generate tree test result from "
+					+ resultNode, e);
+		}
+	}
 }

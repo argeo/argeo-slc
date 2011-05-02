@@ -16,12 +16,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.part.EditorInputTransfer;
 
-/**
- * Set here initial default size of the UI
- * 
- * @author bsinou
- * 
- */
+/** Set here initial default size of the UI */
 public class SlcSecureWorkbenchWindowAdvisor extends
 		SecureWorkbenchWindowAdvisor {
 
@@ -32,46 +27,39 @@ public class SlcSecureWorkbenchWindowAdvisor extends
 		super(configurer, username);
 	}
 
-	// public ActionBarAdvisor createActionBarAdvisor(
-	// IActionBarConfigurer configurer) {
-	// return new ApplicationActionBarAdvisor(configurer);
-	// }
-
-	
-	
 	public void postWindowOpen() {
 		initTray();
 	}
 
-	
-	
 	@Override
 	public void preWindowOpen() {
-		getWindowConfigurer().addEditorAreaTransfer(EditorInputTransfer.getInstance());
-		getWindowConfigurer().configureEditorAreaDropListener(new DropTargetAdapter() {
+		getWindowConfigurer().addEditorAreaTransfer(
+				EditorInputTransfer.getInstance());
+		getWindowConfigurer().configureEditorAreaDropListener(
+				new DropTargetAdapter() {
 
-			@Override
-			public void dragEnter(DropTargetEvent event) {
-				System.out.println("DROP enter!!! " + event);
-			}
+					@Override
+					public void dragEnter(DropTargetEvent event) {
+						System.out.println("DROP enter!!! " + event);
+					}
 
-			@Override
-			public void dragLeave(DropTargetEvent event) {
-				System.out.println("DROP leave!!! " + event);
-			}
+					@Override
+					public void dragLeave(DropTargetEvent event) {
+						System.out.println("DROP leave!!! " + event);
+					}
 
-			public void drop(DropTargetEvent event) {
-				System.out.println("DROP drop!!! " + event);
+					public void drop(DropTargetEvent event) {
+						System.out.println("DROP drop!!! " + event);
 
-			}
+					}
 
-			@Override
-			public void dropAccept(DropTargetEvent event) {
-				System.out.println("DROP accept!!! " + event);
-				super.dropAccept(event);
-			}
+					@Override
+					public void dropAccept(DropTargetEvent event) {
+						System.out.println("DROP accept!!! " + event);
+						super.dropAccept(event);
+					}
 
-		});
+				});
 		super.preWindowOpen();
 	}
 

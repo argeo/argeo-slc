@@ -9,7 +9,7 @@
 	         id="org.argeo.slc.client.ui.jcrExecutionModulesView"
 	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
 	         icon="icons/execution_module.gif"
-	         name="Execution Modules"
+	         name="Execution"
 	         restorable="true">
 	   </view>
 	   <view

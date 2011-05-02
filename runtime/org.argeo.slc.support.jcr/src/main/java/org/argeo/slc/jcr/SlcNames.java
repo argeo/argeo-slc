@@ -26,6 +26,7 @@ public interface SlcNames {
 	// result
 	public final static String SLC_SUCCESS = "slc:success";
 	public final static String SLC_MESSAGE = "slc:message";
+	public final static String SLC_TAG = "slc:tag";
 	public final static String SLC_ERROR_MESSAGE = "slc:errorMessage";
 
 }

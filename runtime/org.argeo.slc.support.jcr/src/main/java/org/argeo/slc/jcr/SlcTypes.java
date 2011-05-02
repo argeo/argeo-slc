@@ -18,5 +18,6 @@ public interface SlcTypes {
 
 	public final static String SLC_RESULT = "slc:result";
 	public final static String SLC_CHECK = "slc:check";
+	public final static String SLC_PROPERTY = "slc:property";
 
 }

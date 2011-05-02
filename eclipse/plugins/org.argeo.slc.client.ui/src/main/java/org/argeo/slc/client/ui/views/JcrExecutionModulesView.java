@@ -3,6 +3,7 @@ package org.argeo.slc.client.ui.views;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -124,6 +125,17 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 			System.arraycopy(children, 0, sorted, 0, children.length);
 			Arrays.sort(sorted, new ViewComparator());
 			return sorted;
+		}
+
+		@Override
+		protected List<Node> filterChildren(List<Node> children)
+				throws RepositoryException {
+			for (Iterator<Node> it = children.iterator(); it.hasNext();) {
+				Node node = it.next();
+				if (node.getName().equals(SLC_EXECUTION_SPECS))
+					it.remove();
+			}
+			return super.filterChildren(children);
 		}
 	}
 
