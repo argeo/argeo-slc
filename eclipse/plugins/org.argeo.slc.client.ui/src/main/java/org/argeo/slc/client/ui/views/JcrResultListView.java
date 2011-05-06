@@ -54,7 +54,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 
 	private DateFormat dateFormat = new SimpleDateFormat(
 			"EEE, dd MMM yyyy HH:mm:ss");
-	private Integer queryLimit = 100;
+	private Integer queryLimit = 2000;
 
 	public void createPartControl(Composite parent) {
 
