@@ -49,8 +49,8 @@ import org.eclipse.ui.part.ViewPart;
 /** JCR based view of the execution modules. */
 public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		SlcNames {
-//	private final static Log log = LogFactory
-//			.getLog(JcrExecutionModulesView.class);
+	// private final static Log log = LogFactory
+	// .getLog(JcrExecutionModulesView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.jcrExecutionModulesView";
 
@@ -147,6 +147,20 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 					it.remove();
 			}
 			return super.filterChildren(children);
+		}
+
+		@Override
+		public boolean hasChildren(Object element) {
+			if (element instanceof Node) {
+				Node node = (Node) element;
+				try {
+					if (node.isNodeType(SlcTypes.SLC_EXECUTION_FLOW))
+						return false;
+				} catch (RepositoryException e) {
+					throw new SlcException("Cannot check has children", e);
+				}
+			}
+			return super.hasChildren(element);
 		}
 	}
 
