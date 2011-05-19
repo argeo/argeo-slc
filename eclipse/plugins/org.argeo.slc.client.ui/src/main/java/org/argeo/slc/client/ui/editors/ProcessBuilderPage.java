@@ -3,6 +3,8 @@ package org.argeo.slc.client.ui.editors;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -597,9 +599,16 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 						+ "']) OR ISSAMENODE(['" + path + "'])";
 				// log.debug(statement);
 				Query query = qm.createQuery(statement, Query.JCR_SQL2);
+
+				// order paths
+				SortedSet<String> paths = new TreeSet<String>();
 				for (NodeIterator nit = query.execute().getNodes(); nit
 						.hasNext();) {
-					addFlow(nit.nextNode().getPath());
+					paths.add(nit.nextNode().getPath());
+				}
+
+				for (String p : paths) {
+					addFlow(p);
 				}
 				return true;
 			} catch (RepositoryException e) {
