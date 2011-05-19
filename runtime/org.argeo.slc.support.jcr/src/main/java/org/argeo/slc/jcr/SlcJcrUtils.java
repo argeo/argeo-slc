@@ -84,7 +84,7 @@ public class SlcJcrUtils {
 		setPrimitiveAsProperty(node, propertyName, type, value);
 	}
 
-	/** Map a primitive value to JCR ptoperty value. */
+	/** Map a primitive value to JCR property value. */
 	public static void setPrimitiveAsProperty(Node node, String propertyName,
 			String type, Object value) {
 		if (value == null)

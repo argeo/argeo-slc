@@ -18,8 +18,6 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
@@ -74,7 +72,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 public class ProcessBuilderPage extends FormPage implements SlcNames {
 	public final static String ID = "processBuilderPage";
-	private final static Log log = LogFactory.getLog(ProcessBuilderPage.class);
+	// private final static Log log =
+	// LogFactory.getLog(ProcessBuilderPage.class);
 
 	private Node processNode;
 
@@ -372,6 +371,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 			specAttrs: for (NodeIterator nit = specAttrsBase.getNodes(); nit
 					.hasNext();) {
 				Node specAttrNode = nit.nextNode();
+				String attrName = specAttrNode.getName();
 				if (!specAttrNode
 						.isNodeType(SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE))
 					continue specAttrs;
@@ -379,13 +379,13 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 						.getName());
 				JcrUtils.copy(specAttrNode, realizedAttrNode);
 
-				// for (PropertyIterator pit = realizedAttrNode.getProperties();
-				// pit
-				// .hasNext();) {
-				// Property p = pit.nextProperty();
-				// if (!p.isMultiple())
-				// log.debug(p.getName() + "=" + p.getValue().getString());
-				// }
+				// ovveride with flow value
+				if (flowNode.hasNode(attrName)) {
+					// assuming this is a primitive
+					realizedAttrNode.setProperty(SLC_VALUE,
+							flowNode.getNode(attrName).getProperty(SLC_VALUE)
+									.getValue());
+				}
 			}
 
 			flowsViewer.refresh();
@@ -595,7 +595,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 						+ SlcTypes.SLC_EXECUTION_FLOW
 						+ "] WHERE ISDESCENDANTNODE(['" + path
 						+ "']) OR ISSAMENODE(['" + path + "'])";
-				//log.debug(statement);
+				// log.debug(statement);
 				Query query = qm.createQuery(statement, Query.JCR_SQL2);
 				for (NodeIterator nit = query.execute().getNodes(); nit
 						.hasNext();) {

@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
+import org.argeo.slc.core.execution.PrimitiveValue;
 import org.argeo.slc.core.execution.RefSpecAttribute;
 import org.argeo.slc.core.execution.RefValueChoice;
 import org.argeo.slc.deploy.ModuleDescriptor;
@@ -207,6 +208,8 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 							SlcTypes.SLC_EXECUTION_FLOW);
 			}
 		}
+
+		// name, description
 		flowNode.setProperty(SLC_NAME, efd.getName());
 		String[] tokens = relativePath.split("/");
 		flowNode.setProperty(Property.JCR_TITLE, tokens[tokens.length - 1]);
@@ -218,6 +221,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		ExecutionSpec executionSpec = efd.getExecutionSpec();
 		String esName = executionSpec.getName();
 		if (!(esName == null || esName.equals(ExecutionSpec.INTERNAL_NAME))) {
+			// reference spec node
 			Node executionSpecsNode = moduleNode.hasNode(SLC_EXECUTION_SPECS) ? moduleNode
 					.getNode(SLC_EXECUTION_SPECS) : moduleNode
 					.addNode(SLC_EXECUTION_SPECS);
@@ -232,8 +236,25 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			mapExecutionSpec(executionSpecNode, executionSpec);
 			flowNode.setProperty(SLC_SPEC, executionSpecNode);
 		} else {
+			// internal spec node
 			mapExecutionSpec(flowNode, executionSpec);
 		}
+
+		// values
+		for (String attr : efd.getValues().keySet()) {
+			if (log.isDebugEnabled())
+				log.debug(attr + "=" + efd.getValues().get(attr));
+			ExecutionSpecAttribute esa = executionSpec.getAttributes()
+					.get(attr);
+			if (esa instanceof PrimitiveSpecAttribute) {
+				PrimitiveSpecAttribute psa = (PrimitiveSpecAttribute) esa;
+				Node valueNode = flowNode.addNode(attr);
+				valueNode.setProperty(SLC_TYPE, psa.getType());
+				SlcJcrUtils.setPrimitiveAsProperty(valueNode, SLC_VALUE,
+						(PrimitiveValue) efd.getValues().get(attr));
+			}
+		}
+
 		return flowNode;
 	}
 

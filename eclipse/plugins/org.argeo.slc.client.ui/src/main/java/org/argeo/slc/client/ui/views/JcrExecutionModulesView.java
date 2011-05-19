@@ -14,8 +14,6 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
@@ -30,7 +28,6 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.eclipse.jface.fieldassist.SimpleContentProposalProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -52,8 +49,8 @@ import org.eclipse.ui.part.ViewPart;
 /** JCR based view of the execution modules. */
 public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		SlcNames {
-	private final static Log log = LogFactory
-			.getLog(JcrExecutionModulesView.class);
+//	private final static Log log = LogFactory
+//			.getLog(JcrExecutionModulesView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.jcrExecutionModulesView";
 
@@ -141,7 +138,12 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 				throws RepositoryException {
 			for (Iterator<Node> it = children.iterator(); it.hasNext();) {
 				Node node = it.next();
+				// execution spec definitions
 				if (node.getName().equals(SLC_EXECUTION_SPECS))
+					it.remove();
+				// flow values
+				else if (node.getParent().isNodeType(
+						SlcTypes.SLC_EXECUTION_FLOW))
 					it.remove();
 			}
 			return super.filterChildren(children);
@@ -208,38 +210,38 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	class VmAgentObserver extends AsyncUiEventListener {
 		protected void onEventInUiThread(EventIterator events) {
-//			List<Node> baseNodes = ((SimpleNodeContentProvider) viewer
-//					.getContentProvider()).getBaseNodes();
-//			Node baseNode = baseNodes.get(0);
-//
-//			while (events.hasNext()) {
-//				Event event = events.nextEvent();
-//				try {
-//					String path = event.getPath();
-//					String baseNodePath = baseNode.getPath();
-//					if (path.startsWith(baseNodePath)) {
-//						String relPath = path
-//								.substring(baseNodePath.length() + 1);
-//						log.debug("relPath: " + relPath);
-//						if (baseNode.hasNode(relPath)) {
-//							Node refreshNode = baseNode.getNode(relPath);
-//							log.debug("refreshNode: " + refreshNode);
-//							viewer.refresh(refreshNode);
-//						}
-//
-//					}
-//					// if (log.isDebugEnabled())
-//					// log.debug("Process " + path + ": " + event);
-//
-//					// if (session.itemExists(path)) {
-//					// Node parentNode = session.getNode(path).getParent();
-//					// log.debug("Parent: " + parentNode);
-//					// viewer.refresh(parentNode);
-//					// }
-//				} catch (RepositoryException e) {
-//					log.warn("Cannot process event " + event + ": " + e);
-//				}
-//			}
+			// List<Node> baseNodes = ((SimpleNodeContentProvider) viewer
+			// .getContentProvider()).getBaseNodes();
+			// Node baseNode = baseNodes.get(0);
+			//
+			// while (events.hasNext()) {
+			// Event event = events.nextEvent();
+			// try {
+			// String path = event.getPath();
+			// String baseNodePath = baseNode.getPath();
+			// if (path.startsWith(baseNodePath)) {
+			// String relPath = path
+			// .substring(baseNodePath.length() + 1);
+			// log.debug("relPath: " + relPath);
+			// if (baseNode.hasNode(relPath)) {
+			// Node refreshNode = baseNode.getNode(relPath);
+			// log.debug("refreshNode: " + refreshNode);
+			// viewer.refresh(refreshNode);
+			// }
+			//
+			// }
+			// // if (log.isDebugEnabled())
+			// // log.debug("Process " + path + ": " + event);
+			//
+			// // if (session.itemExists(path)) {
+			// // Node parentNode = session.getNode(path).getParent();
+			// // log.debug("Parent: " + parentNode);
+			// // viewer.refresh(parentNode);
+			// // }
+			// } catch (RepositoryException e) {
+			// log.warn("Cannot process event " + event + ": " + e);
+			// }
+			// }
 
 			// try {
 			// Node vmAgentNode = session

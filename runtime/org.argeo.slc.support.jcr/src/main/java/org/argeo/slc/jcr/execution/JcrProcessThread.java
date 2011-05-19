@@ -63,6 +63,7 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 			realizedFlow.setModuleName(executionModuleName);
 			realizedFlow.setModuleVersion(executionModuleVersion);
 
+			// retrieve execution spec
 			DefaultExecutionSpec executionSpec = null;
 			if (flowNode.hasProperty(SlcNames.SLC_SPEC)) {
 				Node executionSpecNode = flowNode.getProperty(SLC_SPEC)
@@ -77,13 +78,38 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 			Map<String, ExecutionSpecAttribute> attrs = readExecutionSpecAttributes(realizedFlowNode);
 			Map<String, Object> values = new HashMap<String, Object>();
 			for (String attrName : attrs.keySet()) {
-				ExecutionSpecAttribute attr = attrs.get(attrName);
-				Object value = attr.getValue();
-				values.put(attrName,value);
+				if (flowNode.hasNode(attrName)) {
+					// we assume this is a primitive
+					// since ref are not yet implemented
+					Node valueNode = flowNode.getNode(attrName);
+					String type = valueNode.getProperty(SLC_TYPE).getString();
+					String valueStr = valueNode.getProperty(SLC_VALUE)
+							.getString();
+					Object value = PrimitiveUtils.convert(type, valueStr);
+					values.put(attrName, value);
+					// Property prop = flowNode.getNode(attrName).getProperty(
+					// SLC_VALUE);
+					// // yes, this could be a switch... (patches welcome)
+					// if (prop.getType() == PropertyType.STRING)
+					// values.put(attrName, prop.getString());
+					// else if (prop.getType() == PropertyType.LONG)
+					// values.put(attrName, prop.getLong());
+					// else if (prop.getType() == PropertyType.DOUBLE)
+					// values.put(attrName, prop.getDouble());
+					// else if (prop.getType() == PropertyType.BOOLEAN)
+					// values.put(attrName, prop.getBoolean());
+					// else
+					// throw new SlcException("Unsupported value type "
+					// + PropertyType.nameFromValue(prop.getType()));
+				} else {
+					ExecutionSpecAttribute attr = attrs.get(attrName);
+					Object value = attr.getValue();
+					values.put(attrName, value);
+				}
 			}
-			
-//			if(executionSpec!=null)
-//				executionSpec.setAttributes(attrs);
+
+			// if(executionSpec!=null)
+			// executionSpec.setAttributes(attrs);
 			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(flowName,
 					values, executionSpec);
 			realizedFlow.setFlowDescriptor(efd);
