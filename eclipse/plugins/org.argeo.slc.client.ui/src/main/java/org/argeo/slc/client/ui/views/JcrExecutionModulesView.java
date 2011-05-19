@@ -5,14 +5,19 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
@@ -333,14 +338,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 			try {
 				if (obj instanceof Node) {
 					Node node = (Node) obj;
-					if (node.isNodeType(SLC_EXECUTION_FLOW)) {
-						List<String> paths = new ArrayList<String>();
-						paths.add(node.getPath());
-						IWorkbenchPage activePage = PlatformUI.getWorkbench()
-								.getActiveWorkbenchWindow().getActivePage();
-						activePage.openEditor(new ProcessEditorInput(paths,
-								true), ProcessEditor.ID);
-					} else if (node.isNodeType(SLC_EXECUTION_MODULE)) {
+					if (node.isNodeType(SLC_EXECUTION_MODULE)) {
 						String name = node.getProperty(SLC_NAME).getString();
 						String version = node.getProperty(SLC_VERSION)
 								.getString();
@@ -353,6 +351,32 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 						} else {
 							modulesManager.start(nameVersion);
 						}
+					} else {
+						String path = node.getPath();
+						// TODO factorize with editor
+						QueryManager qm = node.getSession().getWorkspace()
+								.getQueryManager();
+						String statement = "SELECT * FROM ["
+								+ SlcTypes.SLC_EXECUTION_FLOW
+								+ "] WHERE ISDESCENDANTNODE(['" + path
+								+ "']) OR ISSAMENODE(['" + path + "'])";
+						// log.debug(statement);
+						Query query = qm.createQuery(statement, Query.JCR_SQL2);
+
+						// order paths
+						SortedSet<String> paths = new TreeSet<String>();
+						for (NodeIterator nit = query.execute().getNodes(); nit
+								.hasNext();) {
+							paths.add(nit.nextNode().getPath());
+						}
+
+						// List<String> paths = new ArrayList<String>();
+						// paths.add(node.getPath());
+						IWorkbenchPage activePage = PlatformUI.getWorkbench()
+								.getActiveWorkbenchWindow().getActivePage();
+						activePage.openEditor(new ProcessEditorInput(
+								new ArrayList<String>(paths), true),
+								ProcessEditor.ID);
 					}
 				}
 			} catch (Exception e) {
