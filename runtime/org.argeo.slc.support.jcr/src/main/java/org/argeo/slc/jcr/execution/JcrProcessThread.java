@@ -87,20 +87,6 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 							.getString();
 					Object value = PrimitiveUtils.convert(type, valueStr);
 					values.put(attrName, value);
-					// Property prop = flowNode.getNode(attrName).getProperty(
-					// SLC_VALUE);
-					// // yes, this could be a switch... (patches welcome)
-					// if (prop.getType() == PropertyType.STRING)
-					// values.put(attrName, prop.getString());
-					// else if (prop.getType() == PropertyType.LONG)
-					// values.put(attrName, prop.getLong());
-					// else if (prop.getType() == PropertyType.DOUBLE)
-					// values.put(attrName, prop.getDouble());
-					// else if (prop.getType() == PropertyType.BOOLEAN)
-					// values.put(attrName, prop.getBoolean());
-					// else
-					// throw new SlcException("Unsupported value type "
-					// + PropertyType.nameFromValue(prop.getType()));
 				} else {
 					ExecutionSpecAttribute attr = attrs.get(attrName);
 					Object value = attr.getValue();
@@ -128,14 +114,15 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
 					String type = specAttrNode.getProperty(SLC_TYPE)
 							.getString();
+					Object value = null;
 					if (specAttrNode.hasProperty(SLC_VALUE)) {
 						String valueStr = specAttrNode.getProperty(SLC_VALUE)
 								.getString();
-						Object value = PrimitiveUtils.convert(type, valueStr);
-						PrimitiveSpecAttribute specAttr = new PrimitiveSpecAttribute(
-								type, value);
-						attrs.put(specAttrNode.getName(), specAttr);
+						value = PrimitiveUtils.convert(type, valueStr);
 					}
+					PrimitiveSpecAttribute specAttr = new PrimitiveSpecAttribute(
+							type, value);
+					attrs.put(specAttrNode.getName(), specAttr);
 				}
 
 			}

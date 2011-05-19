@@ -242,8 +242,6 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 
 		// values
 		for (String attr : efd.getValues().keySet()) {
-			if (log.isDebugEnabled())
-				log.debug(attr + "=" + efd.getValues().get(attr));
 			ExecutionSpecAttribute esa = executionSpec.getAttributes()
 					.get(attr);
 			if (esa instanceof PrimitiveSpecAttribute) {

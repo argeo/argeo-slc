@@ -74,6 +74,10 @@ public class DefaultExecutionFlowDescriptorConverter implements
 				ExecutionSpecAttribute attribute = executionSpec
 						.getAttributes().get(key);
 
+				if (attribute == null)
+					throw new SlcException("No spec attribute defined for '"
+							+ key + "'");
+
 				if (attribute.getIsFrozen())
 					continue values;
 
@@ -130,7 +134,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 						throw new UnsupportedException("Ref value type",
 								refValue.getType());
 					}
-				}else{
+				} else {
 					convertedValues.put(key, value);
 				}
 			}
