@@ -11,6 +11,6 @@
 	<packaging>pom</packaging>
 	<name>SLC Distribution</name>
 	<modules>
-		<module>org.argeo.slc.sdk</module>
+<!-- 		<module>org.argeo.slc.sdk</module> -->
 	</modules>
 </project>
