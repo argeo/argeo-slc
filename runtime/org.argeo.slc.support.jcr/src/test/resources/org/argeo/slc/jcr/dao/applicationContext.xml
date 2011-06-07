@@ -64,7 +64,8 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="argeo.jcr.repository.inMemory" class="org.argeo.jackrabbit.JackrabbitContainer">
+	<bean id="argeo.jcr.repository.inMemory" class="org.argeo.jackrabbit.JackrabbitContainer"
+		init-method="init" destroy-method="dispose">
 		<property name="homeDirectory"
 			value="${java.io.tmpdir}/jackrabbit-slc-unit-${user.name}" />
 		<property name="inMemory" value="true" />

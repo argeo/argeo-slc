@@ -28,18 +28,26 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- SLC Runtime -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.aether</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.jcr</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- SLC Modules -->
 		<dependency>
 			<groupId>org.argeo.commons.server</groupId>
 			<artifactId>org.argeo.server.jcr</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.aether</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-		</dependency>
-
+		<!-- Third party -->
 		<dependency>
 			<groupId>org.eclipse.osgi</groupId>
 			<artifactId>org.eclipse.osgi</artifactId>
@@ -52,6 +60,9 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>com.springsource.slf4j.org.apache.commons.logging</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>com.springsource.javax.servlet</artifactId>
+		</dependency>
 	</dependencies>
 </project>
