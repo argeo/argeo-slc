@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherTemplate;
+import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoNames;
 import org.argeo.slc.repo.RepoTypes;
 import org.osgi.framework.Constants;
@@ -55,7 +56,7 @@ public class ImportMavenDependencies implements Runnable {
 	private Set<String> excludedArtifacts = new HashSet<String>();
 
 	private Session jcrSession;
-	private String artifactBasePath = "/slc/repo/artifacts";
+	private String artifactBasePath = RepoConstants.ARTIFACTS_BASE_PATH;
 	private String distributionsBasePath = "/slc/repo/distributions";
 	private String distributionName;
 

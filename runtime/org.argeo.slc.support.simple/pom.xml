@@ -81,8 +81,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.freecompany.redline</groupId>
-			<artifactId>org.argeo.dep.org.freecompany.redline</artifactId>
+			<groupId>org.argeo.dep.osgi</groupId>
+			<artifactId>org.redline_rpm</artifactId>
 		</dependency>
 
 		<!-- TODO: check if necessary here -->
