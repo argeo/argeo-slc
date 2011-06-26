@@ -140,10 +140,10 @@
 			<artifactId>com.springsource.org.postgresql.jdbc3</artifactId>
 		</dependency>
 		<!-- Required by the Oracle JDBC driver -->
-		<dependency>
-			<groupId>javax.resource</groupId>
-			<artifactId>com.springsource.javax.resource</artifactId>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>javax.resource</groupId> -->
+<!-- 			<artifactId>com.springsource.javax.resource</artifactId> -->
+<!-- 		</dependency> -->
 
 		<!-- Jacob (will be removed soon) -->
 		<dependency>

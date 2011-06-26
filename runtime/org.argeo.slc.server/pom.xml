@@ -29,6 +29,8 @@
 							org.springframework.context.support,
 							org.tmatesoft.svn.*;resolution:=optional,
 							com.lowagie.*;resolution:=optional,
+							com.springsource.json.*;resolution:=optional,
+							org.springframework.oxm.*;resolution:=optional,
 							*
 						</Import-Package>
 					</instructions>
@@ -63,6 +65,7 @@
 		<dependency>
 			<groupId>org.springframework.ws</groupId>
 			<artifactId>org.springframework.oxm</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- Web -->
@@ -99,10 +102,12 @@
 			<groupId>com.springsource.json</groupId>
 			<artifactId>com.springsource.json</artifactId>
 			<version>1.0.1.RELEASE</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.antlr</groupId>
 			<artifactId>com.springsource.org.antlr</artifactId>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- SVN -->

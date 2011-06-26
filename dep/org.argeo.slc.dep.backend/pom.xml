@@ -22,52 +22,58 @@
 	<dependencies>
 		<!-- HACK because of dependencies pb with Maven: version 2.4.0 is required 
 			by Spring-LDAP while Apache Directory takes 2.1.0 -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.apache.commons</groupId> -->
+<!-- 			<artifactId>com.springsource.org.apache.commons.lang</artifactId> -->
+<!-- 			<version>2.4.0</version> -->
+<!-- 		</dependency> -->
+
+		<!-- SLC Agent -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.lang</artifactId>
-			<version>2.4.0</version>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.core</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.simple</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.ant</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.jcr</artifactId>
+			<version>${version.slc}</version>
 		</dependency>
 
+		<!-- SLC Agent Modules -->
+		<dependency>
+			<groupId>org.argeo.slc.modules</groupId>
+			<artifactId>org.argeo.slc.agent</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.modules</groupId>
+			<artifactId>org.argeo.slc.agent.jcr</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
+
+		<!-- SLC Server -->
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
 			<artifactId>org.argeo.security.dep.node</artifactId>
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.agent</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.detached</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-		</dependency>
-		<!-- Provided -->
-		<dependency>
-			<groupId>org.apache.xmlcommons</groupId>
-			<artifactId>com.springsource.org.apache.xmlcommons</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.xml.stream</groupId>
-			<artifactId>com.springsource.javax.xml.stream</artifactId>
-		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.slc.dep</groupId> -->
-		<!-- <artifactId>org.argeo.slc.dep.gis</artifactId> -->
-		<!-- <version>${version.slc}</version> -->
-		<!-- </dependency> -->
 
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.server</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.hibernate</artifactId>
 			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -84,13 +90,6 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.repo</artifactId>
 			<version>${version.slc}</version>
-		</dependency>
-
-		<!-- SLC non deps -->
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.unit</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Modules (see profiles below) -->

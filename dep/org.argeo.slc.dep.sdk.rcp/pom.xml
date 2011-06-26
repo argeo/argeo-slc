@@ -54,23 +54,4 @@
 			<version>${version.slc}</version>
 		</dependency>
 	</dependencies>
-	<profiles>
-		<profile>
-			<id>sdkWithModules</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<dependencies>
-				<dependency>
-					<groupId>org.argeo.slc.eclipse</groupId>
-					<artifactId>org.argeo.slc.eclipse.modules.bundles</artifactId>
-					<version>${version.slc}</version>
-					<type>pom</type>
-				</dependency>
-			</dependencies>
-		</profile>
-		<profile>
-			<id>sdkWithoutModules</id>
-		</profile>
-	</profiles>
 </project>

@@ -36,10 +36,29 @@
 			<artifactId>org.argeo.security.dep.node.rap</artifactId>
 			<version>${version.argeo-commons}</version>
 			<exclusions>
+<!-- 				<exclusion> -->
+<!-- 					<groupId>org.argeo.commons.security</groupId> -->
+<!-- 					<artifactId>org.argeo.security.ui.admin</artifactId> -->
+<!-- 				</exclusion> -->
+
 				<exclusion>
-					<groupId>org.argeo.commons.security</groupId>
-					<artifactId>org.argeo.security.ui.admin</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>org.mortbay.jetty.server</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>org.mortbay.jetty.server.util</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.equinox</groupId>
+					<artifactId>org.eclipse.equinox.http.jetty</artifactId>
+				</exclusion>
+
+				<exclusion>
+					<groupId>org.argeo.slc.runtime</groupId>
+					<artifactId>org.argeo.slc.support.castor</artifactId>
+				</exclusion>
+
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -50,7 +69,7 @@
 		<!-- Back-end Dependencies -->
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.server</artifactId>
+			<artifactId>org.argeo.slc.dep.backend</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
 

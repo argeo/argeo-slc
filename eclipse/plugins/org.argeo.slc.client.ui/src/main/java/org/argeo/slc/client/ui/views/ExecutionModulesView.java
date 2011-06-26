@@ -11,7 +11,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.client.oxm.OxmInterface;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.controllers.ProcessController;
 import org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider;
@@ -48,7 +47,7 @@ public class ExecutionModulesView extends ViewPart {
 
 	// Ioc
 	private IContentProvider contentProvider;
-	private OxmInterface oxmBean;
+	//private OxmInterface oxmBean;
 	private ProcessController processController;
 
 	public void createPartControl(Composite parent) {
@@ -196,10 +195,10 @@ public class ExecutionModulesView extends ViewPart {
 			realizedFlow.setExecutionSpec(fn.getExecutionFlowDescriptor()
 					.getExecutionSpec());
 
-			props.setProperty("RealizedFlowAsXml",
-					oxmBean.marshal(realizedFlow));
-			System.out
-					.println(oxmBean.marshal(fn.getExecutionFlowDescriptor()));
+//			props.setProperty("RealizedFlowAsXml",
+//					oxmBean.marshal(realizedFlow));
+//			System.out
+//					.println(oxmBean.marshal(fn.getExecutionFlowDescriptor()));
 
 		}
 
@@ -214,8 +213,8 @@ public class ExecutionModulesView extends ViewPart {
 		this.processController = processController;
 	}
 
-	public void setOxmBean(OxmInterface oxmBean) {
-		this.oxmBean = oxmBean;
-	}
+//	public void setOxmBean(OxmInterface oxmBean) {
+//		this.oxmBean = oxmBean;
+//	}
 
 }

@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.client.oxm.OxmInterface;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.controllers.ProcessController;
 import org.argeo.slc.process.RealizedFlow;
@@ -61,7 +60,7 @@ public class ProcessBuilderView extends ViewPart {
 	private int curSelectedRow = -1;
 
 	// IoC
-	private OxmInterface oxmBean;
+	//private OxmInterface oxmBean;
 	private ProcessController processController;
 	private List<SlcAgent> slcAgents;
 
@@ -271,7 +270,7 @@ public class ProcessBuilderView extends ViewPart {
 			String fdXml = props.getProperty("RealizedFlowAsXml");
 			if (fdXml == null)
 				return false;
-			RealizedFlow rf = (RealizedFlow) oxmBean.unmarshal(fdXml);
+			RealizedFlow rf = null;//(RealizedFlow) oxmBean.unmarshal(fdXml);
 			realizedFlows.add(rf);
 			curSelectedRow = realizedFlows.indexOf(rf);
 			refreshParameterview();
@@ -291,9 +290,9 @@ public class ProcessBuilderView extends ViewPart {
 		this.slcAgents = slcAgents;
 	}
 
-	public void setOxmBean(OxmInterface oxmBean) {
-		this.oxmBean = oxmBean;
-	}
+//	public void setOxmBean(OxmInterface oxmBean) {
+//		this.oxmBean = oxmBean;
+//	}
 
 	public void setProcessController(ProcessController processController) {
 		this.processController = processController;

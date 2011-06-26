@@ -14,16 +14,16 @@
 
 	<dependencies>
 		<!-- SLC Client UI -->
-		<dependency>
-			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.oxm</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.core</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc.eclipse</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.client.oxm</artifactId> -->
+<!-- 			<version>${version.slc}</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc.eclipse</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.client.core</artifactId> -->
+<!-- 			<version>${version.slc}</version> -->
+<!-- 		</dependency> -->
 
 		<!-- SLC -->
 		<dependency>

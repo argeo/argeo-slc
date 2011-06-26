@@ -223,5 +223,10 @@
 			<artifactId>org.argeo.dep.osgi.aether</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>org.junit</groupId>
+			<artifactId>com.springsource.junit</artifactId>
+		</dependency>
+
 	</dependencies>
 </project>
