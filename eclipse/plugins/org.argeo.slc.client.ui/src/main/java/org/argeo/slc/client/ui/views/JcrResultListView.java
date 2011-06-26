@@ -67,7 +67,8 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 
 		getViewSite().setSelectionProvider(viewer);
 
-		resultsObserver = new AsyncUiEventListener() {
+		resultsObserver = new AsyncUiEventListener(viewer.getTable()
+				.getDisplay()) {
 			protected void onEventInUiThread(EventIterator events) {
 				// TODO optimize by updating only the changed result
 				viewer.refresh();

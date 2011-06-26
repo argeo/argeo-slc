@@ -33,13 +33,11 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceAdapter;
@@ -48,6 +46,7 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -68,9 +67,9 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		
+
 		// FIXME : does not work in RAP, find a way to have it for RCP only
-		//ColumnViewerToolTipSupport.enableFor(viewer);
+		// ColumnViewerToolTipSupport.enableFor(viewer);
 
 		ViewContentProvider contentProvider = new ViewContentProvider(session);
 
@@ -90,7 +89,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 			session.getWorkspace()
 					.getObservationManager()
 					.addEventListener(
-							new VmAgentObserver(),
+							new VmAgentObserver(viewer.getTree().getDisplay()),
 							Event.NODE_ADDED | Event.NODE_REMOVED
 									| Event.NODE_MOVED,
 							SlcJcrConstants.VM_AGENT_FACTORY_PATH, true, null,
@@ -99,7 +98,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 			throw new SlcException("Cannot add observer", e);
 		}
 	}
-	
+
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
@@ -231,6 +230,11 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 	// }
 
 	class VmAgentObserver extends AsyncUiEventListener {
+
+		public VmAgentObserver(Display display) {
+			super(display);
+		}
+
 		protected void onEventInUiThread(EventIterator events) {
 			// List<Node> baseNodes = ((SimpleNodeContentProvider) viewer
 			// .getContentProvider()).getBaseNodes();

@@ -65,7 +65,8 @@ public class JcrProcessListView extends ViewPart {
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 
-		processesObserver = new AsyncUiEventListener() {
+		processesObserver = new AsyncUiEventListener(viewer.getTable()
+				.getDisplay()) {
 			protected void onEventInUiThread(EventIterator events) {
 				// TODO optimize by updating only the changed process
 				viewer.refresh();

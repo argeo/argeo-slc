@@ -61,6 +61,11 @@
 			<artifactId>org.argeo.slc.agent.jcr</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.modules</groupId>
+			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
 
 		<!-- SLC Server -->
 		<dependency>

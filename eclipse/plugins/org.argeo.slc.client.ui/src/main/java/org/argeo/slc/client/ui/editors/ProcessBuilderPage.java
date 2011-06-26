@@ -114,7 +114,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 			getManagedForm().addPart(formPart);
 
 			// observation
-			statusObserver = new AsyncUiEventListener() {
+			statusObserver = new AsyncUiEventListener(form.getDisplay()) {
 				protected void onEventInUiThread(EventIterator events) {
 					statusChanged();
 				}
