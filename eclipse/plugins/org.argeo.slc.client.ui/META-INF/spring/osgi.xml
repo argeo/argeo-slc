@@ -8,8 +8,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	osgi:default-timeout="30000">
 
-	<beans:description> Implements SLC specific RCP UIs.
-	</beans:description>
+	<beans:description>SLC UI</beans:description>
 
 	<!-- REFERENCES -->
 	<reference id="repository" interface="javax.jcr.Repository"

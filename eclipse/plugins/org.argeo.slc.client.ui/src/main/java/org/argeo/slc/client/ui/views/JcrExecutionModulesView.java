@@ -39,6 +39,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceAdapter;
@@ -67,7 +68,9 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-		ColumnViewerToolTipSupport.enableFor(viewer);
+		
+		// FIXME : does not work in RAP, find a way to have it for RCP only
+		//ColumnViewerToolTipSupport.enableFor(viewer);
 
 		ViewContentProvider contentProvider = new ViewContentProvider(session);
 
@@ -96,7 +99,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 			throw new SlcException("Cannot add observer", e);
 		}
 	}
-
+	
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
