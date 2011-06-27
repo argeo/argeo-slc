@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: SLC GIS Position GpsBabel
-Bundle-SymbolicName: org.argeo.slc.gis.position.gpsbabel
-Bundle-Version: 0.13.1.SNAPSHOT
-Import-Package: org.argeo.slc.gpsbabel,
- org.argeo.slc.jts
