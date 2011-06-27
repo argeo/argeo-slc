@@ -26,7 +26,6 @@
 		<module>org.argeo.slc.support.maven</module>
 		<module>org.argeo.slc.support.jemmy</module>
 		<module>org.argeo.slc.support.jcr</module>
-		<module>org.argeo.slc.support.gis</module>
 		<module>org.argeo.slc.server</module>
 		<module>org.argeo.slc.detached</module>
 		<module>org.argeo.slc.detached.launcher</module>
