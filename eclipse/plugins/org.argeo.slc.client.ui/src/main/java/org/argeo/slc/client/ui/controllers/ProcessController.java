@@ -15,10 +15,8 @@ import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.execution.JcrExecutionProcess;
-import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
-import org.argeo.slc.services.SlcExecutionService;
 
 /**
  * We use a separate class (not in UI components) so that it can be a singleton
@@ -26,16 +24,7 @@ import org.argeo.slc.services.SlcExecutionService;
  */
 public class ProcessController {
 	private final static Log log = LogFactory.getLog(ProcessController.class);
-	private SlcExecutionService slcExecutionService;
 	private Map<String, SlcAgentFactory> agentFactories = new HashMap<String, SlcAgentFactory>();
-
-	public void execute(SlcAgent agent, SlcExecution slcExecution) {
-		slcExecutionService.newExecution(slcExecution);
-		agent.process(slcExecution);
-		if (log.isDebugEnabled())
-			log.debug("SlcExecution " + slcExecution.getUuid()
-					+ " launched on Agent " + agent.toString());
-	}
 
 	public void process(Node processNode) {
 		JcrExecutionProcess process = new JcrExecutionProcess(processNode);
@@ -73,10 +62,6 @@ public class ProcessController {
 				process.setStatus(ExecutionProcess.ERROR);
 			throw new SlcException("Cannot execute " + processNode, e);
 		}
-	}
-
-	public void setSlcExecutionService(SlcExecutionService slcExecutionService) {
-		this.slcExecutionService = slcExecutionService;
 	}
 
 	public synchronized void register(SlcAgentFactory agentFactory,

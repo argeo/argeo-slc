@@ -11,8 +11,6 @@
 	<name>SLC Eclipse</name>
 	<packaging>pom</packaging>
 	<modules>
-		<module>runtime</module>
-		<module>modules</module>
 		<module>plugins</module>
 	</modules>
 </project>
