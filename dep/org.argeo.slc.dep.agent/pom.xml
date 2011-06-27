@@ -11,6 +11,14 @@
 	<artifactId>org.argeo.slc.dep.agent</artifactId>
 	<packaging>jar</packaging>
 	<name>SLC Agent Dependencies</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.argeo.maven.plugins</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<!-- Commons -->
 		<dependency>
@@ -18,11 +26,11 @@
 			<artifactId>org.argeo.osgi.boot</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.argeo.commons.server</groupId>-->
-<!--			<artifactId>org.argeo.server.modeshape</artifactId>-->
-<!--			<version>${version.argeo-commons}</version>-->
-<!--		</dependency>-->
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.commons.server</groupId> -->
+		<!-- <artifactId>org.argeo.server.modeshape</artifactId> -->
+		<!-- <version>${version.argeo-commons}</version> -->
+		<!-- </dependency> -->
 
 		<!-- SLC -->
 		<dependency>
@@ -47,11 +55,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.castor</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.ant</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
@@ -62,40 +65,51 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.lib.detached</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.maven</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc.runtime</groupId> -->
+		<!-- <artifactId>org.argeo.slc.support.maven</artifactId> -->
+		<!-- <version>${version.slc}</version> -->
+		<!-- </dependency> -->
 
+		<!-- Active MQ -->
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.dep.activemq</artifactId>
+			<version>${version.argeo-commons}</version>
+			<type>pom</type>
+		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
 			<artifactId>org.argeo.security.activemq</artifactId>
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>
 		</dependency>
-		
-		<!-- JCR -->
 
-		<!-- Spring -->
+		<!-- Javax (JDK 1.5) -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.jdbc</artifactId>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.dep.javax</artifactId>
+			<version>0.3.3-SNAPSHOT</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xmlcommons</groupId>
+			<artifactId>com.springsource.org.apache.xmlcommons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.xalan</groupId>
+			<artifactId>com.springsource.org.apache.xalan</artifactId>
 		</dependency>
 
 		<!-- Various third parties -->
 		<dependency>
-			<groupId>org.custommonkey.xmlunit</groupId>
-			<artifactId>com.springsource.org.custommonkey.xmlunit</artifactId>
+			<groupId>org.springframework</groupId>
+			<artifactId>org.springframework.jdbc</artifactId>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.bsf</groupId>
 			<artifactId>com.springsource.org.apache.bsf</artifactId>
@@ -104,24 +118,12 @@
 			<groupId>org.beanshell</groupId>
 			<artifactId>com.springsource.bsh</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>net.sourceforge.jexcelapi</groupId>
-			<artifactId>com.springsource.jxl</artifactId>
-		</dependency>
 
 		<!-- DB Drivers -->
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>org.springframework.jdbc</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons.server</groupId>
 			<artifactId>org.argeo.server.jdbc</artifactId>
 			<version>${version.argeo-commons}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>com.springsource.org.hsqldb</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -140,29 +142,25 @@
 			<artifactId>com.springsource.org.postgresql.jdbc3</artifactId>
 		</dependency>
 		<!-- Required by the Oracle JDBC driver -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>javax.resource</groupId> -->
-<!-- 			<artifactId>com.springsource.javax.resource</artifactId> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>javax.resource</groupId> -->
+		<!-- <artifactId>com.springsource.javax.resource</artifactId> -->
+		<!-- </dependency> -->
 
 		<!-- Jacob (will be removed soon) -->
-		<dependency>
-			<groupId>org.argeo.dep.jacob</groupId>
-			<artifactId>org.argeo.dep.jacob</artifactId>
-		</dependency>
 		<!-- <dependency> <groupId>org.argeo.dep.jacob</groupId> <artifactId>org.argeo.dep.jacob.win32.x86</artifactId> 
 			</dependency> -->
 		<!-- Languages <dependency> <groupId>org.codehaus.groovy</groupId> <artifactId>com.springsource.org.codehaus.groovy</artifactId> 
 			</dependency> -->
 		<!-- ASM -->
-		<dependency>
-			<groupId>org.objectweb.asm</groupId>
-			<artifactId>com.springsource.org.objectweb.asm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.objectweb.asm</groupId>
-			<artifactId>com.springsource.org.objectweb.asm.attrs</artifactId>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.objectweb.asm</groupId> -->
+		<!-- <artifactId>com.springsource.org.objectweb.asm</artifactId> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.objectweb.asm</groupId> -->
+		<!-- <artifactId>com.springsource.org.objectweb.asm.attrs</artifactId> -->
+		<!-- </dependency> -->
 
 	</dependencies>
 	<profiles>

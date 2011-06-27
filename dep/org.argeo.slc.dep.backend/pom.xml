@@ -10,7 +10,8 @@
 
 	<groupId>org.argeo.slc.dep</groupId>
 	<artifactId>org.argeo.slc.dep.backend</artifactId>
-	<name>SLC BACKEND Dependencies</name>
+	<name>SLC Backend Dependencies</name>
+	<description>Shared by RAP and pure server</description>
 	<build>
 		<plugins>
 			<plugin>
@@ -47,6 +48,11 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.jcr</artifactId>
+			<version>${version.slc}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.activemq</artifactId>
 			<version>${version.slc}</version>
 		</dependency>
 

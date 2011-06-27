@@ -11,6 +11,14 @@
 	<artifactId>org.argeo.slc.dep.server</artifactId>
 	<packaging>jar</packaging>
 	<name>SLC Server Dependencies</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.argeo.maven.plugins</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<!-- Other deps -->
 		<dependency>
@@ -22,6 +30,11 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.hibernate</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.castor</artifactId>
 			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
@@ -101,6 +114,13 @@
 			<type>pom</type>
 		</dependency>
 
+		<!-- Javax (JDK 1.5) -->
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.dep.javax</artifactId>
+			<version>0.3.3-SNAPSHOT</version>
+			<type>pom</type>
+		</dependency>
 
 		<!-- Jackrabbit -->
 		<dependency>
