@@ -35,7 +35,7 @@ import org.argeo.slc.jcr.SlcTypes;
  */
 public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		SlcNames {
-	private final static String SLC_EXECUTION_MODRULES_PROPERTY = "slc.executionModules";
+	private final static String SLC_EXECUTION_MODULES_PROPERTY = "slc.executionModules";
 
 	private final static Log log = LogFactory
 			.getLog(JcrExecutionModulesListener.class);
@@ -59,7 +59,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			List<ModuleDescriptor> moduleDescriptors = modulesManager
 					.listModules();
 			String executionModules = System
-					.getProperty(SLC_EXECUTION_MODRULES_PROPERTY);
+					.getProperty(SLC_EXECUTION_MODULES_PROPERTY);
 			if (executionModules != null)
 				try {
 					Node agentNode = session.getNode(agent.getNodePath());
