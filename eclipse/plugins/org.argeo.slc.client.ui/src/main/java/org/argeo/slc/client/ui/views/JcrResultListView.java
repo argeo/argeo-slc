@@ -10,7 +10,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
@@ -239,35 +238,21 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 				int eventType = event.getType();
 				if (eventType == Event.NODE_REMOVED)
 					return true;
-				// if (event.getType() == Event.PROPERTY_ADDED) {
 				String path = event.getPath();
-				// getLog().debug(path);
 				int index = path.lastIndexOf('/');
 				String propertyName = path.substring(index + 1);
-				// Property property = session.getProperty(path);
-				// if (!property.getName().equals(SLC_COMPLETED))
-				// return true;
 				if (propertyName.equals(SLC_COMPLETED)
 						|| propertyName.equals(SLC_UUID)) {
-					// getLog().debug("Kept " + propertyName);
 					return true;
-				} else {
-					// getLog().debug("Skipped " + propertyName);
 				}
-				// } else if (eventType == Event.NODE_ADDED
-				// || eventType == Event.NODE_MOVED
-				// || eventType == Event.NODE_REMOVED) {
-				// return true;
-				// } else {
-				// }
 			}
 			return false;
 		}
 
 		protected void onEventInUiThread(List<Event> events)
 				throws RepositoryException {
-			if (getLog().isDebugEnabled())
-				getLog().debug("Refresh result list");
+			if (getLog().isTraceEnabled())
+				getLog().trace("Refresh result list");
 			viewer.refresh();
 		}
 
