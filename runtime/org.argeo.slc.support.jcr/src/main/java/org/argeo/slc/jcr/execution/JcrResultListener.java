@@ -174,6 +174,9 @@ public class JcrResultListener implements TreeTestResultListener, SlcNames {
 
 			uuidToIdentifier.remove(uuid);
 			session.save();
+
+			if (log.isDebugEnabled())
+				log.debug("Closed test result " + uuid);
 		} catch (RepositoryException e) {
 			JcrUtils.discardQuietly(session);
 			log.error("Cannot close result " + testResult, e);

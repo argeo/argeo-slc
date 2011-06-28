@@ -235,7 +235,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 			super(display);
 		}
 
-		protected void onEventInUiThread(EventIterator events) {
+		protected void onEventInUiThread(List<Event> events) {
 			// List<Node> baseNodes = ((SimpleNodeContentProvider) viewer
 			// .getContentProvider()).getBaseNodes();
 			// Node baseNode = baseNodes.get(0);

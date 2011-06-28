@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
@@ -17,6 +16,7 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
+import org.argeo.eclipse.ui.jcr.NodeElementComparer;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
@@ -36,6 +36,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPage;
@@ -64,23 +65,20 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
+		viewer.setComparer(new NodeElementComparer());
 
 		getViewSite().setSelectionProvider(viewer);
 
-		resultsObserver = new AsyncUiEventListener(viewer.getTable()
-				.getDisplay()) {
-			protected void onEventInUiThread(EventIterator events) {
-				// TODO optimize by updating only the changed result
-				viewer.refresh();
-			}
-		};
+		resultsObserver = new ResultObserver(viewer.getTable().getDisplay());
 		try {
 			ObservationManager observationManager = session.getWorkspace()
 					.getObservationManager();
+			String[] nodeTypes = { SlcTypes.SLC_RESULT };
+			// FIXME Will not be notified if empty result is deleted
 			observationManager.addEventListener(resultsObserver,
-					Event.NODE_ADDED | Event.NODE_REMOVED
-							| Event.PROPERTY_CHANGED,
-					SlcJcrConstants.RESULTS_BASE_PATH, true, null, null, false);
+					Event.PROPERTY_ADDED | Event.NODE_REMOVED,
+					SlcJcrConstants.RESULTS_BASE_PATH, true, null, nodeTypes,
+					false);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot register listeners", e);
 		}
@@ -126,6 +124,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 		try {
 			if (obj instanceof Node) {
 				Node node = (Node) obj;
+				// FIXME: open a default result editor
 				if (node.isNodeType(SlcTypes.SLC_PROCESS)) {
 					IWorkbenchPage activePage = PlatformUI.getWorkbench()
 							.getActiveWorkbenchWindow().getActivePage();
@@ -201,9 +200,13 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 				switch (index) {
 
 				case 0:
-					return dateFormat.format(node
-							.getProperty(Property.JCR_LAST_MODIFIED).getDate()
-							.getTime());
+					if (node.hasProperty(SLC_COMPLETED)) {
+						return dateFormat
+								.format(node.getProperty(SLC_COMPLETED)
+										.getDate().getTime());
+					} else {
+						return "OPEN";
+					}
 				case 1:
 					return node.getProperty(SlcNames.SLC_UUID).getString();
 				}
@@ -218,6 +221,54 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	class ViewDoubleClickListener implements IDoubleClickListener {
 		public void doubleClick(DoubleClickEvent evt) {
 			processDoubleClick(evt);
+		}
+
+	}
+
+	class ResultObserver extends AsyncUiEventListener {
+
+		public ResultObserver(Display display) {
+			super(display);
+		}
+
+		@Override
+		protected Boolean willProcessInUiThread(List<Event> events)
+				throws RepositoryException {
+			for (Event event : events) {
+				// getLog().debug("Received event " + event);
+				int eventType = event.getType();
+				if (eventType == Event.NODE_REMOVED)
+					return true;
+				// if (event.getType() == Event.PROPERTY_ADDED) {
+				String path = event.getPath();
+				// getLog().debug(path);
+				int index = path.lastIndexOf('/');
+				String propertyName = path.substring(index + 1);
+				// Property property = session.getProperty(path);
+				// if (!property.getName().equals(SLC_COMPLETED))
+				// return true;
+				if (propertyName.equals(SLC_COMPLETED)
+						|| propertyName.equals(SLC_UUID)) {
+					// getLog().debug("Kept " + propertyName);
+					return true;
+				} else {
+					// getLog().debug("Skipped " + propertyName);
+				}
+				// } else if (eventType == Event.NODE_ADDED
+				// || eventType == Event.NODE_MOVED
+				// || eventType == Event.NODE_REMOVED) {
+				// return true;
+				// } else {
+				// }
+			}
+			return false;
+		}
+
+		protected void onEventInUiThread(List<Event> events)
+				throws RepositoryException {
+			if (getLog().isDebugEnabled())
+				getLog().debug("Refresh result list");
+			viewer.refresh();
 		}
 
 	}

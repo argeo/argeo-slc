@@ -67,7 +67,7 @@ public class JcrProcessListView extends ViewPart {
 
 		processesObserver = new AsyncUiEventListener(viewer.getTable()
 				.getDisplay()) {
-			protected void onEventInUiThread(EventIterator events) {
+			protected void onEventInUiThread(List<Event> events) {
 				// TODO optimize by updating only the changed process
 				viewer.refresh();
 			}
