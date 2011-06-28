@@ -18,9 +18,12 @@ import javax.jcr.observation.Event;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
+import org.argeo.eclipse.ui.jcr.NodeElementComparer;
 import org.argeo.eclipse.ui.jcr.SimpleNodeContentProvider;
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
@@ -53,8 +56,8 @@ import org.eclipse.ui.part.ViewPart;
 /** JCR based view of the execution modules. */
 public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		SlcNames {
-	// private final static Log log = LogFactory
-	// .getLog(JcrExecutionModulesView.class);
+	private final static Log log = LogFactory
+			.getLog(JcrExecutionModulesView.class);
 
 	public static final String ID = "org.argeo.slc.client.ui.jcrExecutionModulesView";
 
@@ -73,6 +76,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		ViewContentProvider contentProvider = new ViewContentProvider(session);
 
 		viewer.setContentProvider(contentProvider);
+		viewer.setComparer(new NodeElementComparer());
 		final ViewLabelProvider viewLabelProvider = new ViewLabelProvider();
 		viewer.setLabelProvider(viewLabelProvider);
 		viewer.setInput(getViewSite());
@@ -85,6 +89,8 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		viewer.addDragSupport(operations, tt, new ViewDragListener());
 
 		try {
+			String[] nodeTypes = { SlcTypes.SLC_AGENT,
+					SlcTypes.SLC_AGENT_FACTORY, SlcTypes.SLC_EXECUTION_MODULE };
 			session.getWorkspace()
 					.getObservationManager()
 					.addEventListener(
@@ -92,7 +98,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 							Event.NODE_ADDED | Event.NODE_REMOVED
 									| Event.NODE_MOVED,
 							SlcJcrConstants.VM_AGENT_FACTORY_PATH, true, null,
-							null, false);
+							nodeTypes, false);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot add observer", e);
 		}
@@ -235,38 +241,20 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		}
 
 		protected void onEventInUiThread(List<Event> events) {
-			// List<Node> baseNodes = ((SimpleNodeContentProvider) viewer
-			// .getContentProvider()).getBaseNodes();
-			// Node baseNode = baseNodes.get(0);
-			//
-			// while (events.hasNext()) {
-			// Event event = events.nextEvent();
-			// try {
-			// String path = event.getPath();
-			// String baseNodePath = baseNode.getPath();
-			// if (path.startsWith(baseNodePath)) {
-			// String relPath = path
-			// .substring(baseNodePath.length() + 1);
-			// log.debug("relPath: " + relPath);
-			// if (baseNode.hasNode(relPath)) {
-			// Node refreshNode = baseNode.getNode(relPath);
-			// log.debug("refreshNode: " + refreshNode);
-			// viewer.refresh(refreshNode);
-			// }
-			//
-			// }
-			// // if (log.isDebugEnabled())
-			// // log.debug("Process " + path + ": " + event);
-			//
-			// // if (session.itemExists(path)) {
-			// // Node parentNode = session.getNode(path).getParent();
-			// // log.debug("Parent: " + parentNode);
-			// // viewer.refresh(parentNode);
-			// // }
-			// } catch (RepositoryException e) {
-			// log.warn("Cannot process event " + event + ": " + e);
-			// }
-			// }
+			for (Event event : events) {
+				try {
+					String path = event.getPath();
+
+					if (session.itemExists(path)) {
+						Node parentNode = session.getNode(path);// .getParent();
+						if (log.isDebugEnabled())
+							log.debug("Refresh " + parentNode);
+						viewer.refresh(parentNode);
+					}
+				} catch (RepositoryException e) {
+					log.warn("Cannot process event " + event + ": " + e);
+				}
+			}
 
 			// try {
 			// Node vmAgentNode = session
