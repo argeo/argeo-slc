@@ -35,6 +35,10 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -336,15 +340,33 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 						String name = node.getProperty(SLC_NAME).getString();
 						String version = node.getProperty(SLC_VERSION)
 								.getString();
-						NameVersion nameVersion = new BasicNameVersion(name,
-								version);
+						final NameVersion nameVersion = new BasicNameVersion(
+								name, version);
 						Boolean started = node.getProperty(SLC_STARTED)
 								.getBoolean();
+
+						Job job;
 						if (started) {
-							modulesManager.stop(nameVersion);
+							job = new Job("Stop " + nameVersion) {
+								protected IStatus run(IProgressMonitor monitor) {
+									monitor.beginTask("Stop " + nameVersion, 1);
+									modulesManager.stop(nameVersion);
+									monitor.worked(1);
+									return Status.OK_STATUS;
+								}
+							};
 						} else {
-							modulesManager.start(nameVersion);
+							job = new Job("Start " + nameVersion) {
+								protected IStatus run(IProgressMonitor monitor) {
+									monitor.beginTask("Start " + nameVersion, 1);
+									modulesManager.start(nameVersion);
+									monitor.worked(1);
+									return Status.OK_STATUS;
+								}
+							};
 						}
+						job.setUser(true);
+						job.schedule();
 					} else {
 						String path = node.getPath();
 						// TODO factorize with editor
