@@ -1,7 +1,8 @@
 package org.argeo.slc.client.ui;
 
-import org.eclipse.swt.graphics.Image;
 import static org.argeo.slc.client.ui.ClientUiPlugin.img;
+
+import org.eclipse.swt.graphics.Image;
 
 /** Shared images. */
 public class SlcImages {

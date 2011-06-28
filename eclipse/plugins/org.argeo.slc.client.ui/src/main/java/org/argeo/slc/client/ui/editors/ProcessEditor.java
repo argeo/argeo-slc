@@ -3,10 +3,8 @@ package org.argeo.slc.client.ui.editors;
 import java.util.UUID;
 
 import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 
 import org.argeo.eclipse.ui.Error;
 import org.argeo.jcr.JcrUtils;
