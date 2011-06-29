@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.eclipse.ui.Error;
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.deploy.ModulesManager;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -81,8 +82,8 @@ public class UpdateModule extends AbstractHandler {
 						}
 						return Status.OK_STATUS;
 					} catch (Exception e) {
-						Error.show("Cannot update " + obj, e);
-						return Status.CANCEL_STATUS;
+						throw new SlcException("Cannot update module " + obj, e);
+						// return Status.CANCEL_STATUS;
 					}
 				}
 			};
