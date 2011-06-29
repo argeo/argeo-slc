@@ -8,7 +8,6 @@ import javax.jcr.Node;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.eclipse.ui.Error;
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
