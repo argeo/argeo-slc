@@ -49,8 +49,8 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 
 	private BundleContext bundleContext;
 
-	private Long defaultTimeout = 10000l;
-	private Long pollingPeriod = 100l;
+	private Long defaultTimeout = 120 * 1000l;
+	private Long pollingPeriod = 200l;
 
 	// Refresh sync objects
 	private final Object refreshedPackageSem = new Object();
@@ -316,8 +316,10 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 					osgiBundle.getName().equals(bundle.getSymbolicName()),
 					"symbolic name consistent");
 			if (osgiBundle.getVersion() != null)
-				Assert.isTrue(osgiBundle.getVersion().equals(
-						bundle.getHeaders().get(Constants.BUNDLE_VERSION)),
+				Assert.isTrue(
+						osgiBundle.getVersion().equals(
+								bundle.getHeaders().get(
+										Constants.BUNDLE_VERSION)),
 						"version consistent");
 		} else if (osgiBundle.getVersion() == null) {
 			bundle = OsgiBundleUtils.findBundleBySymbolicName(bundleContext,
@@ -335,8 +337,8 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 						break bundles;
 					}
 
-					if (b.getHeaders().get(Constants.BUNDLE_VERSION).equals(
-							osgiBundle.getVersion())) {
+					if (b.getHeaders().get(Constants.BUNDLE_VERSION)
+							.equals(osgiBundle.getVersion())) {
 						bundle = b;
 						osgiBundle.setInternalBundleId(b.getBundleId());
 						break bundles;
