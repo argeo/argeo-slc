@@ -252,7 +252,8 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 					if (session.itemExists(path)) {
 						Node parentNode = session.getNode(path);// .getParent();
 						if (log.isDebugEnabled())
-							log.debug("Refresh " + parentNode);
+							log.debug("Refresh " + parentNode + " after event "
+									+ event);
 						viewer.refresh(parentNode);
 					}
 				} catch (RepositoryException e) {
