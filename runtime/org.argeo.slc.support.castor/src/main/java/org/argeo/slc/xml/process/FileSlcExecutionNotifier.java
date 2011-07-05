@@ -29,21 +29,22 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionNotifier;
+import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.springframework.oxm.Marshaller;
 
 /** @deprecated Probably not even working anymore */
 public class FileSlcExecutionNotifier implements SlcExecutionNotifier {
-//	private final static SimpleDateFormat sdf = new SimpleDateFormat(
-//			"yyyyMMdd-HHmmss");
-//
-//	private String basePath;
+	// private final static SimpleDateFormat sdf = new SimpleDateFormat(
+	// "yyyyMMdd-HHmmss");
+	//
+	// private String basePath;
 	private Marshaller marshaller;
 
 	private Map<String, String> uuidToDir = new HashMap<String, String>();
 
 	public void addSteps(ExecutionProcess slcExecution,
-			List<SlcExecutionStep> additionalSteps) {
+			List<ExecutionStep> additionalSteps) {
 		writeSlcExecution(slcExecution);
 	}
 
@@ -80,7 +81,7 @@ public class FileSlcExecutionNotifier implements SlcExecutionNotifier {
 	}
 
 	public void setBasePath(String basePath) {
-		//this.basePath = basePath;
+		// this.basePath = basePath;
 	}
 
 	public void setMarshaller(Marshaller marshaller) {

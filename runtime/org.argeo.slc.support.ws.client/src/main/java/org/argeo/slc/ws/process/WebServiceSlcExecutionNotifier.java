@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.msg.process.SlcExecutionRequest;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
+import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionNotifier;
@@ -40,7 +41,7 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 	private Boolean cannotConnect = false;
 
 	public void newExecution(ExecutionProcess process) {
-		SlcExecution slcExecution= (SlcExecution)process;
+		SlcExecution slcExecution = (SlcExecution) process;
 		if (cannotConnect)
 			return;
 
@@ -78,7 +79,7 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 
 	public void updateStatus(ExecutionProcess process, String oldStatus,
 			String newStatus) {
-		SlcExecution slcExecution= (SlcExecution)process;
+		SlcExecution slcExecution = (SlcExecution) process;
 		if (cannotConnect)
 			return;
 
@@ -97,20 +98,13 @@ public class WebServiceSlcExecutionNotifier implements SlcExecutionNotifier {
 	}
 
 	public void addSteps(ExecutionProcess process,
-			List<SlcExecutionStep> additionalSteps) {
-		SlcExecution slcExecution= (SlcExecution)process;
+			List<ExecutionStep> additionalSteps) {
+		SlcExecution slcExecution = (SlcExecution) process;
 		if (cannotConnect)
 			return;
 
-		SlcExecutionStepsRequest req = new SlcExecutionStepsRequest();
-		req.setSlcExecutionUuid(slcExecution.getUuid());
-		req.setSteps(additionalSteps);
-		if (log.isTraceEnabled()) {
-			for (SlcExecutionStep step : additionalSteps) {
-				log.trace("Step " + step.getUuid() + ": " + step);
-			}
-		}
-
+		SlcExecutionStepsRequest req = new SlcExecutionStepsRequest(
+				slcExecution.getUuid(), additionalSteps);
 		try {
 			WebServiceUtils.marshalSendAndReceive(template, req);
 			if (log.isTraceEnabled())

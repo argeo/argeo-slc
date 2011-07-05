@@ -59,6 +59,8 @@ public class SlcExecutionStep extends ExecutionStep {
 			String thread) {
 		super(timestamp, type, log, thread);
 	}
+	
+	
 
 	public String getUuid() {
 		return uuid;
@@ -88,7 +90,8 @@ public class SlcExecutionStep extends ExecutionStep {
 		this.logLines = logLines;
 	}
 
-	protected String addLog(String log) {
+	/** public for legacy reasons*/
+	public String addLog(String log) {
 		if (logLines == null)
 			logLines = new ArrayList<String>();
 

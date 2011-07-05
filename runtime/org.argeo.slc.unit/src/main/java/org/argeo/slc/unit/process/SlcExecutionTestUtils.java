@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
+import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
@@ -89,17 +90,21 @@ public abstract class SlcExecutionTestUtils {
 
 	}
 
-	public static void assertSlcExecutionStep(SlcExecutionStep expected,
-			SlcExecutionStep reached) {
+	public static void assertSlcExecutionStep(ExecutionStep expected,
+			ExecutionStep reached) {
 		assertNotNull(reached);
-		assertEquals(expected.getUuid(), reached.getUuid());
 		assertEquals(expected.getType(), reached.getType());
 		assertDateSec(expected.getTimestamp(), reached.getTimestamp());
-		assertEquals(expected.getLogLines().size(), reached.getLogLines()
-				.size());
-		for (int i = 0; i < expected.getLogLines().size(); i++) {
-			assertEquals(expected.getLogLines().get(i), reached.getLogLines()
-					.get(i));
+		if (expected instanceof SlcExecutionStep) {
+			SlcExecutionStep slcExpected = (SlcExecutionStep)expected;
+			SlcExecutionStep slcReached = (SlcExecutionStep)reached;
+			assertEquals(slcExpected.getUuid(), slcReached.getUuid());
+			assertEquals(slcExpected.getLogLines().size(), slcReached.getLogLines()
+					.size());
+			for (int i = 0; i < slcExpected.getLogLines().size(); i++) {
+				assertEquals(slcExpected.getLogLines().get(i), slcReached
+						.getLogLines().get(i));
+			}
 		}
 	}
 

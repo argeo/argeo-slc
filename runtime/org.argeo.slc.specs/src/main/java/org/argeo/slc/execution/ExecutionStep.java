@@ -26,8 +26,6 @@ import java.util.Date;
 public class ExecutionStep implements Serializable {
 	private static final long serialVersionUID = 798640526532912161L;
 
-	// public final static String START = "START";
-	// public final static String END = "END";
 	public final static String PHASE_START = "PHASE_START";
 	public final static String PHASE_END = "PHASE_END";
 	public final static String ERROR = "ERROR";
@@ -35,6 +33,11 @@ public class ExecutionStep implements Serializable {
 	public final static String INFO = "INFO";
 	public final static String DEBUG = "DEBUG";
 	public final static String TRACE = "TRACE";
+
+	/** @deprecated*/
+	public final static String START = "START";
+	/** @deprecated*/
+	public final static String END = "END";
 
 	// TODO make the fields final and private when we don't need POJO support
 	// anymore (that

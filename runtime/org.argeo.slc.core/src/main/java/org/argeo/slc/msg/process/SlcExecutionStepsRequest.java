@@ -19,8 +19,8 @@ package org.argeo.slc.msg.process;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
+import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.process.SlcExecutionStep;
 
 public class SlcExecutionStepsRequest implements Serializable {
@@ -33,16 +33,17 @@ public class SlcExecutionStepsRequest implements Serializable {
 	}
 
 	public SlcExecutionStepsRequest(String slcExecutionUuid,
-			List<SlcExecutionStep> steps) {
+			List<ExecutionStep> steps) {
 		this.slcExecutionUuid = slcExecutionUuid;
-		this.steps = steps;
+		for (ExecutionStep step : steps) {
+			this.steps.add((SlcExecutionStep) step);
+		}
 	}
 
-	public SlcExecutionStepsRequest(String slcExecutionUuid,
-			SlcExecutionStep step) {
+	public SlcExecutionStepsRequest(String slcExecutionUuid, ExecutionStep step) {
 		this.slcExecutionUuid = slcExecutionUuid;
-		List<SlcExecutionStep> steps = new Vector<SlcExecutionStep>();
-		steps.add(step);
+		List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
+		steps.add((SlcExecutionStep) step);
 		this.steps = steps;
 	}
 

@@ -70,6 +70,8 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 	// TODO is it really necessary closeDate == null ?
 	private Boolean isClosed = false;
 
+	private Boolean cache = true;
+
 	private transient List<TestResultListener<TreeTestResult>> listeners = new Vector<TestResultListener<TreeTestResult>>();
 
 	/** Sets the list of listeners. */
@@ -88,15 +90,18 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 		if (currentPath == null)
 			throw new SlcException("No current path set.");
 
-		PartSubList subList = resultParts.get(currentPath);
-		if (subList == null) {
-			subList = new PartSubList();
-			resultParts.put(currentPath, subList);
+		if (cache) {
+			PartSubList subList = resultParts.get(currentPath);
+			if (subList == null) {
+				subList = new PartSubList();
+				resultParts.put(currentPath, subList);
+			}
+			subList.getParts().add(part);
 		}
+
 		if (part instanceof TestRunAware && currentTestRun != null) {
 			((TestRunAware) part).notifyTestRun(currentTestRun);
 		}
-		subList.getParts().add(part);
 
 		// notify listeners
 		synchronized (listeners) {
@@ -115,6 +120,9 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
 			TreeSPath path) {
+		if (!cache)
+			return;
+
 		if (registry != null) {
 			for (TreeSPath p : path.getHierarchyAsList()) {
 				if (!elements.containsKey(p)) {
@@ -303,6 +311,14 @@ public class TreeTestResult implements TestResult, StructureAware<TreeSPath>,
 
 	public void setStrictChecks(Boolean strictChecks) {
 		this.strictChecks = strictChecks;
+	}
+
+	/**
+	 * Whether information should be stored in thsi object or simply forwarded
+	 * to teh listeners.
+	 */
+	public void setCache(Boolean cache) {
+		this.cache = cache;
 	}
 
 }

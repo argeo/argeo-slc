@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.execution.ExecutionProcess;
+import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.msg.process.SlcExecutionStatusRequest;
 import org.argeo.slc.msg.process.SlcExecutionStepsRequest;
 import org.argeo.slc.process.SlcExecution;
@@ -51,7 +52,7 @@ public class JmsSlcExecutionNotifier implements SlcExecutionNotifier {
 	}
 
 	public void addSteps(ExecutionProcess slcExecution,
-			List<SlcExecutionStep> additionalSteps) {
+			List<ExecutionStep> additionalSteps) {
 		SlcExecutionStepsRequest req = new SlcExecutionStepsRequest(
 				slcExecution.getUuid(), additionalSteps);
 		convertAndSend(req);
