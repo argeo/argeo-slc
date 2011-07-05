@@ -1,5 +1,8 @@
 package org.argeo.slc.client.ui.editors;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -11,7 +14,10 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.controllers.ProcessController;
+import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
+import org.argeo.slc.execution.ExecutionProcessNotifier;
+import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -21,7 +27,8 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
-public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
+public class ProcessEditor extends FormEditor implements
+		ExecutionProcessNotifier, SlcTypes, SlcNames {
 	public final static String ID = ClientUiPlugin.ID + ".processEditor";
 
 	private Session session;
@@ -30,6 +37,8 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 
 	private ProcessBuilderPage builderPage;
 	private ProcessLogPage logPage;
+
+	private ExecutionModulesManager modulesManager;
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
@@ -96,7 +105,11 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		}
 		doSave(null);
 		try {
-			processController.process(processNode);
+			ExecutionProcess process = processController.process(processNode);
+			Map<String, String> properties = new HashMap<String, String>();
+			properties.put(ExecutionModulesManager.SLC_PROCESS_ID,
+					process.getUuid());
+			modulesManager.registerProcessNotifier(this, properties);
 		} catch (Exception e) {
 			Error.show("Execution of " + processNode + " failed", e);
 		}
@@ -142,6 +155,14 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		return false;
 	}
 
+	public void updateStatus(ExecutionProcess process, String oldStatus,
+			String newStatus) {
+	}
+
+	public void addSteps(ExecutionProcess process, List<ExecutionStep> steps) {
+		logPage.addSteps(steps);
+	}
+
 	/** Expects one session per editor. */
 	public void setSession(Session session) {
 		this.session = session;
@@ -149,6 +170,10 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 
 	public void setProcessController(ProcessController processController) {
 		this.processController = processController;
+	}
+
+	public void setModulesManager(ExecutionModulesManager modulesManager) {
+		this.modulesManager = modulesManager;
 	}
 
 }

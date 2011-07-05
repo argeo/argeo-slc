@@ -4,23 +4,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<!-- Views -->
-	<bean id="jcrExecutionModulesView" class="org.argeo.slc.client.ui.views.JcrExecutionModulesView"
-		scope="prototype">
-		<property name="session" ref="session" />
-		<property name="modulesManager" ref="modulesManager"/>
-	</bean>
-
-	<bean id="jcrProcessListView" class="org.argeo.slc.client.ui.views.JcrProcessListView"
-		scope="prototype">
-		<property name="session" ref="session" />
-	</bean>
-
-	<bean id="jcrResultListView" class="org.argeo.slc.client.ui.views.JcrResultListView"
-		scope="prototype">
-		<property name="session" ref="session" />
-	</bean>
-
 	<bean id="session" class="org.argeo.jcr.spring.ThreadBoundSession">
 		<property name="repository" ref="repository" />
 	</bean>

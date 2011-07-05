@@ -16,39 +16,28 @@
 
 package org.argeo.slc.process;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.UUID;
 
+import org.argeo.slc.execution.ExecutionStep;
+
 /**
  * An atomic step to be notified in during an {@link SlcExecution}. Can be a log
  * or the start/end of a phase, etc.
+ * 
+ * @deprecated use {@link ExecutionStep} instead
  */
-public class SlcExecutionStep implements Serializable {
+public class SlcExecutionStep extends ExecutionStep {
 	private static final long serialVersionUID = -7308643628104726471L;
 
-	public final static String START = "START";
-	public final static String END = "END";
-	public final static String PHASE_START = "PHASE_START";
-	public final static String PHASE_END = "PHASE_END";
-	public final static String ERROR = "ERROR";
-	public final static String WARNING = "WARNING";
-	public final static String INFO = "INFO";
-	public final static String DEBUG = "DEBUG";
-	public final static String TRACE = "TRACE";
-
 	private String uuid = UUID.randomUUID().toString();
-	private String type;
-	private String thread;
-	private Date timestamp = new Date();
 	private List<String> logLines = new ArrayList<String>();
 
 	/** Empty constructor */
 	public SlcExecutionStep() {
-		thread = Thread.currentThread().getName();
 	}
 
 	/** Creates a step at the current date of type INFO */
@@ -68,10 +57,7 @@ public class SlcExecutionStep implements Serializable {
 
 	public SlcExecutionStep(Date timestamp, String type, String log,
 			String thread) {
-		this.type = type;
-		this.timestamp = timestamp;
-		this.thread = thread;
-		addLog(log);
+		super(timestamp, type, log, thread);
 	}
 
 	public String getUuid() {
@@ -82,24 +68,12 @@ public class SlcExecutionStep implements Serializable {
 		this.uuid = uuid;
 	}
 
-	public String getType() {
-		return type;
-	}
-
 	public void setType(String type) {
 		this.type = type;
 	}
 
-	public Date getTimestamp() {
-		return timestamp;
-	}
-
 	public void setTimestamp(Date begin) {
 		this.timestamp = begin;
-	}
-
-	public String getThread() {
-		return thread;
 	}
 
 	public void setThread(String thread) {
@@ -114,13 +88,17 @@ public class SlcExecutionStep implements Serializable {
 		this.logLines = logLines;
 	}
 
-	public void addLog(String log) {
+	protected String addLog(String log) {
+		if (logLines == null)
+			logLines = new ArrayList<String>();
+
 		if (log == null)
-			return;
+			return null;
 
 		StringTokenizer st = new StringTokenizer(log, "\n");
 		while (st.hasMoreTokens())
 			logLines.add(removeNonXmlChars(st.nextToken()));
+		return null;
 	}
 
 	/**

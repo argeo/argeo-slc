@@ -4,52 +4,20 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<!-- Views -->
-<!-- 	<bean id="executionModulesView" class="org.argeo.slc.client.ui.views.ExecutionModulesView" -->
-<!-- 		scope="prototype"> -->
-<!-- 		<property name="contentProvider" ref="executionModulesContentProvider" /> -->
-<!-- 		<property name="processController" ref="processController" /> -->
-<!-- 		<property name="oxmBean" ref="oxmBean" /> -->
-<!-- 	</bean> -->
+	<bean id="jcrExecutionModulesView" class="org.argeo.slc.client.ui.views.JcrExecutionModulesView"
+		scope="prototype">
+		<property name="session" ref="session" />
+		<property name="modulesManager" ref="modulesManager" />
+	</bean>
 
-<!-- 	<bean id="resultListView" class="org.argeo.slc.client.ui.views.ResultListView" -->
-<!-- 		scope="prototype"> -->
-<!-- 		<property name="testResultCollectionDao" ref="testResultCollectionDao" /> -->
-<!-- 	</bean> -->
+	<bean id="jcrProcessListView" class="org.argeo.slc.client.ui.views.JcrProcessListView"
+		scope="prototype">
+		<property name="session" ref="session" />
+	</bean>
 
-<!-- 	<bean id="resultDetailView" class="org.argeo.slc.client.ui.views.ResultDetailView" -->
-<!-- 		scope="prototype"> -->
-<!-- 		<property name="treeTestResultDao" ref="treeTestResultDao" /> -->
-<!-- 		<property name="contentProvider" ref="resultDetailContentProvider" /> -->
-<!-- 		<property name="labelProvider" ref="resultDetailLabelProvider" /> -->
-<!-- 	</bean> -->
-<!-- 	<bean id="processListView" class="org.argeo.slc.client.ui.views.ProcessListView" -->
-<!-- 		scope="prototype"> -->
-<!-- 		<property name="slcExecutionDao" ref="slcExecutionDao" /> -->
-<!-- 		<property name="structuredContentProvider" ref="processListStructuredContentProvider" /> -->
-<!-- 		<property name="tableLabelProvider" ref="processListTableLabelProvider" /> -->
-<!-- 	</bean> -->
+	<bean id="jcrResultListView" class="org.argeo.slc.client.ui.views.JcrResultListView"
+		scope="prototype">
+		<property name="session" ref="session" />
+	</bean>
 
-<!-- 	<bean id="processDetailView" class="org.argeo.slc.client.ui.views.ProcessDetailView" -->
-<!-- 		scope="prototype"> -->
-<!-- 		<property name="slcExecutionDao" ref="slcExecutionDao" /> -->
-<!-- 		<property name="contentProvider" ref="processDetailContentProvider" /> -->
-<!-- 	</bean> -->
-
-<!-- 	<bean id="processBuilderView" class="org.argeo.slc.client.ui.views.ProcessBuilderView" -->
-<!-- 		scope="prototype"> -->
-<!-- 		<property name="processController" ref="processController" /> -->
-<!-- 		<property name="oxmBean" ref="oxmBean" /> -->
-<!-- 		<property name="slcAgents" ref="slcAgents" /> -->
-<!-- 	</bean> -->
-
-<!-- 	<bean id="processParametersView" class="org.argeo.slc.client.ui.views.ProcessParametersView" -->
-<!-- 		scope="prototype"> -->
-<!-- 	</bean> -->
-
-	<!-- Providers. -->
-<!-- 	<bean id="executionModulesContentProvider" -->
-<!-- 		class="org.argeo.slc.client.ui.providers.ExecutionModulesContentProvider"> -->
-<!-- 		<property name="slcAgents" ref="slcAgents" /> -->
-<!-- 	</bean> -->
 </beans>

@@ -19,8 +19,8 @@ package org.argeo.slc.core.execution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
+import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.process.RealizedFlow;
-import org.argeo.slc.process.SlcExecutionStep;
 
 /** Thread of a single execution */
 public class ExecutionThread extends Thread {
@@ -51,8 +51,8 @@ public class ExecutionThread extends Thread {
 				.getFlowDescriptor();
 		String flowName = executionFlowDescriptor.getName();
 
-		dispatchAddStep(new SlcExecutionStep(SlcExecutionStep.PHASE_START,
-				"Flow " + flowName));
+		dispatchAddStep(new ExecutionStep(ExecutionStep.PHASE_START, "Flow "
+				+ flowName));
 
 		try {
 			String autoUpgrade = System
@@ -68,17 +68,17 @@ public class ExecutionThread extends Thread {
 			// TODO: re-throw exception ?
 			String msg = "Execution of flow " + flowName + " failed.";
 			log.error(msg, e);
-			dispatchAddStep(new SlcExecutionStep(SlcExecutionStep.ERROR, msg
-					+ " " + e.getMessage()));
+			dispatchAddStep(new ExecutionStep(ExecutionStep.ERROR, msg + " "
+					+ e.getMessage()));
 			processThread.notifyError();
 		} finally {
 			processThread.flowCompleted();
-			dispatchAddStep(new SlcExecutionStep(SlcExecutionStep.PHASE_END,
-					"Flow " + flowName));
+			dispatchAddStep(new ExecutionStep(ExecutionStep.PHASE_END, "Flow "
+					+ flowName));
 		}
 	}
 
-	private void dispatchAddStep(SlcExecutionStep step) {
+	private void dispatchAddStep(ExecutionStep step) {
 		processThread.getProcessThreadGroup().dispatchAddStep(step);
 	}
 

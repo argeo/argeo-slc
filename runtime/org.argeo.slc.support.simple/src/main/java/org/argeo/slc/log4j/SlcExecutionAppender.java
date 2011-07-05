@@ -26,7 +26,7 @@ import org.apache.log4j.PatternLayout;
 import org.apache.log4j.spi.LoggingEvent;
 import org.argeo.slc.core.execution.ExecutionThread;
 import org.argeo.slc.core.execution.ProcessThreadGroup;
-import org.argeo.slc.process.SlcExecutionStep;
+import org.argeo.slc.execution.ExecutionStep;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -96,20 +96,20 @@ public class SlcExecutionAppender extends AppenderSkeleton implements
 			final String type;
 			if (event.getLevel().equals(Level.ERROR)
 					|| event.getLevel().equals(Level.FATAL))
-				type = SlcExecutionStep.ERROR;
+				type = ExecutionStep.ERROR;
 			else if (event.getLevel().equals(Level.WARN))
-				type = SlcExecutionStep.WARNING;
+				type = ExecutionStep.WARNING;
 			else if (event.getLevel().equals(Level.INFO))
-				type = SlcExecutionStep.INFO;
+				type = ExecutionStep.INFO;
 			else if (event.getLevel().equals(Level.DEBUG))
-				type = SlcExecutionStep.DEBUG;
+				type = ExecutionStep.DEBUG;
 			else if (event.getLevel().equals(Level.TRACE))
-				type = SlcExecutionStep.TRACE;
+				type = ExecutionStep.TRACE;
 			else
-				type = SlcExecutionStep.INFO;
+				type = ExecutionStep.INFO;
 
-			SlcExecutionStep step = new SlcExecutionStep(new Date(event
-					.getTimeStamp()), type, layout.format(event));
+			ExecutionStep step = new ExecutionStep(new Date(
+					event.getTimeStamp()), type, layout.format(event));
 
 			try {
 				dispatching.set(true);

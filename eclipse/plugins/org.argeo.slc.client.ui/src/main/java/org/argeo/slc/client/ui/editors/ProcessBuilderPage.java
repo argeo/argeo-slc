@@ -71,6 +71,7 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
+/** Definition of the process. */
 public class ProcessBuilderPage extends FormPage implements SlcNames {
 	public final static String ID = "processBuilderPage";
 	// private final static Log log =

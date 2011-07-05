@@ -26,7 +26,7 @@ public class ProcessController {
 	private final static Log log = LogFactory.getLog(ProcessController.class);
 	private Map<String, SlcAgentFactory> agentFactories = new HashMap<String, SlcAgentFactory>();
 
-	public void process(Node processNode) {
+	public ExecutionProcess process(Node processNode) {
 		JcrExecutionProcess process = new JcrExecutionProcess(processNode);
 		try {
 			// we currently only deal with single agents
@@ -57,6 +57,7 @@ public class ProcessController {
 				SlcAgent slcAgent = agentFactory.getAgent(agentUuid);
 				slcAgent.process(process);
 			}
+			return process;
 		} catch (Exception e) {
 			if (!process.getStatus().equals(ExecutionProcess.ERROR))
 				process.setStatus(ExecutionProcess.ERROR);

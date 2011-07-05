@@ -17,6 +17,7 @@
 package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +29,10 @@ import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
+import org.argeo.slc.execution.ExecutionProcessNotifier;
+import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecutionNotifier;
-import org.argeo.slc.process.SlcExecutionStep;
 
 /** Provides the base feature of an execution module manager. */
 @SuppressWarnings("deprecation")
@@ -41,7 +43,10 @@ public abstract class AbstractExecutionModulesManager implements
 
 	private List<SlcExecutionNotifier> slcExecutionNotifiers = new ArrayList<SlcExecutionNotifier>();
 
-	private ThreadGroup processesThreadGroup = new ThreadGroup("Processes");
+	private List<FilteredNotifier> filteredNotifiers = Collections
+			.synchronizedList(new ArrayList<FilteredNotifier>());
+
+	private ThreadGroup processesThreadGroup = new ThreadGroup("SLC Processes");
 
 	protected abstract ExecutionFlow findExecutionFlow(String moduleName,
 			String moduleVersion, String flowName);
@@ -79,22 +84,42 @@ public abstract class AbstractExecutionModulesManager implements
 		//
 	}
 
-	public void dispatchUpdateStatus(ExecutionProcess slcExecution,
+	public void dispatchUpdateStatus(ExecutionProcess process,
 			String oldStatus, String newStatus) {
+		// generic notifiers (notified of everything)
 		for (Iterator<SlcExecutionNotifier> it = getSlcExecutionNotifiers()
 				.iterator(); it.hasNext();) {
-			it.next().updateStatus(slcExecution, oldStatus, newStatus);
+			it.next().updateStatus(process, oldStatus, newStatus);
+		}
+
+		// filtered notifiers
+		for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
+				.hasNext();) {
+			FilteredNotifier filteredNotifier = it.next();
+			if (filteredNotifier.receiveFrom(process))
+				filteredNotifier.getNotifier().updateStatus(process, oldStatus,
+						newStatus);
 		}
 	}
 
-	public void dispatchAddStep(ExecutionProcess slcExecution,
-			SlcExecutionStep step) {
-		List<SlcExecutionStep> steps = new ArrayList<SlcExecutionStep>();
-		steps.add(step);
+	public void dispatchAddSteps(ExecutionProcess process,
+			List<ExecutionStep> steps) {
 		for (Iterator<SlcExecutionNotifier> it = getSlcExecutionNotifiers()
 				.iterator(); it.hasNext();) {
-			it.next().addSteps(slcExecution, steps);
+			it.next().addSteps(process, steps);
 		}
+
+		for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
+				.hasNext();) {
+			FilteredNotifier filteredNotifier = it.next();
+			if (filteredNotifier.receiveFrom(process))
+				filteredNotifier.getNotifier().addSteps(process, steps);
+		}
+	}
+
+	public void registerProcessNotifier(ExecutionProcessNotifier notifier,
+			Map<String, String> properties) {
+		filteredNotifiers.add(new FilteredNotifier(notifier, properties));
 	}
 
 	public void setSlcExecutionNotifiers(
@@ -102,7 +127,7 @@ public abstract class AbstractExecutionModulesManager implements
 		this.slcExecutionNotifiers = slcExecutionNotifiers;
 	}
 
-	public List<SlcExecutionNotifier> getSlcExecutionNotifiers() {
+	private List<SlcExecutionNotifier> getSlcExecutionNotifiers() {
 		return slcExecutionNotifiers;
 	}
 
@@ -110,4 +135,45 @@ public abstract class AbstractExecutionModulesManager implements
 		return processesThreadGroup;
 	}
 
+	protected class FilteredNotifier {
+		private final ExecutionProcessNotifier notifier;
+		private final String processId;
+
+		public FilteredNotifier(ExecutionProcessNotifier notifier,
+				Map<String, String> properties) {
+			super();
+			this.notifier = notifier;
+			if (properties.containsKey(SLC_PROCESS_ID))
+				processId = properties.get(SLC_PROCESS_ID);
+			else
+				processId = null;
+		}
+
+		/**
+		 * Whether event from this process should be received by this listener.
+		 */
+		public Boolean receiveFrom(ExecutionProcess process) {
+			if (processId != null)
+				if (process.getUuid().equals(processId))
+					return true;
+				else
+					return false;
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			return notifier.hashCode();
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			return notifier.equals(obj);
+		}
+
+		public ExecutionProcessNotifier getNotifier() {
+			return notifier;
+		}
+
+	}
 }

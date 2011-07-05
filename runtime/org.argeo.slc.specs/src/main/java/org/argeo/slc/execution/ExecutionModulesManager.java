@@ -17,6 +17,7 @@
 package org.argeo.slc.execution;
 
 import java.util.List;
+import java.util.Map;
 
 import org.argeo.slc.deploy.ModulesManager;
 import org.argeo.slc.process.RealizedFlow;
@@ -24,6 +25,9 @@ import org.argeo.slc.process.SlcExecutionStep;
 
 /** Provides access to the execution modules */
 public interface ExecutionModulesManager extends ModulesManager {
+	/** Used to filter event notified to an execution notifier. */
+	public static String SLC_PROCESS_ID = "slc.process.id";
+
 	/** @return a full fledged module descriptor. */
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version);
@@ -45,5 +49,13 @@ public interface ExecutionModulesManager extends ModulesManager {
 			String oldStatus, String newStatus);
 
 	/** Notify that a step was added in an {@link ExecutionProcess} */
-	public void dispatchAddStep(ExecutionProcess process, SlcExecutionStep step);
+	public void dispatchAddSteps(ExecutionProcess process,
+			List<ExecutionStep> steps);
+
+	/**
+	 * Register a notifier which will be notified based on the provided
+	 * properties.
+	 */
+	public void registerProcessNotifier(ExecutionProcessNotifier notifier,
+			Map<String, String> properties);
 }
