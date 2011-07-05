@@ -82,5 +82,13 @@
 			<version>${version.argeo-commons}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- For target platform generation -->
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
