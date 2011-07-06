@@ -200,7 +200,7 @@ public class SystemCall implements Runnable {
 
 		//
 		// THE EXECUTION PROPER
-		// 
+		//
 		try {
 			if (synchronous)
 				try {
@@ -208,6 +208,10 @@ public class SystemCall implements Runnable {
 							environmentVariablesToUse);
 					executeResultHandler.onProcessComplete(exitValue);
 				} catch (ExecuteException e1) {
+					if (e1.getExitValue() == Executor.INVALID_EXITVALUE) {
+						Thread.currentThread().interrupt();
+						return;
+					}
 					executeResultHandler.onProcessFailed(e1);
 				}
 			else
