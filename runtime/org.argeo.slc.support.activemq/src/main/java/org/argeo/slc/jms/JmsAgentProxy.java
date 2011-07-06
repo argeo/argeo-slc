@@ -96,6 +96,10 @@ public class JmsAgentProxy implements SlcAgent {
 		}
 	}
 
+	public void kill(ExecutionProcess process) {
+		throw new UnsupportedOperationException();
+	}
+
 	protected Object sendReceive(AgentMC messageCreator) {
 		long begin = System.currentTimeMillis();
 		Object res;

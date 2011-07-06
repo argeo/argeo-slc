@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.argeo.slc.deploy.ModulesManager;
 import org.argeo.slc.process.RealizedFlow;
-import org.argeo.slc.process.SlcExecutionStep;
 
 /** Provides access to the execution modules */
 public interface ExecutionModulesManager extends ModulesManager {
@@ -37,9 +36,6 @@ public interface ExecutionModulesManager extends ModulesManager {
 	 *         meta data, not the flows)
 	 */
 	public List<ExecutionModuleDescriptor> listExecutionModules();
-
-	/** The thread group to which all process threads will belong. */
-	public ThreadGroup getProcessesThreadGroup();
 
 	/** Synchronously finds and executes an {@link ExecutionFlow}. */
 	public void execute(RealizedFlow realizedFlow);
@@ -57,5 +53,9 @@ public interface ExecutionModulesManager extends ModulesManager {
 	 * properties.
 	 */
 	public void registerProcessNotifier(ExecutionProcessNotifier notifier,
+			Map<String, String> properties);
+
+	/** Unregisters a notifier */
+	public void unregisterProcessNotifier(ExecutionProcessNotifier notifier,
 			Map<String, String> properties);
 }

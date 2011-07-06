@@ -5,6 +5,7 @@ import java.util.List;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentFactory;
 
+/** @deprecated old prototype, should be removed */
 public class SimpleAgentFactory implements SlcAgentFactory {
 	private List<SlcAgent> agents;
 

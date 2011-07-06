@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,40 +30,60 @@ public class ProcessController {
 	public ExecutionProcess process(Node processNode) {
 		JcrExecutionProcess process = new JcrExecutionProcess(processNode);
 		try {
-			// we currently only deal with single agents
-			Node realizedFlowNode = processNode.getNode(SlcNames.SLC_FLOW);
-			NodeIterator nit = realizedFlowNode.getNodes();
-			if (nit.hasNext()) {
-				// TODO find a better way to determine which agent to use
-				// currently we check the agent of the first registered flow
-				Node firstRealizedFlow = nit.nextNode();
-				// we assume there is an nt:address
-				String firstFlowPath = firstRealizedFlow
-						.getNode(SlcNames.SLC_ADDRESS)
-						.getProperty(Property.JCR_PATH).getString();
-				Node flowNode = processNode.getSession().getNode(firstFlowPath);
-				String agentFactoryPath = SlcJcrUtils
-						.flowAgentFactoryPath(firstFlowPath);
-				if (!agentFactories.containsKey(agentFactoryPath))
-					throw new SlcException("No agent factory registered under "
-							+ agentFactoryPath);
-				SlcAgentFactory agentFactory = agentFactories
-						.get(agentFactoryPath);
-				Node agentNode = ((Node) flowNode
-						.getAncestor(SlcJcrUtils.AGENT_FACTORY_DEPTH + 1));
-				String agentUuid = agentNode.getProperty(SlcNames.SLC_UUID)
-						.getString();
-
-				// process
-				SlcAgent slcAgent = agentFactory.getAgent(agentUuid);
-				slcAgent.process(process);
-			}
+			SlcAgent slcAgent = findAgent(processNode);
+			if (slcAgent == null)
+				throw new SlcException("Cannot find agent for " + processNode);
+			slcAgent.process(process);
 			return process;
 		} catch (Exception e) {
 			if (!process.getStatus().equals(ExecutionProcess.ERROR))
 				process.setStatus(ExecutionProcess.ERROR);
 			throw new SlcException("Cannot execute " + processNode, e);
 		}
+	}
+
+	public void kill(Node processNode) {
+		JcrExecutionProcess process = new JcrExecutionProcess(processNode);
+		try {
+			SlcAgent slcAgent = findAgent(processNode);
+			if (slcAgent == null)
+				throw new SlcException("Cannot find agent for " + processNode);
+			slcAgent.kill(process);
+		} catch (Exception e) {
+			if (!process.getStatus().equals(ExecutionProcess.ERROR))
+				process.setStatus(ExecutionProcess.ERROR);
+			throw new SlcException("Cannot execute " + processNode, e);
+		}
+	}
+
+	protected SlcAgent findAgent(Node processNode) throws RepositoryException {
+		// we currently only deal with single agents
+		Node realizedFlowNode = processNode.getNode(SlcNames.SLC_FLOW);
+		NodeIterator nit = realizedFlowNode.getNodes();
+		if (nit.hasNext()) {
+			// TODO find a better way to determine which agent to use
+			// currently we check the agent of the first registered flow
+			Node firstRealizedFlow = nit.nextNode();
+			// we assume there is an nt:address
+			String firstFlowPath = firstRealizedFlow
+					.getNode(SlcNames.SLC_ADDRESS)
+					.getProperty(Property.JCR_PATH).getString();
+			Node flowNode = processNode.getSession().getNode(firstFlowPath);
+			String agentFactoryPath = SlcJcrUtils
+					.flowAgentFactoryPath(firstFlowPath);
+			if (!agentFactories.containsKey(agentFactoryPath))
+				throw new SlcException("No agent factory registered under "
+						+ agentFactoryPath);
+			SlcAgentFactory agentFactory = agentFactories.get(agentFactoryPath);
+			Node agentNode = ((Node) flowNode
+					.getAncestor(SlcJcrUtils.AGENT_FACTORY_DEPTH + 1));
+			String agentUuid = agentNode.getProperty(SlcNames.SLC_UUID)
+					.getString();
+
+			// process
+			return agentFactory.getAgent(agentUuid);
+		}
+		return null;
 	}
 
 	public synchronized void register(SlcAgentFactory agentFactory,

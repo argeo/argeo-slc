@@ -27,6 +27,12 @@ public interface SlcAgent {
 	/** Agent unique identifier */
 	public String getAgentUuid();
 
+	/** Execute / take part to this process */
+	public void process(ExecutionProcess process);
+
+	/** Kills this process */
+	public void kill(ExecutionProcess process);
+
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version);
 
@@ -34,8 +40,6 @@ public interface SlcAgent {
 
 	/** @deprecated Use {@link #process(ExecutionProcess)} instead. */
 	public void runSlcExecution(SlcExecution slcExecution);
-
-	public void process(ExecutionProcess process);
 
 	/** @return true if still alive. */
 	public boolean ping();

@@ -5,13 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
@@ -63,8 +61,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -125,6 +121,9 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 					Event.PROPERTY_CHANGED, processNode.getPath(), true, null,
 					null, false);
 
+			// make sure all controls are in line with status
+			statusChanged();
+
 			// add initial flows
 			addInitialFlows();
 
@@ -146,7 +145,9 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 		run.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
 				if (isFinished(getProcessStatus())) {
-					relaunch();
+					((ProcessEditor) getEditor()).relaunch();
+				} else if (isRunning(getProcessStatus())) {
+					((ProcessEditor) getEditor()).kill();
 				} else {
 					((ProcessEditor) getEditor()).process();
 				}
@@ -191,8 +192,6 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 		statusComposite.setLayout(new FillLayout());
 		statusLabel = tk.createLabel(statusComposite, getProcessStatus());
 
-		// make sure all controls are in line with status
-		statusChanged();
 	}
 
 	protected void createBuilder(Composite parent) {
@@ -279,59 +278,27 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	/*
 	 * CONTROLLERS
 	 */
-	/** Opens a new editor with a copy of this process */
-	protected void relaunch() {
-		try {
-			Node duplicatedNode = duplicateProcess();
-			IWorkbenchPage activePage = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage();
-			activePage.openEditor(
-					new ProcessEditorInput(duplicatedNode.getPath()),
-					ProcessEditor.ID);
-			getEditor().close(false);
-		} catch (Exception e1) {
-			throw new SlcException("Cannot relaunch " + processNode, e1);
-		}
-	}
-
-	/** Duplicates the process */
-	protected Node duplicateProcess() {
-		try {
-			Session session = processNode.getSession();
-			String uuid = UUID.randomUUID().toString();
-			String destPath = SlcJcrUtils.createExecutionProcessPath(uuid);
-			Node newNode = JcrUtils.mkdirs(session, destPath,
-					SlcTypes.SLC_PROCESS);
-			JcrUtils.copy(processNode, newNode);
-			// session.getWorkspace().copy(processNode.getPath(), destPath);
-			// Node newNode = session.getNode(destPath);
-			// make sure that we kept the mixins
-			// newNode.addMixin(NodeType.MIX_CREATED);
-			// newNode.addMixin(NodeType.MIX_LAST_MODIFIED);
-			newNode.setProperty(SLC_UUID, uuid);
-			newNode.setProperty(SLC_STATUS, ExecutionProcess.INITIALIZED);
-			session.save();
-			return newNode;
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot duplicate process", e);
-		}
-	}
-
 	/** Reflects a status change */
 	protected void statusChanged() {
 		String status = getProcessStatus();
 		statusLabel.setText(status);
 		Boolean isEditable = isEditable(status);
-		run.setEnabled(isEditable);
+		run.setEnabled(status.equals(ExecutionProcess.RUNNING) || isEditable);
 		remove.setEnabled(isEditable);
 		clear.setEnabled(isEditable);
 		// flowsViewer.getTree().setEnabled(isEditable);
-		if (status.equals(ExecutionProcess.COMPLETED)
-				|| status.equals(ExecutionProcess.ERROR)) {
+		if (status.equals(ExecutionProcess.RUNNING)) {
+			run.setEnabled(true);
+			run.setImage(SlcImages.KILL);
+			run.setToolTipText("Kill");
+		} else if (isFinished(status)) {
 			run.setEnabled(true);
 			run.setImage(SlcImages.RELAUNCH);
 			run.setToolTipText("Relaunch");
 		}
+
+		if (flowsViewer != null)
+			flowsViewer.refresh();
 	}
 
 	/** Adds initial flows from the editor input if any */
@@ -448,14 +415,19 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	}
 
 	/** Optimization so that we don't call the node each time */
-	protected Boolean isEditable(String status) {
+	protected static Boolean isEditable(String status) {
 		return status.equals(ExecutionProcess.NEW)
 				|| status.equals(ExecutionProcess.INITIALIZED);
 	}
 
-	protected Boolean isFinished(String status) {
+	protected static Boolean isFinished(String status) {
 		return status.equals(ExecutionProcess.COMPLETED)
-				|| status.equals(ExecutionProcess.ERROR);
+				|| status.equals(ExecutionProcess.ERROR)
+				|| status.equals(ExecutionProcess.KILLED);
+	}
+
+	protected static Boolean isRunning(String status) {
+		return status.equals(ExecutionProcess.RUNNING);
 	}
 
 	/*
@@ -556,6 +528,18 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 			Node node = (Node) element;
 			try {
 				if (node.isNodeType(SlcTypes.SLC_REALIZED_FLOW)) {
+					if (node.hasProperty(SLC_STATUS)) {
+						String status = node.getProperty(SLC_STATUS)
+								.getString();
+						// TODO: factorize with process view ?
+						if (status.equals(ExecutionProcess.RUNNING))
+							return SlcImages.PROCESS_RUNNING;
+						else if (status.equals(ExecutionProcess.ERROR)
+								|| status.equals(ExecutionProcess.KILLED))
+							return SlcImages.PROCESS_ERROR;
+						else if (status.equals(ExecutionProcess.COMPLETED))
+							return SlcImages.PROCESS_COMPLETED;
+					}
 					return SlcImages.FLOW;
 				}
 			} catch (RepositoryException e) {

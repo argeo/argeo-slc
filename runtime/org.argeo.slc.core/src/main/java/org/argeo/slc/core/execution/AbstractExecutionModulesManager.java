@@ -18,6 +18,7 @@ package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -45,8 +46,6 @@ public abstract class AbstractExecutionModulesManager implements
 
 	private List<FilteredNotifier> filteredNotifiers = Collections
 			.synchronizedList(new ArrayList<FilteredNotifier>());
-
-	private ThreadGroup processesThreadGroup = new ThreadGroup("SLC Processes");
 
 	protected abstract ExecutionFlow findExecutionFlow(String moduleName,
 			String moduleVersion, String flowName);
@@ -100,6 +99,7 @@ public abstract class AbstractExecutionModulesManager implements
 				filteredNotifier.getNotifier().updateStatus(process, oldStatus,
 						newStatus);
 		}
+
 	}
 
 	public void dispatchAddSteps(ExecutionProcess process,
@@ -122,6 +122,11 @@ public abstract class AbstractExecutionModulesManager implements
 		filteredNotifiers.add(new FilteredNotifier(notifier, properties));
 	}
 
+	public void unregisterProcessNotifier(ExecutionProcessNotifier notifier,
+			Map<String, String> properties) {
+		filteredNotifiers.remove(notifier);
+	}
+
 	public void setSlcExecutionNotifiers(
 			List<SlcExecutionNotifier> slcExecutionNotifiers) {
 		this.slcExecutionNotifiers = slcExecutionNotifiers;
@@ -129,10 +134,6 @@ public abstract class AbstractExecutionModulesManager implements
 
 	private List<SlcExecutionNotifier> getSlcExecutionNotifiers() {
 		return slcExecutionNotifiers;
-	}
-
-	public ThreadGroup getProcessesThreadGroup() {
-		return processesThreadGroup;
 	}
 
 	protected class FilteredNotifier {
@@ -143,6 +144,8 @@ public abstract class AbstractExecutionModulesManager implements
 				Map<String, String> properties) {
 			super();
 			this.notifier = notifier;
+			if (properties == null)
+				properties = new HashMap<String, String>();
 			if (properties.containsKey(SLC_PROCESS_ID))
 				processId = properties.get(SLC_PROCESS_ID);
 			else
@@ -168,7 +171,14 @@ public abstract class AbstractExecutionModulesManager implements
 
 		@Override
 		public boolean equals(Object obj) {
-			return notifier.equals(obj);
+			if (obj instanceof FilteredNotifier) {
+				FilteredNotifier fn = (FilteredNotifier) obj;
+				return notifier.equals(fn.notifier);
+			} else if (obj instanceof ExecutionProcessNotifier) {
+				ExecutionProcessNotifier epn = (ExecutionProcessNotifier) obj;
+				return notifier.equals(epn);
+			} else
+				return false;
 		}
 
 		public ExecutionProcessNotifier getNotifier() {

@@ -25,6 +25,7 @@ import java.util.TreeMap;
 
 import org.argeo.slc.execution.ExecutionProcess;
 
+/** @deprecated use other implementations of {@link ExecutionProcess} */
 public class SlcExecution implements ExecutionProcess, Serializable {
 	private static final long serialVersionUID = -7607457971382118466L;
 

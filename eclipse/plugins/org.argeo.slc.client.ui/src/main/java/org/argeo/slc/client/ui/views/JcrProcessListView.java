@@ -175,6 +175,8 @@ public class JcrProcessListView extends ViewPart {
 					return SlcImages.PROCESS_COMPLETED;
 				else if (status.equals(ExecutionProcess.RUNNING))
 					return SlcImages.PROCESS_RUNNING;
+				else if (status.equals(ExecutionProcess.KILLED))
+					return SlcImages.PROCESS_ERROR;
 				else
 					throw new SlcException("Unkown status " + status);
 			} catch (RepositoryException e) {

@@ -58,8 +58,9 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames 
 	 */
 	@Override
 	protected ProcessThread createProcessThread(
+			ThreadGroup processesThreadGroup,
 			ExecutionModulesManager modulesManager, ExecutionProcess process) {
-		return new JcrProcessThread(modulesManager,
+		return new JcrProcessThread(processesThreadGroup, modulesManager,
 				(JcrExecutionProcess) process);
 	}
 

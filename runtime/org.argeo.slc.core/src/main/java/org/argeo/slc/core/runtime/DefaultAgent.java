@@ -18,7 +18,10 @@ package org.argeo.slc.core.runtime;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.argeo.slc.SlcException;
@@ -26,14 +29,20 @@ import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
+import org.argeo.slc.execution.ExecutionProcessNotifier;
+import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 
 /** Implements the base methods of an SLC agent. */
-public class DefaultAgent implements SlcAgent {
+public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 	private SlcAgentDescriptor agentDescriptor;
 	private ExecutionModulesManager modulesManager;
+
+	private ThreadGroup processesThreadGroup;
+	private Map<String, ProcessThread> runningProcesses = Collections
+			.synchronizedMap(new HashMap<String, ProcessThread>());
 
 	/*
 	 * LIFECYCLE
@@ -46,10 +55,15 @@ public class DefaultAgent implements SlcAgent {
 		} catch (UnknownHostException e) {
 			throw new SlcException("Unable to create agent descriptor.", e);
 		}
+		processesThreadGroup = new ThreadGroup("SLC Processes of Agent #"
+				+ agentDescriptor.getUuid());
+		modulesManager.registerProcessNotifier(this,
+				new HashMap<String, String>());
 	}
 
 	public void dispose() {
-
+		modulesManager.unregisterProcessNotifier(this,
+				new HashMap<String, String>());
 	}
 
 	/**
@@ -68,19 +82,29 @@ public class DefaultAgent implements SlcAgent {
 	}
 
 	public void process(ExecutionProcess process) {
-		ProcessThread processThread = createProcessThread(modulesManager,
-				process);
+		ProcessThread processThread = createProcessThread(processesThreadGroup,
+				modulesManager, process);
 		processThread.start();
+		runningProcesses.put(process.getUuid(), processThread);
+		// FIXME find a way to remove them from this register
+	}
+
+	public void kill(ExecutionProcess process) {
+		String processUuid = process.getUuid();
+		if (runningProcesses.containsKey(processUuid)) {
+			runningProcesses.get(processUuid).interrupt();
+		}
 	}
 
 	/** Creates the thread which will coordinate the execution for this agent. */
 	protected ProcessThread createProcessThread(
+			ThreadGroup processesThreadGroup,
 			ExecutionModulesManager modulesManager, ExecutionProcess process) {
 		if (!(process instanceof SlcExecution))
 			throw new SlcException("Unsupported process type "
 					+ process.getClass());
-		ProcessThread processThread = new ProcessThread(modulesManager,
-				(SlcExecution) process);
+		ProcessThread processThread = new ProcessThread(processesThreadGroup,
+				modulesManager, (SlcExecution) process);
 		return processThread;
 	}
 
@@ -95,6 +119,21 @@ public class DefaultAgent implements SlcAgent {
 
 	public boolean ping() {
 		return true;
+	}
+
+	/*
+	 * PROCESS NOTIFIER
+	 */
+	public void updateStatus(ExecutionProcess process, String oldStatus,
+			String newStatus) {
+		if (newStatus.equals(ExecutionProcess.COMPLETED)
+				|| newStatus.equals(ExecutionProcess.ERROR)
+				|| newStatus.equals(ExecutionProcess.KILLED)) {
+			runningProcesses.remove(process.getUuid());
+		}
+	}
+
+	public void addSteps(ExecutionProcess process, List<ExecutionStep> steps) {
 	}
 
 	/*

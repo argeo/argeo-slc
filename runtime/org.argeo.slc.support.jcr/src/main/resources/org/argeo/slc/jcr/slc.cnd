@@ -65,6 +65,7 @@ mixin
 // - slc:spec (STRING)
 - slc:started (DATE)
 - slc:completed (DATE)
+//- slc:status (STRING)
 + slc:address (nt:address)
 + slc:flow (slc:realizedFlow) *
 // the realized execution spec attributes

@@ -6,6 +6,11 @@ package org.argeo.slc.execution;
  * during and after the execution actually took place, providing an entry point
  * for the definition of executions, their monitoring (e.g. logging) and
  * tracking. A process can be distributed or parallelized.
+ * <br/>
+ * NEW => INITIALIZED => SCHEDULED => RUNNING<br/>
+ * RUNNING => {COMPLETED | ERROR | KILLED}<br/>
+ * {COMPLETED | ERROR | KILLED} => PURGED<br/>
+ * UNKOWN : this is a bug if this status occurs<br/>
  */
 public interface ExecutionProcess {
 	/** The process is not yet usable. */
@@ -20,6 +25,8 @@ public interface ExecutionProcess {
 	public final static String COMPLETED = "COMPLETED";
 	/** The process failed because of an unexpected error. */
 	public final static String ERROR = "ERROR";
+	/** The process was killed explicitly or through a crash. */
+	public final static String KILLED = "KILLED";
 	/** The status cannot be retrieved (probably because of unexpected errors). */
 	public final static String UNKOWN = "UNKOWN";
 

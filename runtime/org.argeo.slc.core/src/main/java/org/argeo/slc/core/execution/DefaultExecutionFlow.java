@@ -36,6 +36,7 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.validation.MapBindingResult;
 
+/** Default implementation of an execution flow. */
 public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		BeanNameAware {
 	private final static Log log = LogFactory
@@ -83,13 +84,13 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 			ExecutionSpecAttribute attr = executionSpec.getAttributes()
 					.get(key);
 
-			if (attr.getIsParameter() && !isSetAsParameter(key)) {
-				errors.rejectValue(key, "Parameter not set");
+			if (attr.getIsImmutable() && !isSetAsParameter(key)) {
+				errors.rejectValue(key, "Immutable but not set");
 				break;
 			}
 
-			if (attr.getIsFrozen() && !isSetAsParameter(key)) {
-				errors.rejectValue(key, "Frozen but not set as parameter");
+			if (attr.getIsConstant() && !isSetAsParameter(key)) {
+				errors.rejectValue(key, "Constant but not set as parameter");
 				break;
 			}
 
@@ -108,9 +109,23 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	public void run() {
 		try {
 			for (Runnable executable : executables) {
+				if (Thread.interrupted()) {
+					log.error("Flow '" + getName() + "' killed before '"
+							+ executable + "'");
+					Thread.currentThread().interrupt();
+					return;
+					// throw new ThreadDeath();
+				}
 				this.doExecuteRunnable(executable);
 			}
 		} catch (RuntimeException e) {
+			if (Thread.interrupted()) {
+				log.error("Flow '" + getName()
+						+ "' killed while receiving an unrelated exception", e);
+				Thread.currentThread().interrupt();
+				return;
+				// throw new ThreadDeath();
+			}
 			if (failOnError)
 				throw e;
 			else {

@@ -42,7 +42,7 @@ public class ExecutionThread extends Thread {
 	public void run() {
 		if (getContextClassLoader() != null) {
 			if (log.isTraceEnabled())
-				log.debug("Context class loader set to "
+				log.trace("Context class loader set to "
 						+ getContextClassLoader());
 		}
 

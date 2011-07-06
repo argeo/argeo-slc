@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -24,9 +25,12 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.editor.FormEditor;
 
+/** Editor for an execution process. */
 public class ProcessEditor extends FormEditor implements
 		ExecutionProcessNotifier, SlcTypes, SlcNames {
 	public final static String ID = ClientUiPlugin.ID + ".processEditor";
@@ -96,7 +100,7 @@ public class ProcessEditor extends FormEditor implements
 	}
 
 	/** Actually runs the process. */
-	public void process() {
+	void process() {
 		// the modifications have to be saved before execution
 		try {
 			processNode.setProperty(SLC_STATUS, ExecutionProcess.SCHEDULED);
@@ -105,6 +109,9 @@ public class ProcessEditor extends FormEditor implements
 		}
 		doSave(null);
 		try {
+			// show log
+			// setActivePage(logPage.getId());
+
 			ExecutionProcess process = processController.process(processNode);
 			Map<String, String> properties = new HashMap<String, String>();
 			properties.put(ExecutionModulesManager.SLC_PROCESS_ID,
@@ -112,6 +119,56 @@ public class ProcessEditor extends FormEditor implements
 			modulesManager.registerProcessNotifier(this, properties);
 		} catch (Exception e) {
 			Error.show("Execution of " + processNode + " failed", e);
+		}
+	}
+
+	void kill() {
+		processController.kill(processNode);
+	}
+
+	/** Opens a new editor with a copy of this process */
+	void relaunch() {
+		try {
+			Node duplicatedNode = duplicateProcess();
+			IWorkbenchPage activePage = PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage();
+			activePage.openEditor(
+					new ProcessEditorInput(duplicatedNode.getPath()),
+					ProcessEditor.ID);
+			close(false);
+		} catch (Exception e1) {
+			throw new SlcException("Cannot relaunch " + processNode, e1);
+		}
+	}
+
+	/** Duplicates the process */
+	protected Node duplicateProcess() {
+		try {
+			Session session = processNode.getSession();
+			String uuid = UUID.randomUUID().toString();
+			String destPath = SlcJcrUtils.createExecutionProcessPath(uuid);
+			Node newNode = JcrUtils.mkdirs(session, destPath,
+					SlcTypes.SLC_PROCESS);
+
+			// copy node
+			JcrUtils.copy(processNode, newNode);
+
+			newNode.setProperty(SLC_UUID, uuid);
+			newNode.setProperty(SLC_STATUS, ExecutionProcess.INITIALIZED);
+
+			// reset realized flow status
+			Node rootRealizedFlowNode = newNode.getNode(SLC_FLOW);
+			// we just manage one level for the time being
+			NodeIterator nit = rootRealizedFlowNode.getNodes(SLC_FLOW);
+			while (nit.hasNext()) {
+				nit.nextNode().setProperty(SLC_STATUS,
+						ExecutionProcess.INITIALIZED);
+			}
+
+			session.save();
+			return newNode;
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot duplicate process", e);
 		}
 	}
 

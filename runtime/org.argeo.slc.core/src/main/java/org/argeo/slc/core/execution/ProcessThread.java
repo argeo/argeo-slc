@@ -17,6 +17,7 @@
 package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -37,29 +38,37 @@ public class ProcessThread extends Thread {
 	private final ExecutionProcess process;
 	private final ProcessThreadGroup processThreadGroup;
 
-	private Set<ExecutionThread> executionThreads = new HashSet<ExecutionThread>();
+	private Set<ExecutionThread> executionThreads = Collections
+			.synchronizedSet(new HashSet<ExecutionThread>());
 
 	private Boolean hadAnError = false;
+	private Boolean killed = false;
 
-	public ProcessThread(ExecutionModulesManager executionModulesManager,
+	public ProcessThread(ThreadGroup processesThreadGroup,
+			ExecutionModulesManager executionModulesManager,
 			ExecutionProcess process) {
-		super(executionModulesManager.getProcessesThreadGroup(),
-				"SLC Process #" + process.getUuid());
+		super(processesThreadGroup, "SLC Process #" + process.getUuid());
 		this.executionModulesManager = executionModulesManager;
 		this.process = process;
 		processThreadGroup = new ProcessThreadGroup(executionModulesManager,
 				this);
 	}
 
-	public void run() {
+	public final void run() {
 		log.info("\n##\n## SLC Process #" + process.getUuid()
 				+ " STARTED\n##\n");
 
-		process.setStatus(SlcExecution.RUNNING);
-		executionModulesManager.dispatchUpdateStatus(process,
-				SlcExecution.SCHEDULED, SlcExecution.RUNNING);
+		String oldStatus = process.getStatus();
+		process.setStatus(ExecutionProcess.RUNNING);
+		executionModulesManager.dispatchUpdateStatus(process, oldStatus,
+				ExecutionProcess.RUNNING);
 
-		process();
+		try {
+			process();
+		} catch (InterruptedException e) {
+			die();
+			return;
+		}
 
 		// waits for all execution threads to complete (in case they were
 		// started asynchronously)
@@ -68,28 +77,51 @@ public class ProcessThread extends Thread {
 				try {
 					executionThread.join();
 				} catch (InterruptedException e) {
-					log.error("Execution thread " + executionThread
-							+ " was interrupted");
+					die();
+					return;
 				}
 			}
 		}
 
-		// TODO: error management at flow level?
-		if (hadAnError)
-			process.setStatus(SlcExecution.ERROR);
-		else
-			process.setStatus(SlcExecution.COMPLETED);
-		executionModulesManager.dispatchUpdateStatus(process,
-				SlcExecution.RUNNING, process.getStatus());
+		computeFinalStatus();
+	}
 
-		log.info("\n## SLC Process #" + process.getUuid() + " COMPLETED\n");
+	/** Make sure this is called BEFORE all the threads are interrupted. */
+	private void computeFinalStatus() {
+		String oldStatus = process.getStatus();
+		// TODO: error management at flow level?
+		if (killed)
+			process.setStatus(ExecutionProcess.KILLED);
+		else if (hadAnError)
+			process.setStatus(ExecutionProcess.ERROR);
+		else
+			process.setStatus(ExecutionProcess.COMPLETED);
+		executionModulesManager.dispatchUpdateStatus(process, oldStatus,
+				process.getStatus());
+		log.info("\n## SLC Process #" + process.getUuid() + " "
+				+ process.getStatus() + "\n");
+	}
+
+	/** Called when being killed */
+	private synchronized void die() {
+		killed = true;
+		computeFinalStatus();
+		for (ExecutionThread executionThread : executionThreads) {
+			try {
+				executionThread.interrupt();
+			} catch (Exception e) {
+				log.error("Cannot interrupt " + executionThread);
+			}
+		}
+		processThreadGroup.interrupt();
 	}
 
 	/**
 	 * Implementation specific execution. To be overridden in order to deal with
 	 * custom process types. Default expects an {@link SlcExecution}.
 	 */
-	protected void process() {
+	@SuppressWarnings("deprecation")
+	protected void process() throws InterruptedException {
 		if (!(process instanceof SlcExecution))
 			throw new SlcException("Unsupported process type "
 					+ process.getClass());
@@ -104,27 +136,19 @@ public class ProcessThread extends Thread {
 	}
 
 	/** @return the (distinct) thread used for this execution */
-	protected Thread execute(RealizedFlow realizedFlow, Boolean synchronous) {
+	protected final void execute(RealizedFlow realizedFlow, Boolean synchronous)
+			throws InterruptedException {
+		if (killed)
+			return;
+
 		ExecutionThread thread = new ExecutionThread(this, realizedFlow);
 		executionThreads.add(thread);
 		thread.start();
 
-		if (synchronous) {
-			try {
-				thread.join();
-			} catch (InterruptedException e) {
-				log.error("Flow " + realizedFlow + " was interrupted", e);
-			}
-		}
-		return thread;
+		if (synchronous)
+			thread.join();
 
-		// synchronized (this) {
-		// try {
-		// wait();
-		// } catch (InterruptedException e) {
-		// // silent
-		// }
-		// }
+		return;
 	}
 
 	public void notifyError() {
