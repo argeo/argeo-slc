@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:flow="http://www.argeo.org/schema/slc-flow" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
+
+	<!-- Hello world -->
+	<flow:flow name="hello/HelloWorld">
+		<description>Print Hello World!</description>
+		<bean p:message="Hello World!" class="org.argeo.slc.core.execution.tasks.Echo" />
+	</flow:flow>
+
+	<flow:spec id="helloSpec">
+		<flow:primitive name="testKey" value="777" isParameter="false" />
+	</flow:spec>
+
+	<flow:flow name="hello/HelloWorldWithVar" spec="helloSpec">
+		<description>Print Hello World! with variable</description>
+		<bean p:message="Hello World! @{testKey}" class="org.argeo.slc.core.execution.tasks.Echo">
+			<flow:variable proxy-target-class="false" />
+		</bean>
+	</flow:flow>
+
+</beans>

@@ -6,15 +6,5 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<import resource="classpath:org/argeo/slc/core/execution/runtime.xml" />
-
-	<bean id="executionContext" class="org.argeo.slc.core.execution.MapExecutionContext"
-		scope="execution">
-		<aop:scoped-proxy proxy-target-class="false"/>
-	</bean>
-
-	<bean id="executionFlowDescriptorConverter"
-		class="org.argeo.slc.core.execution.DefaultExecutionFlowDescriptorConverter" />
-
-
+	<import resource="classpath:org/argeo/slc/core/execution/simple.xml" />
 </beans>

@@ -110,7 +110,7 @@ public class ProcessEditor extends FormEditor implements
 		doSave(null);
 		try {
 			// show log
-			// setActivePage(logPage.getId());
+			setActivePage(logPage.getId());
 
 			ExecutionProcess process = processController.process(processNode);
 			Map<String, String> properties = new HashMap<String, String>();

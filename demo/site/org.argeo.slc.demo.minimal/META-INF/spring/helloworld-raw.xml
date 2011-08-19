@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd"
+	>
+
+	<!-- Hello world without namespace (for reference, do not use) -->
+	<bean name="hello/raw/HelloWorld" class="org.argeo.slc.core.execution.DefaultExecutionFlow">
+		<description>Print Hello World!</description>
+		<property name="executables">
+			<list>
+				<bean p:message="Hello World!" class="org.argeo.slc.core.execution.tasks.Echo" />
+			</list>
+		</property>
+	</bean>
+
+	<bean name="hello/raw/HelloWorldWithVar" class="org.argeo.slc.core.execution.DefaultExecutionFlow">
+		<description>Print Hello World! with variable</description>
+		<constructor-arg>
+			<bean class="org.argeo.slc.core.execution.DefaultExecutionSpec">
+				<property name="attributes">
+					<map>
+						<entry key="testKey">
+							<bean p:value="777"
+								class="org.argeo.slc.core.execution.PrimitiveSpecAttribute" />
+						</entry>
+					</map>
+				</property>
+			</bean>
+		</constructor-arg>
+		<property name="executables">
+			<list>
+				<bean p:message="Hello World! @{testKey}" class="org.argeo.slc.core.execution.tasks.Echo"
+					scope="execution">
+					<aop:scoped-proxy proxy-target-class="false" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+</beans>

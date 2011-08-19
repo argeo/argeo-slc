@@ -63,7 +63,7 @@ public class ExecutionFlowDescriptor implements Serializable {
 	}
 
 	/**
-	 * @deprecated will be removed in SLC 2.0, the path should be the part of
+	 * @deprecated will be removed in SLC 2.x, the path should be the part of
 	 *             the name with '/'
 	 */
 	public String getPath() {

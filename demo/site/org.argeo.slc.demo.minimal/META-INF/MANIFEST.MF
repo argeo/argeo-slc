@@ -3,8 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.argeo.slc.demo.minimal
 Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-Name: SLC Demo Minimal
-Bundle-Description: Minimal functioning execution module
-Spring-Context: slc/*
+Bundle-Description: Minimal execution module to be used as a template
 Import-Package: org.aopalliance.aop,
  org.argeo.slc.core.execution,
  org.argeo.slc.core.execution.tasks,

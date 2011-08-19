@@ -40,7 +40,6 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 /**
@@ -59,6 +58,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 
 	private ApplicationContext applicationContext;
 
+	@SuppressWarnings("unused")
 	public Map<String, Object> convertValues(
 			ExecutionFlowDescriptor executionFlowDescriptor) {
 		Map<String, Object> values = executionFlowDescriptor.getValues();
@@ -78,7 +78,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 					throw new SlcException("No spec attribute defined for '"
 							+ key + "'");
 
-				if (attribute.getIsFrozen())
+				if (attribute.getIsConstant())
 					continue values;
 
 				Object value = values.get(key);
@@ -163,14 +163,19 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		md.getExecutionFlows().addAll(set);
 	}
 
+	@SuppressWarnings("deprecation")
 	public ExecutionFlowDescriptor getExecutionFlowDescriptor(
 			ExecutionFlow executionFlow) {
-		Assert.notNull(executionFlow.getName());
+		if (executionFlow.getName() == null)
+			throw new SlcException("Flow name is null: " + executionFlow);
 		String name = executionFlow.getName();
 
 		ExecutionSpec executionSpec = executionFlow.getExecutionSpec();
-		Assert.notNull(executionSpec);
-		Assert.notNull(executionSpec.getName());
+		if (executionSpec == null)
+			throw new SlcException("Execution spec is null: " + executionFlow);
+		if (executionSpec.getName() == null)
+			throw new SlcException("Execution spec name is null: "
+					+ executionSpec);
 
 		Map<String, Object> values = new TreeMap<String, Object>();
 		for (String key : executionSpec.getAttributes().keySet()) {
@@ -190,7 +195,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 					// all necessary information is in the spec
 				}
 			} else if (attribute instanceof RefSpecAttribute) {
-				if (attribute.getIsFrozen()) {
+				if (attribute.getIsConstant()) {
 					values.put(key, new RefValue(REF_VALUE_INTERNAL));
 				} else
 					values.put(
@@ -223,7 +228,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		RefValue refValue = new RefValue();
 		// FIXME: UI should be able to deal with other types
 		refValue.setType(REF_VALUE_TYPE_BEAN_NAME);
-		Class targetClass = rsa.getTargetClass();
+		Class<?> targetClass = rsa.getTargetClass();
 		String primitiveType = PrimitiveUtils.classAsType(targetClass);
 		if (primitiveType != null) {
 			if (executionFlow.isSetAsParameter(key)) {
@@ -294,6 +299,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 
 	private static class ExecutionFlowDescriptorComparator implements
 			Comparator<ExecutionFlowDescriptor> {
+		@SuppressWarnings("deprecation")
 		public int compare(ExecutionFlowDescriptor o1,
 				ExecutionFlowDescriptor o2) {
 			// TODO: write unit tests for this
