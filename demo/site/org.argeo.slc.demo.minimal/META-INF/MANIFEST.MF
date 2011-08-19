@@ -1,8 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: SLC Demo Minimal
 Bundle-SymbolicName: org.argeo.slc.demo.minimal
 Bundle-Version: 0.13.1.SNAPSHOT
+Bundle-Name: SLC Demo Minimal
+Bundle-Description: Minimal functioning execution module
 Spring-Context: slc/*
 Import-Package: org.aopalliance.aop,
  org.argeo.slc.core.execution,
@@ -13,4 +14,3 @@ Import-Package: org.aopalliance.aop,
  org.springframework.aop.framework,
  org.springframework.aop.scope,
  org.springframework.beans.factory.config
-Bundle-Description: Minimal functioning execution module
