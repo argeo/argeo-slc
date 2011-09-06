@@ -17,11 +17,6 @@
             id="org.argeo.slc.client.ui.dist.modulesView"
             name="Modules">
       </view>
-	   <view
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         id="org.argeo.slc.client.ui.dist.distributionView"
-	         name="Distribution">
-	   </view>
    </extension>
    <extension
            point="org.eclipse.ui.editors">

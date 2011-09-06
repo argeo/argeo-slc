@@ -5,10 +5,10 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- Views -->
-	<bean id="org.argeo.slc.client.ui.dist.distributionView" class="org.argeo.slc.client.ui.dist.views.DistributionView"
-		scope="prototype">
-		<property name="repositoryRegister" ref="repositoryRegister" />
-	</bean>
+<!-- 	<bean id="org.argeo.slc.client.ui.dist.distributionView" class="org.argeo.slc.client.ui.dist.views.DistributionView" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="repositoryRegister" ref="repositoryRegister" /> -->
+<!-- 	</bean> -->
 
 <!--	<bean id="jcrSession" class="org.argeo.jcr.ThreadBoundJcrSessionFactory">-->
 <!--		<property name="repository" ref="jcrRepository" />-->
