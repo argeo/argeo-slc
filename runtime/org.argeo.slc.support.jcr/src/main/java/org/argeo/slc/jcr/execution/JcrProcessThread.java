@@ -108,20 +108,20 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 			Map<String, ExecutionSpecAttribute> attrs = readExecutionSpecAttributes(realizedFlowNode);
 			Map<String, Object> values = new HashMap<String, Object>();
 			for (String attrName : attrs.keySet()) {
-				if (flowNode.hasNode(attrName)) {
-					// we assume this is a primitive
-					// since ref are not yet implemented
-					Node valueNode = flowNode.getNode(attrName);
-					String type = valueNode.getProperty(SLC_TYPE).getString();
-					String valueStr = valueNode.getProperty(SLC_VALUE)
-							.getString();
-					Object value = PrimitiveUtils.convert(type, valueStr);
-					values.put(attrName, value);
-				} else {
+//				if (flowNode.hasNode(attrName)) {
+//					// we assume this is a primitive
+//					// since ref are not yet implemented
+//					Node valueNode = flowNode.getNode(attrName);
+//					String type = valueNode.getProperty(SLC_TYPE).getString();
+//					String valueStr = valueNode.getProperty(SLC_VALUE)
+//							.getString();
+//					Object value = PrimitiveUtils.convert(type, valueStr);
+//					values.put(attrName, value);
+//				} else {
 					ExecutionSpecAttribute attr = attrs.get(attrName);
 					Object value = attr.getValue();
 					values.put(attrName, value);
-				}
+//				}
 			}
 
 			// if(executionSpec!=null)
