@@ -22,6 +22,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,6 +64,7 @@ public class SystemCall implements Runnable {
 	private String cmd = null;
 	private List<Object> command = null;
 
+	private Executor executor = new DefaultExecutor();
 	private Boolean synchronous = true;
 
 	private String stdErrLogLevel = "ERROR";
@@ -69,7 +72,14 @@ public class SystemCall implements Runnable {
 
 	private Resource stdOutFile = null;
 	private Resource stdErrFile = null;
+
 	private Resource stdInFile = null;
+	/**
+	 * If no {@link #stdInFile} provided, writing to this stream will write to
+	 * the stdin of the process.
+	 */
+	private OutputStream stdInSink = null;
+
 	private Boolean redirectStdOut = false;
 
 	private List<SystemCallOutputListener> outputListeners = Collections
@@ -87,6 +97,7 @@ public class SystemCall implements Runnable {
 	private String osConsole = null;
 	private String generateScript = null;
 
+	/** 24 hours */
 	private Long watchdogTimeout = 24 * 60 * 60 * 1000l;
 
 	private TestResult testResult;
@@ -145,13 +156,17 @@ public class SystemCall implements Runnable {
 				stdErrWriter = createWriter(stdOutFile, true);
 		}
 
-		if (stdInFile != null)
-			try {
+		try {
+			if (stdInFile != null)
 				stdInStream = stdInFile.getInputStream();
-			} catch (IOException e2) {
-				throw new SlcException("Cannot open a stream for " + stdInFile,
-						e2);
+			else {
+				stdInStream = new PipedInputStream();
+				stdInSink = new PipedOutputStream(
+						(PipedInputStream) stdInStream);
 			}
+		} catch (IOException e2) {
+			throw new SlcException("Cannot open a stream for " + stdInFile, e2);
+		}
 
 		if (log.isTraceEnabled()) {
 			log.debug("os.name=" + System.getProperty("os.name"));
@@ -165,20 +180,24 @@ public class SystemCall implements Runnable {
 			dir.mkdirs();
 
 		// Watchdog to check for lost processes
-		Executor executor = new DefaultExecutor();
-		executor.setWatchdog(new ExecuteWatchdog(watchdogTimeout));
+		Executor executorToUse;
+		if (executor != null)
+			executorToUse = executor;
+		else
+			executorToUse = new DefaultExecutor();
+		executorToUse.setWatchdog(new ExecuteWatchdog(watchdogTimeout));
 
 		if (redirectStreams) {
 			// Redirect standard streams
-			executor.setStreamHandler(createExecuteStreamHandler(stdOutWriter,
-					stdOutputStream, stdErrWriter, stdInStream));
+			executorToUse.setStreamHandler(createExecuteStreamHandler(
+					stdOutWriter, stdOutputStream, stdErrWriter, stdInStream));
 		} else {
 			// Dummy stream handler (otherwise pump is used)
-			executor.setStreamHandler(new DummyexecuteStreamHandler());
+			executorToUse.setStreamHandler(new DummyexecuteStreamHandler());
 		}
 
-		executor.setProcessDestroyer(new ShutdownHookProcessDestroyer());
-		executor.setWorkingDirectory(dir);
+		executorToUse.setProcessDestroyer(new ShutdownHookProcessDestroyer());
+		executorToUse.setWorkingDirectory(dir);
 
 		// Command line to use
 		final CommandLine commandLine = createCommandLine();
@@ -188,12 +207,11 @@ public class SystemCall implements Runnable {
 
 		// Env variables
 		Map<String, String> environmentVariablesToUse = null;
-		if (environmentVariables.size() > 0) {
-			environmentVariablesToUse = new HashMap<String, String>();
-			if (mergeEnvironmentVariables)
-				environmentVariablesToUse.putAll(System.getenv());
+		environmentVariablesToUse = new HashMap<String, String>();
+		if (mergeEnvironmentVariables)
+			environmentVariablesToUse.putAll(System.getenv());
+		if (environmentVariables.size() > 0)
 			environmentVariablesToUse.putAll(environmentVariables);
-		}
 
 		// Execute
 		ExecuteResultHandler executeResultHandler = createExecuteResultHandler(commandLine);
@@ -204,7 +222,7 @@ public class SystemCall implements Runnable {
 		try {
 			if (synchronous)
 				try {
-					int exitValue = executor.execute(commandLine,
+					int exitValue = executorToUse.execute(commandLine,
 							environmentVariablesToUse);
 					executeResultHandler.onProcessComplete(exitValue);
 				} catch (ExecuteException e1) {
@@ -215,7 +233,7 @@ public class SystemCall implements Runnable {
 					executeResultHandler.onProcessFailed(e1);
 				}
 			else
-				executor.execute(commandLine, environmentVariablesToUse,
+				executorToUse.execute(commandLine, environmentVariablesToUse,
 						executeResultHandler);
 		} catch (SlcException e) {
 			throw e;
@@ -226,6 +244,7 @@ public class SystemCall implements Runnable {
 			IOUtils.closeQuietly(stdOutWriter);
 			IOUtils.closeQuietly(stdErrWriter);
 			IOUtils.closeQuietly(stdInStream);
+			IOUtils.closeQuietly(stdInSink);
 		}
 
 	}
@@ -345,7 +364,17 @@ public class SystemCall implements Runnable {
 						if (stdErrWriter != null)
 							appendLineToFile(stdErrWriter, line);
 					}
-				}, stdInStream);
+				}, stdInStream) {
+
+			@Override
+			public void stop() {
+				// prevents the method to block when joining stdin
+				if (stdInSink != null)
+					IOUtils.closeQuietly(stdInSink);
+
+				super.stop();
+			}
+		};
 		return pumpStreamHandler;
 	}
 
@@ -603,6 +632,10 @@ public class SystemCall implements Runnable {
 		this.outputListeners = outputListeners;
 	}
 
+	public void setExecutor(Executor executor) {
+		this.executor = executor;
+	}
+
 	private class DummyexecuteStreamHandler implements ExecuteStreamHandler {
 
 		public void setProcessErrorStream(InputStream is) throws IOException {
@@ -621,5 +654,4 @@ public class SystemCall implements Runnable {
 		}
 
 	}
-
 }

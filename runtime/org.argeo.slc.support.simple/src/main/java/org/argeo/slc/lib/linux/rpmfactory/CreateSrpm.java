@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.exec.Executor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -22,7 +23,7 @@ public class CreateSrpm implements Runnable {
 
 	private File topdir;
 
-	/** Directory where to cache downloaded dsitributions. */
+	/** Directory where to cache downloaded distributions. */
 	private File distributionCache;
 
 	private Resource specFile;
@@ -32,6 +33,8 @@ public class CreateSrpm implements Runnable {
 	private Boolean overwriteSources = false;
 
 	private File srpmFile;
+
+	private Executor executor;
 
 	public void run() {
 		File sourcesDir = new File(topdir, "SOURCES");
@@ -58,12 +61,15 @@ public class CreateSrpm implements Runnable {
 			packageSrpm.arg("rpmbuild");
 			packageSrpm.arg("-bs").arg("--nodeps");
 			packageSrpm.arg("--rcfile=rpmrc");
+			packageSrpm.arg("--macros=" + RpmBuildEnvironment.defaultMacroFiles
+					+ ":rpmmacros");
 			// buildSrpm.arg("-D", "_topdir " + topdir.getCanonicalPath() + "");
 			packageSrpm.arg("SPECS/" + specFile.getFilename());
 			packageSrpm.setExecDir(topdir.getCanonicalPath());
 			packageSrpm.setLogCommand(true);
 
 			// Execute
+			packageSrpm.setExecutor(executor);
 			String answer = packageSrpm.function();
 
 			// Extract generated SRPM path
@@ -131,8 +137,8 @@ public class CreateSrpm implements Runnable {
 				if (!targetFile.exists() || overwriteSources)
 					copyResourceToFile(res, targetFile);
 				if (!targetDir.equals(sourcesDir)) {
-					File fileInSourcesDir = new File(sourcesDir, targetFile
-							.getName());
+					File fileInSourcesDir = new File(sourcesDir,
+							targetFile.getName());
 					if (!fileInSourcesDir.exists()
 							|| !(fileInSourcesDir.length() == targetFile
 									.length()))
@@ -196,6 +202,10 @@ public class CreateSrpm implements Runnable {
 
 	public void setDistributionCache(File distributionCache) {
 		this.distributionCache = distributionCache;
+	}
+
+	public void setExecutor(Executor executor) {
+		this.executor = executor;
 	}
 
 }

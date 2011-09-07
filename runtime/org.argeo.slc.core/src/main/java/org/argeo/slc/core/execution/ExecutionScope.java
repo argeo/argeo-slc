@@ -27,6 +27,10 @@ import org.argeo.slc.execution.ExecutionStack;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.config.Scope;
 
+/**
+ * When Spring beans are instantiated with this scope, the same instance is
+ * reused across an execution.
+ */
 public class ExecutionScope implements Scope {
 	private final static Log log = LogFactory.getLog(ExecutionScope.class);
 

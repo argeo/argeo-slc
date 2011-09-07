@@ -74,10 +74,14 @@
 			<artifactId>com.springsource.org.tmatesoft.svn</artifactId>
 		</dependency>
 
-		<!-- Commons VFS -->
+		<!-- Commons -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>com.springsource.org.apache.commons.vfs</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.dep.osgi</groupId>
+			<artifactId>org.argeo.dep.osgi.commons.exec</artifactId>
 		</dependency>
 
 		<dependency>

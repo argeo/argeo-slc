@@ -1,12 +1,13 @@
 package org.argeo.slc.execution;
 
+import java.util.List;
+
 /**
  * A process is the functional representation of a combination of executions.
  * While an execution is the actual java code running, a process exists before,
  * during and after the execution actually took place, providing an entry point
  * for the definition of executions, their monitoring (e.g. logging) and
- * tracking. A process can be distributed or parallelized.
- * <br/>
+ * tracking. A process can be distributed or parallelized. <br/>
  * NEW => INITIALIZED => SCHEDULED => RUNNING<br/>
  * RUNNING => {COMPLETED | ERROR | KILLED}<br/>
  * {COMPLETED | ERROR | KILLED} => PURGED<br/>
@@ -44,4 +45,6 @@ public interface ExecutionProcess {
 
 	/** Sets the current status of this process */
 	public void setStatus(String status);
+
+	public void addSteps(List<ExecutionStep> steps);
 }

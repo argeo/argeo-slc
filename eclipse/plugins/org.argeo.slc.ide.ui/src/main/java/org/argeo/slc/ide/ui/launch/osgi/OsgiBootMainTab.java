@@ -45,31 +45,14 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 		container.setLayout(new GridLayout());
 		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-		createGeneral(container);
 		createAdditionalProgramArgs(container);
 		createAdditionalVmArgumentBlock(container);
+		createAdvanced(container);
 		Dialog.applyDialogFont(container);
 		setControl(container);
 	}
 
-	protected void createGeneral(Composite parent) {
-		Group container = new Group(parent, SWT.NONE);
-		container.setText("General");
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		container.setLayout(layout);
-		container.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-		syncBundles = new Button(container, SWT.CHECK);
-		syncBundles.addSelectionListener(listener);
-		new Label(container, SWT.NONE)
-				.setText("Keep bundles in line with target platform and workspace (recommended)");
-		clearDataDirectory = new Button(container, SWT.CHECK);
-		clearDataDirectory.addSelectionListener(listener);
-		new Label(container, SWT.NONE)
-				.setText("Clear data directory before launch");
-	}
-
+	/** Init UI for programs arguments */
 	protected void createAdditionalProgramArgs(Composite parent) {
 		Group container = new Group(parent, SWT.NONE);
 		container.setText("Additional Program Arguments");
@@ -88,6 +71,7 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 		additionalProgramArgs.addModifyListener(listener);
 	}
 
+	/** Init UI for VM arguments */
 	protected void createAdditionalVmArgumentBlock(Composite parent) {
 		Group container = new Group(parent, SWT.NONE);
 		container.setText("Additional VM Arguments");
@@ -104,6 +88,26 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 		gd.horizontalSpan = 2;
 		additionalVmArgs.setLayoutData(gd);
 		additionalVmArgs.addModifyListener(listener);
+
+	}
+
+	/** Init UI for Advanced section */
+	protected void createAdvanced(Composite parent) {
+		Group container = new Group(parent, SWT.NONE);
+		container.setText("Advanced");
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 2;
+		container.setLayout(layout);
+		container.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		syncBundles = new Button(container, SWT.CHECK);
+		syncBundles.addSelectionListener(listener);
+		new Label(container, SWT.NONE)
+				.setText("Keep bundles in line with target platform and workspace (recommended)");
+		clearDataDirectory = new Button(container, SWT.CHECK);
+		clearDataDirectory.addSelectionListener(listener);
+		new Label(container, SWT.NONE)
+				.setText("Clear data directory before launch");
 
 		addJvmPaths = new Button(container, SWT.CHECK);
 		addJvmPaths.addSelectionListener(listener);

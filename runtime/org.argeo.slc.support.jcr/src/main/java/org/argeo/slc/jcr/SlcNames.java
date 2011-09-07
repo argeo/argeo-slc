@@ -18,6 +18,8 @@ public interface SlcNames {
 	public final static String SLC_SPEC = "slc:spec";
 	public final static String SLC_EXECUTION_SPECS = "slc:executionSpecs";
 	public final static String SLC_FLOW = "slc:flow";
+	public final static String SLC_LOG = "slc:log";
+	public final static String SLC_TIMESTAMP = "slc:timestamp";
 
 	// spec attribute
 	public final static String SLC_IS_IMMUTABLE = "slc:isImmutable";

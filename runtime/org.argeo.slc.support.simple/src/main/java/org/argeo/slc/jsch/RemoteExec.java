@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -66,6 +67,9 @@ public class RemoteExec extends AbstractJschTask {
 
 	private String user;
 
+	private ExecuteStreamHandler streamHandler = null;
+
+	private Integer lastExitStatus = null;
 	/**
 	 * If set, stdout is written to it as a list of lines. Cleared before each
 	 * run.
@@ -106,8 +110,8 @@ public class RemoteExec extends AbstractJschTask {
 				throw new SlcException("Cannot specify commands and script");
 			BufferedReader reader = null;
 			try {
-				reader = new BufferedReader(new InputStreamReader(script
-						.getInputStream()));
+				reader = new BufferedReader(new InputStreamReader(
+						script.getInputStream()));
 				String line = null;
 				while ((line = reader.readLine()) != null) {
 					if (!StringUtils.hasText(line))
@@ -256,25 +260,20 @@ public class RemoteExec extends AbstractJschTask {
 				log.debug("Run '" + command + "' on " + getSshTarget() + "...");
 			channel.connect();
 
-			if (stdIn != null) {
-				Thread stdInThread = new Thread("Stdin " + getSshTarget()) {
-					@Override
-					public void run() {
-						OutputStream out = null;
-						try {
-							out = channel.getOutputStream();
-							IOUtils.copy(stdIn.getInputStream(), out);
-						} catch (IOException e) {
-							throw new SlcException("Cannot write stdin on "
-									+ getSshTarget(), e);
-						} finally {
-							IOUtils.closeQuietly(out);
-						}
-					}
-				};
-				stdInThread.start();
-			}
+			readStdIn(channel);
 			readStdOut(channel);
+
+			if (streamHandler != null){
+				streamHandler.start();
+				while(!channel.isClosed()){
+					try {
+						Thread.sleep(100);
+					} catch (Exception e) {
+						break;
+					}
+				}
+			}
+
 			checkExitStatus(channel);
 			channel.disconnect();
 		} catch (Exception e) {
@@ -283,76 +282,117 @@ public class RemoteExec extends AbstractJschTask {
 		}
 	}
 
-	protected void readStdErr(final ChannelExec channel) {
-		new Thread("stderr " + getSshTarget()) {
-			public void run() {
-				BufferedReader stdErr = null;
-				try {
-					InputStream in = channel.getErrStream();
-					stdErr = new BufferedReader(new InputStreamReader(in));
-					String line = null;
-					while ((line = stdErr.readLine()) != null) {
-						if (!line.trim().equals(""))
-							log.error(line);
-					}
-				} catch (IOException e) {
-					if (log.isDebugEnabled())
-						log.error("Cannot read stderr from " + getSshTarget(),
-								e);
-				} finally {
-					IOUtils.closeQuietly(stdErr);
-				}
-			}
-		}.start();
-	}
-
 	protected void readStdOut(Channel channel) {
-		if (stdOut != null) {
-			OutputStream localStdOut = createOutputStream(stdOut);
-			try {
-				IOUtils.copy(channel.getInputStream(), localStdOut);
-			} catch (IOException e) {
-				throw new SlcException("Cannot redirect stdout", e);
-			} finally {
-				IOUtils.closeQuietly(localStdOut);
-			}
-		} else {
-			BufferedReader stdOut = null;
-			try {
-				InputStream in = channel.getInputStream();
-				stdOut = new BufferedReader(new InputStreamReader(in));
-				String line = null;
-				while ((line = stdOut.readLine()) != null) {
-					if (!line.trim().equals("")) {
+		try {
+			if (stdOut != null) {
+				OutputStream localStdOut = createOutputStream(stdOut);
+				try {
+					IOUtils.copy(channel.getInputStream(), localStdOut);
+				} finally {
+					IOUtils.closeQuietly(localStdOut);
+				}
+			} else if (streamHandler != null) {
+				if (channel.getInputStream() != null)
+					streamHandler.setProcessOutputStream(channel
+							.getInputStream());
+			} else {
+				BufferedReader stdOut = null;
+				try {
+					InputStream in = channel.getInputStream();
+					stdOut = new BufferedReader(new InputStreamReader(in));
+					String line = null;
+					while ((line = stdOut.readLine()) != null) {
+						if (!line.trim().equals("")) {
 
-						if (stdOutLines != null) {
-							stdOutLines.add(line);
-							if (logEvenIfStdOutLines && !quiet)
-								log.info(line);
-						} else {
-							if (!quiet)
-								log.info(line);
+							if (stdOutLines != null) {
+								stdOutLines.add(line);
+								if (logEvenIfStdOutLines && !quiet)
+									log.info(line);
+							} else {
+								if (!quiet)
+									log.info(line);
+							}
 						}
 					}
+				} finally {
+					IOUtils.closeQuietly(stdOut);
 				}
+			}
+		} catch (IOException e) {
+			throw new SlcException("Cannot redirect stdout from "
+					+ getSshTarget(), e);
+		}
+	}
+
+	protected void readStdErr(final ChannelExec channel) {
+		if (streamHandler != null) {
+			try {
+				streamHandler.setProcessOutputStream(channel.getErrStream());
 			} catch (IOException e) {
-				if (log.isDebugEnabled())
-					log.error("Cannot read stdout from " + getSshTarget(), e);
-			} finally {
-				IOUtils.closeQuietly(stdOut);
+				throw new SlcException("Cannot read stderr from "
+						+ getSshTarget(), e);
+			}
+		} else {
+			new Thread("stderr " + getSshTarget()) {
+				public void run() {
+					BufferedReader stdErr = null;
+					try {
+						InputStream in = channel.getErrStream();
+						stdErr = new BufferedReader(new InputStreamReader(in));
+						String line = null;
+						while ((line = stdErr.readLine()) != null) {
+							if (!line.trim().equals(""))
+								log.error(line);
+						}
+					} catch (IOException e) {
+						if (log.isDebugEnabled())
+							log.error("Cannot read stderr from "
+									+ getSshTarget(), e);
+					} finally {
+						IOUtils.closeQuietly(stdErr);
+					}
+				}
+			}.start();
+		}
+	}
+
+	protected void readStdIn(final ChannelExec channel) {
+		if (stdIn != null) {
+			Thread stdInThread = new Thread("Stdin " + getSshTarget()) {
+				@Override
+				public void run() {
+					OutputStream out = null;
+					try {
+						out = channel.getOutputStream();
+						IOUtils.copy(stdIn.getInputStream(), out);
+					} catch (IOException e) {
+						throw new SlcException("Cannot write stdin on "
+								+ getSshTarget(), e);
+					} finally {
+						IOUtils.closeQuietly(out);
+					}
+				}
+			};
+			stdInThread.start();
+		} else if (streamHandler != null) {
+			try {
+				streamHandler.setProcessInputStream(channel.getOutputStream());
+			} catch (IOException e) {
+				throw new SlcException("Cannot write stdin on "
+						+ getSshTarget(), e);
 			}
 		}
 	}
 
 	protected void checkExitStatus(Channel channel) {
 		if (channel.isClosed()) {
-			int exitStatus = channel.getExitStatus();
-			if (exitStatus == 0) {
+			lastExitStatus = channel.getExitStatus();
+			if (lastExitStatus == 0) {
 				if (log.isTraceEnabled())
-					log.trace("Remote execution exit status: " + exitStatus);
+					log.trace("Remote execution exit status: " + lastExitStatus);
 			} else {
 				String msg = "Remote execution failed with " + " exit status: "
-						+ exitStatus;
+						+ lastExitStatus;
 				if (failOnBadExitStatus)
 					throw new SlcException(msg);
 				else
@@ -377,6 +417,14 @@ public class RemoteExec extends AbstractJschTask {
 			IOUtils.closeQuietly(out);
 		}
 		return out;
+	}
+
+	public Integer getLastExitStatus() {
+		return lastExitStatus;
+	}
+
+	public void setStreamHandler(ExecuteStreamHandler executeStreamHandler) {
+		this.streamHandler = executeStreamHandler;
 	}
 
 	public void setCommand(String command) {

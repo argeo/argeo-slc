@@ -51,8 +51,8 @@ public class ExecutionThread extends Thread {
 				.getFlowDescriptor();
 		String flowName = executionFlowDescriptor.getName();
 
-		dispatchAddStep(new ExecutionStep(ExecutionStep.PHASE_START, "Flow "
-				+ flowName));
+		dispatchAddStep(new ExecutionStep(realizedFlow.getModuleName(),
+				ExecutionStep.PHASE_START, "Flow " + flowName));
 
 		try {
 			String autoUpgrade = System
@@ -68,18 +68,22 @@ public class ExecutionThread extends Thread {
 			// TODO: re-throw exception ?
 			String msg = "Execution of flow " + flowName + " failed.";
 			log.error(msg, e);
-			dispatchAddStep(new ExecutionStep(ExecutionStep.ERROR, msg + " "
-					+ e.getMessage()));
+			dispatchAddStep(new ExecutionStep(realizedFlow.getModuleName(),
+					ExecutionStep.ERROR, msg + " " + e.getMessage()));
 			processThread.notifyError();
 		} finally {
 			processThread.flowCompleted();
-			dispatchAddStep(new ExecutionStep(ExecutionStep.PHASE_END, "Flow "
-					+ flowName));
+			dispatchAddStep(new ExecutionStep(realizedFlow.getModuleName(),
+					ExecutionStep.PHASE_END, "Flow " + flowName));
 		}
 	}
 
 	private void dispatchAddStep(ExecutionStep step) {
 		processThread.getProcessThreadGroup().dispatchAddStep(step);
+	}
+
+	public RealizedFlow getRealizedFlow() {
+		return realizedFlow;
 	}
 
 }

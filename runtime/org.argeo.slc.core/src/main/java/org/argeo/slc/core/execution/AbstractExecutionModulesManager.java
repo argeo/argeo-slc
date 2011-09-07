@@ -104,6 +104,8 @@ public abstract class AbstractExecutionModulesManager implements
 
 	public void dispatchAddSteps(ExecutionProcess process,
 			List<ExecutionStep> steps) {
+		process.addSteps(steps);
+
 		for (Iterator<SlcExecutionNotifier> it = getSlcExecutionNotifiers()
 				.iterator(); it.hasNext();) {
 			it.next().addSteps(process, steps);

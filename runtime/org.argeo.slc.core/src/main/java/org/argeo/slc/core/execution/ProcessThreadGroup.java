@@ -18,6 +18,8 @@ package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
@@ -29,6 +31,11 @@ import org.argeo.slc.process.SlcExecutionStep;
 public class ProcessThreadGroup extends ThreadGroup {
 	private final ExecutionModulesManager executionModulesManager;
 	private final ProcessThread processThread;
+
+	private final static Integer STEPS_BUFFER_CAPACITY = 10000;
+
+	private BlockingQueue<ExecutionStep> steps = new ArrayBlockingQueue<ExecutionStep>(
+			STEPS_BUFFER_CAPACITY);
 
 	public ProcessThreadGroup(ExecutionModulesManager executionModulesManager,
 			ProcessThread processThread) {
@@ -50,12 +57,17 @@ public class ProcessThreadGroup extends ThreadGroup {
 
 		List<ExecutionStep> steps = new ArrayList<ExecutionStep>();
 		steps.add(step);
-		dispatchAddSteps(steps);
+		// dispatchAddSteps(steps);
+		this.steps.add(step);
 	}
 
 	public void dispatchAddSteps(List<ExecutionStep> steps) {
 		ExecutionProcess slcProcess = processThread.getProcess();
 		executionModulesManager.dispatchAddSteps(slcProcess, steps);
+	}
+
+	public BlockingQueue<ExecutionStep> getSteps() {
+		return steps;
 	}
 
 }

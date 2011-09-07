@@ -23,6 +23,7 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionSpec;
 
+/** A fully configured execution flow, ready to be executed. */
 public class RealizedFlow implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -34,9 +34,9 @@ public class ExecutionStep implements Serializable {
 	public final static String DEBUG = "DEBUG";
 	public final static String TRACE = "TRACE";
 
-	/** @deprecated*/
+	/** @deprecated */
 	public final static String START = "START";
-	/** @deprecated*/
+	/** @deprecated */
 	public final static String END = "END";
 
 	// TODO make the fields final and private when we don't need POJO support
@@ -47,27 +47,28 @@ public class ExecutionStep implements Serializable {
 	protected Date timestamp;
 	protected String log;
 
+	private String location;
+
 	/** Empty constructor */
 	public ExecutionStep() {
-		thread = Thread.currentThread().getName();
-	}
-
-	/** Creates a step at the current date of type INFO */
-	public ExecutionStep(String log) {
-		this(new Date(), INFO, log);
+		Thread currentThread = Thread.currentThread();
+		thread = currentThread.getName();
 	}
 
 	/** Creates a step at the current date */
-	public ExecutionStep(String type, String log) {
-		this(new Date(), type, log);
+	public ExecutionStep(String location, String type, String log) {
+		this(location, new Date(), type, log);
 	}
 
 	/** Creates a step of the given type. */
-	public ExecutionStep(Date timestamp, String type, String log) {
-		this(timestamp, type, log, Thread.currentThread().getName());
+	public ExecutionStep(String location, Date timestamp, String type,
+			String log) {
+		this(location, timestamp, type, log, Thread.currentThread().getName());
 	}
 
-	public ExecutionStep(Date timestamp, String type, String log, String thread) {
+	public ExecutionStep(String location, Date timestamp, String type,
+			String log, String thread) {
+		this.location = location;
 		this.type = type;
 		this.timestamp = timestamp;
 		this.thread = thread;
@@ -101,6 +102,11 @@ public class ExecutionStep implements Serializable {
 	@Override
 	public String toString() {
 		return "Execution step, thread=" + thread + ", type=" + type;
+	}
+
+	/** Typically the logging category */
+	public String getLocation() {
+		return location;
 	}
 
 }

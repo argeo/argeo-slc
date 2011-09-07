@@ -16,6 +16,7 @@
 
 package org.argeo.slc.execution;
 
+/** Variables or references attached to an execution (typically thread bounded).*/
 public interface ExecutionContext {
 	public final static String VAR_EXECUTION_CONTEXT_ID = "slcVar.executionContext.id";
 	public final static String VAR_EXECUTION_CONTEXT_CREATION_DATE = "slcVar.executionContext.creationDate";

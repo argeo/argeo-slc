@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.exec.Executor;
 import org.apache.commons.io.FileUtils;
 import org.argeo.slc.SlcException;
 
@@ -15,8 +16,14 @@ import org.argeo.slc.SlcException;
  * components performing the various actions related to RPM build.
  */
 public class RpmBuildEnvironment {
-	private String defaultMacroFiles = "/usr/lib/rpm/macros:/usr/lib/rpm/ia32e-linux/macros:/usr/lib/rpm/redhat/macros:/etc/rpm/macros.*:/etc/rpm/macros:/etc/rpm/ia32e-linux/macros:~/.rpmmacros";
+	static String defaultMacroFiles = "/usr/lib/rpm/macros:/usr/lib/rpm/ia32e-linux/macros:/usr/lib/rpm/redhat/macros:/etc/rpm/macros.*:/etc/rpm/macros:/etc/rpm/ia32e-linux/macros:~/.rpmmacros";
+
 	private Map<String, String> rpmmacros = new HashMap<String, String>();
+
+	private List<String> archs = new ArrayList<String>();
+
+	private String stagingBase = System.getProperty("user.home")
+			+ "/dev/staging";
 
 	/** Write (topdir)/rpmmacros and (topdir)/rpmrc */
 	public void writeRpmbuildConfigFiles(File topdir) {
@@ -61,4 +68,19 @@ public class RpmBuildEnvironment {
 		this.defaultMacroFiles = defaultMacroFiles;
 	}
 
+	public void setArchs(List<String> archs) {
+		this.archs = archs;
+	}
+
+	public List<String> getArchs() {
+		return archs;
+	}
+
+	public String getStagingBase() {
+		return stagingBase;
+	}
+
+	public void setStagingBase(String stagingBase) {
+		this.stagingBase = stagingBase;
+	}
 }

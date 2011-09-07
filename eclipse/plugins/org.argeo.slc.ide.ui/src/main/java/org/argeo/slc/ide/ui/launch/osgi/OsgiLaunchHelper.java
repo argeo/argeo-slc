@@ -9,7 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 import org.argeo.slc.ide.ui.SlcIdeUiPlugin;
 import org.eclipse.core.resources.IFile;
@@ -48,7 +50,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 @SuppressWarnings("restriction")
 public class OsgiLaunchHelper implements OsgiLauncherConstants {
-	private static Boolean debug = false;
+	private static Boolean debug = true;
 
 	private final static String DEFAULT_DATA_DIR = "data";
 	private final static String DEFAULT_EXEC_DIR = "exec";
@@ -72,7 +74,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			String originalVmArgs = wc.getAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
 			wc.setAttribute(ATTR_DEFAULT_VM_ARGS, originalVmArgs);
-			wc.setAttribute(IPDELauncherConstants.CONFIG_CLEAR_AREA, true);
+			wc.setAttribute(IPDELauncherConstants.CONFIG_CLEAR_AREA, false);
 		} catch (CoreException e) {
 			Shell shell = Display.getCurrent().getActiveShell();
 			ErrorDialog.openError(shell, "Error",
@@ -358,14 +360,10 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		if (debug)
 			System.out.println("Original bundle list: " + original);
 
-		StringBuffer bufBundles = new StringBuffer(1024);
 		StringTokenizer stComa = new StringTokenizer(original, ",");
-		boolean first = true;
+		// sort by bundle symbolic name
+		Set<String> bundleIds = new TreeSet<String>();
 		bundles: while (stComa.hasMoreTokens()) {
-			if (first)
-				first = false;
-			else
-				bufBundles.append(',');
 
 			String bundleId = stComa.nextToken();
 			if (bundleId.indexOf('*') >= 0)
@@ -375,7 +373,6 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 								+ " not properly formatted, clean your workspace projects");
 
 			int indexAt = bundleId.indexOf('@');
-			boolean modified = false;
 			if (indexAt >= 0) {
 				bundleId = bundleId.substring(0, indexAt);
 			}
@@ -391,7 +388,17 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 				// skip simple configurator in order to avoid side-effects
 				continue bundles;
 			}
+			bundleIds.add(bundleId);
+		}
 
+		StringBuffer bufBundles = new StringBuffer(1024);
+		boolean first = true;
+		for (String bundleId : bundleIds) {
+			if (first)
+				first = false;
+			else
+				bufBundles.append(',');
+			boolean modified = false;
 			if (bundlesToStart.contains(bundleId)) {
 				bufBundles.append(bundleId).append('@').append("default:true");
 				modified = true;
@@ -401,6 +408,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 
 			if (!modified)
 				bufBundles.append(bundleId);
+
 		}
 		String output = bufBundles.toString();
 		return output;

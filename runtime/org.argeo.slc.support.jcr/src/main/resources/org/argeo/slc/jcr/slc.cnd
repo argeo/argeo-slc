@@ -56,6 +56,26 @@ mixin
 - slc:uuid (STRING) ! m
 - slc:status (STRING) m
 + slc:flow (slc:realizedFlow)
++ slc:log
+
+// The first part of the relative path is the thread name, rest is location
+[slc:logEntry] > nt:unstructured
+abstract
+- slc:message (STRING) !
+- slc:timestamp (STRING)
+
+// Log levels are set via types.
+// Querying one level also queries the higher levels thanks to the inheritance
+// e.g. 'select * from [slc:logWarn]' also returns errors 
+[slc:logTrace] > slc:logEntry
+
+[slc:logDebug] > slc:logTrace
+
+[slc:logInfo] > slc:logDebug
+
+[slc:logWarning] > slc:logInfo
+
+[slc:logError] > slc:logWarning
 
 [slc:realizedFlow] > nt:base
 mixin

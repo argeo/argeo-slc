@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.argeo.slc.execution.ExecutionProcess;
+import org.argeo.slc.execution.ExecutionStep;
 
 /** @deprecated use other implementations of {@link ExecutionProcess} */
 public class SlcExecution implements ExecutionProcess, Serializable {
@@ -59,6 +60,10 @@ public class SlcExecution implements ExecutionProcess, Serializable {
 
 	public void setSteps(List<SlcExecutionStep> steps) {
 		this.steps = steps;
+	}
+
+	public void addSteps(List<ExecutionStep> steps) {
+		// not implemented on deprecated
 	}
 
 	public String getUuid() {

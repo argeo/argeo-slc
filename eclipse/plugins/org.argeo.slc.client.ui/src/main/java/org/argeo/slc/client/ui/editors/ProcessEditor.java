@@ -150,14 +150,14 @@ public class ProcessEditor extends FormEditor implements
 			Node newNode = JcrUtils.mkdirs(session, destPath,
 					SlcTypes.SLC_PROCESS);
 
+			Node rootRealizedFlowNode = newNode.addNode(SLC_FLOW);
 			// copy node
-			JcrUtils.copy(processNode, newNode);
+			JcrUtils.copy(processNode.getNode(SLC_FLOW), rootRealizedFlowNode);
 
 			newNode.setProperty(SLC_UUID, uuid);
 			newNode.setProperty(SLC_STATUS, ExecutionProcess.INITIALIZED);
 
 			// reset realized flow status
-			Node rootRealizedFlowNode = newNode.getNode(SLC_FLOW);
 			// we just manage one level for the time being
 			NodeIterator nit = rootRealizedFlowNode.getNodes(SLC_FLOW);
 			while (nit.hasNext()) {
@@ -178,7 +178,7 @@ public class ProcessEditor extends FormEditor implements
 			builderPage = new ProcessBuilderPage(this, processNode);
 			addPage(builderPage);
 			firePropertyChange(PROP_DIRTY);
-			logPage = new ProcessLogPage(this);
+			logPage = new ProcessLogPage(this, processNode);
 			addPage(logPage);
 		} catch (PartInitException e) {
 			throw new SlcException("Cannot add pages", e);
@@ -217,7 +217,7 @@ public class ProcessEditor extends FormEditor implements
 	}
 
 	public void addSteps(ExecutionProcess process, List<ExecutionStep> steps) {
-		logPage.addSteps(steps);
+		// logPage.addSteps(steps);
 	}
 
 	/** Expects one session per editor. */
