@@ -2,17 +2,12 @@ package org.argeo.slc.repo.maven.proxy;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.jcr.Binary;
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -26,8 +21,6 @@ import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.repo.RepoConstants;
-import org.sonatype.aether.repository.RemoteRepository;
 
 /**
  * Expose the SLC repository as a regular Maven repository, proxying third party
@@ -39,86 +32,46 @@ public class MavenProxyServlet extends HttpServlet implements ArgeoNames,
 
 	private final static Log log = LogFactory.getLog(MavenProxyServlet.class);
 
-	private Session jcrSession;
-	private List<RemoteRepository> defaultRepositories = new ArrayList<RemoteRepository>();
-	private String contentTypeCharset = "UTF-8";
+	private MavenProxyService proxyService;
 
-	@Override
-	public void init() throws ServletException {
-		try {
-			Node proxiedRepositories = JcrUtils.mkdirs(jcrSession,
-					RepoConstants.PROXIED_REPOSITORIES);
-			for (RemoteRepository repository : defaultRepositories) {
-				if (!proxiedRepositories.hasNode(repository.getId())) {
-					Node proxiedRepository = proxiedRepositories
-							.addNode(repository.getId());
-					proxiedRepository.setProperty(SLC_URL, repository.getUrl());
-					proxiedRepository.setProperty(SLC_TYPE,
-							repository.getContentType());
-				}
-			}
-			jcrSession.save();
-		} catch (RepositoryException e) {
-			JcrUtils.discardQuietly(jcrSession);
-			throw new SlcException("Cannot initialize Maven proxy", e);
-		}
-	}
+	private Session jcrSession;
+	private String contentTypeCharset = "UTF-8";
 
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String path = request.getPathInfo();
 
-		String nodePath = RepoConstants.ARTIFACTS_BASE_PATH + path;
-		if (log.isDebugEnabled())
-			log.debug("path=" + path + ", nodePath=" + nodePath);
+		String nodePath = proxyService.getNodePath(path);
+		if (log.isTraceEnabled())
+			log.trace("path=" + path + ", nodePath=" + nodePath);
 
 		try {
-			Node node = null;
-			if (jcrSession.itemExists(nodePath)) {
-				node = jcrSession.getNode(nodePath);
-			} else {
-				proxiedRepositories: for (NodeIterator nit = jcrSession
-						.getNode(RepoConstants.PROXIED_REPOSITORIES).getNodes(); nit
-						.hasNext();) {
-					Node proxiedRepository = nit.nextNode();
-					String repoUrl = proxiedRepository.getProperty(SLC_URL)
-							.getString();
-					String remoteUrl = repoUrl + path;
-					if (log.isDebugEnabled())
-						log.debug("remoteUrl=" + remoteUrl);
-					InputStream in = null;
-					try {
-						URL u = new URL(remoteUrl);
-						in = u.openStream();
-						node = importFile(nodePath, in);
-						break proxiedRepositories;
-					} catch (Exception e) {
-						if (log.isTraceEnabled())
-							log.trace("Cannot read " + remoteUrl
-									+ ", skipping...");
-					} finally {
-						IOUtils.closeQuietly(in);
-					}
-				}
-
-				if (node == null) {
+			Node node;
+			if (!jcrSession.itemExists(nodePath)) {
+				String nodeIdentifier = proxyService.proxyFile(path);
+				if (nodeIdentifier == null) {
+					//log.warn("Could not proxy " + path);
 					response.sendError(404);
 					return;
-					// throw new SlcException("Could not find " + path
-					// + " among proxies");
+				} else {
+					node = jcrSession.getNodeByIdentifier(nodeIdentifier);
 				}
+			} else {
+				node = jcrSession.getNode(nodePath);
 			}
 			processResponse(nodePath, node, response);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot proxy " + request, e);
 		}
-		super.doGet(request, response);
+		//super.doGet(request, response);
 	}
 
-	/** Download the content of the node. */
+	/** Retrieve the content of the node. */
 	protected void processResponse(String path, Node node,
 			HttpServletResponse response) {
+		Binary binary = null;
+		InputStream in = null;
 		try {
 			String fileName = node.getName();
 			String ext = FilenameUtils.getExtension(fileName);
@@ -146,26 +99,25 @@ public class MavenProxyServlet extends HttpServlet implements ArgeoNames,
 			response.setHeader("Pragma", "no-cache");
 
 			response.setContentType(contentType);
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot download " + node, e);
-		}
-	}
 
-	protected Node importFile(String nodePath, InputStream in) {
-		Binary binary = null;
-		try {
-			Node node = JcrUtils.mkdirs(jcrSession, nodePath, NodeType.NT_FILE,
-					NodeType.NT_FOLDER, false);
-			Node content = node.addNode(Node.JCR_CONTENT, NodeType.NT_RESOURCE);
-			binary = jcrSession.getValueFactory().createBinary(in);
-			content.setProperty(Property.JCR_DATA, binary);
-			jcrSession.save();
-			return node;
-		} catch (RepositoryException e) {
-			JcrUtils.discardQuietly(jcrSession);
-			throw new SlcException("Cannot initialize Maven proxy", e);
+			binary = node.getNode(Property.JCR_CONTENT)
+					.getProperty(Property.JCR_DATA).getBinary();
+			in = binary.getStream();
+			IOUtils.copy(in, response.getOutputStream());
+		} catch (Exception e) {
+			throw new SlcException("Cannot download " + node, e);
 		} finally {
+			IOUtils.closeQuietly(in);
 			JcrUtils.closeQuietly(binary);
 		}
 	}
+
+	public void setJcrSession(Session jcrSession) {
+		this.jcrSession = jcrSession;
+	}
+
+	public void setProxyService(MavenProxyService proxyService) {
+		this.proxyService = proxyService;
+	}
+
 }

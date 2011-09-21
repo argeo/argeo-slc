@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:sec="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.4.xsd">
+
+	<bean id="springSecurityFilterChain" class="org.springframework.security.util.FilterChainProxy">
+		<sec:filter-chain-map path-type="ant">
+			<sec:filter-chain pattern="/**"
+				filters="httpSessionContextIntegrationFilter,logoutFilter,basicProcessingFilter,anonymousProcessingFilter,securityContextHolderAwareRequestFilter,exceptionTranslationFilter,filterInvocationInterceptor" />
+		</sec:filter-chain-map>
+	</bean>
+
+	<!-- The actual authorization checks (called last, but first here for ease 
+		of configuration) -->
+	<bean id="filterInvocationInterceptor" parent="filterInvocationInterceptorTemplate">
+		<property name="objectDefinitionSource">
+			<value>
+				CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON
+				PATTERN_TYPE_APACHE_ANT
+				/public/**=IS_AUTHENTICATED_ANONYMOUSLY
+				/**=ROLE_USER
+			</value>
+			<!-- <value> -->
+			<!-- CONVERT_URL_TO_LOWERCASE_BEFORE_COMPARISON -->
+			<!-- PATTERN_TYPE_APACHE_ANT -->
+			<!-- /config/**=ROLE_ADMINISTRATOR -->
+			<!-- /**=IS_AUTHENTICATED_ANONYMOUSLY -->
+			<!-- </value> -->
+		</property>
+	</bean>
+
+	<!-- Integrates the authentication information in the http sessions -->
+	<bean id="httpSessionContextIntegrationFilter"
+		class="org.springframework.security.context.HttpSessionContextIntegrationFilter">
+		<property name="allowSessionCreation" value="true" />
+	</bean>
+
+	<!-- Processes logouts, removing both session informations and the remember-me 
+		cookie from the browser -->
+	<bean id="logoutFilter" class="org.springframework.security.ui.logout.LogoutFilter">
+		<constructor-arg value="/web/" />
+		<!-- URL redirected to after logout -->
+		<constructor-arg>
+			<list>
+				<ref bean="rememberMeServices" />
+				<bean
+					class="org.springframework.security.ui.logout.SecurityContextLogoutHandler" />
+			</list>
+		</constructor-arg>
+	</bean>
+
+	<!-- Double check, this may not be necessary -->
+	<bean id="securityContextHolderAwareRequestFilter"
+		class="org.springframework.security.wrapper.SecurityContextHolderAwareRequestFilter" />
+
+	<!-- Use the remember me cookie to authenticate -->
+	<bean id="rememberMeProcessingFilter"
+		class="org.springframework.security.ui.rememberme.RememberMeProcessingFilter">
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="rememberMeServices" ref="rememberMeServices" />
+	</bean>
+
+	<bean id="rememberMeServices"
+		class="org.springframework.security.ui.rememberme.TokenBasedRememberMeServices">
+		<property name="userDetailsService" ref="userDetailsService" />
+		<property name="key" value="${argeo.security.systemKey}" />
+	</bean>
+
+	<!-- Basic authentication -->
+	<bean id="basicProcessingFilter"
+		class="org.springframework.security.ui.basicauth.BasicProcessingFilter">
+		<property name="authenticationManager">
+			<ref bean="authenticationManager" />
+		</property>
+		<property name="authenticationEntryPoint">
+			<ref local="basicProcessingFilterEntryPoint" />
+		</property>
+		<property name="rememberMeServices" ref="rememberMeServices" />
+	</bean>
+
+	<!-- Activate basic auth when needed -->
+	<bean id="basicProcessingFilterEntryPoint"
+		class="org.springframework.security.ui.basicauth.BasicProcessingFilterEntryPoint">
+		<property name="realmName">
+			<value>Argeo</value>
+		</property>
+	</bean>
+
+	<!-- If everything else failed, anonymous authentication -->
+	<bean id="anonymousProcessingFilter"
+		class="org.springframework.security.providers.anonymous.AnonymousProcessingFilter">
+		<property name="key" value="${argeo.security.systemKey}" />
+		<property name="userAttribute" value="anonymous,ROLE_ANONYMOUS" />
+	</bean>
+
+	<!-- Reacts to security related exceptions -->
+	<bean id="exceptionTranslationFilter"
+		class="org.springframework.security.ui.ExceptionTranslationFilter">
+		<property name="authenticationEntryPoint">
+			<ref bean="basicProcessingFilterEntryPoint" />
+		</property>
+		<property name="accessDeniedHandler">
+			<bean class="org.springframework.security.ui.AccessDeniedHandlerImpl">
+				<property name="errorPage" value="/accessDenied.jsp" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- Template for authorization checks -->
+	<bean id="filterInvocationInterceptorTemplate" abstract="true"
+		class="org.springframework.security.intercept.web.FilterSecurityInterceptor">
+		<property name="authenticationManager" ref="authenticationManager" />
+		<property name="accessDecisionManager">
+			<bean class="org.springframework.security.vote.AffirmativeBased">
+				<property name="allowIfAllAbstainDecisions" value="false" />
+				<property name="decisionVoters">
+					<list>
+						<bean class="org.springframework.security.vote.RoleVoter" />
+						<bean class="org.springframework.security.vote.AuthenticatedVoter" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+</beans>

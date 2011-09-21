@@ -8,11 +8,14 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
 
-	<set id="repositories" interface="javax.jcr.Repository" cardinality="0..N">
-		<listener ref="repositoryRegister" bind-method="register"
-			unbind-method="unregister" />
-	</set>
+	<!-- REFRENCES -->
+	<!-- Security -->
+	<reference id="authenticationManager"
+		interface="org.springframework.security.AuthenticationManager" />
+	<reference id="userDetailsService"
+		interface="org.springframework.security.userdetails.UserDetailsService" />
 
-<!--	<reference id="authenticationManager"-->
-<!--		interface="org.springframework.security.AuthenticationManager" />-->
+	<!-- JCR -->
+	<reference id="jcrRepository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=slc)" />
 </beans:beans>
