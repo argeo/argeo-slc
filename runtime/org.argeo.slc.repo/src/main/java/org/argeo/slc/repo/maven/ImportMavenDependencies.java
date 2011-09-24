@@ -20,7 +20,6 @@ import java.util.jar.Manifest;
 import javax.jcr.Binary;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -35,9 +34,9 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherTemplate;
+import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
-import org.argeo.slc.repo.RepoNames;
-import org.argeo.slc.repo.RepoTypes;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 import org.sonatype.aether.artifact.Artifact;
@@ -144,7 +143,7 @@ public class ImportMavenDependencies implements Runnable {
 					Node parentNode;
 					if (!jcrSession.itemExists(parentPath)) {
 						parentNode = JcrUtils.mkdirs(jcrSession, parentPath,
-								NodeType.NT_FOLDER, false);
+								NodeType.NT_FOLDER);
 					} else {
 						parentNode = jcrSession.getNode(parentPath);
 					}
@@ -156,7 +155,7 @@ public class ImportMavenDependencies implements Runnable {
 						fileNode = parentNode.getNode(file.getName());
 					}
 					processArtifact(fileNode, artifact);
-					if (fileNode.isNodeType(RepoTypes.SLC_JAR_FILE)) {
+					if (fileNode.isNodeType(SlcTypes.SLC_JAR_FILE)) {
 						processOsgiBundle(fileNode);
 					}
 					jcrSession.save();
@@ -164,7 +163,7 @@ public class ImportMavenDependencies implements Runnable {
 					if (!jcrSession
 							.itemExists(bundleDistributionPath(fileNode))
 							&& fileNode
-									.isNodeType(RepoTypes.SLC_BUNDLE_ARTIFACT))
+									.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT))
 						jcrSession.getWorkspace().clone(
 								jcrSession.getWorkspace().getName(),
 								fileNode.getPath(),
@@ -198,10 +197,10 @@ public class ImportMavenDependencies implements Runnable {
 					+ '/'
 					+ distributionName
 					+ '/'
-					+ fileNode.getProperty(RepoNames.SLC_SYMBOLIC_NAME)
+					+ fileNode.getProperty(SlcNames.SLC_SYMBOLIC_NAME)
 							.getString()
 					+ '_'
-					+ fileNode.getProperty(RepoNames.SLC_BUNDLE_VERSION)
+					+ fileNode.getProperty(SlcNames.SLC_BUNDLE_VERSION)
 							.getString();
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot create distribution path for "
@@ -211,15 +210,15 @@ public class ImportMavenDependencies implements Runnable {
 
 	protected void processArtifact(Node fileNode, Artifact artifact) {
 		try {
-			fileNode.addMixin(RepoTypes.SLC_ARTIFACT);
-			fileNode.setProperty(RepoNames.SLC_ARTIFACT_ID,
+			fileNode.addMixin(SlcTypes.SLC_ARTIFACT);
+			fileNode.setProperty(SlcNames.SLC_ARTIFACT_ID,
 					artifact.getArtifactId());
-			fileNode.setProperty(RepoNames.SLC_GROUP_ID, artifact.getGroupId());
-			fileNode.setProperty(RepoNames.SLC_ARTIFACT_VERSION,
+			fileNode.setProperty(SlcNames.SLC_GROUP_ID, artifact.getGroupId());
+			fileNode.setProperty(SlcNames.SLC_ARTIFACT_VERSION,
 					artifact.getVersion());
-			fileNode.setProperty(RepoNames.SLC_ARTIFACT_EXTENSION,
+			fileNode.setProperty(SlcNames.SLC_ARTIFACT_EXTENSION,
 					artifact.getExtension());
-			fileNode.setProperty(RepoNames.SLC_ARTIFACT_CLASSIFIER,
+			fileNode.setProperty(SlcNames.SLC_ARTIFACT_CLASSIFIER,
 					artifact.getClassifier());
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot process artifact " + artifact
@@ -253,7 +252,7 @@ public class ImportMavenDependencies implements Runnable {
 		Binary manifestBinary = null;
 		InputStream manifestIn = null;
 		try {
-			manifestBinary = fileNode.getProperty(RepoNames.SLC_MANIFEST)
+			manifestBinary = fileNode.getProperty(SlcNames.SLC_MANIFEST)
 					.getBinary();
 			manifestIn = manifestBinary.getStream();
 			Manifest manifest = new Manifest(manifestIn);
@@ -268,13 +267,13 @@ public class ImportMavenDependencies implements Runnable {
 				return;// not an osgi bundle
 			}
 
-			fileNode.addMixin(RepoTypes.SLC_BUNDLE_ARTIFACT);
+			fileNode.addMixin(SlcTypes.SLC_BUNDLE_ARTIFACT);
 
 			// symbolic name
 			String symbolicName = attrs.getValue(Constants.BUNDLE_SYMBOLICNAME);
 			// make sure there is no directive
 			symbolicName = symbolicName.split(";")[0];
-			fileNode.setProperty(RepoNames.SLC_SYMBOLIC_NAME, symbolicName);
+			fileNode.setProperty(SlcNames.SLC_SYMBOLIC_NAME, symbolicName);
 
 			// direct mapping
 			addAttr(Constants.BUNDLE_SYMBOLICNAME, fileNode, attrs);
@@ -296,7 +295,7 @@ public class ImportMavenDependencies implements Runnable {
 			if (attrs.containsKey(new Name(
 					Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT)))
 				fileNode.setProperty(
-						RepoNames.SLC_
+						SlcNames.SLC_
 								+ Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT,
 						attrs.getValue(
 								Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT)
@@ -304,57 +303,58 @@ public class ImportMavenDependencies implements Runnable {
 
 			// bundle classpath
 			if (attrs.containsKey(new Name(Constants.BUNDLE_CLASSPATH)))
-				fileNode.setProperty(RepoNames.SLC_
-						+ Constants.BUNDLE_CLASSPATH,
-						attrs.getValue(Constants.BUNDLE_CLASSPATH).split(","));
+				fileNode.setProperty(
+						SlcNames.SLC_ + Constants.BUNDLE_CLASSPATH, attrs
+								.getValue(Constants.BUNDLE_CLASSPATH)
+								.split(","));
 
 			// version
 			Version version = new Version(
 					attrs.getValue(Constants.BUNDLE_VERSION));
-			fileNode.setProperty(RepoNames.SLC_BUNDLE_VERSION,
+			fileNode.setProperty(SlcNames.SLC_BUNDLE_VERSION,
 					version.toString());
-			cleanSubNodes(fileNode, RepoNames.SLC_ + Constants.BUNDLE_VERSION);
-			Node bundleVersionNode = fileNode.addNode(RepoNames.SLC_
-					+ Constants.BUNDLE_VERSION, RepoTypes.SLC_OSGI_VERSION);
+			cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.BUNDLE_VERSION);
+			Node bundleVersionNode = fileNode.addNode(SlcNames.SLC_
+					+ Constants.BUNDLE_VERSION, SlcTypes.SLC_OSGI_VERSION);
 			mapOsgiVersion(version, bundleVersionNode);
 
 			// fragment
-			cleanSubNodes(fileNode, RepoNames.SLC_ + Constants.FRAGMENT_HOST);
+			cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.FRAGMENT_HOST);
 			if (attrs.containsKey(new Name(Constants.FRAGMENT_HOST))) {
 				String fragmentHost = attrs.getValue(Constants.FRAGMENT_HOST);
 				String[] tokens = fragmentHost.split(";");
-				Node node = fileNode.addNode(RepoNames.SLC_
-						+ Constants.FRAGMENT_HOST, RepoTypes.SLC_FRAGMENT_HOST);
-				node.setProperty(RepoNames.SLC_SYMBOLIC_NAME, tokens[0]);
+				Node node = fileNode.addNode(SlcNames.SLC_
+						+ Constants.FRAGMENT_HOST, SlcTypes.SLC_FRAGMENT_HOST);
+				node.setProperty(SlcNames.SLC_SYMBOLIC_NAME, tokens[0]);
 				for (int i = 1; i < tokens.length; i++) {
 					if (tokens[i]
 							.startsWith(Constants.BUNDLE_VERSION_ATTRIBUTE)) {
-						node.setProperty(RepoNames.SLC_BUNDLE_VERSION,
+						node.setProperty(SlcNames.SLC_BUNDLE_VERSION,
 								attributeValue(tokens[i]));
 					}
 				}
 			}
 
 			// imported packages
-			cleanSubNodes(fileNode, RepoNames.SLC_ + Constants.IMPORT_PACKAGE);
+			cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.IMPORT_PACKAGE);
 			if (attrs.containsKey(new Name(Constants.IMPORT_PACKAGE))) {
 				String importPackages = attrs
 						.getValue(Constants.IMPORT_PACKAGE);
 				List<String> packages = parsePackages(importPackages);
 				for (String pkg : packages) {
 					String[] tokens = pkg.split(";");
-					Node node = fileNode.addNode(RepoNames.SLC_
+					Node node = fileNode.addNode(SlcNames.SLC_
 							+ Constants.IMPORT_PACKAGE,
-							RepoTypes.SLC_IMPORTED_PACKAGE);
-					node.setProperty(RepoNames.SLC_NAME, tokens[0]);
+							SlcTypes.SLC_IMPORTED_PACKAGE);
+					node.setProperty(SlcNames.SLC_NAME, tokens[0]);
 					for (int i = 1; i < tokens.length; i++) {
 						if (tokens[i].startsWith(Constants.VERSION_ATTRIBUTE)) {
-							node.setProperty(RepoNames.SLC_VERSION,
+							node.setProperty(SlcNames.SLC_VERSION,
 									attributeValue(tokens[i]));
 						} else if (tokens[i]
 								.startsWith(Constants.RESOLUTION_DIRECTIVE)) {
 							node.setProperty(
-									RepoNames.SLC_OPTIONAL,
+									SlcNames.SLC_OPTIONAL,
 									directiveValue(tokens[i]).equals(
 											Constants.RESOLUTION_OPTIONAL));
 						}
@@ -363,7 +363,7 @@ public class ImportMavenDependencies implements Runnable {
 			}
 
 			// dynamic import package
-			cleanSubNodes(fileNode, RepoNames.SLC_
+			cleanSubNodes(fileNode, SlcNames.SLC_
 					+ Constants.DYNAMICIMPORT_PACKAGE);
 			if (attrs.containsKey(new Name(Constants.DYNAMICIMPORT_PACKAGE))) {
 				String importPackages = attrs
@@ -371,13 +371,13 @@ public class ImportMavenDependencies implements Runnable {
 				List<String> packages = parsePackages(importPackages);
 				for (String pkg : packages) {
 					String[] tokens = pkg.split(";");
-					Node node = fileNode.addNode(RepoNames.SLC_
+					Node node = fileNode.addNode(SlcNames.SLC_
 							+ Constants.DYNAMICIMPORT_PACKAGE,
-							RepoTypes.SLC_DYNAMIC_IMPORTED_PACKAGE);
-					node.setProperty(RepoNames.SLC_NAME, tokens[0]);
+							SlcTypes.SLC_DYNAMIC_IMPORTED_PACKAGE);
+					node.setProperty(SlcNames.SLC_NAME, tokens[0]);
 					for (int i = 1; i < tokens.length; i++) {
 						if (tokens[i].startsWith(Constants.VERSION_ATTRIBUTE)) {
-							node.setProperty(RepoNames.SLC_VERSION,
+							node.setProperty(SlcNames.SLC_VERSION,
 									attributeValue(tokens[i]));
 						}
 					}
@@ -385,26 +385,26 @@ public class ImportMavenDependencies implements Runnable {
 			}
 
 			// exported packages
-			cleanSubNodes(fileNode, RepoNames.SLC_ + Constants.EXPORT_PACKAGE);
+			cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.EXPORT_PACKAGE);
 			if (attrs.containsKey(new Name(Constants.EXPORT_PACKAGE))) {
 				String exportPackages = attrs
 						.getValue(Constants.EXPORT_PACKAGE);
 				List<String> packages = parsePackages(exportPackages);
 				for (String pkg : packages) {
 					String[] tokens = pkg.split(";");
-					Node node = fileNode.addNode(RepoNames.SLC_
+					Node node = fileNode.addNode(SlcNames.SLC_
 							+ Constants.EXPORT_PACKAGE,
-							RepoTypes.SLC_EXPORTED_PACKAGE);
-					node.setProperty(RepoNames.SLC_NAME, tokens[0]);
+							SlcTypes.SLC_EXPORTED_PACKAGE);
+					node.setProperty(SlcNames.SLC_NAME, tokens[0]);
 					// TODO: are these cleans really necessary?
-					cleanSubNodes(node, RepoNames.SLC_USES);
-					cleanSubNodes(node, RepoNames.SLC_VERSION);
+					cleanSubNodes(node, SlcNames.SLC_USES);
+					cleanSubNodes(node, SlcNames.SLC_VERSION);
 					for (int i = 1; i < tokens.length; i++) {
 						if (tokens[i].startsWith(Constants.VERSION_ATTRIBUTE)) {
 							String versionStr = attributeValue(tokens[i]);
 							Node versionNode = node.addNode(
-									RepoNames.SLC_VERSION,
-									RepoTypes.SLC_OSGI_VERSION);
+									SlcNames.SLC_VERSION,
+									SlcTypes.SLC_OSGI_VERSION);
 							mapOsgiVersion(new Version(versionStr), versionNode);
 						} else if (tokens[i]
 								.startsWith(Constants.USES_DIRECTIVE)) {
@@ -413,10 +413,9 @@ public class ImportMavenDependencies implements Runnable {
 							for (String usedPackage : usedPackages.split(",")) {
 								// log.debug("usedPackage='" + usedPackage +
 								// "'");
-								Node usesNode = node.addNode(
-										RepoNames.SLC_USES,
-										RepoTypes.SLC_JAVA_PACKAGE);
-								usesNode.setProperty(RepoNames.SLC_NAME,
+								Node usesNode = node.addNode(SlcNames.SLC_USES,
+										SlcTypes.SLC_JAVA_PACKAGE);
+								usesNode.setProperty(SlcNames.SLC_NAME,
 										usedPackage);
 							}
 						}
@@ -425,25 +424,25 @@ public class ImportMavenDependencies implements Runnable {
 			}
 
 			// required bundle
-			cleanSubNodes(fileNode, RepoNames.SLC_ + Constants.REQUIRE_BUNDLE);
+			cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.REQUIRE_BUNDLE);
 			if (attrs.containsKey(new Name(Constants.REQUIRE_BUNDLE))) {
 				String requireBundle = attrs.getValue(Constants.REQUIRE_BUNDLE);
 				String[] bundles = requireBundle.split(",");
 				for (String bundle : bundles) {
 					String[] tokens = bundle.split(";");
-					Node node = fileNode.addNode(RepoNames.SLC_
+					Node node = fileNode.addNode(SlcNames.SLC_
 							+ Constants.REQUIRE_BUNDLE,
-							RepoTypes.SLC_REQUIRED_BUNDLE);
-					node.setProperty(RepoNames.SLC_SYMBOLIC_NAME, tokens[0]);
+							SlcTypes.SLC_REQUIRED_BUNDLE);
+					node.setProperty(SlcNames.SLC_SYMBOLIC_NAME, tokens[0]);
 					for (int i = 1; i < tokens.length; i++) {
 						if (tokens[i]
 								.startsWith(Constants.BUNDLE_VERSION_ATTRIBUTE)) {
-							node.setProperty(RepoNames.SLC_BUNDLE_VERSION,
+							node.setProperty(SlcNames.SLC_BUNDLE_VERSION,
 									attributeValue(tokens[i]));
 						} else if (tokens[i]
 								.startsWith(Constants.RESOLUTION_DIRECTIVE)) {
 							node.setProperty(
-									RepoNames.SLC_OPTIONAL,
+									SlcNames.SLC_OPTIONAL,
 									directiveValue(tokens[i]).equals(
 											Constants.RESOLUTION_OPTIONAL));
 						}
@@ -491,7 +490,7 @@ public class ImportMavenDependencies implements Runnable {
 			throws RepositoryException {
 		if (attrs.containsKey(key)) {
 			String value = attrs.getValue(key);
-			node.setProperty(RepoNames.SLC_ + key, value);
+			node.setProperty(SlcNames.SLC_ + key, value);
 		}
 	}
 
@@ -506,12 +505,12 @@ public class ImportMavenDependencies implements Runnable {
 
 	protected void mapOsgiVersion(Version version, Node versionNode)
 			throws RepositoryException {
-		versionNode.setProperty(RepoNames.SLC_AS_STRING, version.toString());
-		versionNode.setProperty(RepoNames.SLC_MAJOR, version.getMajor());
-		versionNode.setProperty(RepoNames.SLC_MINOR, version.getMinor());
-		versionNode.setProperty(RepoNames.SLC_MICRO, version.getMicro());
+		versionNode.setProperty(SlcNames.SLC_AS_STRING, version.toString());
+		versionNode.setProperty(SlcNames.SLC_MAJOR, version.getMajor());
+		versionNode.setProperty(SlcNames.SLC_MINOR, version.getMinor());
+		versionNode.setProperty(SlcNames.SLC_MICRO, version.getMicro());
 		if (!version.getQualifier().equals(""))
-			versionNode.setProperty(RepoNames.SLC_QUALIFIER,
+			versionNode.setProperty(SlcNames.SLC_QUALIFIER,
 					version.getQualifier());
 	}
 
@@ -559,8 +558,8 @@ public class ImportMavenDependencies implements Runnable {
 					bi = new ByteArrayInputStream(bo.toByteArray());
 					manifestBinary = jcrSession.getValueFactory().createBinary(
 							bi);
-					fileNode.addMixin(RepoTypes.SLC_JAR_FILE);
-					fileNode.setProperty(RepoNames.SLC_MANIFEST, manifestBinary);
+					fileNode.addMixin(SlcTypes.SLC_JAR_FILE);
+					fileNode.setProperty(SlcNames.SLC_MANIFEST, manifestBinary);
 					Attributes attrs = manifest.getMainAttributes();
 					addAttr(Attributes.Name.MANIFEST_VERSION, fileNode, attrs);
 					addAttr(Attributes.Name.SIGNATURE_VERSION, fileNode, attrs);
