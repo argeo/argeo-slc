@@ -36,6 +36,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherTemplate;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.RepoConstants;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
@@ -58,6 +59,8 @@ public class ImportMavenDependencies implements Runnable {
 	private String artifactBasePath = RepoConstants.ARTIFACTS_BASE_PATH;
 	private String distributionsBasePath = "/slc/repo/distributions";
 	private String distributionName;
+
+	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 
 	public void run() {
 		log.debug(jcrSession.getUserID());
@@ -154,7 +157,9 @@ public class ImportMavenDependencies implements Runnable {
 					} else {
 						fileNode = parentNode.getNode(file.getName());
 					}
-					processArtifact(fileNode, artifact);
+
+					if (artifactIndexer.support(fileNode.getPath()))
+						artifactIndexer.index(fileNode);
 					if (fileNode.isNodeType(SlcTypes.SLC_JAR_FILE)) {
 						processOsgiBundle(fileNode);
 					}
@@ -206,25 +211,6 @@ public class ImportMavenDependencies implements Runnable {
 			throw new SlcException("Cannot create distribution path for "
 					+ fileNode, e);
 		}
-	}
-
-	protected void processArtifact(Node fileNode, Artifact artifact) {
-		try {
-			fileNode.addMixin(SlcTypes.SLC_ARTIFACT);
-			fileNode.setProperty(SlcNames.SLC_ARTIFACT_ID,
-					artifact.getArtifactId());
-			fileNode.setProperty(SlcNames.SLC_GROUP_ID, artifact.getGroupId());
-			fileNode.setProperty(SlcNames.SLC_ARTIFACT_VERSION,
-					artifact.getVersion());
-			fileNode.setProperty(SlcNames.SLC_ARTIFACT_EXTENSION,
-					artifact.getExtension());
-			fileNode.setProperty(SlcNames.SLC_ARTIFACT_CLASSIFIER,
-					artifact.getClassifier());
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot process artifact " + artifact
-					+ " on node " + fileNode, e);
-		}
-
 	}
 
 	protected File artifactToFile(Artifact artifact) {

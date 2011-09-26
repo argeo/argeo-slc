@@ -45,7 +45,6 @@
 		<!-- URL redirected to after logout -->
 		<constructor-arg>
 			<list>
-				<ref bean="rememberMeServices" />
 				<bean
 					class="org.springframework.security.ui.logout.SecurityContextLogoutHandler" />
 			</list>
@@ -56,19 +55,6 @@
 	<bean id="securityContextHolderAwareRequestFilter"
 		class="org.springframework.security.wrapper.SecurityContextHolderAwareRequestFilter" />
 
-	<!-- Use the remember me cookie to authenticate -->
-	<bean id="rememberMeProcessingFilter"
-		class="org.springframework.security.ui.rememberme.RememberMeProcessingFilter">
-		<property name="authenticationManager" ref="authenticationManager" />
-		<property name="rememberMeServices" ref="rememberMeServices" />
-	</bean>
-
-	<bean id="rememberMeServices"
-		class="org.springframework.security.ui.rememberme.TokenBasedRememberMeServices">
-		<property name="userDetailsService" ref="userDetailsService" />
-		<property name="key" value="${argeo.security.systemKey}" />
-	</bean>
-
 	<!-- Basic authentication -->
 	<bean id="basicProcessingFilter"
 		class="org.springframework.security.ui.basicauth.BasicProcessingFilter">
@@ -78,14 +64,13 @@
 		<property name="authenticationEntryPoint">
 			<ref local="basicProcessingFilterEntryPoint" />
 		</property>
-		<property name="rememberMeServices" ref="rememberMeServices" />
 	</bean>
 
 	<!-- Activate basic auth when needed -->
 	<bean id="basicProcessingFilterEntryPoint"
 		class="org.springframework.security.ui.basicauth.BasicProcessingFilterEntryPoint">
 		<property name="realmName">
-			<value>Argeo</value>
+			<value>Argeo Repository</value>
 		</property>
 	</bean>
 

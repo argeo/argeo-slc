@@ -12,10 +12,12 @@
 	<!-- Security -->
 	<reference id="authenticationManager"
 		interface="org.springframework.security.AuthenticationManager" />
-	<reference id="userDetailsService"
-		interface="org.springframework.security.userdetails.UserDetailsService" />
 
 	<!-- JCR -->
 	<reference id="jcrRepository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=slc)" />
+
+	<!-- Maven -->
+	<reference id="mavenProxy" interface="org.argeo.slc.repo.maven.proxy.MavenProxyService" />
+
 </beans:beans>

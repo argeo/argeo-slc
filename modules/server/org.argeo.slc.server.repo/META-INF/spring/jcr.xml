@@ -3,9 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="jcrSession" class="org.argeo.jcr.ThreadBoundJcrSessionFactory">
+	<bean id="jcrSession" class="org.argeo.security.jcr.SecureThreadBoundSession">
 		<property name="repository" ref="jcrRepository" />
-		<property name="workspace" value="slc_repo" />
-		<property name="forceDefaultCredentials" value="true"/>
 	</bean>
 </beans>

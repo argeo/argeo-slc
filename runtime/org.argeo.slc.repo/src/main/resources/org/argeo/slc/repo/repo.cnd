@@ -9,6 +9,21 @@ mixin
 - slc:artifactExtension (STRING) m
 - slc:artifactClassifier (STRING) ='' m a
 
+[slc:artifactVersionBase] > nt:base
+mixin
+- slc:artifactId (STRING) primary m
+- slc:groupId (STRING) m
+- slc:artifactVersion (STRING) m
+
+[slc:artifactBase] > nt:base
+mixin
+- slc:artifactId (STRING) primary m
+- slc:groupId (STRING) m
+
+[slc:groupBase] > nt:base
+mixin
+- slc:groupId (STRING) primary m
+
 [slc:jarFile] > nt:base
 mixin
 - 'slc:manifest' (BINARY) m

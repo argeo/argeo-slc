@@ -1,8 +1,7 @@
 package org.argeo.slc.repo.maven.proxy;
 
-/** Synchronizes JCR and Maven repositories */
-public interface MavenProxyService {
-	public String getNodePath(String path);
+import org.argeo.jcr.proxy.ResourceProxy;
 
-	public String proxyFile(String path);
+/** Marker interface (useful for OSGi servcies references), maybe extended later */
+public interface MavenProxyService extends ResourceProxy {
 }

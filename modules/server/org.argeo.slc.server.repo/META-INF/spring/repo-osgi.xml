@@ -8,6 +8,10 @@
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
 
+	<!-- REFERENCES -->
+	<!-- Security -->
+	<reference id="authenticationManager"
+		interface="org.springframework.security.AuthenticationManager" />
 	<reference id="jcrRepository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=slc)" />
 
@@ -16,4 +20,7 @@
 		filter="(aether.repositorySystemType=maven)" />
 	<reference id="mavenRepositorySystemSession" interface="org.sonatype.aether.RepositorySystemSession"
 		filter="(aether.repositorySystemType=maven)" />
+
+	<!-- SERVICES -->
+	<service ref="mavenProxyService" interface="org.argeo.slc.repo.maven.proxy.MavenProxyService" />
 </beans:beans>

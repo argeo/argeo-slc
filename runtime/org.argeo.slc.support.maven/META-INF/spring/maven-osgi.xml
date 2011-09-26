@@ -6,6 +6,7 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<!-- SERVICES -->
 	<service ref="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem">
 		<service-properties>
 			<beans:entry key="aether.repositorySystemType" value="maven" />

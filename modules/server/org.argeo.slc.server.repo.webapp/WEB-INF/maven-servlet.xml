@@ -22,53 +22,12 @@
 		</property>
 	</bean>
 
-	<bean id="mavenProxyService" class="org.argeo.slc.repo.maven.proxy.MavenProxyServiceImpl"
-		init-method="init" destroy-method="destroy">
-		<property name="jcrRepository" ref="jcrRepository" />
-		<property name="defaultRepositories" ref="defaultMavenRepositories" />
-	</bean>
-
-	<bean id="mavenProxyServlet" class="org.argeo.slc.repo.maven.proxy.MavenProxyServlet">
+	<bean id="mavenProxyServlet" class="org.argeo.jcr.mvc.ResourceProxyServlet">
 		<property name="jcrSession" ref="jcrSession" />
-		<property name="proxyService" ref="mavenProxyService" />
+		<property name="proxy" ref="mavenProxy" />
 	</bean>
 
 	<bean id="jcrSession" class="org.argeo.security.jcr.SecureThreadBoundSession">
 		<property name="repository" ref="jcrRepository" />
-		<property name="defaultUsername" value="root" />
-		<property name="defaultPassword" value="demo" />
 	</bean>
-
-	<bean
-		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
-		<property name="authenticationManager" ref="authenticationManager" />
-	</bean>
-
-	<!-- Remote repositories -->
-	<util:list id="defaultMavenRepositories">
-		<ref local="central" />
-		<ref local="com.springsource.repository.bundles.external" />
-		<ref local="com.springsource.repository.bundles.release" />
-		<ref local="argeo" />
-		<ref local="argeo-snapshots" />
-	</util:list>
-
-	<bean id="central" class="org.argeo.slc.aether.spring.RemoteRepositoryFactory">
-		<property name="url" value="http://repo1.maven.org/maven2" />
-	</bean>
-	<bean id="com.springsource.repository.bundles.release" class="org.argeo.slc.aether.spring.RemoteRepositoryFactory">
-		<property name="url"
-			value="http://repository.springsource.com/maven/bundles/release" />
-	</bean>
-	<bean id="com.springsource.repository.bundles.external" class="org.argeo.slc.aether.spring.RemoteRepositoryFactory">
-		<property name="url"
-			value="http://repository.springsource.com/maven/bundles/external" />
-	</bean>
-	<bean id="argeo" class="org.argeo.slc.aether.spring.RemoteRepositoryFactory">
-		<property name="url" value="http://maven.argeo.org/argeo/" />
-	</bean>
-	<bean id="argeo-snapshots" class="org.argeo.slc.aether.spring.RemoteRepositoryFactory">
-		<property name="url" value="http://dev.argeo.org/maven/argeo-snapshots/" />
-	</bean>
-
 </beans>
