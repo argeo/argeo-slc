@@ -32,6 +32,9 @@ public interface SlcTypes {
 	 * REPO
 	 */
 	public final static String SLC_ARTIFACT = "slc:artifact";
+	public final static String SLC_ARTIFACT_VERSION_BASE = "slc:artifactVersionBase";
+	public final static String SLC_ARTIFACT_BASE = "slc:artifactBase";
+	public final static String SLC_GROUP_BASE = "slc:groupBase";
 	public final static String SLC_JAR_FILE = "slc:jarFile";
 	public final static String SLC_BUNDLE_ARTIFACT = "slc:bundleArtifact";
 	public final static String SLC_OSGI_VERSION = "slc:osgiVersion";
