@@ -43,6 +43,8 @@ public class BuildInMock implements Runnable {
 	private RpmBuildEnvironment buildEnvironment;
 	private Executor executor;
 
+	private String debuginfoDirName = "debuginfo";
+
 	public void run() {
 		// TODO check if caller is in mock group
 
@@ -78,7 +80,7 @@ public class BuildInMock implements Runnable {
 		File debuginfoDir = null;
 		if (!arch.equals(NOARCH)) {
 			archDir = new File(repoDir, arch);
-			debuginfoDir = new File(archDir, "debuginfo");
+			debuginfoDir = new File(archDir, debuginfoDirName);
 			debuginfoDir.mkdirs();
 		}
 
@@ -120,6 +122,9 @@ public class BuildInMock implements Runnable {
 			createrepo.arg("createrepo");
 			// sqllite db
 			createrepo.arg("-d");
+			// debuginfo
+			if (!repoToRecreate.getName().equals(debuginfoDirName))
+				createrepo.arg("-x").arg(debuginfoDirName + "/*");
 			// quiet
 			createrepo.arg("-q");
 			createrepo.arg(repoToRecreate.getAbsolutePath());

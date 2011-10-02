@@ -17,6 +17,7 @@
 package org.argeo.slc.log4j;
 
 import java.util.Date;
+import java.util.concurrent.BlockingQueue;
 
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
@@ -110,8 +111,16 @@ public class SlcExecutionAppender extends AppenderSkeleton {
 
 			try {
 				dispatching.set(true);
-				((ProcessThreadGroup) currentThread.getThreadGroup())
-						.getSteps().add(step);
+				BlockingQueue<ExecutionStep> steps = ((ProcessThreadGroup) currentThread
+						.getThreadGroup()).getSteps();
+				if (steps.remainingCapacity() == 0) {
+					stdOut("WARNING: execution steps queue is full, skipping step: "
+							+ step);
+					// FIXME understand why it block indefinitely: the queue
+					// should be emptied by the logging thread
+				} else {
+					steps.add(step);
+				}
 			} finally {
 				dispatching.set(false);
 			}
@@ -134,7 +143,7 @@ public class SlcExecutionAppender extends AppenderSkeleton {
 	// }
 
 	/** For development purpose, since using regular logging is not easy here */
-	private static void stdOut(Object obj) {
+	static void stdOut(Object obj) {
 		System.out.println(obj);
 	}
 

@@ -77,6 +77,8 @@ public class JschExecutor implements Executor {
 	public int execute(CommandLine command, Map environment)
 			throws ExecuteException, IOException {
 		String cmd = command.toString();
+		if(workingDirectory!=null)
+			cmd = "cd "+workingDirectory.getPath()+" && "+cmd;
 		RemoteExec remoteExec = new RemoteExec();
 		remoteExec.setSshTarget(sshTarget);
 		remoteExec.setStreamHandler(streamHandler);
