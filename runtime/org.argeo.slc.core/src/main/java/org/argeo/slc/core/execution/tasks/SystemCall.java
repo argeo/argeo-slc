@@ -176,8 +176,8 @@ public class SystemCall implements Runnable {
 
 		// Execution directory
 		File dir = new File(getExecDirToUse());
-		if (!dir.exists())
-			dir.mkdirs();
+		// if (!dir.exists())
+		// dir.mkdirs();
 
 		// Watchdog to check for lost processes
 		Executor executorToUse;
@@ -422,9 +422,11 @@ public class SystemCall implements Runnable {
 		try {
 			File dir = null;
 			if (execDir != null) {
+				return execDir;
 				// Replace '/' by local file separator, for portability
-				execDir.replace('/', File.separatorChar);
-				dir = new File(execDir).getCanonicalFile();
+				// execDir.replace('/', File.separatorChar);
+				// dir = new File(execDir).getCanonicalFile();
+				// dir = execDir.;
 			}
 
 			if (dir == null)

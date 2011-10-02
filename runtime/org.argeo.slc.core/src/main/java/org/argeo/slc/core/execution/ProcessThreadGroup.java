@@ -32,7 +32,7 @@ public class ProcessThreadGroup extends ThreadGroup {
 	private final ExecutionModulesManager executionModulesManager;
 	private final ProcessThread processThread;
 
-	private final static Integer STEPS_BUFFER_CAPACITY = 10000;
+	private final static Integer STEPS_BUFFER_CAPACITY = 5000;
 
 	private BlockingQueue<ExecutionStep> steps = new ArrayBlockingQueue<ExecutionStep>(
 			STEPS_BUFFER_CAPACITY);

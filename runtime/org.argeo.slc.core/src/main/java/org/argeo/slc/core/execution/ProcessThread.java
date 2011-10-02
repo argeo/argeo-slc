@@ -182,13 +182,18 @@ public class ProcessThread extends Thread {
 	}
 
 	private class LoggingThread extends Thread {
+
+		public LoggingThread() {
+			super("SLC Process Logger #" + process.getUuid());
+		}
+
 		public void run() {
 			boolean run = true;
 			while (run) {
 				List<ExecutionStep> newSteps = new ArrayList<ExecutionStep>();
 				processThreadGroup.getSteps().drainTo(newSteps);
 				if (newSteps.size() > 0) {
-					//System.out.println(steps.size() + " steps");
+					// System.out.println(steps.size() + " steps");
 					process.addSteps(newSteps);
 				}
 
