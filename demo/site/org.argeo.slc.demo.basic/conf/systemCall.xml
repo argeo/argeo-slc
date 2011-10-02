@@ -33,7 +33,11 @@
 	<bean name="sshExecutor" class="org.argeo.slc.jsch.JschExecutor">
 		<property name="sshTarget">
 			<bean p:host="localhost" p:port="22" p:user="${user.name}"
-				p:localPrivateKey="${user.home}/.ssh/argeo_admin_rsa" class="org.argeo.slc.jsch.SshTarget" />
+				p:localPrivateKey="${user.home}/.ssh/id_rsa" class="org.argeo.slc.jsch.SshTarget">
+				<property name="userInfo">
+					<bean class="org.argeo.slc.jsch.UiUserInfo" />
+				</property>
+			</bean>
 		</property>
 	</bean>
 
