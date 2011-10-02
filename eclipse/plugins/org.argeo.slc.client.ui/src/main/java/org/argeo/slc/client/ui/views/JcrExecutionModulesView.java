@@ -84,7 +84,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		viewer.setComparer(new NodeElementComparer());
 		final ViewLabelProvider viewLabelProvider = new ViewLabelProvider();
 		viewer.setLabelProvider(viewLabelProvider);
-		ColumnViewerToolTipSupport.enableFor(viewer);
+		//ColumnViewerToolTipSupport.enableFor(viewer);
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 		getViewSite().setSelectionProvider(viewer);

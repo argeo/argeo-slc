@@ -10,7 +10,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.eclipse.ui.Error;
+import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
@@ -118,7 +118,7 @@ public class ProcessEditor extends FormEditor implements
 					process.getUuid());
 			modulesManager.registerProcessNotifier(this, properties);
 		} catch (Exception e) {
-			Error.show("Execution of " + processNode + " failed", e);
+			ErrorFeedback.show("Execution of " + processNode + " failed", e);
 		}
 	}
 
