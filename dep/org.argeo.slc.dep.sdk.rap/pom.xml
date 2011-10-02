@@ -74,6 +74,14 @@
 		</dependency>
 
 		<!-- TEST and target platform generation -->
+		<!-- Default Tomcat conf (for development) -->
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.tomcat</artifactId>
+			<version>${version.argeo-commons}</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Apache Directory -->
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
