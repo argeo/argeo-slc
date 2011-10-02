@@ -54,7 +54,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 
 	private final static String DEFAULT_DATA_DIR = "data";
 	private final static String DEFAULT_EXEC_DIR = "exec";
-	private final static String DEFAULT_VMARGS = "-Xmx128m";
+	private final static String DEFAULT_VMARGS = "-Xmx256m";
 	private final static String DEFAULT_PROGRAM_ARGS = "-console";
 
 	/** Sets default values on this configuration. */
