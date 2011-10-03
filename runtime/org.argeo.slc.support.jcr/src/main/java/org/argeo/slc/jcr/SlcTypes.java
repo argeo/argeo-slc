@@ -25,7 +25,7 @@ public interface SlcTypes {
 	public final static String SLC_LOG_TRACE = "slc:logTrace";
 	public final static String SLC_LOG_DEBUG = "slc:logDebug";
 	public final static String SLC_LOG_INFO = "slc:logInfo";
-	public final static String SLC_LOG_WARNING = "slc:logWarn";
+	public final static String SLC_LOG_WARNING = "slc:logWarning";
 	public final static String SLC_LOG_ERROR = "slc:logError";
 
 	/*
