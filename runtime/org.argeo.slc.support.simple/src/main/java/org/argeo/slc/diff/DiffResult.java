@@ -17,12 +17,16 @@
 package org.argeo.slc.diff;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The result of a diff. Can be subclassed to provided more structured
  * information.
  */
 public interface DiffResult {
+	/** Summary information, alphabetically ordered key/value pairs */
+	public Map<String, String> getSummary();
+
 	/** The list of issues, a zero size meaning that the diff succeeded. */
 	public List<DiffIssue> getIssues();
 }

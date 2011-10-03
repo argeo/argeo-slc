@@ -16,13 +16,22 @@
 
 package org.argeo.slc.diff;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
+import java.util.Map;
+import java.util.TreeMap;
 
 /** A basic implementation of <code>DiffResult</code>. */
 public class SimpleDiffResult implements DiffResult {
-	private List<DiffIssue> issues = new Vector<DiffIssue>();
+	private List<DiffIssue> issues = new ArrayList<DiffIssue>();
+	private Map<String, String> summary = new TreeMap<String, String>();
 
+	/** Summary information, alphabetically ordered key/value pairs */
+	public Map<String, String> getSummary() {
+		return summary;
+	}
+
+	/** The diff issues. */
 	public List<DiffIssue> getIssues() {
 		return issues;
 	}
