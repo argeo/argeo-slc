@@ -1,5 +1,6 @@
 package org.argeo.slc.jcr;
 
+/** JCR related constants used across SLC */
 public interface SlcJcrConstants {
 	public final static String PROPERTY_PATH = "argeo.slc.jcr.path";
 	public final static String PROCESSES_BASE_PATH = "/slc/processes";

@@ -31,6 +31,10 @@ public interface SlcNames {
 	public final static String SLC_MESSAGE = "slc:message";
 	public final static String SLC_TAG = "slc:tag";
 	public final static String SLC_ERROR_MESSAGE = "slc:errorMessage";
+	// diff result
+	public final static String SLC_SUMMARY = "slc:summary";
+	public final static String SLC_TOLERANCES = "slc:tolerances";
+	public final static String SLC_ISSUES = "slc:issues";
 
 	/*
 	 * REPO
