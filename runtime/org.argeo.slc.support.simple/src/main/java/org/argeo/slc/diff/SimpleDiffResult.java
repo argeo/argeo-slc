@@ -23,8 +23,28 @@ import java.util.TreeMap;
 
 /** A basic implementation of <code>DiffResult</code>. */
 public class SimpleDiffResult implements DiffResult {
-	private List<DiffIssue> issues = new ArrayList<DiffIssue>();
-	private Map<String, String> summary = new TreeMap<String, String>();
+	private final List<DiffIssue> issues;
+	private final Map<String, String> summary;
+
+	/** Empty constructor */
+	public SimpleDiffResult() {
+		this(new TreeMap<String, String>(), new ArrayList<DiffIssue>());
+	}
+
+	/** Initialize from existing data */
+	public SimpleDiffResult(Map<String, String> summary, List<DiffIssue> issues) {
+		this.summary = summary;
+		this.issues = issues;
+	}
+
+	/**
+	 * Initialize from existing {@link DiffResult}, the collections are NOT
+	 * cloned for performance purposes.
+	 */
+	public SimpleDiffResult(DiffResult diffResult) {
+		this.summary = diffResult.getSummary();
+		this.issues = diffResult.getIssues();
+	}
 
 	/** Summary information, alphabetically ordered key/value pairs */
 	public Map<String, String> getSummary() {
