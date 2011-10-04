@@ -31,7 +31,11 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestStatus;
 
-/** Persists results in JCR */
+/**
+ * Persists results in JCR by listening to {@link TreeTestResult}. This is to
+ * facilitate transition from legacy approaches and should not be used in new
+ * implementations.
+ */
 public class JcrResultListener implements TreeTestResultListener, SlcNames {
 	private final static Log log = LogFactory.getLog(JcrResultListener.class);
 
