@@ -102,6 +102,7 @@ mixin
 - slc:message (STRING)
 // ERROR if set, the check could not be performed because of an unexpected exception
 - slc:errorMessage (STRING)
+// to ease transition with legacy approach
 + * (slc:property) *
 
 [slc:property] > nt:unstructured

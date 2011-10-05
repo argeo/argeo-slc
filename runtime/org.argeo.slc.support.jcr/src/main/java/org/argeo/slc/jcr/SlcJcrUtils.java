@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.argeo.jcr.JcrUtils;
@@ -11,12 +12,13 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
 import org.argeo.slc.core.execution.PrimitiveUtils;
 import org.argeo.slc.deploy.ModuleDescriptor;
+import org.argeo.slc.test.TestStatus;
 
 /**
  * Utilities around the SLC JCR model. Note that it relies on fixed base paths
  * (convention over configuration) for optimization purposes.
  */
-public class SlcJcrUtils {
+public class SlcJcrUtils implements SlcNames {
 	public final static Integer AGENT_FACTORY_DEPTH = 3;
 
 	/** Extracts the path of a flow relative to its execution module */
@@ -111,6 +113,65 @@ public class SlcJcrUtils {
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot set primitive of " + type
 					+ " as property " + propertyName + " on " + node, e);
+		}
+	}
+
+	/** Aggregates the {@link TestStatus} of this sub-tree. */
+	public static Integer aggregateTestStatus(Node node) {
+		try {
+			Integer status = TestStatus.PASSED;
+			if (node.isNodeType(SlcTypes.SLC_CHECK))
+				if (node.getProperty(SLC_SUCCESS).getBoolean())
+					status = TestStatus.PASSED;
+				else if (node.hasProperty(SLC_ERROR_MESSAGE))
+					status = TestStatus.ERROR;
+				else
+					status = TestStatus.FAILED;
+
+			NodeIterator it = node.getNodes();
+			while (it.hasNext()) {
+				Integer childStatus = aggregateTestStatus(it.nextNode());
+				if (childStatus > status)
+					status = childStatus;
+			}
+			return status;
+		} catch (Exception e) {
+			throw new SlcException("Could not aggregate test status from "
+					+ node, e);
+		}
+	}
+
+	/**
+	 * Aggregates the {@link TestStatus} of this sub-tree.
+	 * 
+	 * @return the same {@link StringBuffer}, for convenience (typically calling
+	 *         toString() on it)
+	 */
+	public static StringBuffer aggregateTestMessages(Node node,
+			StringBuffer messages) {
+		try {
+			if (node.isNodeType(SlcTypes.SLC_CHECK)) {
+				if (node.hasProperty(SLC_MESSAGE)) {
+					if (messages.length() > 0)
+						messages.append('\n');
+					messages.append(node.getProperty(SLC_MESSAGE).getString());
+				}
+				if (node.hasProperty(SLC_ERROR_MESSAGE)) {
+					if (messages.length() > 0)
+						messages.append('\n');
+					messages.append(node.getProperty(SLC_ERROR_MESSAGE)
+							.getString());
+				}
+			}
+			NodeIterator it = node.getNodes();
+			while (it.hasNext()) {
+				Node child = it.nextNode();
+				aggregateTestMessages(child, messages);
+			}
+			return messages;
+		} catch (Exception e) {
+			throw new SlcException("Could not aggregate test messages from "
+					+ node, e);
 		}
 	}
 

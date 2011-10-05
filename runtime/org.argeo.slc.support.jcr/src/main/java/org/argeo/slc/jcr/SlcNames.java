@@ -31,10 +31,22 @@ public interface SlcNames {
 	public final static String SLC_MESSAGE = "slc:message";
 	public final static String SLC_TAG = "slc:tag";
 	public final static String SLC_ERROR_MESSAGE = "slc:errorMessage";
+	public final static String SLC_TEST_CASE = "slc:testCase";
+	public final static String SLC_TEST_CASE_TYPE = "slc:testCaseType";
+
 	// diff result
 	public final static String SLC_SUMMARY = "slc:summary";
-	public final static String SLC_TOLERANCES = "slc:tolerances";
 	public final static String SLC_ISSUES = "slc:issues";
+	public final static String SLC_TOLERANCE = "slc:tolerance";
+	public final static String SLC_RELATIVE_TOLERANCE = "slc:relativeTolerance";
+	public final static String SLC_KEY_COLUMN = "slc:keyColumn";
+	public final static String SLC_MISMATCH = "slc:mismatch";
+	public final static String SLC_LEFT_OVER = "slc:leftOver";
+	public final static String SLC_MISSING = "slc:missing";
+	public final static String SLC_LEFT_OVER_MAX = "slc:leftOverMax";
+	public final static String SLC_MISSING_MAX = "slc:missingMax";
+	public final static String SLC_DETAILED = "slc:detailed";
+	public final static String SLC_ZERO_MISMATCH = "slc:zeroMismatch";
 
 	/*
 	 * REPO

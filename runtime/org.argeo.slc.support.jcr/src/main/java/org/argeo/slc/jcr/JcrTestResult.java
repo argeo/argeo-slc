@@ -30,6 +30,8 @@ public class JcrTestResult implements TestResult, SlcNames {
 	/** cached for performance purposes */
 	private String nodeIdentifier = null;
 
+	private Map<String, String> attributes = new HashMap<String, String>();
+
 	public void init() {
 		try {
 			if (uuid == null) {
@@ -38,6 +40,15 @@ public class JcrTestResult implements TestResult, SlcNames {
 				String path = SlcJcrUtils.createResultPath(uuid);
 				Node resultNode = JcrUtils.mkdirs(session, path, resultType);
 				resultNode.setProperty(SLC_UUID, uuid);
+				for (String attr : attributes.keySet()) {
+					String property = attr;
+					// compatibility with legacy applications
+					if ("testCase".equals(attr))
+						property = SLC_TEST_CASE;
+					else if ("testCaseType".equals(attr))
+						property = SLC_TEST_CASE_TYPE;
+					resultNode.setProperty(property, attributes.get(attr));
+				}
 				session.save();
 			}
 		} catch (Exception e) {
@@ -156,6 +167,14 @@ public class JcrTestResult implements TestResult, SlcNames {
 
 	public void setResultType(String resultType) {
 		this.resultType = resultType;
+	}
+
+	public void setAttributes(Map<String, String> attributes) {
+		if (uuid != null)
+			throw new SlcException(
+					"Attributes cannot be set on an already initialized test result."
+							+ " Update the related JCR node directly instead.");
+		this.attributes = attributes;
 	}
 
 }

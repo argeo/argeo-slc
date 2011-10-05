@@ -17,7 +17,9 @@
 package org.argeo.slc.test;
 
 /**
- * Simple statuses.
+ * Simple statuses. Ordering of the flags can be relied upon in aggregation: if
+ * one element is failed, the aggregation is failed. Is one element is in ERROR,
+ * the aggregation is in ERROR.
  * <p>
  * <ul>
  * <li>{@link #PASSED}: the test succeeded</li>
