@@ -47,12 +47,12 @@ public class ExecutionAspect {
 		executionContext.setVariable(ExecutionContext.VAR_FLOW_NAME,
 				executionFlow.getName());
 
-		logStackEvent("=> ", executionFlow, false);
+		logStackEvent("=> ", executionFlow);
 		try {
 			// Actually execute the flow
 			pjp.proceed();
 		} finally {
-			logStackEvent("<= ", executionFlow, true);
+			logStackEvent("<= ", executionFlow);
 			executionStack.leaveFlow(executionFlow);
 		}
 	}
@@ -85,18 +85,14 @@ public class ExecutionAspect {
 		this.executionContext = executionContext;
 	}
 
-	protected void logStackEvent(String symbol, ExecutionFlow executionFlow,
-			Boolean trace) {
+	protected void logStackEvent(String symbol, ExecutionFlow executionFlow) {
 		Integer stackSize = executionStack.getStackSize();
 		if (log.isTraceEnabled())
 			log.debug(depthSpaces(stackSize) + symbol + executionFlow + " #"
 					+ executionStack.getCurrentStackLevelUuid() + ", depth="
 					+ stackSize);
-		else if (log.isDebugEnabled() && !trace)
+		if (log.isDebugEnabled())
 			log.debug(depthSpaces(stackSize) + symbol + executionFlow);
-		else if (log.isTraceEnabled() && trace)
-			log.trace(depthSpaces(stackSize) + symbol + executionFlow);
-
 	}
 
 	protected void logRunnableExecution(ExecutionFlow executionFlow,
