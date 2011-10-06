@@ -213,13 +213,13 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		flowNode.setProperty(SLC_NAME, efd.getName());
 		String[] tokens = relativePath.split("/");
 		String endName = tokens[tokens.length - 1];
+		flowNode.setProperty(Property.JCR_TITLE, endName);
 		if (efd.getDescription() != null
 				&& !efd.getDescription().trim().equals("")) {
-			flowNode.setProperty(Property.JCR_TITLE, efd.getDescription());
+			flowNode.setProperty(Property.JCR_DESCRIPTION, efd.getDescription());
 		} else {
-			flowNode.setProperty(Property.JCR_TITLE, endName);
+			flowNode.setProperty(Property.JCR_DESCRIPTION, endName);
 		}
-		flowNode.setProperty(Property.JCR_DESCRIPTION, endName);
 
 		// execution spec
 		ExecutionSpec executionSpec = efd.getExecutionSpec();
