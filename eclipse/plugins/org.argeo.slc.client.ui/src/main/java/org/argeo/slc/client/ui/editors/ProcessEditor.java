@@ -44,6 +44,8 @@ public class ProcessEditor extends FormEditor implements
 
 	private ExecutionModulesManager modulesManager;
 
+	private Boolean switchToLog = false;
+
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
@@ -110,7 +112,8 @@ public class ProcessEditor extends FormEditor implements
 		doSave(null);
 		try {
 			// show log
-			setActivePage(logPage.getId());
+			if (switchToLog)
+				setActivePage(logPage.getId());
 
 			ExecutionProcess process = processController.process(processNode);
 			Map<String, String> properties = new HashMap<String, String>();
