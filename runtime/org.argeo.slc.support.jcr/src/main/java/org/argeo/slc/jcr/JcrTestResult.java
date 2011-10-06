@@ -133,6 +133,8 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 			JcrUtils.discardUnderlyingSessionQuietly(node);
 			throw new SlcException("Cannot get close date from " + node, e);
 		}
+		if (logoutWhenDestroyed)
+			JcrUtils.logoutQuietly(session);
 	}
 
 	public Date getCloseDate() {
