@@ -15,13 +15,15 @@ import javax.jcr.query.QueryManager;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.attachment.Attachment;
+import org.argeo.slc.core.attachment.AttachmentsEnabled;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestRun;
 import org.argeo.slc.test.TestStatus;
 
 /** {@link TestResult} wrapping a JCR node of type {@link SlcTypes#SLC_RESULT}. */
-public class JcrTestResult implements TestResult, SlcNames {
+public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	/** Should only be set for an already existing result. */
 	private String uuid;
 	private Session session;
@@ -29,6 +31,8 @@ public class JcrTestResult implements TestResult, SlcNames {
 
 	/** cached for performance purposes */
 	private String nodeIdentifier = null;
+
+	private Boolean logoutWhenDestroyed = true;
 
 	private Map<String, String> attributes = new HashMap<String, String>();
 
@@ -58,7 +62,8 @@ public class JcrTestResult implements TestResult, SlcNames {
 	}
 
 	public void destroy() {
-
+		if (logoutWhenDestroyed)
+			JcrUtils.logoutQuietly(session);
 	}
 
 	public Node getNode() {
@@ -157,6 +162,10 @@ public class JcrTestResult implements TestResult, SlcNames {
 		}
 	}
 
+	public void addAttachment(Attachment attachment) {
+		// TODO implement it
+	}
+
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
@@ -175,6 +184,10 @@ public class JcrTestResult implements TestResult, SlcNames {
 					"Attributes cannot be set on an already initialized test result."
 							+ " Update the related JCR node directly instead.");
 		this.attributes = attributes;
+	}
+
+	public void setLogoutWhenDestroyed(Boolean logoutWhenDestroyed) {
+		this.logoutWhenDestroyed = logoutWhenDestroyed;
 	}
 
 }

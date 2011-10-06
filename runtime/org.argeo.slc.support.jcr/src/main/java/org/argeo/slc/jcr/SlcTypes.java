@@ -19,6 +19,7 @@ public interface SlcTypes {
 	public final static String SLC_RESULT = "slc:result";
 	public final static String SLC_CHECK = "slc:check";
 	public final static String SLC_PROPERTY = "slc:property";
+	public final static String SLC_DIFF_RESULT = "slc:diffResult";
 
 	// Log levels
 	public final static String SLC_LOG_ENTRY = "slc:logEntry";

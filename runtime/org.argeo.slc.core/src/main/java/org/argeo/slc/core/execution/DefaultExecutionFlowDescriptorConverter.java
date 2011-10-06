@@ -269,9 +269,15 @@ public class DefaultExecutionFlowDescriptorConverter implements
 					}
 				}
 				if (ref == null) {
-					log.warn("Cannot define reference for ref spec attribute "
-							+ key + " in " + executionFlow + " (" + rsa + ")."
-							+ " If it is an inner bean consider put it frozen.");
+					if (log.isTraceEnabled())
+						log.trace("Cannot define reference for ref spec attribute "
+								+ key
+								+ " in "
+								+ executionFlow
+								+ " ("
+								+ rsa
+								+ ")."
+								+ " If it is an inner bean consider put it frozen.");
 					ref = REF_VALUE_INTERNAL;
 				} else {
 					if (log.isTraceEnabled())

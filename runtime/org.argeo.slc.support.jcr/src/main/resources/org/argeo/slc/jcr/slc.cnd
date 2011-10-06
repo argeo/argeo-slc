@@ -94,7 +94,12 @@ mixin
 // RESULT
 [slc:result] > nt:unstructured, mix:created, mix:lastModified
 - slc:uuid (STRING) ! m
+- slc:testCase (STRING)
 - slc:completed (DATE)
+
+[slc:diffResult] > slc:result
++ slc:summary
++ slc:issues
 
 [slc:check] > nt:unstructured
 // true for PASSED, false for FAILED or ERROR
