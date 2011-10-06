@@ -39,6 +39,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -83,7 +84,8 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		viewer.setComparer(new NodeElementComparer());
 		final ViewLabelProvider viewLabelProvider = new ViewLabelProvider();
 		viewer.setLabelProvider(viewLabelProvider);
-		// ColumnViewerToolTipSupport.enableFor(viewer);
+		// FIXME fail on RAP put it in specific
+		ColumnViewerToolTipSupport.enableFor(viewer);
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 		getViewSite().setSelectionProvider(viewer);
