@@ -26,11 +26,11 @@
 	</bean>
  -->
  
-	<bean id="mavenAetherTemplate" class="org.argeo.slc.aether.AetherTemplate">
-		<property name="repositorySystem" ref="mavenRepositorySystem" />
-		<property name="repositorySystemSession" ref="mavenRepositorySystemSession" />
-		<property name="remoteRepositories" ref="defaultMavenRepositories" />
-	</bean>
+<!-- 	<bean id="mavenAetherTemplate" class="org.argeo.slc.aether.AetherTemplate"> -->
+<!-- 		<property name="repositorySystem" ref="mavenRepositorySystem" /> -->
+<!-- 		<property name="repositorySystemSession" ref="mavenRepositorySystemSession" /> -->
+<!-- 		<property name="remoteRepositories" ref="defaultMavenRepositories" /> -->
+<!-- 	</bean> -->
 
 	<!-- Remote repositories -->
 	<util:list id="defaultMavenRepositories">

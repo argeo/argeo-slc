@@ -16,10 +16,10 @@
 		filter="(argeo.jcr.repository.alias=slc)" />
 
 	<!-- Maven -->
-	<reference id="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem"
-		filter="(aether.repositorySystemType=maven)" />
-	<reference id="mavenRepositorySystemSession" interface="org.sonatype.aether.RepositorySystemSession"
-		filter="(aether.repositorySystemType=maven)" />
+<!-- 	<reference id="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem" -->
+<!-- 		filter="(aether.repositorySystemType=maven)" /> -->
+<!-- 	<reference id="mavenRepositorySystemSession" interface="org.sonatype.aether.RepositorySystemSession" -->
+<!-- 		filter="(aether.repositorySystemType=maven)" /> -->
 
 	<!-- SERVICES -->
 	<service ref="mavenProxyService" interface="org.argeo.slc.repo.maven.proxy.MavenProxyService" />

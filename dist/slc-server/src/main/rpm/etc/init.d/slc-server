@@ -11,20 +11,13 @@
 RETVAL=0
 
 start() {
-	EXECDIR=/var/lib/slc-server
-	cd $EXECDIR
-	export JAVA_OPTS=-Xmx256m
-	/usr/bin/slc -console 3040 &
+	/usr/sbin/osgi-service slc-server start
 	action $"Start SLC server" /bin/true
 	return $RETVAL
 }
 
 stop() {
-	/usr/bin/expect  << EOF
-spawn telnet localhost 3040
-expect "osgi>"
-send "close\r"
-EOF
+	/usr/sbin/osgi-service slc-server stop
 	action $"Stop SLC server" /bin/true
 	return $RETVAL
 }
@@ -37,21 +30,16 @@ case "$1" in
   stop)
         stop
         ;;
-  restart|reload)
+  restart)
         stop
         start
         RETVAL=$?
         ;;
-  condrestart)
-  		echo Not implemented
-  		exit 1
-        ;;
   status)
-  		echo Not implemented
-  		exit 1
+  		/usr/sbin/osgi-service slc-server status
         ;;
   *)
-        echo $"Usage: $0 {start|stop|restart}"
+        echo $"Usage: $0 {start|stop|restart|status}"
         exit 1
 esac
 
