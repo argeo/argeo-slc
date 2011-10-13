@@ -25,6 +25,7 @@ import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
 import org.argeo.eclipse.ui.jcr.NodeElementComparer;
 import org.argeo.eclipse.ui.jcr.SimpleNodeContentProvider;
+import org.argeo.eclipse.ui.specific.EclipseUiSpecificUtils;
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -39,7 +40,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -74,18 +74,13 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	public void createPartControl(Composite parent) {
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-
-		// FIXME : does not work in RAP, find a way to have it for RCP only
-		// ColumnViewerToolTipSupport.enableFor(viewer);
+		EclipseUiSpecificUtils.enableToolTipSupport(viewer);
 
 		ViewContentProvider contentProvider = new ViewContentProvider(session);
-
 		viewer.setContentProvider(contentProvider);
 		viewer.setComparer(new NodeElementComparer());
 		final ViewLabelProvider viewLabelProvider = new ViewLabelProvider();
 		viewer.setLabelProvider(viewLabelProvider);
-		// FIXME fail on RAP put it in specific
-		ColumnViewerToolTipSupport.enableFor(viewer);
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 		getViewSite().setSelectionProvider(viewer);
