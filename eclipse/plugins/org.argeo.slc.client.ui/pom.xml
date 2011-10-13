@@ -14,16 +14,16 @@
 
 	<dependencies>
 		<!-- SLC Client UI -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc.eclipse</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.client.oxm</artifactId> -->
-<!-- 			<version>${version.slc}</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc.eclipse</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.client.core</artifactId> -->
-<!-- 			<version>${version.slc}</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc.eclipse</groupId> -->
+		<!-- <artifactId>org.argeo.slc.client.oxm</artifactId> -->
+		<!-- <version>${version.slc}</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc.eclipse</groupId> -->
+		<!-- <artifactId>org.argeo.slc.client.core</artifactId> -->
+		<!-- <version>${version.slc}</version> -->
+		<!-- </dependency> -->
 
 		<!-- SLC -->
 		<dependency>
@@ -56,6 +56,12 @@
 		</dependency>
 
 		<!-- Eclipse and RCP only dependency, needed at compile time -->
+		<dependency>
+			<groupId>org.argeo.commons.eclipse</groupId>
+			<artifactId>org.argeo.eclipse.ui.rcp</artifactId>
+			<version>${version.argeo-commons}</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons.eclipse</groupId>
 			<artifactId>org.argeo.eclipse.dep.rcp</artifactId>
