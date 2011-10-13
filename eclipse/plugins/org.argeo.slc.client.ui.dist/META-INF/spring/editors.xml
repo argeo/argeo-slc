@@ -7,6 +7,6 @@
 
 	<bean id="org.argeo.slc.client.ui.dist.genericJcrQueryEditor"
 		class="org.argeo.eclipse.ui.jcr.editors.GenericJcrQueryEditor" scope="prototype">
-		<property name="session" ref="jcrSession" />
+		<property name="session" ref="slcSession" />
 	</bean>
 </beans>

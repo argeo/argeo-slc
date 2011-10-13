@@ -4,17 +4,35 @@ Bundle-Name: Dist
 Bundle-SymbolicName: org.argeo.slc.client.ui.dist;singleton:=true
 Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Activator: org.argeo.slc.client.ui.dist.DistPlugin
+Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional,
- org.eclipse.core.runtime
-Bundle-Activator: org.argeo.slc.client.ui.dist.DistPlugin
+ org.eclipse.core.runtime;resolution:=optional,
+ org.eclipse.rap.ui.workbench;resolution:=optional
 Import-Package: aQute.lib.osgi;resolution:=optional,
  javax.jcr;version="[2.0.0,3.0.0)",
+ javax.jcr.query,
  org.apache.commons.logging;version="1.1.1",
+ org.argeo,
  org.argeo.eclipse.spring,
  org.argeo.eclipse.ui,
+ org.argeo.eclipse.ui.dialogs,
+ org.argeo.eclipse.ui.jcr,
  org.argeo.eclipse.ui.jcr.commands,
  org.argeo.eclipse.ui.jcr.editors,
+ org.argeo.eclipse.ui.jcr.utils,
  org.argeo.eclipse.ui.jcr.views,
- org.argeo.jcr
-Bundle-ActivationPolicy: lazy
+ org.argeo.eclipse.ui.specific,
+ org.argeo.eclipse.ui.utils,
+ org.argeo.jcr,
+ org.argeo.jcr.security,
+ org.argeo.jcr.spring,
+ org.argeo.jcr.ui.explorer.utils,
+ org.argeo.slc.jcr,
+ org.argeo.slc.repo,
+ org.eclipse.ui.forms,
+ org.eclipse.ui.forms.editor,
+ org.eclipse.ui.forms.events,
+ org.eclipse.ui.forms.widgets
+

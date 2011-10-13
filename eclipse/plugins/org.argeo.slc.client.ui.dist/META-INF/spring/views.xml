@@ -1,19 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd">
+        http://www.springframework.org/schema/beans/spring-beans.xsd 
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<!-- Views -->
-<!-- 	<bean id="org.argeo.slc.client.ui.dist.distributionView" class="org.argeo.slc.client.ui.dist.views.DistributionView" -->
-<!-- 		scope="prototype"> -->
-<!-- 		<property name="repositoryRegister" ref="repositoryRegister" /> -->
-<!-- 	</bean> -->
+	<bean id="artifactsBrowser" class="org.argeo.slc.client.ui.dist.views.ArtifactsBrowser"
+		scope="prototype">
+		<property name="jcrSession" ref="slcSession" />
+	</bean>
+	<bean id="queryArtifactsForm" class="org.argeo.slc.client.ui.dist.views.QueryArtifactsForm"
+		scope="prototype">
+		<property name="session" ref="slcSession" />
+	</bean>
 
-<!--	<bean id="jcrSession" class="org.argeo.jcr.ThreadBoundJcrSessionFactory">-->
-<!--		<property name="repository" ref="jcrRepository" />-->
-<!--		<property name="workspace" value="slc_repo" />-->
-<!--		<property name="forceDefaultCredentials" value="true" />-->
-<!--	</bean>-->
+	<bean id="queryArtifactsText" class="org.argeo.slc.client.ui.dist.views.QueryArtifactsText"
+		scope="prototype">
+		<property name="session" ref="slcSession" />
+	</bean>
 
+	<util:list id="columnProperties" scope="prototype">
+		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_ARTIFACT_ID" />
+		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_GROUP_ID" />
+		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_ARTIFACT_VERSION" />
+		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_ARTIFACT_EXTENSION" />
+		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_ARTIFACT_CLASSIFIER" />
+	</util:list>
 </beans>

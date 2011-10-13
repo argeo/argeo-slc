@@ -5,6 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-	<bean id="repositoryRegister" class="org.argeo.jcr.DefaultRepositoryRegister">
+	<bean id="slcSession" class="org.argeo.jcr.spring.ThreadBoundSession">
+		<property name="repository" ref="slcRepository" />
 	</bean>
 </beans>

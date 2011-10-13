@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+ 	<!-- Perspectives --> 
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
@@ -10,14 +11,26 @@
             icon="icons/distribution_perspective.gif">
       </perspective>
    </extension>
+   <!-- Views -->
    <extension
          point="org.eclipse.ui.views">
       <view
-            class="org.argeo.slc.client.ui.dist.views.ModulesView"
-            id="org.argeo.slc.client.ui.dist.modulesView"
-            name="Modules">
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.artifactsBrowser"
+            name="Artifacts browser">
+      </view>
+      <view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.queryArtifactsForm"
+            name="Query Artifacts Form">
+      </view>
+      <view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.queryArtifactsText"
+            name="Artifacts query builder">
       </view>
    </extension>
+   <!-- Editors -->
    <extension
            point="org.eclipse.ui.editors">
 	     <editor
@@ -27,7 +40,8 @@
               icon="icons/distribution_perspective.gif"
               default="false">
         </editor>
-     </extension>
+    </extension>
+    <!-- Commands --> 
    	<extension
          point="org.eclipse.ui.commands">
 		<command
@@ -40,7 +54,7 @@
          id="menu:org.eclipse.ui.main.menu"
          point="org.eclipse.ui.menus">
         <!-- Queries --> 
-		<menuContribution
+		<!-- <menuContribution
                 allPopups="false"
                 locationURI="menu:org.eclipse.ui.main.menu?after=edit">
         	<menu label="Queries"
@@ -55,6 +69,6 @@
                       tooltip="Open JCR query editor">
                 </command>
              </menu>
-          </menuContribution>
+          </menuContribution> -->
 	</extension>
 </plugin>
