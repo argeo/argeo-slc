@@ -90,7 +90,10 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 			int i = 0;
 			for (final String columnName : qr.getColumnNames()) {
 				TableViewerColumn tvc = new TableViewerColumn(viewer, SWT.NONE);
-				tableConfigurer.configureColumn(columnName, tvc, i);
+				// Small hack to remove prefix from the column name
+				String tmpStr = columnName.substring(columnName
+						.lastIndexOf(".")+1);
+				tableConfigurer.configureColumn(tmpStr, tvc, i);
 				tvc.setLabelProvider(tableConfigurer
 						.getLabelProvider(columnName));
 				tableViewerColumns.add(tvc);

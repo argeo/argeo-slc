@@ -16,6 +16,10 @@
 		scope="prototype">
 		<property name="session" ref="slcSession" />
 	</bean>
+	<bean id="queryBundlesForm" class="org.argeo.slc.client.ui.dist.views.QueryBundlesForm"
+		scope="prototype">
+		<property name="session" ref="slcSession" />
+	</bean>
 
 	<bean id="queryArtifactsText" class="org.argeo.slc.client.ui.dist.views.QueryArtifactsText"
 		scope="prototype">

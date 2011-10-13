@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Text;
 public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 		SlcNames {
 	private static final Log log = LogFactory.getLog(QueryBundlesForm.class);
-	public static final String ID = DistPlugin.ID + ".queryArtifactsForm";
+	public static final String ID = DistPlugin.ID + ".queryBundlesForm";
 
 	// widgets
 	private Button executeBtn;
@@ -28,6 +28,11 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 	private Text importedPackage;
 	private Text exportedPackage;
 	private SashForm sashForm;
+
+	// shortcuts
+	final static String SBA = "sba";
+	final static String SIP = "sip";
+	final static String SEP = "sep";
 
 	private Composite top, bottom;
 
@@ -105,22 +110,33 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 
 			StringBuffer sb = new StringBuffer();
 			// Select
-			sb.append("select p.* ");
+			sb.append("select " + SBA + ".* ");
+			if (ipClause)
+				sb.append(", " + SIP + ".* ");
+			if (epClause)
+				sb.append(", " + SEP + ".* ");
+
+			sb.append(" from [");
+			sb.append(SLC_BUNDLE_ARTIFACT);
+			sb.append("] as " + SBA + " ");
 
 			// join
 			if (ipClause) {
-				sb.append(" from [");
-				sb.append(SLC_BUNDLE_ARTIFACT);
-				sb.append("] as sa ");
+				sb.append(" inner join [");
+				sb.append(SLC_IMPORTED_PACKAGE);
+				sb.append("] as " + SIP + " on isdescendantnode(" + SIP + ", "
+						+ SBA + ") ");
 			}
 
-			sb.append(" inner join [");
-			sb.append(SLC_BUNDLE_ARTIFACT);
-			sb.append("] as sa on isdescendantnode(sa, sba)");
+			if (epClause) {
+				sb.append(" inner join [");
+				sb.append(SLC_EXPORTED_PACKAGE);
+				sb.append("] as " + SEP + " on isdescendantnode(" + SEP + ", "
+						+ SBA + ") ");
+			}
 
 			// where
 			sb.append(" where ");
-
 			if (symbolicName.getText() != null
 					&& !symbolicName.getText().trim().equals("")) {
 				sb.append("sba.[" + SLC_SYMBOLIC_NAME + "] like '"
@@ -131,7 +147,7 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 			if (ipClause) {
 				if (hasFirstClause)
 					sb.append(" AND ");
-				sb.append("[" + SLC_ARTIFACT_ID + "] like '"
+				sb.append(SIP + ".[" + SLC_NAME + "] like '"
 						+ importedPackage.getText().replace('*', '%') + "'");
 				hasFirstClause = true;
 			}
@@ -139,10 +155,12 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 			if (epClause) {
 				if (hasFirstClause)
 					sb.append(" AND ");
-				sb.append("[" + SLC_ARTIFACT_ID + "] like '"
+				sb.append(SEP + ".[" + SLC_NAME + "] like '"
 						+ exportedPackage.getText().replace('*', '%') + "'");
-				hasFirstClause = true;
 			}
+
+			if (log.isDebugEnabled())
+				log.debug("Statement : " + sb.toString());
 
 			return sb.toString();
 		} catch (Exception e) {

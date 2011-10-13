@@ -26,6 +26,11 @@
       </view>
       <view
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.queryBundlesForm"
+            name="Query Bundles Form">
+      </view>
+      <view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
             id="org.argeo.slc.client.ui.dist.queryArtifactsText"
             name="Artifacts query builder">
       </view>
