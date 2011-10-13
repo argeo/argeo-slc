@@ -3,7 +3,7 @@
 // AETHER
 [slc:artifact] > nt:base, mix:shareable
 mixin
-- slc:artifactId (STRING) primary m
+- slc:artifactId (STRING) m
 - slc:groupId (STRING) m
 - slc:artifactVersion (STRING) m
 - slc:artifactExtension (STRING) m
@@ -11,18 +11,20 @@ mixin
 
 [slc:artifactVersionBase] > nt:base
 mixin
-- slc:artifactId (STRING) primary m
+- slc:artifactId (STRING) m
 - slc:groupId (STRING) m
 - slc:artifactVersion (STRING) m
 
 [slc:artifactBase] > nt:base
 mixin
-- slc:artifactId (STRING) primary m
+- slc:artifactId (STRING) m
 - slc:groupId (STRING) m
 
 [slc:groupBase] > nt:base
 mixin
-- slc:groupId (STRING) primary m
+// it is possible to have groupBase being artifact base (e.g. org.argeo.commons.basic)
+// so using groupId would conflict 
+- slc:groupBaseId (STRING) m
 
 [slc:jarFile] > nt:base
 mixin

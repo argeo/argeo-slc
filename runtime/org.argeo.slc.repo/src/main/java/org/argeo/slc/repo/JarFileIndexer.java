@@ -59,8 +59,8 @@ public class JarFileIndexer implements NodeIndexer {
 
 			jarIn = new JarInputStream(fileBinary.getStream());
 			Manifest manifest = jarIn.getManifest();
-			if(manifest==null){
-				log.error(fileNode+" has no MANIFEST");
+			if (manifest == null) {
+				log.error(fileNode + " has no MANIFEST");
 				return;
 			}
 			bo = new ByteArrayOutputStream();
@@ -93,9 +93,11 @@ public class JarFileIndexer implements NodeIndexer {
 			// OSGi
 			if (attrs.containsKey(new Name(Constants.BUNDLE_SYMBOLICNAME))) {
 				addOsgiMetadata(fileNode, attrs);
+				JcrUtils.updateLastModified(fileNode);
 				if (log.isTraceEnabled())
 					log.trace("Indexed OSGi bundle " + fileNode);
 			} else {
+				JcrUtils.updateLastModified(fileNode);
 				if (log.isTraceEnabled())
 					log.trace("Indexed JAR file " + fileNode);
 			}

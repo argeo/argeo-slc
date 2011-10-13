@@ -5,6 +5,7 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherUtils;
 import org.argeo.slc.jcr.SlcNames;
@@ -55,6 +56,7 @@ public class ArtifactIndexer implements NodeIndexer {
 			// can be null but ok for JCR API
 			fileNode.setProperty(SlcNames.SLC_ARTIFACT_CLASSIFIER,
 					artifact.getClassifier());
+			JcrUtils.updateLastModified(fileNode);
 
 			// set higher levels
 			Node artifactVersionBase = fileNode.getParent();
@@ -68,6 +70,7 @@ public class ArtifactIndexer implements NodeIndexer {
 						artifact.getArtifactId());
 				artifactVersionBase.setProperty(SlcNames.SLC_GROUP_ID,
 						artifact.getGroupId());
+				JcrUtils.updateLastModified(artifactVersionBase);
 			}
 			Node artifactBase = artifactVersionBase.getParent();
 			if (!artifactBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
@@ -76,12 +79,20 @@ public class ArtifactIndexer implements NodeIndexer {
 						artifact.getArtifactId());
 				artifactBase.setProperty(SlcNames.SLC_GROUP_ID,
 						artifact.getGroupId());
+				JcrUtils.updateLastModified(artifactBase);
 			}
+			
+			// TODO do we really need group base?
 			Node groupBase = artifactBase.getParent();
 			if (!groupBase.isNodeType(SlcTypes.SLC_GROUP_BASE)) {
+				// if (groupBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
+				// log.warn("Group base " + groupBase.getPath()
+				// + " is also artifact base");
+				// }
 				groupBase.addMixin(SlcTypes.SLC_GROUP_BASE);
-				groupBase.setProperty(SlcNames.SLC_GROUP_ID,
+				groupBase.setProperty(SlcNames.SLC_GROUP_BASE_ID,
 						artifact.getGroupId());
+				JcrUtils.updateLastModified(groupBase);
 			}
 
 			if (log.isTraceEnabled())
