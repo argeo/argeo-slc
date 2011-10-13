@@ -17,16 +17,16 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 /** Query SLC Repo to get some artifacts given some predefined parameters */
-public class QueryArtifactsForm extends AbstractQueryArtifactsView implements
+public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 		SlcNames {
-	private static final Log log = LogFactory.getLog(QueryArtifactsForm.class);
+	private static final Log log = LogFactory.getLog(QueryBundlesForm.class);
 	public static final String ID = DistPlugin.ID + ".queryArtifactsForm";
 
 	// widgets
 	private Button executeBtn;
-	private Text groupId;
-	private Text artifactId;
-	private Text version;
+	private Text symbolicName;
+	private Text importedPackage;
+	private Text exportedPackage;
 	private SashForm sashForm;
 
 	private Composite top, bottom;
@@ -58,26 +58,20 @@ public class QueryArtifactsForm extends AbstractQueryArtifactsView implements
 		gl.marginTop = 5;
 		parent.setLayout(gl);
 
+		// Bundle Name
 		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Query by coordinates");
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		lbl.setLayoutData(gd);
+		lbl.setText("Bundle name: ");
+		symbolicName = new Text(parent, SWT.SINGLE | SWT.BORDER);
 
-		// Group ID
+		// imported package
 		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Group ID:");
-		groupId = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		lbl.setText("Imported package: ");
+		importedPackage = new Text(parent, SWT.SINGLE | SWT.BORDER);
 
-		// Artifact ID
+		// exported package
 		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Artifact ID:");
-		artifactId = new Text(parent, SWT.SINGLE | SWT.BORDER);
-
-		// Version
-		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Version:");
-		version = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		lbl.setText("Exported package: ");
+		exportedPackage = new Text(parent, SWT.SINGLE | SWT.BORDER);
 
 		executeBtn = new Button(parent, SWT.PUSH);
 		executeBtn.setText("Search");
@@ -94,40 +88,60 @@ public class QueryArtifactsForm extends AbstractQueryArtifactsView implements
 	}
 
 	public void refreshQuery() {
-		String queryStr = generateSelectStatement() + generateFromStatement()
-				+ generateWhereStatement();
+		String queryStr = generateStatement();
 		executeQuery(queryStr);
 		bottom.layout();
 		sashForm.layout();
 	}
 
-	private String generateWhereStatement() {
+	private String generateStatement() {
 		try {
+			// shortcuts
 			boolean hasFirstClause = false;
-			StringBuffer sb = new StringBuffer(" where ");
+			boolean ipClause = importedPackage.getText() != null
+					&& !importedPackage.getText().trim().equals("");
+			boolean epClause = exportedPackage.getText() != null
+					&& !exportedPackage.getText().trim().equals("");
 
-			if (groupId.getText() != null
-					&& !groupId.getText().trim().equals("")) {
-				sb.append("[" + SLC_GROUP_ID + "] like '"
-						+ groupId.getText().replace('*', '%') + "'");
+			StringBuffer sb = new StringBuffer();
+			// Select
+			sb.append("select p.* ");
+
+			// join
+			if (ipClause) {
+				sb.append(" from [");
+				sb.append(SLC_BUNDLE_ARTIFACT);
+				sb.append("] as sa ");
+			}
+
+			sb.append(" inner join [");
+			sb.append(SLC_BUNDLE_ARTIFACT);
+			sb.append("] as sa on isdescendantnode(sa, sba)");
+
+			// where
+			sb.append(" where ");
+
+			if (symbolicName.getText() != null
+					&& !symbolicName.getText().trim().equals("")) {
+				sb.append("sba.[" + SLC_SYMBOLIC_NAME + "] like '"
+						+ symbolicName.getText().replace('*', '%') + "'");
 				hasFirstClause = true;
 			}
 
-			if (artifactId.getText() != null
-					&& !artifactId.getText().trim().equals("")) {
+			if (ipClause) {
 				if (hasFirstClause)
 					sb.append(" AND ");
 				sb.append("[" + SLC_ARTIFACT_ID + "] like '"
-						+ artifactId.getText().replace('*', '%') + "'");
+						+ importedPackage.getText().replace('*', '%') + "'");
 				hasFirstClause = true;
 			}
 
-			if (version.getText() != null
-					&& !version.getText().trim().equals("")) {
+			if (epClause) {
 				if (hasFirstClause)
 					sb.append(" AND ");
-				sb.append("[" + SLC_ARTIFACT_VERSION + "] like '"
-						+ version.getText().replace('*', '%') + "'");
+				sb.append("[" + SLC_ARTIFACT_ID + "] like '"
+						+ exportedPackage.getText().replace('*', '%') + "'");
+				hasFirstClause = true;
 			}
 
 			return sb.toString();
