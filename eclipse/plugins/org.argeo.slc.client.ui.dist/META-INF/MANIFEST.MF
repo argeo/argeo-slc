@@ -12,6 +12,7 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui.workbench;resolution:=optional
 Import-Package: aQute.lib.osgi;resolution:=optional,
  javax.jcr;version="[2.0.0,3.0.0)",
+ javax.jcr.nodetype;version="2.0.0",
  javax.jcr.query,
  org.apache.commons.logging;version="1.1.1",
  org.argeo,
