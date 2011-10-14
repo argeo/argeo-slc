@@ -56,6 +56,10 @@ public interface SlcNames {
 	public final static String SLC_OPTIONAL = "slc:optional";
 	public final static String SLC_AS_STRING = "slc:asString";
 
+	// origin
+	public final static String SLC_ORIGIN = "slc:origin";
+	public final static String SLC_PROXY = "slc:proxy";
+
 	// slc:artifact
 	public final static String SLC_ARTIFACT_ID = "slc:artifactId";
 	public final static String SLC_GROUP_ID = "slc:groupId";

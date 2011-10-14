@@ -70,8 +70,14 @@ public class ArtifactIndexer implements NodeIndexer {
 						artifact.getArtifactId());
 				artifactVersionBase.setProperty(SlcNames.SLC_GROUP_ID,
 						artifact.getGroupId());
-				JcrUtils.updateLastModified(artifactVersionBase);
 			}
+			JcrUtils.updateLastModified(artifactVersionBase);
+
+			// pom
+			if (artifact.getExtension().equals("pom")) {
+				// TODO read to make it a distribution
+			}
+
 			Node artifactBase = artifactVersionBase.getParent();
 			if (!artifactBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
 				artifactBase.addMixin(SlcTypes.SLC_ARTIFACT_BASE);
@@ -79,10 +85,9 @@ public class ArtifactIndexer implements NodeIndexer {
 						artifact.getArtifactId());
 				artifactBase.setProperty(SlcNames.SLC_GROUP_ID,
 						artifact.getGroupId());
-				JcrUtils.updateLastModified(artifactBase);
 			}
-			
-			// TODO do we really need group base?
+			JcrUtils.updateLastModified(artifactBase);
+
 			Node groupBase = artifactBase.getParent();
 			if (!groupBase.isNodeType(SlcTypes.SLC_GROUP_BASE)) {
 				// if (groupBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
@@ -92,8 +97,9 @@ public class ArtifactIndexer implements NodeIndexer {
 				groupBase.addMixin(SlcTypes.SLC_GROUP_BASE);
 				groupBase.setProperty(SlcNames.SLC_GROUP_BASE_ID,
 						artifact.getGroupId());
-				JcrUtils.updateLastModified(groupBase);
 			}
+			JcrUtils.updateLastModifiedAndParents(groupBase,
+					RepoConstants.ARTIFACTS_BASE_PATH);
 
 			if (log.isTraceEnabled())
 				log.trace("Indexed artifact " + artifact + " on " + fileNode);

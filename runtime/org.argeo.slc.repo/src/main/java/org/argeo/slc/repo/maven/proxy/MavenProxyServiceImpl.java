@@ -6,6 +6,8 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +16,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.proxy.AbstractUrlProxy;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
 import org.sonatype.aether.repository.RemoteRepository;
 
@@ -25,16 +28,21 @@ public class MavenProxyServiceImpl extends AbstractUrlProxy implements
 
 	private List<RemoteRepository> defaultRepositories = new ArrayList<RemoteRepository>();
 
+	/** Inititalizes the artifacts area. */
 	@Override
-	protected void beforeInitSessionSave() throws RepositoryException {
-		JcrUtils.mkdirs(getJcrAdminSession(), RepoConstants.ARTIFACTS_BASE_PATH);
-		Node proxiedRepositories = JcrUtils.mkdirs(getJcrAdminSession(),
+	protected void beforeInitSessionSave(Session session)
+			throws RepositoryException {
+		JcrUtils.mkdirsSafe(session, RepoConstants.ARTIFACTS_BASE_PATH);
+		Node proxiedRepositories = JcrUtils.mkdirsSafe(session,
 				RepoConstants.PROXIED_REPOSITORIES);
 		for (RemoteRepository repository : defaultRepositories) {
 			if (!proxiedRepositories.hasNode(repository.getId())) {
 				Node proxiedRepository = proxiedRepositories.addNode(repository
 						.getId());
-				proxiedRepository.setProperty(SLC_URL, repository.getUrl());
+				proxiedRepository.addMixin(NodeType.MIX_REFERENCEABLE);
+				JcrUtils.urlToAddressProperties(proxiedRepository,
+						repository.getUrl());
+				// proxiedRepository.setProperty(SLC_URL, repository.getUrl());
 				proxiedRepository.setProperty(SLC_TYPE,
 						repository.getContentType());
 			}
@@ -44,34 +52,42 @@ public class MavenProxyServiceImpl extends AbstractUrlProxy implements
 	/**
 	 * Retrieve and add this file to the repository
 	 */
-	protected String retrieve(String path) {
+	@Override
+	protected Node retrieve(Session session, String path) {
 		try {
+			if (session.hasPendingChanges())
+				throw new SlcException("Session has pending changed");
 			Node node = null;
-			baseUrls: for (String baseUrl : getBaseUrls()) {
-				node = proxyUrl(baseUrl, path);
-				if (node != null)
-					break baseUrls;
+			for (Node proxiedRepository : getBaseUrls(session)) {
+				String baseUrl = JcrUtils
+						.urlFromAddressProperties(proxiedRepository);
+				node = proxyUrl(session, baseUrl, path);
+				if (node != null) {
+					node.addMixin(SlcTypes.SLC_KNOWN_ORIGIN);
+					Node origin = node
+							.addNode(SLC_ORIGIN, SlcTypes.SLC_PROXIED);
+					origin.setProperty(SLC_PROXY, proxiedRepository);
+					JcrUtils.urlToAddressProperties(origin, baseUrl + path);
+					if (log.isDebugEnabled())
+						log.debug("Imported " + baseUrl + path + " to " + node);
+					return node;
+				}
 			}
-
-			if (node != null)
-				return node.getIdentifier();
-			else {
-				log.warn("Could not proxy " + path);
-				return null;
-			}
-		} catch (RepositoryException e) {
+			if (log.isDebugEnabled())
+				log.warn("No proxy found for " + path);
+			return null;
+		} catch (Exception e) {
 			throw new SlcException("Cannot proxy " + path, e);
 		}
 	}
 
-	protected synchronized List<String> getBaseUrls()
+	protected synchronized List<Node> getBaseUrls(Session session)
 			throws RepositoryException {
-		List<String> baseUrls = new ArrayList<String>();
-		for (NodeIterator nit = getJcrAdminSession().getNode(
+		List<Node> baseUrls = new ArrayList<Node>();
+		for (NodeIterator nit = session.getNode(
 				RepoConstants.PROXIED_REPOSITORIES).getNodes(); nit.hasNext();) {
 			Node proxiedRepository = nit.nextNode();
-			String repoUrl = proxiedRepository.getProperty(SLC_URL).getString();
-			baseUrls.add(repoUrl);
+			baseUrls.add(proxiedRepository);
 		}
 		return baseUrls;
 	}

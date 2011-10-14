@@ -1,7 +1,7 @@
 <slc = 'http://www.argeo.org/ns/slc'>
 
 // AETHER
-[slc:artifact] > nt:base, mix:shareable
+[slc:artifact] > mix:referenceable, mix:created, mix:lastModified
 mixin
 - slc:artifactId (STRING) m
 - slc:groupId (STRING) m
@@ -9,24 +9,37 @@ mixin
 - slc:artifactExtension (STRING) m
 - slc:artifactClassifier (STRING) ='' m a
 
-[slc:artifactVersionBase] > nt:base
+[slc:artifactVersion] > mix:referenceable, mix:created, mix:lastModified, mix:title
 mixin
 - slc:artifactId (STRING) m
 - slc:groupId (STRING) m
 - slc:artifactVersion (STRING) m
 
-[slc:artifactBase] > nt:base
+[slc:artifactBase] > mix:referenceable, mix:created, mix:lastModified
 mixin
 - slc:artifactId (STRING) m
 - slc:groupId (STRING) m
 
-[slc:groupBase] > nt:base
+[slc:groupBase] > mix:referenceable, mix:created, mix:lastModified
 mixin
 // it is possible to have groupBase being artifact base (e.g. org.argeo.commons.basic)
 // so using groupId would conflict 
 - slc:groupBaseId (STRING) m
 
-[slc:jarFile] > nt:base
+[slc:distribution] > slc:artifactVersion
+mixin
++ slc:artifactVersions (argeo:references) m
+
+// ORIGINS
+[slc:knownOrigin] > nt:base
+mixin
++ slc:origin (nt:address)
+
+[slc:proxied] > nt:address
+- slc:proxy (REFERENCE)
+
+// JAVA
+[slc:jarFile] > mix:referenceable
 mixin
 - 'slc:manifest' (BINARY) m
 - 'slc:Manifest-Version' (STRING)
@@ -46,10 +59,10 @@ mixin
 // OSGi
 // see http://www.osgi.org/Specifications/Reference
 
-[slc:javaPackage] > nt:base
+[slc:javaPackage] > mix:referenceable
 - slc:name (STRING) primary m
 
-[slc:osgiBaseVersion] > nt:base
+[slc:osgiBaseVersion] > mix:referenceable
 - slc:asString (STRING) primary m
 - slc:major (LONG) m
 - slc:minor (LONG) m
@@ -70,22 +83,22 @@ mixin
 - slc:version (STRING) ='0.0.0' m a
 - slc:optional (BOOLEAN) ='false' m a
 
-[slc:requiredBundle] > nt:base
+[slc:requiredBundle] > mix:referenceable
 - 'slc:symbolic-name' (STRING) primary m
 - 'slc:bundle-version' (STRING) ='0.0.0' m a
 - slc:optional (BOOLEAN) ='false' m a
 
-[slc:fragmentHost] > nt:base
+[slc:fragmentHost] > mix:referenceable
 - 'slc:symbolic-name' (STRING) m
 - 'slc:bundle-version' (STRING) ='0.0.0' m a
 
-[slc:bundleNativeCode] > nt:base
+[slc:bundleNativeCode] > mix:referenceable
 - slc:path (STRING) primary m
 - slc:osname (STRING)
 - slc:processor (STRING)
 
 // see http://www.osgi.org/Specifications/ReferenceHeaders
-[slc:bundle] > nt:base
+[slc:bundle] > mix:referenceable
 mixin
 - 'slc:symbolic-name' (STRING) primary m
 - 'slc:bundle-version' (STRING) m
@@ -116,4 +129,3 @@ mixin
 
 [slc:bundleArtifact] > slc:artifact,slc:jarFile,slc:bundle
 mixin
-

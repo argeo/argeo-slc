@@ -33,7 +33,7 @@ public interface SlcTypes {
 	 * REPO
 	 */
 	public final static String SLC_ARTIFACT = "slc:artifact";
-	public final static String SLC_ARTIFACT_VERSION_BASE = "slc:artifactVersionBase";
+	public final static String SLC_ARTIFACT_VERSION_BASE = "slc:artifactVersion";
 	public final static String SLC_ARTIFACT_BASE = "slc:artifactBase";
 	public final static String SLC_GROUP_BASE = "slc:groupBase";
 	public final static String SLC_JAR_FILE = "slc:jarFile";
@@ -45,5 +45,9 @@ public interface SlcTypes {
 	public final static String SLC_DYNAMIC_IMPORTED_PACKAGE = "slc:dynamicImportedPackage";
 	public final static String SLC_REQUIRED_BUNDLE = "slc:requiredBundle";
 	public final static String SLC_FRAGMENT_HOST = "slc:fragmentHost";
+	
+	// origin
+	public final static String SLC_KNOWN_ORIGIN = "slc:knownOrigin";
+	public final static String SLC_PROXIED = "slc:proxied";
 
 }

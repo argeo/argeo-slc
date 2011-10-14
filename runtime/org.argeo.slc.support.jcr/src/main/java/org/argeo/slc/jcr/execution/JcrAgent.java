@@ -31,7 +31,7 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames 
 	 */
 	protected String initAgentUuid() {
 		try {
-			Node vmAgentFactoryNode = JcrUtils.mkdirs(session,
+			Node vmAgentFactoryNode = JcrUtils.mkdirsSafe(session,
 					SlcJcrConstants.VM_AGENT_FACTORY_PATH,
 					SlcTypes.SLC_AGENT_FACTORY);
 			if (!vmAgentFactoryNode.hasNode(agentNodeName)) {
