@@ -1,6 +1,7 @@
 package org.argeo.slc.client.ui.dist.providers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -8,10 +9,18 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.argeo.ArgeoException;
+import org.argeo.eclipse.ui.jcr.utils.JcrItemsComparator;
+import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-public class ArtifactsTreeContentProvider implements ITreeContentProvider {
+public class ArtifactsTreeContentProvider implements ITreeContentProvider,
+		SlcTypes {
+
+	// Utils
+	private boolean sortChildren = true;
+	private JcrItemsComparator itemComparator = new JcrItemsComparator();
+
 	public Object[] getElements(Object parent) {
 		return getChildren(parent);
 	}
@@ -30,7 +39,14 @@ public class ArtifactsTreeContentProvider implements ITreeContentProvider {
 				while (ni.hasNext()) {
 					nodesList.add(ni.nextNode());
 				}
-				elements = nodesList.toArray();
+				if (sortChildren) {
+					Node[] arr = (Node[]) nodesList.toArray(new Node[nodesList
+							.size()]);
+					Arrays.sort(arr, itemComparator);
+					return arr;
+				} else
+					return nodesList.toArray();
+
 			}
 		} catch (RepositoryException e) {
 			throw new ArgeoException(
@@ -41,8 +57,13 @@ public class ArtifactsTreeContentProvider implements ITreeContentProvider {
 
 	public boolean hasChildren(Object parent) {
 		try {
-			if (parent instanceof Node && ((Node) parent).hasNodes()) {
-				return true;
+			if (parent instanceof Node) {
+				Node curNode = (Node) parent;
+				// We manually stop digging at this level
+				if (curNode.isNodeType(SLC_ARTIFACT_VERSION_BASE))
+					return false;
+				else if (curNode.hasNodes())
+					return true;
 			}
 		} catch (RepositoryException e) {
 			throw new ArgeoException(
@@ -50,6 +71,14 @@ public class ArtifactsTreeContentProvider implements ITreeContentProvider {
 					e);
 		}
 		return false;
+	}
+
+	public void setSortChildren(boolean sortChildren) {
+		this.sortChildren = sortChildren;
+	}
+
+	public boolean getSortChildren() {
+		return sortChildren;
 	}
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {

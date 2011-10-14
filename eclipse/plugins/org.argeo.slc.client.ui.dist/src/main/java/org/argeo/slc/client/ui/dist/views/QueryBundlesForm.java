@@ -5,8 +5,10 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -18,7 +20,7 @@ import org.eclipse.swt.widgets.Text;
 
 /** Query SLC Repo to get some artifacts given some predefined parameters */
 public class QueryBundlesForm extends AbstractQueryArtifactsView implements
-		SlcNames {
+		SlcNames, SlcTypes {
 	private static final Log log = LogFactory.getLog(QueryBundlesForm.class);
 	public static final String ID = DistPlugin.ID + ".queryBundlesForm";
 
@@ -29,11 +31,6 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 	private Text exportedPackage;
 	private SashForm sashForm;
 
-	// shortcuts
-	final static String SBA = "sba";
-	final static String SIP = "sip";
-	final static String SEP = "sep";
-
 	private Composite top, bottom;
 
 	@Override
@@ -41,7 +38,9 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 
 		sashForm = new SashForm(parent, SWT.VERTICAL);
 		sashForm.setSashWidth(4);
-		sashForm.setLayout(new GridLayout(1, false));
+		// Enable the different parts to fill the whole page when the tab is
+		// maximized
+		sashForm.setLayout(new FillLayout());
 
 		top = new Composite(sashForm, SWT.NONE);
 		top.setLayout(new GridLayout(1, false));
@@ -65,18 +64,27 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 
 		// Bundle Name
 		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Bundle name: ");
+		lbl.setText("Symbolic name");
 		symbolicName = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.grabExcessHorizontalSpace = true;
+		symbolicName.setLayoutData(gd);
 
 		// imported package
 		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Imported package: ");
+		lbl.setText("Imported package");
 		importedPackage = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.grabExcessHorizontalSpace = true;
+		importedPackage.setLayoutData(gd);
 
 		// exported package
 		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Exported package: ");
+		lbl.setText("Exported package");
 		exportedPackage = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.grabExcessHorizontalSpace = true;
+		exportedPackage.setLayoutData(gd);
 
 		executeBtn = new Button(parent, SWT.PUSH);
 		executeBtn.setText("Search");
@@ -110,36 +118,30 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 
 			StringBuffer sb = new StringBuffer();
 			// Select
-			sb.append("select " + SBA + ".* ");
-			if (ipClause)
-				sb.append(", " + SIP + ".* ");
-			if (epClause)
-				sb.append(", " + SEP + ".* ");
-
-			sb.append(" from [");
-			sb.append(SLC_BUNDLE_ARTIFACT);
-			sb.append("] as " + SBA + " ");
+			sb.append("select " + SBA + ".*, " + SAVB + ".* ");
+			sb.append(" from " + SAVB);
 
 			// join
+			sb.append(" inner join ");
+			sb.append(SBA);
+			sb.append(" on isdescendantnode(" + SBA + ", " + SAVB + ") ");
 			if (ipClause) {
-				sb.append(" inner join [");
-				sb.append(SLC_IMPORTED_PACKAGE);
-				sb.append("] as " + SIP + " on isdescendantnode(" + SIP + ", "
-						+ SBA + ") ");
+				sb.append(" inner join ");
+				sb.append(SIP);
+				sb.append(" on isdescendantnode(" + SIP + ", " + SBA + ") ");
 			}
 
 			if (epClause) {
-				sb.append(" inner join [");
-				sb.append(SLC_EXPORTED_PACKAGE);
-				sb.append("] as " + SEP + " on isdescendantnode(" + SEP + ", "
-						+ SBA + ") ");
+				sb.append(" inner join ");
+				sb.append(SEP);
+				sb.append(" on isdescendantnode(" + SEP + ", " + SBA + ") ");
 			}
 
 			// where
 			sb.append(" where ");
 			if (symbolicName.getText() != null
 					&& !symbolicName.getText().trim().equals("")) {
-				sb.append("sba.[" + SLC_SYMBOLIC_NAME + "] like '"
+				sb.append(SBA + ".[" + SLC_SYMBOLIC_NAME + "] like '"
 						+ symbolicName.getText().replace('*', '%') + "'");
 				hasFirstClause = true;
 			}
@@ -158,10 +160,6 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 				sb.append(SEP + ".[" + SLC_NAME + "] like '"
 						+ exportedPackage.getText().replace('*', '%') + "'");
 			}
-
-			if (log.isDebugEnabled())
-				log.debug("Statement : " + sb.toString());
-
 			return sb.toString();
 		} catch (Exception e) {
 			throw new ArgeoException(

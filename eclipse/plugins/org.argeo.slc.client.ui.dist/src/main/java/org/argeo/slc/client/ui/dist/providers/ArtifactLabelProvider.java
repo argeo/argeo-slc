@@ -5,18 +5,19 @@ import java.text.SimpleDateFormat;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
 
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistConstants;
+import org.argeo.slc.client.ui.dist.DistImages;
+import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.graphics.Image;
 
 public class ArtifactLabelProvider extends ColumnLabelProvider implements
-		DistConstants {
+		DistConstants, SlcTypes {
 
 	// To be able to change column order easily
 	public static final int COLUMN_TREE = 0;
@@ -24,16 +25,42 @@ public class ArtifactLabelProvider extends ColumnLabelProvider implements
 	public static final int COLUMN_SIZE = 2;
 
 	// Utils
-	protected DateFormat timeFormatter = new SimpleDateFormat(DATE_TIME_FORMAT);
+	protected static DateFormat timeFormatter = new SimpleDateFormat(
+			DATE_TIME_FORMAT);
 
 	public void update(ViewerCell cell) {
+		int colIndex = cell.getColumnIndex();
 		Object element = cell.getElement();
-		cell.setText(getColumnText(element, cell.getColumnIndex()));
-		// Image image = getImage(element);
-		// cell.setImage(image);
-		// cell.setBackground(getBackground(element));
-		// cell.setForeground(getForeground(element));
-		// cell.setFont(getFont(element));
+		cell.setText(getColumnText(element, colIndex));
+		if (element instanceof Node && colIndex == 0) {
+			Node node = (Node) element;
+			try {
+				if (node.isNodeType(SLC_ARTIFACT_BASE))
+					cell.setImage(DistImages.IMG_ARTIFACT_BASE);
+				else if (node.isNodeType(SLC_ARTIFACT_VERSION_BASE))
+					cell.setImage(DistImages.IMG_ARTIFACT_VERSION_BASE);
+			} catch (RepositoryException e) {
+				// Silent
+			}
+		}
+	}
+
+	@Override
+	public Image getImage(Object element) {
+
+		if (element instanceof Node) {
+			Node node = (Node) element;
+			try {
+				if (node.isNodeType(SLC_ARTIFACT_BASE)) {
+					return DistImages.IMG_ARTIFACT_BASE;
+				} else if (node.isNodeType(SLC_ARTIFACT_VERSION_BASE)) {
+					return DistImages.IMG_ARTIFACT_VERSION_BASE;
+				}
+			} catch (RepositoryException e) {
+				// Silent
+			}
+		}
+		return null;
 	}
 
 	public String getColumnText(Object element, int columnIndex) {
@@ -50,10 +77,10 @@ public class ArtifactLabelProvider extends ColumnLabelProvider implements
 					else
 						return size + " KB";
 				case COLUMN_DATE:
-					if (node.hasProperty(Property.JCR_CREATED))
+					if (node.hasProperty(Property.JCR_LAST_MODIFIED))
 						return timeFormatter.format(node
-								.getProperty(Property.JCR_CREATED).getDate()
-								.getTime());
+								.getProperty(Property.JCR_LAST_MODIFIED)
+								.getDate().getTime());
 					else
 						return null;
 				}
@@ -63,23 +90,5 @@ public class ArtifactLabelProvider extends ColumnLabelProvider implements
 					"Unexepected error while getting property values", re);
 		}
 		return null;
-	}
-
-	private String formatValueAsString(Value value) {
-		// TODO enhance this method
-		try {
-			String strValue;
-
-			if (value.getType() == PropertyType.BINARY)
-				strValue = "<binary>";
-			else if (value.getType() == PropertyType.DATE)
-				strValue = timeFormatter.format(value.getDate().getTime());
-			else
-				strValue = value.getString();
-			return strValue;
-		} catch (RepositoryException e) {
-			throw new ArgeoException("unexpected error while formatting value",
-					e);
-		}
 	}
 }

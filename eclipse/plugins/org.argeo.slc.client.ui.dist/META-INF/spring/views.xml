@@ -15,22 +15,31 @@
 	<bean id="queryArtifactsForm" class="org.argeo.slc.client.ui.dist.views.QueryArtifactsForm"
 		scope="prototype">
 		<property name="session" ref="slcSession" />
+		<property name="columnProperties">
+			<list>
+				<value>slc:artifactVersion.jcr:uuid</value>
+				<value>slc:artifactVersion.slc:groupId</value>
+				<value>slc:artifactVersion.slc:artifactId</value>
+				<value>slc:artifactVersion.slc:artifactVersion</value>
+			</list>
+		</property>
 	</bean>
 	<bean id="queryBundlesForm" class="org.argeo.slc.client.ui.dist.views.QueryBundlesForm"
 		scope="prototype">
 		<property name="session" ref="slcSession" />
+		<property name="columnProperties">
+			<list>
+				<value>slc:artifactVersion.jcr:uuid</value>
+				<value>slc:bundleArtifact.slc:symbolic-name</value>
+				<value>slc:artifactVersion.slc:groupId</value>
+				<value>slc:bundleArtifact.slc:bundle-version</value>
+				<!-- <value>slc:bundleArtifact.slc:Fragment-Host</value> -->
+			</list>
+		</property>
 	</bean>
 
 	<bean id="queryArtifactsText" class="org.argeo.slc.client.ui.dist.views.QueryArtifactsText"
 		scope="prototype">
 		<property name="session" ref="slcSession" />
 	</bean>
-
-	<util:list id="columnProperties" scope="prototype">
-		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_ARTIFACT_ID" />
-		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_GROUP_ID" />
-		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_ARTIFACT_VERSION" />
-		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_ARTIFACT_EXTENSION" />
-		<util:constant static-field="org.argeo.slc.jcr.SlcNames.SLC_ARTIFACT_CLASSIFIER" />
-	</util:list>
 </beans>

@@ -35,8 +35,8 @@
 			<version>${version.argeo-commons}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.commons.server</groupId>
-			<artifactId>org.argeo.jcr.ui.explorer</artifactId>
+			<groupId>org.argeo.commons.eclipse</groupId>
+			<artifactId>org.argeo.eclipse.ui.jcr</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 		<dependency>

@@ -75,45 +75,15 @@ public class ArtifactsTableConfigurer implements SlcNames, SlcTypes,
 					getSelectionAdapter(column.getColumn(), columnIndex));
 			indexToName.put(new Integer(columnIndex), jcrColumnName);
 		}
-		Object[] objs = getColumnLabelAndWidth(jcrColumnName);
-		column.getColumn().setWidth((Integer) objs[0]);
-		column.getColumn().setText((String) objs[1]);
+		Object[] objs = DistUiHelpers
+				.getLabelAndDefaultValueWidth(jcrColumnName);
+		column.getColumn().setWidth((Integer) objs[1]);
+		column.getColumn().setText((String) objs[0]);
 	}
 
 	/**
-	 * Returns corresponding default width ( (int) object[0] ) and the header
-	 * label ( (String) object[1] ) depending on the property name.
-	 */
-	public static Object[] getColumnLabelAndWidth(String propertyName) {
-		// to avoid npe :
-		if (propertyName == null)
-			return new Object[] { 60, "(No name)" };
-
-		if (propertyName.equals(SLC_ARTIFACT + "." + SLC_ARTIFACT_ID)) {
-			return new Object[] { 140, "Artifact ID" };
-		} else if (propertyName.equals(SLC_ARTIFACT + "." + SLC_GROUP_ID)) {
-			return new Object[] { 120, "Group ID" };
-		} else if (propertyName.equals(SLC_ARTIFACT + "."
-				+ SLC_ARTIFACT_VERSION)) {
-			return new Object[] { 60, "Version" };
-		} else if (propertyName.equals(SLC_ARTIFACT + "."
-				+ SLC_ARTIFACT_CLASSIFIER)) {
-			return new Object[] { 60, "Classifier" };
-		} else if (propertyName.equals(SLC_ARTIFACT + "."
-				+ SLC_ARTIFACT_EXTENSION)) {
-			return new Object[] { 40, "Type" };
-		} else if (propertyName.equals(SLC_ARTIFACT + ".jcr:uuid")) {
-			return new Object[] { 20, "UUID" };
-		} else {
-			if (log.isTraceEnabled())
-				log.trace("No Column label provider defined for property: ["
-						+ propertyName + "]");
-			return new Object[] { 60, propertyName };
-		}
-	}
-
-	/**
-	 * Might be used by client classes to sort columns.
+	 * Might be used by client classes to sort the table with based on selected
+	 * columns.
 	 * 
 	 * @param column
 	 * @param index

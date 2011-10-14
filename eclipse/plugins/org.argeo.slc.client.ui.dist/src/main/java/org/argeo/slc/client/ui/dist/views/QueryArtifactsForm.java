@@ -7,6 +7,7 @@ import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -36,7 +37,9 @@ public class QueryArtifactsForm extends AbstractQueryArtifactsView implements
 
 		sashForm = new SashForm(parent, SWT.VERTICAL);
 		sashForm.setSashWidth(4);
-		sashForm.setLayout(new GridLayout(1, false));
+		// Enable the different parts to fill the whole page when the tab is
+		// maximized
+		sashForm.setLayout(new FillLayout());
 
 		top = new Composite(sashForm, SWT.NONE);
 		top.setLayout(new GridLayout(1, false));
@@ -58,26 +61,35 @@ public class QueryArtifactsForm extends AbstractQueryArtifactsView implements
 		gl.marginTop = 5;
 		parent.setLayout(gl);
 
-		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Query by coordinates");
-		gd = new GridData();
-		gd.horizontalSpan = 2;
-		lbl.setLayoutData(gd);
+		// lbl = new Label(parent, SWT.SINGLE);
+		// lbl.setText("Query by coordinates");
+		// gd = new GridData();
+		// gd.horizontalSpan = 2;
+		// lbl.setLayoutData(gd);
 
 		// Group ID
 		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Group ID:");
+		lbl.setText("Group ID");
 		groupId = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.grabExcessHorizontalSpace = true;
+		groupId.setLayoutData(gd);
 
 		// Artifact ID
 		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Artifact ID:");
+		lbl.setText("Artifact ID");
 		artifactId = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.grabExcessHorizontalSpace = true;
+		artifactId.setLayoutData(gd);
 
 		// Version
 		lbl = new Label(parent, SWT.SINGLE);
-		lbl.setText("Version:");
+		lbl.setText("Version");
 		version = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.grabExcessHorizontalSpace = true;
+		version.setLayoutData(gd);
 
 		executeBtn = new Button(parent, SWT.PUSH);
 		executeBtn.setText("Search");

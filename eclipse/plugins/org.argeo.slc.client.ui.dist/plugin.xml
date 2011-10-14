@@ -17,32 +17,36 @@
       <view
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
             id="org.argeo.slc.client.ui.dist.artifactsBrowser"
+            icon="icons/packageBrowser.gif"
             name="Artifacts browser">
       </view>
       <view
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
             id="org.argeo.slc.client.ui.dist.queryArtifactsForm"
-            name="Query Artifacts Form">
+            icon="icons/searchForm.gif"
+            name="Artifacts Form">
       </view>
       <view
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
             id="org.argeo.slc.client.ui.dist.queryBundlesForm"
-            name="Query Bundles Form">
+            icon="icons/searchForm.gif"
+            name="Bundles Form">
       </view>
       <view
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
             id="org.argeo.slc.client.ui.dist.queryArtifactsText"
-            name="Artifacts query builder">
+            icon="icons/search.gif"
+            name="Query builder">
       </view>
    </extension>
    <!-- Editors -->
    <extension
            point="org.eclipse.ui.editors">
 	     <editor
-	          class="org.argeo.eclipse.spring.SpringExtensionFactory"
-              id="org.argeo.slc.client.ui.dist.genericJcrQueryEditor"
-              name="JCR Query"
-              icon="icons/distribution_perspective.gif"
+	          class="org.argeo.slc.client.ui.dist.editors.GenericArtifactEditor"
+              id="org.argeo.slc.client.ui.dist.genericArtifactEditor"
+              name="Artifact editor"
+              icon="icons/artifactVersionBase.gif"
               default="false">
         </editor>
     </extension>
@@ -50,14 +54,46 @@
    	<extension
          point="org.eclipse.ui.commands">
 		<command
-            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            id="org.argeo.slc.client.ui.dist.openGenericJcrQueryEditor"
-            name="OpenGenericJcrQueryEditor ">
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.ShowSizeColumn"
+            id="org.argeo.slc.client.ui.dist.showSizeColumn"
+            name="Show size column">
+            <state 
+				id="org.argeo.slc.client.ui.dist.showSizeColumn.toggleState">
+				<class class="org.eclipse.jface.commands.ToggleState"> 
+					<parameter
+						name="default"
+               			value="true" />
+				</class>
+			</state>
+    	</command>
+		<command
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.RefreshArtifactBrowser"
+            id="org.argeo.slc.client.ui.dist.refreshArtifactBrowser"
+            name="Refresh Artifact Browser">
     	</command>
     </extension>
 	<extension
          id="menu:org.eclipse.ui.main.menu"
          point="org.eclipse.ui.menus">
+    
+         <!-- View Specific Menus --> 
+		<menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.dist.artifactsBrowser">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.showSizeColumn"
+                icon="icons/showSize.gif"
+                style="toggle" 
+                label="Show sizes"
+                tooltip="Warning: showing size column might reduce overall browser reactivity">
+            </command>
+			<command
+            	commandId="org.argeo.slc.client.ui.dist.refreshArtifactBrowser"
+                icon="icons/refresh.png"
+	                label="Refresh"
+                tooltip="Refresh the whole browser">
+            </command>
+        </menuContribution>
+	
         <!-- Queries --> 
 		<!-- <menuContribution
                 allPopups="false"

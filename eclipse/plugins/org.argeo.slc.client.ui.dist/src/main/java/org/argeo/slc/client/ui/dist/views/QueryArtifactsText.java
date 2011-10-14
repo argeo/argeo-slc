@@ -6,6 +6,7 @@ import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -33,7 +34,9 @@ public class QueryArtifactsText extends AbstractQueryArtifactsView implements
 
 		sashForm = new SashForm(parent, SWT.VERTICAL);
 		sashForm.setSashWidth(4);
-		sashForm.setLayout(new GridLayout(1, false));
+		// Enable the different parts to fill the whole page when the tab is
+		// maximized
+		sashForm.setLayout(new FillLayout());
 
 		top = new Composite(sashForm, SWT.NONE);
 		top.setLayout(new GridLayout(1, false));

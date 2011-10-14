@@ -3,6 +3,7 @@ package org.argeo.slc.client.ui.dist.views;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -17,6 +18,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.GenericTableComparator;
 import org.argeo.slc.client.ui.dist.utils.ArtifactsTableConfigurer;
+import org.argeo.slc.client.ui.dist.utils.GenericDoubleClickListener;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -41,14 +43,24 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 	private static final Log log = LogFactory
 			.getLog(AbstractQueryArtifactsView.class);
 
+	// shortcuts
+	final protected static String SAVB = "[" + SLC_ARTIFACT_VERSION_BASE + "]";
+	final protected static String SBA = "[" + SLC_BUNDLE_ARTIFACT + "]";
+	final protected static String SIP = "[" + SLC_IMPORTED_PACKAGE + "]";
+	final protected static String SEP = "[" + SLC_EXPORTED_PACKAGE + "]";
+
 	/* DEPENDENCY INJECTION */
 	private Session session;
+	private List<String> columnProperties;
 
 	// This page widgets
 	private TableViewer viewer;
 	private List<TableViewerColumn> tableViewerColumns = new ArrayList<TableViewerColumn>();
 	private ArtifactsTableConfigurer tableConfigurer;
 	private GenericTableComparator comparator;
+
+	// to be set by client to display all columns
+	private boolean displayAllColumns = false;
 
 	protected void createResultPart(Composite parent) {
 		viewer = new TableViewer(parent);
@@ -60,7 +72,8 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setContentProvider(new ViewContentProvider());
-		// viewer.addDoubleClickListener(new ViewDoubleClickListener());
+		viewer.addDoubleClickListener(new GenericDoubleClickListener(null));
+
 		tableConfigurer = new ArtifactsTableConfigurer(viewer, 1,
 				GenericTableComparator.DESCENDING);
 
@@ -87,19 +100,39 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 			// remove previous columns
 			for (TableViewerColumn tvc : tableViewerColumns)
 				tvc.getColumn().dispose();
-			int i = 0;
-			for (final String columnName : qr.getColumnNames()) {
-				TableViewerColumn tvc = new TableViewerColumn(viewer, SWT.NONE);
-				// Small hack to remove prefix from the column name
-				String tmpStr = columnName.substring(columnName
-						.lastIndexOf(".")+1);
-				tableConfigurer.configureColumn(tmpStr, tvc, i);
-				tvc.setLabelProvider(tableConfigurer
-						.getLabelProvider(columnName));
-				tableViewerColumns.add(tvc);
-				i++;
-			}
 
+			// If a pre(-defined list of columns has been injected, we use it,
+			// otherwise we display all results of the resultSet
+			if (!displayAllColumns && columnProperties != null) {
+				int i = 0;
+
+				Iterator<String> it = columnProperties.iterator();
+				while (it.hasNext()) {
+					String columnName = it.next();
+
+					TableViewerColumn tvc = new TableViewerColumn(viewer,
+							SWT.NONE);
+					tableConfigurer.configureColumn(columnName, tvc, i);
+					tvc.setLabelProvider(tableConfigurer
+							.getLabelProvider(columnName));
+					tableViewerColumns.add(tvc);
+					i++;
+				}
+			} else {
+				int i = 0;
+				for (final String columnName : qr.getColumnNames()) {
+					TableViewerColumn tvc = new TableViewerColumn(viewer,
+							SWT.NONE);
+					// Small hack to remove prefix from the column name
+					// String tmpStr = columnName.substring(columnName
+					// .lastIndexOf(".") + 1);
+					tableConfigurer.configureColumn(columnName, tvc, i);
+					tvc.setLabelProvider(tableConfigurer
+							.getLabelProvider(columnName));
+					tableViewerColumns.add(tvc);
+					i++;
+				}
+			}
 			// We must create a local list because query result can be read only
 			// once.
 			try {
@@ -120,16 +153,24 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 		}
 	}
 
+	/**
+	 * Client must use this method to display all columns of the result set
+	 * instead of a limited predifined and injected set
+	 **/
+	public void displayAllColumns(boolean flag) {
+		displayAllColumns = flag;
+	}
+
 	// Can be overridden by subclasses.
 	protected String generateSelectStatement() {
-		StringBuffer sb = new StringBuffer("select * ");
+		StringBuffer sb = new StringBuffer("select " + SAVB + ".* ");
 		return sb.toString();
 	}
 
 	protected String generateFromStatement() {
-		StringBuffer sb = new StringBuffer(" from [");
-		sb.append(SLC_ARTIFACT);
-		sb.append("] ");
+		StringBuffer sb = new StringBuffer(" from ");
+		sb.append(SAVB);
+		sb.append(" ");
 		return sb.toString();
 	}
 
@@ -167,5 +208,9 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 	/* DEPENDENCY INJECTION */
 	public void setSession(Session session) {
 		this.session = session;
+	}
+
+	public void setColumnProperties(List<String> columnProperties) {
+		this.columnProperties = columnProperties;
 	}
 }

@@ -7,9 +7,9 @@ public interface DistConstants {
 	 */
 	public final static String DATE_TIME_FORMAT = "MM/dd/yyyy, HH:mm";
 	public final static String DATE_FORMAT = "MM/dd/yyyy";
+	// this should be directly got in JCR
+	public final static String JCR_IDENTIFIER = "jcr:uuid";
 
-	/*
-	 * Architecture specific constants
-	 */
-	public final static String BASE_ARTIFACTS_NODE_PATH = "/slc/repo/artifacts";
+	
+	
 }
