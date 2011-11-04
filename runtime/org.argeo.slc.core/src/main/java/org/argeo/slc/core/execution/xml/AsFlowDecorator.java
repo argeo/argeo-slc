@@ -20,6 +20,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionFlow;
+import org.argeo.slc.execution.ExecutionFlow;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -29,6 +30,7 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 
+/** Publishes a {@link Runnable} as an {@link ExecutionFlow} */
 public class AsFlowDecorator implements BeanDefinitionDecorator {
 	private Log log = LogFactory.getLog(AsFlowDecorator.class);
 
@@ -38,25 +40,10 @@ public class AsFlowDecorator implements BeanDefinitionDecorator {
 		String attrValue = ((Attr) node).getValue();
 		if (attrValue.charAt(attrValue.length() - 1) == '/')
 			throw new SlcException(attrValue + " cannot end with a path");
-		// int lastSlash = attrValue.lastIndexOf('/');
-		// String path;
-		// String flowBeanName;
-		// if (lastSlash > 0) {
-		// flowBeanName = attrValue.substring(lastSlash + 1);
-		// path = attrValue.substring(0, lastSlash);
-		// } else if (lastSlash == 0) {
-		// flowBeanName = attrValue.substring(lastSlash + 1);
-		// path = null;
-		// } else {
-		// flowBeanName = attrValue;
-		// path = null;
-		// }
-		//
 		final String flowBeanName = attrValue;
-		final String path = null;
 
 		if (log.isTraceEnabled())
-			log.debug("path=" + path + ", flowBeanName=" + flowBeanName);
+			log.trace("flowBeanName=" + flowBeanName);
 
 		if (ctx.getRegistry().containsBeanDefinition(flowBeanName))
 			throw new SlcException("A bean named " + flowBeanName
@@ -71,8 +58,8 @@ public class AsFlowDecorator implements BeanDefinitionDecorator {
 		else
 			executables.add(new RuntimeBeanReference(beanName));
 
-		if (path != null)
-			flow.addPropertyValue("path", path);
+		// if (path != null)
+		// flow.addPropertyValue("path", path);
 		flow.addPropertyValue("executables", executables);
 
 		if (beanName != null)

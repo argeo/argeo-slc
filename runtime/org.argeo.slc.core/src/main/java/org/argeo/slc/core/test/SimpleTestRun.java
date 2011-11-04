@@ -35,6 +35,7 @@ import org.argeo.slc.test.WritableTestRun;
  * A basic bean implementation of a <code>WritableTestRun</code>, holding
  * references to the various parts of a test run.
  */
+@SuppressWarnings("deprecation")
 public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 		SlcExecutionRelated, StructureAware<TreeSPath> {
 	private String uuid;
@@ -130,6 +131,7 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 		this.slcExecutionStepUuid = slcExecutionStepUuid;
 	}
 
+	@Deprecated
 	public void notifySlcExecution(SlcExecution slcExecution) {
 		if (slcExecution != null) {
 			slcExecutionUuid = slcExecution.getUuid();

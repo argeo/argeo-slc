@@ -420,19 +420,10 @@ public class SystemCall implements Runnable {
 	 */
 	protected String getExecDirToUse() {
 		try {
-			File dir = null;
 			if (execDir != null) {
 				return execDir;
-				// Replace '/' by local file separator, for portability
-				// execDir.replace('/', File.separatorChar);
-				// dir = new File(execDir).getCanonicalFile();
-				// dir = execDir.;
 			}
-
-			if (dir == null)
-				return System.getProperty("user.dir");
-			else
-				return dir.getPath();
+			return System.getProperty("user.dir");
 		} catch (Exception e) {
 			throw new SlcException("Cannot find exec dir", e);
 		}

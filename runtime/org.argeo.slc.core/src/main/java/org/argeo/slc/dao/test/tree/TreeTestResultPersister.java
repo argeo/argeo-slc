@@ -28,6 +28,7 @@ import org.argeo.slc.test.TestResultPart;
  * 
  * @see TreeTestResult
  */
+@Deprecated
 public class TreeTestResultPersister implements
 		TestResultListener<TreeTestResult> {
 	private static Log log = LogFactory.getLog(TreeTestResultPersister.class);

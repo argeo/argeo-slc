@@ -28,6 +28,7 @@ import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
 
 /** The thread group attached to a given {@link SlcExecution}. */
+@SuppressWarnings("deprecation")
 public class ProcessThreadGroup extends ThreadGroup {
 	private final ExecutionModulesManager executionModulesManager;
 	private final ProcessThread processThread;
@@ -44,10 +45,6 @@ public class ProcessThreadGroup extends ThreadGroup {
 		this.executionModulesManager = executionModulesManager;
 		this.processThread = processThread;
 	}
-
-	// public SlcExecution getSlcProcess() {
-	// return processThread.getSlcProcess();
-	// }
 
 	public void dispatchAddStep(ExecutionStep step) {
 		// legacy

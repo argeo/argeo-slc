@@ -32,6 +32,7 @@ import org.argeo.slc.structure.StructureElement;
  * 
  * @see TreeTestResult
  */
+@Deprecated
 public interface TreeTestResultDao extends TestResultDao<TreeTestResult> {
 	/** Lists results containing this path */
 	public List<TreeTestResult> listResults(TreeSPath path);

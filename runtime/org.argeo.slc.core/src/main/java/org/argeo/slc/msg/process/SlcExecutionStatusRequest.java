@@ -18,6 +18,7 @@ package org.argeo.slc.msg.process;
 
 import java.io.Serializable;
 
+@Deprecated
 public class SlcExecutionStatusRequest implements Serializable {
 	private static final long serialVersionUID = -6495004680978575999L;
 	private String slcExecutionUuid;

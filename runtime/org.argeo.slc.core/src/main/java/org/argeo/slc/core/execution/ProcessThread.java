@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +32,7 @@ import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 
 /** Thread of the SLC Process, starting the sub executions. */
+@SuppressWarnings("deprecation")
 public class ProcessThread extends Thread {
 	private final static Log log = LogFactory.getLog(ProcessThread.class);
 
@@ -46,10 +45,6 @@ public class ProcessThread extends Thread {
 
 	private Boolean hadAnError = false;
 	private Boolean killed = false;
-
-	private final static Integer STEPS_BUFFER_CAPACITY = 10000;
-	private BlockingQueue<ExecutionStep> steps = new ArrayBlockingQueue<ExecutionStep>(
-			STEPS_BUFFER_CAPACITY);
 
 	public ProcessThread(ThreadGroup processesThreadGroup,
 			ExecutionModulesManager executionModulesManager,
@@ -130,7 +125,6 @@ public class ProcessThread extends Thread {
 	 * Implementation specific execution. To be overridden in order to deal with
 	 * custom process types. Default expects an {@link SlcExecution}.
 	 */
-	@SuppressWarnings("deprecation")
 	protected void process() throws InterruptedException {
 		if (!(process instanceof SlcExecution))
 			throw new SlcException("Unsupported process type "

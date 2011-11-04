@@ -16,6 +16,7 @@
 
 package org.argeo.slc.process;
 
+@Deprecated
 public interface SlcExecutionAware {
 	public void notifySlcExecution(SlcExecution slcExecution);
 }

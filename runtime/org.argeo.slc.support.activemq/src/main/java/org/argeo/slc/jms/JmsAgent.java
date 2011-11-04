@@ -162,7 +162,7 @@ public class JmsAgent extends DefaultAgent implements MessageListener {
 				final SlcExecution slcExecution = (SlcExecution) convertFrom(message);
 				new Thread() {
 					public void run() {
-						runSlcExecution(slcExecution);
+						process(slcExecution);
 					}
 				}.start();
 				return ExecutionAnswer.ok("Execution started on agent "

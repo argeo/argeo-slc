@@ -1,6 +1,6 @@
 package org.argeo.slc.osgi;
 
-/** A structured set of OSGi bundles. */
+/** <b>Experimental</b> A structured set of OSGi bundles. */
 public interface BundleRegister {
 	/**
 	 * @param pkg

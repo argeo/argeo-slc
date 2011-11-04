@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -12,12 +11,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.Constants;
 
+/** <b>Experimental</b> */
 public class FileSystemBundleRegister implements BundleRegister {
 	private final static Log log = LogFactory
 			.getLog(FileSystemBundleRegister.class);
-
-	private File baseDirectory;
-
 	private Properties packagesBundles = null;
 
 	public String bundleProvidingPackage(String pkg, String version) {

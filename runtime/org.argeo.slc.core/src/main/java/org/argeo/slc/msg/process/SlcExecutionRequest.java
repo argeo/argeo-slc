@@ -20,6 +20,7 @@ import java.io.Serializable;
 
 import org.argeo.slc.process.SlcExecution;
 
+@Deprecated
 public class SlcExecutionRequest implements Serializable {
 	private static final long serialVersionUID = 4448081961875614441L;
 	private SlcExecution slcExecution;

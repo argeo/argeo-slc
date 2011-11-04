@@ -41,6 +41,12 @@ import org.springframework.beans.factory.support.ManagedSet;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
+/**
+ * Spring post processor which ensures that execution parameters are properly
+ * set. It is used at two levels: first during instantiation for instantiation
+ * parameters which allow to implement templates, then at runtime in order to
+ * interpret @{} placeholders when object of scope execution are instantiated.
+ */
 public class ExecutionParameterPostProcessor extends
 		InstantiationAwareBeanPostProcessorAdapter {
 
@@ -102,7 +108,7 @@ public class ExecutionParameterPostProcessor extends
 					placeholder).toString();
 
 		else {// execution
-			// next call fail if no execution context available
+				// next call fail if no execution context available
 			Object obj = executionContext.getVariable(placeholder);
 			if (obj != null) {
 				return obj.toString();
@@ -131,12 +137,12 @@ public class ExecutionParameterPostProcessor extends
 			return convertedValue.equals(originalValue) ? value
 					: convertedValue;
 		} else if (value instanceof ManagedMap) {
-			Map mapVal = (Map) value;
+			Map<?, ?> mapVal = (Map<?, ?>) value;
 
-			Map newContent = new ManagedMap();
+			Map<Object, Object> newContent = new ManagedMap();
 			boolean entriesModified = false;
-			for (Iterator it = mapVal.entrySet().iterator(); it.hasNext();) {
-				Map.Entry entry = (Map.Entry) it.next();
+			for (Iterator<?> it = mapVal.entrySet().iterator(); it.hasNext();) {
+				Map.Entry<?, ?> entry = (Map.Entry<?, ?>) it.next();
 				Object key = entry.getKey();
 				int keyHash = (key != null ? key.hashCode() : 0);
 				Object newKey = resolveValue(beanName, bean, key);
@@ -150,8 +156,8 @@ public class ExecutionParameterPostProcessor extends
 
 			return entriesModified ? newContent : value;
 		} else if (value instanceof ManagedList) {
-			List listVal = (List) value;
-			List newContent = new ManagedList();
+			List<?> listVal = (List<?>) value;
+			List<Object> newContent = new ManagedList();
 			boolean valueModified = false;
 
 			for (int i = 0; i < listVal.size(); i++) {
@@ -164,10 +170,10 @@ public class ExecutionParameterPostProcessor extends
 			}
 			return valueModified ? newContent : value;
 		} else if (value instanceof ManagedSet) {
-			Set setVal = (Set) value;
-			Set newContent = new ManagedSet();
+			Set<?> setVal = (Set<?>) value;
+			Set<Object> newContent = new ManagedSet();
 			boolean entriesModified = false;
-			for (Iterator it = setVal.iterator(); it.hasNext();) {
+			for (Iterator<?> it = setVal.iterator(); it.hasNext();) {
 				Object elem = it.next();
 				int elemHash = (elem != null ? elem.hashCode() : 0);
 				Object newVal = resolveValue(beanName, bean, elem);
@@ -257,8 +263,8 @@ public class ExecutionParameterPostProcessor extends
 					// previously resolved placeholder value.
 					propVal = parseStringValue(bean, propVal,
 							visitedPlaceholders);
-					buf.replace(startIndex, endIndex
-							+ placeholderSuffix.length(), propVal);
+					buf.replace(startIndex,
+							endIndex + placeholderSuffix.length(), propVal);
 					if (log.isTraceEnabled()) {
 						log.trace("Resolved placeholder '" + placeholder + "'");
 					}

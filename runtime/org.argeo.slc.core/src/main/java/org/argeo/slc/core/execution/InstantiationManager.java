@@ -24,6 +24,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 
+/** Manage parameters that need to be set during the instantiation of a flow */
 public class InstantiationManager {
 
 	private final static Log log = LogFactory
@@ -46,7 +47,7 @@ public class InstantiationManager {
 		if (flow instanceof DefaultExecutionFlow) {
 			((DefaultExecutionFlow) flow).setBeanName(flowName);
 		}
-		
+
 		if (log.isTraceEnabled())
 			log.trace("Start initialization of " + flow.hashCode() + " ("
 					+ flow + " - " + flow.getClass() + ")");
@@ -63,8 +64,8 @@ public class InstantiationManager {
 		if (log.isTraceEnabled())
 			log.trace("Finish initialization of " + flow.hashCode() + " ("
 					+ flow + " - " + flow.getClass() + ")");
-		
-		if(flowStack.get() != null) {
+
+		if (flowStack.get() != null) {
 			ExecutionFlow registeredFlow = flowStack.get().pop();
 			if (registeredFlow != null) {
 				if (!flow.getName().equals(registeredFlow.getName()))
@@ -72,8 +73,7 @@ public class InstantiationManager {
 				// log.info("# flowInitializationFinished " + flowName);
 				// initializingFlow.set(null);
 			}
-		}
-		else {
+		} else {
 			// happens for flows imported as services
 			log.warn("flowInitializationFinished - Flow Stack is null");
 		}

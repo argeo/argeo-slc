@@ -44,7 +44,7 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 	private TreeSPath path;
 	private StructureRegistry<TreeSPath> registry;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void execute(TestRun testRun) {
 		if (log.isTraceEnabled())
 			log.trace("Execute sequence of test definitions...");
@@ -53,8 +53,8 @@ public class CompositeTreeTestDefinition implements TestDefinition,
 		for (TestDefinition task : tasks) {
 			TestResult result = testRun.getTestResult();
 			if (result instanceof StructureAware) {
-				((StructureAware) result).notifyCurrentPath(registry, taskPaths
-						.get(i));
+				((StructureAware) result).notifyCurrentPath(registry,
+						taskPaths.get(i));
 			}
 
 			task.execute(testRun);
