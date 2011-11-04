@@ -13,10 +13,11 @@
 	<reference id="repository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=slc)" />
 
-	<reference id="modulesManager"
-		interface="org.argeo.slc.execution.ExecutionModulesManager" />
 	<reference id="authenticationManager"
 		interface="org.springframework.security.AuthenticationManager" />
+
+	<reference id="modulesManager"
+		interface="org.argeo.slc.execution.ExecutionModulesManager" />
 
 	<!-- SERVICES -->
 	<!-- Deprecated -->

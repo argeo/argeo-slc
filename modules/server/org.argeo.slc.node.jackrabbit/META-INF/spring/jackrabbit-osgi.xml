@@ -10,9 +10,11 @@
        http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<!-- REFERENCES -->
-	<reference id="systemExecutionService" interface="org.argeo.security.SystemExecutionService" />
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=${argeo.node.repo.alias})" />
+		filter="(argeo.jcr.repository.alias=node)" />
+
+	<reference id="authenticationManager"
+		interface="org.springframework.security.AuthenticationManager" />
 
 	<!-- SERVICES -->
 	<service ref="jcrRepository" interface="javax.jcr.Repository">
