@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionProcess;
-import org.argeo.slc.process.SlcExecution;
 
 /** A local agent, able to run SLC Execution locally. */
 public interface SlcAgent {
@@ -37,9 +36,6 @@ public interface SlcAgent {
 			String moduleName, String version);
 
 	public List<ExecutionModuleDescriptor> listExecutionModuleDescriptors();
-
-	/** @deprecated Use {@link #process(ExecutionProcess)} instead. */
-	public void runSlcExecution(SlcExecution slcExecution);
 
 	/** @return true if still alive. */
 	public boolean ping();

@@ -154,7 +154,7 @@ public class ProcessController {
 		slcExecutionManager.storeRealizedFlows(slcExecution);
 		slcExecutionService.newExecution(slcExecution);
 		SlcAgent agent = agentFactory.getAgent(agentId);
-		agent.runSlcExecution(slcExecution);
+		//agent.runSlcExecution(slcExecution);
 
 		return ExecutionAnswer.ok("Execution completed properly");
 	}

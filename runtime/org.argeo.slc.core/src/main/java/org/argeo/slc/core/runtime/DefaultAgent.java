@@ -36,6 +36,7 @@ import org.argeo.slc.runtime.SlcAgent;
 import org.argeo.slc.runtime.SlcAgentDescriptor;
 
 /** Implements the base methods of an SLC agent. */
+@SuppressWarnings("deprecation")
 public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 	private SlcAgentDescriptor agentDescriptor;
 	private ExecutionModulesManager modulesManager;
@@ -77,10 +78,6 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 	/*
 	 * SLC AGENT
 	 */
-	public void runSlcExecution(SlcExecution slcExecution) {
-		process(slcExecution);
-	}
-
 	public void process(ExecutionProcess process) {
 		ProcessThread processThread = createProcessThread(processesThreadGroup,
 				modulesManager, process);
