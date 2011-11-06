@@ -12,6 +12,6 @@
 	<packaging>pom</packaging>
 	<name>SLC Distribution</name>
 	<modules>
-		<module>slc-server</module>
+		<module>slc</module>
 	</modules>
 </project>
