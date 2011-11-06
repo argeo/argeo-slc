@@ -1,6 +1,7 @@
 if [ $1 = "0" ];then
-#	APP=%{name} => doesn't work
+	#APP=%{name} => doesn't work
 	APP=slc
 	/sbin/chkconfig --del $APP
 	userdel $APP
+	groupdel $APP
 fi
