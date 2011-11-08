@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.exec.Executor;
 import org.apache.commons.io.FileUtils;
 import org.argeo.slc.SlcException;
 
@@ -22,8 +21,7 @@ public class RpmBuildEnvironment {
 
 	private List<String> archs = new ArrayList<String>();
 
-	private String stagingBase = System.getProperty("user.home")
-			+ "/dev/staging";
+	private String stagingBase = "/srv/rpmfactory";
 
 	/** Write (topdir)/rpmmacros and (topdir)/rpmrc */
 	public void writeRpmbuildConfigFiles(File topdir) {

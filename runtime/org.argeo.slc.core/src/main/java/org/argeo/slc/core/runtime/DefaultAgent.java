@@ -48,6 +48,7 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 	/*
 	 * LIFECYCLE
 	 */
+	/** Initialization */
 	public void init() {
 		try {
 			agentDescriptor = new SlcAgentDescriptor();
@@ -62,7 +63,8 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 				new HashMap<String, String>());
 	}
 
-	public void dispose() {
+	/** Clean up (needs to be called by overriding method) */
+	public void destroy() {
 		modulesManager.unregisterProcessNotifier(this,
 				new HashMap<String, String>());
 	}

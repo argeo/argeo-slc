@@ -71,8 +71,10 @@ public class BuildInMock implements Runnable {
 		mock.setExecutor(executor);
 		mock.run();
 
+		// File repoDir = new File(buildEnvironment.getStagingBase() + "/"
+		// + repository + "/" + level + "/" + release);
 		File repoDir = new File(buildEnvironment.getStagingBase() + "/"
-				+ repository + "/" + level + "/" + release);
+				+ repository + "-staging" + "/" + release);
 		File srpmDir = new File(repoDir, "SRPMS");
 		if (mkdirs)
 			srpmDir.mkdirs();

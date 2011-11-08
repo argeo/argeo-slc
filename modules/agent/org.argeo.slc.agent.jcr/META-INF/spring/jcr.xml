@@ -4,18 +4,22 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<bean id="agent" class="org.argeo.slc.jcr.execution.JcrAgent"
-		init-method="init" destroy-method="dispose">
-		<property name="session" ref="session" />
+		init-method="init" destroy-method="destroy">
+		<property name="repository" ref="repository" />
 		<property name="modulesManager" ref="modulesManager" />
 	</bean>
 
 	<bean id="executionModulesListener" class="org.argeo.slc.jcr.execution.JcrExecutionModulesListener"
-		init-method="init" destroy-method="dispose">
+		init-method="init" destroy-method="destroy">
 		<property name="agent" ref="agent" />
-		<property name="session">
-			<bean factory-bean="repository" factory-method="login" />
-		</property>
+		<property name="repository" ref="repository" />
 		<property name="modulesManager" ref="modulesManager" />
+	</bean>
+
+	<!-- Thread-bound session is used when multiple threads with various authentication 
+		will call the component -->
+	<bean id="session" class="org.argeo.security.jcr.SecureThreadBoundSession">
+		<property name="repository" ref="repository" />
 	</bean>
 
 	<bean id="resultListener" class="org.argeo.slc.jcr.execution.JcrResultListener">
@@ -26,10 +30,6 @@
 		<property name="session" ref="session" />
 	</bean>
 
-
-	<bean id="session" class="org.argeo.security.jcr.SecureThreadBoundSession">
-		<property name="repository" ref="repository" />
-	</bean>
 
 	<bean
 		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">

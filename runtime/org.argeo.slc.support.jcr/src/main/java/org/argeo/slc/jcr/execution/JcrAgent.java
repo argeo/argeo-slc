@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.jcr.Node;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -21,7 +22,7 @@ import org.argeo.slc.runtime.SlcAgentFactory;
 
 /** SLC VM agent synchronizing with a JCR repository. */
 public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames {
-	private Session session;
+	private Repository repository;
 
 	/** only one agent per VM is currently supported */
 	private final String agentNodeName = "default";
@@ -30,7 +31,9 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames 
 	 * LIFECYCLE
 	 */
 	protected String initAgentUuid() {
+		Session session = null;
 		try {
+			session = repository.login();
 			Node vmAgentFactoryNode = JcrUtils.mkdirsSafe(session,
 					SlcJcrConstants.VM_AGENT_FACTORY_PATH,
 					SlcTypes.SLC_AGENT_FACTORY);
@@ -46,11 +49,14 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames 
 		} catch (RepositoryException e) {
 			JcrUtils.discardQuietly(session);
 			throw new SlcException("Cannot find JCR agent UUID", e);
+		} finally {
+			JcrUtils.logoutQuietly(session);
 		}
 	}
 
-	public void dispose() {
-
+	@Override
+	public void destroy() {
+		super.destroy();
 	}
 
 	/*
@@ -88,12 +94,12 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames 
 	/*
 	 * BEAN
 	 */
-	public void setSession(Session session) {
-		this.session = session;
-	}
-
 	public String getAgentNodeName() {
 		return agentNodeName;
+	}
+
+	public void setRepository(Repository repository) {
+		this.repository = repository;
 	}
 
 }

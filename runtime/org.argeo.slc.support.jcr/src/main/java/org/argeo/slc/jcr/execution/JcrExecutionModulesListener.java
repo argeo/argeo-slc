@@ -7,6 +7,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
@@ -43,6 +44,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 
 	private ExecutionModulesManager modulesManager;
 
+	private Repository repository;
 	/**
 	 * We don't use a thread bound session because many different threads will
 	 * call this critical component and we don't want to login each time. We
@@ -54,14 +56,15 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 	 * LIFECYCLE
 	 */
 	public void init() {
-		clearAgent();
-		if (modulesManager != null) {
-			List<ModuleDescriptor> moduleDescriptors = modulesManager
-					.listModules();
-			String executionModules = System
-					.getProperty(SLC_EXECUTION_MODULES_PROPERTY);
-			if (executionModules != null)
-				try {
+		try {
+			session = repository.login();
+			clearAgent();
+			if (modulesManager != null) {
+				List<ModuleDescriptor> moduleDescriptors = modulesManager
+						.listModules();
+				String executionModules = System
+						.getProperty(SLC_EXECUTION_MODULES_PROPERTY);
+				if (executionModules != null) {
 					Node agentNode = session.getNode(agent.getNodePath());
 					for (String executionModule : executionModules.split(",")) {
 						for (ModuleDescriptor moduleDescriptor : moduleDescriptors) {
@@ -89,16 +92,18 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 						}
 					}
 					session.save();
-				} catch (RepositoryException e) {
-					JcrUtils.discardQuietly(session);
-					throw new SlcException("Cannot initialize modules", e);
 				}
+			}
+		} catch (RepositoryException e) {
+			JcrUtils.discardQuietly(session);
+			JcrUtils.logoutQuietly(session);
+			throw new SlcException("Cannot initialize modules", e);
 		}
 	}
 
-	public void dispose() {
+	public void destroy() {
 		clearAgent();
-		session.logout();
+		JcrUtils.logoutQuietly(session);
 	}
 
 	protected synchronized void clearAgent() {
@@ -342,9 +347,8 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		this.agent = agent;
 	}
 
-	/** Expects a non-shared session with admin authorization */
-	public void setSession(Session session) {
-		this.session = session;
+	public void setRepository(Repository repository) {
+		this.repository = repository;
 	}
 
 	public void setModulesManager(ExecutionModulesManager modulesManager) {

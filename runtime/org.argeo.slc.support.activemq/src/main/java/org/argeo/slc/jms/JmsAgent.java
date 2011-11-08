@@ -67,7 +67,8 @@ public class JmsAgent extends DefaultAgent implements MessageListener {
 		}
 	}
 
-	public void dispose() {
+	@Override
+	public void destroy() {
 		try {
 			jmsTemplate.convertAndSend(agentUnregister, getAgentDescriptor());
 			log.info("Agent #" + getAgentUuid() + " unregistered from "
@@ -78,7 +79,7 @@ public class JmsAgent extends DefaultAgent implements MessageListener {
 			if (log.isTraceEnabled())
 				log.debug("Original error.", e);
 		}
-		super.dispose();
+		super.destroy();
 	}
 
 	public void setAgentRegister(Destination agentRegister) {
