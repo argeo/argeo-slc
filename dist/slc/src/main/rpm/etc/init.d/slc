@@ -1,42 +1,31 @@
 #!/bin/bash
 #
-# slc-server	SLC Server
+# slc	Argeo SLC
 #
 # chkconfig: 3 92 92
-# description: SLC Server
+# description: Argeo SLC (http://www.argeo.org)
 
 # Source function library.
-. /etc/rc.d/init.d/functions
+. /etc/osgiboot/osgi-service-init-functions.sh
 
-RETVAL=0
+# Application id (must be in line with header)
+APP=slc
 
-start() {
-	/usr/sbin/osgi-service slc start
-	action $"Start SLC" /bin/true
-	return $RETVAL
-}
-
-stop() {
-	/usr/sbin/osgi-service slc stop
-	action $"Stop SLC" /bin/true
-	return $RETVAL
-}
-
-# See how we were called.
+# main
 case "$1" in
   start)
-        start
+        osgi_service_start $APP
         ;;
   stop)
-        stop
+        osgi_service_stop $APP
         ;;
   restart)
-        stop
-        start
+        osgi_service_stop $APP
+        osgi_service_start $APP
         RETVAL=$?
         ;;
   status)
-  		/usr/sbin/osgi-service slc-server status
+        osgi_service_status $APP
         ;;
   *)
         echo $"Usage: $0 {start|stop|restart|status}"
