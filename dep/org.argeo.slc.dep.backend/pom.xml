@@ -33,27 +33,37 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.ant</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.jcr</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.activemq</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.server</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.runtime</groupId>
+			<artifactId>org.argeo.slc.support.equinox</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SLC Agent Modules -->
@@ -73,31 +83,6 @@
 			<version>${version.slc}</version>
 		</dependency>
 
-		<!-- Node -->
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.dep.node</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-		</dependency>
-
-		<!-- SLC -->
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.server</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.equinox</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.support.jcr</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-		</dependency>
-
 		<!-- SLC Repo -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
@@ -115,8 +100,6 @@
 			<version>${version.slc}</version>
 		</dependency>
 
-		<!-- Modules (see profiles below) -->
-
 		<!-- Launcher -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
@@ -126,15 +109,151 @@
 			<classifier>base</classifier>
 		</dependency>
 
-		<!-- Felix -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.osgi.service.obr</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.felix</groupId> -->
-		<!-- <artifactId>org.apache.felix.bundlerepository</artifactId> -->
-		<!-- </dependency> -->
-
+		<!-- Node -->
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.dep.node</artifactId>
+			<version>${version.argeo-commons}</version>
+			<type>pom</type>
+		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>rpmbuild</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-dependencies</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>copy-dependencies</goal>
+								</goals>
+								<configuration>
+									<includeTypes>jar</includeTypes>
+									<includeGroupIds>org.argeo.slc.modules,org.argeo.slc.runtime</includeGroupIds>
+									<outputDirectory>${project.build.directory}/slc</outputDirectory>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>rpm-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>rpm-slc</id>
+								<phase>package</phase>
+								<goals>
+									<goal>rpm</goal>
+								</goals>
+								<configuration>
+									<name>slc-libs</name>
+									<copyright>2011 Argeo</copyright>
+									<mappings>
+										<mapping>
+											<directory>/usr/share/osgi</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<sources>
+												<source>
+													<location>${project.build.directory}/slc</location>
+												</source>
+											</sources>
+										</mapping>
+									</mappings>
+									<requires>
+										<require>slc-tp</require>
+										<require>argeo-node</require>
+									</requires>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>rpmbuild-tp</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>rpm-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>rpm-tp</id>
+								<phase>package</phase>
+								<goals>
+									<goal>rpm</goal>
+								</goals>
+								<configuration>
+									<name>slc-tp</name>
+									<projversion>${version.argeo-distribution}</projversion>
+									<mappings>
+										<mapping>
+											<directory>/usr/share/osgi</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<dependency>
+												<includes>
+													<!-- Core -->
+													<include>org.aspectj:com.springsource.org.aspectj.runtime</include>
+													<include>org.aspectj:com.springsource.org.aspectj.weaver</include>
+													<!-- Simple -->
+													<include>com.jcraft.jsch:com.springsource.com.jcraft.jsch</include>
+													<include>com.opensymphony.quartz:com.springsource.org.quartz</include>
+													<include>org.springframework:org.springframework.context.support</include>
+													<include>javax.mail:com.springsource.javax.mail</include>
+													<include>com.svnkit:com.springsource.org.tmatesoft.svn</include>
+													<include>javax.mail:com.springsource.javax.mail</include>
+													<include>org.argeo.dep.osgi:org.redline_rpm</include>
+													<!-- Ant -->
+													<include>org.apache.ant:com.springsource.org.apache.tools.ant</include>
+													<include>org.apache.ant:com.springsource.org.apache.tools.ant.launch</include>
+													<include>org.apache.oro:com.springsource.org.apache.oro</include>
+													<include>org.apache.bsf:com.springsource.org.apache.bsf</include>
+													<!-- Maven -->
+													<include>org.argeo.dep.osgi:org.argeo.dep.osgi.aether</include>
+													<!-- Misc -->
+													<include>net.sourceforge.jexcelapi:com.springsource.jxl</include>
+												</includes>
+											</dependency>
+										</mapping>
+									</mappings>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<copy todir="${rpm.stagingRepository}" verbose="true">
+											<fileset dir="${project.build.directory}/rpm"
+												includes="*/RPMS/**/*.rpm" />
+											<flattenmapper />
+										</copy>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

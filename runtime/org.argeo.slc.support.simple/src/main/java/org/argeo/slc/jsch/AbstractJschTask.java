@@ -53,6 +53,7 @@ public abstract class AbstractJschTask implements Runnable {
 					getSshTarget().getHost(), getSshTarget().getPort());
 
 			session.setUserInfo(getSshTarget().getUserInfo());
+			session.setServerAliveInterval(1000);
 			session.connect();
 			if (log.isDebugEnabled())
 				log.debug("Connected to " + getSshTarget() + " via SSH");

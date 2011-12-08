@@ -21,37 +21,28 @@
 	<dependencies>
 		<!-- Perspectives -->
 		<dependency>
-			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.ui</artifactId>
+			<groupId>org.argeo.slc.dep</groupId>
+			<artifactId>org.argeo.slc.dep.eclipse</artifactId>
 			<version>0.13.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.ui.dist</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-		</dependency>
-		<!-- Secure Application -->
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.dep.node.rcp</artifactId>
-			<version>${version.argeo-commons}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.argeo.commons.security</groupId>
-					<artifactId>org.argeo.security.ui.admin</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.rcp</artifactId>
 			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
+		
 		<!-- Back-end Dependencies -->
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.backend</artifactId>
 			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Secure Application -->
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.dep.node.rcp</artifactId>
+			<version>${version.argeo-commons}</version>
 		</dependency>
 
 		<!-- For target platform generation -->
@@ -62,4 +53,69 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<profiles>
+		<profile>
+			<id>rpmbuild</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>rpm-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>rpm-slc-rcp</id>
+								<phase>package</phase>
+								<goals>
+									<goal>rpm</goal>
+								</goals>
+								<configuration>
+									<name>slc-rcp</name>
+									<copyright>2011 Argeo</copyright>
+									<mappings>
+										<mapping>
+											<directory>/usr/share/osgi/rcp</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<dependency>
+												<includes>
+													<include>org.argeo.slc.eclipse:org.argeo.slc.client.rcp</include>
+												</includes>
+											</dependency>
+										</mapping>
+									</mappings>
+									<requires>
+										<require>slc-eclipse</require>
+										<require>slc-libs</require>
+										<require>argeo-node-rcp</require>
+									</requires>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>install</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<copy todir="${rpm.stagingRepository}" verbose="true">
+											<fileset dir="${project.build.directory}/rpm"
+												includes="*/RPMS/**/*.rpm" />
+											<flattenmapper />
+										</copy>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

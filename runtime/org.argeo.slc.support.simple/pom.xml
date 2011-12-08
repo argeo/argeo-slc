@@ -16,7 +16,6 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>${version.maven-bundle-plugin}</version>
 				<configuration>
 					<instructions>
 						<Export-Package>
@@ -35,14 +34,13 @@
 					</instructions>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SSH -->
