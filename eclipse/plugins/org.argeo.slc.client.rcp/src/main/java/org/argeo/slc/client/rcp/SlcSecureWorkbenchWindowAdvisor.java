@@ -64,13 +64,6 @@ public class SlcSecureWorkbenchWindowAdvisor extends
 					}
 
 				});
-
-		// start hidden if in tray
-		String inTray = System.getProperty(IN_TRAY_PROPERTY);
-		if (inTray != null && inTray.equals("true")) {
-			Shell shell = getWindowConfigurer().getWindow().getShell();
-			shell.setVisible(false);
-		}
 		super.preWindowOpen();
 	}
 
