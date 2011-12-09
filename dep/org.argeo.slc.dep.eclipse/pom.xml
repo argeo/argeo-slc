@@ -9,8 +9,24 @@
 	</parent>
 	<groupId>org.argeo.slc.dep</groupId>
 	<artifactId>org.argeo.slc.dep.eclipse</artifactId>
-	<packaging>jar</packaging>
 	<name>SLC Eclipse Dependencies</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.argeo.maven.plugins</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-descriptors</id>
+						<goals>
+							<goal>descriptors</goal>
+						</goals>
+						<phase>generate-resources</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
@@ -20,6 +36,13 @@
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.ui.dist</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Back-end Dependencies -->
+		<dependency>
+			<groupId>org.argeo.slc.dep</groupId>
+			<artifactId>org.argeo.slc.dep.backend</artifactId>
 			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
@@ -73,26 +96,9 @@
 											</sources>
 										</mapping>
 									</mappings>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<copy todir="${rpm.stagingRepository}" verbose="true">
-											<fileset dir="${project.build.directory}/rpm"
-												includes="*/RPMS/**/*.rpm" />
-											<flattenmapper />
-										</copy>
-									</target>
+									<requires>
+										<require>slc-libs</require>
+									</requires>
 								</configuration>
 							</execution>
 						</executions>

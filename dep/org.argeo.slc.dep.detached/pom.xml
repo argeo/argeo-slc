@@ -12,7 +12,6 @@
 	<packaging>jar</packaging>
 	<name>SLC Detached Dependencies</name>
 	<dependencies>
-
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.detached</artifactId>
