@@ -1,14 +1,24 @@
 #!/bin/sh
 
-if [ -d ./lib ];then
-	OSGI_INSTALL_AREA=`pwd`/lib
-else
-	OSGI_INSTALL_AREA=/usr/share/osgi
+OSGI_INSTALL_AREA=/usr/share/osgi/boot
+OSGI_FRAMEWORK=$OSGI_INSTALL_AREA/org.eclipse.osgi.jar
+
+CL_DIR=~/.slc/cl
+DATA_DIR=$CL_DIR/data
+CONF_DIR=$CL_DIR/conf
+
+MODULE=$1
+FLOW=$2
+
+if [ ! -f $CONF_DIR/config.ini ];
+then
+	mkdir -p $CONF_DIR
+    cp /etc/slc-cl/config.ini $CONF_DIR
 fi
 
-
-java $JAVA_OPTS -jar $OSGI_INSTALL_AREA/org.eclipse.osgi.jar \
-	-clean \
-	-configuration conf \
-	-data data \
-	"$@"
+java -jar $OSGI_FRAMEWORK \
+ -configuration $CONF_DIR \
+ -data $DATA_DIR \
+ -Dslc.launch.module=$MODULE \
+ -Dslc.launch.execution=$FLOW \
+ -clean

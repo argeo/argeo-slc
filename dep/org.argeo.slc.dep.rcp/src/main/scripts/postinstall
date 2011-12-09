@@ -1,0 +1,32 @@
+if [ $1 = "1" ];then
+	APP=%{name}
+
+cd /usr/lib64/eclipse/plugins
+SOURCE=/usr/lib64/eclipse/plugins
+TARGET=/usr/lib64/eclipse-rcp
+
+org.eclipse.core.commands
+org.eclipse.core.contenttype
+org.eclipse.core.databinding
+org.eclipse.core.databinding.observable
+org.eclipse.core.databinding.property
+org.eclipse.core.expressions
+org.eclipse.core.jobs
+org.eclipse.core.runtime
+org.eclipse.equinox.app
+org.eclipse.equinox.common
+org.eclipse.equinox.launcher
+org.eclipse.equinox.preferences
+org.eclipse.equinox.registry
+org.eclipse.equinox.security
+org.eclipse.help
+org.eclipse.jface
+org.eclipse.jface.databinding
+org.eclipse.osgi
+org.eclipse.swt
+org.eclipse.swt.gtk.linux.x86_64
+org.eclipse.ui
+org.eclipse.ui.forms
+org.eclipse.ui.workbench
+
+fi

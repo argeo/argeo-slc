@@ -19,6 +19,7 @@ import org.eclipse.ui.part.EditorInputTransfer;
 /** Set here initial default size of the UI */
 public class SlcSecureWorkbenchWindowAdvisor extends
 		SecureWorkbenchWindowAdvisor {
+	public final static String IN_TRAY_PROPERTY = "org.argeo.slc.ui.inTray";
 
 	private TrayItem trayItem;
 
@@ -28,7 +29,10 @@ public class SlcSecureWorkbenchWindowAdvisor extends
 	}
 
 	public void postWindowOpen() {
-		initTray();
+		String inTray = System.getProperty(IN_TRAY_PROPERTY);
+		if (inTray != null && inTray.equals("true")) {
+			initTray();
+		}
 	}
 
 	@Override
@@ -60,6 +64,13 @@ public class SlcSecureWorkbenchWindowAdvisor extends
 					}
 
 				});
+
+		// start hidden if in tray
+		String inTray = System.getProperty(IN_TRAY_PROPERTY);
+		if (inTray != null && inTray.equals("true")) {
+			Shell shell = getWindowConfigurer().getWindow().getShell();
+			shell.setVisible(false);
+		}
 		super.preWindowOpen();
 	}
 
@@ -76,7 +87,8 @@ public class SlcSecureWorkbenchWindowAdvisor extends
 	/** Init tray support */
 	protected void initTray() {
 		IWorkbenchWindow window = getWindowConfigurer().getWindow();
-		final Tray tray = window.getShell().getDisplay().getSystemTray();
+		Shell shell = window.getShell();
+		final Tray tray = shell.getDisplay().getSystemTray();
 		trayItem = new TrayItem(tray, SWT.NONE);
 		if (trayItem == null)
 			return;
@@ -124,6 +136,7 @@ public class SlcSecureWorkbenchWindowAdvisor extends
 				}
 			}
 		});
+
 	}
 
 	@Override

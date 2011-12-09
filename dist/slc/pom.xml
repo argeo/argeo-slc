@@ -35,29 +35,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>org.argeo.slc.dep</groupId>
-			<artifactId>org.argeo.slc.dep.sdk.rap</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-			<exclusions>
-				<!-- Included in osgi-boot -->
-				<exclusion>
-					<groupId>org.eclipse.osgi</groupId>
-					<artifactId>org.eclipse.osgi</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.argeo.commons.osgi</groupId>
-					<artifactId>org.argeo.osgi.boot</artifactId>
-				</exclusion>
-				<!-- Node -->
-				<exclusion>
-					<groupId>org.argeo.commons.security</groupId>
-					<artifactId>org.argeo.security.dep.node.rap</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
 	<profiles>
 		<profile>
 			<id>rpmbuild</id>
@@ -111,6 +88,18 @@
 											<sources>
 												<source>
 													<location>src/main/rpm/etc/slc</location>
+												</source>
+											</sources>
+										</mapping>
+										<mapping>
+											<directory>/etc/slc-cl</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<sources>
+												<source>
+													<location>src/main/rpm/etc/slc-cl</location>
 												</source>
 											</sources>
 										</mapping>

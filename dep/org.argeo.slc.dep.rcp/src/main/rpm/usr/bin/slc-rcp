@@ -1,0 +1,23 @@
+#!/bin/sh
+
+LIB_BASE=/usr/lib64
+OSGI_FRAMEWORK=$LIB_BASE/eclipse/plugins/org.eclipse.osgi_3.6.1.R36x_v20100806.jar
+ECLIPSE_LAUNCHER=$LIB_BASE/eclipse/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar
+INSTALL_DIR=/usr/share/osgi/rcp
+
+UI_DIR=~/.slc/rcp
+DATA_DIR=$UI_DIR/data
+CONF_DIR=$UI_DIR/conf
+
+if [ ! -f $CONF_DIR/config.ini ];
+then
+	mkdir -p $CONF_DIR
+    cp /etc/slc-rcp/config.ini $CONF_DIR
+fi
+
+java -Dosgi.framework=$OSGI_FRAMEWORK \
+ -jar $ECLIPSE_LAUNCHER \
+ -install $INSTALL_DIR \
+ -configuration $CONF_DIR \
+ -data $DATA_DIR \
+ -clean

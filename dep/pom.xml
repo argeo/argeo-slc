@@ -14,8 +14,8 @@
 		<module>org.argeo.slc.dep.detached</module>
 		<module>org.argeo.slc.dep.backend</module>
 		<module>org.argeo.slc.dep.eclipse</module>
-		<module>org.argeo.slc.dep.sdk.rcp</module>
-		<module>org.argeo.slc.dep.sdk.rap</module>
+		<module>org.argeo.slc.dep.rcp</module>
+		<module>org.argeo.slc.dep.rap</module>
 	</modules>
 	<build>
 		<resources>

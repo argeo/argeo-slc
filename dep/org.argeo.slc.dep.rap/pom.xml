@@ -8,14 +8,24 @@
 		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.dep</groupId>
-	<artifactId>org.argeo.slc.dep.sdk.rcp</artifactId>
-	<name>SLC Eclipse RCP Dependencies</name>
+	<artifactId>org.argeo.slc.dep.rap</artifactId>
+	<name>SLC Eclipse RAP Dependencies</name>
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.argeo.maven.plugins</groupId>
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
 				<executions>
+					<execution>
+						<id>resolve-pde-sources</id>
+						<goals>
+							<goal>pde-sources</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<copyArtifacts>false</copyArtifacts>
+						</configuration>
+					</execution>
 					<execution>
 						<id>generate-descriptors</id>
 						<goals>
@@ -41,7 +51,6 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<!-- Perspectives -->
 		<dependency>
 			<groupId>org.argeo.slc.dep</groupId>
 			<artifactId>org.argeo.slc.dep.eclipse</artifactId>
@@ -49,23 +58,15 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
-			<artifactId>org.argeo.slc.client.rcp</artifactId>
+			<artifactId>org.argeo.slc.client.rap</artifactId>
 			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Secure Application -->
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.dep.node.rcp</artifactId>
+			<artifactId>org.argeo.security.dep.node.rap</artifactId>
 			<version>${version.argeo-commons}</version>
-		</dependency>
-
-		<!-- For target platform generation -->
-		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
-			<artifactId>org.argeo.slc.unit</artifactId>
-			<version>0.13.1-SNAPSHOT</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<profiles>
@@ -78,31 +79,31 @@
 						<artifactId>rpm-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>rpm-slc-rcp</id>
+								<id>rpm-slc-rap</id>
 								<phase>package</phase>
 								<goals>
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>slc-rcp</name>
+									<name>slc-rap</name>
 									<copyright>2011 Argeo</copyright>
 									<mappings>
 										<mapping>
-											<directory>/usr/share/osgi/rcp</directory>
+											<directory>/usr/share/osgi/rap</directory>
 											<username>root</username>
 											<groupname>root</groupname>
 											<filemode>644</filemode>
 											<directoryIncluded>false</directoryIncluded>
 											<dependency>
 												<includes>
-													<include>org.argeo.slc.eclipse:org.argeo.slc.client.rcp</include>
+													<include>org.argeo.slc.eclipse:org.argeo.slc.client.rap</include>
 												</includes>
 											</dependency>
 										</mapping>
 									</mappings>
 									<requires>
 										<require>slc-eclipse</require>
-										<require>argeo-node-rcp</require>
+										<require>argeo-node-rap</require>
 									</requires>
 								</configuration>
 							</execution>
