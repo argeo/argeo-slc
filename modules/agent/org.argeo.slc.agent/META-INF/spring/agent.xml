@@ -5,7 +5,8 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<!-- Manager -->
-	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager">
+	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager"
+		init-method="init" destroy-method="destroy">
 		<property name="slcExecutionNotifiers" ref="slcExecutionListeners" />
 		<property name="bundlesManager" ref="bundlesManager" />
 	</bean>

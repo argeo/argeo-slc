@@ -27,6 +27,12 @@ public interface ExecutionModulesManager extends ModulesManager {
 	/** Used to filter event notified to an execution notifier. */
 	public static String SLC_PROCESS_ID = "slc.process.id";
 
+	/** Unique launch module */
+	public static String UNIQUE_LAUNCH_MODULE_PROPERTY = "slc.launch.module";
+
+	/** Unique launch flow */
+	public static String UNIQUE_LAUNCH_FLOW_PROPERTY = "slc.launch.flow";
+
 	/** @return a full fledged module descriptor. */
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version);

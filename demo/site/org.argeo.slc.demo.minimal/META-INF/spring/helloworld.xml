@@ -6,7 +6,7 @@
 	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
 
 	<!-- Hello world -->
-	<flow:flow name="hello/HelloWorld">
+	<flow:flow name="hello">
 		<description>Print Hello World!</description>
 		<bean p:message="Hello World!" class="org.argeo.slc.core.execution.tasks.Echo" />
 	</flow:flow>

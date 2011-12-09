@@ -281,11 +281,16 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	}
 
 	@SuppressWarnings(value = { "unchecked" })
-	public <T> T getSingleService(Class<T> clss, String filter) {
+	public <T> T getSingleService(Class<T> clss, String filter,
+			Boolean synchronous) {
 		Assert.isTrue(OsgiFilterUtils.isValidFilter(filter), "valid filter");
 		ServiceReference[] sfs;
 		try {
-			sfs = bundleContext.getServiceReferences(clss.getName(), filter);
+			if (synchronous)
+				sfs = getServiceRefSynchronous(clss.getName(), filter);
+			else
+				sfs = bundleContext
+						.getServiceReferences(clss.getName(), filter);
 		} catch (InvalidSyntaxException e) {
 			throw new SlcException("Cannot retrieve service reference for "
 					+ filter, e);
@@ -300,7 +305,7 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	}
 
 	public <T> T getSingleServiceStrict(Class<T> clss, String filter) {
-		T service = getSingleService(clss, filter);
+		T service = getSingleService(clss, filter, true);
 		if (service == null)
 			throw new SlcException("No execution flow found for " + filter);
 		else

@@ -21,7 +21,6 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.osgi.OsgiExecutionModulesManager;
 import org.argeo.slc.process.RealizedFlow;
-import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
@@ -100,31 +99,4 @@ public class ExecutionCommandProvider implements CommandProvider {
 		this.modulesManager = osgiModulesManager;
 	}
 
-	public void init() throws Exception {
-		final String module = System.getProperty("slc.launch.module");
-		final String executionName = System.getProperty("slc.launch.execution");
-		if (module != null) {
-			new Thread() {
-
-				@Override
-				public void run() {
-					try {
-						launch(SLC_NO_REFRESH, module, executionName);
-						// in case of failure OSGi runtime stays up and last
-						// launch can be used to debug by calling 'slc'
-					} catch (Exception e) {
-						throw new SlcException("Error when executing "
-								+ executionName + " on " + module, e);
-					}
-					try {
-						EclipseStarter.shutdown();
-					} catch (Exception e) {
-						throw new SlcException("Cannot shutdown equinox.", e);
-					}
-				}
-
-			}.start();
-		}
-
-	}
 }

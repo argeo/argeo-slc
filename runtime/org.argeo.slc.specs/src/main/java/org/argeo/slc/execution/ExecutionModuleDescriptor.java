@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.argeo.slc.deploy.ModuleDescriptor;
 
+/** Describes the information required to launch a flow */
 public class ExecutionModuleDescriptor extends ModuleDescriptor {
 	private static final long serialVersionUID = -2394473464513029512L;
 	private List<ExecutionSpec> executionSpecs = new ArrayList<ExecutionSpec>();

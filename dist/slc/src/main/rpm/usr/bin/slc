@@ -20,5 +20,6 @@ java -jar $OSGI_FRAMEWORK \
  -configuration $CONF_DIR \
  -data $DATA_DIR \
  -Dslc.launch.module=$MODULE \
- -Dslc.launch.execution=$FLOW \
+ -Dslc.launch.flow=$FLOW \
+ -console \
  -clean

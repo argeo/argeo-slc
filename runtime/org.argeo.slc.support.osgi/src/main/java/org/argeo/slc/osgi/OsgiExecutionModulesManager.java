@@ -67,6 +67,47 @@ public class OsgiExecutionModulesManager extends
 
 	private Boolean registerFlowsToJmx = true;
 
+	public void init() throws Exception {
+		final String module = System.getProperty(UNIQUE_LAUNCH_MODULE_PROPERTY);
+		final String flow = System.getProperty(UNIQUE_LAUNCH_FLOW_PROPERTY);
+		if (module != null) {
+			// launch a flow and stops
+			new Thread("Unique Flow") {
+				@Override
+				public void run() {
+					try {
+						bundlesManager.startSynchronous(bundlesManager
+								.findRelatedBundle(bundlesManager
+										.findFromPattern(module)));
+						RealizedFlow lastLaunch = findRealizedFlow(module, flow);
+						if (lastLaunch == null)
+							throw new SlcException("Cannot find launch for "
+									+ module + " " + flow);
+						execute(lastLaunch);
+					} catch (Exception e) {
+						throw new SlcException(
+								"Error when executing unique flow " + flow
+										+ " on " + module, e);
+					} finally {
+						try {
+							bundlesManager.getBundleContext().getBundle(0)
+									.stop();
+							System.exit(0);
+						} catch (Exception e) {
+							log.error("Cannot shutdown equinox.", e);
+							System.exit(1);
+						}
+					}
+				}
+			}.start();
+		}
+
+	}
+
+	public void destroy() {
+
+	}
+
 	public synchronized ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version) {
 		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
@@ -142,11 +183,10 @@ public class OsgiExecutionModulesManager extends
 
 	protected ExecutionFlowDescriptorConverter findExecutionFlowDescriptorConverter(
 			String moduleName, String moduleVersion) {
-
 		String filter = "(&(Bundle-SymbolicName=" + moduleName
 				+ ")(Bundle-Version=" + moduleVersion + "))";
 		return bundlesManager.getSingleService(
-				ExecutionFlowDescriptorConverter.class, filter);
+				ExecutionFlowDescriptorConverter.class, filter, false);
 	}
 
 	/**

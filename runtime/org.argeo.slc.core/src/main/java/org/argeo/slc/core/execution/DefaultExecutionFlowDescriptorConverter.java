@@ -35,6 +35,7 @@ import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.springframework.aop.scope.ScopedObject;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -217,8 +218,11 @@ public class DefaultExecutionFlowDescriptorConverter implements
 			efd.setPath("");
 
 		// Takes description from spring
-		BeanDefinition bd = getBeanFactory().getBeanDefinition(name);
-		efd.setDescription(bd.getDescription());
+		BeanFactory bf = getBeanFactory();
+		if (bf != null) {
+			BeanDefinition bd = getBeanFactory().getBeanDefinition(name);
+			efd.setDescription(bd.getDescription());
+		}
 		return efd;
 	}
 
@@ -292,7 +296,10 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		}
 	}
 
+	/** @return can be null */
 	private ConfigurableListableBeanFactory getBeanFactory() {
+		if (applicationContext == null)
+			return null;
 		return ((ConfigurableApplicationContext) applicationContext)
 				.getBeanFactory();
 	}

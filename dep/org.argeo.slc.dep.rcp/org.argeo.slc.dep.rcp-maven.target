@@ -6,9 +6,11 @@
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/eclipse/org.argeo.slc.client.ui/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/eclipse/org.argeo.slc.client.ui.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.jcr/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.jcr.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/server/org.argeo.server.jcr/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/server/org.argeo.server.jcr.source/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.server/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.server.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/security/org.argeo.security.core/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/security/org.argeo.security.core.source/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.web.servlet/2.5.6.SEC01" type="Directory"/>
@@ -34,7 +36,9 @@
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/eclipse/org.argeo.slc.client.ui.dist/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/eclipse/org.argeo.slc.client.ui.dist.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.repo/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.repo.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.aether/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.aether.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.aether/1.11.0.0001" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.aether.source/1.11.0.0001" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/modules/org.argeo.slc.server.repo/0.13.1-SNAPSHOT" type="Directory"/>
@@ -42,6 +46,7 @@
 <location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.bnd.source/0.0.384.0002" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/dep/org.argeo.slc.dep.backend/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.ant/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.ant.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/apache/ant/com.springsource.org.apache.tools.ant/1.7.1" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/apache/ant/com.springsource.org.apache.tools.ant.source/1.7.1" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/apache/ant/com.springsource.org.apache.tools.ant.launch/1.7.1" type="Directory"/>
@@ -53,6 +58,7 @@
 <location path="${system_property:user.home}/.m2/repository/org/apache/bsf/com.springsource.org.apache.bsf/2.4.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/apache/bsf/com.springsource.org.apache.bsf.source/2.4.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.activemq/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.activemq.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.jms/2.5.6.SEC01" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.jms.source/2.5.6.SEC01" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/springframework/ws/org.springframework.oxm/1.5.9.A" type="Directory"/>
@@ -79,7 +85,9 @@
 <location path="${system_property:user.home}/.m2/repository/javax/ejb/com.springsource.javax.ejb.source/3.0.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/javax/xml/rpc/com.springsource.javax.xml.rpc/1.1.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.equinox/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.equinox.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.osgi/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.osgi.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/objectweb/asm/com.springsource.org.objectweb.asm.attrs/2.2.3" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/objectweb/asm/com.springsource.org.objectweb.asm.attrs.source/2.2.3" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/objectweb/asm/com.springsource.org.objectweb.asm/2.2.3" type="Directory"/>
@@ -315,8 +323,11 @@
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/security/org.argeo.security.ui.admin/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/security/org.argeo.security.ui.admin.source/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.unit/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.unit.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.core/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.core.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.specs/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.specs.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/aspectj/com.springsource.org.aspectj.runtime/1.6.3.RELEASE" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/aspectj/com.springsource.org.aspectj.runtime.source/1.6.3.RELEASE" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/aspectj/com.springsource.org.aspectj.weaver/1.6.3.RELEASE" type="Directory"/>
@@ -332,6 +343,7 @@
 <location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.codec/1.4.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.codec.source/1.4.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.simple/0.13.1-SNAPSHOT" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.simple.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/com/jcraft/jsch/com.springsource.com.jcraft.jsch/0.1.41" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/com/jcraft/jsch/com.springsource.com.jcraft.jsch.source/0.1.41" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/com/opensymphony/quartz/com.springsource.org.quartz/1.6.2" type="Directory"/>
@@ -384,9 +396,11 @@
 <plugin id="org.argeo.slc.client.ui"/>
 <plugin id="org.argeo.slc.client.ui.source"/>
 <plugin id="org.argeo.slc.support.jcr"/>
+<plugin id="org.argeo.slc.support.jcr.source"/>
 <plugin id="org.argeo.server.jcr"/>
 <plugin id="org.argeo.server.jcr.source"/>
 <plugin id="org.argeo.slc.server"/>
+<plugin id="org.argeo.slc.server.source"/>
 <plugin id="org.argeo.security.core"/>
 <plugin id="org.argeo.security.core.source"/>
 <plugin id="org.springframework.web.servlet"/>
@@ -412,7 +426,9 @@
 <plugin id="org.argeo.slc.client.ui.dist"/>
 <plugin id="org.argeo.slc.client.ui.dist.source"/>
 <plugin id="org.argeo.slc.repo"/>
+<plugin id="org.argeo.slc.repo.source"/>
 <plugin id="org.argeo.slc.support.aether"/>
+<plugin id="org.argeo.slc.support.aether.source"/>
 <plugin id="org.argeo.dep.osgi.aether"/>
 <plugin id="org.argeo.dep.osgi.aether.source"/>
 <plugin id="org.argeo.slc.server.repo"/>
@@ -420,6 +436,7 @@
 <plugin id="biz.aQute.bnd.source"/>
 <plugin id="org.argeo.slc.dep.backend"/>
 <plugin id="org.argeo.slc.support.ant"/>
+<plugin id="org.argeo.slc.support.ant.source"/>
 <plugin id="com.springsource.org.apache.tools.ant"/>
 <plugin id="com.springsource.org.apache.tools.ant.source"/>
 <plugin id="com.springsource.org.apache.tools.ant.launch"/>
@@ -431,6 +448,7 @@
 <plugin id="com.springsource.org.apache.bsf"/>
 <plugin id="com.springsource.org.apache.bsf.source"/>
 <plugin id="org.argeo.slc.support.activemq"/>
+<plugin id="org.argeo.slc.support.activemq.source"/>
 <plugin id="org.springframework.jms"/>
 <plugin id="org.springframework.jms.source"/>
 <plugin id="org.springframework.oxm"/>
@@ -457,7 +475,9 @@
 <plugin id="com.springsource.javax.ejb.source"/>
 <plugin id="com.springsource.javax.xml.rpc"/>
 <plugin id="org.argeo.slc.support.equinox"/>
+<plugin id="org.argeo.slc.support.equinox.source"/>
 <plugin id="org.argeo.slc.support.osgi"/>
+<plugin id="org.argeo.slc.support.osgi.source"/>
 <plugin id="com.springsource.org.objectweb.asm.attrs"/>
 <plugin id="com.springsource.org.objectweb.asm.attrs.source"/>
 <plugin id="com.springsource.org.objectweb.asm"/>
@@ -693,8 +713,11 @@
 <plugin id="org.argeo.security.ui.admin"/>
 <plugin id="org.argeo.security.ui.admin.source"/>
 <plugin id="org.argeo.slc.unit"/>
+<plugin id="org.argeo.slc.unit.source"/>
 <plugin id="org.argeo.slc.core"/>
+<plugin id="org.argeo.slc.core.source"/>
 <plugin id="org.argeo.slc.specs"/>
+<plugin id="org.argeo.slc.specs.source"/>
 <plugin id="com.springsource.org.aspectj.runtime"/>
 <plugin id="com.springsource.org.aspectj.runtime.source"/>
 <plugin id="com.springsource.org.aspectj.weaver"/>
@@ -710,6 +733,7 @@
 <plugin id="com.springsource.org.apache.commons.codec"/>
 <plugin id="com.springsource.org.apache.commons.codec.source"/>
 <plugin id="org.argeo.slc.support.simple"/>
+<plugin id="org.argeo.slc.support.simple.source"/>
 <plugin id="com.springsource.com.jcraft.jsch"/>
 <plugin id="com.springsource.com.jcraft.jsch.source"/>
 <plugin id="com.springsource.org.quartz"/>
