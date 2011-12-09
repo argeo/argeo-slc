@@ -137,6 +137,8 @@ public class SlcSecureWorkbenchWindowAdvisor extends
 			}
 		});
 
+		// start hidden
+		// shell.setVisible(false);
 	}
 
 	@Override
