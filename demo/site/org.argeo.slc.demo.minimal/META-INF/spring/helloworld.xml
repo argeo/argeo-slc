@@ -15,7 +15,7 @@
 		<flow:primitive name="testKey" value="777" isParameter="false" />
 	</flow:spec>
 
-	<flow:flow name="hello/HelloWorldWithVar" spec="helloSpec">
+	<flow:flow name="HelloWorld/WithVar" spec="helloSpec">
 		<description>Print Hello World! with variable</description>
 		<bean p:message="Hello World! @{testKey}" class="org.argeo.slc.core.execution.tasks.Echo">
 			<flow:variable proxy-target-class="false" />

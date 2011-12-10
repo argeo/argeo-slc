@@ -48,6 +48,7 @@ import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
+import org.osgi.framework.launch.Framework;
 import org.springframework.osgi.service.importer.OsgiServiceLifecycleListener;
 
 /** Execution modules manager implementation based on an OSGi runtime. */
@@ -75,26 +76,37 @@ public class OsgiExecutionModulesManager extends
 			new Thread("Unique Flow") {
 				@Override
 				public void run() {
+					if (log.isDebugEnabled())
+						log.debug("Launch unique flow " + flow
+								+ " from module " + module);
 					try {
-						bundlesManager.startSynchronous(bundlesManager
-								.findRelatedBundle(bundlesManager
-										.findFromPattern(module)));
+						OsgiBundle osgiBundle = bundlesManager
+								.findFromPattern(module);
+						Bundle moduleBundle = bundlesManager
+								.findRelatedBundle(osgiBundle);
+						bundlesManager.startSynchronous(moduleBundle);
 						RealizedFlow lastLaunch = findRealizedFlow(module, flow);
 						if (lastLaunch == null)
 							throw new SlcException("Cannot find launch for "
 									+ module + " " + flow);
 						execute(lastLaunch);
 					} catch (Exception e) {
-						throw new SlcException(
-								"Error when executing unique flow " + flow
-										+ " on " + module, e);
+						log.error("Error in unique flow " + flow
+								+ " from module " + module, e);
 					} finally {
+						if (log.isDebugEnabled())
+							log.debug("Shutdown OSGi runtime...");
+						Framework framework = (Framework) bundlesManager
+								.getBundleContext().getBundle(0);
 						try {
-							bundlesManager.getBundleContext().getBundle(0)
-									.stop();
+							// shutdown framework
+							framework.stop();
+							// wait 1 min for shutdown
+							framework.waitForStop(60 * 1000);
+							// close VM
 							System.exit(0);
 						} catch (Exception e) {
-							log.error("Cannot shutdown equinox.", e);
+							e.printStackTrace();
 							System.exit(1);
 						}
 					}
@@ -170,7 +182,7 @@ public class OsgiExecutionModulesManager extends
 		String filter = "(&(Bundle-SymbolicName=" + moduleName
 				+ ")(org.springframework.osgi.bean.name=" + flowName + "))";
 		return bundlesManager.getSingleServiceStrict(ExecutionFlow.class,
-				filter);
+				filter, true);
 	}
 
 	protected ExecutionContext findExecutionContext(String moduleName,
@@ -178,7 +190,7 @@ public class OsgiExecutionModulesManager extends
 		String filter = "(&(Bundle-SymbolicName=" + moduleName
 				+ ")(Bundle-Version=" + moduleVersion + "))";
 		return bundlesManager.getSingleServiceStrict(ExecutionContext.class,
-				filter);
+				filter, true);
 	}
 
 	protected ExecutionFlowDescriptorConverter findExecutionFlowDescriptorConverter(

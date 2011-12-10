@@ -53,8 +53,6 @@
 <location path="${system_property:user.home}/.m2/repository/org/apache/bsf/com.springsource.org.apache.bsf.source/2.4.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.activemq/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.activemq.source/0.13.1-SNAPSHOT" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.jms/2.5.6.SEC01" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.jms.source/2.5.6.SEC01" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/springframework/ws/org.springframework.oxm/1.5.9.A" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/springframework/ws/org.springframework.oxm.source/1.5.9.A" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/javax/jms/com.springsource.javax.jms/1.1.0" type="Directory"/>
@@ -193,6 +191,30 @@
 <location path="${system_property:user.home}/.m2/repository/org/apache/bcel/com.springsource.org.apache.bcel.source/5.1.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/apache/regexp/com.springsource.org.apache.regexp/1.5.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/apache/regexp/com.springsource.org.apache.regexp.source/1.5.0" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/xml/soap/com.springsource.javax.xml.soap/1.3.0" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/xml/soap/com.springsource.javax.xml.soap.source/1.3.0" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/activation/com.springsource.javax.activation/1.1.1" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/activation/com.springsource.javax.activation.source/1.1.1" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/annotation/com.springsource.javax.annotation/1.0.0" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/annotation/com.springsource.javax.annotation.source/1.0.0" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/xml/ws/com.springsource.javax.xml.ws/2.1.1" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/xml/ws/com.springsource.javax.xml.ws.source/2.1.1" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/xml/bind/com.springsource.javax.xml.bind/2.1.7" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/xml/bind/com.springsource.javax.xml.bind.source/2.1.7" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/mail/com.springsource.javax.mail/1.4.1" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/javax/mail/com.springsource.javax.mail.source/1.4.1" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.vfs/1.0.0" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.vfs.source/1.0.0" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.commons.exec/1.0.0.0002" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.commons.exec.source/1.0.0.0002" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.commons.cli/1.1.0.0002" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.commons.cli.source/1.1.0.0002" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.dbcp.source/1.2.2.osgi" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.context.support/2.5.6.SEC01" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.context.support.source/2.5.6.SEC01" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.jms/2.5.6.SEC01" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.jms.source/2.5.6.SEC01" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/springframework/osgi/org.springframework.osgi.extender/1.2.1" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/springframework/osgi/org.springframework.osgi.extender.source/1.2.1" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/server/org.argeo.server.jackrabbit/0.3.4-SNAPSHOT" type="Directory"/>
@@ -203,8 +225,6 @@
 <location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.httpclient.source/3.1.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.compress/1.1.0" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.compress.source/1.1.0" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.dbcp/1.2.2.osgi" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.dbcp.source/1.2.2.osgi" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/edu/oswego/cs/concurrent/com.springsource.edu.oswego.cs.dl.util.concurrent/1.3.4" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/edu/oswego/cs/concurrent/com.springsource.edu.oswego.cs.dl.util.concurrent.source/1.3.4" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.tika/0.8.0.0002" type="Directory"/>
@@ -232,20 +252,8 @@
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/security/org.argeo.security.activemq/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/security/org.argeo.security.activemq.source/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/server/org.argeo.server.activemq.broker/0.3.4-SNAPSHOT" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/xml/soap/com.springsource.javax.xml.soap/1.3.0" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/xml/soap/com.springsource.javax.xml.soap.source/1.3.0" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/activation/com.springsource.javax.activation/1.1.1" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/activation/com.springsource.javax.activation.source/1.1.1" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/annotation/com.springsource.javax.annotation/1.0.0" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/annotation/com.springsource.javax.annotation.source/1.0.0" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/xml/ws/com.springsource.javax.xml.ws/2.1.1" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/xml/ws/com.springsource.javax.xml.ws.source/2.1.1" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/xml/bind/com.springsource.javax.xml.bind/2.1.7" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/xml/bind/com.springsource.javax.xml.bind.source/2.1.7" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.vfs/1.0.0" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/apache/commons/com.springsource.org.apache.commons.vfs.source/1.0.0" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.commons.exec/1.0.0.0002" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.commons.exec.source/1.0.0.0002" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/com/opensymphony/quartz/com.springsource.org.quartz/1.6.2" type="Directory"/>
+<location path="${system_property:user.home}/.m2/repository/com/opensymphony/quartz/com.springsource.org.quartz.source/1.6.2" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/security/org.argeo.security.dao.ldap/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/security/org.argeo.security.ldap/0.3.4-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/commons/security/org.argeo.security.ldap.source/0.3.4-SNAPSHOT" type="Directory"/>
@@ -362,12 +370,6 @@
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.support.simple.source/0.13.1-SNAPSHOT" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/com/jcraft/jsch/com.springsource.com.jcraft.jsch/0.1.41" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/com/jcraft/jsch/com.springsource.com.jcraft.jsch.source/0.1.41" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/com/opensymphony/quartz/com.springsource.org.quartz/1.6.2" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/com/opensymphony/quartz/com.springsource.org.quartz.source/1.6.2" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.context.support/2.5.6.SEC01" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/springframework/org.springframework.context.support.source/2.5.6.SEC01" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/mail/com.springsource.javax.mail/1.4.1" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/javax/mail/com.springsource.javax.mail.source/1.4.1" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/com/svnkit/com.springsource.org.tmatesoft.svn/1.3.1.6109" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/com/svnkit/com.springsource.org.tmatesoft.svn.source/1.3.1.6109" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.redline_rpm/1.1.8.0001" type="Directory"/>
@@ -393,8 +395,6 @@
 <location path="${system_property:user.home}/.m2/repository/org/springframework/osgi/org.springframework.osgi.io/1.2.1" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/springframework/osgi/org.springframework.osgi.io.source/1.2.1" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/argeo/slc/runtime/org.argeo.slc.launcher/0.13.1-SNAPSHOT" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.commons.cli/1.1.0.0002" type="Directory"/>
-<location path="${system_property:user.home}/.m2/repository/org/argeo/dep/osgi/org.argeo.dep.osgi.commons.cli.source/1.1.0.0002" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/slf4j/com.springsource.slf4j.org.apache.commons.logging/1.5.10" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/slf4j/com.springsource.slf4j.org.apache.commons.logging.source/1.5.10" type="Directory"/>
 <location path="${system_property:user.home}/.m2/repository/org/slf4j/com.springsource.slf4j.api/1.5.10" type="Directory"/>
@@ -456,8 +456,6 @@
 <plugin id="com.springsource.org.apache.bsf.source"/>
 <plugin id="org.argeo.slc.support.activemq"/>
 <plugin id="org.argeo.slc.support.activemq.source"/>
-<plugin id="org.springframework.jms"/>
-<plugin id="org.springframework.jms.source"/>
 <plugin id="org.springframework.oxm"/>
 <plugin id="org.springframework.oxm.source"/>
 <plugin id="com.springsource.javax.jms"/>
@@ -596,6 +594,30 @@
 <plugin id="com.springsource.org.apache.bcel.source"/>
 <plugin id="com.springsource.org.apache.regexp"/>
 <plugin id="com.springsource.org.apache.regexp.source"/>
+<plugin id="com.springsource.javax.xml.soap"/>
+<plugin id="com.springsource.javax.xml.soap.source"/>
+<plugin id="com.springsource.javax.activation"/>
+<plugin id="com.springsource.javax.activation.source"/>
+<plugin id="com.springsource.javax.annotation"/>
+<plugin id="com.springsource.javax.annotation.source"/>
+<plugin id="com.springsource.javax.xml.ws"/>
+<plugin id="com.springsource.javax.xml.ws.source"/>
+<plugin id="com.springsource.javax.xml.bind"/>
+<plugin id="com.springsource.javax.xml.bind.source"/>
+<plugin id="com.springsource.javax.mail"/>
+<plugin id="com.springsource.javax.mail.source"/>
+<plugin id="com.springsource.org.apache.commons.vfs"/>
+<plugin id="com.springsource.org.apache.commons.vfs.source"/>
+<plugin id="org.argeo.dep.osgi.commons.exec"/>
+<plugin id="org.argeo.dep.osgi.commons.exec.source"/>
+<plugin id="org.argeo.dep.osgi.commons.cli"/>
+<plugin id="org.argeo.dep.osgi.commons.cli.source"/>
+<plugin id="com.springsource.org.apache.commons.dbcp"/>
+<plugin id="com.springsource.org.apache.commons.dbcp.source"/>
+<plugin id="org.springframework.context.support"/>
+<plugin id="org.springframework.context.support.source"/>
+<plugin id="org.springframework.jms"/>
+<plugin id="org.springframework.jms.source"/>
 <plugin id="org.springframework.osgi.extender"/>
 <plugin id="org.springframework.osgi.extender.source"/>
 <plugin id="org.argeo.server.jackrabbit"/>
@@ -606,8 +628,6 @@
 <plugin id="com.springsource.org.apache.commons.httpclient.source"/>
 <plugin id="com.springsource.org.apache.commons.compress"/>
 <plugin id="com.springsource.org.apache.commons.compress.source"/>
-<plugin id="com.springsource.org.apache.commons.dbcp"/>
-<plugin id="com.springsource.org.apache.commons.dbcp.source"/>
 <plugin id="com.springsource.edu.oswego.cs.dl.util.concurrent"/>
 <plugin id="com.springsource.edu.oswego.cs.dl.util.concurrent.source"/>
 <plugin id="org.argeo.dep.osgi.tika"/>
@@ -635,20 +655,8 @@
 <plugin id="org.argeo.security.activemq"/>
 <plugin id="org.argeo.security.activemq.source"/>
 <plugin id="org.argeo.server.activemq.broker"/>
-<plugin id="com.springsource.javax.xml.soap"/>
-<plugin id="com.springsource.javax.xml.soap.source"/>
-<plugin id="com.springsource.javax.activation"/>
-<plugin id="com.springsource.javax.activation.source"/>
-<plugin id="com.springsource.javax.annotation"/>
-<plugin id="com.springsource.javax.annotation.source"/>
-<plugin id="com.springsource.javax.xml.ws"/>
-<plugin id="com.springsource.javax.xml.ws.source"/>
-<plugin id="com.springsource.javax.xml.bind"/>
-<plugin id="com.springsource.javax.xml.bind.source"/>
-<plugin id="com.springsource.org.apache.commons.vfs"/>
-<plugin id="com.springsource.org.apache.commons.vfs.source"/>
-<plugin id="org.argeo.dep.osgi.commons.exec"/>
-<plugin id="org.argeo.dep.osgi.commons.exec.source"/>
+<plugin id="com.springsource.org.quartz"/>
+<plugin id="com.springsource.org.quartz.source"/>
 <plugin id="org.argeo.security.dao.ldap"/>
 <plugin id="org.argeo.security.ldap"/>
 <plugin id="org.argeo.security.ldap.source"/>
@@ -765,12 +773,6 @@
 <plugin id="org.argeo.slc.support.simple.source"/>
 <plugin id="com.springsource.com.jcraft.jsch"/>
 <plugin id="com.springsource.com.jcraft.jsch.source"/>
-<plugin id="com.springsource.org.quartz"/>
-<plugin id="com.springsource.org.quartz.source"/>
-<plugin id="org.springframework.context.support"/>
-<plugin id="org.springframework.context.support.source"/>
-<plugin id="com.springsource.javax.mail"/>
-<plugin id="com.springsource.javax.mail.source"/>
 <plugin id="com.springsource.org.tmatesoft.svn"/>
 <plugin id="com.springsource.org.tmatesoft.svn.source"/>
 <plugin id="org.redline_rpm"/>
@@ -796,8 +798,6 @@
 <plugin id="org.springframework.osgi.io"/>
 <plugin id="org.springframework.osgi.io.source"/>
 <plugin id="org.argeo.slc.launcher"/>
-<plugin id="org.argeo.dep.osgi.commons.cli"/>
-<plugin id="org.argeo.dep.osgi.commons.cli.source"/>
 <plugin id="com.springsource.slf4j.org.apache.commons.logging"/>
 <plugin id="com.springsource.slf4j.org.apache.commons.logging.source"/>
 <plugin id="com.springsource.slf4j.api"/>

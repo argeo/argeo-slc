@@ -8,7 +8,7 @@
 	>
 
 	<!-- Hello world without namespace (for reference, do not use) -->
-	<bean name="hello/raw/HelloWorld" class="org.argeo.slc.core.execution.DefaultExecutionFlow">
+	<bean name="HelloWorld/Raw" class="org.argeo.slc.core.execution.DefaultExecutionFlow">
 		<description>Print Hello World!</description>
 		<property name="executables">
 			<list>
@@ -17,7 +17,7 @@
 		</property>
 	</bean>
 
-	<bean name="hello/raw/HelloWorldWithVar" class="org.argeo.slc.core.execution.DefaultExecutionFlow">
+	<bean name="HelloWorld/RawWithVar" class="org.argeo.slc.core.execution.DefaultExecutionFlow">
 		<description>Print Hello World! with variable</description>
 		<constructor-arg>
 			<bean class="org.argeo.slc.core.execution.DefaultExecutionSpec">

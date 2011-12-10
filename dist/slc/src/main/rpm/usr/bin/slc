@@ -16,10 +16,12 @@ then
     cp /etc/slc-cl/config.ini $CONF_DIR
 fi
 
-java -jar $OSGI_FRAMEWORK \
+java \
+ -Dslc.launch.module="$MODULE" \
+ -Dslc.launch.flow="$FLOW" \
+ -jar $OSGI_FRAMEWORK \
  -configuration $CONF_DIR \
  -data $DATA_DIR \
- -Dslc.launch.module=$MODULE \
- -Dslc.launch.flow=$FLOW \
  -console \
  -clean
+ 

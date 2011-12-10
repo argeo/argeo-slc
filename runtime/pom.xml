@@ -43,7 +43,11 @@
 				<directory>.</directory>
 				<includes>
 					<include>META-INF/**</include>
+					<include>*.properties</include>
 				</includes>
+				<excludes>
+					<exclude>build.properties</exclude>
+				</excludes>
 			</resource>
 		</resources>
 		<plugins>

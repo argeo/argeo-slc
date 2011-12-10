@@ -304,15 +304,20 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 		return (T) bundleContext.getService(sfs[0]);
 	}
 
-	public <T> T getSingleServiceStrict(Class<T> clss, String filter) {
-		T service = getSingleService(clss, filter, true);
+	public <T> T getSingleServiceStrict(Class<T> clss, String filter,
+			Boolean synchronous) {
+		T service = getSingleService(clss, filter, synchronous);
 		if (service == null)
 			throw new SlcException("No execution flow found for " + filter);
 		else
 			return service;
 	}
 
-	/** @return the related bundle or null if not found */
+	/**
+	 * @param osgiBundle
+	 *            cannot be null
+	 * @return the related bundle or null if not found
+	 */
 	public Bundle findRelatedBundle(OsgiBundle osgiBundle) {
 		Bundle bundle = null;
 		if (osgiBundle.getInternalBundleId() != null) {
@@ -387,8 +392,11 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 		this.defaultTimeout = defaultTimeout;
 	}
 
-	/** Temporary internal access for {@link OsgiExecutionModulesManager} */
-	BundleContext getBundleContext() {
+	/**
+	 * Use with caution since it may interfer with some cached information
+	 * within this object
+	 */
+	public BundleContext getBundleContext() {
 		return bundleContext;
 	}
 
