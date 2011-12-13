@@ -9,6 +9,8 @@ UI_DIR=~/.slc/rcp
 DATA_DIR=$UI_DIR/data
 CONF_DIR=$UI_DIR/conf
 
+mkdir -p $UI_DIR/modules
+
 if [ ! -f $CONF_DIR/config.ini ];
 then
 	mkdir -p $CONF_DIR
