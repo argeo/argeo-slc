@@ -1,6 +1,11 @@
 #!/bin/sh
 
-LIB_BASE=/usr/lib64
+if [ -d /usr/lib64 ]; 
+then
+	LIB_BASE=/usr/lib64
+else
+	LIB_BASE=/usr/lib
+fi
 OSGI_FRAMEWORK=$LIB_BASE/eclipse/plugins/org.eclipse.osgi_3.6.1.R36x_v20100806.jar
 ECLIPSE_LAUNCHER=$LIB_BASE/eclipse/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar
 INSTALL_DIR=/usr/share/osgi/rcp
