@@ -435,7 +435,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		try {
 			in = file.getContents();
 			props.load(in);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new CoreException(new Status(IStatus.ERROR,
 					SlcIdeUiPlugin.ID, "Cannot read properties file", e));
 		} finally {
