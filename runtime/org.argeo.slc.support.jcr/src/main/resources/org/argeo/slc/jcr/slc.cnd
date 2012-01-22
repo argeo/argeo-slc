@@ -38,10 +38,11 @@ mixin
 - slc:value (UNDEFINED)
 
 [slc:refSpecAttribute] > slc:executionSpecAttribute
+orderable
 mixin
 // typically a class name
 - slc:type (STRING)
-+ slc:value
+- slc:value (UNDEFINED)
 + * (mix:title)
 
 [slc:executionFlow] > nt:unstructured, mix:title
@@ -53,6 +54,7 @@ mixin
 
 // PROCESS
 [slc:process] > nt:unstructured, mix:created, mix:lastModified
+orderable
 - slc:uuid (STRING) ! m
 - slc:status (STRING) m
 + slc:flow (slc:realizedFlow)
@@ -78,6 +80,7 @@ abstract
 [slc:logError] > slc:logWarning
 
 [slc:realizedFlow] > nt:base
+orderable
 mixin
 // the name of the flow
 // - slc:flow (STRING)

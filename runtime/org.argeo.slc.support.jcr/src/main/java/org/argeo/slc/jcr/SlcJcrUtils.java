@@ -174,7 +174,7 @@ public class SlcJcrUtils implements SlcNames {
 					+ node, e);
 		}
 	}
-
+	
 	/** Prevents instantiation */
 	private SlcJcrUtils() {
 

@@ -56,4 +56,11 @@ public class PrimitiveSpecAttribute extends AbstractSpecAttribute implements
 		this.type = type;
 
 	}
+
+	@Override
+	public String toString() {
+		return "Primitive spec attribute [" + type + "]"
+				+ (value != null ? "=" + value : "");
+	}
+
 }

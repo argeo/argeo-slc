@@ -68,7 +68,8 @@ public class RefSpecAttribute extends AbstractSpecAttribute implements
 
 	@Override
 	public String toString() {
-		return "Ref spec attribute [" + targetClass + "]";
+		return "Ref spec attribute [" + targetClass + "]"
+				+ (value != null ? "=" + value : "");
 	}
 
 }

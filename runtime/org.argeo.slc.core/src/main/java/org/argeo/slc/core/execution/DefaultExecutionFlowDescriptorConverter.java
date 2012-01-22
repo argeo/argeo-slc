@@ -136,6 +136,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 								refValue.getType());
 					}
 				} else {
+					// default is to take the value as is
 					convertedValues.put(key, value);
 				}
 			}

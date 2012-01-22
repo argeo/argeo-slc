@@ -14,6 +14,7 @@ import org.argeo.slc.core.execution.DefaultExecutionSpec;
 import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
 import org.argeo.slc.core.execution.PrimitiveUtils;
 import org.argeo.slc.core.execution.ProcessThread;
+import org.argeo.slc.core.execution.RefSpecAttribute;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
@@ -94,38 +95,26 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 			realizedFlow.setModuleVersion(executionModuleVersion);
 
 			// retrieve execution spec
-			DefaultExecutionSpec executionSpec = null;
+			DefaultExecutionSpec executionSpec = new DefaultExecutionSpec();
+			Map<String, ExecutionSpecAttribute> attrs = readExecutionSpecAttributes(realizedFlowNode);
+			executionSpec.setAttributes(attrs);
+
+			// set execution spec name
 			if (flowNode.hasProperty(SlcNames.SLC_SPEC)) {
 				Node executionSpecNode = flowNode.getProperty(SLC_SPEC)
 						.getNode();
-				executionSpec = new DefaultExecutionSpec();
 				executionSpec.setBeanName(executionSpecNode.getProperty(
 						SLC_NAME).getString());
-				executionSpec
-						.setAttributes(readExecutionSpecAttributes(executionSpecNode));
-			}
-			// TODO: will with original attr
-			Map<String, ExecutionSpecAttribute> attrs = readExecutionSpecAttributes(realizedFlowNode);
-			Map<String, Object> values = new HashMap<String, Object>();
-			for (String attrName : attrs.keySet()) {
-//				if (flowNode.hasNode(attrName)) {
-//					// we assume this is a primitive
-//					// since ref are not yet implemented
-//					Node valueNode = flowNode.getNode(attrName);
-//					String type = valueNode.getProperty(SLC_TYPE).getString();
-//					String valueStr = valueNode.getProperty(SLC_VALUE)
-//							.getString();
-//					Object value = PrimitiveUtils.convert(type, valueStr);
-//					values.put(attrName, value);
-//				} else {
-					ExecutionSpecAttribute attr = attrs.get(attrName);
-					Object value = attr.getValue();
-					values.put(attrName, value);
-//				}
 			}
 
-			// if(executionSpec!=null)
-			// executionSpec.setAttributes(attrs);
+			// explicitly retrieve values
+			Map<String, Object> values = new HashMap<String, Object>();
+			for (String attrName : attrs.keySet()) {
+				ExecutionSpecAttribute attr = attrs.get(attrName);
+				Object value = attr.getValue();
+				values.put(attrName, value);
+			}
+
 			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(flowName,
 					values, executionSpec);
 			realizedFlow.setFlowDescriptor(efd);
@@ -157,8 +146,28 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 					PrimitiveSpecAttribute specAttr = new PrimitiveSpecAttribute(
 							type, value);
 					attrs.put(specAttrNode.getName(), specAttr);
+				} else if (specAttrNode
+						.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
+					if (!specAttrNode.hasProperty(SLC_VALUE)) {
+						continue;
+					}
+					Integer value = (int) specAttrNode.getProperty(SLC_VALUE)
+							.getLong();
+					RefSpecAttribute specAttr = new RefSpecAttribute();
+					NodeIterator children = specAttrNode.getNodes();
+					int index = 0;
+					String id = null;
+					while (children.hasNext()) {
+						Node child = children.nextNode();
+						if (index == value)
+							id = child.getName();
+						index++;
+					}
+					specAttr.setValue(id);
+					attrs.put(specAttrNode.getName(), specAttr);
 				}
-
+				// throw new SlcException("Unsupported spec attribute "
+				// + specAttrNode);
 			}
 			return attrs;
 		} catch (RepositoryException e) {

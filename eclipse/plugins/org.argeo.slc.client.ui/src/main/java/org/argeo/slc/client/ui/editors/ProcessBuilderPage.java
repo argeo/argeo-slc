@@ -30,6 +30,7 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ComboBoxCellEditor;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -72,6 +73,9 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	public final static String ID = "processBuilderPage";
 	// private final static Log log =
 	// LogFactory.getLog(ProcessBuilderPage.class);
+
+	/** To be displayed in empty lists */
+	final static String NONE = "<none>";
 
 	private Node processNode;
 
@@ -258,8 +262,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 			} else if (i == 1) {
 				column.setLabelProvider(new ColumnLabelProvider() {
 					public String getText(Object element) {
-						Object obj = getAttributeSpecValue((Node) element);
-						return obj != null ? obj.toString() : "";
+						return getAttributeSpecText((Node) element);
 					}
 				});
 				column.setEditingSupport(new ValuesEditingSupport(viewer));
@@ -442,24 +445,65 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	/*
 	 * UTILITIES
 	 */
-	protected static Object getAttributeSpecValue(Node specAttrNode) {
+	// protected static Object getAttributeSpecValue(Node specAttrNode) {
+	// try {
+	// if (specAttrNode.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
+	// if (!specAttrNode.hasProperty(SLC_VALUE))
+	// return null;
+	// String type = specAttrNode.getProperty(SLC_TYPE).getString();
+	// // TODO optimize based on data type?
+	// Object value = PrimitiveUtils.convert(type, specAttrNode
+	// .getProperty(SLC_VALUE).getString());
+	// // log.debug(specAttrNode + ", type=" + type + ", value=" +
+	// // value);
+	// return value;
+	// } else if (specAttrNode.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
+	// if (specAttrNode.hasNode(SLC_VALUE)) {
+	// // return the index of the sub node
+	// // in the future we may manage reference as well
+	// return specAttrNode.getProperty(SLC_VALUE).getLong();
+	// } else
+	// return null;
+	// }
+	// return null;
+	// } catch (RepositoryException e) {
+	// throw new SlcException("Cannot get value", e);
+	// }
+	//
+	// }
+
+	protected static String getAttributeSpecText(Node specAttrNode) {
 		try {
 			if (specAttrNode.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
 				if (!specAttrNode.hasProperty(SLC_VALUE))
-					return null;
+					return "";
 				String type = specAttrNode.getProperty(SLC_TYPE).getString();
-				// TODO optimize based on data type?
 				Object value = PrimitiveUtils.convert(type, specAttrNode
 						.getProperty(SLC_VALUE).getString());
-				// log.debug(specAttrNode + ", type=" + type + ", value=" +
-				// value);
-				return value;
+				return value.toString();
+			} else if (specAttrNode.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
+				if (specAttrNode.hasProperty(SLC_VALUE)) {
+					int value = (int) specAttrNode.getProperty(SLC_VALUE)
+							.getLong();
+					NodeIterator children = specAttrNode.getNodes();
+					int index = 0;
+					while (children.hasNext()) {
+						Node child = children.nextNode();
+						if (index == value)
+							return child.getProperty(Property.JCR_TITLE)
+									.getString();
+						index++;
+					}
+					throw new SlcException("No child node with index " + value
+							+ " for spec attribute " + specAttrNode);
+				} else
+					return "";
 			}
-			return null;
+			throw new SlcException("Unsupported type for spec attribute "
+					+ specAttrNode);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot get value", e);
 		}
-
 	}
 
 	/*
@@ -653,8 +697,21 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 			try {
 				Node specAttrNode = (Node) element;
 				if (specAttrNode
-						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE))
+						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
 					return new TextCellEditor(tableViewer.getTable());
+				} else if (specAttrNode
+						.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
+					NodeIterator children = specAttrNode.getNodes();
+					ArrayList<String> items = new ArrayList<String>();
+					while (children.hasNext()) {
+						Node child = children.nextNode();
+						if (child.isNodeType(NodeType.MIX_TITLE))
+							items.add(child.getProperty(Property.JCR_TITLE)
+									.getString());
+					}
+					return new ComboBoxCellEditor(tableViewer.getTable(),
+							items.toArray(new String[items.size()]));
+				}
 				return null;
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot get celle editor", e);
@@ -668,24 +725,51 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 				return !(specAttrNode.getProperty(SLC_IS_IMMUTABLE)
 						.getBoolean() || specAttrNode.getProperty(
 						SLC_IS_CONSTANT).getBoolean())
-						&& specAttrNode
-								.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE);
+						&& isSupportedAttributeType(specAttrNode);
 			} catch (RepositoryException e) {
-				throw new SlcException("Cannot check canEdit", e);
+				throw new SlcException("Cannot check whether " + element
+						+ " is editable", e);
 			}
+		}
+
+		/**
+		 * Supports {@link SlcTypes#SLC_PRIMITIVE_SPEC_ATTRIBUTE} and
+		 * {@link SlcTypes#SLC_REF_SPEC_ATTRIBUTE}
+		 */
+		protected boolean isSupportedAttributeType(Node specAttrNode)
+				throws RepositoryException {
+			return specAttrNode
+					.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)
+					|| specAttrNode.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE);
 		}
 
 		@Override
 		protected Object getValue(Object element) {
 			Node specAttrNode = (Node) element;
 			try {
-				Object value = getAttributeSpecValue(specAttrNode);
-				if (value == null)
-					throw new SlcException("Unsupported attribute " + element);
+				// Object value = getAttributeSpecValue(specAttrNode);
+				// if (value == null)
+				// throw new SlcException("Unsupported attribute " + element);
 				if (specAttrNode
-						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE))
+						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
+					if (!specAttrNode.hasProperty(SLC_VALUE))
+						return NONE;
+					String type = specAttrNode.getProperty(SLC_TYPE)
+							.getString();
+					// TODO optimize based on data type?
+					Object value = PrimitiveUtils.convert(type, specAttrNode
+							.getProperty(SLC_VALUE).getString());
 					return value.toString();
-				return value;
+				} else if (specAttrNode
+						.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
+					if (!specAttrNode.hasProperty(SLC_VALUE))
+						return 0;
+					// return the index of the sub node as set by setValue()
+					// in the future we may manage references as well
+					return (int) specAttrNode.getProperty(SLC_VALUE).getLong();
+				}
+				throw new SlcException("Unsupported type for spec attribute "
+						+ specAttrNode);
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot get value for " + element, e);
 			}
@@ -701,6 +785,12 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 							.getString();
 					SlcJcrUtils.setPrimitiveAsProperty(specAttrNode, SLC_VALUE,
 							type, value);
+					valuesViewer.refresh();
+					formPart.markDirty();
+				} else if (specAttrNode
+						.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
+					specAttrNode.setProperty(SLC_VALUE,
+							((Integer) value).longValue());
 					valuesViewer.refresh();
 					formPart.markDirty();
 				}
