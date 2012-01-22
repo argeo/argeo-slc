@@ -22,6 +22,7 @@ import java.util.Properties;
 import org.argeo.slc.runtime.SlcExecutionContext;
 import org.argeo.slc.runtime.SlcExecutionOutput;
 
+@Deprecated
 public interface SlcRuntime<T extends SlcExecutionContext> {
 	public void executeScript(String runtime, String script, String targets,
 			Properties properties, Map<String, Object> references,

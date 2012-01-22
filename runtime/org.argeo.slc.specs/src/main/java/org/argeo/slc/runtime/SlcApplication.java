@@ -21,6 +21,8 @@ import java.util.Properties;
 
 import org.argeo.slc.process.SlcExecution;
 
+/** Will be removed soon */
+@Deprecated
 public interface SlcApplication<T extends SlcExecutionContext> {
 	public void execute(SlcExecution slcExecution, Properties properties,
 			Map<String, Object> references,

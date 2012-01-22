@@ -21,7 +21,6 @@ import java.io.Serializable;
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
-import org.argeo.slc.execution.ExecutionSpec;
 
 /** A fully configured execution flow, ready to be executed. */
 public class RealizedFlow implements Serializable {
@@ -30,7 +29,6 @@ public class RealizedFlow implements Serializable {
 	private String moduleName;
 	private String moduleVersion;
 	private ExecutionFlowDescriptor flowDescriptor;
-	private ExecutionSpec executionSpec;
 
 	public String getModuleName() {
 		return moduleName;
@@ -58,13 +56,5 @@ public class RealizedFlow implements Serializable {
 
 	public void setFlowDescriptor(ExecutionFlowDescriptor flowDescriptor) {
 		this.flowDescriptor = flowDescriptor;
-	}
-
-	public ExecutionSpec getExecutionSpec() {
-		return executionSpec;
-	}
-
-	public void setExecutionSpec(ExecutionSpec executionSpec) {
-		this.executionSpec = executionSpec;
 	}
 }
