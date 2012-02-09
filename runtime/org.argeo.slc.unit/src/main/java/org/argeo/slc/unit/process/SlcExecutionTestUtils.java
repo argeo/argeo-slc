@@ -53,7 +53,7 @@ public abstract class SlcExecutionTestUtils {
 		realizedFlow.setModuleName("test.module");
 		realizedFlow.setModuleVersion("1.0.0");
 		realizedFlow.setFlowDescriptor(flowDescriptor);
-		realizedFlow.setExecutionSpec(flowDescriptor.getExecutionSpec());
+		//realizedFlow.setExecutionSpec(flowDescriptor.getExecutionSpec());
 		realizedFlows.add(realizedFlow);
 		slcExec.setRealizedFlows(realizedFlows);
 		return slcExec;
