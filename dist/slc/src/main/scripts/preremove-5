@@ -3,7 +3,4 @@ if [ $1 = "0" ];then
 	APP=slc
 	/sbin/chkconfig --del $APP
 	userdel $APP
-	
-	# necessary for EL5? (breaks EL6)
-	#groupdel slc
 fi

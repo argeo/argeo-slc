@@ -105,13 +105,13 @@
 										</mapping>
 									</mappings>
 									<preinstallScriptlet>
-										<scriptFile>src/main/scripts/preinstall</scriptFile>
+										<scriptFile>src/main/scripts/preinstall-${rpm.release}</scriptFile>
 									</preinstallScriptlet>
 									<postinstallScriptlet>
 										<scriptFile>src/main/scripts/postinstall</scriptFile>
 									</postinstallScriptlet>
 									<preremoveScriptlet>
-										<scriptFile>src/main/scripts/preremove</scriptFile>
+										<scriptFile>src/main/scripts/preremove-${rpm.release}</scriptFile>
 									</preremoveScriptlet>
 									<requires>
 										<require>slc-libs</require>
