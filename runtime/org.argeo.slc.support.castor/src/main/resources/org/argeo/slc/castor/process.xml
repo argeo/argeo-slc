@@ -65,9 +65,6 @@
 		<field name="flowDescriptor">
 			<bind-xml auto-naming="deriveByClass" />
 		</field>
-		<field name="executionSpec">
-			<bind-xml auto-naming="deriveByClass" />
-		</field>
 	</class>
 
 	<class name="org.argeo.slc.process.SlcExecutionStep">
