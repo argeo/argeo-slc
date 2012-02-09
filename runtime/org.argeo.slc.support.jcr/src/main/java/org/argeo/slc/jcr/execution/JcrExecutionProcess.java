@@ -88,6 +88,11 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 				String relPath = SLC_LOG + '/' + step.getThread() + '/'
 						+ step.getLocation().replace('.', '/');
 				String path = node.getPath() + '/' + relPath;
+				// clean special character
+				// TODO factorize in JcrUtils
+				path = path.replace('@', '_').replace('/', '_')
+						.replace(':', '_');
+
 				Node location = JcrUtils.mkdirs(node.getSession(), path);
 				Node logEntry = location.addNode(Long.toString(nextLogLine),
 						type);
@@ -106,7 +111,7 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 			JcrUtils.updateLastModified(node);
 
 			node.getSession().save();
-		} catch (RepositoryException e) {
+		} catch (Exception e) {
 			JcrUtils.discardUnderlyingSessionQuietly(node);
 			e.printStackTrace();
 		}
