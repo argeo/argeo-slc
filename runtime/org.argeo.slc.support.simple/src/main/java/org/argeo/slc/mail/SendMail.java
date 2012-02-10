@@ -26,12 +26,19 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
 
-// http://java.sun.com/developer/onlineTraining/JavaMail/contents.html#JavaMailUsage
-// http://java.sun.com/products/javamail/FAQ.html#gmail
+/** Sends a mail via JavaMail, local mail command or Google Mail. */
 public class SendMail implements Runnable {
+	// See:
+	// http://java.sun.com/developer/onlineTraining/JavaMail/contents.html#JavaMailUsage
+	// http://java.sun.com/products/javamail/FAQ.html#gmail
+
+	private final static Log log = LogFactory.getLog(SendMail.class);
+
 	private String host;
 	private String from;
 	private String to;
@@ -54,6 +61,8 @@ public class SendMail implements Runnable {
 		SystemCall mail = new SystemCall("mail");
 		mail.arg("-s", subject).arg(to);
 		mail.run();
+		if (log.isDebugEnabled())
+			log.debug("Sent mail to " + to + " with OS mail command");
 	}
 
 	protected void sendWithJavaMail() {
@@ -76,6 +85,8 @@ public class SendMail implements Runnable {
 
 			// Send message
 			Transport.send(message);
+			if (log.isDebugEnabled())
+				log.debug("Sent mail to " + to + " with JavaMail");
 		} catch (Exception e) {
 			throw new SlcException("Cannot send message.", e);
 		}
@@ -96,7 +107,8 @@ public class SendMail implements Runnable {
 			} finally {
 				t.close();
 			}
-
+			if (log.isDebugEnabled())
+				log.debug("Sent mail to " + to + " with Google Mail");
 		} catch (Exception e) {
 			throw new SlcException("Cannot send message.", e);
 		}
