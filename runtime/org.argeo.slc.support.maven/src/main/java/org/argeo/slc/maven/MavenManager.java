@@ -18,7 +18,6 @@ package org.argeo.slc.maven;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.cli.MavenCli;
 import org.apache.maven.repository.internal.DefaultServiceLocator;
 import org.apache.maven.repository.internal.MavenRepositorySystemSession;
 import org.argeo.slc.SlcException;
@@ -39,7 +38,6 @@ import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.spi.connector.RepositoryConnectorFactory;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.graph.PreorderNodeListGenerator;
-import org.sonatype.aether.util.graph.selector.OptionalDependencySelector;
 
 public class MavenManager {
 	private final static Log log = LogFactory.getLog(MavenManager.class);
@@ -177,17 +175,4 @@ public class MavenManager {
 		new MavenManager().init();
 	}
 
-	static class CustomCli extends MavenCli {
-		private PlexusContainer container;
-
-		@Override
-		protected void customizeContainer(PlexusContainer container) {
-			this.container = container;
-		}
-
-		public PlexusContainer getContainer() {
-			return container;
-		}
-
-	}
 }
