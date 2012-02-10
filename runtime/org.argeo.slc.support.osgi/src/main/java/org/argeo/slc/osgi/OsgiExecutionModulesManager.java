@@ -508,7 +508,7 @@ public class OsgiExecutionModulesManager extends
 		String path = executionFlow.getPath();
 		String name = executionFlow.getName();
 		if (path == null && name.indexOf('/') >= 0) {
-			path = name.substring(0, name.lastIndexOf('/') - 1);
+			path = name.substring(0, name.lastIndexOf('/'));
 			name = name.substring(name.lastIndexOf('/'));
 		}
 

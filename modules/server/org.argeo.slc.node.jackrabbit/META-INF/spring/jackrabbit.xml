@@ -16,7 +16,7 @@
 		<property name="cndFiles">
 			<list>
 				<value>/org/argeo/slc/jcr/slc.cnd</value>
-				<value>/org/argeo/slc/repo/repo.cnd</value>
+<!-- 				<value>/org/argeo/slc/repo/repo.cnd</value> -->
 			</list>
 		</property>
 		<property name="repository" ref="nodeRepository" />

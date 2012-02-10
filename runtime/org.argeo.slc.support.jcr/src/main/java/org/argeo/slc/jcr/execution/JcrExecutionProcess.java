@@ -85,13 +85,13 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 					// skip
 					continue steps;
 
-				String relPath = SLC_LOG + '/' + step.getThread() + '/'
+				String relPath = SLC_LOG + '/'
+						+ step.getThread().replace('/', '_') + '/'
 						+ step.getLocation().replace('.', '/');
 				String path = node.getPath() + '/' + relPath;
 				// clean special character
 				// TODO factorize in JcrUtils
-				path = path.replace('@', '_').replace('/', '_')
-						.replace(':', '_');
+				path = path.replace('@', '_').replace(':', '_');
 
 				Node location = JcrUtils.mkdirs(node.getSession(), path);
 				Node logEntry = location.addNode(Long.toString(nextLogLine),

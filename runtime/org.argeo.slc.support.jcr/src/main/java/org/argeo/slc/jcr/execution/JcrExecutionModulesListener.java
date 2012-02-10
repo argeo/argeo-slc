@@ -67,7 +67,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 				if (executionModules != null) {
 					Node agentNode = session.getNode(agent.getNodePath());
 					for (String executionModule : executionModules.split(",")) {
-						for (ModuleDescriptor moduleDescriptor : moduleDescriptors) {
+						allModules: for (ModuleDescriptor moduleDescriptor : moduleDescriptors) {
 							String moduleNodeName = SlcJcrUtils
 									.getModuleNodeName(moduleDescriptor);
 							if (moduleDescriptor.getName().equals(
@@ -88,10 +88,12 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 										Property.JCR_DESCRIPTION,
 										moduleDescriptor.getDescription());
 								moduleNode.setProperty(SLC_STARTED, false);
+								break allModules;
 							}
 						}
 					}
-					session.save();
+					if (session.hasPendingChanges())
+						session.save();
 				}
 			}
 		} catch (RepositoryException e) {
