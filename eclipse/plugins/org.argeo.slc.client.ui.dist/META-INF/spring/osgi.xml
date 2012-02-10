@@ -9,5 +9,5 @@
 	osgi:default-timeout="30000">
 
 	<reference id="javaRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=repos_java)" />
+		filter="(argeo.jcr.repository.alias=java)" />
 </beans:beans>

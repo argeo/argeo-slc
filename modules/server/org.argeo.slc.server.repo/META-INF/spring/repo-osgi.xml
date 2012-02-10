@@ -16,7 +16,7 @@
 <!-- 		filter="(argeo.jcr.repository.alias=slc)" /> -->
 	<service ref="jcrRepository" interface="javax.jcr.Repository">
 		<service-properties>
-			<beans:entry key="argeo.jcr.repository.alias" value="repos_java" />
+			<beans:entry key="argeo.jcr.repository.alias" value="java" />
 		</service-properties>
 	</service>
 
