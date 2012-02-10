@@ -7,7 +7,16 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd
 	">
 
-	<bean id="repo" class="org.argeo.slc.repo.RepoImpl" init-method="init" destroy-method="destroy">
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="locations">
+			<value>osgibundle:repo.properties</value>
+		</property>
+	</bean>
+
+	<bean id="repo" class="org.argeo.slc.repo.RepoImpl" init-method="init"
+		destroy-method="destroy">
 		<property name="jcrRepository" ref="jcrRepository" />
 		<property name="nodeIndexers">
 			<list>

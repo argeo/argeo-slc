@@ -6,4 +6,20 @@
 	<bean id="jcrSession" class="org.argeo.security.jcr.SecureThreadBoundSession">
 		<property name="repository" ref="jcrRepository" />
 	</bean>
+
+	<bean id="jcrRepository" class="org.argeo.jackrabbit.JackrabbitContainer"
+		init-method="init" destroy-method="destroy">
+		<property name="homeDirectory" value="${osgi.instance.area}/repos/java" />
+		<property name="configuration" value="osgibundle:repository-h2.xml" />
+		<property name="variables" value="osgibundle:/repo.properties" />
+		<property name="cndFiles">
+			<list>
+				<value>/org/argeo/jcr/argeo.cnd</value>
+				<value>/org/argeo/slc/jcr/slc.cnd</value>
+				<value>/org/argeo/slc/repo/repo.cnd</value>
+			</list>
+		</property>
+		<property name="bundleContext" ref="bundleContext" />
+	</bean>
+
 </beans>

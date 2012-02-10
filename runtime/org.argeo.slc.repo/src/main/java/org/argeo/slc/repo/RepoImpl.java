@@ -1,6 +1,7 @@
 package org.argeo.slc.repo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -35,6 +36,12 @@ public class RepoImpl {
 					.addEventListener(artifactListener, Event.NODE_ADDED,
 							RepoConstants.ARTIFACTS_BASE_PATH, true, null,
 							null, true);
+			// localrepo
+			String localrepoWorkspace = "localrepo";
+			if (!Arrays.asList(
+					adminSession.getWorkspace().getAccessibleWorkspaceNames())
+					.contains(localrepoWorkspace))
+				adminSession.getWorkspace().createWorkspace(localrepoWorkspace);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot initialize repository backend", e);
 		}

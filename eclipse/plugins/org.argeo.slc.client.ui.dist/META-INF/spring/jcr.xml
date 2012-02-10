@@ -6,6 +6,6 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<bean id="slcSession" class="org.argeo.jcr.spring.ThreadBoundSession">
-		<property name="repository" ref="slcRepository" />
+		<property name="repository" ref="javaRepository" />
 	</bean>
 </beans>

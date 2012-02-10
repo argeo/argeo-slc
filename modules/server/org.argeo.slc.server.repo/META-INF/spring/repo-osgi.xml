@@ -12,8 +12,13 @@
 	<!-- Security -->
 	<reference id="authenticationManager"
 		interface="org.springframework.security.AuthenticationManager" />
-	<reference id="jcrRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=slc)" />
+<!-- 	<reference id="jcrRepository" interface="javax.jcr.Repository" -->
+<!-- 		filter="(argeo.jcr.repository.alias=slc)" /> -->
+	<service ref="jcrRepository" interface="javax.jcr.Repository">
+		<service-properties>
+			<beans:entry key="argeo.jcr.repository.alias" value="repos_java" />
+		</service-properties>
+	</service>
 
 	<!-- Maven -->
 <!-- 	<reference id="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem" -->
