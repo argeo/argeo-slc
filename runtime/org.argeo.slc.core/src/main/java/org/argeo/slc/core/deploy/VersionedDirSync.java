@@ -17,9 +17,12 @@
 package org.argeo.slc.core.deploy;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.deploy.VersioningDriver;
 
 /**
@@ -32,8 +35,18 @@ public class VersionedDirSync implements Runnable {
 	private VersioningDriver versioningDriver;
 	private File dir;
 	private String url;
+	private Boolean clean = false;
 
 	public void run() {
+		if (clean) {
+			try {
+				FileUtils.deleteDirectory(dir);
+			} catch (IOException e) {
+				throw new SlcException("Cannot delete checkout directory "
+						+ dir, e);
+			}
+			dir.mkdirs();
+		}
 		versioningDriver.checkout(url, dir, true);
 		if (log.isDebugEnabled())
 			log.debug("Synchronized " + url + " to " + dir);
@@ -49,6 +62,11 @@ public class VersionedDirSync implements Runnable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	/** Delete before checkout */
+	public void setClean(Boolean clean) {
+		this.clean = clean;
 	}
 
 }
