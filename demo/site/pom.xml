@@ -17,6 +17,7 @@
 				<artifactId>maven-argeo-osgi-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
+					<buildNumber>${timestamp}</buildNumber>
 				</configuration>
 			</plugin>
 		</plugins>
