@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.List;
 
+/** Abstracts common versioning operations */
 public interface VersioningDriver {
 	public void getFileFromRepository(String repositoryBaseUrl,
 			String location, OutputStream out);
@@ -34,7 +35,13 @@ public interface VersioningDriver {
 
 	public void importFileOrDir(String repositoryUrl, File fileOrDir);
 
-	public void checkout(String repositoryUrl, File destDir, Boolean recursive);
+	/**
+	 * Checks out or update this versioned directory
+	 * 
+	 * @return true if the content has changed, false otherwise
+	 */
+	public Boolean checkout(String repositoryUrl, File destDir,
+			Boolean recursive);
 
 	public void createRepository(String filePath);
 

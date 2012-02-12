@@ -37,7 +37,10 @@ public class VersionedDirSync implements Runnable {
 	private String url;
 	private Boolean clean = false;
 
+	private Boolean changed = null;
+
 	public void run() {
+		changed = null;
 		if (clean) {
 			try {
 				FileUtils.deleteDirectory(dir);
@@ -47,7 +50,7 @@ public class VersionedDirSync implements Runnable {
 			}
 			dir.mkdirs();
 		}
-		versioningDriver.checkout(url, dir, true);
+		changed = versioningDriver.checkout(url, dir, true);
 		if (log.isDebugEnabled())
 			log.debug("Synchronized " + url + " to " + dir);
 	}
@@ -67,6 +70,13 @@ public class VersionedDirSync implements Runnable {
 	/** Delete before checkout */
 	public void setClean(Boolean clean) {
 		this.clean = clean;
+	}
+
+	/** Whether last call has changed the directory */
+	public Boolean getChanged() {
+		if (changed == null)
+			throw new SlcException("Sync has not run");
+		return changed;
 	}
 
 }

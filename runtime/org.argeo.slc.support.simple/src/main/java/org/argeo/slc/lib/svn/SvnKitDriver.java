@@ -21,8 +21,11 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.deploy.VersioningDriver;
+import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
@@ -30,15 +33,19 @@ import org.tmatesoft.svn.core.internal.io.fs.FSRepositoryFactory;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
 import org.tmatesoft.svn.core.wc.SVNRevision;
+import org.tmatesoft.svn.core.wc.SVNWCUtil;
 import org.tmatesoft.svn.core.wc.admin.ISVNChangeEntryHandler;
 import org.tmatesoft.svn.core.wc.admin.SVNChangeEntry;
 
+/** Versioning driver with a Subversion backen, based on SVNKit */
 public class SvnKitDriver implements VersioningDriver {
+	private final static Log log = LogFactory.getLog(SvnKitDriver.class);
+
 	private final SVNClientManager manager;
 
 	public SvnKitDriver() {
-		 DAVRepositoryFactory.setup();
-		 FSRepositoryFactory.setup();
+		DAVRepositoryFactory.setup();
+		FSRepositoryFactory.setup();
 		manager = SVNClientManager.newInstance();
 	}
 
@@ -64,12 +71,37 @@ public class SvnKitDriver implements VersioningDriver {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public void checkout(String repositoryUrl, File destDir, Boolean recursive) {
+	public Boolean checkout(String repositoryUrl, File destDir,
+			Boolean recursive) {
 		try {
-			manager.getUpdateClient().doCheckout(
+			SVNRevision previousRevision = null;
+			if (destDir.exists() && SVNWCUtil.isVersionedDirectory(destDir)) {
+				previousRevision = manager.getWCClient().doInfo(destDir, null)
+						.getRevision();
+			}
+			if (previousRevision == null && log.isDebugEnabled())
+				log.debug("Checking out " + repositoryUrl + " to " + destDir
+						+ "...");
+			long revision = manager.getUpdateClient().doCheckout(
 					SVNURL.parseURIDecoded(repositoryUrl), destDir,
-					SVNRevision.UNDEFINED, SVNRevision.HEAD, recursive);
+					SVNRevision.UNDEFINED, SVNRevision.HEAD, SVNDepth.INFINITY,
+					recursive);
+			if (previousRevision != null
+					&& previousRevision.getNumber() == revision) {
+				if (log.isTraceEnabled())
+					log.trace(destDir + " already at revision " + revision);
+				return false;
+
+			} else {
+				if (log.isDebugEnabled())
+					if (previousRevision != null)
+						log.debug(destDir + " updated to revision " + revision
+								+ " from " + previousRevision.getNumber());
+					else
+						log.debug(destDir + " checked out to revision "
+								+ revision);
+				return true;
+			}
 		} catch (Exception e) {
 			throw new SlcException("Cannot checkout " + repositoryUrl + " to "
 					+ destDir, e);
