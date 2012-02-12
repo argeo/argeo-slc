@@ -1,11 +1,13 @@
 package org.argeo.slc.maven;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.SlcException;
 import org.codehaus.plexus.PlexusContainer;
 
 /** A Maven execution. */
@@ -27,7 +29,7 @@ public class MavenCall implements Runnable {
 			args.add(settings);
 		}
 		args.add("-f");
-		args.add(basedir + "/pom.xml");
+		args.add(getBasedirFile().getPath() + "/pom.xml");
 		if (goals != null)
 			args.addAll(goals);
 		if (profiles != null)
@@ -47,13 +49,25 @@ public class MavenCall implements Runnable {
 		// Launcher.main(goals);
 
 		CustomCli mavenCli = new CustomCli();
-		mavenCli.doMain(args.toArray(new String[args.size()]), basedir,
-				System.out, System.err);
+		mavenCli.doMain(args.toArray(new String[args.size()]), getBasedirFile()
+				.getPath(), System.out, System.err);
 
 		PlexusContainer plexusContainer = mavenCli.getContainer();
 		if (log.isDebugEnabled())
 			log.debug(plexusContainer.getContext().getContextData());
 		plexusContainer.dispose();
+	}
+
+	/** Removes 'file:' prefix if present */
+	protected File getBasedirFile() {
+		if (basedir == null)
+			throw new SlcException("basedir not set");
+		File dir;
+		if (basedir.startsWith("file:"))
+			dir = new File(basedir.substring("file:".length()));
+		else
+			dir = new File(basedir);
+		return dir;
 	}
 
 	public void setBasedir(String basedir) {
