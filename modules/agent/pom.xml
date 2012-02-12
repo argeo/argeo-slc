@@ -18,6 +18,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<bundlesPomArtifactId>org.argeo.slc.modules.agent.bundles</bundlesPomArtifactId>
+					<buildNumber>${timestamp}</buildNumber>
 				</configuration>
 			</plugin>
 		</plugins>
