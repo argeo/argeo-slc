@@ -2,6 +2,7 @@ package org.argeo.slc.maven;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ public class MavenCall implements Runnable {
 	private final static Log log = LogFactory.getLog(MavenCall.class);
 	private String basedir;
 	private String settings;
+	/** Raw command lines arguments */
+	private String cl;
 	private List<String> goals;
 	private List<String> profiles;
 	private Map<String, String> properties;
@@ -30,6 +33,12 @@ public class MavenCall implements Runnable {
 		}
 		args.add("-f");
 		args.add(getBasedirFile().getPath() + "/pom.xml");
+		// FIXME manages \" \". Use Commons CLI?
+		if (cl != null) {
+			String[] clArgs = cl.split(" ");
+			args.addAll(Arrays.asList(clArgs));
+		}
+
 		if (goals != null)
 			args.addAll(goals);
 		if (profiles != null)
@@ -49,8 +58,10 @@ public class MavenCall implements Runnable {
 		// Launcher.main(goals);
 
 		CustomCli mavenCli = new CustomCli();
-		mavenCli.doMain(args.toArray(new String[args.size()]), getBasedirFile()
-				.getPath(), System.out, System.err);
+		int exitCode = mavenCli.doMain(args.toArray(new String[args.size()]),
+				getBasedirFile().getPath(), System.out, System.err);
+		if (log.isDebugEnabled())
+			log.debug("Maven exit code: " + exitCode);
 
 		PlexusContainer plexusContainer = mavenCli.getContainer();
 		if (log.isDebugEnabled())
@@ -88,6 +99,10 @@ public class MavenCall implements Runnable {
 
 	public void setProperties(Map<String, String> properties) {
 		this.properties = properties;
+	}
+
+	public void setCl(String cl) {
+		this.cl = cl;
 	}
 
 }
