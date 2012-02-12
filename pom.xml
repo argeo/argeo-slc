@@ -73,16 +73,6 @@ limitations under the License.
 			</roles>
 		</developer>
 		<developer>
-			<id>cdujeu</id>
-			<name>Charles du Jeu</name>
-			<email><![CDATA[http://mailhide.recaptcha.net/d?k=01EM7GpnvY3k8woQ2tnnZLUA==&c=KGbI2aXhd2VnJuMU9cL3qeGeNSKwIeUjeqa3XCqRQhY=]]></email>
-			<organization>Argeo</organization>
-			<organizationUrl>http://www.argeo.org</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
-		<developer>
 			<id>ocapillo</id>
 			<name>Olivier Capillon</name>
 			<email><![CDATA[http://mailhide.recaptcha.net/d?k=01EM7GpnvY3k8woQ2tnnZLUA==&c=BYw8i94WiejnvegUKJoCZQQr0h-mYlKCNKZVe_3WPIA=]]></email>
@@ -100,7 +90,6 @@ limitations under the License.
 			<organizationUrl>http://www.argeo.org</organizationUrl>
 			<roles>
 				<role>developer</role>
-				<role>QA</role>
 			</roles>
 		</developer>
 	</developers>
@@ -116,76 +105,6 @@ limitations under the License.
 			</roles>
 		</contributor>
 	</contributors>
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-scm-plugin</artifactId>
-					<version>1.4</version>
-					<configuration>
-						<connectionType>connection</connectionType>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>org.apache.maven.scm</groupId>
-							<artifactId>maven-scm-provider-gitexe</artifactId>
-							<version>1.2</version>
-						</dependency>
-					</dependencies>
-				</plugin>
-				<plugin>
-					<groupId>org.argeo.maven.plugins</groupId>
-					<artifactId>maven-argeo-osgi-plugin</artifactId>
-					<version>${version.maven-argeo-osgi}</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>buildnumber-maven-plugin</artifactId>
-				<version>1.0-beta-4</version>
-				<executions>
-					<execution>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>create</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<doCheck>false</doCheck>
-					<doUpdate>false</doUpdate>
-					<format>{0,date,yyyyMMdd_HHmmss}</format>
-					<items>
-						<item>timestamp</item>
-					</items>
-					<revisionOnScmFailure>git</revisionOnScmFailure>
-					<providerImplementations>
-						<git>svn</git>
-					</providerImplementations>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.4.3</version>
-				<configuration>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<version>2.1</version>
-				<configuration>
-					<autoVersionSubmodules>true</autoVersionSubmodules>
-					<preparationGoals>clean install</preparationGoals>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<dependencyManagement>
 		<dependencies>
 			<!-- FIXME : use distribution > v1.1.5 and remove this -->
