@@ -14,6 +14,7 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
@@ -292,8 +293,14 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 				attrNode.addMixin(SlcTypes.SLC_REF_SPEC_ATTRIBUTE);
 				RefSpecAttribute rsa = (RefSpecAttribute) esa;
 				attrNode.setProperty(SLC_TYPE, rsa.getTargetClassName());
+				Object value = rsa.getValue();
 				if (rsa.getChoices() != null) {
+					Integer index = null;
+					int count = 0;
 					for (RefValueChoice choice : rsa.getChoices()) {
+						String name = choice.getName();
+						if (value != null && name.equals(value.toString()))
+							index = count;
 						Node choiceNode = attrNode.addNode(choice.getName());
 						choiceNode.addMixin(NodeType.MIX_TITLE);
 						choiceNode.setProperty(Property.JCR_TITLE,
@@ -302,7 +309,11 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 								&& !choice.getDescription().trim().equals(""))
 							choiceNode.setProperty(Property.JCR_DESCRIPTION,
 									choice.getDescription());
+						count++;
 					}
+
+					if (index != null)
+						attrNode.setProperty(SLC_VALUE, index);
 				}
 			}
 		}
@@ -315,7 +326,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			Node moduleNode = agentNode.getNode(SlcJcrUtils
 					.getModuleNodeName(module));
 			String relativePath = getExecutionFlowRelativePath(executionFlow);
-			if (!moduleNode.hasNode(relativePath))
+			if (moduleNode.hasNode(relativePath))
 				moduleNode.getNode(relativePath).remove();
 			agentNode.getSession().save();
 		} catch (RepositoryException e) {

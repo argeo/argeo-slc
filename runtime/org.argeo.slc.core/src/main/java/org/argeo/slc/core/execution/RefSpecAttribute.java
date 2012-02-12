@@ -18,14 +18,16 @@ package org.argeo.slc.core.execution;
 
 import java.util.List;
 
+/** A spec attribute whose value is a reference to a full fledged object. */
 public class RefSpecAttribute extends AbstractSpecAttribute implements
 		Cloneable {
 	private static final long serialVersionUID = -3427797452955753574L;
-	private transient Class<?> targetClass;
+	private transient Class<?> targetClass = String.class;
 	/** Read only. */
 	private String targetClassName;
 	private transient Object value = null;
 
+	/** List to be chosen from */
 	private List<RefValueChoice> choices = null;
 
 	public Object getValue() {
@@ -36,6 +38,7 @@ public class RefSpecAttribute extends AbstractSpecAttribute implements
 		this.value = value;
 	}
 
+	/** Default is {@link String} */
 	public Class<?> getTargetClass() {
 		return targetClass;
 	}
