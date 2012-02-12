@@ -245,7 +245,6 @@
 								</goals>
 								<configuration>
 									<name>slc-maven</name>
-									<projversion>${version.argeo-distribution}</projversion>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi</directory>
