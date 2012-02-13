@@ -15,7 +15,7 @@
 
 	<!-- JCR -->
 	<reference id="jcrRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=slc)" />
+		filter="(argeo.jcr.repository.alias=java)" />
 
 	<!-- Maven -->
 	<reference id="mavenProxy" interface="org.argeo.slc.repo.maven.proxy.MavenProxyService" />
