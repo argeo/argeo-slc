@@ -47,24 +47,9 @@
 												</includes>
 											</dependency>
 										</mapping>
-										<mapping>
-											<directory>/var/lib/slc/.m2</directory>
-											<username>slc</username>
-											<groupname>slc</groupname>
-											<filemode>644</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>src/main/var/lib/slc/.m2</location>
-												</source>
-											</sources>
-										</mapping>
 									</mappings>
-									<preremoveScriptlet>
-										<scriptFile>src/main/scripts/preremove</scriptFile>
-									</preremoveScriptlet>
 									<requires>
-										<require>slc</require>
+										<require>slc-libs</require>
 									</requires>
 								</configuration>
 							</execution>

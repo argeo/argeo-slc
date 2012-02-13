@@ -10,31 +10,31 @@
 	<artifactId>slc</artifactId>
 	<packaging>pom</packaging>
 	<name>SLC Node (RPM)</name>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>filter-base</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/base</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/base</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+<!-- 	<build> -->
+<!-- 		<plugins> -->
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-resources-plugin</artifactId> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<id>filter-base</id> -->
+<!-- 						<phase>process-resources</phase> -->
+<!-- 						<goals> -->
+<!-- 							<goal>copy-resources</goal> -->
+<!-- 						</goals> -->
+<!-- 						<configuration> -->
+<!-- 							<outputDirectory>${basedir}/target/base</outputDirectory> -->
+<!-- 							<resources> -->
+<!-- 								<resource> -->
+<!-- 									<directory>src/main/base</directory> -->
+<!-- 									<filtering>true</filtering> -->
+<!-- 								</resource> -->
+<!-- 							</resources> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+<!-- 		</plugins> -->
+<!-- 	</build> -->
 	<profiles>
 		<profile>
 			<id>rpmbuild</id>
@@ -103,6 +103,19 @@
 												</source>
 											</sources>
 										</mapping>
+										<!-- Maven (even if not installed) -->
+										<mapping>
+											<directory>/var/lib/slc/.m2</directory>
+											<username>slc</username>
+											<groupname>slc</groupname>
+											<filemode>600</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<sources>
+												<source>
+													<location>src/main/rpm/var/lib/slc/.m2</location>
+												</source>
+											</sources>
+										</mapping>
 									</mappings>
 									<preinstallScriptlet>
 										<scriptFile>src/main/scripts/preinstall-${rpm.release}</scriptFile>
@@ -118,26 +131,6 @@
 										<require>osgi-boot</require>
 										<require>java-1.6.0-openjdk</require>
 									</requires>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<copy todir="${rpm.stagingRepository}" verbose="true">
-											<fileset dir="${project.build.directory}/rpm"
-												includes="*/RPMS/**/*.rpm" />
-											<flattenmapper />
-										</copy>
-									</target>
 								</configuration>
 							</execution>
 						</executions>

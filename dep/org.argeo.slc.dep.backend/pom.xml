@@ -197,26 +197,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>install</phase>
-								<goals>
-									<goal>run</goal>
-								</goals>
-								<configuration>
-									<target>
-										<copy todir="${rpm.stagingRepository}" verbose="true">
-											<fileset dir="${project.build.directory}/rpm"
-												includes="*/RPMS/**/*.rpm" />
-											<flattenmapper />
-										</copy>
-									</target>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -270,6 +250,9 @@
 											</dependency>
 										</mapping>
 									</mappings>
+									<requires>
+										<require>argeo-node-tp</require>
+									</requires>
 								</configuration>
 							</execution>
 						</executions>

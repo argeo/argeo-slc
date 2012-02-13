@@ -2,5 +2,9 @@ if [ $1 = "0" ];then
 	#APP=%{name} => doesn't work
 	APP=slc
 	/sbin/chkconfig --del $APP
+	
+	# Maven
+	rm -rf /var/lib/$APP/.m2/repository
+	
 	#userdel $APP
 fi
