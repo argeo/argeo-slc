@@ -22,12 +22,14 @@ public class MavenCall implements Runnable {
 	private List<String> profiles;
 	private Map<String, String> properties;
 
+	private Boolean success = null;
+
 	public void run() {
 		Thread.currentThread().setContextClassLoader(
 				getClass().getClassLoader());
 		List<String> args = new ArrayList<String>();
 		args.add("-e");
-		if (settings != null) {
+		if (settings != null && !settings.trim().equals("")) {
 			args.add("--settings");
 			args.add(settings);
 		}
@@ -62,6 +64,10 @@ public class MavenCall implements Runnable {
 				getBasedirFile().getPath(), System.out, System.err);
 		if (log.isDebugEnabled())
 			log.debug("Maven exit code: " + exitCode);
+		if (exitCode == 0)
+			success = true;
+		else
+			success = false;
 
 		PlexusContainer plexusContainer = mavenCli.getContainer();
 		if (log.isDebugEnabled())
@@ -103,6 +109,10 @@ public class MavenCall implements Runnable {
 
 	public void setCl(String cl) {
 		this.cl = cl;
+	}
+
+	public Boolean getSuccess() {
+		return success == null ? false : success;
 	}
 
 }
