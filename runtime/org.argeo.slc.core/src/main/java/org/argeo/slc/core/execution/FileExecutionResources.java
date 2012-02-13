@@ -32,6 +32,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
+/** Implements write access to resources based on standard Java {@link File} */
 public class FileExecutionResources implements ExecutionResources {
 	private final static Log log = LogFactory
 			.getLog(FileExecutionResources.class);
@@ -40,8 +41,7 @@ public class FileExecutionResources implements ExecutionResources {
 			.getProperty("java.io.tmpdir")
 			+ File.separator
 			+ "slc"
-			+ File.separator
-			+ DEFAULT_EXECUTION_RESOURCES_DIRNAME;
+			+ File.separator + DEFAULT_EXECUTION_RESOURCES_DIRNAME;
 
 	private File baseDir;
 	private ExecutionContext executionContext;
@@ -172,10 +172,9 @@ public class FileExecutionResources implements ExecutionResources {
 			Assert.notNull(executionContext, "execution context is null");
 			String path = baseDir.getPath()
 					+ File.separator
-					+ sdf()
-							.format(
-									executionContext
-											.getVariable(ExecutionContext.VAR_EXECUTION_CONTEXT_CREATION_DATE))
+					+ sdf().format(
+							executionContext
+									.getVariable(ExecutionContext.VAR_EXECUTION_CONTEXT_CREATION_DATE))
 					+ executionContext.getUuid();
 			return new File(path);
 		} else {

@@ -20,6 +20,7 @@ import java.io.File;
 
 import org.springframework.core.io.Resource;
 
+/** Provides write access to resources during execution */
 public interface ExecutionResources {
 	/** The base directory where this execution can write */
 	public File getWritableBaseDir();
