@@ -1,8 +1,12 @@
 if [ $1 = "1" ];then
 	APP=%{name}
 	
-	# create application user (EL5)
-	useradd -r --home-dir /var/lib/$APP --shell /sbin/nologin --create-home $APP
+	# check if user exists
+	/bin/id $APP 2>/dev/null
+	if [ $? -ne 0 ];then
+		# create application user (EL5)
+		useradd -r --home-dir /var/lib/$APP --shell /sbin/nologin --create-home $APP
+	fi
 	
 	# give read access to group on home
 	chmod g+r /var/lib/$APP

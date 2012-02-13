@@ -1,0 +1,4 @@
+if [ $1 = "0" ];then
+	APP=slc
+	rm -rf /var/lib/$APP/.m2/repository
+fi
