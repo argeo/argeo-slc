@@ -28,6 +28,9 @@ public class MavenProxyServiceImpl extends AbstractUrlProxy implements
 
 	private List<RemoteRepository> defaultRepositories = new ArrayList<RemoteRepository>();
 
+	private boolean rootNodeIsArtifactBase = RepoConstants.ARTIFACTS_BASE_PATH
+			.equals("/");
+
 	/** Inititalizes the artifacts area. */
 	@Override
 	protected void beforeInitSessionSave(Session session)
@@ -94,7 +97,10 @@ public class MavenProxyServiceImpl extends AbstractUrlProxy implements
 
 	/** The JCR path where this file could be found */
 	public String getNodePath(String path) {
-		return RepoConstants.ARTIFACTS_BASE_PATH + path;
+		if (rootNodeIsArtifactBase)
+			return path;
+		else
+			return RepoConstants.ARTIFACTS_BASE_PATH + path;
 	}
 
 	public void setDefaultRepositories(
