@@ -28,6 +28,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.osgi.context.BundleContextAware;
 import org.springframework.osgi.io.OsgiBundleResource;
 
+/** Write access to resources in an OSGi context */
 public class OsgiExecutionResources extends FileExecutionResources implements
 		BundleContextAware {
 	private final static Log log = LogFactory
@@ -62,14 +63,15 @@ public class OsgiExecutionResources extends FileExecutionResources implements
 			// TODO: Equinox specific?
 			String relPath = location.substring("initial@reference:file:"
 					.length());
-//			if (relPath.startsWith("../"))// relative to the framework jar
-//				relPath = relPath.substring("../".length());
-//			String framework = System.getProperty("osgi.framework").substring(
-//					"file:".length());
-//			log.debug(framework);
+			// if (relPath.startsWith("../"))// relative to the framework jar
+			// relPath = relPath.substring("../".length());
+			// String framework =
+			// System.getProperty("osgi.framework").substring(
+			// "file:".length());
+			// log.debug(framework);
 			String installArea = System.getProperty("osgi.install.area")
 					.substring("file:".length());
-//			log.debug(installArea);
+			// log.debug(installArea);
 			base = installArea + '/' + relPath;
 			// int sepIndex = framework.lastIndexOf(File.separatorChar);
 			// framework = framework.substring(0, sepIndex);
