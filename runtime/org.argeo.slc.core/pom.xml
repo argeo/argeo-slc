@@ -44,6 +44,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.argeo.commons.basic</groupId>
+			<artifactId>org.argeo.basic.nodeps</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>com.springsource.org.aspectj.runtime</artifactId>
 		</dependency>

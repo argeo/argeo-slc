@@ -22,4 +22,16 @@
 		<property name="bundleContext" ref="bundleContext" />
 	</bean>
 
+	<!-- Security -->
+	<bean class="org.argeo.jackrabbit.JackrabbitAuthorizations"
+		init-method="run">
+		<property name="groupPrivileges">
+			<map>
+				<entry key="jcr:read" value="anonymous,ROLE_USER" />
+				<entry key="jcr:all" value="ROLE_ARGEO_COMMITTER" />
+			</map>
+		</property>
+		<property name="repository" ref="jcrRepository" />
+	</bean>
+
 </beans>
