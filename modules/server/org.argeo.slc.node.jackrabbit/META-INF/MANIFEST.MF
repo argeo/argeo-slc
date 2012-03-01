@@ -1,15 +1,17 @@
 Manifest-Version: 1.0
+Bnd-LastModified: 1330634818721
+Build-Jdk: 1.6.0_22
+Built-By: mbaudier
+Bundle-DocURL: http://www.argeo.org
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
-Bundle-Name: Node Wrapper
+Bundle-Name: SLC Node Jackrabbit
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-SymbolicName: org.argeo.slc.node.jackrabbit
-Bundle-Version: 0.13.1.SNAPSHOT
 Bundle-Vendor: Argeo
-Import-Package: javax.jcr;version="[2.0.0,3.0.0)",
- org.argeo.jackrabbit,
- org.argeo.security.core,
- org.argeo.security.jackrabbit,
- org.argeo.slc.jcr,
- org.argeo.slc.repo,
- org.postgresql;version="[8.3.0,9.0.0)",
- org.springframework.beans.factory.config;version="2.5.6.SEC01",
- org.springframework.security;version="2.0.6.RELEASE"
+Bundle-Version: 0.13.1.SNAPSHOT-r120301_2146
+Created-By: Apache Maven Bundle Plugin
+Import-Package: javax.jcr,org.argeo.jackrabbit,org.argeo.security.core,o
+ rg.argeo.slc.jcr,org.springframework.beans.factory.config,org.springfra
+ mework.security
+Tool: Bnd-1.50.0

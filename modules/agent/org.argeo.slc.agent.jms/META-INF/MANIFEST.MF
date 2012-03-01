@@ -1,20 +1,19 @@
 Manifest-Version: 1.0
-Require-Bundle: org.argeo.slc.specs,
- org.argeo.slc.core,
- org.argeo.slc.support.activemq,
- com.springsource.org.castor;resolution:=optional
-Bundle-Version: 0.13.1.SNAPSHOT
+Bnd-LastModified: 1330634569577
+Build-Jdk: 1.6.0_22
+Built-By: mbaudier
+Bundle-DocURL: http://www.argeo.org
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
 Bundle-Name: SLC Agent JMS
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-SymbolicName: org.argeo.slc.agent.jms
-Import-Package: bsh.util;resolution:=optional,
- javax.jms,
- org.apache.activemq,
- org.apache.activemq.command,
- org.apache.activemq.pool,
- org.apache.commons.pool,
- org.springframework.beans.factory.config,
- org.springframework.jms.connection,
- org.springframework.jms.core,
- org.springframework.jms.listener,
- org.springframework.jms.listener.adapter,
- org.springframework.oxm.castor
+Bundle-Vendor: Argeo
+Bundle-Version: 0.13.1.SNAPSHOT-r120301_2142
+Created-By: Apache Maven Bundle Plugin
+Import-Package: org.apache.activemq,org.argeo.slc.core.attachment,org.ar
+ geo.slc.core.test.tree,org.argeo.slc.execution,org.argeo.slc.jms,org.ar
+ geo.slc.process,org.argeo.slc.test,org.springframework.beans.factory.co
+ nfig,org.springframework.jms.connection,org.springframework.jms.core,or
+ g.springframework.jms.listener
+Tool: Bnd-1.50.0

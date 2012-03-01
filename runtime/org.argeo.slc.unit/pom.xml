@@ -38,12 +38,12 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.junit</groupId>
@@ -89,7 +89,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- OXM -->

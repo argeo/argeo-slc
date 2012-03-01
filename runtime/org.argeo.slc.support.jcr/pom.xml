@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -46,7 +46,7 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
 			<scope>test</scope>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons.server</groupId>

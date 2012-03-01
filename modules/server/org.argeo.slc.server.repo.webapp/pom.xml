@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc.modules</groupId>
+		<artifactId>server</artifactId>
+		<version>0.13.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>org.argeo.slc.server.repo.webapp</artifactId>
+	<name>SLC Repo Web App</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<!-- TODO optimize -->
+						<Import-Package>
+							*,
+							javax.jcr,
+							javax.servlet,
+							javax.servlet.http,
+							javax.servlet.resources,
+							org.argeo.jcr.mvc,
+							org.argeo.security.core,
+							org.argeo.security.jcr,
+							org.argeo.slc.aether.spring,
+							org.argeo.slc.repo.maven.proxy,
+							org.springframework.osgi.web.context.support,
+							org.springframework.security,
+							org.springframework.security.context,
+							org.springframework.security.intercept.web,
+							org.springframework.security.providers.anonymous,
+							org.springframework.security.ui,
+							org.springframework.security.ui.basicauth,
+							org.springframework.security.ui.logout,
+							org.springframework.security.util,
+							org.springframework.security.vote,
+							org.springframework.security.wrapper,
+							org.springframework.web.context,
+							org.springframework.web.filter,
+							org.springframework.web.servlet,
+							org.springframework.web.servlet.handler
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

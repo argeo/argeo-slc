@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
 			<artifactId>org.argeo.slc.client.ui</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Argeo common distribution for RAP projects -->

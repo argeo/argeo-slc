@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc.modules</groupId>
+		<artifactId>agent</artifactId>
+		<version>0.13.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>org.argeo.slc.agent.ext.jdbc</artifactId>
+	<name>SLC Agent JDBC Extension</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Fragment-Host>org.springframework.jdbc</Fragment-Host>
+						<Import-Package>
+							*,
+							com.mysql.jdbc;resolution:=optional,
+							net.sourceforge.jtds.jdbc;resolution:=optional,
+							org.hsqldb;resolution:=optional
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

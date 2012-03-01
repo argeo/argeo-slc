@@ -11,7 +11,6 @@
 	<name>SLC Client RCP</name>
 	<packaging>jar</packaging>
 	<dependencies>
-
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc.eclipse</groupId>
@@ -20,6 +19,17 @@
 		</dependency>
 
 		<!-- Bundles to start -->
+		<dependency>
+			<groupId>org.argeo.slc.modules</groupId>
+			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc.modules</groupId>
+			<artifactId>org.argeo.slc.agent</artifactId>
+			<version>0.13.1-SNAPSHOT</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>
 			<artifactId>org.argeo.security.dao.jackrabbit</artifactId>
@@ -36,53 +46,6 @@
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc.eclipse</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.client.agent</artifactId> -->
-<!-- 			<version>${version.slc}</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc.eclipse</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.client.hibernate</artifactId> -->
-<!-- 			<version>${version.slc}</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc.eclipse</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.client.oxm</artifactId> -->
-<!-- 			<version>${version.slc}</version> -->
-<!-- 		</dependency> -->
-
-		<dependency>
-			<groupId>org.argeo.slc.modules</groupId>
-			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc.modules</groupId>
-			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>${version.slc}</version>
-		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc.modules</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.server.castor</artifactId> -->
-<!-- 			<version>${version.slc}</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc.modules</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.server.h2</artifactId> -->
-<!-- 			<version>${version.slc}</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc.modules</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.server.hibernate</artifactId> -->
-<!-- 			<version>${version.slc}</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc.modules</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.server.services</artifactId> -->
-<!-- 			<version>${version.slc}</version> -->
-<!-- 		</dependency> -->
-
 		<!-- Security UI -->
 		<dependency>
 			<groupId>org.argeo.commons.eclipse</groupId>
@@ -94,7 +57,5 @@
 			<artifactId>org.argeo.security.ui.rcp</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
-
-
 	</dependencies>
 </project>

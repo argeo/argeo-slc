@@ -92,17 +92,17 @@
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.agent.jcr</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SLC Repo -->
@@ -114,12 +114,12 @@
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.server.repo.webapp</artifactId>
-			<version>${version.slc}</version>
+			<version>0.13.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Launcher -->
