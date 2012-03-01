@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:flow="http://www.argeo.org/schema/slc-flow"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
+
+	<bean id="hostManager" class="org.argeo.slc.lib.linux.RedhatHostManager">
+		<property name="sshTarget" ref="sshTarget" />
+		<property name="host" ref="host" />
+	</bean>
+
+	<bean flow:as-flow="deployConfig" class="org.argeo.slc.core.execution.tasks.MethodCall"
+		p:target-ref="hostManager" p:method="deployConfig" />
+
+	<bean flow:as-flow="system/reboot" p:command="shutdown -r now"
+		p:sshTarget-ref="sshTarget" class="org.argeo.slc.jsch.RemoteExec" />
+
+	<bean flow:as-flow="system/shutdown" p:command="shutdown -h now"
+		p:sshTarget-ref="sshTarget" class="org.argeo.slc.jsch.RemoteExec" />
+
+	<bean flow:as-flow="system/packages/install" class="org.argeo.slc.core.execution.tasks.MethodCall"
+		p:target-ref="hostManager" p:method="installPackages" />
+
+	<bean flow:as-flow="system/packages/update" p:sshTarget-ref="sshTarget"
+		class="org.argeo.slc.jsch.RemoteExec">
+		<property name="systemCall">
+			<bean class="org.argeo.slc.core.execution.tasks.SystemCall">
+				<property name="cmd" value="yum -y update" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean flow:as-flow="system/security/firewall" p:script="osgibundle:/scripts/firewall.sh"
+		p:sshTarget-ref="sshTarget" class="org.argeo.slc.jsch.RemoteExec" />
+
+</beans>
