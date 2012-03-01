@@ -1,4 +1,4 @@
-package org.argeo.slc.jsch;
+package org.argeo.slc.jsch.swing;
 
 import java.awt.Container;
 import java.awt.GridLayout;
@@ -14,7 +14,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-public class UiUserInfo extends SimpleUserInfo {
+import org.argeo.slc.jsch.SimpleUserInfo;
+
+public class SwingUserInfo extends SimpleUserInfo {
 
 	private Boolean alwaysPrompt = false;
 
