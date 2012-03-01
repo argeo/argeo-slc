@@ -1,5 +1,0 @@
-Bundle-Name: Log4j Configuration
-Bundle-SymbolicName: org.argeo.slc.jemmytest.log4j
-Bundle-Version: 1.0.0
-Fragment-Host: com.springsource.org.apache.log4j
-
