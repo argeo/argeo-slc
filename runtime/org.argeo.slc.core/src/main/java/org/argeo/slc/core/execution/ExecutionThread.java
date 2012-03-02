@@ -18,9 +18,12 @@ package org.argeo.slc.core.execution;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.process.RealizedFlow;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContextHolder;
 
 /** Thread of a single execution */
 public class ExecutionThread extends Thread {
@@ -40,6 +43,13 @@ public class ExecutionThread extends Thread {
 	}
 
 	public void run() {
+		// authenticate thread
+		Authentication authentication = getProcessThreadGroup()
+				.getAuthentication();
+		if (authentication == null)
+			throw new SlcException("Can only execute authenticated threads");
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
 		if (getContextClassLoader() != null) {
 			if (log.isTraceEnabled())
 				log.trace("Context class loader set to "
@@ -80,6 +90,10 @@ public class ExecutionThread extends Thread {
 
 	private void dispatchAddStep(ExecutionStep step) {
 		processThread.getProcessThreadGroup().dispatchAddStep(step);
+	}
+
+	protected ProcessThreadGroup getProcessThreadGroup() {
+		return processThread.getProcessThreadGroup();
 	}
 
 	public RealizedFlow getRealizedFlow() {

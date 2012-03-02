@@ -30,6 +30,8 @@ import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.process.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContextHolder;
 
 /** Thread of the SLC Process, starting the sub executions. */
 @SuppressWarnings("deprecation")
@@ -57,8 +59,15 @@ public class ProcessThread extends Thread {
 	}
 
 	public final void run() {
-		log.info("\n##\n## SLC Process #" + process.getUuid()
-				+ " STARTED\n##\n");
+		// authenticate thread
+		Authentication authentication = getProcessThreadGroup()
+				.getAuthentication();
+		if (authentication == null)
+			throw new SlcException("Can only execute authenticated threads");
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		log.info("\n##\n## SLC Process #" + process.getUuid() + " STARTED by "
+				+ authentication.getName() + "\n##\n");
 
 		// Start logging
 		new LoggingThread().start();

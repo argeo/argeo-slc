@@ -35,7 +35,7 @@
 			<bean p:host="localhost" p:port="22" p:user="${user.name}"
 				p:localPrivateKey="${user.home}/.ssh/id_rsa" class="org.argeo.slc.jsch.SshTarget">
 				<property name="userInfo">
-					<bean class="org.argeo.slc.jsch.UiUserInfo" />
+					<bean class="org.argeo.slc.jsch.swing.SwingUserInfo" />
 				</property>
 			</bean>
 		</property>

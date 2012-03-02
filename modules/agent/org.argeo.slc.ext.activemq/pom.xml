@@ -25,7 +25,6 @@
 							org.argeo.slc.build,
 							org.argeo.slc.core.execution,
 							org.argeo.slc.core.attachment,
-							org.argeo.slc.core.execution,
 							org.argeo.slc.core.structure,
 							org.argeo.slc.core.structure.tree,
 							org.argeo.slc.core.test,

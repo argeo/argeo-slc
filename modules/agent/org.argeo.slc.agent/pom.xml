@@ -9,4 +9,20 @@
 	</parent>
 	<artifactId>org.argeo.slc.agent</artifactId>
 	<name>SLC Agent</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Import-Package>
+							*,
+							org.argeo.slc.core.test.tree
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>

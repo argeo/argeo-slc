@@ -34,4 +34,8 @@
 		<property name="repository" ref="jcrRepository" />
 	</bean>
 
+	<bean
+		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
+		<property name="authenticationManager" ref="authenticationManager" />
+	</bean>
 </beans>
