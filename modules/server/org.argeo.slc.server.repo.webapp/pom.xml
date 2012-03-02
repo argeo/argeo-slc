@@ -16,6 +16,7 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
+						<Web-ContextPath>org.argeo.slc.repo.webapp</Web-ContextPath>
 						<!-- TODO optimize -->
 						<Import-Package>
 							*,
