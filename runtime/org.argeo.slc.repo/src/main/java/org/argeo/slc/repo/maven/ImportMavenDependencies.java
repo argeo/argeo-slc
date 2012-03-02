@@ -57,7 +57,7 @@ public class ImportMavenDependencies implements Runnable {
 
 	private Session jcrSession;
 	private String artifactBasePath = RepoConstants.ARTIFACTS_BASE_PATH;
-	private String distributionsBasePath = "/slc/repo/distributions";
+	private String distributionsBasePath = RepoConstants.DISTRIBUTIONS_BASE_PATH;
 	private String distributionName;
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
@@ -141,7 +141,8 @@ public class ImportMavenDependencies implements Runnable {
 				}
 
 				try {
-					String parentPath = artifactBasePath + '/'
+					String parentPath = artifactBasePath
+							+ (artifactBasePath.endsWith("/") ? "" : "/")
 							+ artifactParentPath(artifact);
 					Node parentNode;
 					if (!jcrSession.itemExists(parentPath)) {
