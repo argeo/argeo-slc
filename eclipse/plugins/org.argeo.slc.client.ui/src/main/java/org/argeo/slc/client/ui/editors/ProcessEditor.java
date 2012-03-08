@@ -40,11 +40,11 @@ public class ProcessEditor extends FormEditor implements
 	private ProcessController processController;
 
 	private ProcessBuilderPage builderPage;
-	private ProcessLogPage logPage;
+	//private ProcessLogPage logPage;
 
 	private ExecutionModulesManager modulesManager;
 
-	private Boolean switchToLog = false;
+	//private Boolean switchToLog = false;
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
@@ -112,8 +112,8 @@ public class ProcessEditor extends FormEditor implements
 		doSave(null);
 		try {
 			// show log
-			if (switchToLog)
-				setActivePage(logPage.getId());
+//			if (switchToLog)
+//				setActivePage(logPage.getId());
 
 			ExecutionProcess process = processController.process(processNode);
 			Map<String, String> properties = new HashMap<String, String>();
@@ -181,8 +181,8 @@ public class ProcessEditor extends FormEditor implements
 			builderPage = new ProcessBuilderPage(this, processNode);
 			addPage(builderPage);
 			firePropertyChange(PROP_DIRTY);
-			logPage = new ProcessLogPage(this, processNode);
-			addPage(logPage);
+//			logPage = new ProcessLogPage(this, processNode);
+//			addPage(logPage);
 		} catch (PartInitException e) {
 			throw new SlcException("Cannot add pages", e);
 		}

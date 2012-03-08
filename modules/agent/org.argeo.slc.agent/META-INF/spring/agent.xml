@@ -14,13 +14,13 @@
 	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager" />
 
 	<!-- Logging -->
-	<bean id="log4Notification" class="org.argeo.slc.log4j.SlcExecutionAppender"
-		init-method="init" destroy-method="destroy">
-		<property name="disabled" value="${slc.agent.log4Notification.disabled}" />
-		<property name="level" value="${slc.agent.log4Notification.level}" />
-		<property name="onlyExecutionThread"
-			value="${slc.agent.log4Notification.onlyExecutionThread}" />
-	</bean>
+<!-- 	<bean id="log4Notification" class="org.argeo.slc.log4j.SlcExecutionAppender" -->
+<!-- 		init-method="init" destroy-method="destroy"> -->
+<!-- 		<property name="disabled" value="${slc.agent.log4Notification.disabled}" /> -->
+<!-- 		<property name="level" value="${slc.agent.log4Notification.level}" /> -->
+<!-- 		<property name="onlyExecutionThread" -->
+<!-- 			value="${slc.agent.log4Notification.onlyExecutionThread}" /> -->
+<!-- 	</bean> -->
 
 
 </beans>

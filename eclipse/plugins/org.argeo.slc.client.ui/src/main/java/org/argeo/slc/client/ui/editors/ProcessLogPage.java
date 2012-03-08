@@ -46,7 +46,7 @@ public class ProcessLogPage extends FormPage {
 	 * optimization field: we compute once the length of the path to slc:log so
 	 * that we can easily substring the relative path of logs.
 	 */
-	private Integer logPathLength;
+	//private Integer logPathLength;
 
 	public ProcessLogPage(FormEditor editor, Node processNode) {
 		super(editor, ID, "Log");
@@ -57,7 +57,7 @@ public class ProcessLogPage extends FormPage {
 
 		try {
 			String logBasePath = processNode.getPath() + '/' + SlcNames.SLC_LOG;
-			logPathLength = logBasePath.length();
+			//logPathLength = logBasePath.length();
 
 			Workspace ws = processNode.getSession().getWorkspace();
 
@@ -125,12 +125,12 @@ public class ProcessLogPage extends FormPage {
 	protected void appendLogEntry(StringBuffer buf, Node logEntry)
 			throws RepositoryException {
 		// +1 in order to remove the first slash
-		String relPath = logEntry.getPath().substring(logPathLength + 1);
+//		String relPath = logEntry.getPath().substring(logPathLength + 1);
 		//System.out.println("relPath=" + relPath);
-		int firstSlashIndex = relPath.indexOf('/');
-		int lastSlashIndex = relPath.lastIndexOf('/');
-		String thread = relPath.substring(0, firstSlashIndex);
-		String location = relPath.substring(firstSlashIndex, lastSlashIndex);
+//		int firstSlashIndex = relPath.indexOf('/');
+//		int lastSlashIndex = relPath.lastIndexOf('/');
+//		String thread = relPath.substring(0, firstSlashIndex);
+//		String location = relPath.substring(firstSlashIndex, lastSlashIndex);
 
 		// String date = dateFormat.format(logEntry
 		// .getProperty(SlcNames.SLC_TIMESTAMP).getDate().getTime());
