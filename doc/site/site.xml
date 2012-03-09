@@ -24,31 +24,24 @@
 	<body>
 		<menu name="Overview">
 			<item name="Home" href="${project.url}/index.html" />
-			<item name="Getting Started" href="${project.url}/gettingStarted.html" />
-			<item name="FAQ" href="${project.url}/faq.html" />
-			<item name="Runtime" href="${project.url}/runtime/index.html">
-				<item name="API (Javadoc)" href="${project.url}/apidocs/index.html" />
-				<item name="Code" href="${project.url}/xref/index.html" />
-				<item name="Unit Tests Results" href="${project.url}/surefire-report.html" />
-			</item>
-			<item name="How-To">
-				<item name="Execution Resources"
-					href="${project.url}/howtos/howto-executionResources.html" />
-				<item name="Attachments" href="${project.url}/howtos/howto-attachments.html" />
-			</item>
+			<!--<item name="Getting Started" href="${project.url}/gettingStarted.html" />-->
+			<!--<item name="FAQ" href="${project.url}/faq.html" />-->
+			<item name="API (Javadoc)" href="${project.url}/apidocs/index.html" target="argeo_slc_javadoc" />
+			<item name="Browse Code" href="${project.url}/xref/index.html" target="argeo_slc_code" />
+			<item name="FIXMEs / TODOs" href="${project.url}/taglist.html" />
 		</menu>
-		<menu ref="parent" />
-		<menu ref="modules" />
+		<!--
+		<menu name="How-To">
+			<item name="Execution Resources"
+					href="${project.url}/howtos/howto-executionResources.html" />
+			<item name="Attachments" href="${project.url}/howtos/howto-attachments.html" />
+		</menu>
+		-->
 		<menu ref="reports" />
 	</body>
-	<poweredBy>
-		<logo name="Maven" href="http://maven.apache.org/"
-			img="http://maven.apache.org/images/logos/maven-feather.png" />
-	</poweredBy>
 	<skin>
 		<groupId>org.apache.maven.skins</groupId>
 		<artifactId>maven-default-skin</artifactId>
 		<version>1.0</version>
 	</skin>
 </project>
-
