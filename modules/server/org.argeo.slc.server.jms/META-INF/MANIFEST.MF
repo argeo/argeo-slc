@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.13.1.SNAPSHOT
+Bundle-Version: 0.13.1
 Bundle-SymbolicName: org.argeo.slc.server.jms
 Import-Package: javax.jms,
  javax.management.j2ee.statistics,

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
 Fragment-Host: com.springsource.org.apache.log4j
-Bundle-Version: 0.13.1.SNAPSHOT
+Bundle-Version: 0.13.1
 Bundle-Name: Log4j Configuration
 Bundle-SymbolicName: org.argeo.slc.demo.log4j

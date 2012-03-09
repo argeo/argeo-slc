@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.argeo.slc.demo.minimal
-Bundle-Version: 0.13.1.SNAPSHOT
+Bundle-Version: 0.13.1
 Bundle-Name: SLC Demo Minimal
 Bundle-Description: Minimal execution module to be used as a template
 Import-Package: org.aopalliance.aop,

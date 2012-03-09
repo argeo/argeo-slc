@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SLC Demo Ant
 Bundle-SymbolicName: org.argeo.slc.demo.ant
-Bundle-Version: 0.13.1.SNAPSHOT
+Bundle-Version: 0.13.1
 Spring-Context: conf/*,conf/testCases/*
 Import-Package: org.aopalliance.aop,org.argeo.slc.ant,org.argeo.slc.core.execution,org.argeo.slc.execution,org.argeo.slc.osgi,org.springframework.aop,org.springframework.aop.framework,org.springframework.aop.scope,org.springframework.beans.factory.config,org.springframework.core.io
 Bundle-Description: Demonstrate Ant support
