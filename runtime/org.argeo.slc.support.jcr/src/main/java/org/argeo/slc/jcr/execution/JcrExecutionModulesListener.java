@@ -29,7 +29,6 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
@@ -38,6 +37,7 @@ import org.argeo.slc.core.execution.RefSpecAttribute;
 import org.argeo.slc.core.execution.RefValueChoice;
 import org.argeo.slc.deploy.ModuleDescriptor;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
+import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionSpec;
@@ -76,38 +76,62 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			session = repository.login();
 			clearAgent();
 			if (modulesManager != null) {
+				Node agentNode = session.getNode(agent.getNodePath());
+
 				List<ModuleDescriptor> moduleDescriptors = modulesManager
 						.listModules();
+
+				// scan SLC-ExecutionModule metadata
+				for (ModuleDescriptor md : moduleDescriptors) {
+					if (md.getMetadata().containsKey(
+							ExecutionModuleDescriptor.SLC_EXECUTION_MODULE)) {
+						String moduleNodeName = SlcJcrUtils
+								.getModuleNodeName(md);
+						Node moduleNode = agentNode.hasNode(moduleNodeName) ? agentNode
+								.getNode(moduleNodeName) : agentNode
+								.addNode(moduleNodeName);
+						moduleNode.addMixin(SlcTypes.SLC_EXECUTION_MODULE);
+						moduleNode.setProperty(SLC_NAME, md.getName());
+						moduleNode.setProperty(SLC_VERSION, md.getVersion());
+						moduleNode.setProperty(Property.JCR_TITLE,
+								md.getTitle());
+						moduleNode.setProperty(Property.JCR_DESCRIPTION,
+								md.getDescription());
+						moduleNode.setProperty(SLC_STARTED, md.getStarted());
+					}
+				}
+
+				// scan execution modules property
 				String executionModules = System
 						.getProperty(SLC_EXECUTION_MODULES_PROPERTY);
 				if (executionModules != null) {
-					Node agentNode = session.getNode(agent.getNodePath());
 					for (String executionModule : executionModules.split(",")) {
-						allModules: for (ModuleDescriptor moduleDescriptor : moduleDescriptors) {
+						allModules: for (ModuleDescriptor md : moduleDescriptors) {
 							String moduleNodeName = SlcJcrUtils
-									.getModuleNodeName(moduleDescriptor);
-							if (moduleDescriptor.getName().equals(
-									executionModule)) {
+									.getModuleNodeName(md);
+							if (md.getName().equals(executionModule)) {
 								Node moduleNode = agentNode
 										.hasNode(moduleNodeName) ? agentNode
 										.getNode(moduleNodeName) : agentNode
 										.addNode(moduleNodeName);
 								moduleNode
 										.addMixin(SlcTypes.SLC_EXECUTION_MODULE);
-								moduleNode.setProperty(SLC_NAME,
-										moduleDescriptor.getName());
+								moduleNode.setProperty(SLC_NAME, md.getName());
 								moduleNode.setProperty(SLC_VERSION,
-										moduleDescriptor.getVersion());
+										md.getVersion());
 								moduleNode.setProperty(Property.JCR_TITLE,
-										moduleDescriptor.getTitle());
+										md.getTitle());
 								moduleNode.setProperty(
 										Property.JCR_DESCRIPTION,
-										moduleDescriptor.getDescription());
-								moduleNode.setProperty(SLC_STARTED, false);
+										md.getDescription());
+								moduleNode.setProperty(SLC_STARTED,
+										md.getStarted());
 								break allModules;
 							}
 						}
 					}
+
+					// save if needed
 					if (session.hasPendingChanges())
 						session.save();
 				}

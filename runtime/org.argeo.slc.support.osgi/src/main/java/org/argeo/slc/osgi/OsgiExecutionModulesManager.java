@@ -17,6 +17,8 @@ package org.argeo.slc.osgi;
 
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -48,6 +50,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
+import org.springframework.context.ApplicationContext;
 import org.springframework.osgi.service.importer.OsgiServiceLifecycleListener;
 
 /** Execution modules manager implementation based on an OSGi runtime. */
@@ -281,7 +284,23 @@ public class OsgiExecutionModulesManager extends
 			Bundle bundle = bundlesManager.findRelatedBundle(new OsgiBundle(
 					nameVersion));
 			bundlesManager.startSynchronous(bundle);
-		} catch (BundleException e) {
+			boolean isSpringInstrumented = bundle.getEntryPaths(
+					"/META-INF/spring").hasMoreElements()
+					|| bundle.getHeaders().get("Spring-Context") == null;
+			if (isSpringInstrumented) {
+				// Wait for Spring application context to be ready
+				String filter = "(Bundle-SymbolicName="
+						+ bundle.getSymbolicName() + ")";
+				try {
+					bundlesManager.getServiceRefSynchronous(
+							ApplicationContext.class.getName(), filter);
+				} catch (Exception e) {
+					// stop if application context not found
+					bundle.stop();
+					throw e;
+				}
+			}
+		} catch (Exception e) {
 			throw new SlcException("Cannot start " + nameVersion, e);
 		}
 	}
@@ -321,6 +340,23 @@ public class OsgiExecutionModulesManager extends
 		md.setVersion(getHeaderSafe(bdl, Constants.BUNDLE_VERSION));
 		md.setTitle(getHeaderSafe(bdl, Constants.BUNDLE_NAME));
 		md.setDescription(getHeaderSafe(bdl, Constants.BUNDLE_DESCRIPTION));
+
+		// copy manifets header to meta data
+		Dictionary<?, ?> headers = bundle.getHeaders();
+		Enumeration<?> keys = headers.keys();
+		while (keys.hasMoreElements()) {
+			Object key = keys.nextElement();
+			Object value = headers.get(key);
+			if (value != null)
+				md.getMetadata().put(key.toString(), value.toString());
+		}
+
+		// check if started
+		if (bundle.getState() == Bundle.ACTIVE
+				|| bundle.getState() == Bundle.STARTING)
+			md.setStarted(true);
+		else
+			md.setStarted(false);
 	}
 
 	private String getHeaderSafe(Bundle bundle, Object key) {

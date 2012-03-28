@@ -22,6 +22,9 @@ import org.argeo.slc.deploy.ModuleDescriptor;
 
 /** Describes the information required to launch a flow */
 public class ExecutionModuleDescriptor extends ModuleDescriptor {
+	/** Metadata header identifying an SLC execution module */
+	public final static String SLC_EXECUTION_MODULE = "SLC-ExecutionModule";
+
 	private static final long serialVersionUID = -2394473464513029512L;
 	private List<ExecutionSpec> executionSpecs = new ArrayList<ExecutionSpec>();
 	private List<ExecutionFlowDescriptor> executionFlows = new ArrayList<ExecutionFlowDescriptor>();

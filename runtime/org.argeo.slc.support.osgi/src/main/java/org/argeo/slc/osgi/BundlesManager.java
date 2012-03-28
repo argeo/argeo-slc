@@ -267,7 +267,7 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 		try {
 			Thread.sleep(pollingPeriod);
 		} catch (InterruptedException e) {
-			// silent
+			throw new SlcException("Polling interrupted");
 		}
 	}
 

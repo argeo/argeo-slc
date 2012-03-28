@@ -16,6 +16,8 @@
 package org.argeo.slc.deploy;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.argeo.slc.BasicNameVersion;
 
@@ -24,6 +26,8 @@ public class ModuleDescriptor extends BasicNameVersion implements Serializable {
 	private static final long serialVersionUID = 4310820315478645419L;
 	private String title;
 	private String description;
+	private Map<String, String> metadata = new HashMap<String, String>();
+	private Boolean started = false;
 
 	public String getTitle() {
 		return title;
@@ -49,6 +53,22 @@ public class ModuleDescriptor extends BasicNameVersion implements Serializable {
 	/** @deprecated use {@link #setTitle(String)} instead */
 	public void setLabel(String label) {
 		this.title = label;
+	}
+
+	public Map<String, String> getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Map<String, String> metadata) {
+		this.metadata = metadata;
+	}
+
+	public Boolean getStarted() {
+		return started;
+	}
+
+	public void setStarted(Boolean started) {
+		this.started = started;
 	}
 
 }
