@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
@@ -37,6 +39,8 @@ import org.argeo.slc.runtime.SlcAgentDescriptor;
 /** Implements the base methods of an SLC agent. */
 @SuppressWarnings("deprecation")
 public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
+	private final static Log log = LogFactory.getLog(DefaultAgent.class);
+
 	private SlcAgentDescriptor agentDescriptor;
 	private ExecutionModulesManager modulesManager;
 
@@ -49,12 +53,13 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 	 */
 	/** Initialization */
 	public void init() {
+		agentDescriptor = new SlcAgentDescriptor();
+		agentDescriptor.setUuid(initAgentUuid());
 		try {
-			agentDescriptor = new SlcAgentDescriptor();
-			agentDescriptor.setUuid(initAgentUuid());
 			agentDescriptor.setHost(InetAddress.getLocalHost().getHostName());
 		} catch (UnknownHostException e) {
-			throw new SlcException("Unable to create agent descriptor.", e);
+			log.error("Cannot resolve localhost host name: " + e.getMessage());
+			agentDescriptor.setHost("localhost");
 		}
 		processesThreadGroup = new ThreadGroup("SLC Processes of Agent #"
 				+ agentDescriptor.getUuid());
