@@ -371,6 +371,11 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 									monitor.worked(1);
 									return Status.OK_STATUS;
 								}
+
+								protected void canceling() {
+									getThread().interrupt();
+									super.canceling();
+								}
 							};
 						} else {
 							job = new Job("Start " + nameVersion) {
@@ -379,6 +384,11 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 									modulesManager.start(nameVersion);
 									monitor.worked(1);
 									return Status.OK_STATUS;
+								}
+
+								protected void canceling() {
+									getThread().interrupt();
+									super.canceling();
 								}
 							};
 						}

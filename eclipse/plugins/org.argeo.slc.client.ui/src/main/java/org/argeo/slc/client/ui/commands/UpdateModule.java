@@ -50,61 +50,74 @@ public class UpdateModule extends AbstractHandler {
 		final ISelection selection = HandlerUtil
 				.getActiveWorkbenchWindow(event).getActivePage().getSelection();
 		if (selection != null && selection instanceof IStructuredSelection) {
-
-			Job job = new Job("Update modules") {
-
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					Iterator<?> it = ((IStructuredSelection) selection)
-							.iterator();
-					Object obj = null;
-					try {
-						Map<String, Node> nodes = new HashMap<String, Node>();
-						nodes: while (it.hasNext()) {
-							obj = it.next();
-							if (obj instanceof Node) {
-								Node node = (Node) obj;
-								Node executionModuleNode = null;
-								while (executionModuleNode == null) {
-									if (node.isNodeType(SlcTypes.SLC_EXECUTION_MODULE)) {
-										executionModuleNode = node;
-									}
-									node = node.getParent();
-									if (node.getPath().equals("/"))// root
-										continue nodes;
-								}
-
-								if (!nodes.containsKey(executionModuleNode
-										.getPath()))
-									nodes.put(executionModuleNode.getPath(),
-											executionModuleNode);
-							}
-						}
-
-						monitor.beginTask("Update modules", nodes.size());
-						for (Node executionModuleNode : nodes.values()) {
-							monitor.subTask("Update "
-									+ executionModuleNode.getName());
-							NameVersion nameVersion = new BasicNameVersion(
-									executionModuleNode.getProperty(
-											SlcNames.SLC_NAME).getString(),
-									executionModuleNode.getProperty(
-											SlcNames.SLC_VERSION).getString());
-							modulesManager.upgrade(nameVersion);
-							monitor.worked(1);
-							log.info("Module " + nameVersion + " updated");
-						}
-						return Status.OK_STATUS;
-					} catch (Exception e) {
-						throw new SlcException("Cannot update module " + obj, e);
-						// return Status.CANCEL_STATUS;
-					}
-				}
-			};
+			UpdateJob job = new UpdateJob(selection);
 			job.setUser(true);
 			job.schedule();
 		}
 		return null;
+	}
+
+	private class UpdateJob extends Job {
+		private final IStructuredSelection selection;
+
+		public UpdateJob(ISelection selection) {
+			super("Update modules");
+			this.selection = ((IStructuredSelection) selection);
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			Iterator<?> it = selection.iterator();
+			Object obj = null;
+			try {
+				Map<String, Node> nodes = new HashMap<String, Node>();
+				nodes: while (it.hasNext()) {
+					obj = it.next();
+					if (obj instanceof Node) {
+						Node node = (Node) obj;
+						Node executionModuleNode = null;
+						while (executionModuleNode == null) {
+							if (node.isNodeType(SlcTypes.SLC_EXECUTION_MODULE)) {
+								executionModuleNode = node;
+							}
+							node = node.getParent();
+							if (node.getPath().equals("/"))// root
+								continue nodes;
+						}
+
+						if (!nodes.containsKey(executionModuleNode.getPath()))
+							nodes.put(executionModuleNode.getPath(),
+									executionModuleNode);
+					}
+				}
+
+				monitor.beginTask("Update modules", nodes.size());
+				for (Node executionModuleNode : nodes.values()) {
+					monitor.subTask("Update " + executionModuleNode.getName());
+					NameVersion nameVersion = new BasicNameVersion(
+							executionModuleNode.getProperty(SlcNames.SLC_NAME)
+									.getString(), executionModuleNode
+									.getProperty(SlcNames.SLC_VERSION)
+									.getString());
+					modulesManager.upgrade(nameVersion);
+					monitor.worked(1);
+					log.info("Module " + nameVersion + " updated");
+					if (monitor.isCanceled())
+						return Status.CANCEL_STATUS;
+				}
+				return Status.OK_STATUS;
+			} catch (Exception e) {
+				throw new SlcException("Cannot update module " + obj, e);
+				// return Status.CANCEL_STATUS;
+			}
+		}
+
+		@Override
+		protected void canceling() {
+			getThread().interrupt();
+			super.canceling();
+		}
+
 	}
 
 	public void setModulesManager(ModulesManager modulesManager) {
