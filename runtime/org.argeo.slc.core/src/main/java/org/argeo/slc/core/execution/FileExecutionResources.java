@@ -39,10 +39,10 @@ public class FileExecutionResources implements ExecutionResources {
 	public final static String DEFAULT_EXECUTION_RESOURCES_TMP_PATH = System
 			.getProperty("java.io.tmpdir")
 			+ File.separator
-			+ "slc-"
 			+ System.getProperty("user.name")
 			+ File.separator
-			+ DEFAULT_EXECUTION_RESOURCES_DIRNAME;
+			+ "slc"
+			+ File.separator + DEFAULT_EXECUTION_RESOURCES_DIRNAME;
 
 	private File baseDir;
 	private ExecutionContext executionContext;
