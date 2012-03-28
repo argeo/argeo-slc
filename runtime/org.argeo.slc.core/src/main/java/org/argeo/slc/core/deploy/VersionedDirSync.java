@@ -42,6 +42,7 @@ public class VersionedDirSync implements Runnable {
 		changed = null;
 		if (clean) {
 			try {
+				log.info("Clean " + dir);
 				FileUtils.deleteDirectory(dir);
 			} catch (IOException e) {
 				throw new SlcException("Cannot delete checkout directory "
@@ -49,6 +50,7 @@ public class VersionedDirSync implements Runnable {
 			}
 			dir.mkdirs();
 		}
+		log.info("Checkout " + url + " to " + dir);
 		changed = versioningDriver.checkout(url, dir, true);
 		if (log.isDebugEnabled())
 			log.debug("Synchronized " + url + " to " + dir);
