@@ -73,6 +73,7 @@ public class MavenCall implements Runnable {
 		// System.setProperty("maven.home", m2Home);
 		//
 		// Launcher.main(goals);
+		log.info("Maven call: " + args);
 
 		CustomCli mavenCli = new CustomCli();
 		int exitCode = mavenCli.doMain(args.toArray(new String[args.size()]),
