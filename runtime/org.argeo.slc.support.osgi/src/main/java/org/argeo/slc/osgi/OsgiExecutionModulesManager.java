@@ -47,7 +47,9 @@ import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.process.RealizedFlow;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 import org.springframework.context.ApplicationContext;
@@ -55,7 +57,8 @@ import org.springframework.osgi.service.importer.OsgiServiceLifecycleListener;
 
 /** Execution modules manager implementation based on an OSGi runtime. */
 public class OsgiExecutionModulesManager extends
-		AbstractExecutionModulesManager implements OsgiServiceLifecycleListener {
+		AbstractExecutionModulesManager implements
+		OsgiServiceLifecycleListener, BundleListener {
 
 	private final static Log log = LogFactory
 			.getLog(OsgiExecutionModulesManager.class);
@@ -68,9 +71,11 @@ public class OsgiExecutionModulesManager extends
 
 	private List<ExecutionModulesListener> executionModulesListeners = new ArrayList<ExecutionModulesListener>();
 
-	private Boolean registerFlowsToJmx = true;
+	private Boolean registerFlowsToJmx = false;
 
 	public void init() throws Exception {
+		bundlesManager.getBundleContext().addBundleListener(this);
+
 		final String module = System.getProperty(UNIQUE_LAUNCH_MODULE_PROPERTY);
 		final String flow = System.getProperty(UNIQUE_LAUNCH_FLOW_PROPERTY);
 		if (module != null) {
@@ -78,48 +83,51 @@ public class OsgiExecutionModulesManager extends
 			new Thread("Unique Flow") {
 				@Override
 				public void run() {
-					if (log.isDebugEnabled())
-						log.debug("Launch unique flow " + flow
-								+ " from module " + module);
-					try {
-						OsgiBundle osgiBundle = bundlesManager
-								.findFromPattern(module);
-						Bundle moduleBundle = bundlesManager
-								.findRelatedBundle(osgiBundle);
-						bundlesManager.startSynchronous(moduleBundle);
-						RealizedFlow lastLaunch = findRealizedFlow(module, flow);
-						if (lastLaunch == null)
-							throw new SlcException("Cannot find launch for "
-									+ module + " " + flow);
-						execute(lastLaunch);
-					} catch (Exception e) {
-						log.error("Error in unique flow " + flow
-								+ " from module " + module, e);
-					} finally {
-						if (log.isDebugEnabled())
-							log.debug("Shutdown OSGi runtime...");
-						Framework framework = (Framework) bundlesManager
-								.getBundleContext().getBundle(0);
-						try {
-							// shutdown framework
-							framework.stop();
-							// wait 1 min for shutdown
-							framework.waitForStop(60 * 1000);
-							// close VM
-							System.exit(0);
-						} catch (Exception e) {
-							e.printStackTrace();
-							System.exit(1);
-						}
-					}
+					executeFlowAndExit(module, null, flow);
 				}
 			}.start();
 		}
-
 	}
 
 	public void destroy() {
+		bundlesManager.getBundleContext().removeBundleListener(this);
+	}
 
+	/** Executes a single flow and <b>stops the JVM</b> */
+	protected void executeFlowAndExit(final String module,
+			final String version, final String flow) {
+		if (log.isDebugEnabled())
+			log.debug("Launch unique flow " + flow + " from module " + module);
+		try {
+			OsgiBundle osgiBundle = bundlesManager.findFromPattern(module);
+			Bundle moduleBundle = bundlesManager.findRelatedBundle(osgiBundle);
+			bundlesManager.startSynchronous(moduleBundle);
+			RealizedFlow lastLaunch = findRealizedFlow(module, flow);
+			if (lastLaunch == null)
+				throw new SlcException("Cannot find launch for " + module + " "
+						+ flow);
+			execute(lastLaunch);
+		} catch (Exception e) {
+			log.error(
+					"Error in unique flow " + flow + " from module " + module,
+					e);
+		} finally {
+			if (log.isDebugEnabled())
+				log.debug("Shutdown OSGi runtime...");
+			Framework framework = (Framework) bundlesManager.getBundleContext()
+					.getBundle(0);
+			try {
+				// shutdown framework
+				framework.stop();
+				// wait 1 min for shutdown
+				framework.waitForStop(60 * 1000);
+				// close VM
+				System.exit(0);
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
 	}
 
 	public synchronized ExecutionModuleDescriptor getExecutionModuleDescriptor(
@@ -383,8 +391,10 @@ public class OsgiExecutionModulesManager extends
 		if (log.isTraceEnabled())
 			log.trace("Registered execution context from " + osgiBundle);
 		// Notify
+		ModuleDescriptor md = osgiBundle.getModuleDescriptor();
+		md.setStarted(true);
 		for (ExecutionModulesListener listener : executionModulesListeners)
-			listener.executionModuleAdded(osgiBundle.getModuleDescriptor());
+			listener.executionModuleAdded(md);
 	}
 
 	/** Unregisters an execution context. */
@@ -396,9 +406,10 @@ public class OsgiExecutionModulesManager extends
 			if (log.isTraceEnabled())
 				log.trace("Removed execution context from " + osgiBundle);
 			// Notify
+			ModuleDescriptor md = osgiBundle.getModuleDescriptor();
+			md.setStarted(false);
 			for (ExecutionModulesListener listener : executionModulesListeners)
-				listener.executionModuleRemoved(osgiBundle
-						.getModuleDescriptor());
+				listener.executionModuleRemoved(md);
 		}
 	}
 
@@ -471,6 +482,27 @@ public class OsgiExecutionModulesManager extends
 			ExecutionModulesListener executionModulesListener,
 			Map<String, String> properties) {
 		executionModulesListeners.remove(executionModulesListener);
+	}
+
+	/*
+	 * INTERFACE IMPLEMENTATIONS
+	 */
+
+	public void bundleChanged(BundleEvent evt) {
+		Bundle bundle = evt.getBundle();
+		if (bundle.getHeaders().get(
+				ExecutionModuleDescriptor.SLC_EXECUTION_MODULE) != null) {
+			OsgiBundle osgiBundle = new OsgiBundle(bundle);
+			if (evt.getType() == BundleEvent.INSTALLED)
+				for (ExecutionModulesListener listener : executionModulesListeners)
+					listener.executionModuleAdded(osgiBundle
+							.getModuleDescriptor());
+			else if (evt.getType() == BundleEvent.UNINSTALLED)
+				for (ExecutionModulesListener listener : executionModulesListeners)
+					listener.executionModuleRemoved(osgiBundle
+							.getModuleDescriptor());
+		}
+
 	}
 
 	@SuppressWarnings({ "rawtypes" })

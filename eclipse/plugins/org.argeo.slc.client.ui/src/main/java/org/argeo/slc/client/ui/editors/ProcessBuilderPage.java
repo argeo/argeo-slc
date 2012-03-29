@@ -572,7 +572,11 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 					if (node.hasNode(SLC_ADDRESS)) {
 						String path = node.getNode(SLC_ADDRESS)
 								.getProperty(Property.JCR_PATH).getString();
-						return SlcJcrUtils.flowExecutionModuleName(path) + ":"
+						Node executionModuleNode = node.getSession().getNode(
+								SlcJcrUtils.modulePath(path));
+						String executionModuleName = executionModuleNode
+								.getProperty(SLC_NAME).getString();
+						return executionModuleName + ":"
 								+ SlcJcrUtils.flowRelativePath(path);
 					}
 				}

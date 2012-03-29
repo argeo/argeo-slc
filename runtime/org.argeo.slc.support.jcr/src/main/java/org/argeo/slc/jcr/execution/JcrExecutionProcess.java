@@ -106,7 +106,7 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 				String path = node.getPath() + '/' + relPath;
 				// clean special character
 				// TODO factorize in JcrUtils
-				path = path.replace('@', '_').replace(':', '_');
+				path = path.replace('@', '_');
 
 				Node location = JcrUtils.mkdirs(node.getSession(), path);
 				Node logEntry = location.addNode(Long.toString(nextLogLine),

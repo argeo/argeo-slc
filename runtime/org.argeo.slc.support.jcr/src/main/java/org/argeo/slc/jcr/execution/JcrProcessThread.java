@@ -100,10 +100,12 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 			Node flowNode = realizedFlowNode.getSession().getNode(flowPath);
 			String flowName = flowNode.getProperty(SLC_NAME).getString();
 
-			String executionModuleName = SlcJcrUtils
-					.flowExecutionModuleName(flowPath);
-			String executionModuleVersion = SlcJcrUtils
-					.flowExecutionModuleVersion(flowPath);
+			Node executionModuleNode = flowNode.getSession().getNode(
+					SlcJcrUtils.modulePath(flowPath));
+			String executionModuleName = executionModuleNode.getProperty(
+					SLC_NAME).getString();
+			String executionModuleVersion = executionModuleNode.getProperty(
+					SLC_VERSION).getString();
 
 			RealizedFlow realizedFlow = new RealizedFlow();
 			realizedFlow.setModuleName(executionModuleName);

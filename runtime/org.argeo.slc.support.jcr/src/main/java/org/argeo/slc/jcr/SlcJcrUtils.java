@@ -46,23 +46,20 @@ public class SlcJcrUtils implements SlcNames {
 		return buf.toString();
 	}
 
+	/** Extracts the path to the related execution module */
+	public static String modulePath(String fullFlowPath) {
+		String[] tokens = fullFlowPath.split("/");
+		StringBuffer buf = new StringBuffer(fullFlowPath.length());
+		for (int i = 0; i < AGENT_FACTORY_DEPTH + 3; i++) {
+			if (!tokens[i].equals(""))
+				buf.append('/').append(tokens[i]);
+		}
+		return buf.toString();
+	}
+
 	/** Module node name based on module name and version */
 	public static String getModuleNodeName(ModuleDescriptor moduleDescriptor) {
 		return moduleDescriptor.getName() + "_" + moduleDescriptor.getVersion();
-	}
-
-	/** Extracts the execution module name of a flow */
-	public static String flowExecutionModuleName(String fullFlowPath) {
-		String[] tokens = fullFlowPath.split("/");
-		String moduleNodeName = tokens[AGENT_FACTORY_DEPTH + 2];
-		return moduleNodeName.substring(0, moduleNodeName.lastIndexOf('_'));
-	}
-
-	/** Extracts the execution module version of a flow */
-	public static String flowExecutionModuleVersion(String fullFlowPath) {
-		String[] tokens = fullFlowPath.split("/");
-		String moduleNodeName = tokens[AGENT_FACTORY_DEPTH + 2];
-		return moduleNodeName.substring(moduleNodeName.lastIndexOf('_') + 1);
 	}
 
 	/** Extracts the agent factory of a flow */
@@ -189,20 +186,9 @@ public class SlcJcrUtils implements SlcNames {
 					+ node, e);
 		}
 	}
-	
+
 	/** Prevents instantiation */
 	private SlcJcrUtils() {
 
 	}
-
-	public static void main(String[] args) {
-		String path = "/slc/agents/vm/default/org.argeo_1.2.3/myPath/myFlow";
-		System.out.println("Flow relative path: " + flowRelativePath(path));
-		System.out.println("Execution Module Name: "
-				+ flowExecutionModuleName(path));
-		System.out.println("Execution Module Version: "
-				+ flowExecutionModuleVersion(path));
-		System.out.println("Agent Factory path: " + flowAgentFactoryPath(path));
-	}
-
 }

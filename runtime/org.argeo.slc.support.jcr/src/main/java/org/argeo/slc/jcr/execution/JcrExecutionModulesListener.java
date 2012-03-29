@@ -163,8 +163,13 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 	/*
 	 * EXECUTION MODULES LISTENER
 	 */
+
 	public synchronized void executionModuleAdded(
 			ModuleDescriptor moduleDescriptor) {
+		syncExecutionModule(moduleDescriptor);
+	}
+
+	protected void syncExecutionModule(ModuleDescriptor moduleDescriptor) {
 		try {
 			Node agentNode = session.getNode(agent.getNodePath());
 			String moduleNodeName = SlcJcrUtils
@@ -179,13 +184,12 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 					moduleDescriptor.getTitle());
 			moduleNode.setProperty(Property.JCR_DESCRIPTION,
 					moduleDescriptor.getDescription());
-			moduleNode.setProperty(SLC_STARTED, true);
+			moduleNode.setProperty(SLC_STARTED, moduleDescriptor.getStarted());
 			session.save();
 		} catch (RepositoryException e) {
 			JcrUtils.discardQuietly(session);
-			throw new SlcException("Cannot add module " + moduleDescriptor, e);
+			throw new SlcException("Cannot sync module " + moduleDescriptor, e);
 		}
-
 	}
 
 	public synchronized void executionModuleRemoved(
