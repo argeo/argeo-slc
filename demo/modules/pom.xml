@@ -43,11 +43,17 @@
 						<!-- Minimal imports -->
 						<Import-Package>
 							*,
+							net.sf.cglib.core;resolution:=optional,
+							net.sf.cglib.proxy;resolution:=optional,
+							net.sf.cglib.reflect;resolution:=optional,
 							org.aopalliance.aop,
 							org.argeo.slc.core.execution,
 							org.argeo.slc.core.execution.tasks,
+							org.argeo.slc.core.structure.tree;resolution:=optional,
 							org.argeo.slc.execution,
 							org.argeo.slc.osgi,
+							org.argeo.slc.test;resolution:=optional,
+							org.argeo.slc.structure;resolution:=optional,
 							org.springframework.aop,
 							org.springframework.aop.framework,
 							org.springframework.aop.scope,
