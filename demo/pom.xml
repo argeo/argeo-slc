@@ -11,7 +11,7 @@
 	<packaging>pom</packaging>
 	<name>SLC Demo</name>
 	<modules>
-		<module>site</module>
+		<module>modules</module>
 	</modules>
 	<build>
 		<plugins>
