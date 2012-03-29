@@ -1,23 +1,76 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-	<groupId>org.argeo.slc</groupId>
-	<artifactId>demo</artifactId>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>demo</artifactId>
 		<version>0.13.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.demo</groupId>
-	<artifactId>org.argeo.slc.demo.bundles</artifactId>
-	<packaging>bundles</packaging>
-	<name>SLC Demo Bundles</name>
+	<artifactId>modules</artifactId>
+	<packaging>pom</packaging>
+	<name>SLC Demo Modules</name>
+	<modules>
+		<module>org.argeo.slc.demo.ant</module>
+		<module>org.argeo.slc.demo.basic</module>
+		<module>org.argeo.slc.demo.det</module>
+		<module>org.argeo.slc.demo.detached</module>
+		<module>org.argeo.slc.demo.maven</module>
+		<module>org.argeo.slc.demo.minimal</module>
+	</modules>
 	<build>
+		<resources>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>.*</exclude>
+					<exclude>pom.xml</exclude>
+					<exclude>build.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
-				<groupId>org.argeo.maven.plugins</groupId>
-				<artifactId>maven-argeo-osgi-plugin</artifactId>
-				<extensions>true</extensions>
+				<artifactId>maven-clean-plugin</artifactId>
 				<configuration>
-					<buildNumber>${timestamp}</buildNumber>
+					<filesets>
+						<fileset>
+							<directory>META-INF</directory>
+							<includes>
+								<include>MANIFEST.MF</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<!-- Minimal imports -->
+						<Import-Package>
+							*,
+							org.aopalliance.aop,
+							org.argeo.slc.core.execution,
+							org.argeo.slc.core.execution.tasks,
+							org.argeo.slc.execution,
+							org.argeo.slc.osgi,
+							org.springframework.aop,
+							org.springframework.aop.framework,
+							org.springframework.aop.scope,
+							org.springframework.beans.factory.config,
+							org.springframework.core.io,						
+						</Import-Package>
+					</instructions>
 				</configuration>
 			</plugin>
 		</plugins>

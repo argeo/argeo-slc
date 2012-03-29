@@ -1,28 +1,23 @@
 Manifest-Version: 1.0
+Bnd-LastModified: 1333023159802
+Build-Jdk: 1.6.0_22
+Built-By: mbaudier
+Bundle-Description: Generic layers integrating free / open source techno
+ logies in order to quickly develop custom enterprise systems: security,
+  JCR, user interface, monitoring
+Bundle-DocURL: http://www.argeo.org
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: SLC Demo Detached
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: org.argeo.slc.demo.detached
-Bundle-Version: 0.13.2.SNAPSHOT
-Bundle-Name: SLC Demo Detached (Test)
-Import-Package: net.sf.cglib.core,
- net.sf.cglib.proxy,
- net.sf.cglib.reflect,
- org.aopalliance.aop,
- org.argeo.slc.core.attachment,
- org.argeo.slc.core.execution,
- org.argeo.slc.core.execution.tasks,
- org.argeo.slc.core.structure.tree,
- org.argeo.slc.core.test,
- org.argeo.slc.core.test.context,
- org.argeo.slc.core.test.tree,
- org.argeo.slc.detached,
- org.argeo.slc.detached.drivers,
- org.argeo.slc.execution,
- org.argeo.slc.lib.detached,
- org.argeo.slc.osgi,
- org.argeo.slc.structure,
- org.argeo.slc.test,
- org.springframework.aop,
- org.springframework.aop.framework,
- org.springframework.aop.scope,
- org.springframework.beans.factory.config,
- org.springframework.core.io,
- org.springframework.oxm.castor
+Bundle-Vendor: Argeo
+Bundle-Version: 0.13.2.SNAPSHOT-r120329_1412
+Created-By: Apache Maven Bundle Plugin
+Import-Package: org.aopalliance.aop,org.argeo.slc.core.execution,org.arg
+ eo.slc.core.execution.tasks,org.argeo.slc.core.test,org.argeo.slc.core.
+ test.tree,org.argeo.slc.detached.drivers,org.argeo.slc.execution,org.ar
+ geo.slc.lib.detached,org.argeo.slc.osgi,org.springframework.aop,org.spr
+ ingframework.aop.framework,org.springframework.aop.scope,org.springfram
+ ework.beans.factory.config,org.springframework.core.io
+Tool: Bnd-1.50.0

@@ -1,16 +1,22 @@
 Manifest-Version: 1.0
+Bnd-LastModified: 1333023160185
+Build-Jdk: 1.6.0_22
+Built-By: mbaudier
+Bundle-Description: Generic layers integrating free / open source techno
+ logies in order to quickly develop custom enterprise systems: security,
+  JCR, user interface, monitoring
+Bundle-DocURL: http://www.argeo.org
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
 Bundle-ManifestVersion: 2
 Bundle-Name: SLC Demo Maven
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-SymbolicName: org.argeo.slc.demo.maven
-Bundle-Version: 0.13.2.SNAPSHOT
-Bundle-Description: Demonstrate Maven support
-Import-Package: org.aopalliance.aop,
- org.argeo.slc.core.execution,
- org.argeo.slc.execution,
- org.argeo.slc.maven,
- org.argeo.slc.osgi,
- org.springframework.aop,
- org.springframework.aop.framework,
- org.springframework.aop.scope,
- org.springframework.beans.factory.config,
- org.springframework.osgi.util
+Bundle-Vendor: Argeo
+Bundle-Version: 0.13.2.SNAPSHOT-r120329_1412
+Created-By: Apache Maven Bundle Plugin
+Import-Package: org.aopalliance.aop,org.argeo.slc.core.execution,org.arg
+ eo.slc.core.execution.tasks,org.argeo.slc.execution,org.argeo.slc.maven
+ ,org.argeo.slc.osgi,org.springframework.aop,org.springframework.aop.fra
+ mework,org.springframework.aop.scope,org.springframework.beans.factory.
+ config,org.springframework.core.io
+Tool: Bnd-1.50.0
