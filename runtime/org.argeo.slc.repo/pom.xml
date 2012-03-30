@@ -39,7 +39,7 @@
 			<version>0.13.2-SNAPSHOT</version>
 		</dependency>
 
-		<!-- SLC Modules -->
+		<!-- Commons -->
 		<dependency>
 			<groupId>org.argeo.commons.server</groupId>
 			<artifactId>org.argeo.server.jcr</artifactId>
