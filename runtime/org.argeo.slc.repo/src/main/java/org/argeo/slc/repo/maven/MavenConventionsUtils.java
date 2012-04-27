@@ -76,6 +76,62 @@ public class MavenConventionsUtils {
 				+ artifact.getArtifactId() + '/' + artifact.getVersion();
 	}
 
+	public static String artifactsAsDependencyPom(Artifact pomArtifact,
+			Set<Artifact> artifacts) {
+		StringBuffer b = new StringBuffer();
+
+		// XML header
+		b.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		b.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
+		b.append("<modelVersion>4.0.0</modelVersion>");
+
+		// Artifact
+		b.append("<parent><groupId>org.argeo</groupId><artifactId>parent</artifactId><version>1.2.0</version></parent>\n");
+		b.append("<groupId>").append(pomArtifact.getGroupId())
+				.append("</groupId>\n");
+		b.append("<artifactId>").append(pomArtifact.getArtifactId())
+				.append("</artifactId>\n");
+		b.append("<version>").append(pomArtifact.getVersion())
+				.append("</version>\n");
+		b.append("<packaging>pom</packaging>\n");
+
+		// Dependencies
+		b.append("<dependencies>\n");
+		for (Artifact artifact : artifacts) {
+			b.append("\t<dependency>");
+			b.append("<artifactId>").append(artifact.getArtifactId())
+					.append("</artifactId>");
+			b.append("<groupId>").append(artifact.getGroupId())
+					.append("</groupId>");
+			b.append("</dependency>\n");
+		}
+		b.append("</dependencies>\n");
+
+		// Dependency management
+		b.append("<dependencyManagement>\n");
+		b.append("<dependencies>\n");
+		for (Artifact artifact : artifacts) {
+			b.append("\t<dependency>");
+			b.append("<artifactId>").append(artifact.getArtifactId())
+					.append("</artifactId>");
+			b.append("<version>").append(artifact.getVersion())
+					.append("</version>");
+			b.append("<groupId>").append(artifact.getGroupId())
+					.append("</groupId>");
+			b.append("</dependency>\n");
+		}
+		b.append("</dependencies>\n");
+		b.append("</dependencyManagement>\n");
+
+		// Repositories
+		b.append("<repositories>\n");
+		b.append("<repository><id>argeo</id><url>http://maven.argeo.org/argeo</url></repository>\n");
+		b.append("</repositories>\n");
+
+		b.append("</project>\n");
+		return b.toString();
+	}
+
 	/**
 	 * Directly parses Maven POM XML format in order to find all artifacts
 	 * references under the dependency and dependencyManagement tags. This is

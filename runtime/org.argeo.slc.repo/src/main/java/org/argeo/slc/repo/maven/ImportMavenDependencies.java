@@ -101,12 +101,16 @@ public class ImportMavenDependencies implements Runnable {
 					artifactComparator);
 			MavenConventionsUtils.gatherPomDependencies(aetherTemplate,
 					registeredArtifacts, pomArtifact);
+			Artifact sdkArtifact = new DefaultArtifact(
+					"org.argeo.tp:dist:pom:1.3.0");
+			String sdkPom = MavenConventionsUtils.artifactsAsDependencyPom(
+					sdkArtifact, registeredArtifacts);
 			if (log.isDebugEnabled())
 				log.debug("Gathered " + registeredArtifacts.size()
-						+ " artifacts");
-
+						+ " artifacts:\n" + sdkPom);
 			// Resolve and add non-optional dependencies
 			Set<Artifact> artifacts = new TreeSet<Artifact>(artifactComparator);
+			/*
 			for (Artifact artifact : registeredArtifacts) {
 				try {
 					Boolean wasAdded = addArtifact(artifacts, artifact);
@@ -132,7 +136,7 @@ public class ImportMavenDependencies implements Runnable {
 			// distributionDescriptor.store(out, "");
 			// log.debug(new String(out.toByteArray()));
 			// out.close();
-
+*/
 			return artifacts;
 		} catch (Exception e) {
 			throw new SlcException("Cannot resolve distribution", e);
