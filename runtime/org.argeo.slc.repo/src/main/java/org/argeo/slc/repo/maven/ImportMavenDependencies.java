@@ -54,6 +54,7 @@ public class ImportMavenDependencies implements Runnable {
 
 	private AetherTemplate aetherTemplate;
 	private String rootCoordinates;
+	private String distCoordinates = "org.argeo.tp:dist:pom:1.3.0";
 	private Set<String> excludedArtifacts = new HashSet<String>();
 
 	private Repository repository;
@@ -74,6 +75,10 @@ public class ImportMavenDependencies implements Runnable {
 		Set<Artifact> artifacts = resolveDistribution();
 
 		// sync
+		sync(artifacts);
+	}
+
+	void sync(Set<Artifact> artifacts) {
 		Session session = null;
 		try {
 			session = JcrUtils.loginOrCreateWorkspace(repository, workspace);
@@ -93,7 +98,11 @@ public class ImportMavenDependencies implements Runnable {
 		}
 	}
 
-	private Set<Artifact> resolveDistribution() {
+	/**
+	 * Generate a POM with all the artifacts declared in root coordinates as
+	 * dependencies AND in dependency management.
+	 */
+	void createDistPom() {
 		try {
 			Artifact pomArtifact = new DefaultArtifact(rootCoordinates);
 
@@ -101,42 +110,57 @@ public class ImportMavenDependencies implements Runnable {
 					artifactComparator);
 			MavenConventionsUtils.gatherPomDependencies(aetherTemplate,
 					registeredArtifacts, pomArtifact);
-			Artifact sdkArtifact = new DefaultArtifact(
-					"org.argeo.tp:dist:pom:1.3.0");
+			Artifact sdkArtifact = new DefaultArtifact(distCoordinates);
 			String sdkPom = MavenConventionsUtils.artifactsAsDependencyPom(
 					sdkArtifact, registeredArtifacts);
 			if (log.isDebugEnabled())
 				log.debug("Gathered " + registeredArtifacts.size()
 						+ " artifacts:\n" + sdkPom);
-			// Resolve and add non-optional dependencies
+		} catch (Exception e) {
+			throw new SlcException("Cannot resolve distribution", e);
+		}
+	}
+
+	/** Returns all transitive dependencies of dist POM */
+	private Set<Artifact> resolveDistribution() {
+		try {
+			Artifact distArtifact = new DefaultArtifact(distCoordinates);
 			Set<Artifact> artifacts = new TreeSet<Artifact>(artifactComparator);
-			/*
-			for (Artifact artifact : registeredArtifacts) {
-				try {
-					Boolean wasAdded = addArtifact(artifacts, artifact);
-					if (wasAdded) {
-						DependencyNode node = aetherTemplate
-								.resolveDependencies(artifact);
-						addDependencies(artifacts, node, null);
-					}
-				} catch (Exception e) {
-					log.error("Could not resolve dependencies of " + artifact
-							+ ": " + e.getCause().getMessage());
-				}
 
-			}
+			DependencyNode node = aetherTemplate
+					.resolveDependencies(distArtifact);
+			addDependencies(artifacts, node, null);
 
-			if (log.isDebugEnabled())
+			if (log.isDebugEnabled()) {
 				log.debug("Resolved " + artifacts.size() + " artifacts");
 
-			// distribution descriptor
-			// Properties distributionDescriptor =
-			// generateDistributionDescriptor(artifacts);
-			// ByteArrayOutputStream out = new ByteArrayOutputStream();
-			// distributionDescriptor.store(out, "");
-			// log.debug(new String(out.toByteArray()));
-			// out.close();
-*/
+//				Properties distributionDescriptor = generateDistributionDescriptor(artifacts);
+//				ByteArrayOutputStream out = new ByteArrayOutputStream();
+//				distributionDescriptor.store(out, "");
+//				log.debug(new String(out.toByteArray()));
+//				out.close();
+			}
+
+			/*
+			 * for (Artifact artifact : registeredArtifacts) { try { Boolean
+			 * wasAdded = addArtifact(artifacts, artifact); if (wasAdded) {
+			 * DependencyNode node = aetherTemplate
+			 * .resolveDependencies(artifact); addDependencies(artifacts, node,
+			 * null); } } catch (Exception e) {
+			 * log.error("Could not resolve dependencies of " + artifact + ": "
+			 * + e.getCause().getMessage()); }
+			 * 
+			 * }
+			 * 
+			 * if (log.isDebugEnabled()) log.debug("Resolved " +
+			 * artifacts.size() + " artifacts");
+			 * 
+			 * // distribution descriptor // Properties distributionDescriptor =
+			 * // generateDistributionDescriptor(artifacts); //
+			 * ByteArrayOutputStream out = new ByteArrayOutputStream(); //
+			 * distributionDescriptor.store(out, ""); // log.debug(new
+			 * String(out.toByteArray())); // out.close();
+			 */
 			return artifacts;
 		} catch (Exception e) {
 			throw new SlcException("Cannot resolve distribution", e);
@@ -267,8 +291,8 @@ public class ImportMavenDependencies implements Runnable {
 	/** Recursively adds non optional dependencies */
 	private void addDependencies(Set<Artifact> artifacts, DependencyNode node,
 			String ancestors) {
-		if (artifacts.contains(node.getDependency().getArtifact()))
-			return;
+//		if (artifacts.contains(node.getDependency().getArtifact()))
+//			return;
 		String currentArtifactId = node.getDependency().getArtifact()
 				.getArtifactId();
 		if (log.isDebugEnabled()) {
