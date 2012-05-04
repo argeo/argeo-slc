@@ -216,7 +216,7 @@ public class ImportMavenDependencies implements Runnable {
 						jarFileIndexer.index(fileNode);
 					jcrSession.save();
 
-					addPdeSource(jcrSession, artifact, jarFile, artifacts);
+					addPdeSource(jcrSession, artifact, jarFile, artifactsWithoutSources);
 					jcrSession.save();
 
 					if (log.isDebugEnabled())
