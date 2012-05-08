@@ -111,7 +111,7 @@ public class Migration_01_03 implements Runnable, SlcNames {
 			String targetSymbolicName = sourceSymbolicName
 					.substring(SPRING_SOURCE_PREFIX.length() + 1);
 			if (log.isDebugEnabled())
-				log.debug("Renamed " + Constants.BUNDLE_SYMBOLICNAME + " to "
+				log.debug(Constants.BUNDLE_SYMBOLICNAME + " to "
 						+ targetSymbolicName + " \t\tfrom "
 						+ sourceSymbolicName);
 			targetManifest.getMainAttributes().putValue(
@@ -126,10 +126,10 @@ public class Migration_01_03 implements Runnable, SlcNames {
 					Constants.FRAGMENT_HOST);
 			if (fragmentHost.startsWith(SPRING_SOURCE_PREFIX)
 					&& !fragmentHost.equals(SPRING_SOURCE_PREFIX + ".json")) {
-				String targetFragmentHost = sourceSymbolicName
+				String targetFragmentHost = fragmentHost
 						.substring(SPRING_SOURCE_PREFIX.length() + 1);
 				if (log.isDebugEnabled())
-					log.debug("Renamed " + Constants.FRAGMENT_HOST + " to "
+					log.debug(Constants.FRAGMENT_HOST + " to "
 							+ targetFragmentHost + " from " + fragmentHost);
 				targetManifest.getMainAttributes().putValue(
 						Constants.FRAGMENT_HOST, targetFragmentHost);

@@ -53,7 +53,7 @@ public class ImportMavenDependencies implements Runnable {
 			.getLog(ImportMavenDependencies.class);
 
 	private AetherTemplate aetherTemplate;
-	private String rootCoordinates;
+	private String rootCoordinates = "org.argeo.dep:versions-all:pom:1.2.0";
 	private String distCoordinates = "org.argeo.tp:dist:pom:1.3.0";
 	private Set<String> excludedArtifacts = new HashSet<String>();
 
@@ -86,7 +86,8 @@ public class ImportMavenDependencies implements Runnable {
 			NodeIterator nit = session.getNode(artifactBasePath).getNodes();
 			while (nit.hasNext()) {
 				Node node = nit.nextNode();
-				if (node.isNodeType(NodeType.NT_FOLDER))
+				if (node.isNodeType(NodeType.NT_FOLDER)
+						|| node.isNodeType(NodeType.NT_UNSTRUCTURED))
 					node.remove();
 			}
 			session.save();
@@ -134,11 +135,12 @@ public class ImportMavenDependencies implements Runnable {
 			if (log.isDebugEnabled()) {
 				log.debug("Resolved " + artifacts.size() + " artifacts");
 
-//				Properties distributionDescriptor = generateDistributionDescriptor(artifacts);
-//				ByteArrayOutputStream out = new ByteArrayOutputStream();
-//				distributionDescriptor.store(out, "");
-//				log.debug(new String(out.toByteArray()));
-//				out.close();
+				// Properties distributionDescriptor =
+				// generateDistributionDescriptor(artifacts);
+				// ByteArrayOutputStream out = new ByteArrayOutputStream();
+				// distributionDescriptor.store(out, "");
+				// log.debug(new String(out.toByteArray()));
+				// out.close();
 			}
 
 			/*
@@ -178,13 +180,23 @@ public class ImportMavenDependencies implements Runnable {
 		return distributionDescriptor;
 	}
 
-	private void syncDistribution(Session jcrSession, Set<Artifact> artifacts) {
+	/** Write artifacts to the target workspace, skipping excluded ones */
+	protected void syncDistribution(Session jcrSession, Set<Artifact> artifacts) {
 		Set<Artifact> artifactsWithoutSources = new TreeSet<Artifact>(
 				artifactComparator);
 		Long begin = System.currentTimeMillis();
 		try {
-			JcrUtils.mkdirs(jcrSession, artifactBasePath);
+			JcrUtils.mkdirs(jcrSession, artifactBasePath, NodeType.NT_FOLDER,
+					NodeType.NT_FOLDER, false);
 			artifacts: for (Artifact artifact : artifacts) {
+				// skip excluded
+				if (excludedArtifacts.contains(artifact.getGroupId() + ":"
+						+ artifact.getArtifactId())) {
+					if (log.isDebugEnabled())
+						log.debug("Exclude " + artifact);
+					continue artifacts;
+				}
+
 				File jarFile = MavenConventionsUtils.artifactToFile(artifact);
 				if (!jarFile.exists()) {
 					log.warn("Generated file " + jarFile + " for " + artifact
@@ -199,7 +211,7 @@ public class ImportMavenDependencies implements Runnable {
 					Node parentNode;
 					if (!jcrSession.itemExists(parentPath))
 						parentNode = JcrUtils.mkdirs(jcrSession, parentPath,
-								NodeType.NT_FOLDER);
+								NodeType.NT_FOLDER, NodeType.NT_FOLDER, false);
 					else
 						parentNode = jcrSession.getNode(parentPath);
 
@@ -216,7 +228,8 @@ public class ImportMavenDependencies implements Runnable {
 						jarFileIndexer.index(fileNode);
 					jcrSession.save();
 
-					addPdeSource(jcrSession, artifact, jarFile, artifactsWithoutSources);
+					addPdeSource(jcrSession, artifact, jarFile,
+							artifactsWithoutSources);
 					jcrSession.save();
 
 					if (log.isDebugEnabled())
@@ -264,9 +277,9 @@ public class ImportMavenDependencies implements Runnable {
 						.getResolvedFile(origSourceArtifact);
 			}
 
-			String parentPath = MavenConventionsUtils.artifactParentPath(
-					artifactBasePath, artifact);
-			Node parentNode = JcrUtils.mkdirs(session, parentPath,
+			String sourceParentPath = MavenConventionsUtils.artifactParentPath(
+					artifactBasePath, targetSourceArtifact);
+			Node sourceParentNode = JcrUtils.mkdirs(session, sourceParentPath,
 					NodeType.NT_FOLDER);
 			NameVersion bundleNameVersion = RepoUtils
 					.readNameVersion(artifactFile);
@@ -274,7 +287,7 @@ public class ImportMavenDependencies implements Runnable {
 					out);
 			String targetSourceFileName = MavenConventionsUtils
 					.artifactFileName(targetSourceArtifact);
-			JcrUtils.copyBytesAsFile(parentNode, targetSourceFileName,
+			JcrUtils.copyBytesAsFile(sourceParentNode, targetSourceFileName,
 					out.toByteArray());
 		} catch (Exception e) {
 			log.error("Cannot add PDE source for " + artifact + ": " + e);
@@ -291,8 +304,8 @@ public class ImportMavenDependencies implements Runnable {
 	/** Recursively adds non optional dependencies */
 	private void addDependencies(Set<Artifact> artifacts, DependencyNode node,
 			String ancestors) {
-//		if (artifacts.contains(node.getDependency().getArtifact()))
-//			return;
+		// if (artifacts.contains(node.getDependency().getArtifact()))
+		// return;
 		String currentArtifactId = node.getDependency().getArtifact()
 				.getArtifactId();
 		if (log.isDebugEnabled()) {
@@ -349,6 +362,14 @@ public class ImportMavenDependencies implements Runnable {
 
 	public void setWorkspace(String workspace) {
 		this.workspace = workspace;
+	}
+
+	public void setDistCoordinates(String distCoordinates) {
+		this.distCoordinates = distCoordinates;
+	}
+
+	public void setArtifactBasePath(String artifactBasePath) {
+		this.artifactBasePath = artifactBasePath;
 	}
 
 }
