@@ -7,6 +7,6 @@
 
 	<bean id="slcSession" class="org.argeo.jcr.spring.ThreadBoundSession">
 		<property name="repository" ref="javaRepository" />
-		<property name="workspace" value="argeo-tp-1-testing" />
+		<property name="workspace" value="argeo-tp-1-staging" />
 	</bean>
 </beans>
