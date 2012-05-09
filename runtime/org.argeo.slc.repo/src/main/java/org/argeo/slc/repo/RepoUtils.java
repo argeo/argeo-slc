@@ -28,6 +28,7 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.osgi.framework.Constants;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
@@ -59,6 +60,24 @@ public class RepoUtils implements SlcNames {
 							+ nameVersion.getVersion());
 			copyJar(sourceFile, out, sourceManifest);
 		}
+	}
+
+	public static byte[] packageAsPdeSource(InputStream sourceJar,
+			NameVersion nameVersion) {
+		String sourceSymbolicName = nameVersion.getName() + ".source";
+
+		Manifest sourceManifest = null;
+		sourceManifest = new Manifest();
+		sourceManifest.getMainAttributes().put(
+				Attributes.Name.MANIFEST_VERSION, "1.0");
+		sourceManifest.getMainAttributes().putValue("Bundle-SymbolicName",
+				sourceSymbolicName);
+		sourceManifest.getMainAttributes().putValue("Bundle-Version",
+				nameVersion.getVersion());
+		sourceManifest.getMainAttributes().putValue("Eclipse-SourceBundle",
+				nameVersion.getName() + ";version=" + nameVersion.getVersion());
+
+		return modifyManifest(sourceJar, sourceManifest);
 	}
 
 	/**
@@ -189,25 +208,10 @@ public class RepoUtils implements SlcNames {
 	/** Read the OSGi {@link NameVersion} */
 	public static NameVersion readNameVersion(File artifactFile) {
 		JarInputStream jarInputStream = null;
-
 		try {
-			BasicNameVersion nameVersion = new BasicNameVersion();
 			jarInputStream = new JarInputStream(new FileInputStream(
 					artifactFile));
-			nameVersion.setName(jarInputStream.getManifest()
-					.getMainAttributes().getValue("Bundle-SymbolicName"));
-
-			// Skip additional specs such as
-			// ; singleton:=true
-			if (nameVersion.getName().indexOf(';') > -1) {
-				nameVersion.setName(new StringTokenizer(nameVersion.getName(),
-						" ;").nextToken());
-			}
-
-			nameVersion.setVersion(jarInputStream.getManifest()
-					.getMainAttributes().getValue("Bundle-Version"));
-
-			return nameVersion;
+			return readNameVersion(jarInputStream.getManifest());
 		} catch (Exception e) {
 			// probably not a jar, skipping
 			if (log.isDebugEnabled()) {
@@ -218,6 +222,26 @@ public class RepoUtils implements SlcNames {
 			IOUtils.closeQuietly(jarInputStream);
 		}
 		return null;
+	}
+
+	/** Read the OSGi {@link NameVersion} */
+	public static NameVersion readNameVersion(Manifest manifest) {
+		BasicNameVersion nameVersion = new BasicNameVersion();
+		nameVersion.setName(manifest.getMainAttributes().getValue(
+				Constants.BUNDLE_SYMBOLICNAME));
+
+		// Skip additional specs such as
+		// ; singleton:=true
+		if (nameVersion.getName().indexOf(';') > -1) {
+			nameVersion
+					.setName(new StringTokenizer(nameVersion.getName(), " ;")
+							.nextToken());
+		}
+
+		nameVersion.setVersion(manifest.getMainAttributes().getValue(
+				Constants.BUNDLE_VERSION));
+
+		return nameVersion;
 	}
 
 	/*

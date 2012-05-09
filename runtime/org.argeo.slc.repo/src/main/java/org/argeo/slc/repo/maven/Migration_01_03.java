@@ -24,6 +24,7 @@ import javax.jcr.query.qom.Selector;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -254,6 +255,54 @@ public class Migration_01_03 implements Runnable, SlcNames {
 		jarFileIndexer.index(targetJarNode);
 
 		targetSession.save();
+
+		// sources
+		Artifact origSourceArtifact = new DefaultArtifact(
+				origArtifact.getGroupId(), origArtifact.getArtifactId()
+						+ ".source", "jar", origArtifact.getVersion());
+		String origSourcePath = MavenConventionsUtils.artifactPath(
+				artifactBasePath, origSourceArtifact);
+		if (origSession.itemExists(origSourcePath)) {
+			Node origSourceJarNode = origSession.getNode(origSourcePath);
+
+			Artifact targetSourceArtifact = new DefaultArtifact(targetGroupId,
+					targetArtifactId + ".source", "jar",
+					origArtifact.getVersion());
+			String targetSourceParentPath = MavenConventionsUtils
+					.artifactParentPath(artifactBasePath, targetSourceArtifact);
+			String targetSourceFileName = MavenConventionsUtils
+					.artifactFileName(targetSourceArtifact);
+			String targetSourceJarPath = targetSourceParentPath + '/'
+					+ targetSourceFileName;
+
+			Node targetSourceParentNode = JcrUtils.mkfolders(targetSession,
+					targetSourceParentPath);
+			targetSession.save();
+
+			if (!targetSymbolicName.equals(origSymbolicName)) {
+				Binary origBinary = origSourceJarNode.getNode(Node.JCR_CONTENT)
+						.getProperty(Property.JCR_DATA).getBinary();
+				NameVersion targetNameVersion = RepoUtils
+						.readNameVersion(targetManifest);
+				byte[] targetJarBytes = RepoUtils.packageAsPdeSource(
+						origBinary.getStream(), targetNameVersion);
+				JcrUtils.copyBytesAsFile(targetSourceParentNode,
+						targetSourceFileName, targetJarBytes);
+				JcrUtils.closeQuietly(origBinary);
+			} else {// just copy
+				targetSession.getWorkspace().copy(sourceWorkspace,
+						origSourceJarNode.getPath(), targetSourceJarPath);
+			}
+			targetSession.save();
+
+			// reindex
+			Node targetSourceJarNode = targetSession
+					.getNode(targetSourceJarPath);
+			artifactIndexer.index(targetSourceJarNode);
+			jarFileIndexer.index(targetSourceJarNode);
+
+			targetSession.save();
+		}
 	}
 
 	/*

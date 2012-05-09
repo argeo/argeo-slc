@@ -63,6 +63,12 @@ public class MavenConventionsUtils {
 						.getClassifier()) + '.' + artifact.getExtension();
 	}
 
+	/** Absolute path to the file */
+	public static String artifactPath(String artifactBasePath, Artifact artifact) {
+		return artifactParentPath(artifactBasePath, artifact) + '/'
+				+ artifactFileName(artifact);
+	}
+
 	/** Absolute path to the directories where the files will be stored */
 	public static String artifactParentPath(String artifactBasePath,
 			Artifact artifact) {
