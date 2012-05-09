@@ -91,6 +91,8 @@ public class ImportMavenDependencies implements Runnable {
 					node.remove();
 			}
 			session.save();
+			
+			// sync
 			syncDistribution(session, artifacts);
 		} catch (Exception e) {
 			throw new SlcException("Cannot import distribution", e);
@@ -186,8 +188,7 @@ public class ImportMavenDependencies implements Runnable {
 				artifactComparator);
 		Long begin = System.currentTimeMillis();
 		try {
-			JcrUtils.mkdirs(jcrSession, artifactBasePath, NodeType.NT_FOLDER,
-					NodeType.NT_FOLDER, false);
+			JcrUtils.mkfolders(jcrSession, artifactBasePath);
 			artifacts: for (Artifact artifact : artifacts) {
 				// skip excluded
 				if (excludedArtifacts.contains(artifact.getGroupId() + ":"
@@ -210,8 +211,7 @@ public class ImportMavenDependencies implements Runnable {
 							.artifactParentPath(artifactBasePath, artifact);
 					Node parentNode;
 					if (!jcrSession.itemExists(parentPath))
-						parentNode = JcrUtils.mkdirs(jcrSession, parentPath,
-								NodeType.NT_FOLDER, NodeType.NT_FOLDER, false);
+						parentNode = JcrUtils.mkfolders(jcrSession, parentPath);
 					else
 						parentNode = jcrSession.getNode(parentPath);
 
@@ -263,7 +263,7 @@ public class ImportMavenDependencies implements Runnable {
 			Artifact origSourceArtifact = new DefaultArtifact(
 					artifact.getGroupId(), artifact.getArtifactId(), "sources",
 					artifact.getExtension(), artifact.getVersion());
-			Artifact targetSourceArtifact = new DefaultArtifact(
+			Artifact newSourceArtifact = new DefaultArtifact(
 					artifact.getGroupId(),
 					artifact.getArtifactId() + ".source",
 					artifact.getExtension(), artifact.getVersion());
@@ -272,22 +272,22 @@ public class ImportMavenDependencies implements Runnable {
 						.getResolvedFile(origSourceArtifact);
 			} catch (Exception e) {
 				// also try artifact following the conventions
-				origSourceArtifact = targetSourceArtifact;
+				origSourceArtifact = newSourceArtifact;
 				origSourceFile = aetherTemplate
 						.getResolvedFile(origSourceArtifact);
 			}
 
-			String sourceParentPath = MavenConventionsUtils.artifactParentPath(
-					artifactBasePath, targetSourceArtifact);
-			Node sourceParentNode = JcrUtils.mkdirs(session, sourceParentPath,
-					NodeType.NT_FOLDER);
+			String newSourceParentPath = MavenConventionsUtils
+					.artifactParentPath(artifactBasePath, newSourceArtifact);
+			Node newSourceParentNode = JcrUtils.mkfolders(session,
+					newSourceParentPath);
 			NameVersion bundleNameVersion = RepoUtils
 					.readNameVersion(artifactFile);
 			RepoUtils.packagesAsPdeSource(origSourceFile, bundleNameVersion,
 					out);
-			String targetSourceFileName = MavenConventionsUtils
-					.artifactFileName(targetSourceArtifact);
-			JcrUtils.copyBytesAsFile(sourceParentNode, targetSourceFileName,
+			String newSourceFileName = MavenConventionsUtils
+					.artifactFileName(newSourceArtifact);
+			JcrUtils.copyBytesAsFile(newSourceParentNode, newSourceFileName,
 					out.toByteArray());
 		} catch (Exception e) {
 			log.error("Cannot add PDE source for " + artifact + ": " + e);

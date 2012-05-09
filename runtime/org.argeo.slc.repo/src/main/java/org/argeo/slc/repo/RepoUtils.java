@@ -1,5 +1,6 @@
 package org.argeo.slc.repo;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,16 +16,23 @@ import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.jcr.SlcTypes;
 import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /** Utilities around repo */
-public class RepoUtils {
+public class RepoUtils implements SlcNames {
 	private final static Log log = LogFactory.getLog(RepoUtils.class);
 
 	/** Packages a regular sources jar as PDE source. */
@@ -127,6 +135,41 @@ public class RepoUtils {
 		}
 	}
 
+	/** Copy a jar changing onlythe manifest */
+	public static void copyJar(InputStream in, OutputStream out,
+			Manifest manifest) {
+		JarInputStream jarIn = null;
+		JarOutputStream jarOut = null;
+		try {
+			jarIn = new JarInputStream(in);
+			jarOut = new JarOutputStream(out, manifest);
+			JarEntry jarEntry = null;
+			while ((jarEntry = jarIn.getNextJarEntry()) != null) {
+				jarOut.putNextEntry(jarEntry);
+				IOUtils.copy(jarIn, jarOut);
+				jarIn.closeEntry();
+				jarOut.closeEntry();
+			}
+		} catch (IOException e) {
+			throw new SlcException("Could not copy jar with MANIFEST "
+					+ manifest.getMainAttributes(), e);
+		} finally {
+			IOUtils.closeQuietly(jarIn);
+			IOUtils.closeQuietly(jarOut);
+		}
+	}
+
+	/** Reads a jar file, modify its manifest */
+	public static byte[] modifyManifest(InputStream in, Manifest manifest) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream(200 * 1024);
+		try {
+			copyJar(in, out, manifest);
+			return out.toByteArray();
+		} finally {
+			IOUtils.closeQuietly(out);
+		}
+	}
+
 	/** Read the OSGi {@link NameVersion} */
 	public static NameVersion readNameVersion(Artifact artifact) {
 		File artifactFile = artifact.getFile();
@@ -175,6 +218,30 @@ public class RepoUtils {
 			IOUtils.closeQuietly(jarInputStream);
 		}
 		return null;
+	}
+
+	/*
+	 * DATA MODEL
+	 */
+	/** The artifact described by this node */
+	public static Artifact asArtifact(Node node) throws RepositoryException {
+		if (node.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE)) {
+			// FIXME update data model to store packaging at this level
+			String extension = "jar";
+			return new DefaultArtifact(node.getProperty(SLC_GROUP_ID)
+					.getString(),
+					node.getProperty(SLC_ARTIFACT_ID).getString(), extension,
+					node.getProperty(SLC_ARTIFACT_VERSION).getString());
+		} else if (node.isNodeType(SlcTypes.SLC_ARTIFACT)) {
+			return new DefaultArtifact(node.getProperty(SLC_GROUP_ID)
+					.getString(),
+					node.getProperty(SLC_ARTIFACT_ID).getString(), node
+							.getProperty(SLC_ARTIFACT_CLASSIFIER).getString(),
+					node.getProperty(SLC_ARTIFACT_EXTENSION).getString(), node
+							.getProperty(SLC_ARTIFACT_VERSION).getString());
+		} else {
+			throw new SlcException("Unsupported node type for " + node);
+		}
 	}
 
 	private RepoUtils() {
