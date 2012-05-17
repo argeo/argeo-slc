@@ -1,6 +1,7 @@
 package org.argeo.slc.repo.maven;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.jar.Attributes.Name;
@@ -52,6 +53,8 @@ public class Migration_01_03 implements Runnable, SlcNames {
 	private String sourceWorkspace;
 	private String targetWorkspace;
 
+	private List<String> excludedBundles = new ArrayList<String>();
+
 	private Session origSession;
 	private Session targetSession;
 
@@ -81,19 +84,21 @@ public class Migration_01_03 implements Runnable, SlcNames {
 	public void run() {
 
 		try {
-			NodeIterator origArtifacts = listArtifactVersions(origSession);
-
 			// clear target
 			NodeIterator nit = targetSession.getNode(artifactBasePath)
 					.getNodes();
 			while (nit.hasNext()) {
 				Node node = nit.nextNode();
 				if (node.isNodeType(NodeType.NT_FOLDER)
-						|| node.isNodeType(NodeType.NT_UNSTRUCTURED))
+						|| node.isNodeType(NodeType.NT_UNSTRUCTURED)) {
 					node.remove();
+					node.getSession().save();
+					if (log.isDebugEnabled())
+						log.debug("Cleared " + node);
+				}
 			}
-			targetSession.save();
 
+			NodeIterator origArtifacts = listArtifactVersions(origSession);
 			// process
 			while (origArtifacts.hasNext()) {
 				Node origArtifactNode = origArtifacts.nextNode();
@@ -147,6 +152,10 @@ public class Migration_01_03 implements Runnable, SlcNames {
 			targetSymbolicName = origSymbolicName;
 		}
 
+		// skip excluded bundles
+		if (excludedBundles.contains(targetSymbolicName))
+			return;
+
 		// check fragment host
 		if (origManifest.getMainAttributes().containsKey(
 				new Name(Constants.FRAGMENT_HOST))) {
@@ -183,7 +192,7 @@ public class Migration_01_03 implements Runnable, SlcNames {
 				if (systemPackages.contains(pkg)) {
 					if (!(sourceVersion.trim().equals("0") || sourceVersion
 							.trim().equals("0.0.0"))) {
-						targetVersion = "0";
+						targetVersion = null;
 						importPackagesModified = true;
 						if (log.isDebugEnabled())
 							log.debug(origSymbolicName
@@ -191,8 +200,9 @@ public class Migration_01_03 implements Runnable, SlcNames {
 									+ sourceVersion);
 					}
 				}
-				targetImportPackages.append(";version=\"")
-						.append(targetVersion).append("\"");
+				if (targetVersion != null)
+					targetImportPackages.append(";version=\"")
+							.append(targetVersion).append("\"");
 			}
 			if (importPackage.hasProperty(SLC_OPTIONAL)) {
 				Boolean optional = importPackage.getProperty(SLC_OPTIONAL)
@@ -340,4 +350,9 @@ public class Migration_01_03 implements Runnable, SlcNames {
 	public void setTargetWorkspace(String targetWorkspace) {
 		this.targetWorkspace = targetWorkspace;
 	}
+
+	public void setExcludedBundles(List<String> excludedBundles) {
+		this.excludedBundles = excludedBundles;
+	}
+
 }

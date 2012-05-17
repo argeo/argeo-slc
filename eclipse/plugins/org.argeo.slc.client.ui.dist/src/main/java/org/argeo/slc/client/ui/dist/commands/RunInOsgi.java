@@ -56,7 +56,7 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		File targetDirectory = new File(
-				"/home/mbaudier/dev/work/120517-ArgeoTP/lib");
+				"/home/mbaudier/dev/work/120517-ArgeoTP/" + workspace);
 
 		InputStream jarStream = null;
 		OutputStream out = null;
@@ -80,6 +80,8 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 				// skip eclipse
 				if (symbolicName.startsWith("org.eclipse")
 						&& !symbolicName.equals("org.eclipse.osgi"))
+					continue bundles;
+				if(symbolicName.equals("org.polymap.openlayers.rap.widget"))
 					continue bundles;
 
 				File targetFile = new File(targetDirectory,
