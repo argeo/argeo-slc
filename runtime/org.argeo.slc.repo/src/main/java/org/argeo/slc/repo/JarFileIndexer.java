@@ -352,9 +352,11 @@ public class JarFileIndexer implements NodeIndexer {
 		boolean in = false;
 		for (char c : str.toCharArray()) {
 			if (c == ',') {
-				if (!in) {
+				if (!in) {// new package
 					res.add(curr.toString());
 					curr = new StringBuffer("");
+				} else {// a ',' within " "
+					curr.append(c);
 				}
 			} else if (c == '\"') {
 				in = !in;
