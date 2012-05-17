@@ -38,6 +38,12 @@
             icon="icons/search.gif"
             name="Query builder">
       </view>
+      <view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.distributionsView"
+            icon="icons/search.gif"
+            name="Distributions">
+      </view>
    </extension>
    <!-- Editors -->
    <extension
@@ -71,6 +77,11 @@
             id="org.argeo.slc.client.ui.dist.refreshArtifactBrowser"
             name="Refresh Artifact Browser">
     	</command>
+		<command
+            id="org.argeo.slc.client.ui.dist.runInOSGi"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Run in OSGi">
+    	</command>
     </extension>
 	<extension
          id="menu:org.eclipse.ui.main.menu"
@@ -91,6 +102,15 @@
                 icon="icons/refresh.png"
 	                label="Refresh"
                 tooltip="Refresh the whole browser">
+            </command>
+        </menuContribution>
+		<menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.dist.distributionsView">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.runInOSGi"
+                icon="icons/showSize.gif"
+                label="Run in OSGi"
+                tooltip="Run in a spearate OSGi runtime">
             </command>
         </menuContribution>
 	

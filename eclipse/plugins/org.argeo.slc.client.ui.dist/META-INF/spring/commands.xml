@@ -10,4 +10,10 @@
 		<property name="editorId"
 			value="org.argeo.slc.client.ui.dist.genericJcrQueryEditor" />
 	</bean>
+
+	<bean id="runInOSGi" class="org.argeo.slc.client.ui.dist.commands.RunInOsgi"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+		<property name="workspace" value="argeo-tp-1-staging" />
+	</bean>
 </beans>
