@@ -3,7 +3,9 @@ package org.argeo.slc.repo.maven;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.Attributes.Name;
 import java.util.jar.Manifest;
 
@@ -54,6 +56,7 @@ public class Migration_01_03 implements Runnable, SlcNames {
 	private String targetWorkspace;
 
 	private List<String> excludedBundles = new ArrayList<String>();
+	private Map<String, String> symbolicNamesMapping = new HashMap<String, String>();
 
 	private Session origSession;
 	private Session targetSession;
@@ -138,18 +141,23 @@ public class Migration_01_03 implements Runnable, SlcNames {
 		String origSymbolicName = origManifest.getMainAttributes().getValue(
 				Constants.BUNDLE_SYMBOLICNAME);
 		final String targetSymbolicName;
-		if (origSymbolicName.startsWith(SPRING_SOURCE_PREFIX)
+		if (symbolicNamesMapping.containsKey(origSymbolicName)) {
+			targetSymbolicName = symbolicNamesMapping.get(origSymbolicName);
+		} else if (origSymbolicName.startsWith(SPRING_SOURCE_PREFIX)
 				&& !origSymbolicName.equals(SPRING_SOURCE_PREFIX + ".json")) {
 			targetSymbolicName = origSymbolicName
 					.substring(SPRING_SOURCE_PREFIX.length() + 1);
-			if (log.isDebugEnabled())
-				log.debug(Constants.BUNDLE_SYMBOLICNAME + " to "
-						+ targetSymbolicName + " \t\tfrom " + origSymbolicName);
+		} else {
+			targetSymbolicName = origSymbolicName;
+		}
+
+		if (!targetSymbolicName.equals(origSymbolicName)) {
 			targetManifest.getMainAttributes().putValue(
 					Constants.BUNDLE_SYMBOLICNAME, targetSymbolicName);
 			manifestModified = true;
-		} else {
-			targetSymbolicName = origSymbolicName;
+			if (log.isDebugEnabled())
+				log.debug(Constants.BUNDLE_SYMBOLICNAME + " to "
+						+ targetSymbolicName + " \t\tfrom " + origSymbolicName);
 		}
 
 		// skip excluded bundles
@@ -161,16 +169,24 @@ public class Migration_01_03 implements Runnable, SlcNames {
 				new Name(Constants.FRAGMENT_HOST))) {
 			String origFragmentHost = origManifest.getMainAttributes()
 					.getValue(Constants.FRAGMENT_HOST);
-			if (origFragmentHost.startsWith(SPRING_SOURCE_PREFIX)
+			String targetFragmentHost;
+			if (symbolicNamesMapping.containsKey(origFragmentHost)) {
+				targetFragmentHost = symbolicNamesMapping.get(origFragmentHost);
+			} else if (origFragmentHost.startsWith(SPRING_SOURCE_PREFIX)
 					&& !origFragmentHost.equals(SPRING_SOURCE_PREFIX + ".json")) {
-				String targetFragmentHost = origFragmentHost
+				targetFragmentHost = origFragmentHost
 						.substring(SPRING_SOURCE_PREFIX.length() + 1);
-				if (log.isDebugEnabled())
-					log.debug(Constants.FRAGMENT_HOST + " to "
-							+ targetFragmentHost + " from " + origFragmentHost);
+			} else {
+				targetFragmentHost = origFragmentHost;
+			}
+
+			if (!targetFragmentHost.equals(origFragmentHost)) {
 				targetManifest.getMainAttributes().putValue(
 						Constants.FRAGMENT_HOST, targetFragmentHost);
 				manifestModified = true;
+				if (log.isDebugEnabled())
+					log.debug(Constants.FRAGMENT_HOST + " to "
+							+ targetFragmentHost + " from " + origFragmentHost);
 			}
 		}
 
@@ -353,6 +369,10 @@ public class Migration_01_03 implements Runnable, SlcNames {
 
 	public void setExcludedBundles(List<String> excludedBundles) {
 		this.excludedBundles = excludedBundles;
+	}
+
+	public void setSymbolicNamesMapping(Map<String, String> symbolicNamesMapping) {
+		this.symbolicNamesMapping = symbolicNamesMapping;
 	}
 
 }
