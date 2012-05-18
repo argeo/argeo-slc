@@ -82,6 +82,11 @@
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Run in OSGi">
     	</command>
+		<command
+            id="org.argeo.slc.client.ui.dist.normalizeDistribution"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Normalize Distribution">
+    	</command>
     </extension>
 	<extension
          id="menu:org.eclipse.ui.main.menu"
@@ -111,6 +116,15 @@
                 icon="icons/showSize.gif"
                 label="Run in OSGi"
                 tooltip="Run in a spearate OSGi runtime">
+            </command>
+        </menuContribution>
+		<menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.dist.distributionsView">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.normalizeDistribution"
+                icon="icons/refresh.png"
+                label="Normalize Distribution"
+                tooltip="Normalize Distribution">
             </command>
         </menuContribution>
 	

@@ -61,11 +61,12 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 		InputStream jarStream = null;
 		OutputStream out = null;
 		Writer writer = null;
+		Session session = null;
 		try {
 			FileUtils.deleteDirectory(targetDirectory);
 			targetDirectory.mkdirs();
 
-			Session session = repository.login(workspace);
+			session = repository.login(workspace);
 			NodeIterator bundles = listBundleArtifacts(session);
 
 			List<File> files = new ArrayList<File>();
@@ -81,7 +82,7 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 				if (symbolicName.startsWith("org.eclipse")
 						&& !symbolicName.equals("org.eclipse.osgi"))
 					continue bundles;
-				if(symbolicName.equals("org.polymap.openlayers.rap.widget"))
+				if (symbolicName.equals("org.polymap.openlayers.rap.widget"))
 					continue bundles;
 
 				File targetFile = new File(targetDirectory,
@@ -119,6 +120,7 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 			IOUtils.closeQuietly(jarStream);
 			IOUtils.closeQuietly(out);
 			IOUtils.closeQuietly(writer);
+			JcrUtils.logoutQuietly(session);
 		}
 
 		return null;

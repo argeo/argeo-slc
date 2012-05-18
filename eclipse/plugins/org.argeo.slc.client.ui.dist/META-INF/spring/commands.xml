@@ -16,4 +16,11 @@
 		<property name="repository" ref="javaRepository" />
 		<property name="workspace" value="argeo-tp-1-staging" />
 	</bean>
+	
+	<bean id="normalizeDistribution"
+		class="org.argeo.slc.client.ui.dist.commands.NormalizeDistribution"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+		<property name="workspace" value="argeo-tp-1-staging" />
+	</bean>
 </beans>

@@ -176,6 +176,10 @@ public class Migration_01_03 implements Runnable, SlcNames {
 					&& !origFragmentHost.equals(SPRING_SOURCE_PREFIX + ".json")) {
 				targetFragmentHost = origFragmentHost
 						.substring(SPRING_SOURCE_PREFIX.length() + 1);
+			} else if (origFragmentHost
+					.equals("org.argeo.dep.jacob;bundle-version=\"[1.14.3,1.14.4)\"")) {
+				// this one for those who think I cannot be pragmatic - mbaudier
+				targetFragmentHost = "com.jacob;bundle-version=\"[1.14.3,1.14.4)\"";
 			} else {
 				targetFragmentHost = origFragmentHost;
 			}
@@ -243,7 +247,8 @@ public class Migration_01_03 implements Runnable, SlcNames {
 
 		// target coordinates
 		final String targetGroupId;
-		if (origArtifact.getGroupId().startsWith("org.eclipse"))
+		if (origArtifact.getGroupId().startsWith("org.eclipse")
+				&& !origArtifact.getArtifactId().equals("org.eclipse.osgi"))
 			targetGroupId = "org.argeo.tp.eclipse";
 		else
 			targetGroupId = "org.argeo.tp";
