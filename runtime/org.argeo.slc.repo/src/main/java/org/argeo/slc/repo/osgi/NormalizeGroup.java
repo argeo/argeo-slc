@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.client.ui.dist.commands;
+package org.argeo.slc.repo.osgi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,55 +27,96 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.query.qom.Selector;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import org.argeo.slc.repo.RepoUtils;
+import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.osgi.framework.Constants;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
-public class NormalizeDistribution extends AbstractHandler implements SlcNames {
-	private final static Log log = LogFactory
-			.getLog(NormalizeDistribution.class);
+/**
+ * Make sure that all JCR metadata and Maven metadata are consistent for this
+ * group of OSGi bundles.
+ */
+public class NormalizeGroup implements Runnable, SlcNames {
+	public final static String BINARIES_ARTIFACT_ID = "binaries";
+	public final static String SOURCES_ARTIFACT_ID = "sources";
+	public final static String SDK_ARTIFACT_ID = "sdk";
+
+	private final static Log log = LogFactory.getLog(NormalizeGroup.class);
 
 	private Repository repository;
 	private String workspace;
 	private String groupId;
+	private String artifactBasePath = "/";
+	private String version = "1.3.0";
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
+
+	private List<String> systemPackages = OsgiProfile.PROFILE_JAVA_SE_1_6
+			.getSystemPackages();
 
 	// indexes
 	private Map<String, String> packagesToSymbolicNames = new HashMap<String, String>();
 	private Map<String, Node> symbolicNamesToNodes = new HashMap<String, Node>();
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	private Set<Artifact> binaries = new TreeSet<Artifact>(
+			new ArtifactIdComparator());
+	private Set<Artifact> sources = new TreeSet<Artifact>(
+			new ArtifactIdComparator());
+
+	public void run() {
 		Session session = null;
 		try {
 			session = repository.login(workspace);
-			NodeIterator bundlesIt = listBundleArtifacts(session);
 
-			while (bundlesIt.hasNext()) {
-				Node bundleNode = bundlesIt.nextNode();
-				preProcessBundleArtifact(bundleNode);
-				bundleNode.getSession().save();
-				if (log.isDebugEnabled())
-					log.debug("Pre-processed " + bundleNode.getName());
+			Node groupNode = session.getNode(MavenConventionsUtils.groupPath(
+					artifactBasePath, groupId));
+			// TODO factorize with a traverser pattern?
+			for (NodeIterator artifactBases = groupNode.getNodes(); artifactBases
+					.hasNext();) {
+				Node artifactBase = artifactBases.nextNode();
+				if (artifactBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
+					for (NodeIterator artifactVersions = artifactBase
+							.getNodes(); artifactVersions.hasNext();) {
+						Node artifactVersion = artifactVersions.nextNode();
+						if (artifactVersion
+								.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE))
+							for (NodeIterator files = artifactVersion
+									.getNodes(); files.hasNext();) {
+								Node file = files.nextNode();
+								if (file.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
+									preProcessBundleArtifact(file);
+									file.getSession().save();
+									if (log.isDebugEnabled())
+										log.debug("Pre-processed "
+												+ file.getName());
+								}
+
+							}
+					}
+				}
 			}
+			// NodeIterator bundlesIt = listBundleArtifacts(session);
+			//
+			// while (bundlesIt.hasNext()) {
+			// Node bundleNode = bundlesIt.nextNode();
+			// preProcessBundleArtifact(bundleNode);
+			// bundleNode.getSession().save();
+			// if (log.isDebugEnabled())
+			// log.debug("Pre-processed " + bundleNode.getName());
+			// }
 
 			int bundleCount = symbolicNamesToNodes.size();
 			if (log.isDebugEnabled())
@@ -90,13 +131,36 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 							+ bundleNode.getName());
 				count++;
 			}
+
+			// indexes
+			Set<Artifact> indexes = new TreeSet<Artifact>(
+					new ArtifactIdComparator());
+			Artifact indexArtifact = writeIndex(session, BINARIES_ARTIFACT_ID,
+					binaries);
+			indexes.add(indexArtifact);
+			indexArtifact = writeIndex(session, SOURCES_ARTIFACT_ID, sources);
+			indexes.add(indexArtifact);
+			// sdk
+			writeIndex(session, SDK_ARTIFACT_ID, indexes);
 		} catch (Exception e) {
-			ErrorFeedback.show("Cannot normalize distribution " + workspace, e);
+			throw new SlcException("Cannot normalize group " + groupId + " in "
+					+ workspace, e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
 		}
+	}
 
-		return null;
+	private Artifact writeIndex(Session session, String artifactId,
+			Set<Artifact> artifacts) throws RepositoryException {
+		Artifact artifact = new DefaultArtifact(groupId, artifactId, "pom",
+				version);
+		String pom = MavenConventionsUtils.artifactsAsDependencyPom(artifact,
+				artifacts);
+		Node node = RepoUtils.copyBytesAsArtifact(
+				session.getNode(artifactBasePath), artifact, pom.getBytes());
+		artifactIndexer.index(node);
+		session.save();
+		return artifact;
 	}
 
 	protected void preProcessBundleArtifact(Node bundleNode)
@@ -108,6 +172,7 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 
 		if (symbolicName.endsWith(".source")) {
 			// TODO make a shared node with classifier 'sources'
+			sources.add(RepoUtils.asArtifact(bundleNode));
 			return;
 		}
 
@@ -120,6 +185,7 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 		}
 
 		symbolicNamesToNodes.put(symbolicName, bundleNode);
+		binaries.add(RepoUtils.asArtifact(bundleNode));
 	}
 
 	protected void processBundleArtifact(Node bundleNode)
@@ -187,7 +253,8 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 				else
 					dependenciesSymbolicNames.add(dependencySymbolicName);
 			} else {
-				if (!JcrUtils.check(importPackage, SLC_OPTIONAL))
+				if (!JcrUtils.check(importPackage, SLC_OPTIONAL)
+						&& !systemPackages.contains(importPackage))
 					log.warn("No bundle found for pkg " + pkg);
 			}
 		}
@@ -198,6 +265,8 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 					SLC_SYMBOLIC_NAME);
 			dependenciesSymbolicNames.add(fragmentHost);
 		}
+
+		// TODO require bundles
 
 		List<Node> dependencyNodes = new ArrayList<Node>();
 		for (String depSymbName : dependenciesSymbolicNames) {
@@ -256,32 +325,16 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 		return p.toString();
 	}
 
-	static NodeIterator listBundleArtifacts(Session session)
-			throws RepositoryException {
-		QueryManager queryManager = session.getWorkspace().getQueryManager();
-		QueryObjectModelFactory factory = queryManager.getQOMFactory();
-
-		final String bundleArtifactsSelector = "bundleArtifacts";
-		Selector source = factory.selector(SlcTypes.SLC_BUNDLE_ARTIFACT,
-				bundleArtifactsSelector);
-
-		Ordering order = factory.ascending(factory.propertyValue(
-				bundleArtifactsSelector, SlcNames.SLC_SYMBOLIC_NAME));
-		Ordering[] orderings = { order };
-
-		QueryObjectModel query = factory.createQuery(source, null, orderings,
-				null);
-
-		QueryResult result = query.execute();
-		return result.getNodes();
-	}
-
 	public void setRepository(Repository repository) {
 		this.repository = repository;
 	}
 
 	public void setWorkspace(String workspace) {
 		this.workspace = workspace;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
 	}
 
 }

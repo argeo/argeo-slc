@@ -76,6 +76,12 @@ public class MavenConventionsUtils {
 				+ artifactParentPath(artifact);
 	}
 
+	/** Absolute path to the directory of this group */
+	public static String groupPath(String artifactBasePath, String groupId) {
+		return artifactBasePath + (artifactBasePath.endsWith("/") ? "" : "/")
+				+ groupId.replace('.', '/');
+	}
+
 	/** Relative path to the directories where the files will be stored */
 	public static String artifactParentPath(Artifact artifact) {
 		return artifact.getGroupId().replace('.', '/') + '/'
@@ -84,58 +90,61 @@ public class MavenConventionsUtils {
 
 	public static String artifactsAsDependencyPom(Artifact pomArtifact,
 			Set<Artifact> artifacts) {
-		StringBuffer b = new StringBuffer();
+		StringBuffer p = new StringBuffer();
 
 		// XML header
-		b.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		b.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
-		b.append("<modelVersion>4.0.0</modelVersion>");
+		p.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		p.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
+		p.append("<modelVersion>4.0.0</modelVersion>");
 
 		// Artifact
-		b.append("<parent><groupId>org.argeo</groupId><artifactId>parent</artifactId><version>1.2.0</version></parent>\n");
-		b.append("<groupId>").append(pomArtifact.getGroupId())
+		p.append("<parent><groupId>org.argeo</groupId><artifactId>parent</artifactId><version>1.2.0</version></parent>\n");
+		p.append("<groupId>").append(pomArtifact.getGroupId())
 				.append("</groupId>\n");
-		b.append("<artifactId>").append(pomArtifact.getArtifactId())
+		p.append("<artifactId>").append(pomArtifact.getArtifactId())
 				.append("</artifactId>\n");
-		b.append("<version>").append(pomArtifact.getVersion())
+		p.append("<version>").append(pomArtifact.getVersion())
 				.append("</version>\n");
-		b.append("<packaging>pom</packaging>\n");
+		p.append("<packaging>pom</packaging>\n");
 
 		// Dependencies
-		b.append("<dependencies>\n");
-		for (Artifact artifact : artifacts) {
-			b.append("\t<dependency>");
-			b.append("<artifactId>").append(artifact.getArtifactId())
+		p.append("<dependencies>\n");
+		for (Artifact a : artifacts) {
+			p.append("\t<dependency>");
+			p.append("<artifactId>").append(a.getArtifactId())
 					.append("</artifactId>");
-			b.append("<groupId>").append(artifact.getGroupId())
-					.append("</groupId>");
-			b.append("</dependency>\n");
+			p.append("<groupId>").append(a.getGroupId()).append("</groupId>");
+			if (!a.getExtension().equals("jar"))
+				p.append("<type>").append(a.getExtension()).append("</type>");
+			p.append("</dependency>\n");
 		}
-		b.append("</dependencies>\n");
+		p.append("</dependencies>\n");
 
 		// Dependency management
-		b.append("<dependencyManagement>\n");
-		b.append("<dependencies>\n");
-		for (Artifact artifact : artifacts) {
-			b.append("\t<dependency>");
-			b.append("<artifactId>").append(artifact.getArtifactId())
+		p.append("<dependencyManagement>\n");
+		p.append("<dependencies>\n");
+		for (Artifact a : artifacts) {
+			p.append("\t<dependency>");
+			p.append("<artifactId>").append(a.getArtifactId())
 					.append("</artifactId>");
-			b.append("<version>").append(artifact.getVersion())
-					.append("</version>");
-			b.append("<groupId>").append(artifact.getGroupId())
-					.append("</groupId>");
-			b.append("</dependency>\n");
+			p.append("<version>").append(a.getVersion()).append("</version>");
+			p.append("<groupId>").append(a.getGroupId()).append("</groupId>");
+			if (a.getExtension().equals("pom")) {
+				p.append("<type>").append(a.getExtension()).append("</type>");
+				p.append("<scope>import</scope>");
+			}
+			p.append("</dependency>\n");
 		}
-		b.append("</dependencies>\n");
-		b.append("</dependencyManagement>\n");
+		p.append("</dependencies>\n");
+		p.append("</dependencyManagement>\n");
 
 		// Repositories
-		b.append("<repositories>\n");
-		b.append("<repository><id>argeo</id><url>http://maven.argeo.org/argeo</url></repository>\n");
-		b.append("</repositories>\n");
+		p.append("<repositories>\n");
+		p.append("<repository><id>argeo</id><url>http://maven.argeo.org/argeo</url></repository>\n");
+		p.append("</repositories>\n");
 
-		b.append("</project>\n");
-		return b.toString();
+		p.append("</project>\n");
+		return p.toString();
 	}
 
 	/**

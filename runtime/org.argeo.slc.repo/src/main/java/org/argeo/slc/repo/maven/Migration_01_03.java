@@ -34,6 +34,7 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
 import org.argeo.slc.repo.RepoUtils;
+import org.argeo.slc.repo.osgi.OsgiProfile;
 import org.osgi.framework.Constants;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -54,6 +55,7 @@ public class Migration_01_03 implements Runnable, SlcNames {
 	private Repository repository;
 	private String sourceWorkspace;
 	private String targetWorkspace;
+	private String osgiProfile = "JavaSE-1.6.profile";
 
 	private List<String> excludedBundles = new ArrayList<String>();
 	private Map<String, String> symbolicNamesMapping = new HashMap<String, String>();
@@ -61,7 +63,8 @@ public class Migration_01_03 implements Runnable, SlcNames {
 	private Session origSession;
 	private Session targetSession;
 
-	private List<String> systemPackages;
+	private List<String> systemPackages = OsgiProfile.PROFILE_JAVA_SE_1_6
+			.getSystemPackages();
 
 	private String artifactBasePath = "/";
 
@@ -75,8 +78,8 @@ public class Migration_01_03 implements Runnable, SlcNames {
 				targetWorkspace);
 
 		// works only in OSGi!!
-		systemPackages = Arrays.asList(System.getProperty(
-				"org.osgi.framework.system.packages").split(","));
+		// systemPackages = Arrays.asList(System.getProperty(
+		// "org.osgi.framework.system.packages").split(","));
 	}
 
 	public void destroy() {
@@ -121,6 +124,16 @@ public class Migration_01_03 implements Runnable, SlcNames {
 	protected void processOrigArtifactVersion(Node origArtifactNode)
 			throws RepositoryException, IOException {
 		Artifact origArtifact = RepoUtils.asArtifact(origArtifactNode);
+
+		// skip eclipse artifacts
+		if ((origArtifact.getGroupId().startsWith("org.eclipse") && !origArtifact
+				.getArtifactId().equals("org.eclipse.osgi"))
+				|| (origArtifact.getArtifactId().startsWith("org.polymap"))) {
+			if (log.isDebugEnabled())
+				log.debug("Skip " + origArtifact);
+			return;
+		}
+
 		String origJarNodeName = MavenConventionsUtils
 				.artifactFileName(origArtifact);
 		if (!origArtifactNode.hasNode(origJarNodeName))

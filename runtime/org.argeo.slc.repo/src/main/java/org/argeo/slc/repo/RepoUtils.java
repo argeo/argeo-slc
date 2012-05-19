@@ -23,11 +23,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.osgi.framework.Constants;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -268,6 +270,16 @@ public class RepoUtils implements SlcNames {
 		}
 	}
 
+	public static Node copyBytesAsArtifact(Node artifactsBase,
+			Artifact artifact, byte[] bytes) throws RepositoryException {
+		String parentPath = MavenConventionsUtils.artifactParentPath(
+				artifactsBase.getPath(), artifact);
+		Node folderNode = JcrUtils.mkfolders(artifactsBase.getSession(),
+				parentPath);
+		return JcrUtils.copyBytesAsFile(folderNode,
+				MavenConventionsUtils.artifactFileName(artifact), bytes);
+	}
+	
 	private RepoUtils() {
 	}
 }

@@ -36,6 +36,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherTemplate;
+import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
 import org.argeo.slc.repo.RepoConstants;
@@ -64,11 +65,7 @@ public class ImportMavenDependencies implements Runnable {
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
-	private Comparator<Artifact> artifactComparator = new Comparator<Artifact>() {
-		public int compare(Artifact o1, Artifact o2) {
-			return o1.getArtifactId().compareTo(o2.getArtifactId());
-		}
-	};
+	private Comparator<Artifact> artifactComparator = new ArtifactIdComparator();
 
 	public void run() {
 		// resolve
