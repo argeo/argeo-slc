@@ -2,7 +2,6 @@ package org.argeo.slc.repo.maven;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,6 @@ public class Migration_01_03 implements Runnable, SlcNames {
 	private Repository repository;
 	private String sourceWorkspace;
 	private String targetWorkspace;
-	private String osgiProfile = "JavaSE-1.6.profile";
 
 	private List<String> excludedBundles = new ArrayList<String>();
 	private Map<String, String> symbolicNamesMapping = new HashMap<String, String>();
@@ -126,9 +124,11 @@ public class Migration_01_03 implements Runnable, SlcNames {
 		Artifact origArtifact = RepoUtils.asArtifact(origArtifactNode);
 
 		// skip eclipse artifacts
-		if ((origArtifact.getGroupId().startsWith("org.eclipse") && !origArtifact
-				.getArtifactId().equals("org.eclipse.osgi"))
-				|| (origArtifact.getArtifactId().startsWith("org.polymap"))) {
+		if ((origArtifact.getGroupId().startsWith("org.eclipse") && !(origArtifact
+				.getArtifactId().equals("org.eclipse.osgi") || origArtifact
+				.getArtifactId().equals("org.eclipse.osgi.source")))
+				|| origArtifact.getArtifactId().startsWith("org.polymap")
+				|| origArtifact.getArtifactId().startsWith("com.ibm.icu")) {
 			if (log.isDebugEnabled())
 				log.debug("Skip " + origArtifact);
 			return;

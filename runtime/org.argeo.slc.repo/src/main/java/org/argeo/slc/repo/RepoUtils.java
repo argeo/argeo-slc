@@ -270,6 +270,10 @@ public class RepoUtils implements SlcNames {
 		}
 	}
 
+	/**
+	 * Copy this bytes array as an artifact, relative to the root of the
+	 * repository (typically the workspace root node)
+	 */
 	public static Node copyBytesAsArtifact(Node artifactsBase,
 			Artifact artifact, byte[] bytes) throws RepositoryException {
 		String parentPath = MavenConventionsUtils.artifactParentPath(
@@ -279,7 +283,7 @@ public class RepoUtils implements SlcNames {
 		return JcrUtils.copyBytesAsFile(folderNode,
 				MavenConventionsUtils.artifactFileName(artifact), bytes);
 	}
-	
+
 	private RepoUtils() {
 	}
 }
