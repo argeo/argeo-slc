@@ -89,7 +89,7 @@ public class MavenConventionsUtils {
 	}
 
 	public static String artifactsAsDependencyPom(Artifact pomArtifact,
-			Set<Artifact> artifacts) {
+			Set<Artifact> artifacts, Artifact parent) {
 		StringBuffer p = new StringBuffer();
 
 		// XML header
@@ -98,7 +98,16 @@ public class MavenConventionsUtils {
 		p.append("<modelVersion>4.0.0</modelVersion>");
 
 		// Artifact
-		p.append("<parent><groupId>org.argeo</groupId><artifactId>parent</artifactId><version>1.2.0</version></parent>\n");
+		if (parent != null) {
+			p.append("<parent>\n");
+			p.append("<groupId>").append(parent.getGroupId())
+					.append("</groupId>\n");
+			p.append("<artifactId>").append(parent.getArtifactId())
+					.append("</artifactId>\n");
+			p.append("<version>").append(parent.getVersion())
+					.append("</version>\n");
+			p.append("</parent>\n");
+		}
 		p.append("<groupId>").append(pomArtifact.getGroupId())
 				.append("</groupId>\n");
 		p.append("<artifactId>").append(pomArtifact.getArtifactId())

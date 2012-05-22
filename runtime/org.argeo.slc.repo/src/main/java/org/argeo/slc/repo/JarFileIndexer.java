@@ -18,6 +18,7 @@ package org.argeo.slc.repo;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
@@ -47,7 +48,7 @@ import org.osgi.framework.Version;
  * Indexes jar file, currently supports standard J2SE and OSGi metadata (both
  * from MANIFEST)
  */
-public class JarFileIndexer implements NodeIndexer {
+public class JarFileIndexer implements NodeIndexer, SlcNames {
 	private final static Log log = LogFactory.getLog(JarFileIndexer.class);
 
 	public Boolean support(String path) {
@@ -78,13 +79,27 @@ public class JarFileIndexer implements NodeIndexer {
 				log.error(fileNode + " has no MANIFEST");
 				return;
 			}
+
 			bo = new ByteArrayOutputStream();
 			manifest.write(bo);
-			bi = new ByteArrayInputStream(bo.toByteArray());
+			byte[] newManifest = bo.toByteArray();
+			if (fileNode.hasProperty(SLC_MANIFEST)) {
+				byte[] storedManifest = JcrUtils.getBinaryAsBytes(fileNode
+						.getProperty(SLC_MANIFEST));
+				if (Arrays.equals(newManifest, storedManifest)) {
+					if (log.isTraceEnabled())
+						log.trace("Manifest not changed, doing nothing "
+								+ fileNode);
+					return;
+				}
+			}
+
+			bi = new ByteArrayInputStream(newManifest);
 			manifestBinary = jcrSession.getValueFactory().createBinary(bi);
 
 			// standard jar file
 			fileNode.addMixin(SlcTypes.SLC_JAR_FILE);
+
 			fileNode.setProperty(SlcNames.SLC_MANIFEST, manifestBinary);
 			Attributes attrs = manifest.getMainAttributes();
 			if (log.isTraceEnabled())
@@ -116,6 +131,7 @@ public class JarFileIndexer implements NodeIndexer {
 				if (log.isTraceEnabled())
 					log.trace("Indexed JAR file " + fileNode);
 			}
+
 		} catch (Exception e) {
 			throw new SlcException("Cannot index jar " + fileNode, e);
 		} finally {

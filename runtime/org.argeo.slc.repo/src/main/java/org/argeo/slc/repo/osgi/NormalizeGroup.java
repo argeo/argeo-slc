@@ -60,6 +60,7 @@ public class NormalizeGroup implements Runnable, SlcNames {
 	private String groupId;
 	private String artifactBasePath = "/";
 	private String version = "1.3.0";
+	private String parentPomCoordinates = "org.argeo:parent:1.3.0";
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
@@ -155,10 +156,15 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		Artifact artifact = new DefaultArtifact(groupId, artifactId, "pom",
 				version);
 		String pom = MavenConventionsUtils.artifactsAsDependencyPom(artifact,
-				artifacts);
+				artifacts, new DefaultArtifact(parentPomCoordinates));
 		Node node = RepoUtils.copyBytesAsArtifact(
 				session.getNode(artifactBasePath), artifact, pom.getBytes());
 		artifactIndexer.index(node);
+
+		// FIXME factorize
+		String pomSha = JcrUtils.checksumFile(node, "SHA-1");
+		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".sha1",
+				pomSha.getBytes());
 		session.save();
 		return artifact;
 	}
@@ -203,7 +209,7 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		String bundleSha = JcrUtils.checksumFile(bundleNode, "SHA-1");
 		JcrUtils.copyBytesAsFile(artifactFolder,
 				bundleNode.getName() + ".sha1", bundleSha.getBytes());
-		String pomSha = JcrUtils.checksumFile(bundleNode, "SHA-1");
+		String pomSha = JcrUtils.checksumFile(pomNode, "SHA-1");
 		JcrUtils.copyBytesAsFile(artifactFolder, pomNode.getName() + ".sha1",
 				pomSha.getBytes());
 	}
@@ -254,7 +260,7 @@ public class NormalizeGroup implements Runnable, SlcNames {
 					dependenciesSymbolicNames.add(dependencySymbolicName);
 			} else {
 				if (!JcrUtils.check(importPackage, SLC_OPTIONAL)
-						&& !systemPackages.contains(importPackage))
+						&& !systemPackages.contains(pkg))
 					log.warn("No bundle found for pkg " + pkg);
 			}
 		}
@@ -317,7 +323,15 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		// Dependency management
 		p.append("<dependencyManagement>\n");
 		p.append("<dependencies>\n");
-		// TODO import SDK
+		p.append("<dependency>\n");
+		p.append("\t<groupId>").append(groupId).append("</groupId>\n");
+		p.append("\t<artifactId>")
+				.append(ownSymbolicName.endsWith(".source") ? SOURCES_ARTIFACT_ID
+						: BINARIES_ARTIFACT_ID).append("</artifactId>\n");
+		p.append("\t<version>").append(version).append("</version>\n");
+		p.append("\t<type>pom</type>\n");
+		p.append("\t<scope>import</scope>\n");
+		p.append("</dependency>\n");
 		p.append("</dependencies>\n");
 		p.append("</dependencyManagement>\n");
 
@@ -335,6 +349,10 @@ public class NormalizeGroup implements Runnable, SlcNames {
 
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
+	}
+
+	public void setParentPomCoordinates(String parentPomCoordinates) {
+		this.parentPomCoordinates = parentPomCoordinates;
 	}
 
 }

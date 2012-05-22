@@ -56,6 +56,7 @@ public class ImportMavenDependencies implements Runnable {
 	private AetherTemplate aetherTemplate;
 	private String rootCoordinates = "org.argeo.dep:versions-all:pom:1.2.0";
 	private String distCoordinates = "org.argeo.tp:dist:pom:1.3.0";
+	private String parentPomCoordinates = "org.argeo:parent:1.2.0";
 	private Set<String> excludedArtifacts = new HashSet<String>();
 
 	private Repository repository;
@@ -88,7 +89,7 @@ public class ImportMavenDependencies implements Runnable {
 					node.remove();
 			}
 			session.save();
-			
+
 			// sync
 			syncDistribution(session, artifacts);
 		} catch (Exception e) {
@@ -112,7 +113,8 @@ public class ImportMavenDependencies implements Runnable {
 					registeredArtifacts, pomArtifact);
 			Artifact sdkArtifact = new DefaultArtifact(distCoordinates);
 			String sdkPom = MavenConventionsUtils.artifactsAsDependencyPom(
-					sdkArtifact, registeredArtifacts);
+					sdkArtifact, registeredArtifacts, new DefaultArtifact(
+							parentPomCoordinates));
 			if (log.isDebugEnabled())
 				log.debug("Gathered " + registeredArtifacts.size()
 						+ " artifacts:\n" + sdkPom);
