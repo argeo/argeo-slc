@@ -25,9 +25,8 @@
 	<!-- Security -->
 	<bean class="org.argeo.jackrabbit.JackrabbitAuthorizations"
 		init-method="run">
-		<property name="groupPrivileges">
+		<property name="principalPrivileges">
 			<map>
-				<entry key="jcr:read" value="anonymous,ROLE_USER" />
 				<entry key="jcr:all" value="ROLE_ARGEO_COMMITTER" />
 			</map>
 		</property>
