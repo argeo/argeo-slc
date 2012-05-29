@@ -15,42 +15,34 @@
  */
 package org.argeo.slc.client.ui.dist.views;
 
-import java.util.List;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.query.qom.Selector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.eclipse.ui.AbstractTreeContentProvider;
 import org.argeo.eclipse.ui.ErrorFeedback;
-import org.argeo.jcr.JcrUtils;
+import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
+import org.argeo.slc.client.ui.dist.editors.DistributionEditorInput;
 import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Basic View to browse a maven based repository.
- * 
- * By Default size of the various bundles is not computed but it can be
- * activated the view command.
+ * Browse and manipulate distributions (like merge, rename, etc.). Only support
+ * one single repository currently.
  */
 
 public class DistributionsView extends ViewPart implements SlcNames {
@@ -58,96 +50,114 @@ public class DistributionsView extends ViewPart implements SlcNames {
 	public final static String ID = DistPlugin.ID + ".distributionsView";
 
 	private Repository repository;
-	private String workspace;
 
-	private Session session;
-	private TableViewer viewer;
+	private TreeViewer viewer;
 
 	@Override
 	public void createPartControl(Composite parent) {
-		try {
-			session = repository.login(workspace);
-		} catch (RepositoryException e) {
-			ErrorFeedback.show("Cannot log to workspace " + workspace, e);
-		}
-
 		// Define the TableViewer
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.FULL_SELECTION | SWT.BORDER);
 
-		TableViewerColumn col = new TableViewerColumn(viewer, SWT.NONE);
+		TreeViewerColumn col = new TreeViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(200);
 		col.getColumn().setText("Workspace");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return JcrUtils.get((Node) element, SLC_SYMBOLIC_NAME);
+				return element.toString();
 			}
 		});
 
-		final Table table = viewer.getTable();
+		final Tree table = viewer.getTree();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 
 		viewer.setContentProvider(new DistributionsContentProvider());
-		viewer.setInput(session);
+		viewer.addDoubleClickListener(new DistributionsDCL());
+		viewer.setInput(getSite());
 	}
 
 	@Override
 	public void setFocus() {
-		viewer.getTable().setFocus();
+		viewer.getTree().setFocus();
 	}
 
 	public void setRepository(Repository repository) {
 		this.repository = repository;
 	}
 
-	public void setWorkspace(String workspace) {
-		this.workspace = workspace;
-	}
-
-	private static class DistributionsContentProvider implements
-			IStructuredContentProvider {
-		private Session session;
-
-		public void dispose() {
-		}
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			session = (Session) newInput;
-		}
+	private class DistributionsContentProvider extends
+			AbstractTreeContentProvider {
 
 		public Object[] getElements(Object arg0) {
+			return new Object[] { new RepositoryElem("java", repository) };
+		}
+
+	}
+
+	private static class RepositoryElem extends TreeParent {
+		private final Repository repository;
+		private Session defaultSession;
+
+		public RepositoryElem(String name, Repository repository) {
+			super(name);
+			this.repository = repository;
 			try {
-				List<Node> nodes = JcrUtils
-						.nodeIteratorToList(listBundleArtifacts(session));
-				return nodes.toArray();
+				defaultSession = repository.login();
+				String[] workspaceNames = defaultSession.getWorkspace()
+						.getAccessibleWorkspaceNames();
+				for (String workspace : workspaceNames)
+					addChild(new DistributionElem(repository, workspace));
 			} catch (RepositoryException e) {
-				ErrorFeedback.show("Cannot list bundles", e);
-				return null;
+				ErrorFeedback.show("Cannot log to repository", e);
 			}
 		}
 
 	}
 
-	static NodeIterator listBundleArtifacts(Session session)
-			throws RepositoryException {
-		QueryManager queryManager = session.getWorkspace().getQueryManager();
-		QueryObjectModelFactory factory = queryManager.getQOMFactory();
+	private static class DistributionElem extends TreeParent {
+		private final String workspaceName;
+		private final Repository repository;
 
-		final String bundleArtifactsSelector = "bundleArtifacts";
-		Selector source = factory.selector(SlcTypes.SLC_BUNDLE_ARTIFACT,
-				bundleArtifactsSelector);
+		public DistributionElem(Repository repository, String workspaceName) {
+			super(workspaceName);
+			this.workspaceName = workspaceName;
+			this.repository = repository;
+		}
 
-		Ordering order = factory.ascending(factory.propertyValue(
-				bundleArtifactsSelector, SlcNames.SLC_SYMBOLIC_NAME));
-		Ordering[] orderings = { order };
+		public String getWorkspaceName() {
+			return workspaceName;
+		}
 
-		QueryObjectModel query = factory.createQuery(source, null, orderings,
-				null);
+		public Repository getRepository() {
+			return repository;
+		}
 
-		QueryResult result = query.execute();
-		return result.getNodes();
 	}
 
+	private class DistributionsDCL implements IDoubleClickListener {
+
+		public void doubleClick(DoubleClickEvent event) {
+			if (event.getSelection() == null || event.getSelection().isEmpty())
+				return;
+			Object obj = ((IStructuredSelection) event.getSelection())
+					.getFirstElement();
+			if (obj instanceof DistributionElem) {
+				DistributionElem distributionElem = (DistributionElem) obj;
+				DistributionEditorInput dei = new DistributionEditorInput(
+						distributionElem.getRepository(),
+						distributionElem.getWorkspaceName());
+				try {
+					DistPlugin.getDefault().getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage()
+							.openEditor(dei, DistributionEditor.ID);
+				} catch (PartInitException e) {
+					ErrorFeedback.show("Cannot open editor for "
+							+ distributionElem.getWorkspaceName(), e);
+				}
+			}
+		}
+
+	}
 }

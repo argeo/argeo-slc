@@ -55,6 +55,13 @@
               icon="icons/artifactVersionBase.gif"
               default="false">
         </editor>
+	     <editor
+	          class="org.argeo.slc.client.ui.dist.editors.DistributionEditor"
+              id="org.argeo.slc.client.ui.dist.distributionEditor"
+              name="Distribution editor"
+              icon="icons/distribution_perspective.gif"
+              default="false">
+        </editor>
     </extension>
     <!-- Commands --> 
    	<extension

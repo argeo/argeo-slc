@@ -46,6 +46,6 @@
 	<bean id="distributionsView" class="org.argeo.slc.client.ui.dist.views.DistributionsView"
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
-		<property name="workspace" value="argeo-tp-1-staging" />
+<!-- 		<property name="workspace" value="argeo-tp-1-staging" /> -->
 	</bean>
 </beans>
