@@ -78,7 +78,13 @@ public class ImportBundlesZip implements Runnable {
 					log.warn(entryName + " has no MANIFEST");
 					continue entries;
 				}
-				NameVersion nv = RepoUtils.readNameVersion(manifest);
+				NameVersion nv;
+				try {
+					nv = RepoUtils.readNameVersion(manifest);
+				} catch (Exception e) {
+					log.warn("Cannot read name version from " + entryName, e);
+					continue entries;
+				}
 
 				// skip excluded bundles and their sources
 				if (excludedBundles.contains(extractBundleNameFromSourceName(nv
