@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dep</artifactId>
-		<version>0.13.2-SNAPSHOT</version>
+		<version>0.14.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -34,78 +33,78 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.ant</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.jcr</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.activemq</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.server</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.equinox</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 
 		<!-- SLC Agent Modules -->
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.agent.jcr</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 
 		<!-- SLC Repo -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.server.repo.webapp</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 
 		<!-- Launcher -->
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.launcher</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 			<type>tar.gz</type>
 			<classifier>base</classifier>
 		</dependency>

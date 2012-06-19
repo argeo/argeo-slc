@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>runtime</artifactId>
-		<version>0.13.2-SNAPSHOT</version>
+		<version>0.14.0</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
@@ -66,12 +66,12 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.specs</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.aether</artifactId>
-			<version>0.13.2-SNAPSHOT</version>
+			<version>0.14.0</version>
 		</dependency>
 
 		<!-- <dependency> <groupId>org.argeo.dep.osgi</groupId> <artifactId>org.argeo.dep.osgi.maven.embedder</artifactId> 
