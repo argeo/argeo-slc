@@ -125,9 +125,10 @@ public class Migration_01_03 implements Runnable, SlcNames {
 
 		// skip eclipse artifacts
 		if ((origArtifact.getGroupId().startsWith("org.eclipse") && !(origArtifact
-				.getArtifactId().equals("org.eclipse.osgi") || origArtifact
-				.getArtifactId().equals("org.eclipse.osgi.source")))
-				|| origArtifact.getArtifactId().startsWith("org.polymap")
+				.getArtifactId().equals("org.eclipse.osgi")
+				|| origArtifact.getArtifactId().equals(
+						"org.eclipse.osgi.source") || origArtifact
+				.getArtifactId().startsWith("org.eclipse.rwt.widgets.upload")))
 				|| origArtifact.getArtifactId().startsWith("com.ibm.icu")) {
 			if (log.isDebugEnabled())
 				log.debug("Skip " + origArtifact);
@@ -260,9 +261,16 @@ public class Migration_01_03 implements Runnable, SlcNames {
 
 		// target coordinates
 		final String targetGroupId;
-		if (origArtifact.getGroupId().startsWith("org.eclipse")
+		if (origArtifact.getArtifactId().startsWith(
+				"org.eclipse.rwt.widgets.upload"))
+			targetGroupId = "org.argeo.tp.rap";
+		else if (origArtifact.getArtifactId().startsWith("org.polymap"))
+			targetGroupId = "org.argeo.tp.rap";
+		else if (origArtifact.getGroupId().startsWith("org.eclipse")
 				&& !origArtifact.getArtifactId().equals("org.eclipse.osgi"))
-			targetGroupId = "org.argeo.tp.eclipse";
+			throw new SlcException(origArtifact + " should have been excluded");// targetGroupId
+																				// =
+																				// "org.argeo.tp.eclipse";
 		else
 			targetGroupId = "org.argeo.tp";
 
