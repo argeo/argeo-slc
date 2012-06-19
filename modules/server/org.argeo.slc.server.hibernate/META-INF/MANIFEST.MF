@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.14.0
+Bundle-Version: 0.14.1.SNAPSHOT
 Bundle-SymbolicName: org.argeo.slc.server.hibernate
 Import-Package: org.aopalliance.aop,
  org.argeo.slc.core.attachment,
