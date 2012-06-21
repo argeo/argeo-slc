@@ -20,6 +20,7 @@
 			</list>
 		</property>
 		<property name="bundleContext" ref="bundleContext" />
+		<property name="forceCndImport" value="${org.argeo.slc.repo.forceCndImport}" />
 	</bean>
 
 	<!-- Security -->
