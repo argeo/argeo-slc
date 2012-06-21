@@ -22,7 +22,6 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
@@ -53,14 +52,14 @@ public class ImportBundlesZip implements Runnable {
 			session = repository.login(workspace);
 
 			// clear
-			String groupPath = MavenConventionsUtils.groupPath(
-					artifactBasePath, groupId);
-			if (session.itemExists(groupPath)) {
-				session.getNode(groupPath).remove();
-				session.save();
-				if (log.isDebugEnabled())
-					log.debug("Cleared " + groupPath);
-			}
+			// String groupPath = MavenConventionsUtils.groupPath(
+			// artifactBasePath, groupId);
+			// if (session.itemExists(groupPath)) {
+			// session.getNode(groupPath).remove();
+			// session.save();
+			// if (log.isDebugEnabled())
+			// log.debug("Cleared " + groupPath);
+			// }
 
 			zipIn = new ZipInputStream(url.openStream());
 			ZipEntry zipEntry = null;
@@ -86,10 +85,15 @@ public class ImportBundlesZip implements Runnable {
 					continue entries;
 				}
 
+				String bundleName = RepoUtils.extractBundleNameFromSourceName(nv
+						.getName());
 				// skip excluded bundles and their sources
-				if (excludedBundles.contains(extractBundleNameFromSourceName(nv
-						.getName())))
+				if (excludedBundles.contains(bundleName))
 					continue entries;
+				// for(String excludedBundle:excludedBundles){
+				// if(bundleName.contains(excludedBundle))
+				// continue entries;
+				// }
 
 				Artifact artifact = new DefaultArtifact(groupId, nv.getName(),
 						"jar", nv.getVersion());
@@ -113,15 +117,6 @@ public class ImportBundlesZip implements Runnable {
 			JcrUtils.logoutQuietly(session);
 		}
 
-	}
-
-	/** If a source return the base bundle name, does not change otherwise */
-	private String extractBundleNameFromSourceName(String sourceBundleName) {
-		if (sourceBundleName.endsWith(".source"))
-			return sourceBundleName.substring(0, sourceBundleName.length()
-					- ".source".length());
-		else
-			return sourceBundleName;
 	}
 
 	public void setRepository(Repository repository) {

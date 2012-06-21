@@ -286,4 +286,13 @@ public class RepoUtils implements SlcNames {
 
 	private RepoUtils() {
 	}
+
+	/** If a source return the base bundle name, does not change otherwise */
+	public static String extractBundleNameFromSourceName(String sourceBundleName) {
+		if (sourceBundleName.endsWith(".source"))
+			return sourceBundleName.substring(0, sourceBundleName.length()
+					- ".source".length());
+		else
+			return sourceBundleName;
+	}
 }

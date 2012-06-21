@@ -95,7 +95,7 @@ public class MavenConventionsUtils {
 		// XML header
 		p.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		p.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
-		p.append("<modelVersion>4.0.0</modelVersion>");
+		p.append("<modelVersion>4.0.0</modelVersion>\n");
 
 		// Artifact
 		if (parent != null) {
@@ -148,9 +148,9 @@ public class MavenConventionsUtils {
 		p.append("</dependencyManagement>\n");
 
 		// Repositories
-		p.append("<repositories>\n");
-		p.append("<repository><id>argeo</id><url>http://maven.argeo.org/argeo</url></repository>\n");
-		p.append("</repositories>\n");
+//		p.append("<repositories>\n");
+//		p.append("<repository><id>argeo</id><url>http://maven.argeo.org/argeo</url></repository>\n");
+//		p.append("</repositories>\n");
 
 		p.append("</project>\n");
 		return p.toString();

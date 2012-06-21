@@ -59,8 +59,10 @@ public class NormalizeGroup implements Runnable, SlcNames {
 	private String workspace;
 	private String groupId;
 	private String artifactBasePath = "/";
-	private String version = "1.3.0";
-	private String parentPomCoordinates = "org.argeo:parent:1.3.0";
+	private String version = null;// = "1.3.0";
+	private String parentPomCoordinates;// = "org.argeo:parent:1.3.0";
+
+	private List<String> excludedSuffixes = new ArrayList<String>();
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
@@ -155,8 +157,10 @@ public class NormalizeGroup implements Runnable, SlcNames {
 			Set<Artifact> artifacts) throws RepositoryException {
 		Artifact artifact = new DefaultArtifact(groupId, artifactId, "pom",
 				version);
+		Artifact parentArtifact = parentPomCoordinates != null ? new DefaultArtifact(
+				parentPomCoordinates) : null;
 		String pom = MavenConventionsUtils.artifactsAsDependencyPom(artifact,
-				artifacts, new DefaultArtifact(parentPomCoordinates));
+				artifacts, parentArtifact);
 		Node node = RepoUtils.copyBytesAsArtifact(
 				session.getNode(artifactBasePath), artifact, pom.getBytes());
 		artifactIndexer.index(node);
@@ -178,6 +182,12 @@ public class NormalizeGroup implements Runnable, SlcNames {
 
 		if (symbolicName.endsWith(".source")) {
 			// TODO make a shared node with classifier 'sources'
+			String bundleName = RepoUtils
+					.extractBundleNameFromSourceName(symbolicName);
+			for (String excludedSuffix : excludedSuffixes) {
+				if (bundleName.endsWith(excludedSuffix))
+					return;// skip adding to sources
+			}
 			sources.add(RepoUtils.asArtifact(bundleNode));
 			return;
 		}
@@ -191,6 +201,10 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		}
 
 		symbolicNamesToNodes.put(symbolicName, bundleNode);
+		for (String excludedSuffix : excludedSuffixes) {
+			if (symbolicName.endsWith(excludedSuffix))
+				return;// skip adding to binaries
+		}
 		binaries.add(RepoUtils.asArtifact(bundleNode));
 	}
 
@@ -353,6 +367,18 @@ public class NormalizeGroup implements Runnable, SlcNames {
 
 	public void setParentPomCoordinates(String parentPomCoordinates) {
 		this.parentPomCoordinates = parentPomCoordinates;
+	}
+
+	public void setArtifactBasePath(String artifactBasePath) {
+		this.artifactBasePath = artifactBasePath;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public void setExcludedSuffixes(List<String> excludedSuffixes) {
+		this.excludedSuffixes = excludedSuffixes;
 	}
 
 }
