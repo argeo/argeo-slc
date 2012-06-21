@@ -15,6 +15,9 @@
  */
 package org.argeo.slc.client.ui.dist.views;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -25,9 +28,17 @@ import org.argeo.eclipse.ui.AbstractTreeContentProvider;
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
+import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
+import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
+import org.argeo.slc.client.ui.dist.commands.ManageWorkspaceAuth;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditorInput;
+import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.jcr.SlcNames;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -36,7 +47,9 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
@@ -75,7 +88,19 @@ public class DistributionsView extends ViewPart implements SlcNames {
 
 		viewer.setContentProvider(new DistributionsContentProvider());
 		viewer.addDoubleClickListener(new DistributionsDCL());
+
+		MenuManager menuManager = new MenuManager();
+		Menu menu = menuManager.createContextMenu(viewer.getTree());
+		menuManager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				contextMenuAboutToShow(manager);
+			}
+		});
+		viewer.getTree().setMenu(menu);
+		getSite().registerContextMenu(menuManager, viewer);
+
 		viewer.setInput(getSite());
+
 	}
 
 	@Override
@@ -83,8 +108,56 @@ public class DistributionsView extends ViewPart implements SlcNames {
 		viewer.getTree().setFocus();
 	}
 
+	/**
+	 * Force refresh of the whole view
+	 */
+	public void refresh() {
+		viewer.setContentProvider(new DistributionsContentProvider());
+	}
+
 	public void setRepository(Repository repository) {
 		this.repository = repository;
+	}
+
+	/** Programatically configure the context menu */
+	protected void contextMenuAboutToShow(IMenuManager menuManager) {
+		IWorkbenchWindow window = DistPlugin.getDefault().getWorkbench()
+				.getActiveWorkbenchWindow();
+		// Get Current selected item :
+		Object firstElement = ((IStructuredSelection) viewer.getSelection())
+				.getFirstElement();
+		String wsName = null;
+		if (firstElement instanceof TreeParent) {
+			wsName = ((TreeParent) firstElement).getName();
+		}
+
+		// Build conditions depending on element type (repo or workspace)
+
+		// create workspace
+		CommandHelpers.refreshCommand(menuManager, window, CreateWorkspace.ID,
+				CreateWorkspace.DEFAULT_LABEL,
+				CreateWorkspace.DEFAULT_ICON_PATH, true);
+
+		// Copy workspace
+		Map<String, String> params = new HashMap<String, String>();
+		params.put(CopyWorkspace.PARAM_WORKSPACE_NAME, wsName);
+		CommandHelpers.refreshParameterizedCommand(menuManager, window,
+				CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
+				CopyWorkspace.DEFAULT_ICON_PATH, true, params);
+
+		// Delete Workspace
+		params = new HashMap<String, String>();
+		params.put(DeleteWorkspace.PARAM_WORKSPACE_NAME, wsName);
+		CommandHelpers.refreshParameterizedCommand(menuManager, window,
+				DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
+				DeleteWorkspace.DEFAULT_ICON_PATH, true, params);
+
+		// Manage workspace authorizations
+		params = new HashMap<String, String>();
+		params.put(ManageWorkspaceAuth.PARAM_WORKSPACE_NAME, wsName);
+		CommandHelpers.refreshParameterizedCommand(menuManager, window,
+				ManageWorkspaceAuth.ID, ManageWorkspaceAuth.DEFAULT_LABEL,
+				ManageWorkspaceAuth.DEFAULT_ICON_PATH, true, params);
 	}
 
 	private class DistributionsContentProvider extends
@@ -160,4 +233,5 @@ public class DistributionsView extends ViewPart implements SlcNames {
 		}
 
 	}
+
 }

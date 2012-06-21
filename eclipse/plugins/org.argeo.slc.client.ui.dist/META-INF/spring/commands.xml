@@ -23,4 +23,28 @@
 		<property name="repository" ref="javaRepository" />
 		<property name="workspace" value="argeo-tp-1-staging" />
 	</bean>
+	<bean id="createWorkspace"
+		class="org.argeo.slc.client.ui.dist.commands.CreateWorkspace"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+	</bean>
+	<bean id="copyWorkspace"
+		class="org.argeo.slc.client.ui.dist.commands.CopyWorkspace"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+	</bean>
+	<bean id="deleteWorkspace"
+		class="org.argeo.slc.client.ui.dist.commands.DeleteWorkspace"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+	</bean>
+	<bean id="manageWorkspaceAuth"
+		class="org.argeo.slc.client.ui.dist.commands.ManageWorkspaceAuth"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+	</bean>
+	<bean id="refreshDistributionsView"
+		class="org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView"
+		scope="prototype">
+	</bean>
 </beans>

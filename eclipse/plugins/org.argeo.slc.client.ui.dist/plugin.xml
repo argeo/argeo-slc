@@ -94,6 +94,45 @@
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Normalize Distribution">
     	</command>
+	
+		<!-- TO MANIPULATE WORKSPACES -->
+		<command
+            id="org.argeo.slc.client.ui.dist.createWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Create Workspace">
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.deleteWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Delete chosen Workspace">
+            <commandParameter
+         		id="org.argeo.slc.client.ui.dist.workspaceName"
+         		name="Workspace Name">
+  	 		</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.copyWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Copy chosen Workspace">
+            <commandParameter
+         		id="org.argeo.slc.client.ui.dist.workspaceName"
+         		name="Workspace Name">
+  	 		</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.manageWorkspaceAuth"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Manage workspace authorizations">
+            <commandParameter
+         		id="org.argeo.slc.client.ui.dist.workspaceName"
+         		name="Workspace Name">
+  	 		</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.refreshDistributionsView"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Refresh Distributions View">
+    	</command>
     </extension>
 	<extension
          id="menu:org.eclipse.ui.main.menu"

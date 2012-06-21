@@ -1,9 +1,11 @@
 package org.argeo.slc.client.ui.dist.editors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.QueryManager;
@@ -15,6 +17,7 @@ import javax.jcr.query.qom.Selector;
 
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -23,6 +26,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Table;
@@ -37,6 +42,8 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 	private TableViewer viewer;
 	private Session session;
 
+	private NodeViewerComparator comparator;
+
 	public DistributionOverviewPage(FormEditor formEditor, String title,
 			Session session) {
 		super(formEditor, "distributionPage", title);
@@ -48,6 +55,10 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 		ScrolledForm form = managedForm.getForm();
 		GridLayout layout = new GridLayout(1, false);
 		form.getBody().setLayout(layout);
+
+		// helpers to enable sorting by column
+		List<String> propertiesList = new ArrayList<String>();
+		List<Integer> propertyTypesList = new ArrayList<Integer>();
 
 		// Define the TableViewer
 		viewer = new TableViewer(form.getBody(), SWT.MULTI | SWT.H_SCROLL
@@ -62,6 +73,10 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 				return JcrUtils.get((Node) element, SLC_SYMBOLIC_NAME);
 			}
 		});
+		col.getColumn().addSelectionListener(getSelectionAdapter(0));
+		propertiesList.add(SLC_SYMBOLIC_NAME);
+		propertyTypesList.add(PropertyType.STRING);
+
 		col = new TableViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(100);
 		col.getColumn().setText("Version");
@@ -71,6 +86,10 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 				return JcrUtils.get((Node) element, SLC_BUNDLE_VERSION);
 			}
 		});
+		col.getColumn().addSelectionListener(getSelectionAdapter(1));
+		propertiesList.add(SLC_BUNDLE_VERSION);
+		propertyTypesList.add(PropertyType.STRING);
+
 		col = new TableViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(150);
 		col.getColumn().setText("Group ID");
@@ -80,6 +99,10 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 				return JcrUtils.get((Node) element, SLC_GROUP_ID);
 			}
 		});
+		col.getColumn().addSelectionListener(getSelectionAdapter(2));
+		propertiesList.add(SLC_GROUP_ID);
+		propertyTypesList.add(PropertyType.STRING);
+
 		col = new TableViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(300);
 		col.getColumn().setText("Name");
@@ -90,6 +113,9 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 						+ Constants.BUNDLE_NAME);
 			}
 		});
+		col.getColumn().addSelectionListener(getSelectionAdapter(3));
+		propertiesList.add(SLC_ + Constants.BUNDLE_NAME);
+		propertyTypesList.add(PropertyType.STRING);
 
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
@@ -98,6 +124,10 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 
 		viewer.setContentProvider(new DistributionsContentProvider());
 		viewer.setInput(session);
+		comparator = new NodeViewerComparator(1,
+				NodeViewerComparator.DESCENDING, propertiesList,
+				propertyTypesList);
+		viewer.setComparator(comparator);
 	}
 
 	@Override
@@ -123,6 +153,26 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 
 		QueryResult result = query.execute();
 		return result.getNodes();
+	}
+
+	private SelectionAdapter getSelectionAdapter(final int index) {
+		SelectionAdapter selectionAdapter = new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Table table = viewer.getTable();
+				comparator.setColumn(index);
+				int dir = table.getSortDirection();
+				if (table.getSortColumn() == table.getColumn(index)) {
+					dir = dir == SWT.UP ? SWT.DOWN : SWT.UP;
+				} else {
+					dir = SWT.DOWN;
+				}
+				table.setSortDirection(dir);
+				table.setSortColumn(table.getColumn(index));
+				viewer.refresh();
+			}
+		};
+		return selectionAdapter;
 	}
 
 	private static class DistributionsContentProvider implements
