@@ -135,6 +135,11 @@ public class Migration_01_03 implements Runnable, SlcNames {
 			return;
 		}
 
+		// skip SpringSource ActiveMQ
+		if (origArtifact.getArtifactId().startsWith(
+				"com.springsource.org.apache.activemq"))
+			return;
+
 		String origJarNodeName = MavenConventionsUtils
 				.artifactFileName(origArtifact);
 		if (!origArtifactNode.hasNode(origJarNodeName))
