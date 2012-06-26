@@ -59,8 +59,8 @@ public class NormalizeGroup implements Runnable, SlcNames {
 	private String workspace;
 	private String groupId;
 	private String artifactBasePath = "/";
-	private String version = null;// = "1.3.0";
-	private String parentPomCoordinates;// = "org.argeo:parent:1.3.0";
+	private String version = null;
+	private String parentPomCoordinates;
 
 	private List<String> excludedSuffixes = new ArrayList<String>();
 
@@ -206,8 +206,8 @@ public class NormalizeGroup implements Runnable, SlcNames {
 				return;// skip adding to binaries
 		}
 		binaries.add(RepoUtils.asArtifact(bundleNode));
-		
-		if(bundleNode.getSession().hasPendingChanges())
+
+		if (bundleNode.getSession().hasPendingChanges())
 			bundleNode.getSession().save();
 	}
 
