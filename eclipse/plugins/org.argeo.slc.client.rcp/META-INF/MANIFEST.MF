@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SLC RCP
 Bundle-SymbolicName: org.argeo.slc.client.rcp;singleton:=true
-Bundle-Version: 0.14.1.SNAPSHOT
+Bundle-Version: 0.14.1
 Bundle-Activator: org.argeo.slc.client.rcp.ClientRcpPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
