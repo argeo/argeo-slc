@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>runtime</artifactId>
-		<version>0.14.1</version>
+		<version>0.14.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
@@ -62,7 +62,7 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>0.14.1</version>
+			<version>0.14.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -90,7 +90,7 @@
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
 			<scope>test</scope>
-			<version>0.14.1</version>
+			<version>0.14.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
