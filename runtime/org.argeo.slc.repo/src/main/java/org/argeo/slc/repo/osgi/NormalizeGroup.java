@@ -206,6 +206,9 @@ public class NormalizeGroup implements Runnable, SlcNames {
 				return;// skip adding to binaries
 		}
 		binaries.add(RepoUtils.asArtifact(bundleNode));
+		
+		if(bundleNode.getSession().hasPendingChanges())
+			bundleNode.getSession().save();
 	}
 
 	protected void processBundleArtifact(Node bundleNode)
