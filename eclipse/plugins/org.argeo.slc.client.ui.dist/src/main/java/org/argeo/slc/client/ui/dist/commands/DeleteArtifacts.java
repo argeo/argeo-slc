@@ -3,9 +3,7 @@ package org.argeo.slc.client.ui.dist.commands;
 import java.util.Iterator;
 
 import javax.jcr.Node;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.argeo.ArgeoException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -29,9 +27,6 @@ public class DeleteArtifacts extends AbstractHandler {
 	public final static String DEFAULT_LABEL = "Delete selected items";
 	public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
 
-	/* DEPENDENCY INJECTION */
-	private Repository repository;
-
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String msg = "Your are about to definitively remove these artifacts.\n"
 				+ "Do you really want to proceed ?";
@@ -40,9 +35,9 @@ public class DeleteArtifacts extends AbstractHandler {
 				.getWorkbench().getDisplay().getActiveShell(),
 				"Confirm deletion", msg);
 		if (result) {
-			Session session = null;
+			// Session session = null;
 			try {
-				session = repository.login();
+				// session = repository.login();
 				IWorkbenchPart activePart = DistPlugin.getDefault()
 						.getWorkbench().getActiveWorkbenchWindow()
 						.getActivePage().getActivePart();
@@ -57,25 +52,22 @@ public class DeleteArtifacts extends AbstractHandler {
 								.iterator();
 						while (it.hasNext()) {
 							Node node = (Node) it.next();
-							node.remove();
+							// we remove the artifactVersion, that is the parent
+							node.getParent().remove();
+							node.getSession().save();
 						}
 					}
-					session.save();
+					// session.save();
 				}
 				CommandHelpers.callCommand(RefreshDistributionOverviewPage.ID);
 			} catch (RepositoryException re) {
 				throw new ArgeoException(
 						"Unexpected error while deleting artifacts.", re);
 			} finally {
-				if (session != null)
-					session.logout();
+				// if (session != null)
+				// session.logout();
 			}
 		}
 		return null;
-	}
-
-	/* DEPENDENCY INJECTION */
-	public void setRepository(Repository repository) {
-		this.repository = repository;
 	}
 }
