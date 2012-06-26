@@ -89,51 +89,54 @@ public class CopyWorkspace extends AbstractHandler {
 		try {
 			if (log.isDebugEnabled())
 				log.debug("copy node :" + fromNode.getPath());
-	
-			
+
 			// FIXME : small hack to enable specific workspace copy
-			if (fromNode.isNodeType("rep:ACL") || fromNode.isNodeType("rep:system")){
+			if (fromNode.isNodeType("rep:ACL")
+					|| fromNode.isNodeType("rep:system")) {
 				if (log.isTraceEnabled())
 					log.trace("node skipped");
 				return;
 			}
-			
+
 			// add mixins
 			for (NodeType mixinType : fromNode.getMixinNodeTypes()) {
 				toNode.addMixin(mixinType.getName());
 			}
-			
+
 			// Double check
 			for (NodeType mixinType : toNode.getMixinNodeTypes()) {
-				log.debug(mixinType.getName());
+				if (log.isDebugEnabled())
+					log.debug(mixinType.getName());
 			}
-			
+
 			// process properties
 			PropertyIterator pit = fromNode.getProperties();
 			properties: while (pit.hasNext()) {
 				Property fromProperty = pit.nextProperty();
 				String propName = fromProperty.getName();
-				try{
-				String propertyName = fromProperty.getName();
-				if (toNode.hasProperty(propertyName)
-						&& toNode.getProperty(propertyName).getDefinition()
-								.isProtected())
-					continue properties;
+				try {
+					String propertyName = fromProperty.getName();
+					if (toNode.hasProperty(propertyName)
+							&& toNode.getProperty(propertyName).getDefinition()
+									.isProtected())
+						continue properties;
 
-				if (fromProperty.getDefinition().isProtected())
-					continue properties;
+					if (fromProperty.getDefinition().isProtected())
+						continue properties;
 
-				if (propertyName.equals("jcr:created")
-						|| propertyName.equals("jcr:createdBy")
-						|| propertyName.equals("jcr:lastModified")
-						|| propertyName.equals("jcr:lastModifiedBy"))
-					continue properties;
+					if (propertyName.equals("jcr:created")
+							|| propertyName.equals("jcr:createdBy")
+							|| propertyName.equals("jcr:lastModified")
+							|| propertyName.equals("jcr:lastModifiedBy"))
+						continue properties;
 
-				if (fromProperty.isMultiple()) {
-					toNode.setProperty(propertyName, fromProperty.getValues());
-				} else {
-					toNode.setProperty(propertyName, fromProperty.getValue());
-				}
+					if (fromProperty.isMultiple()) {
+						toNode.setProperty(propertyName,
+								fromProperty.getValues());
+					} else {
+						toNode.setProperty(propertyName,
+								fromProperty.getValue());
+					}
 				} catch (RepositoryException e) {
 					throw new ArgeoException("Cannot property " + propName, e);
 				}
@@ -159,11 +162,11 @@ public class CopyWorkspace extends AbstractHandler {
 			if (!toNode.getDefinition().isProtected()
 					&& toNode.isNodeType(NodeType.MIX_LAST_MODIFIED))
 				JcrUtils.updateLastModified(toNode);
-			
+
 			// Workaround to reduce session size: artifact is a saveable unity
 			if (toNode.isNodeType(SlcTypes.SLC_ARTIFACT))
 				toNode.getSession().save();
-			
+
 		} catch (RepositoryException e) {
 			throw new ArgeoException("Cannot copy " + fromNode + " to "
 					+ toNode, e);
