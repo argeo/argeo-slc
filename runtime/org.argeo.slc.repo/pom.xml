@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>runtime</artifactId>
-		<version>0.14.1-SNAPSHOT</version>
+		<version>0.14.1</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<groupId>org.argeo.slc.runtime</groupId>
@@ -31,12 +31,12 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.aether</artifactId>
-			<version>0.14.1-SNAPSHOT</version>
+			<version>0.14.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.support.jcr</artifactId>
-			<version>0.14.1-SNAPSHOT</version>
+			<version>0.14.1</version>
 		</dependency>
 
 		<!-- Commons -->
