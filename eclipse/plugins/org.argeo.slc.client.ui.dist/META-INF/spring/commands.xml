@@ -47,4 +47,13 @@
 		class="org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView"
 		scope="prototype">
 	</bean>
+	<bean id="org.argeo.slc.client.ui.dist.deleteArtifacts"
+		class="org.argeo.slc.client.ui.dist.commands.DeleteArtifacts"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+	</bean>
+	<bean id="refreshDistributionOverviewPage"
+		class="org.argeo.slc.client.ui.dist.commands.RefreshDistributionOverviewPage"
+		scope="prototype">
+	</bean>
 </beans>

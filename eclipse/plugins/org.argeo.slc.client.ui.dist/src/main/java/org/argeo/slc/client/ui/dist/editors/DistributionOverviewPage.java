@@ -17,9 +17,15 @@ import javax.jcr.query.qom.Selector;
 
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
+import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -30,7 +36,9 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -38,7 +46,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.osgi.framework.Constants;
 
 /** Table giving an overview of an OSGi distribution */
-class DistributionOverviewPage extends FormPage implements SlcNames {
+public class DistributionOverviewPage extends FormPage implements SlcNames {
 	private TableViewer viewer;
 	private Session session;
 
@@ -123,16 +131,48 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		viewer.setContentProvider(new DistributionsContentProvider());
+		getSite().setSelectionProvider(viewer);
+		
 		viewer.setInput(session);
 		comparator = new NodeViewerComparator(1,
 				NodeViewerComparator.DESCENDING, propertiesList,
 				propertyTypesList);
 		viewer.setComparator(comparator);
+
+		MenuManager menuManager = new MenuManager();
+		Menu menu = menuManager.createContextMenu(viewer.getTable());
+		menuManager.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				contextMenuAboutToShow(manager);
+			}
+		});
+		viewer.getTable().setMenu(menu);
+		getSite().registerContextMenu(menuManager, viewer);
+
 	}
 
 	@Override
 	public void setFocus() {
 		viewer.getTable().setFocus();
+	}
+
+	/** force refresh of the artifact list */
+	public void refresh() {
+		viewer.refresh();
+	}
+
+	/** Programatically configure the context menu */
+	protected void contextMenuAboutToShow(IMenuManager menuManager) {
+		IWorkbenchWindow window = DistPlugin.getDefault().getWorkbench()
+				.getActiveWorkbenchWindow();
+
+		// Build conditions depending on element type (repo or workspace)
+
+		// Delete selected artifacts
+		CommandHelpers.refreshCommand(menuManager, window, DeleteArtifacts.ID,
+				DeleteArtifacts.DEFAULT_LABEL,
+				DeleteArtifacts.DEFAULT_ICON_PATH, true);
+
 	}
 
 	static NodeIterator listBundleArtifacts(Session session)
@@ -198,5 +238,4 @@ class DistributionOverviewPage extends FormPage implements SlcNames {
 		}
 
 	}
-
 }
