@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bundle-Version: 0.14.1
+Bundle-Version: 0.14.2.SNAPSHOT
 Bundle-Name: SLC Server Services
 Bundle-SymbolicName: org.argeo.slc.server.services
 Import-Package: org.aopalliance.aop,
