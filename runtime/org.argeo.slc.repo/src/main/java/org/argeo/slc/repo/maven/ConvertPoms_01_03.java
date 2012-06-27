@@ -163,8 +163,8 @@ public class ConvertPoms_01_03 implements Runnable {
 			}
 
 			if (wasChanged) {
-//				pomFile.renameTo(new File(pomFile.getParentFile(),
-//						"pom-old.xml"));
+				// pomFile.renameTo(new File(pomFile.getParentFile(),
+				// "pom-old.xml"));
 				// save in place
 				Source source = new DOMSource(doc);
 				Result result = new StreamResult(pomFile);
@@ -202,7 +202,7 @@ public class ConvertPoms_01_03 implements Runnable {
 	}
 
 	public static void main(String argv[]) {
-		new ConvertPoms_01_03("/home/mbaudier/dev/src/commons").run();
+		new ConvertPoms_01_03(argv[0]).run();
 	}
 
 }
