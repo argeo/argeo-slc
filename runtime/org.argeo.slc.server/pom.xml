@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -53,65 +53,69 @@
 
 		<!-- Spring -->
 		<dependency>
-			<groupId>org.springframework</groupId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.springframework.web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
 			<artifactId>org.springframework.web.servlet</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
+			<groupId>org.argeo.tp</groupId>
 			<artifactId>org.springframework.aop</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.ws</groupId>
+			<groupId>org.argeo.tp</groupId>
 			<artifactId>org.springframework.oxm</artifactId>
 			<optional>true</optional>
 		</dependency>
 
 		<!-- Web -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.fileupload</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.commons.fileupload</artifactId>
 		</dependency>
 
 		<!-- J2EE -->
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>com.springsource.javax.servlet</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>javax.servlet</artifactId>
 		</dependency>
 
 		<!-- AOP -->
 		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>com.springsource.org.aspectj.weaver</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.aspectj.weaver</artifactId>
 		</dependency>
 
 		<!-- Docs -->
 		<dependency>
-			<groupId>net.sourceforge.jexcelapi</groupId>
-			<artifactId>com.springsource.jxl</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>jxl</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.lowagie.text</groupId>
-			<artifactId>com.springsource.com.lowagie.text</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>com.lowagie.text</artifactId>
 		</dependency>
 
 		<!-- Security -->
 
 		<dependency>
-			<groupId>com.springsource.json</groupId>
+			<groupId>org.argeo.tp</groupId>
 			<artifactId>com.springsource.json</artifactId>
 			<version>1.0.1.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.antlr</groupId>
-			<artifactId>com.springsource.org.antlr</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.antlr</artifactId>
 			<optional>true</optional>
 		</dependency>
 
 		<!-- SVN -->
 		<dependency>
-			<groupId>com.svnkit</groupId>
-			<artifactId>com.springsource.org.tmatesoft.svn</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.tmatesoft.svn</artifactId>
 			<optional>true</optional>
 		</dependency>
 

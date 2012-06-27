@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -44,58 +44,58 @@
 
 		<!-- SSH -->
 		<dependency>
-			<groupId>com.jcraft.jsch</groupId>
-			<artifactId>com.springsource.com.jcraft.jsch</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>com.jcraft.jsch</artifactId>
 		</dependency>
 
 		<!-- Scheduling -->
 		<dependency>
-			<groupId>com.opensymphony.quartz</groupId>
-			<artifactId>com.springsource.org.quartz</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.quartz</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.springframework</groupId>
+			<groupId>org.argeo.tp</groupId>
 			<artifactId>org.springframework.context.support</artifactId>
 		</dependency>
 
 		<!-- Mail -->
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>com.springsource.javax.mail</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>javax.mail</artifactId>
 		</dependency>
 
 		<!-- SVN -->
 		<dependency>
-			<groupId>com.svnkit</groupId>
-			<artifactId>com.springsource.org.tmatesoft.svn</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.tmatesoft.svn</artifactId>
 		</dependency>
 
 		<!-- Commons -->
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.vfs</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.commons.vfs</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.dep.osgi</groupId>
-			<artifactId>org.argeo.dep.osgi.commons.exec</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.commons.exec</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.argeo.dep.osgi</groupId>
+			<groupId>org.argeo.tp</groupId>
 			<artifactId>org.redline_rpm</artifactId>
 		</dependency>
 
 		<!-- TODO: check if necessary here -->
 		<dependency>
-			<groupId>org.springframework</groupId>
+			<groupId>org.argeo.tp</groupId>
 			<artifactId>org.springframework.transaction</artifactId>
 		</dependency>
 
 		<!-- Unit Tests -->
 		<dependency>
-			<groupId>org.junit</groupId>
-			<artifactId>com.springsource.junit</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
 

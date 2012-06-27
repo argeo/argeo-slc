@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>0.4.0</version>
+		<version>1.1.1</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -92,18 +93,6 @@ limitations under the License.
 			</roles>
 		</developer>
 	</developers>
-	<contributors>
-		<contributor>
-			<name>Philippe Rioland</name>
-			<email><![CDATA[http://mailhide.recaptcha.net/d?k=01EM7GpnvY3k8woQ2tnnZLUA==&c=w76gYPekGIELW7dvvImvvNzdDSJ3sgCmCXJHFngDGlA=]]></email>
-			<organization>CapCo</organization>
-			<organizationUrl>http://www.capco.com</organizationUrl>
-			<roles>
-				<role>tester</role>
-				<role>sponsor</role>
-			</roles>
-		</contributor>
-	</contributors>
 	<build>
 		<plugins>
 			<plugin>
@@ -117,8 +106,8 @@ limitations under the License.
 	</build>
 	<repositories>
 		<repository>
-			<id>argeo</id>
-			<url>http://maven.argeo.org/argeo</url>
+			<id>argeo-commons</id>
+			<url>http://dev.argeo.org/org.argeo.jcr.webapp/public/java/org.argeo.commons-1.1.1</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -130,54 +119,12 @@ limitations under the License.
 				<checksumPolicy>fail</checksumPolicy>
 			</snapshots>
 		</repository>
-		<repository>
-			<id>argeo-snapshots</id>
-			<url>http://dev.argeo.org/maven/argeo-snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>fail</checksumPolicy>
-			</snapshots>
-		</repository>
 	</repositories>
 	<distributionManagement>
 		<site>
 			<id>argeo-slc-site</id>
 			<name>SLC Site</name>
-			<url>file://${site.repoBase}/${developmentCycle.slc}/</url>
+			<url>file://${site.repoBase}/${project.version}</url>
 		</site>
 	</distributionManagement>
-	<profiles>
-		<profile>
-			<id>developer</id>
-			<properties>
-				<site.repoBase>file://${user.home}/dev/work/slcSite</site.repoBase>
-				<site.urlBase>${site.repoBase}</site.urlBase>
-			</properties>
-			<distributionManagement>
-				<snapshotRepository>
-					<uniqueVersion>true</uniqueVersion>
-					<id>argeo-snapshots-restricted</id>
-					<name>Argeo FOSS Snapshots Repository</name>
-					<url>scpexe://argeo.org/var/argeo/maven2/argeo-snapshots</url>
-				</snapshotRepository>
-			</distributionManagement>
-		</profile>
-		<profile>
-			<id>release</id>
-			<distributionManagement>
-				<site>
-					<id>argeo-slc-site</id>
-					<name>SLC Site</name>
-					<url>file://${site.repoBase}/${version.slc}</url>
-				</site>
-			</distributionManagement>
-		</profile>
-	</profiles>
-
 </project>

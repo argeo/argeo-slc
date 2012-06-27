@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -34,26 +34,26 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>com.springsource.org.apache.tools.ant</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.tools.ant</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>com.springsource.org.apache.tools.ant.launch</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>com.springsource.org.apache.commons.net</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.oro</groupId>
-			<artifactId>com.springsource.org.apache.oro</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.tools.ant.launch</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.bsf</groupId>
-			<artifactId>com.springsource.org.apache.bsf</artifactId>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.commons.net</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.oro</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.bsf</artifactId>
 		</dependency>
 	</dependencies>
 </project>
