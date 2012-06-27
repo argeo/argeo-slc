@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc.modules</groupId>
 		<artifactId>agent</artifactId>
-		<version>1.1.1</version>
+		<version>1.1.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.agent.ext.jdbc</artifactId>
