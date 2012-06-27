@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Server H2
 Bundle-SymbolicName: org.argeo.slc.server.h2
-Bundle-Version: 1.1.1.SNAPSHOT
+Bundle-Version: 1.1.1
 Bundle-Vendor: Argeo
 Import-Package: net.sf.ehcache.hibernate,
  org.aopalliance.aop,

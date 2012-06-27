@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>1.1.1</version>
+		<version>1.1.2</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -16,7 +16,7 @@
 		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
 		<site.repoBase>file:///srv/projects/www/slc/site</site.repoBase>
 		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
-		<version.slc>${developmentCycle.slc}.1-SNAPSHOT</version.slc>
+		<version.slc>${developmentCycle.slc}.1</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
@@ -107,7 +107,7 @@ limitations under the License.
 	<repositories>
 		<repository>
 			<id>argeo-commons</id>
-			<url>http://dev.argeo.org/org.argeo.jcr.webapp/public/java/org.argeo.commons-1.1.1</url>
+			<url>http://dev.argeo.org/org.argeo.jcr.webapp/public/java/org.argeo.commons-1.1.2</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
