@@ -228,25 +228,24 @@
 											<dependency>
 												<includes>
 													<!-- Core -->
-													<include>org.aspectj:com.springsource.org.aspectj.runtime</include>
-													<include>org.aspectj:com.springsource.org.aspectj.weaver</include>
+													<include>org.argeo.tp:org.aspectj.runtime</include>
+													<include>org.argeo.tp:org.aspectj.weaver</include>
 													<!-- Simple -->
-													<include>com.jcraft.jsch:com.springsource.com.jcraft.jsch</include>
-													<include>com.opensymphony.quartz:com.springsource.org.quartz</include>
-													<include>org.springframework:org.springframework.context.support</include>
-													<include>javax.mail:com.springsource.javax.mail</include>
-													<include>com.svnkit:com.springsource.org.tmatesoft.svn</include>
-													<include>javax.mail:com.springsource.javax.mail</include>
-													<include>org.argeo.dep.osgi:org.redline_rpm</include>
+													<include>org.argeo.tp:com.jcraft.jsch</include>
+													<include>org.argeo.tp:org.quartz</include>
+													<include>org.argeo.tp:org.springframework.context.support</include>
+													<include>org.argeo.tp:javax.mail</include>
+													<include>org.argeo.tp:org.tmatesoft.svn</include>
+													<include>org.argeo.tp:org.redline_rpm</include>
 													<!-- Ant -->
-													<include>org.apache.ant:com.springsource.org.apache.tools.ant</include>
-													<include>org.apache.ant:com.springsource.org.apache.tools.ant.launch</include>
-													<include>org.apache.oro:com.springsource.org.apache.oro</include>
-													<include>org.apache.bsf:com.springsource.org.apache.bsf</include>
+													<include>org.argeo.tp:org.apache.tools.ant</include>
+													<include>org.argeo.tp:org.apache.tools.ant.launch</include>
+													<include>org.argeo.tp:org.apache.oro</include>
+													<include>org.argeo.tp:org.apache.bsf</include>
 													<!-- Maven -->
-													<include>org.argeo.dep.osgi:org.argeo.dep.osgi.aether</include>
+													<include>org.argeo.tp:org.sonatype.aether</include>
 													<!-- Misc -->
-													<include>net.sourceforge.jexcelapi:com.springsource.jxl</include>
+													<include>org.argeo.tp:jxl</include>
 												</includes>
 											</dependency>
 										</mapping>
