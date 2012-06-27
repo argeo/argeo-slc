@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -20,7 +22,13 @@
 						<Export-Package>
 							org.argeo.slc.repo.*
 						</Export-Package>
-						<Import-Package>javax.jcr.nodetype,*</Import-Package>
+						<Import-Package>
+							org.w3c.dom.*;version="0.0.0",
+							javax.xml.transform.*;version="0.0.0",
+							javax.xml.parsers.*;version="0.0.0",
+							javax.jcr.nodetype,
+							*
+						</Import-Package>
 					</instructions>
 				</configuration>
 			</plugin>
