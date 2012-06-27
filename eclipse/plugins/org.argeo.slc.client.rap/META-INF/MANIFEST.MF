@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Rap Client for SLC
 Bundle-SymbolicName: org.argeo.slc.client.rap;singleton:=true
-Bundle-Version: 0.14.2.SNAPSHOT
+Bundle-Version: 0.14.2
 Bundle-Vendor: Argeo SASU
 Require-Bundle: org.eclipse.rap.ui;resolution:=optional
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

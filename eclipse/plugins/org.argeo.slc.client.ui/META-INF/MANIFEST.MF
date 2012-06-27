@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ui
 Bundle-SymbolicName: org.argeo.slc.client.ui;singleton:=true
-Bundle-Version: 0.14.2.SNAPSHOT
+Bundle-Version: 0.14.2
 Bundle-Activator: org.argeo.slc.client.ui.ClientUiPlugin
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime;resolution:=optional,

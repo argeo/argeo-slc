@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dist
 Bundle-SymbolicName: org.argeo.slc.client.ui.dist;singleton:=true
-Bundle-Version: 0.14.2.SNAPSHOT
+Bundle-Version: 0.14.2
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Activator: org.argeo.slc.client.ui.dist.DistPlugin
 Bundle-ActivationPolicy: lazy

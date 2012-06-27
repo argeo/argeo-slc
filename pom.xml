@@ -15,7 +15,7 @@
 		<developmentCycle.startDate>2012-06-19</developmentCycle.startDate>
 		<site.repoBase>file:///srv/projects/www/slc/site</site.repoBase>
 		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
-		<version.slc>${developmentCycle.slc}.2-SNAPSHOT</version.slc>
+		<version.slc>${developmentCycle.slc}.2</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
