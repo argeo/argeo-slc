@@ -134,7 +134,10 @@ public class ConvertPoms_01_03 implements Runnable {
 					String newArtifactId = null;
 					if (groupId.startsWith("org.argeo.dep")) {
 						newGroupId = "org.argeo.tp";
-					} else if (!groupId.startsWith("org.argeo")) {
+					} else if (!(groupId.startsWith("org.argeo")
+							|| groupId.startsWith("com.capco")
+							|| groupId.startsWith("com.agfa") || groupId
+							.startsWith("org.ibboost"))) {
 						newGroupId = "org.argeo.tp";
 					}
 
