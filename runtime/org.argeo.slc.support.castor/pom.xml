@@ -41,17 +41,19 @@
 							org.argeo.slc.detached;resolution:=optional,
 							org.apache.xml.serialize;resolution:=optional,
 							org.apache.xerces.jaxp;resolution:=optional,
-							javax.xml.transform;resolution:=optional,
-							javax.xml.transform.stream;resolution:=optional,
-							javax.xml.transform.dom;resolution:=optional,
+							org.w3c.dom.*;version="0.0.0";resolution:=optional,
+							org.xml.sax.*;version="0.0.0";resolution:=optional,
+							javax.xml.transform.*;version="0.0.0";resolution:=optional,
+							javax.xml.parsers.*;version="0.0.0";resolution:=optional,
 							org.springframework.xml.validation;resolution:=optional,
 							org.apache.commons.io,
 							org.springframework.oxm,
 							org.springframework.core,
 							org.springframework.xml.transform,
-							org.springframework.core.io
+							org.springframework.core.io,
+							*
 						</Import-Package>
-						<Fragment-Host>com.springsource.org.castor</Fragment-Host>
+						<Fragment-Host>org.castor</Fragment-Host>
 					</instructions>
 				</configuration>
 			</plugin>
