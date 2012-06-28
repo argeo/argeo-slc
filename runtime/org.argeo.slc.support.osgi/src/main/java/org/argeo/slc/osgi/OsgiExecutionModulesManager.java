@@ -292,10 +292,7 @@ public class OsgiExecutionModulesManager extends
 			Bundle bundle = bundlesManager.findRelatedBundle(new OsgiBundle(
 					nameVersion));
 			bundlesManager.startSynchronous(bundle);
-			boolean isSpringInstrumented = bundle.getEntryPaths(
-					"/META-INF/spring").hasMoreElements()
-					|| bundle.getHeaders().get("Spring-Context") == null;
-			if (isSpringInstrumented) {
+			if (isSpringInstrumented(bundle)) {
 				// Wait for Spring application context to be ready
 				String filter = "(Bundle-SymbolicName="
 						+ bundle.getSymbolicName() + ")";
@@ -311,6 +308,18 @@ public class OsgiExecutionModulesManager extends
 		} catch (Exception e) {
 			throw new SlcException("Cannot start " + nameVersion, e);
 		}
+	}
+
+	/** Do it calmly in order to avoid NPE */
+	private Boolean isSpringInstrumented(Bundle bundle) {
+		Dictionary<?, ?> headers = bundle.getHeaders();
+		if (headers != null && headers.get("Spring-Context") != null)
+			return true;
+		Enumeration<?> springEntryPaths = bundle
+				.getEntryPaths("/META-INF/spring");
+		if (springEntryPaths != null && springEntryPaths.hasMoreElements())
+			return true;
+		return false;
 	}
 
 	public void stop(NameVersion nameVersion) {
