@@ -99,11 +99,9 @@
 		</dependency>
 
 		<!-- Security -->
-
 		<dependency>
 			<groupId>org.argeo.tp</groupId>
 			<artifactId>com.springsource.json</artifactId>
-			<version>1.0.1.RELEASE</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
