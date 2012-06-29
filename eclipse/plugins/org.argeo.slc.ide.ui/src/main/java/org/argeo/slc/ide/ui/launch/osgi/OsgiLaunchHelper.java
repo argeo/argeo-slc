@@ -357,8 +357,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	 */
 	protected static String convertBundleList(List<String> bundlesToStart,
 			String original) {
-		if (debug)
-			System.out.println("Original bundle list: " + original);
+		debug("Original bundle list: " + original);
 
 		StringTokenizer stComa = new StringTokenizer(original, ",");
 		// sort by bundle symbolic name
@@ -380,8 +379,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			// We can now rely on bundleId value
 
 			if (bundleId.endsWith(".source")) {
-				if (debug)
-					System.out.println("Skip source bundle " + bundleId);
+				debug("Skip source bundle " + bundleId);
 				continue bundles;
 			} else if (bundleId
 					.equals(IPDEBuildConstants.BUNDLE_SIMPLE_CONFIGURATOR)) {
@@ -402,8 +400,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			if (bundlesToStart.contains(bundleId)) {
 				bufBundles.append(bundleId).append('@').append("default:true");
 				modified = true;
-				if (debug)
-					System.out.println("Will start " + bundleId);
+				debug("Will start " + bundleId);
 			}
 
 			if (!modified)
@@ -543,6 +540,11 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 				}
 			}
 		}
+	}
+
+	static void debug(Object obj) {
+		if (debug)
+			System.out.println(obj);
 	}
 
 }

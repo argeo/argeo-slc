@@ -7,6 +7,7 @@ import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.pde.ui.launcher.EclipseLauncherTabGroup;
 import org.eclipse.pde.ui.launcher.MainTab;
 import org.eclipse.pde.ui.launcher.OSGiSettingsTab;
+import org.eclipse.pde.ui.launcher.PluginsTab;
 import org.eclipse.pde.ui.launcher.TracingTab;
 
 /** Definition of the set of tabs used in Eclipse Boot launch configuration UI. */
@@ -17,6 +18,7 @@ public class EclipseBootLauncherTabGroup extends EclipseLauncherTabGroup {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 				new OsgiBootMainTab(true),
 				new MainTab(),
+				new PluginsTab(),
 				// new PluginsTab() {
 				// private boolean activating = false;
 				//
