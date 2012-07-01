@@ -189,26 +189,39 @@ public class OsgiExecutionModulesManager extends
 
 	protected ExecutionFlow findExecutionFlow(String moduleName,
 			String moduleVersion, String flowName) {
-		String filter = "(&(Bundle-SymbolicName=" + moduleName
-				+ ")(org.springframework.osgi.bean.name=" + flowName + "))";
+		String filter = moduleVersion == null || moduleVersion.equals("0.0.0") ? "(&(Bundle-SymbolicName="
+				+ moduleName
+				+ ")(org.springframework.osgi.bean.name="
+				+ flowName + "))"
+				: "(&(Bundle-SymbolicName=" + moduleName + ")(Bundle-Version="
+						+ moduleVersion
+						+ ")(org.springframework.osgi.bean.name=" + flowName
+						+ "))";
 		return bundlesManager.getSingleServiceStrict(ExecutionFlow.class,
 				filter, true);
 	}
 
 	protected ExecutionContext findExecutionContext(String moduleName,
 			String moduleVersion) {
-		String filter = "(&(Bundle-SymbolicName=" + moduleName
-				+ ")(Bundle-Version=" + moduleVersion + "))";
+		String filter = moduleFilter(moduleName, moduleVersion);
 		return bundlesManager.getSingleServiceStrict(ExecutionContext.class,
 				filter, true);
 	}
 
 	protected ExecutionFlowDescriptorConverter findExecutionFlowDescriptorConverter(
 			String moduleName, String moduleVersion) {
-		String filter = "(&(Bundle-SymbolicName=" + moduleName
-				+ ")(Bundle-Version=" + moduleVersion + "))";
+		String filter = moduleFilter(moduleName, moduleVersion);
 		return bundlesManager.getSingleService(
 				ExecutionFlowDescriptorConverter.class, filter, false);
+	}
+
+	/** Only based on symbolic name if version is null or "0.0.0" */
+	protected String moduleFilter(String moduleName, String moduleVersion) {
+		return moduleVersion == null || moduleVersion.equals("0.0.0") ? "(Bundle-SymbolicName="
+				+ moduleName + ")"
+				: "(&(Bundle-SymbolicName=" + moduleName + ")(Bundle-Version="
+						+ moduleVersion + "))";
+
 	}
 
 	/**
@@ -291,6 +304,10 @@ public class OsgiExecutionModulesManager extends
 		try {
 			Bundle bundle = bundlesManager.findRelatedBundle(new OsgiBundle(
 					nameVersion));
+			if (bundle == null)
+				throw new SlcException("Counld not find bundle for "
+						+ nameVersion);
+
 			bundlesManager.startSynchronous(bundle);
 			if (isSpringInstrumented(bundle)) {
 				// Wait for Spring application context to be ready

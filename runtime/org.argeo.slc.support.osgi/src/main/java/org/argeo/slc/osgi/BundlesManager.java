@@ -330,7 +330,8 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 								bundle.getHeaders().get(
 										Constants.BUNDLE_VERSION)),
 						"version consistent");
-		} else if (osgiBundle.getVersion() == null) {
+		} else if (osgiBundle.getVersion() == null
+				|| osgiBundle.getVersion().equals("0.0.0")) {
 			bundle = OsgiBundleUtils.findBundleBySymbolicName(bundleContext,
 					osgiBundle.getName());
 		} else {// scan all bundles
