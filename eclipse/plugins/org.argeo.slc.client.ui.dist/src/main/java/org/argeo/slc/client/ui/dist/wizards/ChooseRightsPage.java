@@ -85,10 +85,11 @@ public class ChooseRightsPage extends WizardPage implements ModifyListener {
 	protected String checkComplete() {
 		String groupStr = groupNameTxt.getText();
 		if (groupStr == null || "".equals(groupStr))
-			return "Please enter a short technical name for the new repository.";
-		else if (!match(groupStr))
-			return "Please use only alphanumerical chars for the short technical name.";
-
+			return "Please enter the name of the corresponding group.";
+		// Remove regexp check for the time being.
+		// else if (!match(groupStr))
+		// return
+		// "Please use only alphanumerical chars for the short technical name.";
 		return null;
 	}
 }
