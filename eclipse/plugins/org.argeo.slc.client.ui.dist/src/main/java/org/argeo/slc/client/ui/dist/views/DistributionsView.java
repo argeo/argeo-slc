@@ -32,6 +32,7 @@ import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
 import org.argeo.slc.client.ui.dist.commands.ManageWorkspaceAuth;
+import org.argeo.slc.client.ui.dist.commands.NormalizeDistribution;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditorInput;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
@@ -145,10 +146,20 @@ public class DistributionsView extends ViewPart implements SlcNames {
 			// create workspace
 			CommandHelpers.refreshCommand(menuManager, window,
 					CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
-					CreateWorkspace.DEFAULT_ICON_PATH, true);
+					CreateWorkspace.DEFAULT_ICON_PATH,
+					tp instanceof RepositoryElem);
+
+			// Normalize workspace
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(NormalizeDistribution.PARAM_WORKSPACE, wsName);
+			CommandHelpers.refreshParameterizedCommand(menuManager, window,
+					NormalizeDistribution.ID,
+					NormalizeDistribution.DEFAULT_LABEL,
+					NormalizeDistribution.DEFAULT_ICON_PATH, isDistribElem,
+					params);
 
 			// Copy workspace
-			Map<String, String> params = new HashMap<String, String>();
+			params = new HashMap<String, String>();
 			params.put(CopyWorkspace.PARAM_WORKSPACE_NAME, wsName);
 			CommandHelpers.refreshParameterizedCommand(menuManager, window,
 					CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,

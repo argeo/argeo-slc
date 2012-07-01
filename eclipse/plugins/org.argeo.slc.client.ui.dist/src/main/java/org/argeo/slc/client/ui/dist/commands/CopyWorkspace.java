@@ -31,7 +31,7 @@ public class CopyWorkspace extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".copyWorkspace";
 	public final static String PARAM_WORKSPACE_NAME = DistPlugin.ID
 			+ ".workspaceName";
-	public final static String DEFAULT_LABEL = "Copy this workspace";
+	public final static String DEFAULT_LABEL = "Duplicate";
 	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
 
 	/* DEPENDENCY INJECTION */

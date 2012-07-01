@@ -17,7 +17,7 @@ public class DeleteWorkspace extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".deleteWorkspace";
 	public final static String PARAM_WORKSPACE_NAME = DistPlugin.ID
 			+ ".workspaceName";
-	public final static String DEFAULT_LABEL = "Delete current workspace";
+	public final static String DEFAULT_LABEL = "Delete";
 	public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
 
 	/* DEPENDENCY INJECTION */

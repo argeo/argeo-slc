@@ -23,7 +23,7 @@ public class ManageWorkspaceAuth extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".manageWorkspaceAuth";
 	public final static String PARAM_WORKSPACE_NAME = DistPlugin.ID
 			+ ".workspaceName";
-	public final static String DEFAULT_LABEL = "Change rights for current workspace";
+	public final static String DEFAULT_LABEL = "Manage Rights";
 	public final static String DEFAULT_ICON_PATH = "icons/changeRights.gif";
 
 	/* DEPENDENCY INJECTION */
