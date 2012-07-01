@@ -126,38 +126,49 @@ public class DistributionsView extends ViewPart implements SlcNames {
 		// Get Current selected item :
 		Object firstElement = ((IStructuredSelection) viewer.getSelection())
 				.getFirstElement();
-		String wsName = null;
+
 		if (firstElement instanceof TreeParent) {
-			wsName = ((TreeParent) firstElement).getName();
+			TreeParent tp = (TreeParent) firstElement;
+			String wsName = tp.getName();
+
+			// Build conditions depending on element type (repo or distribution
+			// for the time being)
+			boolean isDistribElem = false; // , isRepoElem = false;
+
+			// if (tp instanceof RepositoryElem){
+			// isRepoElem = true;
+			// } else
+			if (tp instanceof DistributionElem) {
+				isDistribElem = true;
+			}
+
+			// create workspace
+			CommandHelpers.refreshCommand(menuManager, window,
+					CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
+					CreateWorkspace.DEFAULT_ICON_PATH, true);
+
+			// Copy workspace
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(CopyWorkspace.PARAM_WORKSPACE_NAME, wsName);
+			CommandHelpers.refreshParameterizedCommand(menuManager, window,
+					CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
+					CopyWorkspace.DEFAULT_ICON_PATH, isDistribElem, params);
+
+			// Delete Workspace
+			params = new HashMap<String, String>();
+			params.put(DeleteWorkspace.PARAM_WORKSPACE_NAME, wsName);
+			CommandHelpers.refreshParameterizedCommand(menuManager, window,
+					DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
+					DeleteWorkspace.DEFAULT_ICON_PATH, isDistribElem, params);
+
+			// Manage workspace authorizations
+			params = new HashMap<String, String>();
+			params.put(ManageWorkspaceAuth.PARAM_WORKSPACE_NAME, wsName);
+			CommandHelpers.refreshParameterizedCommand(menuManager, window,
+					ManageWorkspaceAuth.ID, ManageWorkspaceAuth.DEFAULT_LABEL,
+					ManageWorkspaceAuth.DEFAULT_ICON_PATH, isDistribElem,
+					params);
 		}
-
-		// Build conditions depending on element type (repo or workspace)
-
-		// create workspace
-		CommandHelpers.refreshCommand(menuManager, window, CreateWorkspace.ID,
-				CreateWorkspace.DEFAULT_LABEL,
-				CreateWorkspace.DEFAULT_ICON_PATH, true);
-
-		// Copy workspace
-		Map<String, String> params = new HashMap<String, String>();
-		params.put(CopyWorkspace.PARAM_WORKSPACE_NAME, wsName);
-		CommandHelpers.refreshParameterizedCommand(menuManager, window,
-				CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
-				CopyWorkspace.DEFAULT_ICON_PATH, true, params);
-
-		// Delete Workspace
-		params = new HashMap<String, String>();
-		params.put(DeleteWorkspace.PARAM_WORKSPACE_NAME, wsName);
-		CommandHelpers.refreshParameterizedCommand(menuManager, window,
-				DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
-				DeleteWorkspace.DEFAULT_ICON_PATH, true, params);
-
-		// Manage workspace authorizations
-		params = new HashMap<String, String>();
-		params.put(ManageWorkspaceAuth.PARAM_WORKSPACE_NAME, wsName);
-		CommandHelpers.refreshParameterizedCommand(menuManager, window,
-				ManageWorkspaceAuth.ID, ManageWorkspaceAuth.DEFAULT_LABEL,
-				ManageWorkspaceAuth.DEFAULT_ICON_PATH, true, params);
 	}
 
 	private class DistributionsContentProvider extends
@@ -170,12 +181,12 @@ public class DistributionsView extends ViewPart implements SlcNames {
 	}
 
 	private static class RepositoryElem extends TreeParent {
-		private final Repository repository;
+		// private final Repository repository;
 		private Session defaultSession;
 
 		public RepositoryElem(String name, Repository repository) {
 			super(name);
-			this.repository = repository;
+			// this.repository = repository;
 			try {
 				defaultSession = repository.login();
 				String[] workspaceNames = defaultSession.getWorkspace()
@@ -187,6 +198,14 @@ public class DistributionsView extends ViewPart implements SlcNames {
 			}
 		}
 
+		@Override
+		public synchronized void dispose() {
+			if (log.isTraceEnabled())
+				log.trace("Disposing RepositoryElement");
+			if (defaultSession != null)
+				defaultSession.logout();
+			super.dispose();
+		}
 	}
 
 	private static class DistributionElem extends TreeParent {
@@ -206,7 +225,11 @@ public class DistributionsView extends ViewPart implements SlcNames {
 		public Repository getRepository() {
 			return repository;
 		}
+	}
 
+	@Override
+	public void dispose() {
+		super.dispose();
 	}
 
 	private class DistributionsDCL implements IDoubleClickListener {
@@ -231,7 +254,5 @@ public class DistributionsView extends ViewPart implements SlcNames {
 				}
 			}
 		}
-
 	}
-
 }

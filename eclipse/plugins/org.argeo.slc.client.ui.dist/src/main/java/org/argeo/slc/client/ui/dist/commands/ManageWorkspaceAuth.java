@@ -3,7 +3,6 @@ package org.argeo.slc.client.ui.dist.commands;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.security.Privilege;
 
 import org.argeo.ArgeoException;
 import org.argeo.slc.client.ui.dist.DistPlugin;

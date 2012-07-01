@@ -37,13 +37,17 @@ public class CreateWorkspace extends AbstractHandler {
 				"", null);
 		inputDialog.open();
 		String workspaceName = inputDialog.getValue();
+		Session session = null;
 		try {
-			Session session = repository.login();
+			session = repository.login();
 			session.getWorkspace().createWorkspace(workspaceName);
 			CommandHelpers.callCommand(RefreshDistributionsView.ID);
 		} catch (RepositoryException re) {
 			throw new ArgeoException(
 					"Unexpected error while creating the new workspace.", re);
+		} finally {
+			if (session != null)
+				session.logout();
 		}
 		if (log.isTraceEnabled())
 			log.debug("WORKSPACE " + workspaceName + " CREATED");

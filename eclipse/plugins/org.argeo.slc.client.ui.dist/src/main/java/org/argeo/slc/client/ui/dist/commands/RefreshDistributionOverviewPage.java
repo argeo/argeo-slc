@@ -1,7 +1,5 @@
 package org.argeo.slc.client.ui.dist.commands;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
 import org.argeo.slc.client.ui.dist.editors.DistributionOverviewPage;
@@ -12,12 +10,12 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.editor.IFormPage;
 
 /**
- * Force refresh of the DistributionsView
+ * Force refresh of the Distribution overview page of the corresponding editor
  */
 
 public class RefreshDistributionOverviewPage extends AbstractHandler {
-	private static final Log log = LogFactory
-			.getLog(RefreshDistributionOverviewPage.class);
+	// private static final Log log = LogFactory
+	// .getLog(RefreshDistributionOverviewPage.class);
 	public final static String ID = DistPlugin.ID
 			+ ".refreshDistributionOverviewPage";
 	public final static String DEFAULT_LABEL = "Refresh the distribution overview";

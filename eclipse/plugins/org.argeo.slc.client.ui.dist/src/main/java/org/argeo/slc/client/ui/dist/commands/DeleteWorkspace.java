@@ -1,12 +1,8 @@
 package org.argeo.slc.client.ui.dist.commands;
 
 import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
-import org.argeo.ArgeoException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -28,15 +24,16 @@ public class DeleteWorkspace extends AbstractHandler {
 	private Repository repository;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		String workspaceName = event.getParameter(PARAM_WORKSPACE_NAME);
-		String msg = "Your are about to definitively delete this workspace ["
-				+ workspaceName + "].\n Do you really want to proceed ?";
-
+	
 		MessageDialog.openWarning(DistPlugin.getDefault()
 				.getWorkbench().getDisplay().getActiveShell(),
 				"WARNING", "Not yet implemented");
 		return null;
-		
+	
+//		String workspaceName = event.getParameter(PARAM_WORKSPACE_NAME);
+//		String msg = "Your are about to definitively delete this workspace ["
+//				+ workspaceName + "].\n Do you really want to proceed ?";
+
 //		boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
 //				.getWorkbench().getDisplay().getActiveShell(),
 //				"Confirm deletion", msg);

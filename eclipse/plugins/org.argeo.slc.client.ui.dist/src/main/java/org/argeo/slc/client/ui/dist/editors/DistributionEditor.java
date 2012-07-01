@@ -65,6 +65,13 @@ public class DistributionEditor extends FormEditor implements SlcNames {
 	}
 
 	@Override
+	public void dispose() {
+		if (session != null)
+			session.logout();
+		super.dispose();
+	}
+
+	@Override
 	public void doSaveAs() {
 	}
 

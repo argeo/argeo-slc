@@ -28,28 +28,28 @@ public class DeleteArtifacts extends AbstractHandler {
 	public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		String msg = "Your are about to definitively remove these artifacts.\n"
-				+ "Do you really want to proceed ?";
+		try {
+			IWorkbenchPart activePart = DistPlugin.getDefault().getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage().getActivePart();
 
-		boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
-				.getWorkbench().getDisplay().getActiveShell(),
-				"Confirm deletion", msg);
-		if (result) {
-			// Session session = null;
-			try {
-				// session = repository.login();
-				IWorkbenchPart activePart = DistPlugin.getDefault()
-						.getWorkbench().getActiveWorkbenchWindow()
-						.getActivePage().getActivePart();
+			if (activePart instanceof IEditorPart) {
+				ISelection selector = ((IEditorPart) activePart)
+						.getEditorSite().getSelectionProvider().getSelection();
+				if (selector != null
+						&& selector instanceof IStructuredSelection) {
+					Iterator<?> it = ((IStructuredSelection) selector)
+							.iterator();
 
-				if (activePart instanceof IEditorPart) {
-					ISelection selector = ((IEditorPart) activePart)
-							.getEditorSite().getSelectionProvider()
-							.getSelection();
-					if (selector != null
-							&& selector instanceof IStructuredSelection) {
-						Iterator<?> it = ((IStructuredSelection) selector)
-								.iterator();
+					String msg = "Your are about to definitively remove the "
+							+ ((IStructuredSelection) selector).size()
+							+ " selected artifacts.\n"
+							+ "Are you sure you want to proceed ?";
+
+					boolean result = MessageDialog.openConfirm(DistPlugin
+							.getDefault().getWorkbench().getDisplay()
+							.getActiveShell(), "Confirm Delete", msg);
+
+					if (result) {
 						while (it.hasNext()) {
 							Node node = (Node) it.next();
 							// we remove the artifactVersion, that is the parent
@@ -57,16 +57,12 @@ public class DeleteArtifacts extends AbstractHandler {
 							node.getSession().save();
 						}
 					}
-					// session.save();
 				}
-				CommandHelpers.callCommand(RefreshDistributionOverviewPage.ID);
-			} catch (RepositoryException re) {
-				throw new ArgeoException(
-						"Unexpected error while deleting artifacts.", re);
-			} finally {
-				// if (session != null)
-				// session.logout();
 			}
+			CommandHelpers.callCommand(RefreshDistributionOverviewPage.ID);
+		} catch (RepositoryException re) {
+			throw new ArgeoException(
+					"Unexpected error while deleting artifacts.", re);
 		}
 		return null;
 	}
