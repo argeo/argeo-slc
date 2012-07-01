@@ -9,6 +9,11 @@
 		scope="prototype">
 		<property name="modulesManager" ref="modulesManager"/>
 	</bean>
+<!-- 	<bean name="runSlc/Flow" -->
+<!-- 		class="org.argeo.slc.client.ui.commands.RunSlcFlow" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="modulesManager" ref="modulesManager"/> -->
+<!-- 	</bean> -->
 
 	<!-- Result list view commands-->
 <!-- 	<bean id="org.argeo.slc.client.ui.refreshResultList" -->

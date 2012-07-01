@@ -89,6 +89,13 @@
 	        id="org.argeo.slc.client.ui.updateModule"
 	    	name="Update Module">
 	    </command>
+	    <!--
+		<command
+	        defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+	        id="org.argeo.slc.client.ui.runSlc/Flow"
+	    	name="org.argeo.slc.demo.minimal:hello">
+	    </command>
+	    -->
 	    <!-- Result List
 		<command
 	        defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
@@ -165,6 +172,14 @@
 				label="Update module"
 				tooltip="Update module">
 			</command>
+			<!--
+			<command
+				commandId="org.argeo.slc.client.ui.runSlc/Flow"
+				icon="icons/launch.gif"
+				label="Run SLC Flow"
+				tooltip="Run SLC Flow">
+			</command>
+			-->
 		</menuContribution>   
         <!--
 		<menuContribution
