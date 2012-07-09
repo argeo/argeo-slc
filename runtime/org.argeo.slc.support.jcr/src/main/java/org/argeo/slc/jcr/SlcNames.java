@@ -42,6 +42,7 @@ public interface SlcNames {
 	public final static String SLC_IS_HIDDEN = "slc:isHidden";
 
 	// result
+	public final static String SLC_RESULTS = "slc:results";
 	public final static String SLC_SUCCESS = "slc:success";
 	public final static String SLC_MESSAGE = "slc:message";
 	public final static String SLC_TAG = "slc:tag";

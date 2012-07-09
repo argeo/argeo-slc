@@ -81,10 +81,10 @@ public class SlcJcrUtils implements SlcNames {
 	}
 
 	/** Create a new execution result path based on the current time */
-	public static String createResultPath(String uuid) {
+	public static String createResultPath(String username, String uuid) {
 		Calendar now = new GregorianCalendar();
-		return SlcJcrConstants.RESULTS_BASE_PATH + '/'
-				+ JcrUtils.dateAsPath(now, true) + uuid;
+		return JcrUtils.getUserHomePath(username) + '/' + SlcNames.SLC_RESULTS
+				+ '/' + JcrUtils.dateAsPath(now, true) + uuid;
 	}
 
 	/**

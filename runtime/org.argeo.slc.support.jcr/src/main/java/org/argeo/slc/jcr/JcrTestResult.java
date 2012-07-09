@@ -24,6 +24,7 @@ import java.util.UUID;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
+import javax.jcr.Repository;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -41,6 +42,7 @@ import org.argeo.slc.test.TestStatus;
 public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	/** Should only be set for an already existing result. */
 	private String uuid;
+	private Repository repository;
 	private Session session;
 	private String resultType = SlcTypes.SLC_RESULT;
 
@@ -53,10 +55,12 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 
 	public void init() {
 		try {
+			session = repository.login();
 			if (uuid == null) {
 				// create new result
 				uuid = UUID.randomUUID().toString();
-				String path = SlcJcrUtils.createResultPath(uuid);
+				String path = SlcJcrUtils.createResultPath(session.getUserID(),
+						uuid);
 				Node resultNode = JcrUtils.mkdirs(session, path, resultType);
 				resultNode.setProperty(SLC_UUID, uuid);
 				for (String attr : attributes.keySet()) {
@@ -187,8 +191,8 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 		this.uuid = uuid;
 	}
 
-	public void setSession(Session session) {
-		this.session = session;
+	public void setRepository(Repository repository) {
+		this.repository = repository;
 	}
 
 	public void setResultType(String resultType) {
@@ -203,8 +207,8 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 		this.attributes = attributes;
 	}
 
-	public void setLogoutWhenDestroyed(Boolean logoutWhenDestroyed) {
-		this.logoutWhenDestroyed = logoutWhenDestroyed;
-	}
+//	public void setLogoutWhenDestroyed(Boolean logoutWhenDestroyed) {
+//		this.logoutWhenDestroyed = logoutWhenDestroyed;
+//	}
 
 }
