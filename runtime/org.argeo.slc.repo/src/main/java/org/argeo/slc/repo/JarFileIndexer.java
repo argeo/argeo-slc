@@ -211,7 +211,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.IMPORT_PACKAGE);
 		if (attrs.containsKey(new Name(Constants.IMPORT_PACKAGE))) {
 			String importPackages = attrs.getValue(Constants.IMPORT_PACKAGE);
-			List<String> packages = parsePackages(importPackages);
+			List<String> packages = parseCommaSeparated(importPackages);
 			for (String pkg : packages) {
 				String[] tokens = pkg.split(";");
 				Node node = fileNode.addNode(SlcNames.SLC_
@@ -238,7 +238,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		if (attrs.containsKey(new Name(Constants.DYNAMICIMPORT_PACKAGE))) {
 			String importPackages = attrs
 					.getValue(Constants.DYNAMICIMPORT_PACKAGE);
-			List<String> packages = parsePackages(importPackages);
+			List<String> packages = parseCommaSeparated(importPackages);
 			for (String pkg : packages) {
 				String[] tokens = pkg.split(";");
 				Node node = fileNode.addNode(SlcNames.SLC_
@@ -258,7 +258,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.EXPORT_PACKAGE);
 		if (attrs.containsKey(new Name(Constants.EXPORT_PACKAGE))) {
 			String exportPackages = attrs.getValue(Constants.EXPORT_PACKAGE);
-			List<String> packages = parsePackages(exportPackages);
+			List<String> packages = parseCommaSeparated(exportPackages);
 			for (String pkg : packages) {
 				String[] tokens = pkg.split(";");
 				Node node = fileNode.addNode(SlcNames.SLC_
@@ -294,7 +294,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.REQUIRE_BUNDLE);
 		if (attrs.containsKey(new Name(Constants.REQUIRE_BUNDLE))) {
 			String requireBundle = attrs.getValue(Constants.REQUIRE_BUNDLE);
-			String[] bundles = requireBundle.split(",");
+			List<String> bundles = parseCommaSeparated(requireBundle);
 			for (String bundle : bundles) {
 				String[] tokens = bundle.split(";");
 				Node node = fileNode.addNode(SlcNames.SLC_
@@ -362,7 +362,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 	}
 
 	/** Parse package list with nested directive with ',' */
-	private List<String> parsePackages(String str) {
+	private List<String> parseCommaSeparated(String str) {
 		List<String> res = new ArrayList<String>();
 		StringBuffer curr = new StringBuffer("");
 		boolean in = false;
