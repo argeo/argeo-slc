@@ -65,7 +65,7 @@ public class CopyWorkspace extends AbstractHandler {
 			Node srcRootNode = srcSession.getRootNode();
 			// log in the newly created workspace
 			newSession = repository.login(newWorkspaceName);
-			newSession.save();
+			//newSession.save();
 			Node newRootNode = newSession.getRootNode();
 			copy(srcRootNode, newRootNode);
 			newSession.save();
