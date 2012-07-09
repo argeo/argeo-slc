@@ -28,7 +28,7 @@
 		init-method="run">
 		<property name="principalPrivileges">
 			<map>
-				<entry key="jcr:all" value="ROLE_ARGEO_COMMITTER" />
+				<entry key="jcr:all" value="ROLE_SLC" />
 			</map>
 		</property>
 		<property name="repository" ref="jcrRepository" />
