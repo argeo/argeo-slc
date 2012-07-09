@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>1.1.3-SNAPSHOT</version>
+		<version>1.1.3</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -16,7 +16,7 @@
 		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
 		<site.repoBase>file:///srv/projects/www/slc/site</site.repoBase>
 		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
-		<version.slc>${developmentCycle.slc}.2-SNAPSHOT</version.slc>
+		<version.slc>${developmentCycle.slc}.2</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
@@ -107,7 +107,7 @@ limitations under the License.
 	<repositories>
 		<repository>
 			<id>argeo-commons</id>
-			<url>http://dev.argeo.org/org.argeo.jcr.webapp/public/java/org.argeo.commons-1.1.2</url>
+			<url>http://dev.argeo.org/org.argeo.jcr.webapp/public/java/org.argeo.commons-1.1.x</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -118,7 +118,7 @@ limitations under the License.
 	<distributionManagement>
 		<repository>
 			<id>staging</id>
-			<url>dav:http://localhost:7080/org.argeo.jcr.webapp/webdav/java/org.argeo.slc-${version.slc}</url>
+			<url>dav:http://localhost:7080/org.argeo.jcr.webapp/webdav/java/org.argeo.slc-1.1.x</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<site>
