@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc.demo</groupId>
 		<artifactId>modules</artifactId>
-		<version>1.1.2-SNAPSHOT</version>
+		<version>1.1.2</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.demo.detached</artifactId>

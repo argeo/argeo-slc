@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc.eclipse</groupId>
 		<artifactId>plugins</artifactId>
-		<version>1.1.2-SNAPSHOT</version>
+		<version>1.1.2</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.client.ui.dist</artifactId>
@@ -35,12 +35,12 @@
 		<dependency>
 			<groupId>org.argeo.slc.runtime</groupId>
 			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.modules</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
-			<version>1.1.2-SNAPSHOT</version>
+			<version>1.1.2</version>
 		</dependency>
 
 		<dependency>
