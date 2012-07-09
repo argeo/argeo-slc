@@ -25,13 +25,15 @@ import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContextHolder;
 
 /** The thread group attached to a given {@link SlcExecution}. */
 @SuppressWarnings("deprecation")
 public class ProcessThreadGroup extends ThreadGroup {
 	private final ExecutionModulesManager executionModulesManager;
 	private final ProcessThread processThread;
-//	private final Authentication authentication;
+	private final Authentication authentication;
 	private final static Integer STEPS_BUFFER_CAPACITY = 5000;
 
 	private BlockingQueue<ExecutionStep> steps = new ArrayBlockingQueue<ExecutionStep>(
@@ -43,13 +45,13 @@ public class ProcessThreadGroup extends ThreadGroup {
 				+ " thread group");
 		this.executionModulesManager = executionModulesManager;
 		this.processThread = processThread;
-//		this.authentication = SecurityContextHolder.getContext()
-//				.getAuthentication();
+		this.authentication = SecurityContextHolder.getContext()
+				.getAuthentication();
 	}
 
-//	public Authentication getAuthentication() {
-//		return authentication;
-//	}
+	public Authentication getAuthentication() {
+		return authentication;
+	}
 
 	public void dispatchAddStep(ExecutionStep step) {
 		// legacy

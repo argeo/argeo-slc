@@ -258,4 +258,33 @@
             id="org.argeo.slc.client.ui.processEditorInputFactory">
       </factory>
    </extension>
+   <extension
+           point="org.eclipse.ui.activities">
+     </extension>
+  <extension
+           point="org.eclipse.ui.activities">
+        <activity
+              description="SLC users"
+              id="org.argeo.slc.client.ui.slcActivity"
+              name="SLC">
+		  <enabledWhen>
+		    <with variable="roles">
+		      <iterate ifEmpty="false" operator="or">
+		        <equals value="ROLE_SLC" />
+		      </iterate>
+		    </with>
+		  </enabledWhen>
+        </activity>
+        <!-- TODO: find a way to exclude evrything -->
+        <activityPatternBinding
+              activityId="org.argeo.slc.client.ui.slcActivity"
+              isEqualityPattern="true"
+              pattern="org.argeo.slc.client.ui/org.argeo.slc.client.ui.slcExecutionPerspective">
+        </activityPatternBinding>
+        <activityPatternBinding
+              activityId="org.argeo.security.ui.adminActivity"
+              isEqualityPattern="true"
+              pattern="org.argeo.slc.client.ui/org.argeo.slc.client.ui.slcExecutionPerspective">
+        </activityPatternBinding>
+     </extension>
 </plugin>
