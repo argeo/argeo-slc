@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Require-Bundle: org.argeo.slc.specs,org.argeo.slc.support.equinox
-Bundle-Version: 1.1.2
+Bundle-Version: 1.1.3.SNAPSHOT
 Bundle-Name: SLC Server Main
 Bundle-SymbolicName: org.argeo.slc.server.main
 Import-Package: org.argeo.slc.build,org.argeo.slc.osgi.build

@@ -15,7 +15,7 @@
 		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
 		<site.repoBase>file:///srv/projects/www/slc/site</site.repoBase>
 		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
-		<version.slc>${developmentCycle.slc}.2</version.slc>
+		<version.slc>${developmentCycle.slc}.3-SNAPSHOT</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
@@ -123,7 +123,7 @@ limitations under the License.
 		<site>
 			<id>argeo-slc-site</id>
 			<name>SLC Site</name>
-			<url>file://${site.repoBase}/${project.version}</url>
+			<url>file:///srv/projects/www/slc/site/${version.slc}</url>
 		</site>
 	</distributionManagement>
 </project>
