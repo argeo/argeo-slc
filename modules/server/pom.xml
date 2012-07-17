@@ -6,8 +6,8 @@
 		<version>1.1.3-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<groupId>org.argeo.slc.modules</groupId>
-	<artifactId>server</artifactId>
+	<groupId>org.argeo.slc</groupId>
+	<artifactId>modules</artifactId>
 	<packaging>pom</packaging>
 	<name>SLC Modules Server</name>
 	<modules>
