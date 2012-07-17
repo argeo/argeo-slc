@@ -1,13 +1,23 @@
 Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Rap Client for SLC
-Bundle-SymbolicName: org.argeo.slc.client.rap;singleton:=true
-Bundle-Version: 1.1.3.SNAPSHOT
-Bundle-Vendor: Argeo SASU
-Require-Bundle: org.eclipse.rap.ui;resolution:=optional
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bnd-LastModified: 1342538784010
+Build-Jdk: 1.6.0_24
+Built-By: mbaudier
 Bundle-ActivationPolicy: lazy
-Import-Package: javax.servlet;version="2.4.0",
- javax.servlet.http;version="2.4.0",
- org.argeo.security.ui.rap
-Export-Package: org.argeo.slc.client.rap
+Bundle-Description: Generic layers integrating free / open source techno
+ logies in order to quickly develop custom enterprise systems: security,
+  JCR, user interface, monitoring
+Bundle-DocURL: http://www.argeo.org
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: SLC Client RAP
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-SymbolicName: org.argeo.slc.client.rap;singleton:=true
+Bundle-Vendor: Argeo
+Bundle-Version: 1.1.3.SNAPSHOT-r120717_1726
+Created-By: Apache Maven Bundle Plugin
+Export-Package: org.argeo.slc.client.rap;uses:="org.argeo.security.ui.ra
+ p";version="1.1.3.SNAPSHOT-r120717_1726"
+Import-Package: javax.servlet;version="[2.5,3)",javax.servlet.http;versi
+ on="[2.5,3)",org.argeo.security.ui.rap;version="[1.1,2)"
+Require-Bundle: org.eclipse.rap.ui;resolution:=optional
+Tool: Bnd-1.50.0

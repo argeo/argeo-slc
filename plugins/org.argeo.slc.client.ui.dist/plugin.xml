@@ -213,7 +213,7 @@
         <activityPatternBinding
               activityId="org.argeo.security.ui.adminActivity"
               isEqualityPattern="true"
-              pattern="org.argeo.slc.client.ui/org.argeo.slc.client.ui.slcExecutionPerspective">
+              pattern="org.argeo.slc.client.ui.dist/org.argeo.slc.client.ui.dist.distributionPerspective">
         </activityPatternBinding>
      </extension>
 </plugin>
