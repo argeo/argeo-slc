@@ -10,7 +10,48 @@
 	<name>SLC Modules</name>
 	<packaging>pom</packaging>
 	<modules>
-		<module>agent</module>
-		<module>server</module>
+		<module>org.argeo.slc.agent</module>
+		<module>org.argeo.slc.agent.jcr</module>
+		<module>org.argeo.slc.node.jackrabbit</module>
+		<module>org.argeo.slc.server.repo</module>
+		<module>org.argeo.slc.server.repo.webapp</module>
 	</modules>
+	<build>
+		<resources>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>.*</exclude>
+					<exclude>pom.xml</exclude>
+					<exclude>build.properties</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>META-INF</directory>
+							<includes>
+								<include>MANIFEST.MF</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>
