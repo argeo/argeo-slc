@@ -45,8 +45,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.argeo.commons.basic</groupId>
-			<artifactId>org.argeo.basic.nodeps</artifactId>
+			<groupId>org.argeo.commons.base</groupId>
+			<artifactId>org.argeo.util</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
@@ -73,8 +73,8 @@
 			<artifactId>slf4j.org.apache.commons.logging</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.commons.basic</groupId>
-			<artifactId>org.argeo.basic.dep.log4j</artifactId>
+			<groupId>org.argeo.commons.base</groupId>
+			<artifactId>org.argeo.dep.log4j</artifactId>
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>
 		</dependency>

@@ -75,7 +75,7 @@
 
 		<!-- OSGi -->
 		<dependency>
-			<groupId>org.argeo.commons.osgi</groupId>
+			<groupId>org.argeo.commons.base</groupId>
 			<artifactId>org.argeo.osgi.boot</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>

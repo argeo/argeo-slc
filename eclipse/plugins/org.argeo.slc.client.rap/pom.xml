@@ -20,7 +20,7 @@
 
 		<!-- Argeo common distribution for RAP projects -->
 		<dependency>
-			<groupId>org.argeo.commons.eclipse</groupId>
+			<groupId>org.argeo.commons.base</groupId>
 			<artifactId>org.argeo.eclipse.dep.rap</artifactId>
 			<version>${version.argeo-commons}</version>
 			<exclusions>
