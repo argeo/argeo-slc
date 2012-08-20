@@ -47,6 +47,8 @@ import org.osgi.framework.Constants;
 
 /** Table giving an overview of an OSGi distribution */
 public class DistributionOverviewPage extends FormPage implements SlcNames {
+	final static String PAGE_ID = "distributionOverviewPage";
+
 	private TableViewer viewer;
 	private Session session;
 
@@ -54,7 +56,7 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 
 	public DistributionOverviewPage(FormEditor formEditor, String title,
 			Session session) {
-		super(formEditor, "distributionPage", title);
+		super(formEditor, PAGE_ID, title);
 		this.session = session;
 	}
 
@@ -72,7 +74,7 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		viewer = new TableViewer(form.getBody(), SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
-		TableViewerColumn col = new TableViewerColumn(viewer,  SWT.V_SCROLL);
+		TableViewerColumn col = new TableViewerColumn(viewer, SWT.V_SCROLL);
 		col.getColumn().setWidth(300);
 		col.getColumn().setText("Symbolic name");
 		col.setLabelProvider(new ColumnLabelProvider() {

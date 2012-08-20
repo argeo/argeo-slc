@@ -19,6 +19,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.argeo.ArgeoException;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -55,6 +56,7 @@ public class DistributionEditor extends FormEditor implements SlcNames {
 	protected void addPages() {
 		try {
 			addPage(new DistributionOverviewPage(this, "Overview", session));
+			addPage(new ArtifactsBrowserPage(this, "Browser", session));
 		} catch (PartInitException e) {
 			throw new ArgeoException("Cannot add distribution editor pages", e);
 		}
@@ -66,8 +68,7 @@ public class DistributionEditor extends FormEditor implements SlcNames {
 
 	@Override
 	public void dispose() {
-		if (session != null)
-			session.logout();
+		JcrUtils.logoutQuietly(session);
 		super.dispose();
 	}
 

@@ -15,7 +15,9 @@
  */
 package org.argeo.slc.client.ui.dist.views;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Repository;
@@ -27,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.eclipse.ui.AbstractTreeContentProvider;
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.TreeParent;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
@@ -67,6 +70,8 @@ public class DistributionsView extends ViewPart implements SlcNames {
 
 	private TreeViewer viewer;
 
+	private List<RepositoryElem> repositories = new ArrayList<DistributionsView.RepositoryElem>();
+
 	@Override
 	public void createPartControl(Composite parent) {
 		// Define the TableViewer
@@ -99,6 +104,10 @@ public class DistributionsView extends ViewPart implements SlcNames {
 		});
 		viewer.getTree().setMenu(menu);
 		getSite().registerContextMenu(menuManager, viewer);
+
+		// Initializes repositories
+		// TODO make it more generic, with remote repositories etc.
+		repositories.add(new RepositoryElem("java", repository));
 
 		viewer.setInput(getSite());
 
@@ -186,7 +195,7 @@ public class DistributionsView extends ViewPart implements SlcNames {
 			AbstractTreeContentProvider {
 
 		public Object[] getElements(Object arg0) {
-			return new Object[] { new RepositoryElem("java", repository) };
+			return repositories.toArray();
 		}
 
 	}
@@ -213,8 +222,7 @@ public class DistributionsView extends ViewPart implements SlcNames {
 		public synchronized void dispose() {
 			if (log.isTraceEnabled())
 				log.trace("Disposing RepositoryElement");
-			if (defaultSession != null)
-				defaultSession.logout();
+			JcrUtils.logoutQuietly(defaultSession);
 			super.dispose();
 		}
 	}
@@ -240,6 +248,8 @@ public class DistributionsView extends ViewPart implements SlcNames {
 
 	@Override
 	public void dispose() {
+		for (RepositoryElem re : repositories)
+			re.dispose();
 		super.dispose();
 	}
 
