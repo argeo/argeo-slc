@@ -31,7 +31,10 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.part.EditorInputTransfer;
 
-/** Set here initial default size of the UI */
+/**
+ * Custom {@link SecureWorkbenchWindowAdvisor} which can add a tray. TODO: to
+ * be factorized in Argeo Commons and made more generic.
+ */
 public class SlcSecureWorkbenchWindowAdvisor extends
 		SecureWorkbenchWindowAdvisor {
 	public final static String IN_TRAY_PROPERTY = "org.argeo.slc.ui.inTray";
