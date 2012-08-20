@@ -22,7 +22,9 @@ import java.util.Map;
 
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
+import javax.jcr.SimpleCredentials;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,6 +69,7 @@ public class DistributionsView extends ViewPart implements SlcNames {
 	public final static String ID = DistPlugin.ID + ".distributionsView";
 
 	private Repository repository;
+	private RepositoryFactory repositoryFactory;
 
 	private TreeViewer viewer;
 
@@ -107,7 +110,17 @@ public class DistributionsView extends ViewPart implements SlcNames {
 
 		// Initializes repositories
 		// TODO make it more generic, with remote repositories etc.
-		repositories.add(new RepositoryElem("java", repository));
+		repositories.add(new RepositoryElem("java", repository, false));
+
+		// Remote
+		/*
+		String uri = "http://localhost:7070/org.argeo.jcr.webapp/remoting/java";
+		//String uri = "http://dev.argeo.org/org.argeo.jcr.webapp/pub/java";
+		Repository remoteRepository = JcrUtils.getRepositoryByUri(
+				repositoryFactory, uri);
+		repositories.add(new RepositoryElem("java@dev.argeo.org",
+				remoteRepository, true));
+		*/
 
 		viewer.setInput(getSite());
 
@@ -127,6 +140,10 @@ public class DistributionsView extends ViewPart implements SlcNames {
 
 	public void setRepository(Repository repository) {
 		this.repository = repository;
+	}
+
+	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+		this.repositoryFactory = repositoryFactory;
 	}
 
 	/** Programatically configure the context menu */
@@ -200,15 +217,25 @@ public class DistributionsView extends ViewPart implements SlcNames {
 
 	}
 
+	/** Wraps a repository **/
 	private static class RepositoryElem extends TreeParent {
 		// private final Repository repository;
 		private Session defaultSession;
+		private final Boolean isRemote;
 
-		public RepositoryElem(String name, Repository repository) {
+		public RepositoryElem(String name, Repository repository,
+				Boolean isRemote) {
 			super(name);
 			// this.repository = repository;
+			this.isRemote = isRemote;
 			try {
-				defaultSession = repository.login();
+				if (isRemote) {
+					SimpleCredentials sc = new SimpleCredentials("root",
+							"demo".toCharArray());
+					defaultSession = repository.login(sc);
+				} else {
+					defaultSession = repository.login();
+				}
 				String[] workspaceNames = defaultSession.getWorkspace()
 						.getAccessibleWorkspaceNames();
 				for (String workspace : workspaceNames)

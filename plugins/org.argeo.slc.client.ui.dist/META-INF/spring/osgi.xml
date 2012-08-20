@@ -10,4 +10,6 @@
 
 	<reference id="javaRepository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=java)" />
+
+	<reference id="repositoryFactory" interface="javax.jcr.RepositoryFactory" />
 </beans:beans>
