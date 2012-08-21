@@ -122,7 +122,7 @@ public class ArtifactIndexer implements NodeIndexer {
 						artifact.getGroupId());
 			}
 			JcrUtils.updateLastModifiedAndParents(groupBase,
-					RepoConstants.ARTIFACTS_BASE_PATH);
+					RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH);
 
 			if (log.isTraceEnabled())
 				log.trace("Indexed artifact " + artifact + " on " + fileNode);
@@ -133,7 +133,7 @@ public class ArtifactIndexer implements NodeIndexer {
 	}
 
 	private String getRelativePath(String nodePath) {
-		String basePath = RepoConstants.ARTIFACTS_BASE_PATH;
+		String basePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
 		if (!nodePath.startsWith(basePath))
 			return null;
 		String relativePath = nodePath.substring(basePath.length());

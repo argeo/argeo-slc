@@ -39,7 +39,7 @@ public class IndexDistribution implements Runnable {
 	private Repository repository;
 	private String workspace;
 
-	private String artifactBasePath = RepoConstants.ARTIFACTS_BASE_PATH;
+	private String artifactBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
 	private String distributionsBasePath = RepoConstants.DISTRIBUTIONS_BASE_PATH;
 	private String distributionName;
 

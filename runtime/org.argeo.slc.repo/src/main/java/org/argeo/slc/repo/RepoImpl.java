@@ -49,7 +49,7 @@ public class RepoImpl {
 					.getWorkspace()
 					.getObservationManager()
 					.addEventListener(artifactListener, Event.NODE_ADDED,
-							RepoConstants.ARTIFACTS_BASE_PATH, true, null,
+							RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, true, null,
 							null, true);
 			// localrepo
 			String localrepoWorkspace = "localrepo";

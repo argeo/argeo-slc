@@ -62,7 +62,7 @@ public class ImportMavenDependencies implements Runnable {
 	private Repository repository;
 	private String workspace;
 
-	private String artifactBasePath = RepoConstants.ARTIFACTS_BASE_PATH;
+	private String artifactBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
