@@ -15,6 +15,8 @@
  */
 package org.argeo.slc.client.ui.dist.editors;
 
+import javax.jcr.Credentials;
+import javax.jcr.GuestCredentials;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -43,7 +45,8 @@ public class DistributionEditor extends FormEditor implements SlcNames {
 			throws PartInitException {
 		DistributionEditorInput dei = (DistributionEditorInput) input;
 		try {
-			session = dei.getRepository().login(dei.getWorkspaceName());
+			session = dei.getRepository().login(dei.getCredentials(),
+					dei.getWorkspaceName());
 		} catch (RepositoryException e) {
 			throw new PartInitException("Cannot log to workspace "
 					+ dei.getWorkspaceName(), e);
@@ -55,8 +58,8 @@ public class DistributionEditor extends FormEditor implements SlcNames {
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new DistributionOverviewPage(this, "Overview", session));
 			addPage(new ArtifactsBrowserPage(this, "Browser", session));
+			addPage(new DistributionOverviewPage(this, "Overview", session));
 		} catch (PartInitException e) {
 			throw new ArgeoException("Cannot add distribution editor pages", e);
 		}

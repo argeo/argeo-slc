@@ -15,9 +15,11 @@
  */
 package org.argeo.slc.client.ui.dist.editors;
 
+import javax.jcr.Credentials;
 import javax.jcr.Repository;
 
 import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.repo.RepoConstants;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -27,20 +29,27 @@ import org.eclipse.ui.IPersistableElement;
  * */
 public class DistributionEditorInput implements IEditorInput, SlcNames {
 
+	private String repositoryName;
 	private Repository repository;
 	private String workspaceName;
-	private String artifactsBase = "/";
+	private String artifactsBase = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
+	private Credentials credentials;
 
-	public DistributionEditorInput(Repository repository, String workspaceName,
-			String artifactsBase) {
+	public DistributionEditorInput(String repositoryName,
+			Repository repository, String workspaceName, String artifactsBase,
+			Credentials credentials) {
 		super();
 		this.repository = repository;
+		this.repositoryName = repositoryName;
 		this.workspaceName = workspaceName;
 		this.artifactsBase = artifactsBase;
+		this.credentials = credentials;
 	}
 
-	public DistributionEditorInput(Repository repository, String workspaceName) {
-		this(repository, workspaceName, "/");
+	public DistributionEditorInput(String repositoryName,
+			Repository repository, String workspaceName, Credentials credentials) {
+		this(repositoryName, repository, workspaceName,
+				RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, credentials);
 	}
 
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
@@ -91,6 +100,14 @@ public class DistributionEditorInput implements IEditorInput, SlcNames {
 
 	public String getArtifactsBase() {
 		return artifactsBase;
+	}
+
+	public String getRepositoryName() {
+		return repositoryName;
+	}
+
+	public Credentials getCredentials() {
+		return credentials;
 	}
 
 }

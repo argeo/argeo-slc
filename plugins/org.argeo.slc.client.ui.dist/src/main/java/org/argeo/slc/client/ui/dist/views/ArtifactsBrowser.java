@@ -100,7 +100,7 @@ public class ArtifactsBrowser extends ViewPart implements DistConstants,
 		// Model initialisation
 		if (jcrSession != null) {
 			try {
-				rootNode = jcrSession.getNode(ARTIFACTS_BASE_PATH);
+				rootNode = jcrSession.getNode(DEFAULT_ARTIFACTS_BASE_PATH);
 				artifactTreeViewer.setInput(rootNode);
 			} catch (RepositoryException e) {
 				throw new ArgeoException("Cannot load base artifact nodes", e);

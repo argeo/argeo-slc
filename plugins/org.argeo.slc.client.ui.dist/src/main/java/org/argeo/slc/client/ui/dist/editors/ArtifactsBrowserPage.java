@@ -110,7 +110,12 @@ public class ArtifactsBrowserPage extends FormPage implements DistConstants,
 		// Model initialisation
 		if (jcrSession != null) {
 			try {
-				rootNode = jcrSession.getNode(ARTIFACTS_BASE_PATH);
+				DistributionEditorInput dei = (DistributionEditorInput) getEditorInput();
+				if (dei.getArtifactsBase().equals(DEFAULT_ARTIFACTS_BASE_PATH)) {
+					rootNode = jcrSession.getRootNode();
+				} else {
+					rootNode = jcrSession.getNode(dei.getArtifactsBase());
+				}
 				artifactTreeViewer.setInput(rootNode);
 			} catch (RepositoryException e) {
 				throw new ArgeoException("Cannot load base artifact nodes", e);

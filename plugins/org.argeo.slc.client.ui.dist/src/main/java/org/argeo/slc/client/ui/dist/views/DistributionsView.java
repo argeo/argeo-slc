@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.Credentials;
+import javax.jcr.GuestCredentials;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
@@ -110,17 +112,31 @@ public class DistributionsView extends ViewPart implements SlcNames {
 
 		// Initializes repositories
 		// TODO make it more generic, with remote repositories etc.
-		repositories.add(new RepositoryElem("java", repository, false));
+		repositories.add(new RepositoryElem("java", repository, null));
 
 		// Remote
-		/*
-		String uri = "http://localhost:7070/org.argeo.jcr.webapp/remoting/java";
-		//String uri = "http://dev.argeo.org/org.argeo.jcr.webapp/pub/java";
-		Repository remoteRepository = JcrUtils.getRepositoryByUri(
-				repositoryFactory, uri);
-		repositories.add(new RepositoryElem("java@dev.argeo.org",
-				remoteRepository, true));
-		*/
+		String uri = null;
+		Credentials credentials = null;
+		Repository remoteRepository = null;
+
+		uri = "http://dev.argeo.org/org.argeo.jcr.webapp/pub/java";
+		credentials = new GuestCredentials();
+		remoteRepository = JcrUtils.getRepositoryByUri(repositoryFactory, uri);
+		repositories.add(new RepositoryElem("anonymous@dev.argeo.org//java",
+				remoteRepository, credentials));
+
+		uri = "http://localhost:7070/org.argeo.jcr.webapp/pub/java";
+		credentials = new GuestCredentials();
+		remoteRepository = JcrUtils.getRepositoryByUri(repositoryFactory, uri);
+		repositories.add(new RepositoryElem("anonymous@localhost//java",
+				remoteRepository, credentials));
+
+		uri = "http://localhost:7070/org.argeo.jcr.webapp/remoting/java";
+		credentials = new SimpleCredentials(System.getProperty("user.name"),
+				"".toCharArray());
+		remoteRepository = JcrUtils.getRepositoryByUri(repositoryFactory, uri);
+		repositories.add(new RepositoryElem("@localhost//java",
+				remoteRepository, credentials));
 
 		viewer.setInput(getSite());
 
@@ -221,25 +237,17 @@ public class DistributionsView extends ViewPart implements SlcNames {
 	private static class RepositoryElem extends TreeParent {
 		// private final Repository repository;
 		private Session defaultSession;
-		private final Boolean isRemote;
 
 		public RepositoryElem(String name, Repository repository,
-				Boolean isRemote) {
+				Credentials credentials) {
 			super(name);
-			// this.repository = repository;
-			this.isRemote = isRemote;
 			try {
-				if (isRemote) {
-					SimpleCredentials sc = new SimpleCredentials("root",
-							"demo".toCharArray());
-					defaultSession = repository.login(sc);
-				} else {
-					defaultSession = repository.login();
-				}
+				defaultSession = repository.login(credentials);
 				String[] workspaceNames = defaultSession.getWorkspace()
 						.getAccessibleWorkspaceNames();
 				for (String workspace : workspaceNames)
-					addChild(new DistributionElem(repository, workspace));
+					addChild(new DistributionElem(repository, workspace,
+							credentials));
 			} catch (RepositoryException e) {
 				ErrorFeedback.show("Cannot log to repository", e);
 			}
@@ -257,11 +265,14 @@ public class DistributionsView extends ViewPart implements SlcNames {
 	private static class DistributionElem extends TreeParent {
 		private final String workspaceName;
 		private final Repository repository;
+		private final Credentials credentials;
 
-		public DistributionElem(Repository repository, String workspaceName) {
+		public DistributionElem(Repository repository, String workspaceName,
+				Credentials credentials) {
 			super(workspaceName);
 			this.workspaceName = workspaceName;
 			this.repository = repository;
+			this.credentials = credentials;
 		}
 
 		public String getWorkspaceName() {
@@ -270,6 +281,10 @@ public class DistributionsView extends ViewPart implements SlcNames {
 
 		public Repository getRepository() {
 			return repository;
+		}
+
+		public Credentials getCredentials() {
+			return credentials;
 		}
 	}
 
@@ -290,8 +305,10 @@ public class DistributionsView extends ViewPart implements SlcNames {
 			if (obj instanceof DistributionElem) {
 				DistributionElem distributionElem = (DistributionElem) obj;
 				DistributionEditorInput dei = new DistributionEditorInput(
+						distributionElem.getName(),
 						distributionElem.getRepository(),
-						distributionElem.getWorkspaceName());
+						distributionElem.getWorkspaceName(),
+						distributionElem.getCredentials());
 				try {
 					DistPlugin.getDefault().getWorkbench()
 							.getActiveWorkbenchWindow().getActivePage()
