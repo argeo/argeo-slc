@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.utils.CommandUtils;
+import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
@@ -118,11 +119,11 @@ public class JcrResultTreeView extends ViewPart {
 			ObservationManager observationManager = session.getWorkspace()
 					.getObservationManager();
 			// FIXME Will not be notified if empty result is deleted
-			if (JcrUtils.getUserHome(session) != null) {
+			if (ArgeoJcrUtils.getUserHome(session) != null) {
 				resultsObserver = new ResultObserver(resultTreeViewer.getTree()
 						.getDisplay());
 				observationManager.addEventListener(resultsObserver,
-						Event.PROPERTY_ADDED | Event.NODE_REMOVED, JcrUtils
+						Event.PROPERTY_ADDED | Event.NODE_REMOVED, ArgeoJcrUtils
 								.getUserHome(session).getPath(), true, null,
 						observedNodeTypes, false);
 			}
@@ -316,7 +317,7 @@ public class JcrResultTreeView extends ViewPart {
 					resultsObserver = new ResultObserver(resultTreeViewer
 							.getTree().getDisplay());
 					observationManager.addEventListener(resultsObserver,
-							Event.PROPERTY_ADDED | Event.NODE_REMOVED, JcrUtils
+							Event.PROPERTY_ADDED | Event.NODE_REMOVED, ArgeoJcrUtils
 									.getUserHome(session).getPath(), true,
 							null, observedNodeTypes, false);
 				} catch (RepositoryException e) {

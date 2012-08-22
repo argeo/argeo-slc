@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.eclipse.ui.AbstractTreeContentProvider;
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.TreeParent;
+import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
@@ -121,20 +122,20 @@ public class DistributionsView extends ViewPart implements SlcNames {
 
 		uri = "http://dev.argeo.org/org.argeo.jcr.webapp/pub/java";
 		credentials = new GuestCredentials();
-		remoteRepository = JcrUtils.getRepositoryByUri(repositoryFactory, uri);
+		remoteRepository = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
 		repositories.add(new RepositoryElem("anonymous@dev.argeo.org//java",
 				remoteRepository, credentials));
 
 		uri = "http://localhost:7070/org.argeo.jcr.webapp/pub/java";
 		credentials = new GuestCredentials();
-		remoteRepository = JcrUtils.getRepositoryByUri(repositoryFactory, uri);
+		remoteRepository = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
 		repositories.add(new RepositoryElem("anonymous@localhost//java",
 				remoteRepository, credentials));
 
 		uri = "http://localhost:7070/org.argeo.jcr.webapp/remoting/java";
 		credentials = new SimpleCredentials(System.getProperty("user.name"),
 				"".toCharArray());
-		remoteRepository = JcrUtils.getRepositoryByUri(repositoryFactory, uri);
+		remoteRepository = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
 		repositories.add(new RepositoryElem("@localhost//java",
 				remoteRepository, credentials));
 

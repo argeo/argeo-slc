@@ -22,6 +22,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
+import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
@@ -83,7 +84,7 @@ public class SlcJcrUtils implements SlcNames {
 	/** Create a new execution result path based on the current time */
 	public static String createResultPath(String username, String uuid) {
 		Calendar now = new GregorianCalendar();
-		return JcrUtils.getUserHomePath(username) + '/' + SlcNames.SLC_RESULTS
+		return ArgeoJcrUtils.getUserHomePath(username) + '/' + SlcNames.SLC_RESULTS
 				+ '/' + JcrUtils.dateAsPath(now, true) + uuid;
 	}
 
