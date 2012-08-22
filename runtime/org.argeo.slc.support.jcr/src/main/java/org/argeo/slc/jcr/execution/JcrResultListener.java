@@ -169,7 +169,7 @@ public class JcrResultListener implements TreeTestResultListener, SlcNames {
 			throws RepositoryException {
 		String uuid = testResult.getUuid();
 		String path = SlcJcrUtils.createResultPath(session.getUserID(), uuid);
-		Node resultNode = JcrUtils.mkdirs(session, path, SlcTypes.SLC_RESULT);
+		Node resultNode = JcrUtils.mkdirs(session, path, SlcTypes.SLC_TEST_RESULT);
 		resultNode.setProperty(SLC_UUID, uuid);
 		for (Map.Entry<String, String> entry : testResult.getAttributes()
 				.entrySet()) {

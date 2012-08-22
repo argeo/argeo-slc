@@ -38,13 +38,13 @@ import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestRun;
 import org.argeo.slc.test.TestStatus;
 
-/** {@link TestResult} wrapping a JCR node of type {@link SlcTypes#SLC_RESULT}. */
+/** {@link TestResult} wrapping a JCR node of type {@link SlcTypes#SLC_TEST_RESULT}. */
 public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	/** Should only be set for an already existing result. */
 	private String uuid;
 	private Repository repository;
 	private Session session;
-	private String resultType = SlcTypes.SLC_RESULT;
+	private String resultType = SlcTypes.SLC_TEST_RESULT;
 
 	/** cached for performance purposes */
 	private String nodeIdentifier = null;
@@ -93,7 +93,8 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 			} else {
 				QueryManager qm = session.getWorkspace().getQueryManager();
 				Query q = qm.createQuery(
-						"select * from [slc:result] where [slc:uuid]='" + uuid
+						"select * from [" + SlcTypes.SLC_TEST_RESULT
+						+ "] where [slc:uuid]='" + uuid
 								+ "'", Query.JCR_SQL2);
 				resultNode = JcrUtils.querySingleNode(q);
 				if (resultNode != null)
@@ -111,9 +112,7 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	public void addResultPart(TestResultPart testResultPart) {
 		Node node = getNode();
 		try {
-			// TODO: find a better way to name it by default
-			String partName = Long.toString(System.currentTimeMillis());
-			Node resultPartNode = node.addNode(partName, SlcTypes.SLC_CHECK);
+			Node resultPartNode = node.addNode(SlcNames.SLC_STATUS, SlcTypes.SLC_CHECK);
 			resultPartNode.setProperty(SLC_SUCCESS,
 					testResultPart.getStatus() == TestStatus.PASSED);
 			if (testResultPart.getMessage() != null)

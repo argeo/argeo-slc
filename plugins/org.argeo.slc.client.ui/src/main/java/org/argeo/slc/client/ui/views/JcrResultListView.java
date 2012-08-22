@@ -35,7 +35,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
 import org.argeo.slc.client.ui.editors.ProcessEditorInput;
-import org.argeo.slc.jcr.SlcJcrConstants;
+import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -87,12 +87,12 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 		try {
 			ObservationManager observationManager = session.getWorkspace()
 					.getObservationManager();
-			String[] nodeTypes = { SlcTypes.SLC_RESULT };
+			String[] nodeTypes = { SlcTypes.SLC_TEST_RESULT };
 			// FIXME Will not be notified if empty result is deleted
 			observationManager.addEventListener(resultsObserver,
 					Event.PROPERTY_ADDED | Event.NODE_REMOVED,
-					SlcJcrConstants.RESULTS_BASE_PATH, true, null, nodeTypes,
-					false);
+					SlcJcrResultUtils.getSlcResultsBasePath(session), true,
+					null, nodeTypes, false);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot register listeners", e);
 		}
@@ -167,7 +167,8 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 		public Object[] getElements(Object inputElement) {
 			try {
 				// TODO filter, optimize with virtual table, ...
-				String sql = "SELECT * from [slc:result] ORDER BY [jcr:lastModified] DESC";
+				String sql = "SELECT * from [" + SlcTypes.SLC_TEST_RESULT
+						+ "] ORDER BY [jcr:lastModified] DESC";
 				Query query = session.getWorkspace().getQueryManager()
 						.createQuery(sql, Query.JCR_SQL2);
 				// TODO paging
@@ -276,5 +277,4 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	public void setSession(Session session) {
 		this.session = session;
 	}
-
 }

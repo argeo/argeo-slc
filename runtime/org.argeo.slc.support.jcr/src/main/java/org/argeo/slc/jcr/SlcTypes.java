@@ -31,10 +31,11 @@ public interface SlcTypes {
 	public final static String SLC_PRIMITIVE_SPEC_ATTRIBUTE = "slc:primitiveSpecAttribute";
 	public final static String SLC_REF_SPEC_ATTRIBUTE = "slc:refSpecAttribute";
 
-	public final static String SLC_RESULT = "slc:result";
+	public final static String SLC_TEST_RESULT = "slc:testResult";
 	public final static String SLC_CHECK = "slc:check";
 	public final static String SLC_PROPERTY = "slc:property";
 	public final static String SLC_DIFF_RESULT = "slc:diffResult";
+	public final static String SLC_RESULT_FOLDER = "slc:resultFolder";
 
 	// Log levels
 	public final static String SLC_LOG_ENTRY = "slc:logEntry";
@@ -60,7 +61,7 @@ public interface SlcTypes {
 	public final static String SLC_DYNAMIC_IMPORTED_PACKAGE = "slc:dynamicImportedPackage";
 	public final static String SLC_REQUIRED_BUNDLE = "slc:requiredBundle";
 	public final static String SLC_FRAGMENT_HOST = "slc:fragmentHost";
-	
+
 	// origin
 	public final static String SLC_KNOWN_ORIGIN = "slc:knownOrigin";
 	public final static String SLC_PROXIED = "slc:proxied";

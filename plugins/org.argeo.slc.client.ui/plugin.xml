@@ -89,6 +89,22 @@
 	        id="org.argeo.slc.client.ui.updateModule"
 	    	name="Update Module">
 	    </command>
+	    
+	    <!-- Commands that do not need dependency injection --> 
+	    <command
+	        defaultHandler="org.argeo.slc.client.ui.commands.AddResultFolder"
+	        id="org.argeo.slc.client.ui.addResultFolder"
+	    	name="Add result folder">
+	    </command>
+	    <command
+	        defaultHandler="org.argeo.slc.client.ui.commands.RefreshJcrResultTreeView"
+	        id="org.argeo.slc.client.ui.refreshJcrResultTreeView"
+	    	name="Refresh">
+	    	<commandParameter
+         		id="org.argeo.slc.client.ui.param.refreshType"
+         		name="Refresh type">
+  	 		</commandParameter>
+	    </command>
 	    <!--
 		<command
 	        defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"

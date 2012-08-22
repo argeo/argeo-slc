@@ -95,14 +95,20 @@ mixin
 + * (slc:executionSpecAttribute) *
 
 // RESULT
-[slc:result] > nt:unstructured, mix:created, mix:lastModified
+[slc:testResult] > nt:unstructured, mix:created, mix:lastModified
 - slc:uuid (STRING) ! m
 - slc:testCase (STRING)
 - slc:completed (DATE)
++ slc:testStatus (slc:check)
 
-[slc:diffResult] > slc:result
+[slc:diffResult] > slc:testResult
 + slc:summary
 + slc:issues
+
+[slc:resultFolder] > nt:unstructured
++ slc:folderStatus (slc:check)
++ * (slc:resultFolder) *
++ * (slc:testResult) *
 
 [slc:check] > nt:unstructured
 // true for PASSED, false for FAILED or ERROR
