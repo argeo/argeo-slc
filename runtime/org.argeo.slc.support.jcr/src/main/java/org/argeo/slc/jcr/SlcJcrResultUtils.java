@@ -20,8 +20,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.argeo.ArgeoException;
-import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
 
 /**
@@ -36,7 +36,7 @@ public class SlcJcrResultUtils {
 	public static String getSlcResultsBasePath(Session session) {
 		try {
 
-			return ArgeoJcrUtils.getUserHome(session).getPath() + "/"
+			return UserJcrUtils.getUserHome(session).getPath() + "/"
 					+ SlcNames.SLC_RESULTS;
 		} catch (RepositoryException re) {
 			throw new ArgeoException(
@@ -50,7 +50,7 @@ public class SlcJcrResultUtils {
 	 */
 	public static String getMyResultsBasePath(Session session) {
 		try {
-			return ArgeoJcrUtils.getUserHome(session).getPath() + "/"
+			return UserJcrUtils.getUserHome(session).getPath() + "/"
 					+ SlcJcrConstants.SLC_MYRESULT_BASEPATH;
 		} catch (RepositoryException re) {
 			throw new ArgeoException(

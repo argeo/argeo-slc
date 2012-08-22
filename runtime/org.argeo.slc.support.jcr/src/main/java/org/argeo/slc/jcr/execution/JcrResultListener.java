@@ -168,7 +168,7 @@ public class JcrResultListener implements TreeTestResultListener, SlcNames {
 	protected Node createResultNode(TreeTestResult testResult)
 			throws RepositoryException {
 		String uuid = testResult.getUuid();
-		String path = SlcJcrUtils.createResultPath(session.getUserID(), uuid);
+		String path = SlcJcrUtils.createResultPath(session, uuid);
 		Node resultNode = JcrUtils.mkdirs(session, path, SlcTypes.SLC_TEST_RESULT);
 		resultNode.setProperty(SLC_UUID, uuid);
 		for (Map.Entry<String, String> entry : testResult.getAttributes()

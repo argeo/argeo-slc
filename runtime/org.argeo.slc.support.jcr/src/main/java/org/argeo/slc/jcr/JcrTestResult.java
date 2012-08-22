@@ -38,7 +38,10 @@ import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestRun;
 import org.argeo.slc.test.TestStatus;
 
-/** {@link TestResult} wrapping a JCR node of type {@link SlcTypes#SLC_TEST_RESULT}. */
+/**
+ * {@link TestResult} wrapping a JCR node of type
+ * {@link SlcTypes#SLC_TEST_RESULT}.
+ */
 public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	/** Should only be set for an already existing result. */
 	private String uuid;
@@ -59,8 +62,7 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 			if (uuid == null) {
 				// create new result
 				uuid = UUID.randomUUID().toString();
-				String path = SlcJcrUtils.createResultPath(session.getUserID(),
-						uuid);
+				String path = SlcJcrUtils.createResultPath(session, uuid);
 				Node resultNode = JcrUtils.mkdirs(session, path, resultType);
 				resultNode.setProperty(SLC_UUID, uuid);
 				for (String attr : attributes.keySet()) {
@@ -92,10 +94,9 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 				return session.getNodeByIdentifier(nodeIdentifier);
 			} else {
 				QueryManager qm = session.getWorkspace().getQueryManager();
-				Query q = qm.createQuery(
-						"select * from [" + SlcTypes.SLC_TEST_RESULT
-						+ "] where [slc:uuid]='" + uuid
-								+ "'", Query.JCR_SQL2);
+				Query q = qm.createQuery("select * from ["
+						+ SlcTypes.SLC_TEST_RESULT + "] where [slc:uuid]='"
+						+ uuid + "'", Query.JCR_SQL2);
 				resultNode = JcrUtils.querySingleNode(q);
 				if (resultNode != null)
 					nodeIdentifier = resultNode.getIdentifier();
@@ -112,7 +113,8 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	public void addResultPart(TestResultPart testResultPart) {
 		Node node = getNode();
 		try {
-			Node resultPartNode = node.addNode(SlcNames.SLC_STATUS, SlcTypes.SLC_CHECK);
+			Node resultPartNode = node.addNode(SlcNames.SLC_STATUS,
+					SlcTypes.SLC_CHECK);
 			resultPartNode.setProperty(SLC_SUCCESS,
 					testResultPart.getStatus() == TestStatus.PASSED);
 			if (testResultPart.getMessage() != null)
@@ -206,8 +208,8 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 		this.attributes = attributes;
 	}
 
-//	public void setLogoutWhenDestroyed(Boolean logoutWhenDestroyed) {
-//		this.logoutWhenDestroyed = logoutWhenDestroyed;
-//	}
+	// public void setLogoutWhenDestroyed(Boolean logoutWhenDestroyed) {
+	// this.logoutWhenDestroyed = logoutWhenDestroyed;
+	// }
 
 }
