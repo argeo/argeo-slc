@@ -30,5 +30,5 @@ public interface SlcJcrConstants {
 	/*
 	 * SLC SPECIFIC JCR PATHS
 	 */
-	public final static String SLC_MYRESULT_BASEPATH = "slc:myResults/";
+	public final static String SLC_MYRESULT_BASEPATH = "slc:myResults";
 }

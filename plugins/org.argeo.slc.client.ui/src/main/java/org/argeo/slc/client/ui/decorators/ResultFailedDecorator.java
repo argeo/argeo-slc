@@ -15,8 +15,6 @@
  */
 package org.argeo.slc.client.ui.decorators;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.model.ResultParent;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -30,8 +28,8 @@ import org.eclipse.ui.ISharedImages;
 public class ResultFailedDecorator extends LabelProvider implements
 		ILabelDecorator {
 
-	private final static Log log = LogFactory
-			.getLog(ResultFailedDecorator.class);
+	// private final static Log log = LogFactory
+	// .getLog(ResultFailedDecorator.class);
 
 	public ResultFailedDecorator() {
 		super();
@@ -45,8 +43,6 @@ public class ResultFailedDecorator extends LabelProvider implements
 		// decorates resource icon with basic decorations provided
 		// by Eclipse
 		if (object instanceof ResultParent) {
-			log.debug("decorate : " + ((ResultParent) object).getName()
-					+ " - passed : " + ((ResultParent) object).isPassed());
 			if (!((ResultParent) object).isPassed()) {
 				ImageDescriptor desc = ClientUiPlugin.getDefault()
 						.getWorkbench().getSharedImages()

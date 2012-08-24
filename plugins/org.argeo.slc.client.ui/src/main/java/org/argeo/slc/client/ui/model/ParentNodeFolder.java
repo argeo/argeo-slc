@@ -21,14 +21,16 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 
 /**
- * UI Tree component that wrap a node of type NT_UNSTRUCTURED. list either other
- * folders and/or a list of results. keeps a reference to its parent.
+ * UI Tree component that wrap a node of type NT_UNSTRUCTURED. list either
+ * result folders, other folders and/or a list of results. keeps a reference to
+ * its parent.
  */
-public class SimpleNodeFolder extends ResultParent {
+public class ParentNodeFolder extends ResultParent {
 
 	private Node node = null;
 
@@ -39,7 +41,7 @@ public class SimpleNodeFolder extends ResultParent {
 	 *            throws an exception if null
 	 * @param name
 	 */
-	public SimpleNodeFolder(SimpleNodeFolder parent, Node node, String name) {
+	public ParentNodeFolder(ParentNodeFolder parent, Node node, String name) {
 		super(name);
 		if (node == null)
 			throw new SlcException("Node Object cannot be null");
@@ -58,8 +60,13 @@ public class SimpleNodeFolder extends ResultParent {
 							currNode.getProperty(SlcNames.SLC_TEST_CASE)
 									.getString());
 					addChild(srn);
+				} else if (currNode.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
+					// FIXME change label
+					ResultFolder rf = new ResultFolder(this, currNode,
+							currNode.getName());
+					addChild(rf);
 				} else if (currNode.isNodeType(NodeType.NT_UNSTRUCTURED))
-					addChild(new SimpleNodeFolder(this, currNode,
+					addChild(new ParentNodeFolder(this, currNode,
 							currNode.getName()));
 			}
 		} catch (RepositoryException re) {
@@ -76,5 +83,24 @@ public class SimpleNodeFolder extends ResultParent {
 
 	public Node getNode() {
 		return node;
+	}
+
+	/**
+	 * Overriden in the specific case of "My result" root object to return an
+	 * ordered list of children
+	 */
+	public synchronized Object[] getChildren() {
+		Object[] children = super.getChildren();
+		try {
+			if (node.getPath().equals(
+					SlcJcrResultUtils.getMyResultsBasePath(node.getSession())))
+				return ResultParentUtils.orderChildren(children);
+			else
+				return children;
+		} catch (RepositoryException re) {
+			throw new SlcException(
+					"Unexpected error while initializing simple node folder : "
+							+ getName(), re);
+		}
 	}
 }

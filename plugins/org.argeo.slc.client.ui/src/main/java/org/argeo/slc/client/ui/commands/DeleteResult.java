@@ -26,7 +26,9 @@ import javax.jcr.Session;
 
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.slc.client.ui.model.ResultFolder;
+import org.argeo.slc.client.ui.model.ResultParentUtils;
 import org.argeo.slc.client.ui.model.SingleResultNode;
+import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -83,7 +85,9 @@ public class DeleteResult extends AbstractHandler {
 						for (final String path : nodes) {
 							if (session.itemExists(path)) {
 								node = session.getNode(path);
+								Node parent = node.getParent();
 								node.remove();
+								ResultParentUtils.updateStatusOnRemoval(parent);
 							}
 							monitor.worked(1);
 						}

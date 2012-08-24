@@ -18,7 +18,9 @@ package org.argeo.slc.jcr;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
 
+import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
@@ -58,20 +60,36 @@ public class SlcJcrResultUtils {
 		}
 	}
 
+	/**
+	 * Creates a new node with type NodeType.NT_UNSTRUCTURED at the given
+	 * absolute path. If a node already exists at the given path, returns that
+	 * node if it has the correct type and throws an exception otherwise.
+	 * 
+	 * @param session
+	 * @return
+	 */
 	public static Node getMyResultParentNode(Session session) {
 		try {
-			if (session.nodeExists(SlcJcrResultUtils
-					.getMyResultsBasePath(session)))
-				return session.getNode(getMyResultsBasePath(session));
-			else
-				return createResultFolderNode(session,
-						getMyResultsBasePath(session));
+			String absPath = getMyResultsBasePath(session);
+			if (session.nodeExists(absPath)) {
+				Node currNode = session.getNode(absPath);
+				if (currNode.isNodeType(NodeType.NT_UNSTRUCTURED))
+					return currNode;
+				else
+					throw new SlcException(
+							"A node already exists at this path : " + absPath
+									+ " that has the wrong type. ");
+			} else {
+				Node myResParNode = JcrUtils.mkdirs(session, absPath);
+				myResParNode.setPrimaryType(NodeType.NT_UNSTRUCTURED);
+				session.save();
+				return myResParNode;
+			}
 		} catch (RepositoryException re) {
 			throw new ArgeoException(
 					"Unexpected error while creating user MyResult base node.",
 					re);
 		}
-
 	}
 
 	/**

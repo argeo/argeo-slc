@@ -27,7 +27,7 @@ import org.argeo.slc.jcr.SlcTypes;
  * UI Tree component that wrap a node of type ResultFolder. list either other
  * folders and/or a list of results. keeps a reference to its parent.
  */
-public class ResultFolder extends ResultParent {
+public class ResultFolder extends ResultParent implements Comparable<ResultFolder> {
 
 	private Node node = null;
 
@@ -38,16 +38,17 @@ public class ResultFolder extends ResultParent {
 	 *            throws an exception if null
 	 * @param name
 	 */
-	public ResultFolder(ResultFolder parent, Node node, String name) {
+	public ResultFolder(ResultParent parent, Node node, String name) {
 		super(name);
 		try {
 			if (node == null)
 				throw new SlcException("Node Object cannot be null");
 			setParent(parent);
 			this.node = node;
-			// initialize passed status
-			setPassed(node.getNode(SlcNames.SLC_STATUS)
-					.getProperty(SlcNames.SLC_SUCCESS).getBoolean());
+			// initialize passed status if possible
+			if (node.hasNode(SlcNames.SLC_STATUS))
+				setPassed(node.getNode(SlcNames.SLC_STATUS)
+						.getProperty(SlcNames.SLC_SUCCESS).getBoolean());
 		} catch (RepositoryException re) {
 			throw new SlcException(
 					"Unexpected error while initializing result folder : "
@@ -90,51 +91,15 @@ public class ResultFolder extends ResultParent {
 		return node;
 	}
 
-	// /** Override normal behavior to initialize display */
-	// @Override
-	// public synchronized Object[] getChildren() {
-	// if (isLoaded()) {
-	// return super.getChildren();
-	// } else {
-	// // initialize current object
-	// try {
-	// if (node != null) {
-	// NodeIterator ni = node.getNodes();
-	// while (ni.hasNext()) {
-	// Node currNode = ni.nextNode();
-	// if (currNode.isNodeType(SlcTypes.SLC_TEST_RESULT))
-	// addChild(new SingleResultNode(this, node, node
-	// .getProperty(SlcNames.SLC_TEST_CASE)
-	// .getString()));
-	// else if (currNode
-	// .isNodeType(SlcTypes.SLC_RESULT_FOLDER))
-	// addChild(new ResultFolder(this, node,
-	// node.getName()));
-	// }
-	// }
-	// return super.getChildren();
-	// } catch (RepositoryException e) {
-	// throw new ArgeoException(
-	// "Cannot initialize WorkspaceNode UI object."
-	// + getName(), e);
-	// }
-	// }
-	// }
+	/**
+	 * Overriden to return an ordered list of children
+	 */
+	public synchronized Object[] getChildren() {
+		Object[] children = super.getChildren();
+		return ResultParentUtils.orderChildren(children);
+	}
 
-	// @Override
-	// public boolean refreshPassedStatus() {
-	// Object[] children = getChildren();
-	// isPassed = true;
-	// checkChildrenStatus: for (int i = 0; i <= children.length; i++) {
-	// if (children[i] instanceof ResultFolder) {
-	//
-	// }
-	// if (!((ResultParent) children[i]).isPassed()) {
-	// isPassed = false;
-	// break checkChildrenStatus;
-	// }
-	// }
-	// return isPassed;
-	// }
-
+	public int compareTo(ResultFolder o) {
+		return super.compareTo(o);
+	}
 }

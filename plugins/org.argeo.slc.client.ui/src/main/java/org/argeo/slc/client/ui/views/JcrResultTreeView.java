@@ -1,6 +1,7 @@
 package org.argeo.slc.client.ui.views;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -11,6 +12,7 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
@@ -25,10 +27,12 @@ import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.commands.AddResultFolder;
+import org.argeo.slc.client.ui.model.ParentNodeFolder;
 import org.argeo.slc.client.ui.model.ResultFolder;
 import org.argeo.slc.client.ui.model.ResultParent;
-import org.argeo.slc.client.ui.model.SimpleNodeFolder;
+import org.argeo.slc.client.ui.model.ResultParentUtils;
 import org.argeo.slc.client.ui.model.SingleResultNode;
+import org.argeo.slc.client.ui.model.VirtualFolder;
 import org.argeo.slc.client.ui.providers.ResultTreeContentProvider;
 import org.argeo.slc.client.ui.providers.ResultTreeLabelProvider;
 import org.argeo.slc.jcr.SlcJcrResultUtils;
@@ -82,7 +86,13 @@ public class JcrResultTreeView extends ViewPart {
 
 	private EventListener resultsObserver = null;
 
-	private final static String[] observedNodeTypes = { SlcTypes.SLC_TEST_RESULT };
+	private final static String[] observedNodeTypes = {
+			SlcTypes.SLC_TEST_RESULT, SlcTypes.SLC_RESULT_FOLDER,
+			NodeType.NT_UNSTRUCTURED };
+
+	// FIXME cache to ease refresh after D&D
+	private ResultParent lastSelectedElement;
+	private ResultParent lastSelectedElementParent;
 
 	/**
 	 * To be overridden to adapt size of form and result frames.
@@ -114,23 +124,6 @@ public class JcrResultTreeView extends ViewPart {
 
 		// Refresh the view to initialize it
 		refresh(null);
-
-		try {
-			ObservationManager observationManager = session.getWorkspace()
-					.getObservationManager();
-			// FIXME Will not be notified if empty result is deleted
-			if (UserJcrUtils.getUserHome(session) != null) {
-				resultsObserver = new ResultObserver(resultTreeViewer.getTree()
-						.getDisplay());
-				observationManager.addEventListener(resultsObserver,
-						Event.PROPERTY_ADDED | Event.NODE_REMOVED, UserJcrUtils
-								.getUserHome(session).getPath(), true, null,
-						observedNodeTypes, false);
-			}
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot register listeners", e);
-		}
-
 	}
 
 	// The main tree viewer
@@ -183,10 +176,12 @@ public class JcrResultTreeView extends ViewPart {
 										.getNode());
 					else
 						propertiesViewer.setInput(null);
+					lastSelectedElement = (ResultParent) firstItem;
+					lastSelectedElementParent = (ResultParent) ((ResultParent) firstItem)
+							.getParent();
 				}
 			}
 		});
-
 		return viewer;
 	}
 
@@ -308,16 +303,13 @@ public class JcrResultTreeView extends ViewPart {
 		if (resultParent == null) {
 			resultTreeViewer.setInput(initializeResultTree());
 			if (resultsObserver == null) {
-				// force initialization of the resultsObserver, only useful
-				// if the current view has been displayed before a single
-				// test has been run
 				try {
 					ObservationManager observationManager = session
 							.getWorkspace().getObservationManager();
 					resultsObserver = new ResultObserver(resultTreeViewer
 							.getTree().getDisplay());
 					observationManager.addEventListener(resultsObserver,
-							Event.PROPERTY_ADDED | Event.NODE_REMOVED, UserJcrUtils
+							Event.NODE_ADDED | Event.NODE_REMOVED, UserJcrUtils
 									.getUserHome(session).getPath(), true,
 							null, observedNodeTypes, false);
 				} catch (RepositoryException e) {
@@ -331,21 +323,63 @@ public class JcrResultTreeView extends ViewPart {
 				ResultFolder currFolder = (ResultFolder) resultParent;
 				jcrRefresh(currFolder.getNode());
 				currFolder.forceFullRefresh();
+				resultTreeViewer.refresh(lastSelectedElement);
 			}
 		}
 	}
 
 	private ResultParent[] initializeResultTree() {
-		ResultParent[] roots = new ResultParent[2];
 		try {
-			roots[0] = new ResultFolder(null,
-					SlcJcrResultUtils.getMyResultParentNode(session),
-					"My results");
-			Node otherResultsPar = session.getNode(SlcJcrResultUtils
-					.getSlcResultsBasePath(session));
-			roots[1] = new SimpleNodeFolder(null, otherResultsPar,
-					"All results");
-			return roots;
+			if (session.nodeExists(SlcJcrResultUtils
+					.getSlcResultsBasePath(session))) {
+				ResultParent[] roots = new ResultParent[5];
+
+				// My results
+				roots[0] = new ParentNodeFolder(null,
+						SlcJcrResultUtils.getMyResultParentNode(session),
+						"My results");
+
+				// today
+				Calendar cal = Calendar.getInstance();
+				String relPath = JcrUtils.dateAsPath(cal);
+				List<String> datePathes = new ArrayList<String>();
+				datePathes.add(relPath);
+				roots[1] = new VirtualFolder(null,
+						ResultParentUtils.getResultsForDates(session,
+								datePathes), "Today");
+
+				// Yesterday
+				cal = Calendar.getInstance();
+				cal.add(Calendar.DAY_OF_YEAR, -1);
+				relPath = JcrUtils.dateAsPath(cal);
+				datePathes = new ArrayList<String>();
+				datePathes.add(relPath);
+				roots[2] = new VirtualFolder(null,
+						ResultParentUtils.getResultsForDates(session,
+								datePathes), "Yesterday");
+				// Last 7 days
+
+				cal = Calendar.getInstance();
+				datePathes = new ArrayList<String>();
+
+				for (int i = 0; i < 7; i++) {
+					cal.add(Calendar.DAY_OF_YEAR, -i);
+					relPath = JcrUtils.dateAsPath(cal);
+					datePathes.add(relPath);
+				}
+				roots[3] = new VirtualFolder(null,
+						ResultParentUtils.getResultsForDates(session,
+								datePathes), "Last 7 days");
+
+				// All results
+				Node otherResultsPar = session.getNode(SlcJcrResultUtils
+						.getSlcResultsBasePath(session));
+				roots[4] = new ParentNodeFolder(null, otherResultsPar,
+						"All results");
+				return roots;
+			} else
+				// no test has yet been processed, we leave the viewer blank
+				return null;
 		} catch (RepositoryException re) {
 			throw new ArgeoException(
 					"Unexpected error while initializing ResultTree.", re);
@@ -367,13 +401,15 @@ public class JcrResultTreeView extends ViewPart {
 		if (selection.size() == 1) {
 			Object obj = selection.getFirstElement();
 			try {
-				Node targetParentNode = null;
-				if (obj instanceof ResultFolder) {
-					targetParentNode = ((ResultFolder) obj).getNode();
-
-					if (targetParentNode.isNodeType(SlcTypes.SLC_RESULT_FOLDER))
-						isMyResultFolder = true;
-				}
+				if (obj instanceof ResultFolder
+						&& (((ResultFolder) obj).getNode())
+								.isNodeType(SlcTypes.SLC_RESULT_FOLDER))
+					isMyResultFolder = true;
+				else if (obj instanceof ParentNodeFolder
+						&& (((ParentNodeFolder) obj).getNode().getPath()
+								.startsWith(SlcJcrResultUtils
+										.getMyResultsBasePath(session))))
+					isMyResultFolder = true;
 			} catch (RepositoryException re) {
 				throw new SlcException(
 						"unexpected error while building condition for context menu",
@@ -456,20 +492,30 @@ public class JcrResultTreeView extends ViewPart {
 				// We can only drop under myResults
 				Node targetParentNode = null;
 				if (target instanceof ResultFolder) {
-					Node currNode = ((ResultFolder) target).getNode();
-
-					if (currNode.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
-						targetParentNode = currNode;
-					}
+					targetParentNode = ((ResultFolder) target).getNode();
+				} else if (target instanceof ParentNodeFolder) {
+					if ((((ParentNodeFolder) target).getNode().getPath()
+							.startsWith(SlcJcrResultUtils
+									.getMyResultsBasePath(session))))
+						targetParentNode = ((ParentNodeFolder) target)
+								.getNode();
 				} else if (target instanceof SingleResultNode) {
 					Node currNode = ((SingleResultNode) target).getNode();
-					if (currNode.getParent().isNodeType(
-							SlcTypes.SLC_RESULT_FOLDER))
+					if (currNode
+							.getParent()
+							.getPath()
+							.startsWith(
+									SlcJcrResultUtils
+											.getMyResultsBasePath(session)))
 						targetParentNode = currNode.getParent();
 				}
 				if (targetParentNode != null) {
 					currParentNode = targetParentNode;
 					validDrop = true;
+					// FIXME
+					lastSelectedElement = (ResultParent) target;
+					lastSelectedElementParent = (ResultParent) ((ResultParent) target)
+							.getParent();
 				}
 			} catch (RepositoryException re) {
 				throw new SlcException(
@@ -486,7 +532,7 @@ public class JcrResultTreeView extends ViewPart {
 				Node target = currParentNode.addNode(source.getName(), source
 						.getPrimaryNodeType().getName());
 				JcrUtils.copy(source, target);
-				updatePassedStatus(target, target.getNode(SlcNames.SLC_STATUS)
+				ResultParentUtils.updatePassedStatus(target, target.getNode(SlcNames.SLC_STATUS)
 						.getProperty(SlcNames.SLC_SUCCESS).getBoolean());
 				target.getSession().save();
 			} catch (RepositoryException re) {
@@ -494,59 +540,6 @@ public class JcrResultTreeView extends ViewPart {
 						"unexpected error while copying dropped node", re);
 			}
 			return true;
-		}
-
-		/**
-		 * recursively update passed status of the parent ResultFolder and its
-		 * parent if needed
-		 * 
-		 * @param node
-		 *            cannot be null
-		 * 
-		 */
-		private void updatePassedStatus(Node node, boolean passed) {
-			try {
-				Node pNode = node.getParent();
-				boolean pStatus = pNode.getNode(SlcNames.SLC_STATUS)
-						.getProperty(SlcNames.SLC_SUCCESS).getBoolean();
-				if (pStatus == passed)
-					// nothing to update
-					return;
-				else if (!passed) {
-					// error we only update status of the result folder and its
-					// parent if needed
-					pNode.getNode(SlcNames.SLC_STATUS).setProperty(
-							SlcNames.SLC_SUCCESS, passed);
-					updatePassedStatus(pNode, passed);
-				} else {
-					// success we must first check if all siblings have also
-					// successfully completed
-					boolean success = true;
-					NodeIterator ni = pNode.getNodes();
-					children: while (ni.hasNext()) {
-						Node currNode = ni.nextNode();
-						if ((currNode.isNodeType(SlcTypes.SLC_DIFF_RESULT) || currNode
-								.isNodeType(SlcTypes.SLC_RESULT_FOLDER))
-								&& !currNode.getNode(SlcNames.SLC_STATUS)
-										.getProperty(SlcNames.SLC_SUCCESS)
-										.getBoolean()) {
-							success = false;
-							break children;
-						}
-					}
-					if (success) {
-						pNode.getNode(SlcNames.SLC_STATUS).setProperty(
-								SlcNames.SLC_SUCCESS, passed);
-						updatePassedStatus(pNode, passed);
-					} else
-						// one of the siblings had also the failed status so
-						// above tree remains unchanged.
-						return;
-				}
-
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot register listeners", e);
-			}
 		}
 	}
 
@@ -559,31 +552,72 @@ public class JcrResultTreeView extends ViewPart {
 		@Override
 		protected Boolean willProcessInUiThread(List<Event> events)
 				throws RepositoryException {
-			for (Event event : events) {
-				// getLog().debug("Received event " + event);
-				int eventType = event.getType();
-				if (eventType == Event.NODE_REMOVED)
-					return true;
-				String path = event.getPath();
-				int index = path.lastIndexOf('/');
-				String propertyName = path.substring(index + 1);
-				if (propertyName.equals(SlcNames.SLC_COMPLETED)
-						|| propertyName.equals(SlcNames.SLC_UUID)) {
-					return true;
-				}
-			}
-			return false;
+			// unfiltered for the time being
+			return true;
+			// for (Event event : events) {
+			// getLog().debug("Received event " + event);
+			// int eventType = event.getType();
+			// if (eventType == Event.NODE_REMOVED)
+			// ;//return true;
+			// String path = event.getPath();
+			// int index = path.lastIndexOf('/');
+			// String propertyName = path.substring(index + 1);
+			// if (propertyName.equals(SlcNames.SLC_COMPLETED)
+			// || propertyName.equals(SlcNames.SLC_UUID)) {
+			// ;//return true;
+			// }
+			// }
+			// return false;
 		}
 
 		protected void onEventInUiThread(List<Event> events)
 				throws RepositoryException {
+
+			for (Event event : events) {
+				 getLog().debug("Received event " + event);
+				int eventType = event.getType();
+				if (eventType == Event.NODE_REMOVED) {
+					String path = event.getPath();
+					int index = path.lastIndexOf('/');
+					String parPath = path.substring(0, index + 1);
+					if (session.nodeExists(parPath)) {
+						Node currNode = session.getNode(parPath);
+						if (currNode.isNodeType(NodeType.NT_UNSTRUCTURED)) {
+							refresh(null);
+							jcrRefresh(currNode);
+							resultTreeViewer.refresh(true);
+							resultTreeViewer.expandToLevel(
+									lastSelectedElementParent, 1);
+							
+						}
+					}
+				} else if (eventType == Event.NODE_ADDED) {
+					String path = event.getPath();
+					if (session.nodeExists(path)) {
+						Node currNode = session.getNode(path);
+						if (currNode.isNodeType(SlcTypes.SLC_DIFF_RESULT)
+								|| currNode
+										.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
+							refresh(null);
+							resultTreeViewer.expandToLevel(lastSelectedElement,
+									1);
+						}
+					}
+				}
+				// String path = event.getPath();
+				// int index = path.lastIndexOf('/');
+				// String propertyName = path.substring(index + 1);
+				// if (propertyName.equals(SlcNames.SLC_COMPLETED)
+				// || propertyName.equals(SlcNames.SLC_UUID)) {
+				// }
+			}
+
 			// FIXME implement correct behaviour. treeViewer selection is
 			// disposed by the drag & drop.
 			// resultTreeViewer.refresh();
 			// refresh(null);
 			// log.warn("Implement refresh.");
 		}
-
 	}
 
 	class PropertiesContentProvider implements IStructuredContentProvider {

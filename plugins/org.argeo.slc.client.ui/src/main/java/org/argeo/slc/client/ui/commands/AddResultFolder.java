@@ -23,6 +23,7 @@ import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.dialogs.SingleValue;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
+import org.argeo.slc.client.ui.model.ParentNodeFolder;
 import org.argeo.slc.client.ui.model.ResultFolder;
 import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.eclipse.core.commands.AbstractHandler;
@@ -48,18 +49,32 @@ public class AddResultFolder extends AbstractHandler {
 
 		// Sanity check, already done when populating the corresponding popup
 		// menu.
-		if (selection != null && selection.size() == 1
-				&& selection.getFirstElement() instanceof ResultFolder) {
-			ResultFolder rf = (ResultFolder) selection.getFirstElement();
+		if (selection != null && selection.size() == 1) {
+			Object obj = selection.getFirstElement();
+
 			try {
-				String folderName = SingleValue.ask("Folder name",
-						"Enter folder name");
-				if (folderName != null) {
-					Node parentNode = rf.getNode();
-					String absPath = parentNode.getPath()+ "/"
-							+ folderName;
-					SlcJcrResultUtils.createResultFolderNode(
-							parentNode.getSession(), absPath);
+				Node parentNode = null;
+
+				if (obj instanceof ResultFolder) {
+					ResultFolder rf = (ResultFolder) obj;
+					parentNode = rf.getNode();
+				} else if (obj instanceof ParentNodeFolder) {
+					Node node = ((ParentNodeFolder) obj).getNode();
+					if (node.getPath().startsWith(
+							SlcJcrResultUtils.getMyResultsBasePath(node
+									.getSession())))
+						parentNode = node;
+				}
+
+				if (parentNode != null) {
+					String folderName = SingleValue.ask("Folder name",
+							"Enter folder name");
+					if (folderName != null) {
+						String absPath = parentNode.getPath() + "/"
+								+ folderName;
+						SlcJcrResultUtils.createResultFolderNode(
+								parentNode.getSession(), absPath);
+					}
 				}
 			} catch (RepositoryException e) {
 				throw new SlcException(

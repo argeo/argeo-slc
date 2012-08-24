@@ -30,7 +30,8 @@ import org.argeo.slc.jcr.SlcNames;
  * It has no child.
  */
 
-public class SingleResultNode extends ResultParent {
+public class SingleResultNode extends ResultParent implements
+		Comparable<SingleResultNode> {
 
 	private final Node node;
 	private boolean passed;
@@ -82,6 +83,10 @@ public class SingleResultNode extends ResultParent {
 	@Override
 	protected void initialize() {
 		// Do nothing this object is fully initialized at instantiation time.
+	}
+
+	public int compareTo(SingleResultNode o) {
+		return super.compareTo(o);
 	}
 
 }
