@@ -82,7 +82,7 @@
 	</bean>
 
 	<bean id="argeo.jcr.repository.inMemory" class="org.argeo.jackrabbit.JackrabbitContainer"
-		init-method="init" destroy-method="dispose">
+		init-method="init" destroy-method="destroy">
 		<property name="homeDirectory"
 			value="${java.io.tmpdir}/jackrabbit-slc-unit-${user.name}" />
 		<property name="inMemory" value="true" />
