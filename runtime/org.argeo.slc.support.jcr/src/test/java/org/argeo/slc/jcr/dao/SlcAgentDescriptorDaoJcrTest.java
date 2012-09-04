@@ -30,13 +30,12 @@ public class SlcAgentDescriptorDaoJcrTest extends AbstractSpringTestCase {
 	// .getLog(SlcAgentDescriptorDaoJcrTest.class);
 
 	private SlcAgentDescriptorDao slcAgentDescriptorDao;
-	private String host;
+	private String host = "localhost";
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		slcAgentDescriptorDao = getBean(SlcAgentDescriptorDao.class);
-		host = InetAddress.getLocalHost().getCanonicalHostName();
 	}
 
 	public void testZero() throws Exception {

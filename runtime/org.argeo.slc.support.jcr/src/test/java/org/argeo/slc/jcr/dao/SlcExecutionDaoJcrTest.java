@@ -36,7 +36,7 @@ public class SlcExecutionDaoJcrTest extends AbstractSpringTestCase {
 		super.setUp();
 		slcExecutionDao = getBean(SlcExecutionDao.class);
 		session = getBean(Session.class);
-		host = InetAddress.getLocalHost().getCanonicalHostName();
+		host = "localhost";
 	}
 
 	public void testCreate() throws Exception {
