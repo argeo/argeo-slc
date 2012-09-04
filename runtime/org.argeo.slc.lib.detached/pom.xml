@@ -6,7 +6,6 @@
 		<version>1.1.3-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<groupId>org.argeo.slc.runtime</groupId>
 	<artifactId>org.argeo.slc.lib.detached</artifactId>
 	<name>SLC Lib Detached</name>
 	<build>
@@ -28,24 +27,24 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
+			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
 			<version>1.1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
+			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.detached</artifactId>
 			<version>1.1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
+			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support.castor</artifactId>
 			<version>1.1.3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Unit Tests -->
 		<dependency>
-			<groupId>org.argeo.slc.runtime</groupId>
+			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
 			<version>1.1.3-SNAPSHOT</version>
 			<scope>test</scope>
