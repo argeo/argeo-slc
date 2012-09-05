@@ -22,7 +22,6 @@
 		<module>org.argeo.slc.support.maven</module>
 		<module>org.argeo.slc.support.jemmy</module>
 		<module>org.argeo.slc.support.jcr</module>
-		<module>org.argeo.slc.support.castor</module>
 		<module>org.argeo.slc.detached</module>
 		<module>org.argeo.slc.detached.launcher</module>
 		<module>org.argeo.slc.launcher</module>
