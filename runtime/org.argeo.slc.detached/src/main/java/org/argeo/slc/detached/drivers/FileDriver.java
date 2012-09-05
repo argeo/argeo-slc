@@ -71,12 +71,12 @@ public class FileDriver implements DetachedClient, DetachedDriver,
 	// Counters to avoid naming files with same prefix
 	private long lastSentTime = 0;
 	private int counter = 0;
-	
-	private DetachedXmlConverter xmlConverter = null;	
-	
+
+	private DetachedXmlConverter xmlConverter = null;
+
 	private long receiveAnswerTimeout = 10000l;
-	
-	private boolean active = true; 
+
+	private boolean active = true;
 
 	public synchronized DetachedRequest receiveRequest() throws Exception {
 		DetachedRequest request = (DetachedRequest) receiveFile(requestsDir,
@@ -84,8 +84,7 @@ public class FileDriver implements DetachedClient, DetachedDriver,
 		if (request != null)
 			if (log.isTraceEnabled())
 				log.trace("Received detached request #" + request.getUuid()
-						+ " for ref '" + request.getRef() + "', path="
-						+ request.getPath());
+						+ " for ref '" + request.getRef());
 		return request;
 	}
 
@@ -109,8 +108,7 @@ public class FileDriver implements DetachedClient, DetachedDriver,
 		sendFile(requestsDir, request);
 		if (log.isTraceEnabled())
 			log.trace("Sent     detached request #" + request.getUuid()
-					+ " for ref '" + request.getRef() + "', path="
-					+ request.getPath());
+					+ " for ref '" + request.getRef());
 	}
 
 	protected synchronized void sendFile(File dir, DetachedCommunication detCom)
@@ -132,8 +130,8 @@ public class FileDriver implements DetachedClient, DetachedDriver,
 
 		// Create file path
 		StringBuffer filePath = new StringBuffer(dir.getPath());
-		filePath.append(File.separatorChar).append(sdf.format(nowDate)).append(
-				'-');
+		filePath.append(File.separatorChar).append(sdf.format(nowDate))
+				.append('-');
 		filePath.append(mf.format(new Object[] { new Long(counter) })).append(
 				'-');
 		filePath.append(detCom.getUuid()).append(ext);
@@ -225,13 +223,13 @@ public class FileDriver implements DetachedClient, DetachedDriver,
 		FileUtils.moveFileToDirectory(file, processedDir, false);
 		return detCom;
 	}
-	
+
 	public synchronized void stop() {
 		log.debug("Stopping Detached Driver");
 		active = false;
 		notifyAll();
-	}	
-	
+	}
+
 	private synchronized boolean isActive() {
 		return active;
 	}

@@ -223,16 +223,6 @@ public class DetachedExecutionServerImpl implements DetachedExecutionServer,
 					log.warn(msg);
 				}				
 				
-				// Check paths
-				if (!previousRequest.getPath().equals(request.getPath())) {
-					String msg = "New request is not consistent with previous path. previousPath="
-							+ previousRequest.getPath()
-							+ ", newPath="
-							+ request.getPath() + "\n";
-					skippedLog.append(msg);
-					log.warn(msg);
-				}
-				
 				if (previousAnswer.getStatus() != DetachedAnswer.ERROR) {
 					// if no error occurred in the replayedSession,
 					// skip the step

@@ -97,4 +97,8 @@ public class SimpleTestResult implements TestResult {
 		return attributes;
 	}
 
+	public void setAttributes(Map<String, String> attributes) {
+		this.attributes = attributes;
+	}
+
 }

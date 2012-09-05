@@ -103,9 +103,6 @@ public class DetachedXmlConverterCompat implements DetachedXmlConverter {
 					.setRef(root.getElementsByTagNameNS(
 							SLC_DETACHED_NAMESPACE_URI, "ref").item(0)
 							.getTextContent());
-			request.setPath(root.getElementsByTagNameNS(
-					SLC_DETACHED_NAMESPACE_URI, "path").item(0)
-					.getTextContent());
 			Element propertiesElement = (Element) root.getElementsByTagNameNS(
 					SLC_DETACHED_NAMESPACE_URI, "properties").item(0);
 			NodeList propElements = propertiesElement.getElementsByTagNameNS(
@@ -177,8 +174,6 @@ public class DetachedXmlConverterCompat implements DetachedXmlConverter {
 				"uuid").item(0).getTextContent());
 		request.setRef(node.getElementsByTagNameNS(SLC_DETACHED_NAMESPACE_URI,
 				"ref").item(0).getTextContent());
-		request.setPath(node.getElementsByTagNameNS(SLC_DETACHED_NAMESPACE_URI,
-				"path").item(0).getTextContent());
 		Element propertiesElement = (Element) node.getElementsByTagNameNS(
 				SLC_DETACHED_NAMESPACE_URI, "properties").item(0);
 		NodeList propElements = propertiesElement.getElementsByTagNameNS(

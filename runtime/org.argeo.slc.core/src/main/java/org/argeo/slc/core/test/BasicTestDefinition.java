@@ -16,7 +16,6 @@
 package org.argeo.slc.core.test;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.context.ContextUtils;
 import org.argeo.slc.test.IncompatibleTestDataException;
 import org.argeo.slc.test.TestData;
@@ -27,8 +26,7 @@ import org.argeo.slc.test.TestStatus;
 import org.argeo.slc.test.context.ContextAware;
 
 /** Understands basic test data and context aware test data. */
-public class BasicTestDefinition extends TreeSRelatedHelper implements
-		TestDefinition {
+public class BasicTestDefinition implements TestDefinition {
 
 	public void execute(TestRun testRun) {
 		if (testRun.<TestData> getTestData() instanceof BasicTestData) {
@@ -55,7 +53,7 @@ public class BasicTestDefinition extends TreeSRelatedHelper implements
 		} else if (testRun.<TestData> getTestData() instanceof ContextAware) {
 			TestData testData = testRun.getTestData();
 			ContextUtils.compareReachedExpected((ContextAware) testData,
-					testRun.getTestResult(), this);
+					testRun.getTestResult());
 		} else {
 			throw new IncompatibleTestDataException(testRun);
 		}

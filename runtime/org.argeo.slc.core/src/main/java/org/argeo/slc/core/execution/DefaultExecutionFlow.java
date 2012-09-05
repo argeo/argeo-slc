@@ -23,14 +23,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.structure.tree.TreeSRegistry;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
-import org.argeo.slc.structure.StructureAware;
-import org.argeo.slc.structure.StructureRegistry;
-import org.springframework.aop.scope.ScopedObject;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.validation.MapBindingResult;
@@ -47,7 +42,6 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	private List<Runnable> executables = new ArrayList<Runnable>();
 
 	private String path;
-	private StructureRegistry<TreeSPath> registry = new TreeSRegistry();
 
 	private Boolean failOnError = true;
 
@@ -142,7 +136,6 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 		runnable.run();
 	}
 
-	@SuppressWarnings(value = { "unchecked" })
 	public void afterPropertiesSet() throws Exception {
 		if (path == null) {
 			if (name.charAt(0) == '/') {
@@ -152,11 +145,7 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 		if (path != null) {
 			for (Runnable executable : executables) {
-				if (executable instanceof StructureAware
-						&& !(executable instanceof ScopedObject)) {
-					((StructureAware<TreeSPath>) executable).notifyCurrentPath(
-							registry, new TreeSPath(path));
-				} else if (executable instanceof DefaultExecutionFlow) {
+				if (executable instanceof DefaultExecutionFlow) {
 					// so we don't need to have DefaultExecutionFlow
 					// implementing StructureAware
 					// FIXME: probably has side effects
@@ -238,10 +227,6 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	public void setPath(String path) {
 		this.path = path;
-	}
-
-	public void setRegistry(StructureRegistry<TreeSPath> registry) {
-		this.registry = registry;
 	}
 
 	public Boolean getFailOnError() {

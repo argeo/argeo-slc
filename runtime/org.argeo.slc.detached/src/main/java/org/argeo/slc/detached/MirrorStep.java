@@ -31,7 +31,6 @@ public class MirrorStep implements DetachedStep {
 			DetachedRequest req) {
 		log.debug("  uuid=" + req.getUuid());
 		log.debug("  ref=" + req.getRef());
-		log.debug("  path=" + req.getPath());
 		log.debug("  properties=" + req.getProperties());
 
 		DetachedAnswer answer = new DetachedAnswer(req, "Mirror");

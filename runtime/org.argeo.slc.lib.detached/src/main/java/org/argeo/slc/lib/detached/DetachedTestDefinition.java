@@ -22,7 +22,6 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.core.structure.tree.TreeSRelatedHelper;
 import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.core.test.context.ContextUtils;
 import org.argeo.slc.core.test.context.DefaultContextTestData;
@@ -46,8 +45,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
-public class DetachedTestDefinition extends TreeSRelatedHelper implements
-		TestDefinition, BeanNameAware, BeanFactoryAware, InitializingBean {
+public class DetachedTestDefinition implements TestDefinition, BeanNameAware,
+		BeanFactoryAware, InitializingBean {
 	private final static Log log = LogFactory
 			.getLog(DetachedTestDefinition.class);
 
@@ -81,7 +80,6 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 
 		// Execute
 		DetachedRequest request = new DetachedRequest();
-		request.setPath(getBasePath().toString());
 		request.setUuid(UUID.randomUUID().toString());
 		request.setRef(stepBeanNameT);
 
@@ -106,8 +104,8 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 		} catch (Exception e) {
 			throw new SlcException("Could not receive answer #"
 					+ request.getUuid() + " for step " + stepBeanNameT, e);
-		}			
-			
+		}
+
 		if (answer.getStatus() == DetachedAnswer.ERROR)
 			throw new SlcException("Error when executing step "
 					+ answer.getUuid() + ": " + answer.getLog());
@@ -122,14 +120,13 @@ public class DetachedTestDefinition extends TreeSRelatedHelper implements
 						outputParameters.get(key));
 		}
 
-
 		if (testData != null) {
-			ContextUtils.compareReachedExpected(testData, testRun
-					.getTestResult(), this);
+			ContextUtils.compareReachedExpected(testData,
+					testRun.getTestResult());
 		} else {
-			((TestResult)testRun.getTestResult()).addResultPart(
-					new SimpleResultPart(TestStatus.PASSED, "Step "
-							+ stepBeanNameT + " executed successfully"));
+			((TestResult) testRun.getTestResult())
+					.addResultPart(new SimpleResultPart(TestStatus.PASSED,
+							"Step " + stepBeanNameT + " executed successfully"));
 		}
 	}
 

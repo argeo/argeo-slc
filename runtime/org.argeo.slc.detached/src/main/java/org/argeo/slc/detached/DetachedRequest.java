@@ -24,7 +24,6 @@ public class DetachedRequest implements DetachedCommunication {
 	private String uuid;
 	private Properties properties = new Properties();
 	private String ref;
-	private String path = "";
 
 	private Object cachedObject = null;
 
@@ -57,15 +56,6 @@ public class DetachedRequest implements DetachedCommunication {
 		this.ref = stepRef;
 	}
 
-	/** A path identifying the request within its source context. */
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
 	/** The unique identifier of this request. */
 	public String getUuid() {
 		return uuid;
@@ -80,7 +70,6 @@ public class DetachedRequest implements DetachedCommunication {
 		buf.append(ref);
 		buf.append(" #").append(uuid);
 		buf.append(" cachedObject=").append((cachedObject != null));
-		buf.append(" path=").append(path);
 		buf.append(" properties=").append(properties);
 		return buf.toString();
 	}

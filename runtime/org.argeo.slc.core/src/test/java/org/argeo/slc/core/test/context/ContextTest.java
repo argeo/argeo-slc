@@ -27,11 +27,11 @@ public class ContextTest extends AbstractInternalSpringTestCase {
 	public void testComplexContext() {
 		SimpleTestResult testResult = new SimpleTestResult();
 		ContextUtils.compareReachedExpected(
-				(ContextAware) getBean("context.c1"), testResult, null);
+				(ContextAware) getBean("context.c1"), testResult);
 		ContextUtils.compareReachedExpected(
-				(ContextAware) getBean("context.c2"), testResult, null);
+				(ContextAware) getBean("context.c2"), testResult);
 		ContextUtils.compareReachedExpected(
-				(ContextAware) getBean("context.c3"), testResult, null);
+				(ContextAware) getBean("context.c3"), testResult);
 
 		List<TestResultPart> parts = testResult.getParts();
 		assertEquals(6, parts.size());

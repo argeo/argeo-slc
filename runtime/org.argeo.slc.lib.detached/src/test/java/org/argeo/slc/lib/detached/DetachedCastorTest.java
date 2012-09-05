@@ -100,7 +100,6 @@ public class DetachedCastorTest extends AbstractSpringTestCase {
 	public static DetachedRequest createTestRequest() {
 		DetachedRequest request = new DetachedRequest();
 		request.setUuid("12345");
-		request.setPath("/root/test");
 		request.setRef("testRef");
 		Properties properties = new Properties();
 		properties.setProperty("key1", "value1");
@@ -124,7 +123,6 @@ public class DetachedCastorTest extends AbstractSpringTestCase {
 	public static void assertDetachedRequest(DetachedRequest expected,
 			DetachedRequest reached) {
 		assertEquals(expected.getUuid(), reached.getUuid());
-		assertEquals(expected.getPath(), reached.getPath());
 		assertEquals(expected.getRef(), reached.getRef());
 		Properties expectedProps = expected.getProperties();
 		Properties reachedProps = reached.getProperties();

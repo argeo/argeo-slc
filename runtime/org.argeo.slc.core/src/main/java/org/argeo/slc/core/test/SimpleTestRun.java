@@ -17,13 +17,7 @@ package org.argeo.slc.core.test;
 
 import java.util.UUID;
 
-import org.argeo.slc.core.structure.tree.TreeSPath;
 import org.argeo.slc.deploy.DeployedSystem;
-import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.process.SlcExecutionRelated;
-import org.argeo.slc.process.SlcExecutionStep;
-import org.argeo.slc.structure.StructureAware;
-import org.argeo.slc.structure.StructureRegistry;
 import org.argeo.slc.test.ExecutableTestRun;
 import org.argeo.slc.test.TestData;
 import org.argeo.slc.test.TestDefinition;
@@ -34,16 +28,11 @@ import org.argeo.slc.test.WritableTestRun;
  * A basic bean implementation of a <code>WritableTestRun</code>, holding
  * references to the various parts of a test run.
  */
-@SuppressWarnings("deprecation")
-public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
-		SlcExecutionRelated, StructureAware<TreeSPath> {
+public class SimpleTestRun implements WritableTestRun, ExecutableTestRun {
 	private String uuid;
 
 	private String slcExecutionUuid;
 	private String slcExecutionStepUuid;
-
-	private TreeSPath path;
-	private StructureRegistry<TreeSPath> registry;
 
 	private DeployedSystem deployedSystem;
 	private TestData testData;
@@ -51,21 +40,10 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 	private TestResult testResult;
 
 	/** Executes the underlying test definition. */
-	@SuppressWarnings("unchecked")
 	public void run() {
 		uuid = UUID.randomUUID().toString();
 		if (testResult != null)
 			testResult.notifyTestRun(this);
-
-		// Structure
-		if (testResult != null && path != null
-				&& testResult instanceof StructureAware)
-			((StructureAware<TreeSPath>) testResult).notifyCurrentPath(
-					registry, path);
-
-		if (path != null && testDefinition instanceof StructureAware)
-			((StructureAware<TreeSPath>) testDefinition).notifyCurrentPath(
-					registry, path);
 
 		testDefinition.execute(this);
 	}
@@ -129,22 +107,4 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun,
 	public void setSlcExecutionStepUuid(String slcExecutionStepUuid) {
 		this.slcExecutionStepUuid = slcExecutionStepUuid;
 	}
-
-	@Deprecated
-	public void notifySlcExecution(SlcExecution slcExecution) {
-		if (slcExecution != null) {
-			slcExecutionUuid = slcExecution.getUuid();
-			SlcExecutionStep step = slcExecution.currentStep();
-			if (step != null) {
-				slcExecutionStepUuid = step.getUuid();
-			}
-		}
-	}
-
-	public void notifyCurrentPath(StructureRegistry<TreeSPath> registry,
-			TreeSPath path) {
-		this.registry = registry;
-		this.path = path;
-	}
-
 }

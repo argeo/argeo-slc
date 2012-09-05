@@ -20,13 +20,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import org.argeo.slc.core.structure.tree.TreeSPath;
-import org.argeo.slc.core.structure.tree.TreeSRelated;
 import org.argeo.slc.core.test.SimpleResultPart;
-import org.argeo.slc.structure.StructureAware;
-import org.argeo.slc.structure.StructureElement;
-import org.argeo.slc.structure.StructureRegistry;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestStatus;
 import org.argeo.slc.test.context.ContextAware;
@@ -36,7 +30,7 @@ public class ContextUtils {
 	private final static Log log = LogFactory.getLog(ContextUtils.class);
 
 	public static void compareReachedExpected(ContextAware contextAware,
-			TestResult testResult, TreeSRelated treeSRelated) {
+			TestResult testResult) {
 		for (String key : contextAware.getExpectedValues().keySet()) {
 
 			// Compare expected values with reached ones
@@ -48,9 +42,6 @@ public class ContextUtils {
 					log.debug("Skipped check for key '" + key + "'");
 				continue;
 			}
-
-			// Register in structure
-			registerInStructure(testResult, treeSRelated, key);
 
 			if (contextAware.getValues().containsKey(key)) {
 				Object reachedValue = contextAware.getValues().get(key);
@@ -73,42 +64,6 @@ public class ContextUtils {
 				testResult.addResultPart(new SimpleResultPart(
 						TestStatus.FAILED, "No value reached for key '" + key
 								+ "'"));
-			}
-			resetStructure(testResult, treeSRelated);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static void registerInStructure(TestResult testResult,
-			TreeSRelated treeSRelated, String key) {
-		if (treeSRelated != null) {
-			if (treeSRelated.getBasePath() != null) {
-				TreeSPath path = treeSRelated.getBasePath().createChild(key);
-				StructureRegistry<TreeSPath> registry = treeSRelated
-						.getRegistry();
-				final StructureElement element = treeSRelated
-						.getStructureElement(key);
-				registry.register(path, element);
-				if (testResult instanceof StructureAware)
-					((StructureAware<TreeSPath>) testResult).notifyCurrentPath(
-							registry, path);
-
-				if (log.isDebugEnabled())
-					log.debug("Checking key " + key + " for path " + path);
-			}
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private static void resetStructure(TestResult testResult,
-			TreeSRelated treeSRelated) {
-		if (treeSRelated != null) {
-			if (treeSRelated.getBasePath() != null) {
-				if (testResult instanceof StructureAware) {
-					((StructureAware<TreeSPath>) testResult).notifyCurrentPath(
-							treeSRelated.getRegistry(), treeSRelated
-									.getBasePath());
-				}
 			}
 		}
 	}

@@ -29,7 +29,6 @@
             ns-prefix="&slc-detached-namespace-prefix;" />
         <field name="uuid" />
         <field name="ref" />
-        <field name="path" />
         <field name="properties" collection="map">
             <bind-xml name="prop" location="properties">
                 <class name="org.exolab.castor.mapping.MapItem">

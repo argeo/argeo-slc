@@ -37,7 +37,7 @@
 		<!--			</bean>-->
 		<!--		</property>-->
 		<property name="testResult">
-			<bean parent="slcDefault.test.basicTreeTestResult" scope="execution">
+			<bean parent="slcDefault.test.basicSimpleTestResult" scope="execution">
 				<property name="attributes">
 					<map>
 						<entry key="displayWithControl" value="@{displayWithControl}" />

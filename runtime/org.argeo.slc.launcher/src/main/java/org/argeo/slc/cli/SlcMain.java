@@ -28,7 +28,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.server.client.impl.SlcServerHttpClientImpl;
 
 @SuppressWarnings("static-access")
 public class SlcMain {
@@ -44,18 +43,20 @@ public class SlcMain {
 	// "classpath:org/argeo/slc/cli/spring-agent-default.xml";
 
 	private final static Option typeOpt = OptionBuilder.withLongOpt("mode")
-			.withArgName("mode").hasArg().withDescription(
-					"Execution type, one of: " + listTypeValues()).create('t');
+			.withArgName("mode").hasArg()
+			.withDescription("Execution type, one of: " + listTypeValues())
+			.create('t');
 
-	private final static Option propertyOpt = OptionBuilder.withLongOpt(
-			"property").withArgName("prop1=val1,prop2=val2").hasArgs()
-			.withValueSeparator(',').withDescription(
-					"use value for given property").create('p');
+	private final static Option propertyOpt = OptionBuilder
+			.withLongOpt("property").withArgName("prop1=val1,prop2=val2")
+			.hasArgs().withValueSeparator(',')
+			.withDescription("use value for given property").create('p');
 
-	private final static Option propertiesOpt = OptionBuilder.withLongOpt(
-			"properties").withArgName("properties file").hasArgs()
-			.withValueSeparator(',').withDescription(
-					"load properties from file (-p has priority)").create('P');
+	private final static Option propertiesOpt = OptionBuilder
+			.withLongOpt("properties").withArgName("properties file").hasArgs()
+			.withValueSeparator(',')
+			.withDescription("load properties from file (-p has priority)")
+			.create('P');
 
 	private final static Option moduleOpt = OptionBuilder.withLongOpt("module")
 			.withArgName("module").hasArg().withDescription("Execution module")
@@ -65,9 +66,9 @@ public class SlcMain {
 			.withArgName("flows").hasArg().withDescription("Flows to execute")
 			.create('f');
 
-	private final static Option runtimeOpt = OptionBuilder.withLongOpt(
-			"runtime").withArgName("runtime").hasArg().withDescription(
-			"Runtime URL").create('r');
+	private final static Option runtimeOpt = OptionBuilder
+			.withLongOpt("runtime").withArgName("runtime").hasArg()
+			.withDescription("Runtime URL").create('r');
 
 	private final static Options options;
 
@@ -167,11 +168,6 @@ public class SlcMain {
 		}
 		// Agent
 		else if (type.equals(Type.agent)) {
-		}
-		// Server
-		else if (type.equals(Type.server)) {
-			SlcServerHttpClientImpl slcServerHttpClient = new SlcServerHttpClientImpl();
-			slcServerHttpClient.setBaseUrl(urlStr);
 		}
 	}
 

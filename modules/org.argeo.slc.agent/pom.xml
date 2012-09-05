@@ -17,7 +17,6 @@
 					<instructions>
 						<Import-Package>
 							*,
-							org.argeo.slc.core.test.tree
 						</Import-Package>
 					</instructions>
 				</configuration>
