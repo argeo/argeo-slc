@@ -18,7 +18,7 @@ package org.argeo.slc.diff;
 import org.springframework.core.io.Resource;
 
 /** A comparator providing structured information about the differences found. */
-public interface Diff {
+public interface Diff<T> {
 	/** Performs the comparison. */
-	public DiffResult compare(Resource expected, Resource reached);
+	public T compare(Resource expected, Resource reached);
 }
