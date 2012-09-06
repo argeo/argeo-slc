@@ -26,6 +26,7 @@ import org.argeo.slc.test.TestStatus;
 import org.argeo.slc.test.context.ContextAware;
 import org.argeo.slc.test.context.ParentContextAware;
 
+/** Utilities for comparing and synchronising contexts. */
 public class ContextUtils {
 	private final static Log log = LogFactory.getLog(ContextUtils.class);
 
@@ -97,8 +98,8 @@ public class ContextUtils {
 			// same keys
 			Map<String, Object> expectedValuesCommonChild = new TreeMap<String, Object>(
 					expectedValuesCommon);
-			putNotContained(expectedValuesCommonChild, child
-					.getExpectedValues());
+			putNotContained(expectedValuesCommonChild,
+					child.getExpectedValues());
 
 			if (child instanceof ParentContextAware) {
 				// Recursive sync
