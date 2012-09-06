@@ -16,10 +16,8 @@
 package org.argeo.slc.test;
 
 import org.argeo.slc.deploy.DeployedSystem;
-import org.argeo.slc.process.SlcExecutionAware;
 
 /** The actual run of a test */
-@SuppressWarnings("deprecation")
 public interface TestRun {
 	/** Gets UUID */
 	public String getUuid();
