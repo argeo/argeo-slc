@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.jcr.Credentials;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
@@ -47,18 +48,21 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	private String uuid;
 	private Repository repository;
 	private Session session;
+	/**
+	 * For testing purposes, best practice is to not set them explicitely but
+	 * via other mechanisms such as JAAS or SPring Security.
+	 */
+	private Credentials credentials = null;
 	private String resultType = SlcTypes.SLC_TEST_RESULT;
 
 	/** cached for performance purposes */
 	private String nodeIdentifier = null;
 
-	private Boolean logoutWhenDestroyed = true;
-
 	private Map<String, String> attributes = new HashMap<String, String>();
 
 	public void init() {
 		try {
-			session = repository.login();
+			session = repository.login(credentials);
 			if (uuid == null) {
 				// create new result
 				uuid = UUID.randomUUID().toString();
@@ -83,8 +87,7 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	}
 
 	public void destroy() {
-		if (logoutWhenDestroyed)
-			JcrUtils.logoutQuietly(session);
+		JcrUtils.logoutQuietly(session);
 	}
 
 	public Node getNode() {
@@ -141,6 +144,7 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 		}
 	}
 
+	/** JCR session is NOT logged out */
 	public void close() {
 		Node node = getNode();
 		try {
@@ -153,8 +157,6 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 			JcrUtils.discardUnderlyingSessionQuietly(node);
 			throw new SlcException("Cannot get close date from " + node, e);
 		}
-		if (logoutWhenDestroyed)
-			JcrUtils.logoutQuietly(session);
 	}
 
 	public Date getCloseDate() {
@@ -206,6 +208,10 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 					"Attributes cannot be set on an already initialized test result."
 							+ " Update the related JCR node directly instead.");
 		this.attributes = attributes;
+	}
+
+	public void setCredentials(Credentials credentials) {
+		this.credentials = credentials;
 	}
 
 	// public void setLogoutWhenDestroyed(Boolean logoutWhenDestroyed) {

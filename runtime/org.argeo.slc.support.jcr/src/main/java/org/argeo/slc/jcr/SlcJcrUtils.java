@@ -89,9 +89,12 @@ public class SlcJcrUtils implements SlcNames {
 	public static String createResultPath(Session session, String uuid)
 			throws RepositoryException {
 		Calendar now = new GregorianCalendar();
-		return UserJcrUtils.getUserHome(session).getPath() + '/'
-				+ SlcNames.SLC_RESULTS + '/' + JcrUtils.dateAsPath(now, true)
-				+ uuid;
+		Node userHome = UserJcrUtils.getUserHome(session);
+		if (userHome == null)
+			throw new SlcException("No user home available for "
+					+ session.getUserID());
+		return userHome.getPath() + '/' + SlcNames.SLC_RESULTS + '/'
+				+ JcrUtils.dateAsPath(now, true) + uuid;
 	}
 
 	/**
