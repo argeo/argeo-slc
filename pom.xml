@@ -106,7 +106,7 @@ limitations under the License.
 	<repositories>
 		<repository>
 			<id>argeo-commons</id>
-			<url>http://dev.argeo.org/org.argeo.jcr.webapp/public/java/org.argeo.commons-1.1.x</url>
+			<url>http://repo.argeo.org/org.argeo.jcr.webapp/public/java/org.argeo.commons-1.1.x</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
