@@ -23,7 +23,8 @@
 							org.eclipse.ui;resolution:=optional,
 							org.eclipse.rap.ui;resolution:=optional,
 							org.eclipse.core.runtime;resolution:=optional,
-							org.eclipse.rap.ui.workbench;resolution:=optional
+							org.eclipse.rap.ui.workbench;resolution:=optional,
+							aQute.lib.*;resolution:=optional,
  						</Require-Bundle>
 						<Import-Package>
 							org.argeo.eclipse.spring,

@@ -234,6 +234,7 @@
 													<include>org.argeo.tp:org.sonatype.aether</include>
 													<!-- Misc -->
 													<include>org.argeo.tp:jxl</include>
+													<include>org.argeo.tp:biz.aQute.bndlib</include>
 												</includes>
 											</dependency>
 										</mapping>
