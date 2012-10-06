@@ -56,6 +56,7 @@ public interface SlcNames {
 	public final static String SLC_TOLERANCE = "slc:tolerance";
 	public final static String SLC_RELATIVE_TOLERANCE = "slc:relativeTolerance";
 	public final static String SLC_KEY_COLUMN = "slc:keyColumn";
+	public final static String SLC_COLUMN_TYPE = "slc:columnType";
 	public final static String SLC_MISMATCH = "slc:mismatch";
 	public final static String SLC_LEFT_OVER = "slc:leftOver";
 	public final static String SLC_MISSING = "slc:missing";
@@ -63,7 +64,12 @@ public interface SlcNames {
 	public final static String SLC_MISSING_MAX = "slc:missingMax";
 	public final static String SLC_DETAILED = "slc:detailed";
 	public final static String SLC_ZERO_MISMATCH = "slc:zeroMismatch";
+	public final static String SLC_ROWCOUNT_EXPECTED = "slc:rowCountInExpected";
+	public final static String SLC_ROWCOUNT_REACHED = "slc:rowCountInReached";	
+	public final static String SLC_COLUMNCOUNT_EXPECTED = "slc:columnCountInExpected";
+	public final static String SLC_COLUMNCOUNT_REACHED = "slc:columnCountInReached";	
 
+	
 	/*
 	 * REPO
 	 */
