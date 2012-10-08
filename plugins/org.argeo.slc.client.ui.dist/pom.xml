@@ -23,12 +23,12 @@
 							org.eclipse.ui;resolution:=optional,
 							org.eclipse.rap.ui;resolution:=optional,
 							org.eclipse.core.runtime;resolution:=optional,
-							org.eclipse.rap.ui.workbench;resolution:=optional,
-							aQute.lib.*;resolution:=optional,
+							org.eclipse.rap.ui.workbench;resolution:=optional
  						</Require-Bundle>
 						<Import-Package>
 							org.argeo.eclipse.spring,
 							javax.jcr.security,
+							aQute.lib.*;resolution:=optional,
 							*
 						</Import-Package>
 					</instructions>
