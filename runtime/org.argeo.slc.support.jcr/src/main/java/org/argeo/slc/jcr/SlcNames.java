@@ -54,32 +54,6 @@ public interface SlcNames {
 	// diff result
 	public final static String SLC_SUMMARY = "slc:summary";
 	public final static String SLC_ISSUES = "slc:issues";
-	public final static String SLC_TOLERANCE = "slc:tolerance";
-	public final static String SLC_RELATIVE_TOLERANCE = "slc:relativeTolerance";
-	
-	@Deprecated
-	public final static String SLC_KEY_COLUMN = "slc:keyColumn";
-	public final static String SLC_COLUMN_TYPE = "slc:columnType";
-	public final static String SLC_COLUMN_TYPE_KEY = "key";
-	public final static String SLC_COLUMN_TYPE_VALUE = "value";
-	public final static String SLC_COLUMN_TYPE_IGNORE = "ignore";
-	public final static String SLC_COLUMN_TYPE_IGNORE_REACHED = "ignoreReached";
-	public final static String SLC_COLUMN_TYPE_IGNORE_EXPECTED = "ignoreExpected";
-	public final static String SLC_COLUMN_TYPE_MISSING = "missing";
-	public final static String SLC_COLUMN_TYPE_LEFTOVER = "leftOver";
-	public final static String SLC_MISMATCH = "slc:mismatch";
-	public final static String SLC_LEFT_OVER = "slc:leftOver";
-	public final static String SLC_MISSING = "slc:missing";
-	public final static String SLC_LEFT_OVER_MAX = "slc:leftOverMax";
-	public final static String SLC_MISSING_MAX = "slc:missingMax";
-	public final static String SLC_DETAILED = "slc:detailed";
-	public final static String SLC_ZERO_MISMATCH = "slc:zeroMismatch";
-	public final static String SLC_TOLERATED_MISMATCH = "slc:toleratedMismatch";
-	public final static String SLC_ROWCOUNT_EXPECTED = "slc:rowCountInExpected";
-	public final static String SLC_ROWCOUNT_REACHED = "slc:rowCountInReached";	
-	public final static String SLC_COLUMNCOUNT_EXPECTED = "slc:columnCountInExpected";
-	public final static String SLC_COLUMNCOUNT_REACHED = "slc:columnCountInReached";	
-
 	
 	/*
 	 * REPO
