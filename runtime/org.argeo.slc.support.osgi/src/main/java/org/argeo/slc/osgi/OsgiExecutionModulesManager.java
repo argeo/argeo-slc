@@ -100,6 +100,8 @@ public class OsgiExecutionModulesManager extends
 			log.debug("Launch unique flow " + flow + " from module " + module);
 		try {
 			OsgiBundle osgiBundle = bundlesManager.findFromPattern(module);
+			if (osgiBundle == null)
+				throw new SlcException("No OSGi bundle found for " + module);
 			Bundle moduleBundle = bundlesManager.findRelatedBundle(osgiBundle);
 			bundlesManager.startSynchronous(moduleBundle);
 			RealizedFlow lastLaunch = findRealizedFlow(module, flow);

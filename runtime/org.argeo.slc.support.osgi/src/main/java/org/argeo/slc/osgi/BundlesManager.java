@@ -316,8 +316,13 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	 * @param osgiBundle
 	 *            cannot be null
 	 * @return the related bundle or null if not found
+	 * @throws SlcException
+	 *             if osgiBundle argument is null
 	 */
 	public Bundle findRelatedBundle(OsgiBundle osgiBundle) {
+		if (osgiBundle == null)
+			throw new SlcException("OSGi bundle cannot be null");
+
 		Bundle bundle = null;
 		if (osgiBundle.getInternalBundleId() != null) {
 			bundle = bundleContext.getBundle(osgiBundle.getInternalBundleId());

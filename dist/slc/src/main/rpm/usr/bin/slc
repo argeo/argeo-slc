@@ -16,6 +16,9 @@ then
     cp /etc/slc-cl/config.ini $CONF_DIR
 fi
 
+# WORKAROUND: Clean up workspace directories
+rmdir $DATA_DIR/node/workspaces/*
+
 java \
  -Dslc.launch.module="$MODULE" \
  -Dslc.launch.flow="$FLOW" \
