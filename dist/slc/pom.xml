@@ -8,31 +8,6 @@
 	<artifactId>slc</artifactId>
 	<packaging>pom</packaging>
 	<name>SLC Node (RPM)</name>
-<!-- 	<build> -->
-<!-- 		<plugins> -->
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-resources-plugin</artifactId> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>filter-base</id> -->
-<!-- 						<phase>process-resources</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>copy-resources</goal> -->
-<!-- 						</goals> -->
-<!-- 						<configuration> -->
-<!-- 							<outputDirectory>${basedir}/target/base</outputDirectory> -->
-<!-- 							<resources> -->
-<!-- 								<resource> -->
-<!-- 									<directory>src/main/base</directory> -->
-<!-- 									<filtering>true</filtering> -->
-<!-- 								</resource> -->
-<!-- 							</resources> -->
-<!-- 						</configuration> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
-<!-- 		</plugins> -->
-<!-- 	</build> -->
 	<profiles>
 		<profile>
 			<id>rpmbuild</id>
