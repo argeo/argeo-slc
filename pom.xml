@@ -23,7 +23,6 @@
 		<module>plugins</module>
 		<module>demo</module>
 		<module>dep</module>
-		<!-- <module>integration-tests</module> -->
 		<module>dist</module>
 	</modules>
 	<url>${site.urlBase}/${developmentCycle.slc}</url>
@@ -117,7 +116,7 @@ limitations under the License.
 	<distributionManagement>
 		<repository>
 			<id>staging</id>
-			<url>dav:http://localhost:7080/org.argeo.jcr.webapp/webdav/java/org.argeo.slc-1.1.x</url>
+			<url>dav:https://repo.argeo.org/org.argeo.jcr.webapp/webdav/java/org.argeo.slc-1.1.x</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<site>
