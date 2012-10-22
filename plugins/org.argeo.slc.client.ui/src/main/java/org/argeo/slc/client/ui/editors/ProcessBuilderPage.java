@@ -369,9 +369,10 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 				// override with flow value
 				if (flowNode.hasNode(attrName)) {
 					// assuming this is a primitive
-					realizedAttrNode.setProperty(SLC_VALUE,
-							flowNode.getNode(attrName).getProperty(SLC_VALUE)
-									.getValue());
+					Node attrNode = flowNode.getNode(attrName);
+					if (attrNode.hasProperty(SLC_VALUE))
+						realizedAttrNode.setProperty(SLC_VALUE, attrNode
+								.getProperty(SLC_VALUE).getValue());
 				}
 			}
 
