@@ -9,4 +9,16 @@
 		<property name="repository" ref="javaRepository" />
 		<property name="workspace" value="org.argeo.tp-1.3.1" />
 	</bean>
+
+	<bean id="nodeSession" class="org.argeo.jcr.spring.ThreadBoundSession">
+		<property name="repository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="keyring" class="org.argeo.security.jcr.JcrKeyring">
+		<property name="session" ref="nodeSession" />
+		<property name="defaultCallbackHandler" ref="defaultCallbackHandler" />
+		<!-- <property name="secreteKeyLength" value="${argeo.keyring.secreteKeyLength}" 
+			/> -->
+	</bean>
+
 </beans>

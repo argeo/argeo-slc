@@ -17,10 +17,14 @@ package org.argeo.slc.repo;
 
 /** SLC repository constants */
 public interface RepoConstants {
+	public final static String DEFAULT_JAVA_REPOSITORY_ALIAS = "java";
+
 	public final static String DEFAULT_ARTIFACTS_BASE_PATH = "/";
 	public final static String REPO_BASEPATH = "/slc:repo";
 	public final static String PROXIED_REPOSITORIES = REPO_BASEPATH
 			+ "/slc:sources";
 	public final static String DISTRIBUTIONS_BASE_PATH = REPO_BASEPATH
 			+ "/slc:distributions";
+	public final static String REPOSITORIES_BASE_PATH = REPO_BASEPATH
+			+ "/slc:repositories";
 }

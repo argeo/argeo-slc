@@ -16,24 +16,21 @@
 		<property name="repository" ref="javaRepository" />
 		<property name="workspace" value="org.argeo.tp-1.3.1" />
 	</bean>
-	
+
 	<bean id="normalizeDistribution"
 		class="org.argeo.slc.client.ui.dist.commands.NormalizeDistribution"
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
 	</bean>
-	<bean id="createWorkspace"
-		class="org.argeo.slc.client.ui.dist.commands.CreateWorkspace"
+	<bean id="createWorkspace" class="org.argeo.slc.client.ui.dist.commands.CreateWorkspace"
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
 	</bean>
-	<bean id="copyWorkspace"
-		class="org.argeo.slc.client.ui.dist.commands.CopyWorkspace"
+	<bean id="copyWorkspace" class="org.argeo.slc.client.ui.dist.commands.CopyWorkspace"
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
 	</bean>
-	<bean id="deleteWorkspace"
-		class="org.argeo.slc.client.ui.dist.commands.DeleteWorkspace"
+	<bean id="deleteWorkspace" class="org.argeo.slc.client.ui.dist.commands.DeleteWorkspace"
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
 	</bean>
@@ -46,12 +43,18 @@
 		class="org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView"
 		scope="prototype">
 	</bean>
-	<bean id="org.argeo.slc.client.ui.dist.deleteArtifacts"
-		class="org.argeo.slc.client.ui.dist.commands.DeleteArtifacts"
+	<bean id="org.argeo.slc.client.ui.dist.deleteArtifacts" class="org.argeo.slc.client.ui.dist.commands.DeleteArtifacts"
 		scope="prototype">
 	</bean>
 	<bean id="refreshDistributionOverviewPage"
 		class="org.argeo.slc.client.ui.dist.commands.RefreshDistributionOverviewPage"
 		scope="prototype">
 	</bean>
+
+	<bean id="addRepository" class="org.argeo.slc.client.ui.dist.commands.AddRepository">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
+	</bean>
+
 </beans>

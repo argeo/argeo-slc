@@ -45,7 +45,8 @@
 
 	<bean id="distributionsView" class="org.argeo.slc.client.ui.dist.views.DistributionsView"
 		scope="prototype">
-		<property name="repository" ref="javaRepository" />
 		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
 	</bean>
 </beans>

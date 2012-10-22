@@ -102,6 +102,11 @@
          		name="Workspace Name">
   	 		</commandParameter>
     	</command>
+		<command
+            id="org.argeo.slc.client.ui.dist.addRepository"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Add Repository">
+    	</command>
 	
 		<!-- TO MANIPULATE WORKSPACES -->
 		<command
@@ -173,17 +178,23 @@
                 tooltip="Refresh the whole browser">
             </command>
         </menuContribution>
-        <!--
 		<menuContribution
         	locationURI="toolbar:org.argeo.slc.client.ui.dist.distributionsView">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.addRepository"
+                icon="icons/addItem.gif"
+                label="Add repository"
+                tooltip="Add a repository">
+            </command>
+        	<!--
             <command
             	commandId="org.argeo.slc.client.ui.dist.runInOSGi"
                 icon="icons/showSize.gif"
                 label="Run in OSGi"
                 tooltip="Run in a spearate OSGi runtime">
             </command>
+            -->
         </menuContribution>
-	-->
         <!-- Queries --> 
 		<!-- <menuContribution
                 allPopups="false"

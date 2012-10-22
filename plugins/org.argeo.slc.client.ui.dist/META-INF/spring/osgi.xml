@@ -12,4 +12,9 @@
 		filter="(argeo.jcr.repository.alias=java)" />
 
 	<reference id="repositoryFactory" interface="javax.jcr.RepositoryFactory" />
+
+	<reference id="nodeRepository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=node)" />
+
+	<reference id="defaultCallbackHandler" interface="javax.security.auth.callback.CallbackHandler" />
 </beans:beans>
