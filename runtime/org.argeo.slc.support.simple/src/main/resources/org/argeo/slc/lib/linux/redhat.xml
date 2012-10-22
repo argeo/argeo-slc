@@ -1,34 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-
-    Copyright (C) 2007-2012 Mathieu Baudier
-
-    Licensed under the Apache License, Version 2.0 (the "License");
-    you may not use this file except in compliance with the License.
-    You may obtain a copy of the License at
-
-            http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing, software
-    distributed under the License is distributed on an "AS IS" BASIS,
-    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-    See the License for the specific language governing permissions and
-    limitations under the License.
-
--->
+<!-- Copyright (C) 2007-2012 Mathieu Baudier Licensed under the Apache License, 
+	Version 2.0 (the "License"); you may not use this file except in compliance 
+	with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:flow="http://www.argeo.org/schema/slc-flow"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
-	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
+	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-1.2.xsd">
 
 	<bean id="hostManager" class="org.argeo.slc.lib.linux.RedhatHostManager">
 		<property name="sshTarget" ref="sshTarget" />
 		<property name="host" ref="host" />
 	</bean>
 
+	<!-- Execution Flows -->
 	<bean flow:as-flow="deployConfig" class="org.argeo.slc.core.execution.tasks.MethodCall"
 		p:target-ref="hostManager" p:method="deployConfig" />
 
@@ -52,5 +43,33 @@
 
 	<bean flow:as-flow="system/security/firewall" p:script="osgibundle:/scripts/firewall.sh"
 		p:sshTarget-ref="sshTarget" class="org.argeo.slc.jsch.RemoteExec" />
+
+	<flow:spec id="authconfig.spec">
+		<flow:primitive name="ldapserver" />
+		<flow:primitive name="ldapbasedn" />
+	</flow:spec>
+
+	<flow:flow spec="">
+		<bean flow:as-flow="system/security/authconfig" p:sshTarget-ref="sshTarget"
+			class="org.argeo.slc.jsch.RemoteExec">
+			<property name="systemCall">
+				<bean class="org.argeo.slc.core.execution.tasks.SystemCall">
+					<property name="command">
+						<list>
+							<value>authconfig</value>
+							<value>--enableldap</value>
+							<value>--enableldapauth</value>
+							<value>--enablecache</value>
+							<value>--enablemkhomedir</value>
+							<value>--ldapserver=@{ldapserver}</value>
+							<value>--ldapbasedn=@{ldapbasedn}</value>
+							<value>--passalgo=sha256</value>
+							<value>--updateall</value>
+						</list>
+					</property>
+				</bean>
+			</property>
+		</bean>
+	</flow:flow>
 
 </beans>

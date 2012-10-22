@@ -1,2 +1,3 @@
-http\://www.argeo.org/schema/slc-flow.xsd=org/argeo/slc/core/execution/xml/slc-flow-0.12.xsd
+http\://www.argeo.org/schema/slc-flow.xsd=org/argeo/slc/core/execution/xml/slc-flow-1.2.xsd
+http\://www.argeo.org/schema/slc-flow-1.2.xsd=org/argeo/slc/core/execution/xml/slc-flow-1.2.xsd
 http\://www.argeo.org/schema/slc-flow-0.12.xsd=org/argeo/slc/core/execution/xml/slc-flow-0.12.xsd

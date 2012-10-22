@@ -275,7 +275,11 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		// execution spec
 		ExecutionSpec executionSpec = efd.getExecutionSpec();
 		String esName = executionSpec.getName();
-		if (!(esName == null || esName.equals(ExecutionSpec.INTERNAL_NAME))) {
+		if (esName == null || esName.equals(ExecutionSpec.INTERNAL_NAME)
+				|| esName.contains("#")/* automatically generated bean name */) {
+			// internal spec node
+			mapExecutionSpec(flowNode, executionSpec);
+		} else {
 			// reference spec node
 			Node executionSpecsNode = moduleNode.hasNode(SLC_EXECUTION_SPECS) ? moduleNode
 					.getNode(SLC_EXECUTION_SPECS) : moduleNode
@@ -290,9 +294,6 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 						executionSpec.getDescription());
 			mapExecutionSpec(executionSpecNode, executionSpec);
 			flowNode.setProperty(SLC_SPEC, executionSpecNode);
-		} else {
-			// internal spec node
-			mapExecutionSpec(flowNode, executionSpec);
 		}
 
 		// values

@@ -18,6 +18,8 @@ package org.argeo.slc.core.execution.xml;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlow;
@@ -35,9 +37,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/** Interprets the <flow:flow> tag */
 public class FlowBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
-	// private Log log = LogFactory.getLog(FlowBeanDefinitionParser.class);
+	private Log log = LogFactory.getLog(FlowBeanDefinitionParser.class);
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -45,7 +48,7 @@ public class FlowBeanDefinitionParser extends
 			BeanDefinitionBuilder builder) {
 		String path = element.getAttribute("path");
 		if (StringUtils.hasText(path))
-			builder.addPropertyValue("path", path);
+			log.warn("The 'path' attribute is not used anymore to build flows");
 
 		String spec = element.getAttribute("spec");
 		if (StringUtils.hasText(spec))
@@ -63,14 +66,17 @@ public class FlowBeanDefinitionParser extends
 		builder.getBeanDefinition().setDescription(
 				DomUtils.getChildElementValueByTagName(element, "description"));
 
-		List<Element> execElems = new ArrayList<Element>();
 		List<Element> argsElems = new ArrayList<Element>();
+		List<Element> execElems = new ArrayList<Element>();
+		List<Element> specElems = new ArrayList<Element>();
 		NodeList nodeList = element.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node node = nodeList.item(i);
 			if (node instanceof Element) {
 				if (DomUtils.nodeNameEquals(node, "arg"))
 					argsElems.add((Element) node);
+				else if (DomUtils.nodeNameEquals(node, "spec"))
+					specElems.add((Element) node);
 				else if (!DomUtils.nodeNameEquals(node, "description"))
 					execElems.add((Element) node);
 			}
@@ -90,6 +96,18 @@ public class FlowBeanDefinitionParser extends
 			builder.getBeanDefinition().getConstructorArgumentValues()
 					.addGenericArgumentValue(args);
 		}
+
+		// Execution specs
+		if (StringUtils.hasText(spec) && specElems.size() != 0)
+			throw new SlcException("A flow cannot have multiple specs");
+		if (specElems.size() == 1) {
+			Object specObj = NamespaceUtils.parseBeanOrReference(
+					specElems.get(0), parserContext,
+					builder.getBeanDefinition());
+			builder.getBeanDefinition().getConstructorArgumentValues()
+					.addGenericArgumentValue(specObj);
+		} else if (specElems.size() > 1)
+			throw new SlcException("A flow cannot have multiple specs");
 
 		// Executables
 		if (execElems.size() != 0) {
@@ -116,8 +134,8 @@ public class FlowBeanDefinitionParser extends
 			} catch (ClassNotFoundException e) {
 				try {
 					return (Class<? extends ExecutionFlow>) Thread
-							.currentThread().getContextClassLoader().loadClass(
-									clss);
+							.currentThread().getContextClassLoader()
+							.loadClass(clss);
 				} catch (ClassNotFoundException e1) {
 					throw new SlcException("Cannot load class " + clss, e);
 				}

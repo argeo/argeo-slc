@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.util.xml.DomUtils;
 import org.w3c.dom.Element;
 
+/** Interprets the <flow:spec> tag */
 public class SpecBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
 	private Log log = LogFactory.getLog(SpecBeanDefinitionParser.class);
@@ -41,9 +42,9 @@ public class SpecBeanDefinitionParser extends
 	@Override
 	protected void doParse(Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
-		builder.getBeanDefinition().setDescription(DomUtils.getChildElementValueByTagName(element, 
-		"description"));		
-		
+		builder.getBeanDefinition().setDescription(
+				DomUtils.getChildElementValueByTagName(element, "description"));
+
 		ManagedMap attributes = new ManagedMap();
 
 		// Primitives
@@ -82,8 +83,8 @@ public class SpecBeanDefinitionParser extends
 				for (Element choiceElem : choices) {
 					BeanDefinitionBuilder choiceBuilder = BeanDefinitionBuilder
 							.genericBeanDefinition(RefValueChoice.class);
-					choiceBuilder.addPropertyValue("name", choiceElem
-							.getAttribute("name"));
+					choiceBuilder.addPropertyValue("name",
+							choiceElem.getAttribute("name"));
 					String desc = choiceElem.getAttribute("description");
 					if (StringUtils.hasText(desc))
 						choiceBuilder.addPropertyValue("description", desc);
@@ -93,8 +94,8 @@ public class SpecBeanDefinitionParser extends
 				refAttrBuilder.addPropertyValue("choices", choiceBeans);
 			}
 
-			putInAttributes(attributes, refAttrElem, refAttrBuilder
-					.getBeanDefinition(), "ref");
+			putInAttributes(attributes, refAttrElem,
+					refAttrBuilder.getBeanDefinition(), "ref");
 		}
 
 		builder.addPropertyValue("attributes", attributes);
@@ -102,9 +103,11 @@ public class SpecBeanDefinitionParser extends
 
 	protected void addCommonProperties(Element element,
 			ParserContext parserContext, BeanDefinitionBuilder specAttr) {
+		addBooleanProperty("isImmutable", specAttr, element);
+		addBooleanProperty("isConstant", specAttr, element);
+		addBooleanProperty("isHidden", specAttr, element);
 		addBooleanProperty("isParameter", specAttr, element);
 		addBooleanProperty("isFrozen", specAttr, element);
-		addBooleanProperty("isHidden", specAttr, element);
 
 		Object value = NamespaceUtils.parseValue(element, parserContext,
 				specAttr.getBeanDefinition(), "value");

@@ -24,6 +24,10 @@ import org.springframework.osgi.io.OsgiBundleResourceLoader;
 import org.springframework.osgi.io.OsgiBundleResourcePatternResolver;
 import org.springframework.osgi.util.OsgiBundleUtils;
 
+/**
+ * Retrieves ressources from an OSGi bundle either the active one or another one
+ * referenced by its symbolic name.
+ */
 public class OsgiResourceSet extends DefaultResourceSet implements
 		BundleContextAware {
 	private BundleContext bundleContext;
