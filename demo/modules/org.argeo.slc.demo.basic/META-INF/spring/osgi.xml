@@ -12,6 +12,7 @@
 		interface="org.argeo.slc.core.attachment.AttachmentUploader"
 		cardinality="0..1" />
 
-	<list id="resultListeners" interface="org.argeo.slc.core.test.tree.TreeTestResultListener"
-		cardinality="0..N" />
+	<!-- REFERENCES -->
+	<reference id="repository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=slc)" />
 </beans:beans>

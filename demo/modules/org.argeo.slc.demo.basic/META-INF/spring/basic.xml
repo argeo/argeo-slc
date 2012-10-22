@@ -2,10 +2,12 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:flow="http://www.argeo.org/schema/slc-flow"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
-	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
 
 	<bean id="basic.spec" parent="slcTemplate.simpleSpec">
 		<property name="attributes">
@@ -96,16 +98,28 @@
 	<bean id="basic.testDef" class="org.argeo.slc.core.test.BasicTestDefinition"
 		scope="prototype" />
 
-	<bean id="basic.testResult" parent="slcDefault.test.basicTreeTestResult"
-		scope="execution">
-		<property name="listeners" ref="resultListeners" />
+	<bean id="basic.testResult" class="org.argeo.slc.jcr.JcrTestResult"
+		init-method="init" destroy-method="destroy">
+		<flow:variable />
+		<property name="resultType" value="slc:diffResult" />
 		<property name="attributes">
 			<map>
-				<entry key="testedComponentId" value="@{testedComponentId}" />
+				<entry key="testCase" value="@{slcVar.flow.name}" />
 			</map>
 		</property>
-		<aop:scoped-proxy />
+		<property name="repository" ref="repository" />
 	</bean>
+
+<!-- 	<bean id="basic.testResult" parent="slcDefault.test.basicTreeTestResult" -->
+<!-- 		scope="execution"> -->
+<!-- 		<property name="listeners" ref="resultListeners" /> -->
+<!-- 		<property name="attributes"> -->
+<!-- 			<map> -->
+<!-- 				<entry key="testedComponentId" value="@{testedComponentId}" /> -->
+<!-- 			</map> -->
+<!-- 		</property> -->
+<!-- 		<aop:scoped-proxy /> -->
+<!-- 	</bean> -->
 
 	<bean id="basic.testRun" class="org.argeo.slc.core.test.SimpleTestRun"
 		abstract="true">
