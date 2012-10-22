@@ -44,14 +44,13 @@
 	<bean flow:as-flow="system/security/firewall" p:script="osgibundle:/scripts/firewall.sh"
 		p:sshTarget-ref="sshTarget" class="org.argeo.slc.jsch.RemoteExec" />
 
-	<flow:spec id="authconfig.spec">
-		<flow:primitive name="ldapserver" />
-		<flow:primitive name="ldapbasedn" />
-	</flow:spec>
-
-	<flow:flow spec="">
-		<bean flow:as-flow="system/security/authconfig" p:sshTarget-ref="sshTarget"
-			class="org.argeo.slc.jsch.RemoteExec">
+	<flow:flow name="system/security/authconfig">
+		<flow:spec>
+			<flow:primitive name="ldapserver" />
+			<flow:primitive name="ldapbasedn" />
+		</flow:spec>
+		<bean p:sshTarget-ref="sshTarget" class="org.argeo.slc.jsch.RemoteExec">
+			<flow:variable />
 			<property name="systemCall">
 				<bean class="org.argeo.slc.core.execution.tasks.SystemCall">
 					<property name="command">
