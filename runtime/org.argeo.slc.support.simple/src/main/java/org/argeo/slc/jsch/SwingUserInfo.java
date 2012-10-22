@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.jsch.swing;
+package org.argeo.slc.jsch;
 
 import java.awt.Container;
 import java.awt.GridLayout;
@@ -29,7 +29,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-import org.argeo.slc.jsch.SimpleUserInfo;
 
 public class SwingUserInfo extends SimpleUserInfo {
 
