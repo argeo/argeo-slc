@@ -1,0 +1,186 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>dep</artifactId>
+		<version>1.1.4-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>org.argeo.slc.dep.minimal</artifactId>
+	<name>SLC Minimal Dependencies</name>
+	<description>The minimal set of dependencies required to run an SLC execution</description>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.argeo.maven.plugins</groupId>
+				<artifactId>maven-argeo-osgi-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-descriptors</id>
+						<goals>
+							<goal>descriptors</goal>
+						</goals>
+						<phase>generate-resources</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<!-- SLC Agent -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.core</artifactId>
+			<version>1.1.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.support.jcr</artifactId>
+			<version>1.1.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.support.osgi</artifactId>
+			<version>1.1.4-SNAPSHOT</version>
+		</dependency>
+
+		<!-- SLC Agent Modules -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.agent</artifactId>
+			<version>1.1.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.agent.jcr</artifactId>
+			<version>1.1.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
+			<version>1.1.4-SNAPSHOT</version>
+		</dependency>
+
+
+		<!-- Node subset -->
+		<!-- Default JCR repositories configurations -->
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.node.repo.jackrabbit</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.node.repofactory.jackrabbit</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<!-- OSGi Boot (and Equinox) -->
+		<dependency>
+			<groupId>org.argeo.commons.base</groupId>
+			<artifactId>org.argeo.osgi.boot</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.argeo.commons.base</groupId>
+			<artifactId>org.argeo.dep.log4j</artifactId>
+			<version>${version.argeo-commons}</version>
+			<type>pom</type>
+		</dependency>
+
+		<!-- Argeo Security -->
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.core</artifactId>
+			<version>${version.argeo-commons}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.argeo.tp</groupId>
+					<artifactId>bcprov</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- Xerces and Xalan -->
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.xmlcommons</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.apache.xalan</artifactId>
+		</dependency>
+
+		<!-- Javax -->
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>javax.annotation</artifactId>
+		</dependency>
+
+		<!-- Spring OSGi -->
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>org.springframework.osgi.extender</artifactId>
+		</dependency>
+
+		<!-- Jackrabbit -->
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.jackrabbit</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.jackrabbit</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<!-- Security (Jackrabbit) -->
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.dao.jackrabbit</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<!-- Security (Standalone) -->
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.dao.os</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<!-- DB drivers -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.tp</groupId> -->
+<!-- 			<artifactId>org.h2</artifactId> -->
+<!-- 		</dependency> -->
+	</dependencies>
+	<profiles>
+		<profile>
+			<id>check-osgi</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.argeo.maven.plugins</groupId>
+						<artifactId>maven-argeo-osgi-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>check-osgi</id>
+								<phase>test</phase>
+								<goals>
+									<goal>equinox</goal>
+								</goals>
+								<configuration>
+									<onlyCheck>true</onlyCheck>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

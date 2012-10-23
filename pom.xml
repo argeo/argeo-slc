@@ -20,6 +20,7 @@
 	<modules>
 		<module>runtime</module>
 		<module>modules</module>
+		<module>lib</module>
 		<module>plugins</module>
 		<module>demo</module>
 		<module>dep</module>
