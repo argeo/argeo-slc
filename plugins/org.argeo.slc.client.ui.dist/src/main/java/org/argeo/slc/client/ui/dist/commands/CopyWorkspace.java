@@ -1,21 +1,16 @@
 package org.argeo.slc.client.ui.dist.commands;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
-import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.DistUiUtils;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
-import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -65,9 +60,9 @@ public class CopyWorkspace extends AbstractHandler {
 			Node srcRootNode = srcSession.getRootNode();
 			// log in the newly created workspace
 			newSession = repository.login(newWorkspaceName);
-			//newSession.save();
+			// newSession.save();
 			Node newRootNode = newSession.getRootNode();
-			copy(srcRootNode, newRootNode);
+			DistUiUtils.copy(srcRootNode, newRootNode);
 			newSession.save();
 
 			CommandHelpers.callCommand(RefreshDistributionsView.ID);
@@ -81,96 +76,6 @@ public class CopyWorkspace extends AbstractHandler {
 				newSession.logout();
 		}
 		return null;
-	}
-
-	// FIXME : commons is frozen, cannot fix the problem directly there.
-	// test and report corresponding patch
-	private void copy(Node fromNode, Node toNode) {
-		try {
-			if (log.isDebugEnabled())
-				log.debug("copy node :" + fromNode.getPath());
-
-			// FIXME : small hack to enable specific workspace copy
-			if (fromNode.isNodeType("rep:ACL")
-					|| fromNode.isNodeType("rep:system")) {
-				if (log.isTraceEnabled())
-					log.trace("node skipped");
-				return;
-			}
-
-			// add mixins
-			for (NodeType mixinType : fromNode.getMixinNodeTypes()) {
-				toNode.addMixin(mixinType.getName());
-			}
-
-			// Double check
-			for (NodeType mixinType : toNode.getMixinNodeTypes()) {
-				if (log.isDebugEnabled())
-					log.debug(mixinType.getName());
-			}
-
-			// process properties
-			PropertyIterator pit = fromNode.getProperties();
-			properties: while (pit.hasNext()) {
-				Property fromProperty = pit.nextProperty();
-				String propName = fromProperty.getName();
-				try {
-					String propertyName = fromProperty.getName();
-					if (toNode.hasProperty(propertyName)
-							&& toNode.getProperty(propertyName).getDefinition()
-									.isProtected())
-						continue properties;
-
-					if (fromProperty.getDefinition().isProtected())
-						continue properties;
-
-					if (propertyName.equals("jcr:created")
-							|| propertyName.equals("jcr:createdBy")
-							|| propertyName.equals("jcr:lastModified")
-							|| propertyName.equals("jcr:lastModifiedBy"))
-						continue properties;
-
-					if (fromProperty.isMultiple()) {
-						toNode.setProperty(propertyName,
-								fromProperty.getValues());
-					} else {
-						toNode.setProperty(propertyName,
-								fromProperty.getValue());
-					}
-				} catch (RepositoryException e) {
-					throw new ArgeoException("Cannot property " + propName, e);
-				}
-			}
-
-			// recursively process children nodes
-			NodeIterator nit = fromNode.getNodes();
-			while (nit.hasNext()) {
-				Node fromChild = nit.nextNode();
-				Integer index = fromChild.getIndex();
-				String nodeRelPath = fromChild.getName() + "[" + index + "]";
-				Node toChild;
-				if (toNode.hasNode(nodeRelPath))
-					toChild = toNode.getNode(nodeRelPath);
-				else
-					toChild = toNode.addNode(fromChild.getName(), fromChild
-							.getPrimaryNodeType().getName());
-				copy(fromChild, toChild);
-			}
-
-			// update jcr:lastModified and jcr:lastModifiedBy in toNode in case
-			// they existed
-			if (!toNode.getDefinition().isProtected()
-					&& toNode.isNodeType(NodeType.MIX_LAST_MODIFIED))
-				JcrUtils.updateLastModified(toNode);
-
-			// Workaround to reduce session size: artifact is a saveable unity
-			if (toNode.isNodeType(SlcTypes.SLC_ARTIFACT))
-				toNode.getSession().save();
-
-		} catch (RepositoryException e) {
-			throw new ArgeoException("Cannot copy " + fromNode + " to "
-					+ toNode, e);
-		}
 	}
 
 	/* DEPENDENCY INJECTION */

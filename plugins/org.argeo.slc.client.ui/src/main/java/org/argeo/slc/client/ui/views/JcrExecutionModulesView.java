@@ -429,36 +429,18 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	}
 
+	/** Listen to drags */
 	class ViewDragListener extends DragSourceAdapter {
 		public void dragSetData(DragSourceEvent event) {
 			IStructuredSelection selection = (IStructuredSelection) viewer
 					.getSelection();
 			if (selection.getFirstElement() instanceof Node) {
 				Node node = (Node) selection.getFirstElement();
-				// try {
-				// if (node.isNodeType(SLC_EXECUTION_FLOW)) {
-				// if (EditorInputTransfer.getInstance().isSupportedType(
-				// event.dataType)) {
-				// ProcessEditorInput pei = new ProcessEditorInput(
-				// node.getPath());
-				// EditorInputData eid = EditorInputTransfer
-				// .createEditorInputData(ProcessEditor.ID,
-				// pei);
-				// event.data = new EditorInputTransfer.EditorInputData[] { eid
-				// };
-				//
-				// }
-				// }
-				// } catch (RepositoryException e1) {
-				// throw new SlcException("Cannot drag " + node, e1);
-				// }
-
 				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 					try {
 						event.data = node.getPath();
-					} catch (RepositoryException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+					} catch (RepositoryException e) {
+						throw new SlcException("Cannot read node", e);
 					}
 				}
 			}

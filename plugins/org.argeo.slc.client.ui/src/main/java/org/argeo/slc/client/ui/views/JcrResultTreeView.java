@@ -17,8 +17,6 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.utils.CommandUtils;
@@ -75,7 +73,8 @@ import org.eclipse.ui.part.ViewPart;
 public class JcrResultTreeView extends ViewPart {
 	public final static String ID = ClientUiPlugin.ID + ".jcrResultTreeView";
 
-	private final static Log log = LogFactory.getLog(JcrResultTreeView.class);
+	// private final static Log log =
+	// LogFactory.getLog(JcrResultTreeView.class);
 
 	/* DEPENDENCY INJECTION */
 	private Session session;
@@ -532,8 +531,11 @@ public class JcrResultTreeView extends ViewPart {
 				Node target = currParentNode.addNode(source.getName(), source
 						.getPrimaryNodeType().getName());
 				JcrUtils.copy(source, target);
-				ResultParentUtils.updatePassedStatus(target, target.getNode(SlcNames.SLC_STATUS)
-						.getProperty(SlcNames.SLC_SUCCESS).getBoolean());
+				ResultParentUtils
+						.updatePassedStatus(target,
+								target.getNode(SlcNames.SLC_STATUS)
+										.getProperty(SlcNames.SLC_SUCCESS)
+										.getBoolean());
 				target.getSession().save();
 			} catch (RepositoryException re) {
 				throw new SlcException(
@@ -574,7 +576,7 @@ public class JcrResultTreeView extends ViewPart {
 				throws RepositoryException {
 
 			for (Event event : events) {
-				 getLog().debug("Received event " + event);
+				getLog().debug("Received event " + event);
 				int eventType = event.getType();
 				if (eventType == Event.NODE_REMOVED) {
 					String path = event.getPath();
@@ -588,7 +590,7 @@ public class JcrResultTreeView extends ViewPart {
 							resultTreeViewer.refresh(true);
 							resultTreeViewer.expandToLevel(
 									lastSelectedElementParent, 1);
-							
+
 						}
 					}
 				} else if (eventType == Event.NODE_ADDED) {

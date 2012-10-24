@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Credentials;
+import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -28,9 +29,12 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.argeo.ArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseArgeoMonitor;
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.jcr.ArgeoJcrUtils;
@@ -40,6 +44,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.DistUiUtils;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
@@ -51,9 +56,14 @@ import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.util.security.Keyring;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -62,7 +72,14 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
@@ -75,8 +92,7 @@ import org.eclipse.ui.part.ViewPart;
  * one single repository currently.
  */
 public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames {
-	// private final static Log log =
-	// LogFactory.getLog(DistributionsView.class);
+	private final static Log log = LogFactory.getLog(DistributionsView.class);
 	public final static String ID = DistPlugin.ID + ".distributionsView";
 
 	private Repository nodeRepository;
@@ -84,11 +100,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	private Keyring keyring;
 
 	private TreeViewer viewer;
-
-	// private List<RepositoryElem> repositories = new
-	// ArrayList<DistributionsView.RepositoryElem>();
-
-	// private Session nodeSession = null;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -114,6 +125,12 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		viewer.setContentProvider(new DistributionsContentProvider());
 		viewer.addDoubleClickListener(new DistributionsDCL());
+
+		// Drag'n drop
+		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
+		int operations = DND.DROP_COPY | DND.DROP_MOVE;
+		viewer.addDragSupport(operations, tt, new ViewDragListener());
+		viewer.addDropSupport(operations, tt, new ViewDropListener(viewer));
 
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getTree());
@@ -154,99 +171,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		} finally {
 			JcrUtils.logoutQuietly(nodeSession);
 		}
-		//
-		// try {
-		// nodeSession = nodeRepository.login();
-		// NodeIterator repos = JcrUtils.mkdirs(
-		// nodeSession,
-		// UserJcrUtils.getUserHome(nodeSession).getPath()
-		// + RepoConstants.REPOSITORIES_BASE_PATH).getNodes();
-		// while (repos.hasNext()) {
-		// Node repository = repos.nextNode();
-		// String label = null;
-		// if (repository.isNodeType(NodeType.MIX_TITLE)) {
-		// label = repository.getProperty(Property.JCR_TITLE)
-		// .getString();
-		// }
-		//
-		// if (repository.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
-		// String uri = repository.getProperty(ARGEO_URI).getString();
-		// Credentials credentials = null;
-		// if (repository.hasProperty(ARGEO_USER_ID)) {
-		// String userId = repository.getProperty(ARGEO_USER_ID)
-		// .getString();
-		// credentials = new SimpleCredentials(userId,
-		// "".toCharArray());
-		// }
-		// Repository remoteRepository = ArgeoJcrUtils
-		// .getRepositoryByUri(repositoryFactory, uri);
-		// if (label == null)
-		// label = repository.getName();
-		// repositories.add(new RepositoryElem(label,
-		// remoteRepository, credentials));
-		// }
-		// }
-		// } catch (RepositoryException e) {
-		// throw new ArgeoException("Cannot read registered repositories", e);
-		// }
-
-		// Remote
-		// String uri = null;
-		// Credentials credentials = null;
-		// Repository remoteRepository = null;
-
-		// try {
-		// uri = "http://dev.argeo.org/org.argeo.jcr.webapp/pub/java";
-		// credentials = new GuestCredentials();
-		// remoteRepository =
-		// ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
-		// repositories.add(new RepositoryElem("anonymous@dev.argeo.org//java",
-		// remoteRepository, credentials));
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// }
-
-		// uri = "http://localhost:7070/org.argeo.jcr.webapp/pub/java";
-		// credentials = new GuestCredentials();
-		// remoteRepository =
-		// ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
-		// repositories.add(new RepositoryElem("anonymous@localhost//java",
-		// remoteRepository, credentials));
-
-		// uri = "http://localhost:7070/org.argeo.jcr.webapp/remoting/java";
-		// credentials = new SimpleCredentials(System.getProperty("user.name"),
-		// "".toCharArray());
-		// remoteRepository =
-		// ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
-		// repositories.add(new RepositoryElem("@localhost//java",
-		// remoteRepository, credentials));
 
 		viewer.setInput(nodeRepository);
 
-	}
-
-	@Override
-	public void setFocus() {
-		viewer.getTree().setFocus();
-	}
-
-	/**
-	 * Force refresh of the whole view
-	 */
-	public void refresh() {
-		viewer.setContentProvider(new DistributionsContentProvider());
-	}
-
-	public void setNodeRepository(Repository repository) {
-		this.nodeRepository = repository;
-	}
-
-	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
-		this.repositoryFactory = repositoryFactory;
-	}
-
-	public void setKeyring(Keyring keyring) {
-		this.keyring = keyring;
 	}
 
 	/** Programatically configure the context menu */
@@ -310,6 +237,37 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 	}
 
+	@Override
+	public void setFocus() {
+		viewer.getTree().setFocus();
+	}
+
+	/*
+	 * DEPENDENCY INJECTION
+	 */
+	/**
+	 * Force refresh of the whole view
+	 */
+	public void refresh() {
+		viewer.setContentProvider(new DistributionsContentProvider());
+	}
+
+	public void setNodeRepository(Repository repository) {
+		this.nodeRepository = repository;
+	}
+
+	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+		this.repositoryFactory = repositoryFactory;
+	}
+
+	public void setKeyring(Keyring keyring) {
+		this.keyring = keyring;
+	}
+
+	/*
+	 * INTERNAL CLASSES
+	 */
+	/** Content provider */
 	private class DistributionsContentProvider implements ITreeContentProvider {
 		Session nodeSession;
 		List<RepoElem> repositories = new ArrayList<RepoElem>();
@@ -372,21 +330,12 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 	}
 
-	// private class DistributionsContentProvider extends
-	// AbstractTreeContentProvider {
-	//
-	// public Object[] getElements(Object arg0) {
-	// return repositories.toArray();
-	// }
-	//
-	// }
-
+	/** A software repository */
 	private class RepoElem {
 		private Node repoNode;
 
 		private Repository repository;
 		private Credentials credentials;
-		private Session defaultSession = null;
 
 		public RepoElem(Node repoNode) {
 			this.repoNode = repoNode;
@@ -394,35 +343,12 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		/** Lazily connects to repository */
 		protected void connect() {
-			if (defaultSession != null)
+			if (repository != null)
 				return;
-
-			try {
-				if (repoNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
-					String uri = repoNode.getProperty(ARGEO_URI).getString();
-					if (uri.startsWith("http")) {// http, https
-						if (repoNode.hasProperty(ARGEO_USER_ID)) {
-							String userId = repoNode.getProperty(ARGEO_USER_ID)
-									.getString();
-							char[] password = keyring.getAsChars(repoNode
-									.getPath() + '/' + ARGEO_PASSWORD);
-							credentials = new SimpleCredentials(userId,
-									password);
-						}
-						repository = ArgeoJcrUtils.getRepositoryByUri(
-								repositoryFactory, uri);
-					} else {// alias
-						String alias = uri;
-						repository = ArgeoJcrUtils.getRepositoryByAlias(
-								repositoryFactory, alias);
-						credentials = null;
-					}
-					defaultSession = repository.login(credentials);
-				}
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot connect to repository "
-						+ repoNode, e);
-			}
+			repository = DistUiUtils.getRepository(repositoryFactory, keyring,
+					repoNode);
+			credentials = DistUiUtils.getRepositoryCredentials(keyring,
+					repoNode);
 		}
 
 		public String getLabel() {
@@ -443,73 +369,100 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		public Object[] getChildren() {
 			connect();
+			Session session = null;
 			try {
-				String[] workspaceNames = defaultSession.getWorkspace()
+				session = repository.login(credentials);
+				String[] workspaceNames = session.getWorkspace()
 						.getAccessibleWorkspaceNames();
 				List<DistributionElem> distributionElems = new ArrayList<DistributionElem>();
 				for (String workspace : workspaceNames)
-					distributionElems.add(new DistributionElem(repository,
-							workspace, credentials));
+					distributionElems.add(new DistributionElem(this, workspace,
+							credentials));
+				// FIXME remove deleted workspaces
 				return distributionElems.toArray();
 			} catch (RepositoryException e) {
 				throw new SlcException(
 						"Cannot list workspaces for " + repoNode, e);
+			} finally {
+				JcrUtils.logoutQuietly(session);
 			}
 		}
 
 		public void dispose() {
-			JcrUtils.logoutQuietly(defaultSession);
+		}
+
+		public Node getRepoNode() {
+			return repoNode;
+		}
+
+		public String getRepoPath() {
+			try {
+				return repoNode.getPath();
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get path for " + repoNode, e);
+			}
+		}
+
+		public Repository getRepository() {
+			connect();
+			return repository;
 		}
 	}
 
-	/** Wraps a repository **/
-	// private static class RepositoryElem extends TreeParent {
-	// // private final Repository repository;
-	// private Session defaultSession;
-	//
-	// public RepositoryElem(String name, Repository repository,
-	// Credentials credentials) {
-	// super(name);
-	// try {
-	// defaultSession = repository.login(credentials);
-	// String[] workspaceNames = defaultSession.getWorkspace()
-	// .getAccessibleWorkspaceNames();
-	// for (String workspace : workspaceNames)
-	// addChild(new DistributionElem(repository, workspace,
-	// credentials));
-	// } catch (RepositoryException e) {
-	// ErrorFeedback.show("Cannot log to repository", e);
-	// }
-	// }
-	//
-	// @Override
-	// public synchronized void dispose() {
-	// if (log.isTraceEnabled())
-	// log.trace("Disposing RepositoryElement");
-	// JcrUtils.logoutQuietly(defaultSession);
-	// super.dispose();
-	// }
-	// }
-
+	/** Abstracts a distribution, that is a workspace */
 	private static class DistributionElem extends TreeParent {
+		private final RepoElem repoElem;
+		private final Node workspaceNode;
 		private final String workspaceName;
-		private final Repository repository;
 		private final Credentials credentials;
 
-		public DistributionElem(Repository repository, String workspaceName,
+		public DistributionElem(RepoElem repoElem, String workspaceName,
 				Credentials credentials) {
 			super(workspaceName);
+			this.repoElem = repoElem;
+			try {
+				// TODO move it to repo elem
+				this.workspaceNode = repoElem.getRepoNode().hasNode(
+						workspaceName) ? repoElem.getRepoNode().getNode(
+						workspaceName) : repoElem.getRepoNode().addNode(
+						workspaceName);
+				repoElem.getRepoNode().getSession().save();
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get or add workspace node "
+						+ workspaceName, e);
+			}
 			this.workspaceName = workspaceName;
-			this.repository = repository;
 			this.credentials = credentials;
+		}
+
+		public Node getWorkspaceNode() {
+			return workspaceNode;
 		}
 
 		public String getWorkspaceName() {
 			return workspaceName;
 		}
 
-		public Repository getRepository() {
-			return repository;
+		public String getWorkspacePath() {
+			try {
+				return workspaceNode.getPath();
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get or add workspace path "
+						+ workspaceName, e);
+			}
+		}
+
+		public String getRepoPath() {
+			try {
+				return workspaceNode.getParent().getPath();
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get or add workspace path "
+						+ workspaceName, e);
+			}
+		}
+
+		public RepoElem getRepoElem() {
+			return repoElem;
 		}
 
 		public Credentials getCredentials() {
@@ -517,13 +470,153 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 	}
 
-	@Override
-	public void dispose() {
-		// for (RepositoryElem re : repositories)
-		// re.dispose();
-		super.dispose();
+	/** Listens to drag */
+	class ViewDragListener extends DragSourceAdapter {
+		public void dragSetData(DragSourceEvent event) {
+			if (log.isDebugEnabled())
+				log.debug("Drag started: " + event);
+			IStructuredSelection selection = (IStructuredSelection) viewer
+					.getSelection();
+			if (selection.getFirstElement() instanceof DistributionElem) {
+				DistributionElem de = (DistributionElem) selection
+						.getFirstElement();
+				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+					event.data = de.getWorkspacePath();
+					if (log.isDebugEnabled())
+						log.debug("Distribution drag for " + event.data);
+				}
+			}
+		}
 	}
 
+	/** Listens to drop */
+	class ViewDropListener extends ViewerDropAdapter {
+
+		public ViewDropListener(Viewer viewer) {
+			super(viewer);
+		}
+
+		@Override
+		public boolean performDrop(Object data) {
+			DistributionElem sourceDist = (DistributionElem) getSelectedObject();
+			RepoElem targetRepo = (RepoElem) getCurrentTarget();
+
+			Boolean ok = MessageDialog.openConfirm(getSite().getShell(),
+					"Confirm distribution merge", "Do you want to merge "
+							+ sourceDist.getWorkspaceName() + " (from repo "
+							+ sourceDist.getRepoElem().getLabel()
+							+ ") to repo " + targetRepo.getLabel() + "?");
+			if (!ok)
+				return false;
+
+			try {
+				String sourceWorkspace = sourceDist.getWorkspaceName();
+				Repository sourceRepository = DistUiUtils.getRepository(
+						repositoryFactory, keyring, sourceDist
+								.getWorkspaceNode().getParent());
+				Credentials sourceCredentials = DistUiUtils
+						.getRepositoryCredentials(keyring, sourceDist
+								.getWorkspaceNode().getParent());
+
+				String targetWorkspace = sourceWorkspace;
+				Repository targetRepository = DistUiUtils.getRepository(
+						repositoryFactory, keyring, targetRepo.getRepoNode());
+				Credentials targetCredentials = DistUiUtils
+						.getRepositoryCredentials(keyring,
+								targetRepo.getRepoNode());
+
+				// Open sessions here since the background thread
+				// won't necessarily be authenticated.
+				// Job should close the sessions.
+				Session sourceSession = sourceRepository.login(
+						sourceCredentials, sourceWorkspace);
+				Session targetSession;
+				try {
+					targetSession = targetRepository.login(targetCredentials,
+							targetWorkspace);
+				} catch (NoSuchWorkspaceException e) {
+					Session defaultSession = targetRepository
+							.login(targetCredentials);
+					try {
+						defaultSession.getWorkspace().createWorkspace(
+								targetWorkspace);
+					} catch (Exception e1) {
+						throw new SlcException("Cannot create new workspace "
+								+ targetWorkspace, e);
+					} finally {
+						JcrUtils.logoutQuietly(defaultSession);
+					}
+					targetSession = targetRepository.login(targetCredentials,
+							targetWorkspace);
+				}
+
+				new WorkspaceMergeJob(sourceSession, targetSession).schedule();
+				return true;
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot process drop from " + sourceDist
+						+ " to " + targetRepo, e);
+			}
+		}
+
+		@Override
+		public boolean validateDrop(Object target, int operation,
+				TransferData transferType) {
+			if (target instanceof RepoElem) {
+				if (getSelectedObject() instanceof DistributionElem) {
+					// check if not same repository
+					String srcRepoPath = ((DistributionElem) getSelectedObject())
+							.getRepoPath();
+					String targetRepoPath = ((RepoElem) target).getRepoPath();
+					return !targetRepoPath.equals(srcRepoPath);
+				}
+			}
+			return false;
+		}
+	}
+
+	private static class WorkspaceMergeJob extends Job {
+		private Session sourceSession;
+		private Session targetSession;
+
+		public WorkspaceMergeJob(Session sourceSession, Session targetSession) {
+			super("Workspace merge");
+			this.sourceSession = sourceSession;
+			this.targetSession = targetSession;
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor monitor) {
+			long begin = System.currentTimeMillis();
+			try {
+				// Not implemented in Davex Jackrabbit v2.2
+				// Long fileCount = sourceSession
+				// .getWorkspace()
+				// .getQueryManager()
+				// .createQuery("select count(*) from [nt:file]",
+				// Query.JCR_SQL2).execute().getRows().nextRow()
+				// .getValues()[0].getLong();
+
+				ArgeoMonitor argeoMonitor = new EclipseArgeoMonitor(monitor);
+				monitor.beginTask("Copy files", ArgeoMonitor.UNKNOWN);
+
+				Long count = JcrUtils.copyFiles(sourceSession.getRootNode(),
+						targetSession.getRootNode(), true, argeoMonitor);
+
+				long duration = (System.currentTimeMillis() - begin) / 1000;// in
+																			// s
+				if (log.isDebugEnabled())
+					log.debug("Copied " + count + " files in "
+							+ (duration / 60) + "min " + (duration % 60) + "s");
+
+				return Status.OK_STATUS;
+			} catch (RepositoryException e) {
+				return new Status(IStatus.ERROR, DistPlugin.ID, "Cannot merge",
+						e);
+			}
+		}
+	}
+
+	/** Listen to double-clicks */
 	private class DistributionsDCL implements IDoubleClickListener {
 
 		public void doubleClick(DoubleClickEvent event) {
@@ -534,8 +627,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			if (obj instanceof DistributionElem) {
 				DistributionElem distributionElem = (DistributionElem) obj;
 				DistributionEditorInput dei = new DistributionEditorInput(
-						distributionElem.getName(),
-						distributionElem.getRepository(),
+						distributionElem.getName(), distributionElem
+								.getRepoElem().getRepository(),
 						distributionElem.getWorkspaceName(),
 						distributionElem.getCredentials());
 				try {
@@ -549,4 +642,72 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			}
 		}
 	}
+
+	//
+	// try {
+	// nodeSession = nodeRepository.login();
+	// NodeIterator repos = JcrUtils.mkdirs(
+	// nodeSession,
+	// UserJcrUtils.getUserHome(nodeSession).getPath()
+	// + RepoConstants.REPOSITORIES_BASE_PATH).getNodes();
+	// while (repos.hasNext()) {
+	// Node repository = repos.nextNode();
+	// String label = null;
+	// if (repository.isNodeType(NodeType.MIX_TITLE)) {
+	// label = repository.getProperty(Property.JCR_TITLE)
+	// .getString();
+	// }
+	//
+	// if (repository.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
+	// String uri = repository.getProperty(ARGEO_URI).getString();
+	// Credentials credentials = null;
+	// if (repository.hasProperty(ARGEO_USER_ID)) {
+	// String userId = repository.getProperty(ARGEO_USER_ID)
+	// .getString();
+	// credentials = new SimpleCredentials(userId,
+	// "".toCharArray());
+	// }
+	// Repository remoteRepository = ArgeoJcrUtils
+	// .getRepositoryByUri(repositoryFactory, uri);
+	// if (label == null)
+	// label = repository.getName();
+	// repositories.add(new RepositoryElem(label,
+	// remoteRepository, credentials));
+	// }
+	// }
+	// } catch (RepositoryException e) {
+	// throw new ArgeoException("Cannot read registered repositories", e);
+	// }
+
+	// Remote
+	// String uri = null;
+	// Credentials credentials = null;
+	// Repository remoteRepository = null;
+
+	// try {
+	// uri = "http://dev.argeo.org/org.argeo.jcr.webapp/pub/java";
+	// credentials = new GuestCredentials();
+	// remoteRepository =
+	// ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
+	// repositories.add(new RepositoryElem("anonymous@dev.argeo.org//java",
+	// remoteRepository, credentials));
+	// } catch (Exception e) {
+	// e.printStackTrace();
+	// }
+
+	// uri = "http://localhost:7070/org.argeo.jcr.webapp/pub/java";
+	// credentials = new GuestCredentials();
+	// remoteRepository =
+	// ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
+	// repositories.add(new RepositoryElem("anonymous@localhost//java",
+	// remoteRepository, credentials));
+
+	// uri = "http://localhost:7070/org.argeo.jcr.webapp/remoting/java";
+	// credentials = new SimpleCredentials(System.getProperty("user.name"),
+	// "".toCharArray());
+	// remoteRepository =
+	// ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
+	// repositories.add(new RepositoryElem("@localhost//java",
+	// remoteRepository, credentials));
+
 }
