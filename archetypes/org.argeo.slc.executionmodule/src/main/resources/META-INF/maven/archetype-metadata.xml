@@ -1,0 +1,10 @@
+<archetype-descriptor name="org.argeo.slc.executionmodule">
+	<fileSets>
+		<fileSet filtered="true">
+			<directory></directory>
+			<includes>
+				<include>*/**</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</archetype-descriptor>

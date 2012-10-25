@@ -22,9 +22,10 @@
 		<module>modules</module>
 		<module>lib</module>
 		<module>plugins</module>
-		<module>demo</module>
 		<module>dep</module>
+		<module>archetypes</module>
 		<module>dist</module>
+		<module>demo</module>
 	</modules>
 	<url>${site.urlBase}/${developmentCycle.slc}</url>
 	<scm>
