@@ -473,8 +473,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	/** Listens to drag */
 	class ViewDragListener extends DragSourceAdapter {
 		public void dragSetData(DragSourceEvent event) {
-			if (log.isDebugEnabled())
-				log.debug("Drag started: " + event);
 			IStructuredSelection selection = (IStructuredSelection) viewer
 					.getSelection();
 			if (selection.getFirstElement() instanceof DistributionElem) {
@@ -592,12 +590,14 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			long begin = System.currentTimeMillis();
 			try {
 				// Not implemented in Davex Jackrabbit v2.2
-				// Long fileCount = sourceSession
+				// Query countQuery = sourceSession
 				// .getWorkspace()
 				// .getQueryManager()
 				// .createQuery("select count(*) from [nt:file]",
-				// Query.JCR_SQL2).execute().getRows().nextRow()
-				// .getValues()[0].getLong();
+				// Query.JCR_SQL2);
+				// QueryResult result = countQuery.execute();
+				// Long fileCount = result.getRows().nextRow().getValues()[0]
+				// .getLong();
 
 				ArgeoMonitor monitor = new EclipseArgeoMonitor(eclipseMonitor);
 				eclipseMonitor.beginTask("Copy files", ArgeoMonitor.UNKNOWN);
@@ -616,6 +616,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			} catch (RepositoryException e) {
 				return new Status(IStatus.ERROR, DistPlugin.ID, "Cannot merge",
 						e);
+			} finally {
+				JcrUtils.logoutQuietly(sourceSession);
+				JcrUtils.logoutQuietly(targetSession);
 			}
 		}
 	}
