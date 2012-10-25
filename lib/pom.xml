@@ -10,7 +10,7 @@
 	<artifactId>lib</artifactId>
 	<packaging>pom</packaging>
 	<name>SLC Standard Libs</name>
-	<description>SLC execution modules for generic tasks</description>
+	<description>SLC execution modules for generic tasks, to be used as parent pom</description>
 	<properties>
 		<additionalImports.slc-lib>
 			com.jcraft.jsch;resolution:=optional,
@@ -26,6 +26,7 @@
 				</includes>
 				<excludes>
 					<exclude>.*</exclude>
+					<exclude>.*/**</exclude>
 					<exclude>pom.xml</exclude>
 					<exclude>build.properties</exclude>
 				</excludes>
@@ -59,23 +60,6 @@
 						</Import-Package>
 					</instructions>
 				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>META-INF</directory>
-							<includes>
-								<include>MANIFEST.MF</include>
-							</includes>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
 			</plugin>
 		</plugins>
 	</build>
