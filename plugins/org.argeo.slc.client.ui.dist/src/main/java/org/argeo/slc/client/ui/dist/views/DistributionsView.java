@@ -550,7 +550,10 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 							targetWorkspace);
 				}
 
-				new WorkspaceMergeJob(sourceSession, targetSession).schedule();
+				Job workspaceMergeJob = new WorkspaceMergeJob(sourceSession,
+						targetSession);
+				workspaceMergeJob.setUser(true);
+				workspaceMergeJob.schedule();
 				return true;
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot process drop from " + sourceDist
@@ -585,7 +588,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 
 		@Override
-		protected IStatus run(IProgressMonitor monitor) {
+		protected IStatus run(IProgressMonitor eclipseMonitor) {
 			long begin = System.currentTimeMillis();
 			try {
 				// Not implemented in Davex Jackrabbit v2.2
@@ -596,12 +599,13 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				// Query.JCR_SQL2).execute().getRows().nextRow()
 				// .getValues()[0].getLong();
 
-				ArgeoMonitor argeoMonitor = new EclipseArgeoMonitor(monitor);
-				monitor.beginTask("Copy files", ArgeoMonitor.UNKNOWN);
+				ArgeoMonitor monitor = new EclipseArgeoMonitor(eclipseMonitor);
+				eclipseMonitor.beginTask("Copy files", ArgeoMonitor.UNKNOWN);
 
 				Long count = JcrUtils.copyFiles(sourceSession.getRootNode(),
-						targetSession.getRootNode(), true, argeoMonitor);
+						targetSession.getRootNode(), true, monitor);
 
+				monitor.done();
 				long duration = (System.currentTimeMillis() - begin) / 1000;// in
 																			// s
 				if (log.isDebugEnabled())

@@ -40,5 +40,6 @@ public class DistributionPerspective implements IPerspectiveFactory {
 		main.addView(QueryArtifactsForm.ID);
 		main.addView(QueryBundlesForm.ID);
 		main.addView(QueryArtifactsText.ID);
+		main.addView("org.eclipse.ui.views.ProgressView");
 	}
 }

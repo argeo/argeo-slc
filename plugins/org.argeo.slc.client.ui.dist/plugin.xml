@@ -44,6 +44,13 @@
             icon="icons/search.gif"
             name="Distributions">
       </view>
+	   <view
+	         name="Progress View"
+	         icon="icons/pview.gif"
+	         category="org.eclipse.ui"
+	         class="org.eclipse.ui.ExtensionFactory:progressView"
+	         id="org.eclipse.ui.views.ProgressView">
+	   </view>
    </extension>
    <!-- Editors -->
    <extension
