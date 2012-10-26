@@ -44,7 +44,6 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.DistUiUtils;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
@@ -55,6 +54,7 @@ import org.argeo.slc.client.ui.dist.editors.DistributionEditorInput;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoConstants;
+import org.argeo.slc.repo.RepoUtils;
 import org.argeo.util.security.Keyring;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -109,7 +109,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		TreeViewerColumn col = new TreeViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(200);
-		// col.getColumn().setText("Workspace");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
@@ -160,9 +159,10 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				if (!repos.hasNode(alias)) {
 					Node repoNode = repos.addNode(alias,
 							ArgeoTypes.ARGEO_REMOTE_REPOSITORY);
-					repoNode.setProperty(ARGEO_URI, alias);
+					repoNode.setProperty(ARGEO_URI, "vm:///" + alias);
 					repoNode.addMixin(NodeType.MIX_TITLE);
-					repoNode.setProperty(Property.JCR_TITLE, "vm://" + alias);
+					repoNode.setProperty(Property.JCR_TITLE, "Internal "
+							+ alias + " repository");
 					nodeSession.save();
 				}
 			}
@@ -345,10 +345,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		protected void connect() {
 			if (repository != null)
 				return;
-			repository = DistUiUtils.getRepository(repositoryFactory, keyring,
+			repository = RepoUtils.getRepository(repositoryFactory, keyring,
 					repoNode);
-			credentials = DistUiUtils.getRepositoryCredentials(keyring,
-					repoNode);
+			credentials = RepoUtils.getRepositoryCredentials(keyring, repoNode);
 		}
 
 		public String getLabel() {
@@ -509,17 +508,17 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 			try {
 				String sourceWorkspace = sourceDist.getWorkspaceName();
-				Repository sourceRepository = DistUiUtils.getRepository(
+				Repository sourceRepository = RepoUtils.getRepository(
 						repositoryFactory, keyring, sourceDist
 								.getWorkspaceNode().getParent());
-				Credentials sourceCredentials = DistUiUtils
+				Credentials sourceCredentials = RepoUtils
 						.getRepositoryCredentials(keyring, sourceDist
 								.getWorkspaceNode().getParent());
 
 				String targetWorkspace = sourceWorkspace;
-				Repository targetRepository = DistUiUtils.getRepository(
+				Repository targetRepository = RepoUtils.getRepository(
 						repositoryFactory, keyring, targetRepo.getRepoNode());
-				Credentials targetCredentials = DistUiUtils
+				Credentials targetCredentials = RepoUtils
 						.getRepositoryCredentials(keyring,
 								targetRepo.getRepoNode());
 

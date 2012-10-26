@@ -9,8 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.DistUiUtils;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
+import org.argeo.slc.repo.RepoUtils;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -62,7 +62,7 @@ public class CopyWorkspace extends AbstractHandler {
 			newSession = repository.login(newWorkspaceName);
 			// newSession.save();
 			Node newRootNode = newSession.getRootNode();
-			DistUiUtils.copy(srcRootNode, newRootNode);
+			RepoUtils.copy(srcRootNode, newRootNode);
 			newSession.save();
 
 			CommandHelpers.callCommand(RefreshDistributionsView.ID);

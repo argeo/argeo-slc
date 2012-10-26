@@ -20,9 +20,9 @@
 	<modules>
 		<module>runtime</module>
 		<module>modules</module>
-		<module>lib</module>
 		<module>plugins</module>
 		<module>dep</module>
+		<module>lib</module>
 		<module>archetypes</module>
 		<module>dist</module>
 		<module>demo</module>

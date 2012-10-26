@@ -11,6 +11,9 @@
 	<packaging>pom</packaging>
 	<name>SLC Standard Libs</name>
 	<description>SLC execution modules for generic tasks, to be used as parent pom</description>
+	<modules>
+		<module>org.argeo.slc.lib.repo</module>
+	</modules>
 	<properties>
 		<additionalImports.slc-lib>
 			com.jcraft.jsch;resolution:=optional,

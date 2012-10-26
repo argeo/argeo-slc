@@ -9,4 +9,5 @@
 	</parent>
 	<artifactId>org.argeo.slc.lib.repo</artifactId>
 	<name>SLC Lib - Repository Utilities</name>
+	<description>Utilities to transfer, convert, manage software repositories</description>
 </project>
