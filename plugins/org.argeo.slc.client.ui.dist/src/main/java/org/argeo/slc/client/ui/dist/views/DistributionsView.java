@@ -30,6 +30,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -479,8 +481,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						.getFirstElement();
 				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 					event.data = de.getWorkspacePath();
-					if (log.isDebugEnabled())
-						log.debug("Distribution drag for " + event.data);
 				}
 			}
 		}
@@ -589,17 +589,20 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			long begin = System.currentTimeMillis();
 			try {
 				// Not implemented in Davex Jackrabbit v2.2
-				// Query countQuery = sourceSession
-				// .getWorkspace()
+				// Query countQuery = sourceSession.getWorkspace()
 				// .getQueryManager()
-				// .createQuery("select count(*) from [nt:file]",
-				// Query.JCR_SQL2);
+				// .createQuery("//element(*, nt:file)", Query.XPATH);
 				// QueryResult result = countQuery.execute();
-				// Long fileCount = result.getRows().nextRow().getValues()[0]
-				// .getLong();
+				// Long expectedCount = result.getNodes().getSize();
+
+				 Long expectedCount = JcrUtils.countFiles(sourceSession
+				 .getRootNode());
+				if (log.isDebugEnabled())
+					log.debug("Will copy " + expectedCount + " files...");
 
 				ArgeoMonitor monitor = new EclipseArgeoMonitor(eclipseMonitor);
-				eclipseMonitor.beginTask("Copy files", ArgeoMonitor.UNKNOWN);
+				eclipseMonitor
+						.beginTask("Copy files", expectedCount.intValue());
 
 				Long count = JcrUtils.copyFiles(sourceSession.getRootNode(),
 						targetSession.getRootNode(), true, monitor);

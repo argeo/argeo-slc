@@ -26,6 +26,7 @@ import javax.jcr.util.TraversingItemVisitor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.ArtifactIndexer;
@@ -56,7 +57,12 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String workspace = event.getParameter(PARAM_WORKSPACE);
-		NormalizeJob job = new NormalizeJob(workspace);
+		NormalizeJob job;
+		try {
+			job = new NormalizeJob(repository.login(workspace));
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot normalize " + workspace, e);
+		}
 		job.setUser(true);
 		job.schedule();
 		return null;
@@ -67,18 +73,18 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	}
 
 	private class NormalizeJob extends Job {
-		private String workspace;
+		private Session session;
 
-		public NormalizeJob(String workspace) {
+		public NormalizeJob(Session session) {
 			super("Normalize Distribution");
-			this.workspace = workspace;
+			this.session = session;
 		}
 
 		@Override
 		protected IStatus run(IProgressMonitor monitor) {
-			Session session = null;
+			// Session session = null;
 			try {
-				session = repository.login(workspace);
+				// session = repository.login(workspace);
 				// QueryManager qm = session.getWorkspace().getQueryManager();
 				// Query query = qm
 				// .createQuery(
@@ -90,12 +96,14 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 				// log.debug("Count: " + count);
 				// long count = query.execute().getRows().nextRow()
 				// .getValue("count").getLong();
-				monitor.beginTask("Normalize " + workspace, -1);
+				monitor.beginTask("Normalize "
+						+ session.getWorkspace().getName(), -1);
 				NormalizingTraverser tiv = new NormalizingTraverser(monitor);
 				session.getNode(artifactBasePath).accept(tiv);
 			} catch (Exception e) {
 				return new Status(IStatus.ERROR, DistPlugin.ID,
-						"Cannot normalize distribution " + workspace, e);
+						"Cannot normalize distribution "
+								+ session.getWorkspace().getName(), e);
 			} finally {
 				JcrUtils.logoutQuietly(session);
 			}
