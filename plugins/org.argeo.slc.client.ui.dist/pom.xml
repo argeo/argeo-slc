@@ -27,6 +27,7 @@
  						</Require-Bundle>
 						<Import-Package>
 							org.argeo.eclipse.spring,
+							javax.jcr.nodetype,
 							javax.jcr.security,
 							aQute.lib.*;resolution:=optional,
 							*
