@@ -55,11 +55,8 @@ public class ProcessEditor extends FormEditor implements
 	private ProcessController processController;
 
 	private ProcessBuilderPage builderPage;
-	//private ProcessLogPage logPage;
 
 	private ExecutionModulesManager modulesManager;
-
-	//private Boolean switchToLog = false;
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
@@ -86,7 +83,8 @@ public class ProcessEditor extends FormEditor implements
 	protected Node newProcessNode(ProcessEditorInput pei)
 			throws RepositoryException {
 		String uuid = UUID.randomUUID().toString();
-		String processPath = SlcJcrUtils.createExecutionProcessPath(uuid);
+		String processPath = SlcJcrUtils.createExecutionProcessPath(session,
+				uuid);
 		Node processNode = JcrUtils.mkdirs(session, processPath, SLC_PROCESS);
 		processNode.setProperty(SLC_UUID, uuid);
 		processNode.setProperty(SLC_STATUS, ExecutionProcess.NEW);
@@ -126,10 +124,6 @@ public class ProcessEditor extends FormEditor implements
 		}
 		doSave(null);
 		try {
-			// show log
-//			if (switchToLog)
-//				setActivePage(logPage.getId());
-
 			ExecutionProcess process = processController.process(processNode);
 			Map<String, String> properties = new HashMap<String, String>();
 			properties.put(ExecutionModulesManager.SLC_PROCESS_ID,
@@ -164,7 +158,8 @@ public class ProcessEditor extends FormEditor implements
 		try {
 			Session session = processNode.getSession();
 			String uuid = UUID.randomUUID().toString();
-			String destPath = SlcJcrUtils.createExecutionProcessPath(uuid);
+			String destPath = SlcJcrUtils.createExecutionProcessPath(session,
+					uuid);
 			Node newNode = JcrUtils.mkdirs(session, destPath,
 					SlcTypes.SLC_PROCESS);
 
@@ -193,11 +188,10 @@ public class ProcessEditor extends FormEditor implements
 	@Override
 	protected void addPages() {
 		try {
-			builderPage = new ProcessBuilderPage(this, processNode);
+			builderPage = new ProcessBuilderPage(this, processNode,
+					modulesManager);
 			addPage(builderPage);
 			firePropertyChange(PROP_DIRTY);
-//			logPage = new ProcessLogPage(this, processNode);
-//			addPage(logPage);
 		} catch (PartInitException e) {
 			throw new SlcException("Cannot add pages", e);
 		}
@@ -235,7 +229,6 @@ public class ProcessEditor extends FormEditor implements
 	}
 
 	public void addSteps(ExecutionProcess process, List<ExecutionStep> steps) {
-		// logPage.addSteps(steps);
 	}
 
 	/** Expects one session per editor. */

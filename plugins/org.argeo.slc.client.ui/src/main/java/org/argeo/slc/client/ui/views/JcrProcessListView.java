@@ -37,7 +37,7 @@ import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
 import org.argeo.slc.client.ui.editors.ProcessEditorInput;
 import org.argeo.slc.execution.ExecutionProcess;
-import org.argeo.slc.jcr.SlcJcrConstants;
+import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -92,8 +92,8 @@ public class JcrProcessListView extends ViewPart {
 			observationManager.addEventListener(processesObserver,
 					Event.NODE_ADDED | Event.NODE_REMOVED
 							| Event.PROPERTY_CHANGED,
-					SlcJcrConstants.PROCESSES_BASE_PATH, true, null, null,
-					false);
+					SlcJcrUtils.getSlcProcessesBasePath(session), true, null,
+					null, false);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot register listeners", e);
 		}

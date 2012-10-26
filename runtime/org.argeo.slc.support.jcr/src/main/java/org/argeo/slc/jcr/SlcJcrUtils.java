@@ -76,10 +76,25 @@ public class SlcJcrUtils implements SlcNames {
 	}
 
 	/** Create a new execution process path based on the current time */
-	public static String createExecutionProcessPath(String uuid) {
+	public static String createExecutionProcessPath(Session session, String uuid) {
 		Calendar now = new GregorianCalendar();
-		return SlcJcrConstants.PROCESSES_BASE_PATH + '/'
+		return getSlcProcessesBasePath(session) + '/'
 				+ JcrUtils.dateAsPath(now, true) + uuid;
+	}
+
+	/** GEt the base for the user processeses. */
+	public static String getSlcProcessesBasePath(Session session) {
+		try {
+			Node userHome = UserJcrUtils.getUserHome(session);
+			if (userHome == null)
+				throw new SlcException("No user home available for "
+						+ session.getUserID());
+			return userHome.getPath() + '/' + SlcNames.SLC_SYSTEM + '/'
+					+ SlcNames.SLC_PROCESSES;
+		} catch (RepositoryException re) {
+			throw new SlcException(
+					"Unexpected error while getting Slc Results Base Path.", re);
+		}
 	}
 
 	/**
@@ -89,11 +104,7 @@ public class SlcJcrUtils implements SlcNames {
 	public static String createResultPath(Session session, String uuid)
 			throws RepositoryException {
 		Calendar now = new GregorianCalendar();
-		Node userHome = UserJcrUtils.getUserHome(session);
-		if (userHome == null)
-			throw new SlcException("No user home available for "
-					+ session.getUserID());
-		return userHome.getPath() + '/' + SlcNames.SLC_RESULTS + '/'
+		return SlcJcrResultUtils.getSlcResultsBasePath(session) + '/'
 				+ JcrUtils.dateAsPath(now, true) + uuid;
 	}
 
@@ -116,9 +127,13 @@ public class SlcJcrUtils implements SlcNames {
 		if (value instanceof CharSequence)
 			value = PrimitiveUtils.convert(type,
 					((CharSequence) value).toString());
+		if (value instanceof char[])
+			value = new String((char[]) value);
 
 		try {
 			if (type.equals(PrimitiveAccessor.TYPE_STRING))
+				node.setProperty(propertyName, value.toString());
+			else if (type.equals(PrimitiveAccessor.TYPE_PASSWORD))
 				node.setProperty(propertyName, value.toString());
 			else if (type.equals(PrimitiveAccessor.TYPE_INTEGER))
 				node.setProperty(propertyName, (long) ((Integer) value));

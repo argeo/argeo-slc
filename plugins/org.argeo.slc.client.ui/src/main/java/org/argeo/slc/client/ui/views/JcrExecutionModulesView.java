@@ -41,9 +41,8 @@ import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
 import org.argeo.eclipse.ui.jcr.NodeElementComparer;
 import org.argeo.eclipse.ui.jcr.SimpleNodeContentProvider;
 import org.argeo.eclipse.ui.specific.EclipseUiSpecificUtils;
-import org.argeo.slc.BasicNameVersion;
-import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
 import org.argeo.slc.client.ui.editors.ProcessEditorInput;
@@ -51,10 +50,6 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -140,20 +135,6 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 					new String[] { SlcJcrConstants.VM_AGENT_FACTORY_PATH });
 		}
 
-		// @Override
-		// protected Object[] getChildren(Node node) throws RepositoryException
-		// {
-		// if (node.isNodeType(SlcTypes.SLC_AGENT_FACTORY)) {
-		// List<AgentNodesWrapper> wrappers = new
-		// ArrayList<AgentNodesWrapper>();
-		// for (NodeIterator nit = node.getNodes(); nit.hasNext();) {
-		// wrappers.add(new AgentNodesWrapper(nit.nextNode()));
-		// }
-		// return wrappers.toArray();
-		// }
-		// return super.getChildren(node);
-		// }
-
 		@Override
 		protected Object[] sort(Object parent, Object[] children) {
 			Object[] sorted = new Object[children.length];
@@ -229,28 +210,6 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	}
 
-	// /** Wraps the execution modules of an agent. */
-	// static class AgentNodesWrapper extends NodesWrapper {
-	//
-	// public AgentNodesWrapper(Node node) {
-	// super(node);
-	// }
-	//
-	// protected List<WrappedNode> getWrappedNodes()
-	// throws RepositoryException {
-	// List<WrappedNode> children = new ArrayList<WrappedNode>();
-	// Node executionModules = getNode();
-	// for (NodeIterator nit = executionModules.getNodes(); nit.hasNext();) {
-	// for (NodeIterator nitVersions = nit.nextNode().getNodes(); nitVersions
-	// .hasNext();) {
-	// children.add(new WrappedNode(this, nitVersions.nextNode()));
-	// }
-	// }
-	// return children;
-	// }
-	//
-	// }
-
 	class VmAgentObserver extends AsyncUiEventListener {
 
 		public VmAgentObserver(Display display) {
@@ -274,13 +233,6 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 				}
 			}
 
-			// try {
-			// Node vmAgentNode = session
-			// .getNode(SlcJcrConstants.VM_AGENT_FACTORY_PATH);
-			// viewer.refresh(vmAgentNode);
-			// } catch (RepositoryException e) {
-			// log.warn("Cannot process event : " + e);
-			// }
 			// TODO: optimize based on event
 			viewer.refresh();
 		}
@@ -354,46 +306,8 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 				if (obj instanceof Node) {
 					Node node = (Node) obj;
 					if (node.isNodeType(SLC_EXECUTION_MODULE)) {
-						String name = node.getProperty(SLC_NAME).getString();
-						String version = node.getProperty(SLC_VERSION)
-								.getString();
-						final NameVersion nameVersion = new BasicNameVersion(
-								name, version);
-						Boolean started = node.getProperty(SLC_STARTED)
-								.getBoolean();
-
-						Job job;
-						if (started) {
-							job = new Job("Stop " + nameVersion) {
-								protected IStatus run(IProgressMonitor monitor) {
-									monitor.beginTask("Stop " + nameVersion, 1);
-									modulesManager.stop(nameVersion);
-									monitor.worked(1);
-									return Status.OK_STATUS;
-								}
-
-								protected void canceling() {
-									getThread().interrupt();
-									super.canceling();
-								}
-							};
-						} else {
-							job = new Job("Start " + nameVersion) {
-								protected IStatus run(IProgressMonitor monitor) {
-									monitor.beginTask("Start " + nameVersion, 1);
-									modulesManager.start(nameVersion);
-									monitor.worked(1);
-									return Status.OK_STATUS;
-								}
-
-								protected void canceling() {
-									getThread().interrupt();
-									super.canceling();
-								}
-							};
-						}
-						job.setUser(true);
-						job.schedule();
+						ClientUiPlugin.startStopExecutionModule(modulesManager,
+								node);
 					} else {
 						String path = node.getPath();
 						// TODO factorize with editor
@@ -413,8 +327,6 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 							paths.add(nit.nextNode().getPath());
 						}
 
-						// List<String> paths = new ArrayList<String>();
-						// paths.add(node.getPath());
 						IWorkbenchPage activePage = PlatformUI.getWorkbench()
 								.getActiveWorkbenchWindow().getActivePage();
 						activePage.openEditor(new ProcessEditorInput(

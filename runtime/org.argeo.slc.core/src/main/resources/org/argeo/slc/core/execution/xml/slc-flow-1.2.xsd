@@ -238,6 +238,7 @@
 					<xsd:simpleType>
 						<xsd:restriction base="xsd:string">
 							<xsd:enumeration value="string" />
+							<xsd:enumeration value="password" />
 							<xsd:enumeration value="integer" />
 							<xsd:enumeration value="long" />
 							<xsd:enumeration value="float" />

@@ -15,7 +15,6 @@
  */
 package org.argeo.slc.jcr;
 
-
 /** JCR names used by SLC */
 public interface SlcNames {
 	public final static String SLC_ = "slc:";
@@ -42,8 +41,13 @@ public interface SlcNames {
 	public final static String SLC_IS_CONSTANT = "slc:isConstant";
 	public final static String SLC_IS_HIDDEN = "slc:isHidden";
 
-	// result
+	// base directories
+	public final static String SLC_SYSTEM = "slc:system";
 	public final static String SLC_RESULTS = "slc:results";
+	public final static String SLC_MY_RESULTS = "slc:myResults";
+	public final static String SLC_PROCESSES = "slc:processes";
+
+	// result
 	public final static String SLC_SUCCESS = "slc:success";
 	public final static String SLC_MESSAGE = "slc:message";
 	public final static String SLC_TAG = "slc:tag";
@@ -54,7 +58,7 @@ public interface SlcNames {
 	// diff result
 	public final static String SLC_SUMMARY = "slc:summary";
 	public final static String SLC_ISSUES = "slc:issues";
-	
+
 	/*
 	 * REPO
 	 */

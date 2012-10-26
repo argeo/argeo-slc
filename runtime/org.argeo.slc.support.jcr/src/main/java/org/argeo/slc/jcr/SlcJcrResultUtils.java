@@ -20,7 +20,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
@@ -36,11 +35,14 @@ public class SlcJcrResultUtils {
 	 */
 	public static String getSlcResultsBasePath(Session session) {
 		try {
-
-			return UserJcrUtils.getUserHome(session).getPath() + "/"
+			Node userHome = UserJcrUtils.getUserHome(session);
+			if (userHome == null)
+				throw new SlcException("No user home available for "
+						+ session.getUserID());
+			return userHome.getPath() + '/' + SlcNames.SLC_SYSTEM + '/'
 					+ SlcNames.SLC_RESULTS;
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexpected error while getting Slc Results Base Path.", re);
 		}
 	}
@@ -51,10 +53,14 @@ public class SlcJcrResultUtils {
 	 */
 	public static String getMyResultsBasePath(Session session) {
 		try {
-			return UserJcrUtils.getUserHome(session).getPath() + "/"
-					+ SlcJcrConstants.SLC_MYRESULT_BASEPATH;
+			Node userHome = UserJcrUtils.getUserHome(session);
+			if (userHome == null)
+				throw new SlcException("No user home available for "
+						+ session.getUserID());
+			return userHome.getPath() + '/' + SlcNames.SLC_SYSTEM + '/'
+					+ SlcNames.SLC_MY_RESULTS;
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexpected error while getting Slc Results Base Path.", re);
 		}
 	}
@@ -85,7 +91,7 @@ public class SlcJcrResultUtils {
 				return myResParNode;
 			}
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexpected error while creating user MyResult base node.",
 					re);
 		}
@@ -121,7 +127,7 @@ public class SlcJcrResultUtils {
 			session.save();
 			return rfNode;
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexpected error while creating Result Folder node.", re);
 		}
 	}

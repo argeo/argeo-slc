@@ -33,11 +33,15 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
 import org.argeo.ArgeoException;
+import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.SlcImages;
+import org.argeo.slc.core.execution.PrimitiveAccessor;
 import org.argeo.slc.core.execution.PrimitiveUtils;
+import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
@@ -86,13 +90,12 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /** Definition of the process. */
 public class ProcessBuilderPage extends FormPage implements SlcNames {
 	public final static String ID = "processBuilderPage";
-	// private final static Log log =
-	// LogFactory.getLog(ProcessBuilderPage.class);
 
 	/** To be displayed in empty lists */
 	final static String NONE = "<none>";
 
 	private Node processNode;
+	private final ExecutionModulesManager modulesManager;
 
 	private TreeViewer flowsViewer;
 	private TableViewer valuesViewer;
@@ -104,9 +107,11 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	private AbstractFormPart formPart;
 	private EventListener statusObserver;
 
-	public ProcessBuilderPage(ProcessEditor editor, Node processNode) {
+	public ProcessBuilderPage(ProcessEditor editor, Node processNode,
+			ExecutionModulesManager modulesManager) {
 		super(editor, ID, "Definition");
 		this.processNode = processNode;
+		this.modulesManager = modulesManager;
 	}
 
 	@Override
@@ -461,39 +466,14 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	/*
 	 * UTILITIES
 	 */
-	// protected static Object getAttributeSpecValue(Node specAttrNode) {
-	// try {
-	// if (specAttrNode.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
-	// if (!specAttrNode.hasProperty(SLC_VALUE))
-	// return null;
-	// String type = specAttrNode.getProperty(SLC_TYPE).getString();
-	// // TODO optimize based on data type?
-	// Object value = PrimitiveUtils.convert(type, specAttrNode
-	// .getProperty(SLC_VALUE).getString());
-	// // log.debug(specAttrNode + ", type=" + type + ", value=" +
-	// // value);
-	// return value;
-	// } else if (specAttrNode.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
-	// if (specAttrNode.hasNode(SLC_VALUE)) {
-	// // return the index of the sub node
-	// // in the future we may manage reference as well
-	// return specAttrNode.getProperty(SLC_VALUE).getLong();
-	// } else
-	// return null;
-	// }
-	// return null;
-	// } catch (RepositoryException e) {
-	// throw new SlcException("Cannot get value", e);
-	// }
-	//
-	// }
-
 	protected static String getAttributeSpecText(Node specAttrNode) {
 		try {
 			if (specAttrNode.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
 				if (!specAttrNode.hasProperty(SLC_VALUE))
 					return "";
 				String type = specAttrNode.getProperty(SLC_TYPE).getString();
+				if (PrimitiveAccessor.TYPE_PASSWORD.equals(type))
+					return "****************";
 				Object value = PrimitiveUtils.convert(type, specAttrNode
 						.getProperty(SLC_VALUE).getString());
 				return value.toString();
@@ -525,7 +505,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	/*
 	 * FLOWS SUBCLASSES
 	 */
-	static class FlowsContentProvider implements ITreeContentProvider {
+	class FlowsContentProvider implements ITreeContentProvider {
 		public Object[] getElements(Object obj) {
 			if (!(obj instanceof Node))
 				return new Object[0];
@@ -534,11 +514,29 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 				Node node = (Node) obj;
 				List<Node> children = new ArrayList<Node>();
 				for (NodeIterator nit = node.getNode(SLC_FLOW).getNodes(); nit
-						.hasNext();)
-					children.add(nit.nextNode());
+						.hasNext();) {
+					Node flowNode = nit.nextNode();
+					children.add(flowNode);
+					try {
+						// make sure modules are started for all nodes
+						String flowDefPath = flowNode.getNode(SLC_ADDRESS)
+								.getProperty(Property.JCR_PATH).getString();
+						Node executionModuleNode = flowNode.getSession()
+								.getNode(SlcJcrUtils.modulePath(flowDefPath));
+						if (!executionModuleNode.getProperty(SLC_STARTED)
+								.getBoolean())
+							ClientUiPlugin.startStopExecutionModule(
+									modulesManager, executionModuleNode);
+					} catch (Exception e) {
+						ErrorFeedback.show(
+								"Cannot start execution module related to "
+										+ flowNode, e);
+					}
+
+				}
 				return children.toArray();
 			} catch (RepositoryException e) {
-				throw new SlcException("Cannot list children of " + obj, e);
+				throw new SlcException("Cannot list flows of " + obj, e);
 			}
 		}
 
@@ -718,7 +716,14 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 				Node specAttrNode = (Node) element;
 				if (specAttrNode
 						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
-					return new TextCellEditor(tableViewer.getTable());
+					String type = specAttrNode.getProperty(SLC_TYPE)
+							.getString();
+					if (PrimitiveAccessor.TYPE_PASSWORD.equals(type)) {
+						return new TextCellEditor(tableViewer.getTable(),
+								SWT.PASSWORD);
+					} else {
+						return new TextCellEditor(tableViewer.getTable());
+					}
 				} else if (specAttrNode
 						.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
 					NodeIterator children = specAttrNode.getNodes();
@@ -767,9 +772,6 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 		protected Object getValue(Object element) {
 			Node specAttrNode = (Node) element;
 			try {
-				// Object value = getAttributeSpecValue(specAttrNode);
-				// if (value == null)
-				// throw new SlcException("Unsupported attribute " + element);
 				if (specAttrNode
 						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
 					if (!specAttrNode.hasProperty(SLC_VALUE))

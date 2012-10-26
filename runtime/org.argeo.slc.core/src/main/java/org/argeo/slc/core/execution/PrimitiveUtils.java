@@ -50,6 +50,8 @@ public class PrimitiveUtils {
 	public static Class<?> typeAsClass(String type) {
 		if (PrimitiveAccessor.TYPE_STRING.equals(type))
 			return String.class;
+		else if (PrimitiveAccessor.TYPE_PASSWORD.equals(type))
+			return char[].class;
 		else if (PrimitiveAccessor.TYPE_INTEGER.equals(type))
 			return Integer.class;
 		else if (PrimitiveAccessor.TYPE_LONG.equals(type))
@@ -68,6 +70,8 @@ public class PrimitiveUtils {
 	public static String classAsType(Class<?> clss) {
 		if (String.class.isAssignableFrom(clss))
 			return PrimitiveAccessor.TYPE_STRING;
+		else if (char[].class.isAssignableFrom(clss))
+			return PrimitiveAccessor.TYPE_PASSWORD;
 		else if (Integer.class.isAssignableFrom(clss))
 			return PrimitiveAccessor.TYPE_INTEGER;
 		else if (Long.class.isAssignableFrom(clss))
@@ -82,8 +86,11 @@ public class PrimitiveUtils {
 			return null;
 	}
 
+	/** Parse string as an object. Passwords are returned as String.*/
 	public static Object convert(String type, String str) {
 		if (PrimitiveAccessor.TYPE_STRING.equals(type)) {
+			return str;
+		} else if (PrimitiveAccessor.TYPE_PASSWORD.equals(type)) {
 			return str;
 		} else if (PrimitiveAccessor.TYPE_INTEGER.equals(type)) {
 			return (Integer.parseInt(str));
