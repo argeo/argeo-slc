@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.process;
+package org.argeo.slc.execution;
 
 import java.io.Serializable;
 
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
-import org.argeo.slc.execution.ExecutionFlowDescriptor;
 
 /** A fully configured execution flow, ready to be executed. */
 public class RealizedFlow implements Serializable {

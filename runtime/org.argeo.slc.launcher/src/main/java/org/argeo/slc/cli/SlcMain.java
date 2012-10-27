@@ -15,7 +15,9 @@
  */
 package org.argeo.slc.cli;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.cli.CommandLine;
@@ -27,7 +29,13 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
+import org.argeo.osgi.boot.OsgiBoot;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.ExecutionModulesManager;
+import org.eclipse.core.runtime.adaptor.EclipseStarter;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 @SuppressWarnings("static-access")
 public class SlcMain {
@@ -74,71 +82,154 @@ public class SlcMain {
 
 	private final static String commandName = "slc";
 
+	private static String bundlesToInstall = "/usr/share/osgi;in=*.jar";
+
+	private static String bundlesToStart = "org.springframework.osgi.extender,"
+			+ "org.argeo.node.repofactory.jackrabbit,"
+			+ "org.argeo.node.repo.jackrabbit," + "org.argeo.security.dao.os,"
+			+ "org.argeo.slc.node.jackrabbit," + "org.argeo.slc.agent,"
+			+ "org.argeo.slc.agent.jcr";
+
 	static {
 		options = new Options();
-		options.addOption(typeOpt);
-		options.addOption(moduleOpt);
-		options.addOption(flowsOpt);
-		options.addOption(propertyOpt);
-		options.addOption(propertiesOpt);
-		options.addOption(runtimeOpt);
+		// options.addOption(typeOpt);
+		// options.addOption(moduleOpt);
+		// options.addOption(flowsOpt);
+		// options.addOption(propertyOpt);
+		// options.addOption(propertiesOpt);
+		// options.addOption(runtimeOpt);
 	}
 
 	public static void main(String[] args) {
-		Type type = null;
-		Properties properties = new Properties();
+		// Type type = null;
+		// Properties properties = new Properties();
+		// String flows = null;
+		// String urlStr = null;
+
 		String module = null;
-		String flows = null;
-		String urlStr = null;
+		String moduleUrl = null;
+		String flow = null;
 
 		try {
 
 			CommandLineParser clParser = new GnuParser();
 			CommandLine cl = clParser.parse(options, args);
 
-			// Mode
-			String typeStr = cl.getOptionValue(typeOpt.getOpt());
-			if (typeStr == null) {
-				type = Type.standalone;
+			List<String> arguments = cl.getArgList();
+			if (arguments.size() == 0) {
+				// TODO default behaviour
 			} else {
-				try {
-					type = Type.valueOf(typeStr);
-				} catch (IllegalArgumentException e) {
-					throw new SlcException("Unrecognized mode '" + typeStr
-							+ "'", e);
+				module = arguments.get(0);
+				File moduleFile = new File(module);
+				if (moduleFile.exists()) {
+					if (moduleFile.isDirectory()) {
+						moduleUrl = "reference:file:"
+								+ moduleFile.getCanonicalPath();
+					} else {
+						moduleUrl = "file:" + moduleFile.getCanonicalPath();
+					}
+				}
+
+				if (arguments.size() == 1) {
+					// TODO module info
+				} else {
+					flow = arguments.get(1);
 				}
 			}
 
-			// Script
-			if (type.equals(Type.standalone)) {
-				if (!cl.hasOption(moduleOpt.getOpt()))
-					throw new SlcException("Type " + Type.standalone
-							+ " requires option '" + moduleOpt.getLongOpt()
-							+ "'");
-				module = cl.getOptionValue(moduleOpt.getOpt());
+			// System.setProperty(
+			// ExecutionModulesManager.UNIQUE_LAUNCH_MODULE_PROPERTY,
+			// module);
+			// System.setProperty(
+			// ExecutionModulesManager.UNIQUE_LAUNCH_FLOW_PROPERTY, flow);
 
-				// Targets
-				if (cl.hasOption(flowsOpt.getOpt()))
-					flows = cl.getOptionValue(flowsOpt.getOpt());
+			String executionDir = System.getProperty("user.dir");
+			File slcDir = new File(executionDir, ".slc");
+			File dataDir = new File(slcDir, "data");
+			if (!dataDir.exists())
+				dataDir.mkdirs();
+			File confDir = new File(slcDir, "conf");
+			if (!confDir.exists())
+				confDir.mkdirs();
+
+			BundleContext bundleContext = null;
+			try {
+				String[] osgiRuntimeArgs = { "-configuration",
+						confDir.getCanonicalPath(), "-data",
+						dataDir.getCanonicalPath(), "-console", "-clean" };
+				bundleContext = EclipseStarter.startup(osgiRuntimeArgs, null);
+			} catch (Exception e) {
+				throw new RuntimeException("Cannot start Equinox.", e);
 			}
 
-			// Properties
-			if (cl.hasOption(propertiesOpt.getOpt())) {
-				for (String propertyFile : cl.getOptionValues(propertiesOpt
-						.getOpt())) {
-					loadPropertyFile(properties, propertyFile);
-				}
-			}
-			if (cl.hasOption(propertyOpt.getOpt())) {
-				for (String property : cl.getOptionValues(propertyOpt.getOpt())) {
-					addProperty(properties, property);
-				}
+			// OSGi bootstrap
+			OsgiBoot osgiBoot = new OsgiBoot(bundleContext);
+			osgiBoot.installUrls(osgiBoot.getBundlesUrls(bundlesToInstall));
+			osgiBoot.startBundles(bundlesToStart);
+
+			if (moduleUrl != null) {
+				Bundle bundle = osgiBoot.installUrl(moduleUrl);
+				module = bundle.getSymbolicName();
+				// TODO deal with version
 			}
 
-			// Runtime
-			if (cl.hasOption(runtimeOpt.getOpt())) {
-				urlStr = cl.getOptionValue(runtimeOpt.getOpt());
-			}
+			// retrieve modulesManager
+			ServiceReference sr = bundleContext
+					.getServiceReference(ExecutionModulesManager.class
+							.getName());
+			ExecutionModulesManager modulesManager = (ExecutionModulesManager) bundleContext
+					.getService(sr);
+			
+			
+			modulesManager.execute(null);
+
+			// osgiBoot.bootstrap();
+			// osgiBoot.bootstrap();
+
+			// Mode
+			// String typeStr = cl.getOptionValue(typeOpt.getOpt());
+			// if (typeStr == null) {
+			// type = Type.standalone;
+			// } else {
+			// try {
+			// type = Type.valueOf(typeStr);
+			// } catch (IllegalArgumentException e) {
+			// throw new SlcException("Unrecognized mode '" + typeStr
+			// + "'", e);
+			// }
+			// }
+			//
+			// // Script
+			// if (type.equals(Type.standalone)) {
+			// if (!cl.hasOption(moduleOpt.getOpt()))
+			// throw new SlcException("Type " + Type.standalone
+			// + " requires option '" + moduleOpt.getLongOpt()
+			// + "'");
+			// module = cl.getOptionValue(moduleOpt.getOpt());
+			//
+			// // Targets
+			// if (cl.hasOption(flowsOpt.getOpt()))
+			// flows = cl.getOptionValue(flowsOpt.getOpt());
+			// }
+			//
+			// // Properties
+			// if (cl.hasOption(propertiesOpt.getOpt())) {
+			// for (String propertyFile : cl.getOptionValues(propertiesOpt
+			// .getOpt())) {
+			// loadPropertyFile(properties, propertyFile);
+			// }
+			// }
+			// if (cl.hasOption(propertyOpt.getOpt())) {
+			// for (String property : cl.getOptionValues(propertyOpt.getOpt()))
+			// {
+			// addProperty(properties, property);
+			// }
+			// }
+			//
+			// // Runtime
+			// if (cl.hasOption(runtimeOpt.getOpt())) {
+			// urlStr = cl.getOptionValue(runtimeOpt.getOpt());
+			// }
 		} catch (ParseException e) {
 			System.err.println("Problem with command line arguments. "
 					+ e.getMessage());
@@ -152,23 +243,23 @@ public class SlcMain {
 			badExit();
 		}
 
-		if (debug) {
-			debug("Mode: " + type);
-			if (urlStr != null)
-				debug("Runtime: " + urlStr);
-			debug("User properties: " + properties);
-			if (module != null)
-				debug("Module: " + module);
-			if (flows != null)
-				debug("Flows: " + flows);
-		}
-
-		// Standalone
-		if (type.equals(Type.standalone)) {
-		}
-		// Agent
-		else if (type.equals(Type.agent)) {
-		}
+		// if (debug) {
+		// debug("Mode: " + type);
+		// if (urlStr != null)
+		// debug("Runtime: " + urlStr);
+		// debug("User properties: " + properties);
+		// if (module != null)
+		// debug("Module: " + module);
+		// if (flows != null)
+		// debug("Flows: " + flows);
+		// }
+		//
+		// // Standalone
+		// if (type.equals(Type.standalone)) {
+		// }
+		// // Agent
+		// else if (type.equals(Type.agent)) {
+		// }
 	}
 
 	public static void printUsage() {

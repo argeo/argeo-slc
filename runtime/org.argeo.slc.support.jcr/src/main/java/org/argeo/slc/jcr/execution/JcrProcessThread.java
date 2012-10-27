@@ -34,10 +34,10 @@ import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
+import org.argeo.slc.execution.RealizedFlow;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.argeo.slc.process.RealizedFlow;
 
 /** Where the actual execution takes place */
 public class JcrProcessThread extends ProcessThread implements SlcNames {

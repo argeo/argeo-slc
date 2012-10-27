@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.argeo.slc.deploy.ModulesManager;
-import org.argeo.slc.process.RealizedFlow;
 
 /** Provides access to the execution modules */
 public interface ExecutionModulesManager extends ModulesManager {

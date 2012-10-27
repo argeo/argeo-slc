@@ -23,7 +23,7 @@ import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.Module;
 import org.argeo.slc.deploy.ModuleDescriptor;
 import org.argeo.slc.deploy.TargetData;
-import org.argeo.slc.process.RealizedFlow;
+import org.argeo.slc.execution.RealizedFlow;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Constants;
 import org.springframework.core.io.Resource;

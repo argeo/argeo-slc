@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionStep;
-import org.argeo.slc.process.RealizedFlow;
+import org.argeo.slc.execution.RealizedFlow;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 

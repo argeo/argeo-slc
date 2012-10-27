@@ -25,7 +25,7 @@ import java.util.UUID;
 
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionStep;
-import org.argeo.slc.process.RealizedFlow;
+import org.argeo.slc.execution.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.argeo.slc.process.SlcExecutionStep;
 import org.argeo.slc.unit.execution.ExecutionFlowDescriptorTestUtils;

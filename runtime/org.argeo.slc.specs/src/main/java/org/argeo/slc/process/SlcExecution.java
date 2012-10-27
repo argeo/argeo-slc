@@ -24,6 +24,7 @@ import java.util.TreeMap;
 
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
+import org.argeo.slc.execution.RealizedFlow;
 
 /** @deprecated use other implementations of {@link ExecutionProcess} */
 public class SlcExecution implements ExecutionProcess, Serializable {

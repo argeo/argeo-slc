@@ -22,7 +22,7 @@ import java.util.Map;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
-import org.argeo.slc.process.RealizedFlow;
+import org.argeo.slc.execution.RealizedFlow;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;

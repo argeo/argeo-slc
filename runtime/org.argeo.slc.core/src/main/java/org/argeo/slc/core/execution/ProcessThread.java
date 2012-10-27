@@ -27,7 +27,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
-import org.argeo.slc.process.RealizedFlow;
+import org.argeo.slc.execution.RealizedFlow;
 import org.argeo.slc.process.SlcExecution;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;

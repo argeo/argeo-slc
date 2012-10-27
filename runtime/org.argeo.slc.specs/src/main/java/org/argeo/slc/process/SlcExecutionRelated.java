@@ -15,6 +15,7 @@
  */
 package org.argeo.slc.process;
 
+@Deprecated
 public interface SlcExecutionRelated {
 	public String getSlcExecutionUuid();
 

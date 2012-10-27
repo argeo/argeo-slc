@@ -31,7 +31,7 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionProcessNotifier;
 import org.argeo.slc.execution.ExecutionStep;
-import org.argeo.slc.process.RealizedFlow;
+import org.argeo.slc.execution.RealizedFlow;
 import org.argeo.slc.process.SlcExecutionNotifier;
 
 /** Provides the base feature of an execution module manager. */
