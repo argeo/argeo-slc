@@ -16,6 +16,8 @@
 package org.argeo.slc.execution;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
@@ -54,5 +56,31 @@ public class RealizedFlow implements Serializable {
 
 	public void setFlowDescriptor(ExecutionFlowDescriptor flowDescriptor) {
 		this.flowDescriptor = flowDescriptor;
+	}
+
+	/** Create a simple realized flow */
+	public static RealizedFlow create(String module, String version,
+			String flowName, Map<String, String> args) {
+		final RealizedFlow realizedFlow = new RealizedFlow();
+		realizedFlow.setModuleName(module);
+		// TODO deal with version
+		if (version == null)
+			version = "0.0.0";
+		realizedFlow.setModuleVersion(version);
+		ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor();
+		efd.setName(flowName);
+
+		// arguments
+		if (args != null && args.size() > 0) {
+			Map<String, Object> values = new HashMap<String, Object>();
+			for (String key : args.keySet()) {
+				String value = args.get(key);
+				values.put(key, value);
+			}
+			efd.setValues(values);
+		}
+
+		realizedFlow.setFlowDescriptor(efd);
+		return realizedFlow;
 	}
 }

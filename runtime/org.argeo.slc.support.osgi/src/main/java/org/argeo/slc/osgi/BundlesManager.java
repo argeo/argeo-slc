@@ -55,6 +55,13 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	private final Object refreshedPackageSem = new Object();
 	private Boolean packagesRefreshed = false;
 
+	public BundlesManager() {
+	}
+
+	public BundlesManager(BundleContext bundleContext) {
+		this.bundleContext = bundleContext;
+	}
+
 	/**
 	 * Stop the module, update it, refresh it and restart it. All synchronously.
 	 */
@@ -282,7 +289,8 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	@SuppressWarnings(value = { "unchecked" })
 	public <T> T getSingleService(Class<T> clss, String filter,
 			Boolean synchronous) {
-		Assert.isTrue(OsgiFilterUtils.isValidFilter(filter), "valid filter");
+		if (filter != null)
+			Assert.isTrue(OsgiFilterUtils.isValidFilter(filter), "valid filter");
 		ServiceReference[] sfs;
 		try {
 			if (synchronous)

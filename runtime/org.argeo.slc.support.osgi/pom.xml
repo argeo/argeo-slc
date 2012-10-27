@@ -59,11 +59,6 @@
 
 		<dependency>
 			<groupId>org.argeo.tp</groupId>
-			<artifactId>org.springframework.osgi.web</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
 			<artifactId>net.sf.cglib</artifactId>
 		</dependency>
 		<dependency>
@@ -73,10 +68,10 @@
 
 		<!-- Xalan and Xerces are implicitly required since the JDK provided implementations 
 			are overridden in the execution modules manager -->
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>org.apache.xalan</artifactId>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.tp</groupId> -->
+<!-- 			<artifactId>org.apache.xalan</artifactId> -->
+<!-- 		</dependency> -->
 
 	</dependencies>
 </project>

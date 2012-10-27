@@ -24,71 +24,79 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.argeo.osgi.boot.OsgiBoot;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.ExecutionModulesManager;
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
-@SuppressWarnings("static-access")
+@SuppressWarnings("restriction")
 public class SlcMain {
-	public enum Type {
-		standalone, agent, server
-	}
+	/** Unique launch module */
+	public static String UNIQUE_LAUNCH_MODULE_PROPERTY = "slc.launch.module";
 
-	private static Boolean debug = true;
+	/** Unique launch flow */
+	public static String UNIQUE_LAUNCH_FLOW_PROPERTY = "slc.launch.flow";
+
+	// public enum Type {
+	// standalone, agent, server
+	// }
+
+	// private static Boolean debug = true;
 
 	// private final static String BOOTSTRAP_LOG4J_CONFIG =
 	// "org/argeo/slc/cli/bootstrapLog4j.properties";
 	// private final static String DEFAULT_AGENT_CONTEXT =
 	// "classpath:org/argeo/slc/cli/spring-agent-default.xml";
 
-	private final static Option typeOpt = OptionBuilder.withLongOpt("mode")
-			.withArgName("mode").hasArg()
-			.withDescription("Execution type, one of: " + listTypeValues())
-			.create('t');
-
-	private final static Option propertyOpt = OptionBuilder
-			.withLongOpt("property").withArgName("prop1=val1,prop2=val2")
-			.hasArgs().withValueSeparator(',')
-			.withDescription("use value for given property").create('p');
-
-	private final static Option propertiesOpt = OptionBuilder
-			.withLongOpt("properties").withArgName("properties file").hasArgs()
-			.withValueSeparator(',')
-			.withDescription("load properties from file (-p has priority)")
-			.create('P');
-
-	private final static Option moduleOpt = OptionBuilder.withLongOpt("module")
-			.withArgName("module").hasArg().withDescription("Execution module")
-			.create('m');
-
-	private final static Option flowsOpt = OptionBuilder.withLongOpt("flows")
-			.withArgName("flows").hasArg().withDescription("Flows to execute")
-			.create('f');
-
-	private final static Option runtimeOpt = OptionBuilder
-			.withLongOpt("runtime").withArgName("runtime").hasArg()
-			.withDescription("Runtime URL").create('r');
+	// private final static Option typeOpt = OptionBuilder.withLongOpt("mode")
+	// .withArgName("mode").hasArg()
+	// .withDescription("Execution type, one of: " + listTypeValues())
+	// .create('t');
+	//
+	// private final static Option propertyOpt = OptionBuilder
+	// .withLongOpt("property").withArgName("prop1=val1,prop2=val2")
+	// .hasArgs().withValueSeparator(',')
+	// .withDescription("use value for given property").create('p');
+	//
+	// private final static Option propertiesOpt = OptionBuilder
+	// .withLongOpt("properties").withArgName("properties file").hasArgs()
+	// .withValueSeparator(',')
+	// .withDescription("load properties from file (-p has priority)")
+	// .create('P');
+	//
+	// private final static Option moduleOpt =
+	// OptionBuilder.withLongOpt("module")
+	// .withArgName("module").hasArg().withDescription("Execution module")
+	// .create('m');
+	//
+	// private final static Option flowsOpt = OptionBuilder.withLongOpt("flows")
+	// .withArgName("flows").hasArg().withDescription("Flows to execute")
+	// .create('f');
+	//
+	// private final static Option runtimeOpt = OptionBuilder
+	// .withLongOpt("runtime").withArgName("runtime").hasArg()
+	// .withDescription("Runtime URL").create('r');
 
 	private final static Options options;
 
 	private final static String commandName = "slc";
 
-	private static String bundlesToInstall = "/usr/share/osgi;in=*.jar";
+	// private static String bundlesToInstall = "/usr/share/osgi;in=*.jar";
+	private static String bundlesToInstall = System.getProperty("user.home")
+			+ "/dev/src/slc/runtime/org.argeo.slc.launcher/target/dependency;in=*.jar";
 
+	// private static String bundlesToStart =
+	// "org.springframework.osgi.extender,"
+	// + "org.argeo.node.repofactory.jackrabbit,"
+	// + "org.argeo.node.repo.jackrabbit," + "org.argeo.security.dao.os,"
+	// + "org.argeo.slc.node.jackrabbit," + "org.argeo.slc.agent,"
+	// + "org.argeo.slc.agent.jcr";
 	private static String bundlesToStart = "org.springframework.osgi.extender,"
-			+ "org.argeo.node.repofactory.jackrabbit,"
-			+ "org.argeo.node.repo.jackrabbit," + "org.argeo.security.dao.os,"
-			+ "org.argeo.slc.node.jackrabbit," + "org.argeo.slc.agent,"
-			+ "org.argeo.slc.agent.jcr";
+			+ "org.argeo.slc.agent";
 
 	static {
 		options = new Options();
@@ -100,6 +108,7 @@ public class SlcMain {
 		// options.addOption(runtimeOpt);
 	}
 
+	@SuppressWarnings({ "unchecked" })
 	public static void main(String[] args) {
 		// Type type = null;
 		// Properties properties = new Properties();
@@ -137,14 +146,8 @@ public class SlcMain {
 				}
 			}
 
-			// System.setProperty(
-			// ExecutionModulesManager.UNIQUE_LAUNCH_MODULE_PROPERTY,
-			// module);
-			// System.setProperty(
-			// ExecutionModulesManager.UNIQUE_LAUNCH_FLOW_PROPERTY, flow);
-
 			String executionDir = System.getProperty("user.dir");
-			File slcDir = new File(executionDir, ".slc");
+			File slcDir = new File(executionDir, "target/.slc");
 			File dataDir = new File(slcDir, "data");
 			if (!dataDir.exists())
 				dataDir.mkdirs();
@@ -165,7 +168,6 @@ public class SlcMain {
 			// OSGi bootstrap
 			OsgiBoot osgiBoot = new OsgiBoot(bundleContext);
 			osgiBoot.installUrls(osgiBoot.getBundlesUrls(bundlesToInstall));
-			osgiBoot.startBundles(bundlesToStart);
 
 			if (moduleUrl != null) {
 				Bundle bundle = osgiBoot.installUrl(moduleUrl);
@@ -173,15 +175,28 @@ public class SlcMain {
 				// TODO deal with version
 			}
 
-			// retrieve modulesManager
-			ServiceReference sr = bundleContext
-					.getServiceReference(ExecutionModulesManager.class
-							.getName());
-			ExecutionModulesManager modulesManager = (ExecutionModulesManager) bundleContext
-					.getService(sr);
-			
-			
-			modulesManager.execute(null);
+			System.setProperty(UNIQUE_LAUNCH_MODULE_PROPERTY, module);
+			System.setProperty(UNIQUE_LAUNCH_FLOW_PROPERTY, flow);
+			System.setProperty("log4j.configuration", "file:./log4j.properties");
+
+			// start runtime
+			osgiBoot.startBundles(bundlesToStart);
+
+			// Bundle bundle = (Bundle) osgiBoot.getBundlesBySymbolicName().get(
+			// "org.argeo.slc.specs");
+			// bundle.loadClass(Execu)
+			//
+			// // retrieve modulesManager
+			// BundlesManager bundlesManager = new
+			// BundlesManager(bundleContext);
+			// ExecutionModulesManager modulesManager = bundlesManager
+			// .getSingleService(ExecutionModulesManager.class, null, true);
+			//
+			// RealizedFlow realizedFlow = RealizedFlow.create(module, null,
+			// flow,
+			// null);
+			// modulesManager.start(new BasicNameVersion(module, "0.0.0"));
+			// modulesManager.execute(realizedFlow);
 
 			// osgiBoot.bootstrap();
 			// osgiBoot.bootstrap();
@@ -266,15 +281,15 @@ public class SlcMain {
 		new HelpFormatter().printHelp(commandName, options, true);
 	}
 
-	private static String listTypeValues() {
-		StringBuffer buf = new StringBuffer("");
-		for (Type mode : Type.values()) {
-			buf.append(mode).append(", ");
-		}
-		String str = buf.toString();
-		// unsafe, but there will be at least one value in the enum
-		return str.substring(0, str.length() - 2);
-	}
+	// private static String listTypeValues() {
+	// StringBuffer buf = new StringBuffer("");
+	// for (Type mode : Type.values()) {
+	// buf.append(mode).append(", ");
+	// }
+	// String str = buf.toString();
+	// // unsafe, but there will be at least one value in the enum
+	// return str.substring(0, str.length() - 2);
+	// }
 
 	protected static void addProperty(Properties properties, String property) {
 		int eqIndex = property.indexOf('=');
