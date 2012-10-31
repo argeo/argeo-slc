@@ -26,6 +26,7 @@ public interface SlcNames {
 	public final static String SLC_VERSION = "slc:version";
 	public final static String SLC_VALUE = "slc:value";
 	public final static String SLC_ADDRESS = "slc:address";
+	public final static String SLC_METADATA = "slc:metadata";
 
 	public final static String SLC_STARTED = "slc:started";
 	public final static String SLC_COMPLETED = "slc:completed";

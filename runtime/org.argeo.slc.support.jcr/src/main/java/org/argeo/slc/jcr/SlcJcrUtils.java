@@ -59,6 +59,14 @@ public class SlcJcrUtils implements SlcNames {
 		return buf.toString();
 	}
 
+	/** Extracts the module name from a flow path */
+	public static String moduleName(String fullFlowPath) {
+		String[] tokens = fullFlowPath.split("/");
+		String moduleName = tokens[AGENT_FACTORY_DEPTH + 2];
+		moduleName = moduleName.substring(0, moduleName.indexOf('_'));
+		return moduleName;
+	}
+
 	/** Module node name based on module name and version */
 	public static String getModuleNodeName(ModuleDescriptor moduleDescriptor) {
 		return moduleDescriptor.getName() + "_" + moduleDescriptor.getVersion();
