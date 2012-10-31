@@ -31,8 +31,8 @@ import org.argeo.slc.test.WritableTestRun;
 public class SimpleTestRun implements WritableTestRun, ExecutableTestRun {
 	private String uuid;
 
-	private String slcExecutionUuid;
-	private String slcExecutionStepUuid;
+	// private String slcExecutionUuid;
+	// private String slcExecutionStepUuid;
 
 	private DeployedSystem deployedSystem;
 	private TestData testData;
@@ -92,19 +92,19 @@ public class SimpleTestRun implements WritableTestRun, ExecutableTestRun {
 		this.uuid = uuid;
 	}
 
-	public String getSlcExecutionUuid() {
-		return slcExecutionUuid;
-	}
-
-	public void setSlcExecutionUuid(String slcExecutionUuid) {
-		this.slcExecutionUuid = slcExecutionUuid;
-	}
-
-	public String getSlcExecutionStepUuid() {
-		return slcExecutionStepUuid;
-	}
-
-	public void setSlcExecutionStepUuid(String slcExecutionStepUuid) {
-		this.slcExecutionStepUuid = slcExecutionStepUuid;
-	}
+	// public String getSlcExecutionUuid() {
+	// return slcExecutionUuid;
+	// }
+	//
+	// public void setSlcExecutionUuid(String slcExecutionUuid) {
+	// this.slcExecutionUuid = slcExecutionUuid;
+	// }
+	//
+	// public String getSlcExecutionStepUuid() {
+	// return slcExecutionStepUuid;
+	// }
+	//
+	// public void setSlcExecutionStepUuid(String slcExecutionStepUuid) {
+	// this.slcExecutionStepUuid = slcExecutionStepUuid;
+	// }
 }
