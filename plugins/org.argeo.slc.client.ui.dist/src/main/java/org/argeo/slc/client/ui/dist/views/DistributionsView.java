@@ -374,10 +374,15 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				String[] workspaceNames = session.getWorkspace()
 						.getAccessibleWorkspaceNames();
 				List<DistributionElem> distributionElems = new ArrayList<DistributionElem>();
-				for (String workspace : workspaceNames)
-					distributionElems.add(new DistributionElem(this, workspace,
-							credentials));
-				// FIXME remove deleted workspaces
+				for (String workspaceName : workspaceNames) {
+					Node workspaceNode = repoNode.hasNode(workspaceName) ? repoNode
+							.getNode(workspaceName) : repoNode
+							.addNode(workspaceName);
+					repoNode.getSession().save();
+					distributionElems.add(new DistributionElem(this,
+							workspaceNode));
+					// FIXME remove deleted workspaces
+				}
 				return distributionElems.toArray();
 			} catch (RepositoryException e) {
 				throw new SlcException(
@@ -406,32 +411,22 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			connect();
 			return repository;
 		}
+
+		public Credentials getCredentials() {
+			return credentials;
+		}
+
 	}
 
 	/** Abstracts a distribution, that is a workspace */
 	private static class DistributionElem extends TreeParent {
 		private final RepoElem repoElem;
 		private final Node workspaceNode;
-		private final String workspaceName;
-		private final Credentials credentials;
 
-		public DistributionElem(RepoElem repoElem, String workspaceName,
-				Credentials credentials) {
-			super(workspaceName);
+		public DistributionElem(RepoElem repoElem, Node workspaceNode) {
+			super(JcrUtils.getNameQuietly(workspaceNode));
 			this.repoElem = repoElem;
-			try {
-				// TODO move it to repo elem
-				this.workspaceNode = repoElem.getRepoNode().hasNode(
-						workspaceName) ? repoElem.getRepoNode().getNode(
-						workspaceName) : repoElem.getRepoNode().addNode(
-						workspaceName);
-				repoElem.getRepoNode().getSession().save();
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot get or add workspace node "
-						+ workspaceName, e);
-			}
-			this.workspaceName = workspaceName;
-			this.credentials = credentials;
+			this.workspaceNode = workspaceNode;
 		}
 
 		public Node getWorkspaceNode() {
@@ -439,7 +434,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 
 		public String getWorkspaceName() {
-			return workspaceName;
+			return JcrUtils.getNameQuietly(workspaceNode);
 		}
 
 		public String getWorkspacePath() {
@@ -447,7 +442,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				return workspaceNode.getPath();
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot get or add workspace path "
-						+ workspaceName, e);
+						+ getWorkspaceName(), e);
 			}
 		}
 
@@ -456,7 +451,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				return workspaceNode.getParent().getPath();
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot get or add workspace path "
-						+ workspaceName, e);
+						+ getWorkspaceName(), e);
 			}
 		}
 
@@ -465,7 +460,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 
 		public Credentials getCredentials() {
-			return credentials;
+			return repoElem.getCredentials();
 		}
 	}
 
@@ -593,8 +588,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				// QueryResult result = countQuery.execute();
 				// Long expectedCount = result.getNodes().getSize();
 
-				 Long expectedCount = JcrUtils.countFiles(sourceSession
-				 .getRootNode());
+				Long expectedCount = JcrUtils.countFiles(sourceSession
+						.getRootNode());
 				if (log.isDebugEnabled())
 					log.debug("Will copy " + expectedCount + " files...");
 

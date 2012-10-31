@@ -48,6 +48,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
+/** <b>UNDER DEVELOPMENT</b>. Download and prepare an OSGi runtime*/
 public class RunInOsgi extends AbstractHandler implements SlcNames {
 	private final static Log log = LogFactory.getLog(RunInOsgi.class);
 
