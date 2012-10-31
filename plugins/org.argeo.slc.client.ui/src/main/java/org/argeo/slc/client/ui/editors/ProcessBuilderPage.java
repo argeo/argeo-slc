@@ -517,22 +517,6 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 						.hasNext();) {
 					Node flowNode = nit.nextNode();
 					children.add(flowNode);
-					try {
-						// make sure modules are started for all nodes
-						String flowDefPath = flowNode.getNode(SLC_ADDRESS)
-								.getProperty(Property.JCR_PATH).getString();
-						Node executionModuleNode = flowNode.getSession()
-								.getNode(SlcJcrUtils.modulePath(flowDefPath));
-						if (!executionModuleNode.getProperty(SLC_STARTED)
-								.getBoolean())
-							ClientUiPlugin.startStopExecutionModule(
-									modulesManager, executionModuleNode);
-					} catch (Exception e) {
-						ErrorFeedback.show(
-								"Cannot start execution module related to "
-										+ flowNode, e);
-					}
-
 				}
 				return children.toArray();
 			} catch (RepositoryException e) {
@@ -562,7 +546,6 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	}
 
 	static class FlowsLabelProvider extends ColumnLabelProvider {
-
 		@Override
 		public String getText(Object element) {
 			Node node = (Node) element;
@@ -571,10 +554,12 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 					if (node.hasNode(SLC_ADDRESS)) {
 						String path = node.getNode(SLC_ADDRESS)
 								.getProperty(Property.JCR_PATH).getString();
-						Node executionModuleNode = node.getSession().getNode(
-								SlcJcrUtils.modulePath(path));
-						String executionModuleName = executionModuleNode
-								.getProperty(SLC_NAME).getString();
+						String executionModuleName = SlcJcrUtils
+								.moduleName(path);
+						// Node executionModuleNode = node.getSession().getNode(
+						// SlcJcrUtils.modulePath(path));
+						// String executionModuleName = executionModuleNode
+						// .getProperty(SLC_NAME).getString();
 						return executionModuleName + ":"
 								+ SlcJcrUtils.flowRelativePath(path);
 					}

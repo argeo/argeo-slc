@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -122,8 +123,32 @@ public class ProcessEditor extends FormEditor implements
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot update status of " + processNode, e);
 		}
+
+		// save
 		doSave(null);
+
 		try {
+			// make sure modules are started for all nodes
+			for (NodeIterator nit = processNode.getNode(SLC_FLOW).getNodes(); nit
+					.hasNext();) {
+				Node flowNode = nit.nextNode();
+				try {
+					String flowDefPath = flowNode.getNode(SLC_ADDRESS)
+							.getProperty(Property.JCR_PATH).getString();
+					Node executionModuleNode = flowNode.getSession().getNode(
+							SlcJcrUtils.modulePath(flowDefPath));
+					if (!executionModuleNode.getProperty(SLC_STARTED)
+							.getBoolean())
+						ClientUiPlugin.startStopExecutionModule(modulesManager,
+								executionModuleNode);
+				} catch (Exception e) {
+					ErrorFeedback.show(
+							"Cannot start execution module related to "
+									+ flowNode, e);
+				}
+			}
+
+			// Actually process
 			ExecutionProcess process = processController.process(processNode);
 			Map<String, String> properties = new HashMap<String, String>();
 			properties.put(ExecutionModulesManager.SLC_PROCESS_ID,

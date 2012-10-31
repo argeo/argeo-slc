@@ -26,59 +26,6 @@
 	         icon="icons/processes.gif"
 	         restorable="true">
 	   </view>
-	   <!--
-	   <view
-	         id="org.argeo.slc.client.ui.executionModulesView"
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         icon="icons/execution_module.gif"
-	         name="Execution Modules"
-	         restorable="true">
-	   </view>
-	   <view
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         icon="icons/results.gif"
-	         id="org.argeo.slc.client.ui.resultListView"
-	         name="Results"
-	         restorable="true">
-	   </view>
-	   <view
-	         allowMultiple="true"
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         icon="icons/result_details.gif"
-	         id="org.argeo.slc.client.ui.resultDetailView"
-	         name="Result details"
-	         restorable="true">
-	   </view>
-	   <view
-	         id="org.argeo.slc.client.ui.processListView"
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         name="Processes"
-	         icon="icons/processes.gif"
-	         restorable="true">
-	   </view>
-	   <view
-	         allowMultiple="true"
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         icon="icons/process_details.gif"
-	         id="org.argeo.slc.client.ui.processDetailView"
-	         name="Process details"
-	         restorable="true">
-	   </view>
-	   <view
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         icon="icons/edit_parameters.gif"
-	         id="org.argeo.slc.client.ui.processParametersView"
-	         name="Process Parameters"
-	         restorable="true">
-	   </view>
-	   <view
-	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
-	         icon="icons/batch.gif"
-	         id="org.argeo.slc.client.ui.processBuilderView"
-	         name="Batch"
-	         restorable="true">
-	   </view>
-	   -->
    </extension>
 	
 	<!-- Commands definitions --> 
@@ -105,75 +52,6 @@
          		name="Refresh type">
   	 		</commandParameter>
 	    </command>
-	    <!--
-		<command
-	        defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	        id="org.argeo.slc.client.ui.runSlc/Flow"
-	    	name="org.argeo.slc.demo.minimal:hello">
-	    </command>
-	    -->
-	    <!-- Result List
-		<command
-	        defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	        id="org.argeo.slc.client.ui.refreshResultList"
-	    	name="Refresh Result List">
-	    </command>
-		<command
-	        defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	        id="org.argeo.slc.client.ui.removeSelectedResultFromResultList"
-	    	name="Remove selected results from list">
-	    </command>
-		<command 
-	      	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	      	id="org.argeo.slc.client.ui.displayResultDetails"
-	      	name="Display Result Details">
-		</command>
-	 -->
-	    <!-- Execution Modules
-	    <command
-	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	        id="org.argeo.slc.client.ui.refreshExecutionModulesView"
-	        name="Refresh Execution Modules View">
-		</command>
-		 -->
-	    <!-- Batch
-	    <command
-	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	        id="org.argeo.slc.client.ui.launchBatch"
-	        name="Launch Batch">
-	    </command>
-	    <command
-	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	        id="org.argeo.slc.client.ui.removeSelectedFromBatch"
-	        name="Remove Selected From Batch">
-		</command>
-	    <command
-	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	        id="org.argeo.slc.client.ui.clearBatch"
-	        name="Clear Batch">
-		</command>
-		 -->
-	    <!-- Process List
-	    <command
-	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	        id="org.argeo.slc.client.ui.refreshProcessList"
-	        name="Refresh Process List ">
-		</command>
-	   	<command 
-	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	      	id="org.argeo.slc.client.ui.displayProcessDetails"
-	      	name="DisplayProcessDetails">
-	   		<commandParameter
-	        	id="org.argeo.slc.client.commands.processUuid"
-	         	name="Process UUID">
-	  	 	</commandParameter>
-		</command>
-		<command 
-	    	defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-	      	id="org.argeo.slc.client.ui.manageBundles"
-	      	name="Manage Bundles">
-		</command>
-		 -->
     </extension>
    
 	<!-- Menu definitions -->
@@ -188,65 +66,7 @@
 				label="Update module"
 				tooltip="Update module">
 			</command>
-			<!--
-			<command
-				commandId="org.argeo.slc.client.ui.runSlc/Flow"
-				icon="icons/launch.gif"
-				label="Run SLC Flow"
-				tooltip="Run SLC Flow">
-			</command>
-			-->
 		</menuContribution>   
-        <!--
-		<menuContribution
-        	locationURI="menu:fileMenu">
-		</menuContribution>
-		<menuContribution
-			locationURI="toolbar:org.argeo.slc.client.ui.resultListView">
-            <command
-            	commandId="org.argeo.slc.client.ui.refreshResultList"
-                icon="icons/refresh.png"
-                label="Refresh result list"
-                tooltip="Refresh the result list">
-            </command>
-            <command
-            	commandId="org.argeo.slc.client.ui.removeSelectedResultFromResultList"
-                icon="icons/removeAll.png"
-                label="Remove selected"
-                tooltip="Remove selected items from the result list (Also on server side, cannot be undone)">
-            </command>
-		</menuContribution>
-		<menuContribution
-        	locationURI="toolbar:org.argeo.slc.client.ui.executionModulesView">
-			<command
-				commandId="org.argeo.slc.client.ui.refreshExecutionModulesView"
-				icon="icons/refresh.png"
-				label="Refresh execution modules"
-				tooltip="Refresh the execution modules view.">
-			</command>
-		</menuContribution>   
-		<menuContribution
-			locationURI="toolbar:org.argeo.slc.client.ui.processBuilderView">
-			<command
-				commandId="org.argeo.slc.client.ui.launchBatch"
-				icon="icons/launch.gif"
-				label="Launch Batch"
-				tooltip="Launch the batch built in the process builder view.">
-			</command>
-			<command
-				commandId="org.argeo.slc.client.ui.clearBatch"
-				label="Clear Batch"
-				icon="icons/clear_batch.gif"
-				tooltip="Clear the batch built in the process builder view.">
-			</command>
-			<command
-				commandId="org.argeo.slc.client.ui.removeSelectedFromBatch"
-				icon="icons/remove_one.gif"
-				label="Remove Selected From Batch"
-				tooltip="Remove selected process from process builder view.">
-			</command>
-		</menuContribution>
-		-->
 	</extension>
    <extension
          point="org.eclipse.ui.perspectives">
