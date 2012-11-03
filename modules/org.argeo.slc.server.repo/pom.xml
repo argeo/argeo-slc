@@ -22,7 +22,6 @@
 							org.argeo.slc.jcr,
 							org.argeo.slc.repo,
 							org.h2;resolution:=optional,
-							org.xml.sax.*;version="0.0.0",
 						</Import-Package>
 					</instructions>
 				</configuration>
