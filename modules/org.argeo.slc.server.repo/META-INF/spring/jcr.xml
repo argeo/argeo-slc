@@ -29,9 +29,11 @@
 		<property name="principalPrivileges">
 			<map>
 				<entry key="jcr:all" value="ROLE_SLC" />
+				<entry key="jcr:all" value="ROLE_ADMIN" />
 			</map>
 		</property>
 		<property name="repository" ref="jcrRepository" />
+		<property name="workspace" value="*" />
 	</bean>
 
 	<bean
