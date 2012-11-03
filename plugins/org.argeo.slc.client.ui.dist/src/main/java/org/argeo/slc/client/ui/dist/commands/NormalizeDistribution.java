@@ -21,6 +21,8 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 import javax.jcr.util.TraversingItemVisitor;
 
 import org.apache.commons.logging.Log;
@@ -96,8 +98,17 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 				// log.debug("Count: " + count);
 				// long count = query.execute().getRows().nextRow()
 				// .getValue("count").getLong();
+				Query countQuery = session
+						.getWorkspace()
+						.getQueryManager()
+						.createQuery("select file from [nt:file] as file",
+								Query.JCR_SQL2);
+				QueryResult result = countQuery.execute();
+				Long expectedCount = result.getNodes().getSize();
+
 				monitor.beginTask("Normalize "
-						+ session.getWorkspace().getName(), -1);
+						+ session.getWorkspace().getName(),
+						expectedCount.intValue());
 				NormalizingTraverser tiv = new NormalizingTraverser(monitor);
 				session.getNode(artifactBasePath).accept(tiv);
 			} catch (Exception e) {

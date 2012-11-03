@@ -30,6 +30,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -588,8 +590,19 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				// QueryResult result = countQuery.execute();
 				// Long expectedCount = result.getNodes().getSize();
 
-				Long expectedCount = JcrUtils.countFiles(sourceSession
-						.getRootNode());
+				Query countQuery = sourceSession
+						.getWorkspace()
+						.getQueryManager()
+						.createQuery("select file from [nt:file] as file",
+								Query.JCR_SQL2);
+				QueryResult result = countQuery.execute();
+				Long expectedCount = result.getNodes().getSize();
+				// Long expectedCount =
+				// result.getRows().nextRow().getValues()[0]
+				// .getLong();
+
+				// Long expectedCount = JcrUtils.countFiles(sourceSession
+				// .getRootNode());
 				if (log.isDebugEnabled())
 					log.debug("Will copy " + expectedCount + " files...");
 
