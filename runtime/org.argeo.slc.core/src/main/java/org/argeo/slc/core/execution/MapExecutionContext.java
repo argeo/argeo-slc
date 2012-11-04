@@ -80,7 +80,11 @@ public class MapExecutionContext implements ExecutionContext,
 			}
 		}
 
-		return variables.get(key);
+		Object value = variables.get(key);
+		// try system property in last resort
+		if (value == null)
+			value = System.getProperty(key);
+		return value;
 	}
 
 	public String getUuid() {
