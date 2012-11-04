@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -46,7 +47,7 @@ public class FileExecutionResources implements ExecutionResources {
 
 	private File baseDir;
 	private ExecutionContext executionContext;
-	private String prefixDatePattern = "yyyyMMdd_HHmmss_";
+	private String prefixDatePattern = "yyMMdd_HHmmss_SSS";
 	private SimpleDateFormat sdf = null;
 
 	private Boolean withExecutionSubdirectory = true;
@@ -170,13 +171,12 @@ public class FileExecutionResources implements ExecutionResources {
 
 	public File getWritableBaseDir() {
 		if (withExecutionSubdirectory) {
+			Date executionContextCreationDate = (Date) executionContext
+					.getVariable(ExecutionContext.VAR_EXECUTION_CONTEXT_CREATION_DATE);
 			Assert.notNull(executionContext, "execution context is null");
-			String path = baseDir.getPath()
-					+ File.separator
-					+ sdf().format(
-							executionContext
-									.getVariable(ExecutionContext.VAR_EXECUTION_CONTEXT_CREATION_DATE))
-					+ executionContext.getUuid();
+			String path = baseDir.getPath() + File.separator
+					+ sdf().format(executionContextCreationDate);
+			// TODO write execution id somewhere? like in a txt file
 			return new File(path);
 		} else {
 			return baseDir;
