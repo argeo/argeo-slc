@@ -131,8 +131,11 @@ public class ExecutionScope implements Scope {
 	}
 
 	public void registerDestructionCallback(String name, Runnable callback) {
-		// TODO: implement it
-		// throw new UnsupportedOperationException();
+		if (Thread.currentThread() instanceof ExecutionThread) {
+			ExecutionThread executionThread = (ExecutionThread) Thread
+					.currentThread();
+			executionThread.registerDestructionCallback(name, callback);
+		}
 	}
 
 	public Object remove(String name) {

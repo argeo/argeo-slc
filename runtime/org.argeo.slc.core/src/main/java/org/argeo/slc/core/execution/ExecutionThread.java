@@ -15,6 +15,9 @@
  */
 package org.argeo.slc.core.execution;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
@@ -33,6 +36,8 @@ public class ExecutionThread extends Thread {
 	private final RealizedFlow realizedFlow;
 	private final ProcessThread processThread;
 
+	private List<Runnable> destructionCallbacks = new ArrayList<Runnable>();
+
 	public ExecutionThread(ProcessThread processThread,
 			RealizedFlow realizedFlow) {
 		super(processThread.getProcessThreadGroup(), "Flow "
@@ -48,12 +53,6 @@ public class ExecutionThread extends Thread {
 		if (authentication == null)
 			throw new SlcException("Can only execute authenticated threads");
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-
-		if (getContextClassLoader() != null) {
-			if (log.isTraceEnabled())
-				log.trace("Context class loader set to "
-						+ getContextClassLoader());
-		}
 
 		// Retrieve execution flow descriptor
 		ExecutionFlowDescriptor executionFlowDescriptor = realizedFlow
@@ -84,11 +83,31 @@ public class ExecutionThread extends Thread {
 			processThread.flowCompleted();
 			dispatchAddStep(new ExecutionStep(realizedFlow.getModuleName(),
 					ExecutionStep.PHASE_END, "Flow " + flowName));
+			processDestructionCallbacks();
 		}
 	}
 
 	private void dispatchAddStep(ExecutionStep step) {
 		processThread.getProcessThreadGroup().dispatchAddStep(step);
+	}
+
+	private synchronized void processDestructionCallbacks() {
+		for (int i = destructionCallbacks.size() - 1; i >= 0; i--) {
+			try {
+				destructionCallbacks.get(i).run();
+			} catch (Exception e) {
+				log.warn("Could not process destruction callback " + i
+						+ " in thread " + getName(), e);
+			}
+		}
+	}
+
+	/**
+	 * Gather object destruction callback to be called in reverse order at the
+	 * end of the thread
+	 */
+	synchronized void registerDestructionCallback(String name, Runnable callback) {
+		destructionCallbacks.add(callback);
 	}
 
 	protected ProcessThreadGroup getProcessThreadGroup() {

@@ -15,6 +15,7 @@
  */
 package org.argeo.slc.execution;
 
+/** Deal with nested level of executions using different vartiables. */
 public interface ExecutionStack {
 	/**
 	 * @param name

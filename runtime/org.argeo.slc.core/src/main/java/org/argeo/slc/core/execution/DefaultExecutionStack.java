@@ -27,6 +27,7 @@ import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.execution.ExecutionStack;
 
+/** Canonical implementation of an execution stack. */
 public class DefaultExecutionStack implements ExecutionStack {
 
 	private final static Log log = LogFactory

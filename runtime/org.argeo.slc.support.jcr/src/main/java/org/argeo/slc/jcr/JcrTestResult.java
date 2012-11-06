@@ -30,6 +30,8 @@ import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.attachment.Attachment;
@@ -44,6 +46,8 @@ import org.argeo.slc.test.TestStatus;
  * {@link SlcTypes#SLC_TEST_RESULT}.
  */
 public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
+	private final static Log log = LogFactory.getLog(JcrTestResult.class);
+
 	/** Should only be set for an already existing result. */
 	private String uuid;
 	private Repository repository;
@@ -79,6 +83,8 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 					resultNode.setProperty(property, attributes.get(attr));
 				}
 				session.save();
+				if (log.isDebugEnabled())
+					log.debug("Created test result " + uuid);
 			}
 		} catch (Exception e) {
 			JcrUtils.discardQuietly(session);
@@ -88,6 +94,8 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 
 	public void destroy() {
 		JcrUtils.logoutQuietly(session);
+		if (log.isTraceEnabled())
+			log.trace("Logged out session for result " + uuid);
 	}
 
 	public Node getNode() {
@@ -111,6 +119,10 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	}
 
 	public void notifyTestRun(TestRun testRun) {
+		// TODO store meta data about the test running
+		// if (log.isDebugEnabled())
+		// log.debug("Running test "
+		// + testRun.getTestDefinition().getClass().getName() + "...");
 	}
 
 	public void addResultPart(TestResultPart testResultPart) {
@@ -213,9 +225,4 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	public void setCredentials(Credentials credentials) {
 		this.credentials = credentials;
 	}
-
-	// public void setLogoutWhenDestroyed(Boolean logoutWhenDestroyed) {
-	// this.logoutWhenDestroyed = logoutWhenDestroyed;
-	// }
-
 }
