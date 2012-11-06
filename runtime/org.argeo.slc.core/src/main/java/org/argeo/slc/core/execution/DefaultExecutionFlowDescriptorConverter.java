@@ -164,7 +164,6 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		md.getExecutionFlows().addAll(set);
 	}
 
-	@SuppressWarnings("deprecation")
 	public ExecutionFlowDescriptor getExecutionFlowDescriptor(
 			ExecutionFlow executionFlow) {
 		if (executionFlow.getName() == null)
@@ -212,10 +211,10 @@ public class DefaultExecutionFlowDescriptorConverter implements
 
 		ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(name, values,
 				executionSpec);
-		if (executionFlow.getPath() != null)
-			efd.setPath(executionFlow.getPath());
-		else
-			efd.setPath("");
+//		if (executionFlow.getPath() != null)
+//			efd.setPath(executionFlow.getPath());
+//		else
+//			efd.setPath("");
 
 		// Takes description from spring
 		BeanFactory bf = getBeanFactory();
