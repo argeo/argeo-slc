@@ -14,15 +14,14 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 
 public class ResultParentUtils {
-	private final static Log log = LogFactory.getLog(ResultParentUtils.class);
+	// private final static Log log =
+	// LogFactory.getLog(ResultParentUtils.class);
 
 	public static Object[] orderChildren(Object[] children) {
 		List<ResultFolder> folders = new ArrayList<ResultFolder>();

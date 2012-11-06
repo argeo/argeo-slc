@@ -28,7 +28,6 @@ import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.slc.client.ui.model.ResultFolder;
 import org.argeo.slc.client.ui.model.ResultParentUtils;
 import org.argeo.slc.client.ui.model.SingleResultNode;
-import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

@@ -24,7 +24,10 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
+import org.argeo.slc.client.ui.SlcUiConstants;
 import org.argeo.slc.client.ui.commands.AddResultFolder;
+import org.argeo.slc.client.ui.editors.ProcessEditor;
+import org.argeo.slc.client.ui.editors.ProcessEditorInput;
 import org.argeo.slc.client.ui.model.ParentNodeFolder;
 import org.argeo.slc.client.ui.model.ResultFolder;
 import org.argeo.slc.client.ui.model.ResultParent;
@@ -41,6 +44,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -66,7 +71,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /** SLC generic JCR Result tree view. */
@@ -90,8 +97,9 @@ public class JcrResultTreeView extends ViewPart {
 			NodeType.NT_UNSTRUCTURED };
 
 	// FIXME cache to ease refresh after D&D
-	private ResultParent lastSelectedElement;
-	private ResultParent lastSelectedElementParent;
+	private ResultParent lastSelectedTargetElement;
+	private ResultParent lastSelectedTargetElementParent;
+	private ResultParent lastSelectedSourceElementParent;
 
 	/**
 	 * To be overridden to adapt size of form and result frames.
@@ -141,6 +149,8 @@ public class JcrResultTreeView extends ViewPart {
 				.getDecoratorManager().getLabelDecorator();
 		viewer.setLabelProvider(new DecoratingLabelProvider(rtLblProvider,
 				decorator));
+		viewer.addDoubleClickListener(new ViewDoubleClickListener());
+
 		// viewer.setLabelProvider(rtLblProvider);
 		getSite().setSelectionProvider(viewer);
 
@@ -175,8 +185,8 @@ public class JcrResultTreeView extends ViewPart {
 										.getNode());
 					else
 						propertiesViewer.setInput(null);
-					lastSelectedElement = (ResultParent) firstItem;
-					lastSelectedElementParent = (ResultParent) ((ResultParent) firstItem)
+					lastSelectedTargetElement = (ResultParent) firstItem;
+					lastSelectedTargetElementParent = (ResultParent) ((ResultParent) firstItem)
 							.getParent();
 				}
 			}
@@ -248,6 +258,33 @@ public class JcrResultTreeView extends ViewPart {
 		});
 		propertiesViewer.setInput(getViewSite());
 		return propertiesViewer;
+	}
+
+	/**
+	 * Override to provide specific behaviour. Typically to enable the display
+	 * of a result file.
+	 * 
+	 * @param evt
+	 */
+	protected void processDoubleClick(DoubleClickEvent evt) {
+		Object obj = ((IStructuredSelection) evt.getSelection())
+				.getFirstElement();
+		try {
+			if (obj instanceof SingleResultNode) {
+				SingleResultNode srNode = (SingleResultNode) obj;
+				Node node = srNode.getNode();
+				// FIXME: open a default result editor
+				if (node.isNodeType(SlcTypes.SLC_PROCESS)) {
+					IWorkbenchPage activePage = PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage();
+					activePage.openEditor(
+							new ProcessEditorInput(node.getPath()),
+							ProcessEditor.ID);
+				}
+			}
+		} catch (Exception e) {
+			throw new SlcException("Cannot open " + obj, e);
+		}
 	}
 
 	@Override
@@ -322,7 +359,7 @@ public class JcrResultTreeView extends ViewPart {
 				ResultFolder currFolder = (ResultFolder) resultParent;
 				jcrRefresh(currFolder.getNode());
 				currFolder.forceFullRefresh();
-				resultTreeViewer.refresh(lastSelectedElement);
+				resultTreeViewer.refresh(lastSelectedTargetElement);
 			}
 		}
 	}
@@ -336,7 +373,7 @@ public class JcrResultTreeView extends ViewPart {
 				// My results
 				roots[0] = new ParentNodeFolder(null,
 						SlcJcrResultUtils.getMyResultParentNode(session),
-						"My results");
+						SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL);
 
 				// today
 				Calendar cal = Calendar.getInstance();
@@ -428,7 +465,6 @@ public class JcrResultTreeView extends ViewPart {
 
 		public void dragStart(DragSourceEvent event) {
 			// Check if the drag action should start.
-
 			IStructuredSelection selection = (IStructuredSelection) resultTreeViewer
 					.getSelection();
 			boolean doIt = false;
@@ -438,12 +474,16 @@ public class JcrResultTreeView extends ViewPart {
 				if (obj instanceof SingleResultNode) {
 					Node tNode = ((SingleResultNode) obj).getNode();
 					try {
+						// if (tNode.getPrimaryNodeType().isNodeType(
+						// SlcTypes.SLC_TEST_RESULT)
+						// && (tNode.getPath()
+						// .startsWith(SlcJcrResultUtils
+						// .getSlcResultsBasePath(session))))
 						if (tNode.getPrimaryNodeType().isNodeType(
-								SlcTypes.SLC_TEST_RESULT)
-								&& (tNode.getPath()
-										.startsWith(SlcJcrResultUtils
-												.getSlcResultsBasePath(session))))
+								SlcTypes.SLC_TEST_RESULT))
 							doIt = true;
+						lastSelectedSourceElementParent = (ResultParent) ((SingleResultNode) obj)
+								.getParent();
 					} catch (RepositoryException re) {
 						throw new SlcException(
 								"unexpected error while validating drag source",
@@ -462,6 +502,7 @@ public class JcrResultTreeView extends ViewPart {
 				Node first = ((SingleResultNode) obj).getNode();
 				try {
 					event.data = first.getIdentifier();
+
 				} catch (RepositoryException re) {
 					throw new SlcException(
 							"unexpected error while setting data", re);
@@ -478,6 +519,7 @@ public class JcrResultTreeView extends ViewPart {
 	protected class ViewDropListener extends ViewerDropAdapter {
 
 		private Node currParentNode = null;
+		private boolean copyNode = true;
 
 		public ViewDropListener(Viewer viewer) {
 			super(viewer);
@@ -512,9 +554,19 @@ public class JcrResultTreeView extends ViewPart {
 					currParentNode = targetParentNode;
 					validDrop = true;
 					// FIXME
-					lastSelectedElement = (ResultParent) target;
-					lastSelectedElementParent = (ResultParent) ((ResultParent) target)
+					lastSelectedTargetElement = (ResultParent) target;
+					lastSelectedTargetElementParent = (ResultParent) ((ResultParent) target)
 							.getParent();
+				}
+				// Check if it's a move or a copy
+				if (validDrop) {
+					String pPath = "";
+					if (lastSelectedSourceElementParent instanceof ResultFolder)
+						pPath = ((ResultFolder) lastSelectedSourceElementParent)
+								.getNode().getPath();
+					if ((pPath.startsWith(SlcJcrResultUtils
+							.getMyResultsBasePath(session))))
+						copyNode = false;
 				}
 			} catch (RepositoryException re) {
 				throw new SlcException(
@@ -528,15 +580,31 @@ public class JcrResultTreeView extends ViewPart {
 
 			try {
 				Node source = session.getNodeByIdentifier((String) data);
-				Node target = currParentNode.addNode(source.getName(), source
-						.getPrimaryNodeType().getName());
-				JcrUtils.copy(source, target);
-				ResultParentUtils
-						.updatePassedStatus(target,
-								target.getNode(SlcNames.SLC_STATUS)
-										.getProperty(SlcNames.SLC_SUCCESS)
-										.getBoolean());
-				target.getSession().save();
+				if (copyNode) {
+					Node target = currParentNode.addNode(source.getName(),
+							source.getPrimaryNodeType().getName());
+					JcrUtils.copy(source, target);
+					ResultParentUtils.updatePassedStatus(
+							target,
+							target.getNode(SlcNames.SLC_STATUS)
+									.getProperty(SlcNames.SLC_SUCCESS)
+									.getBoolean());
+					target.getSession().save();
+				} else // move only
+				{
+					String sourcePath = source.getPath();
+					String destPath = currParentNode.getPath() + "/"
+							+ source.getName();
+					session.move(sourcePath, destPath);
+					session.save();
+					Node target = session.getNode(destPath);
+					ResultParentUtils.updatePassedStatus(
+							target,
+							target.getNode(SlcNames.SLC_STATUS)
+									.getProperty(SlcNames.SLC_SUCCESS)
+									.getBoolean());
+					session.save();
+				}
 			} catch (RepositoryException re) {
 				throw new SlcException(
 						"unexpected error while copying dropped node", re);
@@ -589,7 +657,7 @@ public class JcrResultTreeView extends ViewPart {
 							jcrRefresh(currNode);
 							resultTreeViewer.refresh(true);
 							resultTreeViewer.expandToLevel(
-									lastSelectedElementParent, 1);
+									lastSelectedTargetElementParent, 1);
 
 						}
 					}
@@ -601,29 +669,16 @@ public class JcrResultTreeView extends ViewPart {
 								|| currNode
 										.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
 							refresh(null);
-							resultTreeViewer.expandToLevel(lastSelectedElement,
-									1);
+							resultTreeViewer.expandToLevel(
+									lastSelectedTargetElement, 1);
 						}
 					}
 				}
-				// String path = event.getPath();
-				// int index = path.lastIndexOf('/');
-				// String propertyName = path.substring(index + 1);
-				// if (propertyName.equals(SlcNames.SLC_COMPLETED)
-				// || propertyName.equals(SlcNames.SLC_UUID)) {
-				// }
 			}
-
-			// FIXME implement correct behaviour. treeViewer selection is
-			// disposed by the drag & drop.
-			// resultTreeViewer.refresh();
-			// refresh(null);
-			// log.warn("Implement refresh.");
 		}
 	}
 
 	class PropertiesContentProvider implements IStructuredContentProvider {
-		// private JcrItemsComparator itemComparator = new JcrItemsComparator();
 
 		public void dispose() {
 		}
@@ -647,6 +702,13 @@ public class JcrResultTreeView extends ViewPart {
 						+ inputElement, e);
 			}
 		}
+	}
+
+	class ViewDoubleClickListener implements IDoubleClickListener {
+		public void doubleClick(DoubleClickEvent evt) {
+			processDoubleClick(evt);
+		}
+
 	}
 
 	/* DEPENDENCY INJECTION */

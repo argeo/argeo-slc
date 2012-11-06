@@ -15,8 +15,17 @@
  */
 package org.argeo.slc.client.ui.decorators;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.model.ResultParent;
+import org.argeo.slc.client.ui.model.SingleResultNode;
+import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;
@@ -30,6 +39,9 @@ public class ResultFailedDecorator extends LabelProvider implements
 
 	// private final static Log log = LogFactory
 	// .getLog(ResultFailedDecorator.class);
+
+	private final static DateFormat dateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd HH:mm");
 
 	public ResultFailedDecorator() {
 		super();
@@ -58,6 +70,22 @@ public class ResultFailedDecorator extends LabelProvider implements
 
 	// Method to decorate Text
 	public String decorateText(String label, Object object) {
-		return null;
+		if (object instanceof SingleResultNode) {
+			SingleResultNode srNode = (SingleResultNode) object;
+			Node node = srNode.getNode();
+			String decoration = null;
+			try {
+				if (node.hasProperty(SlcNames.SLC_COMPLETED))
+					decoration = dateFormat.format(node
+							.getProperty(SlcNames.SLC_COMPLETED).getDate()
+							.getTime());
+			} catch (RepositoryException re) {
+				throw new SlcException(
+						"Unexpected defining text decoration for result", re);
+			}
+			return label + " [" + decoration + "]";
+		} else
+			return null;
 	}
+
 }
