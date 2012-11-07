@@ -26,6 +26,7 @@ import javax.jcr.Session;
 
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.slc.client.ui.model.ResultFolder;
+import org.argeo.slc.client.ui.model.ResultParent;
 import org.argeo.slc.client.ui.model.ResultParentUtils;
 import org.argeo.slc.client.ui.model.SingleResultNode;
 import org.eclipse.core.commands.AbstractHandler;
@@ -49,9 +50,29 @@ public class DeleteResult extends AbstractHandler {
 		final ISelection selection = HandlerUtil
 				.getActiveWorkbenchWindow(event).getActivePage().getSelection();
 
-		if (!MessageDialog.openConfirm(HandlerUtil.getActiveShell(event),
-				"Confirm",
-				"Are you sure that you want to delete these results?"))
+		// confirmation
+		StringBuffer buf = new StringBuffer("");
+		Iterator<?> lst = ((IStructuredSelection) selection).iterator();
+		while (lst.hasNext()) {
+			Object obj = lst.next();
+
+			if (obj instanceof ResultParent) {
+				ResultParent rp = ((ResultParent) obj);
+				buf.append(rp.getName()).append(", ");
+			}
+
+		}
+
+		String msg = "Nothing to delete";
+		// remove last separator
+		if (buf.lastIndexOf(", ") > -1) {
+			msg = "Do you want to delete following objects: "
+					+ buf.substring(0, buf.lastIndexOf(", ")) + "?";
+		}
+		Boolean ok = MessageDialog.openConfirm(
+				HandlerUtil.getActiveShell(event), "Confirm deletion", msg);
+
+		if (!ok)
 			return null;
 
 		Job job = new Job("Delete results") {
