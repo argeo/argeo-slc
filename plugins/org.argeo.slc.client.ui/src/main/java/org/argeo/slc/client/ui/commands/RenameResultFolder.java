@@ -18,30 +18,29 @@ package org.argeo.slc.client.ui.commands;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
-import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.dialogs.SingleValue;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
-import org.argeo.slc.client.ui.model.ParentNodeFolder;
 import org.argeo.slc.client.ui.model.ResultFolder;
-import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * Add a new SlcType.SLC_RESULT_FOLDER node to the current user "my result"
- * tree. This handler is only intended to bu used with JcrResultTreeView and its
- * descendants.
+ * Rename a node of type SlcType.SLC_RESULT_FOLDER by moving it.
  */
 
-public class AddResultFolder extends AbstractHandler {
-	public final static String ID = ClientUiPlugin.ID + ".addResultFolder";
-	public final static String DEFAULT_ICON_REL_PATH = "icons/addFolder.gif";
-	public final static String DEFAULT_LABEL = "New result folder";
+public class RenameResultFolder extends AbstractHandler {
+	public final static String ID = ClientUiPlugin.ID + ".renameResultFolder";
+	public final static ImageDescriptor DEFAULT_IMG_DESCRIPTOR = ClientUiPlugin
+			.getImageDescriptor("icons/rename.png");
+	public final static String DEFAULT_LABEL = "Rename folder";
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil
@@ -52,34 +51,25 @@ public class AddResultFolder extends AbstractHandler {
 		if (selection != null && selection.size() == 1) {
 			Object obj = selection.getFirstElement();
 			try {
-				Node parentNode = null;
 				if (obj instanceof ResultFolder) {
 					ResultFolder rf = (ResultFolder) obj;
-					parentNode = rf.getNode();
-				} else if (obj instanceof ParentNodeFolder) {
-					Node node = ((ParentNodeFolder) obj).getNode();
-					if (node.getPath().startsWith(
-							SlcJcrResultUtils.getMyResultsBasePath(node
-									.getSession())))
-						parentNode = node;
-				}
-
-				if (parentNode != null) {
-					String folderName = SingleValue.ask("Folder name",
-							"Enter folder name");
+					Node sourceNode = rf.getNode();
+					String folderName = SingleValue.ask("Rename folder",
+							"Enter a new folder name");
 					if (folderName != null) {
-						String absPath = parentNode.getPath() + "/"
-								+ folderName;
-						SlcJcrResultUtils.createResultFolderNode(
-								parentNode.getSession(), absPath);
+						String sourcePath = sourceNode.getPath();
+						String targetPath = JcrUtils.parentPath(sourcePath)
+								+ "/" + folderName;
+						Session session = sourceNode.getSession();
+						session.move(sourcePath, targetPath);
+						session.save();
 					}
 				}
 			} catch (RepositoryException e) {
 				throw new SlcException(
-						"Unexpected exception while creating result folder", e);
+						"Unexpected exception while refactoring result folder",
+						e);
 			}
-		} else {
-			ErrorFeedback.show("Can only add file folder to a node");
 		}
 		return null;
 	}

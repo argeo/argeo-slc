@@ -16,20 +16,17 @@
 package org.argeo.slc.client.ui.model;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 
 /**
  * UI Tree component that wrap a node of type ResultFolder. list either other
  * folders and/or a list of results. keeps a reference to its parent.
  */
-public class ResultFolder extends ResultParent implements Comparable<ResultFolder> {
-
-	private Node node = null;
+public class ResultFolder extends ParentNodeFolder implements
+		Comparable<ResultFolder> {
 
 	/**
 	 * 
@@ -38,13 +35,9 @@ public class ResultFolder extends ResultParent implements Comparable<ResultFolde
 	 *            throws an exception if null
 	 * @param name
 	 */
-	public ResultFolder(ResultParent parent, Node node, String name) {
-		super(name);
+	public ResultFolder(ParentNodeFolder parent, Node node, String name) {
+		super(parent, node, name);
 		try {
-			if (node == null)
-				throw new SlcException("Node Object cannot be null");
-			setParent(parent);
-			this.node = node;
 			// initialize passed status if possible
 			if (node.hasNode(SlcNames.SLC_STATUS))
 				setPassed(node.getNode(SlcNames.SLC_STATUS)
@@ -54,41 +47,6 @@ public class ResultFolder extends ResultParent implements Comparable<ResultFolde
 					"Unexpected error while initializing result folder : "
 							+ getName(), re);
 		}
-
-	}
-
-	@Override
-	protected void initialize() {
-		try {
-			NodeIterator ni = node.getNodes();
-			while (ni.hasNext()) {
-				Node currNode = ni.nextNode();
-				if (currNode.isNodeType(SlcTypes.SLC_TEST_RESULT)) {
-					SingleResultNode srn = new SingleResultNode(this, currNode,
-							currNode.getProperty(SlcNames.SLC_TEST_CASE)
-									.getString());
-					addChild(srn);
-				} else if (currNode.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
-					// FIXME change label
-					ResultFolder rf = new ResultFolder(this, currNode,
-							currNode.getName());
-					addChild(rf);
-				}
-			}
-		} catch (RepositoryException re) {
-			throw new SlcException(
-					"Unexpected error while initializing result folder : "
-							+ getName(), re);
-		}
-	}
-
-	@Override
-	public synchronized void dispose() {
-		super.dispose();
-	}
-
-	public Node getNode() {
-		return node;
 	}
 
 	/**

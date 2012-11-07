@@ -17,6 +17,8 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.utils.CommandUtils;
@@ -26,6 +28,8 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.SlcUiConstants;
 import org.argeo.slc.client.ui.commands.AddResultFolder;
+import org.argeo.slc.client.ui.commands.RenameResultFolder;
+import org.argeo.slc.client.ui.commands.RenameResultNode;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
 import org.argeo.slc.client.ui.editors.ProcessEditorInput;
 import org.argeo.slc.client.ui.model.ParentNodeFolder;
@@ -36,6 +40,7 @@ import org.argeo.slc.client.ui.model.SingleResultNode;
 import org.argeo.slc.client.ui.model.VirtualFolder;
 import org.argeo.slc.client.ui.providers.ResultTreeContentProvider;
 import org.argeo.slc.client.ui.providers.ResultTreeLabelProvider;
+import org.argeo.slc.client.ui.wizards.ConfirmOverwriteWizard;
 import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -53,9 +58,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.dnd.DND;
@@ -80,8 +87,7 @@ import org.eclipse.ui.part.ViewPart;
 public class JcrResultTreeView extends ViewPart {
 	public final static String ID = ClientUiPlugin.ID + ".jcrResultTreeView";
 
-	// private final static Log log =
-	// LogFactory.getLog(JcrResultTreeView.class);
+	private final static Log log = LogFactory.getLog(JcrResultTreeView.class);
 
 	/* DEPENDENCY INJECTION */
 	private Session session;
@@ -96,10 +102,16 @@ public class JcrResultTreeView extends ViewPart {
 			SlcTypes.SLC_TEST_RESULT, SlcTypes.SLC_RESULT_FOLDER,
 			NodeType.NT_UNSTRUCTURED };
 
-	// FIXME cache to ease refresh after D&D
+	// FIXME cache to ease D&D
+	private boolean isActionUnderMyResult = false;
 	private ResultParent lastSelectedTargetElement;
-	private ResultParent lastSelectedTargetElementParent;
+	private ResultParent lastSelectedSourceElement;
 	private ResultParent lastSelectedSourceElementParent;
+	private boolean isResultFolder = false;
+
+	// FIXME we cache the fact that we are moving a node to avoid exception
+	// triggered by the "Add Node" event while moving
+	// boolean isMoveInProgress = false;
 
 	/**
 	 * To be overridden to adapt size of form and result frames.
@@ -173,24 +185,7 @@ public class JcrResultTreeView extends ViewPart {
 
 		// add change listener to display TestResult information in the property
 		// viewer
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				if (!event.getSelection().isEmpty()) {
-					IStructuredSelection sel = (IStructuredSelection) event
-							.getSelection();
-					Object firstItem = sel.getFirstElement();
-					if (firstItem instanceof SingleResultNode)
-						propertiesViewer
-								.setInput(((SingleResultNode) firstItem)
-										.getNode());
-					else
-						propertiesViewer.setInput(null);
-					lastSelectedTargetElement = (ResultParent) firstItem;
-					lastSelectedTargetElementParent = (ResultParent) ((ResultParent) firstItem)
-							.getParent();
-				}
-			}
-		});
+		viewer.addSelectionChangedListener(new MySelectionChangedListener());
 		return viewer;
 	}
 
@@ -345,7 +340,8 @@ public class JcrResultTreeView extends ViewPart {
 					resultsObserver = new ResultObserver(resultTreeViewer
 							.getTree().getDisplay());
 					observationManager.addEventListener(resultsObserver,
-							Event.NODE_ADDED | Event.NODE_REMOVED, UserJcrUtils
+							Event.NODE_MOVED | Event.NODE_ADDED
+									| Event.NODE_REMOVED, UserJcrUtils
 									.getUserHome(session).getPath(), true,
 							null, observedNodeTypes, false);
 				} catch (RepositoryException e) {
@@ -354,13 +350,16 @@ public class JcrResultTreeView extends ViewPart {
 			}
 
 		} else {
-			// FIXME implement refresh for a specific ResultParent object.
-			if (resultParent instanceof ResultFolder) {
-				ResultFolder currFolder = (ResultFolder) resultParent;
+			if (resultParent instanceof ParentNodeFolder) {
+				ParentNodeFolder currFolder = (ParentNodeFolder) resultParent;
 				jcrRefresh(currFolder.getNode());
 				currFolder.forceFullRefresh();
-				resultTreeViewer.refresh(lastSelectedTargetElement);
 			}
+			// FIXME: specific refresh does not work
+			// resultTreeViewer.refresh(currFolder, true);
+			TreePath[] tps = resultTreeViewer.getExpandedTreePaths();
+			resultTreeViewer.setInput(initializeResultTree());
+			resultTreeViewer.setExpandedTreePaths(tps);
 		}
 	}
 
@@ -433,19 +432,24 @@ public class JcrResultTreeView extends ViewPart {
 		// Building conditions
 		IStructuredSelection selection = (IStructuredSelection) resultTreeViewer
 				.getSelection();
-		boolean isMyResultFolder = false;
+		boolean canAddSubfolder = false;
+		boolean isSingleResultNode = false;
 		if (selection.size() == 1) {
 			Object obj = selection.getFirstElement();
 			try {
-				if (obj instanceof ResultFolder
-						&& (((ResultFolder) obj).getNode())
-								.isNodeType(SlcTypes.SLC_RESULT_FOLDER))
-					isMyResultFolder = true;
+				// if (obj instanceof ResultFolder
+				// && (((ResultFolder) obj).getNode())
+				// .isNodeType(SlcTypes.SLC_RESULT_FOLDER))
+				if (isResultFolder)
+					canAddSubfolder = true;
+				else if (obj instanceof SingleResultNode)
+					isSingleResultNode = true;
 				else if (obj instanceof ParentNodeFolder
 						&& (((ParentNodeFolder) obj).getNode().getPath()
 								.startsWith(SlcJcrResultUtils
 										.getMyResultsBasePath(session))))
-					isMyResultFolder = true;
+					canAddSubfolder = true;
+
 			} catch (RepositoryException re) {
 				throw new SlcException(
 						"unexpected error while building condition for context menu",
@@ -457,7 +461,15 @@ public class JcrResultTreeView extends ViewPart {
 				AddResultFolder.DEFAULT_LABEL,
 				ClientUiPlugin.getDefault().getWorkbench().getSharedImages()
 						.getImageDescriptor(ISharedImages.IMG_OBJ_ADD),
-				isMyResultFolder);
+				canAddSubfolder);
+
+		CommandUtils.refreshCommand(menuManager, window, RenameResultFolder.ID,
+				RenameResultFolder.DEFAULT_LABEL,
+				RenameResultFolder.DEFAULT_IMG_DESCRIPTOR, canAddSubfolder);
+
+		CommandUtils.refreshCommand(menuManager, window, RenameResultNode.ID,
+				RenameResultNode.DEFAULT_LABEL,
+				RenameResultNode.DEFAULT_IMG_DESCRIPTOR, isSingleResultNode);
 	}
 
 	/* INNER CLASSES */
@@ -470,25 +482,26 @@ public class JcrResultTreeView extends ViewPart {
 			boolean doIt = false;
 			// only one node at a time for the time being.
 			if (selection.size() == 1) {
-				Object obj = selection.getFirstElement();
-				if (obj instanceof SingleResultNode) {
-					Node tNode = ((SingleResultNode) obj).getNode();
-					try {
-						// if (tNode.getPrimaryNodeType().isNodeType(
-						// SlcTypes.SLC_TEST_RESULT)
-						// && (tNode.getPath()
-						// .startsWith(SlcJcrResultUtils
-						// .getSlcResultsBasePath(session))))
+				try {
+					Object obj = selection.getFirstElement();
+					if (obj instanceof SingleResultNode) {
+						Node tNode = ((SingleResultNode) obj).getNode();
 						if (tNode.getPrimaryNodeType().isNodeType(
-								SlcTypes.SLC_TEST_RESULT))
+								SlcTypes.SLC_TEST_RESULT)) {
 							doIt = true;
-						lastSelectedSourceElementParent = (ResultParent) ((SingleResultNode) obj)
-								.getParent();
-					} catch (RepositoryException re) {
-						throw new SlcException(
-								"unexpected error while validating drag source",
-								re);
+							isResultFolder = false;
+						}
+					} else if (obj instanceof ResultFolder) {
+						Node tNode = ((ResultFolder) obj).getNode();
+						if (tNode.getPrimaryNodeType().isNodeType(
+								SlcTypes.SLC_RESULT_FOLDER)) {
+							doIt = true;
+							isResultFolder = true;
+						}
 					}
+				} catch (RepositoryException re) {
+					throw new SlcException(
+							"unexpected error while validating drag source", re);
 				}
 			}
 			event.doit = doIt;
@@ -498,28 +511,29 @@ public class JcrResultTreeView extends ViewPart {
 			IStructuredSelection selection = (IStructuredSelection) resultTreeViewer
 					.getSelection();
 			Object obj = selection.getFirstElement();
-			if (obj instanceof SingleResultNode) {
-				Node first = ((SingleResultNode) obj).getNode();
-				try {
+			try {
+				Node first;
+				if (obj instanceof SingleResultNode) {
+					first = ((SingleResultNode) obj).getNode();
 					event.data = first.getIdentifier();
-
-				} catch (RepositoryException re) {
-					throw new SlcException(
-							"unexpected error while setting data", re);
+				} else if (obj instanceof ResultFolder) {
+					first = ((ResultFolder) obj).getNode();
+					event.data = first.getIdentifier();
 				}
+			} catch (RepositoryException re) {
+				throw new SlcException("unexpected error while setting data",
+						re);
 			}
 		}
 
 		public void dragFinished(DragSourceEvent event) {
-			// implement here tree refresh in case of a move.
+			// refresh is done via observer
 		}
 	}
 
 	// Implementation of the Drop Listener
 	protected class ViewDropListener extends ViewerDropAdapter {
-
-		private Node currParentNode = null;
-		private boolean copyNode = true;
+		private Node targetParentNode = null;
 
 		public ViewDropListener(Viewer viewer) {
 			super(viewer);
@@ -528,18 +542,18 @@ public class JcrResultTreeView extends ViewPart {
 		@Override
 		public boolean validateDrop(Object target, int operation,
 				TransferData transferType) {
+
 			boolean validDrop = false;
 			try {
 				// We can only drop under myResults
-				Node targetParentNode = null;
+				Node tpNode = null;
 				if (target instanceof ResultFolder) {
-					targetParentNode = ((ResultFolder) target).getNode();
+					tpNode = ((ResultFolder) target).getNode();
 				} else if (target instanceof ParentNodeFolder) {
 					if ((((ParentNodeFolder) target).getNode().getPath()
 							.startsWith(SlcJcrResultUtils
 									.getMyResultsBasePath(session))))
-						targetParentNode = ((ParentNodeFolder) target)
-								.getNode();
+						tpNode = ((ParentNodeFolder) target).getNode();
 				} else if (target instanceof SingleResultNode) {
 					Node currNode = ((SingleResultNode) target).getNode();
 					if (currNode
@@ -548,26 +562,28 @@ public class JcrResultTreeView extends ViewPart {
 							.startsWith(
 									SlcJcrResultUtils
 											.getMyResultsBasePath(session)))
-						targetParentNode = currNode.getParent();
+						tpNode = currNode.getParent();
 				}
-				if (targetParentNode != null) {
-					currParentNode = targetParentNode;
-					validDrop = true;
-					// FIXME
-					lastSelectedTargetElement = (ResultParent) target;
-					lastSelectedTargetElementParent = (ResultParent) ((ResultParent) target)
-							.getParent();
+
+				if (tpNode != null) {
+					// Sanity check : we cannot move a folder to one of its sub
+					// folder
+					boolean doit = true;
+					if (isResultFolder) {
+						Node source = ((ParentNodeFolder) lastSelectedSourceElement)
+								.getNode();
+						String sourcePath = source.getPath();
+						String targetPath = tpNode.getPath();
+						if (targetPath.startsWith(sourcePath))
+							doit = false;
+					}
+					if (doit) {
+						targetParentNode = tpNode;
+						validDrop = true;
+						lastSelectedTargetElement = (ResultParent) target;
+					}
 				}
-				// Check if it's a move or a copy
-				if (validDrop) {
-					String pPath = "";
-					if (lastSelectedSourceElementParent instanceof ResultFolder)
-						pPath = ((ResultFolder) lastSelectedSourceElementParent)
-								.getNode().getPath();
-					if ((pPath.startsWith(SlcJcrResultUtils
-							.getMyResultsBasePath(session))))
-						copyNode = false;
-				}
+
 			} catch (RepositoryException re) {
 				throw new SlcException(
 						"unexpected error while validating drop target", re);
@@ -577,34 +593,56 @@ public class JcrResultTreeView extends ViewPart {
 
 		@Override
 		public boolean performDrop(Object data) {
-
+			// clear selection to prevent unwanted scrolling of the UI
+			resultTreeViewer.setSelection(null);
 			try {
 				Node source = session.getNodeByIdentifier((String) data);
-				if (copyNode) {
-					Node target = currParentNode.addNode(source.getName(),
-							source.getPrimaryNodeType().getName());
-					JcrUtils.copy(source, target);
-					ResultParentUtils.updatePassedStatus(
-							target,
-							target.getNode(SlcNames.SLC_STATUS)
-									.getProperty(SlcNames.SLC_SUCCESS)
-									.getBoolean());
-					target.getSession().save();
-				} else // move only
-				{
-					String sourcePath = source.getPath();
-					String destPath = currParentNode.getPath() + "/"
-							+ source.getName();
-					session.move(sourcePath, destPath);
-					session.save();
-					Node target = session.getNode(destPath);
-					ResultParentUtils.updatePassedStatus(
-							target,
-							target.getNode(SlcNames.SLC_STATUS)
-									.getProperty(SlcNames.SLC_SUCCESS)
-									.getBoolean());
-					session.save();
+
+				// Check is a node with same name already exists at destination
+				String name;
+				if (source.hasProperty(Property.JCR_TITLE))
+					name = source.getProperty(Property.JCR_TITLE).getString();
+				else if (source.hasProperty(SlcNames.SLC_TEST_CASE))
+					name = source.getProperty(SlcNames.SLC_TEST_CASE)
+							.getString();
+				else
+					name = source.getName();
+
+				if (targetParentNode.hasNode(name)) {
+					ConfirmOverwriteWizard wizard = new ConfirmOverwriteWizard(
+							name, targetParentNode);
+					WizardDialog dialog = new WizardDialog(Display.getDefault()
+							.getActiveShell(), wizard);
+					dialog.open();
+
+					if (wizard.overwrite()) {
+						targetParentNode.getNode(name).remove();
+						// session.save();
+					} else
+						name = wizard.newName();
 				}
+
+				Node target;
+				if (!isActionUnderMyResult) {// Copy
+					target = targetParentNode.addNode(name, source
+							.getPrimaryNodeType().getName());
+					JcrUtils.copy(source, target);
+				} else {// move
+					String sourcePath = source.getPath();
+					String destPath = targetParentNode.getPath() + "/" + name;
+					session.move(sourcePath, destPath);
+					// session.save();
+					target = session.getNode(destPath);
+				}
+				if (!target.isNodeType(NodeType.MIX_TITLE))
+					target.addMixin(NodeType.MIX_TITLE);
+				target.setProperty(Property.JCR_TITLE, name);
+				ResultParentUtils
+						.updatePassedStatus(target,
+								target.getNode(SlcNames.SLC_STATUS)
+										.getProperty(SlcNames.SLC_SUCCESS)
+										.getBoolean());
+				session.save();
 			} catch (RepositoryException re) {
 				throw new SlcException(
 						"unexpected error while copying dropped node", re);
@@ -624,57 +662,43 @@ public class JcrResultTreeView extends ViewPart {
 				throws RepositoryException {
 			// unfiltered for the time being
 			return true;
-			// for (Event event : events) {
-			// getLog().debug("Received event " + event);
-			// int eventType = event.getType();
-			// if (eventType == Event.NODE_REMOVED)
-			// ;//return true;
-			// String path = event.getPath();
-			// int index = path.lastIndexOf('/');
-			// String propertyName = path.substring(index + 1);
-			// if (propertyName.equals(SlcNames.SLC_COMPLETED)
-			// || propertyName.equals(SlcNames.SLC_UUID)) {
-			// ;//return true;
-			// }
-			// }
-			// return false;
 		}
 
 		protected void onEventInUiThread(List<Event> events)
 				throws RepositoryException {
+			int i = 0;
 
 			for (Event event : events) {
-				getLog().debug("Received event " + event);
+				i++;
+				// log.debug("Received event " + event);
 				int eventType = event.getType();
 				if (eventType == Event.NODE_REMOVED) {
 					String path = event.getPath();
-					int index = path.lastIndexOf('/');
-					String parPath = path.substring(0, index + 1);
+					String parPath = JcrUtils.parentPath(path);
 					if (session.nodeExists(parPath)) {
 						Node currNode = session.getNode(parPath);
 						if (currNode.isNodeType(NodeType.NT_UNSTRUCTURED)) {
-							refresh(null);
-							jcrRefresh(currNode);
-							resultTreeViewer.refresh(true);
-							resultTreeViewer.expandToLevel(
-									lastSelectedTargetElementParent, 1);
-
+							// jcrRefresh(currNode);
+							refresh(lastSelectedSourceElementParent);
 						}
 					}
 				} else if (eventType == Event.NODE_ADDED) {
+					// refresh(lastSelectedTargetElement);
 					String path = event.getPath();
 					if (session.nodeExists(path)) {
 						Node currNode = session.getNode(path);
-						if (currNode.isNodeType(SlcTypes.SLC_DIFF_RESULT)
+						if (currNode.isNodeType(SlcTypes.SLC_TEST_RESULT)
 								|| currNode
 										.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
-							refresh(null);
-							resultTreeViewer.expandToLevel(
-									lastSelectedTargetElement, 1);
+							refresh(lastSelectedTargetElement);
+							// resultTreeViewer.expandToLevel(
+							// lastSelectedTargetElement, 1);
 						}
 					}
 				}
 			}
+			if (log.isDebugEnabled())
+				log.debug("treated events: " + i);
 		}
 	}
 
@@ -700,6 +724,45 @@ public class JcrResultTreeView extends ViewPart {
 			} catch (RepositoryException e) {
 				throw new ArgeoException("Cannot get element for "
 						+ inputElement, e);
+			}
+		}
+	}
+
+	class MySelectionChangedListener implements ISelectionChangedListener {
+
+		public void selectionChanged(SelectionChangedEvent event) {
+			if (!event.getSelection().isEmpty()) {
+				IStructuredSelection sel = (IStructuredSelection) event
+						.getSelection();
+				ResultParent firstItem = (ResultParent) sel.getFirstElement();
+				if (firstItem instanceof SingleResultNode)
+					propertiesViewer.setInput(((SingleResultNode) firstItem)
+							.getNode());
+				else
+					propertiesViewer.setInput(null);
+				// update cache for Drag & drop
+				lastSelectedTargetElement = firstItem;
+				lastSelectedSourceElement = firstItem;
+				lastSelectedSourceElementParent = (ResultParent) firstItem
+						.getParent();
+				String pPath = "";
+				try {
+
+					if (firstItem instanceof ParentNodeFolder)
+						pPath = ((ParentNodeFolder) firstItem).getNode()
+								.getPath();
+					else if (firstItem instanceof SingleResultNode)
+						pPath = ((SingleResultNode) firstItem).getNode()
+								.getPath();
+				} catch (RepositoryException e) {
+					throw new SlcException(
+							"Unexpected error while checking parent UI tree", e);
+				}
+				if ((pPath.startsWith(SlcJcrResultUtils
+						.getMyResultsBasePath(session))))
+					isActionUnderMyResult = true;
+				else
+					isActionUnderMyResult = false;
 			}
 		}
 	}

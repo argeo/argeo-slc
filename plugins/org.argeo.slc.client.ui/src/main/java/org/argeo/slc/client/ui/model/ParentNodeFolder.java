@@ -20,18 +20,28 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 
 /**
- * UI Tree component that wrap a node of type NT_UNSTRUCTURED. list either
- * result folders, other folders and/or a list of results. keeps a reference to
- * its parent.
+ * UI Tree component that wrap a node of type NT_UNSTRUCTURED.
+ * 
+ * It is used for
+ * <ul>
+ * <li>automatically generated tree structure to store results (typically
+ * Year/Month/Day...)</li>
+ * <li>parent node for user defined tree structure (typically My Results node)</li>
+ * </ul>
+ * It thus lists either result folders, other folders and/or a list of results
+ * and keeps a reference to its parent.
  */
 public class ParentNodeFolder extends ResultParent {
-
+	private final static Log log = LogFactory.getLog(ParentNodeFolder.class);
+	
 	private Node node = null;
 
 	/**
@@ -65,13 +75,17 @@ public class ParentNodeFolder extends ResultParent {
 					ResultFolder rf = new ResultFolder(this, currNode,
 							currNode.getName());
 					addChild(rf);
+				} else if (currNode.isNodeType(SlcTypes.SLC_CHECK)) {
+					// FIXME : manually skip node types that are not to be
+					// displayed
+					// Do nothing
 				} else if (currNode.isNodeType(NodeType.NT_UNSTRUCTURED))
 					addChild(new ParentNodeFolder(this, currNode,
 							currNode.getName()));
 			}
 		} catch (RepositoryException re) {
 			throw new SlcException(
-					"Unexpected error while initializing simple node folder : "
+					"Unexpected error while initializing ParentNodeFolder : "
 							+ getName(), re);
 		}
 	}

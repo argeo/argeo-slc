@@ -44,6 +44,16 @@
 	    	name="Add result folder">
 	    </command>
 	    <command
+	        defaultHandler="org.argeo.slc.client.ui.commands.RenameResultFolder"
+	        id="org.argeo.slc.client.ui.renameResultFolder"
+	    	name="Rename folder">
+	    </command>
+	    <command
+	        defaultHandler="org.argeo.slc.client.ui.commands.RenameResultNode"
+	        id="org.argeo.slc.client.ui.renameResultNode"
+	    	name="Rename result">
+	    </command>
+	    <command
 	        defaultHandler="org.argeo.slc.client.ui.commands.RefreshJcrResultTreeView"
 	        id="org.argeo.slc.client.ui.refreshJcrResultTreeView"
 	    	name="Refresh">

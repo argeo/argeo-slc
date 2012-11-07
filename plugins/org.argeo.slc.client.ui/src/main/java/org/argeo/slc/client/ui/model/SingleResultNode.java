@@ -49,9 +49,15 @@ public class SingleResultNode extends ResultParent implements
 
 	public boolean refreshPassedStatus() {
 		try {
-			Node check = node.getNode(SlcNames.SLC_STATUS);
-			passed = check.getProperty(SlcNames.SLC_SUCCESS).getBoolean();
-			return passed;
+			Node check;
+			if (node.hasNode(SlcNames.SLC_STATUS)) {
+				check = node.getNode(SlcNames.SLC_STATUS);
+				passed = check.getProperty(SlcNames.SLC_SUCCESS).getBoolean();
+				return passed;
+			} else
+				// Happens only if the UI triggers a refresh while the execution
+				// is in progress and the corresponding node is being built
+				return false;
 		} catch (RepositoryException re) {
 			throw new SlcException(
 					"Unexpected error while checking result status", re);

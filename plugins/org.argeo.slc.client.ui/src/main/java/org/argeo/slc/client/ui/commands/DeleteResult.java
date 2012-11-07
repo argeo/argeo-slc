@@ -55,7 +55,6 @@ public class DeleteResult extends AbstractHandler {
 		Iterator<?> lst = ((IStructuredSelection) selection).iterator();
 		while (lst.hasNext()) {
 			Object obj = lst.next();
-
 			if (obj instanceof ResultParent) {
 				ResultParent rp = ((ResultParent) obj);
 				buf.append(rp.getName()).append(", ");

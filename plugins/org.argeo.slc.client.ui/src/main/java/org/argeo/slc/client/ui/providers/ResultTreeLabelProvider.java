@@ -1,6 +1,12 @@
 package org.argeo.slc.client.ui.providers;
 
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NodeType;
+
 import org.argeo.eclipse.ui.TreeParent;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.SlcUiConstants;
 import org.argeo.slc.client.ui.model.ResultParent;
@@ -15,6 +21,16 @@ public class ResultTreeLabelProvider extends LabelProvider {
 
 	@Override
 	public String getText(Object element) {
+		if (element instanceof SingleResultNode) {
+			Node node = ((SingleResultNode) element).getNode();
+			try {
+				if (node.isNodeType(NodeType.MIX_TITLE))
+					return node.getProperty(Property.JCR_TITLE).getString();
+			} catch (RepositoryException e) {
+				throw new SlcException("Unexpected error while getting "
+						+ "custom result label", e);
+			}
+		}
 		return ((TreeParent) element).getName();
 	}
 
@@ -27,7 +43,8 @@ public class ResultTreeLabelProvider extends LabelProvider {
 			return SlcImages.PROCESS_COMPLETED;
 		} else if (obj instanceof ResultParent) {
 			ResultParent rParent = (ResultParent) obj;
-			if (SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL.equals(rParent.getName()))
+			if (SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL.equals(rParent
+					.getName()))
 				return SlcImages.MY_RESULTS_FOLDER;
 			else
 				return SlcImages.FOLDER;

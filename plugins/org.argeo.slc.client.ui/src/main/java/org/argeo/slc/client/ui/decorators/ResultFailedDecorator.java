@@ -81,7 +81,7 @@ public class ResultFailedDecorator extends LabelProvider implements
 							.getTime());
 			} catch (RepositoryException re) {
 				throw new SlcException(
-						"Unexpected defining text decoration for result", re);
+						"Unexpected error defining text decoration for result", re);
 			}
 			return label + " [" + decoration + "]";
 		} else

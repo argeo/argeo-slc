@@ -38,7 +38,7 @@ public class ResultParentUtils {
 		// Comparator<SingleResultNode> second = Collections.reverseOrder();
 		Collections.sort(results);
 
-		Object[] orderedChildren = new Object[children.length];
+		Object[] orderedChildren = new Object[folders.size() + results.size()];
 		int i = 0;
 		Iterator<ResultFolder> it = folders.iterator();
 		while (it.hasNext()) {

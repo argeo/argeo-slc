@@ -27,6 +27,7 @@ public class SlcImages {
 	public final static Image MODULE_STOPPED = img("icons/module_stopped.gif");
 	public final static Image FOLDER = img("icons/folder.gif");
 	public final static Image MY_RESULTS_FOLDER = img("icons/myResult.png");
+	public final static Image RENAME = img("icons/rename.png");
 	public final static Image FLOW = img("icons/flow.png");
 	public final static Image PROCESSES = img("icons/processes.gif");
 	public final static Image PASSED = img("icons/passed.gif");
