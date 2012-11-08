@@ -5,6 +5,7 @@ if [ $1 = "1" ];then
 	/bin/id $APP 2>/dev/null
 	if [ $? -ne 0 ];then
 		# create application user (EL6)
+		echo Create user $APP...
 		useradd --system --home-dir /var/lib/$APP --shell /sbin/nologin --user-group --create-home $APP
 	fi
 	
