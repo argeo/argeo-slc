@@ -2,9 +2,12 @@ package org.argeo.slc.client.ui.wizards;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
+import org.argeo.slc.client.ui.SlcUiConstants;
+import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -34,6 +37,7 @@ public class ConfirmOverwriteWizard extends Wizard {
 	private Node targetParentNode;
 
 	private String newName;
+	private String parentRelPath;
 	private boolean overwrite;
 
 	public ConfirmOverwriteWizard(String sourceNodeName, Node targetParentNode) {
@@ -72,6 +76,7 @@ public class ConfirmOverwriteWizard extends Wizard {
 			if (overwriteBtn.getSelection())
 				doFinish = MessageDialog.openConfirm(Display.getDefault()
 						.getActiveShell(), "CAUTION", "All data contained in ["
+						+ (parentRelPath !=null?parentRelPath:"")
 						+ sourceNodeName
 						+ "] are about to be definitively destroyed. \n "
 						+ "Are you sure you want to proceed ?");
@@ -90,8 +95,30 @@ public class ConfirmOverwriteWizard extends Wizard {
 
 		public MyPage() {
 			super("");
-			setTitle("An object with same name (" + sourceNodeName
-					+ ") already exists");
+			String msg = "An object with same name (" + sourceNodeName
+					+ ") already exists at chosen target path";
+
+			// Add target rel path to the message
+			Session session;
+			String relPath;
+			try {
+				session = targetParentNode.getSession();
+				relPath = targetParentNode.getPath();
+				String basePath = SlcJcrResultUtils
+						.getMyResultsBasePath(session);
+				if (relPath.startsWith(basePath))
+					relPath = relPath.substring(basePath.length());
+				// FIXME currently add the default base label
+				parentRelPath = SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL + "/"
+						+ relPath;
+			} catch (RepositoryException e) {
+				throw new SlcException("Unexpected error while defining "
+						+ "target parent node rel path", e);
+			}
+			msg = msg + (parentRelPath == null ? "." : ": \n" + parentRelPath);
+
+			// Set Title
+			setTitle(msg);
 		}
 
 		public void createControl(Composite parent) {

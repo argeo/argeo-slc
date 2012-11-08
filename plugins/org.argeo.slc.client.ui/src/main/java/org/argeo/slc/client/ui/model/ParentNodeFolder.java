@@ -20,8 +20,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.argeo.slc.jcr.SlcNames;
@@ -40,8 +38,8 @@ import org.argeo.slc.jcr.SlcTypes;
  * and keeps a reference to its parent.
  */
 public class ParentNodeFolder extends ResultParent {
-	private final static Log log = LogFactory.getLog(ParentNodeFolder.class);
-	
+	// private final static Log log = LogFactory.getLog(ParentNodeFolder.class);
+
 	private Node node = null;
 
 	/**

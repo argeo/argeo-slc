@@ -1,5 +1,6 @@
 package org.argeo.slc.client.ui.views;
 
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -615,7 +616,9 @@ public class JcrResultTreeView extends ViewPart {
 							name, targetParentNode);
 					WizardDialog dialog = new WizardDialog(Display.getDefault()
 							.getActiveShell(), wizard);
-					dialog.open();
+					
+					if (dialog.open() == WizardDialog.CANCEL)
+						return true;
 
 					if (wizard.overwrite()) {
 						targetParentNode.getNode(name).remove();
