@@ -141,6 +141,19 @@ public class JcrResultTreeView extends ViewPart {
 
 		sashForm.setWeights(getWeights());
 
+		try {
+			ObservationManager observationManager = session.getWorkspace()
+					.getObservationManager();
+			resultsObserver = new ResultObserver(resultTreeViewer.getTree()
+					.getDisplay());
+			observationManager.addEventListener(resultsObserver,
+					Event.NODE_MOVED | Event.NODE_ADDED | Event.NODE_REMOVED,
+					UserJcrUtils.getUserHome(session).getPath(), true, null,
+					observedNodeTypes, false);
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot register listeners", e);
+		}
+
 		// Refresh the view to initialize it
 		refresh(null);
 	}
@@ -287,6 +300,33 @@ public class JcrResultTreeView extends ViewPart {
 	}
 
 	/**
+	 * refreshes the passed resultParent and its corresponding subtree. It
+	 * refreshes the whole viewer if null is passed.
+	 * 
+	 * @param ResultParent
+	 * 
+	 */
+	public void refresh(ResultParent resultParent) {
+		if (log.isDebugEnabled())
+			log.debug("Refreshing '" + resultParent + "'...");
+		// Thread.dumpStack();
+		if (resultParent == null) {
+			resultTreeViewer.setInput(initializeResultTree());
+		} else {
+			if (resultParent instanceof ParentNodeFolder) {
+				ParentNodeFolder currFolder = (ParentNodeFolder) resultParent;
+				jcrRefresh(currFolder.getNode());
+				currFolder.forceFullRefresh();
+			}
+			// FIXME: specific refresh does not work
+			// resultTreeViewer.refresh(currFolder, true);
+			TreePath[] tps = resultTreeViewer.getExpandedTreePaths();
+			resultTreeViewer.setInput(initializeResultTree());
+			resultTreeViewer.setExpandedTreePaths(tps);
+		}
+	}
+
+	/**
 	 * refreshes the passed node and its corresponding subtree.
 	 * 
 	 * @param node
@@ -294,6 +334,8 @@ public class JcrResultTreeView extends ViewPart {
 	 * 
 	 */
 	public boolean jcrRefresh(Node node) {
+		if (log.isDebugEnabled())
+			log.debug(" JCR refreshing " + node + "...");
 		boolean isPassed = true;
 		try {
 			if (node.isNodeType(SlcTypes.SLC_TEST_RESULT)) {
@@ -321,46 +363,6 @@ public class JcrResultTreeView extends ViewPart {
 			throw new SlcException("Cannot register listeners", e);
 		}
 		return isPassed;
-	}
-
-	/**
-	 * refreshes the passed resultParent and its corresponding subtree. It
-	 * refreshes the whole viewer if null is passed.
-	 * 
-	 * @param ResultParent
-	 * 
-	 */
-	public void refresh(ResultParent resultParent) {
-		if (resultParent == null) {
-			resultTreeViewer.setInput(initializeResultTree());
-			if (resultsObserver == null) {
-				try {
-					ObservationManager observationManager = session
-							.getWorkspace().getObservationManager();
-					resultsObserver = new ResultObserver(resultTreeViewer
-							.getTree().getDisplay());
-					observationManager.addEventListener(resultsObserver,
-							Event.NODE_MOVED | Event.NODE_ADDED
-									| Event.NODE_REMOVED, UserJcrUtils
-									.getUserHome(session).getPath(), true,
-							null, observedNodeTypes, false);
-				} catch (RepositoryException e) {
-					throw new SlcException("Cannot register listeners", e);
-				}
-			}
-
-		} else {
-			if (resultParent instanceof ParentNodeFolder) {
-				ParentNodeFolder currFolder = (ParentNodeFolder) resultParent;
-				jcrRefresh(currFolder.getNode());
-				currFolder.forceFullRefresh();
-			}
-			// FIXME: specific refresh does not work
-			// resultTreeViewer.refresh(currFolder, true);
-			TreePath[] tps = resultTreeViewer.getExpandedTreePaths();
-			resultTreeViewer.setInput(initializeResultTree());
-			resultTreeViewer.setExpandedTreePaths(tps);
-		}
 	}
 
 	private ResultParent[] initializeResultTree() {
@@ -670,6 +672,7 @@ public class JcrResultTreeView extends ViewPart {
 
 			for (Event event : events) {
 				i++;
+				// if (log.isDebugEnabled())
 				// log.debug("Received event " + event);
 				int eventType = event.getType();
 				if (eventType == Event.NODE_REMOVED) {
