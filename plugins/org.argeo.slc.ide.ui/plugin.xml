@@ -104,4 +104,11 @@
             id="org.argeo.slc.ide.ui.EclipseBootLauncherImage">
       </launchConfigurationTypeImage>
    </extension>
+   
+   <extension point = "org.eclipse.pde.core.targets">
+     <target 
+       id="org.eclipse.pde.core.rcpTarget"
+       name="Managed"
+       definition="targets/managedTarget.target"/>
+   </extension>
 </plugin>

@@ -74,6 +74,8 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			String originalVmArgs = wc.getAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
 			wc.setAttribute(ATTR_DEFAULT_VM_ARGS, originalVmArgs);
+
+			// clear config area by default
 			wc.setAttribute(IPDELauncherConstants.CONFIG_CLEAR_AREA, true);
 		} catch (CoreException e) {
 			Shell shell = Display.getCurrent().getActiveShell();

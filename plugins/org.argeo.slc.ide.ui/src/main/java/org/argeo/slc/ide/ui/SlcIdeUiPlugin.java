@@ -11,6 +11,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.eclipse.pde.core.plugin.TargetPlatform;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -38,6 +39,9 @@ public class SlcIdeUiPlugin extends AbstractUIPlugin {
 		plugin = this;
 		DebugPlugin.getDefault()
 				.addDebugEventListener(new DebugEventListener());
+
+		String location = TargetPlatform.getLocation();
+		System.out.println(location);
 	}
 
 	@Override
