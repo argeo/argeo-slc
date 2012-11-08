@@ -90,7 +90,7 @@ public class SlcJcrUtils implements SlcNames {
 				+ JcrUtils.dateAsPath(now, true) + uuid;
 	}
 
-	/** GEt the base for the user processeses. */
+	/** Get the base for the user processi. */
 	public static String getSlcProcessesBasePath(Session session) {
 		try {
 			Node userHome = UserJcrUtils.getUserHome(session);

@@ -44,6 +44,11 @@
 	    	name="Add result folder">
 	    </command>
 	    <command
+        	id="org.argeo.slc.client.ui.deleteItems"
+            defaultHandler="org.argeo.slc.client.ui.commands.DeleteItems"
+            name="Delete selected item(s)">
+    	</command>
+	    <command
 	        defaultHandler="org.argeo.slc.client.ui.commands.RenameResultFolder"
 	        id="org.argeo.slc.client.ui.renameResultFolder"
 	    	name="Rename folder">

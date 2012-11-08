@@ -28,7 +28,6 @@ public abstract class ResultParent extends TreeParent {
 	}
 
 	private boolean isPassed = true;
-	private boolean isDisposed = false;
 
 	protected synchronized void setPassed(boolean isPassed) {
 		this.isPassed = isPassed;
@@ -40,17 +39,15 @@ public abstract class ResultParent extends TreeParent {
 
 	@Override
 	public synchronized boolean hasChildren() {
-		// sometimes in UI, disposed objects are still called.
-		if (isDisposed)
-			return false;
+		// only initialize when needed : correctly called by the jface framework
 		if (!isLoaded())
 			initialize();
 		return super.hasChildren();
 	}
 
 	public void forceFullRefresh() {
-		if (isDisposed)
-			return;
+		// if (isDisposed)
+		// return;
 		if (hasChildren())
 			clearChildren();
 		initialize();
@@ -58,9 +55,7 @@ public abstract class ResultParent extends TreeParent {
 
 	public synchronized void dispose() {
 		super.dispose();
-		isDisposed = true;
 	}
 
 	protected abstract void initialize();
-
 }

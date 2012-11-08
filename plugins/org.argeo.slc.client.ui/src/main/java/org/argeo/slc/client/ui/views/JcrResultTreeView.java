@@ -1,6 +1,5 @@
 package org.argeo.slc.client.ui.views;
 
-import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -142,6 +141,8 @@ public class JcrResultTreeView extends ViewPart {
 
 		sashForm.setWeights(getWeights());
 
+		resultTreeViewer.setInput(initializeResultTree());
+		// Initialize observer
 		try {
 			ObservationManager observationManager = session.getWorkspace()
 					.getObservationManager();
@@ -154,9 +155,6 @@ public class JcrResultTreeView extends ViewPart {
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot register listeners", e);
 		}
-
-		// Refresh the view to initialize it
-		refresh(null);
 	}
 
 	// The main tree viewer
@@ -308,8 +306,8 @@ public class JcrResultTreeView extends ViewPart {
 	 * 
 	 */
 	public void refresh(ResultParent resultParent) {
-		if (log.isDebugEnabled())
-			log.debug("Refreshing '" + resultParent + "'...");
+		// if (log.isDebugEnabled())
+		// log.debug("Refreshing '" + resultParent + "'...");
 		// Thread.dumpStack();
 		if (resultParent == null) {
 			resultTreeViewer.setInput(initializeResultTree());
@@ -335,8 +333,9 @@ public class JcrResultTreeView extends ViewPart {
 	 * 
 	 */
 	public boolean jcrRefresh(Node node) {
-		if (log.isDebugEnabled())
-			log.debug(" JCR refreshing " + node + "...");
+		// if (log.isDebugEnabled())
+		// log.debug(" JCR refreshing " + node + "...");
+		// Thread.dumpStack();
 		boolean isPassed = true;
 		try {
 			if (node.isNodeType(SlcTypes.SLC_TEST_RESULT)) {
@@ -368,56 +367,54 @@ public class JcrResultTreeView extends ViewPart {
 
 	private ResultParent[] initializeResultTree() {
 		try {
-			if (session.nodeExists(SlcJcrResultUtils
-					.getSlcResultsBasePath(session))) {
-				ResultParent[] roots = new ResultParent[5];
+			// Force initialization of the tree structure if needed
+			SlcJcrResultUtils.getSlcResultsParentNode(session);
+			SlcJcrResultUtils.getMyResultParentNode(session);
+			ResultParent[] roots = new ResultParent[5];
 
-				// My results
-				roots[0] = new ParentNodeFolder(null,
-						SlcJcrResultUtils.getMyResultParentNode(session),
-						SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL);
+			// My results
+			roots[0] = new ParentNodeFolder(null,
+					SlcJcrResultUtils.getMyResultParentNode(session),
+					SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL);
 
-				// today
-				Calendar cal = Calendar.getInstance();
-				String relPath = JcrUtils.dateAsPath(cal);
-				List<String> datePathes = new ArrayList<String>();
-				datePathes.add(relPath);
-				roots[1] = new VirtualFolder(null,
-						ResultParentUtils.getResultsForDates(session,
-								datePathes), "Today");
+			// today
+			Calendar cal = Calendar.getInstance();
+			String relPath = JcrUtils.dateAsPath(cal);
+			List<String> datePathes = new ArrayList<String>();
+			datePathes.add(relPath);
+			roots[1] = new VirtualFolder(null,
+					ResultParentUtils.getResultsForDates(session, datePathes),
+					"Today");
 
-				// Yesterday
-				cal = Calendar.getInstance();
-				cal.add(Calendar.DAY_OF_YEAR, -1);
+			// Yesterday
+			cal = Calendar.getInstance();
+			cal.add(Calendar.DAY_OF_YEAR, -1);
+			relPath = JcrUtils.dateAsPath(cal);
+			datePathes = new ArrayList<String>();
+			datePathes.add(relPath);
+			roots[2] = new VirtualFolder(null,
+					ResultParentUtils.getResultsForDates(session, datePathes),
+					"Yesterday");
+			// Last 7 days
+
+			cal = Calendar.getInstance();
+			datePathes = new ArrayList<String>();
+
+			for (int i = 0; i < 7; i++) {
+				cal.add(Calendar.DAY_OF_YEAR, -i);
 				relPath = JcrUtils.dateAsPath(cal);
-				datePathes = new ArrayList<String>();
 				datePathes.add(relPath);
-				roots[2] = new VirtualFolder(null,
-						ResultParentUtils.getResultsForDates(session,
-								datePathes), "Yesterday");
-				// Last 7 days
+			}
+			roots[3] = new VirtualFolder(null,
+					ResultParentUtils.getResultsForDates(session, datePathes),
+					"Last 7 days");
 
-				cal = Calendar.getInstance();
-				datePathes = new ArrayList<String>();
-
-				for (int i = 0; i < 7; i++) {
-					cal.add(Calendar.DAY_OF_YEAR, -i);
-					relPath = JcrUtils.dateAsPath(cal);
-					datePathes.add(relPath);
-				}
-				roots[3] = new VirtualFolder(null,
-						ResultParentUtils.getResultsForDates(session,
-								datePathes), "Last 7 days");
-
-				// All results
-				Node otherResultsPar = session.getNode(SlcJcrResultUtils
-						.getSlcResultsBasePath(session));
-				roots[4] = new ParentNodeFolder(null, otherResultsPar,
-						"All results");
-				return roots;
-			} else
-				// no test has yet been processed, we leave the viewer blank
-				return null;
+			// All results
+			Node otherResultsPar = session.getNode(SlcJcrResultUtils
+					.getSlcResultsBasePath(session));
+			roots[4] = new ParentNodeFolder(null, otherResultsPar,
+					"All results");
+			return roots;
 		} catch (RepositoryException re) {
 			throw new ArgeoException(
 					"Unexpected error while initializing ResultTree.", re);
@@ -432,27 +429,27 @@ public class JcrResultTreeView extends ViewPart {
 		IWorkbenchWindow window = ClientUiPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
 
-		// Building conditions
 		IStructuredSelection selection = (IStructuredSelection) resultTreeViewer
 				.getSelection();
 		boolean canAddSubfolder = false;
+		boolean canRenamefolder = false;
 		boolean isSingleResultNode = false;
+		// Building conditions
 		if (selection.size() == 1) {
 			Object obj = selection.getFirstElement();
 			try {
-				// if (obj instanceof ResultFolder
-				// && (((ResultFolder) obj).getNode())
-				// .isNodeType(SlcTypes.SLC_RESULT_FOLDER))
-				if (isResultFolder)
-					canAddSubfolder = true;
-				else if (obj instanceof SingleResultNode)
+				if (obj instanceof SingleResultNode)
 					isSingleResultNode = true;
-				else if (obj instanceof ParentNodeFolder
-						&& (((ParentNodeFolder) obj).getNode().getPath()
-								.startsWith(SlcJcrResultUtils
-										.getMyResultsBasePath(session))))
-					canAddSubfolder = true;
-
+				else if (obj instanceof ParentNodeFolder) {
+					Node cNode = ((ParentNodeFolder) obj).getNode();
+					if (cNode.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
+						canAddSubfolder = true;
+						canRenamefolder = true;
+					} else if (cNode
+							.isNodeType(SlcTypes.SLC_MY_RESULT_ROOT_FOLDER)) {
+						canAddSubfolder = true;
+					}
+				}
 			} catch (RepositoryException re) {
 				throw new SlcException(
 						"unexpected error while building condition for context menu",
@@ -468,7 +465,7 @@ public class JcrResultTreeView extends ViewPart {
 
 		CommandUtils.refreshCommand(menuManager, window, RenameResultFolder.ID,
 				RenameResultFolder.DEFAULT_LABEL,
-				RenameResultFolder.DEFAULT_IMG_DESCRIPTOR, canAddSubfolder);
+				RenameResultFolder.DEFAULT_IMG_DESCRIPTOR, canRenamefolder);
 
 		CommandUtils.refreshCommand(menuManager, window, RenameResultNode.ID,
 				RenameResultNode.DEFAULT_LABEL,
@@ -545,39 +542,41 @@ public class JcrResultTreeView extends ViewPart {
 		@Override
 		public boolean validateDrop(Object target, int operation,
 				TransferData transferType) {
-
 			boolean validDrop = false;
 			try {
 				// We can only drop under myResults
 				Node tpNode = null;
-				if (target instanceof ResultFolder) {
+				if (target instanceof SingleResultNode) {
+					Node currNode = ((SingleResultNode) target).getNode();
+					String pPath = currNode.getParent().getPath();
+					if (pPath.startsWith(SlcJcrResultUtils
+							.getMyResultsBasePath(session)))
+						tpNode = currNode.getParent();
+				} else if (target instanceof ResultFolder) {
 					tpNode = ((ResultFolder) target).getNode();
 				} else if (target instanceof ParentNodeFolder) {
-					if ((((ParentNodeFolder) target).getNode().getPath()
-							.startsWith(SlcJcrResultUtils
-									.getMyResultsBasePath(session))))
+					Node node = ((ParentNodeFolder) target).getNode();
+					if (node.isNodeType(SlcTypes.SLC_MY_RESULT_ROOT_FOLDER))
 						tpNode = ((ParentNodeFolder) target).getNode();
-				} else if (target instanceof SingleResultNode) {
-					Node currNode = ((SingleResultNode) target).getNode();
-					if (currNode
-							.getParent()
-							.getPath()
-							.startsWith(
-									SlcJcrResultUtils
-											.getMyResultsBasePath(session)))
-						tpNode = currNode.getParent();
 				}
 
 				if (tpNode != null) {
 					// Sanity check : we cannot move a folder to one of its sub
+					// folder or neither move an object in the same parent
 					// folder
 					boolean doit = true;
+					Node source = null;
 					if (isResultFolder) {
-						Node source = ((ParentNodeFolder) lastSelectedSourceElement)
+						source = ((ParentNodeFolder) lastSelectedSourceElement)
 								.getNode();
-						String sourcePath = source.getPath();
-						String targetPath = tpNode.getPath();
-						if (targetPath.startsWith(sourcePath))
+						if (tpNode.getPath().startsWith(source.getPath()))
+							doit = false;
+					} else if (lastSelectedSourceElement instanceof SingleResultNode) {
+						source = ((SingleResultNode) lastSelectedSourceElement)
+								.getNode();
+						String sourceParentPath = JcrUtils.parentPath(source
+								.getPath());
+						if (tpNode.getPath().equals(sourceParentPath))
 							doit = false;
 					}
 					if (doit) {
@@ -586,7 +585,6 @@ public class JcrResultTreeView extends ViewPart {
 						lastSelectedTargetElement = (ResultParent) target;
 					}
 				}
-
 			} catch (RepositoryException re) {
 				throw new SlcException(
 						"unexpected error while validating drop target", re);
@@ -616,7 +614,7 @@ public class JcrResultTreeView extends ViewPart {
 							name, targetParentNode);
 					WizardDialog dialog = new WizardDialog(Display.getDefault()
 							.getActiveShell(), wizard);
-					
+
 					if (dialog.open() == WizardDialog.CANCEL)
 						return true;
 
@@ -671,40 +669,43 @@ public class JcrResultTreeView extends ViewPart {
 
 		protected void onEventInUiThread(List<Event> events)
 				throws RepositoryException {
-			int i = 0;
+			refresh(lastSelectedSourceElementParent);
 
-			for (Event event : events) {
-				i++;
-				// if (log.isDebugEnabled())
-				// log.debug("Received event " + event);
-				int eventType = event.getType();
-				if (eventType == Event.NODE_REMOVED) {
-					String path = event.getPath();
-					String parPath = JcrUtils.parentPath(path);
-					if (session.nodeExists(parPath)) {
-						Node currNode = session.getNode(parPath);
-						if (currNode.isNodeType(NodeType.NT_UNSTRUCTURED)) {
-							// jcrRefresh(currNode);
-							refresh(lastSelectedSourceElementParent);
-						}
-					}
-				} else if (eventType == Event.NODE_ADDED) {
-					// refresh(lastSelectedTargetElement);
-					String path = event.getPath();
-					if (session.nodeExists(path)) {
-						Node currNode = session.getNode(path);
-						if (currNode.isNodeType(SlcTypes.SLC_TEST_RESULT)
-								|| currNode
-										.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
-							refresh(lastSelectedTargetElement);
-							// resultTreeViewer.expandToLevel(
-							// lastSelectedTargetElement, 1);
-						}
-					}
-				}
-			}
-			if (log.isDebugEnabled())
-				log.debug("treated events: " + i);
+			// boolean wasRemoved = false;
+			// boolean wasAdded = false;
+			//
+			// for (Event event : events) {
+			// // if (log.isDebugEnabled())
+			// // log.debug("Received event " + event);
+			// int eventType = event.getType();
+			// if (eventType == Event.NODE_REMOVED) {
+			// String path = event.getPath();
+			// String parPath = JcrUtils.parentPath(path);
+			// if (session.nodeExists(parPath)) {
+			// Node currNode = session.getNode(parPath);
+			// if (currNode.isNodeType(NodeType.NT_UNSTRUCTURED)) {
+			// // jcrRefresh(currNode);
+			// wasRemoved = true;
+			// }
+			// }
+			// } else if (eventType == Event.NODE_ADDED) {
+			// // refresh(lastSelectedTargetElement);
+			// String path = event.getPath();
+			// if (session.nodeExists(path)) {
+			// Node currNode = session.getNode(path);
+			// if (currNode.isNodeType(SlcTypes.SLC_TEST_RESULT)
+			// || currNode
+			// .isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
+			// // refresh(lastSelectedTargetElement);
+			// wasAdded = true;
+			// // resultTreeViewer.expandToLevel(
+			// // lastSelectedTargetElement, 1);
+			// }
+			// }
+			// }
+			// }
+			// if (wasRemoved || wasAdded)
+			// refresh(lastSelectedSourceElementParent);
 		}
 	}
 

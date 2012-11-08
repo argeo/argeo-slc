@@ -53,7 +53,7 @@ public class ResultParentUtils {
 		return orderedChildren;
 	}
 
-	public static ResultParent[] getResultsForDates(Session session,
+	public static List<Node> getResultsForDates(Session session,
 			List<String> dateRelPathes) {
 		if (dateRelPathes == null || dateRelPathes.size() == 0)
 			throw new SlcException("Specify at least one correct date as Path");
@@ -84,18 +84,11 @@ public class ResultParentUtils {
 			QueryResult result = q.execute();
 
 			NodeIterator ni = result.getNodes();
-			ResultParent[] results = new ResultParent[(int) ni.getSize()];
-			int i = 0;
+			List<Node> nodes = new ArrayList<Node>();
 			while (ni.hasNext()) {
-				Node currNode = ni.nextNode();
-				SingleResultNode srn = new SingleResultNode(null, currNode,
-						currNode.getProperty(SlcNames.SLC_TEST_CASE)
-								.getString());
-
-				results[i] = srn;
-				i++;
+				nodes.add(ni.nextNode());
 			}
-			return results;
+			return nodes;
 		} catch (RepositoryException re) {
 			throw new SlcException(
 					"Unexpected error while getting Results for given date", re);
@@ -194,7 +187,8 @@ public class ResultParentUtils {
 					return;
 			}
 		} catch (RepositoryException e) {
-			throw new SlcException("Unexpected error while updating status on removal", e);
+			throw new SlcException(
+					"Unexpected error while updating status on removal", e);
 		}
 	}
 

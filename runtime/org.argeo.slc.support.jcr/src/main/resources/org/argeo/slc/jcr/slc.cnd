@@ -110,6 +110,12 @@ mixin
 + * (slc:resultFolder) *
 + * (slc:testResult) *
 
+// base node for user defined and managed result tree
+// simplify UI management
+[slc:myResultRootFolder] > nt:unstructured
++ * (slc:resultFolder) *
++ * (slc:testResult) *
+
 [slc:check] > nt:unstructured
 // true for PASSED, false for FAILED or ERROR
 - slc:success (BOOLEAN) ! m

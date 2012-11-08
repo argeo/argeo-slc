@@ -24,7 +24,8 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.eclipse.ui.ErrorFeedback;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.model.ResultFolder;
 import org.argeo.slc.client.ui.model.ResultParent;
 import org.argeo.slc.client.ui.model.ResultParentUtils;
@@ -37,14 +38,17 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Deletes one or many results */
-public class DeleteResult extends AbstractHandler {
-	/* DEPENDENCY INJECTION */
-	private Session session;
+public class DeleteItems extends AbstractHandler {
+	public final static String ID = ClientUiPlugin.ID + ".deleteItems";
+	public final static ImageDescriptor DEFAULT_IMG_DESCRIPTOR = ClientUiPlugin
+			.getImageDescriptor("icons/removeAll.png");
+	public final static String DEFAULT_LABEL = "Delete selected item(s)";
 
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		final ISelection selection = HandlerUtil
@@ -59,7 +63,6 @@ public class DeleteResult extends AbstractHandler {
 				ResultParent rp = ((ResultParent) obj);
 				buf.append(rp.getName()).append(", ");
 			}
-
 		}
 
 		String msg = "Nothing to delete";
@@ -79,40 +82,36 @@ public class DeleteResult extends AbstractHandler {
 			protected IStatus run(IProgressMonitor monitor) {
 				if (selection != null
 						&& selection instanceof IStructuredSelection) {
-					List<String> nodes = new ArrayList<String>();
+					List<Node> nodes = new ArrayList<Node>();
 					Iterator<?> it = ((IStructuredSelection) selection)
 							.iterator();
 					Object obj = null;
-					try {
-						while (it.hasNext()) {
-							obj = it.next();
-							if (obj instanceof ResultFolder) {
-								Node node = ((ResultFolder) obj).getNode();
-								nodes.add(node.getPath());
-							} else if (obj instanceof SingleResultNode) {
-								Node node = ((SingleResultNode) obj).getNode();
-								nodes.add(node.getPath());
-							}
+					while (it.hasNext()) {
+						obj = it.next();
+						if (obj instanceof ResultFolder) {
+							Node node = ((ResultFolder) obj).getNode();
+							nodes.add(node);
+						} else if (obj instanceof SingleResultNode) {
+							Node node = ((SingleResultNode) obj).getNode();
+							nodes.add(node);
 						}
-					} catch (RepositoryException e) {
-						ErrorFeedback.show("Cannot list nodes", e);
-						return null;
 					}
-					monitor.beginTask("Delete results", nodes.size());
-					Node node = null;
 					try {
-						for (final String path : nodes) {
-							if (session.itemExists(path)) {
-								node = session.getNode(path);
+						if (!nodes.isEmpty()) {
+							Session session = nodes.get(0).getSession();
+							monitor.beginTask("Delete results", nodes.size());
+							for (Node node : nodes) {
 								Node parent = node.getParent();
 								node.remove();
 								ResultParentUtils.updateStatusOnRemoval(parent);
+								monitor.worked(1);
 							}
-							monitor.worked(1);
+							session.save();
 						}
-						session.save();
+
 					} catch (RepositoryException e) {
-						ErrorFeedback.show("Cannot delete node " + node, e);
+						throw new SlcException(
+								"Unexpected error while deleteting node(s)", e);
 					}
 					monitor.done();
 				}
@@ -123,10 +122,5 @@ public class DeleteResult extends AbstractHandler {
 		job.setUser(true);
 		job.schedule();
 		return null;
-	}
-
-	/* DEPENDENCY INJECTION */
-	public void setSession(Session session) {
-		this.session = session;
 	}
 }

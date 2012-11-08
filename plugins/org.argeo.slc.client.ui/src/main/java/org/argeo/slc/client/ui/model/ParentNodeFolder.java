@@ -21,12 +21,12 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcJcrResultUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 
 /**
- * UI Tree component that wrap a node of type NT_UNSTRUCTURED.
+ * UI Tree component that wrap a node of type NT_UNSTRUCTURED or base node for
+ * UI specific, user defined tree structure of type SLC_MY_RESULTS_ROOT_FOLDER.
  * 
  * It is used for
  * <ul>
@@ -104,8 +104,7 @@ public class ParentNodeFolder extends ResultParent {
 	public synchronized Object[] getChildren() {
 		Object[] children = super.getChildren();
 		try {
-			if (node.getPath().equals(
-					SlcJcrResultUtils.getMyResultsBasePath(node.getSession())))
+			if (node.isNodeType(SlcTypes.SLC_MY_RESULT_ROOT_FOLDER))
 				return ResultParentUtils.orderChildren(children);
 			else
 				return children;
