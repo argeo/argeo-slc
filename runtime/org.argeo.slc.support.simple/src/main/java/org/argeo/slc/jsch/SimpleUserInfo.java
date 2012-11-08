@@ -26,6 +26,7 @@ import org.argeo.slc.SlcException;
 
 import com.jcraft.jsch.UserInfo;
 
+/** Basic implementation of user info. */
 public class SimpleUserInfo implements UserInfo {
 	private Boolean permissive = true;
 	private Boolean verbose = false;

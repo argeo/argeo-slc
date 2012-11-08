@@ -29,7 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-
+/** Retrieves a password or a passphrase using standard Swing */
 public class SwingUserInfo extends SimpleUserInfo {
 
 	private Boolean alwaysPrompt = false;
