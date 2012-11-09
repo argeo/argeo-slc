@@ -1,7 +1,5 @@
 package org.argeo.slc.ide.ui.launch.osgi;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.EnvironmentTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
@@ -19,27 +17,27 @@ public class OsgiBootLauncherTabGroup extends OSGiLauncherTabGroup {
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 				new OsgiBootMainTab(false),
 				new BundlesTab() {
-					private boolean activating = false;
-
-					@Override
-					public void performApply(
-							ILaunchConfigurationWorkingCopy config) {
-						super.performApply(config);
-						if (activating) {
-							try {
-								config.doSave();
-							} catch (CoreException e) {
-								e.printStackTrace();
-							}
-							activating = false;
-						}
-					}
-
-					@Override
-					public void activated(
-							ILaunchConfigurationWorkingCopy workingCopy) {
-						activating = true;
-					}
+//					private boolean activating = false;
+//
+//					@Override
+//					public void performApply(
+//							ILaunchConfigurationWorkingCopy config) {
+//						super.performApply(config);
+//						if (activating) {
+//							try {
+//								config.doSave();
+//							} catch (CoreException e) {
+//								e.printStackTrace();
+//							}
+//							activating = false;
+//						}
+//					}
+//
+//					@Override
+//					public void activated(
+//							ILaunchConfigurationWorkingCopy workingCopy) {
+//						activating = true;
+//					}
 				}, new OSGiSettingsTab(), new EnvironmentTab(),
 				new TracingTab(), new CommonTab() };
 		setTabs(tabs);

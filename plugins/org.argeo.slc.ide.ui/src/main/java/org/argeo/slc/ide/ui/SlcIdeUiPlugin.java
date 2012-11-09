@@ -85,12 +85,11 @@ public class SlcIdeUiPlugin extends AbstractUIPlugin {
 				if (source instanceof IProcess
 						&& event.getKind() == DebugEvent.TERMINATE) {
 					IProcess process = (IProcess) source;
-					if (process == null)
-						continue;
+//					if (process == null)
+//						continue;
 					ILaunch launch = process.getLaunch();
 					if (launch != null)
 						refreshOsgiBootLaunch(launch);
-
 				}
 			}
 		}

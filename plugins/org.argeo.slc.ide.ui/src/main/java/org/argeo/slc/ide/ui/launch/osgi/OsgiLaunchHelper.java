@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.argeo.slc.ide.ui.SlcIdeUiPlugin;
@@ -75,6 +76,10 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
 			wc.setAttribute(ATTR_DEFAULT_VM_ARGS, originalVmArgs);
 
+			// do NOT use custom features (both must be set)
+			wc.setAttribute(IPDELauncherConstants.USE_CUSTOM_FEATURES, false);
+			wc.setAttribute(IPDELauncherConstants.USE_DEFAULT, true);
+
 			// clear config area by default
 			wc.setAttribute(IPDELauncherConstants.CONFIG_CLEAR_AREA, true);
 		} catch (CoreException e) {
@@ -125,7 +130,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			Properties properties = readProperties(propertiesFile);
 
 			// Extract information from the properties file
-			List<String> bundlesToStart = new ArrayList<String>();
+			Map<String, Integer> bundlesToStart = new TreeMap<String, Integer>();
 			Map<String, String> systemPropertiesToAppend = new HashMap<String, String>();
 			String applicationId = interpretProperties(properties,
 					bundlesToStart, systemPropertiesToAppend);
@@ -167,7 +172,8 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	 * UI.
 	 */
 	protected static void updateLaunchConfiguration(
-			ILaunchConfigurationWorkingCopy wc, List<String> bundlesToStart,
+			ILaunchConfigurationWorkingCopy wc,
+			Map<String, Integer> bundlesToStart,
 			Map<String, String> systemPropertiesToAppend, String dataDir,
 			Boolean isEclipse) throws CoreException {
 		// Convert bundle lists
@@ -204,6 +210,10 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 
 		// Update other default information
 		wc.setAttribute(IPDELauncherConstants.DEFAULT_AUTO_START, false);
+
+		// do NOT use custom features (both must be set)
+		wc.setAttribute(IPDELauncherConstants.USE_CUSTOM_FEATURES, false);
+		wc.setAttribute(IPDELauncherConstants.USE_DEFAULT, true);
 
 		// VM arguments (system properties)
 		String defaultVmArgs = wc.getAttribute(
@@ -273,20 +283,24 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	 *         found
 	 */
 	protected static String interpretProperties(Properties properties,
-			List<String> bundlesToStart,
+			Map<String, Integer> bundlesToStart,
 			Map<String, String> systemPropertiesToAppend) {
-		String argeoOsgiStart = properties
-				.getProperty(OsgiLauncherConstants.ARGEO_OSGI_START);
-		if (argeoOsgiStart != null) {
-			StringTokenizer st = new StringTokenizer(argeoOsgiStart, ",");
-			while (st.hasMoreTokens())
-				bundlesToStart.add(st.nextToken());
-		}
+		// String argeoOsgiStart = properties
+		// .getProperty(OsgiLauncherConstants.ARGEO_OSGI_START);
+		// if (argeoOsgiStart != null) {
+		// StringTokenizer st = new StringTokenizer(argeoOsgiStart, ",");
+		// while (st.hasMoreTokens())
+		// bundlesToStart.add(st.nextToken());
+		// }
+
+		computeBundlesToStart(bundlesToStart, properties, null);
 
 		String applicationId = null;
 		propKeys: for (Object keyObj : properties.keySet()) {
 			String key = keyObj.toString();
 			if (OsgiLauncherConstants.ARGEO_OSGI_START.equals(key))
+				continue propKeys;
+			if (key.startsWith(OsgiLauncherConstants.ARGEO_OSGI_START + "."))
 				continue propKeys;
 			else if (OsgiLauncherConstants.ARGEO_OSGI_BUNDLES.equals(key))
 				continue propKeys;
@@ -357,9 +371,10 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	 * Reformat the bundle list in order to reflect which bundles have to be
 	 * started.
 	 */
-	protected static String convertBundleList(List<String> bundlesToStart,
-			String original) {
-		debug("Original bundle list: " + original);
+	protected static String convertBundleList(
+			Map<String, Integer> bundlesToStart, String original) {
+		if (debug)
+			debug("Original bundle list: " + original);
 
 		StringTokenizer stComa = new StringTokenizer(original, ",");
 		// sort by bundle symbolic name
@@ -399,10 +414,14 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			else
 				bufBundles.append(',');
 			boolean modified = false;
-			if (bundlesToStart.contains(bundleId)) {
-				bufBundles.append(bundleId).append('@').append("default:true");
+			if (bundlesToStart.containsKey(bundleId)) {
+				Integer startLevel = bundlesToStart.get(bundleId);
+				String startLevelStr = startLevel != null ? startLevel
+						.toString() : "default";
+				bufBundles.append(bundleId).append('@').append(startLevelStr)
+						.append(":true");
 				modified = true;
-				debug("Will start " + bundleId);
+				debug("Will start " + bundleId + " at level " + startLevelStr);
 			}
 
 			if (!modified)
@@ -448,6 +467,58 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		return props;
 	}
 
+	/** Determines the start levels for the bundles */
+	private static void computeBundlesToStart(
+			Map<String, Integer> bundlesToStart, Properties properties,
+			Integer defaultStartLevel) {
+
+		// default (and previously, only behaviour)
+		appendBundlesToStart(bundlesToStart, defaultStartLevel,
+				properties.getProperty(OsgiLauncherConstants.ARGEO_OSGI_START,
+						""));
+
+		// list argeo.osgi.start.* system properties
+		Iterator<Object> keys = properties.keySet().iterator();
+		final String prefix = OsgiLauncherConstants.ARGEO_OSGI_START + ".";
+		while (keys.hasNext()) {
+			String key = (String) keys.next();
+			if (key.startsWith(prefix)) {
+				Integer startLevel;
+				String suffix = key.substring(prefix.length());
+				String[] tokens = suffix.split("\\.");
+				if (tokens.length > 0 && !tokens[0].trim().equals(""))
+					try {
+						// first token is start level
+						startLevel = new Integer(tokens[0]);
+					} catch (NumberFormatException e) {
+						startLevel = defaultStartLevel;
+					}
+				else
+					startLevel = defaultStartLevel;
+
+				// append bundle names
+				String bundleNames = properties.getProperty(key);
+				appendBundlesToStart(bundlesToStart, startLevel, bundleNames);
+			}
+		}
+	}
+
+	/** Append a comma-separated list of bundles to the start levels. */
+	private static void appendBundlesToStart(
+			Map<String, Integer> bundlesToStart, Integer startLevel, String str) {
+		if (str == null || str.trim().equals(""))
+			return;
+
+		String[] bundleNames = str.split(",");
+		for (int i = 0; i < bundleNames.length; i++) {
+			if (bundleNames[i] != null && !bundleNames[i].trim().equals(""))
+				bundlesToStart.put(bundleNames[i], startLevel);
+		}
+	}
+
+	/*
+	 * HACKED UTILITIES
+	 */
 	// Hacked from
 	// org.eclipse.pde.internal.ui.launcher.LaunchArgumentsHelper.getWorkingDirectory(ILaunchConfiguration)
 	private static File getWorkingDirectory(ILaunchConfiguration configuration)

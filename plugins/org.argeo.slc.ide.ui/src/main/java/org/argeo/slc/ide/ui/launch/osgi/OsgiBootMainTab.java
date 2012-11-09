@@ -33,11 +33,11 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 
 	private Text additionalProgramArgs;
 
-	private final Boolean isEclipse;
+	// private final Boolean isEclipse;
 
 	public OsgiBootMainTab(Boolean isEclipse) {
 		super();
-		this.isEclipse = isEclipse;
+		// this.isEclipse = isEclipse;
 	}
 
 	public void createControl(Composite parent) {
@@ -160,7 +160,7 @@ public class OsgiBootMainTab extends AbstractLaunchConfigurationTab implements
 				addJvmPaths.getSelection());
 		// writeProperties(configuration);
 
-		OsgiLaunchHelper.updateLaunchConfiguration(configuration, isEclipse);
+		// OsgiLaunchHelper.updateLaunchConfiguration(configuration, isEclipse);
 	}
 
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
