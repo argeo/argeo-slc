@@ -370,7 +370,9 @@ public class JcrResultTreeView extends ViewPart {
 			// Force initialization of the tree structure if needed
 			SlcJcrResultUtils.getSlcResultsParentNode(session);
 			SlcJcrResultUtils.getMyResultParentNode(session);
-			ResultParent[] roots = new ResultParent[5];
+			// Remove yesterday and last 7 days virtual folders
+			// ResultParent[] roots = new ResultParent[5];
+			ResultParent[] roots = new ResultParent[3];
 
 			// My results
 			roots[0] = new ParentNodeFolder(null,
@@ -386,33 +388,35 @@ public class JcrResultTreeView extends ViewPart {
 					ResultParentUtils.getResultsForDates(session, datePathes),
 					"Today");
 
-			// Yesterday
-			cal = Calendar.getInstance();
-			cal.add(Calendar.DAY_OF_YEAR, -1);
-			relPath = JcrUtils.dateAsPath(cal);
-			datePathes = new ArrayList<String>();
-			datePathes.add(relPath);
-			roots[2] = new VirtualFolder(null,
-					ResultParentUtils.getResultsForDates(session, datePathes),
-					"Yesterday");
-			// Last 7 days
-
-			cal = Calendar.getInstance();
-			datePathes = new ArrayList<String>();
-
-			for (int i = 0; i < 7; i++) {
-				cal.add(Calendar.DAY_OF_YEAR, -i);
-				relPath = JcrUtils.dateAsPath(cal);
-				datePathes.add(relPath);
-			}
-			roots[3] = new VirtualFolder(null,
-					ResultParentUtils.getResultsForDates(session, datePathes),
-					"Last 7 days");
+			// // Yesterday
+			// cal = Calendar.getInstance();
+			// cal.add(Calendar.DAY_OF_YEAR, -1);
+			// relPath = JcrUtils.dateAsPath(cal);
+			// datePathes = new ArrayList<String>();
+			// datePathes.add(relPath);
+			// roots[2] = new VirtualFolder(null,
+			// ResultParentUtils.getResultsForDates(session, datePathes),
+			// "Yesterday");
+			// // Last 7 days
+			//
+			// cal = Calendar.getInstance();
+			// datePathes = new ArrayList<String>();
+			//
+			// for (int i = 0; i < 7; i++) {
+			// cal.add(Calendar.DAY_OF_YEAR, -i);
+			// relPath = JcrUtils.dateAsPath(cal);
+			// datePathes.add(relPath);
+			// }
+			// roots[3] = new VirtualFolder(null,
+			// ResultParentUtils.getResultsForDates(session, datePathes),
+			// "Last 7 days");
 
 			// All results
 			Node otherResultsPar = session.getNode(SlcJcrResultUtils
 					.getSlcResultsBasePath(session));
-			roots[4] = new ParentNodeFolder(null, otherResultsPar,
+			// roots[4] = new ParentNodeFolder(null, otherResultsPar,
+			// "All results");
+			roots[2] = new ParentNodeFolder(null, otherResultsPar,
 					"All results");
 			return roots;
 		} catch (RepositoryException re) {
