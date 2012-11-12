@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -76,10 +77,6 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 					IJavaLaunchConfigurationConstants.ATTR_VM_ARGUMENTS, "");
 			wc.setAttribute(ATTR_DEFAULT_VM_ARGS, originalVmArgs);
 
-			// do NOT use custom features (both must be set)
-			wc.setAttribute(IPDELauncherConstants.USE_CUSTOM_FEATURES, false);
-			wc.setAttribute(IPDELauncherConstants.USE_DEFAULT, true);
-
 			// clear config area by default
 			wc.setAttribute(IPDELauncherConstants.CONFIG_CLEAR_AREA, true);
 		} catch (CoreException e) {
@@ -121,9 +118,14 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	}
 
 	/** Expects properties file to be set as mapped resources */
+	@SuppressWarnings("unchecked")
 	public static void updateLaunchConfiguration(
 			ILaunchConfigurationWorkingCopy wc, Boolean isEclipse) {
 		try {
+			if (debug)
+				debug("##\n## Launch " + wc.getName() + " - " + new Date()
+						+ "\n##");
+
 			// Finds the properties file and load it
 			IFile propertiesFile = (IFile) wc.getMappedResources()[0];
 			propertiesFile.refreshLocal(IResource.DEPTH_ONE, null);
@@ -153,6 +155,13 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			updateLaunchConfiguration(wc, bundlesToStart,
 					systemPropertiesToAppend, dataDir.getAbsolutePath(),
 					isEclipse);
+
+			if (debug) {
+				Map<String, ?> attrs = new TreeMap<String, Object>(
+						(Map<String, String>) wc.getAttributes());
+				for (String key : attrs.keySet())
+					OsgiLaunchHelper.debug(key + "=" + attrs.get(key));
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			Shell shell = SlcIdeUiPlugin.getDefault().getWorkbench()
@@ -211,9 +220,9 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		// Update other default information
 		wc.setAttribute(IPDELauncherConstants.DEFAULT_AUTO_START, false);
 
-		// do NOT use custom features (both must be set)
 		wc.setAttribute(IPDELauncherConstants.USE_CUSTOM_FEATURES, false);
-		wc.setAttribute(IPDELauncherConstants.USE_DEFAULT, true);
+		if (!isEclipse)
+			wc.setAttribute(IPDELauncherConstants.USE_DEFAULT, true);
 
 		// VM arguments (system properties)
 		String defaultVmArgs = wc.getAttribute(
@@ -285,14 +294,6 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	protected static String interpretProperties(Properties properties,
 			Map<String, Integer> bundlesToStart,
 			Map<String, String> systemPropertiesToAppend) {
-		// String argeoOsgiStart = properties
-		// .getProperty(OsgiLauncherConstants.ARGEO_OSGI_START);
-		// if (argeoOsgiStart != null) {
-		// StringTokenizer st = new StringTokenizer(argeoOsgiStart, ",");
-		// while (st.hasMoreTokens())
-		// bundlesToStart.add(st.nextToken());
-		// }
-
 		computeBundlesToStart(bundlesToStart, properties, null);
 
 		String applicationId = null;
@@ -330,7 +331,6 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 		IVMInstallType[] vmTypes = JavaRuntime.getVMInstallTypes();
 		for (IVMInstallType vmType : vmTypes) {
 			for (IVMInstall vmInstall : vmType.getVMInstalls()) {
-				// printVm("", vmInstall);
 				// properties based on name
 				addVmSysProperty(vmArgs, vmInstall.getName(), vmInstall);
 				if (vmInstall instanceof IVMInstall2) {
@@ -373,9 +373,6 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 	 */
 	protected static String convertBundleList(
 			Map<String, Integer> bundlesToStart, String original) {
-		if (debug)
-			debug("Original bundle list: " + original);
-
 		StringTokenizer stComa = new StringTokenizer(original, ",");
 		// sort by bundle symbolic name
 		Set<String> bundleIds = new TreeSet<String>();
@@ -396,7 +393,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 			// We can now rely on bundleId value
 
 			if (bundleId.endsWith(".source")) {
-				debug("Skip source bundle " + bundleId);
+				// debug("Skip source bundle " + bundleId);
 				continue bundles;
 			} else if (bundleId
 					.equals(IPDEBuildConstants.BUNDLE_SIMPLE_CONFIGURATOR)) {
