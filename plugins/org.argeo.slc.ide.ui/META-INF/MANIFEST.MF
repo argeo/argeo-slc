@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: SLC IDE UI
+Bundle-Name: SLC IDE
 Bundle-SymbolicName: org.argeo.slc.ide.ui;singleton:=true
-Bundle-Version: 1.1.1.D20121107_1340
+Bundle-Version: 1.1.1.qualifier
 Bundle-Activator: org.argeo.slc.ide.ui.SlcIdeUiPlugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -18,5 +18,5 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.pde.ui;bundle-version="3.4.0",
  org.eclipse.jdt.ui;bundle-version="3.4.2"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-Vendor: Argeo
+Bundle-Vendor: Argeo GmbH
 Bundle-ActivationPolicy: lazy

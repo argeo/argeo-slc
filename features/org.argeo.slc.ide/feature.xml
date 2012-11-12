@@ -1,42 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.argeo.slc.ide"
-      label="Argeo Java IDE"
-      version="1.1.1.D20121107_1340"
-      provider-name="Argeo"
+      label="Argeo IDE"
+      version="1.1.1.qualifier"
+      provider-name="Argeo GmbH"
       plugin="org.argeo.slc.ide.branding"
       image="icons/argeo-icon-100104-256.png">
 
-   <description url="http://www.argeo.org/projects/slc/">
+   <description url="http://projects.argeo.org/slc/">
       Argeo SLC IDE
    </description>
 
    <copyright url="http://www.argeo.org">
-      Copyright 2010 Mathieu Baudier - Argeo SASU
+      Copyright 2012 Argeo GmbH
    </copyright>
 
    <license url="http://www.apache.org/licenses/LICENSE-2.0.txt">
-      SLC - Systems Life Cycle framework
-
-Copyright 2010 Mathieu Baudier - Argeo SASU
-
+      Argeo Integrated Development Environment
+Copyright 2012 Argeo GmbH
 Licensed under the Apache License, Version 2.0 (the &amp;quot;License&amp;quot;);
 you may not use this file except in compliance with the License.
-
 You may obtain a copy of the License at
 http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an &amp;quot;AS IS&amp;quot;
 BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
 or implied.
-
 See the License for the specific language governing permissions
 and limitations under the License.
    </license>
 
    <url>
-      <update label="Argeo SLC IDE (Devpt)" url="http://www.argeo.org/projects/slc/update/ide-dev"/>
+      <update label="Argeo SLC IDE (Devpt)" url="http://projects.argeo.org/projects/slc/update/ide-dev"/>
+      <discovery label="Argeo.org" url="http://www.argeo.org"/>
    </url>
 
    <requires>
@@ -64,14 +60,7 @@ and limitations under the License.
          id="org.argeo.slc.ide.ui"
          download-size="0"
          install-size="0"
-         version="1.1.1.D20121107_1340"
-         unpack="false"/>
-
-   <plugin
-         id="org.argeo.slc.ide.branding"
-         download-size="0"
-         install-size="0"
-         version="1.1.1.D20121107_1340"
+         version="1.1.1.qualifier"
          unpack="false"/>
 
 </feature>
