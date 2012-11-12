@@ -124,7 +124,8 @@ public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
 		mpv.addPropertyValue("runnableCalls", flowDescriptor.getRunnableCalls());
 		mpv.addPropertyValue("sharedContextValuesMap", new RuntimeBeanReference(contextValuesBeanName));
 		
-		mpv.addPropertyValue("name", flowDescriptor.getPath() + "/" + beanName);
+		mpv.addPropertyValue("name", beanName);
+		mpv.addPropertyValue("path", flowDescriptor.getPath());
 
 		mpv.addPropertyValue("executionContext", new RuntimeBeanReference(executionContextBeanName));
 		

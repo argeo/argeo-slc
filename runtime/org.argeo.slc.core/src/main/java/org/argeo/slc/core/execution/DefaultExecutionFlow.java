@@ -27,10 +27,12 @@ import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.validation.MapBindingResult;
 
 /** Default implementation of an execution flow. */
-public class DefaultExecutionFlow implements ExecutionFlow, BeanNameAware {
+public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
+		BeanNameAware {
 	private final static Log log = LogFactory
 			.getLog(DefaultExecutionFlow.class);
 
@@ -38,6 +40,8 @@ public class DefaultExecutionFlow implements ExecutionFlow, BeanNameAware {
 	private String name = null;
 	private Map<String, Object> parameters = new HashMap<String, Object>();
 	private List<Runnable> executables = new ArrayList<Runnable>();
+
+	private String path;
 
 	private Boolean failOnError = true;
 
@@ -132,6 +136,28 @@ public class DefaultExecutionFlow implements ExecutionFlow, BeanNameAware {
 		runnable.run();
 	}
 
+	public void afterPropertiesSet() throws Exception {
+		if (path == null) {
+			if (name.charAt(0) == '/') {
+				path = name.substring(0, name.lastIndexOf('/'));
+			}
+		}
+
+		if (path != null) {
+			for (Runnable executable : executables) {
+				if (executable instanceof DefaultExecutionFlow) {
+					// so we don't need to have DefaultExecutionFlow
+					// implementing StructureAware
+					// FIXME: probably has side effects
+					DefaultExecutionFlow flow = (DefaultExecutionFlow) executable;
+					String newPath = path + '/' + flow.getName();
+					flow.setPath(newPath);
+					log.warn(newPath + " was forcibly set on " + flow);
+				}
+			}
+		}
+	}
+
 	public void setBeanName(String name) {
 		this.name = name;
 	}
@@ -195,9 +221,12 @@ public class DefaultExecutionFlow implements ExecutionFlow, BeanNameAware {
 		return name.hashCode();
 	}
 
-	/** @deprecated does nothing */
-	@Deprecated
+	public String getPath() {
+		return path;
+	}
+
 	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public Boolean getFailOnError() {

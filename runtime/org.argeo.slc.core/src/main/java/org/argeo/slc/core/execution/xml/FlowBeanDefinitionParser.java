@@ -42,13 +42,24 @@ public class FlowBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
 	private Log log = LogFactory.getLog(FlowBeanDefinitionParser.class);
 
+	/** Whether the user has already be warned on path attribute usage. */
+	private Boolean warnedAboutPathAttribute = false;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void doParse(Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
 		String path = element.getAttribute("path");
-		if (StringUtils.hasText(path))
-			log.warn("The 'path' attribute is not used anymore to build flows");
+		if (StringUtils.hasText(path)) {
+			builder.addPropertyValue("path", path);
+
+			// warns user only once
+			if (!warnedAboutPathAttribute)
+				log.warn("The path=\"\" attribute is deprecated"
+						+ " and will be removed in a later release."
+						+ " Use <flow:flow name=\"/my/path/flowName\">.");
+			warnedAboutPathAttribute = true;
+		}
 
 		String spec = element.getAttribute("spec");
 		if (StringUtils.hasText(spec))

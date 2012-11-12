@@ -243,11 +243,6 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			String relativePath, ExecutionFlowDescriptor efd)
 			throws RepositoryException {
 		Node flowNode = null;
-		// if (relativePath.startsWith("/"))
-		// relativePath = relativePath.substring(1);
-		// if (relativePath.endsWith("/"))
-		// relativePath = relativePath.substring(0, relativePath.length() - 1);
-
 		Iterator<String> names = Arrays.asList(relativePath.split("/"))
 				.iterator();
 		// create intermediary paths
@@ -388,9 +383,12 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 	 * UTILITIES
 	 */
 	/** @return the relative path, never starts with '/' */
+	@SuppressWarnings("deprecation")
 	protected String getExecutionFlowRelativePath(
 			ExecutionFlowDescriptor executionFlow) {
-		String relativePath = executionFlow.getName();
+		String relativePath = executionFlow.getPath() == null ? executionFlow
+				.getName() : executionFlow.getPath() + '/'
+				+ executionFlow.getName();
 		// we assume that it is more than one char long
 		if (relativePath.charAt(0) == '/')
 			relativePath = relativePath.substring(1);

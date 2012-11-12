@@ -31,4 +31,10 @@ public interface ExecutionFlow extends Runnable {
 	 * interpreted by UIs as a hierarchy;
 	 */
 	public String getName();
+
+	/**
+	 * @deprecated will be removed in SLC 2.0, the path should be the part of
+	 *             the name with '/'
+	 */
+	public String getPath();
 }

@@ -596,35 +596,33 @@ public class OsgiExecutionModulesManager extends
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	protected ObjectName flowMBeanName(Module module,
 			ExecutionFlow executionFlow) {
 		String executionModulesPrefix = "SLCExecutionModules";
-		// String path = executionFlow.getPath();
+		String path = executionFlow.getPath();
 		String name = executionFlow.getName();
-		// if (path == null && name.indexOf('/') >= 0) {
-		// path = name.substring(0, name.lastIndexOf('/'));
-		// name = name.substring(name.lastIndexOf('/'));
-		// }
+		if (path == null && name.indexOf('/') >= 0) {
+			path = name.substring(0, name.lastIndexOf('/'));
+			name = name.substring(name.lastIndexOf('/'));
+		}
 
 		StringBuffer buf = new StringBuffer(executionModulesPrefix + ":"
 				+ "module=" + module.getName() + " [" + module.getVersion()
 				+ "],");
 
-		// if (path != null && !path.equals("")) {
-		// int depth = 0;
-		// for (String token : path.split("/")) {
-		// if (!token.equals("")) {
-		// buf.append("path").append(depth).append('=');
-		// // in order to have directories first
-		// buf.append('/');
-		// buf.append(token).append(',');
-		// depth++;
-		// }
-		// }
-		// }
-
-		// FIXME deal with /
-
+		if (path != null && !path.equals("")) {
+			int depth = 0;
+			for (String token : path.split("/")) {
+				if (!token.equals("")) {
+					buf.append("path").append(depth).append('=');
+					// in order to have directories first
+					buf.append('/');
+					buf.append(token).append(',');
+					depth++;
+				}
+			}
+		}
 		buf.append("name=").append(name);
 		try {
 			return new ObjectName(buf.toString());
