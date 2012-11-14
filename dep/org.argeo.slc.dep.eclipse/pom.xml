@@ -79,7 +79,6 @@
 								</goals>
 								<configuration>
 									<name>slc-eclipse</name>
-									<copyright>2011 Argeo</copyright>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi/eclipse</directory>

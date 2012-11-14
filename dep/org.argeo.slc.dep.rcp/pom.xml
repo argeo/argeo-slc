@@ -99,7 +99,6 @@
 								</goals>
 								<configuration>
 									<name>slc-rcp</name>
-									<copyright>2011 Argeo</copyright>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi/rcp</directory>

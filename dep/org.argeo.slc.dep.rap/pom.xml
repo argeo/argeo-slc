@@ -98,7 +98,6 @@
 								</goals>
 								<configuration>
 									<name>slc-rap</name>
-									<copyright>2011 Argeo</copyright>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi/rap</directory>

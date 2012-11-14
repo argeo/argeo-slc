@@ -25,7 +25,6 @@
 								</goals>
 								<configuration>
 									<name>slc</name>
-									<copyright>2011 Argeo</copyright>
 									<mappings>
 										<mapping>
 											<directory>/usr/bin</directory>
