@@ -17,11 +17,14 @@ package org.argeo.slc.jcr;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
@@ -112,8 +115,26 @@ public class SlcJcrUtils implements SlcNames {
 	public static String createResultPath(Session session, String uuid)
 			throws RepositoryException {
 		Calendar now = new GregorianCalendar();
-		return SlcJcrResultUtils.getSlcResultsBasePath(session) + '/'
-				+ JcrUtils.dateAsPath(now, true) + uuid;
+		StringBuffer absPath = new StringBuffer(
+				SlcJcrResultUtils.getSlcResultsBasePath(session) + '/');
+		// Remove hours and add title property to the result process path on
+		// request of O. Capillon
+		// return getSlcProcessesBasePath(session) + '/'
+		// + JcrUtils.dateAsPath(now, true) + uuid;
+		String relPath = JcrUtils.dateAsPath(now, false);
+		List<String> names = JcrUtils.tokenize(relPath);
+		for (String name : names) {
+			absPath.append(name + "/");
+			Node node = JcrUtils.mkdirs(session, absPath.toString());
+			try {
+				node.addMixin(NodeType.MIX_TITLE);
+				node.setProperty(Property.JCR_TITLE, name.substring(1));
+			} catch (RepositoryException e) {
+				throw new SlcException(
+						"unable to create execution process path", e);
+			}
+		}
+		return absPath.toString() + uuid;
 	}
 
 	/**
