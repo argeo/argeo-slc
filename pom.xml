@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.commons</groupId>
@@ -107,7 +108,7 @@ limitations under the License.
 	<repositories>
 		<repository>
 			<id>argeo-commons</id>
-			<url>http://repo.argeo.org/org.argeo.jcr.webapp/public/java/org.argeo.commons-1.1.x</url>
+			<url>http://repo.argeo.org/data/public/java/org.argeo.commons-1.1.x</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -118,7 +119,7 @@ limitations under the License.
 	<distributionManagement>
 		<repository>
 			<id>staging</id>
-			<url>dav:https://repo.argeo.org/org.argeo.jcr.webapp/webdav/java/org.argeo.slc-1.1.x</url>
+			<url>dav:https://repo.argeo.org/data/files/java/org.argeo.slc-1.1.x</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<site>
