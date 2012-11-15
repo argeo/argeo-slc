@@ -742,42 +742,6 @@ public class JcrResultTreeView extends ViewPart {
 			for (Node node : nodesToRefresh)
 				jcrRefresh(node);
 			refresh(null);
-
-			// boolean wasRemoved = false;
-			// boolean wasAdded = false;
-			//
-			// for (Event event : events) {
-			// // if (log.isDebugEnabled())
-			// // log.debug("Received event " + event);
-			// int eventType = event.getType();
-			// if (eventType == Event.NODE_REMOVED) {
-			// String path = event.getPath();
-			// String parPath = JcrUtils.parentPath(path);
-			// if (session.nodeExists(parPath)) {
-			// Node currNode = session.getNode(parPath);
-			// if (currNode.isNodeType(NodeType.NT_UNSTRUCTURED)) {
-			// // jcrRefresh(currNode);
-			// wasRemoved = true;
-			// }
-			// }
-			// } else if (eventType == Event.NODE_ADDED) {
-			// // refresh(lastSelectedTargetElement);
-			// String path = event.getPath();
-			// if (session.nodeExists(path)) {
-			// Node currNode = session.getNode(path);
-			// if (currNode.isNodeType(SlcTypes.SLC_TEST_RESULT)
-			// || currNode
-			// .isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
-			// // refresh(lastSelectedTargetElement);
-			// wasAdded = true;
-			// // resultTreeViewer.expandToLevel(
-			// // lastSelectedTargetElement, 1);
-			// }
-			// }
-			// }
-			// }
-			// if (wasRemoved || wasAdded)
-			// refresh(lastSelectedSourceElementParent);
 		}
 	}
 
@@ -796,11 +760,8 @@ public class JcrResultTreeView extends ViewPart {
 
 		protected void onEventInUiThread(List<Event> events)
 				throws RepositoryException {
-			for (Event event : events) {
-				if (log.isDebugEnabled())
-					log.debug("Received event " + event);
-			}
-			refresh(lastSelectedSourceElementParent);
+			if (lastSelectedSourceElementParent != null)
+				refresh(lastSelectedSourceElementParent);
 		}
 	}
 
