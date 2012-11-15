@@ -24,6 +24,7 @@ import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.SlcUiConstants;
+import org.argeo.slc.client.ui.model.ParentNodeFolder;
 import org.argeo.slc.client.ui.model.ResultParent;
 import org.argeo.slc.client.ui.model.SingleResultNode;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -36,15 +37,21 @@ public class ResultTreeLabelProvider extends LabelProvider {
 
 	@Override
 	public String getText(Object element) {
-		if (element instanceof SingleResultNode) {
-			Node node = ((SingleResultNode) element).getNode();
-			try {
+		try {
+
+			if (element instanceof SingleResultNode) {
+				Node node = ((SingleResultNode) element).getNode();
 				if (node.isNodeType(NodeType.MIX_TITLE))
 					return node.getProperty(Property.JCR_TITLE).getString();
-			} catch (RepositoryException e) {
-				throw new SlcException("Unexpected error while getting "
-						+ "custom result label", e);
+
+			} else if (element instanceof ParentNodeFolder) {
+				Node node = ((ParentNodeFolder) element).getNode();
+				if (node.hasProperty(Property.JCR_TITLE))
+					return node.getProperty(Property.JCR_TITLE).getString();
 			}
+		} catch (RepositoryException e) {
+			throw new SlcException("Unexpected error while getting "
+					+ "custom result label", e);
 		}
 		return ((TreeParent) element).getName();
 	}

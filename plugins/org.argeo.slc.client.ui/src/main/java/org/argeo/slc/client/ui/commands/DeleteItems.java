@@ -102,7 +102,8 @@ public class DeleteItems extends AbstractHandler {
 							for (Node node : nodes) {
 								Node parent = node.getParent();
 								node.remove();
-								ResultParentUtils.updateStatusOnRemoval(parent);
+								ResultParentUtils.updatePassedStatus(parent,
+										true);
 								monitor.worked(1);
 							}
 							session.save();

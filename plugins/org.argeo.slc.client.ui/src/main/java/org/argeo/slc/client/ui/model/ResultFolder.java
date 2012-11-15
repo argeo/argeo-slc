@@ -25,8 +25,7 @@ import org.argeo.slc.jcr.SlcNames;
  * UI Tree component that wrap a node of type ResultFolder. list either other
  * folders and/or a list of results. keeps a reference to its parent.
  */
-public class ResultFolder extends ParentNodeFolder implements
-		Comparable<ResultFolder> {
+public class ResultFolder extends ParentNodeFolder {
 
 	/**
 	 * 
@@ -49,15 +48,15 @@ public class ResultFolder extends ParentNodeFolder implements
 		}
 	}
 
-	/**
-	 * Overriden to return an ordered list of children
-	 */
-	public synchronized Object[] getChildren() {
-		Object[] children = super.getChildren();
-		return ResultParentUtils.orderChildren(children);
-	}
-
-	public int compareTo(ResultFolder o) {
-		return super.compareTo(o);
-	}
+	// /**
+	// * Overriden to return an ordered list of children
+	// */
+	// public synchronized Object[] getChildren() {
+	// Object[] children = super.getChildren();
+	// return ResultParentUtils.orderChildren(children);
+	// }
+	//
+	// public int compareTo(ResultFolder o) {
+	// return super.compareTo(o);
+	// }
 }

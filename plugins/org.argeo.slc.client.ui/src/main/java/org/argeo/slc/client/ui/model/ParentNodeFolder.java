@@ -88,30 +88,25 @@ public class ParentNodeFolder extends ResultParent {
 		}
 	}
 
-	@Override
-	public synchronized void dispose() {
-		super.dispose();
-	}
-
 	public Node getNode() {
 		return node;
 	}
 
-	/**
-	 * Overriden in the specific case of "My result" root object to return an
-	 * ordered list of children
-	 */
-	public synchronized Object[] getChildren() {
-		Object[] children = super.getChildren();
-		try {
-			if (node.isNodeType(SlcTypes.SLC_MY_RESULT_ROOT_FOLDER))
-				return ResultParentUtils.orderChildren(children);
-			else
-				return children;
-		} catch (RepositoryException re) {
-			throw new SlcException(
-					"Unexpected error while initializing simple node folder : "
-							+ getName(), re);
-		}
-	}
+	// /**
+	// * Overriden in the specific case of "My result" root object to return an
+	// * ordered list of children
+	// */
+	// public synchronized Object[] getChildren() {
+	// Object[] children = super.getChildren();
+	// try {
+	// if (node.isNodeType(SlcTypes.SLC_MY_RESULT_ROOT_FOLDER))
+	// return ResultParentUtils.orderChildren(children);
+	// else
+	// return children;
+	// } catch (RepositoryException re) {
+	// throw new SlcException(
+	// "Unexpected error while initializing simple node folder : "
+	// + getName(), re);
+	// }
+	// }
 }

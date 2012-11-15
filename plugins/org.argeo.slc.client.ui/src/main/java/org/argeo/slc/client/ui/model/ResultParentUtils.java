@@ -16,7 +16,6 @@
 package org.argeo.slc.client.ui.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,35 +37,35 @@ public class ResultParentUtils {
 	// private final static Log log =
 	// LogFactory.getLog(ResultParentUtils.class);
 
-	public static Object[] orderChildren(Object[] children) {
-		List<ResultFolder> folders = new ArrayList<ResultFolder>();
-		List<SingleResultNode> results = new ArrayList<SingleResultNode>();
-		for (Object child : children) {
-			if (child instanceof ResultFolder)
-				folders.add((ResultFolder) child);
-			else if (child instanceof SingleResultNode)
-				results.add((SingleResultNode) child);
-		}
-
-		// Comparator first = Collections.reverseOrder();
-		Collections.sort(folders);
-		// Comparator<SingleResultNode> second = Collections.reverseOrder();
-		Collections.sort(results);
-
-		Object[] orderedChildren = new Object[folders.size() + results.size()];
-		int i = 0;
-		Iterator<ResultFolder> it = folders.iterator();
-		while (it.hasNext()) {
-			orderedChildren[i] = it.next();
-			i++;
-		}
-		Iterator<SingleResultNode> it2 = results.iterator();
-		while (it2.hasNext()) {
-			orderedChildren[i] = it2.next();
-			i++;
-		}
-		return orderedChildren;
-	}
+	// public static Object[] orderChildren(Object[] children) {
+	// List<ResultFolder> folders = new ArrayList<ResultFolder>();
+	// List<SingleResultNode> results = new ArrayList<SingleResultNode>();
+	// for (Object child : children) {
+	// if (child instanceof ResultFolder)
+	// folders.add((ResultFolder) child);
+	// else if (child instanceof SingleResultNode)
+	// results.add((SingleResultNode) child);
+	// }
+	//
+	// // Comparator first = Collections.reverseOrder();
+	// Collections.sort(folders);
+	// // Comparator<SingleResultNode> second = Collections.reverseOrder();
+	// Collections.sort(results);
+	//
+	// Object[] orderedChildren = new Object[folders.size() + results.size()];
+	// int i = 0;
+	// Iterator<ResultFolder> it = folders.iterator();
+	// while (it.hasNext()) {
+	// orderedChildren[i] = it.next();
+	// i++;
+	// }
+	// Iterator<SingleResultNode> it2 = results.iterator();
+	// while (it2.hasNext()) {
+	// orderedChildren[i] = it2.next();
+	// i++;
+	// }
+	// return orderedChildren;
+	// }
 
 	public static List<Node> getResultsForDates(Session session,
 			List<String> dateRelPathes) {
@@ -111,7 +110,7 @@ public class ResultParentUtils {
 	}
 
 	/**
-	 * recursively update passed status of the parent ResultFolder and its
+	 * recursively update passed status of the current ResultFolder and its
 	 * parent if needed
 	 * 
 	 * @param node
@@ -120,27 +119,28 @@ public class ResultParentUtils {
 	 */
 	public static void updatePassedStatus(Node node, boolean passed) {
 		try {
-			Node pNode = node.getParent();
-			if (!pNode.hasNode(SlcNames.SLC_STATUS))
+			if (!node.hasNode(SlcNames.SLC_STATUS))
 				// we have reached the root of the tree. stop the
 				// recursivity
 				return;
-			boolean pStatus = pNode.getNode(SlcNames.SLC_STATUS)
+			boolean pStatus = node.getNode(SlcNames.SLC_STATUS)
 					.getProperty(SlcNames.SLC_SUCCESS).getBoolean();
 			if (pStatus == passed)
 				// nothing to update
 				return;
 			else if (!passed) {
-				// error we only update status of the result folder and its
+				// New status is 'failed' : we only update status of the result
+				// folder and its
 				// parent if needed
-				pNode.getNode(SlcNames.SLC_STATUS).setProperty(
+				node.getNode(SlcNames.SLC_STATUS).setProperty(
 						SlcNames.SLC_SUCCESS, passed);
-				updatePassedStatus(pNode, passed);
+				updatePassedStatus(node.getParent(), passed);
 			} else {
-				// success we must first check if all siblings have also
+				// New status is 'passed': we must first check if all siblings
+				// have also
 				// successfully completed
 				boolean success = true;
-				NodeIterator ni = pNode.getNodes();
+				NodeIterator ni = node.getNodes();
 				children: while (ni.hasNext()) {
 					Node currNode = ni.nextNode();
 					if ((currNode.isNodeType(SlcTypes.SLC_DIFF_RESULT) || currNode
@@ -153,16 +153,16 @@ public class ResultParentUtils {
 					}
 				}
 				if (success) {
-					pNode.getNode(SlcNames.SLC_STATUS).setProperty(
+					node.getNode(SlcNames.SLC_STATUS).setProperty(
 							SlcNames.SLC_SUCCESS, passed);
-					updatePassedStatus(pNode, passed);
+					updatePassedStatus(node.getParent(), passed);
 				} else
 					// one of the siblings had also the failed status so
 					// above tree remains unchanged.
 					return;
 			}
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot register listeners", e);
+			throw new SlcException("Cannot update result passed status", e);
 		}
 	}
 
