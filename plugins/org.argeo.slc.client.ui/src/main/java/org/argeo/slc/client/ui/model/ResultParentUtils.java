@@ -165,46 +165,4 @@ public class ResultParentUtils {
 			throw new SlcException("Cannot update result passed status", e);
 		}
 	}
-
-	public static void updateStatusOnRemoval(Node node) {
-		try {
-			if (!node.hasNode(SlcNames.SLC_STATUS))
-				// nothing to do
-				return;
-			boolean pStatus = node.getNode(SlcNames.SLC_STATUS)
-					.getProperty(SlcNames.SLC_SUCCESS).getBoolean();
-			if (pStatus == true)
-				// nothing to update
-				return;
-			else {
-				// success we must first check if all siblings have also
-				// successfully completed
-				boolean success = true;
-				NodeIterator ni = node.getNodes();
-				children: while (ni.hasNext()) {
-					Node currNode = ni.nextNode();
-					if ((currNode.isNodeType(SlcTypes.SLC_DIFF_RESULT) || currNode
-							.isNodeType(SlcTypes.SLC_RESULT_FOLDER))
-							&& !currNode.getNode(SlcNames.SLC_STATUS)
-									.getProperty(SlcNames.SLC_SUCCESS)
-									.getBoolean()) {
-						success = false;
-						break children;
-					}
-				}
-				if (success) {
-					node.getNode(SlcNames.SLC_STATUS).setProperty(
-							SlcNames.SLC_SUCCESS, true);
-					updatePassedStatus(node, true);
-				} else
-					// one of the siblings had also the failed status so
-					// above tree remains unchanged.
-					return;
-			}
-		} catch (RepositoryException e) {
-			throw new SlcException(
-					"Unexpected error while updating status on removal", e);
-		}
-	}
-
 }
