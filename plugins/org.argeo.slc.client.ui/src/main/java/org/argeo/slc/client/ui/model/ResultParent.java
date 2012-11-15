@@ -15,15 +15,7 @@
  */
 package org.argeo.slc.client.ui.model;
 
-import java.util.Collections;
-
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-
 import org.argeo.eclipse.ui.TreeParent;
-import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcTypes;
 
 /**
  * Common base UI object to build result Tree.
