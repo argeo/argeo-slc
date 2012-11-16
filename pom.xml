@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>1.1.7-SNAPSHOT</version>
+		<version>1.1.7</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -15,7 +15,7 @@
 		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
 		<site.repoBase>file:///srv/projects/www/slc/site</site.repoBase>
 		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
-		<version.slc>1.1.6-SNAPSHOT</version.slc>
+		<version.slc>1.1.6</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
