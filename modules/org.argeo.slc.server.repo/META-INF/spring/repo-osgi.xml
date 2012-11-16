@@ -9,23 +9,31 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
 
 	<!-- REFERENCES -->
-	<!-- Security -->
 	<reference id="authenticationManager"
 		interface="org.springframework.security.AuthenticationManager" />
-<!-- 	<reference id="jcrRepository" interface="javax.jcr.Repository" -->
-<!-- 		filter="(argeo.jcr.repository.alias=slc)" /> -->
-	<service ref="jcrRepository" interface="javax.jcr.Repository">
+
+	<!-- SERVICES -->
+	<service ref="javaRepository" interface="javax.jcr.Repository">
 		<service-properties>
 			<beans:entry key="argeo.jcr.repository.alias" value="java" />
 		</service-properties>
 	</service>
+	<service ref="distRepository" interface="javax.jcr.Repository">
+		<service-properties>
+			<beans:entry key="argeo.jcr.repository.alias" value="dist" />
+		</service-properties>
+	</service>
+	<service ref="rpmRepository" interface="javax.jcr.Repository">
+		<service-properties>
+			<beans:entry key="argeo.jcr.repository.alias" value="rpm" />
+		</service-properties>
+	</service>
 
-	<!-- Maven -->
-<!-- 	<reference id="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem" -->
-<!-- 		filter="(aether.repositorySystemType=maven)" /> -->
-<!-- 	<reference id="mavenRepositorySystemSession" interface="org.sonatype.aether.RepositorySystemSession" -->
-<!-- 		filter="(aether.repositorySystemType=maven)" /> -->
-
-	<!-- SERVICES -->
 	<service ref="mavenProxyService" interface="org.argeo.slc.repo.maven.proxy.MavenProxyService" />
 </beans:beans>
+
+<!-- <reference id="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem" -->
+<!-- filter="(aether.repositorySystemType=maven)" /> -->
+<!-- <reference id="mavenRepositorySystemSession" interface="org.sonatype.aether.RepositorySystemSession" -->
+<!-- filter="(aether.repositorySystemType=maven)" /> -->
+

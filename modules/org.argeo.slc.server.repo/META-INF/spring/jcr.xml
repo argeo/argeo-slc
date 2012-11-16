@@ -3,14 +3,40 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="jcrSession" class="org.argeo.security.jcr.SecureThreadBoundSession">
-		<property name="repository" ref="jcrRepository" />
+	<!-- JCR repositories -->
+	<bean id="javaRepository" parent="template.jcrRepository">
+		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/java" />
+		<property name="configuration" value="${slc.repo.jcr.configuration.java}" />
+	</bean>
+	<bean id="distRepository" parent="template.jcrRepository">
+		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/dist" />
+		<property name="configuration" value="${slc.repo.jcr.configuration.dist}" />
+	</bean>
+	<bean id="rpmRepository" parent="template.jcrRepository">
+		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/rpm" />
+		<property name="configuration" value="${slc.repo.jcr.configuration.rpm}" />
 	</bean>
 
-	<bean id="jcrRepository" class="org.argeo.jackrabbit.JackrabbitContainer"
-		init-method="init" destroy-method="destroy">
-		<property name="homeDirectory" value="${osgi.instance.area}/repos/java" />
-		<property name="configuration" value="osgibundle:repository-h2.xml" />
+	<!-- JCR authorizations -->
+	<bean parent="template.jcrAuthorizations">
+		<property name="repository" ref="javaRepository" />
+	</bean>
+	<bean parent="template.jcrAuthorizations">
+		<property name="repository" ref="distRepository" />
+	</bean>
+	<bean parent="template.jcrAuthorizations">
+		<property name="repository" ref="rpmRepository" />
+	</bean>
+
+	<bean
+		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
+		<property name="authenticationManager" ref="authenticationManager" />
+	</bean>
+
+	<!-- Templates -->
+	<bean id="template.jcrRepository" abstract="true"
+		class="org.argeo.jackrabbit.JackrabbitContainer" init-method="init"
+		destroy-method="destroy">
 		<property name="variables" value="osgibundle:/repo.properties" />
 		<property name="cndFiles">
 			<list>
@@ -20,24 +46,19 @@
 			</list>
 		</property>
 		<property name="bundleContext" ref="bundleContext" />
-		<property name="forceCndImport" value="${org.argeo.slc.repo.forceCndImport}" />
+		<property name="forceCndImport" value="${slc.repo.jcr.forceCndImport}" />
 	</bean>
 
-	<!-- Security -->
-	<bean class="org.argeo.jackrabbit.JackrabbitAuthorizations"
-		init-method="run">
+	<bean id="template.jcrAuthorizations" abstract="true"
+		class="org.argeo.jackrabbit.JackrabbitAuthorizations" init-method="run">
 		<property name="principalPrivileges">
 			<map>
 				<entry key="jcr:all" value="ROLE_SLC" />
 				<entry key="jcr:all" value="ROLE_ADMIN" />
 			</map>
 		</property>
-		<property name="repository" ref="jcrRepository" />
 		<property name="workspace" value="*" />
 	</bean>
 
-	<bean
-		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
-		<property name="authenticationManager" ref="authenticationManager" />
-	</bean>
+
 </beans>

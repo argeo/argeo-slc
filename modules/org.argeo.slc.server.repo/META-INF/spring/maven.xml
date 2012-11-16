@@ -9,32 +9,10 @@
 
 	<!-- Proxied repositories -->
 	<util:list id="defaultMavenRepositories">
-		<ref local="argeo-snapshots" />
-		<ref local="argeo" />
 		<ref local="central" />
-		<ref local="com.springsource.repository.bundles.external" />
-		<ref local="com.springsource.repository.bundles.release" />
 	</util:list>
 
-<!-- 	<bean id="localrepo" p:url="http://localrepo:7080/org.argeo.slc.repo.webapp/maven" -->
-<!-- 		p:username="root" p:password="demo" -->
-<!-- 		class="org.argeo.slc.aether.spring.RemoteRepositoryFactory" /> -->
-
 	<bean id="central" p:url="http://repo1.maven.org/maven2"
-		class="org.argeo.slc.aether.spring.RemoteRepositoryFactory" />
-
-	<bean id="com.springsource.repository.bundles.release"
-		p:url="http://repository.springsource.com/maven/bundles/release"
-		class="org.argeo.slc.aether.spring.RemoteRepositoryFactory" />
-
-	<bean id="com.springsource.repository.bundles.external"
-		p:url="http://repository.springsource.com/maven/bundles/external"
-		class="org.argeo.slc.aether.spring.RemoteRepositoryFactory" />
-
-	<bean id="argeo" p:url="http://maven.argeo.org/argeo"
-		class="org.argeo.slc.aether.spring.RemoteRepositoryFactory" />
-
-	<bean id="argeo-snapshots" p:url="http://dev.argeo.org/maven/argeo-snapshots"
 		class="org.argeo.slc.aether.spring.RemoteRepositoryFactory" />
 
 </beans>

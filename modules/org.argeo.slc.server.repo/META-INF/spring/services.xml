@@ -17,7 +17,7 @@
 
 	<bean id="repo" class="org.argeo.slc.repo.RepoImpl" init-method="init"
 		destroy-method="destroy">
-		<property name="jcrRepository" ref="jcrRepository" />
+		<property name="jcrRepository" ref="javaRepository" />
 		<property name="nodeIndexers">
 			<list>
 				<bean class="org.argeo.slc.repo.ArtifactIndexer" />
@@ -28,7 +28,7 @@
 
 	<bean id="mavenProxyService" class="org.argeo.slc.repo.maven.proxy.MavenProxyServiceImpl"
 		init-method="init" destroy-method="destroy">
-		<property name="jcrRepository" ref="jcrRepository" />
+		<property name="jcrRepository" ref="javaRepository" />
 		<property name="defaultRepositories" ref="defaultMavenRepositories" />
 	</bean>
 
