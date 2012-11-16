@@ -91,8 +91,8 @@ public class ConfirmOverwriteWizard extends Wizard {
 			if (overwriteBtn.getSelection())
 				doFinish = MessageDialog.openConfirm(Display.getDefault()
 						.getActiveShell(), "CAUTION", "All data contained in ["
-						+ (parentRelPath !=null?parentRelPath:"")
-						+ sourceNodeName
+						+ (parentRelPath != null ? parentRelPath : "")
+						+ "/"+ sourceNodeName
 						+ "] are about to be definitively destroyed. \n "
 						+ "Are you sure you want to proceed ?");
 			else
@@ -124,7 +124,7 @@ public class ConfirmOverwriteWizard extends Wizard {
 				if (relPath.startsWith(basePath))
 					relPath = relPath.substring(basePath.length());
 				// FIXME currently add the default base label
-				parentRelPath = SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL + "/"
+				parentRelPath = SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL
 						+ relPath;
 			} catch (RepositoryException e) {
 				throw new SlcException("Unexpected error while defining "

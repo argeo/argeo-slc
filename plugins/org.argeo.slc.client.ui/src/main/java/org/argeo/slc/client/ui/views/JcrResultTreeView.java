@@ -32,8 +32,6 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.utils.CommandUtils;
@@ -103,7 +101,8 @@ import org.eclipse.ui.part.ViewPart;
 public class JcrResultTreeView extends ViewPart {
 	public final static String ID = ClientUiPlugin.ID + ".jcrResultTreeView";
 
-	private final static Log log = LogFactory.getLog(JcrResultTreeView.class);
+	// private final static Log log =
+	// LogFactory.getLog(JcrResultTreeView.class);
 
 	/* DEPENDENCY INJECTION */
 	private Session session;
@@ -619,7 +618,9 @@ public class JcrResultTreeView extends ViewPart {
 					if (isResultFolder) {
 						source = ((ParentNodeFolder) lastSelectedSourceElement)
 								.getNode();
-						if (tpNode.getPath().startsWith(source.getPath()))
+						if (tpNode.getPath().startsWith(source.getPath())
+								|| source.getParent().getPath()
+										.equals(tpNode.getPath()))
 							doit = false;
 					} else if (lastSelectedSourceElement instanceof SingleResultNode) {
 						source = ((SingleResultNode) lastSelectedSourceElement)
