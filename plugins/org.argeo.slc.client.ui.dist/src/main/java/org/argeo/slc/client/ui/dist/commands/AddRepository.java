@@ -112,9 +112,9 @@ public class AddRepository extends AbstractHandler implements ArgeoNames,
 			composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 					false));
 			setMessage("Login to remote repository", IMessageProvider.NONE);
-			name = createLT(composite, "Name", "Argeo.org Java Repository");
+			name = createLT(composite, "Name", "Example Java Repository");
 			uri = createLT(composite, "URI",
-					"https://repo.argeo.org/org.argeo.jcr.webapp/remoting/java");
+					"https://example.com/data/jcr/java");
 			username = createLT(composite, "User", "");
 			password = createLP(composite, "Password");
 

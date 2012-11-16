@@ -186,19 +186,17 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		Object firstElement = ((IStructuredSelection) viewer.getSelection())
 				.getFirstElement();
 
-		if (firstElement instanceof TreeParent) {
-			TreeParent tp = (TreeParent) firstElement;
-			String wsName = tp.getName();
+		if (firstElement instanceof TreeParent
+				|| firstElement instanceof RepoElem) {
+			String wsName = null;
 
 			// Build conditions depending on element type (repo or distribution
 			// for the time being)
 			boolean isDistribElem = false; // , isRepoElem = false;
 
-			// if (tp instanceof RepositoryElem){
-			// isRepoElem = true;
-			// } else
-			if (tp instanceof DistributionElem) {
+			if (firstElement instanceof DistributionElem) {
 				isDistribElem = true;
+				wsName = ((DistributionElem) firstElement).getName();
 			}
 
 			// create workspace
