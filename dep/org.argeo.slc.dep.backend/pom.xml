@@ -229,8 +229,6 @@
 													<!-- Simple -->
 													<include>org.argeo.tp:com.jcraft.jsch</include>
 													<include>org.argeo.tp:org.quartz</include>
-													<include>org.argeo.tp:org.springframework.context.support</include>
-													<include>org.argeo.tp:javax.mail</include>
 													<include>org.argeo.tp:org.tmatesoft.svn</include>
 													<include>org.argeo.tp:org.redline_rpm</include>
 													<!-- Ant -->
@@ -241,8 +239,11 @@
 													<!-- Maven -->
 													<include>org.argeo.tp:org.sonatype.aether</include>
 													<!-- Misc -->
-													<include>org.argeo.tp:jxl</include>
 													<include>org.argeo.tp:biz.aQute.bndlib</include>
+													<!-- TODO move to Commons so that Connect can use them -->
+													<include>org.argeo.tp:jxl</include>
+													<include>org.argeo.tp:org.springframework.context.support</include>
+													<include>org.argeo.tp:javax.mail</include>
 												</includes>
 											</dependency>
 										</mapping>
