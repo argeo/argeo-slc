@@ -18,10 +18,12 @@ package org.argeo.slc.client.ui.dist.commands;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.security.Privilege;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.eclipse.core.commands.AbstractHandler;
@@ -40,6 +42,8 @@ public class CreateWorkspace extends AbstractHandler {
 	public final static String DEFAULT_LABEL = "Create new workspace";
 	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
 
+	private String slcRole = "ROLE_SLC";
+
 	/* DEPENDENCY INJECTION */
 	private Repository repository;
 
@@ -56,16 +60,19 @@ public class CreateWorkspace extends AbstractHandler {
 		try {
 			session = repository.login();
 			session.getWorkspace().createWorkspace(workspaceName);
+			JcrUtils.logoutQuietly(session);
+			// init new workspace
+			session = repository.login(workspaceName);
+			JcrUtils.addPrivilege(session, "/", slcRole, Privilege.JCR_ALL);
 			CommandHelpers.callCommand(RefreshDistributionsView.ID);
 		} catch (RepositoryException re) {
 			throw new ArgeoException(
 					"Unexpected error while creating the new workspace.", re);
 		} finally {
-			if (session != null)
-				session.logout();
+			JcrUtils.logoutQuietly(session);
 		}
 		if (log.isTraceEnabled())
-			log.debug("WORKSPACE " + workspaceName + " CREATED");
+			log.trace("WORKSPACE " + workspaceName + " CREATED");
 		return null;
 	}
 
@@ -73,4 +80,9 @@ public class CreateWorkspace extends AbstractHandler {
 	public void setRepository(Repository repository) {
 		this.repository = repository;
 	}
+
+	public void setSlcRole(String slcRole) {
+		this.slcRole = slcRole;
+	}
+
 }

@@ -54,7 +54,6 @@
 		<property name="principalPrivileges">
 			<map>
 				<entry key="jcr:all" value="ROLE_SLC" />
-				<entry key="jcr:all" value="ROLE_ADMIN" />
 			</map>
 		</property>
 		<property name="workspace" value="*" />
