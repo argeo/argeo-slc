@@ -581,13 +581,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		protected IStatus run(IProgressMonitor eclipseMonitor) {
 			long begin = System.currentTimeMillis();
 			try {
-				// Not implemented in Davex Jackrabbit v2.2
-				// Query countQuery = sourceSession.getWorkspace()
-				// .getQueryManager()
-				// .createQuery("//element(*, nt:file)", Query.XPATH);
-				// QueryResult result = countQuery.execute();
-				// Long expectedCount = result.getNodes().getSize();
-
 				Query countQuery = sourceSession
 						.getWorkspace()
 						.getQueryManager()
@@ -595,12 +588,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 								Query.JCR_SQL2);
 				QueryResult result = countQuery.execute();
 				Long expectedCount = result.getNodes().getSize();
-				// Long expectedCount =
-				// result.getRows().nextRow().getValues()[0]
-				// .getLong();
-
-				// Long expectedCount = JcrUtils.countFiles(sourceSession
-				// .getRootNode());
 				if (log.isDebugEnabled())
 					log.debug("Will copy " + expectedCount + " files...");
 
@@ -655,72 +642,4 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			}
 		}
 	}
-
-	//
-	// try {
-	// nodeSession = nodeRepository.login();
-	// NodeIterator repos = JcrUtils.mkdirs(
-	// nodeSession,
-	// UserJcrUtils.getUserHome(nodeSession).getPath()
-	// + RepoConstants.REPOSITORIES_BASE_PATH).getNodes();
-	// while (repos.hasNext()) {
-	// Node repository = repos.nextNode();
-	// String label = null;
-	// if (repository.isNodeType(NodeType.MIX_TITLE)) {
-	// label = repository.getProperty(Property.JCR_TITLE)
-	// .getString();
-	// }
-	//
-	// if (repository.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
-	// String uri = repository.getProperty(ARGEO_URI).getString();
-	// Credentials credentials = null;
-	// if (repository.hasProperty(ARGEO_USER_ID)) {
-	// String userId = repository.getProperty(ARGEO_USER_ID)
-	// .getString();
-	// credentials = new SimpleCredentials(userId,
-	// "".toCharArray());
-	// }
-	// Repository remoteRepository = ArgeoJcrUtils
-	// .getRepositoryByUri(repositoryFactory, uri);
-	// if (label == null)
-	// label = repository.getName();
-	// repositories.add(new RepositoryElem(label,
-	// remoteRepository, credentials));
-	// }
-	// }
-	// } catch (RepositoryException e) {
-	// throw new ArgeoException("Cannot read registered repositories", e);
-	// }
-
-	// Remote
-	// String uri = null;
-	// Credentials credentials = null;
-	// Repository remoteRepository = null;
-
-	// try {
-	// uri = "http://dev.argeo.org/org.argeo.jcr.webapp/pub/java";
-	// credentials = new GuestCredentials();
-	// remoteRepository =
-	// ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
-	// repositories.add(new RepositoryElem("anonymous@dev.argeo.org//java",
-	// remoteRepository, credentials));
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-
-	// uri = "http://localhost:7070/org.argeo.jcr.webapp/pub/java";
-	// credentials = new GuestCredentials();
-	// remoteRepository =
-	// ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
-	// repositories.add(new RepositoryElem("anonymous@localhost//java",
-	// remoteRepository, credentials));
-
-	// uri = "http://localhost:7070/org.argeo.jcr.webapp/remoting/java";
-	// credentials = new SimpleCredentials(System.getProperty("user.name"),
-	// "".toCharArray());
-	// remoteRepository =
-	// ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
-	// repositories.add(new RepositoryElem("@localhost//java",
-	// remoteRepository, credentials));
-
 }
