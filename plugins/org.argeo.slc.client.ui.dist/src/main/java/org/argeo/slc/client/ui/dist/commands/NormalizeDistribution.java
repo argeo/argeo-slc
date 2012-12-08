@@ -15,7 +15,9 @@
  */
 package org.argeo.slc.client.ui.dist.commands;
 
+import javax.jcr.Binary;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
@@ -27,12 +29,21 @@ import javax.jcr.util.TraversingItemVisitor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.ArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.eclipse.ui.dialogs.SingleValue;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.aether.AetherUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
+import org.argeo.slc.repo.RepoUtils;
+import org.argeo.slc.repo.maven.MavenConventionsUtils;
+import org.argeo.slc.repo.osgi.NormalizeGroup;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -40,6 +51,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /** Make sure than Maven and OSGi metadata are consistent */
 public class NormalizeDistribution extends AbstractHandler implements SlcNames {
@@ -59,9 +72,14 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String workspace = event.getParameter(PARAM_WORKSPACE);
+		String version = SingleValue.ask("Version",
+				"Enter Distribution Version");
+		if (version == null)
+			return null;
+
 		NormalizeJob job;
 		try {
-			job = new NormalizeJob(repository.login(workspace));
+			job = new NormalizeJob(repository.login(workspace), version);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot normalize " + workspace, e);
 		}
@@ -70,34 +88,84 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 		return null;
 	}
 
+	protected void packageSourcesAsPdeSource(Node sourcesNode) {
+		Binary origBinary = null;
+		Binary osgiBinary = null;
+		try {
+			Session session = sourcesNode.getSession();
+			Artifact sourcesArtifact = AetherUtils.convertPathToArtifact(
+					sourcesNode.getPath(), null);
+
+			// read name version from manifest
+			Artifact osgiArtifact = new DefaultArtifact(
+					sourcesArtifact.getGroupId(),
+					sourcesArtifact.getArtifactId(),
+					sourcesArtifact.getExtension(),
+					sourcesArtifact.getVersion());
+			String osgiPath = MavenConventionsUtils.artifactPath(
+					artifactBasePath, osgiArtifact);
+			osgiBinary = session.getNode(osgiPath).getNode(Node.JCR_CONTENT)
+					.getProperty(Property.JCR_DATA).getBinary();
+
+			NameVersion nameVersion = RepoUtils.readNameVersion(osgiBinary
+					.getStream());
+
+			// create PDe sources artifact
+			Artifact pdeSourceArtifact = new DefaultArtifact(
+					sourcesArtifact.getGroupId(),
+					sourcesArtifact.getArtifactId() + ".source",
+					sourcesArtifact.getExtension(),
+					sourcesArtifact.getVersion());
+			String targetSourceParentPath = MavenConventionsUtils
+					.artifactParentPath(artifactBasePath, pdeSourceArtifact);
+			String targetSourceFileName = MavenConventionsUtils
+					.artifactFileName(pdeSourceArtifact);
+			String targetSourceJarPath = targetSourceParentPath + '/'
+					+ targetSourceFileName;
+
+			Node targetSourceParentNode = JcrUtils.mkfolders(session,
+					targetSourceParentPath);
+			origBinary = sourcesNode.getNode(Node.JCR_CONTENT)
+					.getProperty(Property.JCR_DATA).getBinary();
+			byte[] targetJarBytes = RepoUtils.packageAsPdeSource(
+					origBinary.getStream(), nameVersion);
+			JcrUtils.copyBytesAsFile(targetSourceParentNode,
+					targetSourceFileName, targetJarBytes);
+
+			// reindex
+			Node targetSourceJarNode = session.getNode(targetSourceJarPath);
+			artifactIndexer.index(targetSourceJarNode);
+			jarFileIndexer.index(targetSourceJarNode);
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot add PDE sources for " + sourcesNode,
+					e);
+		} finally {
+			JcrUtils.closeQuietly(origBinary);
+			JcrUtils.closeQuietly(osgiBinary);
+		}
+
+	}
+
 	public void setRepository(Repository repository) {
 		this.repository = repository;
 	}
 
 	private class NormalizeJob extends Job {
 		private Session session;
+		private String version;
 
-		public NormalizeJob(Session session) {
+		public NormalizeJob(Session session, String version) {
 			super("Normalize Distribution");
 			this.session = session;
+			this.version = version;
 		}
 
 		@Override
-		protected IStatus run(IProgressMonitor monitor) {
-			// Session session = null;
+		protected IStatus run(IProgressMonitor progressMonitor) {
+
 			try {
-				// session = repository.login(workspace);
-				// QueryManager qm = session.getWorkspace().getQueryManager();
-				// Query query = qm
-				// .createQuery(
-				// "select * from [nt:file] where NAME([nt:file]) like '%.jar'",
-				// Query.JCR_SQL2);
-				// // Query query = qm.createQuery("//*jar", Query.XPATH);
-				// long count = query.execute().getRows().getSize();
-				// if (log.isDebugEnabled())
-				// log.debug("Count: " + count);
-				// long count = query.execute().getRows().nextRow()
-				// .getValue("count").getLong();
+				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
+				// normalize artifacts
 				Query countQuery = session
 						.getWorkspace()
 						.getQueryManager()
@@ -105,12 +173,29 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 								Query.JCR_SQL2);
 				QueryResult result = countQuery.execute();
 				Long expectedCount = result.getNodes().getSize();
-
-				monitor.beginTask("Normalize "
+				monitor.beginTask("Normalize artifacts of "
 						+ session.getWorkspace().getName(),
 						expectedCount.intValue());
 				NormalizingTraverser tiv = new NormalizingTraverser(monitor);
 				session.getNode(artifactBasePath).accept(tiv);
+
+				// normalize groups
+				Query groupQuery = session
+						.getWorkspace()
+						.getQueryManager()
+						.createQuery(
+								"select group from [" + SlcTypes.SLC_GROUP_BASE
+										+ "] as group", Query.JCR_SQL2);
+				NodeIterator groups = groupQuery.execute().getNodes();
+				monitor.beginTask("Normalize groups of "
+						+ session.getWorkspace().getName(),
+						(int) groups.getSize());
+				while (groups.hasNext()) {
+					NormalizeGroup normalizeGroup = new NormalizeGroup();
+					normalizeGroup.setArtifactBasePath(artifactBasePath);
+					normalizeGroup.processGroupNode(groups.nextNode(), version,
+							monitor);
+				}
 			} catch (Exception e) {
 				return new Status(IStatus.ERROR, DistPlugin.ID,
 						"Cannot normalize distribution "
@@ -124,9 +209,9 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	}
 
 	private class NormalizingTraverser extends TraversingItemVisitor {
-		IProgressMonitor monitor;
+		ArgeoMonitor monitor;
 
-		public NormalizingTraverser(IProgressMonitor monitor) {
+		public NormalizingTraverser(ArgeoMonitor monitor) {
 			super();
 			this.monitor = monitor;
 		}
@@ -140,16 +225,28 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 		protected void entering(Node node, int level)
 				throws RepositoryException {
 			if (node.isNodeType(NodeType.NT_FILE)) {
-				if (jarFileIndexer.support(node.getPath()))
-					if (artifactIndexer.support(node.getPath())) {
-						monitor.subTask(node.getName());
-						artifactIndexer.index(node);
-						jarFileIndexer.index(node);
-						node.getSession().save();
-						monitor.worked(1);
-						if (log.isDebugEnabled())
-							log.debug("Processed " + node);
-					}
+				if (node.getName().endsWith("-sources.jar")) {
+					monitor.subTask(node.getName());
+					packageSourcesAsPdeSource(node);
+					node.getSession().save();
+					monitor.worked(1);
+					if (log.isDebugEnabled())
+						log.debug("Processed source artifact " + node.getPath());
+				} else if (node.getName().endsWith(".jar")) {
+					if (jarFileIndexer.support(node.getPath()))
+						if (artifactIndexer.support(node.getPath())) {
+							monitor.subTask(node.getName());
+							artifactIndexer.index(node);
+							jarFileIndexer.index(node);
+							node.getSession().save();
+							monitor.worked(1);
+							if (log.isDebugEnabled())
+								log.debug("Processed artifact "
+										+ node.getPath());
+						}
+				} else {
+					monitor.worked(1);
+				}
 			}
 		}
 

@@ -31,6 +31,7 @@ import javax.jcr.Session;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.ArgeoMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.ArtifactIdComparator;
@@ -83,74 +84,89 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		Session session = null;
 		try {
 			session = repository.login(workspace);
-
 			Node groupNode = session.getNode(MavenConventionsUtils.groupPath(
 					artifactBasePath, groupId));
-			// TODO factorize with a traverser pattern?
-			for (NodeIterator artifactBases = groupNode.getNodes(); artifactBases
-					.hasNext();) {
-				Node artifactBase = artifactBases.nextNode();
-				if (artifactBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
-					for (NodeIterator artifactVersions = artifactBase
-							.getNodes(); artifactVersions.hasNext();) {
-						Node artifactVersion = artifactVersions.nextNode();
-						if (artifactVersion
-								.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE))
-							for (NodeIterator files = artifactVersion
-									.getNodes(); files.hasNext();) {
-								Node file = files.nextNode();
-								if (file.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
-									preProcessBundleArtifact(file);
-									file.getSession().save();
-									if (log.isDebugEnabled())
-										log.debug("Pre-processed "
-												+ file.getName());
-								}
-
-							}
-					}
-				}
-			}
-			// NodeIterator bundlesIt = listBundleArtifacts(session);
-			//
-			// while (bundlesIt.hasNext()) {
-			// Node bundleNode = bundlesIt.nextNode();
-			// preProcessBundleArtifact(bundleNode);
-			// bundleNode.getSession().save();
-			// if (log.isDebugEnabled())
-			// log.debug("Pre-processed " + bundleNode.getName());
-			// }
-
-			int bundleCount = symbolicNamesToNodes.size();
-			if (log.isDebugEnabled())
-				log.debug("Indexed " + bundleCount + " bundles");
-
-			int count = 1;
-			for (Node bundleNode : symbolicNamesToNodes.values()) {
-				processBundleArtifact(bundleNode);
-				bundleNode.getSession().save();
-				if (log.isDebugEnabled())
-					log.debug(count + "/" + bundleCount + " Processed "
-							+ bundleNode.getName());
-				count++;
-			}
-
-			// indexes
-			Set<Artifact> indexes = new TreeSet<Artifact>(
-					new ArtifactIdComparator());
-			Artifact indexArtifact = writeIndex(session, BINARIES_ARTIFACT_ID,
-					binaries);
-			indexes.add(indexArtifact);
-			indexArtifact = writeIndex(session, SOURCES_ARTIFACT_ID, sources);
-			indexes.add(indexArtifact);
-			// sdk
-			writeIndex(session, SDK_ARTIFACT_ID, indexes);
+			processGroupNode(groupNode, null);
 		} catch (Exception e) {
 			throw new SlcException("Cannot normalize group " + groupId + " in "
 					+ workspace, e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
 		}
+	}
+
+	public synchronized void processGroupNode(Node groupNode, String version,
+			ArgeoMonitor monitor) throws RepositoryException {
+		// FIXME better encapsulate
+		groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID).getString();
+		this.version = version;
+		processGroupNode(groupNode, monitor);
+	}
+
+	protected void processGroupNode(Node groupNode, ArgeoMonitor monitor)
+			throws RepositoryException {
+		if (monitor != null)
+			monitor.subTask("Group " + groupId);
+		Session session = groupNode.getSession();
+		for (NodeIterator artifactBases = groupNode.getNodes(); artifactBases
+				.hasNext();) {
+			Node artifactBase = artifactBases.nextNode();
+			if (artifactBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
+				for (NodeIterator artifactVersions = artifactBase.getNodes(); artifactVersions
+						.hasNext();) {
+					Node artifactVersion = artifactVersions.nextNode();
+					if (artifactVersion
+							.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE))
+						for (NodeIterator files = artifactVersion.getNodes(); files
+								.hasNext();) {
+							Node file = files.nextNode();
+							if (file.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
+								preProcessBundleArtifact(file);
+								file.getSession().save();
+								if (log.isDebugEnabled())
+									log.debug("Pre-processed " + file.getName());
+							}
+
+						}
+				}
+			}
+		}
+		// NodeIterator bundlesIt = listBundleArtifacts(session);
+		//
+		// while (bundlesIt.hasNext()) {
+		// Node bundleNode = bundlesIt.nextNode();
+		// preProcessBundleArtifact(bundleNode);
+		// bundleNode.getSession().save();
+		// if (log.isDebugEnabled())
+		// log.debug("Pre-processed " + bundleNode.getName());
+		// }
+
+		int bundleCount = symbolicNamesToNodes.size();
+		if (log.isDebugEnabled())
+			log.debug("Indexed " + bundleCount + " bundles");
+
+		int count = 1;
+		for (Node bundleNode : symbolicNamesToNodes.values()) {
+			processBundleArtifact(bundleNode);
+			bundleNode.getSession().save();
+			if (log.isDebugEnabled())
+				log.debug(count + "/" + bundleCount + " Processed "
+						+ bundleNode.getName());
+			count++;
+		}
+
+		// indexes
+		Set<Artifact> indexes = new TreeSet<Artifact>(
+				new ArtifactIdComparator());
+		Artifact indexArtifact = writeIndex(session, BINARIES_ARTIFACT_ID,
+				binaries);
+		indexes.add(indexArtifact);
+		indexArtifact = writeIndex(session, SOURCES_ARTIFACT_ID, sources);
+		indexes.add(indexArtifact);
+		// sdk
+		writeIndex(session, SDK_ARTIFACT_ID, indexes);
+		if (monitor != null)
+			monitor.worked(1);
 	}
 
 	private Artifact writeIndex(Session session, String artifactId,

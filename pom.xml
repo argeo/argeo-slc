@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>1.1.8-SNAPSHOT</version>
+		<version>1.1.8</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -13,9 +13,7 @@
 	<properties>
 		<developmentCycle.slc>1.1</developmentCycle.slc>
 		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
-		<site.repoBase>file:///srv/projects/www/slc/site</site.repoBase>
-		<site.urlBase>http://projects.argeo.org/slc/site</site.urlBase>
-		<version.slc>1.1.6</version.slc>
+		<version.slc>1.1.7-SNAPSHOT</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
@@ -27,7 +25,7 @@
 		<module>dist</module>
 		<module>demo</module>
 	</modules>
-	<url>${site.urlBase}/${developmentCycle.slc}</url>
+	<url>http://projects.argeo.org/slc/</url>
 	<scm>
 		<connection>scm:svn:https://svn.argeo.org/slc/trunk</connection>
 		<developerConnection>scm:svn:https://svn.argeo.org/slc/trunk</developerConnection>
@@ -118,13 +116,13 @@ limitations under the License.
 	<distributionManagement>
 		<repository>
 			<id>staging</id>
-			<url>dav:https://repo.argeo.org/data/files/java/org.argeo.slc-1.1.x</url>
+			<url>dav:https://repo.argeo.org/data/files/java/org.argeo.slc-${developmentCycle.slc}.x</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<site>
 			<id>site</id>
 			<name>SLC Site</name>
-			<url>file:///srv/projects/www/slc/site/${project.version}</url>
+			<url>dav:https://repo.argeo.org/data/files/docs/org.argeo.slc-${developmentCycle.slc}.x</url>
 		</site>
 	</distributionManagement>
 </project>

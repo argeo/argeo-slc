@@ -73,12 +73,18 @@ public class ArtifactIndexer implements NodeIndexer {
 					artifact.getClassifier());
 			JcrUtils.updateLastModified(fileNode);
 
-			// make sure there is a checksum
+			// make sure there are checksums
 			String shaNodeName = fileNode.getName() + ".sha1";
 			if (!fileNode.getParent().hasNode(shaNodeName)) {
 				String sha = JcrUtils.checksumFile(fileNode, "SHA-1");
 				JcrUtils.copyBytesAsFile(fileNode.getParent(), shaNodeName,
 						sha.getBytes());
+			}
+			String md5NodeName = fileNode.getName() + ".md5";
+			if (!fileNode.getParent().hasNode(md5NodeName)) {
+				String md5 = JcrUtils.checksumFile(fileNode, "MD5");
+				JcrUtils.copyBytesAsFile(fileNode.getParent(), md5NodeName,
+						md5.getBytes());
 			}
 
 			// set higher levels

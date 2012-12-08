@@ -237,15 +237,28 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 
 	/** Read the OSGi {@link NameVersion} */
 	public static NameVersion readNameVersion(File artifactFile) {
-		JarInputStream jarInputStream = null;
 		try {
-			jarInputStream = new JarInputStream(new FileInputStream(
-					artifactFile));
-			return readNameVersion(jarInputStream.getManifest());
+			return readNameVersion(new FileInputStream(artifactFile));
 		} catch (Exception e) {
 			// probably not a jar, skipping
 			if (log.isDebugEnabled()) {
 				log.debug("Skipping " + artifactFile + " because of " + e);
+				// e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	/** Read the OSGi {@link NameVersion} */
+	public static NameVersion readNameVersion(InputStream in) {
+		JarInputStream jarInputStream = null;
+		try {
+			jarInputStream = new JarInputStream(in);
+			return readNameVersion(jarInputStream.getManifest());
+		} catch (Exception e) {
+			// probably not a jar, skipping
+			if (log.isDebugEnabled()) {
+				log.debug("Skipping because of " + e);
 				// e.printStackTrace();
 			}
 		} finally {

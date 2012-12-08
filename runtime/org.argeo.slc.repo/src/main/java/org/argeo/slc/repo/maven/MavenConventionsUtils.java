@@ -100,7 +100,7 @@ public class MavenConventionsUtils {
 	/** Relative path to the directories where the files will be stored */
 	public static String artifactParentPath(Artifact artifact) {
 		return artifact.getGroupId().replace('.', '/') + '/'
-				+ artifact.getArtifactId() + '/' + artifact.getVersion();
+				+ artifact.getArtifactId() + '/' + artifact.getBaseVersion();
 	}
 
 	public static String artifactsAsDependencyPom(Artifact pomArtifact,
@@ -163,9 +163,9 @@ public class MavenConventionsUtils {
 		p.append("</dependencyManagement>\n");
 
 		// Repositories
-//		p.append("<repositories>\n");
-//		p.append("<repository><id>argeo</id><url>http://maven.argeo.org/argeo</url></repository>\n");
-//		p.append("</repositories>\n");
+		// p.append("<repositories>\n");
+		// p.append("<repository><id>argeo</id><url>http://maven.argeo.org/argeo</url></repository>\n");
+		// p.append("</repositories>\n");
 
 		p.append("</project>\n");
 		return p.toString();
