@@ -28,6 +28,11 @@
 			<beans:entry key="argeo.jcr.repository.alias" value="rpm" />
 		</service-properties>
 	</service>
+	<service ref="docsRepository" interface="javax.jcr.Repository">
+		<service-properties>
+			<beans:entry key="argeo.jcr.repository.alias" value="docs" />
+		</service-properties>
+	</service>
 
 	<service ref="mavenProxyService" interface="org.argeo.slc.repo.maven.proxy.MavenProxyService" />
 </beans:beans>

@@ -16,6 +16,10 @@
 		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/rpm" />
 		<property name="configuration" value="${slc.repo.jcr.configuration.rpm}" />
 	</bean>
+	<bean id="docsRepository" parent="template.jcrRepository">
+		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/docs" />
+		<property name="configuration" value="${slc.repo.jcr.configuration.docs}" />
+	</bean>
 
 	<!-- JCR authorizations -->
 	<bean parent="template.jcrAuthorizations">
@@ -26,6 +30,9 @@
 	</bean>
 	<bean parent="template.jcrAuthorizations">
 		<property name="repository" ref="rpmRepository" />
+	</bean>
+	<bean parent="template.jcrAuthorizations">
+		<property name="repository" ref="docsRepository" />
 	</bean>
 
 	<bean
