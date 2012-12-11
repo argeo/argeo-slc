@@ -173,8 +173,9 @@ public class AddRepository extends AbstractHandler implements ArgeoNames,
 
 		@Override
 		protected void okPressed() {
+			Session nodeSession = null;
 			try {
-				Session nodeSession = nodeRepository.login();
+				nodeSession = nodeRepository.login();
 				String reposPath = UserJcrUtils.getUserHome(nodeSession)
 						.getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
 
@@ -204,6 +205,8 @@ public class AddRepository extends AbstractHandler implements ArgeoNames,
 				super.okPressed();
 			} catch (Exception e) {
 				ErrorFeedback.show("Cannot add remote repository", e);
+			} finally {
+				JcrUtils.logoutQuietly(nodeSession);
 			}
 		}
 
