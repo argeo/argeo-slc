@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.commons</groupId>
@@ -121,8 +122,22 @@ limitations under the License.
 		</repository>
 		<site>
 			<id>site</id>
-			<name>SLC Site</name>
 			<url>dav:https://repo.argeo.org/data/files/docs/org.argeo.slc-${developmentCycle.slc}.x</url>
 		</site>
 	</distributionManagement>
+	<profiles>
+		<profile>
+			<id>localrepo</id>
+			<distributionManagement>
+				<repository>
+					<id>localrepo</id>
+					<url>dav:http://localhost:7070/data/files/java/org.argeo.slc-${developmentCycle.slc}.x</url>
+				</repository>
+				<site>
+					<id>site</id>
+					<url>dav:http://localhost:7070/data/files/docs/org.argeo.slc-${developmentCycle.slc}.x</url>
+				</site>
+			</distributionManagement>
+		</profile>
+	</profiles>
 </project>
