@@ -31,7 +31,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoMonitor;
 import org.argeo.eclipse.ui.EclipseArgeoMonitor;
-import org.argeo.eclipse.ui.dialogs.SingleValue;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -51,6 +50,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IMessageProvider;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
@@ -72,14 +85,18 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String workspace = event.getParameter(PARAM_WORKSPACE);
-		String version = SingleValue.ask("Version",
-				"Enter Distribution Version");
-		if (version == null)
+		NormalizationDialog dialog = new NormalizationDialog(
+				HandlerUtil.getActiveShell(event));
+		if (dialog.open() != Dialog.OK)
 			return null;
+
+		String version = dialog.getVersion();
+		Boolean overridePoms = dialog.getOverridePoms();
 
 		NormalizeJob job;
 		try {
-			job = new NormalizeJob(repository.login(workspace), version);
+			job = new NormalizeJob(repository.login(workspace), version,
+					overridePoms);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot normalize " + workspace, e);
 		}
@@ -153,11 +170,14 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	private class NormalizeJob extends Job {
 		private Session session;
 		private String version;
+		private Boolean overridePoms;
 
-		public NormalizeJob(Session session, String version) {
+		public NormalizeJob(Session session, String version,
+				Boolean overridePoms) {
 			super("Normalize Distribution");
 			this.session = session;
 			this.version = version;
+			this.overridePoms = overridePoms;
 		}
 
 		@Override
@@ -191,10 +211,8 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 						+ session.getWorkspace().getName(),
 						(int) groups.getSize());
 				while (groups.hasNext()) {
-					NormalizeGroup normalizeGroup = new NormalizeGroup();
-					normalizeGroup.setArtifactBasePath(artifactBasePath);
-					normalizeGroup.processGroupNode(groups.nextNode(), version,
-							monitor);
+					NormalizeGroup.processGroupNode(groups.nextNode(), version,
+							overridePoms, monitor);
 				}
 			} catch (Exception e) {
 				return new Status(IStatus.ERROR, DistPlugin.ID,
@@ -257,6 +275,76 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 
 		@Override
 		protected void leaving(Node node, int level) throws RepositoryException {
+		}
+
+	}
+
+	public class NormalizationDialog extends TitleAreaDialog {
+		private Text versionT;
+		private String version;
+		private Button overridePomsC;
+		private Boolean overridePoms;
+
+		public NormalizationDialog(Shell parentShell) {
+			super(parentShell);
+		}
+
+		protected Point getInitialSize() {
+			return new Point(300, 250);
+		}
+
+		protected Control createDialogArea(Composite parent) {
+			Composite dialogarea = (Composite) super.createDialogArea(parent);
+			dialogarea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+					true));
+			Composite composite = new Composite(dialogarea, SWT.NONE);
+			composite.setLayout(new GridLayout(2, false));
+			composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+					false));
+			versionT = createLT(composite, "Version");
+			overridePomsC = createLC(composite, "Override POMs");
+			setMessage("Configure normalization", IMessageProvider.NONE);
+
+			parent.pack();
+			return composite;
+		}
+
+		@Override
+		protected void okPressed() {
+			version = versionT.getText();
+			overridePoms = overridePomsC.getSelection();
+			super.okPressed();
+		}
+
+		/** Creates label and text. */
+		protected Text createLT(Composite parent, String label) {
+			new Label(parent, SWT.NONE).setText(label);
+			Text text = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.BORDER
+					| SWT.NONE);
+			text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			return text;
+		}
+
+		/** Creates label and check. */
+		protected Button createLC(Composite parent, String label) {
+			new Label(parent, SWT.NONE).setText(label);
+			Button check = new Button(parent, SWT.CHECK);
+			check.setSelection(false);
+			check.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			return check;
+		}
+
+		protected void configureShell(Shell shell) {
+			super.configureShell(shell);
+			shell.setText("Configure Normalization");
+		}
+
+		public String getVersion() {
+			return version;
+		}
+
+		public Boolean getOverridePoms() {
+			return overridePoms;
 		}
 
 	}
