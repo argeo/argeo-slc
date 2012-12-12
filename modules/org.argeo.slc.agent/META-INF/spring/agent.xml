@@ -12,7 +12,7 @@
 	</bean>
 
 	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager">
-	<property name="defaultTimeout" value=""/>
+		<property name="defaultTimeout" value="${slc.agent.osgi.defaultTimeout}" />
 	</bean>
 
 	<!-- Logging -->
