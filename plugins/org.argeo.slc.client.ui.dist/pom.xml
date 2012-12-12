@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>plugins</artifactId>
-		<version>1.1.8-SNAPSHOT</version>
+		<version>1.1.8</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.client.ui.dist</artifactId>
@@ -66,17 +66,17 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.specs</artifactId>
-			<version>1.1.8-SNAPSHOT</version>
+			<version>1.1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>1.1.8-SNAPSHOT</version>
+			<version>1.1.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
-			<version>1.1.8-SNAPSHOT</version>
+			<version>1.1.8</version>
 		</dependency>
 
 		<dependency>
