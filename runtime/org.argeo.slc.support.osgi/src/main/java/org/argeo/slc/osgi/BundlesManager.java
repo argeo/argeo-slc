@@ -48,7 +48,7 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 
 	private BundleContext bundleContext;
 
-	private Long defaultTimeout = 30 * 1000l;
+	private Long defaultTimeout = 60 * 1000l;
 	private Long pollingPeriod = 200l;
 
 	// Refresh sync objects
