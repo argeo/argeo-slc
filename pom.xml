@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>1.1.9</version>
+		<version>1.2.0</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -13,7 +13,7 @@
 	<properties>
 		<developmentCycle.slc>1.1</developmentCycle.slc>
 		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
-		<version.slc>1.1.8-SNAPSHOT</version.slc>
+		<version.slc>1.1.9-SNAPSHOT</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
