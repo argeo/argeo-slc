@@ -13,7 +13,7 @@
 	<properties>
 		<developmentCycle.slc>1.1</developmentCycle.slc>
 		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
-		<version.slc>1.1.9</version.slc>
+		<version.slc>1.1.10-SNAPSHOT</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
@@ -105,7 +105,7 @@ limitations under the License.
 	<repositories>
 		<repository>
 			<id>argeo-commons</id>
-			<url>http://repo.argeo.org/data/public/java/org.argeo.commons-1.1.x</url>
+			<url>http://repo.argeo.org/data/public/java/org.argeo.commons-1.2.x</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
