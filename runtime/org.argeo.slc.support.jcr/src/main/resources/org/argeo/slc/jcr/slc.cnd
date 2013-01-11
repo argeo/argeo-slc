@@ -99,6 +99,11 @@ mixin
 - slc:uuid (STRING) ! m
 - slc:testCase (STRING)
 - slc:completed (DATE)
+// Added by the engine once the test has been fully processed. 
+// If the test is killed before it ends, this node is not created
++ slc:status (slc:check)
+// DEPRECATED. This Node is now rather called slc:status (see above)
+// Should be removed in Argeo 2.
 + slc:testStatus (slc:check)
 
 [slc:diffResult] > slc:testResult

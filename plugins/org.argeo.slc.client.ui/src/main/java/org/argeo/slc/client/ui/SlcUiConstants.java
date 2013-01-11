@@ -26,6 +26,5 @@ public interface SlcUiConstants {
 	/*
 	 * MISCEALLENEOUS
 	 */
-	public final static String DEFAULT_DISPLAY_DATE_FORMAT = "MM/dd/yy";
-	public final static String DEFAULT_DISPLAY_DATE_TIME_FORMAT = "MM/dd/yyyy, HH:mm:ss";
+	public final static String DEFAULT_DISPLAY_DATE_TIME_FORMAT = "yyyy-MM-dd, HH:mm:ss";
 }

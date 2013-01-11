@@ -15,6 +15,8 @@
  */
 package org.argeo.slc.client.ui.views;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -22,11 +24,8 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
@@ -100,6 +99,9 @@ import org.eclipse.ui.part.ViewPart;
 /** SLC generic JCR Result tree view. */
 public class JcrResultTreeView extends ViewPart {
 	public final static String ID = ClientUiPlugin.ID + ".jcrResultTreeView";
+
+	private final static DateFormat dateFormat = new SimpleDateFormat(
+			SlcUiConstants.DEFAULT_DISPLAY_DATE_TIME_FORMAT);
 
 	// private final static Log log =
 	// LogFactory.getLog(JcrResultTreeView.class);
@@ -259,11 +261,23 @@ public class JcrResultTreeView extends ViewPart {
 		TableViewerColumn col = new TableViewerColumn(propertiesViewer,
 				SWT.NONE);
 		col.getColumn().setText("Name");
-		col.getColumn().setWidth(200);
+		col.getColumn().setWidth(100);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			public String getText(Object element) {
 				try {
-					return ((Property) element).getName();
+					String name = ((Property) element).getName();
+					String value = null;
+					if (SlcNames.SLC_TEST_CASE.equals(name))
+						value = "Test case";
+					else if (SlcNames.SLC_COMPLETED.equals(name))
+						value = "Completed on";
+					else if (SlcNames.SLC_SUCCESS.equals(name))
+						value = "Status";
+					else if (SlcNames.SLC_MESSAGE.equals(name))
+						value = "Message";
+					else if (SlcNames.SLC_ERROR_MESSAGE.equals(name))
+							value = "Error";
+					return value;
 				} catch (RepositoryException e) {
 					throw new ArgeoException(
 							"Unexpected exception in label provider", e);
@@ -272,39 +286,33 @@ public class JcrResultTreeView extends ViewPart {
 		});
 		col = new TableViewerColumn(propertiesViewer, SWT.NONE);
 		col.getColumn().setText("Value");
-		col.getColumn().setWidth(400);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			public String getText(Object element) {
-				try {
-					Property property = (Property) element;
-					if (property.getType() == PropertyType.BINARY)
-						return "<binary>";
-					else if (property.isMultiple()) {
-						StringBuffer buf = new StringBuffer("[");
-						Value[] values = property.getValues();
-						for (int i = 0; i < values.length; i++) {
-							if (i != 0)
-								buf.append(", ");
-							buf.append(values[i].getString());
-						}
-						buf.append(']');
-						return buf.toString();
-					} else
-						return property.getValue().getString();
-				} catch (RepositoryException e) {
-					throw new ArgeoException(
-							"Unexpected exception in label provider", e);
-				}
-			}
-		});
-		col = new TableViewerColumn(propertiesViewer, SWT.NONE);
-		col.getColumn().setText("Type");
 		col.getColumn().setWidth(200);
 		col.setLabelProvider(new ColumnLabelProvider() {
 			public String getText(Object element) {
 				try {
-					return PropertyType.nameFromValue(((Property) element)
-							.getType());
+					Property property = (Property) element;
+					String name = property.getName();
+					String value = null;
+
+					if (SlcNames.SLC_TEST_CASE.equals(name)
+							|| SlcNames.SLC_ERROR_MESSAGE.equals(name)
+							|| SlcNames.SLC_MESSAGE.equals(name))
+						value = property.getValue().getString();
+					else if (SlcNames.SLC_COMPLETED.equals(name)) {
+						Calendar date = property.getValue().getDate();
+						value = dateFormat.format(date.getTime());
+					} else if (SlcNames.SLC_SUCCESS.equals(name)) {
+						if (property.getValue().getBoolean())
+							value = "SUCCESS";
+						else {
+							if (property.getParent().hasNode(
+									SlcNames.SLC_ERROR_MESSAGE))
+								value = "ERROR";
+							else
+								value = "FAILED";
+						}
+					}
+					return value;
 				} catch (RepositoryException e) {
 					throw new ArgeoException(
 							"Unexpected exception in label provider", e);
@@ -777,14 +785,28 @@ public class JcrResultTreeView extends ViewPart {
 		public Object[] getElements(Object inputElement) {
 			try {
 				if (inputElement instanceof Node) {
-					List<Property> props = new ArrayList<Property>();
-					PropertyIterator pit = ((Node) inputElement)
-							.getProperties();
-					while (pit.hasNext())
-						props.add(pit.nextProperty());
-					return props.toArray();
+					Node node = (Node) inputElement;
+					if (node.isNodeType(SlcTypes.SLC_TEST_RESULT)) {
+						List<Property> props = new ArrayList<Property>();
+						if (node.hasProperty(SlcNames.SLC_TEST_CASE))
+							props.add(node.getProperty(SlcNames.SLC_TEST_CASE));
+						if (node.hasProperty(SlcNames.SLC_COMPLETED))
+							props.add(node.getProperty(SlcNames.SLC_COMPLETED));
+						if (node.hasNode(SlcNames.SLC_STATUS)) {
+							Node status = node.getNode(SlcNames.SLC_STATUS);
+							props.add(status.getProperty(SlcNames.SLC_SUCCESS));
+							if (status.hasProperty(SlcNames.SLC_MESSAGE))
+								props.add(status
+										.getProperty(SlcNames.SLC_MESSAGE));
+							if (status.hasProperty(SlcNames.SLC_ERROR_MESSAGE))
+								props.add(status
+										.getProperty(SlcNames.SLC_ERROR_MESSAGE));
+						}
+						return props.toArray();
+					}
 				}
 				return new Object[] {};
+
 			} catch (RepositoryException e) {
 				throw new ArgeoException("Cannot get element for "
 						+ inputElement, e);

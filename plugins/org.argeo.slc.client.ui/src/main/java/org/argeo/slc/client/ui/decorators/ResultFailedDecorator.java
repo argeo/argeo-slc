@@ -23,6 +23,7 @@ import javax.jcr.RepositoryException;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
+import org.argeo.slc.client.ui.SlcUiConstants;
 import org.argeo.slc.client.ui.model.ResultParent;
 import org.argeo.slc.client.ui.model.SingleResultNode;
 import org.argeo.slc.jcr.SlcNames;
@@ -41,7 +42,7 @@ public class ResultFailedDecorator extends LabelProvider implements
 	// .getLog(ResultFailedDecorator.class);
 
 	private final static DateFormat dateFormat = new SimpleDateFormat(
-			"yyyy-MM-dd HH:mm");
+			SlcUiConstants.DEFAULT_DISPLAY_DATE_TIME_FORMAT);
 
 	public ResultFailedDecorator() {
 		super();
