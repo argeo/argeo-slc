@@ -20,6 +20,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.logging.Log;
@@ -33,7 +34,7 @@ import org.argeo.slc.jcr.SlcTypes;
 
 /** Execution process implementation based on a JCR node. */
 public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
-	private Log log = LogFactory.getLog(JcrExecutionProcess.class);
+	private final static Log log = LogFactory.getLog(JcrExecutionProcess.class);
 	private final Node node;
 
 	private Long nextLogLine = 1l;
@@ -42,7 +43,7 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 		this.node = node;
 	}
 
-	public String getUuid() {
+	public synchronized String getUuid() {
 		try {
 			return node.getProperty(SLC_UUID).getString();
 		} catch (RepositoryException e) {
@@ -50,7 +51,7 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 		}
 	}
 
-	public String getStatus() {
+	public synchronized String getStatus() {
 		try {
 			return node.getProperty(SLC_STATUS).getString();
 		} catch (RepositoryException e) {
@@ -62,7 +63,7 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 		}
 	}
 
-	public void setStatus(String status) {
+	public synchronized void setStatus(String status) {
 		try {
 			node.setProperty(SLC_STATUS, status);
 			// last modified properties needs to be manually updated
@@ -132,8 +133,25 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 		}
 	}
 
-	public Node getNode() {
-		return node;
+	// public Node getNode() {
+	// return node;
+	// }
+
+	public String getNodePath() {
+		try {
+			return node.getPath();
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot get process node path for " + node,
+					e);
+		}
 	}
 
+	public Repository getRepository() {
+		try {
+			return node.getSession().getRepository();
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot get process JCR repository for "
+					+ node, e);
+		}
+	}
 }

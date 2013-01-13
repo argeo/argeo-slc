@@ -22,8 +22,10 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.argeo.ArgeoException;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionSpec;
 import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
@@ -50,8 +52,11 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 
 	@Override
 	protected void process() throws InterruptedException {
+		Session session = null;
 		try {
-			Node rootRealizedFlowNode = getNode().getNode(SLC_FLOW);
+			session = getJcrExecutionProcess().getRepository().login();
+			Node rootRealizedFlowNode = session.getNode(
+					getJcrExecutionProcess().getNodePath()).getNode(SLC_FLOW);
 			// we just manage one level for the time being
 			NodeIterator nit = rootRealizedFlowNode.getNodes(SLC_FLOW);
 			while (nit.hasNext()) {
@@ -85,7 +90,10 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 				}
 			}
 		} catch (RepositoryException e) {
-			throw new ArgeoException("Cannot process " + getNode(), e);
+			throw new ArgeoException("Cannot process "
+					+ getJcrExecutionProcess().getNodePath(), e);
+		} finally {
+			JcrUtils.logoutQuietly(session);
 		}
 	}
 
@@ -193,7 +201,7 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 		}
 	}
 
-	protected Node getNode() {
-		return ((JcrExecutionProcess) getProcess()).getNode();
+	protected JcrExecutionProcess getJcrExecutionProcess() {
+		return (JcrExecutionProcess) getProcess();
 	}
 }
