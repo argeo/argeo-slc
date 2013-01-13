@@ -23,6 +23,7 @@ import javax.jcr.RepositoryException;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
+import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.SlcUiConstants;
 import org.argeo.slc.client.ui.model.ResultParent;
 import org.argeo.slc.client.ui.model.SingleResultNode;
@@ -35,8 +36,11 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 
+/** Dynamically decorates the results tree. */
 public class ResultFailedDecorator extends LabelProvider implements
 		ILabelDecorator {
+
+	// FIXME why not use? org.eclipse.jface.viewers.DecoratingLabelProvider
 
 	// private final static Log log = LogFactory
 	// .getLog(ResultFailedDecorator.class);
@@ -44,8 +48,22 @@ public class ResultFailedDecorator extends LabelProvider implements
 	private final static DateFormat dateFormat = new SimpleDateFormat(
 			SlcUiConstants.DEFAULT_DISPLAY_DATE_TIME_FORMAT);
 
+	// hack for SWT resource leak
+	// see http://www.eclipse.org/articles/swt-design-2/swt-design-2.html
+	// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=181215
+	private final Image failedFolder;
+	private final Image failedSingleResult;
+
 	public ResultFailedDecorator() {
 		super();
+		ImageDescriptor desc = ClientUiPlugin.getDefault().getWorkbench()
+				.getSharedImages()
+				.getImageDescriptor(ISharedImages.IMG_DEC_FIELD_ERROR);
+		failedFolder = new DecorationOverlayIcon(SlcImages.FOLDER, desc,
+				IDecoration.TOP_LEFT).createImage();
+		failedSingleResult = new DecorationOverlayIcon(
+				SlcImages.PROCESS_COMPLETED, desc, IDecoration.TOP_LEFT)
+				.createImage();
 	}
 
 	// Method to decorate Image
@@ -57,12 +75,17 @@ public class ResultFailedDecorator extends LabelProvider implements
 		// by Eclipse
 		if (object instanceof ResultParent) {
 			if (!((ResultParent) object).isPassed()) {
-				ImageDescriptor desc = ClientUiPlugin.getDefault()
-						.getWorkbench().getSharedImages()
-						.getImageDescriptor(ISharedImages.IMG_DEC_FIELD_ERROR);
-				DecorationOverlayIcon decoratedImage = new DecorationOverlayIcon(
-						image, desc, IDecoration.TOP_LEFT);
-				return decoratedImage.createImage();
+				// ImageDescriptor desc = ClientUiPlugin.getDefault()
+				// .getWorkbench().getSharedImages()
+				// .getImageDescriptor(ISharedImages.IMG_DEC_FIELD_ERROR);
+				// DecorationOverlayIcon decoratedImage = new
+				// DecorationOverlayIcon(
+				// image, desc, IDecoration.TOP_LEFT);
+				// return decoratedImage.createImage();
+				if (object instanceof SingleResultNode)
+					return failedSingleResult;
+				else
+					return failedFolder;
 			} else
 				return null;
 		}
@@ -82,11 +105,19 @@ public class ResultFailedDecorator extends LabelProvider implements
 							.getTime());
 			} catch (RepositoryException re) {
 				throw new SlcException(
-						"Unexpected error defining text decoration for result", re);
+						"Unexpected error defining text decoration for result",
+						re);
 			}
 			return label + " [" + decoration + "]";
 		} else
 			return null;
+	}
+
+	@Override
+	public void dispose() {
+		failedFolder.dispose();
+		failedSingleResult.dispose();
+		super.dispose();
 	}
 
 }
