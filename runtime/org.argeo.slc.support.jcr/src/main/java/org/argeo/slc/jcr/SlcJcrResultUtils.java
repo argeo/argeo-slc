@@ -153,7 +153,7 @@ public class SlcJcrResultUtils {
 			}
 			Node rfNode = JcrUtils.mkdirs(session, absPath);
 			rfNode.setPrimaryType(SlcTypes.SLC_RESULT_FOLDER);
-			Node statusNode = rfNode.addNode(SlcNames.SLC_STATUS,
+			Node statusNode = rfNode.addNode(SlcNames.SLC_AGGREGATED_STATUS,
 					SlcTypes.SLC_CHECK);
 			statusNode.setProperty(SlcNames.SLC_SUCCESS, true);
 			session.save();

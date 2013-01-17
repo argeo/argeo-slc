@@ -50,8 +50,8 @@ public class SingleResultNode extends ResultParent implements
 	public boolean refreshPassedStatus() {
 		try {
 			Node check;
-			if (node.hasNode(SlcNames.SLC_STATUS)) {
-				check = node.getNode(SlcNames.SLC_STATUS);
+			if (node.hasNode(SlcNames.SLC_AGGREGATED_STATUS)) {
+				check = node.getNode(SlcNames.SLC_AGGREGATED_STATUS);
 				passed = check.getProperty(SlcNames.SLC_SUCCESS).getBoolean();
 				return passed;
 			} else

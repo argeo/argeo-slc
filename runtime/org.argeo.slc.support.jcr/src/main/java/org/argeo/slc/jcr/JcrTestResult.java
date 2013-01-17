@@ -128,23 +128,77 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 	public void addResultPart(TestResultPart testResultPart) {
 		Node node = getNode();
 		try {
-			Node resultPartNode = node.addNode(SlcNames.SLC_STATUS,
+			// add the new result part, retrieving status information
+			Node resultPartNode = node.addNode(SlcNames.SLC_RESULT_PART,
 					SlcTypes.SLC_CHECK);
 			resultPartNode.setProperty(SLC_SUCCESS,
 					testResultPart.getStatus() == TestStatus.PASSED);
 			if (testResultPart.getMessage() != null)
 				resultPartNode.setProperty(SLC_MESSAGE,
 						testResultPart.getMessage());
-			if (testResultPart.getExceptionMessage() != null)
+			if (testResultPart.getStatus() == TestStatus.ERROR) {
 				resultPartNode.setProperty(SLC_ERROR_MESSAGE,
-						testResultPart.getExceptionMessage());
+						(testResultPart.getExceptionMessage() == null) ? ""
+								: testResultPart.getExceptionMessage());
+			}
+
+			// helper update aggregate status node
+			Node mainStatus;
+			if (!node.hasNode(SLC_AGGREGATED_STATUS)) {
+
+				mainStatus = node.addNode(SLC_AGGREGATED_STATUS,
+						SlcTypes.SLC_CHECK);
+				mainStatus.setProperty(SLC_SUCCESS,
+						resultPartNode.getProperty(SLC_SUCCESS).getBoolean());
+				if (resultPartNode.hasProperty(SLC_MESSAGE))
+					mainStatus.setProperty(SLC_MESSAGE, resultPartNode
+							.getProperty(SLC_MESSAGE).getString());
+				if (resultPartNode.hasProperty(SLC_ERROR_MESSAGE))
+					mainStatus.setProperty(SLC_ERROR_MESSAGE, resultPartNode
+							.getProperty(SLC_ERROR_MESSAGE).getString());
+			} else {
+				mainStatus = node.getNode(SLC_AGGREGATED_STATUS);
+				if (mainStatus.hasProperty(SLC_ERROR_MESSAGE)) {
+					// main status already in error we do nothing
+				} else if (resultPartNode.hasProperty(SLC_ERROR_MESSAGE)) {
+					// main status was not in error and new result part is in
+					// error; we update main status
+					mainStatus.setProperty(SLC_SUCCESS, false);
+					mainStatus.setProperty(SLC_ERROR_MESSAGE, resultPartNode
+							.getProperty(SLC_ERROR_MESSAGE).getString());
+					if (resultPartNode.hasProperty(SLC_MESSAGE))
+						mainStatus.setProperty(SLC_MESSAGE, resultPartNode
+								.getProperty(SLC_MESSAGE).getString());
+					else
+						// remove old message to remain consistent
+						mainStatus.setProperty(SLC_MESSAGE, "");
+				} else if (!mainStatus.getProperty(SLC_SUCCESS).getBoolean()) {
+					// main status was already failed and new result part is not
+					// in error, we do nothing
+				} else if (!resultPartNode.getProperty(SLC_SUCCESS)
+						.getBoolean()) {
+					// new resultPart that is failed
+					mainStatus.setProperty(SLC_SUCCESS, false);
+					if (resultPartNode.hasProperty(SLC_MESSAGE))
+						mainStatus.setProperty(SLC_MESSAGE, resultPartNode
+								.getProperty(SLC_MESSAGE).getString());
+					else
+						// remove old message to remain consistent
+						mainStatus.setProperty(SLC_MESSAGE, "");
+				} else if (resultPartNode.hasProperty(SLC_MESSAGE)
+						&& (!mainStatus.hasProperty(SLC_MESSAGE) || (""
+								.equals(mainStatus.getProperty(SLC_MESSAGE)
+										.getString().trim())))) {
+					mainStatus.setProperty(SLC_MESSAGE, resultPartNode
+							.getProperty(SLC_MESSAGE).getString());
+				}
+			}
 			JcrUtils.updateLastModified(node);
 			node.getSession().save();
 		} catch (Exception e) {
 			JcrUtils.discardUnderlyingSessionQuietly(node);
 			throw new SlcException("Cannot get UUID from " + node, e);
 		}
-
 	}
 
 	public String getUuid() {

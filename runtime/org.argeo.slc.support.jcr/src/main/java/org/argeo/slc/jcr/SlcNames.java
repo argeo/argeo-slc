@@ -21,6 +21,17 @@ public interface SlcNames {
 
 	public final static String SLC_UUID = "slc:uuid";
 	public final static String SLC_STATUS = "slc:status";
+	// generic name for result parts of a given test result (slc:testResult)
+	// note that corresponding nodes can be retrieved using
+	// myTestResultNode.getNodes(SLC_RESULT_PART+"*") method
+	public final static String SLC_RESULT_PART = "slc:resultPart";
+	// Fixed name of the child node of a slc:testResult of type
+	// slc:check that aggregate status of all result parts of a given test
+	// result
+	public final static String SLC_AGGREGATED_STATUS = "slc:aggregatedStatus";
+	
+	
+	
 	public final static String SLC_TYPE = "slc:type";
 	public final static String SLC_NAME = "slc:name";
 	public final static String SLC_VERSION = "slc:version";

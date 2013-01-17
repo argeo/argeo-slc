@@ -196,9 +196,14 @@ public class SlcJcrUtils implements SlcNames {
 
 			NodeIterator it = node.getNodes();
 			while (it.hasNext()) {
-				Integer childStatus = aggregateTestStatus(it.nextNode());
-				if (childStatus > status)
-					status = childStatus;
+				Node curr = it.nextNode();
+
+				// Manually skip aggregated status
+				if (!SlcNames.SLC_AGGREGATED_STATUS.equals(curr.getName())) {
+					Integer childStatus = aggregateTestStatus(curr);
+					if (childStatus > status)
+						status = childStatus;
+				}
 			}
 			return status;
 		} catch (Exception e) {
@@ -232,7 +237,10 @@ public class SlcJcrUtils implements SlcNames {
 			NodeIterator it = node.getNodes();
 			while (it.hasNext()) {
 				Node child = it.nextNode();
-				aggregateTestMessages(child, messages);
+				// Manually skip aggregated status
+				if (!SlcNames.SLC_AGGREGATED_STATUS.equals(child.getName())) {
+					aggregateTestMessages(child, messages);
+				}
 			}
 			return messages;
 		} catch (Exception e) {
@@ -243,6 +251,5 @@ public class SlcJcrUtils implements SlcNames {
 
 	/** Prevents instantiation */
 	private SlcJcrUtils() {
-
 	}
 }

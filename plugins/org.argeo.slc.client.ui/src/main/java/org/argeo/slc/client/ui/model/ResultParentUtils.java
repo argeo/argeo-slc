@@ -77,7 +77,7 @@ public class ResultParentUtils {
 			Iterator<String> it = dateRelPathes.iterator();
 			StringBuffer clause = new StringBuffer();
 			clause.append("SELECT * FROM [");
-			clause.append(SlcTypes.SLC_DIFF_RESULT);
+			clause.append(SlcTypes.SLC_TEST_RESULT);
 			clause.append("] as results");
 			clause.append(" WHERE ");
 			while (it.hasNext()) {
@@ -119,11 +119,11 @@ public class ResultParentUtils {
 	 */
 	public static void updatePassedStatus(Node node, boolean passed) {
 		try {
-			if (!node.hasNode(SlcNames.SLC_STATUS))
+			if (!node.hasNode(SlcNames.SLC_AGGREGATED_STATUS))
 				// we have reached the root of the tree. stop the
 				// recursivity
 				return;
-			boolean pStatus = node.getNode(SlcNames.SLC_STATUS)
+			boolean pStatus = node.getNode(SlcNames.SLC_AGGREGATED_STATUS)
 					.getProperty(SlcNames.SLC_SUCCESS).getBoolean();
 			if (pStatus == passed)
 				// nothing to update
@@ -132,7 +132,7 @@ public class ResultParentUtils {
 				// New status is 'failed' : we only update status of the result
 				// folder and its
 				// parent if needed
-				node.getNode(SlcNames.SLC_STATUS).setProperty(
+				node.getNode(SlcNames.SLC_AGGREGATED_STATUS).setProperty(
 						SlcNames.SLC_SUCCESS, passed);
 				updatePassedStatus(node.getParent(), passed);
 			} else {
@@ -145,7 +145,8 @@ public class ResultParentUtils {
 					Node currNode = ni.nextNode();
 					if ((currNode.isNodeType(SlcTypes.SLC_DIFF_RESULT) || currNode
 							.isNodeType(SlcTypes.SLC_RESULT_FOLDER))
-							&& !currNode.getNode(SlcNames.SLC_STATUS)
+							&& !currNode
+									.getNode(SlcNames.SLC_AGGREGATED_STATUS)
 									.getProperty(SlcNames.SLC_SUCCESS)
 									.getBoolean()) {
 						success = false;
@@ -153,7 +154,7 @@ public class ResultParentUtils {
 					}
 				}
 				if (success) {
-					node.getNode(SlcNames.SLC_STATUS).setProperty(
+					node.getNode(SlcNames.SLC_AGGREGATED_STATUS).setProperty(
 							SlcNames.SLC_SUCCESS, passed);
 					updatePassedStatus(node.getParent(), passed);
 				} else

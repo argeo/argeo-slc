@@ -38,8 +38,8 @@ public class ResultFolder extends ParentNodeFolder {
 		super(parent, node, name);
 		try {
 			// initialize passed status if possible
-			if (node.hasNode(SlcNames.SLC_STATUS))
-				setPassed(node.getNode(SlcNames.SLC_STATUS)
+			if (node.hasNode(SlcNames.SLC_AGGREGATED_STATUS))
+				setPassed(node.getNode(SlcNames.SLC_AGGREGATED_STATUS)
 						.getProperty(SlcNames.SLC_SUCCESS).getBoolean());
 		} catch (RepositoryException re) {
 			throw new SlcException(
