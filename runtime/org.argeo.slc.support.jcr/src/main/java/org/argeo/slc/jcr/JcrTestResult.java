@@ -127,15 +127,22 @@ public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
 
 	public void addResultPart(TestResultPart testResultPart) {
 		Node node = getNode();
+		
 		try {
+		
+			// error
+            if (testResultPart.getExceptionMessage() != null)
+                    JcrUtils.discardQuietly(node.getSession());
+			node.getSession().save();
+			
 			// add the new result part, retrieving status information
 			Node resultPartNode = node.addNode(SlcNames.SLC_RESULT_PART,
 					SlcTypes.SLC_CHECK);
 			resultPartNode.setProperty(SLC_SUCCESS,
 					testResultPart.getStatus() == TestStatus.PASSED);
-			if (testResultPart.getMessage() != null)
-				resultPartNode.setProperty(SLC_MESSAGE,
-						testResultPart.getMessage());
+			// if (testResultPart.getMessage() != null)
+			// resultPartNode.setProperty(SLC_MESSAGE,
+			// testResultPart.getMessage());
 			if (testResultPart.getStatus() == TestStatus.ERROR) {
 				resultPartNode.setProperty(SLC_ERROR_MESSAGE,
 						(testResultPart.getExceptionMessage() == null) ? ""
