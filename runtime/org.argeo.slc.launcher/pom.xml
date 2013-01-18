@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>runtime</artifactId>
-		<version>1.1.11-SNAPSHOT</version>
+		<version>1.1.11</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.launcher</artifactId>
@@ -67,19 +67,19 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>1.1.11-SNAPSHOT</version>
+			<version>1.1.11</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support.osgi</artifactId>
-			<version>1.1.11-SNAPSHOT</version>
+			<version>1.1.11</version>
 		</dependency>
 
 		<!-- SLC Agent Modules -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>1.1.11-SNAPSHOT</version>
+			<version>1.1.11</version>
 		</dependency>
 
 		<!-- OSGi Boot (and Equinox) -->
