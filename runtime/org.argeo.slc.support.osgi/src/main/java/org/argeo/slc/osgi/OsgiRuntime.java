@@ -116,6 +116,7 @@ public class OsgiRuntime implements BundleContextAware, ResourceLoaderAware,
 	}
 
 	public void shutdown() {
+		// FIXME use framework
 		throw new UnsupportedException();
 	}
 
