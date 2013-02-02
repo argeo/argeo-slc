@@ -19,6 +19,9 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.osgi.OsgiRuntime;
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
 
+/** OSGi runtime with shutdown capability implemented. */
+@SuppressWarnings("restriction")
+@Deprecated
 public class EquinoxRuntime extends OsgiRuntime {
 
 	public void shutdown() {

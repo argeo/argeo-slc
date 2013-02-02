@@ -21,8 +21,7 @@
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
 		<property name="ignoreUnresolvablePlaceholders" value="false" />
 		<property name="locations">
-			<value>osgibundle:equinox.properties
-			</value>
+			<value>osgibundle:equinox.properties</value>
 		</property>
 	</bean>
 
@@ -30,13 +29,13 @@
 		<property name="modulesManager" ref="modulesManager" />
 	</bean>
 
+	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager">
+		<property name="bundlesManager" ref="bundlesManager" />
+	</bean>
+
 	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager">
 		<property name="defaultTimeout" value="${slc.equinox.commandTimeout}" />
 		<property name="pollingPeriod" value="${slc.equinox.commandPollingPeriod}" />
-	</bean>
-
-	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager">
-		<property name="bundlesManager" ref="bundlesManager" />
 	</bean>
 
 </beans>

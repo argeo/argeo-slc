@@ -23,7 +23,6 @@ import org.argeo.slc.osgi.OsgiExecutionModulesManager;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
-@SuppressWarnings("restriction")
 public class ExecutionCommandProvider implements CommandProvider {
 	private final static Log log = LogFactory
 			.getLog(ExecutionCommandProvider.class);
