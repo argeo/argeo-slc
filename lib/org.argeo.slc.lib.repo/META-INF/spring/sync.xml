@@ -9,10 +9,11 @@
 	<flow:flow name="sync">
 		<flow:spec>
 			<flow:primitive name="sourceRepo"
-				value="https://repo.argeo.org/org.argeo.jcr.webapp/remoting/java" />
-			<flow:primitive name="sourceWksp" />
+				value="http://repo.argeo.org/data/pub/java" />
+			<flow:primitive name="sourceWksp" value="" />
 			<flow:primitive name="sourceUsername" value="${user.name}" />
-			<flow:primitive name="sourcePassword" type="password"/>
+			<flow:primitive name="sourcePassword" type="password"
+				value="" />
 			<flow:primitive name="targetRepo" value="vm:///java/" />
 		</flow:spec>
 		<bean class="org.argeo.slc.repo.RepoSync">

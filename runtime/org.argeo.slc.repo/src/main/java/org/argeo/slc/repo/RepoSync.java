@@ -15,18 +15,28 @@
  */
 package org.argeo.slc.repo;
 
+import java.util.Calendar;
+
 import javax.jcr.Credentials;
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.NoSuchWorkspaceException;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
+import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /** Sync to from software repositories */
 public class RepoSync implements Runnable {
@@ -43,6 +53,8 @@ public class RepoSync implements Runnable {
 	private RepositoryFactory repositoryFactory;
 
 	public void run() {
+		Session sourceDefaultSession = null;
+		Session targetDefaultSession = null;
 		try {
 			long begin = System.currentTimeMillis();
 
@@ -54,25 +66,144 @@ public class RepoSync implements Runnable {
 			if (sourceUsername != null)
 				sourceCredentials = new SimpleCredentials(sourceUsername,
 						sourcePassword);
-			Session sourceSession = sourceRepository.login(sourceCredentials,
-					sourceWksp);
-
 			Credentials targetCredentials = null;
-			Session targetSession = targetRepository.login(targetCredentials,
-					sourceWksp);
 
-			Long count = JcrUtils.copyFiles(sourceSession.getRootNode(),
-					targetSession.getRootNode(), true, null);
+			sourceDefaultSession = sourceRepository.login(sourceCredentials);
+			targetDefaultSession = targetRepository.login(targetCredentials);
+			for (String sourceWorkspaceName : sourceDefaultSession
+					.getWorkspace().getAccessibleWorkspaceNames()) {
+				Session sourceSession = null;
+				Session targetSession = null;
+				try {
+					try {
+						targetSession = targetRepository.login(
+								targetCredentials, sourceWorkspaceName);
+					} catch (NoSuchWorkspaceException e) {
+						targetDefaultSession.getWorkspace().createWorkspace(
+								sourceWorkspaceName);
+						targetSession = targetRepository.login(
+								targetCredentials, sourceWorkspaceName);
+					}
+					sourceSession = sourceRepository.login(sourceCredentials,
+							sourceWorkspaceName);
+					syncWorkspace(sourceSession, targetSession);
+				} finally {
+					JcrUtils.logoutQuietly(sourceSession);
+					JcrUtils.logoutQuietly(targetSession);
+				}
+			}
+			// Session sourceSession = sourceRepository.login(sourceCredentials,
+			// sourceWksp);
+			//
+			// Credentials targetCredentials = null;
+			// Session targetSession = targetRepository.login(targetCredentials,
+			// sourceWksp);
+			//
+			// Long count = JcrUtils.copyFiles(sourceSession.getRootNode(),
+			// targetSession.getRootNode(), true, null);
 
-			long duration = (System.currentTimeMillis() - begin) / 1000;// in
-			// s
-			if (log.isDebugEnabled())
-				log.debug("Copied " + count + " files in " + (duration / 60)
-						+ "min " + (duration % 60) + "s");
+			long duration = (System.currentTimeMillis() - begin) / 1000;// s
+			log.info("Sync " + sourceRepo + " to " + targetRepo + " in "
+					+ (duration / 60)
+
+					+ "min " + (duration % 60) + "s");
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot sync " + sourceRepo + " to "
 					+ targetRepo, e);
+		} finally {
+			JcrUtils.logoutQuietly(sourceDefaultSession);
+			JcrUtils.logoutQuietly(targetDefaultSession);
 		}
+	}
+
+	protected void syncWorkspace(Session sourceSession, Session targetSession) {
+		try {
+			if (log.isDebugEnabled())
+				log.debug("Syncing " + sourceSession.getWorkspace().getName()
+						+ "...");
+			for (NodeIterator it = sourceSession.getRootNode().getNodes(); it
+					.hasNext();) {
+				Node node = it.nextNode();
+				if (node.getName().equals("jcr:system"))
+					continue;
+				// ContentHandler targetHandler = targetSession
+				// .getWorkspace()
+				// .getImportContentHandler(
+				// "/",
+				// ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
+				// sourceSession.exportSystemView(node.getPath(), targetHandler,
+				// true, false);
+				// if (log.isDebugEnabled())
+				// log.debug(" " + node.getPath());
+				syncNode(node, targetSession.getRootNode());
+			}
+			if (log.isDebugEnabled())
+				log.debug("Synced " + sourceSession.getWorkspace().getName());
+		} catch (Exception e) {
+			throw new SlcException("Cannot sync "
+					+ sourceSession.getWorkspace().getName() + " to "
+					+ targetSession.getWorkspace().getName(), e);
+		}
+	}
+
+	protected void syncNode(Node sourceNode, Node targetParentNode)
+			throws RepositoryException, SAXException {
+		Boolean noRecurse = noRecurse(sourceNode);
+		if (!targetParentNode.hasNode(sourceNode.getName())) {
+			ContentHandler contentHandler = targetParentNode
+					.getSession()
+					.getWorkspace()
+					.getImportContentHandler(targetParentNode.getPath(),
+							ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
+			sourceNode.getSession().exportSystemView(sourceNode.getPath(),
+					contentHandler, false, noRecurse);
+			if (log.isDebugEnabled())
+				log.debug("Add " + sourceNode.getPath());
+		} else {
+			Node targetNode = targetParentNode.getNode(sourceNode.getName());
+			if (sourceNode.isNodeType(NodeType.MIX_LAST_MODIFIED)) {
+				Calendar sourceLastModified = sourceNode.getProperty(
+						Property.JCR_LAST_MODIFIED).getDate();
+				Calendar targetLastModified = null;
+				if (targetNode.isNodeType(NodeType.MIX_LAST_MODIFIED)) {
+					targetLastModified = targetNode.getProperty(
+							Property.JCR_LAST_MODIFIED).getDate();
+				}
+
+				if (targetLastModified == null
+						|| targetLastModified.before(sourceLastModified)) {
+					ContentHandler contentHandler = targetParentNode
+							.getSession()
+							.getWorkspace()
+							.getImportContentHandler(
+									targetParentNode.getPath(),
+									ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
+					sourceNode.getSession().exportSystemView(
+							sourceNode.getPath(), contentHandler, false,
+							noRecurse);
+					if (log.isDebugEnabled())
+						log.debug("Update " + targetNode.getPath());
+				} else {
+					if (log.isDebugEnabled())
+						log.debug("Skip up to date " + targetNode.getPath());
+				}
+			}
+		}
+
+		if (noRecurse) {
+			// recurse
+			Node targetNode = targetParentNode.getNode(sourceNode.getName());
+			for (NodeIterator it = sourceNode.getNodes(); it.hasNext();) {
+				syncNode(it.nextNode(), targetNode);
+			}
+		}
+
+	}
+
+	protected Boolean noRecurse(Node sourceNode) throws RepositoryException {
+		if (sourceNode.isNodeType(NodeType.NT_FILE))
+			return false;
+		return true;
 	}
 
 	public void setSourceRepo(String sourceRepo) {
@@ -98,5 +229,4 @@ public class RepoSync implements Runnable {
 	public void setSourcePassword(char[] sourcePassword) {
 		this.sourcePassword = sourcePassword;
 	}
-
 }
