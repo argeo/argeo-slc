@@ -14,6 +14,9 @@
 			<flow:primitive name="sourceUsername" value="${user.name}" />
 			<flow:primitive name="sourcePassword" type="password"
 				value="" />
+			<flow:primitive name="targetUsername" value="${user.name}" />
+			<flow:primitive name="targetPassword" type="password"
+				value="" />
 			<flow:primitive name="targetRepo" value="vm:///java/" />
 		</flow:spec>
 		<bean class="org.argeo.slc.repo.RepoSync">
@@ -22,6 +25,8 @@
 			<property name="sourceWksp" value="@{sourceWksp}" />
 			<property name="sourceUsername" value="@{sourceUsername}" />
 			<property name="sourcePassword" value="@{sourcePassword}" />
+			<property name="targetUsername" value="@{sourceUsername}" />
+			<property name="targetPassword" value="@{sourcePassword}" />
 			<property name="targetRepo" value="@{targetRepo}" />
 			<property name="repositoryFactory" ref="repositoryFactory" />
 		</bean>

@@ -16,6 +16,10 @@
 package org.argeo.slc.repo;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TimeZone;
 
 import javax.jcr.Credentials;
 import javax.jcr.ImportUUIDBehavior;
@@ -42,6 +46,8 @@ import org.xml.sax.SAXException;
 public class RepoSync implements Runnable {
 	private final static Log log = LogFactory.getLog(RepoSync.class);
 
+	private final Calendar zero;
+
 	private String sourceRepo;
 	private String targetRepo;
 
@@ -49,8 +55,15 @@ public class RepoSync implements Runnable {
 
 	private String sourceUsername;
 	private char[] sourcePassword;
+	private String targetUsername;
+	private char[] targetPassword;
 
 	private RepositoryFactory repositoryFactory;
+
+	public RepoSync() {
+		zero = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
+		zero.setTimeInMillis(0);
+	}
 
 	public void run() {
 		Session sourceDefaultSession = null;
@@ -67,11 +80,22 @@ public class RepoSync implements Runnable {
 				sourceCredentials = new SimpleCredentials(sourceUsername,
 						sourcePassword);
 			Credentials targetCredentials = null;
+			if (targetUsername != null)
+				targetCredentials = new SimpleCredentials(targetUsername,
+						targetPassword);
 
+			Map<String, Exception> errors = new HashMap<String, Exception>();
 			sourceDefaultSession = sourceRepository.login(sourceCredentials);
 			targetDefaultSession = targetRepository.login(targetCredentials);
 			for (String sourceWorkspaceName : sourceDefaultSession
 					.getWorkspace().getAccessibleWorkspaceNames()) {
+				if (sourceWksp != null && !sourceWksp.trim().equals("")
+						&& !sourceWorkspaceName.equals(sourceWksp))
+					continue;
+				if (sourceWorkspaceName.equals("security"))
+					continue;
+				if (sourceWorkspaceName.equals("localrepo"))
+					continue;
 				Session sourceSession = null;
 				Session targetSession = null;
 				try {
@@ -87,6 +111,9 @@ public class RepoSync implements Runnable {
 					sourceSession = sourceRepository.login(sourceCredentials,
 							sourceWorkspaceName);
 					syncWorkspace(sourceSession, targetSession);
+				} catch (Exception e) {
+					errors.put("Could not sync workspace "
+							+ sourceWorkspaceName, e);
 				} finally {
 					JcrUtils.logoutQuietly(sourceSession);
 					JcrUtils.logoutQuietly(targetSession);
@@ -107,6 +134,10 @@ public class RepoSync implements Runnable {
 					+ (duration / 60)
 
 					+ "min " + (duration % 60) + "s");
+
+			if (errors.size() > 0) {
+				throw new SlcException("Sync failed " + errors);
+			}
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot sync " + sourceRepo + " to "
 					+ targetRepo, e);
@@ -149,6 +180,12 @@ public class RepoSync implements Runnable {
 	protected void syncNode(Node sourceNode, Node targetParentNode)
 			throws RepositoryException, SAXException {
 		Boolean noRecurse = noRecurse(sourceNode);
+		Calendar sourceLastModified = null;
+		if (sourceNode.isNodeType(NodeType.MIX_LAST_MODIFIED)) {
+			sourceLastModified = sourceNode.getProperty(
+					Property.JCR_LAST_MODIFIED).getDate();
+		}
+
 		if (!targetParentNode.hasNode(sourceNode.getName())) {
 			ContentHandler contentHandler = targetParentNode
 					.getSession()
@@ -158,12 +195,10 @@ public class RepoSync implements Runnable {
 			sourceNode.getSession().exportSystemView(sourceNode.getPath(),
 					contentHandler, false, noRecurse);
 			if (log.isDebugEnabled())
-				log.debug("Add " + sourceNode.getPath());
+				log.debug("Added " + sourceNode.getPath());
 		} else {
 			Node targetNode = targetParentNode.getNode(sourceNode.getName());
-			if (sourceNode.isNodeType(NodeType.MIX_LAST_MODIFIED)) {
-				Calendar sourceLastModified = sourceNode.getProperty(
-						Property.JCR_LAST_MODIFIED).getDate();
+			if (sourceLastModified != null) {
 				Calendar targetLastModified = null;
 				if (targetNode.isNodeType(NodeType.MIX_LAST_MODIFIED)) {
 					targetLastModified = targetNode.getProperty(
@@ -182,10 +217,12 @@ public class RepoSync implements Runnable {
 							sourceNode.getPath(), contentHandler, false,
 							noRecurse);
 					if (log.isDebugEnabled())
-						log.debug("Update " + targetNode.getPath());
+						log.debug("Updated " + targetNode.getPath());
 				} else {
 					if (log.isDebugEnabled())
-						log.debug("Skip up to date " + targetNode.getPath());
+						log.debug("Skipped up to date " + targetNode.getPath());
+					// if (!noRecurse)
+					return;
 				}
 			}
 		}
@@ -193,8 +230,21 @@ public class RepoSync implements Runnable {
 		if (noRecurse) {
 			// recurse
 			Node targetNode = targetParentNode.getNode(sourceNode.getName());
+			if (sourceLastModified != null) {
+				Calendar zero = new GregorianCalendar();
+				zero.setTimeInMillis(0);
+				targetNode.setProperty(Property.JCR_LAST_MODIFIED, zero);
+				targetNode.getSession().save();
+			}
+
 			for (NodeIterator it = sourceNode.getNodes(); it.hasNext();) {
 				syncNode(it.nextNode(), targetNode);
+			}
+
+			if (sourceLastModified != null) {
+				targetNode.setProperty(Property.JCR_LAST_MODIFIED,
+						sourceLastModified);
+				targetNode.getSession().save();
 			}
 		}
 
