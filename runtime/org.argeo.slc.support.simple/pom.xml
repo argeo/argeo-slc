@@ -40,6 +40,11 @@
 			<artifactId>org.argeo.slc.core</artifactId>
 			<version>1.1.12-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.server</groupId>
+			<artifactId>org.argeo.server.jcr</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
 
 		<!-- SSH -->
 		<dependency>

@@ -11,4 +11,8 @@
 			<value>osgibundle:agent.properties</value>
 		</property>
 	</bean>
+	
+		<bean name="fileSystemManager" class="org.apache.commons.vfs.impl.StandardFileSystemManager"
+		init-method="init" destroy-method="close" />
+	
 </beans>

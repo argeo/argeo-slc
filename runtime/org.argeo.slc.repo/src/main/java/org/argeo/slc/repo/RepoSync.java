@@ -279,4 +279,13 @@ public class RepoSync implements Runnable {
 	public void setSourcePassword(char[] sourcePassword) {
 		this.sourcePassword = sourcePassword;
 	}
+
+	public void setTargetUsername(String targetUsername) {
+		this.targetUsername = targetUsername;
+	}
+
+	public void setTargetPassword(char[] targetPassword) {
+		this.targetPassword = targetPassword;
+	}
+
 }

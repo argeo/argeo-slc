@@ -6,7 +6,7 @@
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-<!-- 	<beans:import resource="classpath:org/argeo/slc/osgi/manager.xml" /> -->
+	<!-- <beans:import resource="classpath:org/argeo/slc/osgi/manager.xml" /> -->
 
 	<!-- REFERENCES -->
 	<list id="executionContexts" interface="org.argeo.slc.execution.ExecutionContext"
@@ -39,6 +39,8 @@
 
 	<!-- SERVICES -->
 	<service ref="modulesManager" interface="org.argeo.slc.execution.ExecutionModulesManager" />
+
+	<service ref="fileSystemManager" interface="org.apache.commons.vfs.FileSystemManager" />
 
 
 </beans:beans>
