@@ -7,7 +7,7 @@
 		<version>1.1.12-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.lib.jcr</artifactId>
+	<artifactId>org.argeo.slc.lib.repo</artifactId>
 	<name>SLC Lib - Repository Utilities</name>
 	<description>Utilities related to JCR repositories</description>
 </project>

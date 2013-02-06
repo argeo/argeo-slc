@@ -6,11 +6,13 @@
 	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-1.2.xsd">
 
 	<flow:flow name="backup">
-		<description>Backups a JCR repository as XML</description>
+		<description>Backups a JCR repository</description>
 		<flow:spec>
-			<flow:primitive name="targetFile" value="file://${user.home}/node.zip" />
+			<flow:primitive name="targetFile"
+				value="file://${user.home}/.slc/backups/node" />
 			<flow:primitive name="sourceRepo" value="vm:///node/" />
 			<flow:primitive name="sourceWksp" value="" />
+			<flow:primitive name="sourceDatastore" value="" />
 			<flow:primitive name="sourceUsername" value="${user.name}" />
 			<flow:primitive name="sourcePassword" type="password"
 				value="" />
@@ -20,6 +22,7 @@
 			<property name="targetFile" value="@{targetFile}" />
 			<property name="sourceRepo" value="@{sourceRepo}" />
 			<property name="sourceWksp" value="@{sourceWksp}" />
+			<property name="sourceDatastore" value="@{sourceDatastore}" />
 			<property name="sourceUsername" value="@{sourceUsername}" />
 			<property name="sourcePassword" value="@{sourcePassword}" />
 			<property name="repositoryFactory" ref="repositoryFactory" />
