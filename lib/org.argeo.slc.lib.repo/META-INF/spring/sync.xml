@@ -25,8 +25,8 @@
 			<property name="sourceWksp" value="@{sourceWksp}" />
 			<property name="sourceUsername" value="@{sourceUsername}" />
 			<property name="sourcePassword" value="@{sourcePassword}" />
-			<property name="targetUsername" value="@{sourceUsername}" />
-			<property name="targetPassword" value="@{sourcePassword}" />
+			<property name="targetUsername" value="@{targetUsername}" />
+			<property name="targetPassword" value="@{targetPassword}" />
 			<property name="targetRepo" value="@{targetRepo}" />
 			<property name="repositoryFactory" ref="repositoryFactory" />
 		</bean>
