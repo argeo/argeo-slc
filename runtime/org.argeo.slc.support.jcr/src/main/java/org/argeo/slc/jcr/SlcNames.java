@@ -19,6 +19,9 @@ package org.argeo.slc.jcr;
 public interface SlcNames {
 	public final static String SLC_ = "slc:";
 
+	/*
+	 * GENERAL
+	 */
 	public final static String SLC_UUID = "slc:uuid";
 	public final static String SLC_STATUS = "slc:status";
 	// generic name for result parts of a given test result (slc:testResult)
@@ -29,9 +32,7 @@ public interface SlcNames {
 	// slc:check that aggregate status of all result parts of a given test
 	// result
 	public final static String SLC_AGGREGATED_STATUS = "slc:aggregatedStatus";
-	
-	
-	
+
 	public final static String SLC_TYPE = "slc:type";
 	public final static String SLC_NAME = "slc:name";
 	public final static String SLC_VERSION = "slc:version";
@@ -39,14 +40,20 @@ public interface SlcNames {
 	public final static String SLC_ADDRESS = "slc:address";
 	public final static String SLC_METADATA = "slc:metadata";
 
+	public final static String SLC_TIMESTAMP = "slc:timestamp";
 	public final static String SLC_STARTED = "slc:started";
 	public final static String SLC_COMPLETED = "slc:completed";
 
+	public final static String SLC_VM = "slc:vm";
+	/*
+	 * SLC RUNTIME
+	 */
+	// execution
 	public final static String SLC_SPEC = "slc:spec";
 	public final static String SLC_EXECUTION_SPECS = "slc:executionSpecs";
 	public final static String SLC_FLOW = "slc:flow";
 	public final static String SLC_LOG = "slc:log";
-	public final static String SLC_TIMESTAMP = "slc:timestamp";
+	public final static String SLC_AGENTS = "slc:agents";
 
 	// spec attribute
 	public final static String SLC_IS_IMMUTABLE = "slc:isImmutable";
@@ -72,7 +79,7 @@ public interface SlcNames {
 	public final static String SLC_ISSUES = "slc:issues";
 
 	/*
-	 * REPO
+	 * SLC REPO
 	 */
 	// shared
 	public final static String SLC_URL = "slc:url";

@@ -15,7 +15,6 @@
  */
 package org.argeo.slc.jcr.execution;
 
-import java.util.List;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -32,15 +31,12 @@ import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.argeo.slc.runtime.SlcAgent;
-import org.argeo.slc.runtime.SlcAgentFactory;
 
 /** SLC VM agent synchronizing with a JCR repository. */
-public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames {
+public class JcrAgent extends DefaultAgent implements SlcNames {
 	private Repository repository;
 
-	/** only one agent per VM is currently supported */
-	private final String agentNodeName = "default";
+	private String agentNodeName = "default";
 
 	/*
 	 * LIFECYCLE
@@ -86,20 +82,6 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames 
 	}
 
 	/*
-	 * SLC AGENT FACTORY
-	 */
-	public SlcAgent getAgent(String uuid) {
-		if (!uuid.equals(getAgentUuid()))
-			throw new SlcException("Internal UUID " + getAgentUuid()
-					+ " is different from argument UUID " + uuid);
-		return this;
-	}
-
-	public void pingAll(List<String> activeAgentIds) {
-		ping();
-	}
-
-	/*
 	 * UTILITIES
 	 */
 	public String getNodePath() {
@@ -115,6 +97,10 @@ public class JcrAgent extends DefaultAgent implements SlcAgentFactory, SlcNames 
 
 	public void setRepository(Repository repository) {
 		this.repository = repository;
+	}
+
+	public void setAgentNodeName(String agentNodeName) {
+		this.agentNodeName = agentNodeName;
 	}
 
 }

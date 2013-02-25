@@ -4,6 +4,14 @@
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="locations">
+			<value>osgibundle:agent.properties</value>
+		</property>
+	</bean>
+
 	<!-- Manager -->
 	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager"
 		init-method="init" destroy-method="destroy">
@@ -15,16 +23,6 @@
 		<property name="defaultTimeout" value="${slc.agent.osgi.defaultTimeout}" />
 	</bean>
 
-	<!-- Logging -->
-	<!-- <bean id="log4Notification" class="org.argeo.slc.log4j.SlcExecutionAppender" -->
-	<!-- init-method="init" destroy-method="destroy"> -->
-	<!-- <property name="disabled" value="${slc.agent.log4Notification.disabled}" 
-		/> -->
-	<!-- <property name="level" value="${slc.agent.log4Notification.level}" 
-		/> -->
-	<!-- <property name="onlyExecutionThread" -->
-	<!-- value="${slc.agent.log4Notification.onlyExecutionThread}" /> -->
-	<!-- </bean> -->
-
-
+	<!-- Agent Factory -->
+	<bean id="vmAgentFactory" class="org.argeo.slc.core.execution.DefaultAgentFactory" />
 </beans>
