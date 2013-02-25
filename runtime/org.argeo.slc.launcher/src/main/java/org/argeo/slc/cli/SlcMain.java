@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -52,22 +53,23 @@ public class SlcMain implements Runnable {
 
 	// private static String bundlesToInstall = "/usr/share/osgi;in=*.jar";
 	private String bundlesToInstall = System.getProperty("user.home")
-			+ "/dev/src/slc/runtime/org.argeo.slc.launcher/target/dependency;in=*.jar,"
+			+ "/dev/src/slc/dep/org.argeo.slc.dep.minimal/target/dependency;in=*.jar,"
 			+ System.getProperty("user.home")
 			+ "/dev/src/slc/demo/modules;in=*;ex=pom.xml;ex=.svn";
 
-	// private static String bundlesToStart =
-	// "org.springframework.osgi.extender,"
-	// + "org.argeo.node.repofactory.jackrabbit,"
-	// + "org.argeo.node.repo.jackrabbit," + "org.argeo.security.dao.os,"
-	// + "org.argeo.slc.node.jackrabbit," + "org.argeo.slc.agent,"
-	// + "org.argeo.slc.agent.jcr";
 	private final List<String> bundlesToStart = new ArrayList<String>();
 
 	public SlcMain(String[] args) {
 		this.args = args;
+		// bundlesToStart.add("org.springframework.osgi.extender");
+		// bundlesToStart.add("org.argeo.slc.agent");
+
 		bundlesToStart.add("org.springframework.osgi.extender");
+		bundlesToStart.add("org.argeo.node.repo.jackrabbit");
+		bundlesToStart.add("org.argeo.security.dao.os");
+		bundlesToStart.add("org.argeo.slc.node.jackrabbit");
 		bundlesToStart.add("org.argeo.slc.agent");
+		bundlesToStart.add("org.argeo.slc.agent.jcr");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -105,9 +107,13 @@ public class SlcMain implements Runnable {
 
 			String executionDir = System.getProperty("user.dir");
 			File slcDir = new File(executionDir, "target/.slc");
-			File dataDir = new File(slcDir, "data");
+			File tempDir = new File(System.getProperty("java.io.tmpdir"));
+
+			File dataDir = new File(tempDir, "slc-data-"
+					+ UUID.randomUUID().toString());
 			if (!dataDir.exists())
 				dataDir.mkdirs();
+
 			File confDir = new File(slcDir, "conf");
 			if (!confDir.exists())
 				confDir.mkdirs();
@@ -135,7 +141,8 @@ public class SlcMain implements Runnable {
 			System.setProperty(UNIQUE_LAUNCH_MODULE_PROPERTY, module);
 			System.setProperty(UNIQUE_LAUNCH_FLOW_PROPERTY, flow);
 			System.setProperty("log4j.configuration", "file:./log4j.properties");
-
+			System.setProperty("argeo.node.repo.configuration",
+					"osgibundle:repository-memory.xml");
 			// start runtime
 			osgiBoot.startBundles(bundlesToStart);
 

@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.runtime;
+package org.argeo.slc.execution;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.argeo.slc.execution.ExecutionModuleDescriptor;
 
 public class SlcAgentDescriptor implements Cloneable, Serializable {
 	private static final long serialVersionUID = 1L;

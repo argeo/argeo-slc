@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -74,8 +75,6 @@
 			<artifactId>org.argeo.slc.support.osgi</artifactId>
 			<version>1.1.12-SNAPSHOT</version>
 		</dependency>
-
-		<!-- SLC Agent Modules -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.agent</artifactId>
@@ -89,14 +88,6 @@
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
-		<!-- Logging -->
-		<dependency>
-			<groupId>org.argeo.commons.base</groupId>
-			<artifactId>org.argeo.dep.log4j</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-		</dependency>
-
 		<!-- Spring OSGi -->
 		<dependency>
 			<groupId>org.argeo.tp</groupId>
@@ -106,6 +97,14 @@
 		<dependency>
 			<groupId>org.argeo.tp</groupId>
 			<artifactId>org.apache.commons.cli</artifactId>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.argeo.commons.base</groupId>
+			<artifactId>org.argeo.dep.log4j</artifactId>
+			<version>${version.argeo-commons}</version>
+			<type>pom</type>
 		</dependency>
 	</dependencies>
 </project>

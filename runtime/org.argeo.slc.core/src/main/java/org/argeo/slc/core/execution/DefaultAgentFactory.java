@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.runtime.SlcAgent;
-import org.argeo.slc.runtime.SlcAgentFactory;
+import org.argeo.slc.execution.SlcAgent;
+import org.argeo.slc.execution.SlcAgentFactory;
 
 /** Register agents (typically via OSGi listeners) */
 public class DefaultAgentFactory implements SlcAgentFactory {

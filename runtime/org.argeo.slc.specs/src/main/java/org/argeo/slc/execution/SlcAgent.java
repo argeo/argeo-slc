@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.runtime;
+package org.argeo.slc.execution;
 
 import java.util.List;
 
-import org.argeo.slc.execution.ExecutionModuleDescriptor;
-import org.argeo.slc.execution.ExecutionProcess;
 
 /** A local agent, able to run SLC Execution locally. */
 public interface SlcAgent {

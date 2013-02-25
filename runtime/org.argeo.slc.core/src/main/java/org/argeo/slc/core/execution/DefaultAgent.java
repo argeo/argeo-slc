@@ -31,9 +31,9 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionProcessNotifier;
 import org.argeo.slc.execution.ExecutionStep;
+import org.argeo.slc.execution.SlcAgent;
+import org.argeo.slc.execution.SlcAgentDescriptor;
 import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.runtime.SlcAgent;
-import org.argeo.slc.runtime.SlcAgentDescriptor;
 
 /** Implements the base methods of an SLC agent. */
 @SuppressWarnings("deprecation")
@@ -64,6 +64,20 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 				+ agentDescriptor.getUuid());
 		modulesManager.registerProcessNotifier(this,
 				new HashMap<String, String>());
+
+		// final String module = System
+		// .getProperty(ExecutionModulesManager.UNIQUE_LAUNCH_MODULE_PROPERTY);
+		// final String flow = System
+		// .getProperty(ExecutionModulesManager.UNIQUE_LAUNCH_FLOW_PROPERTY);
+		// if (module != null) {
+		// // launch a flow and stops
+		// new Thread("Unique Flow") {
+		// @Override
+		// public void run() {
+		// executeFlowAndExit(module, null, flow);
+		// }
+		// }.start();
+		// }
 	}
 
 	/** Clean up (needs to be called by overriding method) */
@@ -79,6 +93,13 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 	protected String initAgentUuid() {
 		return UUID.randomUUID().toString();
 	}
+
+	/*
+	 * UNIQUE FLOW
+	 */
+	// protected void executeFlowAndExit(final String module,
+	// final String version, final String flow) {
+	// }
 
 	/*
 	 * SLC AGENT

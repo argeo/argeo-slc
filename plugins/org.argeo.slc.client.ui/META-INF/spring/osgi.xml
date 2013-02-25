@@ -14,7 +14,7 @@
 	<reference id="repository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=slc)" />
 
-	<list id="agentFactories" interface="org.argeo.slc.runtime.SlcAgentFactory">
+	<list id="agentFactories" interface="org.argeo.slc.execution.SlcAgentFactory">
 		<listener ref="processController" bind-method="register"
 			unbind-method="unregister" />
 	</list>

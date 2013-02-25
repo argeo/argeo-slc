@@ -27,12 +27,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionProcess;
+import org.argeo.slc.execution.SlcAgent;
+import org.argeo.slc.execution.SlcAgentFactory;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.execution.JcrExecutionProcess;
-import org.argeo.slc.runtime.SlcAgent;
-import org.argeo.slc.runtime.SlcAgentFactory;
 
 /**
  * We use a separate class (not in UI components) so that it can be a singleton
