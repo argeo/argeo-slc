@@ -17,6 +17,7 @@ package org.argeo.slc.cli;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -34,20 +35,26 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
 @SuppressWarnings("restriction")
-public class SlcMain {
+public class SlcMain implements Runnable {
 	/** Unique launch module */
-	public static String UNIQUE_LAUNCH_MODULE_PROPERTY = "slc.launch.module";
+	public final static String UNIQUE_LAUNCH_MODULE_PROPERTY = "slc.launch.module";
 
 	/** Unique launch flow */
-	public static String UNIQUE_LAUNCH_FLOW_PROPERTY = "slc.launch.flow";
+	public final static String UNIQUE_LAUNCH_FLOW_PROPERTY = "slc.launch.flow";
 
-	private final static Options options;
+	/** Unique launch flow */
+	public final static String UNIQUE_LAUNCH_ARGS_PROPERTY_BASE = "slc.launch.args";
 
-	private final static String commandName = "slc";
+	private final Options options = new Options();
+	private final String[] args;
+
+	private final String commandName = "slc";
 
 	// private static String bundlesToInstall = "/usr/share/osgi;in=*.jar";
-	private static String bundlesToInstall = System.getProperty("user.home")
-			+ "/dev/src/slc/runtime/org.argeo.slc.launcher/target/dependency;in=*.jar";
+	private String bundlesToInstall = System.getProperty("user.home")
+			+ "/dev/src/slc/runtime/org.argeo.slc.launcher/target/dependency;in=*.jar,"
+			+ System.getProperty("user.home")
+			+ "/dev/src/slc/demo/modules;in=*;ex=pom.xml;ex=.svn";
 
 	// private static String bundlesToStart =
 	// "org.springframework.osgi.extender,"
@@ -55,15 +62,16 @@ public class SlcMain {
 	// + "org.argeo.node.repo.jackrabbit," + "org.argeo.security.dao.os,"
 	// + "org.argeo.slc.node.jackrabbit," + "org.argeo.slc.agent,"
 	// + "org.argeo.slc.agent.jcr";
-	private static String bundlesToStart = "org.springframework.osgi.extender,"
-			+ "org.argeo.slc.agent";
+	private final List<String> bundlesToStart = new ArrayList<String>();
 
-	static {
-		options = new Options();
+	public SlcMain(String[] args) {
+		this.args = args;
+		bundlesToStart.add("org.springframework.osgi.extender");
+		bundlesToStart.add("org.argeo.slc.agent");
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	public static void main(String[] args) {
+	@SuppressWarnings("unchecked")
+	public void run() {
 		String module = null;
 		String moduleUrl = null;
 		String flow = null;
@@ -145,7 +153,11 @@ public class SlcMain {
 		}
 	}
 
-	public static void printUsage() {
+	public static void main(String[] args) {
+		new SlcMain(args).run();
+	}
+
+	public void printUsage() {
 		new HelpFormatter().printHelp(commandName, options, true);
 	}
 
@@ -178,7 +190,7 @@ public class SlcMain {
 		}
 	}
 
-	private static void badExit() {
+	private void badExit() {
 		printUsage();
 		System.exit(1);
 	}
