@@ -31,4 +31,9 @@
 		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
 		<property name="authenticationManager" ref="authenticationManager" />
 	</bean>
+
+
+	<bean name="fileSystemManager" class="org.apache.commons.vfs.impl.StandardFileSystemManager"
+		init-method="init" destroy-method="close" />
+
 </beans>

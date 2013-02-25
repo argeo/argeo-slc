@@ -36,4 +36,6 @@
 		</service-properties>
 	</service>
 	<service ref="agent" interface="org.argeo.slc.runtime.SlcAgent" />
+
+	<service ref="fileSystemManager" interface="org.apache.commons.vfs.FileSystemManager" />
 </beans:beans>

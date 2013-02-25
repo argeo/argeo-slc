@@ -40,7 +40,5 @@
 	<!-- SERVICES -->
 	<service ref="modulesManager" interface="org.argeo.slc.execution.ExecutionModulesManager" />
 
-	<service ref="fileSystemManager" interface="org.apache.commons.vfs.FileSystemManager" />
-
 
 </beans:beans>
