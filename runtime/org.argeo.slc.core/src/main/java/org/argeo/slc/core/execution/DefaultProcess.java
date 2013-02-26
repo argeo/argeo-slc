@@ -31,8 +31,19 @@ public class DefaultProcess implements ExecutionProcess {
 	}
 
 	public List<RealizedFlow> getRealizedFlows() {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public List<ExecutionStep> getSteps() {
+		return steps;
+	}
+
+	public void setSteps(List<ExecutionStep> steps) {
+		this.steps = steps;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 }

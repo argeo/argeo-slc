@@ -14,10 +14,7 @@
 	<reference id="repository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=slc)" />
 
-	<list id="agentFactories" interface="org.argeo.slc.execution.SlcAgentFactory">
-		<listener ref="processController" bind-method="register"
-			unbind-method="unregister" />
-	</list>
+	<reference id="agent" interface="org.argeo.slc.execution.SlcAgent" />
 
 	<reference id="modulesManager"
 		interface="org.argeo.slc.execution.ExecutionModulesManager" />

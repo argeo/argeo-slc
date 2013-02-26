@@ -21,7 +21,4 @@
 	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager">
 		<property name="defaultTimeout" value="${slc.agent.osgi.defaultTimeout}" />
 	</bean>
-
-	<!-- Agent Factory -->
-	<bean id="vmAgentFactory" class="org.argeo.slc.core.execution.DefaultAgentFactory" />
 </beans>
