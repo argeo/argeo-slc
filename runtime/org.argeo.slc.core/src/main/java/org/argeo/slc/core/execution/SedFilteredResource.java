@@ -48,20 +48,22 @@ public class SedFilteredResource implements FactoryBean, InitializingBean {
 	private String charset = "UTF-8";
 	private Charset cs;
 	private CharsetDecoder decoder;
-	//private CharsetEncoder encoder;
+
+	// private CharsetEncoder encoder;
 
 	public Object getObject() throws Exception {
 		if (filters.size() == 0)
 			return source;
 
-		//int capacity = 100 * 1024;// 100 KB
+		// int capacity = 100 * 1024;// 100 KB
 		ByteBuffer bb;
 		if (source instanceof ByteArrayResource) {
 			bb = ByteBuffer.wrap(((ByteArrayResource) source).getByteArray());
 		} else {
+			FileInputStream fis = null;
 			try {
 				File file = source.getFile();
-				FileInputStream fis = new FileInputStream(file);
+				fis = new FileInputStream(file);
 				FileChannel fc = fis.getChannel();
 
 				// Get the file's size and then map it into memory
@@ -78,6 +80,8 @@ public class SedFilteredResource implements FactoryBean, InitializingBean {
 				// FIXME : use nio to parse the stream as it goes
 				bb = ByteBuffer.wrap(IOUtils.toByteArray(source
 						.getInputStream()));
+			} finally {
+				IOUtils.closeQuietly(fis);
 			}
 		}
 		CharBuffer cb = decoder.decode(bb);
@@ -86,10 +90,10 @@ public class SedFilteredResource implements FactoryBean, InitializingBean {
 			String output = matcher.replaceAll(patterns.get(pattern));
 			cb = CharBuffer.wrap(output);
 		}
-//		ByteBuffer bbout = encoder.encode(cb);
-//		ByteArrayOutputStream out = new ByteArrayOutputStream(capacity);
-//		WritableByteChannel wchannel = Channels.newChannel(out);
-//		wchannel.write(bbout);
+		// ByteBuffer bbout = encoder.encode(cb);
+		// ByteArrayOutputStream out = new ByteArrayOutputStream(capacity);
+		// WritableByteChannel wchannel = Channels.newChannel(out);
+		// wchannel.write(bbout);
 		ByteArrayResource res = new ByteArrayResource(cb.toString().getBytes());
 		return res;
 	}
@@ -105,7 +109,7 @@ public class SedFilteredResource implements FactoryBean, InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 		cs = Charset.forName(charset);
 		decoder = cs.newDecoder();
-		//encoder = cs.newEncoder();
+		// encoder = cs.newEncoder();
 
 		for (String sedStr : filters) {
 			sedStr = sedStr.trim();
