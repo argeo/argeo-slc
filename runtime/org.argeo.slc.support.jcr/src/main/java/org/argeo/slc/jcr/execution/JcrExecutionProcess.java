@@ -15,11 +15,13 @@
  */
 package org.argeo.slc.jcr.execution;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 
@@ -29,6 +31,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
+import org.argeo.slc.execution.RealizedFlow;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 
@@ -136,6 +139,25 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 	// public Node getNode() {
 	// return node;
 	// }
+
+	public List<RealizedFlow> getRealizedFlows() {
+		try {
+			List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
+			Node rootRealizedFlowNode = node.getNode(SLC_FLOW);
+			// we just manage one level for the time being
+			NodeIterator nit = rootRealizedFlowNode.getNodes(SLC_FLOW);
+			while (nit.hasNext()) {
+				Node realizedFlowNode = nit.nextNode();
+				RealizedFlow realizedFlow = new JcrRealizedFlow(
+						realizedFlowNode);
+				if (realizedFlow != null)
+					realizedFlows.add(realizedFlow);
+			}
+			return realizedFlows;
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot get realized flows", e);
+		}
+	}
 
 	public String getNodePath() {
 		try {

@@ -28,12 +28,9 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.RealizedFlow;
-import org.argeo.slc.process.SlcExecution;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 
-/** Thread of the SLC Process, starting the sub executions. */
-@SuppressWarnings("deprecation")
 public class ProcessThread extends Thread {
 	private final static Log log = LogFactory.getLog(ProcessThread.class);
 
@@ -59,11 +56,11 @@ public class ProcessThread extends Thread {
 
 	public final void run() {
 		// authenticate thread
-		 Authentication authentication = getProcessThreadGroup()
-		 .getAuthentication();
-		 if (authentication == null)
-		 throw new SlcException("Can only execute authenticated threads");
-		 SecurityContextHolder.getContext().setAuthentication(authentication);
+		Authentication authentication = getProcessThreadGroup()
+				.getAuthentication();
+		if (authentication == null)
+			throw new SlcException("Can only execute authenticated threads");
+		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		// log.info("\n##\n## SLC Process #" + process.getUuid() +
 		// " STARTED by "
@@ -137,13 +134,8 @@ public class ProcessThread extends Thread {
 	 * custom process types. Default expects an {@link SlcExecution}.
 	 */
 	protected void process() throws InterruptedException {
-		if (!(process instanceof SlcExecution))
-			throw new SlcException("Unsupported process type "
-					+ process.getClass());
-		SlcExecution slcExecution = (SlcExecution) process;
 		List<RealizedFlow> flowsToProcess = new ArrayList<RealizedFlow>();
-		flowsToProcess.addAll(slcExecution.getRealizedFlows());
-
+		flowsToProcess.addAll(process.getRealizedFlows());
 		while (flowsToProcess.size() > 0) {
 			RealizedFlow realizedFlow = flowsToProcess.remove(0);
 			execute(realizedFlow, true);

@@ -16,31 +16,19 @@
  */
 package org.argeo.slc.jcr.execution;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.slc.SlcException;
-import org.argeo.slc.core.execution.DefaultExecutionSpec;
-import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
-import org.argeo.slc.core.execution.PrimitiveUtils;
 import org.argeo.slc.core.execution.ProcessThread;
-import org.argeo.slc.core.execution.RefSpecAttribute;
-import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
-import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.execution.RealizedFlow;
-import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 
 /** Where the actual execution takes place */
 public class JcrProcessThread extends ProcessThread implements SlcNames {
@@ -56,19 +44,21 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 		Session session = null;
 		try {
 			session = getJcrExecutionProcess().getRepository().login();
-			Node rootRealizedFlowNode = session.getNode(
-					getJcrExecutionProcess().getNodePath()).getNode(SLC_FLOW);
-			// we just manage one level for the time being
-			NodeIterator nit = rootRealizedFlowNode.getNodes(SLC_FLOW);
-			while (nit.hasNext()) {
-				Node realizedFlowNode = nit.nextNode();
+
+			List<RealizedFlow> realizedFlows = getProcess().getRealizedFlows();
+			for (RealizedFlow realizedFlow : realizedFlows) {
+				Node realizedFlowNode = session
+						.getNode(((JcrRealizedFlow) realizedFlow).getPath());
 
 				// set status on realized flow
 				realizedFlowNode.setProperty(SLC_STATUS,
 						ExecutionProcess.RUNNING);
 				realizedFlowNode.getSession().save();
 				try {
-					execute(realizedFlowNode);
+					//
+					// EXECUTE THE FLOW
+					//
+					execute(realizedFlow, true);
 
 					// set status on realized flow
 					realizedFlowNode.setProperty(SLC_STATUS,
@@ -98,109 +88,113 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 		}
 	}
 
-	/** Configure the realized flows */
-	protected void execute(Node realizedFlowNode) throws RepositoryException,
-			InterruptedException {
-		if (realizedFlowNode.hasNode(SLC_ADDRESS)) {
-			String flowPath = realizedFlowNode.getNode(SLC_ADDRESS)
-					.getProperty(Property.JCR_PATH).getString();
-			// TODO: convert to local path if remote
-
-			Node flowNode = realizedFlowNode.getSession().getNode(flowPath);
-			String flowName = flowNode.getProperty(SLC_NAME).getString();
-
-			Node executionModuleNode = flowNode.getSession().getNode(
-					SlcJcrUtils.modulePath(flowPath));
-			String executionModuleName = executionModuleNode.getProperty(
-					SLC_NAME).getString();
-			String executionModuleVersion = executionModuleNode.getProperty(
-					SLC_VERSION).getString();
-
-			RealizedFlow realizedFlow = new RealizedFlow();
-			realizedFlow.setModuleName(executionModuleName);
-			realizedFlow.setModuleVersion(executionModuleVersion);
-
-			// retrieve execution spec
-			DefaultExecutionSpec executionSpec = new DefaultExecutionSpec();
-			Map<String, ExecutionSpecAttribute> attrs = readExecutionSpecAttributes(realizedFlowNode);
-			executionSpec.setAttributes(attrs);
-
-			// set execution spec name
-			if (flowNode.hasProperty(SlcNames.SLC_SPEC)) {
-				Node executionSpecNode = flowNode.getProperty(SLC_SPEC)
-						.getNode();
-				executionSpec.setBeanName(executionSpecNode.getProperty(
-						SLC_NAME).getString());
-			}
-
-			// explicitly retrieve values
-			Map<String, Object> values = new HashMap<String, Object>();
-			for (String attrName : attrs.keySet()) {
-				ExecutionSpecAttribute attr = attrs.get(attrName);
-				Object value = attr.getValue();
-				values.put(attrName, value);
-			}
-
-			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(flowName,
-					values, executionSpec);
-			realizedFlow.setFlowDescriptor(efd);
-
-			//
-			// EXECUTE THE FLOW
-			//
-			execute(realizedFlow, true);
-			//
-		}
-	}
-
-	protected Map<String, ExecutionSpecAttribute> readExecutionSpecAttributes(
-			Node node) {
-		try {
-			Map<String, ExecutionSpecAttribute> attrs = new HashMap<String, ExecutionSpecAttribute>();
-			for (NodeIterator nit = node.getNodes(); nit.hasNext();) {
-				Node specAttrNode = nit.nextNode();
-				if (specAttrNode
-						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
-					String type = specAttrNode.getProperty(SLC_TYPE)
-							.getString();
-					Object value = null;
-					if (specAttrNode.hasProperty(SLC_VALUE)) {
-						String valueStr = specAttrNode.getProperty(SLC_VALUE)
-								.getString();
-						value = PrimitiveUtils.convert(type, valueStr);
-					}
-					PrimitiveSpecAttribute specAttr = new PrimitiveSpecAttribute(
-							type, value);
-					attrs.put(specAttrNode.getName(), specAttr);
-				} else if (specAttrNode
-						.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
-					if (!specAttrNode.hasProperty(SLC_VALUE)) {
-						continue;
-					}
-					Integer value = (int) specAttrNode.getProperty(SLC_VALUE)
-							.getLong();
-					RefSpecAttribute specAttr = new RefSpecAttribute();
-					NodeIterator children = specAttrNode.getNodes();
-					int index = 0;
-					String id = null;
-					while (children.hasNext()) {
-						Node child = children.nextNode();
-						if (index == value)
-							id = child.getName();
-						index++;
-					}
-					specAttr.setValue(id);
-					attrs.put(specAttrNode.getName(), specAttr);
-				}
-				// throw new SlcException("Unsupported spec attribute "
-				// + specAttrNode);
-			}
-			return attrs;
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot read spec attributes from " + node,
-					e);
-		}
-	}
+	//
+	// /** CONFIGURE THE REALIZED FLOWS */
+	// PROTECTED VOID EXECUTE(NODE REALIZEDFLOWNODE) THROWS REPOSITORYEXCEPTION,
+	// INTERRUPTEDEXCEPTION {
+	// IF (REALIZEDFLOWNODE.HASNODE(SLC_ADDRESS)) {
+	// STRING FLOWPATH = REALIZEDFLOWNODE.GETNODE(SLC_ADDRESS)
+	// .GETPROPERTY(PROPERTY.JCR_PATH).GETSTRING();
+	// // TODO: CONVERT TO LOCAL PATH IF REMOTE
+	//
+	// NODE FLOWNODE = REALIZEDFLOWNODE.GETSESSION().GETNODE(FLOWPATH);
+	// STRING FLOWNAME = FLOWNODE.GETPROPERTY(SLC_NAME).GETSTRING();
+	//
+	// NODE EXECUTIONMODULENODE = FLOWNODE.GETSESSION().GETNODE(
+	// SLCJCRUTILS.MODULEPATH(FLOWPATH));
+	// STRING EXECUTIONMODULENAME = EXECUTIONMODULENODE.GETPROPERTY(
+	// SLC_NAME).GETSTRING();
+	// STRING EXECUTIONMODULEVERSION = EXECUTIONMODULENODE.GETPROPERTY(
+	// SLC_VERSION).GETSTRING();
+	//
+	// REALIZEDFLOW REALIZEDFLOW = NEW REALIZEDFLOW();
+	// REALIZEDFLOW.SETMODULENAME(EXECUTIONMODULENAME);
+	// REALIZEDFLOW.SETMODULEVERSION(EXECUTIONMODULEVERSION);
+	//
+	// // RETRIEVE EXECUTION SPEC
+	// DEFAULTEXECUTIONSPEC EXECUTIONSPEC = NEW DEFAULTEXECUTIONSPEC();
+	// MAP<STRING, EXECUTIONSPECATTRIBUTE> ATTRS =
+	// READEXECUTIONSPECATTRIBUTES(REALIZEDFLOWNODE);
+	// EXECUTIONSPEC.SETATTRIBUTES(ATTRS);
+	//
+	// // SET EXECUTION SPEC NAME
+	// IF (FLOWNODE.HASPROPERTY(SLCNAMES.SLC_SPEC)) {
+	// NODE EXECUTIONSPECNODE = FLOWNODE.GETPROPERTY(SLC_SPEC)
+	// .GETNODE();
+	// EXECUTIONSPEC.SETBEANNAME(EXECUTIONSPECNODE.GETPROPERTY(
+	// SLC_NAME).GETSTRING());
+	// }
+	//
+	// // EXPLICITLY RETRIEVE VALUES
+	// MAP<STRING, OBJECT> VALUES = NEW HASHMAP<STRING, OBJECT>();
+	// FOR (STRING ATTRNAME : ATTRS.KEYSET()) {
+	// EXECUTIONSPECATTRIBUTE ATTR = ATTRS.GET(ATTRNAME);
+	// OBJECT VALUE = ATTR.GETVALUE();
+	// VALUES.PUT(ATTRNAME, VALUE);
+	// }
+	//
+	// EXECUTIONFLOWDESCRIPTOR EFD = NEW EXECUTIONFLOWDESCRIPTOR(FLOWNAME,
+	// VALUES, EXECUTIONSPEC);
+	// REALIZEDFLOW.SETFLOWDESCRIPTOR(EFD);
+	//
+	// //
+	// // EXECUTE THE FLOW
+	// //
+	// EXECUTE(REALIZEDFLOW, TRUE);
+	// //
+	// }
+	// }
+	//
+	// PROTECTED MAP<STRING, EXECUTIONSPECATTRIBUTE>
+	// READEXECUTIONSPECATTRIBUTES(
+	// NODE NODE) {
+	// TRY {
+	// MAP<STRING, EXECUTIONSPECATTRIBUTE> ATTRS = NEW HASHMAP<STRING,
+	// EXECUTIONSPECATTRIBUTE>();
+	// FOR (NODEITERATOR NIT = NODE.GETNODES(); NIT.HASNEXT();) {
+	// NODE SPECATTRNODE = NIT.NEXTNODE();
+	// IF (SPECATTRNODE
+	// .ISNODETYPE(SLCTYPES.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
+	// STRING TYPE = SPECATTRNODE.GETPROPERTY(SLC_TYPE)
+	// .GETSTRING();
+	// OBJECT VALUE = NULL;
+	// IF (SPECATTRNODE.HASPROPERTY(SLC_VALUE)) {
+	// STRING VALUESTR = SPECATTRNODE.GETPROPERTY(SLC_VALUE)
+	// .GETSTRING();
+	// VALUE = PRIMITIVEUTILS.CONVERT(TYPE, VALUESTR);
+	// }
+	// PRIMITIVESPECATTRIBUTE SPECATTR = NEW PRIMITIVESPECATTRIBUTE(
+	// TYPE, VALUE);
+	// ATTRS.PUT(SPECATTRNODE.GETNAME(), SPECATTR);
+	// } ELSE IF (SPECATTRNODE
+	// .ISNODETYPE(SLCTYPES.SLC_REF_SPEC_ATTRIBUTE)) {
+	// IF (!SPECATTRNODE.HASPROPERTY(SLC_VALUE)) {
+	// CONTINUE;
+	// }
+	// INTEGER VALUE = (INT) SPECATTRNODE.GETPROPERTY(SLC_VALUE)
+	// .GETLONG();
+	// REFSPECATTRIBUTE SPECATTR = NEW REFSPECATTRIBUTE();
+	// NODEITERATOR CHILDREN = SPECATTRNODE.GETNODES();
+	// INT INDEX = 0;
+	// STRING ID = NULL;
+	// WHILE (CHILDREN.HASNEXT()) {
+	// NODE CHILD = CHILDREN.NEXTNODE();
+	// IF (INDEX == VALUE)
+	// ID = CHILD.GETNAME();
+	// INDEX++;
+	// }
+	// SPECATTR.SETVALUE(ID);
+	// ATTRS.PUT(SPECATTRNODE.GETNAME(), SPECATTR);
+	// }
+	// // THROW NEW SLCEXCEPTION("UNSUPPORTED SPEC ATTRIBUTE "
+	// // + SPECATTRNODE);
+	// }
+	// RETURN ATTRS;
+	// } CATCH (REPOSITORYEXCEPTION E) {
+	// THROW NEW SLCEXCEPTION("CANNOT READ SPEC ATTRIBUTES FROM " + NODE,
+	// E);
+	// }
+	// }
 
 	protected JcrExecutionProcess getJcrExecutionProcess() {
 		return (JcrExecutionProcess) getProcess();

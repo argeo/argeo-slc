@@ -33,9 +33,6 @@
 		<listener ref="modulesManager" />
 	</list>
 
-	<list id="slcExecutionListeners" interface="org.argeo.slc.process.SlcExecutionNotifier"
-		cardinality="0..N" />
-
 	<list id="agents" interface="org.argeo.slc.execution.SlcAgent"
 		cardinality="0..N">
 		<listener ref="vmAgentFactory" bind-method="register"

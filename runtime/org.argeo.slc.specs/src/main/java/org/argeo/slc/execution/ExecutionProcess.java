@@ -62,4 +62,6 @@ public interface ExecutionProcess {
 	public void setStatus(String status);
 
 	public void addSteps(List<ExecutionStep> steps);
+
+	public List<RealizedFlow> getRealizedFlows();
 }

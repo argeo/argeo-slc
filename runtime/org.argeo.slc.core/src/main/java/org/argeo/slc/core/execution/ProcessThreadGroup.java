@@ -23,13 +23,10 @@ import java.util.concurrent.BlockingQueue;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
-import org.argeo.slc.process.SlcExecution;
-import org.argeo.slc.process.SlcExecutionStep;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 
 /** The thread group attached to a given {@link SlcExecution}. */
-@SuppressWarnings("deprecation")
 public class ProcessThreadGroup extends ThreadGroup {
 	private final ExecutionModulesManager executionModulesManager;
 	private final ProcessThread processThread;
@@ -54,14 +51,12 @@ public class ProcessThreadGroup extends ThreadGroup {
 	}
 
 	public void dispatchAddStep(ExecutionStep step) {
-		// legacy
 		ExecutionProcess slcProcess = processThread.getProcess();
-		if (slcProcess instanceof SlcExecution)
-			((SlcExecution) slcProcess).getSteps().add((SlcExecutionStep) step);
-
 		List<ExecutionStep> steps = new ArrayList<ExecutionStep>();
 		steps.add(step);
+		// TODO clarify why we don't dispatch steps, must be a reason
 		// dispatchAddSteps(steps);
+		slcProcess.addSteps(steps);
 		this.steps.add(step);
 	}
 

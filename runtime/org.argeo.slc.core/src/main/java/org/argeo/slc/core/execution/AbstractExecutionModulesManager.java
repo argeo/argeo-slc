@@ -32,16 +32,12 @@ import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionProcessNotifier;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.RealizedFlow;
-import org.argeo.slc.process.SlcExecutionNotifier;
 
 /** Provides the base feature of an execution module manager. */
-@SuppressWarnings("deprecation")
 public abstract class AbstractExecutionModulesManager implements
 		ExecutionModulesManager {
 	private final static Log log = LogFactory
 			.getLog(AbstractExecutionModulesManager.class);
-
-	private List<SlcExecutionNotifier> slcExecutionNotifiers = new ArrayList<SlcExecutionNotifier>();
 
 	private List<FilteredNotifier> filteredNotifiers = Collections
 			.synchronizedList(new ArrayList<FilteredNotifier>());
@@ -84,12 +80,6 @@ public abstract class AbstractExecutionModulesManager implements
 
 	public void dispatchUpdateStatus(ExecutionProcess process,
 			String oldStatus, String newStatus) {
-		// generic notifiers (notified of everything)
-		for (Iterator<SlcExecutionNotifier> it = getSlcExecutionNotifiers()
-				.iterator(); it.hasNext();) {
-			it.next().updateStatus(process, oldStatus, newStatus);
-		}
-
 		// filtered notifiers
 		for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
 				.hasNext();) {
@@ -104,12 +94,6 @@ public abstract class AbstractExecutionModulesManager implements
 	public void dispatchAddSteps(ExecutionProcess process,
 			List<ExecutionStep> steps) {
 		process.addSteps(steps);
-
-		for (Iterator<SlcExecutionNotifier> it = getSlcExecutionNotifiers()
-				.iterator(); it.hasNext();) {
-			it.next().addSteps(process, steps);
-		}
-
 		for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
 				.hasNext();) {
 			FilteredNotifier filteredNotifier = it.next();
@@ -126,15 +110,6 @@ public abstract class AbstractExecutionModulesManager implements
 	public void unregisterProcessNotifier(ExecutionProcessNotifier notifier,
 			Map<String, String> properties) {
 		filteredNotifiers.remove(notifier);
-	}
-
-	public void setSlcExecutionNotifiers(
-			List<SlcExecutionNotifier> slcExecutionNotifiers) {
-		this.slcExecutionNotifiers = slcExecutionNotifiers;
-	}
-
-	private List<SlcExecutionNotifier> getSlcExecutionNotifiers() {
-		return slcExecutionNotifiers;
 	}
 
 	protected class FilteredNotifier {

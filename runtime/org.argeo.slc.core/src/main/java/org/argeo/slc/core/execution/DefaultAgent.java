@@ -25,7 +25,6 @@ import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
@@ -33,10 +32,8 @@ import org.argeo.slc.execution.ExecutionProcessNotifier;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.SlcAgent;
 import org.argeo.slc.execution.SlcAgentDescriptor;
-import org.argeo.slc.process.SlcExecution;
 
 /** Implements the base methods of an SLC agent. */
-@SuppressWarnings("deprecation")
 public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 	private final static Log log = LogFactory.getLog(DefaultAgent.class);
 
@@ -123,11 +120,8 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 	protected ProcessThread createProcessThread(
 			ThreadGroup processesThreadGroup,
 			ExecutionModulesManager modulesManager, ExecutionProcess process) {
-		if (!(process instanceof SlcExecution))
-			throw new SlcException("Unsupported process type "
-					+ process.getClass());
 		ProcessThread processThread = new ProcessThread(processesThreadGroup,
-				modulesManager, (SlcExecution) process);
+				modulesManager, process);
 		return processThread;
 	}
 

@@ -15,7 +15,6 @@
 	<!-- Manager -->
 	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager"
 		init-method="init" destroy-method="destroy">
-		<property name="slcExecutionNotifiers" ref="slcExecutionListeners" />
 		<property name="bundlesManager" ref="bundlesManager" />
 	</bean>
 
