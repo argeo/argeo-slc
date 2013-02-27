@@ -28,6 +28,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IParameter;
 
+@Deprecated
 public class RunSlcFlow extends AbstractHandler {
 	private ExecutionModulesManager modulesManager;
 
