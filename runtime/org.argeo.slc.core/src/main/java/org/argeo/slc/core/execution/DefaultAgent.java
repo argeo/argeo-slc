@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,13 +29,11 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
-import org.argeo.slc.execution.ExecutionProcessNotifier;
-import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.SlcAgent;
 import org.argeo.slc.execution.SlcAgentDescriptor;
 
 /** Implements the base methods of an SLC agent. */
-public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
+public class DefaultAgent implements SlcAgent {
 	private final static Log log = LogFactory.getLog(DefaultAgent.class);
 
 	private SlcAgentDescriptor agentDescriptor;
@@ -59,8 +58,8 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 		}
 		processesThreadGroup = new ThreadGroup("SLC Processes of Agent #"
 				+ agentDescriptor.getUuid());
-		modulesManager.registerProcessNotifier(this,
-				new HashMap<String, String>());
+		// modulesManager.registerProcessNotifier(this,
+		// new HashMap<String, String>());
 
 		// final String module = System
 		// .getProperty(ExecutionModulesManager.UNIQUE_LAUNCH_MODULE_PROPERTY);
@@ -79,8 +78,8 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 
 	/** Clean up (needs to be called by overriding method) */
 	public void destroy() {
-		modulesManager.unregisterProcessNotifier(this,
-				new HashMap<String, String>());
+//		modulesManager.unregisterProcessNotifier(this,
+//				new HashMap<String, String>());
 	}
 
 	/**
@@ -106,7 +105,14 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 				modulesManager, process);
 		processThread.start();
 		runningProcesses.put(process.getUuid(), processThread);
-		// FIXME find a way to remove them from this register
+
+		// clean up old processes
+		Iterator<ProcessThread> it = runningProcesses.values().iterator();
+		while (it.hasNext()) {
+			ProcessThread pThread = it.next();
+			if (!pThread.isAlive())
+				it.remove();
+		}
 	}
 
 	public void kill(ExecutionProcess process) {
@@ -141,17 +147,18 @@ public class DefaultAgent implements SlcAgent, ExecutionProcessNotifier {
 	/*
 	 * PROCESS NOTIFIER
 	 */
-	public void updateStatus(ExecutionProcess process, String oldStatus,
-			String newStatus) {
-		if (newStatus.equals(ExecutionProcess.COMPLETED)
-				|| newStatus.equals(ExecutionProcess.ERROR)
-				|| newStatus.equals(ExecutionProcess.KILLED)) {
-			runningProcesses.remove(process.getUuid());
-		}
-	}
-
-	public void addSteps(ExecutionProcess process, List<ExecutionStep> steps) {
-	}
+	// public void updateStatus(ExecutionProcess process, String oldStatus,
+	// String newStatus) {
+	// if (newStatus.equals(ExecutionProcess.COMPLETED)
+	// || newStatus.equals(ExecutionProcess.ERROR)
+	// || newStatus.equals(ExecutionProcess.KILLED)) {
+	// runningProcesses.remove(process.getUuid());
+	// }
+	// }
+	//
+	// public void addSteps(ExecutionProcess process, List<ExecutionStep> steps)
+	// {
+	// }
 
 	/*
 	 * BEAN

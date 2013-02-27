@@ -8,11 +8,13 @@ import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.RealizedFlow;
 
+/** Canonical implementation of an {@link ExecutionProcess} as a bean. */
 public class DefaultProcess implements ExecutionProcess {
 	private String uuid = UUID.randomUUID().toString();
-	private String status;
+	private String status = ExecutionProcess.NEW;
 
 	private List<ExecutionStep> steps = new ArrayList<ExecutionStep>();
+	private List<RealizedFlow> realizedFlows = new ArrayList<RealizedFlow>();
 
 	public String getUuid() {
 		return uuid;
@@ -31,7 +33,7 @@ public class DefaultProcess implements ExecutionProcess {
 	}
 
 	public List<RealizedFlow> getRealizedFlows() {
-		return null;
+		return realizedFlows;
 	}
 
 	public List<ExecutionStep> getSteps() {
@@ -44,6 +46,10 @@ public class DefaultProcess implements ExecutionProcess {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public void setRealizedFlows(List<RealizedFlow> realizedFlows) {
+		this.realizedFlows = realizedFlows;
 	}
 
 }

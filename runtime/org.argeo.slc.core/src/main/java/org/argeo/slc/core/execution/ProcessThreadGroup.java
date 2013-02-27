@@ -15,12 +15,9 @@
  */
 package org.argeo.slc.core.execution;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
 import org.springframework.security.Authentication;
@@ -28,20 +25,20 @@ import org.springframework.security.context.SecurityContextHolder;
 
 /** The thread group attached to a given {@link SlcExecution}. */
 public class ProcessThreadGroup extends ThreadGroup {
-	private final ExecutionModulesManager executionModulesManager;
-	private final ProcessThread processThread;
+	// private final ExecutionModulesManager executionModulesManager;
+	// private final ProcessThread processThread;
 	private final Authentication authentication;
 	private final static Integer STEPS_BUFFER_CAPACITY = 5000;
 
 	private BlockingQueue<ExecutionStep> steps = new ArrayBlockingQueue<ExecutionStep>(
 			STEPS_BUFFER_CAPACITY);
 
-	public ProcessThreadGroup(ExecutionModulesManager executionModulesManager,
-			ProcessThread processThread) {
-		super("SLC Process #" + processThread.getProcess().getUuid()
-				+ " thread group");
-		this.executionModulesManager = executionModulesManager;
-		this.processThread = processThread;
+	private Boolean hadAnError = false;
+
+	public ProcessThreadGroup(ExecutionProcess executionProcess) {
+		super("SLC Process #" + executionProcess.getUuid() + " thread group");
+		// this.executionModulesManager = executionModulesManager;
+		// this.processThread = processThread;
 		this.authentication = SecurityContextHolder.getContext()
 				.getAuthentication();
 	}
@@ -51,22 +48,27 @@ public class ProcessThreadGroup extends ThreadGroup {
 	}
 
 	public void dispatchAddStep(ExecutionStep step) {
-		ExecutionProcess slcProcess = processThread.getProcess();
-		List<ExecutionStep> steps = new ArrayList<ExecutionStep>();
-		steps.add(step);
+		// ExecutionProcess slcProcess = processThread.getProcess();
+		// List<ExecutionStep> steps = new ArrayList<ExecutionStep>();
+		// steps.add(step);
 		// TODO clarify why we don't dispatch steps, must be a reason
 		// dispatchAddSteps(steps);
-		slcProcess.addSteps(steps);
+		// slcProcess.addSteps(steps);
+		if (step.getType().equals(ExecutionStep.ERROR))
+			hadAnError = true;
 		this.steps.add(step);
 	}
 
-	public void dispatchAddSteps(List<ExecutionStep> steps) {
-		ExecutionProcess slcProcess = processThread.getProcess();
-		executionModulesManager.dispatchAddSteps(slcProcess, steps);
-	}
+	// public void dispatchAddSteps(List<ExecutionStep> steps) {
+	// ExecutionProcess slcProcess = processThread.getProcess();
+	// executionModulesManager.dispatchAddSteps(slcProcess, steps);
+	// }
 
 	public BlockingQueue<ExecutionStep> getSteps() {
 		return steps;
 	}
 
+	public Boolean hadAnError() {
+		return hadAnError;
+	}
 }

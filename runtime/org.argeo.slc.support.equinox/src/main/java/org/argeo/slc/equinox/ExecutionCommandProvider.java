@@ -58,6 +58,7 @@ public class ExecutionCommandProvider implements CommandProvider {
 			}
 		}
 		String executionName = ci.nextArgument();
+		
 
 		launch(slcCommand, firstArg, executionName);
 		return "COMMAND COMPLETED";

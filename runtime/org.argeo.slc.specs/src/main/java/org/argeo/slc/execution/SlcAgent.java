@@ -17,8 +17,12 @@ package org.argeo.slc.execution;
 
 import java.util.List;
 
-
-/** A local agent, able to run SLC Execution locally. */
+/**
+ * A local agent can run SLC processes. It is responsible for creating their
+ * threads and integrating them with various UIs. It typically wraps
+ * {@link ExecutionModulesManager} which is used to run flows synchronously at a
+ * lower level.
+ */
 public interface SlcAgent {
 	/** Agent unique identifier */
 	public String getAgentUuid();
@@ -29,9 +33,14 @@ public interface SlcAgent {
 	/** Kills this process */
 	public void kill(ExecutionProcess process);
 
+	/**
+	 * Describe all the flows provided by this execution module. Typically
+	 * called in order to build a realized flow.
+	 */
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version);
 
+	/** List all execution modules which can be processed by this agent. */
 	public List<ExecutionModuleDescriptor> listExecutionModuleDescriptors();
 
 	/** @return true if still alive. */

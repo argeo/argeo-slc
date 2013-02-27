@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
+import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.RealizedFlow;
 import org.springframework.security.Authentication;
@@ -33,17 +34,20 @@ public class ExecutionThread extends Thread {
 
 	private final static Log log = LogFactory.getLog(ExecutionThread.class);
 
+	private ExecutionModulesManager executionModulesManager;
 	private final RealizedFlow realizedFlow;
-	private final ProcessThread processThread;
+	// private final ProcessThread processThread;
 
 	private List<Runnable> destructionCallbacks = new ArrayList<Runnable>();
 
-	public ExecutionThread(ProcessThread processThread,
+	public ExecutionThread(ProcessThreadGroup processThreadGroup,
+			ExecutionModulesManager executionModulesManager,
 			RealizedFlow realizedFlow) {
-		super(processThread.getProcessThreadGroup(), "Flow "
+		super(processThreadGroup, "Flow "
 				+ realizedFlow.getFlowDescriptor().getName());
 		this.realizedFlow = realizedFlow;
-		this.processThread = processThread;
+		this.executionModulesManager = executionModulesManager;
+		// this.processThread = processThread;
 	}
 
 	public void run() {
@@ -59,37 +63,40 @@ public class ExecutionThread extends Thread {
 				.getFlowDescriptor();
 		String flowName = executionFlowDescriptor.getName();
 
-		dispatchAddStep(new ExecutionStep(realizedFlow.getModuleName(),
-				ExecutionStep.PHASE_START, "Flow " + flowName));
+		getProcessThreadGroup().dispatchAddStep(
+				new ExecutionStep(realizedFlow.getModuleName(),
+						ExecutionStep.PHASE_START, "Flow " + flowName));
 
 		try {
 			String autoUpgrade = System
 					.getProperty(SYSPROP_EXECUTION_AUTO_UPGRADE);
 			if (autoUpgrade != null && autoUpgrade.equals("true"))
-				processThread.getExecutionModulesManager().upgrade(
-						realizedFlow.getModuleNameVersion());
+				executionModulesManager.upgrade(realizedFlow
+						.getModuleNameVersion());
 
 			// START FLOW
-			processThread.getExecutionModulesManager().execute(realizedFlow);
+			executionModulesManager.execute(realizedFlow);
 			// END FLOW
 		} catch (Exception e) {
 			// TODO: re-throw exception ?
 			String msg = "Execution of flow " + flowName + " failed.";
 			log.error(msg, e);
-			dispatchAddStep(new ExecutionStep(realizedFlow.getModuleName(),
-					ExecutionStep.ERROR, msg + " " + e.getMessage()));
-			processThread.notifyError();
+			getProcessThreadGroup().dispatchAddStep(
+					new ExecutionStep(realizedFlow.getModuleName(),
+							ExecutionStep.ERROR, msg + " " + e.getMessage()));
+			// processThread.notifyError();
 		} finally {
-			processThread.flowCompleted();
-			dispatchAddStep(new ExecutionStep(realizedFlow.getModuleName(),
-					ExecutionStep.PHASE_END, "Flow " + flowName));
+			// processThread.flowCompleted();
+			getProcessThreadGroup().dispatchAddStep(
+					new ExecutionStep(realizedFlow.getModuleName(),
+							ExecutionStep.PHASE_END, "Flow " + flowName));
 			processDestructionCallbacks();
 		}
 	}
 
-	private void dispatchAddStep(ExecutionStep step) {
-		processThread.getProcessThreadGroup().dispatchAddStep(step);
-	}
+	// private void dispatchAddStep(ExecutionStep step) {
+	// getProcessThreadGroup().dispatchAddStep(step);
+	// }
 
 	private synchronized void processDestructionCallbacks() {
 		for (int i = destructionCallbacks.size() - 1; i >= 0; i--) {
@@ -111,11 +118,12 @@ public class ExecutionThread extends Thread {
 	}
 
 	protected ProcessThreadGroup getProcessThreadGroup() {
-		return processThread.getProcessThreadGroup();
+		return (ProcessThreadGroup) getThreadGroup();
+		// return processThread.getProcessThreadGroup();
 	}
 
-	public RealizedFlow getRealizedFlow() {
-		return realizedFlow;
-	}
+	// public RealizedFlow getRealizedFlow() {
+	// return realizedFlow;
+	// }
 
 }

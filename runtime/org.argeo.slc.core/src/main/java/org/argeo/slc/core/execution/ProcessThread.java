@@ -31,6 +31,10 @@ import org.argeo.slc.execution.RealizedFlow;
 import org.springframework.security.Authentication;
 import org.springframework.security.context.SecurityContextHolder;
 
+/**
+ * Main thread coordinating an {@link ExecutionProcess}, launching parallel or
+ * sequential {@link ExecutionThread}s.
+ */
 public class ProcessThread extends Thread {
 	private final static Log log = LogFactory.getLog(ProcessThread.class);
 
@@ -41,7 +45,7 @@ public class ProcessThread extends Thread {
 	private Set<ExecutionThread> executionThreads = Collections
 			.synchronizedSet(new HashSet<ExecutionThread>());
 
-	private Boolean hadAnError = false;
+	// private Boolean hadAnError = false;
 	private Boolean killed = false;
 
 	public ProcessThread(ThreadGroup processesThreadGroup,
@@ -50,8 +54,7 @@ public class ProcessThread extends Thread {
 		super(processesThreadGroup, "SLC Process #" + process.getUuid());
 		this.executionModulesManager = executionModulesManager;
 		this.process = process;
-		processThreadGroup = new ProcessThreadGroup(executionModulesManager,
-				this);
+		processThreadGroup = new ProcessThreadGroup(process);
 	}
 
 	public final void run() {
@@ -71,10 +74,10 @@ public class ProcessThread extends Thread {
 		// Start logging
 		new LoggingThread().start();
 
-		String oldStatus = process.getStatus();
+		// String oldStatus = process.getStatus();
 		process.setStatus(ExecutionProcess.RUNNING);
-		executionModulesManager.dispatchUpdateStatus(process, oldStatus,
-				ExecutionProcess.RUNNING);
+		// executionModulesManager.dispatchUpdateStatus(process, oldStatus,
+		// ExecutionProcess.RUNNING);
 
 		try {
 			process();
@@ -101,16 +104,16 @@ public class ProcessThread extends Thread {
 
 	/** Make sure this is called BEFORE all the threads are interrupted. */
 	private void computeFinalStatus() {
-		String oldStatus = process.getStatus();
+		// String oldStatus = process.getStatus();
 		// TODO: error management at flow level?
 		if (killed)
 			process.setStatus(ExecutionProcess.KILLED);
-		else if (hadAnError)
+		else if (processThreadGroup.hadAnError())
 			process.setStatus(ExecutionProcess.ERROR);
 		else
 			process.setStatus(ExecutionProcess.COMPLETED);
-		executionModulesManager.dispatchUpdateStatus(process, oldStatus,
-				process.getStatus());
+		// executionModulesManager.dispatchUpdateStatus(process, oldStatus,
+		// process.getStatus());
 		log.info("\n## SLC Process #" + process.getUuid() + " "
 				+ process.getStatus() + "\n");
 	}
@@ -148,7 +151,8 @@ public class ProcessThread extends Thread {
 		if (killed)
 			return;
 
-		ExecutionThread thread = new ExecutionThread(this, realizedFlow);
+		ExecutionThread thread = new ExecutionThread(processThreadGroup,
+				executionModulesManager, realizedFlow);
 		executionThreads.add(thread);
 		thread.start();
 
@@ -158,13 +162,13 @@ public class ProcessThread extends Thread {
 		return;
 	}
 
-	public void notifyError() {
-		hadAnError = true;
-	}
-
-	public synchronized void flowCompleted() {
-		// notifyAll();
-	}
+//	public void notifyError() {
+//		hadAnError = true;
+//	}
+//
+//	public synchronized void flowCompleted() {
+//		// notifyAll();
+//	}
 
 	public ExecutionProcess getProcess() {
 		return process;

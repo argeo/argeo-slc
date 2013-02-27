@@ -16,7 +16,6 @@
 package org.argeo.slc.execution;
 
 import java.util.List;
-import java.util.Map;
 
 import org.argeo.slc.deploy.ModulesManager;
 
@@ -44,22 +43,22 @@ public interface ExecutionModulesManager extends ModulesManager {
 	/** Synchronously finds and executes an {@link ExecutionFlow}. */
 	public void execute(RealizedFlow realizedFlow);
 
-	/** Notify of a status update status of the {@link ExecutionProcess} */
-	public void dispatchUpdateStatus(ExecutionProcess process,
-			String oldStatus, String newStatus);
-
-	/** Notify that a step was added in an {@link ExecutionProcess} */
-	public void dispatchAddSteps(ExecutionProcess process,
-			List<ExecutionStep> steps);
-
-	/**
-	 * Register a notifier which will be notified based on the provided
-	 * properties.
-	 */
-	public void registerProcessNotifier(ExecutionProcessNotifier notifier,
-			Map<String, String> properties);
-
-	/** Unregisters a notifier */
-	public void unregisterProcessNotifier(ExecutionProcessNotifier notifier,
-			Map<String, String> properties);
+	// /** Notify of a status update status of the {@link ExecutionProcess} */
+//	 public void dispatchUpdateStatus(ExecutionProcess process,
+//	 String oldStatus, String newStatus);
+	//
+	// /** Notify that a step was added in an {@link ExecutionProcess} */
+	// public void dispatchAddSteps(ExecutionProcess process,
+	// List<ExecutionStep> steps);
+	//
+	// /**
+	// * Register a notifier which will be notified based on the provided
+	// * properties.
+	// */
+	// public void registerProcessNotifier(ExecutionProcessNotifier notifier,
+	// Map<String, String> properties);
+	//
+	// /** Unregisters a notifier */
+	// public void unregisterProcessNotifier(ExecutionProcessNotifier notifier,
+	// Map<String, String> properties);
 }
