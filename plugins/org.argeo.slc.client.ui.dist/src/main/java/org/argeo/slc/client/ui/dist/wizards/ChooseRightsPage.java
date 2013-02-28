@@ -15,8 +15,6 @@
  */
 package org.argeo.slc.client.ui.dist.wizards;
 
-import java.util.regex.Pattern;
-
 import javax.jcr.security.Privilege;
 
 import org.eclipse.jface.wizard.WizardPage;
@@ -37,7 +35,7 @@ public class ChooseRightsPage extends WizardPage implements ModifyListener {
 	private Combo authorizationCmb;
 
 	// Define acceptable chars for the technical name
-	private static Pattern p = Pattern.compile("^[A-Za-z0-9]+$");
+	// private static Pattern p = Pattern.compile("^[A-Za-z0-9]+$");
 
 	// USABLE SHORTCUTS
 	protected final static String[] validAuthType = { Privilege.JCR_READ,
@@ -45,7 +43,7 @@ public class ChooseRightsPage extends WizardPage implements ModifyListener {
 
 	public ChooseRightsPage() {
 		super("Main");
-		setTitle("Manange authorizations on the current workspace");
+		setTitle("Manage authorizations on the current workspace");
 	}
 
 	public void createControl(Composite parent) {
@@ -82,9 +80,9 @@ public class ChooseRightsPage extends WizardPage implements ModifyListener {
 		return authorizationCmb.getItem(authorizationCmb.getSelectionIndex());
 	}
 
-	private static boolean match(String s) {
-		return p.matcher(s).matches();
-	}
+	// private static boolean match(String s) {
+	// return p.matcher(s).matches();
+	// }
 
 	public void modifyText(ModifyEvent event) {
 		String message = checkComplete();

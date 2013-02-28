@@ -26,6 +26,18 @@
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
 	</bean>
+	<bean id="repoSyncCommand" class="org.argeo.slc.client.ui.dist.commands.RepoSyncCommand"
+		scope="prototype">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
+	</bean>
+	<bean id="unregisterRemoteRepo"
+		class="org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo"
+		scope="prototype">
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
 	<bean id="copyWorkspace" class="org.argeo.slc.client.ui.dist.commands.CopyWorkspace"
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />

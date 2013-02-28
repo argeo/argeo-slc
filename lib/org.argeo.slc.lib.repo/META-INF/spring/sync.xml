@@ -5,10 +5,10 @@
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-1.2.xsd">
 
-	<!-- Hello world -->
+	<!-- Sync from to repository -->
 	<flow:flow name="sync">
 		<flow:spec>
-			<flow:primitive name="sourceRepo"
+			<flow:primitive name="sourceRepoUri"
 				value="http://repo.argeo.org/data/pub/java" />
 			<flow:primitive name="sourceWksp" value="" />
 			<flow:primitive name="sourceUsername" value="${user.name}" />
@@ -17,17 +17,17 @@
 			<flow:primitive name="targetUsername" value="${user.name}" />
 			<flow:primitive name="targetPassword" type="password"
 				value="" />
-			<flow:primitive name="targetRepo" value="vm:///java/" />
+			<flow:primitive name="targetRepoUri" value="vm:///java/" />
 		</flow:spec>
 		<bean class="org.argeo.slc.repo.RepoSync">
 			<flow:variable proxy-target-class="false" />
-			<property name="sourceRepo" value="@{sourceRepo}" />
+			<property name="sourceRepoUri" value="@{sourceRepo}" />
 			<property name="sourceWksp" value="@{sourceWksp}" />
 			<property name="sourceUsername" value="@{sourceUsername}" />
 			<property name="sourcePassword" value="@{sourcePassword}" />
 			<property name="targetUsername" value="@{targetUsername}" />
 			<property name="targetPassword" value="@{targetPassword}" />
-			<property name="targetRepo" value="@{targetRepo}" />
+			<property name="targetRepoUri" value="@{targetRepo}" />
 			<property name="repositoryFactory" ref="repositoryFactory" />
 		</bean>
 	</flow:flow>

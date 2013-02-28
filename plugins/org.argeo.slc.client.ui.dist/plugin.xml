@@ -73,6 +73,12 @@
     <!-- Commands --> 
    	<extension
          point="org.eclipse.ui.commands">
+		<!-- Command which do not need dependency injection -->
+		<command
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.RefreshArtifactBrowser"
+            id="org.argeo.slc.client.ui.dist.refreshArtifactBrowser"
+            name="Refresh Artifact Browser">
+    	</command>
 		<command
             defaultHandler="org.argeo.slc.client.ui.dist.commands.ShowSizeColumn"
             id="org.argeo.slc.client.ui.dist.showSizeColumn"
@@ -86,11 +92,18 @@
 				</class>
 			</state>
     	</command>
+
+		<!-- Command with Spring dependency injection -->
 		<command
-            defaultHandler="org.argeo.slc.client.ui.dist.commands.RefreshArtifactBrowser"
-            id="org.argeo.slc.client.ui.dist.refreshArtifactBrowser"
-            name="Refresh Artifact Browser">
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.client.ui.dist.unregisterRemoteRepo"
+            name="Unregister remote repository">
+            <commandParameter
+         		id="org.argeo.slc.client.ui.dist.repoNodePath"
+         		name="Remote Repo path">
+  	 		</commandParameter>
     	</command>
+		
 		<command
             id="org.argeo.slc.client.ui.dist.runInOSGi"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
@@ -113,6 +126,16 @@
             id="org.argeo.slc.client.ui.dist.addRepository"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Add Repository">
+    	</command>
+    	
+    	<command
+            id="org.argeo.slc.client.ui.dist.repoSyncCommand"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Fetch repository">
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo path">
+  	 		</commandParameter>
     	</command>
 	
 		<!-- TO MANIPULATE WORKSPACES -->
@@ -193,7 +216,13 @@
                 label="Add repository"
                 tooltip="Add a repository">
             </command>
-        	<!--
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.refreshDistributionsView"
+                icon="icons/refresh.png"
+                label="Refresh"
+                tooltip="Refresh distributions view">
+            </command>
+           <!--
             <command
             	commandId="org.argeo.slc.client.ui.dist.runInOSGi"
                 icon="icons/showSize.gif"

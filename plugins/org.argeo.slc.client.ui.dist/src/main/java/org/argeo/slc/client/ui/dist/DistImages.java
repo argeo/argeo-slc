@@ -25,4 +25,10 @@ public class DistImages {
 			.getImageDescriptor("icons/artifactVersionBase.gif").createImage();
 	public final static Image IMG_FILE = DistPlugin.getImageDescriptor(
 			"icons/file.gif").createImage();
+
+	/** Icons to handle check boxes */
+	public final static Image CHECKED = DistPlugin.getImageDescriptor(
+			"icons/checked.gif").createImage();
+	public final static Image UNCHECKED = DistPlugin.getImageDescriptor(
+			"icons/unchecked.gif").createImage();
 }

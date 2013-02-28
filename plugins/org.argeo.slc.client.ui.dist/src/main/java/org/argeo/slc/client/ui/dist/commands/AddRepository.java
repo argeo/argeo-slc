@@ -34,6 +34,7 @@ import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
+import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.util.security.Keyring;
@@ -64,6 +65,10 @@ import org.eclipse.swt.widgets.Text;
 public class AddRepository extends AbstractHandler implements ArgeoNames,
 		SlcNames {
 
+	public final static String ID = DistPlugin.ID + ".addRepository";
+	public final static String DEFAULT_LABEL = "Register a repository";
+	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
+	
 	private RepositoryFactory repositoryFactory;
 	private Repository nodeRepository;
 	private Keyring keyring;

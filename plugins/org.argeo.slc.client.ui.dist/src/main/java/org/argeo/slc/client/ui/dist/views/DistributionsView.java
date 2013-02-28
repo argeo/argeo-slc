@@ -46,11 +46,14 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.commands.AddRepository;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
 import org.argeo.slc.client.ui.dist.commands.ManageWorkspaceAuth;
 import org.argeo.slc.client.ui.dist.commands.NormalizeDistribution;
+import org.argeo.slc.client.ui.dist.commands.RepoSyncCommand;
+import org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditorInput;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
@@ -126,6 +129,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		viewer.setContentProvider(new DistributionsContentProvider());
 		viewer.addDoubleClickListener(new DistributionsDCL());
+		// Enable selection retrieving from outside the view
+		getSite().setSelectionProvider(viewer);
 
 		// Drag'n drop
 		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
@@ -175,65 +180,107 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 
 		viewer.setInput(nodeRepository);
-
 	}
 
 	/** Programatically configure the context menu */
 	protected void contextMenuAboutToShow(IMenuManager menuManager) {
 		IWorkbenchWindow window = DistPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
-		// Get Current selected item :
-		Object firstElement = ((IStructuredSelection) viewer.getSelection())
-				.getFirstElement();
+		try {
+			// Most of the implemented commands support only one selected
+			// element
+			boolean singleElement = ((IStructuredSelection) viewer
+					.getSelection()).size() == 1;
+			// Get Current selected item :
+			Object firstElement = ((IStructuredSelection) viewer.getSelection())
+					.getFirstElement();
 
-		if (firstElement instanceof TreeParent
-				|| firstElement instanceof RepoElem) {
-			String wsName = null;
+			if (firstElement instanceof TreeParent
+					|| firstElement instanceof RepoElem) {
+				String wsName = null;
+				String targetRepoPath = null;
 
-			// Build conditions depending on element type (repo or distribution
-			// for the time being)
-			boolean isDistribElem = false; // , isRepoElem = false;
+				// Build conditions depending on element type (repo or
+				// distribution
+				// for the time being)
+				boolean isDistribElem = false; // , isRepoElem = false;
 
-			if (firstElement instanceof DistributionElem) {
-				isDistribElem = true;
-				wsName = ((DistributionElem) firstElement).getName();
+				if (firstElement instanceof DistributionElem) {
+					isDistribElem = true;
+					wsName = ((DistributionElem) firstElement).getName();
+				}
+
+				if (firstElement instanceof RepoElem) {
+					Node node = ((RepoElem) firstElement).getRepoNode();
+					targetRepoPath = node.getPath();
+				}
+
+				// create workspace
+				CommandHelpers.refreshCommand(menuManager, window,
+						CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
+						CreateWorkspace.DEFAULT_ICON_PATH, !isDistribElem
+								&& singleElement);
+
+				// Register a remote repository
+				CommandHelpers.refreshCommand(menuManager, window,
+						AddRepository.ID, AddRepository.DEFAULT_LABEL,
+						AddRepository.DEFAULT_ICON_PATH, !isDistribElem
+								&& singleElement);
+
+				// Unregister a remote repository
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(UnregisterRemoteRepo.PARAM_REPO_PATH, targetRepoPath);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						UnregisterRemoteRepo.ID,
+						UnregisterRemoteRepo.DEFAULT_LABEL,
+						UnregisterRemoteRepo.DEFAULT_ICON_PATH, !isDistribElem
+								&& singleElement, params);
+
+				// Fetch repository
+				params = new HashMap<String, String>();
+				params.put(RepoSyncCommand.PARAM_TARGET_REPO, targetRepoPath);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						RepoSyncCommand.ID, RepoSyncCommand.DEFAULT_LABEL,
+						RepoSyncCommand.DEFAULT_ICON_PATH, !isDistribElem
+								&& singleElement, params);
+
+				// Normalize workspace
+				params = new HashMap<String, String>();
+				params.put(NormalizeDistribution.PARAM_WORKSPACE, wsName);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						NormalizeDistribution.ID,
+						NormalizeDistribution.DEFAULT_LABEL,
+						NormalizeDistribution.DEFAULT_ICON_PATH, isDistribElem
+								&& singleElement, params);
+
+				// Copy workspace
+				params = new HashMap<String, String>();
+				params.put(CopyWorkspace.PARAM_WORKSPACE_NAME, wsName);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
+						CopyWorkspace.DEFAULT_ICON_PATH, isDistribElem
+								&& singleElement, params);
+
+				// Delete Workspace
+				params = new HashMap<String, String>();
+				params.put(DeleteWorkspace.PARAM_WORKSPACE_NAME, wsName);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
+						DeleteWorkspace.DEFAULT_ICON_PATH, isDistribElem
+								&& singleElement, params);
+
+				// Manage workspace authorizations
+				params = new HashMap<String, String>();
+				params.put(ManageWorkspaceAuth.PARAM_WORKSPACE_NAME, wsName);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						ManageWorkspaceAuth.ID,
+						ManageWorkspaceAuth.DEFAULT_LABEL,
+						ManageWorkspaceAuth.DEFAULT_ICON_PATH, isDistribElem
+								&& singleElement, params);
 			}
-
-			// create workspace
-			CommandHelpers.refreshCommand(menuManager, window,
-					CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
-					CreateWorkspace.DEFAULT_ICON_PATH, !isDistribElem);
-
-			// Normalize workspace
-			Map<String, String> params = new HashMap<String, String>();
-			params.put(NormalizeDistribution.PARAM_WORKSPACE, wsName);
-			CommandHelpers.refreshParameterizedCommand(menuManager, window,
-					NormalizeDistribution.ID,
-					NormalizeDistribution.DEFAULT_LABEL,
-					NormalizeDistribution.DEFAULT_ICON_PATH, isDistribElem,
-					params);
-
-			// Copy workspace
-			params = new HashMap<String, String>();
-			params.put(CopyWorkspace.PARAM_WORKSPACE_NAME, wsName);
-			CommandHelpers.refreshParameterizedCommand(menuManager, window,
-					CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
-					CopyWorkspace.DEFAULT_ICON_PATH, isDistribElem, params);
-
-			// Delete Workspace
-			params = new HashMap<String, String>();
-			params.put(DeleteWorkspace.PARAM_WORKSPACE_NAME, wsName);
-			CommandHelpers.refreshParameterizedCommand(menuManager, window,
-					DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
-					DeleteWorkspace.DEFAULT_ICON_PATH, isDistribElem, params);
-
-			// Manage workspace authorizations
-			params = new HashMap<String, String>();
-			params.put(ManageWorkspaceAuth.PARAM_WORKSPACE_NAME, wsName);
-			CommandHelpers.refreshParameterizedCommand(menuManager, window,
-					ManageWorkspaceAuth.ID, ManageWorkspaceAuth.DEFAULT_LABEL,
-					ManageWorkspaceAuth.DEFAULT_ICON_PATH, isDistribElem,
-					params);
+		} catch (RepositoryException e) {
+			throw new SlcException("unexpected errror while "
+					+ "building context menu", e);
 		}
 	}
 
@@ -242,26 +289,11 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		viewer.getTree().setFocus();
 	}
 
-	/*
-	 * DEPENDENCY INJECTION
-	 */
 	/**
 	 * Force refresh of the whole view
 	 */
 	public void refresh() {
 		viewer.setContentProvider(new DistributionsContentProvider());
-	}
-
-	public void setNodeRepository(Repository repository) {
-		this.nodeRepository = repository;
-	}
-
-	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
-		this.repositoryFactory = repositoryFactory;
-	}
-
-	public void setKeyring(Keyring keyring) {
-		this.keyring = keyring;
 	}
 
 	/*
@@ -641,5 +673,20 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				}
 			}
 		}
+	}
+
+	/*
+	 * DEPENDENCY INJECTION
+	 */
+	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+		this.repositoryFactory = repositoryFactory;
+	}
+
+	public void setKeyring(Keyring keyring) {
+		this.keyring = keyring;
+	}
+
+	public void setNodeRepository(Repository repository) {
+		this.nodeRepository = repository;
 	}
 }

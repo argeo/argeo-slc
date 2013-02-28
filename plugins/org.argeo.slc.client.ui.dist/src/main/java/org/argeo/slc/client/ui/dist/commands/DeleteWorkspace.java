@@ -22,9 +22,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoException;
+import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.eclipse.core.commands.AbstractHandler;
@@ -37,7 +36,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
  */
 
 public class DeleteWorkspace extends AbstractHandler {
-	private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
+	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
 
 	public final static String ID = DistPlugin.ID + ".deleteWorkspace";
 	public final static String PARAM_WORKSPACE_NAME = DistPlugin.ID
@@ -50,43 +49,53 @@ public class DeleteWorkspace extends AbstractHandler {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		// MessageDialog.openWarning(DistPlugin.getDefault()
-		// .getWorkbench().getDisplay().getActiveShell(),
-		// "WARNING", "Not yet implemented");
-		// return null;
-
 		String workspaceName = event.getParameter(PARAM_WORKSPACE_NAME);
-		String msg = "Your are about to clear workspace [" + workspaceName
-				+ "].\n Do you really want to proceed ?";
+
+		String msg = "Your are about to completely delete workspace ["
+				+ workspaceName + "].\n Do you really want to proceed ?";
 
 		boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
 				.getWorkbench().getDisplay().getActiveShell(),
-				"Confirm workspace clear", msg);
+				"Confirm workspace deletion", msg);
+
+		if (result) {
+			// msg =
+			// "There is no possible turning back, are your REALLY sure you want to proceed ?";
+			msg = "WARNING: \nCurrent Jackrabbit version used does "
+					+ "not support workspace management.\n"
+					+ "Thus, the workspace will only be cleaned so "
+					+ "that you can launch fetch process again.\n\n"
+					+ "Do you still want to proceed ?";
+			result = MessageDialog.openConfirm(DistPlugin.getDefault()
+					.getWorkbench().getDisplay().getActiveShell(),
+					"Confirm workspace deletion", msg);
+		}
+
 		if (result) {
 			Session session = null;
 			try {
 				session = repository.login(workspaceName);
+				// TODO use this with a newer version of Jackrabbit
+				// Workspace wsp = session.getWorkspace();
+				// wsp.deleteWorkspace(workspaceName);
+
 				NodeIterator nit = session.getRootNode().getNodes();
 				while (nit.hasNext()) {
 					Node node = nit.nextNode();
 					if (node.isNodeType(NodeType.NT_FOLDER)
 							|| node.isNodeType(NodeType.NT_UNSTRUCTURED)) {
-						String path = node.getPath();
+						// String path = node.getPath();
 						node.remove();
 						session.save();
-						if (log.isDebugEnabled())
-							log.debug("Cleared " + path + " in "
-									+ workspaceName);
 					}
 				}
 				CommandHelpers.callCommand(RefreshDistributionsView.ID);
 			} catch (RepositoryException re) {
-				throw new ArgeoException(
+				throw new SlcException(
 						"Unexpected error while deleting workspace ["
 								+ workspaceName + "].", re);
 			} finally {
-				if (session != null)
-					session.logout();
+				JcrUtils.logoutQuietly(session);
 			}
 		}
 		return null;
