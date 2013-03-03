@@ -73,6 +73,18 @@
 			<type>pom</type>
 		</dependency>
 
+		<!-- CLI Agent -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.launcher</artifactId>
+			<version>1.1.12-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.agent.cli</artifactId>
+			<version>1.1.12-SNAPSHOT</version>
+		</dependency>
+
 		<!-- JCR Agent -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
@@ -87,13 +99,6 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
-			<version>1.1.12-SNAPSHOT</version>
-		</dependency>
-
-		<!-- Launcher -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.launcher</artifactId>
 			<version>1.1.12-SNAPSHOT</version>
 		</dependency>
 

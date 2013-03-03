@@ -32,12 +32,30 @@ import javax.security.auth.login.LoginContext;
 
 import org.argeo.osgi.boot.OsgiBoot;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
-import org.osgi.util.tracker.ServiceTracker;
 
 /** Configures an SLC runtime and runs a process. */
 public class SlcMain implements Runnable {
+	public final static String NIX = "NIX";
+	public final static String WINDOWS = "WINDOWS";
+	public final static String SOLARIS = "SOLARIS";
+
+	public final static String os;
+	static {
+		String osName = System.getProperty("os.name");
+		if (osName.startsWith("Win"))
+			os = WINDOWS;
+		else if (osName.startsWith("Solaris"))
+			os = SOLARIS;
+		else
+			os = NIX;
+	}
+
+	// private final DateFormat dateFormat = new
+	// SimpleDateFormat("HH:mm:ss,SSS");
+	private Long timeout = 30 * 1000l;
 	private final String[] args;
 
 	// private static String bundlesToInstall = "/usr/share/osgi;in=*.jar";
@@ -56,22 +74,31 @@ public class SlcMain implements Runnable {
 		bundlesToStart.add("org.argeo.slc.node.jackrabbit");
 		bundlesToStart.add("org.argeo.slc.agent");
 		bundlesToStart.add("org.argeo.slc.agent.jcr");
+		// bundlesToStart.add("org.argeo.slc.agent.cli");
 	}
 
 	public void run() {
+		long begin = System.currentTimeMillis();
+		// System.out.println(dateFormat.format(new Date()));
+
+		Boolean isTransient = false;
+		File dataDir = null;
 		final LoginContext lc;
 		try {
 			// Authenticate
-			lc = new LoginContext("NIX");
+			lc = new LoginContext(os);
 			lc.login();
 
 			// Prepare directories
 			String executionDir = System.getProperty("user.dir");
-			File slcDir = new File(executionDir, "target/.slc");
+			File slcDir = new File(executionDir, ".slc");
 			File tempDir = new File(System.getProperty("java.io.tmpdir"));
 
-			File dataDir = new File(tempDir, "slc-data-"
-					+ UUID.randomUUID().toString());
+			if (isTransient)
+				dataDir = new File(tempDir, "slc-data-"
+						+ UUID.randomUUID().toString());
+			else
+				dataDir = new File(slcDir, "data");
 			if (!dataDir.exists())
 				dataDir.mkdirs();
 
@@ -80,8 +107,9 @@ public class SlcMain implements Runnable {
 				confDir.mkdirs();
 
 			System.setProperty("log4j.configuration", "file:./log4j.properties");
-			System.setProperty("argeo.node.repo.configuration",
-					"osgibundle:repository-memory.xml");
+			if (isTransient)
+				System.setProperty("argeo.node.repo.configuration",
+						"osgibundle:repository-memory.xml");
 
 			// Start Equinox
 			ServiceLoader<FrameworkFactory> ff = ServiceLoader
@@ -91,7 +119,8 @@ public class SlcMain implements Runnable {
 			configuration.put("osgi.configuration.area",
 					confDir.getCanonicalPath());
 			configuration.put("osgi.instance.area", dataDir.getCanonicalPath());
-			configuration.put("osgi.clean", "true");
+			// configuration.put("osgi.clean", "true");
+			// configuration.put("osgi.console", "");
 
 			// Spring configs currently require System properties
 			System.getProperties().putAll(configuration);
@@ -113,11 +142,26 @@ public class SlcMain implements Runnable {
 			osgiBoot.startBundles(bundlesToStart);
 
 			// Find SLC Agent
-			ServiceTracker agentTracker = new ServiceTracker(bundleContext,
-					"org.argeo.slc.execution.SlcAgentCli", null);
-			agentTracker.open();
-			final Object agentCli = agentTracker.waitForService(30 * 1000);
+			ServiceReference sr = null;
+			while (sr == null) {
+				sr = bundleContext
+						.getServiceReference("org.argeo.slc.execution.SlcAgentCli");
+				if (System.currentTimeMillis() - begin > timeout)
+					throw new RuntimeException("Cannot find SLC agent CLI");
+				Thread.sleep(100);
+			}
+			final Object agentCli = bundleContext.getService(sr);
 
+			// ServiceTracker agentTracker = new ServiceTracker(bundleContext,
+			// "org.argeo.slc.execution.SlcAgentCli", null);
+			// agentTracker.open();
+			// final Object agentCli = agentTracker.waitForService(30 * 1000);
+			// if (agentCli == null)
+			// throw new RuntimeException("Cannot find SLC agent CLI");
+
+			long duration = System.currentTimeMillis() - begin;
+			System.out.println("Initialized in " + (duration / 1000) + "s "
+					+ (duration % 1000) + "ms");
 			// Run as a privileged action
 			Subject.doAs(Subject.getSubject(AccessController.getContext()),
 					new PrivilegedAction<String>() {
@@ -148,6 +192,11 @@ public class SlcMain implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
+		} finally {
+			if (isTransient && dataDir != null && dataDir.exists()) {
+				// TODO clean up transient data dir
+			}
+
 		}
 	}
 

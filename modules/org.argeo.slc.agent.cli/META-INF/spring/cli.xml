@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="agent" class="org.argeo.slc.core.execution.DefaultAgent"
+		init-method="init" destroy-method="destroy">
+		<property name="modulesManager" ref="modulesManager" />
+	</bean>
+
+	<bean id="agentCli" class="org.argeo.slc.core.execution.DefaultAgentCli">
+		<property name="agent" ref="agent" />
+		<property name="authenticationManager" ref="authenticationManager" />
+	</bean>
+
+	<bean
+		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
+		<property name="authenticationManager" ref="authenticationManager" />
+	</bean>
+
+	<bean name="fileSystemManager" class="org.apache.commons.vfs.impl.StandardFileSystemManager"
+		init-method="init" destroy-method="close" />
+</beans>
