@@ -9,6 +9,11 @@
 		<property name="modulesManager" ref="modulesManager" />
 	</bean>
 
+	<bean id="agentCli" class="org.argeo.slc.core.execution.DefaultAgentCli">
+		<property name="agent" ref="agent" />
+		<property name="authenticationManager" ref="authenticationManager" />
+	</bean>
+
 	<bean id="executionModulesListener" class="org.argeo.slc.jcr.execution.JcrExecutionModulesListener"
 		init-method="init" destroy-method="destroy">
 		<property name="agent" ref="agent" />

@@ -21,10 +21,12 @@
 
 	<!-- SERVICES -->
 	<service ref="attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
-	
+
 	<service interface="org.argeo.slc.execution.ExecutionModulesListener"
 		ref="executionModulesListener" />
+
 	<service ref="agent" interface="org.argeo.slc.execution.SlcAgent" />
+	<service ref="agentCli" interface="org.argeo.slc.execution.SlcAgentCli" />
 
 	<service ref="fileSystemManager" interface="org.apache.commons.vfs.FileSystemManager" />
 </beans:beans>

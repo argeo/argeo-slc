@@ -42,6 +42,10 @@ public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 
 			Node flowNode = realizedFlowNode.getSession().getNode(flowPath);
 			String flowName = flowNode.getProperty(SLC_NAME).getString();
+			String description = null;
+			if (flowNode.hasProperty(Property.JCR_DESCRIPTION))
+				description = flowNode.getProperty(Property.JCR_DESCRIPTION)
+						.getString();
 
 			Node executionModuleNode = flowNode.getSession().getNode(
 					SlcJcrUtils.modulePath(flowPath));
@@ -76,7 +80,7 @@ public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 			}
 
 			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(flowName,
-					values, executionSpec);
+					description, values, executionSpec);
 			realizedFlow.setFlowDescriptor(efd);
 		} else {
 			throw new SlcException("Unsupported realized flow "

@@ -77,8 +77,12 @@ public class JcrAgent extends DefaultAgent implements SlcNames {
 	protected ProcessThread createProcessThread(
 			ThreadGroup processesThreadGroup,
 			ExecutionModulesManager modulesManager, ExecutionProcess process) {
-		return new JcrProcessThread(processesThreadGroup, modulesManager,
-				(JcrExecutionProcess) process);
+		if (process instanceof JcrProcessThread)
+			return new JcrProcessThread(processesThreadGroup, modulesManager,
+					(JcrExecutionProcess) process);
+		else
+			return super.createProcessThread(processesThreadGroup,
+					modulesManager, process);
 	}
 
 	/*

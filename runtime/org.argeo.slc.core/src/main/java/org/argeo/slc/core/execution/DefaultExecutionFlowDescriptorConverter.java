@@ -210,8 +210,8 @@ public class DefaultExecutionFlowDescriptorConverter implements
 
 		}
 
-		ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(name, values,
-				executionSpec);
+		ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(name, null,
+				values, executionSpec);
 		if (executionFlow.getPath() != null)
 			efd.setPath(executionFlow.getPath());
 		else

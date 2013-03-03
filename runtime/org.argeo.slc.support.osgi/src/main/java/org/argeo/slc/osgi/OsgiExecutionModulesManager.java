@@ -140,9 +140,16 @@ public class OsgiExecutionModulesManager extends
 		bundles: for (Iterator<OsgiBundle> iterator = executionContexts
 				.keySet().iterator(); iterator.hasNext();) {
 			OsgiBundle ob = iterator.next();
-			if (ob.equals(nameVersion)) {
-				osgiBundle = ob;
-				break bundles;
+			if (nameVersion.getVersion() != null) {
+				if (ob.equals(nameVersion)) {
+					osgiBundle = ob;
+					break bundles;
+				}
+			} else {
+				if (ob.getName().equals(nameVersion.getName())) {
+					osgiBundle = ob;
+					break bundles;
+				}
 			}
 		}
 		if (osgiBundle == null)
@@ -180,7 +187,8 @@ public class OsgiExecutionModulesManager extends
 			String moduleName, String moduleVersion) {
 
 		Map<String, ExecutionFlow> flows = new HashMap<String, ExecutionFlow>();
-		OsgiBundle key = new OsgiBundle(moduleName, moduleVersion);
+		OsgiBundle key = bundlesManager.findRelatedBundle(moduleName,
+				moduleVersion);
 		if (!executionFlows.containsKey(key))
 			return flows;
 		Set<ExecutionFlow> flowsT = executionFlows.get(key);
@@ -274,8 +282,9 @@ public class OsgiExecutionModulesManager extends
 
 	protected synchronized ExecutionFlowDescriptorConverter getExecutionFlowDescriptorConverter(
 			String moduleName, String moduleVersion) {
-		OsgiBundle osgiBundle = new OsgiBundle(moduleName, moduleVersion);
-		return getExecutionFlowDescriptorConverter(osgiBundle);
+		return findExecutionFlowDescriptorConverter(moduleName, moduleVersion);
+		// OsgiBundle osgiBundle = new OsgiBundle(moduleName, moduleVersion);
+		// return getExecutionFlowDescriptorConverter(osgiBundle);
 	}
 
 	protected synchronized ExecutionFlowDescriptorConverter getExecutionFlowDescriptorConverter(
@@ -307,7 +316,7 @@ public class OsgiExecutionModulesManager extends
 			Bundle bundle = bundlesManager.findRelatedBundle(new OsgiBundle(
 					nameVersion));
 			if (bundle == null)
-				throw new SlcException("Counld not find bundle for "
+				throw new SlcException("Could not find bundle for "
 						+ nameVersion);
 
 			bundlesManager.startSynchronous(bundle);

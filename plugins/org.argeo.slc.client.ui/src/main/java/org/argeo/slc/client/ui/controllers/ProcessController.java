@@ -56,7 +56,7 @@ public class ProcessController {
 			SlcAgent slcAgent = findAgent(processNode);
 			if (slcAgent == null)
 				throw new SlcException("Cannot find agent for " + processNode);
-			slcAgent.kill(process);
+			slcAgent.kill(process.getUuid());
 		} catch (Exception e) {
 			if (!process.getStatus().equals(ExecutionProcess.ERROR))
 				process.setStatus(ExecutionProcess.ERROR);

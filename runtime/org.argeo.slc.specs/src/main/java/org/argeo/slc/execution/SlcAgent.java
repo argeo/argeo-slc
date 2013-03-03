@@ -15,6 +15,7 @@
  */
 package org.argeo.slc.execution;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -30,8 +31,25 @@ public interface SlcAgent {
 	/** Execute / take part to this process */
 	public void process(ExecutionProcess process);
 
+	/**
+	 * Asynchronously processes the flows defined as URIs, or interpret a single
+	 * UUID URN as a scheduled or template process.
+	 * 
+	 * @return the UUID of the process launched.
+	 */
+	public String process(List<URI> uris);
+
 	/** Kills this process */
-	public void kill(ExecutionProcess process);
+	public void kill(String processUuid);
+
+	/**
+	 * Wait for this process to finish. returns immediately if it does not
+	 * exist.
+	 * 
+	 * @param millis
+	 *            can be null
+	 */
+	public void waitFor(String processUuid, Long millis);
 
 	/**
 	 * Describe all the flows provided by this execution module. Typically

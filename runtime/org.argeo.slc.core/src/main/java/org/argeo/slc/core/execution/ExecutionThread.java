@@ -74,6 +74,7 @@ public class ExecutionThread extends Thread {
 				executionModulesManager.upgrade(realizedFlow
 						.getModuleNameVersion());
 
+			executionModulesManager.start(realizedFlow.getModuleNameVersion());
 			// START FLOW
 			executionModulesManager.execute(realizedFlow);
 			// END FLOW

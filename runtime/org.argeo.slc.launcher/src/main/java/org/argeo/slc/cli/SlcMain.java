@@ -16,40 +16,29 @@
 package org.argeo.slc.cli;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.lang.reflect.Method;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.UUID;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-import org.apache.commons.io.IOUtils;
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
+
 import org.argeo.osgi.boot.OsgiBoot;
-import org.argeo.slc.SlcException;
-import org.eclipse.core.runtime.adaptor.EclipseStarter;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.launch.Framework;
+import org.osgi.framework.launch.FrameworkFactory;
+import org.osgi.util.tracker.ServiceTracker;
 
-@SuppressWarnings("restriction")
+/** Configures an SLC runtime and runs a process. */
 public class SlcMain implements Runnable {
-	/** Unique launch module */
-	public final static String UNIQUE_LAUNCH_MODULE_PROPERTY = "slc.launch.module";
-
-	/** Unique launch flow */
-	public final static String UNIQUE_LAUNCH_FLOW_PROPERTY = "slc.launch.flow";
-
-	/** Unique launch flow */
-	public final static String UNIQUE_LAUNCH_ARGS_PROPERTY_BASE = "slc.launch.args";
-
-	private final Options options = new Options();
 	private final String[] args;
-
-	private final String commandName = "slc";
 
 	// private static String bundlesToInstall = "/usr/share/osgi;in=*.jar";
 	private String bundlesToInstall = System.getProperty("user.home")
@@ -61,9 +50,6 @@ public class SlcMain implements Runnable {
 
 	public SlcMain(String[] args) {
 		this.args = args;
-		// bundlesToStart.add("org.springframework.osgi.extender");
-		// bundlesToStart.add("org.argeo.slc.agent");
-
 		bundlesToStart.add("org.springframework.osgi.extender");
 		bundlesToStart.add("org.argeo.node.repo.jackrabbit");
 		bundlesToStart.add("org.argeo.security.dao.os");
@@ -72,39 +58,14 @@ public class SlcMain implements Runnable {
 		bundlesToStart.add("org.argeo.slc.agent.jcr");
 	}
 
-	@SuppressWarnings("unchecked")
 	public void run() {
-		String module = null;
-		String moduleUrl = null;
-		String flow = null;
-
+		final LoginContext lc;
 		try {
+			// Authenticate
+			lc = new LoginContext("NIX");
+			lc.login();
 
-			CommandLineParser clParser = new GnuParser();
-			CommandLine cl = clParser.parse(options, args);
-
-			List<String> arguments = cl.getArgList();
-			if (arguments.size() == 0) {
-				// TODO default behaviour
-			} else {
-				module = arguments.get(0);
-				File moduleFile = new File(module);
-				if (moduleFile.exists()) {
-					if (moduleFile.isDirectory()) {
-						moduleUrl = "reference:file:"
-								+ moduleFile.getCanonicalPath();
-					} else {
-						moduleUrl = "file:" + moduleFile.getCanonicalPath();
-					}
-				}
-
-				if (arguments.size() == 1) {
-					// TODO module info
-				} else {
-					flow = arguments.get(1);
-				}
-			}
-
+			// Prepare directories
 			String executionDir = System.getProperty("user.dir");
 			File slcDir = new File(executionDir, "target/.slc");
 			File tempDir = new File(System.getProperty("java.io.tmpdir"));
@@ -118,88 +79,80 @@ public class SlcMain implements Runnable {
 			if (!confDir.exists())
 				confDir.mkdirs();
 
-			BundleContext bundleContext = null;
-			try {
-				String[] osgiRuntimeArgs = { "-configuration",
-						confDir.getCanonicalPath(), "-data",
-						dataDir.getCanonicalPath(), "-console", "-clean" };
-				bundleContext = EclipseStarter.startup(osgiRuntimeArgs, null);
-			} catch (Exception e) {
-				throw new RuntimeException("Cannot start Equinox.", e);
-			}
+			System.setProperty("log4j.configuration", "file:./log4j.properties");
+			System.setProperty("argeo.node.repo.configuration",
+					"osgibundle:repository-memory.xml");
+
+			// Start Equinox
+			ServiceLoader<FrameworkFactory> ff = ServiceLoader
+					.load(FrameworkFactory.class);
+			FrameworkFactory frameworkFactory = ff.iterator().next();
+			Map<String, String> configuration = new HashMap<String, String>();
+			configuration.put("osgi.configuration.area",
+					confDir.getCanonicalPath());
+			configuration.put("osgi.instance.area", dataDir.getCanonicalPath());
+			configuration.put("osgi.clean", "true");
+
+			// Spring configs currently require System properties
+			System.getProperties().putAll(configuration);
+
+			Framework framework = frameworkFactory.newFramework(configuration);
+			framework.start();
+			BundleContext bundleContext = framework.getBundleContext();
+			// String[] osgiRuntimeArgs = { "-configuration",
+			// confDir.getCanonicalPath(), "-data",
+			// dataDir.getCanonicalPath(), "-clean" };
+			// BundleContext bundleContext = EclipseStarter.startup(
+			// osgiRuntimeArgs, null);
 
 			// OSGi bootstrap
 			OsgiBoot osgiBoot = new OsgiBoot(bundleContext);
 			osgiBoot.installUrls(osgiBoot.getBundlesUrls(bundlesToInstall));
 
-			if (moduleUrl != null) {
-				Bundle bundle = osgiBoot.installUrl(moduleUrl);
-				module = bundle.getSymbolicName();
-				// TODO deal with version
-			}
-
-			System.setProperty(UNIQUE_LAUNCH_MODULE_PROPERTY, module);
-			System.setProperty(UNIQUE_LAUNCH_FLOW_PROPERTY, flow);
-			System.setProperty("log4j.configuration", "file:./log4j.properties");
-			System.setProperty("argeo.node.repo.configuration",
-					"osgibundle:repository-memory.xml");
-			// start runtime
+			// Start runtime
 			osgiBoot.startBundles(bundlesToStart);
 
-		} catch (ParseException e) {
-			System.err.println("Problem with command line arguments. "
-					+ e.getMessage());
-			badExit();
-		} catch (SlcException e) {
-			System.err.println(e.getMessage());
-			badExit();
+			// Find SLC Agent
+			ServiceTracker agentTracker = new ServiceTracker(bundleContext,
+					"org.argeo.slc.execution.SlcAgentCli", null);
+			agentTracker.open();
+			final Object agentCli = agentTracker.waitForService(30 * 1000);
+
+			// Run as a privileged action
+			Subject.doAs(Subject.getSubject(AccessController.getContext()),
+					new PrivilegedAction<String>() {
+
+						public String run() {
+							try {
+								Class<?>[] parameterTypes = { String[].class };
+								Method method = agentCli.getClass().getMethod(
+										"process", parameterTypes);
+								Object[] methodArgs = { args };
+								Object ret = method
+										.invoke(agentCli, methodArgs);
+								return ret.toString();
+							} catch (Exception e) {
+								throw new RuntimeException("Cannot run "
+										+ Arrays.toString(args) + " on "
+										+ agentCli, e);
+							}
+						}
+
+					});
+
+			// Shutdown OSGi runtime
+			framework.stop();
+			framework.waitForStop(60 * 1000);
+
+			System.exit(0);
 		} catch (Exception e) {
-			System.err.println("Unexpected exception when bootstrapping.");
 			e.printStackTrace();
-			badExit();
+			System.exit(1);
 		}
 	}
 
 	public static void main(String[] args) {
 		new SlcMain(args).run();
-	}
-
-	public void printUsage() {
-		new HelpFormatter().printHelp(commandName, options, true);
-	}
-
-	protected static void addProperty(Properties properties, String property) {
-		int eqIndex = property.indexOf('=');
-		if (eqIndex == 0)
-			throw new SlcException("Badly formatted property " + property);
-
-		if (eqIndex > 0) {
-			String key = property.substring(0, eqIndex);
-			String value = property.substring(eqIndex + 1);
-			properties.setProperty(key, value);
-
-		} else {
-			properties.setProperty(property, "true");
-		}
-	}
-
-	protected static void loadPropertyFile(Properties properties,
-			String propertyFile) {
-		FileInputStream in = null;
-		try {
-			in = new FileInputStream(propertyFile);
-			properties.load(in);
-		} catch (Exception e) {
-			throw new SlcException("Could not load proeprty file "
-					+ propertyFile);
-		} finally {
-			IOUtils.closeQuietly(in);
-		}
-	}
-
-	private void badExit() {
-		printUsage();
-		System.exit(1);
 	}
 
 	protected static void info(Object msg) {
@@ -209,4 +162,5 @@ public class SlcMain implements Runnable {
 	protected static void debug(Object msg) {
 		System.out.println(msg);
 	}
+
 }

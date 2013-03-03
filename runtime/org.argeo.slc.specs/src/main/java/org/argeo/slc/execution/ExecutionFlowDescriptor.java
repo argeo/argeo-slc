@@ -16,6 +16,7 @@
 package org.argeo.slc.execution;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -39,7 +40,7 @@ import java.util.Map;
  * Generally, values object are either a <code>PrimitiveAccessor</code> or a
  * <code>RefValue</code> but can be other objects.
  */
-public class ExecutionFlowDescriptor implements Serializable {
+public class ExecutionFlowDescriptor implements Serializable, Cloneable {
 	private static final long serialVersionUID = 7101944857038041216L;
 	private String name;
 	private String description;
@@ -50,11 +51,18 @@ public class ExecutionFlowDescriptor implements Serializable {
 	public ExecutionFlowDescriptor() {
 	}
 
-	public ExecutionFlowDescriptor(String name, Map<String, Object> values,
-			ExecutionSpec executionSpec) {
+	public ExecutionFlowDescriptor(String name, String description,
+			Map<String, Object> values, ExecutionSpec executionSpec) {
 		this.name = name;
 		this.values = values;
 		this.executionSpec = executionSpec;
+	}
+
+	/** The referenced {@link ExecutionSpec} is NOT cloned. */
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return new ExecutionFlowDescriptor(name, description,
+				new HashMap<String, Object>(values), executionSpec);
 	}
 
 	public String getName() {

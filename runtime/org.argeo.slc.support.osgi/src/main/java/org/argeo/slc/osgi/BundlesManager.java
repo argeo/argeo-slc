@@ -320,6 +320,15 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 			return service;
 	}
 
+	public OsgiBundle findRelatedBundle(String moduleName, String moduleVersion) {
+		OsgiBundle osgiBundle = new OsgiBundle(moduleName, moduleVersion);
+		if (osgiBundle.getVersion() == null) {
+			Bundle bundle = findRelatedBundle(osgiBundle);
+			osgiBundle = new OsgiBundle(bundle);
+		}
+		return osgiBundle;
+	}
+
 	/**
 	 * @param osgiBundle
 	 *            cannot be null
