@@ -6,7 +6,7 @@
 	<DataSources>
 		<DataSource name="dataSource">
 			<param name="driver" value="org.postgresql.Driver" />
-			<param name="url" value="${slc.repo.jcr.dburl.rpm}" />
+			<param name="url" value="${slc.repo.jcr.dburl.docs}" />
 			<param name="user" value="${slc.repo.jcr.dbuser}" />
 			<param name="password" value="${slc.repo.jcr.dbpassword}" />
 			<param name="databaseType" value="postgresql" />
@@ -24,7 +24,7 @@
 		<param name="dataSourceName" value="dataSource" />
 		<param name="schemaObjectPrefix" value="ds_" />
 	</DataStore>
-
+	
 	<!-- Workspace templates -->
 	<Workspaces rootPath="${rep.home}/workspaces"
 		defaultWorkspace="main" />

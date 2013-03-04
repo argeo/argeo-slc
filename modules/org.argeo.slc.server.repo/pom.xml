@@ -21,6 +21,8 @@
 							org.argeo.slc.jcr,
 							org.argeo.slc.repo,
 							org.h2;resolution:=optional,
+							org.postgresql;resolution:=optional,
+							com.mysql.jdbc;resolution:=optional,
 						</Import-Package>
 					</instructions>
 				</configuration>
