@@ -125,7 +125,7 @@ public class RepoSync implements Runnable {
 
 			// Compute job size
 			if (monitor != null) {
-				monitor.beginTask("Fetch", -1);
+				monitor.beginTask("Computing fetch size...", -1);
 				Long totalAmount = 0l;
 				if (sourceWkspList != null) {
 					for (String wkspName : sourceWkspList) {
