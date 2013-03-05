@@ -125,6 +125,7 @@ public class RepoSync implements Runnable {
 
 			// Compute job size
 			if (monitor != null) {
+				monitor.beginTask("Fetch", -1);
 				Long totalAmount = 0l;
 				if (sourceWkspList != null) {
 					for (String wkspName : sourceWkspList) {
@@ -136,6 +137,7 @@ public class RepoSync implements Runnable {
 						totalAmount += getNodesNumber(sourceWorkspaceName);
 					}
 				monitor.beginTask("Fetch", totalAmount.intValue());
+
 				if (log.isDebugEnabled())
 					log.debug("Nb of nodes to sync: " + totalAmount.intValue());
 			}
