@@ -26,8 +26,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.utils.DistUiHelpers;
@@ -58,7 +56,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 
 public class ArtifactDetailsPage extends FormPage implements SlcNames, SlcTypes {
-	private final static Log log = LogFactory.getLog(ArtifactDetailsPage.class);
+	// private final static Log log =
+	// LogFactory.getLog(ArtifactDetailsPage.class);
 
 	// Main business Objects
 	private Node currentNode;

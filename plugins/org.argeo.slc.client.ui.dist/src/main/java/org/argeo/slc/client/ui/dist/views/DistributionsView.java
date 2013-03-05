@@ -45,17 +45,19 @@ import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.commands.AddRepository;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
 import org.argeo.slc.client.ui.dist.commands.ManageWorkspaceAuth;
 import org.argeo.slc.client.ui.dist.commands.NormalizeDistribution;
+import org.argeo.slc.client.ui.dist.commands.RegisterRepository;
 import org.argeo.slc.client.ui.dist.commands.RepoSyncCommand;
 import org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditorInput;
+import org.argeo.slc.client.ui.dist.utils.ArtifactNamesComparator;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoConstants;
@@ -85,6 +87,7 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
@@ -121,6 +124,16 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 					return ((RepoElem) element).getLabel();
 				return element.toString();
 			}
+
+			@Override
+			public Image getImage(Object element) {
+				if (element instanceof RepoElem)
+					return DistImages.IMG_REPO;
+				else if (element instanceof DistributionElem) {
+					return DistImages.IMG_WKSP;
+				}
+				return null;
+			}
 		});
 
 		final Tree table = viewer.getTree();
@@ -129,6 +142,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		viewer.setContentProvider(new DistributionsContentProvider());
 		viewer.addDoubleClickListener(new DistributionsDCL());
+		viewer.setComparator(new ArtifactNamesComparator());
+		log.debug("Comparator set ");
+
 		// Enable selection retrieving from outside the view
 		getSite().setSelectionProvider(viewer);
 
@@ -223,8 +239,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 				// Register a remote repository
 				CommandHelpers.refreshCommand(menuManager, window,
-						AddRepository.ID, AddRepository.DEFAULT_LABEL,
-						AddRepository.DEFAULT_ICON_PATH, !isDistribElem
+						RegisterRepository.ID,
+						RegisterRepository.DEFAULT_LABEL,
+						RegisterRepository.DEFAULT_ICON_PATH, !isDistribElem
 								&& singleElement);
 
 				// Unregister a remote repository
@@ -340,7 +357,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 
 		public Object getParent(Object element) {
-			// TODO register repo elem in distirbution elem?
+			// TODO register repo elem in distribution elem?
 			return null;
 		}
 
@@ -407,13 +424,17 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						.getAccessibleWorkspaceNames();
 				List<DistributionElem> distributionElems = new ArrayList<DistributionElem>();
 				for (String workspaceName : workspaceNames) {
-					Node workspaceNode = repoNode.hasNode(workspaceName) ? repoNode
-							.getNode(workspaceName) : repoNode
-							.addNode(workspaceName);
-					repoNode.getSession().save();
-					distributionElems.add(new DistributionElem(this,
-							workspaceNode));
-					// FIXME remove deleted workspaces
+					// filter technical workspaces
+					// FIXME: rely on a more robust rule than just wksp name
+					if (workspaceName.lastIndexOf('-') > 0) {
+						Node workspaceNode = repoNode.hasNode(workspaceName) ? repoNode
+								.getNode(workspaceName) : repoNode
+								.addNode(workspaceName);
+						repoNode.getSession().save();
+						distributionElems.add(new DistributionElem(this,
+								workspaceNode));
+						// FIXME remove deleted workspaces
+					}
 				}
 				return distributionElems.toArray();
 			} catch (RepositoryException e) {

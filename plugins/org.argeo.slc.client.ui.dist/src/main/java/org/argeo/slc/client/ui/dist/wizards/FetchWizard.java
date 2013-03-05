@@ -16,7 +16,6 @@
 package org.argeo.slc.client.ui.dist.wizards;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +35,9 @@ import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.PrivilegedJob;
+import org.argeo.slc.client.ui.dist.utils.ArtifactNamesComparator;
 import org.argeo.slc.client.ui.dist.utils.ViewerUtils;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoSync;
@@ -48,12 +47,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.Wizard;
@@ -63,9 +59,9 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -77,20 +73,17 @@ import org.eclipse.swt.widgets.Table;
  */
 public class FetchWizard extends Wizard {
 
+	// private final static Log log = LogFactory.getLog(FetchWizard.class);
+
 	// Business objects
 	private Keyring keyring;
 	private RepositoryFactory repositoryFactory;
 	private Session currSession;
-
-	// Caches the workspace list
-	private List<String> wkspToSync = new ArrayList<String>();
-
-	private TableViewer wkspViewer;
-
 	private Node targetRepoNode, sourceRepoNode;
 
 	// This page widget
 	private DefineModelPage page;
+	private CheckboxTableViewer wkspViewer;
 
 	public FetchWizard(Keyring keyring, RepositoryFactory repositoryFactory,
 			Repository nodeRepository) {
@@ -107,6 +100,7 @@ public class FetchWizard extends Wizard {
 
 	@Override
 	public void dispose() {
+		super.dispose();
 		JcrUtils.logoutQuietly(currSession);
 	}
 
@@ -115,7 +109,7 @@ public class FetchWizard extends Wizard {
 		try {
 			page = new DefineModelPage();
 			addPage(page);
-			setWindowTitle("Fetch ...");
+			setWindowTitle("Fetch...");
 		} catch (Exception e) {
 			throw new SlcException("Cannot add page to wizard ", e);
 		}
@@ -142,7 +136,18 @@ public class FetchWizard extends Wizard {
 			Credentials sourceCredentials = RepoUtils.getRepositoryCredentials(
 					keyring, sourceRepoNode);
 
-			String msg = "Your are about to fetch data from repository: \n\t"
+			String msg;
+
+			// no workspace has been chosen, we return
+			if (wkspViewer.getCheckedElements().length == 0) {
+				msg = "No workspace has been chosen, and thus no fetch has been done.";
+				MessageDialog.openWarning(DistPlugin.getDefault()
+						.getWorkbench().getDisplay().getActiveShell(),
+						"Warning", msg);
+				return true;
+			}
+
+			msg = "Your are about to fetch data from repository: \n\t"
 					+ sourceRepoUri + "\ninto target repository: \n\t"
 					+ targetRepoUri + "\nDo you really want to proceed ?";
 
@@ -156,10 +161,12 @@ public class FetchWizard extends Wizard {
 				repoSync.setTargetRepoUri(targetRepoUri);
 				repoSync.setSourceRepoUri(sourceRepoUri);
 
-				// / Specify workspaces to synchronise
-				if (wkspToSync != null && wkspToSync.size() > 0)
-					repoSync.setSourceWkspList(wkspToSync);
-
+				// Specify workspaces to synchronise
+				List<String> wksps = new ArrayList<String>();
+				for (Object obj : wkspViewer.getCheckedElements()) {
+					wksps.add((String) obj);
+				}
+				repoSync.setSourceWkspList(wksps);
 				FetchJob job = new FetchJob(repoSync);
 				job.setUser(true);
 				job.schedule();
@@ -208,7 +215,20 @@ public class FetchWizard extends Wizard {
 			gd.verticalAlignment = SWT.FILL;
 			wkspTable.setLayoutData(gd);
 			wkspTable.setLayout(new GridLayout(1, false));
-			addFilesTablePart(wkspTable);
+			addWkspTablePart(wkspTable);
+
+			// Choose source repo
+			final Button selectAllBtn = new Button(composite, SWT.CHECK);
+			selectAllBtn.setText("Select/Unselect all");
+
+			selectAllBtn.addSelectionListener(new SelectionListener() {
+				public void widgetSelected(SelectionEvent e) {
+					wkspViewer.setAllChecked(selectAllBtn.getSelection());
+				}
+
+				public void widgetDefaultSelected(SelectionEvent e) {
+				}
+			});
 
 			chooseSourceRepoCmb.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent e) {
@@ -220,8 +240,8 @@ public class FetchWizard extends Wizard {
 			});
 
 			// initialize to first avalaible repo
-			chooseSourceRepoCmb.select(0);
-
+			if (chooseSourceRepoCmb.getItemCount() > 0)
+				chooseSourceRepoCmb.select(0);
 			// Compulsory
 			setControl(composite);
 		}
@@ -263,49 +283,18 @@ public class FetchWizard extends Wizard {
 		}
 
 		// Create the workspaces table
-		private void addFilesTablePart(Composite parent) {
+		private void addWkspTablePart(Composite parent) {
 
-			final Table table = new Table(parent, SWT.NONE | SWT.H_SCROLL
-					| SWT.V_SCROLL | SWT.BORDER);
+			Table table = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL
+					| SWT.BORDER | SWT.CHECK);
 			table.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true));
 			table.setLinesVisible(true);
 			table.setHeaderVisible(true);
-			wkspViewer = new TableViewer(table);
-
-			// CHECKBOX COLUMN
-			TableViewerColumn column = ViewerUtils.createTableViewerColumn(
-					wkspViewer, "", SWT.NONE, 20);
-			column.setLabelProvider(new ColumnLabelProvider() {
-				public String getText(Object element) {
-					return null;
-				}
-
-				public Image getImage(Object element) {
-					return wkspToSync.contains(element) ? DistImages.CHECKED
-							: DistImages.UNCHECKED;
-				}
-			});
-			column.setEditingSupport(new CheckboxEditingSupport(wkspViewer));
-			// add select all option
-			column.getColumn().addSelectionListener(new SelectionListener() {
-				public void widgetSelected(SelectionEvent e) {
-					if (wkspToSync.size() > 0)
-						wkspToSync = new ArrayList<String>();
-					else {
-						String[] elements = (String[]) ((IStructuredContentProvider) wkspViewer
-								.getContentProvider()).getElements(null);
-						wkspToSync = Arrays.asList(elements);
-					}
-					wkspViewer.refresh();
-				}
-
-				public void widgetDefaultSelected(SelectionEvent e) {
-				}
-			});
+			wkspViewer = new CheckboxTableViewer(table);
 
 			// WORKSPACES COLUMN
-			column = ViewerUtils.createTableViewerColumn(wkspViewer,
-					"Workspaces", SWT.NONE, 400);
+			TableViewerColumn column = ViewerUtils.createTableViewerColumn(
+					wkspViewer, "Workspaces", SWT.NONE, 400);
 			column.setLabelProvider(new ColumnLabelProvider());
 
 			wkspViewer.setContentProvider(new IStructuredContentProvider() {
@@ -315,13 +304,15 @@ public class FetchWizard extends Wizard {
 
 				public void inputChanged(Viewer viewer, Object oldInput,
 						Object newInput) {
-					// update current used repository
-					currSourceRepo = RepoUtils.getRepository(repositoryFactory,
-							keyring, (Node) newInput);
-					currSourceCred = RepoUtils.getRepositoryCredentials(
-							keyring, (Node) newInput);
-					// reset workspace list
-					wkspToSync = new ArrayList<String>();
+					if (newInput != null && newInput instanceof Node) {
+						// update current used repository
+						currSourceRepo = RepoUtils.getRepository(
+								repositoryFactory, keyring, (Node) newInput);
+						currSourceCred = RepoUtils.getRepositoryCredentials(
+								keyring, (Node) newInput);
+						// reset workspace list
+						wkspViewer.setAllChecked(false);
+					}
 				}
 
 				public void dispose() {
@@ -331,8 +322,13 @@ public class FetchWizard extends Wizard {
 					Session session = null;
 					try {
 						session = currSourceRepo.login(currSourceCred);
-						return session.getWorkspace()
-								.getAccessibleWorkspaceNames();
+						List<String> result = new ArrayList<String>();
+						// remove unvalid elements
+						for (String name : session.getWorkspace()
+								.getAccessibleWorkspaceNames())
+							if (name.lastIndexOf('-') > 0)
+								result.add(name);
+						return result.toArray();
 					} catch (RepositoryException e) {
 						throw new SlcException(
 								"Unexpected error while initializing fetch wizard",
@@ -340,44 +336,10 @@ public class FetchWizard extends Wizard {
 					} finally {
 						JcrUtils.logoutQuietly(session);
 					}
-
 				}
 			});
-		}
+			wkspViewer.setComparator(new ArtifactNamesComparator());
 
-		/** Select which file to import by editing a checkbox */
-		protected class CheckboxEditingSupport extends EditingSupport {
-
-			private final TableViewer viewer;
-
-			public CheckboxEditingSupport(TableViewer viewer) {
-				super(viewer);
-				this.viewer = viewer;
-			}
-
-			@Override
-			protected boolean canEdit(Object element) {
-				return true;
-			}
-
-			@Override
-			protected CellEditor getCellEditor(Object element) {
-				return new CheckboxCellEditor(null, SWT.CHECK | SWT.READ_ONLY);
-			}
-
-			@Override
-			protected Object getValue(Object element) {
-				return wkspToSync.contains(element);
-			}
-
-			@Override
-			protected void setValue(Object element, Object value) {
-				if ((Boolean) value && !wkspToSync.contains(element))
-					wkspToSync.add((String) element);
-				else if (!(Boolean) value && wkspToSync.contains(element))
-					wkspToSync.remove(element);
-				viewer.refresh();
-			}
 		}
 	}
 
@@ -414,42 +376,4 @@ public class FetchWizard extends Wizard {
 	public void setSourceRepoNode(Node sourceRepoNode) {
 		this.sourceRepoNode = sourceRepoNode;
 	}
-
-	// private class FetchJob extends Job {
-	// private RepoSync repoSync;
-	// private final Authentication authentication;
-	// private Subject subject;
-	//
-	// public FetchJob(RepoSync repoSync) {
-	// super("Fetch");
-	// this.repoSync = repoSync;
-	// authentication = SecurityContextHolder.getContext()
-	// .getAuthentication();
-	// subject = Subject.getSubject(AccessController.getContext());
-	// }
-	//
-	// @Override
-	// protected IStatus run(final IProgressMonitor progressMonitor) {
-	// PrivilegedAction<IStatus> privilegedAction = new
-	// PrivilegedAction<IStatus>() {
-	// public IStatus run() {
-	// try {
-	// // SecurityContextHolder.setContext(securityContext);
-	// SecurityContextHolder.getContext().setAuthentication(
-	// authentication);
-	// ArgeoMonitor monitor = new EclipseArgeoMonitor(
-	// progressMonitor);
-	// repoSync.setMonitor(monitor);
-	// repoSync.run();
-	// } catch (Exception e) {
-	// return new Status(IStatus.ERROR, DistPlugin.ID,
-	// "Cannot fetch repository", e);
-	// }
-	// return Status.OK_STATUS;
-	// }
-	//
-	// };
-	// return Subject.doAs(subject, privilegedAction);
-	// }
-	// }
 }

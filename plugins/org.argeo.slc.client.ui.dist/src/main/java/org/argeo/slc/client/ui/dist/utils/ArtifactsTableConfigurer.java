@@ -25,8 +25,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Row;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.GenericTableComparator;
 import org.argeo.slc.client.ui.dist.DistConstants;
@@ -48,8 +46,8 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class ArtifactsTableConfigurer implements SlcNames, SlcTypes,
 		DistConstants {
-	private final static Log log = LogFactory
-			.getLog(ArtifactsTableConfigurer.class);
+	// private final static Log log = LogFactory
+	// .getLog(ArtifactsTableConfigurer.class);
 	// Used in the comparator to be able to retrieve the value from a row
 	// knowing the corresponding column index.
 	private Map<Integer, String> indexToName = new HashMap<Integer, String>();

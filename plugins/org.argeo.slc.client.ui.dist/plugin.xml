@@ -123,7 +123,7 @@
   	 		</commandParameter>
     	</command>
 		<command
-            id="org.argeo.slc.client.ui.dist.addRepository"
+            id="org.argeo.slc.client.ui.dist.registerRepository"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Add Repository">
     	</command>
@@ -211,10 +211,10 @@
 		<menuContribution
         	locationURI="toolbar:org.argeo.slc.client.ui.dist.distributionsView">
             <command
-            	commandId="org.argeo.slc.client.ui.dist.addRepository"
-                icon="icons/addItem.gif"
-                label="Add repository"
-                tooltip="Add a repository">
+            	commandId="org.argeo.slc.client.ui.dist.registerRepository"
+                icon="icons/addRepo.gif"
+                label="Register repository"
+                tooltip="Register a remote repository">
             </command>
             <command
             	commandId="org.argeo.slc.client.ui.dist.refreshDistributionsView"

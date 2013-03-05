@@ -16,6 +16,7 @@ import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -25,31 +26,32 @@ public class RepoSyncCommand extends AbstractHandler {
 
 	public final static String ID = DistPlugin.ID + ".repoSyncCommand";
 	public final static String PARAM_TARGET_REPO = "targetRepoPath";
-	public final static String DEFAULT_LABEL = "Fetch ...";
-	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
+	public final static String DEFAULT_LABEL = "Fetch...";
+	public final static String DEFAULT_ICON_PATH = "icons/fetchRepo.png";
 
 	// DEPENDENCY INJECTION
 	private Keyring keyring;
 	private RepositoryFactory repositoryFactory;
 	private Repository nodeRepository;
 
-	private Session currSession;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+		Session currSession = null;
 		try {
-			currSession = nodeRepository.login();
 			// Target Repository
 			String targetRepoPath = event.getParameter(PARAM_TARGET_REPO);
+			currSession = nodeRepository.login();
 			Node targetRepoNode = currSession.getNode(targetRepoPath);
 
 			FetchWizard wizard = new FetchWizard(keyring, repositoryFactory,
 					nodeRepository);
 			wizard.setTargetRepoNode(targetRepoNode);
-
 			WizardDialog dialog = new WizardDialog(
 					HandlerUtil.getActiveShell(event), wizard);
-			dialog.open();
-			CommandHelpers.callCommand(RefreshDistributionsView.ID);
+			
+			int result = dialog.open();
+			if (result == Dialog.OK)
+				CommandHelpers.callCommand(RefreshDistributionsView.ID);
 			return null;
 		} catch (RepositoryException e) {
 			throw new SlcException("Unexpected error while fetching data", e);

@@ -63,7 +63,7 @@
 		scope="prototype">
 	</bean>
 
-	<bean id="addRepository" class="org.argeo.slc.client.ui.dist.commands.AddRepository">
+	<bean id="registerRepository" class="org.argeo.slc.client.ui.dist.commands.RegisterRepository">
 		<property name="repositoryFactory" ref="repositoryFactory" />
 		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />

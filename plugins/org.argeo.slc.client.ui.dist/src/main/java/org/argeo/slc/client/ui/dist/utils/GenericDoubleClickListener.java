@@ -20,8 +20,6 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Row;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.utils.JcrFileProvider;
 import org.argeo.eclipse.ui.specific.FileHandler;
@@ -44,16 +42,16 @@ import org.eclipse.ui.PartInitException;
 public class GenericDoubleClickListener implements IDoubleClickListener,
 		SlcTypes, SlcNames, DistConstants {
 
-	private final static Log log = LogFactory
-			.getLog(GenericDoubleClickListener.class);
+	// private final static Log log = LogFactory
+	// .getLog(GenericDoubleClickListener.class);
 
-	private TreeViewer viewer;
+	//private TreeViewer viewer;
 
 	private JcrFileProvider jfp;
 	private FileHandler fileHandler;
 
 	public GenericDoubleClickListener(TreeViewer viewer) {
-		this.viewer = viewer;
+		// this.viewer = viewer;
 		jfp = new JcrFileProvider();
 		fileHandler = new FileHandler(jfp);
 	}

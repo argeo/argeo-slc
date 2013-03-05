@@ -29,6 +29,7 @@ import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 
@@ -54,7 +55,12 @@ public class CreateWorkspace extends AbstractHandler {
 		InputDialog inputDialog = new InputDialog(iww.getShell(),
 				"New workspace", "Choose a name for the workspace to create",
 				"", null);
-		inputDialog.open();
+		int result = inputDialog.open();
+
+		// Canceled by user
+		if (result == Dialog.CANCEL)
+			return null;
+
 		String workspaceName = inputDialog.getValue();
 		Session session = null;
 		try {

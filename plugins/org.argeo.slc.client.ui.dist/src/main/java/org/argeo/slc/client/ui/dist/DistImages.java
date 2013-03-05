@@ -19,6 +19,7 @@ import org.eclipse.swt.graphics.Image;
 
 /** Shared icons. */
 public class DistImages {
+
 	public final static Image IMG_ARTIFACT_BASE = DistPlugin
 			.getImageDescriptor("icons/artifactBase.gif").createImage();
 	public final static Image IMG_ARTIFACT_VERSION_BASE = DistPlugin
@@ -26,7 +27,23 @@ public class DistImages {
 	public final static Image IMG_FILE = DistPlugin.getImageDescriptor(
 			"icons/file.gif").createImage();
 
-	/** Icons to handle check boxes */
+	/* WORKSPACES */
+	public final static Image IMG_WKSP = DistPlugin.getImageDescriptor(
+			"icons/distribution_perspective.gif").createImage();
+
+	/* REPOSITORIES */
+	public final static Image IMG_REPO = DistPlugin.getImageDescriptor(
+			"icons/repo.gif").createImage();
+	public final static Image IMG_REPO_READONLY = DistPlugin
+			.getImageDescriptor("icons/repoReadOnly.gif").createImage();
+	public final static Image IMG_ADD_REPO = DistPlugin.getImageDescriptor(
+			"icons/addRepo.gif").createImage();
+	public final static Image IMG_REMOVE_REPO = DistPlugin.getImageDescriptor(
+			"icons/artifactBase.gif").createImage();
+	public final static Image IMG_FETCH_REPO = DistPlugin.getImageDescriptor(
+			"icons/fetchRepo.png").createImage();
+
+	/* CHECK BOXES */
 	public final static Image CHECKED = DistPlugin.getImageDescriptor(
 			"icons/checked.gif").createImage();
 	public final static Image UNCHECKED = DistPlugin.getImageDescriptor(
