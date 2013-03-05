@@ -123,6 +123,7 @@ public class RepoSync implements Runnable {
 						targetPassword);
 			targetDefaultSession = targetRepository.login(targetCredentials);
 
+			// FIXME implement a cleaner way to compute job size.
 			// Compute job size
 			if (monitor != null) {
 				monitor.beginTask("Computing fetch size...", -1);
