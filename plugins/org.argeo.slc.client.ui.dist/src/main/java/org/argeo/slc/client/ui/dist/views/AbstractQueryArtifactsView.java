@@ -87,7 +87,7 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setContentProvider(new ViewContentProvider());
-		viewer.addDoubleClickListener(new GenericDoubleClickListener(null));
+		viewer.addDoubleClickListener(new GenericDoubleClickListener());
 
 		tableConfigurer = new ArtifactsTableConfigurer(viewer, 1,
 				GenericTableComparator.DESCENDING);

@@ -23,7 +23,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.Constraint;
@@ -34,10 +33,11 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.ArgeoException;
+import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.dist.DistConstants;
+import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
@@ -48,7 +48,10 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -59,26 +62,28 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
-import org.osgi.framework.Constants;
 
 /** Table giving an overview of an OSGi distribution with corresponding filters */
 public class DistributionOverviewPage extends FormPage implements SlcNames {
 	final static String PAGE_ID = "distributionOverviewPage";
-	final private static Log log = LogFactory
-			.getLog(DistributionOverviewPage.class);
+	// final private static Log log = LogFactory
+	// .getLog(DistributionOverviewPage.class);
 
 	// Business Objects
 	private Session session;
@@ -89,7 +94,8 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 	private Text artifactTxt;
 	private FormToolkit tk;
 	private Composite header;
-	private Section headerSection;
+
+	// private Section headerSection;
 
 	public DistributionOverviewPage(FormEditor formEditor, String title,
 			Session session) {
@@ -112,6 +118,9 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		// Add the table
 		createTableViewer(body);
 
+		viewer.setInput(session);
+		resetFilter();
+
 		// Add a listener to enable custom resize process
 		form.addControlListener(new ControlListener() {
 			public void controlResized(ControlEvent e) {
@@ -133,6 +142,66 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 
 	}
 
+	/** Build repository request */
+	private NodeIterator listBundleArtifacts(Session session)
+			throws RepositoryException {
+		QueryManager queryManager = session.getWorkspace().getQueryManager();
+		QueryObjectModelFactory factory = queryManager.getQOMFactory();
+
+		final String bundleArtifactsSelector = "bundleArtifacts";
+		Selector source = factory.selector(SlcTypes.SLC_BUNDLE_ARTIFACT,
+				bundleArtifactsSelector);
+
+		// Create a dynamic operand for each property on which we want to filter
+		DynamicOperand symbNameDO = factory.propertyValue(
+				source.getSelectorName(), SlcNames.SLC_SYMBOLIC_NAME);
+		DynamicOperand versionDO = factory.propertyValue(
+				source.getSelectorName(), SlcNames.SLC_BUNDLE_VERSION);
+		DynamicOperand nameDO = factory.propertyValue(source.getSelectorName(),
+				DistConstants.SLC_BUNDLE_NAME);
+
+		// Default Constraint: no source artifacts
+		Constraint defaultC = factory.not(factory.comparison(
+				symbNameDO,
+				QueryObjectModelFactory.JCR_OPERATOR_LIKE,
+				factory.literal(session.getValueFactory().createValue(
+						"%.source"))));
+
+		// Build constraints based the textArea content
+		String artifactTxtVal = artifactTxt.getText();
+		if (!"".equals(artifactTxtVal.trim())) {
+			// Parse the String
+			String[] strs = artifactTxtVal.trim().split(" ");
+			for (String token : strs) {
+				token = token.replace('*', '%');
+				StaticOperand so = factory.literal(session.getValueFactory()
+						.createValue("%" + token + "%"));
+
+				Constraint currC = factory.comparison(symbNameDO,
+						QueryObjectModelFactory.JCR_OPERATOR_LIKE, so);
+				currC = factory.or(currC, factory.comparison(versionDO,
+						QueryObjectModelFactory.JCR_OPERATOR_LIKE, so));
+				currC = factory.or(currC, factory.comparison(nameDO,
+						QueryObjectModelFactory.JCR_OPERATOR_LIKE, so));
+
+				defaultC = factory.and(defaultC, currC);
+			}
+		}
+
+		Ordering order = factory.descending(factory.propertyValue(
+				bundleArtifactsSelector, SlcNames.SLC_BUNDLE_VERSION));
+		Ordering order2 = factory.ascending(factory.propertyValue(
+				bundleArtifactsSelector, SlcNames.SLC_SYMBOLIC_NAME));
+		Ordering[] orderings = { order, order2 };
+
+		QueryObjectModel query = factory.createQuery(source, defaultC,
+				orderings, null);
+
+		QueryResult result = query.execute();
+		return result.getNodes();
+
+	}
+
 	private void createFilterPart(Composite parent) {
 		header = tk.createComposite(parent);
 		GridLayout layout = new GridLayout(2, false);
@@ -140,8 +209,15 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 		header.setLayoutData(gd);
 
-		// Artifact Name
-		tk.createLabel(header, "Artifact name: ", SWT.NONE);
+		// TODO display real repository information
+		// Title: some meta information
+		Label lbl = tk.createLabel(header, "Current repository: ", SWT.NONE);
+
+		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
+		gd.horizontalSpan = 2;
+		lbl.setLayoutData(gd);
+
+		// Text Area to filter
 		artifactTxt = tk.createText(header, "", SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 		gd.grabExcessHorizontalSpace = true;
@@ -153,33 +229,24 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 			}
 		});
 
-		headerSection = tk.createSection(header, Section.TWISTIE);
-		headerSection.setText("Advanced filters");
-		headerSection.setExpanded(false);
-		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
-		gd.horizontalSpan = 2;
-		headerSection.setLayoutData(gd);
+		Button resetBtn = tk.createButton(header, null, SWT.PUSH);
+		resetBtn.setImage(DistImages.IMG_REPO_READONLY);
+		resetBtn.addSelectionListener(new SelectionListener() {
 
-		Composite body = new Composite(headerSection, SWT.FILL);
-		headerSection.setClient(body);
+			public void widgetSelected(SelectionEvent e) {
+				resetFilter();
+			}
 
-		// Layout
-		layout = new GridLayout(2, false);
-		body.setLayout(layout);
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
 
-		// Artifact Name
-		tk.createLabel(body, "Add some more filters here ", SWT.NONE);
-		// lbl = tk.createLabel(body, "Artifact name: ", SWT.NONE);
-		// artifactTxt = tk.createText(body, "", SWT.BORDER | SWT.SINGLE);
-		// gd = new GridData(SWT.FILL, SWT.FILL, false, false);
-		// gd.grabExcessHorizontalSpace = true;
-		// artifactTxt.setLayoutData(gd);
-		// artifactTxt.addModifyListener(new ModifyListener() {
-		//
-		// public void modifyText(ModifyEvent event) {
-		// refreshFilteredList();
-		// }
-		// });
+	}
+
+	private void resetFilter() {
+		artifactTxt.setText("");
+		artifactTxt.setMessage("Enter filter criterion separated by a space");
+		viewer.refresh();
 	}
 
 	private void refreshFilteredList() {
@@ -187,7 +254,6 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 	}
 
 	private void createTableViewer(Composite parent) {
-
 		// helpers to enable sorting by column
 		List<String> propertiesList = new ArrayList<String>();
 		List<Integer> propertyTypesList = new ArrayList<Integer>();
@@ -196,7 +262,23 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
-		TableViewerColumn col = new TableViewerColumn(viewer, SWT.V_SCROLL);
+		// Name
+		TableViewerColumn col = new TableViewerColumn(viewer, SWT.NONE);
+		col.getColumn().setWidth(300);
+		col.getColumn().setText("Name");
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return JcrUtils.get((Node) element,
+						DistConstants.SLC_BUNDLE_NAME);
+			}
+		});
+		col.getColumn().addSelectionListener(getSelectionAdapter(0));
+		propertiesList.add(DistConstants.SLC_BUNDLE_NAME);
+		propertyTypesList.add(PropertyType.STRING);
+
+		// Symbolic name
+		col = new TableViewerColumn(viewer, SWT.V_SCROLL);
 		col.getColumn().setWidth(300);
 		col.getColumn().setText("Symbolic name");
 		col.setLabelProvider(new ColumnLabelProvider() {
@@ -205,10 +287,11 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 				return JcrUtils.get((Node) element, SLC_SYMBOLIC_NAME);
 			}
 		});
-		col.getColumn().addSelectionListener(getSelectionAdapter(0));
+		col.getColumn().addSelectionListener(getSelectionAdapter(1));
 		propertiesList.add(SLC_SYMBOLIC_NAME);
 		propertyTypesList.add(PropertyType.STRING);
 
+		// Version
 		col = new TableViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(100);
 		col.getColumn().setText("Version");
@@ -218,53 +301,23 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 				return JcrUtils.get((Node) element, SLC_BUNDLE_VERSION);
 			}
 		});
-		col.getColumn().addSelectionListener(getSelectionAdapter(1));
-		propertiesList.add(SLC_BUNDLE_VERSION);
-		propertyTypesList.add(PropertyType.STRING);
-
-		col = new TableViewerColumn(viewer, SWT.NONE);
-		col.getColumn().setWidth(150);
-		col.getColumn().setText("Group ID");
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				return JcrUtils.get((Node) element, SLC_GROUP_ID);
-			}
-		});
 		col.getColumn().addSelectionListener(getSelectionAdapter(2));
-		propertiesList.add(SLC_GROUP_ID);
-		propertyTypesList.add(PropertyType.STRING);
-
-		col = new TableViewerColumn(viewer, SWT.NONE);
-		col.getColumn().setWidth(300);
-		col.getColumn().setText("Name");
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				return JcrUtils.get((Node) element, SLC_
-						+ Constants.BUNDLE_NAME);
-			}
-		});
-		col.getColumn().addSelectionListener(getSelectionAdapter(3));
-		propertiesList.add(SLC_ + Constants.BUNDLE_NAME);
+		propertiesList.add(SLC_BUNDLE_VERSION);
 		propertyTypesList.add(PropertyType.STRING);
 
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		GridData gd = new GridData(SWT.FILL, SWT.TOP, true, true);
-		gd.heightHint = 300;
-		table.setLayoutData(gd);
 
 		viewer.setContentProvider(new DistributionsContentProvider());
 		getSite().setSelectionProvider(viewer);
 
-		viewer.setInput(session);
-		comparator = new NodeViewerComparator(1,
-				NodeViewerComparator.DESCENDING, propertiesList,
+		comparator = new NodeViewerComparator(2,
+				NodeViewerComparator.ASCENDING, propertiesList,
 				propertyTypesList);
 		viewer.setComparator(comparator);
 
+		// Context Menu
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getTable());
 		menuManager.addMenuListener(new IMenuListener() {
@@ -275,6 +328,8 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		viewer.getTable().setMenu(menu);
 		getSite().registerContextMenu(menuManager, viewer);
 
+		// Double click
+		viewer.addDoubleClickListener(new DoubleClickListener());
 	}
 
 	@Override
@@ -287,117 +342,18 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		viewer.refresh();
 	}
 
-	/**
-	 * UI Trick to put scroll bar on the table rather than on the scrollform
-	 */
-	private void refreshLayout() {
-		// Compute desired table size
-		int maxH = getManagedForm().getForm().getSize().y;
-		int maxW = getManagedForm().getForm().getParent().getSize().x;
-		// int maxW = getManagedForm().getForm().getSize().x;
-		maxH = maxH - header.getSize().y;
-
-		// maxH = maxH - headerSection.getSize().y
-		// - headerSection.getClient().getSize().y;
-
-		// Set
-		final Table table = viewer.getTable();
-		GridData gd = new GridData(SWT.LEFT, SWT.TOP, true, true);
-		// when table height is less than 200 px, we let the scroll bar on the
-		// scrollForm
-
-		// FIXME substract some spare space. Here is room for optimization
-		gd.heightHint = Math.max(maxH - 70, 200);
-		gd.widthHint = Math.max(maxW - 40, 200);
-
-		table.setLayoutData(gd);
-		getManagedForm().reflow(true);
-	}
-
-	@Override
-	public void setActive(boolean active) {
-		super.setActive(active);
-		if (active) {
-			refreshLayout();
-		}
-	}
-
-	/** Programatically configure the context menu */
+	/** Programmatically configure the context menu */
 	protected void contextMenuAboutToShow(IMenuManager menuManager) {
 		IWorkbenchWindow window = DistPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
 
-		// Build conditions depending on element type (repo or workspace)
+		// Build conditions
 
 		// Delete selected artifacts
 		CommandHelpers.refreshCommand(menuManager, window, DeleteArtifacts.ID,
 				DeleteArtifacts.DEFAULT_LABEL,
 				DeleteArtifacts.DEFAULT_ICON_PATH, true);
 
-	}
-
-	NodeIterator listBundleArtifacts(Session session)
-			throws RepositoryException {
-		QueryManager queryManager = session.getWorkspace().getQueryManager();
-		QueryObjectModelFactory factory = queryManager.getQOMFactory();
-
-		final String bundleArtifactsSelector = "bundleArtifacts";
-		Selector source = factory.selector(SlcTypes.SLC_BUNDLE_ARTIFACT,
-				bundleArtifactsSelector);
-
-		String artifactTxtVal = artifactTxt.getText();
-
-		DynamicOperand propName = factory.propertyValue(
-				source.getSelectorName(), SlcNames.SLC_SYMBOLIC_NAME);
-		StaticOperand propValue = factory.bindVariable("'%" + artifactTxtVal
-				+ "%'");
-		Constraint constraint = factory.comparison(propName,
-				QueryObjectModelFactory.JCR_OPERATOR_LIKE, propValue);
-
-		Ordering order = factory.ascending(factory.propertyValue(
-				bundleArtifactsSelector, SlcNames.SLC_SYMBOLIC_NAME));
-		Ordering[] orderings = { order };
-
-		QueryObjectModel query = factory.createQuery(source, constraint,
-				orderings, null);
-
-		QueryResult result = query.execute();
-		return result.getNodes();
-	}
-
-	private NodeIterator getArtifactsWithWhereClause(String whereClause) {
-		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("Select * FROM [" + SlcTypes.SLC_BUNDLE_ARTIFACT
-				+ "] AS bundleArtifacts");
-		if (whereClause != null && !"".equals(whereClause.trim())) {
-			strBuf.append(" WHERE ");
-			strBuf.append(whereClause);
-		}
-		strBuf.append(" ORDER BY ");
-		strBuf.append("bundleArtifacts.[" + SlcNames.SLC_SYMBOLIC_NAME + "] ");
-		strBuf.append("ASC");
-		try {
-			if (log.isTraceEnabled())
-				log.trace("Get artifacts query : " + strBuf.toString());
-			Query query = session.getWorkspace().getQueryManager()
-					.createQuery(strBuf.toString(), Query.JCR_SQL2);
-			return query.execute().getNodes();
-		} catch (RepositoryException e) {
-			throw new SlcException(
-					"Unexpected error while retrieving list of artifacts", e);
-		}
-	}
-
-	private String buildWhereClause() {
-		StringBuffer whereClause = new StringBuffer();
-
-		String artifactTxtVal = artifactTxt.getText();
-		if (!"".equals(artifactTxtVal)) {
-			whereClause.append("bundleArtifacts.[" + SlcNames.SLC_SYMBOLIC_NAME
-					+ "] like ");
-			whereClause.append("'%" + artifactTxtVal + "%'");
-		}
-		return whereClause.toString();
 	}
 
 	private SelectionAdapter getSelectionAdapter(final int index) {
@@ -420,6 +376,7 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		return selectionAdapter;
 	}
 
+	/* LOCAL CLASSES */
 	private class DistributionsContentProvider implements
 			IStructuredContentProvider {
 		// private Session session;
@@ -432,86 +389,71 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		}
 
 		public Object[] getElements(Object arg0) {
-			// try {
-			// List<Node> nodes = JcrUtils
-			// .nodeIteratorToList(listBundleArtifacts(session));
-			// return nodes.toArray();
-			// } catch (RepositoryException e) {
-			// ErrorFeedback.show("Cannot list bundles", e);
-			// return null;
-			// }
-
-			List<Node> nodes = JcrUtils
-					.nodeIteratorToList(getArtifactsWithWhereClause(buildWhereClause()));
-			return nodes.toArray();
+			try {
+				List<Node> nodes = JcrUtils
+						.nodeIteratorToList(listBundleArtifacts(session));
+				return nodes.toArray();
+			} catch (RepositoryException e) {
+				ErrorFeedback.show("Cannot list bundles", e);
+				return null;
+			}
 		}
 	}
-	//
-	// private class BoundedLayout extends Layout {
-	// protected Layout delegateLayout;
-	//
-	// protected Method computeSizeMethod;
-	// protected Method layoutMethod;
-	//
-	// protected boolean widthBound;
-	//
-	// public BoundedLayout(Layout delegateLayout, boolean widthBound) {
-	// setDelegateLayout(delegateLayout);
-	// this.widthBound = widthBound;
-	// }
-	//
-	// public Layout getDelegateLayout() {
-	// return delegateLayout;
-	// }
-	//
-	// public void setDelegateLayout(Layout delegateLayout) {
-	// this.delegateLayout = delegateLayout;
-	//
-	// try {
-	// computeSizeMethod = delegateLayout.getClass()
-	// .getDeclaredMethod("computeSize", Composite.class,
-	// int.class, int.class, boolean.class);
-	// computeSizeMethod.setAccessible(true);
-	//
-	// layoutMethod = delegateLayout.getClass().getDeclaredMethod(
-	// "layout", Composite.class, boolean.class);
-	// layoutMethod.setAccessible(true);
-	// } catch (Exception e) {
-	// throw new RuntimeException(e);
-	// }
-	// }
-	//
-	// @Override
-	// protected Point computeSize(Composite composite, int wHint, int hHint,
-	// boolean flushCache) {
-	// // get comp size to make sure we don't let any children exceed it
-	// Point compSize = composite.getSize();
-	//
-	// try {
-	// Point layoutComputedSize = (Point) computeSizeMethod.invoke(
-	// delegateLayout, composite, wHint, hHint, flushCache);
-	//
-	// if (widthBound) {
-	// layoutComputedSize.x = Math.min(compSize.x,
-	// layoutComputedSize.x);
-	// } else {
-	// layoutComputedSize.y = Math.min(compSize.y,
-	// layoutComputedSize.y);
-	// }
-	//
-	// return layoutComputedSize;
-	// } catch (Exception e) {
-	// throw new RuntimeException(e);
-	// }
-	// }
-	//
-	// @Override
-	// protected void layout(Composite composite, boolean flushCache) {
-	// try {
-	// layoutMethod.invoke(delegateLayout, composite, flushCache);
-	// } catch (Exception e) {
-	// throw new RuntimeException(e);
-	// }
-	// }
-	// }
+
+	private class DoubleClickListener implements IDoubleClickListener {
+
+		public void doubleClick(DoubleClickEvent event) {
+			Object obj = ((IStructuredSelection) event.getSelection())
+					.getFirstElement();
+			try {
+				if (obj instanceof Node) {
+					Node node = (Node) obj;
+					if (node.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
+						GenericBundleEditorInput gaei = new GenericBundleEditorInput(
+								node);
+						DistPlugin.getDefault().getWorkbench()
+								.getActiveWorkbenchWindow().getActivePage()
+								.openEditor(gaei, GenericBundleEditor.ID);
+					}
+				}
+			} catch (RepositoryException re) {
+				throw new ArgeoException(
+						"Repository error while getting node info", re);
+			} catch (PartInitException pie) {
+				throw new ArgeoException(
+						"Unexepected exception while opening artifact editor",
+						pie);
+			}
+		}
+	}
+
+	/**
+	 * UI Trick to put scroll bar on the table rather than on the scrollform
+	 */
+	private void refreshLayout() {
+		// Compute desired table size
+		int maxH = getManagedForm().getForm().getSize().y;
+		int maxW = getManagedForm().getForm().getParent().getSize().x;
+		maxH = maxH - header.getSize().y;
+		final Table table = viewer.getTable();
+		GridData gd = new GridData(SWT.LEFT, SWT.TOP, true, true);
+
+		// when table height is less than 200 px, we let the scroll bar on the
+		// scrollForm
+		// FIXME substract some spare space. Here is room for optimization
+		gd.heightHint = Math.max(maxH - 35, 200);
+		gd.widthHint = Math.max(maxW - 35, 200);
+
+		table.setLayoutData(gd);
+		getManagedForm().reflow(true);
+	}
+
+	@Override
+	public void setActive(boolean active) {
+		super.setActive(active);
+		if (active) {
+			refreshLayout();
+		}
+	}
+
 }

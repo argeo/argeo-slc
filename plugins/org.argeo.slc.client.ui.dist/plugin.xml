@@ -56,9 +56,9 @@
    <extension
            point="org.eclipse.ui.editors">
 	     <editor
-	          class="org.argeo.slc.client.ui.dist.editors.GenericArtifactEditor"
-              id="org.argeo.slc.client.ui.dist.genericArtifactEditor"
-              name="Artifact editor"
+	          class="org.argeo.slc.client.ui.dist.editors.GenericBundleEditor"
+              id="org.argeo.slc.client.ui.dist.genericBundleEditor"
+              name="Bundle editor"
               icon="icons/artifactVersionBase.gif"
               default="false">
         </editor>
@@ -129,7 +129,7 @@
     	</command>
     	
     	<command
-            id="org.argeo.slc.client.ui.dist.repoSyncCommand"
+            id="org.argeo.slc.client.ui.dist.fetch"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Fetch repository">
             <commandParameter

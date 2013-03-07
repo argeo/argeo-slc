@@ -28,16 +28,16 @@ import org.eclipse.ui.IPersistableElement;
  * An editor input based the JCR node object.
  * */
 
-public class GenericArtifactEditorInput implements IEditorInput, SlcNames {
+public class GenericBundleEditorInput implements IEditorInput, SlcNames {
 
 	private final Node artifactNode;
-	// cache key properties at creation time to avoid Exception at recoring time
+	// cache key properties at creation time to avoid Exception at recovering time
 	// when the session has been closed
 	private String artifactId;
 	private String groupId;
 	private String version;
 
-	public GenericArtifactEditorInput(Node artifactNode) {
+	public GenericBundleEditorInput(Node artifactNode) {
 		this.artifactNode = artifactNode;
 		try {
 			artifactId = artifactNode.getProperty(SLC_ARTIFACT_ID).getString();
@@ -85,7 +85,8 @@ public class GenericArtifactEditorInput implements IEditorInput, SlcNames {
 	}
 
 	public String getName() {
-		return artifactId + ":" + groupId + ":" + version;
+		// return artifactId + ":" + groupId + ":" + version;
+		return groupId;
 	}
 
 	public IPersistableElement getPersistable() {
@@ -103,7 +104,7 @@ public class GenericArtifactEditorInput implements IEditorInput, SlcNames {
 		if (getClass() != obj.getClass())
 			return false;
 
-		GenericArtifactEditorInput other = (GenericArtifactEditorInput) obj;
+		GenericBundleEditorInput other = (GenericBundleEditorInput) obj;
 		if (!getGroupId().equals(other.getGroupId()))
 			return false;
 		if (!getArtifactId().equals(other.getArtifactId()))

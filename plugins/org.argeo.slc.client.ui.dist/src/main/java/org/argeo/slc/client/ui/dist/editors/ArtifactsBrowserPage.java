@@ -137,7 +137,7 @@ public class ArtifactsBrowserPage extends FormPage implements DistConstants,
 		viewer.setContentProvider(new ArtifactsTreeContentProvider());
 		viewer.setLabelProvider(new ArtifactLabelProvider());
 		viewer.addSelectionChangedListener(new ArtifactTreeSelectionListener());
-		viewer.addDoubleClickListener(new GenericDoubleClickListener(viewer));
+		viewer.addDoubleClickListener(new GenericDoubleClickListener());
 		viewer.setInput(rootNode);
 
 		return viewer;

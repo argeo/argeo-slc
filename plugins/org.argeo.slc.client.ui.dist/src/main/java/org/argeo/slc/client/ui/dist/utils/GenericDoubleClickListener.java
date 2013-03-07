@@ -25,19 +25,19 @@ import org.argeo.eclipse.ui.jcr.utils.JcrFileProvider;
 import org.argeo.eclipse.ui.specific.FileHandler;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.editors.GenericArtifactEditor;
-import org.argeo.slc.client.ui.dist.editors.GenericArtifactEditorInput;
+import org.argeo.slc.client.ui.dist.editors.GenericBundleEditor;
+import org.argeo.slc.client.ui.dist.editors.GenericBundleEditorInput;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.PartInitException;
 
 /**
- * Centralizes the management of double click on an ArtifactTreeViewer
+ * Centralizes the management of double click on an viewer that displays
+ * artifacts.
  */
 public class GenericDoubleClickListener implements IDoubleClickListener,
 		SlcTypes, SlcNames, DistConstants {
@@ -45,13 +45,10 @@ public class GenericDoubleClickListener implements IDoubleClickListener,
 	// private final static Log log = LogFactory
 	// .getLog(GenericDoubleClickListener.class);
 
-	//private TreeViewer viewer;
-
 	private JcrFileProvider jfp;
 	private FileHandler fileHandler;
 
-	public GenericDoubleClickListener(TreeViewer viewer) {
-		// this.viewer = viewer;
+	public GenericDoubleClickListener() {
 		jfp = new JcrFileProvider();
 		fileHandler = new FileHandler(jfp);
 	}
@@ -65,11 +62,11 @@ public class GenericDoubleClickListener implements IDoubleClickListener,
 			if (obj instanceof Node) {
 				Node node = (Node) obj;
 				if (node.isNodeType(SLC_ARTIFACT_VERSION_BASE)) {
-					GenericArtifactEditorInput gaei = new GenericArtifactEditorInput(
+					GenericBundleEditorInput gaei = new GenericBundleEditorInput(
 							node);
 					DistPlugin.getDefault().getWorkbench()
 							.getActiveWorkbenchWindow().getActivePage()
-							.openEditor(gaei, GenericArtifactEditor.ID);
+							.openEditor(gaei, GenericBundleEditor.ID);
 				} else if (node.isNodeType(NodeType.NT_FILE)) {
 					String name = node.getName();
 					String id = node.getIdentifier();
@@ -107,11 +104,11 @@ public class GenericDoubleClickListener implements IDoubleClickListener,
 									+ SLC_ARTIFACT_VERSION_BASE + " node "
 									+ " in order to open the artifact editor");
 				else {
-					GenericArtifactEditorInput gaei = new GenericArtifactEditorInput(
+					GenericBundleEditorInput gaei = new GenericBundleEditorInput(
 							node);
 					DistPlugin.getDefault().getWorkbench()
 							.getActiveWorkbenchWindow().getActivePage()
-							.openEditor(gaei, GenericArtifactEditor.ID);
+							.openEditor(gaei, GenericBundleEditor.ID);
 				}
 			}
 		} catch (RepositoryException re) {

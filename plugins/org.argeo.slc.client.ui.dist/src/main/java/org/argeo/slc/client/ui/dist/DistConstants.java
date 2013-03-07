@@ -15,6 +15,9 @@
  */
 package org.argeo.slc.client.ui.dist;
 
+import org.argeo.slc.jcr.SlcNames;
+import org.osgi.framework.Constants;
+
 /** Constants used across the application. */
 public interface DistConstants {
 	/*
@@ -25,6 +28,11 @@ public interface DistConstants {
 	// this should be directly got in JCR
 	public final static String JCR_IDENTIFIER = "jcr:uuid";
 
-	
-	
+	// FIXME: might be defined in SlcNames
+	public final static String SLC_BUNDLE_NAME = SlcNames.SLC_
+			+ Constants.BUNDLE_NAME;
+	public final static String SLC_BUNDLE_LICENCE = SlcNames.SLC_
+			+ "Bundle-License";
+	public final static String SLC_BUNDLE_VENDOR = SlcNames.SLC_
+			+ Constants.BUNDLE_VENDOR;
 }

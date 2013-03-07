@@ -21,10 +21,10 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Wraps a {@link RepoSync} as an Eclipse command. */
-public class RepoSyncCommand extends AbstractHandler {
-	// private final static Log log = LogFactory.getLog(RepoSyncCommand.class);
+public class Fetch extends AbstractHandler {
+	// private final static Log log = LogFactory.getLog(Fetch.class);
 
-	public final static String ID = DistPlugin.ID + ".repoSyncCommand";
+	public final static String ID = DistPlugin.ID + ".fetch";
 	public final static String PARAM_TARGET_REPO = "targetRepoPath";
 	public final static String DEFAULT_LABEL = "Fetch...";
 	public final static String DEFAULT_ICON_PATH = "icons/fetchRepo.png";
@@ -33,7 +33,6 @@ public class RepoSyncCommand extends AbstractHandler {
 	private Keyring keyring;
 	private RepositoryFactory repositoryFactory;
 	private Repository nodeRepository;
-
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		Session currSession = null;
@@ -48,7 +47,7 @@ public class RepoSyncCommand extends AbstractHandler {
 			wizard.setTargetRepoNode(targetRepoNode);
 			WizardDialog dialog = new WizardDialog(
 					HandlerUtil.getActiveShell(event), wizard);
-			
+
 			int result = dialog.open();
 			if (result == Dialog.OK)
 				CommandHelpers.callCommand(RefreshDistributionsView.ID);

@@ -26,7 +26,7 @@
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
 	</bean>
-	<bean id="repoSyncCommand" class="org.argeo.slc.client.ui.dist.commands.RepoSyncCommand"
+	<bean id="fetch" class="org.argeo.slc.client.ui.dist.commands.Fetch"
 		scope="prototype">
 		<property name="repositoryFactory" ref="repositoryFactory" />
 		<property name="nodeRepository" ref="nodeRepository" />
@@ -63,7 +63,8 @@
 		scope="prototype">
 	</bean>
 
-	<bean id="registerRepository" class="org.argeo.slc.client.ui.dist.commands.RegisterRepository">
+	<bean id="registerRepository"
+		class="org.argeo.slc.client.ui.dist.commands.RegisterRepository">
 		<property name="repositoryFactory" ref="repositoryFactory" />
 		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />

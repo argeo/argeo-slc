@@ -27,37 +27,37 @@ import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
  * 
- * Container for the node editor page. At creation time, it takes a JCR Node
- * that cannot be changed afterwards.
+ * Exposes a bundle and enable its management
  * 
  */
-public class GenericArtifactEditor extends FormEditor {
+public class GenericBundleEditor extends FormEditor {
 
 	// private final static Log log =
 	// LogFactory.getLog(GenericNodeEditor.class);
-	public final static String ID = DistPlugin.ID + ".genericArtifactEditor";
+	public final static String ID = DistPlugin.ID + ".genericBundleEditor";
 
 	// business objects
-	private Node artifactNode;
+	private Node bundleNode;
 
 	// This Editor widgets
-	private ArtifactDetailsPage artifactDetailsPage;
+	private BundleRawPage bundleRawPage;
+	private BundleDetailsPage bundleDetailsPage;
 
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
-		GenericArtifactEditorInput gaei = (GenericArtifactEditorInput) getEditorInput();
-		artifactNode = gaei.getArtifactNode();
+		GenericBundleEditorInput gaei = (GenericBundleEditorInput) getEditorInput();
+		bundleNode = gaei.getArtifactNode();
 		this.setPartName(gaei.getArtifactId());
 	}
 
 	@Override
 	protected void addPages() {
 		try {
-
-			artifactDetailsPage = new ArtifactDetailsPage(this, "Main",
-					artifactNode);
-			addPage(artifactDetailsPage);
+			bundleDetailsPage = new BundleDetailsPage(this, "Main", bundleNode);
+			addPage(bundleDetailsPage);
+			bundleRawPage = new BundleRawPage(this, "Main", bundleNode);
+			addPage(bundleRawPage);
 		} catch (PartInitException e) {
 			throw new ArgeoException("Not able to add an empty page ", e);
 		}
@@ -83,9 +83,5 @@ public class GenericArtifactEditor extends FormEditor {
 	@Override
 	public boolean isSaveAsAllowed() {
 		return true;
-	}
-
-	Node getArtifactNode() {
-		return artifactNode;
 	}
 }

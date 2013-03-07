@@ -109,5 +109,4 @@ public class DistributionEditorInput implements IEditorInput, SlcNames {
 	public Credentials getCredentials() {
 		return credentials;
 	}
-
 }

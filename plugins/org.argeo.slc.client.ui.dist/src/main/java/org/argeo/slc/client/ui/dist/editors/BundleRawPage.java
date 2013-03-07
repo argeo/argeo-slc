@@ -47,43 +47,40 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
- * Generic editor property page. Lists all properties of current node as a
- * complex tree. TODO: enable editing
+ * Lists all properties of current bundle as a tree
  */
 
-public class ArtifactDetailsPage extends FormPage implements SlcNames, SlcTypes {
+public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 	// private final static Log log =
 	// LogFactory.getLog(ArtifactDetailsPage.class);
 
 	// Main business Objects
-	private Node currentNode;
+	private Node currBundle;
 
 	// This page widgets
-	private FormToolkit tk;
 	private TreeViewer complexTree;
 	private Text mavenSnippet;
 
-	public ArtifactDetailsPage(FormEditor editor, String title, Node currentNode) {
+	public BundleRawPage(FormEditor editor, String title, Node currentNode) {
 		super(editor, "id", title);
-		this.currentNode = currentNode;
+		this.currBundle = currentNode;
 	}
 
 	protected void createFormContent(IManagedForm managedForm) {
-		tk = managedForm.getToolkit();
 		ScrolledForm form = managedForm.getForm();
 		GridLayout layout = new GridLayout(1, false);
 		layout.marginWidth = 5;
 		form.getBody().setLayout(layout);
 
-		complexTree = createComplexTree(form.getBody());
-		createMavenSnipet(form.getBody());
+		createViewer(form.getBody());
 	}
 
-	private TreeViewer createComplexTree(Composite parent) {
+	private void createViewer(Composite parent) {
+		
+		// Create the viewer
 		int style = SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION;
 		Tree tree = new Tree(parent, style);
 		GridData gd = new GridData(GridData.FILL_BOTH);
@@ -95,49 +92,20 @@ public class ArtifactDetailsPage extends FormPage implements SlcNames, SlcTypes 
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
 
-		TreeViewer result = new TreeViewer(tree);
-		result.setContentProvider(new TreeContentProvider());
-		result.setLabelProvider(new TreeLabelProvider());
+		// Configure
+		complexTree.addDoubleClickListener(new GenericDoubleClickListener());
+		complexTree = new TreeViewer(tree);
+		complexTree.setContentProvider(new TreeContentProvider());
+		complexTree.setLabelProvider(new TreeLabelProvider());
 
-		result.setInput(currentNode);
-		result.expandToLevel(2);
-
-		result.addDoubleClickListener(new GenericDoubleClickListener(result));
+		// Initialize
+		complexTree.setInput(currBundle);
 		// result.expandAll();
-		return result;
+		complexTree.expandToLevel(2);
+
 	}
 
-	private void createMavenSnipet(Composite parent) {
-		mavenSnippet = new Text(parent, SWT.MULTI | SWT.WRAP | SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.grabExcessHorizontalSpace = true;
-		gd.heightHint = 75;
-		mavenSnippet.setLayoutData(gd);
-		mavenSnippet.setText(generateXmlSnippet());
-	}
-
-	// Helpers
-	private String generateXmlSnippet() {
-		try {
-			StringBuffer sb = new StringBuffer();
-			sb.append("<dependency>\n");
-			sb.append("\t<groupeId>");
-			sb.append(currentNode.getProperty(SLC_GROUP_ID).getString());
-			sb.append("</groupeId>\n");
-			sb.append("\t<artifactId>");
-			sb.append(currentNode.getProperty(SLC_ARTIFACT_ID).getString());
-			sb.append("</artifactId>\n");
-			sb.append("\t<version>");
-			sb.append(currentNode.getProperty(SLC_ARTIFACT_VERSION).getString());
-			sb.append("</version>\n");
-			sb.append("</dependency>");
-			return sb.toString();
-		} catch (RepositoryException re) {
-			throw new ArgeoException(
-					"unexpected error while generating maven snippet");
-		}
-	}
-
+	
 	private static TreeColumn createColumn(Tree parent, String name, int style,
 			int width) {
 		TreeColumn result = new TreeColumn(parent, style);

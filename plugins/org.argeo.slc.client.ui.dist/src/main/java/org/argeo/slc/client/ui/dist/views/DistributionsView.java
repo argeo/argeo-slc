@@ -50,10 +50,10 @@ import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
+import org.argeo.slc.client.ui.dist.commands.Fetch;
 import org.argeo.slc.client.ui.dist.commands.ManageWorkspaceAuth;
 import org.argeo.slc.client.ui.dist.commands.NormalizeDistribution;
 import org.argeo.slc.client.ui.dist.commands.RegisterRepository;
-import org.argeo.slc.client.ui.dist.commands.RepoSyncCommand;
 import org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditorInput;
@@ -136,14 +136,13 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			}
 		});
 
-		final Tree table = viewer.getTree();
-		table.setHeaderVisible(false);
-		table.setLinesVisible(false);
+		final Tree tree = viewer.getTree();
+		tree.setHeaderVisible(false);
+		tree.setLinesVisible(false);
 
 		viewer.setContentProvider(new DistributionsContentProvider());
 		viewer.addDoubleClickListener(new DistributionsDCL());
 		viewer.setComparator(new ArtifactNamesComparator());
-		log.debug("Comparator set ");
 
 		// Enable selection retrieving from outside the view
 		getSite().setSelectionProvider(viewer);
@@ -255,11 +254,10 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 				// Fetch repository
 				params = new HashMap<String, String>();
-				params.put(RepoSyncCommand.PARAM_TARGET_REPO, targetRepoPath);
+				params.put(Fetch.PARAM_TARGET_REPO, targetRepoPath);
 				CommandHelpers.refreshParameterizedCommand(menuManager, window,
-						RepoSyncCommand.ID, RepoSyncCommand.DEFAULT_LABEL,
-						RepoSyncCommand.DEFAULT_ICON_PATH, !isDistribElem
-								&& singleElement, params);
+						Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON_PATH,
+						!isDistribElem && singleElement, params);
 
 				// Normalize workspace
 				params = new HashMap<String, String>();
