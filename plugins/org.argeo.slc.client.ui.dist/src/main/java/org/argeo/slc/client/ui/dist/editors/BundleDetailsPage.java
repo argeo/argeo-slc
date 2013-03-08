@@ -115,7 +115,11 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		createField(details, "Symbolic name", SlcNames.SLC_SYMBOLIC_NAME);
 		createField(details, "Version", SlcNames.SLC_BUNDLE_VERSION);
 		createField(details, "Group Id", SlcNames.SLC_GROUP_ID);
-		//createHyperlink(details, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
+		// Single sourcing issue: this does not works with rap
+		// createHyperlink(details, "Licence",
+		// DistConstants.SLC_BUNDLE_LICENCE);
+		createField(details, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
+
 		createField(details, "Vendor", DistConstants.SLC_BUNDLE_VENDOR);
 
 	}

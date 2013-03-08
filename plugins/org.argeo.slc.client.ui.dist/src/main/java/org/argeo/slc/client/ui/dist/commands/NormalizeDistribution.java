@@ -16,6 +16,7 @@
 package org.argeo.slc.client.ui.dist.commands;
 
 import javax.jcr.Binary;
+import javax.jcr.Credentials;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -36,6 +37,8 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.views.DistributionsView;
+import org.argeo.slc.client.ui.dist.views.DistributionsView.DistributionViewSelectedElement;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
@@ -63,6 +66,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -70,7 +75,6 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 /** Make sure than Maven and OSGi metadata are consistent */
 public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	public final static String ID = DistPlugin.ID + ".normalizeDistribution";
-	public final static String PARAM_WORKSPACE = "workspace";
 	public final static String DEFAULT_LABEL = "Normalize...";
 	public final static String DEFAULT_ICON_PATH = "icons/normalize.gif";
 
@@ -78,13 +82,30 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 			.getLog(NormalizeDistribution.class);
 
 	private Repository repository;
+	private Credentials credentials;
+	private String wkspName;
 	private String artifactBasePath = "/";
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		String workspace = event.getParameter(PARAM_WORKSPACE);
+
+		IWorkbenchWindow iww = DistPlugin.getDefault().getWorkbench()
+				.getActiveWorkbenchWindow();
+		IWorkbenchPart view = iww.getActivePage().getActivePart();
+		if (view instanceof DistributionsView) {
+			DistributionViewSelectedElement dvse = ((DistributionsView) view)
+					.getSelectedElement();
+			if (dvse != null && (dvse.isWorkspace)) {
+				repository = dvse.repository;
+				credentials = dvse.credentials;
+				wkspName = dvse.wkspName;
+			}
+		}
+		if (repository == null || wkspName == null)
+			return null;
+
 		NormalizationDialog dialog = new NormalizationDialog(
 				HandlerUtil.getActiveShell(event));
 		if (dialog.open() != Dialog.OK)
@@ -95,10 +116,10 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 
 		NormalizeJob job;
 		try {
-			job = new NormalizeJob(repository.login(workspace), version,
-					overridePoms);
+			job = new NormalizeJob(repository.login(credentials, wkspName),
+					version, overridePoms);
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot normalize " + workspace, e);
+			throw new SlcException("Cannot normalize " + wkspName, e);
 		}
 		job.setUser(true);
 		job.schedule();

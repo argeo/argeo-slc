@@ -34,8 +34,10 @@ import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
 import org.argeo.ArgeoException;
-import org.argeo.eclipse.ui.ErrorFeedback;
+import org.argeo.ArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseArgeoMonitor;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -44,6 +46,10 @@ import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -94,13 +100,47 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 	private Text artifactTxt;
 	private FormToolkit tk;
 	private Composite header;
-
-	// private Section headerSection;
+	private final static String FILTER_HELP_MSG = "Enter filter criterion separated by a space";
 
 	public DistributionOverviewPage(FormEditor formEditor, String title,
 			Session session) {
 		super(formEditor, PAGE_ID, title);
 		this.session = session;
+	}
+
+	private void asynchronousRefresh() {
+		refreshFilteredList();
+		// FIXME Does not work yet: how can the job set the viewer input ?
+		// RefreshJob job = new RefreshJob(session, artifactTxt.getText());
+		// job.setUser(true);
+		// job.schedule();
+		// viewer.setInput(nodes);
+	}
+
+	private class RefreshJob extends Job {
+		private Session session;
+		private List<Node> nodes;
+		private String filter;
+
+		public RefreshJob(Session session, String filter, List<Node> nodes) {
+			super("Get bundle list");
+			this.session = session;
+		}
+
+		@Override
+		protected IStatus run(IProgressMonitor progressMonitor) {
+			try {
+				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
+				monitor.beginTask("Getting bundle list", -1);
+				List<Node> result = JcrUtils
+						.nodeIteratorToList(listBundleArtifacts(session, filter));
+				nodes.addAll(result);
+			} catch (Exception e) {
+				return new Status(IStatus.ERROR, DistPlugin.ID,
+						"Cannot get bundle list", e);
+			}
+			return Status.OK_STATUS;
+		}
 	}
 
 	@Override
@@ -117,12 +157,10 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		createFilterPart(body);
 		// Add the table
 		createTableViewer(body);
-
-		viewer.setInput(session);
-		resetFilter();
-
+		viewer.setInput(null);
 		// Add a listener to enable custom resize process
 		form.addControlListener(new ControlListener() {
+			// form.addListener(SWT.RESIZE, new Listener() does not work
 			public void controlResized(ControlEvent e) {
 				refreshLayout();
 			}
@@ -130,20 +168,11 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 			public void controlMoved(ControlEvent e) {
 			}
 		});
-
-		// This below doesn not work; the listener must be added as a control
-		// listener to be correctly notified when resize events happen
-
-		// form.addListener(SWT.RESIZE, new Listener() {
-		// public void handleEvent(Event event) {
-		// log.debug("Form resized ....");
-		// }
-		// });
-
+		asynchronousRefresh();
 	}
 
 	/** Build repository request */
-	private NodeIterator listBundleArtifacts(Session session)
+	private NodeIterator listBundleArtifacts(Session session, String filter)
 			throws RepositoryException {
 		QueryManager queryManager = session.getWorkspace().getQueryManager();
 		QueryObjectModelFactory factory = queryManager.getQOMFactory();
@@ -168,10 +197,9 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 						"%.source"))));
 
 		// Build constraints based the textArea content
-		String artifactTxtVal = artifactTxt.getText();
-		if (!"".equals(artifactTxtVal.trim())) {
+		if (filter != null && !"".equals(filter.trim())) {
 			// Parse the String
-			String[] strs = artifactTxtVal.trim().split(" ");
+			String[] strs = filter.trim().split(" ");
 			for (String token : strs) {
 				token = token.replace('*', '%');
 				StaticOperand so = factory.literal(session.getValueFactory()
@@ -220,13 +248,16 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 
 		// Text Area to filter
 		artifactTxt = tk.createText(header, "", SWT.BORDER | SWT.SINGLE);
+		artifactTxt.setMessage(FILTER_HELP_MSG);
 		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 		gd.grabExcessHorizontalSpace = true;
 		artifactTxt.setLayoutData(gd);
 		artifactTxt.addModifyListener(new ModifyListener() {
-
 			public void modifyText(ModifyEvent event) {
-				refreshFilteredList();
+				if ("".equals(artifactTxt.getText().trim()))
+					asynchronousRefresh();
+				else
+					refreshFilteredList();
 			}
 		});
 
@@ -246,12 +277,18 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 
 	private void resetFilter() {
 		artifactTxt.setText("");
-		artifactTxt.setMessage("Enter filter criterion separated by a space");
-		viewer.refresh();
+		artifactTxt.setMessage(FILTER_HELP_MSG);
 	}
 
 	private void refreshFilteredList() {
-		viewer.refresh();
+		List<Node> nodes;
+		try {
+			nodes = JcrUtils.nodeIteratorToList(listBundleArtifacts(session,
+					artifactTxt.getText()));
+			viewer.setInput(nodes);
+		} catch (RepositoryException e) {
+			throw new SlcException("Unable to list bundles", e);
+		}
 	}
 
 	private void createTableViewer(Composite parent) {
@@ -340,21 +377,18 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 
 	/** force refresh of the artifact list */
 	public void refresh() {
-		viewer.refresh();
+		asynchronousRefresh();
 	}
 
 	/** Programmatically configure the context menu */
 	protected void contextMenuAboutToShow(IMenuManager menuManager) {
 		IWorkbenchWindow window = DistPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
-
 		// Build conditions
-
 		// Delete selected artifacts
 		CommandHelpers.refreshCommand(menuManager, window, DeleteArtifacts.ID,
 				DeleteArtifacts.DEFAULT_LABEL,
 				DeleteArtifacts.DEFAULT_ICON_PATH, true);
-
 	}
 
 	private SelectionAdapter getSelectionAdapter(final int index) {
@@ -380,24 +414,21 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 	/* LOCAL CLASSES */
 	private class DistributionsContentProvider implements
 			IStructuredContentProvider {
-		// private Session session;
+		// we keep a cache of the Nodes in the content provider to be able to
+		// manage long request
+		private List<Node> nodes;
 
 		public void dispose() {
 		}
 
+		// We expect a list of nodes as a new input
+		@SuppressWarnings("unchecked")
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// session = (Session) newInput;
+			nodes = (List<Node>) newInput;
 		}
 
 		public Object[] getElements(Object arg0) {
-			try {
-				List<Node> nodes = JcrUtils
-						.nodeIteratorToList(listBundleArtifacts(session));
-				return nodes.toArray();
-			} catch (RepositoryException e) {
-				ErrorFeedback.show("Cannot list bundles", e);
-				return null;
-			}
+			return nodes.toArray();
 		}
 	}
 

@@ -56,7 +56,6 @@ public class DeleteWorkspace extends AbstractHandler {
 
 		IWorkbenchWindow iww = DistPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
-
 		IWorkbenchPart view = iww.getActivePage().getActivePart();
 		if (view instanceof DistributionsView) {
 			DistributionViewSelectedElement dvse = ((DistributionsView) view)

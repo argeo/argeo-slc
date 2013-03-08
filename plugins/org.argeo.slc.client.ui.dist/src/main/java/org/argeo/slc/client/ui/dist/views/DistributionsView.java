@@ -226,7 +226,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		if (firstElement instanceof TreeParent
 				|| firstElement instanceof BrowserElem) {
-			String wsName = null;
 			String targetRepoPath = null;
 
 			// Build conditions depending on element type
@@ -236,7 +235,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			if (firstElement instanceof DistributionElem) {
 				DistributionElem de = (DistributionElem) firstElement;
 				isDistribElem = true;
-				wsName = de.getName();
 				isReadOnly = de.isReadOnly();
 			} else if (firstElement instanceof RepoElem) {
 				RepoElem re = (RepoElem) firstElement;
@@ -292,21 +290,17 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 					isRepoElem && singleElement && !isReadOnly, params);
 
 			// Normalize workspace
-			params = new HashMap<String, String>();
-			params.put(NormalizeDistribution.PARAM_WORKSPACE, wsName);
-			CommandHelpers.refreshParameterizedCommand(menuManager, window,
+			CommandHelpers.refreshCommand(menuManager, window,
 					NormalizeDistribution.ID,
 					NormalizeDistribution.DEFAULT_LABEL,
 					NormalizeDistribution.DEFAULT_ICON_PATH, isDistribElem
-							&& singleElement && !isReadOnly, params);
+							&& singleElement && !isReadOnly);
 
 			// Copy workspace
-			params = new HashMap<String, String>();
-			params.put(CopyWorkspace.PARAM_WORKSPACE_NAME, wsName);
-			CommandHelpers.refreshParameterizedCommand(menuManager, window,
+			CommandHelpers.refreshCommand(menuManager, window,
 					CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
 					CopyWorkspace.DEFAULT_ICON_PATH, isDistribElem
-							&& singleElement, params);
+							&& singleElement);
 
 			// Clear Workspace
 			CommandHelpers.refreshCommand(menuManager, window,
