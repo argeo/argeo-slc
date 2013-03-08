@@ -56,7 +56,7 @@ public class GenericBundleEditor extends FormEditor {
 		try {
 			bundleDetailsPage = new BundleDetailsPage(this, "Main", bundleNode);
 			addPage(bundleDetailsPage);
-			bundleRawPage = new BundleRawPage(this, "Main", bundleNode);
+			bundleRawPage = new BundleRawPage(this, "Raw info", bundleNode);
 			addPage(bundleRawPage);
 		} catch (PartInitException e) {
 			throw new ArgeoException("Not able to add an empty page ", e);

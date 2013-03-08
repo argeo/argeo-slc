@@ -41,7 +41,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.forms.IManagedForm;
@@ -62,7 +61,6 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 
 	// This page widgets
 	private TreeViewer complexTree;
-	private Text mavenSnippet;
 
 	public BundleRawPage(FormEditor editor, String title, Node currentNode) {
 		super(editor, "id", title);
@@ -74,12 +72,11 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 		GridLayout layout = new GridLayout(1, false);
 		layout.marginWidth = 5;
 		form.getBody().setLayout(layout);
-
 		createViewer(form.getBody());
 	}
 
 	private void createViewer(Composite parent) {
-		
+
 		// Create the viewer
 		int style = SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION;
 		Tree tree = new Tree(parent, style);
@@ -91,6 +88,7 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 		createColumn(tree, "Value", SWT.LEFT, 200);
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
+		complexTree = new TreeViewer(tree);
 
 		// Configure
 		complexTree.addDoubleClickListener(new GenericDoubleClickListener());
@@ -105,7 +103,6 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 
 	}
 
-	
 	private static TreeColumn createColumn(Tree parent, String name, int style,
 			int width) {
 		TreeColumn result = new TreeColumn(parent, style);

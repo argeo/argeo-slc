@@ -20,13 +20,9 @@ import java.text.SimpleDateFormat;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistConstants;
@@ -62,8 +58,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class ArtifactsBrowserPage extends FormPage implements DistConstants,
 		RepoConstants {
 	final static String PAGE_ID = "artifactsBrowserPage";
-	private final static Log log = LogFactory
-			.getLog(ArtifactsBrowserPage.class);
+	// private final static Log log = LogFactory
+	// .getLog(ArtifactsBrowserPage.class);
 
 	/* DEPENDENCY INJECTION */
 	private Session jcrSession;
@@ -264,23 +260,23 @@ public class ArtifactsBrowserPage extends FormPage implements DistConstants,
 			return null;
 		}
 
-		private String formatValueAsString(Value value) {
-			// TODO enhance this method
-			try {
-				String strValue;
-
-				if (value.getType() == PropertyType.BINARY)
-					strValue = "<binary>";
-				else if (value.getType() == PropertyType.DATE)
-					strValue = timeFormatter.format(value.getDate().getTime());
-				else
-					strValue = value.getString();
-				return strValue;
-			} catch (RepositoryException e) {
-				throw new ArgeoException(
-						"unexpected error while formatting value", e);
-			}
-		}
+		// private String formatValueAsString(Value value) {
+		// // TODO enhance this method
+		// try {
+		// String strValue;
+		//
+		// if (value.getType() == PropertyType.BINARY)
+		// strValue = "<binary>";
+		// else if (value.getType() == PropertyType.DATE)
+		// strValue = timeFormatter.format(value.getDate().getTime());
+		// else
+		// strValue = value.getString();
+		// return strValue;
+		// } catch (RepositoryException e) {
+		// throw new ArgeoException(
+		// "unexpected error while formatting value", e);
+		// }
+		// }
 	}
 
 	private class ArtifactTreeSelectionListener implements
