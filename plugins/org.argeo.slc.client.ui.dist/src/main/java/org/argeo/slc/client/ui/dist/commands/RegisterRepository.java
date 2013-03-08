@@ -38,7 +38,7 @@ public class RegisterRepository extends AbstractHandler implements ArgeoNames,
 		SlcNames {
 
 	public final static String ID = DistPlugin.ID + ".registerRepository";
-	public final static String DEFAULT_LABEL = "Register a repository";
+	public final static String DEFAULT_LABEL = "Register a repository...";
 	public final static String DEFAULT_ICON_PATH = "icons/addRepo.gif";
 
 	/* DEPENDENCY INJECTION */

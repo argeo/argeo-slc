@@ -30,25 +30,28 @@ import org.eclipse.ui.IPersistableElement;
 public class DistributionEditorInput implements IEditorInput, SlcNames {
 
 	private String repositoryName;
+	private String repositoryDescription;
 	private Repository repository;
 	private String workspaceName;
 	private String artifactsBase = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
 	private Credentials credentials;
 
 	public DistributionEditorInput(String repositoryName,
-			Repository repository, String workspaceName, String artifactsBase,
-			Credentials credentials) {
+			String repositoryDescription, Repository repository,
+			String workspaceName, String artifactsBase, Credentials credentials) {
 		super();
 		this.repository = repository;
 		this.repositoryName = repositoryName;
+		this.repositoryDescription = repositoryDescription;
 		this.workspaceName = workspaceName;
 		this.artifactsBase = artifactsBase;
 		this.credentials = credentials;
 	}
 
 	public DistributionEditorInput(String repositoryName,
-			Repository repository, String workspaceName, Credentials credentials) {
-		this(repositoryName, repository, workspaceName,
+			String repositoryDescription, Repository repository,
+			String workspaceName, Credentials credentials) {
+		this(repositoryName, repositoryDescription, repository, workspaceName,
 				RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, credentials);
 	}
 
@@ -104,6 +107,10 @@ public class DistributionEditorInput implements IEditorInput, SlcNames {
 
 	public String getRepositoryName() {
 		return repositoryName;
+	}
+
+	public String getRepositoryDescription() {
+		return repositoryDescription;
 	}
 
 	public Credentials getCredentials() {

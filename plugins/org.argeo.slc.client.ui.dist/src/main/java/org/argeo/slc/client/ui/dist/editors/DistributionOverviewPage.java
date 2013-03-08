@@ -209,9 +209,10 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 		header.setLayoutData(gd);
 
-		// TODO display real repository information
 		// Title: some meta information
-		Label lbl = tk.createLabel(header, "Current repository: ", SWT.NONE);
+		String desc = ((DistributionEditorInput) getEditorInput())
+				.getRepositoryDescription();
+		Label lbl = tk.createLabel(header, desc, SWT.NONE);
 
 		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 		gd.horizontalSpan = 2;

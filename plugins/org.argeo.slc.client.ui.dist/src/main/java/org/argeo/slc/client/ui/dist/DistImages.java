@@ -34,6 +34,8 @@ public class DistImages {
 	/* REPOSITORIES */
 	public final static Image IMG_REPO = DistPlugin.getImageDescriptor(
 			"icons/repo.gif").createImage();
+	public final static Image IMG_HOME_REPO = DistPlugin.getImageDescriptor(
+			"icons/homeRepo.gif").createImage();
 	public final static Image IMG_REPO_READONLY = DistPlugin
 			.getImageDescriptor("icons/repoReadOnly.gif").createImage();
 	public final static Image IMG_ADD_REPO = DistPlugin.getImageDescriptor(
@@ -43,6 +45,13 @@ public class DistImages {
 	public final static Image IMG_FETCH_REPO = DistPlugin.getImageDescriptor(
 			"icons/fetchRepo.png").createImage();
 
+	/* DISTRIBUTIONS */
+	public final static Image IMG_DISTGRP = DistPlugin.getImageDescriptor(
+			"icons/distGrp.gif").createImage();
+	public final static Image IMG_DISTGRP_READONLY = DistPlugin
+			.getImageDescriptor("icons/distGrpReadOnly.gif").createImage();
+	
+	
 	/* CHECK BOXES */
 	public final static Image CHECKED = DistPlugin.getImageDescriptor(
 			"icons/checked.gif").createImage();

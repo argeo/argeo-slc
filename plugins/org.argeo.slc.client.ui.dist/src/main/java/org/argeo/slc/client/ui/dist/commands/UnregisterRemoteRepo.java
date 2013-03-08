@@ -40,7 +40,7 @@ public class UnregisterRemoteRepo extends AbstractHandler {
 	// private static final Log log = LogFactory
 	// .getLog(UnregisterRemoteRepo.class);
 	public final static String ID = DistPlugin.ID + ".unregisterRemoteRepo";
-	public final static String DEFAULT_LABEL = "Unregister repository";
+	public final static String DEFAULT_LABEL = "Unregister this repository";
 	public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
 	public final static String PARAM_REPO_PATH = DistPlugin.ID
 			+ ".repoNodePath";

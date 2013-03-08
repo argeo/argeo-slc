@@ -15,7 +15,6 @@
  */
 package org.argeo.slc.client.ui.dist.editors;
 
-import java.net.URL;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -34,7 +33,6 @@ import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
-import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -54,15 +52,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.browser.IWebBrowser;
-import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -122,7 +115,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		createField(details, "Symbolic name", SlcNames.SLC_SYMBOLIC_NAME);
 		createField(details, "Version", SlcNames.SLC_BUNDLE_VERSION);
 		createField(details, "Group Id", SlcNames.SLC_GROUP_ID);
-		createHyperlink(details, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
+		//createHyperlink(details, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
 		createField(details, "Vendor", DistConstants.SLC_BUNDLE_VENDOR);
 
 	}
@@ -405,34 +398,34 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		return section;
 	}
 
-	private void createHyperlink(Composite parent, String label,
-			String jcrPropName) throws RepositoryException {
-		toolkit.createLabel(parent, label, SWT.NONE);
-		if (currBundle.hasProperty(jcrPropName)) {
-			final Hyperlink link = toolkit.createHyperlink(parent, currBundle
-					.getProperty(jcrPropName).getString(), SWT.NONE);
-			link.addHyperlinkListener(new AbstractHyperlinkListener() {
-				@Override
-				public void linkActivated(HyperlinkEvent e) {
-					try {
-						IWorkbenchBrowserSupport browserSupport = PlatformUI
-								.getWorkbench().getBrowserSupport();
-						IWebBrowser browser = browserSupport
-								.createBrowser(
-										IWorkbenchBrowserSupport.LOCATION_BAR
-												| IWorkbenchBrowserSupport.NAVIGATION_BAR,
-										"SLC Distribution browser",
-										"SLC Distribution browser",
-										"A tool tip");
-						browser.openURL(new URL(link.getText()));
-					} catch (Exception ex) {
-						throw new SlcException("error opening browser", ex); //$NON-NLS-1$
-					}
-				}
-			});
-		} else
-			toolkit.createLabel(parent, "", SWT.NONE);
-	}
+	// private void createHyperlink(Composite parent, String label,
+	// String jcrPropName) throws RepositoryException {
+	// toolkit.createLabel(parent, label, SWT.NONE);
+	// if (currBundle.hasProperty(jcrPropName)) {
+	// final Hyperlink link = toolkit.createHyperlink(parent, currBundle
+	// .getProperty(jcrPropName).getString(), SWT.NONE);
+	// link.addHyperlinkListener(new AbstractHyperlinkListener() {
+	// @Override
+	// public void linkActivated(HyperlinkEvent e) {
+	// try {
+	// IWorkbenchBrowserSupport browserSupport = PlatformUI
+	// .getWorkbench().getBrowserSupport();
+	// IWebBrowser browser = browserSupport
+	// .createBrowser(
+	// IWorkbenchBrowserSupport.LOCATION_BAR
+	// | IWorkbenchBrowserSupport.NAVIGATION_BAR,
+	// "SLC Distribution browser",
+	// "SLC Distribution browser",
+	// "A tool tip");
+	// browser.openURL(new URL(link.getText()));
+	// } catch (Exception ex) {
+	//						throw new SlcException("error opening browser", ex); //$NON-NLS-1$
+	// }
+	// }
+	// });
+	// } else
+	// toolkit.createLabel(parent, "", SWT.NONE);
+	// }
 
 	/** Creates a text area with corresponding maven snippet */
 	private void createMavenSnipet(Composite parent) {

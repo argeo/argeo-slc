@@ -79,7 +79,12 @@
             id="org.argeo.slc.client.ui.dist.refreshArtifactBrowser"
             name="Refresh Artifact Browser">
     	</command>
-		<command
+    	<command
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.PublishWorkspace"
+            id="org.argeo.slc.client.ui.dist.publishWorkspace"
+            name="Publish selected workspace">
+    	</command>
+    	<command
             defaultHandler="org.argeo.slc.client.ui.dist.commands.ShowSizeColumn"
             id="org.argeo.slc.client.ui.dist.showSizeColumn"
             name="Show size column">

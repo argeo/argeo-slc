@@ -71,8 +71,8 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	public final static String ID = DistPlugin.ID + ".normalizeDistribution";
 	public final static String PARAM_WORKSPACE = "workspace";
-	public final static String DEFAULT_LABEL = "Normalize";
-	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
+	public final static String DEFAULT_LABEL = "Normalize...";
+	public final static String DEFAULT_ICON_PATH = "icons/normalize.gif";
 
 	private final static Log log = LogFactory
 			.getLog(NormalizeDistribution.class);
@@ -336,7 +336,7 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 
 		protected void configureShell(Shell shell) {
 			super.configureShell(shell);
-			shell.setText("Configure Normalization");
+			shell.setText("Normalize...");
 		}
 
 		public String getVersion() {
