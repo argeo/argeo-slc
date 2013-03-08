@@ -14,25 +14,24 @@
 		</DataSource>
 	</DataSources>
 
-	<!-- File system and datastore -->
-	<FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
-		<param name="dataSourceName" value="dataSource" />
-		<param name="schema" value="default" />
-		<param name="schemaObjectPrefix" value="fs_" />
+	<!-- Repository wide -->
+	<DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
+		<param name="path" value="${rep.home}/datastore" />
+		<param name="minRecordLength" value="10240" />
+	</DataStore>
+	<FileSystem class="org.apache.jackrabbit.core.fs.local.LocalFileSystem">
+		<param name="path" value="${rep.home}/fs" />
 	</FileSystem>
-	<DataStore class="org.apache.jackrabbit.core.data.FileDataStore" />
-	<!-- <DataStore class="org.apache.jackrabbit.core.data.db.DbDataStore"> 
-		<param name="dataSourceName" value="dataSource" /> <param name="schemaObjectPrefix" 
-		value="ds_" /> </DataStore> -->
+	<SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
+		<param name="path" value="${rep.home}/indexes/repository" />
+	</SearchIndex>
 
-	<!-- Workspace templates -->
+	<!-- Workspaces -->
 	<Workspaces rootPath="${rep.home}/workspaces"
 		defaultWorkspace="main" />
 	<Workspace name="${wsp.name}">
-		<FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
-			<param name="dataSourceName" value="dataSource" />
-			<param name="schema" value="default" />
-			<param name="schemaObjectPrefix" value="${wsp.name}_fs_" />
+		<FileSystem class="org.apache.jackrabbit.core.fs.local.LocalFileSystem">
+			<param name="path" value="${wsp.home}/fs" />
 		</FileSystem>
 		<PersistenceManager
 			class="org.apache.jackrabbit.core.persistence.pool.H2PersistenceManager">
@@ -40,16 +39,14 @@
 			<param name="schemaObjectPrefix" value="${wsp.name}_pm_" />
 		</PersistenceManager>
 		<SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
-			<param name="path" value="${wsp.home}/index" />
+			<param name="path" value="${rep.home}/indexes/workspaces/${wsp.name}" />
 		</SearchIndex>
 	</Workspace>
 
 	<!-- Versioning -->
 	<Versioning rootPath="${rep.home}/version">
-		<FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
-			<param name="dataSourceName" value="dataSource" />
-			<param name="schema" value="default" />
-			<param name="schemaObjectPrefix" value="fs_ver_" />
+		<FileSystem class="org.apache.jackrabbit.core.fs.local.LocalFileSystem">
+			<param name="path" value="${rep.home}/version/fs" />
 		</FileSystem>
 		<PersistenceManager
 			class="org.apache.jackrabbit.core.persistence.pool.H2PersistenceManager">
@@ -57,13 +54,6 @@
 			<param name="schemaObjectPrefix" value="pm_ver_" />
 		</PersistenceManager>
 	</Versioning>
-
-	<!-- Indexing -->
-	<SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
-		<param name="path" value="${rep.home}/repository/index" />
-		<param name="extractorPoolSize" value="2" />
-		<param name="supportHighlighting" value="true" />
-	</SearchIndex>
 
 	<!-- Security -->
 	<Security appName="Jackrabbit">

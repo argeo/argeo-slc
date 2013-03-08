@@ -15,6 +15,7 @@
  */
 package org.argeo.slc.repo;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -24,12 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import javax.jcr.Binary;
 import javax.jcr.Credentials;
-import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.PropertyType;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
@@ -39,13 +42,13 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoMonitor;
 import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /** Sync to from software repositories */
@@ -77,6 +80,9 @@ public class RepoSync implements Runnable {
 
 	private ArgeoMonitor monitor;
 	private List<String> sourceWkspList;
+
+	// TODO fix monitor
+	private Boolean filesOnly = false;
 
 	public RepoSync() {
 		zero = new GregorianCalendar(TimeZone.getTimeZone("UTC"));
@@ -125,23 +131,6 @@ public class RepoSync implements Runnable {
 
 			// FIXME implement a cleaner way to compute job size.
 			// Compute job size
-			if (monitor != null) {
-				monitor.beginTask("Computing fetch size...", -1);
-				Long totalAmount = 0l;
-				if (sourceWkspList != null) {
-					for (String wkspName : sourceWkspList) {
-						totalAmount += getNodesNumber(wkspName);
-					}
-				} else
-					for (String sourceWorkspaceName : sourceDefaultSession
-							.getWorkspace().getAccessibleWorkspaceNames()) {
-						totalAmount += getNodesNumber(sourceWorkspaceName);
-					}
-				monitor.beginTask("Fetch", totalAmount.intValue());
-
-				if (log.isDebugEnabled())
-					log.debug("Nb of nodes to sync: " + totalAmount.intValue());
-			}
 
 			Map<String, Exception> errors = new HashMap<String, Exception>();
 			for (String sourceWorkspaceName : sourceDefaultSession
@@ -200,29 +189,49 @@ public class RepoSync implements Runnable {
 		}
 	}
 
-	private long getNodesNumber(String wkspName) {
-		if (IGNORED_WSKP_LIST.contains(wkspName))
+	private long getNodesNumber(Session session) {
+		if (IGNORED_WSKP_LIST.contains(session.getWorkspace().getName()))
 			return 0l;
 		Session sourceSession = null;
 		try {
-			sourceSession = sourceRepository.login(sourceCredentials, wkspName);
-			Query countQuery = sourceDefaultSession
+			Query countQuery = session
 					.getWorkspace()
 					.getQueryManager()
-					.createQuery("select file from [nt:base] as file",
-							Query.JCR_SQL2);
+					.createQuery(
+							"select file from ["
+									+ (true ? "nt:file" : "nt:base")
+									+ "] as file", Query.JCR_SQL2);
 			QueryResult result = countQuery.execute();
 			Long expectedCount = result.getNodes().getSize();
 			return expectedCount;
 		} catch (RepositoryException e) {
 			throw new SlcException("Unexpected error while computing "
-					+ "the size of the fetch for workspace " + wkspName, e);
+					+ "the size of the fetch for workspace "
+					+ session.getWorkspace().getName(), e);
 		} finally {
 			JcrUtils.logoutQuietly(sourceSession);
 		}
 	}
 
 	protected void syncWorkspace(Session sourceSession, Session targetSession) {
+		if (monitor != null) {
+			monitor.beginTask("Computing fetch size...", -1);
+			Long totalAmount = getNodesNumber(sourceSession);
+			// if (sourceWkspList != null) {
+			// for (String wkspName : sourceWkspList) {
+			// totalAmount += getNodesNumber(wkspName);
+			// }
+			// } else
+			// for (String sourceWorkspaceName : sourceDefaultSession
+			// .getWorkspace().getAccessibleWorkspaceNames()) {
+			// totalAmount += getNodesNumber(sourceWorkspaceName);
+			// }
+			monitor.beginTask("Fetch", totalAmount.intValue());
+
+			// if (log.isDebugEnabled())
+			// log.debug("Nb of nodes to sync: " + totalAmount.intValue());
+		}
+
 		try {
 			String msg = "Synchronizing workspace: "
 					+ sourceSession.getWorkspace().getName();
@@ -230,12 +239,18 @@ public class RepoSync implements Runnable {
 				monitor.setTaskName(msg);
 			if (log.isDebugEnabled())
 				log.debug(msg);
-			for (NodeIterator it = sourceSession.getRootNode().getNodes(); it
-					.hasNext();) {
-				Node node = it.nextNode();
-				if (node.getName().equals("jcr:system"))
-					continue;
-				syncNode(node, targetSession.getRootNode());
+
+			if (filesOnly) {
+				JcrUtils.copyFiles(sourceSession.getRootNode(),
+						targetSession.getRootNode(), true, monitor);
+			} else {
+				for (NodeIterator it = sourceSession.getRootNode().getNodes(); it
+						.hasNext();) {
+					Node node = it.nextNode();
+					if (node.getName().equals("jcr:system"))
+						continue;
+					syncNode(node, targetSession, true);
+				}
 			}
 			if (log.isDebugEnabled())
 				log.debug("Synced " + sourceSession.getWorkspace().getName());
@@ -248,102 +263,242 @@ public class RepoSync implements Runnable {
 
 	/** factorizes monitor management */
 	private void updateMonitor(String msg) {
-		if (monitor != null) {
-			monitor.worked(1);
-			monitor.subTask(msg);
-		}
+		updateMonitor(msg, false);
 	}
 
-	protected void syncNode(Node sourceNode, Node targetParentNode)
-			throws RepositoryException, SAXException {
+	protected void syncNode(Node sourceNode, Session targetSession,
+			Boolean doSave) throws RepositoryException, SAXException {
+		Boolean singleLevel = singleLevel(sourceNode);
 
-		// enable cancelation of the current fetch process
-		// FIXME insure the repository stays in a stable state
 		if (monitor != null && monitor.isCanceled()) {
 			updateMonitor("Fetched has been canceled, "
 					+ "process is terminating");
 			return;
 		}
 
-		Boolean noRecurse = noRecurse(sourceNode);
-		Calendar sourceLastModified = null;
-		if (sourceNode.isNodeType(NodeType.MIX_LAST_MODIFIED)) {
-			sourceLastModified = sourceNode.getProperty(
-					Property.JCR_LAST_MODIFIED).getDate();
-		}
-
-		if (sourceNode.getDefinition().isProtected())
-			log.warn(sourceNode + " is protected.");
-
-		if (!targetParentNode.hasNode(sourceNode.getName())) {
-			String msg = "Adding " + sourceNode.getPath();
-			updateMonitor(msg);
-			if (log.isDebugEnabled())
-				log.debug(msg);
-			ContentHandler contentHandler = targetParentNode
-					.getSession()
-					.getWorkspace()
-					.getImportContentHandler(targetParentNode.getPath(),
-							ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
-			sourceNode.getSession().exportSystemView(sourceNode.getPath(),
-					contentHandler, false, noRecurse);
+		Node targetParentNode = targetSession.getNode(sourceNode.getParent()
+				.getPath());
+		Node targetNode;
+		final Boolean isNew;
+		if (monitor != null && sourceNode.isNodeType(NodeType.NT_FILE))
+			monitor.subTask("Process " + sourceNode.getPath());
+		if (!targetSession.itemExists(sourceNode.getPath())) {
+			isNew = true;
+			// updateMonitor("Adding " + sourceNode.getPath());
+			targetNode = targetParentNode.addNode(sourceNode.getName(),
+					sourceNode.getPrimaryNodeType().getName());
 		} else {
-			Node targetNode = targetParentNode.getNode(sourceNode.getName());
-			if (sourceLastModified != null) {
-				Calendar targetLastModified = null;
-				if (targetNode.isNodeType(NodeType.MIX_LAST_MODIFIED)) {
-					targetLastModified = targetNode.getProperty(
-							Property.JCR_LAST_MODIFIED).getDate();
-				}
+			isNew = false;
+			// updateMonitor("Updating " + sourceNode.getPath());
+			targetNode = targetSession.getNode(sourceNode.getPath());
+			if (!targetNode.getPrimaryNodeType().getName()
+					.equals(sourceNode.getPrimaryNodeType().getName()))
+				targetNode.setPrimaryType(sourceNode.getPrimaryNodeType()
+						.getName());
+		}
+		for (NodeType nt : sourceNode.getMixinNodeTypes()) {
+			if (!targetNode.isNodeType(nt.getName())
+					&& targetNode.canAddMixin(nt.getName()))
+				targetNode.addMixin(nt.getName());
+		}
 
-				if (targetLastModified == null
-						|| targetLastModified.before(sourceLastModified)) {
-					String msg = "Updating " + targetNode.getPath();
-					updateMonitor(msg);
-					if (log.isDebugEnabled())
-						log.debug(msg);
-					ContentHandler contentHandler = targetParentNode
-							.getSession()
-							.getWorkspace()
-							.getImportContentHandler(
-									targetParentNode.getPath(),
-									ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
-					sourceNode.getSession().exportSystemView(
-							sourceNode.getPath(), contentHandler, false,
-							noRecurse);
-				} else {
-					String msg = "Skipped up to date " + targetNode.getPath();
-					updateMonitor(msg);
-					if (log.isDebugEnabled())
-						log.debug(msg);
-					return;
-				}
+		// export
+		// sourceNode.getSession().exportSystemView(sourceNode.getPath(),
+		// contentHandler, false, singleLevel);
+		copyProperties(sourceNode, targetSession, singleLevel);
+
+		if (singleLevel) {
+			if (targetSession.hasPendingChanges()) {
+				// updateMonitor(
+				// (isNew ? "Added " : "Updated ") + targetNode.getPath(),
+				// true);
+				if (doSave)
+					targetSession.save();
+			} else {
+				// updateMonitor("Checked " + targetNode.getPath(), false);
 			}
 		}
 
-		if (noRecurse) {
-			// recurse
-			Node targetNode = targetParentNode.getNode(sourceNode.getName());
-			if (sourceLastModified != null) {
-				Calendar zero = new GregorianCalendar();
-				zero.setTimeInMillis(0);
-				targetNode.setProperty(Property.JCR_LAST_MODIFIED, zero);
-				targetNode.getSession().save();
-			}
+		// next level
+		for (NodeIterator ni = sourceNode.getNodes(); ni.hasNext();) {
+			Node sourceChild = ni.nextNode();
+			syncNode(sourceChild, targetSession, doSave && singleLevel);
+		}
 
-			for (NodeIterator it = sourceNode.getNodes(); it.hasNext();) {
-				syncNode(it.nextNode(), targetNode);
-			}
-
-			if (sourceLastModified != null) {
-				targetNode.setProperty(Property.JCR_LAST_MODIFIED,
-						sourceLastModified);
-				targetNode.getSession().save();
+		if (!singleLevel) {
+			if (targetSession.hasPendingChanges()) {
+				if (sourceNode.isNodeType(NodeType.NT_FILE))
+					updateMonitor(
+							(isNew ? "Added " : "Updated ")
+									+ targetNode.getPath(), true);
+				if (doSave)
+					targetSession.save();
+			} else {
+				if (sourceNode.isNodeType(NodeType.NT_FILE))
+					updateMonitor("Checked " + targetNode.getPath(), false);
 			}
 		}
 	}
 
-	protected Boolean noRecurse(Node sourceNode) throws RepositoryException {
+	private void copyProperties(Node sourceNode, Session targetSession,
+			boolean singleLevel) throws RepositoryException {
+		Node targetNode = targetSession.getNode(sourceNode.getPath());
+		properties: for (PropertyIterator pi = sourceNode.getProperties(); pi
+				.hasNext();) {
+			Property p = pi.nextProperty();
+			if (p.getDefinition().isProtected())
+				continue properties;
+			if (p.getType() == PropertyType.BINARY) {
+				copyBinary(p, targetNode);
+			} else {
+
+				if (p.isMultiple()) {
+					if (!targetNode.hasProperty(p.getName())
+							|| !Arrays.equals(
+									targetNode.getProperty(p.getName())
+											.getValues(), p.getValues()))
+						targetNode.setProperty(p.getName(), p.getValues());
+				} else {
+					if (!targetNode.hasProperty(p.getName())
+							|| !targetNode.getProperty(p.getName()).getValue()
+									.equals(p.getValue()))
+						targetNode.setProperty(p.getName(), p.getValue());
+				}
+			}
+		}
+	}
+
+	private static void copyBinary(Property p, Node targetNode)
+			throws RepositoryException {
+		InputStream in = null;
+		Binary sourceBinary = null;
+		Binary targetBinary = null;
+		try {
+			sourceBinary = p.getBinary();
+			if (targetNode.hasProperty(p.getName()))
+				targetBinary = targetNode.getProperty(p.getName()).getBinary();
+
+			// optim FIXME make it more configurable
+			if (targetBinary != null)
+				if (sourceBinary.getSize() == targetBinary.getSize()) {
+					if (log.isTraceEnabled())
+						log.trace("Skipped " + p.getPath());
+					return;
+				}
+
+			in = sourceBinary.getStream();
+			targetBinary = targetNode.getSession().getValueFactory()
+					.createBinary(in);
+			targetNode.setProperty(p.getName(), targetBinary);
+		} catch (Exception e) {
+			throw new SlcException("Could not transfer " + p, e);
+		} finally {
+			IOUtils.closeQuietly(in);
+			JcrUtils.closeQuietly(sourceBinary);
+			JcrUtils.closeQuietly(targetBinary);
+		}
+	}
+
+	/** factorizes monitor management */
+	private void updateMonitor(String msg, Boolean doLog) {
+		if (doLog && log.isDebugEnabled())
+			log.debug(msg);
+		if (monitor != null) {
+			monitor.worked(1);
+			monitor.subTask(msg);
+		}
+	}
+
+	// private void syncNode_old(Node sourceNode, Node targetParentNode)
+	// throws RepositoryException, SAXException {
+	//
+	// // enable cancelation of the current fetch process
+	// // FIXME insure the repository stays in a stable state
+	// if (monitor != null && monitor.isCanceled()) {
+	// updateMonitor("Fetched has been canceled, "
+	// + "process is terminating");
+	// return;
+	// }
+	//
+	// Boolean noRecurse = singleLevel(sourceNode);
+	// Calendar sourceLastModified = null;
+	// if (sourceNode.isNodeType(NodeType.MIX_LAST_MODIFIED)) {
+	// sourceLastModified = sourceNode.getProperty(
+	// Property.JCR_LAST_MODIFIED).getDate();
+	// }
+	//
+	// if (sourceNode.getDefinition().isProtected())
+	// log.warn(sourceNode + " is protected.");
+	//
+	// if (!targetParentNode.hasNode(sourceNode.getName())) {
+	// String msg = "Adding " + sourceNode.getPath();
+	// updateMonitor(msg);
+	// if (log.isDebugEnabled())
+	// log.debug(msg);
+	// ContentHandler contentHandler = targetParentNode
+	// .getSession()
+	// .getWorkspace()
+	// .getImportContentHandler(targetParentNode.getPath(),
+	// ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
+	// sourceNode.getSession().exportSystemView(sourceNode.getPath(),
+	// contentHandler, false, noRecurse);
+	// } else {
+	// Node targetNode = targetParentNode.getNode(sourceNode.getName());
+	// if (sourceLastModified != null) {
+	// Calendar targetLastModified = null;
+	// if (targetNode.isNodeType(NodeType.MIX_LAST_MODIFIED)) {
+	// targetLastModified = targetNode.getProperty(
+	// Property.JCR_LAST_MODIFIED).getDate();
+	// }
+	//
+	// if (targetLastModified == null
+	// || targetLastModified.before(sourceLastModified)) {
+	// String msg = "Updating " + targetNode.getPath();
+	// updateMonitor(msg);
+	// if (log.isDebugEnabled())
+	// log.debug(msg);
+	// ContentHandler contentHandler = targetParentNode
+	// .getSession()
+	// .getWorkspace()
+	// .getImportContentHandler(
+	// targetParentNode.getPath(),
+	// ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
+	// sourceNode.getSession().exportSystemView(
+	// sourceNode.getPath(), contentHandler, false,
+	// noRecurse);
+	// } else {
+	// String msg = "Skipped up to date " + targetNode.getPath();
+	// updateMonitor(msg);
+	// if (log.isDebugEnabled())
+	// log.debug(msg);
+	// return;
+	// }
+	// }
+	// }
+	//
+	// if (noRecurse) {
+	// // recurse
+	// Node targetNode = targetParentNode.getNode(sourceNode.getName());
+	// if (sourceLastModified != null) {
+	// Calendar zero = new GregorianCalendar();
+	// zero.setTimeInMillis(0);
+	// targetNode.setProperty(Property.JCR_LAST_MODIFIED, zero);
+	// targetNode.getSession().save();
+	// }
+	//
+	// for (NodeIterator it = sourceNode.getNodes(); it.hasNext();) {
+	// syncNode_old(it.nextNode(), targetNode);
+	// }
+	//
+	// if (sourceLastModified != null) {
+	// targetNode.setProperty(Property.JCR_LAST_MODIFIED,
+	// sourceLastModified);
+	// targetNode.getSession().save();
+	// }
+	// }
+	// }
+
+	protected Boolean singleLevel(Node sourceNode) throws RepositoryException {
 		if (sourceNode.isNodeType(NodeType.NT_FILE))
 			return false;
 		return true;
@@ -421,4 +576,9 @@ public class RepoSync implements Runnable {
 	public void setTargetCredentials(Credentials targetCredentials) {
 		this.targetCredentials = targetCredentials;
 	}
+
+	public void setFilesOnly(Boolean filesOnly) {
+		this.filesOnly = filesOnly;
+	}
+
 }
