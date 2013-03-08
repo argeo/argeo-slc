@@ -312,12 +312,6 @@ public class RepoSync implements Runnable {
 		// }
 		// }
 
-		// next level
-		for (NodeIterator ni = sourceNode.getNodes(); ni.hasNext();) {
-			Node sourceChild = ni.nextNode();
-			syncNode(sourceChild, targetSession);
-		}
-
 		// mixin and properties
 		for (NodeType nt : sourceNode.getMixinNodeTypes()) {
 			if (!targetNode.isNodeType(nt.getName())
@@ -325,6 +319,14 @@ public class RepoSync implements Runnable {
 				targetNode.addMixin(nt.getName());
 		}
 		copyProperties(sourceNode, targetNode);
+
+		// next level
+		for (NodeIterator ni = sourceNode.getNodes(); ni.hasNext();) {
+			Node sourceChild = ni.nextNode();
+			syncNode(sourceChild, targetSession);
+		}
+
+		copyTimestamps(sourceNode, targetNode);
 
 		if (sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE)) {
 			if (targetSession.hasPendingChanges()) {
@@ -341,6 +343,35 @@ public class RepoSync implements Runnable {
 		}
 	}
 
+	private void copyTimestamps(Node sourceNode, Node targetNode)
+			throws RepositoryException {
+		if (sourceNode.getDefinition().isProtected())
+			return;
+		if (targetNode.getDefinition().isProtected())
+			return;
+		copyTimestamp(sourceNode, targetNode, Property.JCR_CREATED);
+		copyTimestamp(sourceNode, targetNode, Property.JCR_CREATED_BY);
+		copyTimestamp(sourceNode, targetNode, Property.JCR_LAST_MODIFIED);
+		copyTimestamp(sourceNode, targetNode, Property.JCR_LAST_MODIFIED_BY);
+	}
+
+	private void copyTimestamp(Node sourceNode, Node targetNode, String property)
+			throws RepositoryException {
+		if (sourceNode.hasProperty(property)) {
+			Property p = sourceNode.getProperty(property);
+			if (p.getDefinition().isProtected())
+				return;
+			if (targetNode.hasProperty(property)
+					&& targetNode
+							.getProperty(property)
+							.getValue()
+							.equals(sourceNode.getProperty(property).getValue()))
+				return;
+			targetNode.setProperty(property, sourceNode.getProperty(property)
+					.getValue());
+		}
+	}
+
 	private void copyProperties(Node sourceNode, Node targetNode)
 			throws RepositoryException {
 		properties: for (PropertyIterator pi = sourceNode.getProperties(); pi
@@ -348,6 +379,12 @@ public class RepoSync implements Runnable {
 			Property p = pi.nextProperty();
 			if (p.getDefinition().isProtected())
 				continue properties;
+			if (p.getName().equals(Property.JCR_CREATED)
+					|| p.getName().equals(Property.JCR_CREATED_BY)
+					|| p.getName().equals(Property.JCR_LAST_MODIFIED)
+					|| p.getName().equals(Property.JCR_LAST_MODIFIED_BY))
+				continue properties;
+
 			if (p.getType() == PropertyType.BINARY) {
 				copyBinary(p, targetNode);
 			} else {
