@@ -272,6 +272,9 @@ public class RepoSync implements Runnable {
 					Property.JCR_LAST_MODIFIED).getDate();
 		}
 
+		if (sourceNode.getDefinition().isProtected())
+			return;
+
 		if (!targetParentNode.hasNode(sourceNode.getName())) {
 			String msg = "Adding " + sourceNode.getPath();
 			updateMonitor(msg);
