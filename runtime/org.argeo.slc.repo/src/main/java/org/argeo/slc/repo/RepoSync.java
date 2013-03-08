@@ -129,12 +129,11 @@ public class RepoSync implements Runnable {
 						targetPassword);
 			targetDefaultSession = targetRepository.login(targetCredentials);
 
-			// FIXME implement a cleaner way to compute job size.
-			// Compute job size
-
 			Map<String, Exception> errors = new HashMap<String, Exception>();
 			for (String sourceWorkspaceName : sourceDefaultSession
 					.getWorkspace().getAccessibleWorkspaceNames()) {
+				if (monitor != null && monitor.isCanceled())
+					break;
 
 				if (sourceWkspList != null
 						&& !sourceWkspList.contains(sourceWorkspaceName))
@@ -249,7 +248,7 @@ public class RepoSync implements Runnable {
 					Node node = it.nextNode();
 					if (node.getName().equals("jcr:system"))
 						continue;
-					syncNode(node, targetSession, true);
+					syncNode(node, targetSession);
 				}
 			}
 			if (log.isDebugEnabled())
@@ -266,9 +265,9 @@ public class RepoSync implements Runnable {
 		updateMonitor(msg, false);
 	}
 
-	protected void syncNode(Node sourceNode, Session targetSession,
-			Boolean doSave) throws RepositoryException, SAXException {
-		Boolean singleLevel = singleLevel(sourceNode);
+	protected void syncNode(Node sourceNode, Session targetSession)
+			throws RepositoryException, SAXException {
+		// Boolean singleLevel = singleLevel(sourceNode);
 
 		if (monitor != null && monitor.isCanceled()) {
 			updateMonitor("Fetched has been canceled, "
@@ -279,60 +278,62 @@ public class RepoSync implements Runnable {
 		Node targetParentNode = targetSession.getNode(sourceNode.getParent()
 				.getPath());
 		Node targetNode;
-		final Boolean isNew;
-		if (monitor != null && sourceNode.isNodeType(NodeType.NT_FILE))
+		if (monitor != null
+				&& sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE))
 			monitor.subTask("Process " + sourceNode.getPath());
+
+		final Boolean isNew;
 		if (!targetSession.itemExists(sourceNode.getPath())) {
 			isNew = true;
-			// updateMonitor("Adding " + sourceNode.getPath());
 			targetNode = targetParentNode.addNode(sourceNode.getName(),
 					sourceNode.getPrimaryNodeType().getName());
 		} else {
 			isNew = false;
-			// updateMonitor("Updating " + sourceNode.getPath());
 			targetNode = targetSession.getNode(sourceNode.getPath());
 			if (!targetNode.getPrimaryNodeType().getName()
 					.equals(sourceNode.getPrimaryNodeType().getName()))
 				targetNode.setPrimaryType(sourceNode.getPrimaryNodeType()
 						.getName());
 		}
+
+		// export
+		// sourceNode.getSession().exportSystemView(sourceNode.getPath(),
+		// contentHandler, false, singleLevel);
+
+		// if (singleLevel) {
+		// if (targetSession.hasPendingChanges()) {
+		// // updateMonitor(
+		// // (isNew ? "Added " : "Updated ") + targetNode.getPath(),
+		// // true);
+		// if (doSave)
+		// targetSession.save();
+		// } else {
+		// // updateMonitor("Checked " + targetNode.getPath(), false);
+		// }
+		// }
+
+		// next level
+		for (NodeIterator ni = sourceNode.getNodes(); ni.hasNext();) {
+			Node sourceChild = ni.nextNode();
+			syncNode(sourceChild, targetSession);
+		}
+
+		// mixin and properties
 		for (NodeType nt : sourceNode.getMixinNodeTypes()) {
 			if (!targetNode.isNodeType(nt.getName())
 					&& targetNode.canAddMixin(nt.getName()))
 				targetNode.addMixin(nt.getName());
 		}
+		copyProperties(sourceNode, targetNode);
 
-		// export
-		// sourceNode.getSession().exportSystemView(sourceNode.getPath(),
-		// contentHandler, false, singleLevel);
-		copyProperties(sourceNode, targetSession, singleLevel);
-
-		if (singleLevel) {
-			if (targetSession.hasPendingChanges()) {
-				// updateMonitor(
-				// (isNew ? "Added " : "Updated ") + targetNode.getPath(),
-				// true);
-				if (doSave)
-					targetSession.save();
-			} else {
-				// updateMonitor("Checked " + targetNode.getPath(), false);
-			}
-		}
-
-		// next level
-		for (NodeIterator ni = sourceNode.getNodes(); ni.hasNext();) {
-			Node sourceChild = ni.nextNode();
-			syncNode(sourceChild, targetSession, doSave && singleLevel);
-		}
-
-		if (!singleLevel) {
+		if (sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE)) {
 			if (targetSession.hasPendingChanges()) {
 				if (sourceNode.isNodeType(NodeType.NT_FILE))
 					updateMonitor(
 							(isNew ? "Added " : "Updated ")
 									+ targetNode.getPath(), true);
-				if (doSave)
-					targetSession.save();
+				// if (doSave)
+				targetSession.save();
 			} else {
 				if (sourceNode.isNodeType(NodeType.NT_FILE))
 					updateMonitor("Checked " + targetNode.getPath(), false);
@@ -340,9 +341,8 @@ public class RepoSync implements Runnable {
 		}
 	}
 
-	private void copyProperties(Node sourceNode, Session targetSession,
-			boolean singleLevel) throws RepositoryException {
-		Node targetNode = targetSession.getNode(sourceNode.getPath());
+	private void copyProperties(Node sourceNode, Node targetNode)
+			throws RepositoryException {
 		properties: for (PropertyIterator pi = sourceNode.getProperties(); pi
 				.hasNext();) {
 			Property p = pi.nextProperty();
