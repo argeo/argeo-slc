@@ -15,6 +15,7 @@
  */
 package org.argeo.slc.client.ui.dist.commands;
 
+import javax.jcr.Credentials;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
@@ -26,10 +27,14 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
+import org.argeo.slc.client.ui.dist.views.DistributionsView;
+import org.argeo.slc.client.ui.dist.views.DistributionsView.DistributionViewSelectedElement;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 
 /**
  * Delete chosen workspace in the current repository.
@@ -39,21 +44,35 @@ public class DeleteWorkspace extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
 
 	public final static String ID = DistPlugin.ID + ".deleteWorkspace";
-	public final static String PARAM_WORKSPACE_NAME = DistPlugin.ID
-			+ ".workspaceName";
 	public final static String DEFAULT_LABEL = "Clear";
 	public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
 
-	/* DEPENDENCY INJECTION */
 	private Repository repository;
+	private Credentials credentials;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		String workspaceName = event.getParameter(PARAM_WORKSPACE_NAME);
+		String workspaceName = "";
+
+		IWorkbenchWindow iww = DistPlugin.getDefault().getWorkbench()
+				.getActiveWorkbenchWindow();
+
+		IWorkbenchPart view = iww.getActivePage().getActivePart();
+		if (view instanceof DistributionsView) {
+			DistributionViewSelectedElement dvse = ((DistributionsView) view)
+					.getSelectedElement();
+			if (dvse != null && (dvse.isWorkspace)) {
+				repository = dvse.repository;
+				credentials = dvse.credentials;
+				workspaceName = dvse.wkspName;
+			}
+		}
+
+		if (repository == null)
+			return null;
 
 		String msg = "Your are about to completely delete workspace ["
 				+ workspaceName + "].\n Do you really want to proceed ?";
-
 		boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
 				.getWorkbench().getDisplay().getActiveShell(),
 				"Confirm workspace deletion", msg);
@@ -74,7 +93,7 @@ public class DeleteWorkspace extends AbstractHandler {
 		if (result) {
 			Session session = null;
 			try {
-				session = repository.login(workspaceName);
+				session = repository.login(credentials, workspaceName);
 				// TODO use this with a newer version of Jackrabbit
 				// Workspace wsp = session.getWorkspace();
 				// wsp.deleteWorkspace(workspaceName);
@@ -99,10 +118,5 @@ public class DeleteWorkspace extends AbstractHandler {
 			}
 		}
 		return null;
-	}
-
-	/* DEPENDENCY INJECTION */
-	public void setRepository(Repository repository) {
-		this.repository = repository;
 	}
 }

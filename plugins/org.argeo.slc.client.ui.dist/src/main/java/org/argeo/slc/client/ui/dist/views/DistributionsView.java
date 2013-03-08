@@ -50,6 +50,7 @@ import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
+import org.argeo.slc.client.ui.dist.commands.DisplayRepoInformation;
 import org.argeo.slc.client.ui.dist.commands.Fetch;
 import org.argeo.slc.client.ui.dist.commands.NormalizeDistribution;
 import org.argeo.slc.client.ui.dist.commands.PublishWorkspace;
@@ -229,7 +230,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			String targetRepoPath = null;
 
 			// Build conditions depending on element type
-			boolean isDistribElem = false, isRepoElem = false;
+			boolean isDistribElem = false, isRepoElem = false, isDistribGroupElem = false;
 			boolean isHomeRepo = false, isReadOnly = true;
 
 			if (firstElement instanceof DistributionElem) {
@@ -243,13 +244,25 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				targetRepoPath = re.getRepoPath();
 				isHomeRepo = re.isHomeRepo();
 				isReadOnly = re.isReadOnly();
+			} else if (firstElement instanceof DistribGroupElem) {
+				DistribGroupElem dge = (DistribGroupElem) firstElement;
+				isReadOnly = dge.isReadOnly();
+				isDistribGroupElem = true;
 			}
+
+			// Display repo info
+			CommandHelpers.refreshCommand(menuManager, window,
+					DisplayRepoInformation.ID,
+					DisplayRepoInformation.DEFAULT_LABEL,
+					DisplayRepoInformation.DEFAULT_ICON_PATH, isRepoElem
+							&& singleElement);
 
 			// create workspace
 			CommandHelpers.refreshCommand(menuManager, window,
 					CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
-					CreateWorkspace.DEFAULT_ICON_PATH, isRepoElem
-							&& singleElement && !isReadOnly);
+					CreateWorkspace.DEFAULT_ICON_PATH,
+					(isRepoElem || isDistribGroupElem) && singleElement
+							&& !isReadOnly);
 			// publish workspace
 			CommandHelpers.refreshCommand(menuManager, window,
 					PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
@@ -276,7 +289,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			params.put(Fetch.PARAM_TARGET_REPO, targetRepoPath);
 			CommandHelpers.refreshParameterizedCommand(menuManager, window,
 					Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON_PATH,
-					!isDistribElem && singleElement && !isReadOnly, params);
+					isRepoElem && singleElement && !isReadOnly, params);
 
 			// Normalize workspace
 			params = new HashMap<String, String>();
@@ -296,12 +309,10 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 							&& singleElement, params);
 
 			// Clear Workspace
-			params = new HashMap<String, String>();
-			params.put(DeleteWorkspace.PARAM_WORKSPACE_NAME, wsName);
-			CommandHelpers.refreshParameterizedCommand(menuManager, window,
+			CommandHelpers.refreshCommand(menuManager, window,
 					DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
 					DeleteWorkspace.DEFAULT_ICON_PATH, isDistribElem
-							&& singleElement && !isReadOnly, params);
+							&& singleElement && !isReadOnly);
 
 			// // Manage workspace authorizations
 			// params = new HashMap<String, String>();
@@ -325,6 +336,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		public boolean isRepository = false;
 		public boolean isWorkspaceGroup = false;
 		public boolean isWorkspace = false;
+		public boolean isReadOnly = false;
 		public String repositoryDescription;
 		public Node repoNode;
 		public String wkspName;
@@ -349,6 +361,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		if (obj instanceof RepoElem) {
 			RepoElem re = (RepoElem) obj;
 			dvse.isRepository = true;
+			dvse.isReadOnly = re.isReadOnly();
 			dvse.repository = re.getRepository();
 			dvse.repoNode = re.getRepoNode();
 			dvse.credentials = re.getCredentials();
@@ -356,6 +369,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		} else if (obj instanceof DistribGroupElem) {
 			DistribGroupElem dge = (DistribGroupElem) obj;
 			dvse.isWorkspaceGroup = true;
+			dvse.isReadOnly = dge.isReadOnly();
 			dvse.repository = dge.getRepoElem().getRepository();
 			dvse.repoNode = dge.getRepoElem().getRepoNode();
 			dvse.credentials = dge.getRepoElem().getCredentials();
@@ -365,10 +379,11 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		} else if (obj instanceof DistributionElem) {
 			DistributionElem de = (DistributionElem) obj;
 			dvse.isWorkspace = true;
+			dvse.isReadOnly = de.isReadOnly();
 			dvse.repository = de.getRepoElem().getRepository();
 			dvse.repoNode = de.getRepoElem().getRepoNode();
 			dvse.credentials = de.getRepoElem().getCredentials();
-			dvse.wkspName = de.getName();
+			dvse.wkspName = de.getWorkspaceName();
 			dvse.repositoryDescription = getRepositoryDescription(de
 					.getRepoElem());
 		}
@@ -469,6 +484,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 	}
 
+	/** Add some view specific behaviours to the comparator */
 	private class BrowserElementComparator extends ArtifactNamesComparator {
 		@Override
 		public int category(Object element) {
@@ -478,6 +494,15 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				return 2;
 			else
 				return super.category(element);
+		}
+
+		@Override
+		public int compare(Viewer viewer, Object e1, Object e2) {
+			// reverse order for versions
+			if (e1 instanceof DistributionElem)
+				return -super.compare(viewer, e1, e2);
+			else
+				return super.compare(viewer, e1, e2);
 		}
 	}
 
@@ -671,8 +696,20 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		private final RepoElem repoElem;
 		private final Node workspaceNode;
 
+		/**
+		 * Helper to display only version when the workspace name is well
+		 * formatted
+		 */
+		private static String formatName(Node workspaceNode) {
+			String name = JcrUtils.getNameQuietly(workspaceNode);
+			if (name != null && name.lastIndexOf('-') > 0)
+				return name.substring(name.lastIndexOf('-') + 1);
+			else
+				return name;
+		}
+
 		public DistributionElem(RepoElem repoElem, Node workspaceNode) {
-			super(JcrUtils.getNameQuietly(workspaceNode));
+			super(formatName(workspaceNode));
 			this.repoElem = repoElem;
 			this.workspaceNode = workspaceNode;
 		}

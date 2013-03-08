@@ -80,9 +80,25 @@
             name="Refresh Artifact Browser">
     	</command>
     	<command
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.DisplayRepoInformation"
+            id="org.argeo.slc.client.ui.dist.displayRepoInformation"
+            name="Display repo info">
+    	</command>
+		<!-- Workspaces CRUD --> 
+    	<command
             defaultHandler="org.argeo.slc.client.ui.dist.commands.PublishWorkspace"
             id="org.argeo.slc.client.ui.dist.publishWorkspace"
             name="Publish selected workspace">
+    	</command>
+		<command
+            id="org.argeo.slc.client.ui.dist.createWorkspace"
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.CreateWorkspace"
+            name="Create Workspace">
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.deleteWorkspace"
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.DeleteWorkspace"
+            name="Delete chosen Workspace">
     	</command>
     	<command
             defaultHandler="org.argeo.slc.client.ui.dist.commands.ShowSizeColumn"
@@ -97,6 +113,8 @@
 				</class>
 			</state>
     	</command>
+
+
 
 		<!-- Command with Spring dependency injection -->
 		<command
@@ -145,20 +163,6 @@
 	
 		<!-- TO MANIPULATE WORKSPACES -->
 		<command
-            id="org.argeo.slc.client.ui.dist.createWorkspace"
-            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            name="Create Workspace">
-    	</command>
-    	<command
-            id="org.argeo.slc.client.ui.dist.deleteWorkspace"
-            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            name="Delete chosen Workspace">
-            <commandParameter
-         		id="org.argeo.slc.client.ui.dist.workspaceName"
-         		name="Workspace Name">
-  	 		</commandParameter>
-    	</command>
-    	<command
             id="org.argeo.slc.client.ui.dist.copyWorkspace"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Copy chosen Workspace">

@@ -15,6 +15,7 @@
  */
 package org.argeo.slc.client.ui.dist.commands;
 
+import javax.jcr.Credentials;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -26,11 +27,14 @@ import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
+import org.argeo.slc.client.ui.dist.views.DistributionsView;
+import org.argeo.slc.client.ui.dist.views.DistributionsView.DistributionViewSelectedElement;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 
 /**
@@ -40,55 +44,76 @@ import org.eclipse.ui.IWorkbenchWindow;
 public class CreateWorkspace extends AbstractHandler {
 	private static final Log log = LogFactory.getLog(CreateWorkspace.class);
 	public final static String ID = DistPlugin.ID + ".createWorkspace";
-	public final static String DEFAULT_LABEL = "Create new workspace";
+	public final static String DEFAULT_LABEL = "Create new workspace...";
 	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
 
 	private String slcRole = "ROLE_SLC";
 
-	/* DEPENDENCY INJECTION */
 	private Repository repository;
+	private Credentials credentials;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchWindow iww = DistPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
-		// TODO : add an input validator
-		InputDialog inputDialog = new InputDialog(iww.getShell(),
-				"New workspace", "Choose a name for the workspace to create",
-				"", null);
-		int result = inputDialog.open();
+		String prefix = "";
 
-		// Canceled by user
-		if (result == Dialog.CANCEL)
-			return null;
-
-		String workspaceName = inputDialog.getValue();
-		Session session = null;
-		try {
-			session = repository.login();
-			session.getWorkspace().createWorkspace(workspaceName);
-			JcrUtils.logoutQuietly(session);
-			// init new workspace
-			session = repository.login(workspaceName);
-			JcrUtils.addPrivilege(session, "/", slcRole, Privilege.JCR_ALL);
-			CommandHelpers.callCommand(RefreshDistributionsView.ID);
-		} catch (RepositoryException re) {
-			throw new ArgeoException(
-					"Unexpected error while creating the new workspace.", re);
-		} finally {
-			JcrUtils.logoutQuietly(session);
+		IWorkbenchPart view = iww.getActivePage().getActivePart();
+		if (view instanceof DistributionsView) {
+			DistributionViewSelectedElement dvse = ((DistributionsView) view)
+					.getSelectedElement();
+			if (dvse != null && (dvse.isRepository || dvse.isWorkspaceGroup)) {
+				repository = dvse.repository;
+				credentials = dvse.credentials;
+				prefix = dvse.wkspPrefix;
+			}
 		}
-		if (log.isTraceEnabled())
-			log.trace("WORKSPACE " + workspaceName + " CREATED");
+
+		if (repository != null) {
+			// TODO : add an input validator
+			InputDialog inputDialog = new InputDialog(iww.getShell(),
+					"Workspace name?",
+					"Choose a name for the workspace to create", prefix + "-",
+					null);
+			int result = inputDialog.open();
+
+			String workspaceName = inputDialog.getValue();
+
+			// Canceled by user
+			if (result == Dialog.CANCEL || workspaceName == null
+					|| "".equals(workspaceName.trim()))
+				return null;
+
+			Session session = null;
+			try {
+				session = repository.login(credentials);
+				session.getWorkspace().createWorkspace(workspaceName);
+				JcrUtils.logoutQuietly(session);
+				// init new workspace
+				session = repository.login(workspaceName);
+				JcrUtils.addPrivilege(session, "/", slcRole, Privilege.JCR_ALL);
+				CommandHelpers.callCommand(RefreshDistributionsView.ID);
+			} catch (RepositoryException re) {
+				throw new ArgeoException(
+						"Unexpected error while creating the new workspace.",
+						re);
+			} finally {
+				JcrUtils.logoutQuietly(session);
+			}
+			if (log.isTraceEnabled())
+				log.trace("WORKSPACE " + workspaceName + " CREATED");
+		}
 		return null;
 	}
 
-	/* DEPENDENCY INJECTION */
 	public void setRepository(Repository repository) {
 		this.repository = repository;
+	}
+
+	public void setCredentials(Credentials credentials) {
+		this.credentials = credentials;
 	}
 
 	public void setSlcRole(String slcRole) {
 		this.slcRole = slcRole;
 	}
-
 }

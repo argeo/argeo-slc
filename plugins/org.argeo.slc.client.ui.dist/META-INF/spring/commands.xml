@@ -22,10 +22,6 @@
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
 	</bean>
-	<bean id="createWorkspace" class="org.argeo.slc.client.ui.dist.commands.CreateWorkspace"
-		scope="prototype">
-		<property name="repository" ref="javaRepository" />
-	</bean>
 	<bean id="fetch" class="org.argeo.slc.client.ui.dist.commands.Fetch"
 		scope="prototype">
 		<property name="repositoryFactory" ref="repositoryFactory" />
@@ -39,10 +35,6 @@
 	</bean>
 
 	<bean id="copyWorkspace" class="org.argeo.slc.client.ui.dist.commands.CopyWorkspace"
-		scope="prototype">
-		<property name="repository" ref="javaRepository" />
-	</bean>
-	<bean id="deleteWorkspace" class="org.argeo.slc.client.ui.dist.commands.DeleteWorkspace"
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
 	</bean>
