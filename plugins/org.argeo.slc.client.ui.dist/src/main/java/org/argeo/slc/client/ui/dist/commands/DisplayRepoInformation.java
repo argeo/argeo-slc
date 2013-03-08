@@ -93,8 +93,7 @@ public class DisplayRepoInformation extends AbstractHandler {
 		@Override
 		protected void createButtonsForButtonBar(Composite parent) {
 			// No Cancel button
-			createButton(parent, IDialogConstants.OK_ID,
-					IDialogConstants.OK_LABEL, true);
+			createButton(parent, IDialogConstants.OK_ID, "OK", true);
 		}
 
 		public InformationDialog(Shell parentShell) {
