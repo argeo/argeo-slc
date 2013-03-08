@@ -273,7 +273,7 @@ public class RepoSync implements Runnable {
 		}
 
 		if (sourceNode.getDefinition().isProtected())
-			return;
+			log.warn(sourceNode + " is protected.");
 
 		if (!targetParentNode.hasNode(sourceNode.getName())) {
 			String msg = "Adding " + sourceNode.getPath();
