@@ -18,6 +18,7 @@ package org.argeo.slc.repo;
 /** SLC repository constants */
 public interface RepoConstants {
 	public final static String DEFAULT_JAVA_REPOSITORY_ALIAS = "java";
+	public final static String DEFAULT_JAVA_REPOSITORY_LABEL = "Internal Java Repository";
 
 	public final static String DEFAULT_ARTIFACTS_BASE_PATH = "/";
 	public final static String REPO_BASEPATH = "/slc:repo";
