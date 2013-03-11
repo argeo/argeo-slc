@@ -84,6 +84,7 @@ public class FetchWizard extends Wizard {
 	// This page widget
 	private DefineModelPage page;
 	private CheckboxTableViewer wkspViewer;
+	private Button filesOnlyBtn;
 
 	public FetchWizard(Keyring keyring, RepositoryFactory repositoryFactory,
 			Repository nodeRepository) {
@@ -167,6 +168,10 @@ public class FetchWizard extends Wizard {
 					wksps.add((String) obj);
 				}
 				repoSync.setSourceWkspList(wksps);
+
+				// Set the import files only option
+				repoSync.setFilesOnly(filesOnlyBtn.getSelection());
+
 				FetchJob job = new FetchJob(repoSync);
 				job.setUser(true);
 				job.schedule();
@@ -206,6 +211,13 @@ public class FetchWizard extends Wizard {
 			chooseSourceRepoCmb.setItems(getSourceRepoUris());
 			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 			chooseSourceRepoCmb.setLayoutData(gd);
+
+			// Import only files
+			filesOnlyBtn = new Button(composite, SWT.CHECK | SWT.WRAP);
+			filesOnlyBtn
+					.setText("Import only files (faster, a normalized action should be launched once done)");
+			filesOnlyBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+					false, 2, 1));
 
 			// Workspace table
 			Composite wkspTable = new Composite(composite, SWT.NONE);

@@ -20,13 +20,6 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.query.qom.Selector;
 
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.ErrorFeedback;
@@ -124,7 +117,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 
 	}
 
-	/** Import Package Section */
+	/** Export Package Section */
 	private void createExportPackageSection(Composite parent)
 			throws RepositoryException {
 
@@ -326,28 +319,49 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		viewer.setInput("Initialize");
 	}
 
-	/** Build repository request */
+	/**
+	 * Build repository request
+	 * 
+	 * FIXME Workaround for remote repository, the path to bundleartifact (for
+	 * instance
+	 * .../org/argeo/slc/org.argeo.slc.client.ui.dist/1.1.12/org.argeo.slc
+	 * .client.ui.dist-1.1.12/ ) is not valid for method factory.childNode(); it
+	 * fails parsing the "1.1.12" part, trying to cast it as a BigDecimal
+	 * 
+	 * */
 	private NodeIterator listNodes(Node parent, String nodeType, String orderBy)
 			throws RepositoryException {
-		QueryManager queryManager = currBundle.getSession().getWorkspace()
-				.getQueryManager();
-		QueryObjectModelFactory factory = queryManager.getQOMFactory();
+		// QueryManager queryManager = currBundle.getSession().getWorkspace()
+		// .getQueryManager();
+		// QueryObjectModelFactory factory = queryManager.getQOMFactory();
+		//
+		// final String nodeSelector = "nodes";
+		// Selector source = factory.selector(nodeType, nodeSelector);
+		//
+		// Constraint childOf = factory.childNode(nodeSelector,
+		// parent.getPath());
+		//
+		// Ordering order =
+		// factory.ascending(factory.propertyValue(nodeSelector,
+		// orderBy));
+		// Ordering[] orderings = { order };
+		//
+		// QueryObjectModel query = factory.createQuery(source, childOf,
+		// orderings, null);
+		//
+		// QueryResult result = query.execute();
 
-		final String nodeSelector = "nodes";
-		Selector source = factory.selector(nodeType, nodeSelector);
+		String pattern = null;
+		if (SlcTypes.SLC_EXPORTED_PACKAGE.equals(nodeType))
+			pattern = "slc:Export-Package*";
+		else if (SlcTypes.SLC_JAVA_PACKAGE.equals(nodeType))
+			pattern = "slc:uses*";
+		else if (SlcTypes.SLC_IMPORTED_PACKAGE.equals(nodeType))
+			pattern = "slc:Import-Package*";
+		else if (SlcTypes.SLC_REQUIRED_BUNDLE.equals(nodeType))
+			pattern = "slc:Require-Bundle*";
 
-		Constraint childOf = factory.childNode(nodeSelector, parent.getPath());
-
-		Ordering order = factory.ascending(factory.propertyValue(nodeSelector,
-				orderBy));
-		Ordering[] orderings = { order };
-
-		QueryObjectModel query = factory.createQuery(source, childOf,
-				orderings, null);
-
-		QueryResult result = query.execute();
-		return result.getNodes();
-
+		return parent.getNodes(pattern);
 	}
 
 	private class TableContentProvider implements IStructuredContentProvider {

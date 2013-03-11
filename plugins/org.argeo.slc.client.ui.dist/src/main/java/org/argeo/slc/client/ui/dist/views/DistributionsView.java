@@ -97,8 +97,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Browse and manipulate distributions (like merge, rename, etc.). Only support
- * one single repository currently.
+ * Browse, manipulate and manage distributions accross multiple repositories
+ * (like fetch, merge, publish, etc.).
  */
 public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames {
 	private final static Log log = LogFactory.getLog(DistributionsView.class);
@@ -118,38 +118,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		TreeViewerColumn col = new TreeViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(400);
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				if (element instanceof BrowserElem)
-					return ((BrowserElem) element).getLabel();
-				else
-					return element.toString();
-			}
-
-			@Override
-			public Image getImage(Object element) {
-				if (element instanceof BrowserElem) {
-					BrowserElem bElement = (BrowserElem) element;
-					if (bElement instanceof RepoElem) {
-						if (bElement.isHomeRepo())
-							return DistImages.IMG_HOME_REPO;
-						else if (bElement.isReadOnly)
-							return DistImages.IMG_REPO_READONLY;
-						else
-							return DistImages.IMG_REPO;
-
-					} else if (bElement instanceof DistribGroupElem) {
-						if (bElement.isReadOnly)
-							return DistImages.IMG_DISTGRP_READONLY;
-						else
-							return DistImages.IMG_DISTGRP;
-					}
-				} else if (element instanceof DistributionElem)
-					return DistImages.IMG_WKSP;
-				return null;
-			}
-		});
+		col.setLabelProvider(new DistributionLabelProvider());
 
 		final Tree tree = viewer.getTree();
 		tree.setHeaderVisible(false);
@@ -198,8 +167,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 							ArgeoTypes.ARGEO_REMOTE_REPOSITORY);
 					repoNode.setProperty(ARGEO_URI, "vm:///" + alias);
 					repoNode.addMixin(NodeType.MIX_TITLE);
-					repoNode.setProperty(Property.JCR_TITLE, "Internal "
-							+ alias + " repository");
+					repoNode.setProperty(Property.JCR_TITLE,
+							RepoConstants.DEFAULT_JAVA_REPOSITORY_LABEL);
 					nodeSession.save();
 				}
 			}
@@ -210,6 +179,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 
 		viewer.setInput(nodeRepository);
+		viewer.expandToLevel(2);
 	}
 
 	/** Programatically configure the context menu */
@@ -406,8 +376,42 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	}
 
 	/*
-	 * INTERNAL CLASSES
+	 * UI MODEL
 	 */
+	private class DistributionLabelProvider extends ColumnLabelProvider {
+		@Override
+		public String getText(Object element) {
+			if (element instanceof BrowserElem)
+				return ((BrowserElem) element).getLabel();
+			else
+				return element.toString();
+		}
+
+		@Override
+		public Image getImage(Object element) {
+			if (element instanceof BrowserElem) {
+				BrowserElem bElement = (BrowserElem) element;
+				if (bElement instanceof RepoElem) {
+					if (bElement.isHomeRepo())
+						return DistImages.IMG_HOME_REPO;
+					else if (bElement.isReadOnly())
+						return DistImages.IMG_REPO_READONLY;
+					else
+						return DistImages.IMG_REPO;
+
+				} else if (bElement instanceof DistribGroupElem) {
+					return DistImages.IMG_WKSP;
+				}
+			} else if (element instanceof DistributionElem)
+				if (((DistributionElem) element).isReadOnly())
+					return DistImages.IMG_DISTGRP_READONLY;
+				else
+					return DistImages.IMG_DISTGRP;
+
+			return null;
+		}
+	}	
+	
 	/** Content provider */
 	private class DistributionsContentProvider implements ITreeContentProvider {
 		Session nodeSession;
@@ -444,7 +448,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-
 		}
 
 		public Object[] getChildren(Object parentElement) {
@@ -674,6 +677,10 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		public String getLabel() {
 			return name;
+		}
+
+		public String toString() {
+			return getLabel();
 		}
 
 		public void dispose() {

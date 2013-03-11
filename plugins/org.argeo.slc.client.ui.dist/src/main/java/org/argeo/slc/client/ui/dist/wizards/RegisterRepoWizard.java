@@ -75,7 +75,7 @@ public class RegisterRepoWizard extends Wizard {
 	private Button saveInKeyring;
 
 	// Default values
-	private final static String DEFAULT_NAME = "Argeo public Repository";
+	private final static String DEFAULT_NAME = "Argeo Public Repository";
 	private final static String DEFAULT_URI = "http://repo.argeo.org/data/pub/java";
 	private final static String DEFAULT_USER_NAME = "anonymous";
 	private final static boolean DEFAULT_ANONYMOUS = true;
