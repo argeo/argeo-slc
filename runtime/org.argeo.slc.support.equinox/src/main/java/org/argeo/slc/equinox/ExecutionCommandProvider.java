@@ -15,87 +15,46 @@
  */
 package org.argeo.slc.equinox;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.argeo.slc.SlcException;
-import org.argeo.slc.execution.RealizedFlow;
-import org.argeo.slc.osgi.OsgiExecutionModulesManager;
+import org.argeo.slc.execution.SlcAgentCli;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 import org.eclipse.osgi.framework.console.CommandProvider;
 
 public class ExecutionCommandProvider implements CommandProvider {
-	private final static Log log = LogFactory
-			.getLog(ExecutionCommandProvider.class);
+	private SlcAgentCli agentCli;
 
-	private final static String SLC_WITH_REFRESH = "slc";
-	private final static String SLC_NO_REFRESH = "slcnr";
-
-	private OsgiExecutionModulesManager modulesManager;
-
-	private RealizedFlow lastLaunch = null;
+	private String lastProcessUuid;
 
 	public Object _slc(CommandInterpreter ci) {
-		return exec(SLC_WITH_REFRESH, ci);
-	}
-
-	public Object _slcnr(CommandInterpreter ci) {
-		return exec(SLC_NO_REFRESH, ci);
-	}
-
-	protected Object exec(String slcCommand, CommandInterpreter ci) {
-		// TODO: check version
-		String firstArg = ci.nextArgument();
-		if (firstArg == null) {
-			if (lastLaunch != null) {
-				String cmd = slcCommand + " " + lastLaunch.getModuleName()
-						+ " " + lastLaunch.getFlowDescriptor().getName();
-				if (log.isDebugEnabled())
-					log.debug("Execute again last command: " + cmd);
-				return ci.execute(cmd);
-			} else {
-				ci.execute("help");
-				throw new SlcException("Command not properly formatted");
-			}
+		List<String> args = new ArrayList<String>();
+		String arg = null;
+		while ((arg = ci.nextArgument()) != null)
+			args.add(arg);
+		if (args.size() == 0) {
+			// TODO relaunch last process
+			ci.execute("help");
+			throw new SlcException("Command not properly formatted");
 		}
-		String executionName = ci.nextArgument();
-		
 
-		launch(slcCommand, firstArg, executionName);
-		return "COMMAND COMPLETED";
-	}
-
-	protected void launch(String slcCommand, String firstArg,
-			String executionName) {
-		lastLaunch = modulesManager.findRealizedFlow(firstArg, executionName);
-		if (lastLaunch == null)
-			throw new SlcException("Cannot find launch for " + firstArg + " "
-					+ executionName);
-
-		// Execute
-		if (SLC_WITH_REFRESH.equals(slcCommand)) {
-			modulesManager.upgrade(lastLaunch.getModuleNameVersion());
-			modulesManager.execute(lastLaunch);
-		} else if (SLC_NO_REFRESH.equals(slcCommand))
-			modulesManager.execute(lastLaunch);
-		else
-			throw new SlcException("Unrecognized SLC command " + slcCommand);
+		lastProcessUuid = agentCli
+				.process(args.toArray(new String[args.size()]));
+		return lastProcessUuid;
 	}
 
 	public String getHelp() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("---SLC Execution Commands---\n");
-		buf
-				.append("\tslc (<id>|<segment of bsn>) <execution bean>"
-						+ "  - refresh the bundle, execute an execution flow (without arg, execute last)\n");
-		buf
-				.append("\tslcnr (<id>|<segment of bsn>) <execution bean>"
-						+ "  - execute an execution flow (without arg, execute last)\n");
+		buf.append("\tslc <module> <flow> [[ --arg value | --booleanArg ]]"
+				+ "  - executes an execution flow\n");
 		return buf.toString();
 
 	}
 
-	public void setModulesManager(OsgiExecutionModulesManager osgiModulesManager) {
-		this.modulesManager = osgiModulesManager;
+	public void setAgentCli(SlcAgentCli agentCli) {
+		this.agentCli = agentCli;
 	}
 
 }

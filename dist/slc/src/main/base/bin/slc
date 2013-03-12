@@ -1,5 +1,13 @@
 #!/bin/sh
 
+JAVA_CMD=java
+JAVA_OPTS="-client -Xmx128m"
+
+SLC_HOME_DIR=${HOME}/.slc/
+if [ -f $SLC_HOME_DIR/settings.sh ];then
+	. $SLC_HOME_DIR/settings.sh
+fi
+
 # Find home
 if [ -z "$ARGEO_SLC_HOME" -o ! -d "$ARGEO_SLC_HOME" ] ; then
   ## resolve links - $0 may be a link to home
@@ -23,13 +31,14 @@ if [ -z "$ARGEO_SLC_HOME" -o ! -d "$ARGEO_SLC_HOME" ] ; then
   ARGEO_SLC_HOME=`cd "$ARGEO_SLC_HOME" && pwd`
 fi
 
-echo ARGEO_SLC_HOME=$ARGEO_SLC_HOME
-
-for i in "${ARGEO_SLC_HOME}"/lib/*.jar
+for i in "${ARGEO_SLC_HOME}"/boot/*.jar
 	do
 	CLASSPATH="$CLASSPATH:$i"
 	done
 
-#echo CLASSPATH=$CLASSPATH
+ARGEO_OSGI_BUNDLES="$SLC_HOME_DIR/modules;in=**;ex=**/.git/**;ex=**/.svn/**,$ARGEO_SLC_HOME/modules;in=**;ex=**/.git/**;ex=**/.svn/**"
 
-java -cp $CLASSPATH org.argeo.slc.cli.SlcMain "$@"
+$JAVA_CMD $JAVA_OPTS \
+ "-Dargeo.osgi.bundles=$ARGEO_OSGI_BUNDLES" \
+ -cp "$CLASSPATH" \
+ org.argeo.slc.cli.SlcMain "$@"

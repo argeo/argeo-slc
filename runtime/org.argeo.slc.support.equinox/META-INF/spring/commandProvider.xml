@@ -16,26 +16,26 @@
 	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
 
-	<bean
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
-		<property name="ignoreUnresolvablePlaceholders" value="false" />
-		<property name="locations">
-			<value>osgibundle:equinox.properties</value>
-		</property>
-	</bean>
+<!-- 	<bean -->
+<!-- 		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> -->
+<!-- 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" /> -->
+<!-- 		<property name="ignoreUnresolvablePlaceholders" value="false" /> -->
+<!-- 		<property name="locations"> -->
+<!-- 			<value>osgibundle:equinox.properties</value> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
 
 	<bean id="commandProvider" class="org.argeo.slc.equinox.ExecutionCommandProvider">
-		<property name="modulesManager" ref="modulesManager" />
+		<property name="agentCli" ref="agentCli" />
 	</bean>
 
-	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager">
-		<property name="bundlesManager" ref="bundlesManager" />
-	</bean>
+<!-- 	<bean id="modulesManager" class="org.argeo.slc.osgi.OsgiExecutionModulesManager"> -->
+<!-- 		<property name="bundlesManager" ref="bundlesManager" /> -->
+<!-- 	</bean> -->
 
-	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager">
-		<property name="defaultTimeout" value="${slc.equinox.commandTimeout}" />
-		<property name="pollingPeriod" value="${slc.equinox.commandPollingPeriod}" />
-	</bean>
+<!-- 	<bean id="bundlesManager" class="org.argeo.slc.osgi.BundlesManager"> -->
+<!-- 		<property name="defaultTimeout" value="${slc.equinox.commandTimeout}" /> -->
+<!-- 		<property name="pollingPeriod" value="${slc.equinox.commandPollingPeriod}" /> -->
+<!-- 	</bean> -->
 
 </beans>

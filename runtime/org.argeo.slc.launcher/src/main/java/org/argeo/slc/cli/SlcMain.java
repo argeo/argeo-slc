@@ -16,11 +16,13 @@
 package org.argeo.slc.cli;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +39,13 @@ import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 
 /** Configures an SLC runtime and runs a process. */
-public class SlcMain implements Runnable {
+public class SlcMain implements PrivilegedAction<String> {
 	public final static String NIX = "NIX";
 	public final static String WINDOWS = "WINDOWS";
 	public final static String SOLARIS = "SOLARIS";
 
 	public final static String os;
+	public final static String slcDirName = ".slc";
 	static {
 		String osName = System.getProperty("os.name");
 		if (osName.startsWith("Win"))
@@ -53,63 +56,36 @@ public class SlcMain implements Runnable {
 			os = NIX;
 	}
 
-	// private final DateFormat dateFormat = new
-	// SimpleDateFormat("HH:mm:ss,SSS");
 	private Long timeout = 30 * 1000l;
 	private final String[] args;
-
-	// private static String bundlesToInstall = "/usr/share/osgi;in=*.jar";
-	private String bundlesToInstall = System.getProperty("user.home")
-			+ "/dev/src/slc/dep/org.argeo.slc.dep.minimal/target/dependency;in=*.jar,"
-			+ System.getProperty("user.home")
-			+ "/dev/src/slc/demo/modules;in=*;ex=pom.xml;ex=.svn";
+	private final File confDir;
+	private final File dataDir;
+	private final File modulesDir;
 
 	private final List<String> bundlesToStart = new ArrayList<String>();
 
-	public SlcMain(String[] args) {
+	public SlcMain(String[] args, File confDir, File dataDir, File modulesDir) {
 		this.args = args;
+		this.confDir = confDir;
+		this.dataDir = dataDir;
+		this.modulesDir = modulesDir;
 		bundlesToStart.add("org.springframework.osgi.extender");
 		bundlesToStart.add("org.argeo.node.repo.jackrabbit");
 		bundlesToStart.add("org.argeo.security.dao.os");
 		bundlesToStart.add("org.argeo.slc.node.jackrabbit");
 		bundlesToStart.add("org.argeo.slc.agent");
 		bundlesToStart.add("org.argeo.slc.agent.jcr");
+		if (args.length == 0)
+			bundlesToStart.add("org.argeo.slc.support.equinox");
 		// bundlesToStart.add("org.argeo.slc.agent.cli");
 	}
 
-	public void run() {
+	public String run() {
 		long begin = System.currentTimeMillis();
-		// System.out.println(dateFormat.format(new Date()));
 
-		Boolean isTransient = false;
-		File dataDir = null;
-		final LoginContext lc;
 		try {
-			// Authenticate
-			lc = new LoginContext(os);
-			lc.login();
-
-			// Prepare directories
-			String executionDir = System.getProperty("user.dir");
-			File slcDir = new File(executionDir, ".slc");
-			File tempDir = new File(System.getProperty("java.io.tmpdir"));
-
-			if (isTransient)
-				dataDir = new File(tempDir, "slc-data-"
-						+ UUID.randomUUID().toString());
-			else
-				dataDir = new File(slcDir, "data");
-			if (!dataDir.exists())
-				dataDir.mkdirs();
-
-			File confDir = new File(slcDir, "conf");
-			if (!confDir.exists())
-				confDir.mkdirs();
-
-			System.setProperty("log4j.configuration", "file:./log4j.properties");
-			if (isTransient)
-				System.setProperty("argeo.node.repo.configuration",
-						"osgibundle:repository-memory.xml");
+			info("## Date : " + new Date());
+			info("## Data : " + dataDir.getCanonicalPath());
 
 			// Start Equinox
 			ServiceLoader<FrameworkFactory> ff = ServiceLoader
@@ -119,8 +95,10 @@ public class SlcMain implements Runnable {
 			configuration.put("osgi.configuration.area",
 					confDir.getCanonicalPath());
 			configuration.put("osgi.instance.area", dataDir.getCanonicalPath());
-			// configuration.put("osgi.clean", "true");
-			// configuration.put("osgi.console", "");
+			if (args.length == 0) {
+				// configuration.put("osgi.clean", "true");
+				configuration.put("osgi.console", "");
+			}
 
 			// Spring configs currently require System properties
 			System.getProperties().putAll(configuration);
@@ -128,15 +106,22 @@ public class SlcMain implements Runnable {
 			Framework framework = frameworkFactory.newFramework(configuration);
 			framework.start();
 			BundleContext bundleContext = framework.getBundleContext();
-			// String[] osgiRuntimeArgs = { "-configuration",
-			// confDir.getCanonicalPath(), "-data",
-			// dataDir.getCanonicalPath(), "-clean" };
-			// BundleContext bundleContext = EclipseStarter.startup(
-			// osgiRuntimeArgs, null);
 
 			// OSGi bootstrap
 			OsgiBoot osgiBoot = new OsgiBoot(bundleContext);
-			osgiBoot.installUrls(osgiBoot.getBundlesUrls(bundlesToInstall));
+
+			// working copy modules
+			if (modulesDir.exists())
+				osgiBoot.installUrls(osgiBoot.getBundlesUrls(modulesDir
+						.getCanonicalPath() + ";in=*;ex=.gitignore"));
+
+			// system modules
+			if (System.getProperty(OsgiBoot.PROP_ARGEO_OSGI_BUNDLES) != null)
+				osgiBoot.installUrls(osgiBoot.getBundlesUrls(System
+						.getProperty(OsgiBoot.PROP_ARGEO_OSGI_BUNDLES)));
+			else
+				osgiBoot.installUrls(osgiBoot.getBundlesUrls(System
+						.getProperty("user.home") + "/.slc/modules/**"));
 
 			// Start runtime
 			osgiBoot.startBundles(bundlesToStart);
@@ -150,62 +135,144 @@ public class SlcMain implements Runnable {
 					throw new RuntimeException("Cannot find SLC agent CLI");
 				Thread.sleep(100);
 			}
-			final Object agentCli = bundleContext.getService(sr);
+			Object agentCli = bundleContext.getService(sr);
 
-			// ServiceTracker agentTracker = new ServiceTracker(bundleContext,
-			// "org.argeo.slc.execution.SlcAgentCli", null);
-			// agentTracker.open();
-			// final Object agentCli = agentTracker.waitForService(30 * 1000);
-			// if (agentCli == null)
-			// throw new RuntimeException("Cannot find SLC agent CLI");
-
+			// Initialization completed
 			long duration = System.currentTimeMillis() - begin;
-			System.out.println("Initialized in " + (duration / 1000) + "s "
-					+ (duration % 1000) + "ms");
-			// Run as a privileged action
-			Subject.doAs(Subject.getSubject(AccessController.getContext()),
-					new PrivilegedAction<String>() {
+			info("[[ Initialized in " + (duration / 1000) + "s "
+					+ (duration % 1000) + "ms ]]");
 
-						public String run() {
-							try {
-								Class<?>[] parameterTypes = { String[].class };
-								Method method = agentCli.getClass().getMethod(
-										"process", parameterTypes);
-								Object[] methodArgs = { args };
-								Object ret = method
-										.invoke(agentCli, methodArgs);
-								return ret.toString();
-							} catch (Exception e) {
-								throw new RuntimeException("Cannot run "
-										+ Arrays.toString(args) + " on "
-										+ agentCli, e);
-							}
-						}
+			if (args.length == 0)
+				return null;// console mode
 
-					});
+			// Subject.doAs(Subject.getSubject(AccessController.getContext()),
+			// new AgentCliCall(agentCli));
+			Class<?>[] parameterTypes = { String[].class };
+			Method method = agentCli.getClass().getMethod("process",
+					parameterTypes);
+			Object[] methodArgs = { args };
+			Object ret = method.invoke(agentCli, methodArgs);
 
 			// Shutdown OSGi runtime
 			framework.stop();
 			framework.waitForStop(60 * 1000);
 
-			System.exit(0);
+			return ret.toString();
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		} finally {
-			if (isTransient && dataDir != null && dataDir.exists()) {
-				// TODO clean up transient data dir
-			}
-
+			throw new RuntimeException("Cannot run SLC command line", e);
 		}
 	}
 
 	public static void main(String[] args) {
-		new SlcMain(args).run();
+		try {
+			// Prepare directories
+			File executionDir = new File(System.getProperty("user.dir"));
+			File slcDir;
+			Boolean isTransient = false;
+			if (isTransient) {
+				File tempDir = new File(System.getProperty("java.io.tmpdir")
+						+ "/" + System.getProperty("user.name"));
+				slcDir = new File(tempDir, "slc-"
+						+ UUID.randomUUID().toString());
+				slcDir.mkdirs();
+				System.setProperty("argeo.node.repo.configuration",
+						"osgibundle:repository-memory.xml");
+			} else {
+				slcDir = findSlcDir(executionDir);
+				if (slcDir == null) {
+					slcDir = new File(executionDir, slcDirName);
+					slcDir.mkdirs();
+				}
+			}
+
+			File dataDir = new File(slcDir, "data");
+			if (!dataDir.exists())
+				dataDir.mkdirs();
+
+			File confDir = new File(slcDir, "conf");
+			if (!confDir.exists())
+				confDir.mkdirs();
+
+			File modulesDir = new File(slcDir, "modules");
+
+			// JAAS
+			File jaasFile = new File(confDir, "jaas.config");
+			if (!jaasFile.exists())
+				copyResource("/org/argeo/slc/cli/jaas.config", jaasFile);
+			System.setProperty("java.security.auth.login.config",
+					jaasFile.getCanonicalPath());
+
+			// log4j
+			File log4jFile = new File(confDir, "log4j.properties");
+			if (!log4jFile.exists())
+				copyResource("/org/argeo/slc/cli/log4j.properties", log4jFile);
+			System.setProperty("log4j.configuration",
+					"file://" + log4jFile.getCanonicalPath());
+			// Run as a privileged action
+			LoginContext lc = new LoginContext(os);
+			lc.login();
+
+			Subject subject = Subject.getSubject(AccessController.getContext());
+			Subject.doAs(subject, new SlcMain(args, confDir, dataDir,
+					modulesDir));
+
+			if (args.length != 0)
+				System.exit(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	/**
+	 * Recursively look in parent directories for a directory named
+	 * {@link #slcDirName}
+	 */
+	protected static File findSlcDir(File currentDir) {
+		File slcDir = new File(currentDir, slcDirName);
+		if (slcDir.exists() && slcDir.isDirectory())
+			return slcDir;
+		File parentDir = currentDir.getParentFile();
+		if (parentDir == null)
+			return null;
+		return findSlcDir(parentDir);
+	}
+
+	protected static void copyResource(String resource, File targetFile) {
+		InputStream input = null;
+		FileOutputStream output = null;
+		try {
+			input = SlcMain.class.getResourceAsStream(resource);
+			output = new FileOutputStream(targetFile);
+			byte[] buf = new byte[8192];
+			while (true) {
+				int length = input.read(buf);
+				if (length < 0)
+					break;
+				output.write(buf, 0, length);
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot write " + resource + " file to "
+					+ targetFile, e);
+		} finally {
+			try {
+				input.close();
+			} catch (Exception ignore) {
+			}
+			try {
+				output.close();
+			} catch (Exception ignore) {
+			}
+		}
+
 	}
 
 	protected static void info(Object msg) {
 		System.out.println(msg);
+	}
+
+	protected static void err(Object msg) {
+		System.err.println(msg);
 	}
 
 	protected static void debug(Object msg) {
@@ -213,3 +280,41 @@ public class SlcMain implements Runnable {
 	}
 
 }
+
+// private String bundlesToInstall = System.getProperty("user.home")
+// +
+// "/dev/src/slc/dep/org.argeo.slc.dep.minimal/target/dependency;in=*.jar,"
+// + System.getProperty("user.home")
+// + "/dev/src/slc/demo/modules;in=*;ex=pom.xml;ex=.svn";
+
+// ServiceTracker agentTracker = new ServiceTracker(bundleContext,
+// "org.argeo.slc.execution.SlcAgentCli", null);
+// agentTracker.open();
+// final Object agentCli = agentTracker.waitForService(30 * 1000);
+// if (agentCli == null)
+// throw new RuntimeException("Cannot find SLC agent CLI");
+
+// protected class AgentCliCall implements PrivilegedAction<String> {
+// private final Object agentCli;
+//
+// public AgentCliCall(Object agentCli) {
+// super();
+// this.agentCli = agentCli;
+// }
+//
+// public String run() {
+// try {
+// Class<?>[] parameterTypes = { String[].class };
+// Method method = agentCli.getClass().getMethod("process",
+// parameterTypes);
+// Object[] methodArgs = { args };
+// Object ret = method.invoke(agentCli, methodArgs);
+// return ret.toString();
+// } catch (Exception e) {
+// throw new RuntimeException("Cannot run "
+// + Arrays.toString(args) + " on " + agentCli, e);
+// }
+// }
+//
+// }
+

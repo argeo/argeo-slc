@@ -1,30 +1,22 @@
 #!/bin/sh
 
-OSGI_INSTALL_AREA=/usr/share/osgi/boot
-OSGI_FRAMEWORK=$OSGI_INSTALL_AREA/org.eclipse.osgi.jar
+JAVA_CMD=/usr/lib/jvm/java-1.6.0/bin/java
+JAVA_OPTS="-client -Xmx256m"
 
-CL_DIR=~/.slc/cl
-DATA_DIR=$CL_DIR/data
-CONF_DIR=$CL_DIR/conf
-
-MODULE=$1
-FLOW=$2
-
-if [ ! -f $CONF_DIR/config.ini ];
-then
-	mkdir -p $CONF_DIR
-    cp /etc/slc-cl/config.ini $CONF_DIR
+SLC_HOME_DIR=${HOME}/.slc/
+if [ -f $SLC_HOME_DIR/settings.sh ];then
+	. $SLC_HOME_DIR/settings.sh
 fi
 
-# WORKAROUND: Clean up workspace directories
-rmdir $DATA_DIR/node/workspaces/*
+OSGI_INSTALL_AREA=/usr/share/osgi/boot
+OSGI_FRAMEWORK=$OSGI_INSTALL_AREA/org.eclipse.osgi.jar
+OSGI_BOOT=$OSGI_INSTALL_AREA/org.argeo.osgi.boot.jar
+SLC_LAUNCHER=$OSGI_INSTALL_AREA/org.argeo.slc.launcher.jar
 
-java \
- -Dslc.launch.module="$MODULE" \
- -Dslc.launch.flow="$FLOW" \
- -jar $OSGI_FRAMEWORK \
- -configuration $CONF_DIR \
- -data $DATA_DIR \
- -console \
- -clean
+ARGEO_OSGI_BUNDLES="$SLC_HOME_DIR/modules;in=**;ex=**/.git/**;ex=**/.svn/**,/etc/slc-cl/modules;in=**;ex=**/.git/**;ex=**/.svn/**,/usr/share/osgi;in=*.jar"
+
+$JAVA_CMD $JAVA_OPTS \
+ "-Dargeo.osgi.bundle=$ARGEO_OSGI_BUNDLES" \
+ -cp $OSGI_FRAMEWORK:$OSGI_BOOT \
+ -jar $SLC_LAUNCHER "$@"
  

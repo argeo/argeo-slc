@@ -83,13 +83,6 @@
 			<artifactId>org.springframework.osgi.core</artifactId>
 		</dependency>
 
-		<!-- Client -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.launcher</artifactId>
-			<version>1.1.12-SNAPSHOT</version>
-		</dependency>
-
 		<!-- OXM -->
 		<dependency>
 			<groupId>org.argeo.tp</groupId>

@@ -96,16 +96,7 @@
 			<artifactId>org.argeo.slc.server.repo.webapp</artifactId>
 			<version>1.1.12-SNAPSHOT</version>
 		</dependency>
-
-		<!-- Launcher -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.launcher</artifactId>
-			<version>1.1.12-SNAPSHOT</version>
-			<type>tar.gz</type>
-			<classifier>base</classifier>
-		</dependency>
-
+		
 		<!-- Node -->
 		<dependency>
 			<groupId>org.argeo.commons.security</groupId>

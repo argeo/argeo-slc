@@ -14,6 +14,10 @@
        http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd
        http://www.springframework.org/schema/beans   
        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!-- REFERENCES -->
+	<reference id="agentCli" interface="org.argeo.slc.execution.SlcAgentCli" />
+
 	<!-- SERVICES -->
 	<service interface="org.eclipse.osgi.framework.console.CommandProvider"
 		ref="commandProvider" />
