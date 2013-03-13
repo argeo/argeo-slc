@@ -151,10 +151,13 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		try {
 			nodeSession = nodeRepository.login();
 
+			Node homeNode = UserJcrUtils.getUserHome(nodeSession);
+			if (homeNode == null) // anonymous
+				throw new SlcException("User must be authenticated.");
+
 			// make sure base directory is available
-			Node repos = JcrUtils.mkdirs(nodeSession,
-					UserJcrUtils.getUserHome(nodeSession).getPath()
-							+ RepoConstants.REPOSITORIES_BASE_PATH);
+			Node repos = JcrUtils.mkdirs(nodeSession, homeNode.getPath()
+					+ RepoConstants.REPOSITORIES_BASE_PATH);
 			nodeSession.save();
 
 			// register default local java repository
@@ -410,8 +413,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 			return null;
 		}
-	}	
-	
+	}
+
 	/** Content provider */
 	private class DistributionsContentProvider implements ITreeContentProvider {
 		Session nodeSession;
