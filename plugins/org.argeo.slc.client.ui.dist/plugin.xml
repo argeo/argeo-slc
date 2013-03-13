@@ -4,18 +4,18 @@
  	<!-- Perspectives --> 
    <extension
          point="org.eclipse.ui.perspectives">
-      <perspective
+		<perspective
             name="SLC Repo"
             class="org.argeo.slc.client.ui.dist.DistributionPerspective"
             id="org.argeo.slc.client.ui.dist.distributionPerspective"
-            icon="icons/distribution_perspective.gif">
-      </perspective>
-      <perspective
+            icon="icons/repo.gif">
+		</perspective>
+		<perspective
             name="SLC Distribution"
             class="org.argeo.slc.client.ui.dist.AnonymousDistributionPerspective"
             id="org.argeo.slc.client.ui.dist.anonymousDistributionPerspective"
             icon="icons/distribution_perspective.gif">
-      </perspective>
+		</perspective>
    </extension>
    <!-- Views -->
    <extension

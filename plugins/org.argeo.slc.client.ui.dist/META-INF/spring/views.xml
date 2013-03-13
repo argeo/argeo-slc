@@ -45,8 +45,21 @@
 
 	<bean id="distributionsView" class="org.argeo.slc.client.ui.dist.views.DistributionsView"
 		scope="prototype">
-		<property name="repositoryFactory" ref="repositoryFactory" />
+		<!-- <property name="repositoryFactory" ref="repositoryFactory" /> -->
+		<!-- <property name="keyring" ref="keyring" /> -->
 		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="treeContentProvider" ref="distTreeContentProvider" />
+	</bean>
+
+	<!-- Corresponding content provider -->
+	<bean id="distTreeContentProvider"
+		class="org.argeo.slc.client.ui.dist.providers.DistTreeContentProvider"
+		scope="prototype">
+		<property name="repositoryFactory" ref="repositoryFactory" />
 		<property name="keyring" ref="keyring" />
 	</bean>
+
+	<!-- <bean id="distributionPerspective" class="org.argeo.slc.client.ui.dist.DistributionPerspective" 
+		scope="prototype"> <property name="repositoryFactory" ref="repositoryFactory" 
+		/> <property name="nodeRepository" ref="nodeRepository" /> </bean> -->
 </beans>

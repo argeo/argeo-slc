@@ -15,21 +15,14 @@
  */
 package org.argeo.slc.client.ui.dist.views;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Credentials;
-import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
@@ -39,13 +32,8 @@ import org.argeo.ArgeoMonitor;
 import org.argeo.eclipse.ui.EclipseArgeoMonitor;
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.TreeParent;
-import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.ArgeoNames;
-import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.jcr.UserJcrUtils;
-import org.argeo.slc.SlcException;
-import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
@@ -58,12 +46,15 @@ import org.argeo.slc.client.ui.dist.commands.RegisterRepository;
 import org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditorInput;
+import org.argeo.slc.client.ui.dist.model.DistParentElem;
+import org.argeo.slc.client.ui.dist.model.GroupElem;
+import org.argeo.slc.client.ui.dist.model.RepoElem;
+import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
+import org.argeo.slc.client.ui.dist.providers.DistTreeContentProvider;
+import org.argeo.slc.client.ui.dist.providers.DistTreeLabelProvider;
 import org.argeo.slc.client.ui.dist.utils.ArtifactNamesComparator;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.repo.RepoConstants;
-import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -72,11 +63,9 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -88,7 +77,6 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.dnd.TransferData;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
@@ -104,9 +92,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	private final static Log log = LogFactory.getLog(DistributionsView.class);
 	public final static String ID = DistPlugin.ID + ".distributionsView";
 
+	/* DEPENDENCY INJECTION */
 	private Repository nodeRepository;
-	private RepositoryFactory repositoryFactory;
-	private Keyring keyring;
+	private DistTreeContentProvider treeContentProvider;
 
 	private TreeViewer viewer;
 
@@ -118,13 +106,14 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		TreeViewerColumn col = new TreeViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(400);
-		col.setLabelProvider(new DistributionLabelProvider());
+		col.setLabelProvider(new DistTreeLabelProvider());
 
 		final Tree tree = viewer.getTree();
 		tree.setHeaderVisible(false);
 		tree.setLinesVisible(false);
 
-		viewer.setContentProvider(new DistributionsContentProvider());
+		// viewer.setContentProvider(new DistTreeContentProvider());
+		viewer.setContentProvider(treeContentProvider);
 		viewer.addDoubleClickListener(new DistributionsDCL());
 		viewer.setComparator(new BrowserElementComparator());
 
@@ -147,42 +136,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		viewer.getTree().setMenu(menu);
 		getSite().registerContextMenu(menuManager, viewer);
 
-		Session nodeSession = null;
-		try {
-			nodeSession = nodeRepository.login();
-
-			Node homeNode = UserJcrUtils.getUserHome(nodeSession);
-			if (homeNode == null) // anonymous
-				throw new SlcException("User must be authenticated.");
-
-			// make sure base directory is available
-			Node repos = JcrUtils.mkdirs(nodeSession, homeNode.getPath()
-					+ RepoConstants.REPOSITORIES_BASE_PATH);
-			nodeSession.save();
-
-			// register default local java repository
-			String alias = RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS;
-			Repository javaRepository = ArgeoJcrUtils.getRepositoryByAlias(
-					repositoryFactory, alias);
-			if (javaRepository != null) {
-				if (!repos.hasNode(alias)) {
-					Node repoNode = repos.addNode(alias,
-							ArgeoTypes.ARGEO_REMOTE_REPOSITORY);
-					repoNode.setProperty(ARGEO_URI, "vm:///" + alias);
-					repoNode.addMixin(NodeType.MIX_TITLE);
-					repoNode.setProperty(Property.JCR_TITLE,
-							RepoConstants.DEFAULT_JAVA_REPOSITORY_LABEL);
-					nodeSession.save();
-				}
-			}
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot register repository", e);
-		} finally {
-			JcrUtils.logoutQuietly(nodeSession);
-		}
-
-		viewer.setInput(nodeRepository);
-		viewer.expandToLevel(2);
+		// Initialize
+		refresh();
 	}
 
 	/** Programatically configure the context menu */
@@ -198,25 +153,25 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				.getFirstElement();
 
 		if (firstElement instanceof TreeParent
-				|| firstElement instanceof BrowserElem) {
+				|| firstElement instanceof DistParentElem) {
 			String targetRepoPath = null;
 
 			// Build conditions depending on element type
 			boolean isDistribElem = false, isRepoElem = false, isDistribGroupElem = false;
 			boolean isHomeRepo = false, isReadOnly = true;
 
-			if (firstElement instanceof DistributionElem) {
-				DistributionElem de = (DistributionElem) firstElement;
+			if (firstElement instanceof WorkspaceElem) {
+				WorkspaceElem de = (WorkspaceElem) firstElement;
 				isDistribElem = true;
 				isReadOnly = de.isReadOnly();
 			} else if (firstElement instanceof RepoElem) {
 				RepoElem re = (RepoElem) firstElement;
 				isRepoElem = true;
 				targetRepoPath = re.getRepoPath();
-				isHomeRepo = re.isHomeRepo();
+				isHomeRepo = re.inHome();
 				isReadOnly = re.isReadOnly();
-			} else if (firstElement instanceof DistribGroupElem) {
-				DistribGroupElem dge = (DistribGroupElem) firstElement;
+			} else if (firstElement instanceof GroupElem) {
+				GroupElem dge = (GroupElem) firstElement;
 				isReadOnly = dge.isReadOnly();
 				isDistribGroupElem = true;
 			}
@@ -333,8 +288,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			dvse.repoNode = re.getRepoNode();
 			dvse.credentials = re.getCredentials();
 			dvse.repositoryDescription = getRepositoryDescription(re);
-		} else if (obj instanceof DistribGroupElem) {
-			DistribGroupElem dge = (DistribGroupElem) obj;
+		} else if (obj instanceof GroupElem) {
+			GroupElem dge = (GroupElem) obj;
 			dvse.isWorkspaceGroup = true;
 			dvse.isReadOnly = dge.isReadOnly();
 			dvse.repository = dge.getRepoElem().getRepository();
@@ -343,8 +298,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			dvse.wkspPrefix = dge.getLabel();
 			dvse.repositoryDescription = getRepositoryDescription(dge
 					.getRepoElem());
-		} else if (obj instanceof DistributionElem) {
-			DistributionElem de = (DistributionElem) obj;
+		} else if (obj instanceof WorkspaceElem) {
+			WorkspaceElem de = (WorkspaceElem) obj;
 			dvse.isWorkspace = true;
 			dvse.isReadOnly = de.isReadOnly();
 			dvse.repository = de.getRepoElem().getRepository();
@@ -375,113 +330,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	 * Force refresh of the whole view
 	 */
 	public void refresh() {
-		viewer.setContentProvider(new DistributionsContentProvider());
-	}
-
-	/*
-	 * UI MODEL
-	 */
-	private class DistributionLabelProvider extends ColumnLabelProvider {
-		@Override
-		public String getText(Object element) {
-			if (element instanceof BrowserElem)
-				return ((BrowserElem) element).getLabel();
-			else
-				return element.toString();
-		}
-
-		@Override
-		public Image getImage(Object element) {
-			if (element instanceof BrowserElem) {
-				BrowserElem bElement = (BrowserElem) element;
-				if (bElement instanceof RepoElem) {
-					if (bElement.isHomeRepo())
-						return DistImages.IMG_HOME_REPO;
-					else if (bElement.isReadOnly())
-						return DistImages.IMG_REPO_READONLY;
-					else
-						return DistImages.IMG_REPO;
-
-				} else if (bElement instanceof DistribGroupElem) {
-					return DistImages.IMG_WKSP;
-				}
-			} else if (element instanceof DistributionElem)
-				if (((DistributionElem) element).isReadOnly())
-					return DistImages.IMG_DISTGRP_READONLY;
-				else
-					return DistImages.IMG_DISTGRP;
-
-			return null;
-		}
-	}
-
-	/** Content provider */
-	private class DistributionsContentProvider implements ITreeContentProvider {
-		Session nodeSession;
-		List<RepoElem> repositories = new ArrayList<RepoElem>();
-
-		public Object[] getElements(Object input) {
-			Repository nodeRepository = (Repository) input;
-			try {
-				if (nodeSession != null)
-					dispose();
-				nodeSession = nodeRepository.login();
-
-				String reposPath = UserJcrUtils.getUserHome(nodeSession)
-						.getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
-				NodeIterator repos = nodeSession.getNode(reposPath).getNodes();
-				while (repos.hasNext()) {
-					Node repoNode = repos.nextNode();
-					if (repoNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
-						if (RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS
-								.equals(repoNode.getName()))
-							repositories
-									.add(new RepoElem(repoNode, true, false));
-						else if (repoNode.hasNode(ARGEO_PASSWORD))
-							repositories.add(new RepoElem(repoNode));
-						else
-							repositories
-									.add(new RepoElem(repoNode, false, true));
-					}
-				}
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot get base elements", e);
-			}
-			return repositories.toArray();
-		}
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		}
-
-		public Object[] getChildren(Object parentElement) {
-			if (parentElement instanceof BrowserElem) {
-				return ((BrowserElem) parentElement).getChildren();
-			} else if (parentElement instanceof DistributionElem) {
-				return ((DistributionElem) parentElement).getChildren();
-			}
-			return null;
-		}
-
-		public Object getParent(Object element) {
-			// TODO register repo elem in distribution elem?
-			return null;
-		}
-
-		public boolean hasChildren(Object element) {
-			if (element instanceof BrowserElem) {
-				return true;
-			} else if (element instanceof DistributionElem) {
-				return false;
-			}
-			return false;
-		}
-
-		public void dispose() {
-			for (RepoElem repoElem : repositories)
-				repoElem.dispose();
-			repositories = new ArrayList<RepoElem>();
-			JcrUtils.logoutQuietly(nodeSession);
-		}
+		viewer.setInput(nodeRepository);
+		viewer.expandToLevel(2);
 	}
 
 	/** Add some view specific behaviours to the comparator */
@@ -489,8 +339,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		@Override
 		public int category(Object element) {
 			// Home repository always first
-			if (element instanceof RepoElem
-					&& ((RepoElem) element).isHomeRepo())
+			if (element instanceof RepoElem && ((RepoElem) element).inHome())
 				return 2;
 			else
 				return super.category(element);
@@ -499,7 +348,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
 			// reverse order for versions
-			if (e1 instanceof DistributionElem)
+			if (e1 instanceof WorkspaceElem)
 				return -super.compare(viewer, e1, e2);
 			else
 				return super.compare(viewer, e1, e2);
@@ -507,264 +356,16 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	}
 
 	/** Abstract class to simplify UI conditions build */
-	abstract class BrowserElem {
-		private boolean isHomeRepo = false;
-		private boolean isReadOnly = false;
-
-		public BrowserElem(boolean isHomeRepo, boolean isReadOnly) {
-			this.isHomeRepo = isHomeRepo;
-			this.isReadOnly = isReadOnly;
-		}
-
-		public BrowserElem() {
-		}
-
-		public abstract String getLabel();
-
-		public abstract Object[] getChildren();
-
-		public void dispose() {
-		}
-
-		public boolean isHomeRepo() {
-			return isHomeRepo;
-		}
-
-		public boolean isReadOnly() {
-			return isReadOnly;
-		}
-	}
 
 	/** A software repository */
-	private class RepoElem extends BrowserElem {
-		private Node repoNode;
-		private Repository repository;
-		private Credentials credentials;
-
-		public RepoElem(Node repoNode, boolean isHomeRepo, boolean isReadOnly) {
-			super(isHomeRepo, isReadOnly);
-			this.repoNode = repoNode;
-		}
-
-		public RepoElem(Node repoNode) {
-			this.repoNode = repoNode;
-		}
-
-		/** Lazily connects to repository */
-		protected void connect() {
-			if (repository != null)
-				return;
-			repository = RepoUtils.getRepository(repositoryFactory, keyring,
-					repoNode);
-			credentials = RepoUtils.getRepositoryCredentials(keyring, repoNode);
-		}
-
-		public String getLabel() {
-			try {
-				if (repoNode.isNodeType(NodeType.MIX_TITLE)) {
-					return repoNode.getProperty(Property.JCR_TITLE).getString();
-				} else {
-					return repoNode.getName();
-				}
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot read label of " + repoNode, e);
-			}
-		}
-
-		public String toString() {
-			return repoNode.toString();
-		}
-
-		public Object[] getChildren() {
-			connect();
-			Session session = null;
-			try {
-				session = repository.login(credentials);
-				String[] workspaceNames = session.getWorkspace()
-						.getAccessibleWorkspaceNames();
-				// List<DistributionElem> distributionElems = new
-				// ArrayList<DistributionElem>();
-				Map<String, DistribGroupElem> children = new HashMap<String, DistributionsView.DistribGroupElem>();
-				for (String workspaceName : workspaceNames) {
-					// filter technical workspaces
-					// FIXME: rely on a more robust rule than just wksp name
-					if (workspaceName.lastIndexOf('-') > 0) {
-						String prefix = workspaceName.substring(0,
-								workspaceName.lastIndexOf('-'));
-						if (!repoNode.hasNode(workspaceName))
-							repoNode.addNode(workspaceName);
-						repoNode.getSession().save();
-						if (!children.containsKey(prefix)) {
-							children.put(prefix, new DistribGroupElem(
-									RepoElem.this, prefix));
-						}
-						// FIXME remove deleted workspaces
-					}
-				}
-				return children.values().toArray();
-			} catch (RepositoryException e) {
-				throw new SlcException(
-						"Cannot list workspaces for " + repoNode, e);
-			} finally {
-				JcrUtils.logoutQuietly(session);
-			}
-		}
-
-		public String getRepoPath() {
-			try {
-				return repoNode.getPath();
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot get path for " + repoNode, e);
-			}
-		}
-
-		public Repository getRepository() {
-			connect();
-			return repository;
-		}
-
-		public Credentials getCredentials() {
-			return credentials;
-		}
-
-		public Node getRepoNode() {
-			return repoNode;
-		}
-
-	}
-
-	/**
-	 * Abstracts a group of distribution, that is a bunch of workspaces with
-	 * same prefix.
-	 */
-	private class DistribGroupElem extends BrowserElem {
-		private RepoElem repoElem;
-		private String name;
-
-		public DistribGroupElem(RepoElem repoElem, String prefix) {
-			super(repoElem.isHomeRepo(), repoElem.isReadOnly());
-			this.repoElem = repoElem;
-			this.name = prefix;
-		}
-
-		public Object[] getChildren() {
-			repoElem.connect();
-			Session session = null;
-			try {
-				Repository repository = repoElem.getRepository();
-				Node repoNode = repoElem.getRepoNode();
-				session = repository.login(repoElem.getCredentials());
-
-				String[] workspaceNames = session.getWorkspace()
-						.getAccessibleWorkspaceNames();
-				List<DistributionElem> distributionElems = new ArrayList<DistributionElem>();
-				for (String workspaceName : workspaceNames) {
-					// filter technical workspaces
-					if (workspaceName.startsWith(name)) {
-						Node workspaceNode = repoNode.hasNode(workspaceName) ? repoNode
-								.getNode(workspaceName) : repoNode
-								.addNode(workspaceName);
-						distributionElems.add(new DistributionElem(repoElem,
-								workspaceNode));
-						// FIXME remove deleted workspaces
-					}
-				}
-				return distributionElems.toArray();
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot list workspaces for prefix "
-						+ name, e);
-			} finally {
-				JcrUtils.logoutQuietly(session);
-			}
-		}
-
-		public String getLabel() {
-			return name;
-		}
-
-		public String toString() {
-			return getLabel();
-		}
-
-		public void dispose() {
-		}
-
-		public RepoElem getRepoElem() {
-			return repoElem;
-		}
-
-	}
-
-	/** Abstracts a distribution, that is a workspace */
-	private static class DistributionElem extends TreeParent {
-		private final RepoElem repoElem;
-		private final Node workspaceNode;
-
-		/**
-		 * Helper to display only version when the workspace name is well
-		 * formatted
-		 */
-		private static String formatName(Node workspaceNode) {
-			String name = JcrUtils.getNameQuietly(workspaceNode);
-			if (name != null && name.lastIndexOf('-') > 0)
-				return name.substring(name.lastIndexOf('-') + 1);
-			else
-				return name;
-		}
-
-		public DistributionElem(RepoElem repoElem, Node workspaceNode) {
-			super(formatName(workspaceNode));
-			this.repoElem = repoElem;
-			this.workspaceNode = workspaceNode;
-		}
-
-		public Node getWorkspaceNode() {
-			return workspaceNode;
-		}
-
-		public String getWorkspaceName() {
-			return JcrUtils.getNameQuietly(workspaceNode);
-		}
-
-		public String getWorkspacePath() {
-			try {
-				return workspaceNode.getPath();
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot get or add workspace path "
-						+ getWorkspaceName(), e);
-			}
-		}
-
-		public String getRepoPath() {
-			try {
-				return workspaceNode.getParent().getPath();
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot get or add workspace path "
-						+ getWorkspaceName(), e);
-			}
-		}
-
-		public RepoElem getRepoElem() {
-			return repoElem;
-		}
-
-		public Credentials getCredentials() {
-			return repoElem.getCredentials();
-		}
-
-		public boolean isReadOnly() {
-			return repoElem.isReadOnly();
-		}
-	}
 
 	/** Listens to drag */
 	class ViewDragListener extends DragSourceAdapter {
 		public void dragSetData(DragSourceEvent event) {
 			IStructuredSelection selection = (IStructuredSelection) viewer
 					.getSelection();
-			if (selection.getFirstElement() instanceof DistributionElem) {
-				DistributionElem de = (DistributionElem) selection
-						.getFirstElement();
+			if (selection.getFirstElement() instanceof WorkspaceElem) {
+				WorkspaceElem de = (WorkspaceElem) selection.getFirstElement();
 				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
 					event.data = de.getWorkspacePath();
 				}
@@ -781,76 +382,79 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		@Override
 		public boolean performDrop(Object data) {
-			DistributionElem sourceDist = (DistributionElem) getSelectedObject();
+			WorkspaceElem sourceDist = (WorkspaceElem) getSelectedObject();
 			RepoElem targetRepo = (RepoElem) getCurrentTarget();
 
 			Boolean ok = MessageDialog.openConfirm(getSite().getShell(),
-					"Confirm distribution merge", "Do you want to merge "
-							+ sourceDist.getWorkspaceName() + " (from repo "
+					"FIXME: BROKEN BY REFACTORING--Confirm distribution merge",
+					"Do you want to merge " + sourceDist.getWorkspaceName()
+							+ " (from repo "
 							+ sourceDist.getRepoElem().getLabel()
 							+ ") to repo " + targetRepo.getLabel() + "?");
 			if (!ok)
 				return false;
 
-			try {
-				String sourceWorkspace = sourceDist.getWorkspaceName();
-				Repository sourceRepository = RepoUtils.getRepository(
-						repositoryFactory, keyring, sourceDist
-								.getWorkspaceNode().getParent());
-				Credentials sourceCredentials = RepoUtils
-						.getRepositoryCredentials(keyring, sourceDist
-								.getWorkspaceNode().getParent());
-
-				String targetWorkspace = sourceWorkspace;
-				Repository targetRepository = RepoUtils.getRepository(
-						repositoryFactory, keyring, targetRepo.getRepoNode());
-				Credentials targetCredentials = RepoUtils
-						.getRepositoryCredentials(keyring,
-								targetRepo.getRepoNode());
-
-				// Open sessions here since the background thread
-				// won't necessarily be authenticated.
-				// Job should close the sessions.
-				Session sourceSession = sourceRepository.login(
-						sourceCredentials, sourceWorkspace);
-				Session targetSession;
-				try {
-					targetSession = targetRepository.login(targetCredentials,
-							targetWorkspace);
-				} catch (NoSuchWorkspaceException e) {
-					Session defaultSession = targetRepository
-							.login(targetCredentials);
-					try {
-						defaultSession.getWorkspace().createWorkspace(
-								targetWorkspace);
-					} catch (Exception e1) {
-						throw new SlcException("Cannot create new workspace "
-								+ targetWorkspace, e);
-					} finally {
-						JcrUtils.logoutQuietly(defaultSession);
-					}
-					targetSession = targetRepository.login(targetCredentials,
-							targetWorkspace);
-				}
-
-				Job workspaceMergeJob = new WorkspaceMergeJob(sourceSession,
-						targetSession);
-				workspaceMergeJob.setUser(true);
-				workspaceMergeJob.schedule();
-				return true;
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot process drop from " + sourceDist
-						+ " to " + targetRepo, e);
-			}
+			// TODO uncomment that
+			return true;
+			// try {
+			// String sourceWorkspace = sourceDist.getWorkspaceName();
+			// Repository sourceRepository = RepoUtils.getRepository(
+			// repositoryFactory, keyring, sourceDist
+			// .getWorkspaceNode().getParent());
+			// Credentials sourceCredentials = RepoUtils
+			// .getRepositoryCredentials(keyring, sourceDist
+			// .getWorkspaceNode().getParent());
+			//
+			// String targetWorkspace = sourceWorkspace;
+			// Repository targetRepository = RepoUtils.getRepository(
+			// repositoryFactory, keyring, targetRepo.getRepoNode());
+			// Credentials targetCredentials = RepoUtils
+			// .getRepositoryCredentials(keyring,
+			// targetRepo.getRepoNode());
+			//
+			// // Open sessions here since the background thread
+			// // won't necessarily be authenticated.
+			// // Job should close the sessions.
+			// Session sourceSession = sourceRepository.login(
+			// sourceCredentials, sourceWorkspace);
+			// Session targetSession;
+			// try {
+			// targetSession = targetRepository.login(targetCredentials,
+			// targetWorkspace);
+			// } catch (NoSuchWorkspaceException e) {
+			// Session defaultSession = targetRepository
+			// .login(targetCredentials);
+			// try {
+			// defaultSession.getWorkspace().createWorkspace(
+			// targetWorkspace);
+			// } catch (Exception e1) {
+			// throw new SlcException("Cannot create new workspace "
+			// + targetWorkspace, e);
+			// } finally {
+			// JcrUtils.logoutQuietly(defaultSession);
+			// }
+			// targetSession = targetRepository.login(targetCredentials,
+			// targetWorkspace);
+			// }
+			//
+			// Job workspaceMergeJob = new WorkspaceMergeJob(sourceSession,
+			// targetSession);
+			// workspaceMergeJob.setUser(true);
+			// workspaceMergeJob.schedule();
+			// return true;
+			// } catch (RepositoryException e) {
+			// throw new SlcException("Cannot process drop from " + sourceDist
+			// + " to " + targetRepo, e);
+			// }
 		}
 
 		@Override
 		public boolean validateDrop(Object target, int operation,
 				TransferData transferType) {
 			if (target instanceof RepoElem) {
-				if (getSelectedObject() instanceof DistributionElem) {
+				if (getSelectedObject() instanceof WorkspaceElem) {
 					// check if not same repository
-					String srcRepoPath = ((DistributionElem) getSelectedObject())
+					String srcRepoPath = ((WorkspaceElem) getSelectedObject())
 							.getRepoPath();
 					String targetRepoPath = ((RepoElem) target).getRepoPath();
 					return !targetRepoPath.equals(srcRepoPath);
@@ -917,8 +521,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				return;
 			Object obj = ((IStructuredSelection) event.getSelection())
 					.getFirstElement();
-			if (obj instanceof DistributionElem) {
-				DistributionElem distributionElem = (DistributionElem) obj;
+			if (obj instanceof WorkspaceElem) {
+				WorkspaceElem distributionElem = (WorkspaceElem) obj;
 				DistributionEditorInput dei = new DistributionEditorInput(
 						distributionElem.getName(),
 						getRepositoryDescription(distributionElem.getRepoElem()),
@@ -940,15 +544,12 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	/*
 	 * DEPENDENCY INJECTION
 	 */
-	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
-		this.repositoryFactory = repositoryFactory;
-	}
-
-	public void setKeyring(Keyring keyring) {
-		this.keyring = keyring;
-	}
-
 	public void setNodeRepository(Repository repository) {
 		this.nodeRepository = repository;
+	}
+
+	public void setTreeContentProvider(
+			DistTreeContentProvider treeContentProvider) {
+		this.treeContentProvider = treeContentProvider;
 	}
 }

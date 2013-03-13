@@ -32,10 +32,5 @@ public class AnonymousDistributionPerspective implements IPerspectiveFactory {
 		IFolderLayout main = layout.createFolder("main", IPageLayout.LEFT,
 				0.5f, editorArea);
 		main.addView(DistributionsView.ID);
-//		main.addView(ArtifactsBrowser.ID);
-//		main.addView(QueryArtifactsForm.ID);
-//		main.addView(QueryBundlesForm.ID);
-//		main.addView(QueryArtifactsText.ID);
-		main.addView("org.eclipse.ui.views.ProgressView");
 	}
 }

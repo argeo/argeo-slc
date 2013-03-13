@@ -20,11 +20,20 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
+/**
+ * User interface to manage a set of distributions split into several
+ * repositories
+ */
 public class DistributionPerspective implements IPerspectiveFactory {
+
+//	private RepositoryFactory repositoryFactory;
+//	private Repository nodeRepository;
 
 	public final static String ID = DistPlugin.ID + ".distributionPerspective";
 
 	public void createInitialLayout(IPageLayout layout) {
+		//initializeModel();
+
 		String editorArea = layout.getEditorArea();
 		layout.setEditorAreaVisible(true);
 		layout.setFixed(false);
@@ -32,10 +41,52 @@ public class DistributionPerspective implements IPerspectiveFactory {
 		IFolderLayout main = layout.createFolder("main", IPageLayout.LEFT,
 				0.5f, editorArea);
 		main.addView(DistributionsView.ID);
-//		main.addView(ArtifactsBrowser.ID);
-//		main.addView(QueryArtifactsForm.ID);
-//		main.addView(QueryBundlesForm.ID);
-//		main.addView(QueryArtifactsText.ID);
 		main.addView("org.eclipse.ui.views.ProgressView");
+
 	}
+
+//	private void initializeModel() {
+//		Session nodeSession = null;
+//		try {
+//			nodeSession = nodeRepository.login();
+//
+//			Node homeNode = UserJcrUtils.getUserHome(nodeSession);
+//			if (homeNode == null) // anonymous
+//				throw new SlcException("User must be authenticated.");
+//
+//			// make sure base directory is available
+//			Node repos = JcrUtils.mkdirs(nodeSession, homeNode.getPath()
+//					+ RepoConstants.REPOSITORIES_BASE_PATH);
+//			nodeSession.save();
+//
+//			// register default local java repository
+//			String alias = RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS;
+//			Repository javaRepository = ArgeoJcrUtils.getRepositoryByAlias(
+//					repositoryFactory, alias);
+//			if (javaRepository != null) {
+//				if (!repos.hasNode(alias)) {
+//					Node repoNode = repos.addNode(alias,
+//							ArgeoTypes.ARGEO_REMOTE_REPOSITORY);
+//					repoNode.setProperty(ArgeoNames.ARGEO_URI, "vm:///" + alias);
+//					repoNode.addMixin(NodeType.MIX_TITLE);
+//					repoNode.setProperty(Property.JCR_TITLE,
+//							RepoConstants.DEFAULT_JAVA_REPOSITORY_LABEL);
+//					nodeSession.save();
+//				}
+//			}
+//		} catch (RepositoryException e) {
+//			throw new SlcException("Cannot register repository", e);
+//		} finally {
+//			JcrUtils.logoutQuietly(nodeSession);
+//		}
+//	}
+
+	// public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+	// this.repositoryFactory = repositoryFactory;
+	// }
+	//
+	// public void setRepository(Repository nodeRepository) {
+	// this.nodeRepository = nodeRepository;
+	// }
+
 }
