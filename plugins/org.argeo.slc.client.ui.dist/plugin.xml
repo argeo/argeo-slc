@@ -5,9 +5,15 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="SLC Distribution"
+            name="SLC Repo"
             class="org.argeo.slc.client.ui.dist.DistributionPerspective"
             id="org.argeo.slc.client.ui.dist.distributionPerspective"
+            icon="icons/distribution_perspective.gif">
+      </perspective>
+      <perspective
+            name="SLC Distribution"
+            class="org.argeo.slc.client.ui.dist.AnonymousDistributionPerspective"
+            id="org.argeo.slc.client.ui.dist.anonymousDistributionPerspective"
             icon="icons/distribution_perspective.gif">
       </perspective>
    </extension>
