@@ -17,6 +17,7 @@ package org.argeo.slc.cli;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.security.AccessController;
@@ -34,6 +35,7 @@ import javax.security.auth.login.LoginContext;
 
 import org.argeo.osgi.boot.OsgiBoot;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
@@ -46,6 +48,8 @@ public class SlcMain implements PrivilegedAction<String> {
 
 	public final static String os;
 	public final static String slcDirName = ".slc";
+	final static File homeDir = new File(System.getProperty("user.home"));
+
 	static {
 		String osName = System.getProperty("os.name");
 		if (osName.startsWith("Win"))
@@ -83,6 +87,7 @@ public class SlcMain implements PrivilegedAction<String> {
 	public String run() {
 		long begin = System.currentTimeMillis();
 
+		Framework framework = null;
 		try {
 			info("## Date : " + new Date());
 			info("## Data : " + dataDir.getCanonicalPath());
@@ -103,7 +108,7 @@ public class SlcMain implements PrivilegedAction<String> {
 			// Spring configs currently require System properties
 			System.getProperties().putAll(configuration);
 
-			Framework framework = frameworkFactory.newFramework(configuration);
+			framework = frameworkFactory.newFramework(configuration);
 			framework.start();
 			BundleContext bundleContext = framework.getBundleContext();
 
@@ -121,7 +126,7 @@ public class SlcMain implements PrivilegedAction<String> {
 						.getProperty(OsgiBoot.PROP_ARGEO_OSGI_BUNDLES)));
 			else
 				osgiBoot.installUrls(osgiBoot.getBundlesUrls(System
-						.getProperty("user.home") + "/.slc/modules/**"));
+						.getProperty("user.home") + "/.slc/modules/;in=**"));
 
 			// Start runtime
 			osgiBoot.startBundles(bundlesToStart);
@@ -159,7 +164,16 @@ public class SlcMain implements PrivilegedAction<String> {
 
 			return ret.toString();
 		} catch (Exception e) {
+			// Shutdown OSGi runtime
+			if (framework != null)
+				try {
+					framework.stop();
+					framework.waitForStop(15 * 1000);
+				} catch (Exception silent) {
+				}
 			throw new RuntimeException("Cannot run SLC command line", e);
+		} finally {
+
 		}
 	}
 
@@ -182,6 +196,7 @@ public class SlcMain implements PrivilegedAction<String> {
 				if (slcDir == null) {
 					slcDir = new File(executionDir, slcDirName);
 					slcDir.mkdirs();
+					info("## Creating an SLC node at " + slcDir + " ...");
 				}
 			}
 
@@ -235,6 +250,13 @@ public class SlcMain implements PrivilegedAction<String> {
 		File parentDir = currentDir.getParentFile();
 		if (parentDir == null)
 			return null;
+		try {
+			// ~/.slc reserved for agent
+			if (parentDir.getCanonicalPath().equals(homeDir.getCanonicalPath()))
+				return null;
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot check home directory", e);
+		}
 		return findSlcDir(parentDir);
 	}
 

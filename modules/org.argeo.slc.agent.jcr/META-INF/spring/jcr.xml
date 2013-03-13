@@ -5,6 +5,7 @@
 
 	<bean id="agent" class="org.argeo.slc.jcr.execution.JcrAgent"
 		init-method="init" destroy-method="destroy">
+		<property name="defaultModulePrefix" value="org.argeo.slc.lib" />
 		<property name="repository" ref="repository" />
 		<property name="modulesManager" ref="modulesManager" />
 	</bean>

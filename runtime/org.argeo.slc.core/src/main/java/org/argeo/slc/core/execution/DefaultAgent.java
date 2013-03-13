@@ -16,10 +16,8 @@
 package org.argeo.slc.core.execution;
 
 import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,44 +26,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.SlcAgent;
-import org.argeo.slc.execution.SlcAgentDescriptor;
 
 /** Implements the base methods of an SLC agent. */
 public class DefaultAgent implements SlcAgent {
-	private final static Log log = LogFactory.getLog(DefaultAgent.class);
+	// private final static Log log = LogFactory.getLog(DefaultAgent.class);
 	/** UTF-8 charset for encoding. */
 	private final static String UTF8 = "UTF-8";
 
-	private SlcAgentDescriptor agentDescriptor;
+	private String agentUuid = null;
+	// private SlcAgentDescriptor agentDescriptor;
 	private ExecutionModulesManager modulesManager;
 
 	private ThreadGroup processesThreadGroup;
 	private Map<String, ProcessThread> runningProcesses = Collections
 			.synchronizedMap(new HashMap<String, ProcessThread>());
 
+	private String defaultModulePrefix = null;
+
 	/*
 	 * LIFECYCLE
 	 */
 	/** Initialization */
 	public void init() {
-		agentDescriptor = new SlcAgentDescriptor();
-		agentDescriptor.setUuid(initAgentUuid());
-		try {
-			agentDescriptor.setHost(InetAddress.getLocalHost().getHostName());
-		} catch (UnknownHostException e) {
-			log.error("Cannot resolve localhost host name: " + e.getMessage());
-			agentDescriptor.setHost("localhost");
-		}
+		agentUuid = initAgentUuid();
+		// agentDescriptor = new SlcAgentDescriptor();
+		// agentDescriptor.setUuid(initAgentUuid());
+		// try {
+		// agentDescriptor.setHost(InetAddress.getLocalHost().getHostName());
+		// } catch (UnknownHostException e) {
+		// log.error("Cannot resolve localhost host name: " + e.getMessage());
+		// agentDescriptor.setHost("localhost");
+		// }
 		processesThreadGroup = new ThreadGroup("SLC Processes of Agent #"
-				+ agentDescriptor.getUuid());
+				+ agentUuid);
 		// modulesManager.registerProcessNotifier(this,
 		// new HashMap<String, String>());
 
@@ -129,7 +128,9 @@ public class DefaultAgent implements SlcAgent {
 			String[] path = uri.getPath().split("/");
 			if (path.length < 3)
 				throw new SlcException("Badly formatted URI: " + uri);
-			String module = path[1];
+			String moduleName = path[1];
+			// TODO process version
+			String moduleVersion = null;
 			StringBuilder flow = new StringBuilder();
 			for (int i = 2; i < path.length; i++)
 				flow.append('/').append(path[i]);
@@ -138,9 +139,9 @@ public class DefaultAgent implements SlcAgent {
 			if (uri.getQuery() != null)
 				values = getQueryMap(uri.getQuery());
 
-			modulesManager.start(new BasicNameVersion(module, null));
+			// Get execution module descriptor
 			ExecutionModuleDescriptor emd = getExecutionModuleDescriptor(
-					module, null);
+					moduleName, moduleVersion);
 			process.getRealizedFlows().add(
 					emd.asRealizedFlow(flow.toString(), values));
 		}
@@ -181,8 +182,24 @@ public class DefaultAgent implements SlcAgent {
 	}
 
 	public ExecutionModuleDescriptor getExecutionModuleDescriptor(
-			String moduleName, String version) {
-		return modulesManager.getExecutionModuleDescriptor(moduleName, version);
+			String moduleName, String moduleVersion) {
+		// Get execution module descriptor
+		ExecutionModuleDescriptor emd;
+		try {
+			modulesManager.start(new BasicNameVersion(moduleName, moduleVersion));
+			emd = modulesManager.getExecutionModuleDescriptor(moduleName,
+					moduleVersion);
+		} catch (SlcException e) {
+			if (defaultModulePrefix != null) {
+				moduleName = defaultModulePrefix + "." + moduleName;
+				modulesManager.start(new BasicNameVersion(moduleName,
+						moduleVersion));
+				emd = modulesManager.getExecutionModuleDescriptor(moduleName,
+						moduleVersion);
+			} else
+				throw e;
+		}
+		return emd;
 	}
 
 	public List<ExecutionModuleDescriptor> listExecutionModuleDescriptors() {
@@ -235,16 +252,16 @@ public class DefaultAgent implements SlcAgent {
 		this.modulesManager = modulesManager;
 	}
 
-	protected SlcAgentDescriptor getAgentDescriptor() {
-		return agentDescriptor;
+	public void setDefaultModulePrefix(String defaultModulePrefix) {
+		this.defaultModulePrefix = defaultModulePrefix;
 	}
 
 	public String getAgentUuid() {
-		return agentDescriptor.getUuid();
+		return agentUuid;
 	}
 
 	@Override
 	public String toString() {
-		return agentDescriptor.toString();
+		return "Agent #" + getAgentUuid();
 	}
 }
