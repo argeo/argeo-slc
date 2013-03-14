@@ -102,6 +102,8 @@ mixin
 // Helper to keep a centralize place to have testResultStatus
 // when adding more than one result part to a given testResult 
 + slc:aggregatedStatus (slc:check)
+// DEPRECATED - FOR COMPATIBILITY - DO NOT USE
++ slc:testStatus (slc:check)
 
 [slc:diffResult] > slc:testResult
 + slc:summary
