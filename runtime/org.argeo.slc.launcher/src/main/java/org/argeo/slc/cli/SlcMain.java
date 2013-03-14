@@ -35,7 +35,6 @@ import javax.security.auth.login.LoginContext;
 
 import org.argeo.osgi.boot.OsgiBoot;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
@@ -245,6 +244,7 @@ public class SlcMain implements PrivilegedAction<String> {
 	 */
 	protected static File findSlcDir(File currentDir) {
 		File slcDir = new File(currentDir, slcDirName);
+		// covers the use case of running from the home directory
 		if (slcDir.exists() && slcDir.isDirectory())
 			return slcDir;
 		File parentDir = currentDir.getParentFile();

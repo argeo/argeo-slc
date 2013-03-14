@@ -37,12 +37,27 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<!-- SLC Agent -->
+		<!-- Base -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
+			<artifactId>org.argeo.slc.dep.minimal</artifactId>
+			<version>1.1.12-SNAPSHOT</version>
+			<type>pom</type>
+		</dependency>
+
+		<!-- SLC Libs -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.lib.repo</artifactId>
 			<version>1.1.12-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.lib.jcr</artifactId>
+			<version>1.1.12-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Extensions -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
@@ -51,33 +66,6 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support.ant</artifactId>
-			<version>1.1.12-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support.jcr</artifactId>
-			<version>1.1.12-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support.equinox</artifactId>
-			<version>1.1.12-SNAPSHOT</version>
-		</dependency>
-
-		<!-- SLC Agent Modules -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>1.1.12-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent.jcr</artifactId>
-			<version>1.1.12-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
 			<version>1.1.12-SNAPSHOT</version>
 		</dependency>
 
@@ -226,6 +214,7 @@
 													<!-- Core -->
 													<include>org.argeo.tp:org.aspectj.runtime</include>
 													<include>org.argeo.tp:org.aspectj.weaver</include>
+													<include>org.argeo.tp:net.sf.cglib</include>
 													<!-- Simple -->
 													<include>org.argeo.tp:org.tmatesoft.svn</include>
 													<include>org.argeo.tp:org.redline_rpm</include>

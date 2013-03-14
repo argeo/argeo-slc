@@ -73,12 +73,5 @@
 			<version>1.1.12-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.dep.backend</artifactId>
-			<version>1.1.12-SNAPSHOT</version>
-			<type>pom</type>
-			<optional>true</optional>
-		</dependency>
 	</dependencies>
 </project>

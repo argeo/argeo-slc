@@ -35,6 +35,11 @@
 	</service>
 
 	<service ref="mavenProxyService" interface="org.argeo.slc.repo.maven.proxy.MavenProxyService" />
+
+	<!-- LABEL -->
+	<beans:bean class="org.argeo.slc.osgi.deploy.OsgiModuleLabel">
+		<beans:property name="bundleContext" ref="bundleContext" />
+	</beans:bean>
 </beans:beans>
 
 <!-- <reference id="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem" -->
