@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
@@ -40,7 +41,6 @@ public class DefaultAgent implements SlcAgent {
 	private final static String UTF8 = "UTF-8";
 
 	private String agentUuid = null;
-	// private SlcAgentDescriptor agentDescriptor;
 	private ExecutionModulesManager modulesManager;
 
 	private ThreadGroup processesThreadGroup;
@@ -55,38 +55,12 @@ public class DefaultAgent implements SlcAgent {
 	/** Initialization */
 	public void init() {
 		agentUuid = initAgentUuid();
-		// agentDescriptor = new SlcAgentDescriptor();
-		// agentDescriptor.setUuid(initAgentUuid());
-		// try {
-		// agentDescriptor.setHost(InetAddress.getLocalHost().getHostName());
-		// } catch (UnknownHostException e) {
-		// log.error("Cannot resolve localhost host name: " + e.getMessage());
-		// agentDescriptor.setHost("localhost");
-		// }
 		processesThreadGroup = new ThreadGroup("SLC Processes of Agent #"
 				+ agentUuid);
-		// modulesManager.registerProcessNotifier(this,
-		// new HashMap<String, String>());
-
-		// final String module = System
-		// .getProperty(ExecutionModulesManager.UNIQUE_LAUNCH_MODULE_PROPERTY);
-		// final String flow = System
-		// .getProperty(ExecutionModulesManager.UNIQUE_LAUNCH_FLOW_PROPERTY);
-		// if (module != null) {
-		// // launch a flow and stops
-		// new Thread("Unique Flow") {
-		// @Override
-		// public void run() {
-		// executeFlowAndExit(module, null, flow);
-		// }
-		// }.start();
-		// }
 	}
 
 	/** Clean up (needs to be called by overriding method) */
 	public void destroy() {
-		// modulesManager.unregisterProcessNotifier(this,
-		// new HashMap<String, String>());
 	}
 
 	/**
@@ -96,13 +70,6 @@ public class DefaultAgent implements SlcAgent {
 	protected String initAgentUuid() {
 		return UUID.randomUUID().toString();
 	}
-
-	/*
-	 * UNIQUE FLOW
-	 */
-	// protected void executeFlowAndExit(final String module,
-	// final String version, final String flow) {
-	// }
 
 	/*
 	 * SLC AGENT
@@ -128,20 +95,15 @@ public class DefaultAgent implements SlcAgent {
 			String[] path = uri.getPath().split("/");
 			if (path.length < 3)
 				throw new SlcException("Badly formatted URI: " + uri);
-			String moduleName = path[1];
-			// TODO process version
-			String moduleVersion = null;
+			NameVersion nameVersion = new BasicNameVersion(path[1]);
 			StringBuilder flow = new StringBuilder();
 			for (int i = 2; i < path.length; i++)
 				flow.append('/').append(path[i]);
 
-			Map<String, Object> values = new HashMap<String, Object>();
-			if (uri.getQuery() != null)
-				values = getQueryMap(uri.getQuery());
-
+			Map<String, Object> values = getQueryMap(uri.getQuery());
 			// Get execution module descriptor
 			ExecutionModuleDescriptor emd = getExecutionModuleDescriptor(
-					moduleName, moduleVersion);
+					nameVersion.getName(), nameVersion.getVersion());
 			process.getRealizedFlows().add(
 					emd.asRealizedFlow(flow.toString(), values));
 		}
@@ -186,7 +148,8 @@ public class DefaultAgent implements SlcAgent {
 		// Get execution module descriptor
 		ExecutionModuleDescriptor emd;
 		try {
-			modulesManager.start(new BasicNameVersion(moduleName, moduleVersion));
+			modulesManager
+					.start(new BasicNameVersion(moduleName, moduleVersion));
 			emd = modulesManager.getExecutionModuleDescriptor(moduleName,
 					moduleVersion);
 		} catch (SlcException e) {
@@ -211,33 +174,24 @@ public class DefaultAgent implements SlcAgent {
 	}
 
 	/*
-	 * PROCESS NOTIFIER
-	 */
-	// public void updateStatus(ExecutionProcess process, String oldStatus,
-	// String newStatus) {
-	// if (newStatus.equals(ExecutionProcess.COMPLETED)
-	// || newStatus.equals(ExecutionProcess.ERROR)
-	// || newStatus.equals(ExecutionProcess.KILLED)) {
-	// runningProcesses.remove(process.getUuid());
-	// }
-	// }
-	//
-	// public void addSteps(ExecutionProcess process, List<ExecutionStep> steps)
-	// {
-	// }
-
-	/*
 	 * UTILITIES
 	 */
-	private static Map<String, Object> getQueryMap(String query) {
-		String[] params = query.split("&");
+	/**
+	 * @param query
+	 *            can be null
+	 */
+	static Map<String, Object> getQueryMap(String query) {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		if (query == null)
+			return map;
+		String[] params = query.split("&");
 		for (String param : params) {
-			String name = param.split("=")[0];
-			String value = param.split("=")[1];
+			String[] arr = param.split("=");
+			String name = arr[0];
+			Object value = arr.length > 1 ? param.split("=")[1] : Boolean.TRUE;
 			try {
 				map.put(URLDecoder.decode(name, UTF8),
-						URLDecoder.decode(value, UTF8));
+						URLDecoder.decode(value.toString(), UTF8));
 			} catch (UnsupportedEncodingException e) {
 				throw new SlcException("Cannot decode '" + param + "'", e);
 			}

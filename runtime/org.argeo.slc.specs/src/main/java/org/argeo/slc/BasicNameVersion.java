@@ -17,7 +17,6 @@ package org.argeo.slc;
 
 import java.io.Serializable;
 
-
 public class BasicNameVersion implements NameVersion, Comparable<NameVersion>,
 		Serializable {
 	private static final long serialVersionUID = -5127304279136195127L;
@@ -25,6 +24,18 @@ public class BasicNameVersion implements NameVersion, Comparable<NameVersion>,
 	private String version;
 
 	public BasicNameVersion() {
+	}
+
+	/** Interprets string in OSGi-like format my.module.name;version=0.0.0 */
+	public BasicNameVersion(String nameVersion) {
+		int index = nameVersion.indexOf(";version=");
+		if (index < 0) {
+			name = nameVersion;
+			version = null;
+		} else {
+			name = nameVersion.substring(0, index);
+			version = nameVersion.substring(index + ";version=".length());
+		}
 	}
 
 	public BasicNameVersion(String name, String version) {
@@ -79,5 +90,4 @@ public class BasicNameVersion implements NameVersion, Comparable<NameVersion>,
 		else
 			return name.compareTo(o.getName());
 	}
-
 }

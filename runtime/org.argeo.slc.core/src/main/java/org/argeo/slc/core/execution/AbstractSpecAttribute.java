@@ -27,6 +27,8 @@ public abstract class AbstractSpecAttribute implements ExecutionSpecAttribute,
 	private Boolean isConstant = false;
 	private Boolean isHidden = false;
 
+	private String description;
+
 	/** Has to be set at instantiation */
 	public Boolean getIsImmutable() {
 		return isImmutable;
@@ -75,6 +77,14 @@ public abstract class AbstractSpecAttribute implements ExecutionSpecAttribute,
 	/** @deprecated use {@link #setIsConstant(Boolean)} instead */
 	public void setIsFrozen(Boolean isFrozen) {
 		this.isConstant = isFrozen;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getDescription() {
+		return description;
 	}
 
 }

@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.security.OsAuthenticationToken;
+import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
@@ -46,7 +49,7 @@ public class DefaultAgentCli implements SlcAgentCli {
 		if (args.length > 0 && args[0].equals("help")) {
 			StringBuilder buf = new StringBuilder();
 			help(args, buf);
-			log.info(buf);
+			log.info("\n" + buf);
 			return buf.toString();
 		} else {
 			List<URI> uris = asURIs(args);
@@ -54,6 +57,80 @@ public class DefaultAgentCli implements SlcAgentCli {
 			agent.waitFor(processUuid, timeout);
 			return processUuid;
 		}
+	}
+
+	protected void help(String[] rawArgs, StringBuilder buf) {
+		String[] args = Arrays.copyOfRange(rawArgs, 1, rawArgs.length);
+		if (args.length == 0) {// modules
+			for (ExecutionModuleDescriptor emd : agent
+					.listExecutionModuleDescriptors()) {
+				appendModule(emd, buf);
+			}
+		} else if (args.length == 1 && !args[0].contains("/")) {// single module
+			NameVersion nameVersion = new BasicNameVersion(args[0]);
+			ExecutionModuleDescriptor emd = agent.getExecutionModuleDescriptor(
+					nameVersion.getName(), nameVersion.getVersion());
+			appendModule(emd, buf);
+
+			// flows
+			for (ExecutionFlowDescriptor efd : emd.getExecutionFlows()) {
+				buf.append(" ").append(efd.getName());
+				if (efd.getDescription() != null
+						&& !efd.getDescription().trim().equals(""))
+					buf.append(" : ").append(" ").append(efd.getDescription());
+				buf.append('\n');
+			}
+			return;
+		} else {
+			List<URI> uris = asURIs(args);
+			for (URI uri : uris) {
+				appendUriHelp(uri, buf);
+			}
+		}
+	}
+
+	protected void appendUriHelp(URI uri, StringBuilder buf) {
+		String[] path = uri.getPath().split("/");
+		NameVersion nameVersion = new BasicNameVersion(path[1]);
+		ExecutionModuleDescriptor emd = agent.getExecutionModuleDescriptor(
+				nameVersion.getName(), nameVersion.getVersion());
+
+		StringBuilder flow = new StringBuilder();
+		for (int i = 2; i < path.length; i++)
+			flow.append('/').append(path[i]);
+		String flowPath = flow.toString();
+		ExecutionFlowDescriptor efd = findExecutionFlowDescriptor(emd, flowPath);
+		if (efd == null)
+			throw new SlcException("Flow " + uri + " not found");
+
+		appendModule(emd, buf);
+
+		buf.append(" ").append(efd.getName());
+		if (efd.getDescription() != null
+				&& !efd.getDescription().trim().equals(""))
+			buf.append(" : ").append(" ").append(efd.getDescription());
+		buf.append('\n');
+		Map<String, Object> values = DefaultAgent.getQueryMap(uri.getQuery());
+		ExecutionSpec spec = efd.getExecutionSpec();
+		for (String attrKey : spec.getAttributes().keySet()) {
+			ExecutionSpecAttribute esa = spec.getAttributes().get(attrKey);
+			buf.append("  --").append(attrKey);
+			if (values.containsKey(attrKey))
+				buf.append(" ").append(values.get(attrKey));
+			if (esa.getValue() != null)
+				buf.append(" (").append(esa.getValue()).append(')');
+			buf.append('\n');
+		}
+	}
+
+	private void appendModule(ExecutionModuleDescriptor emd, StringBuilder buf) {
+		buf.append("# ").append(emd.getName());
+		if (emd.getDescription() != null
+				&& !emd.getDescription().trim().equals(""))
+			buf.append(" : ").append(emd.getDescription());
+		if (emd.getVersion() != null)
+			buf.append(" (v").append(emd.getVersion()).append(")");
+		buf.append('\n');
 	}
 
 	public static List<URI> asURIs(String[] args) {
@@ -72,14 +149,17 @@ public class DefaultAgentCli implements SlcAgentCli {
 						currUri.append(URLEncoder.encode(arg, UTF8));
 						currKey = null;
 					} else { // module
-						if (currUri != null)
+						if (currUri != null) {
 							uris.add(new URI(currUri.toString()));
+						}
 						currUri = new StringBuilder("flow:");
 
 						String currModule = arg;
 						currUri.append('/').append(currModule);
 						if (!arg.contains("/")) {
 							// flow path not in arg go to next arg
+							if (!argIt.hasNext())
+								throw new SlcException("No flow found");
 							String currFlow = argIt.next();
 							if (!currFlow.startsWith("/"))
 								currFlow = "/" + currFlow;
@@ -90,6 +170,16 @@ public class DefaultAgentCli implements SlcAgentCli {
 					if (currUri == null) {// first args
 						leftOvers.add(arg);
 					} else {
+						String key;
+						if (arg.startsWith("--"))
+							key = arg.substring(2);
+						else if (arg.startsWith("-"))
+							key = arg.substring(1);
+						else {
+							throw new SlcException("Cannot intepret key: "
+									+ arg);
+						}
+
 						if (!hasArgs) {
 							currUri.append('?');
 							hasArgs = true;
@@ -103,14 +193,6 @@ public class DefaultAgentCli implements SlcAgentCli {
 							currKey = null;
 						}
 
-						String key;
-						if (arg.startsWith("--"))
-							key = arg.substring(2);
-						else if (arg.startsWith("-"))
-							key = arg.substring(1);
-						else
-							throw new SlcException("Cannot intepret key: "
-									+ arg);
 						currKey = key;
 						currUri.append(URLEncoder.encode(key, UTF8))
 								.append('=');
@@ -126,81 +208,22 @@ public class DefaultAgentCli implements SlcAgentCli {
 		}
 	}
 
-	protected void help(String[] rawArgs, StringBuilder buf) {
-		String[] args = Arrays.copyOfRange(rawArgs, 1, rawArgs.length);
-		List<URI> uris = asURIs(args);
-		uris: for (URI uri : uris) {
-			String[] path = uri.getPath().split("/");
-			if (path.length < 2) {
-				for (ExecutionModuleDescriptor emd : agent
-						.listExecutionModuleDescriptors()) {
-					buf.append(
-							"# Execution Module " + emd.getName() + " v"
-									+ emd.getVersion()).append('\n');
-					if (emd.getDescription() != null
-							&& !emd.getDescription().trim().equals(""))
-						buf.append(emd.getDescription()).append('\n');
-				}
-				continue uris;
-			}
-
-			String moduleName = path[1];
-			// TODO process version
-			String moduleVersion = null;
-
-			ExecutionModuleDescriptor emd = agent.getExecutionModuleDescriptor(
-					moduleName, moduleVersion);
-
-			if (path.length >= 2) {
-				StringBuilder flow = new StringBuilder();
-				for (int i = 2; i < path.length; i++)
-					flow.append('/').append(path[i]);
-				String flowPath = flow.toString();
-				ExecutionFlowDescriptor flowDescriptor = null;
-				for (ExecutionFlowDescriptor efd : emd.getExecutionFlows()) {
-					if (efd.getName().equals(flowPath)) {
-						flowDescriptor = efd;
-						break;
-					}
-				}
-				if (flowDescriptor == null)
-					throw new SlcException("Flow " + uri + " not found");
-
-				buf.append(
-						"# Execution Module " + emd.getName() + " v"
-								+ emd.getVersion()).append('\n');
-				buf.append(" Flow ").append(flowDescriptor.getName());
-				if (flowDescriptor.getDescription() != null
-						&& !flowDescriptor.getDescription().trim().equals(""))
-					buf.append(" ").append(flowDescriptor.getDescription());
-				buf.append('\n');
-				ExecutionSpec spec = flowDescriptor.getExecutionSpec();
-				for (String attrKey : spec.getAttributes().keySet()) {
-					ExecutionSpecAttribute esa = spec.getAttributes().get(
-							attrKey);
-					buf.append("  --").append(attrKey);
-					// TODO check values in query part
-					if (esa.getValue() != null)
-						buf.append(" ").append(esa.getValue());
-					buf.append('\n');
-				}
-			} else {
-				// module only
-				buf.append(
-						"# Execution Module " + emd.getName() + " v"
-								+ emd.getVersion()).append('\n');
-				if (emd.getDescription() != null
-						&& !emd.getDescription().trim().equals(""))
-					buf.append(emd.getDescription()).append('\n');
-				for (ExecutionFlowDescriptor efd : emd.getExecutionFlows()) {
-					buf.append(" ").append(efd.getName());
-					if (efd.getDescription() != null
-							&& !efd.getDescription().trim().equals(""))
-						buf.append(" ").append(efd.getDescription());
-				}
-				buf.append('\n');
+	private ExecutionFlowDescriptor findExecutionFlowDescriptor(
+			ExecutionModuleDescriptor emd, String flowPath) {
+		ExecutionFlowDescriptor flowDescriptor = null;
+		for (ExecutionFlowDescriptor efd : emd.getExecutionFlows()) {
+			String name = efd.getName();
+			// normalize name as flow path
+			if (!name.startsWith("/"))
+				name = "/" + name;
+			if (name.endsWith("/"))
+				name = name.substring(0, name.length() - 1);
+			if (name.equals(flowPath)) {
+				flowDescriptor = efd;
+				break;
 			}
 		}
+		return flowDescriptor;
 	}
 
 	public void setAgent(SlcAgent agent) {

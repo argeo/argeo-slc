@@ -31,12 +31,10 @@ import org.springframework.security.context.SecurityContextHolder;
 /** Thread of a single execution */
 public class ExecutionThread extends Thread {
 	public final static String SYSPROP_EXECUTION_AUTO_UPGRADE = "slc.execution.autoupgrade";
-
 	private final static Log log = LogFactory.getLog(ExecutionThread.class);
 
 	private ExecutionModulesManager executionModulesManager;
 	private final RealizedFlow realizedFlow;
-	// private final ProcessThread processThread;
 
 	private List<Runnable> destructionCallbacks = new ArrayList<Runnable>();
 
@@ -47,7 +45,6 @@ public class ExecutionThread extends Thread {
 				+ realizedFlow.getFlowDescriptor().getName());
 		this.realizedFlow = realizedFlow;
 		this.executionModulesManager = executionModulesManager;
-		// this.processThread = processThread;
 	}
 
 	public void run() {
@@ -73,11 +70,19 @@ public class ExecutionThread extends Thread {
 			if (autoUpgrade != null && autoUpgrade.equals("true"))
 				executionModulesManager.upgrade(realizedFlow
 						.getModuleNameVersion());
-
 			executionModulesManager.start(realizedFlow.getModuleNameVersion());
+			//
 			// START FLOW
+			//
 			executionModulesManager.execute(realizedFlow);
 			// END FLOW
+		} catch (FlowConfigurationException e) {
+			String msg = "Configuration problem with flow " + flowName + ":\n"
+					+ e.getMessage();
+			log.error(msg);
+			getProcessThreadGroup().dispatchAddStep(
+					new ExecutionStep(realizedFlow.getModuleName(),
+							ExecutionStep.ERROR, msg + " " + e.getMessage()));
 		} catch (Exception e) {
 			// TODO: re-throw exception ?
 			String msg = "Execution of flow " + flowName + " failed.";
@@ -85,19 +90,13 @@ public class ExecutionThread extends Thread {
 			getProcessThreadGroup().dispatchAddStep(
 					new ExecutionStep(realizedFlow.getModuleName(),
 							ExecutionStep.ERROR, msg + " " + e.getMessage()));
-			// processThread.notifyError();
 		} finally {
-			// processThread.flowCompleted();
 			getProcessThreadGroup().dispatchAddStep(
 					new ExecutionStep(realizedFlow.getModuleName(),
 							ExecutionStep.PHASE_END, "Flow " + flowName));
 			processDestructionCallbacks();
 		}
 	}
-
-	// private void dispatchAddStep(ExecutionStep step) {
-	// getProcessThreadGroup().dispatchAddStep(step);
-	// }
 
 	private synchronized void processDestructionCallbacks() {
 		for (int i = destructionCallbacks.size() - 1; i >= 0; i--) {
@@ -120,11 +119,5 @@ public class ExecutionThread extends Thread {
 
 	protected ProcessThreadGroup getProcessThreadGroup() {
 		return (ProcessThreadGroup) getThreadGroup();
-		// return processThread.getProcessThreadGroup();
 	}
-
-	// public RealizedFlow getRealizedFlow() {
-	// return realizedFlow;
-	// }
-
 }

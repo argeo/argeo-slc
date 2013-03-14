@@ -56,6 +56,9 @@ public interface ExecutionSpecAttribute {
 	 */
 	public Object getValue();
 
+	/** Description of this attribute, can be null */
+	public String getDescription();
+
 	/** @deprecated use {@link #getIsImmutable()} instead */
 	public Boolean getIsParameter();
 

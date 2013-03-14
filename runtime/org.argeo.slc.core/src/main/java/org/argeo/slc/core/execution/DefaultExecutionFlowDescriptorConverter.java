@@ -24,8 +24,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.SlcException;
-import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
@@ -75,8 +73,8 @@ public class DefaultExecutionFlowDescriptorConverter implements
 						.getAttributes().get(key);
 
 				if (attribute == null)
-					throw new SlcException("No spec attribute defined for '"
-							+ key + "'");
+					throw new FlowConfigurationException(
+							"No spec attribute defined for '" + key + "'");
 
 				if (attribute.getIsConstant())
 					continue values;
@@ -131,8 +129,9 @@ public class DefaultExecutionFlowDescriptorConverter implements
 						Object obj = PrimitiveUtils.convert(type, ref);
 						convertedValues.put(key, obj);
 					} else {
-						throw new UnsupportedException("Ref value type",
-								refValue.getType());
+						throw new FlowConfigurationException(
+								"Ref value type not supported: "
+										+ refValue.getType());
 					}
 				} else {
 					// default is to take the value as is
@@ -164,19 +163,20 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		md.getExecutionFlows().addAll(set);
 	}
 
-	@SuppressWarnings("deprecation")
 	public ExecutionFlowDescriptor getExecutionFlowDescriptor(
 			ExecutionFlow executionFlow) {
 		if (executionFlow.getName() == null)
-			throw new SlcException("Flow name is null: " + executionFlow);
+			throw new FlowConfigurationException("Flow name is null: "
+					+ executionFlow);
 		String name = executionFlow.getName();
 
 		ExecutionSpec executionSpec = executionFlow.getExecutionSpec();
 		if (executionSpec == null)
-			throw new SlcException("Execution spec is null: " + executionFlow);
+			throw new FlowConfigurationException("Execution spec is null: "
+					+ executionFlow);
 		if (executionSpec.getName() == null)
-			throw new SlcException("Execution spec name is null: "
-					+ executionSpec);
+			throw new FlowConfigurationException(
+					"Execution spec name is null: " + executionSpec);
 
 		Map<String, Object> values = new TreeMap<String, Object>();
 		for (String key : executionSpec.getAttributes().keySet()) {
@@ -204,18 +204,18 @@ public class DefaultExecutionFlowDescriptorConverter implements
 							buildRefValue((RefSpecAttribute) attribute,
 									executionFlow, key));
 			} else {
-				throw new SlcException("Unkown spec attribute type "
-						+ attribute.getClass());
+				throw new FlowConfigurationException(
+						"Unkown spec attribute type " + attribute.getClass());
 			}
 
 		}
 
 		ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(name, null,
 				values, executionSpec);
-		if (executionFlow.getPath() != null)
-			efd.setPath(executionFlow.getPath());
-		else
-			efd.setPath("");
+		// if (executionFlow.getPath() != null)
+		// efd.setPath(executionFlow.getPath());
+		// else
+		// efd.setPath("");
 
 		// Takes description from spring
 		BeanFactory bf = getBeanFactory();
