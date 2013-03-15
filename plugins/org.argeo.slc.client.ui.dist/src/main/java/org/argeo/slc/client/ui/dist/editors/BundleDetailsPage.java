@@ -171,13 +171,9 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			public Image getImage(Object element) {
 				if (element instanceof Node) {
 					try {
-
 						Node node = (Node) element;
 						if (node.isNodeType(SlcTypes.SLC_EXPORTED_PACKAGE))
 							return DistImages.IMG_PACKAGE;
-						else if (node.isNodeType(SlcTypes.SLC_JAVA_PACKAGE))
-							return DistImages.IMG_PACKAGE;
-
 					} catch (RepositoryException e) {
 						throw new SlcException("Error retriving "
 								+ "image for the labelProvider", e);
@@ -282,6 +278,11 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_NAME);
 			}
+
+			public Image getImage(Object element) {
+				return DistImages.IMG_PACKAGE;
+			}
+
 		});
 
 		// Version
@@ -338,11 +339,16 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_SYMBOLIC_NAME);
 			}
+
+			@Override
+			public Image getImage(Object element) {
+				return DistImages.IMG_BUNDLE;
+			}
 		});
 
 		// Version
 		col = new TableViewerColumn(viewer, SWT.NONE);
-		col.getColumn().setWidth(100);
+		col.getColumn().setWidth(140);
 		col.getColumn().setText("Version");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override

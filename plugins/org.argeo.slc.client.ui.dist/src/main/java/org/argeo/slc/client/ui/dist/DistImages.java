@@ -24,7 +24,8 @@ public class DistImages {
 			.getImageDescriptor("icons/artifactBase.gif").createImage();
 	public final static Image IMG_PACKAGE = DistPlugin.getImageDescriptor(
 			"icons/package.gif").createImage();
-
+	public final static Image IMG_BUNDLE = DistPlugin.getImageDescriptor(
+			"icons/packages.gif").createImage();
 	public final static Image IMG_ARTIFACT_VERSION_BASE = DistPlugin
 			.getImageDescriptor("icons/artifactVersionBase.gif").createImage();
 	public final static Image IMG_FILE = DistPlugin.getImageDescriptor(
