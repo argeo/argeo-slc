@@ -177,7 +177,7 @@ public class RegisterRepoWizard extends Wizard {
 			uri = createLT(composite, "URI", DEFAULT_URI);
 
 			final Button anonymousLogin = createLC(composite,
-					"log as anonymous", true);
+					"Log as anonymous", true);
 			anonymousLogin.addSelectionListener(new SelectionListener() {
 				public void widgetSelected(SelectionEvent e) {
 					if (anonymousLogin.getSelection()) {
