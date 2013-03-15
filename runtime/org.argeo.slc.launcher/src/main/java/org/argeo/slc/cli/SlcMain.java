@@ -99,8 +99,10 @@ public class SlcMain implements PrivilegedAction<String> {
 			configuration.put("osgi.configuration.area",
 					confDir.getCanonicalPath());
 			configuration.put("osgi.instance.area", dataDir.getCanonicalPath());
+			// FIXME must clean configuration area because jars are installed as
+			// file: by OSGi boot and not as reference:file:
+			configuration.put("osgi.clean", "true");
 			if (args.length == 0) {
-				// configuration.put("osgi.clean", "true");
 				configuration.put("osgi.console", "");
 			}
 
