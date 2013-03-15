@@ -20,6 +20,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
@@ -27,17 +28,19 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
-import org.argeo.slc.client.ui.dist.views.DistributionsView;
-import org.argeo.slc.client.ui.dist.views.DistributionsView.DistributionViewSelectedElement;
+import org.argeo.slc.repo.RepoUtils;
+import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 
 /**
  * Delete chosen workspace in the current repository.
+ * 
+ * Due to current version of JackRabbit, it only cleans it for the time being,
+ * removing all nodes of type {@code NodeType.NT_FOLDER} and
+ * {@code NodeType.NT_UNSTRUCTURED}
  */
 
 public class DeleteWorkspace extends AbstractHandler {
@@ -46,53 +49,52 @@ public class DeleteWorkspace extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".deleteWorkspace";
 	public final static String DEFAULT_LABEL = "Clear";
 	public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
+	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
+	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 
-	private Repository repository;
-	private Credentials credentials;
+	// DEPENDENCY INJECTION
+	private RepositoryFactory repositoryFactory;
+	private Keyring keyring;
+	private Repository nodeRepository;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		String workspaceName = "";
+		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
+		String workspaceName = event.getParameter(PARAM_WORKSPACE_NAME);
 
-		IWorkbenchWindow iww = DistPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow();
-		IWorkbenchPart view = iww.getActivePage().getActivePart();
-		if (view instanceof DistributionsView) {
-			DistributionViewSelectedElement dvse = ((DistributionsView) view)
-					.getSelectedElement();
-			if (dvse != null && (dvse.isWorkspace)) {
-				repository = dvse.repository;
-				credentials = dvse.credentials;
-				workspaceName = dvse.wkspName;
-			}
-		}
+		Session nodeSession = null;
+		Session session = null;
 
-		if (repository == null)
-			return null;
+		try {
+			nodeSession = nodeRepository.login();
+			Node repoNode = nodeSession.getNode(targetRepoPath);
+			Repository repository = RepoUtils.getRepository(repositoryFactory,
+					keyring, repoNode);
+			Credentials credentials = RepoUtils.getRepositoryCredentials(
+					keyring, repoNode);
 
-		String msg = "Your are about to completely delete workspace ["
-				+ workspaceName + "].\n Do you really want to proceed ?";
-		boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
-				.getWorkbench().getDisplay().getActiveShell(),
-				"Confirm workspace deletion", msg);
-
-		if (result) {
-			// msg =
-			// "There is no possible turning back, are your REALLY sure you want to proceed ?";
-			msg = "WARNING: \nCurrent Jackrabbit version used does "
-					+ "not support workspace management.\n"
-					+ "Thus, the workspace will only be cleaned so "
-					+ "that you can launch fetch process again.\n\n"
-					+ "Do you still want to proceed ?";
-			result = MessageDialog.openConfirm(DistPlugin.getDefault()
+			String msg = "Your are about to completely delete workspace ["
+					+ workspaceName + "].\n Do you really want to proceed ?";
+			boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
 					.getWorkbench().getDisplay().getActiveShell(),
 					"Confirm workspace deletion", msg);
-		}
 
-		if (result) {
-			Session session = null;
-			try {
+			if (result) {
+				// msg =
+				// "There is no possible turning back, are your REALLY sure you want to proceed ?";
+				msg = "WARNING: \nCurrent Jackrabbit version used does "
+						+ "not support workspace management.\n"
+						+ "Thus, the workspace will only be cleaned so "
+						+ "that you can launch fetch process again.\n\n"
+						+ "Do you still want to proceed ?";
+				result = MessageDialog.openConfirm(DistPlugin.getDefault()
+						.getWorkbench().getDisplay().getActiveShell(),
+						"Confirm workspace deletion", msg);
+			}
+
+			if (result) {
 				session = repository.login(credentials, workspaceName);
+
 				// TODO use this with a newer version of Jackrabbit
 				// Workspace wsp = session.getWorkspace();
 				// wsp.deleteWorkspace(workspaceName);
@@ -108,14 +110,28 @@ public class DeleteWorkspace extends AbstractHandler {
 					}
 				}
 				CommandHelpers.callCommand(RefreshDistributionsView.ID);
-			} catch (RepositoryException re) {
-				throw new SlcException(
-						"Unexpected error while deleting workspace ["
-								+ workspaceName + "].", re);
-			} finally {
-				JcrUtils.logoutQuietly(session);
 			}
+		} catch (RepositoryException re) {
+			throw new SlcException(
+					"Unexpected error while deleting workspace ["
+							+ workspaceName + "].", re);
+		} finally {
+			JcrUtils.logoutQuietly(session);
+			JcrUtils.logoutQuietly(nodeSession);
 		}
 		return null;
+	}
+
+	/* DEPENDENCY INJECTION */
+	public void setNodeRepository(Repository nodeRepository) {
+		this.nodeRepository = nodeRepository;
+	}
+
+	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+		this.repositoryFactory = repositoryFactory;
+	}
+
+	public void setKeyring(Keyring keyring) {
+		this.keyring = keyring;
 	}
 }

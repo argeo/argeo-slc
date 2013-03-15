@@ -1,4 +1,4 @@
-package org.argeo.slc.client.ui.dist.providers;
+package org.argeo.slc.client.ui.dist.controllers;
 
 import javax.jcr.Credentials;
 import javax.jcr.NoSuchWorkspaceException;

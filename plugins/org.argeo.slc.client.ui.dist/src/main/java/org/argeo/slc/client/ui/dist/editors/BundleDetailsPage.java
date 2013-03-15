@@ -136,7 +136,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		tree.setLayoutData(gd);
 
 		TreeViewerColumn col = new TreeViewerColumn(viewer, SWT.FILL);
-		col.getColumn().setWidth(200);
+		col.getColumn().setWidth(400);
 
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
@@ -208,6 +208,9 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 
 		headerSection.setClient(tree);
 		viewer.setInput("Initialize");
+		// work around a display problem : the tree table has only a few lines
+		// when the tree is not expended
+		viewer.expandToLevel(2);
 	}
 
 	/** Import Package Section */
@@ -221,7 +224,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 
 		// Name
 		TableViewerColumn col = new TableViewerColumn(viewer, SWT.NONE);
-		col.getColumn().setWidth(300);
+		col.getColumn().setWidth(350);
 		col.getColumn().setText("Name");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override

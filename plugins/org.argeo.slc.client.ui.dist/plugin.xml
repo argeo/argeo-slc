@@ -22,6 +22,24 @@
          point="org.eclipse.ui.views">
       <view
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.distributionsView"
+            icon="icons/search.gif"
+            name="Distributions">
+      </view>
+      <view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.anonymousDistributionsView"
+            icon="icons/search.gif"
+            name="Public Repository">
+      </view>
+      <view
+            class="org.argeo.slc.client.ui.dist.views.HelpView"
+            id="org.argeo.slc.client.ui.dist.helpView"
+            icon="icons/help.gif"
+            name="Infos">
+      </view>
+      <view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
             id="org.argeo.slc.client.ui.dist.artifactsBrowser"
             icon="icons/packageBrowser.gif"
             name="Artifacts browser">
@@ -44,13 +62,7 @@
             icon="icons/search.gif"
             name="Query builder">
       </view>
-      <view
-            class="org.argeo.eclipse.spring.SpringExtensionFactory"
-            id="org.argeo.slc.client.ui.dist.distributionsView"
-            icon="icons/search.gif"
-            name="Distributions">
-      </view>
-	   <view
+       <view
 	         name="Progress View"
 	         icon="icons/pview.gif"
 	         category="org.eclipse.ui"
@@ -90,34 +102,7 @@
             id="org.argeo.slc.client.ui.dist.displayRepoInformation"
             name="Display repo info">
     	</command>
-		<!-- Workspaces CRUD --> 
-    	<command
-            defaultHandler="org.argeo.slc.client.ui.dist.commands.PublishWorkspace"
-            id="org.argeo.slc.client.ui.dist.publishWorkspace"
-            name="Publish selected workspace">
-    	</command>
 		<command
-            id="org.argeo.slc.client.ui.dist.createWorkspace"
-            defaultHandler="org.argeo.slc.client.ui.dist.commands.CreateWorkspace"
-            name="Create Workspace">
-    	</command>
-    	<command
-            id="org.argeo.slc.client.ui.dist.deleteWorkspace"
-            defaultHandler="org.argeo.slc.client.ui.dist.commands.DeleteWorkspace"
-            name="Delete chosen Workspace">
-    	</command>
-    	<command
-            id="org.argeo.slc.client.ui.dist.normalizeDistribution"
-            defaultHandler="org.argeo.slc.client.ui.dist.commands.NormalizeDistribution"
-            name="Normalize Distribution">
-    	</command>
-		<command
-            id="org.argeo.slc.client.ui.dist.copyWorkspace"
-            defaultHandler="org.argeo.slc.client.ui.dist.commands.CopyWorkspace"
-            name="Copy chosen Workspace">
-    	</command>
-    	
-    	<command
             defaultHandler="org.argeo.slc.client.ui.dist.commands.ShowSizeColumn"
             id="org.argeo.slc.client.ui.dist.showSizeColumn"
             name="Show size column">
@@ -130,8 +115,6 @@
 				</class>
 			</state>
     	</command>
-
-
 
 		<!-- Command with Spring dependency injection -->
 		<command
@@ -164,11 +147,98 @@
             name="Fetch repository">
             <commandParameter
          		id="targetRepoPath"
-         		name="Target repo path">
+         		name="Target repo uri">
   	 		</commandParameter>
     	</command>
 	
 		<!-- TO MANIPULATE WORKSPACES -->
+		<!-- Workspaces CRUD --> 
+		<command
+            id="org.argeo.slc.client.ui.dist.createWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Create Workspace">
+            <commandParameter
+         		id="workspacePrefix"
+         		name="Workspace prefix">
+  	 		</commandParameter>
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo node path">
+  	 		</commandParameter>
+    	</command>
+		<command
+			id="org.argeo.slc.client.ui.dist.deleteWorkspace"
+			defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+			name="Delete chosen Workspace">
+			<commandParameter
+				id="workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="targetRepoPath"
+				name="Target repo node path">
+			</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.publishWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Publish selected workspace">
+			<commandParameter
+				id="workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="targetRepoPath"
+				name="Target repo node path">
+			</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.normalizeDistribution"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Normalize Distribution">
+			<commandParameter
+				id="workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="targetRepoPath"
+				name="Target repo node path">
+			</commandParameter>
+    	</command>
+		<command
+            id="org.argeo.slc.client.ui.dist.copyWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Copy chosen Workspace">
+            <commandParameter
+         		id="srcWkspName"
+         		name="Source Workspace Name">
+  	 		</commandParameter>
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo node path">
+  	 		</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.mergeWorkspaces"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Copy chosen Workspace">
+            <commandParameter
+         		id="srcWkspName"
+         		name="Source Workspace Name">
+  	 		</commandParameter>
+          <commandParameter
+         		id="srcRepoPath"
+         		name="Source Repo Node path ">
+  	 		</commandParameter>
+           <commandParameter
+         		id="targetWkspName"
+         		name="Target Workspace Name">
+  	 		</commandParameter>
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo node path">
+  	 		</commandParameter>
+    	</command>
     	<command
             id="org.argeo.slc.client.ui.dist.manageWorkspaceAuth"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"

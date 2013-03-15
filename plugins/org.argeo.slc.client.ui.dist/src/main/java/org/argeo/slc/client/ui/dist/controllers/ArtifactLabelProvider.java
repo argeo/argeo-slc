@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.client.ui.dist.providers;
+package org.argeo.slc.client.ui.dist.controllers;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

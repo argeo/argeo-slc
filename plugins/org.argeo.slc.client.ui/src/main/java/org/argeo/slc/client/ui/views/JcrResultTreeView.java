@@ -32,8 +32,6 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.utils.CommandUtils;
@@ -105,7 +103,8 @@ public class JcrResultTreeView extends ViewPart {
 	private final static DateFormat dateFormat = new SimpleDateFormat(
 			SlcUiConstants.DEFAULT_DISPLAY_DATE_TIME_FORMAT);
 
-	private final static Log log = LogFactory.getLog(JcrResultTreeView.class);
+	// private final static Log log =
+	// LogFactory.getLog(JcrResultTreeView.class);
 
 	/* DEPENDENCY INJECTION */
 	private Session session;
@@ -677,7 +676,7 @@ public class JcrResultTreeView extends ViewPart {
 					ResultParentUtils.updatePassedStatus(
 							session.getNode(JcrUtils.parentPath(sourcePath)),
 							true);
-					Node target = session.getNode(destPath);
+					// Node target = session.getNode(destPath);
 					session.save();
 					return true;
 				}

@@ -1,5 +1,6 @@
 package org.argeo.slc.client.ui.dist.model;
 
+/** Common super class for all dist tree elements */
 public abstract class DistParentElem {
 	private boolean inHome = false;
 	private boolean isReadOnly = false;
@@ -16,7 +17,19 @@ public abstract class DistParentElem {
 
 	public abstract Object[] getChildren();
 
+	public boolean hasChildren() {
+		return true;
+	}
+
 	public void dispose() {
+	}
+
+	public void setInHome(boolean inHome) {
+		this.inHome = inHome;
+	}
+
+	public void setReadOnly(boolean isReadOnly) {
+		this.isReadOnly = isReadOnly;
 	}
 
 	public boolean inHome() {

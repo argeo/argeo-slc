@@ -53,4 +53,36 @@
 		<property name="keyring" ref="keyring" />
 	</bean>
 
+	<!-- WORKSPACE CRUD -->
+	<bean id="createWorkspace" class="org.argeo.slc.client.ui.dist.commands.CreateWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
+	</bean>
+	<bean id="copyWorkspace" class="org.argeo.slc.client.ui.dist.commands.CopyWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
+	</bean>
+	<bean id="mergeWorkspaces" class="org.argeo.slc.client.ui.dist.commands.MergeWorkspaces">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
+	</bean>
+	<bean id="deleteWorkspace" class="org.argeo.slc.client.ui.dist.commands.DeleteWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
+	</bean>
+	<bean id="publishWorkspace" class="org.argeo.slc.client.ui.dist.commands.PublishWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
+	</bean>
+	<bean id="normalizeDistribution"
+		class="org.argeo.slc.client.ui.dist.commands.NormalizeDistribution">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
+	</bean>
 </beans>

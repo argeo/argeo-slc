@@ -25,7 +25,7 @@ public class Fetch extends AbstractHandler {
 	// private final static Log log = LogFactory.getLog(Fetch.class);
 
 	public final static String ID = DistPlugin.ID + ".fetch";
-	public final static String PARAM_TARGET_REPO = "targetRepoPath";
+	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 	public final static String DEFAULT_LABEL = "Fetch...";
 	public final static String DEFAULT_ICON_PATH = "icons/fetchRepo.png";
 
@@ -38,7 +38,7 @@ public class Fetch extends AbstractHandler {
 		Session currSession = null;
 		try {
 			// Target Repository
-			String targetRepoPath = event.getParameter(PARAM_TARGET_REPO);
+			String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
 			currSession = nodeRepository.login();
 			Node targetRepoNode = currSession.getNode(targetRepoPath);
 

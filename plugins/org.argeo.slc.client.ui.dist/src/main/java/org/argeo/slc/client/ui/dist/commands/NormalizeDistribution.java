@@ -22,6 +22,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
@@ -37,8 +38,6 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.views.DistributionsView;
-import org.argeo.slc.client.ui.dist.views.DistributionsView.DistributionViewSelectedElement;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
@@ -46,6 +45,7 @@ import org.argeo.slc.repo.JarFileIndexer;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.argeo.slc.repo.osgi.NormalizeGroup;
+import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -66,8 +66,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -77,52 +75,55 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	public final static String ID = DistPlugin.ID + ".normalizeDistribution";
 	public final static String DEFAULT_LABEL = "Normalize...";
 	public final static String DEFAULT_ICON_PATH = "icons/normalize.gif";
+	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
+	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 
 	private final static Log log = LogFactory
 			.getLog(NormalizeDistribution.class);
 
-	private Repository repository;
-	private Credentials credentials;
-	private String wkspName;
 	private String artifactBasePath = "/";
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
 
+	// DEPENDENCY INJECTION
+	private RepositoryFactory repositoryFactory;
+	private Keyring keyring;
+	private Repository nodeRepository;
+
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		IWorkbenchWindow iww = DistPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow();
-		IWorkbenchPart view = iww.getActivePage().getActivePart();
-		if (view instanceof DistributionsView) {
-			DistributionViewSelectedElement dvse = ((DistributionsView) view)
-					.getSelectedElement();
-			if (dvse != null && (dvse.isWorkspace)) {
-				repository = dvse.repository;
-				credentials = dvse.credentials;
-				wkspName = dvse.wkspName;
-			}
-		}
-		if (repository == null || wkspName == null)
-			return null;
+		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
+		String wkspName = event.getParameter(PARAM_WORKSPACE_NAME);
 
-		NormalizationDialog dialog = new NormalizationDialog(
-				HandlerUtil.getActiveShell(event));
-		if (dialog.open() != Dialog.OK)
-			return null;
-
-		String version = dialog.getVersion();
-		Boolean overridePoms = dialog.getOverridePoms();
-
+		Session nodeSession = null;
 		NormalizeJob job;
 		try {
+
+			NormalizationDialog dialog = new NormalizationDialog(
+					HandlerUtil.getActiveShell(event));
+			if (dialog.open() != Dialog.OK)
+				return null;
+
+			nodeSession = nodeRepository.login();
+			Node repoNode = nodeSession.getNode(targetRepoPath);
+			Repository repository = RepoUtils.getRepository(repositoryFactory,
+					keyring, repoNode);
+			Credentials credentials = RepoUtils.getRepositoryCredentials(
+					keyring, repoNode);
+
+			String version = dialog.getVersion();
+			Boolean overridePoms = dialog.getOverridePoms();
+
 			job = new NormalizeJob(repository.login(credentials, wkspName),
 					version, overridePoms);
+			job.setUser(true);
+			job.schedule();
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot normalize " + wkspName, e);
+		} finally {
+			JcrUtils.logoutQuietly(nodeSession);
 		}
-		job.setUser(true);
-		job.schedule();
 		return null;
 	}
 
@@ -182,10 +183,6 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 			JcrUtils.closeQuietly(osgiBinary);
 		}
 
-	}
-
-	public void setRepository(Repository repository) {
-		this.repository = repository;
 	}
 
 	private class NormalizeJob extends Job {
@@ -368,5 +365,18 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 			return overridePoms;
 		}
 
+	}
+
+	/* DEPENDENCY INJECTION */
+	public void setNodeRepository(Repository nodeRepository) {
+		this.nodeRepository = nodeRepository;
+	}
+
+	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+		this.repositoryFactory = repositoryFactory;
+	}
+
+	public void setKeyring(Keyring keyring) {
+		this.keyring = keyring;
 	}
 }

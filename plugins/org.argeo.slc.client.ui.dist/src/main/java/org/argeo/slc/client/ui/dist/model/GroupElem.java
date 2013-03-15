@@ -3,7 +3,6 @@ package org.argeo.slc.client.ui.dist.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -26,11 +25,10 @@ public class GroupElem extends DistParentElem {
 	}
 
 	public Object[] getChildren() {
-		repoElem.connect();
 		Session session = null;
 		try {
 			Repository repository = repoElem.getRepository();
-			Node repoNode = repoElem.getRepoNode();
+			// Node repoNode = repoElem.getRepoNode();
 			session = repository.login(repoElem.getCredentials());
 
 			String[] workspaceNames = session.getWorkspace()
@@ -39,12 +37,8 @@ public class GroupElem extends DistParentElem {
 			for (String workspaceName : workspaceNames) {
 				// filter technical workspaces
 				if (workspaceName.startsWith(name)) {
-					Node workspaceNode = repoNode.hasNode(workspaceName) ? repoNode
-							.getNode(workspaceName) : repoNode
-							.addNode(workspaceName);
 					distributionElems.add(new WorkspaceElem(repoElem,
-							workspaceNode));
-					// FIXME remove deleted workspaces
+							workspaceName));
 				}
 			}
 			return distributionElems.toArray();

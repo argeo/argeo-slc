@@ -20,19 +20,15 @@ import java.text.SimpleDateFormat;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.providers.ArtifactsTreeContentProvider;
+import org.argeo.slc.client.ui.dist.controllers.ArtifactsTreeContentProvider;
 import org.argeo.slc.client.ui.dist.utils.GenericDoubleClickListener;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
@@ -60,7 +56,7 @@ import org.eclipse.ui.part.ViewPart;
 
 public class ArtifactsBrowser extends ViewPart implements DistConstants,
 		RepoConstants {
-	private final static Log log = LogFactory.getLog(ArtifactsBrowser.class);
+	// private final static Log log = LogFactory.getLog(ArtifactsBrowser.class);
 	public final static String ID = DistPlugin.ID + ".artifactsBrowser";
 
 	/* DEPENDENCY INJECTION */
@@ -255,23 +251,23 @@ public class ArtifactsBrowser extends ViewPart implements DistConstants,
 			return null;
 		}
 
-		private String formatValueAsString(Value value) {
-			// TODO enhance this method
-			try {
-				String strValue;
-
-				if (value.getType() == PropertyType.BINARY)
-					strValue = "<binary>";
-				else if (value.getType() == PropertyType.DATE)
-					strValue = timeFormatter.format(value.getDate().getTime());
-				else
-					strValue = value.getString();
-				return strValue;
-			} catch (RepositoryException e) {
-				throw new ArgeoException(
-						"unexpected error while formatting value", e);
-			}
-		}
+		// private String formatValueAsString(Value value) {
+		// // TODO enhance this method
+		// try {
+		// String strValue;
+		//
+		// if (value.getType() == PropertyType.BINARY)
+		// strValue = "<binary>";
+		// else if (value.getType() == PropertyType.DATE)
+		// strValue = timeFormatter.format(value.getDate().getTime());
+		// else
+		// strValue = value.getString();
+		// return strValue;
+		// } catch (RepositoryException e) {
+		// throw new ArgeoException(
+		// "unexpected error while formatting value", e);
+		// }
+		// }
 	}
 
 	private class ArtifactTreeSelectionListener implements

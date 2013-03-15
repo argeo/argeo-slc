@@ -19,6 +19,7 @@ import javax.jcr.Credentials;
 import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
@@ -26,15 +27,13 @@ import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
-import org.argeo.slc.client.ui.dist.views.DistributionsView;
-import org.argeo.slc.client.ui.dist.views.DistributionsView.DistributionViewSelectedElement;
 import org.argeo.slc.repo.RepoUtils;
+import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Create a copy of the chosen workspace in the current repository.
@@ -44,37 +43,39 @@ public class CopyWorkspace extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(CopyWorkspace.class);
 	public final static String ID = DistPlugin.ID + ".copyWorkspace";
 	public final static String DEFAULT_LABEL = "Duplicate";
+	public final static String PARAM_SOURCE_WORKSPACE_NAME = "srcWkspName";
+	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
 
-	private Repository repository;
-	private Credentials credentials;
-	private String wkspName;
+	// DEPENDENCY INJECTION
+	private RepositoryFactory repositoryFactory;
+	private Keyring keyring;
+	private Repository nodeRepository;
+
 	private String slcRole = "ROLE_SLC";
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow iww = DistPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow();
-		IWorkbenchPart view = iww.getActivePage().getActivePart();
-		if (view instanceof DistributionsView) {
-			DistributionViewSelectedElement dvse = ((DistributionsView) view)
-					.getSelectedElement();
-			if (dvse != null && (dvse.isWorkspace)) {
-				repository = dvse.repository;
-				credentials = dvse.credentials;
-				wkspName = dvse.wkspName;
-			}
-		}
-		if (repository == null || wkspName == null)
-			return null;
 
-		InputDialog inputDialog = new InputDialog(iww.getShell(),
-				"New copy of workspace " + wkspName,
-				"Choose a name for the workspace to create", "", null);
-		inputDialog.open();
-		String newWorkspaceName = inputDialog.getValue();
+		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
+		String wkspName = event.getParameter(PARAM_SOURCE_WORKSPACE_NAME);
+
+		Session nodeSession = null;
 		Session srcSession = null;
 		Session newSession = null;
 		try {
+			nodeSession = nodeRepository.login();
+			Node repoNode = nodeSession.getNode(targetRepoPath);
+			Repository repository = RepoUtils.getRepository(repositoryFactory,
+					keyring, repoNode);
+			Credentials credentials = RepoUtils.getRepositoryCredentials(
+					keyring, repoNode);
+
+			InputDialog inputDialog = new InputDialog(HandlerUtil
+					.getActiveWorkbenchWindow(event).getShell(),
+					"New copy of workspace " + wkspName,
+					"Choose a name for the workspace to create", "", null);
+			inputDialog.open();
+			String newWorkspaceName = inputDialog.getValue();
 			srcSession = repository.login(credentials, wkspName);
 
 			// Create the workspace
@@ -91,16 +92,23 @@ public class CopyWorkspace extends AbstractHandler {
 			throw new ArgeoException(
 					"Unexpected error while creating the new workspace.", re);
 		} finally {
-			if (srcSession != null)
-				srcSession.logout();
-			if (newSession != null)
-				newSession.logout();
+			JcrUtils.logoutQuietly(newSession);
+			JcrUtils.logoutQuietly(srcSession);
+			JcrUtils.logoutQuietly(nodeSession);
 		}
 		return null;
 	}
 
 	/* DEPENDENCY INJECTION */
-	public void setRepository(Repository repository) {
-		this.repository = repository;
+	public void setNodeRepository(Repository nodeRepository) {
+		this.nodeRepository = nodeRepository;
+	}
+
+	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+		this.repositoryFactory = repositoryFactory;
+	}
+
+	public void setKeyring(Keyring keyring) {
+		this.keyring = keyring;
 	}
 }

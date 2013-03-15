@@ -53,10 +53,24 @@
 
 	<!-- Corresponding content provider -->
 	<bean id="distTreeContentProvider"
-		class="org.argeo.slc.client.ui.dist.providers.DistTreeContentProvider"
+		class="org.argeo.slc.client.ui.dist.controllers.DistTreeContentProvider"
 		scope="prototype">
 		<property name="repositoryFactory" ref="repositoryFactory" />
 		<property name="keyring" ref="keyring" />
+	</bean>
+
+	<!-- ANONYMOUS DISTRIBUTION VIEW -->
+	<bean id="anonymousDistributionsView"
+		class="org.argeo.slc.client.ui.dist.views.AnonymousDistributionsView"
+		scope="prototype">
+		<property name="treeContentProvider" ref="anonymousDistTreeContentProvider" />
+	</bean>
+
+	<!-- Corresponding content provider -->
+	<bean id="anonymousDistTreeContentProvider"
+		class="org.argeo.slc.client.ui.dist.controllers.AnonymousDistTreeContentProvider"
+		scope="prototype">
+		<property name="repositoryFactory" ref="repositoryFactory" />
 	</bean>
 
 	<!-- <bean id="distributionPerspective" class="org.argeo.slc.client.ui.dist.DistributionPerspective" 

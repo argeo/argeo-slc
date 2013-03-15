@@ -29,16 +29,18 @@ import org.eclipse.ui.IPersistableElement;
  * */
 public class DistributionEditorInput implements IEditorInput, SlcNames {
 
+	private Repository repository;
+	private Credentials credentials;
 	private String repositoryName;
 	private String repositoryDescription;
-	private Repository repository;
 	private String workspaceName;
-	private String artifactsBase = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
-	private Credentials credentials;
 
-	public DistributionEditorInput(String repositoryName,
-			String repositoryDescription, Repository repository,
-			String workspaceName, String artifactsBase, Credentials credentials) {
+	private String artifactsBase;
+
+	public DistributionEditorInput(Repository repository,
+			Credentials credentials, String repositoryName,
+			String repositoryDescription, String workspaceName,
+			String artifactsBase) {
 		super();
 		this.repository = repository;
 		this.repositoryName = repositoryName;
@@ -48,11 +50,11 @@ public class DistributionEditorInput implements IEditorInput, SlcNames {
 		this.credentials = credentials;
 	}
 
-	public DistributionEditorInput(String repositoryName,
-			String repositoryDescription, Repository repository,
-			String workspaceName, Credentials credentials) {
-		this(repositoryName, repositoryDescription, repository, workspaceName,
-				RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, credentials);
+	public DistributionEditorInput(Repository repository,
+			Credentials credentials, String repositoryName,
+			String repositoryDescription, String workspaceName) {
+		this(repository, credentials, repositoryName, repositoryDescription,
+				workspaceName, RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH);
 	}
 
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {

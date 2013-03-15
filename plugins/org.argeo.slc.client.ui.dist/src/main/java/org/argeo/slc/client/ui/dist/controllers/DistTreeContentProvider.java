@@ -1,4 +1,4 @@
-package org.argeo.slc.client.ui.dist.providers;
+package org.argeo.slc.client.ui.dist.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,18 +53,9 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 			NodeIterator repos = nodeSession.getNode(reposPath).getNodes();
 			while (repos.hasNext()) {
 				Node repoNode = repos.nextNode();
-				if (repoNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
-					if (RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS
-							.equals(repoNode.getName()))
-						repositories.add(new RepoElem(repoNode,
-								repositoryFactory, keyring, true, false));
-					else if (repoNode.hasNode(ArgeoNames.ARGEO_PASSWORD))
-						repositories.add(new RepoElem(repoNode,
-								repositoryFactory, keyring));
-					else
-						repositories.add(new RepoElem(repoNode,
-								repositoryFactory, keyring, false, true));
-				}
+				if (repoNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY))
+					repositories.add(new RepoElem(repoNode, repositoryFactory,
+							keyring));
 			}
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot get base elements", e);
@@ -90,12 +81,12 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 	}
 
 	public boolean hasChildren(Object element) {
-		if (element instanceof DistParentElem) {
-			return true;
-		} else if (element instanceof WorkspaceElem) {
+		if (element instanceof WorkspaceElem)
 			return false;
-		}
-		return false;
+		else if (element instanceof DistParentElem)
+			return true;
+		else
+			return false;
 	}
 
 	public void dispose() {

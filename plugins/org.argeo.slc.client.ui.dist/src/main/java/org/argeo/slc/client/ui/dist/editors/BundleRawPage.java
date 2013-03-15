@@ -29,7 +29,6 @@ import javax.jcr.nodetype.NodeType;
 import org.argeo.ArgeoException;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.utils.DistUiHelpers;
-import org.argeo.slc.client.ui.dist.utils.GenericDoubleClickListener;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -91,7 +90,7 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 		complexTree = new TreeViewer(tree);
 
 		// Configure
-		complexTree.addDoubleClickListener(new GenericDoubleClickListener());
+		// complexTree.addDoubleClickListener(new GenericDoubleClickListener());
 		complexTree = new TreeViewer(tree);
 		complexTree.setContentProvider(new TreeContentProvider());
 		complexTree.setLabelProvider(new TreeLabelProvider());
@@ -238,6 +237,16 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 						elements.add(child);
 					}
 				}
+
+				// Properties
+				PropertyIterator pi = node.getProperties();
+				while (pi.hasNext()) {
+					Property curProp = pi.nextProperty();
+					if (!curProp.getName().startsWith("jcr:")
+							&& !curProp.isMultiple())
+						elements.add(curProp);
+				}
+
 			} catch (RepositoryException e) {
 				throw new ArgeoException(
 						"Unexpected exception while listing node properties", e);

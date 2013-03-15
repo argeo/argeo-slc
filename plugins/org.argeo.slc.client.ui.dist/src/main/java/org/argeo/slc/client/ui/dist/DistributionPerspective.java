@@ -39,7 +39,7 @@ public class DistributionPerspective implements IPerspectiveFactory {
 		layout.setFixed(false);
 
 		IFolderLayout main = layout.createFolder("main", IPageLayout.LEFT,
-				0.5f, editorArea);
+				0.3f, editorArea);
 		main.addView(DistributionsView.ID);
 		main.addView("org.eclipse.ui.views.ProgressView");
 

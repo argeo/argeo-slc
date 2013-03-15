@@ -41,6 +41,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
@@ -49,7 +50,6 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -73,6 +73,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
@@ -109,32 +110,37 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 	}
 
 	private void asynchronousRefresh() {
-		refreshFilteredList();
-		// FIXME Does not work yet: how can the job set the viewer input ?
-		// RefreshJob job = new RefreshJob(session, artifactTxt.getText());
-		// job.setUser(true);
-		// job.schedule();
-		// viewer.setInput(nodes);
+		RefreshJob job = new RefreshJob(artifactTxt.getText(), viewer,
+				getSite().getShell().getDisplay());
+		job.setUser(true);
+		job.schedule();
 	}
 
-	private class RefreshJob extends Job {
-		private Session session;
-		private List<Node> nodes;
+	private class RefreshJob extends PrivilegedJob {
+		private TableViewer viewer;
 		private String filter;
+		private Display display;
 
-		public RefreshJob(Session session, String filter, List<Node> nodes) {
+		public RefreshJob(String filter, TableViewer viewer, Display display) {
 			super("Get bundle list");
-			this.session = session;
+			this.filter = filter;
+			this.viewer = viewer;
+			this.display = display;
 		}
 
 		@Override
-		protected IStatus run(IProgressMonitor progressMonitor) {
+		protected IStatus doRun(IProgressMonitor progressMonitor) {
 			try {
 				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
 				monitor.beginTask("Getting bundle list", -1);
-				List<Node> result = JcrUtils
+				final List<Node> result = JcrUtils
 						.nodeIteratorToList(listBundleArtifacts(session, filter));
-				nodes.addAll(result);
+
+				display.asyncExec(new Runnable() {
+					public void run() {
+						viewer.setInput(result);
+					}
+				});
 			} catch (Exception e) {
 				return new Status(IStatus.ERROR, DistPlugin.ID,
 						"Cannot get bundle list", e);

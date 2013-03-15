@@ -19,6 +19,7 @@ import java.net.URI;
 import java.util.Hashtable;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryFactory;
@@ -26,7 +27,6 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeType;
 
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.ArgeoJcrConstants;
 import org.argeo.jcr.ArgeoJcrUtils;
@@ -113,9 +113,26 @@ public class RegisterRepoWizard extends Wizard {
 			Node repos = nodeSession.getNode(reposPath);
 			String repoNodeName = JcrUtils.replaceInvalidChars(name.getText());
 			if (repos.hasNode(repoNodeName))
-				throw new ArgeoException(
+				throw new SlcException(
 						"There is already a remote repository named "
 								+ repoNodeName);
+
+			// check if the same URI has already been registered
+			NodeIterator ni = repos.getNodes();
+			while (ni.hasNext()) {
+				Node node = ni.nextNode();
+				if (node.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)
+						&& node.hasProperty(ArgeoNames.ARGEO_URI)
+						&& node.getProperty(ArgeoNames.ARGEO_URI).getString()
+								.equals(uri.getText()))
+					throw new SlcException(
+							"This URI "
+									+ uri.getText()
+									+ " is already registered, "
+									+ "for the time being, only one instance of a single "
+									+ "repository at a time is implemented.");
+			}
+
 			Node repoNode = repos.addNode(repoNodeName,
 					ArgeoTypes.ARGEO_REMOTE_REPOSITORY);
 			repoNode.setProperty(ArgeoNames.ARGEO_URI, uri.getText());

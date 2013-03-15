@@ -16,22 +16,22 @@
 package org.argeo.slc.client.ui.dist.commands;
 
 import javax.jcr.Credentials;
+import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.views.DistributionsView;
-import org.argeo.slc.client.ui.dist.views.DistributionsView.DistributionViewSelectedElement;
+import org.argeo.slc.repo.RepoUtils;
+import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 
 /**
  * Publish the current workspace by giving REOD_ONLY rights to anonymous.
@@ -42,28 +42,31 @@ public class PublishWorkspace extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".publishWorkspace";
 	public final static String DEFAULT_LABEL = "Publish workspace";
 	public final static String DEFAULT_ICON_PATH = "icons/publish.gif";
+	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
+	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
+
+	// DEPENDENCY INJECTION
+	private RepositoryFactory repositoryFactory;
+	private Keyring keyring;
+	private Repository nodeRepository;
 
 	private String publicRole = "anonymous";
 
-	private String workspaceName;
-	private Repository repository;
-	private Credentials credentials;
-
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow iww = DistPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow();
-		IWorkbenchPart view = iww.getActivePage().getActivePart();
-		if (view instanceof DistributionsView) {
-			DistributionViewSelectedElement dvse = ((DistributionsView) view)
-					.getSelectedElement();
-			if (dvse != null && dvse.isWorkspace) {
-				repository = dvse.repository;
-				credentials = dvse.credentials;
-				workspaceName = dvse.wkspName;
-			}
-		}
+		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
+		String workspaceName = event.getParameter(PARAM_WORKSPACE_NAME);
 
-		if (repository != null && workspaceName != null) {
+		Session nodeSession = null;
+		Session session = null;
+
+		try {
+			nodeSession = nodeRepository.login();
+			Node repoNode = nodeSession.getNode(targetRepoPath);
+			Repository repository = RepoUtils.getRepository(repositoryFactory,
+					keyring, repoNode);
+			Credentials credentials = RepoUtils.getRepositoryCredentials(
+					keyring, repoNode);
+
 			String msg = "Are you sure you want to publish this distribution: "
 					+ workspaceName + " ?";
 			boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
@@ -72,30 +75,34 @@ public class PublishWorkspace extends AbstractHandler {
 
 			if (result) {
 
-				Session session = null;
-				try {
-					session = repository.login(credentials, workspaceName);
-					JcrUtils.addPrivilege(session, "/", publicRole,
-							Privilege.JCR_READ);
-					JcrUtils.logoutQuietly(session);
-					// CommandHelpers.callCommand(RefreshDistributionsView.ID);
-				} catch (RepositoryException re) {
-					throw new ArgeoException(
-							"Unexpected error while publishing workspace "
-									+ workspaceName, re);
-				} finally {
-					JcrUtils.logoutQuietly(session);
-				}
+				session = repository.login(credentials, workspaceName);
+				JcrUtils.addPrivilege(session, "/", publicRole,
+						Privilege.JCR_READ);
+				session.save();
+				JcrUtils.logoutQuietly(session);
+				// CommandHelpers.callCommand(RefreshDistributionsView.ID);
 			}
+		} catch (RepositoryException re) {
+			throw new ArgeoException(
+					"Unexpected error while publishing workspace "
+							+ workspaceName, re);
+		} finally {
+			JcrUtils.logoutQuietly(session);
+			JcrUtils.logoutQuietly(nodeSession);
 		}
 		return null;
 	}
 
-	public void setRepository(Repository repository) {
-		this.repository = repository;
+	/* DEPENDENCY INJECTION */
+	public void setNodeRepository(Repository nodeRepository) {
+		this.nodeRepository = nodeRepository;
 	}
 
-	public void setWorkspaceName(String workspaceName) {
-		this.workspaceName = workspaceName;
+	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+		this.repositoryFactory = repositoryFactory;
+	}
+
+	public void setKeyring(Keyring keyring) {
+		this.keyring = keyring;
 	}
 }

@@ -27,8 +27,6 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 
 public class RefreshDistributionsView extends AbstractHandler {
-	// private static final Log log = LogFactory
-	// .getLog(RefreshDistributionsView.class);
 	public final static String ID = DistPlugin.ID + ".refreshDistributionsView";
 	public final static String DEFAULT_LABEL = "Refresh the distribution view";
 	public final static String DEFAULT_ICON_PATH = "icons/refresh.png";

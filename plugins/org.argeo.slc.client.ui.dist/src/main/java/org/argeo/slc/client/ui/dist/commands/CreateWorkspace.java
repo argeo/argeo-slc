@@ -16,8 +16,10 @@
 package org.argeo.slc.client.ui.dist.commands;
 
 import javax.jcr.Credentials;
+import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
@@ -27,15 +29,14 @@ import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
-import org.argeo.slc.client.ui.dist.views.DistributionsView;
-import org.argeo.slc.client.ui.dist.views.DistributionsView.DistributionViewSelectedElement;
+import org.argeo.slc.repo.RepoUtils;
+import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Create a new empty workspace in the current repository.
@@ -44,36 +45,39 @@ import org.eclipse.ui.IWorkbenchWindow;
 public class CreateWorkspace extends AbstractHandler {
 	private static final Log log = LogFactory.getLog(CreateWorkspace.class);
 	public final static String ID = DistPlugin.ID + ".createWorkspace";
-	public final static String DEFAULT_LABEL = "Create new workspace...";
+	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
+	public final static String PARAM_WORKSPACE_PREFIX = "workspacePrefix";
+	public final static String DEFAULT_LABEL = "Create workspace...";
 	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
 
 	private String slcRole = "ROLE_SLC";
 
-	private Repository repository;
-	private Credentials credentials;
+	// DEPENDENCY INJECTION
+	private RepositoryFactory repositoryFactory;
+	private Keyring keyring;
+	private Repository nodeRepository;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow iww = DistPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow();
-		String prefix = "";
 
-		IWorkbenchPart view = iww.getActivePage().getActivePart();
-		if (view instanceof DistributionsView) {
-			DistributionViewSelectedElement dvse = ((DistributionsView) view)
-					.getSelectedElement();
-			if (dvse != null && (dvse.isRepository || dvse.isWorkspaceGroup)) {
-				repository = dvse.repository;
-				credentials = dvse.credentials;
-				prefix = dvse.wkspPrefix;
-			}
-		}
+		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
+		String prefix = event.getParameter(PARAM_WORKSPACE_PREFIX);
 
-		if (repository != null) {
+		Session nodeSession = null;
+		Session session = null;
+		try {
+			nodeSession = nodeRepository.login();
+			Node repoNode = nodeSession.getNode(targetRepoPath);
+			Repository repository = RepoUtils.getRepository(repositoryFactory,
+					keyring, repoNode);
+			Credentials credentials = RepoUtils.getRepositoryCredentials(
+					keyring, repoNode);
+
 			// TODO : add an input validator
-			InputDialog inputDialog = new InputDialog(iww.getShell(),
+			InputDialog inputDialog = new InputDialog(HandlerUtil
+					.getActiveWorkbenchWindow(event).getShell(),
 					"Workspace name?",
-					"Choose a name for the workspace to create", prefix + "-",
-					null);
+					"Choose a name for the workspace to create",
+					prefix == null ? "" : prefix + "-", null);
 			int result = inputDialog.open();
 
 			String workspaceName = inputDialog.getValue();
@@ -83,37 +87,36 @@ public class CreateWorkspace extends AbstractHandler {
 					|| "".equals(workspaceName.trim()))
 				return null;
 
-			Session session = null;
-			try {
-				session = repository.login(credentials);
-				session.getWorkspace().createWorkspace(workspaceName);
-				JcrUtils.logoutQuietly(session);
-				// init new workspace
-				session = repository.login(workspaceName);
-				JcrUtils.addPrivilege(session, "/", slcRole, Privilege.JCR_ALL);
-				CommandHelpers.callCommand(RefreshDistributionsView.ID);
-			} catch (RepositoryException re) {
-				throw new ArgeoException(
-						"Unexpected error while creating the new workspace.",
-						re);
-			} finally {
-				JcrUtils.logoutQuietly(session);
-			}
+			session = repository.login(credentials);
+			session.getWorkspace().createWorkspace(workspaceName);
+			JcrUtils.logoutQuietly(session);
+			// init new workspace
+			session = repository.login(credentials, workspaceName);
+			JcrUtils.addPrivilege(session, "/", slcRole, Privilege.JCR_ALL);
+			CommandHelpers.callCommand(RefreshDistributionsView.ID);
 			if (log.isTraceEnabled())
 				log.trace("WORKSPACE " + workspaceName + " CREATED");
+
+		} catch (RepositoryException re) {
+			throw new ArgeoException(
+					"Unexpected error while creating the new workspace.", re);
+		} finally {
+			JcrUtils.logoutQuietly(session);
+			JcrUtils.logoutQuietly(nodeSession);
 		}
 		return null;
 	}
 
-	public void setRepository(Repository repository) {
-		this.repository = repository;
+	/* DEPENDENCY INJECTION */
+	public void setNodeRepository(Repository nodeRepository) {
+		this.nodeRepository = nodeRepository;
 	}
 
-	public void setCredentials(Credentials credentials) {
-		this.credentials = credentials;
+	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+		this.repositoryFactory = repositoryFactory;
 	}
 
-	public void setSlcRole(String slcRole) {
-		this.slcRole = slcRole;
+	public void setKeyring(Keyring keyring) {
+		this.keyring = keyring;
 	}
 }

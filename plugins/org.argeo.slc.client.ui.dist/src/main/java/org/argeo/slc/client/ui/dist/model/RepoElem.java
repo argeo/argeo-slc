@@ -12,70 +12,91 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
+import org.argeo.jcr.ArgeoJcrUtils;
+import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.util.security.Keyring;
 
+/**
+ * Abstract a repository. Might be persisted by a node in the current user home
+ * Node or just an URI and a label if user is anonymous
+ */
 public class RepoElem extends DistParentElem {
-	private Node repoNode;
+
 	private Repository repository;
 	private Credentials credentials;
-
 	private RepositoryFactory repositoryFactory;
 	private Keyring keyring;
 
-	@Deprecated
-	public RepoElem(Node repoNode, boolean inHome, boolean isReadOnly) {
-		super(inHome, isReadOnly);
-		this.repoNode = repoNode;
-	}
+	// Defines current repo
+	private Node repoNode = null;
+	private String label;
+	private String uri;
 
-	/** Inject repofactory and keyring to enable lazy init */
-	public RepoElem(Node repoNode, RepositoryFactory repoFactory,
-			Keyring keyring, boolean inHome, boolean isReadOnly) {
-		super(inHome, isReadOnly);
-		this.repoNode = repoNode;
-		this.repositoryFactory = repoFactory;
-		this.keyring = keyring;
-	}
-
-	/** Inject repofactory and keyring to enable lazy init */
+	/**
+	 * Creates a RepoElement for an authenticated user. repofactory and keyring
+	 * are used to enable lazy init
+	 * 
+	 */
 	public RepoElem(Node repoNode, RepositoryFactory repoFactory,
 			Keyring keyring) {
 		this.repoNode = repoNode;
 		this.repositoryFactory = repoFactory;
 		this.keyring = keyring;
+		try {
+			// initialize this repo informations
+			setInHome(RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS
+					.equals(repoNode.getName()));
+			if (!inHome())
+				setReadOnly(!repoNode.hasNode(ArgeoNames.ARGEO_PASSWORD));
+			uri = JcrUtils.get(repoNode, ArgeoNames.ARGEO_URI);
+			label = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
+					.getProperty(Property.JCR_TITLE).getString() : repoNode
+					.getName();
+		} catch (RepositoryException e) {
+			throw new SlcException("Unable to " + "initialize repo element", e);
+		}
 	}
 
-	@Deprecated
-	public RepoElem(Node repoNode) {
-		this.repoNode = repoNode;
+	/**
+	 * Creates a RepoElement for anonymous user. repofactory is used to enable
+	 * lazy init
+	 * 
+	 */
+	public RepoElem(RepositoryFactory repoFactory, String uri, String label) {
+		this.repositoryFactory = repoFactory;
+		this.uri = uri;
+		this.label = label;
 	}
 
 	/** Lazily connects to repository */
 	protected void connect() {
 		if (repository != null)
 			return;
-		repository = RepoUtils.getRepository(repositoryFactory, keyring,
-				repoNode);
-		credentials = RepoUtils.getRepositoryCredentials(keyring, repoNode);
-	}
-
-	public String getLabel() {
-		try {
-			if (repoNode.isNodeType(NodeType.MIX_TITLE)) {
-				return repoNode.getProperty(Property.JCR_TITLE).getString();
-			} else {
-				return repoNode.getName();
-			}
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot read label of " + repoNode, e);
+		if (repoNode == null)
+			// Anonymous
+			repository = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory,
+					uri);
+		else {
+			repository = RepoUtils.getRepository(repositoryFactory, keyring,
+					repoNode);
+			credentials = RepoUtils.getRepositoryCredentials(keyring, repoNode);
 		}
 	}
 
+	public String getLabel() {
+		return label;
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
 	public String toString() {
-		return repoNode.toString();
+		return repoNode != null ? repoNode.toString() : label;
 	}
 
 	public Object[] getChildren() {
@@ -85,23 +106,43 @@ public class RepoElem extends DistParentElem {
 			session = repository.login(credentials);
 			String[] workspaceNames = session.getWorkspace()
 					.getAccessibleWorkspaceNames();
-			// List<DistributionElem> distributionElems = new
-			// ArrayList<DistributionElem>();
 			Map<String, GroupElem> children = new HashMap<String, GroupElem>();
-			for (String workspaceName : workspaceNames) {
+
+			buildWksp: for (String workspaceName : workspaceNames) {
+				// Add a supplementary check to hide workspace that are not
+				// public to anonymous user
+
+				// TODO fix this
+				// if (repoNode == null) {
+				// Session tmpSession = null;
+				// try {
+				// tmpSession = repository.login();
+				// Privilege[] priv = new Privilege[1];
+				// priv[0] = tmpSession.getAccessControlManager()
+				// .privilegeFromName(Privilege.JCR_READ);
+				// Privilege[] tmp = tmpSession.getAccessControlManager()
+				// .getPrivileges("/");
+				// boolean res = tmpSession.getAccessControlManager()
+				// .hasPrivileges("/", priv);
+				// if (!res)
+				// continue buildWksp;
+				// } catch (RepositoryException e) {
+				// throw new SlcException(
+				// "Cannot list workspaces for anonymous user", e);
+				// } finally {
+				// JcrUtils.logoutQuietly(tmpSession);
+				// }
+				// }
+
 				// filter technical workspaces
 				// FIXME: rely on a more robust rule than just wksp name
 				if (workspaceName.lastIndexOf('-') > 0) {
 					String prefix = workspaceName.substring(0,
 							workspaceName.lastIndexOf('-'));
-					if (!repoNode.hasNode(workspaceName))
-						repoNode.addNode(workspaceName);
-					repoNode.getSession().save();
 					if (!children.containsKey(prefix)) {
 						children.put(prefix, new GroupElem(RepoElem.this,
 								prefix));
 					}
-					// FIXME remove deleted workspaces
 				}
 			}
 			return children.values().toArray();
@@ -109,14 +150,6 @@ public class RepoElem extends DistParentElem {
 			throw new SlcException("Cannot list workspaces for " + repoNode, e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
-		}
-	}
-
-	public String getRepoPath() {
-		try {
-			return repoNode.getPath();
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot get path for " + repoNode, e);
 		}
 	}
 
@@ -129,8 +162,15 @@ public class RepoElem extends DistParentElem {
 		return credentials;
 	}
 
+	public String getDescription() {
+		String desc = label;
+		if (repoNode != null)
+			desc = label + " (" + uri + ")";
+		return desc;
+	}
+
+	/** Might return null in case of an anonymous user */
 	public Node getRepoNode() {
 		return repoNode;
 	}
-
 }

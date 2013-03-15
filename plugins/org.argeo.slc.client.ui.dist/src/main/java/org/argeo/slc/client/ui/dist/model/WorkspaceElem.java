@@ -1,70 +1,49 @@
 package org.argeo.slc.client.ui.dist.model;
 
-import javax.jcr.Credentials;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import org.argeo.eclipse.ui.TreeParent;
-import org.argeo.jcr.JcrUtils;
-import org.argeo.slc.SlcException;
-
 /** Abstracts a workspace that contains a given distribution */
-public class WorkspaceElem extends TreeParent {
+public class WorkspaceElem extends DistParentElem {
 	private final RepoElem repoElem;
-	private final Node workspaceNode;
+	private String workspaceName;
+	private String label;
 
 	/**
 	 * Helper to display only version when the workspace name is well formatted
 	 */
-	private static String formatName(Node workspaceNode) {
-		String name = JcrUtils.getNameQuietly(workspaceNode);
+	private static String formatName(String name) {
 		if (name != null && name.lastIndexOf('-') > 0)
 			return name.substring(name.lastIndexOf('-') + 1);
 		else
 			return name;
 	}
 
-	public WorkspaceElem(RepoElem repoElem, Node workspaceNode) {
-		super(formatName(workspaceNode));
+	public WorkspaceElem(RepoElem repoElem, String workspaceName) {
 		this.repoElem = repoElem;
-		this.workspaceNode = workspaceNode;
-	}
-
-	public Node getWorkspaceNode() {
-		return workspaceNode;
+		this.workspaceName = workspaceName;
+		this.label = formatName(workspaceName);
 	}
 
 	public String getWorkspaceName() {
-		return JcrUtils.getNameQuietly(workspaceNode);
-	}
-
-	public String getWorkspacePath() {
-		try {
-			return workspaceNode.getPath();
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot get or add workspace path "
-					+ getWorkspaceName(), e);
-		}
-	}
-
-	public String getRepoPath() {
-		try {
-			return workspaceNode.getParent().getPath();
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot get or add workspace path "
-					+ getWorkspaceName(), e);
-		}
+		return workspaceName;
 	}
 
 	public RepoElem getRepoElem() {
 		return repoElem;
 	}
 
-	public Credentials getCredentials() {
-		return repoElem.getCredentials();
-	}
-
 	public boolean isReadOnly() {
 		return repoElem.isReadOnly();
+	}
+
+	public boolean hasChildren() {
+		return false;
+	}
+
+	public Object[] getChildren() {
+		return null;
+	}
+
+	@Override
+	public String getLabel() {
+		return label;
 	}
 }

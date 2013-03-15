@@ -18,53 +18,38 @@ package org.argeo.slc.client.ui.dist.views;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.jcr.Credentials;
-import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoMonitor;
-import org.argeo.eclipse.ui.EclipseArgeoMonitor;
-import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.jcr.ArgeoNames;
-import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DisplayRepoInformation;
 import org.argeo.slc.client.ui.dist.commands.Fetch;
+import org.argeo.slc.client.ui.dist.commands.MergeWorkspaces;
 import org.argeo.slc.client.ui.dist.commands.NormalizeDistribution;
 import org.argeo.slc.client.ui.dist.commands.PublishWorkspace;
+import org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView;
 import org.argeo.slc.client.ui.dist.commands.RegisterRepository;
 import org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo;
-import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
-import org.argeo.slc.client.ui.dist.editors.DistributionEditorInput;
+import org.argeo.slc.client.ui.dist.controllers.DistTreeComparator;
+import org.argeo.slc.client.ui.dist.controllers.DistTreeContentProvider;
+import org.argeo.slc.client.ui.dist.controllers.DistTreeDoubleClickListener;
+import org.argeo.slc.client.ui.dist.controllers.DistTreeLabelProvider;
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
 import org.argeo.slc.client.ui.dist.model.GroupElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
-import org.argeo.slc.client.ui.dist.providers.DistTreeContentProvider;
-import org.argeo.slc.client.ui.dist.providers.DistTreeLabelProvider;
-import org.argeo.slc.client.ui.dist.utils.ArtifactNamesComparator;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.jcr.SlcNames;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -81,7 +66,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -89,7 +73,8 @@ import org.eclipse.ui.part.ViewPart;
  * (like fetch, merge, publish, etc.).
  */
 public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames {
-	private final static Log log = LogFactory.getLog(DistributionsView.class);
+	// private final static Log log =
+	// LogFactory.getLog(DistributionsView.class);
 	public final static String ID = DistPlugin.ID + ".distributionsView";
 
 	/* DEPENDENCY INJECTION */
@@ -114,8 +99,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		// viewer.setContentProvider(new DistTreeContentProvider());
 		viewer.setContentProvider(treeContentProvider);
-		viewer.addDoubleClickListener(new DistributionsDCL());
-		viewer.setComparator(new BrowserElementComparator());
+		viewer.addDoubleClickListener(new DistTreeDoubleClickListener());
+		viewer.setComparator(new DistTreeComparator());
 
 		// Enable selection retrieving from outside the view
 		getSite().setSelectionProvider(viewer);
@@ -144,181 +129,148 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	protected void contextMenuAboutToShow(IMenuManager menuManager) {
 		IWorkbenchWindow window = DistPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
-		// Most of the implemented commands support only one selected
-		// element
-		boolean singleElement = ((IStructuredSelection) viewer.getSelection())
-				.size() == 1;
-		// Get Current selected item :
-		Object firstElement = ((IStructuredSelection) viewer.getSelection())
-				.getFirstElement();
 
-		if (firstElement instanceof TreeParent
-				|| firstElement instanceof DistParentElem) {
-			String targetRepoPath = null;
+		try {
+			// Most of the implemented commands support only one selected
+			// element
+			boolean singleElement = ((IStructuredSelection) viewer
+					.getSelection()).size() == 1;
+			// Get Current selected item :
+			Object firstElement = ((IStructuredSelection) viewer.getSelection())
+					.getFirstElement();
 
-			// Build conditions depending on element type
-			boolean isDistribElem = false, isRepoElem = false, isDistribGroupElem = false;
-			boolean isHomeRepo = false, isReadOnly = true;
+			if (firstElement instanceof TreeParent
+					|| firstElement instanceof DistParentElem) {
 
-			if (firstElement instanceof WorkspaceElem) {
-				WorkspaceElem de = (WorkspaceElem) firstElement;
-				isDistribElem = true;
-				isReadOnly = de.isReadOnly();
-			} else if (firstElement instanceof RepoElem) {
-				RepoElem re = (RepoElem) firstElement;
-				isRepoElem = true;
-				targetRepoPath = re.getRepoPath();
-				isHomeRepo = re.inHome();
-				isReadOnly = re.isReadOnly();
-			} else if (firstElement instanceof GroupElem) {
-				GroupElem dge = (GroupElem) firstElement;
-				isReadOnly = dge.isReadOnly();
-				isDistribGroupElem = true;
+				String targetRepoPath = null, workspaceName = null, workspacePrefix = null;
+				// String targetRepoUri = null;
+				// Build conditions depending on element type
+				boolean isDistribElem = false, isRepoElem = false, isDistribGroupElem = false;
+				boolean isHomeRepo = false, isReadOnly = true;
+
+				RepoElem re = null;
+
+				if (firstElement instanceof WorkspaceElem) {
+					WorkspaceElem de = (WorkspaceElem) firstElement;
+					re = de.getRepoElem();
+					isDistribElem = true;
+					isReadOnly = de.isReadOnly();
+					workspaceName = de.getWorkspaceName();
+				} else if (firstElement instanceof RepoElem) {
+					re = (RepoElem) firstElement;
+					isRepoElem = true;
+					isHomeRepo = re.inHome();
+					isReadOnly = re.isReadOnly();
+				} else if (firstElement instanceof GroupElem) {
+					GroupElem dge = (GroupElem) firstElement;
+					isReadOnly = dge.isReadOnly();
+					isDistribGroupElem = true;
+					re = dge.getRepoElem();
+					workspacePrefix = dge.getLabel();
+				}
+
+				if (re != null) {
+					// targetRepoUri = re.getUri();
+					targetRepoPath = re.getRepoNode().getPath();
+				}
+
+				// Display repo info
+				CommandHelpers.refreshCommand(menuManager, window,
+						DisplayRepoInformation.ID,
+						DisplayRepoInformation.DEFAULT_LABEL,
+						DisplayRepoInformation.DEFAULT_ICON_PATH, isRepoElem
+								&& singleElement);
+
+				// create workspace
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(CreateWorkspace.PARAM_TARGET_REPO_PATH,
+						targetRepoPath);
+				params.put(CreateWorkspace.PARAM_WORKSPACE_PREFIX,
+						workspacePrefix);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
+						CreateWorkspace.DEFAULT_ICON_PATH,
+						(isRepoElem || isDistribGroupElem) && singleElement
+								&& !isReadOnly, params);
+
+				// publish workspace
+				params = new HashMap<String, String>();
+				params.put(PublishWorkspace.PARAM_TARGET_REPO_PATH,
+						targetRepoPath);
+				params.put(PublishWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
+						PublishWorkspace.DEFAULT_ICON_PATH, isDistribElem
+								&& singleElement && !isReadOnly, params);
+
+				// Register a remote repository
+				CommandHelpers.refreshCommand(menuManager, window,
+						RegisterRepository.ID,
+						RegisterRepository.DEFAULT_LABEL,
+						RegisterRepository.DEFAULT_ICON_PATH, isRepoElem
+								&& singleElement);
+
+				// Unregister a remote repository
+				params = new HashMap<String, String>();
+				params.put(UnregisterRemoteRepo.PARAM_REPO_PATH, targetRepoPath);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						UnregisterRemoteRepo.ID,
+						UnregisterRemoteRepo.DEFAULT_LABEL,
+						UnregisterRemoteRepo.DEFAULT_ICON_PATH, isRepoElem
+								&& !isHomeRepo && singleElement, params);
+
+				// Fetch repository
+				params = new HashMap<String, String>();
+				params.put(Fetch.PARAM_TARGET_REPO_PATH, targetRepoPath);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON_PATH,
+						isRepoElem && singleElement && !isReadOnly, params);
+
+				// Normalize workspace
+				params = new HashMap<String, String>();
+				params.put(NormalizeDistribution.PARAM_TARGET_REPO_PATH,
+						targetRepoPath);
+				params.put(NormalizeDistribution.PARAM_WORKSPACE_NAME,
+						workspaceName);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						NormalizeDistribution.ID,
+						NormalizeDistribution.DEFAULT_LABEL,
+						NormalizeDistribution.DEFAULT_ICON_PATH, isDistribElem
+								&& singleElement && !isReadOnly, params);
+
+				// Copy workspace
+				params = new HashMap<String, String>();
+				params.put(CopyWorkspace.PARAM_TARGET_REPO_PATH, targetRepoPath);
+				params.put(CopyWorkspace.PARAM_SOURCE_WORKSPACE_NAME,
+						workspaceName);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
+						CopyWorkspace.DEFAULT_ICON_PATH, isDistribElem
+								&& singleElement, params);
+
+				// Clear Workspace
+				params = new HashMap<String, String>();
+				params.put(DeleteWorkspace.PARAM_TARGET_REPO_PATH,
+						targetRepoPath);
+				params.put(DeleteWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
+				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+						DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
+						DeleteWorkspace.DEFAULT_ICON_PATH, isDistribElem
+								&& singleElement && !isReadOnly, params);
+
+				// // Manage workspace authorizations
+				// params = new HashMap<String, String>();
+				// params.put(ManageWorkspaceAuth.PARAM_WORKSPACE_NAME, wsName);
+				// CommandHelpers.refreshParameterizedCommand(menuManager,
+				// window,
+				// ManageWorkspaceAuth.ID, ManageWorkspaceAuth.DEFAULT_LABEL,
+				// ManageWorkspaceAuth.DEFAULT_ICON_PATH, isDistribElem
+				// && singleElement && !isReadOnly, params);
 			}
-
-			// Display repo info
-			CommandHelpers.refreshCommand(menuManager, window,
-					DisplayRepoInformation.ID,
-					DisplayRepoInformation.DEFAULT_LABEL,
-					DisplayRepoInformation.DEFAULT_ICON_PATH, isRepoElem
-							&& singleElement);
-
-			// create workspace
-			CommandHelpers.refreshCommand(menuManager, window,
-					CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
-					CreateWorkspace.DEFAULT_ICON_PATH,
-					(isRepoElem || isDistribGroupElem) && singleElement
-							&& !isReadOnly);
-			// publish workspace
-			CommandHelpers.refreshCommand(menuManager, window,
-					PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
-					PublishWorkspace.DEFAULT_ICON_PATH, isDistribElem
-							&& singleElement && !isReadOnly);
-
-			// Register a remote repository
-			CommandHelpers.refreshCommand(menuManager, window,
-					RegisterRepository.ID, RegisterRepository.DEFAULT_LABEL,
-					RegisterRepository.DEFAULT_ICON_PATH, isRepoElem
-							&& singleElement);
-
-			// Unregister a remote repository
-			Map<String, String> params = new HashMap<String, String>();
-			params.put(UnregisterRemoteRepo.PARAM_REPO_PATH, targetRepoPath);
-			CommandHelpers.refreshParameterizedCommand(menuManager, window,
-					UnregisterRemoteRepo.ID,
-					UnregisterRemoteRepo.DEFAULT_LABEL,
-					UnregisterRemoteRepo.DEFAULT_ICON_PATH, isRepoElem
-							&& !isHomeRepo && singleElement, params);
-
-			// Fetch repository
-			params = new HashMap<String, String>();
-			params.put(Fetch.PARAM_TARGET_REPO, targetRepoPath);
-			CommandHelpers.refreshParameterizedCommand(menuManager, window,
-					Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON_PATH,
-					isRepoElem && singleElement && !isReadOnly, params);
-
-			// Normalize workspace
-			CommandHelpers.refreshCommand(menuManager, window,
-					NormalizeDistribution.ID,
-					NormalizeDistribution.DEFAULT_LABEL,
-					NormalizeDistribution.DEFAULT_ICON_PATH, isDistribElem
-							&& singleElement && !isReadOnly);
-
-			// Copy workspace
-			CommandHelpers.refreshCommand(menuManager, window,
-					CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
-					CopyWorkspace.DEFAULT_ICON_PATH, isDistribElem
-							&& singleElement);
-
-			// Clear Workspace
-			CommandHelpers.refreshCommand(menuManager, window,
-					DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
-					DeleteWorkspace.DEFAULT_ICON_PATH, isDistribElem
-							&& singleElement && !isReadOnly);
-
-			// // Manage workspace authorizations
-			// params = new HashMap<String, String>();
-			// params.put(ManageWorkspaceAuth.PARAM_WORKSPACE_NAME, wsName);
-			// CommandHelpers.refreshParameterizedCommand(menuManager, window,
-			// ManageWorkspaceAuth.ID, ManageWorkspaceAuth.DEFAULT_LABEL,
-			// ManageWorkspaceAuth.DEFAULT_ICON_PATH, isDistribElem
-			// && singleElement && !isReadOnly, params);
+		} catch (RepositoryException e) {
+			throw new SlcException("unexpected errror while "
+					+ "building context menu", e);
 		}
-		// } catch (RepositoryException e) {
-		// throw new SlcException("unexpected errror while "
-		// + "building context menu", e);
-		// }
-	}
-
-	/**
-	 * Exposes some Repository and workspace information about the selected
-	 * element without exposing the UI model
-	 */
-	public class DistributionViewSelectedElement {
-		public boolean isRepository = false;
-		public boolean isWorkspaceGroup = false;
-		public boolean isWorkspace = false;
-		public boolean isReadOnly = false;
-		public String repositoryDescription;
-		public Node repoNode;
-		public String wkspName;
-		public String wkspPrefix;
-		public Repository repository;
-		public Credentials credentials;
-	}
-
-	/**
-	 * Returns a {@see DistributionViewSelectedElement} if one and only one
-	 * valid element is currently selected.
-	 * 
-	 */
-	public DistributionViewSelectedElement getSelectedElement() {
-
-		IStructuredSelection iss = (IStructuredSelection) viewer.getSelection();
-		if (iss.isEmpty() || iss.size() > 1)
-			return null;
-
-		DistributionViewSelectedElement dvse = new DistributionViewSelectedElement();
-		Object obj = iss.getFirstElement();
-		if (obj instanceof RepoElem) {
-			RepoElem re = (RepoElem) obj;
-			dvse.isRepository = true;
-			dvse.isReadOnly = re.isReadOnly();
-			dvse.repository = re.getRepository();
-			dvse.repoNode = re.getRepoNode();
-			dvse.credentials = re.getCredentials();
-			dvse.repositoryDescription = getRepositoryDescription(re);
-		} else if (obj instanceof GroupElem) {
-			GroupElem dge = (GroupElem) obj;
-			dvse.isWorkspaceGroup = true;
-			dvse.isReadOnly = dge.isReadOnly();
-			dvse.repository = dge.getRepoElem().getRepository();
-			dvse.repoNode = dge.getRepoElem().getRepoNode();
-			dvse.credentials = dge.getRepoElem().getCredentials();
-			dvse.wkspPrefix = dge.getLabel();
-			dvse.repositoryDescription = getRepositoryDescription(dge
-					.getRepoElem());
-		} else if (obj instanceof WorkspaceElem) {
-			WorkspaceElem de = (WorkspaceElem) obj;
-			dvse.isWorkspace = true;
-			dvse.isReadOnly = de.isReadOnly();
-			dvse.repository = de.getRepoElem().getRepository();
-			dvse.repoNode = de.getRepoElem().getRepoNode();
-			dvse.credentials = de.getRepoElem().getCredentials();
-			dvse.wkspName = de.getWorkspaceName();
-			dvse.repositoryDescription = getRepositoryDescription(de
-					.getRepoElem());
-		}
-		return dvse;
-	}
-
-	private String getRepositoryDescription(RepoElem repo) {
-		StringBuffer repoDesc = new StringBuffer();
-		repoDesc.append(repo.getLabel());
-		repoDesc.append(" (");
-		repoDesc.append(JcrUtils.get(repo.getRepoNode(), ARGEO_URI));
-		repoDesc.append(")");
-		return repoDesc.toString();
 	}
 
 	@Override
@@ -334,31 +286,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		viewer.expandToLevel(2);
 	}
 
-	/** Add some view specific behaviours to the comparator */
-	private class BrowserElementComparator extends ArtifactNamesComparator {
-		@Override
-		public int category(Object element) {
-			// Home repository always first
-			if (element instanceof RepoElem && ((RepoElem) element).inHome())
-				return 2;
-			else
-				return super.category(element);
-		}
-
-		@Override
-		public int compare(Viewer viewer, Object e1, Object e2) {
-			// reverse order for versions
-			if (e1 instanceof WorkspaceElem)
-				return -super.compare(viewer, e1, e2);
-			else
-				return super.compare(viewer, e1, e2);
-		}
-	}
-
-	/** Abstract class to simplify UI conditions build */
-
-	/** A software repository */
-
 	/** Listens to drag */
 	class ViewDragListener extends DragSourceAdapter {
 		public void dragSetData(DragSourceEvent event) {
@@ -367,7 +294,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			if (selection.getFirstElement() instanceof WorkspaceElem) {
 				WorkspaceElem de = (WorkspaceElem) selection.getFirstElement();
 				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-					event.data = de.getWorkspacePath();
+					event.data = de.getRepoElem().getUri() + "/"
+							+ de.getWorkspaceName();
 				}
 			}
 		}
@@ -386,66 +314,27 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			RepoElem targetRepo = (RepoElem) getCurrentTarget();
 
 			Boolean ok = MessageDialog.openConfirm(getSite().getShell(),
-					"FIXME: BROKEN BY REFACTORING--Confirm distribution merge",
-					"Do you want to merge " + sourceDist.getWorkspaceName()
-							+ " (from repo "
+					"Confirm distribution merge", "Do you want to merge "
+							+ sourceDist.getWorkspaceName() + " (from repo "
 							+ sourceDist.getRepoElem().getLabel()
 							+ ") to repo " + targetRepo.getLabel() + "?");
 			if (!ok)
 				return false;
 
-			// TODO uncomment that
-			return true;
-			// try {
-			// String sourceWorkspace = sourceDist.getWorkspaceName();
-			// Repository sourceRepository = RepoUtils.getRepository(
-			// repositoryFactory, keyring, sourceDist
-			// .getWorkspaceNode().getParent());
-			// Credentials sourceCredentials = RepoUtils
-			// .getRepositoryCredentials(keyring, sourceDist
-			// .getWorkspaceNode().getParent());
-			//
-			// String targetWorkspace = sourceWorkspace;
-			// Repository targetRepository = RepoUtils.getRepository(
-			// repositoryFactory, keyring, targetRepo.getRepoNode());
-			// Credentials targetCredentials = RepoUtils
-			// .getRepositoryCredentials(keyring,
-			// targetRepo.getRepoNode());
-			//
-			// // Open sessions here since the background thread
-			// // won't necessarily be authenticated.
-			// // Job should close the sessions.
-			// Session sourceSession = sourceRepository.login(
-			// sourceCredentials, sourceWorkspace);
-			// Session targetSession;
-			// try {
-			// targetSession = targetRepository.login(targetCredentials,
-			// targetWorkspace);
-			// } catch (NoSuchWorkspaceException e) {
-			// Session defaultSession = targetRepository
-			// .login(targetCredentials);
-			// try {
-			// defaultSession.getWorkspace().createWorkspace(
-			// targetWorkspace);
-			// } catch (Exception e1) {
-			// throw new SlcException("Cannot create new workspace "
-			// + targetWorkspace, e);
-			// } finally {
-			// JcrUtils.logoutQuietly(defaultSession);
-			// }
-			// targetSession = targetRepository.login(targetCredentials,
-			// targetWorkspace);
-			// }
-			//
-			// Job workspaceMergeJob = new WorkspaceMergeJob(sourceSession,
-			// targetSession);
-			// workspaceMergeJob.setUser(true);
-			// workspaceMergeJob.schedule();
-			// return true;
-			// } catch (RepositoryException e) {
-			// throw new SlcException("Cannot process drop from " + sourceDist
-			// + " to " + targetRepo, e);
-			// }
+			try {
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(MergeWorkspaces.PARAM_TARGET_REPO_PATH, targetRepo
+						.getRepoNode().getPath());
+				params.put(MergeWorkspaces.PARAM_SOURCE_REPO_PATH, sourceDist
+						.getRepoElem().getRepoNode().getPath());
+				params.put(MergeWorkspaces.PARAM_SOURCE_WORKSPACE_NAME,
+						sourceDist.getWorkspaceName());
+				CommandHelpers.callCommand(RefreshDistributionsView.ID, params);
+				return true;
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot process drop from " + sourceDist
+						+ " to " + targetRepo, e);
+			}
 		}
 
 		@Override
@@ -454,90 +343,13 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			if (target instanceof RepoElem) {
 				if (getSelectedObject() instanceof WorkspaceElem) {
 					// check if not same repository
-					String srcRepoPath = ((WorkspaceElem) getSelectedObject())
-							.getRepoPath();
-					String targetRepoPath = ((RepoElem) target).getRepoPath();
-					return !targetRepoPath.equals(srcRepoPath);
+					String srcRepoUri = ((WorkspaceElem) getSelectedObject())
+							.getRepoElem().getUri();
+					String targetRepoUri = ((RepoElem) target).getUri();
+					return !targetRepoUri.equals(srcRepoUri);
 				}
 			}
 			return false;
-		}
-	}
-
-	private static class WorkspaceMergeJob extends Job {
-		private Session sourceSession;
-		private Session targetSession;
-
-		public WorkspaceMergeJob(Session sourceSession, Session targetSession) {
-			super("Workspace merge");
-			this.sourceSession = sourceSession;
-			this.targetSession = targetSession;
-		}
-
-		@Override
-		protected IStatus run(IProgressMonitor eclipseMonitor) {
-			long begin = System.currentTimeMillis();
-			try {
-				Query countQuery = sourceSession
-						.getWorkspace()
-						.getQueryManager()
-						.createQuery("select file from [nt:file] as file",
-								Query.JCR_SQL2);
-				QueryResult result = countQuery.execute();
-				Long expectedCount = result.getNodes().getSize();
-				if (log.isDebugEnabled())
-					log.debug("Will copy " + expectedCount + " files...");
-
-				ArgeoMonitor monitor = new EclipseArgeoMonitor(eclipseMonitor);
-				eclipseMonitor
-						.beginTask("Copy files", expectedCount.intValue());
-
-				Long count = JcrUtils.copyFiles(sourceSession.getRootNode(),
-						targetSession.getRootNode(), true, monitor);
-
-				monitor.done();
-				long duration = (System.currentTimeMillis() - begin) / 1000;// in
-																			// s
-				if (log.isDebugEnabled())
-					log.debug("Copied " + count + " files in "
-							+ (duration / 60) + "min " + (duration % 60) + "s");
-
-				return Status.OK_STATUS;
-			} catch (RepositoryException e) {
-				return new Status(IStatus.ERROR, DistPlugin.ID, "Cannot merge",
-						e);
-			} finally {
-				JcrUtils.logoutQuietly(sourceSession);
-				JcrUtils.logoutQuietly(targetSession);
-			}
-		}
-	}
-
-	/** Listen to double-clicks */
-	private class DistributionsDCL implements IDoubleClickListener {
-
-		public void doubleClick(DoubleClickEvent event) {
-			if (event.getSelection() == null || event.getSelection().isEmpty())
-				return;
-			Object obj = ((IStructuredSelection) event.getSelection())
-					.getFirstElement();
-			if (obj instanceof WorkspaceElem) {
-				WorkspaceElem distributionElem = (WorkspaceElem) obj;
-				DistributionEditorInput dei = new DistributionEditorInput(
-						distributionElem.getName(),
-						getRepositoryDescription(distributionElem.getRepoElem()),
-						distributionElem.getRepoElem().getRepository(),
-						distributionElem.getWorkspaceName(), distributionElem
-								.getCredentials());
-				try {
-					DistPlugin.getDefault().getWorkbench()
-							.getActiveWorkbenchWindow().getActivePage()
-							.openEditor(dei, DistributionEditor.ID);
-				} catch (PartInitException e) {
-					ErrorFeedback.show("Cannot open editor for "
-							+ distributionElem.getWorkspaceName(), e);
-				}
-			}
 		}
 	}
 
