@@ -22,6 +22,9 @@ public class DistImages {
 
 	public final static Image IMG_ARTIFACT_BASE = DistPlugin
 			.getImageDescriptor("icons/artifactBase.gif").createImage();
+	public final static Image IMG_PACKAGE = DistPlugin.getImageDescriptor(
+			"icons/package.gif").createImage();
+
 	public final static Image IMG_ARTIFACT_VERSION_BASE = DistPlugin
 			.getImageDescriptor("icons/artifactVersionBase.gif").createImage();
 	public final static Image IMG_FILE = DistPlugin.getImageDescriptor(
@@ -50,8 +53,7 @@ public class DistImages {
 			"icons/distGrp.gif").createImage();
 	public final static Image IMG_DISTGRP_READONLY = DistPlugin
 			.getImageDescriptor("icons/distGrpReadOnly.gif").createImage();
-	
-	
+
 	/* CHECK BOXES */
 	public final static Image CHECKED = DistPlugin.getImageDescriptor(
 			"icons/checked.gif").createImage();

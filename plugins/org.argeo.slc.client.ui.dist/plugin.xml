@@ -8,13 +8,13 @@
             name="SLC Repo"
             class="org.argeo.slc.client.ui.dist.DistributionPerspective"
             id="org.argeo.slc.client.ui.dist.distributionPerspective"
-            icon="icons/repo.gif">
+            icon="icons/distribution_perspective.gif">
 		</perspective>
 		<perspective
             name="SLC Distribution"
             class="org.argeo.slc.client.ui.dist.AnonymousDistributionPerspective"
             id="org.argeo.slc.client.ui.dist.anonymousDistributionPerspective"
-            icon="icons/distribution_perspective.gif">
+            icon="icons/repo.gif">
 		</perspective>
    </extension>
    <!-- Views -->

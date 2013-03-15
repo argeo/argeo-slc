@@ -26,6 +26,7 @@ import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
+import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -117,6 +118,25 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 
 	}
 
+	// Workaround to add an artificial level to the export package browser
+	private class LevelElem {
+		private String label;
+		private Object parent;
+
+		public LevelElem(String label, Object parent) {
+			this.label = label;
+			this.parent = parent;
+		}
+
+		public String toString() {
+			return label;
+		}
+
+		public Object getParent() {
+			return parent;
+		}
+	}
+
 	/** Export Package Section */
 	private void createExportPackageSection(Composite parent)
 			throws RepositoryException {
@@ -141,11 +161,28 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return JcrUtils.get((Node) element, SlcNames.SLC_NAME);
+				if (element instanceof Node)
+					return JcrUtils.get((Node) element, SlcNames.SLC_NAME);
+				else
+					return element.toString();
 			}
 
 			@Override
 			public Image getImage(Object element) {
+				if (element instanceof Node) {
+					try {
+
+						Node node = (Node) element;
+						if (node.isNodeType(SlcTypes.SLC_EXPORTED_PACKAGE))
+							return DistImages.IMG_PACKAGE;
+						else if (node.isNodeType(SlcTypes.SLC_JAVA_PACKAGE))
+							return DistImages.IMG_PACKAGE;
+
+					} catch (RepositoryException e) {
+						throw new SlcException("Error retriving "
+								+ "image for the labelProvider", e);
+					}
+				}
 				return null;
 			}
 		});
@@ -173,15 +210,25 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			public Object[] getChildren(Object parentElement) {
 				// Only 2 levels for the time being
 				try {
-					Node pNode = (Node) parentElement;
-					if (pNode.isNodeType(SlcTypes.SLC_EXPORTED_PACKAGE)) {
+					if (parentElement instanceof LevelElem) {
+						Node node = (Node) ((LevelElem) parentElement)
+								.getParent();
 						List<Node> nodes = JcrUtils
-								.nodeIteratorToList(listNodes(pNode,
+								.nodeIteratorToList(listNodes(node,
 										SlcTypes.SLC_JAVA_PACKAGE,
 										SlcNames.SLC_NAME));
 						return nodes.toArray();
-					} else
-						return null;
+					} else if (parentElement instanceof Node) {
+						Node pNode = (Node) parentElement;
+						if (pNode.isNodeType(SlcTypes.SLC_EXPORTED_PACKAGE)) {
+							if (listNodes(pNode, SlcTypes.SLC_JAVA_PACKAGE,
+									SlcNames.SLC_NAME).getSize() > 0) {
+								Object[] result = { new LevelElem("uses", pNode) };
+								return result;
+							}
+						}
+					}
+					return null;
 				} catch (RepositoryException e) {
 					throw new SlcException("Cannot list children Nodes", e);
 				}
@@ -194,12 +241,16 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 
 			public boolean hasChildren(Object element) {
 				try {
-					Node pNode = (Node) element;
-					if (pNode.isNodeType(SlcTypes.SLC_EXPORTED_PACKAGE)) {
-						// might return true even if there is no "valid" child
-						return pNode.hasNodes();
-					} else
-						return false;
+					if (element instanceof LevelElem)
+						return true;
+					else {
+						Node pNode = (Node) element;
+						if (pNode.isNodeType(SlcTypes.SLC_EXPORTED_PACKAGE)) {
+							return listNodes(pNode, SlcTypes.SLC_JAVA_PACKAGE,
+									SlcNames.SLC_NAME).getSize() > 0;
+						}
+					}
+					return false;
 				} catch (RepositoryException e) {
 					throw new SlcException("Cannot check children Nodes", e);
 				}
@@ -210,7 +261,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		viewer.setInput("Initialize");
 		// work around a display problem : the tree table has only a few lines
 		// when the tree is not expended
-		viewer.expandToLevel(2);
+		viewer.expandToLevel(3);
 	}
 
 	/** Import Package Section */

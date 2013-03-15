@@ -35,7 +35,7 @@ public class HelpView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		parent.setLayout(new GridLayout(2, false));
 		Browser browser = new Browser(parent, SWT.NONE);
-		browser.setUrl("http://www.argeo.org");
+		browser.setUrl("/repo/howto.html");
 		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 	}
 

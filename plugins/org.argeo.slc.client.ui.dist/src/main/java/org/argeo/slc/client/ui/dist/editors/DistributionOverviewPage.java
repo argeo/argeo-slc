@@ -337,7 +337,7 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 
 		// Version
 		col = new TableViewerColumn(viewer, SWT.NONE);
-		col.getColumn().setWidth(100);
+		col.getColumn().setWidth(130);
 		col.getColumn().setText("Version");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
