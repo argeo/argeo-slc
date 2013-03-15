@@ -1,0 +1,1 @@
+You can browse public artifacts <a href="/ui/public">here</a>.

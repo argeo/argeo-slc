@@ -28,6 +28,7 @@
 	</bean>
 
 	<bean id="jcrSession" class="org.argeo.security.jcr.SecureThreadBoundSession">
+		<property name="workspace" value="localrepo" />
 		<property name="repository" ref="jcrRepository" />
 	</bean>
 </beans>
