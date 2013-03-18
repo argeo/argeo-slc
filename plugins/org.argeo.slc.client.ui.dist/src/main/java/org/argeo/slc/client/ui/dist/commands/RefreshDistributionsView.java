@@ -16,6 +16,7 @@
 package org.argeo.slc.client.ui.dist.commands;
 
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.views.AnonymousDistributionsView;
 import org.argeo.slc.client.ui.dist.views.DistributionsView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -36,6 +37,8 @@ public class RefreshDistributionsView extends AbstractHandler {
 				.getActiveWorkbenchWindow().getActivePage().getActivePart();
 		if (activePart instanceof DistributionsView)
 			((DistributionsView) activePart).refresh();
+		else if (activePart instanceof AnonymousDistributionsView)
+			((AnonymousDistributionsView) activePart).refresh();
 		return null;
 	}
 }

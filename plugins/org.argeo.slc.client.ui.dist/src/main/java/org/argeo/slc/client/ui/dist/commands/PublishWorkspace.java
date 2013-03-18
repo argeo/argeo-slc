@@ -79,6 +79,7 @@ public class PublishWorkspace extends AbstractHandler {
 				JcrUtils.addPrivilege(session, "/", publicRole,
 						Privilege.JCR_READ);
 				session.save();
+
 				JcrUtils.logoutQuietly(session);
 				// CommandHelpers.callCommand(RefreshDistributionsView.ID);
 			}

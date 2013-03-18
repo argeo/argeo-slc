@@ -33,11 +33,9 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
 import org.argeo.ArgeoException;
-import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
 import org.argeo.slc.core.execution.PrimitiveUtils;
@@ -251,6 +249,8 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 		GridData valuedGd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		// valuedGd.widthHint = 200;
 		valuesViewer.getTable().setLayoutData(valuedGd);
+		valuesViewer.getTable().setHeaderVisible(true);
+
 		valuesViewer.setContentProvider(new ValuesContentProvider());
 		initializeValuesViewer(valuesViewer);
 		sashForm.setWeights(getWeights());
@@ -724,7 +724,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 				}
 				return null;
 			} catch (RepositoryException e) {
-				throw new SlcException("Cannot get celle editor", e);
+				throw new SlcException("Cannot get cell editor", e);
 			}
 		}
 

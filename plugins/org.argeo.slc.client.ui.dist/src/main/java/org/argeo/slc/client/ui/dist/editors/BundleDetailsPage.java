@@ -31,6 +31,8 @@ import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.repo.RepoConstants;
+import org.argeo.slc.repo.RepoUtils;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -44,6 +46,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -116,12 +119,26 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		createField(details, "Symbolic name", SlcNames.SLC_SYMBOLIC_NAME);
 		createField(details, "Version", SlcNames.SLC_BUNDLE_VERSION);
 		createField(details, "Group Id", SlcNames.SLC_GROUP_ID);
-		// Single sourcing issue: this does not works with rap
 		createHyperlink(details, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
-		// createField(details, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
-
 		createField(details, "Vendor", DistConstants.SLC_BUNDLE_VENDOR);
+		addSourceAvailableLabel(details);
 
+	}
+
+	// helper to check if sources are available
+	private void addSourceAvailableLabel(Composite parent) {
+		Button srcChk = toolkit.createButton(parent, "Sources available",
+				SWT.CHECK);
+		srcChk.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
+
+		try {
+			String srcPath = RepoUtils.relatedPdeSourcePath(
+					RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, currBundle);
+			srcChk.setSelection(currBundle.getSession().nodeExists(srcPath));
+		} catch (RepositoryException e) {
+			throw new SlcException("Unable to check sources", e);
+		}
+		srcChk.setEnabled(false);
 	}
 
 	// Workaround to add an artificial level to the export package browser

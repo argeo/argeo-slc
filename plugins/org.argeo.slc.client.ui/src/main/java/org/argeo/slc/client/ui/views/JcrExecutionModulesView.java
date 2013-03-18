@@ -74,7 +74,8 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 	private final static Log log = LogFactory
 			.getLog(JcrExecutionModulesView.class);
 
-	public static final String ID = "org.argeo.slc.client.ui.jcrExecutionModulesView";
+	public static final String ID = ClientUiPlugin.ID
+			+ ".jcrExecutionModulesView";
 
 	private TreeViewer viewer;
 

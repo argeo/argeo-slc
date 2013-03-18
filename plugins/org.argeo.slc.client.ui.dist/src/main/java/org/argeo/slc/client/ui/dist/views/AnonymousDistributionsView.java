@@ -38,7 +38,8 @@ public class AnonymousDistributionsView extends ViewPart implements SlcNames,
 		ArgeoNames {
 	// private final static Log log = LogFactory
 	// .getLog(AnonymousDistributionsView.class);
-	public final static String ID = DistPlugin.ID + ".anonymousDistributionsView";
+	public final static String ID = DistPlugin.ID
+			+ ".anonymousDistributionsView";
 
 	/* DEPENDENCY INJECTION */
 	private ITreeContentProvider treeContentProvider;
@@ -73,8 +74,10 @@ public class AnonymousDistributionsView extends ViewPart implements SlcNames,
 	 * Force refresh of the whole view
 	 */
 	public void refresh() {
+		Object[] ee = viewer.getExpandedElements();
 		viewer.setInput(DistConstants.DEFAULT_PUBLIC_REPOSITORY_URI);
-		viewer.expandToLevel(2);
+		// viewer.expandToLevel(2);
+		viewer.setExpandedElements(ee);
 	}
 
 	@Override

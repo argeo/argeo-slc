@@ -308,6 +308,15 @@
             </command>
             -->
         </menuContribution>
+        <menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.dist.anonymousDistributionsView">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.refreshDistributionsView"
+                icon="icons/refresh.png"
+                label="Refresh"
+                tooltip="Refresh distributions view">
+            </command>
+        </menuContribution>
         <!-- Queries --> 
 		<!-- <menuContribution
                 allPopups="false"
