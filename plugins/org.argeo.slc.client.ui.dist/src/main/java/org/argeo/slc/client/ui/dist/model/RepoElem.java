@@ -1,5 +1,6 @@
 package org.argeo.slc.client.ui.dist.model;
 
+import java.security.AccessControlException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ import org.argeo.util.security.Keyring;
  * Node or just an URI and a label if user is anonymous
  */
 public class RepoElem extends DistParentElem {
-
+	// private final static Log log = LogFactory.getLog(RepoElem.class);
 	private Repository repository;
 	private Credentials credentials;
 	private RepositoryFactory repositoryFactory;
@@ -112,27 +113,25 @@ public class RepoElem extends DistParentElem {
 				// Add a supplementary check to hide workspace that are not
 				// public to anonymous user
 
-				// TODO fix this
-				// if (repoNode == null) {
-				// Session tmpSession = null;
-				// try {
-				// tmpSession = repository.login();
-				// Privilege[] priv = new Privilege[1];
-				// priv[0] = tmpSession.getAccessControlManager()
-				// .privilegeFromName(Privilege.JCR_READ);
-				// Privilege[] tmp = tmpSession.getAccessControlManager()
-				// .getPrivileges("/");
-				// boolean res = tmpSession.getAccessControlManager()
-				// .hasPrivileges("/", priv);
-				// if (!res)
-				// continue buildWksp;
-				// } catch (RepositoryException e) {
-				// throw new SlcException(
-				// "Cannot list workspaces for anonymous user", e);
-				// } finally {
-				// JcrUtils.logoutQuietly(tmpSession);
-				// }
-				// }
+				if (repoNode == null) {
+					Session tmpSession = null;
+					try {
+						tmpSession = repository.login(workspaceName);
+						Boolean res = true;
+						try {
+							tmpSession.checkPermission("/", "read");
+						} catch (AccessControlException e) {
+							res = false;
+						}
+						if (!res)
+							continue buildWksp;
+					} catch (RepositoryException e) {
+						throw new SlcException(
+								"Cannot list workspaces for anonymous user", e);
+					} finally {
+						JcrUtils.logoutQuietly(tmpSession);
+					}
+				}
 
 				// filter technical workspaces
 				// FIXME: rely on a more robust rule than just wksp name

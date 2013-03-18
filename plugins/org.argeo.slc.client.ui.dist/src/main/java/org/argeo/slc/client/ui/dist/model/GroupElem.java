@@ -1,5 +1,6 @@
 package org.argeo.slc.client.ui.dist.model;
 
+import java.security.AccessControlException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,13 +29,34 @@ public class GroupElem extends DistParentElem {
 		Session session = null;
 		try {
 			Repository repository = repoElem.getRepository();
-			// Node repoNode = repoElem.getRepoNode();
 			session = repository.login(repoElem.getCredentials());
 
 			String[] workspaceNames = session.getWorkspace()
 					.getAccessibleWorkspaceNames();
 			List<WorkspaceElem> distributionElems = new ArrayList<WorkspaceElem>();
-			for (String workspaceName : workspaceNames) {
+			buildWksp: for (String workspaceName : workspaceNames) {
+
+				// Filter non-public workspaces for user anonymous.
+				if (repoElem.getRepoNode() == null) {
+					Session tmpSession = null;
+					try {
+						tmpSession = repository.login(workspaceName);
+						Boolean res = true;
+						try {
+							tmpSession.checkPermission("/", "read");
+						} catch (AccessControlException e) {
+							res = false;
+						}
+						if (!res)
+							continue buildWksp;
+					} catch (RepositoryException e) {
+						throw new SlcException(
+								"Cannot list workspaces for anonymous user", e);
+					} finally {
+						JcrUtils.logoutQuietly(tmpSession);
+					}
+				}
+
 				// filter technical workspaces
 				if (workspaceName.startsWith(name)) {
 					distributionElems.add(new WorkspaceElem(repoElem,
