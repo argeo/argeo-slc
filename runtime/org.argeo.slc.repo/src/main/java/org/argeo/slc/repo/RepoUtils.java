@@ -312,6 +312,22 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 	}
 
 	/**
+	 * The path to the PDE source related to this artifact (or artifact version
+	 * base). There may or there may not be a node at this location (the
+	 * returned path will typically be used to test whether PDE sources are
+	 * attached to this artifact).
+	 */
+	public static String relatedPdeSourcePath(String artifactBasePath,
+			Node artifactNode) throws RepositoryException {
+		Artifact artifact = asArtifact(artifactNode);
+		Artifact pdeSourceArtifact = new DefaultArtifact(artifact.getGroupId(),
+				artifact.getArtifactId() + ".source", artifact.getExtension(),
+				artifact.getVersion());
+		return MavenConventionsUtils.artifactPath(artifactBasePath,
+				pdeSourceArtifact);
+	}
+
+	/**
 	 * Copy this bytes array as an artifact, relative to the root of the
 	 * repository (typically the workspace root node)
 	 */
