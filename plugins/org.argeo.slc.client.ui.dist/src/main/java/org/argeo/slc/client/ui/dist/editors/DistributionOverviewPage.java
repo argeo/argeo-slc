@@ -98,9 +98,9 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 	// This page widgets
 	private NodeViewerComparator comparator;
 	private TableViewer viewer;
-	private Text artifactTxt;
 	private FormToolkit tk;
 	private Composite header;
+	private Text artifactTxt;
 	private final static String FILTER_HELP_MSG = "Enter filter criterion separated by a space";
 
 	public DistributionOverviewPage(FormEditor formEditor, String title,
