@@ -243,8 +243,9 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			String relativePath, ExecutionFlowDescriptor efd)
 			throws RepositoryException {
 		Node flowNode = null;
-		Iterator<String> names = Arrays.asList(relativePath.split("/"))
-				.iterator();
+		List<String> pathTokens = Arrays.asList(relativePath.split("/"));
+
+		Iterator<String> names = pathTokens.iterator();
 		// create intermediary paths
 		Node currNode = moduleNode;
 		while (names.hasNext()) {
@@ -262,8 +263,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 
 		// name, description
 		flowNode.setProperty(SLC_NAME, efd.getName());
-		String[] tokens = relativePath.split("/");
-		String endName = tokens[tokens.length - 1];
+		String endName = pathTokens.get(pathTokens.size() - 1);
 		flowNode.setProperty(Property.JCR_TITLE, endName);
 		if (efd.getDescription() != null
 				&& !efd.getDescription().trim().equals("")) {
@@ -300,9 +300,12 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		for (String attr : efd.getValues().keySet()) {
 			ExecutionSpecAttribute esa = executionSpec.getAttributes()
 					.get(attr);
+			if (!flowNode.hasNode(attr))
+				throw new SlcException("No spec node for attribute '" + attr
+						+ "' in flow " + flowNode.getPath());
 			if (esa instanceof PrimitiveSpecAttribute) {
 				PrimitiveSpecAttribute psa = (PrimitiveSpecAttribute) esa;
-				Node valueNode = flowNode.addNode(attr);
+				Node valueNode = flowNode.getNode(attr);
 				valueNode.setProperty(SLC_TYPE, psa.getType());
 				SlcJcrUtils.setPrimitiveAsProperty(valueNode, SLC_VALUE,
 						(PrimitiveValue) efd.getValues().get(attr));
