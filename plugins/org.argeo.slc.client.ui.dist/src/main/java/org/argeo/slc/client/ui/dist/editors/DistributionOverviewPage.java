@@ -324,7 +324,7 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		// Symbolic name
 		col = new TableViewerColumn(viewer, SWT.V_SCROLL);
 		col.getColumn().setWidth(300);
-		col.getColumn().setText("Symbolic name");
+		col.getColumn().setText("Symbolic Name");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
