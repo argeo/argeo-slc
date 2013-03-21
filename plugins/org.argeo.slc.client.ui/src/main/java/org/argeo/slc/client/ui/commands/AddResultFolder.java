@@ -67,6 +67,12 @@ public class AddResultFolder extends AbstractHandler {
 					String folderName = SingleValue.ask("Folder name",
 							"Enter folder name");
 					if (folderName != null) {
+						if (folderName.contains("/")) {
+							ErrorFeedback
+									.show("Folder names can't contain a '/'.");
+							return null;
+						}
+
 						String absPath = parentNode.getPath() + "/"
 								+ folderName;
 						SlcJcrResultUtils.createResultFolderNode(
