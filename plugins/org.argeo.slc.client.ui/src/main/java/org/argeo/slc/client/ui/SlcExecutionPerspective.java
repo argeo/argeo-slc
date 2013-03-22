@@ -15,6 +15,7 @@
  */
 package org.argeo.slc.client.ui;
 
+import org.argeo.security.ui.SecurityUiPlugin;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -29,14 +30,14 @@ public class SlcExecutionPerspective implements IPerspectiveFactory {
 
 		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT,
 				0.3f, editorArea);
-		left.addView("org.argeo.slc.client.ui.jcrExecutionModulesView");
-		left.addView("org.argeo.slc.client.ui.jcrResultListView");
+		left.addView(ClientUiPlugin.ID + ".jcrExecutionModulesView");
+		left.addView(ClientUiPlugin.ID + ".jcrResultListView");
 		// Sleak view for SWT resource debugging
-		//left.addView("org.eclipse.swt.tools.views.SleakView");
+		// left.addView("org.eclipse.swt.tools.views.SleakView");
 
 		IFolderLayout bottom = layout.createFolder("bottom",
 				IPageLayout.BOTTOM, 0.65f, editorArea);
-		bottom.addView("org.argeo.security.ui.logView");
-		bottom.addView("org.argeo.slc.client.ui.jcrProcessListView");
+		bottom.addView(SecurityUiPlugin.PLUGIN_ID + ".logView");
+		bottom.addView(ClientUiPlugin.ID + ".jcrProcessListView");
 	}
 }
