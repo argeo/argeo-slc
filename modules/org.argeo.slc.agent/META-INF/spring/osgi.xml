@@ -37,7 +37,16 @@
 	<service ref="modulesManager" interface="org.argeo.slc.execution.ExecutionModulesManager" />
 
 	<!-- LABEL -->
-	<beans:bean class="org.argeo.slc.osgi.deploy.OsgiModuleLabel">
+	<beans:bean class="org.argeo.security.core.OsgiModuleLabel">
 		<beans:property name="bundleContext" ref="bundleContext" />
+	</beans:bean>
+
+	<!-- ROLES -->
+	<reference id="userAdminService" interface="org.argeo.security.UserAdminService" />
+
+	<beans:bean class="org.argeo.security.core.SimpleRoleRegistration"
+		init-method="run">
+		<beans:property name="role" value="ROLE_SLC" />
+		<beans:property name="userAdminService" ref="userAdminService" />
 	</beans:bean>
 </beans:beans>
