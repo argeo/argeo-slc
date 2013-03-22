@@ -296,16 +296,14 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			flowNode.setProperty(SLC_SPEC, executionSpecNode);
 		}
 
-		// values
+		// flow values
 		for (String attr : efd.getValues().keySet()) {
 			ExecutionSpecAttribute esa = executionSpec.getAttributes()
 					.get(attr);
-			if (!flowNode.hasNode(attr))
-				throw new SlcException("No spec node for attribute '" + attr
-						+ "' in flow " + flowNode.getPath());
 			if (esa instanceof PrimitiveSpecAttribute) {
 				PrimitiveSpecAttribute psa = (PrimitiveSpecAttribute) esa;
-				Node valueNode = flowNode.getNode(attr);
+				// if spec reference there will be no node at this stage
+				Node valueNode = JcrUtils.getOrAdd(flowNode, attr);
 				valueNode.setProperty(SLC_TYPE, psa.getType());
 				SlcJcrUtils.setPrimitiveAsProperty(valueNode, SLC_VALUE,
 						(PrimitiveValue) efd.getValues().get(attr));
