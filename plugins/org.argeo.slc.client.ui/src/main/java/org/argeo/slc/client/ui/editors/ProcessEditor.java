@@ -209,8 +209,7 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	@Override
 	protected void addPages() {
 		try {
-			builderPage = new ProcessBuilderPage(this, processNode,
-					modulesManager);
+			builderPage = new ProcessBuilderPage(this, processNode);
 			addPage(builderPage);
 			firePropertyChange(PROP_DIRTY);
 		} catch (PartInitException e) {

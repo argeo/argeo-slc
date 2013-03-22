@@ -39,7 +39,6 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
 import org.argeo.slc.core.execution.PrimitiveUtils;
-import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
@@ -93,7 +92,6 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	final static String NONE = "<none>";
 
 	private Node processNode;
-	private final ExecutionModulesManager modulesManager;
 
 	private TreeViewer flowsViewer;
 	private TableViewer valuesViewer;
@@ -105,11 +103,9 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 	private AbstractFormPart formPart;
 	private EventListener statusObserver;
 
-	public ProcessBuilderPage(ProcessEditor editor, Node processNode,
-			ExecutionModulesManager modulesManager) {
+	public ProcessBuilderPage(ProcessEditor editor, Node processNode) {
 		super(editor, ID, "Definition");
 		this.processNode = processNode;
-		this.modulesManager = modulesManager;
 	}
 
 	@Override
