@@ -33,6 +33,7 @@ import javax.jcr.query.Query;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
 import org.argeo.slc.client.ui.editors.ProcessEditorInput;
@@ -59,7 +60,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /** Displays processes. */
 public class JcrProcessListView extends ViewPart {
-	public static final String ID = "org.argeo.slc.client.ui.jcrProcessListView";
+	public static final String ID = ClientUiPlugin.ID + ".jcrProcessListView";
 
 	private TableViewer viewer;
 

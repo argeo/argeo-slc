@@ -33,6 +33,7 @@ import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.jcr.NodeElementComparer;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
 import org.argeo.slc.client.ui.editors.ProcessEditorInput;
 import org.argeo.slc.jcr.SlcJcrResultUtils;
@@ -59,7 +60,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /** Displays results. */
 public class JcrResultListView extends ViewPart implements SlcNames {
-	public static final String ID = "org.argeo.slc.client.ui.jcrResultListView";
+	public static final String ID = ClientUiPlugin.ID + ".jcrResultListView";
 
 	private TableViewer viewer;
 
