@@ -732,10 +732,11 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 		protected boolean canEdit(Object element) {
 			try {
 				Node specAttrNode = (Node) element;
-				return !(specAttrNode.getProperty(SLC_IS_IMMUTABLE)
-						.getBoolean() || specAttrNode.getProperty(
-						SLC_IS_CONSTANT).getBoolean())
-						&& isSupportedAttributeType(specAttrNode);
+				Boolean cannotEdit = specAttrNode.getProperty(SLC_IS_IMMUTABLE)
+						.getBoolean()
+						|| specAttrNode.getProperty(SLC_IS_CONSTANT)
+								.getBoolean();
+				return !cannotEdit && isSupportedAttributeType(specAttrNode);
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot check whether " + element
 						+ " is editable", e);
