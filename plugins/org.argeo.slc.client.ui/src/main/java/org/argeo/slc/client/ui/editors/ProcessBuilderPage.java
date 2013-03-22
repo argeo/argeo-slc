@@ -615,32 +615,40 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 
 		@Override
 		public boolean performDrop(Object data) {
-			String path = data.toString();
-			try {
-				// either a node or a whole directory was dragged
-				QueryManager qm = processNode.getSession().getWorkspace()
-						.getQueryManager();
-				String statement = "SELECT * FROM ["
-						+ SlcTypes.SLC_EXECUTION_FLOW
-						+ "] WHERE ISDESCENDANTNODE(['" + path
-						+ "']) OR ISSAMENODE(['" + path + "'])";
-				// log.debug(statement);
-				Query query = qm.createQuery(statement, Query.JCR_SQL2);
 
-				// order paths
-				SortedSet<String> paths = new TreeSet<String>();
-				for (NodeIterator nit = query.execute().getNodes(); nit
-						.hasNext();) {
-					paths.add(nit.nextNode().getPath());
-				}
+			// Parse the received String, paths are separated with a carriage
+			// return
+			String[] paths = data.toString().split(new String("\n"));
+			SortedSet<String> resultPaths = new TreeSet<String>();
+			for (String path : paths) {
+				try {
+					// either a node or a whole directory can have been dragged
+					QueryManager qm = processNode.getSession().getWorkspace()
+							.getQueryManager();
+					String statement = "SELECT * FROM ["
+							+ SlcTypes.SLC_EXECUTION_FLOW
+							+ "] WHERE ISDESCENDANTNODE(['" + path
+							+ "']) OR ISSAMENODE(['" + path + "'])";
+					Query query = qm.createQuery(statement, Query.JCR_SQL2);
 
-				for (String p : paths) {
-					addFlow(p);
+					// order paths
+					for (NodeIterator nit = query.execute().getNodes(); nit
+							.hasNext();) {
+						String currPath = nit.nextNode().getPath();
+						// do not add twice a same flow
+						if (!resultPaths.contains(currPath))
+							resultPaths.add(currPath);
+					}
+				} catch (RepositoryException e) {
+					throw new SlcException("Cannot query flows under " + path,
+							e);
 				}
-				return true;
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot query flows under " + path, e);
 			}
+			for (String p : resultPaths) {
+				addFlow(p);
+			}
+			return true;
+
 		}
 
 		@Override
@@ -667,6 +675,12 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 					Node specAttrNode = nit.nextNode();
 					if (!specAttrNode
 							.isNodeType(SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE))
+						continue specAttrs;
+					// workaround to enable hiding of necessary but unusable
+					// flow parameters
+					else if (specAttrNode.hasProperty(SlcNames.SLC_IS_HIDDEN)
+							&& specAttrNode.getProperty(SlcNames.SLC_IS_HIDDEN)
+									.getBoolean())
 						continue specAttrs;
 					specAttributes.add(specAttrNode);
 				}

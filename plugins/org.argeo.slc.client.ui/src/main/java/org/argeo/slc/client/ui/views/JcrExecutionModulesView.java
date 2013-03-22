@@ -344,19 +344,74 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	/** Listen to drags */
 	class ViewDragListener extends DragSourceAdapter {
+
+		// Check if the drag action should start.
+		public void dragStart(DragSourceEvent event) {
+			// we only start drag if at least one of the selected elements is
+			// valid
+			boolean doIt = false;
+			IStructuredSelection selection = (IStructuredSelection) viewer
+					.getSelection();
+			@SuppressWarnings("rawtypes")
+			Iterator it = selection.iterator();
+			try {
+				while (it.hasNext()) {
+					Object obj = it.next();
+					if (obj instanceof Node) {
+						Node node = (Node) obj;
+						if (node.isNodeType(SlcTypes.SLC_EXECUTION_FLOW)
+								|| node.isNodeType(SlcTypes.SLC_EXECUTION_MODULE)) {
+							doIt = true;
+						}
+					}
+				}
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot read node to set drag data", e);
+			}
+			event.doit = doIt;
+		}
+
 		public void dragSetData(DragSourceEvent event) {
 			IStructuredSelection selection = (IStructuredSelection) viewer
 					.getSelection();
-			if (selection.getFirstElement() instanceof Node) {
-				Node node = (Node) selection.getFirstElement();
-				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-					try {
-						event.data = node.getPath();
-					} catch (RepositoryException e) {
-						throw new SlcException("Cannot read node", e);
+			StringBuilder buf = new StringBuilder();
+			@SuppressWarnings("rawtypes")
+			Iterator it = selection.iterator();
+			try {
+
+				while (it.hasNext()) {
+					Object obj = it.next();
+
+					if (obj instanceof Node) {
+						Node node = (Node) obj;
+						if ((node.isNodeType(SlcTypes.SLC_EXECUTION_FLOW) || node
+								.isNodeType(SlcTypes.SLC_EXECUTION_MODULE))
+								&& TextTransfer.getInstance().isSupportedType(
+										event.dataType)) {
+							buf.append(node.getPath()).append('\n');
+						}
 					}
 				}
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot read node to set drag data", e);
 			}
+
+			if (buf.length() > 0) {
+				if (buf.charAt(buf.length() - 1) == '\n')
+					buf.deleteCharAt(buf.length() - 1);
+				event.data = buf.toString();
+				log.debug("data set to : " + buf.toString());
+			}
+			// if (selection.getFirstElement() instanceof Node) {
+			// Node node = (Node) selection.getFirstElement();
+			// if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+			// try {
+			// event.data = node.getPath();
+			// } catch (RepositoryException e) {
+			// throw new SlcException("Cannot read node", e);
+			// }
+			// }
+			// }
 		}
 	}
 
