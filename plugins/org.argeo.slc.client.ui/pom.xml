@@ -45,7 +45,7 @@
 			<version>1.1.12-SNAPSHOT</version>
 		</dependency>
 
-		<!-- Argeo Eclipse -->
+		<!-- Argeo Commons -->
 		<dependency>
 			<groupId>org.argeo.commons.base</groupId>
 			<artifactId>org.argeo.eclipse.ui</artifactId>
@@ -54,6 +54,11 @@
 		<dependency>
 			<groupId>org.argeo.commons.base</groupId>
 			<artifactId>org.argeo.eclipse.ui.jcr</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.ui</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
