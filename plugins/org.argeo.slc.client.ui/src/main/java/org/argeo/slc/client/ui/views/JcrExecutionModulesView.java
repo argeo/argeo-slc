@@ -402,19 +402,10 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 				event.data = buf.toString();
 				log.debug("data set to : " + buf.toString());
 			}
-			// if (selection.getFirstElement() instanceof Node) {
-			// Node node = (Node) selection.getFirstElement();
-			// if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-			// try {
-			// event.data = node.getPath();
-			// } catch (RepositoryException e) {
-			// throw new SlcException("Cannot read node", e);
-			// }
-			// }
-			// }
 		}
 	}
 
+	// DEPENDENCY INJECTION
 	public void setSession(Session session) {
 		this.session = session;
 	}
@@ -422,5 +413,4 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 	public void setModulesManager(ExecutionModulesManager modulesManager) {
 		this.modulesManager = modulesManager;
 	}
-
 }

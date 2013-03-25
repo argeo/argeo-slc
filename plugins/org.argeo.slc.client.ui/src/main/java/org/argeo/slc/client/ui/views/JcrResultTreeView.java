@@ -124,16 +124,7 @@ public class JcrResultTreeView extends ViewPart {
 	private final static String[] observedNodeTypesUnderAllResults = {
 			SlcTypes.SLC_TEST_RESULT, NodeType.NT_UNSTRUCTURED };
 
-	// FIXME cache to ease D&D
-	// private boolean isActionUnderMyResult = false;
-	// private ResultParent lastSelectedTargetElement;
-	// private ResultParent lastSelectedSourceElement;
-	// private ResultParent lastSelectedSourceElementParent;
 	private boolean isResultFolder = false;
-
-	// FIXME we cache the fact that we are moving a node to avoid exception
-	// triggered by the "Add Node" event while moving
-	// boolean isMoveInProgress = false;
 
 	/**
 	 * To be overridden to adapt size of form and result frames.
@@ -221,8 +212,7 @@ public class JcrResultTreeView extends ViewPart {
 
 		// Override default behaviour to insure that 2 distincts results that
 		// have the same name will be correctly and distincly returned by
-		// corresponding
-		// TreeViewer.getSelection() method.
+		// corresponding TreeViewer.getSelection() method.
 		viewer.setComparer(new ResultItemsComparer());
 
 		// viewer.setLabelProvider(rtLblProvider);

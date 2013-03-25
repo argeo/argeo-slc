@@ -32,6 +32,8 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
@@ -43,6 +45,10 @@ import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -77,7 +83,10 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -86,6 +95,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /** Definition of the process. */
 public class ProcessBuilderPage extends FormPage implements SlcNames {
+	private final static Log log = LogFactory.getLog(ProcessBuilderPage.class);
+
 	public final static String ID = "processBuilderPage";
 
 	/** To be displayed in empty lists */
@@ -234,6 +245,9 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
 		flowsViewer.addDropSupport(operations, tt, new FlowsDropListener(
 				flowsViewer));
+
+		// Context menu
+		addContextMenu();
 
 		flowsViewer.setInput(getEditorSite());
 		flowsViewer.setInput(processNode);
@@ -604,6 +618,47 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 					.getSelection()).getFirstElement();
 			valuesViewer.setInput(realizedFlowNode);
 		}
+	}
+
+	private void addContextMenu() {
+		// Create the popup menu
+		final MenuManager menuMgr = new MenuManager();
+		final Menu menu = menuMgr.createContextMenu(flowsViewer.getTree());
+		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+		menuMgr.addMenuListener(new IMenuListener() {
+
+			public void menuAboutToShow(IMenuManager manager) {
+				if (flowsViewer.getSelection().isEmpty()) {
+					log.debug("empty selection");
+					return;
+				}
+
+				if (flowsViewer.getSelection() instanceof IStructuredSelection) {
+					IStructuredSelection selection = (IStructuredSelection) flowsViewer
+							.getSelection();
+					log.debug("got a selection");
+					Node currNode = (Node) selection.getFirstElement();
+					if (true) {
+						MenuItem renameItem = new MenuItem(menu, SWT.PUSH);
+						renameItem
+								.addSelectionListener(new SelectionListener() {
+
+									public void widgetSelected(SelectionEvent e) {
+										removeSelectedFlows();
+									}
+
+									public void widgetDefaultSelected(
+											SelectionEvent e) {
+									}
+								});
+						renameItem.setText("Remove selected");
+					}
+				}
+			}
+		});
+		// menuMgr.setRemoveAllWhenShown(true);
+		getSite().registerContextMenu(menuMgr, flowsViewer);
+		flowsViewer.getTree().setMenu(menu);
 	}
 
 	/** Manages drop event. */
