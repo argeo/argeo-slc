@@ -72,11 +72,24 @@ public class ResultItemsComparator extends ViewerComparator {
 			} catch (RepositoryException e) {
 				throw new SlcException("Unable to compare date created", e);
 			}
-		} else
-			// only remaining objects for the time being
-			// NT_UNSTRUCTURED that display all result tree structures
-			// We want the newest folders first
-			result = super.compare(viewer, e1, e2) * -1;
+		} else if (e1 instanceof ParentNodeFolder
+				&& e2 instanceof ParentNodeFolder) {
+			try {
+				Node an = ((ParentNodeFolder) e1).getNode();
+				// under my Result
+				if (an.isNodeType(SlcTypes.SLC_MY_RESULT_ROOT_FOLDER)
+						|| an.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
+					result = super.compare(viewer, e1, e2);
+				} else {
+					// only remaining objects for the time being
+					// NT_UNSTRUCTURED that display all result tree structures
+					// We want the newest folders first
+					result = super.compare(viewer, e1, e2) * -1;
+				}
+			} catch (RepositoryException e) {
+				throw new SlcException("Unable to compare date created", e);
+			}
+		}
 		return result;
 	}
 }

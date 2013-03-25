@@ -40,7 +40,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class AddResultFolder extends AbstractHandler {
 	public final static String ID = ClientUiPlugin.ID + ".addResultFolder";
 	public final static String DEFAULT_ICON_REL_PATH = "icons/addFolder.gif";
-	public final static String DEFAULT_LABEL = "New result folder";
+	public final static String DEFAULT_LABEL = "Add folder...";
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil

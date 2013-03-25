@@ -39,6 +39,7 @@ import org.argeo.slc.client.ui.views.JcrResultTreeView;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -53,6 +54,9 @@ public class RefreshJcrResultTreeView extends AbstractHandler {
 	public final static String PARAM_REFRESH_TYPE = ClientUiPlugin.ID
 			+ ".param.refreshType";
 	public final static String PARAM_REFRESH_TYPE_FULL = "fullRefresh";
+	public final static ImageDescriptor DEFAULT_IMG_DESCRIPTOR = ClientUiPlugin
+	.getImageDescriptor("icons/refresh.png");
+	public final static String DEFAULT_LABEL = "Refresh selected";
 
 	public Object execute(final ExecutionEvent event) throws ExecutionException {
 		String refreshType = event.getParameter(PARAM_REFRESH_TYPE);

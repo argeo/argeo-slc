@@ -39,7 +39,7 @@ public class RenameResultFolder extends AbstractHandler {
 	public final static String ID = ClientUiPlugin.ID + ".renameResultFolder";
 	public final static ImageDescriptor DEFAULT_IMG_DESCRIPTOR = ClientUiPlugin
 			.getImageDescriptor("icons/rename.png");
-	public final static String DEFAULT_LABEL = "Rename folder";
+	public final static String DEFAULT_LABEL = "Rename...";
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IStructuredSelection selection = (IStructuredSelection) HandlerUtil

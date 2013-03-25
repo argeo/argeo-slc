@@ -40,6 +40,8 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.SlcUiConstants;
 import org.argeo.slc.client.ui.commands.AddResultFolder;
+import org.argeo.slc.client.ui.commands.DeleteItems;
+import org.argeo.slc.client.ui.commands.RefreshJcrResultTreeView;
 import org.argeo.slc.client.ui.commands.RenameResultFolder;
 import org.argeo.slc.client.ui.commands.RenameResultNode;
 import org.argeo.slc.client.ui.editors.ProcessEditor;
@@ -186,9 +188,9 @@ public class JcrResultTreeView extends ViewPart {
 	 */
 	private void setOrderedInput(TreeViewer viewer) {
 		// Add specific ordering
-		resultTreeViewer.setInput(null);
+		viewer.setInput(null);
 		viewer.setComparator(null);
-		resultTreeViewer.setInput(initializeResultTree());
+		viewer.setInput(initializeResultTree());
 		viewer.setComparator(new ResultItemsComparator());
 	}
 
@@ -233,6 +235,8 @@ public class JcrResultTreeView extends ViewPart {
 			}
 		});
 		viewer.getTree().setMenu(menu);
+		menuManager.setRemoveAllWhenShown(true);
+
 		getSite().registerContextMenu(menuManager, viewer);
 
 		// add change listener to display TestResult information in the property
@@ -295,7 +299,7 @@ public class JcrResultTreeView extends ViewPart {
 						if (property.getValue().getBoolean())
 							value = "SUCCESS";
 						else {
-							if (property.getParent().hasNode(
+							if (property.getParent().hasProperty(
 									SlcNames.SLC_ERROR_MESSAGE))
 								value = "ERROR";
 							else
@@ -481,10 +485,13 @@ public class JcrResultTreeView extends ViewPart {
 		boolean canAddSubfolder = false;
 		boolean canRenamefolder = false;
 		boolean isSingleResultNode = false;
-		// Building conditions
-		if (selection.size() == 1) {
-			Object obj = selection.getFirstElement();
-			try {
+		boolean isUnderMyResult = false;
+		boolean validMultipleDelete = false;
+		try {
+
+			// Building conditions
+			if (selection.size() == 1) {
+				Object obj = selection.getFirstElement();
 				if (obj instanceof SingleResultNode)
 					isSingleResultNode = true;
 				else if (obj instanceof ParentNodeFolder) {
@@ -492,18 +499,50 @@ public class JcrResultTreeView extends ViewPart {
 					if (cNode.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
 						canAddSubfolder = true;
 						canRenamefolder = true;
+						isUnderMyResult = true;
 					} else if (cNode
 							.isNodeType(SlcTypes.SLC_MY_RESULT_ROOT_FOLDER)) {
 						canAddSubfolder = true;
 					}
 				}
-			} catch (RepositoryException re) {
-				throw new SlcException(
-						"unexpected error while building condition for context menu",
-						re);
+			} else {
+				@SuppressWarnings("rawtypes")
+				Iterator it = selection.iterator();
+				multicheck: while (it.hasNext()) {
+					validMultipleDelete = true;
+					Object obj = it.next();
+					if (obj instanceof SingleResultNode)
+						continue multicheck;
+					else if (obj instanceof ParentNodeFolder) {
+						Node cNode = ((ParentNodeFolder) obj).getNode();
+						if (cNode.isNodeType(SlcTypes.SLC_RESULT_FOLDER))
+							continue multicheck;
+						else {
+							validMultipleDelete = false;
+							break multicheck;
+						}
+					} else {
+						validMultipleDelete = false;
+						break multicheck;
+					}
+				}
 			}
+		} catch (RepositoryException re) {
+			throw new SlcException(
+					"unexpected error while building condition for context menu",
+					re);
 		}
+
 		// Effective Refresh
+		CommandUtils.refreshCommand(menuManager, window,
+				RefreshJcrResultTreeView.ID,
+				RefreshJcrResultTreeView.DEFAULT_LABEL,
+				RefreshJcrResultTreeView.DEFAULT_IMG_DESCRIPTOR, true);
+
+		CommandUtils.refreshCommand(menuManager, window, DeleteItems.ID,
+				DeleteItems.DEFAULT_LABEL, DeleteItems.DEFAULT_IMG_DESCRIPTOR,
+				isUnderMyResult || isSingleResultNode || validMultipleDelete);
+
 		CommandUtils.refreshCommand(menuManager, window, AddResultFolder.ID,
 				AddResultFolder.DEFAULT_LABEL,
 				ClientUiPlugin.getDefault().getWorkbench().getSharedImages()
@@ -514,9 +553,21 @@ public class JcrResultTreeView extends ViewPart {
 				RenameResultFolder.DEFAULT_LABEL,
 				RenameResultFolder.DEFAULT_IMG_DESCRIPTOR, canRenamefolder);
 
+		// Command removed for the time being.
 		CommandUtils.refreshCommand(menuManager, window, RenameResultNode.ID,
 				RenameResultNode.DEFAULT_LABEL,
-				RenameResultNode.DEFAULT_IMG_DESCRIPTOR, isSingleResultNode);
+				RenameResultNode.DEFAULT_IMG_DESCRIPTOR, false);
+
+		// Test to be removed
+		// If you use this pattern, do not forget to call
+		// menuManager.setRemoveAllWhenShown(true);
+		// when creating the menuManager
+
+		// menuManager.add(new Action("Test") {
+		// public void run() {
+		// log.debug("do something");
+		// }
+		// });
 	}
 
 	/* INNER CLASSES */
@@ -578,14 +629,14 @@ public class JcrResultTreeView extends ViewPart {
 				} else {
 					@SuppressWarnings("rawtypes")
 					Iterator it = selection.iterator();
-					StringBuffer nodes = new StringBuffer();
+					StringBuilder nodes = new StringBuilder();
 					while (it.hasNext()) {
 						Object obj = it.next();
 						if (obj instanceof SingleResultNode) {
 							Node tNode = ((SingleResultNode) obj).getNode();
 							if (tNode.getPrimaryNodeType().isNodeType(
 									SlcTypes.SLC_TEST_RESULT)) {
-								nodes.append(tNode.getIdentifier() + ";");
+								nodes.append(tNode.getIdentifier()).append(";");
 							}
 						}
 					}
@@ -711,9 +762,11 @@ public class JcrResultTreeView extends ViewPart {
 					}
 
 					Node target;
-					boolean passedStatus = source
-							.getNode(SlcNames.SLC_AGGREGATED_STATUS)
-							.getProperty(SlcNames.SLC_SUCCESS).getBoolean();
+					boolean passedStatus = false;
+					if (source.hasNode(SlcNames.SLC_AGGREGATED_STATUS))
+						passedStatus = source
+								.getNode(SlcNames.SLC_AGGREGATED_STATUS)
+								.getProperty(SlcNames.SLC_SUCCESS).getBoolean();
 
 					boolean isActionUnderMyResult = source.getPath()
 							.startsWith(
@@ -729,7 +782,6 @@ public class JcrResultTreeView extends ViewPart {
 						String destPath = targetParentNode.getPath() + "/"
 								+ name;
 						session.move(sourcePath, destPath);
-						// session.save();
 						// Update passed status of the parent source Node
 						ResultParentUtils
 								.updatePassedStatus(session.getNode(JcrUtils
@@ -743,70 +795,6 @@ public class JcrResultTreeView extends ViewPart {
 					ResultParentUtils.updatePassedStatus(target.getParent(),
 							passedStatus);
 					session.save();
-
-					// try {
-					// Node source = session.getNodeByIdentifier(id);
-					// String name;
-					// if (source.hasProperty(Property.JCR_TITLE))
-					// name = source.getProperty(Property.JCR_TITLE)
-					// .getString();
-					// else if (source.hasProperty(SlcNames.SLC_TEST_CASE))
-					// name = source.getProperty(SlcNames.SLC_TEST_CASE)
-					// .getString();
-					// else
-					// name = source.getName();
-					//
-					// // Check if a user defined folder result with same name
-					// // exists
-					// // at target
-					// if (targetParentNode.hasNode(name)
-					// && targetParentNode.getNode(name).isNodeType(
-					// SlcTypes.SLC_RESULT_FOLDER)) {
-					// ConfirmOverwriteWizard wizard = new
-					// ConfirmOverwriteWizard(
-					// name, targetParentNode);
-					// WizardDialog dialog = new WizardDialog(Display
-					// .getDefault().getActiveShell(), wizard);
-					//
-					// if (dialog.open() == WizardDialog.CANCEL)
-					// return true;
-					//
-					// if (wizard.overwrite()) {
-					// targetParentNode.getNode(name).remove();
-					// // session.save();
-					// } else
-					// name = wizard.newName();
-					// }
-					//
-					// Node target;
-					// boolean passedStatus = source
-					// .getNode(SlcNames.SLC_AGGREGATED_STATUS)
-					// .getProperty(SlcNames.SLC_SUCCESS).getBoolean();
-					//
-					// if (!isActionUnderMyResult) {// Copy
-					// target = targetParentNode.addNode(source.getName(),
-					// source.getPrimaryNodeType().getName());
-					// JcrUtils.copy(source, target);
-					// } else {// move
-					// String sourcePath = source.getPath();
-					// String destPath = targetParentNode.getPath() + "/"
-					// + name;
-					// session.move(sourcePath, destPath);
-					// // session.save();
-					// // Update passed status of the parent source Node
-					// ResultParentUtils
-					// .updatePassedStatus(session.getNode(JcrUtils
-					// .parentPath(sourcePath)), true);
-					// target = session.getNode(destPath);
-					//
-					// }
-					// if (!target.isNodeType(NodeType.MIX_TITLE))
-					// target.addMixin(NodeType.MIX_TITLE);
-					// target.setProperty(Property.JCR_TITLE, name);
-					// ResultParentUtils.updatePassedStatus(target.getParent(),
-					// passedStatus);
-					// session.save();
-
 				}
 			} catch (RepositoryException re) {
 				throw new SlcException(

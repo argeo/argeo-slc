@@ -15,9 +15,9 @@
  */
 package org.argeo.slc.client.ui.commands;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -54,7 +54,7 @@ public class DeleteItems extends AbstractHandler {
 				.getActiveWorkbenchWindow(event).getActivePage().getSelection();
 
 		// confirmation
-		StringBuffer buf = new StringBuffer("");
+		StringBuilder buf = new StringBuilder("");
 		Iterator<?> lst = ((IStructuredSelection) selection).iterator();
 		while (lst.hasNext()) {
 			Object obj = lst.next();
@@ -67,7 +67,7 @@ public class DeleteItems extends AbstractHandler {
 		String msg = "Nothing to delete";
 		// remove last separator
 		if (buf.lastIndexOf(", ") > -1) {
-			msg = "Do you want to delete following objects: "
+			msg = "Do you want to delete following objects (and their children): "
 					+ buf.substring(0, buf.lastIndexOf(", ")) + "?";
 		}
 		Boolean ok = MessageDialog.openConfirm(
@@ -81,29 +81,37 @@ public class DeleteItems extends AbstractHandler {
 			protected IStatus run(IProgressMonitor monitor) {
 				if (selection != null
 						&& selection instanceof IStructuredSelection) {
-					List<Node> nodes = new ArrayList<Node>();
+					Map<String, Node> nodes = new HashMap<String, Node>();
 					Iterator<?> it = ((IStructuredSelection) selection)
 							.iterator();
 					Object obj = null;
-					while (it.hasNext()) {
-						obj = it.next();
-						if (obj instanceof ResultFolder) {
-							Node node = ((ResultFolder) obj).getNode();
-							nodes.add(node);
-						} else if (obj instanceof SingleResultNode) {
-							Node node = ((SingleResultNode) obj).getNode();
-							nodes.add(node);
-						}
-					}
 					try {
+
+						while (it.hasNext()) {
+							obj = it.next();
+							if (obj instanceof ResultFolder) {
+								Node node = ((ResultFolder) obj).getNode();
+								nodes.put(node.getPath(), node);
+							} else if (obj instanceof SingleResultNode) {
+								Node node = ((SingleResultNode) obj).getNode();
+								nodes.put(node.getPath(), node);
+							}
+						}
 						if (!nodes.isEmpty()) {
-							Session session = nodes.get(0).getSession();
+							Session session = null;
 							monitor.beginTask("Delete results", nodes.size());
-							for (Node node : nodes) {
-								Node parent = node.getParent();
-								node.remove();
-								ResultParentUtils.updatePassedStatus(parent,
-										true);
+							for (String path : nodes.keySet()) {
+								if (session == null)
+									session = nodes.get(path).getSession();
+
+								// check if the item has not already been
+								// deleted while deleting one of its ancestor
+								if (session.itemExists(path)) {
+									Node parent = nodes.get(path).getParent();
+									nodes.get(path).remove();
+									ResultParentUtils.updatePassedStatus(
+											parent, true);
+								}
 								monitor.worked(1);
 							}
 							session.save();
