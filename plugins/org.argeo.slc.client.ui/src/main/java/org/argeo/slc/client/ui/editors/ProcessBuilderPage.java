@@ -32,8 +32,6 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
@@ -90,7 +88,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /** Definition of the process. */
 public class ProcessBuilderPage extends FormPage implements SlcNames {
-	private final static Log log = LogFactory.getLog(ProcessBuilderPage.class);
+	// private final static Log log =
+	// LogFactory.getLog(ProcessBuilderPage.class);
 
 	public final static String ID = "processBuilderPage";
 
