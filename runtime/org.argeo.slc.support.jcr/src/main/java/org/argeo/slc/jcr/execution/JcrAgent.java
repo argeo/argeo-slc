@@ -15,6 +15,8 @@
  */
 package org.argeo.slc.jcr.execution;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.UUID;
 
 import javax.jcr.Node;
@@ -34,6 +36,9 @@ import org.argeo.slc.jcr.SlcTypes;
 
 /** SLC VM agent synchronizing with a JCR repository. */
 public class JcrAgent extends DefaultAgent implements SlcNames {
+	// final static String ROLE_REMOTE = "ROLE_REMOTE";
+	final static String NODE_REPO_URI = "argeo.node.repo.uri";
+
 	private Repository repository;
 
 	private String agentNodeName = "default";
@@ -45,9 +50,10 @@ public class JcrAgent extends DefaultAgent implements SlcNames {
 		Session session = null;
 		try {
 			session = repository.login();
+
+			String agentFactoryPath = getAgentFactoryPath();
 			Node vmAgentFactoryNode = JcrUtils.mkdirsSafe(session,
-					SlcJcrConstants.VM_AGENT_FACTORY_PATH,
-					SlcTypes.SLC_AGENT_FACTORY);
+					agentFactoryPath, SlcTypes.SLC_AGENT_FACTORY);
 			if (!vmAgentFactoryNode.hasNode(agentNodeName)) {
 				String uuid = UUID.randomUUID().toString();
 				Node agentNode = vmAgentFactoryNode.addNode(agentNodeName,
@@ -89,7 +95,29 @@ public class JcrAgent extends DefaultAgent implements SlcNames {
 	 * UTILITIES
 	 */
 	public String getNodePath() {
-		return SlcJcrConstants.VM_AGENT_FACTORY_PATH + '/' + getAgentNodeName();
+		return getAgentFactoryPath() + '/' + getAgentNodeName();
+	}
+
+	public String getAgentFactoryPath() {
+		try {
+			Boolean isRemote = System.getProperty(NODE_REPO_URI) != null;
+			String agentFactoryPath;
+			if (isRemote) {
+				InetAddress localhost = InetAddress.getLocalHost();
+				agentFactoryPath = SlcJcrConstants.AGENTS_BASE_PATH + "/"
+						+ localhost.getCanonicalHostName();
+
+				if (agentFactoryPath
+						.equals(SlcJcrConstants.VM_AGENT_FACTORY_PATH))
+					throw new SlcException("Unsupported hostname "
+							+ localhost.getCanonicalHostName());
+			} else {// local
+				agentFactoryPath = SlcJcrConstants.VM_AGENT_FACTORY_PATH;
+			}
+			return agentFactoryPath;
+		} catch (UnknownHostException e) {
+			throw new SlcException("Cannot find agent factory base path", e);
+		}
 	}
 
 	/*
@@ -106,5 +134,4 @@ public class JcrAgent extends DefaultAgent implements SlcNames {
 	public void setAgentNodeName(String agentNodeName) {
 		this.agentNodeName = agentNodeName;
 	}
-
 }

@@ -15,15 +15,15 @@
 	</bean>
 
 	<!-- Security -->
-	<bean class="org.argeo.jackrabbit.JackrabbitAuthorizations"
-		init-method="run">
-		<property name="principalPrivileges">
-			<map>
-				<entry key="jcr:all" value="ROLE_SLC" />
-			</map>
-		</property>
-		<property name="repository" ref="jcrRepository" />
-	</bean>
+<!-- 	<bean class="org.argeo.jackrabbit.JackrabbitAuthorizations" -->
+<!-- 		init-method="run"> -->
+<!-- 		<property name="principalPrivileges"> -->
+<!-- 			<map> -->
+<!-- 				<entry key="jcr:all" value="ROLE_SLC" /> -->
+<!-- 			</map> -->
+<!-- 		</property> -->
+<!-- 		<property name="repository" ref="jcrRepository" /> -->
+<!-- 	</bean> -->
 
 	<bean
 		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
