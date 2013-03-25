@@ -45,10 +45,6 @@ import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
@@ -86,7 +82,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -620,44 +615,36 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 		}
 	}
 
+	/**
+	 * Add a context menu that call private methods. It only relies on selected
+	 * item(s) not on parameter that are passed in the menuAboutToShow method
+	 **/
 	private void addContextMenu() {
-		// Create the popup menu
-		final MenuManager menuMgr = new MenuManager();
-		final Menu menu = menuMgr.createContextMenu(flowsViewer.getTree());
-		menuMgr.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-		menuMgr.addMenuListener(new IMenuListener() {
+		Menu menu = new Menu(flowsViewer.getControl());
 
-			public void menuAboutToShow(IMenuManager manager) {
-				if (flowsViewer.getSelection().isEmpty()) {
-					log.debug("empty selection");
-					return;
-				}
+		MenuItem removeItems = new MenuItem(menu, SWT.PUSH);
+		removeItems.addSelectionListener(new SelectionListener() {
 
-				if (flowsViewer.getSelection() instanceof IStructuredSelection) {
-					IStructuredSelection selection = (IStructuredSelection) flowsViewer
-							.getSelection();
-					log.debug("got a selection");
-					Node currNode = (Node) selection.getFirstElement();
-					if (true) {
-						MenuItem renameItem = new MenuItem(menu, SWT.PUSH);
-						renameItem
-								.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				removeSelectedFlows();
+			}
 
-									public void widgetSelected(SelectionEvent e) {
-										removeSelectedFlows();
-									}
-
-									public void widgetDefaultSelected(
-											SelectionEvent e) {
-									}
-								});
-						renameItem.setText("Remove selected");
-					}
-				}
+			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
-		// menuMgr.setRemoveAllWhenShown(true);
-		getSite().registerContextMenu(menuMgr, flowsViewer);
+		removeItems.setText("Remove selected flow(s)");
+
+		MenuItem removeAllItems = new MenuItem(menu, SWT.PUSH);
+		removeAllItems.addSelectionListener(new SelectionListener() {
+
+			public void widgetSelected(SelectionEvent e) {
+				removeAllFlows();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
+		});
+		removeAllItems.setText("Remove all flows");
 		flowsViewer.getTree().setMenu(menu);
 	}
 
