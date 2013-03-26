@@ -297,7 +297,7 @@ public class JcrResultTreeView extends ViewPart {
 						value = dateFormat.format(date.getTime());
 					} else if (SlcNames.SLC_SUCCESS.equals(name)) {
 						if (property.getValue().getBoolean())
-							value = "SUCCESS";
+							value = "PASSED";
 						else {
 							if (property.getParent().hasProperty(
 									SlcNames.SLC_ERROR_MESSAGE))
