@@ -25,6 +25,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.SlcUiConstants;
+import org.argeo.slc.client.ui.model.ResultFolder;
 import org.argeo.slc.client.ui.model.ResultParent;
 import org.argeo.slc.client.ui.model.SingleResultNode;
 import org.argeo.slc.jcr.SlcNames;
@@ -51,19 +52,30 @@ public class ResultFailedDecorator extends LabelProvider implements
 	// hack for SWT resource leak
 	// see http://www.eclipse.org/articles/swt-design-2/swt-design-2.html
 	// see https://bugs.eclipse.org/bugs/show_bug.cgi?id=181215
+	private final Image passedFolder;
 	private final Image failedFolder;
 	private final Image failedSingleResult;
+	private final Image errorSingleResult;
+	private final Image passedSingleResult;
 
 	public ResultFailedDecorator() {
 		super();
-		ImageDescriptor desc = ClientUiPlugin.getDefault().getWorkbench()
+		ImageDescriptor failedDesc = ClientUiPlugin.getDefault().getWorkbench()
 				.getSharedImages()
 				.getImageDescriptor(ISharedImages.IMG_DEC_FIELD_ERROR);
-		failedFolder = new DecorationOverlayIcon(SlcImages.FOLDER, desc,
+		failedFolder = new DecorationOverlayIcon(SlcImages.FOLDER, failedDesc,
 				IDecoration.TOP_LEFT).createImage();
+		passedFolder = new DecorationOverlayIcon(SlcImages.FOLDER,
+				SlcImages.EXECUTION_PASSED, IDecoration.TOP_LEFT).createImage();
 		failedSingleResult = new DecorationOverlayIcon(
-				SlcImages.PROCESS_COMPLETED, desc, IDecoration.TOP_LEFT)
+				SlcImages.PROCESS_COMPLETED, failedDesc, IDecoration.TOP_LEFT)
 				.createImage();
+		errorSingleResult = new DecorationOverlayIcon(
+				SlcImages.PROCESS_COMPLETED, SlcImages.EXECUTION_ERROR,
+				IDecoration.TOP_LEFT).createImage();
+		passedSingleResult = new DecorationOverlayIcon(
+				SlcImages.PROCESS_COMPLETED, SlcImages.EXECUTION_PASSED,
+				IDecoration.TOP_LEFT).createImage();
 	}
 
 	// Method to decorate Image
@@ -74,7 +86,14 @@ public class ResultFailedDecorator extends LabelProvider implements
 		// decorates resource icon with basic decorations provided
 		// by Eclipse
 		if (object instanceof ResultParent) {
-			if (!((ResultParent) object).isPassed()) {
+			if (((ResultParent) object).isPassed()) {
+				if (object instanceof SingleResultNode)
+					return passedSingleResult;
+				else if (object instanceof ResultFolder)
+					return passedFolder;
+				else
+					return null;
+			} else {
 				// ImageDescriptor desc = ClientUiPlugin.getDefault()
 				// .getWorkbench().getSharedImages()
 				// .getImageDescriptor(ISharedImages.IMG_DEC_FIELD_ERROR);
@@ -82,12 +101,24 @@ public class ResultFailedDecorator extends LabelProvider implements
 				// DecorationOverlayIcon(
 				// image, desc, IDecoration.TOP_LEFT);
 				// return decoratedImage.createImage();
-				if (object instanceof SingleResultNode)
-					return failedSingleResult;
-				else
+				if (object instanceof SingleResultNode) {
+					SingleResultNode srn = (SingleResultNode) object;
+					boolean isError = false;
+					try {
+						isError = srn.getNode()
+								.getNode(SlcNames.SLC_AGGREGATED_STATUS)
+								.hasProperty(SlcNames.SLC_ERROR_MESSAGE);
+					} catch (RepositoryException re) {
+						// Silent node might not exist
+					}
+					if (isError)
+						return errorSingleResult;
+					else
+						return failedSingleResult;
+
+				} else
 					return failedFolder;
-			} else
-				return null;
+			}
 		}
 		return null;
 	}

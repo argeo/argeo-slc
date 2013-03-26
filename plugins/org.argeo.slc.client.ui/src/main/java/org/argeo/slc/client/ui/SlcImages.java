@@ -15,8 +15,10 @@
  */
 package org.argeo.slc.client.ui;
 
+import static org.argeo.slc.client.ui.ClientUiPlugin.getImageDescriptor;
 import static org.argeo.slc.client.ui.ClientUiPlugin.img;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
 /** Shared images. */
@@ -45,4 +47,9 @@ public class SlcImages {
 	public final static Image PROCESS_SCHEDULED = img("icons/process_scheduled.gif");
 	public final static Image PROCESS_RUNNING = img("icons/process_running.png");
 	public final static Image PROCESS_COMPLETED = img("icons/process_completed.png");
+
+	// Decorators
+	public final static ImageDescriptor EXECUTION_ERROR = getImageDescriptor("icons/executionError.gif");
+	public final static ImageDescriptor EXECUTION_PASSED = getImageDescriptor("icons/executionPassed.gif");
+
 }
