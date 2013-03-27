@@ -83,7 +83,7 @@ public class JcrAgent extends DefaultAgent implements SlcNames {
 	protected ProcessThread createProcessThread(
 			ThreadGroup processesThreadGroup,
 			ExecutionModulesManager modulesManager, ExecutionProcess process) {
-		if (process instanceof JcrProcessThread)
+		if (process instanceof JcrExecutionProcess)
 			return new JcrProcessThread(processesThreadGroup, modulesManager,
 					(JcrExecutionProcess) process);
 		else
