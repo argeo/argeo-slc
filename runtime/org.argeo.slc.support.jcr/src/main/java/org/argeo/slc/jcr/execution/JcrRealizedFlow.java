@@ -39,7 +39,7 @@ public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 			String flowPath = realizedFlowNode.getNode(SLC_ADDRESS)
 					.getProperty(Property.JCR_PATH).getString();
 			// TODO: convert to local path if remote
-
+			// FIXME start related module
 			Node flowNode = realizedFlowNode.getSession().getNode(flowPath);
 			String flowName = flowNode.getProperty(SLC_NAME).getString();
 			String description = null;
