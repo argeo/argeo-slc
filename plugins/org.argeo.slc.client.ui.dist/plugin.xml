@@ -36,7 +36,7 @@
             class="org.argeo.slc.client.ui.dist.views.HelpView"
             id="org.argeo.slc.client.ui.dist.helpView"
             icon="icons/help.gif"
-            name="Infos">
+            name="About">
       </view>
       <view
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
