@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>runtime</artifactId>
-		<version>1.1.12</version>
+		<version>1.1.13-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.support.aether</artifactId>
@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.core</artifactId>
-			<version>1.1.12</version>
+			<version>1.1.13-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

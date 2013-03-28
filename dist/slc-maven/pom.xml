@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dist</artifactId>
-		<version>1.1.12</version>
+		<version>1.1.13-SNAPSHOT</version>
 	</parent>
 	<artifactId>slc-maven</artifactId>
 	<packaging>pom</packaging>
@@ -12,7 +12,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support.maven</artifactId>
-			<version>1.1.12</version>
+			<version>1.1.13-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<profiles>
