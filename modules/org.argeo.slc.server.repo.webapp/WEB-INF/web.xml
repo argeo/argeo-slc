@@ -24,19 +24,19 @@
 	</context-param>
 
 	<!-- Maven -->
-	<servlet>
-		<servlet-name>maven</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextClass</param-name>
-			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value>
-		</init-param>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>maven</servlet-name>
-		<url-pattern>/maven/*</url-pattern>
-	</servlet-mapping>
+<!-- 	<servlet> -->
+<!-- 		<servlet-name>maven</servlet-name> -->
+<!-- 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class> -->
+<!-- 		<init-param> -->
+<!-- 			<param-name>contextClass</param-name> -->
+<!-- 			<param-value>org.springframework.osgi.web.context.support.OsgiBundleXmlWebApplicationContext</param-value> -->
+<!-- 		</init-param> -->
+<!-- 		<load-on-startup>1</load-on-startup> -->
+<!-- 	</servlet> -->
+<!-- 	<servlet-mapping> -->
+<!-- 		<servlet-name>maven</servlet-name> -->
+<!-- 		<url-pattern>/maven/*</url-pattern> -->
+<!-- 	</servlet-mapping> -->
 
 	<!-- Security -->
 	<filter>
