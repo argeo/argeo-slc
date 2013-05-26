@@ -27,5 +27,6 @@
 		<module>org.argeo.slc.launcher</module>
 		<module>org.argeo.slc.lib.detached</module>
 		<module>org.argeo.slc.repo</module>
+		<module>org.argeo.slc.rpmfactory</module>
 	</modules>
 </project>
