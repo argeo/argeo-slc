@@ -33,14 +33,14 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
-import org.argeo.slc.rpmfactory.MavenProxyService;
+import org.argeo.slc.rpmfactory.RpmProxyService;
 import org.argeo.slc.rpmfactory.RpmRepository;
 
 /** Synchronizes the node repository with remote Maven repositories */
-public class MavenProxyServiceImpl extends AbstractUrlProxy implements
-		MavenProxyService, ArgeoNames, SlcNames {
+public class RpmProxyServiceImpl extends AbstractUrlProxy implements
+		RpmProxyService, ArgeoNames, SlcNames {
 	private final static Log log = LogFactory
-			.getLog(MavenProxyServiceImpl.class);
+			.getLog(RpmProxyServiceImpl.class);
 
 	private List<RpmRepository> defaultRepositories = new ArrayList<RpmRepository>();
 

@@ -22,6 +22,8 @@
 							org.argeo.slc.rpmfactory.*
 						</Export-Package>
 						<Import-Package>
+							javax.jcr.nodetype,
+							org.argeo.slc.repo,
 							*
 						</Import-Package>
 					</instructions>
