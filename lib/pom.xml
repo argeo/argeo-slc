@@ -13,6 +13,7 @@
 	<modules>
 		<module>org.argeo.slc.lib.jcr</module>
 		<module>org.argeo.slc.lib.repo</module>
+		<module>org.argeo.slc.lib.rpmfactory</module>
 	</modules>
 	<properties>
 		<additionalImports.slc-lib>
