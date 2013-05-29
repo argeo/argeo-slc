@@ -54,11 +54,11 @@ public abstract class AbstractJschTask implements Runnable {
 			session.setUserInfo(getSshTarget().getUserInfo());
 			session.setServerAliveInterval(1000);
 			session.connect();
-			if (log.isDebugEnabled())
-				log.debug("Connected to " + getSshTarget() + " via SSH");
+			if (log.isTraceEnabled())
+				log.trace("Connected to " + getSshTarget() + " via SSH");
 			if (sshTarget.getSession() != null) {
-				if (log.isDebugEnabled())
-					log.debug("The cached session to " + getSshTarget()
+				if (log.isTraceEnabled())
+					log.trace("The cached session to " + getSshTarget()
 							+ " was disconnected and was reset.");
 				sshTarget.setSession(session);
 			}
@@ -78,8 +78,8 @@ public abstract class AbstractJschTask implements Runnable {
 		} finally {
 			if (sshTarget != null && sshTarget.getSession() == null) {
 				session.disconnect();
-				if (log.isDebugEnabled())
-					log.debug("Disconnected from " + getSshTarget()
+				if (log.isTraceEnabled())
+					log.trace("Disconnected from " + getSshTarget()
 							+ " via SSH");
 			}
 		}

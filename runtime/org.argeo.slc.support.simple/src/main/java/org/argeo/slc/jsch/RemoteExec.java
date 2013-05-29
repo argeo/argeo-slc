@@ -255,16 +255,16 @@ public class RemoteExec extends AbstractJschTask {
 			// Standard Error
 			readStdErr(channel);
 
-			if (log.isDebugEnabled())
-				log.debug("Run '" + command + "' on " + getSshTarget() + "...");
+			if (log.isTraceEnabled())
+				log.trace("Run '" + command + "' on " + getSshTarget() + "...");
 			channel.connect();
 
 			readStdIn(channel);
 			readStdOut(channel);
 
-			if (streamHandler != null){
+			if (streamHandler != null) {
 				streamHandler.start();
-				while(!channel.isClosed()){
+				while (!channel.isClosed()) {
 					try {
 						Thread.sleep(100);
 					} catch (Exception e) {
