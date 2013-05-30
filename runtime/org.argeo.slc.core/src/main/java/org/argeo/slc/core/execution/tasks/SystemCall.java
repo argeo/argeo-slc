@@ -229,6 +229,8 @@ public class SystemCall implements Runnable {
 						Thread.currentThread().interrupt();
 						return;
 					}
+					// Sleep 1s in order to make sure error logs are flushed
+					Thread.sleep(1000);
 					executeResultHandler.onProcessFailed(e1);
 				}
 			else
@@ -395,6 +397,7 @@ public class SystemCall implements Runnable {
 			}
 
 			public void onProcessFailed(ExecuteException e) {
+
 				String msg = "System call '" + commandLine + "' failed.";
 				if (testResult != null) {
 					forwardPath(testResult);
