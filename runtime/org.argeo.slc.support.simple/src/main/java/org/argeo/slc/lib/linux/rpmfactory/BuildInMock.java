@@ -51,7 +51,7 @@ public class BuildInMock implements Runnable {
 	private String level = null;
 	private String arch = NOARCH;
 
-	private String srpm;
+	private String rpmPackage = null;
 
 	private Boolean mkdirs = true;
 
@@ -63,8 +63,8 @@ public class BuildInMock implements Runnable {
 	public void run() {
 		// TODO check if caller is in mock group
 
-		String cfg = mockConfig != null ? mockConfig : repository + "-"
-				+ release + "-" + level + "-" + arch;
+		String cfgId = repository + "-" + release + "-" + arch;
+		String cfg = mockConfig != null ? mockConfig : "slc/" + cfgId;
 
 		// prepare mock call
 		SystemCall mock = new SystemCall();
@@ -78,7 +78,9 @@ public class BuildInMock implements Runnable {
 		if (arch != null)
 			mock.arg("--arch=" + arch);
 		mock.arg("-r").arg(cfg);
-		mock.arg(srpm);
+
+		mock.arg("--scm-enable");
+		mock.arg("--scm-option").arg("package=" + rpmPackage);
 
 		mock.setLogCommand(true);
 
@@ -89,7 +91,7 @@ public class BuildInMock implements Runnable {
 		// File repoDir = new File(buildEnvironment.getStagingBase() + "/"
 		// + repository + "/" + level + "/" + release);
 		File repoDir = new File(buildEnvironment.getStagingBase() + "/"
-				+ repository + "-staging" + "/" + release);
+				+ repository + "-" + release + "-staging");
 		File srpmDir = new File(repoDir, "SRPMS");
 		if (mkdirs)
 			srpmDir.mkdirs();
@@ -103,7 +105,7 @@ public class BuildInMock implements Runnable {
 
 		// copy RPMs
 		Set<File> reposToRecreate = new HashSet<File>();
-		File resultDir = new File(mockVar + "/" + cfg + "/result");
+		File resultDir = new File(mockVar + "/" + cfgId + "/result");
 		rpms: for (File file : resultDir.listFiles()) {
 			if (file.isDirectory())
 				continue rpms;
@@ -188,8 +190,8 @@ public class BuildInMock implements Runnable {
 		this.arch = arch;
 	}
 
-	public void setSrpm(String srpm) {
-		this.srpm = srpm;
+	public void setRpmPackage(String rpmPackage) {
+		this.rpmPackage = rpmPackage;
 	}
 
 	public void setMockVar(String mockVar) {

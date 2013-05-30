@@ -36,7 +36,7 @@ public class RpmBuildEnvironment {
 
 	private List<String> archs = new ArrayList<String>();
 
-	private String stagingBase = "/srv/rpmfactory";
+	private String stagingBase = "/mnt/slc/repos/rpm";
 
 	/** Write (topdir)/rpmmacros and (topdir)/rpmrc */
 	public void writeRpmbuildConfigFiles(File topdir) {
