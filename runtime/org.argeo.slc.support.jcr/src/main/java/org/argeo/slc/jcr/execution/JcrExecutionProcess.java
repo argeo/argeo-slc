@@ -22,16 +22,20 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.RealizedFlow;
+import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 
@@ -148,6 +152,17 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 			NodeIterator nit = rootRealizedFlowNode.getNodes(SLC_FLOW);
 			while (nit.hasNext()) {
 				Node realizedFlowNode = nit.nextNode();
+
+				if (realizedFlowNode.hasNode(SLC_ADDRESS)) {
+					String flowPath = realizedFlowNode.getNode(SLC_ADDRESS)
+							.getProperty(Property.JCR_PATH).getString();
+					NameVersion moduleNameVersion = SlcJcrUtils
+							.moduleNameVersion(flowPath);
+					((ProcessThread) Thread.currentThread())
+							.getExecutionModulesManager().start(
+									moduleNameVersion);
+				}
+
 				RealizedFlow realizedFlow = new JcrRealizedFlow(
 						realizedFlowNode);
 				if (realizedFlow != null)

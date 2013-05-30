@@ -102,8 +102,10 @@ public class OsgiExecutionModulesManager extends
 			OsgiBundle osgiBundle = bundlesManager.findFromPattern(module);
 			if (osgiBundle == null)
 				throw new SlcException("No OSGi bundle found for " + module);
-			Bundle moduleBundle = bundlesManager.findRelatedBundle(osgiBundle);
-			bundlesManager.startSynchronous(moduleBundle);
+			// Bundle moduleBundle =
+			// bundlesManager.findRelatedBundle(osgiBundle);
+			start(osgiBundle);
+
 			RealizedFlow lastLaunch = findRealizedFlow(module, flow);
 			if (lastLaunch == null)
 				throw new SlcException("Cannot find launch for " + module + " "
@@ -131,6 +133,23 @@ public class OsgiExecutionModulesManager extends
 			}
 		}
 	}
+
+	// public void startExectionModule(String moduleName, String moduleVersion)
+	// {
+	// try {
+	// ServiceReference[] sr = bundlesManager.getServiceRefSynchronous(
+	// ApplicationContext.class.getName(),
+	// "org.springframework.context.service.name=" + moduleName);
+	// // bundlesManager.startSynchronous(moduleBundle);
+	// if (sr == null || sr.length == 0)
+	// throw new SlcException(
+	// "Cannot find execution module application context "
+	// + moduleName);
+	// } catch (InvalidSyntaxException e) {
+	// throw new SlcException("Cannot start exeuction module "
+	// + moduleName, e);
+	// }
+	// }
 
 	public synchronized ExecutionModuleDescriptor getExecutionModuleDescriptor(
 			String moduleName, String version) {

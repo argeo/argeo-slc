@@ -28,6 +28,8 @@ import javax.jcr.nodetype.NodeType;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
+import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
 import org.argeo.slc.core.execution.PrimitiveUtils;
@@ -68,6 +70,15 @@ public class SlcJcrUtils implements SlcNames {
 		String moduleName = tokens[AGENT_FACTORY_DEPTH + 2];
 		moduleName = moduleName.substring(0, moduleName.indexOf('_'));
 		return moduleName;
+	}
+
+	/** Extracts the module name and version from a flow path */
+	public static NameVersion moduleNameVersion(String fullFlowPath) {
+		String[] tokens = fullFlowPath.split("/");
+		String module = tokens[AGENT_FACTORY_DEPTH + 2];
+		String moduleName = module.substring(0, module.indexOf('_'));
+		String moduleVersion = module.substring(module.indexOf('_') + 1);
+		return new BasicNameVersion(moduleName, moduleVersion);
 	}
 
 	/** Module node name based on module name and version */
