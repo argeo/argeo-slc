@@ -17,12 +17,12 @@
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
 			<props>
-				<prop key="*">mavenProxyServlet</prop>
+				<prop key="*">rpmProxyServlet</prop>
 			</props>
 		</property>
 	</bean>
 
-	<bean id="mavenProxyServlet" class="org.argeo.jcr.mvc.ResourceProxyServlet">
-		<property name="proxy" ref="mavenProxy" />
+	<bean id="rpmProxyServlet" class="org.argeo.jcr.mvc.ResourceProxyServlet">
+		<property name="proxy" ref="rpmProxy" />
 	</bean>
 </beans>

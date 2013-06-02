@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.repo.maven.proxy;
+package org.argeo.slc.repo.maven;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +32,11 @@ import org.argeo.jcr.proxy.AbstractUrlProxy;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.repo.MavenProxyService;
 import org.argeo.slc.repo.RepoConstants;
 import org.sonatype.aether.repository.RemoteRepository;
 
-/** Synchronizes the node repository with remote Maven repositories */
+/** Synchronises the node repository with remote Maven repositories */
 public class MavenProxyServiceImpl extends AbstractUrlProxy implements
 		MavenProxyService, ArgeoNames, SlcNames {
 	private final static Log log = LogFactory
@@ -43,9 +44,7 @@ public class MavenProxyServiceImpl extends AbstractUrlProxy implements
 
 	private List<RemoteRepository> defaultRepositories = new ArrayList<RemoteRepository>();
 
-	private String artifactsBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
-
-	/** Inititalizes the artifacts area. */
+	/** Initialises the artifacts area. */
 	@Override
 	protected void beforeInitSessionSave(Session session)
 			throws RepositoryException {
@@ -109,21 +108,8 @@ public class MavenProxyServiceImpl extends AbstractUrlProxy implements
 		return baseUrls;
 	}
 
-	/** The JCR path where this file could be found */
-	public String getNodePath(String path) {
-		if (artifactsBasePath.equals(RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH))
-			return path;
-		else
-			return artifactsBasePath + path;
-	}
-
 	public void setDefaultRepositories(
 			List<RemoteRepository> defaultRepositories) {
 		this.defaultRepositories = defaultRepositories;
 	}
-
-	public void setArtifactsBasePath(String artifactsBasePath) {
-		this.artifactsBasePath = artifactsBasePath;
-	}
-
 }

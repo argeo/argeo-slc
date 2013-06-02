@@ -26,8 +26,8 @@
 			<item name="Home" href="${project.url}/index.html" />
 			<!--<item name="Getting Started" href="${project.url}/gettingStarted.html" />-->
 			<!--<item name="FAQ" href="${project.url}/faq.html" />-->
-			<item name="API (Javadoc)" href="${project.url}/apidocs/index.html" target="argeo_slc_javadoc" />
-			<item name="Browse Code" href="${project.url}/xref/index.html" target="argeo_slc_code" />
+			<item name="API (Javadoc)" href="${project.url}/apidocs/index.html" />
+			<item name="Browse Code" href="${project.url}/xref/index.html" />
 			<item name="FIXMEs / TODOs" href="${project.url}/taglist.html" />
 		</menu>
 		<!--

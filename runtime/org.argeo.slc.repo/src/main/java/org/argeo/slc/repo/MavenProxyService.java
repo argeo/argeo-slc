@@ -13,13 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.lib.linux.rpmfactory;
+package org.argeo.slc.repo;
 
-import org.freecompany.redline.Builder;
+import org.argeo.jcr.proxy.ResourceProxy;
 
-public class RpmBuilder {
-	private Builder builder;
-
-	public void run() {
-	}
+/** Marker interface (useful for OSGi servcies references), maybe extended later */
+public interface MavenProxyService extends ResourceProxy {
 }

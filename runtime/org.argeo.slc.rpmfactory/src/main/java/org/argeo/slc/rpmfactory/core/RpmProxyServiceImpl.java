@@ -15,14 +15,12 @@
  */
 package org.argeo.slc.rpmfactory.core;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,98 +30,87 @@ import org.argeo.jcr.proxy.AbstractUrlProxy;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.rpmfactory.RpmProxyService;
 import org.argeo.slc.rpmfactory.RpmRepository;
 
-/** Synchronizes the node repository with remote Maven repositories */
+/** Synchronises the node repository with remote Maven repositories */
 public class RpmProxyServiceImpl extends AbstractUrlProxy implements
 		RpmProxyService, ArgeoNames, SlcNames {
-	private final static Log log = LogFactory
-			.getLog(RpmProxyServiceImpl.class);
+	private final static Log log = LogFactory.getLog(RpmProxyServiceImpl.class);
 
-	private List<RpmRepository> defaultRepositories = new ArrayList<RpmRepository>();
-
-	private String artifactsBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
-
-	/** Inititalizes the artifacts area. */
-	@Override
-	protected void beforeInitSessionSave(Session session)
-			throws RepositoryException {
-		JcrUtils.mkdirsSafe(session, RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH);
-		Node proxiedRepositories = JcrUtils.mkdirsSafe(session,
-				RepoConstants.PROXIED_REPOSITORIES);
-		for (RpmRepository repository : defaultRepositories) {
-			if (!proxiedRepositories.hasNode(repository.getId())) {
-				Node proxiedRepository = proxiedRepositories.addNode(repository
-						.getId());
-				proxiedRepository.addMixin(NodeType.MIX_REFERENCEABLE);
-				JcrUtils.urlToAddressProperties(proxiedRepository,
-						repository.getUrl());
-				// proxiedRepository.setProperty(SLC_URL, repository.getUrl());
-				// proxiedRepository.setProperty(SLC_TYPE,
-				// repository.getContentType());
-			}
-		}
-	}
+	private Set<RpmRepository> defaultRepositories = new HashSet<RpmRepository>();
 
 	/**
 	 * Retrieve and add this file to the repository
 	 */
 	@Override
 	protected Node retrieve(Session session, String path) {
-		try {
-			if (session.hasPendingChanges())
-				throw new SlcException("Session has pending changed");
-			Node node = null;
-			for (Node proxiedRepository : getBaseUrls(session)) {
-				String baseUrl = JcrUtils
-						.urlFromAddressProperties(proxiedRepository);
-				node = proxyUrl(session, baseUrl, path);
-				if (node != null) {
-					node.addMixin(SlcTypes.SLC_KNOWN_ORIGIN);
-					Node origin = node
-							.addNode(SLC_ORIGIN, SlcTypes.SLC_PROXIED);
-					origin.setProperty(SLC_PROXY, proxiedRepository);
-					JcrUtils.urlToAddressProperties(origin, baseUrl + path);
-					if (log.isDebugEnabled())
-						log.debug("Imported " + baseUrl + path + " to " + node);
-					return node;
-				}
+		StringBuilder relativePathBuilder = new StringBuilder();
+		String repoId = extractRepoId(path, relativePathBuilder);
+		String relativePath = relativePathBuilder.toString();
+
+		RpmRepository sourceRepo = null;
+		for (Iterator<RpmRepository> reposIt = defaultRepositories.iterator(); reposIt
+				.hasNext();) {
+			RpmRepository rpmRepo = reposIt.next();
+			if (rpmRepo.getId().equals(repoId)) {
+				sourceRepo = rpmRepo;
+				break;
 			}
-			if (log.isDebugEnabled())
-				log.warn("No proxy found for " + path);
-			return null;
+		}
+
+		if (sourceRepo == null)
+			throw new SlcException("No RPM repository found for " + path);
+
+		try {
+			// if (session.hasPendingChanges())
+			// throw new SlcException("Session has pending changed");
+			String baseUrl = sourceRepo.getUrl();
+			String remoteUrl = baseUrl + relativePath;
+			Node node = proxyUrl(session, remoteUrl, path);
+			if (node != null) {
+				node.addMixin(SlcTypes.SLC_KNOWN_ORIGIN);
+				Node origin;
+				if (!node.hasNode(SLC_ORIGIN))
+					origin = node.addNode(SLC_ORIGIN, SlcTypes.SLC_PROXIED);
+				else
+					origin = node.getNode(SLC_ORIGIN);
+				// origin.setProperty(SLC_PROXY, sourceRepo.getId());
+				JcrUtils.urlToAddressProperties(origin, remoteUrl);
+
+				if (log.isDebugEnabled())
+					log.debug("Imported " + remoteUrl + " to " + node);
+				return node;
+			}
 		} catch (Exception e) {
 			throw new SlcException("Cannot proxy " + path, e);
 		}
+		JcrUtils.discardQuietly(session);
+		throw new SlcException("No proxy found for " + path);
 	}
 
-	protected synchronized List<Node> getBaseUrls(Session session)
-			throws RepositoryException {
-		List<Node> baseUrls = new ArrayList<Node>();
-		for (NodeIterator nit = session.getNode(
-				RepoConstants.PROXIED_REPOSITORIES).getNodes(); nit.hasNext();) {
-			Node proxiedRepository = nit.nextNode();
-			baseUrls.add(proxiedRepository);
+	/** Returns the first token of the path */
+	protected String extractRepoId(String path, StringBuilder relativePath) {
+		StringBuilder workspace = new StringBuilder();
+		StringBuilder buf = workspace;
+		for (int i = 1; i < path.length(); i++) {
+			char c = path.charAt(i);
+			if (c == '/') {
+				buf = relativePath;
+			}
+			buf.append(c);
 		}
-		return baseUrls;
+		return workspace.toString();
 	}
 
-	/** The JCR path where this file could be found */
-	public String getNodePath(String path) {
-		if (artifactsBasePath.equals(RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH))
-			return path;
-		else
-			return artifactsBasePath + path;
+	@Override
+	protected Boolean shouldUpdate(Session clientSession, String nodePath) {
+		if (nodePath.contains("/repodata/"))
+			return true;
+		return super.shouldUpdate(clientSession, nodePath);
 	}
 
-	public void setDefaultRepositories(List<RpmRepository> defaultRepositories) {
+	public void setDefaultRepositories(Set<RpmRepository> defaultRepositories) {
 		this.defaultRepositories = defaultRepositories;
 	}
-
-	public void setArtifactsBasePath(String artifactsBasePath) {
-		this.artifactsBasePath = artifactsBasePath;
-	}
-
 }

@@ -12,6 +12,9 @@
 	<reference id="authenticationManager"
 		interface="org.springframework.security.AuthenticationManager" />
 
+	<set id="defaultRpmRepositories" cardinality="0..N"
+		interface="org.argeo.slc.rpmfactory.RpmRepository" />
+
 	<!-- SERVICES -->
 	<service ref="javaRepository" interface="javax.jcr.Repository">
 		<service-properties>
@@ -34,7 +37,8 @@
 		</service-properties>
 	</service>
 
-	<service ref="mavenProxyService" interface="org.argeo.slc.repo.maven.proxy.MavenProxyService" />
+	<service ref="mavenProxyService" interface="org.argeo.slc.repo.MavenProxyService" />
+	<service ref="rpmProxyService" interface="org.argeo.slc.rpmfactory.RpmProxyService" />
 
 	<!-- LABEL -->
 	<beans:bean class="org.argeo.security.core.OsgiModuleLabel">
