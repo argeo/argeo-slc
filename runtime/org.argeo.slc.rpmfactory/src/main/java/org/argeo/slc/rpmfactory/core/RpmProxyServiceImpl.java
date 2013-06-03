@@ -29,7 +29,6 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.proxy.AbstractUrlProxy;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.rpmfactory.RpmProxyService;
 import org.argeo.slc.rpmfactory.RpmRepository;
 
@@ -69,14 +68,14 @@ public class RpmProxyServiceImpl extends AbstractUrlProxy implements
 			String remoteUrl = baseUrl + relativePath;
 			Node node = proxyUrl(session, remoteUrl, path);
 			if (node != null) {
-				node.addMixin(SlcTypes.SLC_KNOWN_ORIGIN);
-				Node origin;
-				if (!node.hasNode(SLC_ORIGIN))
-					origin = node.addNode(SLC_ORIGIN, SlcTypes.SLC_PROXIED);
-				else
-					origin = node.getNode(SLC_ORIGIN);
-				// origin.setProperty(SLC_PROXY, sourceRepo.getId());
-				JcrUtils.urlToAddressProperties(origin, remoteUrl);
+				// node.addMixin(SlcTypes.SLC_KNOWN_ORIGIN);
+				// Node origin;
+				// if (!node.hasNode(SLC_ORIGIN))
+				// origin = node.addNode(SLC_ORIGIN, SlcTypes.SLC_PROXIED);
+				// else
+				// origin = node.getNode(SLC_ORIGIN);
+				// // origin.setProperty(SLC_PROXY, sourceRepo.getId());
+				// JcrUtils.urlToAddressProperties(origin, remoteUrl);
 
 				if (log.isDebugEnabled())
 					log.debug("Imported " + remoteUrl + " to " + node);

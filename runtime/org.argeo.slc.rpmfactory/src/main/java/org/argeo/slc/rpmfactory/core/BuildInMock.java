@@ -30,30 +30,13 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
 
-/** Rebuild an SRPM in mock. (Historical) Replaces the build-mock.sh script. */
+/** Build an RPM in mock. */
 public class BuildInMock implements Runnable {
 	private final static Log log = LogFactory.getLog(BuildInMock.class);
-
-	/** Mock flavour provided by the EPEL repository */
-	public final static String EPEL = "EPEL";
-	/** Mock flavour provided by CentOS until v5 */
-	public final static String CENTOS = "CENTOS";
-
-	public final static String NOARCH = "noarch";
-
-	private String mockVar = "/var/lib/mock";
-
-	private String mockFlavour = EPEL;
-	private String mockConfig = null;
-
-	private String repository;
-	private String release = null;
-	private String level = null;
-	private String arch = NOARCH;
+	private final static String NOARCH = "noarch";
 
 	private String rpmPackage = null;
-
-	private Boolean mkdirs = true;
+	private String arch = NOARCH;
 
 	private RpmBuildEnvironment buildEnvironment;
 	private Executor executor;
@@ -61,51 +44,45 @@ public class BuildInMock implements Runnable {
 	private String debuginfoDirName = "debuginfo";
 
 	public void run() {
-		// TODO check if caller is in mock group
-
-		String cfgId = repository + "-" + release + "-" + arch;
-		String cfg = mockConfig != null ? mockConfig : "slc/" + cfgId;
+		String mockCfg = buildEnvironment.getMockConfig(arch);
+		File mockConfigFile = buildEnvironment.getMockConfigFile(arch);
 
 		// prepare mock call
 		SystemCall mock = new SystemCall();
 		if (arch != null)
 			mock.arg("setarch").arg(arch);
 		mock.arg("mock");
-		if (mockFlavour.equals(EPEL))
-			mock.arg("-v");
-		else if (mockFlavour.equals(CENTOS))
-			mock.arg("--debug");
+		mock.arg("-v");
+		mock.arg("--configdir=" + mockConfigFile.getAbsoluteFile().getParent());
 		if (arch != null)
 			mock.arg("--arch=" + arch);
-		mock.arg("-r").arg(cfg);
-
+		mock.arg("-r").arg(mockCfg);
 		mock.arg("--scm-enable");
 		mock.arg("--scm-option").arg("package=" + rpmPackage);
 
 		mock.setLogCommand(true);
-
-		// mock command execution
 		mock.setExecutor(executor);
-		mock.run();
 
-		// File repoDir = new File(buildEnvironment.getStagingBase() + "/"
-		// + repository + "/" + level + "/" + release);
-		File repoDir = new File(buildEnvironment.getStagingBase() + "/"
-				+ repository + "-" + release + "-staging");
-		File srpmDir = new File(repoDir, "SRPMS");
-		if (mkdirs)
-			srpmDir.mkdirs();
+		//
+		// mock command execution
+		//
+		mock.run();
+		//
+
+		File stagingDir = buildEnvironment.getStagingDir();
+		File srpmDir = new File(stagingDir, "SRPMS");
+		srpmDir.mkdirs();
 		File archDir = null;
 		File debuginfoDir = null;
 		if (!arch.equals(NOARCH)) {
-			archDir = new File(repoDir, arch);
+			archDir = new File(stagingDir, arch);
 			debuginfoDir = new File(archDir, debuginfoDirName);
 			debuginfoDir.mkdirs();
 		}
 
 		// copy RPMs
 		Set<File> reposToRecreate = new HashSet<File>();
-		File resultDir = new File(mockVar + "/" + cfgId + "/result");
+		File resultDir = buildEnvironment.getResultDir(arch);
 		rpms: for (File file : resultDir.listFiles()) {
 			if (file.isDirectory())
 				continue rpms;
@@ -121,7 +98,7 @@ public class BuildInMock implements Runnable {
 			else if (file.getName().contains(".noarch.rpm")) {
 				List<File> dirs = new ArrayList<File>();
 				for (String arch : buildEnvironment.getArchs())
-					dirs.add(new File(repoDir, arch));
+					dirs.add(new File(stagingDir, arch));
 				targetDirs = dirs.toArray(new File[dirs.size()]);
 			} else if (file.getName().contains(".rpm"))
 				throw new SlcException("Don't know where to copy " + file);
@@ -166,40 +143,12 @@ public class BuildInMock implements Runnable {
 		}
 	}
 
-	public void setMockFlavour(String mockFlavour) {
-		this.mockFlavour = mockFlavour;
-	}
-
-	public void setMockConfig(String mockConfig) {
-		this.mockConfig = mockConfig;
-	}
-
-	public void setRepository(String repo) {
-		this.repository = repo;
-	}
-
-	public void setRelease(String release) {
-		this.release = release;
-	}
-
-	public void setLevel(String level) {
-		this.level = level;
-	}
-
 	public void setArch(String arch) {
 		this.arch = arch;
 	}
 
 	public void setRpmPackage(String rpmPackage) {
 		this.rpmPackage = rpmPackage;
-	}
-
-	public void setMockVar(String mockVar) {
-		this.mockVar = mockVar;
-	}
-
-	public void setMkdirs(Boolean mkdirs) {
-		this.mkdirs = mkdirs;
 	}
 
 	public void setBuildEnvironment(RpmBuildEnvironment buildEnvironment) {
@@ -209,5 +158,4 @@ public class BuildInMock implements Runnable {
 	public void setExecutor(Executor executor) {
 		this.executor = executor;
 	}
-
 }

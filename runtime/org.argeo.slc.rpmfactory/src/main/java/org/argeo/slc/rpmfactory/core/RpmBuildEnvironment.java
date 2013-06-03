@@ -22,21 +22,229 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.Node;
+import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
 import org.apache.commons.io.FileUtils;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.core.execution.tasks.SystemCall;
+import org.argeo.slc.rpmfactory.RpmRepository;
 
 /**
  * Defines a build environment. This information is typically used by other
  * components performing the various actions related to RPM build.
  */
 public class RpmBuildEnvironment {
-	static String defaultMacroFiles = "/usr/lib/rpm/macros:/usr/lib/rpm/ia32e-linux/macros:/usr/lib/rpm/redhat/macros:/etc/rpm/macros.*:/etc/rpm/macros:/etc/rpm/ia32e-linux/macros:~/.rpmmacros";
 
-	private Map<String, String> rpmmacros = new HashMap<String, String>();
+	private Repository rpmRepository;
+	private Repository distRepository;
 
+	private String id;
+	private String stagingBase = "/mnt/slc/repos/rpm";
+	private String mockVar = "/var/lib/mock";
+	private String mockEtc = "/etc/mock";
 	private List<String> archs = new ArrayList<String>();
 
-	private String stagingBase = "/mnt/slc/repos/rpm";
+	private String localUrlBase = "http://localhost:7070/";
+
+	private String yumConfigMainSection = "cachedir=/var/cache/yum\n"
+			+ "debuglevel=1\n" + "reposdir=/dev/null\n"
+			+ "logfile=/var/log/yum.log\n" + "retries=20\n" + "obsoletes=1\n"
+			+ "gpgcheck=0\n" + "assumeyes=1\n" + "syslog_ident=mock\n"
+			+ "syslog_device=\n";
+	private List<RpmRepository> repositories = new ArrayList<RpmRepository>();
+
+	private String defaultMacroFiles = "/usr/lib/rpm/macros:"
+			+ "/usr/lib/rpm/ia32e-linux/macros:"
+			+ "/usr/lib/rpm/redhat/macros:" + "/etc/rpm/macros.*:"
+			+ "/etc/rpm/macros:" + "/etc/rpm/ia32e-linux/macros:"
+			+ "~/.rpmmacros";
+	private Map<String, String> rpmmacros = new HashMap<String, String>();
+
+	// set by init
+	private String proxiedReposBase;
+	private String managedReposBase;
+
+	private String stagingWorkspace;
+	private String testingWorkspace;
+	private String stableWorkspace;
+
+	private File rpmFactoryBaseDir;
+	private File mockConfDir;
+	private File yumConfDir;
+
+	public void init() {
+		proxiedReposBase = localUrlBase + "repo/rpm/";
+		managedReposBase = localUrlBase + "data/public/rpm/";
+
+		stagingWorkspace = id + "-staging";
+		testingWorkspace = id + "-testing";
+		stableWorkspace = id;
+
+		// rpmFactoryBaseDir = new File(System.getProperty("osgi.instance.area")
+		// .substring("file://".length()) + "/rpmfactory");
+		rpmFactoryBaseDir.mkdirs();
+		mockConfDir = new File(rpmFactoryBaseDir.getPath() + "/conf/mock");
+		mockConfDir.mkdirs();
+		yumConfDir = new File(rpmFactoryBaseDir.getPath() + "/conf/yum");
+		yumConfDir.mkdirs();
+
+		initDistWorkspace(stagingWorkspace);
+		initRpmWorkspace(stagingWorkspace);
+		initRpmWorkspace(testingWorkspace);
+		initRpmWorkspace(stableWorkspace);
+	}
+
+	protected void initRpmWorkspace(String workspace) {
+		Session session = null;
+		try {
+			session = JcrUtils.loginOrCreateWorkspace(rpmRepository, workspace);
+			JcrUtils.addPrivilege(session, "/", "anonymous", "jcr:read");
+
+			for (String arch : archs) {
+				Node archFolder = JcrUtils.mkfolders(session, "/" + arch);
+				if (!archFolder.hasNode("repodata")) {
+					SystemCall createrepo = new SystemCall();
+					createrepo.arg("createrepo");
+					createrepo.arg("-q");
+					File archDir = new File(getStagingDir(), arch);
+					createrepo.arg(archDir.getAbsolutePath());
+				}
+			}
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot initialize workspace " + workspace,
+					e);
+		} finally {
+			JcrUtils.logoutQuietly(session);
+		}
+	}
+
+	protected void initDistWorkspace(String workspace) {
+		Session session = null;
+		try {
+			session = JcrUtils
+					.loginOrCreateWorkspace(distRepository, workspace);
+			JcrUtils.addPrivilege(session, "/", "anonymous", "jcr:read");
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot initialize workspace " + workspace,
+					e);
+		} finally {
+			JcrUtils.logoutQuietly(session);
+		}
+	}
+
+	public void destroy() {
+
+	}
+
+	public String generateMockConfigFile(String arch) {
+		StringBuffer buf = new StringBuffer();
+
+		buf.append("config_opts['root'] = '" + getIdWithArch(arch) + "'\n");
+		buf.append("config_opts['target_arch'] = '" + arch + "'\n");
+		buf.append("config_opts['legal_host_arches'] = ('" + arch + "',)\n");
+		buf.append("config_opts['chroot_setup_cmd'] = 'groupinstall buildsys-build'\n");
+		// buf.append("config_opts['dist'] = 'el6'\n");
+
+		buf.append("config_opts['scm'] = False\n");
+		buf.append("config_opts['scm_opts']['method'] = 'git'\n");
+		buf.append("config_opts['scm_opts']['git_get'] = 'git clone -b elgis6 /home/mbaudier/dev/git/elgis.argeo.org/SCM_PKG SCM_PKG'\n");
+		buf.append("config_opts['scm_opts']['spec'] = 'SCM_PKG.spec'\n");
+		buf.append("config_opts['scm_opts']['ext_src_dir'] = '/home/mbaudier/dev/git/elgis.argeo.org/sources'\n");
+		buf.append("config_opts['scm_opts']['git_timestamps'] = True\n");
+
+		buf.append("config_opts['yum.conf'] = \"\"\"\n");
+		buf.append(generateYumConfigFile(arch)).append('\n');
+		buf.append("\"\"\"\n");
+		return buf.toString();
+	}
+
+	public String generateYumConfigFile(String arch) {
+		StringBuffer buf = new StringBuffer();
+		buf.append("[main]\n");
+		buf.append(yumConfigMainSection).append('\n');
+
+		for (RpmRepository repository : repositories) {
+			buf.append('[').append(repository.getId()).append("]\n");
+			if (repository instanceof ThirdPartyRpmRepository) {
+				buf.append("#baseurl=").append(repository.getUrl())
+						.append(arch).append('/').append("\n");
+				buf.append("baseurl=").append(proxiedReposBase)
+						.append(repository.getId()).append('/').append(arch)
+						.append('/').append("\n");
+			}
+		}
+
+		// managed repos
+		buf.append('[').append(stagingWorkspace).append("]\n");
+		buf.append("baseurl=").append(managedReposBase)
+				.append(stagingWorkspace).append('/').append(arch).append('/')
+				.append("\n");
+
+		buf.append('[').append(testingWorkspace).append("]\n");
+		buf.append("baseurl=").append(managedReposBase)
+				.append(testingWorkspace).append('/').append(arch).append('/')
+				.append("\n");
+
+		buf.append('[').append(stableWorkspace).append("]\n");
+		buf.append("baseurl=").append(managedReposBase).append(stableWorkspace)
+				.append('/').append(arch).append('/').append("\n");
+		return buf.toString();
+	}
+
+	/** Creates a mock config file. */
+	public File getMockConfigFile(String arch) {
+		File mockSiteDefaultsFile = new File(mockConfDir, "site-defaults.cfg");
+		File mockLoggingFile = new File(mockConfDir, "logging.ini");
+		File mockConfigFile = new File(mockConfDir, getIdWithArch(arch)
+				+ ".cfg");
+		try {
+			if (!mockSiteDefaultsFile.exists())
+				mockSiteDefaultsFile.createNewFile();
+			if (!mockLoggingFile.exists())
+				FileUtils.copyFile(new File(mockEtc + "/logging.ini"),
+						mockLoggingFile);
+
+			FileUtils.writeStringToFile(mockConfigFile,
+					generateMockConfigFile(arch));
+			return mockConfigFile;
+		} catch (IOException e) {
+			throw new SlcException("Cannot write mock config file to "
+					+ mockConfigFile, e);
+		}
+	}
+
+	/** Creates a yum config file. */
+	public File getYumConfigFile(String arch) {
+		File yumConfigFile = new File(yumConfDir, getIdWithArch(arch) + ".conf");
+		try {
+			FileUtils.writeStringToFile(yumConfigFile,
+					generateYumConfigFile(arch));
+			return yumConfigFile;
+		} catch (IOException e) {
+			throw new SlcException("Cannot write yum config file to "
+					+ yumConfigFile, e);
+		}
+	}
+
+	public File getResultDir(String arch) {
+		return new File(mockVar + "/" + getIdWithArch(arch) + "/result");
+	}
+
+	public File getStagingDir() {
+		return new File(stagingBase + "/" + stagingWorkspace);
+	}
+
+	public String getMockConfig(String arch) {
+		return getIdWithArch(arch);
+	}
+
+	public String getIdWithArch(String arch) {
+		return id + "-" + arch;
+	}
 
 	/** Write (topdir)/rpmmacros and (topdir)/rpmrc */
 	public void writeRpmbuildConfigFiles(File topdir) {
@@ -96,4 +304,37 @@ public class RpmBuildEnvironment {
 	public void setStagingBase(String stagingBase) {
 		this.stagingBase = stagingBase;
 	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setMockVar(String mockVar) {
+		this.mockVar = mockVar;
+	}
+
+	public void setRpmRepository(Repository rpmRepository) {
+		this.rpmRepository = rpmRepository;
+	}
+
+	public void setDistRepository(Repository distRepository) {
+		this.distRepository = distRepository;
+	}
+
+	public void setLocalUrlBase(String localUrlBase) {
+		this.localUrlBase = localUrlBase;
+	}
+
+	public void setYumConfigMainSection(String yumConfigMainSection) {
+		this.yumConfigMainSection = yumConfigMainSection;
+	}
+
+	public void setRepositories(List<RpmRepository> repositories) {
+		this.repositories = repositories;
+	}
+
+	public void setRpmFactoryBaseDir(File rpmFactoryBaseDir) {
+		this.rpmFactoryBaseDir = rpmFactoryBaseDir;
+	}
+
 }

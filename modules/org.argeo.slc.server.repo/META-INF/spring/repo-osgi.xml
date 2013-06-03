@@ -53,6 +53,11 @@
 		<beans:property name="role" value="ROLE_SLC" />
 		<beans:property name="userAdminService" ref="userAdminService" />
 	</beans:bean>
+
+	<beans:bean
+		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
+		<beans:property name="authenticationManager" ref="authenticationManager" />
+	</beans:bean>
 </beans:beans>
 
 <!-- <reference id="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem" -->

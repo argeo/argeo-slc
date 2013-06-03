@@ -35,11 +35,6 @@
 		<property name="repository" ref="docsRepository" />
 	</bean>
 
-	<bean
-		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
-		<property name="authenticationManager" ref="authenticationManager" />
-	</bean>
-
 	<!-- Templates -->
 	<bean id="template.jcrRepository" abstract="true"
 		class="org.argeo.jackrabbit.JackrabbitContainer" init-method="init"

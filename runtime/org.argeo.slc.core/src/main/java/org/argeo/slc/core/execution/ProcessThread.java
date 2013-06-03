@@ -65,25 +65,25 @@ public class ProcessThread extends Thread {
 			throw new SlcException("Can only execute authenticated threads");
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		// log.info("\n##\n## SLC Process #" + process.getUuid() +
-		// " STARTED by "
-		// + authentication.getName() + "\n##\n");
 		log.info("\n##\n## SLC Process #" + process.getUuid()
 				+ " STARTED\n##\n");
 
 		// Start logging
 		new LoggingThread().start();
 
-		// String oldStatus = process.getStatus();
 		process.setStatus(ExecutionProcess.RUNNING);
-		// executionModulesManager.dispatchUpdateStatus(process, oldStatus,
-		// ExecutionProcess.RUNNING);
-
 		try {
 			process();
 		} catch (InterruptedException e) {
 			die();
 			return;
+		} catch (Exception e) {
+			String msg = "Process " + getProcess().getUuid()
+					+ " failed unexpectedly.";
+			log.error(msg, e);
+			getProcessThreadGroup().dispatchAddStep(
+					new ExecutionStep("Process", ExecutionStep.ERROR, msg + " "
+							+ e.getMessage()));
 		}
 
 		// waits for all execution threads to complete (in case they were
@@ -162,13 +162,13 @@ public class ProcessThread extends Thread {
 		return;
 	}
 
-//	public void notifyError() {
-//		hadAnError = true;
-//	}
-//
-//	public synchronized void flowCompleted() {
-//		// notifyAll();
-//	}
+	// public void notifyError() {
+	// hadAnError = true;
+	// }
+	//
+	// public synchronized void flowCompleted() {
+	// // notifyAll();
+	// }
 
 	public ExecutionProcess getProcess() {
 		return process;

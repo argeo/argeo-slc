@@ -75,6 +75,11 @@
 			<version>1.1.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>org.argeo.slc.rpmfactory</groupId>
+			<artifactId>org.argeo.slc.repo</artifactId>
+			<version>1.1.13-SNAPSHOT</version>
+		</dependency>
+		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
 			<version>1.1.13-SNAPSHOT</version>
