@@ -29,33 +29,40 @@ import javax.jcr.Session;
 
 import org.apache.commons.io.FileUtils;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
+import org.argeo.slc.repo.NodeIndexerVisitor;
 import org.argeo.slc.rpmfactory.RpmRepository;
 
 /**
  * Defines a build environment. This information is typically used by other
  * components performing the various actions related to RPM build.
  */
-public class RpmBuildEnvironment {
-
+public class RpmFactory {
 	private Repository rpmRepository;
 	private Repository distRepository;
 
 	private String id;
-	private String stagingBase = "/mnt/slc/repos/rpm";
-	private String mockVar = "/var/lib/mock";
-	private String mockEtc = "/etc/mock";
+	private List<RpmRepository> repositories = new ArrayList<RpmRepository>();
 	private List<String> archs = new ArrayList<String>();
 
+	private String rpmBase = "/mnt/slc/repos/rpm";
+	private String distBase = "/mnt/slc/repos/dist";
+	private String mockVar = "/var/lib/mock";
+	private String mockEtc = "/etc/mock";
+
+	private String gitWorkspace = "git";
+
 	private String localUrlBase = "http://localhost:7070/";
+
+	private Boolean withTestingRepository = false;
 
 	private String yumConfigMainSection = "cachedir=/var/cache/yum\n"
 			+ "debuglevel=1\n" + "reposdir=/dev/null\n"
 			+ "logfile=/var/log/yum.log\n" + "retries=20\n" + "obsoletes=1\n"
 			+ "gpgcheck=0\n" + "assumeyes=1\n" + "syslog_ident=mock\n"
-			+ "syslog_device=\n";
-	private List<RpmRepository> repositories = new ArrayList<RpmRepository>();
+			+ "syslog_device=\n" + "http_caching=none\n";
 
 	private String defaultMacroFiles = "/usr/lib/rpm/macros:"
 			+ "/usr/lib/rpm/ia32e-linux/macros:"
@@ -77,24 +84,28 @@ public class RpmBuildEnvironment {
 	private File yumConfDir;
 
 	public void init() {
+		// local URL bases
 		proxiedReposBase = localUrlBase + "repo/rpm/";
 		managedReposBase = localUrlBase + "data/public/rpm/";
 
-		stagingWorkspace = id + "-staging";
-		testingWorkspace = id + "-testing";
-		stableWorkspace = id;
-
-		// rpmFactoryBaseDir = new File(System.getProperty("osgi.instance.area")
-		// .substring("file://".length()) + "/rpmfactory");
+		// local directories
 		rpmFactoryBaseDir.mkdirs();
 		mockConfDir = new File(rpmFactoryBaseDir.getPath() + "/conf/mock");
 		mockConfDir.mkdirs();
 		yumConfDir = new File(rpmFactoryBaseDir.getPath() + "/conf/yum");
 		yumConfDir.mkdirs();
 
-		initDistWorkspace(stagingWorkspace);
+		// managed repositories
+		stagingWorkspace = id + "-staging";
+		if (withTestingRepository)
+			testingWorkspace = id + "-testing";
+		stableWorkspace = id;
+
+		initDistWorkspace(stableWorkspace);
+		initGitWorkspace();
 		initRpmWorkspace(stagingWorkspace);
-		initRpmWorkspace(testingWorkspace);
+		if (withTestingRepository)
+			initRpmWorkspace(testingWorkspace);
 		initRpmWorkspace(stableWorkspace);
 	}
 
@@ -103,20 +114,47 @@ public class RpmBuildEnvironment {
 		try {
 			session = JcrUtils.loginOrCreateWorkspace(rpmRepository, workspace);
 			JcrUtils.addPrivilege(session, "/", "anonymous", "jcr:read");
+			JcrUtils.addPrivilege(session, "/", SlcConstants.ROLE_SLC,
+					"jcr:all");
 
 			for (String arch : archs) {
 				Node archFolder = JcrUtils.mkfolders(session, "/" + arch);
+				session.save();
 				if (!archFolder.hasNode("repodata")) {
+					File workspaceDir = getWorkspaceDir(workspace);
+					// touch a file in order to make sue this is properly
+					// mounted.
+					File touch = new File(workspaceDir, ".touch");
+					touch.createNewFile();
+					touch.delete();
+
 					SystemCall createrepo = new SystemCall();
 					createrepo.arg("createrepo");
 					createrepo.arg("-q");
-					File archDir = new File(getStagingDir(), arch);
+					File archDir = new File(workspaceDir, arch);
 					createrepo.arg(archDir.getAbsolutePath());
+					createrepo.run();
 				}
 			}
-		} catch (RepositoryException e) {
+		} catch (Exception e) {
 			throw new SlcException("Cannot initialize workspace " + workspace,
 					e);
+		} finally {
+			JcrUtils.logoutQuietly(session);
+		}
+	}
+
+	protected void initGitWorkspace() {
+		Session session = null;
+		try {
+			session = JcrUtils.loginOrCreateWorkspace(rpmRepository,
+					gitWorkspace);
+			JcrUtils.addPrivilege(session, "/", "anonymous", "jcr:read");
+			JcrUtils.addPrivilege(session, "/", SlcConstants.ROLE_SLC,
+					"jcr:all");
+		} catch (Exception e) {
+			throw new SlcException("Cannot initialize workspace "
+					+ gitWorkspace, e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
 		}
@@ -140,7 +178,7 @@ public class RpmBuildEnvironment {
 
 	}
 
-	public String generateMockConfigFile(String arch) {
+	public String generateMockConfigFile(String arch, String branch) {
 		StringBuffer buf = new StringBuffer();
 
 		buf.append("config_opts['root'] = '" + getIdWithArch(arch) + "'\n");
@@ -148,15 +186,19 @@ public class RpmBuildEnvironment {
 		buf.append("config_opts['legal_host_arches'] = ('" + arch + "',)\n");
 		buf.append("config_opts['chroot_setup_cmd'] = 'groupinstall buildsys-build'\n");
 		// buf.append("config_opts['dist'] = 'el6'\n");
+		buf.append("config_opts['plugin_conf']['yum_cache_enable'] = False\n");
 
 		buf.append("config_opts['scm'] = False\n");
 		buf.append("config_opts['scm_opts']['method'] = 'git'\n");
-		buf.append("config_opts['scm_opts']['git_get'] = 'git clone -b elgis6 /home/mbaudier/dev/git/elgis.argeo.org/SCM_PKG SCM_PKG'\n");
 		buf.append("config_opts['scm_opts']['spec'] = 'SCM_PKG.spec'\n");
-		buf.append("config_opts['scm_opts']['ext_src_dir'] = '/home/mbaudier/dev/git/elgis.argeo.org/sources'\n");
+		buf.append("config_opts['scm_opts']['ext_src_dir'] = '"
+				+ getSourcesDir().getAbsolutePath() + "'\n");
 		buf.append("config_opts['scm_opts']['git_timestamps'] = True\n");
+		buf.append("config_opts['scm_opts']['git_get'] = 'git clone "
+				+ (branch != null ? "-b " + branch : "") + " "
+				+ getGitBaseUrl() + "/SCM_PKG.git SCM_PKG'\n");
 
-		buf.append("config_opts['yum.conf'] = \"\"\"\n");
+		buf.append("\nconfig_opts['yum.conf'] = \"\"\"\n");
 		buf.append(generateYumConfigFile(arch)).append('\n');
 		buf.append("\"\"\"\n");
 		return buf.toString();
@@ -179,24 +221,22 @@ public class RpmBuildEnvironment {
 		}
 
 		// managed repos
-		buf.append('[').append(stagingWorkspace).append("]\n");
-		buf.append("baseurl=").append(managedReposBase)
-				.append(stagingWorkspace).append('/').append(arch).append('/')
-				.append("\n");
-
-		buf.append('[').append(testingWorkspace).append("]\n");
-		buf.append("baseurl=").append(managedReposBase)
-				.append(testingWorkspace).append('/').append(arch).append('/')
-				.append("\n");
-
-		buf.append('[').append(stableWorkspace).append("]\n");
-		buf.append("baseurl=").append(managedReposBase).append(stableWorkspace)
-				.append('/').append(arch).append('/').append("\n");
+		addManagedRepository(buf, stagingWorkspace, arch);
+		if (withTestingRepository)
+			addManagedRepository(buf, testingWorkspace, arch);
+		addManagedRepository(buf, stableWorkspace, arch);
 		return buf.toString();
 	}
 
+	protected void addManagedRepository(StringBuffer buf, String workspace,
+			String arch) {
+		buf.append('[').append(workspace).append("]\n");
+		buf.append("baseurl=").append(managedReposBase).append(workspace)
+				.append('/').append(arch).append('/').append("\n");
+	}
+
 	/** Creates a mock config file. */
-	public File getMockConfigFile(String arch) {
+	public File getMockConfigFile(String arch, String branch) {
 		File mockSiteDefaultsFile = new File(mockConfDir, "site-defaults.cfg");
 		File mockLoggingFile = new File(mockConfDir, "logging.ini");
 		File mockConfigFile = new File(mockConfDir, getIdWithArch(arch)
@@ -209,7 +249,7 @@ public class RpmBuildEnvironment {
 						mockLoggingFile);
 
 			FileUtils.writeStringToFile(mockConfigFile,
-					generateMockConfigFile(arch));
+					generateMockConfigFile(arch, branch));
 			return mockConfigFile;
 		} catch (IOException e) {
 			throw new SlcException("Cannot write mock config file to "
@@ -234,8 +274,12 @@ public class RpmBuildEnvironment {
 		return new File(mockVar + "/" + getIdWithArch(arch) + "/result");
 	}
 
-	public File getStagingDir() {
-		return new File(stagingBase + "/" + stagingWorkspace);
+	public File getWorkspaceDir(String workspace) {
+		return new File(rpmBase + "/" + workspace);
+	}
+
+	public File getSourcesDir() {
+		return new File(distBase + "/" + stagingWorkspace);
 	}
 
 	public String getMockConfig(String arch) {
@@ -244,6 +288,23 @@ public class RpmBuildEnvironment {
 
 	public String getIdWithArch(String arch) {
 		return id + "-" + arch;
+	}
+
+	public String getGitBaseUrl() {
+		return managedReposBase + gitWorkspace;
+	}
+
+	public void indexWorkspace(String workspace) {
+		Session session = null;
+		try {
+			session = rpmRepository.login(workspace);
+			session.getRootNode().accept(
+					new NodeIndexerVisitor(new RpmIndexer()));
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot index workspace " + workspace, e);
+		} finally {
+			JcrUtils.logoutQuietly(session);
+		}
 	}
 
 	/** Write (topdir)/rpmmacros and (topdir)/rpmrc */
@@ -297,12 +358,8 @@ public class RpmBuildEnvironment {
 		return archs;
 	}
 
-	public String getStagingBase() {
-		return stagingBase;
-	}
-
-	public void setStagingBase(String stagingBase) {
-		this.stagingBase = stagingBase;
+	public void setRpmBase(String stagingBase) {
+		this.rpmBase = stagingBase;
 	}
 
 	public void setId(String id) {
@@ -335,6 +392,22 @@ public class RpmBuildEnvironment {
 
 	public void setRpmFactoryBaseDir(File rpmFactoryBaseDir) {
 		this.rpmFactoryBaseDir = rpmFactoryBaseDir;
+	}
+
+	public String getStagingWorkspace() {
+		return stagingWorkspace;
+	}
+
+	public String getTestingWorkspace() {
+		return testingWorkspace;
+	}
+
+	public String getStableWorkspace() {
+		return stableWorkspace;
+	}
+
+	public void setWithTestingRepository(Boolean withTestingRepository) {
+		this.withTestingRepository = withTestingRepository;
 	}
 
 }

@@ -23,12 +23,14 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
+import javax.jcr.security.AccessControlException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.proxy.AbstractUrlProxy;
+import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -48,6 +50,15 @@ public class MavenProxyServiceImpl extends AbstractUrlProxy implements
 	@Override
 	protected void beforeInitSessionSave(Session session)
 			throws RepositoryException {
+		JcrUtils.addPrivilege(session, "/", "anonymous", "jcr:read");
+		try {
+			JcrUtils.addPrivilege(session, "/", SlcConstants.ROLE_SLC,
+					"jcr:all");
+		} catch (AccessControlException e) {
+			if (log.isTraceEnabled())
+				log.trace("Cannot give jcr:all privileges to ROLE_SLC");
+		}
+
 		JcrUtils.mkdirsSafe(session, RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH);
 		Node proxiedRepositories = JcrUtils.mkdirsSafe(session,
 				RepoConstants.PROXIED_REPOSITORIES);

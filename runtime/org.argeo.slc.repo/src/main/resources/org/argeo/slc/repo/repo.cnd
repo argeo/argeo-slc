@@ -129,3 +129,13 @@ mixin
 
 [slc:bundleArtifact] > slc:artifact,slc:jarFile,slc:bundle
 mixin
+
+// RPM
+[slc:rpm] > mix:referenceable, mix:created, mix:lastModified, mix:title
+mixin
+- slc:name (STRING)
+- slc:version (STRING)
+- slc:rpmVersion (STRING)
+- slc:rpmRelease (STRING)
+- slc:rpmArch (STRING)
+- slc:rpmArchivaeSize (STRING)

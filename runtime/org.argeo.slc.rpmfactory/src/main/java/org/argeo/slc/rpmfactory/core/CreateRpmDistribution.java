@@ -5,12 +5,10 @@ package org.argeo.slc.rpmfactory.core;
  * consistent distributable set (typically to be used to generate an ISO).
  */
 public class CreateRpmDistribution implements Runnable {
-	
+	// private RpmDistribution rpmDistribution;
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 
 	}
-
 }

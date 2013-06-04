@@ -48,8 +48,8 @@
 	<!-- ROLES -->
 	<reference id="userAdminService" interface="org.argeo.security.UserAdminService" />
 
-	<beans:bean class="org.argeo.security.core.SimpleRoleRegistration"
-		init-method="run">
+	<beans:bean id="ROLE_SLC"
+		class="org.argeo.security.core.SimpleRoleRegistration" init-method="run">
 		<beans:property name="role" value="ROLE_SLC" />
 		<beans:property name="userAdminService" ref="userAdminService" />
 	</beans:bean>

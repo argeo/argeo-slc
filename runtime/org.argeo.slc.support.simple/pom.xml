@@ -85,11 +85,6 @@
 			<artifactId>org.apache.commons.exec</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>org.redline_rpm</artifactId>
-		</dependency>
-
 		<!-- TODO: check if necessary here -->
 		<dependency>
 			<groupId>org.argeo.tp</groupId>

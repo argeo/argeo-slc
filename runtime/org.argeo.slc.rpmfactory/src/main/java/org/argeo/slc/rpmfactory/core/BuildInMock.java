@@ -36,16 +36,17 @@ public class BuildInMock implements Runnable {
 	private final static String NOARCH = "noarch";
 
 	private String rpmPackage = null;
+	private String branch = null;
 	private String arch = NOARCH;
 
-	private RpmBuildEnvironment buildEnvironment;
+	private RpmFactory factory;
 	private Executor executor;
 
 	private String debuginfoDirName = "debuginfo";
 
 	public void run() {
-		String mockCfg = buildEnvironment.getMockConfig(arch);
-		File mockConfigFile = buildEnvironment.getMockConfigFile(arch);
+		String mockCfg = factory.getMockConfig(arch);
+		File mockConfigFile = factory.getMockConfigFile(arch, branch);
 
 		// prepare mock call
 		SystemCall mock = new SystemCall();
@@ -58,6 +59,10 @@ public class BuildInMock implements Runnable {
 			mock.arg("--arch=" + arch);
 		mock.arg("-r").arg(mockCfg);
 		mock.arg("--scm-enable");
+		// mock.arg("--scm-option");
+		// mock.arg("git_get='git clone " + (branch != null ? "-b " + branch :
+		// "")
+		// + " " + factory.getGitBaseUrl() + "/SCM_PKG SCM_PKG'");
 		mock.arg("--scm-option").arg("package=" + rpmPackage);
 
 		mock.setLogCommand(true);
@@ -69,7 +74,8 @@ public class BuildInMock implements Runnable {
 		mock.run();
 		//
 
-		File stagingDir = buildEnvironment.getStagingDir();
+		File stagingDir = factory
+				.getWorkspaceDir(factory.getStagingWorkspace());
 		File srpmDir = new File(stagingDir, "SRPMS");
 		srpmDir.mkdirs();
 		File archDir = null;
@@ -82,7 +88,7 @@ public class BuildInMock implements Runnable {
 
 		// copy RPMs
 		Set<File> reposToRecreate = new HashSet<File>();
-		File resultDir = buildEnvironment.getResultDir(arch);
+		File resultDir = factory.getResultDir(arch);
 		rpms: for (File file : resultDir.listFiles()) {
 			if (file.isDirectory())
 				continue rpms;
@@ -97,7 +103,7 @@ public class BuildInMock implements Runnable {
 				targetDirs = new File[] { archDir };
 			else if (file.getName().contains(".noarch.rpm")) {
 				List<File> dirs = new ArrayList<File>();
-				for (String arch : buildEnvironment.getArchs())
+				for (String arch : factory.getArchs())
 					dirs.add(new File(stagingDir, arch));
 				targetDirs = dirs.toArray(new File[dirs.size()]);
 			} else if (file.getName().contains(".rpm"))
@@ -129,6 +135,9 @@ public class BuildInMock implements Runnable {
 			createrepo.run();
 			log.info("Updated repo " + repoToRecreate);
 		}
+
+		// index staging workspace
+		factory.indexWorkspace(factory.getStagingWorkspace());
 	}
 
 	protected void copyToDirs(File file, File[] dirs) {
@@ -151,8 +160,12 @@ public class BuildInMock implements Runnable {
 		this.rpmPackage = rpmPackage;
 	}
 
-	public void setBuildEnvironment(RpmBuildEnvironment buildEnvironment) {
-		this.buildEnvironment = buildEnvironment;
+	public void setBranch(String branch) {
+		this.branch = branch;
+	}
+
+	public void setFactory(RpmFactory env) {
+		this.factory = env;
 	}
 
 	public void setExecutor(Executor executor) {

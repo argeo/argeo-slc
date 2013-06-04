@@ -115,4 +115,10 @@ public interface SlcNames {
 	// slc:exportedPackage
 	public final static String SLC_USES = "slc:uses";
 
+	// RPM
+	// slc:rpm
+	public final static String SLC_RPM_VERSION = "slc:rpmVersion";
+	public final static String SLC_RPM_RELEASE = "slc:rpmRelease";
+	public final static String SLC_RPM_ARCH = "slc:rpmArch";
+	public final static String SLC_RPM_ARCHIVE_SIZE = "slc:rpmArchiveSize";
 }

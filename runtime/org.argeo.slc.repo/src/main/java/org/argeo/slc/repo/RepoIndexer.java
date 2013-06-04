@@ -16,7 +16,6 @@
 package org.argeo.slc.repo;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -31,32 +30,27 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 
 /** Repository backend, maintain the JCR repository, mainly through listeners */
-public class RepoImpl {
+public class RepoIndexer {
 
 	private Repository jcrRepository;
-	private Session adminSession;
+	private String workspace = null;
 
-	private ArtifactListener artifactListener;
+	// Internal
+	private Session adminSession;
+	private FilesListener artifactListener;
 
 	/** order may be important */
 	private List<NodeIndexer> nodeIndexers = new ArrayList<NodeIndexer>();
 
 	public void init() {
 		try {
-			adminSession = jcrRepository.login();
-			artifactListener = new ArtifactListener();
+			adminSession = jcrRepository.login(workspace);
+			artifactListener = new FilesListener();
 			adminSession
 					.getWorkspace()
 					.getObservationManager()
-					.addEventListener(artifactListener, Event.NODE_ADDED,
-							RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, true, null,
-							null, true);
-			// localrepo
-			String localrepoWorkspace = "localrepo";
-			if (!Arrays.asList(
-					adminSession.getWorkspace().getAccessibleWorkspaceNames())
-					.contains(localrepoWorkspace))
-				adminSession.getWorkspace().createWorkspace(localrepoWorkspace);
+					.addEventListener(artifactListener, Event.NODE_ADDED, "/",
+							true, null, null, true);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot initialize repository backend", e);
 		}
@@ -74,7 +68,11 @@ public class RepoImpl {
 		this.nodeIndexers = nodeIndexers;
 	}
 
-	class ArtifactListener implements EventListener {
+	public void setWorkspace(String workspace) {
+		this.workspace = workspace;
+	}
+
+	class FilesListener implements EventListener {
 
 		public void onEvent(EventIterator events) {
 			while (events.hasNext()) {

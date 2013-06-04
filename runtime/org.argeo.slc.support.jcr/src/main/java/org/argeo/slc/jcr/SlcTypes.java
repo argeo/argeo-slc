@@ -35,7 +35,7 @@ public interface SlcTypes {
 	public final static String SLC_CHECK = "slc:check";
 	public final static String SLC_PROPERTY = "slc:property";
 	public final static String SLC_DIFF_RESULT = "slc:diffResult";
-	
+
 	// Node types used for user defined and managed result UI tree
 	public final static String SLC_MY_RESULT_ROOT_FOLDER = "slc:myResultRootFolder";
 	public final static String SLC_RESULT_FOLDER = "slc:resultFolder";
@@ -69,4 +69,6 @@ public interface SlcTypes {
 	public final static String SLC_KNOWN_ORIGIN = "slc:knownOrigin";
 	public final static String SLC_PROXIED = "slc:proxied";
 
+	// rpm
+	public final static String SLC_RPM = "slc:rpm";
 }
