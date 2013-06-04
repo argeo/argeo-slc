@@ -279,7 +279,7 @@ public class RpmFactory {
 	}
 
 	public File getSourcesDir() {
-		return new File(distBase + "/" + stagingWorkspace);
+		return new File(distBase + "/" + stableWorkspace);
 	}
 
 	public String getMockConfig(String arch) {
