@@ -43,6 +43,7 @@ public class BuildInMock implements Runnable {
 	private Executor executor;
 
 	private String debuginfoDirName = "debuginfo";
+	private String mockExecutable = "/usr/bin/mock";
 
 	public void run() {
 		String mockCfg = factory.getMockConfig(arch);
@@ -52,7 +53,7 @@ public class BuildInMock implements Runnable {
 		SystemCall mock = new SystemCall();
 		if (arch != null)
 			mock.arg("setarch").arg(arch);
-		mock.arg("mock");
+		mock.arg(mockExecutable);
 		mock.arg("-v");
 		mock.arg("--configdir=" + mockConfigFile.getAbsoluteFile().getParent());
 		if (arch != null)
@@ -89,34 +90,35 @@ public class BuildInMock implements Runnable {
 		// copy RPMs
 		Set<File> reposToRecreate = new HashSet<File>();
 		File resultDir = factory.getResultDir(arch);
-		rpms: for (File file : resultDir.listFiles()) {
-			if (file.isDirectory())
-				continue rpms;
+		if (resultDir.exists())
+			rpms: for (File file : resultDir.listFiles()) {
+				if (file.isDirectory())
+					continue rpms;
 
-			File[] targetDirs;
-			if (file.getName().contains(".src.rpm"))
-				targetDirs = new File[] { srpmDir };
-			else if (file.getName().contains("-debuginfo-"))
-				targetDirs = new File[] { debuginfoDir };
-			else if (!arch.equals(NOARCH)
-					&& file.getName().contains("." + arch + ".rpm"))
-				targetDirs = new File[] { archDir };
-			else if (file.getName().contains(".noarch.rpm")) {
-				List<File> dirs = new ArrayList<File>();
-				for (String arch : factory.getArchs())
-					dirs.add(new File(stagingDir, arch));
-				targetDirs = dirs.toArray(new File[dirs.size()]);
-			} else if (file.getName().contains(".rpm"))
-				throw new SlcException("Don't know where to copy " + file);
-			else {
-				if (log.isTraceEnabled())
-					log.trace("Skip " + file);
-				continue rpms;
+				File[] targetDirs;
+				if (file.getName().contains(".src.rpm"))
+					targetDirs = new File[] { srpmDir };
+				else if (file.getName().contains("-debuginfo-"))
+					targetDirs = new File[] { debuginfoDir };
+				else if (!arch.equals(NOARCH)
+						&& file.getName().contains("." + arch + ".rpm"))
+					targetDirs = new File[] { archDir };
+				else if (file.getName().contains(".noarch.rpm")) {
+					List<File> dirs = new ArrayList<File>();
+					for (String arch : factory.getArchs())
+						dirs.add(new File(stagingDir, arch));
+					targetDirs = dirs.toArray(new File[dirs.size()]);
+				} else if (file.getName().contains(".rpm"))
+					throw new SlcException("Don't know where to copy " + file);
+				else {
+					if (log.isTraceEnabled())
+						log.trace("Skip " + file);
+					continue rpms;
+				}
+
+				reposToRecreate.addAll(Arrays.asList(targetDirs));
+				copyToDirs(file, targetDirs);
 			}
-
-			reposToRecreate.addAll(Arrays.asList(targetDirs));
-			copyToDirs(file, targetDirs);
-		}
 
 		// recreate changed repos
 		for (File repoToRecreate : reposToRecreate) {
@@ -171,4 +173,9 @@ public class BuildInMock implements Runnable {
 	public void setExecutor(Executor executor) {
 		this.executor = executor;
 	}
+
+	public void setMockExecutable(String mockExecutable) {
+		this.mockExecutable = mockExecutable;
+	}
+
 }
