@@ -17,7 +17,11 @@ package org.argeo.slc.rpmfactory.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +55,8 @@ public class RpmFactory {
 	private String distBase = "/mnt/slc/repos/dist";
 	private String mockVar = "/var/lib/mock";
 	private String mockEtc = "/etc/mock";
+
+	private DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmm");
 
 	private String gitWorkspace = "git";
 
@@ -141,6 +147,26 @@ public class RpmFactory {
 					e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
+		}
+	}
+
+	/** Caller must logout the underlying session. */
+	protected Node newDistribution(String distributionId) {
+		Session session = null;
+		try {
+			session = JcrUtils.loginOrCreateWorkspace(rpmRepository,
+					distributionId);
+			JcrUtils.addPrivilege(session, "/", "anonymous", "jcr:read");
+			JcrUtils.addPrivilege(session, "/", SlcConstants.ROLE_SLC,
+					"jcr:all");
+
+			Calendar now = new GregorianCalendar();
+			String folderName = dateFormat.format(now.getTime());
+			return JcrUtils.mkfolders(session, "/" + folderName);
+		} catch (Exception e) {
+			JcrUtils.logoutQuietly(session);
+			throw new SlcException("Cannot initialize distribution workspace "
+					+ distributionId, e);
 		}
 	}
 

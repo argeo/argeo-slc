@@ -253,10 +253,16 @@ public class SystemCall implements Runnable {
 	public synchronized String function() {
 		final StringBuffer buf = new StringBuffer("");
 		SystemCallOutputListener tempOutputListener = new SystemCallOutputListener() {
+			private Long lineCount = 0l;
+
 			public void newLine(SystemCall systemCall, String line,
 					Boolean isError) {
-				if (!isError)
+				if (!isError) {
+					if (lineCount != 0l)
+						buf.append('\n');
 					buf.append(line);
+					lineCount++;
+				}
 			}
 		};
 		addOutputListener(tempOutputListener);
