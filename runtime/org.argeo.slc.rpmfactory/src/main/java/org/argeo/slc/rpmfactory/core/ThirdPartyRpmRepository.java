@@ -5,5 +5,14 @@ package org.argeo.slc.rpmfactory.core;
  * will be cached within the system.
  */
 public class ThirdPartyRpmRepository extends AbstractRpmRepository {
+	private String yumConf;
+
+	public String getYumConf() {
+		return yumConf;
+	}
+
+	public void setYumConf(String yumConf) {
+		this.yumConf = yumConf;
+	}
 
 }

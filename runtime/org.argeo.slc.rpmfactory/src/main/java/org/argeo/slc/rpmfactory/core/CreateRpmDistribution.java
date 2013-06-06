@@ -16,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
-import org.springframework.core.io.ByteArrayResource;
 
 /**
  * Gather RPMs from various sources (local builds or third party) into a
@@ -46,7 +45,7 @@ public class CreateRpmDistribution implements Runnable {
 			SystemCall repoquery = new SystemCall();
 			repoquery.arg(repoqueryExecutable);
 
-			File yumConfigFile = rpmFactory.getYumConfigFile(arch);
+			File yumConfigFile = rpmFactory.getYumRepoFile(arch);
 			repoquery.arg("-c", yumConfigFile.getAbsolutePath());
 			repoquery.arg("--requires");
 			repoquery.arg("--resolve");
@@ -102,6 +101,17 @@ public class CreateRpmDistribution implements Runnable {
 				}
 			}
 
+			// createrepo
+			File workspaceDir = rpmFactory.getWorkspaceDir(rpmDistribution
+					.getId());
+			SystemCall createrepo = new SystemCall();
+			createrepo.arg("createrepo");
+			createrepo.arg("-q");
+			createrepo.arg("-d");
+			File archDir = new File(workspaceDir.getPath()
+					+ targetFolder.getPath());
+			createrepo.arg(archDir.getAbsolutePath());
+			createrepo.run();
 		} catch (Exception e) {
 			throw new SlcException("Cannot generate distribution "
 					+ rpmDistribution.getId(), e);

@@ -243,6 +243,10 @@ public class RpmFactory {
 				buf.append("baseurl=").append(proxiedReposBase)
 						.append(repository.getId()).append('/').append(arch)
 						.append('/').append("\n");
+				if (((ThirdPartyRpmRepository) repository).getYumConf() != null)
+					buf.append(
+							((ThirdPartyRpmRepository) repository).getYumConf()
+									.trim()).append('\n');
 			}
 		}
 
@@ -259,6 +263,7 @@ public class RpmFactory {
 		buf.append('[').append(workspace).append("]\n");
 		buf.append("baseurl=").append(managedReposBase).append(workspace)
 				.append('/').append(arch).append('/').append("\n");
+		buf.append("gpgcheck=0").append("\n");
 	}
 
 	/** Creates a mock config file. */
@@ -284,8 +289,8 @@ public class RpmFactory {
 	}
 
 	/** Creates a yum config file. */
-	public File getYumConfigFile(String arch) {
-		File yumConfigFile = new File(yumConfDir, getIdWithArch(arch) + ".conf");
+	public File getYumRepoFile(String arch) {
+		File yumConfigFile = new File(yumConfDir, getIdWithArch(arch) + ".repo");
 		try {
 			FileUtils.writeStringToFile(yumConfigFile,
 					generateYumConfigFile(arch));
