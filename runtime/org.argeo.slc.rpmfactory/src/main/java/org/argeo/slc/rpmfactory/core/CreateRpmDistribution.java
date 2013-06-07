@@ -50,6 +50,7 @@ public class CreateRpmDistribution implements Runnable {
 			repoquery.arg("--requires");
 			repoquery.arg("--resolve");
 			repoquery.arg("--location");
+			repoquery.arg("--archlist=" + arch);
 
 			for (String rpmPackage : rpmDistribution.getPackages())
 				repoquery.arg(rpmPackage);
