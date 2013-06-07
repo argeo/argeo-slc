@@ -61,6 +61,8 @@ public class RpmFactory {
 	private String gitWorkspace = "git";
 
 	private String localUrlBase = "http://localhost:7070/";
+	/** If not null or empty, this is a developer instance. */
+	private String gitDevBaseUrl = null;
 
 	private Boolean withTestingRepository = false;
 
@@ -220,9 +222,16 @@ public class RpmFactory {
 		buf.append("config_opts['scm_opts']['ext_src_dir'] = '"
 				+ getSourcesDir().getAbsolutePath() + "'\n");
 		buf.append("config_opts['scm_opts']['git_timestamps'] = True\n");
-		buf.append("config_opts['scm_opts']['git_get'] = 'git clone "
-				+ (branch != null ? "-b " + branch : "") + " "
-				+ getGitBaseUrl() + "/SCM_PKG.git SCM_PKG'\n");
+
+		// development
+		if (gitDevBaseUrl != null && !gitDevBaseUrl.trim().equals(""))
+			buf.append("config_opts['scm_opts']['git_get'] = 'git clone "
+					+ (branch != null ? "-b " + branch : "") + " "
+					+ gitDevBaseUrl + "/SCM_PKG SCM_PKG'\n");
+		else
+			buf.append("config_opts['scm_opts']['git_get'] = 'git clone "
+					+ (branch != null ? "-b " + branch : "") + " "
+					+ getGitBaseUrl() + "/SCM_PKG.git SCM_PKG'\n");
 
 		buf.append("\nconfig_opts['yum.conf'] = \"\"\"\n");
 		buf.append(generateYumConfigFile(arch)).append('\n');
@@ -441,4 +450,7 @@ public class RpmFactory {
 		this.withTestingRepository = withTestingRepository;
 	}
 
+	public void setGitDevBaseUrl(String gitBaseUrl) {
+		this.gitDevBaseUrl = gitBaseUrl;
+	}
 }
