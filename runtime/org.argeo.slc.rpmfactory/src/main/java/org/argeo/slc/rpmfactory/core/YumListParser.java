@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
 import org.apache.commons.logging.Log;
@@ -79,7 +80,9 @@ public class YumListParser implements RpmPackageSet {
 	protected String extractRpmName(String line) {
 		StringTokenizer st = new StringTokenizer(line, " \t");
 		String packageName = st.nextToken();
-		return packageName.split("\\.")[0];
+		// consider the arch as an extension
+		return FilenameUtils.getBaseName(packageName);
+		//return packageName.split("\\.")[0];
 	}
 
 	public Set<String> getInstalled() {
