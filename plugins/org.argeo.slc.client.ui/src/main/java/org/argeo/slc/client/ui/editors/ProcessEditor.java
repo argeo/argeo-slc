@@ -235,6 +235,10 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		}
 	}
 
+	public void setEditorTitle(String title) {
+		setPartName(title);
+	}
+
 	@Override
 	public void doSaveAs() {
 	}

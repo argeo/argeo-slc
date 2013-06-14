@@ -347,6 +347,8 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 			Node flowNode = processNode.getSession().getNode(path);
 			Node realizedFlowNode = processNode.getNode(SLC_FLOW).addNode(
 					SLC_FLOW);
+			realizedFlowNode.setProperty(SLC_NAME,
+					flowNode.getProperty(SLC_NAME).getString());
 			realizedFlowNode.addMixin(SlcTypes.SLC_REALIZED_FLOW);
 			Node address = realizedFlowNode.addNode(SLC_ADDRESS,
 					NodeType.NT_ADDRESS);
@@ -385,10 +387,21 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 				}
 			}
 
+			// Part title
+			StringBuilder editorTitle = new StringBuilder();
+			NodeIterator it = realizedFlowNode.getParent().getNodes(SLC_FLOW);
+			while (it.hasNext()) {
+				Node rFlowNode = it.nextNode();
+				String name = rFlowNode.getProperty(SLC_NAME).getString();
+				editorTitle.append(name).append(' ');
+			}
+			((ProcessEditor) getEditor())
+					.setEditorTitle(editorTitle.toString());
+
 			flowsViewer.refresh();
 			formPart.markDirty();
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot drop " + path, e);
+			throw new SlcException("Cannot add flow " + path, e);
 		}
 	}
 
