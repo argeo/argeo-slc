@@ -45,36 +45,34 @@ public class BuildInMock implements Runnable {
 	private String debuginfoDirName = "debuginfo";
 	private String mockExecutable = "/usr/bin/mock";
 
+	private List<String> preBuildCommands = new ArrayList<String>();
+
 	public void run() {
-		String mockCfg = factory.getMockConfig(arch);
-		File mockConfigFile = factory.getMockConfigFile(arch, branch);
+		if (!factory.isDeveloperInstance()) {
+			// clean/init
+			SystemCall mockClean = createBaseMockCall();
+			mockClean.arg("--init");
+			mockClean.run();
+		}
 
-		// prepare mock call
-		SystemCall mock = new SystemCall();
-		if (arch != null)
-			mock.arg("setarch").arg(arch);
-		mock.arg(mockExecutable);
-		mock.arg("-v");
-		mock.arg("--configdir=" + mockConfigFile.getAbsoluteFile().getParent());
-		if (arch != null)
-			mock.arg("--arch=" + arch);
-		mock.arg("-r").arg(mockCfg);
-		mock.arg("--scm-enable");
-		// mock.arg("--scm-option");
-		// mock.arg("git_get='git clone " + (branch != null ? "-b " + branch :
-		// "")
-		// + " " + factory.getGitBaseUrl() + "/SCM_PKG SCM_PKG'");
-		mock.arg("--scm-option").arg("package=" + rpmPackage);
+		// pre build commands
+		for (String preBuildCmd : preBuildCommands) {
+			SystemCall mockClean = createBaseMockCall();
+			mockClean.arg("--chroot").arg(preBuildCmd);
+			mockClean.run();
+		}
 
-		mock.setLogCommand(true);
-		mock.setExecutor(executor);
-
+		// actual build
+		SystemCall mockBuild = createBaseMockCall();
+		mockBuild.arg("--scm-enable");
+		mockBuild.arg("--scm-option").arg("package=" + rpmPackage);
+		mockBuild.arg("--no-clean");
 		//
-		// mock command execution
 		//
-		mock.run();
+		mockBuild.run();
 		//
 
+		// copy RPMs to target directories
 		File stagingDir = factory
 				.getWorkspaceDir(factory.getStagingWorkspace());
 		File srpmDir = new File(stagingDir, "SRPMS");
@@ -87,7 +85,6 @@ public class BuildInMock implements Runnable {
 			debuginfoDir.mkdirs();
 		}
 
-		// copy RPMs
 		Set<File> reposToRecreate = new HashSet<File>();
 		File resultDir = factory.getResultDir(arch);
 		if (resultDir.exists())
@@ -142,6 +139,29 @@ public class BuildInMock implements Runnable {
 		factory.indexWorkspace(factory.getStagingWorkspace());
 	}
 
+	/** Creates a mock call with all the common options such as config file etc. */
+	protected SystemCall createBaseMockCall() {
+		String mockCfg = factory.getMockConfig(arch);
+		File mockConfigFile = factory.getMockConfigFile(arch, branch);
+
+		// prepare mock call
+		SystemCall mock = new SystemCall();
+
+		if (arch != null)
+			mock.arg("setarch").arg(arch);
+		mock.arg(mockExecutable);
+		mock.arg("-v");
+		mock.arg("--configdir=" + mockConfigFile.getAbsoluteFile().getParent());
+		if (arch != null)
+			mock.arg("--arch=" + arch);
+		mock.arg("-r").arg(mockCfg);
+
+		mock.setLogCommand(true);
+		mock.setExecutor(executor);
+
+		return mock;
+	}
+
 	protected void copyToDirs(File file, File[] dirs) {
 		for (File dir : dirs) {
 			try {
@@ -176,6 +196,10 @@ public class BuildInMock implements Runnable {
 
 	public void setMockExecutable(String mockExecutable) {
 		this.mockExecutable = mockExecutable;
+	}
+
+	public void setPreBuildCommands(List<String> preBuildCommands) {
+		this.preBuildCommands = preBuildCommands;
 	}
 
 }

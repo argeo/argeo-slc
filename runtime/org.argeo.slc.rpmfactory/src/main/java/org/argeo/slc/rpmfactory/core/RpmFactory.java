@@ -347,6 +347,10 @@ public class RpmFactory {
 		}
 	}
 
+	public Boolean isDeveloperInstance() {
+		return gitDevBaseUrl != null;
+	}
+
 	/** Write (topdir)/rpmmacros and (topdir)/rpmrc */
 	public void writeRpmbuildConfigFiles(File topdir) {
 		writeRpmbuildConfigFiles(topdir, new File(topdir, "rpmmacros"),
