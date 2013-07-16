@@ -39,7 +39,7 @@ public class BuildInMock implements Runnable {
 	private String branch = null;
 	private String arch = NOARCH;
 
-	private RpmFactory factory;
+	private RpmFactory rpmFactory;
 	private Executor executor;
 
 	private String debuginfoDirName = "debuginfo";
@@ -48,7 +48,7 @@ public class BuildInMock implements Runnable {
 	private List<String> preBuildCommands = new ArrayList<String>();
 
 	public void run() {
-		if (!factory.isDeveloperInstance()) {
+		if (!rpmFactory.isDeveloperInstance()) {
 			// clean/init
 			SystemCall mockClean = createBaseMockCall();
 			mockClean.arg("--init");
@@ -73,8 +73,8 @@ public class BuildInMock implements Runnable {
 		//
 
 		// copy RPMs to target directories
-		File stagingDir = factory
-				.getWorkspaceDir(factory.getStagingWorkspace());
+		File stagingDir = rpmFactory.getWorkspaceDir(rpmFactory
+				.getStagingWorkspace());
 		File srpmDir = new File(stagingDir, "SRPMS");
 		srpmDir.mkdirs();
 		File archDir = null;
@@ -86,7 +86,7 @@ public class BuildInMock implements Runnable {
 		}
 
 		Set<File> reposToRecreate = new HashSet<File>();
-		File resultDir = factory.getResultDir(arch);
+		File resultDir = rpmFactory.getResultDir(arch);
 		if (resultDir.exists())
 			rpms: for (File file : resultDir.listFiles()) {
 				if (file.isDirectory())
@@ -102,7 +102,7 @@ public class BuildInMock implements Runnable {
 					targetDirs = new File[] { archDir };
 				else if (file.getName().contains(".noarch.rpm")) {
 					List<File> dirs = new ArrayList<File>();
-					for (String arch : factory.getArchs())
+					for (String arch : rpmFactory.getArchs())
 						dirs.add(new File(stagingDir, arch));
 					targetDirs = dirs.toArray(new File[dirs.size()]);
 				} else if (file.getName().contains(".rpm"))
@@ -136,13 +136,13 @@ public class BuildInMock implements Runnable {
 		}
 
 		// index staging workspace
-		factory.indexWorkspace(factory.getStagingWorkspace());
+		rpmFactory.indexWorkspace(rpmFactory.getStagingWorkspace());
 	}
 
 	/** Creates a mock call with all the common options such as config file etc. */
 	protected SystemCall createBaseMockCall() {
-		String mockCfg = factory.getMockConfig(arch);
-		File mockConfigFile = factory.getMockConfigFile(arch, branch);
+		String mockCfg = rpmFactory.getMockConfig(arch);
+		File mockConfigFile = rpmFactory.getMockConfigFile(arch, branch);
 
 		// prepare mock call
 		SystemCall mock = new SystemCall();
@@ -186,8 +186,8 @@ public class BuildInMock implements Runnable {
 		this.branch = branch;
 	}
 
-	public void setFactory(RpmFactory env) {
-		this.factory = env;
+	public void setRpmFactory(RpmFactory env) {
+		this.rpmFactory = env;
 	}
 
 	public void setExecutor(Executor executor) {

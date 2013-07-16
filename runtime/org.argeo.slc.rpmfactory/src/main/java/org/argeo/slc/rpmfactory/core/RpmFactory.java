@@ -246,6 +246,7 @@ public class RpmFactory {
 
 		for (RpmRepository repository : repositories) {
 			buf.append('[').append(repository.getId()).append("]\n");
+			buf.append("name=").append(repository.getId()).append('\n');
 			if (repository instanceof ThirdPartyRpmRepository) {
 				buf.append("#baseurl=").append(repository.getUrl())
 						.append(arch).append('/').append("\n");
