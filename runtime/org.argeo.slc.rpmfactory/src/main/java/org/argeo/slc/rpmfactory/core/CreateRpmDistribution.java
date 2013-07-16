@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
+import org.argeo.slc.rpmfactory.RpmFactory;
 
 /**
  * Gather RPMs from various sources (local builds or third party) into a

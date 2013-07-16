@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
+import org.argeo.slc.rpmfactory.RpmFactory;
 
 /** Build an RPM in mock. */
 public class BuildInMock implements Runnable {

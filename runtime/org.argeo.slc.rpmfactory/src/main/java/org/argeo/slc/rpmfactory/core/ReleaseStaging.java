@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
+import org.argeo.slc.rpmfactory.RpmFactory;
 
 /** Releases the content of staging to a public repository. */
 public class ReleaseStaging implements Runnable {
@@ -23,14 +24,14 @@ public class ReleaseStaging implements Runnable {
 
 	@Override
 	public void run() {
-		File stagingDir = rpmFactory.getWorkspaceDir(rpmFactory
-				.getStagingWorkspace());
-		// TODO deal with testing
-		File targetRepoDir = rpmFactory.getWorkspaceDir(rpmFactory
-				.getStableWorkspace());
+		String sourceWorkspace = rpmFactory.getStagingWorkspace();
+		File sourceRepoDir = rpmFactory.getWorkspaceDir(sourceWorkspace);
+		String targetWorkspace = rpmFactory.getTestingWorkspace() != null ? rpmFactory
+				.getTestingWorkspace() : rpmFactory.getStableWorkspace();
+		File targetRepoDir = rpmFactory.getWorkspaceDir(targetWorkspace);
 		List<File> reposToRecreate = new ArrayList<File>();
 
-		stagingChildren: for (File dir : stagingDir.listFiles()) {
+		stagingChildren: for (File dir : sourceRepoDir.listFiles()) {
 			if (!dir.isDirectory())
 				continue stagingChildren;
 			if (dir.getName().equals("lost+found"))
@@ -42,7 +43,7 @@ public class ReleaseStaging implements Runnable {
 				if (log.isDebugEnabled())
 					log.debug(dir + " => " + targetDir);
 			} catch (IOException e) {
-				throw new SlcException(stagingDir
+				throw new SlcException(sourceRepoDir
 						+ " could not be copied properly, check it manually."
 						+ " Metadata have NOT been updated.", e);
 			}
@@ -59,7 +60,7 @@ public class ReleaseStaging implements Runnable {
 		}
 
 		// clear staging
-		for (File dir : stagingDir.listFiles()) {
+		for (File dir : sourceRepoDir.listFiles()) {
 			try {
 				if (dir.getName().equals("lost+found"))
 					continue;
@@ -89,6 +90,8 @@ public class ReleaseStaging implements Runnable {
 			log.info("Updated repo " + repoToRecreate);
 		}
 
+		rpmFactory.indexWorkspace(sourceWorkspace);
+		rpmFactory.indexWorkspace(targetWorkspace);
 	}
 
 	public void setRpmFactory(RpmFactory rpmFactory) {

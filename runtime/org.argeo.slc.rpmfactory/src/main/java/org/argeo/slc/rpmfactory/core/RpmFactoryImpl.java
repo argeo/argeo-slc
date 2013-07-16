@@ -32,18 +32,23 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
 import org.argeo.slc.repo.NodeIndexerVisitor;
+import org.argeo.slc.rpmfactory.RpmFactory;
 import org.argeo.slc.rpmfactory.RpmRepository;
 
 /**
  * Defines a build environment. This information is typically used by other
  * components performing the various actions related to RPM build.
  */
-public class RpmFactory {
+public class RpmFactoryImpl implements RpmFactory {
+	private Log log = LogFactory.getLog(RpmFactoryImpl.class);
+
 	private Repository rpmRepository;
 	private Repository distRepository;
 
@@ -153,7 +158,7 @@ public class RpmFactory {
 	}
 
 	/** Caller must logout the underlying session. */
-	protected Node newDistribution(String distributionId) {
+	public Node newDistribution(String distributionId) {
 		Session session = null;
 		try {
 			session = JcrUtils.loginOrCreateWorkspace(rpmRepository,
@@ -341,6 +346,8 @@ public class RpmFactory {
 			session = rpmRepository.login(workspace);
 			session.getRootNode().accept(
 					new NodeIndexerVisitor(new RpmIndexer()));
+			if (log.isDebugEnabled())
+				log.debug("Indexed workspace " + workspace);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot index workspace " + workspace, e);
 		} finally {
