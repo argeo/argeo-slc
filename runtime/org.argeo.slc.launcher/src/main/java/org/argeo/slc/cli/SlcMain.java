@@ -99,6 +99,8 @@ public class SlcMain implements PrivilegedAction<String> {
 			configuration.put("osgi.configuration.area",
 					confDir.getCanonicalPath());
 			configuration.put("osgi.instance.area", dataDir.getCanonicalPath());
+			// Do clean
+			configuration.put("osgi.clean", "true");
 			if (args.length == 0) {
 				configuration.put("osgi.console", "");
 			}
