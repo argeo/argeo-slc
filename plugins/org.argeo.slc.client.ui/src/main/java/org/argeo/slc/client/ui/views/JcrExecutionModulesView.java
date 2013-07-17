@@ -50,10 +50,6 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.jcr.SlcJcrConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -68,7 +64,6 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -99,7 +94,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		viewer.setInput(getViewSite());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 		// context menu
-		addContextMenu(viewer);
+		// addContextMenu(viewer);
 
 		getViewSite().setSelectionProvider(viewer);
 
@@ -219,24 +214,24 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	}
 
-	private void addContextMenu(TreeViewer flowsViewer) {
-
-		final MenuManager menuMgr = new MenuManager();
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-
-			public void menuAboutToShow(IMenuManager manager) {
-				menuMgr.add(new Action("Test") {
-					public void run() {
-						log.debug("do something");
-					}
-				});
-			}
-		});
-		Menu menu = menuMgr.createContextMenu(flowsViewer.getControl());
-		flowsViewer.getTree().setMenu(menu);
-		getSite().registerContextMenu(menuMgr, flowsViewer);
-	}
+	// private void addContextMenu(TreeViewer flowsViewer) {
+	//
+	// final MenuManager menuMgr = new MenuManager();
+	// menuMgr.setRemoveAllWhenShown(true);
+	// menuMgr.addMenuListener(new IMenuListener() {
+	//
+	// public void menuAboutToShow(IMenuManager manager) {
+	// menuMgr.add(new Action("Test") {
+	// public void run() {
+	// log.debug("do something");
+	// }
+	// });
+	// }
+	// });
+	// Menu menu = menuMgr.createContextMenu(flowsViewer.getControl());
+	// flowsViewer.getTree().setMenu(menu);
+	// getSite().registerContextMenu(menuMgr, flowsViewer);
+	// }
 
 	class VmAgentObserver extends AsyncUiEventListener {
 
