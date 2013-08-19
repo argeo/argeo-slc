@@ -62,6 +62,9 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		ByteArrayInputStream bi = null;
 		Binary manifestBinary = null;
 		try {
+			if(!support(fileNode.getPath()))
+				return;
+			
 			if (!fileNode.isNodeType(NodeType.NT_FILE))
 				return;
 

@@ -52,6 +52,9 @@ public class ArtifactIndexer implements NodeIndexer {
 	public void index(Node fileNode) {
 		Artifact artifact = null;
 		try {
+			if(!support(fileNode.getPath()))
+				return;
+			
 			if (!fileNode.isNodeType(NodeType.NT_FILE))
 				return;
 
