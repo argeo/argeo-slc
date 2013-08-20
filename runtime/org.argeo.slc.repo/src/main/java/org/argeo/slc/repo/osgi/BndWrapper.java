@@ -11,21 +11,27 @@ import java.util.jar.Manifest;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.osgi.framework.Version;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.springframework.beans.factory.BeanNameAware;
 
 import aQute.lib.osgi.Builder;
 import aQute.lib.osgi.Constants;
 import aQute.lib.osgi.Jar;
 
 /** Utilities around the BND library, which manipulates OSI meta-data. */
-public class BndWrapper implements Constants {
+public class BndWrapper implements Constants, NameVersion, BeanNameAware {
 	private final static Log log = LogFactory.getLog(BndWrapper.class);
 
-	private String bsn;
+	private String groupId;
+	private String name;
 	private String version;
+	private Properties bndProperties = new Properties();
 
-	public void wrapJar(Properties properties, InputStream in, OutputStream out) {
+	public void wrapJar(InputStream in, OutputStream out) {
 		Builder b = new Builder();
 		try {
 			Jar jar = new Jar(null, in);
@@ -53,12 +59,15 @@ public class BndWrapper implements Constants {
 				}
 			}
 
-			properties.setProperty(BUNDLE_SYMBOLICNAME, bsn);
+			Properties properties = new Properties();
+			properties.putAll(bndProperties);
+			properties.setProperty(BUNDLE_SYMBOLICNAME, name);
 			properties.setProperty(BUNDLE_VERSION, versionToUse.toString());
 
 			// b.addIncluded(jarFile);
 			b.addClasspath(jar);
 
+			log.debug(properties);
 			b.setProperties(properties);
 
 			Jar newJar = b.build();
@@ -71,12 +80,12 @@ public class BndWrapper implements Constants {
 
 	}
 
-	public void setBsn(String bsn) {
-		this.bsn = bsn;
+	public void setName(String bsn) {
+		this.name = bsn;
 	}
 
-	public String getBsn() {
-		return bsn;
+	public String getName() {
+		return name;
 	}
 
 	public void setVersion(String version) {
@@ -87,9 +96,33 @@ public class BndWrapper implements Constants {
 		return version;
 	}
 
+	public Properties getBndProperties() {
+		return bndProperties;
+	}
+
+	public void setBndProperties(Properties bndProperties) {
+		this.bndProperties = bndProperties;
+	}
+
+	public void setBeanName(String name) {
+		this.name = name;
+	}
+
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(String groupId) {
+		this.groupId = groupId;
+	}
+
+	public Artifact getArtifact() {
+		return new DefaultArtifact(groupId, name, "jar", version);
+	}
+
 	public static void main(String[] args) {
 		BndWrapper bndWrapper = new BndWrapper();
-		bndWrapper.setBsn("org.slf4j");
+		bndWrapper.setName("org.slf4j");
 
 		InputStream in = null;
 		InputStream propertiesIn = null;
@@ -104,7 +137,7 @@ public class BndWrapper implements Constants {
 			// propertiesIn = new FileInputStream(propertiesFile);
 			out = new FileOutputStream(new File("test.jar"));
 			// properties.load(propertiesIn);
-			bndWrapper.wrapJar(properties, in, out);
+			bndWrapper.wrapJar(in, out);
 		} catch (Exception e) {
 			throw new SlcException("Cannot test", e);
 		} finally {

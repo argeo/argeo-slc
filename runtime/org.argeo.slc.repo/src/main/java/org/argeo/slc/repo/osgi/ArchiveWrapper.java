@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -20,20 +19,30 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.RepoUtils;
 import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /** Download a software distribution and generates the related OSGi bundles. */
-public class DistributionWrapper implements Runnable {
-	private final static Log log = LogFactory.getLog(DistributionWrapper.class);
+public class ArchiveWrapper implements Runnable {
+	private final static Log log = LogFactory.getLog(ArchiveWrapper.class);
 
 	private OsgiFactory osgiFactory;
 
 	private String version;
-	private String groupId;
+	// private String groupId;
 
 	private String uri;
 
 	private Map<String, BndWrapper> wrappers = new HashMap<String, BndWrapper>();
+
+	public void init() {
+		for (BndWrapper wrapper : wrappers.values()) {
+			if (wrapper.getVersion() == null)
+				wrapper.setVersion(version);
+		}
+	}
+
+	public void destroy() {
+
+	}
 
 	public void run() {
 
@@ -62,22 +71,21 @@ public class DistributionWrapper implements Runnable {
 					if (wrappers.containsKey(name)) {
 
 						BndWrapper wrapper = (BndWrapper) wrappers.get(name);
-						if (wrapper.getVersion() == null)
-							wrapper.setVersion(version);// FIXME stateful?
+						// if (wrapper.getVersion() == null)
+						// wrapper.setVersion(version);// FIXME stateful?
 
 						out = new ByteArrayOutputStream((int) zentry.getSize());
 						// we must copy since the stream is closed by BND
 						byte[] sourceJarBytes = IOUtils.toByteArray(zin);
 						in = new ByteArrayInputStream(sourceJarBytes);
-						Properties properties = new Properties();
-						wrapper.wrapJar(properties, in, out);
+						wrapper.wrapJar(in, out);
 
-						Artifact newArtifact = new DefaultArtifact(groupId,
-								wrapper.getBsn(), "jar", wrapper.getVersion());
+						Artifact newArtifact = wrapper.getArtifact();
 						Node newJarNode = RepoUtils.copyBytesAsArtifact(
 								javaSession.getRootNode(), newArtifact,
 								out.toByteArray());
 						osgiFactory.indexNode(newJarNode);
+						newJarNode.getSession().save();
 						if (log.isDebugEnabled())
 							log.debug("Wrapped " + name + " to "
 									+ newJarNode.getPath());
@@ -96,9 +104,15 @@ public class DistributionWrapper implements Runnable {
 		}
 	}
 
-	public void setVersion(String version) {
-		this.version = version;
-	}
+	// public List<ArtifactDistribution> provides() {
+	// List<ArtifactDistribution> res = new ArrayList<ArtifactDistribution>();
+	// for (BndWrapper bndWrapper : wrappers.values()) {
+	// ArtifactDistribution ad = new ArtifactDistribution(groupId + ":"
+	// + bndWrapper.getName() + ":" + bndWrapper.getVersion());
+	// res.add(ad);
+	// }
+	// return res;
+	// }
 
 	public void setUri(String uri) {
 		this.uri = uri;
@@ -108,12 +122,12 @@ public class DistributionWrapper implements Runnable {
 		this.wrappers = wrappers;
 	}
 
-	public void setGroupId(String groupId) {
-		this.groupId = groupId;
-	}
-
 	public void setOsgiFactory(OsgiFactory osgiFactory) {
 		this.osgiFactory = osgiFactory;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 }
