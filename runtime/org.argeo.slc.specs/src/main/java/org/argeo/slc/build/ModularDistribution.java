@@ -19,11 +19,18 @@ import java.util.Set;
 
 import org.argeo.slc.NameVersion;
 
+/**
+ * A distribution of modules, that is components that can be identified by a
+ * name / version couple.
+ * 
+ * @see NameVersion
+ */
 public interface ModularDistribution extends Distribution, NameVersion {
 	public Distribution getModuleDistribution(String moduleName,
 			String moduleVersion);
 
 	public Set<NameVersion> listModulesNameVersions();
 
+	/** A descriptor such as P2, OBR or yum metadata. */
 	public Object getModulesDescriptor(String descriptorType);
 }
