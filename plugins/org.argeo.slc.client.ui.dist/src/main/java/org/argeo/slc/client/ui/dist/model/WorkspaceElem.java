@@ -44,6 +44,6 @@ public class WorkspaceElem extends DistParentElem {
 
 	@Override
 	public String getLabel() {
-		return "v" + label;
+		return label;
 	}
 }
