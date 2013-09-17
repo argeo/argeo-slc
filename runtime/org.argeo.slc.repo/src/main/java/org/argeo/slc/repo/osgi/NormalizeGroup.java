@@ -38,6 +38,7 @@ import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
+import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.osgi.framework.Constants;
@@ -50,10 +51,6 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
  * group of OSGi bundles.
  */
 public class NormalizeGroup implements Runnable, SlcNames {
-	public final static String BINARIES_ARTIFACT_ID = "binaries";
-	public final static String SOURCES_ARTIFACT_ID = "sources";
-	public final static String SDK_ARTIFACT_ID = "sdk";
-
 	private final static Log log = LogFactory.getLog(NormalizeGroup.class);
 
 	private Repository repository;
@@ -190,13 +187,13 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		// indexes
 		Set<Artifact> indexes = new TreeSet<Artifact>(
 				new ArtifactIdComparator());
-		Artifact indexArtifact = writeIndex(session, BINARIES_ARTIFACT_ID,
+		Artifact indexArtifact = writeIndex(session, RepoConstants.BINARIES_ARTIFACT_ID,
 				binaries);
 		indexes.add(indexArtifact);
-		indexArtifact = writeIndex(session, SOURCES_ARTIFACT_ID, sources);
+		indexArtifact = writeIndex(session, RepoConstants.SOURCES_ARTIFACT_ID, sources);
 		indexes.add(indexArtifact);
 		// sdk
-		writeIndex(session, SDK_ARTIFACT_ID, indexes);
+		writeIndex(session, RepoConstants.SDK_ARTIFACT_ID, indexes);
 		if (monitor != null)
 			monitor.worked(1);
 	}
@@ -405,8 +402,8 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		p.append("<dependency>\n");
 		p.append("\t<groupId>").append(groupId).append("</groupId>\n");
 		p.append("\t<artifactId>")
-				.append(ownSymbolicName.endsWith(".source") ? SOURCES_ARTIFACT_ID
-						: BINARIES_ARTIFACT_ID).append("</artifactId>\n");
+				.append(ownSymbolicName.endsWith(".source") ? RepoConstants.SOURCES_ARTIFACT_ID
+						: RepoConstants.BINARIES_ARTIFACT_ID).append("</artifactId>\n");
 		p.append("\t<version>").append(version).append("</version>\n");
 		p.append("\t<type>pom</type>\n");
 		p.append("\t<scope>import</scope>\n");

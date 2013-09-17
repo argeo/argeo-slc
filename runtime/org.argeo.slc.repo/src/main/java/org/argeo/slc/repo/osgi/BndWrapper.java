@@ -22,7 +22,7 @@ import aQute.lib.osgi.Builder;
 import aQute.lib.osgi.Constants;
 import aQute.lib.osgi.Jar;
 
-/** Utilities around the BND library, which manipulates OSI meta-data. */
+/** Utilities around the BND library, which manipulates OSGi metadata. */
 public class BndWrapper implements Constants, NameVersion, BeanNameAware {
 	private final static Log log = LogFactory.getLog(BndWrapper.class);
 

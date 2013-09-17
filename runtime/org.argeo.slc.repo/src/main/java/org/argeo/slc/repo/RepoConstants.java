@@ -28,4 +28,7 @@ public interface RepoConstants {
 			+ "/slc:distributions";
 	public final static String REPOSITORIES_BASE_PATH = REPO_BASEPATH
 			+ "/slc:repositories";
+	public final static String BINARIES_ARTIFACT_ID = "binaries";
+	public final static String SOURCES_ARTIFACT_ID = "sources";
+	public final static String SDK_ARTIFACT_ID = "sdk";
 }

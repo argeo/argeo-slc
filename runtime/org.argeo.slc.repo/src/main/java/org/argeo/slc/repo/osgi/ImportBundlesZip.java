@@ -43,7 +43,10 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 /**
  * Import all bundles in a zip file (typically an Eclipse distribution) into the
  * workspace.
+ * 
+ * @deprecated Use {@link ArchiveWrapper} instead.
  */
+@Deprecated
 public class ImportBundlesZip implements Runnable {
 	private final static Log log = LogFactory.getLog(ImportBundlesZip.class);
 	private Repository repository;
@@ -100,8 +103,8 @@ public class ImportBundlesZip implements Runnable {
 					continue entries;
 				}
 
-				String bundleName = RepoUtils.extractBundleNameFromSourceName(nv
-						.getName());
+				String bundleName = RepoUtils
+						.extractBundleNameFromSourceName(nv.getName());
 				// skip excluded bundles and their sources
 				if (excludedBundles.contains(bundleName))
 					continue entries;

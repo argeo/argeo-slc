@@ -23,7 +23,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -40,6 +42,7 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
+import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeType;
 
@@ -51,9 +54,10 @@ import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
@@ -269,7 +273,7 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 
 	/** Read the OSGi {@link NameVersion} */
 	public static NameVersion readNameVersion(Manifest manifest) {
-		BasicNameVersion nameVersion = new BasicNameVersion();
+		DefaultNameVersion nameVersion = new DefaultNameVersion();
 		nameVersion.setName(manifest.getMainAttributes().getValue(
 				Constants.BUNDLE_SYMBOLICNAME));
 
@@ -411,6 +415,61 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			throw new SlcException("Cannot connect to repository " + repoNode,
 					e);
 		}
+	}
+
+	/**
+	 * Write group indexes: 'binaries' lists all bundles and their versions,
+	 * 'sources' list theire sources, and 'sdk' aggregates both.
+	 */
+	public static void writeGroupIndexes(Session session,
+			String artifactBasePath, String groupId, String version,
+			Set<Artifact> binaries, Set<Artifact> sources) {
+		try {
+			Set<Artifact> indexes = new TreeSet<Artifact>(
+					new ArtifactIdComparator());
+			Artifact binariesArtifact = writeIndex(session, artifactBasePath,
+					groupId, RepoConstants.BINARIES_ARTIFACT_ID, version,
+					binaries);
+			indexes.add(binariesArtifact);
+			if (sources != null) {
+				Artifact sourcesArtifact = writeIndex(session,
+						artifactBasePath, groupId,
+						RepoConstants.SOURCES_ARTIFACT_ID, version, sources);
+				indexes.add(sourcesArtifact);
+			}
+			// sdk
+			writeIndex(session, artifactBasePath, groupId,
+					RepoConstants.SDK_ARTIFACT_ID, version, indexes);
+			session.save();
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot write indexes for group " + groupId,
+					e);
+		}
+	}
+
+	/** Write a group index. */
+	private static Artifact writeIndex(Session session,
+			String artifactBasePath, String groupId, String artifactId,
+			String version, Set<Artifact> artifacts) throws RepositoryException {
+		Artifact artifact = new DefaultArtifact(groupId, artifactId, "pom",
+				version);
+		String pom = MavenConventionsUtils.artifactsAsDependencyPom(artifact,
+				artifacts, null);
+		Node node = RepoUtils.copyBytesAsArtifact(
+				session.getNode(artifactBasePath), artifact, pom.getBytes());
+		addMavenChecksums(node);
+		return artifact;
+	}
+
+	/** Add files containing the SHA-1 and MD5 checksums. */
+	public static void addMavenChecksums(Node node) throws RepositoryException {
+		// TODO optimize
+		String sha = JcrUtils.checksumFile(node, "SHA-1");
+		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".sha1",
+				sha.getBytes());
+		String md5 = JcrUtils.checksumFile(node, "MD5");
+		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".md5",
+				md5.getBytes());
 	}
 
 	/**
