@@ -13,7 +13,7 @@
 	<properties>
 		<developmentCycle.slc>1.1</developmentCycle.slc>
 		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
-		<version.slc>1.1.14</version.slc>
+		<version.slc>1.1.15-SNAPSHOT</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
