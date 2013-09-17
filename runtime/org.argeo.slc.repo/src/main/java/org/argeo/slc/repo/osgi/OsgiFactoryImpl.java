@@ -1,11 +1,14 @@
 package org.argeo.slc.repo.osgi;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.Repository;
@@ -22,6 +25,7 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.NodeIndexer;
 import org.argeo.slc.repo.OsgiFactory;
 
+/** Default implementation of {@link OsgiFactory}. */
 public class OsgiFactoryImpl implements OsgiFactory {
 	private final static Log log = LogFactory.getLog(OsgiFactoryImpl.class);
 
@@ -30,6 +34,9 @@ public class OsgiFactoryImpl implements OsgiFactory {
 	private Repository javaRepository;
 
 	private List<NodeIndexer> nodeIndexers = new ArrayList<NodeIndexer>();
+
+	/** key is URI prefix, value list of base URLs */
+	private Map<String, List<String>> mirrors = new HashMap<String, List<String>>();
 
 	public void init() {
 		if (workspace == null)
@@ -77,19 +84,49 @@ public class OsgiFactoryImpl implements OsgiFactory {
 
 	public Node getDist(Session distSession, String uri)
 			throws RepositoryException {
-
 		String distPath = '/' + JcrUtils.urlAsPath(uri);
 
-		// TODO manage mirrors
+		// already retrieved
+		if (distSession.itemExists(distPath))
+			return distSession.getNode(distPath);
 
-		if (!distSession.itemExists(distPath))
-			loadUrlToPath(uri, distSession, distPath);
-		Node distNode = distSession.getNode(distPath);
-		return distNode;
+		// find mirror
+		List<String> urlBases = null;
+		String uriPrefix = null;
+		uriPrefixes: for (String uriPref : mirrors.keySet()) {
+			if (uri.startsWith(uriPref)) {
+				if (mirrors.get(uriPref).size() > 0) {
+					urlBases = mirrors.get(uriPref);
+					uriPrefix = uriPref;
+					break uriPrefixes;
+				}
+			}
+		}
+		if (urlBases == null)
+			try {
+				return loadUrlToPath(uri, distSession, distPath);
+			} catch (FileNotFoundException e) {
+				throw new SlcException("Cannot download " + uri, e);
+			}
+
+		// try to download
+		for (String urlBase : urlBases) {
+			String relativePath = uri.substring(uriPrefix.length());
+			String url = urlBase + relativePath;
+			try {
+				return loadUrlToPath(url, distSession, distPath);
+			} catch (FileNotFoundException e) {
+				if (log.isDebugEnabled())
+					log.debug("Cannot download" + url
+							+ ", trying another mirror");
+			}
+		}
+
+		throw new SlcException("Could not download " + uri);
 	}
 
-	protected void loadUrlToPath(String url, Session distSession, String path)
-			throws RepositoryException {
+	protected Node loadUrlToPath(String url, Session distSession, String path)
+			throws RepositoryException, FileNotFoundException {
 		if (log.isDebugEnabled())
 			log.debug("Downloading " + url + "...");
 
@@ -106,9 +143,11 @@ public class OsgiFactoryImpl implements OsgiFactory {
 					SlcTypes.SLC_PROXIED);
 			JcrUtils.urlToAddressProperties(origin, url);
 			distSession.save();
-
+			return fileNode;
 		} catch (MalformedURLException e) {
 			throw new SlcException("URL " + url + " not valid.", e);
+		} catch (FileNotFoundException e) {
+			throw e;
 		} catch (IOException e) {
 			throw new SlcException("Cannot load " + url + " to " + path, e);
 		}
@@ -129,6 +168,10 @@ public class OsgiFactoryImpl implements OsgiFactory {
 
 	public void setNodeIndexers(List<NodeIndexer> nodeIndexers) {
 		this.nodeIndexers = nodeIndexers;
+	}
+
+	public void setMirrors(Map<String, List<String>> mirrors) {
+		this.mirrors = mirrors;
 	}
 
 }
