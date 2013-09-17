@@ -13,6 +13,8 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
@@ -26,7 +28,8 @@ import org.argeo.util.security.Keyring;
  * Node or just an URI and a label if user is anonymous
  */
 public class RepoElem extends DistParentElem {
-	// private final static Log log = LogFactory.getLog(RepoElem.class);
+	private final static Log log = LogFactory.getLog(RepoElem.class);
+
 	private Repository repository;
 	private Credentials credentials;
 	private RepositoryFactory repositoryFactory;
@@ -101,7 +104,13 @@ public class RepoElem extends DistParentElem {
 	}
 
 	public Object[] getChildren() {
-		connect();
+		try {
+			connect();
+		} catch (Exception e) {
+			log.error("Cannot connect to " + uri + " return no children.", e);
+			return new Object[0];
+		}
+
 		Session session = null;
 		try {
 			session = repository.login(credentials);
