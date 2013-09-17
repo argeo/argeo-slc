@@ -129,7 +129,7 @@ limitations under the License.
 			<id>localrepo</id>
 			<distributionManagement>
 				<repository>
-					<id>localrepo</id>
+					<id>staging</id>
 					<url>dav:http://localhost:7070/data/files/java/org.argeo.slc-${developmentCycle.slc}.x</url>
 				</repository>
 				<site>
