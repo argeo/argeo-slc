@@ -45,16 +45,16 @@
 		</dependency>
 
 		<!-- SLC Libs -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.lib.repo</artifactId>
-			<version>1.1.14-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.lib.jcr</artifactId>
-			<version>1.1.14-SNAPSHOT</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.lib.repo</artifactId> -->
+<!-- 			<version>1.1.14-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.lib.jcr</artifactId> -->
+<!-- 			<version>1.1.14-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
 
 		<!-- Extensions -->
 		<dependency>

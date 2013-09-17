@@ -14,6 +14,11 @@
 			<artifactId>org.argeo.slc.support.maven</artifactId>
 			<version>1.1.14-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.lib.build</artifactId>
+			<version>1.1.14-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>
@@ -43,6 +48,7 @@
 											<dependency>
 												<includes>
 													<include>org.argeo.slc:org.argeo.slc.support.maven</include>
+													<include>org.argeo.slc:org.argeo.slc.lib.build</include>
 												</includes>
 											</dependency>
 										</mapping>

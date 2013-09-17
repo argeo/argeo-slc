@@ -11,6 +11,7 @@
 	<name>SLC Standard Libs</name>
 	<description>SLC execution modules for generic tasks, to be used as parent pom</description>
 	<modules>
+		<module>org.argeo.slc.lib.build</module>
 		<module>org.argeo.slc.lib.jcr</module>
 		<module>org.argeo.slc.lib.repo</module>
 		<module>org.argeo.slc.lib.rpmfactory</module>
