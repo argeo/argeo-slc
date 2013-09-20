@@ -101,7 +101,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			createExportPackageSection(body);
 			createImportPackageSection(body);
 			createReqBundleSection(body);
-			createMavenSnipet(body);
+			createMavenSnippet(body);
 
 		} catch (RepositoryException e) {
 			throw new SlcException("unexpected error "
@@ -529,7 +529,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 	}
 
 	/** Creates a text area with corresponding maven snippet */
-	private void createMavenSnipet(Composite parent) {
+	private void createMavenSnippet(Composite parent) {
 		mavenSnippet = new Text(parent, SWT.MULTI | SWT.WRAP | SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.grabExcessHorizontalSpace = true;
@@ -543,9 +543,9 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		try {
 			StringBuffer sb = new StringBuffer();
 			sb.append("<dependency>\n");
-			sb.append("\t<groupeId>");
+			sb.append("\t<groupId>");
 			sb.append(currBundle.getProperty(SLC_GROUP_ID).getString());
-			sb.append("</groupeId>\n");
+			sb.append("</groupId>\n");
 			sb.append("\t<artifactId>");
 			sb.append(currBundle.getProperty(SLC_ARTIFACT_ID).getString());
 			sb.append("</artifactId>\n");
