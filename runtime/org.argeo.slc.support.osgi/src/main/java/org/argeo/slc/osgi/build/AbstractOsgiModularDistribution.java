@@ -17,6 +17,7 @@ package org.argeo.slc.osgi.build;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedMap;
@@ -24,7 +25,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
@@ -52,19 +53,23 @@ public abstract class AbstractOsgiModularDistribution implements
 
 	public Distribution getModuleDistribution(String moduleName,
 			String moduleVersion) {
-		return distributions
-				.get(new BasicNameVersion(moduleName, moduleVersion));
+		return distributions.get(new DefaultNameVersion(moduleName,
+				moduleVersion));
 	}
 
 	public String getDistributionId() {
 		return bundleContext.getBundle().getSymbolicName()
 				+ "-"
-				+ bundleContext.getBundle().getHeaders().get(
-						Constants.BUNDLE_VERSION);
+				+ bundleContext.getBundle().getHeaders()
+						.get(Constants.BUNDLE_VERSION);
 	}
 
 	public Set<NameVersion> listModulesNameVersions() {
 		return distributions.keySet();
+	}
+
+	public Iterator<NameVersion> nameVersions() {
+		return distributions.keySet().iterator();
 	}
 
 	public void setBundleContext(BundleContext bundleContext) {
@@ -152,13 +157,13 @@ public abstract class AbstractOsgiModularDistribution implements
 	}
 
 	public String getVersion() {
-		return bundleContext.getBundle().getHeaders().get(
-				Constants.BUNDLE_VERSION).toString();
+		return bundleContext.getBundle().getHeaders()
+				.get(Constants.BUNDLE_VERSION).toString();
 	}
 
 	@Override
 	public String toString() {
-		return new BasicNameVersion(this).toString();
+		return new DefaultNameVersion(this).toString();
 	}
 
 	public void setEclipseUpdateSite(EclipseUpdateSite eclipseUpdateSite) {

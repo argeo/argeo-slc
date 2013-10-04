@@ -17,6 +17,7 @@ package org.argeo.slc.core.execution;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -130,6 +131,26 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 					e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * List sub-runnables that would be executed if run() method would be
+	 * called.
+	 */
+	public Iterator<Runnable> runnables() {
+		return executables.iterator();
+	}
+
+	/**
+	 * If there is one and only one runnable wrapped return it, throw an
+	 * exeception otherwise.
+	 */
+	public Runnable getRunnable() {
+		if (executables.size() == 1)
+			return executables.get(0);
+		else
+			throw new SlcException("There are " + executables.size()
+					+ " runnables in flow " + getName());
 	}
 
 	public void doExecuteRunnable(Runnable runnable) {

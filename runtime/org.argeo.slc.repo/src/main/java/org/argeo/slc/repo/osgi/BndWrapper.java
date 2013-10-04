@@ -1,18 +1,15 @@
 package org.argeo.slc.repo.osgi;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 import java.util.jar.Manifest;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.NameVersion;
+import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.build.Distribution;
 import org.osgi.framework.Version;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -23,7 +20,8 @@ import aQute.lib.osgi.Constants;
 import aQute.lib.osgi.Jar;
 
 /** Utilities around the BND library, which manipulates OSGi metadata. */
-public class BndWrapper implements Constants, NameVersion, BeanNameAware {
+public class BndWrapper implements Constants, CategorizedNameVersion,
+		Distribution, BeanNameAware {
 	private final static Log log = LogFactory.getLog(BndWrapper.class);
 
 	private String groupId;
@@ -112,38 +110,41 @@ public class BndWrapper implements Constants, NameVersion, BeanNameAware {
 		return groupId;
 	}
 
+	public String getCategory() {
+		return getGroupId();
+	}
+
 	public void setGroupId(String groupId) {
 		this.groupId = groupId;
+	}
+
+	public String getDistributionId() {
+		return getArtifact().toString();
 	}
 
 	public Artifact getArtifact() {
 		return new DefaultArtifact(groupId, name, "jar", version);
 	}
 
-	public static void main(String[] args) {
-		BndWrapper bndWrapper = new BndWrapper();
-		bndWrapper.setName("org.slf4j");
-
-		InputStream in = null;
-		InputStream propertiesIn = null;
-		OutputStream out = null;
-		Properties properties = new Properties();
-		File jarFile = new File(
-				"/home/mbaudier/dev/work/130129-Distribution/slf4j/slf4j-1.7.5/slf4j-api-1.7.5.jar");
-		File propertiesFile = new File(
-				"/home/mbaudier/dev/git/git.argeo.org/distribution/bnd/org.slf4j/bnd.bnd");
-		try {
-			in = new FileInputStream(jarFile);
-			// propertiesIn = new FileInputStream(propertiesFile);
-			out = new FileOutputStream(new File("test.jar"));
-			// properties.load(propertiesIn);
-			bndWrapper.wrapJar(in, out);
-		} catch (Exception e) {
-			throw new SlcException("Cannot test", e);
-		} finally {
-			IOUtils.closeQuietly(in);
-			IOUtils.closeQuietly(propertiesIn);
-			IOUtils.closeQuietly(out);
-		}
+	@Override
+	public String toString() {
+		return getArtifact().toString();
 	}
+
+	@Override
+	public int hashCode() {
+		return getArtifact().hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof CategorizedNameVersion) {
+			CategorizedNameVersion cnv = (CategorizedNameVersion) obj;
+			return getCategory().equals(cnv.getCategory())
+					&& getName().equals(cnv.getName())
+					&& getVersion().equals(cnv.getVersion());
+		} else
+			return false;
+	}
+
 }

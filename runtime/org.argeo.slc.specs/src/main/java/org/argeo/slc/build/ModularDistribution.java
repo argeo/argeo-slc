@@ -15,8 +15,7 @@
  */
 package org.argeo.slc.build;
 
-import java.util.Set;
-
+import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
 
 /**
@@ -25,11 +24,10 @@ import org.argeo.slc.NameVersion;
  * 
  * @see NameVersion
  */
-public interface ModularDistribution extends Distribution, NameVersion {
+public interface ModularDistribution extends Distribution, NameVersion,
+		ModuleSet {
 	public Distribution getModuleDistribution(String moduleName,
 			String moduleVersion);
-
-	public Set<NameVersion> listModulesNameVersions();
 
 	/** A descriptor such as P2, OBR or yum metadata. */
 	public Object getModulesDescriptor(String descriptorType);

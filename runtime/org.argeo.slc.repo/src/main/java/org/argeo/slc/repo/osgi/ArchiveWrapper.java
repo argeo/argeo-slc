@@ -2,9 +2,9 @@ package org.argeo.slc.repo.osgi;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,9 +21,11 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.ArtifactIdComparator;
+import org.argeo.slc.build.Distribution;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.RepoUtils;
 import org.sonatype.aether.artifact.Artifact;
@@ -36,15 +38,14 @@ import org.springframework.util.PathMatcher;
  * the jars, or import them directly if they are already OSGi bundles and don't
  * need further modification.
  */
-public class ArchiveWrapper implements Runnable {
+public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 	private final static Log log = LogFactory.getLog(ArchiveWrapper.class);
 
 	private OsgiFactory osgiFactory;
 	private String version;
-	
+
 	private String uri;
-	private List<String> fallbackUris = new ArrayList<String>();
-	
+
 	// jars to wrap as OSGi bundles
 	private Map<String, BndWrapper> wrappers = new HashMap<String, BndWrapper>();
 
@@ -65,6 +66,14 @@ public class ArchiveWrapper implements Runnable {
 
 	public void destroy() {
 
+	}
+
+	public String getDistributionId() {
+		return uri;
+	}
+
+	public Iterator<? extends NameVersion> nameVersions() {
+		return wrappers.values().iterator();
 	}
 
 	public void run() {

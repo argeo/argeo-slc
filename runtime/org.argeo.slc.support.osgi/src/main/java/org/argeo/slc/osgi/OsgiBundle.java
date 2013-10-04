@@ -15,7 +15,7 @@
  */
 package org.argeo.slc.osgi;
 
-import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.core.build.ResourceDistribution;
@@ -29,9 +29,7 @@ import org.osgi.framework.Constants;
 import org.springframework.core.io.Resource;
 
 /** A deployed OSGi bundle. */
-public class OsgiBundle extends BasicNameVersion implements Module {
-	private static final long serialVersionUID = 35073826504550477L;
-
+public class OsgiBundle extends DefaultNameVersion implements Module {
 	private ResourceDistribution distribution;
 
 	private Long internalBundleId;

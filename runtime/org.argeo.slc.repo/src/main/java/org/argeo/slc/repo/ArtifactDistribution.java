@@ -1,20 +1,17 @@
 package org.argeo.slc.repo;
 
-import org.argeo.slc.DefaultNameVersion;
-import org.argeo.slc.NameVersion;
+import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.build.Distribution;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /** A {@link Distribution} based on an Aether {@link Artifact} */
-public class ArtifactDistribution extends DefaultNameVersion implements
-		Distribution {
+public class ArtifactDistribution implements Distribution,
+		CategorizedNameVersion {
 	private final Artifact artifact;
 
 	public ArtifactDistribution(Artifact artifact) {
 		this.artifact = artifact;
-		setName(artifact.getArtifactId());
-		setVersion(artifact.getVersion());
 	}
 
 	public ArtifactDistribution(String coords) {
@@ -30,6 +27,18 @@ public class ArtifactDistribution extends DefaultNameVersion implements
 		return artifact;
 	}
 
+	public String getName() {
+		return getArtifact().getArtifactId();
+	}
+
+	public String getVersion() {
+		return getArtifact().getVersion();
+	}
+
+	public String getCategory() {
+		return getArtifact().getGroupId();
+	}
+
 	@Override
 	public int hashCode() {
 		return artifact.hashCode();
@@ -37,9 +46,12 @@ public class ArtifactDistribution extends DefaultNameVersion implements
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof NameVersion)
-			return super.equals(obj);
-		else
+		if (obj instanceof CategorizedNameVersion) {
+			CategorizedNameVersion cnv = (CategorizedNameVersion) obj;
+			return getCategory().equals(cnv.getCategory())
+					&& getName().equals(cnv.getName())
+					&& getVersion().equals(cnv.getVersion());
+		} else
 			return artifact.equals(obj);
 	}
 

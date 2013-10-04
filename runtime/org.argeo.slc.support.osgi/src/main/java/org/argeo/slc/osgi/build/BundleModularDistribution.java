@@ -23,7 +23,7 @@ import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
 import org.apache.commons.io.IOUtils;
-import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.core.build.VersionedResourceDistribution;
@@ -59,7 +59,7 @@ public class BundleModularDistribution extends AbstractOsgiModularDistribution
 
 				String version = mf.getMainAttributes().getValue(
 						Constants.BUNDLE_VERSION);
-				BasicNameVersion nameVersion = new BasicNameVersion(name,
+				DefaultNameVersion nameVersion = new DefaultNameVersion(name,
 						version);
 				distributions.put(nameVersion,
 						new VersionedResourceDistribution(name, version,

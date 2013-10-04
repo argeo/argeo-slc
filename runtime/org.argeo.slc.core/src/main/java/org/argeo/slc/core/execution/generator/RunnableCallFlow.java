@@ -15,6 +15,8 @@
  */
 package org.argeo.slc.core.execution.generator;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -142,8 +144,8 @@ public class RunnableCallFlow implements ExecutionFlow, ApplicationContextAware 
 		try {
 			for (int callIndex = 0; callIndex < runnableCalls.size(); ++callIndex) {
 				RunnableCall runnableCall = runnableCalls.get(callIndex);
-				Object bean = applicationContext.getBean(runnableCall
-						.getBeanName(), Runnable.class);
+				Object bean = applicationContext.getBean(
+						runnableCall.getBeanName(), Runnable.class);
 				if (log.isDebugEnabled())
 					log.debug("Running flow '" + runnableCall.getBeanName()
 							+ "'");
@@ -164,11 +166,30 @@ public class RunnableCallFlow implements ExecutionFlow, ApplicationContextAware 
 		}
 	}
 
+	public Iterator<Runnable> runnables() {
+		List<Runnable> runnables = new ArrayList<Runnable>();
+		for (int callIndex = 0; callIndex < runnableCalls.size(); ++callIndex) {
+			RunnableCall runnableCall = runnableCalls.get(callIndex);
+			Object bean = applicationContext.getBean(
+					runnableCall.getBeanName(), Runnable.class);
+			runnables.add((Runnable) bean);
+		}
+		return runnables.iterator();
+	}
+
+	public Runnable getRunnable() {
+		if (runnableCalls.size() == 1)
+			return runnables().next();
+		else
+			throw new SlcException("There are " + runnableCalls.size()
+					+ " runnables in flow " + getName());
+	}
+
 	@Override
 	public String toString() {
 		return new StringBuffer("RunnableCallFlow ").append(name).toString();
-	}	
-	
+	}
+
 	public ExecutionSpec getExecutionSpec() {
 		return executionSpec;
 	}

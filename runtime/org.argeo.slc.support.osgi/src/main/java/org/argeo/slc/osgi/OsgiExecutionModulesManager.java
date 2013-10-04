@@ -32,7 +32,7 @@ import javax.management.StandardMBean;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.AbstractExecutionModulesManager;
@@ -155,7 +155,8 @@ public class OsgiExecutionModulesManager extends
 			String moduleName, String version) {
 		ExecutionModuleDescriptor md = new ExecutionModuleDescriptor();
 		OsgiBundle osgiBundle = null;
-		BasicNameVersion nameVersion = new BasicNameVersion(moduleName, version);
+		DefaultNameVersion nameVersion = new DefaultNameVersion(moduleName,
+				version);
 		bundles: for (Iterator<OsgiBundle> iterator = executionContexts
 				.keySet().iterator(); iterator.hasNext();) {
 			OsgiBundle ob = iterator.next();
