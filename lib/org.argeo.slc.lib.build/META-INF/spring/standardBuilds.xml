@@ -8,28 +8,26 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-1.2.xsd">
 
-	<flow:spec id="mavenCall.spec">
-		<flow:primitive name="mvnArgs" value="" />
-		<flow:primitive name="mvnSettings" value="" />
-		<flow:primitive name="mvnBaseDir" value="." />
-	</flow:spec>
-
-	<flow:flow id="mvn" spec="mavenCall.spec">
-		<description>Pure Maven call</description>
-		<bean class="org.argeo.slc.maven.MavenCall">
+	<flow:flow name="dev">
+		<description>Argeo Developer Build </description>
+		<flow:spec>
+			<flow:primitive name="mvnArgs" value="clean install" />
+		</flow:spec>
+		<bean parent="templates/defaultMavenCall">
 			<flow:variable />
-			<property name="cl" value="@{mvnArgs}" />
-			<property name="basedir" value="@{mvnBaseDir}" />
-			<property name="settings" value="@{mvnSettings}" />
 		</bean>
 	</flow:flow>
 
-	<!-- Templates -->
-	<bean name="templates/defaultMavenCall" abstract="true"
-		class="org.argeo.slc.maven.MavenCall">
-		<property name="cl" value="@{mvnArgs}" />
-		<property name="basedir" value="." />
-		<property name="settings" value="" />
-	</bean>
+	<flow:flow name="devFull">
+		<description>Argeo Full Developer Build </description>
+		<flow:spec>
+			<flow:primitive name="mvnArgs"
+				value="clean argeo-osgi:pde-sources install -Pcheck-osgi" />
+		</flow:spec>
+		<bean parent="templates/defaultMavenCall">
+			<flow:variable />
+		</bean>
+	</flow:flow>
+
 
 </beans>
