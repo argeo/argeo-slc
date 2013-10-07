@@ -109,6 +109,24 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 							sourceJarBytes, wrapper);
 					addArtifactToIndex(binaries, wrapper.getGroupId(), artifact);
 				} else {
+					for (String wrapperKey : wrappers.keySet())
+						if (pathMatcher.match(wrapperKey, name)) {
+							// first matched is taken
+							BndWrapper wrapper = (BndWrapper) wrappers
+									.get(wrapperKey);
+							// we must copy since the stream is closed by BND
+							byte[] sourceJarBytes = IOUtils.toByteArray(zin);
+							Artifact artifact = wrapZipEntry(javaSession,
+									zentry, sourceJarBytes, wrapper);
+							addArtifactToIndex(binaries, wrapper.getGroupId(),
+									artifact);
+							continue entries;
+						} else {
+							if (log.isTraceEnabled())
+								log.trace(name + " not matched by "
+										+ wrapperKey);
+						}
+
 					for (String exclude : excludes)
 						if (pathMatcher.match(exclude, name))
 							continue entries;

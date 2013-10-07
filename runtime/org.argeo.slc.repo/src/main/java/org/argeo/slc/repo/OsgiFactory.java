@@ -18,4 +18,11 @@ public interface OsgiFactory {
 	 */
 	public Node getDist(Session distSession, String uri)
 			throws RepositoryException;
+
+	/**
+	 * Provide access to a cached maven ardifact identified by its coordinates
+	 * the 'dist' repository, downloading it if it is not available.
+	 */
+	public Node getMaven(Session distSession, String coords)
+			throws RepositoryException;
 }

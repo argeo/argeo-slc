@@ -35,26 +35,41 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 			Jar jar = new Jar(null, in);
 
 			Manifest sourceManifest = jar.getManifest();
-			String sourceVersion = sourceManifest.getMainAttributes().getValue(
-					BUNDLE_VERSION);
+
 			Version versionToUse;
-			if (version == null && sourceVersion == null) {
-				throw new SlcException("A bundle version must be defined.");
-			} else if (version == null && sourceVersion != null) {
-				versionToUse = new Version(sourceVersion);
-			} else if (version != null && sourceVersion == null) {
-				versionToUse = new Version(version);
-			} else {// both set
-				versionToUse = new Version(version);
-				Version sv = new Version(sourceVersion);
-				if (versionToUse.getMajor() != sv.getMajor()
-						|| versionToUse.getMinor() != sv.getMinor()
-						|| versionToUse.getMicro() != sv.getMicro()) {
-					log.warn("The new version ("
-							+ versionToUse
-							+ ") is not consistant with the wrapped bundle version ("
-							+ sv + ")");
+			if (sourceManifest != null) {
+				String sourceSymbolicName = sourceManifest.getMainAttributes()
+						.getValue(BUNDLE_SYMBOLICNAME);
+				if (sourceSymbolicName != null
+						&& sourceSymbolicName.equals(name))
+					log.warn("The new symbolic name ("
+							+ name
+							+ ") is not consistant with the wrapped bundle symbolic name ("
+							+ sourceSymbolicName + ")");
+
+				String sourceVersion = sourceManifest.getMainAttributes()
+						.getValue(BUNDLE_VERSION);
+				if (version == null && sourceVersion == null) {
+					throw new SlcException("A bundle version must be defined.");
+				} else if (version == null && sourceVersion != null) {
+					versionToUse = new Version(sourceVersion);
+					version = sourceVersion; // set wrapper version
+				} else if (version != null && sourceVersion == null) {
+					versionToUse = new Version(version);
+				} else {// both set
+					versionToUse = new Version(version);
+					Version sv = new Version(sourceVersion);
+					if (versionToUse.getMajor() != sv.getMajor()
+							|| versionToUse.getMinor() != sv.getMinor()
+							|| versionToUse.getMicro() != sv.getMicro()) {
+						log.warn("The new version ("
+								+ versionToUse
+								+ ") is not consistant with the wrapped bundle version ("
+								+ sv + ")");
+					}
 				}
+			} else {
+				versionToUse = new Version(version);
 			}
 
 			Properties properties = new Properties();

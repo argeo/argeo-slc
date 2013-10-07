@@ -24,9 +24,12 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.NodeIndexer;
 import org.argeo.slc.repo.OsgiFactory;
+import org.argeo.slc.repo.maven.MavenConventionsUtils;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /** Default implementation of {@link OsgiFactory}. */
-public class OsgiFactoryImpl implements OsgiFactory {
+public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 	private final static Log log = LogFactory.getLog(OsgiFactoryImpl.class);
 
 	private String workspace;
@@ -38,9 +41,19 @@ public class OsgiFactoryImpl implements OsgiFactory {
 	/** key is URI prefix, value list of base URLs */
 	private Map<String, List<String>> mirrors = new HashMap<String, List<String>>();
 
+	private List<String> mavenRepositories = new ArrayList<String>();
+	private String mavenProxyBase = "/mavenProxy";
+
 	public void init() {
 		if (workspace == null)
 			throw new SlcException("A workspace must be specified");
+
+		// default Maven repo
+		if (mavenRepositories.size() == 0) {
+			// mavenRepositories
+			// .add("http://search.maven.org/remotecontent?filepath=");
+			mavenRepositories.add("http://repo1.maven.org/maven2");
+		}
 
 		Session javaSession = null;
 		Session distSession = null;
@@ -80,6 +93,45 @@ public class OsgiFactoryImpl implements OsgiFactory {
 		for (NodeIndexer nodeIndexer : nodeIndexers) {
 			nodeIndexer.index(node);
 		}
+	}
+
+	public Node getMaven(Session distSession, String coords)
+			throws RepositoryException {
+		Artifact artifact = new DefaultArtifact(coords);
+		String path = MavenConventionsUtils.artifactPath(mavenProxyBase,
+				artifact);
+
+		// exists
+		if (distSession.itemExists(path))
+			return distSession.getNode(path);
+
+		for (String mavenRepo : mavenRepositories) {
+			String url = mavenRepo
+					+ MavenConventionsUtils.artifactPath("/", artifact);
+			try {
+				Node node = loadUrlToPath(url, distSession, path);
+				if (node != null) {
+					// checksums
+					try {
+						loadUrlToPath(url + ".md5", distSession, path + ".md5");
+					} catch (FileNotFoundException e) {
+						// silent
+					}
+					try {
+						loadUrlToPath(url + ".sha1", distSession, path
+								+ ".sha1");
+					} catch (FileNotFoundException e) {
+						// silent
+					}
+					return node;
+				}
+			} catch (FileNotFoundException e) {
+				if (log.isDebugEnabled())
+					log.debug("Maven " + coords
+							+ " could not be downloaded from " + url);
+			}
+		}
+		throw new SlcException("Could not download Maven " + coords);
 	}
 
 	public Node getDist(Session distSession, String uri)
@@ -125,6 +177,7 @@ public class OsgiFactoryImpl implements OsgiFactory {
 		throw new SlcException("Could not download " + uri);
 	}
 
+	/** Actually downloads a file to an internal location */
 	protected Node loadUrlToPath(String url, Session distSession, String path)
 			throws RepositoryException, FileNotFoundException {
 		if (log.isDebugEnabled())
@@ -139,8 +192,7 @@ public class OsgiFactoryImpl implements OsgiFactory {
 			Node fileNode = JcrUtils.copyStreamAsFile(folderNode,
 					JcrUtils.nodeNameFromPath(path), in);
 			fileNode.addMixin(SlcTypes.SLC_KNOWN_ORIGIN);
-			Node origin = fileNode.addNode(SlcNames.SLC_ORIGIN,
-					SlcTypes.SLC_PROXIED);
+			Node origin = fileNode.addNode(SLC_ORIGIN, SlcTypes.SLC_PROXIED);
 			JcrUtils.urlToAddressProperties(origin, url);
 			distSession.save();
 			return fileNode;
