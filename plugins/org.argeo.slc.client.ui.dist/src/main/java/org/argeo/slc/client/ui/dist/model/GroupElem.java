@@ -58,7 +58,9 @@ public class GroupElem extends DistParentElem {
 				}
 
 				// filter technical workspaces
-				if (workspaceName.startsWith(name)) {
+				if (workspaceName.startsWith(name)
+						&& workspaceName.substring(0,
+								workspaceName.indexOf("-")).equals(name)) {
 					distributionElems.add(new WorkspaceElem(repoElem,
 							workspaceName));
 				}
