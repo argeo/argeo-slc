@@ -8,7 +8,7 @@
 	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
 
 	<!-- Flow definition is simplified thanks to the 'flow:flow' element -->
-	<flow:flow id="flow" path="/namespace">
+	<flow:flow name="/namespace/flow" >
 		<bean p:message="TEST in flow" class="org.argeo.slc.core.execution.tasks.Echo" />
 		<ref bean="referencedRunnable" />
 	</flow:flow>
@@ -29,7 +29,7 @@
 			isParameter="true" type="integer" />
 	</flow:spec>
 
-	<flow:flow id="flowSpec" spec="namespaceSpec" path="/namespace">
+	<flow:flow name="/namespace/flowSpec" spec="namespaceSpec">
 		<bean p:message="TEST in flow @{primitive}" class="org.argeo.slc.core.execution.tasks.Echo"
 			scope="execution">
 			<aop:scoped-proxy />

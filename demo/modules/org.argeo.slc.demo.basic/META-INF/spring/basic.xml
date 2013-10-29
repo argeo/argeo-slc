@@ -27,9 +27,6 @@
 		</property>
 	</bean>
 
-	<!-- <bean id="basic.ref" factory-bean="basic.spec" factory-method="createRef" 
-		abstract="true" /> -->
-
 	<bean id="basic.flowTemplate" parent="slcTemplate.simpleFlow"
 		abstract="true">
 		<constructor-arg ref="basic.spec" />
@@ -98,7 +95,6 @@
 		<constructor-arg value="testData2" />
 	</bean>
 
-
 	<bean id="basic.testData" class="org.argeo.slc.core.test.BasicTestData">
 		<aop:scoped-proxy />
 		<property name="expected" value="tata" />
@@ -145,7 +141,5 @@
 	<bean id="basic.resourcesManager" parent="slcTemplate.fileResources">
 		<property name="executionContext" ref="executionContext" />
 	</bean>
-
-
 
 </beans>

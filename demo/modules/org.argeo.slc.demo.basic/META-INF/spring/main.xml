@@ -36,7 +36,7 @@
 		<property name="executables">
 			<list>
 				<bean parent="task.echo">
-					<property name="message" value="No rg!" />
+					<property name="message" value="No arg!" />
 				</bean>
 			</list>
 		</property>
