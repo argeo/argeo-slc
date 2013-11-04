@@ -12,6 +12,7 @@
 	<modules>
 		<module>org.argeo.slc.client.ui</module>
 		<module>org.argeo.slc.client.ui.dist</module>
+		<module>org.argeo.slc.akb.ui</module>
 		<module>org.argeo.slc.client.rcp</module>
 		<module>org.argeo.slc.client.rap</module>
 	</modules>

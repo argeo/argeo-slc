@@ -28,5 +28,6 @@
 		<module>org.argeo.slc.lib.detached</module>
 		<module>org.argeo.slc.repo</module>
 		<module>org.argeo.slc.rpmfactory</module>
+		<module>org.argeo.slc.akb</module>
 	</modules>
 </project>
