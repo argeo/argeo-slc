@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<!-- Perspective --> 
+	<extension
+		point="org.eclipse.ui.perspectives">
+		<perspective
+			class="org.argeo.slc.akb.ui.AkbEnvPerspective"
+			icon="icons/akb.png"
+            id="org.argeo.slc.akb.ui.akbEnvPerspective"
+            name="AKB">
+		</perspective>
+		<perspective
+			class="org.argeo.slc.akb.ui.AkbTemplatesPerspective"
+			icon="icons/akb.png"
+            id="org.argeo.slc.akb.ui.akbTemplatesPerspective"
+            name="AKB Templates">
+      </perspective>
+   </extension>
+    <!-- Views -->
+    <extension
+		point="org.eclipse.ui.views">
+		<view
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			icon="icons/akb.png"
+			id="org.argeo.slc.akb.ui.akbDefaultView"
+			name="Search"
+			restorable="true">
+		</view>
+	</extension>
+	<!-- Editors -->
+    <extension
+		point="org.eclipse.ui.editors">
+	</extension>
+	<!-- Commands -->
+	<extension
+		point="org.eclipse.ui.commands">
+	</extension>		
+	
+	<!-- Menus -->
+	<extension
+		point="org.eclipse.ui.menus">
+	</extension>
+</plugin>

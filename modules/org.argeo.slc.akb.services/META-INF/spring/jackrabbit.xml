@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="akbRepository" class="org.argeo.jackrabbit.JackrabbitWrapper"
+		init-method="init" destroy-method="destroy">
+		<property name="cndFiles">
+			<list>
+				<value>/org/argeo/slc/akb/akb.cnd</value>
+			</list>
+		</property>
+		<property name="repository" ref="nodeRepository" />
+		<property name="bundleContext" ref="bundleContext" />
+	</bean>
+</beans>

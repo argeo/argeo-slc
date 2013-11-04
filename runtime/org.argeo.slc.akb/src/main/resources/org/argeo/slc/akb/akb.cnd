@@ -1,0 +1,62 @@
+<akb = 'http://www.argeo.org/ns/akb'>
+
+//
+// MOVE THIS TO ITS CORRECT LOCATION 
+//
+[argeo:note] > mix:title, mix:versionable, mix:created, mix:lastModified
+mixin
+
+
+//
+// TEMPLATES AND ENVIRONMENTS 
+// 
+
+// Abstract description of whole or part of an IT environment
+[akb:envTemplate] > nt:unstructured
+
+// An environment template (1..1 relationship) applied to a real environment
+[akb:env] > nt:unstructured
+
+
+//
+// CONNECTORS
+// 
+
+// GENERIC TYPE FOR A CONNECTOR
+[akb:connector] > nt:unstructured, mix:title  
+- akb:connectorUrl (STRING)
+// add argeo keyring
+    
+    
+//
+// GENERIC ITEM
+//
+[akb:item] > nt:unstructured
+
+//
+// GENERIC ITEM FOLDER
+//
+[akb:itemsFolder] > nt:unstructured
++ * (akb:item) * 
+
+//
+// SSH FILE
+// 
+[akb:sshFile] > akb:item
+
+//
+// SSH COMMAND
+// 
+[akb:sshCommand] > akb:item
+
+//
+// JDBC QUERY
+// 
+[akb:jdbcQuery] > akb:item
+
+
+//
+// NOTE 
+// 
+[akb:note] > akb:item, argeo:note 
+
