@@ -5,10 +5,10 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-	<!-- <bean id="akbService" class="org.argeo.slc.akb.core.AkbServiceImpl" 
-		init-method="init" destroy-method="destroy"> <property name="repository" 
-		ref="peopleRepository" /> <property name="managedRoles" ref="managedRoles" 
-		/> </bean> -->
+	<bean id="akbService" class="org.argeo.slc.akb.core.AkbServiceImpl"
+		init-method="init" destroy-method="destroy">
+		<property name="repository" ref="akbRepository" />
+	</bean>
 	<bean
 		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
 		<property name="authenticationManager" ref="authenticationManager" />

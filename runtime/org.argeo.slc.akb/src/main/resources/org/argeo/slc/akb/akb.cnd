@@ -26,7 +26,18 @@ mixin
 [akb:connector] > nt:unstructured, mix:title  
 - akb:connectorUrl (STRING)
 // add argeo keyring
+
+[akb:connectorAlias] > nt:unstructured, mix:title  
     
+
+// Various connector types as mixin
+[akb:sshConnector]  
+mixin
+
+[akb:jdbcConnector]  
+mixin
+
+
     
 //
 // GENERIC ITEM

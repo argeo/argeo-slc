@@ -27,16 +27,52 @@
 			name="Search"
 			restorable="true">
 		</view>
+		<view
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			icon="icons/akb.png"
+			id="org.argeo.slc.akb.ui.akbTemplatesTreeView"
+			name="Akb Templates"
+			restorable="true">
+		</view>
 	</extension>
 	<!-- Editors -->
     <extension
 		point="org.eclipse.ui.editors">
+		<editor
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			icon="icons/akb.png"
+			id="org.argeo.slc.akb.ui.akbConnectorAliasEditor"
+			name="Connector Alias Editor">
+		</editor>
+		<editor
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			icon="icons/akb.png"
+			id="org.argeo.slc.akb.ui.akbEnvTemplateEditor"
+			name="Environment Template Editor">
+		</editor>
+		
 	</extension>
 	<!-- Commands -->
 	<extension
 		point="org.eclipse.ui.commands">
+		<command
+			defaultHandler="org.argeo.eclipse.spring.SpringExtensionFactory"
+			id="org.argeo.slc.akb.ui.openAkbNodeEditor"
+			name="Open Akb Node editor">
+        	<commandParameter
+     			id="param.nodeType"
+     			name="Corresponding JCR node type">
+ 			</commandParameter>
+        	<commandParameter
+     			id="param.nodeJcrId"
+     			name="The Node JCR ID if needed">
+ 			</commandParameter>
+        	<commandParameter
+     			id="param.parentNodeJcrId"
+     			name="The Parent Node JCR ID if needed">
+ 			</commandParameter>
+ 		</command>
 	</extension>		
-	
 	<!-- Menus -->
 	<extension
 		point="org.eclipse.ui.menus">

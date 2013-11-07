@@ -5,14 +5,18 @@ public interface AkbTypes {
 
 	public final static String ARGEO_NOTE = "argeo:note";
 
-	
 	// Env and templates 
 	public final static String AKB_ENV_TEMPLATE = "akb:envTemplate";
 	public final static String AKB_ENV= "akb:env";
 
 	// Connectors
 	public final static String AKB_CONNECTOR = "akb:connector";  
+	public final static String AKB_CONNECTOR_ALIAS = "akb:connectorAlias";  
 
+	// Various connector mixin types
+	public final static String AKB_SSH_CONNECTOR = "akb:sshConnector";  
+	public final static String AKB_JDBC_CONNECTOR = "akb:jdbcConnector";  
+		
 	// Item tree 
 	public final static String AKB_ITEM_FOLDER = "akb:itemsFolder";
 	public final static String AKB_ITEM = "akb:item";

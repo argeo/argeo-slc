@@ -4,4 +4,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+	<!-- Opens or show an AKB specific node given some params. -->
+	<bean id="openAkbNodeEditor" class="org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor"
+		scope="prototype">
+		<property name="repository" ref="repository" />
+	</bean>
 </beans>
