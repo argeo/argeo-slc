@@ -22,4 +22,5 @@
 			<beans:entry key="argeo.jcr.repository.alias" value="akb" />
 		</service-properties>
 	</service>
+	<service ref="akbService" interface="org.argeo.slc.akb.AkbService" />
 </beans:beans>

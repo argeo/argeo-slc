@@ -12,10 +12,10 @@ mixin
 // 
 
 // Abstract description of whole or part of an IT environment
-[akb:envTemplate] > nt:unstructured
+[akb:envTemplate] > nt:unstructured, mix:title
 
 // An environment template (1..1 relationship) applied to a real environment
-[akb:env] > nt:unstructured
+[akb:env] > nt:unstructured, mix:title
 
 
 //

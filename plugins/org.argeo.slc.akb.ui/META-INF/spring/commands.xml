@@ -8,5 +8,6 @@
 	<bean id="openAkbNodeEditor" class="org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor"
 		scope="prototype">
 		<property name="repository" ref="repository" />
+		<property name="akbService" ref="akbService" />
 	</bean>
 </beans>

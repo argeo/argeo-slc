@@ -1,23 +1,23 @@
 package org.argeo.slc.akb.ui.editors;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
-import org.argeo.slc.akb.ui.AkbUiPlugin;
+import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
 /**
- * Parent Abstract Node editor for AKB. Manage life cycle of the JCR session that
- * is bound to it.
+ * Parent Abstract Node editor for AKB. Manage life cycle of the JCR session
+ * that is bound to it.
  */
 public abstract class AbstractAkbNodeEditor extends EditorPart {
 	// private final static Log log = LogFactory
@@ -31,6 +31,9 @@ public abstract class AbstractAkbNodeEditor extends EditorPart {
 	// Business Objects
 	private Node akbNode;
 
+	// Some constants
+	private final static int SHORT_NAME_LENGHT = 10;
+
 	// LIFE CYCLE
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
@@ -40,33 +43,29 @@ public abstract class AbstractAkbNodeEditor extends EditorPart {
 			session = repository.login();
 			AkbNodeEditorInput anei = (AkbNodeEditorInput) getEditorInput();
 			akbNode = session.getNodeByIdentifier(anei.getIdentifier());
-
-			// try to set a default part name
-			updatePartName();
-
-			// update tooltip
-			// String displayName = CommonsJcrUtils.get(getEntity(),
-			// Property.JCR_TITLE);
-
-			// if (CommonsJcrUtils.isEmptyString(displayName))
-			// displayName = "current item";
-			// setTitleToolTip("Display and edit information for " +
-			// displayName);
+			updatePartNameAndToolTip();
 		} catch (RepositoryException e) {
 			throw new AkbException("Unable open editor for akb node", e);
 		}
 	}
 
 	/**
-	 * Overwrite to provide a specific part Name
+	 * Overwrite to provide a specific part Name and / or tooltip
 	 */
-	protected void updatePartName() {
-		// String name = CommonsJcrUtils.get(entity, Property.JCR_TITLE);
-		// if (CommonsJcrUtils.checkNotEmptyString(name)) {
-		// if (name.length() > SHORT_NAME_LENGHT)
-		// name = name.substring(0, SHORT_NAME_LENGHT - 1) + "...";
-		// setPartName(name);
-		// }
+	protected void updatePartNameAndToolTip() {
+		String name = JcrUtils.get(akbNode, Property.JCR_TITLE);
+
+		// Name
+		if (AkbJcrUtils.checkNotEmptyString(name)) {
+			if (name.length() > SHORT_NAME_LENGHT)
+				name = name.substring(0, SHORT_NAME_LENGHT - 1) + "...";
+			setPartName(name);
+		}
+
+		// Tooltip
+		if (AkbJcrUtils.isEmptyString(name))
+			name = "current item";
+		setTitleToolTip("Display and edit " + name);
 	}
 
 	/* EXPOSES TO CHILDREN CLASSES */

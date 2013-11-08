@@ -17,7 +17,6 @@ public class AkbEnvPerspective implements IPerspectiveFactory {
 
 		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT,
 				0.3f, editorArea);
-		left.addView(AkbTemplatesTreeView.ID);
 		left.addView(AkbDefaultView.ID);
 	}
 }

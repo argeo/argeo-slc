@@ -28,6 +28,7 @@
 						<Import-Package>
 							*,
 							org.argeo.eclipse.spring,
+							javax.jcr.nodetype
 						</Import-Package>
 					</instructions>
 				</configuration>

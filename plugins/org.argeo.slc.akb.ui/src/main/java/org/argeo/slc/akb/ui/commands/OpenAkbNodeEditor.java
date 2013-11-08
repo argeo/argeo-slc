@@ -5,8 +5,10 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.argeo.eclipse.ui.dialogs.SingleValue;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
+import org.argeo.slc.akb.AkbService;
 import org.argeo.slc.akb.AkbTypes;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
 import org.argeo.slc.akb.ui.editors.AkbConnectorAliasEditor;
@@ -15,6 +17,7 @@ import org.argeo.slc.akb.ui.editors.AkbNodeEditorInput;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -35,6 +38,7 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 
 	/* DEPENDENCY INJECTION */
 	private Repository repository;
+	private AkbService akbService;
 
 	public final static String PARAM_NODE_JCR_ID = "param.nodeJcrId";
 	public final static String PARAM_NODE_TYPE = "param.nodeType";
@@ -48,6 +52,10 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 
 		Session session = null;
 		try {
+			// caches current Page
+			IWorkbenchPage currentPage = HandlerUtil.getActiveWorkbenchWindow(
+					event).getActivePage();
+
 			session = repository.login();
 			Node node = null;
 
@@ -60,13 +68,20 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 			else
 				node = session.getNodeByIdentifier(nodeJcrId);
 
+			// no node has been found or created, return
+			if (node == null)
+				return null;
+
 			String editorId = getEditorForNode(node);
+
+			// no editor has been found, return
+			if (editorId == null)
+				return null;
 
 			AkbNodeEditorInput eei = new AkbNodeEditorInput(
 					node.getIdentifier());
 
-			HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-					.openEditor(eei, editorId);
+			currentPage.openEditor(eei, editorId);
 		} catch (PartInitException pie) {
 			throw new AkbException(
 					"Unexpected PartInitException while opening akb node editor",
@@ -82,8 +97,19 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 
 	private Node createNewNode(Session session, String nodeType,
 			String parentNodeJcrId) throws RepositoryException {
-		Node parentNode = session.getNodeByIdentifier(parentNodeJcrId);
-		Node node = parentNode.addNode("new", nodeType);
+		Node node = null;
+		if (AkbTypes.AKB_ENV_TEMPLATE.equals(nodeType)) {
+			String name = SingleValue.ask("Template name",
+					"Please give a name to the template to create");
+			if (name != null)
+				node = akbService.createAkbTemplate(
+						session.getNodeByIdentifier(parentNodeJcrId), name);
+			else
+				return null;
+		} else {
+			Node parentNode = session.getNodeByIdentifier(parentNodeJcrId);
+			node = parentNode.addNode("new", nodeType);
+		}
 		// corresponding node is saved but not checked in, in order to ease
 		// cancel actions.
 		session.save();
@@ -92,7 +118,6 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 
 	private String getEditorForNode(Node node) throws RepositoryException {
 		String editorId = null;
-
 		if (node.isNodeType(AkbTypes.AKB_CONNECTOR_ALIAS))
 			editorId = AkbConnectorAliasEditor.ID;
 		else if (node.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
@@ -105,5 +130,9 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 	/* DEPENDENCY INJECTION */
 	public void setRepository(Repository repository) {
 		this.repository = repository;
+	}
+
+	public void setAkbService(AkbService akbService) {
+		this.akbService = akbService;
 	}
 }

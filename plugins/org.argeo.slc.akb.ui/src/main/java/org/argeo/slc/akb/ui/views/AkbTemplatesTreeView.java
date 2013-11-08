@@ -15,15 +15,19 @@
  */
 package org.argeo.slc.akb.ui.views;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.argeo.eclipse.ui.utils.CommandUtils;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.AkbTypes;
@@ -95,7 +99,8 @@ public class AkbTemplatesTreeView extends ViewPart {
 	public void createPartControl(Composite parent) {
 		initialize();
 
-		createResultsTreeViewer(parent);
+		resultTreeViewer = createResultsTreeViewer(parent);
+		resultTreeViewer.setInput(initializeResultTree());
 
 		// parent.setLayout(new FillLayout());
 		// // Main layout
@@ -173,12 +178,6 @@ public class AkbTemplatesTreeView extends ViewPart {
 		// .getDecoratorManager().getLabelDecorator();
 		// viewer.setLabelProvider(new DecoratingLabelProvider(rtLblProvider,
 		// decorator));
-		// viewer.addDoubleClickListener(new ViewDoubleClickListener());
-
-		// Override default behaviour to insure that 2 distincts results that
-		// have the same name will be correctly and distincly returned by
-		// corresponding TreeViewer.getSelection() method.
-		// viewer.setComparer(new ResultItemsComparer());
 
 		getSite().setSelectionProvider(viewer);
 
@@ -215,65 +214,26 @@ public class AkbTemplatesTreeView extends ViewPart {
 	public void setFocus() {
 	}
 
-	// private ResultParent[] initializeResultTree() {
-	// try {
-	// // Force initialization of the tree structure if needed
-	// SlcJcrResultUtils.getSlcResultsParentNode(session);
-	// SlcJcrResultUtils.getMyResultParentNode(session);
-	// // Remove yesterday and last 7 days virtual folders
-	// // ResultParent[] roots = new ResultParent[5];
-	// ResultParent[] roots = new ResultParent[3];
-	//
-	// // My results
-	// roots[0] = new ParentNodeFolder(null,
-	// SlcJcrResultUtils.getMyResultParentNode(session),
-	// SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL);
-	//
-	// // today
-	// Calendar cal = Calendar.getInstance();
-	// String relPath = JcrUtils.dateAsPath(cal);
-	// List<String> datePathes = new ArrayList<String>();
-	// datePathes.add(relPath);
-	// roots[1] = new VirtualFolder(null,
-	// ResultParentUtils.getResultsForDates(session, datePathes),
-	// "Today");
-	//
-	// // // Yesterday
-	// // cal = Calendar.getInstance();
-	// // cal.add(Calendar.DAY_OF_YEAR, -1);
-	// // relPath = JcrUtils.dateAsPath(cal);
-	// // datePathes = new ArrayList<String>();
-	// // datePathes.add(relPath);
-	// // roots[2] = new VirtualFolder(null,
-	// // ResultParentUtils.getResultsForDates(session, datePathes),
-	// // "Yesterday");
-	// // // Last 7 days
-	// //
-	// // cal = Calendar.getInstance();
-	// // datePathes = new ArrayList<String>();
-	// //
-	// // for (int i = 0; i < 7; i++) {
-	// // cal.add(Calendar.DAY_OF_YEAR, -i);
-	// // relPath = JcrUtils.dateAsPath(cal);
-	// // datePathes.add(relPath);
-	// // }
-	// // roots[3] = new VirtualFolder(null,
-	// // ResultParentUtils.getResultsForDates(session, datePathes),
-	// // "Last 7 days");
-	//
-	// // All results
-	// Node otherResultsPar = session.getNode(SlcJcrResultUtils
-	// .getSlcResultsBasePath(session));
-	// // roots[4] = new ParentNodeFolder(null, otherResultsPar,
-	// // "All results");
-	// roots[2] = new ParentNodeFolder(null, otherResultsPar,
-	// "All results");
-	// return roots;
-	// } catch (RepositoryException re) {
-	// throw new ArgeoException(
-	// "Unexpected error while initializing ResultTree.", re);
-	// }
-	// }
+	private Node[] initializeResultTree() {
+		try {
+
+			NodeIterator ni = templatesParentNode.getNodes();
+			List<Node> templates = new ArrayList<Node>();
+
+			while (ni.hasNext()) {
+				Node currNode = ni.nextNode();
+				if (currNode.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
+					templates.add(currNode);
+			}
+
+			Node[] templateArr = templates.toArray(new Node[templates.size()]);
+
+			return templateArr;
+		} catch (RepositoryException re) {
+			throw new AkbException("Error while initializing templates Tree.",
+					re);
+		}
+	}
 
 	// Manage context menu
 	/**
@@ -283,54 +243,6 @@ public class AkbTemplatesTreeView extends ViewPart {
 		IWorkbenchWindow window = AkbUiPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
 		try {
-			// IStructuredSelection selection = (IStructuredSelection)
-			// resultTreeViewer
-			// .getSelection();
-			// boolean canAddSubfolder = false;
-			// boolean canRenamefolder = false;
-			// boolean isSingleResultNode = false;
-			// boolean isUnderMyResult = false;
-			// boolean validMultipleDelete = false;
-			//
-			// // Building conditions
-			// if (selection.size() == 1) {
-			// Object obj = selection.getFirstElement();
-			// if (obj instanceof SingleResultNode)
-			// isSingleResultNode = true;
-			// else if (obj instanceof ParentNodeFolder) {
-			// Node cNode = ((ParentNodeFolder) obj).getNode();
-			// if (cNode.isNodeType(SlcTypes.SLC_RESULT_FOLDER)) {
-			// canAddSubfolder = true;
-			// canRenamefolder = true;
-			// isUnderMyResult = true;
-			// } else if (cNode
-			// .isNodeType(SlcTypes.SLC_MY_RESULT_ROOT_FOLDER)) {
-			// canAddSubfolder = true;
-			// }
-			// }
-			// } else {
-			// @SuppressWarnings("rawtypes")
-			// Iterator it = selection.iterator();
-			// multicheck: while (it.hasNext()) {
-			// validMultipleDelete = true;
-			// Object obj = it.next();
-			// if (obj instanceof SingleResultNode)
-			// continue multicheck;
-			// else if (obj instanceof ParentNodeFolder) {
-			// Node cNode = ((ParentNodeFolder) obj).getNode();
-			// if (cNode.isNodeType(SlcTypes.SLC_RESULT_FOLDER))
-			// continue multicheck;
-			// else {
-			// validMultipleDelete = false;
-			// break multicheck;
-			// }
-			// } else {
-			// validMultipleDelete = false;
-			// break multicheck;
-			// }
-			// }
-			// }
-
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(OpenAkbNodeEditor.PARAM_PARENT_NODE_JCR_ID,
 					templatesParentNode.getIdentifier());
@@ -342,39 +254,6 @@ public class AkbTemplatesTreeView extends ViewPart {
 					OpenAkbNodeEditor.ID, "Create new template...", null, true,
 					params);
 
-			//
-			// CommandUtils.refreshCommand(menuManager, window, DeleteItems.ID,
-			// DeleteItems.DEFAULT_LABEL, DeleteItems.DEFAULT_IMG_DESCRIPTOR,
-			// isUnderMyResult || isSingleResultNode || validMultipleDelete);
-			//
-			// CommandUtils.refreshCommand(menuManager, window,
-			// AddResultFolder.ID,
-			// AddResultFolder.DEFAULT_LABEL,
-			// ClientUiPlugin.getDefault().getWorkbench().getSharedImages()
-			// .getImageDescriptor(ISharedImages.IMG_OBJ_ADD),
-			// canAddSubfolder);
-			//
-			// CommandUtils.refreshCommand(menuManager, window,
-			// RenameResultFolder.ID,
-			// RenameResultFolder.DEFAULT_LABEL,
-			// RenameResultFolder.DEFAULT_IMG_DESCRIPTOR, canRenamefolder);
-			//
-			// // Command removed for the time being.
-			// CommandUtils.refreshCommand(menuManager, window,
-			// RenameResultNode.ID,
-			// RenameResultNode.DEFAULT_LABEL,
-			// RenameResultNode.DEFAULT_IMG_DESCRIPTOR, false);
-			//
-			// // Test to be removed
-			// // If you use this pattern, do not forget to call
-			// // menuManager.setRemoveAllWhenShown(true);
-			// // when creating the menuManager
-			//
-			// // menuManager.add(new Action("Test") {
-			// // public void run() {
-			// // log.debug("do something");
-			// // }
-			// // });
 		} catch (RepositoryException re) {
 			throw new AkbException("Error while refreshing context menu", re);
 		}
@@ -398,60 +277,11 @@ public class AkbTemplatesTreeView extends ViewPart {
 		}
 	}
 
-	// class MyResultsObserver extends AsyncUiEventListener {
-	//
-	// public MyResultsObserver(Display display) {
-	// super(display);
-	// }
-	//
-	// @Override
-	// protected Boolean willProcessInUiThread(List<Event> events)
-	// throws RepositoryException {
-	// // unfiltered for the time being
-	// return true;
-	// }
-	//
-	// protected void onEventInUiThread(List<Event> events)
-	// throws RepositoryException {
-	// List<Node> nodesToRefresh = new ArrayList<Node>();
-	//
-	// for (Event event : events) {
-	// String parPath = JcrUtils.parentPath(event.getPath());
-	// if (session.nodeExists(parPath)) {
-	// Node node = session.getNode(parPath);
-	// if (!nodesToRefresh.contains(node)) {
-	// nodesToRefresh.add(node);
-	// }
-	// }
-	// }
-	//
-	// // Update check nodes
-	// for (Node node : nodesToRefresh)
-	// jcrRefresh(node);
-	// refresh(null);
-	// }
-	// }
-
-	// class AllResultsObserver extends AsyncUiEventListener {
-	//
-	// public AllResultsObserver(Display display) {
-	// super(display);
-	// }
-	//
-	// @Override
-	// protected Boolean willProcessInUiThread(List<Event> events)
-	// throws RepositoryException {
-	// // unfiltered for the time being
-	// return true;
-	// }
-	//
-	// protected void onEventInUiThread(List<Event> events)
-	// throws RepositoryException {
-	// refresh(null);
-	// // if (lastSelectedSourceElementParent != null)
-	// // refresh(lastSelectedSourceElementParent);
-	// }
-	// }
+	@Override
+	public void dispose() {
+		JcrUtils.logoutQuietly(session);
+		super.dispose();
+	}
 
 	/* DEPENDENCY INJECTION */
 	public void setRepository(Repository repository) {

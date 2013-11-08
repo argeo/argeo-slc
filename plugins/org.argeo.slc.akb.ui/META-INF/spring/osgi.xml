@@ -12,4 +12,5 @@
 	<!-- REFERENCES -->
 	<reference id="repository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=akb)" cardinality="0..1" />
+	<reference id="akbService" interface="org.argeo.slc.akb.AkbService" />
 </beans:beans>

@@ -3,20 +3,26 @@ package org.argeo.slc.akb.core;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
+import org.argeo.slc.akb.AkbService;
+import org.argeo.slc.akb.AkbTypes;
 
 /**
  * Concrete access to akb services. It provides among other an initialized
  * environment
  */
-public class AkbServiceImpl implements AkbNames {
+public class AkbServiceImpl implements AkbService, AkbNames {
 	private final static Log log = LogFactory.getLog(AkbServiceImpl.class);
 
 	/* DEPENDENCY INJECTION */
@@ -55,18 +61,38 @@ public class AkbServiceImpl implements AkbNames {
 		} finally {
 			JcrUtils.logoutQuietly(adminSession);
 		}
-		// log.info("AKB service has been initialized.");
 	}
 
 	/** Clean shutdown of the backend. */
 	public void destroy() {
-		// Do nothing
 	}
 
-	/** Expose injected repository */
-	public Repository getRepository() {
-		return repository;
+	@Override
+	public Node createAkbTemplate(Node parentNode, String name)
+			throws RepositoryException {
+		String connectorParentName = "Connectors";
+		String itemsParentName = "Items";
+
+		Node newTemplate = parentNode.addNode(name, AkbTypes.AKB_ENV_TEMPLATE);
+		newTemplate.setProperty(Property.JCR_TITLE, name);
+
+		Node connectorParent = newTemplate.addNode(connectorParentName,
+				NodeType.NT_UNSTRUCTURED);
+		connectorParent.addMixin(NodeType.MIX_TITLE);
+		connectorParent.setProperty(Property.JCR_TITLE, connectorParentName);
+
+		Node itemsParent = newTemplate.addNode(itemsParentName,
+				NodeType.NT_UNSTRUCTURED);
+		itemsParent.addMixin(NodeType.MIX_TITLE);
+		itemsParent.setProperty(Property.JCR_TITLE, itemsParentName);
+
+		return newTemplate;
 	}
+
+	// /** Expose injected repository */
+	// public Repository getRepository() {
+	// return repository;
+	// }
 
 	/* DEPENDENCY INJECTION */
 	public void setRepository(Repository repository) {
