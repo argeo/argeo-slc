@@ -11,10 +11,10 @@ import org.eclipse.ui.forms.IManagedForm;
 /**
  * Display and edit a connector Alias
  */
-public class AkbEnvTemplateEditor extends AbstractAkbNodeEditor {
+public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 
 	public final static String ID = AkbUiPlugin.PLUGIN_ID
-			+ ".akbEnvTemplateEditor";
+			+ ".envTemplateEditor";
 
 	/* CONTENT CREATION */
 	@Override

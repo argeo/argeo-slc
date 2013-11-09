@@ -28,12 +28,12 @@ import org.eclipse.ui.forms.IManagedForm;
 /**
  * Display and edit a connector Alias
  */
-public class AkbConnectorAliasEditor extends AbstractAkbNodeEditor {
+public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 	// private final static Log log = LogFactory
 	// .getLog(AkbConnectorAliasEditor.class);
 
 	public final static String ID = AkbUiPlugin.PLUGIN_ID
-			+ ".akbConnectorAliasEditor";
+			+ ".connectorAliasEditor";
 
 	private String[] connectorTypesLbl = new String[] { "JDBC", "SSH", "JCR" };
 	private String[] connectorTypes = new String[] {
@@ -90,6 +90,9 @@ public class AkbConnectorAliasEditor extends AbstractAkbNodeEditor {
 						Property.JCR_TITLE);
 				AkbUiUtils.refreshFormTextWidget(descTxt, getAkbNode(),
 						Property.JCR_DESCRIPTION);
+				typeCmb.select(getCurrTypeIndex());
+				typeCmb.setEnabled(AkbJcrUtils
+						.isNodeCheckedOutByMe(getAkbNode()));
 			}
 		};
 		// Listeners
@@ -103,15 +106,8 @@ public class AkbConnectorAliasEditor extends AbstractAkbNodeEditor {
 			public void modifyText(ModifyEvent event) {
 
 				try { // TODO enhance this
-
 					// retrieve old and new node type
-					int oldIndex = -1;
-					for (int i = 0; i < connectorTypes.length; i++) {
-						if (getAkbNode().isNodeType(connectorTypes[i])) {
-							oldIndex = i;
-							break;
-						}
-					}
+					int oldIndex = getCurrTypeIndex();
 					int selIndex = typeCmb.getSelectionIndex();
 
 					// insure something has really been modified
@@ -129,8 +125,24 @@ public class AkbConnectorAliasEditor extends AbstractAkbNodeEditor {
 				}
 			}
 		});
-
 		managedForm.addPart(part);
+	}
+
+	private int getCurrTypeIndex() {
+		try {
+			int oldIndex = -1;
+			for (int i = 0; i < connectorTypes.length; i++) {
+				if (getAkbNode().isNodeType(connectorTypes[i])) {
+					oldIndex = i;
+					break;
+
+				}
+			}
+			return oldIndex;
+		} catch (RepositoryException e) {
+			throw new AkbException("Error while getting connector type", e);
+		}
+
 	}
 
 	private void createDefaultTestConnectorCmp(Composite parent) {

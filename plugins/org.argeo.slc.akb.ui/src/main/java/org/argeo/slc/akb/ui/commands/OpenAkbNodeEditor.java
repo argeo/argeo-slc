@@ -12,12 +12,17 @@ import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbService;
 import org.argeo.slc.akb.AkbTypes;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
-import org.argeo.slc.akb.ui.editors.AkbConnectorAliasEditor;
-import org.argeo.slc.akb.ui.editors.AkbEnvTemplateEditor;
+import org.argeo.slc.akb.ui.dialogs.AddItemDialog;
 import org.argeo.slc.akb.ui.editors.AkbNodeEditorInput;
+import org.argeo.slc.akb.ui.editors.ConnectorAliasEditor;
+import org.argeo.slc.akb.ui.editors.EnvTemplateEditor;
+import org.argeo.slc.akb.ui.editors.JdbcQueryTemplateEditor;
+import org.argeo.slc.akb.ui.editors.SshCommandTemplateEditor;
+import org.argeo.slc.akb.ui.editors.SshFileTemplateEditor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -99,17 +104,25 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 	private Node createNewNode(Session session, String nodeType,
 			String parentNodeJcrId) throws RepositoryException {
 		Node node = null;
-		String name = SingleValue.ask("New name", "Create AKB item");
 
-		if (name == null)
-			return null;
-		if (AkbTypes.AKB_ENV_TEMPLATE.equals(nodeType)) {
-			node = akbService.createAkbTemplate(
-					session.getNodeByIdentifier(parentNodeJcrId), name);
+		if (AkbTypes.AKB_ITEM.equals(nodeType)) {
+			Node parNode = session.getNodeByIdentifier(parentNodeJcrId);
+			AddItemDialog dialog = new AddItemDialog(Display.getDefault()
+					.getActiveShell(), "Add new item", parNode);
+			dialog.open();
+			node = dialog.getNewNode();
 		} else {
-			Node parentNode = session.getNodeByIdentifier(parentNodeJcrId);
-			node = parentNode.addNode(name, nodeType);
-			node.setProperty(Property.JCR_TITLE, name);
+			String name = SingleValue.ask("New name", "Create AKB item");
+			if (name == null)
+				return null;
+			if (AkbTypes.AKB_ENV_TEMPLATE.equals(nodeType)) {
+				node = akbService.createAkbTemplate(
+						session.getNodeByIdentifier(parentNodeJcrId), name);
+			} else {
+				Node parentNode = session.getNodeByIdentifier(parentNodeJcrId);
+				node = parentNode.addNode(name, nodeType);
+				node.setProperty(Property.JCR_TITLE, name);
+			}
 		}
 		// corresponding node is saved but not checked in, in order to ease
 		// cancel actions.
@@ -120,9 +133,15 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 	private String getEditorForNode(Node node) throws RepositoryException {
 		String editorId = null;
 		if (node.isNodeType(AkbTypes.AKB_CONNECTOR_ALIAS))
-			editorId = AkbConnectorAliasEditor.ID;
+			editorId = ConnectorAliasEditor.ID;
 		else if (node.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
-			editorId = AkbEnvTemplateEditor.ID;
+			editorId = EnvTemplateEditor.ID;
+		else if (node.isNodeType(AkbTypes.AKB_SSH_FILE))
+			editorId = SshFileTemplateEditor.ID;
+		else if (node.isNodeType(AkbTypes.AKB_SSH_COMMAND))
+			editorId = SshCommandTemplateEditor.ID;
+		else if (node.isNodeType(AkbTypes.AKB_JDBC_QUERY))
+			editorId = JdbcQueryTemplateEditor.ID;
 		// else
 		// throw new AkbException("Editor is undefined for node " + node);
 		return editorId;

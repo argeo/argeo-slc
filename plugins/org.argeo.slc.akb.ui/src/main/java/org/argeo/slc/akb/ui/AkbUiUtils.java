@@ -51,6 +51,19 @@ public class AkbUiUtils {
 		text.setEnabled(AkbJcrUtils.isNodeCheckedOutByMe(entity));
 		return tmpStr;
 	}
+	
+	
+	/**
+	 * Shortcut to refresh a <code>Text</code> widget given a Node in a form and
+	 * a property Name. Also manages its enable state and set a default message if corresponding Text value is empty 
+	 */
+	public static String refreshFormTextWidget(Text text, Node entity,
+			String propName, String defaultMsg) {
+		String tmpStr = refreshFormTextWidget(text, entity, propName);
+		if (AkbJcrUtils.isEmptyString(tmpStr) && AkbJcrUtils.checkNotEmptyString(defaultMsg))
+			text.setMessage(defaultMsg);
+		return tmpStr;
+	}
 
 	/**
 	 * Shortcut to refresh a Check box <code>Button</code> widget given a Node

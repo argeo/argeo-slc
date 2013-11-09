@@ -81,6 +81,10 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 		setTitleToolTip("Display and edit " + name);
 	}
 
+	/** Overwrite to provide supplementary pages between main and history page */
+	protected void addOtherPages() throws PartInitException {
+	}
+
 	/* Pages management */
 	@Override
 	protected void addPages() {

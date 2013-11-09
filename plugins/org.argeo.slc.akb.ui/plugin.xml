@@ -41,16 +41,34 @@
 		<editor
 			class="org.argeo.eclipse.spring.SpringExtensionFactory"
 			icon="icons/akb.png"
-			id="org.argeo.slc.akb.ui.akbConnectorAliasEditor"
-			name="Connector Alias Editor">
+			id="org.argeo.slc.akb.ui.envTemplateEditor"
+			name="Environment Template Editor">
 		</editor>
 		<editor
 			class="org.argeo.eclipse.spring.SpringExtensionFactory"
 			icon="icons/akb.png"
-			id="org.argeo.slc.akb.ui.akbEnvTemplateEditor"
-			name="Environment Template Editor">
+			id="org.argeo.slc.akb.ui.connectorAliasEditor"
+			name="Connector Alias Editor">
 		</editor>
-		
+		<!-- ITEMS EDITORS --> 
+		<editor
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			icon="icons/akb.png"
+			id="org.argeo.slc.akb.ui.jdbcQueryTemplateEditor"
+			name="JDBC Query Template Editor">
+		</editor>
+		<editor
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			icon="icons/akb.png"
+			id="org.argeo.slc.akb.ui.sshFileTemplateEditor"
+			name="SSH File Template Editor">
+		</editor>
+		<editor
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			icon="icons/akb.png"
+			id="org.argeo.slc.akb.ui.sshCommandTemplateEditor"
+			name="SSH Command Template Editor">
+		</editor>
 	</extension>
 	<!-- Commands -->
 	<extension

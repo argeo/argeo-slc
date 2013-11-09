@@ -3,13 +3,28 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
-	<bean id="akbEnvTemplateEditor" class="org.argeo.slc.akb.ui.editors.AkbEnvTemplateEditor"
+	<bean id="envTemplateEditor" class="org.argeo.slc.akb.ui.editors.EnvTemplateEditor"
 		scope="prototype">
 		<property name="repository" ref="repository" />
 	</bean>
-	<bean id="akbConnectorAliasEditor" class="org.argeo.slc.akb.ui.editors.AkbConnectorAliasEditor"
+
+	<bean id="connectorAliasEditor" class="org.argeo.slc.akb.ui.editors.ConnectorAliasEditor"
 		scope="prototype">
 		<property name="repository" ref="repository" />
 		<property name="akbService" ref="akbService" />
+	</bean>
+
+	<!-- Various Items editors -->
+	<bean id="jdbcQueryTemplateEditor" class="org.argeo.slc.akb.ui.editors.JdbcQueryTemplateEditor"
+		scope="prototype">
+		<property name="repository" ref="repository" />
+	</bean>
+	<bean id="sshCommandTemplateEditor" class="org.argeo.slc.akb.ui.editors.SshCommandTemplateEditor"
+		scope="prototype">
+		<property name="repository" ref="repository" />
+	</bean>
+	<bean id="sshFileTemplateEditor" class="org.argeo.slc.akb.ui.editors.SshFileTemplateEditor"
+		scope="prototype">
+		<property name="repository" ref="repository" />
 	</bean>
 </beans>

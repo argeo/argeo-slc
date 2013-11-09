@@ -6,22 +6,117 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.Ordering;
+import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.Selector;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.PropertyDiff;
 import org.argeo.slc.akb.AkbException;
+import org.argeo.slc.akb.AkbTypes;
 
 /** Some static utils methods that might be factorized in a near future */
 public class AkbJcrUtils {
 
+	// /////////////////////////
+	// SPECIFIC METHOS
+	/**
+	 * Return the type of alias that must be used given current item type
+	 */
+	public static String getAliasTypeForNode(Node itemTemplate) {
+		try {
+			if (itemTemplate.isNodeType(AkbTypes.AKB_JDBC_QUERY))
+				return AkbTypes.AKB_JDBC_CONNECTOR;
+			else if (itemTemplate.isNodeType(AkbTypes.AKB_SSH_COMMAND)
+					|| itemTemplate.isNodeType(AkbTypes.AKB_SSH_FILE))
+				return AkbTypes.AKB_SSH_CONNECTOR;
+			else
+				throw new AkbException("No connector type define for node "
+						+ itemTemplate);
+		} catch (RepositoryException re) {
+			throw new AkbException("Unable to login", re);
+		}
+	}
+
+	/**
+	 * Return defined alias in the current environment given current item type
+	 */
+	public static List<Node> getDefinedAliasForNode(Node itemTemplate) {
+		try {
+			Session session = itemTemplate.getSession();
+			QueryManager queryManager = session.getWorkspace()
+					.getQueryManager();
+			QueryObjectModelFactory factory = queryManager.getQOMFactory();
+			String nodeType = getAliasTypeForNode(itemTemplate);
+
+			Selector source = factory.selector(nodeType, nodeType);
+			String basePath = getCurrentEnvBasePath(itemTemplate);
+			Constraint defaultC = factory.descendantNode(
+					source.getSelectorName(), basePath);
+
+			// Order by default by JCR TITLE
+			// TODO check if node definition has MIX_TITLE mixin
+			// TODO Apparently case insensitive ordering is not implemented in
+			// current used JCR implementation
+			Ordering order = factory
+					.ascending(factory.upperCase(factory.propertyValue(
+							source.getSelectorName(), Property.JCR_TITLE)));
+			QueryObjectModel query;
+			query = factory.createQuery(source, defaultC,
+					new Ordering[] { order }, null);
+			QueryResult result = query.execute();
+
+			NodeIterator ni = result.getNodes();
+
+			return JcrUtils.nodeIteratorToList(ni);
+		} catch (RepositoryException e) {
+			throw new AkbException("Unable to list connector", e);
+		}
+	}
+
+	/**
+	 * Return the current env base path
+	 */
+	public static String getCurrentEnvBasePath(Node akbNode) {
+		try {
+			if (akbNode.getDepth() == 0)
+				// no base path for root node
+				return null;
+
+			Node parNode = akbNode.getParent();
+
+			while (parNode != null)
+				if (akbNode.isNodeType(AkbTypes.AKB_ENV)
+						|| akbNode.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
+					return akbNode.getPath();
+				else if (parNode.getDepth() == 0)
+					// we found not fitting node
+					return null;
+				else {
+					akbNode = parNode;
+					parNode = parNode.getParent();
+				}
+			return null;
+		} catch (RepositoryException re) {
+			throw new AkbException("Unable to login", re);
+		}
+	}
+
+	// //////////////////////////////////
+	// METHODS THAT CAN BE FACTORIZED
 	/**
 	 * Call {@link Repository#login()} without exceptions (useful in super
 	 * constructors and dependency injection).
