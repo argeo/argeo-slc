@@ -25,19 +25,26 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventListener;
+import javax.jcr.observation.ObservationManager;
 
+import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.AkbTypes;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
+import org.argeo.slc.akb.ui.commands.DeleteAkbNodes;
 import org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor;
 import org.argeo.slc.akb.ui.providers.AkbTreeLabelProvider;
 import org.argeo.slc.akb.ui.providers.TemplatesTreeContentProvider;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -45,9 +52,13 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.services.IServiceLocator;
 
 /** SLC generic JCR Result tree view. */
 public class AkbTemplatesTreeView extends ViewPart {
@@ -65,6 +76,12 @@ public class AkbTemplatesTreeView extends ViewPart {
 
 	// Usefull business objects
 	private Node templatesParentNode;
+
+	// Observer
+	private EventListener allResultsObserver = null;
+	private final static String[] observedNodeTypesUnderAllResults = {
+			AkbTypes.AKB_ENV_TEMPLATE, AkbTypes.AKB_CONNECTOR_ALIAS,
+			AkbTypes.AKB_ITEM, AkbTypes.AKB_ITEM_FOLDER };
 
 	// private EventListener myResultsObserver = null;
 	// private EventListener allResultsObserver = null;
@@ -200,10 +217,48 @@ public class AkbTemplatesTreeView extends ViewPart {
 
 		getSite().registerContextMenu(menuManager, viewer);
 
+		// Initialize observer
+		try {
+			ObservationManager observationManager = session.getWorkspace()
+					.getObservationManager();
+
+			allResultsObserver = new AllResultsObserver(viewer.getTree()
+					.getDisplay());
+
+			// observe tree changes under All results
+			observationManager.addEventListener(allResultsObserver,
+					Event.NODE_ADDED | Event.NODE_REMOVED,
+					templatesParentNode.getPath(), true, null,
+					observedNodeTypesUnderAllResults, false);
+		} catch (RepositoryException e) {
+			throw new AkbException("Cannot register listeners", e);
+		}
+
 		// add change listener to display TestResult information in the property
 		// viewer
 		// viewer.addSelectionChangedListener(new MySelectionChangedListener());
 		return viewer;
+	}
+
+	class AllResultsObserver extends AsyncUiEventListener {
+
+		public AllResultsObserver(Display display) {
+			super(display);
+		}
+
+		@Override
+		protected Boolean willProcessInUiThread(List<Event> events)
+				throws RepositoryException {
+			// unfiltered for the time being
+			return true;
+		}
+
+		protected void onEventInUiThread(List<Event> events)
+				throws RepositoryException {
+			resultTreeViewer.setInput(initializeResultTree());
+			// if (lastSelectedSourceElementParent != null)
+			// refresh(lastSelectedSourceElementParent);
+		}
 	}
 
 	// Detailed property viewer
@@ -243,19 +298,108 @@ public class AkbTemplatesTreeView extends ViewPart {
 		IWorkbenchWindow window = AkbUiPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
 		try {
+
+			// Build conditions
+			Node selected = (Node) ((IStructuredSelection) resultTreeViewer
+					.getSelection()).getFirstElement();
+
+			boolean hasSelection = selected != null;
+			boolean isParentItemsFolder = hasSelection ? selected
+					.isNodeType(AkbTypes.AKB_ITEM_FOLDER) : false;
+			boolean isParentConnectorsFolder = hasSelection ? selected
+					.isNodeType(AkbTypes.AKB_CONNECTOR_FOLDER) : false;
+			boolean isDeletable = hasSelection ? !(selected.getParent()
+					.isNodeType(AkbTypes.AKB_ENV_TEMPLATE)) : false;
+
+			// Add Connector Alias
 			Map<String, String> params = new HashMap<String, String>();
+			if (hasSelection)
+				params.put(OpenAkbNodeEditor.PARAM_PARENT_NODE_JCR_ID,
+						selected.getIdentifier());
+			params.put(OpenAkbNodeEditor.PARAM_NODE_TYPE,
+					AkbTypes.AKB_CONNECTOR_ALIAS);
+			refreshParameterizedCommand(menuManager, window,
+					"cmd.addConnector", OpenAkbNodeEditor.ID,
+					"Add connector Alias", null, isParentConnectorsFolder,
+					params);
+
+			// Add Item
+			params = new HashMap<String, String>();
+			if (hasSelection)
+				params.put(OpenAkbNodeEditor.PARAM_PARENT_NODE_JCR_ID,
+						selected.getIdentifier());
+			params.put(OpenAkbNodeEditor.PARAM_NODE_TYPE, AkbTypes.AKB_ITEM);
+			refreshParameterizedCommand(menuManager, window, "cmd.addItem",
+					OpenAkbNodeEditor.ID, "Add item", null,
+					isParentItemsFolder, params);
+
+			// Add Item Folder
+			params = new HashMap<String, String>();
+			if (hasSelection)
+				params.put(OpenAkbNodeEditor.PARAM_PARENT_NODE_JCR_ID,
+						selected.getIdentifier());
+			params.put(OpenAkbNodeEditor.PARAM_NODE_TYPE,
+					AkbTypes.AKB_ITEM_FOLDER);
+			refreshParameterizedCommand(menuManager, window,
+					"cmd.addItemFolder", OpenAkbNodeEditor.ID,
+					"Add item folder", null, isParentItemsFolder, params);
+
+			// Delete Item
+			params = new HashMap<String, String>();
+			if (hasSelection)
+				params.put(DeleteAkbNodes.PARAM_NODE_JCR_ID,
+						selected.getIdentifier());
+			refreshParameterizedCommand(menuManager, window, "cmd.deleteItem",
+					DeleteAkbNodes.ID, "Delete selected item(s)", null,
+					isDeletable, params);
+
+			// create template
+			params = new HashMap<String, String>();
 			params.put(OpenAkbNodeEditor.PARAM_PARENT_NODE_JCR_ID,
 					templatesParentNode.getIdentifier());
 			params.put(OpenAkbNodeEditor.PARAM_NODE_TYPE,
 					AkbTypes.AKB_ENV_TEMPLATE);
-
-			// Effective Refresh
-			CommandUtils.refreshParametrizedCommand(menuManager, window,
-					OpenAkbNodeEditor.ID, "Create new template...", null, true,
-					params);
+			refreshParameterizedCommand(menuManager, window,
+					"cmd.createTemplate", OpenAkbNodeEditor.ID,
+					"Create new template...", null, true, params);
 
 		} catch (RepositoryException re) {
 			throw new AkbException("Error while refreshing context menu", re);
+		}
+	}
+
+	/**
+	 * Commodities the refresh of a single command with a map of parameters in a
+	 * Menu.aboutToShow method to simplify further development
+	 * 
+	 * @param menuManager
+	 * @param locator
+	 * @param cmdId
+	 * @param label
+	 * @param iconPath
+	 * @param showCommand
+	 */
+	private void refreshParameterizedCommand(IMenuManager menuManager,
+			IServiceLocator locator, String itemId, String cmdId, String label,
+			ImageDescriptor icon, boolean showCommand,
+			Map<String, String> params) {
+		IContributionItem ici = menuManager.find(itemId);
+		if (ici != null)
+			menuManager.remove(ici);
+		CommandContributionItemParameter contributionItemParameter = new CommandContributionItemParameter(
+				locator, itemId, cmdId, SWT.PUSH);
+
+		if (showCommand) {
+			// Set Params
+			contributionItemParameter.label = label;
+			contributionItemParameter.icon = icon;
+
+			if (params != null)
+				contributionItemParameter.parameters = params;
+
+			CommandContributionItem cci = new CommandContributionItem(
+					contributionItemParameter);
+			menuManager.add(cci);
 		}
 	}
 

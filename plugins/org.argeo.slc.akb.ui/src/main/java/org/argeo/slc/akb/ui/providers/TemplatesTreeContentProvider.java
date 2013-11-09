@@ -42,7 +42,11 @@ public class TemplatesTreeContentProvider implements ITreeContentProvider {
 
 	public Object getParent(Object child) {
 		try {
-			return ((Node) child).getParent();
+			Node node = (Node) child;
+			if (node.getDepth() == 0)
+				return null;
+			else
+				return node.getParent();
 		} catch (RepositoryException e) {
 			throw new AkbException("Error while getting parent node", e);
 		}

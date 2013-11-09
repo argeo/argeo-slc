@@ -10,5 +10,6 @@
 	<bean id="akbConnectorAliasEditor" class="org.argeo.slc.akb.ui.editors.AkbConnectorAliasEditor"
 		scope="prototype">
 		<property name="repository" ref="repository" />
+		<property name="akbService" ref="akbService" />
 	</bean>
 </beans>

@@ -27,7 +27,15 @@ mixin
 - akb:connectorUrl (STRING)
 // add argeo keyring
 
-[akb:connectorAlias] > nt:unstructured, mix:title  
+// ease retrieval and enable adding alias specific properties
+[akb:connectorAlias] > akb:connector  
+// Use akb:connectorUrl property to define default test connector
+
+
+// HELPER
+[akb:connectorFolder] > nt:unstructured, mix:title  
++ * (akb:connector, akb:connectorAlias) * 
+
     
 
 // Various connector types as mixin
@@ -35,6 +43,9 @@ mixin
 mixin
 
 [akb:jdbcConnector]  
+mixin
+
+[akb:jcrConnector]  
 mixin
 
 
@@ -47,8 +58,9 @@ mixin
 //
 // GENERIC ITEM FOLDER
 //
-[akb:itemsFolder] > nt:unstructured
+[akb:itemsFolder] > nt:unstructured, mix:title  
 + * (akb:item) * 
++ * (akb:itemsFolder) * 
 
 //
 // SSH FILE

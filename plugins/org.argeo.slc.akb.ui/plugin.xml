@@ -72,6 +72,15 @@
      			name="The Parent Node JCR ID if needed">
  			</commandParameter>
  		</command>
+		<command
+			defaultHandler="org.argeo.eclipse.spring.SpringExtensionFactory"
+			id="org.argeo.slc.akb.ui.deleteAkbNodes"
+			name="Delete Akb Node(s) and close corresponding editors">
+         	<commandParameter
+     			id="param.nodeJcrId"
+     			name="The Node JCR ID if needed">
+ 			</commandParameter>
+  		</command>
 	</extension>		
 	<!-- Menus -->
 	<extension

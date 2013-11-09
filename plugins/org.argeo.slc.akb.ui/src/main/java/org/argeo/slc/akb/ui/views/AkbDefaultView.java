@@ -171,4 +171,4 @@ public class AkbDefaultView extends ViewPart {
 		// + "session for view " + ID, e);
 		// }
 	}
- }
+}

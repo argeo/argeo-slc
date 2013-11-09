@@ -8,7 +8,6 @@ import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -76,17 +75,23 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 		Node newTemplate = parentNode.addNode(name, AkbTypes.AKB_ENV_TEMPLATE);
 		newTemplate.setProperty(Property.JCR_TITLE, name);
 
-		Node connectorParent = newTemplate.addNode(connectorParentName,
-				NodeType.NT_UNSTRUCTURED);
-		connectorParent.addMixin(NodeType.MIX_TITLE);
+		Node connectorParent = newTemplate.addNode(
+				AkbTypes.AKB_CONNECTOR_FOLDER, AkbTypes.AKB_CONNECTOR_FOLDER);
 		connectorParent.setProperty(Property.JCR_TITLE, connectorParentName);
 
-		Node itemsParent = newTemplate.addNode(itemsParentName,
-				NodeType.NT_UNSTRUCTURED);
-		itemsParent.addMixin(NodeType.MIX_TITLE);
+		Node itemsParent = newTemplate.addNode(AkbTypes.AKB_ITEM_FOLDER,
+				AkbTypes.AKB_ITEM_FOLDER);
 		itemsParent.setProperty(Property.JCR_TITLE, itemsParentName);
 
 		return newTemplate;
+	}
+
+	// ///////////////////////////////////////
+	// / CONNECTORS
+
+	public boolean testConnector(Node connector) {
+		// TODO Implement this.
+		return false;
 	}
 
 	// /** Expose injected repository */

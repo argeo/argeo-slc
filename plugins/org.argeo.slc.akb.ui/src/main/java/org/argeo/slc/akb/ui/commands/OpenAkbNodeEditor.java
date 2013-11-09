@@ -1,6 +1,7 @@
 package org.argeo.slc.akb.ui.commands;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -74,7 +75,7 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 
 			String editorId = getEditorForNode(node);
 
-			// no editor has been found, return
+			// no editor has been found, return silently
 			if (editorId == null)
 				return null;
 
@@ -98,17 +99,17 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 	private Node createNewNode(Session session, String nodeType,
 			String parentNodeJcrId) throws RepositoryException {
 		Node node = null;
+		String name = SingleValue.ask("New name", "Create AKB item");
+
+		if (name == null)
+			return null;
 		if (AkbTypes.AKB_ENV_TEMPLATE.equals(nodeType)) {
-			String name = SingleValue.ask("Template name",
-					"Please give a name to the template to create");
-			if (name != null)
-				node = akbService.createAkbTemplate(
-						session.getNodeByIdentifier(parentNodeJcrId), name);
-			else
-				return null;
+			node = akbService.createAkbTemplate(
+					session.getNodeByIdentifier(parentNodeJcrId), name);
 		} else {
 			Node parentNode = session.getNodeByIdentifier(parentNodeJcrId);
-			node = parentNode.addNode("new", nodeType);
+			node = parentNode.addNode(name, nodeType);
+			node.setProperty(Property.JCR_TITLE, name);
 		}
 		// corresponding node is saved but not checked in, in order to ease
 		// cancel actions.
@@ -122,8 +123,8 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 			editorId = AkbConnectorAliasEditor.ID;
 		else if (node.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
 			editorId = AkbEnvTemplateEditor.ID;
-		else
-			throw new AkbException("Editor is undefined for node " + node);
+		// else
+		// throw new AkbException("Editor is undefined for node " + node);
 		return editorId;
 	}
 

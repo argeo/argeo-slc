@@ -8,18 +8,25 @@ import javax.jcr.Session;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
+import org.argeo.slc.akb.AkbService;
 import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.EditorPart;
+import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * Parent Abstract Node editor for AKB. Manage life cycle of the JCR session
  * that is bound to it.
  */
-public abstract class AbstractAkbNodeEditor extends EditorPart {
+public abstract class AbstractAkbNodeEditor extends FormEditor {
 	// private final static Log log = LogFactory
 	// .getLog(AbstractEntityEditor.class);
 
@@ -27,6 +34,7 @@ public abstract class AbstractAkbNodeEditor extends EditorPart {
 	// changes life cycle
 	private Repository repository;
 	private Session session;
+	private AkbService akbService;
 
 	// Business Objects
 	private Node akbNode;
@@ -34,7 +42,12 @@ public abstract class AbstractAkbNodeEditor extends EditorPart {
 	// Some constants
 	private final static int SHORT_NAME_LENGHT = 10;
 
-	// LIFE CYCLE
+	// to implement methods
+	protected abstract String getEditorId();
+
+	protected abstract void populateMainPage(Composite parent,
+			IManagedForm managedForm);
+
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		setSite(site);
@@ -68,11 +81,50 @@ public abstract class AbstractAkbNodeEditor extends EditorPart {
 		setTitleToolTip("Display and edit " + name);
 	}
 
+	/* Pages management */
+	@Override
+	protected void addPages() {
+		try {
+			addPage(new ConnectorAliasPage(this, "mainPage", "Main"));
+			// TODO Add history page
+			// addPage(new ConnectorAliasPage(this, "mainPage", "Main"));
+		} catch (PartInitException e) {
+			throw new AkbException("Unable to initialise pages for editor "
+					+ getEditorId(), e);
+		}
+	}
+
+	/**
+	 * Display and edit info
+	 */
+	private class ConnectorAliasPage extends FormPage {
+
+		public ConnectorAliasPage(FormEditor editor, String id, String title) {
+			super(editor, id, title);
+		}
+
+		protected void createFormContent(IManagedForm managedForm) {
+			super.createFormContent(managedForm);
+			ScrolledForm form = managedForm.getForm();
+			form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			populateMainPage(form.getBody(), managedForm);
+		}
+	}
+
 	/* EXPOSES TO CHILDREN CLASSES */
 	protected Session getSession() {
 		return session;
 	}
 
+	protected AkbService getAkbService() {
+		return akbService;
+	}
+
+	protected Node getAkbNode() {
+		return akbNode;
+	}
+
+	/* LIFE CYCLE MANAGEMENT */
 	@Override
 	public void dispose() {
 		try {
@@ -93,7 +145,15 @@ public abstract class AbstractAkbNodeEditor extends EditorPart {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		throw new AkbException("Implement this");
+		try {
+			if (getSession().hasPendingChanges())
+				JcrUtils.updateLastModified(getAkbNode());
+			getSession().save();
+			updatePartNameAndToolTip();
+			this.firePropertyChange(PROP_DIRTY);
+		} catch (Exception e) {
+			throw new AkbException("Error getting session status.", e);
+		}
 	}
 
 	@Override
@@ -117,5 +177,9 @@ public abstract class AbstractAkbNodeEditor extends EditorPart {
 	/* DEPENDENCY INJECTION */
 	public void setRepository(Repository repository) {
 		this.repository = repository;
+	}
+
+	public void setAkbService(AkbService akbService) {
+		this.akbService = akbService;
 	}
 }
