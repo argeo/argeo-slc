@@ -36,6 +36,7 @@ import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.AkbTypes;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
+import org.argeo.slc.akb.ui.AkbUiUtils;
 import org.argeo.slc.akb.ui.commands.DeleteAkbNodes;
 import org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor;
 import org.argeo.slc.akb.ui.providers.AkbTreeLabelProvider;
@@ -81,7 +82,8 @@ public class AkbTemplatesTreeView extends ViewPart {
 	private EventListener allResultsObserver = null;
 	private final static String[] observedNodeTypesUnderAllResults = {
 			AkbTypes.AKB_ENV_TEMPLATE, AkbTypes.AKB_CONNECTOR_ALIAS,
-			AkbTypes.AKB_ITEM, AkbTypes.AKB_ITEM_FOLDER };
+			AkbTypes.AKB_ITEM, AkbTypes.AKB_ITEM_FOLDER,
+			AkbTypes.AKB_CONNECTOR_FOLDER };
 
 	// private EventListener myResultsObserver = null;
 	// private EventListener allResultsObserver = null;
@@ -139,29 +141,6 @@ public class AkbTemplatesTreeView extends ViewPart {
 		// sashForm.setWeights(getWeights());
 
 		// setOrderedInput(resultTreeViewer);
-
-		// Initialize observer
-		// try {
-		// ObservationManager observationManager = session.getWorkspace()
-		// .getObservationManager();
-		// myResultsObserver = new MyResultsObserver(resultTreeViewer
-		// .getTree().getDisplay());
-		// allResultsObserver = new AllResultsObserver(resultTreeViewer
-		// .getTree().getDisplay());
-		//
-		// // observe tree changes under MyResults
-		// observationManager.addEventListener(myResultsObserver,
-		// Event.NODE_ADDED | Event.NODE_REMOVED,
-		// SlcJcrResultUtils.getMyResultsBasePath(session), true,
-		// null, observedNodeTypesUnderMyResult, false);
-		// // observe tree changes under All results
-		// observationManager.addEventListener(allResultsObserver,
-		// Event.NODE_ADDED | Event.NODE_REMOVED,
-		// SlcJcrResultUtils.getSlcResultsBasePath(session), true,
-		// null, observedNodeTypesUnderAllResults, false);
-		// } catch (RepositoryException e) {
-		// throw new SlcException("Cannot register listeners", e);
-		// }
 	}
 
 	/**
@@ -178,6 +157,7 @@ public class AkbTemplatesTreeView extends ViewPart {
 
 	// The main tree viewer
 	protected TreeViewer createResultsTreeViewer(Composite parent) {
+		parent.setLayout(AkbUiUtils.gridLayoutNoBorder());
 		int style = SWT.BORDER | SWT.MULTI;
 
 		TreeViewer viewer = new TreeViewer(parent, style);
@@ -255,9 +235,26 @@ public class AkbTemplatesTreeView extends ViewPart {
 
 		protected void onEventInUiThread(List<Event> events)
 				throws RepositoryException {
-			resultTreeViewer.setInput(initializeResultTree());
-			// if (lastSelectedSourceElementParent != null)
-			// refresh(lastSelectedSourceElementParent);
+			boolean fullRefresh = false;
+
+			eventLoop: for (Event event : events) {
+				String currPath = event.getPath();
+				if (session.nodeExists(currPath)) {
+					Node node = session.getNode(currPath);
+					if (node.isNodeType(AkbTypes.AKB_ENV_TEMPLATE)) {
+						fullRefresh = true;
+						break eventLoop;
+					}
+				}
+			}
+
+			Object[] visibles = resultTreeViewer.getExpandedElements();
+			if (fullRefresh)
+				resultTreeViewer.setInput(initializeResultTree());
+			else
+				resultTreeViewer.refresh();
+
+			resultTreeViewer.setExpandedElements(visibles);
 		}
 	}
 
@@ -271,7 +268,6 @@ public class AkbTemplatesTreeView extends ViewPart {
 
 	private Node[] initializeResultTree() {
 		try {
-
 			NodeIterator ni = templatesParentNode.getNodes();
 			List<Node> templates = new ArrayList<Node>();
 
@@ -282,7 +278,6 @@ public class AkbTemplatesTreeView extends ViewPart {
 			}
 
 			Node[] templateArr = templates.toArray(new Node[templates.size()]);
-
 			return templateArr;
 		} catch (RepositoryException re) {
 			throw new AkbException("Error while initializing templates Tree.",

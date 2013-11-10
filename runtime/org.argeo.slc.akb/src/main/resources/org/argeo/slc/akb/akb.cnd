@@ -54,6 +54,9 @@ mixin
 // GENERIC ITEM
 //
 [akb:item] > nt:unstructured
+// a path to the corresponding connector
+- akb:usedConnector (STRING)
+
 
 //
 // GENERIC ITEM FOLDER
@@ -66,16 +69,20 @@ mixin
 // SSH FILE
 // 
 [akb:sshFile] > akb:item
+- akb:filePath (STRING)
 
 //
 // SSH COMMAND
 // 
 [akb:sshCommand] > akb:item
+- akb:commandText (STRING)
 
 //
 // JDBC QUERY
 // 
 [akb:jdbcQuery] > akb:item
+- akb:queryText (STRING)
+
 
 
 //

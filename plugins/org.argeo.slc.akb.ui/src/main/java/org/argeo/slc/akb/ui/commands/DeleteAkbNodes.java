@@ -12,6 +12,7 @@ import org.argeo.slc.akb.ui.editors.AkbNodeEditorInput;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -28,15 +29,14 @@ public class DeleteAkbNodes extends AbstractHandler {
 
 	public final static String PARAM_NODE_JCR_ID = "param.nodeJcrId";
 
-	// public final static String PARAM_NODE_TYPE = "param.nodeType";
-
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
-		// String nodeType = event.getParameter(PARAM_NODE_TYPE);
 		String nodeJcrId = event.getParameter(PARAM_NODE_JCR_ID);
 
 		Session session = null;
 		try {
+			session = repository.login();
+
 			// caches current Page
 			IWorkbenchPage currentPage = HandlerUtil.getActiveWorkbenchWindow(
 					event).getActivePage();
@@ -47,14 +47,21 @@ public class DeleteAkbNodes extends AbstractHandler {
 			if (nodeJcrId != null)
 				node = session.getNodeByIdentifier(nodeJcrId);
 
-			// no node has been found or created, return silently
-			if (node == null)
-				return null;
-
 			IEditorPart currPart = currentPage
 					.findEditor(new AkbNodeEditorInput(nodeJcrId));
 			if (currPart != null)
 				currPart.dispose();
+
+			if (node != null) {
+				Boolean ok = MessageDialog.openConfirm(
+						HandlerUtil.getActiveShell(event), "Confirm deletion",
+						"Do you want to delete this item?");
+
+				if (ok) {
+					node.remove();
+					session.save();
+				}
+			}
 		} catch (RepositoryException e) {
 			throw new AkbException("JCR error while deleting node" + nodeJcrId
 					+ " editor", e);

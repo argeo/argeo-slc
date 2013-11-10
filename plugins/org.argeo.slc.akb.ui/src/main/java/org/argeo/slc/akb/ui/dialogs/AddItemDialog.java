@@ -27,7 +27,7 @@ public class AddItemDialog extends TrayDialog {
 	private final String title;
 
 	private String[] itemTypesLbl = new String[] { "SSH File", "SSH Command",
-			"JDBC Connection" };
+			"JDBC Query" };
 	private String[] itemTypes = new String[] { AkbTypes.AKB_SSH_FILE,
 			AkbTypes.AKB_SSH_COMMAND, AkbTypes.AKB_JDBC_QUERY };
 

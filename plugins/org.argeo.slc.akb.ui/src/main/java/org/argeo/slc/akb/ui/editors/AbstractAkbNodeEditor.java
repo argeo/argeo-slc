@@ -9,6 +9,7 @@ import javax.jcr.Session;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbService;
+import org.argeo.slc.akb.ui.AkbUiUtils;
 import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -90,8 +91,9 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 	protected void addPages() {
 		try {
 			addPage(new ConnectorAliasPage(this, "mainPage", "Main"));
-			// TODO Add history page
-			// addPage(new ConnectorAliasPage(this, "mainPage", "Main"));
+			// Add AKB Type specific pages
+			addOtherPages();
+			addPage(new HistoryPage(this, "historyPage", "History"));
 		} catch (PartInitException e) {
 			throw new AkbException("Unable to initialise pages for editor "
 					+ getEditorId(), e);
@@ -112,6 +114,26 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 			ScrolledForm form = managedForm.getForm();
 			form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			populateMainPage(form.getBody(), managedForm);
+		}
+	}
+
+	/**
+	 * Display history
+	 */
+	private class HistoryPage extends FormPage {
+
+		public HistoryPage(FormEditor editor, String id, String title) {
+			super(editor, id, title);
+		}
+
+		protected void createFormContent(IManagedForm managedForm) {
+			super.createFormContent(managedForm);
+			ScrolledForm form = managedForm.getForm();
+			form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+			Composite parent = form.getBody();
+			parent.setLayout(AkbUiUtils.gridLayoutNoBorder());
+			getToolkit().createLabel(parent,
+					"This page will display history " + "for current AKB Node");
 		}
 	}
 

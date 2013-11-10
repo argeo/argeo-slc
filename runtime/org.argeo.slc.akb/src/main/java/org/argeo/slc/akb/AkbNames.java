@@ -19,5 +19,10 @@ public interface AkbNames {
 	public final static String AKB_CONNECTOR_URL = "akb:connectorUrl";
 
 	/* ITEMS PROPERTIES */
+	public final static String AKB_USED_CONNECTOR = "akb:usedConnector";
+
+	public final static String AKB_FILE_PATH = "akb:filePath";
+	public final static String AKB_COMMAND_TEXT = "akb:commandText";
+	public final static String AKB_QUERY_TEXT = "akb:queryText";
 
 }

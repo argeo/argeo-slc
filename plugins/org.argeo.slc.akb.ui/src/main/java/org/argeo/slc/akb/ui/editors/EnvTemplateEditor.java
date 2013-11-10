@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
 /**
- * Display and edit a connector Alias
+ * Display and edit an environment template
  */
 public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 
