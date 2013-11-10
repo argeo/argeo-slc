@@ -19,7 +19,7 @@
 					<instructions>
 						<Import-Package>
 							*,
-							org.argeo.slc.akb
+							org.argeo.slc.akb,
 						 </Import-Package>
 					</instructions>
 				</configuration>

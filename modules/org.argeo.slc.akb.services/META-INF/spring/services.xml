@@ -8,6 +8,7 @@
 	<bean id="akbService" class="org.argeo.slc.akb.core.AkbServiceImpl"
 		init-method="init" destroy-method="destroy">
 		<property name="repository" ref="akbRepository" />
+		<property name="keyring" ref="keyring" />
 	</bean>
 	<bean
 		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">

@@ -1,5 +1,7 @@
 package org.argeo.slc.akb;
 
+import java.sql.PreparedStatement;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
@@ -16,4 +18,10 @@ public interface AkbService {
 	 * current user has the sufficient credentials to connect
 	 */
 	public boolean testConnector(Node connector);
+
+	public PreparedStatement prepareJdbcQuery(Node node);
+
+	public String executeCommand(Node node);
+
+	public String retrieveFile(Node node);
 }

@@ -3,6 +3,7 @@ package org.argeo.slc.akb.ui.editors;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
+import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.AkbTypes;
@@ -106,7 +107,7 @@ public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 			public void modifyText(ModifyEvent event) {
 
 				try { // TODO enhance this
-					// retrieve old and new node type
+						// retrieve old and new node type
 					int oldIndex = getCurrTypeIndex();
 					int selIndex = typeCmb.getSelectionIndex();
 
@@ -158,11 +159,15 @@ public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 
 		Composite firstLine = getToolkit().createComposite(group);
 		firstLine.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		firstLine.setLayout(new GridLayout(3, false));
+		firstLine.setLayout(new GridLayout(2, false));
 
 		getToolkit().createLabel(firstLine, "URL");
 		final Text urlTxt = getToolkit().createText(firstLine, "", SWT.BORDER);
 		urlTxt.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+
+		getToolkit().createLabel(firstLine, "User");
+		final Text userTxt = getToolkit().createText(firstLine, "", SWT.BORDER);
+		userTxt.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
 		final Button testBtn = getToolkit().createButton(firstLine,
 				"Test connection", SWT.PUSH);
@@ -176,17 +181,27 @@ public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 				// update display value
 				AkbUiUtils.refreshFormTextWidget(urlTxt, getAkbNode(),
 						AkbNames.AKB_CONNECTOR_URL);
+				AkbUiUtils.refreshFormTextWidget(userTxt, getAkbNode(),
+						AkbNames.AKB_CONNECTOR_USER);
 			}
 		};
 		// Listeners
 		AkbUiUtils.addTextModifyListener(urlTxt, getAkbNode(),
 				AkbNames.AKB_CONNECTOR_URL, part);
+		AkbUiUtils.addTextModifyListener(userTxt, getAkbNode(),
+				AkbNames.AKB_CONNECTOR_USER, part);
 
 		testBtn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				boolean testSuccesfull = getAkbService().testConnector(
-						getAkbNode());
+				boolean testSuccesfull;
+				try {
+					testSuccesfull = getAkbService()
+							.testConnector(getAkbNode());
+				} catch (Exception e1) {
+					testSuccesfull = false;
+					ErrorFeedback.show("Cannot test connection", e1);
+				}
 
 				String name = AkbJcrUtils.get(getAkbNode(), Property.JCR_TITLE);
 				String url = AkbJcrUtils.get(getAkbNode(),

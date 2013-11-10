@@ -23,4 +23,7 @@
 		</service-properties>
 	</service>
 	<service ref="akbService" interface="org.argeo.slc.akb.AkbService" />
+
+	<reference id="keyring" interface="org.argeo.security.crypto.CryptoKeyring" />
+
 </beans:beans>

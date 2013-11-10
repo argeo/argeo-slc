@@ -51,6 +51,11 @@
 			<artifactId>org.argeo.eclipse.ui</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons.security</groupId>
+			<artifactId>org.argeo.security.ui</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
 
 		<!-- RAP only dependency, needed at compile time -->
 		<dependency>

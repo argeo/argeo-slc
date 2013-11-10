@@ -18,13 +18,16 @@
 	<bean id="jdbcQueryTemplateEditor" class="org.argeo.slc.akb.ui.editors.JdbcQueryTemplateEditor"
 		scope="prototype">
 		<property name="repository" ref="repository" />
+		<property name="akbService" ref="akbService" />
 	</bean>
 	<bean id="sshCommandTemplateEditor" class="org.argeo.slc.akb.ui.editors.SshCommandTemplateEditor"
 		scope="prototype">
 		<property name="repository" ref="repository" />
+		<property name="akbService" ref="akbService" />
 	</bean>
 	<bean id="sshFileTemplateEditor" class="org.argeo.slc.akb.ui.editors.SshFileTemplateEditor"
 		scope="prototype">
 		<property name="repository" ref="repository" />
+		<property name="akbService" ref="akbService" />
 	</bean>
 </beans>

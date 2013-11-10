@@ -17,6 +17,7 @@ public interface AkbNames {
 
 	/* CONNECTOR PROPERTIES */
 	public final static String AKB_CONNECTOR_URL = "akb:connectorUrl";
+	public final static String AKB_CONNECTOR_USER = "akb:connectorUser";
 
 	/* ITEMS PROPERTIES */
 	public final static String AKB_USED_CONNECTOR = "akb:usedConnector";

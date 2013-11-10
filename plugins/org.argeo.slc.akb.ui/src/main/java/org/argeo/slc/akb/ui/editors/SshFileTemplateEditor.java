@@ -4,6 +4,7 @@ import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
 import org.argeo.slc.akb.ui.AkbUiUtils;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -23,6 +24,21 @@ public class SshFileTemplateEditor extends AkbItemTemplateEditor {
 	@Override
 	protected String getEditorId() {
 		return ID;
+	}
+
+	@Override
+	protected void populateTestPage(Composite parent) {
+		parent.setLayout(AkbUiUtils.gridLayoutNoBorder());
+
+		Text outputDisplay = getToolkit().createText(parent, "", SWT.MULTI);
+		outputDisplay.setFont(new Font(parent.getDisplay(), "Monospaced", 10,
+				SWT.NONE));
+		outputDisplay.setEditable(false);
+		outputDisplay
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		String output = getAkbService().retrieveFile(getAkbNode());
+		outputDisplay.setText(output);
 	}
 
 	@Override

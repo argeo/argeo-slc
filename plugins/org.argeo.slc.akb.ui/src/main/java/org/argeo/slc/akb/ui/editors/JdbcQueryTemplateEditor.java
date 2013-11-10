@@ -9,6 +9,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -56,6 +57,12 @@ public class JdbcQueryTemplateEditor extends AkbItemTemplateEditor {
 		AkbUiUtils.addTextModifyListener(queryTxt, getAkbNode(),
 				AkbNames.AKB_QUERY_TEXT, part);
 		managedForm.addPart(part);
+	}
+
+	@Override
+	protected void addOtherPages() throws PartInitException {
+		addPage(new JdbcTestPage(getAkbService(), this, "testPage", "Test",
+				getAkbNode()));
 	}
 
 }
