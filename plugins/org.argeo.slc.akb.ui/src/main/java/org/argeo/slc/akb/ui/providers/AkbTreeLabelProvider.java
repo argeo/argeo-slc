@@ -7,6 +7,8 @@ import javax.jcr.nodetype.NodeType;
 
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.akb.AkbException;
+import org.argeo.slc.akb.AkbTypes;
+import org.argeo.slc.akb.ui.AkbImages;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
@@ -18,7 +20,6 @@ public class AkbTreeLabelProvider extends LabelProvider {
 	@Override
 	public String getText(Object element) {
 		try {
-
 			if (element instanceof Node) {
 				Node node = (Node) element;
 				if (node.isNodeType(NodeType.MIX_TITLE))
@@ -33,21 +34,31 @@ public class AkbTreeLabelProvider extends LabelProvider {
 		return ((TreeParent) element).getName();
 	}
 
-	public Image getImage(Object obj) {
-		// if (obj instanceof SingleResultNode) {
-		// // FIXME add realtime modification of process icon (SCHEDULED,
-		// // RUNNING, COMPLETED...)
-		// // Node resultNode = ((SingleResultNode) obj).getNode();
-		// // int status = SlcJcrUtils.aggregateTestStatus(resultNode);
-		// return SlcImages.PROCESS_COMPLETED;
-		// } else if (obj instanceof ResultParent) {
-		// ResultParent rParent = (ResultParent) obj;
-		// if (SlcUiConstants.DEFAULT_MY_RESULTS_FOLDER_LABEL.equals(rParent
-		// .getName()))
-		// return SlcImages.MY_RESULTS_FOLDER;
-		// else
-		// return SlcImages.FOLDER;
-		// } else
+	public Image getImage(Object element) {
+		try {
+			if (element instanceof Node) {
+				Node node = (Node) element;
+				if (node.isNodeType(AkbTypes.AKB_ITEM_FOLDER))
+					return AkbImages.ITEM_FOLDER;
+				else if (node.isNodeType(AkbTypes.AKB_SSH_CONNECTOR))
+					return AkbImages.SSH_CONNECTOR;
+				else if (node.isNodeType(AkbTypes.AKB_SSH_COMMAND))
+					return AkbImages.SSH_COMMAND;
+				else if (node.isNodeType(AkbTypes.AKB_SSH_FILE))
+					return AkbImages.SSH_FILE;
+				else if (node.isNodeType(AkbTypes.AKB_JDBC_CONNECTOR))
+					return AkbImages.JDBC_CONNECTOR;
+				else if (node.isNodeType(AkbTypes.AKB_JDBC_QUERY))
+					return AkbImages.JDBC_QUERY;
+				else if (node.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
+					return AkbImages.TEMPLATE;
+				else if (node.isNodeType(AkbTypes.AKB_CONNECTOR_FOLDER))
+					return AkbImages.CONNECTOR_FOLDER;
+			}
+		} catch (RepositoryException e) {
+			throw new AkbException("Unexpected error while getting "
+					+ "Custom node label", e);
+		}
 		return null;
 	}
 }
