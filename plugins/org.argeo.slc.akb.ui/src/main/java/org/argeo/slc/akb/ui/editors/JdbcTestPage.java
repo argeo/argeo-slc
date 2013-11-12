@@ -168,7 +168,10 @@ public class JdbcTestPage extends FormPage implements AkbNames {
 			col.setLabelProvider(new ColumnLabelProvider() {
 				@Override
 				public String getText(Object element) {
-					return ((Object[]) element)[index].toString();
+					Object obj = ((Object[]) element)[index];
+					if (obj == null)
+						return null;
+					return obj.toString();
 				}
 			});
 		}
