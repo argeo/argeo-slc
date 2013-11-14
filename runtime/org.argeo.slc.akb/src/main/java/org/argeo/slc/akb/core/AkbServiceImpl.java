@@ -10,10 +10,19 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.qom.Constraint;
+import javax.jcr.query.qom.Ordering;
+import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelConstants;
+import javax.jcr.query.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.Selector;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -103,7 +112,6 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 	public Node createAkbTemplate(Node parentNode, String name)
 			throws RepositoryException {
 		String connectorParentName = "Connectors";
-		String itemsParentName = "Items";
 
 		Node newTemplate = parentNode.addNode(name, AkbTypes.AKB_ENV_TEMPLATE);
 		newTemplate.setProperty(Property.JCR_TITLE, name);
@@ -112,16 +120,113 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 				AkbTypes.AKB_CONNECTOR_FOLDER, AkbTypes.AKB_CONNECTOR_FOLDER);
 		connectorParent.setProperty(Property.JCR_TITLE, connectorParentName);
 
-		Node itemsParent = newTemplate.addNode(AkbTypes.AKB_ITEM_FOLDER,
-				AkbTypes.AKB_ITEM_FOLDER);
-		itemsParent.setProperty(Property.JCR_TITLE, itemsParentName);
-
 		return newTemplate;
 	}
 
 	// ///////////////////////////////////////
 	// / CONNECTORS
 
+	@Override
+	public Node createConnectorAlias(Node templateNode, String name,
+			String connectorType) throws RepositoryException {
+		Node parent = JcrUtils.mkdirs(templateNode,
+				AkbTypes.AKB_CONNECTOR_FOLDER, AkbTypes.AKB_CONNECTOR_FOLDER);
+		Node newConnector = parent.addNode(name, AkbTypes.AKB_CONNECTOR_ALIAS);
+		newConnector.setProperty(Property.JCR_TITLE, name);
+		newConnector.setProperty(AkbNames.AKB_CONNECTOR_TYPE, connectorType);
+
+		// Node defaultConnector =
+		Node defaultConn = newConnector.addNode(
+				AkbNames.AKB_DEFAULT_TEST_CONNECTOR, connectorType);
+		defaultConn.setProperty(AkbNames.AKB_CONNECTOR_ALIAS_NAME, name);
+		return newConnector;
+	}
+
+	@Override
+	public NodeIterator getDefinedAliases(Node itemTemplate,
+			String connectorType) throws RepositoryException {
+		try {
+			Session session = itemTemplate.getSession();
+			QueryManager queryManager = session.getWorkspace()
+					.getQueryManager();
+			QueryObjectModelFactory factory = queryManager.getQOMFactory();
+
+			Selector source = factory.selector(AkbTypes.AKB_CONNECTOR_ALIAS,
+					AkbTypes.AKB_CONNECTOR_ALIAS);
+			Constraint defaultC = factory.descendantNode(
+					source.getSelectorName(), itemTemplate.getPath());
+
+			if (connectorType != null) {
+				Constraint connType = factory.comparison(factory.propertyValue(
+						source.getSelectorName(), AkbNames.AKB_CONNECTOR_TYPE),
+						QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO,
+						factory.literal(session.getValueFactory().createValue(
+								connectorType)));
+				defaultC = factory.and(defaultC, connType);
+			}
+
+			// Order by default by JCR TITLE
+			// TODO check if node definition has MIX_TITLE mixin
+			// TODO Apparently case insensitive ordering is not implemented in
+			// current used JCR implementation
+			Ordering order = factory
+					.ascending(factory.upperCase(factory.propertyValue(
+							source.getSelectorName(), Property.JCR_TITLE)));
+			QueryObjectModel query;
+			query = factory.createQuery(source, defaultC,
+					new Ordering[] { order }, null);
+			QueryResult result = query.execute();
+			return result.getNodes();
+		} catch (RepositoryException e) {
+			throw new AkbException("Unable to list connector", e);
+		}
+	}
+
+	@Override
+	public Node getConnectorByAlias(Node envNode, String aliasName)
+			throws RepositoryException {
+		try {
+			Session session = envNode.getSession();
+			QueryManager queryManager = session.getWorkspace()
+					.getQueryManager();
+			QueryObjectModelFactory factory = queryManager.getQOMFactory();
+
+			Selector source = factory.selector(AkbTypes.AKB_CONNECTOR,
+					AkbTypes.AKB_CONNECTOR);
+			Constraint defaultC = factory.descendantNode(
+					source.getSelectorName(), envNode.getPath());
+
+			Constraint connType = factory.comparison(
+					factory.propertyValue(source.getSelectorName(),
+							AkbNames.AKB_CONNECTOR_ALIAS_NAME),
+					QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO, factory
+							.literal(session.getValueFactory().createValue(
+									aliasName)));
+			defaultC = factory.and(defaultC, connType);
+
+			QueryObjectModel query;
+			query = factory.createQuery(source, defaultC, null, null);
+			QueryResult result = query.execute();
+			NodeIterator ni = result.getNodes();
+
+			if (!ni.hasNext())
+				return null;
+			else {
+				Node connector = ni.nextNode();
+				if (ni.hasNext())
+					throw new AkbException("More than  one alias with name "
+							+ aliasName + " has been defined for environment "
+							+ envNode);
+				else
+					return connector;
+			}
+		} catch (RepositoryException e) {
+			throw new AkbException("Unable to get connector " + aliasName
+					+ " in " + envNode, e);
+		}
+	}
+
+	@Override
 	public boolean testConnector(Node connectorNode) {
 		try {
 			if (connectorNode.isNodeType(AkbTypes.AKB_JDBC_CONNECTOR)) {
@@ -172,15 +277,22 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 	 * Opens a new connection each time. All resources must be cleaned by
 	 * caller.
 	 */
-	public PreparedStatement prepareJdbcQuery(Node node) {
+	public PreparedStatement prepareJdbcQuery(Node activeEnv, Node node) {
 		PreparedStatement statement = null;
 		try {
+			
 			if (node.isNodeType(AkbTypes.AKB_JDBC_QUERY)) {
-				String sqlQuery = node.getProperty(AKB_QUERY_TEXT).getString();
-
 				String connectorPath = node.getProperty(AKB_USED_CONNECTOR)
 						.getString();
 				Node connectorNode = node.getSession().getNode(connectorPath);
+				
+				if (activeEnv != null){
+					String aliasName = connectorNode.getProperty(Property.JCR_TITLE).getString();
+					connectorNode = getConnectorByAlias(activeEnv, aliasName); 
+				}
+
+				String sqlQuery = node.getProperty(AKB_QUERY_TEXT).getString();
+
 				String connectorUrl = connectorNode.getProperty(
 						AKB_CONNECTOR_URL).getString();
 				String connectorUser = connectorNode.getProperty(
@@ -210,7 +322,7 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 		}
 	}
 
-	public String executeCommand(Node node) {
+	public String executeCommand(Node activeEnv, Node node) {
 		try {
 			String command = node.getProperty(AkbNames.AKB_COMMAND_TEXT)
 					.getString();
@@ -261,7 +373,7 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 
 	}
 
-	public String retrieveFile(Node node) {
+	public String retrieveFile(Node activeEnv, Node node) {
 		try {
 			String filePath = node.getProperty(AkbNames.AKB_FILE_PATH)
 					.getString();

@@ -1,6 +1,7 @@
 package org.argeo.slc.akb.ui;
 
 import java.util.Calendar;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.PropertyType;
@@ -8,6 +9,9 @@ import javax.jcr.RepositoryException;
 
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.utils.AkbJcrUtils;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -23,6 +27,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.AbstractFormPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.menus.CommandContributionItem;
+import org.eclipse.ui.menus.CommandContributionItemParameter;
+import org.eclipse.ui.services.IServiceLocator;
 
 /** Some helper methods that factorize widely used snippets in people UI */
 public class AkbUiUtils {
@@ -51,16 +58,17 @@ public class AkbUiUtils {
 		text.setEnabled(AkbJcrUtils.isNodeCheckedOutByMe(entity));
 		return tmpStr;
 	}
-	
-	
+
 	/**
 	 * Shortcut to refresh a <code>Text</code> widget given a Node in a form and
-	 * a property Name. Also manages its enable state and set a default message if corresponding Text value is empty 
+	 * a property Name. Also manages its enable state and set a default message
+	 * if corresponding Text value is empty
 	 */
 	public static String refreshFormTextWidget(Text text, Node entity,
 			String propName, String defaultMsg) {
 		String tmpStr = refreshFormTextWidget(text, entity, propName);
-		if (AkbJcrUtils.isEmptyString(tmpStr) && AkbJcrUtils.checkNotEmptyString(defaultMsg))
+		if (AkbJcrUtils.isEmptyString(tmpStr)
+				&& AkbJcrUtils.checkNotEmptyString(defaultMsg))
 			text.setMessage(defaultMsg);
 		return tmpStr;
 	}
@@ -267,4 +275,48 @@ public class AkbUiUtils {
 		formData.bottom = new FormAttachment(bottom, 0);
 		return formData;
 	}
+
+	// //////////////////////////////
+	// / COMMANDS
+	public static CommandContributionItem createContributionItem(
+			IMenuManager menuManager, IServiceLocator locator, String itemId,
+			String cmdId, String label, ImageDescriptor icon,
+			Map<String, String> params) {
+
+		CommandContributionItemParameter contributionItemParameter = new CommandContributionItemParameter(
+				locator, itemId, cmdId, SWT.PUSH);
+
+		contributionItemParameter.label = label;
+		contributionItemParameter.icon = icon;
+
+		if (params != null)
+			contributionItemParameter.parameters = params;
+		CommandContributionItem cci = new CommandContributionItem(
+				contributionItemParameter);
+		return cci;
+	}
+
+	/**
+	 * Commodities the refresh of a single command with a map of parameters in a
+	 * Menu.aboutToShow method to simplify further development
+	 * 
+	 * @param menuManager
+	 * @param locator
+	 * @param cmdId
+	 * @param label
+	 * @param iconPath
+	 * @param showCommand
+	 */
+	public static void refreshParameterizedCommand(IMenuManager menuManager,
+			IServiceLocator locator, String itemId, String cmdId, String label,
+			ImageDescriptor icon, boolean showCommand,
+			Map<String, String> params) {
+		IContributionItem ici = menuManager.find(itemId);
+		if (ici != null)
+			menuManager.remove(ici);
+		if (showCommand)
+			menuManager.add(createContributionItem(menuManager, locator,
+					itemId, cmdId, label, icon, params));
+	}
+
 }

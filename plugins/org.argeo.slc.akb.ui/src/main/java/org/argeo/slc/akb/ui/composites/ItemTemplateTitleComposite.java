@@ -8,8 +8,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.argeo.eclipse.ui.utils.CommandUtils;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
+import org.argeo.slc.akb.AkbService;
 import org.argeo.slc.akb.ui.AkbUiUtils;
 import org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor;
 import org.argeo.slc.akb.utils.AkbJcrUtils;
@@ -34,6 +36,7 @@ public class ItemTemplateTitleComposite extends Composite {
 	// private final static Log log =
 	// LogFactory.getLog(MixTitleComposite.class);
 
+	private final AkbService akbService;
 	private final Node akbNode;
 	private final FormToolkit toolkit;
 	private final IManagedForm form;
@@ -47,11 +50,13 @@ public class ItemTemplateTitleComposite extends Composite {
 	private List<Node> definedAliases;
 
 	public ItemTemplateTitleComposite(Composite parent, int style,
-			FormToolkit toolkit, IManagedForm form, Node akbNode) {
+			FormToolkit toolkit, IManagedForm form, Node akbNode,
+			AkbService akbService) {
 		super(parent, style);
 		this.akbNode = akbNode;
 		this.toolkit = toolkit;
 		this.form = form;
+		this.akbService = akbService;
 		populate();
 		toolkit.adapt(this);
 	}
@@ -92,17 +97,6 @@ public class ItemTemplateTitleComposite extends Composite {
 							"No selected alias");
 			}
 		});
-		//
-		// final Link testAliasLk= new Link(parent, SWT.NONE);
-		// openAliasLk.setText("<a> Edit Alias </a>");
-		// openAliasLk.addSelectionListener(new SelectionAdapter() {
-		// private static final long serialVersionUID = 1L;
-		//
-		// @Override
-		// public void widgetSelected(final SelectionEvent event) {
-		// MessageDialog.openInformation(getShell(), "test", "test");
-		// }
-		// });
 
 		// 3rd line: description
 		Label lbl = toolkit.createLabel(parent, "Description");
@@ -147,8 +141,10 @@ public class ItemTemplateTitleComposite extends Composite {
 
 					// set new alias
 					Node newAlias = definedAliases.get(selIndex);
-					akbNode.setProperty(AkbNames.AKB_USED_CONNECTOR,
-							newAlias.getPath());
+
+					// Only relies on the alias
+					akbNode.setProperty(AkbNames.AKB_USED_CONNECTOR, newAlias
+							.getProperty(Property.JCR_TITLE).getString());
 					part.markDirty();
 				} catch (RepositoryException e) {
 					throw new AkbException(
@@ -161,7 +157,15 @@ public class ItemTemplateTitleComposite extends Composite {
 	}
 
 	private void refreshTypeCmbValues() {
-		List<Node> newAliases = AkbJcrUtils.getDefinedAliasForNode(akbNode);
+		List<Node> newAliases;
+		try {
+			newAliases = JcrUtils.nodeIteratorToList(akbService
+					.getDefinedAliases(AkbJcrUtils.getCurrentTemplate(akbNode),
+							AkbJcrUtils.getAliasTypeForNode(akbNode)));
+		} catch (RepositoryException e) {
+			throw new AkbException("Unable to get defined aliases for node "
+					+ akbNode, e);
+		}
 		boolean hasChanged = false;
 		// manually ckeck if something has changed
 		if (definedAliases == null

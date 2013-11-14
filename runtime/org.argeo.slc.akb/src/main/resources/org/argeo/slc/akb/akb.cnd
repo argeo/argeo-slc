@@ -25,28 +25,29 @@ mixin
 // GENERIC TYPE FOR A CONNECTOR
 [akb:connector] > nt:unstructured, mix:title  
 - akb:connectorUrl (STRING)
+// the name of the corresponding alias. We assume it is unique.
+- akb:connectorName (STRING)
+
 // add argeo keyring
 
 // ease retrieval and enable adding alias specific properties
-[akb:connectorAlias] > akb:connector  
-// Use akb:connectorUrl property to define default test connector
-
+[akb:connectorAlias] > nt:unstructured, mix:title
++ defaultTestConnector (akb:connector) 
+- akb:connectorType (STRING) 
 
 // HELPER
 [akb:connectorFolder] > nt:unstructured, mix:title  
 + * (akb:connector, akb:connectorAlias) * 
 
-    
 
-// Various connector types as mixin
-[akb:sshConnector]  
-mixin
+// Various connectors    
+[akb:sshConnector] > akb:connector
 
-[akb:jdbcConnector]  
-mixin
 
-[akb:jcrConnector]  
-mixin
+[akb:jdbcConnector] > akb:connector 
+
+
+[akb:jcrConnector] > akb:connector  
 
 
     

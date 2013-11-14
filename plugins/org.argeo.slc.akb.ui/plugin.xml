@@ -82,8 +82,16 @@
      			name="Corresponding JCR node type">
  			</commandParameter>
         	<commandParameter
+     			id="param.nodeSubtype"
+     			name="A subtype if needed">
+ 			</commandParameter>
+        	<commandParameter
      			id="param.nodeJcrId"
      			name="The Node JCR ID if needed">
+ 			</commandParameter>
+        	<commandParameter
+     			id="param.currEnvJcrId"
+     			name="The current environment JCR ID, might be an active or a template env">
  			</commandParameter>
         	<commandParameter
      			id="param.parentNodeJcrId"
@@ -99,9 +107,45 @@
      			name="The Node JCR ID if needed">
  			</commandParameter>
   		</command>
+		<command
+			defaultHandler="org.argeo.slc.akb.ui.commands.ForceRefresh"
+			id="org.argeo.slc.akb.ui.forceRefresh"
+			name="Force refresh of the current active part if such an action is possible">
+  		</command>
+  		<command
+			defaultHandler="org.argeo.slc.akb.ui.commands.OpenTracker"
+			id="org.argeo.slc.akb.ui.openTracker"
+			name="Report a bug in Argeo's tracker">
+  		</command>
 	</extension>		
 	<!-- Menus -->
 	<extension
 		point="org.eclipse.ui.menus">
+		<menuContribution
+        	locationURI="toolbar:org.argeo.slc.akb.ui.akbTemplatesTreeView">
+            <command
+            	commandId="org.argeo.slc.akb.ui.forceRefresh"
+                icon="icons/refresh.png"
+	                label="Refresh"
+                tooltip="Refresh the whole browser">
+            </command>
+        </menuContribution>
+      
+      	<menuContribution
+			locationURI="menu:org.eclipse.ui.main.menu">
+			<menu
+				id="help"
+				label="Help">
+				<command
+					commandId="org.argeo.slc.akb.ui.openTracker"
+					label="Report a bug..."
+					style="push">
+				</command>
+				<command
+					commandId="org.eclipse.ui.help.aboutAction"
+					label="About"
+					style="push">
+				</command> 		</menu>
+      </menuContribution>	
 	</extension>
 </plugin>

@@ -10,7 +10,6 @@ public interface AkbTypes {
 	public final static String AKB_ENV = "akb:env";
 
 	// Connectors
-
 	public final static String AKB_CONNECTOR_FOLDER = "akb:connectorFolder";
 	public final static String AKB_CONNECTOR = "akb:connector";
 	public final static String AKB_CONNECTOR_ALIAS = "akb:connectorAlias";

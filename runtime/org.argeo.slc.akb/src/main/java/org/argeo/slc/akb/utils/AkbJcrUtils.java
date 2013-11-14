@@ -20,12 +20,14 @@ import javax.jcr.query.RowIterator;
 import javax.jcr.query.qom.Constraint;
 import javax.jcr.query.qom.Ordering;
 import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelConstants;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.PropertyDiff;
 import org.argeo.slc.akb.AkbException;
+import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.AkbTypes;
 
 /** Some static utils methods that might be factorized in a near future */
@@ -54,18 +56,26 @@ public class AkbJcrUtils {
 	/**
 	 * Return defined alias in the current environment given current item type
 	 */
+	@Deprecated
 	public static List<Node> getDefinedAliasForNode(Node itemTemplate) {
 		try {
 			Session session = itemTemplate.getSession();
 			QueryManager queryManager = session.getWorkspace()
 					.getQueryManager();
 			QueryObjectModelFactory factory = queryManager.getQOMFactory();
-			String nodeType = getAliasTypeForNode(itemTemplate);
 
-			Selector source = factory.selector(nodeType, nodeType);
+			Selector source = factory.selector(AkbTypes.AKB_CONNECTOR_ALIAS,
+					AkbTypes.AKB_CONNECTOR_ALIAS);
 			String basePath = getCurrentEnvBasePath(itemTemplate);
 			Constraint defaultC = factory.descendantNode(
 					source.getSelectorName(), basePath);
+
+			String nodeType = getAliasTypeForNode(itemTemplate);
+			Constraint connType = factory.comparison(factory.propertyValue(
+					source.getSelectorName(), AkbNames.AKB_CONNECTOR_TYPE),
+					QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO, factory
+							.literal(session.getValueFactory().createValue(
+									nodeType)));
 
 			// Order by default by JCR TITLE
 			// TODO check if node definition has MIX_TITLE mixin
@@ -75,8 +85,9 @@ public class AkbJcrUtils {
 					.ascending(factory.upperCase(factory.propertyValue(
 							source.getSelectorName(), Property.JCR_TITLE)));
 			QueryObjectModel query;
-			query = factory.createQuery(source, defaultC,
-					new Ordering[] { order }, null);
+			query = factory.createQuery(source,
+					factory.and(defaultC, connType), new Ordering[] { order },
+					null);
 			QueryResult result = query.execute();
 
 			NodeIterator ni = result.getNodes();
@@ -84,6 +95,33 @@ public class AkbJcrUtils {
 			return JcrUtils.nodeIteratorToList(ni);
 		} catch (RepositoryException e) {
 			throw new AkbException("Unable to list connector", e);
+		}
+	}
+
+	/**
+	 * Return current template depending on the passed node
+	 */
+	public static Node getCurrentTemplate(Node akbNode) {
+		try {
+			if (akbNode.getDepth() == 0)
+				// no base path for root node
+				return null;
+			Node parNode = akbNode.getParent();
+
+			while (parNode != null)
+				if (akbNode.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
+					return akbNode;
+				else if (parNode.getDepth() == 0)
+					// we found not fitting node
+					return null;
+				else {
+					akbNode = parNode;
+					parNode = parNode.getParent();
+				}
+			return null;
+		} catch (RepositoryException re) {
+			throw new AkbException("Unable to find template for node "
+					+ akbNode, re);
 		}
 	}
 

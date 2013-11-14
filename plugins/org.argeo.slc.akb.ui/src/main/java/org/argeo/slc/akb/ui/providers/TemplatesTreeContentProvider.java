@@ -15,13 +15,15 @@
  */
 package org.argeo.slc.akb.ui.providers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
-import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
+import org.argeo.slc.akb.AkbTypes;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -54,8 +56,15 @@ public class TemplatesTreeContentProvider implements ITreeContentProvider {
 
 	public Object[] getChildren(Object parent) {
 		try {
-			List<Node> nodes = JcrUtils.nodeIteratorToList(((Node) parent)
-					.getNodes());
+			NodeIterator ni = ((Node) parent).getNodes();
+			List<Node> nodes = new ArrayList<Node>();
+
+			while (ni.hasNext()) {
+				Node currNode = ni.nextNode();
+				if (!currNode.isNodeType(AkbTypes.AKB_CONNECTOR_FOLDER))
+					nodes.add(currNode);
+			}
+
 			return nodes.toArray();
 		} catch (RepositoryException e) {
 			throw new AkbException("Error while getting children nodes", e);
@@ -64,6 +73,7 @@ public class TemplatesTreeContentProvider implements ITreeContentProvider {
 
 	public boolean hasChildren(Object parent) {
 		try {
+			// refine this
 			return ((Node) parent).hasNodes();
 		} catch (RepositoryException e) {
 			throw new AkbException("Error while checking children nodes", e);

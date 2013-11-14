@@ -11,6 +11,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbService;
 import org.argeo.slc.akb.AkbTypes;
+import org.argeo.slc.akb.ui.AkbMessages;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
 import org.argeo.slc.akb.ui.dialogs.AddItemDialog;
 import org.argeo.slc.akb.ui.editors.AkbNodeEditorInput;
@@ -48,11 +49,15 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 
 	public final static String PARAM_NODE_JCR_ID = "param.nodeJcrId";
 	public final static String PARAM_NODE_TYPE = "param.nodeType";
+	public final static String PARAM_NODE_SUBTYPE = "param.nodeSubtype";
+	public final static String PARAM_CURR_ENV_JCR_ID = "param.currEnvJcrId";
 	public final static String PARAM_PARENT_NODE_JCR_ID = "param.parentNodeJcrId";
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 		String nodeType = event.getParameter(PARAM_NODE_TYPE);
+		String nodeSubtype = event.getParameter(PARAM_NODE_SUBTYPE);
+		String currEnvJcrId = event.getParameter(PARAM_CURR_ENV_JCR_ID);
 		String nodeJcrId = event.getParameter(PARAM_NODE_JCR_ID);
 		String parentNodeJcrId = event.getParameter(PARAM_PARENT_NODE_JCR_ID);
 
@@ -70,7 +75,8 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 					throw new AkbException(
 							"Define a parent node to create a new node");
 				else
-					node = createNewNode(session, nodeType, parentNodeJcrId);
+					node = createNewNode(session, nodeType, nodeSubtype,
+							parentNodeJcrId);
 			else
 				node = session.getNodeByIdentifier(nodeJcrId);
 
@@ -84,7 +90,7 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 			if (editorId == null)
 				return null;
 
-			AkbNodeEditorInput eei = new AkbNodeEditorInput(
+			AkbNodeEditorInput eei = new AkbNodeEditorInput(currEnvJcrId,
 					node.getIdentifier());
 
 			currentPage.openEditor(eei, editorId);
@@ -102,7 +108,8 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 	}
 
 	private Node createNewNode(Session session, String nodeType,
-			String parentNodeJcrId) throws RepositoryException {
+			String nodeSubtype, String parentNodeJcrId)
+			throws RepositoryException {
 		Node node = null;
 
 		if (AkbTypes.AKB_ITEM.equals(nodeType)) {
@@ -112,12 +119,25 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 			dialog.open();
 			node = dialog.getNewNode();
 		} else {
-			String name = SingleValue.ask("New name", "Create AKB item");
+			String name = SingleValue
+					.ask("Create "
+							+ AkbMessages
+									.getLabelForType(nodeSubtype == null ? nodeType
+											: nodeSubtype),
+							"Please enter a name for the corresponding "
+									+ AkbMessages
+											.getLabelForType(nodeSubtype == null ? nodeType
+													: nodeSubtype));
 			if (name == null)
 				return null;
 			if (AkbTypes.AKB_ENV_TEMPLATE.equals(nodeType)) {
 				node = akbService.createAkbTemplate(
 						session.getNodeByIdentifier(parentNodeJcrId), name);
+			} else if (AkbTypes.AKB_CONNECTOR_ALIAS.equals(nodeType)) {
+				// the Jcr ID of the corresponding template must be passed to
+				// create a new alias
+				node = session.getNodeByIdentifier(parentNodeJcrId);
+				akbService.createConnectorAlias(node, name, nodeSubtype);
 			} else {
 				Node parentNode = session.getNodeByIdentifier(parentNodeJcrId);
 				node = parentNode.addNode(name, nodeType);

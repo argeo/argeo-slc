@@ -6,6 +6,7 @@
 	<bean id="envTemplateEditor" class="org.argeo.slc.akb.ui.editors.EnvTemplateEditor"
 		scope="prototype">
 		<property name="repository" ref="repository" />
+		<property name="akbService" ref="akbService" />
 	</bean>
 
 	<bean id="connectorAliasEditor" class="org.argeo.slc.akb.ui.editors.ConnectorAliasEditor"

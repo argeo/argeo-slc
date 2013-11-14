@@ -1,25 +1,22 @@
 package org.argeo.slc.akb.ui.editors;
 
+import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
-import org.argeo.slc.akb.AkbTypes;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
 import org.argeo.slc.akb.ui.AkbUiUtils;
 import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
@@ -36,18 +33,25 @@ public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 	public final static String ID = AkbUiPlugin.PLUGIN_ID
 			+ ".connectorAliasEditor";
 
-	private String[] connectorTypesLbl = new String[] { "JDBC", "SSH", "JCR" };
-	private String[] connectorTypes = new String[] {
-			AkbTypes.AKB_JDBC_CONNECTOR, AkbTypes.AKB_SSH_CONNECTOR,
-			AkbTypes.AKB_JCR_CONNECTOR };
-
 	private IManagedForm managedForm;
+	private Node activeConnector;
 
 	/* CONTENT CREATION */
 	@Override
 	public void populateMainPage(Composite parent, IManagedForm managedForm) {
 		parent.setLayout(AkbUiUtils.gridLayoutNoBorder());
+
+		// TODO clean this
+		// Initialization
 		this.managedForm = managedForm;
+		// enable dynamic change of the active connector
+		try {
+			activeConnector = getAkbNode().getNode(
+					AkbNames.AKB_DEFAULT_TEST_CONNECTOR);
+		} catch (RepositoryException e) {
+			throw new AkbException("unable to retrieve active connector node",
+					e);
+		}
 
 		// First line main info
 		Composite firstLine = getToolkit()
@@ -64,22 +68,18 @@ public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 	}
 
 	private void createConnectorAliasInfoCmp(Composite parent) {
-		parent.setLayout(new GridLayout(4, false));
+		parent.setLayout(new GridLayout(2, false));
 
-		// first line: connector type and name
-		getToolkit().createLabel(parent, "Connector Type");
-		final Combo typeCmb = new Combo(parent, SWT.READ_ONLY);
-		typeCmb.setItems(connectorTypesLbl);
-
-		getToolkit().createLabel(parent, "Name");
+		// Name
 		final Text titleTxt = getToolkit().createText(parent, "", SWT.BORDER);
-		GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+		GridData gd = new GridData(SWT.FILL, SWT.TOP, false, false);
+		gd.minimumWidth = 200;
+		gd.widthHint = 200;
 		titleTxt.setLayoutData(gd);
 
-		// 2nd line: description
-		getToolkit().createLabel(parent, "Short Description");
+		// Description
 		final Text descTxt = getToolkit().createText(parent, "", SWT.BORDER);
-		gd = new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1);
+		gd = new GridData(SWT.FILL, SWT.TOP, true, false);
 		descTxt.setLayoutData(gd);
 
 		// Part Management
@@ -88,12 +88,9 @@ public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 				super.refresh();
 				// update display value
 				AkbUiUtils.refreshFormTextWidget(titleTxt, getAkbNode(),
-						Property.JCR_TITLE);
+						Property.JCR_TITLE, "Name");
 				AkbUiUtils.refreshFormTextWidget(descTxt, getAkbNode(),
-						Property.JCR_DESCRIPTION);
-				typeCmb.select(getCurrTypeIndex());
-				typeCmb.setEnabled(AkbJcrUtils
-						.isNodeCheckedOutByMe(getAkbNode()));
+						Property.JCR_DESCRIPTION, "Short description");
 			}
 		};
 		// Listeners
@@ -102,48 +99,12 @@ public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 		AkbUiUtils.addTextModifyListener(descTxt, getAkbNode(),
 				Property.JCR_DESCRIPTION, part);
 
-		typeCmb.addModifyListener(new ModifyListener() {
-			@Override
-			public void modifyText(ModifyEvent event) {
-
-				try { // TODO enhance this
-						// retrieve old and new node type
-					int oldIndex = getCurrTypeIndex();
-					int selIndex = typeCmb.getSelectionIndex();
-
-					// insure something has really been modified
-					if (selIndex < 0 || oldIndex == selIndex)
-						return;
-
-					// remove old mixin, add new and notify form
-					if (oldIndex > -1)
-						getAkbNode().removeMixin(connectorTypes[oldIndex]);
-					getAkbNode().addMixin(connectorTypes[selIndex]);
-					part.markDirty();
-				} catch (RepositoryException e) {
-					throw new AkbException(
-							"Error while updating connector type", e);
-				}
-			}
-		});
 		managedForm.addPart(part);
 	}
 
-	private int getCurrTypeIndex() {
-		try {
-			int oldIndex = -1;
-			for (int i = 0; i < connectorTypes.length; i++) {
-				if (getAkbNode().isNodeType(connectorTypes[i])) {
-					oldIndex = i;
-					break;
-
-				}
-			}
-			return oldIndex;
-		} catch (RepositoryException e) {
-			throw new AkbException("Error while getting connector type", e);
-		}
-
+	protected void updatePartNameAndToolTip() {
+		super.updatePartNameAndToolTip();
+		// TODO update editor image
 	}
 
 	private void createDefaultTestConnectorCmp(Composite parent) {
@@ -155,8 +116,8 @@ public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 
 		group.setText(groupTitle);
 		group.setLayout(AkbUiUtils.gridLayoutNoBorder());
-		// 1st line: the URL
 
+		// 1st line: the URL
 		Composite firstLine = getToolkit().createComposite(group);
 		firstLine.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		firstLine.setLayout(new GridLayout(2, false));
@@ -179,32 +140,34 @@ public class ConnectorAliasEditor extends AbstractAkbNodeEditor {
 			public void refresh() {
 				super.refresh();
 				// update display value
-				AkbUiUtils.refreshFormTextWidget(urlTxt, getAkbNode(),
+				AkbUiUtils.refreshFormTextWidget(urlTxt, activeConnector,
 						AkbNames.AKB_CONNECTOR_URL);
-				AkbUiUtils.refreshFormTextWidget(userTxt, getAkbNode(),
+				AkbUiUtils.refreshFormTextWidget(userTxt, activeConnector,
 						AkbNames.AKB_CONNECTOR_USER);
 			}
 		};
 		// Listeners
-		AkbUiUtils.addTextModifyListener(urlTxt, getAkbNode(),
+		AkbUiUtils.addTextModifyListener(urlTxt, activeConnector,
 				AkbNames.AKB_CONNECTOR_URL, part);
-		AkbUiUtils.addTextModifyListener(userTxt, getAkbNode(),
+		AkbUiUtils.addTextModifyListener(userTxt, activeConnector,
 				AkbNames.AKB_CONNECTOR_USER, part);
 
 		testBtn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				boolean testSuccesfull;
+
 				try {
-					testSuccesfull = getAkbService()
-							.testConnector(getAkbNode());
+					testSuccesfull = getAkbService().testConnector(
+							activeConnector);
 				} catch (Exception e1) {
 					testSuccesfull = false;
 					ErrorFeedback.show("Cannot test connection", e1);
 				}
 
-				String name = AkbJcrUtils.get(getAkbNode(), Property.JCR_TITLE);
-				String url = AkbJcrUtils.get(getAkbNode(),
+				String name = AkbJcrUtils.get(activeConnector,
+						Property.JCR_TITLE);
+				String url = AkbJcrUtils.get(activeConnector,
 						AkbNames.AKB_CONNECTOR_URL);
 
 				String msg = "to " + name + " (" + url + ")";

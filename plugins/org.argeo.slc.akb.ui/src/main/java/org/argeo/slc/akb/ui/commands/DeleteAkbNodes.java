@@ -9,6 +9,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
 import org.argeo.slc.akb.ui.editors.AkbNodeEditorInput;
+import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -47,8 +48,12 @@ public class DeleteAkbNodes extends AbstractHandler {
 			if (nodeJcrId != null)
 				node = session.getNodeByIdentifier(nodeJcrId);
 
+			// We must be in a template to delete nodes...
+			Node template = AkbJcrUtils.getCurrentTemplate(node);
+
 			IEditorPart currPart = currentPage
-					.findEditor(new AkbNodeEditorInput(nodeJcrId));
+					.findEditor(new AkbNodeEditorInput(
+							template.getIdentifier(), nodeJcrId));
 			if (currPart != null)
 				currPart.dispose();
 

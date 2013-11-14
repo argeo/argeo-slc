@@ -35,7 +35,9 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /** Test JDBC. */
 public class JdbcTestPage extends FormPage implements AkbNames {
-	private Node node;
+	private Node currItem;
+	// A template or an active environment
+	private Node currEnv;
 	private AkbService akbService;
 
 	private TableViewer viewer = null;
@@ -44,10 +46,11 @@ public class JdbcTestPage extends FormPage implements AkbNames {
 	private PreparedStatement statement;
 
 	public JdbcTestPage(AkbService akbService, FormEditor editor, String id,
-			String title, Node node) {
+			String title, Node currEnv, Node currItem) {
 		super(editor, id, title);
 		this.akbService = akbService;
-		this.node = node;
+		this.currItem = currItem;
+		this.currEnv = currEnv;
 	}
 
 	protected void createFormContent(IManagedForm managedForm) {
@@ -67,8 +70,8 @@ public class JdbcTestPage extends FormPage implements AkbNames {
 		viewer.setContentProvider(contentProvider);
 		// viewer.setLabelProvider(new ColumnLabelProvider(){});
 
-		statement = akbService.prepareJdbcQuery(node);
-		PrivilegedJob job = new PrivilegedJob("Execute query on " + node) {
+		statement = akbService.prepareJdbcQuery(currEnv, currItem);
+		PrivilegedJob job = new PrivilegedJob("Execute query on " + currItem) {
 
 			@Override
 			protected IStatus doRun(IProgressMonitor progressMonitor) {
@@ -84,7 +87,7 @@ public class JdbcTestPage extends FormPage implements AkbNames {
 							});
 					return Status.OK_STATUS;
 				} catch (SQLException e) {
-					throw new SlcException("Cannot execute " + node, e);
+					throw new SlcException("Cannot execute " + currItem, e);
 				}
 			}
 		};

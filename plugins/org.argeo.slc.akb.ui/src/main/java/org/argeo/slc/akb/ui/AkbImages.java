@@ -1,5 +1,6 @@
 package org.argeo.slc.akb.ui;
 
+import org.argeo.slc.akb.AkbTypes;
 import org.eclipse.swt.graphics.Image;
 
 /** Shared icons. */
@@ -26,4 +27,13 @@ public class AkbImages {
 			"icons/sshCommand.png").createImage();
 	public final static Image SSH_FILE = AkbUiPlugin.getImageDescriptor(
 			"icons/sshFile.gif").createImage();
+
+	public static Image getImageForAkbNodeType(String nodeType) {
+		if (AkbTypes.AKB_JDBC_CONNECTOR.equals(nodeType))
+			return JDBC_CONNECTOR;
+		else if (AkbTypes.AKB_SSH_CONNECTOR.equals(nodeType))
+			return SSH_CONNECTOR;
+		else
+			return null;
+	}
 }
