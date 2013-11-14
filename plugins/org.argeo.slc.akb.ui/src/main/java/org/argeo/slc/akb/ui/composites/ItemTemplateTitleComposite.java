@@ -1,11 +1,12 @@
 package org.argeo.slc.akb.ui.composites;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
@@ -37,7 +38,8 @@ public class ItemTemplateTitleComposite extends Composite {
 	// LogFactory.getLog(MixTitleComposite.class);
 
 	private final AkbService akbService;
-	private final Node akbNode;
+	private final Node envNode;
+	private final Node itemNode;
 	private final FormToolkit toolkit;
 	private final IManagedForm form;
 	// Don't forget to unregister on dispose
@@ -45,15 +47,26 @@ public class ItemTemplateTitleComposite extends Composite {
 
 	// To enable set focus
 	private Text titleTxt;
-	private Combo typeCmb;
+	private Combo aliasCmb;
 
 	private List<Node> definedAliases;
 
+	/**
+	 * 
+	 * @param parent
+	 * @param style
+	 * @param toolkit
+	 * @param form
+	 * @param envNode
+	 * @param itemNode
+	 * @param akbService
+	 */
 	public ItemTemplateTitleComposite(Composite parent, int style,
-			FormToolkit toolkit, IManagedForm form, Node akbNode,
-			AkbService akbService) {
+			FormToolkit toolkit, IManagedForm form, Node envNode,
+			Node itemNode, AkbService akbService) {
 		super(parent, style);
-		this.akbNode = akbNode;
+		this.envNode = envNode;
+		this.itemNode = itemNode;
 		this.toolkit = toolkit;
 		this.form = form;
 		this.akbService = akbService;
@@ -75,23 +88,27 @@ public class ItemTemplateTitleComposite extends Composite {
 
 		// Second line: alias management
 		toolkit.createLabel(parent, "Alias");
-		typeCmb = new Combo(parent, SWT.READ_ONLY);
-		toolkit.adapt(typeCmb, false, false);
+		aliasCmb = new Combo(parent, SWT.READ_ONLY);
+		toolkit.adapt(aliasCmb, false, false);
 		gd = new GridData(SWT.FILL, SWT.TOP, true, false, 3, 1);
-		typeCmb.setLayoutData(gd);
+		aliasCmb.setLayoutData(gd);
 
 		final Link openAliasLk = new Link(parent, SWT.NONE);
 		toolkit.adapt(openAliasLk, false, false);
-		openAliasLk.setText("<a> Edit Alias </a>");
+		openAliasLk.setText("<a>Edit Alias</a>");
 		openAliasLk.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(final SelectionEvent event) {
-				int index = typeCmb.getSelectionIndex();
+				int index = aliasCmb.getSelectionIndex();
 				if (index != -1) {
 					Node currAlias = definedAliases.get(index);
 					String id = AkbJcrUtils.getIdentifierQuietly(currAlias);
-					CommandUtils.callCommand(OpenAkbNodeEditor.ID,
-							OpenAkbNodeEditor.PARAM_NODE_JCR_ID, id);
+					Map<String, String> params = new HashMap<String, String>();
+					params.put(OpenAkbNodeEditor.PARAM_NODE_JCR_ID, id);
+					params.put(OpenAkbNodeEditor.PARAM_CURR_ENV_JCR_ID,
+							AkbJcrUtils.getIdentifierQuietly(envNode));
+
+					CommandUtils.callCommand(OpenAkbNodeEditor.ID, params);
 				} else
 					MessageDialog.openError(getShell(), "Error",
 							"No selected alias");
@@ -111,29 +128,29 @@ public class ItemTemplateTitleComposite extends Composite {
 			public void refresh() {
 				super.refresh();
 				// update display value
-				AkbUiUtils.refreshFormTextWidget(titleTxt, akbNode,
+				AkbUiUtils.refreshFormTextWidget(titleTxt, itemNode,
 						Property.JCR_TITLE);
-				AkbUiUtils.refreshFormTextWidget(descTxt, akbNode,
+				AkbUiUtils.refreshFormTextWidget(descTxt, itemNode,
 						Property.JCR_DESCRIPTION);
 
 				refreshTypeCmbValues();
-				typeCmb.select(getCurrAliasIndex());
-				typeCmb.setEnabled(AkbJcrUtils.isNodeCheckedOutByMe(akbNode));
+				aliasCmb.select(getCurrAliasIndex());
+				aliasCmb.setEnabled(AkbJcrUtils.isNodeCheckedOutByMe(itemNode));
 			}
 		};
 
 		// Listeners
-		AkbUiUtils.addTextModifyListener(titleTxt, akbNode, Property.JCR_TITLE,
-				part);
-		AkbUiUtils.addTextModifyListener(descTxt, akbNode,
+		AkbUiUtils.addTextModifyListener(titleTxt, itemNode,
+				Property.JCR_TITLE, part);
+		AkbUiUtils.addTextModifyListener(descTxt, itemNode,
 				Property.JCR_DESCRIPTION, part);
 
-		typeCmb.addModifyListener(new ModifyListener() {
+		aliasCmb.addModifyListener(new ModifyListener() {
 			@Override
 			public void modifyText(ModifyEvent event) {
 				try {
 					int oldIndex = getCurrAliasIndex();
-					int selIndex = typeCmb.getSelectionIndex();
+					int selIndex = aliasCmb.getSelectionIndex();
 
 					// insure something has really been modified
 					if (selIndex < 0 || oldIndex == selIndex)
@@ -143,7 +160,7 @@ public class ItemTemplateTitleComposite extends Composite {
 					Node newAlias = definedAliases.get(selIndex);
 
 					// Only relies on the alias
-					akbNode.setProperty(AkbNames.AKB_USED_CONNECTOR, newAlias
+					itemNode.setProperty(AkbNames.AKB_USED_CONNECTOR, newAlias
 							.getProperty(Property.JCR_TITLE).getString());
 					part.markDirty();
 				} catch (RepositoryException e) {
@@ -160,11 +177,12 @@ public class ItemTemplateTitleComposite extends Composite {
 		List<Node> newAliases;
 		try {
 			newAliases = JcrUtils.nodeIteratorToList(akbService
-					.getDefinedAliases(AkbJcrUtils.getCurrentTemplate(akbNode),
-							AkbJcrUtils.getAliasTypeForNode(akbNode)));
+					.getDefinedAliases(
+							AkbJcrUtils.getCurrentTemplate(itemNode),
+							AkbJcrUtils.getAliasTypeForNode(itemNode)));
 		} catch (RepositoryException e) {
 			throw new AkbException("Unable to get defined aliases for node "
-					+ akbNode, e);
+					+ itemNode, e);
 		}
 		boolean hasChanged = false;
 		// manually ckeck if something has changed
@@ -187,7 +205,7 @@ public class ItemTemplateTitleComposite extends Composite {
 			int i = 0;
 			for (Node node : definedAliases)
 				names[i++] = AkbJcrUtils.get(node, Property.JCR_TITLE);
-			typeCmb.setItems(names);
+			aliasCmb.setItems(names);
 		}
 	}
 
@@ -198,25 +216,12 @@ public class ItemTemplateTitleComposite extends Composite {
 	 */
 	private int getCurrAliasIndex() {
 		try {
-			String path = null;
-			int currAliasIndex = -1;
-			if (akbNode.hasProperty(AkbNames.AKB_USED_CONNECTOR))
-				path = akbNode.getProperty(AkbNames.AKB_USED_CONNECTOR)
-						.getString();
-
-			Session session = akbNode.getSession();
-			if (path != null && session.nodeExists(path)) {
-				for (int i = 0; i < definedAliases.size(); i++) {
-					if (path.equals(definedAliases.get(i).getPath())) {
-						currAliasIndex = i;
-						break;
-					}
-				}
-				// does not work
-				// Node chosenAlias = session.getNode(path);
-				// currAliasIndex = definedAliases.indexOf(chosenAlias);
-			}
-			return currAliasIndex;
+			if (itemNode.hasProperty(AkbNames.AKB_USED_CONNECTOR)) {
+				String aliasName = itemNode.getProperty(
+						AkbNames.AKB_USED_CONNECTOR).getString();
+				return aliasCmb.indexOf(aliasName);
+			} else
+				return -1;
 		} catch (RepositoryException re) {
 			throw new AkbException("Unable to retrieve current Alias", re);
 		}

@@ -35,6 +35,7 @@ import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.AkbService;
 import org.argeo.slc.akb.AkbTypes;
+import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.argeo.slc.jsch.SimpleUserInfo;
 import org.argeo.util.security.Keyring;
 
@@ -280,16 +281,16 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 	public PreparedStatement prepareJdbcQuery(Node activeEnv, Node node) {
 		PreparedStatement statement = null;
 		try {
-			
+
 			if (node.isNodeType(AkbTypes.AKB_JDBC_QUERY)) {
-				String connectorPath = node.getProperty(AKB_USED_CONNECTOR)
+				String connectorAliasStr = node.getProperty(AKB_USED_CONNECTOR)
 						.getString();
-				Node connectorNode = node.getSession().getNode(connectorPath);
-				
-				if (activeEnv != null){
-					String aliasName = connectorNode.getProperty(Property.JCR_TITLE).getString();
-					connectorNode = getConnectorByAlias(activeEnv, aliasName); 
+				// in case of a template passed env can be null
+				if (activeEnv == null) {
+					activeEnv = AkbJcrUtils.getCurrentTemplate(node);
 				}
+				Node connectorNode = getConnectorByAlias(activeEnv,
+						connectorAliasStr);
 
 				String sqlQuery = node.getProperty(AKB_QUERY_TEXT).getString();
 
@@ -324,12 +325,18 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 
 	public String executeCommand(Node activeEnv, Node node) {
 		try {
+
+			String connectorAliasStr = node.getProperty(AKB_USED_CONNECTOR)
+					.getString();
+			// in case of a template passed env can be null
+			if (activeEnv == null) {
+				activeEnv = AkbJcrUtils.getCurrentTemplate(node);
+			}
+			Node connectorNode = getConnectorByAlias(activeEnv,
+					connectorAliasStr);
 			String command = node.getProperty(AkbNames.AKB_COMMAND_TEXT)
 					.getString();
 
-			String connectorPath = node.getProperty(AKB_USED_CONNECTOR)
-					.getString();
-			Node connectorNode = node.getSession().getNode(connectorPath);
 			String connectorUrl = connectorNode.getProperty(AKB_CONNECTOR_URL)
 					.getString();
 			String connectorUser = connectorNode
@@ -379,10 +386,16 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 					.getString();
 			String command = "cat " + filePath;
 
-			// TODO do a proper scp
-			String connectorPath = node.getProperty(AKB_USED_CONNECTOR)
+			String connectorAliasStr = node.getProperty(AKB_USED_CONNECTOR)
 					.getString();
-			Node connectorNode = node.getSession().getNode(connectorPath);
+			// in case of a template passed env can be null
+			if (activeEnv == null) {
+				activeEnv = AkbJcrUtils.getCurrentTemplate(node);
+			}
+			Node connectorNode = getConnectorByAlias(activeEnv,
+					connectorAliasStr);
+
+			// TODO do a proper scp
 			String connectorUrl = connectorNode.getProperty(AKB_CONNECTOR_URL)
 					.getString();
 			String connectorUser = connectorNode

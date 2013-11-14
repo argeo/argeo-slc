@@ -9,6 +9,7 @@ import javax.jcr.Session;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbService;
+import org.argeo.slc.akb.AkbTypes;
 import org.argeo.slc.akb.ui.AkbUiUtils;
 import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -39,6 +40,10 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 
 	// Business Objects
 	private Node akbNode;
+	// a template or an active environment
+	private Node envNode;
+	// shortcut
+	private boolean isTemplate;
 
 	// Some constants
 	private final static int SHORT_NAME_LENGHT = 10;
@@ -57,6 +62,8 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 			session = repository.login();
 			AkbNodeEditorInput anei = (AkbNodeEditorInput) getEditorInput();
 			akbNode = session.getNodeByIdentifier(anei.getIdentifier());
+			envNode = session.getNodeByIdentifier(anei.getEnvIdentifier());
+			isTemplate = envNode.isNodeType(AkbTypes.AKB_ENV_TEMPLATE);
 			updatePartNameAndToolTip();
 		} catch (RepositoryException e) {
 			throw new AkbException("Unable open editor for akb node", e);
@@ -87,13 +94,18 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 	}
 
 	/* Pages management */
+	@SuppressWarnings("unused")
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new ConnectorAliasPage(this, "mainPage", "Main"));
+			if (isTemplate)
+				addPage(new ConnectorAliasPage(this, "mainPage", "Main"));
 			// Add AKB Type specific pages
 			addOtherPages();
-			addPage(new HistoryPage(this, "historyPage", "History"));
+			// Use this when versioning is implemented
+			// if (isTemplate)
+			if (false)
+				addPage(new HistoryPage(this, "historyPage", "History"));
 		} catch (PartInitException e) {
 			throw new AkbException("Unable to initialise pages for editor "
 					+ getEditorId(), e);
@@ -148,6 +160,14 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 
 	protected Node getAkbNode() {
 		return akbNode;
+	}
+
+	protected Node getEnvNode() {
+		return envNode;
+	}
+
+	protected boolean isTemplate() {
+		return isTemplate;
 	}
 
 	/* LIFE CYCLE MANAGEMENT */

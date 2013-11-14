@@ -37,7 +37,8 @@ public class SshFileTemplateEditor extends AkbItemTemplateEditor {
 		outputDisplay
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		String output = getAkbService().retrieveFile(getAkbNode());
+		String output = getAkbService()
+				.retrieveFile(getEnvNode(), getAkbNode());
 		outputDisplay.setText(output);
 	}
 

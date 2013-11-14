@@ -62,7 +62,7 @@ public class JdbcQueryTemplateEditor extends AkbItemTemplateEditor {
 	@Override
 	protected void addOtherPages() throws PartInitException {
 		addPage(new JdbcTestPage(getAkbService(), this, "testPage", "Test",
-				getAkbNode()));
+				getEnvNode(), getAkbNode()));
 	}
 
 }

@@ -16,23 +16,27 @@ public class AkbNodeEditorInput implements IEditorInput {
 	private final String jcrId;
 
 	/**
-	 * the Env Jcr ID cannot be null, JcrId can only be null if current node is
-	 * an environment (active or template)
+	 * @param envJcrId
+	 *            can be null when current node is an environment (active or
+	 *            template)
+	 * @param jcrId
+	 *            cannot be null
 	 */
+
 	public AkbNodeEditorInput(String envJcrId, String jcrId) {
 		this.envJcrId = envJcrId;
 		this.jcrId = jcrId;
 	}
 
 	public String getIdentifier() {
-		if (jcrId == null)
-			return envJcrId;
-		else
-			return jcrId;
+		return jcrId;
 	}
 
 	public String getEnvIdentifier() {
-		return envJcrId;
+		if (envJcrId == null)
+			return jcrId;
+		else
+			return envJcrId;
 	}
 
 	public boolean exists() {
@@ -73,7 +77,7 @@ public class AkbNodeEditorInput implements IEditorInput {
 			return false;
 		AkbNodeEditorInput other = (AkbNodeEditorInput) obj;
 		if (!jcrId.equals(other.getIdentifier())
-				|| !envJcrId.equals(other.getEnvIdentifier()))
+				|| !getEnvIdentifier().equals(other.getEnvIdentifier()))
 			return false;
 		return true;
 	}

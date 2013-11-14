@@ -54,8 +54,9 @@ mixin
 //
 // GENERIC ITEM
 //
-[akb:item] > nt:unstructured
-// a path to the corresponding connector
+[akb:item] > nt:unstructured, mix:title
+// the alias name of the corresponding connector
+// Must be unique in a given template environment 
 - akb:usedConnector (STRING)
 
 

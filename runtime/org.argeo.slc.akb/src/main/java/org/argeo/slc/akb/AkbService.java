@@ -50,10 +50,27 @@ public interface AkbService {
 	/**
 	 * If no active environment is defined, tries to execute query with default
 	 * connector defined for the template
+	 * 
+	 * @param activeEnvironment
+	 * @param itemNode
+	 * @return
 	 */
-	public PreparedStatement prepareJdbcQuery(Node activeEnvironment, Node node);
+	public PreparedStatement prepareJdbcQuery(Node activeEnvironment,
+			Node itemNode);
 
-	public String executeCommand(Node activeEnvironment, Node node);
+	/**
+	 * 
+	 * @param activeEnvironment
+	 * @param itemNode
+	 * @return
+	 */
+	public String executeCommand(Node activeEnvironment, Node itemNode);
 
-	public String retrieveFile(Node activeEnvironment, Node node);
+	/**
+	 * 
+	 * @param activeEnvironment
+	 * @param itemNode
+	 * @return
+	 */
+	public String retrieveFile(Node activeEnvironment, Node itemNode);
 }

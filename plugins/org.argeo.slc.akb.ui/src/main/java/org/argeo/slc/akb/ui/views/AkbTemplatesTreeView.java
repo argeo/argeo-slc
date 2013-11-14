@@ -34,6 +34,7 @@ import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
+import org.argeo.slc.akb.AkbService;
 import org.argeo.slc.akb.AkbTypes;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
 import org.argeo.slc.akb.ui.AkbUiUtils;
@@ -42,7 +43,7 @@ import org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor;
 import org.argeo.slc.akb.ui.providers.AkbTreeLabelProvider;
 import org.argeo.slc.akb.ui.providers.TemplatesTreeContentProvider;
 import org.argeo.slc.akb.ui.utils.Refreshable;
-import org.argeo.slc.akb.ui.views.AkbTemplatesTreeView.ViewDoubleClickListener;
+import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -70,6 +71,7 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 
 	/* DEPENDENCY INJECTION */
 	private Session session;
+	private AkbService akbService;
 
 	// This page widgets
 	private TreeViewer envTreeViewer;
@@ -235,8 +237,13 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 					.getSelection();
 
 			Node selected = (Node) selection.getFirstElement();
+			Node currEnv = null;
 
 			boolean hasSelection = selected != null;
+
+			if (hasSelection)
+				currEnv = AkbJcrUtils.getCurrentTemplate(selected);
+
 			boolean isTemplate = hasSelection ? selected
 					.isNodeType(AkbTypes.AKB_ENV_TEMPLATE) : false;
 			boolean isParentItemsFolder = hasSelection ? selected
@@ -247,9 +254,12 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 
 			// Add Connector Alias
 			Map<String, String> params = new HashMap<String, String>();
-			if (hasSelection && isTemplate)
+			if (hasSelection && isTemplate) {
 				params.put(OpenAkbNodeEditor.PARAM_PARENT_NODE_JCR_ID,
 						selected.getIdentifier());
+				params.put(OpenAkbNodeEditor.PARAM_CURR_ENV_JCR_ID,
+						currEnv.getIdentifier());
+			}
 			params.put(OpenAkbNodeEditor.PARAM_NODE_TYPE,
 					AkbTypes.AKB_CONNECTOR_ALIAS);
 
@@ -259,19 +269,26 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 
 			// Item Submenu
 			params = new HashMap<String, String>();
-			if (hasSelection)
+			if (hasSelection) {
 				params.put(OpenAkbNodeEditor.PARAM_PARENT_NODE_JCR_ID,
 						selected.getIdentifier());
+				params.put(OpenAkbNodeEditor.PARAM_CURR_ENV_JCR_ID,
+						currEnv.getIdentifier());
+			}
 			refreshItemsSubmenu(menuManager, window, "menu.itemsSubmenu",
 					"Add Item", isParentItemsFolder || isTemplate, params);
 
 			// Add Item Folder
 			params = new HashMap<String, String>();
-			if (hasSelection)
+			if (hasSelection) {
 				params.put(OpenAkbNodeEditor.PARAM_PARENT_NODE_JCR_ID,
 						selected.getIdentifier());
+				params.put(OpenAkbNodeEditor.PARAM_CURR_ENV_JCR_ID,
+						currEnv.getIdentifier());
+			}
 			params.put(OpenAkbNodeEditor.PARAM_NODE_TYPE,
 					AkbTypes.AKB_ITEM_FOLDER);
+
 			AkbUiUtils.refreshParameterizedCommand(menuManager, window,
 					"cmd.addItemFolder", OpenAkbNodeEditor.ID,
 					"Add item folder", null, isParentItemsFolder || isTemplate,
@@ -490,9 +507,16 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 			try {
 				if (obj instanceof Node) {
 					Node node = (Node) obj;
-					CommandUtils.callCommand(OpenAkbNodeEditor.ID,
-							OpenAkbNodeEditor.PARAM_NODE_JCR_ID,
+					Node currEnv = AkbJcrUtils.getCurrentTemplate(node);
+
+					// Add Connector Alias
+					Map<String, String> params = new HashMap<String, String>();
+					params.put(OpenAkbNodeEditor.PARAM_NODE_JCR_ID,
 							node.getIdentifier());
+					params.put(OpenAkbNodeEditor.PARAM_CURR_ENV_JCR_ID,
+							currEnv.getIdentifier());
+
+					CommandUtils.callCommand(OpenAkbNodeEditor.ID, params);
 				}
 			} catch (RepositoryException e) {
 				throw new AkbException("Cannot open " + obj, e);
@@ -513,5 +537,10 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 		} catch (RepositoryException e) {
 			throw new AkbException("unable to log in for " + ID + " view");
 		}
+	}
+
+	public void setAkbService(AkbService akbService) {
+		this.akbService = akbService;
+
 	}
 }

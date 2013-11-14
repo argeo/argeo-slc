@@ -37,7 +37,8 @@ public class SshCommandTemplateEditor extends AkbItemTemplateEditor {
 		outputDisplay
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		String output = getAkbService().executeCommand(getAkbNode());
+		String output = getAkbService().executeCommand(getEnvNode(),
+				getAkbNode());
 		outputDisplay.setText(output);
 	}
 

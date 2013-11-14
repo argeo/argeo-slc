@@ -23,7 +23,8 @@ public abstract class AkbItemTemplateEditor extends AbstractAkbNodeEditor {
 		parent.setLayout(AkbUiUtils.gridLayoutNoBorder());
 		// First line main info
 		ItemTemplateTitleComposite ittCmp = new ItemTemplateTitleComposite(
-				parent, SWT.NO_FOCUS, getToolkit(), managedForm, getAkbNode(), getAkbService());
+				parent, SWT.NO_FOCUS, getToolkit(), managedForm, getEnvNode(),
+				getAkbNode(), getAkbService());
 		GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
 		gd.minimumHeight = 250;
 		ittCmp.setLayoutData(gd);
