@@ -26,8 +26,6 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
-import javax.jcr.observation.EventListener;
-import javax.jcr.observation.ObservationManager;
 
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.utils.CommandUtils;
@@ -61,13 +59,11 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.services.IServiceLocator;
 
-/** AKB template tree view. */
-public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
-	// private final static Log log =
-	// LogFactory.getLog(AkbTemplatesTreeView.class);
+/** AKB Active environment tree view. */
+public class AkbActiveEnvsTreeView extends ViewPart implements Refreshable {
 
 	public final static String ID = AkbUiPlugin.PLUGIN_ID
-			+ ".akbTemplatesTreeView";
+			+ ".akbActiveEnvsTreeView";
 
 	/* DEPENDENCY INJECTION */
 	private Session session;
@@ -77,19 +73,12 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 	private TreeViewer envTreeViewer;
 
 	// Usefull business objects
-	private Node templatesParentNode;
-
-	// Observer
-	private EventListener akbNodesObserver = null;
-	private final static String[] observedNodeTypes = {
-			AkbTypes.AKB_ENV_TEMPLATE, AkbTypes.AKB_CONNECTOR_ALIAS,
-			AkbTypes.AKB_ITEM, AkbTypes.AKB_ITEM_FOLDER,
-			AkbTypes.AKB_CONNECTOR_FOLDER };
+	private Node activeEnvsParentNode;
 
 	private void initialize() {
 		try {
-			templatesParentNode = session
-					.getNode(AkbNames.AKB_TEMPLATES_BASE_PATH);
+			activeEnvsParentNode = session
+					.getNode(AkbNames.AKB_ENVIRONMENTS_BASE_PATH);
 		} catch (RepositoryException e) {
 			throw new AkbException("unable to initialize AKB Browser view", e);
 		}
@@ -98,43 +87,9 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 	@Override
 	public void createPartControl(Composite parent) {
 		initialize();
-
 		envTreeViewer = createTreeViewer(parent);
 		envTreeViewer.setInput(initializeTree());
-
-		// parent.setLayout(new FillLayout());
-		// // Main layout
-		// SashForm sashForm = new SashForm(parent, SWT.VERTICAL);
-		// sashForm.setSashWidth(4);
-		// sashForm.setLayout(new FillLayout());
-
-		// Create the tree on top of the view
-		// Composite top = new Composite(sashForm, SWT.NONE);
-		// GridLayout gl = new GridLayout(1, false);
-		// top.setLayout(gl);
-		// resultTreeViewer = createResultsTreeViewer(top);
-
-		// // Create the property viewer on the bottom
-		// Composite bottom = new Composite(sashForm, SWT.NONE);
-		// bottom.setLayout(new GridLayout(1, false));
-		// propertiesViewer = createPropertiesViewer(bottom);
-		//
-		// sashForm.setWeights(getWeights());
-
-		// setOrderedInput(resultTreeViewer);
 	}
-
-	/**
-	 * Override default behaviour so that default defined order remains
-	 * unchanged on first level of the tree
-	 */
-	// private void setOrderedInput(TreeViewer viewer) {
-	// // Add specific ordering
-	// viewer.setInput(null);
-	// viewer.setComparator(null);
-	// viewer.setInput(initializeResultTree());
-	// viewer.setComparator(new ResultItemsComparator());
-	// }
 
 	// The main tree viewer
 	protected TreeViewer createTreeViewer(Composite parent) {
@@ -149,23 +104,9 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 		viewer.setLabelProvider(new AkbTreeLabelProvider());
 		viewer.addDoubleClickListener(new ViewDoubleClickListener());
 
-		// Add label provider with label decorator
-		// ResultTreeLabelProvider rtLblProvider = new
-		// ResultTreeLabelProvider();
-		// ILabelDecorator decorator = AkbUiPlugin.getDefault().getWorkbench()
-		// .getDecoratorManager().getLabelDecorator();
-		// viewer.setLabelProvider(new DecoratingLabelProvider(rtLblProvider,
-		// decorator));
-
 		getSite().setSelectionProvider(viewer);
 
-		// // add drag & drop support
-		// int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		// Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
-		// viewer.addDragSupport(operations, tt, new ViewDragListener());
-		// viewer.addDropSupport(operations, tt, new ViewDropListener(viewer));
-
-		// add context menu
+		// context menu
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getTree());
 		menuManager.addMenuListener(new IMenuListener() {
@@ -175,55 +116,48 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 		});
 		viewer.getTree().setMenu(menu);
 		menuManager.setRemoveAllWhenShown(true);
-
 		getSite().registerContextMenu(menuManager, viewer);
 
-		// Initialize observer
-		try {
-			ObservationManager observationManager = session.getWorkspace()
-					.getObservationManager();
-
-			akbNodesObserver = new AkbNodesObserver(viewer.getTree()
-					.getDisplay());
-			observationManager.addEventListener(akbNodesObserver,
-					Event.NODE_ADDED | Event.NODE_REMOVED,
-					templatesParentNode.getPath(), true, null,
-					observedNodeTypes, false);
-		} catch (RepositoryException e) {
-			throw new AkbException("Cannot register listeners", e);
-		}
 		return viewer;
-	}
-
-	@Override
-	public void setFocus() {
 	}
 
 	private Node[] initializeTree() {
 		try {
-			NodeIterator ni = templatesParentNode.getNodes();
-			List<Node> templates = new ArrayList<Node>();
+			NodeIterator ni = activeEnvsParentNode.getNodes();
+			List<Node> envs = new ArrayList<Node>();
 			while (ni.hasNext()) {
 				Node currNode = ni.nextNode();
-				if (currNode.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
-					templates.add(currNode);
+				if (currNode.isNodeType(AkbTypes.AKB_ENV))
+					envs.add(currNode);
 			}
-			Node[] templateArr = templates.toArray(new Node[templates.size()]);
-			return templateArr;
+			Node[] envArr = envs.toArray(new Node[envs.size()]);
+			return envArr;
 		} catch (RepositoryException re) {
-			throw new AkbException("Error while initializing templates Tree.",
-					re);
+			throw new AkbException("Error while initializing the "
+					+ "tree of active environments.", re);
 		}
 	}
 
+	//////////////////////
+	/// LIFE CYCLE
+	
 	@Override
 	public void forceRefresh(Object object) {
 		envTreeViewer.setInput(initializeTree());
 	}
+	
+	@Override
+	public void setFocus() {
+	}
 
+	@Override
+	public void dispose() {
+		JcrUtils.logoutQuietly(session);
+		super.dispose();
+	}
+	
 	// ///////////////////////////
 	// CONTEXT MENU MANAGEMENT
-
 	/**
 	 * Defines the commands that will pop up in the context menu.
 	 **/
@@ -231,7 +165,6 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 		IWorkbenchWindow window = AkbUiPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
 		try {
-
 			// Build conditions
 			IStructuredSelection selection = (IStructuredSelection) envTreeViewer
 					.getSelection();
@@ -306,7 +239,7 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 			// create template
 			params = new HashMap<String, String>();
 			params.put(OpenAkbNodeEditor.PARAM_PARENT_NODE_JCR_ID,
-					templatesParentNode.getIdentifier());
+					activeEnvsParentNode.getIdentifier());
 			params.put(OpenAkbNodeEditor.PARAM_NODE_TYPE,
 					AkbTypes.AKB_ENV_TEMPLATE);
 			AkbUiUtils.refreshParameterizedCommand(menuManager, window,
@@ -437,69 +370,7 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 		subMenu.setVisible(isVisible);
 	}
 
-	// private class MyCompoundCI extends CompoundContributionItem {
-	// private IMenuManager menuManager;
-	// private IServiceLocator locator;
-	//
-	// public MyCompoundCI(IMenuManager menuManager, IServiceLocator locator,
-	// String itemId) {
-	// super(itemId);
-	// this.menuManager = menuManager;
-	// this.locator = locator;
-	// }
-	//
-	// @Override
-	// protected IContributionItem[] getContributionItems() {
-	//
-	// CommandContributionItem[] submenu = new CommandContributionItem[2];
-	// submenu[0] = createContributionItem(menuManager, locator, "uid.1",
-	// OpenAkbNodeEditor.ID, "test1" + System.currentTimeMillis(),
-	// null, null);
-	// submenu[1] = createContributionItem(menuManager, locator, "uid.2",
-	// OpenAkbNodeEditor.ID, "test2", null, null);
-	// return submenu;
-	// }
-	// }
-
 	/* INNER CLASSES */
-	private class AkbNodesObserver extends AsyncUiEventListener {
-
-		public AkbNodesObserver(Display display) {
-			super(display);
-		}
-
-		@Override
-		protected Boolean willProcessInUiThread(List<Event> events)
-				throws RepositoryException {
-			// unfiltered for the time being
-			return true;
-		}
-
-		protected void onEventInUiThread(List<Event> events)
-				throws RepositoryException {
-			boolean fullRefresh = false;
-
-			eventLoop: for (Event event : events) {
-				String currPath = event.getPath();
-				if (session.nodeExists(currPath)) {
-					Node node = session.getNode(currPath);
-					if (node.isNodeType(AkbTypes.AKB_ENV_TEMPLATE)) {
-						fullRefresh = true;
-						break eventLoop;
-					}
-				}
-			}
-
-			Object[] visibles = envTreeViewer.getExpandedElements();
-			if (fullRefresh)
-				envTreeViewer.setInput(initializeTree());
-			else
-				envTreeViewer.refresh();
-
-			envTreeViewer.setExpandedElements(visibles);
-		}
-	}
-
 	class ViewDoubleClickListener implements IDoubleClickListener {
 		public void doubleClick(DoubleClickEvent evt) {
 			Object obj = ((IStructuredSelection) evt.getSelection())
@@ -522,12 +393,6 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 				throw new AkbException("Cannot open " + obj, e);
 			}
 		}
-	}
-
-	@Override
-	public void dispose() {
-		JcrUtils.logoutQuietly(session);
-		super.dispose();
 	}
 
 	/* DEPENDENCY INJECTION */

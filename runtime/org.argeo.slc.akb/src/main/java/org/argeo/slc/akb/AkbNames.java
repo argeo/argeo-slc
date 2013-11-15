@@ -14,6 +14,7 @@ public interface AkbNames {
 			+ "akb:environments";
 
 	/* ENVIRONMENT PROPERTIES */
+	public final static String AKB_ENV_TEMPLATE_PATH = "akb:envTemplatePath";
 
 	/* CONNECTOR PROPERTIES */
 	public final static String AKB_CONNECTOR_URL = "akb:connectorUrl";

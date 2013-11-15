@@ -29,15 +29,13 @@ import org.argeo.slc.akb.AkbTypes;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
-/** Basic content provider for a tree of AKB environment templates */
+/** Basic content provider for a tree of active AKB environments */
 public class TemplatesTreeContentProvider implements ITreeContentProvider {
 	private final static Log log = LogFactory
 			.getLog(TemplatesTreeContentProvider.class);
 
 	/**
 	 * @param parent
-	 *            Pass current user home as parameter
-	 * 
 	 */
 	public Object[] getElements(Object parent) {
 		if (parent instanceof Object[])
@@ -50,7 +48,7 @@ public class TemplatesTreeContentProvider implements ITreeContentProvider {
 		try {
 			Node node = (Node) child;
 
-			// Manual sanity check to avoid exception when tryin to refresh an
+			// Manual sanity check to avoid exception when trying to refresh an
 			// element that displays a node which has been removed
 			try {
 				String id = node.getIdentifier();
@@ -102,4 +100,7 @@ public class TemplatesTreeContentProvider implements ITreeContentProvider {
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	}
+	
+	
+	
 }

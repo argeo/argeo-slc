@@ -6,7 +6,6 @@
 [argeo:note] > mix:title, mix:versionable, mix:created, mix:lastModified
 mixin
 
-
 //
 // TEMPLATES AND ENVIRONMENTS 
 // 
@@ -16,7 +15,8 @@ mixin
 
 // An environment template (1..1 relationship) applied to a real environment
 [akb:env] > nt:unstructured, mix:title
-
+// the path to the corresponding template
+- akb:envTemplatePath (STRING)
 
 //
 // CONNECTORS
@@ -46,11 +46,8 @@ mixin
 
 [akb:jdbcConnector] > akb:connector 
 
-
 [akb:jcrConnector] > akb:connector  
 
-
-    
 //
 // GENERIC ITEM
 //
