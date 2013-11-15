@@ -51,18 +51,18 @@ public class DeleteAkbNodes extends AbstractHandler {
 			// We must be in a template to delete nodes...
 			Node template = AkbJcrUtils.getCurrentTemplate(node);
 
-			IEditorPart currPart = currentPage
-					.findEditor(new AkbNodeEditorInput(
-							template.getIdentifier(), nodeJcrId));
-			if (currPart != null)
-				currPart.dispose();
-
 			if (node != null) {
 				Boolean ok = MessageDialog.openConfirm(
 						HandlerUtil.getActiveShell(event), "Confirm deletion",
 						"Do you want to delete this item?");
 
 				if (ok) {
+					IEditorPart currPart = currentPage
+							.findEditor(new AkbNodeEditorInput(template
+									.getIdentifier(), nodeJcrId));
+					if (currPart != null)
+						currentPage.closeEditor(currPart, false);
+
 					node.remove();
 					session.save();
 				}

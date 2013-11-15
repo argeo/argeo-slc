@@ -160,8 +160,8 @@ public class ItemTemplateTitleComposite extends Composite {
 					Node newAlias = definedAliases.get(selIndex);
 
 					// Only relies on the alias
-					itemNode.setProperty(AkbNames.AKB_USED_CONNECTOR, newAlias
-							.getProperty(Property.JCR_TITLE).getString());
+					itemNode.setProperty(AkbNames.AKB_USED_CONNECTOR,
+							newAlias.getPath());
 					part.markDirty();
 				} catch (RepositoryException e) {
 					throw new AkbException(
@@ -217,9 +217,10 @@ public class ItemTemplateTitleComposite extends Composite {
 	private int getCurrAliasIndex() {
 		try {
 			if (itemNode.hasProperty(AkbNames.AKB_USED_CONNECTOR)) {
-				String aliasName = itemNode.getProperty(
+				String aliasPath = itemNode.getProperty(
 						AkbNames.AKB_USED_CONNECTOR).getString();
-				return aliasCmb.indexOf(aliasName);
+				Node alias = itemNode.getSession().getNode(aliasPath);
+				return aliasCmb.indexOf(alias.getProperty(Property.JCR_TITLE).getString());
 			} else
 				return -1;
 		} catch (RepositoryException re) {

@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.forms.AbstractFormPart;
+import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 
 /**
@@ -181,7 +182,7 @@ public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 			ObservationManager observationManager = getSession().getWorkspace()
 					.getObservationManager();
 			connectorObserver = new ConnectorObserver(panel.getDisplay(),
-					formPart);
+					managedForm);
 			// observe tree changes under All results
 			observationManager.addEventListener(connectorObserver,
 					Event.NODE_ADDED | Event.NODE_REMOVED, getAkbNode()
@@ -195,11 +196,11 @@ public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 
 	class ConnectorObserver extends AsyncUiEventListener {
 
-		private AbstractFormPart formPart;
+		private IManagedForm managedForm;
 
-		public ConnectorObserver(Display display, AbstractFormPart formPart) {
+		public ConnectorObserver(Display display, IManagedForm managedForm) {
 			super(display);
-			this.formPart = formPart;
+			this.managedForm = managedForm;
 		}
 
 		@Override
@@ -211,7 +212,8 @@ public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 		protected void onEventInUiThread(List<Event> events)
 				throws RepositoryException {
 			try {
-				formPart.refresh();
+				for (IFormPart part : managedForm.getParts())
+					part.refresh();
 			} catch (Exception e) {
 				// silently fail
 				e.printStackTrace();

@@ -139,7 +139,7 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 		// Node defaultConnector =
 		Node defaultConn = newConnector.addNode(
 				AkbNames.AKB_DEFAULT_TEST_CONNECTOR, connectorType);
-		defaultConn.setProperty(AkbNames.AKB_CONNECTOR_ALIAS_NAME, name);
+		defaultConn.setProperty(AkbNames.AKB_CONNECTOR_ALIAS_PATH, newConnector.getPath());
 		return newConnector;
 	}
 
@@ -184,7 +184,7 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 	}
 
 	@Override
-	public Node getConnectorByAlias(Node envNode, String aliasName)
+	public Node getActiveConnectorByAlias(Node envNode, String aliasPath)
 			throws RepositoryException {
 		try {
 			Session session = envNode.getSession();
@@ -199,10 +199,10 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 
 			Constraint connType = factory.comparison(
 					factory.propertyValue(source.getSelectorName(),
-							AkbNames.AKB_CONNECTOR_ALIAS_NAME),
+							AkbNames.AKB_CONNECTOR_ALIAS_PATH),
 					QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO, factory
 							.literal(session.getValueFactory().createValue(
-									aliasName)));
+									aliasPath)));
 			defaultC = factory.and(defaultC, connType);
 
 			QueryObjectModel query;
@@ -216,13 +216,13 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 				Node connector = ni.nextNode();
 				if (ni.hasNext())
 					throw new AkbException("More than  one alias with name "
-							+ aliasName + " has been defined for environment "
+							+ aliasPath + " has been defined for environment "
 							+ envNode);
 				else
 					return connector;
 			}
 		} catch (RepositoryException e) {
-			throw new AkbException("Unable to get connector " + aliasName
+			throw new AkbException("Unable to get connector " + aliasPath
 					+ " in " + envNode, e);
 		}
 	}
@@ -289,7 +289,7 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 				if (activeEnv == null) {
 					activeEnv = AkbJcrUtils.getCurrentTemplate(node);
 				}
-				Node connectorNode = getConnectorByAlias(activeEnv,
+				Node connectorNode = getActiveConnectorByAlias(activeEnv,
 						connectorAliasStr);
 
 				String sqlQuery = node.getProperty(AKB_QUERY_TEXT).getString();
@@ -332,7 +332,7 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 			if (activeEnv == null) {
 				activeEnv = AkbJcrUtils.getCurrentTemplate(node);
 			}
-			Node connectorNode = getConnectorByAlias(activeEnv,
+			Node connectorNode = getActiveConnectorByAlias(activeEnv,
 					connectorAliasStr);
 			String command = node.getProperty(AkbNames.AKB_COMMAND_TEXT)
 					.getString();
@@ -392,7 +392,7 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 			if (activeEnv == null) {
 				activeEnv = AkbJcrUtils.getCurrentTemplate(node);
 			}
-			Node connectorNode = getConnectorByAlias(activeEnv,
+			Node connectorNode = getActiveConnectorByAlias(activeEnv,
 					connectorAliasStr);
 
 			// TODO do a proper scp

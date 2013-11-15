@@ -25,8 +25,8 @@ mixin
 // GENERIC TYPE FOR A CONNECTOR
 [akb:connector] > nt:unstructured, mix:title  
 - akb:connectorUrl (STRING)
-// the name of the corresponding alias. We assume it is unique.
-- akb:connectorName (STRING)
+// the path to the corresponding alias
+- akb:connectorAliasPath (STRING)
 
 // add argeo keyring
 

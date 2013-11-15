@@ -22,6 +22,8 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbTypes;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -29,6 +31,8 @@ import org.eclipse.jface.viewers.Viewer;
 
 /** Basic content provider for a tree of AKB environment templates */
 public class TemplatesTreeContentProvider implements ITreeContentProvider {
+	private final static Log log = LogFactory
+			.getLog(TemplatesTreeContentProvider.class);
 
 	/**
 	 * @param parent
@@ -45,10 +49,22 @@ public class TemplatesTreeContentProvider implements ITreeContentProvider {
 	public Object getParent(Object child) {
 		try {
 			Node node = (Node) child;
+
+			// Manual sanity check to avoid exception when tryin to refresh an
+			// element that displays a node which has been removed
+			try {
+				String id = node.getIdentifier();
+				node.getSession().getNodeByIdentifier(id);
+			} catch (Exception e) {
+				log.warn("Trying to refresh an unexisting node");
+				return null;
+			}
+
 			if (node.getDepth() == 0)
 				return null;
 			else
 				return node.getParent();
+
 		} catch (RepositoryException e) {
 			throw new AkbException("Error while getting parent node", e);
 		}

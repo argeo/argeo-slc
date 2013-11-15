@@ -3,6 +3,7 @@ package org.argeo.slc.akb.ui.composites;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.eclipse.ui.utils.CommandUtils;
@@ -170,14 +171,26 @@ public class ConnectorAliasSmallComposite extends Composite {
 		removeBtn.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				CommandUtils.CallCommandWithOneParameter(DeleteAkbNodes.ID,
-						DeleteAkbNodes.PARAM_NODE_JCR_ID,
-						AkbJcrUtils.getIdentifierQuietly(connectorAlias));
-				// for (IFormPart part : form.getParts())
-				// if (!formPart.equals(part))
-				// part.refresh();
+				try {
+					// Manually check if corresponding node was really removed
+					Session session = connectorAlias.getSession();
+					String absPath = connectorAlias.getPath();
+
+					CommandUtils.CallCommandWithOneParameter(DeleteAkbNodes.ID,
+							DeleteAkbNodes.PARAM_NODE_JCR_ID,
+							AkbJcrUtils.getIdentifierQuietly(connectorAlias));
+
+					if (!session.nodeExists(absPath))
+						form.removePart(formPart);
+
+				} catch (RepositoryException re) {
+					throw new AkbException(
+							"Error while removing connector Alias ", re);
+				}
 			}
 		});
+		// force refresh to initialize various fields on creation
+		formPart.refresh();
 		form.addPart(formPart);
 	}
 

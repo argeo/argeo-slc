@@ -17,7 +17,7 @@ public interface AkbNames {
 
 	/* CONNECTOR PROPERTIES */
 	public final static String AKB_CONNECTOR_URL = "akb:connectorUrl";
-	public final static String AKB_CONNECTOR_ALIAS_NAME = "akb:connectorName";
+	public final static String AKB_CONNECTOR_ALIAS_PATH = "akb:connectorAliasPath";
 	public final static String AKB_CONNECTOR_USER = "akb:connectorUser";
 	// Alias specific
 	public final static String AKB_DEFAULT_TEST_CONNECTOR = "defaultTestConnector";

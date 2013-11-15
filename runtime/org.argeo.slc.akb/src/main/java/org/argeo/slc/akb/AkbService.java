@@ -30,12 +30,13 @@ public interface AkbService {
 	/**
 	 * @param envNode
 	 *            an environment or a template
-	 * @param aliasName
-	 *            the alias of the node to get
-	 * @return
+	 * @param aliasPath
+	 *            the path of the parent alias in the corresponding template
+	 *            environment used as key
+	 * @return the corresponding active connector if found
 	 * @throws RepositoryException
 	 */
-	public Node getConnectorByAlias(Node envNode, String aliasName)
+	public Node getActiveConnectorByAlias(Node envNode, String aliasPath)
 			throws RepositoryException;
 
 	/**

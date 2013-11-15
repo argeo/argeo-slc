@@ -97,8 +97,10 @@ public class JdbcTestPage extends FormPage implements AkbNames {
 	@Override
 	public void dispose() {
 		try {
-			statement.close();
-			statement.getConnection().close();
+			if (statement != null) {
+				statement.close();
+				statement.getConnection().close();
+			}
 		} catch (SQLException e) {
 			// silent
 		}
