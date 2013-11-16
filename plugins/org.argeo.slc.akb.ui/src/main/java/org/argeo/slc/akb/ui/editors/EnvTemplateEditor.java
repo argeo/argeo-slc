@@ -180,10 +180,11 @@ public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 										SWT.NO_FOCUS, getToolkit(),
 										managedForm, getAkbNode(), aliasPath,
 										getAkbService());
-								currCmp.setLayoutData(new GridData(SWT.FILL,
-										SWT.TOP, true, false));
-								connectorsCmps.put(currJcrId, currCmp);
 							}
+							currCmp.setLayoutData(new GridData(SWT.FILL,
+									SWT.TOP, true, false));
+							connectorsCmps.put(currJcrId, currCmp);
+
 						}
 					}
 

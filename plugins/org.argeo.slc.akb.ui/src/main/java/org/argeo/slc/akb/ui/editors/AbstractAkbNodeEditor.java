@@ -102,7 +102,7 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 	@Override
 	protected void addPages() {
 		try {
-			if (isTemplate || envNode.isNodeType(AkbTypes.AKB_ENV))
+			if (isTemplate || akbNode.isNodeType(AkbTypes.AKB_ENV))
 				addPage(new ConnectorAliasPage(this, "mainPage", "Main"));
 			// Add AKB Type specific pages
 			addOtherPages();

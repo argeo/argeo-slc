@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.AbstractFormPart;
+import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -107,45 +108,19 @@ public class AliasListItemComposite extends Composite {
 		final Link testBtn = new Link(firstLine, SWT.NONE);
 		toolkit.adapt(testBtn, false, false);
 		testBtn.setText("<a>Test</a>");
-		testBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
-				true, false));
-		
+		testBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false));
+
 		final Link editActiveConnLk = new Link(firstLine, SWT.NONE);
 		toolkit.adapt(editActiveConnLk, false, false);
 		// editActiveConnLk.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER,
 		// true, false));
-		
-		if (!isActive) {
-			final Link removeBtn = new Link(firstLine, SWT.NONE);
-			toolkit.adapt(removeBtn, false, false);
-			removeBtn.setText("<a>Delete</a>");
-			removeBtn.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					try {
-						// Manually check if corresponding node was really
-						// removed
-						Session session = connectorAlias.getSession();
-						String absPath = connectorAlias.getPath();
-						CommandUtils.CallCommandWithOneParameter(
-								DeleteAkbNodes.ID,
-								DeleteAkbNodes.PARAM_NODE_JCR_ID, AkbJcrUtils
-										.getIdentifierQuietly(connectorAlias));
-
-						if (!session.nodeExists(absPath))
-							form.removePart(formPart);
-					} catch (RepositoryException re) {
-						throw new AkbException(
-								"Error while removing connector Alias ", re);
-					}
-				}
-			});
-		}
 
 		// Part Management
 		formPart = new AbstractFormPart() {
 			public void refresh() {
 				super.refresh();
+				if (titleTxt.isDisposed())
+					return;
 				// update display value
 				AkbUiUtils.refreshFormTextWidget(titleTxt, connectorAlias,
 						Property.JCR_TITLE, "Name");
@@ -163,6 +138,51 @@ public class AliasListItemComposite extends Composite {
 				}
 			}
 		};
+
+		if (!isActive) {
+			final Link removeBtn = new Link(firstLine, SWT.NONE);
+			toolkit.adapt(removeBtn, false, false);
+			removeBtn.setText("<a>Delete</a>");
+			removeBtn.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					try {
+
+						try {
+							connectorAlias.getPath();
+						} catch (Exception ex) {
+							// node has been removed.
+							// silent
+							return;
+						}
+
+						// Manually check if corresponding node was really
+						// removed
+						Session session = connectorAlias.getSession();
+						String absPath = connectorAlias.getPath();
+
+						form.removePart(formPart);
+
+						CommandUtils.CallCommandWithOneParameter(
+								DeleteAkbNodes.ID,
+								DeleteAkbNodes.PARAM_NODE_JCR_ID, AkbJcrUtils
+										.getIdentifierQuietly(connectorAlias));
+
+						if (session.nodeExists(absPath)) {
+							form.addPart(formPart);
+						} else {
+							for (IFormPart cpart : form.getParts())
+								cpart.refresh();
+						}
+
+					} catch (RepositoryException re) {
+						throw new AkbException(
+								"Error while removing connector Alias ", re);
+					}
+				}
+			});
+		}
+
 		// Listeners
 		AkbUiUtils.addTextModifyListener(titleTxt, connectorAlias,
 				Property.JCR_TITLE, formPart);
