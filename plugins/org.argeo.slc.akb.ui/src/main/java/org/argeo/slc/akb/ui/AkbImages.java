@@ -11,11 +11,15 @@ public class AkbImages {
 
 	public final static Image TEMPLATE = AkbUiPlugin.getImageDescriptor(
 			"icons/template.gif").createImage();
+	public final static Image ACTIVE_ENV = AkbUiPlugin.getImageDescriptor(
+			"icons/environment.png").createImage();
+	
 	public final static Image CONNECTOR_FOLDER = AkbUiPlugin
 			.getImageDescriptor("icons/connectors.gif").createImage();
 
 	public final static Image ITEM_FOLDER = AkbUiPlugin.getImageDescriptor(
 			"icons/itemFolder.gif").createImage();
+	
 	public final static Image JDBC_CONNECTOR = AkbUiPlugin.getImageDescriptor(
 			"icons/jdbcConnector.gif").createImage();
 	public final static Image JDBC_QUERY = AkbUiPlugin.getImageDescriptor(

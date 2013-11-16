@@ -42,6 +42,7 @@ import org.argeo.slc.akb.ui.commands.DeleteAkbNodes;
 import org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor;
 import org.argeo.slc.akb.ui.providers.AkbTreeLabelProvider;
 import org.argeo.slc.akb.ui.providers.TemplatesTreeContentProvider;
+import org.argeo.slc.akb.ui.utils.AkbItemsComparator;
 import org.argeo.slc.akb.ui.utils.Refreshable;
 import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.jface.action.IContributionItem;
@@ -101,40 +102,8 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 
 		envTreeViewer = createTreeViewer(parent);
 		envTreeViewer.setInput(initializeTree());
-
-		// parent.setLayout(new FillLayout());
-		// // Main layout
-		// SashForm sashForm = new SashForm(parent, SWT.VERTICAL);
-		// sashForm.setSashWidth(4);
-		// sashForm.setLayout(new FillLayout());
-
-		// Create the tree on top of the view
-		// Composite top = new Composite(sashForm, SWT.NONE);
-		// GridLayout gl = new GridLayout(1, false);
-		// top.setLayout(gl);
-		// resultTreeViewer = createResultsTreeViewer(top);
-
-		// // Create the property viewer on the bottom
-		// Composite bottom = new Composite(sashForm, SWT.NONE);
-		// bottom.setLayout(new GridLayout(1, false));
-		// propertiesViewer = createPropertiesViewer(bottom);
-		//
-		// sashForm.setWeights(getWeights());
-
-		// setOrderedInput(resultTreeViewer);
+		envTreeViewer.setComparator(new AkbItemsComparator());
 	}
-
-	/**
-	 * Override default behaviour so that default defined order remains
-	 * unchanged on first level of the tree
-	 */
-	// private void setOrderedInput(TreeViewer viewer) {
-	// // Add specific ordering
-	// viewer.setInput(null);
-	// viewer.setComparator(null);
-	// viewer.setInput(initializeResultTree());
-	// viewer.setComparator(new ResultItemsComparator());
-	// }
 
 	// The main tree viewer
 	protected TreeViewer createTreeViewer(Composite parent) {

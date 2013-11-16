@@ -102,7 +102,7 @@ public class CreateEnvInstanceWizard extends Wizard {
 			valueTxt.addModifyListener(new ModifyListener() {
 				@Override
 				public void modifyText(ModifyEvent e) {
-					//TODO implement here name validation.
+					// TODO implement here name validation.
 					getWizard().getContainer().updateButtons();
 				}
 			});
@@ -126,6 +126,7 @@ public class CreateEnvInstanceWizard extends Wizard {
 
 			useDefaultConnChk = new Button(container, SWT.CHECK);
 			useDefaultConnChk.setText("Import default connectors");
+			useDefaultConnChk.setSelection(true);
 
 			setControl(container);
 		}

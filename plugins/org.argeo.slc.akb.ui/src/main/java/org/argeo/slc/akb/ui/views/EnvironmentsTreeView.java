@@ -22,6 +22,7 @@ import org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor;
 import org.argeo.slc.akb.ui.providers.ActiveEnvsTreeContentProvider;
 import org.argeo.slc.akb.ui.providers.ActiveTreeItem;
 import org.argeo.slc.akb.ui.providers.AkbTreeLabelProvider;
+import org.argeo.slc.akb.ui.utils.AkbItemsComparator;
 import org.argeo.slc.akb.ui.utils.Refreshable;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -67,6 +68,7 @@ public class EnvironmentsTreeView extends ViewPart implements Refreshable {
 		initialize();
 		envTreeViewer = createTreeViewer(parent);
 		envTreeViewer.setInput(activeEnvsParentNode);
+		envTreeViewer.setComparator(new AkbItemsComparator());
 	}
 
 	// The main tree viewer

@@ -31,14 +31,14 @@
 			class="org.argeo.eclipse.spring.SpringExtensionFactory"
 			icon="icons/treeView.png"
 			id="org.argeo.slc.akb.ui.akbTemplatesTreeView"
-			name="Akb Templates"
+			name="AKB Templates"
 			restorable="true">
 		</view>
 		<view
 			class="org.argeo.eclipse.spring.SpringExtensionFactory"
 			icon="icons/treeView.png"
 			id="org.argeo.slc.akb.ui.environmentsTreeView"
-			name="Akb Environments"
+			name="AKB Environments"
 			restorable="true">
 		</view>
 	</extension>

@@ -30,6 +30,9 @@ public class AkbTreeLabelProvider extends LabelProvider {
 				else
 					return node.getName();
 			}
+			if (element instanceof String)
+				return (String) element;
+
 		} catch (RepositoryException e) {
 			throw new AkbException("Unexpected error while getting "
 					+ "Custom node label", e);
@@ -58,6 +61,8 @@ public class AkbTreeLabelProvider extends LabelProvider {
 					return AkbImages.JDBC_QUERY;
 				else if (node.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
 					return AkbImages.TEMPLATE;
+				else if (node.isNodeType(AkbTypes.AKB_ENV))
+					return AkbImages.ACTIVE_ENV;
 				else if (node.isNodeType(AkbTypes.AKB_CONNECTOR_FOLDER))
 					return AkbImages.CONNECTOR_FOLDER;
 			}
