@@ -114,12 +114,8 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 			throws RepositoryException {
 		Node newTemplate = parentNode.addNode(name, AkbTypes.AKB_ENV_TEMPLATE);
 		newTemplate.setProperty(Property.JCR_TITLE, name);
-
-		// Node connectorParent =
 		newTemplate.addNode(AkbTypes.AKB_CONNECTOR_FOLDER,
 				AkbTypes.AKB_CONNECTOR_FOLDER);
-		// connectorParent.setProperty(Property.JCR_TITLE, connectorParentName);
-
 		return newTemplate;
 	}
 
@@ -140,11 +136,18 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 
 		NodeIterator ni = template.getNode(AkbTypes.AKB_CONNECTOR_FOLDER)
 				.getNodes();
-		while (ni.hasNext()) {
+		activeConns: while (ni.hasNext()) {
 			Node currNode = ni.nextNode();
 			if (currNode.isNodeType(AkbTypes.AKB_CONNECTOR_ALIAS)) {
+				String connType = currNode.getProperty(AKB_CONNECTOR_TYPE)
+						.getString();
+				
+				if (AkbJcrUtils.isEmptyString(connType))
+					// Cannot create an instance if the type is undefined
+					continue activeConns;
+
 				Node newConnector = connectorParent.addNode(currNode.getName(),
-						AkbTypes.AKB_CONNECTOR);
+						connType);
 				newConnector.setProperty(AKB_CONNECTOR_ALIAS_PATH,
 						currNode.getPath());
 				if (copyDefaultConnectors

@@ -1,8 +1,5 @@
 package org.argeo.slc.akb.ui.composites;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -12,8 +9,9 @@ import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.AkbService;
 import org.argeo.slc.akb.ui.commands.ForceRefresh;
-import org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor;
+import org.argeo.slc.akb.ui.wizards.ActiveConnectorWizard;
 import org.argeo.slc.akb.utils.AkbJcrUtils;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -113,14 +111,20 @@ public class ActiveItemHeaderComposite extends Composite {
 					Node activeConnector = akbService
 							.getActiveConnectorByAlias(envNode, pathId);
 
-					String id = AkbJcrUtils
-							.getIdentifierQuietly(activeConnector);
-					Map<String, String> params = new HashMap<String, String>();
-					params.put(OpenAkbNodeEditor.PARAM_NODE_JCR_ID, id);
-					params.put(OpenAkbNodeEditor.PARAM_CURR_ENV_JCR_ID,
-							AkbJcrUtils.getIdentifierQuietly(envNode));
-
-					CommandUtils.callCommand(OpenAkbNodeEditor.ID, params);
+					ActiveConnectorWizard wizard = new ActiveConnectorWizard(
+							akbService, activeConnector);
+					WizardDialog dialog = new WizardDialog(getShell(), wizard);
+					dialog.open();
+					
+					// String id = AkbJcrUtils
+					// .getIdentifierQuietly(activeConnector);
+					// Map<String, String> params = new HashMap<String,
+					// String>();
+					// params.put(OpenAkbNodeEditor.PARAM_NODE_JCR_ID, id);
+					// params.put(OpenAkbNodeEditor.PARAM_CURR_ENV_JCR_ID,
+					// AkbJcrUtils.getIdentifierQuietly(envNode));
+					//
+					// CommandUtils.callCommand(OpenAkbNodeEditor.ID, params);
 				} catch (RepositoryException e) {
 					throw new AkbException("Error opening active connector", e);
 				}
