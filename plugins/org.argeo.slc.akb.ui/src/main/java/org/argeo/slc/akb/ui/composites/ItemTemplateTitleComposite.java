@@ -219,8 +219,13 @@ public class ItemTemplateTitleComposite extends Composite {
 			if (itemNode.hasProperty(AkbNames.AKB_USED_CONNECTOR)) {
 				String aliasPath = itemNode.getProperty(
 						AkbNames.AKB_USED_CONNECTOR).getString();
+				
+				if (!itemNode.getSession().nodeExists(aliasPath))
+					return -1;
+
 				Node alias = itemNode.getSession().getNode(aliasPath);
-				return aliasCmb.indexOf(alias.getProperty(Property.JCR_TITLE).getString());
+				return aliasCmb.indexOf(alias.getProperty(Property.JCR_TITLE)
+						.getString());
 			} else
 				return -1;
 		} catch (RepositoryException re) {

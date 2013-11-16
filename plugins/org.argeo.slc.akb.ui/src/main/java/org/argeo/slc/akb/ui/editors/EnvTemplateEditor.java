@@ -13,13 +13,17 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.ObservationManager;
 
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
+import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.slc.akb.AkbException;
+import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.AkbTypes;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
 import org.argeo.slc.akb.ui.AkbUiUtils;
+import org.argeo.slc.akb.ui.commands.ForceRefresh;
 import org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor;
-import org.argeo.slc.akb.ui.composites.ConnectorAliasSmallComposite;
+import org.argeo.slc.akb.ui.composites.AliasListItemComposite;
 import org.argeo.slc.akb.ui.composites.MixTitleComposite;
+import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -82,10 +86,15 @@ public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 	protected void aboutToShow(IMenuManager menu) {
 		try {
 			// initialization
-			String submenuID = "subMenu.addAlias";
 			IWorkbenchWindow window = AkbUiPlugin.getDefault().getWorkbench()
 					.getActiveWorkbenchWindow();
 			Node connectorParent = getAkbNode();
+
+			// Refresh
+			CommandUtils.refreshCommand(menu, window, ForceRefresh.ID,
+					"Refresh", null, true);
+
+			String submenuID = "subMenu.addAlias";
 			IContributionItem ici = menu.find(submenuID);
 			if (ici != null)
 				menu.remove(ici);
@@ -121,7 +130,8 @@ public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 			subMenu.add(AkbUiUtils.createContributionItem(subMenu, window,
 					currItemId, OpenAkbNodeEditor.ID, "SSH", null, tmpParams));
 
-			menu.add(subMenu);
+			if (isTemplate())
+				menu.add(subMenu);
 
 		} catch (RepositoryException e) {
 			throw new AkbException("Unable to refresh context menu", e);
@@ -141,19 +151,39 @@ public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 				try {
 					super.refresh();
 					// first: initialise composite for new connectors
+
 					Node connectorPar = getAkbNode().getNode(
 							AkbTypes.AKB_CONNECTOR_FOLDER);
 					NodeIterator ni = connectorPar.getNodes();
-					while (ni.hasNext()) {
+
+					boolean isTemplate = getEnvNode().isNodeType(
+							AkbTypes.AKB_ENV_TEMPLATE);
+
+					aliases: while (ni.hasNext()) {
 						Node currNode = ni.nextNode();
 						String currJcrId = currNode.getIdentifier();
 						if (!connectorsCmps.containsKey(currJcrId)) {
-							Composite currCmp = new ConnectorAliasSmallComposite(
-									panel, SWT.NO_FOCUS, getToolkit(),
-									managedForm, currNode, getAkbService());
-							currCmp.setLayoutData(new GridData(SWT.FILL,
-									SWT.TOP, true, false));
-							connectorsCmps.put(currJcrId, currCmp);
+							Composite currCmp;
+							if (isTemplate)
+								currCmp = new AliasListItemComposite(panel,
+										SWT.NO_FOCUS, getToolkit(),
+										managedForm, getAkbNode(),
+										currNode.getPath(), getAkbService());
+							else {
+								String aliasPath = AkbJcrUtils.get(currNode,
+										AkbNames.AKB_CONNECTOR_ALIAS_PATH);
+								if (AkbJcrUtils.isEmptyString(aliasPath)
+										|| !getSession().nodeExists(aliasPath))
+									continue aliases;
+
+								currCmp = new AliasListItemComposite(panel,
+										SWT.NO_FOCUS, getToolkit(),
+										managedForm, getAkbNode(), aliasPath,
+										getAkbService());
+								currCmp.setLayoutData(new GridData(SWT.FILL,
+										SWT.TOP, true, false));
+								connectorsCmps.put(currJcrId, currCmp);
+							}
 						}
 					}
 

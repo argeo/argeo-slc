@@ -154,7 +154,7 @@ public class OpenAkbNodeEditor extends AbstractHandler {
 		String editorId = null;
 		if (node.isNodeType(AkbTypes.AKB_CONNECTOR_ALIAS))
 			editorId = ConnectorAliasEditor.ID;
-		else if (node.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
+		else if (node.isNodeType(AkbTypes.AKB_ENV_TEMPLATE) || node.isNodeType(AkbTypes.AKB_ENV))
 			editorId = EnvTemplateEditor.ID;
 		else if (node.isNodeType(AkbTypes.AKB_SSH_FILE))
 			editorId = SshFileTemplateEditor.ID;

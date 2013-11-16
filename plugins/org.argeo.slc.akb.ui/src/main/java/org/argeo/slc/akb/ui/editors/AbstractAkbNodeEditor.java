@@ -85,8 +85,12 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 
 		// Tooltip
 		if (AkbJcrUtils.isEmptyString(name))
-			name = "current item";
-		setTitleToolTip("Display and edit " + name);
+			name = "current akb object";
+		if (isTemplate) {
+			setTitleToolTip("Display and edit " + name);
+		} else
+			setTitleToolTip("Display " + name);
+
 	}
 
 	/** Overwrite to provide supplementary pages between main and history page */
@@ -98,7 +102,7 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 	@Override
 	protected void addPages() {
 		try {
-			if (isTemplate)
+			if (isTemplate || envNode.isNodeType(AkbTypes.AKB_ENV))
 				addPage(new ConnectorAliasPage(this, "mainPage", "Main"));
 			// Add AKB Type specific pages
 			addOtherPages();
@@ -107,6 +111,9 @@ public abstract class AbstractAkbNodeEditor extends FormEditor {
 			if (false)
 				addPage(new HistoryPage(this, "historyPage", "History"));
 		} catch (PartInitException e) {
+			throw new AkbException("Unable to initialise pages for editor "
+					+ getEditorId(), e);
+		} catch (RepositoryException e) {
 			throw new AkbException("Unable to initialise pages for editor "
 					+ getEditorId(), e);
 		}
