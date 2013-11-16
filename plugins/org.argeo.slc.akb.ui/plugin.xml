@@ -133,9 +133,13 @@
 			name="Force refresh of the current active part if such an action is possible">
   		</command>
   		<command
-			defaultHandler="org.argeo.slc.akb.ui.commands.OpenTracker"
-			id="org.argeo.slc.akb.ui.openTracker"
-			name="Report a bug in Argeo's tracker">
+			defaultHandler="org.argeo.slc.akb.ui.commands.OpenUrl"
+			id="org.argeo.slc.akb.ui.openUrl"
+			name="Open an URL in the end user browser">
+			<commandParameter
+     			id="param.urlType"
+     			name="The type of the url">
+ 			</commandParameter>
   		</command>
 	</extension>		
 	<!-- Menus -->
@@ -155,7 +159,7 @@
             <command
             	commandId="org.argeo.slc.akb.ui.forceRefresh"
                 icon="icons/refresh.png"
-	                label="Refresh"
+	            label="Refresh"
                 tooltip="Refresh the whole browser">
             </command>
         </menuContribution>
@@ -166,15 +170,31 @@
 				id="help"
 				label="Help">
 				<command
-					commandId="org.argeo.slc.akb.ui.openTracker"
+					commandId="org.argeo.slc.akb.ui.openUrl"
 					label="Report a bug..."
-					style="push">
+					icon="icons/refresh.png"
+	            	style="push"
+	            	tooltip="Report a bug or an enhancement to Argeos tracker system">
+					<parameter 
+						name="param.urlType" 
+						value="tracker" />
 				</command>
-				<command
-					commandId="org.eclipse.ui.help.aboutAction"
-					label="About"
+				
+	<!--			<command
+					commandId="org.argeo.slc.akb.ui.openUrl"
+					label="AKB's wiki
 					style="push">
-				</command> 		</menu>
+					<parameter name="param.urlType" value="wiki" />
+				</command>-->
+				<command
+					commandId="org.argeo.slc.akb.ui.openUrl"
+					label="AKB wiki"
+					style="push">
+					<parameter 
+						name="param.urlType" 
+						value="wiki" />
+				</command> 
+			</menu>
       </menuContribution>	
 	</extension>
 </plugin>

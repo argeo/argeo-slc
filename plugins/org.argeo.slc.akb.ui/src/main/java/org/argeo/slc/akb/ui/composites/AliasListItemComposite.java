@@ -98,11 +98,13 @@ public class AliasListItemComposite extends Composite {
 		// Name
 		final Text titleTxt = toolkit.createText(firstLine, "", SWT.NONE);
 		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
-		gd.widthHint = 100;
+		gd.widthHint = 150;
 		titleTxt.setLayoutData(gd);
 
 		// Description
 		final Text descTxt = toolkit.createText(firstLine, "", SWT.NONE);
+		gd = new GridData(SWT.LEFT, SWT.CENTER, false, false);
+		gd.widthHint = 220;
 		descTxt.setLayoutData(gd);
 
 		final Link testBtn = new Link(firstLine, SWT.NONE);
