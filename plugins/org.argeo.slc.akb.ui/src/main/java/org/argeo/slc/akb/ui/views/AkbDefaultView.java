@@ -1,17 +1,27 @@
 package org.argeo.slc.akb.ui.views;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.jcr.Node;
 import javax.jcr.Repository;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.argeo.eclipse.ui.utils.CommandUtils;
+import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.akb.AkbException;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
-import org.eclipse.jface.viewers.TableViewer;
+import org.argeo.slc.akb.ui.commands.OpenAkbNodeEditor;
+import org.argeo.slc.akb.ui.composites.AkbItemsTableComposite;
+import org.argeo.slc.akb.utils.AkbJcrUtils;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 /** Basic view that display a list of items with a quick search field. */
@@ -24,9 +34,7 @@ public class AkbDefaultView extends ViewPart {
 	private Session session;
 
 	// This page widgets
-	private TableViewer itemViewer;
-	private Text filterTxt;
-	private final static String FILTER_HELP_MSG = "Search...";
+	private AkbItemsTableComposite userTableCmp;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -34,39 +42,72 @@ public class AkbDefaultView extends ViewPart {
 		gl.horizontalSpacing = gl.verticalSpacing = gl.marginWidth = 0;
 		parent.setLayout(gl);
 
-		// Filter
-		Composite cmp = new Composite(parent, SWT.NO_FOCUS);
-		cmp.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		createFilterPart(cmp);
+		// Create the composite that displays the list and a filter
+		AkbItemsTableComposite userTableCmp = new AkbItemsTableComposite(
+				parent, SWT.NO_FOCUS, session);
+		userTableCmp.populate(true, false);
+		userTableCmp
+				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+		// Configure
+		userTableCmp.getTableViewer().addDoubleClickListener(
+				new ViewDoubleClickListener());
+		getViewSite().setSelectionProvider(userTableCmp.getTableViewer());
+
+		// // Filter
+		// Composite cmp = new Composite(parent, SWT.NO_FOCUS);
+		// cmp.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		// createFilterPart(cmp);
+		//
 		// // Table
 		// cmp = new Composite(parent, SWT.NO_FOCUS);
 		// cmp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		// itemViewer = createListPart(cmp, new EntitySingleColumnLabelProvider(
-		// peopleService));
+		// itemViewer = createListPart(cmp);
 		//
-		// refreshFilteredList();
+		// // refreshFilteredList();
 	}
 
-	private void createFilterPart(Composite parent) {
-		parent.setLayout(new GridLayout());
-		// Text Area for the filter
-		filterTxt = new Text(parent, SWT.BORDER | SWT.SEARCH | SWT.ICON_SEARCH
-				| SWT.ICON_CANCEL);
-		filterTxt.setMessage(FILTER_HELP_MSG);
-		filterTxt.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-		filterTxt.addModifyListener(new ModifyListener() {
+	class ViewDoubleClickListener implements IDoubleClickListener {
+		public void doubleClick(DoubleClickEvent evt) {
+			Object obj = ((IStructuredSelection) evt.getSelection())
+					.getFirstElement();
+			try {
+				if (obj instanceof Node) {
+					Node node = (Node) obj;
+					Node currEnv = AkbJcrUtils.getCurrentTemplate(node);
 
-			public void modifyText(ModifyEvent event) {
-				// refreshFilteredList();
+					// Add Connector Alias
+					Map<String, String> params = new HashMap<String, String>();
+					params.put(OpenAkbNodeEditor.PARAM_NODE_JCR_ID,
+							node.getIdentifier());
+					params.put(OpenAkbNodeEditor.PARAM_CURR_ENV_JCR_ID,
+							currEnv.getIdentifier());
+
+					CommandUtils.callCommand(OpenAkbNodeEditor.ID, params);
+				}
+			} catch (RepositoryException e) {
+				throw new AkbException("Cannot open " + obj, e);
 			}
-		});
+		}
 	}
 
-	// protected TableViewer createListPart(Composite parent,
-	// ILabelProvider labelProvider) {
+	// private void createFilterPart(Composite parent) {
+	// parent.setLayout(new GridLayout());
+	// // Text Area for the filter
+	// filterTxt = new Text(parent, SWT.BORDER | SWT.SEARCH | SWT.ICON_SEARCH
+	// | SWT.ICON_CANCEL);
+	// filterTxt.setMessage(FILTER_HELP_MSG);
+	// filterTxt.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+	// filterTxt.addModifyListener(new ModifyListener() {
+	//
+	// public void modifyText(ModifyEvent event) {
+	// refreshFilteredList();
+	// }
+	// });
+	// }
+	//
+	// protected TableViewer createListPart(Composite parent) {
 	// TableViewer v = new TableViewer(parent);
-	// v.setLabelProvider(labelProvider);
 	//
 	// TableColumn singleColumn = new TableColumn(v.getTable(), SWT.V_SCROLL);
 	// TableColumnLayout tableColumnLayout = new TableColumnLayout();
@@ -86,7 +127,8 @@ public class AkbDefaultView extends ViewPart {
 
 	@Override
 	public void dispose() {
-		// JcrUtils.logoutQuietly(session);
+		userTableCmp.dispose();
+		JcrUtils.logoutQuietly(session);
 		super.dispose();
 	}
 
@@ -164,11 +206,11 @@ public class AkbDefaultView extends ViewPart {
 
 	/* DEPENDENCY INJECTION */
 	public void setRepository(Repository repository) {
-		// try {
-		// session = repository.login();
-		// } catch (RepositoryException e) {
-		// throw new PeopleException("Unable to initialize "
-		// + "session for view " + ID, e);
-		// }
+		try {
+			session = repository.login();
+		} catch (RepositoryException e) {
+			throw new AkbException("Unable to initialize "
+					+ "session for view " + ID, e);
+		}
 	}
 }
