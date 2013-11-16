@@ -20,6 +20,9 @@ public class AkbTreeLabelProvider extends LabelProvider {
 	@Override
 	public String getText(Object element) {
 		try {
+			if (element instanceof ActiveTreeItem)
+				element = ((ActiveTreeItem) element).getNode();
+
 			if (element instanceof Node) {
 				Node node = (Node) element;
 				if (node.isNodeType(NodeType.MIX_TITLE))
@@ -36,6 +39,9 @@ public class AkbTreeLabelProvider extends LabelProvider {
 
 	public Image getImage(Object element) {
 		try {
+			if (element instanceof ActiveTreeItem)
+				element = ((ActiveTreeItem) element).getNode();
+
 			if (element instanceof Node) {
 				Node node = (Node) element;
 				if (node.isNodeType(AkbTypes.AKB_ITEM_FOLDER))

@@ -112,20 +112,67 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 	@Override
 	public Node createAkbTemplate(Node parentNode, String name)
 			throws RepositoryException {
-		String connectorParentName = "Connectors";
-
 		Node newTemplate = parentNode.addNode(name, AkbTypes.AKB_ENV_TEMPLATE);
 		newTemplate.setProperty(Property.JCR_TITLE, name);
 
-		Node connectorParent = newTemplate.addNode(
-				AkbTypes.AKB_CONNECTOR_FOLDER, AkbTypes.AKB_CONNECTOR_FOLDER);
-		connectorParent.setProperty(Property.JCR_TITLE, connectorParentName);
+		// Node connectorParent =
+		newTemplate.addNode(AkbTypes.AKB_CONNECTOR_FOLDER,
+				AkbTypes.AKB_CONNECTOR_FOLDER);
+		// connectorParent.setProperty(Property.JCR_TITLE, connectorParentName);
 
 		return newTemplate;
 	}
 
+	// //////////////////////////
+	// ENVIRONMENTS
+	@Override
+	public Node createActiveEnv(Node template, String name,
+			boolean copyDefaultConnectors) throws RepositoryException {
+
+		Session session = template.getSession();
+		Node parentEnvNode = session.getNode(AKB_ENVIRONMENTS_BASE_PATH);
+		Node createdEnv = parentEnvNode.addNode(name, AkbTypes.AKB_ENV);
+		createdEnv.setProperty(AKB_ENV_TEMPLATE_PATH, template.getPath());
+		createdEnv.setProperty(Property.JCR_TITLE, name);
+
+		Node connectorParent = createdEnv.addNode(
+				AkbTypes.AKB_CONNECTOR_FOLDER, AkbTypes.AKB_CONNECTOR_FOLDER);
+
+		NodeIterator ni = template.getNode(AkbTypes.AKB_CONNECTOR_FOLDER)
+				.getNodes();
+		while (ni.hasNext()) {
+			Node currNode = ni.nextNode();
+			if (currNode.isNodeType(AkbTypes.AKB_CONNECTOR_ALIAS)) {
+				Node newConnector = connectorParent.addNode(currNode.getName(),
+						AkbTypes.AKB_CONNECTOR);
+				newConnector.setProperty(AKB_CONNECTOR_ALIAS_PATH,
+						currNode.getPath());
+				if (copyDefaultConnectors
+						&& currNode
+								.hasNode(AkbNames.AKB_DEFAULT_TEST_CONNECTOR)) {
+					Node defaultConn = currNode
+							.getNode(AkbNames.AKB_DEFAULT_TEST_CONNECTOR);
+					if (defaultConn.hasProperty(AkbNames.AKB_CONNECTOR_URL))
+						newConnector
+								.setProperty(
+										AkbNames.AKB_CONNECTOR_URL,
+										defaultConn.getProperty(
+												AkbNames.AKB_CONNECTOR_URL)
+												.getString());
+					if (defaultConn.hasProperty(AkbNames.AKB_CONNECTOR_USER))
+						newConnector.setProperty(
+								AkbNames.AKB_CONNECTOR_USER,
+								defaultConn.getProperty(
+										AkbNames.AKB_CONNECTOR_USER)
+										.getString());
+				}
+			}
+		}
+		return createdEnv;
+	}
+
 	// ///////////////////////////////////////
-	// / CONNECTORS
+	// CONNECTORS
 
 	@Override
 	public Node createConnectorAlias(Node templateNode, String name,
@@ -139,7 +186,8 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 		// Node defaultConnector =
 		Node defaultConn = newConnector.addNode(
 				AkbNames.AKB_DEFAULT_TEST_CONNECTOR, connectorType);
-		defaultConn.setProperty(AkbNames.AKB_CONNECTOR_ALIAS_PATH, newConnector.getPath());
+		defaultConn.setProperty(AkbNames.AKB_CONNECTOR_ALIAS_PATH,
+				newConnector.getPath());
 		return newConnector;
 	}
 
@@ -294,10 +342,15 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 
 				String sqlQuery = node.getProperty(AKB_QUERY_TEXT).getString();
 
-				String connectorUrl = connectorNode.getProperty(
-						AKB_CONNECTOR_URL).getString();
-				String connectorUser = connectorNode.getProperty(
-						AKB_CONNECTOR_USER).getString();
+				String connectorUrl = AkbJcrUtils.get(connectorNode,
+						AKB_CONNECTOR_URL);
+				String connectorUser = AkbJcrUtils.get(connectorNode,
+						AKB_CONNECTOR_USER);
+
+				// Sanity check
+				if (AkbJcrUtils.isEmptyString(connectorUrl)
+						|| AkbJcrUtils.isEmptyString(connectorUser))
+					return null;
 
 				String pwdPath = getPasswordPath(connectorNode);
 				// String pwdPath = connectorNode.getPath() + '/'
@@ -337,10 +390,16 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 			String command = node.getProperty(AkbNames.AKB_COMMAND_TEXT)
 					.getString();
 
-			String connectorUrl = connectorNode.getProperty(AKB_CONNECTOR_URL)
-					.getString();
-			String connectorUser = connectorNode
-					.getProperty(AKB_CONNECTOR_USER).getString();
+			String connectorUrl = AkbJcrUtils.get(connectorNode,
+					AKB_CONNECTOR_URL);
+			String connectorUser = AkbJcrUtils.get(connectorNode,
+					AKB_CONNECTOR_USER);
+
+			// Sanity check
+			if (AkbJcrUtils.isEmptyString(connectorUrl)
+					|| AkbJcrUtils.isEmptyString(connectorUser))
+				return null;
+
 			String pwdPath = getPasswordPath(connectorNode);
 			char[] pwd = keyring.getAsChars(pwdPath);
 
@@ -396,10 +455,16 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 					connectorAliasStr);
 
 			// TODO do a proper scp
-			String connectorUrl = connectorNode.getProperty(AKB_CONNECTOR_URL)
-					.getString();
-			String connectorUser = connectorNode
-					.getProperty(AKB_CONNECTOR_USER).getString();
+			String connectorUrl = AkbJcrUtils.get(connectorNode,
+					AKB_CONNECTOR_URL);
+			String connectorUser = AkbJcrUtils.get(connectorNode,
+					AKB_CONNECTOR_USER);
+
+			// Sanity check
+			if (AkbJcrUtils.isEmptyString(connectorUrl)
+					|| AkbJcrUtils.isEmptyString(connectorUser))
+				return null;
+
 			String pwdPath = getPasswordPath(connectorNode);
 			char[] pwd = keyring.getAsChars(pwdPath);
 
@@ -458,10 +523,10 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 
 	}
 
-	// /** Expose injected repository */
-	// public Repository getRepository() {
-	// return repository;
-	// }
+	/** Expose injected repository */
+	public Repository getRepository() {
+		return repository;
+	}
 
 	/* DEPENDENCY INJECTION */
 	public void setRepository(Repository repository) {

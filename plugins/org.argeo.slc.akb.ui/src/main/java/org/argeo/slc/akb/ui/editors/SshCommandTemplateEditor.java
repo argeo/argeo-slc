@@ -3,6 +3,9 @@ package org.argeo.slc.akb.ui.editors;
 import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
 import org.argeo.slc.akb.ui.AkbUiUtils;
+import org.argeo.slc.akb.ui.composites.ActiveItemHeaderComposite;
+import org.argeo.slc.akb.ui.utils.Refreshable;
+import org.argeo.slc.akb.utils.AkbJcrUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
@@ -16,10 +19,13 @@ import org.eclipse.ui.forms.IManagedForm;
 /**
  * Display and edit a SSH Command Template ITEM
  */
-public class SshCommandTemplateEditor extends AkbItemTemplateEditor {
+public class SshCommandTemplateEditor extends AkbItemTemplateEditor implements
+		Refreshable {
 
 	public final static String ID = AkbUiPlugin.PLUGIN_ID
 			+ ".sshCommandTemplateEditor";
+
+	private Text outputDisplay;
 
 	@Override
 	protected String getEditorId() {
@@ -27,19 +33,28 @@ public class SshCommandTemplateEditor extends AkbItemTemplateEditor {
 	}
 
 	@Override
-	protected void populateTestPage(Composite parent) {
+	protected void populateTestPage(Composite parent, IManagedForm managedForm) {
 		parent.setLayout(AkbUiUtils.gridLayoutNoBorder());
 
-		Text outputDisplay = getToolkit().createText(parent, "", SWT.MULTI);
+		ActiveItemHeaderComposite header = new ActiveItemHeaderComposite(
+				parent, SWT.NONE, getToolkit(), managedForm, getEnvNode(),
+				getAkbNode(), getAkbService());
+		header.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+
+		outputDisplay = getToolkit().createText(parent, "", SWT.MULTI);
 		outputDisplay.setFont(new Font(parent.getDisplay(), "Monospaced", 10,
 				SWT.NONE));
 		outputDisplay.setEditable(false);
 		outputDisplay
 				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		forceRefresh(null);
+	}
 
+	public void forceRefresh(Object object) {
 		String output = getAkbService().executeCommand(getEnvNode(),
 				getAkbNode());
-		outputDisplay.setText(output);
+		if (AkbJcrUtils.checkNotEmptyString(output))
+			outputDisplay.setText(output);
 	}
 
 	@Override

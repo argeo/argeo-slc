@@ -11,7 +11,13 @@
 		<property name="akbService" ref="akbService" />
 	</bean>
 
-	<!-- deletes an AKB specific node-->
+	<!-- Creates an AKB node given some params. -->
+	<bean id="createAkbNode" class="org.argeo.slc.akb.ui.commands.CreateAkbNode"
+		scope="prototype">
+		<property name="akbService" ref="akbService" />
+	</bean>
+
+	<!-- deletes an AKB specific node -->
 	<bean id="deleteAkbNodes" class="org.argeo.slc.akb.ui.commands.DeleteAkbNodes"
 		scope="prototype">
 		<property name="repository" ref="repository" />

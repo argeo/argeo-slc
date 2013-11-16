@@ -10,6 +10,10 @@
 		scope="prototype">
 		<property name="repository" ref="repository" />
 	</bean>
+	<bean id="environmentsTreeView" class="org.argeo.slc.akb.ui.views.EnvironmentsTreeView"
+		scope="prototype">
+		<property name="repository" ref="repository" />
+	</bean>
 	<bean id="akbTemplatesTreeView" class="org.argeo.slc.akb.ui.views.AkbTemplatesTreeView"
 		scope="prototype">
 		<property name="repository" ref="repository" />

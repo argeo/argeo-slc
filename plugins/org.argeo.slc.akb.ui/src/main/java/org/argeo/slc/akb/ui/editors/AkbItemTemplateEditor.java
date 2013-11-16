@@ -58,11 +58,11 @@ public abstract class AkbItemTemplateEditor extends AbstractAkbNodeEditor {
 			ScrolledForm form = managedForm.getForm();
 			form.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			Composite parent = form.getBody();
-			populateTestPage(parent);
+			populateTestPage(parent, managedForm);
 		}
 	}
 
-	protected void populateTestPage(Composite parent) {
+	protected void populateTestPage(Composite parent, IManagedForm managedForm) {
 		parent.setLayout(AkbUiUtils.gridLayoutNoBorder());
 		getToolkit().createLabel(
 				parent,

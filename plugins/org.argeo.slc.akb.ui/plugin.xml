@@ -34,6 +34,13 @@
 			name="Akb Templates"
 			restorable="true">
 		</view>
+		<view
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			icon="icons/treeView.png"
+			id="org.argeo.slc.akb.ui.environmentsTreeView"
+			name="Akb Environments"
+			restorable="true">
+		</view>
 	</extension>
 	<!-- Editors -->
     <extension
@@ -100,6 +107,19 @@
  		</command>
 		<command
 			defaultHandler="org.argeo.eclipse.spring.SpringExtensionFactory"
+			id="org.argeo.slc.akb.ui.createAkbNode"
+			name="Create a new Akb Node">
+        	<commandParameter
+     			id="param.nodeType"
+     			name="Corresponding JCR node type">
+ 			</commandParameter>
+        	<commandParameter
+     			id="param.parentNodeJcrId"
+     			name="The Parent Node JCR ID if needed">
+ 			</commandParameter>
+ 		</command>
+		<command
+			defaultHandler="org.argeo.eclipse.spring.SpringExtensionFactory"
 			id="org.argeo.slc.akb.ui.deleteAkbNodes"
 			name="Delete Akb Node(s) and close corresponding editors">
          	<commandParameter
@@ -123,6 +143,15 @@
 		point="org.eclipse.ui.menus">
 		<menuContribution
         	locationURI="toolbar:org.argeo.slc.akb.ui.akbTemplatesTreeView">
+            <command
+            	commandId="org.argeo.slc.akb.ui.forceRefresh"
+                icon="icons/refresh.png"
+	                label="Refresh"
+                tooltip="Refresh the whole browser">
+            </command>
+        </menuContribution>
+		<menuContribution
+        	locationURI="toolbar:org.argeo.slc.akb.ui.environmentsTreeView">
             <command
             	commandId="org.argeo.slc.akb.ui.forceRefresh"
                 icon="icons/refresh.png"

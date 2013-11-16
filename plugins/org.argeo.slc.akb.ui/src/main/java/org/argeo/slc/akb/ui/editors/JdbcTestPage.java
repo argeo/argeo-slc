@@ -14,6 +14,8 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.akb.AkbNames;
 import org.argeo.slc.akb.AkbService;
 import org.argeo.slc.akb.ui.AkbUiUtils;
+import org.argeo.slc.akb.ui.composites.ActiveItemHeaderComposite;
+import org.argeo.slc.akb.ui.utils.Refreshable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -34,7 +36,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /** Test JDBC. */
-public class JdbcTestPage extends FormPage implements AkbNames {
+public class JdbcTestPage extends FormPage implements AkbNames, Refreshable {
 	private Node currItem;
 	// A template or an active environment
 	private Node currEnv;
@@ -61,6 +63,14 @@ public class JdbcTestPage extends FormPage implements AkbNames {
 
 		parent.setLayout(AkbUiUtils.gridLayoutNoBorder());
 		FormToolkit toolkit = getEditor().getToolkit();
+
+		// the header
+		ActiveItemHeaderComposite header = new ActiveItemHeaderComposite(
+				parent, SWT.NONE, toolkit, managedForm, currEnv, currItem,
+				akbService);
+		header.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+
+		// the table
 		Table table = toolkit.createTable(parent, SWT.VIRTUAL);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		table.setHeaderVisible(true);
@@ -70,32 +80,39 @@ public class JdbcTestPage extends FormPage implements AkbNames {
 		viewer.setContentProvider(contentProvider);
 		// viewer.setLabelProvider(new ColumnLabelProvider(){});
 
-		statement = akbService.prepareJdbcQuery(currEnv, currItem);
-		PrivilegedJob job = new PrivilegedJob("Execute query on " + currItem) {
-
-			@Override
-			protected IStatus doRun(IProgressMonitor progressMonitor) {
-				try {
-					final ResultSet resultSet = statement.executeQuery();
-					getEditorSite().getWorkbenchWindow().getShell()
-							.getDisplay().syncExec(new Runnable() {
-
-								@Override
-								public void run() {
-									viewer.setInput(resultSet);
-								}
-							});
-					return Status.OK_STATUS;
-				} catch (SQLException e) {
-					throw new SlcException("Cannot execute " + currItem, e);
-				}
-			}
-		};
-		job.schedule();
+		forceRefresh(null);
 	}
 
-	@Override
-	public void dispose() {
+	public void forceRefresh(Object object) {
+		silentlyCloseStatement();
+		statement = akbService.prepareJdbcQuery(currEnv, currItem);
+		if (statement != null) {
+			PrivilegedJob job = new PrivilegedJob("Execute query on "
+					+ currItem) {
+
+				@Override
+				protected IStatus doRun(IProgressMonitor progressMonitor) {
+					try {
+						final ResultSet resultSet = statement.executeQuery();
+						getEditorSite().getWorkbenchWindow().getShell()
+								.getDisplay().syncExec(new Runnable() {
+
+									@Override
+									public void run() {
+										viewer.setInput(resultSet);
+									}
+								});
+						return Status.OK_STATUS;
+					} catch (SQLException e) {
+						throw new SlcException("Cannot execute " + currItem, e);
+					}
+				}
+			};
+			job.schedule();
+		}
+	}
+
+	private void silentlyCloseStatement() {
 		try {
 			if (statement != null) {
 				statement.close();
@@ -104,6 +121,11 @@ public class JdbcTestPage extends FormPage implements AkbNames {
 		} catch (SQLException e) {
 			// silent
 		}
+	}
+
+	@Override
+	public void dispose() {
+		silentlyCloseStatement();
 	}
 
 	private class JdbcTestContentProvider implements ILazyContentProvider {

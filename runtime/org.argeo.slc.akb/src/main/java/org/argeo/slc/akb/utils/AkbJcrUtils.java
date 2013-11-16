@@ -13,16 +13,8 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelConstants;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.query.qom.Selector;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.PropertyDiff;
@@ -35,6 +27,51 @@ public class AkbJcrUtils {
 
 	// /////////////////////////
 	// SPECIFIC METHOS
+	/**
+	 * Returns the list of environment templates that are visible for the
+	 * current user.
+	 */
+	public static List<Node> getDefinedTemplate(Session session) {
+		try {
+			if (session.nodeExists(AkbNames.AKB_TEMPLATES_BASE_PATH)) {
+				NodeIterator ni = session.getNode(
+						AkbNames.AKB_TEMPLATES_BASE_PATH).getNodes();
+				List<Node> templates = new ArrayList<Node>();
+				while (ni.hasNext()) {
+					Node currN = ni.nextNode();
+					if (currN.isNodeType(AkbTypes.AKB_ENV_TEMPLATE))
+						templates.add(currN);
+				}
+				return templates;
+			}
+			return null;
+		} catch (RepositoryException re) {
+			throw new AkbException("Unable to list templates", re);
+		}
+	}
+
+	/**
+	 * Returns a template given it's name
+	 */
+	public static Node getTemplateByName(Session session, String name) {
+		try {
+			if (name == null)
+				return null;
+			if (session.nodeExists(AkbNames.AKB_TEMPLATES_BASE_PATH)) {
+				NodeIterator ni = session.getNode(
+						AkbNames.AKB_TEMPLATES_BASE_PATH).getNodes();
+				while (ni.hasNext()) {
+					Node currN = ni.nextNode();
+					if (name.equals(AkbJcrUtils.get(currN, Property.JCR_TITLE)))
+						return currN;
+				}
+			}
+			return null;
+		} catch (RepositoryException re) {
+			throw new AkbException("Unable to list templates", re);
+		}
+	}
+
 	/**
 	 * Return the type of alias that must be used given current item type
 	 */
@@ -50,51 +87,6 @@ public class AkbJcrUtils {
 						+ itemTemplate);
 		} catch (RepositoryException re) {
 			throw new AkbException("Unable to login", re);
-		}
-	}
-
-	/**
-	 * Return defined alias in the current environment given current item type
-	 */
-	@Deprecated
-	public static List<Node> getDefinedAliasForNode(Node itemTemplate) {
-		try {
-			Session session = itemTemplate.getSession();
-			QueryManager queryManager = session.getWorkspace()
-					.getQueryManager();
-			QueryObjectModelFactory factory = queryManager.getQOMFactory();
-
-			Selector source = factory.selector(AkbTypes.AKB_CONNECTOR_ALIAS,
-					AkbTypes.AKB_CONNECTOR_ALIAS);
-			String basePath = getCurrentEnvBasePath(itemTemplate);
-			Constraint defaultC = factory.descendantNode(
-					source.getSelectorName(), basePath);
-
-			String nodeType = getAliasTypeForNode(itemTemplate);
-			Constraint connType = factory.comparison(factory.propertyValue(
-					source.getSelectorName(), AkbNames.AKB_CONNECTOR_TYPE),
-					QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO, factory
-							.literal(session.getValueFactory().createValue(
-									nodeType)));
-
-			// Order by default by JCR TITLE
-			// TODO check if node definition has MIX_TITLE mixin
-			// TODO Apparently case insensitive ordering is not implemented in
-			// current used JCR implementation
-			Ordering order = factory
-					.ascending(factory.upperCase(factory.propertyValue(
-							source.getSelectorName(), Property.JCR_TITLE)));
-			QueryObjectModel query;
-			query = factory.createQuery(source,
-					factory.and(defaultC, connType), new Ordering[] { order },
-					null);
-			QueryResult result = query.execute();
-
-			NodeIterator ni = result.getNodes();
-
-			return JcrUtils.nodeIteratorToList(ni);
-		} catch (RepositoryException e) {
-			throw new AkbException("Unable to list connector", e);
 		}
 	}
 

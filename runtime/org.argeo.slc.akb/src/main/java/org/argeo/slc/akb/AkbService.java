@@ -4,14 +4,22 @@ import java.sql.PreparedStatement;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 
 /** Provides method interfaces to manage an AKB repository */
 public interface AkbService {
 
+	/** Exposes injected Repository */
+	public Repository getRepository();
+
 	/** Creates a pre-configured AKB Template */
 	public Node createAkbTemplate(Node parent, String name)
 			throws RepositoryException;
+
+	/** Creates an instance of a template */
+	public Node createActiveEnv(Node template, String name,
+			boolean copyDefaultConnectors) throws RepositoryException;
 
 	/** Creates a new pre-configured AKB connector Alias for the given template */
 	public Node createConnectorAlias(Node templateNode, String name,
@@ -27,6 +35,7 @@ public interface AkbService {
 	public NodeIterator getDefinedAliases(Node templateNode,
 			String connectorType) throws RepositoryException;
 
+	
 	/**
 	 * @param envNode
 	 *            an environment or a template

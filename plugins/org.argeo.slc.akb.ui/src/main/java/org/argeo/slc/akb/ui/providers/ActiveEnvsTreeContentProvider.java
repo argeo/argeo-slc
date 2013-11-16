@@ -40,14 +40,33 @@ public class ActiveEnvsTreeContentProvider implements ITreeContentProvider {
 
 	/**
 	 * @param parent
-	 *            Pass current user home as parameter
+	 *            Pass base parent node as parameter
 	 * 
 	 */
 	public Object[] getElements(Object parent) {
-		if (parent instanceof Object[])
-			return (Object[]) parent;
+		if (parent instanceof Node)
+			return initializeTree((Node) parent);
 		else
 			return null;
+	}
+
+	private ActiveTreeItem[] initializeTree(Node activeEnvsParentNode) {
+		try {
+			NodeIterator ni = activeEnvsParentNode.getNodes();
+			List<ActiveTreeItem> envs = new ArrayList<ActiveTreeItem>();
+			while (ni.hasNext()) {
+				Node currNode = ni.nextNode();
+				if (currNode.isNodeType(AkbTypes.AKB_ENV)) {
+					envs.add(new ActiveTreeItem(null, currNode, currNode));
+				}
+			}
+			ActiveTreeItem[] envArr = envs.toArray(new ActiveTreeItem[envs
+					.size()]);
+			return envArr;
+		} catch (RepositoryException re) {
+			throw new AkbException("Error while initializing the "
+					+ "tree of active environments.", re);
+		}
 	}
 
 	public Object getParent(Object child) {

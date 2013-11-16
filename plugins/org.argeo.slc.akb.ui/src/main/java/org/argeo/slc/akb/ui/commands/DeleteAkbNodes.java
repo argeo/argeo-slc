@@ -7,6 +7,7 @@ import javax.jcr.Session;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.akb.AkbException;
+import org.argeo.slc.akb.AkbTypes;
 import org.argeo.slc.akb.ui.AkbUiPlugin;
 import org.argeo.slc.akb.ui.editors.AkbNodeEditorInput;
 import org.argeo.slc.akb.utils.AkbJcrUtils;
@@ -48,8 +49,10 @@ public class DeleteAkbNodes extends AbstractHandler {
 			if (nodeJcrId != null)
 				node = session.getNodeByIdentifier(nodeJcrId);
 
-			// We must be in a template to delete nodes...
-			Node template = AkbJcrUtils.getCurrentTemplate(node);
+			// We must be in a template or on the root of an env instance to
+			// delete nodes.
+			Node template = node.isNodeType(AkbTypes.AKB_ENV) ? node
+					: AkbJcrUtils.getCurrentTemplate(node);
 
 			if (node != null) {
 				Boolean ok = MessageDialog.openConfirm(
