@@ -141,7 +141,7 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 			if (currNode.isNodeType(AkbTypes.AKB_CONNECTOR_ALIAS)) {
 				String connType = currNode.getProperty(AKB_CONNECTOR_TYPE)
 						.getString();
-				
+
 				if (AkbJcrUtils.isEmptyString(connType))
 					// Cannot create an instance if the type is undefined
 					continue activeConns;
@@ -343,8 +343,15 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 				Node connectorNode = getActiveConnectorByAlias(activeEnv,
 						connectorAliasStr);
 
-				String sqlQuery = node.getProperty(AKB_QUERY_TEXT).getString();
+				// Sanity check
+				if (connectorNode == null)
+					// should never happen
+					return null;
+				// FIXME hack to force saving of password in keyring on never
+				// used connector instance for active env
+				testConnector(connectorNode);
 
+				String sqlQuery = AkbJcrUtils.get(node, AKB_QUERY_TEXT);
 				String connectorUrl = AkbJcrUtils.get(connectorNode,
 						AKB_CONNECTOR_URL);
 				String connectorUser = AkbJcrUtils.get(connectorNode,
@@ -352,7 +359,8 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 
 				// Sanity check
 				if (AkbJcrUtils.isEmptyString(connectorUrl)
-						|| AkbJcrUtils.isEmptyString(connectorUser))
+						|| AkbJcrUtils.isEmptyString(connectorUser)
+						|| AkbJcrUtils.isEmptyString(sqlQuery))
 					return null;
 
 				String pwdPath = getPasswordPath(connectorNode);
@@ -381,18 +389,24 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 
 	public String executeCommand(Node activeEnv, Node node) {
 		try {
-
 			String connectorAliasStr = node.getProperty(AKB_USED_CONNECTOR)
 					.getString();
 			// in case of a template passed env can be null
 			if (activeEnv == null) {
 				activeEnv = AkbJcrUtils.getCurrentTemplate(node);
 			}
+
 			Node connectorNode = getActiveConnectorByAlias(activeEnv,
 					connectorAliasStr);
-			String command = node.getProperty(AkbNames.AKB_COMMAND_TEXT)
-					.getString();
+			// Sanity check
+			if (connectorNode == null)
+				// should never happen
+				return null;
+			// FIXME hack to force saving of password in keyring on never used
+			// connector instance for active env
+			testConnector(connectorNode);
 
+			String command = AkbJcrUtils.get(node, AKB_COMMAND_TEXT);
 			String connectorUrl = AkbJcrUtils.get(connectorNode,
 					AKB_CONNECTOR_URL);
 			String connectorUser = AkbJcrUtils.get(connectorNode,
@@ -400,7 +414,8 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 
 			// Sanity check
 			if (AkbJcrUtils.isEmptyString(connectorUrl)
-					|| AkbJcrUtils.isEmptyString(connectorUser))
+					|| AkbJcrUtils.isEmptyString(connectorUser)
+					|| AkbJcrUtils.isEmptyString(command))
 				return null;
 
 			String pwdPath = getPasswordPath(connectorNode);
@@ -456,6 +471,14 @@ public class AkbServiceImpl implements AkbService, AkbNames {
 			}
 			Node connectorNode = getActiveConnectorByAlias(activeEnv,
 					connectorAliasStr);
+
+			// Sanity check
+			if (connectorNode == null)
+				// should never happen
+				return null;
+			// FIXME hack to force saving of password in keyring on never used
+			// connector instance for active env
+			testConnector(connectorNode);
 
 			// TODO do a proper scp
 			String connectorUrl = AkbJcrUtils.get(connectorNode,

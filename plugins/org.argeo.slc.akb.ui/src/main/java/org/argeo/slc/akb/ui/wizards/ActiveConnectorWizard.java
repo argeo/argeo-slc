@@ -51,23 +51,24 @@ public class ActiveConnectorWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		return doUpdate();
-	}
-
-	private boolean doUpdate() {
 		if (!canFinish())
 			return false;
+		doUpdate();
+		return true;
+	}
+
+	private void doUpdate() {
 		try {
-			boolean changed = true;
-			changed &= AkbUiUtils.setJcrProperty(activeConnector,
+			boolean changed = false;
+			changed |= AkbUiUtils.setJcrProperty(activeConnector,
 					AkbNames.AKB_CONNECTOR_URL, PropertyType.STRING,
 					editConnectorPage.getUrl());
-			changed &= AkbUiUtils.setJcrProperty(activeConnector,
+			changed |= AkbUiUtils.setJcrProperty(activeConnector,
 					AkbNames.AKB_CONNECTOR_USER, PropertyType.STRING,
 					editConnectorPage.getUser());
 			if (changed)
 				activeConnector.getSession().save();
-			return changed;
+			// return changed;
 		} catch (RepositoryException re) {
 			throw new AkbException("Unable to update active connector", re);
 		}
@@ -98,9 +99,9 @@ public class ActiveConnectorWizard extends Wizard {
 	public boolean canFinish() {
 		if (AkbJcrUtils.isEmptyString(editConnectorPage.getUrl())
 				|| AkbJcrUtils.isEmptyString(editConnectorPage.getUser()))
-			return true;
-		else
 			return false;
+		else
+			return true;
 	}
 
 	// //////////////////////

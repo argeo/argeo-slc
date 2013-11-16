@@ -320,7 +320,7 @@ public class AkbTemplatesTreeView extends ViewPart implements Refreshable {
 		if (currItem != null)
 			subMenu.remove(currItem);
 		subMenu.add(AkbUiUtils.createContributionItem(menuManager, locator,
-				currItemId, OpenAkbNodeEditor.ID, "JDBC", null, tmpParams));
+				currItemId, OpenAkbNodeEditor.ID, "JDBC Query", null, tmpParams));
 
 		// SSH COMMAND
 		tmpParams = new HashMap<String, String>();
