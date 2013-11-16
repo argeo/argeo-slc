@@ -55,6 +55,8 @@ public class SshCommandTemplateEditor extends AkbItemTemplateEditor implements
 				getAkbNode());
 		if (AkbJcrUtils.checkNotEmptyString(output))
 			outputDisplay.setText(output);
+		else 
+			outputDisplay.setText("");
 	}
 
 	@Override

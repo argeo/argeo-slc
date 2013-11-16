@@ -79,7 +79,7 @@ public class EnvTemplateEditor extends AbstractAkbNodeEditor {
 		menuManager.setRemoveAllWhenShown(true);
 	}
 
-	private void aboutToShow(IMenuManager menu) {
+	protected void aboutToShow(IMenuManager menu) {
 		try {
 			// initialization
 			String submenuID = "subMenu.addAlias";

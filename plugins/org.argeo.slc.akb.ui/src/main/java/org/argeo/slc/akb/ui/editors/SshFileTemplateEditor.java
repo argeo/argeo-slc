@@ -56,6 +56,8 @@ public class SshFileTemplateEditor extends AkbItemTemplateEditor implements
 				.retrieveFile(getEnvNode(), getAkbNode());
 		if (AkbJcrUtils.checkNotEmptyString(output))
 			outputDisplay.setText(output);
+		else 
+			outputDisplay.setText("");
 	}
 
 	@Override
