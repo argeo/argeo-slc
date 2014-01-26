@@ -6,12 +6,15 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.build.ModularDistribution;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.repo.ArtifactDistribution;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /** A consistent and versioned OSGi distribution, which can be built and tested. */
 public class ArgeoOsgiDistribution extends ArtifactDistribution implements

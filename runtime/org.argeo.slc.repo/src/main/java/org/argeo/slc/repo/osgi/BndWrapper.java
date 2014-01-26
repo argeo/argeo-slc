@@ -29,6 +29,8 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 	private String version;
 	private Properties bndProperties = new Properties();
 
+	private Boolean doNotModify = false;
+
 	public void wrapJar(InputStream in, OutputStream out) {
 		Builder b = new Builder();
 		try {
@@ -72,19 +74,25 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 				versionToUse = new Version(version);
 			}
 
-			Properties properties = new Properties();
-			properties.putAll(bndProperties);
-			properties.setProperty(BUNDLE_SYMBOLICNAME, name);
-			properties.setProperty(BUNDLE_VERSION, versionToUse.toString());
+			if (doNotModify) {
+				jar.write(out);
+			} else {
 
-			// b.addIncluded(jarFile);
-			b.addClasspath(jar);
+				Properties properties = new Properties();
+				properties.putAll(bndProperties);
+				properties.setProperty(BUNDLE_SYMBOLICNAME, name);
+				properties.setProperty(BUNDLE_VERSION, versionToUse.toString());
 
-			log.debug(properties);
-			b.setProperties(properties);
+				// b.addIncluded(jarFile);
+				b.addClasspath(jar);
 
-			Jar newJar = b.build();
-			newJar.write(out);
+				if (log.isDebugEnabled())
+					log.debug(properties);
+				b.setProperties(properties);
+
+				Jar newJar = b.build();
+				newJar.write(out);
+			}
 		} catch (Exception e) {
 			throw new SlcException("Cannot wrap jar", e);
 		} finally {
@@ -160,6 +168,10 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 					&& getVersion().equals(cnv.getVersion());
 		} else
 			return false;
+	}
+
+	public void setDoNotModify(Boolean doNotModify) {
+		this.doNotModify = doNotModify;
 	}
 
 }
