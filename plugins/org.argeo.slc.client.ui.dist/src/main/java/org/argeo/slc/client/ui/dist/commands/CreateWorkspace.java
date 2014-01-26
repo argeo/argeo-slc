@@ -25,7 +25,7 @@ import javax.jcr.security.Privilege;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoException;
+import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
@@ -77,10 +77,32 @@ public class CreateWorkspace extends AbstractHandler {
 					.getActiveWorkbenchWindow(event).getShell(),
 					"Workspace name?",
 					"Choose a name for the workspace to create",
-					prefix == null ? "" : prefix + "-", null);
+					prefix == null ? "" : prefix + "_", null);
 			int result = inputDialog.open();
 
-			String workspaceName = inputDialog.getValue();
+			String enteredName = inputDialog.getValue();
+
+			final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXZY0123456789_";
+			char[] arr = enteredName.toUpperCase().toCharArray();
+			int count = 0;
+			for (int i = 0; i < arr.length; i++) {
+				if (legalChars.indexOf(arr[i]) == -1)
+					count = count + 7;
+				else
+					count++;
+			}
+
+			if (log.isDebugEnabled())
+				log.debug("Count " + count);
+
+			if (count > 60) {
+				ErrorFeedback.show("Workspace name '" + enteredName
+						+ "' is too long or contains"
+						+ " too many special characters such as '.' or '-'.");
+				return null;
+			}
+
+			String workspaceName = enteredName;
 
 			// Canceled by user
 			if (result == Dialog.CANCEL || workspaceName == null
@@ -98,7 +120,7 @@ public class CreateWorkspace extends AbstractHandler {
 				log.trace("WORKSPACE " + workspaceName + " CREATED");
 
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			ErrorFeedback.show(
 					"Unexpected error while creating the new workspace.", re);
 		} finally {
 			JcrUtils.logoutQuietly(session);
