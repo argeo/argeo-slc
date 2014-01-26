@@ -144,9 +144,9 @@ public class RepoElem extends DistParentElem {
 
 				// filter technical workspaces
 				// FIXME: rely on a more robust rule than just wksp name
-				if (workspaceName.lastIndexOf('-') > 0) {
+				if (workspaceName.lastIndexOf(VERSION_SEP) > 0) {
 					String prefix = workspaceName.substring(0,
-							workspaceName.lastIndexOf('-'));
+							workspaceName.lastIndexOf(VERSION_SEP));
 					if (!children.containsKey(prefix)) {
 						children.put(prefix, new GroupElem(RepoElem.this,
 								prefix));

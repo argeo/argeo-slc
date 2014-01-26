@@ -2,6 +2,8 @@ package org.argeo.slc.client.ui.dist.model;
 
 /** Common super class for all dist tree elements */
 public abstract class DistParentElem {
+	public final static Character VERSION_SEP = '-';
+
 	private boolean inHome = false;
 	private boolean isReadOnly = false;
 
