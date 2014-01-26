@@ -16,8 +16,6 @@
 		<module>org.argeo.slc.dep.eclipse</module>
 		<module>org.argeo.slc.dep.rcp</module>
 		<module>org.argeo.slc.dep.rap</module>
-		<module>org.argeo.slc.dep.akb.rcp</module>
-		<module>org.argeo.slc.dep.akb.rap</module>
 	</modules>
 	<build>
 		<plugins>

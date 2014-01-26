@@ -17,7 +17,6 @@
 		<module>org.argeo.slc.node.jackrabbit</module>
 		<module>org.argeo.slc.server.repo</module>
 		<module>org.argeo.slc.server.repo.webapp</module>
-		<module>org.argeo.slc.akb.services</module>
 	</modules>
 	<build>
 		<resources>
