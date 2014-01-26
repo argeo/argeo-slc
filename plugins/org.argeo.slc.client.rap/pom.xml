@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>plugins</artifactId>
-		<version>1.1.15</version>
+		<version>1.1.16-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.client.rap</artifactId>
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.client.ui</artifactId>
-			<version>1.1.15</version>
+			<version>1.1.16-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Argeo common distribution for RAP projects -->
