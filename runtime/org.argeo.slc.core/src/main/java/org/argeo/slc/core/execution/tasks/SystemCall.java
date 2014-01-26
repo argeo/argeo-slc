@@ -29,6 +29,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import javax.security.auth.callback.CallbackHandler;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -51,6 +54,8 @@ import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestStatus;
 import org.springframework.core.io.Resource;
+import org.springframework.security.Authentication;
+import org.springframework.security.context.SecurityContextHolder;
 
 /** Execute an OS specific system call. */
 public class SystemCall implements Runnable {
@@ -93,6 +98,8 @@ public class SystemCall implements Runnable {
 	private Boolean exceptionOnFailed = true;
 	private Boolean mergeEnvironmentVariables = true;
 
+	private Authentication authentication;
+
 	private String osConsole = null;
 	private String generateScript = null;
 
@@ -102,6 +109,16 @@ public class SystemCall implements Runnable {
 	private TestResult testResult;
 
 	private ExecutionResources executionResources;
+
+	/** Sudo the command, as root if empty or as user if not. */
+	private String sudo = null;
+	// TODO make it more secure and robust, test only once
+	private final String sudoPrompt = UUID.randomUUID().toString();
+	private String askPassProgram = "/usr/libexec/openssh/ssh-askpass";
+	private boolean firstLine = true;
+	private CallbackHandler callbackHandler;
+	/** Chroot to the this path (must not be empty) */
+	private String chroot = null;
 
 	/** Empty constructor */
 	public SystemCall() {
@@ -137,6 +154,8 @@ public class SystemCall implements Runnable {
 
 	/** Executes the system call. */
 	public void run() {
+		authentication = SecurityContextHolder.getContext().getAuthentication();
+
 		// Manage streams
 		Writer stdOutWriter = null;
 		OutputStream stdOutputStream = null;
@@ -307,11 +326,40 @@ public class SystemCall implements Runnable {
 			throw new SlcException(
 					"Specify the command either as a line or as a list.");
 		else if (cmdToUse != null) {
+			if (chroot != null && !chroot.trim().equals(""))
+				cmdToUse = "chroot \"" + chroot + "\" " + cmdToUse;
+			if (sudo != null) {
+				environmentVariables.put("SUDO_ASKPASS", askPassProgram);
+				if (!sudo.trim().equals(""))
+					cmdToUse = "sudo -p " + sudoPrompt + " -u " + sudo + " "
+							+ cmdToUse;
+				else
+					cmdToUse = "sudo -p " + sudoPrompt + " " + cmdToUse;
+			}
+
+			// GENERATE COMMAND LINE
 			commandLine = CommandLine.parse(cmdToUse);
 		} else if (commandToUse != null) {
 			if (commandToUse.size() == 0)
 				throw new SlcException("Command line is empty.");
 
+			if (chroot != null && sudo != null) {
+				commandToUse.add(0, "chroot");
+				commandToUse.add(1, chroot);
+			}
+
+			if (sudo != null) {
+				environmentVariables.put("SUDO_ASKPASS", askPassProgram);
+				commandToUse.add(0, "sudo");
+				commandToUse.add(1, "-p");
+				commandToUse.add(2, sudoPrompt);
+				if (!sudo.trim().equals("")) {
+					commandToUse.add(3, "-u");
+					commandToUse.add(4, sudo);
+				}
+			}
+
+			// GENERATE COMMAND LINE
 			commandLine = new CommandLine(commandToUse.get(0).toString());
 
 			for (int i = 1; i < commandToUse.size(); i++) {
@@ -354,24 +402,50 @@ public class SystemCall implements Runnable {
 			final Writer stdErrWriter, final InputStream stdInStream) {
 
 		// Log writers
-
-		PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(
-				stdOutputStream != null ? stdOutputStream
-						: new LogOutputStream() {
-							protected void processLine(String line, int level) {
-								if (line != null && !line.trim().equals(""))
-									logStdOut(line);
-								if (stdOutWriter != null)
-									appendLineToFile(stdOutWriter, line);
-							}
-						}, new LogOutputStream() {
+		OutputStream stdout = stdOutputStream != null ? stdOutputStream
+				: new LogOutputStream() {
 					protected void processLine(String line, int level) {
+						// if (firstLine) {
+						// if (sudo != null && callbackHandler != null
+						// && line.startsWith(sudoPrompt)) {
+						// try {
+						// PasswordCallback pc = new PasswordCallback(
+						// "sudo password", false);
+						// Callback[] cbs = { pc };
+						// callbackHandler.handle(cbs);
+						// char[] pwd = pc.getPassword();
+						// char[] arr = Arrays.copyOf(pwd,
+						// pwd.length + 1);
+						// arr[arr.length - 1] = '\n';
+						// IOUtils.write(arr, stdInSink);
+						// stdInSink.flush();
+						// } catch (Exception e) {
+						// throw new SlcException(
+						// "Cannot retrieve sudo password", e);
+						// }
+						// }
+						// firstLine = false;
+						// }
+
 						if (line != null && !line.trim().equals(""))
-							logStdErr(line);
-						if (stdErrWriter != null)
-							appendLineToFile(stdErrWriter, line);
+							logStdOut(line);
+
+						if (stdOutWriter != null)
+							appendLineToFile(stdOutWriter, line);
 					}
-				}, stdInStream) {
+				};
+
+		OutputStream stderr = new LogOutputStream() {
+			protected void processLine(String line, int level) {
+				if (line != null && !line.trim().equals(""))
+					logStdErr(line);
+				if (stdErrWriter != null)
+					appendLineToFile(stdErrWriter, line);
+			}
+		};
+
+		PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(stdout,
+				stderr, stdInStream) {
 
 			@Override
 			public void stop() {
@@ -419,6 +493,7 @@ public class SystemCall implements Runnable {
 		};
 	}
 
+	@Deprecated
 	protected void forwardPath(TestResult testResult) {
 		// TODO: allocate a TreeSPath
 	}
@@ -451,6 +526,12 @@ public class SystemCall implements Runnable {
 
 	/** Log from the underlying streams. */
 	protected void log(String logLevel, String line) {
+		// TODO optimize
+		if (SecurityContextHolder.getContext().getAuthentication() == null) {
+			SecurityContextHolder.getContext()
+					.setAuthentication(authentication);
+		}
+
 		if ("ERROR".equals(logLevel))
 			log.error(line);
 		else if ("WARN".equals(logLevel))
@@ -568,6 +649,10 @@ public class SystemCall implements Runnable {
 		this.environmentVariables = environmentVariables;
 	}
 
+	public Map<String, String> getEnvironmentVariables() {
+		return environmentVariables;
+	}
+
 	public void setWatchdogTimeout(Long watchdogTimeout) {
 		this.watchdogTimeout = watchdogTimeout;
 	}
@@ -635,6 +720,18 @@ public class SystemCall implements Runnable {
 
 	public void setExecutor(Executor executor) {
 		this.executor = executor;
+	}
+
+	public void setSudo(String sudo) {
+		this.sudo = sudo;
+	}
+
+	public void setCallbackHandler(CallbackHandler callbackHandler) {
+		this.callbackHandler = callbackHandler;
+	}
+
+	public void setChroot(String chroot) {
+		this.chroot = chroot;
 	}
 
 	private class DummyexecuteStreamHandler implements ExecuteStreamHandler {
