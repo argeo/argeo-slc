@@ -30,15 +30,15 @@ public interface NodeIndexer {
 	 * information contained in the path / file name: file extension, base path,
 	 * etc. If the node needs to be loaded, the recommended approach is to
 	 * return <code>true</code> here and wait for index to be called, possibly
-	 * returning without processing if the node should node be indexed. While
-	 * not stricly a requirements, this avoids to open sessions in the indexer,
-	 * centrlaizing such tasks in the caller.
+	 * returning without processing if the node should not be indexed. While
+	 * not strictly a requirement, this avoids to open sessions in the indexer,
+	 * centralizing such tasks in the caller.
 	 */
 	public Boolean support(String path);
 
 	/**
 	 * Adds the metadata. This is the responsibility of the caller to save the
-	 * udnerlying session.
+	 * underlying session.
 	 */
 	public void index(Node node);
 }
