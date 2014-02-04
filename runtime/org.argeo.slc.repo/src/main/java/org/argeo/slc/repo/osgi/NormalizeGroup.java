@@ -127,6 +127,17 @@ public class NormalizeGroup implements Runnable, SlcNames {
 							if (allArtifactsHighestVersion == null)
 								allArtifactsHighestVersion = aVersion;
 
+							// BS will fail if artifacts arrive in this order
+							// Name1 - V1, name2 - V3, V1 will remain the
+							// allArtifactsHighestVersion
+							// Fixed below
+							else {
+								Version currVersion = extractOsgiVersion(aVersion);
+								Version highestVersion = extractOsgiVersion(allArtifactsHighestVersion);
+								if (currVersion.compareTo(highestVersion) > 0)
+									allArtifactsHighestVersion = aVersion;
+							}
+
 						} else {
 							Version currVersion = extractOsgiVersion(aVersion);
 							Version currentHighestVersion = extractOsgiVersion(highestAVersion);
@@ -158,7 +169,7 @@ public class NormalizeGroup implements Runnable, SlcNames {
 			}
 		}
 
-		// if version not set or empty, use the highets version
+		// if version not set or empty, use the highest version
 		// useful when indexing a product maven repository where
 		// all artifacts have the same version for a given release
 		// => the version can then be left empty
@@ -187,10 +198,11 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		// indexes
 		Set<Artifact> indexes = new TreeSet<Artifact>(
 				new ArtifactIdComparator());
-		Artifact indexArtifact = writeIndex(session, RepoConstants.BINARIES_ARTIFACT_ID,
-				binaries);
+		Artifact indexArtifact = writeIndex(session,
+				RepoConstants.BINARIES_ARTIFACT_ID, binaries);
 		indexes.add(indexArtifact);
-		indexArtifact = writeIndex(session, RepoConstants.SOURCES_ARTIFACT_ID, sources);
+		indexArtifact = writeIndex(session, RepoConstants.SOURCES_ARTIFACT_ID,
+				sources);
 		indexes.add(indexArtifact);
 		// sdk
 		writeIndex(session, RepoConstants.SDK_ARTIFACT_ID, indexes);
@@ -403,7 +415,8 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		p.append("\t<groupId>").append(groupId).append("</groupId>\n");
 		p.append("\t<artifactId>")
 				.append(ownSymbolicName.endsWith(".source") ? RepoConstants.SOURCES_ARTIFACT_ID
-						: RepoConstants.BINARIES_ARTIFACT_ID).append("</artifactId>\n");
+						: RepoConstants.BINARIES_ARTIFACT_ID)
+				.append("</artifactId>\n");
 		p.append("\t<version>").append(version).append("</version>\n");
 		p.append("\t<type>pom</type>\n");
 		p.append("\t<scope>import</scope>\n");
