@@ -6,20 +6,21 @@ public class WorkspaceElem extends DistParentElem {
 	private String workspaceName;
 	private String label;
 
-	/**
-	 * Helper to display only version when the workspace name is well formatted
-	 */
-	private static String formatName(String name) {
-		if (name != null && name.lastIndexOf(VERSION_SEP) > 0)
-			return name.substring(name.lastIndexOf(VERSION_SEP) + 1);
-		else
-			return name;
-	}
+	// /**
+	// * Helper to display only version when the workspace name is well
+	// formatted
+	// */
+	// private static String formatName(String name) {
+	// if (name != null && name.lastIndexOf(VERSION_SEP) > 0)
+	// return name.substring(name.lastIndexOf(VERSION_SEP) + 1);
+	// else
+	// return name;
+	// }
 
 	public WorkspaceElem(RepoElem repoElem, String workspaceName) {
 		this.repoElem = repoElem;
 		this.workspaceName = workspaceName;
-		this.label = formatName(workspaceName);
+		this.label = workspaceName; // formatName(workspaceName);
 	}
 
 	public String getWorkspaceName() {

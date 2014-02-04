@@ -224,7 +224,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(Fetch.PARAM_TARGET_REPO_PATH, targetRepoPath);
 				CommandHelpers.refreshParameterizedCommand(menuManager, window,
 						Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON_PATH,
-						isRepoElem && singleElement && !isReadOnly, params);
+						isRepoElem && isHomeRepo && singleElement && !isReadOnly, params);
 
 				// Normalize workspace
 				params = new HashMap<String, String>();
