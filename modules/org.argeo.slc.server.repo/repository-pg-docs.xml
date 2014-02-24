@@ -18,12 +18,12 @@
 	<FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
 		<param name="dataSourceName" value="dataSource" />
 		<param name="schema" value="postgresql" />
-		<param name="schemaObjectPrefix" value="fs_" />
+		<param name="schemaObjectPrefix" value="_fs_" />
 	</FileSystem>
 	<DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
 		<param name="path" value="${rep.home}/datastore" />
 	</DataStore>
-	
+
 	<!-- Workspace templates -->
 	<Workspaces rootPath="${rep.home}/workspaces"
 		defaultWorkspace="main" />
@@ -31,12 +31,12 @@
 		<FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
 			<param name="dataSourceName" value="dataSource" />
 			<param name="schema" value="postgresql" />
-			<param name="schemaObjectPrefix" value="${wsp.name}_fs_" />
+			<param name="schemaObjectPrefix" value="${wsp.name}_" />
 		</FileSystem>
 		<PersistenceManager
 			class="org.apache.jackrabbit.core.persistence.pool.PostgreSQLPersistenceManager">
 			<param name="dataSourceName" value="dataSource" />
-			<param name="schemaObjectPrefix" value="${wsp.name}_pm_" />
+			<param name="schemaObjectPrefix" value="${wsp.name}_" />
 		</PersistenceManager>
 		<SearchIndex class="org.apache.jackrabbit.core.query.lucene.SearchIndex">
 			<param name="path" value="${rep.home}/indexes/workspaces/${wsp.name}" />
@@ -48,12 +48,12 @@
 		<FileSystem class="org.apache.jackrabbit.core.fs.db.DbFileSystem">
 			<param name="dataSourceName" value="dataSource" />
 			<param name="schema" value="postgresql" />
-			<param name="schemaObjectPrefix" value="fs_ver_" />
+			<param name="schemaObjectPrefix" value="_versioning_" />
 		</FileSystem>
 		<PersistenceManager
 			class="org.apache.jackrabbit.core.persistence.pool.PostgreSQLPersistenceManager">
 			<param name="dataSourceName" value="dataSource" />
-			<param name="schemaObjectPrefix" value="pm_ver_" />
+			<param name="schemaObjectPrefix" value="_versioning_" />
 		</PersistenceManager>
 	</Versioning>
 
