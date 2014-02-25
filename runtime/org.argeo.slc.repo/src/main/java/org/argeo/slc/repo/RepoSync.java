@@ -16,7 +16,6 @@
 package org.argeo.slc.repo;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -51,12 +50,19 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.xml.sax.SAXException;
 
-/** Sync to from software repositories */
+/**
+ * Synchronise workspaces from a remote software repository to the local
+ * repository (Synchronisation in the other direction does not work).
+ * 
+ * Workspaces are retrieved by name given a map that links the source with a
+ * target name. If a target workspace does not exist, it is created. Otherwise
+ * we copy the content of the source workspace into the target one.
+ */
 public class RepoSync implements Runnable {
 	private final static Log log = LogFactory.getLog(RepoSync.class);
 
 	// Centralizes definition of workspaces that must be ignored by the sync.
-	private final static List<String> IGNORED_WSKP_LIST = Arrays.asList(
+	private final static List<String> IGNORED_WKSP_LIST = Arrays.asList(
 			"security", "localrepo");
 
 	private final Calendar zero;
@@ -79,7 +85,7 @@ public class RepoSync implements Runnable {
 	private RepositoryFactory repositoryFactory;
 
 	private ArgeoMonitor monitor;
-	private List<String> sourceWkspList;
+	private Map<String, String> workspaceMap;
 
 	// TODO fix monitor
 	private Boolean filesOnly = false;
@@ -135,23 +141,25 @@ public class RepoSync implements Runnable {
 				if (monitor != null && monitor.isCanceled())
 					break;
 
-				if (sourceWkspList != null
-						&& !sourceWkspList.contains(sourceWorkspaceName))
+				if (workspaceMap != null
+						&& !workspaceMap.containsKey(sourceWorkspaceName))
 					continue;
-				if (IGNORED_WSKP_LIST.contains(sourceWorkspaceName))
+				if (IGNORED_WKSP_LIST.contains(sourceWorkspaceName))
 					continue;
 
 				Session sourceSession = null;
 				Session targetSession = null;
+				String targetWorkspaceName = workspaceMap
+						.get(sourceWorkspaceName);
 				try {
 					try {
 						targetSession = targetRepository.login(
-								targetCredentials, sourceWorkspaceName);
+								targetCredentials, targetWorkspaceName);
 					} catch (NoSuchWorkspaceException e) {
 						targetDefaultSession.getWorkspace().createWorkspace(
-								sourceWorkspaceName);
+								targetWorkspaceName);
 						targetSession = targetRepository.login(
-								targetCredentials, sourceWorkspaceName);
+								targetCredentials, targetWorkspaceName);
 					}
 					sourceSession = sourceRepository.login(sourceCredentials,
 							sourceWorkspaceName);
@@ -159,8 +167,9 @@ public class RepoSync implements Runnable {
 				} catch (Exception e) {
 					errors.put("Could not sync workspace "
 							+ sourceWorkspaceName, e);
-					if (log.isDebugEnabled())
+					if (log.isErrorEnabled())
 						e.printStackTrace();
+
 				} finally {
 					JcrUtils.logoutQuietly(sourceSession);
 					JcrUtils.logoutQuietly(targetSession);
@@ -189,9 +198,8 @@ public class RepoSync implements Runnable {
 	}
 
 	private long getNodesNumber(Session session) {
-		if (IGNORED_WSKP_LIST.contains(session.getWorkspace().getName()))
+		if (IGNORED_WKSP_LIST.contains(session.getWorkspace().getName()))
 			return 0l;
-		Session sourceSession = null;
 		try {
 			Query countQuery = session
 					.getWorkspace()
@@ -207,8 +215,6 @@ public class RepoSync implements Runnable {
 			throw new SlcException("Unexpected error while computing "
 					+ "the size of the fetch for workspace "
 					+ session.getWorkspace().getName(), e);
-		} finally {
-			JcrUtils.logoutQuietly(sourceSession);
 		}
 	}
 
@@ -216,19 +222,7 @@ public class RepoSync implements Runnable {
 		if (monitor != null) {
 			monitor.beginTask("Computing fetch size...", -1);
 			Long totalAmount = getNodesNumber(sourceSession);
-			// if (sourceWkspList != null) {
-			// for (String wkspName : sourceWkspList) {
-			// totalAmount += getNodesNumber(wkspName);
-			// }
-			// } else
-			// for (String sourceWorkspaceName : sourceDefaultSession
-			// .getWorkspace().getAccessibleWorkspaceNames()) {
-			// totalAmount += getNodesNumber(sourceWorkspaceName);
-			// }
 			monitor.beginTask("Fetch", totalAmount.intValue());
-
-			// if (log.isDebugEnabled())
-			// log.debug("Nb of nodes to sync: " + totalAmount.intValue());
 		}
 
 		try {
@@ -541,29 +535,41 @@ public class RepoSync implements Runnable {
 		return true;
 	}
 
-	/** synchronise only one workspace retrieved by name */
+	/**
+	 * Synchronises only one workspace, retrieved by name without changing its
+	 * name.
+	 */
 	public void setSourceWksp(String sourceWksp) {
 		if (sourceWksp != null && !sourceWksp.trim().equals("")) {
-			List<String> list = new ArrayList<String>();
-			list.add(sourceWksp);
-			setSourceWkspList(list);
+			Map<String, String> map = new HashMap<String, String>();
+			map.put(sourceWksp, sourceWksp);
+			setWkspMap(map);
 		}
 	}
 
-	/** synchronise a list workspace that will be retrieved by name */
-	public void setSourceWkspList(List<String> sourceWkspList) {
+	/**
+	 * Synchronises a map of workspaces that will be retrieved by name. If the
+	 * target name is not defined (eg null or an empty string) for a given
+	 * source workspace, we use the source name as target name.
+	 */
+	public void setWkspMap(Map<String, String> workspaceMap) {
 		// clean the list to ease later use
-		this.sourceWkspList = null;
-		if (sourceWkspList != null) {
-			for (String wkspName : sourceWkspList) {
-				if (!wkspName.trim().equals("")) {
-					// only instantiate if needed
-					if (this.sourceWkspList == null)
-						this.sourceWkspList = new ArrayList<String>();
-					this.sourceWkspList.add(wkspName);
-				}
+		this.workspaceMap = new HashMap<String, String>();
+		if (workspaceMap != null) {
+			workspaceNames: for (String srcName : workspaceMap.keySet()) {
+				String targetName = workspaceMap.get(srcName);
+
+				// Sanity check
+				if (srcName.trim().equals(""))
+					continue workspaceNames;
+				if (targetName == null || "".equals(targetName.trim()))
+					targetName = srcName;
+				this.workspaceMap.put(srcName, targetName);
 			}
 		}
+		// clean the map to ease later use
+		if (this.workspaceMap.size() == 0)
+			this.workspaceMap = null;
 	}
 
 	public void setMonitor(ArgeoMonitor monitor) {

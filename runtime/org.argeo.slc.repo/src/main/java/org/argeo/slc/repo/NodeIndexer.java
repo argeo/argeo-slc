@@ -20,7 +20,7 @@ import javax.jcr.observation.EventListener;
 
 /**
  * Adds metadata to an existing node, ideally via observation after it has been
- * added. THere is a similar concept in ModeShape with which this abstraction
+ * added. There is a similar concept in ModeShape with which this abstraction
  * may be merged in the future.
  */
 public interface NodeIndexer {

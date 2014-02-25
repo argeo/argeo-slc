@@ -385,7 +385,6 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			throw new SlcException("Cannot connect to repository " + repoNode,
 					e);
 		}
-
 	}
 
 	/**
