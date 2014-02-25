@@ -21,6 +21,7 @@ import org.argeo.slc.client.ui.dist.editors.DistributionOverviewPage;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.forms.editor.IFormPage;
 
@@ -34,7 +35,10 @@ public class RefreshDistributionOverviewPage extends AbstractHandler {
 	public final static String ID = DistPlugin.ID
 			+ ".refreshDistributionOverviewPage";
 	public final static String DEFAULT_LABEL = "Refresh the distribution overview";
-	public final static String DEFAULT_ICON_PATH = "icons/refresh.png";
+
+	// public final static String DEFAULT_ICON_PATH = "icons/refresh.png";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/refresh.png");
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchPart activePart = DistPlugin.getDefault().getWorkbench()

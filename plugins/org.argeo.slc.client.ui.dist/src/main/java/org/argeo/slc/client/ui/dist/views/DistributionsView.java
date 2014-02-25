@@ -22,6 +22,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 
 import org.argeo.eclipse.ui.TreeParent;
+import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.ArgeoNames;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -32,6 +33,7 @@ import org.argeo.slc.client.ui.dist.commands.DisplayRepoInformation;
 import org.argeo.slc.client.ui.dist.commands.Fetch;
 import org.argeo.slc.client.ui.dist.commands.MergeWorkspaces;
 import org.argeo.slc.client.ui.dist.commands.NormalizeDistribution;
+import org.argeo.slc.client.ui.dist.commands.NormalizeWorkspace;
 import org.argeo.slc.client.ui.dist.commands.PublishWorkspace;
 import org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView;
 import org.argeo.slc.client.ui.dist.commands.RegisterRepository;
@@ -175,10 +177,10 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				}
 
 				// Display repo info
-				CommandHelpers.refreshCommand(menuManager, window,
+				CommandUtils.refreshCommand(menuManager, window,
 						DisplayRepoInformation.ID,
 						DisplayRepoInformation.DEFAULT_LABEL,
-						DisplayRepoInformation.DEFAULT_ICON_PATH, isRepoElem
+						DisplayRepoInformation.DEFAULT_ICON, isRepoElem
 								&& singleElement);
 
 				// create workspace
@@ -187,9 +189,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						targetRepoPath);
 				params.put(CreateWorkspace.PARAM_WORKSPACE_PREFIX,
 						workspacePrefix);
-				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
 						CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
-						CreateWorkspace.DEFAULT_ICON_PATH,
+						CreateWorkspace.DEFAULT_ICON,
 						(isRepoElem || isDistribGroupElem) && singleElement
 								&& !isReadOnly, params);
 
@@ -198,33 +200,34 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(PublishWorkspace.PARAM_TARGET_REPO_PATH,
 						targetRepoPath);
 				params.put(PublishWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
-				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
 						PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
-						PublishWorkspace.DEFAULT_ICON_PATH, isDistribElem
+						PublishWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
 
 				// Register a remote repository
-				CommandHelpers.refreshCommand(menuManager, window,
+				CommandUtils.refreshCommand(menuManager, window,
 						RegisterRepository.ID,
 						RegisterRepository.DEFAULT_LABEL,
-						RegisterRepository.DEFAULT_ICON_PATH, isRepoElem
+						RegisterRepository.DEFAULT_ICON, isRepoElem
 								&& singleElement);
 
 				// Unregister a remote repository
 				params = new HashMap<String, String>();
 				params.put(UnregisterRemoteRepo.PARAM_REPO_PATH, targetRepoPath);
-				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
 						UnregisterRemoteRepo.ID,
 						UnregisterRemoteRepo.DEFAULT_LABEL,
-						UnregisterRemoteRepo.DEFAULT_ICON_PATH, isRepoElem
+						UnregisterRemoteRepo.DEFAULT_ICON, isRepoElem
 								&& !isHomeRepo && singleElement, params);
 
 				// Fetch repository
 				params = new HashMap<String, String>();
 				params.put(Fetch.PARAM_TARGET_REPO_PATH, targetRepoPath);
-				CommandHelpers.refreshParameterizedCommand(menuManager, window,
-						Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON_PATH,
-						isRepoElem && isHomeRepo && singleElement && !isReadOnly, params);
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
+						Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON,
+						isRepoElem && isHomeRepo && singleElement
+								&& !isReadOnly, params);
 
 				// Normalize workspace
 				params = new HashMap<String, String>();
@@ -232,10 +235,22 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						targetRepoPath);
 				params.put(NormalizeDistribution.PARAM_WORKSPACE_NAME,
 						workspaceName);
-				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
 						NormalizeDistribution.ID,
 						NormalizeDistribution.DEFAULT_LABEL,
-						NormalizeDistribution.DEFAULT_ICON_PATH, isDistribElem
+						NormalizeDistribution.DEFAULT_ICON, isDistribElem
+								&& singleElement && !isReadOnly, params);
+
+				// Normalize workspace
+				params = new HashMap<String, String>();
+				params.put(NormalizeWorkspace.PARAM_TARGET_REPO_PATH,
+						targetRepoPath);
+				params.put(NormalizeWorkspace.PARAM_WORKSPACE_NAME,
+						workspaceName);
+
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
+						NormalizeWorkspace.ID, "Normalize workspace...",
+						NormalizeWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
 
 				// Copy workspace
@@ -243,9 +258,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(CopyWorkspace.PARAM_TARGET_REPO_PATH, targetRepoPath);
 				params.put(CopyWorkspace.PARAM_SOURCE_WORKSPACE_NAME,
 						workspaceName);
-				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
 						CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
-						CopyWorkspace.DEFAULT_ICON_PATH, isDistribElem
+						CopyWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement, params);
 
 				// Clear Workspace
@@ -253,9 +268,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(DeleteWorkspace.PARAM_TARGET_REPO_PATH,
 						targetRepoPath);
 				params.put(DeleteWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
-				CommandHelpers.refreshParameterizedCommand(menuManager, window,
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
 						DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
-						DeleteWorkspace.DEFAULT_ICON_PATH, isDistribElem
+						DeleteWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
 
 				// // Manage workspace authorizations

@@ -17,6 +17,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -27,7 +28,9 @@ public class Fetch extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".fetch";
 	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 	public final static String DEFAULT_LABEL = "Fetch...";
-	public final static String DEFAULT_ICON_PATH = "icons/fetchRepo.png";
+	// public final static String DEFAULT_ICON_PATH = "icons/fetchRepo.png";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/fetchRepo.png");
 
 	// DEPENDENCY INJECTION
 	private Keyring keyring;
@@ -35,6 +38,7 @@ public class Fetch extends AbstractHandler {
 	private Repository nodeRepository;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+
 		Session currSession = null;
 		try {
 			// Target Repository

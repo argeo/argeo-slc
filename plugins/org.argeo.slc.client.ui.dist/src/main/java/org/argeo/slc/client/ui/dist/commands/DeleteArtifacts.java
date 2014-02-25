@@ -27,6 +27,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
@@ -40,8 +41,12 @@ public class DeleteArtifacts extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
 	public final static String ID = DistPlugin.ID + ".deleteArtifacts";
 	public final static String DEFAULT_LABEL = "Delete selected items";
-	public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
+	// public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
 
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/removeItem.gif");
+
+	
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
 			IWorkbenchPart activePart = DistPlugin.getDefault().getWorkbench()

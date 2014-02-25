@@ -36,6 +36,7 @@ import javax.jcr.query.qom.StaticOperand;
 import org.argeo.ArgeoException;
 import org.argeo.ArgeoMonitor;
 import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
@@ -43,7 +44,6 @@ import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
-import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -163,7 +163,7 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		createFilterPart(body);
 		// Add the table
 		createTableViewer(body);
-		viewer.setInput(null);
+		// viewer.setInput(null);
 		// Add a listener to enable custom resize process
 		form.addControlListener(new ControlListener() {
 			// form.addListener(SWT.RESIZE, new Listener() does not work
@@ -239,6 +239,8 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 	private void createFilterPart(Composite parent) {
 		header = tk.createComposite(parent);
 		GridLayout layout = new GridLayout(2, false);
+		layout.marginWidth = layout.marginHeight = layout.verticalSpacing = 0;
+		layout.horizontalSpacing = 5;
 		header.setLayout(layout);
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 		header.setLayoutData(gd);
@@ -253,7 +255,8 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		lbl.setLayoutData(gd);
 
 		// Text Area to filter
-		artifactTxt = tk.createText(header, "", SWT.BORDER | SWT.SINGLE);
+		artifactTxt = tk.createText(header, "", SWT.BORDER | SWT.SINGLE
+				| SWT.SEARCH | SWT.CANCEL);
 		artifactTxt.setMessage(FILTER_HELP_MSG);
 		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 		gd.grabExcessHorizontalSpace = true;
@@ -392,9 +395,9 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 				.getActiveWorkbenchWindow();
 		// Build conditions
 		// Delete selected artifacts
-		CommandHelpers.refreshCommand(menuManager, window, DeleteArtifacts.ID,
-				DeleteArtifacts.DEFAULT_LABEL,
-				DeleteArtifacts.DEFAULT_ICON_PATH, true);
+		CommandUtils.refreshCommand(menuManager, window, DeleteArtifacts.ID,
+				DeleteArtifacts.DEFAULT_LABEL, DeleteArtifacts.DEFAULT_ICON,
+				true);
 	}
 
 	private SelectionAdapter getSelectionAdapter(final int index) {
@@ -478,7 +481,7 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 
 		// when table height is less than 200 px, we let the scroll bar on the
 		// scrollForm
-		// FIXME substract some spare space. Here is room for optimization
+		// FIXME substract some spare space. There is room here for optimization
 		gd.heightHint = Math.max(maxH - 35, 200);
 		gd.widthHint = Math.max(maxW - 35, 200);
 

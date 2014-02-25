@@ -32,6 +32,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  * Publish the current workspace by giving REOD_ONLY rights to anonymous.
@@ -41,7 +42,11 @@ public class PublishWorkspace extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(PublishWorkspace.class);
 	public final static String ID = DistPlugin.ID + ".publishWorkspace";
 	public final static String DEFAULT_LABEL = "Publish workspace";
-	public final static String DEFAULT_ICON_PATH = "icons/publish.gif";
+	
+	// public final static String DEFAULT_ICON_PATH = "icons/publish.gif";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/publish.gif");
+
 	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
 	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 

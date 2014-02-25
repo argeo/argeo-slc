@@ -25,6 +25,7 @@ import org.argeo.slc.client.ui.dist.wizards.ChangeRightsWizard;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -39,7 +40,10 @@ public class ManageWorkspaceAuth extends AbstractHandler {
 	public final static String PARAM_WORKSPACE_NAME = DistPlugin.ID
 			+ ".workspaceName";
 	public final static String DEFAULT_LABEL = "Manage Rights";
-	public final static String DEFAULT_ICON_PATH = "icons/changeRights.gif";
+	// public final static String DEFAULT_ICON_PATH = "icons/changeRights.gif";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/changeRights.gif");
+
 
 	/* DEPENDENCY INJECTION */
 	private Repository repository;

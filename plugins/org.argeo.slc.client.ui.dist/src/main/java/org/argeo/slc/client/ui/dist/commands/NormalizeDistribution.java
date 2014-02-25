@@ -56,6 +56,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -74,7 +75,10 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	public final static String ID = DistPlugin.ID + ".normalizeDistribution";
 	public final static String DEFAULT_LABEL = "Normalize...";
-	public final static String DEFAULT_ICON_PATH = "icons/normalize.gif";
+	// public final static String DEFAULT_ICON_PATH = "icons/normalize.gif";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/normalize.gif");
+
 	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
 	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 

@@ -36,6 +36,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
@@ -48,7 +49,11 @@ public class CreateWorkspace extends AbstractHandler {
 	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 	public final static String PARAM_WORKSPACE_PREFIX = "workspacePrefix";
 	public final static String DEFAULT_LABEL = "Create workspace...";
-	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
+	
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/addItem.gif");
+
+	// public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
 
 	private String slcRole = "ROLE_SLC";
 

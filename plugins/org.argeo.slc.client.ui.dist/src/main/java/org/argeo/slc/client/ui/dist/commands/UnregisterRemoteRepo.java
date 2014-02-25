@@ -21,15 +21,16 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  * Unregisters a remote repository by deleting the corresponding RepoNode from
@@ -41,7 +42,10 @@ public class UnregisterRemoteRepo extends AbstractHandler {
 	// .getLog(UnregisterRemoteRepo.class);
 	public final static String ID = DistPlugin.ID + ".unregisterRemoteRepo";
 	public final static String DEFAULT_LABEL = "Unregister this repository";
-	public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
+	// public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/removeItem.gif");
+
 	public final static String PARAM_REPO_PATH = DistPlugin.ID
 			+ ".repoNodePath";
 
@@ -72,13 +76,12 @@ public class UnregisterRemoteRepo extends AbstractHandler {
 					rNode.remove();
 					session.save();
 				}
-				CommandHelpers.callCommand(RefreshDistributionsView.ID);
+				CommandUtils.callCommand(RefreshDistributionsView.ID);
 			}
-
-			// } catch (Exception e) {
 		} catch (RepositoryException e) {
 			throw new SlcException(
-					"Unexpected error while deleting artifacts.", e);
+					"Unexpected error while unregistering remote repository.",
+					e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
 		}

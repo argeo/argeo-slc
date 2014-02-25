@@ -28,6 +28,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -39,7 +40,10 @@ public class RegisterRepository extends AbstractHandler implements ArgeoNames,
 
 	public final static String ID = DistPlugin.ID + ".registerRepository";
 	public final static String DEFAULT_LABEL = "Register a repository...";
-	public final static String DEFAULT_ICON_PATH = "icons/addRepo.gif";
+	// public final static String DEFAULT_ICON_PATH = "icons/addRepo.gif";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/addRepo.gif");
+
 
 	/* DEPENDENCY INJECTION */
 	private RepositoryFactory repositoryFactory;

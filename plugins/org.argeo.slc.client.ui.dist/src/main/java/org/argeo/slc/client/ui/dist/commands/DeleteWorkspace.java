@@ -34,6 +34,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  * Delete chosen workspace in the current repository.
@@ -48,7 +49,10 @@ public class DeleteWorkspace extends AbstractHandler {
 
 	public final static String ID = DistPlugin.ID + ".deleteWorkspace";
 	public final static String DEFAULT_LABEL = "Clear";
-	public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
+	// public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/removeItem.gif");
+
 	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
 	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 

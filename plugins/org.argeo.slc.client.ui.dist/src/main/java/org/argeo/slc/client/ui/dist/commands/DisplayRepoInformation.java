@@ -27,6 +27,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -47,7 +48,10 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class DisplayRepoInformation extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".displayRepoInformation";
 	public final static String DEFAULT_LABEL = "Repository infos...";
-	public final static String DEFAULT_ICON_PATH = "icons/help.gif";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/help.gif");
+
+	// public final static String DEFAULT_ICON_PATH = "icons/help.gif";
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 

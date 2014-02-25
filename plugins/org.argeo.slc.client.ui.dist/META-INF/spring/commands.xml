@@ -85,4 +85,10 @@
 		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
 	</bean>
+	<bean id="normalizeWorkspace"
+		class="org.argeo.slc.client.ui.dist.commands.NormalizeWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="keyring" ref="keyring" />
+	</bean>
 </beans>

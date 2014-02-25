@@ -37,7 +37,6 @@ import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.PrivilegedJob;
-import org.argeo.slc.client.ui.dist.utils.ArtifactNamesComparator;
 import org.argeo.slc.client.ui.dist.utils.ViewerUtils;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoSync;
@@ -47,18 +46,22 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTableViewer;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -66,13 +69,13 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * Defines parameters for the fetch process and run it using a {@link RepoSync}
  * object.
  */
 public class FetchWizard extends Wizard {
-
 	// private final static Log log = LogFactory.getLog(FetchWizard.class);
 
 	// Business objects
@@ -81,10 +84,19 @@ public class FetchWizard extends Wizard {
 	private Session currSession;
 	private Node targetRepoNode, sourceRepoNode;
 
-	// This page widget
-	private DefineModelPage page;
-	private CheckboxTableViewer wkspViewer;
+	private List<WkspObject> selectedWorkspaces = new ArrayList<WkspObject>();
+
+	// The pages
+	private ChooseWkspPage chooseWkspPage;
+	private RecapPage recapPage;
+
+	// Cache the advanced pages
+	private Map<WkspObject, AdvancedFetchPage> advancedPages = new HashMap<FetchWizard.WkspObject, FetchWizard.AdvancedFetchPage>();
+
+	// Controls with parameters
 	private Button filesOnlyBtn;
+	private Button advancedBtn;
+	private CheckboxTableViewer wkspViewer;
 
 	public FetchWizard(Keyring keyring, RepositoryFactory repositoryFactory,
 			Repository nodeRepository) {
@@ -101,16 +113,18 @@ public class FetchWizard extends Wizard {
 
 	@Override
 	public void dispose() {
-		super.dispose();
 		JcrUtils.logoutQuietly(currSession);
+		super.dispose();
 	}
 
 	@Override
 	public void addPages() {
 		try {
-			page = new DefineModelPage();
-			addPage(page);
-			setWindowTitle("Fetch...");
+			chooseWkspPage = new ChooseWkspPage();
+			addPage(chooseWkspPage);
+			recapPage = new RecapPage();
+			addPage(recapPage);
+			setWindowTitle("Define Fetch Procedure");
 		} catch (Exception e) {
 			throw new SlcException("Cannot add page to wizard ", e);
 		}
@@ -137,24 +151,13 @@ public class FetchWizard extends Wizard {
 			Credentials sourceCredentials = RepoUtils.getRepositoryCredentials(
 					keyring, sourceRepoNode);
 
-			String msg;
-
-			// no workspace has been chosen, we return
-			if (wkspViewer.getCheckedElements().length == 0) {
-				msg = "No workspace has been chosen, and thus no fetch has been done.";
-				MessageDialog.openWarning(DistPlugin.getDefault()
-						.getWorkbench().getDisplay().getActiveShell(),
-						"Warning", msg);
-				return true;
-			}
-
-			msg = "Your are about to fetch data from repository: \n\t"
+			String msg = "Your are about to fetch data from repository: \n\t"
 					+ sourceRepoUri + "\ninto target repository: \n\t"
 					+ targetRepoUri + "\nDo you really want to proceed ?";
 
 			boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
 					.getWorkbench().getDisplay().getActiveShell(),
-					"Confirm Fetch clear", msg);
+					"Confirm Fetch Launch", msg);
 
 			if (result) {
 				RepoSync repoSync = new RepoSync(sourceRepo, sourceCredentials,
@@ -163,20 +166,19 @@ public class FetchWizard extends Wizard {
 				repoSync.setSourceRepoUri(sourceRepoUri);
 
 				// Specify workspaces to synchronise
-				List<String> wksps = new ArrayList<String>();
+				Map<String, String> wksps = new HashMap<String, String>();
 				for (Object obj : wkspViewer.getCheckedElements()) {
-					wksps.add((String) obj);
+					WkspObject stn = (WkspObject) obj;
+					wksps.put(stn.srcName, stn.targetName);
 				}
-				repoSync.setSourceWkspList(wksps);
+				repoSync.setWkspMap(wksps);
 
 				// Set the import files only option
 				repoSync.setFilesOnly(filesOnlyBtn.getSelection());
-
 				FetchJob job = new FetchJob(repoSync);
 				job.setUser(true);
 				job.schedule();
 			}
-
 		} catch (Exception e) {
 			throw new SlcException(
 					"Unexpected error while launching the fetch", e);
@@ -184,33 +186,54 @@ public class FetchWizard extends Wizard {
 		return true;
 	}
 
-	private class DefineModelPage extends WizardPage {
+	// ///////////////////////////////
+	// ////// THE PAGES
 
-		// This page widget
+	private class ChooseWkspPage extends WizardPage {
+
+		private Map<String, Node> sourceReposMap;
 		private Combo chooseSourceRepoCmb;
 
-		// Business objects
-		private Map<String, Node> sourceReposMap;
-
-		public DefineModelPage() {
+		public ChooseWkspPage() {
 			super("Main");
-			setTitle("Define fetch parameters");
+			setTitle("Choose workspaces to fetch");
+			setDescription("Check 'advanced fetch' box to "
+					+ "rename workspaces and fine tune the process");
+
+			// Initialise with registered Repositories
+			sourceReposMap = getSourceRepoUris();
 		}
 
 		public void createControl(Composite parent) {
-
-			// main layout
-			Composite composite = new Composite(parent, SWT.NONE);
+			Composite composite = new Composite(parent, SWT.NO_FOCUS);
 			composite.setLayout(new GridLayout(2, false));
 
-			// Choose source repo
+			// Choose source repository combo
 			new Label(composite, SWT.NONE)
 					.setText("Choose a source repository");
 			chooseSourceRepoCmb = new Combo(composite, SWT.BORDER
 					| SWT.V_SCROLL);
-			chooseSourceRepoCmb.setItems(getSourceRepoUris());
+			chooseSourceRepoCmb.setItems(sourceReposMap.keySet().toArray(
+					new String[sourceReposMap.size()]));
 			GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 			chooseSourceRepoCmb.setLayoutData(gd);
+
+			// Check boxes
+			final Button selectAllBtn = new Button(composite, SWT.CHECK);
+			selectAllBtn.setText("Select/Unselect all");
+
+			advancedBtn = new Button(composite, SWT.CHECK);
+			advancedBtn.setText("Advanced fetch");
+			advancedBtn.setToolTipText("Check this for further "
+					+ "parameterization of the fetch process");
+
+			// Workspace table
+			Table table = new Table(composite, SWT.H_SCROLL | SWT.V_SCROLL
+					| SWT.BORDER | SWT.CHECK);
+			gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+			gd.horizontalSpan = 2;
+			table.setLayoutData(gd);
+			configureWkspTable(table);
 
 			// Import only files
 			filesOnlyBtn = new Button(composite, SWT.CHECK | SWT.WRAP);
@@ -219,28 +242,22 @@ public class FetchWizard extends Wizard {
 			filesOnlyBtn.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
 					false, 2, 1));
 
-			// Workspace table
-			Composite wkspTable = new Composite(composite, SWT.NONE);
-			gd = new GridData();
-			gd.horizontalSpan = 2;
-			gd.grabExcessVerticalSpace = true;
-			gd.verticalAlignment = SWT.FILL;
-			wkspTable.setLayoutData(gd);
-			wkspTable.setLayout(new GridLayout(1, false));
-			addWkspTablePart(wkspTable);
-
-			// Choose source repo
-			final Button selectAllBtn = new Button(composite, SWT.CHECK);
-			selectAllBtn.setText("Select/Unselect all");
-
-			selectAllBtn.addSelectionListener(new SelectionListener() {
+			// Listeners
+			selectAllBtn.addSelectionListener(new SelectionAdapter() {
 				public void widgetSelected(SelectionEvent e) {
 					wkspViewer.setAllChecked(selectAllBtn.getSelection());
-				}
-
-				public void widgetDefaultSelected(SelectionEvent e) {
+					getContainer().updateButtons();
 				}
 			});
+
+			// advancedBtn.addSelectionListener(new SelectionAdapter() {
+			// public void widgetSelected(SelectionEvent e) {
+			// if (advancedBtn.getSelection()){
+			//
+			// }
+			// wkspViewer.setAllChecked();
+			// }
+			// });
 
 			chooseSourceRepoCmb.addModifyListener(new ModifyListener() {
 				public void modifyText(ModifyEvent e) {
@@ -251,107 +268,233 @@ public class FetchWizard extends Wizard {
 				}
 			});
 
-			// initialize to first avalaible repo
+			wkspViewer.addCheckStateListener(new ICheckStateListener() {
+				public void checkStateChanged(CheckStateChangedEvent event) {
+					getContainer().updateButtons();
+				}
+			});
+
+			// Initialise to first available repo
 			if (chooseSourceRepoCmb.getItemCount() > 0)
 				chooseSourceRepoCmb.select(0);
+
 			// Compulsory
 			setControl(composite);
 		}
 
-		// Helper to populate avalaible source repo list
-		protected String[] getSourceRepoUris() {
-			try {
-				Node repoList = currSession.getNode(UserJcrUtils.getUserHome(
-						currSession).getPath()
-						+ RepoConstants.REPOSITORIES_BASE_PATH);
+		@Override
+		public boolean isPageComplete() {
+			return wkspViewer.getCheckedElements().length != 0;
+		}
 
-				String targetRepoUri = null;
-				if (targetRepoNode != null) {
-					targetRepoUri = targetRepoNode.getProperty(
-							ArgeoNames.ARGEO_URI).getString();
+		@Override
+		public IWizardPage getNextPage() {
+			// WARNING: page are added and never removed.
+			if (advancedBtn.getSelection()
+					&& wkspViewer.getCheckedElements().length != 0) {
+				IWizardPage toReturn = null;
+				for (Object obj : wkspViewer.getCheckedElements()) {
+					WkspObject curr = (WkspObject) obj;
+					// currSelecteds.add(curr);
+					AdvancedFetchPage page;
+					if (!advancedPages.containsKey(curr)) {
+						page = new AdvancedFetchPage(curr.srcName, curr);
+						addPage(page);
+						advancedPages.put(curr, page);
+					} else
+						page = advancedPages.get(curr);
+					if (toReturn == null)
+						toReturn = page;
 				}
-				NodeIterator ni = repoList.getNodes();
-				List<String> sourceRepoNames = new ArrayList<String>();
-				// caches a map of the source repo nodes with their URI as a key
-				// to ease further processing
-				sourceReposMap = new HashMap<String, Node>();
-				while (ni.hasNext()) {
-					Node currNode = ni.nextNode();
-					if (currNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
-						String currUri = currNode.getProperty(
-								ArgeoNames.ARGEO_URI).getString();
-						if (targetRepoUri == null
-								|| !targetRepoUri.equals(currUri)) {
-							sourceReposMap.put(currUri, currNode);
-							sourceRepoNames.add(currUri);
-						}
-					}
-				}
-				return sourceRepoNames.toArray(new String[sourceRepoNames
-						.size()]);
-			} catch (RepositoryException e) {
-				throw new SlcException("Error while getting repo aliases", e);
+				return toReturn;
+			} else {
+				return recapPage;
 			}
 		}
 
-		// Create the workspaces table
-		private void addWkspTablePart(Composite parent) {
-
-			Table table = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL
-					| SWT.BORDER | SWT.CHECK);
-			table.setLayoutData(new GridData(SWT.LEFT, SWT.FILL, false, true));
+		// Configure the workspace table
+		private void configureWkspTable(Table table) {
 			table.setLinesVisible(true);
 			table.setHeaderVisible(true);
 			wkspViewer = new CheckboxTableViewer(table);
 
-			// WORKSPACES COLUMN
+			// WORKSPACE COLUMNS
 			TableViewerColumn column = ViewerUtils.createTableViewerColumn(
-					wkspViewer, "Workspaces", SWT.NONE, 400);
-			column.setLabelProvider(new ColumnLabelProvider());
+					wkspViewer, "Source names", SWT.NONE, 250);
+			column.setLabelProvider(new ColumnLabelProvider() {
+				@Override
+				public String getText(Object element) {
+					return ((WkspObject) element).srcName;
+				}
+			});
 
-			wkspViewer.setContentProvider(new IStructuredContentProvider() {
-				// caches current repo
-				private Repository currSourceRepo;
-				private Credentials currSourceCred;
+			// column = ViewerUtils.createTableViewerColumn(wkspViewer, "Size",
+			// SWT.NONE, 250);
+			// column.setLabelProvider(new ColumnLabelProvider() {
+			// @Override
+			// public String getText(Object element) {
+			// return ((WkspObject) element).getFormattedSize();
+			// }
+			// });
+
+			wkspViewer.setContentProvider(new WkspContentProvider());
+
+			// TODO implement a fitting comparator
+			// wkspViewer.setComparator(new ArtifactNamesComparator());
+		}
+	}
+
+	private class AdvancedFetchPage extends WizardPage {
+
+		private final WkspObject currentWorkspace;
+
+		private Text targetNameTxt;
+
+		protected AdvancedFetchPage(String pageName, WkspObject currentWorkspace) {
+			super(pageName);
+			this.currentWorkspace = currentWorkspace;
+		}
+
+		@Override
+		public void setVisible(boolean visible) {
+			super.setVisible(visible);
+			if (visible) {
+				String msg = "Define advanced parameters to fetch workspace "
+						+ currentWorkspace.srcName;
+				setMessage(msg);
+				targetNameTxt.setText(currentWorkspace.targetName);
+			}
+			// else
+			// currentWorkspace.targetName = targetNameTxt.getText();
+		}
+
+		public void createControl(Composite parent) {
+			Composite body = new Composite(parent, SWT.NO_FOCUS);
+			body.setLayout(new GridLayout(2, false));
+			new Label(body, SWT.NONE).setText("Choose a new name");
+			targetNameTxt = new Text(body, SWT.BORDER);
+			targetNameTxt.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+					true, false));
+			setControl(body);
+		}
+
+		protected WkspObject getWorkspaceObject() {
+			currentWorkspace.targetName = targetNameTxt.getText();
+			return currentWorkspace;
+		}
+
+		@Override
+		public IWizardPage getNextPage() {
+			// WARNING: page are added and never removed.
+			// IWizardPage toReturn = null;
+			// IWizardPage[] pages = ((Wizard) getContainer()).getPages();
+			Object[] selected = wkspViewer.getCheckedElements();
+			for (int i = 0; i < selected.length - 1; i++) {
+				WkspObject curr = (WkspObject) selected[i];
+				if (curr.equals(currentWorkspace))
+					return advancedPages.get((WkspObject) selected[i + 1]);
+			}
+			return recapPage;
+		}
+	}
+
+	private class RecapPage extends WizardPage {
+
+		private TableViewer recapViewer;
+
+		public RecapPage() {
+			super("Validate and launch");
+			setTitle("Validate and launch");
+		}
+
+		@Override
+		public boolean isPageComplete() {
+			return isCurrentPage();
+		}
+
+		public IWizardPage getNextPage() {
+			// always last....
+			return null;
+		}
+
+		@Override
+		public void setVisible(boolean visible) {
+			super.setVisible(visible);
+			if (visible) {
+				try {
+					String targetRepoUri = targetRepoNode.getProperty(
+							ArgeoNames.ARGEO_URI).getString();
+					String sourceRepoUri = sourceRepoNode.getProperty(
+							ArgeoNames.ARGEO_URI).getString();
+
+					String msg = "Fetch data from: " + sourceRepoUri
+							+ "\ninto target repository: " + targetRepoUri;
+					// + "\nDo you really want to proceed ?";
+					setMessage(msg);
+
+					// update values that will be used for the fetch
+					selectedWorkspaces.clear();
+
+					for (Object obj : wkspViewer.getCheckedElements()) {
+						WkspObject curr = (WkspObject) obj;
+
+						if (advancedBtn.getSelection()) {
+							AdvancedFetchPage page = advancedPages.get(curr);
+							selectedWorkspaces.add(page.getWorkspaceObject());
+						} else
+							selectedWorkspaces.add(curr);
+					}
+					recapViewer.setInput(selectedWorkspaces);
+					recapViewer.refresh();
+
+				} catch (RepositoryException re) {
+					throw new SlcException("Unable to get repositories URIs",
+							re);
+				}
+			}
+		}
+
+		public void createControl(Composite parent) {
+			Table table = new Table(parent, SWT.H_SCROLL | SWT.V_SCROLL
+					| SWT.BORDER);
+			table.setLinesVisible(true);
+			table.setHeaderVisible(true);
+			recapViewer = new TableViewer(table);
+
+			// WORKSPACE COLUMNS
+			TableViewerColumn column = ViewerUtils.createTableViewerColumn(
+					recapViewer, "Sources", SWT.NONE, 250);
+			column.setLabelProvider(new ColumnLabelProvider() {
+				@Override
+				public String getText(Object element) {
+					return ((WkspObject) element).srcName;
+				}
+			});
+
+			column = ViewerUtils.createTableViewerColumn(recapViewer,
+					"targets", SWT.NONE, 250);
+			column.setLabelProvider(new ColumnLabelProvider() {
+				@Override
+				public String getText(Object element) {
+					return ((WkspObject) element).targetName;
+				}
+			});
+
+			recapViewer.setContentProvider(new IStructuredContentProvider() {
 
 				public void inputChanged(Viewer viewer, Object oldInput,
 						Object newInput) {
-					if (newInput != null && newInput instanceof Node) {
-						// update current used repository
-						currSourceRepo = RepoUtils.getRepository(
-								repositoryFactory, keyring, (Node) newInput);
-						currSourceCred = RepoUtils.getRepositoryCredentials(
-								keyring, (Node) newInput);
-						// reset workspace list
-						wkspViewer.setAllChecked(false);
-					}
+					// TODO Auto-generated method stub
 				}
 
 				public void dispose() {
 				}
 
-				public Object[] getElements(Object obj) {
-					Session session = null;
-					try {
-						session = currSourceRepo.login(currSourceCred);
-						List<String> result = new ArrayList<String>();
-						// remove unvalid elements
-						for (String name : session.getWorkspace()
-								.getAccessibleWorkspaceNames())
-							if (name.lastIndexOf('-') > 0)
-								result.add(name);
-						return result.toArray();
-					} catch (RepositoryException e) {
-						throw new SlcException(
-								"Unexpected error while initializing fetch wizard",
-								e);
-					} finally {
-						JcrUtils.logoutQuietly(session);
-					}
+				public Object[] getElements(Object inputElement) {
+					return selectedWorkspaces.toArray();
 				}
 			});
-			wkspViewer.setComparator(new ArtifactNamesComparator());
-
+			setControl(table);
 		}
 	}
 
@@ -378,6 +521,136 @@ public class FetchWizard extends Wizard {
 						"Cannot fetch repository", e);
 			}
 			return Status.OK_STATUS;
+		}
+	}
+
+	// ///////////////////////
+	// Local classes
+	private class WkspObject {
+		protected final String srcName;
+		protected String targetName;
+
+		protected WkspObject(String srcName) {
+			this.srcName = srcName;
+			this.targetName = srcName;
+		}
+
+		@Override
+		public String toString() {
+			return "[" + srcName + " to " + targetName + "]";
+		}
+	}
+
+	private class WkspContentProvider implements IStructuredContentProvider {
+		// caches current repo
+		private Node currSourceNodeRepo;
+		private Repository currSourceRepo;
+		private Credentials currSourceCred;
+
+		private List<WkspObject> workspaces = new ArrayList<WkspObject>();
+
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			if (newInput != null && newInput instanceof Node) {
+				Session session = null;
+				try {
+					Node newRepoNode = (Node) newInput;
+					if (currSourceNodeRepo == null
+							|| !newRepoNode.getPath().equals(
+									currSourceNodeRepo.getPath())) {
+
+						// update cache
+						currSourceNodeRepo = newRepoNode;
+						currSourceRepo = RepoUtils.getRepository(
+								repositoryFactory, keyring, currSourceNodeRepo);
+						currSourceCred = RepoUtils.getRepositoryCredentials(
+								keyring, currSourceNodeRepo);
+
+						// reset workspace list
+						wkspViewer.setAllChecked(false);
+						workspaces.clear();
+						session = currSourceRepo.login(currSourceCred);
+						// remove unvalid elements
+						for (String name : session.getWorkspace()
+								.getAccessibleWorkspaceNames())
+							// TODO implement a cleaner way to filter
+							// workspaces out
+							if (name.lastIndexOf('-') > 0) {
+								WkspObject currWksp = new WkspObject(name);
+								// compute wkspace size
+								// TODO implement this
+								// Session currSession = null;
+								// try {
+								// currSession = currSourceRepo.login(
+								// currSourceCred, name);
+								// currWksp.size = JcrUtils
+								// .getNodeApproxSize(currSession
+								// .getNode("/"));
+								//
+								// } catch (RepositoryException re) {
+								// log.warn(
+								// "unable to compute size of workspace "
+								// + name, re);
+								// } finally {
+								// JcrUtils.logoutQuietly(currSession);
+								// }
+								workspaces.add(currWksp);
+							}
+					}
+
+				} catch (RepositoryException e) {
+					throw new SlcException("Unexpected error while "
+							+ "initializing fetch wizard", e);
+				} finally {
+					JcrUtils.logoutQuietly(session);
+				}
+				viewer.refresh();
+			}
+		}
+
+		public void dispose() {
+		}
+
+		public Object[] getElements(Object obj) {
+			return workspaces.toArray();
+		}
+	}
+
+	// ////////////////////////////
+	// // Helpers
+
+	// populate available source repo list
+	private Map<String, Node> getSourceRepoUris() {
+		try {
+			Node repoList = currSession.getNode(UserJcrUtils.getUserHome(
+					currSession).getPath()
+					+ RepoConstants.REPOSITORIES_BASE_PATH);
+
+			String targetRepoUri = null;
+			if (targetRepoNode != null) {
+				targetRepoUri = targetRepoNode
+						.getProperty(ArgeoNames.ARGEO_URI).getString();
+			}
+			NodeIterator ni = repoList.getNodes();
+			// List<String> sourceRepoNames = new ArrayList<String>();
+			// // caches a map of the source repo nodes with their URI as a key
+			// // to ease further processing
+			Map<String, Node> sourceReposMap = new HashMap<String, Node>();
+			while (ni.hasNext()) {
+				Node currNode = ni.nextNode();
+				if (currNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
+					String currUri = currNode.getProperty(ArgeoNames.ARGEO_URI)
+							.getString();
+					if (targetRepoUri == null || !targetRepoUri.equals(currUri)) {
+						sourceReposMap.put(currUri, currNode);
+						// sourceRepoNames.add(currUri);
+					}
+				}
+			}
+			return sourceReposMap;
+			// sourceRepoNames.toArray(new String[sourceRepoNames
+			// .size()]);
+		} catch (RepositoryException e) {
+			throw new SlcException("Error while getting repo aliases", e);
 		}
 	}
 
