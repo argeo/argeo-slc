@@ -1,6 +1,6 @@
 package org.argeo.slc.client.ui.dist.model;
 
-/** Common super class for all dist tree elements */
+/** Common super class for all tree elements of the Distributions View*/
 public abstract class DistParentElem {
 	public final static Character VERSION_SEP = '-';
 

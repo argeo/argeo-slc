@@ -24,7 +24,7 @@ import org.argeo.slc.repo.RepoUtils;
 import org.argeo.util.security.Keyring;
 
 /**
- * Abstract a repository. Might be persisted by a node in the current user home
+ * Abstract a repository. It might be persisted by a node in the current user home
  * Node or just an URI and a label if user is anonymous
  */
 public class RepoElem extends DistParentElem {
@@ -116,7 +116,7 @@ public class RepoElem extends DistParentElem {
 			session = repository.login(credentials);
 			String[] workspaceNames = session.getWorkspace()
 					.getAccessibleWorkspaceNames();
-			Map<String, GroupElem> children = new HashMap<String, GroupElem>();
+			Map<String, WkspGroupElem> children = new HashMap<String, WkspGroupElem>();
 
 			buildWksp: for (String workspaceName : workspaceNames) {
 				// Add a supplementary check to hide workspace that are not
@@ -148,7 +148,7 @@ public class RepoElem extends DistParentElem {
 					String prefix = workspaceName.substring(0,
 							workspaceName.lastIndexOf(VERSION_SEP));
 					if (!children.containsKey(prefix)) {
-						children.put(prefix, new GroupElem(RepoElem.this,
+						children.put(prefix, new WkspGroupElem(RepoElem.this,
 								prefix));
 					}
 				}

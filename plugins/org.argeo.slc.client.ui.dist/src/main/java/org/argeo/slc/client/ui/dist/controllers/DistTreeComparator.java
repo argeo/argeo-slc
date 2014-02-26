@@ -1,7 +1,7 @@
 package org.argeo.slc.client.ui.dist.controllers;
 
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
-import org.argeo.slc.client.ui.dist.model.GroupElem;
+import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.eclipse.jface.viewers.Viewer;
@@ -17,7 +17,7 @@ public class DistTreeComparator extends ViewerComparator {
 				return 2;
 			else
 				return 5;
-		else if (element instanceof GroupElem)
+		else if (element instanceof WkspGroupElem)
 			return 10;
 		else if (element instanceof WorkspaceElem)
 			return 15;

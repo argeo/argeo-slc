@@ -43,7 +43,7 @@ import org.argeo.slc.client.ui.dist.controllers.DistTreeContentProvider;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeDoubleClickListener;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeLabelProvider;
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
-import org.argeo.slc.client.ui.dist.model.GroupElem;
+import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
@@ -165,8 +165,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 					isRepoElem = true;
 					isHomeRepo = re.inHome();
 					isReadOnly = re.isReadOnly();
-				} else if (firstElement instanceof GroupElem) {
-					GroupElem dge = (GroupElem) firstElement;
+				} else if (firstElement instanceof WkspGroupElem) {
+					WkspGroupElem dge = (WkspGroupElem) firstElement;
 					isReadOnly = dge.isReadOnly();
 					isDistribGroupElem = true;
 					re = dge.getRepoElem();

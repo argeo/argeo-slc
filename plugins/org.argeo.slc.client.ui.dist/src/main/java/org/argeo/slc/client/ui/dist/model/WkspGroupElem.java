@@ -12,14 +12,14 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 
 /**
- * Abstracts a group of distribution, that is a bunch of workspaces with same
+ * Abstract set of similar workspaces, that is a bunch of workspaces with same
  * prefix.
  */
-public class GroupElem extends DistParentElem {
+public class WkspGroupElem extends DistParentElem {
 	private RepoElem repoElem;
 	private String name;
 
-	public GroupElem(RepoElem repoElem, String prefix) {
+	public WkspGroupElem(RepoElem repoElem, String prefix) {
 		super(repoElem.inHome(), repoElem.isReadOnly());
 		this.repoElem = repoElem;
 		this.name = prefix;
@@ -60,7 +60,8 @@ public class GroupElem extends DistParentElem {
 				// filter technical workspaces
 				if (workspaceName.startsWith(name)
 						&& workspaceName.substring(0,
-								workspaceName.lastIndexOf(VERSION_SEP)).equals(name)) {
+								workspaceName.lastIndexOf(VERSION_SEP)).equals(
+								name)) {
 					distributionElems.add(new WorkspaceElem(repoElem,
 							workspaceName));
 				}
@@ -88,5 +89,4 @@ public class GroupElem extends DistParentElem {
 	public RepoElem getRepoElem() {
 		return repoElem;
 	}
-
 }
