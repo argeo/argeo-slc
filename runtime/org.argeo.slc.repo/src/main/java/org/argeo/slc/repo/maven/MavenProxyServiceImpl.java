@@ -24,6 +24,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.security.AccessControlException;
+import javax.jcr.security.Privilege;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,13 +51,14 @@ public class MavenProxyServiceImpl extends AbstractUrlProxy implements
 	@Override
 	protected void beforeInitSessionSave(Session session)
 			throws RepositoryException {
-		JcrUtils.addPrivilege(session, "/", "anonymous", "jcr:read");
+		JcrUtils.addPrivilege(session, "/", SlcConstants.USER_ANONYMOUS, Privilege.JCR_READ);
 		try {
 			JcrUtils.addPrivilege(session, "/", SlcConstants.ROLE_SLC,
-					"jcr:all");
+					Privilege.JCR_ALL);
 		} catch (AccessControlException e) {
 			if (log.isTraceEnabled())
-				log.trace("Cannot give jcr:all privileges to ROLE_SLC");
+				log.trace("Cannot give jcr:all privileges to "
+						+ SlcConstants.ROLE_SLC);
 		}
 
 		JcrUtils.mkdirsSafe(session, RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH);
