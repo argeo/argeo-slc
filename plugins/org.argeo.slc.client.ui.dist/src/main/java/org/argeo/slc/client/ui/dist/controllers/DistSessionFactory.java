@@ -14,7 +14,7 @@ import org.argeo.slc.repo.RepoUtils;
 import org.argeo.util.security.Keyring;
 
 /**
- * Provides shortcut to retrieve sessions, repositories and workspaces that are
+ * Provide shortcuts to retrieve sessions, repositories and workspaces that are
  * persisted in the current user node using path only.
  */
 public class DistSessionFactory {

@@ -261,6 +261,16 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				if (ici != null)
 					menuManager.remove(ici);
 
+				// Publish workspace
+				params = new HashMap<String, String>();
+				params.put(PublishWorkspace.PARAM_TARGET_REPO_PATH,
+						targetRepoPath);
+				params.put(PublishWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
+				CommandUtils.refreshParametrizedCommand(submenu, window,
+						PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
+						PublishWorkspace.DEFAULT_ICON, isDistribElem
+								&& singleElement && !isReadOnly, params);
+				
 				// Normalize distribution (Legacy)
 				params = new HashMap<String, String>();
 				params.put(NormalizeDistribution.PARAM_TARGET_REPO_PATH,
@@ -273,15 +283,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						NormalizeDistribution.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
 
-				// publish workspace
-				params = new HashMap<String, String>();
-				params.put(PublishWorkspace.PARAM_TARGET_REPO_PATH,
-						targetRepoPath);
-				params.put(PublishWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
-				CommandUtils.refreshParametrizedCommand(submenu, window,
-						PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
-						PublishWorkspace.DEFAULT_ICON, isDistribElem
-								&& singleElement && !isReadOnly, params);
+			
 
 				if (submenu.getSize() > 0)
 					menuManager.add(submenu);

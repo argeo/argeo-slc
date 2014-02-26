@@ -86,11 +86,12 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-/** Table giving an overview of an OSGi distribution with corresponding filters */
+/** Show all bundles contained in a given workspace as filter-able table */
 public class DistributionOverviewPage extends FormPage implements SlcNames {
-	final static String PAGE_ID = "distributionOverviewPage";
 	// final private static Log log = LogFactory
 	// .getLog(DistributionOverviewPage.class);
+
+	final static String PAGE_ID = "distributionOverviewPage";
 
 	// Business Objects
 	private Session session;

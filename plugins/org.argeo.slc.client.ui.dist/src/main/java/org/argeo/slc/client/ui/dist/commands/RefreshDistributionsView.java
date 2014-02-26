@@ -25,15 +25,13 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
- * Force refresh of the DistributionsView
+ * Force refresh of the Distributions View
  */
-
 public class RefreshDistributionsView extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".refreshDistributionsView";
 	public final static String DEFAULT_LABEL = "Refresh the distribution view";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/refresh.png");
-
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchPart activePart = DistPlugin.getDefault().getWorkbench()

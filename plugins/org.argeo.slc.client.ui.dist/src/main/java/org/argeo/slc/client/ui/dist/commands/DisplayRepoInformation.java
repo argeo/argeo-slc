@@ -46,7 +46,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class DisplayRepoInformation extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".displayRepoInformation";
-	public final static String DEFAULT_LABEL = "Repository infos";
+	public final static String DEFAULT_LABEL = "Information";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/help.gif");
 

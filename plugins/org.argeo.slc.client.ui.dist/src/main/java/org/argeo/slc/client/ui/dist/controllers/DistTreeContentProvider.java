@@ -27,7 +27,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Enables browsing in local and remote slc distribution repositories. Keyring
+ * Enables browsing in local and remote SLC software repositories. Keyring
  * and repository factory must be injected
  */
 public class DistTreeContentProvider implements ITreeContentProvider {

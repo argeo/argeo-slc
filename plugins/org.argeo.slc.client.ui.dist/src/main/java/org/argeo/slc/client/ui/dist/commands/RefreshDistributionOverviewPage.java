@@ -28,15 +28,13 @@ import org.eclipse.ui.forms.editor.IFormPage;
 /**
  * Force refresh of the Distribution overview page of the corresponding editor
  */
-
 public class RefreshDistributionOverviewPage extends AbstractHandler {
 	// private static final Log log = LogFactory
 	// .getLog(RefreshDistributionOverviewPage.class);
+
 	public final static String ID = DistPlugin.ID
 			+ ".refreshDistributionOverviewPage";
 	public final static String DEFAULT_LABEL = "Refresh the distribution overview";
-
-	// public final static String DEFAULT_ICON_PATH = "icons/refresh.png";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/refresh.png");
 

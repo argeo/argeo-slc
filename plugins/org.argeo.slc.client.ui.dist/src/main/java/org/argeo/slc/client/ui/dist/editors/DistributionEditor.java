@@ -29,7 +29,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
- * Editor to browse, analyze and modify an OSGi distribution
+ * Browse, analyse and modify an OSGi distribution
  */
 public class DistributionEditor extends FormEditor implements SlcNames {
 	// private final static Log log =
@@ -81,5 +81,4 @@ public class DistributionEditor extends FormEditor implements SlcNames {
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
-
 }

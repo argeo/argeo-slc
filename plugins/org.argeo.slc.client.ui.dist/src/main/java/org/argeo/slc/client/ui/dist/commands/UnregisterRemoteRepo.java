@@ -34,15 +34,14 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  * Unregisters a remote repository by deleting the corresponding RepoNode from
- * the NodeRepository. It does not affect the repository instance
+ * the node Repository. It does not affect the repository instance
  */
-
 public class UnregisterRemoteRepo extends AbstractHandler {
 	// private static final Log log = LogFactory
 	// .getLog(UnregisterRemoteRepo.class);
+	
 	public final static String ID = DistPlugin.ID + ".unregisterRemoteRepo";
-	public final static String DEFAULT_LABEL = "Unregister this repository";
-	// public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
+	public final static String DEFAULT_LABEL = "Unregister";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/removeItem.gif");
 

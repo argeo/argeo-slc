@@ -64,9 +64,8 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
- * Presents main information of a given OSGI bundle
+ * Present main information of a given OSGI bundle
  */
-
 public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 	// private final static Log log =
 	// LogFactory.getLog(ArtifactDetailsPage.class);
@@ -109,7 +108,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		}
 	}
 
-	/** Add useful info for the current bundle */
+	/** Displays useful info for the current bundle */
 	private void createdetailsPart(Composite parent) throws RepositoryException {
 		Composite details = toolkit.createComposite(parent);
 		GridLayout layout = new GridLayout(2, false);
@@ -122,7 +121,6 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		createHyperlink(details, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
 		createField(details, "Vendor", DistConstants.SLC_BUNDLE_VENDOR);
 		addSourceAvailableLabel(details);
-
 	}
 
 	// helper to check if sources are available

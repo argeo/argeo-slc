@@ -7,7 +7,7 @@ import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
-/** Specific behaviour to enhence Distribution tree browsers */
+/** Specific comparator to enhance Distribution tree browsers */
 public class DistTreeComparator extends ViewerComparator {
 
 	public int category(Object element) {

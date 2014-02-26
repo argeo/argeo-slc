@@ -26,13 +26,12 @@ import org.eclipse.ui.IPersistableElement;
 
 /**
  * An editor input based the JCR node object.
- * */
-
+ */
 public class GenericBundleEditorInput implements IEditorInput, SlcNames {
 
 	private final Node artifactNode;
-	// cache key properties at creation time to avoid Exception at recovering time
-	// when the session has been closed
+	// cache key properties at creation time to avoid Exception at recovering
+	// time when the session has been closed
 	private String artifactId;
 	private String groupId;
 	private String version;

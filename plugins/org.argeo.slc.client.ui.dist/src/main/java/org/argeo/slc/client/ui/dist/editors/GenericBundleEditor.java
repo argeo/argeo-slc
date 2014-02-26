@@ -26,14 +26,12 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
- * 
- * Exposes a bundle and enable its management
- * 
+ * Expose a bundle and enable its management
  */
 public class GenericBundleEditor extends FormEditor {
-
 	// private final static Log log =
 	// LogFactory.getLog(GenericNodeEditor.class);
+
 	public final static String ID = DistPlugin.ID + ".genericBundleEditor";
 
 	// business objects
@@ -64,11 +62,6 @@ public class GenericBundleEditor extends FormEditor {
 	}
 
 	@Override
-	public void doSaveAs() {
-		// unused compulsory method
-	}
-
-	@Override
 	public void doSave(IProgressMonitor monitor) {
 		try {
 			// Automatically commit all pages of the editor
@@ -80,8 +73,14 @@ public class GenericBundleEditor extends FormEditor {
 
 	}
 
+	// unused compulsory methods
 	@Override
 	public boolean isSaveAsAllowed() {
-		return true;
+		return false;
 	}
+
+	@Override
+	public void doSaveAs() {
+	}
+
 }

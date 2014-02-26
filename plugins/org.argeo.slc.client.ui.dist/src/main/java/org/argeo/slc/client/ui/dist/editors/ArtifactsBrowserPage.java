@@ -58,14 +58,15 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
- * Exposes the various group id of a distribution as a tree.
+ * Expose Maven artifacts of a given workspace as a tree. Artifacts are grouped
+ * by Maven group.
  */
 public class ArtifactsBrowserPage extends FormPage implements DistConstants,
 		RepoConstants {
-
-	final static String PAGE_ID = "artifactsBrowserPage";
 	// private final static Log log = LogFactory
 	// .getLog(ArtifactsBrowserPage.class);
+
+	final static String PAGE_ID = "artifactsBrowserPage";
 
 	// Business object
 	private Session session;
@@ -83,8 +84,6 @@ public class ArtifactsBrowserPage extends FormPage implements DistConstants,
 		try {
 			ScrolledForm form = managedForm.getForm();
 			Composite parent = form.getBody();
-			// Enable the different parts to fill the whole page when the tab is
-			// maximized
 			parent.setLayout(new FillLayout());
 			createExportPackageSection(parent);
 			getEditor().getSite().setSelectionProvider(artifactTreeViewer);

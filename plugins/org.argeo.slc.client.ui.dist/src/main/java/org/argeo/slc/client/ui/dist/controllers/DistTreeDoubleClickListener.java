@@ -10,7 +10,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.PartInitException;
 
-/** Listen to double-clicks */
+/** Listen to double-clicks on the distributions view tree. */
 public class DistTreeDoubleClickListener implements IDoubleClickListener {
 
 	public void doubleClick(DoubleClickEvent event) {
