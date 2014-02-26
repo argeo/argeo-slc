@@ -42,22 +42,17 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * Create a new empty workspace in the current repository.
+ * Opens a popup that displays various information on the current reppository.
  */
-
 public class DisplayRepoInformation extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".displayRepoInformation";
-	public final static String DEFAULT_LABEL = "Repository infos...";
+	public final static String DEFAULT_LABEL = "Repository infos";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/help.gif");
 
-	// public final static String DEFAULT_ICON_PATH = "icons/help.gif";
-
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-
 		IStructuredSelection iss = (IStructuredSelection) HandlerUtil
 				.getActiveSite(event).getSelectionProvider().getSelection();
-
 		if (iss.getFirstElement() instanceof RepoElem) {
 			RepoElem re = (RepoElem) iss.getFirstElement();
 			InformationDialog inputDialog = new InformationDialog(HandlerUtil
@@ -72,7 +67,7 @@ public class DisplayRepoInformation extends AbstractHandler {
 				inputDialog.readOnlyBtn.setSelection(re.isReadOnly());
 			} catch (RepositoryException e) {
 				throw new SlcException("Unexpected error while "
-						+ "getting repository infos.", e);
+						+ "getting repository information.", e);
 			} finally {
 				JcrUtils.logoutQuietly(session);
 			}
@@ -81,7 +76,7 @@ public class DisplayRepoInformation extends AbstractHandler {
 		return null;
 	}
 
-	public class InformationDialog extends Dialog {
+	private class InformationDialog extends Dialog {
 		Text nameTxt;
 		Text uriTxt;
 		Text loginTxt;
@@ -102,7 +97,6 @@ public class DisplayRepoInformation extends AbstractHandler {
 		}
 
 		protected Control createDialogArea(Composite parent) {
-
 			Composite dialogarea = (Composite) super.createDialogArea(parent);
 			dialogarea.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
 					true));

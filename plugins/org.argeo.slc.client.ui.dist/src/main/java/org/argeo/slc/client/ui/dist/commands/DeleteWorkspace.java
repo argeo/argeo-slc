@@ -43,13 +43,11 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * removing all nodes of type {@code NodeType.NT_FOLDER} and
  * {@code NodeType.NT_UNSTRUCTURED}
  */
-
 public class DeleteWorkspace extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
 
 	public final static String ID = DistPlugin.ID + ".deleteWorkspace";
 	public final static String DEFAULT_LABEL = "Clear";
-	// public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/removeItem.gif");
 
@@ -68,7 +66,6 @@ public class DeleteWorkspace extends AbstractHandler {
 
 		Session nodeSession = null;
 		Session session = null;
-
 		try {
 			nodeSession = nodeRepository.login();
 			Node repoNode = nodeSession.getNode(targetRepoPath);
@@ -78,7 +75,7 @@ public class DeleteWorkspace extends AbstractHandler {
 					keyring, repoNode);
 
 			String msg = "Your are about to completely delete workspace ["
-					+ workspaceName + "].\n Do you really want to proceed ?";
+					+ workspaceName + "].\n Do you really want to proceed?";
 			boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
 					.getWorkbench().getDisplay().getActiveShell(),
 					"Confirm workspace deletion", msg);
@@ -87,10 +84,10 @@ public class DeleteWorkspace extends AbstractHandler {
 				// msg =
 				// "There is no possible turning back, are your REALLY sure you want to proceed ?";
 				msg = "WARNING: \nCurrent Jackrabbit version used does "
-						+ "not support workspace management.\n"
+						+ "not support workspace deletion.\n"
 						+ "Thus, the workspace will only be cleaned so "
 						+ "that you can launch fetch process again.\n\n"
-						+ "Do you still want to proceed ?";
+						+ "Do you still want to proceed?";
 				result = MessageDialog.openConfirm(DistPlugin.getDefault()
 						.getWorkbench().getDisplay().getActiveShell(),
 						"Confirm workspace deletion", msg);
@@ -98,11 +95,9 @@ public class DeleteWorkspace extends AbstractHandler {
 
 			if (result) {
 				session = repository.login(credentials, workspaceName);
-
 				// TODO use this with a newer version of Jackrabbit
 				// Workspace wsp = session.getWorkspace();
 				// wsp.deleteWorkspace(workspaceName);
-
 				NodeIterator nit = session.getRootNode().getNodes();
 				while (nit.hasNext()) {
 					Node node = nit.nextNode();

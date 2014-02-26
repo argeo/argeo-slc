@@ -45,12 +45,12 @@ import org.eclipse.core.runtime.jobs.Job;
 /**
  * Merge two workspaces
  */
-
 public class MergeWorkspaces extends AbstractHandler {
 	private final static Log log = LogFactory.getLog(MergeWorkspaces.class);
 
 	public final static String ID = DistPlugin.ID + ".mergeWorkspaces";
 	public final static String DEFAULT_LABEL = "Merge";
+
 	public final static String PARAM_SOURCE_WORKSPACE_NAME = "srcWkspName";
 	public final static String PARAM_SOURCE_REPO_PATH = "srcRepoPath";
 	public final static String PARAM_TARGET_WORKSPACE_NAME = "targetWkspName";
@@ -62,7 +62,6 @@ public class MergeWorkspaces extends AbstractHandler {
 	private Repository nodeRepository;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-
 		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
 		String targetWkspName = event.getParameter(PARAM_TARGET_WORKSPACE_NAME);
 		String sourceRepoPath = event.getParameter(PARAM_SOURCE_REPO_PATH);

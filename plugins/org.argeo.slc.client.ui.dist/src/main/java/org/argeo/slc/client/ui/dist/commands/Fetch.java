@@ -21,16 +21,19 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/** Wraps a {@link RepoSync} as an Eclipse command. */
+/**
+ * Wrap a {@link RepoSync} as an Eclipse command. Open a wizard that enable
+ * definition of the fetch process parameters
+ */
 public class Fetch extends AbstractHandler {
 	// private final static Log log = LogFactory.getLog(Fetch.class);
 
 	public final static String ID = DistPlugin.ID + ".fetch";
-	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 	public final static String DEFAULT_LABEL = "Fetch...";
-	// public final static String DEFAULT_ICON_PATH = "icons/fetchRepo.png";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/fetchRepo.png");
+
+	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 
 	// DEPENDENCY INJECTION
 	private Keyring keyring;
@@ -57,7 +60,7 @@ public class Fetch extends AbstractHandler {
 				CommandHelpers.callCommand(RefreshDistributionsView.ID);
 			return null;
 		} catch (RepositoryException e) {
-			throw new SlcException("Unexpected error while fetching data", e);
+			throw new SlcException("Unable te retrieve repo node from path", e);
 		} finally {
 			JcrUtils.logoutQuietly(currSession);
 		}

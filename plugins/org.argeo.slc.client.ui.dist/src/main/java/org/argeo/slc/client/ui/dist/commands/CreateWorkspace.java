@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.repo.RepoUtils;
@@ -45,17 +46,16 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class CreateWorkspace extends AbstractHandler {
 	private static final Log log = LogFactory.getLog(CreateWorkspace.class);
+
+	// Exposes commands meta-info
 	public final static String ID = DistPlugin.ID + ".createWorkspace";
-	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
-	public final static String PARAM_WORKSPACE_PREFIX = "workspacePrefix";
 	public final static String DEFAULT_LABEL = "Create workspace...";
-	
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/addItem.gif");
 
-	// public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
-
-	private String slcRole = "ROLE_SLC";
+	// Parameters
+	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
+	public final static String PARAM_WORKSPACE_PREFIX = "workspacePrefix";
 
 	// DEPENDENCY INJECTION
 	private RepositoryFactory repositoryFactory;
@@ -119,7 +119,8 @@ public class CreateWorkspace extends AbstractHandler {
 			JcrUtils.logoutQuietly(session);
 			// init new workspace
 			session = repository.login(credentials, workspaceName);
-			JcrUtils.addPrivilege(session, "/", slcRole, Privilege.JCR_ALL);
+			JcrUtils.addPrivilege(session, "/", SlcConstants.ROLE_SLC,
+					Privilege.JCR_ALL);
 			CommandHelpers.callCommand(RefreshDistributionsView.ID);
 			if (log.isTraceEnabled())
 				log.trace("WORKSPACE " + workspaceName + " CREATED");

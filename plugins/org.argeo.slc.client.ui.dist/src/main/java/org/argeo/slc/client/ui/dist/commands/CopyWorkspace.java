@@ -25,6 +25,7 @@ import javax.jcr.security.Privilege;
 
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.repo.RepoUtils;
@@ -49,14 +50,10 @@ public class CopyWorkspace extends AbstractHandler {
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/addItem.gif");
 
-// 	public final static String DEFAULT_ICON_PATH = "icons/addItem.gif";
-
 	// DEPENDENCY INJECTION
 	private RepositoryFactory repositoryFactory;
 	private Keyring keyring;
 	private Repository nodeRepository;
-
-	private String slcRole = "ROLE_SLC";
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
@@ -90,7 +87,8 @@ public class CopyWorkspace extends AbstractHandler {
 			Node newRootNode = newSession.getRootNode();
 			RepoUtils.copy(srcRootNode, newRootNode);
 			newSession.save();
-			JcrUtils.addPrivilege(newSession, "/", slcRole, Privilege.JCR_ALL);
+			JcrUtils.addPrivilege(newSession, "/", SlcConstants.ROLE_SLC,
+					Privilege.JCR_ALL);
 			CommandHelpers.callCommand(RefreshDistributionsView.ID);
 		} catch (RepositoryException re) {
 			throw new ArgeoException(

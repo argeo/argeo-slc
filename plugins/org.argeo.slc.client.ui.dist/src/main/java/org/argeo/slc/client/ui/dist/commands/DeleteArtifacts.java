@@ -36,17 +36,14 @@ import org.eclipse.ui.IWorkbenchPart;
 /**
  * Delete chosen artifacts from the current workspace.
  */
-
 public class DeleteArtifacts extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
+
 	public final static String ID = DistPlugin.ID + ".deleteArtifacts";
 	public final static String DEFAULT_LABEL = "Delete selected items";
-	// public final static String DEFAULT_ICON_PATH = "icons/removeItem.gif";
-
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/removeItem.gif");
 
-	
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
 			IWorkbenchPart activePart = DistPlugin.getDefault().getWorkbench()
@@ -63,11 +60,11 @@ public class DeleteArtifacts extends AbstractHandler {
 					String msg = "Your are about to definitively remove the "
 							+ ((IStructuredSelection) selector).size()
 							+ " selected artifacts.\n"
-							+ "Are you sure you want to proceed ?";
+							+ "Are you sure you want to proceed?";
 
 					boolean result = MessageDialog.openConfirm(DistPlugin
 							.getDefault().getWorkbench().getDisplay()
-							.getActiveShell(), "Confirm Delete", msg);
+							.getActiveShell(), "Confirm Deletion", msg);
 
 					if (result) {
 						while (it.hasNext()) {
