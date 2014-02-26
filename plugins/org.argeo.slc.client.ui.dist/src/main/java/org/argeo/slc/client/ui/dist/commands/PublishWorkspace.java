@@ -25,6 +25,7 @@ import javax.jcr.security.Privilege;
 
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.util.security.Keyring;
@@ -35,15 +36,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
- * Publish the current workspace by giving REOD_ONLY rights to anonymous.
+ * Publish the current workspace by giving READ_ONLY rights to anonymous.
  */
-
 public class PublishWorkspace extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(PublishWorkspace.class);
-	public final static String ID = DistPlugin.ID + ".publishWorkspace";
-	public final static String DEFAULT_LABEL = "Publish workspace";
 	
-	// public final static String DEFAULT_ICON_PATH = "icons/publish.gif";
+	public final static String ID = DistPlugin.ID + ".publishWorkspace";
+	public final static String DEFAULT_LABEL = "Make Public";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/publish.gif");
 
@@ -55,7 +54,7 @@ public class PublishWorkspace extends AbstractHandler {
 	private Keyring keyring;
 	private Repository nodeRepository;
 
-	private String publicRole = "anonymous";
+	private String publicRole = SlcConstants.USER_ANONYMOUS;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
@@ -79,12 +78,10 @@ public class PublishWorkspace extends AbstractHandler {
 					"Confirm publication", msg);
 
 			if (result) {
-
 				session = repository.login(credentials, workspaceName);
 				JcrUtils.addPrivilege(session, "/", publicRole,
 						Privilege.JCR_READ);
 				session.save();
-
 				JcrUtils.logoutQuietly(session);
 				// CommandHelpers.callCommand(RefreshDistributionsView.ID);
 			}

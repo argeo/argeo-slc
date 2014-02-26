@@ -35,6 +35,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
@@ -44,7 +45,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class CopyWorkspace extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(CopyWorkspace.class);
 	public final static String ID = DistPlugin.ID + ".copyWorkspace";
-	public final static String DEFAULT_LABEL = "Duplicate";
+	public final static String DEFAULT_LABEL = "Duplicate...";
 	public final static String PARAM_SOURCE_WORKSPACE_NAME = "srcWkspName";
 	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
@@ -75,21 +76,23 @@ public class CopyWorkspace extends AbstractHandler {
 					.getActiveWorkbenchWindow(event).getShell(),
 					"New copy of workspace " + wkspName,
 					"Choose a name for the workspace to create", "", null);
-			inputDialog.open();
-			String newWorkspaceName = inputDialog.getValue();
-			srcSession = repository.login(credentials, wkspName);
+			int result = inputDialog.open();
+			if (result == Window.OK) {
+				String newWorkspaceName = inputDialog.getValue();
+				srcSession = repository.login(credentials, wkspName);
 
-			// Create the workspace
-			srcSession.getWorkspace().createWorkspace(newWorkspaceName);
-			Node srcRootNode = srcSession.getRootNode();
-			// log in the newly created workspace
-			newSession = repository.login(credentials, newWorkspaceName);
-			Node newRootNode = newSession.getRootNode();
-			RepoUtils.copy(srcRootNode, newRootNode);
-			newSession.save();
-			JcrUtils.addPrivilege(newSession, "/", SlcConstants.ROLE_SLC,
-					Privilege.JCR_ALL);
-			CommandHelpers.callCommand(RefreshDistributionsView.ID);
+				// Create the workspace
+				srcSession.getWorkspace().createWorkspace(newWorkspaceName);
+				Node srcRootNode = srcSession.getRootNode();
+				// log in the newly created workspace
+				newSession = repository.login(credentials, newWorkspaceName);
+				Node newRootNode = newSession.getRootNode();
+				RepoUtils.copy(srcRootNode, newRootNode);
+				newSession.save();
+				JcrUtils.addPrivilege(newSession, "/", SlcConstants.ROLE_SLC,
+						Privilege.JCR_ALL);
+				CommandHelpers.callCommand(RefreshDistributionsView.ID);
+			}
 		} catch (RepositoryException re) {
 			throw new ArgeoException(
 					"Unexpected error while creating the new workspace.", re);

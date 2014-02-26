@@ -42,6 +42,7 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
+import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.argeo.slc.repo.osgi.NormalizeGroup;
@@ -71,21 +72,20 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
-/** Make sure than Maven and OSGi metadata are consistent */
+/** Legacy - Make sure than Maven and OSGi metadata are consistent */
 public class NormalizeDistribution extends AbstractHandler implements SlcNames {
+	private final static Log log = LogFactory
+			.getLog(NormalizeDistribution.class);
+
 	public final static String ID = DistPlugin.ID + ".normalizeDistribution";
-	public final static String DEFAULT_LABEL = "Normalize...";
-	// public final static String DEFAULT_ICON_PATH = "icons/normalize.gif";
+	public final static String DEFAULT_LABEL = "Legacy Normalization...";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/normalize.gif");
 
 	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
 	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 
-	private final static Log log = LogFactory
-			.getLog(NormalizeDistribution.class);
-
-	private String artifactBasePath = "/";
+	private String artifactBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();

@@ -48,6 +48,7 @@ import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.jcr.SlcNames;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -71,12 +72,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Browse, manipulate and manage distributions accross multiple repositories
+ * Browse, manipulate and manage distributions across multiple repositories
  * (like fetch, merge, publish, etc.).
  */
 public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames {
 	// private final static Log log =
 	// LogFactory.getLog(DistributionsView.class);
+
 	public final static String ID = DistPlugin.ID + ".distributionsView";
 
 	/* DEPENDENCY INJECTION */
@@ -104,10 +106,10 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		viewer.addDoubleClickListener(new DistTreeDoubleClickListener());
 		viewer.setComparator(new DistTreeComparator());
 
-		// Enable selection retrieving from outside the view
+		// Enable retrieving current tree selected items from outside the view
 		getSite().setSelectionProvider(viewer);
 
-		// Drag'n drop
+		// Drag and drop
 		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
 		int operations = DND.DROP_COPY | DND.DROP_MOVE;
 		viewer.addDragSupport(operations, tt, new ViewDragListener());
@@ -195,16 +197,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						(isRepoElem || isDistribGroupElem) && singleElement
 								&& !isReadOnly, params);
 
-				// publish workspace
-				params = new HashMap<String, String>();
-				params.put(PublishWorkspace.PARAM_TARGET_REPO_PATH,
-						targetRepoPath);
-				params.put(PublishWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
-						PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
-						PublishWorkspace.DEFAULT_ICON, isDistribElem
-								&& singleElement && !isReadOnly, params);
-
 				// Register a remote repository
 				CommandUtils.refreshCommand(menuManager, window,
 						RegisterRepository.ID,
@@ -231,25 +223,13 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 				// Normalize workspace
 				params = new HashMap<String, String>();
-				params.put(NormalizeDistribution.PARAM_TARGET_REPO_PATH,
-						targetRepoPath);
-				params.put(NormalizeDistribution.PARAM_WORKSPACE_NAME,
-						workspaceName);
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
-						NormalizeDistribution.ID,
-						NormalizeDistribution.DEFAULT_LABEL,
-						NormalizeDistribution.DEFAULT_ICON, isDistribElem
-								&& singleElement && !isReadOnly, params);
-
-				// Normalize workspace
-				params = new HashMap<String, String>();
 				params.put(NormalizeWorkspace.PARAM_TARGET_REPO_PATH,
 						targetRepoPath);
 				params.put(NormalizeWorkspace.PARAM_WORKSPACE_NAME,
 						workspaceName);
 
 				CommandUtils.refreshParametrizedCommand(menuManager, window,
-						NormalizeWorkspace.ID, "Normalize workspace...",
+						NormalizeWorkspace.ID, "Normalize...",
 						NormalizeWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
 
@@ -272,6 +252,39 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
 						DeleteWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
+
+				// Advanced submenu
+				MenuManager submenu = new MenuManager("Advanced", DistPlugin.ID
+						+ ".advancedSubmenu");
+				IContributionItem ici = menuManager.find(DistPlugin.ID
+						+ ".advancedSubmenu");
+				if (ici != null)
+					menuManager.remove(ici);
+
+				// Normalize distribution (Legacy)
+				params = new HashMap<String, String>();
+				params.put(NormalizeDistribution.PARAM_TARGET_REPO_PATH,
+						targetRepoPath);
+				params.put(NormalizeDistribution.PARAM_WORKSPACE_NAME,
+						workspaceName);
+				CommandUtils.refreshParametrizedCommand(submenu, window,
+						NormalizeDistribution.ID,
+						NormalizeDistribution.DEFAULT_LABEL,
+						NormalizeDistribution.DEFAULT_ICON, isDistribElem
+								&& singleElement && !isReadOnly, params);
+
+				// publish workspace
+				params = new HashMap<String, String>();
+				params.put(PublishWorkspace.PARAM_TARGET_REPO_PATH,
+						targetRepoPath);
+				params.put(PublishWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
+				CommandUtils.refreshParametrizedCommand(submenu, window,
+						PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
+						PublishWorkspace.DEFAULT_ICON, isDistribElem
+								&& singleElement && !isReadOnly, params);
+
+				if (submenu.getSize() > 0)
+					menuManager.add(submenu);
 
 				// // Manage workspace authorizations
 				// params = new HashMap<String, String>();

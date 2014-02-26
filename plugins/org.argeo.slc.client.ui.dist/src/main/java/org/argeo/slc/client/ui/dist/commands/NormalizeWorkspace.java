@@ -60,26 +60,25 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 	private final static Log log = LogFactory.getLog(NormalizeWorkspace.class);
 
 	public final static String ID = DistPlugin.ID + ".normalizeWorkspace";
-
-	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
-	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/normalize.gif");
 
-	private String artifactBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
+	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
+	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
 
-	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
-	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
-	private PdeSourcesIndexer pdeSourceIndexer = new PdeSourcesIndexer(
-			artifactIndexer, jarFileIndexer);
+	private String artifactBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
 
 	// DEPENDENCY INJECTION
 	private RepositoryFactory repositoryFactory;
 	private Keyring keyring;
 	private Repository repository;
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
+	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
+	private PdeSourcesIndexer pdeSourceIndexer = new PdeSourcesIndexer(
+			artifactIndexer, jarFileIndexer);
 
+	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
 		String wkspName = event.getParameter(PARAM_WORKSPACE_NAME);
 
@@ -88,7 +87,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 		try {
 			String msg = "Your are about to normalize workspace: " + wkspName
 					+ ".\nThis will index OSGi bundles and Maven artifacts, "
-					+ "it will also generate pdeSources if needed.\n"
+					+ "it will also convert Maven sources to PDE Sources if needed.\n"
 					+ "Note that no information will be overwritten: "
 					+ "all existing information are kept."
 					+ "\n\n Do you really want to proceed ?";
@@ -126,10 +125,9 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 
 		@Override
 		protected IStatus run(IProgressMonitor progressMonitor) {
-
 			try {
 				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
-				// normalize artifacts
+				// Normalize artifacts
 				Query countQuery = session
 						.getWorkspace()
 						.getQueryManager()
@@ -203,7 +201,6 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 		@Override
 		protected void leaving(Node node, int level) throws RepositoryException {
 		}
-
 	}
 
 	/* DEPENDENCY INJECTION */

@@ -43,7 +43,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * Create a new empty workspace in the current repository.
  */
-
 public class CreateWorkspace extends AbstractHandler {
 	private static final Log log = LogFactory.getLog(CreateWorkspace.class);
 

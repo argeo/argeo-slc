@@ -22,7 +22,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * Change visible state of the ArtifactBrower size column
+ * Force the refresh of the artifact browser view
  */
 public class RefreshArtifactBrowser extends AbstractHandler {
 
