@@ -263,7 +263,7 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			// probably not a jar, skipping
 			if (log.isDebugEnabled()) {
 				log.debug("Skipping because of " + e);
-				// e.printStackTrace();
+				e.printStackTrace();
 			}
 		} finally {
 			IOUtils.closeQuietly(jarInputStream);
