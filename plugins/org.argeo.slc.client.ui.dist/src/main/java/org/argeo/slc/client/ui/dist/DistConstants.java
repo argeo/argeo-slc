@@ -20,15 +20,16 @@ import org.osgi.framework.Constants;
 
 /** Constants used across the application. */
 public interface DistConstants {
+
 	/*
 	 * MISCEALLENEOUS
 	 */
 	public final static String DATE_TIME_FORMAT = "MM/dd/yyyy, HH:mm";
 	public final static String DATE_FORMAT = "MM/dd/yyyy";
-	// this should be directly got in JCR
+	// this should be directly retrieved from JCR APIs
 	public final static String JCR_IDENTIFIER = "jcr:uuid";
 
-	// FIXME: might be defined in SlcNames
+	// FIXME: should be defined in SlcNames
 	public final static String SLC_BUNDLE_NAME = SlcNames.SLC_
 			+ Constants.BUNDLE_NAME;
 	public final static String SLC_BUNDLE_LICENCE = SlcNames.SLC_

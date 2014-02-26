@@ -21,6 +21,7 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
+/** Simple default perspective that presents public repositories */
 public class AnonymousDistributionPerspective implements IPerspectiveFactory {
 
 	public final static String ID = DistPlugin.ID
