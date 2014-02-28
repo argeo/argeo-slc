@@ -224,7 +224,7 @@ public class RegisterRepoWizard extends Wizard {
 
 		/** Creates label and text. */
 		protected Text createLT(Composite parent, String label, String initial) {
-			new Label(parent, SWT.NONE).setText(label);
+			new Label(parent, SWT.RIGHT).setText(label);
 			Text text = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
 			text.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, true));
 			text.setText(initial);
@@ -234,7 +234,7 @@ public class RegisterRepoWizard extends Wizard {
 		/** Creates label and check. */
 		protected Button createLC(Composite parent, String label,
 				Boolean initial) {
-			new Label(parent, SWT.NONE).setText(label);
+			new Label(parent, SWT.RIGHT).setText(label);
 			Button check = new Button(parent, SWT.CHECK);
 			check.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			check.setSelection(initial);

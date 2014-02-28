@@ -55,6 +55,9 @@ public class DistImages {
 	public final static Image IMG_DISTGRP_READONLY = DistPlugin
 			.getImageDescriptor("icons/distGrpReadOnly.gif").createImage();
 
+	public final static Image IMG_GROUP_BASE = DistPlugin.getImageDescriptor(
+			"icons/packages.gif").createImage();
+
 	/* CHECK BOXES */
 	public final static Image CHECKED = DistPlugin.getImageDescriptor(
 			"icons/checked.gif").createImage();

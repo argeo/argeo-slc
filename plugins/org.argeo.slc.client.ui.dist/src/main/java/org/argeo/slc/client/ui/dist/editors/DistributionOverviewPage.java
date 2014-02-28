@@ -20,9 +20,11 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Property;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.Constraint;
@@ -247,8 +249,22 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		header.setLayoutData(gd);
 
 		// Title: some meta information
-		String desc = ((DistributionEditorInput) getEditorInput())
-				.getRepositoryDescription();
+		// label = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
+		// .getProperty(Property.JCR_TITLE).getString() : repoNode
+		// .getName();
+
+		String desc = null;
+		Node repoNode = ((DistributionWorkspaceEditor) getEditor())
+				.getRepoNode();
+		if (repoNode != null)
+			try {
+				desc = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
+						.getProperty(Property.JCR_TITLE).getString() : repoNode
+						.getName();
+			} catch (RepositoryException e1) {
+				throw new SlcException("Unable to get repository alias ", e1);
+			}
+		desc += " (" + ((WorkspaceEditorInput) getEditorInput()).getUri() + ")";
 		Label lbl = tk.createLabel(header, desc, SWT.NONE);
 
 		gd = new GridData(SWT.FILL, SWT.FILL, false, false);

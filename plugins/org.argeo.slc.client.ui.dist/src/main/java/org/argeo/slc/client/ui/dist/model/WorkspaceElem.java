@@ -1,26 +1,26 @@
 package org.argeo.slc.client.ui.dist.model;
 
-/** Abstracts a workspace that contains a given distribution */
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.query.Query;
+
+import org.argeo.ArgeoException;
+import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.jcr.SlcTypes;
+
+/** Abstract a workspace that contains a software distribution */
 public class WorkspaceElem extends DistParentElem {
 	private final RepoElem repoElem;
 	private String workspaceName;
-	private String label;
+	private Session defaultSession;
 
-	// /**
-	// * Helper to display only version when the workspace name is well
-	// formatted
-	// */
-	// private static String formatName(String name) {
-	// if (name != null && name.lastIndexOf(VERSION_SEP) > 0)
-	// return name.substring(name.lastIndexOf(VERSION_SEP) + 1);
-	// else
-	// return name;
-	// }
-
-	public WorkspaceElem(RepoElem repoElem, String workspaceName) {
+	public WorkspaceElem(WkspGroupElem parent, RepoElem repoElem,
+			String workspaceName) {
+		super(workspaceName, repoElem.inHome(), repoElem.isReadOnly());
 		this.repoElem = repoElem;
 		this.workspaceName = workspaceName;
-		this.label = workspaceName; // formatName(workspaceName);
+		setParent(parent);
 	}
 
 	public String getWorkspaceName() {
@@ -31,20 +31,63 @@ public class WorkspaceElem extends DistParentElem {
 		return repoElem;
 	}
 
-	public boolean isReadOnly() {
-		return repoElem.isReadOnly();
+	public Boolean isConnected() {
+		if (defaultSession != null && defaultSession.isLive())
+			return true;
+		else
+			return false;
+	}
+
+	public void login() {
+		defaultSession = repoElem.repositoryLogin(getName());
 	}
 
 	public boolean hasChildren() {
-		return false;
+		try {
+			if (isConnected())
+				return defaultSession.getRootNode().hasNodes();
+			else
+				return false;
+		} catch (RepositoryException re) {
+			throw new ArgeoException(
+					"Unexpected error while checking children node existence",
+					re);
+		}
 	}
 
-	public Object[] getChildren() {
-		return null;
-	}
-
+	/** Override normal behaviour to initialize display of the workspace */
 	@Override
-	public String getLabel() {
-		return label;
+	public synchronized Object[] getChildren() {
+		if (isLoaded()) {
+			return super.getChildren();
+		} else {
+			// initialize current object
+			try {
+				if (defaultSession == null)
+					return null;
+				else {
+					Query groupQuery = defaultSession
+							.getWorkspace()
+							.getQueryManager()
+							.createQuery(
+									"select * from [" + SlcTypes.SLC_GROUP_BASE
+											+ "] as group order by group.["
+											+ SlcNames.SLC_GROUP_BASE_ID + "]",
+									Query.JCR_SQL2);
+					NodeIterator groups = groupQuery.execute().getNodes();
+					while (groups.hasNext()) {
+						addChild(new GroupBaseElem(WorkspaceElem.this, groups
+								.nextNode()
+								.getProperty(SlcNames.SLC_GROUP_BASE_ID)
+								.getString()));
+					}
+				}
+				return super.getChildren();
+			} catch (RepositoryException e) {
+				throw new ArgeoException(
+						"Cannot initialize WorkspaceNode UI object."
+								+ getName(), e);
+			}
+		}
 	}
 }

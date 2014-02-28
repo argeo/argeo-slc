@@ -9,4 +9,12 @@
 		class="org.argeo.eclipse.ui.jcr.editors.GenericJcrQueryEditor" scope="prototype">
 		<property name="session" ref="slcSession" />
 	</bean>
+
+	<bean id="distributionWorkspaceEditor"
+		class="org.argeo.slc.client.ui.dist.editors.DistributionWorkspaceEditor"
+		scope="prototype">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="localRepository" ref="nodeRepository" />
+	</bean>
 </beans>

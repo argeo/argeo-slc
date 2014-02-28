@@ -63,7 +63,7 @@ public class AnonymousDistributionsView extends ViewPart implements SlcNames,
 
 		// viewer.setContentProvider(new DistTreeContentProvider());
 		viewer.setContentProvider(treeContentProvider);
-		viewer.addDoubleClickListener(new DistTreeDoubleClickListener());
+		viewer.addDoubleClickListener(new DistTreeDoubleClickListener(viewer));
 		viewer.setComparator(new DistTreeComparator());
 
 		// Initialize

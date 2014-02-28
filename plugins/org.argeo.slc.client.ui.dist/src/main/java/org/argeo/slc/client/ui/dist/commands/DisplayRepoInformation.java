@@ -15,13 +15,14 @@
  */
 package org.argeo.slc.client.ui.dist.commands;
 
-import javax.jcr.RepositoryException;
+import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
 import org.argeo.jcr.JcrUtils;
-import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
+import org.argeo.slc.repo.RepoUtils;
+import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -42,36 +43,44 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * Opens a popup that displays various information on the current reppository.
+ * Open a dialog that displays various information on the current repository.
  */
 public class DisplayRepoInformation extends AbstractHandler {
 	public final static String ID = DistPlugin.ID + ".displayRepoInformation";
 	public final static String DEFAULT_LABEL = "Information";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/help.gif");
-
+	
+	/* DEPENDENCY INJECTION */
+	private RepositoryFactory repositoryFactory;
+	private Keyring keyring;
+	
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IStructuredSelection iss = (IStructuredSelection) HandlerUtil
 				.getActiveSite(event).getSelectionProvider().getSelection();
 		if (iss.getFirstElement() instanceof RepoElem) {
 			RepoElem re = (RepoElem) iss.getFirstElement();
+		
+			Session defaultSession =  null;
+			try{
+				defaultSession = RepoUtils.getCorrespondingSession(repositoryFactory, keyring, re.getRepoNode(), re.getUri(), null);
+			
+			
 			InformationDialog inputDialog = new InformationDialog(HandlerUtil
 					.getActiveSite(event).getShell());
 			inputDialog.create();
-			Session session = null;
-			try {
-				session = re.getRepository().login(re.getCredentials());
-				inputDialog.loginTxt.setText(session.getUserID());
-				inputDialog.nameTxt.setText(re.getLabel());
-				inputDialog.uriTxt.setText(re.getUri());
-				inputDialog.readOnlyBtn.setSelection(re.isReadOnly());
-			} catch (RepositoryException e) {
-				throw new SlcException("Unexpected error while "
-						+ "getting repository information.", e);
-			} finally {
-				JcrUtils.logoutQuietly(session);
-			}
+			inputDialog.loginTxt.setText(defaultSession.getUserID());
+			inputDialog.nameTxt.setText(re.getLabel());
+			inputDialog.uriTxt.setText(re.getUri());
+			inputDialog.readOnlyBtn.setSelection(re.isReadOnly());
+		
 			inputDialog.open();
+				// } catch (RepositoryException e) {
+				// throw new SlcException("Unexpected error while "
+				// + "getting repository information.", e);
+			} finally {
+				JcrUtils.logoutQuietly(defaultSession);
+			}
 		}
 		return null;
 	}
@@ -117,7 +126,7 @@ public class DisplayRepoInformation extends AbstractHandler {
 
 		/** Creates label and text. */
 		protected Text createLT(Composite parent, String label) {
-			new Label(parent, SWT.NONE).setText(label);
+			new Label(parent, SWT.RIGHT).setText(label);
 			Text text = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.NONE);
 			text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			text.setEditable(false);
@@ -126,7 +135,7 @@ public class DisplayRepoInformation extends AbstractHandler {
 
 		/** Creates label and check. */
 		protected Button createLC(Composite parent, String label) {
-			new Label(parent, SWT.NONE).setText(label);
+			new Label(parent, SWT.RIGHT).setText(label);
 			Button check = new Button(parent, SWT.CHECK);
 			check.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			check.setEnabled(false);
@@ -138,4 +147,14 @@ public class DisplayRepoInformation extends AbstractHandler {
 			shell.setText("Repository information");
 		}
 	}
+	
+	/* DEPENDENCY INJECTION */
+	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
+		this.repositoryFactory = repositoryFactory;
+	}
+
+	public void setKeyring(Keyring keyring) {
+		this.keyring = keyring;
+	}
+	
 }

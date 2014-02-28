@@ -2,9 +2,8 @@ package org.argeo.slc.client.ui.dist.controllers;
 
 import javax.jcr.RepositoryFactory;
 
-import org.argeo.slc.client.ui.dist.model.DistParentElem;
+import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
-import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -29,28 +28,33 @@ public class AnonymousDistTreeContentProvider implements ITreeContentProvider {
 		String uri = (String) input;
 		publicRepo = new RepoElem(repositoryFactory, uri,
 				"Argeo Public Repository");
+		// force connection and creation of the children UI object
+		publicRepo.login();
 		return publicRepo.getChildren();
 	}
 
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	}
 
+	// @Override
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof DistParentElem) {
-			return ((DistParentElem) parentElement).getChildren();
-		} else
+		if (parentElement instanceof TreeParent)
+			return ((TreeParent) parentElement).getChildren();
+		else
 			return null;
 	}
 
+	// @Override
 	public Object getParent(Object element) {
+		if (element instanceof TreeParent)
+			return ((TreeParent) element).getParent();
 		return null;
 	}
 
+	// @Override
 	public boolean hasChildren(Object element) {
-		if (element instanceof WorkspaceElem)
-			return false;
-		else if (element instanceof DistParentElem)
-			return true;
+		if (element instanceof TreeParent)
+			return ((TreeParent) element).hasChildren();
 		else
 			return false;
 	}

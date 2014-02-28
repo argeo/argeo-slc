@@ -1,8 +1,8 @@
 package org.argeo.slc.client.ui.dist.controllers;
 
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
-import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
+import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -36,8 +36,8 @@ public class DistTreeComparator extends ViewerComparator {
 		String s1, s2;
 
 		if (e1 instanceof DistParentElem) {
-			s1 = ((DistParentElem) e1).getLabel();
-			s2 = ((DistParentElem) e2).getLabel();
+			s1 = ((DistParentElem) e1).getName();
+			s2 = ((DistParentElem) e2).getName();
 		} else {
 			s1 = e1.toString();
 			s2 = e2.toString();

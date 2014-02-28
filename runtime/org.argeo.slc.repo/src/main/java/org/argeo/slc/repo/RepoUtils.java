@@ -388,7 +388,7 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 	}
 
 	/**
-	 * Reads credentials from node, using keyring if there is a password. Cann
+	 * Reads credentials from node, using keyring if there is a password. Can
 	 * return null if no credentials needed (local repo) at all, but returns
 	 * {@link GuestCredentials} if user id is 'anonymous' .
 	 */
@@ -413,6 +413,42 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot connect to repository " + repoNode,
 					e);
+		}
+	}
+
+	/**
+	 * Shortcut to retrieve a session given variable information: Handle the
+	 * case where we only have an URI of the repository, that we want to connect
+	 * as anonymous or the case of a identified connexion to a local or remote
+	 * repository.
+	 * 
+	 * Callers must close the session once it has been used
+	 */
+	public static Session getCorrespondingSession(
+			RepositoryFactory repositoryFactory, Keyring keyring,
+			Node repoNode, String uri, String workspaceName) {
+		try {
+			if (repoNode == null && uri == null)
+				throw new SlcException(
+						"At least one of repoNode and uri must be defined");
+			Repository currRepo = null;
+			Credentials credentials = null;
+			// Anonymous URI only workspace
+			if (repoNode == null)
+				// Anonymous
+				currRepo = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory,
+						uri);
+			else {
+				currRepo = RepoUtils.getRepository(repositoryFactory, keyring,
+						repoNode);
+				credentials = RepoUtils.getRepositoryCredentials(keyring,
+						repoNode);
+			}
+			return currRepo.login(credentials, workspaceName);
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot connect to workspace "
+					+ workspaceName + " of repository " + repoNode
+					+ " with URI " + uri, e);
 		}
 	}
 

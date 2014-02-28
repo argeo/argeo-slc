@@ -39,12 +39,13 @@ import org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView;
 import org.argeo.slc.client.ui.dist.commands.RegisterRepository;
 import org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeComparator;
+import org.argeo.slc.client.ui.dist.controllers.DistTreeComparer;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeContentProvider;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeDoubleClickListener;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeLabelProvider;
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
-import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
+import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.jcr.SlcNames;
@@ -57,6 +58,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -103,8 +105,13 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		// viewer.setContentProvider(new DistTreeContentProvider());
 		viewer.setContentProvider(treeContentProvider);
-		viewer.addDoubleClickListener(new DistTreeDoubleClickListener());
+		viewer.addDoubleClickListener(new DistTreeDoubleClickListener(viewer));
+		viewer.setComparer(new DistTreeComparer());
+
 		viewer.setComparator(new DistTreeComparator());
+
+		@SuppressWarnings("unused")
+		ViewerComparator vc = viewer.getComparator();
 
 		// Enable retrieving current tree selected items from outside the view
 		getSite().setSelectionProvider(viewer);
@@ -156,7 +163,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 				if (firstElement instanceof WorkspaceElem) {
 					WorkspaceElem de = (WorkspaceElem) firstElement;
-					re = de.getRepoElem();
+					re = (RepoElem) de.getParent().getParent();
 					isDistribElem = true;
 					isReadOnly = de.isReadOnly();
 					workspaceName = de.getWorkspaceName();
@@ -166,12 +173,14 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 					isHomeRepo = re.inHome();
 					isReadOnly = re.isReadOnly();
 				} else if (firstElement instanceof WkspGroupElem) {
-					WkspGroupElem dge = (WkspGroupElem) firstElement;
-					isReadOnly = dge.isReadOnly();
+					WkspGroupElem wge = (WkspGroupElem) firstElement;
+					isReadOnly = wge.isReadOnly();
 					isDistribGroupElem = true;
-					re = dge.getRepoElem();
-					workspacePrefix = dge.getLabel();
+					re = (RepoElem) wge.getParent();
+					workspacePrefix = wge.getName();
 				}
+
+				// TODO add case for goups
 
 				if (re != null) {
 					// targetRepoUri = re.getUri();
@@ -270,7 +279,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
 						PublishWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
-				
+
 				// Normalize distribution (Legacy)
 				params = new HashMap<String, String>();
 				params.put(NormalizeDistribution.PARAM_TARGET_REPO_PATH,
@@ -282,8 +291,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						NormalizeDistribution.DEFAULT_LABEL,
 						NormalizeDistribution.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
-
-			
 
 				if (submenu.getSize() > 0)
 					menuManager.add(submenu);
@@ -324,8 +331,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			if (selection.getFirstElement() instanceof WorkspaceElem) {
 				WorkspaceElem de = (WorkspaceElem) selection.getFirstElement();
 				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-					event.data = de.getRepoElem().getUri() + "/"
-							+ de.getWorkspaceName();
+					event.data = ((RepoElem) de.getParent().getParent())
+							.getUri() + "/" + de.getWorkspaceName();
 				}
 			}
 		}
@@ -340,14 +347,18 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		@Override
 		public boolean performDrop(Object data) {
-			WorkspaceElem sourceDist = (WorkspaceElem) getSelectedObject();
+			WorkspaceElem sourceWksp = (WorkspaceElem) getSelectedObject();
 			RepoElem targetRepo = (RepoElem) getCurrentTarget();
 
-			Boolean ok = MessageDialog.openConfirm(getSite().getShell(),
-					"Confirm distribution merge", "Do you want to merge "
-							+ sourceDist.getWorkspaceName() + " (from repo "
-							+ sourceDist.getRepoElem().getLabel()
-							+ ") to repo " + targetRepo.getLabel() + "?");
+			Boolean ok = MessageDialog.openConfirm(
+					getSite().getShell(),
+					"Confirm distribution merge",
+					"Do you want to merge "
+							+ sourceWksp.getWorkspaceName()
+							+ " (from repo "
+							+ ((RepoElem) sourceWksp.getParent().getParent())
+									.getLabel() + ") to repo "
+							+ targetRepo.getLabel() + "?");
 			if (!ok)
 				return false;
 
@@ -355,14 +366,15 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				Map<String, String> params = new HashMap<String, String>();
 				params.put(MergeWorkspaces.PARAM_TARGET_REPO_PATH, targetRepo
 						.getRepoNode().getPath());
-				params.put(MergeWorkspaces.PARAM_SOURCE_REPO_PATH, sourceDist
-						.getRepoElem().getRepoNode().getPath());
+				params.put(MergeWorkspaces.PARAM_SOURCE_REPO_PATH,
+						((RepoElem) sourceWksp.getParent().getParent())
+								.getRepoNode().getPath());
 				params.put(MergeWorkspaces.PARAM_SOURCE_WORKSPACE_NAME,
-						sourceDist.getWorkspaceName());
+						sourceWksp.getWorkspaceName());
 				CommandHelpers.callCommand(RefreshDistributionsView.ID, params);
 				return true;
 			} catch (RepositoryException e) {
-				throw new SlcException("Cannot process drop from " + sourceDist
+				throw new SlcException("Cannot process drop from " + sourceWksp
 						+ " to " + targetRepo, e);
 			}
 		}
@@ -373,8 +385,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			if (target instanceof RepoElem) {
 				if (getSelectedObject() instanceof WorkspaceElem) {
 					// check if not same repository
-					String srcRepoUri = ((WorkspaceElem) getSelectedObject())
-							.getRepoElem().getUri();
+					String srcRepoUri = ((RepoElem) ((WorkspaceElem) getSelectedObject())
+							.getParent().getParent()).getUri();
 					String targetRepoUri = ((RepoElem) target).getUri();
 					return !targetRepoUri.equals(srcRepoUri);
 				}

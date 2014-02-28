@@ -12,28 +12,28 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
+import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.client.ui.dist.model.DistParentElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
-import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.util.security.Keyring;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Enables browsing in local and remote SLC software repositories. Keyring
- * and repository factory must be injected
+ * Enables browsing in local and remote SLC software repositories. Keyring and
+ * repository factory must be injected
  */
 public class DistTreeContentProvider implements ITreeContentProvider {
 	private Session nodeSession;
 	List<RepoElem> repositories = new ArrayList<RepoElem>();
 
+	/* DEPENDENCY INJECTION */
 	private RepositoryFactory repositoryFactory;
 	private Keyring keyring;
 
@@ -53,9 +53,13 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 			NodeIterator repos = nodeSession.getNode(reposPath).getNodes();
 			while (repos.hasNext()) {
 				Node repoNode = repos.nextNode();
-				if (repoNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY))
-					repositories.add(new RepoElem(repoNode, repositoryFactory,
-							keyring));
+				if (repoNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
+					String label = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
+							.getProperty(Property.JCR_TITLE).getString()
+							: repoNode.getName();
+					repositories.add(new RepoElem(repositoryFactory, keyring,
+							repoNode, label));
+				}
 			}
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot get base elements", e);
@@ -66,25 +70,25 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 	}
 
+	// @Override
 	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof DistParentElem) {
-			return ((DistParentElem) parentElement).getChildren();
-		} else if (parentElement instanceof WorkspaceElem) {
-			return ((WorkspaceElem) parentElement).getChildren();
-		}
-		return null;
+		if (parentElement instanceof TreeParent)
+			return ((TreeParent) parentElement).getChildren();
+		else
+			return null;
 	}
 
+	// @Override
 	public Object getParent(Object element) {
-		// TODO register repo elem in distribution elem?
+		if (element instanceof TreeParent)
+			return ((TreeParent) element).getParent();
 		return null;
 	}
 
+	// @Override
 	public boolean hasChildren(Object element) {
-		if (element instanceof WorkspaceElem)
-			return false;
-		else if (element instanceof DistParentElem)
-			return true;
+		if (element instanceof TreeParent)
+			return ((TreeParent) element).hasChildren();
 		else
 			return false;
 	}
@@ -128,9 +132,7 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 		}
 	}
 
-	/*
-	 * DEPENDENCY INJECTION
-	 */
+	/* DEPENDENCY INJECTION */
 	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
 		this.repositoryFactory = repositoryFactory;
 	}
