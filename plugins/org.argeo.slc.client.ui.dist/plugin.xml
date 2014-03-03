@@ -264,6 +264,27 @@
   	 		</commandParameter>
     	</command>
     	
+		<!-- Advanced commands --> 
+		<command
+            id="org.argeo.slc.client.ui.dist.doNothing"
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.DoNothing"
+            name="Advanced">
+    	</command>
+		<command
+            id="org.argeo.slc.client.ui.dist.runInOSGi"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Run in OSGi">
+            <commandParameter
+         		id="workspace"
+         		name="Workspace Name">
+  	 		</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.refreshDistributionsView"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Refresh Distributions View">
+    	</command>
+		
 		<!-- Legacy -->
 		<command
             defaultHandler="org.argeo.slc.client.ui.dist.commands.RefreshArtifactBrowser"
@@ -283,40 +304,64 @@
 				</class>
 			</state>
     	</command>
-
-		<command
-            id="org.argeo.slc.client.ui.dist.runInOSGi"
-            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            name="Run in OSGi">
-            <commandParameter
-         		id="workspace"
-         		name="Workspace Name">
-  	 		</commandParameter>
-    	</command>
-		
-    	<command
-            id="org.argeo.slc.client.ui.dist.refreshDistributionsView"
-            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            name="Refresh Distributions View">
-    	</command>
-
     	<command
             id="org.argeo.slc.client.ui.dist.refreshDistributionOverviewPage"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Refresh distribution overview page">
     	</command>
-
     	<command
             id="org.argeo.slc.client.ui.dist.deleteArtifacts"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Remove selected artifacts">
     	</command>
     </extension>
+    
+	<!-- MENU CONTRIBUTIONS --> 
 	<extension
          id="menu:org.eclipse.ui.main.menu"
          point="org.eclipse.ui.menus">
-    
-         <!-- View Specific Menus --> 
+		<!-- Distributions view tool bar --> 
+		<menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.dist.distributionsView">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.registerRepository"
+                icon="icons/addRepo.gif"
+                label="Register repository"
+                tooltip="Register a remote repository">
+            </command>
+             <command
+             	 commandId="org.argeo.slc.client.ui.dist.doNothing"
+                 id="org.argeo.slc.client.ui.dist.advancedMenu"
+                 icon="icons/more.gif"
+                 tooltip="Access to advanced commands"
+                 style="pulldown">
+           </command>
+        </menuContribution>
+		<menuContribution locationURI="menu:org.argeo.slc.client.ui.dist.advancedMenu">
+        	<command
+				commandId="org.argeo.slc.client.ui.dist.refreshDistributionsView"
+				icon="icons/refresh.png"
+				label="Refresh"
+				tooltip="Force the full refresh of the distribution tree (close all open connections)">
+			</command>
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.runInOSGi"
+                icon="icons/showSize.gif"
+                label="Run in OSGi"
+                tooltip="Run in a spearate OSGi runtime">
+            </command>
+		</menuContribution>
+		<!-- Anonymous distribution view toolbar -->             
+        <menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.dist.anonymousDistributionsView">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.refreshDistributionsView"
+                icon="icons/refresh.png"
+                label="Refresh"
+                tooltip="Force the full refresh of the distribution tree (close all open connections)">
+            </command>
+        </menuContribution>
+        <!-- Artifact Browser Tool bar --> 
 		<menuContribution
         	locationURI="toolbar:org.argeo.slc.client.ui.dist.artifactsBrowser">
             <command
@@ -331,38 +376,6 @@
                 icon="icons/refresh.png"
 	                label="Refresh"
                 tooltip="Refresh the whole browser">
-            </command>
-        </menuContribution>
-		<menuContribution
-        	locationURI="toolbar:org.argeo.slc.client.ui.dist.distributionsView">
-            <command
-            	commandId="org.argeo.slc.client.ui.dist.registerRepository"
-                icon="icons/addRepo.gif"
-                label="Register repository"
-                tooltip="Register a remote repository">
-            </command>
-            <command
-            	commandId="org.argeo.slc.client.ui.dist.refreshDistributionsView"
-                icon="icons/refresh.png"
-                label="Refresh"
-                tooltip="Refresh distributions view">
-            </command>
-           <!--
-            <command
-            	commandId="org.argeo.slc.client.ui.dist.runInOSGi"
-                icon="icons/showSize.gif"
-                label="Run in OSGi"
-                tooltip="Run in a spearate OSGi runtime">
-            </command>
-            -->
-        </menuContribution>
-        <menuContribution
-        	locationURI="toolbar:org.argeo.slc.client.ui.dist.anonymousDistributionsView">
-            <command
-            	commandId="org.argeo.slc.client.ui.dist.refreshDistributionsView"
-                icon="icons/refresh.png"
-                label="Refresh"
-                tooltip="Refresh distributions view">
             </command>
         </menuContribution>
         <!-- Queries --> 
@@ -383,7 +396,7 @@
              </menu>
           </menuContribution> -->
 	</extension>
-  <extension
+	<extension
            point="org.eclipse.ui.activities">
         <!-- TODO: find a way to exclude evrything -->
         <activityPatternBinding

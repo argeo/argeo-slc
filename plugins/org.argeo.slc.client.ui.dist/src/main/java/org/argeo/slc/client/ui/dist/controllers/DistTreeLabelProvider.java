@@ -38,7 +38,7 @@ public class DistTreeLabelProvider extends ColumnLabelProvider {
 			else
 				return JcrImages.WORKSPACE_DISCONNECTED;
 		} else if (element instanceof WkspGroupElem)
-			return JcrImages.WORKSPACE_CONNECTED;
+			return DistImages.IMG_WKSP_GROUP;
 		else if (element instanceof GroupBaseElem)
 			return DistImages.IMG_GROUP_BASE;
 		return super.getImage(element);

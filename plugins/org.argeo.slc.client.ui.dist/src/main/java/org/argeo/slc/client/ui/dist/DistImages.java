@@ -58,6 +58,9 @@ public class DistImages {
 	public final static Image IMG_GROUP_BASE = DistPlugin.getImageDescriptor(
 			"icons/packages.gif").createImage();
 
+	public final static Image IMG_WKSP_GROUP = DistPlugin.getImageDescriptor(
+			"icons/wkspGroup.gif").createImage();
+
 	/* CHECK BOXES */
 	public final static Image CHECKED = DistPlugin.getImageDescriptor(
 			"icons/checked.gif").createImage();
