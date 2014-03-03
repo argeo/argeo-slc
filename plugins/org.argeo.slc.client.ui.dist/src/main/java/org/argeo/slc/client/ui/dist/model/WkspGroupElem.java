@@ -14,8 +14,6 @@ public class WkspGroupElem extends DistParentElem {
 
 	private Session defaultSession;
 
-	/**
-	 */
 	public WkspGroupElem(RepoElem repoElem, String prefix) {
 		super(prefix, repoElem.inHome(), repoElem.isReadOnly());
 		setParent(repoElem);
@@ -25,7 +23,8 @@ public class WkspGroupElem extends DistParentElem {
 			String[] wkpNames = defaultSession.getWorkspace()
 					.getAccessibleWorkspaceNames();
 			for (String wkpName : wkpNames) {
-				if (wkpName.startsWith(prefix)
+				if (prefix.equals(getPrefix(wkpName))
+				// if (wkpName.startsWith(prefix)
 						&& repoElem.isWorkspaceVisible(wkpName))
 					addChild(new WorkspaceElem(WkspGroupElem.this, repoElem,
 							wkpName));
@@ -35,71 +34,20 @@ public class WkspGroupElem extends DistParentElem {
 		}
 	}
 
-	//
-	// public Object[] getChildren() {
-	// Session session = null;
-	// try {
-	// Repository repository = repoElem.getRepository();
-	// session = repository.login(repoElem.getCredentials());
-	//
-	// String[] workspaceNames = session.getWorkspace()
-	// .getAccessibleWorkspaceNames();
-	// List<WorkspaceElem> distributionElems = new ArrayList<WorkspaceElem>();
-	// buildWksp: for (String workspaceName : workspaceNames) {
-	//
-	// // Filter non-public workspaces for user anonymous.
-	// if (repoElem.getRepoNode() == null) {
-	// Session tmpSession = null;
-	// try {
-	// tmpSession = repository.login(workspaceName);
-	// Boolean res = true;
-	// try {
-	// tmpSession.checkPermission("/", "read");
-	// } catch (AccessControlException e) {
-	// res = false;
-	// }
-	// if (!res)
-	// continue buildWksp;
-	// } catch (RepositoryException e) {
-	// throw new SlcException(
-	// "Cannot list workspaces for anonymous user", e);
-	// } finally {
-	// JcrUtils.logoutQuietly(tmpSession);
-	// }
-	// }
-	//
-	// // filter technical workspaces
-	// if (workspaceName.startsWith(name)
-	// && workspaceName.substring(0,
-	// workspaceName.lastIndexOf(VERSION_SEP)).equals(
-	// name)) {
-	// distributionElems.add(new WorkspaceElem(repoElem,
-	// workspaceName));
-	// }
-	// }
-	// return distributionElems.toArray();
-	// } catch (RepositoryException e) {
-	// throw new SlcException("Cannot list workspaces for prefix " + name,
-	// e);
-	// } finally {
-	// JcrUtils.logoutQuietly(session);
-	// }
-	// }
-
-	// public String getLabel() {
-	// return name;
-	// }
-	//
-	// public String toString() {
-	// return getLabel();
-	// }
+	// FIXME - we rely on a "hard coded" convention : Workspace name must have
+	// this format: name-major.minor
+	// We might expose this method as static public, to be used among others by
+	// the RepoElem parent objects when building its children
+	private String getPrefix(String workspaceName) {
+		if (workspaceName.lastIndexOf(VERSION_SEP) > 0)
+			return workspaceName.substring(0,
+					workspaceName.lastIndexOf(VERSION_SEP));
+		else
+			return workspaceName;
+	}
 
 	public void dispose() {
 		JcrUtils.logoutQuietly(defaultSession);
 		super.dispose();
 	}
-
-	// public RepoElem getRepoElem() {
-	// return repoElem;
-	// }
 }
