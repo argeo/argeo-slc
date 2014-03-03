@@ -6,6 +6,7 @@ import javax.jcr.Session;
 import javax.jcr.query.Query;
 
 import org.argeo.ArgeoException;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 
@@ -89,5 +90,11 @@ public class WorkspaceElem extends DistParentElem {
 								+ getName(), e);
 			}
 		}
+	}
+	
+	@Override
+	public synchronized void dispose() {
+		JcrUtils.logoutQuietly(defaultSession);
+		super.dispose();
 	}
 }
