@@ -49,7 +49,7 @@
 		<property name="workspace" value="${slc.repo.jcr.proxyWorkspace}" />
 		<property name="nodeIndexers">
 			<list>
-				<bean class="org.argeo.slc.rpmfactory.core.RpmIndexer" />
+				<bean class="org.argeo.slc.repo.RpmIndexer" />
 			</list>
 		</property>
 	</bean>
