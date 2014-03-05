@@ -22,7 +22,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -41,14 +43,19 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.core.execution.tasks.JvmProcess;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.osgi.framework.Bundle;
 
-/** <b>UNDER DEVELOPMENT</b>. Download and prepare an OSGi runtime*/
+/** <b>UNDER DEVELOPMENT</b>. Download and prepare an OSGi runtime */
 public class RunInOsgi extends AbstractHandler implements SlcNames {
 	private final static Log log = LogFactory.getLog(RunInOsgi.class);
 
@@ -56,20 +63,32 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 	private String workspace;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		File targetDirectory = new File(
-				"/home/mbaudier/dev/work/120517-ArgeoTP/" + workspace);
 
 		InputStream jarStream = null;
 		OutputStream out = null;
 		Writer writer = null;
 		Session session = null;
 		try {
-			FileUtils.deleteDirectory(targetDirectory);
+			// Target directory
+			Bundle distPluginBundle = DistPlugin.getDefault().getBundle();
+			File baseDirectory = distPluginBundle.getBundleContext()
+					.getDataFile("runInOSGi");
+			if (baseDirectory.exists())
+				FileUtils.deleteDirectory(baseDirectory);
+			File targetDirectory = new File(baseDirectory, "lib");
 			targetDirectory.mkdirs();
+			File confDir = new File(baseDirectory, "configuration");
+			confDir.mkdirs();
+			File dataDir = new File(baseDirectory, "data");
+			dataDir.mkdirs();
 
 			session = repository.login(workspace);
 			NodeIterator bundles = listBundleArtifacts(session);
 
+			if (log.isDebugEnabled())
+				log.debug("## Copying to " + targetDirectory);
+
+			File equinoxJar = null;
 			List<File> files = new ArrayList<File>();
 			bundles: while (bundles.hasNext()) {
 				Node bundleNode = bundles.nextNode();
@@ -92,7 +111,9 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 				jarStream = bundleNode.getNode(Node.JCR_CONTENT)
 						.getProperty(Property.JCR_DATA).getBinary().getStream();
 				IOUtils.copy(jarStream, out);
-				if (!symbolicName.equals("org.eclipse.osgi"))
+				if (symbolicName.equals("org.eclipse.osgi"))
+					equinoxJar = targetFile;
+				else
 					files.add(targetFile);
 				if (log.isDebugEnabled())
 					log.debug("Copied " + targetFile.getName());
@@ -108,15 +129,60 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 				osgiBundles.append(files.get(i).getName());
 			}
 
-			File confDir = new File(targetDirectory, "configuration");
-			confDir.mkdirs();
 			File confIni = new File(confDir, "config.ini");
 			writer = new FileWriter(confIni);
 			writer.write(osgiBundles.toString());
 			IOUtils.closeQuietly(writer);
+
+			Map<String, String> configuration = new HashMap<String, String>();
+			configuration.put("osgi.configuration.area",
+					confDir.getCanonicalPath());
+			configuration.put("osgi.instance.area", dataDir.getCanonicalPath());
+			// Do clean
+			configuration.put("osgi.clean", "true");
+
+			JvmProcess osgiRuntime = new JvmProcess();
+			osgiRuntime.setExecDir(baseDirectory.getCanonicalPath());
+			if (equinoxJar == null)
+				throw new SlcException("Cannot find OSGi runtime.");
+			osgiRuntime.setMainJar(equinoxJar.getCanonicalPath());
+			osgiRuntime.arg("-configuration", confDir.getCanonicalPath())
+					.arg("-data", dataDir.getCanonicalPath())
+					.arg("-console", "7777").arg("-clean");
+			osgiRuntime.setLogCommand(true);
+			osgiRuntime.afterPropertiesSet();
+			osgiRuntime.run();
+
+			// Map<String, String> configuration = new HashMap<String,
+			// String>();
+			// configuration.put("osgi.configuration.area",
+			// confDir.getCanonicalPath());
+			// configuration.put("osgi.instance.area",
+			// dataDir.getCanonicalPath());
+			// // Do clean
+			// configuration.put("osgi.clean", "true");
+			// ServiceLoader<FrameworkFactory> ff = ServiceLoader
+			// .load(FrameworkFactory.class);
+			// FrameworkFactory frameworkFactory = ff.iterator().next();
+			// Framework framework =
+			// frameworkFactory.newFramework(configuration);
+			// framework.start();
+			// BundleContext testBundleContext = framework.getBundleContext();
+
+			// for (int i = 0; i < files.size(); i++) {
+			// testBundleContext.installBundle("file://"
+			// + files.get(i).getCanonicalPath());
+			// }
+			//
+			// Bundle[] testBundles = testBundleContext.getBundles();
+			// for (Bundle bundle : testBundles) {
+			// if (log.isDebugEnabled())
+			// log.debug(bundle.getSymbolicName() + " "
+			// + bundle.getVersion());
+			// }
+
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			ErrorFeedback.show("Cannot run in OSGi", e);
 		} finally {
 			IOUtils.closeQuietly(jarStream);
 			IOUtils.closeQuietly(out);

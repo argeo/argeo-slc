@@ -5,7 +5,7 @@
 	<extension
 		point="org.eclipse.ui.perspectives">
 		<perspective
-            name="SLC Repo"
+            name="SLC Factory"
             class="org.argeo.slc.client.ui.dist.DistributionPerspective"
             id="org.argeo.slc.client.ui.dist.distributionPerspective"
             icon="icons/distribution_perspective.gif">

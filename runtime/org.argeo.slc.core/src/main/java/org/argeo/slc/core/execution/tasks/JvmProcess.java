@@ -29,12 +29,14 @@ import org.argeo.slc.SlcException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
+/** A Java Virtual Machine process. */
 public class JvmProcess extends SystemCall implements InitializingBean {
 	private Properties systemProperties = new Properties();
 	private List<Resource> classpath = new ArrayList<Resource>();
 	private List<Resource> pBootClasspath = new ArrayList<Resource>();
 	private Resource jvm = null;
 	private String mainClass;
+	private String mainJar;
 	private List<String> jvmArgs = new ArrayList<String>();
 	private List<String> args = new ArrayList<String>();
 
@@ -67,14 +69,16 @@ public class JvmProcess extends SystemCall implements InitializingBean {
 			command.add(jvmArg);
 		}
 
-		command.add("-cp");
-		StringBuffer buf = new StringBuffer("");
-		for (Resource res : classpath) {
-			if (buf.length() != 0)
-				buf.append(File.pathSeparatorChar);
-			buf.append(asFile(res));
+		if (classpath.size() > 0) {
+			command.add("-cp");
+			StringBuffer buf = new StringBuffer("");
+			for (Resource res : classpath) {
+				if (buf.length() != 0)
+					buf.append(File.pathSeparatorChar);
+				buf.append(asFile(res));
+			}
+			command.add(buf.toString());
 		}
-		command.add(buf.toString());
 
 		if (systemPropertiesFileProperty == null) {
 			// pass system properties as argument
@@ -112,7 +116,14 @@ public class JvmProcess extends SystemCall implements InitializingBean {
 		}
 
 		// Program
-		command.add(mainClass);
+		if (mainClass != null) {
+			command.add(mainClass);
+		} else if (mainJar != null) {
+			command.add("-jar");
+			command.add(mainJar);
+		} else {
+			throw new SlcException("No main class or jar defined");
+		}
 
 		for (String arg : args) {
 			command.add(arg);
@@ -145,6 +156,21 @@ public class JvmProcess extends SystemCall implements InitializingBean {
 		}
 		IOUtils.closeQuietly(fos);
 		return tempFile;
+	}
+
+	/** Append the argument (for chaining) */
+	@Override
+	public SystemCall arg(String arg) {
+		args.add(arg);
+		return this;
+	}
+
+	/** Append the argument (for chaining) */
+	@Override
+	public SystemCall arg(String arg, String value) {
+		args.add(arg);
+		args.add(value);
+		return this;
 	}
 
 	public Properties getSystemProperties() {
@@ -185,6 +211,14 @@ public class JvmProcess extends SystemCall implements InitializingBean {
 
 	public void setMainClass(String mainClass) {
 		this.mainClass = mainClass;
+	}
+
+	public String getMainJar() {
+		return mainJar;
+	}
+
+	public void setMainJar(String mainJar) {
+		this.mainJar = mainJar;
 	}
 
 	public List<String> getJvmArgs() {
