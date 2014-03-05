@@ -34,10 +34,6 @@ public class DistPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	public static BundleContext getBundleContext() {
-		return bundleContext;
-	}
-
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(ID, path);
 	}
