@@ -20,7 +20,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 public class DistPlugin extends AbstractUIPlugin {
-	private static BundleContext bundleContext;
 	public final static String ID = "org.argeo.slc.client.ui.dist";
 
 	private static DistPlugin plugin;
