@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>runtime</artifactId>
-		<version>1.1.16</version>
+		<version>1.1.17-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.support.equinox</artifactId>
@@ -45,7 +45,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support.osgi</artifactId>
-			<version>1.1.16</version>
+			<version>1.1.17-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -58,7 +58,7 @@
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
 			<scope>test</scope>
-			<version>1.1.16</version>
+			<version>1.1.17-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
