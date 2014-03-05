@@ -53,16 +53,26 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.Bundle;
 
 /** <b>UNDER DEVELOPMENT</b>. Download and prepare an OSGi runtime */
 public class RunInOsgi extends AbstractHandler implements SlcNames {
 	private final static Log log = LogFactory.getLog(RunInOsgi.class);
 
+	public final static String ID = DistPlugin.ID + ".runInOsgi";
+	public final static String DEFAULT_LABEL = "Run in OSGi";
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
+			.getImageDescriptor("icons/runInOsgi.gif");
+
+	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
+
+	/* DEPENDENCY INJECTION */
 	private Repository repository;
-	private String workspace;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
+
+		String workspace = event.getParameter(PARAM_WORKSPACE_NAME);
 
 		InputStream jarStream = null;
 		OutputStream out = null;
@@ -216,9 +226,4 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 	public void setRepository(Repository repository) {
 		this.repository = repository;
 	}
-
-	public void setWorkspace(String workspace) {
-		this.workspace = workspace;
-	}
-
 }

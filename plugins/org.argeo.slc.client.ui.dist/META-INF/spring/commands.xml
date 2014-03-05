@@ -91,18 +91,19 @@
 		<property name="keyring" ref="keyring" />
 	</bean>
 
+	<!-- ADVANCED -->
+	<bean id="runInOsgi" class="org.argeo.slc.client.ui.dist.commands.RunInOsgi"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+	</bean>
+
+
 	<!-- LEGACY -->
 	<bean id="org.argeo.slc.client.ui.dist.openGenericJcrQueryEditor"
 		class="org.argeo.eclipse.ui.jcr.commands.OpenGenericJcrQueryEditor"
 		scope="prototype">
 		<property name="editorId"
 			value="org.argeo.slc.client.ui.dist.genericJcrQueryEditor" />
-	</bean>
-
-	<bean id="runInOSGi" class="org.argeo.slc.client.ui.dist.commands.RunInOsgi"
-		scope="prototype">
-		<property name="repository" ref="javaRepository" />
-		<property name="workspace" value="org.argeo.tp-1.4.x" />
 	</bean>
 
 	<bean id="refreshDistributionsView"

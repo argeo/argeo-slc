@@ -37,6 +37,7 @@ import org.argeo.slc.client.ui.dist.commands.NormalizeWorkspace;
 import org.argeo.slc.client.ui.dist.commands.PublishWorkspace;
 import org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView;
 import org.argeo.slc.client.ui.dist.commands.RegisterRepository;
+import org.argeo.slc.client.ui.dist.commands.RunInOsgi;
 import org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeComparator;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeComparer;
@@ -157,7 +158,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				// String targetRepoUri = null;
 				// Build conditions depending on element type
 				boolean isDistribElem = false, isRepoElem = false, isDistribGroupElem = false;
-				boolean isHomeRepo = false, isReadOnly = true;
+				boolean isLocal = false, isReadOnly = true;
 
 				RepoElem re = null;
 
@@ -167,10 +168,11 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 					isDistribElem = true;
 					isReadOnly = de.isReadOnly();
 					workspaceName = de.getWorkspaceName();
+					isLocal = de.inHome();
 				} else if (firstElement instanceof RepoElem) {
 					re = (RepoElem) firstElement;
 					isRepoElem = true;
-					isHomeRepo = re.inHome();
+					isLocal = re.inHome();
 					isReadOnly = re.isReadOnly();
 				} else if (firstElement instanceof WkspGroupElem) {
 					WkspGroupElem wge = (WkspGroupElem) firstElement;
@@ -220,14 +222,14 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						UnregisterRemoteRepo.ID,
 						UnregisterRemoteRepo.DEFAULT_LABEL,
 						UnregisterRemoteRepo.DEFAULT_ICON, isRepoElem
-								&& !isHomeRepo && singleElement, params);
+								&& !isLocal && singleElement, params);
 
 				// Fetch repository
 				params = new HashMap<String, String>();
 				params.put(Fetch.PARAM_TARGET_REPO_PATH, targetRepoPath);
 				CommandUtils.refreshParametrizedCommand(menuManager, window,
 						Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON,
-						isRepoElem && isHomeRepo && singleElement
+						isRepoElem && isLocal && singleElement
 								&& !isReadOnly, params);
 
 				// Normalize workspace
@@ -291,6 +293,14 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						NormalizeDistribution.DEFAULT_LABEL,
 						NormalizeDistribution.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
+
+				// Run in OSGi
+				params = new HashMap<String, String>();
+				params.put(RunInOsgi.PARAM_WORKSPACE_NAME, workspaceName);
+				CommandUtils.refreshParametrizedCommand(submenu, window,
+						RunInOsgi.ID, RunInOsgi.DEFAULT_LABEL,
+						RunInOsgi.DEFAULT_ICON, isDistribElem && singleElement
+								&& isLocal, params);
 
 				if (submenu.getSize() > 0)
 					menuManager.add(submenu);

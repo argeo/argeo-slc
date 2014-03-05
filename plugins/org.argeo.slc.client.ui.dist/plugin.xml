@@ -271,11 +271,11 @@
             name="Advanced">
     	</command>
 		<command
-            id="org.argeo.slc.client.ui.dist.runInOSGi"
+            id="org.argeo.slc.client.ui.dist.runInOsgi"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Run in OSGi">
             <commandParameter
-         		id="workspace"
+         		id="workspaceName"
          		name="Workspace Name">
   	 		</commandParameter>
     	</command>
@@ -344,12 +344,13 @@
 				label="Refresh"
 				tooltip="Force the full refresh of the distribution tree (close all open connections)">
 			</command>
-            <command
+            <!-- <command
             	commandId="org.argeo.slc.client.ui.dist.runInOSGi"
                 icon="icons/showSize.gif"
                 label="Run in OSGi"
                 tooltip="Run in a spearate OSGi runtime">
             </command>
+            -->
 		</menuContribution>
 		<!-- Anonymous distribution view toolbar -->             
         <menuContribution
