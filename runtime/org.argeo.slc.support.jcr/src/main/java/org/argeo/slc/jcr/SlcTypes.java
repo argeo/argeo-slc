@@ -64,6 +64,9 @@ public interface SlcTypes {
 	public final static String SLC_DYNAMIC_IMPORTED_PACKAGE = "slc:dynamicImportedPackage";
 	public final static String SLC_REQUIRED_BUNDLE = "slc:requiredBundle";
 	public final static String SLC_FRAGMENT_HOST = "slc:fragmentHost";
+	
+	public final static String SLC_MODULAR_DISTRIBUTION = "slc:modularDistribution";
+	public final static String SLC_MODULE_COORDINATES = "slc:moduleCoordinates";
 
 	// origin
 	public final static String SLC_KNOWN_ORIGIN = "slc:knownOrigin";

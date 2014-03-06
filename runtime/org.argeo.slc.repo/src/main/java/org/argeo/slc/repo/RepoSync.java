@@ -262,78 +262,80 @@ public class RepoSync implements Runnable {
 	protected void syncNode(Node sourceNode, Session targetSession)
 			throws RepositoryException, SAXException {
 		// Boolean singleLevel = singleLevel(sourceNode);
-
-		if (monitor != null && monitor.isCanceled()) {
-			updateMonitor("Fetched has been canceled, "
-					+ "process is terminating");
-			return;
-		}
-
-		Node targetParentNode = targetSession.getNode(sourceNode.getParent()
-				.getPath());
-		Node targetNode;
-		if (monitor != null
-				&& sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE))
-			monitor.subTask("Process " + sourceNode.getPath());
-
-		final Boolean isNew;
-		if (!targetSession.itemExists(sourceNode.getPath())) {
-			isNew = true;
-			targetNode = targetParentNode.addNode(sourceNode.getName(),
-					sourceNode.getPrimaryNodeType().getName());
-		} else {
-			isNew = false;
-			targetNode = targetSession.getNode(sourceNode.getPath());
-			if (!targetNode.getPrimaryNodeType().getName()
-					.equals(sourceNode.getPrimaryNodeType().getName()))
-				targetNode.setPrimaryType(sourceNode.getPrimaryNodeType()
-						.getName());
-		}
-
-		// export
-		// sourceNode.getSession().exportSystemView(sourceNode.getPath(),
-		// contentHandler, false, singleLevel);
-
-		// if (singleLevel) {
-		// if (targetSession.hasPendingChanges()) {
-		// // updateMonitor(
-		// // (isNew ? "Added " : "Updated ") + targetNode.getPath(),
-		// // true);
-		// if (doSave)
-		// targetSession.save();
-		// } else {
-		// // updateMonitor("Checked " + targetNode.getPath(), false);
-		// }
-		// }
-
-		// mixin and properties
-		for (NodeType nt : sourceNode.getMixinNodeTypes()) {
-			if (!targetNode.isNodeType(nt.getName())
-					&& targetNode.canAddMixin(nt.getName()))
-				targetNode.addMixin(nt.getName());
-		}
-		copyProperties(sourceNode, targetNode);
-
-		// next level
-		for (NodeIterator ni = sourceNode.getNodes(); ni.hasNext();) {
-			Node sourceChild = ni.nextNode();
-			syncNode(sourceChild, targetSession);
-		}
-
-		copyTimestamps(sourceNode, targetNode);
-
-		if (sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE)) {
-			if (targetSession.hasPendingChanges()) {
-				if (sourceNode.isNodeType(NodeType.NT_FILE))
-					updateMonitor(
-							(isNew ? "Added " : "Updated ")
-									+ targetNode.getPath(), true);
-				// if (doSave)
-				targetSession.save();
-			} else {
-				if (sourceNode.isNodeType(NodeType.NT_FILE))
-					updateMonitor("Checked " + targetNode.getPath(), false);
+		try {
+			if (monitor != null && monitor.isCanceled()) {
+				updateMonitor("Fetched has been canceled, "
+						+ "process is terminating");
+				return;
 			}
+
+			Node targetParentNode = targetSession.getNode(sourceNode
+					.getParent().getPath());
+			Node targetNode;
+			if (monitor != null
+					&& sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE))
+				monitor.subTask("Process " + sourceNode.getPath());
+
+			final Boolean isNew;
+			if (!targetSession.itemExists(sourceNode.getPath())) {
+				isNew = true;
+				targetNode = targetParentNode.addNode(sourceNode.getName(),
+						sourceNode.getPrimaryNodeType().getName());
+			} else {
+				isNew = false;
+				targetNode = targetSession.getNode(sourceNode.getPath());
+				if (!targetNode.getPrimaryNodeType().getName()
+						.equals(sourceNode.getPrimaryNodeType().getName()))
+					targetNode.setPrimaryType(sourceNode.getPrimaryNodeType()
+							.getName());
+			}
+
+			// export
+			// sourceNode.getSession().exportSystemView(sourceNode.getPath(),
+			// contentHandler, false, singleLevel);
+
+			// if (singleLevel) {
+			// if (targetSession.hasPendingChanges()) {
+			// // updateMonitor(
+			// // (isNew ? "Added " : "Updated ") + targetNode.getPath(),
+			// // true);
+			// if (doSave)
+			// targetSession.save();
+			// } else {
+			// // updateMonitor("Checked " + targetNode.getPath(), false);
+			// }
+			// }
+
+			// mixin and properties
+			for (NodeType nt : sourceNode.getMixinNodeTypes()) {
+				if (!targetNode.isNodeType(nt.getName())
+						&& targetNode.canAddMixin(nt.getName()))
+					targetNode.addMixin(nt.getName());
+			}
+			copyProperties(sourceNode, targetNode);
+
+			// next level
+			for (NodeIterator ni = sourceNode.getNodes(); ni.hasNext();) {
+				Node sourceChild = ni.nextNode();
+				syncNode(sourceChild, targetSession);
+			}
+
+			copyTimestamps(sourceNode, targetNode);
+
+			if (sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE)) {
+				if (targetSession.hasPendingChanges()) {
+					if (sourceNode.isNodeType(NodeType.NT_FILE))
+						updateMonitor((isNew ? "Added " : "Updated ")
+								+ targetNode.getPath(), true);
+					// if (doSave)
+					targetSession.save();
+				} else {
+					if (sourceNode.isNodeType(NodeType.NT_FILE))
+						updateMonitor("Checked " + targetNode.getPath(), false);
+				}
+			}
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot sync source node " + sourceNode, e);
 		}
 	}
 

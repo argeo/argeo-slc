@@ -75,7 +75,6 @@ public class OpenWorkspaceEditor extends AbstractHandler {
 			} finally {
 				JcrUtils.logoutQuietly(defaultSession);
 			}
-
 		}
 
 		WorkspaceEditorInput wei = new WorkspaceEditorInput(repoNodePath,

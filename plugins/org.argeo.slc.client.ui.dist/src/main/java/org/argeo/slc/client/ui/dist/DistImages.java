@@ -50,16 +50,21 @@ public class DistImages {
 			"icons/fetchRepo.png").createImage();
 
 	/* DISTRIBUTIONS */
+	public final static Image IMG_WKSP_GROUP = DistPlugin.getImageDescriptor(
+			"icons/wkspGroup.gif").createImage();
 	public final static Image IMG_DISTGRP = DistPlugin.getImageDescriptor(
 			"icons/distGrp.gif").createImage();
 	public final static Image IMG_DISTGRP_READONLY = DistPlugin
 			.getImageDescriptor("icons/distGrpReadOnly.gif").createImage();
 
+	public final static Image IMG_MODULAR_DIST_BASE = DistPlugin.getImageDescriptor(
+			"icons/packages.gif").createImage();
+	public final static Image IMG_MODULAR_DIST_VERSION = DistPlugin.getImageDescriptor(
+			"icons/packages.gif").createImage();
+
 	public final static Image IMG_GROUP_BASE = DistPlugin.getImageDescriptor(
 			"icons/packages.gif").createImage();
 
-	public final static Image IMG_WKSP_GROUP = DistPlugin.getImageDescriptor(
-			"icons/wkspGroup.gif").createImage();
 
 	/* CHECK BOXES */
 	public final static Image CHECKED = DistPlugin.getImageDescriptor(

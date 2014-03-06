@@ -115,6 +115,14 @@ public interface SlcNames {
 	// slc:exportedPackage
 	public final static String SLC_USES = "slc:uses";
 
+	// slc:modularDistribution
+	public final static String SLC_MODULES = "slc:modules";
+
+	// slc:moduleCoordinates
+	public final static String SLC_MODULE_CATEGORY = "slc:category";
+	public final static String SLC_MODULE_NAME = "slc:name";
+	public final static String SLC_MODULE_VERSION = "slc:version";
+
 	// RPM
 	// slc:rpm
 	public final static String SLC_RPM_VERSION = "slc:rpmVersion";

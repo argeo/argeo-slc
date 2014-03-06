@@ -1,6 +1,7 @@
 package org.argeo.slc.client.ui.dist.controllers;
 
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
+import org.argeo.slc.client.ui.dist.model.ModularDistVersionElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
@@ -43,7 +44,7 @@ public class DistTreeComparator extends ViewerComparator {
 			s2 = e2.toString();
 		}
 
-		if (e1 instanceof WorkspaceElem)
+		if (e1 instanceof WorkspaceElem || e1 instanceof ModularDistVersionElem)
 			// Reverse order for versions
 			return s2.compareTo(s1);
 		else

@@ -3,7 +3,8 @@ package org.argeo.slc.client.ui.dist.controllers;
 import org.argeo.eclipse.ui.jcr.JcrImages;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
-import org.argeo.slc.client.ui.dist.model.GroupBaseElem;
+import org.argeo.slc.client.ui.dist.model.ModularDistBaseElem;
+import org.argeo.slc.client.ui.dist.model.ModularDistVersionElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
@@ -39,8 +40,12 @@ public class DistTreeLabelProvider extends ColumnLabelProvider {
 				return JcrImages.WORKSPACE_DISCONNECTED;
 		} else if (element instanceof WkspGroupElem)
 			return DistImages.IMG_WKSP_GROUP;
-		else if (element instanceof GroupBaseElem)
-			return DistImages.IMG_GROUP_BASE;
+		// else if (element instanceof GroupBaseElem)
+		// return DistImages.IMG_GROUP_BASE;
+		else if (element instanceof ModularDistBaseElem)
+			return DistImages.IMG_MODULAR_DIST_BASE;
+		else if (element instanceof ModularDistVersionElem)
+			return DistImages.IMG_MODULAR_DIST_VERSION;
 		return super.getImage(element);
 	}
 }

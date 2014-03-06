@@ -1,5 +1,6 @@
 package org.argeo.slc.client.ui.dist.model;
 
+import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -14,7 +15,7 @@ import org.argeo.slc.jcr.SlcTypes;
 public class WorkspaceElem extends DistParentElem {
 	private final RepoElem repoElem;
 	private String workspaceName;
-	private Session defaultSession;
+	private Session currSession;
 
 	public WorkspaceElem(WkspGroupElem parent, RepoElem repoElem,
 			String workspaceName) {
@@ -33,20 +34,20 @@ public class WorkspaceElem extends DistParentElem {
 	}
 
 	public Boolean isConnected() {
-		if (defaultSession != null && defaultSession.isLive())
+		if (currSession != null && currSession.isLive())
 			return true;
 		else
 			return false;
 	}
 
 	public void login() {
-		defaultSession = repoElem.repositoryLogin(getName());
+		currSession = repoElem.repositoryLogin(getName());
 	}
 
 	public boolean hasChildren() {
 		try {
 			if (isConnected())
-				return defaultSession.getRootNode().hasNodes();
+				return currSession.getRootNode().hasNodes();
 			else
 				return false;
 		} catch (RepositoryException re) {
@@ -64,23 +65,44 @@ public class WorkspaceElem extends DistParentElem {
 		} else {
 			// initialize current object
 			try {
-				if (defaultSession == null)
+				if (currSession == null)
 					return null;
 				else {
-					Query groupQuery = defaultSession
-							.getWorkspace()
+					Query groupQuery = currSession.getWorkspace()
 							.getQueryManager()
+							// .createQuery(
+							// "select * from [" + SlcTypes.SLC_GROUP_BASE
+							// + "] as group order by group.["
+							// + SlcNames.SLC_GROUP_BASE_ID + "]",
 							.createQuery(
-									"select * from [" + SlcTypes.SLC_GROUP_BASE
-											+ "] as group order by group.["
-											+ SlcNames.SLC_GROUP_BASE_ID + "]",
-									Query.JCR_SQL2);
-					NodeIterator groups = groupQuery.execute().getNodes();
-					while (groups.hasNext()) {
-						addChild(new GroupBaseElem(WorkspaceElem.this, groups
-								.nextNode()
-								.getProperty(SlcNames.SLC_GROUP_BASE_ID)
-								.getString()));
+									"select * from ["
+											+ SlcTypes.SLC_MODULAR_DISTRIBUTION
+											+ "]", Query.JCR_SQL2);
+					NodeIterator distributions = groupQuery.execute()
+							.getNodes();
+					distribs: while (distributions.hasNext()) {
+						Node currDist = distributions.nextNode();
+						Node distBase = currDist.getParent().getParent();
+						if (!distBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE))
+							continue distribs;
+						String groupId = distBase.getProperty(
+								SlcNames.SLC_GROUP_ID).getString();
+						String artifactId = distBase.getProperty(
+								SlcNames.SLC_ARTIFACT_ID).getString();
+
+						String name;
+						String type;
+						if (ModularDistBaseElem.AETHER_BINARIES_TYPE
+								.equals(artifactId)) {
+							name = groupId;
+							type = ModularDistBaseElem.AETHER_BINARIES_TYPE;
+						} else {
+							name = artifactId;
+							type = ModularDistBaseElem.AETHER_DEP_TYPE;
+						}
+						if (getChildByName(name) == null)
+							addChild(new ModularDistBaseElem(
+									WorkspaceElem.this, name, distBase, type));
 					}
 				}
 				return super.getChildren();
@@ -91,10 +113,10 @@ public class WorkspaceElem extends DistParentElem {
 			}
 		}
 	}
-	
+
 	@Override
 	public synchronized void dispose() {
-		JcrUtils.logoutQuietly(defaultSession);
+		JcrUtils.logoutQuietly(currSession);
 		super.dispose();
 	}
 }

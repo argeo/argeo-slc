@@ -36,6 +36,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.ArtifactIndexer;
+import org.argeo.slc.repo.DistributionBundleIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
 import org.argeo.slc.repo.PdeSourcesIndexer;
 import org.argeo.slc.repo.RepoConstants;
@@ -75,6 +76,8 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
+	private DistributionBundleIndexer distBundleIndexer = new DistributionBundleIndexer();
+
 	private PdeSourcesIndexer pdeSourceIndexer = new PdeSourcesIndexer(
 			artifactIndexer, jarFileIndexer);
 
@@ -85,7 +88,8 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 		Session currSession = null;
 		NormalizeJob job;
 		try {
-			String msg = "Your are about to normalize workspace: " + wkspName
+			String msg = "Your are about to normalize workspace: "
+					+ wkspName
 					+ ".\nThis will index OSGi bundles and Maven artifacts, "
 					+ "it will also convert Maven sources to PDE Sources if needed.\n"
 					+ "Note that no information will be overwritten: "
@@ -139,7 +143,8 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 						+ session.getWorkspace().getName(),
 						expectedCount.intValue());
 				NormalizingTraverser tiv = new NormalizingTraverser(monitor);
-				session.getNode(artifactBasePath).accept(tiv);
+				Node artifactBaseNode =session.getNode(artifactBasePath); 
+				artifactBaseNode.accept(tiv);
 			} catch (Exception e) {
 				return new Status(IStatus.ERROR, DistPlugin.ID,
 						"Cannot normalize distribution "
@@ -181,6 +186,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 							monitor.subTask(node.getName());
 							artifactIndexer.index(node);
 							jarFileIndexer.index(node);
+							distBundleIndexer.index(node);
 							node.getSession().save();
 							monitor.worked(1);
 							if (log.isDebugEnabled())

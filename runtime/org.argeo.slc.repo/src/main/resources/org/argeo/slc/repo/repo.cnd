@@ -30,6 +30,16 @@ mixin
 mixin
 + slc:artifactVersions (argeo:references) m
 
+[slc:modularDistribution]
+mixin
++ slc:modules (nt:unstructured) m
+
+[slc:moduleCoordinates] > nt:unstructured
+- slc:category (STRING)
+- slc:name (STRING)
+- slc:version (STRING)
+
+
 // ORIGINS
 [slc:knownOrigin] > nt:base
 mixin
