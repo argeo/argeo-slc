@@ -149,7 +149,7 @@ public class ArtifactsBrowserPage extends FormPage implements DistConstants,
 				try {
 
 					if (node.isNodeType(SlcTypes.SLC_GROUP_BASE))
-						return DistImages.IMG_WKSP;
+						return DistImages.IMG_GROUP_BASE;
 					else if (node.isNodeType(SlcTypes.SLC_ARTIFACT_BASE))
 						return DistImages.IMG_ARTIFACT_BASE;
 					else if (node
