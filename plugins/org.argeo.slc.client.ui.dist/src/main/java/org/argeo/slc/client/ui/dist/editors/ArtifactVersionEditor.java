@@ -23,6 +23,7 @@ import javax.jcr.Session;
 
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoUtils;
@@ -34,13 +35,14 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
- * Browse, analyse and modify a workspace containing software distributions
+ * Base editor to manage an artifact in a multiple repository environment
  */
-public class DistributionWorkspaceEditor extends FormEditor implements SlcNames {
+public class ArtifactVersionEditor extends FormEditor implements SlcNames {
 	// private final static Log log =
-	// LogFactory.getLog(DistributionEditor.class);
-	public final static String ID = DistPlugin.ID
-			+ ".distributionWorkspaceEditor";
+	// LogFactory.getLog(ArtifactEditor.class);
+	public final static String ID = DistPlugin.ID + ".artifactVersionEditor";
+
+	private ModuleEditorInput editorInput;
 
 	/* DEPENDENCY INJECTION */
 	private RepositoryFactory repositoryFactory;
@@ -51,38 +53,55 @@ public class DistributionWorkspaceEditor extends FormEditor implements SlcNames 
 	private Node repoNode;
 	// Session that provides the node in the home of the local repository
 	private Session localSession = null;
-	// The business Session on optionally remote repository
+	// The business Session on an optionally remote repository
 	private Session businessSession;
-	private WorkspaceEditorInput editorInput;
+	private Node artifact;
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
-		editorInput = (WorkspaceEditorInput) input;
-
+		editorInput = (ModuleEditorInput) input;
 		try {
 			localSession = localRepository.login();
 			if (editorInput.getRepoNodePath() != null
 					&& localSession.nodeExists(editorInput.getRepoNodePath()))
 				repoNode = localSession.getNode(editorInput.getRepoNodePath());
-
 			businessSession = RepoUtils.getCorrespondingSession(
 					repositoryFactory, keyring, repoNode, editorInput.getUri(),
 					editorInput.getWorkspaceName());
+			artifact = businessSession.getNode(editorInput.getModulePath());
 		} catch (RepositoryException e) {
-			throw new PartInitException("Cannot log to workspace "
-					+ editorInput.getName(), e);
+			throw new PartInitException(
+					"Unable to initialise editor for artifact "
+							+ editorInput.getModulePath() + " in workspace "
+							+ editorInput.getWorkspaceName()
+							+ " of repository " + editorInput.getUri(), e);
 		}
-		setPartName(editorInput.getWorkspaceName());
+		setPartName(getFormattedName());
 		super.init(site, input);
+	}
+
+	/** Override to provide a specific part name */
+	protected String getFormattedName() {
+		try {
+			String partName = artifact.getProperty(SLC_ARTIFACT_ID).getString();
+
+			if (partName.length() > 10) {
+				partName = "..." + partName.substring(partName.length() - 10);
+			}
+			return partName;
+		} catch (RepositoryException re) {
+			throw new SlcException(
+					"unable to get slc:artifactId Property for node "
+							+ artifact, re);
+		}
 	}
 
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new DistributionOverviewPage(this, "Overview",
-					businessSession));
-			addPage(new ArtifactsBrowserPage(this, "Browser", businessSession));
+			addPage(new BundleDetailsPage(this, "Details ", artifact));
+			addPage(new BundleRawPage(this, "Raw Meta-Data ", artifact));
 		} catch (PartInitException e) {
 			throw new ArgeoException("Cannot add distribution editor pages", e);
 		}
@@ -110,6 +129,10 @@ public class DistributionWorkspaceEditor extends FormEditor implements SlcNames 
 
 	protected Node getRepoNode() {
 		return repoNode;
+	}
+
+	protected Node getArtifact() {
+		return artifact;
 	}
 
 	/* DEPENDENCY INJECTION */

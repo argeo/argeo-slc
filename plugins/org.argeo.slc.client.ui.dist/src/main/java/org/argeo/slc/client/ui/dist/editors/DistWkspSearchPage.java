@@ -16,7 +16,9 @@
 package org.argeo.slc.client.ui.dist.editors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -35,7 +37,6 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
-import org.argeo.ArgeoException;
 import org.argeo.ArgeoMonitor;
 import org.argeo.eclipse.ui.EclipseArgeoMonitor;
 import org.argeo.eclipse.ui.utils.CommandUtils;
@@ -46,6 +47,7 @@ import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
+import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
 import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -81,15 +83,13 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /** Show all bundles contained in a given workspace as filter-able table */
-public class DistributionOverviewPage extends FormPage implements SlcNames {
+public class DistWkspSearchPage extends FormPage implements SlcNames {
 	// final private static Log log = LogFactory
 	// .getLog(DistributionOverviewPage.class);
 
@@ -99,16 +99,20 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 	private Session session;
 
 	// This page widgets
+	private DistWorkspaceEditor formEditor;
+	private FormToolkit tk;
+
 	private NodeViewerComparator comparator;
 	private TableViewer viewer;
-	private FormToolkit tk;
+
 	private Composite header;
 	private Text artifactTxt;
 	private final static String FILTER_HELP_MSG = "Enter filter criterion separated by a space";
 
-	public DistributionOverviewPage(FormEditor formEditor, String title,
+	public DistWkspSearchPage(DistWorkspaceEditor formEditor, String title,
 			Session session) {
 		super(formEditor, PAGE_ID, title);
+		this.formEditor = formEditor;
 		this.session = session;
 	}
 
@@ -254,8 +258,7 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		// .getName();
 
 		String desc = null;
-		Node repoNode = ((DistributionWorkspaceEditor) getEditor())
-				.getRepoNode();
+		Node repoNode = ((DistWorkspaceEditor) getEditor()).getRepoNode();
 		if (repoNode != null)
 			try {
 				desc = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
@@ -264,7 +267,7 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 			} catch (RepositoryException e1) {
 				throw new SlcException("Unable to get repository alias ", e1);
 			}
-		desc += " (" + ((WorkspaceEditorInput) getEditorInput()).getUri() + ")";
+		desc += " (" + ((DistWkspEditorInput) getEditorInput()).getUri() + ")";
 		Label lbl = tk.createLabel(header, desc, SWT.NONE);
 
 		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
@@ -463,24 +466,29 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 		public void doubleClick(DoubleClickEvent event) {
 			Object obj = ((IStructuredSelection) event.getSelection())
 					.getFirstElement();
-			try {
-				if (obj instanceof Node) {
-					Node node = (Node) obj;
-					if (node.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
-						GenericBundleEditorInput gaei = new GenericBundleEditorInput(
-								node);
-						DistPlugin.getDefault().getWorkbench()
-								.getActiveWorkbenchWindow().getActivePage()
-								.openEditor(gaei, GenericBundleEditor.ID);
+			if (obj instanceof Node) {
+				Node node = (Node) obj;
+				try {
+					if (node.isNodeType(SlcTypes.SLC_ARTIFACT)) {
+						DistWkspEditorInput dwip = (DistWkspEditorInput) formEditor
+								.getEditorInput();
+						Map<String, String> params = new HashMap<String, String>();
+						params.put(OpenModuleEditor.PARAM_REPO_NODE_PATH,
+								dwip.getRepoNodePath());
+						params.put(OpenModuleEditor.PARAM_REPO_URI,
+								dwip.getUri());
+						params.put(OpenModuleEditor.PARAM_WORKSPACE_NAME,
+								dwip.getWorkspaceName());
+						String path = node.getPath();
+						params.put(OpenModuleEditor.PARAM_MODULE_PATH, path);
+						CommandUtils.callCommand(OpenModuleEditor.ID, params);
 					}
+				} catch (RepositoryException re) {
+					throw new SlcException("Cannot get path for node " + node
+							+ " while setting parameters for "
+							+ "command OpenModuleEditor", re);
 				}
-			} catch (RepositoryException re) {
-				throw new ArgeoException(
-						"Repository error while getting node info", re);
-			} catch (PartInitException pie) {
-				throw new ArgeoException(
-						"Unexepected exception while opening artifact editor",
-						pie);
+
 			}
 		}
 	}
@@ -513,5 +521,4 @@ public class DistributionOverviewPage extends FormPage implements SlcNames {
 			refreshLayout();
 		}
 	}
-
 }

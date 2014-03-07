@@ -8,8 +8,15 @@
 	<bean id="normalizeDistribution"
 		class="org.argeo.slc.client.ui.dist.commands.NormalizeDistribution">
 		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="openModuleEditor" class="org.argeo.slc.client.ui.dist.commands.OpenModuleEditor"
+		scope="prototype">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="localRepository" ref="nodeRepository" />
 	</bean>
 
 	<!-- REPOSITORY MANAGEMENT -->

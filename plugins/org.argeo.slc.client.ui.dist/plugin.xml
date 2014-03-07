@@ -81,15 +81,22 @@
 			default="false">
 		</editor>
 		<editor
-			class="org.argeo.slc.client.ui.dist.editors.DistributionEditor"
-			id="org.argeo.slc.client.ui.dist.distributionEditor"
-			name="Distribution editor"
-			icon="icons/distribution_perspective.gif"
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			id="org.argeo.slc.client.ui.dist.artifactVersionEditor"
+			name="Artifact Version Editor"
+			icon="icons/artifactVersionBase.gif"
 			default="false">
 		</editor>
 		<editor
 			class="org.argeo.eclipse.spring.SpringExtensionFactory"
-			id="org.argeo.slc.client.ui.dist.distributionWorkspaceEditor"
+			id="org.argeo.slc.client.ui.dist.modularDistVersionEditor"
+			name="Modular Distribution Version Editor"
+			icon="icons/modularDistributionVersion.gif"
+			default="false">
+		</editor>
+		<editor
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			id="org.argeo.slc.client.ui.dist.distWorkspaceEditor"
 			name="Distribution workspace editor"
 			icon="icons/distribution_perspective.gif"
 			default="false">
@@ -112,6 +119,28 @@
 			<commandParameter
 				id="targetRepoPath"
 				name="Target repo node path">
+			</commandParameter>
+    	</command>
+    	
+    	<command
+            id="org.argeo.slc.client.ui.dist.openModuleEditor"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Open Workspace Editor">
+			<commandParameter
+				id="param.repoNodePath"
+				name="Repo node path">
+			</commandParameter>
+			<commandParameter
+				id="param.repoUri"
+				name="Repo URI">
+			</commandParameter>
+			<commandParameter
+				id="param.workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="param.modulePath"
+				name="Module path name">
 			</commandParameter>
     	</command>
     	

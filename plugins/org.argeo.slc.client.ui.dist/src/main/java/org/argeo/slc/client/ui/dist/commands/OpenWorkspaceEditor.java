@@ -24,8 +24,8 @@ import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.editors.DistributionWorkspaceEditor;
-import org.argeo.slc.client.ui.dist.editors.WorkspaceEditorInput;
+import org.argeo.slc.client.ui.dist.editors.DistWorkspaceEditor;
+import org.argeo.slc.client.ui.dist.editors.DistWkspEditorInput;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -61,7 +61,6 @@ public class OpenWorkspaceEditor extends AbstractHandler {
 		Session defaultSession = null;
 		if (repoNodePath != null && repoUri == null) {
 			try {
-
 				defaultSession = localRepository.login();
 				if (defaultSession.nodeExists(repoNodePath)) {
 					Node repoNode = defaultSession.getNode(repoNodePath);
@@ -70,18 +69,18 @@ public class OpenWorkspaceEditor extends AbstractHandler {
 				}
 			} catch (RepositoryException e) {
 				throw new SlcException("Unexpected error while "
-						+ "getting repoNode info for repoNode at path "
+						+ "getting repoNode at path "
 						+ repoNodePath, e);
 			} finally {
 				JcrUtils.logoutQuietly(defaultSession);
 			}
 		}
 
-		WorkspaceEditorInput wei = new WorkspaceEditorInput(repoNodePath,
+		DistWkspEditorInput wei = new DistWkspEditorInput(repoNodePath,
 				repoUri, workspaceName);
 		try {
 			HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-					.openEditor(wei, DistributionWorkspaceEditor.ID);
+					.openEditor(wei, DistWorkspaceEditor.ID);
 		} catch (PartInitException e) {
 			throw new SlcException("Unexpected error while "
 					+ "opening editor for workspace " + workspaceName

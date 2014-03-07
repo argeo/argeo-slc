@@ -18,7 +18,6 @@ package org.argeo.slc.client.ui.dist.editors;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
@@ -55,12 +54,12 @@ public class DistributionEditor extends FormEditor implements SlcNames {
 
 	@Override
 	protected void addPages() {
-		try {
-			addPage(new DistributionOverviewPage(this, "Overview", session));
-			addPage(new ArtifactsBrowserPage(this, "Browser", session));
-		} catch (PartInitException e) {
-			throw new ArgeoException("Cannot add distribution editor pages", e);
-		}
+		// try {
+		// addPage(new DistWkspSearchPage(this, "Overview", session));
+		// addPage(new DistWkspBrowserPage(this, "Browser", session));
+		// } catch (PartInitException e) {
+		// throw new ArgeoException("Cannot add distribution editor pages", e);
+		// }
 	}
 
 	@Override

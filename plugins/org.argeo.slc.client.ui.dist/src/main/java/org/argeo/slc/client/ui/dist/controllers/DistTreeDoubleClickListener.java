@@ -82,7 +82,7 @@ public class DistTreeDoubleClickListener implements IDoubleClickListener {
 				params.put(OpenModuleEditor.PARAM_REPO_URI, repoElem.getUri());
 				params.put(OpenModuleEditor.PARAM_WORKSPACE_NAME,
 						wkspElem.getWorkspaceName());
-				params.put(OpenModuleEditor.PARAM_ARTIFACT_PATH,
+				params.put(OpenModuleEditor.PARAM_MODULE_PATH,
 						moduleNode.getPath());
 				CommandUtils.callCommand(OpenModuleEditor.ID, params);
 			} catch (RepositoryException re) {

@@ -36,7 +36,6 @@ import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
@@ -87,6 +86,7 @@ public class ModuleListPage extends FormPage implements SlcNames {
 
 	// Business Objects
 	private Node modularDistribution;
+	// private Node modularDistributionBase;
 
 	// This page widgets
 	private NodeViewerComparator comparator;
@@ -95,8 +95,6 @@ public class ModuleListPage extends FormPage implements SlcNames {
 	private Composite header;
 	private Text filterTxt;
 	private final static String FILTER_HELP_MSG = "Enter filter criterion separated by a space";
-
-	private Node moduleParent;
 
 	public ModuleListPage(FormEditor formEditor, String title,
 			Node modularDistribution) {
@@ -248,45 +246,44 @@ public class ModuleListPage extends FormPage implements SlcNames {
 
 		// Name
 		TableViewerColumn col = new TableViewerColumn(viewer, SWT.NONE);
-		col.getColumn().setWidth(300);
+		col.getColumn().setWidth(220);
+		col.getColumn().setText("Category");
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return JcrUtils.get((Node) element, SlcNames.SLC_CATEGORY);
+			}
+		});
+		col.getColumn().addSelectionListener(getSelectionAdapter(0));
+		propertiesList.add(SlcNames.SLC_CATEGORY);
+		propertyTypesList.add(PropertyType.STRING);
+
+		// Symbolic name
+		col = new TableViewerColumn(viewer, SWT.NONE);
+		col.getColumn().setWidth(220);
 		col.getColumn().setText("Name");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return JcrUtils.get((Node) element,
-						DistConstants.SLC_BUNDLE_NAME);
-			}
-		});
-		col.getColumn().addSelectionListener(getSelectionAdapter(0));
-		propertiesList.add(DistConstants.SLC_BUNDLE_NAME);
-		propertyTypesList.add(PropertyType.STRING);
-
-		// Symbolic name
-		col = new TableViewerColumn(viewer, SWT.V_SCROLL);
-		col.getColumn().setWidth(300);
-		col.getColumn().setText("Symbolic Name");
-		col.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				return JcrUtils.get((Node) element, SLC_SYMBOLIC_NAME);
+				return JcrUtils.get((Node) element, SLC_NAME);
 			}
 		});
 		col.getColumn().addSelectionListener(getSelectionAdapter(1));
-		propertiesList.add(SLC_SYMBOLIC_NAME);
+		propertiesList.add(SLC_NAME);
 		propertyTypesList.add(PropertyType.STRING);
 
 		// Version
 		col = new TableViewerColumn(viewer, SWT.NONE);
-		col.getColumn().setWidth(130);
+		col.getColumn().setWidth(160);
 		col.getColumn().setText("Version");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				return JcrUtils.get((Node) element, SLC_BUNDLE_VERSION);
+				return JcrUtils.get((Node) element, SLC_VERSION);
 			}
 		});
 		col.getColumn().addSelectionListener(getSelectionAdapter(2));
-		propertiesList.add(SLC_BUNDLE_VERSION);
+		propertiesList.add(SLC_VERSION);
 		propertyTypesList.add(PropertyType.STRING);
 
 		final Table table = viewer.getTable();

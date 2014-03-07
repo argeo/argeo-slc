@@ -20,7 +20,7 @@ import org.argeo.slc.SlcException;
 /**
  * An editor input pointing to a given group base in a distribution workspace
  */
-public class GroupBaseEditorInput extends WorkspaceEditorInput {
+public class GroupBaseEditorInput extends DistWkspEditorInput {
 
 	private final String groupBaseId;
 

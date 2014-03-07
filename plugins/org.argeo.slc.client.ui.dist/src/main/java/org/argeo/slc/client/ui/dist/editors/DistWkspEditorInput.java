@@ -24,7 +24,7 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * An editor input pointing to a distribution workspace
  */
-public class WorkspaceEditorInput implements IEditorInput, SlcNames {
+public class DistWkspEditorInput implements IEditorInput, SlcNames {
 
 	// Injected
 	// private RepositoryFactory repositoryFactory;
@@ -48,7 +48,7 @@ public class WorkspaceEditorInput implements IEditorInput, SlcNames {
 	// }
 
 	/** uri and workspace name cannot be null */
-	public WorkspaceEditorInput(String repoNodePath, String uri,
+	public DistWkspEditorInput(String repoNodePath, String uri,
 			String workspaceName) {
 		if (workspaceName == null)
 			throw new SlcException("Workspace name cannot be null");
@@ -90,10 +90,10 @@ public class WorkspaceEditorInput implements IEditorInput, SlcNames {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof WorkspaceEditorInput))
+		if (!(obj instanceof DistWkspEditorInput))
 			return false;
 
-		WorkspaceEditorInput other = (WorkspaceEditorInput) obj;
+		DistWkspEditorInput other = (DistWkspEditorInput) obj;
 
 		if (!workspaceName.equals(other.getWorkspaceName()))
 			return false;

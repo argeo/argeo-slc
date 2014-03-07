@@ -143,9 +143,14 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 						+ session.getWorkspace().getName(),
 						expectedCount.intValue());
 				NormalizingTraverser tiv = new NormalizingTraverser(monitor);
-				Node artifactBaseNode =session.getNode(artifactBasePath); 
+				Node artifactBaseNode = session.getNode(artifactBasePath);
 				artifactBaseNode.accept(tiv);
 			} catch (Exception e) {
+				log.error("Error normalizing workspace "
+						+ session.getWorkspace().getName() + ": "
+						+ e.getMessage());
+				if (log.isErrorEnabled())
+					e.printStackTrace();
 				return new Status(IStatus.ERROR, DistPlugin.ID,
 						"Cannot normalize distribution "
 								+ session.getWorkspace().getName(), e);

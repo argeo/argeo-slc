@@ -10,8 +10,23 @@
 		<property name="session" ref="slcSession" />
 	</bean>
 
-	<bean id="distributionWorkspaceEditor"
-		class="org.argeo.slc.client.ui.dist.editors.DistributionWorkspaceEditor"
+	<bean id="distWorkspaceEditor"
+		class="org.argeo.slc.client.ui.dist.editors.DistWorkspaceEditor"
+		scope="prototype">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="localRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="artifactVersionEditor"
+		class="org.argeo.slc.client.ui.dist.editors.ArtifactVersionEditor"
+		scope="prototype">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="localRepository" ref="nodeRepository" />
+	</bean>
+	<bean id="modularDistVersionEditor"
+		class="org.argeo.slc.client.ui.dist.editors.ModularDistVersionEditor"
 		scope="prototype">
 		<property name="repositoryFactory" ref="repositoryFactory" />
 		<property name="keyring" ref="keyring" />

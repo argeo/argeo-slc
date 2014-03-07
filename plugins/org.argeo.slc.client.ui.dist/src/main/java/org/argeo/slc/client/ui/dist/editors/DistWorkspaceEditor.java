@@ -34,14 +34,13 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 /**
- * Base editor to manage an artifact in a multirepository environment
+ * Browse, analyse and modify a workspace containing software distributions
  */
-public class ArtifactEditor extends FormEditor implements SlcNames {
+public class DistWorkspaceEditor extends FormEditor implements SlcNames {
 	// private final static Log log =
-	// LogFactory.getLog(ArtifactEditor.class);
-	public final static String ID = DistPlugin.ID + ".artifactEditor";
-
-	private ModuleEditorInput editorInput;
+	// LogFactory.getLog(DistributionEditor.class);
+	public final static String ID = DistPlugin.ID
+			+ ".distWorkspaceEditor";
 
 	/* DEPENDENCY INJECTION */
 	private RepositoryFactory repositoryFactory;
@@ -52,29 +51,26 @@ public class ArtifactEditor extends FormEditor implements SlcNames {
 	private Node repoNode;
 	// Session that provides the node in the home of the local repository
 	private Session localSession = null;
-	// The business Session on an optionally remote repository
+	// The business Session on optionally remote repository
 	private Session businessSession;
-	private Node artifact;
+	private DistWkspEditorInput editorInput;
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
-		editorInput = (ModuleEditorInput) input;
+		editorInput = (DistWkspEditorInput) input;
 		try {
 			localSession = localRepository.login();
 			if (editorInput.getRepoNodePath() != null
 					&& localSession.nodeExists(editorInput.getRepoNodePath()))
 				repoNode = localSession.getNode(editorInput.getRepoNodePath());
+
 			businessSession = RepoUtils.getCorrespondingSession(
 					repositoryFactory, keyring, repoNode, editorInput.getUri(),
 					editorInput.getWorkspaceName());
-			artifact = businessSession.getNode(editorInput.getModulePath());
 		} catch (RepositoryException e) {
-			throw new PartInitException(
-					"Unable to initialise editor for artifact "
-							+ editorInput.getModulePath() + " in workspace "
-							+ editorInput.getWorkspaceName()
-							+ " of repository " + editorInput.getUri(), e);
+			throw new PartInitException("Cannot log to workspace "
+					+ editorInput.getName(), e);
 		}
 		setPartName(editorInput.getWorkspaceName());
 		super.init(site, input);
@@ -83,9 +79,9 @@ public class ArtifactEditor extends FormEditor implements SlcNames {
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new DistributionOverviewPage(this, "Overview",
+			addPage(new DistWkspSearchPage(this, "Overview",
 					businessSession));
-			addPage(new ArtifactsBrowserPage(this, "Browser", businessSession));
+			addPage(new DistWkspBrowserPage(this, "Browser", businessSession));
 		} catch (PartInitException e) {
 			throw new ArgeoException("Cannot add distribution editor pages", e);
 		}
@@ -113,10 +109,6 @@ public class ArtifactEditor extends FormEditor implements SlcNames {
 
 	protected Node getRepoNode() {
 		return repoNode;
-	}
-
-	protected Node getArtifact() {
-		return artifact;
 	}
 
 	/* DEPENDENCY INJECTION */

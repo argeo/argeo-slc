@@ -25,9 +25,9 @@ import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.editors.ArtifactEditor;
+import org.argeo.slc.client.ui.dist.editors.ArtifactVersionEditor;
+import org.argeo.slc.client.ui.dist.editors.ModularDistVersionEditor;
 import org.argeo.slc.client.ui.dist.editors.ModuleEditorInput;
-import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.util.security.Keyring;
@@ -53,7 +53,7 @@ public class OpenModuleEditor extends AbstractHandler {
 	// relevant repository
 	public final static String PARAM_REPO_URI = "param.repoUri";
 	public final static String PARAM_WORKSPACE_NAME = "param.workspaceName";
-	public final static String PARAM_ARTIFACT_PATH = "param.artifactPath";
+	public final static String PARAM_MODULE_PATH = "param.modulePath";
 
 	/* DEPENDENCY INJECTION */
 	private Repository localRepository;
@@ -66,47 +66,44 @@ public class OpenModuleEditor extends AbstractHandler {
 		String repoNodePath = event.getParameter(PARAM_REPO_NODE_PATH);
 		String repoUri = event.getParameter(PARAM_REPO_URI);
 		String workspaceName = event.getParameter(PARAM_WORKSPACE_NAME);
-		String artifactPath = event.getParameter(PARAM_ARTIFACT_PATH);
+		String modulePath = event.getParameter(PARAM_MODULE_PATH);
 
 		Session localSession = null;
 		Session businessSession = null;
 		Node repoNode = null;
 
 		try {
-			if (repoNodePath != null && repoUri == null) {
-				try {
-					localSession = localRepository.login();
-					if (repoNodePath != null
-							&& localSession.nodeExists(repoNodePath))
-						repoNode = localSession.getNode(repoNodePath);
+			try {
+				localSession = localRepository.login();
+				if (repoNodePath != null
+						&& localSession.nodeExists(repoNodePath))
+					repoNode = localSession.getNode(repoNodePath);
 
-					businessSession = RepoUtils.getCorrespondingSession(
-							repositoryFactory, keyring, repoNode, repoUri,
-							workspaceName);
-					repoUri = repoNode.getProperty(ArgeoNames.ARGEO_URI)
-							.getString();
+				businessSession = RepoUtils.getCorrespondingSession(
+						repositoryFactory, keyring, repoNode, repoUri,
+						workspaceName);
+				repoUri = repoNode.getProperty(ArgeoNames.ARGEO_URI)
+						.getString();
 
-				} catch (RepositoryException e) {
-					throw new SlcException("Cannot log to workspace "
-							+ workspaceName + " for repo defined in "
-							+ repoNodePath, e);
-				} finally {
-					JcrUtils.logoutQuietly(localSession);
-				}
-
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot log to workspace "
+						+ workspaceName + " for repo defined in "
+						+ repoNodePath, e);
+			} finally {
+				JcrUtils.logoutQuietly(localSession);
 			}
 
 			ModuleEditorInput wei = new ModuleEditorInput(repoNodePath,
-					repoUri, workspaceName, artifactPath);
-			Node artifact = businessSession.getNode(artifactPath);
+					repoUri, workspaceName, modulePath);
+			Node artifact = businessSession.getNode(modulePath);
 
 			// Choose correct editor based on the artifact mixin
 			if (artifact.isNodeType(SlcTypes.SLC_MODULAR_DISTRIBUTION))
 				HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-						.openEditor(wei, DistributionEditor.ID);
+						.openEditor(wei, ModularDistVersionEditor.ID);
 			else
 				HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-						.openEditor(wei, ArtifactEditor.ID);
+						.openEditor(wei, ArtifactVersionEditor.ID);
 		} catch (RepositoryException e) {
 			throw new SlcException("Unexpected error while "
 					+ "getting repoNode info for repoNode at path "
@@ -116,6 +113,8 @@ public class OpenModuleEditor extends AbstractHandler {
 					+ "opening editor for workspace " + workspaceName
 					+ " with URI " + repoUri + " and repoNode at path "
 					+ repoNodePath, e);
+		} finally {
+			JcrUtils.logoutQuietly(businessSession);
 		}
 		return null;
 	}

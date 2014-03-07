@@ -17,7 +17,7 @@ package org.argeo.slc.client.ui.dist.commands;
 
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.editors.DistributionEditor;
-import org.argeo.slc.client.ui.dist.editors.DistributionOverviewPage;
+import org.argeo.slc.client.ui.dist.editors.DistWkspSearchPage;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -44,8 +44,8 @@ public class RefreshDistributionOverviewPage extends AbstractHandler {
 		if (activePart instanceof DistributionEditor) {
 			IFormPage ifp = ((DistributionEditor) activePart)
 					.getActivePageInstance();
-			if (ifp instanceof DistributionOverviewPage)
-				((DistributionOverviewPage) ifp).refresh();
+			if (ifp instanceof DistWkspSearchPage)
+				((DistWkspSearchPage) ifp).refresh();
 		}
 		return null;
 	}

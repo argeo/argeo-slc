@@ -61,7 +61,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  * Expose Maven artifacts of a given workspace as a tree. Artifacts are grouped
  * by Maven group.
  */
-public class ArtifactsBrowserPage extends FormPage implements DistConstants,
+public class DistWkspBrowserPage extends FormPage implements DistConstants,
 		RepoConstants {
 	// private final static Log log = LogFactory
 	// .getLog(ArtifactsBrowserPage.class);
@@ -74,7 +74,7 @@ public class ArtifactsBrowserPage extends FormPage implements DistConstants,
 	// This page widgets
 	private TreeViewer artifactTreeViewer;
 
-	public ArtifactsBrowserPage(FormEditor editor, String title, Session session) {
+	public DistWkspBrowserPage(FormEditor editor, String title, Session session) {
 		super(editor, PAGE_ID, title);
 		this.session = session;
 	}
