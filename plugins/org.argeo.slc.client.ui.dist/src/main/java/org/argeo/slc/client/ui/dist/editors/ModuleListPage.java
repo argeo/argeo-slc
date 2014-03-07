@@ -151,11 +151,11 @@ public class ModuleListPage extends FormPage implements SlcNames {
 			// Create a dynamic operand for each property on which we want to
 			// filter
 			DynamicOperand catDO = factory.propertyValue(
-					source.getSelectorName(), SlcNames.SLC_MODULE_CATEGORY);
+					source.getSelectorName(), SlcNames.SLC_CATEGORY);
 			DynamicOperand nameDO = factory.propertyValue(
-					source.getSelectorName(), SlcNames.SLC_MODULE_NAME);
+					source.getSelectorName(), SlcNames.SLC_NAME);
 			DynamicOperand versionDO = factory.propertyValue(
-					source.getSelectorName(), SlcNames.SLC_MODULE_VERSION);
+					source.getSelectorName(), SlcNames.SLC_VERSION);
 
 			String path = modularDistribution.getPath() + "/"
 					+ SlcNames.SLC_MODULES;

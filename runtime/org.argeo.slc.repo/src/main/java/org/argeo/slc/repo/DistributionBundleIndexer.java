@@ -136,14 +136,13 @@ public class DistributionBundleIndexer implements NodeIndexer {
 						Node moduleCoord = modules.addNode(
 								artifact.getArtifactId(),
 								SlcTypes.SLC_MODULE_COORDINATES);
-						moduleCoord.setProperty(SlcNames.SLC_MODULE_NAME,
+						moduleCoord.setProperty(SlcNames.SLC_NAME,
 								artifact.getArtifactId());
-						moduleCoord.setProperty(SlcNames.SLC_MODULE_VERSION,
+						moduleCoord.setProperty(SlcNames.SLC_VERSION,
 								artifact.getVersion());
 						String groupId = artifact.getGroupId();
 						if (groupId != null && !"".equals(groupId.trim()))
-							moduleCoord.setProperty(
-									SlcNames.SLC_MODULE_CATEGORY,
+							moduleCoord.setProperty(SlcNames.SLC_CATEGORY,
 									artifact.getGroupId());
 					}
 				}
@@ -188,8 +187,10 @@ public class DistributionBundleIndexer implements NodeIndexer {
 			while ((line = reader.readLine()) != null) {
 
 				StringTokenizer st = new StringTokenizer(line, separator);
-				String moduleName = st.nextToken();
-				String moduleVersion = st.nextToken();
+				// String moduleName =
+				st.nextToken();
+				// String moduleVersion =
+				st.nextToken();
 				String relativeUrl = st.nextToken();
 
 				//
@@ -208,17 +209,17 @@ public class DistributionBundleIndexer implements NodeIndexer {
 		return artifacts;
 	}
 
-	/** Relative path to the directories where the files will be stored */
-	private String getCategoryFromRelativeUrl(String relativeUrl,
-			String moduleName) {
-		int index = relativeUrl.indexOf("moduleName");
-		if (index < 1)
-			throw new SlcException("Unvalid relative URL: " + relativeUrl
-					+ " for module " + moduleName);
-		// Remove trailing /
-		String result = relativeUrl.substring(0, index - 1);
-		return result.replace('/', '.');
-	}
+	// /** Relative path to the directories where the files will be stored */
+	// private String getCategoryFromRelativeUrl(String relativeUrl,
+	// String moduleName) {
+	// int index = relativeUrl.indexOf("moduleName");
+	// if (index < 1)
+	// throw new SlcException("Unvalid relative URL: " + relativeUrl
+	// + " for module " + moduleName);
+	// // Remove trailing /
+	// String result = relativeUrl.substring(0, index - 1);
+	// return result.replace('/', '.');
+	// }
 
 	/**
 	 * List full URLs of the bundles, based on base URL, usable directly for

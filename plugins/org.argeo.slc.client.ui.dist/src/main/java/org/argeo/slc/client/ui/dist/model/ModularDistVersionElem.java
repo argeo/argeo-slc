@@ -25,6 +25,10 @@ public class ModularDistVersionElem extends DistParentElem {
 		return getName();
 	}
 
+	public WorkspaceElem getWorkspaceElem() {
+		return (WorkspaceElem) getParent().getParent();
+	}
+
 	public Node getModularDistVersionNode() {
 		return modularDistVersionNode;
 	}

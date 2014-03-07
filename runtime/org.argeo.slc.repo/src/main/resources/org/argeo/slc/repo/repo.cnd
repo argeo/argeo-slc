@@ -26,9 +26,17 @@ mixin
 // so using groupId would conflict 
 - slc:groupBaseId (STRING) m
 
+// Mark a given group base as relevant to create modular distribution in the current workspace  
+[slc:category]
+mixin
+
 [slc:distribution] > slc:artifactVersion
 mixin
 + slc:artifactVersions (argeo:references) m
+
+
+[slc:modularDistributionBase]
+mixin
 
 [slc:modularDistribution]
 mixin
