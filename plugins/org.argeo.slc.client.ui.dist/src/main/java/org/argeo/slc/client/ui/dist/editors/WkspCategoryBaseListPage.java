@@ -23,6 +23,8 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.Constraint;
@@ -33,9 +35,11 @@ import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
 import org.argeo.ArgeoException;
+import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.MarkAsRelevantCategory;
@@ -55,17 +59,16 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -93,9 +96,12 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 	private NodeViewerComparator comparator;
 	private TableViewer viewer;
 	private FormToolkit tk;
-	private Composite header;
 	private Text filterTxt;
 	private final static String FILTER_HELP_MSG = "Enter filter criterion separated by a space";
+
+	// Observes changes
+	private final static String[] observedTypes = { SlcTypes.SLC_GROUP_BASE };
+	private CategoryObserver categoriesObserver;
 
 	public WkspCategoryBaseListPage(FormEditor formEditor, String title,
 			Session session) {
@@ -108,29 +114,40 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		ScrolledForm form = managedForm.getForm();
 		tk = managedForm.getToolkit();
 
-		form.setText("Category base definition");
-		form.setMessage("Define relevant group base objects",
+		form.setText("Define Relevant Category");
+		form.setMessage("Choose in the below list "
+				+ "the categories that can be used as base for "
+				+ "modular distributions maintained via the current workspace",
 				IMessageProvider.NONE);
 
 		// Main Layout
 		GridLayout layout = new GridLayout(1, false);
 		Composite body = form.getBody();
 		body.setLayout(layout);
-		// Add the filter section
-		createFilterPart(body);
-		// Add the table
-		createTableViewer(body);
 
-		// Add a listener to enable custom resize process
-		form.addControlListener(new ControlListener() {
-			// form.addListener(SWT.RESIZE, new Listener() does not work
-			public void controlResized(ControlEvent e) {
-				refreshLayout();
-			}
+		// filter section
+		Composite header = tk.createComposite(body);
+		header.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		createFilterPart(header);
 
-			public void controlMoved(ControlEvent e) {
-			}
-		});
+		// the table
+		Composite tableCmp = tk.createComposite(body);
+		tableCmp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		createTableViewer(tableCmp);
+
+		categoriesObserver = new CategoryObserver(viewer.getTable()
+				.getDisplay());
+		try {
+			ObservationManager observationManager = session.getWorkspace()
+					.getObservationManager();
+			// FIXME Will not be notified if empty result is deleted
+			observationManager.addEventListener(categoriesObserver,
+					Event.PROPERTY_CHANGED, "/", true, null, observedTypes,
+					false);
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot register listeners", e);
+		}
+
 		refresh();
 	}
 
@@ -192,39 +209,29 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 	}
 
 	private void createFilterPart(Composite parent) {
-		header = tk.createComposite(parent);
 		GridLayout layout = new GridLayout(2, false);
 		layout.marginWidth = layout.marginHeight = layout.verticalSpacing = 0;
 		layout.horizontalSpacing = 5;
-		header.setLayout(layout);
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
-		header.setLayoutData(gd);
+		parent.setLayout(layout);
 
 		// Text Area to filter
-		filterTxt = tk.createText(header, "", SWT.BORDER | SWT.SINGLE
+		filterTxt = tk.createText(parent, "", SWT.BORDER | SWT.SINGLE
 				| SWT.SEARCH | SWT.CANCEL);
 		filterTxt.setMessage(FILTER_HELP_MSG);
-		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
-		gd.grabExcessHorizontalSpace = true;
-		filterTxt.setLayoutData(gd);
+		filterTxt.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		filterTxt.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent event) {
 				refresh();
 			}
 		});
 
-		Button resetBtn = tk.createButton(header, null, SWT.PUSH);
+		Button resetBtn = tk.createButton(parent, null, SWT.PUSH);
 		resetBtn.setImage(DistImages.IMG_REPO_READONLY);
-		resetBtn.addSelectionListener(new SelectionListener() {
-
+		resetBtn.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				resetFilter();
 			}
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
 		});
-
 	}
 
 	private void resetFilter() {
@@ -233,12 +240,13 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 	}
 
 	private void createTableViewer(Composite parent) {
+		parent.setLayout(new FillLayout());
 		// helpers to enable sorting by column
 		List<String> propertiesList = new ArrayList<String>();
 		List<Integer> propertyTypesList = new ArrayList<Integer>();
 
 		// Define the TableViewer
-		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
+		viewer = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
 		TableViewerColumn col;
@@ -267,20 +275,20 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 			}
 		});
 		col.getColumn().addSelectionListener(getSelectionAdapter(0));
-		propertiesList.add(SLC_NAME);
+		propertiesList.add(SLC_GROUP_BASE_ID);
 		propertyTypesList.add(PropertyType.STRING);
 
 		// Version
 		col = new TableViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(80);
-		col.getColumn().setText("Is category");
+		col.getColumn().setText("Relevant");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
 				try {
 					return ((Node) element)
 							.isNodeType(SlcTypes.SLC_RELEVANT_CATEGORY) ? "Yes"
-							: "-";
+							: "No";
 				} catch (RepositoryException e) {
 					throw new SlcException("unable to check type of node "
 							+ element, e);
@@ -331,18 +339,31 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		// Mark as category base
 		Object firstElement = ((IStructuredSelection) viewer.getSelection())
 				.getFirstElement();
-		boolean showMark = false;
+		Node currSelected = (Node) firstElement;
+
+		boolean isRelevant = false;
 		try {
-			showMark = !((Node) firstElement)
+			isRelevant = currSelected
 					.isNodeType(SlcTypes.SLC_RELEVANT_CATEGORY);
+			boolean canEdit = currSelected
+					.canAddMixin(SlcTypes.SLC_RELEVANT_CATEGORY);
+
 		} catch (RepositoryException e) {
 			throw new SlcException("unable to check type of node "
 					+ firstElement, e);
 		}
-		CommandUtils.refreshCommand(menuManager, window,
-				MarkAsRelevantCategory.ID,
-				MarkAsRelevantCategory.DEFAULT_LABEL,
-				MarkAsRelevantCategory.DEFAULT_ICON, showMark);
+		// Add
+		if (isRelevant) {// Remove
+			CommandUtils.refreshCommand(menuManager, window,
+					MarkAsRelevantCategory.ID,
+					MarkAsRelevantCategory.DEFAULT_REMOVE_LABEL,
+					MarkAsRelevantCategory.DEFAULT_REMOVE_ICON, true);
+		} else {
+			CommandUtils.refreshCommand(menuManager, window,
+					MarkAsRelevantCategory.ID,
+					MarkAsRelevantCategory.DEFAULT_LABEL,
+					MarkAsRelevantCategory.DEFAULT_ICON, true);
+		}
 	}
 
 	private SelectionAdapter getSelectionAdapter(final int index) {
@@ -413,32 +434,36 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		}
 	}
 
-	/**
-	 * UI Trick to put scroll bar on the table rather than on the scrollform
-	 */
-	private void refreshLayout() {
-		// Compute desired table size
-		int maxH = getManagedForm().getForm().getSize().y;
-		int maxW = getManagedForm().getForm().getParent().getSize().x;
-		maxH = maxH - header.getSize().y;
-		final Table table = viewer.getTable();
-		GridData gd = new GridData(SWT.LEFT, SWT.TOP, true, true);
+	class CategoryObserver extends AsyncUiEventListener {
 
-		// when table height is less than 200 px, we let the scroll bar on the
-		// scrollForm
-		// FIXME substract some spare space. There is room here for optimization
-		gd.heightHint = Math.max(maxH - 35, 200);
-		gd.widthHint = Math.max(maxW - 35, 200);
+		public CategoryObserver(Display display) {
+			super(display);
+		}
 
-		table.setLayoutData(gd);
-		getManagedForm().reflow(true);
+		@Override
+		protected Boolean willProcessInUiThread(List<Event> events)
+				throws RepositoryException {
+			for (Event event : events) {
+				String path = event.getPath();
+				if (JcrUtils.lastPathElement(path).equals(
+						DistConstants.JCR_MIXIN_TYPES))
+					return true;
+			}
+			return false;
+		}
+
+		protected void onEventInUiThread(List<Event> events)
+				throws RepositoryException {
+			if (getLog().isTraceEnabled())
+				getLog().trace("Refresh table");
+			viewer.refresh();
+		}
 	}
 
 	@Override
 	public void setActive(boolean active) {
 		super.setActive(active);
 		if (active) {
-			refreshLayout();
 		}
 	}
 }

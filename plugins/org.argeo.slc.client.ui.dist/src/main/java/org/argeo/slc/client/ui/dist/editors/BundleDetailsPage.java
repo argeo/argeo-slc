@@ -33,6 +33,7 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
+import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -89,6 +90,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			form.setText(currBundle.hasProperty(DistConstants.SLC_BUNDLE_NAME) ? currBundle
 					.getProperty(DistConstants.SLC_BUNDLE_NAME).getString()
 					: "");
+			form.setMessage(" test", IMessageProvider.NONE);
 			Composite body = form.getBody();
 			GridLayout layout = new GridLayout(1, false);
 			layout.marginWidth = 5;

@@ -21,6 +21,7 @@ import org.argeo.slc.jcr.SlcTypes;
  */
 public class ModularDistBaseElem extends DistParentElem {
 
+	final static public String AETHER_CATEGORY_BASE = "categoryBase";
 	final static public String AETHER_BINARIES_TYPE = "binaries";
 	final static public String AETHER_DEP_TYPE = "dep";
 	private String type;
@@ -57,7 +58,7 @@ public class ModularDistBaseElem extends DistParentElem {
 			// initialize current object
 			try {
 				NodeIterator ni = getDistVersions();
-				while (ni.hasNext()) {
+				while (ni != null && ni.hasNext()) {
 					Node curNode = ni.nextNode();
 					addChild(new ModularDistVersionElem(this, curNode
 							.getProperty(SlcNames.SLC_ARTIFACT_VERSION)
@@ -74,6 +75,9 @@ public class ModularDistBaseElem extends DistParentElem {
 
 	public NodeIterator getDistVersions() {
 		try {
+			if (AETHER_CATEGORY_BASE.equals(type))
+				return null;
+
 			QueryManager queryManager = artifactBase.getSession()
 					.getWorkspace().getQueryManager();
 			QueryObjectModelFactory factory = queryManager.getQOMFactory();

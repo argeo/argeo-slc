@@ -49,7 +49,7 @@ public class WorkspaceElem extends DistParentElem {
 			if (isConnected())
 				return currSession.getRootNode().hasNodes();
 			else
-				return false;
+				return true;
 		} catch (RepositoryException re) {
 			throw new ArgeoException(
 					"Unexpected error while checking children node existence",
@@ -65,61 +65,60 @@ public class WorkspaceElem extends DistParentElem {
 		} else {
 			// initialize current object
 			try {
+				// Lazy connect the first time we retrieve children
 				if (currSession == null)
-					return null;
-				else {
-					// Retrieve already existing distribution
-					Query groupQuery = currSession
-							.getWorkspace()
-							.getQueryManager()
-							.createQuery(
-									"select * from ["
-											+ SlcTypes.SLC_MODULAR_DISTRIBUTION
-											+ "]", Query.JCR_SQL2);
-					NodeIterator distributions = groupQuery.execute()
-							.getNodes();
-					distribs: while (distributions.hasNext()) {
-						Node currDist = distributions.nextNode();
-						Node distBase = currDist.getParent().getParent();
-						if (!distBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE))
-							continue distribs;
-						String groupId = distBase.getProperty(
-								SlcNames.SLC_GROUP_ID).getString();
-						String artifactId = distBase.getProperty(
-								SlcNames.SLC_ARTIFACT_ID).getString();
+					login();
 
-						String name;
-						String type;
-						if (ModularDistBaseElem.AETHER_BINARIES_TYPE
-								.equals(artifactId)) {
-							name = groupId;
-							type = ModularDistBaseElem.AETHER_BINARIES_TYPE;
-						} else {
-							name = artifactId;
-							type = ModularDistBaseElem.AETHER_DEP_TYPE;
-						}
-						if (getChildByName(name) == null)
-							addChild(new ModularDistBaseElem(
-									WorkspaceElem.this, name, distBase, type));
+				// Retrieve already existing distribution
+				Query groupQuery = currSession
+						.getWorkspace()
+						.getQueryManager()
+						.createQuery(
+								"select * from ["
+										+ SlcTypes.SLC_MODULAR_DISTRIBUTION
+										+ "]", Query.JCR_SQL2);
+				NodeIterator distributions = groupQuery.execute().getNodes();
+				distribs: while (distributions.hasNext()) {
+					Node currDist = distributions.nextNode();
+					Node distBase = currDist.getParent().getParent();
+					if (!distBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE))
+						continue distribs;
+					String groupId = distBase
+							.getProperty(SlcNames.SLC_GROUP_ID).getString();
+					String artifactId = distBase.getProperty(
+							SlcNames.SLC_ARTIFACT_ID).getString();
+
+					String name;
+					String type;
+					if (ModularDistBaseElem.AETHER_BINARIES_TYPE
+							.equals(artifactId)) {
+						name = groupId;
+						type = ModularDistBaseElem.AETHER_BINARIES_TYPE;
+					} else {
+						name = artifactId;
+						type = ModularDistBaseElem.AETHER_DEP_TYPE;
 					}
-					// Add empty group base that have been marked as relevant
-					groupQuery = currSession
-							.getWorkspace()
-							.getQueryManager()
-							.createQuery(
-									"select * from ["
-											+ SlcTypes.SLC_RELEVANT_CATEGORY
-											+ "]", Query.JCR_SQL2);
-					distributions = groupQuery.execute().getNodes();
-					while (distributions.hasNext()) {
-						Node distBase = distributions.nextNode();
-						String groupBaseId = distBase.getProperty(
-								SlcNames.SLC_GROUP_BASE_ID).getString();
-						if (getChildByName(groupBaseId) == null)
-							addChild(new ModularDistBaseElem(
-									WorkspaceElem.this, groupBaseId, distBase,
-									ModularDistBaseElem.AETHER_BINARIES_TYPE));
-					}
+					if (getChildByName(name) == null)
+						addChild(new ModularDistBaseElem(WorkspaceElem.this,
+								name, distBase, type));
+				}
+				// Add empty group base that have been marked as relevant
+				groupQuery = currSession
+						.getWorkspace()
+						.getQueryManager()
+						.createQuery(
+								"select * from ["
+										+ SlcTypes.SLC_RELEVANT_CATEGORY + "]",
+								Query.JCR_SQL2);
+				distributions = groupQuery.execute().getNodes();
+				while (distributions.hasNext()) {
+					Node distBase = distributions.nextNode();
+					String groupBaseId = distBase.getProperty(
+							SlcNames.SLC_GROUP_BASE_ID).getString();
+					if (getChildByName(groupBaseId) == null)
+						addChild(new ModularDistBaseElem(WorkspaceElem.this,
+								groupBaseId, distBase,
+								ModularDistBaseElem.AETHER_CATEGORY_BASE));
 				}
 				return super.getChildren();
 			} catch (RepositoryException e) {

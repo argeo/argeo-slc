@@ -82,8 +82,9 @@ public class OpenModuleEditor extends AbstractHandler {
 				businessSession = RepoUtils.getCorrespondingSession(
 						repositoryFactory, keyring, repoNode, repoUri,
 						workspaceName);
-				repoUri = repoNode.getProperty(ArgeoNames.ARGEO_URI)
-						.getString();
+				if (repoUri == null && repoNode != null)
+					repoUri = repoNode.getProperty(ArgeoNames.ARGEO_URI)
+							.getString();
 
 			} catch (RepositoryException e) {
 				throw new SlcException("Cannot log to workspace "

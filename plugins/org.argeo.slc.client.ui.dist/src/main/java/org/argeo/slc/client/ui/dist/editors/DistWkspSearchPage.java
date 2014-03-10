@@ -39,6 +39,7 @@ import javax.jcr.query.qom.StaticOperand;
 
 import org.argeo.ArgeoMonitor;
 import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -66,13 +67,12 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlEvent;
-import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -105,9 +105,9 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 	private NodeViewerComparator comparator;
 	private TableViewer viewer;
 
-	private Composite header;
+	// private Composite header;
 	private Text artifactTxt;
-	private final static String FILTER_HELP_MSG = "Enter filter criterion separated by a space";
+	private final static String FILTER_HELP_MSG = "Search bundles in the current workspace";
 
 	public DistWkspSearchPage(DistWorkspaceEditor formEditor, String title,
 			Session session) {
@@ -166,22 +166,20 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		Composite body = form.getBody();
 		body.setLayout(layout);
 
-		// Add the filter section
-		createFilterPart(body);
-		// Add the table
-		createTableViewer(body);
-		// viewer.setInput(null);
-		// Add a listener to enable custom resize process
-		form.addControlListener(new ControlListener() {
-			// form.addListener(SWT.RESIZE, new Listener() does not work
-			public void controlResized(ControlEvent e) {
-				refreshLayout();
-			}
+		// Meta info about current workspace
+		Composite header = tk.createComposite(body);
+		header.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		createHeaderPart(form, header);
 
-			public void controlMoved(ControlEvent e) {
-			}
-		});
-		asynchronousRefresh();
+		// filter text
+		Composite filter = tk.createComposite(body);
+		filter.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		createFilterPart(filter);
+
+		// the table
+		Composite tableCmp = tk.createComposite(body);
+		tableCmp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		createTableViewer(tableCmp);
 	}
 
 	/** Build repository request */
@@ -243,42 +241,62 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 
 	}
 
-	private void createFilterPart(Composite parent) {
-		header = tk.createComposite(parent);
-		GridLayout layout = new GridLayout(2, false);
+	private void createHeaderPart(ScrolledForm form, Composite parent) {
+		GridLayout layout = new GridLayout(4, false);
 		layout.marginWidth = layout.marginHeight = layout.verticalSpacing = 0;
 		layout.horizontalSpacing = 5;
-		header.setLayout(layout);
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
-		header.setLayoutData(gd);
+		parent.setLayout(layout);
 
-		// Title: some meta information
-		// label = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
-		// .getProperty(Property.JCR_TITLE).getString() : repoNode
-		// .getName();
+		String wkspName = ((DistWkspEditorInput) getEditorInput())
+				.getWorkspaceName();
+		// wkspName = "Workspace " + wkspName;
+		form.setText(wkspName);
 
-		String desc = null;
+		// form.setMessage("Choose in the below list "
+		// + "the categories that can be used as base for "
+		// + "modular distributions maintained via the current workspace",
+		// IMessageProvider.NONE);
+
+		String repoAlias = "";
 		Node repoNode = ((DistWorkspaceEditor) getEditor()).getRepoNode();
 		if (repoNode != null)
 			try {
-				desc = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
+				repoAlias = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
 						.getProperty(Property.JCR_TITLE).getString() : repoNode
 						.getName();
 			} catch (RepositoryException e1) {
 				throw new SlcException("Unable to get repository alias ", e1);
 			}
-		desc += " (" + ((DistWkspEditorInput) getEditorInput()).getUri() + ")";
-		Label lbl = tk.createLabel(header, desc, SWT.NONE);
+		else
+			repoAlias = " - ";
 
-		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
-		gd.horizontalSpan = 2;
-		lbl.setLayoutData(gd);
+		createLT(parent, "Repository alias", repoAlias);
+		createLT(parent, "URI",
+				((DistWkspEditorInput) getEditorInput()).getUri());
+	}
+
+	private Text createLT(Composite parent, String labelValue, String textValue) {
+		Label label = tk.createLabel(parent, labelValue, SWT.RIGHT);
+		label.setFont(EclipseUiUtils.getBoldFont(parent));
+		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
+
+		// Add a trailing space to workaround a display glitch in RAP 1.3
+		Text text = tk.createText(parent, textValue + " ", SWT.LEFT);
+		text.setEditable(false);
+		return text;
+	}
+
+	private void createFilterPart(Composite parent) {
+		GridLayout layout = new GridLayout(2, false);
+		layout.marginWidth = layout.marginHeight = layout.verticalSpacing = 0;
+		layout.horizontalSpacing = 5;
+		parent.setLayout(layout);
 
 		// Text Area to filter
-		artifactTxt = tk.createText(header, "", SWT.BORDER | SWT.SINGLE
+		artifactTxt = tk.createText(parent, "", SWT.BORDER | SWT.SINGLE
 				| SWT.SEARCH | SWT.CANCEL);
 		artifactTxt.setMessage(FILTER_HELP_MSG);
-		gd = new GridData(SWT.FILL, SWT.FILL, false, false);
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
 		gd.grabExcessHorizontalSpace = true;
 		artifactTxt.setLayoutData(gd);
 		artifactTxt.addModifyListener(new ModifyListener() {
@@ -290,7 +308,7 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 			}
 		});
 
-		Button resetBtn = tk.createButton(header, null, SWT.PUSH);
+		Button resetBtn = tk.createButton(parent, null, SWT.PUSH);
 		resetBtn.setImage(DistImages.IMG_REPO_READONLY);
 		resetBtn.addSelectionListener(new SelectionListener() {
 
@@ -301,7 +319,6 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 			public void widgetDefaultSelected(SelectionEvent e) {
 			}
 		});
-
 	}
 
 	private void resetFilter() {
@@ -321,6 +338,7 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 	}
 
 	private void createTableViewer(Composite parent) {
+		parent.setLayout(new FillLayout());
 		// helpers to enable sorting by column
 		List<String> propertiesList = new ArrayList<String>();
 		List<Integer> propertyTypesList = new ArrayList<Integer>();
@@ -497,21 +515,23 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 	 * UI Trick to put scroll bar on the table rather than on the scrollform
 	 */
 	private void refreshLayout() {
-		// Compute desired table size
-		int maxH = getManagedForm().getForm().getSize().y;
-		int maxW = getManagedForm().getForm().getParent().getSize().x;
-		maxH = maxH - header.getSize().y;
-		final Table table = viewer.getTable();
-		GridData gd = new GridData(SWT.LEFT, SWT.TOP, true, true);
-
-		// when table height is less than 200 px, we let the scroll bar on the
-		// scrollForm
-		// FIXME substract some spare space. There is room here for optimization
-		gd.heightHint = Math.max(maxH - 35, 200);
-		gd.widthHint = Math.max(maxW - 35, 200);
-
-		table.setLayoutData(gd);
-		getManagedForm().reflow(true);
+		// // Compute desired table size
+		// int maxH = getManagedForm().getForm().getSize().y;
+		// int maxW = getManagedForm().getForm().getParent().getSize().x;
+		// // maxH = maxH - header.getSize().y;
+		// final Table table = viewer.getTable();
+		// GridData gd = new GridData(SWT.LEFT, SWT.TOP, true, true);
+		//
+		// // when table height is less than 200 px, we let the scroll bar on
+		// the
+		// // scrollForm
+		// // FIXME substract some spare space. There is room here for
+		// optimization
+		// gd.heightHint = Math.max(maxH - 35, 200);
+		// gd.widthHint = Math.max(maxW - 35, 200);
+		//
+		// table.setLayoutData(gd);
+		// getManagedForm().reflow(true);
 	}
 
 	@Override

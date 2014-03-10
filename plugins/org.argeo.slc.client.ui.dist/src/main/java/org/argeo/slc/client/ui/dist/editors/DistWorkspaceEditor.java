@@ -79,8 +79,8 @@ public class DistWorkspaceEditor extends FormEditor implements SlcNames {
 	protected void addPages() {
 		try {
 			addPage(new DistWkspSearchPage(this, "Details ", businessSession));
-			addPage(new DistWkspBrowserPage(this, "Browser ", businessSession));
-			addPage(new WkspCategoryBaseListPage(this, "Group base ",
+			addPage(new DistWkspBrowserPage(this, "Maven ", businessSession));
+			addPage(new WkspCategoryBaseListPage(this, "Groups ",
 					businessSession));
 		} catch (PartInitException e) {
 			throw new ArgeoException("Cannot add distribution editor pages", e);

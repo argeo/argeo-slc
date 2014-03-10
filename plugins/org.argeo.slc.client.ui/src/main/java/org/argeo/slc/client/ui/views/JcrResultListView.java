@@ -272,7 +272,6 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 				getLog().trace("Refresh result list");
 			viewer.refresh();
 		}
-
 	}
 
 	public void setSession(Session session) {

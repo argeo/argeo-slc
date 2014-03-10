@@ -26,8 +26,11 @@ public interface DistConstants {
 	 */
 	public final static String DATE_TIME_FORMAT = "MM/dd/yyyy, HH:mm";
 	public final static String DATE_FORMAT = "MM/dd/yyyy";
-	// this should be directly retrieved from JCR APIs
+	// this should be directly retrieved from JCR APIs once we have solved the
+	// problem of the translation of name space to shortcut, typically
+	// {http://www.jcp.org/jcr/1.0} to jcr:
 	public final static String JCR_IDENTIFIER = "jcr:uuid";
+	public final static String JCR_MIXIN_TYPES = "jcr:mixinTypes";
 
 	// FIXME: should be defined in SlcNames
 	public final static String SLC_BUNDLE_NAME = SlcNames.SLC_
@@ -38,4 +41,5 @@ public interface DistConstants {
 			+ Constants.BUNDLE_VENDOR;
 
 	public final String DEFAULT_PUBLIC_REPOSITORY_URI = "vm:///java";
+
 }

@@ -34,10 +34,7 @@ public class DistTreeLabelProvider extends ColumnLabelProvider {
 			else
 				return JcrImages.REPOSITORY_DISCONNECTED;
 		} else if (element instanceof WorkspaceElem) {
-			if (((WorkspaceElem) element).isConnected())
-				return JcrImages.WORKSPACE_CONNECTED;
-			else
-				return JcrImages.WORKSPACE_DISCONNECTED;
+			return JcrImages.WORKSPACE_CONNECTED;
 		} else if (element instanceof WkspGroupElem)
 			return DistImages.IMG_WKSP_GROUP;
 		// else if (element instanceof GroupBaseElem)

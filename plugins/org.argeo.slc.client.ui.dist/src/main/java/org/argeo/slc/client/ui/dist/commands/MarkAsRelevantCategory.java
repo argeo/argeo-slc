@@ -41,8 +41,11 @@ public class MarkAsRelevantCategory extends AbstractHandler {
 
 	public final static String ID = DistPlugin.ID + ".markAsRelevantCategory";
 	public final static String DEFAULT_LABEL = "Mark as relevant category base";
+	public final static String DEFAULT_REMOVE_LABEL = "Remove this category from relevant list";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/addItem.gif");
+	public final static ImageDescriptor DEFAULT_REMOVE_ICON = DistPlugin
+			.getImageDescriptor("icons/removeMark.gif");
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
@@ -57,16 +60,23 @@ public class MarkAsRelevantCategory extends AbstractHandler {
 					Iterator<?> it = ((IStructuredSelection) selector)
 							.iterator();
 
-					String msg = "Your are about to mark this group as category base in the current workspace"
-							+ ".\n" + "Are you sure you want to proceed?";
+					Node node = (Node) it.next();
+					if (node.isNodeType(SlcTypes.SLC_RELEVANT_CATEGORY)) {
+						String msg = "Your are about to unlist this category from the relevant category list for current workspace"
+								+ ".\n" + "Are you sure you want to proceed?";
+						if (MessageDialog.openConfirm(DistPlugin.getDefault()
+								.getWorkbench().getDisplay().getActiveShell(),
+								"Confirm", msg)) {
+							node.removeMixin(SlcTypes.SLC_RELEVANT_CATEGORY);
+							node.getSession().save();
+						}
+					} else {
+						String msg = "Your are about to mark this group as category base in the current workspace"
+								+ ".\n" + "Are you sure you want to proceed?";
 
-					boolean result = MessageDialog.openConfirm(DistPlugin
-							.getDefault().getWorkbench().getDisplay()
-							.getActiveShell(), "Confirm", msg);
-
-					if (result) {
-						while (it.hasNext()) {
-							Node node = (Node) it.next();
+						if (MessageDialog.openConfirm(DistPlugin.getDefault()
+								.getWorkbench().getDisplay().getActiveShell(),
+								"Confirm", msg)) {
 							node.addMixin(SlcTypes.SLC_RELEVANT_CATEGORY);
 							node.getSession().save();
 						}

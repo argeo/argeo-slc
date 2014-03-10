@@ -40,33 +40,32 @@ public class DistTreeDoubleClickListener implements IDoubleClickListener {
 				treeViewer.refresh(obj);
 			}
 		} else if (obj instanceof WorkspaceElem) {
-			WorkspaceElem wn = (WorkspaceElem) obj;
-			if (!wn.isConnected()) {
-				wn.login();
-				treeViewer.refresh(obj);
-			} else {
-				WorkspaceElem we = (WorkspaceElem) obj;
-				Node repoNode = null;
-				try {
-					RepoElem repoElem = we.getRepoElem();
-					Map<String, String> params = new HashMap<String, String>();
+			//WorkspaceElem wn = (WorkspaceElem) obj;
+			// if (!wn.isConnected()) {
+			// wn.login();
+			// treeViewer.refresh(obj);
+			// } else {
+			WorkspaceElem we = (WorkspaceElem) obj;
+			Node repoNode = null;
+			try {
+				RepoElem repoElem = we.getRepoElem();
+				Map<String, String> params = new HashMap<String, String>();
 
-					repoNode = repoElem.getRepoNode();
-					if (repoNode != null)
-						params.put(OpenWorkspaceEditor.PARAM_REPO_NODE_PATH,
-								repoNode.getPath());
-					params.put(OpenWorkspaceEditor.PARAM_REPO_URI,
-							repoElem.getUri());
-					params.put(OpenWorkspaceEditor.PARAM_WORKSPACE_NAME,
-							we.getWorkspaceName());
-					CommandUtils.callCommand(OpenWorkspaceEditor.ID, params);
-				} catch (RepositoryException re) {
-					throw new SlcException("Cannot get path for node "
-							+ repoNode + " while "
-							+ "setting parameters of command "
-							+ "OpenWorkspaceEditor", re);
-				}
+				repoNode = repoElem.getRepoNode();
+				if (repoNode != null)
+					params.put(OpenWorkspaceEditor.PARAM_REPO_NODE_PATH,
+							repoNode.getPath());
+				params.put(OpenWorkspaceEditor.PARAM_REPO_URI,
+						repoElem.getUri());
+				params.put(OpenWorkspaceEditor.PARAM_WORKSPACE_NAME,
+						we.getWorkspaceName());
+				CommandUtils.callCommand(OpenWorkspaceEditor.ID, params);
+			} catch (RepositoryException re) {
+				throw new SlcException("Cannot get path for node " + repoNode
+						+ " while " + "setting parameters of command "
+						+ "OpenWorkspaceEditor", re);
 			}
+			// }
 		} else if (obj instanceof ModularDistVersionElem) {
 			ModularDistVersionElem modDistElem = (ModularDistVersionElem) obj;
 			WorkspaceElem wkspElem = modDistElem.getWorkspaceElem();
