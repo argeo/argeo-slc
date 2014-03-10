@@ -68,12 +68,10 @@ public class WorkspaceElem extends DistParentElem {
 				if (currSession == null)
 					return null;
 				else {
-					Query groupQuery = currSession.getWorkspace()
+					// Retrieve already existing distribution
+					Query groupQuery = currSession
+							.getWorkspace()
 							.getQueryManager()
-							// .createQuery(
-							// "select * from [" + SlcTypes.SLC_GROUP_BASE
-							// + "] as group order by group.["
-							// + SlcNames.SLC_GROUP_BASE_ID + "]",
 							.createQuery(
 									"select * from ["
 											+ SlcTypes.SLC_MODULAR_DISTRIBUTION
@@ -103,6 +101,24 @@ public class WorkspaceElem extends DistParentElem {
 						if (getChildByName(name) == null)
 							addChild(new ModularDistBaseElem(
 									WorkspaceElem.this, name, distBase, type));
+					}
+					// Add empty group base that have been marked as relevant
+					groupQuery = currSession
+							.getWorkspace()
+							.getQueryManager()
+							.createQuery(
+									"select * from ["
+											+ SlcTypes.SLC_RELEVANT_CATEGORY
+											+ "]", Query.JCR_SQL2);
+					distributions = groupQuery.execute().getNodes();
+					while (distributions.hasNext()) {
+						Node distBase = distributions.nextNode();
+						String groupBaseId = distBase.getProperty(
+								SlcNames.SLC_GROUP_BASE_ID).getString();
+						if (getChildByName(groupBaseId) == null)
+							addChild(new ModularDistBaseElem(
+									WorkspaceElem.this, groupBaseId, distBase,
+									ModularDistBaseElem.AETHER_BINARIES_TYPE));
 					}
 				}
 				return super.getChildren();

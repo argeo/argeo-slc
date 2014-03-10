@@ -192,6 +192,13 @@
          		name="Target repo uri">
   	 		</commandParameter>
     	</command>
+    	
+    	<command
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.MarkAsRelevantCategory"
+            id="org.argeo.slc.client.ui.dist.markAsRelevantCategory"
+            name="Mark as relevant category">
+    	</command>
+    	
     	<command
             id="org.argeo.slc.client.ui.dist.normalizeWorkspace"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
@@ -320,6 +327,7 @@
             id="org.argeo.slc.client.ui.dist.refreshArtifactBrowser"
             name="Refresh Artifact Browser">
     	</command>
+    	    	
     	<command
             defaultHandler="org.argeo.slc.client.ui.dist.commands.ShowSizeColumn"
             id="org.argeo.slc.client.ui.dist.showSizeColumn"

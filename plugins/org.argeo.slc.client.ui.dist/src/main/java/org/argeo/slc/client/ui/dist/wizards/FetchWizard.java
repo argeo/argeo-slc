@@ -54,6 +54,7 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -338,9 +339,8 @@ public class FetchWizard extends Wizard {
 			// });
 
 			wkspViewer.setContentProvider(new WkspContentProvider());
-
-			// TODO implement a fitting comparator
-			// wkspViewer.setComparator(new ArtifactNamesComparator());
+			// A basic comparator
+			wkspViewer.setComparator(new WkspComparator());
 		}
 	}
 
@@ -494,6 +494,9 @@ public class FetchWizard extends Wizard {
 					return selectedWorkspaces.toArray();
 				}
 			});
+
+			// A basic comparator
+			recapViewer.setComparator(new WkspComparator());
 			setControl(table);
 		}
 	}
@@ -539,6 +542,10 @@ public class FetchWizard extends Wizard {
 		public String toString() {
 			return "[" + srcName + " to " + targetName + "]";
 		}
+	}
+
+	private class WkspComparator extends ViewerComparator {
+
 	}
 
 	private class WkspContentProvider implements IStructuredContentProvider {

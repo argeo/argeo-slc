@@ -39,8 +39,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 public class DistWorkspaceEditor extends FormEditor implements SlcNames {
 	// private final static Log log =
 	// LogFactory.getLog(DistributionEditor.class);
-	public final static String ID = DistPlugin.ID
-			+ ".distWorkspaceEditor";
+	public final static String ID = DistPlugin.ID + ".distWorkspaceEditor";
 
 	/* DEPENDENCY INJECTION */
 	private RepositoryFactory repositoryFactory;
@@ -79,9 +78,10 @@ public class DistWorkspaceEditor extends FormEditor implements SlcNames {
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new DistWkspSearchPage(this, "Overview",
+			addPage(new DistWkspSearchPage(this, "Details ", businessSession));
+			addPage(new DistWkspBrowserPage(this, "Browser ", businessSession));
+			addPage(new WkspCategoryBaseListPage(this, "Group base ",
 					businessSession));
-			addPage(new DistWkspBrowserPage(this, "Browser", businessSession));
 		} catch (PartInitException e) {
 			throw new ArgeoException("Cannot add distribution editor pages", e);
 		}
@@ -109,6 +109,10 @@ public class DistWorkspaceEditor extends FormEditor implements SlcNames {
 
 	protected Node getRepoNode() {
 		return repoNode;
+	}
+
+	protected Session getSession() {
+		return businessSession;
 	}
 
 	/* DEPENDENCY INJECTION */
