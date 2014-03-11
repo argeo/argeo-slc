@@ -114,7 +114,7 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		ScrolledForm form = managedForm.getForm();
 		tk = managedForm.getToolkit();
 
-		form.setText("Define Relevant Category");
+		form.setText("Define Relevant Categories");
 		form.setMessage("Choose in the below list "
 				+ "the categories that can be used as base for "
 				+ "modular distributions maintained via the current workspace",

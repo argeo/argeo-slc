@@ -57,18 +57,19 @@ public class DistImages {
 	public final static Image IMG_DISTGRP_READONLY = DistPlugin
 			.getImageDescriptor("icons/distGrpReadOnly.gif").createImage();
 
-	public final static Image IMG_MODULAR_DIST_BASE = DistPlugin.getImageDescriptor(
-			"icons/packages.gif").createImage();
-	public final static Image IMG_MODULAR_DIST_VERSION = DistPlugin.getImageDescriptor(
-			"icons/packages.gif").createImage();
+	public final static Image IMG_MODULAR_DIST_BASE = DistPlugin
+			.getImageDescriptor("icons/packages.gif").createImage();
+	public final static Image IMG_MODULAR_DIST_VERSION = DistPlugin
+			.getImageDescriptor("icons/packages.gif").createImage();
 
 	public final static Image IMG_GROUP_BASE = DistPlugin.getImageDescriptor(
 			"icons/packages.gif").createImage();
 
-
-	/* CHECK BOXES */
+	/* Various */
 	public final static Image CHECKED = DistPlugin.getImageDescriptor(
 			"icons/checked.gif").createImage();
 	public final static Image UNCHECKED = DistPlugin.getImageDescriptor(
 			"icons/unchecked.gif").createImage();
+	public final static Image IMG_CLEAR = DistPlugin.getImageDescriptor(
+			"icons/clear.gif").createImage();
 }

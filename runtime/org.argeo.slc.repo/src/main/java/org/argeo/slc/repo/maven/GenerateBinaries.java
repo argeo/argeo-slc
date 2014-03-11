@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.repo.osgi;
+package org.argeo.slc.repo.maven;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.jcr.Credentials;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Repository;
@@ -40,7 +41,7 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.slc.repo.maven.MavenConventionsUtils;
+import org.argeo.slc.repo.osgi.OsgiProfile;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 import org.sonatype.aether.artifact.Artifact;
@@ -50,34 +51,37 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
  * Make sure that all JCR metadata and Maven metadata are consistent for this
  * group of OSGi bundles.
  */
-public class NormalizeGroup implements Runnable, SlcNames {
-	private final static Log log = LogFactory.getLog(NormalizeGroup.class);
+public class GenerateBinaries implements Runnable, SlcNames {
+	private final static Log log = LogFactory.getLog(GenerateBinaries.class);
 
+	// Connection info
 	private Repository repository;
+	private Credentials credentials;
 	private String workspace;
+
+	// Business info
 	private String groupId;
-	private Boolean overridePoms = false;
-	private String artifactBasePath = "/";
-	private String version = null;
 	private String parentPomCoordinates;
+	private Boolean overridePoms = false;
+	private String version = null;
 
+	// Constants
+	private String artifactBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
 	private List<String> excludedSuffixes = new ArrayList<String>();
-
-	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
-	// private JarFileIndexer jarFileIndexer = new JarFileIndexer();
-
 	/** TODO make it more generic */
 	private List<String> systemPackages = OsgiProfile.PROFILE_JAVA_SE_1_6
 			.getSystemPackages();
 
-	// indexes
+	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
+
+	// Local indexes
 	private Map<String, String> packagesToSymbolicNames = new HashMap<String, String>();
 	private Map<String, Node> symbolicNamesToNodes = new HashMap<String, Node>();
-
 	private Set<Artifact> binaries = new TreeSet<Artifact>(
 			new ArtifactIdComparator());
 	private Set<Artifact> sources = new TreeSet<Artifact>(
 			new ArtifactIdComparator());
+	private Node allArtifactsHighestVersion;
 
 	public void run() {
 		Session session = null;
@@ -85,6 +89,7 @@ public class NormalizeGroup implements Runnable, SlcNames {
 			session = repository.login(workspace);
 			Node groupNode = session.getNode(MavenConventionsUtils.groupPath(
 					artifactBasePath, groupId));
+			internalPreProcessing(groupNode, null);
 			processGroupNode(groupNode, null);
 		} catch (Exception e) {
 			throw new SlcException("Cannot normalize group " + groupId + " in "
@@ -98,76 +103,85 @@ public class NormalizeGroup implements Runnable, SlcNames {
 			Boolean overridePoms, ArgeoMonitor monitor)
 			throws RepositoryException {
 		// TODO set artifactsBase based on group node
-		NormalizeGroup ng = new NormalizeGroup();
+		GenerateBinaries gb = new GenerateBinaries();
 		String groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID)
 				.getString();
-		ng.setGroupId(groupId);
-		ng.setVersion(version);
-		ng.setOverridePoms(overridePoms);
-		ng.processGroupNode(groupNode, monitor);
+		gb.setGroupId(groupId);
+		gb.setVersion(version);
+		gb.setOverridePoms(overridePoms);
+		// TODO use already done pre-processing
+		gb.internalPreProcessing(groupNode, monitor);
+		gb.processGroupNode(groupNode, monitor);
 	}
 
-	protected void processGroupNode(Node groupNode, ArgeoMonitor monitor)
+	/** Only builds local indexes. Does not change anything in the local Session */
+	public static GenerateBinaries preProcessGroupNode(Node groupNode,
+			ArgeoMonitor monitor) throws RepositoryException {
+		// TODO set artifactsBase based on group node
+		GenerateBinaries gb = new GenerateBinaries();
+		String groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID)
+				.getString();
+		gb.setGroupId(groupId);
+		// gb.setVersion(version);
+		// gb.setOverridePoms(overridePoms);
+		gb.internalPreProcessing(groupNode, monitor);
+		return gb;
+	}
+
+	// exposes indexes. to display results of the pre-processing phase.
+	public Set<Artifact> getBinaries() {
+		return binaries;
+	}
+
+	public Artifact getHighestArtifactVersion() throws RepositoryException {
+		return allArtifactsHighestVersion == null ? null : RepoUtils
+				.asArtifact(allArtifactsHighestVersion);
+	}
+
+	protected void internalPreProcessing(Node groupNode, ArgeoMonitor monitor)
 			throws RepositoryException {
 		if (monitor != null)
-			monitor.subTask("Group " + groupId);
-		Node allArtifactsHighestVersion = null;
-		Session session = groupNode.getSession();
+			monitor.subTask("Pre processing group " + groupId);
+
+		// Process all direct children nodes,
+		// gathering latest versions of all artifact base
+		allArtifactsHighestVersion = null;
+		// Session session = groupNode.getSession();
 		aBases: for (NodeIterator aBases = groupNode.getNodes(); aBases
 				.hasNext();) {
 			Node aBase = aBases.nextNode();
 			if (aBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
-				Node highestAVersion = null;
-				for (NodeIterator aVersions = aBase.getNodes(); aVersions
-						.hasNext();) {
-					Node aVersion = aVersions.nextNode();
-					if (aVersion.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE)) {
-						if (highestAVersion == null) {
-							highestAVersion = aVersion;
-							if (allArtifactsHighestVersion == null)
-								allArtifactsHighestVersion = aVersion;
-
-							// BS will fail if artifacts arrive in this order
-							// Name1 - V1, name2 - V3, V1 will remain the
-							// allArtifactsHighestVersion
-							// Fixed below
-							else {
-								Version currVersion = extractOsgiVersion(aVersion);
-								Version highestVersion = extractOsgiVersion(allArtifactsHighestVersion);
-								if (currVersion.compareTo(highestVersion) > 0)
-									allArtifactsHighestVersion = aVersion;
-							}
-
-						} else {
-							Version currVersion = extractOsgiVersion(aVersion);
-							Version currentHighestVersion = extractOsgiVersion(highestAVersion);
-							if (currVersion.compareTo(currentHighestVersion) > 0) {
-								highestAVersion = aVersion;
-							}
-							if (currVersion
-									.compareTo(extractOsgiVersion(allArtifactsHighestVersion)) > 0) {
-								allArtifactsHighestVersion = aVersion;
-							}
-						}
-
-					}
-
-				}
+				Node highestAVersion = getArtifactLatestVersion(aBase);
 				if (highestAVersion == null)
 					continue aBases;
-				for (NodeIterator files = highestAVersion.getNodes(); files
-						.hasNext();) {
-					Node file = files.nextNode();
-					if (file.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
-						preProcessBundleArtifact(file);
-						file.getSession().save();
-						if (log.isDebugEnabled())
-							log.debug("Pre-processed " + file.getName());
+				else {
+					// retrieve relevant child node
+					for (NodeIterator files = highestAVersion.getNodes(); files
+							.hasNext();) {
+						Node file = files.nextNode();
+						if (file.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
+							preProcessBundleArtifact(file);
+							if (log.isDebugEnabled())
+								log.debug("Pre-processed " + file.getName());
+						}
 					}
-
 				}
 			}
 		}
+		if (log.isDebugEnabled()) {
+			int bundleCount = symbolicNamesToNodes.size();
+			log.debug("" + bundleCount + " bundles have been indexed for "
+					+ groupId);
+		}
+	}
+
+	/** Does the real job : writes JCR META-DATA and generates binaries */
+	protected void processGroupNode(Node groupNode, ArgeoMonitor monitor)
+			throws RepositoryException {
+		if (monitor != null)
+			monitor.subTask("Processing group " + groupId);
+
+		Session session = groupNode.getSession();
 
 		// if version not set or empty, use the highest version
 		// useful when indexing a product maven repository where
@@ -178,13 +192,10 @@ public class NormalizeGroup implements Runnable, SlcNames {
 				version = allArtifactsHighestVersion.getProperty(
 						SLC_ARTIFACT_VERSION).getString();
 			else
-				version = "0.0";
-//				throw new SlcException("Group version " + version
-//						+ " is empty.");
+				throw new SlcException("Group version " + version
+						+ " is empty.");
 
 		int bundleCount = symbolicNamesToNodes.size();
-		if (log.isDebugEnabled())
-			log.debug("Indexed " + bundleCount + " bundles");
 
 		int count = 1;
 		for (Node bundleNode : symbolicNamesToNodes.values()) {
@@ -211,35 +222,53 @@ public class NormalizeGroup implements Runnable, SlcNames {
 			monitor.worked(1);
 	}
 
+	// Helpers
+	private Node getArtifactLatestVersion(Node artifactBase) {
+		try {
+			Node highestAVersion = null;
+			for (NodeIterator aVersions = artifactBase.getNodes(); aVersions
+					.hasNext();) {
+				Node aVersion = aVersions.nextNode();
+				if (aVersion.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE)) {
+					if (highestAVersion == null) {
+						highestAVersion = aVersion;
+						if (allArtifactsHighestVersion == null)
+							allArtifactsHighestVersion = aVersion;
+						// Correctly handle following arrival order:
+						// Name1 - V1, name2 - V3
+						else {
+							Version cachedHighestVersion = extractOsgiVersion(allArtifactsHighestVersion);
+							Version currVersion = extractOsgiVersion(aVersion);
+							if (currVersion.compareTo(cachedHighestVersion) > 0)
+								allArtifactsHighestVersion = aVersion;
+						}
+					} else {
+						Version currVersion = extractOsgiVersion(aVersion);
+						Version currentHighestVersion = extractOsgiVersion(highestAVersion);
+						if (currVersion.compareTo(currentHighestVersion) > 0) {
+							highestAVersion = aVersion;
+						}
+						if (currVersion
+								.compareTo(extractOsgiVersion(allArtifactsHighestVersion)) > 0) {
+							allArtifactsHighestVersion = aVersion;
+						}
+					}
+
+				}
+			}
+			return highestAVersion;
+		} catch (RepositoryException re) {
+			throw new SlcException("Unable to get latest version for node "
+					+ artifactBase, re);
+		}
+	}
+
 	private Version extractOsgiVersion(Node artifactVersion)
 			throws RepositoryException {
 		String rawVersion = artifactVersion.getProperty(SLC_ARTIFACT_VERSION)
 				.getString();
 		String cleanVersion = rawVersion.replace("-SNAPSHOT", ".SNAPSHOT");
 		return new Version(cleanVersion);
-	}
-
-	private Artifact writeIndex(Session session, String artifactId,
-			Set<Artifact> artifacts) throws RepositoryException {
-		Artifact artifact = new DefaultArtifact(groupId, artifactId, "pom",
-				version);
-		Artifact parentArtifact = parentPomCoordinates != null ? new DefaultArtifact(
-				parentPomCoordinates) : null;
-		String pom = MavenConventionsUtils.artifactsAsDependencyPom(artifact,
-				artifacts, parentArtifact);
-		Node node = RepoUtils.copyBytesAsArtifact(
-				session.getNode(artifactBasePath), artifact, pom.getBytes());
-		artifactIndexer.index(node);
-
-		// TODO factorize
-		String pomSha = JcrUtils.checksumFile(node, "SHA-1");
-		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".sha1",
-				pomSha.getBytes());
-		String pomMd5 = JcrUtils.checksumFile(node, "MD5");
-		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".md5",
-				pomMd5.getBytes());
-		session.save();
-		return artifact;
 	}
 
 	protected void preProcessBundleArtifact(Node bundleNode)
@@ -274,7 +303,9 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		binaries.add(RepoUtils.asArtifact(bundleNode));
 
 		if (bundleNode.getSession().hasPendingChanges())
-			bundleNode.getSession().save();
+			throw new SlcException("Pending changes in the session, "
+					+ "this should not be true here.");
+		// bundleNode.getSession().save();
 	}
 
 	protected void processBundleArtifact(Node bundleNode)
@@ -297,6 +328,30 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		String pomSha = JcrUtils.checksumFile(pomNode, "SHA-1");
 		JcrUtils.copyBytesAsFile(artifactFolder, pomNode.getName() + ".sha1",
 				pomSha.getBytes());
+	}
+
+	// Writers
+	private Artifact writeIndex(Session session, String artifactId,
+			Set<Artifact> artifacts) throws RepositoryException {
+		Artifact artifact = new DefaultArtifact(groupId, artifactId, "pom",
+				version);
+		Artifact parentArtifact = parentPomCoordinates != null ? new DefaultArtifact(
+				parentPomCoordinates) : null;
+		String pom = MavenConventionsUtils.artifactsAsDependencyPom(artifact,
+				artifacts, parentArtifact);
+		Node node = RepoUtils.copyBytesAsArtifact(
+				session.getNode(artifactBasePath), artifact, pom.getBytes());
+		artifactIndexer.index(node);
+
+		// TODO factorize
+		String pomSha = JcrUtils.checksumFile(node, "SHA-1");
+		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".sha1",
+				pomSha.getBytes());
+		String pomMd5 = JcrUtils.checksumFile(node, "MD5");
+		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".md5",
+				pomMd5.getBytes());
+		session.save();
+		return artifact;
 	}
 
 	private String generatePomForBundle(Node n) throws RepositoryException {
@@ -358,8 +413,6 @@ public class NormalizeGroup implements Runnable, SlcNames {
 
 		// TODO require bundles
 
-		
-		
 		List<Node> dependencyNodes = new ArrayList<Node>();
 		for (String depSymbName : dependenciesSymbolicNames) {
 			if (depSymbName.equals(ownSymbolicName))
@@ -426,6 +479,7 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		return p.toString();
 	}
 
+	/* SETTERS */
 	public void setRepository(Repository repository) {
 		this.repository = repository;
 	}

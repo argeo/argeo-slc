@@ -40,7 +40,7 @@ public class ModularDistVersionEditor extends ArtifactVersionEditor {
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new ModuleListPage(this, "Modules ", getArtifact()));
+			addPage(new ModularDistVersionOverviewPage(this, "Modules ", getArtifact()));
 			addPage(new RunInOsgiPage(this, "Run as OSGi ", getArtifact()));
 			super.addPages();
 		} catch (PartInitException e) {

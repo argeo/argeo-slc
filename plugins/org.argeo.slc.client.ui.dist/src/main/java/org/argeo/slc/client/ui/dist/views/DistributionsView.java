@@ -34,6 +34,7 @@ import org.argeo.slc.client.ui.dist.commands.Fetch;
 import org.argeo.slc.client.ui.dist.commands.MergeWorkspaces;
 import org.argeo.slc.client.ui.dist.commands.NormalizeDistribution;
 import org.argeo.slc.client.ui.dist.commands.NormalizeWorkspace;
+import org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard;
 import org.argeo.slc.client.ui.dist.commands.PublishWorkspace;
 import org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView;
 import org.argeo.slc.client.ui.dist.commands.RegisterRepository;
@@ -45,6 +46,7 @@ import org.argeo.slc.client.ui.dist.controllers.DistTreeContentProvider;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeDoubleClickListener;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeLabelProvider;
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
+import org.argeo.slc.client.ui.dist.model.ModularDistBaseElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
@@ -157,7 +159,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				String targetRepoPath = null, workspaceName = null, workspacePrefix = null;
 				// String targetRepoUri = null;
 				// Build conditions depending on element type
-				boolean isDistribElem = false, isRepoElem = false, isDistribGroupElem = false;
+				boolean isDistribElem = false, isModularDistBaseElem = false, isRepoElem = false, isDistribGroupElem = false;
 				boolean isLocal = false, isReadOnly = true;
 
 				RepoElem re = null;
@@ -172,6 +174,12 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				} else if (firstElement instanceof RepoElem) {
 					re = (RepoElem) firstElement;
 					isRepoElem = true;
+					isLocal = re.inHome();
+					isReadOnly = re.isReadOnly();
+				} else if (firstElement instanceof ModularDistBaseElem) {
+					ModularDistBaseElem mdbe = (ModularDistBaseElem) firstElement;
+					re = (RepoElem) mdbe.getParent().getParent().getParent();
+					isModularDistBaseElem = true;
 					isLocal = re.inHome();
 					isReadOnly = re.isReadOnly();
 				} else if (firstElement instanceof WkspGroupElem) {
@@ -229,8 +237,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(Fetch.PARAM_TARGET_REPO_PATH, targetRepoPath);
 				CommandUtils.refreshParametrizedCommand(menuManager, window,
 						Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON,
-						isRepoElem && isLocal && singleElement
-								&& !isReadOnly, params);
+						isRepoElem && isLocal && singleElement && !isReadOnly,
+						params);
 
 				// Normalize workspace
 				params = new HashMap<String, String>();
@@ -300,7 +308,13 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				CommandUtils.refreshParametrizedCommand(submenu, window,
 						RunInOsgi.ID, RunInOsgi.DEFAULT_LABEL,
 						RunInOsgi.DEFAULT_ICON, isDistribElem && singleElement
-								&& isLocal, params);
+								&& isLocal, params);// Run in OSGi
+
+				CommandUtils.refreshCommand(submenu, window,
+						OpenGenerateBinariesWizard.ID,
+						OpenGenerateBinariesWizard.DEFAULT_LABEL,
+						OpenGenerateBinariesWizard.DEFAULT_ICON,
+						isModularDistBaseElem && !isReadOnly);
 
 				if (submenu.getSize() > 0)
 					menuManager.add(submenu);

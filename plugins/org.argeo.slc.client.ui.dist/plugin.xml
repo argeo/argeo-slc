@@ -200,6 +200,12 @@
     	</command>
     	
     	<command
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard"
+            id="org.argeo.slc.client.ui.dist.openGenerateBinariesWizard"
+            name="Generate Binaries...">
+    	</command>
+    	
+    	<command
             id="org.argeo.slc.client.ui.dist.normalizeWorkspace"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Normalize Workspace">

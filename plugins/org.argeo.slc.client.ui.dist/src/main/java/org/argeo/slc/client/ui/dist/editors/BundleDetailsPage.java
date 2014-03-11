@@ -90,7 +90,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			form.setText(currBundle.hasProperty(DistConstants.SLC_BUNDLE_NAME) ? currBundle
 					.getProperty(DistConstants.SLC_BUNDLE_NAME).getString()
 					: "");
-			form.setMessage(" test", IMessageProvider.NONE);
+			form.setMessage(" ", IMessageProvider.NONE);
 			Composite body = form.getBody();
 			GridLayout layout = new GridLayout(1, false);
 			layout.marginWidth = 5;

@@ -35,6 +35,19 @@ public class ModularDistBaseElem extends DistParentElem {
 		this.type = type;
 	}
 
+	public Node getCategoryBase() {
+		// TODO clean this
+		if (type.equals(AETHER_CATEGORY_BASE))
+			return artifactBase;
+		else
+			try {
+				return artifactBase.getParent();
+			} catch (RepositoryException e) {
+				throw new SlcException("unable tyo get parent node for "
+						+ artifactBase, e);
+			}
+	}
+
 	/**
 	 * Override normal behavior to initialize children only when first requested
 	 */
@@ -73,7 +86,7 @@ public class ModularDistBaseElem extends DistParentElem {
 		}
 	}
 
-	public NodeIterator getDistVersions() {
+	private NodeIterator getDistVersions() {
 		try {
 			if (AETHER_CATEGORY_BASE.equals(type))
 				return null;

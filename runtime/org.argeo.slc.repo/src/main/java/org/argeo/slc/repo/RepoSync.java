@@ -248,6 +248,7 @@ public class RepoSync implements Runnable {
 			if (log.isDebugEnabled())
 				log.debug("Synced " + sourceSession.getWorkspace().getName());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new SlcException("Cannot sync "
 					+ sourceSession.getWorkspace().getName() + " to "
 					+ targetSession.getWorkspace().getName(), e);
@@ -315,7 +316,8 @@ public class RepoSync implements Runnable {
 			copyProperties(sourceNode, targetNode);
 
 			// next level
-			for (NodeIterator ni = sourceNode.getNodes(); ni.hasNext();) {
+			NodeIterator ni = sourceNode.getNodes();
+			while (ni != null && ni.hasNext()) {
 				Node sourceChild = ni.nextNode();
 				syncNode(sourceChild, targetSession);
 			}
