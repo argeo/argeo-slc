@@ -15,7 +15,23 @@
 		</property>
 	</bean>
 
-	<!-- Maven Proxy -->
+	<bean id="slcRepoManager" class="org.argeo.slc.repo.core.SlcRepoManagerImpl"
+		init-method="init" destroy-method="destroy">
+		<property name="javaRepoManager" ref="javaRepoManager" />
+	</bean>
+
+	<!-- Java -->
+	<bean id="javaRepoManager" class="org.argeo.slc.repo.core.JavaRepoManagerImpl"
+		init-method="init" destroy-method="destroy" depends-on="ROLE_SLC">
+		<property name="nodeIndexers">
+			<list>
+				<bean class="org.argeo.slc.repo.ArtifactIndexer" />
+				<bean class="org.argeo.slc.repo.JarFileIndexer" />
+			</list>
+		</property>
+		<property name="jcrRepository" ref="javaRepository" />
+	</bean>
+
 	<bean id="mavenProxyService" class="org.argeo.slc.repo.maven.MavenProxyServiceImpl"
 		init-method="init" destroy-method="destroy" depends-on="ROLE_SLC">
 		<property name="jcrRepository" ref="javaRepository" />
@@ -23,34 +39,21 @@
 		<property name="defaultRepositories" ref="defaultMavenRepositories" />
 	</bean>
 
-	<bean id="mavenProxyIndexer" class="org.argeo.slc.repo.RepoIndexer"
-		init-method="init" destroy-method="destroy">
-		<property name="jcrRepository" ref="javaRepository" />
-		<property name="workspace" value="${slc.repo.jcr.proxyWorkspace}" />
-		<property name="nodeIndexers">
-			<list>
-				<bean class="org.argeo.slc.repo.ArtifactIndexer" />
-				<bean class="org.argeo.slc.repo.JarFileIndexer" />
-			</list>
-		</property>
-	</bean>
-
-	<!-- RPM Proxy -->
-	<bean id="rpmProxyService" class="org.argeo.slc.rpmfactory.core.RpmProxyServiceImpl"
+	<!-- RPM -->
+	<bean id="rpmRepoManager" class="org.argeo.slc.repo.core.RpmRepoManagerImpl"
 		init-method="init" destroy-method="destroy" depends-on="ROLE_SLC">
-		<property name="jcrRepository" ref="rpmRepository" />
-		<property name="proxyWorkspace" value="${slc.repo.jcr.proxyWorkspace}" />
-		<property name="defaultRepositories" ref="defaultRpmRepositories" />
-	</bean>
-
-	<bean id="rpmProxyIndexer" class="org.argeo.slc.repo.RepoIndexer"
-		init-method="init" destroy-method="destroy">
-		<property name="jcrRepository" ref="rpmRepository" />
-		<property name="workspace" value="${slc.repo.jcr.proxyWorkspace}" />
 		<property name="nodeIndexers">
 			<list>
 				<bean class="org.argeo.slc.repo.RpmIndexer" />
 			</list>
 		</property>
+		<property name="jcrRepository" ref="rpmRepository" />
+	</bean>
+
+	<bean id="rpmProxyService" class="org.argeo.slc.rpmfactory.core.RpmProxyServiceImpl"
+		init-method="init" destroy-method="destroy" depends-on="ROLE_SLC">
+		<property name="jcrRepository" ref="rpmRepository" />
+		<property name="proxyWorkspace" value="${slc.repo.jcr.proxyWorkspace}" />
+		<property name="defaultRepositories" ref="defaultRpmRepositories" />
 	</bean>
 </beans>

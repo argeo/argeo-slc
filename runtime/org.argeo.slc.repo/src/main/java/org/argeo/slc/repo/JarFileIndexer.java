@@ -50,6 +50,7 @@ import org.osgi.framework.Version;
  */
 public class JarFileIndexer implements NodeIndexer, SlcNames {
 	private final static Log log = LogFactory.getLog(JarFileIndexer.class);
+	private Boolean force = false;
 
 	public Boolean support(String path) {
 		return FilenameUtils.getExtension(path).equals("jar");
@@ -62,9 +63,13 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		ByteArrayInputStream bi = null;
 		Binary manifestBinary = null;
 		try {
-			if(!support(fileNode.getPath()))
+			if (!support(fileNode.getPath()))
 				return;
-			
+
+			// Already indexed
+			if (!force && fileNode.isNodeType(SlcTypes.SLC_JAR_FILE))
+				return;
+
 			if (!fileNode.isNodeType(NodeType.NT_FILE))
 				return;
 
@@ -398,6 +403,10 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		if (!version.getQualifier().equals(""))
 			versionNode.setProperty(SlcNames.SLC_QUALIFIER,
 					version.getQualifier());
+	}
+
+	public void setForce(Boolean force) {
+		this.force = force;
 	}
 
 }

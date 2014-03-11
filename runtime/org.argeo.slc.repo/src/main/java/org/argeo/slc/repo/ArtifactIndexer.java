@@ -34,6 +34,7 @@ import org.sonatype.aether.artifact.Artifact;
  */
 public class ArtifactIndexer implements NodeIndexer {
 	private Log log = LogFactory.getLog(ArtifactIndexer.class);
+	private Boolean force = false;
 
 	public Boolean support(String path) {
 		String relativePath = getRelativePath(path);
@@ -52,9 +53,13 @@ public class ArtifactIndexer implements NodeIndexer {
 	public void index(Node fileNode) {
 		Artifact artifact = null;
 		try {
-			if(!support(fileNode.getPath()))
+			if (!support(fileNode.getPath()))
 				return;
-			
+
+			// Already indexed
+			if (!force && fileNode.isNodeType(SlcTypes.SLC_ARTIFACT))
+				return;
+
 			if (!fileNode.isNodeType(NodeType.NT_FILE))
 				return;
 
@@ -148,4 +153,9 @@ public class ArtifactIndexer implements NodeIndexer {
 		String relativePath = nodePath.substring(basePath.length());
 		return relativePath;
 	}
+
+	public void setForce(Boolean force) {
+		this.force = force;
+	}
+
 }

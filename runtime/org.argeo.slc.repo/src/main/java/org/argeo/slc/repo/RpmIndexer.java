@@ -9,6 +9,7 @@ import java.nio.channels.Channels;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
+import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.argeo.slc.SlcException;
@@ -22,6 +23,7 @@ import org.freecompany.redline.header.Header;
 
 /** Indexes an RPM file. */
 public class RpmIndexer implements NodeIndexer, SlcNames {
+	private Boolean force = false;
 
 	@Override
 	public Boolean support(String path) {
@@ -31,6 +33,16 @@ public class RpmIndexer implements NodeIndexer, SlcNames {
 	@Override
 	public void index(Node node) {
 		try {
+			if (!support(node.getPath()))
+				return;
+
+			// Already indexed
+			if (!force && node.isNodeType(SlcTypes.SLC_RPM))
+				return;
+
+			if (!node.isNodeType(NodeType.NT_FILE))
+				return;
+
 			InputStream in = node.getNode(Node.JCR_CONTENT)
 					.getProperty(Property.JCR_DATA).getBinary().getStream();
 			ReadableChannelWrapper channel = new ReadableChannelWrapper(

@@ -13,39 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.repo;
+package org.argeo.slc.repo.core;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.repo.NodeIndexer;
 
-/** Repository backend, maintain the JCR repository, mainly through listeners */
-public class RepoIndexer {
+/** Maintains the metadata of a workspace, using listeners */
+public class WorkspaceIndexer {
+	private final static Log log = LogFactory.getLog(WorkspaceIndexer.class);
 
-	private Repository jcrRepository;
-	private String workspace = null;
-
-	// Internal
-	private Session adminSession;
-	private FilesListener artifactListener;
-
+	private final Session adminSession;
+	private IndexingListener artifactListener;
 	/** order may be important */
-	private List<NodeIndexer> nodeIndexers = new ArrayList<NodeIndexer>();
+	private final List<NodeIndexer> nodeIndexers;
 
-	public void init() {
+	public WorkspaceIndexer(Session adminSession, List<NodeIndexer> nodeIndexers) {
+		this.adminSession = adminSession;
+		this.nodeIndexers = nodeIndexers;
 		try {
-			adminSession = jcrRepository.login(workspace);
-			artifactListener = new FilesListener();
+			artifactListener = new IndexingListener();
 			adminSession
 					.getWorkspace()
 					.getObservationManager()
@@ -56,23 +54,17 @@ public class RepoIndexer {
 		}
 	}
 
-	public void destroy() {
-		JcrUtils.logoutQuietly(adminSession);
+	public void close() {
+		try {
+			adminSession.getWorkspace().getObservationManager()
+					.removeEventListener(artifactListener);
+		} catch (RepositoryException e) {
+			log.error("Cannot close workspace indexer "
+					+ adminSession.getWorkspace().getName(), e);
+		}
 	}
 
-	public void setJcrRepository(Repository jcrRepository) {
-		this.jcrRepository = jcrRepository;
-	}
-
-	public void setNodeIndexers(List<NodeIndexer> nodeIndexers) {
-		this.nodeIndexers = nodeIndexers;
-	}
-
-	public void setWorkspace(String workspace) {
-		this.workspace = workspace;
-	}
-
-	class FilesListener implements EventListener {
+	class IndexingListener implements EventListener {
 
 		public void onEvent(EventIterator events) {
 			while (events.hasNext()) {
@@ -100,9 +92,6 @@ public class RepoIndexer {
 					JcrUtils.discardQuietly(adminSession);
 				}
 			}
-
 		}
-
 	}
-
 }
