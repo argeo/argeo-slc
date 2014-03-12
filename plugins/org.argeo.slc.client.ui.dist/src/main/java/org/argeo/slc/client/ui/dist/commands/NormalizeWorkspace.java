@@ -192,11 +192,13 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 							artifactIndexer.index(node);
 							jarFileIndexer.index(node);
 							distBundleIndexer.index(node);
-							node.getSession().save();
+							if (node.getSession().hasPendingChanges()) {
+								node.getSession().save();
+								if (log.isDebugEnabled())
+									log.debug("Processed artifact "
+											+ node.getPath());
+							}
 							monitor.worked(1);
-							if (log.isDebugEnabled())
-								log.debug("Processed artifact "
-										+ node.getPath());
 						}
 				} else {
 					monitor.worked(1);
