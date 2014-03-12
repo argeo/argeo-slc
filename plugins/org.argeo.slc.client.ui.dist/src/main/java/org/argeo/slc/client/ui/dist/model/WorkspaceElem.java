@@ -44,6 +44,11 @@ public class WorkspaceElem extends DistParentElem {
 		currSession = repoElem.repositoryLogin(getName());
 	}
 
+	/** Utility to create a new Session with correct credential in this context */
+	public Session getNewSession() {
+		return repoElem.repositoryLogin(getName());
+	}
+
 	public boolean hasChildren() {
 		try {
 			if (isConnected())

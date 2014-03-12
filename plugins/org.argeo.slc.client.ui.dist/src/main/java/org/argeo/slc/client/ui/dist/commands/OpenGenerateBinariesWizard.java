@@ -17,8 +17,14 @@ package org.argeo.slc.client.ui.dist.commands;
 
 import java.util.Iterator;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.model.ModularDistBaseElem;
+import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.client.ui.dist.wizards.GenerateBinariesWizard;
 import org.eclipse.core.commands.AbstractHandler;
@@ -56,14 +62,27 @@ public class OpenGenerateBinariesWizard extends AbstractHandler {
 				Object element = it.next();
 				if (element instanceof ModularDistBaseElem) {
 					ModularDistBaseElem elem = (ModularDistBaseElem) element;
+					Session newSession = null;
+					try {
+						Node cBase = elem.getCategoryBase();
+						String path = cBase.getPath();
+						newSession = ((WorkspaceElem) elem.getParent())
+								.getNewSession();
+						GenerateBinariesWizard wizard = new GenerateBinariesWizard(
+								newSession.getNode(path));
 
-					GenerateBinariesWizard wizard = new GenerateBinariesWizard(
-							elem.getCategoryBase());
-					WizardDialog dialog = new WizardDialog(
-							HandlerUtil.getActiveShell(event), wizard);
-					int result = dialog.open();
-					if (result == Dialog.OK)
-						CommandHelpers.callCommand(RefreshDistributionsView.ID);
+						WizardDialog dialog = new WizardDialog(
+								HandlerUtil.getActiveShell(event), wizard);
+						int result = dialog.open();
+
+						if (result == Dialog.OK)
+							CommandHelpers
+									.callCommand(RefreshDistributionsView.ID);
+					} catch (RepositoryException re) {
+						throw new SlcException(
+								"Unable to duplicate session for node " + elem,
+								re);
+					}
 				}
 
 			}

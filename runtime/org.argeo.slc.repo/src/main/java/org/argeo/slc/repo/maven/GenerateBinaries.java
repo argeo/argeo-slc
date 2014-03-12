@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import javax.jcr.Credentials;
@@ -160,9 +161,9 @@ public class GenerateBinaries implements Runnable, SlcNames {
 							.hasNext();) {
 						Node file = files.nextNode();
 						if (file.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
-							preProcessBundleArtifact(file);
 							if (log.isDebugEnabled())
-								log.debug("Pre-processed " + file.getName());
+								log.debug("Pre-Processing " + file.getName());
+							preProcessBundleArtifact(file);
 						}
 					}
 				}
@@ -199,11 +200,12 @@ public class GenerateBinaries implements Runnable, SlcNames {
 
 		int count = 1;
 		for (Node bundleNode : symbolicNamesToNodes.values()) {
+			if (log.isDebugEnabled())
+				log.debug("Processing " + bundleNode.getName() + " ( " + count
+						+ "/" + bundleCount + " )");
+
 			processBundleArtifact(bundleNode);
 			bundleNode.getSession().save();
-			if (log.isDebugEnabled())
-				log.debug(count + "/" + bundleCount + " Processed "
-						+ bundleNode.getName());
 			count++;
 		}
 
@@ -268,7 +270,46 @@ public class GenerateBinaries implements Runnable, SlcNames {
 		String rawVersion = artifactVersion.getProperty(SLC_ARTIFACT_VERSION)
 				.getString();
 		String cleanVersion = rawVersion.replace("-SNAPSHOT", ".SNAPSHOT");
-		return new Version(cleanVersion);
+		Version osgiVersion = null;
+		// log invalid version value to enable tracking them
+		try {
+			osgiVersion = new Version(cleanVersion);
+		} catch (IllegalArgumentException e) {
+			log.error("Version string " + cleanVersion + " is invalid ");
+			String twickedVersion = twickInvalidVersion(cleanVersion);
+			osgiVersion = new Version(twickedVersion);
+			log.error("Using " + twickedVersion + " instead");
+			// throw e;
+		}
+		return osgiVersion;
+	}
+
+	private String twickInvalidVersion(String tmpVersion) {
+		String[] tokens = tmpVersion.split("\\.");
+		if (tokens.length == 3 && tokens[2].lastIndexOf("-") > 0) {
+			String newSuffix = tokens[2].replaceFirst("-", ".");
+			tmpVersion = tmpVersion.replaceFirst(tokens[2], newSuffix);
+		} else if (tokens.length > 4) {
+			// FIXME manually remove other "."
+			StringTokenizer st = new StringTokenizer(tmpVersion, ".", true);
+			StringBuilder builder = new StringBuilder();
+			// Major
+			builder.append(st.nextToken()).append(st.nextToken());
+			// Minor
+			builder.append(st.nextToken()).append(st.nextToken());
+			// Micro
+			builder.append(st.nextToken()).append(st.nextToken());
+			// Qualifier
+			builder.append(st.nextToken());
+			while (st.hasMoreTokens()) {
+				// consume delimiter
+				st.nextToken();
+				if (st.hasMoreTokens())
+					builder.append("-").append(st.nextToken());
+			}
+			tmpVersion = builder.toString();
+		}
+		return tmpVersion;
 	}
 
 	protected void preProcessBundleArtifact(Node bundleNode)
