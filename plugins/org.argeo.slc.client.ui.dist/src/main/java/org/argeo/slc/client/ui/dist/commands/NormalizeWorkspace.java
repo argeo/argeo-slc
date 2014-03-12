@@ -200,6 +200,14 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 							}
 							monitor.worked(1);
 						}
+				} else if (node.getName().endsWith(".pom")) {
+					distBundleIndexer.index(node);
+					if (node.getSession().hasPendingChanges()) {
+						node.getSession().save();
+						if (log.isDebugEnabled())
+							log.debug("Processed artifact " + node.getPath());
+					}
+					monitor.worked(1);
 				} else {
 					monitor.worked(1);
 				}
