@@ -87,10 +87,7 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 		createColumn(tree, "Value", SWT.LEFT, 200);
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
-		complexTree = new TreeViewer(tree);
 
-		// Configure
-		// complexTree.addDoubleClickListener(new GenericDoubleClickListener());
 		complexTree = new TreeViewer(tree);
 		complexTree.setContentProvider(new TreeContentProvider());
 		complexTree.setLabelProvider(new TreeLabelProvider());
@@ -218,9 +215,9 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 				elements = new ArrayList<Object>();
 
 				// Maven coordinates
-				elements.add(node.getProperty(SLC_GROUP_ID));
-				elements.add(node.getProperty(SLC_ARTIFACT_ID));
-				elements.add(node.getProperty(SLC_ARTIFACT_VERSION));
+//				elements.add(node.getProperty(SLC_GROUP_ID));
+//				elements.add(node.getProperty(SLC_ARTIFACT_ID));
+//				elements.add(node.getProperty(SLC_ARTIFACT_VERSION));
 
 				// Meta information
 				// boolean gotSource = false;
