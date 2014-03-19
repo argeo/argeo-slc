@@ -16,8 +16,8 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 
 /**
- * Abstract the base a given modular distribution set that is the parent all
- * versions of the same distribution
+ * Abstract the base of a given modular distribution set i.e. the parent of all
+ * versions of a given modular distribution
  */
 public class ModularDistBaseElem extends DistParentElem {
 
@@ -25,31 +25,31 @@ public class ModularDistBaseElem extends DistParentElem {
 	final static public String AETHER_BINARIES_TYPE = "binaries";
 	final static public String AETHER_DEP_TYPE = "dep";
 	private String type;
-	private Node artifactBase;
+	private Node modularDistBase;
 
 	public ModularDistBaseElem(WorkspaceElem wkspElem, String name,
-			Node artifactBase, String type) {
+			Node modularDistBase, String type) {
 		super(name, wkspElem.inHome(), wkspElem.isReadOnly());
 		setParent(wkspElem);
-		this.artifactBase = artifactBase;
+		this.modularDistBase = modularDistBase;
 		this.type = type;
 	}
 
 	public Node getCategoryBase() {
 		// TODO clean this
 		if (type.equals(AETHER_CATEGORY_BASE))
-			return artifactBase;
+			return modularDistBase;
 		else
 			try {
-				return artifactBase.getParent();
+				return modularDistBase.getParent();
 			} catch (RepositoryException e) {
 				throw new SlcException("unable tyo get parent node for "
-						+ artifactBase, e);
+						+ modularDistBase, e);
 			}
 	}
 
 	/**
-	 * Override normal behavior to initialize children only when first requested
+	 * Override normal behaviour to initialise children only when first requested
 	 */
 	@Override
 	public synchronized boolean hasChildren() {
@@ -61,14 +61,13 @@ public class ModularDistBaseElem extends DistParentElem {
 	};
 
 	/**
-	 * Override normal behavior to initialize children only when first requested
+	 * Override normal behaviour to initialise children only when first requested
 	 */
 	@Override
 	public synchronized Object[] getChildren() {
 		if (isLoaded()) {
 			return super.getChildren();
 		} else {
-			// initialize current object
 			try {
 				NodeIterator ni = getDistVersions();
 				while (ni != null && ni.hasNext()) {
@@ -80,8 +79,8 @@ public class ModularDistBaseElem extends DistParentElem {
 				return super.getChildren();
 			} catch (RepositoryException re) {
 				throw new ArgeoException(
-						"Unexcpected error while initializing children SingleJcrNode",
-						re);
+						"Unable to retrieve children for "
+								+ modularDistBase, re);
 			}
 		}
 	}
@@ -91,14 +90,14 @@ public class ModularDistBaseElem extends DistParentElem {
 			if (AETHER_CATEGORY_BASE.equals(type))
 				return null;
 
-			QueryManager queryManager = artifactBase.getSession()
+			QueryManager queryManager = modularDistBase.getSession()
 					.getWorkspace().getQueryManager();
 			QueryObjectModelFactory factory = queryManager.getQOMFactory();
 			Selector source = factory.selector(
 					SlcTypes.SLC_MODULAR_DISTRIBUTION,
 					SlcTypes.SLC_MODULAR_DISTRIBUTION);
 			Constraint constraint = factory.descendantNode(
-					source.getSelectorName(), artifactBase.getPath());
+					source.getSelectorName(), modularDistBase.getPath());
 			// Ordering order = factory.descending(factory.propertyValue(
 			// source.getSelectorName(), SlcNames.SLC_ARTIFACT_VERSION));
 			// Ordering[] orderings = { order };

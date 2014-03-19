@@ -74,10 +74,10 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 	private Keyring keyring;
 	private Repository repository;
 
+	// RElevant default node indexers 
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
 	private DistributionBundleIndexer distBundleIndexer = new DistributionBundleIndexer();
-
 	private PdeSourcesIndexer pdeSourceIndexer = new PdeSourcesIndexer(
 			artifactIndexer, jarFileIndexer);
 
@@ -195,7 +195,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 							if (node.getSession().hasPendingChanges()) {
 								node.getSession().save();
 								if (log.isDebugEnabled())
-									log.debug("Processed artifact "
+									log.debug("Processed jar artifact "
 											+ node.getPath());
 							}
 							monitor.worked(1);
@@ -205,7 +205,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 					if (node.getSession().hasPendingChanges()) {
 						node.getSession().save();
 						if (log.isDebugEnabled())
-							log.debug("Processed artifact " + node.getPath());
+							log.debug("Processed pom artifact " + node.getPath());
 					}
 					monitor.worked(1);
 				} else {

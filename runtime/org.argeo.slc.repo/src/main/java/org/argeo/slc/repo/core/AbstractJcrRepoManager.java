@@ -76,8 +76,9 @@ abstract class AbstractJcrRepoManager {
 	}
 
 	protected void workspaceInit(String workspaceName) {
+		Session workspaceAdminSession = null;
 		try {
-			Session workspaceAdminSession = jcrRepository.login(workspaceName);
+			workspaceAdminSession = jcrRepository.login(workspaceName);
 			workspaceSessions.put(workspaceName, adminSession);
 			JcrUtils.addPrivilege(workspaceAdminSession, "/",
 					SlcConstants.ROLE_SLC, "jcr:all");
@@ -86,6 +87,8 @@ abstract class AbstractJcrRepoManager {
 			workspaceIndexers.put(workspaceName, workspaceIndexer);
 		} catch (RepositoryException e) {
 			log.error("Cannot initialize workspace " + workspaceName, e);
+		} finally {
+			JcrUtils.logoutQuietly(workspaceAdminSession);
 		}
 	}
 
@@ -100,5 +103,4 @@ abstract class AbstractJcrRepoManager {
 	public void setSecurityWorkspace(String securityWorkspace) {
 		this.securityWorkspace = securityWorkspace;
 	}
-
 }
