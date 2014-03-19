@@ -25,6 +25,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
@@ -948,7 +949,23 @@ public class JcrResultTreeView extends ViewPart {
 	}
 
 	/* DEPENDENCY INJECTION */
+	@Deprecated
 	public void setSession(Session session) {
 		this.session = session;
+	}
+
+	public void dispose() {
+		// JcrUtils.unregisterQuietly(session.getWorkspace(), resultsObserver);
+		JcrUtils.logoutQuietly(session);
+		super.dispose();
+	}
+
+	public void setRepository(Repository repository) {
+		try {
+			session = repository.login();
+		} catch (RepositoryException re) {
+			throw new SlcException("Unable to log in Repository " + repository,
+					re);
+		}
 	}
 }

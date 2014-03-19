@@ -26,6 +26,7 @@ import java.util.TreeSet;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
@@ -41,6 +42,7 @@ import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
 import org.argeo.eclipse.ui.jcr.NodeElementComparer;
 import org.argeo.eclipse.ui.jcr.SimpleNodeContentProvider;
 import org.argeo.eclipse.ui.specific.EclipseUiSpecificUtils;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.SlcImages;
@@ -427,12 +429,28 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		}
 	}
 
+	public void dispose() {
+		JcrUtils.logoutQuietly(session);
+		super.dispose();
+	}
+
 	// DEPENDENCY INJECTION
+
+	public void setModulesManager(ExecutionModulesManager modulesManager) {
+		this.modulesManager = modulesManager;
+	}
+
+	@Deprecated
 	public void setSession(Session session) {
 		this.session = session;
 	}
 
-	public void setModulesManager(ExecutionModulesManager modulesManager) {
-		this.modulesManager = modulesManager;
+	public void setRepository(Repository repository) {
+		try {
+			session = repository.login();
+		} catch (RepositoryException re) {
+			throw new SlcException("Unable to log in Repository " + repository,
+					re);
+		}
 	}
 }

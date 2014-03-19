@@ -22,6 +22,7 @@ import java.util.UUID;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -109,6 +110,7 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	@Override
 	public void dispose() {
 		JcrUtils.logoutQuietly(session);
+		super.dispose();
 	}
 
 	/** Actually runs the process. */
@@ -230,8 +232,8 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 			editorDirtyStateChanged();
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot save " + processNode, e);
-		} finally {
-			JcrUtils.discardQuietly(session);
+			// } finally {
+			// JcrUtils.discardQuietly(session);
 		}
 	}
 
@@ -257,8 +259,18 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	// }
 
 	/** Expects one session per editor. */
+	@Deprecated
 	public void setSession(Session session) {
 		this.session = session;
+	}
+
+	public void setRepository(Repository repository) {
+		try {
+			session = repository.login();
+		} catch (RepositoryException re) {
+			throw new SlcException("Unable to log in Repository " + repository,
+					re);
+		}
 	}
 
 	public void setProcessController(ProcessController processController) {
@@ -268,5 +280,4 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	public void setModulesManager(ExecutionModulesManager modulesManager) {
 		this.modulesManager = modulesManager;
 	}
-
 }

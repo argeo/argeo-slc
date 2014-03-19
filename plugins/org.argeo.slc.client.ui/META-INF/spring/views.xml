@@ -6,18 +6,23 @@
 
 	<bean id="jcrExecutionModulesView" class="org.argeo.slc.client.ui.views.JcrExecutionModulesView"
 		scope="prototype">
-		<property name="session" ref="session" />
+		<property name="repository" ref="repository" />
 		<property name="modulesManager" ref="modulesManager" />
 	</bean>
 
 	<bean id="jcrProcessListView" class="org.argeo.slc.client.ui.views.JcrProcessListView"
 		scope="prototype">
-		<property name="session" ref="session" />
+		<property name="repository" ref="repository" />
 	</bean>
 
 	<bean id="jcrResultListView" class="org.argeo.slc.client.ui.views.JcrResultListView"
 		scope="prototype">
-		<property name="session" ref="session" />
+		<property name="repository" ref="repository" />
+	</bean>
+
+	<bean id="jcrResultTreeView" class="org.argeo.slc.client.ui.views.JcrResultTreeView"
+		scope="prototype">
+		<property name="repository" ref="repository" />
 	</bean>
 
 </beans>

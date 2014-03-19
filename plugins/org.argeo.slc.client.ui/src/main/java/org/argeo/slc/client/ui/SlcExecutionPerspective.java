@@ -31,7 +31,8 @@ public class SlcExecutionPerspective implements IPerspectiveFactory {
 		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT,
 				0.3f, editorArea);
 		left.addView(ClientUiPlugin.ID + ".jcrExecutionModulesView");
-		left.addView(ClientUiPlugin.ID + ".jcrResultListView");
+		// left.addView(ClientUiPlugin.ID + ".jcrResultListView");
+		left.addView(ClientUiPlugin.ID + ".jcrResultTreeView");
 		// Sleak view for SWT resource debugging
 		// left.addView("org.eclipse.swt.tools.views.SleakView");
 

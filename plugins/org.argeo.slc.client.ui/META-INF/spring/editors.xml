@@ -8,8 +8,6 @@
 		scope="prototype">
 		<property name="processController" ref="processController" />
 		<property name="modulesManager" ref="modulesManager" />
-		<property name="session">
-			<bean factory-bean="repository" factory-method="login" />
-		</property>
+		<property name="repository" ref="repository" />
 	</bean>
 </beans>

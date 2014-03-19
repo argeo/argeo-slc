@@ -20,6 +20,13 @@
 	         restorable="true">
 	   </view>
 	   <view
+	         id="org.argeo.slc.client.ui.jcrResultTreeView"
+	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
+	         icon="icons/results.gif"
+	         name="Results"
+	         restorable="true">
+	   </view>
+	   <view
 	         id="org.argeo.slc.client.ui.jcrProcessListView"
 	         class="org.argeo.eclipse.spring.SpringExtensionFactory"
 	         name="Processes"
