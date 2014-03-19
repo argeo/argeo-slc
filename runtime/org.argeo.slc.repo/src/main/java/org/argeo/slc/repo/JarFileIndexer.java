@@ -110,9 +110,10 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 
 			fileNode.setProperty(SlcNames.SLC_MANIFEST, manifestBinary);
 			Attributes attrs = manifest.getMainAttributes();
-			if (log.isTraceEnabled())
-				for (Object key : attrs.keySet())
-					log.trace(key + ": " + attrs.getValue(key.toString()));
+			
+			// if (log.isTraceEnabled())
+			// for (Object key : attrs.keySet())
+			// log.trace(key + ": " + attrs.getValue(key.toString()));
 
 			// standard J2SE MANIFEST attributes
 			addAttr(Attributes.Name.MANIFEST_VERSION, fileNode, attrs);

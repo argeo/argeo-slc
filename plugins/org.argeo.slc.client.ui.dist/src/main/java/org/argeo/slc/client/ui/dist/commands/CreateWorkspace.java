@@ -41,7 +41,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * Create a new empty workspace in the current repository.
+ * Create a new empty workspace in a remote repository.
  */
 public class CreateWorkspace extends AbstractHandler {
 	private static final Log log = LogFactory.getLog(CreateWorkspace.class);
@@ -81,7 +81,7 @@ public class CreateWorkspace extends AbstractHandler {
 					.getActiveWorkbenchWindow(event).getShell(),
 					"Workspace name?",
 					"Choose a name for the workspace to create",
-					prefix == null ? "" : prefix + "_", null);
+					prefix == null ? "" : prefix + "-", null);
 			int result = inputDialog.open();
 
 			String enteredName = inputDialog.getValue();

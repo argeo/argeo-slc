@@ -58,6 +58,8 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 		Session javaSession = null;
 		Session distSession = null;
 		try {
+			// TODO rather user a JavaRepoManager that will also implicitely
+			// manage the indexing of newly created nodes.
 			javaSession = JcrUtils.loginOrCreateWorkspace(javaRepository,
 					workspace);
 			distSession = JcrUtils.loginOrCreateWorkspace(distRepository,
@@ -169,7 +171,7 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 				return loadUrlToPath(url, distSession, distPath);
 			} catch (FileNotFoundException e) {
 				if (log.isDebugEnabled())
-					log.debug("Cannot download" + url
+					log.debug("Cannot download " + url
 							+ ", trying another mirror");
 			}
 		}

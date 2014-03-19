@@ -6,6 +6,11 @@ mixin
 - slc:name (STRING) m
 - slc:version (STRING) m
 
+[slc:categorizedNameVersion] > slc:nameVersion
+mixin
+// define as mandatory?
+- slc:category (STRING)
+
 // AGENT
 [slc:agentFactory] > nt:unstructured, mix:title
 + * (slc:agent)

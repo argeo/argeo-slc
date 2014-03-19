@@ -242,49 +242,7 @@
 			</commandParameter>
     	</command>
     	
-    	<!-- Workspaces CRUD --> 
 		<command
-            id="org.argeo.slc.client.ui.dist.createWorkspace"
-            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            name="Create Workspace">
-            <commandParameter
-         		id="workspacePrefix"
-         		name="Workspace prefix">
-  	 		</commandParameter>
-            <commandParameter
-         		id="targetRepoPath"
-         		name="Target repo node path">
-  	 		</commandParameter>
-    	</command>
-		<command
-			id="org.argeo.slc.client.ui.dist.deleteWorkspace"
-			defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-			name="Delete chosen Workspace">
-			<commandParameter
-				id="workspaceName"
-				name="Workspace name">
-			</commandParameter>
-			<commandParameter
-				id="targetRepoPath"
-				name="Target repo node path">
-			</commandParameter>
-    	</command>
-    	
-		<command
-            id="org.argeo.slc.client.ui.dist.copyWorkspace"
-            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            name="Copy chosen Workspace">
-            <commandParameter
-         		id="srcWkspName"
-         		name="Source Workspace Name">
-  	 		</commandParameter>
-            <commandParameter
-         		id="targetRepoPath"
-         		name="Target repo node path">
-  	 		</commandParameter>
-    	</command>
-    	
-    	<command
             id="org.argeo.slc.client.ui.dist.mergeWorkspaces"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Copy chosen Workspace">
@@ -306,7 +264,70 @@
   	 		</commandParameter>
     	</command>
     	
-		<!-- Advanced commands --> 
+    	<!-- Workspaces CRUD --> 
+		<!-- Generic new and copy workspace -->
+		<command
+            id="org.argeo.slc.client.ui.dist.createWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Create Workspace">
+            <commandParameter
+         		id="workspacePrefix"
+         		name="Workspace prefix">
+  	 		</commandParameter>
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo node path">
+  	 		</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.copyWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Copy chosen Workspace">
+            <commandParameter
+         		id="srcWkspName"
+         		name="Source Workspace Name">
+  	 		</commandParameter>
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo node path">
+  	 		</commandParameter>
+    	</command>
+    	<!-- Specific for local java workspaces --> 
+    	<command
+            id="org.argeo.slc.client.ui.dist.createLocalJavaWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Create Local Java Workspace">
+            <commandParameter
+         		id="workspacePrefix"
+         		name="Workspace prefix">
+  	 		</commandParameter>
+    	</command>
+		<command
+            id="org.argeo.slc.client.ui.dist.copyLocalJavaWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Copy chosen local Java Workspace">
+            <commandParameter
+         		id="srcWkspName"
+         		name="Source Workspace Name">
+  	 		</commandParameter>
+    	</command>
+		
+		<!-- Not terminated delete command - does not really work -->
+    	<command
+			id="org.argeo.slc.client.ui.dist.deleteWorkspace"
+			defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+			name="Delete chosen Workspace">
+			<commandParameter
+				id="workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="targetRepoPath"
+				name="Target repo node path">
+			</commandParameter>
+    	</command>
+    	
+ 		<!-- Advanced commands --> 
 		<command
             id="org.argeo.slc.client.ui.dist.doNothing"
             defaultHandler="org.argeo.slc.client.ui.dist.commands.DoNothing"

@@ -113,7 +113,7 @@ public class WorkspaceElem extends DistParentElem {
 						.getQueryManager()
 						.createQuery(
 								"select * from ["
-										+ SlcTypes.SLC_RELEVANT_CATEGORY + "]",
+										+ SlcTypes.SLC_CATEGORY + "]",
 								Query.JCR_SQL2);
 				distributions = groupQuery.execute().getNodes();
 				while (distributions.hasNext()) {

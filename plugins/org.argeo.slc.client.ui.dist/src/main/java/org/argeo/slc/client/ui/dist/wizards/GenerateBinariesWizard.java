@@ -18,14 +18,18 @@ package org.argeo.slc.client.ui.dist.wizards;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.jcr.Credentials;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoMonitor;
 import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.PrivilegedJob;
@@ -34,7 +38,6 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.GenerateBinaries;
-import org.argeo.slc.repo.maven.IndexDistribution;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -60,30 +63,34 @@ import org.eclipse.swt.widgets.Text;
 import org.sonatype.aether.artifact.Artifact;
 
 /**
- * Defines parameters to generate binaries (e.g. a specific modular
- * distribution) using a {@link IndexDistribution} object
+ * Define parameters to asynchronously generate binaries, sources and sdk pom
+ * artifacts for this group using a {@link GenerateBinaries} runnable
  */
 public class GenerateBinariesWizard extends Wizard {
 	private final static Log log = LogFactory
 			.getLog(GenerateBinariesWizard.class);
 
 	// Business objects
-	private Node groupNode;
+	private String groupNodePath;
+	private Repository repository;
+	private Credentials credentials;
+	private String wkspName;
 
 	// The pages
 	private RecapPage recapPage;
 
 	// Controls with parameters
-	private Button overridePomsBtn;
 	private Text versionTxt;
 	private Text latestVersionTxt;
 	private Text highestArtifactVersionTxt;
 
-	// private CheckboxTableViewer wkspViewer;
-
-	public GenerateBinariesWizard(Node groupNode) {
+	public GenerateBinariesWizard(Repository repository,
+			Credentials credentials, String wkspName, String groupNodePath) {
 		super();
-		this.groupNode = groupNode;
+		this.repository = repository;
+		this.credentials = credentials;
+		this.wkspName = wkspName;
+		this.groupNodePath = groupNodePath;
 	}
 
 	@Override
@@ -107,15 +114,18 @@ public class GenerateBinariesWizard extends Wizard {
 		if (!canFinish())
 			return false;
 		try {
-			String msg = "Your are about to normalize group, do you really want to proceed ?";
+			String msg = "Your are about to generate binaries, sources and sdk "
+					+ "pom artifacts for this group, "
+					+ "do you really want to proceed ?";
 
 			boolean result = MessageDialog.openConfirm(DistPlugin.getDefault()
 					.getWorkbench().getDisplay().getActiveShell(),
-					"Confirm Process Launch", msg);
+					"Confirm Launch", msg);
 
 			if (result) {
-				GenerateBinaryJob job = new GenerateBinaryJob(groupNode,
-						versionTxt.getText(), overridePomsBtn.getSelection());
+				GenerateBinaryJob job = new GenerateBinaryJob(repository,
+						credentials, wkspName, groupNodePath,
+						versionTxt.getText());
 				job.setUser(true);
 				job.schedule();
 			}
@@ -143,20 +153,14 @@ public class GenerateBinariesWizard extends Wizard {
 		}
 
 		public IWizardPage getNextPage() {
-			// always last....
-			return null;
-		}
-
-		@Override
-		public void setVisible(boolean visible) {
-			if (visible) {
-
-			}
-			super.setVisible(visible);
+			return null; // always last
 		}
 
 		private void refreshValues() {
+			Session session = null;
 			try {
+				session = repository.login(credentials, wkspName);
+				Node groupNode = session.getNode(groupNodePath);
 				GenerateBinaries gb = GenerateBinaries.preProcessGroupNode(
 						groupNode, null);
 
@@ -187,31 +191,40 @@ public class GenerateBinariesWizard extends Wizard {
 						}
 					}
 					if (currHighestVersion != null)
-						latestVersionTxt.setText(highestVersion
+						latestVersionTxt.setText(currHighestVersion
 								.getBaseVersion());
 				}
-
 				recapViewer.setInput(binaries);
 				recapViewer.refresh();
 			} catch (RepositoryException re) {
 				throw new SlcException("Unable to get repositories URIs", re);
+			} finally {
+				JcrUtils.logoutQuietly(session);
 			}
 		}
 
 		public void createControl(Composite parent) {
+			setMessage("Configure Maven Indexing", IMessageProvider.NONE);
+
 			Composite composite = new Composite(parent, SWT.NO_FOCUS);
 			composite.setLayout(new GridLayout(2, false));
 
 			versionTxt = createLT(composite, "Version");
+			versionTxt
+					.setToolTipText("Enter a version for the new Modular Distribution");
+
 			latestVersionTxt = createLT(composite, "Latest version");
 			latestVersionTxt.setEditable(false);
+			latestVersionTxt
+					.setToolTipText("The actual latest version of this modular distribution");
+
 			highestArtifactVersionTxt = createLT(composite,
 					"Highest version in current category");
 			highestArtifactVersionTxt.setEditable(false);
+			highestArtifactVersionTxt
+					.setToolTipText("The highest version among all version of the below listed modules.");
 
-			overridePomsBtn = createLC(composite, "Override POMs");
-			setMessage("Configure Maven Indexing", IMessageProvider.NONE);
-
+			// Creates the table
 			Table table = new Table(composite, SWT.H_SCROLL | SWT.V_SCROLL
 					| SWT.BORDER);
 			table.setLinesVisible(true);
@@ -220,7 +233,6 @@ public class GenerateBinariesWizard extends Wizard {
 					1));
 			recapViewer = new TableViewer(table);
 
-			// Artifact columns
 			TableViewerColumn column = ViewerUtils.createTableViewerColumn(
 					recapViewer, "Name", SWT.NONE, 250);
 			column.setLabelProvider(new ColumnLabelProvider() {
@@ -242,6 +254,7 @@ public class GenerateBinariesWizard extends Wizard {
 			recapViewer.setContentProvider(new IStructuredContentProvider() {
 				List<Artifact> artifacts;
 
+				@SuppressWarnings("unchecked")
 				public void inputChanged(Viewer viewer, Object oldInput,
 						Object newInput) {
 					artifacts = (List<Artifact>) newInput;
@@ -264,6 +277,52 @@ public class GenerateBinariesWizard extends Wizard {
 		}
 	}
 
+	/**
+	 * Define the privileged job that will be run asynchronously generate
+	 * corresponding artifacts
+	 */
+	private class GenerateBinaryJob extends PrivilegedJob {
+
+		private final Repository repository;
+		private final Credentials credentials;
+		private final String wkspName;
+		private final String groupNodePath;
+		private final String version;
+
+		public GenerateBinaryJob(Repository repository,
+				Credentials credentials, String wkspName, String groupNodePath,
+				String version) {
+			super("Fetch");
+			this.version = version;
+			this.repository = repository;
+			this.credentials = credentials;
+			this.wkspName = wkspName;
+			this.groupNodePath = groupNodePath;
+		}
+
+		@Override
+		protected IStatus doRun(IProgressMonitor progressMonitor) {
+			Session session = null;
+			try {
+				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
+				session = repository.login(credentials, wkspName);
+				Node groupBaseNode = session.getNode(groupNodePath);
+				GenerateBinaries.processGroupNode(groupBaseNode, version,
+						monitor);
+			} catch (Exception e) {
+				if (log.isDebugEnabled())
+					e.printStackTrace();
+				return new Status(IStatus.ERROR, DistPlugin.ID,
+						"Cannot normalize group", e);
+			} finally {
+				JcrUtils.logoutQuietly(session);
+			}
+			return Status.OK_STATUS;
+		}
+	}
+
+	// ////////////////////////////
+	// // Helpers
 	/** Creates label and text. */
 	protected Text createLT(Composite parent, String label) {
 		new Label(parent, SWT.NONE).setText(label);
@@ -281,40 +340,4 @@ public class GenerateBinariesWizard extends Wizard {
 		check.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		return check;
 	}
-
-	/**
-	 * Define the privileged job that will be run asynchronously to real
-	 * indexing
-	 */
-	private class GenerateBinaryJob extends PrivilegedJob {
-		private Node groupBaseNode;
-		private String version;
-		private boolean overridePoms;
-
-		public GenerateBinaryJob(Node groupBaseNode, String version,
-				boolean overridePoms) {
-			super("Fetch");
-			this.groupBaseNode = groupBaseNode;
-			this.version = version;
-			this.overridePoms = overridePoms;
-		}
-
-		@Override
-		protected IStatus doRun(IProgressMonitor progressMonitor) {
-			try {
-				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
-				GenerateBinaries.processGroupNode(groupBaseNode, version,
-						overridePoms, monitor);
-			} catch (Exception e) {
-				if (log.isDebugEnabled())
-					e.printStackTrace();
-				return new Status(IStatus.ERROR, DistPlugin.ID,
-						"Cannot normalize group", e);
-			}
-			return Status.OK_STATUS;
-		}
-	}
-
-	// ////////////////////////////
-	// // Helpers
 }

@@ -287,7 +287,7 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 			public String getText(Object element) {
 				try {
 					return ((Node) element)
-							.isNodeType(SlcTypes.SLC_RELEVANT_CATEGORY) ? "Yes"
+							.isNodeType(SlcTypes.SLC_CATEGORY) ? "Yes"
 							: "No";
 				} catch (RepositoryException e) {
 					throw new SlcException("unable to check type of node "
@@ -344,9 +344,9 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		boolean isRelevant = false;
 		try {
 			isRelevant = currSelected
-					.isNodeType(SlcTypes.SLC_RELEVANT_CATEGORY);
+					.isNodeType(SlcTypes.SLC_CATEGORY);
 			boolean canEdit = currSelected
-					.canAddMixin(SlcTypes.SLC_RELEVANT_CATEGORY);
+					.canAddMixin(SlcTypes.SLC_CATEGORY);
 
 		} catch (RepositoryException e) {
 			throw new SlcException("unable to check type of node "

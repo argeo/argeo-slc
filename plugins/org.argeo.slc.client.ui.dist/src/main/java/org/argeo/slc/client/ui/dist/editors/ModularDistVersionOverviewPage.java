@@ -126,10 +126,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		layout.verticalSpacing = 0;
 		body.setLayout(layout);
 		try {
-			form.setText(modularDistribution
-					.hasProperty(DistConstants.SLC_BUNDLE_NAME) ? modularDistribution
-					.getProperty(DistConstants.SLC_BUNDLE_NAME).getString()
-					: "");
+			form.setText(modularDistribution.hasProperty(SlcNames.SLC_NAME) ? modularDistribution
+					.getProperty(SlcNames.SLC_NAME).getString() : "");
 			form.setMessage(
 					modularDistribution
 							.hasProperty(SlcNames.SLC_BUNDLE_DESCRIPTION) ? modularDistribution
@@ -162,22 +160,19 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 			createLT(
 					parent,
 					"Category",
-					modularDistribution.hasProperty(SlcNames.SLC_GROUP_ID) ? modularDistribution
-							.getProperty(SlcNames.SLC_GROUP_ID).getString()
+					modularDistribution.hasProperty(SlcNames.SLC_CATEGORY) ? modularDistribution
+							.getProperty(SlcNames.SLC_CATEGORY).getString()
 							: "");
 			createLT(
 					parent,
 					"Name",
-					modularDistribution.hasProperty(SlcNames.SLC_SYMBOLIC_NAME) ? modularDistribution
-							.getProperty(SlcNames.SLC_SYMBOLIC_NAME)
-							.getString() : "");
+					modularDistribution.hasProperty(SlcNames.SLC_NAME) ? modularDistribution
+							.getProperty(SlcNames.SLC_NAME).getString() : "");
 			createLT(
 					parent,
 					"Version",
-					modularDistribution
-							.hasProperty(SlcNames.SLC_BUNDLE_VERSION) ? modularDistribution
-							.getProperty(SlcNames.SLC_BUNDLE_VERSION)
-							.getString() : "");
+					modularDistribution.hasProperty(SlcNames.SLC_VERSION) ? modularDistribution
+							.getProperty(SlcNames.SLC_VERSION).getString() : "");
 
 			// 2nd Line: Vendor, licence, sources
 			createLT(
@@ -186,7 +181,7 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 					modularDistribution
 							.hasProperty(DistConstants.SLC_BUNDLE_VENDOR) ? modularDistribution
 							.getProperty(DistConstants.SLC_BUNDLE_VENDOR)
-							.getString() : "");
+							.getString() : "N/A");
 
 			createHyperlink(parent, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
 			addSourceSourcesLink(parent);
@@ -237,7 +232,7 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 				}
 			});
 		} else
-			tk.createLabel(parent, "", SWT.NONE);
+			tk.createLabel(parent, "N/A", SWT.NONE);
 	}
 
 	// helper to check if sources are available
@@ -252,12 +247,16 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 				Node sourcesNode = modularDistribution.getSession().getNode(
 						srcPath);
 
+				String srcName = null;
+				if (sourcesNode.hasProperty(SlcNames.SLC_SYMBOLIC_NAME))
+					srcName = sourcesNode.getProperty(
+							SlcNames.SLC_SYMBOLIC_NAME).getString();
+				else
+					srcName = sourcesNode.getName();
 				Label label = tk.createLabel(parent, "Sources", SWT.RIGHT);
 				label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
 						false));
-
-				final Hyperlink link = tk.createHyperlink(parent, sourcesNode
-						.getProperty(SlcNames.SLC_SYMBOLIC_NAME).getString(),
+				final Hyperlink link = tk.createHyperlink(parent, srcName,
 						SWT.NONE);
 				link.addHyperlinkListener(new AbstractHyperlinkListener() {
 					@Override

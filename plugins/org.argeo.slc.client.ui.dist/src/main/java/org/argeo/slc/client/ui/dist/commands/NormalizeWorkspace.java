@@ -36,7 +36,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.ArtifactIndexer;
-import org.argeo.slc.repo.DistributionBundleIndexer;
+import org.argeo.slc.repo.ModularDistributionIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
 import org.argeo.slc.repo.PdeSourcesIndexer;
 import org.argeo.slc.repo.RepoConstants;
@@ -74,12 +74,11 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 	private Keyring keyring;
 	private Repository repository;
 
-	// RElevant default node indexers 
+	// Relevant default node indexers
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
-	private DistributionBundleIndexer distBundleIndexer = new DistributionBundleIndexer();
-	private PdeSourcesIndexer pdeSourceIndexer = new PdeSourcesIndexer(
-			artifactIndexer, jarFileIndexer);
+	private ModularDistributionIndexer distBundleIndexer = new ModularDistributionIndexer();
+	private PdeSourcesIndexer pdeSourceIndexer = new PdeSourcesIndexer();
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
@@ -201,11 +200,15 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 							monitor.worked(1);
 						}
 				} else if (node.getName().endsWith(".pom")) {
-					distBundleIndexer.index(node);
+					if (distBundleIndexer.support(node.getPath()))
+						distBundleIndexer.index(node);
+					if (artifactIndexer.support(node.getPath()))
+						artifactIndexer.index(node);
 					if (node.getSession().hasPendingChanges()) {
 						node.getSession().save();
 						if (log.isDebugEnabled())
-							log.debug("Processed pom artifact " + node.getPath());
+							log.debug("Processed pom artifact "
+									+ node.getPath());
 					}
 					monitor.worked(1);
 				} else {

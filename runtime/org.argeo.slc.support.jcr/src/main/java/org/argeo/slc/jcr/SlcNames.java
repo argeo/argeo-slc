@@ -34,9 +34,9 @@ public interface SlcNames {
 	public final static String SLC_AGGREGATED_STATUS = "slc:aggregatedStatus";
 
 	public final static String SLC_TYPE = "slc:type";
-	public final static String SLC_CATEGORY = "slc:category";
 	public final static String SLC_NAME = "slc:name";
 	public final static String SLC_VERSION = "slc:version";
+	public final static String SLC_CATEGORY = "slc:category";
 	public final static String SLC_VALUE = "slc:value";
 	public final static String SLC_ADDRESS = "slc:address";
 	public final static String SLC_METADATA = "slc:metadata";

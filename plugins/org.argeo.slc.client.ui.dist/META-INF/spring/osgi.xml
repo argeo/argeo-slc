@@ -16,4 +16,6 @@
 
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
 		filter="(argeo.jcr.repository.alias=node)" />
+
+	<reference id="slcRepoManager" interface="org.argeo.slc.repo.SlcRepoManager" />
 </beans:beans>

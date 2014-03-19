@@ -22,6 +22,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -35,18 +37,19 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
  * "...-sources.jar"
  */
 public class PdeSourcesIndexer implements NodeIndexer {
-	// private Log log = LogFactory.getLog(PdeSourcesIndexer.class);
+	private Log log = LogFactory.getLog(PdeSourcesIndexer.class);
 
 	private String artifactBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
 
-	private ArtifactIndexer artifactIndexer;
-	private JarFileIndexer jarFileIndexer;
+	// private ArtifactIndexer artifactIndexer;
+	// private JarFileIndexer jarFileIndexer;
 
-	public PdeSourcesIndexer(ArtifactIndexer artifactIndexer,
-			JarFileIndexer jarFileIndexer) {
-		this.artifactIndexer = artifactIndexer;
-		this.jarFileIndexer = jarFileIndexer;
-	}
+	// public PdeSourcesIndexer(){
+	// // ArtifactIndexer artifactIndexer,
+	// // JarFileIndexer jarFileIndexer) {
+	// // this.artifactIndexer = artifactIndexer;
+	// // this.jarFileIndexer = jarFileIndexer;
+	// }
 
 	public Boolean support(String path) {
 		// TODO implement clean management of same name siblings
@@ -60,6 +63,9 @@ public class PdeSourcesIndexer implements NodeIndexer {
 
 	public void index(Node sourcesNode) {
 		try {
+			if (!support(sourcesNode.getPath()))
+				return;
+
 			packageSourcesAsPdeSource(sourcesNode);
 		} catch (Exception e) {
 			throw new SlcException("Cannot generate pde sources for node "
@@ -99,8 +105,8 @@ public class PdeSourcesIndexer implements NodeIndexer {
 					.artifactParentPath(artifactBasePath, pdeSourceArtifact);
 			String targetSourceFileName = MavenConventionsUtils
 					.artifactFileName(pdeSourceArtifact);
-			String targetSourceJarPath = targetSourceParentPath + '/'
-					+ targetSourceFileName;
+			// String targetSourceJarPath = targetSourceParentPath + '/'
+			// + targetSourceFileName;
 
 			Node targetSourceParentNode = JcrUtils.mkfolders(session,
 					targetSourceParentPath);
@@ -112,9 +118,15 @@ public class PdeSourcesIndexer implements NodeIndexer {
 					targetSourceFileName, targetJarBytes);
 
 			// reindex
-			Node targetSourceJarNode = session.getNode(targetSourceJarPath);
-			artifactIndexer.index(targetSourceJarNode);
-			jarFileIndexer.index(targetSourceJarNode);
+			// Automagically done via the various listeners or manually
+			// triggered.
+			// Node targetSourceJarNode = session.getNode(targetSourceJarPath);
+			// artifactIndexer.index(targetSourceJarNode);
+			// jarFileIndexer.index(targetSourceJarNode);
+			if (log.isTraceEnabled())
+				log.trace("Created pde source artifact " + pdeSourceArtifact
+						+ " from " + sourcesNode);
+
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot add PDE sources for " + sourcesNode,
 					e);

@@ -18,6 +18,9 @@ package org.argeo.slc.jcr;
 /** JCR node types used by SLC */
 public interface SlcTypes {
 
+	public final static String SLC_NAME_VERSION = "slc:nameVersion";
+	public final static String SLC_CATEGORIZED_NAME_VERSION = "slc:categorizedNameVersion";
+
 	public final static String SLC_AGENT_FACTORY = "slc:agentFactory";
 	public final static String SLC_AGENT = "slc:agent";
 	public final static String SLC_MODULE = "slc:module";
@@ -64,9 +67,9 @@ public interface SlcTypes {
 	public final static String SLC_DYNAMIC_IMPORTED_PACKAGE = "slc:dynamicImportedPackage";
 	public final static String SLC_REQUIRED_BUNDLE = "slc:requiredBundle";
 	public final static String SLC_FRAGMENT_HOST = "slc:fragmentHost";
-	
+
 	// Distribution management
-	public final static String SLC_RELEVANT_CATEGORY = "slc:category";	
+	public final static String SLC_CATEGORY = "slc:category";
 	public final static String SLC_MODULAR_DISTRIBUTION_BASE = "slc:modularDistributionBase";
 	public final static String SLC_MODULAR_DISTRIBUTION = "slc:modularDistribution";
 	public final static String SLC_MODULE_COORDINATES = "slc:moduleCoordinates";

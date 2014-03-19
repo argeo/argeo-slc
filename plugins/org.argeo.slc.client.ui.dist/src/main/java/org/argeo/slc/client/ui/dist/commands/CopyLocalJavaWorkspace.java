@@ -15,11 +15,9 @@
  */
 package org.argeo.slc.client.ui.dist.commands;
 
-import javax.jcr.Credentials;
 import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
@@ -33,8 +31,8 @@ import org.argeo.slc.SlcConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
+import org.argeo.slc.repo.JavaRepoManager;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -50,27 +48,25 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * Create a copy of the chosen workspace in a remote repository.
+ * Create a copy of the chosen workspace in the local Java repository using a
+ * JavaRepoManager.
  */
-public class CopyWorkspace extends AbstractHandler {
-	private static final Log log = LogFactory.getLog(CopyWorkspace.class);
+public class CopyLocalJavaWorkspace extends AbstractHandler {
+	private static final Log log = LogFactory
+			.getLog(CopyLocalJavaWorkspace.class);
 
-	public final static String ID = DistPlugin.ID + ".copyWorkspace";
-	public final static String DEFAULT_LABEL = "Duplicate...";
+	public final static String ID = DistPlugin.ID + ".copyLocalJavaWorkspace";
+	public final static String DEFAULT_LABEL = "Copy Java Workspace...";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/addItem.gif");
 
 	public final static String PARAM_SOURCE_WORKSPACE_NAME = "srcWkspName";
-	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
-	
+
 	// DEPENDENCY INJECTION
-	private RepositoryFactory repositoryFactory;
-	private Keyring keyring;
 	private Repository nodeRepository;
+	private JavaRepoManager javaRepoManager;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-
-		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
 		String wkspName = event.getParameter(PARAM_SOURCE_WORKSPACE_NAME);
 
 		InputDialog inputDialog = new InputDialog(HandlerUtil
@@ -91,9 +87,9 @@ public class CopyWorkspace extends AbstractHandler {
 										"Error", null));
 				return null;
 			}
-			Job copyWkspJob = new CopyWkspJob(repositoryFactory, keyring,
-					nodeRepository, targetRepoPath, wkspName, newWorkspaceName,
-					HandlerUtil.getActiveWorkbenchWindow(event).getShell()
+			Job copyWkspJob = new CopyWkspJob(javaRepoManager, nodeRepository,
+					wkspName, newWorkspaceName, HandlerUtil
+							.getActiveWorkbenchWindow(event).getShell()
 							.getDisplay());
 			copyWkspJob.setUser(true);
 			copyWkspJob.schedule();
@@ -103,28 +99,23 @@ public class CopyWorkspace extends AbstractHandler {
 
 	private static class CopyWkspJob extends PrivilegedJob {
 
-		private RepositoryFactory repositoryFactory;
-		private Keyring keyring;
+		private JavaRepoManager javaRepoManager;
 		private Repository localRepository;
-		private String targetRepoPath;
 		private String srcWkspName;
 		private String targetWkspName;
 		private Display display;
 
-		public CopyWkspJob(RepositoryFactory repositoryFactory,
-				Keyring keyring, Repository localRepository,
-				String targetRepoPath, String srcWkspName,
+		public CopyWkspJob(JavaRepoManager javaRepoManager,
+				Repository localRepository, String srcWkspName,
 				String targetWkspName, Display display) {
 			super("Duplicate workspace");
-			this.repositoryFactory = repositoryFactory;
-			this.keyring = keyring;
+			this.javaRepoManager = javaRepoManager;
 			this.localRepository = localRepository;
-			this.targetRepoPath = targetRepoPath;
 			this.srcWkspName = srcWkspName;
 			this.targetWkspName = targetWkspName;
 			this.display = display;
 		}
-		
+
 		@Override
 		protected IStatus doRun(IProgressMonitor progressMonitor) {
 			long begin = System.currentTimeMillis();
@@ -132,58 +123,50 @@ public class CopyWorkspace extends AbstractHandler {
 			ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
 			monitor.beginTask("Copy workspace", -1);
 			monitor.subTask("Copying nodes");
-			
-			Session nodeSession = null;
+
 			Session srcSession = null;
-			Session newSession = null;
+			Session targetSession = null;
 			try {
-				nodeSession = localRepository.login();
-				Node repoNode = nodeSession.getNode(targetRepoPath);
-				Repository repository = RepoUtils.getRepository(
-						repositoryFactory, keyring, repoNode);
-				Credentials credentials = RepoUtils.getRepositoryCredentials(
-						keyring, repoNode);
-
-				srcSession = repository.login(credentials, srcWkspName);
-
-				// Create the workspace
-				srcSession.getWorkspace().createWorkspace(targetWkspName);
+				// Initialize source
+				srcSession = localRepository.login(srcWkspName);
 				Node srcRootNode = srcSession.getRootNode();
-				// log in the newly created workspace
-				newSession = repository.login(credentials, targetWkspName);
-				Node newRootNode = newSession.getRootNode();
+
+				// Create the workspace -
+				// FIXME will throw an error if workspace already exists
+				javaRepoManager.createWorkspace(targetWkspName);
+				targetSession = localRepository.login(targetWkspName);
+				Node newRootNode = targetSession.getRootNode();
+
 				RepoUtils.copy(srcRootNode, newRootNode);
-				newSession.save();
-				JcrUtils.addPrivilege(newSession, "/", SlcConstants.ROLE_SLC,
-						Privilege.JCR_ALL);
+				targetSession.save();
+				JcrUtils.addPrivilege(targetSession, "/",
+						SlcConstants.ROLE_SLC, Privilege.JCR_ALL);
+				monitor.worked(1);
 
 				display.asyncExec(new Runnable() {
 					public void run() {
 						CommandHelpers.callCommand(RefreshDistributionsView.ID);
 					}
 				});
-				monitor.worked(1);
 
 			} catch (RepositoryException re) {
 				throw new ArgeoException(
 						"Unexpected error while creating the new workspace.",
 						re);
 			} finally {
-				JcrUtils.logoutQuietly(newSession);
 				JcrUtils.logoutQuietly(srcSession);
-				JcrUtils.logoutQuietly(nodeSession);
+				JcrUtils.logoutQuietly(targetSession);
 			}
 
 			monitor.done();
 			long duration = (System.currentTimeMillis() - begin) / 1000;// in
 																		// s
 			if (log.isDebugEnabled())
-				log.debug("Created workspace " + targetWkspName + " in "
+				log.debug("Duplicated local java workspace " + srcWkspName
+						+ " to workspace " + targetWkspName + " in "
 						+ (duration / 60) + "min " + (duration % 60) + "s");
 			return Status.OK_STATUS;
 		}
-
-		
 	}
 
 	/* DEPENDENCY INJECTION */
@@ -191,11 +174,7 @@ public class CopyWorkspace extends AbstractHandler {
 		this.nodeRepository = nodeRepository;
 	}
 
-	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
-		this.repositoryFactory = repositoryFactory;
-	}
-
-	public void setKeyring(Keyring keyring) {
-		this.keyring = keyring;
+	public void setJavaRepoManager(JavaRepoManager javaRepoManager) {
+		this.javaRepoManager = javaRepoManager;
 	}
 }

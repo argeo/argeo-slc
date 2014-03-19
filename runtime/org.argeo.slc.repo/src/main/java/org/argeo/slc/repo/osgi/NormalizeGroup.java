@@ -38,6 +38,7 @@ import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
+import org.argeo.slc.repo.NodeIndexer;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
@@ -49,7 +50,11 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 /**
  * Make sure that all JCR metadata and Maven metadata are consistent for this
  * group of OSGi bundles.
+ * 
+ * The job is now done via the various {@code NodeIndexer} of the WorkspaceManager.
+ * TODO import dependencies in the workspace.
  */
+@Deprecated
 public class NormalizeGroup implements Runnable, SlcNames {
 	private final static Log log = LogFactory.getLog(NormalizeGroup.class);
 

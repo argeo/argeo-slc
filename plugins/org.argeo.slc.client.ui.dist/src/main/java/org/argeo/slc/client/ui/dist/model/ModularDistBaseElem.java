@@ -49,7 +49,8 @@ public class ModularDistBaseElem extends DistParentElem {
 	}
 
 	/**
-	 * Override normal behaviour to initialise children only when first requested
+	 * Override normal behaviour to initialise children only when first
+	 * requested
 	 */
 	@Override
 	public synchronized boolean hasChildren() {
@@ -61,7 +62,8 @@ public class ModularDistBaseElem extends DistParentElem {
 	};
 
 	/**
-	 * Override normal behaviour to initialise children only when first requested
+	 * Override normal behaviour to initialise children only when first
+	 * requested
 	 */
 	@Override
 	public synchronized Object[] getChildren() {
@@ -72,15 +74,15 @@ public class ModularDistBaseElem extends DistParentElem {
 				NodeIterator ni = getDistVersions();
 				while (ni != null && ni.hasNext()) {
 					Node curNode = ni.nextNode();
-					addChild(new ModularDistVersionElem(this, curNode
-							.getProperty(SlcNames.SLC_ARTIFACT_VERSION)
-							.getString(), curNode));
+					if (curNode.hasProperty(SlcNames.SLC_ARTIFACT_VERSION))
+						addChild(new ModularDistVersionElem(this, curNode
+								.getProperty(SlcNames.SLC_ARTIFACT_VERSION)
+								.getString(), curNode));
 				}
 				return super.getChildren();
 			} catch (RepositoryException re) {
-				throw new ArgeoException(
-						"Unable to retrieve children for "
-								+ modularDistBase, re);
+				throw new ArgeoException("Unable to retrieve children for "
+						+ modularDistBase, re);
 			}
 		}
 	}

@@ -61,13 +61,13 @@ public class MarkAsRelevantCategory extends AbstractHandler {
 							.iterator();
 
 					Node node = (Node) it.next();
-					if (node.isNodeType(SlcTypes.SLC_RELEVANT_CATEGORY)) {
+					if (node.isNodeType(SlcTypes.SLC_CATEGORY)) {
 						String msg = "Your are about to unlist this category from the relevant category list for current workspace"
 								+ ".\n" + "Are you sure you want to proceed?";
 						if (MessageDialog.openConfirm(DistPlugin.getDefault()
 								.getWorkbench().getDisplay().getActiveShell(),
 								"Confirm", msg)) {
-							node.removeMixin(SlcTypes.SLC_RELEVANT_CATEGORY);
+							node.removeMixin(SlcTypes.SLC_CATEGORY);
 							node.getSession().save();
 						}
 					} else {
@@ -77,7 +77,7 @@ public class MarkAsRelevantCategory extends AbstractHandler {
 						if (MessageDialog.openConfirm(DistPlugin.getDefault()
 								.getWorkbench().getDisplay().getActiveShell(),
 								"Confirm", msg)) {
-							node.addMixin(SlcTypes.SLC_RELEVANT_CATEGORY);
+							node.addMixin(SlcTypes.SLC_CATEGORY);
 							node.getSession().save();
 						}
 					}

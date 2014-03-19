@@ -26,17 +26,17 @@ import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.ArgeoNames;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.commands.CopyLocalJavaWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CopyWorkspace;
+import org.argeo.slc.client.ui.dist.commands.CreateLocalJavaWorkspace;
 import org.argeo.slc.client.ui.dist.commands.CreateWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DeleteWorkspace;
 import org.argeo.slc.client.ui.dist.commands.DisplayRepoInformation;
 import org.argeo.slc.client.ui.dist.commands.Fetch;
-import org.argeo.slc.client.ui.dist.commands.MergeWorkspaces;
 import org.argeo.slc.client.ui.dist.commands.NormalizeDistribution;
 import org.argeo.slc.client.ui.dist.commands.NormalizeWorkspace;
 import org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard;
 import org.argeo.slc.client.ui.dist.commands.PublishWorkspace;
-import org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView;
 import org.argeo.slc.client.ui.dist.commands.RegisterRepository;
 import org.argeo.slc.client.ui.dist.commands.RunInOsgi;
 import org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo;
@@ -50,26 +50,16 @@ import org.argeo.slc.client.ui.dist.model.ModularDistBaseElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
-import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSourceAdapter;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.dnd.TransferData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
@@ -118,12 +108,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 		// Enable retrieving current tree selected items from outside the view
 		getSite().setSelectionProvider(viewer);
-
-		// Drag and drop
-		Transfer[] tt = new Transfer[] { TextTransfer.getInstance() };
-		int operations = DND.DROP_COPY | DND.DROP_MOVE;
-		viewer.addDragSupport(operations, tt, new ViewDragListener());
-		viewer.addDropSupport(operations, tt, new ViewDropListener(viewer));
 
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getTree());
@@ -214,8 +198,18 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
 						CreateWorkspace.DEFAULT_ICON,
 						(isRepoElem || isDistribGroupElem) && singleElement
-								&& !isReadOnly, params);
+								&& !isReadOnly  && !isLocal, params);
 
+				// TODO Manage the case where it is not a java workspace
+				params = new HashMap<String, String>();
+				params.put(CreateLocalJavaWorkspace.PARAM_WORKSPACE_PREFIX,
+						workspacePrefix);
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
+						CreateLocalJavaWorkspace.ID, CreateLocalJavaWorkspace.DEFAULT_LABEL,
+						CreateLocalJavaWorkspace.DEFAULT_ICON,
+						(isRepoElem || isDistribGroupElem) && singleElement
+								&& !isReadOnly && isLocal, params);
+				
 				// Register a remote repository
 				CommandUtils.refreshCommand(menuManager, window,
 						RegisterRepository.ID,
@@ -260,7 +254,15 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				CommandUtils.refreshParametrizedCommand(menuManager, window,
 						CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
 						CopyWorkspace.DEFAULT_ICON, isDistribElem
-								&& singleElement, params);
+								&& singleElement && !isLocal, params);
+				
+				params = new HashMap<String, String>();
+				params.put(CopyLocalJavaWorkspace.PARAM_SOURCE_WORKSPACE_NAME,
+						workspaceName);
+				CommandUtils.refreshParametrizedCommand(menuManager, window,
+						CopyLocalJavaWorkspace.ID, CopyLocalJavaWorkspace.DEFAULT_LABEL,
+						CopyLocalJavaWorkspace.DEFAULT_ICON, isDistribElem
+								&& singleElement&& isLocal, params);
 
 				// Clear Workspace
 				params = new HashMap<String, String>();
@@ -345,78 +347,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	public void refresh() {
 		viewer.setInput(nodeRepository);
 		viewer.expandToLevel(2);
-	}
-
-	/** Listens to drag */
-	class ViewDragListener extends DragSourceAdapter {
-		public void dragSetData(DragSourceEvent event) {
-			IStructuredSelection selection = (IStructuredSelection) viewer
-					.getSelection();
-			if (selection.getFirstElement() instanceof WorkspaceElem) {
-				WorkspaceElem de = (WorkspaceElem) selection.getFirstElement();
-				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-					event.data = ((RepoElem) de.getParent().getParent())
-							.getUri() + "/" + de.getWorkspaceName();
-				}
-			}
-		}
-	}
-
-	/** Listens to drop */
-	class ViewDropListener extends ViewerDropAdapter {
-
-		public ViewDropListener(Viewer viewer) {
-			super(viewer);
-		}
-
-		@Override
-		public boolean performDrop(Object data) {
-			WorkspaceElem sourceWksp = (WorkspaceElem) getSelectedObject();
-			RepoElem targetRepo = (RepoElem) getCurrentTarget();
-
-			Boolean ok = MessageDialog.openConfirm(
-					getSite().getShell(),
-					"Confirm distribution merge",
-					"Do you want to merge "
-							+ sourceWksp.getWorkspaceName()
-							+ " (from repo "
-							+ ((RepoElem) sourceWksp.getParent().getParent())
-									.getLabel() + ") to repo "
-							+ targetRepo.getLabel() + "?");
-			if (!ok)
-				return false;
-
-			try {
-				Map<String, String> params = new HashMap<String, String>();
-				params.put(MergeWorkspaces.PARAM_TARGET_REPO_PATH, targetRepo
-						.getRepoNode().getPath());
-				params.put(MergeWorkspaces.PARAM_SOURCE_REPO_PATH,
-						((RepoElem) sourceWksp.getParent().getParent())
-								.getRepoNode().getPath());
-				params.put(MergeWorkspaces.PARAM_SOURCE_WORKSPACE_NAME,
-						sourceWksp.getWorkspaceName());
-				CommandHelpers.callCommand(RefreshDistributionsView.ID, params);
-				return true;
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot process drop from " + sourceWksp
-						+ " to " + targetRepo, e);
-			}
-		}
-
-		@Override
-		public boolean validateDrop(Object target, int operation,
-				TransferData transferType) {
-			if (target instanceof RepoElem) {
-				if (getSelectedObject() instanceof WorkspaceElem) {
-					// check if not same repository
-					String srcRepoUri = ((RepoElem) ((WorkspaceElem) getSelectedObject())
-							.getParent().getParent()).getUri();
-					String targetRepoUri = ((RepoElem) target).getUri();
-					return !targetRepoUri.equals(srcRepoUri);
-				}
-			}
-			return false;
-		}
 	}
 
 	/*

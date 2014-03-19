@@ -38,7 +38,9 @@ mixin
 [slc:modularDistributionBase]
 mixin
 
-[slc:modularDistribution]
+// Inherit from > slc:categorizedNameVersion ??
+// (not possible without migration)
+[slc:modularDistribution] 
 mixin
 + slc:modules (nt:unstructured) m
 

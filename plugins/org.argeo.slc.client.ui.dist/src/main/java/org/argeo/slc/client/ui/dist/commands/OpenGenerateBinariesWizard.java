@@ -17,9 +17,10 @@ package org.argeo.slc.client.ui.dist.commands;
 
 import java.util.Iterator;
 
+import javax.jcr.Credentials;
 import javax.jcr.Node;
+import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -62,14 +63,22 @@ public class OpenGenerateBinariesWizard extends AbstractHandler {
 				Object element = it.next();
 				if (element instanceof ModularDistBaseElem) {
 					ModularDistBaseElem elem = (ModularDistBaseElem) element;
-					Session newSession = null;
+					// Session newSession = null;
 					try {
 						Node cBase = elem.getCategoryBase();
-						String path = cBase.getPath();
-						newSession = ((WorkspaceElem) elem.getParent())
-								.getNewSession();
+						String catBasePath = cBase.getPath();
+						// newSession = ((WorkspaceElem) elem.getParent())
+						// .getNewSession();
+
+						String wkspName = ((WorkspaceElem) elem.getParent())
+								.getWorkspaceName();
+						Repository repository = ((WorkspaceElem) elem
+								.getParent()).getRepoElem().getRepository();
+						Credentials credentials = ((WorkspaceElem) elem
+								.getParent()).getRepoElem().getCredentials();
+
 						GenerateBinariesWizard wizard = new GenerateBinariesWizard(
-								newSession.getNode(path));
+								repository, credentials, wkspName, catBasePath);
 
 						WizardDialog dialog = new WizardDialog(
 								HandlerUtil.getActiveShell(event), wizard);
@@ -82,6 +91,8 @@ public class OpenGenerateBinariesWizard extends AbstractHandler {
 						throw new SlcException(
 								"Unable to duplicate session for node " + elem,
 								re);
+						// } finally {
+						// JcrUtils.logoutQuietly(newSession);
 					}
 				}
 

@@ -27,11 +27,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.CategorizedNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherUtils;
 import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.osgi.framework.Constants;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.w3c.dom.Document;
@@ -39,30 +42,35 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- * Create or update JCR meta-data for modularDistribution bundles: <list><li>
- * .jar: dependency artifacts with csv index</li> <li>.pom: group index artifact
- * (binaries, sources) with tag dependency management</li> </list>
+ * Create or update JCR meta-data for an SLC Modular Distribution
+ * 
+ * Currently, following types are managed: <list><li>* .jar: dependency
+ * artifacts with csv index</li> <li>.pom: artifact (binaries) that indexes a
+ * group, the .pom file contains a tag "dependencyManagement" that list all
+ * modules</li> </list>
  */
-public class DistributionBundleIndexer implements NodeIndexer {
+public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 	private final static Log log = LogFactory
-			.getLog(DistributionBundleIndexer.class);
+			.getLog(ModularDistributionIndexer.class);
 
+	// Constants for csv indexing
 	private final static String INDEX_FILE_NAME = "modularDistribution.csv";
+	private String separator = ",";
+
+	// Artifact indexing
 	private final static List<String> BINARIES_ARTIFACTS_NAME;
 	static {
 		List<String> tmpList = new ArrayList<String>();
 		tmpList.add(RepoConstants.BINARIES_ARTIFACT_ID);
-		//tmpList.add(RepoConstants.SOURCES_ARTIFACT_ID);
-		//tmpList.add(RepoConstants.SDK_ARTIFACT_ID);
+		// tmpList.add(RepoConstants.SOURCES_ARTIFACT_ID);
+		// tmpList.add(RepoConstants.SDK_ARTIFACT_ID);
 		BINARIES_ARTIFACTS_NAME = Collections.unmodifiableList(tmpList);
 	}
 
 	private Manifest manifest;
 	// private String symbolicName;
 	// private String version;
-
 	// private List<Artifact> artifacts;
-	private String separator = ",";
 
 	private Comparator<Artifact> artifactComparator = new ArtifactIdComparator();
 
@@ -98,11 +106,15 @@ public class DistributionBundleIndexer implements NodeIndexer {
 
 			Set<Artifact> artifacts = new TreeSet<Artifact>(artifactComparator);
 
+			MyCategorizedNameVersion currCatNV = null;
+
 			if (FilenameUtils.getExtension(fileNode.getPath()).equals("jar"))
-				listModulesFromCsvIndex(artifacts, fileNode, fileBinary);
+				currCatNV = listModulesFromCsvIndex(artifacts, fileNode,
+						fileBinary);
 			else if (FilenameUtils.getExtension(fileNode.getPath()).equals(
 					"pom"))
-				listModulesFromPomIndex(artifacts, fileNode, fileBinary);
+				currCatNV = listModulesFromPomIndex(artifacts, fileNode,
+						fileBinary);
 
 			if (artifacts.isEmpty())
 				return; // no modules found
@@ -112,6 +124,12 @@ public class DistributionBundleIndexer implements NodeIndexer {
 					modules = fileNode.getNode(SlcNames.SLC_MODULES);
 				} else {
 					fileNode.addMixin(SlcTypes.SLC_MODULAR_DISTRIBUTION);
+					fileNode.addMixin(SlcTypes.SLC_CATEGORIZED_NAME_VERSION);
+					if (currCatNV.getCategory() != null)
+						fileNode.setProperty(SLC_CATEGORY,
+								currCatNV.getCategory());
+					fileNode.setProperty(SLC_NAME, currCatNV.getName());
+					fileNode.setProperty(SLC_VERSION, currCatNV.getVersion());
 					modules = JcrUtils.mkdirs(fileNode, SlcNames.SLC_MODULES,
 							NodeType.NT_UNSTRUCTURED);
 				}
@@ -133,62 +151,56 @@ public class DistributionBundleIndexer implements NodeIndexer {
 									artifact.getGroupId());
 					}
 				}
-
 			}
 
-			// find base URL
-			// won't work if distribution artifact is not listed
-			// for (int i = 0; i < artifacts.size(); i++) {
-			// OsgiArtifact osgiArtifact = artifacts.get(i);
-			// if (osgiArtifact.getSymbolicName().equals(symbolicName)
-			// && osgiArtifact.getVersion().equals(version)) {
-			// String relativeUrl = osgiArtifact.getRelativeUrl();
-			// if (url.endsWith(relativeUrl)) {
-			// baseUrl = url.substring(0, url.length()
-			// - osgiArtifact.getRelativeUrl().length());
-			// break;
-			// }
-			// }
-			// }
+			if (log.isTraceEnabled())
+				log.trace("Indexed " + fileNode + " as modular distribution");
 		} catch (Exception e) {
 			throw new SlcException("Cannot list dependencies from " + fileNode,
 					e);
 		}
 	}
 
-	protected void listModulesFromCsvIndex(Set<Artifact> artifacts,
-			Node fileNode, Binary fileBinary) {
-		// List<Artifact> artifacts = new ArrayList<Artifact>();
+	protected MyCategorizedNameVersion listModulesFromCsvIndex(
+			Set<Artifact> artifacts, Node fileNode, Binary fileBinary) {
 		JarInputStream jarIn = null;
 		BufferedReader reader = null;
-
 		try {
 			jarIn = new JarInputStream(fileBinary.getStream());
 
 			// meta data
-			// symbolicName = manifest.getMainAttributes().getValue(
-			// Constants.BUNDLE_SYMBOLICNAME);
-			// version = manifest.getMainAttributes().getValue(
-			// Constants.BUNDLE_VERSION);
-
 			manifest = jarIn.getManifest();
 			if (manifest == null) {
 				log.error(fileNode + " has no MANIFEST");
-				return;
+				return null;
 			}
+			String symbolicName = manifest.getMainAttributes().getValue(
+					Constants.BUNDLE_SYMBOLICNAME);
+			String version = manifest.getMainAttributes().getValue(
+					Constants.BUNDLE_VERSION);
+			String category = manifest.getMainAttributes().getValue(
+					"SLC-GroupId");
 
+			// Retrieve the index file
 			JarEntry indexEntry;
 			while ((indexEntry = jarIn.getNextJarEntry()) != null) {
 				String entryName = indexEntry.getName();
 				if (entryName.equals(INDEX_FILE_NAME)) {
 					break;
 				}
-				jarIn.closeEntry();
+				try {
+					jarIn.closeEntry();
+				} catch (SecurityException se) {
+					log.error("Invalid signature file digest "
+							+ "for Manifest main attributes: " + entryName
+							+ " while looking for an index in bundle "
+							+ symbolicName);
+				}
 			}
-
 			if (indexEntry == null)
-				return; // Not a modular definition artifact
+				return null; // Not a modular definition artifact
 
+			// Process the index
 			reader = new BufferedReader(new InputStreamReader(jarIn));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -196,12 +208,13 @@ public class DistributionBundleIndexer implements NodeIndexer {
 				st.nextToken(); // moduleName
 				st.nextToken(); // moduleVersion
 				String relativeUrl = st.nextToken();
-
 				artifacts.add(AetherUtils.convertPathToArtifact(relativeUrl,
 						null));
 				if (log.isTraceEnabled())
 					log.debug("Processed dependency: " + line);
 			}
+
+			return new MyCategorizedNameVersion(category, symbolicName, version);
 		} catch (Exception e) {
 			throw new SlcException("Cannot list artifacts", e);
 		} finally {
@@ -210,8 +223,8 @@ public class DistributionBundleIndexer implements NodeIndexer {
 		}
 	}
 
-	protected void listModulesFromPomIndex(Set<Artifact> artifacts,
-			Node fileNode, Binary fileBinary) {
+	protected MyCategorizedNameVersion listModulesFromPomIndex(
+			Set<Artifact> artifacts, Node fileNode, Binary fileBinary) {
 		InputStream input = null;
 		try {
 			input = fileBinary.getStream();
@@ -273,6 +286,16 @@ public class DistributionBundleIndexer implements NodeIndexer {
 				artifacts.add(artifact);
 				// }
 			}
+
+			String groupId = doc.getElementsByTagName("groupId").item(0)
+					.getTextContent().trim();
+			String artifactId = doc.getElementsByTagName("artifactId").item(0)
+					.getTextContent().trim();
+			String version = doc.getElementsByTagName("version").item(0)
+					.getTextContent().trim();
+
+			return new MyCategorizedNameVersion(groupId, artifactId, version);
+
 		} catch (Exception e) {
 			throw new SlcException("Cannot process pom " + fileNode, e);
 		} finally {
@@ -285,37 +308,19 @@ public class DistributionBundleIndexer implements NodeIndexer {
 		this.separator = modulesUrlSeparator;
 	}
 
-	/** One of the listed artifact */
-	protected static class OsgiArtifact {
+	/** The created modular distribution */
+	private static class MyCategorizedNameVersion extends DefaultNameVersion
+			implements CategorizedNameVersion {
 		private final String category;
-		private final String symbolicName;
-		private final String version;
-		private final String relativeUrl;
 
-		public OsgiArtifact(String category, String symbolicName,
-				String version, String relativeUrl) {
-			super();
+		public MyCategorizedNameVersion(String category, String name,
+				String version) {
+			super(name, version);
 			this.category = category;
-			this.symbolicName = symbolicName;
-			this.version = version;
-			this.relativeUrl = relativeUrl;
 		}
 
 		public String getCategory() {
 			return category;
 		}
-
-		public String getSymbolicName() {
-			return symbolicName;
-		}
-
-		public String getVersion() {
-			return version;
-		}
-
-		public String getRelativeUrl() {
-			return relativeUrl;
-		}
-
 	}
 }

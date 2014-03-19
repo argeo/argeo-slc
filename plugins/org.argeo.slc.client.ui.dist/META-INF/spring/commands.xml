@@ -42,7 +42,8 @@
 
 
 	<!-- WORKSPACE MANAGEMENT -->
-	<bean id="openWorkspaceEditor" class="org.argeo.slc.client.ui.dist.commands.OpenWorkspaceEditor"
+	<bean id="openWorkspaceEditor"
+		class="org.argeo.slc.client.ui.dist.commands.OpenWorkspaceEditor"
 		scope="prototype">
 		<property name="localRepository" ref="nodeRepository" />
 	</bean>
@@ -85,6 +86,22 @@
 		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
 	</bean>
+
+	<bean id="copyLocalJavaWorkspace"
+		class="org.argeo.slc.client.ui.dist.commands.CopyLocalJavaWorkspace">
+		<property name="javaRepoManager">
+			<bean factory-bean="slcRepoManager" factory-method="getJavaRepoManager" />
+		</property>
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="createLocalJavaWorkspace"
+		class="org.argeo.slc.client.ui.dist.commands.CreateLocalJavaWorkspace">
+		<property name="javaRepoManager">
+			<bean factory-bean="slcRepoManager" factory-method="getJavaRepoManager" />
+		</property>
+	</bean>
+
 
 	<bean id="mergeWorkspaces" class="org.argeo.slc.client.ui.dist.commands.MergeWorkspaces">
 		<property name="repositoryFactory" ref="repositoryFactory" />
