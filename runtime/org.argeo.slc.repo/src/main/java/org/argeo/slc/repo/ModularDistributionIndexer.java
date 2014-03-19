@@ -210,8 +210,8 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 				String relativeUrl = st.nextToken();
 				artifacts.add(AetherUtils.convertPathToArtifact(relativeUrl,
 						null));
-				if (log.isTraceEnabled())
-					log.debug("Processed dependency: " + line);
+				// if (log.isTraceEnabled())
+				// log.trace("Processed dependency: " + line);
 			}
 
 			return new MyCategorizedNameVersion(category, symbolicName, version);
