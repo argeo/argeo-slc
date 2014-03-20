@@ -152,7 +152,7 @@ public class CopyWorkspace extends AbstractHandler {
 				// log in the newly created workspace
 				newSession = repository.login(credentials, targetWkspName);
 				Node newRootNode = newSession.getRootNode();
-				RepoUtils.copy(srcRootNode, newRootNode);
+				RepoUtils.copy(srcRootNode, newRootNode, monitor);
 				newSession.save();
 				JcrUtils.addPrivilege(newSession, "/", SlcConstants.ROLE_SLC,
 						Privilege.JCR_ALL);

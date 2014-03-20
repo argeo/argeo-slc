@@ -69,7 +69,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 			new ArtifactIdComparator());
 	private Set<Artifact> sources = new TreeSet<Artifact>(
 			new ArtifactIdComparator());
-	
+
 	// local cache
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 	private Node allArtifactsHighestVersion;
@@ -94,13 +94,14 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	 * Generates binaries-, sources- and sdk-version.pom artifacts for the given
 	 * version (or the highest of all children version if none is precised).
 	 * 
-	 * By default, it includes each latest version of all artifact of this group. 
+	 * By default, it includes each latest version of all artifact of this
+	 * group.
 	 * 
-	 * The 3 generated artifacts are then marked as modular distributions and indexed.
+	 * The 3 generated artifacts are then marked as modular distributions and
+	 * indexed.
 	 */
 	public static void processGroupNode(Node groupNode, String version,
-			ArgeoMonitor monitor)
-			throws RepositoryException {
+			ArgeoMonitor monitor) throws RepositoryException {
 		// TODO set artifactsBase based on group node
 		GenerateBinaries gb = new GenerateBinaries();
 		String groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID)
@@ -178,11 +179,11 @@ public class GenerateBinaries implements Runnable, SlcNames {
 				}
 			}
 		}
-//		if (log.isDebugEnabled()) {
-//			int bundleCount = symbolicNamesToNodes.size();
-//			log.debug("" + bundleCount + " bundles have been indexed for "
-//					+ groupId);
-//		}
+		// if (log.isDebugEnabled()) {
+		// int bundleCount = symbolicNamesToNodes.size();
+		// log.debug("" + bundleCount + " bundles have been indexed for "
+		// + groupId);
+		// }
 	}
 
 	/** Does the real job : writes JCR META-DATA and generates binaries */
@@ -205,18 +206,17 @@ public class GenerateBinaries implements Runnable, SlcNames {
 				throw new SlcException("Group version " + version
 						+ " is empty.");
 
-//		int bundleCount = symbolicNamesToNodes.size();
-//
-//		int count = 1;
-//		for (Node bundleNode : symbolicNamesToNodes.values()) {
-//			if (log.isDebugEnabled())
-//				log.debug("Processing " + bundleNode.getName() + " ( " + count
-//						+ "/" + bundleCount + " )");
-//
-//			// processBundleArtifact(bundleNode);
-//			// bundleNode.getSession().save();
-//			count++;
-//		}
+		// int bundleCount = symbolicNamesToNodes.size();
+		// int count = 1;
+		// for (Node bundleNode : symbolicNamesToNodes.values()) {
+		// if (log.isDebugEnabled())
+		// log.debug("Processing " + bundleNode.getName() + " ( " + count
+		// + "/" + bundleCount + " )");
+		//
+		// // processBundleArtifact(bundleNode);
+		// // bundleNode.getSession().save();
+		// count++;
+		// }
 
 		// indexes
 		Set<Artifact> indexes = new TreeSet<Artifact>(

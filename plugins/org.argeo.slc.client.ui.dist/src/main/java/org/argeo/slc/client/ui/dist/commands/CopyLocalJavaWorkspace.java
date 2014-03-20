@@ -63,7 +63,7 @@ public class CopyLocalJavaWorkspace extends AbstractHandler {
 	public final static String PARAM_SOURCE_WORKSPACE_NAME = "srcWkspName";
 
 	// DEPENDENCY INJECTION
-	private Repository nodeRepository;
+	private Repository javaRepository;
 	private JavaRepoManager javaRepoManager;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -87,7 +87,7 @@ public class CopyLocalJavaWorkspace extends AbstractHandler {
 										"Error", null));
 				return null;
 			}
-			Job copyWkspJob = new CopyWkspJob(javaRepoManager, nodeRepository,
+			Job copyWkspJob = new CopyWkspJob(javaRepoManager, javaRepository,
 					wkspName, newWorkspaceName, HandlerUtil
 							.getActiveWorkbenchWindow(event).getShell()
 							.getDisplay());
@@ -100,17 +100,17 @@ public class CopyLocalJavaWorkspace extends AbstractHandler {
 	private static class CopyWkspJob extends PrivilegedJob {
 
 		private JavaRepoManager javaRepoManager;
-		private Repository localRepository;
+		private Repository javaRepository;
 		private String srcWkspName;
 		private String targetWkspName;
 		private Display display;
 
 		public CopyWkspJob(JavaRepoManager javaRepoManager,
-				Repository localRepository, String srcWkspName,
+				Repository javaRepository, String srcWkspName,
 				String targetWkspName, Display display) {
 			super("Duplicate workspace");
 			this.javaRepoManager = javaRepoManager;
-			this.localRepository = localRepository;
+			this.javaRepository = javaRepository;
 			this.srcWkspName = srcWkspName;
 			this.targetWkspName = targetWkspName;
 			this.display = display;
@@ -128,16 +128,16 @@ public class CopyLocalJavaWorkspace extends AbstractHandler {
 			Session targetSession = null;
 			try {
 				// Initialize source
-				srcSession = localRepository.login(srcWkspName);
+				srcSession = javaRepository.login(srcWkspName);
 				Node srcRootNode = srcSession.getRootNode();
 
 				// Create the workspace -
 				// FIXME will throw an error if workspace already exists
 				javaRepoManager.createWorkspace(targetWkspName);
-				targetSession = localRepository.login(targetWkspName);
+				targetSession = javaRepository.login(targetWkspName);
 				Node newRootNode = targetSession.getRootNode();
 
-				RepoUtils.copy(srcRootNode, newRootNode);
+				RepoUtils.copy(srcRootNode, newRootNode, monitor);
 				targetSession.save();
 				JcrUtils.addPrivilege(targetSession, "/",
 						SlcConstants.ROLE_SLC, Privilege.JCR_ALL);
@@ -170,8 +170,8 @@ public class CopyLocalJavaWorkspace extends AbstractHandler {
 	}
 
 	/* DEPENDENCY INJECTION */
-	public void setNodeRepository(Repository nodeRepository) {
-		this.nodeRepository = nodeRepository;
+	public void setJavaRepository(Repository javaRepository) {
+		this.javaRepository = javaRepository;
 	}
 
 	public void setJavaRepoManager(JavaRepoManager javaRepoManager) {

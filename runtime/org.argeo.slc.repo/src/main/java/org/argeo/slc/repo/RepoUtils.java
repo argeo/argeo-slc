@@ -50,6 +50,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.ArgeoMonitor;
 import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.ArgeoTypes;
@@ -512,9 +513,16 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 	 * a workspace completely.
 	 */
 	public static void copy(Node fromNode, Node toNode) {
+		copy(fromNode, toNode, null);
+	}
+
+	public static void copy(Node fromNode, Node toNode, ArgeoMonitor monitor) {
 		try {
+			String fromPath = fromNode.getPath();
+			if (monitor != null)
+				monitor.subTask("copying node :" + fromPath);
 			if (log.isDebugEnabled())
-				log.debug("copy node :" + fromNode.getPath());
+				log.debug("copy node :" + fromPath);
 
 			// FIXME : small hack to enable specific workspace copy
 			if (fromNode.isNodeType("rep:ACL")
@@ -594,6 +602,9 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			// unity
 			if (toNode.isNodeType(SlcTypes.SLC_ARTIFACT))
 				toNode.getSession().save();
+
+			if (monitor != null)
+				monitor.worked(1);
 
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot copy " + fromNode + " to " + toNode,

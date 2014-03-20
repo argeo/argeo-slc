@@ -92,7 +92,7 @@
 		<property name="javaRepoManager">
 			<bean factory-bean="slcRepoManager" factory-method="getJavaRepoManager" />
 		</property>
-		<property name="nodeRepository" ref="nodeRepository" />
+		<property name="javaRepository" ref="javaRepository" />
 	</bean>
 
 	<bean id="createLocalJavaWorkspace"

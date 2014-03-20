@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import javax.jcr.Node;
@@ -38,7 +39,6 @@ import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
-import org.argeo.slc.repo.NodeIndexer;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
@@ -51,8 +51,8 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
  * Make sure that all JCR metadata and Maven metadata are consistent for this
  * group of OSGi bundles.
  * 
- * The job is now done via the various {@code NodeIndexer} of the WorkspaceManager.
- * TODO import dependencies in the workspace.
+ * The job is now done via the various {@code NodeIndexer} of the
+ * WorkspaceManager. TODO import dependencies in the workspace.
  */
 @Deprecated
 public class NormalizeGroup implements Runnable, SlcNames {
@@ -184,8 +184,8 @@ public class NormalizeGroup implements Runnable, SlcNames {
 						SLC_ARTIFACT_VERSION).getString();
 			else
 				version = "0.0";
-//				throw new SlcException("Group version " + version
-//						+ " is empty.");
+		// throw new SlcException("Group version " + version
+		// + " is empty.");
 
 		int bundleCount = symbolicNamesToNodes.size();
 		if (log.isDebugEnabled())
@@ -221,7 +221,46 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		String rawVersion = artifactVersion.getProperty(SLC_ARTIFACT_VERSION)
 				.getString();
 		String cleanVersion = rawVersion.replace("-SNAPSHOT", ".SNAPSHOT");
-		return new Version(cleanVersion);
+		Version osgiVersion = null;
+		// log invalid version value to enable tracking them
+		try {
+			osgiVersion = new Version(cleanVersion);
+		} catch (IllegalArgumentException e) {
+			log.error("Version string " + cleanVersion + " is invalid ");
+			String twickedVersion = twickInvalidVersion(cleanVersion);
+			osgiVersion = new Version(twickedVersion);
+			log.error("Using " + twickedVersion + " instead");
+			// throw e;
+		}
+		return osgiVersion;
+	}
+
+	private String twickInvalidVersion(String tmpVersion) {
+		String[] tokens = tmpVersion.split("\\.");
+		if (tokens.length == 3 && tokens[2].lastIndexOf("-") > 0) {
+			String newSuffix = tokens[2].replaceFirst("-", ".");
+			tmpVersion = tmpVersion.replaceFirst(tokens[2], newSuffix);
+		} else if (tokens.length > 4) {
+			// FIXME manually remove other "."
+			StringTokenizer st = new StringTokenizer(tmpVersion, ".", true);
+			StringBuilder builder = new StringBuilder();
+			// Major
+			builder.append(st.nextToken()).append(st.nextToken());
+			// Minor
+			builder.append(st.nextToken()).append(st.nextToken());
+			// Micro
+			builder.append(st.nextToken()).append(st.nextToken());
+			// Qualifier
+			builder.append(st.nextToken());
+			while (st.hasMoreTokens()) {
+				// consume delimiter
+				st.nextToken();
+				if (st.hasMoreTokens())
+					builder.append("-").append(st.nextToken());
+			}
+			tmpVersion = builder.toString();
+		}
+		return tmpVersion;
 	}
 
 	private Artifact writeIndex(Session session, String artifactId,
@@ -363,8 +402,6 @@ public class NormalizeGroup implements Runnable, SlcNames {
 
 		// TODO require bundles
 
-		
-		
 		List<Node> dependencyNodes = new ArrayList<Node>();
 		for (String depSymbName : dependenciesSymbolicNames) {
 			if (depSymbName.equals(ownSymbolicName))
@@ -431,6 +468,7 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		return p.toString();
 	}
 
+	/* DEPENDENCY INJECTION */
 	public void setRepository(Repository repository) {
 		this.repository = repository;
 	}
