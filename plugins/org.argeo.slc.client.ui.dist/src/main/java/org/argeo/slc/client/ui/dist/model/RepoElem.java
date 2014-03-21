@@ -199,20 +199,32 @@ public class RepoElem extends DistParentElem {
 		return uri;
 	}
 
+	public String getRepoNodePath() {
+		if (repoNode == null)
+			return null;
+		else
+			try {
+				return repoNode.getPath();
+			} catch (RepositoryException e) {
+				throw new SlcException("Cannot get node path for repository "
+						+ label, e);
+			}
+	}
+
 	/**
 	 * Exposes the local repoNode that completely define a connection to a
 	 * repository (including a set of credentials). Might return null in case of
 	 * an anonymous user
 	 */
-	public Node getRepoNode() {
+	protected Node getRepoNode() {
 		return repoNode;
 	}
 
-	public Repository getRepository() {
+	protected Repository getRepository() {
 		return repository;
 	}
-	
-	public Credentials getCredentials() {
+
+	protected Credentials getCredentials() {
 		return credentials;
 	}
 

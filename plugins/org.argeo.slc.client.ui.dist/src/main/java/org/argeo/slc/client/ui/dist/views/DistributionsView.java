@@ -46,7 +46,7 @@ import org.argeo.slc.client.ui.dist.controllers.DistTreeContentProvider;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeDoubleClickListener;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeLabelProvider;
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
-import org.argeo.slc.client.ui.dist.model.ModularDistBaseElem;
+import org.argeo.slc.client.ui.dist.model.ModularDistVersionBaseElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
@@ -128,42 +128,31 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		IWorkbenchWindow window = DistPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
 
+		// Most of the implemented commands support only one selected
+		// element
+		boolean singleElement = ((IStructuredSelection) viewer.getSelection())
+				.size() == 1;
+		// Get Current selected item :
+		Object firstElement = ((IStructuredSelection) viewer.getSelection())
+				.getFirstElement();
+
 		try {
-			// Most of the implemented commands support only one selected
-			// element
-			boolean singleElement = ((IStructuredSelection) viewer
-					.getSelection()).size() == 1;
-			// Get Current selected item :
-			Object firstElement = ((IStructuredSelection) viewer.getSelection())
-					.getFirstElement();
 
 			if (firstElement instanceof TreeParent
 					|| firstElement instanceof DistParentElem) {
 
 				String targetRepoPath = null, workspaceName = null, workspacePrefix = null;
+				String modularDistBasePath = null;
 				// String targetRepoUri = null;
 				// Build conditions depending on element type
-				boolean isDistribElem = false, isModularDistBaseElem = false, isRepoElem = false, isDistribGroupElem = false;
+				boolean isDistribElem = false, isModularDistVersionBaseElem = false, isRepoElem = false, isDistribGroupElem = false;
 				boolean isLocal = false, isReadOnly = true;
 
 				RepoElem re = null;
 
-				if (firstElement instanceof WorkspaceElem) {
-					WorkspaceElem de = (WorkspaceElem) firstElement;
-					re = (RepoElem) de.getParent().getParent();
-					isDistribElem = true;
-					isReadOnly = de.isReadOnly();
-					workspaceName = de.getWorkspaceName();
-					isLocal = de.inHome();
-				} else if (firstElement instanceof RepoElem) {
+				if (firstElement instanceof RepoElem) {
 					re = (RepoElem) firstElement;
 					isRepoElem = true;
-					isLocal = re.inHome();
-					isReadOnly = re.isReadOnly();
-				} else if (firstElement instanceof ModularDistBaseElem) {
-					ModularDistBaseElem mdbe = (ModularDistBaseElem) firstElement;
-					re = (RepoElem) mdbe.getParent().getParent().getParent();
-					isModularDistBaseElem = true;
 					isLocal = re.inHome();
 					isReadOnly = re.isReadOnly();
 				} else if (firstElement instanceof WkspGroupElem) {
@@ -172,13 +161,25 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 					isDistribGroupElem = true;
 					re = (RepoElem) wge.getParent();
 					workspacePrefix = wge.getName();
+				} else if (firstElement instanceof WorkspaceElem) {
+					WorkspaceElem we = (WorkspaceElem) firstElement;
+					re = we.getRepoElem();
+					isDistribElem = true;
+					isReadOnly = we.isReadOnly();
+					workspaceName = we.getWorkspaceName();
+					isLocal = we.inHome();
+				} else if (firstElement instanceof ModularDistVersionBaseElem) {
+					ModularDistVersionBaseElem mdbe = (ModularDistVersionBaseElem) firstElement;
+					isModularDistVersionBaseElem = true;
+					re = mdbe.getWkspElem().getRepoElem();
+					isLocal = re.inHome();
+					isReadOnly = re.isReadOnly();
+					workspaceName = mdbe.getWkspElem().getWorkspaceName();
+					modularDistBasePath = mdbe.getModularDistBase().getPath();
 				}
 
-				// TODO add case for goups
-
 				if (re != null) {
-					// targetRepoUri = re.getUri();
-					targetRepoPath = re.getRepoNode().getPath();
+					targetRepoPath = re.getRepoNodePath();
 				}
 
 				// Display repo info
@@ -198,18 +199,19 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
 						CreateWorkspace.DEFAULT_ICON,
 						(isRepoElem || isDistribGroupElem) && singleElement
-								&& !isReadOnly  && !isLocal, params);
+								&& !isReadOnly && !isLocal, params);
 
 				// TODO Manage the case where it is not a java workspace
 				params = new HashMap<String, String>();
 				params.put(CreateLocalJavaWorkspace.PARAM_WORKSPACE_PREFIX,
 						workspacePrefix);
 				CommandUtils.refreshParametrizedCommand(menuManager, window,
-						CreateLocalJavaWorkspace.ID, CreateLocalJavaWorkspace.DEFAULT_LABEL,
+						CreateLocalJavaWorkspace.ID,
+						CreateLocalJavaWorkspace.DEFAULT_LABEL,
 						CreateLocalJavaWorkspace.DEFAULT_ICON,
 						(isRepoElem || isDistribGroupElem) && singleElement
 								&& !isReadOnly && isLocal, params);
-				
+
 				// Register a remote repository
 				CommandUtils.refreshCommand(menuManager, window,
 						RegisterRepository.ID,
@@ -255,14 +257,15 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
 						CopyWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isLocal, params);
-				
+
 				params = new HashMap<String, String>();
 				params.put(CopyLocalJavaWorkspace.PARAM_SOURCE_WORKSPACE_NAME,
 						workspaceName);
 				CommandUtils.refreshParametrizedCommand(menuManager, window,
-						CopyLocalJavaWorkspace.ID, CopyLocalJavaWorkspace.DEFAULT_LABEL,
+						CopyLocalJavaWorkspace.ID,
+						CopyLocalJavaWorkspace.DEFAULT_LABEL,
 						CopyLocalJavaWorkspace.DEFAULT_ICON, isDistribElem
-								&& singleElement&& isLocal, params);
+								&& singleElement && isLocal, params);
 
 				// Clear Workspace
 				params = new HashMap<String, String>();
@@ -310,13 +313,22 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				CommandUtils.refreshParametrizedCommand(submenu, window,
 						RunInOsgi.ID, RunInOsgi.DEFAULT_LABEL,
 						RunInOsgi.DEFAULT_ICON, isDistribElem && singleElement
-								&& isLocal, params);// Run in OSGi
+								&& isLocal, params);
 
-				CommandUtils.refreshCommand(submenu, window,
+				// Open generate binaries
+				params = new HashMap<String, String>();
+				params.put(OpenGenerateBinariesWizard.PARAM_REPO_NODE_PATH,
+						targetRepoPath);
+				params.put(OpenGenerateBinariesWizard.PARAM_MODULE_PATH,
+						modularDistBasePath);
+				params.put(OpenGenerateBinariesWizard.PARAM_WORKSPACE_NAME,
+						workspaceName);
+
+				CommandUtils.refreshParametrizedCommand(submenu, window,
 						OpenGenerateBinariesWizard.ID,
 						OpenGenerateBinariesWizard.DEFAULT_LABEL,
 						OpenGenerateBinariesWizard.DEFAULT_ICON,
-						isModularDistBaseElem && !isReadOnly);
+						isModularDistVersionBaseElem && !isReadOnly, params);
 
 				if (submenu.getSize() > 0)
 					menuManager.add(submenu);
@@ -332,7 +344,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 			}
 		} catch (RepositoryException e) {
 			throw new SlcException("unexpected errror while "
-					+ "building context menu", e);
+					+ "building context menu for element " + firstElement, e);
 		}
 	}
 

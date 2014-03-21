@@ -27,8 +27,8 @@ mixin
 - slc:groupBaseId (STRING) m
 
 // Mark a given group base as relevant to create modular distribution in the current workspace  
-[slc:category]
-mixin
+// [slc:category]
+// mixin
 
 [slc:distribution] > slc:artifactVersion
 mixin
@@ -38,8 +38,7 @@ mixin
 [slc:modularDistributionBase]
 mixin
 
-// Inherit from > slc:categorizedNameVersion ??
-// (not possible without migration)
+// Question: Extend slc:categorizedNameVersion ? (not possible without migration)
 [slc:modularDistribution] 
 mixin
 + slc:modules (nt:unstructured) m

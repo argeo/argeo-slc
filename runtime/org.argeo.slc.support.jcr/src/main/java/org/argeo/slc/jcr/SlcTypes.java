@@ -69,7 +69,7 @@ public interface SlcTypes {
 	public final static String SLC_FRAGMENT_HOST = "slc:fragmentHost";
 
 	// Distribution management
-	public final static String SLC_CATEGORY = "slc:category";
+	// public final static String SLC_CATEGORY = "slc:category";
 	public final static String SLC_MODULAR_DISTRIBUTION_BASE = "slc:modularDistributionBase";
 	public final static String SLC_MODULAR_DISTRIBUTION = "slc:modularDistribution";
 	public final static String SLC_MODULE_COORDINATES = "slc:moduleCoordinates";

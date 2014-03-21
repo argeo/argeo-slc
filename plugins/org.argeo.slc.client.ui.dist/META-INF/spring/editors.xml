@@ -21,15 +21,12 @@
 	<bean id="artifactVersionEditor"
 		class="org.argeo.slc.client.ui.dist.editors.ArtifactVersionEditor"
 		scope="prototype">
-		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="keyring" ref="keyring" />
-		<property name="localRepository" ref="nodeRepository" />
+		<property name="repoService" ref="repoService" />
 	</bean>
+
 	<bean id="modularDistVersionEditor"
 		class="org.argeo.slc.client.ui.dist.editors.ModularDistVersionEditor"
 		scope="prototype">
-		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="keyring" ref="keyring" />
-		<property name="localRepository" ref="nodeRepository" />
+		<property name="repoService" ref="repoService" />
 	</bean>
 </beans>

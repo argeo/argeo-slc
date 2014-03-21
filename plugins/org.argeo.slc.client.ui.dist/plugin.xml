@@ -193,16 +193,28 @@
   	 		</commandParameter>
     	</command>
     	
-    	<command
+    	<!-- <command
             defaultHandler="org.argeo.slc.client.ui.dist.commands.MarkAsRelevantCategory"
             id="org.argeo.slc.client.ui.dist.markAsRelevantCategory"
             name="Mark as relevant category">
-    	</command>
+    	</command> --> 
     	
     	<command
-            defaultHandler="org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard"
             id="org.argeo.slc.client.ui.dist.openGenerateBinariesWizard"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Generate Binaries...">
+            <commandParameter
+				id="param.repoNodePath"
+				name="Repo node path">
+			</commandParameter>
+			<commandParameter
+				id="param.workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="param.modulePath"
+				name="Module path name">
+			</commandParameter>
     	</command>
     	
     	<command

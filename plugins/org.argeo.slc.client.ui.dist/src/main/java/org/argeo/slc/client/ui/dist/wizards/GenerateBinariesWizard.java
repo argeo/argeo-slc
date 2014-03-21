@@ -18,10 +18,8 @@ package org.argeo.slc.client.ui.dist.wizards;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.jcr.Credentials;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
@@ -33,6 +31,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.PrivilegedJob;
+import org.argeo.slc.client.ui.dist.RepoService;
 import org.argeo.slc.client.ui.dist.utils.ViewerUtils;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
@@ -71,10 +70,10 @@ public class GenerateBinariesWizard extends Wizard {
 			.getLog(GenerateBinariesWizard.class);
 
 	// Business objects
-	private String groupNodePath;
-	private Repository repository;
-	private Credentials credentials;
+	private final RepoService repoService;
+	private final String repoNodePath;
 	private String wkspName;
+	private String groupNodePath;
 
 	// The pages
 	private RecapPage recapPage;
@@ -84,11 +83,11 @@ public class GenerateBinariesWizard extends Wizard {
 	private Text latestVersionTxt;
 	private Text highestArtifactVersionTxt;
 
-	public GenerateBinariesWizard(Repository repository,
-			Credentials credentials, String wkspName, String groupNodePath) {
+	public GenerateBinariesWizard(RepoService repoService, String repoNodePath,
+			String wkspName, String groupNodePath) {
 		super();
-		this.repository = repository;
-		this.credentials = credentials;
+		this.repoService = repoService;
+		this.repoNodePath = repoNodePath;
 		this.wkspName = wkspName;
 		this.groupNodePath = groupNodePath;
 	}
@@ -123,8 +122,8 @@ public class GenerateBinariesWizard extends Wizard {
 					"Confirm Launch", msg);
 
 			if (result) {
-				GenerateBinaryJob job = new GenerateBinaryJob(repository,
-						credentials, wkspName, groupNodePath,
+				GenerateBinaryJob job = new GenerateBinaryJob(repoService,
+						repoNodePath, wkspName, groupNodePath,
 						versionTxt.getText());
 				job.setUser(true);
 				job.schedule();
@@ -159,7 +158,8 @@ public class GenerateBinariesWizard extends Wizard {
 		private void refreshValues() {
 			Session session = null;
 			try {
-				session = repository.login(credentials, wkspName);
+				session = repoService.getRemoteSession(repoNodePath, null,
+						wkspName);
 				Node groupNode = session.getNode(groupNodePath);
 				GenerateBinaries gb = GenerateBinaries.preProcessGroupNode(
 						groupNode, null);
@@ -283,19 +283,18 @@ public class GenerateBinariesWizard extends Wizard {
 	 */
 	private class GenerateBinaryJob extends PrivilegedJob {
 
-		private final Repository repository;
-		private final Credentials credentials;
+		private final RepoService repoService;
+		private final String repoNodePath;
 		private final String wkspName;
 		private final String groupNodePath;
 		private final String version;
 
-		public GenerateBinaryJob(Repository repository,
-				Credentials credentials, String wkspName, String groupNodePath,
-				String version) {
+		public GenerateBinaryJob(RepoService repoService, String repoNodePath,
+				String wkspName, String groupNodePath, String version) {
 			super("Fetch");
 			this.version = version;
-			this.repository = repository;
-			this.credentials = credentials;
+			this.repoService = repoService;
+			this.repoNodePath = repoNodePath;
 			this.wkspName = wkspName;
 			this.groupNodePath = groupNodePath;
 		}
@@ -305,7 +304,8 @@ public class GenerateBinariesWizard extends Wizard {
 			Session session = null;
 			try {
 				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
-				session = repository.login(credentials, wkspName);
+				session = repoService.getRemoteSession(repoNodePath, null,
+						wkspName);
 				Node groupBaseNode = session.getNode(groupNodePath);
 				GenerateBinaries.processGroupNode(groupBaseNode, version,
 						monitor);

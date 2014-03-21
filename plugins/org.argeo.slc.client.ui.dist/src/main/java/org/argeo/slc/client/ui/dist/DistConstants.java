@@ -40,6 +40,9 @@ public interface DistConstants {
 	public final static String SLC_BUNDLE_VENDOR = SlcNames.SLC_
 			+ Constants.BUNDLE_VENDOR;
 
+	public final static String SLC_BUNDLE_DESCRIPTION = SlcNames.SLC_
+			+ Constants.BUNDLE_DESCRIPTION;
+
 	public final String DEFAULT_PUBLIC_REPOSITORY_URI = "vm:///java";
 
 }

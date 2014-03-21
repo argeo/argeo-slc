@@ -420,14 +420,13 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 	/**
 	 * Shortcut to retrieve a session given variable information: Handle the
 	 * case where we only have an URI of the repository, that we want to connect
-	 * as anonymous or the case of a identified connexion to a local or remote
+	 * as anonymous or the case of a identified connection to a local or remote
 	 * repository.
 	 * 
 	 * Callers must close the session once it has been used
 	 */
-	public static Session getCorrespondingSession(
-			RepositoryFactory repositoryFactory, Keyring keyring,
-			Node repoNode, String uri, String workspaceName) {
+	public static Session getRemoteSession(RepositoryFactory repositoryFactory,
+			Keyring keyring, Node repoNode, String uri, String workspaceName) {
 		try {
 			if (repoNode == null && uri == null)
 				throw new SlcException(
@@ -450,6 +449,35 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			throw new SlcException("Cannot connect to workspace "
 					+ workspaceName + " of repository " + repoNode
 					+ " with URI " + uri, e);
+		}
+	}
+
+	/**
+	 * Shortcut to retrieve a session on a remote Jrc Repository from
+	 * information stored in a local argeo node or from an URI: Handle the case
+	 * where we only have an URI of the repository, that we want to connect as
+	 * anonymous or the case of a identified connection to a local or remote
+	 * repository.
+	 * 
+	 * Callers must close the session once it has been used
+	 */
+	public static Session getRemoteSession(RepositoryFactory repositoryFactory,
+			Keyring keyring, Repository localRepository, String repoNodePath,
+			String uri, String workspaceName) {
+		Session localSession = null;
+		Node repoNode = null;
+		try {
+			localSession = localRepository.login();
+			if (repoNodePath != null && localSession.nodeExists(repoNodePath))
+				repoNode = localSession.getNode(repoNodePath);
+
+			return RepoUtils.getRemoteSession(repositoryFactory, keyring,
+					repoNode, uri, workspaceName);
+		} catch (RepositoryException e) {
+			throw new SlcException("Cannot log to workspace " + workspaceName
+					+ " for repo defined in " + repoNodePath, e);
+		} finally {
+			JcrUtils.logoutQuietly(localSession);
 		}
 	}
 

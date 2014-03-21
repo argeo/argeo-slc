@@ -9,7 +9,7 @@ import javax.jcr.Node;
 public class ModularDistVersionElem extends DistParentElem {
 	private final Node modularDistVersionNode;
 
-	public ModularDistVersionElem(ModularDistBaseElem modularDistGroupElem,
+	public ModularDistVersionElem(ModularDistVersionBaseElem modularDistGroupElem,
 			String version, Node modularDistVersionNode) {
 		super(version, modularDistGroupElem.inHome(), modularDistGroupElem
 				.isReadOnly());

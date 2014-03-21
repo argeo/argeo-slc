@@ -105,7 +105,6 @@ public interface SlcNames {
 	// shared OSGi
 	public final static String SLC_SYMBOLIC_NAME = "slc:symbolic-name";
 	public final static String SLC_BUNDLE_VERSION = "slc:bundle-version";
-	public final static String SLC_BUNDLE_DESCRIPTION = "slc:Bundle-Description";
 
 	// slc:osgiBaseVersion
 	public final static String SLC_MAJOR = "slc:major";

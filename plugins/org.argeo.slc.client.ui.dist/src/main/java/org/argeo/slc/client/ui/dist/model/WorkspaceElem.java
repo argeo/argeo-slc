@@ -4,6 +4,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 
 import org.argeo.ArgeoException;
@@ -82,8 +83,17 @@ public class WorkspaceElem extends DistParentElem {
 								"select * from ["
 										+ SlcTypes.SLC_MODULAR_DISTRIBUTION
 										+ "]", Query.JCR_SQL2);
-				NodeIterator distributions = groupQuery.execute().getNodes();
-				distribs: while (distributions.hasNext()) {
+				NodeIterator distributions = null;
+				try {
+					distributions = groupQuery.execute().getNodes();
+				} catch (InvalidQueryException iqe) {
+					// For legacy only does not throw an exception while
+					// browsing
+					// legacy repositories that does not know
+					// SLC_MODULAR_DISTRIBUTION type
+				}
+				distribs: while (distributions != null
+						&& distributions.hasNext()) {
 					Node currDist = distributions.nextNode();
 					Node distBase = currDist.getParent().getParent();
 					if (!distBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE))
@@ -95,35 +105,17 @@ public class WorkspaceElem extends DistParentElem {
 
 					String name;
 					String type;
-					if (ModularDistBaseElem.AETHER_BINARIES_TYPE
+					if (ModularDistVersionBaseElem.AETHER_BINARIES_TYPE
 							.equals(artifactId)) {
 						name = groupId;
-						type = ModularDistBaseElem.AETHER_BINARIES_TYPE;
+						type = ModularDistVersionBaseElem.AETHER_BINARIES_TYPE;
 					} else {
 						name = artifactId;
-						type = ModularDistBaseElem.AETHER_DEP_TYPE;
+						type = ModularDistVersionBaseElem.AETHER_DEP_TYPE;
 					}
 					if (getChildByName(name) == null)
-						addChild(new ModularDistBaseElem(WorkspaceElem.this,
-								name, distBase, type));
-				}
-				// Add empty group base that have been marked as relevant
-				groupQuery = currSession
-						.getWorkspace()
-						.getQueryManager()
-						.createQuery(
-								"select * from ["
-										+ SlcTypes.SLC_CATEGORY + "]",
-								Query.JCR_SQL2);
-				distributions = groupQuery.execute().getNodes();
-				while (distributions.hasNext()) {
-					Node distBase = distributions.nextNode();
-					String groupBaseId = distBase.getProperty(
-							SlcNames.SLC_GROUP_BASE_ID).getString();
-					if (getChildByName(groupBaseId) == null)
-						addChild(new ModularDistBaseElem(WorkspaceElem.this,
-								groupBaseId, distBase,
-								ModularDistBaseElem.AETHER_CATEGORY_BASE));
+						addChild(new ModularDistVersionBaseElem(
+								WorkspaceElem.this, name, distBase, type));
 				}
 				return super.getChildren();
 			} catch (RepositoryException e) {

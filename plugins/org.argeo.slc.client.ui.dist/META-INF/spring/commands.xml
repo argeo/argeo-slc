@@ -14,9 +14,7 @@
 
 	<bean id="openModuleEditor" class="org.argeo.slc.client.ui.dist.commands.OpenModuleEditor"
 		scope="prototype">
-		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="keyring" ref="keyring" />
-		<property name="localRepository" ref="nodeRepository" />
+		<property name="repoService" ref="repoService" />
 	</bean>
 
 	<!-- REPOSITORY MANAGEMENT -->
@@ -36,8 +34,8 @@
 	<bean id="displayRepoInformation"
 		class="org.argeo.slc.client.ui.dist.commands.DisplayRepoInformation"
 		scope="prototype">
-		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="keyring" ref="keyring" />
+		<property name="repoService" ref="repoService" />
+		<property name="nodeRepository" ref="nodeRepository" />
 	</bean>
 
 
@@ -72,6 +70,10 @@
 		<property name="repositoryFactory" ref="repositoryFactory" />
 		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
+	</bean>
+	<bean id="openGenerateBinariesWizard"
+		class="org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard">
+		<property name="repoService" ref="repoService" />
 	</bean>
 
 	<!-- WORKSPACE CRUD -->

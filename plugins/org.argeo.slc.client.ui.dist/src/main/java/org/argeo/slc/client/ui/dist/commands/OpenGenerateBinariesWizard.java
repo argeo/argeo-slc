@@ -15,17 +15,8 @@
  */
 package org.argeo.slc.client.ui.dist.commands;
 
-import java.util.Iterator;
-
-import javax.jcr.Credentials;
-import javax.jcr.Node;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-
-import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.model.ModularDistBaseElem;
-import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
+import org.argeo.slc.client.ui.dist.RepoService;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.client.ui.dist.wizards.GenerateBinariesWizard;
 import org.eclipse.core.commands.AbstractHandler;
@@ -33,10 +24,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -51,53 +39,38 @@ public class OpenGenerateBinariesWizard extends AbstractHandler {
 	public final static String DEFAULT_LABEL = "Generate Aether Index";
 	public final static ImageDescriptor DEFAULT_ICON = null;
 
+	/* DEPENDENCY INJECTION */
+	private RepoService repoService;
+
+	// Absolute Coordinates of the current group node
+	public final static String PARAM_REPO_NODE_PATH = "param.repoNodePath";
+	public final static String PARAM_WORKSPACE_NAME = "param.workspaceName";
+	public final static String PARAM_MODULE_PATH = "param.modulePath";
+
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		IWorkbenchPart activePart = DistPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow().getActivePage().getActivePart();
 
-		if (activePart instanceof IViewPart) {
-			ISelection selector = ((IViewPart) activePart).getViewSite()
-					.getSelectionProvider().getSelection();
-			if (selector != null && selector instanceof IStructuredSelection) {
-				Iterator<?> it = ((IStructuredSelection) selector).iterator();
-				Object element = it.next();
-				if (element instanceof ModularDistBaseElem) {
-					ModularDistBaseElem elem = (ModularDistBaseElem) element;
-					// Session newSession = null;
-					try {
-						Node cBase = elem.getCategoryBase();
-						String catBasePath = cBase.getPath();
-						// newSession = ((WorkspaceElem) elem.getParent())
-						// .getNewSession();
+		String repoNodePath = event.getParameter(PARAM_REPO_NODE_PATH);
+		String workspaceName = event.getParameter(PARAM_WORKSPACE_NAME);
+		String modulePath = event.getParameter(PARAM_MODULE_PATH);
 
-						String wkspName = ((WorkspaceElem) elem.getParent())
-								.getWorkspaceName();
-						Repository repository = ((WorkspaceElem) elem
-								.getParent()).getRepoElem().getRepository();
-						Credentials credentials = ((WorkspaceElem) elem
-								.getParent()).getRepoElem().getCredentials();
+		GenerateBinariesWizard wizard = new GenerateBinariesWizard(repoService,
+				repoNodePath, workspaceName, modulePath);
 
-						GenerateBinariesWizard wizard = new GenerateBinariesWizard(
-								repository, credentials, wkspName, catBasePath);
+		WizardDialog dialog = new WizardDialog(
+				HandlerUtil.getActiveShell(event), wizard);
+		int result = dialog.open();
 
-						WizardDialog dialog = new WizardDialog(
-								HandlerUtil.getActiveShell(event), wizard);
-						int result = dialog.open();
+		if (result == Dialog.OK
+				&& (activePart instanceof RefreshDistributionsView))
+			CommandHelpers.callCommand(RefreshDistributionsView.ID);
 
-						if (result == Dialog.OK)
-							CommandHelpers
-									.callCommand(RefreshDistributionsView.ID);
-					} catch (RepositoryException re) {
-						throw new SlcException(
-								"Unable to duplicate session for node " + elem,
-								re);
-						// } finally {
-						// JcrUtils.logoutQuietly(newSession);
-					}
-				}
-
-			}
-		}
 		return null;
+	}
+	
+	/* DEPENDENCY INJECTION */
+	public void setRepoService(RepoService repoService) {
+		this.repoService = repoService;
 	}
 }

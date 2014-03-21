@@ -16,18 +16,15 @@
 package org.argeo.slc.client.ui.dist.editors;
 
 import javax.jcr.Node;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.RepoService;
 import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -42,49 +39,41 @@ public class ArtifactVersionEditor extends FormEditor implements SlcNames {
 	// LogFactory.getLog(ArtifactEditor.class);
 	public final static String ID = DistPlugin.ID + ".artifactVersionEditor";
 
-	private ModuleEditorInput editorInput;
-
 	/* DEPENDENCY INJECTION */
-	private RepositoryFactory repositoryFactory;
-	private Repository localRepository;
-	private Keyring keyring;
+	private RepoService repoService;
 
-	// Business objects
-	private Node repoNode;
-	// Session that provides the node in the home of the local repository
-	private Session localSession = null;
-	// The business Session on an optionally remote repository
+	// Business Objects
 	private Session businessSession;
 	private Node artifact;
+
+	private ModuleEditorInput editorInput;
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		editorInput = (ModuleEditorInput) input;
+		businessSession = repoService.getRemoteSession(
+				editorInput.getRepoNodePath(), editorInput.getUri(),
+				editorInput.getWorkspaceName());
 		try {
-			localSession = localRepository.login();
-			if (editorInput.getRepoNodePath() != null
-					&& localSession.nodeExists(editorInput.getRepoNodePath()))
-				repoNode = localSession.getNode(editorInput.getRepoNodePath());
-			businessSession = RepoUtils.getCorrespondingSession(
-					repositoryFactory, keyring, repoNode, editorInput.getUri(),
-					editorInput.getWorkspaceName());
 			artifact = businessSession.getNode(editorInput.getModulePath());
 		} catch (RepositoryException e) {
 			throw new PartInitException(
 					"Unable to initialise editor for artifact "
 							+ editorInput.getModulePath() + " in workspace "
-							+ editorInput.getWorkspaceName()
-							+ " of repository " + editorInput.getUri(), e);
+							+ editorInput.getWorkspaceName(), e);
 		}
-		setPartName(getFormattedName());
 		super.init(site, input);
 	}
 
 	/** Override to provide a specific part name */
 	protected String getFormattedName() {
 		try {
-			String partName = artifact.getProperty(SLC_ARTIFACT_ID).getString();
+			String partName = null;
+			if (artifact.hasProperty(SLC_ARTIFACT_ID))
+				partName = artifact.getProperty(SLC_ARTIFACT_ID).getString();
+			else
+				partName = artifact.getName();
 
 			if (partName.length() > 10) {
 				partName = "..." + partName.substring(partName.length() - 10);
@@ -99,12 +88,15 @@ public class ArtifactVersionEditor extends FormEditor implements SlcNames {
 
 	@Override
 	protected void addPages() {
+		setPartName(getFormattedName());
+
 		try {
 			addPage(new BundleDetailsPage(this, "Details ", artifact));
 			addPage(new BundleRawPage(this, "Raw Meta-Data ", artifact));
 		} catch (PartInitException e) {
 			throw new ArgeoException("Cannot add distribution editor pages", e);
 		}
+
 	}
 
 	@Override
@@ -114,7 +106,6 @@ public class ArtifactVersionEditor extends FormEditor implements SlcNames {
 	@Override
 	public void dispose() {
 		JcrUtils.logoutQuietly(businessSession);
-		JcrUtils.logoutQuietly(localSession);
 		super.dispose();
 	}
 
@@ -127,8 +118,8 @@ public class ArtifactVersionEditor extends FormEditor implements SlcNames {
 		return false;
 	}
 
-	protected Node getRepoNode() {
-		return repoNode;
+	protected RepoService getRepoService() {
+		return repoService;
 	}
 
 	protected Node getArtifact() {
@@ -136,15 +127,7 @@ public class ArtifactVersionEditor extends FormEditor implements SlcNames {
 	}
 
 	/* DEPENDENCY INJECTION */
-	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
-		this.repositoryFactory = repositoryFactory;
-	}
-
-	public void setKeyring(Keyring keyring) {
-		this.keyring = keyring;
-	}
-
-	public void setLocalRepository(Repository localRepository) {
-		this.localRepository = localRepository;
+	public void setRepoService(RepoService repoService) {
+		this.repoService = repoService;
 	}
 }

@@ -37,8 +37,9 @@ public class ModuleEditorInput implements IEditorInput, SlcNames {
 			String workspaceName, String artifactPath) {
 		if (workspaceName == null)
 			throw new SlcException("Workspace name cannot be null");
-		if (uri == null)
-			throw new SlcException("URI for repository cannot be null");
+		if (uri == null && repoNodePath == null)
+			throw new SlcException("Define at least one of the 2 "
+					+ "parameters URI or Repo Node Path");
 		if (artifactPath == null)
 			throw new SlcException("Module path cannot be null");
 		this.repoNodePath = repoNodePath;
@@ -105,12 +106,15 @@ public class ModuleEditorInput implements IEditorInput, SlcNames {
 			return false;
 		if (!workspaceName.equals(other.getWorkspaceName()))
 			return false;
-		if (!uri.equals(other.getUri()))
+
+		if (uri == null && other.getUri() != null
+				|| !uri.equals(other.getUri()))
 			return false;
 
-		if (repoNodePath == null)
-			return other.getRepoNodePath() == null;
-		else
-			return repoNodePath.equals(other.getRepoNodePath());
+		if (repoNodePath == null && other.getRepoNodePath() != null
+				|| !repoNodePath.equals(other.getRepoNodePath()))
+			return false;
+
+		return true;
 	}
 }

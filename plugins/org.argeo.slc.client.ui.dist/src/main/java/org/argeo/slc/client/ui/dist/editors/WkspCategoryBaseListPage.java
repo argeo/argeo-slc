@@ -16,7 +16,9 @@
 package org.argeo.slc.client.ui.dist.editors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -24,7 +26,6 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.observation.Event;
-import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.Constraint;
@@ -42,10 +43,11 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.commands.MarkAsRelevantCategory;
+import org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard;
 import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.repo.RepoConstants;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
@@ -100,8 +102,9 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 	private final static String FILTER_HELP_MSG = "Enter filter criterion separated by a space";
 
 	// Observes changes
-	private final static String[] observedTypes = { SlcTypes.SLC_GROUP_BASE };
-	private CategoryObserver categoriesObserver;
+	// private final static String[] observedTypes = { SlcTypes.SLC_GROUP_BASE
+	// };
+	// private CategoryObserver categoriesObserver;
 
 	public WkspCategoryBaseListPage(FormEditor formEditor, String title,
 			Session session) {
@@ -135,18 +138,18 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		tableCmp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		createTableViewer(tableCmp);
 
-		categoriesObserver = new CategoryObserver(viewer.getTable()
-				.getDisplay());
-		try {
-			ObservationManager observationManager = session.getWorkspace()
-					.getObservationManager();
-			// FIXME Will not be notified if empty result is deleted
-			observationManager.addEventListener(categoriesObserver,
-					Event.PROPERTY_CHANGED, "/", true, null, observedTypes,
-					false);
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot register listeners", e);
-		}
+		// categoriesObserver = new CategoryObserver(viewer.getTable()
+		// .getDisplay());
+		// try {
+		// ObservationManager observationManager = session.getWorkspace()
+		// .getObservationManager();
+		// // FIXME Will not be notified if empty result is deleted
+		// observationManager.addEventListener(categoriesObserver,
+		// Event.PROPERTY_CHANGED, "/", true, null, observedTypes,
+		// false);
+		// } catch (RepositoryException e) {
+		// throw new SlcException("Cannot register listeners", e);
+		// }
 
 		refresh();
 	}
@@ -281,13 +284,14 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		// Version
 		col = new TableViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(80);
-		col.getColumn().setText("Relevant");
+		col.getColumn().setText("Has binaries");
 		col.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
 				try {
-					return ((Node) element)
-							.isNodeType(SlcTypes.SLC_CATEGORY) ? "Yes"
+					Node currNode = (Node) element;
+
+					return currNode.hasNode(RepoConstants.BINARIES_ARTIFACT_ID) ? "Yes"
 							: "No";
 				} catch (RepositoryException e) {
 					throw new SlcException("unable to check type of node "
@@ -341,29 +345,46 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 				.getFirstElement();
 		Node currSelected = (Node) firstElement;
 
-		boolean isRelevant = false;
-		try {
-			isRelevant = currSelected
-					.isNodeType(SlcTypes.SLC_CATEGORY);
-			boolean canEdit = currSelected
-					.canAddMixin(SlcTypes.SLC_CATEGORY);
+		DistWkspEditorInput input = (DistWkspEditorInput) getEditorInput();
 
+		Map<String, String> params = new HashMap<String, String>();
+		params.put(OpenGenerateBinariesWizard.PARAM_REPO_NODE_PATH,
+				input.getRepoNodePath());
+		try {
+			params.put(OpenGenerateBinariesWizard.PARAM_MODULE_PATH,
+					currSelected.getPath());
 		} catch (RepositoryException e) {
-			throw new SlcException("unable to check type of node "
-					+ firstElement, e);
+			throw new SlcException("Unable to get path for " + currSelected, e);
 		}
-		// Add
-		if (isRelevant) {// Remove
-			CommandUtils.refreshCommand(menuManager, window,
-					MarkAsRelevantCategory.ID,
-					MarkAsRelevantCategory.DEFAULT_REMOVE_LABEL,
-					MarkAsRelevantCategory.DEFAULT_REMOVE_ICON, true);
-		} else {
-			CommandUtils.refreshCommand(menuManager, window,
-					MarkAsRelevantCategory.ID,
-					MarkAsRelevantCategory.DEFAULT_LABEL,
-					MarkAsRelevantCategory.DEFAULT_ICON, true);
-		}
+		params.put(OpenGenerateBinariesWizard.PARAM_WORKSPACE_NAME,
+				input.getWorkspaceName());
+
+		CommandUtils.refreshParametrizedCommand(menuManager, window,
+				OpenGenerateBinariesWizard.ID,
+				OpenGenerateBinariesWizard.DEFAULT_LABEL,
+				OpenGenerateBinariesWizard.DEFAULT_ICON, true, params);
+
+		// boolean isRelevant = false;
+		// try {
+		// isRelevant = currSelected.isNodeType(SlcTypes.SLC_CATEGORY);
+		// boolean canEdit = currSelected.canAddMixin(SlcTypes.SLC_CATEGORY);
+		//
+		// } catch (RepositoryException e) {
+		// throw new SlcException("unable to check type of node "
+		// + firstElement, e);
+		// }
+		// // Add
+		// if (isRelevant) {// Remove
+		// CommandUtils.refreshCommand(menuManager, window,
+		// MarkAsRelevantCategory.ID,
+		// MarkAsRelevantCategory.DEFAULT_REMOVE_LABEL,
+		// MarkAsRelevantCategory.DEFAULT_REMOVE_ICON, true);
+		// } else {
+		// CommandUtils.refreshCommand(menuManager, window,
+		// MarkAsRelevantCategory.ID,
+		// MarkAsRelevantCategory.DEFAULT_LABEL,
+		// MarkAsRelevantCategory.DEFAULT_ICON, true);
+		// }
 	}
 
 	private SelectionAdapter getSelectionAdapter(final int index) {

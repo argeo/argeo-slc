@@ -64,7 +64,7 @@ public class DistWorkspaceEditor extends FormEditor implements SlcNames {
 					&& localSession.nodeExists(editorInput.getRepoNodePath()))
 				repoNode = localSession.getNode(editorInput.getRepoNodePath());
 
-			businessSession = RepoUtils.getCorrespondingSession(
+			businessSession = RepoUtils.getRemoteSession(
 					repositoryFactory, keyring, repoNode, editorInput.getUri(),
 					editorInput.getWorkspaceName());
 		} catch (RepositoryException e) {

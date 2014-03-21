@@ -16,21 +16,17 @@
 package org.argeo.slc.client.ui.dist.commands;
 
 import javax.jcr.Node;
-import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
-import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
-import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.RepoService;
 import org.argeo.slc.client.ui.dist.editors.ArtifactVersionEditor;
 import org.argeo.slc.client.ui.dist.editors.ModularDistVersionEditor;
 import org.argeo.slc.client.ui.dist.editors.ModuleEditorInput;
 import org.argeo.slc.jcr.SlcTypes;
-import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -56,11 +52,7 @@ public class OpenModuleEditor extends AbstractHandler {
 	public final static String PARAM_MODULE_PATH = "param.modulePath";
 
 	/* DEPENDENCY INJECTION */
-	private Repository localRepository;
-	// We must log in the corresponding repository to get the node and be able
-	// to decide which editor to open depending on its mixin
-	private RepositoryFactory repositoryFactory;
-	private Keyring keyring;
+	private RepoService repoService;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String repoNodePath = event.getParameter(PARAM_REPO_NODE_PATH);
@@ -68,43 +60,22 @@ public class OpenModuleEditor extends AbstractHandler {
 		String workspaceName = event.getParameter(PARAM_WORKSPACE_NAME);
 		String modulePath = event.getParameter(PARAM_MODULE_PATH);
 
-		Session localSession = null;
 		Session businessSession = null;
-		Node repoNode = null;
-
 		try {
-			try {
-				localSession = localRepository.login();
-				if (repoNodePath != null
-						&& localSession.nodeExists(repoNodePath))
-					repoNode = localSession.getNode(repoNodePath);
+			businessSession = repoService.getRemoteSession(repoNodePath,
+					repoUri, workspaceName);
 
-				businessSession = RepoUtils.getCorrespondingSession(
-						repositoryFactory, keyring, repoNode, repoUri,
-						workspaceName);
-				if (repoUri == null && repoNode != null)
-					repoUri = repoNode.getProperty(ArgeoNames.ARGEO_URI)
-							.getString();
-
-			} catch (RepositoryException e) {
-				throw new SlcException("Cannot log to workspace "
-						+ workspaceName + " for repo defined in "
-						+ repoNodePath, e);
-			} finally {
-				JcrUtils.logoutQuietly(localSession);
-			}
-
-			ModuleEditorInput wei = new ModuleEditorInput(repoNodePath,
+			Node module = businessSession.getNode(modulePath);
+			ModuleEditorInput mei = new ModuleEditorInput(repoNodePath,
 					repoUri, workspaceName, modulePath);
-			Node artifact = businessSession.getNode(modulePath);
 
-			// Choose correct editor based on the artifact mixin
-			if (artifact.isNodeType(SlcTypes.SLC_MODULAR_DISTRIBUTION))
+			// Choose correct editor based on its mixin
+			if (module.isNodeType(SlcTypes.SLC_MODULAR_DISTRIBUTION))
 				HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-						.openEditor(wei, ModularDistVersionEditor.ID);
+						.openEditor(mei, ModularDistVersionEditor.ID);
 			else
 				HandlerUtil.getActiveWorkbenchWindow(event).getActivePage()
-						.openEditor(wei, ArtifactVersionEditor.ID);
+						.openEditor(mei, ArtifactVersionEditor.ID);
 		} catch (RepositoryException e) {
 			throw new SlcException("Unexpected error while "
 					+ "getting repoNode info for repoNode at path "
@@ -121,16 +92,7 @@ public class OpenModuleEditor extends AbstractHandler {
 	}
 
 	/* DEPENDENCY INJECTION */
-	public void setLocalRepository(Repository localRepository) {
-		this.localRepository = localRepository;
+	public void setRepoService(RepoService repoService) {
+		this.repoService = repoService;
 	}
-
-	public void setRepositoryFactory(RepositoryFactory repositoryFactory) {
-		this.repositoryFactory = repositoryFactory;
-	}
-
-	public void setKeyring(Keyring keyring) {
-		this.keyring = keyring;
-	}
-
 }

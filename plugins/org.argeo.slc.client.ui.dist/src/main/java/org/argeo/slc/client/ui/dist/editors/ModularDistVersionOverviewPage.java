@@ -130,8 +130,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 					.getProperty(SlcNames.SLC_NAME).getString() : "");
 			form.setMessage(
 					modularDistribution
-							.hasProperty(SlcNames.SLC_BUNDLE_DESCRIPTION) ? modularDistribution
-							.getProperty(SlcNames.SLC_BUNDLE_DESCRIPTION)
+							.hasProperty(DistConstants.SLC_BUNDLE_DESCRIPTION) ? modularDistribution
+							.getProperty(DistConstants.SLC_BUNDLE_DESCRIPTION)
 							.getString() : "", IMessageProvider.NONE);
 		} catch (RepositoryException re) {
 			throw new SlcException("Unable to get bundle name for node "

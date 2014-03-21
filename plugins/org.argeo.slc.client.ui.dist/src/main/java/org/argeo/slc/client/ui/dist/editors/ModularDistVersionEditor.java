@@ -15,6 +15,8 @@
  */
 package org.argeo.slc.client.ui.dist.editors;
 
+import javax.jcr.RepositoryException;
+
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.eclipse.ui.IEditorInput;
@@ -34,13 +36,13 @@ public class ModularDistVersionEditor extends ArtifactVersionEditor {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
-		// setPartName("Editing distrib");
 	}
 
 	@Override
 	protected void addPages() {
 		try {
-			addPage(new ModularDistVersionOverviewPage(this, "Modules ", getArtifact()));
+			addPage(new ModularDistVersionOverviewPage(this, "Modules ",
+					getArtifact()));
 			addPage(new RunInOsgiPage(this, "Run as OSGi ", getArtifact()));
 			super.addPages();
 		} catch (PartInitException e) {
@@ -49,4 +51,23 @@ public class ModularDistVersionEditor extends ArtifactVersionEditor {
 			// throw new SlcException("Cannot get artifact session", e);
 		}
 	}
+
+	protected String getFormattedName() {
+		try {
+			String partName = null;
+			if (getArtifact().hasProperty(SLC_NAME))
+				partName = getArtifact().getProperty(SLC_NAME).getString();
+			else
+				partName = getArtifact().getName();
+
+			if (partName.length() > 10) {
+				partName = "..." + partName.substring(partName.length() - 10);
+			}
+			return partName;
+		} catch (RepositoryException re) {
+			throw new SlcException("unable to get slc:name property for node "
+					+ getArtifact(), re);
+		}
+	}
+
 }

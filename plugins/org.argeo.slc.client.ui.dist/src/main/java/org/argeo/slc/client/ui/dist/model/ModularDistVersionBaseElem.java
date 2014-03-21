@@ -19,33 +19,37 @@ import org.argeo.slc.jcr.SlcTypes;
  * Abstract the base of a given modular distribution set i.e. the parent of all
  * versions of a given modular distribution
  */
-public class ModularDistBaseElem extends DistParentElem {
+public class ModularDistVersionBaseElem extends DistParentElem {
 
-	final static public String AETHER_CATEGORY_BASE = "categoryBase";
+	// final static public String AETHER_CATEGORY_BASE = "categoryBase";
 	final static public String AETHER_BINARIES_TYPE = "binaries";
 	final static public String AETHER_DEP_TYPE = "dep";
 	private String type;
-	private Node modularDistBase;
+	private Node modularDistVersionBase;
 
-	public ModularDistBaseElem(WorkspaceElem wkspElem, String name,
-			Node modularDistBase, String type) {
+	public ModularDistVersionBaseElem(WorkspaceElem wkspElem, String name,
+			Node modularDistVersionBase, String type) {
 		super(name, wkspElem.inHome(), wkspElem.isReadOnly());
 		setParent(wkspElem);
-		this.modularDistBase = modularDistBase;
+		this.modularDistVersionBase = modularDistVersionBase;
 		this.type = type;
 	}
 
-	public Node getCategoryBase() {
-		// TODO clean this
-		if (type.equals(AETHER_CATEGORY_BASE))
-			return modularDistBase;
-		else
-			try {
-				return modularDistBase.getParent();
-			} catch (RepositoryException e) {
-				throw new SlcException("unable tyo get parent node for "
-						+ modularDistBase, e);
-			}
+	public Node getModularDistBase() {
+		// // TODO clean this
+		// if (type.equals(AETHER_CATEGORY_BASE))
+		// return modularDistVersionBase;
+		// else
+		try {
+			return modularDistVersionBase.getParent();
+		} catch (RepositoryException e) {
+			throw new SlcException("unable to get parent node for "
+					+ modularDistVersionBase, e);
+		}
+	}
+
+	public WorkspaceElem getWkspElem() {
+		return (WorkspaceElem) getParent();
 	}
 
 	/**
@@ -82,24 +86,24 @@ public class ModularDistBaseElem extends DistParentElem {
 				return super.getChildren();
 			} catch (RepositoryException re) {
 				throw new ArgeoException("Unable to retrieve children for "
-						+ modularDistBase, re);
+						+ modularDistVersionBase, re);
 			}
 		}
 	}
 
 	private NodeIterator getDistVersions() {
 		try {
-			if (AETHER_CATEGORY_BASE.equals(type))
-				return null;
+			// if (AETHER_CATEGORY_BASE.equals(type))
+			// return null;
 
-			QueryManager queryManager = modularDistBase.getSession()
+			QueryManager queryManager = modularDistVersionBase.getSession()
 					.getWorkspace().getQueryManager();
 			QueryObjectModelFactory factory = queryManager.getQOMFactory();
 			Selector source = factory.selector(
 					SlcTypes.SLC_MODULAR_DISTRIBUTION,
 					SlcTypes.SLC_MODULAR_DISTRIBUTION);
 			Constraint constraint = factory.descendantNode(
-					source.getSelectorName(), modularDistBase.getPath());
+					source.getSelectorName(), modularDistVersionBase.getPath());
 			// Ordering order = factory.descending(factory.propertyValue(
 			// source.getSelectorName(), SlcNames.SLC_ARTIFACT_VERSION));
 			// Ordering[] orderings = { order };
@@ -117,5 +121,4 @@ public class ModularDistBaseElem extends DistParentElem {
 	public String getType() {
 		return type;
 	}
-
 }
