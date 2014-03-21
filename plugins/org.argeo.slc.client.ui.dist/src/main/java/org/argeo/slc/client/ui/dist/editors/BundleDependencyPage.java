@@ -15,29 +15,22 @@
  */
 package org.argeo.slc.client.ui.dist.editors;
 
-import java.net.URL;
 import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
-import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.argeo.slc.repo.RepoConstants;
-import org.argeo.slc.repo.RepoUtils;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -47,27 +40,20 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.browser.IWebBrowser;
-import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
  * Present main information of a given OSGI bundle
  */
-public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
+public class BundleDependencyPage extends FormPage implements SlcNames {
 	// private final static Log log =
 	// LogFactory.getLog(ArtifactDetailsPage.class);
 
@@ -75,10 +61,10 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 	private Node currBundle;
 
 	// This page widgets
-	private Text mavenSnippet;
 	private FormToolkit toolkit;
 
-	public BundleDetailsPage(FormEditor editor, String title, Node currentNode) {
+	public BundleDependencyPage(FormEditor editor, String title,
+			Node currentNode) {
 		super(editor, "id", title);
 		this.currBundle = currentNode;
 	}
@@ -87,58 +73,39 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 		ScrolledForm form = managedForm.getForm();
 		toolkit = managedForm.getToolkit();
 		try {
-			form.setText(currBundle.hasProperty(DistConstants.SLC_BUNDLE_NAME) ? currBundle
-					.getProperty(DistConstants.SLC_BUNDLE_NAME).getString()
-					: "");
-			form.setMessage(" ", IMessageProvider.NONE);
+			if (currBundle.hasProperty(DistConstants.SLC_BUNDLE_NAME))
+				form.setText(currBundle.getProperty(
+						DistConstants.SLC_BUNDLE_NAME).getString());
 			Composite body = form.getBody();
 			GridLayout layout = new GridLayout(1, false);
-			layout.marginWidth = 5;
-			layout.verticalSpacing = 15;
-
+			layout.horizontalSpacing = layout.marginWidth = 0;
+			layout.verticalSpacing = layout.marginHeight = 0;
 			body.setLayout(layout);
-			createdetailsPart(body);
 
-			createExportPackageSection(body);
-			createImportPackageSection(body);
-			createReqBundleSection(body);
-			createMavenSnippet(body);
+			Composite part = toolkit.createComposite(body);
+			createExportPackageSection(part);
+			GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
+			gd.heightHint = 180;
+			part.setLayoutData(gd);
+
+			part = toolkit.createComposite(body);
+			createImportPackageSection(part);
+			gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+			// gd.heightHint = 200;
+			part.setLayoutData(gd);
+
+			part = toolkit.createComposite(body);
+			createReqBundleSection(part);
+			gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+			// /gd.heightHint = 200;
+			part.setLayoutData(gd);
+
+			managedForm.reflow(true);
 
 		} catch (RepositoryException e) {
 			throw new SlcException("unexpected error "
 					+ "while creating bundle details page");
 		}
-	}
-
-	/** Displays useful info for the current bundle */
-	private void createdetailsPart(Composite parent) throws RepositoryException {
-		Composite details = toolkit.createComposite(parent);
-		GridLayout layout = new GridLayout(2, false);
-		layout.horizontalSpacing = 20;
-		details.setLayout(layout);
-
-		createField(details, "Symbolic name", SlcNames.SLC_SYMBOLIC_NAME);
-		createField(details, "Version", SlcNames.SLC_BUNDLE_VERSION);
-		createField(details, "Group Id", SlcNames.SLC_GROUP_ID);
-		createHyperlink(details, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
-		createField(details, "Vendor", DistConstants.SLC_BUNDLE_VENDOR);
-		addSourceAvailableLabel(details);
-	}
-
-	// helper to check if sources are available
-	private void addSourceAvailableLabel(Composite parent) {
-		Button srcChk = toolkit.createButton(parent, "Sources available",
-				SWT.CHECK);
-		srcChk.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 2, 1));
-
-		try {
-			String srcPath = RepoUtils.relatedPdeSourcePath(
-					RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, currBundle);
-			srcChk.setSelection(currBundle.getSession().nodeExists(srcPath));
-		} catch (RepositoryException e) {
-			throw new SlcException("Unable to check sources", e);
-		}
-		srcChk.setEnabled(false);
 	}
 
 	// Workaround to add an artificial level to the export package browser
@@ -163,20 +130,19 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 	/** Export Package Section */
 	private void createExportPackageSection(Composite parent)
 			throws RepositoryException {
+		parent.setLayout(new GridLayout());
 
 		// Define the TableViewer
-		Section headerSection = addSection(parent, "Export packages");
-		// TreeViewer viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL
-		// | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
-		TreeViewer viewer = new TreeViewer(headerSection, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 
+		Section section = addSection(parent, "Export packages");
+		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		TreeViewer viewer = new TreeViewer(section, SWT.H_SCROLL | SWT.V_SCROLL
+				| SWT.BORDER);
 		final Tree tree = viewer.getTree();
 		tree.setHeaderVisible(false);
 		tree.setLinesVisible(true);
-		GridData gd = new GridData(SWT.LEFT, SWT.TOP, true, true);
-		gd.heightHint = 300;
-		tree.setLayoutData(gd);
+		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		TreeViewerColumn col = new TreeViewerColumn(viewer, SWT.FILL);
 		col.getColumn().setWidth(400);
@@ -276,21 +242,31 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			}
 		});
 
-		headerSection.setClient(tree);
+		section.setClient(tree);
 		viewer.setInput("Initialize");
 		// work around a display problem : the tree table has only a few lines
 		// when the tree is not expended
-		viewer.expandToLevel(3);
+		// viewer.expandToLevel(2);
 	}
 
 	/** Import Package Section */
 	private void createImportPackageSection(Composite parent)
 			throws RepositoryException {
+		parent.setLayout(new GridLayout());
 
 		// Define the TableViewer
-		Section headerSection = addSection(parent, "Import packages");
-		TableViewer viewer = new TableViewer(headerSection, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		// toolkit.createLabel(parent, "Import packages", SWT.NONE).setFont(
+		// EclipseUiUtils.getBoldFont(parent));
+
+		Section section = addSection(parent, "Import packages");
+		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		TableViewer viewer = new TableViewer(section, SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.BORDER);
+
+		final Table table = viewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Name
 		TableViewerColumn col = new TableViewerColumn(viewer, SWT.NONE);
@@ -330,28 +306,30 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			}
 		});
 
-		final Table table = viewer.getTable();
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-		GridData gd = new GridData(SWT.LEFT, SWT.TOP, true, true);
-		gd.heightHint = 300;
-		table.setLayoutData(gd);
-
 		viewer.setContentProvider(new TableContentProvider(
-				SLC_IMPORTED_PACKAGE, SLC_NAME));
-		headerSection.setClient(viewer.getTable());
-
+				SlcTypes.SLC_IMPORTED_PACKAGE, SLC_NAME));
+		section.setClient(table);
 		viewer.setInput("Initialize");
 	}
 
 	/** Required Bundle Section */
 	private void createReqBundleSection(Composite parent)
 			throws RepositoryException {
+		parent.setLayout(new GridLayout());
 
 		// Define the TableViewer
-		Section headerSection = addSection(parent, "Required bundles");
-		TableViewer viewer = new TableViewer(headerSection, SWT.MULTI
-				| SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
+		Section section = addSection(parent, "Required bundles");
+		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		// toolkit.createLabel(parent, "Required bundles", SWT.NONE).setFont(
+		// EclipseUiUtils.getBoldFont(parent));
+		TableViewer viewer = new TableViewer(section, SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.BORDER);
+
+		final Table table = viewer.getTable();
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		// Name
 		TableViewerColumn col = new TableViewerColumn(viewer, SWT.NONE);
@@ -380,7 +358,7 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			}
 		});
 
-		// Version
+		// Optional
 		col = new TableViewerColumn(viewer, SWT.NONE);
 		col.getColumn().setWidth(100);
 		col.getColumn().setText("Optional");
@@ -391,14 +369,9 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 			}
 		});
 
-		final Table table = viewer.getTable();
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-
-		viewer.setContentProvider(new TableContentProvider(SLC_REQUIRED_BUNDLE,
-				SLC_SYMBOLIC_NAME));
-		headerSection.setClient(viewer.getTable());
-
+		viewer.setContentProvider(new TableContentProvider(
+				SlcTypes.SLC_REQUIRED_BUNDLE, SLC_SYMBOLIC_NAME));
+		section.setClient(table);
 		viewer.setInput("Initialize");
 	}
 
@@ -475,88 +448,11 @@ public class BundleDetailsPage extends FormPage implements SlcNames, SlcTypes {
 	}
 
 	/* HELPERS */
-	private void createField(Composite parent, String label, String jcrPropName)
-			throws RepositoryException {
-		toolkit.createLabel(parent, label, SWT.NONE);
-		Text txt = toolkit.createText(parent, "", SWT.SINGLE);
-		txt.setText(currBundle.hasProperty(jcrPropName) ? currBundle
-				.getProperty(jcrPropName).getString() : "");
-		txt.setEditable(false);
-		GridData gd = new GridData(SWT.FILL, SWT.TOP, true, false);
-		txt.setLayoutData(gd);
-	}
-
 	private Section addSection(Composite parent, String title) {
-		Section section = toolkit.createSection(parent, Section.TWISTIE);
+		Section section = toolkit.createSection(parent, Section.TITLE_BAR);
 		section.setText(title);
-		section.setExpanded(false);
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, false);
-		section.setLayoutData(gd);
-		Composite body = new Composite(section, SWT.FILL);
-		section.setClient(body);
-		// Layout
-		body.setLayout(new TableLayout());
+		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		return section;
 	}
 
-	private void createHyperlink(Composite parent, String label,
-			String jcrPropName) throws RepositoryException {
-		toolkit.createLabel(parent, label, SWT.NONE);
-		if (currBundle.hasProperty(jcrPropName)) {
-			final Hyperlink link = toolkit.createHyperlink(parent, currBundle
-					.getProperty(jcrPropName).getString(), SWT.NONE);
-			link.addHyperlinkListener(new AbstractHyperlinkListener() {
-				@Override
-				public void linkActivated(HyperlinkEvent e) {
-					try {
-						IWorkbenchBrowserSupport browserSupport = PlatformUI
-								.getWorkbench().getBrowserSupport();
-						IWebBrowser browser = browserSupport
-								.createBrowser(
-										IWorkbenchBrowserSupport.LOCATION_BAR
-												| IWorkbenchBrowserSupport.NAVIGATION_BAR,
-										"SLC Distribution browser",
-										"SLC Distribution browser",
-										"A tool tip");
-						browser.openURL(new URL(link.getText()));
-					} catch (Exception ex) {
-						throw new SlcException("error opening browser", ex); //$NON-NLS-1$
-					}
-				}
-			});
-		} else
-			toolkit.createLabel(parent, "", SWT.NONE);
-	}
-
-	/** Creates a text area with corresponding maven snippet */
-	private void createMavenSnippet(Composite parent) {
-		mavenSnippet = new Text(parent, SWT.MULTI | SWT.WRAP | SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.grabExcessHorizontalSpace = true;
-		gd.heightHint = 100;
-		mavenSnippet.setLayoutData(gd);
-		mavenSnippet.setText(generateXmlSnippet());
-	}
-
-	// Helpers
-	private String generateXmlSnippet() {
-		try {
-			StringBuffer sb = new StringBuffer();
-			sb.append("<dependency>\n");
-			sb.append("\t<groupId>");
-			sb.append(currBundle.getProperty(SLC_GROUP_ID).getString());
-			sb.append("</groupId>\n");
-			sb.append("\t<artifactId>");
-			sb.append(currBundle.getProperty(SLC_ARTIFACT_ID).getString());
-			sb.append("</artifactId>\n");
-			sb.append("\t<version>");
-			sb.append(currBundle.getProperty(SLC_ARTIFACT_VERSION).getString());
-			sb.append("</version>\n");
-			sb.append("</dependency>");
-			return sb.toString();
-		} catch (RepositoryException re) {
-			throw new ArgeoException(
-					"unexpected error while generating maven snippet");
-		}
-	}
 }

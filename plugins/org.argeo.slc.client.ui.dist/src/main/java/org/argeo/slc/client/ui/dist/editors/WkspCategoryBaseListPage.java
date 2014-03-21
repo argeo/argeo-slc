@@ -35,7 +35,6 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
@@ -44,6 +43,7 @@ import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard;
+import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
 import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -75,7 +75,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -433,24 +432,28 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		public void doubleClick(DoubleClickEvent event) {
 			Object obj = ((IStructuredSelection) event.getSelection())
 					.getFirstElement();
-			try {
-				if (obj instanceof Node) {
-					Node node = (Node) obj;
-					if (node.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
-						GenericBundleEditorInput gaei = new GenericBundleEditorInput(
-								node);
-						DistPlugin.getDefault().getWorkbench()
-								.getActiveWorkbenchWindow().getActivePage()
-								.openEditor(gaei, GenericBundleEditor.ID);
+			if (obj instanceof Node) {
+				Node node = (Node) obj;
+				try {
+					if (node.isNodeType(SlcTypes.SLC_ARTIFACT)) {
+						DistWkspEditorInput dwip = (DistWkspEditorInput) getEditorInput();
+						Map<String, String> params = new HashMap<String, String>();
+						params.put(OpenModuleEditor.PARAM_REPO_NODE_PATH,
+								dwip.getRepoNodePath());
+						params.put(OpenModuleEditor.PARAM_REPO_URI,
+								dwip.getUri());
+						params.put(OpenModuleEditor.PARAM_WORKSPACE_NAME,
+								dwip.getWorkspaceName());
+						String path = node.getPath();
+						params.put(OpenModuleEditor.PARAM_MODULE_PATH, path);
+						CommandUtils.callCommand(OpenModuleEditor.ID, params);
 					}
+				} catch (RepositoryException re) {
+					throw new SlcException("Cannot get path for node " + node
+							+ " while setting parameters for "
+							+ "command OpenModuleEditor", re);
 				}
-			} catch (RepositoryException re) {
-				throw new ArgeoException(
-						"Repository error while getting node info", re);
-			} catch (PartInitException pie) {
-				throw new ArgeoException(
-						"Unexepected exception while opening artifact editor",
-						pie);
+
 			}
 		}
 	}

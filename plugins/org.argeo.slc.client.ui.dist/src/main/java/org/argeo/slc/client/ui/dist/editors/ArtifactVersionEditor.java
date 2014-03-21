@@ -91,7 +91,8 @@ public class ArtifactVersionEditor extends FormEditor implements SlcNames {
 		setPartName(getFormattedName());
 
 		try {
-			addPage(new BundleDetailsPage(this, "Details ", artifact));
+			addPage(new BundleDetailPage(this, "Details ", artifact));
+			addPage(new BundleDependencyPage(this, "Dependencies ", artifact));
 			addPage(new BundleRawPage(this, "Raw Meta-Data ", artifact));
 		} catch (PartInitException e) {
 			throw new ArgeoException("Cannot add distribution editor pages", e);

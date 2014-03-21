@@ -16,7 +16,9 @@
 package org.argeo.slc.client.ui.dist.editors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -29,12 +31,12 @@ import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 
-import org.argeo.ArgeoException;
+import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
-import org.argeo.slc.client.ui.dist.DistPlugin;
+import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
@@ -51,7 +53,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -119,7 +120,7 @@ public class DistWkspBrowserPage extends FormPage implements DistConstants,
 		int style = SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION | SWT.BORDER;
 		Tree tree = new Tree(parent, style);
-		createColumn(tree, "Artifacts", SWT.LEFT, 300);
+		createColumn(tree, "Artifacts", SWT.LEFT, 450);
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
 
@@ -242,35 +243,39 @@ public class DistWkspBrowserPage extends FormPage implements DistConstants,
 		public void doubleClick(DoubleClickEvent event) {
 			Object obj = ((IStructuredSelection) event.getSelection())
 					.getFirstElement();
-			try {
-				if (obj instanceof Node) {
-					Node node = (Node) obj;
+			if (obj instanceof Node) {
+				Node node = (Node) obj;
+				try {
 					if (node.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE)) {
-						// TODO fix using QOM after jcr upgrade
-						NodeIterator ni = node.getNodes();
-						while (ni.hasNext()) {
-							Node curr = ni.nextNode();
-							if (curr.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
-								GenericBundleEditorInput gaei = new GenericBundleEditorInput(
-										curr);
-								DistPlugin
-										.getDefault()
-										.getWorkbench()
-										.getActiveWorkbenchWindow()
-										.getActivePage()
-										.openEditor(gaei,
-												GenericBundleEditor.ID);
+						NodeIterator nit = node.getNodes();
+						while (nit.hasNext()) {
+							Node curr = nit.nextNode();
+							if (curr.isNodeType(SlcTypes.SLC_ARTIFACT)) {
+								node = curr;
+								break;
 							}
 						}
 					}
+
+					if (node.isNodeType(SlcTypes.SLC_ARTIFACT)) {
+						DistWkspEditorInput dwip = (DistWkspEditorInput) getEditorInput();
+						Map<String, String> params = new HashMap<String, String>();
+						params.put(OpenModuleEditor.PARAM_REPO_NODE_PATH,
+								dwip.getRepoNodePath());
+						params.put(OpenModuleEditor.PARAM_REPO_URI,
+								dwip.getUri());
+						params.put(OpenModuleEditor.PARAM_WORKSPACE_NAME,
+								dwip.getWorkspaceName());
+						String path = node.getPath();
+						params.put(OpenModuleEditor.PARAM_MODULE_PATH, path);
+						CommandUtils.callCommand(OpenModuleEditor.ID, params);
+					}
+				} catch (RepositoryException re) {
+					throw new SlcException("Cannot get path for node " + node
+							+ " while setting parameters for "
+							+ "command OpenModuleEditor", re);
 				}
-			} catch (RepositoryException re) {
-				throw new ArgeoException(
-						"Repository error while getting node info", re);
-			} catch (PartInitException pie) {
-				throw new ArgeoException(
-						"Unexepected exception while opening artifact editor",
-						pie);
+
 			}
 		}
 	}

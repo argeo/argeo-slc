@@ -40,15 +40,15 @@ public class ModularDistVersionEditor extends ArtifactVersionEditor {
 
 	@Override
 	protected void addPages() {
+		setPartName(getFormattedName());
 		try {
 			addPage(new ModularDistVersionOverviewPage(this, "Modules ",
 					getArtifact()));
 			addPage(new RunInOsgiPage(this, "Run as OSGi ", getArtifact()));
-			super.addPages();
+			addPage(new ModularDistVersionDetailPage(this, "Details",
+					getArtifact()));
 		} catch (PartInitException e) {
 			throw new SlcException("Cannot add distribution editor pages", e);
-			// } catch (RepositoryException e) {
-			// throw new SlcException("Cannot get artifact session", e);
 		}
 	}
 

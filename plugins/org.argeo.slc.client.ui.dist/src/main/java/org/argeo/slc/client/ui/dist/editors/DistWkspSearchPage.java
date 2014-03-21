@@ -39,7 +39,6 @@ import javax.jcr.query.qom.StaticOperand;
 
 import org.argeo.ArgeoMonitor;
 import org.argeo.eclipse.ui.EclipseArgeoMonitor;
-import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -87,6 +86,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.Section;
 
 /** Show all bundles contained in a given workspace as filter-able table */
 public class DistWkspSearchPage extends FormPage implements SlcNames {
@@ -107,7 +107,7 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 
 	// private Composite header;
 	private Text artifactTxt;
-	private final static String FILTER_HELP_MSG = "Search bundles in the current workspace";
+	private final static String FILTER_HELP_MSG = "Filter criterion, separated by a space";
 
 	public DistWkspSearchPage(DistWorkspaceEditor formEditor, String title,
 			Session session) {
@@ -171,7 +171,59 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		header.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		createHeaderPart(form, header);
 
-		// filter text
+		Composite modules = tk.createComposite(body);
+		modules.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		populateModuleSection(modules);
+	}
+
+	private void createHeaderPart(ScrolledForm form, Composite parent) {
+		GridLayout layout = new GridLayout(4, false);
+		// layout.marginWidth = layout.marginHeight = layout.verticalSpacing =
+		// 0;
+		// layout.horizontalSpacing = 2;
+		parent.setLayout(layout);
+
+		String wkspName = ((DistWkspEditorInput) getEditorInput())
+				.getWorkspaceName();
+		wkspName = wkspName.replaceAll("-", " ");
+		form.setText(wkspName);
+
+		String repoAlias = "";
+		Node repoNode = ((DistWorkspaceEditor) getEditor()).getRepoNode();
+		if (repoNode != null)
+			try {
+				repoAlias = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
+						.getProperty(Property.JCR_TITLE).getString() : repoNode
+						.getName();
+			} catch (RepositoryException e1) {
+				throw new SlcException("Unable to get repository alias ", e1);
+			}
+		else
+			repoAlias = " - ";
+
+		createLT(parent, "Repository alias", repoAlias);
+		createLT(parent, "URI",
+				((DistWkspEditorInput) getEditorInput()).getUri());
+	}
+
+	private void populateModuleSection(Composite parent) {
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginWidth = layout.horizontalSpacing = layout.horizontalSpacing = layout.marginHeight = 0;
+		parent.setLayout(layout);
+
+		Section section = tk.createSection(parent, Section.TITLE_BAR
+				| Section.DESCRIPTION);
+		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		section.setText("Artifacts");
+		section.setDescription("Search among all artifacts that are referenced in the current workspace");
+		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		Composite body = tk.createComposite(section);
+		layout = new GridLayout(1, false);
+		layout.marginWidth = layout.horizontalSpacing = layout.horizontalSpacing = layout.marginHeight = 0;
+		body.setLayout(new GridLayout());
+
 		Composite filter = tk.createComposite(body);
 		filter.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		createFilterPart(filter);
@@ -180,6 +232,8 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		Composite tableCmp = tk.createComposite(body);
 		tableCmp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		createTableViewer(tableCmp);
+
+		section.setClient(body);
 	}
 
 	/** Build repository request */
@@ -241,47 +295,15 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 
 	}
 
-	private void createHeaderPart(ScrolledForm form, Composite parent) {
-		GridLayout layout = new GridLayout(4, false);
-		layout.marginWidth = layout.marginHeight = layout.verticalSpacing = 0;
-		layout.horizontalSpacing = 5;
-		parent.setLayout(layout);
-
-		String wkspName = ((DistWkspEditorInput) getEditorInput())
-				.getWorkspaceName();
-		// wkspName = "Workspace " + wkspName;
-		form.setText(wkspName);
-
-		// form.setMessage("Choose in the below list "
-		// + "the categories that can be used as base for "
-		// + "modular distributions maintained via the current workspace",
-		// IMessageProvider.NONE);
-
-		String repoAlias = "";
-		Node repoNode = ((DistWorkspaceEditor) getEditor()).getRepoNode();
-		if (repoNode != null)
-			try {
-				repoAlias = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
-						.getProperty(Property.JCR_TITLE).getString() : repoNode
-						.getName();
-			} catch (RepositoryException e1) {
-				throw new SlcException("Unable to get repository alias ", e1);
-			}
-		else
-			repoAlias = " - ";
-
-		createLT(parent, "Repository alias", repoAlias);
-		createLT(parent, "URI",
-				((DistWkspEditorInput) getEditorInput()).getUri());
-	}
-
 	private Text createLT(Composite parent, String labelValue, String textValue) {
-		Label label = tk.createLabel(parent, labelValue, SWT.RIGHT);
-		label.setFont(EclipseUiUtils.getBoldFont(parent));
+		Label label = new Label(parent, SWT.RIGHT);
+		label.setText(labelValue);
+		// label.setFont(EclipseUiUtils.getBoldFont(parent));
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 
 		// Add a trailing space to workaround a display glitch in RAP 1.3
-		Text text = tk.createText(parent, textValue + " ", SWT.LEFT);
+		Text text = new Text(parent, SWT.LEFT); // | SWT.BORDER
+		text.setText(textValue + " ");
 		text.setEditable(false);
 		return text;
 	}

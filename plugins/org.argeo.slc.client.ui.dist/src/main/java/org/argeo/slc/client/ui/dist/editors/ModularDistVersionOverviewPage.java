@@ -17,7 +17,9 @@ package org.argeo.slc.client.ui.dist.editors;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -33,24 +35,19 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
-import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
+import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
 import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
 import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -71,11 +68,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
@@ -151,8 +145,6 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 
 	private void populateHeaderPart(Composite parent) {
 		GridLayout layout = new GridLayout(6, false);
-		// layout.marginWidth = layout.horizontalSpacing = layout.marginHeight =
-		// 0;
 		layout.horizontalSpacing = 10;
 		parent.setLayout(layout);
 		try {
@@ -198,9 +190,9 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 
 		// Add a trailing space to workaround a display glitch in RAP 1.3
-		Text text = tk.createText(parent, textValue + " ", SWT.LEFT);
+		Text text = new Text(parent, SWT.LEFT);
+		text.setText(textValue + " ");
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-
 		text.setEditable(false);
 		return text;
 	}
@@ -298,7 +290,6 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		createTableViewer(tablePart);
 		// populate it on first pass.
 		refresh();
-
 	}
 
 	private void createFilterPart(Composite parent) {
@@ -392,16 +383,16 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 				propertyTypesList);
 		viewer.setComparator(comparator);
 
-		// Context Menu
-		MenuManager menuManager = new MenuManager();
-		Menu menu = menuManager.createContextMenu(viewer.getTable());
-		menuManager.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				contextMenuAboutToShow(manager);
-			}
-		});
-		viewer.getTable().setMenu(menu);
-		getSite().registerContextMenu(menuManager, viewer);
+//		// Context Menu
+//		MenuManager menuManager = new MenuManager();
+//		Menu menu = menuManager.createContextMenu(viewer.getTable());
+//		menuManager.addMenuListener(new IMenuListener() {
+//			public void menuAboutToShow(IMenuManager manager) {
+//				contextMenuAboutToShow(manager);
+//			}
+//		});
+//		viewer.getTable().setMenu(menu);
+//		getSite().registerContextMenu(menuManager, viewer);
 
 		// Double click
 		viewer.addDoubleClickListener(new DoubleClickListener());
@@ -477,16 +468,16 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		viewer.getTable().setFocus();
 	}
 
-	/** Programmatically configure the context menu */
-	protected void contextMenuAboutToShow(IMenuManager menuManager) {
-		IWorkbenchWindow window = DistPlugin.getDefault().getWorkbench()
-				.getActiveWorkbenchWindow();
-		// Build conditions
-		// Delete selected artifacts
-		CommandUtils.refreshCommand(menuManager, window, DeleteArtifacts.ID,
-				DeleteArtifacts.DEFAULT_LABEL, DeleteArtifacts.DEFAULT_ICON,
-				true);
-	}
+	// /** Programmatically configure the context menu */
+	// protected void contextMenuAboutToShow(IMenuManager menuManager) {
+	// IWorkbenchWindow window = DistPlugin.getDefault().getWorkbench()
+	// .getActiveWorkbenchWindow();
+	// // Build conditions
+	// // Delete selected artifacts
+	// // CommandUtils.refreshCommand(menuManager, window, DeleteArtifacts.ID,
+	// // DeleteArtifacts.DEFAULT_LABEL, DeleteArtifacts.DEFAULT_ICON,
+	// // true);
+	// }
 
 	private SelectionAdapter getSelectionAdapter(final int index) {
 		SelectionAdapter selectionAdapter = new SelectionAdapter() {
@@ -534,54 +525,29 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		public void doubleClick(DoubleClickEvent event) {
 			Object obj = ((IStructuredSelection) event.getSelection())
 					.getFirstElement();
-			try {
-				if (obj instanceof Node) {
-					Node node = (Node) obj;
-					if (node.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
-						GenericBundleEditorInput gaei = new GenericBundleEditorInput(
-								node);
-						DistPlugin.getDefault().getWorkbench()
-								.getActiveWorkbenchWindow().getActivePage()
-								.openEditor(gaei, GenericBundleEditor.ID);
+			if (obj instanceof Node) {
+				Node node = (Node) obj;
+				try {
+					if (node.isNodeType(SlcTypes.SLC_ARTIFACT)) {
+						ModuleEditorInput dwip = (ModuleEditorInput) getEditorInput();
+						Map<String, String> params = new HashMap<String, String>();
+						params.put(OpenModuleEditor.PARAM_REPO_NODE_PATH,
+								dwip.getRepoNodePath());
+						params.put(OpenModuleEditor.PARAM_REPO_URI,
+								dwip.getUri());
+						params.put(OpenModuleEditor.PARAM_WORKSPACE_NAME,
+								dwip.getWorkspaceName());
+						String path = node.getPath();
+						params.put(OpenModuleEditor.PARAM_MODULE_PATH, path);
+						CommandUtils.callCommand(OpenModuleEditor.ID, params);
 					}
+				} catch (RepositoryException re) {
+					throw new SlcException("Cannot get path for node " + node
+							+ " while setting parameters for "
+							+ "command OpenModuleEditor", re);
 				}
-			} catch (RepositoryException re) {
-				throw new ArgeoException(
-						"Repository error while getting node info", re);
-			} catch (PartInitException pie) {
-				throw new ArgeoException(
-						"Unexepected exception while opening artifact editor",
-						pie);
+
 			}
-		}
-	}
-
-	// /**
-	// * UI Trick to put scroll bar on the table rather than on the scrollform
-	// */
-	// private void refreshLayout() {
-	// // Compute desired table size
-	// int maxH = getManagedForm().getForm().getSize().y;
-	// int maxW = getManagedForm().getForm().getParent().getSize().x;
-	// maxH = maxH - header.getSize().y;
-	// final Table table = viewer.getTable();
-	// GridData gd = new GridData(SWT.LEFT, SWT.TOP, true, true);
-	//
-	// // when table height is less than 200 px, we let the scroll bar on the
-	// // scrollForm
-	// // FIXME substract some spare space. There is room here for optimization
-	// gd.heightHint = Math.max(maxH - 35, 200);
-	// gd.widthHint = Math.max(maxW - 35, 200);
-	//
-	// table.setLayoutData(gd);
-	// getManagedForm().reflow(true);
-	// }
-
-	@Override
-	public void setActive(boolean active) {
-		super.setActive(active);
-		if (active) {
-			// refreshLayout();
 		}
 	}
 }

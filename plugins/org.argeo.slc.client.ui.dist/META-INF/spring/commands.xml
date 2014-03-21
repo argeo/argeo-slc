@@ -137,13 +137,7 @@
 		scope="prototype">
 	</bean>
 
-	<bean id="refreshDistributionOverviewPage"
-		class="org.argeo.slc.client.ui.dist.commands.RefreshDistributionOverviewPage"
-		scope="prototype">
-	</bean>
-
 	<bean id="org.argeo.slc.client.ui.dist.deleteArtifacts" class="org.argeo.slc.client.ui.dist.commands.DeleteArtifacts"
 		scope="prototype">
 	</bean>
-
 </beans>

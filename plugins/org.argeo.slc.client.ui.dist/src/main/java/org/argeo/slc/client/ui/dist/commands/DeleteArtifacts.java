@@ -22,7 +22,7 @@ import javax.jcr.RepositoryException;
 
 import org.argeo.ArgeoException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
+import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -32,6 +32,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Delete chosen artifacts from the current workspace.
@@ -46,8 +47,7 @@ public class DeleteArtifacts extends AbstractHandler {
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
-			IWorkbenchPart activePart = DistPlugin.getDefault().getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage().getActivePart();
+			IWorkbenchPart activePart = HandlerUtil.getActivePart(event);
 
 			if (activePart instanceof IEditorPart) {
 				ISelection selector = ((IEditorPart) activePart)
@@ -69,14 +69,16 @@ public class DeleteArtifacts extends AbstractHandler {
 					if (result) {
 						while (it.hasNext()) {
 							Node node = (Node) it.next();
-							// we remove the artifactVersion, that is the parent
-							node.getParent().remove();
-							node.getSession().save();
+							if (node.isNodeType(SlcTypes.SLC_ARTIFACT)) {
+								// we remove the artifactVersion, that is the parent
+								node.getParent().remove();
+								node.getSession().save();
+							}
 						}
 					}
 				}
 			}
-			CommandHelpers.callCommand(RefreshDistributionOverviewPage.ID);
+			// CommandHelpers.callCommand(RefreshDistributionOverviewPage.ID);
 		} catch (RepositoryException re) {
 			throw new ArgeoException(
 					"Unexpected error while deleting artifacts.", re);

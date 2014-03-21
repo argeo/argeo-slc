@@ -33,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.GenericTableComparator;
 import org.argeo.slc.client.ui.dist.utils.ArtifactsTableConfigurer;
-import org.argeo.slc.client.ui.dist.utils.GenericDoubleClickListener;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -87,7 +86,7 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 
 		viewer.setLabelProvider(new ViewLabelProvider());
 		viewer.setContentProvider(new ViewContentProvider());
-		viewer.addDoubleClickListener(new GenericDoubleClickListener());
+		// viewer.addDoubleClickListener(new GenericDoubleClickListener());
 
 		tableConfigurer = new ArtifactsTableConfigurer(viewer, 1,
 				GenericTableComparator.DESCENDING);

@@ -29,7 +29,6 @@ import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.controllers.ArtifactsTreeContentProvider;
-import org.argeo.slc.client.ui.dist.utils.GenericDoubleClickListener;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -118,7 +117,7 @@ public class ArtifactsBrowser extends ViewPart implements DistConstants,
 		viewer.setContentProvider(new ArtifactsTreeContentProvider());
 		viewer.setLabelProvider(new ArtifactLabelProvider());
 		viewer.addSelectionChangedListener(new ArtifactTreeSelectionListener());
-		viewer.addDoubleClickListener(new GenericDoubleClickListener());
+		// viewer.addDoubleClickListener(new GenericDoubleClickListener());
 		viewer.setInput(rootNode);
 
 		return viewer;

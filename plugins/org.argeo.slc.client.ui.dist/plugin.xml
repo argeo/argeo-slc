@@ -381,11 +381,6 @@
 			</state>
     	</command>
     	<command
-            id="org.argeo.slc.client.ui.dist.refreshDistributionOverviewPage"
-            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
-            name="Refresh distribution overview page">
-    	</command>
-    	<command
             id="org.argeo.slc.client.ui.dist.deleteArtifacts"
             defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
             name="Remove selected artifacts">
