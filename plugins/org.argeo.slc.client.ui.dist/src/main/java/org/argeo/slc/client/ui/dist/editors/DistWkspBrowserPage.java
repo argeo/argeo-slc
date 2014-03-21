@@ -86,41 +86,22 @@ public class DistWkspBrowserPage extends FormPage implements DistConstants,
 			ScrolledForm form = managedForm.getForm();
 			Composite parent = form.getBody();
 			parent.setLayout(new FillLayout());
-			createExportPackageSection(parent);
+			createMavenBrowserPart(parent);
 			getEditor().getSite().setSelectionProvider(artifactTreeViewer);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot create artifact browser page", e);
 		}
 	}
 
-	private NodeIterator listNodes(String nodeType, String orderBy)
-			throws RepositoryException {
-		QueryManager queryManager = session.getWorkspace().getQueryManager();
-		QueryObjectModelFactory factory = queryManager.getQOMFactory();
-
-		final String nodeSelector = "nodes";
-		Selector source = factory.selector(nodeType, nodeSelector);
-
-		Ordering order = factory.ascending(factory.propertyValue(nodeSelector,
-				orderBy));
-		Ordering[] orderings = { order };
-
-		QueryObjectModel query = factory.createQuery(source, null, orderings,
-				null);
-
-		QueryResult result = query.execute();
-
-		return result.getNodes();
-	}
-
-	/** Export Package Section */
-	private void createExportPackageSection(Composite parent)
+	/** Aether specific browser for the current workspace */
+	private void createMavenBrowserPart(Composite parent)
 			throws RepositoryException {
 
 		int style = SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL
 				| SWT.FULL_SELECTION | SWT.BORDER;
+		
 		Tree tree = new Tree(parent, style);
-		createColumn(tree, "Artifacts", SWT.LEFT, 450);
+		createColumn(tree, "Maven browser", SWT.LEFT, 450);
 		tree.setLinesVisible(true);
 		tree.setHeaderVisible(true);
 
@@ -290,4 +271,25 @@ public class DistWkspBrowserPage extends FormPage implements DistConstants,
 		return result;
 	}
 
+	private NodeIterator listNodes(String nodeType, String orderBy)
+			throws RepositoryException {
+		QueryManager queryManager = session.getWorkspace().getQueryManager();
+		QueryObjectModelFactory factory = queryManager.getQOMFactory();
+
+		final String nodeSelector = "nodes";
+		Selector source = factory.selector(nodeType, nodeSelector);
+
+		Ordering order = factory.ascending(factory.propertyValue(nodeSelector,
+				orderBy));
+		Ordering[] orderings = { order };
+
+		QueryObjectModel query = factory.createQuery(source, null, orderings,
+				null);
+
+		QueryResult result = query.execute();
+
+		return result.getNodes();
+	}
+
+	
 }

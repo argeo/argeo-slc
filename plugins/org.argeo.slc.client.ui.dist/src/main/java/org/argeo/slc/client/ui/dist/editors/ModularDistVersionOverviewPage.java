@@ -48,6 +48,7 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
+import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -80,6 +81,8 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /**
  * Show all modules contained in a given modular distribution as filter-able
@@ -371,6 +374,21 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		propertiesList.add(SLC_VERSION);
 		propertyTypesList.add(PropertyType.STRING);
 
+		// Exists in workspace
+		col = new TableViewerColumn(viewer, SWT.NONE);
+		col.getColumn().setWidth(160);
+		col.getColumn().setText("Exists in workspace");
+		col.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				return getRealizedModule((Node) element) != null ? "Yes" : "No";
+				// return JcrUtils.get((Node) element, SLC_VERSION);
+			}
+		});
+		// col.getColumn().addSelectionListener(getSelectionAdapter(2));
+		// propertiesList.add(SLC_VERSION);
+		// propertyTypesList.add(PropertyType.STRING);
+
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
@@ -383,19 +401,47 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 				propertyTypesList);
 		viewer.setComparator(comparator);
 
-//		// Context Menu
-//		MenuManager menuManager = new MenuManager();
-//		Menu menu = menuManager.createContextMenu(viewer.getTable());
-//		menuManager.addMenuListener(new IMenuListener() {
-//			public void menuAboutToShow(IMenuManager manager) {
-//				contextMenuAboutToShow(manager);
-//			}
-//		});
-//		viewer.getTable().setMenu(menu);
-//		getSite().registerContextMenu(menuManager, viewer);
+		// // Context Menu
+		// MenuManager menuManager = new MenuManager();
+		// Menu menu = menuManager.createContextMenu(viewer.getTable());
+		// menuManager.addMenuListener(new IMenuListener() {
+		// public void menuAboutToShow(IMenuManager manager) {
+		// contextMenuAboutToShow(manager);
+		// }
+		// });
+		// viewer.getTable().setMenu(menu);
+		// getSite().registerContextMenu(menuManager, viewer);
 
 		// Double click
 		viewer.addDoubleClickListener(new DoubleClickListener());
+	}
+
+	private Node getRealizedModule(Node moduleCoordinates) {
+		try {
+			String category = JcrUtils.get(moduleCoordinates, SLC_CATEGORY);
+			String name = JcrUtils.get(moduleCoordinates, SLC_NAME);
+			String version = JcrUtils.get(moduleCoordinates, SLC_VERSION);
+			Artifact artifact = new DefaultArtifact(category + ":" + name
+					+ ":" +version);
+			String parentPath = MavenConventionsUtils.artifactParentPath(
+					RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, artifact);
+
+			Session session = modularDistribution.getSession();
+			if (session.nodeExists(parentPath)) {
+				Node parent = session.getNode(parentPath);
+				NodeIterator nit = parent.getNodes();
+				while (nit.hasNext()) {
+					Node currN = nit.nextNode();
+					if (currN.isNodeType(SlcTypes.SLC_ARTIFACT))
+						return currN;
+				}
+			}
+		} catch (RepositoryException re) {
+			throw new SlcException(
+					"unable to retrieve realized module with coordinates "
+							+ moduleCoordinates, re);
+		}
+		return null;
 	}
 
 	private void refresh() {
@@ -528,25 +574,28 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 			if (obj instanceof Node) {
 				Node node = (Node) obj;
 				try {
-					if (node.isNodeType(SlcTypes.SLC_ARTIFACT)) {
-						ModuleEditorInput dwip = (ModuleEditorInput) getEditorInput();
-						Map<String, String> params = new HashMap<String, String>();
-						params.put(OpenModuleEditor.PARAM_REPO_NODE_PATH,
-								dwip.getRepoNodePath());
-						params.put(OpenModuleEditor.PARAM_REPO_URI,
-								dwip.getUri());
-						params.put(OpenModuleEditor.PARAM_WORKSPACE_NAME,
-								dwip.getWorkspaceName());
-						String path = node.getPath();
-						params.put(OpenModuleEditor.PARAM_MODULE_PATH, path);
-						CommandUtils.callCommand(OpenModuleEditor.ID, params);
+					if (node.isNodeType(SlcTypes.SLC_MODULE_COORDINATES)) {
+						Node realizedModule = getRealizedModule(node);
+						if (realizedModule != null) {
+							ModuleEditorInput dwip = (ModuleEditorInput) getEditorInput();
+							Map<String, String> params = new HashMap<String, String>();
+							params.put(OpenModuleEditor.PARAM_REPO_NODE_PATH,
+									dwip.getRepoNodePath());
+							params.put(OpenModuleEditor.PARAM_REPO_URI,
+									dwip.getUri());
+							params.put(OpenModuleEditor.PARAM_WORKSPACE_NAME,
+									dwip.getWorkspaceName());
+							String path = realizedModule.getPath();
+							params.put(OpenModuleEditor.PARAM_MODULE_PATH, path);
+							CommandUtils.callCommand(OpenModuleEditor.ID,
+									params);
+						}
 					}
 				} catch (RepositoryException re) {
 					throw new SlcException("Cannot get path for node " + node
 							+ " while setting parameters for "
 							+ "command OpenModuleEditor", re);
 				}
-
 			}
 		}
 	}
