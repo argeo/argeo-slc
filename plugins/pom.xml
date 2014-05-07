@@ -10,10 +10,10 @@
 	<name>SLC Eclipse Plugins</name>
 	<packaging>pom</packaging>
 	<modules>
-		<module>org.argeo.slc.client.ui</module>
-		<module>org.argeo.slc.client.ui.dist</module>
 		<module>org.argeo.slc.client.rcp</module>
 		<module>org.argeo.slc.client.rap</module>
+		<module>org.argeo.slc.client.ui</module>
+		<module>org.argeo.slc.client.ui.dist</module>
 	</modules>
 	<build>
 		<plugins>

@@ -105,7 +105,7 @@ public class SlcSecureWorkbenchWindowAdvisor extends
 			return;
 
 		// image
-		Image trayImage = ClientRcpPlugin.getDefault().getImageRegistry()
+		Image trayImage = SlcRcpPlugin.getDefault().getImageRegistry()
 				.get("argeoTrayIcon");
 		trayItem.setImage(trayImage);
 		trayItem.setToolTipText("Argeo SLC");

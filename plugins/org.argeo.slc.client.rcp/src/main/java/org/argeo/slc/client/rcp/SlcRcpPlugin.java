@@ -23,9 +23,9 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class ClientRcpPlugin extends AbstractUIPlugin {
+public class SlcRcpPlugin extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.argeo.slc.client.rcp";
-	private static ClientRcpPlugin plugin;
+	private static SlcRcpPlugin plugin;
 
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -37,7 +37,7 @@ public class ClientRcpPlugin extends AbstractUIPlugin {
 		super.stop(context);
 	}
 
-	public static ClientRcpPlugin getDefault() {
+	public static SlcRcpPlugin getDefault() {
 		return plugin;
 	}
 

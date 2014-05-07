@@ -58,4 +58,11 @@
 		<property name="proxyWorkspace" value="${slc.repo.jcr.proxyWorkspace}" />
 		<property name="defaultRepositories" ref="defaultRpmRepositories" />
 	</bean>
+
+	<!-- Draft to centralize multirepository connection process in an Argeo 
+		environment -->
+	<!-- <bean id="repoService" class="org.argeo.slc.repo.core.RepoServiceImpl" 
+		init-method="init" destroy-method="destroy"> <property name="repositoryFactory" 
+		ref="repositoryFactory" /> <property name="keyring" ref="keyring" /> <property 
+		name="nodeRepository" ref="nodeRepository" /> </bean> -->
 </beans>

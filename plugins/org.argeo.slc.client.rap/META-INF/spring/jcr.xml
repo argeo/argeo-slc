@@ -5,17 +5,10 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-	<bean id="slcSession" class="org.argeo.jcr.spring.ThreadBoundSession">
-		<property name="repository" ref="javaRepository" />
-		<property name="workspace" value="org.argeo.tp-1.3.1" />
-	</bean>
-
 	<bean id="repoService" class="org.argeo.slc.repo.core.RepoServiceImpl">
 		<property name="repositoryFactory" ref="repositoryFactory" />
 		<property name="keyring" ref="keyring" />
 		<property name="nodeRepository" ref="nodeRepository" />
 	</bean>
 
-	<!-- For the record <property name="session"> <bean factory-bean="repository" 
-		factory-method="login" /> </property> -->
 </beans>

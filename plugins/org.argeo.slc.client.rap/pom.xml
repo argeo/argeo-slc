@@ -16,11 +16,15 @@
 				<artifactId>maven-bundle-plugin</artifactId>
 				<configuration>
 					<instructions>
+						<Bundle-Activator>org.argeo.slc.client.rap.SlcRapPlugin</Bundle-Activator>
 						<Require-Bundle>org.eclipse.rap.ui;resolution:=optional</Require-Bundle>
 						<Import-Package>
-							*,
+							javax.jcr.nodetype,
 							javax.servlet,
-							javax.servlet.http
+							javax.servlet.http,
+							org.argeo.eclipse.spring,
+							org.argeo.slc.repo.core,
+							*
 						</Import-Package>
 					</instructions>
 				</configuration>
@@ -28,11 +32,10 @@
 		</plugins>
 	</build>
 	<dependencies>
-
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.client.ui</artifactId>
+			<artifactId>org.argeo.slc.repo</artifactId>
 			<version>1.1.17-SNAPSHOT</version>
 		</dependency>
 

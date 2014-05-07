@@ -1,4 +1,4 @@
-package org.argeo.slc.client.ui.dist;
+package org.argeo.slc.repo;
 
 import javax.jcr.Session;
 
@@ -7,7 +7,7 @@ public interface RepoService {
 
 	/**
 	 * Returns a corresponding session given the current context. Caller must
-	 * close the session once it as been used
+	 * close the session once it has been used
 	 */
 	public Session getRemoteSession(String repoNodePath, String uri,
 			String workspaceName);

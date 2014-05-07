@@ -20,8 +20,8 @@ import javax.jcr.Session;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.RepoService;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
+import org.argeo.slc.repo.RepoService;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

@@ -16,6 +16,7 @@
 package org.argeo.slc.repo;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.logging.Log;
@@ -25,6 +26,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
+import org.osgi.framework.Constants;
 import org.sonatype.aether.artifact.Artifact;
 
 /**
@@ -32,7 +34,7 @@ import org.sonatype.aether.artifact.Artifact;
  * name doesn't start with the artifact id (in order to skip Maven metadata XML
  * files and other non artifact files).
  */
-public class ArtifactIndexer implements NodeIndexer {
+public class ArtifactIndexer implements NodeIndexer, SlcNames {
 	private Log log = LogFactory.getLog(ArtifactIndexer.class);
 	private Boolean force = false;
 
@@ -92,6 +94,26 @@ public class ArtifactIndexer implements NodeIndexer {
 			if (!fileNode.getParent().hasNode(md5NodeName)) {
 				String md5 = JcrUtils.checksumFile(fileNode, "MD5");
 				JcrUtils.copyBytesAsFile(fileNode.getParent(), md5NodeName,
+						md5.getBytes());
+			}
+
+			// Create a default pom only with artifact coordinates if none
+			// already exist
+			String fileNodeName = fileNode.getName();
+			String pomName= null;
+			if (fileNodeName.endsWith(".jar"))
+				pomName = fileNodeName.substring(0, fileNodeName.length()-".jar".length()) + ".pom";
+			
+			if (pomName != null && !fileNode.getParent().hasNode(pomName)) {
+				String pom = generatePomForBundle(fileNode);
+				Node pomNode = JcrUtils.copyBytesAsFile(fileNode.getParent(),
+						pomName, pom.getBytes());
+				// corresponding check sums
+				String sha = JcrUtils.checksumFile(pomNode, "SHA-1");
+				JcrUtils.copyBytesAsFile(fileNode.getParent(), pomName +  ".sha1",						
+						sha.getBytes());
+				String md5 = JcrUtils.checksumFile(fileNode, "MD5");
+				JcrUtils.copyBytesAsFile(fileNode.getParent(), pomName +".md5",
 						md5.getBytes());
 			}
 
@@ -158,4 +180,32 @@ public class ArtifactIndexer implements NodeIndexer {
 		this.force = force;
 	}
 
+	private String generatePomForBundle(Node n) throws RepositoryException {
+		StringBuffer p = new StringBuffer();
+
+		// XML header
+		p.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		p.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
+		p.append("<modelVersion>4.0.0</modelVersion>");
+
+		// Artifact
+		p.append("<groupId>").append(JcrUtils.get(n, SLC_GROUP_ID))
+				.append("</groupId>\n");
+		p.append("<artifactId>").append(JcrUtils.get(n, SLC_ARTIFACT_ID))
+				.append("</artifactId>\n");
+		p.append("<version>").append(JcrUtils.get(n, SLC_ARTIFACT_VERSION))
+				.append("</version>\n");
+		p.append("<packaging>pom</packaging>\n");
+		if (n.hasProperty(SLC_ + Constants.BUNDLE_NAME))
+			p.append("<name>")
+					.append(JcrUtils.get(n, SLC_ + Constants.BUNDLE_NAME))
+					.append("</name>\n");
+		if (n.hasProperty(SLC_ + Constants.BUNDLE_DESCRIPTION))
+			p.append("<description>")
+					.append(JcrUtils
+							.get(n, SLC_ + Constants.BUNDLE_DESCRIPTION))
+					.append("</description>\n");
+		p.append("</project>\n");
+		return p.toString();
+	}
 }

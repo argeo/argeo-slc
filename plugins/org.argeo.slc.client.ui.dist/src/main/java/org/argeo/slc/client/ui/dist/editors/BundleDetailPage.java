@@ -16,14 +16,18 @@
 package org.argeo.slc.client.ui.dist.editors;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.argeo.ArgeoException;
+import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
+import org.argeo.slc.client.ui.specific.OpenJcrFile;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
@@ -128,7 +132,7 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 							.getString() : "N/A");
 
 			createHyperlink(parent, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
-			addSourceSourcesLink(parent);
+			addSourceLink(parent);
 		} catch (RepositoryException re) {
 			throw new SlcException("Unable to get bundle name for node "
 					+ bundle, re);
@@ -196,14 +200,14 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 	}
 
 	// helper to check if sources are available
-	private void addSourceSourcesLink(Composite parent) {
+	private void addSourceLink(Composite parent) {
 		try {
 			String srcPath = RepoUtils.relatedPdeSourcePath(
 					RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, bundle);
 			if (!bundle.getSession().nodeExists(srcPath)) {
 				createLT(parent, "Sources", "N/A");
 			} else {
-				Node sourcesNode = bundle.getSession().getNode(srcPath);
+				final Node sourcesNode = bundle.getSession().getNode(srcPath);
 
 				String srcName = null;
 				if (sourcesNode.hasProperty(SlcNames.SLC_SYMBOLIC_NAME))
@@ -220,7 +224,17 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 					@Override
 					public void linkActivated(HyperlinkEvent e) {
 						try {
-							System.out.println("CLICK on Sources link");
+							ModuleEditorInput editorInput = (ModuleEditorInput) getEditorInput();
+							Map<String, String> params = new HashMap<String, String>();
+							params.put(OpenJcrFile.PARAM_REPO_NODE_PATH,
+									editorInput.getRepoNodePath());
+							params.put(OpenJcrFile.PARAM_REPO_URI,
+									editorInput.getUri());
+							params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
+									editorInput.getWorkspaceName());
+							params.put(OpenJcrFile.PARAM_FILE_PATH,
+									sourcesNode.getPath());
+							CommandUtils.callCommand(OpenJcrFile.ID, params);
 						} catch (Exception ex) {
 							throw new SlcException("error opening browser", ex); //$NON-NLS-1$
 						}

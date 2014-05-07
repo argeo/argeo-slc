@@ -30,6 +30,32 @@
          </run>
       </application>
    </extension>
+
+    <!-- COMMANDS  --> 
+   	<extension
+        point="org.eclipse.ui.commands">
+		<command
+			id="org.argeo.slc.client.rcp.openJcrFile"
+			defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+			name="Open Workspace Editor">
+			<commandParameter
+				id="param.repoNodePath"
+				name="Repo node path">
+			</commandParameter>
+			<commandParameter
+				id="param.repoUri"
+				name="Repo URI">
+			</commandParameter>
+			<commandParameter
+				id="param.workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="param.filePath"
+				name="File Path">
+			</commandParameter>
+    	</command>
+   	</extension>
    
     <!-- RCP Specific, does not work with RAP --> 
    <extension

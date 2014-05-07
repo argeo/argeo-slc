@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.commons</groupId>
@@ -9,6 +10,7 @@
 	<artifactId>argeo-slc</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC</name>
+	<description>SLC is a framework integrating various build, deployment and testing technologies in order to build specific application life cycle management systems.</description>
 	<version>1.1.17-SNAPSHOT</version>
 	<properties>
 		<developmentCycle.slc>1.1</developmentCycle.slc>

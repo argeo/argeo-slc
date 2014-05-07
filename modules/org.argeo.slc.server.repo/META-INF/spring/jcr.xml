@@ -61,5 +61,4 @@
 		<property name="workspace" value="*" />
 	</bean>
 
-
 </beans>
