@@ -5,15 +5,16 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<!-- RAP Specific open JCR file service -->
-	<bean id="openJcrFileService" class="org.argeo.slc.client.rap.OpenJcrFileService"
-		scope="prototype" init-method="init" destroy-method="destroy">
-		<property name="repoService" ref="repoService" />
-	</bean>
+	<!-- <bean id="openJcrFileService" class="org.argeo.slc.client.rap.OpenJcrFileService" -->
+	<!-- scope="prototype" init-method="init" destroy-method="destroy"> -->
+	<!-- <property name="repoService" ref="repoService" /> -->
+	<!-- <property name="repositoryFactory" ref="repositoryFactory" /> -->
+	<!-- <property name="keyring" ref="keyring" /> -->
+	<!-- <property name="nodeRepository" ref="nodeRepository" /> -->
+	<!-- </bean> -->
 
 	<bean id="org.argeo.slc.client.rap.openJcrFile" class="org.argeo.slc.client.ui.specific.OpenJcrFile"
 		scope="prototype">
 		<property name="repoService" ref="repoService" />
-		<!-- Workaround to only force instantiation -->
-		<property name="openJcrFileService" ref="openJcrFileService" />
 	</bean>
 </beans>

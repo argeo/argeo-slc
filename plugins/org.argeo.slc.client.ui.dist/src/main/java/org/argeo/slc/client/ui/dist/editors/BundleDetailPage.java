@@ -35,6 +35,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -123,7 +124,7 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 							.getProperty(SlcNames.SLC_ARTIFACT_VERSION)
 							.getString() : "");
 
-			// 2nd Line: Vendor, licence, sources
+			// 3rd Line: Vendor, licence, sources
 			createLT(
 					parent,
 					"Vendor",
@@ -131,8 +132,17 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 							.getProperty(DistConstants.SLC_BUNDLE_VENDOR)
 							.getString() : "N/A");
 
-			createHyperlink(parent, "Licence", DistConstants.SLC_BUNDLE_LICENCE);
+			createLicencesLink(parent, "Licence",
+					DistConstants.SLC_BUNDLE_LICENCE);
 			addSourceLink(parent);
+
+			// 2nd Line: The Jar itself and the Manifest
+			createJarLink(parent);
+			createManifestLink(parent);
+
+			// Last line
+			createPomLink(parent);
+
 		} catch (RepositoryException re) {
 			throw new SlcException("Unable to get bundle name for node "
 					+ bundle, re);
@@ -148,8 +158,7 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 		Section section = tk.createSection(parent, Section.TITLE_BAR
 				| Section.DESCRIPTION);
 		section.setText("Maven");
-		section.setDescription("Copy Paste the below snippet "
-				+ "to use it in your code.");
+		section.setDescription("Add the below tag to your Artifact pom dependencies");
 		section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		Text snippetTxt = createMavenSnippet(section);
 		section.setClient(snippetTxt);
@@ -168,6 +177,124 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		text.setEditable(false);
 		return text;
+	}
+
+	private void createLicencesLink(Composite parent, String label,
+			String jcrPropName) throws RepositoryException {
+		tk.createLabel(parent, label, SWT.NONE);
+		if (bundle.hasProperty(jcrPropName)) {
+
+			String licenceLinkVal = bundle.getProperty(jcrPropName).getString();
+			String[] licenceVals = licenceLinkVal.split(", ");
+
+			Composite body = tk.createComposite(parent);
+			body.setLayout(new RowLayout(SWT.WRAP));
+
+			for (String value : licenceVals) {
+				final Hyperlink link = tk
+						.createHyperlink(body, value, SWT.NONE);
+				link.addHyperlinkListener(new AbstractHyperlinkListener() {
+					@Override
+					public void linkActivated(HyperlinkEvent e) {
+						try {
+							IWorkbenchBrowserSupport browserSupport = PlatformUI
+									.getWorkbench().getBrowserSupport();
+							IWebBrowser browser = browserSupport
+									.createBrowser(
+											IWorkbenchBrowserSupport.LOCATION_BAR
+													| IWorkbenchBrowserSupport.NAVIGATION_BAR,
+											"SLC Distribution browser",
+											"SLC Distribution browser",
+											"A tool tip");
+							browser.openURL(new URL(link.getText()));
+						} catch (Exception ex) {
+							throw new SlcException("error opening browser", ex); //$NON-NLS-1$
+						}
+					}
+				});
+			}
+		} else
+			tk.createLabel(parent, "N/A", SWT.NONE);
+	}
+
+	private void createJarLink(Composite parent) throws RepositoryException {
+		Label label = tk.createLabel(parent, "Jar", SWT.RIGHT);
+		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
+
+		Composite body = tk.createComposite(parent);
+		RowLayout rl = new RowLayout(SWT.HORIZONTAL);
+		rl.spacing = 6;
+		body.setLayout(rl);
+		body.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+
+		Hyperlink jarLink = tk
+				.createHyperlink(body, bundle.getName(), SWT.NONE);
+		jarLink.addHyperlinkListener(new OpenFileLinkListener(bundle.getPath()));
+
+		// Corresponding check sums
+
+		String name = bundle.getName() + ".md5";
+		if (bundle.getParent().hasNode(name)) {
+			Node md5 = bundle.getParent().getNode(name);
+			Hyperlink md5Link = tk.createHyperlink(body, "MD5", SWT.NONE);
+			md5Link.addHyperlinkListener(new OpenFileLinkListener(md5.getPath()));
+		}
+
+		name = bundle.getName() + ".sha1";
+		if (bundle.getParent().hasNode(name)) {
+			Node sha1 = bundle.getParent().getNode(name);
+			Hyperlink sha1Link = tk.createHyperlink(body, "SHA1", SWT.NONE);
+			sha1Link.addHyperlinkListener(new OpenFileLinkListener(sha1
+					.getPath()));
+		}
+	}
+
+	private void createPomLink(Composite parent) throws RepositoryException {
+		Label label = tk.createLabel(parent, "Pom", SWT.RIGHT);
+		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
+
+		String name = bundle.getName().substring(0, bundle.getName().length() - "jar".length()) + "pom";
+
+		if (bundle.getParent().hasNode(name)) {
+			Node pom = bundle.getParent().getNode(name);
+
+			Composite body = tk.createComposite(parent);
+			RowLayout rl = new RowLayout(SWT.HORIZONTAL);
+			rl.spacing = 6;
+			body.setLayout(rl);
+			body.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false,
+					3, 1));
+
+			Hyperlink pomLink = tk.createHyperlink(body, "pom.xml", SWT.NONE);
+			pomLink.addHyperlinkListener(new OpenFileLinkListener(pom.getPath()));
+
+			// Corresponding check sums
+
+			name = pom.getName() + ".md5";
+			if (pom.getParent().hasNode(name)) {
+				Node md5 = pom.getParent().getNode(name);
+				Hyperlink md5Link = tk.createHyperlink(body, "MD5", SWT.NONE);
+				md5Link.addHyperlinkListener(new OpenFileLinkListener(md5
+						.getPath()));
+			}
+
+			name = pom.getName() + ".sha1";
+			if (pom.getParent().hasNode(name)) {
+				Node sha1 = pom.getParent().getNode(name);
+				Hyperlink sha1Link = tk.createHyperlink(body, "SHA1", SWT.NONE);
+				sha1Link.addHyperlinkListener(new OpenFileLinkListener(sha1
+						.getPath()));
+			}
+		} else
+			tk.createLabel(parent, "N/A", SWT.NONE);
+	}
+
+	private void createManifestLink(Composite parent)
+			throws RepositoryException {
+		tk.createLabel(parent, "Manifest", SWT.NONE);
+		Hyperlink link = tk.createHyperlink(parent, "MANIFEST.MF", SWT.NONE);
+		// link.addHyperlinkListener(new
+		// OpenFileLinkListener(bundle.getPath()));
 	}
 
 	private void createHyperlink(Composite parent, String label,
@@ -220,31 +347,60 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 						false));
 				final Hyperlink link = tk.createHyperlink(parent, srcName,
 						SWT.NONE);
-				link.addHyperlinkListener(new AbstractHyperlinkListener() {
-					@Override
-					public void linkActivated(HyperlinkEvent e) {
-						try {
-							ModuleEditorInput editorInput = (ModuleEditorInput) getEditorInput();
-							Map<String, String> params = new HashMap<String, String>();
-							params.put(OpenJcrFile.PARAM_REPO_NODE_PATH,
-									editorInput.getRepoNodePath());
-							params.put(OpenJcrFile.PARAM_REPO_URI,
-									editorInput.getUri());
-							params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
-									editorInput.getWorkspaceName());
-							params.put(OpenJcrFile.PARAM_FILE_PATH,
-									sourcesNode.getPath());
-							CommandUtils.callCommand(OpenJcrFile.ID, params);
-						} catch (Exception ex) {
-							throw new SlcException("error opening browser", ex); //$NON-NLS-1$
-						}
-					}
-				});
+				link.addHyperlinkListener(new OpenFileLinkListener(sourcesNode
+						.getPath()));
+
+				// {
+				// @Override
+				// public void linkActivated(HyperlinkEvent e) {
+				// try {
+				// ModuleEditorInput editorInput = (ModuleEditorInput)
+				// getEditorInput();
+				// Map<String, String> params = new HashMap<String, String>();
+				// params.put(OpenJcrFile.PARAM_REPO_NODE_PATH,
+				// editorInput.getRepoNodePath());
+				// params.put(OpenJcrFile.PARAM_REPO_URI,
+				// editorInput.getUri());
+				// params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
+				// editorInput.getWorkspaceName());
+				// params.put(OpenJcrFile.PARAM_FILE_PATH,
+				// );
+				// CommandUtils.callCommand(OpenJcrFile.ID, params);
+				// } catch (Exception ex) {
+				//							throw new SlcException("error opening browser", ex); //$NON-NLS-1$
+				// }
+				// }
+				// });
 
 			}
 		} catch (RepositoryException e) {
 			throw new SlcException("Unable to configure sources link for "
 					+ bundle, e);
+		}
+	}
+
+	private class OpenFileLinkListener extends AbstractHyperlinkListener {
+		final private String path;
+
+		public OpenFileLinkListener(String path) {
+			this.path = path;
+		}
+
+		@Override
+		public void linkActivated(HyperlinkEvent e) {
+			try {
+				ModuleEditorInput editorInput = (ModuleEditorInput) getEditorInput();
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(OpenJcrFile.PARAM_REPO_NODE_PATH,
+						editorInput.getRepoNodePath());
+				params.put(OpenJcrFile.PARAM_REPO_URI, editorInput.getUri());
+				params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
+						editorInput.getWorkspaceName());
+				params.put(OpenJcrFile.PARAM_FILE_PATH, path);
+				CommandUtils.callCommand(OpenJcrFile.ID, params);
+			} catch (Exception ex) {
+				throw new SlcException("error opening browser", ex); //$NON-NLS-1$
+			}
 		}
 	}
 
