@@ -1,12 +1,9 @@
 package org.argeo.slc.repo.core;
 
-import javax.jcr.LoginException;
 import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
-import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.repo.RepoService;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.util.security.Keyring;
@@ -27,22 +24,6 @@ public class RepoServiceImpl implements RepoService {
 
 	public Session getRemoteSession(String repoNodePath, String uri,
 			String workspaceName) {
-
-		// TODO remove this. Only usefull while investigating the RAP login
-		// problem
-		Session session = null;
-		try {
-			session = nodeRepository.login();
-		} catch (LoginException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (RepositoryException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			JcrUtils.logoutQuietly(session);
-		}
-
 		return RepoUtils.getRemoteSession(repositoryFactory, keyring,
 				nodeRepository, repoNodePath, uri, workspaceName);
 	}

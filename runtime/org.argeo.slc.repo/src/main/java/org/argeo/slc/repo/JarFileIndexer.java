@@ -17,11 +17,15 @@ package org.argeo.slc.repo;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.Attributes;
 import java.util.jar.Attributes.Name;
+import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
 
@@ -76,10 +80,6 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 			Session jcrSession = fileNode.getSession();
 			Node contentNode = fileNode.getNode(Node.JCR_CONTENT);
 			fileBinary = contentNode.getProperty(Property.JCR_DATA).getBinary();
-			// jar file
-			// if (!FilenameUtils.isExtension(fileNode.getName(), "jar")) {
-			// return;
-			// }
 
 			jarIn = new JarInputStream(fileBinary.getStream());
 			Manifest manifest = jarIn.getManifest();
@@ -110,10 +110,8 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 
 			fileNode.setProperty(SlcNames.SLC_MANIFEST, manifestBinary);
 			Attributes attrs = manifest.getMainAttributes();
-			
-			// if (log.isTraceEnabled())
-			// for (Object key : attrs.keySet())
-			// log.trace(key + ": " + attrs.getValue(key.toString()));
+
+			getI18nValues(fileBinary, attrs);
 
 			// standard J2SE MANIFEST attributes
 			addAttr(Attributes.Name.MANIFEST_VERSION, fileNode, attrs);
@@ -132,14 +130,14 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 			// OSGi
 			if (attrs.containsKey(new Name(Constants.BUNDLE_SYMBOLICNAME))) {
 				addOsgiMetadata(fileNode, attrs);
-				JcrUtils.updateLastModified(fileNode);
 				if (log.isTraceEnabled())
 					log.trace("Indexed OSGi bundle " + fileNode);
 			} else {
-				JcrUtils.updateLastModified(fileNode);
 				if (log.isTraceEnabled())
 					log.trace("Indexed JAR file " + fileNode);
 			}
+
+			JcrUtils.updateLastModified(fileNode);
 
 		} catch (Exception e) {
 			throw new SlcException("Cannot index jar " + fileNode, e);
@@ -151,6 +149,84 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 			JcrUtils.closeQuietly(fileBinary);
 		}
 
+	}
+
+	private void getI18nValues(Binary fileBinary, Attributes attrs)
+			throws IOException {
+		JarInputStream jarIn = null;
+		try {
+			jarIn = new JarInputStream(fileBinary.getStream());
+			String bundleLocalization = null;
+			
+			String blKey =  Constants.BUNDLE_LOCALIZATION; //"Bundle-Localization";
+			Name blkName = new Name(blKey);
+
+			browse: for (Object obj : attrs.keySet()) {
+				String value = attrs.getValue((Attributes.Name) obj);
+				if (value.startsWith("%")) {
+					if (attrs.containsKey(blkName)) {
+						bundleLocalization = attrs.getValue(blkName);
+						break browse;
+					}
+				}
+			}
+
+			JarEntry jarEntry = null;
+			byte[] propBytes = null;
+			ByteArrayOutputStream baos = null;
+			browse: if (bundleLocalization != null) {
+				JarEntry entry = jarIn.getNextJarEntry();
+				while (entry != null) {
+					if (entry.getName().equals(
+							bundleLocalization + ".properties")) {
+						jarEntry = entry;
+
+						// if(je.getSize() != -1){
+						// propBytes = new byte[(int)je.getSize()];
+						// int len = (int) je.getSize();
+						// int offset = 0;
+						// while (offset != len)
+						// offset += jarIn.read(propBytes, offset, len -
+						// offset);
+						// } else {
+						baos = new ByteArrayOutputStream();
+						while (true) {
+							int qwe = jarIn.read();
+							if (qwe == -1)
+								break;
+							baos.write(qwe);
+						}
+						propBytes = baos.toByteArray();
+						break browse;
+					}
+					entry = jarIn.getNextJarEntry();
+				}
+			}
+
+			if (jarEntry != null) {
+				Properties prop = new Properties();
+				InputStream is = new ByteArrayInputStream(propBytes);
+				prop.load(is);
+
+				for (Object obj : attrs.keySet()) {
+					String value = attrs.getValue((Attributes.Name) obj);
+					if (value.startsWith("%")) {
+						String newVal = prop.getProperty(value.substring(1));
+						if (newVal != null)
+							attrs.put(obj, newVal);
+					}
+				}
+			}
+		} catch (RepositoryException e) {
+			throw new SlcException(
+					"Error while reading the jar binary content " + fileBinary,
+					e);
+		} catch (IOException ioe) {
+			throw new SlcException("unable to get internationalized values",
+					ioe);
+		} finally {
+			IOUtils.closeQuietly(jarIn);
+		}
 	}
 
 	protected void addOsgiMetadata(Node fileNode, Attributes attrs)
