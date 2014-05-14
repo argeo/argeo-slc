@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dep</artifactId>
-		<version>1.1.18</version>
+		<version>1.1.19-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.dep.backend</artifactId>
@@ -40,7 +40,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.minimal</artifactId>
-			<version>1.1.18</version>
+			<version>1.1.19-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 
@@ -60,34 +60,34 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support.simple</artifactId>
-			<version>1.1.18</version>
+			<version>1.1.19-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support.ant</artifactId>
-			<version>1.1.18</version>
+			<version>1.1.19-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SLC Repo -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>1.1.18</version>
+			<version>1.1.19-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.rpmfactory</artifactId>
-			<version>1.1.18</version>
+			<version>1.1.19-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
-			<version>1.1.18</version>
+			<version>1.1.19-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.server.repo.webapp</artifactId>
-			<version>1.1.18</version>
+			<version>1.1.19-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Node -->
