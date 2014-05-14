@@ -15,7 +15,7 @@
 	<properties>
 		<developmentCycle.slc>1.1</developmentCycle.slc>
 		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
-		<version.slc>1.1.17</version.slc>
+		<version.slc>1.1.17-SNAPSHOT</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
@@ -107,7 +107,7 @@ limitations under the License.
 	<repositories>
 		<repository>
 			<id>argeo-commons</id>
-			<url>http://repo.argeo.org/data/public/java/org.argeo.commons-1.2.x</url>
+			<url>http://repo.argeo.org/data/public/java/argeo-commons-1.2</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -118,12 +118,12 @@ limitations under the License.
 	<distributionManagement>
 		<repository>
 			<id>staging</id>
-			<url>dav:https://repo.argeo.org/data/files/java/org.argeo.slc-${developmentCycle.slc}.x</url>
+			<url>dav:https://repo.argeo.org/data/files/java/argeo-slc-${developmentCycle.slc}</url>
 			<uniqueVersion>false</uniqueVersion>
 		</repository>
 		<site>
 			<id>site</id>
-			<url>dav:https://repo.argeo.org/data/files/docs/org.argeo.slc-${developmentCycle.slc}.x</url>
+			<url>dav:https://repo.argeo.org/data/files/docs/argeo-slc-${developmentCycle.slc}</url>
 		</site>
 	</distributionManagement>
 	<profiles>
@@ -132,11 +132,11 @@ limitations under the License.
 			<distributionManagement>
 				<repository>
 					<id>staging</id>
-					<url>dav:http://localhost:7070/data/files/java/org.argeo.slc-${developmentCycle.slc}.x</url>
+					<url>dav:http://localhost:7070/data/files/java/argeo-slc-${developmentCycle.slc}</url>
 				</repository>
 				<site>
 					<id>site</id>
-					<url>dav:http://localhost:7070/data/files/docs/org.argeo.slc-${developmentCycle.slc}.x</url>
+					<url>dav:http://localhost:7070/data/files/docs/argeo-slc-${developmentCycle.slc}</url>
 				</site>
 			</distributionManagement>
 		</profile>
