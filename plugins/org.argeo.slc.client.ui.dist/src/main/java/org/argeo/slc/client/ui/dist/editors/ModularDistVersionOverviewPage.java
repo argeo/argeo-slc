@@ -44,6 +44,8 @@ import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
 import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
 import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
+import org.argeo.slc.client.ui.specific.OpenJcrFile;
+import org.argeo.slc.client.ui.specific.OpenJcrFileCmdId;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
@@ -239,8 +241,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 			if (!modularDistribution.getSession().nodeExists(srcPath)) {
 				createLT(parent, "Sources", "N/A");
 			} else {
-				Node sourcesNode = modularDistribution.getSession().getNode(
-						srcPath);
+				final Node sourcesNode = modularDistribution.getSession()
+						.getNode(srcPath);
 
 				String srcName = null;
 				if (sourcesNode.hasProperty(SlcNames.SLC_SYMBOLIC_NAME))
@@ -251,23 +253,40 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 				Label label = tk.createLabel(parent, "Sources", SWT.RIGHT);
 				label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
 						false));
-				final Hyperlink link = tk.createHyperlink(parent, srcName,
-						SWT.NONE);
-				link.addHyperlinkListener(new AbstractHyperlinkListener() {
-					@Override
-					public void linkActivated(HyperlinkEvent e) {
-						try {
-							System.out.println("CLICK on Sources link");
-						} catch (Exception ex) {
-							throw new SlcException("error opening browser", ex); //$NON-NLS-1$
-						}
-					}
-				});
-
+				Hyperlink link = tk.createHyperlink(parent, srcName, SWT.NONE);
+				link.addHyperlinkListener(new OpenFileLinkListener(sourcesNode
+						.getPath()));
 			}
 		} catch (RepositoryException e) {
 			throw new SlcException("Unable to configure sources link for "
 					+ modularDistribution, e);
+		}
+	}
+
+	private class OpenFileLinkListener extends AbstractHyperlinkListener {
+		final private String path;
+
+		public OpenFileLinkListener(String path) {
+			this.path = path;
+		}
+
+		@Override
+		public void linkActivated(HyperlinkEvent e) {
+			try {
+				ModuleEditorInput editorInput = (ModuleEditorInput) getEditorInput();
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(OpenJcrFile.PARAM_REPO_NODE_PATH,
+						editorInput.getRepoNodePath());
+				params.put(OpenJcrFile.PARAM_REPO_URI, editorInput.getUri());
+				params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
+						editorInput.getWorkspaceName());
+				params.put(OpenJcrFile.PARAM_FILE_PATH, path);
+
+				String cmdId = (new OpenJcrFileCmdId()).getCmdId();
+				CommandUtils.callCommand(cmdId, params);
+			} catch (Exception ex) {
+				throw new SlcException("error opening browser", ex); //$NON-NLS-1$
+			}
 		}
 	}
 
@@ -421,8 +440,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 			String category = JcrUtils.get(moduleCoordinates, SLC_CATEGORY);
 			String name = JcrUtils.get(moduleCoordinates, SLC_NAME);
 			String version = JcrUtils.get(moduleCoordinates, SLC_VERSION);
-			Artifact artifact = new DefaultArtifact(category + ":" + name
-					+ ":" +version);
+			Artifact artifact = new DefaultArtifact(category + ":" + name + ":"
+					+ version);
 			String parentPath = MavenConventionsUtils.artifactParentPath(
 					RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH, artifact);
 
