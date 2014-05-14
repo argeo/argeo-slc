@@ -43,10 +43,10 @@ import org.eclipse.ui.PlatformUI;
  * 2)
  */
 public class OpenJcrFile extends AbstractHandler {
-	// private final static Log log = LogFactory.getLog(OpenJcrFile.class);
 
-	public final static String ID = SlcRapPlugin.PLUGIN_ID + ".openJcrFile";
-
+	// Use (new OpenJcrFileCmdId()).getCmdId() instead.
+	// public final String ID = SlcRapPlugin.PLUGIN_ID + ".openJcrFile";
+	
 	public final static String PARAM_REPO_NODE_PATH = "param.repoNodePath";
 	public final static String PARAM_REPO_URI = "param.repoUri";
 	public final static String PARAM_WORKSPACE_NAME = "param.workspaceName";

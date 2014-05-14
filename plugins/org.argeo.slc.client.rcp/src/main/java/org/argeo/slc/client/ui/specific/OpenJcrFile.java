@@ -31,7 +31,6 @@ import javax.jcr.nodetype.NodeType;
 import org.apache.commons.io.IOUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.client.rcp.SlcRcpPlugin;
 import org.argeo.slc.repo.RepoService;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -45,8 +44,8 @@ public class OpenJcrFile extends AbstractHandler {
 	// private final static Log log = LogFactory.getLog(OpenJcrFile.class);
 
 	// Here is the trick that enable single sourcing: the ID is determined at
-	// runtime. ALWAYS use this public variable to call the command.
-	public final static String ID = SlcRcpPlugin.PLUGIN_ID + ".openJcrFile";
+	// runtime so use (new OpenJcrFileCmdId()).getCmdId() instead of the usual
+	// public final String ID = SlcRcpPlugin.PLUGIN_ID + ".openJcrFile";
 
 	public final static String PARAM_REPO_NODE_PATH = "param.repoNodePath";
 	public final static String PARAM_REPO_URI = "param.repoUri";

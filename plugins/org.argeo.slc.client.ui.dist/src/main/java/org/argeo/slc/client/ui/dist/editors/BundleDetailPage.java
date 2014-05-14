@@ -22,12 +22,15 @@ import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
 import org.argeo.slc.client.ui.specific.OpenJcrFile;
+import org.argeo.slc.client.ui.specific.OpenJcrFileCmdId;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
@@ -55,6 +58,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * Show the details for a given bundle.
  */
 public class BundleDetailPage extends FormPage implements SlcNames {
+	private final static Log log = LogFactory.getLog(BundleDetailPage.class);
 
 	final static String PAGE_ID = "BundleDetailPage";
 
@@ -253,7 +257,9 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 		Label label = tk.createLabel(parent, "Pom", SWT.RIGHT);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false));
 
-		String name = bundle.getName().substring(0, bundle.getName().length() - "jar".length()) + "pom";
+		String name = bundle.getName().substring(0,
+				bundle.getName().length() - "jar".length())
+				+ "pom";
 
 		if (bundle.getParent().hasNode(name)) {
 			Node pom = bundle.getParent().getNode(name);
@@ -397,7 +403,11 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 				params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
 						editorInput.getWorkspaceName());
 				params.put(OpenJcrFile.PARAM_FILE_PATH, path);
-				CommandUtils.callCommand(OpenJcrFile.ID, params);
+
+				String cmdId = (new OpenJcrFileCmdId()).getCmdId();
+				if (log.isTraceEnabled())
+					log.debug("Retrieved openFile Cmd ID: " + cmdId);
+				CommandUtils.callCommand(cmdId, params);
 			} catch (Exception ex) {
 				throw new SlcException("error opening browser", ex); //$NON-NLS-1$
 			}
