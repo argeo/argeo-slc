@@ -5,7 +5,10 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelFactory;
+import javax.jcr.query.qom.Selector;
 
 import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
@@ -76,16 +79,34 @@ public class WorkspaceElem extends DistParentElem {
 					login();
 
 				// Retrieve already existing distribution
-				Query groupQuery = currSession
-						.getWorkspace()
-						.getQueryManager()
-						.createQuery(
-								"select * from ["
-										+ SlcTypes.SLC_MODULAR_DISTRIBUTION
-										+ "]", Query.JCR_SQL2);
+
+				// Use QOM rather than SQL2 - it seems more robust for remoting
+				// with JCR 2.2 (might also be some model refresh issue with the
+				// remoting)
+				QueryManager queryManager = currSession.getWorkspace()
+						.getQueryManager();
+				QueryObjectModelFactory factory = queryManager.getQOMFactory();
+				Selector selector = factory.selector(
+						SlcTypes.SLC_MODULAR_DISTRIBUTION,
+						SlcTypes.SLC_MODULAR_DISTRIBUTION);
+				// Curiously this works...
+				// Selector selector = factory.selector(
+				// SlcTypes.SLC_JAR_FILE,
+				// SlcTypes.SLC_JAR_FILE);
+
+				QueryObjectModel query = factory.createQuery(selector, null,
+						null, null);
+
+				// Query groupQuery = currSession
+				// .getWorkspace()
+				// .getQueryManager()
+				// .createQuery(
+				// "select * from ["
+				// + SlcTypes.SLC_MODULAR_DISTRIBUTION
+				// + "]", Query.JCR_SQL2);
 				NodeIterator distributions = null;
 				try {
-					distributions = groupQuery.execute().getNodes();
+					distributions = query.execute().getNodes();
 				} catch (InvalidQueryException iqe) {
 					// For legacy only does not throw an exception while
 					// browsing

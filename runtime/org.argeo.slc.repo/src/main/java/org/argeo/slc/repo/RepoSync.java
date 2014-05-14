@@ -206,8 +206,10 @@ public class RepoSync implements Runnable {
 					.getQueryManager()
 					.createQuery(
 							"select file from ["
-									+ (true ? "nt:file" : "nt:base")
-									+ "] as file", Query.JCR_SQL2);
+									+ (true ? NodeType.NT_FILE
+											: NodeType.NT_BASE) + "] as file",
+							Query.JCR_SQL2);
+
 			QueryResult result = countQuery.execute();
 			Long expectedCount = result.getNodes().getSize();
 			return expectedCount;
