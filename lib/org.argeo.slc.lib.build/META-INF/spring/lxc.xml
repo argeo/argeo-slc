@@ -8,26 +8,16 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-1.2.xsd">
 
-	<flow:flow name="dev">
-		<description>Argeo Developer Build </description>
+	<flow:flow name="test/deployLxcContainer">
+		<description>Init an LXC container</description>
 		<flow:spec>
-			<flow:primitive name="mvnArgs" value="clean install" />
+			<flow:primitive name="chroot" value="/var/lib/libvirt/lxc/test" />
 		</flow:spec>
-		<bean parent="templates/defaultMavenCall">
+		<bean class="org.argeo.slc.lib.linux.DeployLxcContainer">
 			<flow:variable />
+			<property name="chroot" value="@{chroot}" />
+			<property name="callbackHandler" ref="callbackHandler" />
 		</bean>
 	</flow:flow>
-
-	<flow:flow name="devFull">
-		<description>Argeo Full Developer Build </description>
-		<flow:spec>
-			<flow:primitive name="mvnArgs"
-				value="clean argeo-osgi:pde-sources install" />
-		</flow:spec>
-		<bean parent="templates/defaultMavenCall">
-			<flow:variable />
-		</bean>
-	</flow:flow>
-
 
 </beans>
