@@ -2,8 +2,6 @@ package org.argeo.slc.lib.linux;
 
 import java.io.File;
 
-import javax.security.auth.callback.CallbackHandler;
-
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
 import org.springframework.core.io.ClassPathResource;
@@ -21,7 +19,7 @@ public class DeployLxcContainer implements Runnable {
 			"/org/argeo/slc/lib/linux/lxc-init-guest.sh", getClass()
 					.getClassLoader());;
 
-	private CallbackHandler callbackHandler;
+	// private CallbackHandler callbackHandler;
 
 	private Integer ram = 1024;
 	private Integer vcpu = 2;
@@ -38,14 +36,14 @@ public class DeployLxcContainer implements Runnable {
 		hostCall.setLogCommand(true);
 		hostCall.arg(chroot);
 		// hostCall.getEnvironmentVariables().put("CHROOT", chroot);
-		hostCall.setSudo("");
-		hostCall.setCallbackHandler(callbackHandler);
+		// hostCall.setSudo("");
+		// hostCall.setCallbackHandler(callbackHandler);
 		hostCall.run();
 
 		ScriptCall guestCall = new ScriptCall(guestScript);
 		guestCall.setLogCommand(true);
-		guestCall.setSudo("");
-		guestCall.setCallbackHandler(callbackHandler);
+		// guestCall.setSudo("");
+		// guestCall.setCallbackHandler(callbackHandler);
 		guestCall.setChroot(chroot);
 		guestCall.run();
 
@@ -55,7 +53,7 @@ public class DeployLxcContainer implements Runnable {
 						+ " --filesystem " + chrootDir.getAbsolutePath()
 						+ ",/ --noautoconsole");
 		virtInstall.setLogCommand(true);
-		virtInstall.setSudo("");
+		// virtInstall.setSudo("");
 		virtInstall.run();
 	}
 
@@ -71,9 +69,9 @@ public class DeployLxcContainer implements Runnable {
 		this.guestScript = guestScript;
 	}
 
-	public void setCallbackHandler(CallbackHandler callbackHandler) {
-		this.callbackHandler = callbackHandler;
-	}
+	// public void setCallbackHandler(CallbackHandler callbackHandler) {
+	// this.callbackHandler = callbackHandler;
+	// }
 
 	public void setRam(Integer ram) {
 		this.ram = ram;
