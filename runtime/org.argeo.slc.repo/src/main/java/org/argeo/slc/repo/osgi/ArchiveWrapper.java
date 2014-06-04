@@ -61,6 +61,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			for (BndWrapper wrapper : wrappers.values()) {
 				if (wrapper.getVersion() == null)
 					wrapper.setVersion(version);
+				wrapper.setFactory(this);
 			}
 	}
 

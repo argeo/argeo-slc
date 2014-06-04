@@ -31,6 +31,8 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 
 	private Boolean doNotModify = false;
 
+	private Runnable factory = null;
+
 	public void wrapJar(InputStream in, OutputStream out) {
 		Builder b = new Builder();
 		try {
@@ -99,6 +101,14 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 			b.close();
 		}
 
+	}
+
+	public Runnable getFactory() {
+		return factory;
+	}
+
+	public void setFactory(Runnable factory) {
+		this.factory = factory;
 	}
 
 	public void setName(String bsn) {

@@ -3,18 +3,17 @@ package org.argeo.slc.repo.osgi;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.build.ModularDistribution;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.repo.ArtifactDistribution;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /** A consistent and versioned OSGi distribution, which can be built and tested. */
 public class ArgeoOsgiDistribution extends ArtifactDistribution implements
@@ -30,11 +29,20 @@ public class ArgeoOsgiDistribution extends ArtifactDistribution implements
 
 	public void init() {
 		if (log.isDebugEnabled()) {
+			SortedSet<String> sort = new TreeSet<String>();
 			Iterator<? extends NameVersion> nvIt = nameVersions();
 			while (nvIt.hasNext()) {
-				log.debug(nvIt.next());
-
+				NameVersion nv = nvIt.next();
+				sort.add(nv.getName() + ":" + nv.getVersion());
 			}
+
+			StringBuffer buf = new StringBuffer(
+					"## OSGi FACTORY MANAGED MODULES : \n");
+			for (String str : sort) {
+				buf.append(str).append('\n');
+			}
+
+			log.debug(buf);
 		}
 	}
 

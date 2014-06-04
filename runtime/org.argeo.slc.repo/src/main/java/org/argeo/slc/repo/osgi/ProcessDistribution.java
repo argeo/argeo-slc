@@ -30,8 +30,8 @@ public class ProcessDistribution implements Runnable {
 			Iterator<NameVersion> it = osgiDistribution.nameVersions();
 			while (it.hasNext()) {
 				NameVersion t = it.next();
-				if (log.isDebugEnabled())
-					log.debug("Check " + t + "...");
+				if (log.isTraceEnabled())
+					log.trace("Check " + t + "...");
 				if (!(t instanceof CategorizedNameVersion))
 					throw new SlcException("Unsupported type " + t.getClass());
 				CategorizedNameVersion nv = (CategorizedNameVersion) t;
@@ -39,13 +39,21 @@ public class ProcessDistribution implements Runnable {
 						nv.getName(), "jar", nv.getVersion());
 				String path = MavenConventionsUtils.artifactPath("/", artifact);
 				if (!javaSession.itemExists(path)) {
-					if (nv instanceof Runnable) {
+					// if (nv instanceof Runnable) {
+					// if (log.isDebugEnabled())
+					// log.debug("Run " + nv + "...");
+					// ((Runnable) nv).run();
+					// } else
+					if (nv instanceof BndWrapper) {
 						if (log.isDebugEnabled())
-							log.debug("Run " + nv + "...");
-						((Runnable) nv).run();
+							log.debug("Run factory for   : " + nv + "...");
+						((BndWrapper) nv).getFactory().run();
 					} else {
-						log.warn("Skipped unsupported " + nv);
+						log.warn("Skip unsupported   : " + nv);
 					}
+				} else {
+					if (log.isDebugEnabled())
+						log.debug("Already available : " + nv);
 				}
 			}
 		} catch (RepositoryException e) {

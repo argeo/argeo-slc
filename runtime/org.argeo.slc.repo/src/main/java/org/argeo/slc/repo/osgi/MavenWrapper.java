@@ -22,6 +22,10 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 
 	private OsgiFactory osgiFactory;
 
+	public MavenWrapper() {
+		setFactory(this);
+	}
+
 	public void run() {
 		Session distSession = null;
 		Session javaSession = null;
