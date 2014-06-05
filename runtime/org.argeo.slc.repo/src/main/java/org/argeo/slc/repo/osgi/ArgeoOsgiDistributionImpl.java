@@ -11,19 +11,19 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
-import org.argeo.slc.build.ModularDistribution;
 import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.repo.ArgeoOsgiDistribution;
 import org.argeo.slc.repo.ArtifactDistribution;
 
 /** A consistent and versioned OSGi distribution, which can be built and tested. */
-public class ArgeoOsgiDistribution extends ArtifactDistribution implements
-		ModularDistribution {
+public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements
+		ArgeoOsgiDistribution {
 	private final static Log log = LogFactory
-			.getLog(ArgeoOsgiDistribution.class);
+			.getLog(ArgeoOsgiDistributionImpl.class);
 
 	private List<Object> modules = new ArrayList<Object>();
 
-	public ArgeoOsgiDistribution(String coords) {
+	public ArgeoOsgiDistributionImpl(String coords) {
 		super(coords);
 	}
 
