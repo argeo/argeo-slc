@@ -31,4 +31,7 @@ public interface RepoConstants {
 	public final static String BINARIES_ARTIFACT_ID = "binaries";
 	public final static String SOURCES_ARTIFACT_ID = "sources";
 	public final static String SDK_ARTIFACT_ID = "sdk";
+	
+	// TODO might exists somewhere else
+	public final static String SLC_GROUP_ID = "SLC-GroupId";
 }

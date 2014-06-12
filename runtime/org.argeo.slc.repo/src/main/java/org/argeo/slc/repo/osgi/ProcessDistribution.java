@@ -12,6 +12,7 @@ import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.ArgeoOsgiDistribution;
+import org.argeo.slc.repo.ModularDistributionFactory;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.sonatype.aether.artifact.Artifact;
@@ -33,8 +34,15 @@ public class ProcessDistribution implements Runnable {
 					.nameVersions(); it.hasNext();)
 				processNameVersion(javaSession, it.next());
 
-			// TODO generate distribution indexes (pom.xml, P2, OBR)
+			ModularDistributionFactory mdf = new ModularDistributionFactory(
+					javaSession, osgiDistribution);
+			mdf.run();
+			// javaSession.save();
+
 			// osgiFactory.indexNode(node);
+			// Node artifact = createDistributionArtifact(javaSession,
+			// osgiDistribution);
+
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot process distribution "
 					+ osgiDistribution, e);
@@ -65,9 +73,9 @@ public class ProcessDistribution implements Runnable {
 			if (log.isDebugEnabled())
 				log.debug("Already available : " + nv);
 		}
-
 	}
 
+	/* DEPENDENCY INJECTION */
 	public void setOsgiDistribution(ArgeoOsgiDistribution osgiDistribution) {
 		this.osgiDistribution = osgiDistribution;
 	}
@@ -75,5 +83,4 @@ public class ProcessDistribution implements Runnable {
 	public void setOsgiFactory(OsgiFactory osgiFactory) {
 		this.osgiFactory = osgiFactory;
 	}
-
 }

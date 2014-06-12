@@ -69,17 +69,6 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements
 
 	}
 
-	public Distribution getModuleDistribution(String moduleName,
-			String moduleVersion) {
-		// NameVersion searched = new DefaultNameVersion(moduleName,
-		// moduleVersion);
-		// for (Distribution ad : modules) {
-		// if (ad.equals(searched))
-		// return ad;
-		// }
-		return null;
-	}
-
 	public Iterator<NameVersion> nameVersions() {
 		List<NameVersion> nameVersions = new ArrayList<NameVersion>();
 		for (Object module : modules) {
@@ -109,13 +98,25 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements
 		}
 	}
 
+	// Modular distribution interface methods. Not yet used.
+	public Distribution getModuleDistribution(String moduleName,
+			String moduleVersion) {
+		// NameVersion searched = new DefaultNameVersion(moduleName,
+		// moduleVersion);
+		// for (Distribution ad : modules) {
+		// if (ad.equals(searched))
+		// return ad;
+		// }
+		return null;
+	}
+
 	public Object getModulesDescriptor(String descriptorType) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* DEPENDENCY INJECTION */
 	public void setModules(List<Object> modules) {
 		this.modules = modules;
 	}
-
 }

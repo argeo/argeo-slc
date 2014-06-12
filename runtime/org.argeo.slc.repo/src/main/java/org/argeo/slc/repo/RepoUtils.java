@@ -483,7 +483,7 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 
 	/**
 	 * Write group indexes: 'binaries' lists all bundles and their versions,
-	 * 'sources' list theire sources, and 'sdk' aggregates both.
+	 * 'sources' list their sources, and 'sdk' aggregates both.
 	 */
 	public static void writeGroupIndexes(Session session,
 			String artifactBasePath, String groupId, String version,
