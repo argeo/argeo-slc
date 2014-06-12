@@ -134,20 +134,24 @@ public class RpmFactoryImpl implements RpmFactory {
 			for (String arch : archs) {
 				Node archFolder = JcrUtils.mkfolders(session, "/" + arch);
 				session.save();
-				if (!archFolder.hasNode("repodata")) {
-					File workspaceDir = getWorkspaceDir(workspace);
-					// touch a file in order to make sue this is properly
-					// mounted.
-					File touch = new File(workspaceDir, ".touch");
-					touch.createNewFile();
-					touch.delete();
+				File workspaceDir = getWorkspaceDir(workspace);
+				try {
+					if (!archFolder.hasNode("repodata")) {
+						// touch a file in order to make sure this is properly
+						// mounted.
+						File touch = new File(workspaceDir, ".touch");
+						touch.createNewFile();
+						touch.delete();
 
-					SystemCall createrepo = new SystemCall();
-					createrepo.arg("createrepo");
-					createrepo.arg("-q");
-					File archDir = new File(workspaceDir, arch);
-					createrepo.arg(archDir.getAbsolutePath());
-					createrepo.run();
+						SystemCall createrepo = new SystemCall();
+						createrepo.arg("createrepo");
+						createrepo.arg("-q");
+						File archDir = new File(workspaceDir, arch);
+						createrepo.arg(archDir.getAbsolutePath());
+						createrepo.run();
+					}
+				} catch (IOException e) {
+					log.error(workspaceDir + " not properly mounted.", e);
 				}
 			}
 		} catch (Exception e) {
