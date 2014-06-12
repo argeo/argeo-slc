@@ -73,7 +73,7 @@ public class ModularDistributionFactory implements Runnable {
 				distFile = generatePomFile();
 			else
 				throw new SlcException(
-						"Unimplemented distribution azrtiofact type "
+						"Unimplemented distribution artifact type: "
 								+ artifactType + " for "
 								+ osgiDistribution.toString());
 
@@ -106,6 +106,7 @@ public class ModularDistributionFactory implements Runnable {
 			jarOut = new JarOutputStream(byteOut, createManifest());
 			// Create various indexes
 			addToJar(createCsvDescriptor(), CSV_FILE_NAME, jarOut);
+			jarOut.close();
 			return byteOut.toByteArray();
 		} catch (IOException e) {
 			throw new SlcException(
