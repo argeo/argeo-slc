@@ -32,6 +32,7 @@ import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.zip.ZipInputStream;
 
 import javax.jcr.Credentials;
 import javax.jcr.GuestCredentials;
@@ -208,7 +209,8 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			throw new SlcException("Could not copy jar with MANIFEST "
 					+ manifest.getMainAttributes(), e);
 		} finally {
-			IOUtils.closeQuietly(jarIn);
+			if (!(in instanceof ZipInputStream))
+				IOUtils.closeQuietly(jarIn);
 			IOUtils.closeQuietly(jarOut);
 		}
 	}

@@ -17,10 +17,12 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -46,7 +48,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 	private String uri;
 
-	// jars to wrap as OSGi bundles
+	/** Jars to wrap as OSGi bundles */
 	private Map<String, BndWrapper> wrappers = new HashMap<String, BndWrapper>();
 
 	// pattern of OSGi bundles to import
@@ -102,6 +104,33 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			ZipEntry zentry = null;
 			entries: while ((zentry = zin.getNextEntry()) != null) {
 				String name = zentry.getName();
+
+				// sources autodetect
+				String baseName = FilenameUtils.getBaseName(name);
+				if (baseName.endsWith("-sources")) {
+					String bundle = baseName.substring(0, baseName.length()
+							- "-sources".length());
+					log.debug(name + "," + baseName + ", " + bundle);
+					String bundlePath = FilenameUtils.getPath(name) + bundle
+							+ ".jar";
+					if (wrappers.containsKey(bundlePath)) {
+						BndWrapper wrapper = wrappers.get(bundlePath);
+						NameVersion bundleNv = new DefaultNameVersion(
+								wrapper.getName(), wrapper.getVersion());
+						byte[] pdeSource = RepoUtils.packageAsPdeSource(zin,
+								bundleNv);
+						Node pdeSourceNode = RepoUtils.copyBytesAsArtifact(
+								javaSession.getRootNode(),
+								new DefaultArtifact(wrapper.getCategory(),
+										wrapper.getName() + ".source", "jar",
+										wrapper.getVersion()), pdeSource);
+						osgiFactory.indexNode(pdeSourceNode);
+					}
+				} else if (baseName.endsWith(".source")) {
+					// TODO Eclipse source already available
+				}
+
+				// binaries
 				if (wrappers.containsKey(name)) {
 					BndWrapper wrapper = (BndWrapper) wrappers.get(name);
 					// we must copy since the stream is closed by BND
