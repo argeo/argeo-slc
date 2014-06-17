@@ -157,8 +157,8 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		try {
 			jarIn = new JarInputStream(fileBinary.getStream());
 			String bundleLocalization = null;
-			
-			String blKey =  Constants.BUNDLE_LOCALIZATION; //"Bundle-Localization";
+
+			String blKey = Constants.BUNDLE_LOCALIZATION; // "Bundle-Localization";
 			Name blkName = new Name(blKey);
 
 			browse: for (Object obj : attrs.keySet()) {
@@ -231,6 +231,15 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 
 	protected void addOsgiMetadata(Node fileNode, Attributes attrs)
 			throws RepositoryException {
+
+		// TODO remove this ?
+		// Compulsory for the time being, because bundle artifact extends
+		// artifact
+		if (!fileNode.isNodeType(SlcTypes.SLC_ARTIFACT)) {
+			ArtifactIndexer indexer = new ArtifactIndexer();
+			indexer.index(fileNode);
+		}
+
 		fileNode.addMixin(SlcTypes.SLC_BUNDLE_ARTIFACT);
 
 		// symbolic name

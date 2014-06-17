@@ -1,13 +1,10 @@
 package org.argeo.slc.repo;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -18,8 +15,6 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -37,17 +32,14 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.osgi.framework.Constants;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Create or update JCR meta-data for an SLC Modular Distribution
  * 
  * Currently, following types are managed: <list><li>* .jar: dependency
- * artifacts with csv index</li> <li>.pom: artifact (binaries) that indexes a
- * group, the .pom file contains a tag "dependencyManagement" that list all
- * modules</li> </list>
+ * artifacts with csv index</li> <li>@Deprecated : .pom: artifact (binaries)
+ * that indexes a group, the .pom file contains a tag "dependencyManagement"
+ * that list all modules</li> </list>
  */
 public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 	private final static Log log = LogFactory
@@ -57,28 +49,26 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 	private final static String INDEX_FILE_NAME = "modularDistribution.csv";
 	private String separator = ",";
 
-	// Artifact indexing
-	private final static List<String> BINARIES_ARTIFACTS_NAME;
-	static {
-		List<String> tmpList = new ArrayList<String>();
-		tmpList.add(RepoConstants.BINARIES_ARTIFACT_ID);
-		// tmpList.add(RepoConstants.SOURCES_ARTIFACT_ID);
-		// tmpList.add(RepoConstants.SDK_ARTIFACT_ID);
-		BINARIES_ARTIFACTS_NAME = Collections.unmodifiableList(tmpList);
-	}
+	// TODO remove this: binaries have been replaced by modular distribution
+	// // Artifact indexing
+	// private final static List<String> BINARIES_ARTIFACTS_NAME;
+	// static {
+	// List<String> tmpList = new ArrayList<String>();
+	// tmpList.add(RepoConstants.BINARIES_ARTIFACT_ID);
+	// // tmpList.add(RepoConstants.SOURCES_ARTIFACT_ID);
+	// // tmpList.add(RepoConstants.SDK_ARTIFACT_ID);
+	// BINARIES_ARTIFACTS_NAME = Collections.unmodifiableList(tmpList);
+	// }
 
 	private Manifest manifest;
-
-	// private Comparator<Artifact> artifactComparator = new
-	// ArtifactIdComparator();
 
 	public Boolean support(String path) {
 		if (FilenameUtils.getExtension(path).equals("jar"))
 			return true;
-		if (FilenameUtils.getExtension(path).equals("pom")
-				&& BINARIES_ARTIFACTS_NAME.contains(FilenameUtils.getName(path)
-						.split("-")[0]))
-			return true;
+		// if (FilenameUtils.getExtension(path).equals("pom")
+		// && BINARIES_ARTIFACTS_NAME.contains(FilenameUtils.getName(path)
+		// .split("-")[0]))
+		// return true;
 		return false;
 	}
 
@@ -99,9 +89,9 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 			MyModularDistribution currDist = null;
 			if (FilenameUtils.getExtension(fileNode.getPath()).equals("jar"))
 				currDist = listModulesFromCsvIndex(fileNode, fileBinary);
-			else if (FilenameUtils.getExtension(fileNode.getPath()).equals(
-					"pom"))
-				currDist = listModulesFromPomIndex(fileNode, fileBinary);
+			// else if (FilenameUtils.getExtension(fileNode.getPath()).equals(
+			// "pom"))
+			// currDist = listModulesFromPomIndex(fileNode, fileBinary);
 
 			if (fileNode.isNodeType(SlcTypes.SLC_MODULAR_DISTRIBUTION)
 					|| currDist == null || !currDist.nameVersions().hasNext())
@@ -174,7 +164,7 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 			String version = manifest.getMainAttributes().getValue(
 					Constants.BUNDLE_VERSION);
 
-			Artifact distribution = new DefaultArtifact(category, name, "pom",
+			Artifact distribution = new DefaultArtifact(category, name, "jar",
 					version);
 			// Retrieve the index file
 			JarEntry indexEntry;
@@ -192,7 +182,7 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 				}
 			}
 			if (indexEntry == null)
-				return null; // Not a modular definition artifact
+				return null; // Not a modular definition
 
 			// Process the index
 			reader = new BufferedReader(new InputStreamReader(jarIn));
@@ -217,66 +207,67 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 		}
 	}
 
-	private MyModularDistribution listModulesFromPomIndex(Node fileNode,
-			Binary fileBinary) {
-		InputStream input = null;
-		List<CategorizedNameVersion> modules = new ArrayList<CategorizedNameVersion>();
-		try {
-			input = fileBinary.getStream();
-
-			DocumentBuilder documentBuilder = DocumentBuilderFactory
-					.newInstance().newDocumentBuilder();
-			Document doc = documentBuilder.parse(input);
-			// properties
-			Properties props = new Properties();
-			// props.setProperty("project.version",
-			// pomArtifact.getBaseVersion());
-			NodeList properties = doc.getElementsByTagName("properties");
-			if (properties.getLength() > 0) {
-				NodeList propertiesElems = properties.item(0).getChildNodes();
-				for (int i = 0; i < propertiesElems.getLength(); i++) {
-					if (propertiesElems.item(i) instanceof Element) {
-						Element property = (Element) propertiesElems.item(i);
-						props.put(property.getNodeName(),
-								property.getTextContent());
-					}
-				}
-			}
-
-			// full coordinates are under <dependencyManagement><dependencies>
-			NodeList dependencies = ((Element) doc.getElementsByTagName(
-					"dependencyManagement").item(0))
-					.getElementsByTagName("dependency");
-			for (int i = 0; i < dependencies.getLength(); i++) {
-				Element dependency = (Element) dependencies.item(i);
-				String groupId = dependency.getElementsByTagName("groupId")
-						.item(0).getTextContent().trim();
-				String artifactId = dependency
-						.getElementsByTagName("artifactId").item(0)
-						.getTextContent().trim();
-				String version = dependency.getElementsByTagName("version")
-						.item(0).getTextContent().trim();
-				modules.add(new MyCategorizedNameVersion(groupId, artifactId,
-						version));
-			}
-
-			String groupId = doc.getElementsByTagName("groupId").item(0)
-					.getTextContent().trim();
-			String artifactId = doc.getElementsByTagName("artifactId").item(0)
-					.getTextContent().trim();
-			String version = doc.getElementsByTagName("version").item(0)
-					.getTextContent().trim();
-
-			Artifact currDist = new DefaultArtifact(groupId, artifactId, "pom",
-					version);
-
-			return new MyModularDistribution(currDist, modules);
-		} catch (Exception e) {
-			throw new SlcException("Cannot process pom " + fileNode, e);
-		} finally {
-			IOUtils.closeQuietly(input);
-		}
-	}
+	// private MyModularDistribution listModulesFromPomIndex(Node fileNode,
+	// Binary fileBinary) {
+	// InputStream input = null;
+	// List<CategorizedNameVersion> modules = new
+	// ArrayList<CategorizedNameVersion>();
+	// try {
+	// input = fileBinary.getStream();
+	//
+	// DocumentBuilder documentBuilder = DocumentBuilderFactory
+	// .newInstance().newDocumentBuilder();
+	// Document doc = documentBuilder.parse(input);
+	// // properties
+	// Properties props = new Properties();
+	// // props.setProperty("project.version",
+	// // pomArtifact.getBaseVersion());
+	// NodeList properties = doc.getElementsByTagName("properties");
+	// if (properties.getLength() > 0) {
+	// NodeList propertiesElems = properties.item(0).getChildNodes();
+	// for (int i = 0; i < propertiesElems.getLength(); i++) {
+	// if (propertiesElems.item(i) instanceof Element) {
+	// Element property = (Element) propertiesElems.item(i);
+	// props.put(property.getNodeName(),
+	// property.getTextContent());
+	// }
+	// }
+	// }
+	//
+	// // full coordinates are under <dependencyManagement><dependencies>
+	// NodeList dependencies = ((Element) doc.getElementsByTagName(
+	// "dependencyManagement").item(0))
+	// .getElementsByTagName("dependency");
+	// for (int i = 0; i < dependencies.getLength(); i++) {
+	// Element dependency = (Element) dependencies.item(i);
+	// String groupId = dependency.getElementsByTagName("groupId")
+	// .item(0).getTextContent().trim();
+	// String artifactId = dependency
+	// .getElementsByTagName("artifactId").item(0)
+	// .getTextContent().trim();
+	// String version = dependency.getElementsByTagName("version")
+	// .item(0).getTextContent().trim();
+	// modules.add(new MyCategorizedNameVersion(groupId, artifactId,
+	// version));
+	// }
+	//
+	// String groupId = doc.getElementsByTagName("groupId").item(0)
+	// .getTextContent().trim();
+	// String artifactId = doc.getElementsByTagName("artifactId").item(0)
+	// .getTextContent().trim();
+	// String version = doc.getElementsByTagName("version").item(0)
+	// .getTextContent().trim();
+	//
+	// Artifact currDist = new DefaultArtifact(groupId, artifactId, "pom",
+	// version);
+	//
+	// return new MyModularDistribution(currDist, modules);
+	// } catch (Exception e) {
+	// throw new SlcException("Cannot process pom " + fileNode, e);
+	// } finally {
+	// IOUtils.closeQuietly(input);
+	// }
+	// }
 
 	/** The created modular distribution */
 	private static class MyCategorizedNameVersion extends DefaultNameVersion
@@ -328,5 +319,4 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 	public void setSeparator(String modulesUrlSeparator) {
 		this.separator = modulesUrlSeparator;
 	}
-
 }

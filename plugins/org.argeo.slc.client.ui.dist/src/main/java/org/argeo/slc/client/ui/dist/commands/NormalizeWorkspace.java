@@ -36,8 +36,8 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.ArtifactIndexer;
-import org.argeo.slc.repo.ModularDistributionIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
+import org.argeo.slc.repo.ModularDistributionIndexer;
 import org.argeo.slc.repo.PdeSourcesIndexer;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
@@ -75,10 +75,11 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 	private Repository repository;
 
 	// Relevant default node indexers
-	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
-	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
+	// WARNING Order call is important.
 	private ModularDistributionIndexer distBundleIndexer = new ModularDistributionIndexer();
+	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
 	private PdeSourcesIndexer pdeSourceIndexer = new PdeSourcesIndexer();
+	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String targetRepoPath = event.getParameter(PARAM_TARGET_REPO_PATH);
@@ -188,9 +189,9 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 					if (jarFileIndexer.support(node.getPath()))
 						if (artifactIndexer.support(node.getPath())) {
 							monitor.subTask(node.getName());
-							artifactIndexer.index(node);
-							jarFileIndexer.index(node);
 							distBundleIndexer.index(node);
+							jarFileIndexer.index(node);
+							artifactIndexer.index(node);
 							if (node.getSession().hasPendingChanges()) {
 								node.getSession().save();
 								if (log.isDebugEnabled())
@@ -200,8 +201,9 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 							monitor.worked(1);
 						}
 				} else if (node.getName().endsWith(".pom")) {
-					if (distBundleIndexer.support(node.getPath()))
-						distBundleIndexer.index(node);
+					// Removed: we do not support binaries concept anymore.
+					// if (distBundleIndexer.support(node.getPath()))
+					// distBundleIndexer.index(node);
 					if (artifactIndexer.support(node.getPath()))
 						artifactIndexer.index(node);
 					if (node.getSession().hasPendingChanges()) {

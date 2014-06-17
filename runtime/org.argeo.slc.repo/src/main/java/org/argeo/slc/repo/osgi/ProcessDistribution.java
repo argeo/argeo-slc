@@ -37,9 +37,11 @@ public class ProcessDistribution implements Runnable {
 			ModularDistributionFactory mdf = new ModularDistributionFactory(
 					javaSession, osgiDistribution);
 			mdf.run();
+
+			// TODO why is the created distribution not automatically indexed?
+			// osgiFactory.indexNode(node);
 			// javaSession.save();
 
-			// osgiFactory.indexNode(node);
 			// Node artifact = createDistributionArtifact(javaSession,
 			// osgiDistribution);
 

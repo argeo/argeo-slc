@@ -16,6 +16,7 @@
 package org.argeo.slc.repo;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 
@@ -97,24 +98,25 @@ public class ArtifactIndexer implements NodeIndexer, SlcNames {
 						md5.getBytes());
 			}
 
-			// Create a default pom only with artifact coordinates if none
-			// already exist
+			// Create a default pom if none already exist
 			String fileNodeName = fileNode.getName();
-			String pomName= null;
+			String pomName = null;
 			if (fileNodeName.endsWith(".jar"))
-				pomName = fileNodeName.substring(0, fileNodeName.length()-".jar".length()) + ".pom";
-			
+				pomName = fileNodeName.substring(0, fileNodeName.length()
+						- ".jar".length())
+						+ ".pom";
+
 			if (pomName != null && !fileNode.getParent().hasNode(pomName)) {
 				String pom = generatePomForBundle(fileNode);
 				Node pomNode = JcrUtils.copyBytesAsFile(fileNode.getParent(),
 						pomName, pom.getBytes());
 				// corresponding check sums
 				String sha = JcrUtils.checksumFile(pomNode, "SHA-1");
-				JcrUtils.copyBytesAsFile(fileNode.getParent(), pomName +  ".sha1",						
-						sha.getBytes());
+				JcrUtils.copyBytesAsFile(fileNode.getParent(), pomName
+						+ ".sha1", sha.getBytes());
 				String md5 = JcrUtils.checksumFile(fileNode, "MD5");
-				JcrUtils.copyBytesAsFile(fileNode.getParent(), pomName +".md5",
-						md5.getBytes());
+				JcrUtils.copyBytesAsFile(fileNode.getParent(),
+						pomName + ".md5", md5.getBytes());
 			}
 
 			// set higher levels
@@ -182,20 +184,19 @@ public class ArtifactIndexer implements NodeIndexer, SlcNames {
 
 	private String generatePomForBundle(Node n) throws RepositoryException {
 		StringBuffer p = new StringBuffer();
-
-		// XML header
 		p.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		p.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
 		p.append("<modelVersion>4.0.0</modelVersion>");
 
-		// Artifact
+		// Categorized name version
 		p.append("<groupId>").append(JcrUtils.get(n, SLC_GROUP_ID))
 				.append("</groupId>\n");
 		p.append("<artifactId>").append(JcrUtils.get(n, SLC_ARTIFACT_ID))
 				.append("</artifactId>\n");
 		p.append("<version>").append(JcrUtils.get(n, SLC_ARTIFACT_VERSION))
 				.append("</version>\n");
-		p.append("<packaging>pom</packaging>\n");
+		// TODO make it more generic
+		p.append("<packaging>jar</packaging>\n");
 		if (n.hasProperty(SLC_ + Constants.BUNDLE_NAME))
 			p.append("<name>")
 					.append(JcrUtils.get(n, SLC_ + Constants.BUNDLE_NAME))
@@ -205,7 +206,66 @@ public class ArtifactIndexer implements NodeIndexer, SlcNames {
 					.append(JcrUtils
 							.get(n, SLC_ + Constants.BUNDLE_DESCRIPTION))
 					.append("</description>\n");
+
+		// Dependencies in case of a distribution
+		if (n.isNodeType(SlcTypes.SLC_MODULAR_DISTRIBUTION)) {
+			p.append(getDependenciesSnippet(n.getNode(SlcNames.SLC_MODULES)
+					.getNodes()));
+			p.append(getDependencyManagementSnippet(n.getNode(
+					SlcNames.SLC_MODULES).getNodes()));
+		}
 		p.append("</project>\n");
 		return p.toString();
+	}
+
+	private String getDependenciesSnippet(NodeIterator nit)
+			throws RepositoryException {
+		StringBuilder b = new StringBuilder();
+		b.append("<dependencies>\n");
+		while (nit.hasNext()) {
+			Node currModule = nit.nextNode();
+			if (currModule.isNodeType(SlcTypes.SLC_MODULE_COORDINATES)) {
+				b.append(getDependencySnippet(
+						currModule.getProperty(SlcNames.SLC_CATEGORY)
+								.getString(),
+						currModule.getProperty(SlcNames.SLC_NAME).getString(),
+						null));
+			}
+		}
+		b.append("</dependencies>\n");
+		return b.toString();
+	}
+
+	private String getDependencyManagementSnippet(NodeIterator nit)
+			throws RepositoryException {
+		StringBuilder b = new StringBuilder();
+		b.append("<dependencyManagement>\n");
+		b.append("<dependencies>\n");
+		while (nit.hasNext()) {
+			Node currModule = nit.nextNode();
+			if (currModule.isNodeType(SlcTypes.SLC_MODULE_COORDINATES)) {
+				b.append(getDependencySnippet(
+						currModule.getProperty(SlcNames.SLC_CATEGORY)
+								.getString(),
+						currModule.getProperty(SlcNames.SLC_NAME).getString(),
+						currModule.getProperty(SlcNames.SLC_VERSION)
+								.getString()));
+			}
+		}
+		b.append("</dependencies>\n");
+		b.append("</dependencyManagement>\n");
+		return b.toString();
+	}
+
+	private String getDependencySnippet(String category, String name,
+			String version) {
+		StringBuilder b = new StringBuilder();
+		b.append("<dependency>\n");
+		b.append("\t<groupId>").append(category).append("</groupId>\n");
+		b.append("\t<artifactId>").append(name).append("</artifactId>\n");
+		if (version != null)
+			b.append("\t<version>").append(version).append("</version>\n");
+		b.append("</dependency>\n");
+		return b.toString();
 	}
 }
