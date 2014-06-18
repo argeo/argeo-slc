@@ -29,7 +29,7 @@ public abstract class FreeLicense implements License {
 			"http://www.apache.org/licenses/", RESOURCES + "apache-2.0.txt") {
 	};
 
-	public final static FreeLicense EPEL_v1 = new FreeLicense(
+	public final static FreeLicense EPL_v1 = new FreeLicense(
 			"Eclipse Public License, Version 1.0",
 			"http://www.eclipse.org/legal/epl-v10.html",
 			"http://www.eclipse.org/legal/eplfaq.php", RESOURCES
