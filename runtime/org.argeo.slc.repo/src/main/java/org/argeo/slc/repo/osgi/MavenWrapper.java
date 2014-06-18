@@ -8,12 +8,16 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.DefaultNameVersion;
+import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.RepoUtils;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 public class MavenWrapper extends BndWrapper implements Runnable {
 	private final static Log log = LogFactory.getLog(MavenWrapper.class);
@@ -34,10 +38,9 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 		try {
 			distSession = osgiFactory.openDistSession();
 			javaSession = osgiFactory.openJavaSession();
-			Node sourceArtifact = osgiFactory.getMaven(distSession,
-					sourceCoords);
+			Node origArtifact = osgiFactory.getMaven(distSession, sourceCoords);
 
-			in = sourceArtifact.getNode(Node.JCR_CONTENT)
+			in = origArtifact.getNode(Node.JCR_CONTENT)
 					.getProperty(Property.JCR_DATA).getBinary().getStream();
 			out = new ByteArrayOutputStream();
 			wrapJar(in, out);
@@ -46,6 +49,25 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 							getArtifact(), out.toByteArray());
 			osgiFactory.indexNode(newJarNode);
 			newJarNode.getSession().save();
+
+			// sources
+			try {
+				Node sourcesArtifact = osgiFactory.getMaven(distSession,
+						sourceCoords + ":sources");
+				IOUtils.closeQuietly(in);
+				in = origArtifact.getNode(Node.JCR_CONTENT)
+						.getProperty(Property.JCR_DATA).getBinary().getStream();
+				byte[] pdeSource = RepoUtils.packageAsPdeSource(in,
+						new DefaultNameVersion(getName(), getVersion()));
+				Node pdeSourceNode = RepoUtils.copyBytesAsArtifact(javaSession
+						.getRootNode(), new DefaultArtifact(getCategory(),
+						getName() + ".source", "jar", getVersion()), pdeSource);
+				osgiFactory.indexNode(pdeSourceNode);
+				pdeSourceNode.getSession().save();
+			} catch (SlcException e) {
+				// no sources available
+			}
+
 			if (log.isDebugEnabled())
 				log.debug("Wrapped Maven " + sourceCoords + " to "
 						+ newJarNode.getPath());

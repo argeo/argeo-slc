@@ -128,6 +128,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 										wrapper.getName() + ".source", "jar",
 										wrapper.getVersion()), pdeSource);
 						osgiFactory.indexNode(pdeSourceNode);
+						pdeSourceNode.getSession().save();
 					}
 				} else if (baseName.endsWith(".source")) {
 					// TODO Eclipse source already available
