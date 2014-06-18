@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.build.Distribution;
+import org.argeo.slc.build.License;
 import org.osgi.framework.Version;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -26,8 +27,10 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 
 	private String groupId;
 	private String name;
-	private String version;
 	private Properties bndProperties = new Properties();
+
+	private String version;
+	private License license;
 
 	private Boolean doNotModify = false;
 
@@ -42,6 +45,7 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 
 			Version versionToUse;
 			if (sourceManifest != null) {
+				// Symbolic name
 				String sourceSymbolicName = sourceManifest.getMainAttributes()
 						.getValue(BUNDLE_SYMBOLICNAME);
 				if (sourceSymbolicName != null
@@ -51,6 +55,7 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 							+ ") is not consistant with the wrapped bundle symbolic name ("
 							+ sourceSymbolicName + ")");
 
+				// Version
 				String sourceVersion = sourceManifest.getMainAttributes()
 						.getValue(BUNDLE_VERSION);
 				if (version == null && sourceVersion == null) {
@@ -85,6 +90,21 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 				properties.setProperty(BUNDLE_SYMBOLICNAME, name);
 				properties.setProperty(BUNDLE_VERSION, versionToUse.toString());
 
+				// License
+				if (license != null) {
+					StringBuilder sb = new StringBuilder(license.getUri());
+					if (license.getName() != null)
+						sb.append(';').append("description=")
+								.append(license.getName());
+					if (license.getLink() != null)
+						sb.append(';').append("link=")
+								.append(license.getLink());
+					properties.setProperty(BUNDLE_LICENSE, sb.toString());
+					// TODO add LICENSE.TXT
+				} else {
+					log.warn("No license set for " + toString());
+				}
+
 				// b.addIncluded(jarFile);
 				b.addClasspath(jar);
 
@@ -108,6 +128,8 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 	}
 
 	public void setFactory(Runnable factory) {
+		if (this.factory != null)
+			throw new SlcException("Factory already set on " + name);
 		this.factory = factory;
 	}
 
@@ -120,11 +142,24 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 	}
 
 	public void setVersion(String version) {
+		if (this.version != null)
+			throw new SlcException("Version already set on " + name + " ("
+					+ this.version + ")");
 		this.version = version;
 	}
 
 	public String getVersion() {
 		return version;
+	}
+
+	public License getLicense() {
+		return license;
+	}
+
+	public void setLicense(License license) {
+		if (this.license != null)
+			throw new SlcException("License already set on " + name);
+		this.license = license;
 	}
 
 	public Properties getBndProperties() {

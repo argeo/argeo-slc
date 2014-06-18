@@ -28,6 +28,7 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.build.Distribution;
+import org.argeo.slc.build.License;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.RepoUtils;
 import org.sonatype.aether.artifact.Artifact;
@@ -45,6 +46,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 	private OsgiFactory osgiFactory;
 	private String version;
+	private License license;
 
 	private String uri;
 
@@ -59,12 +61,13 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 	private Boolean mavenGroupIndexes = false;
 
 	public void init() {
-		if (version != null)
-			for (BndWrapper wrapper : wrappers.values()) {
-				if (wrapper.getVersion() == null)
-					wrapper.setVersion(version);
-				wrapper.setFactory(this);
-			}
+		for (BndWrapper wrapper : wrappers.values()) {
+			wrapper.setFactory(this);
+			if (version != null && wrapper.getVersion() == null)
+				wrapper.setVersion(version);
+			if (license != null && wrapper.getLicense() == null)
+				wrapper.setLicense(license);
+		}
 	}
 
 	public void destroy() {
@@ -265,6 +268,10 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public void setLicense(License license) {
+		this.license = license;
 	}
 
 	public void setPathMatcher(PathMatcher pathMatcher) {
