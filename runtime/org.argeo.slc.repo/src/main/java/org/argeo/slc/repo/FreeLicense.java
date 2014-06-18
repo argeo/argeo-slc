@@ -11,6 +11,7 @@ import org.argeo.slc.build.License;
 public abstract class FreeLicense implements License {
 	final static String RESOURCES = "/org/argeo/slc/repo/license/";
 
+	/** GNU */
 	public final static FreeLicense GPL_v3 = new FreeLicense(
 			"GNU General Public License, version 3.0",
 			"http://www.gnu.org/licenses/gpl-3.0.txt",
@@ -22,23 +23,7 @@ public abstract class FreeLicense implements License {
 			"http://www.gnu.org/licenses/gpl-2.0.txt",
 			"http://www.gnu.org/licenses/", RESOURCES + "gpl-2.0.txt") {
 	};
-
-	public final static FreeLicense APACHE_v2 = new FreeLicense(
-			"Apache License, Version 2.0",
-			"http://www.apache.org/licenses/LICENSE-2.0.txt",
-			"http://www.apache.org/licenses/", RESOURCES + "apache-2.0.txt") {
-	};
-
-	public final static FreeLicense EPL_v1 = new FreeLicense(
-			"Eclipse Public License, Version 1.0",
-			"http://www.eclipse.org/legal/epl-v10.html",
-			"http://www.eclipse.org/legal/eplfaq.php", RESOURCES
-					+ "epel-1.0.txt") {
-	};
-
-	public final static FreeLicense MIT = new FreeLicense("The MIT License",
-			"http://opensource.org/licenses/MIT", null, RESOURCES + "mit.txt") {
-	};
+	public final static FreeLicense GPL = GPL_v3;
 
 	public final static FreeLicense LGPL_v3 = new FreeLicense(
 			"GNU Lesser General Public License, version 3.0",
@@ -50,6 +35,56 @@ public abstract class FreeLicense implements License {
 			"GNU Lesser General Public License, version 2.1",
 			"http://www.gnu.org/licenses/lgpl-2.1.txt",
 			"http://www.gnu.org/licenses/", RESOURCES + "lgpl-2.1.txt") {
+	};
+	public final static FreeLicense LGPL = LGPL_v3;
+
+	/** Apache */
+	public final static FreeLicense APACHE_v2 = new FreeLicense(
+			"Apache License, Version 2.0",
+			"http://www.apache.org/licenses/LICENSE-2.0.txt",
+			"http://www.apache.org/licenses/", RESOURCES + "apache-2.0.txt") {
+	};
+	public final static FreeLicense APACHE = APACHE_v2;
+
+	/** Eclipse */
+	public final static FreeLicense EPL_v1 = new FreeLicense(
+			"Eclipse Public License, Version 1.0",
+			"http://www.eclipse.org/legal/epl-v10.html",
+			"http://www.eclipse.org/legal/eplfaq.php", RESOURCES
+					+ "epl-1.0.txt") {
+	};
+	public final static FreeLicense EPL = EPL_v1;
+
+	/** Miscellaneous */
+	public final static FreeLicense MIT = new FreeLicense("The MIT License",
+			"http://opensource.org/licenses/MIT", null, RESOURCES + "mit.txt") {
+	};
+
+	public final static FreeLicense CDDL_v1 = new FreeLicense(
+			"Common Development and Distribution License",
+			"http://opensource.org/licenses/CDDL-1.0", null, RESOURCES
+					+ "cddl-1.0.txt") {
+	};
+	public final static FreeLicense CDDL = CDDL_v1;
+
+	/** Public domain corner case */
+	public final static License PUBLIC_DOMAIN = new License() {
+
+		public String getUri() {
+			return "http://creativecommons.org/about/pdm";
+		}
+
+		public String getText() {
+			return "This work is free of known copyright restrictions.";
+		}
+
+		public String getName() {
+			return "Public Domain License";
+		}
+
+		public String getLink() {
+			return "http://wiki.creativecommons.org/PDM_FAQ";
+		}
 	};
 
 	private final String name, uri, link, resource;
