@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.logging.Log;
@@ -25,6 +24,8 @@ public class UriWrapper extends BndWrapper implements Runnable {
 
 	private OsgiFactory osgiFactory;
 
+	// private SourcesProvider sourcesProvider;
+
 	public UriWrapper() {
 		setFactory(this);
 	}
@@ -34,6 +35,7 @@ public class UriWrapper extends BndWrapper implements Runnable {
 		Session javaSession = null;
 		InputStream in;
 		ByteArrayOutputStream out;
+		// Jar jar = null;
 		try {
 			distSession = osgiFactory.openDistSession();
 			javaSession = osgiFactory.openJavaSession();
@@ -55,11 +57,41 @@ public class UriWrapper extends BndWrapper implements Runnable {
 			newJarNode.getSession().save();
 			if (log.isDebugEnabled())
 				log.debug("Wrapped " + uri + " to " + newJarNode.getPath());
-		} catch (RepositoryException e) {
-			throw new SlcException("Cannot wrap Maven " + uri, e);
+
+			// sources
+			// if (sourcesProvider != null) {
+			// IOUtils.closeQuietly(in);
+			// in = new ByteArrayInputStream(out.toByteArray());
+			// jar = new Jar(null, in);
+			// List<String> packages = jar.getPackages();
+			//
+			// IOUtils.closeQuietly(out);
+			// out = new ByteArrayOutputStream();
+			// sourcesProvider
+			// .writeSources(packages, new ZipOutputStream(out));
+			//
+			// IOUtils.closeQuietly(in);
+			// in = new ByteArrayInputStream(out.toByteArray());
+			// byte[] sourcesJar = RepoUtils.packageAsPdeSource(in,
+			// new DefaultNameVersion(this));
+			// Artifact sourcesArtifact = new DefaultArtifact(getArtifact()
+			// .getGroupId(), getArtifact().getArtifactId()
+			// + ".source", "jar", getArtifact().getVersion());
+			// Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(
+			// javaSession.getRootNode(), sourcesArtifact, sourcesJar);
+			// sourcesJarNode.getSession().save();
+			//
+			// if (log.isDebugEnabled())
+			// log.debug("Added sources " + sourcesArtifact
+			// + " for bundle " + getArtifact());
+			// }
+		} catch (Exception e) {
+			throw new SlcException("Cannot wrap URI " + uri, e);
 		} finally {
 			JcrUtils.logoutQuietly(distSession);
 			JcrUtils.logoutQuietly(javaSession);
+			// if (jar != null)
+			// jar.close();
 		}
 	}
 

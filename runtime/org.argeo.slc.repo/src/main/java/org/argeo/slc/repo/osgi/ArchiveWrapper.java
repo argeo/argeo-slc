@@ -2,6 +2,7 @@ package org.argeo.slc.repo.osgi;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +12,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
@@ -36,6 +38,8 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
+import aQute.lib.osgi.Jar;
+
 /**
  * Download a software distribution and generates the related OSGi bundles from
  * the jars, or import them directly if they are already OSGi bundles and don't
@@ -52,6 +56,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 	/** Jars to wrap as OSGi bundles */
 	private Map<String, BndWrapper> wrappers = new HashMap<String, BndWrapper>();
+
+	private SourcesProvider sourcesProvider;
 
 	// pattern of OSGi bundles to import
 	private PathMatcher pathMatcher = new AntPathMatcher();
@@ -205,6 +211,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 		ByteArrayOutputStream out = null;
 		ByteArrayInputStream in = null;
 		Node newJarNode;
+		Jar jar = null;
 		try {
 			out = new ByteArrayOutputStream((int) zentry.getSize());
 			in = new ByteArrayInputStream(sourceJarBytes);
@@ -218,10 +225,43 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			if (log.isDebugEnabled())
 				log.debug("Wrapped jar " + zentry.getName() + " to "
 						+ newJarNode.getPath());
+
+			// sources
+			if (sourcesProvider != null) {
+				IOUtils.closeQuietly(in);
+				in = new ByteArrayInputStream(out.toByteArray());
+				jar = new Jar(null, in);
+				List<String> packages = jar.getPackages();
+
+				IOUtils.closeQuietly(out);
+				out = new ByteArrayOutputStream();
+				sourcesProvider
+						.writeSources(packages, new ZipOutputStream(out));
+
+				IOUtils.closeQuietly(in);
+				in = new ByteArrayInputStream(out.toByteArray());
+				byte[] sourcesJar = RepoUtils.packageAsPdeSource(in,
+						new DefaultNameVersion(wrapper));
+				Artifact sourcesArtifact = new DefaultArtifact(
+						artifact.getGroupId(), artifact.getArtifactId()
+								+ ".source", "jar", artifact.getVersion());
+				Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(
+						javaSession.getRootNode(), sourcesArtifact, sourcesJar);
+				sourcesJarNode.getSession().save();
+
+				if (log.isDebugEnabled())
+					log.debug("Added sources " + sourcesArtifact
+							+ " for bundle " + artifact);
+			}
+
 			return artifact;
+		} catch (IOException e) {
+			throw new SlcException("Cannot open jar", e);
 		} finally {
 			IOUtils.closeQuietly(in);
 			IOUtils.closeQuietly(out);
+			if (jar != null)
+				jar.close();
 		}
 	}
 
@@ -289,6 +329,10 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 	public void setMavenGroupIndexes(Boolean mavenGroupIndexes) {
 		this.mavenGroupIndexes = mavenGroupIndexes;
+	}
+
+	public void setSourcesProvider(SourcesProvider sourcesProvider) {
+		this.sourcesProvider = sourcesProvider;
 	}
 
 }
