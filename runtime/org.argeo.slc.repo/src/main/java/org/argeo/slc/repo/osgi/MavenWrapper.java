@@ -38,7 +38,13 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 		try {
 			distSession = osgiFactory.openDistSession();
 			javaSession = osgiFactory.openJavaSession();
-			Node origArtifact = osgiFactory.getMaven(distSession, sourceCoords);
+			Node origArtifact;
+			try {
+				origArtifact = osgiFactory.getMaven(distSession, sourceCoords);
+			} catch (Exception e1) {
+				origArtifact = osgiFactory.getMaven(distSession, sourceCoords
+						+ ":" + getVersion());
+			}
 
 			in = origArtifact.getNode(Node.JCR_CONTENT)
 					.getProperty(Property.JCR_DATA).getBinary().getStream();

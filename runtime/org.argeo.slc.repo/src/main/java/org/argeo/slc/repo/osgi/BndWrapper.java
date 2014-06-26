@@ -49,7 +49,7 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 				String sourceSymbolicName = sourceManifest.getMainAttributes()
 						.getValue(BUNDLE_SYMBOLICNAME);
 				if (sourceSymbolicName != null
-						&& sourceSymbolicName.equals(name))
+						&& !sourceSymbolicName.equals(name))
 					log.warn("The new symbolic name ("
 							+ name
 							+ ") is not consistant with the wrapped bundle symbolic name ("

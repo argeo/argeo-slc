@@ -119,7 +119,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 				if (baseName.endsWith("-sources")) {
 					String bundle = baseName.substring(0, baseName.length()
 							- "-sources".length());
-					log.debug(name + "," + baseName + ", " + bundle);
+					// log.debug(name + "," + baseName + ", " + bundle);
 					String bundlePath = FilenameUtils.getPath(name) + bundle
 							+ ".jar";
 					if (wrappers.containsKey(bundlePath)) {
@@ -196,6 +196,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 				}
 			}
 
+			// FIXME Fail if not all wrappers matched
 		} catch (Exception e) {
 			throw new SlcException("Cannot wrap distribution " + uri, e);
 		} finally {

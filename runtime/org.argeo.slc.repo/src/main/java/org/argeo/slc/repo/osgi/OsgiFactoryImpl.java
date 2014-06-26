@@ -228,4 +228,12 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 		this.mirrors = mirrors;
 	}
 
+	public void setMavenRepositories(List<String> mavenRepositories) {
+		this.mavenRepositories = mavenRepositories;
+	}
+
+	public void setMavenProxyBase(String mavenProxyBase) {
+		this.mavenProxyBase = mavenProxyBase;
+	}
+
 }
