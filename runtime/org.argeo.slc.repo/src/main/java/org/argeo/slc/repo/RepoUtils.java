@@ -200,7 +200,8 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			jarOut = new JarOutputStream(out, manifest);
 			JarEntry jarEntry = null;
 			while ((jarEntry = jarIn.getNextJarEntry()) != null) {
-				jarOut.putNextEntry(jarEntry);
+				JarEntry newJarEntry = new JarEntry(jarEntry.getName());
+				jarOut.putNextEntry(newJarEntry);
 				IOUtils.copy(jarIn, jarOut);
 				jarIn.closeEntry();
 				jarOut.closeEntry();
