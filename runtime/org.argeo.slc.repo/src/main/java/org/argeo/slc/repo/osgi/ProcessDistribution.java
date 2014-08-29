@@ -72,8 +72,8 @@ public class ProcessDistribution implements Runnable {
 				log.warn("Skip unsupported   : " + nv);
 			}
 		} else {
-			if (log.isDebugEnabled())
-				log.debug("Already available : " + nv);
+			if (log.isTraceEnabled())
+				log.trace("Already available : " + nv);
 		}
 	}
 
