@@ -31,16 +31,24 @@ import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.GenericTableComparator;
 import org.eclipse.jface.viewers.Viewer;
 
-public class NodeViewerComparator extends GenericTableComparator {
+/** Add ability to order by name version and version */
+public class DistNodeViewerComparator extends GenericTableComparator {
 	private final static Log log = LogFactory
-			.getLog(NodeViewerComparator.class);
+			.getLog(DistNodeViewerComparator.class);
+
+	// Jcr property type goes to 12
+	public final static int NAME_VERSION_TYPE = 100;
+	public final static int VERSION_TYPE = 101;
 
 	protected List<String> propertiesList;
 	protected List<Integer> propertyTypesList;
 	protected Integer propertyType;
 	protected String property;
 
-	public NodeViewerComparator(int defaultColIndex, int defaultDirection,
+	private NameVersionComparator nvc = new NameVersionComparator();
+	private VersionComparator vc = new VersionComparator();
+
+	public DistNodeViewerComparator(int defaultColIndex, int defaultDirection,
 			List<String> propertiesList, List<Integer> propertyTypesList) {
 		super(defaultColIndex, defaultDirection);
 		this.propertiesList = propertiesList;
@@ -75,6 +83,12 @@ public class NodeViewerComparator extends GenericTableComparator {
 				return 1;
 
 			switch (propertyType) {
+			case NAME_VERSION_TYPE:
+				rc = nvc.compare(viewer, v1.getString(), v2.getString());
+				break;
+			case VERSION_TYPE:
+				rc = vc.compare(viewer, v1.getString(), v2.getString());
+				break;
 			case PropertyType.STRING:
 				rc = v1.getString().compareTo(v2.getString());
 				break;
@@ -105,7 +119,7 @@ public class NodeViewerComparator extends GenericTableComparator {
 			case PropertyType.LONG:
 				long l1;
 				long l2;
-				// FIXME sometimes an empty string is set instead of the id 
+				// FIXME sometimes an empty string is set instead of the id
 				try {
 					l1 = v1.getLong();
 				} catch (ValueFormatException ve) {

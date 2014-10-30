@@ -5,11 +5,16 @@ import org.argeo.slc.client.ui.dist.model.ModularDistVersionElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
+import org.argeo.slc.client.ui.dist.utils.NameVersionComparator;
+import org.argeo.slc.client.ui.dist.utils.VersionComparator;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 
 /** Specific comparator to enhance Distribution tree browsers */
 public class DistTreeComparator extends ViewerComparator {
+
+	private VersionComparator vc = new VersionComparator();
+	private NameVersionComparator nvc = new NameVersionComparator();
 
 	public int category(Object element) {
 		if (element instanceof RepoElem)
@@ -44,9 +49,12 @@ public class DistTreeComparator extends ViewerComparator {
 			s2 = e2.toString();
 		}
 
-		if (e1 instanceof WorkspaceElem || e1 instanceof ModularDistVersionElem)
+		if (e1 instanceof WorkspaceElem)
+			// Reverse order for nameversions
+			return nvc.compare(viewer, s2, s1);
+		else if (e1 instanceof ModularDistVersionElem)
 			// Reverse order for versions
-			return s2.compareTo(s1);
+			return vc.compare(viewer, s2, s1);
 		else
 			return s1.compareTo(s2);
 	}

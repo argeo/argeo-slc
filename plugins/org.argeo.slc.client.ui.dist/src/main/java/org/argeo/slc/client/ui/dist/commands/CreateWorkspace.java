@@ -96,8 +96,9 @@ public class CreateWorkspace extends AbstractHandler {
 					count++;
 			}
 
-			if (log.isDebugEnabled())
-				log.debug("Count " + count);
+			if (log.isTraceEnabled())
+				log.trace("Translated workspace name length: " + count
+						+ " (name: " + enteredName + " )");
 
 			if (count > 60) {
 				ErrorFeedback.show("Workspace name '" + enteredName

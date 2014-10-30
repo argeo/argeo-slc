@@ -43,7 +43,7 @@ import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
 import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
-import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
+import org.argeo.slc.client.ui.dist.utils.DistNodeViewerComparator;
 import org.argeo.slc.client.ui.specific.OpenJcrFile;
 import org.argeo.slc.client.ui.specific.OpenJcrFileCmdId;
 import org.argeo.slc.jcr.SlcNames;
@@ -100,7 +100,7 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 	// private Node modularDistributionBase;
 
 	// This page widgets
-	private NodeViewerComparator comparator;
+	private DistNodeViewerComparator comparator;
 	private TableViewer viewer;
 	private FormToolkit tk;
 	private Text filterTxt;
@@ -391,7 +391,7 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		});
 		col.getColumn().addSelectionListener(getSelectionAdapter(2));
 		propertiesList.add(SLC_VERSION);
-		propertyTypesList.add(PropertyType.STRING);
+		propertyTypesList.add(DistNodeViewerComparator.VERSION_TYPE);
 
 		// Exists in workspace
 		col = new TableViewerColumn(viewer, SWT.NONE);
@@ -415,8 +415,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		viewer.setContentProvider(new DistributionsContentProvider());
 		getSite().setSelectionProvider(viewer);
 
-		comparator = new NodeViewerComparator(2,
-				NodeViewerComparator.ASCENDING, propertiesList,
+		comparator = new DistNodeViewerComparator(2,
+				DistNodeViewerComparator.ASCENDING, propertiesList,
 				propertyTypesList);
 		viewer.setComparator(comparator);
 

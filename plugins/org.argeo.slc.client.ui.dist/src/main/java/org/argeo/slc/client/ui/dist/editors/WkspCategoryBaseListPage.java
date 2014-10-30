@@ -44,7 +44,7 @@ import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard;
 import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
-import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
+import org.argeo.slc.client.ui.dist.utils.DistNodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
@@ -94,7 +94,7 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 	private Session session;
 
 	// This page widgets
-	private NodeViewerComparator comparator;
+	private DistNodeViewerComparator comparator;
 	private TableViewer viewer;
 	private FormToolkit tk;
 	private Text filterTxt;
@@ -309,8 +309,8 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		viewer.setContentProvider(new DistributionsContentProvider());
 		getSite().setSelectionProvider(viewer);
 
-		comparator = new NodeViewerComparator(0,
-				NodeViewerComparator.ASCENDING, propertiesList,
+		comparator = new DistNodeViewerComparator(0,
+				DistNodeViewerComparator.ASCENDING, propertiesList,
 				propertyTypesList);
 		viewer.setComparator(comparator);
 

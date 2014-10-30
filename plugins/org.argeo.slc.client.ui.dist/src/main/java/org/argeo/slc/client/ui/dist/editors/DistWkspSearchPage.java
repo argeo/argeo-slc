@@ -48,7 +48,7 @@ import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
 import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
-import org.argeo.slc.client.ui.dist.utils.NodeViewerComparator;
+import org.argeo.slc.client.ui.dist.utils.DistNodeViewerComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -102,7 +102,7 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 	private DistWorkspaceEditor formEditor;
 	private FormToolkit tk;
 
-	private NodeViewerComparator comparator;
+	private DistNodeViewerComparator comparator;
 	private TableViewer viewer;
 
 	// private Composite header;
@@ -410,7 +410,7 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		});
 		col.getColumn().addSelectionListener(getSelectionAdapter(2));
 		propertiesList.add(SLC_BUNDLE_VERSION);
-		propertyTypesList.add(PropertyType.STRING);
+		propertyTypesList.add(DistNodeViewerComparator.VERSION_TYPE);
 
 		final Table table = viewer.getTable();
 		table.setHeaderVisible(true);
@@ -419,8 +419,8 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		viewer.setContentProvider(new DistributionsContentProvider());
 		getSite().setSelectionProvider(viewer);
 
-		comparator = new NodeViewerComparator(2,
-				NodeViewerComparator.ASCENDING, propertiesList,
+		comparator = new DistNodeViewerComparator(2,
+				DistNodeViewerComparator.ASCENDING, propertiesList,
 				propertyTypesList);
 		viewer.setComparator(comparator);
 
