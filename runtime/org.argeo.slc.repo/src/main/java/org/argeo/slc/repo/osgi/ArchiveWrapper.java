@@ -2,7 +2,7 @@ package org.argeo.slc.repo.osgi;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.jar.JarInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -24,6 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
@@ -85,7 +87,55 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 	}
 
 	public Iterator<? extends NameVersion> nameVersions() {
-		return wrappers.values().iterator();
+		if (wrappers.size() > 0)
+			return wrappers.values().iterator();
+		else
+			return osgiNameVersions();
+	}
+
+	@SuppressWarnings("resource")
+	protected Iterator<? extends NameVersion> osgiNameVersions() {
+		List<CategorizedNameVersion> nvs = new ArrayList<CategorizedNameVersion>();
+
+		Session distSession = null;
+		ZipInputStream zin = null;
+		try {
+			distSession = osgiFactory.openDistSession();
+
+			Node distNode = osgiFactory.getDist(distSession, uri);
+			zin = new ZipInputStream(distNode.getNode(Node.JCR_CONTENT)
+					.getProperty(Property.JCR_DATA).getBinary().getStream());
+
+			ZipEntry zentry = null;
+			entries: while ((zentry = zin.getNextEntry()) != null) {
+				String name = zentry.getName();
+				// log.debug(name);
+				for (String exclude : excludes)
+					if (pathMatcher.match(exclude, name))
+						continue entries;
+
+				for (String include : includes.keySet()) {
+					if (pathMatcher.match(include, name)) {
+						String groupId = includes.get(include);
+						JarInputStream jis = new JarInputStream(zin);
+						NameVersion nv = RepoUtils.readNameVersion(jis
+								.getManifest());
+						if (nv != null) {
+							CategorizedNameVersion cnv = new OsgiCategorizedNV(
+									groupId, nv.getName(), nv.getVersion(),
+									this);
+							nvs.add(cnv);
+						}
+					}
+				}
+			}
+			return nvs.iterator();
+		} catch (Exception e) {
+			throw new SlcException("Cannot wrap distribution " + uri, e);
+		} finally {
+			IOUtils.closeQuietly(zin);
+			JcrUtils.logoutQuietly(distSession);
+		}
 	}
 
 	public void run() {
@@ -177,6 +227,10 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 							byte[] sourceJarBytes = IOUtils.toByteArray(zin);
 							Artifact artifact = importZipEntry(javaSession,
 									zentry, sourceJarBytes, groupId);
+							if (artifact == null) {
+								log.warn("Skipped non identified " + zentry);
+								continue entries;
+							}
 							if (artifact.getArtifactId().endsWith(".source"))
 								addArtifactToIndex(sources, groupId, artifact);
 							else
@@ -227,37 +281,50 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 				log.debug("Wrapped jar " + zentry.getName() + " to "
 						+ newJarNode.getPath());
 
-			// sources
-			if (sourcesProvider != null) {
-				IOUtils.closeQuietly(in);
-				in = new ByteArrayInputStream(out.toByteArray());
-				jar = new Jar(null, in);
-				List<String> packages = jar.getPackages();
-
-				IOUtils.closeQuietly(out);
-				out = new ByteArrayOutputStream();
-				sourcesProvider
-						.writeSources(packages, new ZipOutputStream(out));
-
-				IOUtils.closeQuietly(in);
-				in = new ByteArrayInputStream(out.toByteArray());
-				byte[] sourcesJar = RepoUtils.packageAsPdeSource(in,
-						new DefaultNameVersion(wrapper));
-				Artifact sourcesArtifact = new DefaultArtifact(
-						artifact.getGroupId(), artifact.getArtifactId()
-								+ ".source", "jar", artifact.getVersion());
-				Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(
-						javaSession.getRootNode(), sourcesArtifact, sourcesJar);
-				sourcesJarNode.getSession().save();
-
-				if (log.isDebugEnabled())
-					log.debug("Added sources " + sourcesArtifact
-							+ " for bundle " + artifact);
-			}
+			if (sourcesProvider != null)
+				addSource(javaSession, artifact, out.toByteArray());
 
 			return artifact;
-		} catch (IOException e) {
-			throw new SlcException("Cannot open jar", e);
+		} finally {
+			IOUtils.closeQuietly(in);
+			IOUtils.closeQuietly(out);
+			if (jar != null)
+				jar.close();
+		}
+	}
+
+	protected void addSource(Session javaSession, Artifact artifact,
+			byte[] jarBytes) {
+		InputStream in = null;
+		ByteArrayOutputStream out = null;
+		Jar jar = null;
+		try {
+			in = new ByteArrayInputStream(jarBytes);
+			jar = new Jar(null, in);
+			List<String> packages = jar.getPackages();
+
+			out = new ByteArrayOutputStream();
+			sourcesProvider.writeSources(packages, new ZipOutputStream(out));
+
+			IOUtils.closeQuietly(in);
+			in = new ByteArrayInputStream(out.toByteArray());
+			byte[] sourcesJar = RepoUtils.packageAsPdeSource(
+					in,
+					new DefaultNameVersion(artifact.getArtifactId(), artifact
+							.getVersion()));
+			Artifact sourcesArtifact = new DefaultArtifact(
+					artifact.getGroupId(),
+					artifact.getArtifactId() + ".source", "jar",
+					artifact.getVersion());
+			Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(
+					javaSession.getRootNode(), sourcesArtifact, sourcesJar);
+			sourcesJarNode.getSession().save();
+
+			if (log.isDebugEnabled())
+				log.debug("Added sources " + sourcesArtifact + " for bundle "
+						+ artifact);
+		} catch (Exception e) {
+			throw new SlcException("Cannot get sources for " + artifact, e);
 		} finally {
 			IOUtils.closeQuietly(in);
 			IOUtils.closeQuietly(out);
@@ -267,21 +334,28 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 	}
 
 	protected Artifact importZipEntry(Session javaSession, ZipEntry zentry,
-			byte[] sourceJarBytes, String groupId) throws RepositoryException {
+			byte[] jarBytes, String groupId) throws RepositoryException {
 		ByteArrayInputStream in = null;
 		Node newJarNode;
 		try {
-			in = new ByteArrayInputStream(sourceJarBytes);
+			in = new ByteArrayInputStream(jarBytes);
 			NameVersion nameVersion = RepoUtils.readNameVersion(in);
+			if (nameVersion == null) {
+				return null;
+			}
 			Artifact artifact = new DefaultArtifact(groupId,
 					nameVersion.getName(), "jar", nameVersion.getVersion());
 			newJarNode = RepoUtils.copyBytesAsArtifact(
-					javaSession.getRootNode(), artifact, sourceJarBytes);
+					javaSession.getRootNode(), artifact, jarBytes);
 			osgiFactory.indexNode(newJarNode);
 			newJarNode.getSession().save();
 			if (log.isDebugEnabled())
 				log.debug("Imported OSGi bundle " + zentry.getName() + " to "
 						+ newJarNode.getPath());
+
+			if (sourcesProvider != null)
+				addSource(javaSession, artifact, jarBytes);
+
 			return artifact;
 		} finally {
 			IOUtils.closeQuietly(in);

@@ -26,7 +26,7 @@ public class ArchiveSourcesProvider implements SourcesProvider {
 
 	private OsgiFactory osgiFactory;
 	private String uri;
-	private String base;
+	private String base = "";
 
 	@Override
 	public void writeSources(List<String> packages, ZipOutputStream zout) {

@@ -68,6 +68,8 @@ public class ProcessDistribution implements Runnable {
 				if (log.isDebugEnabled())
 					log.debug("Run factory for   : " + nv + "...");
 				((BndWrapper) nv).getFactory().run();
+			} else if (nv instanceof Runnable) {
+				((Runnable) nv).run();
 			} else {
 				log.warn("Skip unsupported   : " + nv);
 			}
