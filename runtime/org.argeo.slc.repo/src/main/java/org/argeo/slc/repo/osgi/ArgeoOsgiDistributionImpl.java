@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import javax.swing.text.StyledEditorKit.ItalicAction;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.ModuleSet;
@@ -73,19 +75,37 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements
 		List<NameVersion> nameVersions = new ArrayList<NameVersion>();
 		for (Object module : modules) {
 			// extract runnable from execution flow
-			if (module instanceof ExecutionFlow)
-				module = ((ExecutionFlow) module).getRunnable();
-
-			if (module instanceof ModuleSet)
-				addNameVersions(nameVersions, (ModuleSet) module);
-			else if (module instanceof NameVersion) {
-				NameVersion nv = (NameVersion) module;
-				if (!nameVersions.contains(nv))
-					nameVersions.add(nv);
-			} else
-				log.warn("Ignored " + module);
+			if (module instanceof ExecutionFlow) {
+				for (Iterator<Runnable> it = ((ExecutionFlow) module)
+						.runnables(); it.hasNext();) {
+					processModule(nameVersions, it.next());
+				}
+			}
+			// module = ((ExecutionFlow) module).getRunnable();
+			else {
+				processModule(nameVersions, module);
+			}
+			// if (module instanceof ModuleSet)
+			// addNameVersions(nameVersions, (ModuleSet) module);
+			// else if (module instanceof NameVersion) {
+			// NameVersion nv = (NameVersion) module;
+			// if (!nameVersions.contains(nv))
+			// nameVersions.add(nv);
+			// } else
+			// log.warn("Ignored " + module);
 		}
 		return nameVersions.iterator();
+	}
+
+	private void processModule(List<NameVersion> nameVersions, Object module) {
+		if (module instanceof ModuleSet)
+			addNameVersions(nameVersions, (ModuleSet) module);
+		else if (module instanceof NameVersion) {
+			NameVersion nv = (NameVersion) module;
+			if (!nameVersions.contains(nv))
+				nameVersions.add(nv);
+		} else
+			log.warn("Ignored " + module);
 	}
 
 	private void addNameVersions(List<NameVersion> nameVersions,
