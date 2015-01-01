@@ -155,6 +155,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 			if (log.isDebugEnabled())
 				log.debug("Wrapping " + uri);
+			boolean nothingWasDone = true;
 
 			Node distNode = osgiFactory.getDist(distSession, uri);
 			zin = new ZipInputStream(distNode.getNode(Node.JCR_CONTENT)
@@ -178,14 +179,21 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 								wrapper.getName(), wrapper.getVersion());
 						byte[] pdeSource = RepoUtils.packageAsPdeSource(zin,
 								bundleNv);
+						Artifact sourcesArtifact = new DefaultArtifact(
+								wrapper.getCategory(), wrapper.getName()
+										+ ".source", "jar",
+								wrapper.getVersion());
 						Node pdeSourceNode = RepoUtils.copyBytesAsArtifact(
-								javaSession.getRootNode(),
-								new DefaultArtifact(wrapper.getCategory(),
-										wrapper.getName() + ".source", "jar",
-										wrapper.getVersion()), pdeSource);
+								javaSession.getRootNode(), sourcesArtifact,
+								pdeSource);
 						osgiFactory.indexNode(pdeSourceNode);
 						pdeSourceNode.getSession().save();
+						if (log.isDebugEnabled())
+							log.debug("Added sources " + sourcesArtifact
+									+ " for bundle " + wrapper.getArtifact()
+									+ "from " + name + " in binary archive.");
 					}
+
 				} else if (baseName.endsWith(".source")) {
 					// TODO Eclipse source already available
 				}
@@ -194,9 +202,10 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 				if (wrappers.containsKey(name)) {
 					BndWrapper wrapper = (BndWrapper) wrappers.get(name);
 					// we must copy since the stream is closed by BND
-					byte[] sourceJarBytes = IOUtils.toByteArray(zin);
+					byte[] origJarBytes = IOUtils.toByteArray(zin);
 					Artifact artifact = wrapZipEntry(javaSession, zentry,
-							sourceJarBytes, wrapper);
+							origJarBytes, wrapper);
+					nothingWasDone = false;
 					addArtifactToIndex(binaries, wrapper.getGroupId(), artifact);
 				} else {
 					for (String wrapperKey : wrappers.keySet())
@@ -205,9 +214,10 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 							BndWrapper wrapper = (BndWrapper) wrappers
 									.get(wrapperKey);
 							// we must copy since the stream is closed by BND
-							byte[] sourceJarBytes = IOUtils.toByteArray(zin);
+							byte[] origJarBytes = IOUtils.toByteArray(zin);
 							Artifact artifact = wrapZipEntry(javaSession,
-									zentry, sourceJarBytes, wrapper);
+									zentry, origJarBytes, wrapper);
+							nothingWasDone = false;
 							addArtifactToIndex(binaries, wrapper.getGroupId(),
 									artifact);
 							continue entries;
@@ -231,6 +241,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 								log.warn("Skipped non identified " + zentry);
 								continue entries;
 							}
+							nothingWasDone = false;
 							if (artifact.getArtifactId().endsWith(".source"))
 								addArtifactToIndex(sources, groupId, artifact);
 							else
@@ -250,6 +261,9 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 				}
 			}
 
+			if (nothingWasDone)
+				throw new SlcException("Nothing was done");
+
 			// FIXME Fail if not all wrappers matched
 		} catch (Exception e) {
 			throw new SlcException("Cannot wrap distribution " + uri, e);
@@ -261,15 +275,14 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 	}
 
 	protected Artifact wrapZipEntry(Session javaSession, ZipEntry zentry,
-			byte[] sourceJarBytes, BndWrapper wrapper)
-			throws RepositoryException {
+			byte[] origJarBytes, BndWrapper wrapper) throws RepositoryException {
 		ByteArrayOutputStream out = null;
 		ByteArrayInputStream in = null;
 		Node newJarNode;
 		Jar jar = null;
 		try {
 			out = new ByteArrayOutputStream((int) zentry.getSize());
-			in = new ByteArrayInputStream(sourceJarBytes);
+			in = new ByteArrayInputStream(origJarBytes);
 			wrapper.wrapJar(in, out);
 
 			Artifact artifact = wrapper.getArtifact();
@@ -294,12 +307,12 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 	}
 
 	protected void addSource(Session javaSession, Artifact artifact,
-			byte[] jarBytes) {
+			byte[] binaryJarBytes) {
 		InputStream in = null;
 		ByteArrayOutputStream out = null;
 		Jar jar = null;
 		try {
-			in = new ByteArrayInputStream(jarBytes);
+			in = new ByteArrayInputStream(binaryJarBytes);
 			jar = new Jar(null, in);
 			List<String> packages = jar.getPackages();
 
@@ -322,7 +335,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 			if (log.isDebugEnabled())
 				log.debug("Added sources " + sourcesArtifact + " for bundle "
-						+ artifact);
+						+ artifact + "from source provider " + sourcesProvider);
 		} catch (Exception e) {
 			throw new SlcException("Cannot get sources for " + artifact, e);
 		} finally {
@@ -334,11 +347,11 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 	}
 
 	protected Artifact importZipEntry(Session javaSession, ZipEntry zentry,
-			byte[] jarBytes, String groupId) throws RepositoryException {
+			byte[] binaryJarBytes, String groupId) throws RepositoryException {
 		ByteArrayInputStream in = null;
 		Node newJarNode;
 		try {
-			in = new ByteArrayInputStream(jarBytes);
+			in = new ByteArrayInputStream(binaryJarBytes);
 			NameVersion nameVersion = RepoUtils.readNameVersion(in);
 			if (nameVersion == null) {
 				return null;
@@ -346,7 +359,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			Artifact artifact = new DefaultArtifact(groupId,
 					nameVersion.getName(), "jar", nameVersion.getVersion());
 			newJarNode = RepoUtils.copyBytesAsArtifact(
-					javaSession.getRootNode(), artifact, jarBytes);
+					javaSession.getRootNode(), artifact, binaryJarBytes);
 			osgiFactory.indexNode(newJarNode);
 			newJarNode.getSession().save();
 			if (log.isDebugEnabled())
@@ -354,7 +367,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 						+ newJarNode.getPath());
 
 			if (sourcesProvider != null)
-				addSource(javaSession, artifact, jarBytes);
+				addSource(javaSession, artifact, binaryJarBytes);
 
 			return artifact;
 		} finally {

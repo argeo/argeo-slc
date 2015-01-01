@@ -171,7 +171,12 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 	}
 
 	public void setBeanName(String name) {
-		this.name = name;
+		if (this.name == null) {
+			this.name = name;
+		} else {
+			log.warn("Using explicitely set name " + this.name
+					+ " and not bean name " + name);
+		}
 	}
 
 	public String getGroupId() {
