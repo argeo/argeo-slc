@@ -200,11 +200,13 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			jarOut = new JarOutputStream(out, manifest);
 			JarEntry jarEntry = null;
 			while ((jarEntry = jarIn.getNextJarEntry()) != null) {
-				JarEntry newJarEntry = new JarEntry(jarEntry.getName());
-				jarOut.putNextEntry(newJarEntry);
-				IOUtils.copy(jarIn, jarOut);
-				jarIn.closeEntry();
-				jarOut.closeEntry();
+				if (!jarEntry.getName().equals("META-INF/MANIFEST.MF")) {
+					JarEntry newJarEntry = new JarEntry(jarEntry.getName());
+					jarOut.putNextEntry(newJarEntry);
+					IOUtils.copy(jarIn, jarOut);
+					jarIn.closeEntry();
+					jarOut.closeEntry();
+				}
 			}
 		} catch (IOException e) {
 			throw new SlcException("Could not copy jar with MANIFEST "
