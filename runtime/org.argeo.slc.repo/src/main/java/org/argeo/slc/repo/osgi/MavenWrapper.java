@@ -31,6 +31,8 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 
 	private OsgiFactory osgiFactory;
 
+	private Boolean doNotModifySources = false;
+
 	public MavenWrapper() {
 		setFactory(this);
 	}
@@ -46,8 +48,8 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 	public void run() {
 		Session distSession = null;
 		Session javaSession = null;
-		InputStream in;
-		ByteArrayOutputStream out;
+		InputStream in = null;
+		ByteArrayOutputStream out = null;
 		try {
 			distSession = osgiFactory.openDistSession();
 			javaSession = osgiFactory.openJavaSession();
@@ -89,8 +91,12 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 			IOUtils.closeQuietly(in);
 			in = sourcesArtifactNode.getNode(Node.JCR_CONTENT)
 					.getProperty(Property.JCR_DATA).getBinary().getStream();
-			byte[] pdeSource = RepoUtils.packageAsPdeSource(in,
-					new DefaultNameVersion(getName(), getVersion()));
+			byte[] pdeSource;
+			if (doNotModifySources)
+				pdeSource = IOUtils.toByteArray(in);
+			else
+				pdeSource = RepoUtils.packageAsPdeSource(in,
+						new DefaultNameVersion(getName(), getVersion()));
 			Node pdeSourceNode = RepoUtils.copyBytesAsArtifact(javaSession
 					.getRootNode(), new DefaultArtifact(getCategory(),
 					getName() + ".source", "jar", getVersion()), pdeSource);
@@ -100,11 +106,13 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 			if (log.isDebugEnabled())
 				log.debug("Wrapped Maven " + sourcesArtifact
 						+ " to PDE sources " + pdeSourceNode.getPath());
-		} catch (RepositoryException e) {
+		} catch (Exception e) {
 			throw new SlcException("Cannot wrap Maven " + sourceCoords, e);
 		} finally {
 			JcrUtils.logoutQuietly(distSession);
 			JcrUtils.logoutQuietly(javaSession);
+			IOUtils.closeQuietly(in);
+			IOUtils.closeQuietly(out);
 		}
 	}
 
@@ -114,6 +122,10 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 
 	public void setOsgiFactory(OsgiFactory osgiFactory) {
 		this.osgiFactory = osgiFactory;
+	}
+
+	public void setDoNotModifySources(Boolean doNotModifySources) {
+		this.doNotModifySources = doNotModifySources;
 	}
 
 }
