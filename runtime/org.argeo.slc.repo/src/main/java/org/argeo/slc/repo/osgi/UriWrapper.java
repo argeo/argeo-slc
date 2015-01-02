@@ -1,18 +1,27 @@
 package org.argeo.slc.repo.osgi;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.Session;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.RepoUtils;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
+
+import aQute.lib.osgi.Jar;
 
 public class UriWrapper extends BndWrapper implements Runnable {
 	private final static Log log = LogFactory.getLog(UriWrapper.class);
@@ -24,7 +33,7 @@ public class UriWrapper extends BndWrapper implements Runnable {
 
 	private OsgiFactory osgiFactory;
 
-	// private SourcesProvider sourcesProvider;
+	private SourcesProvider sourcesProvider;
 
 	public UriWrapper() {
 		setFactory(this);
@@ -35,7 +44,7 @@ public class UriWrapper extends BndWrapper implements Runnable {
 		Session javaSession = null;
 		InputStream in;
 		ByteArrayOutputStream out;
-		// Jar jar = null;
+		Jar jar = null;
 		try {
 			distSession = osgiFactory.openDistSession();
 			javaSession = osgiFactory.openJavaSession();
@@ -48,6 +57,8 @@ public class UriWrapper extends BndWrapper implements Runnable {
 			// TODO factorize with Maven
 			in = sourceArtifact.getNode(Node.JCR_CONTENT)
 					.getProperty(Property.JCR_DATA).getBinary().getStream();
+			out=null;
+			
 			out = new ByteArrayOutputStream();
 			wrapJar(in, out);
 			Node newJarNode = RepoUtils
@@ -59,39 +70,39 @@ public class UriWrapper extends BndWrapper implements Runnable {
 				log.debug("Wrapped " + uri + " to " + newJarNode.getPath());
 
 			// sources
-			// if (sourcesProvider != null) {
-			// IOUtils.closeQuietly(in);
-			// in = new ByteArrayInputStream(out.toByteArray());
-			// jar = new Jar(null, in);
-			// List<String> packages = jar.getPackages();
-			//
-			// IOUtils.closeQuietly(out);
-			// out = new ByteArrayOutputStream();
-			// sourcesProvider
-			// .writeSources(packages, new ZipOutputStream(out));
-			//
-			// IOUtils.closeQuietly(in);
-			// in = new ByteArrayInputStream(out.toByteArray());
-			// byte[] sourcesJar = RepoUtils.packageAsPdeSource(in,
-			// new DefaultNameVersion(this));
-			// Artifact sourcesArtifact = new DefaultArtifact(getArtifact()
-			// .getGroupId(), getArtifact().getArtifactId()
-			// + ".source", "jar", getArtifact().getVersion());
-			// Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(
-			// javaSession.getRootNode(), sourcesArtifact, sourcesJar);
-			// sourcesJarNode.getSession().save();
-			//
-			// if (log.isDebugEnabled())
-			// log.debug("Added sources " + sourcesArtifact
-			// + " for bundle " + getArtifact());
-			// }
+			if (sourcesProvider != null) {
+				IOUtils.closeQuietly(in);
+				in = new ByteArrayInputStream(out.toByteArray());
+				jar = new Jar(null, in);
+				List<String> packages = jar.getPackages();
+
+				IOUtils.closeQuietly(out);
+				out = new ByteArrayOutputStream();
+				sourcesProvider
+						.writeSources(packages, new ZipOutputStream(out));
+
+				IOUtils.closeQuietly(in);
+				in = new ByteArrayInputStream(out.toByteArray());
+				byte[] sourcesJar = RepoUtils.packageAsPdeSource(in,
+						new DefaultNameVersion(this));
+				Artifact sourcesArtifact = new DefaultArtifact(getArtifact()
+						.getGroupId(), getArtifact().getArtifactId()
+						+ ".source", "jar", getArtifact().getVersion());
+				Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(
+						javaSession.getRootNode(), sourcesArtifact, sourcesJar);
+				sourcesJarNode.getSession().save();
+
+				if (log.isDebugEnabled())
+					log.debug("Added sources " + sourcesArtifact
+							+ " for bundle " + getArtifact());
+			}
 		} catch (Exception e) {
 			throw new SlcException("Cannot wrap URI " + uri, e);
 		} finally {
 			JcrUtils.logoutQuietly(distSession);
 			JcrUtils.logoutQuietly(javaSession);
-			// if (jar != null)
-			// jar.close();
+			if (jar != null)
+				jar.close();
 		}
 	}
 
@@ -109,5 +120,9 @@ public class UriWrapper extends BndWrapper implements Runnable {
 
 	public void setVersionSeparator(String versionSeparator) {
 		this.versionSeparator = versionSeparator;
+	}
+
+	public void setSourcesProvider(SourcesProvider sourcesProvider) {
+		this.sourcesProvider = sourcesProvider;
 	}
 }

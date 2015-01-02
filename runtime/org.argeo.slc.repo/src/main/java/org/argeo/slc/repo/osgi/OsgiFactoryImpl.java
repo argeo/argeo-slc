@@ -1,10 +1,12 @@
 package org.argeo.slc.repo.osgi;
 
+import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +17,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
@@ -186,11 +189,17 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 			log.debug("Downloading " + url + "...");
 
 		InputStream in = null;
+		URLConnection conn = null;
 		Node folderNode = JcrUtils.mkfolders(distSession,
 				JcrUtils.parentPath(path));
 		try {
 			URL u = new URL(url);
-			in = u.openStream();
+			conn = u.openConnection();
+			conn.connect();
+			in = new BufferedInputStream(conn.getInputStream());
+			// byte[] arr = IOUtils.toByteArray(in);
+			// Node fileNode = JcrUtils.copyBytesAsFile(folderNode,
+			// JcrUtils.nodeNameFromPath(path), arr);
 			Node fileNode = JcrUtils.copyStreamAsFile(folderNode,
 					JcrUtils.nodeNameFromPath(path), in);
 			fileNode.addMixin(SlcTypes.SLC_KNOWN_ORIGIN);
@@ -204,6 +213,8 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 			throw e;
 		} catch (IOException e) {
 			throw new SlcException("Cannot load " + url + " to " + path, e);
+		} finally {
+			IOUtils.closeQuietly(in);
 		}
 
 	}
