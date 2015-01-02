@@ -42,8 +42,8 @@ public class UriWrapper extends BndWrapper implements Runnable {
 	public void run() {
 		Session distSession = null;
 		Session javaSession = null;
-		InputStream in;
-		ByteArrayOutputStream out;
+		InputStream in = null;
+		ByteArrayOutputStream out = null;
 		Jar jar = null;
 		try {
 			distSession = osgiFactory.openDistSession();
@@ -57,8 +57,6 @@ public class UriWrapper extends BndWrapper implements Runnable {
 			// TODO factorize with Maven
 			in = sourceArtifact.getNode(Node.JCR_CONTENT)
 					.getProperty(Property.JCR_DATA).getBinary().getStream();
-			out=null;
-			
 			out = new ByteArrayOutputStream();
 			wrapJar(in, out);
 			Node newJarNode = RepoUtils
@@ -99,6 +97,8 @@ public class UriWrapper extends BndWrapper implements Runnable {
 		} catch (Exception e) {
 			throw new SlcException("Cannot wrap URI " + uri, e);
 		} finally {
+			IOUtils.closeQuietly(in);
+			IOUtils.closeQuietly(out);
 			JcrUtils.logoutQuietly(distSession);
 			JcrUtils.logoutQuietly(javaSession);
 			if (jar != null)

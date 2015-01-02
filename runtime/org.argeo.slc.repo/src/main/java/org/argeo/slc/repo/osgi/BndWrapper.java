@@ -1,10 +1,12 @@
 package org.argeo.slc.repo.osgi;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 import java.util.jar.Manifest;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.CategorizedNameVersion;
@@ -38,9 +40,11 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 
 	public void wrapJar(InputStream in, OutputStream out) {
 		Builder b = new Builder();
+		Jar jar = null;
 		try {
-			Jar jar = new Jar(null, in);
+			byte[] jarBytes = IOUtils.toByteArray(in);
 
+			jar = new Jar(null, new ByteArrayInputStream(jarBytes));
 			Manifest sourceManifest = jar.getManifest();
 
 			Version versionToUse;
@@ -58,15 +62,15 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 				// Version
 				String sourceVersion = sourceManifest.getMainAttributes()
 						.getValue(BUNDLE_VERSION);
-				if (version == null && sourceVersion == null) {
+				if (getVersion() == null && sourceVersion == null) {
 					throw new SlcException("A bundle version must be defined.");
-				} else if (version == null && sourceVersion != null) {
+				} else if (getVersion() == null && sourceVersion != null) {
 					versionToUse = new Version(sourceVersion);
 					version = sourceVersion; // set wrapper version
-				} else if (version != null && sourceVersion == null) {
-					versionToUse = new Version(version);
+				} else if (getVersion() != null && sourceVersion == null) {
+					versionToUse = new Version(getVersion());
 				} else {// both set
-					versionToUse = new Version(version);
+					versionToUse = new Version(getVersion());
 					Version sv = new Version(sourceVersion);
 					if (versionToUse.getMajor() != sv.getMajor()
 							|| versionToUse.getMinor() != sv.getMinor()
@@ -78,11 +82,12 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 					}
 				}
 			} else {
-				versionToUse = new Version(version);
+				versionToUse = new Version(getVersion());
 			}
 
 			if (doNotModify) {
-				jar.write(out);
+				IOUtils.write(jarBytes, out);
+				// jar.write(out);
 			} else {
 
 				Properties properties = new Properties();
@@ -114,11 +119,14 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 
 				Jar newJar = b.build();
 				newJar.write(out);
+				newJar.close();
 			}
 		} catch (Exception e) {
 			throw new SlcException("Cannot wrap jar", e);
 		} finally {
 			b.close();
+			if (jar != null)
+				jar.close();
 		}
 
 	}
@@ -196,7 +204,7 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 	}
 
 	public Artifact getArtifact() {
-		return new DefaultArtifact(groupId, name, "jar", version);
+		return new DefaultArtifact(groupId, name, "jar", getVersion());
 	}
 
 	@Override

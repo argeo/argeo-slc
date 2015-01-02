@@ -20,6 +20,10 @@ import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.util.artifact.SubArtifact;
 
+/**
+ * BND wrapper based on a Maven artifact available from one of the configured
+ * repositories.
+ */
 public class MavenWrapper extends BndWrapper implements Runnable {
 	private final static Log log = LogFactory.getLog(MavenWrapper.class);
 
@@ -29,6 +33,14 @@ public class MavenWrapper extends BndWrapper implements Runnable {
 
 	public MavenWrapper() {
 		setFactory(this);
+	}
+
+	@Override
+	public String getVersion() {
+		String version = super.getVersion();
+		if (version != null)
+			return version;
+		return new DefaultArtifact(sourceCoords).getVersion();
 	}
 
 	public void run() {
