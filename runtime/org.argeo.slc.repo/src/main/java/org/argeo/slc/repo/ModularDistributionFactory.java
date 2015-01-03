@@ -19,7 +19,6 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -127,7 +126,9 @@ public class ModularDistributionFactory implements Runnable {
 		distNode.setProperty(SlcNames.SLC_VERSION,
 				osgiDistribution.getVersion());
 
-		Node modules = JcrUtils.mkdirs(distNode, SlcNames.SLC_MODULES,
+		if (distNode.hasNode(SlcNames.SLC_MODULES))
+			distNode.getNode(SlcNames.SLC_MODULES).remove();
+		Node modules = distNode.addNode(SlcNames.SLC_MODULES,
 				NodeType.NT_UNSTRUCTURED);
 
 		for (Iterator<? extends NameVersion> it = osgiDistribution
