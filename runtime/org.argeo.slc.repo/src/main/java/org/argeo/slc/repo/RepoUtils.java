@@ -316,6 +316,10 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 							.getProperty(SLC_ARTIFACT_CLASSIFIER).getString(),
 					node.getProperty(SLC_ARTIFACT_EXTENSION).getString(), node
 							.getProperty(SLC_ARTIFACT_VERSION).getString());
+		} else if (node.isNodeType(SlcTypes.SLC_MODULE_COORDINATES)) {
+			return new DefaultArtifact(node.getProperty(SLC_CATEGORY)
+					.getString(), node.getProperty(SLC_NAME).getString(),
+					"jar", node.getProperty(SLC_VERSION).getString());
 		} else {
 			throw new SlcException("Unsupported node type for " + node);
 		}
