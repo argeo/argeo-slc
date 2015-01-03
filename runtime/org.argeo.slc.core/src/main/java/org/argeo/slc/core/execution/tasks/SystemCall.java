@@ -120,6 +120,10 @@ public class SystemCall implements Runnable {
 	/** Chroot to the this path (must not be empty) */
 	private String chroot = null;
 
+	// Current
+	/** Current watchdog, null if process is completed */
+	ExecuteWatchdog currentWatchdog = null;
+
 	/** Empty constructor */
 	public SystemCall() {
 
@@ -203,7 +207,7 @@ public class SystemCall implements Runnable {
 			executorToUse = executor;
 		else
 			executorToUse = new DefaultExecutor();
-		executorToUse.setWatchdog(new ExecuteWatchdog(watchdogTimeout));
+		executorToUse.setWatchdog(createWatchdog());
 
 		if (redirectStreams) {
 			// Redirect standard streams
@@ -474,6 +478,7 @@ public class SystemCall implements Runnable {
 					testResult.addResultPart(new SimpleResultPart(
 							TestStatus.PASSED, msg));
 				}
+				releaseWatchdog();
 			}
 
 			public void onProcessFailed(ExecuteException e) {
@@ -489,6 +494,7 @@ public class SystemCall implements Runnable {
 					else
 						log.error(msg, e);
 				}
+				releaseWatchdog();
 			}
 		};
 	}
@@ -610,6 +616,27 @@ public class SystemCall implements Runnable {
 		command.add(arg);
 		command.add(value);
 		return this;
+	}
+
+	// CONTROL
+	public synchronized Boolean isRunning() {
+		return currentWatchdog != null;
+	}
+
+	private synchronized ExecuteWatchdog createWatchdog() {
+		if (currentWatchdog != null)
+			throw new SlcException("A process is already being monitored");
+		currentWatchdog = new ExecuteWatchdog(watchdogTimeout);
+		return currentWatchdog;
+	}
+
+	private synchronized void releaseWatchdog() {
+		currentWatchdog = null;
+	}
+
+	public synchronized void kill() {
+		if (currentWatchdog != null)
+			currentWatchdog.destroyProcess();
 	}
 
 	/** */
