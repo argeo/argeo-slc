@@ -121,6 +121,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 						NameVersion nv = RepoUtils.readNameVersion(jis
 								.getManifest());
 						if (nv != null) {
+							if (nv.getName().endsWith(".source"))
+								continue entries;
 							CategorizedNameVersion cnv = new OsgiCategorizedNV(
 									groupId, nv.getName(), nv.getVersion(),
 									this);
@@ -194,9 +196,9 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 									+ "from " + name + " in binary archive.");
 					}
 
-				} else if (baseName.endsWith(".source")) {
-					// TODO Eclipse source already available
 				}
+				// else if (baseName.endsWith(".source")) {
+				// }
 
 				// binaries
 				if (wrappers.containsKey(name)) {
@@ -234,9 +236,9 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 					for (String include : includes.keySet()) {
 						if (pathMatcher.match(include, name)) {
 							String groupId = includes.get(include);
-							byte[] sourceJarBytes = IOUtils.toByteArray(zin);
+							byte[] origJarBytes = IOUtils.toByteArray(zin);
 							Artifact artifact = importZipEntry(javaSession,
-									zentry, sourceJarBytes, groupId);
+									zentry, origJarBytes, groupId);
 							if (artifact == null) {
 								log.warn("Skipped non identified " + zentry);
 								continue entries;

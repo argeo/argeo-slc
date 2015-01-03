@@ -20,7 +20,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
@@ -121,8 +120,9 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 		distNode.setProperty(SlcNames.SLC_CATEGORY, osgiDist.getCategory());
 		distNode.setProperty(SlcNames.SLC_NAME, osgiDist.getName());
 		distNode.setProperty(SlcNames.SLC_VERSION, osgiDist.getVersion());
-		Node modules = JcrUtils.mkdirs(distNode, SlcNames.SLC_MODULES,
-				NodeType.NT_UNSTRUCTURED);
+		if (distNode.hasNode(SLC_MODULES))
+			distNode.getNode(SLC_MODULES).remove();
+		Node modules = distNode.addNode(SLC_MODULES, NodeType.NT_UNSTRUCTURED);
 
 		for (Iterator<? extends NameVersion> it = osgiDist.nameVersions(); it
 				.hasNext();)
