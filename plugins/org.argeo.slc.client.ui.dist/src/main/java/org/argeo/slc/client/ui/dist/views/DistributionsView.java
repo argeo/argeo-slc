@@ -47,6 +47,7 @@ import org.argeo.slc.client.ui.dist.controllers.DistTreeDoubleClickListener;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeLabelProvider;
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
 import org.argeo.slc.client.ui.dist.model.ModularDistVersionBaseElem;
+import org.argeo.slc.client.ui.dist.model.ModularDistVersionElem;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.client.ui.dist.model.WkspGroupElem;
 import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
@@ -143,6 +144,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 				String targetRepoPath = null, workspaceName = null, workspacePrefix = null;
 				String modularDistBasePath = null;
+				String modularDistPath = null;
 				// String targetRepoUri = null;
 				// Build conditions depending on element type
 				boolean isDistribElem = false, isModularDistVersionBaseElem = false, isRepoElem = false, isDistribGroupElem = false;
@@ -176,6 +178,14 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 					isReadOnly = re.isReadOnly();
 					workspaceName = mdbe.getWkspElem().getWorkspaceName();
 					modularDistBasePath = mdbe.getModularDistBase().getPath();
+				} else if (firstElement instanceof ModularDistVersionElem) {
+					ModularDistVersionElem mdbe = (ModularDistVersionElem) firstElement;
+					re = mdbe.getWorkspaceElem().getRepoElem();
+					isLocal = re.inHome();
+					isReadOnly = re.isReadOnly();
+					workspaceName = mdbe.getWorkspaceElem().getWorkspaceName();
+					modularDistPath = mdbe.getModularDistVersionNode()
+							.getPath();
 				}
 
 				if (re != null) {
@@ -309,11 +319,12 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 
 				// Run in OSGi
 				params = new HashMap<String, String>();
+				params.put(RunInOsgi.PARAM_MODULE_PATH, modularDistPath);
 				params.put(RunInOsgi.PARAM_WORKSPACE_NAME, workspaceName);
 				CommandUtils.refreshParametrizedCommand(submenu, window,
 						RunInOsgi.ID, RunInOsgi.DEFAULT_LABEL,
-						RunInOsgi.DEFAULT_ICON, isDistribElem && singleElement
-								&& isLocal, params);
+						RunInOsgi.DEFAULT_ICON, modularDistPath!=null
+								&& singleElement && isLocal, params);
 
 				// Open generate binaries
 				params = new HashMap<String, String>();

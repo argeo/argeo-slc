@@ -353,6 +353,11 @@
          		id="workspaceName"
          		name="Workspace Name">
   	 		</commandParameter>
+            <commandParameter
+                  id="modulePath"
+                  name="Module Path"
+                  optional="true">
+            </commandParameter>
     	</command>
     	<command
             id="org.argeo.slc.client.ui.dist.refreshDistributionsView"
