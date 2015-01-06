@@ -75,10 +75,10 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 	private Repository repository;
 
 	// Relevant default node indexers
-	// WARNING Order call is important.
-	private ModularDistributionIndexer distBundleIndexer = new ModularDistributionIndexer();
-	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
 	private PdeSourcesIndexer pdeSourceIndexer = new PdeSourcesIndexer();
+	// WARNING Order is important: must be called in the following order.
+	private ModularDistributionIndexer modularDistributionIndexer = new ModularDistributionIndexer();
+	private JarFileIndexer jarFileIndexer = new JarFileIndexer();
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -189,7 +189,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 					if (jarFileIndexer.support(node.getPath()))
 						if (artifactIndexer.support(node.getPath())) {
 							monitor.subTask(node.getName());
-							distBundleIndexer.index(node);
+							modularDistributionIndexer.index(node);
 							jarFileIndexer.index(node);
 							artifactIndexer.index(node);
 							if (node.getSession().hasPendingChanges()) {

@@ -15,22 +15,20 @@ import java.util.jar.Manifest;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 import org.osgi.framework.Constants;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 /**
  * Creates a jar bundle from an ArgeoOsgiDistribution. This jar is then
- * persisted and indexed in a java repository.
+ * persisted and indexed in a java repository using the OSGI Factory.
  * 
  * It does the following <list><li>Creates a Manifest</li><li>Creates files
  * indexes (csv, feature.xml ...)</li><li>Populate the corresponding jar</li><li>
@@ -40,6 +38,7 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
  */
 public class ModularDistributionFactory implements Runnable {
 
+	private OsgiFactory osgiFactory;
 	private Session javaSession;
 	private ArgeoOsgiDistribution osgiDistribution;
 	private String modularDistributionSeparator = ",";
@@ -48,24 +47,22 @@ public class ModularDistributionFactory implements Runnable {
 
 	// Constants
 	private final static String CSV_FILE_NAME = "modularDistribution.csv";
-	private final static String FEATURE_FILE_NAME = "feature.xml";
-	public static int BUFFER_SIZE = 10240;
+	// private final static String FEATURE_FILE_NAME = "feature.xml";
+	// private static int BUFFER_SIZE = 10240;
 
 	/** Convenience constructor with minimal configuration */
-	public ModularDistributionFactory(Session javaSession,
+	public ModularDistributionFactory(OsgiFactory osgiFactory,
 			ArgeoOsgiDistribution osgiDistribution) {
-		this.javaSession = javaSession;
+		this.osgiFactory = osgiFactory;
 		this.osgiDistribution = osgiDistribution;
 	}
 
 	@Override
 	public void run() {
-		internalCreateDistribution();
-	}
-
-	private void internalCreateDistribution() {
 		byte[] distFile = null;
 		try {
+			javaSession = osgiFactory.openJavaSession();
+
 			if (artifactType == "jar")
 				distFile = generateJarFile();
 			else if (artifactType == "pom")
@@ -86,14 +83,17 @@ public class ModularDistributionFactory implements Runnable {
 					distFile);
 
 			// index
-			indexDistribution(distNode);
+			osgiFactory.indexNode(distNode);
 
 			// Really ?
 			javaSession.save();
+
 		} catch (RepositoryException e) {
 			throw new SlcException(
 					"JCR error while persisting modular distribution in JCR "
 							+ osgiDistribution.toString(), e);
+		} finally {
+			JcrUtils.logoutQuietly(javaSession);
 		}
 	}
 
@@ -117,24 +117,25 @@ public class ModularDistributionFactory implements Runnable {
 		}
 	}
 
-	private void indexDistribution(Node distNode) throws RepositoryException {
-		distNode.addMixin(SlcTypes.SLC_MODULAR_DISTRIBUTION);
-		distNode.addMixin(SlcTypes.SLC_CATEGORIZED_NAME_VERSION);
-		distNode.setProperty(SlcNames.SLC_CATEGORY,
-				osgiDistribution.getCategory());
-		distNode.setProperty(SlcNames.SLC_NAME, osgiDistribution.getName());
-		distNode.setProperty(SlcNames.SLC_VERSION,
-				osgiDistribution.getVersion());
-
-		if (distNode.hasNode(SlcNames.SLC_MODULES))
-			distNode.getNode(SlcNames.SLC_MODULES).remove();
-		Node modules = distNode.addNode(SlcNames.SLC_MODULES,
-				NodeType.NT_UNSTRUCTURED);
-
-		for (Iterator<? extends NameVersion> it = osgiDistribution
-				.nameVersions(); it.hasNext();)
-			addModule(modules, it.next());
-	}
+	// private void indexDistribution(Node distNode) throws RepositoryException
+	// {
+	// distNode.addMixin(SlcTypes.SLC_MODULAR_DISTRIBUTION);
+	// distNode.addMixin(SlcTypes.SLC_CATEGORIZED_NAME_VERSION);
+	// distNode.setProperty(SlcNames.SLC_CATEGORY,
+	// osgiDistribution.getCategory());
+	// distNode.setProperty(SlcNames.SLC_NAME, osgiDistribution.getName());
+	// distNode.setProperty(SlcNames.SLC_VERSION,
+	// osgiDistribution.getVersion());
+	//
+	// if (distNode.hasNode(SlcNames.SLC_MODULES))
+	// distNode.getNode(SlcNames.SLC_MODULES).remove();
+	// Node modules = distNode.addNode(SlcNames.SLC_MODULES,
+	// NodeType.NT_UNSTRUCTURED);
+	//
+	// for (Iterator<? extends NameVersion> it = osgiDistribution
+	// .nameVersions(); it.hasNext();)
+	// addModule(modules, it.next());
+	// }
 
 	private Manifest createManifest() {
 		Manifest manifest = new Manifest();
@@ -191,6 +192,7 @@ public class ModularDistributionFactory implements Runnable {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private byte[] createFeatureDescriptor() {
 		// Directly retrieved from Argeo maven plugin
 		// Does not work due to the lack of org.codehaus.plexus/plexus-archiver
@@ -464,22 +466,22 @@ public class ModularDistributionFactory implements Runnable {
 	}
 
 	// Helpers
-	private Node addModule(Node modules, NameVersion nameVersion)
-			throws RepositoryException {
-		CategorizedNameVersion cnv = (CategorizedNameVersion) nameVersion;
-		Node moduleCoord = null;
-		// TODO solve the same name issue
-		// if (modules.hasNode(cnv.getName()))
-		// moduleCoord = modules.getNode(cnv.getName());
-		// else {
-		moduleCoord = modules.addNode(cnv.getName(),
-				SlcTypes.SLC_MODULE_COORDINATES);
-		moduleCoord.setProperty(SlcNames.SLC_CATEGORY, cnv.getCategory());
-		moduleCoord.setProperty(SlcNames.SLC_NAME, cnv.getName());
-		moduleCoord.setProperty(SlcNames.SLC_VERSION, cnv.getVersion());
-		// }
-		return moduleCoord;
-	}
+	// private Node addModule(Node modules, NameVersion nameVersion)
+	// throws RepositoryException {
+	// CategorizedNameVersion cnv = (CategorizedNameVersion) nameVersion;
+	// Node moduleCoord = null;
+	// // TODO solve the same name issue
+	// // if (modules.hasNode(cnv.getName()))
+	// // moduleCoord = modules.getNode(cnv.getName());
+	// // else {
+	// moduleCoord = modules.addNode(cnv.getName(),
+	// SlcTypes.SLC_MODULE_COORDINATES);
+	// moduleCoord.setProperty(SlcNames.SLC_CATEGORY, cnv.getCategory());
+	// moduleCoord.setProperty(SlcNames.SLC_NAME, cnv.getName());
+	// moduleCoord.setProperty(SlcNames.SLC_VERSION, cnv.getVersion());
+	// // }
+	// return moduleCoord;
+	// }
 
 	private void addToJar(byte[] content, String name, JarOutputStream target)
 			throws IOException {

@@ -29,13 +29,12 @@ public class ProcessDistribution implements Runnable {
 		Session javaSession = null;
 		try {
 			javaSession = osgiFactory.openJavaSession();
-
 			for (Iterator<? extends NameVersion> it = osgiDistribution
 					.nameVersions(); it.hasNext();)
 				processNameVersion(javaSession, it.next());
 
 			ModularDistributionFactory mdf = new ModularDistributionFactory(
-					javaSession, osgiDistribution);
+					osgiFactory, osgiDistribution);
 			mdf.run();
 
 			// TODO why is the created distribution not automatically indexed?
