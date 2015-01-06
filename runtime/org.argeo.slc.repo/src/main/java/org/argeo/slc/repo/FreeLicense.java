@@ -60,6 +60,14 @@ public abstract class FreeLicense implements License {
 			"http://opensource.org/licenses/MIT", null, RESOURCES + "mit.txt") {
 	};
 
+	public final static FreeLicense BSD_NEW = new FreeLicense(
+			"The BSD 3-Clause License",
+			"http://opensource.org/licenses/BSD-3-Clause", null, RESOURCES
+					+ "bsd-3-clause.txt") {
+	};
+
+	public final static FreeLicense BSD = BSD_NEW;
+
 	public final static FreeLicense CDDL_v1 = new FreeLicense(
 			"Common Development and Distribution License",
 			"http://opensource.org/licenses/CDDL-1.0", null, RESOURCES
