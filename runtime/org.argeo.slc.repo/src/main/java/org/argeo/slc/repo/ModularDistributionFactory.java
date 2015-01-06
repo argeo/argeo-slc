@@ -47,6 +47,7 @@ public class ModularDistributionFactory implements Runnable {
 
 	// Constants
 	private final static String CSV_FILE_NAME = "modularDistribution.csv";
+
 	// private final static String FEATURE_FILE_NAME = "feature.xml";
 	// private static int BUFFER_SIZE = 10240;
 
@@ -85,9 +86,8 @@ public class ModularDistributionFactory implements Runnable {
 			// index
 			osgiFactory.indexNode(distNode);
 
-			// Really ?
+			// We use a specific session. Save before closing
 			javaSession.save();
-
 		} catch (RepositoryException e) {
 			throw new SlcException(
 					"JCR error while persisting modular distribution in JCR "
@@ -466,23 +466,6 @@ public class ModularDistributionFactory implements Runnable {
 	}
 
 	// Helpers
-	// private Node addModule(Node modules, NameVersion nameVersion)
-	// throws RepositoryException {
-	// CategorizedNameVersion cnv = (CategorizedNameVersion) nameVersion;
-	// Node moduleCoord = null;
-	// // TODO solve the same name issue
-	// // if (modules.hasNode(cnv.getName()))
-	// // moduleCoord = modules.getNode(cnv.getName());
-	// // else {
-	// moduleCoord = modules.addNode(cnv.getName(),
-	// SlcTypes.SLC_MODULE_COORDINATES);
-	// moduleCoord.setProperty(SlcNames.SLC_CATEGORY, cnv.getCategory());
-	// moduleCoord.setProperty(SlcNames.SLC_NAME, cnv.getName());
-	// moduleCoord.setProperty(SlcNames.SLC_VERSION, cnv.getVersion());
-	// // }
-	// return moduleCoord;
-	// }
-
 	private void addToJar(byte[] content, String name, JarOutputStream target)
 			throws IOException {
 		ByteArrayInputStream in = null;
@@ -531,8 +514,9 @@ public class ModularDistributionFactory implements Runnable {
 		return builder.toString();
 	}
 
-	public void setJavaSession(Session javaSession) {
-		this.javaSession = javaSession;
+	/** Enable dependency injection */
+	public void setOsgiFactory(OsgiFactory osgiFactory) {
+		this.osgiFactory = osgiFactory;
 	}
 
 	public void setOsgiDistribution(ArgeoOsgiDistribution osgiDistribution) {

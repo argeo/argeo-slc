@@ -33,16 +33,11 @@ public class ProcessDistribution implements Runnable {
 					.nameVersions(); it.hasNext();)
 				processNameVersion(javaSession, it.next());
 
+			// explicitly create the corresponding modular distribution as we
+			// have here all necessary info.
 			ModularDistributionFactory mdf = new ModularDistributionFactory(
 					osgiFactory, osgiDistribution);
 			mdf.run();
-
-			// TODO why is the created distribution not automatically indexed?
-			// osgiFactory.indexNode(node);
-			// javaSession.save();
-
-			// Node artifact = createDistributionArtifact(javaSession,
-			// osgiDistribution);
 
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot process distribution "
