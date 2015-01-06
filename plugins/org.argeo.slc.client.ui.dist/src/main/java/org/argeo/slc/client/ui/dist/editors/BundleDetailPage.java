@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.build.License;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
 import org.argeo.slc.client.ui.specific.OpenJcrFile;
@@ -189,14 +190,24 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 		if (bundle.hasProperty(jcrPropName)) {
 
 			String licenceLinkVal = bundle.getProperty(jcrPropName).getString();
-			String[] licenceVals = licenceLinkVal.split(", ");
+
+			// FIXME Hack until license generation is done cleanly
+			// Problem is with description that contains a "," like "Apache License, Version 2"
+			String[] licenceVals;
+			if (licenceLinkVal.contains("description="))
+				licenceVals = new String[] { licenceLinkVal };
+			else
+				// multiple license, form non-regenerated manifests
+				licenceVals = licenceLinkVal.split(", ");
 
 			Composite body = tk.createComposite(parent);
 			body.setLayout(new RowLayout(SWT.WRAP));
 
-			for (String value : licenceVals) {
-				final Hyperlink link = tk
-						.createHyperlink(body, value, SWT.NONE);
+			for (final String value : licenceVals) {
+				final License currLicense = parseLicenseString(value);
+
+				Hyperlink link = tk.createHyperlink(body,
+						currLicense.getName(), SWT.NONE);
 				link.addHyperlinkListener(new AbstractHyperlinkListener() {
 					@Override
 					public void linkActivated(HyperlinkEvent e) {
@@ -210,7 +221,7 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 											"SLC Distribution browser",
 											"SLC Distribution browser",
 											"A tool tip");
-							browser.openURL(new URL(link.getText()));
+							browser.openURL(new URL(currLicense.getUri()));
 						} catch (Exception ex) {
 							throw new SlcException("error opening browser", ex); //$NON-NLS-1$
 						}
@@ -219,6 +230,66 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 			}
 		} else
 			tk.createLabel(parent, "N/A", SWT.NONE);
+	}
+
+	// TODO this must be moved to a better place once the standard has been
+	// defined
+	// Enable licence encoding in a single JCR Value
+	private final static String LICENSE_SEPARATOR = ";";
+	// The human readable name of the licence
+	private final static String LICENSE_NAME = "description";
+	// A link on the internet with some more info on this licence
+	private final static String LICENSE_LINK = "link";
+
+	private License parseLicenseString(String licenseStr) {
+		String uri = null, name = null, link = null, text = null;
+		// TODO enhance this
+		String[] values = licenseStr.split(LICENSE_SEPARATOR);
+		for (String value : values) {
+			if (value.startsWith(LICENSE_NAME))
+				name = value.substring(LICENSE_NAME.length() + 1); // +1 for the
+																	// '='
+			else if (value.startsWith(LICENSE_LINK))
+				link = value.substring(LICENSE_LINK.length() + 1);
+			else if (uri == null)
+				uri = value;
+			// TODO manage text
+		}
+		return new SimpleLicense(name, uri, link, text);
+	}
+
+	class SimpleLicense implements License {
+		private final String name;
+		private final String uri;
+		private final String link;
+		private final String text;
+
+		public SimpleLicense(String name, String uri, String link, String text) {
+			if (uri == null)
+				throw new SlcException(
+						"Cannot manage a licence with a null URI ");
+			this.uri = uri;
+
+			this.name = name;
+			this.link = link;
+			this.text = text;
+		}
+
+		public String getUri() {
+			return uri;
+		}
+
+		public String getText() {
+			return text;
+		}
+
+		public String getName() {
+			return name != null ? name : uri;
+		}
+
+		public String getLink() {
+			return link;
+		}
 	}
 
 	private void createJarLink(Composite parent) throws RepositoryException {
@@ -275,7 +346,6 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 			pomLink.addHyperlinkListener(new OpenFileLinkListener(pom.getPath()));
 
 			// Corresponding check sums
-
 			name = pom.getName() + ".md5";
 			if (pom.getParent().hasNode(name)) {
 				Node md5 = pom.getParent().getNode(name);
@@ -298,39 +368,42 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 	private void createManifestLink(Composite parent)
 			throws RepositoryException {
 		tk.createLabel(parent, "Manifest", SWT.NONE);
-		Hyperlink link = tk.createHyperlink(parent, "MANIFEST.MF", SWT.NONE);
+		// Hyperlink link =
+		// TODO fix this when file download has been implemented for the
+		// manifest
+		tk.createHyperlink(parent, "MANIFEST.MF", SWT.NONE);
 		// link.addHyperlinkListener(new
 		// OpenFileLinkListener(bundle.getPath()));
 	}
 
-	private void createHyperlink(Composite parent, String label,
-			String jcrPropName) throws RepositoryException {
-		tk.createLabel(parent, label, SWT.NONE);
-		if (bundle.hasProperty(jcrPropName)) {
-			final Hyperlink link = tk.createHyperlink(parent, bundle
-					.getProperty(jcrPropName).getString(), SWT.NONE);
-			link.addHyperlinkListener(new AbstractHyperlinkListener() {
-				@Override
-				public void linkActivated(HyperlinkEvent e) {
-					try {
-						IWorkbenchBrowserSupport browserSupport = PlatformUI
-								.getWorkbench().getBrowserSupport();
-						IWebBrowser browser = browserSupport
-								.createBrowser(
-										IWorkbenchBrowserSupport.LOCATION_BAR
-												| IWorkbenchBrowserSupport.NAVIGATION_BAR,
-										"SLC Distribution browser",
-										"SLC Distribution browser",
-										"A tool tip");
-						browser.openURL(new URL(link.getText()));
-					} catch (Exception ex) {
-						throw new SlcException("error opening browser", ex); //$NON-NLS-1$
-					}
-				}
-			});
-		} else
-			tk.createLabel(parent, "N/A", SWT.NONE);
-	}
+	// private void createHyperlink(Composite parent, String label,
+	// String jcrPropName) throws RepositoryException {
+	// tk.createLabel(parent, label, SWT.NONE);
+	// if (bundle.hasProperty(jcrPropName)) {
+	// final Hyperlink link = tk.createHyperlink(parent, bundle
+	// .getProperty(jcrPropName).getString(), SWT.NONE);
+	// link.addHyperlinkListener(new AbstractHyperlinkListener() {
+	// @Override
+	// public void linkActivated(HyperlinkEvent e) {
+	// try {
+	// IWorkbenchBrowserSupport browserSupport = PlatformUI
+	// .getWorkbench().getBrowserSupport();
+	// IWebBrowser browser = browserSupport
+	// .createBrowser(
+	// IWorkbenchBrowserSupport.LOCATION_BAR
+	// | IWorkbenchBrowserSupport.NAVIGATION_BAR,
+	// "SLC Distribution browser",
+	// "SLC Distribution browser",
+	// "A tool tip");
+	// browser.openURL(new URL(link.getText()));
+	// } catch (Exception ex) {
+	//						throw new SlcException("error opening browser", ex); //$NON-NLS-1$
+	// }
+	// }
+	// });
+	// } else
+	// tk.createLabel(parent, "N/A", SWT.NONE);
+	// }
 
 	// helper to check if sources are available
 	private void addSourceLink(Composite parent) {
