@@ -25,9 +25,9 @@
 		init-method="init" destroy-method="destroy" depends-on="ROLE_SLC">
 		<property name="nodeIndexers">
 			<list>
-				<bean class="org.argeo.slc.repo.ArtifactIndexer" />
-				<bean class="org.argeo.slc.repo.JarFileIndexer" />
 				<bean class="org.argeo.slc.repo.ModularDistributionIndexer" />
+				<bean class="org.argeo.slc.repo.JarFileIndexer" />
+				<bean class="org.argeo.slc.repo.ArtifactIndexer" />
 				<bean class="org.argeo.slc.repo.PdeSourcesIndexer" />
 			</list>
 		</property>
