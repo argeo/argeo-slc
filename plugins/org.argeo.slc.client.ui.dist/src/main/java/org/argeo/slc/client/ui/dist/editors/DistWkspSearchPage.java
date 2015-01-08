@@ -43,7 +43,6 @@ import org.argeo.eclipse.ui.utils.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
-import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
@@ -70,11 +69,9 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -224,11 +221,12 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		layout.marginWidth = layout.horizontalSpacing = layout.horizontalSpacing = layout.marginHeight = 0;
 		body.setLayout(new GridLayout());
 
+		// Filter
 		Composite filter = tk.createComposite(body);
 		filter.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		createFilterPart(filter);
 
-		// the table
+		// Table
 		Composite tableCmp = tk.createComposite(body);
 		tableCmp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		createTableViewer(tableCmp);
@@ -309,7 +307,7 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 	}
 
 	private void createFilterPart(Composite parent) {
-		GridLayout layout = new GridLayout(2, false);
+		GridLayout layout = new GridLayout();
 		layout.marginWidth = layout.marginHeight = layout.verticalSpacing = 0;
 		layout.horizontalSpacing = 5;
 		parent.setLayout(layout);
@@ -329,23 +327,6 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 					refreshFilteredList();
 			}
 		});
-
-		Button resetBtn = tk.createButton(parent, null, SWT.PUSH);
-		resetBtn.setImage(DistImages.IMG_REPO_READONLY);
-		resetBtn.addSelectionListener(new SelectionListener() {
-
-			public void widgetSelected(SelectionEvent e) {
-				resetFilter();
-			}
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-			}
-		});
-	}
-
-	private void resetFilter() {
-		artifactTxt.setText("");
-		artifactTxt.setMessage(FILTER_HELP_MSG);
 	}
 
 	private void refreshFilteredList() {
@@ -530,37 +511,6 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 				}
 
 			}
-		}
-	}
-
-	/**
-	 * UI Trick to put scroll bar on the table rather than on the scrollform
-	 */
-	private void refreshLayout() {
-		// // Compute desired table size
-		// int maxH = getManagedForm().getForm().getSize().y;
-		// int maxW = getManagedForm().getForm().getParent().getSize().x;
-		// // maxH = maxH - header.getSize().y;
-		// final Table table = viewer.getTable();
-		// GridData gd = new GridData(SWT.LEFT, SWT.TOP, true, true);
-		//
-		// // when table height is less than 200 px, we let the scroll bar on
-		// the
-		// // scrollForm
-		// // FIXME substract some spare space. There is room here for
-		// optimization
-		// gd.heightHint = Math.max(maxH - 35, 200);
-		// gd.widthHint = Math.max(maxW - 35, 200);
-		//
-		// table.setLayoutData(gd);
-		// getManagedForm().reflow(true);
-	}
-
-	@Override
-	public void setActive(boolean active) {
-		super.setActive(active);
-		if (active) {
-			refreshLayout();
 		}
 	}
 }
