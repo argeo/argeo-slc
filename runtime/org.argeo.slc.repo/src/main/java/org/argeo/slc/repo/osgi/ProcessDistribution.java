@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.CategorizedNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.ArgeoOsgiDistribution;
@@ -32,6 +33,17 @@ public class ProcessDistribution implements Runnable {
 			for (Iterator<? extends NameVersion> it = osgiDistribution
 					.nameVersions(); it.hasNext();)
 				processNameVersion(javaSession, it.next());
+
+			// Check sources
+			for (Iterator<? extends NameVersion> it = osgiDistribution
+					.nameVersions(); it.hasNext();) {
+				CategorizedNameVersion nv = (CategorizedNameVersion) it.next();
+				Artifact artifact = new DefaultArtifact(nv.getCategory(),
+						nv.getName() + ".source", "jar", nv.getVersion());
+				String path = MavenConventionsUtils.artifactPath("/", artifact);
+				if (!javaSession.itemExists(path))
+					log.warn("No source available for " + nv);
+			}
 
 			// explicitly create the corresponding modular distribution as we
 			// have here all necessary info.

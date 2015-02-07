@@ -109,7 +109,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			ZipEntry zentry = null;
 			entries: while ((zentry = zin.getNextEntry()) != null) {
 				String name = zentry.getName();
-				// log.debug(name);
+				if (log.isTraceEnabled())
+					log.trace("Zip entry " + name);
 				for (String exclude : excludes)
 					if (pathMatcher.match(exclude, name))
 						continue entries;
@@ -118,6 +119,11 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 					if (pathMatcher.match(include, name)) {
 						String groupId = includes.get(include);
 						JarInputStream jis = new JarInputStream(zin);
+						if (jis.getManifest() == null) {
+							log.warn("No MANIFEST in entry " + name
+									+ ", skipping...");
+							continue entries;
+						}
 						NameVersion nv = RepoUtils.readNameVersion(jis
 								.getManifest());
 						if (nv != null) {
@@ -127,6 +133,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 									groupId, nv.getName(), nv.getVersion(),
 									this);
 							nvs.add(cnv);
+							// no need to process further includes
+							continue entries;
 						}
 					}
 				}
@@ -248,6 +256,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 								addArtifactToIndex(sources, groupId, artifact);
 							else
 								addArtifactToIndex(binaries, groupId, artifact);
+							// no need to process this entry further
+							continue entries;
 						}
 					}
 				}
@@ -356,6 +366,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			in = new ByteArrayInputStream(binaryJarBytes);
 			NameVersion nameVersion = RepoUtils.readNameVersion(in);
 			if (nameVersion == null) {
+				log.warn("Cannot identify " + zentry.getName());
 				return null;
 			}
 			Artifact artifact = new DefaultArtifact(groupId,
