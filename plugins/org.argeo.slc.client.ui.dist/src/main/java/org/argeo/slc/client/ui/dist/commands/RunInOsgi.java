@@ -145,7 +145,7 @@ public class RunInOsgi extends AbstractHandler implements SlcNames {
 			StringBuilder conf = new StringBuilder(1024 * 1024);
 			conf.append("osgi.clean=true\n");
 			conf.append("osgi.console=7777\n");
-			conf.append("osgi.console.enable.builtin=true\n");
+			// conf.append("osgi.console.enable.builtin=true\n");
 
 			conf.append("osgi.bundles=");
 			coords: while (coordinates.hasNext()) {
