@@ -28,9 +28,9 @@
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
 	<scm>
-		<connection>scm:svn:https://svn.argeo.org/slc/trunk</connection>
-		<developerConnection>scm:svn:https://svn.argeo.org/slc/trunk</developerConnection>
-		<url>https://svn.argeo.org/slc/trunk</url>
+		<connection>scm:svn:https://svn.argeo.org/slc/branches/1.x</connection>
+		<developerConnection>scm:svn:https://svn.argeo.org/slc/branches/1.x</developerConnection>
+		<url>https://svn.argeo.org/slc/branches/1.x</url>
 	</scm>
 	<inceptionYear>2007</inceptionYear>
 	<licenses>
