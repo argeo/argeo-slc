@@ -12,9 +12,9 @@
 	<description>SLC is a framework integrating various build, deployment and testing technologies in order to build specific application life cycle management systems.</description>
 	<version>1.1.21-SNAPSHOT</version>
 	<properties>
-		<developmentCycle.slc>1.1</developmentCycle.slc>
-		<developmentCycle.startDate>2012-06-27</developmentCycle.startDate>
-		<version.slc>1.1.21-SNAPSHOT</version.slc>
+		<developmentCycle.slc>2.1</developmentCycle.slc>
+		<developmentCycle.startDate>2015-026-12</developmentCycle.startDate>
+		<version.slc>2.1.0</version.slc>
 	</properties>
 	<modules>
 		<module>runtime</module>
