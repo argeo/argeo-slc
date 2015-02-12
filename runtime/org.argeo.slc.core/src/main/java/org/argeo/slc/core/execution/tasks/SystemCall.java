@@ -624,8 +624,8 @@ public class SystemCall implements Runnable {
 	}
 
 	private synchronized ExecuteWatchdog createWatchdog() {
-		if (currentWatchdog != null)
-			throw new SlcException("A process is already being monitored");
+//		if (currentWatchdog != null)
+//			throw new SlcException("A process is already being monitored");
 		currentWatchdog = new ExecuteWatchdog(watchdogTimeout);
 		return currentWatchdog;
 	}
