@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2007-2012 Argeo GmbH
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:flow="http://www.argeo.org/schema/slc-flow"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang-2.5.xsd
+	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
+
+	<import resource="classpath:org/argeo/slc/core/execution/spring.xml" />
+	<import resource="classpath:/org/argeo/slc/core/test/spring.xml" />
+
+	<bean id="testResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+
+	<bean id="testDef" class="org.argeo.slc.core.test.BasicTestDefinition" />
+
+	<bean id="testRunTemplate" class="org.argeo.slc.core.test.SimpleTestRun" abstract="true">
+		<property name="testDefinition" ref="testDef" />
+		<property name="testResult" ref="testResult"/>
+	</bean>	
+
+	<flow:spec id="advanced.spec">
+		<description>spec description</description>
+		<flow:primitive name="param1" isParameter="true"
+			type="integer" />
+		<flow:primitive name="param2" isParameter="true"
+			type="integer" />			
+	</flow:spec>
+
+
+	<flow:flow id="advanced.flowTemplate" abstract="true" spec="advanced.spec"
+		path="/path">
+		<description>flow description</description>
+ 		<bean parent="task.echo">
+			<property name="message" value="Advanced: param1=@{param1}, param2=@{param2}" />
+			<flow:variable/>
+		</bean> 
+ 		<flow:flow>
+ 			<bean parent="task.echo" p:message="Flow in Flow - param1=@{param1}, param2=@{param2} [Not variable]" />
+ 		</flow:flow>
+ 
+		<bean parent="testRunTemplate">
+			<property name="testData">
+				<bean class="org.argeo.slc.core.test.BasicTestData">
+					<flow:variable/>
+					<property name="expected" value="@{param1}" />
+					<property name="reached" value="@{param2}" />
+				</bean>
+			</property>					
+		</bean>
+ 
+	</flow:flow>
+
+	<flow:flow id="advanced.flowTemplate2" abstract="true" spec="advanced.spec"
+		path="/path">
+ 		<bean parent="task.echo" p:message="Advanced2: param1=@{param1}, param2=@{param2}">
+			<flow:variable/>
+		</bean>
+		<flow:flow parent="advanced.flowTemplate">
+			<flow:arg name="param1" value="@{param1}"/>
+			<flow:arg name="param2">
+				<!-- flow:param in flow:arg -->
+				<flow:param name="param2" />
+			</flow:arg>
+		</flow:flow>
+	</flow:flow>
+
+	
+	<flow:flow id="flow1" parent="advanced.flowTemplate">
+		<flow:arg name="param1" value="1" />
+		<flow:arg name="param2" value="1" />
+	</flow:flow>
+	
+	<flow:flow id="flow2">
+		<flow:flow parent="advanced.flowTemplate">
+			<flow:arg name="param1" value="2" />
+			<flow:arg name="param2" value="2" />
+		</flow:flow>
+	</flow:flow>
+
+	<flow:flow id="flow3" parent="advanced.flowTemplate2">
+		<flow:arg name="param1" value="3" />
+		<flow:arg name="param2" value="3" />
+	</flow:flow>
+	
+	<flow:flow id="flow4" parent="advanced.flowTemplate">
+		<description>Would fail if param 2 is not changed at execution</description>
+		<flow:arg name="param1" value="4" />
+		<flow:arg name="param2" value="3" />
+	</flow:flow>	
+
+
+</beans>

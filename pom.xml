@@ -17,6 +17,7 @@
 	</properties>
 	<modules>
 		<module>org.argeo.slc.api</module>
+		<module>org.argeo.slc.core</module>
 
 <!-- 		<module>runtime</module> -->
 <!-- 		<module>modules</module> -->

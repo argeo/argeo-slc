@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (C) 2007-2012 Argeo GmbH
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+            http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd">
+
+	<import resource="../imports.xml" />
+
+	<bean id="systemCallSimple" parent="slcTemplate.simpleFlow">
+		<property name="executables">
+			<list>
+				<bean parent="task.echo">
+					<property name="message" value="os.name=${os.name}" />
+				</bean>
+				<bean parent="task.systemCall">
+					<property name="cmd" value="echo Hello World" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="systemCallList" parent="slcTemplate.simpleFlow">
+		<property name="executables">
+			<list>
+				<bean parent="task.systemCall">
+					<property name="command">
+						<list>
+							<value>echo</value>
+							<value>Hello</value>
+							<value>World</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="systemCallOsSpecific" parent="slcTemplate.simpleFlow">
+		<!-- Direct call to dir under Windows isnot working -->
+		<property name="executables">
+			<list>
+				<bean parent="task.systemCall">
+					<property name="cmd" value="dir" />
+					<property name="execDir" value="../.." />
+					<property name="osCmds">
+						<map>
+							<entry key="Linux" value="ls" />
+							<entry key="Mac OS X" value="ls" />
+						</map>
+					</property>
+				</bean>
+				<bean parent="task.systemCall">
+					<property name="command">
+						<list>
+							<value>dir</value>
+						</list>
+					</property>
+					<property name="osCommands">
+						<map>
+							<entry key="Linux">
+								<list>
+									<value>ls</value>
+								</list>
+							</entry>
+							<entry key="Mac OS X">
+								<list>
+									<value>ls</value>
+								</list>
+							</entry>
+						</map>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="systemCallWithVar" parent="slcTemplate.simpleFlow">
+		<constructor-arg>
+			<bean parent="slcTemplate.simpleSpec">
+				<property name="attributes">
+					<map>
+						<entry key="var">
+							<bean parent="specAttr.primitive" p:value="660" />
+						</entry>
+					</map>
+				</property>
+			</bean>
+		</constructor-arg>
+		<property name="executables">
+			<list>
+				<bean parent="task.systemCall" scope="execution">
+					<property name="cmd" value="echo var=@{var}" />
+					<aop:scoped-proxy />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+
+</beans>
