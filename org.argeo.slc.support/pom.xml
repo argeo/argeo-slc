@@ -8,4 +8,12 @@
 	</parent>
 	<artifactId>org.argeo.slc.support</artifactId>
 	<name>SLC Third Party Support</name>
+	<dependencies>
+		<!-- SLC Runtime -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.core</artifactId>
+			<version>2.1.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>

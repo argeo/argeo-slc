@@ -14,11 +14,14 @@
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
 		<version.slc>2.1.1-SNAPSHOT</version.slc>
+		<!-- Libraries versions -->
+		<version.argeo-tp-extras>2.1.5</version.argeo-tp-extras>
 	</properties>
 	<modules>
 		<module>org.argeo.slc.api</module>
 		<module>org.argeo.slc.core</module>
 		<module>org.argeo.slc.unit</module>
+		<module>org.argeo.slc.repo</module>
 
 <!-- 		<module>runtime</module> -->
 <!-- 		<module>modules</module> -->
@@ -117,7 +120,35 @@ limitations under the License.
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
 		</repository>
+		<!-- 
+		<repository>
+			<id>argeo-tp-extras</id>
+			<url>https://forge.argeo.org/data/public/java/argeo-tp-extras-2.1</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		 -->
+		<repository>
+			<id>argeo-tp-extras-local</id>
+			<url>http://localhost:7080/data/public/java/argeo-tp-extras-2.1</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
 	</repositories>
+	<dependencies>
+		<dependency>
+			<groupId>org.argeo.tp.extras</groupId>
+			<artifactId>argeo-tp-extras</artifactId>
+			<version>${version.argeo-tp-extras}</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 	<distributionManagement>
 		<repository>
 			<id>staging</id>

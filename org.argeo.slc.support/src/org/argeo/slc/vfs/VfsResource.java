@@ -23,9 +23,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.commons.io.IOExceptionWithCause;
-import org.apache.commons.vfs.FileObject;
-import org.apache.commons.vfs.FileSystemException;
-import org.apache.commons.vfs.NameScope;
+import org.apache.commons.vfs2.FileObject;
+import org.apache.commons.vfs2.FileSystemException;
+import org.apache.commons.vfs2.NameScope;
 import org.argeo.slc.SlcException;
 import org.springframework.core.io.Resource;
 
@@ -105,4 +105,7 @@ public class VfsResource implements Resource {
 		return fileObject;
 	}
 
+	public long contentLength(){
+		return -1;
+	}
 }

@@ -1,0 +1,6 @@
+Import-Package: org.apache.commons.logging,\
+org.dbunit.*;resolution:="optional",\
+junit.framework;resolution:="optional",\
+org.apache.commons.vfs.*,\
+javax.swing.plaf.metal,\
+*

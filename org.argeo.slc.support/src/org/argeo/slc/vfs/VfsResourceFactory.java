@@ -15,9 +15,9 @@
  */
 package org.argeo.slc.vfs;
 
-import org.apache.commons.vfs.CacheStrategy;
-import org.apache.commons.vfs.FileSystemManager;
-import org.apache.commons.vfs.impl.StandardFileSystemManager;
+import org.apache.commons.vfs2.CacheStrategy;
+import org.apache.commons.vfs2.FileSystemManager;
+import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;

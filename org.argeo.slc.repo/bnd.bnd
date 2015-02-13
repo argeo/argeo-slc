@@ -1,0 +1,6 @@
+Import-Package: org.w3c.dom.*,\
+org.xml.sax.*,\
+javax.xml.transform.*,\
+javax.xml.parsers.*,\
+javax.jcr.nodetype,\
+*
