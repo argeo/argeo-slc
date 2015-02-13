@@ -123,12 +123,9 @@ limitations under the License.
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
 		</repository>
-		<!-- <repository> <id>argeo-tp-extras</id> <url>https://forge.argeo.org/data/public/java/argeo-tp-extras-2.1</url> 
-			<releases> <enabled>true</enabled> <updatePolicy>daily</updatePolicy> <checksumPolicy>warn</checksumPolicy> 
-			</releases> </repository> -->
 		<repository>
-			<id>argeo-tp-extras-local</id>
-			<url>http://localhost:7080/data/public/java/argeo-tp-extras-2.1</url>
+			<id>argeo-tp-extras</id>
+			<url>https://forge.argeo.org/data/public/java/argeo-tp-extras-2.1</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -158,6 +155,26 @@ limitations under the License.
 	<profiles>
 		<profile>
 			<id>localrepo</id>
+			<repositories>
+				<repository>
+					<id>argeo-tp</id>
+					<url>http://localhost:7080/data/public/java/argeo-tp-${developmentCycle.argeo-commons}/</url>
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>daily</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</releases>
+				</repository>
+				<repository>
+					<id>argeo-tp-extras</id>
+					<url>http://localhost:7080/data/public/java/argeo-tp-extras-2.1</url>
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>daily</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</releases>
+				</repository>
+			</repositories>
 			<distributionManagement>
 				<repository>
 					<id>staging</id>
