@@ -1,8 +1,4 @@
-Import-Package: org.w3c.dom;version="0.0.0",\
-org.dbunit;resolution:="optional",\
-org.dbunit.database;resolution:="optional",\
-org.dbunit.dataset;resolution:="optional",\
-org.dbunit.dataset.xml;resolution:="optional",\
-org.dbunit.operation;resolution:="optional",\
+Import-Package: javax.jcr.nodetype,\
+org.apache.tools.ant.*;resolution:="optional",\
 junit.framework;resolution:="optional",\
 *
