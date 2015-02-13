@@ -46,35 +46,15 @@
 			<artifactId>org.argeo.slc.core</artifactId>
 			<version>2.1.1-SNAPSHOT</version>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.agent</artifactId> -->
+<!-- 			<version>2.1.1-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support.osgi</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support.equinox</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons.base</groupId>
+			<groupId>org.argeo.commons</groupId>
 			<artifactId>org.argeo.osgi.boot</artifactId>
 			<version>${version.argeo-commons}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>org.springframework.osgi.extender</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons.base</groupId>
-			<artifactId>org.argeo.dep.log4j</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
 		</dependency>
 
 		<!-- CLI Agent -->
@@ -83,103 +63,39 @@
 <!-- 			<artifactId>org.argeo.slc.launcher</artifactId> -->
 <!-- 			<version>1.1.12-SNAPSHOT</version> -->
 <!-- 		</dependency> -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent.cli</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.agent.cli</artifactId> -->
+<!-- 			<version>2.1.1-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
 
 		<!-- JCR Agent -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support.jcr</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent.jcr</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.agent.jcr</artifactId> -->
+<!-- 			<version>2.1.1-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.node.jackrabbit</artifactId> -->
+<!-- 			<version>2.1.1-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
 
 		<!-- Node subset -->
 		<!-- Default JCR repositories configurations -->
 		<dependency>
-			<groupId>org.argeo.commons.server</groupId>
-			<artifactId>org.argeo.node.repo.jackrabbit</artifactId>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.cms</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
 		<!-- Argeo Security -->
 		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
+			<groupId>org.argeo.commons</groupId>
 			<artifactId>org.argeo.security.core</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
-		<!-- VFS -->
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>org.apache.commons.vfs</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.argeo.tp</groupId>
-					<artifactId>org.apache.xmlcommons</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- Xerces and Xalan -->
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>org.apache.xmlcommons</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>org.apache.xalan</artifactId>
-		</dependency>
-
-		<!-- Javax -->
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>javax.annotation</artifactId>
-		</dependency>
-
-		<!-- Jackrabbit -->
-		<dependency>
-			<groupId>org.argeo.commons.server</groupId>
-			<artifactId>org.argeo.server.jackrabbit</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.jackrabbit</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
-
-		<!-- Security (Jackrabbit) -->
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.dao.jackrabbit</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
-
-		<!-- Security (Standalone) -->
-		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.dao.os</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
-
-		<!-- DB drivers -->
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>org.h2</artifactId>
-		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>

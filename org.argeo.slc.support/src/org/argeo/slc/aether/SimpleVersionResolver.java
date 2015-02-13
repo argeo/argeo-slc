@@ -15,11 +15,11 @@
  */
 package org.argeo.slc.aether;
 
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.impl.VersionResolver;
-import org.sonatype.aether.resolution.VersionRequest;
-import org.sonatype.aether.resolution.VersionResolutionException;
-import org.sonatype.aether.resolution.VersionResult;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.impl.VersionResolver;
+import org.eclipse.aether.resolution.VersionRequest;
+import org.eclipse.aether.resolution.VersionResolutionException;
+import org.eclipse.aether.resolution.VersionResult;
 
 public class SimpleVersionResolver implements VersionResolver {
 

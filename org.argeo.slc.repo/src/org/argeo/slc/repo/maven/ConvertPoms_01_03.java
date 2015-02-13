@@ -56,7 +56,7 @@ public class ConvertPoms_01_03 implements Runnable {
 				"org.apache.activemq.optional");
 		artifactMapping.put("org.argeo.dep.osgi.activemq.xmpp",
 				"org.apache.activemq.xmpp");
-		artifactMapping.put("org.argeo.dep.osgi.aether", "org.sonatype.aether");
+		artifactMapping.put("org.argeo.dep.osgi.aether", "org.eclipse.aether");
 		artifactMapping.put("org.argeo.dep.osgi.boilerpipe",
 				"de.l3s.boilerpipe");
 		artifactMapping.put("org.argeo.dep.osgi.commons.cli",

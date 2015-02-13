@@ -2,8 +2,8 @@ package org.argeo.slc.repo;
 
 import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.build.Distribution;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /** A {@link Distribution} based on an Aether {@link Artifact} */
 public class ArtifactDistribution implements Distribution,

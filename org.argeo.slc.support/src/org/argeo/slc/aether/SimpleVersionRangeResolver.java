@@ -16,12 +16,12 @@
 package org.argeo.slc.aether;
 
 import org.argeo.slc.aether.osgi.OsgiVersion;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.impl.VersionRangeResolver;
-import org.sonatype.aether.resolution.VersionRangeRequest;
-import org.sonatype.aether.resolution.VersionRangeResolutionException;
-import org.sonatype.aether.resolution.VersionRangeResult;
-import org.sonatype.aether.version.Version;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.impl.VersionRangeResolver;
+import org.eclipse.aether.resolution.VersionRangeRequest;
+import org.eclipse.aether.resolution.VersionRangeResolutionException;
+import org.eclipse.aether.resolution.VersionRangeResult;
+import org.eclipse.aether.version.Version;
 
 public class SimpleVersionRangeResolver implements VersionRangeResolver {
 

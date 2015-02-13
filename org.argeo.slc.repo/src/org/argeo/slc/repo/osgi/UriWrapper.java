@@ -18,8 +18,8 @@ import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.RepoUtils;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 import aQute.lib.osgi.Jar;
 

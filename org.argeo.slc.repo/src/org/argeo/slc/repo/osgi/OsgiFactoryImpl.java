@@ -28,8 +28,8 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.NodeIndexer;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /** Default implementation of {@link OsgiFactory}. */
 public class OsgiFactoryImpl implements OsgiFactory, SlcNames {

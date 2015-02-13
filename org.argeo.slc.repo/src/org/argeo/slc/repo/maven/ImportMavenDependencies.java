@@ -41,9 +41,9 @@ import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.graph.DependencyNode;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Import all the dependencies listed in a POM and their dependency graphs to a

@@ -40,8 +40,8 @@ import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.osgi.framework.Version;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Generates binaries-, sources- and sdk-version.pom artifacts for a given

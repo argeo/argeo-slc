@@ -44,8 +44,8 @@ import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Make sure that all JCR metadata and Maven metadata are consistent for this

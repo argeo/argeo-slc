@@ -28,7 +28,7 @@ import org.argeo.slc.aether.AetherUtils;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.osgi.framework.Constants;
-import org.sonatype.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.Artifact;
 
 /**
  * Add {@link Artifact} properties to a {@link Node}. Does nothing if the node

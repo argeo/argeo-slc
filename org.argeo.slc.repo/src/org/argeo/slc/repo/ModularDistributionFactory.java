@@ -23,8 +23,8 @@ import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.osgi.framework.Constants;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Creates a jar bundle from an ArgeoOsgiDistribution. This jar is then

@@ -16,9 +16,9 @@ import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.RepoUtils;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
-import org.sonatype.aether.util.artifact.SubArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.util.artifact.SubArtifact;
 
 /**
  * BND wrapper based on a Maven artifact available from one of the configured

@@ -17,8 +17,8 @@ package org.argeo.slc.aether;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sonatype.aether.AbstractRepositoryListener;
-import org.sonatype.aether.RepositoryEvent;
+import org.eclipse.aether.AbstractRepositoryListener;
+import org.eclipse.aether.RepositoryEvent;
 
 public class ConsoleRepositoryListener extends AbstractRepositoryListener {
 

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.commons</groupId>
@@ -21,17 +22,18 @@
 		<module>org.argeo.slc.api</module>
 		<module>org.argeo.slc.core</module>
 		<module>org.argeo.slc.unit</module>
+		<module>org.argeo.slc.support</module>
 		<module>org.argeo.slc.repo</module>
 
-<!-- 		<module>runtime</module> -->
-<!-- 		<module>modules</module> -->
-<!-- 		<module>plugins</module> -->
-<!-- 		<module>archetypes</module> -->
+		<!-- <module>runtime</module> -->
+		<!-- <module>modules</module> -->
+		<!-- <module>plugins</module> -->
+		<!-- <module>archetypes</module> -->
 
-<!-- 		<module>lib</module> -->
-<!-- 		<module>dep</module> -->
-<!-- 		<module>dist</module> -->
-<!-- 		<module>demo</module> -->
+		<!-- <module>lib</module> -->
+		<module>dep</module>
+		<!-- <module>dist</module> -->
+		<!-- <module>demo</module> -->
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
 	<scm>
@@ -120,17 +122,9 @@ limitations under the License.
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
 		</repository>
-		<!-- 
-		<repository>
-			<id>argeo-tp-extras</id>
-			<url>https://forge.argeo.org/data/public/java/argeo-tp-extras-2.1</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-		</repository>
-		 -->
+		<!-- <repository> <id>argeo-tp-extras</id> <url>https://forge.argeo.org/data/public/java/argeo-tp-extras-2.1</url> 
+			<releases> <enabled>true</enabled> <updatePolicy>daily</updatePolicy> <checksumPolicy>warn</checksumPolicy> 
+			</releases> </repository> -->
 		<repository>
 			<id>argeo-tp-extras-local</id>
 			<url>http://localhost:7080/data/public/java/argeo-tp-extras-2.1</url>

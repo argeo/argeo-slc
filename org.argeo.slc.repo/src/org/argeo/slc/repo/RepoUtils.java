@@ -65,8 +65,8 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.argeo.util.security.Keyring;
 import org.osgi.framework.Constants;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /** Utilities around repo */
 public class RepoUtils implements ArgeoNames, SlcNames {

@@ -1,7 +1,7 @@
 package org.argeo.slc.repo;
 
-import static org.freecompany.redline.header.Header.HeaderTag.HEADERIMMUTABLE;
-import static org.freecompany.redline.header.Signature.SignatureTag.SIGNATURES;
+import static org.redline_rpm.header.Header.HeaderTag.HEADERIMMUTABLE;
+import static org.redline_rpm.header.Signature.SignatureTag.SIGNATURES;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -15,11 +15,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.freecompany.redline.ChannelWrapper.Key;
-import org.freecompany.redline.ReadableChannelWrapper;
-import org.freecompany.redline.header.AbstractHeader;
-import org.freecompany.redline.header.Format;
-import org.freecompany.redline.header.Header;
+import org.redline_rpm.ChannelWrapper.Key;
+import org.redline_rpm.ReadableChannelWrapper;
+import org.redline_rpm.header.AbstractHeader;
+import org.redline_rpm.header.Format;
+import org.redline_rpm.header.Header;
 
 /** Indexes an RPM file. */
 public class RpmIndexer implements NodeIndexer, SlcNames {

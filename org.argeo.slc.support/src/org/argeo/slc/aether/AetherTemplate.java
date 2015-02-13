@@ -19,16 +19,16 @@ import java.io.File;
 import java.util.List;
 
 import org.argeo.slc.SlcException;
-import org.sonatype.aether.RepositorySystem;
-import org.sonatype.aether.RepositorySystemSession;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.collection.CollectRequest;
-import org.sonatype.aether.graph.Dependency;
-import org.sonatype.aether.graph.DependencyNode;
-import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.ArtifactRequest;
-import org.sonatype.aether.resolution.ArtifactResolutionException;
-import org.sonatype.aether.resolution.ArtifactResult;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.resolution.ArtifactRequest;
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.ArtifactResult;
 
 /** Simplifies access to Aether. */
 public class AetherTemplate {
@@ -78,8 +78,10 @@ public class AetherTemplate {
 			DependencyNode node = repositorySystem.collectDependencies(
 					repositorySystemSession, collectRequest).getRoot();
 
-			repositorySystem.resolveDependencies(repositorySystemSession, node,
-					null);
+			// FIXME adapt to changes in Aether
+			// repositorySystem.resolveDependencies(repositorySystemSession,
+			// node,
+			// null);
 			return node;
 		} catch (Exception e) {
 			throw new SlcException("Cannot resolve dependencies of " + artifact

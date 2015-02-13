@@ -15,8 +15,8 @@
  */
 package org.argeo.slc.aether.spring;
 
-import org.sonatype.aether.repository.Authentication;
-import org.sonatype.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.Authentication;
+import org.eclipse.aether.repository.RemoteRepository;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 
@@ -30,14 +30,15 @@ public class RemoteRepositoryFactory implements BeanNameAware, FactoryBean {
 	private String password;
 
 	public Object getObject() throws Exception {
-		RemoteRepository remoteRepository = new RemoteRepository(
-				id != null ? id : beanName, type, url);
-		if (username != null) {
-			Authentication authentication = new Authentication(username,
-					password);
-			remoteRepository.setAuthentication(authentication);
-		}
-		return remoteRepository;
+		// FIXME Adapt to changes in Aether
+//		RemoteRepository remoteRepository = new RemoteRepository(
+//				id != null ? id : beanName, type, url);
+//		if (username != null) {
+//			Authentication authentication = new Authentication(username,
+//					password);
+//			remoteRepository.setAuthentication(authentication);
+//		}
+		return null;
 	}
 
 	public Class<?> getObjectType() {

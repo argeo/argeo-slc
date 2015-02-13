@@ -37,7 +37,7 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.MavenProxyService;
 import org.argeo.slc.repo.RepoConstants;
-import org.sonatype.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RemoteRepository;
 
 /** Synchronises the node repository with remote Maven repositories */
 public class MavenProxyServiceImpl extends AbstractUrlProxy implements

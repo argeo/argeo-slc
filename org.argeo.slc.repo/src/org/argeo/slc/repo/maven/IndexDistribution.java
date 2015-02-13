@@ -31,7 +31,7 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
-import org.sonatype.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.Artifact;
 
 /** Create a distribution node from a set of artifacts */
 public class IndexDistribution implements Runnable {

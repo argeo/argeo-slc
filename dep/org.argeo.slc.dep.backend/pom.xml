@@ -59,40 +59,35 @@
 		<!-- Extensions -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support.simple</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support.ant</artifactId>
+			<artifactId>org.argeo.slc.support</artifactId>
 			<version>2.1.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SLC Repo -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.rpmfactory</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.server.repo</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.server.repo.webapp</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.repo</artifactId> -->
+<!-- 			<version>2.1.1-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.factory</artifactId> -->
+<!-- 			<version>2.1.1-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.server.repo</artifactId> -->
+<!-- 			<version>2.1.1-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.server.repo.webapp</artifactId> -->
+<!-- 			<version>2.1.1-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
 
 		<!-- Node -->
 		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
+			<groupId>org.argeo.commons</groupId>
 			<artifactId>org.argeo.security.dep.node</artifactId>
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>

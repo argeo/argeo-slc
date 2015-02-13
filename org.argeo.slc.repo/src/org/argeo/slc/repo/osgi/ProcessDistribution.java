@@ -16,8 +16,8 @@ import org.argeo.slc.repo.ArgeoOsgiDistribution;
 import org.argeo.slc.repo.ModularDistributionFactory;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /** Executes the processes required so that all managed bundles are available. */
 public class ProcessDistribution implements Runnable {

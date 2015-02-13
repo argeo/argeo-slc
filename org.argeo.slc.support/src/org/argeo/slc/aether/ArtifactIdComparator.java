@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.aether.osgi;
+package org.argeo.slc.aether;
 
-import org.osgi.framework.Version;
+import java.util.Comparator;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
+import org.eclipse.aether.artifact.Artifact;
 
 /**
- * Wraps an OSGi {@link Version} as an Aether
- * {@link org.sonatype.aether.version.Version}.
+ * Compare two artifacts, for use in {@link TreeSet} / {@link TreeMap}, consider
+ * artifactId first THEN groupId
  */
-public class OsgiVersion implements org.sonatype.aether.version.Version {
-	final private Version version;
-
-	public OsgiVersion(String str) {
-		version = Version.parseVersion(str);
+public class ArtifactIdComparator implements Comparator<Artifact> {
+	public int compare(Artifact o1, Artifact o2) {
+		if (o1.getArtifactId().equals(o2.getArtifactId()))
+			return o1.getGroupId().compareTo(o2.getGroupId());
+		return o1.getArtifactId().compareTo(o2.getArtifactId());
 	}
 
-	public Version getVersion() {
-		return version;
-	}
-
-	public int compareTo(org.sonatype.aether.version.Version v) {
-		if (!(v instanceof OsgiVersion))
-			return 0;
-		OsgiVersion ov = (OsgiVersion) v;
-		return version.compareTo(ov.version);
-	}
 }

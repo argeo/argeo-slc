@@ -35,8 +35,8 @@ import org.argeo.slc.build.Distribution;
 import org.argeo.slc.build.License;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.RepoUtils;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 

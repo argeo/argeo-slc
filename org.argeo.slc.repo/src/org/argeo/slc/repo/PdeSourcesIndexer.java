@@ -29,8 +29,8 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Creates pde sources from a source {@link Artifact} with name

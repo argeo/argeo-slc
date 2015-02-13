@@ -50,8 +50,8 @@ import org.argeo.slc.repo.JarFileIndexer;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.osgi.OsgiProfile;
 import org.osgi.framework.Constants;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Migrate the distribution from 1.2 to 1.4 by cleaning naming and dependencies.

@@ -37,8 +37,8 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.JarFileIndexer;
 import org.argeo.slc.repo.RepoUtils;
-import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.util.artifact.DefaultArtifact;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Import all bundles in a zip file (typically an Eclipse distribution) into the
