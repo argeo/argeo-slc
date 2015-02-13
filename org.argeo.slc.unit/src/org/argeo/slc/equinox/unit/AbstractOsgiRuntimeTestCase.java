@@ -32,7 +32,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.springframework.context.ApplicationContext;
-import org.springframework.osgi.util.OsgiStringUtils;
+import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 
 @SuppressWarnings("restriction")
 public abstract class AbstractOsgiRuntimeTestCase extends TestCase {
