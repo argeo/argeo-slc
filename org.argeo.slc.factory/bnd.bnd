@@ -1,0 +1,4 @@
+Import-Package: javax.jcr.nodetype,\
+org.argeo.slc.repo,\
+*
+							

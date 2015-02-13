@@ -24,6 +24,7 @@
 		<module>org.argeo.slc.unit</module>
 		<module>org.argeo.slc.support</module>
 		<module>org.argeo.slc.repo</module>
+		<module>org.argeo.slc.factory</module>
 
 		<!-- <module>runtime</module> -->
 		<!-- <module>modules</module> -->
