@@ -225,8 +225,8 @@ public class OsgiExecutionModulesManager extends
 				+ flowName + "))"
 				: "(&(Bundle-SymbolicName=" + moduleName + ")(Bundle-Version="
 						+ moduleVersion
-						+ ")(org.eclipse.gemini.blueprint.bean.name=" + flowName
-						+ "))";
+						+ ")(org.eclipse.gemini.blueprint.bean.name="
+						+ flowName + "))";
 		return bundlesManager.getSingleServiceStrict(ExecutionFlow.class,
 				filter, true);
 	}
@@ -457,6 +457,9 @@ public class OsgiExecutionModulesManager extends
 	/** Unregisters an execution context. */
 	public synchronized void unregister(ExecutionContext executionContext,
 			Map<String, String> properties) {
+		// FIXME why are properties null?
+		if (properties == null)
+			return;
 		OsgiBundle osgiBundle = asOsgiBundle(properties);
 		if (executionContexts.containsKey(osgiBundle)) {
 			executionContexts.remove(osgiBundle);
@@ -493,6 +496,9 @@ public class OsgiExecutionModulesManager extends
 	/** Unregisters an execution flow. */
 	public synchronized void unregister(ExecutionFlow executionFlow,
 			Map<String, String> properties) {
+		// FIXME why are properties null?
+		if(properties==null)
+			return;
 		OsgiBundle osgiBundle = asOsgiBundle(properties);
 		if (executionFlows.containsKey(osgiBundle)) {
 			Set<ExecutionFlow> flows = executionFlows.get(osgiBundle);
