@@ -28,9 +28,11 @@ import org.eclipse.ui.PartInitException;
  * repository
  */
 public class ModularDistVersionEditor extends ArtifactVersionEditor {
+	private static final long serialVersionUID = -2223542780164288554L;
+
 	// private final static Log log =
 	// LogFactory.getLog(ModularDistVersionEditor.class);
-	public final static String ID = DistPlugin.ID + ".modularDistVersionEditor";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".modularDistVersionEditor";
 
 	@Override
 	public void init(IEditorSite site, IEditorInput input)

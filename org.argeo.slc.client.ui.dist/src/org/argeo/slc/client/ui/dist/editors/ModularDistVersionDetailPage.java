@@ -33,9 +33,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
-/**
- * Show the details for a given bundle.
- */
+/** Show the details for a given bundle. */
 public class ModularDistVersionDetailPage extends FormPage implements SlcNames {
 
 	final static String PAGE_ID = "ModularDistVersionDetailPage";

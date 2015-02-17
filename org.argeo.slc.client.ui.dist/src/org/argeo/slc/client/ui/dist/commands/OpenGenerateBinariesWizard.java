@@ -28,13 +28,11 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/**
- * Open a {@code GenerateBinariesWizard} wizard for the selected node
- */
+/** Open a {@code GenerateBinariesWizard} wizard for the selected node */
 public class OpenGenerateBinariesWizard extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
 
-	public final static String ID = DistPlugin.ID
+	public final static String ID = DistPlugin.PLUGIN_ID
 			+ ".openGenerateBinariesWizard";
 	public final static String DEFAULT_LABEL = "Generate Aether Index";
 	public final static ImageDescriptor DEFAULT_ICON = null;
@@ -68,7 +66,7 @@ public class OpenGenerateBinariesWizard extends AbstractHandler {
 
 		return null;
 	}
-	
+
 	/* DEPENDENCY INJECTION */
 	public void setRepoService(RepoService repoService) {
 		this.repoService = repoService;

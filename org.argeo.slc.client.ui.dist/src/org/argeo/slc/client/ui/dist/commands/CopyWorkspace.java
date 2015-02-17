@@ -29,9 +29,9 @@ import org.argeo.ArgeoException;
 import org.argeo.ArgeoMonitor;
 import org.argeo.eclipse.ui.EclipseArgeoMonitor;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.util.security.Keyring;
@@ -49,20 +49,18 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/**
- * Create a copy of the chosen workspace in a remote repository.
- */
+/** Create a copy of the chosen workspace in a remote repository */
 public class CopyWorkspace extends AbstractHandler {
 	private static final Log log = LogFactory.getLog(CopyWorkspace.class);
 
-	public final static String ID = DistPlugin.ID + ".copyWorkspace";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".copyWorkspace";
 	public final static String DEFAULT_LABEL = "Duplicate...";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/addItem.gif");
 
 	public final static String PARAM_SOURCE_WORKSPACE_NAME = "srcWkspName";
 	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
-	
+
 	// DEPENDENCY INJECTION
 	private RepositoryFactory repositoryFactory;
 	private Keyring keyring;
@@ -124,7 +122,7 @@ public class CopyWorkspace extends AbstractHandler {
 			this.targetWkspName = targetWkspName;
 			this.display = display;
 		}
-		
+
 		@Override
 		protected IStatus doRun(IProgressMonitor progressMonitor) {
 			long begin = System.currentTimeMillis();
@@ -132,7 +130,7 @@ public class CopyWorkspace extends AbstractHandler {
 			ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
 			monitor.beginTask("Copy workspace", -1);
 			monitor.subTask("Copying nodes");
-			
+
 			Session nodeSession = null;
 			Session srcSession = null;
 			Session newSession = null;
@@ -183,7 +181,6 @@ public class CopyWorkspace extends AbstractHandler {
 			return Status.OK_STATUS;
 		}
 
-		
 	}
 
 	/* DEPENDENCY INJECTION */

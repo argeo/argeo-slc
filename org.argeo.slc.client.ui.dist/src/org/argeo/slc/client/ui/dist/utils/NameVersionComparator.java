@@ -20,7 +20,8 @@ import org.eclipse.jface.viewers.ViewerComparator;
  */
 
 public class NameVersionComparator extends ViewerComparator {
-
+	private static final long serialVersionUID = 8290130681918221197L;
+	
 	private VersionComparator vc = new VersionComparator();
 
 	@Override

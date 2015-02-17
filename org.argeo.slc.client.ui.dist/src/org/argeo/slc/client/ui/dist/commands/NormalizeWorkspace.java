@@ -60,7 +60,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 	private final static Log log = LogFactory.getLog(NormalizeWorkspace.class);
 
-	public final static String ID = DistPlugin.ID + ".normalizeWorkspace";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".normalizeWorkspace";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/normalize.gif");
 
@@ -151,7 +151,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 						+ e.getMessage());
 				if (log.isErrorEnabled())
 					e.printStackTrace();
-				return new Status(IStatus.ERROR, DistPlugin.ID,
+				return new Status(IStatus.ERROR, DistPlugin.PLUGIN_ID,
 						"Cannot normalize distribution "
 								+ session.getWorkspace().getName(), e);
 			} finally {

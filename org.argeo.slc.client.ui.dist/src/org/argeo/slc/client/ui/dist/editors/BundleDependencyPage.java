@@ -97,7 +97,6 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 			part = toolkit.createComposite(body);
 			createReqBundleSection(part);
 			gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-			// /gd.heightHint = 200;
 			part.setLayoutData(gd);
 
 			managedForm.reflow(true);
@@ -148,6 +147,8 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(400);
 
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = 1376400790495130862L;
+
 			@Override
 			public String getText(Object element) {
 				if (element instanceof Node)
@@ -173,6 +174,7 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 		});
 
 		viewer.setContentProvider(new ITreeContentProvider() {
+			private static final long serialVersionUID = 1898086304761992568L;
 
 			public void dispose() {
 			}
@@ -273,6 +275,8 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(350);
 		col.getColumn().setText("Name");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = -7836022945221936898L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_NAME);
@@ -289,6 +293,8 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(100);
 		col.getColumn().setText("Version");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = -8277731617775091641L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_VERSION);
@@ -300,6 +306,8 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(100);
 		col.getColumn().setText("Optional");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = -2388533169594840688L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_OPTIONAL);
@@ -336,6 +344,8 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(300);
 		col.getColumn().setText("Name");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = 4423640365819800247L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_SYMBOLIC_NAME);
@@ -352,6 +362,8 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(140);
 		col.getColumn().setText("Version");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = 1898477425996646270L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_BUNDLE_VERSION);
@@ -363,6 +375,8 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(100);
 		col.getColumn().setText("Optional");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = -7029999152302445581L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_OPTIONAL);
@@ -421,6 +435,7 @@ public class BundleDependencyPage extends FormPage implements SlcNames {
 	}
 
 	private class TableContentProvider implements IStructuredContentProvider {
+		private static final long serialVersionUID = 4133284637336320455L;
 		private String nodeType;
 		private String orderBy;
 

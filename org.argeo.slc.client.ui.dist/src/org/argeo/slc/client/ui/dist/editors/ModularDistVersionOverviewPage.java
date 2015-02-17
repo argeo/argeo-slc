@@ -35,6 +35,8 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.workbench.CommandUtils;
 import org.argeo.jcr.JcrUtils;
@@ -42,15 +44,17 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
-import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
+import org.argeo.slc.client.ui.dist.utils.HyperlinkAdapter;
 import org.argeo.slc.client.ui.dist.utils.DistNodeViewerComparator;
-import org.argeo.slc.client.ui.specific.OpenJcrFile;
-import org.argeo.slc.client.ui.specific.OpenJcrFileCmdId;
+//import org.argeo.slc.client.ui.specific.OpenJcrFile;
+//import org.argeo.slc.client.ui.specific.OpenJcrFileCmdId;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -83,8 +87,6 @@ import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
 
 /**
  * Show all modules contained in a given modular distribution as filter-able
@@ -92,6 +94,9 @@ import org.eclipse.aether.artifact.DefaultArtifact;
  */
 public class ModularDistVersionOverviewPage extends FormPage implements
 		SlcNames {
+
+	private final static Log log = LogFactory
+			.getLog(ModularDistVersionOverviewPage.class);
 
 	final static String PAGE_ID = "ModularDistVersionOverviewPage";
 
@@ -209,7 +214,7 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 			final Hyperlink link = tk.createHyperlink(parent,
 					modularDistribution.getProperty(jcrPropName).getString(),
 					SWT.NONE);
-			link.addHyperlinkListener(new AbstractHyperlinkListener() {
+			link.addHyperlinkListener(new HyperlinkAdapter() {
 				@Override
 				public void linkActivated(HyperlinkEvent e) {
 					try {
@@ -263,7 +268,7 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		}
 	}
 
-	private class OpenFileLinkListener extends AbstractHyperlinkListener {
+	private class OpenFileLinkListener extends HyperlinkAdapter {
 		final private String path;
 
 		public OpenFileLinkListener(String path) {
@@ -272,21 +277,25 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 
 		@Override
 		public void linkActivated(HyperlinkEvent e) {
-			try {
-				ModuleEditorInput editorInput = (ModuleEditorInput) getEditorInput();
-				Map<String, String> params = new HashMap<String, String>();
-				params.put(OpenJcrFile.PARAM_REPO_NODE_PATH,
-						editorInput.getRepoNodePath());
-				params.put(OpenJcrFile.PARAM_REPO_URI, editorInput.getUri());
-				params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
-						editorInput.getWorkspaceName());
-				params.put(OpenJcrFile.PARAM_FILE_PATH, path);
+			log.warn("File download must be implemented. Cannot provide access to "
+					+ path);
 
-				String cmdId = (new OpenJcrFileCmdId()).getCmdId();
-				CommandUtils.callCommand(cmdId, params);
-			} catch (Exception ex) {
-				throw new SlcException("error opening browser", ex); //$NON-NLS-1$
-			}
+			// try {
+			// ModuleEditorInput editorInput = (ModuleEditorInput)
+			// getEditorInput();
+			// Map<String, String> params = new HashMap<String, String>();
+			// params.put(OpenJcrFile.PARAM_REPO_NODE_PATH,
+			// editorInput.getRepoNodePath());
+			// params.put(OpenJcrFile.PARAM_REPO_URI, editorInput.getUri());
+			// params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
+			// editorInput.getWorkspaceName());
+			// params.put(OpenJcrFile.PARAM_FILE_PATH, path);
+			//
+			// String cmdId = (new OpenJcrFileCmdId()).getCmdId();
+			// CommandUtils.callCommand(cmdId, params);
+			// } catch (Exception ex) {
+			//				throw new SlcException("error opening browser", ex); //$NON-NLS-1$
+			// }
 		}
 	}
 
@@ -326,6 +335,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		filterTxt.setMessage(FILTER_HELP_MSG);
 		filterTxt.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		filterTxt.addModifyListener(new ModifyListener() {
+			private static final long serialVersionUID = -276152321986407726L;
+
 			public void modifyText(ModifyEvent event) {
 				refresh();
 			}
@@ -334,6 +345,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		Button resetBtn = tk.createButton(parent, null, SWT.PUSH);
 		resetBtn.setImage(DistImages.IMG_CLEAR);
 		resetBtn.addSelectionListener(new SelectionAdapter() {
+			private static final long serialVersionUID = -3549303742841670919L;
+
 			public void widgetSelected(SelectionEvent e) {
 				filterTxt.setText("");
 				filterTxt.setMessage(FILTER_HELP_MSG);
@@ -356,6 +369,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		col.getColumn().setWidth(220);
 		col.getColumn().setText("Category");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = 5875398301711336875L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SlcNames.SLC_CATEGORY);
@@ -370,6 +385,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		col.getColumn().setWidth(220);
 		col.getColumn().setText("Name");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = 3880240676256465072L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_NAME);
@@ -384,6 +401,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		col.getColumn().setWidth(160);
 		col.getColumn().setText("Version");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = -4706438113850571784L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_VERSION);
@@ -398,6 +417,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 		col.getColumn().setWidth(160);
 		col.getColumn().setText("Exists in workspace");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = 8190063212920414300L;
+
 			@Override
 			public String getText(Object element) {
 				return getRealizedModule((Node) element) != null ? "Yes" : "No";
@@ -546,6 +567,8 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 
 	private SelectionAdapter getSelectionAdapter(final int index) {
 		SelectionAdapter selectionAdapter = new SelectionAdapter() {
+			private static final long serialVersionUID = 1260801795934660840L;
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Table table = viewer.getTable();
@@ -567,6 +590,7 @@ public class ModularDistVersionOverviewPage extends FormPage implements
 	/* LOCAL CLASSES */
 	private class DistributionsContentProvider implements
 			IStructuredContentProvider {
+		private static final long serialVersionUID = 8385338190908823791L;
 		// we keep a cache of the Nodes in the content provider to be able to
 		// manage long request
 		private List<Node> nodes;

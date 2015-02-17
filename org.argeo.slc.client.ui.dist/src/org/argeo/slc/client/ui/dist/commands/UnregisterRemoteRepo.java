@@ -33,19 +33,19 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
- * Unregisters a remote repository by deleting the corresponding RepoNode from
+ * Un-register a remote repository by deleting the corresponding RepoNode from
  * the node Repository. It does not affect the repository instance
  */
 public class UnregisterRemoteRepo extends AbstractHandler {
 	// private static final Log log = LogFactory
 	// .getLog(UnregisterRemoteRepo.class);
 	
-	public final static String ID = DistPlugin.ID + ".unregisterRemoteRepo";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".unregisterRemoteRepo";
 	public final static String DEFAULT_LABEL = "Unregister";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/removeItem.gif");
 
-	public final static String PARAM_REPO_PATH = DistPlugin.ID
+	public final static String PARAM_REPO_PATH = DistPlugin.PLUGIN_ID
 			+ ".repoNodePath";
 
 	// DEPENCY INJECTION

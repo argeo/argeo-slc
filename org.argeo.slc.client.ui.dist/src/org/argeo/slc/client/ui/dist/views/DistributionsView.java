@@ -75,7 +75,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	// private final static Log log =
 	// LogFactory.getLog(DistributionsView.class);
 
-	public final static String ID = DistPlugin.ID + ".distributionsView";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".distributionsView";
 
 	/* DEPENDENCY INJECTION */
 	private Repository nodeRepository;
@@ -113,6 +113,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getTree());
 		menuManager.addMenuListener(new IMenuListener() {
+			private static final long serialVersionUID = -1454108001335038652L;
+
 			public void menuAboutToShow(IMenuManager manager) {
 				contextMenuAboutToShow(manager);
 			}
@@ -205,7 +207,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						targetRepoPath);
 				params.put(CreateWorkspace.PARAM_WORKSPACE_PREFIX,
 						workspacePrefix);
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
+				CommandUtils.refreshParameterizedCommand(menuManager, window,
 						CreateWorkspace.ID, CreateWorkspace.DEFAULT_LABEL,
 						CreateWorkspace.DEFAULT_ICON,
 						(isRepoElem || isDistribGroupElem) && singleElement
@@ -215,7 +217,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params = new HashMap<String, String>();
 				params.put(CreateLocalJavaWorkspace.PARAM_WORKSPACE_PREFIX,
 						workspacePrefix);
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
+				CommandUtils.refreshParameterizedCommand(menuManager, window,
 						CreateLocalJavaWorkspace.ID,
 						CreateLocalJavaWorkspace.DEFAULT_LABEL,
 						CreateLocalJavaWorkspace.DEFAULT_ICON,
@@ -232,7 +234,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				// Unregister a remote repository
 				params = new HashMap<String, String>();
 				params.put(UnregisterRemoteRepo.PARAM_REPO_PATH, targetRepoPath);
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
+				CommandUtils.refreshParameterizedCommand(menuManager, window,
 						UnregisterRemoteRepo.ID,
 						UnregisterRemoteRepo.DEFAULT_LABEL,
 						UnregisterRemoteRepo.DEFAULT_ICON, isRepoElem
@@ -241,7 +243,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				// Fetch repository
 				params = new HashMap<String, String>();
 				params.put(Fetch.PARAM_TARGET_REPO_PATH, targetRepoPath);
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
+				CommandUtils.refreshParameterizedCommand(menuManager, window,
 						Fetch.ID, Fetch.DEFAULT_LABEL, Fetch.DEFAULT_ICON,
 						isRepoElem && isLocal && singleElement && !isReadOnly,
 						params);
@@ -253,7 +255,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(NormalizeWorkspace.PARAM_WORKSPACE_NAME,
 						workspaceName);
 
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
+				CommandUtils.refreshParameterizedCommand(menuManager, window,
 						NormalizeWorkspace.ID, "Normalize...",
 						NormalizeWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
@@ -263,7 +265,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(CopyWorkspace.PARAM_TARGET_REPO_PATH, targetRepoPath);
 				params.put(CopyWorkspace.PARAM_SOURCE_WORKSPACE_NAME,
 						workspaceName);
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
+				CommandUtils.refreshParameterizedCommand(menuManager, window,
 						CopyWorkspace.ID, CopyWorkspace.DEFAULT_LABEL,
 						CopyWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isLocal, params);
@@ -271,7 +273,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params = new HashMap<String, String>();
 				params.put(CopyLocalJavaWorkspace.PARAM_SOURCE_WORKSPACE_NAME,
 						workspaceName);
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
+				CommandUtils.refreshParameterizedCommand(menuManager, window,
 						CopyLocalJavaWorkspace.ID,
 						CopyLocalJavaWorkspace.DEFAULT_LABEL,
 						CopyLocalJavaWorkspace.DEFAULT_ICON, isDistribElem
@@ -282,15 +284,15 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(DeleteWorkspace.PARAM_TARGET_REPO_PATH,
 						targetRepoPath);
 				params.put(DeleteWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
-				CommandUtils.refreshParametrizedCommand(menuManager, window,
+				CommandUtils.refreshParameterizedCommand(menuManager, window,
 						DeleteWorkspace.ID, DeleteWorkspace.DEFAULT_LABEL,
 						DeleteWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
 
 				// Advanced submenu
-				MenuManager submenu = new MenuManager("Advanced", DistPlugin.ID
-						+ ".advancedSubmenu");
-				IContributionItem ici = menuManager.find(DistPlugin.ID
+				MenuManager submenu = new MenuManager("Advanced",
+						DistPlugin.PLUGIN_ID + ".advancedSubmenu");
+				IContributionItem ici = menuManager.find(DistPlugin.PLUGIN_ID
 						+ ".advancedSubmenu");
 				if (ici != null)
 					menuManager.remove(ici);
@@ -300,7 +302,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(PublishWorkspace.PARAM_TARGET_REPO_PATH,
 						targetRepoPath);
 				params.put(PublishWorkspace.PARAM_WORKSPACE_NAME, workspaceName);
-				CommandUtils.refreshParametrizedCommand(submenu, window,
+				CommandUtils.refreshParameterizedCommand(submenu, window,
 						PublishWorkspace.ID, PublishWorkspace.DEFAULT_LABEL,
 						PublishWorkspace.DEFAULT_ICON, isDistribElem
 								&& singleElement && !isReadOnly, params);
@@ -311,7 +313,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 						targetRepoPath);
 				params.put(NormalizeDistribution.PARAM_WORKSPACE_NAME,
 						workspaceName);
-				CommandUtils.refreshParametrizedCommand(submenu, window,
+				CommandUtils.refreshParameterizedCommand(submenu, window,
 						NormalizeDistribution.ID,
 						NormalizeDistribution.DEFAULT_LABEL,
 						NormalizeDistribution.DEFAULT_ICON, isDistribElem
@@ -321,9 +323,9 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params = new HashMap<String, String>();
 				params.put(RunInOsgi.PARAM_MODULE_PATH, modularDistPath);
 				params.put(RunInOsgi.PARAM_WORKSPACE_NAME, workspaceName);
-				CommandUtils.refreshParametrizedCommand(submenu, window,
+				CommandUtils.refreshParameterizedCommand(submenu, window,
 						RunInOsgi.ID, RunInOsgi.DEFAULT_LABEL,
-						RunInOsgi.DEFAULT_ICON, modularDistPath!=null
+						RunInOsgi.DEFAULT_ICON, modularDistPath != null
 								&& singleElement && isLocal, params);
 
 				// Open generate binaries
@@ -335,7 +337,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 				params.put(OpenGenerateBinariesWizard.PARAM_WORKSPACE_NAME,
 						workspaceName);
 
-				CommandUtils.refreshParametrizedCommand(submenu, window,
+				CommandUtils.refreshParameterizedCommand(submenu, window,
 						OpenGenerateBinariesWizard.ID,
 						OpenGenerateBinariesWizard.DEFAULT_LABEL,
 						OpenGenerateBinariesWizard.DEFAULT_ICON,
@@ -375,8 +377,8 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 	/*
 	 * DEPENDENCY INJECTION
 	 */
-	public void setNodeRepository(Repository repository) {
-		this.nodeRepository = repository;
+	public void setNodeRepository(Repository nodeRepository) {
+		this.nodeRepository = nodeRepository;
 	}
 
 	public void setTreeContentProvider(

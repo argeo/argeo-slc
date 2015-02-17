@@ -190,6 +190,7 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 
 	// Providers
 	protected class ViewContentProvider implements IStructuredContentProvider {
+		private static final long serialVersionUID = 5286293288979552056L;
 
 		public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
 		}
@@ -205,6 +206,8 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 
 	protected class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
+		private static final long serialVersionUID = -2407263563879116348L;
+
 		public String getColumnText(Object obj, int index) {
 			if (!(obj instanceof String[]))
 				return "Object is not properly formatted ";

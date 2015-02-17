@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
  */
 
 public class VersionComparator extends ViewerComparator {
+	private static final long serialVersionUID = 3760077835650538982L;
 
 	@Override
 	public int compare(Viewer viewer, Object e1, Object e2) {

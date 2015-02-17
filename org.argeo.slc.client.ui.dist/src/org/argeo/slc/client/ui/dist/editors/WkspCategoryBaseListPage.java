@@ -222,6 +222,8 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		filterTxt.setMessage(FILTER_HELP_MSG);
 		filterTxt.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 		filterTxt.addModifyListener(new ModifyListener() {
+			private static final long serialVersionUID = 8727389523069041623L;
+
 			public void modifyText(ModifyEvent event) {
 				refresh();
 			}
@@ -230,6 +232,8 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		Button resetBtn = tk.createButton(parent, null, SWT.PUSH);
 		resetBtn.setImage(DistImages.IMG_REPO_READONLY);
 		resetBtn.addSelectionListener(new SelectionAdapter() {
+			private static final long serialVersionUID = -6523538838444581321L;
+
 			public void widgetSelected(SelectionEvent e) {
 				resetFilter();
 			}
@@ -271,6 +275,8 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(220);
 		col.getColumn().setText("Group Name");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = 6186787928630825293L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_GROUP_BASE_ID);
@@ -285,6 +291,8 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(80);
 		col.getColumn().setText("Has binaries");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = -2017377132642062464L;
+
 			@Override
 			public String getText(Object element) {
 				try {
@@ -318,6 +326,8 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getTable());
 		menuManager.addMenuListener(new IMenuListener() {
+			private static final long serialVersionUID = 739004528695501335L;
+
 			public void menuAboutToShow(IMenuManager manager) {
 				contextMenuAboutToShow(manager);
 			}
@@ -358,7 +368,7 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 		params.put(OpenGenerateBinariesWizard.PARAM_WORKSPACE_NAME,
 				input.getWorkspaceName());
 
-		CommandUtils.refreshParametrizedCommand(menuManager, window,
+		CommandUtils.refreshParameterizedCommand(menuManager, window,
 				OpenGenerateBinariesWizard.ID,
 				OpenGenerateBinariesWizard.DEFAULT_LABEL,
 				OpenGenerateBinariesWizard.DEFAULT_ICON, true, params);
@@ -388,6 +398,8 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 
 	private SelectionAdapter getSelectionAdapter(final int index) {
 		SelectionAdapter selectionAdapter = new SelectionAdapter() {
+			private static final long serialVersionUID = -1723894288128081757L;
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Table table = viewer.getTable();
@@ -409,6 +421,8 @@ public class WkspCategoryBaseListPage extends FormPage implements SlcNames {
 	/* LOCAL CLASSES */
 	private class DistributionsContentProvider implements
 			IStructuredContentProvider {
+		private static final long serialVersionUID = -5939763615620837492L;
+
 		// we keep a cache of the Nodes in the content provider to be able to
 		// manage long request
 		private List<Node> nodes;

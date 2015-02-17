@@ -33,6 +33,8 @@ import org.eclipse.jface.viewers.Viewer;
 
 /** Add ability to order by name version and version */
 public class DistNodeViewerComparator extends GenericTableComparator {
+	private static final long serialVersionUID = -5966120108210992211L;
+
 	private final static Log log = LogFactory
 			.getLog(DistNodeViewerComparator.class);
 

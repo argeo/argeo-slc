@@ -22,9 +22,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-/**
- * An editor input for a JCR node object in a multi-repository environment.
- */
+/** Editor input for a JCR node object in a multi-repository environment */
 public class ModuleEditorInput implements IEditorInput, SlcNames {
 
 	// Define relevant workspace on a given repository

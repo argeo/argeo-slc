@@ -35,13 +35,11 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-/**
- * Publish the current workspace by giving READ_ONLY rights to anonymous.
- */
+/** Publish the current workspace by giving READ_ONLY rights to anonymous */
 public class PublishWorkspace extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(PublishWorkspace.class);
-	
-	public final static String ID = DistPlugin.ID + ".publishWorkspace";
+
+	public final static String ID = DistPlugin.PLUGIN_ID + ".publishWorkspace";
 	public final static String DEFAULT_LABEL = "Make Public";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/publish.gif");

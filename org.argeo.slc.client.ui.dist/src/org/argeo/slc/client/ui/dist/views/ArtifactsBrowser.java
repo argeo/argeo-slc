@@ -56,7 +56,7 @@ import org.eclipse.ui.part.ViewPart;
 public class ArtifactsBrowser extends ViewPart implements DistConstants,
 		RepoConstants {
 	// private final static Log log = LogFactory.getLog(ArtifactsBrowser.class);
-	public final static String ID = DistPlugin.ID + ".artifactsBrowser";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".artifactsBrowser";
 
 	/* DEPENDENCY INJECTION */
 	private Session jcrSession;
@@ -177,6 +177,7 @@ public class ArtifactsBrowser extends ViewPart implements DistConstants,
 
 	private class ArtifactLabelProvider extends ColumnLabelProvider implements
 			DistConstants, SlcTypes {
+		private static final long serialVersionUID = 7516705499556141806L;
 
 		// Utils
 		protected DateFormat timeFormatter = new SimpleDateFormat(

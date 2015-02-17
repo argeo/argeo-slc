@@ -40,14 +40,12 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/**
- * Create a new empty workspace in a remote repository.
- */
+/** Create a new empty workspace in a remote repository */
 public class CreateWorkspace extends AbstractHandler {
 	private static final Log log = LogFactory.getLog(CreateWorkspace.class);
 
 	// Exposes commands meta-info
-	public final static String ID = DistPlugin.ID + ".createWorkspace";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".createWorkspace";
 	public final static String DEFAULT_LABEL = "Create workspace...";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/addItem.gif");

@@ -30,7 +30,7 @@ import org.argeo.eclipse.ui.EclipseArgeoMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.PrivilegedJob;
+import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.utils.ViewerUtils;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
@@ -138,7 +138,7 @@ public class GenerateBinariesWizard extends Wizard {
 	// ///////////////////////////////
 	// ////// THE PAGES
 	private class RecapPage extends WizardPage {
-
+		private static final long serialVersionUID = 904196417910874087L;
 		private TableViewer recapViewer;
 
 		public RecapPage() {
@@ -236,6 +236,8 @@ public class GenerateBinariesWizard extends Wizard {
 			TableViewerColumn column = ViewerUtils.createTableViewerColumn(
 					recapViewer, "Name", SWT.NONE, 250);
 			column.setLabelProvider(new ColumnLabelProvider() {
+				private static final long serialVersionUID = -9145709097621022043L;
+
 				@Override
 				public String getText(Object element) {
 					return ((Artifact) element).getArtifactId();
@@ -245,6 +247,8 @@ public class GenerateBinariesWizard extends Wizard {
 			column = ViewerUtils.createTableViewerColumn(recapViewer,
 					"Version", SWT.NONE, 250);
 			column.setLabelProvider(new ColumnLabelProvider() {
+				private static final long serialVersionUID = 5524185741667651628L;
+
 				@Override
 				public String getText(Object element) {
 					return ((Artifact) element).getBaseVersion();
@@ -252,6 +256,9 @@ public class GenerateBinariesWizard extends Wizard {
 			});
 
 			recapViewer.setContentProvider(new IStructuredContentProvider() {
+				private static final long serialVersionUID = -4579434453554442858L;
+
+				
 				List<Artifact> artifacts;
 
 				@SuppressWarnings("unchecked")
@@ -312,7 +319,7 @@ public class GenerateBinariesWizard extends Wizard {
 			} catch (Exception e) {
 				if (log.isDebugEnabled())
 					e.printStackTrace();
-				return new Status(IStatus.ERROR, DistPlugin.ID,
+				return new Status(IStatus.ERROR, DistPlugin.PLUGIN_ID,
 						"Cannot normalize group", e);
 			} finally {
 				JcrUtils.logoutQuietly(session);

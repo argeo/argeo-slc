@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class ChooseRightsPage extends WizardPage implements ModifyListener {
+	private static final long serialVersionUID = 3016024222014878781L;
 
 	// This page widget
 	private Text groupNameTxt;

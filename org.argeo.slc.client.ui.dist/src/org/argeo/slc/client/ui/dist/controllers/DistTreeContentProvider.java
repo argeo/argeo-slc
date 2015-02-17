@@ -30,13 +30,16 @@ import org.eclipse.jface.viewers.Viewer;
  * repository factory must be injected
  */
 public class DistTreeContentProvider implements ITreeContentProvider {
-	private Session nodeSession;
-	List<RepoElem> repositories = new ArrayList<RepoElem>();
+	private static final long serialVersionUID = -7640840211717811421L;
 
 	/* DEPENDENCY INJECTION */
 	private RepositoryFactory repositoryFactory;
 	private Keyring keyring;
 
+	// Context
+	private Session nodeSession;
+	List<RepoElem> repositories = new ArrayList<RepoElem>();
+	
 	public Object[] getElements(Object input) {
 		Repository nodeRepository = (Repository) input;
 		try {

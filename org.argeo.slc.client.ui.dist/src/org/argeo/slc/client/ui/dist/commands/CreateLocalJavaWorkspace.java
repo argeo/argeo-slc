@@ -29,15 +29,14 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/**
- * Create a new empty workspace in the default local java repository.
- */
+/** Create a new empty workspace in the default local java repository */
 public class CreateLocalJavaWorkspace extends AbstractHandler {
 	private static final Log log = LogFactory
 			.getLog(CreateLocalJavaWorkspace.class);
 
 	// Exposes commands meta-info
-	public final static String ID = DistPlugin.ID + ".createLocalJavaWorkspace";
+	public final static String ID = DistPlugin.PLUGIN_ID
+			+ ".createLocalJavaWorkspace";
 	public final static String DEFAULT_LABEL = "Create local Java workspace...";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/addItem.gif");

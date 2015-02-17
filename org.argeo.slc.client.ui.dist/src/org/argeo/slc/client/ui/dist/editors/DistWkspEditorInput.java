@@ -21,9 +21,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-/**
- * An editor input pointing to a distribution workspace
- */
+/** An editor input pointing to a distribution workspace */
 public class DistWkspEditorInput implements IEditorInput, SlcNames {
 
 	// Injected

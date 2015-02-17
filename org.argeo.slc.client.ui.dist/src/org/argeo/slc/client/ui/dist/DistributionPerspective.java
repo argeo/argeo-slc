@@ -20,12 +20,11 @@ import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
-/**
- * Manage a set of software repositories
- */
+/** Manage a set of software repositories */
 public class DistributionPerspective implements IPerspectiveFactory {
 
-	public final static String ID = DistPlugin.ID + ".distributionPerspective";
+	public final static String ID = DistPlugin.PLUGIN_ID
+			+ ".distributionPerspective";
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();

@@ -45,7 +45,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * Open a dialog that displays various information on the current repository.
  */
 public class DisplayRepoInformation extends AbstractHandler {
-	public final static String ID = DistPlugin.ID + ".displayRepoInformation";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".displayRepoInformation";
 	public final static String DEFAULT_LABEL = "Information";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/help.gif");

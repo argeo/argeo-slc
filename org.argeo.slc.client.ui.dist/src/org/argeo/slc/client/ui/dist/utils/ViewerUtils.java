@@ -8,9 +8,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TreeColumn;
 
-/**
- * Centralizes useful methods to manage table to display nodes list.
- */
+/** Useful methods to manage table to display nodes list. */
 public class ViewerUtils {
 
 	/**

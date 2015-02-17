@@ -29,8 +29,10 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+/** Enable specific browsing of an artifact tree */
 public class ArtifactsTreeContentProvider implements ITreeContentProvider,
 		SlcTypes {
+	private static final long serialVersionUID = -8097817288192073987L;
 
 	// Utils
 	private boolean sortChildren = true;

@@ -87,6 +87,8 @@ public class RunInOsgiPage extends FormPage implements SlcNames {
 		launchBtn.setLayoutData(new GridData(SWT.RIGHT, SWT.TOP, true, false));
 
 		launchBtn.addSelectionListener(new SelectionAdapter() {
+			private static final long serialVersionUID = -1633658484882130602L;
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				super.widgetSelected(e);

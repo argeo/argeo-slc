@@ -73,13 +73,13 @@
 	<!-- EDITORS -->
 	<extension
 		point="org.eclipse.ui.editors">
-		<editor
+		<!-- <editor
 			class="org.argeo.slc.client.ui.dist.editors.GenericBundleEditor"
 			id="org.argeo.slc.client.ui.dist.genericBundleEditor"
 			name="Bundle editor"
 			icon="icons/artifactVersionBase.gif"
 			default="false">
-		</editor>
+		</editor> -->
 		<editor
 			class="org.argeo.eclipse.spring.SpringExtensionFactory"
 			id="org.argeo.slc.client.ui.dist.artifactVersionEditor"

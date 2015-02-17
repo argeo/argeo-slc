@@ -8,12 +8,12 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Enables browsing in local public slc distribution repositories. For the time
+ * Enable browsing in local public slc distribution repositories. For the time
  * being, it supports only one repository at a time. Repository factory must be
  * injected
  */
-
 public class AnonymousDistTreeContentProvider implements ITreeContentProvider {
+	private static final long serialVersionUID = -4149180221319229128L;
 
 	// List<RepoElem> repositories = new ArrayList<RepoElem>();
 	private RepoElem publicRepo;

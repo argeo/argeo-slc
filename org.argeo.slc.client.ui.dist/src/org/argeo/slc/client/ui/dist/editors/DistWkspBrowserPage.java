@@ -108,6 +108,8 @@ public class DistWkspBrowserPage extends FormPage implements DistConstants,
 		artifactTreeViewer = new TreeViewer(tree);
 
 		artifactTreeViewer.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = 2648269889876058461L;
+
 			@Override
 			public String getText(Object element) {
 				Node node = (Node) element;
@@ -146,6 +148,7 @@ public class DistWkspBrowserPage extends FormPage implements DistConstants,
 		});
 
 		artifactTreeViewer.setContentProvider(new ITreeContentProvider() {
+			private static final long serialVersionUID = -2381555428857519326L;
 
 			public void dispose() {
 			}

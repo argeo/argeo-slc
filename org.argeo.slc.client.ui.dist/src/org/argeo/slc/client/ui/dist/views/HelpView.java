@@ -23,13 +23,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
-/**
- * 
- * Displays some info about the distribution
- * 
- */
+/** Display some info about the distribution */
 public class HelpView extends ViewPart {
-	public final static String ID = DistPlugin.ID + ".helpView";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".helpView";
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -39,9 +35,7 @@ public class HelpView extends ViewPart {
 		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 	}
 
-	/**
-	 * Force refresh of the whole view
-	 */
+	/** Force refresh of the whole view */
 	public void refresh() {
 	}
 

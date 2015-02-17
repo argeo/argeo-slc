@@ -47,10 +47,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
-/**
- * Lists all properties of current bundle as a tree
- */
-
+/** List all properties of current bundle as a tree */
 public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 	// private final static Log log =
 	// LogFactory.getLog(ArtifactDetailsPage.class);
@@ -147,6 +144,7 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 	// providers
 	private class TreeLabelProvider extends ColumnLabelProvider implements
 			SlcTypes, SlcNames {
+		private static final long serialVersionUID = -6385445983392621937L;
 
 		public void update(ViewerCell cell) {
 			try {
@@ -207,6 +205,8 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 	}
 
 	private class TreeContentProvider implements ITreeContentProvider {
+		private static final long serialVersionUID = -4315686158836938052L;
+
 		public Object[] getElements(Object parent) {
 			List<Object> elements = new ArrayList<Object>();
 

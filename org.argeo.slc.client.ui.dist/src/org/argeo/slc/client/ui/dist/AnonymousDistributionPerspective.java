@@ -24,7 +24,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 /** Simple default perspective that presents public repositories */
 public class AnonymousDistributionPerspective implements IPerspectiveFactory {
 
-	public final static String ID = DistPlugin.ID
+	public final static String ID = DistPlugin.PLUGIN_ID
 			+ ".anonymousDistributionPerspective";
 
 	public void createInitialLayout(IPageLayout layout) {

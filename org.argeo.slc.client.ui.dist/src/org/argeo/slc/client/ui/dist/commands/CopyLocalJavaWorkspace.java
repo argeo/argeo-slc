@@ -29,7 +29,7 @@ import org.argeo.eclipse.ui.EclipseArgeoMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.PrivilegedJob;
+import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.repo.JavaRepoManager;
 import org.argeo.slc.repo.RepoUtils;
@@ -55,7 +55,7 @@ public class CopyLocalJavaWorkspace extends AbstractHandler {
 	private static final Log log = LogFactory
 			.getLog(CopyLocalJavaWorkspace.class);
 
-	public final static String ID = DistPlugin.ID + ".copyLocalJavaWorkspace";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".copyLocalJavaWorkspace";
 	public final static String DEFAULT_LABEL = "Copy Java Workspace...";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/addItem.gif");

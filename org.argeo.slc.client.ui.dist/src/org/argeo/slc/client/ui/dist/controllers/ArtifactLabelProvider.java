@@ -31,8 +31,10 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.graphics.Image;
 
+/** Retrieve artifact information to be displayed in an artifact tree or table */
 public class ArtifactLabelProvider extends ColumnLabelProvider implements
 		DistConstants, SlcTypes {
+	private static final long serialVersionUID = 8672622174076959016L;
 
 	// To be able to change column order easily
 	public static final int COLUMN_TREE = 0;

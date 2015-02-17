@@ -12,6 +12,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 
 /** Specific comparator to enhance Distribution tree browsers */
 public class DistTreeComparator extends ViewerComparator {
+	private static final long serialVersionUID = -7386716562202568704L;
 
 	private VersionComparator vc = new VersionComparator();
 	private NameVersionComparator nvc = new NameVersionComparator();

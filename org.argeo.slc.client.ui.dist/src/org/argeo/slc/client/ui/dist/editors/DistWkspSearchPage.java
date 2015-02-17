@@ -44,7 +44,7 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.PrivilegedJob;
+import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
 import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
 import org.argeo.slc.client.ui.dist.utils.DistNodeViewerComparator;
@@ -146,7 +146,7 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 					}
 				});
 			} catch (Exception e) {
-				return new Status(IStatus.ERROR, DistPlugin.ID,
+				return new Status(IStatus.ERROR, DistPlugin.PLUGIN_ID,
 						"Cannot get bundle list", e);
 			}
 			return Status.OK_STATUS;
@@ -320,6 +320,8 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		gd.grabExcessHorizontalSpace = true;
 		artifactTxt.setLayoutData(gd);
 		artifactTxt.addModifyListener(new ModifyListener() {
+			private static final long serialVersionUID = -2422321852703208573L;
+
 			public void modifyText(ModifyEvent event) {
 				if ("".equals(artifactTxt.getText().trim()))
 					asynchronousRefresh();
@@ -355,6 +357,8 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(300);
 		col.getColumn().setText("Name");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = -760226161605987538L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element,
@@ -370,6 +374,8 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(300);
 		col.getColumn().setText("Symbolic Name");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = 4431447542158431355L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_SYMBOLIC_NAME);
@@ -384,6 +390,8 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		col.getColumn().setWidth(130);
 		col.getColumn().setText("Version");
 		col.setLabelProvider(new ColumnLabelProvider() {
+			private static final long serialVersionUID = -5616215547236158504L;
+
 			@Override
 			public String getText(Object element) {
 				return JcrUtils.get((Node) element, SLC_BUNDLE_VERSION);
@@ -409,6 +417,8 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		MenuManager menuManager = new MenuManager();
 		Menu menu = menuManager.createContextMenu(viewer.getTable());
 		menuManager.addMenuListener(new IMenuListener() {
+			private static final long serialVersionUID = -3886983092940055195L;
+
 			public void menuAboutToShow(IMenuManager manager) {
 				contextMenuAboutToShow(manager);
 			}
@@ -443,6 +453,8 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 
 	private SelectionAdapter getSelectionAdapter(final int index) {
 		SelectionAdapter selectionAdapter = new SelectionAdapter() {
+			private static final long serialVersionUID = 5515884441510882460L;
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Table table = viewer.getTable();
@@ -464,6 +476,8 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 	/* LOCAL CLASSES */
 	private class DistributionsContentProvider implements
 			IStructuredContentProvider {
+		private static final long serialVersionUID = -635451814876234147L;
+
 		// we keep a cache of the Nodes in the content provider to be able to
 		// manage long request
 		private List<Node> nodes;

@@ -39,7 +39,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * modularDistributions
  */
 public class OpenModuleEditor extends AbstractHandler {
-	public final static String ID = DistPlugin.ID + ".openModuleEditor";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".openModuleEditor";
 	public final static String DEFAULT_LABEL = "Open relevant editor";
 
 	// use local node repo and repository factory to retrieve and log to

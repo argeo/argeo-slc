@@ -157,6 +157,7 @@ public class RegisterRepoWizard extends Wizard {
 	}
 
 	private class DefineModelPage extends WizardPage {
+		private static final long serialVersionUID = 874386824101995060L;
 
 		public DefineModelPage() {
 			super("Main");
@@ -179,6 +180,8 @@ public class RegisterRepoWizard extends Wizard {
 			final Button anonymousLogin = createLC(composite,
 					"Log as anonymous", true);
 			anonymousLogin.addSelectionListener(new SelectionListener() {
+				private static final long serialVersionUID = 4874716406036981039L;
+
 				public void widgetSelected(SelectionEvent e) {
 					if (anonymousLogin.getSelection()) {
 						username.setText(DEFAULT_USER_NAME);
@@ -213,6 +216,8 @@ public class RegisterRepoWizard extends Wizard {
 			test.setLayoutData(gd);
 
 			test.addSelectionListener(new SelectionAdapter() {
+				private static final long serialVersionUID = -4034851916548656293L;
+
 				public void widgetSelected(SelectionEvent arg0) {
 					testConnection();
 				}

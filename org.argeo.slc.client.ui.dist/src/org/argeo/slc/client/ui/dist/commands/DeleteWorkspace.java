@@ -46,7 +46,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public class DeleteWorkspace extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
 
-	public final static String ID = DistPlugin.ID + ".deleteWorkspace";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".deleteWorkspace";
 	public final static String DEFAULT_LABEL = "Clear";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/removeItem.gif");

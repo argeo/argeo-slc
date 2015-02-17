@@ -26,11 +26,9 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/**
- * Change visible state of the ArtifactBrower size column
- */
+/** Change visible state of the ArtifactBrower size column */
 public class ShowSizeColumn extends AbstractHandler {
-	public final static String ID = DistPlugin.ID + ".showSizeColumn";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".showSizeColumn";
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		ArtifactsBrowser view = (ArtifactsBrowser) HandlerUtil
@@ -41,7 +39,7 @@ public class ShowSizeColumn extends AbstractHandler {
 				.getService(ICommandService.class);
 		Command command = service.getCommand(ID);
 		State state = command.getState(ID + ".toggleState");
-	
+
 		boolean wasVisible = (Boolean) state.getValue();
 		view.setSizeVisible(!wasVisible);
 		state.setValue(!wasVisible);

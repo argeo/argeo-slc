@@ -42,13 +42,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-/**
- * Merge two workspaces
- */
+/** Merge two workspaces */
 public class MergeWorkspaces extends AbstractHandler {
 	private final static Log log = LogFactory.getLog(MergeWorkspaces.class);
 
-	public final static String ID = DistPlugin.ID + ".mergeWorkspaces";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".mergeWorkspaces";
 	public final static String DEFAULT_LABEL = "Merge";
 
 	public final static String PARAM_SOURCE_WORKSPACE_NAME = "srcWkspName";
@@ -168,8 +166,8 @@ public class MergeWorkspaces extends AbstractHandler {
 
 				return Status.OK_STATUS;
 			} catch (RepositoryException e) {
-				return new Status(IStatus.ERROR, DistPlugin.ID, "Cannot merge",
-						e);
+				return new Status(IStatus.ERROR, DistPlugin.PLUGIN_ID,
+						"Cannot merge", e);
 			} finally {
 				JcrUtils.logoutQuietly(sourceSession);
 				JcrUtils.logoutQuietly(targetSession);

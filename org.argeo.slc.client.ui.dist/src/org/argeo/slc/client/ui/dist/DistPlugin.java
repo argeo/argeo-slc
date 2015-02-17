@@ -19,8 +19,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+/** Default activator for the distribution bundle */
 public class DistPlugin extends AbstractUIPlugin {
-	public final static String ID = "org.argeo.slc.client.ui.dist";
+	public final static String PLUGIN_ID = "org.argeo.slc.client.ui.dist";
 
 	private static DistPlugin plugin;
 
@@ -34,7 +35,7 @@ public class DistPlugin extends AbstractUIPlugin {
 	}
 
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return imageDescriptorFromPlugin(ID, path);
+		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
 }

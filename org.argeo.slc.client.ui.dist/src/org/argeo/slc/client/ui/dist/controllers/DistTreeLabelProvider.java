@@ -1,6 +1,6 @@
 package org.argeo.slc.client.ui.dist.controllers;
 
-import org.argeo.eclipse.ui.jcr.JcrImages;
+import org.argeo.eclipse.ui.workbench.jcr.JcrImages;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
 import org.argeo.slc.client.ui.dist.model.ModularDistVersionBaseElem;
@@ -11,10 +11,10 @@ import org.argeo.slc.client.ui.dist.model.WorkspaceElem;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-/**
- * Manages icons and labels for the Distributions tree browser
- */
+/** Manage icons and labels for the Distributions tree browser */
 public class DistTreeLabelProvider extends ColumnLabelProvider {
+	private static final long serialVersionUID = -7889294105284404373L;
+
 	@Override
 	public String getText(Object element) {
 		if (element instanceof DistParentElem)

@@ -1,4 +1,4 @@
-Bundle-SymbolicName: org.argeo.slc.client.ui.distp;singleton=true
+Bundle-SymbolicName: org.argeo.slc.client.ui.dist;singleton=true
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.ui;resolution:=optional,\
 org.eclipse.core.runtime,\

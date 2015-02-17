@@ -110,6 +110,8 @@ public class ArtifactsTableConfigurer implements SlcNames, SlcTypes,
 			return null;
 
 		SelectionAdapter selectionAdapter = new SelectionAdapter() {
+			private static final long serialVersionUID = 5239138629878556374L;
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 
@@ -144,6 +146,8 @@ public class ArtifactsTableConfigurer implements SlcNames, SlcTypes,
 
 		if (test) {
 			return new ColumnLabelProvider() {
+				private static final long serialVersionUID = 7996387354459551737L;
+
 				public String getText(Object element) {
 					return null;
 				}
@@ -154,6 +158,8 @@ public class ArtifactsTableConfigurer implements SlcNames, SlcTypes,
 			};
 		} else
 			return new ColumnLabelProvider() {
+				private static final long serialVersionUID = 6746632988975282759L;
+
 				public String getText(Object element) {
 					Row row = (Row) element;
 					try {
@@ -171,6 +177,7 @@ public class ArtifactsTableConfigurer implements SlcNames, SlcTypes,
 
 	/** Implements comparator for various types of Artifact Table row */
 	private class CurrentTableComparator extends GenericTableComparator {
+		private static final long serialVersionUID = -4737460932326339442L;
 
 		public CurrentTableComparator(int colIndex, int direction) {
 			super(colIndex, direction);

@@ -31,13 +31,11 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
-/**
- * Base editor to manage an artifact in a multiple repository environment
- */
+/** Artifact editor in a multiple repository environment */
 public class ArtifactVersionEditor extends FormEditor implements SlcNames {
-	// private final static Log log =
-	// LogFactory.getLog(ArtifactEditor.class);
-	public final static String ID = DistPlugin.ID + ".artifactVersionEditor";
+	private static final long serialVersionUID = 1109872666962757000L;
+
+	public final static String ID = DistPlugin.PLUGIN_ID + ".artifactVersionEditor";
 
 	/* DEPENDENCY INJECTION */
 	private RepoService repoService;

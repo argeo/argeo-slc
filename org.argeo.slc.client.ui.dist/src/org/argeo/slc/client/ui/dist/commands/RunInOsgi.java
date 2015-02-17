@@ -53,7 +53,7 @@ import org.eclipse.aether.artifact.Artifact;
 public class RunInOsgi extends AbstractHandler implements SlcNames {
 	private final static Log log = LogFactory.getLog(RunInOsgi.class);
 
-	public final static String ID = DistPlugin.ID + ".runInOsgi";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".runInOsgi";
 	public final static String DEFAULT_LABEL = "Run in OSGi";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/runInOsgi.gif");

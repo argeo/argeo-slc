@@ -15,8 +15,6 @@
  */
 package org.argeo.slc.client.ui.dist.views;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
@@ -36,8 +34,8 @@ import org.eclipse.swt.widgets.Text;
 /** Query SLC Repo to get some artifacts given some predefined parameters */
 public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 		SlcNames, SlcTypes {
-	private static final Log log = LogFactory.getLog(QueryBundlesForm.class);
-	public static final String ID = DistPlugin.ID + ".queryBundlesForm";
+	// private static final Log log = LogFactory.getLog(QueryBundlesForm.class);
+	public static final String ID = DistPlugin.PLUGIN_ID + ".queryBundlesForm";
 
 	// widgets
 	private Button executeBtn;
@@ -108,6 +106,8 @@ public class QueryBundlesForm extends AbstractQueryArtifactsView implements
 		executeBtn.setLayoutData(gd);
 
 		Listener executeListener = new Listener() {
+			private static final long serialVersionUID = 6267263421349073712L;
+
 			public void handleEvent(Event event) {
 				refreshQuery();
 			}

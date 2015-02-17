@@ -24,11 +24,10 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPart;
 
-/**
- * Force refresh of the Distributions View
- */
+/** Force refresh of the Distributions View */
 public class RefreshDistributionsView extends AbstractHandler {
-	public final static String ID = DistPlugin.ID + ".refreshDistributionsView";
+	public final static String ID = DistPlugin.PLUGIN_ID
+			+ ".refreshDistributionsView";
 	public final static String DEFAULT_LABEL = "Refresh the distribution view";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/refresh.png");

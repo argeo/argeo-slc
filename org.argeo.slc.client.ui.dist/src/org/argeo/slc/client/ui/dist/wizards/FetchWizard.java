@@ -34,9 +34,9 @@ import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.UserJcrUtils;
+import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.utils.ViewerUtils;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoSync;
@@ -191,6 +191,7 @@ public class FetchWizard extends Wizard {
 	// ////// THE PAGES
 
 	private class ChooseWkspPage extends WizardPage {
+		private static final long serialVersionUID = 211336700788047638L;
 
 		private Map<String, Node> sourceReposMap;
 		private Combo chooseSourceRepoCmb;
@@ -245,6 +246,8 @@ public class FetchWizard extends Wizard {
 
 			// Listeners
 			selectAllBtn.addSelectionListener(new SelectionAdapter() {
+				private static final long serialVersionUID = -2071840477444152170L;
+
 				public void widgetSelected(SelectionEvent e) {
 					wkspViewer.setAllChecked(selectAllBtn.getSelection());
 					getContainer().updateButtons();
@@ -261,6 +264,8 @@ public class FetchWizard extends Wizard {
 			// });
 
 			chooseSourceRepoCmb.addModifyListener(new ModifyListener() {
+				private static final long serialVersionUID = 932462568382594523L;
+
 				public void modifyText(ModifyEvent e) {
 					String chosenUri = chooseSourceRepoCmb
 							.getItem(chooseSourceRepoCmb.getSelectionIndex());
@@ -323,6 +328,8 @@ public class FetchWizard extends Wizard {
 			TableViewerColumn column = ViewerUtils.createTableViewerColumn(
 					wkspViewer, "Source names", SWT.NONE, 250);
 			column.setLabelProvider(new ColumnLabelProvider() {
+				private static final long serialVersionUID = 5906079281065061967L;
+
 				@Override
 				public String getText(Object element) {
 					return ((WkspObject) element).srcName;
@@ -340,11 +347,12 @@ public class FetchWizard extends Wizard {
 
 			wkspViewer.setContentProvider(new WkspContentProvider());
 			// A basic comparator
-			wkspViewer.setComparator(new WkspComparator());
+			wkspViewer.setComparator(new ViewerComparator());
 		}
 	}
 
 	private class AdvancedFetchPage extends WizardPage {
+		private static final long serialVersionUID = 1109183561920445169L;
 
 		private final WkspObject currentWorkspace;
 
@@ -399,7 +407,7 @@ public class FetchWizard extends Wizard {
 	}
 
 	private class RecapPage extends WizardPage {
-
+		private static final long serialVersionUID = -7064862323304300989L;
 		private TableViewer recapViewer;
 
 		public RecapPage() {
@@ -465,6 +473,8 @@ public class FetchWizard extends Wizard {
 			TableViewerColumn column = ViewerUtils.createTableViewerColumn(
 					recapViewer, "Sources", SWT.NONE, 250);
 			column.setLabelProvider(new ColumnLabelProvider() {
+				private static final long serialVersionUID = 3913459002502680377L;
+
 				@Override
 				public String getText(Object element) {
 					return ((WkspObject) element).srcName;
@@ -474,6 +484,8 @@ public class FetchWizard extends Wizard {
 			column = ViewerUtils.createTableViewerColumn(recapViewer,
 					"targets", SWT.NONE, 250);
 			column.setLabelProvider(new ColumnLabelProvider() {
+				private static final long serialVersionUID = -517920072332563632L;
+
 				@Override
 				public String getText(Object element) {
 					return ((WkspObject) element).targetName;
@@ -481,6 +493,7 @@ public class FetchWizard extends Wizard {
 			});
 
 			recapViewer.setContentProvider(new IStructuredContentProvider() {
+				private static final long serialVersionUID = 4926999891003040865L;
 
 				public void inputChanged(Viewer viewer, Object oldInput,
 						Object newInput) {
@@ -496,7 +509,7 @@ public class FetchWizard extends Wizard {
 			});
 
 			// A basic comparator
-			recapViewer.setComparator(new WkspComparator());
+			recapViewer.setComparator(new ViewerComparator());
 			setControl(table);
 		}
 	}
@@ -520,7 +533,7 @@ public class FetchWizard extends Wizard {
 				repoSync.setMonitor(monitor);
 				repoSync.run();
 			} catch (Exception e) {
-				return new Status(IStatus.ERROR, DistPlugin.ID,
+				return new Status(IStatus.ERROR, DistPlugin.PLUGIN_ID,
 						"Cannot fetch repository", e);
 			}
 			return Status.OK_STATUS;
@@ -544,11 +557,12 @@ public class FetchWizard extends Wizard {
 		}
 	}
 
-	private class WkspComparator extends ViewerComparator {
-
-	}
+	// private class WkspComparator extends ViewerComparator {
+	//
+	// }
 
 	private class WkspContentProvider implements IStructuredContentProvider {
+		private static final long serialVersionUID = -925058051598536307L;
 		// caches current repo
 		private Node currSourceNodeRepo;
 		private Repository currSourceRepo;

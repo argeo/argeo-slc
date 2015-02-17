@@ -34,13 +34,11 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/**
- * Delete chosen artifacts from the current workspace.
- */
+/** Delete chosen artifacts from the current workspace */
 public class DeleteArtifacts extends AbstractHandler {
 	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
 
-	public final static String ID = DistPlugin.ID + ".deleteArtifacts";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".deleteArtifacts";
 	public final static String DEFAULT_LABEL = "Delete selected items";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/removeItem.gif");
@@ -70,7 +68,8 @@ public class DeleteArtifacts extends AbstractHandler {
 						while (it.hasNext()) {
 							Node node = (Node) it.next();
 							if (node.isNodeType(SlcTypes.SLC_ARTIFACT)) {
-								// we remove the artifactVersion, that is the parent
+								// we remove the artifactVersion, that is the
+								// parent
 								node.getParent().remove();
 								node.getSession().save();
 							}

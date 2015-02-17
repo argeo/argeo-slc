@@ -11,7 +11,6 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.client.ui.dist.wizards.FetchWizard;
-import org.argeo.slc.repo.RepoSync;
 import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -22,13 +21,13 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * Wrap a {@link RepoSync} as an Eclipse command. Open a wizard that enable
+ * Wrap a {@code RepoSync} as an Eclipse command. Open a wizard that enable
  * definition of the fetch process parameters
  */
 public class Fetch extends AbstractHandler {
 	// private final static Log log = LogFactory.getLog(Fetch.class);
 
-	public final static String ID = DistPlugin.ID + ".fetch";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".fetch";
 	public final static String DEFAULT_LABEL = "Fetch...";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/fetchRepo.png");

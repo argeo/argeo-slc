@@ -32,13 +32,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-/**
- * Register a remote repository by creating a node in the current
- */
+/** Register a remote repository by creating a node in the current local node. */
 public class RegisterRepository extends AbstractHandler implements ArgeoNames,
 		SlcNames {
 
-	public final static String ID = DistPlugin.ID + ".registerRepository";
+	public final static String ID = DistPlugin.PLUGIN_ID
+			+ ".registerRepository";
 	public final static String DEFAULT_LABEL = "Register a repository...";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/addRepo.gif");

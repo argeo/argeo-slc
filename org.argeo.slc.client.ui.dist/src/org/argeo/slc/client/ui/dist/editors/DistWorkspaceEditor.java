@@ -33,13 +33,13 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
-/**
- * Browse, analyse and modify a workspace containing software distributions
- */
+/** Browse, analyse and modify a workspace containing software distributions */
 public class DistWorkspaceEditor extends FormEditor implements SlcNames {
+	private static final long serialVersionUID = 5373719580281643675L;
+
 	// private final static Log log =
 	// LogFactory.getLog(DistributionEditor.class);
-	public final static String ID = DistPlugin.ID + ".distWorkspaceEditor";
+	public final static String ID = DistPlugin.PLUGIN_ID + ".distWorkspaceEditor";
 
 	/* DEPENDENCY INJECTION */
 	private RepositoryFactory repositoryFactory;

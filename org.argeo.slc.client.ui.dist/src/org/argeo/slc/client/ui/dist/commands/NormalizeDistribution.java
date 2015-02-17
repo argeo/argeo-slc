@@ -47,6 +47,8 @@ import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.argeo.slc.repo.osgi.NormalizeGroup;
 import org.argeo.util.security.Keyring;
+import org.eclipse.aether.artifact.Artifact;
+import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -69,15 +71,14 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.artifact.DefaultArtifact;
 
 /** Legacy - Make sure than Maven and OSGi metadata are consistent */
 public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	private final static Log log = LogFactory
 			.getLog(NormalizeDistribution.class);
 
-	public final static String ID = DistPlugin.ID + ".normalizeDistribution";
+	public final static String ID = DistPlugin.PLUGIN_ID
+			+ ".normalizeDistribution";
 	public final static String DEFAULT_LABEL = "Legacy Normalization...";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/normalize.gif");
@@ -237,7 +238,7 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 							overridePoms, monitor);
 				}
 			} catch (Exception e) {
-				return new Status(IStatus.ERROR, DistPlugin.ID,
+				return new Status(IStatus.ERROR, DistPlugin.PLUGIN_ID,
 						"Cannot normalize distribution "
 								+ session.getWorkspace().getName(), e);
 			} finally {
@@ -302,6 +303,8 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	}
 
 	public class NormalizationDialog extends TitleAreaDialog {
+		private static final long serialVersionUID = -3103886455862638580L;
+
 		private Text versionT;
 		private String version;
 		private Button overridePomsC;

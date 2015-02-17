@@ -16,8 +16,6 @@
 package org.argeo.slc.client.ui.dist.editors;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -25,13 +23,12 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoException;
-import org.argeo.eclipse.ui.workbench.CommandUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.build.License;
 import org.argeo.slc.client.ui.dist.DistConstants;
-import org.argeo.slc.client.ui.dist.utils.AbstractHyperlinkListener;
-import org.argeo.slc.client.ui.specific.OpenJcrFile;
-import org.argeo.slc.client.ui.specific.OpenJcrFileCmdId;
+import org.argeo.slc.client.ui.dist.utils.HyperlinkAdapter;
+//import org.argeo.slc.client.ui.specific.OpenJcrFile;
+//import org.argeo.slc.client.ui.specific.OpenJcrFileCmdId;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
@@ -55,9 +52,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
-/**
- * Show the details for a given bundle.
- */
+/** Show details for a given bundle. */
 public class BundleDetailPage extends FormPage implements SlcNames {
 	private final static Log log = LogFactory.getLog(BundleDetailPage.class);
 
@@ -192,7 +187,8 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 			String licenceLinkVal = bundle.getProperty(jcrPropName).getString();
 
 			// FIXME Hack until license generation is done cleanly
-			// Problem is with description that contains a "," like "Apache License, Version 2"
+			// Problem is with description that contains a "," like
+			// "Apache License, Version 2"
 			String[] licenceVals;
 			if (licenceLinkVal.contains("description="))
 				licenceVals = new String[] { licenceLinkVal };
@@ -208,7 +204,7 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 
 				Hyperlink link = tk.createHyperlink(body,
 						currLicense.getName(), SWT.NONE);
-				link.addHyperlinkListener(new AbstractHyperlinkListener() {
+				link.addHyperlinkListener(new HyperlinkAdapter() {
 					@Override
 					public void linkActivated(HyperlinkEvent e) {
 						try {
@@ -458,7 +454,7 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 		}
 	}
 
-	private class OpenFileLinkListener extends AbstractHyperlinkListener {
+	private class OpenFileLinkListener extends HyperlinkAdapter {
 		final private String path;
 
 		public OpenFileLinkListener(String path) {
@@ -467,23 +463,27 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 
 		@Override
 		public void linkActivated(HyperlinkEvent e) {
-			try {
-				ModuleEditorInput editorInput = (ModuleEditorInput) getEditorInput();
-				Map<String, String> params = new HashMap<String, String>();
-				params.put(OpenJcrFile.PARAM_REPO_NODE_PATH,
-						editorInput.getRepoNodePath());
-				params.put(OpenJcrFile.PARAM_REPO_URI, editorInput.getUri());
-				params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
-						editorInput.getWorkspaceName());
-				params.put(OpenJcrFile.PARAM_FILE_PATH, path);
+			log.warn("File download must be implemented. Cannot provide access to "
+					+ path);
 
-				String cmdId = (new OpenJcrFileCmdId()).getCmdId();
-				if (log.isTraceEnabled())
-					log.debug("Retrieved openFile Cmd ID: " + cmdId);
-				CommandUtils.callCommand(cmdId, params);
-			} catch (Exception ex) {
-				throw new SlcException("error opening browser", ex); //$NON-NLS-1$
-			}
+			// try {
+			// ModuleEditorInput editorInput = (ModuleEditorInput)
+			// getEditorInput();
+			// Map<String, String> params = new HashMap<String, String>();
+			// params.put(OpenJcrFile.PARAM_REPO_NODE_PATH,
+			// editorInput.getRepoNodePath());
+			// params.put(OpenJcrFile.PARAM_REPO_URI, editorInput.getUri());
+			// params.put(OpenJcrFile.PARAM_WORKSPACE_NAME,
+			// editorInput.getWorkspaceName());
+			// params.put(OpenJcrFile.PARAM_FILE_PATH, path);
+			//
+			// String cmdId = (new OpenJcrFileCmdId()).getCmdId();
+			// if (log.isTraceEnabled())
+			// log.debug("Retrieved openFile Cmd ID: " + cmdId);
+			// CommandUtils.callCommand(cmdId, params);
+			// } catch (Exception ex) {
+			//				throw new SlcException("error opening browser", ex); //$NON-NLS-1$
+			// }
 		}
 	}
 

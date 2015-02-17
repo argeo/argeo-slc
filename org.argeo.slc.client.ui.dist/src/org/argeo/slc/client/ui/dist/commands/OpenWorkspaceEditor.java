@@ -24,8 +24,8 @@ import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.client.ui.dist.editors.DistWorkspaceEditor;
 import org.argeo.slc.client.ui.dist.editors.DistWkspEditorInput;
+import org.argeo.slc.client.ui.dist.editors.DistWorkspaceEditor;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -37,22 +37,23 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * Open a distribution workspace editor for a given workspace in a repository
  */
 public class OpenWorkspaceEditor extends AbstractHandler {
-	public final static String ID = DistPlugin.ID + ".openWorkspaceEditor";
+	public final static String ID = DistPlugin.PLUGIN_ID
+			+ ".openWorkspaceEditor";
 	public final static String DEFAULT_LABEL = "Open editor";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
 			.getImageDescriptor("icons/distribution_perspective.gif");
 
-	// use local node repo and repository factory to retrieve and log to
+	// Use local node repo and repository factory to retrieve and log to
 	// relevant repository
 	public final static String PARAM_REPO_NODE_PATH = "param.repoNodePath";
-	// use URI and repository factory to retrieve and ANONYMOUSLY log in
+	// Use URI and repository factory to retrieve and ANONYMOUSLY log in
 	// relevant repository
 	public final static String PARAM_REPO_URI = "param.repoUri";
 	public final static String PARAM_WORKSPACE_NAME = "param.workspaceName";
 
 	/* DEPENDENCY INJECTION */
 	private Repository localRepository;
-	
+
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		String repoNodePath = event.getParameter(PARAM_REPO_NODE_PATH);
 		String repoUri = event.getParameter(PARAM_REPO_URI);
@@ -69,8 +70,7 @@ public class OpenWorkspaceEditor extends AbstractHandler {
 				}
 			} catch (RepositoryException e) {
 				throw new SlcException("Unexpected error while "
-						+ "getting repoNode at path "
-						+ repoNodePath, e);
+						+ "getting repoNode at path " + repoNodePath, e);
 			} finally {
 				JcrUtils.logoutQuietly(defaultSession);
 			}
