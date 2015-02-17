@@ -49,7 +49,7 @@
 
 		<!-- Secure Application -->
 		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
+			<groupId>org.argeo.commons</groupId>
 			<artifactId>org.argeo.security.dep.node.rcp</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>

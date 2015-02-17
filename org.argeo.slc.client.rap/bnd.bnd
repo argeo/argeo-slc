@@ -1,0 +1,11 @@
+Bundle-SymbolicName: org.argeo.slc.client.rap;singleton=true
+Bundle-ActivationPolicy: lazy
+
+Bundle-Activator: org.argeo.slc.client.rap.SlcRapPlugin
+Import-Package: javax.jcr.nodetype,\
+javax.servlet,\
+javax.servlet.http,\
+org.argeo.eclipse.spring,\
+org.argeo.slc.repo.core,\
+*
+							

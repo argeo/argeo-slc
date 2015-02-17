@@ -1,0 +1,12 @@
+Bundle-SymbolicName: org.argeo.slc.client.ui.distp;singleton=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.ui;resolution:=optional
+
+Bundle-Activator: org.argeo.slc.client.ui.dist.DistPlugin
+Import-Package: org.argeo.eclipse.spring,\
+javax.jcr.nodetype,\
+javax.jcr.security,\
+aQute.lib.*;resolution:=optional,\
+org.argeo.slc.client.ui.specific,\
+*
+							

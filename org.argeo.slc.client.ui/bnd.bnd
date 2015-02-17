@@ -1,0 +1,8 @@
+Bundle-SymbolicName: org.argeo.slc.client.ui;singleton=true
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.ui;resolution:=optional
+
+Bundle-Activator: org.argeo.slc.client.ui.ClientUiPlugin
+Import-Package: org.argeo.eclipse.spring,\
+org.argeo.security.ui,\
+*

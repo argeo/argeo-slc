@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -13,9 +14,9 @@
 	<modules>
 		<module>org.argeo.slc.demo.ant</module>
 		<module>org.argeo.slc.demo.basic</module>
-		<module>org.argeo.slc.demo.det</module>
-		<module>org.argeo.slc.demo.detached</module>
-		<module>org.argeo.slc.demo.maven</module>
+		<!-- <module>org.argeo.slc.demo.det</module> -->
+		<!-- <module>org.argeo.slc.demo.detached</module> -->
+		<!-- <module>org.argeo.slc.demo.maven</module> -->
 		<module>org.argeo.slc.demo.minimal</module>
 	</modules>
 	<properties>
@@ -25,20 +26,6 @@
 		</additionalImports.slc-lib>
 	</properties>
 	<build>
-		<resources>
-			<resource>
-				<directory>.</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>.*</exclude>
-					<exclude>.*/**</exclude>
-					<exclude>pom.xml</exclude>
-					<exclude>build.properties</exclude>
-				</excludes>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -48,7 +35,6 @@
 						<SLC-ExecutionModule>default</SLC-ExecutionModule>
 						<!-- Minimal imports + some optional convenience imports -->
 						<Import-Package>
-							*,
 							net.sf.cglib.core,
 							net.sf.cglib.proxy,
 							net.sf.cglib.reflect,
@@ -63,7 +49,8 @@
 							org.springframework.aop.scope,
 							org.springframework.beans.factory.config,
 							org.springframework.core.io,
-							${additionalImports.slc-lib}
+							${additionalImports.slc-lib},
+							*
 						</Import-Package>
 					</instructions>
 				</configuration>

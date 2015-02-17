@@ -27,7 +27,7 @@ import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.providers.file.FileWagon;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.providers.webdav.WebDavWagon;
-import org.sonatype.aether.connector.wagon.WagonProvider;
+import org.eclipse.aether.connector.wagon.WagonProvider;
 
 public class ManualWagonProvider implements WagonProvider {
 

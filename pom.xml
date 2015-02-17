@@ -26,22 +26,22 @@
 		<module>org.argeo.slc.support</module>
 		<module>org.argeo.slc.repo</module>
 		<module>org.argeo.slc.factory</module>
-		
+
 		<!-- Modules -->
 		<module>org.argeo.slc.agent</module>
 		<module>org.argeo.slc.node.jackrabbit</module>
 		<module>org.argeo.slc.agent.jcr</module>
 		<module>org.argeo.slc.server.repo</module>
 
-		<!-- <module>runtime</module> -->
-		<!-- <module>modules</module> -->
-		<!-- <module>plugins</module> -->
-		<!-- <module>archetypes</module> -->
+		<!-- UI -->
+		<module>org.argeo.slc.client.ui</module>
+		<!-- <module>org.argeo.slc.client.ui.dist</module> -->
+		<module>org.argeo.slc.client.rap</module>
 
 		<!-- <module>lib</module> -->
 		<module>dep</module>
 		<!-- <module>dist</module> -->
-		<!-- <module>demo</module> -->
+		<module>demo</module>
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
 	<scm>
