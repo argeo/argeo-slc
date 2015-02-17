@@ -1,0 +1,2 @@
+Import-Package: org.springframework.core,\
+*

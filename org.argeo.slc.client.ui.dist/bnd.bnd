@@ -1,6 +1,9 @@
 Bundle-SymbolicName: org.argeo.slc.client.ui.distp;singleton=true
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.ui;resolution:=optional
+Require-Bundle: org.eclipse.ui;resolution:=optional,\
+org.eclipse.core.runtime,\
+org.eclipse.rap.ui;resolution:=optional,\
+org.eclipse.rap.ui.workbench;resolution:=optional
 
 Bundle-Activator: org.argeo.slc.client.ui.dist.DistPlugin
 Import-Package: org.argeo.eclipse.spring,\

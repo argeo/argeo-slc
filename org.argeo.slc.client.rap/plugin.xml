@@ -6,7 +6,7 @@
 		<entrypoint
 			id="org.argeo.slc.client.rap.slcSecureRap"
 			class="org.argeo.slc.client.rap.SlcSecureRap"
-			parameter="slc">
+			path="slc">
 		</entrypoint>
 	</extension>
    
