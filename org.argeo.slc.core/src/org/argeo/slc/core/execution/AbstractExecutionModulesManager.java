@@ -31,8 +31,8 @@ public abstract class AbstractExecutionModulesManager implements
 	private final static Log log = LogFactory
 			.getLog(AbstractExecutionModulesManager.class);
 
-//	private List<FilteredNotifier> filteredNotifiers = Collections
-//			.synchronizedList(new ArrayList<FilteredNotifier>());
+	// private List<FilteredNotifier> filteredNotifiers = Collections
+	// .synchronizedList(new ArrayList<FilteredNotifier>());
 
 	protected abstract ExecutionFlow findExecutionFlow(String moduleName,
 			String moduleVersion, String flowName);
@@ -64,94 +64,99 @@ public abstract class AbstractExecutionModulesManager implements
 		//
 		// Actually runs the flow, IN THIS THREAD
 		//
-		flow.run();
+		executionContext.beforeFlow(flow);
+		try {
+			flow.run();
+		} finally {
+			executionContext.afterFlow(flow);
+		}
 		//
 		//
 		//
 	}
 
-//	public void dispatchUpdateStatus(ExecutionProcess process,
-//			String oldStatus, String newStatus) {
-//		// filtered notifiers
-//		for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
-//				.hasNext();) {
-//			FilteredNotifier filteredNotifier = it.next();
-//			if (filteredNotifier.receiveFrom(process))
-//				filteredNotifier.getNotifier().updateStatus(process, oldStatus,
-//						newStatus);
-//		}
-//
-//	}
+	// public void dispatchUpdateStatus(ExecutionProcess process,
+	// String oldStatus, String newStatus) {
+	// // filtered notifiers
+	// for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
+	// .hasNext();) {
+	// FilteredNotifier filteredNotifier = it.next();
+	// if (filteredNotifier.receiveFrom(process))
+	// filteredNotifier.getNotifier().updateStatus(process, oldStatus,
+	// newStatus);
+	// }
+	//
+	// }
 
-//	public void dispatchAddSteps(ExecutionProcess process,
-//			List<ExecutionStep> steps) {
-//		process.addSteps(steps);
-//		for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
-//				.hasNext();) {
-//			FilteredNotifier filteredNotifier = it.next();
-//			if (filteredNotifier.receiveFrom(process))
-//				filteredNotifier.getNotifier().addSteps(process, steps);
-//		}
-//	}
+	// public void dispatchAddSteps(ExecutionProcess process,
+	// List<ExecutionStep> steps) {
+	// process.addSteps(steps);
+	// for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
+	// .hasNext();) {
+	// FilteredNotifier filteredNotifier = it.next();
+	// if (filteredNotifier.receiveFrom(process))
+	// filteredNotifier.getNotifier().addSteps(process, steps);
+	// }
+	// }
 
-//	public void registerProcessNotifier(ExecutionProcessNotifier notifier,
-//			Map<String, String> properties) {
-//		filteredNotifiers.add(new FilteredNotifier(notifier, properties));
-//	}
-//
-//	public void unregisterProcessNotifier(ExecutionProcessNotifier notifier,
-//			Map<String, String> properties) {
-//		filteredNotifiers.remove(notifier);
-//	}
+	// public void registerProcessNotifier(ExecutionProcessNotifier notifier,
+	// Map<String, String> properties) {
+	// filteredNotifiers.add(new FilteredNotifier(notifier, properties));
+	// }
+	//
+	// public void unregisterProcessNotifier(ExecutionProcessNotifier notifier,
+	// Map<String, String> properties) {
+	// filteredNotifiers.remove(notifier);
+	// }
 
-//	protected class FilteredNotifier {
-//		private final ExecutionProcessNotifier notifier;
-//		private final String processId;
-//
-//		public FilteredNotifier(ExecutionProcessNotifier notifier,
-//				Map<String, String> properties) {
-//			super();
-//			this.notifier = notifier;
-//			if (properties == null)
-//				properties = new HashMap<String, String>();
-//			if (properties.containsKey(SLC_PROCESS_ID))
-//				processId = properties.get(SLC_PROCESS_ID);
-//			else
-//				processId = null;
-//		}
-//
-//		/**
-//		 * Whether event from this process should be received by this listener.
-//		 */
-//		public Boolean receiveFrom(ExecutionProcess process) {
-//			if (processId != null)
-//				if (process.getUuid().equals(processId))
-//					return true;
-//				else
-//					return false;
-//			return true;
-//		}
-//
-//		@Override
-//		public int hashCode() {
-//			return notifier.hashCode();
-//		}
-//
-//		@Override
-//		public boolean equals(Object obj) {
-//			if (obj instanceof FilteredNotifier) {
-//				FilteredNotifier fn = (FilteredNotifier) obj;
-//				return notifier.equals(fn.notifier);
-//			} else if (obj instanceof ExecutionProcessNotifier) {
-//				ExecutionProcessNotifier epn = (ExecutionProcessNotifier) obj;
-//				return notifier.equals(epn);
-//			} else
-//				return false;
-//		}
-//
-//		public ExecutionProcessNotifier getNotifier() {
-//			return notifier;
-//		}
-//
-//	}
+	// protected class FilteredNotifier {
+	// private final ExecutionProcessNotifier notifier;
+	// private final String processId;
+	//
+	// public FilteredNotifier(ExecutionProcessNotifier notifier,
+	// Map<String, String> properties) {
+	// super();
+	// this.notifier = notifier;
+	// if (properties == null)
+	// properties = new HashMap<String, String>();
+	// if (properties.containsKey(SLC_PROCESS_ID))
+	// processId = properties.get(SLC_PROCESS_ID);
+	// else
+	// processId = null;
+	// }
+	//
+	// /**
+	// * Whether event from this process should be received by this listener.
+	// */
+	// public Boolean receiveFrom(ExecutionProcess process) {
+	// if (processId != null)
+	// if (process.getUuid().equals(processId))
+	// return true;
+	// else
+	// return false;
+	// return true;
+	// }
+	//
+	// @Override
+	// public int hashCode() {
+	// return notifier.hashCode();
+	// }
+	//
+	// @Override
+	// public boolean equals(Object obj) {
+	// if (obj instanceof FilteredNotifier) {
+	// FilteredNotifier fn = (FilteredNotifier) obj;
+	// return notifier.equals(fn.notifier);
+	// } else if (obj instanceof ExecutionProcessNotifier) {
+	// ExecutionProcessNotifier epn = (ExecutionProcessNotifier) obj;
+	// return notifier.equals(epn);
+	// } else
+	// return false;
+	// }
+	//
+	// public ExecutionProcessNotifier getNotifier() {
+	// return notifier;
+	// }
+	//
+	// }
 }

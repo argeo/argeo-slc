@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.core.test.SimpleTestResult;
+import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestStatus;
@@ -59,9 +60,19 @@ public abstract class AbstractExecutionFlowTestCase extends TestCase {
 	protected void configureAndExecuteSlcFlow(String applicationContextSuffix,
 			String beanName) {
 		ConfigurableApplicationContext applicationContext = createApplicationContext(applicationContextSuffix);
+		ExecutionContext executionContext = (ExecutionContext) applicationContext
+				.getBean("executionContext");
 		ExecutionFlow executionFlow = (ExecutionFlow) applicationContext
 				.getBean(beanName);
-		executionFlow.run();
+		if (executionFlow instanceof DefaultExecutionFlow)
+			((DefaultExecutionFlow) executionFlow)
+					.setExecutionContext(executionContext);
+		try {
+			executionContext.beforeFlow(executionFlow);
+			executionFlow.run();
+		} finally {
+			executionContext.afterFlow(executionFlow);
+		}
 		applicationContext.close();
 	}
 

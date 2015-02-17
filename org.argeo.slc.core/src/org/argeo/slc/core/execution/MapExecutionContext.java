@@ -23,6 +23,8 @@ import java.util.UUID;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionContext;
+import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.execution.ExecutionStack;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.BeansException;
@@ -37,6 +39,7 @@ public class MapExecutionContext implements ExecutionContext,
 	private final String uuid;
 
 	private ApplicationContext applicationContext;
+	private ExecutionStack executionStack;
 
 	public MapExecutionContext() {
 		uuid = UUID.randomUUID().toString();
@@ -84,11 +87,31 @@ public class MapExecutionContext implements ExecutionContext,
 		// try system property in last resort
 		if (value == null)
 			value = System.getProperty(key);
+
+		// if the variable was not found, look in the stack starting at the
+		// upper flows
+		if (value == null) {
+			value = executionStack.findLocalVariable(key);
+		}
 		return value;
 	}
 
 	public String getUuid() {
 		return uuid;
+	}
+
+	@Override
+	public void beforeFlow(ExecutionFlow executionFlow) {
+		// getUuid();
+		executionStack.enterFlow(executionFlow);
+		setVariable(ExecutionContext.VAR_FLOW_ID,
+				executionStack.getCurrentStackLevelUuid());
+		setVariable(ExecutionContext.VAR_FLOW_NAME, executionFlow.getName());
+	}
+
+	@Override
+	public void afterFlow(ExecutionFlow executionFlow) {
+		executionStack.leaveFlow(executionFlow);
 	}
 
 	@Override
@@ -106,6 +129,10 @@ public class MapExecutionContext implements ExecutionContext,
 	public void setApplicationContext(ApplicationContext applicationContext)
 			throws BeansException {
 		this.applicationContext = applicationContext;
+	}
+
+	public void setExecutionStack(ExecutionStack executionStack) {
+		this.executionStack = executionStack;
 	}
 
 }

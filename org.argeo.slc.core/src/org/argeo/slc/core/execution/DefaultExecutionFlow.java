@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
@@ -45,6 +46,9 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	private String path;
 
 	private Boolean failOnError = true;
+
+	// Only needed if stacked execution flows are used
+	private ExecutionContext executionContext = null;
 
 	public DefaultExecutionFlow() {
 		this.executionSpec = new DefaultExecutionSpec();
@@ -154,7 +158,16 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 	}
 
 	public void doExecuteRunnable(Runnable runnable) {
-		runnable.run();
+		try {
+			if (executionContext != null)
+				if (runnable instanceof ExecutionFlow)
+					executionContext.beforeFlow((ExecutionFlow) runnable);
+			runnable.run();
+		} finally {
+			if (executionContext != null)
+				if (runnable instanceof ExecutionFlow)
+					executionContext.afterFlow((ExecutionFlow) runnable);
+		}
 	}
 
 	public void afterPropertiesSet() throws Exception {
@@ -256,6 +269,10 @@ public class DefaultExecutionFlow implements ExecutionFlow, InitializingBean,
 
 	public void setFailOnError(Boolean failOnError) {
 		this.failOnError = failOnError;
+	}
+
+	public void setExecutionContext(ExecutionContext executionContext) {
+		this.executionContext = executionContext;
 	}
 
 }
