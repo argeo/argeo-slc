@@ -25,6 +25,18 @@ public class DefaultNameVersion implements NameVersion,
 	public DefaultNameVersion() {
 	}
 
+	/** Interprets string in OSGi-like format my.module.name;version=0.0.0 */
+	public DefaultNameVersion(String nameVersion) {
+		int index = nameVersion.indexOf(";version=");
+		if (index < 0) {
+			setName(nameVersion);
+			setVersion(null);
+		} else {
+			setName(nameVersion.substring(0, index));
+			setVersion(nameVersion.substring(index + ";version=".length()));
+		}
+	}
+
 	public DefaultNameVersion(String name, String version) {
 		this.name = name;
 		this.version = version;

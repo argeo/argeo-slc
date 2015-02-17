@@ -39,7 +39,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 
 /** Experimental and suboptimal */
-public class SedFilteredResource implements FactoryBean, InitializingBean {
+public class SedFilteredResource implements FactoryBean<Resource>,
+		InitializingBean {
 	private Resource source;
 
 	private List<String> filters = new ArrayList<String>();
@@ -51,7 +52,7 @@ public class SedFilteredResource implements FactoryBean, InitializingBean {
 
 	// private CharsetEncoder encoder;
 
-	public Object getObject() throws Exception {
+	public Resource getObject() throws Exception {
 		if (filters.size() == 0)
 			return source;
 

@@ -15,9 +15,19 @@
  */
 package org.argeo.slc.osgi;
 
+import java.util.Collection;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.eclipse.gemini.blueprint.context.BundleContextAware;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextEvent;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextListener;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextClosedEvent;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
+import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
+import org.eclipse.gemini.blueprint.util.OsgiBundleUtils;
+import org.eclipse.gemini.blueprint.util.OsgiFilterUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -31,19 +41,13 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
-import org.eclipse.gemini.blueprint.context.BundleContextAware;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextEvent;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextListener;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextClosedEvent;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
-import org.eclipse.gemini.blueprint.util.OsgiBundleUtils;
-import org.eclipse.gemini.blueprint.util.OsgiFilterUtils;
 import org.springframework.util.Assert;
 
 /** Wraps low-level access to a {@link BundleContext} */
+@SuppressWarnings("deprecation")
 public class BundlesManager implements BundleContextAware, FrameworkListener,
-		InitializingBean, DisposableBean, OsgiBundleApplicationContextListener {
+		InitializingBean, DisposableBean,
+		OsgiBundleApplicationContextListener<OsgiBundleApplicationContextEvent> {
 	private final static Log log = LogFactory.getLog(BundlesManager.class);
 
 	private BundleContext bundleContext;
@@ -100,9 +104,9 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 					+ ")";
 			// Wait for application context to be ready
 			// TODO: use service tracker
-			ServiceReference[] srs = getServiceRefSynchronous(
-					ApplicationContext.class.getName(), filter);
-			ServiceReference sr = srs[0];
+			Collection<ServiceReference<ApplicationContext>> srs = getServiceRefSynchronous(
+					ApplicationContext.class, filter);
+			ServiceReference<ApplicationContext> sr = srs.iterator().next();
 			long aAppContext = System.currentTimeMillis();
 			long end = aAppContext;
 
@@ -204,8 +208,8 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 
 	/** Refresh bundle synchronously. Does nothing if already started. */
 	protected void refreshSynchronous(Bundle bundle) throws BundleException {
-		ServiceReference packageAdminRef = bundleContext
-				.getServiceReference(PackageAdmin.class.getName());
+		ServiceReference<PackageAdmin> packageAdminRef = bundleContext
+				.getServiceReference(PackageAdmin.class);
 		PackageAdmin packageAdmin = (PackageAdmin) bundleContext
 				.getService(packageAdminRef);
 		Bundle[] bundles = { bundle };
@@ -241,11 +245,11 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 		}
 	}
 
-	public ServiceReference[] getServiceRefSynchronous(String clss,
-			String filter) throws InvalidSyntaxException {
+	public <S> Collection<ServiceReference<S>> getServiceRefSynchronous(
+			Class<S> clss, String filter) throws InvalidSyntaxException {
 		if (log.isTraceEnabled())
 			log.debug("Filter: '" + filter + "'");
-		ServiceReference[] sfs = null;
+		Collection<ServiceReference<S>> sfs = null;
 		boolean waiting = true;
 		long begin = System.currentTimeMillis();
 		do {
@@ -279,36 +283,34 @@ public class BundlesManager implements BundleContextAware, FrameworkListener,
 	}
 
 	/** Creates and open a new service tracker. */
-	public ServiceTracker newTracker(Class<?> clss) {
-		ServiceTracker st = new ServiceTracker(bundleContext, clss.getName(),
+	public <S> ServiceTracker<S, S> newTracker(Class<S> clss) {
+		ServiceTracker<S, S> st = new ServiceTracker<S, S>(bundleContext, clss,
 				null);
 		st.open();
 		return st;
 	}
 
-	@SuppressWarnings(value = { "unchecked" })
 	public <T> T getSingleService(Class<T> clss, String filter,
 			Boolean synchronous) {
 		if (filter != null)
 			Assert.isTrue(OsgiFilterUtils.isValidFilter(filter), "valid filter");
-		ServiceReference[] sfs;
+		Collection<ServiceReference<T>> sfs;
 		try {
 			if (synchronous)
-				sfs = getServiceRefSynchronous(clss.getName(), filter);
+				sfs = getServiceRefSynchronous(clss, filter);
 			else
-				sfs = bundleContext
-						.getServiceReferences(clss.getName(), filter);
+				sfs = bundleContext.getServiceReferences(clss, filter);
 		} catch (InvalidSyntaxException e) {
 			throw new SlcException("Cannot retrieve service reference for "
 					+ filter, e);
 		}
 
-		if (sfs == null || sfs.length == 0)
+		if (sfs == null || sfs.size() == 0)
 			return null;
-		else if (sfs.length > 1)
+		else if (sfs.size() > 1)
 			throw new SlcException("More than one execution flow found for "
 					+ filter);
-		return (T) bundleContext.getService(sfs[0]);
+		return (T) bundleContext.getService(sfs.iterator().next());
 	}
 
 	public <T> T getSingleServiceStrict(Class<T> clss, String filter,

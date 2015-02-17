@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
@@ -95,7 +95,7 @@ public class DefaultAgent implements SlcAgent {
 			String[] path = uri.getPath().split("/");
 			if (path.length < 3)
 				throw new SlcException("Badly formatted URI: " + uri);
-			NameVersion nameVersion = new BasicNameVersion(path[1]);
+			NameVersion nameVersion = new DefaultNameVersion(path[1]);
 			StringBuilder flow = new StringBuilder();
 			for (int i = 2; i < path.length; i++)
 				flow.append('/').append(path[i]);
@@ -149,13 +149,13 @@ public class DefaultAgent implements SlcAgent {
 		ExecutionModuleDescriptor emd;
 		try {
 			modulesManager
-					.start(new BasicNameVersion(moduleName, moduleVersion));
+					.start(new DefaultNameVersion(moduleName, moduleVersion));
 			emd = modulesManager.getExecutionModuleDescriptor(moduleName,
 					moduleVersion);
 		} catch (SlcException e) {
 			if (defaultModulePrefix != null) {
 				moduleName = defaultModulePrefix + "." + moduleName;
-				modulesManager.start(new BasicNameVersion(moduleName,
+				modulesManager.start(new DefaultNameVersion(moduleName,
 						moduleVersion));
 				emd = modulesManager.getExecutionModuleDescriptor(moduleName,
 						moduleVersion);

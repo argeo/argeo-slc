@@ -22,19 +22,19 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
 /** Retrieve an OS File from the given resource. */
-public class OsFileFactoryBean implements FactoryBean {
+public class OsFileFactoryBean implements FactoryBean<String> {
 	private ExecutionResources executionResources;
 	private Resource resource;
 	private Boolean overwrite = false;
 
 	/** Return an existing file on the file system. */
-	public Object getObject() throws Exception {
+	public String getObject() throws Exception {
 		Assert.notNull(executionResources, "executionResources is null");
 		Assert.notNull(resource, "resource is null");
 		return executionResources.getAsOsPath(resource, overwrite);
 	}
 
-	/** Return {@link Object} because CGLIB is unable to proxy {@link File}.*/
+	/** Return {@link Object} because CGLIB is unable to proxy {@link File}. */
 	public Class<? extends Object> getObjectType() {
 		return CharSequence.class;
 	}

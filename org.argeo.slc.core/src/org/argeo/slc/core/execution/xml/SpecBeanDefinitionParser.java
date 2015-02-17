@@ -38,14 +38,13 @@ public class SpecBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
 	private Log log = LogFactory.getLog(SpecBeanDefinitionParser.class);
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void doParse(Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
 		builder.getBeanDefinition().setDescription(
 				DomUtils.getChildElementValueByTagName(element, "description"));
 
-		ManagedMap attributes = new ManagedMap();
+		ManagedMap<String, BeanDefinition> attributes = new ManagedMap<String, BeanDefinition>();
 
 		// Primitives
 		for (Element child : (List<Element>) DomUtils
@@ -79,7 +78,8 @@ public class SpecBeanDefinitionParser extends
 			if (choicesElem != null) {
 				List<Element> choices = DomUtils.getChildElementsByTagName(
 						choicesElem, "choice");
-				ManagedList choiceBeans = new ManagedList(choices.size());
+				ManagedList<BeanDefinition> choiceBeans = new ManagedList<BeanDefinition>(
+						choices.size());
 				for (Element choiceElem : choices) {
 					BeanDefinitionBuilder choiceBuilder = BeanDefinitionBuilder
 							.genericBeanDefinition(RefValueChoice.class);
@@ -116,8 +116,8 @@ public class SpecBeanDefinitionParser extends
 
 	}
 
-	@SuppressWarnings("unchecked")
-	protected void putInAttributes(ManagedMap attributes, Element child,
+	protected void putInAttributes(
+			ManagedMap<String, BeanDefinition> attributes, Element child,
 			BeanDefinition beanDefinition, String nature) {
 		String name = child.getAttribute("name");
 		attributes.put(name, beanDefinition);

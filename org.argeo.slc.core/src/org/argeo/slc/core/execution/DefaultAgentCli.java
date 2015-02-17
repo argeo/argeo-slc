@@ -11,7 +11,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.security.OsAuthenticationToken;
-import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
@@ -67,7 +67,7 @@ public class DefaultAgentCli implements SlcAgentCli {
 				appendModule(emd, buf);
 			}
 		} else if (args.length == 1 && !args[0].contains("/")) {// single module
-			NameVersion nameVersion = new BasicNameVersion(args[0]);
+			NameVersion nameVersion = new DefaultNameVersion(args[0]);
 			ExecutionModuleDescriptor emd = agent.getExecutionModuleDescriptor(
 					nameVersion.getName(), nameVersion.getVersion());
 			appendModule(emd, buf);
@@ -91,7 +91,7 @@ public class DefaultAgentCli implements SlcAgentCli {
 
 	protected void appendUriHelp(URI uri, StringBuilder buf) {
 		String[] path = uri.getPath().split("/");
-		NameVersion nameVersion = new BasicNameVersion(path[1]);
+		NameVersion nameVersion = new DefaultNameVersion(path[1]);
 		ExecutionModuleDescriptor emd = agent.getExecutionModuleDescriptor(
 				nameVersion.getName(), nameVersion.getVersion());
 

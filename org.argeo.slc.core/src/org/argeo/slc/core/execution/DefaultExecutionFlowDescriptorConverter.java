@@ -227,7 +227,6 @@ public class DefaultExecutionFlowDescriptorConverter implements
 		return efd;
 	}
 
-	@SuppressWarnings(value = { "unchecked" })
 	protected RefValue buildRefValue(RefSpecAttribute rsa,
 			ExecutionFlow executionFlow, String key) {
 		RefValue refValue = new RefValue();

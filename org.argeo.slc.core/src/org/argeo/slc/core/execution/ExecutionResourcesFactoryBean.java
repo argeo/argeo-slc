@@ -19,12 +19,12 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.Resource;
 import org.springframework.util.Assert;
 
-/** Workaround when execution placedholders needs to be passed.*/
-public class ExecutionResourcesFactoryBean implements FactoryBean {
+/** Workaround when execution placedholders needs to be passed. */
+public class ExecutionResourcesFactoryBean implements FactoryBean<Resource> {
 	private ExecutionResources executionResources;
 	private String relativePath;
 
-	public Object getObject() throws Exception {
+	public Resource getObject() throws Exception {
 		Assert.notNull(executionResources, "executionResources is null");
 		Assert.notNull(relativePath, "relativePath is null");
 		return executionResources.getWritableResource(relativePath);

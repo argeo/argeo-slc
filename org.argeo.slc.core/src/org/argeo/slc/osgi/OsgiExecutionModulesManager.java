@@ -46,6 +46,7 @@ import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.execution.RealizedFlow;
+import org.eclipse.gemini.blueprint.service.importer.OsgiServiceLifecycleListener;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
@@ -53,7 +54,6 @@ import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
 import org.osgi.framework.launch.Framework;
 import org.springframework.context.ApplicationContext;
-import org.eclipse.gemini.blueprint.service.importer.OsgiServiceLifecycleListener;
 
 /** Execution modules manager implementation based on an OSGi runtime. */
 public class OsgiExecutionModulesManager extends
@@ -346,7 +346,7 @@ public class OsgiExecutionModulesManager extends
 						+ bundle.getSymbolicName() + ")";
 				try {
 					bundlesManager.getServiceRefSynchronous(
-							ApplicationContext.class.getName(), filter);
+							ApplicationContext.class, filter);
 				} catch (Exception e) {
 					// stop if application context not found
 					bundle.stop();
@@ -497,7 +497,7 @@ public class OsgiExecutionModulesManager extends
 	public synchronized void unregister(ExecutionFlow executionFlow,
 			Map<String, String> properties) {
 		// FIXME why are properties null?
-		if(properties==null)
+		if (properties == null)
 			return;
 		OsgiBundle osgiBundle = asOsgiBundle(properties);
 		if (executionFlows.containsKey(osgiBundle)) {

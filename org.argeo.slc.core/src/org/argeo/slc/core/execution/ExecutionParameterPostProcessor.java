@@ -117,7 +117,6 @@ public class ExecutionParameterPostProcessor extends
 		return null;
 	}
 
-	@SuppressWarnings(value = { "unchecked" })
 	public Object resolveValue(String beanName, Object bean, Object value) {
 		if (value instanceof TypedStringValue) {
 			TypedStringValue tsv = (TypedStringValue) value;
@@ -138,7 +137,7 @@ public class ExecutionParameterPostProcessor extends
 		} else if (value instanceof ManagedMap) {
 			Map<?, ?> mapVal = (Map<?, ?>) value;
 
-			Map<Object, Object> newContent = new ManagedMap();
+			Map<Object, Object> newContent = new ManagedMap<Object, Object>();
 			boolean entriesModified = false;
 			for (Iterator<?> it = mapVal.entrySet().iterator(); it.hasNext();) {
 				Map.Entry<?, ?> entry = (Map.Entry<?, ?>) it.next();
@@ -156,7 +155,7 @@ public class ExecutionParameterPostProcessor extends
 			return entriesModified ? newContent : value;
 		} else if (value instanceof ManagedList) {
 			List<?> listVal = (List<?>) value;
-			List<Object> newContent = new ManagedList();
+			List<Object> newContent = new ManagedList<Object>();
 			boolean valueModified = false;
 
 			for (int i = 0; i < listVal.size(); i++) {
@@ -170,7 +169,7 @@ public class ExecutionParameterPostProcessor extends
 			return valueModified ? newContent : value;
 		} else if (value instanceof ManagedSet) {
 			Set<?> setVal = (Set<?>) value;
-			Set<Object> newContent = new ManagedSet();
+			Set<Object> newContent = new ManagedSet<Object>();
 			boolean entriesModified = false;
 			for (Iterator<?> it = setVal.iterator(); it.hasNext();) {
 				Object elem = it.next();

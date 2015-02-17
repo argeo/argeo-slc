@@ -21,14 +21,14 @@ import java.util.List;
 import org.springframework.beans.factory.FactoryBean;
 
 /** Merge the provided lists in one single list, in the order provided. */
-public class MergedLists implements FactoryBean {
+public class MergedLists implements FactoryBean<List<Object>> {
 	private List<List<Object>> lists = new ArrayList<List<Object>>();
 
 	public void setLists(List<List<Object>> lists) {
 		this.lists = lists;
 	}
 
-	public Object getObject() throws Exception {
+	public List<Object> getObject() throws Exception {
 		List<Object> merged = new ArrayList<Object>();
 		for (List<Object> lst : lists) {
 			merged.addAll(lst);

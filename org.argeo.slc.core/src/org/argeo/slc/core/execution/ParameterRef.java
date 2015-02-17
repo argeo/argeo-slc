@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.FactoryBean;
 
-public class ParameterRef implements FactoryBean {
+public class ParameterRef implements FactoryBean<Object> {
 	private final static Log log = LogFactory.getLog(ParameterRef.class);
 
 	private InstantiationManager instantiationManager;

@@ -37,7 +37,6 @@ public class BundleModularDistribution extends AbstractOsgiModularDistribution
 
 	private String libDirectory = "/lib";
 
-	@SuppressWarnings(value = { "unchecked" })
 	protected void fillDistributions(
 			SortedMap<NameVersion, Distribution> distributions)
 			throws Exception {

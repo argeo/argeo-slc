@@ -19,10 +19,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 
 /** The description of a versioned module. */
-public class ModuleDescriptor extends BasicNameVersion implements Serializable {
+public class ModuleDescriptor extends DefaultNameVersion implements Serializable {
 	private static final long serialVersionUID = 4310820315478645419L;
 	private String title;
 	private String description;

@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.argeo.slc.BasicNameVersion;
+import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 
 /** A fully configured execution flow, ready to be executed. */
@@ -39,7 +39,7 @@ public class RealizedFlow implements Serializable {
 	}
 
 	public NameVersion getModuleNameVersion() {
-		return new BasicNameVersion(getModuleName(), getModuleVersion());
+		return new DefaultNameVersion(getModuleName(), getModuleVersion());
 	}
 
 	public String getModuleVersion() {

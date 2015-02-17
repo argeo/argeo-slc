@@ -115,7 +115,9 @@ public class SystemCall implements Runnable {
 	// TODO make it more secure and robust, test only once
 	private final String sudoPrompt = UUID.randomUUID().toString();
 	private String askPassProgram = "/usr/libexec/openssh/ssh-askpass";
+	@SuppressWarnings("unused")
 	private boolean firstLine = true;
+	@SuppressWarnings("unused")
 	private CallbackHandler callbackHandler;
 	/** Chroot to the this path (must not be empty) */
 	private String chroot = null;

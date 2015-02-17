@@ -45,7 +45,6 @@ public class FlowBeanDefinitionParser extends
 	/** Whether the user has already be warned on path attribute usage. */
 	private Boolean warnedAboutPathAttribute = false;
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void doParse(Element element, ParserContext parserContext,
 			BeanDefinitionBuilder builder) {
@@ -95,7 +94,8 @@ public class FlowBeanDefinitionParser extends
 
 		// Arguments
 		if (argsElems.size() != 0) {
-			ManagedMap args = new ManagedMap(argsElems.size());
+			ManagedMap<String, Object> args = new ManagedMap<String, Object>(
+					argsElems.size());
 			for (Element argElem : argsElems) {
 				Object value = NamespaceUtils.parseValue(argElem,
 						parserContext, builder.getBeanDefinition(), null);
@@ -122,7 +122,8 @@ public class FlowBeanDefinitionParser extends
 
 		// Executables
 		if (execElems.size() != 0) {
-			ManagedList executables = new ManagedList(execElems.size());
+			ManagedList<Object> executables = new ManagedList<Object>(
+					execElems.size());
 			for (Element child : execElems) {
 				// child validity check is performed in xsd
 				executables.add(NamespaceUtils.parseBeanOrReference(child,

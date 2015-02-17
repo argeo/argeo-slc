@@ -39,7 +39,7 @@ public class ExecutionScope implements Scope {
 	private final ThreadLocal<ExecutionContext> executionContext = new ThreadLocal<ExecutionContext>();
 	private final ThreadLocal<String> executionContextBeanName = new ThreadLocal<String>();
 
-	public Object get(String name, ObjectFactory objectFactory) {
+	public Object get(String name, ObjectFactory<?> objectFactory) {
 		if (log.isTraceEnabled())
 			log.debug("Get execution scoped bean " + name);
 

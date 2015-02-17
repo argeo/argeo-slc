@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlow;
+import org.springframework.beans.BeanMetadataElement;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.RuntimeBeanReference;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -33,7 +34,6 @@ import org.w3c.dom.Node;
 public class AsFlowDecorator implements BeanDefinitionDecorator {
 	private Log log = LogFactory.getLog(AsFlowDecorator.class);
 
-	@SuppressWarnings("unchecked")
 	public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder bean,
 			ParserContext ctx) {
 		String attrValue = ((Attr) node).getValue();
@@ -49,7 +49,8 @@ public class AsFlowDecorator implements BeanDefinitionDecorator {
 					+ " is already defined.");
 		BeanDefinitionBuilder flow = BeanDefinitionBuilder
 				.rootBeanDefinition(DefaultExecutionFlow.class);
-		ManagedList executables = new ManagedList(1);
+		ManagedList<BeanMetadataElement> executables = new ManagedList<BeanMetadataElement>(
+				1);
 
 		String beanName = bean.getBeanName();
 		if (beanName == null)

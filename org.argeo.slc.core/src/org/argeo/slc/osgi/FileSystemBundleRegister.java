@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.framework.Constants;
@@ -50,8 +51,9 @@ public class FileSystemBundleRegister implements BundleRegister {
 			if (file.isDirectory()) {
 
 			} else {
+				JarFile jarFile = null;
 				try {
-					JarFile jarFile = new JarFile(file);
+					jarFile = new JarFile(file);
 					Manifest manifest = jarFile.getManifest();
 					String symbolicName = manifest.getMainAttributes()
 							.getValue(Constants.BUNDLE_SYMBOLICNAME);
@@ -73,6 +75,8 @@ public class FileSystemBundleRegister implements BundleRegister {
 					log.warn("Cannot scan " + file, e);
 					if (log.isTraceEnabled())
 						e.printStackTrace();
+				} finally {
+					IOUtils.closeQuietly(jarFile);
 				}
 			}
 		}
