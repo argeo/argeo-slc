@@ -29,7 +29,7 @@ public class SlcExecutionPerspective implements IPerspectiveFactory {
 		layout.setFixed(false);
 
 		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT,
-				0.3f, editorArea);
+				0.35f, editorArea);
 		left.addView(ClientUiPlugin.ID + ".jcrExecutionModulesView");
 		// left.addView(ClientUiPlugin.ID + ".jcrResultListView");
 		left.addView(ClientUiPlugin.ID + ".jcrResultTreeView");
