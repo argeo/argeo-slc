@@ -38,7 +38,7 @@
 		<module>org.argeo.slc.client.ui.dist</module>
 		<module>org.argeo.slc.client.rap</module>
 
-		<!-- <module>lib</module> -->
+		<module>lib</module>
 		<module>dep</module>
 		<!-- <module>dist</module> -->
 		<module>demo</module>

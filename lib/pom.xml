@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -10,12 +11,12 @@
 	<packaging>pom</packaging>
 	<name>SLC Standard Libs</name>
 	<description>SLC execution modules for generic tasks, to be used as parent pom</description>
-	<modules>
-		<module>org.argeo.slc.lib.build</module>
-		<module>org.argeo.slc.lib.jcr</module>
-		<module>org.argeo.slc.lib.repo</module>
-		<module>org.argeo.slc.lib.rpmfactory</module>
-	</modules>
+	<!-- <modules> -->
+	<!-- <module>org.argeo.slc.lib.build</module> -->
+	<!-- <module>org.argeo.slc.lib.jcr</module> -->
+	<!-- <module>org.argeo.slc.lib.repo</module> -->
+	<!-- <module>org.argeo.slc.lib.rpmfactory</module> -->
+	<!-- </modules> -->
 	<properties>
 		<additionalImports.slc-lib>
 			com.jcraft.jsch;resolution:=optional,
@@ -46,10 +47,9 @@
 						<SLC-ExecutionModule>default</SLC-ExecutionModule>
 						<!-- Minimal imports + some optional convenience imports -->
 						<Import-Package>
-							*,
-							net.sf.cglib.core,
-							net.sf.cglib.proxy,
-							net.sf.cglib.reflect,
+							org.springframework.cglib.proxy,
+							org.springframework.cglib.core,
+							org.springframework.cglib.reflect,
 							org.aopalliance.aop,
 							org.argeo.slc.core.execution,
 							org.argeo.slc.core.execution.tasks,
@@ -61,7 +61,8 @@
 							org.springframework.aop.scope,
 							org.springframework.beans.factory.config,
 							org.springframework.core.io,
-							${additionalImports.slc-lib}
+							${additionalImports.slc-lib},
+							*
 						</Import-Package>
 					</instructions>
 				</configuration>
