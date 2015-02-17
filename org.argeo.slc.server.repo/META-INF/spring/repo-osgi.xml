@@ -10,7 +10,7 @@
 
 	<!-- REFERENCES -->
 	<reference id="authenticationManager"
-		interface="org.springframework.security.AuthenticationManager" />
+		interface="org.springframework.security.authentication.AuthenticationManager" />
 
 	<set id="defaultRpmRepositories" cardinality="0..N"
 		interface="org.argeo.slc.rpmfactory.RpmRepository" />

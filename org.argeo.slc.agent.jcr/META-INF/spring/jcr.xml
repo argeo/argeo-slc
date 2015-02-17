@@ -39,7 +39,7 @@
 	</bean>
 
 
-	<bean name="fileSystemManager" class="org.apache.commons.vfs.impl.StandardFileSystemManager"
+	<bean name="fileSystemManager" class="org.apache.commons.vfs2.impl.StandardFileSystemManager"
 		init-method="init" destroy-method="close" />
 
 </beans>

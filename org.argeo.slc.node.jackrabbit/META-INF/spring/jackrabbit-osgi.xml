@@ -10,23 +10,17 @@
        http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<!-- REFERENCES -->
-	<reference id="repository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=slc)" />
+	<reference id="nodeRepository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=node)" />
 
 	<reference id="authenticationManager"
-		interface="org.springframework.security.AuthenticationManager" />
-
-	<reference id="modulesManager"
-		interface="org.argeo.slc.execution.ExecutionModulesManager" />
+		interface="org.springframework.security.authentication.AuthenticationManager" />
 
 	<!-- SERVICES -->
-	<service ref="attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
+	<service ref="jcrRepository" interface="javax.jcr.Repository">
+		<service-properties>
+			<beans:entry key="argeo.jcr.repository.alias" value="slc" />
+		</service-properties>
+	</service>
 
-	<service interface="org.argeo.slc.execution.ExecutionModulesListener"
-		ref="executionModulesListener" />
-
-	<service ref="agent" interface="org.argeo.slc.execution.SlcAgent" />
-	<service ref="agentCli" interface="org.argeo.slc.execution.SlcAgentCli" />
-
-	<service ref="fileSystemManager" interface="org.apache.commons.vfs.FileSystemManager" />
 </beans:beans>

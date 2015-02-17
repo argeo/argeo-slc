@@ -1,0 +1,6 @@
+Import-Package: org.argeo.jcr,\
+org.argeo.slc.jcr,\
+org.argeo.slc.repo,\
+org.h2;resolution:=optional,\
+org.postgresql;resolution:=optional,\
+*
