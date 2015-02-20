@@ -16,11 +16,13 @@
 package org.argeo.slc.aether.spring;
 
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.util.repository.AuthenticationBuilder;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 
 /** Simplifies the definition of a remote factory using Spring */
-public class RemoteRepositoryFactory implements BeanNameAware, FactoryBean {
+public class RemoteRepositoryFactory implements BeanNameAware,
+		FactoryBean<RemoteRepository> {
 	private String beanName;
 	private String id;
 	private String url;
@@ -28,16 +30,17 @@ public class RemoteRepositoryFactory implements BeanNameAware, FactoryBean {
 	private String username;
 	private String password;
 
-	public Object getObject() throws Exception {
-		RemoteRepository remoteRepository = new RemoteRepository.Builder(
-				id != null ? id : beanName, type, url).build();
-		// FIXME Adapt to changes in Aether
-		// if (username != null) {
-		// Authentication authentication = new Authentication(username,
-		// password);
-		// remoteRepository.setAuthentication(authentication);
-		// }
-		return null;
+	public RemoteRepository getObject() throws Exception {
+		RemoteRepository.Builder builder = new RemoteRepository.Builder(
+				id != null ? id : beanName, type, url);
+		if (username != null) {
+			AuthenticationBuilder authBuilder = new AuthenticationBuilder();
+			authBuilder.addUsername(username);
+			authBuilder.addPassword(password);
+			builder.setAuthentication(authBuilder.build());
+		}
+		RemoteRepository remoteRepository = builder.build();
+		return remoteRepository;
 	}
 
 	public Class<?> getObjectType() {
