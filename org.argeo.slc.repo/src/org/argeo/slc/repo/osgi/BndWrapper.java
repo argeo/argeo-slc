@@ -182,8 +182,9 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 		if (this.name == null) {
 			this.name = name;
 		} else {
-			log.warn("Using explicitely set name " + this.name
-					+ " and not bean name " + name);
+			if (!name.contains("#"))
+				log.warn("Using explicitely set name " + this.name
+						+ " and not bean name " + name);
 		}
 	}
 
