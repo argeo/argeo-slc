@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-	<!--  LEGACY -->
+	<!-- LEGACY -->
 	<!-- <bean id="org.argeo.slc.client.ui.dist.genericJcrQueryEditor" class="org.argeo.eclipse.ui.jcr.editors.GenericJcrQueryEditor" 
 		scope="prototype"> <property name="session" ref="slcSession" /> </bean> -->
 		

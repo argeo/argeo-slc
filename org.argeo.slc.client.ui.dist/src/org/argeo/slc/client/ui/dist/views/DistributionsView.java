@@ -101,7 +101,6 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		viewer.setContentProvider(treeContentProvider);
 		viewer.addDoubleClickListener(new DistTreeDoubleClickListener(viewer));
 		viewer.setComparer(new DistTreeComparer());
-
 		viewer.setComparator(new DistTreeComparator());
 
 		@SuppressWarnings("unused")
@@ -374,9 +373,7 @@ public class DistributionsView extends ViewPart implements SlcNames, ArgeoNames 
 		viewer.expandToLevel(2);
 	}
 
-	/*
-	 * DEPENDENCY INJECTION
-	 */
+	/* DEPENDENCY INJECTION */
 	public void setNodeRepository(Repository nodeRepository) {
 		this.nodeRepository = nodeRepository;
 	}

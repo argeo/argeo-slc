@@ -21,8 +21,8 @@
 	<bean id="registerRepository"
 		class="org.argeo.slc.client.ui.dist.commands.RegisterRepository">
 		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
 	</bean>
 
 	<bean id="unregisterRemoteRepo"
@@ -61,16 +61,17 @@
 
 	<bean id="publishWorkspace" class="org.argeo.slc.client.ui.dist.commands.PublishWorkspace">
 		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
 	</bean>
 
 	<bean id="normalizeWorkspace"
 		class="org.argeo.slc.client.ui.dist.commands.NormalizeWorkspace">
 		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
 	</bean>
+
 	<bean id="openGenerateBinariesWizard"
 		class="org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard">
 		<property name="repoService" ref="repoService" />
@@ -79,14 +80,14 @@
 	<!-- WORKSPACE CRUD -->
 	<bean id="createWorkspace" class="org.argeo.slc.client.ui.dist.commands.CreateWorkspace">
 		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
 	</bean>
 
 	<bean id="copyWorkspace" class="org.argeo.slc.client.ui.dist.commands.CopyWorkspace">
 		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
 	</bean>
 
 	<bean id="copyLocalJavaWorkspace"
@@ -104,17 +105,16 @@
 		</property>
 	</bean>
 
-
 	<bean id="mergeWorkspaces" class="org.argeo.slc.client.ui.dist.commands.MergeWorkspaces">
 		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
 	</bean>
 
 	<bean id="deleteWorkspace" class="org.argeo.slc.client.ui.dist.commands.DeleteWorkspace">
 		<property name="repositoryFactory" ref="repositoryFactory" />
-		<property name="nodeRepository" ref="nodeRepository" />
 		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
 	</bean>
 
 	<!-- ADVANCED -->
@@ -122,7 +122,6 @@
 		scope="prototype">
 		<property name="repository" ref="javaRepository" />
 	</bean>
-
 
 	<!-- LEGACY -->
 	<!-- <bean id="org.argeo.slc.client.ui.dist.openGenericJcrQueryEditor" class="org.argeo.eclipse.ui.jcr.commands.OpenGenericJcrQueryEditor" 

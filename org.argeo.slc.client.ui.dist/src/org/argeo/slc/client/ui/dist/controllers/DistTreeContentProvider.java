@@ -39,7 +39,7 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 	// Context
 	private Session nodeSession;
 	List<RepoElem> repositories = new ArrayList<RepoElem>();
-	
+
 	public Object[] getElements(Object input) {
 		Repository nodeRepository = (Repository) input;
 		try {
@@ -105,7 +105,6 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 
 	private void initializeModel(Session nodeSession) {
 		try {
-
 			Node homeNode = UserJcrUtils.getUserHome(nodeSession);
 			if (homeNode == null) // anonymous
 				throw new SlcException("User must be authenticated.");
@@ -113,7 +112,8 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 			// make sure base directory is available
 			Node repos = JcrUtils.mkdirs(nodeSession, homeNode.getPath()
 					+ RepoConstants.REPOSITORIES_BASE_PATH);
-			nodeSession.save();
+			if (nodeSession.hasPendingChanges())
+				nodeSession.save();
 
 			// register default local java repository
 			String alias = RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS;
