@@ -9,8 +9,8 @@
        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
 
 	<!-- REFERENCES -->
-	<reference id="authenticationManager"
-		interface="org.springframework.security.authentication.AuthenticationManager" />
+	<reference id="userAdmin" interface="org.osgi.service.useradmin.UserAdmin" />
+	<reference id="userTransaction" interface="javax.transaction.UserTransaction" />
 
 	<set id="defaultRpmRepositories" cardinality="0..N"
 		interface="org.argeo.slc.rpmfactory.RpmRepository" />
@@ -48,17 +48,15 @@
 	</beans:bean>
 
 	<!-- ROLES -->
-	<reference id="userAdminService" interface="org.argeo.security.UserAdminService" />
-
 	<beans:bean id="ROLE_SLC"
 		class="org.argeo.security.core.SimpleRoleRegistration" init-method="run">
-		<beans:property name="role" value="ROLE_SLC" />
-		<beans:property name="userAdminService" ref="userAdminService" />
+		<beans:property name="role" value="org.argeo.slc.user" />
+		<beans:property name="userAdmin" ref="userAdmin" />
+		<beans:property name="userTransaction" ref="userTransaction" />
 	</beans:bean>
 
 	<beans:bean
 		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
-		<beans:property name="authenticationManager" ref="authenticationManager" />
 	</beans:bean>
 </beans:beans>
 

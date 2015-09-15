@@ -69,7 +69,5 @@
 		</SecurityManager>
 		<AccessManager class="org.argeo.security.jackrabbit.ArgeoAccessManager">
 		</AccessManager>
-		<LoginModule class="org.argeo.security.jackrabbit.ArgeoLoginModule">
-		</LoginModule>
 	</Security>
 </Repository>

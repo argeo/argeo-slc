@@ -40,7 +40,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.pde.core.plugin.IPluginModelBase;
 import org.eclipse.pde.core.plugin.PluginRegistry;
-import org.eclipse.pde.internal.build.IPDEBuildConstants;
 import org.eclipse.pde.launching.IPDELauncherConstants;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -396,7 +395,8 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 				// debug("Skip source bundle " + bundleId);
 				continue bundles;
 			} else if (bundleId
-					.equals(IPDEBuildConstants.BUNDLE_SIMPLE_CONFIGURATOR)) {
+					.equals("org.eclipse.equinox.simpleconfigurator")) {
+				// IPDEBuildConstants.BUNDLE_SIMPLE_CONFIGURATOR
 				// skip simple configurator in order to avoid side-effects
 				continue bundles;
 			}

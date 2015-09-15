@@ -128,7 +128,7 @@
 		  <enabledWhen>
 		    <with variable="roles">
 		      <iterate ifEmpty="false" operator="or">
-		        <equals value="ROLE_SLC" />
+		        <equals value="cn=org.argeo.slc.user,ou=roles,ou=node" />
 		      </iterate>
 		    </with>
 		  </enabledWhen>
