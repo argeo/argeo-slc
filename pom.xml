@@ -132,7 +132,7 @@ limitations under the License.
 		</repository>
 		<repository>
 			<id>argeo-tp-extras</id>
-			<url>https://forge.argeo.org/data/public/java/argeo-tp-extras-2.1</url>
+			<url>http://forge.argeo.org/data/public/java/argeo-tp-extras-2.1</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
