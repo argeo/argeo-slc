@@ -20,13 +20,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.RealizedFlow;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /** Thread of a single execution */
 public class ExecutionThread extends Thread {
@@ -49,11 +46,11 @@ public class ExecutionThread extends Thread {
 
 	public void run() {
 		// authenticate thread
-		Authentication authentication = getProcessThreadGroup()
-				.getAuthentication();
-		if (authentication == null)
-			throw new SlcException("Can only execute authenticated threads");
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+//		Authentication authentication = getProcessThreadGroup()
+//				.getAuthentication();
+//		if (authentication == null)
+//			throw new SlcException("Can only execute authenticated threads");
+//		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		// Retrieve execution flow descriptor
 		ExecutionFlowDescriptor executionFlowDescriptor = realizedFlow

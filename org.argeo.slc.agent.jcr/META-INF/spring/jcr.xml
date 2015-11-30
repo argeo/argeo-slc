@@ -12,7 +12,7 @@
 
 	<bean id="agentCli" class="org.argeo.slc.core.execution.DefaultAgentCli">
 		<property name="agent" ref="agent" />
-		<property name="authenticationManager" ref="authenticationManager" />
+<!-- 		<property name="authenticationManager" ref="authenticationManager" /> -->
 	</bean>
 
 	<bean id="executionModulesListener" class="org.argeo.slc.jcr.execution.JcrExecutionModulesListener"
@@ -24,18 +24,18 @@
 
 	<!-- Thread-bound session is used when multiple threads with various authentication 
 		will call the component -->
-	<bean id="session" class="org.argeo.security.jcr.SecureThreadBoundSession">
-		<property name="repository" ref="repository" />
-	</bean>
+<!-- 	<bean id="session" class="org.argeo.security.jcr.SecureThreadBoundSession"> -->
+<!-- 		<property name="repository" ref="repository" /> -->
+<!-- 	</bean> -->
 
 	<bean id="attachmentUploader" class="org.argeo.slc.jcr.execution.JcrAttachmentUploader">
-		<property name="session" ref="session" />
+<!-- 		<property name="session" ref="session" /> -->
 	</bean>
 
 
 	<bean
 		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
-		<property name="authenticationManager" ref="authenticationManager" />
+<!-- 		<property name="authenticationManager" ref="authenticationManager" /> -->
 	</bean>
 
 

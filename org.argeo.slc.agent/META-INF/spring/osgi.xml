@@ -32,6 +32,8 @@
 		cardinality="0..N">
 		<listener ref="modulesManager" />
 	</list>
+	<reference id="userTransaction" interface="javax.transaction.UserTransaction" />
+	<reference id="userAdmin" interface="org.osgi.service.useradmin.UserAdmin" />
 
 	<!-- SERVICES -->
 	<service ref="modulesManager" interface="org.argeo.slc.execution.ExecutionModulesManager" />
@@ -42,11 +44,13 @@
 	</beans:bean>
 
 	<!-- ROLES -->
-	<reference id="userAdminService" interface="org.argeo.security.UserAdminService" />
+<!-- 	<reference id="userAdminService" interface="org.argeo.security.UserAdminService" /> -->
 
 	<beans:bean class="org.argeo.security.core.SimpleRoleRegistration"
 		init-method="run">
 		<beans:property name="role" value="ROLE_SLC" />
-		<beans:property name="userAdminService" ref="userAdminService" />
+		<beans:property name="userAdmin" ref="userAdmin" />
+		<beans:property name="userTransaction" ref="userTransaction" />
+<!-- 		<beans:property name="userAdminService" ref="userAdminService" /> -->
 	</beans:bean>
 </beans:beans>

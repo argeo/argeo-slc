@@ -28,7 +28,7 @@
 	<bean
 		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
 		<description><![CDATA[Executes initialization with a system authentication]]></description>
-		<property name="authenticationManager" ref="authenticationManager" />
+<!-- 		<property name="authenticationManager" ref="authenticationManager" /> -->
 	</bean>
 
 </beans>

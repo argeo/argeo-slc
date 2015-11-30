@@ -20,14 +20,10 @@ import java.util.concurrent.BlockingQueue;
 
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /** The thread group attached to a given {@link SlcExecution}. */
 public class ProcessThreadGroup extends ThreadGroup {
-	// private final ExecutionModulesManager executionModulesManager;
-	// private final ProcessThread processThread;
-	private final Authentication authentication;
+//	private final Authentication authentication;
 	private final static Integer STEPS_BUFFER_CAPACITY = 5000;
 
 	private BlockingQueue<ExecutionStep> steps = new ArrayBlockingQueue<ExecutionStep>(
@@ -37,15 +33,13 @@ public class ProcessThreadGroup extends ThreadGroup {
 
 	public ProcessThreadGroup(ExecutionProcess executionProcess) {
 		super("SLC Process #" + executionProcess.getUuid() + " thread group");
-		// this.executionModulesManager = executionModulesManager;
-		// this.processThread = processThread;
-		this.authentication = SecurityContextHolder.getContext()
-				.getAuthentication();
+//		this.authentication = SecurityContextHolder.getContext()
+//				.getAuthentication();
 	}
 
-	public Authentication getAuthentication() {
-		return authentication;
-	}
+//	public Authentication getAuthentication() {
+//		return authentication;
+//	}
 
 	public void dispatchAddStep(ExecutionStep step) {
 		// ExecutionProcess slcProcess = processThread.getProcess();

@@ -54,8 +54,6 @@ import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestStatus;
 import org.springframework.core.io.Resource;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /** Execute an OS specific system call. */
 public class SystemCall implements Runnable {
@@ -98,7 +96,7 @@ public class SystemCall implements Runnable {
 	private Boolean exceptionOnFailed = true;
 	private Boolean mergeEnvironmentVariables = true;
 
-	private Authentication authentication;
+//	private Authentication authentication;
 
 	private String osConsole = null;
 	private String generateScript = null;
@@ -160,7 +158,7 @@ public class SystemCall implements Runnable {
 
 	/** Executes the system call. */
 	public void run() {
-		authentication = SecurityContextHolder.getContext().getAuthentication();
+//		authentication = SecurityContextHolder.getContext().getAuthentication();
 
 		// Manage streams
 		Writer stdOutWriter = null;
@@ -535,10 +533,10 @@ public class SystemCall implements Runnable {
 	/** Log from the underlying streams. */
 	protected void log(String logLevel, String line) {
 		// TODO optimize
-		if (SecurityContextHolder.getContext().getAuthentication() == null) {
-			SecurityContextHolder.getContext()
-					.setAuthentication(authentication);
-		}
+//		if (SecurityContextHolder.getContext().getAuthentication() == null) {
+//			SecurityContextHolder.getContext()
+//					.setAuthentication(authentication);
+//		}
 
 		if ("ERROR".equals(logLevel))
 			log.error(line);

@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.security.OsAuthenticationToken;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -20,9 +19,6 @@ import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.execution.SlcAgent;
 import org.argeo.slc.execution.SlcAgentCli;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 /**
  * Authenticates thread and executes synchronously a command line execution.
@@ -33,18 +29,18 @@ public class DefaultAgentCli implements SlcAgentCli {
 
 	private final static String UTF8 = "UTF-8";
 	private SlcAgent agent;
-	private AuthenticationManager authenticationManager;
+//	private AuthenticationManager authenticationManager;
 
 	private Long timeout = 24 * 60 * 60 * 1000l;
 
 	public String process(String[] args) {
-		if (SecurityContextHolder.getContext().getAuthentication() == null) {
-			OsAuthenticationToken oat = new OsAuthenticationToken();
-			Authentication authentication = authenticationManager
-					.authenticate(oat);
-			SecurityContextHolder.getContext()
-					.setAuthentication(authentication);
-		}
+//		if (SecurityContextHolder.getContext().getAuthentication() == null) {
+//			OsAuthenticationToken oat = new OsAuthenticationToken();
+//			Authentication authentication = authenticationManager
+//					.authenticate(oat);
+//			SecurityContextHolder.getContext()
+//					.setAuthentication(authentication);
+//		}
 
 		if (args.length > 0 && args[0].equals("help")) {
 			StringBuilder buf = new StringBuilder();
@@ -230,10 +226,10 @@ public class DefaultAgentCli implements SlcAgentCli {
 		this.agent = agent;
 	}
 
-	public void setAuthenticationManager(
-			AuthenticationManager authenticationManager) {
-		this.authenticationManager = authenticationManager;
-	}
+//	public void setAuthenticationManager(
+//			AuthenticationManager authenticationManager) {
+//		this.authenticationManager = authenticationManager;
+//	}
 
 	public void setTimeout(Long timeout) {
 		this.timeout = timeout;
