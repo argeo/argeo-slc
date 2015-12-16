@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>2.1.31-SNAPSHOT</version>
+		<version>2.1.32-SNAPSHOT</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -40,7 +40,7 @@
 
 		<module>lib</module>
 		<module>dep</module>
-		<!-- <module>dist</module> -->
+		<module>dist</module>
 		<module>demo</module>
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
@@ -148,6 +148,17 @@ limitations under the License.
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.argeo.tp.extras</groupId>
+				<artifactId>argeo-tp-extras</artifactId>
+				<version>${version.argeo-tp-extras}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<distributionManagement>
 		<repository>
 			<id>staging</id>

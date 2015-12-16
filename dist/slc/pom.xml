@@ -88,31 +88,31 @@
 			<id>rpmbuild</id>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-dependencies-rpm</id>
-								<phase>package</phase>
-								<goals>
-									<goal>copy</goal>
-								</goals>
-								<configuration>
-									<includeTypes>jar</includeTypes>
-									<stripVersion>true</stripVersion>
-									<outputDirectory>${project.build.directory}/boot</outputDirectory>
-									<artifactItems>
-										<artifactItem>
-											<groupId>org.argeo.slc</groupId>
-											<artifactId>org.argeo.slc.launcher</artifactId>
-											<version>${project.version}</version>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+<!-- 					<plugin> -->
+<!-- 						<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 						<artifactId>maven-dependency-plugin</artifactId> -->
+<!-- 						<executions> -->
+<!-- 							<execution> -->
+<!-- 								<id>copy-dependencies-rpm</id> -->
+<!-- 								<phase>package</phase> -->
+<!-- 								<goals> -->
+<!-- 									<goal>copy</goal> -->
+<!-- 								</goals> -->
+<!-- 								<configuration> -->
+<!-- 									<includeTypes>jar</includeTypes> -->
+<!-- 									<stripVersion>true</stripVersion> -->
+<!-- 									<outputDirectory>${project.build.directory}/boot</outputDirectory> -->
+<!-- 									<artifactItems> -->
+<!-- 										<artifactItem> -->
+<!-- 											<groupId>org.argeo.slc</groupId> -->
+<!-- 											<artifactId>org.argeo.slc.launcher</artifactId> -->
+<!-- 											<version>${project.version}</version> -->
+<!-- 										</artifactItem> -->
+<!-- 									</artifactItems> -->
+<!-- 								</configuration> -->
+<!-- 							</execution> -->
+<!-- 						</executions> -->
+<!-- 					</plugin> -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>rpm-maven-plugin</artifactId>
@@ -175,21 +175,21 @@
 												</source>
 											</sources>
 										</mapping>
-										<mapping>
-											<directory>/usr/share/osgi/boot</directory>
-											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>644</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>${project.build.directory}/boot</location>
-													<includes>
-														<include>org.argeo.slc.launcher.jar</include>
-													</includes>
-												</source>
-											</sources>
-										</mapping>
+<!-- 										<mapping> -->
+<!-- 											<directory>/usr/share/osgi/boot</directory> -->
+<!-- 											<username>root</username> -->
+<!-- 											<groupname>root</groupname> -->
+<!-- 											<filemode>644</filemode> -->
+<!-- 											<directoryIncluded>false</directoryIncluded> -->
+<!-- 											<sources> -->
+<!-- 												<source> -->
+<!-- 													<location>${project.build.directory}/boot</location> -->
+<!-- 													<includes> -->
+<!-- 														<include>org.argeo.slc.launcher.jar</include> -->
+<!-- 													</includes> -->
+<!-- 												</source> -->
+<!-- 											</sources> -->
+<!-- 										</mapping> -->
 										<!-- Maven (even if not installed) -->
 										<mapping>
 											<directory>/var/lib/slc/.m2</directory>
@@ -205,16 +205,16 @@
 										</mapping>
 									</mappings>
 									<preinstallScriptlet>
-										<scriptFile>src/main/scripts/preinstall-${rpm.release}</scriptFile>
+										<scriptFile>src/main/scripts/preinstall</scriptFile>
 									</preinstallScriptlet>
 									<postinstallScriptlet>
 										<scriptFile>src/main/scripts/postinstall</scriptFile>
 									</postinstallScriptlet>
 									<preremoveScriptlet>
-										<scriptFile>src/main/scripts/preremove-${rpm.release}</scriptFile>
+										<scriptFile>src/main/scripts/preremove</scriptFile>
 									</preremoveScriptlet>
 									<requires>
-										<require>slc-libs</require>
+										<require>slc-platform</require>
 										<require>osgi-boot</require>
 										<!-- do not require java so that it can be installed on Ubuntu -->
 										<!-- <require>java-1.6.0-openjdk</require> -->

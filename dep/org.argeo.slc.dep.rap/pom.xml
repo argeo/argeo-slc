@@ -47,13 +47,6 @@
 			<version>2.1.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- Secure Application -->
-		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.security.dep.node.rap</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
-
 		<!-- For target platform generation -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
