@@ -36,47 +36,11 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<!-- Absolutely minimal SLC Agent -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
+			<artifactId>org.argeo.slc.dep.minimal</artifactId>
 			<version>2.1.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.osgi.boot</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
-
-		<!-- CLI Agent -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.slc</groupId> -->
-		<!-- <artifactId>org.argeo.slc.launcher</artifactId> -->
-		<!-- <version>1.1.12-SNAPSHOT</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.slc</groupId> -->
-		<!-- <artifactId>org.argeo.slc.agent.cli</artifactId> -->
-		<!-- <version>2.1.1-SNAPSHOT</version> -->
-		<!-- </dependency> -->
-
-		<!-- JCR Agent -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent.jcr</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
-			<version>2.1.1-SNAPSHOT</version>
-		</dependency>
-
 
 		<!-- SLC Libs -->
 		<!-- <dependency> -->
@@ -203,29 +167,6 @@
 	</dependencies>
 	<profiles>
 		<profile>
-			<id>check-osgi</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.argeo.maven.plugins</groupId>
-						<artifactId>maven-argeo-osgi-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>check-osgi</id>
-								<phase>test</phase>
-								<goals>
-									<goal>equinox</goal>
-								</goals>
-								<configuration>
-									<onlyCheck>true</onlyCheck>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
 			<id>rpmbuild</id>
 			<build>
 				<plugins>
@@ -295,6 +236,7 @@
 										</mapping>
 									</mappings>
 									<requires>
+										<require>argeo-cms-platform</require>
 										<require>slc-agent</require>
 										<require>slc-platform-tp</require>
 									</requires>
