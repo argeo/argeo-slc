@@ -199,7 +199,7 @@ limitations under the License.
 					<url>dav:http://localhost:7070/data/files/java/argeo-slc-${developmentCycle.slc}</url>
 				</repository>
 				<site>
-					<id>site</id>
+					<id>staging</id>
 					<url>dav:http://localhost:7070/data/files/docs/argeo-slc-${developmentCycle.slc}</url>
 				</site>
 			</distributionManagement>
