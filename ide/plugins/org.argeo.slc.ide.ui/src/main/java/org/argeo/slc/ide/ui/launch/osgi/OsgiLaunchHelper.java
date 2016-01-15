@@ -157,7 +157,7 @@ public class OsgiLaunchHelper implements OsgiLauncherConstants {
 
 			if (debug) {
 				Map<String, ?> attrs = new TreeMap<String, Object>(
-						(Map<String, String>) wc.getAttributes());
+						wc.getAttributes());
 				for (String key : attrs.keySet())
 					OsgiLaunchHelper.debug(key + "=" + attrs.get(key));
 			}
