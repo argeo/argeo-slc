@@ -13,7 +13,7 @@
 	<properties>
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
-		<version.slc>2.1.1</version.slc>
+		<version.slc>2.1.2</version.slc>
 		<!-- Libraries versions -->
 		<version.argeo-tp-extras>2.1.7</version.argeo-tp-extras>
 	</properties>
