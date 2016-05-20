@@ -4,22 +4,22 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 	<!-- JCR repositories -->
-	<bean id="javaRepository" parent="template.jcrRepository">
-		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/java" />
-		<property name="configuration" value="${slc.repo.jcr.configuration.java}" />
-	</bean>
-	<bean id="distRepository" parent="template.jcrRepository">
-		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/dist" />
-		<property name="configuration" value="${slc.repo.jcr.configuration.dist}" />
-	</bean>
-	<bean id="rpmRepository" parent="template.jcrRepository">
-		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/rpm" />
-		<property name="configuration" value="${slc.repo.jcr.configuration.rpm}" />
-	</bean>
-	<bean id="docsRepository" parent="template.jcrRepository">
-		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/docs" />
-		<property name="configuration" value="${slc.repo.jcr.configuration.docs}" />
-	</bean>
+<!-- 	<bean id="javaRepository" parent="template.jcrRepository"> -->
+<!-- 		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/java" /> -->
+<!-- 		<property name="configuration" value="${slc.repo.jcr.configuration.java}" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="distRepository" parent="template.jcrRepository"> -->
+<!-- 		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/dist" /> -->
+<!-- 		<property name="configuration" value="${slc.repo.jcr.configuration.dist}" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="rpmRepository" parent="template.jcrRepository"> -->
+<!-- 		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/rpm" /> -->
+<!-- 		<property name="configuration" value="${slc.repo.jcr.configuration.rpm}" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="docsRepository" parent="template.jcrRepository"> -->
+<!-- 		<property name="homeDirectory" value="${slc.repo.jcr.reposBase}/docs" /> -->
+<!-- 		<property name="configuration" value="${slc.repo.jcr.configuration.docs}" /> -->
+<!-- 	</bean> -->
 
 	<!-- JCR authorizations -->
 	<bean parent="template.jcrAuthorizations">
@@ -36,20 +36,20 @@
 	</bean>
 
 	<!-- Templates -->
-	<bean id="template.jcrRepository" abstract="true"
-		class="org.argeo.jackrabbit.JackrabbitContainer" init-method="init"
-		destroy-method="destroy">
-		<property name="variables" value="osgibundle:/repo.properties" />
-		<property name="cndFiles">
-			<list>
-				<value>/org/argeo/jcr/argeo.cnd</value>
-				<value>/org/argeo/slc/jcr/slc.cnd</value>
-				<value>/org/argeo/slc/repo/repo.cnd</value>
-			</list>
-		</property>
-		<property name="bundleContext" ref="bundleContext" />
-		<property name="forceCndImport" value="${slc.repo.jcr.forceCndImport}" />
-	</bean>
+<!-- 	<bean id="template.jcrRepository" abstract="true" -->
+<!-- 		class="org.argeo.jackrabbit.JackrabbitContainer" init-method="init" -->
+<!-- 		destroy-method="destroy"> -->
+<!-- 		<property name="variables" value="osgibundle:/repo.properties" /> -->
+<!-- 		<property name="cndFiles"> -->
+<!-- 			<list> -->
+<!-- 				<value>/org/argeo/jcr/argeo.cnd</value> -->
+<!-- 				<value>/org/argeo/slc/jcr/slc.cnd</value> -->
+<!-- 				<value>/org/argeo/slc/repo/repo.cnd</value> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 		<property name="bundleContext" ref="bundleContext" /> -->
+<!-- 		<property name="forceCndImport" value="${slc.repo.jcr.forceCndImport}" /> -->
+<!-- 	</bean> -->
 
 	<bean id="template.jcrAuthorizations" abstract="true"
 		class="org.argeo.jackrabbit.JackrabbitAuthorizations" init-method="run">

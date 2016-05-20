@@ -15,27 +15,36 @@
 	<set id="defaultRpmRepositories" cardinality="0..N"
 		interface="org.argeo.slc.rpmfactory.RpmRepository" />
 
+	<reference id="javaRepository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=java)" />
+	<reference id="distRepository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=dist)" />
+	<reference id="rpmRepository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=rpm)" />
+	<reference id="docsRepository" interface="javax.jcr.Repository"
+		filter="(argeo.jcr.repository.alias=docs)" />
+
 	<!-- SERVICES -->
-	<service ref="javaRepository" interface="javax.jcr.Repository">
-		<service-properties>
-			<beans:entry key="argeo.jcr.repository.alias" value="java" />
-		</service-properties>
-	</service>
-	<service ref="distRepository" interface="javax.jcr.Repository">
-		<service-properties>
-			<beans:entry key="argeo.jcr.repository.alias" value="dist" />
-		</service-properties>
-	</service>
-	<service ref="rpmRepository" interface="javax.jcr.Repository">
-		<service-properties>
-			<beans:entry key="argeo.jcr.repository.alias" value="rpm" />
-		</service-properties>
-	</service>
-	<service ref="docsRepository" interface="javax.jcr.Repository">
-		<service-properties>
-			<beans:entry key="argeo.jcr.repository.alias" value="docs" />
-		</service-properties>
-	</service>
+<!-- 	<service ref="javaRepository" interface="javax.jcr.Repository"> -->
+<!-- 		<service-properties> -->
+<!-- 			<beans:entry key="argeo.jcr.repository.alias" value="java" /> -->
+<!-- 		</service-properties> -->
+<!-- 	</service> -->
+<!-- 	<service ref="distRepository" interface="javax.jcr.Repository"> -->
+<!-- 		<service-properties> -->
+<!-- 			<beans:entry key="argeo.jcr.repository.alias" value="dist" /> -->
+<!-- 		</service-properties> -->
+<!-- 	</service> -->
+<!-- 	<service ref="rpmRepository" interface="javax.jcr.Repository"> -->
+<!-- 		<service-properties> -->
+<!-- 			<beans:entry key="argeo.jcr.repository.alias" value="rpm" /> -->
+<!-- 		</service-properties> -->
+<!-- 	</service> -->
+<!-- 	<service ref="docsRepository" interface="javax.jcr.Repository"> -->
+<!-- 		<service-properties> -->
+<!-- 			<beans:entry key="argeo.jcr.repository.alias" value="docs" /> -->
+<!-- 		</service-properties> -->
+<!-- 	</service> -->
 
 	<service ref="slcRepoManager" interface="org.argeo.slc.repo.SlcRepoManager" />
 
