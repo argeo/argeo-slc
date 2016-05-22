@@ -110,6 +110,7 @@ public class JcrResultTreeView extends ViewPart {
 	// LogFactory.getLog(JcrResultTreeView.class);
 
 	/* DEPENDENCY INJECTION */
+	private Repository repository;
 	private Session session;
 
 	// This page widgets
@@ -138,6 +139,12 @@ public class JcrResultTreeView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		try {
+			session = repository.login();
+		} catch (RepositoryException e1) {
+			throw new SlcException("Cannot log in to repository");
+		}
+
 		parent.setLayout(new FillLayout());
 		// Main layout
 		SashForm sashForm = new SashForm(parent, SWT.VERTICAL);
@@ -949,11 +956,6 @@ public class JcrResultTreeView extends ViewPart {
 	}
 
 	/* DEPENDENCY INJECTION */
-	@Deprecated
-	public void setSession(Session session) {
-		this.session = session;
-	}
-
 	public void dispose() {
 		// JcrUtils.unregisterQuietly(session.getWorkspace(), resultsObserver);
 		JcrUtils.logoutQuietly(session);
@@ -961,11 +963,6 @@ public class JcrResultTreeView extends ViewPart {
 	}
 
 	public void setRepository(Repository repository) {
-		try {
-			session = repository.login();
-		} catch (RepositoryException re) {
-			throw new SlcException("Unable to log in Repository " + repository,
-					re);
-		}
+		this.repository = repository;
 	}
 }

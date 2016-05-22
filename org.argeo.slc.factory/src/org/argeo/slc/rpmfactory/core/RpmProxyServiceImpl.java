@@ -54,7 +54,7 @@ public class RpmProxyServiceImpl extends AbstractUrlProxy implements
 					"jcr:all");
 		} catch (AccessControlException e) {
 			if (log.isTraceEnabled())
-				log.trace("Cannot give jcr:all privileges to ROLE_SLC");
+				log.trace("Cannot give jcr:all privileges to "+SlcConstants.ROLE_SLC);
 		}
 
 		JcrUtils.mkdirsSafe(session, RepoConstants.PROXIED_REPOSITORIES);

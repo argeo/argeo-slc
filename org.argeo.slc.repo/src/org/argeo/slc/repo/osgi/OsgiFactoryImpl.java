@@ -45,7 +45,8 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 	private Map<String, List<String>> mirrors = new HashMap<String, List<String>>();
 
 	private List<String> mavenRepositories = new ArrayList<String>();
-	private String mavenProxyBase = "/mavenProxy";
+	private String downloadBase = "/download";
+	private String mavenProxyBase = downloadBase + "/maven";
 
 	public void init() {
 		if (workspace == null)
@@ -63,19 +64,14 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 		try {
 			// TODO rather user a JavaRepoManager that will also implicitely
 			// manage the indexing of newly created nodes.
-			javaSession = JcrUtils.loginOrCreateWorkspace(javaRepository,
-					workspace);
-			distSession = JcrUtils.loginOrCreateWorkspace(distRepository,
-					workspace);
+			javaSession = JcrUtils.loginOrCreateWorkspace(javaRepository, workspace);
+			distSession = JcrUtils.loginOrCreateWorkspace(distRepository, workspace);
 
 			// Privileges
-			JcrUtils.addPrivilege(javaSession, "/", SlcConstants.ROLE_SLC,
-					"jcr:all");
-			JcrUtils.addPrivilege(distSession, "/", SlcConstants.ROLE_SLC,
-					"jcr:all");
+			JcrUtils.addPrivilege(javaSession, "/", SlcConstants.ROLE_SLC, "jcr:all");
+			JcrUtils.addPrivilege(distSession, "/", SlcConstants.ROLE_SLC, "jcr:all");
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot initialize OSGi Factory "
-					+ workspace, e);
+			throw new SlcException("Cannot initialize OSGi Factory " + workspace, e);
 		} finally {
 			JcrUtils.logoutQuietly(javaSession);
 			JcrUtils.logoutQuietly(distSession);
@@ -100,19 +96,16 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 		}
 	}
 
-	public Node getMaven(Session distSession, String coords)
-			throws RepositoryException {
+	public Node getMaven(Session distSession, String coords) throws RepositoryException {
 		Artifact artifact = new DefaultArtifact(coords);
-		String path = MavenConventionsUtils.artifactPath(mavenProxyBase,
-				artifact);
+		String path = MavenConventionsUtils.artifactPath(mavenProxyBase, artifact);
 
 		// exists
 		if (distSession.itemExists(path))
 			return distSession.getNode(path);
 
 		for (String mavenRepo : mavenRepositories) {
-			String url = mavenRepo
-					+ MavenConventionsUtils.artifactPath("/", artifact);
+			String url = MavenConventionsUtils.artifactUrl(mavenRepo, artifact);
 			try {
 				Node node = loadUrlToPath(url, distSession, path);
 				if (node != null) {
@@ -123,8 +116,7 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 						// silent
 					}
 					try {
-						loadUrlToPath(url + ".sha1", distSession, path
-								+ ".sha1");
+						loadUrlToPath(url + ".sha1", distSession, path + ".sha1");
 					} catch (FileNotFoundException e) {
 						// silent
 					}
@@ -132,16 +124,14 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 				}
 			} catch (FileNotFoundException e) {
 				if (log.isDebugEnabled())
-					log.debug("Maven " + coords
-							+ " could not be downloaded from " + url);
+					log.debug("Maven " + coords + " could not be downloaded from " + url);
 			}
 		}
 		throw new SlcException("Could not download Maven " + coords);
 	}
 
-	public Node getDist(Session distSession, String uri)
-			throws RepositoryException {
-		String distPath = '/' + JcrUtils.urlAsPath(uri);
+	public Node getDist(Session distSession, String uri) throws RepositoryException {
+		String distPath = downloadBase + '/' + JcrUtils.urlAsPath(uri);
 
 		// already retrieved
 		if (distSession.itemExists(distPath))
@@ -174,8 +164,7 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 				return loadUrlToPath(url, distSession, distPath);
 			} catch (FileNotFoundException e) {
 				if (log.isDebugEnabled())
-					log.debug("Cannot download " + url
-							+ ", trying another mirror");
+					log.debug("Cannot download " + url + ", trying another mirror");
 			}
 		}
 
@@ -190,8 +179,7 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 
 		InputStream in = null;
 		URLConnection conn = null;
-		Node folderNode = JcrUtils.mkfolders(distSession,
-				JcrUtils.parentPath(path));
+		Node folderNode = JcrUtils.mkfolders(distSession, JcrUtils.parentPath(path));
 		try {
 			URL u = new URL(url);
 			conn = u.openConnection();
@@ -200,8 +188,7 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 			// byte[] arr = IOUtils.toByteArray(in);
 			// Node fileNode = JcrUtils.copyBytesAsFile(folderNode,
 			// JcrUtils.nodeNameFromPath(path), arr);
-			Node fileNode = JcrUtils.copyStreamAsFile(folderNode,
-					JcrUtils.nodeNameFromPath(path), in);
+			Node fileNode = JcrUtils.copyStreamAsFile(folderNode, JcrUtils.nodeNameFromPath(path), in);
 			fileNode.addMixin(SlcTypes.SLC_KNOWN_ORIGIN);
 			Node origin = fileNode.addNode(SLC_ORIGIN, SlcTypes.SLC_PROXIED);
 			JcrUtils.urlToAddressProperties(origin, url);

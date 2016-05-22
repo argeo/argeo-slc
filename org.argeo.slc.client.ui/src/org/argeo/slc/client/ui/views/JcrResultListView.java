@@ -65,15 +65,20 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 
 	private TableViewer viewer;
 
+	private Repository repository;
 	private Session session;
 
 	private EventListener resultsObserver;
 
-	private DateFormat dateFormat = new SimpleDateFormat(
-			"EEE, dd MMM yyyy HH:mm:ss");
+	private DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss");
 	private Integer queryLimit = 2000;
 
 	public void createPartControl(Composite parent) {
+		try {
+			session = repository.login();
+		} catch (RepositoryException e1) {
+			throw new SlcException("Cannot log in to repository");
+		}
 
 		Table table = createTable(parent);
 		viewer = new TableViewer(table);
@@ -87,14 +92,11 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 
 		resultsObserver = new ResultObserver(viewer.getTable().getDisplay());
 		try {
-			ObservationManager observationManager = session.getWorkspace()
-					.getObservationManager();
+			ObservationManager observationManager = session.getWorkspace().getObservationManager();
 			String[] nodeTypes = { SlcTypes.SLC_TEST_RESULT };
 			// FIXME Will not be notified if empty result is deleted
-			observationManager.addEventListener(resultsObserver,
-					Event.PROPERTY_ADDED | Event.NODE_REMOVED,
-					SlcJcrResultUtils.getSlcResultsBasePath(session), true,
-					null, nodeTypes, false);
+			observationManager.addEventListener(resultsObserver, Event.PROPERTY_ADDED | Event.NODE_REMOVED,
+					SlcJcrResultUtils.getSlcResultsBasePath(session), true, null, nodeTypes, false);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot register listeners", e);
 		}
@@ -102,8 +104,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	}
 
 	protected Table createTable(Composite parent) {
-		int style = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
-				| SWT.FULL_SELECTION | SWT.MULTI;
+		int style = SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.MULTI;
 		// does not work with RAP, commented for the time being
 		// | SWT.HIDE_SELECTION;
 
@@ -135,18 +136,14 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	}
 
 	protected void processDoubleClick(DoubleClickEvent evt) {
-		Object obj = ((IStructuredSelection) evt.getSelection())
-				.getFirstElement();
+		Object obj = ((IStructuredSelection) evt.getSelection()).getFirstElement();
 		try {
 			if (obj instanceof Node) {
 				Node node = (Node) obj;
 				// FIXME: open a default result editor
 				if (node.isNodeType(SlcTypes.SLC_PROCESS)) {
-					IWorkbenchPage activePage = PlatformUI.getWorkbench()
-							.getActiveWorkbenchWindow().getActivePage();
-					activePage.openEditor(
-							new ProcessEditorInput(node.getPath()),
-							ProcessEditor.ID);
+					IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+					activePage.openEditor(new ProcessEditorInput(node.getPath()), ProcessEditor.ID);
 				}
 			}
 		} catch (Exception e) {
@@ -159,19 +156,17 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	}
 
 	class ViewContentProvider implements IStructuredContentProvider {
+		private static final long serialVersionUID = -4719077015405546260L;
 
 		public Object[] getElements(Object inputElement) {
 			try {
 				// TODO filter, optimize with virtual table, ...
-				String sql = "SELECT * from [" + SlcTypes.SLC_TEST_RESULT
-						+ "] ORDER BY [jcr:lastModified] DESC";
-				Query query = session.getWorkspace().getQueryManager()
-						.createQuery(sql, Query.JCR_SQL2);
+				String sql = "SELECT * from [" + SlcTypes.SLC_TEST_RESULT + "] ORDER BY [jcr:lastModified] DESC";
+				Query query = session.getWorkspace().getQueryManager().createQuery(sql, Query.JCR_SQL2);
 				// TODO paging
 				query.setLimit(queryLimit);
 				List<Node> nodes = new ArrayList<Node>();
-				for (NodeIterator nit = query.execute().getNodes(); nit
-						.hasNext();) {
+				for (NodeIterator nit = query.execute().getNodes(); nit.hasNext();) {
 					nodes.add(nit.nextNode());
 				}
 				return nodes.toArray();
@@ -188,8 +183,8 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 
 	}
 
-	class ViewLabelProvider extends ColumnLabelProvider implements
-			ITableLabelProvider {
+	class ViewLabelProvider extends ColumnLabelProvider implements ITableLabelProvider {
+		private static final long serialVersionUID = -6323202576386795247L;
 
 		public Image getColumnImage(Object obj, int columnIndex) {
 			if (columnIndex != 0)
@@ -212,9 +207,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 
 				case 0:
 					if (node.hasProperty(SLC_COMPLETED)) {
-						return dateFormat
-								.format(node.getProperty(SLC_COMPLETED)
-										.getDate().getTime());
+						return dateFormat.format(node.getProperty(SLC_COMPLETED).getDate().getTime());
 					} else {
 						return "OPEN";
 					}
@@ -243,8 +236,7 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 		}
 
 		@Override
-		protected Boolean willProcessInUiThread(List<Event> events)
-				throws RepositoryException {
+		protected Boolean willProcessInUiThread(List<Event> events) throws RepositoryException {
 			for (Event event : events) {
 				// getLog().debug("Received event " + event);
 				int eventType = event.getType();
@@ -253,25 +245,18 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 				String path = event.getPath();
 				int index = path.lastIndexOf('/');
 				String propertyName = path.substring(index + 1);
-				if (propertyName.equals(SLC_COMPLETED)
-						|| propertyName.equals(SLC_UUID)) {
+				if (propertyName.equals(SLC_COMPLETED) || propertyName.equals(SLC_UUID)) {
 					return true;
 				}
 			}
 			return false;
 		}
 
-		protected void onEventInUiThread(List<Event> events)
-				throws RepositoryException {
+		protected void onEventInUiThread(List<Event> events) throws RepositoryException {
 			if (getLog().isTraceEnabled())
 				getLog().trace("Refresh result list");
 			viewer.refresh();
 		}
-	}
-
-	@Deprecated
-	public void setSession(Session session) {
-		this.session = session;
 	}
 
 	public void dispose() {
@@ -281,11 +266,6 @@ public class JcrResultListView extends ViewPart implements SlcNames {
 	}
 
 	public void setRepository(Repository repository) {
-		try {
-			session = repository.login();
-		} catch (RepositoryException re) {
-			throw new SlcException("Unable to log in Repository " + repository,
-					re);
-		}
+		this.repository = repository;
 	}
 }

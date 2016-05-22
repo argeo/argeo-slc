@@ -3,32 +3,33 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-	<bean id="jcrRepository" class="org.argeo.jackrabbit.JackrabbitWrapper"
-		init-method="init" destroy-method="destroy">
-		<property name="cndFiles">
-			<list>
-				<value>/org/argeo/slc/jcr/slc.cnd</value>
-			</list>
-		</property>
-		<property name="repository" ref="nodeRepository" />
-		<property name="bundleContext" ref="bundleContext" />
-	</bean>
+	<!-- <bean id="jcrRepository" class="org.argeo.jackrabbit.JackrabbitWrapper" -->
+	<!-- init-method="init" destroy-method="destroy"> -->
+	<!-- <property name="cndFiles"> -->
+	<!-- <list> -->
+	<!-- <value>/org/argeo/slc/jcr/slc.cnd</value> -->
+	<!-- </list> -->
+	<!-- </property> -->
+	<!-- <property name="repository" ref="nodeRepository" /> -->
+	<!-- <property name="bundleContext" ref="bundleContext" /> -->
+	<!-- </bean> -->
 
 	<!-- Security -->
-	<bean class="org.argeo.jackrabbit.JackrabbitAuthorizations"
+	<bean class="org.argeo.jcr.security.JcrAuthorizations"
 		init-method="run">
 		<property name="principalPrivileges">
 			<map>
-				<entry key="jcr:all" value="ROLE_SLC" />
+				<entry key="jcr:all" value="org.argeo.slc.user" />
 			</map>
 		</property>
-		<property name="repository" ref="jcrRepository" />
+		<property name="repository" ref="slcRepository" />
 	</bean>
 
 	<bean
 		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
 		<description><![CDATA[Executes initialization with a system authentication]]></description>
-<!-- 		<property name="authenticationManager" ref="authenticationManager" /> -->
+		<!-- <property name="authenticationManager" ref="authenticationManager" 
+			/> -->
 	</bean>
 
 </beans>

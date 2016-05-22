@@ -46,8 +46,11 @@ import org.eclipse.ui.forms.editor.FormEditor;
 
 /** Editor for an execution process. */
 public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
+	private static final long serialVersionUID = 509589737739132467L;
+
 	public final static String ID = ClientUiPlugin.ID + ".processEditor";
 
+	private Repository repository;
 	private Session session;
 	private Node processNode;
 	private ProcessController processController;
@@ -60,6 +63,12 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
+		try {
+			session = repository.login();
+		} catch (RepositoryException e1) {
+			throw new SlcException("Cannot log in to repository");
+		}
+
 		ProcessEditorInput pei = (ProcessEditorInput) input;
 		String processPath = pei.getProcessPath();
 		try {
@@ -250,27 +259,8 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		return false;
 	}
 
-	// public void updateStatus(ExecutionProcess process, String oldStatus,
-	// String newStatus) {
-	// }
-	//
-	// public void addSteps(ExecutionProcess process, List<ExecutionStep> steps)
-	// {
-	// }
-
-	/** Expects one session per editor. */
-	@Deprecated
-	public void setSession(Session session) {
-		this.session = session;
-	}
-
 	public void setRepository(Repository repository) {
-		try {
-			session = repository.login();
-		} catch (RepositoryException re) {
-			throw new SlcException("Unable to log in Repository " + repository,
-					re);
-		}
+		this.repository = repository;
 	}
 
 	public void setProcessController(ProcessController processController) {

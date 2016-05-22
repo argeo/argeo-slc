@@ -71,21 +71,25 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /** JCR based view of the execution modules. */
-public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
-		SlcNames {
-	private final static Log log = LogFactory
-			.getLog(JcrExecutionModulesView.class);
+public class JcrExecutionModulesView extends ViewPart implements SlcTypes, SlcNames {
+	private final static Log log = LogFactory.getLog(JcrExecutionModulesView.class);
 
-	public static final String ID = ClientUiPlugin.ID
-			+ ".jcrExecutionModulesView";
+	public static final String ID = ClientUiPlugin.ID + ".jcrExecutionModulesView";
 
 	private TreeViewer viewer;
 
 	/* DEPENDENCY INJECTION */
+	private Repository repository;
 	private Session session;
 	private ExecutionModulesManager modulesManager;
 
 	public void createPartControl(Composite parent) {
+		try {
+			session = repository.login();
+		} catch (RepositoryException e1) {
+			throw new SlcException("Cannot log in to repository");
+		}
+
 		viewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		EclipseUiSpecificUtils.enableToolTipSupport(viewer);
 		ViewContentProvider contentProvider = new ViewContentProvider(session);
@@ -106,16 +110,11 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		viewer.addDragSupport(operations, tt, new ViewDragListener());
 
 		try {
-			String[] nodeTypes = { SlcTypes.SLC_AGENT,
-					SlcTypes.SLC_AGENT_FACTORY, SlcTypes.SLC_EXECUTION_MODULE };
-			session.getWorkspace()
-					.getObservationManager()
-					.addEventListener(
-							new VmAgentObserver(viewer.getTree().getDisplay()),
-							Event.NODE_ADDED | Event.NODE_REMOVED
-									| Event.NODE_MOVED,
-							SlcJcrConstants.VM_AGENT_FACTORY_PATH, true, null,
-							nodeTypes, false);
+			String[] nodeTypes = { SlcTypes.SLC_AGENT, SlcTypes.SLC_AGENT_FACTORY, SlcTypes.SLC_EXECUTION_MODULE };
+			session.getWorkspace().getObservationManager().addEventListener(
+					new VmAgentObserver(viewer.getTree().getDisplay()),
+					Event.NODE_ADDED | Event.NODE_REMOVED | Event.NODE_MOVED, SlcJcrConstants.VM_AGENT_FACTORY_PATH,
+					true, null, nodeTypes, false);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot add observer", e);
 		}
@@ -135,10 +134,10 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	// Controllers
 	class ViewContentProvider extends SimpleNodeContentProvider {
+		private static final long serialVersionUID = 5117887833174813672L;
 
 		public ViewContentProvider(Session session) {
-			super(session,
-					new String[] { SlcJcrConstants.VM_AGENT_FACTORY_PATH });
+			super(session, new String[] { SlcJcrConstants.VM_AGENT_FACTORY_PATH });
 		}
 
 		@Override
@@ -150,16 +149,14 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		}
 
 		@Override
-		protected List<Node> filterChildren(List<Node> children)
-				throws RepositoryException {
+		protected List<Node> filterChildren(List<Node> children) throws RepositoryException {
 			for (Iterator<Node> it = children.iterator(); it.hasNext();) {
 				Node node = it.next();
 				// execution spec definitions
 				if (node.getName().equals(SLC_EXECUTION_SPECS))
 					it.remove();
 				// flow values
-				else if (node.getParent().isNodeType(
-						SlcTypes.SLC_EXECUTION_FLOW))
+				else if (node.getParent().isNodeType(SlcTypes.SLC_EXECUTION_FLOW))
 					it.remove();
 			}
 			return super.filterChildren(children);
@@ -193,14 +190,11 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 					if (node2.getName().equals(SLC_EXECUTION_SPECS))
 						return 100;
 
-					if (node1.isNodeType(SLC_EXECUTION_FLOW)
-							&& node2.isNodeType(SLC_EXECUTION_FLOW)) {
+					if (node1.isNodeType(SLC_EXECUTION_FLOW) && node2.isNodeType(SLC_EXECUTION_FLOW)) {
 						return node1.getName().compareTo(node2.getName());
-					} else if (node1.isNodeType(SLC_EXECUTION_FLOW)
-							&& !node2.isNodeType(SLC_EXECUTION_FLOW)) {
+					} else if (node1.isNodeType(SLC_EXECUTION_FLOW) && !node2.isNodeType(SLC_EXECUTION_FLOW)) {
 						return 1;
-					} else if (!node1.isNodeType(SLC_EXECUTION_FLOW)
-							&& node2.isNodeType(SLC_EXECUTION_FLOW)) {
+					} else if (!node1.isNodeType(SLC_EXECUTION_FLOW) && node2.isNodeType(SLC_EXECUTION_FLOW)) {
 						return -1;
 					} else {
 						// TODO: check title
@@ -208,8 +202,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 					}
 				}
 			} catch (RepositoryException e) {
-				throw new ArgeoException("Cannot compare " + o1 + " and " + o2,
-						e);
+				throw new ArgeoException("Cannot compare " + o1 + " and " + o2, e);
 			}
 			return 0;
 		}
@@ -249,8 +242,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 					if (session.itemExists(path)) {
 						Node parentNode = session.getNode(path);// .getParent();
 						if (log.isTraceEnabled())
-							log.trace("Refresh " + parentNode + " after event "
-									+ event);
+							log.trace("Refresh " + parentNode + " after event " + event);
 						viewer.refresh(parentNode);
 					}
 				} catch (RepositoryException e) {
@@ -263,18 +255,16 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		}
 	}
 
-	class ViewLabelProvider extends DefaultNodeLabelProvider implements
-			ITableLabelProvider {
+	class ViewLabelProvider extends DefaultNodeLabelProvider implements ITableLabelProvider {
+		private static final long serialVersionUID = 2410754425574656399L;
 
 		@Override
 		protected String getText(Node node) throws RepositoryException {
-			if (node.isNodeType(NodeType.MIX_TITLE)
-					&& node.hasProperty(Property.JCR_TITLE))
+			if (node.isNodeType(NodeType.MIX_TITLE) && node.hasProperty(Property.JCR_TITLE))
 				return node.getProperty(Property.JCR_TITLE).getString();
 			else if (node.getName().equals(SLC_EXECUTION_SPECS))
 				return "Execution Specifications";
-			else if (node.getPath().equals(
-					SlcJcrConstants.VM_AGENT_FACTORY_PATH))
+			else if (node.getPath().equals(SlcJcrConstants.VM_AGENT_FACTORY_PATH))
 				return "Internal Agents";
 			return super.getText(node);
 		}
@@ -282,8 +272,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		@Override
 		public Image getImage(Node node) throws RepositoryException {
 			// we try to optimize a bit by putting deeper nodes first
-			if (node.getParent().isNodeType(
-					SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE))
+			if (node.getParent().isNodeType(SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE))
 				return SlcImages.CHOICES;
 			else if (node.isNodeType(SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE))
 				return SlcImages.EXECUTION_SPEC_ATTRIBUTE;
@@ -307,8 +296,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		}
 
 		public String getToolTipText(Node node) throws RepositoryException {
-			if (node.isNodeType(NodeType.MIX_TITLE)
-					&& node.hasProperty(Property.JCR_DESCRIPTION))
+			if (node.isNodeType(NodeType.MIX_TITLE) && node.hasProperty(Property.JCR_DESCRIPTION))
 				return node.getProperty(Property.JCR_DESCRIPTION).getString();
 			return super.getToolTipText(node);
 		}
@@ -325,37 +313,30 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	class ViewDoubleClickListener implements IDoubleClickListener {
 		public void doubleClick(DoubleClickEvent evt) {
-			Object obj = ((IStructuredSelection) evt.getSelection())
-					.getFirstElement();
+			Object obj = ((IStructuredSelection) evt.getSelection()).getFirstElement();
 			try {
 				if (obj instanceof Node) {
 					Node node = (Node) obj;
 					if (node.isNodeType(SLC_EXECUTION_MODULE)) {
-						ClientUiPlugin.startStopExecutionModule(modulesManager,
-								node);
+						ClientUiPlugin.startStopExecutionModule(modulesManager, node);
 					} else {
 						String path = node.getPath();
 						// TODO factorize with editor
-						QueryManager qm = node.getSession().getWorkspace()
-								.getQueryManager();
-						String statement = "SELECT * FROM ["
-								+ SlcTypes.SLC_EXECUTION_FLOW
-								+ "] WHERE ISDESCENDANTNODE(['" + path
-								+ "']) OR ISSAMENODE(['" + path + "'])";
+						QueryManager qm = node.getSession().getWorkspace().getQueryManager();
+						String statement = "SELECT * FROM [" + SlcTypes.SLC_EXECUTION_FLOW
+								+ "] WHERE ISDESCENDANTNODE(['" + path + "']) OR ISSAMENODE(['" + path + "'])";
 						// log.debug(statement);
 						Query query = qm.createQuery(statement, Query.JCR_SQL2);
 
 						// order paths
 						SortedSet<String> paths = new TreeSet<String>();
-						for (NodeIterator nit = query.execute().getNodes(); nit
-								.hasNext();) {
+						for (NodeIterator nit = query.execute().getNodes(); nit.hasNext();) {
 							paths.add(nit.nextNode().getPath());
 						}
 
-						IWorkbenchPage activePage = PlatformUI.getWorkbench()
-								.getActiveWorkbenchWindow().getActivePage();
-						activePage.openEditor(new ProcessEditorInput(
-								new ArrayList<String>(paths), true),
+						IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+								.getActivePage();
+						activePage.openEditor(new ProcessEditorInput(new ArrayList<String>(paths), true),
 								ProcessEditor.ID);
 					}
 				}
@@ -368,14 +349,14 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 	/** Listen to drags */
 	class ViewDragListener extends DragSourceAdapter {
+		private static final long serialVersionUID = 250270504802674171L;
 
 		// Check if the drag action should start.
 		public void dragStart(DragSourceEvent event) {
 			// we only start drag if at least one of the selected elements is
 			// valid
 			boolean doIt = false;
-			IStructuredSelection selection = (IStructuredSelection) viewer
-					.getSelection();
+			IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 			@SuppressWarnings("rawtypes")
 			Iterator it = selection.iterator();
 			try {
@@ -396,8 +377,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		}
 
 		public void dragSetData(DragSourceEvent event) {
-			IStructuredSelection selection = (IStructuredSelection) viewer
-					.getSelection();
+			IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
 			StringBuilder buf = new StringBuilder();
 			@SuppressWarnings("rawtypes")
 			Iterator it = selection.iterator();
@@ -408,10 +388,9 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 
 					if (obj instanceof Node) {
 						Node node = (Node) obj;
-						if ((node.isNodeType(SlcTypes.SLC_EXECUTION_FLOW) || node
-								.isNodeType(SlcTypes.SLC_EXECUTION_MODULE))
-								&& TextTransfer.getInstance().isSupportedType(
-										event.dataType)) {
+						if ((node.isNodeType(SlcTypes.SLC_EXECUTION_FLOW)
+								|| node.isNodeType(SlcTypes.SLC_EXECUTION_MODULE))
+								&& TextTransfer.getInstance().isSupportedType(event.dataType)) {
 							buf.append(node.getPath()).append('\n');
 						}
 					}
@@ -440,17 +419,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes,
 		this.modulesManager = modulesManager;
 	}
 
-	@Deprecated
-	public void setSession(Session session) {
-		this.session = session;
-	}
-
 	public void setRepository(Repository repository) {
-		try {
-			session = repository.login();
-		} catch (RepositoryException re) {
-			throw new SlcException("Unable to log in Repository " + repository,
-					re);
-		}
+		this.repository = repository;
 	}
 }

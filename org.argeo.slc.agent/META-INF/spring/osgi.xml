@@ -48,7 +48,7 @@
 
 	<beans:bean class="org.argeo.security.core.SimpleRoleRegistration"
 		init-method="run">
-		<beans:property name="role" value="ROLE_SLC" />
+		<beans:property name="role" value="org.argeo.slc.user" />
 		<beans:property name="userAdmin" ref="userAdmin" />
 		<beans:property name="userTransaction" ref="userTransaction" />
 <!-- 		<beans:property name="userAdminService" ref="userAdminService" /> -->

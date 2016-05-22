@@ -37,8 +37,7 @@ import org.w3c.dom.NodeList;
  * based).
  */
 public class MavenConventionsUtils {
-	private final static Log log = LogFactory
-			.getLog(MavenConventionsUtils.class);
+	private final static Log log = LogFactory.getLog(MavenConventionsUtils.class);
 
 	/**
 	 * Path to the file identified by this artifact <b>without</b> using Maven
@@ -48,8 +47,8 @@ public class MavenConventionsUtils {
 	 * @see MavenConventionsUtils#artifactToFile(String, Artifact)
 	 */
 	public static File artifactToFile(Artifact artifact) {
-		return artifactToFile(System.getProperty("user.home") + File.separator
-				+ ".m2" + File.separator + "repository", artifact);
+		return artifactToFile(System.getProperty("user.home") + File.separator + ".m2" + File.separator + "repository",
+				artifact);
 	}
 
 	/**
@@ -62,81 +61,74 @@ public class MavenConventionsUtils {
 	 *            the artifact
 	 */
 	public static File artifactToFile(String repositoryPath, Artifact artifact) {
-		return new File(repositoryPath + File.separator
-				+ artifact.getGroupId().replace('.', File.separatorChar)
-				+ File.separator + artifact.getArtifactId() + File.separator
-				+ artifact.getVersion() + File.separator
+		return new File(repositoryPath + File.separator + artifact.getGroupId().replace('.', File.separatorChar)
+				+ File.separator + artifact.getArtifactId() + File.separator + artifact.getVersion() + File.separator
 				+ artifactFileName(artifact)).getAbsoluteFile();
 	}
 
 	/** The file name of this artifact when stored */
 	public static String artifactFileName(Artifact artifact) {
-		return artifact.getArtifactId()
-				+ '-'
-				+ artifact.getVersion()
-				+ (artifact.getClassifier().equals("") ? "" : '-' + artifact
-						.getClassifier()) + '.' + artifact.getExtension();
+		return artifact.getArtifactId() + '-' + artifact.getVersion()
+				+ (artifact.getClassifier().equals("") ? "" : '-' + artifact.getClassifier()) + '.'
+				+ artifact.getExtension();
 	}
 
 	/** Absolute path to the file */
 	public static String artifactPath(String artifactBasePath, Artifact artifact) {
-		return artifactParentPath(artifactBasePath, artifact) + '/'
-				+ artifactFileName(artifact);
+		return artifactParentPath(artifactBasePath, artifact) + '/' + artifactFileName(artifact);
+	}
+
+	/** Absolute path to the file */
+	public static String artifactUrl(String repoUrl, Artifact artifact) {
+		if (repoUrl.endsWith("/"))
+			return repoUrl + artifactPath("/", artifact).substring(1);
+		else
+			return repoUrl + artifactPath("/", artifact);
 	}
 
 	/** Absolute path to the directories where the files will be stored */
-	public static String artifactParentPath(String artifactBasePath,
-			Artifact artifact) {
-		return artifactBasePath + (artifactBasePath.endsWith("/") ? "" : "/")
-				+ artifactParentPath(artifact);
+	public static String artifactParentPath(String artifactBasePath, Artifact artifact) {
+		return artifactBasePath + (artifactBasePath.endsWith("/") ? "" : "/") + artifactParentPath(artifact);
 	}
 
 	/** Absolute path to the directory of this group */
 	public static String groupPath(String artifactBasePath, String groupId) {
-		return artifactBasePath + (artifactBasePath.endsWith("/") ? "" : "/")
-				+ groupId.replace('.', '/');
+		return artifactBasePath + (artifactBasePath.endsWith("/") ? "" : "/") + groupId.replace('.', '/');
 	}
 
 	/** Relative path to the directories where the files will be stored */
 	public static String artifactParentPath(Artifact artifact) {
-		return artifact.getGroupId().replace('.', '/') + '/'
-				+ artifact.getArtifactId() + '/' + artifact.getBaseVersion();
+		return artifact.getGroupId().replace('.', '/') + '/' + artifact.getArtifactId() + '/'
+				+ artifact.getBaseVersion();
 	}
 
-	public static String artifactsAsDependencyPom(Artifact pomArtifact,
-			Set<Artifact> artifacts, Artifact parent) {
+	public static String artifactsAsDependencyPom(Artifact pomArtifact, Set<Artifact> artifacts, Artifact parent) {
 		StringBuffer p = new StringBuffer();
 
 		// XML header
 		p.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		p.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
+		p.append(
+				"<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
 		p.append("<modelVersion>4.0.0</modelVersion>\n");
 
 		// Artifact
 		if (parent != null) {
 			p.append("<parent>\n");
-			p.append("<groupId>").append(parent.getGroupId())
-					.append("</groupId>\n");
-			p.append("<artifactId>").append(parent.getArtifactId())
-					.append("</artifactId>\n");
-			p.append("<version>").append(parent.getVersion())
-					.append("</version>\n");
+			p.append("<groupId>").append(parent.getGroupId()).append("</groupId>\n");
+			p.append("<artifactId>").append(parent.getArtifactId()).append("</artifactId>\n");
+			p.append("<version>").append(parent.getVersion()).append("</version>\n");
 			p.append("</parent>\n");
 		}
-		p.append("<groupId>").append(pomArtifact.getGroupId())
-				.append("</groupId>\n");
-		p.append("<artifactId>").append(pomArtifact.getArtifactId())
-				.append("</artifactId>\n");
-		p.append("<version>").append(pomArtifact.getVersion())
-				.append("</version>\n");
+		p.append("<groupId>").append(pomArtifact.getGroupId()).append("</groupId>\n");
+		p.append("<artifactId>").append(pomArtifact.getArtifactId()).append("</artifactId>\n");
+		p.append("<version>").append(pomArtifact.getVersion()).append("</version>\n");
 		p.append("<packaging>pom</packaging>\n");
 
 		// Dependencies
 		p.append("<dependencies>\n");
 		for (Artifact a : artifacts) {
 			p.append("\t<dependency>");
-			p.append("<artifactId>").append(a.getArtifactId())
-					.append("</artifactId>");
+			p.append("<artifactId>").append(a.getArtifactId()).append("</artifactId>");
 			p.append("<groupId>").append(a.getGroupId()).append("</groupId>");
 			if (!a.getExtension().equals("jar"))
 				p.append("<type>").append(a.getExtension()).append("</type>");
@@ -149,8 +141,7 @@ public class MavenConventionsUtils {
 		p.append("<dependencies>\n");
 		for (Artifact a : artifacts) {
 			p.append("\t<dependency>");
-			p.append("<artifactId>").append(a.getArtifactId())
-					.append("</artifactId>");
+			p.append("<artifactId>").append(a.getArtifactId()).append("</artifactId>");
 			p.append("<version>").append(a.getVersion()).append("</version>");
 			p.append("<groupId>").append(a.getGroupId()).append("</groupId>");
 			if (a.getExtension().equals("pom")) {
@@ -177,15 +168,14 @@ public class MavenConventionsUtils {
 	 * meant to migrate existing pom registering a lot of artifacts, not to
 	 * replace Maven resolving.
 	 */
-	public static void gatherPomDependencies(AetherTemplate aetherTemplate,
-			Set<Artifact> artifacts, Artifact pomArtifact) {
+	public static void gatherPomDependencies(AetherTemplate aetherTemplate, Set<Artifact> artifacts,
+			Artifact pomArtifact) {
 		if (log.isDebugEnabled())
 			log.debug("Gather dependencies for " + pomArtifact);
 
 		try {
 			File file = aetherTemplate.getResolvedFile(pomArtifact);
-			DocumentBuilder documentBuilder = DocumentBuilderFactory
-					.newInstance().newDocumentBuilder();
+			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document doc = documentBuilder.parse(file);
 
 			// properties
@@ -197,8 +187,7 @@ public class MavenConventionsUtils {
 				for (int i = 0; i < propertiesElems.getLength(); i++) {
 					if (propertiesElems.item(i) instanceof Element) {
 						Element property = (Element) propertiesElems.item(i);
-						props.put(property.getNodeName(),
-								property.getTextContent());
+						props.put(property.getNodeName(), property.getTextContent());
 					}
 				}
 			}
@@ -207,34 +196,25 @@ public class MavenConventionsUtils {
 			NodeList dependencies = doc.getElementsByTagName("dependency");
 			for (int i = 0; i < dependencies.getLength(); i++) {
 				Element dependency = (Element) dependencies.item(i);
-				String groupId = dependency.getElementsByTagName("groupId")
-						.item(0).getTextContent().trim();
-				String artifactId = dependency
-						.getElementsByTagName("artifactId").item(0)
-						.getTextContent().trim();
-				String version = dependency.getElementsByTagName("version")
-						.item(0).getTextContent().trim();
+				String groupId = dependency.getElementsByTagName("groupId").item(0).getTextContent().trim();
+				String artifactId = dependency.getElementsByTagName("artifactId").item(0).getTextContent().trim();
+				String version = dependency.getElementsByTagName("version").item(0).getTextContent().trim();
 				if (version.startsWith("${")) {
-					String versionKey = version.substring(0,
-							version.length() - 1).substring(2);
+					String versionKey = version.substring(0, version.length() - 1).substring(2);
 					if (!props.containsKey(versionKey))
-						throw new SlcException("Cannot interpret version "
-								+ version);
+						throw new SlcException("Cannot interpret version " + version);
 					version = props.getProperty(versionKey);
 				}
 				NodeList scopes = dependency.getElementsByTagName("scope");
-				if (scopes.getLength() > 0
-						&& scopes.item(0).getTextContent().equals("import")) {
+				if (scopes.getLength() > 0 && scopes.item(0).getTextContent().equals("import")) {
 					// recurse
 					gatherPomDependencies(aetherTemplate, artifacts,
-							new DefaultArtifact(groupId, artifactId, "pom",
-									version));
+							new DefaultArtifact(groupId, artifactId, "pom", version));
 				} else {
 					// TODO: deal with scope?
 					// TODO: deal with type
 					String type = "jar";
-					Artifact artifact = new DefaultArtifact(groupId,
-							artifactId, type, version);
+					Artifact artifact = new DefaultArtifact(groupId, artifactId, type, version);
 					artifacts.add(artifact);
 				}
 			}

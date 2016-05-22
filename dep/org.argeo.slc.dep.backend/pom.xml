@@ -114,7 +114,16 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Thrid parties (extras) -->
+		<!-- Third parties (extras) -->
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>biz.aQute.bnd</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>org.junit</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.argeo.tp.extras</groupId>
 			<artifactId>net.sf.jxl</artifactId>
