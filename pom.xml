@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>2.1.40-SNAPSHOT</version>
+		<version>2.1.40</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -117,6 +117,27 @@ limitations under the License.
 			</plugin>
 		</plugins>
 	</build>
+	<repositories>
+		<repository>
+			<id>argeo</id>
+			<url>http://forge.argeo.org/data/public/java/argeo-2.1/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>central</id>
+			<url>http://repo1.maven.org/maven2</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 	<profiles>
 		<profile>
 			<id>localrepo</id>
