@@ -29,8 +29,8 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.service.IServiceHandler;
-import org.eclipse.rap.rwt.service.IServiceManager;
+//import org.eclipse.rap.rwt.service.IServiceHandler;
+//import org.eclipse.rap.rwt.service.IServiceManager;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -75,8 +75,9 @@ public class OpenJcrFile extends AbstractHandler {
 			// yet.
 			currentServiceId = UUID.randomUUID().toString();
 			OpenJcrFileService ojfs = new OpenJcrFileService(result);
-			IServiceManager manager = RWT.getServiceManager();
-			manager.registerServiceHandler(currentServiceId, ojfs);
+			// FIXME replace it
+//			IServiceManager manager = RWT.getServiceManager();
+//			manager.registerServiceHandler(currentServiceId, ojfs);
 			String urlStr = createFullDownloadUrl(currentServiceId);
 			URL url = new URL(urlStr);
 			PlatformUI.getWorkbench().getBrowserSupport()
@@ -91,8 +92,8 @@ public class OpenJcrFile extends AbstractHandler {
 
 	@Override
 	public void dispose() {
-		IServiceManager manager = RWT.getServiceManager();
-		manager.unregisterServiceHandler(currentServiceId);
+//		IServiceManager manager = RWT.getServiceManager();
+//		manager.unregisterServiceHandler(currentServiceId);
 		super.dispose();
 	}
 

@@ -16,13 +16,13 @@ import org.apache.commons.io.IOUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.service.IServiceHandler;
+//import org.eclipse.rap.rwt.service.IServiceHandler;
 
 /**
  * Basic Default service handler that retrieves a file from a NT_FILE JCR node
  * and launch the download.
  */
-public class OpenJcrFileService implements IServiceHandler {
+public class OpenJcrFileService {//implements IServiceHandler {
 
 	/* DEPENDENCY INJECTION */
 	final private Node fileNode;
