@@ -80,8 +80,7 @@ public class RegisterRepoWizard extends Wizard {
 	private final static String DEFAULT_USER_NAME = "anonymous";
 	private final static boolean DEFAULT_ANONYMOUS = true;
 
-	public RegisterRepoWizard(Keyring keyring,
-			RepositoryFactory repositoryFactory, Repository nodeRepository) {
+	public RegisterRepoWizard(Keyring keyring, RepositoryFactory repositoryFactory, Repository nodeRepository) {
 		super();
 		this.keyring = keyring;
 		this.repositoryFactory = repositoryFactory;
@@ -107,42 +106,32 @@ public class RegisterRepoWizard extends Wizard {
 		Session nodeSession = null;
 		try {
 			nodeSession = nodeRepository.login();
-			String reposPath = UserJcrUtils.getUserHome(nodeSession).getPath()
-					+ RepoConstants.REPOSITORIES_BASE_PATH;
+			String reposPath = UserJcrUtils.getUserHome(nodeSession).getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
 
 			Node repos = nodeSession.getNode(reposPath);
 			String repoNodeName = JcrUtils.replaceInvalidChars(name.getText());
 			if (repos.hasNode(repoNodeName))
-				throw new SlcException(
-						"There is already a remote repository named "
-								+ repoNodeName);
+				throw new SlcException("There is already a remote repository named " + repoNodeName);
 
 			// check if the same URI has already been registered
 			NodeIterator ni = repos.getNodes();
 			while (ni.hasNext()) {
 				Node node = ni.nextNode();
-				if (node.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)
-						&& node.hasProperty(ArgeoNames.ARGEO_URI)
-						&& node.getProperty(ArgeoNames.ARGEO_URI).getString()
-								.equals(uri.getText()))
-					throw new SlcException(
-							"This URI "
-									+ uri.getText()
-									+ " is already registered, "
-									+ "for the time being, only one instance of a single "
-									+ "repository at a time is implemented.");
+				if (node.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY) && node.hasProperty(ArgeoNames.ARGEO_URI)
+						&& node.getProperty(ArgeoNames.ARGEO_URI).getString().equals(uri.getText()))
+					throw new SlcException("This URI " + uri.getText() + " is already registered, "
+							+ "for the time being, only one instance of a single "
+							+ "repository at a time is implemented.");
 			}
 
-			Node repoNode = repos.addNode(repoNodeName,
-					ArgeoTypes.ARGEO_REMOTE_REPOSITORY);
+			Node repoNode = repos.addNode(repoNodeName, ArgeoTypes.ARGEO_REMOTE_REPOSITORY);
 			repoNode.setProperty(ArgeoNames.ARGEO_URI, uri.getText());
 			repoNode.setProperty(ArgeoNames.ARGEO_USER_ID, username.getText());
 			repoNode.addMixin(NodeType.MIX_TITLE);
 			repoNode.setProperty(Property.JCR_TITLE, name.getText());
 			nodeSession.save();
 			if (saveInKeyring.getSelection()) {
-				String pwdPath = repoNode.getPath() + '/'
-						+ ArgeoNames.ARGEO_PASSWORD;
+				String pwdPath = repoNode.getPath() + '/' + ArgeoNames.ARGEO_PASSWORD;
 				keyring.set(pwdPath, password.getText().toCharArray());
 				nodeSession.save();
 			}
@@ -169,16 +158,14 @@ public class RegisterRepoWizard extends Wizard {
 			// main layout
 			Composite composite = new Composite(parent, SWT.NONE);
 			composite.setLayout(new GridLayout(2, false));
-			composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-					false));
+			composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
 			// Create various fields
 			// setMessage("Login to remote repository", IMessageProvider.NONE);
 			name = createLT(composite, "Name", DEFAULT_NAME);
 			uri = createLT(composite, "URI", DEFAULT_URI);
 
-			final Button anonymousLogin = createLC(composite,
-					"Log as anonymous", true);
+			final Button anonymousLogin = createLC(composite, "Log as anonymous", true);
 			anonymousLogin.addSelectionListener(new SelectionListener() {
 				private static final long serialVersionUID = 4874716406036981039L;
 
@@ -210,8 +197,7 @@ public class RegisterRepoWizard extends Wizard {
 			}
 
 			Button test = createButton(composite, "Test");
-			GridData gd = new GridData(SWT.CENTER, SWT.CENTER, false, false, 2,
-					1);
+			GridData gd = new GridData(SWT.CENTER, SWT.CENTER, false, false, 2, 1);
 			gd.widthHint = 140;
 			test.setLayoutData(gd);
 
@@ -237,8 +223,7 @@ public class RegisterRepoWizard extends Wizard {
 		}
 
 		/** Creates label and check. */
-		protected Button createLC(Composite parent, String label,
-				Boolean initial) {
+		protected Button createLC(Composite parent, String label, Boolean initial) {
 			new Label(parent, SWT.RIGHT).setText(label);
 			Button check = new Button(parent, SWT.CHECK);
 			check.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -258,8 +243,7 @@ public class RegisterRepoWizard extends Wizard {
 		/** Creates label and password field */
 		protected Text createLP(Composite parent, String label) {
 			new Label(parent, SWT.NONE).setText(label);
-			Text text = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.BORDER
-					| SWT.PASSWORD);
+			Text text = new Text(parent, SWT.SINGLE | SWT.LEAD | SWT.BORDER | SWT.PASSWORD);
 			text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 			return text;
 		}
@@ -274,29 +258,23 @@ public class RegisterRepoWizard extends Wizard {
 				String checkedUriStr = checkedUri.toString();
 				Hashtable<String, String> params = new Hashtable<String, String>();
 				params.put(ArgeoJcrConstants.JCR_REPOSITORY_URI, checkedUriStr);
-				Repository repository = ArgeoJcrUtils.getRepositoryByUri(
-						repositoryFactory, checkedUriStr);
+				Repository repository = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, checkedUriStr);
+				// FIXME make it more generic
+				String defaultWorkspace = "main";
 				if (username.getText().trim().equals("")) {// anonymous
-					session = repository.login();
+					session = repository.login(defaultWorkspace);
 				} else {
-					// FIXME use getTextChars() when upgrading to 3.7
-					// see
-					// https://bugs.eclipse.org/bugs/show_bug.cgi?id=297412
-					char[] pwd = password.getText().toCharArray();
-					SimpleCredentials sc = new SimpleCredentials(
-							username.getText(), pwd);
-					session = repository.login(sc);
+					char[] pwd = password.getTextChars();
+					SimpleCredentials sc = new SimpleCredentials(username.getText(), pwd);
+					session = repository.login(sc, defaultWorkspace);
 				}
 			} else {// alias
-				Repository repository = ArgeoJcrUtils.getRepositoryByAlias(
-						repositoryFactory, uri.getText());
+				Repository repository = ArgeoJcrUtils.getRepositoryByAlias(repositoryFactory, uri.getText());
 				session = repository.login();
 			}
-			MessageDialog.openInformation(getShell(), "Success",
-					"Connection to '" + uri.getText() + "' successful");
+			MessageDialog.openInformation(getShell(), "Success", "Connection to '" + uri.getText() + "' successful");
 		} catch (Exception e) {
-			ErrorFeedback
-					.show("Connection test failed for " + uri.getText(), e);
+			ErrorFeedback.show("Connection test failed for " + uri.getText(), e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
 		}

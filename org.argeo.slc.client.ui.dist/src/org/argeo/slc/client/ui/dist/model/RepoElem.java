@@ -53,8 +53,7 @@ public class RepoElem extends DistParentElem {
 	 * initialisation
 	 * 
 	 */
-	public RepoElem(RepositoryFactory repoFactory, Keyring keyring,
-			Node repoNode, String alias) {
+	public RepoElem(RepositoryFactory repoFactory, Keyring keyring, Node repoNode, String alias) {
 		super(alias);
 		this.label = alias;
 		// label = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
@@ -65,8 +64,7 @@ public class RepoElem extends DistParentElem {
 		this.keyring = keyring;
 		try {
 			// Initialize this repo information
-			setInHome(RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS
-					.equals(repoNode.getName()));
+			setInHome(RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS.equals(repoNode.getName()));
 			if (inHome())
 				// Directly log and retrieve children for local repository
 				login();
@@ -86,37 +84,33 @@ public class RepoElem extends DistParentElem {
 		if (repository == null)
 			if (repoNode == null)
 				// Anonymous
-				repository = ArgeoJcrUtils.getRepositoryByUri(
-						repositoryFactory, uri);
+				repository = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
 			else {
-				repository = RepoUtils.getRepository(repositoryFactory,
-						keyring, repoNode);
-				credentials = RepoUtils.getRepositoryCredentials(keyring,
-						repoNode);
+				repository = RepoUtils.getRepository(repositoryFactory, keyring, repoNode);
+				credentials = RepoUtils.getRepositoryCredentials(keyring, repoNode);
 			}
 
 		try {
-			defaultSession = repository.login(credentials);
+			// FIXME make it more generic
+			String defaultWorkspace = "main";
+			defaultSession = repository.login(credentials, defaultWorkspace);
 			refreshChildren();
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot login repository " + label
-					+ " with credential " + credentials, e);
+			throw new SlcException("Cannot login repository " + label + " with credential " + credentials, e);
 		}
 	}
 
 	protected void refreshChildren() {
 		try {
 			// TODO also remove deleted children (only adds for the time being
-			String[] workspaceNames = defaultSession.getWorkspace()
-					.getAccessibleWorkspaceNames();
+			String[] workspaceNames = defaultSession.getWorkspace().getAccessibleWorkspaceNames();
 			buildWksp: for (String workspaceName : workspaceNames) {
 				if (!isWorkspaceVisible(workspaceName))
 					continue buildWksp;
 
 				String prefix = getPrefix(workspaceName);
 				if (getChildByName(prefix) == null) {
-					WkspGroupElem wkspGpElem = new WkspGroupElem(RepoElem.this,
-							prefix);
+					WkspGroupElem wkspGpElem = new WkspGroupElem(RepoElem.this, prefix);
 					addChild(wkspGpElem);
 				}
 			}
@@ -135,8 +129,7 @@ public class RepoElem extends DistParentElem {
 		// Here is the tricks - we rely on a "hard coded" convention
 		// Workspace name should be like: name-major.minor
 		if (workspaceName.lastIndexOf(VERSION_SEP) > 0)
-			return workspaceName.substring(0,
-					workspaceName.lastIndexOf(VERSION_SEP));
+			return workspaceName.substring(0, workspaceName.lastIndexOf(VERSION_SEP));
 		else
 			return workspaceName;
 	}
@@ -158,8 +151,7 @@ public class RepoElem extends DistParentElem {
 					result = false;
 				}
 			} catch (RepositoryException e) {
-				throw new SlcException(
-						"Cannot list workspaces for anonymous user", e);
+				throw new SlcException("Cannot list workspaces for anonymous user", e);
 			} finally {
 				JcrUtils.logoutQuietly(tmpSession);
 			}
@@ -180,10 +172,11 @@ public class RepoElem extends DistParentElem {
 	 */
 	protected Session repositoryLogin(String workspaceName) {
 		try {
+			if (workspaceName == null)
+				workspaceName = "main";// FIXME make it more generic
 			return repository.login(credentials, workspaceName);
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot login repository " + label
-					+ " with credential " + credentials, e);
+			throw new SlcException("Cannot login repository " + label + " with credential " + credentials, e);
 		}
 	}
 
@@ -206,8 +199,7 @@ public class RepoElem extends DistParentElem {
 			try {
 				return repoNode.getPath();
 			} catch (RepositoryException e) {
-				throw new SlcException("Cannot get node path for repository "
-						+ label, e);
+				throw new SlcException("Cannot get node path for repository " + label, e);
 			}
 	}
 
