@@ -24,7 +24,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.security.ui</artifactId>
+			<artifactId>org.argeo.cms.ui.workbench</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 

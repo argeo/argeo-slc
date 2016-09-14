@@ -20,7 +20,7 @@
 		<!-- Argeo common distribution for Secured UI -->
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.security.ui.rap</artifactId>
+			<artifactId>org.argeo.cms.ui.workbench.rap</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 	</dependencies>
