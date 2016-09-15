@@ -9,9 +9,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
-import org.argeo.jcr.ArgeoJcrUtils;
-import org.argeo.jcr.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.ArgeoNames;
+import org.argeo.node.NodeUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
@@ -84,7 +84,7 @@ public class RepoElem extends DistParentElem {
 		if (repository == null)
 			if (repoNode == null)
 				// Anonymous
-				repository = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, uri);
+				repository = NodeUtils.getRepositoryByUri(repositoryFactory, uri);
 			else {
 				repository = RepoUtils.getRepository(repositoryFactory, keyring, repoNode);
 				credentials = RepoUtils.getRepositoryCredentials(keyring, repoNode);

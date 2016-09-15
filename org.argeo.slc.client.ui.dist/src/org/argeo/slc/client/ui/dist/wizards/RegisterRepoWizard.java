@@ -16,7 +16,6 @@
 package org.argeo.slc.client.ui.dist.wizards;
 
 import java.net.URI;
-import java.util.Hashtable;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -28,12 +27,10 @@ import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeType;
 
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
-import org.argeo.jcr.ArgeoJcrConstants;
-import org.argeo.jcr.ArgeoJcrUtils;
-import org.argeo.jcr.ArgeoNames;
-import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.jcr.UserJcrUtils;
+import org.argeo.node.ArgeoNames;
+import org.argeo.node.ArgeoTypes;
+import org.argeo.node.NodeUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.util.security.Keyring;
@@ -106,7 +103,7 @@ public class RegisterRepoWizard extends Wizard {
 		Session nodeSession = null;
 		try {
 			nodeSession = nodeRepository.login();
-			String reposPath = UserJcrUtils.getUserHome(nodeSession).getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
+			String reposPath = NodeUtils.getUserHome(nodeSession).getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
 
 			Node repos = nodeSession.getNode(reposPath);
 			String repoNodeName = JcrUtils.replaceInvalidChars(name.getText());
@@ -256,9 +253,7 @@ public class RegisterRepoWizard extends Wizard {
 			if (uri.getText().startsWith("http")) {// http, https
 				URI checkedUri = new URI(uri.getText());
 				String checkedUriStr = checkedUri.toString();
-				Hashtable<String, String> params = new Hashtable<String, String>();
-				params.put(ArgeoJcrConstants.JCR_REPOSITORY_URI, checkedUriStr);
-				Repository repository = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory, checkedUriStr);
+				Repository repository = NodeUtils.getRepositoryByUri(repositoryFactory, checkedUriStr);
 				// FIXME make it more generic
 				String defaultWorkspace = "main";
 				if (username.getText().trim().equals("")) {// anonymous
@@ -269,7 +264,7 @@ public class RegisterRepoWizard extends Wizard {
 					session = repository.login(sc, defaultWorkspace);
 				}
 			} else {// alias
-				Repository repository = ArgeoJcrUtils.getRepositoryByAlias(repositoryFactory, uri.getText());
+				Repository repository = NodeUtils.getRepositoryByAlias(repositoryFactory, uri.getText());
 				session = repository.login();
 			}
 			MessageDialog.openInformation(getShell(), "Success", "Connection to '" + uri.getText() + "' successful");

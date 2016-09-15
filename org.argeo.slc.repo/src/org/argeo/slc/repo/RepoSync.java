@@ -45,8 +45,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoMonitor;
-import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.NodeUtils;
 import org.argeo.slc.SlcException;
 import org.xml.sax.SAXException;
 
@@ -120,7 +120,7 @@ public class RepoSync implements Runnable {
 
 			// Setup
 			if (sourceRepository == null)
-				sourceRepository = ArgeoJcrUtils.getRepositoryByUri(
+				sourceRepository = NodeUtils.getRepositoryByUri(
 						repositoryFactory, sourceRepoUri);
 			if (sourceCredentials == null && sourceUsername != null)
 				sourceCredentials = new SimpleCredentials(sourceUsername,
@@ -128,7 +128,7 @@ public class RepoSync implements Runnable {
 			sourceDefaultSession = sourceRepository.login(sourceCredentials);
 
 			if (targetRepository == null)
-				targetRepository = ArgeoJcrUtils.getRepositoryByUri(
+				targetRepository = NodeUtils.getRepositoryByUri(
 						repositoryFactory, targetRepoUri);
 			if (targetCredentials == null && targetUsername != null)
 				targetCredentials = new SimpleCredentials(targetUsername,

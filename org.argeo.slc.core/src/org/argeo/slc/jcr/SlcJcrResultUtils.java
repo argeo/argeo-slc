@@ -21,7 +21,7 @@ import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
 import org.argeo.jcr.JcrUtils;
-import org.argeo.jcr.UserJcrUtils;
+import org.argeo.node.NodeUtils;
 import org.argeo.slc.SlcException;
 
 /**
@@ -35,7 +35,7 @@ public class SlcJcrResultUtils {
 	 */
 	public static String getSlcResultsBasePath(Session session) {
 		try {
-			Node userHome = UserJcrUtils.getUserHome(session);
+			Node userHome = NodeUtils.getUserHome(session);
 			if (userHome == null)
 				throw new SlcException("No user home available for "
 						+ session.getUserID());
@@ -85,7 +85,7 @@ public class SlcJcrResultUtils {
 	 */
 	public static String getMyResultsBasePath(Session session) {
 		try {
-			Node userHome = UserJcrUtils.getUserHome(session);
+			Node userHome = NodeUtils.getUserHome(session);
 			if (userHome == null)
 				throw new SlcException("No user home available for "
 						+ session.getUserID());

@@ -27,7 +27,7 @@ import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
 import org.argeo.jcr.JcrUtils;
-import org.argeo.jcr.UserJcrUtils;
+import org.argeo.node.NodeUtils;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -107,7 +107,7 @@ public class SlcJcrUtils implements SlcNames {
 	/** Get the base for the user processi. */
 	public static String getSlcProcessesBasePath(Session session) {
 		try {
-			Node userHome = UserJcrUtils.getUserHome(session);
+			Node userHome = NodeUtils.getUserHome(session);
 			if (userHome == null)
 				throw new SlcException("No user home available for "
 						+ session.getUserID());

@@ -22,8 +22,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.argeo.eclipse.ui.workbench.CommandUtils;
-import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.ArgeoTypes;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.eclipse.core.commands.AbstractHandler;

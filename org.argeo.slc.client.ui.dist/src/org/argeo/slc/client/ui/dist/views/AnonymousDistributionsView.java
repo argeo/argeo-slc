@@ -15,7 +15,7 @@
  */
 package org.argeo.slc.client.ui.dist.views;
 
-import org.argeo.jcr.ArgeoNames;
+import org.argeo.node.ArgeoNames;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeComparator;

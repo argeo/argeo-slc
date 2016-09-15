@@ -18,7 +18,7 @@ package org.argeo.slc.client.ui.dist.commands;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryFactory;
 
-import org.argeo.jcr.ArgeoNames;
+import org.argeo.node.ArgeoNames;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.client.ui.dist.wizards.RegisterRepoWizard;

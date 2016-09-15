@@ -52,10 +52,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.ArgeoMonitor;
-import org.argeo.jcr.ArgeoJcrUtils;
-import org.argeo.jcr.ArgeoNames;
-import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.ArgeoNames;
+import org.argeo.node.ArgeoTypes;
+import org.argeo.node.NodeUtils;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -64,9 +64,9 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.argeo.util.security.Keyring;
-import org.osgi.framework.Constants;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.osgi.framework.Constants;
 
 /** Utilities around repo */
 public class RepoUtils implements ArgeoNames, SlcNames {
@@ -379,10 +379,10 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			if (repoNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
 				String uri = repoNode.getProperty(ARGEO_URI).getString();
 				if (uri.startsWith("http")) {// http, https
-					repository = ArgeoJcrUtils.getRepositoryByUri(
+					repository = NodeUtils.getRepositoryByUri(
 							repositoryFactory, uri);
 				} else if (uri.startsWith("vm:")) {// alias
-					repository = ArgeoJcrUtils.getRepositoryByUri(
+					repository = NodeUtils.getRepositoryByUri(
 							repositoryFactory, uri);
 				} else {
 					throw new SlcException("Unsupported repository uri " + uri);
@@ -445,8 +445,7 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 			// Anonymous URI only workspace
 			if (repoNode == null)
 				// Anonymous
-				currRepo = ArgeoJcrUtils.getRepositoryByUri(repositoryFactory,
-						uri);
+				currRepo = NodeUtils.getRepositoryByUri(repositoryFactory, uri);
 			else {
 				currRepo = RepoUtils.getRepository(repositoryFactory, keyring,
 						repoNode);

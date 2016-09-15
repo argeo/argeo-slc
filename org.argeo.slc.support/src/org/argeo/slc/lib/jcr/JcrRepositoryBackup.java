@@ -37,8 +37,8 @@ import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
-import org.argeo.jcr.ArgeoJcrUtils;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.NodeUtils;
 import org.argeo.slc.SlcException;
 
 /** Backups a JCR repository */
@@ -69,7 +69,7 @@ public class JcrRepositoryBackup implements Runnable {
 			if (hasDatastore())
 				backupDataStore(archiveRoot.resolveFile(datastoreFolderName));
 
-			Repository sourceRepository = ArgeoJcrUtils.getRepositoryByUri(
+			Repository sourceRepository = NodeUtils.getRepositoryByUri(
 					repositoryFactory, sourceRepo);
 			Credentials sourceCredentials = null;
 			if (sourceUsername != null)

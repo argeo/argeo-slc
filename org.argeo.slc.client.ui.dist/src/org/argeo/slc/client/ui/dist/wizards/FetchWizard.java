@@ -30,10 +30,10 @@ import javax.jcr.Session;
 
 import org.argeo.ArgeoMonitor;
 import org.argeo.eclipse.ui.EclipseArgeoMonitor;
-import org.argeo.jcr.ArgeoNames;
-import org.argeo.jcr.ArgeoTypes;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.jcr.UserJcrUtils;
+import org.argeo.node.ArgeoNames;
+import org.argeo.node.ArgeoTypes;
+import org.argeo.node.NodeUtils;
 import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -642,7 +642,7 @@ public class FetchWizard extends Wizard {
 	// populate available source repo list
 	private Map<String, Node> getSourceRepoUris() {
 		try {
-			Node repoList = currSession.getNode(UserJcrUtils.getUserHome(
+			Node repoList = currSession.getNode(NodeUtils.getUserHome(
 					currSession).getPath()
 					+ RepoConstants.REPOSITORIES_BASE_PATH);
 
