@@ -15,7 +15,6 @@
  */
 package org.argeo.slc.client.ui;
 
-import org.argeo.security.ui.SecurityUiPlugin;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -38,7 +37,7 @@ public class SlcExecutionPerspective implements IPerspectiveFactory {
 
 		IFolderLayout bottom = layout.createFolder("bottom",
 				IPageLayout.BOTTOM, 0.65f, editorArea);
-		bottom.addView(SecurityUiPlugin.PLUGIN_ID + ".logView");
+//		BOTTOM.ADDVIEW(SECURITYUIPLUGIN.PLUGIN_ID + ".LOGVIEW");
 		bottom.addView(ClientUiPlugin.ID + ".jcrProcessListView");
 	}
 }

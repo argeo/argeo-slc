@@ -65,6 +65,7 @@ public class JcrProcessListView extends ViewPart {
 
 	private TableViewer viewer;
 
+	private Repository repository;
 	private Session session;
 
 	private EventListener processesObserver;
@@ -74,6 +75,12 @@ public class JcrProcessListView extends ViewPart {
 	private Integer queryLimit = 2000;
 
 	public void createPartControl(Composite parent) {
+		try {
+			session = repository.login();
+		} catch (RepositoryException re) {
+			throw new SlcException("Unable to log in Repository " + repository,
+					re);
+		}
 		Table table = createTable(parent);
 		viewer = new TableViewer(table);
 		viewer.setLabelProvider(new LabelProvider());
@@ -241,11 +248,6 @@ public class JcrProcessListView extends ViewPart {
 
 	}
 
-	@Deprecated
-	public void setSession(Session session) {
-		this.session = session;
-	}
-
 	public void dispose() {
 		JcrUtils.unregisterQuietly(session.getWorkspace(), processesObserver);
 		JcrUtils.logoutQuietly(session);
@@ -253,12 +255,7 @@ public class JcrProcessListView extends ViewPart {
 	}
 
 	public void setRepository(Repository repository) {
-		try {
-			session = repository.login();
-		} catch (RepositoryException re) {
-			throw new SlcException("Unable to log in Repository " + repository,
-					re);
-		}
+		this.repository = repository;
 	}
 
 }
