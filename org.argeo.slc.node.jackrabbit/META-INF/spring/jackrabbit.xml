@@ -15,7 +15,7 @@
 	<!-- </bean> -->
 
 	<!-- Security -->
-	<bean class="org.argeo.jcr.security.JcrAuthorizations"
+	<bean class="org.argeo.jcr.JcrAuthorizations"
 		init-method="run">
 		<property name="principalPrivileges">
 			<map>
@@ -26,7 +26,7 @@
 	</bean>
 
 	<bean
-		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
+		class="org.argeo.cms.spring.AuthenticatedApplicationContextInitialization">
 		<description><![CDATA[Executes initialization with a system authentication]]></description>
 		<!-- <property name="authenticationManager" ref="authenticationManager" 
 			/> -->

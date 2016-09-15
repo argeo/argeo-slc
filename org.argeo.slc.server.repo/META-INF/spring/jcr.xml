@@ -61,7 +61,7 @@
 	<!-- </bean> -->
 
 	<bean id="template.jcrAuthorizations" abstract="true"
-		class="org.argeo.jcr.security.JcrAuthorizations" init-method="run">
+		class="org.argeo.jcr.JcrAuthorizations" init-method="run">
 		<property name="principalPrivileges">
 			<map>
 				<entry key="jcr:all" value="org.argeo.slc.user" />

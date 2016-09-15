@@ -52,20 +52,20 @@
 	<service ref="rpmProxyService" interface="org.argeo.slc.rpmfactory.RpmProxyService" />
 
 	<!-- LABEL -->
-	<beans:bean class="org.argeo.security.core.OsgiModuleLabel">
+	<beans:bean class="org.argeo.cms.spring.osgi.OsgiModuleLabel">
 		<beans:property name="bundleContext" ref="bundleContext" />
 	</beans:bean>
 
 	<!-- ROLES -->
 	<beans:bean id="ROLE_SLC"
-		class="org.argeo.security.core.SimpleRoleRegistration" init-method="run">
+		class="org.argeo.cms.spring.SimpleRoleRegistration" init-method="run">
 		<beans:property name="role" value="org.argeo.slc.user" />
 		<beans:property name="userAdmin" ref="userAdmin" />
 		<beans:property name="userTransaction" ref="userTransaction" />
 	</beans:bean>
 
 	<beans:bean
-		class="org.argeo.security.core.AuthenticatedApplicationContextInitialization">
+		class="org.argeo.cms.spring.AuthenticatedApplicationContextInitialization">
 	</beans:bean>
 </beans:beans>
 
