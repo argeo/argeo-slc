@@ -27,13 +27,13 @@ import javax.jcr.query.QueryResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoMonitor;
-import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseJcrMonitor;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.security.Keyring;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -150,7 +150,7 @@ public class MergeWorkspaces extends AbstractHandler {
 				if (log.isDebugEnabled())
 					log.debug("Will copy " + expectedCount + " files...");
 
-				ArgeoMonitor monitor = new EclipseArgeoMonitor(eclipseMonitor);
+				JcrMonitor monitor = new EclipseJcrMonitor(eclipseMonitor);
 				eclipseMonitor
 						.beginTask("Copy files", expectedCount.intValue());
 

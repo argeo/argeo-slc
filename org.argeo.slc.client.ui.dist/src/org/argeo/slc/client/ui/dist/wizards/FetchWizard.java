@@ -28,12 +28,13 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
-import org.argeo.ArgeoMonitor;
-import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseJcrMonitor;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.node.ArgeoNames;
 import org.argeo.node.ArgeoTypes;
 import org.argeo.node.NodeUtils;
+import org.argeo.node.security.Keyring;
 import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -41,7 +42,6 @@ import org.argeo.slc.client.ui.dist.utils.ViewerUtils;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoSync;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -529,7 +529,7 @@ public class FetchWizard extends Wizard {
 		@Override
 		protected IStatus doRun(IProgressMonitor progressMonitor) {
 			try {
-				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
+				JcrMonitor monitor = new EclipseJcrMonitor(progressMonitor);
 				repoSync.setMonitor(monitor);
 				repoSync.run();
 			} catch (Exception e) {

@@ -12,10 +12,10 @@ import javax.jcr.Session;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.node.ArgeoNames;
 import org.argeo.node.NodeUtils;
+import org.argeo.node.security.Keyring;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 
 /**
  * Abstract a repository. It might be persisted by a node in the current user

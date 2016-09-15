@@ -36,7 +36,6 @@ import javax.jcr.query.QueryManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
 import org.argeo.eclipse.ui.jcr.NodeElementComparer;
@@ -202,7 +201,7 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes, SlcNa
 					}
 				}
 			} catch (RepositoryException e) {
-				throw new ArgeoException("Cannot compare " + o1 + " and " + o2, e);
+				throw new SlcException("Cannot compare " + o1 + " and " + o2, e);
 			}
 			return 0;
 		}

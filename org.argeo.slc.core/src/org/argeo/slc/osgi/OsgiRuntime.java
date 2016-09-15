@@ -28,13 +28,13 @@ import org.argeo.slc.core.build.VersionedResourceDistribution;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.DynamicRuntime;
 import org.argeo.slc.deploy.TargetData;
+import org.eclipse.gemini.blueprint.context.BundleContextAware;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.eclipse.gemini.blueprint.context.BundleContextAware;
 
 public class OsgiRuntime implements BundleContextAware, ResourceLoaderAware,
 		DynamicRuntime<OsgiBundle> {

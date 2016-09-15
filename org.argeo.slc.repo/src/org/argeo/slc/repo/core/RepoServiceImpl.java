@@ -4,9 +4,9 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
+import org.argeo.node.security.Keyring;
 import org.argeo.slc.repo.RepoService;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 
 /**
  * Work in Progress - enhance this. First implementation of a service that

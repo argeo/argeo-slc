@@ -10,7 +10,6 @@ import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 
-import org.argeo.ArgeoException;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -85,7 +84,7 @@ public class ModularDistVersionBaseElem extends DistParentElem {
 				}
 				return super.getChildren();
 			} catch (RepositoryException re) {
-				throw new ArgeoException("Unable to retrieve children for "
+				throw new SlcException("Unable to retrieve children for "
 						+ modularDistVersionBase, re);
 			}
 		}

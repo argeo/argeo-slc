@@ -24,7 +24,6 @@ import java.util.Vector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.argeo.slc.SlcException;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestResultPart;

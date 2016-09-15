@@ -22,8 +22,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.eclipse.aether.artifact.Artifact;
-import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.graph.DependencyNode;
 
 /** Utilities related to Aether */
 public class AetherUtils {

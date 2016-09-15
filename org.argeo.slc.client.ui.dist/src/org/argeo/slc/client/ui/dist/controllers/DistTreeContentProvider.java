@@ -17,10 +17,10 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.node.ArgeoNames;
 import org.argeo.node.ArgeoTypes;
 import org.argeo.node.NodeUtils;
+import org.argeo.node.security.Keyring;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.model.RepoElem;
 import org.argeo.slc.repo.RepoConstants;
-import org.argeo.util.security.Keyring;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

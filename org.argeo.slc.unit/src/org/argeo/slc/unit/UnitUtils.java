@@ -15,13 +15,13 @@
  */
 package org.argeo.slc.unit;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertNotNull;
 
 public abstract class UnitUtils {
 	public static void assertDateSec(Date expected, Date reached) {

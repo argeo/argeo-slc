@@ -23,8 +23,8 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -98,7 +98,7 @@ public class ArtifactsBrowser extends ViewPart implements DistConstants,
 				rootNode = jcrSession.getNode(DEFAULT_ARTIFACTS_BASE_PATH);
 				artifactTreeViewer.setInput(rootNode);
 			} catch (RepositoryException e) {
-				throw new ArgeoException("Cannot load base artifact nodes", e);
+				throw new SlcException("Cannot load base artifact nodes", e);
 			}
 		}
 	}
@@ -245,7 +245,7 @@ public class ArtifactsBrowser extends ViewPart implements DistConstants,
 					}
 				}
 			} catch (RepositoryException re) {
-				throw new ArgeoException(
+				throw new SlcException(
 						"Unexepected error while getting property values", re);
 			}
 			return null;
@@ -264,7 +264,7 @@ public class ArtifactsBrowser extends ViewPart implements DistConstants,
 		// strValue = value.getString();
 		// return strValue;
 		// } catch (RepositoryException e) {
-		// throw new ArgeoException(
+		// throw new SlcException(
 		// "unexpected error while formatting value", e);
 		// }
 		// }

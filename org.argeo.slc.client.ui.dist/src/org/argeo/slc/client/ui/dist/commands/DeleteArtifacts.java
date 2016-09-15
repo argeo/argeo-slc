@@ -20,7 +20,7 @@ import java.util.Iterator;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.argeo.ArgeoException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.commands.AbstractHandler;
@@ -79,7 +79,7 @@ public class DeleteArtifacts extends AbstractHandler {
 			}
 			// CommandHelpers.callCommand(RefreshDistributionOverviewPage.ID);
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexpected error while deleting artifacts.", re);
 		}
 		return null;

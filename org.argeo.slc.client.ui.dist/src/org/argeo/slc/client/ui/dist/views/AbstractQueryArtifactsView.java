@@ -30,8 +30,8 @@ import javax.jcr.query.RowIterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.GenericTableComparator;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.utils.ArtifactsTableConfigurer;
 import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.runtime.IStatus;
@@ -157,7 +157,7 @@ public abstract class AbstractQueryArtifactsView extends ViewPart implements
 				}
 				viewer.setInput(rows);
 			} catch (RepositoryException e) {
-				throw new ArgeoException("Cannot read query result", e);
+				throw new SlcException("Cannot read query result", e);
 			}
 
 		} catch (RepositoryException e) {

@@ -31,9 +31,10 @@ import javax.jcr.util.TraversingItemVisitor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoMonitor;
-import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseJcrMonitor;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.security.Keyring;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.AetherUtils;
@@ -46,7 +47,6 @@ import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.argeo.slc.repo.osgi.NormalizeGroup;
-import org.argeo.util.security.Keyring;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.core.commands.AbstractHandler;
@@ -207,7 +207,7 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 		protected IStatus run(IProgressMonitor progressMonitor) {
 
 			try {
-				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
+				JcrMonitor monitor = new EclipseJcrMonitor(progressMonitor);
 				// normalize artifacts
 				Query countQuery = session
 						.getWorkspace()
@@ -250,9 +250,9 @@ public class NormalizeDistribution extends AbstractHandler implements SlcNames {
 	}
 
 	private class NormalizingTraverser extends TraversingItemVisitor {
-		ArgeoMonitor monitor;
+		JcrMonitor monitor;
 
-		public NormalizingTraverser(ArgeoMonitor monitor) {
+		public NormalizingTraverser(JcrMonitor monitor) {
 			super();
 			this.monitor = monitor;
 		}

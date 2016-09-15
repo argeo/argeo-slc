@@ -13,9 +13,9 @@ import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.build.License;
-import org.osgi.framework.Version;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.osgi.framework.Version;
 import org.springframework.beans.factory.BeanNameAware;
 
 import aQute.lib.osgi.Builder;

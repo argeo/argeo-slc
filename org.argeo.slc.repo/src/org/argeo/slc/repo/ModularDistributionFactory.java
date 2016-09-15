@@ -22,9 +22,9 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.CategorizedNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
-import org.osgi.framework.Constants;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.osgi.framework.Constants;
 
 /**
  * Creates a jar bundle from an ArgeoOsgiDistribution. This jar is then

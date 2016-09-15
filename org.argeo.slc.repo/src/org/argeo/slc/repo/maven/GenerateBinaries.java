@@ -30,7 +30,7 @@ import javax.jcr.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoMonitor;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.ArtifactIdComparator;
@@ -39,9 +39,9 @@ import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
-import org.osgi.framework.Version;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.osgi.framework.Version;
 
 /**
  * Generates binaries-, sources- and sdk-version.pom artifacts for a given
@@ -101,7 +101,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	 * indexed.
 	 */
 	public static void processGroupNode(Node groupNode, String version,
-			ArgeoMonitor monitor) throws RepositoryException {
+			JcrMonitor monitor) throws RepositoryException {
 		// TODO set artifactsBase based on group node
 		GenerateBinaries gb = new GenerateBinaries();
 		String groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID)
@@ -115,7 +115,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 
 	/** Only builds local indexes. Does not change anything in the local Session */
 	public static GenerateBinaries preProcessGroupNode(Node groupNode,
-			ArgeoMonitor monitor) throws RepositoryException {
+			JcrMonitor monitor) throws RepositoryException {
 		// TODO set artifactsBase based on group node
 		GenerateBinaries gb = new GenerateBinaries();
 		String groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID)
@@ -148,7 +148,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	 * methods build the binaries {@code Set<Artifact>} and other indexes. It
 	 * does not impact the
 	 */
-	protected void internalPreProcessing(Node groupNode, ArgeoMonitor monitor)
+	protected void internalPreProcessing(Node groupNode, JcrMonitor monitor)
 			throws RepositoryException {
 		if (monitor != null)
 			monitor.subTask("Pre processing group " + groupId);
@@ -187,7 +187,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	}
 
 	/** Does the real job : writes JCR META-DATA and generates binaries */
-	protected void internalProcessing(Node groupNode, ArgeoMonitor monitor)
+	protected void internalProcessing(Node groupNode, JcrMonitor monitor)
 			throws RepositoryException {
 		if (monitor != null)
 			monitor.subTask("Processing group " + groupId);

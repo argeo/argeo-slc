@@ -24,15 +24,15 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.SlcException;
 import org.argeo.osgi.boot.OsgiBoot;
+import org.argeo.slc.SlcException;
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
+import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.springframework.context.ApplicationContext;
-import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 
 @SuppressWarnings("restriction")
 public abstract class AbstractOsgiRuntimeTestCase extends TestCase {

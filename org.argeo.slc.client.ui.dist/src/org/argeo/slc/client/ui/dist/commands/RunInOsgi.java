@@ -39,6 +39,7 @@ import org.argeo.slc.core.execution.tasks.JvmProcess;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
+import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -47,7 +48,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.aether.artifact.Artifact;
 
 /** <b>UNDER DEVELOPMENT</b>. Download and prepare an OSGi runtime */
 public class RunInOsgi extends AbstractHandler implements SlcNames {

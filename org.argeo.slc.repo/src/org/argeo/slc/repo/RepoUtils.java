@@ -51,11 +51,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoMonitor;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.node.ArgeoNames;
 import org.argeo.node.ArgeoTypes;
 import org.argeo.node.NodeUtils;
+import org.argeo.node.security.Keyring;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -63,7 +64,6 @@ import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.osgi.framework.Constants;
@@ -552,7 +552,7 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 		copy(fromNode, toNode, null);
 	}
 
-	public static void copy(Node fromNode, Node toNode, ArgeoMonitor monitor) {
+	public static void copy(Node fromNode, Node toNode, JcrMonitor monitor) {
 		try {
 			String fromPath = fromNode.getPath();
 			if (monitor != null)

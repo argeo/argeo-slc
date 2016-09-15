@@ -31,10 +31,10 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.build.ModularDistribution;
+import org.eclipse.gemini.blueprint.context.BundleContextAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.springframework.beans.factory.InitializingBean;
-import org.eclipse.gemini.blueprint.context.BundleContextAware;
 
 public abstract class AbstractOsgiModularDistribution implements
 		ModularDistribution, BundleContextAware, InitializingBean {

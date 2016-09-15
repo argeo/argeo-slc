@@ -19,7 +19,6 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -93,7 +92,7 @@ public class ArtifactVersionEditor extends FormEditor implements SlcNames {
 			addPage(new BundleDependencyPage(this, "Dependencies ", artifact));
 			addPage(new BundleRawPage(this, "Raw Meta-Data ", artifact));
 		} catch (PartInitException e) {
-			throw new ArgeoException("Cannot add distribution editor pages", e);
+			throw new SlcException("Cannot add distribution editor pages", e);
 		}
 
 	}

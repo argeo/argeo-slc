@@ -25,16 +25,16 @@ import javax.jcr.security.Privilege;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoException;
-import org.argeo.ArgeoMonitor;
-import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseJcrMonitor;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.security.Keyring;
 import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.SlcConstants;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -127,7 +127,7 @@ public class CopyWorkspace extends AbstractHandler {
 		protected IStatus doRun(IProgressMonitor progressMonitor) {
 			long begin = System.currentTimeMillis();
 
-			ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
+			JcrMonitor monitor = new EclipseJcrMonitor(progressMonitor);
 			monitor.beginTask("Copy workspace", -1);
 			monitor.subTask("Copying nodes");
 
@@ -163,7 +163,7 @@ public class CopyWorkspace extends AbstractHandler {
 				monitor.worked(1);
 
 			} catch (RepositoryException re) {
-				throw new ArgeoException(
+				throw new SlcException(
 						"Unexpected error while creating the new workspace.",
 						re);
 			} finally {

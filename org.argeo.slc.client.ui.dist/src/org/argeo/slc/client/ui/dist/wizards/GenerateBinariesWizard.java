@@ -25,18 +25,19 @@ import javax.jcr.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoMonitor;
-import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseJcrMonitor;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.utils.ViewerUtils;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoService;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.GenerateBinaries;
+import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -59,7 +60,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.aether.artifact.Artifact;
 
 /**
  * Define parameters to asynchronously generate binaries, sources and sdk pom
@@ -310,7 +310,7 @@ public class GenerateBinariesWizard extends Wizard {
 		protected IStatus doRun(IProgressMonitor progressMonitor) {
 			Session session = null;
 			try {
-				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
+				JcrMonitor monitor = new EclipseJcrMonitor(progressMonitor);
 				session = repoService.getRemoteSession(repoNodePath, null,
 						wkspName);
 				Node groupBaseNode = session.getNode(groupNodePath);

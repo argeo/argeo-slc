@@ -23,7 +23,6 @@ import javax.jcr.Session;
 
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.rap.OpenJcrFileService;
-import org.argeo.slc.client.rap.SlcRapPlugin;
 import org.argeo.slc.repo.RepoService;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;

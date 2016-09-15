@@ -32,7 +32,6 @@ import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -151,7 +150,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 			addInitialFlows();
 
 		} catch (RepositoryException e) {
-			throw new ArgeoException("Cannot create form content", e);
+			throw new SlcException("Cannot create form content", e);
 		}
 	}
 
@@ -415,7 +414,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 				try {
 					node.remove();
 				} catch (RepositoryException e) {
-					throw new ArgeoException("Cannot remove " + node, e);
+					throw new SlcException("Cannot remove " + node, e);
 				}
 			}
 			flowsViewer.refresh();
@@ -432,7 +431,7 @@ public class ProcessBuilderPage extends FormPage implements SlcNames {
 			flowsViewer.refresh();
 			formPart.markDirty();
 		} catch (RepositoryException e) {
-			throw new ArgeoException("Cannot remove flows from " + processNode,
+			throw new SlcException("Cannot remove flows from " + processNode,
 					e);
 		}
 	}

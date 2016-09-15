@@ -10,8 +10,8 @@ import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 
@@ -60,7 +60,7 @@ public class WorkspaceElem extends DistParentElem {
 			else
 				return true;
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexpected error while checking children node existence",
 					re);
 		}
@@ -140,7 +140,7 @@ public class WorkspaceElem extends DistParentElem {
 				}
 				return super.getChildren();
 			} catch (RepositoryException e) {
-				throw new ArgeoException(
+				throw new SlcException(
 						"Cannot initialize WorkspaceNode UI object."
 								+ getName(), e);
 			}

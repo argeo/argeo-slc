@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.argeo.ArgeoException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.Parameterization;
@@ -151,7 +151,7 @@ public class CommandHelpers {
 			// execute the command
 			handlerService.executeCommand(pc, null);
 		} catch (Exception e) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexepected exception while opening node editor", e);
 		}
 	}

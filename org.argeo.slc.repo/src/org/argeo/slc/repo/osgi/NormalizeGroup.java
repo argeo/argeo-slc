@@ -32,7 +32,7 @@ import javax.jcr.Session;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoMonitor;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.aether.ArtifactIdComparator;
@@ -42,10 +42,10 @@ import org.argeo.slc.repo.ArtifactIndexer;
 import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.RepoUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
-import org.osgi.framework.Constants;
-import org.osgi.framework.Version;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.osgi.framework.Constants;
+import org.osgi.framework.Version;
 
 /**
  * Make sure that all JCR metadata and Maven metadata are consistent for this
@@ -100,7 +100,7 @@ public class NormalizeGroup implements Runnable, SlcNames {
 	}
 
 	public static void processGroupNode(Node groupNode, String version,
-			Boolean overridePoms, ArgeoMonitor monitor)
+			Boolean overridePoms, JcrMonitor monitor)
 			throws RepositoryException {
 		// TODO set artifactsBase based on group node
 		NormalizeGroup ng = new NormalizeGroup();
@@ -112,7 +112,7 @@ public class NormalizeGroup implements Runnable, SlcNames {
 		ng.processGroupNode(groupNode, monitor);
 	}
 
-	protected void processGroupNode(Node groupNode, ArgeoMonitor monitor)
+	protected void processGroupNode(Node groupNode, JcrMonitor monitor)
 			throws RepositoryException {
 		if (monitor != null)
 			monitor.subTask("Group " + groupId);

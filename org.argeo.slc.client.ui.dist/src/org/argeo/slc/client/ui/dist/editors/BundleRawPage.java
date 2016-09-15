@@ -26,7 +26,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 
-import org.argeo.ArgeoException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.utils.DistUiHelpers;
 import org.argeo.slc.jcr.SlcNames;
@@ -197,7 +197,7 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 					}
 				}
 			} catch (RepositoryException e) {
-				throw new ArgeoException(
+				throw new SlcException(
 						"unexpected error while getting artifact information",
 						e);
 			}
@@ -245,7 +245,7 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 				}
 
 			} catch (RepositoryException e) {
-				throw new ArgeoException(
+				throw new SlcException(
 						"Unexpected exception while listing node properties", e);
 			}
 			return elements.toArray();
@@ -305,7 +305,7 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 					return elements.toArray();
 				}
 			} catch (RepositoryException e) {
-				throw new ArgeoException(
+				throw new SlcException(
 						"Unexpected error getting multiple values property.", e);
 			}
 			return result;
@@ -324,7 +324,7 @@ public class BundleRawPage extends FormPage implements SlcNames, SlcTypes {
 					return true;
 				}
 			} catch (RepositoryException e) {
-				throw new ArgeoException(
+				throw new SlcException(
 						"Unexpected exception while checking if property is multiple",
 						e);
 			}

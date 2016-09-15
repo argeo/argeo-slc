@@ -3,8 +3,8 @@ package org.argeo.slc.client.ui.dist.model;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 
 /**
  * Abstract set of similar workspaces, that is a bunch of workspaces with same
@@ -30,7 +30,7 @@ public class WkspGroupElem extends DistParentElem {
 							wkpName));
 			}
 		} catch (RepositoryException e) {
-			throw new ArgeoException("Cannot retrieve workspace names", e);
+			throw new SlcException("Cannot retrieve workspace names", e);
 		}
 	}
 

@@ -19,8 +19,8 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.wizards.ChangeRightsWizard;
 import org.eclipse.core.commands.AbstractHandler;
@@ -57,7 +57,7 @@ public class ManageWorkspaceAuth extends AbstractHandler {
 			dialog.open();
 			return null;
 		} catch (RepositoryException re) {
-			throw new ArgeoException("Cannot log in the repository "
+			throw new SlcException("Cannot log in the repository "
 					+ repository + " in workspace " + workspaceName, re);
 		} finally {
 			JcrUtils.logoutQuietly(session);

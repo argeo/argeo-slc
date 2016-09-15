@@ -15,7 +15,7 @@
  */
 package org.argeo.slc.client.ui.dist.views;
 
-import org.argeo.ArgeoException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.swt.SWT;
@@ -159,7 +159,7 @@ public class QueryArtifactsForm extends AbstractQueryArtifactsView implements
 
 			return sb.toString();
 		} catch (Exception e) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Cannot generate where statement to get artifacts", e);
 		}
 	}

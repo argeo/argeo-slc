@@ -16,13 +16,13 @@
 package org.argeo.slc.osgi.deploy;
 
 import org.argeo.slc.core.deploy.DefaultResourceSet;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.springframework.core.io.ResourceLoader;
 import org.eclipse.gemini.blueprint.context.BundleContextAware;
 import org.eclipse.gemini.blueprint.io.OsgiBundleResourceLoader;
 import org.eclipse.gemini.blueprint.io.OsgiBundleResourcePatternResolver;
 import org.eclipse.gemini.blueprint.util.OsgiBundleUtils;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.springframework.core.io.ResourceLoader;
 
 /**
  * Retrieves ressources from an OSGi bundle either the active one or another one

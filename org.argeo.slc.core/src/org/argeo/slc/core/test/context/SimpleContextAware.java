@@ -18,11 +18,10 @@ package org.argeo.slc.core.test.context;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.springframework.beans.factory.InitializingBean;
-
 import org.argeo.slc.SlcException;
 import org.argeo.slc.test.context.ContextAware;
 import org.argeo.slc.test.context.ParentContextAware;
+import org.springframework.beans.factory.InitializingBean;
 
 public class SimpleContextAware implements ContextAware, InitializingBean {
 	private ParentContextAware parentContext;

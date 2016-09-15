@@ -15,10 +15,10 @@
  */
 package org.argeo.slc.aether;
 
+import junit.framework.TestCase;
+
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-
-import junit.framework.TestCase;
 
 public class AetherUtilsTest extends TestCase {
 	public void testConvertPathToArtifact() throws Exception {

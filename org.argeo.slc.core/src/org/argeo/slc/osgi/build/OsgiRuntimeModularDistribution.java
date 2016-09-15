@@ -24,11 +24,11 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.core.build.VersionedResourceDistribution;
 import org.argeo.slc.osgi.OsgiBundle;
+import org.eclipse.gemini.blueprint.util.OsgiBundleUtils;
 import org.osgi.framework.Bundle;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.eclipse.gemini.blueprint.util.OsgiBundleUtils;
 
 public class OsgiRuntimeModularDistribution extends
 		AbstractOsgiModularDistribution implements ResourceLoaderAware {

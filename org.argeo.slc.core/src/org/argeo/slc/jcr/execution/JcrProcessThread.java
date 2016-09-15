@@ -22,8 +22,8 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
@@ -74,7 +74,7 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 					}
 				}
 			} catch (RepositoryException e) {
-				throw new ArgeoException("Cannot process "
+				throw new SlcException("Cannot process "
 						+ getJcrExecutionProcess().getNodePath(), e);
 			} finally {
 				JcrUtils.logoutQuietly(session);

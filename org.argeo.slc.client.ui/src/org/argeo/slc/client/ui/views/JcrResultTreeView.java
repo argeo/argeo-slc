@@ -33,7 +33,6 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.workbench.CommandUtils;
 import org.argeo.jcr.JcrUtils;
@@ -281,7 +280,7 @@ public class JcrResultTreeView extends ViewPart {
 						value = "Error";
 					return value;
 				} catch (RepositoryException e) {
-					throw new ArgeoException(
+					throw new SlcException(
 							"Unexpected exception in label provider", e);
 				}
 			}
@@ -316,7 +315,7 @@ public class JcrResultTreeView extends ViewPart {
 					}
 					return value;
 				} catch (RepositoryException e) {
-					throw new ArgeoException(
+					throw new SlcException(
 							"Unexpected exception in label provider", e);
 				}
 			}
@@ -475,7 +474,7 @@ public class JcrResultTreeView extends ViewPart {
 					"All results");
 			return roots;
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexpected error while initializing ResultTree.", re);
 		}
 	}
@@ -903,7 +902,7 @@ public class JcrResultTreeView extends ViewPart {
 				return new Object[] {};
 
 			} catch (RepositoryException e) {
-				throw new ArgeoException("Cannot get element for "
+				throw new SlcException("Cannot get element for "
 						+ inputElement, e);
 			}
 		}

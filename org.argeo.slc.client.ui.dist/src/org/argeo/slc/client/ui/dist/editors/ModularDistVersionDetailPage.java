@@ -18,7 +18,6 @@ package org.argeo.slc.client.ui.dist.editors;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.argeo.ArgeoException;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.swt.SWT;
@@ -125,7 +124,7 @@ public class ModularDistVersionDetailPage extends FormPage implements SlcNames {
 			sb.append("</dependency>");
 			return sb.toString();
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"unexpected error while generating maven snippet");
 		}
 	}

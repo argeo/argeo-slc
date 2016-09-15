@@ -37,14 +37,14 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
-import org.argeo.ArgeoMonitor;
-import org.argeo.eclipse.ui.EclipseArgeoMonitor;
+import org.argeo.eclipse.ui.EclipseJcrMonitor;
 import org.argeo.eclipse.ui.workbench.CommandUtils;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.client.ui.dist.commands.DeleteArtifacts;
 import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
 import org.argeo.slc.client.ui.dist.utils.DistNodeViewerComparator;
@@ -135,7 +135,7 @@ public class DistWkspSearchPage extends FormPage implements SlcNames {
 		@Override
 		protected IStatus doRun(IProgressMonitor progressMonitor) {
 			try {
-				ArgeoMonitor monitor = new EclipseArgeoMonitor(progressMonitor);
+				JcrMonitor monitor = new EclipseJcrMonitor(progressMonitor);
 				monitor.beginTask("Getting bundle list", -1);
 				final List<Node> result = JcrUtils
 						.nodeIteratorToList(listBundleArtifacts(session, filter));

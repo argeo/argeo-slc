@@ -22,10 +22,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.FileExecutionResources;
-import org.osgi.framework.BundleContext;
-import org.springframework.core.io.Resource;
 import org.eclipse.gemini.blueprint.context.BundleContextAware;
 import org.eclipse.gemini.blueprint.io.OsgiBundleResource;
+import org.osgi.framework.BundleContext;
+import org.springframework.core.io.Resource;
 
 /** Write access to resources in an OSGi context */
 public class OsgiExecutionResources extends FileExecutionResources implements

@@ -18,8 +18,8 @@ package org.argeo.slc.client.ui.dist.wizards;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.eclipse.jface.wizard.Wizard;
 
 /**
@@ -44,7 +44,7 @@ public class ChangeRightsWizard extends Wizard {
 			page = new ChooseRightsPage();
 			addPage(page);
 		} catch (Exception e) {
-			throw new ArgeoException("Cannot add page to wizard ", e);
+			throw new SlcException("Cannot add page to wizard ", e);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class ChangeRightsWizard extends Wizard {
 			JcrUtils.addPrivilege(currentSession, "/", page.getGroupName(),
 					page.getAuthTypeStr());
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexpected error while setting privileges", re);
 		}
 		return true;

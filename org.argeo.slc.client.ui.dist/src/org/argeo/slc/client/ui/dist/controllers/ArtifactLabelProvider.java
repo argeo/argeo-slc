@@ -22,8 +22,8 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.jcr.SlcTypes;
@@ -103,7 +103,7 @@ public class ArtifactLabelProvider extends ColumnLabelProvider implements
 				}
 			}
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexepected error while getting property values", re);
 		}
 		return null;

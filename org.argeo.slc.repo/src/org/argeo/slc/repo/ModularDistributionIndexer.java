@@ -28,9 +28,9 @@ import org.argeo.slc.aether.AetherUtils;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
-import org.osgi.framework.Constants;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.osgi.framework.Constants;
 
 /**
  * Create or update JCR meta-data for an SLC Modular Distribution

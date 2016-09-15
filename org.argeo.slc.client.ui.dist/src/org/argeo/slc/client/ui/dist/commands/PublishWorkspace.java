@@ -23,12 +23,12 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.security.Keyring;
 import org.argeo.slc.SlcConstants;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -84,7 +84,7 @@ public class PublishWorkspace extends AbstractHandler {
 				// CommandHelpers.callCommand(RefreshDistributionsView.ID);
 			}
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"Unexpected error while publishing workspace "
 							+ workspaceName, re);
 		} finally {

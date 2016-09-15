@@ -44,7 +44,7 @@ import javax.jcr.query.QueryResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoMonitor;
+import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.node.NodeUtils;
 import org.argeo.slc.SlcException;
@@ -84,7 +84,7 @@ public class RepoSync implements Runnable {
 
 	private RepositoryFactory repositoryFactory;
 
-	private ArgeoMonitor monitor;
+	private JcrMonitor monitor;
 	private Map<String, String> workspaceMap;
 
 	// TODO fix monitor
@@ -578,7 +578,7 @@ public class RepoSync implements Runnable {
 			this.workspaceMap = null;
 	}
 
-	public void setMonitor(ArgeoMonitor monitor) {
+	public void setMonitor(JcrMonitor monitor) {
 		this.monitor = monitor;
 	}
 

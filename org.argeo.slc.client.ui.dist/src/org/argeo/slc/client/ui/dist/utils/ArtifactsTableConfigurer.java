@@ -25,8 +25,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Row;
 
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.GenericTableComparator;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -165,7 +165,7 @@ public class ArtifactsTableConfigurer implements SlcNames, SlcTypes,
 					try {
 						return row.getValue(columnName).getString();
 					} catch (RepositoryException e) {
-						throw new ArgeoException("Cannot display row " + row, e);
+						throw new SlcException("Cannot display row " + row, e);
 					}
 				}
 
@@ -200,13 +200,13 @@ public class ArtifactsTableConfigurer implements SlcNames, SlcTypes,
 					else if (v1.getType() == PropertyType.DATE)
 						rc = v1.getDate().compareTo(v2.getDate());
 					else
-						throw new ArgeoException("comparator for object type "
+						throw new SlcException("comparator for object type "
 								+ v1.getType() + " is not yet implemented");
 				} catch (Exception e) {
-					throw new ArgeoException("rows cannot be compared ", e);
+					throw new SlcException("rows cannot be compared ", e);
 				}
 			} else
-				throw new ArgeoException("Unsupported row type");
+				throw new SlcException("Unsupported row type");
 			// If descending order, flip the direction
 			if (direction == DESCENDING) {
 				rc = -rc;

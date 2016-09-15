@@ -9,13 +9,12 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.eclipse.rap.rwt.RWT;
 //import org.eclipse.rap.rwt.service.IServiceHandler;
 
 /**

@@ -27,8 +27,8 @@ import javax.jcr.ValueFormatException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoException;
 import org.argeo.eclipse.ui.GenericTableComparator;
+import org.argeo.slc.SlcException;
 import org.eclipse.jface.viewers.Viewer;
 
 /** Add ability to order by name version and version */
@@ -149,7 +149,7 @@ public class DistNodeViewerComparator extends GenericTableComparator {
 				rc = bd1.compareTo(bd2);
 				break;
 			default:
-				throw new ArgeoException(
+				throw new SlcException(
 						"Unimplemented comparaison for PropertyType "
 								+ propertyType);
 			}
@@ -160,7 +160,7 @@ public class DistNodeViewerComparator extends GenericTableComparator {
 			}
 
 		} catch (RepositoryException re) {
-			throw new ArgeoException("Unexpected error "
+			throw new SlcException("Unexpected error "
 					+ "while comparing nodes", re);
 		}
 		return rc;

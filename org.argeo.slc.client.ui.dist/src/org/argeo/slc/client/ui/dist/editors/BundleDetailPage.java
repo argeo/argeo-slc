@@ -22,7 +22,6 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoException;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.build.License;
 import org.argeo.slc.client.ui.dist.DistConstants;
@@ -514,7 +513,7 @@ public class BundleDetailPage extends FormPage implements SlcNames {
 			sb.append("</dependency>");
 			return sb.toString();
 		} catch (RepositoryException re) {
-			throw new ArgeoException(
+			throw new SlcException(
 					"unexpected error while generating maven snippet");
 		}
 	}

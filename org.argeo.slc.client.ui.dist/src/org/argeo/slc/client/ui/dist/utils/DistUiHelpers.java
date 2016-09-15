@@ -25,7 +25,7 @@ import javax.jcr.Value;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.ArgeoException;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
@@ -130,7 +130,7 @@ public class DistUiHelpers implements DistConstants, SlcTypes, SlcNames {
 				strValue = value.getString();
 			return strValue;
 		} catch (RepositoryException e) {
-			throw new ArgeoException("unexpected error while formatting value",
+			throw new SlcException("unexpected error while formatting value",
 					e);
 		}
 	}

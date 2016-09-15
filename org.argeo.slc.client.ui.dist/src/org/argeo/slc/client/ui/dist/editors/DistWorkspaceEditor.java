@@ -21,12 +21,12 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
-import org.argeo.ArgeoException;
 import org.argeo.jcr.JcrUtils;
+import org.argeo.node.security.Keyring;
+import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoUtils;
-import org.argeo.util.security.Keyring;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -83,7 +83,7 @@ public class DistWorkspaceEditor extends FormEditor implements SlcNames {
 			addPage(new WkspCategoryBaseListPage(this, "Groups ",
 					businessSession));
 		} catch (PartInitException e) {
-			throw new ArgeoException("Cannot add distribution editor pages", e);
+			throw new SlcException("Cannot add distribution editor pages", e);
 		}
 	}
 
