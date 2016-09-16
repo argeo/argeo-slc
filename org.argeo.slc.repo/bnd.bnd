@@ -5,7 +5,8 @@ javax.xml.parsers.*,\
 javax.jcr.nodetype,\
 *
 
-Require-Capability: cms.datamodel; filter:="(name=slc)"
+Require-Capability: cms.datamodel; filter:="(name=node)",\
+cms.datamodel; filter:="(name=slc)"
 Provide-Capability: cms.datamodel; name=java; cnd=/org/argeo/slc/repo/repo.cnd,\
  cms.datamodel; name=dist; cnd=/org/argeo/slc/repo/repo.cnd,\
  cms.datamodel; name=docs; cnd=/org/argeo/slc/repo/repo.cnd,\
