@@ -109,6 +109,7 @@
 									<excludeTransitive>true</excludeTransitive>
 									<includeTypes>jar</includeTypes>
 									<includeScope>runtime</includeScope>
+									<useRepositoryLayout>true</useRepositoryLayout>
 								</configuration>
 							</execution>
 						</executions>
@@ -136,7 +137,7 @@
 												<source>
 													<location>${project.build.directory}/lib-argeo</location>
 													<includes>
-														<include>*.jar</include>
+														<include>**/*.jar</include>
 													</includes>
 												</source>
 											</sources>
