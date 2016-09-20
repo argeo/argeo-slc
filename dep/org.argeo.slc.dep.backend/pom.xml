@@ -179,7 +179,7 @@
 											<username>root</username>
 											<groupname>root</groupname>
 											<filemode>644</filemode>
-											<directoryIncluded>false</directoryIncluded>
+											<directoryIncluded>true</directoryIncluded>
 											<sources>
 												<source>
 													<location>${project.build.directory}/lib-argeo</location>
@@ -189,13 +189,14 @@
 												</source>
 											</sources>
 										</mapping>
-										<!-- <mapping> -->
-										<!-- <directory>/usr/share/osgi</directory> -->
-										<!-- <username>root</username> -->
-										<!-- <groupname>root</groupname> -->
-										<!-- <filemode>644</filemode> -->
-										<!-- <artifact /> -->
-										<!-- </mapping> -->
+										<mapping>
+											<directory>/usr/share/osgi/org/argeo/slc/${project.artifactId}/${project.version}</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<artifact />
+										</mapping>
 									</mappings>
 									<requires>
 										<require>argeo-cms-platform</require>
