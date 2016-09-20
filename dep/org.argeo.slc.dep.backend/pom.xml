@@ -40,6 +40,7 @@
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.minimal</artifactId>
 			<version>2.1.5-SNAPSHOT</version>
+			<type>pom</type>
 		</dependency>
 
 		<!-- SLC Libs -->
@@ -193,15 +194,14 @@
 											<directory>/usr/share/osgi/org/argeo/slc/${project.artifactId}/${project.version}</directory>
 											<username>root</username>
 											<groupname>root</groupname>
-											<filemode>644</filemode>
 											<directoryIncluded>false</directoryIncluded>
 											<artifact />
 										</mapping>
 									</mappings>
 									<requires>
 										<require>argeo-cms-platform</require>
+										<require>argeo-cms-sdk-tp</require>
 										<require>slc-agent</require>
-										<require>slc-platform-tp</require>
 									</requires>
 								</configuration>
 							</execution>

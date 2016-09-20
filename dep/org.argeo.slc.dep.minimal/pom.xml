@@ -146,7 +146,6 @@
 											<directory>/usr/share/osgi/org/argeo/slc/${project.artifactId}/${project.version}</directory>
 											<username>root</username>
 											<groupname>root</groupname>
-											<filemode>644</filemode>
 											<directoryIncluded>false</directoryIncluded>
 											<artifact />
 										</mapping>
