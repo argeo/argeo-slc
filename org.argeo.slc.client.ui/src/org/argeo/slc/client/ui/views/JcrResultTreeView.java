@@ -33,8 +33,8 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
+import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
-import org.argeo.eclipse.ui.workbench.CommandUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.ClientUiPlugin;

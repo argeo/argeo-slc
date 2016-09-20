@@ -37,11 +37,11 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
+import org.argeo.cms.ui.workbench.util.CommandUtils;
+import org.argeo.cms.ui.workbench.util.PrivilegedJob;
 import org.argeo.eclipse.ui.EclipseJcrMonitor;
-import org.argeo.eclipse.ui.workbench.CommandUtils;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;

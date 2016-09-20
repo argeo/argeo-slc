@@ -21,8 +21,8 @@ import java.util.Map;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 
+import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.eclipse.ui.TreeParent;
-import org.argeo.eclipse.ui.workbench.CommandUtils;
 import org.argeo.node.ArgeoNames;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;

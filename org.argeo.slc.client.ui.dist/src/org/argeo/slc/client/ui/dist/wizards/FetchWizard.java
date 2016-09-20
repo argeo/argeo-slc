@@ -28,6 +28,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
+import org.argeo.cms.ui.workbench.util.PrivilegedJob;
 import org.argeo.eclipse.ui.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
@@ -35,7 +36,6 @@ import org.argeo.node.ArgeoNames;
 import org.argeo.node.ArgeoTypes;
 import org.argeo.node.NodeUtils;
 import org.argeo.node.security.Keyring;
-import org.argeo.security.ui.PrivilegedJob;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.ViewerUtils;

@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.argeo.eclipse.ui.workbench.CommandUtils;
+import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.commands.OpenModuleEditor;
 import org.argeo.slc.client.ui.dist.commands.OpenWorkspaceEditor;
