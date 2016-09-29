@@ -46,8 +46,7 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 				dispose();
 			nodeSession = nodeRepository.login();
 
-			String reposPath = NodeUtils.getUserHome(nodeSession).getPath()
-					+ RepoConstants.REPOSITORIES_BASE_PATH;
+			String reposPath = NodeUtils.getUserHome(nodeSession).getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
 
 			if (!nodeSession.itemExists(reposPath))
 				initializeModel(nodeSession);
@@ -56,11 +55,9 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 			while (repos.hasNext()) {
 				Node repoNode = repos.nextNode();
 				if (repoNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
-					String label = repoNode.isNodeType(NodeType.MIX_TITLE) ? repoNode
-							.getProperty(Property.JCR_TITLE).getString()
-							: repoNode.getName();
-					repositories.add(new RepoElem(repositoryFactory, keyring,
-							repoNode, label));
+					String label = repoNode.isNodeType(NodeType.MIX_TITLE)
+							? repoNode.getProperty(Property.JCR_TITLE).getString() : repoNode.getName();
+					repositories.add(new RepoElem(repositoryFactory, keyring, repoNode, label));
 				}
 			}
 		} catch (RepositoryException e) {
@@ -109,23 +106,19 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 				throw new SlcException("User must be authenticated.");
 
 			// make sure base directory is available
-			Node repos = JcrUtils.mkdirs(nodeSession, homeNode.getPath()
-					+ RepoConstants.REPOSITORIES_BASE_PATH);
+			Node repos = JcrUtils.mkdirs(homeNode, RepoConstants.REPOSITORIES_BASE_PATH,null);
 			if (nodeSession.hasPendingChanges())
 				nodeSession.save();
 
 			// register default local java repository
 			String alias = RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS;
-			Repository javaRepository = NodeUtils.getRepositoryByAlias(
-					repositoryFactory, alias);
+			Repository javaRepository = NodeUtils.getRepositoryByAlias(repositoryFactory, alias);
 			if (javaRepository != null) {
 				if (!repos.hasNode(alias)) {
-					Node repoNode = repos.addNode(alias,
-							ArgeoTypes.ARGEO_REMOTE_REPOSITORY);
+					Node repoNode = repos.addNode(alias, ArgeoTypes.ARGEO_REMOTE_REPOSITORY);
 					repoNode.setProperty(ArgeoNames.ARGEO_URI, "vm:///" + alias);
 					repoNode.addMixin(NodeType.MIX_TITLE);
-					repoNode.setProperty(Property.JCR_TITLE,
-							RepoConstants.DEFAULT_JAVA_REPOSITORY_LABEL);
+					repoNode.setProperty(Property.JCR_TITLE, RepoConstants.DEFAULT_JAVA_REPOSITORY_LABEL);
 					nodeSession.save();
 				}
 			}

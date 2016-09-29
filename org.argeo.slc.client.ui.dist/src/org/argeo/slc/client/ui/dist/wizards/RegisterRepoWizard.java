@@ -254,14 +254,12 @@ public class RegisterRepoWizard extends Wizard {
 				URI checkedUri = new URI(uri.getText());
 				String checkedUriStr = checkedUri.toString();
 				Repository repository = NodeUtils.getRepositoryByUri(repositoryFactory, checkedUriStr);
-				// FIXME make it more generic
-				String defaultWorkspace = "main";
 				if (username.getText().trim().equals("")) {// anonymous
-					session = repository.login(defaultWorkspace);
+					session = repository.login(RepoConstants.DEFAULT_DEFAULT_WORKSPACE);
 				} else {
 					char[] pwd = password.getTextChars();
 					SimpleCredentials sc = new SimpleCredentials(username.getText(), pwd);
-					session = repository.login(sc, defaultWorkspace);
+					session = repository.login(sc, RepoConstants.DEFAULT_DEFAULT_WORKSPACE);
 				}
 			} else {// alias
 				Repository repository = NodeUtils.getRepositoryByAlias(repositoryFactory, uri.getText());

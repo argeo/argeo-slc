@@ -23,8 +23,10 @@ import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.security.Privilege;
 
 import org.argeo.jcr.JcrUtils;
+import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultAgent;
 import org.argeo.slc.core.execution.ProcessThread;
@@ -52,17 +54,15 @@ public class JcrAgent extends DefaultAgent implements SlcNames {
 			session = repository.login();
 
 			String agentFactoryPath = getAgentFactoryPath();
-			Node vmAgentFactoryNode = JcrUtils.mkdirsSafe(session,
-					agentFactoryPath, SlcTypes.SLC_AGENT_FACTORY);
+			Node vmAgentFactoryNode = JcrUtils.mkdirsSafe(session, agentFactoryPath, SlcTypes.SLC_AGENT_FACTORY);
+			JcrUtils.addPrivilege(session, SlcJcrConstants.SLC_BASE_PATH, SlcConstants.ROLE_SLC, Privilege.JCR_ALL);
 			if (!vmAgentFactoryNode.hasNode(agentNodeName)) {
 				String uuid = UUID.randomUUID().toString();
-				Node agentNode = vmAgentFactoryNode.addNode(agentNodeName,
-						SlcTypes.SLC_AGENT);
+				Node agentNode = vmAgentFactoryNode.addNode(agentNodeName, SlcTypes.SLC_AGENT);
 				agentNode.setProperty(SLC_UUID, uuid);
 			}
 			session.save();
-			return vmAgentFactoryNode.getNode(agentNodeName)
-					.getProperty(SLC_UUID).getString();
+			return vmAgentFactoryNode.getNode(agentNodeName).getProperty(SLC_UUID).getString();
 		} catch (RepositoryException e) {
 			JcrUtils.discardQuietly(session);
 			throw new SlcException("Cannot find JCR agent UUID", e);
@@ -80,15 +80,12 @@ public class JcrAgent extends DefaultAgent implements SlcNames {
 	 * SLC AGENT
 	 */
 	@Override
-	protected ProcessThread createProcessThread(
-			ThreadGroup processesThreadGroup,
+	protected ProcessThread createProcessThread(ThreadGroup processesThreadGroup,
 			ExecutionModulesManager modulesManager, ExecutionProcess process) {
 		if (process instanceof JcrExecutionProcess)
-			return new JcrProcessThread(processesThreadGroup, modulesManager,
-					(JcrExecutionProcess) process);
+			return new JcrProcessThread(processesThreadGroup, modulesManager, (JcrExecutionProcess) process);
 		else
-			return super.createProcessThread(processesThreadGroup,
-					modulesManager, process);
+			return super.createProcessThread(processesThreadGroup, modulesManager, process);
 	}
 
 	/*
@@ -104,13 +101,10 @@ public class JcrAgent extends DefaultAgent implements SlcNames {
 			String agentFactoryPath;
 			if (isRemote) {
 				InetAddress localhost = InetAddress.getLocalHost();
-				agentFactoryPath = SlcJcrConstants.AGENTS_BASE_PATH + "/"
-						+ localhost.getCanonicalHostName();
+				agentFactoryPath = SlcJcrConstants.AGENTS_BASE_PATH + "/" + localhost.getCanonicalHostName();
 
-				if (agentFactoryPath
-						.equals(SlcJcrConstants.VM_AGENT_FACTORY_PATH))
-					throw new SlcException("Unsupported hostname "
-							+ localhost.getCanonicalHostName());
+				if (agentFactoryPath.equals(SlcJcrConstants.VM_AGENT_FACTORY_PATH))
+					throw new SlcException("Unsupported hostname " + localhost.getCanonicalHostName());
 			} else {// local
 				agentFactoryPath = SlcJcrConstants.VM_AGENT_FACTORY_PATH;
 			}

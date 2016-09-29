@@ -589,7 +589,8 @@ public class FetchWizard extends Wizard {
 						// reset workspace list
 						wkspViewer.setAllChecked(false);
 						workspaces.clear();
-						session = currSourceRepo.login(currSourceCred);
+						// FIXME make it more generic
+						session = currSourceRepo.login(currSourceCred,RepoConstants.DEFAULT_DEFAULT_WORKSPACE);
 						// remove unvalid elements
 						for (String name : session.getWorkspace()
 								.getAccessibleWorkspaceNames())

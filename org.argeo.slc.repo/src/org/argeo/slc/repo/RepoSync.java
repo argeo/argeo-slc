@@ -62,8 +62,7 @@ public class RepoSync implements Runnable {
 	private final static Log log = LogFactory.getLog(RepoSync.class);
 
 	// Centralizes definition of workspaces that must be ignored by the sync.
-	private final static List<String> IGNORED_WKSP_LIST = Arrays.asList(
-			"security", "localrepo");
+	private final static List<String> IGNORED_WKSP_LIST = Arrays.asList("security", "localrepo");
 
 	private final Calendar zero;
 	private Session sourceDefaultSession = null;
@@ -105,8 +104,8 @@ public class RepoSync implements Runnable {
 	 * @param targetRepository
 	 * @param targetCredentials
 	 */
-	public RepoSync(Repository sourceRepository, Credentials sourceCredentials,
-			Repository targetRepository, Credentials targetCredentials) {
+	public RepoSync(Repository sourceRepository, Credentials sourceCredentials, Repository targetRepository,
+			Credentials targetCredentials) {
 		this();
 		this.sourceRepository = sourceRepository;
 		this.sourceCredentials = sourceCredentials;
@@ -120,53 +119,42 @@ public class RepoSync implements Runnable {
 
 			// Setup
 			if (sourceRepository == null)
-				sourceRepository = NodeUtils.getRepositoryByUri(
-						repositoryFactory, sourceRepoUri);
+				sourceRepository = NodeUtils.getRepositoryByUri(repositoryFactory, sourceRepoUri);
 			if (sourceCredentials == null && sourceUsername != null)
-				sourceCredentials = new SimpleCredentials(sourceUsername,
-						sourcePassword);
-			sourceDefaultSession = sourceRepository.login(sourceCredentials);
+				sourceCredentials = new SimpleCredentials(sourceUsername, sourcePassword);
+			// FIXME make it more generic
+			sourceDefaultSession = sourceRepository.login(sourceCredentials, RepoConstants.DEFAULT_DEFAULT_WORKSPACE);
 
 			if (targetRepository == null)
-				targetRepository = NodeUtils.getRepositoryByUri(
-						repositoryFactory, targetRepoUri);
+				targetRepository = NodeUtils.getRepositoryByUri(repositoryFactory, targetRepoUri);
 			if (targetCredentials == null && targetUsername != null)
-				targetCredentials = new SimpleCredentials(targetUsername,
-						targetPassword);
+				targetCredentials = new SimpleCredentials(targetUsername, targetPassword);
 			targetDefaultSession = targetRepository.login(targetCredentials);
 
 			Map<String, Exception> errors = new HashMap<String, Exception>();
-			for (String sourceWorkspaceName : sourceDefaultSession
-					.getWorkspace().getAccessibleWorkspaceNames()) {
+			for (String sourceWorkspaceName : sourceDefaultSession.getWorkspace().getAccessibleWorkspaceNames()) {
 				if (monitor != null && monitor.isCanceled())
 					break;
 
-				if (workspaceMap != null
-						&& !workspaceMap.containsKey(sourceWorkspaceName))
+				if (workspaceMap != null && !workspaceMap.containsKey(sourceWorkspaceName))
 					continue;
 				if (IGNORED_WKSP_LIST.contains(sourceWorkspaceName))
 					continue;
 
 				Session sourceSession = null;
 				Session targetSession = null;
-				String targetWorkspaceName = workspaceMap
-						.get(sourceWorkspaceName);
+				String targetWorkspaceName = workspaceMap.get(sourceWorkspaceName);
 				try {
 					try {
-						targetSession = targetRepository.login(
-								targetCredentials, targetWorkspaceName);
+						targetSession = targetRepository.login(targetCredentials, targetWorkspaceName);
 					} catch (NoSuchWorkspaceException e) {
-						targetDefaultSession.getWorkspace().createWorkspace(
-								targetWorkspaceName);
-						targetSession = targetRepository.login(
-								targetCredentials, targetWorkspaceName);
+						targetDefaultSession.getWorkspace().createWorkspace(targetWorkspaceName);
+						targetSession = targetRepository.login(targetCredentials, targetWorkspaceName);
 					}
-					sourceSession = sourceRepository.login(sourceCredentials,
-							sourceWorkspaceName);
+					sourceSession = sourceRepository.login(sourceCredentials, sourceWorkspaceName);
 					syncWorkspace(sourceSession, targetSession);
 				} catch (Exception e) {
-					errors.put("Could not sync workspace "
-							+ sourceWorkspaceName, e);
+					errors.put("Could not sync workspace " + sourceWorkspaceName, e);
 					if (log.isErrorEnabled())
 						e.printStackTrace();
 
@@ -180,8 +168,7 @@ public class RepoSync implements Runnable {
 				log.info("Sync has been canceled by user");
 
 			long duration = (System.currentTimeMillis() - begin) / 1000;// s
-			log.info("Sync " + sourceRepoUri + " to " + targetRepoUri + " in "
-					+ (duration / 60)
+			log.info("Sync " + sourceRepoUri + " to " + targetRepoUri + " in " + (duration / 60)
 
 					+ "min " + (duration % 60) + "s");
 
@@ -189,8 +176,7 @@ public class RepoSync implements Runnable {
 				throw new SlcException("Sync failed " + errors);
 			}
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot sync " + sourceRepoUri + " to "
-					+ targetRepoUri, e);
+			throw new SlcException("Cannot sync " + sourceRepoUri + " to " + targetRepoUri, e);
 		} finally {
 			JcrUtils.logoutQuietly(sourceDefaultSession);
 			JcrUtils.logoutQuietly(targetDefaultSession);
@@ -201,21 +187,14 @@ public class RepoSync implements Runnable {
 		if (IGNORED_WKSP_LIST.contains(session.getWorkspace().getName()))
 			return 0l;
 		try {
-			Query countQuery = session
-					.getWorkspace()
-					.getQueryManager()
-					.createQuery(
-							"select file from ["
-									+ (true ? NodeType.NT_FILE
-											: NodeType.NT_BASE) + "] as file",
-							Query.JCR_SQL2);
+			Query countQuery = session.getWorkspace().getQueryManager().createQuery(
+					"select file from [" + (true ? NodeType.NT_FILE : NodeType.NT_BASE) + "] as file", Query.JCR_SQL2);
 
 			QueryResult result = countQuery.execute();
 			Long expectedCount = result.getNodes().getSize();
 			return expectedCount;
 		} catch (RepositoryException e) {
-			throw new SlcException("Unexpected error while computing "
-					+ "the size of the fetch for workspace "
+			throw new SlcException("Unexpected error while computing " + "the size of the fetch for workspace "
 					+ session.getWorkspace().getName(), e);
 		}
 	}
@@ -228,19 +207,16 @@ public class RepoSync implements Runnable {
 		}
 
 		try {
-			String msg = "Synchronizing workspace: "
-					+ sourceSession.getWorkspace().getName();
+			String msg = "Synchronizing workspace: " + sourceSession.getWorkspace().getName();
 			if (monitor != null)
 				monitor.setTaskName(msg);
 			if (log.isDebugEnabled())
 				log.debug(msg);
 
 			if (filesOnly) {
-				JcrUtils.copyFiles(sourceSession.getRootNode(),
-						targetSession.getRootNode(), true, monitor);
+				JcrUtils.copyFiles(sourceSession.getRootNode(), targetSession.getRootNode(), true, monitor);
 			} else {
-				for (NodeIterator it = sourceSession.getRootNode().getNodes(); it
-						.hasNext();) {
+				for (NodeIterator it = sourceSession.getRootNode().getNodes(); it.hasNext();) {
 					Node node = it.nextNode();
 					if (node.getName().equals("jcr:system"))
 						continue;
@@ -251,8 +227,7 @@ public class RepoSync implements Runnable {
 				log.debug("Synced " + sourceSession.getWorkspace().getName());
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new SlcException("Cannot sync "
-					+ sourceSession.getWorkspace().getName() + " to "
+			throw new SlcException("Cannot sync " + sourceSession.getWorkspace().getName() + " to "
 					+ targetSession.getWorkspace().getName(), e);
 		}
 	}
@@ -262,35 +237,28 @@ public class RepoSync implements Runnable {
 		updateMonitor(msg, false);
 	}
 
-	protected void syncNode(Node sourceNode, Session targetSession)
-			throws RepositoryException, SAXException {
+	protected void syncNode(Node sourceNode, Session targetSession) throws RepositoryException, SAXException {
 		// Boolean singleLevel = singleLevel(sourceNode);
 		try {
 			if (monitor != null && monitor.isCanceled()) {
-				updateMonitor("Fetched has been canceled, "
-						+ "process is terminating");
+				updateMonitor("Fetched has been canceled, " + "process is terminating");
 				return;
 			}
 
-			Node targetParentNode = targetSession.getNode(sourceNode
-					.getParent().getPath());
+			Node targetParentNode = targetSession.getNode(sourceNode.getParent().getPath());
 			Node targetNode;
-			if (monitor != null
-					&& sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE))
+			if (monitor != null && sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE))
 				monitor.subTask("Process " + sourceNode.getPath());
 
 			final Boolean isNew;
 			if (!targetSession.itemExists(sourceNode.getPath())) {
 				isNew = true;
-				targetNode = targetParentNode.addNode(sourceNode.getName(),
-						sourceNode.getPrimaryNodeType().getName());
+				targetNode = targetParentNode.addNode(sourceNode.getName(), sourceNode.getPrimaryNodeType().getName());
 			} else {
 				isNew = false;
 				targetNode = targetSession.getNode(sourceNode.getPath());
-				if (!targetNode.getPrimaryNodeType().getName()
-						.equals(sourceNode.getPrimaryNodeType().getName()))
-					targetNode.setPrimaryType(sourceNode.getPrimaryNodeType()
-							.getName());
+				if (!targetNode.getPrimaryNodeType().getName().equals(sourceNode.getPrimaryNodeType().getName()))
+					targetNode.setPrimaryType(sourceNode.getPrimaryNodeType().getName());
 			}
 
 			// export
@@ -311,8 +279,7 @@ public class RepoSync implements Runnable {
 
 			// mixin and properties
 			for (NodeType nt : sourceNode.getMixinNodeTypes()) {
-				if (!targetNode.isNodeType(nt.getName())
-						&& targetNode.canAddMixin(nt.getName()))
+				if (!targetNode.isNodeType(nt.getName()) && targetNode.canAddMixin(nt.getName()))
 					targetNode.addMixin(nt.getName());
 			}
 			copyProperties(sourceNode, targetNode);
@@ -329,8 +296,7 @@ public class RepoSync implements Runnable {
 			if (sourceNode.isNodeType(NodeType.NT_HIERARCHY_NODE)) {
 				if (targetSession.hasPendingChanges()) {
 					if (sourceNode.isNodeType(NodeType.NT_FILE))
-						updateMonitor((isNew ? "Added " : "Updated ")
-								+ targetNode.getPath(), true);
+						updateMonitor((isNew ? "Added " : "Updated ") + targetNode.getPath(), true);
 					// if (doSave)
 					targetSession.save();
 				} else {
@@ -343,8 +309,7 @@ public class RepoSync implements Runnable {
 		}
 	}
 
-	private void copyTimestamps(Node sourceNode, Node targetNode)
-			throws RepositoryException {
+	private void copyTimestamps(Node sourceNode, Node targetNode) throws RepositoryException {
 		if (sourceNode.getDefinition().isProtected())
 			return;
 		if (targetNode.getDefinition().isProtected())
@@ -355,32 +320,24 @@ public class RepoSync implements Runnable {
 		copyTimestamp(sourceNode, targetNode, Property.JCR_LAST_MODIFIED_BY);
 	}
 
-	private void copyTimestamp(Node sourceNode, Node targetNode, String property)
-			throws RepositoryException {
+	private void copyTimestamp(Node sourceNode, Node targetNode, String property) throws RepositoryException {
 		if (sourceNode.hasProperty(property)) {
 			Property p = sourceNode.getProperty(property);
 			if (p.getDefinition().isProtected())
 				return;
 			if (targetNode.hasProperty(property)
-					&& targetNode
-							.getProperty(property)
-							.getValue()
-							.equals(sourceNode.getProperty(property).getValue()))
+					&& targetNode.getProperty(property).getValue().equals(sourceNode.getProperty(property).getValue()))
 				return;
-			targetNode.setProperty(property, sourceNode.getProperty(property)
-					.getValue());
+			targetNode.setProperty(property, sourceNode.getProperty(property).getValue());
 		}
 	}
 
-	private void copyProperties(Node sourceNode, Node targetNode)
-			throws RepositoryException {
-		properties: for (PropertyIterator pi = sourceNode.getProperties(); pi
-				.hasNext();) {
+	private void copyProperties(Node sourceNode, Node targetNode) throws RepositoryException {
+		properties: for (PropertyIterator pi = sourceNode.getProperties(); pi.hasNext();) {
 			Property p = pi.nextProperty();
 			if (p.getDefinition().isProtected())
 				continue properties;
-			if (p.getName().equals(Property.JCR_CREATED)
-					|| p.getName().equals(Property.JCR_CREATED_BY)
+			if (p.getName().equals(Property.JCR_CREATED) || p.getName().equals(Property.JCR_CREATED_BY)
 					|| p.getName().equals(Property.JCR_LAST_MODIFIED)
 					|| p.getName().equals(Property.JCR_LAST_MODIFIED_BY))
 				continue properties;
@@ -391,22 +348,18 @@ public class RepoSync implements Runnable {
 
 				if (p.isMultiple()) {
 					if (!targetNode.hasProperty(p.getName())
-							|| !Arrays.equals(
-									targetNode.getProperty(p.getName())
-											.getValues(), p.getValues()))
+							|| !Arrays.equals(targetNode.getProperty(p.getName()).getValues(), p.getValues()))
 						targetNode.setProperty(p.getName(), p.getValues());
 				} else {
 					if (!targetNode.hasProperty(p.getName())
-							|| !targetNode.getProperty(p.getName()).getValue()
-									.equals(p.getValue()))
+							|| !targetNode.getProperty(p.getName()).getValue().equals(p.getValue()))
 						targetNode.setProperty(p.getName(), p.getValue());
 				}
 			}
 		}
 	}
 
-	private static void copyBinary(Property p, Node targetNode)
-			throws RepositoryException {
+	private static void copyBinary(Property p, Node targetNode) throws RepositoryException {
 		InputStream in = null;
 		Binary sourceBinary = null;
 		Binary targetBinary = null;
@@ -424,8 +377,7 @@ public class RepoSync implements Runnable {
 				}
 
 			in = sourceBinary.getStream();
-			targetBinary = targetNode.getSession().getValueFactory()
-					.createBinary(in);
+			targetBinary = targetNode.getSession().getValueFactory().createBinary(in);
 			targetNode.setProperty(p.getName(), targetBinary);
 		} catch (Exception e) {
 			throw new SlcException("Could not transfer " + p, e);
@@ -450,7 +402,7 @@ public class RepoSync implements Runnable {
 	// throws RepositoryException, SAXException {
 	//
 	// // enable cancelation of the current fetch process
-	// // FIXME insure the repository stays in a stable state
+	// // fxme insure the repository stays in a stable state
 	// if (monitor != null && monitor.isCanceled()) {
 	// updateMonitor("Fetched has been canceled, "
 	// + "process is terminating");

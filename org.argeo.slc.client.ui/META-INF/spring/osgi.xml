@@ -12,7 +12,7 @@
 
 	<!-- REFERENCES -->
 	<reference id="repository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=slc)" />
+		filter="(argeo.jcr.repository.alias=home)" />
 
 	<reference id="agent" interface="org.argeo.slc.execution.SlcAgent" />
 

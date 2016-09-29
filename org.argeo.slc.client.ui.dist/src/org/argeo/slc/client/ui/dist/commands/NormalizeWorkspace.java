@@ -61,8 +61,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 	private final static Log log = LogFactory.getLog(NormalizeWorkspace.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".normalizeWorkspace";
-	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
-			.getImageDescriptor("icons/normalize.gif");
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin.getImageDescriptor("icons/normalize.gif");
 
 	public final static String PARAM_WORKSPACE_NAME = "workspaceName";
 	public final static String PARAM_TARGET_REPO_PATH = "targetRepoPath";
@@ -88,25 +87,20 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 		Session currSession = null;
 		NormalizeJob job;
 		try {
-			String msg = "Your are about to normalize workspace: "
-					+ wkspName
+			String msg = "Your are about to normalize workspace: " + wkspName
 					+ ".\nThis will index OSGi bundles and Maven artifacts, "
 					+ "it will also convert Maven sources to PDE Sources if needed.\n"
-					+ "Note that no information will be overwritten: "
-					+ "all existing information are kept."
+					+ "Note that no information will be overwritten: " + "all existing information are kept."
 					+ "\n\n Do you really want to proceed ?";
 
-			if (!MessageDialog.openConfirm(DistPlugin.getDefault()
-					.getWorkbench().getDisplay().getActiveShell(),
+			if (!MessageDialog.openConfirm(DistPlugin.getDefault().getWorkbench().getDisplay().getActiveShell(),
 					"Confirm workspace normalization", msg))
 				return null;
 
 			currSession = repository.login();
 			Node repoNode = currSession.getNode(targetRepoPath);
-			Repository repository = RepoUtils.getRepository(repositoryFactory,
-					keyring, repoNode);
-			Credentials credentials = RepoUtils.getRepositoryCredentials(
-					keyring, repoNode);
+			Repository repository = RepoUtils.getRepository(repositoryFactory, keyring, repoNode);
+			Credentials credentials = RepoUtils.getRepositoryCredentials(keyring, repoNode);
 
 			job = new NormalizeJob(repository.login(credentials, wkspName));
 			job.setUser(true);
@@ -132,28 +126,21 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 			try {
 				JcrMonitor monitor = new EclipseJcrMonitor(progressMonitor);
 				// Normalize artifacts
-				Query countQuery = session
-						.getWorkspace()
-						.getQueryManager()
-						.createQuery("select file from [nt:file] as file",
-								Query.JCR_SQL2);
+				Query countQuery = session.getWorkspace().getQueryManager()
+						.createQuery("select file from [nt:file] as file", Query.JCR_SQL2);
 				QueryResult result = countQuery.execute();
 				Long expectedCount = result.getNodes().getSize();
-				monitor.beginTask("Normalize artifacts of "
-						+ session.getWorkspace().getName(),
+				monitor.beginTask("Normalize artifacts of " + session.getWorkspace().getName(),
 						expectedCount.intValue());
 				NormalizingTraverser tiv = new NormalizingTraverser(monitor);
 				Node artifactBaseNode = session.getNode(artifactBasePath);
 				artifactBaseNode.accept(tiv);
 			} catch (Exception e) {
-				log.error("Error normalizing workspace "
-						+ session.getWorkspace().getName() + ": "
-						+ e.getMessage());
+				log.error("Error normalizing workspace " + session.getWorkspace().getName() + ": " + e.getMessage());
 				if (log.isErrorEnabled())
 					e.printStackTrace();
 				return new Status(IStatus.ERROR, DistPlugin.PLUGIN_ID,
-						"Cannot normalize distribution "
-								+ session.getWorkspace().getName(), e);
+						"Cannot normalize distribution " + session.getWorkspace().getName(), e);
 			} finally {
 				JcrUtils.logoutQuietly(session);
 			}
@@ -170,13 +157,14 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 		}
 
 		@Override
-		protected void entering(Property property, int level)
-				throws RepositoryException {
+		protected void entering(Property property, int level) throws RepositoryException {
 		}
 
 		@Override
-		protected void entering(Node node, int level)
-				throws RepositoryException {
+		protected void entering(Node node, int level) throws RepositoryException {
+			if (node.getPath().startsWith(RepoConstants.DIST_DOWNLOAD_BASEPATH))
+				return;
+
 			if (node.isNodeType(NodeType.NT_FILE)) {
 				if (node.getName().endsWith("-sources.jar")) {
 					monitor.subTask(node.getName());
@@ -195,8 +183,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 							if (node.getSession().hasPendingChanges()) {
 								node.getSession().save();
 								if (log.isDebugEnabled())
-									log.debug("Processed jar artifact "
-											+ node.getPath());
+									log.debug("Processed jar artifact " + node.getPath());
 							}
 							monitor.worked(1);
 						}
@@ -209,8 +196,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 					if (node.getSession().hasPendingChanges()) {
 						node.getSession().save();
 						if (log.isDebugEnabled())
-							log.debug("Processed pom artifact "
-									+ node.getPath());
+							log.debug("Processed pom artifact " + node.getPath());
 					}
 					monitor.worked(1);
 				} else {
@@ -220,8 +206,7 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 		}
 
 		@Override
-		protected void leaving(Property property, int level)
-				throws RepositoryException {
+		protected void leaving(Property property, int level) throws RepositoryException {
 		}
 
 		@Override

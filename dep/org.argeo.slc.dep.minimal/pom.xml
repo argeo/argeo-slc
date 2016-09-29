@@ -74,11 +74,11 @@
 			<artifactId>org.argeo.slc.agent.jcr</artifactId>
 			<version>2.1.5-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.node.jackrabbit</artifactId>
-			<version>2.1.5-SNAPSHOT</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.slc.node.jackrabbit</artifactId> -->
+<!-- 			<version>2.1.5-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
 
 		<!-- Node -->
 		<dependency>

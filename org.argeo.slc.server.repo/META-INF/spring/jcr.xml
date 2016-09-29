@@ -64,7 +64,7 @@
 		class="org.argeo.jcr.JcrAuthorizations" init-method="run">
 		<property name="principalPrivileges">
 			<map>
-				<entry key="jcr:all" value="org.argeo.slc.user" />
+				<entry key="jcr:all" value="cn=org.argeo.slc.user,ou=roles,ou=node" />
 			</map>
 		</property>
 		<property name="workspace" value="*" />

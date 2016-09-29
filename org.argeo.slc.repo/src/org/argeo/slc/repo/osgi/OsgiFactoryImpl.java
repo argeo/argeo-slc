@@ -16,6 +16,7 @@ import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.security.Privilege;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -27,6 +28,7 @@ import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.NodeIndexer;
 import org.argeo.slc.repo.OsgiFactory;
+import org.argeo.slc.repo.RepoConstants;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -45,7 +47,7 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 	private Map<String, List<String>> mirrors = new HashMap<String, List<String>>();
 
 	private List<String> mavenRepositories = new ArrayList<String>();
-	private String downloadBase = "/download";
+	private String downloadBase = RepoConstants.DIST_DOWNLOAD_BASEPATH;
 	private String mavenProxyBase = downloadBase + "/maven";
 
 	public void init() {
@@ -68,8 +70,8 @@ public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
 			distSession = JcrUtils.loginOrCreateWorkspace(distRepository, workspace);
 
 			// Privileges
-			JcrUtils.addPrivilege(javaSession, "/", SlcConstants.ROLE_SLC, "jcr:all");
-			JcrUtils.addPrivilege(distSession, "/", SlcConstants.ROLE_SLC, "jcr:all");
+			JcrUtils.addPrivilege(javaSession, "/", SlcConstants.ROLE_SLC, Privilege.JCR_ALL);
+			JcrUtils.addPrivilege(distSession, "/", SlcConstants.ROLE_SLC, Privilege.JCR_ALL);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot initialize OSGi Factory " + workspace, e);
 		} finally {
