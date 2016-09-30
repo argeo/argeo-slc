@@ -26,7 +26,6 @@
 
 		<!-- Modules -->
 		<module>org.argeo.slc.agent</module>
-		<!-- <module>org.argeo.slc.node.jackrabbit</module> -->
 		<module>org.argeo.slc.agent.jcr</module>
 		<module>org.argeo.slc.server.repo</module>
 
