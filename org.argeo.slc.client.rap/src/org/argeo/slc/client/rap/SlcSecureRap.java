@@ -17,7 +17,7 @@ package org.argeo.slc.client.rap;
 
 import org.argeo.security.ui.rap.RapWindowAdvisor;
 import org.argeo.security.ui.rap.RapWorkbenchAdvisor;
-import org.argeo.security.ui.rap.SecureEntryPoint;
+import org.argeo.security.ui.rap.RapWorkbenchLogin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -33,7 +33,7 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  * This class controls all aspects of the application's execution and is
  * contributed through the plugin.xml.
  */
-public class SlcSecureRap extends SecureEntryPoint {
+public class SlcSecureRap extends RapWorkbenchLogin {
 
 	@Override
 	protected RapWorkbenchAdvisor createRapWorkbenchAdvisor(
