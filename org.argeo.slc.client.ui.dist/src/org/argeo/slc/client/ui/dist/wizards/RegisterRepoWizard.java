@@ -73,7 +73,7 @@ public class RegisterRepoWizard extends Wizard {
 
 	// Default values
 	private final static String DEFAULT_NAME = "Argeo Public Repository";
-	private final static String DEFAULT_URI = "http://repo.argeo.org/data/pub/java";
+	private final static String DEFAULT_URI = "https://forge.argeo.org/jcr/java";
 	private final static String DEFAULT_USER_NAME = "anonymous";
 	private final static boolean DEFAULT_ANONYMOUS = true;
 
