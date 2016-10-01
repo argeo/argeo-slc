@@ -9,13 +9,13 @@
 	osgi:default-timeout="30000">
 
 	<reference id="javaRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=java)" />
+		filter="(cn=java)" />
 
 	<reference id="repositoryFactory" interface="javax.jcr.RepositoryFactory" />
 	<reference id="keyring" interface="org.argeo.node.security.CryptoKeyring" />
 
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=home)" />
+		filter="(cn=home)" />
 
 	<reference id="slcRepoManager" interface="org.argeo.slc.repo.SlcRepoManager" />
 </beans:beans>

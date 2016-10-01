@@ -11,7 +11,7 @@
 
 	<!-- REFERENCES -->
 	<reference id="repository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=slc)" />
+		filter="(cn=slc)" />
 
 <!-- 	<reference id="authenticationManager" -->
 <!-- 		interface="org.springframework.security.authentication.AuthenticationManager" /> -->
