@@ -15,7 +15,7 @@
  */
 package org.argeo.slc.client.rcp;
 
-import org.argeo.security.ui.rcp.SecureWorkbenchAdvisor;
+import org.argeo.cms.ui.workbench.rcp.SecureWorkbenchAdvisor;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 

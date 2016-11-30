@@ -15,7 +15,7 @@
  */
 package org.argeo.slc.client.rcp;
 
-import org.argeo.security.ui.rcp.SecureRcp;
+import org.argeo.cms.ui.workbench.rcp.SecureRcp;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.window.Window.IExceptionHandler;
 import org.eclipse.ui.application.WorkbenchAdvisor;

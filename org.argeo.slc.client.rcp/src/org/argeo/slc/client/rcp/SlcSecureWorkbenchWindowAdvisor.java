@@ -15,7 +15,7 @@
  */
 package org.argeo.slc.client.rcp;
 
-import org.argeo.security.ui.rcp.SecureWorkbenchWindowAdvisor;
+import org.argeo.cms.ui.workbench.rcp.SecureWorkbenchWindowAdvisor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
