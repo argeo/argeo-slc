@@ -15,9 +15,9 @@
  */
 package org.argeo.slc.client.rap;
 
-import org.argeo.security.ui.rap.RapWindowAdvisor;
-import org.argeo.security.ui.rap.RapWorkbenchAdvisor;
-import org.argeo.security.ui.rap.RapWorkbenchLogin;
+import org.argeo.cms.ui.workbench.rap.RapWindowAdvisor;
+import org.argeo.cms.ui.workbench.rap.RapWorkbenchAdvisor;
+import org.argeo.cms.ui.workbench.rap.RapWorkbenchLogin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
