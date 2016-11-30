@@ -13,6 +13,7 @@
 	<properties>
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
+		<version.argeo-rcp>2.1.12-SNAPSHOT</version.argeo-rcp>
 		<version.slc>2.1.6-SNAPSHOT</version.slc>
 	</properties>
 	<modules>
@@ -33,6 +34,7 @@
 		<module>org.argeo.slc.client.ui</module>
 		<module>org.argeo.slc.client.ui.dist</module>
 		<module>org.argeo.slc.client.rap</module>
+		<module>org.argeo.slc.client.rcp</module>
 
 		<module>lib</module>
 		<module>dep</module>
@@ -126,6 +128,16 @@ limitations under the License.
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
 		</repository>
+		<repository>
+			<id>argeo-rcp</id>
+			<url>http://forge.argeo.org/data/public/java/argeo-rcp-2.1</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		
 		<!-- Disable Maven default repository -->
 		<repository>
 			<id>central</id>
