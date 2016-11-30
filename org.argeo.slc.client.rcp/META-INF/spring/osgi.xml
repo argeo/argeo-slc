@@ -11,8 +11,8 @@
 	<beans:description>SLC UI RCP</beans:description>
 
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=node)" />
+		filter="(cn=node)" />
 	<reference id="repositoryFactory" interface="javax.jcr.RepositoryFactory" />
-	<reference id="keyring" interface="org.argeo.security.crypto.CryptoKeyring" />
+	<reference id="keyring" interface="org.argeo.node.security.CryptoKeyring" />
 
 </beans:beans>
