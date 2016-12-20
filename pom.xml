@@ -43,9 +43,9 @@
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
 	<scm>
-		<connection>scm:svn:https://svn.argeo.org/slc/trunk</connection>
-		<developerConnection>scm:svn:https://svn.argeo.org/slc/trunk</developerConnection>
-		<url>https://svn.argeo.org/slc/trunk</url>
+		<connection>scm:git:http://git.argeo.org/apache2/argeo-slc.git</connection>
+		<url>http://git.argeo.org/?p=apache2/argeo-slc.git;a=summary</url>
+		<developerConnection>scm:git:https://code.argeo.org/git/apache2/argeo-slc.git</developerConnection>
 	</scm>
 	<inceptionYear>2007</inceptionYear>
 	<licenses>
