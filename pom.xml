@@ -9,7 +9,7 @@
 	<artifactId>argeo-slc</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC</name>
-	<version>2.1.7</version>
+	<version>2.1.8-SNAPSHOT</version>
 	<properties>
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
@@ -46,7 +46,7 @@
 		<connection>scm:git:http://git.argeo.org/apache2/argeo-slc.git</connection>
 		<url>http://git.argeo.org/?p=apache2/argeo-slc.git;a=summary</url>
 		<developerConnection>scm:git:https://code.argeo.org/git/apache2/argeo-slc.git</developerConnection>
-	  <tag>argeo-slc-2.1.7</tag>
+	  <tag>HEAD</tag>
   </scm>
 	<inceptionYear>2007</inceptionYear>
 	<licenses>
