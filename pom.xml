@@ -14,7 +14,7 @@
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
 <!-- 		<version.argeo-rcp>2.1.14-SNAPSHOT</version.argeo-rcp> -->
-		<version.slc>2.1.7-SNAPSHOT</version.slc>
+		<version.slc>2.1.7</version.slc>
 	</properties>
 	<modules>
 		<!-- Runtime -->
