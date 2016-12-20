@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>2.1.53</version>
+		<version>2.1.55</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -121,7 +121,7 @@ limitations under the License.
 	<repositories>
 		<repository>
 			<id>argeo</id>
-			<url>http://forge.argeo.org/data/public/java/argeo-2.1/</url>
+			<url>http://forge.argeo.org/data/java/argeo-2.1/</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -130,7 +130,7 @@ limitations under the License.
 		</repository>
 		<repository>
 			<id>argeo-rcp</id>
-			<url>http://forge.argeo.org/data/public/java/argeo-rcp-2.1</url>
+			<url>http://forge.argeo.org/data/java/argeo-rcp-2.1</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -156,7 +156,7 @@ limitations under the License.
 			<repositories>
 				<repository>
 					<id>argeo-tp</id>
-					<url>http://localhost:7070/data/public/java/argeo-${developmentCycle.argeo-commons}</url>
+					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url>
 					<releases>
 						<enabled>true</enabled>
 						<updatePolicy>daily</updatePolicy>
@@ -165,7 +165,7 @@ limitations under the License.
 				</repository>
 				<!-- <repository> -->
 				<!-- <id>argeo-tp-extras</id> -->
-				<!-- <url>http://localhost:7080/data/public/java/argeo-tp-extras-2.1</url> -->
+				<!-- <url>http://localhost:7080/data/java/argeo-tp-extras-2.1</url> -->
 				<!-- <releases> -->
 				<!-- <enabled>true</enabled> -->
 				<!-- <updatePolicy>daily</updatePolicy> -->
@@ -174,7 +174,7 @@ limitations under the License.
 				<!-- </repository> -->
 				<repository>
 					<id>argeo-commons</id>
-					<url>http://localhost:7070/data/public/java/argeo-${developmentCycle.argeo-commons}</url>
+					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url>
 					<releases>
 						<enabled>true</enabled>
 						<updatePolicy>daily</updatePolicy>
@@ -185,11 +185,11 @@ limitations under the License.
 			<distributionManagement>
 				<repository>
 					<id>staging</id>
-					<url>dav:http://localhost:7070/data/files/java/argeo-slc-${developmentCycle.slc}</url>
+					<url>dav:http://localhost:7070/data/java/argeo-slc-${developmentCycle.slc}</url>
 				</repository>
 				<site>
 					<id>staging</id>
-					<url>dav:http://localhost:7070/data/files/docs/argeo-slc-${developmentCycle.slc}</url>
+					<url>dav:http://localhost:7070/data/docs/argeo-slc-${developmentCycle.slc}</url>
 				</site>
 			</distributionManagement>
 		</profile>
