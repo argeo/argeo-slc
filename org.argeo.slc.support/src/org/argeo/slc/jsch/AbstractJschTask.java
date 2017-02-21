@@ -17,6 +17,7 @@ package org.argeo.slc.jsch;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.PrivilegedAction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +25,9 @@ import org.argeo.slc.SlcException;
 
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Logger;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.UserAuthGSSAPIWithMIC;
 
 public abstract class AbstractJschTask implements Runnable {
 	private final Log log = LogFactory.getLog(getClass());
@@ -36,38 +39,34 @@ public abstract class AbstractJschTask implements Runnable {
 			Session session = sshTarget.getSession();
 			if (session.isConnected()) {
 				if (log.isTraceEnabled())
-					log.debug("Using cached session to " + getSshTarget()
-							+ " via SSH");
+					log.debug("Using cached session to " + getSshTarget() + " via SSH");
 				return session;
 			}
 		}
 
 		try {
 			JSch jsch = new JSch();
-			if (sshTarget.getUsePrivateKey()
-					&& sshTarget.getLocalPrivateKey().exists())
-				jsch.addIdentity(sshTarget.getLocalPrivateKey()
-						.getAbsolutePath());
-			Session session = jsch.getSession(getSshTarget().getUser(),
-					getSshTarget().getHost(), getSshTarget().getPort());
+			if (sshTarget.getUsePrivateKey() && sshTarget.getLocalPrivateKey().exists())
+				jsch.addIdentity(sshTarget.getLocalPrivateKey().getAbsolutePath());
+			Session session = jsch.getSession(getSshTarget().getUser(), getSshTarget().getHost(),
+					getSshTarget().getPort());
 
 			session.setUserInfo(getSshTarget().getUserInfo());
+			session.setConfig("userauth.gssapi-with-mic", UserAuthGSSAPIWithMIC.class.getName());
 			session.setServerAliveInterval(1000);
 			session.connect();
 			if (log.isTraceEnabled())
 				log.trace("Connected to " + getSshTarget() + " via SSH");
 			if (sshTarget.getSession() != null) {
 				if (log.isTraceEnabled())
-					log.trace("The cached session to " + getSshTarget()
-							+ " was disconnected and was reset.");
+					log.trace("The cached session to " + getSshTarget() + " was disconnected and was reset.");
 				sshTarget.setSession(session);
 			}
 			return session;
 		} catch (JSchException e) {
 			if (sshTarget.getUserInfo() instanceof SimpleUserInfo)
 				((SimpleUserInfo) sshTarget.getUserInfo()).reset();
-			throw new SlcException("Could not open session to "
-					+ getSshTarget(), e);
+			throw new SlcException("Could not open session to " + getSshTarget(), e);
 		}
 	}
 
@@ -79,8 +78,7 @@ public abstract class AbstractJschTask implements Runnable {
 			if (sshTarget != null && sshTarget.getSession() == null) {
 				session.disconnect();
 				if (log.isTraceEnabled())
-					log.trace("Disconnected from " + getSshTarget()
-							+ " via SSH");
+					log.trace("Disconnected from " + getSshTarget() + " via SSH");
 			}
 		}
 	}
@@ -124,4 +122,34 @@ public abstract class AbstractJschTask implements Runnable {
 		this.sshTarget = sshTarget;
 	}
 
+	PrivilegedAction<Void> asPrivilegedAction() {
+		return new PrivilegedAction<Void>() {
+			public Void run() {
+				AbstractJschTask.this.run();
+				return null;
+			}
+		};
+	}
+
+	static {
+		JSch.setLogger(new JschLogger());
+	}
+
+	private static class JschLogger implements Logger {
+		private final Log log = LogFactory.getLog(JschLogger.class);
+
+		// TODO better support levels
+		@Override
+		public boolean isEnabled(int level) {
+			if (log.isTraceEnabled())
+				return true;
+			return false;
+		}
+
+		@Override
+		public void log(int level, String message) {
+			log.trace(message);
+		}
+
+	}
 }
