@@ -1,5 +1,9 @@
 <slc = 'http://www.argeo.org/ns/slc'>
 
+// Argeo Commons 1 node types
+[argeo:references] > nt:unstructured
+- * (REFERENCE) *
+
 // AETHER
 [slc:artifact] > mix:referenceable, mix:created, mix:lastModified
 mixin
