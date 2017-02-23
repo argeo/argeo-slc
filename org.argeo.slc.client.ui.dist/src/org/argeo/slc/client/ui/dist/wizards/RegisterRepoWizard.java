@@ -26,10 +26,10 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeType;
 
+import org.argeo.cms.ArgeoNames;
+import org.argeo.cms.ArgeoTypes;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.node.ArgeoNames;
-import org.argeo.node.ArgeoTypes;
 import org.argeo.node.NodeUtils;
 import org.argeo.node.security.Keyring;
 import org.argeo.slc.SlcException;

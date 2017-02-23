@@ -20,8 +20,8 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.argeo.cms.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.node.ArgeoNames;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.editors.DistWkspEditorInput;

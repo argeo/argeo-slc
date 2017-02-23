@@ -27,9 +27,9 @@ import javax.jcr.security.AccessControlException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.cms.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.proxy.AbstractUrlProxy;
-import org.argeo.node.ArgeoNames;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.jcr.SlcNames;
