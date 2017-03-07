@@ -12,7 +12,7 @@
 	<name>SLC Distribution</name>
 	<modules>
 		<module>slc</module>
-		<!-- <module>slc-maven</module> -->
+		<module>slc-maven</module>
 	</modules>
 	<!-- <profiles> -->
 	<!-- <profile> -->

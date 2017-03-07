@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>2.1.62-SNAPSHOT</version>
+		<version>2.1.62</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -15,6 +15,7 @@
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
 		<version.argeo-rcp>2.1.14-SNAPSHOT</version.argeo-rcp>
 		<version.slc>2.1.8-SNAPSHOT</version.slc>
+		<version.equinox>3.11.1.v20160708-1632</version.equinox>
 	</properties>
 	<modules>
 		<!-- Runtime -->
@@ -22,8 +23,10 @@
 		<module>org.argeo.slc.core</module>
 		<module>org.argeo.slc.unit</module>
 		<module>org.argeo.slc.support</module>
+		<module>org.argeo.slc.support.maven</module>
 		<module>org.argeo.slc.repo</module>
 		<module>org.argeo.slc.factory</module>
+		<module>org.argeo.slc.launcher</module>
 
 		<!-- Modules -->
 		<module>org.argeo.slc.agent</module>

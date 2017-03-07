@@ -1,9 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dist</artifactId>
 		<version>2.1.8-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>slc</artifactId>
 	<packaging>pom</packaging>
@@ -66,19 +68,19 @@
 				<dependency>
 					<groupId>org.argeo.slc</groupId>
 					<artifactId>org.argeo.slc.lib.jcr</artifactId>
-					<version>2.1.1-SNAPSHOT</version>
+					<version>2.1.8-SNAPSHOT</version>
 				</dependency>
 				<dependency>
 					<groupId>org.argeo.slc</groupId>
 					<artifactId>org.argeo.slc.lib.repo</artifactId>
-					<version>2.1.1-SNAPSHOT</version>
+					<version>2.1.8-SNAPSHOT</version>
 				</dependency>
 
 				<!-- Launcher -->
 				<dependency>
 					<groupId>org.argeo.slc</groupId>
 					<artifactId>org.argeo.slc.launcher</artifactId>
-					<version>2.1.1-SNAPSHOT</version>
+					<version>2.1.8-SNAPSHOT</version>
 					<!-- <type>tar.gz</type> -->
 					<!-- <classifier>base</classifier> -->
 				</dependency>
@@ -88,31 +90,31 @@
 			<id>rpmbuild</id>
 			<build>
 				<plugins>
-<!-- 					<plugin> -->
-<!-- 						<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 						<artifactId>maven-dependency-plugin</artifactId> -->
-<!-- 						<executions> -->
-<!-- 							<execution> -->
-<!-- 								<id>copy-dependencies-rpm</id> -->
-<!-- 								<phase>package</phase> -->
-<!-- 								<goals> -->
-<!-- 									<goal>copy</goal> -->
-<!-- 								</goals> -->
-<!-- 								<configuration> -->
-<!-- 									<includeTypes>jar</includeTypes> -->
-<!-- 									<stripVersion>true</stripVersion> -->
-<!-- 									<outputDirectory>${project.build.directory}/boot</outputDirectory> -->
-<!-- 									<artifactItems> -->
-<!-- 										<artifactItem> -->
-<!-- 											<groupId>org.argeo.slc</groupId> -->
-<!-- 											<artifactId>org.argeo.slc.launcher</artifactId> -->
-<!-- 											<version>${project.version}</version> -->
-<!-- 										</artifactItem> -->
-<!-- 									</artifactItems> -->
-<!-- 								</configuration> -->
-<!-- 							</execution> -->
-<!-- 						</executions> -->
-<!-- 					</plugin> -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-dependencies-rpm</id>
+								<phase>package</phase>
+								<goals>
+									<goal>copy</goal>
+								</goals>
+								<configuration>
+									<includeTypes>jar</includeTypes>
+									<stripVersion>true</stripVersion>
+									<outputDirectory>${project.build.directory}/boot</outputDirectory>
+									<artifactItems>
+										<artifactItem>
+											<groupId>org.argeo.slc</groupId>
+											<artifactId>org.argeo.slc.launcher</artifactId>
+											<version>${project.version}</version>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>rpm-maven-plugin</artifactId>
@@ -175,21 +177,21 @@
 												</source>
 											</sources>
 										</mapping>
-<!-- 										<mapping> -->
-<!-- 											<directory>/usr/share/osgi/boot</directory> -->
-<!-- 											<username>root</username> -->
-<!-- 											<groupname>root</groupname> -->
-<!-- 											<filemode>644</filemode> -->
-<!-- 											<directoryIncluded>false</directoryIncluded> -->
-<!-- 											<sources> -->
-<!-- 												<source> -->
-<!-- 													<location>${project.build.directory}/boot</location> -->
-<!-- 													<includes> -->
-<!-- 														<include>org.argeo.slc.launcher.jar</include> -->
-<!-- 													</includes> -->
-<!-- 												</source> -->
-<!-- 											</sources> -->
-<!-- 										</mapping> -->
+										<mapping>
+											<directory>/usr/share/osgi/boot</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>false</directoryIncluded>
+											<sources>
+												<source>
+													<location>${project.build.directory}/boot</location>
+													<includes>
+														<include>org.argeo.slc.launcher.jar</include>
+													</includes>
+												</source>
+											</sources>
+										</mapping>
 										<!-- Maven (even if not installed) -->
 										<mapping>
 											<directory>/var/lib/slc/.m2</directory>
