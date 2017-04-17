@@ -1,7 +1,7 @@
 #!/bin/sh
 
-JAVA_CMD=/usr/lib/jvm/java-1.8.0/bin/java
-JAVA_OPTS="-client -Xmx256m"
+JAVA_CMD=java
+JAVA_OPTS="-client -Xmx128m"
 
 SLC_HOME_DIR=${HOME}/.local/share/slc/
 if [ -f $SLC_HOME_DIR/settings.sh ];then
@@ -19,7 +19,7 @@ for i in "${OSGI_INSTALL_AREA}"/*.jar
 
 $JAVA_CMD $JAVA_OPTS \
  "-Dargeo.osgi.bundles=$ARGEO_OSGI_BUNDLES" \
- -Dorg.osgi.framework.security=osgi \
+ -Djava.security.manager= \
  -Djava.security.policy="file:/etc/osgiboot/all.policy" \
  -cp "$CLASSPATH" \
  org.argeo.slc.cli.SlcMain "$@"

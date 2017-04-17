@@ -1,0 +1,12 @@
+[Unit]
+Description=Argeo SLC daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/sbin/slcd start
+ExecStop=/usr/sbin/slcd stop
+Type=forking
+PIDFile=/var/run/slcd.pid
+
+[Install]
+WantedBy=default.target

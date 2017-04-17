@@ -72,14 +72,21 @@ public class SlcMain implements PrivilegedAction<String> {
 		this.confDir = confDir;
 		this.dataDir = dataDir;
 		this.modulesDir = modulesDir;
-		bundlesToStart.add("org.springframework.osgi.extender");
-		bundlesToStart.add("org.argeo.node.repo.jackrabbit");
-		bundlesToStart.add("org.argeo.security.dao.os");
-		bundlesToStart.add("org.argeo.slc.node.jackrabbit");
+
+		bundlesToStart.add("org.eclipse.equinox.cm");
+		bundlesToStart.add("org.argeo.cms");
+		bundlesToStart.add("org.eclipse.gemini.blueprint.extender");
 		bundlesToStart.add("org.argeo.slc.agent");
 		bundlesToStart.add("org.argeo.slc.agent.jcr");
-		if (args.length == 0)
-			bundlesToStart.add("org.argeo.slc.support.equinox");
+
+		// bundlesToStart.add("org.springframework.osgi.extender");
+		// bundlesToStart.add("org.argeo.node.repo.jackrabbit");
+		// bundlesToStart.add("org.argeo.security.dao.os");
+		// bundlesToStart.add("org.argeo.slc.node.jackrabbit");
+		// bundlesToStart.add("org.argeo.slc.agent");
+		// bundlesToStart.add("org.argeo.slc.agent.jcr");
+		// if (args.length == 0)
+		// bundlesToStart.add("org.argeo.slc.support.equinox");
 		// bundlesToStart.add("org.argeo.slc.agent.cli");
 	}
 
@@ -92,12 +99,10 @@ public class SlcMain implements PrivilegedAction<String> {
 			info("## Data : " + dataDir.getCanonicalPath());
 
 			// Start Equinox
-			ServiceLoader<FrameworkFactory> ff = ServiceLoader
-					.load(FrameworkFactory.class);
+			ServiceLoader<FrameworkFactory> ff = ServiceLoader.load(FrameworkFactory.class);
 			FrameworkFactory frameworkFactory = ff.iterator().next();
 			Map<String, String> configuration = new HashMap<String, String>();
-			configuration.put("osgi.configuration.area",
-					confDir.getCanonicalPath());
+			configuration.put("osgi.configuration.area", confDir.getCanonicalPath());
 			configuration.put("osgi.instance.area", dataDir.getCanonicalPath());
 			// Do clean
 			configuration.put("osgi.clean", "true");
@@ -117,16 +122,13 @@ public class SlcMain implements PrivilegedAction<String> {
 
 			// working copy modules
 			if (modulesDir.exists())
-				osgiBoot.installUrls(osgiBoot.getBundlesUrls(modulesDir
-						.getCanonicalPath() + ";in=*;ex=.gitignore"));
+				osgiBoot.installUrls(osgiBoot.getBundlesUrls(modulesDir.getCanonicalPath() + ";in=*;ex=.gitignore"));
 
 			// system modules
 			if (System.getProperty(OsgiBoot.PROP_ARGEO_OSGI_BUNDLES) != null)
-				osgiBoot.installUrls(osgiBoot.getBundlesUrls(System
-						.getProperty(OsgiBoot.PROP_ARGEO_OSGI_BUNDLES)));
+				osgiBoot.installUrls(osgiBoot.getBundlesUrls(System.getProperty(OsgiBoot.PROP_ARGEO_OSGI_BUNDLES)));
 			else
-				osgiBoot.installUrls(osgiBoot.getBundlesUrls(System
-						.getProperty("user.home") + "/.slc/modules/;in=**"));
+				osgiBoot.installUrls(osgiBoot.getBundlesUrls(System.getProperty("user.home") + "/.slc/modules/;in=**"));
 
 			// Start runtime
 			osgiBoot.startBundles(bundlesToStart);
@@ -134,8 +136,7 @@ public class SlcMain implements PrivilegedAction<String> {
 			// Find SLC Agent
 			ServiceReference sr = null;
 			while (sr == null) {
-				sr = bundleContext
-						.getServiceReference("org.argeo.slc.execution.SlcAgentCli");
+				sr = bundleContext.getServiceReference("org.argeo.slc.execution.SlcAgentCli");
 				if (System.currentTimeMillis() - begin > timeout)
 					throw new RuntimeException("Cannot find SLC agent CLI");
 				Thread.sleep(100);
@@ -144,8 +145,7 @@ public class SlcMain implements PrivilegedAction<String> {
 
 			// Initialization completed
 			long duration = System.currentTimeMillis() - begin;
-			info("[[ Initialized in " + (duration / 1000) + "s "
-					+ (duration % 1000) + "ms ]]");
+			info("[[ Initialized in " + (duration / 1000) + "s " + (duration % 1000) + "ms ]]");
 
 			if (args.length == 0)
 				return null;// console mode
@@ -153,8 +153,7 @@ public class SlcMain implements PrivilegedAction<String> {
 			// Subject.doAs(Subject.getSubject(AccessController.getContext()),
 			// new AgentCliCall(agentCli));
 			Class<?>[] parameterTypes = { String[].class };
-			Method method = agentCli.getClass().getMethod("process",
-					parameterTypes);
+			Method method = agentCli.getClass().getMethod("process", parameterTypes);
 			Object[] methodArgs = { args };
 			Object ret = method.invoke(agentCli, methodArgs);
 
@@ -184,13 +183,10 @@ public class SlcMain implements PrivilegedAction<String> {
 			File slcDir;
 			Boolean isTransient = false;
 			if (isTransient) {
-				File tempDir = new File(System.getProperty("java.io.tmpdir")
-						+ "/" + System.getProperty("user.name"));
-				slcDir = new File(tempDir, "slc-"
-						+ UUID.randomUUID().toString());
+				File tempDir = new File(System.getProperty("java.io.tmpdir") + "/" + System.getProperty("user.name"));
+				slcDir = new File(tempDir, "slc-" + UUID.randomUUID().toString());
 				slcDir.mkdirs();
-				System.setProperty("argeo.node.repo.configuration",
-						"osgibundle:repository-memory.xml");
+				System.setProperty("argeo.node.repo.configuration", "osgibundle:repository-memory.xml");
 			} else {
 				slcDir = findSlcDir(executionDir);
 				if (slcDir == null) {
@@ -211,28 +207,27 @@ public class SlcMain implements PrivilegedAction<String> {
 			File modulesDir = new File(slcDir, "modules");
 
 			// JAAS
-//			File jaasFile = new File(confDir, "jaas.config");
-//			if (!jaasFile.exists())
-//				copyResource("/org/argeo/slc/cli/jaas.config", jaasFile);
-//			System.setProperty("java.security.auth.login.config",
-//					jaasFile.getCanonicalPath());
+			// File jaasFile = new File(confDir, "jaas.config");
+			// if (!jaasFile.exists())
+			// copyResource("/org/argeo/slc/cli/jaas.config", jaasFile);
+			// System.setProperty("java.security.auth.login.config",
+			// jaasFile.getCanonicalPath());
 
 			// log4j
 			File log4jFile = new File(confDir, "log4j.properties");
 			if (!log4jFile.exists())
 				copyResource("/org/argeo/slc/cli/log4j.properties", log4jFile);
-			System.setProperty("log4j.configuration",
-					"file://" + log4jFile.getCanonicalPath());
+			System.setProperty("log4j.configuration", "file://" + log4jFile.getCanonicalPath());
 			// Run as a privileged action
-//			LoginContext lc = new LoginContext(os);
-//			lc.login();
-//
-//			Subject subject = Subject.getSubject(AccessController.getContext());
-//			Subject.doAs(subject, new SlcMain(args, confDir, dataDir,
-//					modulesDir));
-SlcMain slcMain =  new SlcMain(args, confDir, dataDir,
-		modulesDir);
-slcMain.run();
+			// LoginContext lc = new LoginContext(os);
+			// lc.login();
+			//
+			// Subject subject =
+			// Subject.getSubject(AccessController.getContext());
+			// Subject.doAs(subject, new SlcMain(args, confDir, dataDir,
+			// modulesDir));
+			SlcMain slcMain = new SlcMain(args, confDir, dataDir, modulesDir);
+			slcMain.run();
 			if (args.length != 0)
 				System.exit(0);
 		} catch (Exception e) {
@@ -277,8 +272,7 @@ slcMain.run();
 				output.write(buf, 0, length);
 			}
 		} catch (Exception e) {
-			throw new RuntimeException("Cannot write " + resource + " file to "
-					+ targetFile, e);
+			throw new RuntimeException("Cannot write " + resource + " file to " + targetFile, e);
 		} finally {
 			try {
 				input.close();
@@ -342,4 +336,3 @@ slcMain.run();
 // }
 //
 // }
-
