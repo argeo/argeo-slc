@@ -15,7 +15,7 @@
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
 		<version.argeo-rcp>2.1.15</version.argeo-rcp>
-		<version.slc>2.1.8-SNAPSHOT</version.slc>
+		<version.slc>2.1.8</version.slc>
 		<version.equinox>3.11.1.v20160708-1632</version.equinox>
 	</properties>
 	<modules>
