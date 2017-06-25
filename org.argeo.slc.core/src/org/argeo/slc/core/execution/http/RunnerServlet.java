@@ -102,10 +102,12 @@ public class RunnerServlet extends HttpServlet {
 		// flow path
 		StringBuilder sb = new StringBuilder("");
 		for (int i = 2; i < tokens.length; i++) {
-			sb.append('/').append(tokens[i]);
+			if (i != 2)
+				sb.append('/');
+			sb.append(tokens[i]);
 		}
-		String flowPath = sb.toString();
-		String ext = FilenameUtils.getExtension(flowPath.toString());
+		String flowName = sb.toString();
+		String ext = FilenameUtils.getExtension(flowName.toString());
 
 		// JCR
 		Repository repository = bc.getService(bc.getServiceReference(Repository.class));
@@ -134,15 +136,16 @@ public class RunnerServlet extends HttpServlet {
 			realizedFlowNode = processNode.addNode(SlcNames.SLC_FLOW);
 			realizedFlowNode.addMixin(SlcTypes.SLC_REALIZED_FLOW);
 			realizedFlowNode.setProperty(SlcNames.SLC_STARTED, started);
+			realizedFlowNode.setProperty(SlcNames.SLC_NAME, flowName);
 			Node addressNode = realizedFlowNode.addNode(SlcNames.SLC_ADDRESS, NodeType.NT_ADDRESS);
-			addressNode.setProperty(Property.JCR_PATH, flowPath);
+			addressNode.setProperty(Property.JCR_PATH, flowName);
 			processNode.getSession().save();
 		} catch (RepositoryException e1) {
 			throw new SlcException("Cannot register SLC process", e1);
 		}
 
 		if (log.isDebugEnabled())
-			log.debug(userDn + " " + workgroup + " " + flowPath);
+			log.debug(userDn + " " + workgroup + " " + flowName);
 
 		try {
 			resp.setHeader("Content-Type", "application/json");
@@ -150,14 +153,14 @@ public class RunnerServlet extends HttpServlet {
 					executor);
 			Callable<Integer> task;
 			if (ext.equals("api")) {
-				String uri = Files.readAllLines(baseDir.resolve(flowPath.substring(1))).get(0);
+				String uri = Files.readAllLines(baseDir.resolve(flowName)).get(0);
 				task = new WebServiceTask(serviceChannel, uri);
 			} else {
-				task = createTask(serviceChannel, flowPath);
+				task = createTask(serviceChannel, flowName);
 			}
 
 			if (task == null)
-				throw new SlcException("No task found for " + flowPath);
+				throw new SlcException("No task found for " + flowName);
 
 			// execute
 			Future<Integer> f = executor.submit(task);
@@ -179,7 +182,7 @@ public class RunnerServlet extends HttpServlet {
 			} catch (RepositoryException e1) {
 				throw new SlcException("Cannot update SLC process status", e1);
 			}
-			throw new SlcException("Task " + flowPath + " failed", e);
+			throw new SlcException("Task " + flowName + " failed", e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
 		}
@@ -192,7 +195,7 @@ public class RunnerServlet extends HttpServlet {
 		// jsonWriter.flush();
 	}
 
-	protected Callable<Integer> createTask(ServiceChannel serviceChannel, String flowPath) {
+	protected Callable<Integer> createTask(ServiceChannel serviceChannel, String flowName) {
 		return null;
 	}
 
