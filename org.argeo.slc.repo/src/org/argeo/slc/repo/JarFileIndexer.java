@@ -43,8 +43,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 import org.osgi.framework.Constants;
 import org.osgi.framework.Version;
 

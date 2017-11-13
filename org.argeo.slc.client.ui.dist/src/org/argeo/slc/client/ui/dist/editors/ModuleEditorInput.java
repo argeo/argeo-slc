@@ -17,7 +17,7 @@ package org.argeo.slc.client.ui.dist.editors;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.SlcNames;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;

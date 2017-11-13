@@ -25,6 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
 
 /**
  * Writes arbitrary metadata into a child node of a given node (or the node

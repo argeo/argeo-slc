@@ -6,8 +6,8 @@ import javax.jcr.RepositoryException;
 
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 

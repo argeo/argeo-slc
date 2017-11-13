@@ -26,9 +26,9 @@ import javax.jcr.Value;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 import org.argeo.slc.client.ui.dist.DistConstants;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 
 public class DistUiHelpers implements DistConstants, SlcTypes, SlcNames {
 	private final static Log log = LogFactory.getLog(DistUiHelpers.class);

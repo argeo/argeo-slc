@@ -21,8 +21,8 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 
 /**
  * UI Tree component. Virtual folder to list a list of results. Keeps a

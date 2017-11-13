@@ -19,7 +19,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.SlcNames;
 
 /**
  * UI Tree component that wrap a node of type ResultFolder. list either other

@@ -3,5 +3,3 @@ javax.jcr.security,\
 org.apache.tools.ant.*;resolution:="optional",\
 junit.framework;resolution:="optional",\
 *
-
-Provide-Capability: cms.datamodel;name=slc;cnd=/org/argeo/slc/jcr/slc.cnd

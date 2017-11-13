@@ -22,13 +22,13 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
 import org.argeo.slc.client.ui.ClientUiPlugin;
 import org.argeo.slc.client.ui.SlcImages;
 import org.argeo.slc.client.ui.SlcUiConstants;
 import org.argeo.slc.client.ui.model.ResultFolder;
 import org.argeo.slc.client.ui.model.ResultParent;
 import org.argeo.slc.client.ui.model.SingleResultNode;
-import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DecorationOverlayIcon;
 import org.eclipse.jface.viewers.IDecoration;

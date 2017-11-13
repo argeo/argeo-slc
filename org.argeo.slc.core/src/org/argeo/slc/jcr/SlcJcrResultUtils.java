@@ -23,6 +23,8 @@ import javax.jcr.nodetype.NodeType;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.node.NodeUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 
 /**
  * Utilities around the SLC JCR Result model. Note that it relies on fixed base

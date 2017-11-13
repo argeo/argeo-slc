@@ -16,12 +16,12 @@
 package org.argeo.slc.client.ui.dist.views;
 
 import org.argeo.cms.ArgeoNames;
+import org.argeo.slc.SlcNames;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeComparator;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeDoubleClickListener;
 import org.argeo.slc.client.ui.dist.controllers.DistTreeLabelProvider;
-import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;

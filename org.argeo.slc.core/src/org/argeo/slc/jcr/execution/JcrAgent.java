@@ -28,13 +28,13 @@ import javax.jcr.security.Privilege;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 import org.argeo.slc.core.execution.DefaultAgent;
 import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrConstants;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 
 /** SLC VM agent synchronizing with a JCR repository. */
 public class JcrAgent extends DefaultAgent implements SlcNames {

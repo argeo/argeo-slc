@@ -31,9 +31,9 @@ import javax.jcr.query.Query;
 
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 import org.argeo.slc.execution.ExecutionStep;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;

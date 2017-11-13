@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.jcr;
+package org.argeo.slc;
 
 /** JCR names used by SLC */
 public interface SlcNames {

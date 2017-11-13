@@ -31,6 +31,8 @@ import org.argeo.node.NodeUtils;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 import org.argeo.slc.core.execution.PrimitiveAccessor;
 import org.argeo.slc.core.execution.PrimitiveUtils;
 import org.argeo.slc.deploy.ModuleDescriptor;

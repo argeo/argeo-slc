@@ -7,7 +7,7 @@ javax.jcr.nodetype,\
 
 Require-Capability: cms.datamodel; filter:="(name=node)",\
 cms.datamodel; filter:="(name=slc)"
-Provide-Capability: cms.datamodel; name=java; cnd=/org/argeo/slc/repo/repo.cnd,\
- cms.datamodel; name=dist; cnd=/org/argeo/slc/repo/repo.cnd,\
- cms.datamodel; name=docs; cnd=/org/argeo/slc/repo/repo.cnd,\
- cms.datamodel; name=rpm; cnd=/org/argeo/slc/repo/repo.cnd
+Provide-Capability: cms.datamodel; name=java,\
+ cms.datamodel; name=dist,\
+ cms.datamodel; name=docs,\
+ cms.datamodel; name=rpm

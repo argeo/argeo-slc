@@ -21,11 +21,11 @@ import javax.jcr.Session;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcTypes;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.editors.ArtifactVersionEditor;
 import org.argeo.slc.client.ui.dist.editors.ModularDistVersionEditor;
 import org.argeo.slc.client.ui.dist.editors.ModuleEditorInput;
-import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoService;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;

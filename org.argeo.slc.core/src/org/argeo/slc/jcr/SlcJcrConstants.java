@@ -15,6 +15,8 @@
  */
 package org.argeo.slc.jcr;
 
+import org.argeo.slc.SlcNames;
+
 /** JCR related constants used across SLC */
 public interface SlcJcrConstants {
 	public final static String PROPERTY_PATH = "argeo.slc.jcr.path";

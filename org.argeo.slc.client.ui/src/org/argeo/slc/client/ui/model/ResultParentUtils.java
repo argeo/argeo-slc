@@ -29,9 +29,9 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 import org.argeo.slc.jcr.SlcJcrResultUtils;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 
 public class ResultParentUtils {
 	// private final static Log log =

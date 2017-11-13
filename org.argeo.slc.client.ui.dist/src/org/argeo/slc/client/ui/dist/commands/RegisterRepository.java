@@ -20,10 +20,10 @@ import javax.jcr.RepositoryFactory;
 
 import org.argeo.cms.ArgeoNames;
 import org.argeo.node.security.Keyring;
+import org.argeo.slc.SlcNames;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
 import org.argeo.slc.client.ui.dist.wizards.RegisterRepoWizard;
-import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

@@ -27,10 +27,10 @@ import javax.jcr.Value;
 import javax.jcr.nodetype.NodeType;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.utils.DistUiHelpers;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;

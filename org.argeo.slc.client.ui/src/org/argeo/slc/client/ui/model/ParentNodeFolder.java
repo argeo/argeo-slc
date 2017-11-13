@@ -21,8 +21,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 
 /**
  * UI Tree component that wrap a node of type NT_UNSTRUCTURED or base node for

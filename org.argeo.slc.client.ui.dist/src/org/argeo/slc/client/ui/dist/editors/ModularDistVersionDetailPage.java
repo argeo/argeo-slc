@@ -19,7 +19,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.SlcNames;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;

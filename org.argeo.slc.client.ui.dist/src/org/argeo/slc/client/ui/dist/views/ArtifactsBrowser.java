@@ -25,11 +25,11 @@ import javax.jcr.Session;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcTypes;
 import org.argeo.slc.client.ui.dist.DistConstants;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.controllers.ArtifactsTreeContentProvider;
-import org.argeo.slc.jcr.SlcTypes;
 import org.argeo.slc.repo.RepoConstants;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelection;

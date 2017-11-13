@@ -21,7 +21,7 @@ import javax.jcr.Workspace;
 
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.SlcNames;
 
 /**
  * UI Tree component. Wraps a result node of a JCR {@link Workspace}. It also

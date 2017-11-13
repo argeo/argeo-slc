@@ -18,7 +18,7 @@ package org.argeo.slc.client.ui.dist.editors;
 import javax.jcr.Node;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.SlcNames;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;

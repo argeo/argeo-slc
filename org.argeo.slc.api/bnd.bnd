@@ -1,0 +1,3 @@
+
+
+Provide-Capability: cms.datamodel;name=slc;cnd=/org/argeo/slc/slc.cnd

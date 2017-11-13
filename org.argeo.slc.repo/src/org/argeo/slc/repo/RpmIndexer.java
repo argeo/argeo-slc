@@ -13,8 +13,8 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.jcr.SlcNames;
-import org.argeo.slc.jcr.SlcTypes;
+import org.argeo.slc.SlcNames;
+import org.argeo.slc.SlcTypes;
 import org.redline_rpm.ChannelWrapper.Key;
 import org.redline_rpm.ReadableChannelWrapper;
 import org.redline_rpm.header.AbstractHeader;

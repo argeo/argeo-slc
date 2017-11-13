@@ -15,8 +15,8 @@
  */
 package org.argeo.slc.client.ui.dist.views;
 
+import org.argeo.slc.SlcNames;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.jcr.SlcNames;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;

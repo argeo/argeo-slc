@@ -21,8 +21,8 @@ import javax.jcr.Session;
 
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcNames;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.jcr.SlcNames;
 import org.argeo.slc.repo.RepoService;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;

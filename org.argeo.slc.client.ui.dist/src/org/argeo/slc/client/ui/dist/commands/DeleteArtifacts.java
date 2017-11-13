@@ -21,8 +21,8 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.SlcTypes;
 import org.argeo.slc.client.ui.dist.DistPlugin;
-import org.argeo.slc.jcr.SlcTypes;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

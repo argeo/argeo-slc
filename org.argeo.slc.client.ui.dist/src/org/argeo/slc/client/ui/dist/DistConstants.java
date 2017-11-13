@@ -15,7 +15,7 @@
  */
 package org.argeo.slc.client.ui.dist;
 
-import org.argeo.slc.jcr.SlcNames;
+import org.argeo.slc.SlcNames;
 import org.osgi.framework.Constants;
 
 /** Constants used across the application. */
