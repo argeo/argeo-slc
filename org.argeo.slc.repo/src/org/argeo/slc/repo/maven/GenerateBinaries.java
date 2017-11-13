@@ -33,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.aether.ArtifactIdComparator;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;
 import org.argeo.slc.repo.ArtifactIndexer;

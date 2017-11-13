@@ -3,7 +3,10 @@ org.xml.sax.*,\
 javax.xml.transform.*,\
 javax.xml.parsers.*,\
 javax.jcr.nodetype,\
+org.eclipse.aether.*;version=1.0.1,\
 *
+
+Private-Package: org.eclipse.aether.*
 
 Require-Capability: cms.datamodel; filter:="(name=node)",\
 cms.datamodel; filter:="(name=slc)"

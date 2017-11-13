@@ -25,7 +25,7 @@
 		<module>org.argeo.slc.core</module>
 		<module>org.argeo.slc.unit</module>
 		<module>org.argeo.slc.support</module>
-		<module>org.argeo.slc.support.maven</module>
+<!-- 		<module>org.argeo.slc.support.maven</module> -->
 		<module>org.argeo.slc.repo</module>
 		<module>org.argeo.slc.factory</module>
 		<module>org.argeo.slc.launcher</module>

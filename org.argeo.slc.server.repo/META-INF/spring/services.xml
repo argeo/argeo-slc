@@ -34,12 +34,14 @@
 		<property name="jcrRepository" ref="javaRepository" />
 	</bean>
 
-	<bean id="mavenProxyService" class="org.argeo.slc.repo.maven.MavenProxyServiceImpl"
-		init-method="init" destroy-method="destroy" depends-on="ROLE_SLC">
-		<property name="jcrRepository" ref="javaRepository" />
-		<property name="proxyWorkspace" value="${slc.repo.jcr.proxyWorkspace}" />
-		<property name="defaultRepositories" ref="defaultMavenRepositories" />
-	</bean>
+	<!-- <bean id="mavenProxyService" class="org.argeo.slc.repo.maven.MavenProxyServiceImpl" -->
+	<!-- init-method="init" destroy-method="destroy" depends-on="ROLE_SLC"> -->
+	<!-- <property name="jcrRepository" ref="javaRepository" /> -->
+	<!-- <property name="proxyWorkspace" value="${slc.repo.jcr.proxyWorkspace}" 
+		/> -->
+	<!-- <property name="defaultRepositories" ref="defaultMavenRepositories" 
+		/> -->
+	<!-- </bean> -->
 
 	<!-- RPM -->
 	<bean id="rpmRepoManager" class="org.argeo.slc.repo.core.RpmRepoManagerImpl"
@@ -52,17 +54,12 @@
 		<property name="jcrRepository" ref="rpmRepository" />
 	</bean>
 
-	<bean id="rpmProxyService" class="org.argeo.slc.rpmfactory.core.RpmProxyServiceImpl"
-		init-method="init" destroy-method="destroy" depends-on="ROLE_SLC">
-		<property name="jcrRepository" ref="rpmRepository" />
-		<property name="proxyWorkspace" value="${slc.repo.jcr.proxyWorkspace}" />
-		<property name="defaultRepositories" ref="defaultRpmRepositories" />
-	</bean>
+	<!-- <bean id="rpmProxyService" class="org.argeo.slc.rpmfactory.core.RpmProxyServiceImpl" -->
+	<!-- init-method="init" destroy-method="destroy" depends-on="ROLE_SLC"> -->
+	<!-- <property name="jcrRepository" ref="rpmRepository" /> -->
+	<!-- <property name="proxyWorkspace" value="${slc.repo.jcr.proxyWorkspace}" 
+		/> -->
+	<!-- <property name="defaultRepositories" ref="defaultRpmRepositories" /> -->
+	<!-- </bean> -->
 
-	<!-- Draft to centralize multirepository connection process in an Argeo 
-		environment -->
-	<!-- <bean id="repoService" class="org.argeo.slc.repo.core.RepoServiceImpl" 
-		init-method="init" destroy-method="destroy"> <property name="repositoryFactory" 
-		ref="repositoryFactory" /> <property name="keyring" ref="keyring" /> <property 
-		name="nodeRepository" ref="nodeRepository" /> </bean> -->
 </beans>

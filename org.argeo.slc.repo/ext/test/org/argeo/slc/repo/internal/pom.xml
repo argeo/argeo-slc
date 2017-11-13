@@ -1,0 +1,209 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.commons</groupId>
+		<artifactId>argeo-commons</artifactId>
+		<version>2.1.70-SNAPSHOT</version>
+	</parent>
+	<groupId>org.argeo.slc</groupId>
+	<artifactId>argeo-slc</artifactId>
+	<packaging>pom</packaging>
+	<name>Argeo SLC</name>
+	<version>2.1.10-SNAPSHOT</version>
+	<properties>
+		<developmentCycle.slc>2.1</developmentCycle.slc>
+		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
+		<version.argeo-rcp>2.1.15</version.argeo-rcp>
+		<version.slc>2.1.10-SNAPSHOT</version.slc>
+		<version.equinox>3.11.1.v20160708-1632</version.equinox>
+		<!-- Embedded Maven -->
+		<version.maven>3.2.5</version.maven>
+	</properties>
+	<modules>
+		<!-- Runtime -->
+		<module>org.argeo.slc.api</module>
+		<module>org.argeo.slc.core</module>
+		<module>org.argeo.slc.unit</module>
+		<module>org.argeo.slc.support</module>
+		<module>org.argeo.slc.support.maven</module>
+		<module>org.argeo.slc.repo</module>
+		<module>org.argeo.slc.factory</module>
+		<module>org.argeo.slc.launcher</module>
+
+		<!-- Modules -->
+		<module>org.argeo.slc.agent</module>
+		<module>org.argeo.slc.agent.jcr</module>
+		<module>org.argeo.slc.server.repo</module>
+
+		<!-- UI -->
+		<module>org.argeo.slc.client.ui</module>
+		<module>org.argeo.slc.client.ui.dist</module>
+		<module>org.argeo.slc.client.rap</module>
+		<!-- <module>org.argeo.slc.client.rcp</module> -->
+
+		<module>lib</module>
+		<module>dep</module>
+		<module>dist</module>
+		<module>demo</module>
+	</modules>
+	<url>http://projects.argeo.org/slc/</url>
+	<scm>
+		<connection>scm:git:http://git.argeo.org/apache2/argeo-slc.git</connection>
+		<url>http://git.argeo.org/?p=apache2/argeo-slc.git;a=summary</url>
+		<developerConnection>scm:git:https://code.argeo.org/git/apache2/argeo-slc.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+	<inceptionYear>2007</inceptionYear>
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments><![CDATA[
+SLC (Software Life Cycle) framework
+			   
+Copyright (C) 2007-2012 Argeo GmbH
+
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+]]>
+			</comments>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<id>mbaudier</id>
+			<name>Mathieu Baudier</name>
+			<email><![CDATA[http://mailhide.recaptcha.net/d?k=01EM7GpnvY3k8woQ2tnnZLUA==&c=crsNpHjhOBDPswHG6HD_gXaqymhC69wmBf7wlagcSHw=]]></email>
+			<organization>Argeo</organization>
+			<organizationUrl>http://www.argeo.org</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+				<role>QA</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>ocapillo</id>
+			<name>Olivier Capillon</name>
+			<email><![CDATA[http://mailhide.recaptcha.net/d?k=01EM7GpnvY3k8woQ2tnnZLUA==&c=BYw8i94WiejnvegUKJoCZQQr0h-mYlKCNKZVe_3WPIA=]]></email>
+			<organization>Argeo</organization>
+			<organizationUrl>http://www.argeo.org</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>bsinou</id>
+			<name>Bruno Sinou</name>
+			<email><![CDATA[http://www.google.com/recaptcha/mailhide/d?k=01SZoYvDnJzcw0KOR7M7u6Qg==&c=SVgEjXA_Uu9ZrNzLES92w1ght6puLFiVpoNUddCfSU8=]]></email>
+			<organization>Argeo</organization>
+			<organizationUrl>http://www.argeo.org</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<inherited>false</inherited>
+				<configuration>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>argeo</id>
+			<url>http://forge.argeo.org/data/java/argeo-2.1/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>argeo-rcp</id>
+			<url>http://forge.argeo.org/data/java/argeo-rcp-2.1</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+		</repository>
+
+		<!-- Disable Maven default repository -->
+		<repository>
+			<id>central</id>
+			<url>http://repo1.maven.org/maven2</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<profiles>
+		<profile>
+			<id>localrepo</id>
+			<repositories>
+				<repository>
+					<id>argeo-tp</id>
+					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url>
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>daily</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</releases>
+				</repository>
+				<!-- <repository> -->
+				<!-- <id>argeo-tp-extras</id> -->
+				<!-- <url>http://localhost:7080/data/java/argeo-tp-extras-2.1</url> -->
+				<!-- <releases> -->
+				<!-- <enabled>true</enabled> -->
+				<!-- <updatePolicy>daily</updatePolicy> -->
+				<!-- <checksumPolicy>warn</checksumPolicy> -->
+				<!-- </releases> -->
+				<!-- </repository> -->
+				<repository>
+					<id>argeo-commons</id>
+					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url>
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>daily</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</releases>
+				</repository>
+			</repositories>
+			<distributionManagement>
+				<repository>
+					<id>staging</id>
+					<url>dav:http://localhost:7070/data/java/argeo-slc-${developmentCycle.slc}</url>
+				</repository>
+				<site>
+					<id>staging</id>
+					<url>dav:http://localhost:7070/data/docs/argeo-slc-${developmentCycle.slc}</url>
+				</site>
+			</distributionManagement>
+		</profile>
+	</profiles>
+</project>

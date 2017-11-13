@@ -25,31 +25,10 @@
 		filter="(cn=docs)" />
 
 	<!-- SERVICES -->
-<!-- 	<service ref="javaRepository" interface="javax.jcr.Repository"> -->
-<!-- 		<service-properties> -->
-<!-- 			<beans:entry key="cn" value="java" /> -->
-<!-- 		</service-properties> -->
-<!-- 	</service> -->
-<!-- 	<service ref="distRepository" interface="javax.jcr.Repository"> -->
-<!-- 		<service-properties> -->
-<!-- 			<beans:entry key="cn" value="dist" /> -->
-<!-- 		</service-properties> -->
-<!-- 	</service> -->
-<!-- 	<service ref="rpmRepository" interface="javax.jcr.Repository"> -->
-<!-- 		<service-properties> -->
-<!-- 			<beans:entry key="cn" value="rpm" /> -->
-<!-- 		</service-properties> -->
-<!-- 	</service> -->
-<!-- 	<service ref="docsRepository" interface="javax.jcr.Repository"> -->
-<!-- 		<service-properties> -->
-<!-- 			<beans:entry key="cn" value="docs" /> -->
-<!-- 		</service-properties> -->
-<!-- 	</service> -->
-
 	<service ref="slcRepoManager" interface="org.argeo.slc.repo.SlcRepoManager" />
 
-	<service ref="mavenProxyService" interface="org.argeo.slc.repo.MavenProxyService" />
-	<service ref="rpmProxyService" interface="org.argeo.slc.rpmfactory.RpmProxyService" />
+<!-- 	<service ref="mavenProxyService" interface="org.argeo.slc.repo.MavenProxyService" /> -->
+<!-- 	<service ref="rpmProxyService" interface="org.argeo.slc.rpmfactory.RpmProxyService" /> -->
 
 	<!-- LABEL -->
 	<beans:bean class="org.argeo.cms.spring.osgi.OsgiModuleLabel">

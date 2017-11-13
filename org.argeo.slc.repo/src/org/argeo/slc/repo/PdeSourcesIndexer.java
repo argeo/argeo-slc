@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.aether.AetherUtils;
+import org.argeo.slc.repo.maven.AetherUtils;
 import org.argeo.slc.repo.maven.MavenConventionsUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
