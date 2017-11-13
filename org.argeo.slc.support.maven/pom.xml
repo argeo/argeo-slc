@@ -12,7 +12,6 @@
 	<name>SLC Support Maven</name>
 	<properties>
 		<version.aether>1.0.1.v20141111</version.aether>
-		<version.maven>3.2.5</version.maven>
 		<version.wagon>1.0</version.wagon>
 	</properties>
 	<build>
