@@ -213,16 +213,28 @@ public class RepoSync implements Runnable {
 			if (log.isDebugEnabled())
 				log.debug(msg);
 
-			if (filesOnly) {
-				JcrUtils.copyFiles(sourceSession.getRootNode(), targetSession.getRootNode(), true, monitor);
-			} else {
-				for (NodeIterator it = sourceSession.getRootNode().getNodes(); it.hasNext();) {
-					Node node = it.nextNode();
-					if (node.getName().equals("jcr:system"))
-						continue;
-					syncNode(node, targetSession);
-				}
+			for (NodeIterator it = sourceSession.getRootNode().getNodes(); it.hasNext();) {
+				Node node = it.nextNode();
+				if (node.getName().contains(":"))
+					continue;
+				if (node.getName().equals("download"))
+					continue;
+				if (!node.isNodeType(NodeType.NT_HIERARCHY_NODE))
+					continue;
+				syncNode(node, targetSession);
 			}
+			// if (filesOnly) {
+			// JcrUtils.copyFiles(sourceSession.getRootNode(), targetSession.getRootNode(),
+			// true, monitor);
+			// } else {
+			// for (NodeIterator it = sourceSession.getRootNode().getNodes(); it.hasNext();)
+			// {
+			// Node node = it.nextNode();
+			// if (node.getName().equals("jcr:system"))
+			// continue;
+			// syncNode(node, targetSession);
+			// }
+			// }
 			if (log.isDebugEnabled())
 				log.debug("Synced " + sourceSession.getWorkspace().getName());
 		} catch (Exception e) {
@@ -238,6 +250,15 @@ public class RepoSync implements Runnable {
 	}
 
 	protected void syncNode(Node sourceNode, Session targetSession) throws RepositoryException, SAXException {
+		if (filesOnly) {
+			Node targetNode;
+			if (targetSession.itemExists(sourceNode.getPath()))
+				targetNode = targetSession.getNode(sourceNode.getPath());
+			else
+				targetNode = JcrUtils.mkdirs(targetSession, sourceNode.getPath(), NodeType.NT_FOLDER);
+			JcrUtils.copyFiles(sourceNode, targetNode, true, monitor, true);
+			return;
+		}
 		// Boolean singleLevel = singleLevel(sourceNode);
 		try {
 			if (monitor != null && monitor.isCanceled()) {
@@ -494,8 +515,7 @@ public class RepoSync implements Runnable {
 	}
 
 	/**
-	 * Synchronises only one workspace, retrieved by name without changing its
-	 * name.
+	 * Synchronises only one workspace, retrieved by name without changing its name.
 	 */
 	public void setSourceWksp(String sourceWksp) {
 		if (sourceWksp != null && !sourceWksp.trim().equals("")) {
@@ -507,8 +527,8 @@ public class RepoSync implements Runnable {
 
 	/**
 	 * Synchronises a map of workspaces that will be retrieved by name. If the
-	 * target name is not defined (eg null or an empty string) for a given
-	 * source workspace, we use the source name as target name.
+	 * target name is not defined (eg null or an empty string) for a given source
+	 * workspace, we use the source name as target name.
 	 */
 	public void setWkspMap(Map<String, String> workspaceMap) {
 		// clean the list to ease later use

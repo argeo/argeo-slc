@@ -69,16 +69,12 @@ public class MergeWorkspaces extends AbstractHandler {
 		try {
 			nodeSession = nodeRepository.login();
 			Node srcRepoNode = nodeSession.getNode(sourceRepoPath);
-			Repository srcRepository = RepoUtils.getRepository(
-					repositoryFactory, keyring, srcRepoNode);
-			Credentials srcCredentials = RepoUtils.getRepositoryCredentials(
-					keyring, srcRepoNode);
+			Repository srcRepository = RepoUtils.getRepository(repositoryFactory, keyring, srcRepoNode);
+			Credentials srcCredentials = RepoUtils.getRepositoryCredentials(keyring, srcRepoNode);
 
 			Node targetRepoNode = nodeSession.getNode(targetRepoPath);
-			Repository targetRepository = RepoUtils.getRepository(
-					repositoryFactory, keyring, targetRepoNode);
-			Credentials targetCredentials = RepoUtils.getRepositoryCredentials(
-					keyring, targetRepoNode);
+			Repository targetRepository = RepoUtils.getRepository(repositoryFactory, keyring, targetRepoNode);
+			Credentials targetCredentials = RepoUtils.getRepositoryCredentials(keyring, targetRepoNode);
 
 			// String msg = "Are you sure you want to merge distribution ["
 			// + sourceWkspName + "] in distribution [" + targetWkspName
@@ -91,35 +87,27 @@ public class MergeWorkspaces extends AbstractHandler {
 			// Open sessions here since the background thread
 			// won't necessarily be authenticated.
 			// Job should close the sessions.
-			Session sourceSession = srcRepository.login(srcCredentials,
-					sourceWkspName);
+			Session sourceSession = srcRepository.login(srcCredentials, sourceWkspName);
 			Session targetSession;
 			try {
-				targetSession = targetRepository.login(targetCredentials,
-						targetWkspName);
+				targetSession = targetRepository.login(targetCredentials, targetWkspName);
 			} catch (NoSuchWorkspaceException e) {
-				Session defaultSession = targetRepository
-						.login(targetCredentials);
+				Session defaultSession = targetRepository.login(targetCredentials);
 				try {
-					defaultSession.getWorkspace().createWorkspace(
-							targetWkspName);
+					defaultSession.getWorkspace().createWorkspace(targetWkspName);
 				} catch (Exception e1) {
-					throw new SlcException("Cannot create new workspace "
-							+ targetWkspName, e);
+					throw new SlcException("Cannot create new workspace " + targetWkspName, e);
 				} finally {
 					JcrUtils.logoutQuietly(defaultSession);
 				}
-				targetSession = targetRepository.login(targetCredentials,
-						targetWkspName);
+				targetSession = targetRepository.login(targetCredentials, targetWkspName);
 			}
 
-			Job workspaceMergeJob = new WorkspaceMergeJob(sourceSession,
-					targetSession);
+			Job workspaceMergeJob = new WorkspaceMergeJob(sourceSession, targetSession);
 			workspaceMergeJob.setUser(true);
 			workspaceMergeJob.schedule();
 		} catch (RepositoryException re) {
-			throw new SlcException(
-					"Unexpected error while merging workspaces.", re);
+			throw new SlcException("Unexpected error while merging workspaces.", re);
 		} finally {
 			JcrUtils.logoutQuietly(nodeSession);
 		}
@@ -140,34 +128,28 @@ public class MergeWorkspaces extends AbstractHandler {
 		protected IStatus run(IProgressMonitor eclipseMonitor) {
 			long begin = System.currentTimeMillis();
 			try {
-				Query countQuery = sourceSession
-						.getWorkspace()
-						.getQueryManager()
-						.createQuery("select file from [nt:file] as file",
-								Query.JCR_SQL2);
+				Query countQuery = sourceSession.getWorkspace().getQueryManager()
+						.createQuery("select file from [nt:file] as file", Query.JCR_SQL2);
 				QueryResult result = countQuery.execute();
 				Long expectedCount = result.getNodes().getSize();
 				if (log.isDebugEnabled())
 					log.debug("Will copy " + expectedCount + " files...");
 
 				JcrMonitor monitor = new EclipseJcrMonitor(eclipseMonitor);
-				eclipseMonitor
-						.beginTask("Copy files", expectedCount.intValue());
+				eclipseMonitor.beginTask("Copy files", expectedCount.intValue());
 
-				Long count = JcrUtils.copyFiles(sourceSession.getRootNode(),
-						targetSession.getRootNode(), true, monitor);
+				Long count = JcrUtils.copyFiles(sourceSession.getRootNode(), targetSession.getRootNode(), true, monitor,
+						true);
 
 				monitor.done();
 				long duration = (System.currentTimeMillis() - begin) / 1000;// in
 																			// s
 				if (log.isDebugEnabled())
-					log.debug("Copied " + count + " files in "
-							+ (duration / 60) + "min " + (duration % 60) + "s");
+					log.debug("Copied " + count + " files in " + (duration / 60) + "min " + (duration % 60) + "s");
 
 				return Status.OK_STATUS;
 			} catch (RepositoryException e) {
-				return new Status(IStatus.ERROR, DistPlugin.PLUGIN_ID,
-						"Cannot merge", e);
+				return new Status(IStatus.ERROR, DistPlugin.PLUGIN_ID, "Cannot merge", e);
 			} finally {
 				JcrUtils.logoutQuietly(sourceSession);
 				JcrUtils.logoutQuietly(targetSession);
