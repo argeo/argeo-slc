@@ -3,4 +3,5 @@ org.argeo.slc.jcr,\
 org.argeo.slc.repo,\
 org.h2;resolution:=optional,\
 org.postgresql;resolution:=optional,\
+org.osgi.*;version=0.0.0,\
 *

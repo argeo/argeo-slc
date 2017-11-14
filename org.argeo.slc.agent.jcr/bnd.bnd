@@ -16,4 +16,5 @@ org.apache.commons.vfs2.provider.url,\
 org.apache.commons.vfs2.provider.temp,\
 org.apache.commons.vfs2.provider.webdav,\
 org.apache.commons.vfs2.provider.zip,\
+org.osgi.*;version=0.0.0,\
 *

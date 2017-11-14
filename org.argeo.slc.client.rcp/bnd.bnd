@@ -8,5 +8,6 @@ Import-Package: javax.jcr.nodetype,\
 org.argeo.eclipse.spring,\
 org.argeo.slc.repo.core,\
 org.argeo.cms.util,\
+org.osgi.*;version=0.0.0,\
 *
 							
