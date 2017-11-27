@@ -1,15 +1,21 @@
 package org.argeo.slc.core.execution.http;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.channels.Channels;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.AccessControlContext;
 import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.GregorianCalendar;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -46,6 +52,10 @@ import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
 import org.osgi.util.tracker.ServiceTracker;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
 public class RunnerServlet extends HttpServlet {
 	private final static Log log = LogFactory.getLog(RunnerServlet.class);
 
@@ -68,6 +78,17 @@ public class RunnerServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		InputStream in;
+		// Deal with x-www-form-urlencoded
+		// FIXME make it more robust an generic
+		Map<String, String[]> params = req.getParameterMap();
+		if (params.size() != 0) {
+			String json = params.keySet().iterator().next();
+			in = new ByteArrayInputStream(json.getBytes(StandardCharsets.UTF_8));
+		} else {
+			in = req.getInputStream();
+		}
+
 		// InputStream in = req.getInputStream();
 		// Gson gson = new Gson();
 		// JsonParser jsonParser = new JsonParser();
@@ -75,8 +96,13 @@ public class RunnerServlet extends HttpServlet {
 		// Charset.forName("UTF-8")));
 		// JsonElement payload = jsonParser.parse(reader);
 		// String payloadStr = gson.toJson(payload);
+		//
+		// log.debug(payloadStr);
+		// if (true)
+		// return;
+
 		String path = req.getPathInfo();
-		InputStream in = req.getInputStream();
+		// InputStream in = req.getInputStream();
 		OutputStream out = resp.getOutputStream();
 
 		String tokens[] = path.split("/");
