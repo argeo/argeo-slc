@@ -106,7 +106,7 @@ public class RunnerServlet extends HttpServlet {
 
 		boolean authorized = false;
 		for (String role : cmsSession.getAuthorization().getRoles()) {
-			if (role.startsWith("cn=" + workgroup)) {
+			if (role.startsWith("cn=" + workgroup) || role.startsWith("uid=" + workgroup)) {
 				authorized = true;
 				break;
 			}
@@ -129,7 +129,14 @@ public class RunnerServlet extends HttpServlet {
 		String ext = FilenameUtils.getExtension(flowName.toString());
 
 		// JCR
-		Repository repository = bc.getService(bc.getServiceReference(Repository.class));
+		Repository repository;
+		try {
+		ServiceReference<Repository> sr=	bc.getServiceReferences( Repository.class,"(cn=home)" ).iterator().next();
+		repository = bc.getService(sr);
+		
+		} catch (InvalidSyntaxException e2) {
+			throw new SlcException("Cannot find home repository",e2);
+		}
 		Session session = Subject.doAs(subject, new PrivilegedAction<Session>() {
 
 			@Override
@@ -145,6 +152,9 @@ public class RunnerServlet extends HttpServlet {
 		UUID processUuid = UUID.randomUUID();
 		GregorianCalendar started = new GregorianCalendar();
 		Node groupHome = NodeUtils.getGroupHome(session, workgroup);
+		if (groupHome == null) {
+			groupHome = NodeUtils.getUserHome(session);
+		}
 		String processPath = SlcNames.SLC_SYSTEM + "/" + SlcNames.SLC_PROCESSES + "/"
 				+ JcrUtils.dateAsPath(started, true) + processUuid;
 		Node processNode = JcrUtils.mkdirs(groupHome, processPath, SlcTypes.SLC_PROCESS);
@@ -163,8 +173,8 @@ public class RunnerServlet extends HttpServlet {
 			throw new SlcException("Cannot register SLC process", e1);
 		}
 
-		if (log.isDebugEnabled())
-			log.debug(userDn + " " + workgroup + " " + flowName);
+		if (log.isTraceEnabled())
+			log.trace(userDn + " " + workgroup + " " + flowName);
 
 		try {
 			resp.setHeader("Content-Type", "application/json");
