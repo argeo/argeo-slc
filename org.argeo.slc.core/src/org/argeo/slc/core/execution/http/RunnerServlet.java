@@ -25,7 +25,6 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
-import javax.naming.ldap.LdapName;
 import javax.security.auth.Subject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -103,19 +102,21 @@ public class RunnerServlet extends HttpServlet {
 		String workgroup = tokens[1];
 
 		CmsSession cmsSession = getByLocalId(req.getSession().getId());
-
-		boolean authorized = false;
-		for (String role : cmsSession.getAuthorization().getRoles()) {
-			if (role.startsWith("cn=" + workgroup) || role.startsWith("uid=" + workgroup)) {
-				authorized = true;
-				break;
+		// FIXME make it more robust
+		if (cmsSession != null) {// multiuser
+			boolean authorized = false;
+			for (String role : cmsSession.getAuthorization().getRoles()) {
+				if (role.startsWith("cn=" + workgroup) || role.startsWith("uid=" + workgroup)) {
+					authorized = true;
+					break;
+				}
+			}
+			if (!authorized) {
+				resp.setStatus(403);
+				return;
 			}
 		}
-		if (!authorized) {
-			resp.setStatus(403);
-			return;
-		}
-		LdapName userDn = cmsSession.getUserDn();
+		// LdapName userDn = cmsSession.getUserDn();
 		AccessControlContext acc = (AccessControlContext) req.getAttribute(HttpContext.REMOTE_USER);
 		Subject subject = Subject.getSubject(acc);
 		// flow path
@@ -131,11 +132,11 @@ public class RunnerServlet extends HttpServlet {
 		// JCR
 		Repository repository;
 		try {
-		ServiceReference<Repository> sr=	bc.getServiceReferences( Repository.class,"(cn=home)" ).iterator().next();
-		repository = bc.getService(sr);
-		
+			ServiceReference<Repository> sr = bc.getServiceReferences(Repository.class, "(cn=home)").iterator().next();
+			repository = bc.getService(sr);
+
 		} catch (InvalidSyntaxException e2) {
-			throw new SlcException("Cannot find home repository",e2);
+			throw new SlcException("Cannot find home repository", e2);
 		}
 		Session session = Subject.doAs(subject, new PrivilegedAction<Session>() {
 
@@ -174,7 +175,7 @@ public class RunnerServlet extends HttpServlet {
 		}
 
 		if (log.isTraceEnabled())
-			log.trace(userDn + " " + workgroup + " " + flowName);
+			log.trace(session.getUserID() + " " + workgroup + " " + flowName);
 
 		try {
 			resp.setHeader("Content-Type", "application/json");
@@ -232,6 +233,10 @@ public class RunnerServlet extends HttpServlet {
 		return baseDir;
 	}
 
+	protected HttpContext getHttpContext(String httpAuthrealm) {
+		return null;
+	}
+
 	public static void register(BundleContext bc, String alias, RunnerServlet runnerServlet, String httpAuthrealm) {
 		try {
 			ServiceTracker<HttpService, HttpService> serviceTracker = new ServiceTracker<HttpService, HttpService>(bc,
@@ -242,7 +247,10 @@ public class RunnerServlet extends HttpServlet {
 					// TODO Auto-generated method stub
 					HttpService httpService = super.addingService(reference);
 					try {
-						httpService.registerServlet(alias, runnerServlet, null, new RunnerHttpContext(httpAuthrealm));
+						HttpContext httpContext = runnerServlet.getHttpContext(httpAuthrealm);
+						if (httpContext == null)
+							httpContext = new RunnerHttpContext(httpAuthrealm);
+						httpService.registerServlet(alias, runnerServlet, null, httpContext);
 					} catch (Exception e) {
 						throw new SlcException("Cannot register servlet", e);
 					}
