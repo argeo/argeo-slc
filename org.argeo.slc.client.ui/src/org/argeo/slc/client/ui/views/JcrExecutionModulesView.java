@@ -56,6 +56,7 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSourceAdapter;
@@ -77,12 +78,17 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes, SlcNa
 
 	private TreeViewer viewer;
 
+	private ServerPushSession pushSession;
+
 	/* DEPENDENCY INJECTION */
 	private Repository repository;
 	private Session session;
 	private ExecutionModulesManager modulesManager;
 
 	public void createPartControl(Composite parent) {
+		pushSession = new ServerPushSession();
+		pushSession.start();
+
 		try {
 			session = repository.login();
 		} catch (RepositoryException e1) {
@@ -409,6 +415,8 @@ public class JcrExecutionModulesView extends ViewPart implements SlcTypes, SlcNa
 
 	public void dispose() {
 		JcrUtils.logoutQuietly(session);
+		if (pushSession != null)
+			pushSession.stop();
 		super.dispose();
 	}
 

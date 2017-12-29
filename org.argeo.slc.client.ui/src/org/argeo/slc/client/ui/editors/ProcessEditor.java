@@ -37,6 +37,7 @@ import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IWorkbenchPage;
@@ -54,6 +55,7 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	private Session session;
 	private Node processNode;
 	private ProcessController processController;
+	private ServerPushSession pushSession;
 
 	private ProcessBuilderPage builderPage;
 
@@ -63,6 +65,8 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
+		pushSession = new ServerPushSession();
+		pushSession.start();
 		try {
 			session = repository.login();
 		} catch (RepositoryException e1) {
@@ -119,6 +123,8 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	@Override
 	public void dispose() {
 		JcrUtils.logoutQuietly(session);
+		if (pushSession != null)
+			pushSession.stop();
 		super.dispose();
 	}
 

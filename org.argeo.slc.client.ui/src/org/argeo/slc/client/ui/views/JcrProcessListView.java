@@ -50,6 +50,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -64,6 +65,7 @@ public class JcrProcessListView extends ViewPart {
 	public static final String ID = ClientUiPlugin.ID + ".jcrProcessListView";
 
 	private TableViewer viewer;
+	private ServerPushSession pushSession;
 
 	private Repository repository;
 	private Session session;
@@ -75,6 +77,8 @@ public class JcrProcessListView extends ViewPart {
 	private Integer queryLimit = 2000;
 
 	public void createPartControl(Composite parent) {
+		pushSession = new ServerPushSession();
+		pushSession.start();
 		try {
 			session = repository.login();
 		} catch (RepositoryException re) {
@@ -251,6 +255,8 @@ public class JcrProcessListView extends ViewPart {
 	public void dispose() {
 		JcrUtils.unregisterQuietly(session.getWorkspace(), processesObserver);
 		JcrUtils.logoutQuietly(session);
+		if (pushSession != null)
+			pushSession.stop();
 		super.dispose();
 	}
 
