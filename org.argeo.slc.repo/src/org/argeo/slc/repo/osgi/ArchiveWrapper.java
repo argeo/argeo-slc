@@ -103,8 +103,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			distSession = osgiFactory.openDistSession();
 
 			Node distNode = osgiFactory.getDist(distSession, uri);
-			zin = new ZipInputStream(distNode.getNode(Node.JCR_CONTENT)
-					.getProperty(Property.JCR_DATA).getBinary().getStream());
+			zin = new ZipInputStream(
+					distNode.getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getBinary().getStream());
 
 			ZipEntry zentry = null;
 			entries: while ((zentry = zin.getNextEntry()) != null) {
@@ -120,17 +120,14 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 						String groupId = includes.get(include);
 						JarInputStream jis = new JarInputStream(zin);
 						if (jis.getManifest() == null) {
-							log.warn("No MANIFEST in entry " + name
-									+ ", skipping...");
+							log.warn("No MANIFEST in entry " + name + ", skipping...");
 							continue entries;
 						}
-						NameVersion nv = RepoUtils.readNameVersion(jis
-								.getManifest());
+						NameVersion nv = RepoUtils.readNameVersion(jis.getManifest());
 						if (nv != null) {
 							if (nv.getName().endsWith(".source"))
 								continue entries;
-							CategorizedNameVersion cnv = new OsgiCategorizedNV(
-									groupId, nv.getName(), nv.getVersion(),
+							CategorizedNameVersion cnv = new OsgiCategorizedNV(groupId, nv.getName(), nv.getVersion(),
 									this);
 							nvs.add(cnv);
 							// no need to process further includes
@@ -150,8 +147,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 	public void run() {
 		if (mavenGroupIndexes && (version == null))
-			throw new SlcException(
-					"'mavenGroupIndexes' requires 'version' to be set");
+			throw new SlcException("'mavenGroupIndexes' requires 'version' to be set");
 
 		Map<String, Set<Artifact>> binaries = new HashMap<String, Set<Artifact>>();
 		Map<String, Set<Artifact>> sources = new HashMap<String, Set<Artifact>>();
@@ -168,8 +164,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			boolean nothingWasDone = true;
 
 			Node distNode = osgiFactory.getDist(distSession, uri);
-			zin = new ZipInputStream(distNode.getNode(Node.JCR_CONTENT)
-					.getProperty(Property.JCR_DATA).getBinary().getStream());
+			zin = new ZipInputStream(
+					distNode.getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getBinary().getStream());
 
 			ZipEntry zentry = null;
 			entries: while ((zentry = zin.getNextEntry()) != null) {
@@ -178,29 +174,21 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 				// sources autodetect
 				String baseName = FilenameUtils.getBaseName(name);
 				if (baseName.endsWith("-sources")) {
-					String bundle = baseName.substring(0, baseName.length()
-							- "-sources".length());
+					String bundle = baseName.substring(0, baseName.length() - "-sources".length());
 					// log.debug(name + "," + baseName + ", " + bundle);
-					String bundlePath = FilenameUtils.getPath(name) + bundle
-							+ ".jar";
+					String bundlePath = FilenameUtils.getPath(name) + bundle + ".jar";
 					if (wrappers.containsKey(bundlePath)) {
 						BndWrapper wrapper = wrappers.get(bundlePath);
-						NameVersion bundleNv = new DefaultNameVersion(
-								wrapper.getName(), wrapper.getVersion());
-						byte[] pdeSource = RepoUtils.packageAsPdeSource(zin,
-								bundleNv);
-						Artifact sourcesArtifact = new DefaultArtifact(
-								wrapper.getCategory(), wrapper.getName()
-										+ ".source", "jar",
-								wrapper.getVersion());
-						Node pdeSourceNode = RepoUtils.copyBytesAsArtifact(
-								javaSession.getRootNode(), sourcesArtifact,
+						NameVersion bundleNv = new DefaultNameVersion(wrapper.getName(), wrapper.getVersion());
+						byte[] pdeSource = RepoUtils.packageAsPdeSource(zin, bundleNv);
+						Artifact sourcesArtifact = new DefaultArtifact(wrapper.getCategory(),
+								wrapper.getName() + ".source", "jar", wrapper.getVersion());
+						Node pdeSourceNode = RepoUtils.copyBytesAsArtifact(javaSession.getRootNode(), sourcesArtifact,
 								pdeSource);
 						osgiFactory.indexNode(pdeSourceNode);
 						pdeSourceNode.getSession().save();
 						if (log.isDebugEnabled())
-							log.debug("Added sources " + sourcesArtifact
-									+ " for bundle " + wrapper.getArtifact()
+							log.debug("Added sources " + sourcesArtifact + " for bundle " + wrapper.getArtifact()
 									+ "from " + name + " in binary archive.");
 					}
 
@@ -213,28 +201,23 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 					BndWrapper wrapper = (BndWrapper) wrappers.get(name);
 					// we must copy since the stream is closed by BND
 					byte[] origJarBytes = IOUtils.toByteArray(zin);
-					Artifact artifact = wrapZipEntry(javaSession, zentry,
-							origJarBytes, wrapper);
+					Artifact artifact = wrapZipEntry(javaSession, zentry, origJarBytes, wrapper);
 					nothingWasDone = false;
 					addArtifactToIndex(binaries, wrapper.getGroupId(), artifact);
 				} else {
 					for (String wrapperKey : wrappers.keySet())
 						if (pathMatcher.match(wrapperKey, name)) {
 							// first matched is taken
-							BndWrapper wrapper = (BndWrapper) wrappers
-									.get(wrapperKey);
+							BndWrapper wrapper = (BndWrapper) wrappers.get(wrapperKey);
 							// we must copy since the stream is closed by BND
 							byte[] origJarBytes = IOUtils.toByteArray(zin);
-							Artifact artifact = wrapZipEntry(javaSession,
-									zentry, origJarBytes, wrapper);
+							Artifact artifact = wrapZipEntry(javaSession, zentry, origJarBytes, wrapper);
 							nothingWasDone = false;
-							addArtifactToIndex(binaries, wrapper.getGroupId(),
-									artifact);
+							addArtifactToIndex(binaries, wrapper.getGroupId(), artifact);
 							continue entries;
 						} else {
 							if (log.isTraceEnabled())
-								log.trace(name + " not matched by "
-										+ wrapperKey);
+								log.trace(name + " not matched by " + wrapperKey);
 						}
 
 					for (String exclude : excludes)
@@ -245,8 +228,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 						if (pathMatcher.match(include, name)) {
 							String groupId = includes.get(include);
 							byte[] origJarBytes = IOUtils.toByteArray(zin);
-							Artifact artifact = importZipEntry(javaSession,
-									zentry, origJarBytes, groupId);
+							Artifact artifact = importZipEntry(javaSession, zentry, origJarBytes, groupId);
 							if (artifact == null) {
 								log.warn("Skipped non identified " + zentry);
 								continue entries;
@@ -266,10 +248,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			// indexes
 			if (mavenGroupIndexes && version != null) {
 				for (String groupId : binaries.keySet()) {
-					RepoUtils.writeGroupIndexes(javaSession, "/", groupId,
-							version, binaries.get(groupId),
-							sources.containsKey(groupId) ? sources.get(groupId)
-									: null);
+					RepoUtils.writeGroupIndexes(javaSession, "/", groupId, version, binaries.get(groupId),
+							sources.containsKey(groupId) ? sources.get(groupId) : null);
 				}
 			}
 
@@ -286,8 +266,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 		}
 	}
 
-	protected Artifact wrapZipEntry(Session javaSession, ZipEntry zentry,
-			byte[] origJarBytes, BndWrapper wrapper) throws RepositoryException {
+	protected Artifact wrapZipEntry(Session javaSession, ZipEntry zentry, byte[] origJarBytes, BndWrapper wrapper)
+			throws RepositoryException {
 		ByteArrayOutputStream out = null;
 		ByteArrayInputStream in = null;
 		Node newJarNode;
@@ -298,13 +278,11 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 			wrapper.wrapJar(in, out);
 
 			Artifact artifact = wrapper.getArtifact();
-			newJarNode = RepoUtils.copyBytesAsArtifact(
-					javaSession.getRootNode(), artifact, out.toByteArray());
+			newJarNode = RepoUtils.copyBytesAsArtifact(javaSession.getRootNode(), artifact, out.toByteArray());
 			osgiFactory.indexNode(newJarNode);
 			newJarNode.getSession().save();
 			if (log.isDebugEnabled())
-				log.debug("Wrapped jar " + zentry.getName() + " to "
-						+ newJarNode.getPath());
+				log.debug("Wrapped jar " + zentry.getName() + " to " + newJarNode.getPath());
 
 			if (sourcesProvider != null)
 				addSource(javaSession, artifact, out.toByteArray());
@@ -318,8 +296,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 		}
 	}
 
-	protected void addSource(Session javaSession, Artifact artifact,
-			byte[] binaryJarBytes) {
+	protected void addSource(Session javaSession, Artifact artifact, byte[] binaryJarBytes) {
 		InputStream in = null;
 		ByteArrayOutputStream out = null;
 		Jar jar = null;
@@ -333,21 +310,16 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 			IOUtils.closeQuietly(in);
 			in = new ByteArrayInputStream(out.toByteArray());
-			byte[] sourcesJar = RepoUtils.packageAsPdeSource(
-					in,
-					new DefaultNameVersion(artifact.getArtifactId(), artifact
-							.getVersion()));
-			Artifact sourcesArtifact = new DefaultArtifact(
-					artifact.getGroupId(),
-					artifact.getArtifactId() + ".source", "jar",
-					artifact.getVersion());
-			Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(
-					javaSession.getRootNode(), sourcesArtifact, sourcesJar);
+			byte[] sourcesJar = RepoUtils.packageAsPdeSource(in,
+					new DefaultNameVersion(artifact.getArtifactId(), artifact.getVersion()));
+			Artifact sourcesArtifact = new DefaultArtifact(artifact.getGroupId(), artifact.getArtifactId() + ".source",
+					"jar", artifact.getVersion());
+			Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(javaSession.getRootNode(), sourcesArtifact, sourcesJar);
 			sourcesJarNode.getSession().save();
 
 			if (log.isDebugEnabled())
-				log.debug("Added sources " + sourcesArtifact + " for bundle "
-						+ artifact + "from source provider " + sourcesProvider);
+				log.debug("Added sources " + sourcesArtifact + " for bundle " + artifact + "from source provider "
+						+ sourcesProvider);
 		} catch (Exception e) {
 			throw new SlcException("Cannot get sources for " + artifact, e);
 		} finally {
@@ -358,8 +330,8 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 		}
 	}
 
-	protected Artifact importZipEntry(Session javaSession, ZipEntry zentry,
-			byte[] binaryJarBytes, String groupId) throws RepositoryException {
+	protected Artifact importZipEntry(Session javaSession, ZipEntry zentry, byte[] binaryJarBytes, String groupId)
+			throws RepositoryException {
 		ByteArrayInputStream in = null;
 		Node newJarNode;
 		try {
@@ -369,15 +341,13 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 				log.warn("Cannot identify " + zentry.getName());
 				return null;
 			}
-			Artifact artifact = new DefaultArtifact(groupId,
-					nameVersion.getName(), "jar", nameVersion.getVersion());
-			newJarNode = RepoUtils.copyBytesAsArtifact(
-					javaSession.getRootNode(), artifact, binaryJarBytes);
+			Artifact artifact = new DefaultArtifact(groupId, nameVersion.getName(), "jar", nameVersion.getVersion());
+			newJarNode = RepoUtils.copyBytesAsArtifact(javaSession.getRootNode(), artifact, binaryJarBytes);
 			osgiFactory.indexNode(newJarNode);
 			newJarNode.getSession().save();
-			if (log.isDebugEnabled())
-				log.debug("Imported OSGi bundle " + zentry.getName() + " to "
-						+ newJarNode.getPath());
+			if (log.isDebugEnabled()) {
+				log.debug(zentry.getName() + " => " + artifact);
+			}
 
 			if (sourcesProvider != null)
 				addSource(javaSession, artifact, binaryJarBytes);
@@ -388,11 +358,9 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 		}
 	}
 
-	private void addArtifactToIndex(Map<String, Set<Artifact>> index,
-			String groupId, Artifact artifact) {
+	private void addArtifactToIndex(Map<String, Set<Artifact>> index, String groupId, Artifact artifact) {
 		if (!index.containsKey(groupId))
-			index.put(groupId,
-					new TreeSet<Artifact>(new ArtifactIdComparator()));
+			index.put(groupId, new TreeSet<Artifact>(new ArtifactIdComparator()));
 		index.get(groupId).add(artifact);
 	}
 
