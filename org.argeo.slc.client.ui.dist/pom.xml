@@ -47,6 +47,15 @@
 			<artifactId>org.argeo.util</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
+
+		<!-- RAP workbench -->
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>argeo-tp-rap-e3</artifactId>
+			<version>${version.argeo-distribution}</version>
+			<type>pom</type>
+			<scope>provided</scope>
+		</dependency>
 		
 	</dependencies>
 </project>

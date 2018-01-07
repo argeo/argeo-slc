@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.commons</groupId>
@@ -11,13 +12,14 @@
 	<name>Argeo SLC</name>
 	<version>2.1.11-SNAPSHOT</version>
 	<properties>
-		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
-<!-- 		<version.argeo-rcp>2.1.15</version.argeo-rcp> -->
 		<version.slc>2.1.11-SNAPSHOT</version.slc>
-		<version.equinox>3.11.1.v20160708-1632</version.equinox>
+		<developmentCycle.slc>2.1</developmentCycle.slc>
+
+		<version.argeo-rcp>2.1.17-SNAPSHOT</version.argeo-rcp>
+		<version.equinox>3.12.50.v20170928-1321</version.equinox>
 		<!-- Embedded Maven -->
-		<version.maven>3.2.5</version.maven>
+		<!-- <version.maven>3.2.5</version.maven> -->
 	</properties>
 	<modules>
 		<!-- Runtime -->
@@ -25,7 +27,7 @@
 		<module>org.argeo.slc.core</module>
 		<module>org.argeo.slc.unit</module>
 		<module>org.argeo.slc.support</module>
-<!-- 		<module>org.argeo.slc.support.maven</module> -->
+		<!-- <module>org.argeo.slc.support.maven</module> -->
 		<module>org.argeo.slc.repo</module>
 		<module>org.argeo.slc.factory</module>
 		<module>org.argeo.slc.launcher</module>
@@ -42,6 +44,7 @@
 
 		<module>lib</module>
 		<module>dep</module>
+		<module>ide</module>
 		<module>dist</module>
 		<module>demo</module>
 	</modules>
