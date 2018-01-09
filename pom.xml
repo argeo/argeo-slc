@@ -44,7 +44,7 @@
 
 		<module>lib</module>
 		<module>dep</module>
-		<module>ide</module>
+<!-- 		<module>ide</module> -->
 		<module>dist</module>
 		<module>demo</module>
 	</modules>
