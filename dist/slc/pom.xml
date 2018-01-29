@@ -119,129 +119,35 @@
 						<artifactId>rpm-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>rpm-slc</id>
+								<id>rpm</id>
 								<phase>package</phase>
 								<goals>
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>slc</name>
+									<name>slc-repo</name>
 									<mappings>
 										<mapping>
-											<directory>/usr/bin</directory>
+											<directory>/etc/node/conf.d</directory>
 											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>755</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>rpm/usr/bin</location>
-												</source>
-											</sources>
-										</mapping>
-										<!-- <mapping> -->
-										<!-- <directory>/usr/sbin</directory> -->
-										<!-- <username>root</username> -->
-										<!-- <groupname>root</groupname> -->
-										<!-- <filemode>755</filemode> -->
-										<!-- <directoryIncluded>false</directoryIncluded> -->
-										<!-- <sources> -->
-										<!-- <source> -->
-										<!-- <location>rpm/usr/sbin</location> -->
-										<!-- </source> -->
-										<!-- </sources> -->
-										<!-- </mapping> -->
-										<!-- <mapping> -->
-										<!-- <directory>/usr/lib/systemd/system</directory> -->
-										<!-- <username>root</username> -->
-										<!-- <groupname>root</groupname> -->
-										<!-- <filemode>644</filemode> -->
-										<!-- <directoryIncluded>false</directoryIncluded> -->
-										<!-- <sources> -->
-										<!-- <source> -->
-										<!-- <location>rpm/usr/lib/systemd/system</location> -->
-										<!-- </source> -->
-										<!-- </sources> -->
-										<!-- </mapping> -->
-										<mapping>
-											<directory>/etc/init.d</directory>
-											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>755</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>rpm/etc/init.d</location>
-												</source>
-											</sources>
-										</mapping>
-										<mapping>
-											<directory>/etc/slc</directory>
-											<username>root</username>
-											<groupname>slc</groupname>
+											<groupname>node</groupname>
 											<filemode>640</filemode>
 											<configuration>noreplace</configuration>
 											<directoryIncluded>false</directoryIncluded>
 											<sources>
 												<source>
-													<location>rpm/etc/slc</location>
-												</source>
-											</sources>
-										</mapping>
-										<mapping>
-											<directory>/etc/slc-cl</directory>
-											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>644</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>rpm/etc/slc-cl</location>
-												</source>
-											</sources>
-										</mapping>
-										<mapping>
-											<directory>/usr/share/osgi/boot</directory>
-											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>644</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>${project.build.directory}/boot</location>
+													<location>rpm/etc/node/conf.d</location>
 													<includes>
-														<include>org.argeo.slc.launcher.jar</include>
+														<include>*.ini</include>
+														<include>*.txt</include>
 													</includes>
 												</source>
 											</sources>
 										</mapping>
-										<!-- Maven (even if not installed) -->
-										<!-- <mapping> -->
-										<!-- <directory>/var/lib/slc/.m2</directory> -->
-										<!-- <username>slc</username> -->
-										<!-- <groupname>slc</groupname> -->
-										<!-- <filemode>600</filemode> -->
-										<!-- <directoryIncluded>false</directoryIncluded> -->
-										<!-- <sources> -->
-										<!-- <source> -->
-										<!-- <location>rpm/var/lib/slc/.m2</location> -->
-										<!-- </source> -->
-										<!-- </sources> -->
-										<!-- </mapping> -->
 									</mappings>
-									<preinstallScriptlet>
-										<scriptFile>rpm/scripts/preinstall</scriptFile>
-									</preinstallScriptlet>
-									<postinstallScriptlet>
-										<scriptFile>rpm/scripts/postinstall</scriptFile>
-									</postinstallScriptlet>
-									<preremoveScriptlet>
-										<scriptFile>rpm/scripts/preremove</scriptFile>
-									</preremoveScriptlet>
 									<requires>
+										<require>argeo-node</require>
 										<require>slc-platform</require>
-										<require>osgi-boot</require>
-										<!-- do not require java so that it can be installed on Ubuntu -->
 									</requires>
 								</configuration>
 							</execution>
