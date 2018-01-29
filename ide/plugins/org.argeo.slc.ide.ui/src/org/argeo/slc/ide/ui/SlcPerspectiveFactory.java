@@ -1,10 +1,8 @@
 package org.argeo.slc.ide.ui;
 
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.console.IConsoleConstants;
 
 public class SlcPerspectiveFactory implements IPerspectiveFactory {
 
@@ -14,11 +12,11 @@ public class SlcPerspectiveFactory implements IPerspectiveFactory {
 
 		IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f,
 			editorArea);
-		topLeft.addView(JavaUI.ID_PACKAGES);
+//		topLeft.addView(JavaUI.ID_PACKAGES);
 
 		IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.66f,
 				editorArea);
-		bottom.addView(IConsoleConstants.ID_CONSOLE_VIEW);
+//		bottom.addView(IConsoleConstants.ID_CONSOLE_VIEW);
 		bottom.addView(IPageLayout.ID_TASK_LIST);
 		
 		layout.addActionSet("org.eclipse.debug.ui.launchActionSet");

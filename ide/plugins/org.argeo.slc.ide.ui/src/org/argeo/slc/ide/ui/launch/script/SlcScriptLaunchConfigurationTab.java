@@ -1,12 +1,9 @@
 package org.argeo.slc.ide.ui.launch.script;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -18,7 +15,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.dialogs.ResourceSelectionDialog;
 
 public class SlcScriptLaunchConfigurationTab extends
 		AbstractLaunchConfigurationTab {
@@ -154,19 +150,20 @@ public class SlcScriptLaunchConfigurationTab extends
 	}
 
 	protected void handleWorkspaceLocationButtonSelected() {
-		ResourceSelectionDialog dialog;
-		dialog = new ResourceSelectionDialog(getShell(), ResourcesPlugin
-				.getWorkspace().getRoot(), "Select a file");
-		if (dialog.open() == Window.OK) {
-			Object[] results = dialog.getResult();
-			if (results == null || results.length < 1) {
-				return;
-			}
-			IResource resource = (IResource) results[0];
-			scriptTF.setText(SlcScriptUtils
-					.convertToWorkspaceLocation(resource));
-			updateLaunchConfigurationDialog();
-		}
+		// FIXME do not use resource framework
+//		ResourceSelectionDialog dialog;
+//		dialog = new ResourceSelectionDialog(getShell(), ResourcesPlugin
+//				.getWorkspace().getRoot(), "Select a file");
+//		if (dialog.open() == Window.OK) {
+//			Object[] results = dialog.getResult();
+//			if (results == null || results.length < 1) {
+//				return;
+//			}
+//			IResource resource = (IResource) results[0];
+//			scriptTF.setText(SlcScriptUtils
+//					.convertToWorkspaceLocation(resource));
+//			updateLaunchConfigurationDialog();
+//		}
 	}
 
 	// LISTENERS

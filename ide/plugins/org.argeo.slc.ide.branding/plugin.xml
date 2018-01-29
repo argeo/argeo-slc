@@ -6,7 +6,7 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.eclipse.ui.ide.workbench"
+            application="org.argeo.cms.ui.workbench.rcp.secureUi"
             name="Argeo SLC IDE">
          <property
                name="windowImages"
