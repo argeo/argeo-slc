@@ -54,14 +54,23 @@ public class ServiceChannel implements AsynchronousByteChannel {
 	}
 
 	@Override
-	/** NB: it does not close the underlying channels. */
-	public void close() throws IOException {
+	public synchronized void close() throws IOException {
+		try {
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			out.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		open = false;
 		notifyAll();
 	}
 
 	@Override
-	public boolean isOpen() {
+	public synchronized boolean isOpen() {
 		return open;
 	}
 
