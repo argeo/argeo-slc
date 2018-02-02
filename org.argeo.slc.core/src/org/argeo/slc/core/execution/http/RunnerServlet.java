@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import javax.jcr.Node;
@@ -57,10 +56,10 @@ public class RunnerServlet extends HttpServlet {
 	private BundleContext bc;
 	private ExecutorService executor;
 
-	public RunnerServlet(BundleContext bc, Path baseDir) {
+	public RunnerServlet(BundleContext bc, Path baseDir, ExecutorService executor) {
 		this.bc = bc;
 		this.baseDir = baseDir;
-		this.executor = Executors.newFixedThreadPool(20);
+		this.executor = executor;
 	}
 
 	@Override
@@ -177,10 +176,10 @@ public class RunnerServlet extends HttpServlet {
 		if (log.isTraceEnabled())
 			log.trace(session.getUserID() + " " + workgroup + " " + flowName);
 
-		try {
+		try (ServiceChannel serviceChannel = new ServiceChannel(Channels.newChannel(in), Channels.newChannel(out),
+				executor)) {
 			resp.setHeader("Content-Type", "application/json");
-			ServiceChannel serviceChannel = new ServiceChannel(Channels.newChannel(in), Channels.newChannel(out),
-					executor);
+
 			Callable<Integer> task;
 			if (ext.equals("api")) {
 				String uri = Files.readAllLines(baseDir.resolve(flowName)).get(0);
