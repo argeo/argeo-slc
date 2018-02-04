@@ -55,11 +55,16 @@ public class RunnerServlet extends HttpServlet {
 	private Path baseDir;
 	private BundleContext bc;
 	private ExecutorService executor;
+	private boolean persistProcesses = true;
 
 	public RunnerServlet(BundleContext bc, Path baseDir, ExecutorService executor) {
 		this.bc = bc;
 		this.baseDir = baseDir;
 		this.executor = executor;
+	}
+
+	protected void setPersistProcesses(boolean persistProcesses) {
+		this.persistProcesses = persistProcesses;
 	}
 
 	@Override
@@ -128,53 +133,56 @@ public class RunnerServlet extends HttpServlet {
 		String flowName = sb.toString();
 		String ext = FilenameUtils.getExtension(flowName.toString());
 
-		// JCR
-		Repository repository;
-		try {
-			ServiceReference<Repository> sr = bc.getServiceReferences(Repository.class, "(cn=home)").iterator().next();
-			repository = bc.getService(sr);
+		Session session = null;
+		Node realizedFlowNode = null;
+		if (persistProcesses) {
+			// JCR
+			Repository repository;
+			try {
+				ServiceReference<Repository> sr = bc.getServiceReferences(Repository.class, "(cn=home)").iterator()
+						.next();
+				repository = bc.getService(sr);
 
-		} catch (InvalidSyntaxException e2) {
-			throw new SlcException("Cannot find home repository", e2);
-		}
-		Session session = Subject.doAs(subject, new PrivilegedAction<Session>() {
-
-			@Override
-			public Session run() {
-				try {
-					return repository.login();
-				} catch (RepositoryException e) {
-					throw new RuntimeException("Cannot login", e);
-				}
+			} catch (InvalidSyntaxException e2) {
+				throw new SlcException("Cannot find home repository", e2);
 			}
+			session = Subject.doAs(subject, new PrivilegedAction<Session>() {
 
-		});
-		UUID processUuid = UUID.randomUUID();
-		GregorianCalendar started = new GregorianCalendar();
-		Node groupHome = NodeUtils.getGroupHome(session, workgroup);
-		if (groupHome == null) {
-			groupHome = NodeUtils.getUserHome(session);
-		}
-		String processPath = SlcNames.SLC_SYSTEM + "/" + SlcNames.SLC_PROCESSES + "/"
-				+ JcrUtils.dateAsPath(started, true) + processUuid;
-		Node processNode = JcrUtils.mkdirs(groupHome, processPath, SlcTypes.SLC_PROCESS);
-		Node realizedFlowNode;
-		try {
-			processNode.setProperty(SlcNames.SLC_UUID, processUuid.toString());
-			processNode.setProperty(SlcNames.SLC_STATUS, ExecutionProcess.RUNNING);
-			realizedFlowNode = processNode.addNode(SlcNames.SLC_FLOW);
-			realizedFlowNode.addMixin(SlcTypes.SLC_REALIZED_FLOW);
-			realizedFlowNode.setProperty(SlcNames.SLC_STARTED, started);
-			realizedFlowNode.setProperty(SlcNames.SLC_NAME, flowName);
-			Node addressNode = realizedFlowNode.addNode(SlcNames.SLC_ADDRESS, NodeType.NT_ADDRESS);
-			addressNode.setProperty(Property.JCR_PATH, flowName);
-			processNode.getSession().save();
-		} catch (RepositoryException e1) {
-			throw new SlcException("Cannot register SLC process", e1);
-		}
+				@Override
+				public Session run() {
+					try {
+						return repository.login();
+					} catch (RepositoryException e) {
+						throw new RuntimeException("Cannot login", e);
+					}
+				}
 
-		if (log.isTraceEnabled())
-			log.trace(session.getUserID() + " " + workgroup + " " + flowName);
+			});
+			UUID processUuid = UUID.randomUUID();
+			GregorianCalendar started = new GregorianCalendar();
+			Node groupHome = NodeUtils.getGroupHome(session, workgroup);
+			if (groupHome == null) {
+				groupHome = NodeUtils.getUserHome(session);
+			}
+			String processPath = SlcNames.SLC_SYSTEM + "/" + SlcNames.SLC_PROCESSES + "/"
+					+ JcrUtils.dateAsPath(started, true) + processUuid;
+			Node processNode = JcrUtils.mkdirs(groupHome, processPath, SlcTypes.SLC_PROCESS);
+			try {
+				processNode.setProperty(SlcNames.SLC_UUID, processUuid.toString());
+				processNode.setProperty(SlcNames.SLC_STATUS, ExecutionProcess.RUNNING);
+				realizedFlowNode = processNode.addNode(SlcNames.SLC_FLOW);
+				realizedFlowNode.addMixin(SlcTypes.SLC_REALIZED_FLOW);
+				realizedFlowNode.setProperty(SlcNames.SLC_STARTED, started);
+				realizedFlowNode.setProperty(SlcNames.SLC_NAME, flowName);
+				Node addressNode = realizedFlowNode.addNode(SlcNames.SLC_ADDRESS, NodeType.NT_ADDRESS);
+				addressNode.setProperty(Property.JCR_PATH, flowName);
+				processNode.getSession().save();
+			} catch (RepositoryException e1) {
+				throw new SlcException("Cannot register SLC process", e1);
+			}
+			if (log.isTraceEnabled())
+				log.trace(session.getUserID() + " " + workgroup + " " + flowName);
+		}
 
 		try (ServiceChannel serviceChannel = new ServiceChannel(Channels.newChannel(in), Channels.newChannel(out),
 				executor)) {
@@ -196,21 +204,25 @@ public class RunnerServlet extends HttpServlet {
 			int written = f.get();
 			if (log.isTraceEnabled())
 				log.trace("Written " + written + " bytes");
-			try {
-				processNode.setProperty(SlcNames.SLC_STATUS, ExecutionProcess.COMPLETED);
-				realizedFlowNode.setProperty(SlcNames.SLC_COMPLETED, new GregorianCalendar());
-				processNode.getSession().save();
-			} catch (RepositoryException e1) {
-				throw new SlcException("Cannot update SLC process status", e1);
-			}
+			if (persistProcesses)
+				try {
+					Node processNode = realizedFlowNode.getParent();
+					processNode.setProperty(SlcNames.SLC_STATUS, ExecutionProcess.COMPLETED);
+					realizedFlowNode.setProperty(SlcNames.SLC_COMPLETED, new GregorianCalendar());
+					processNode.getSession().save();
+				} catch (RepositoryException e1) {
+					throw new SlcException("Cannot update SLC process status", e1);
+				}
 		} catch (Exception e) {
-			try {
-				processNode.setProperty(SlcNames.SLC_STATUS, ExecutionProcess.ERROR);
-				realizedFlowNode.setProperty(SlcNames.SLC_COMPLETED, new GregorianCalendar());
-				processNode.getSession().save();
-			} catch (RepositoryException e1) {
-				throw new SlcException("Cannot update SLC process status", e1);
-			}
+			if (persistProcesses)
+				try {
+					Node processNode = realizedFlowNode.getParent();
+					processNode.setProperty(SlcNames.SLC_STATUS, ExecutionProcess.ERROR);
+					realizedFlowNode.setProperty(SlcNames.SLC_COMPLETED, new GregorianCalendar());
+					processNode.getSession().save();
+				} catch (RepositoryException e1) {
+					throw new SlcException("Cannot update SLC process status", e1);
+				}
 			throw new SlcException("Task " + flowName + " failed", e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
