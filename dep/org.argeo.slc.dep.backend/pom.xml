@@ -35,11 +35,16 @@
 		</plugins>
 	</build>
 	<dependencies>
+		<!-- Parent dependencies -->
+		<dependency>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.dep.cms.sdk</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.minimal</artifactId>
 			<version>2.1.12-SNAPSHOT</version>
-			<type>pom</type>
 		</dependency>
 
 		<!-- SLC Libs -->
@@ -82,13 +87,6 @@
 		<!-- <artifactId>org.argeo.slc.server.repo.webapp</artifactId> -->
 		<!-- <version>2.1.1-SNAPSHOT</version> -->
 		<!-- </dependency> -->
-
-		<!-- Node -->
-		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.dep.cms.sdk</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
 
 		<!-- UI -->
 		<dependency>
@@ -135,6 +133,7 @@
 									<outputDirectory>${project.build.directory}/lib-argeo</outputDirectory>
 									<includeGroupIds>org.argeo.slc</includeGroupIds>
 									<excludeTransitive>true</excludeTransitive>
+									<excludeArtifactIds>org.argeo.slc.dep.minimal</excludeArtifactIds>
 									<includeTypes>jar</includeTypes>
 									<includeScope>runtime</includeScope>
 									<useRepositoryLayout>true</useRepositoryLayout>
