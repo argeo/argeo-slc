@@ -85,18 +85,6 @@ public class RunnerServlet extends HttpServlet {
 			in = req.getInputStream();
 		}
 
-		// InputStream in = req.getInputStream();
-		// Gson gson = new Gson();
-		// JsonParser jsonParser = new JsonParser();
-		// BufferedReader reader = new BufferedReader(new InputStreamReader(in,
-		// Charset.forName("UTF-8")));
-		// JsonElement payload = jsonParser.parse(reader);
-		// String payloadStr = gson.toJson(payload);
-		//
-		// log.debug(payloadStr);
-		// if (true)
-		// return;
-
 		String path = req.getPathInfo();
 		// InputStream in = req.getInputStream();
 		OutputStream out = resp.getOutputStream();
@@ -184,6 +172,7 @@ public class RunnerServlet extends HttpServlet {
 				log.trace(session.getUserID() + " " + workgroup + " " + flowName);
 		}
 
+		boolean isFailed = false;
 		try (ServiceChannel serviceChannel = new ServiceChannel(Channels.newChannel(in), Channels.newChannel(out),
 				executor)) {
 			resp.setHeader("Content-Type", "application/json");
@@ -202,12 +191,18 @@ public class RunnerServlet extends HttpServlet {
 			// execute
 			Future<Integer> f = executor.submit(task);
 			int written = f.get();
+
+			if (written < 0) {// error
+				isFailed = true;
+			}
+
 			if (log.isTraceEnabled())
 				log.trace("Written " + written + " bytes");
 			if (persistProcesses)
 				try {
 					Node processNode = realizedFlowNode.getParent();
-					processNode.setProperty(SlcNames.SLC_STATUS, ExecutionProcess.COMPLETED);
+					processNode.setProperty(SlcNames.SLC_STATUS,
+							isFailed ? ExecutionProcess.ERROR : ExecutionProcess.COMPLETED);
 					realizedFlowNode.setProperty(SlcNames.SLC_COMPLETED, new GregorianCalendar());
 					processNode.getSession().save();
 				} catch (RepositoryException e1) {
@@ -223,17 +218,15 @@ public class RunnerServlet extends HttpServlet {
 				} catch (RepositoryException e1) {
 					throw new SlcException("Cannot update SLC process status", e1);
 				}
-			throw new SlcException("Task " + flowName + " failed", e);
+			// throw new SlcException("Task " + flowName + " failed", e);
+			isFailed = true;
 		} finally {
 			JcrUtils.logoutQuietly(session);
 		}
 
-		// JsonElement answer = jsonParser.parse(answerStr);
-		// resp.setHeader("Content-Type", "application/json");
-		// JsonWriter jsonWriter = gson.newJsonWriter(resp.getWriter());
-		// jsonWriter.setIndent(" ");
-		// gson.toJson(answer, jsonWriter);
-		// jsonWriter.flush();
+		if (isFailed) {
+			resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	protected Callable<Integer> createTask(ServiceChannel serviceChannel, String flowName) {
