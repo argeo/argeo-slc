@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.commons</groupId>
 		<artifactId>argeo-commons</artifactId>
-		<version>2.1.72-SNAPSHOT</version>
+		<version>2.1.72</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -15,8 +16,8 @@
 		<version.slc>2.1.12-SNAPSHOT</version.slc>
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 
-		<version.argeo-rcp>2.1.17-SNAPSHOT</version.argeo-rcp>
-		<version.equinox>3.12.50.v20170928-1321</version.equinox>
+		<!-- <version.argeo-rcp>2.1.17-SNAPSHOT</version.argeo-rcp> -->
+		<!-- <version.equinox>3.12.50.v20170928-1321</version.equinox> -->
 		<!-- Embedded Maven -->
 		<!-- <version.maven>3.2.5</version.maven> -->
 	</properties>
@@ -43,7 +44,7 @@
 
 		<module>lib</module>
 		<module>dep</module>
-<!-- 		<module>ide</module> -->
+		<!-- <module>ide</module> -->
 		<module>dist</module>
 		<module>demo</module>
 	</modules>
