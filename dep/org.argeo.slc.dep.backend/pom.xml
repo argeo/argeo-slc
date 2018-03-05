@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dep</artifactId>
-		<version>2.1.12</version>
+		<version>2.1.13-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.dep.backend</artifactId>
@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.minimal</artifactId>
-			<version>2.1.12</version>
+			<version>2.1.13-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SLC Libs -->
@@ -63,24 +63,24 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support</artifactId>
-			<version>2.1.12</version>
+			<version>2.1.13-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SLC Repo -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>2.1.12</version>
+			<version>2.1.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.factory</artifactId>
-			<version>2.1.12</version>
+			<version>2.1.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
-			<version>2.1.12</version>
+			<version>2.1.13-SNAPSHOT</version>
 		</dependency>
 		<!-- <dependency> -->
 		<!-- <groupId>org.argeo.slc</groupId> -->
@@ -92,24 +92,24 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.client.ui</artifactId>
-			<version>2.1.12</version>
+			<version>2.1.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.client.ui.dist</artifactId>
-			<version>2.1.12</version>
+			<version>2.1.13-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.client.rap</artifactId>
-			<version>2.1.12</version>
+			<version>2.1.13-SNAPSHOT</version>
 		</dependency>
 
 		<!-- For target platform generation -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.unit</artifactId>
-			<version>2.1.12</version>
+			<version>2.1.13-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
