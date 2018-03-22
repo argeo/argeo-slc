@@ -1,6 +1,6 @@
 package org.argeo.slc.client.ui.dist.controllers;
 
-import org.argeo.cms.ui.workbench.jcr.JcrImages;
+import org.argeo.cms.ui.jcr.JcrImages;
 import org.argeo.slc.client.ui.dist.DistImages;
 import org.argeo.slc.client.ui.dist.model.DistParentElem;
 import org.argeo.slc.client.ui.dist.model.ModularDistVersionBaseElem;
