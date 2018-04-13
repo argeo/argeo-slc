@@ -12,6 +12,7 @@
 	<modules>
 		<module>org.argeo.slc.dep.minimal</module>
 		<module>org.argeo.slc.dep.backend</module>
+		<module>org.argeo.slc.dep.e4.rap</module>
 	</modules>
 	<build>
 		<plugins>
