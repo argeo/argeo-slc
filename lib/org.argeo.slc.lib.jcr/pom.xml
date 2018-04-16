@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>lib</artifactId>
-		<version>2.1.13-SNAPSHOT</version>
+		<version>2.1.13</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.lib.jcr</artifactId>
