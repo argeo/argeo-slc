@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -135,29 +137,29 @@
 							</execution>
 						</executions>
 					</plugin>
-<!-- 					<plugin> -->
-<!-- 						<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 						<artifactId>maven-dependency-plugin</artifactId> -->
-<!-- 						<executions> -->
-<!-- 							<execution> -->
-<!-- 								<id>copy-argeo</id> -->
-<!-- 								<phase>package</phase> -->
-<!-- 								<goals> -->
-<!-- 									<goal>copy-dependencies</goal> -->
-<!-- 								</goals> -->
-<!-- 								<configuration> -->
-<!-- 									<includeTypes>jar</includeTypes> -->
-<!-- 									<outputDirectory>${project.build.directory}/lib-argeo</outputDirectory> -->
-<!-- 									<includeGroupIds>org.argeo.slc</includeGroupIds> -->
-<!-- 									<excludeTransitive>true</excludeTransitive> -->
-<!-- 									<excludeArtifactIds>org.argeo.slc.dep.minimal</excludeArtifactIds> -->
-<!-- 									<includeTypes>jar</includeTypes> -->
-<!-- 									<includeScope>runtime</includeScope> -->
-<!-- 									<useRepositoryLayout>true</useRepositoryLayout> -->
-<!-- 								</configuration> -->
-<!-- 							</execution> -->
-<!-- 						</executions> -->
-<!-- 					</plugin> -->
+					<!-- <plugin> -->
+					<!-- <groupId>org.apache.maven.plugins</groupId> -->
+					<!-- <artifactId>maven-dependency-plugin</artifactId> -->
+					<!-- <executions> -->
+					<!-- <execution> -->
+					<!-- <id>copy-argeo</id> -->
+					<!-- <phase>package</phase> -->
+					<!-- <goals> -->
+					<!-- <goal>copy-dependencies</goal> -->
+					<!-- </goals> -->
+					<!-- <configuration> -->
+					<!-- <includeTypes>jar</includeTypes> -->
+					<!-- <outputDirectory>${project.build.directory}/lib-argeo</outputDirectory> -->
+					<!-- <includeGroupIds>org.argeo.slc</includeGroupIds> -->
+					<!-- <excludeTransitive>true</excludeTransitive> -->
+					<!-- <excludeArtifactIds>org.argeo.slc.dep.minimal</excludeArtifactIds> -->
+					<!-- <includeTypes>jar</includeTypes> -->
+					<!-- <includeScope>runtime</includeScope> -->
+					<!-- <useRepositoryLayout>true</useRepositoryLayout> -->
+					<!-- </configuration> -->
+					<!-- </execution> -->
+					<!-- </executions> -->
+					<!-- </plugin> -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>rpm-maven-plugin</artifactId>
@@ -186,13 +188,13 @@
 												</source>
 											</sources>
 										</mapping>
-										<mapping>
-											<directory>/usr/share/osgi/org/argeo/slc/${project.artifactId}/${project.version}</directory>
-											<username>root</username>
-											<groupname>root</groupname>
-											<directoryIncluded>false</directoryIncluded>
-											<artifact />
-										</mapping>
+										<!-- <mapping> -->
+										<!-- <directory>/usr/share/osgi/org/argeo/slc/${project.artifactId}/${project.version}</directory> -->
+										<!-- <username>root</username> -->
+										<!-- <groupname>root</groupname> -->
+										<!-- <directoryIncluded>false</directoryIncluded> -->
+										<!-- <artifact /> -->
+										<!-- </mapping> -->
 									</mappings>
 									<requires>
 										<require>argeo-cms-platform</require>
