@@ -20,6 +20,19 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.argeo.commons</groupId>
+						<artifactId>assembly-descriptors</artifactId>
+						<version>${version.argeo-commons}</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<attach>false</attach>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
