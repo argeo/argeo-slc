@@ -89,31 +89,31 @@
 			<id>rpmbuild</id>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-dependencies-rpm</id>
-								<phase>package</phase>
-								<goals>
-									<goal>copy</goal>
-								</goals>
-								<configuration>
-									<includeTypes>jar</includeTypes>
-									<stripVersion>true</stripVersion>
-									<outputDirectory>${project.build.directory}/boot</outputDirectory>
-									<artifactItems>
-										<artifactItem>
-											<groupId>org.argeo.slc</groupId>
-											<artifactId>org.argeo.slc.launcher</artifactId>
-											<version>${project.version}</version>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+<!-- 					<plugin> -->
+<!-- 						<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 						<artifactId>maven-dependency-plugin</artifactId> -->
+<!-- 						<executions> -->
+<!-- 							<execution> -->
+<!-- 								<id>copy-dependencies-rpm</id> -->
+<!-- 								<phase>package</phase> -->
+<!-- 								<goals> -->
+<!-- 									<goal>copy</goal> -->
+<!-- 								</goals> -->
+<!-- 								<configuration> -->
+<!-- 									<includeTypes>jar</includeTypes> -->
+<!-- 									<stripVersion>true</stripVersion> -->
+<!-- 									<outputDirectory>${project.build.directory}/boot</outputDirectory> -->
+<!-- 									<artifactItems> -->
+<!-- 										<artifactItem> -->
+<!-- 											<groupId>org.argeo.slc</groupId> -->
+<!-- 											<artifactId>org.argeo.slc.launcher</artifactId> -->
+<!-- 											<version>${project.version}</version> -->
+<!-- 										</artifactItem> -->
+<!-- 									</artifactItems> -->
+<!-- 								</configuration> -->
+<!-- 							</execution> -->
+<!-- 						</executions> -->
+<!-- 					</plugin> -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>rpm-maven-plugin</artifactId>
@@ -128,7 +128,7 @@
 									<name>slc-repo</name>
 									<mappings>
 										<mapping>
-											<directory>/etc/node/conf.d</directory>
+											<directory>/etc/argeo/conf.d</directory>
 											<username>root</username>
 											<groupname>argeo</groupname>
 											<filemode>640</filemode>
@@ -136,7 +136,7 @@
 											<directoryIncluded>false</directoryIncluded>
 											<sources>
 												<source>
-													<location>rpm/etc/node/conf.d</location>
+													<location>rpm/etc/argeo/conf.d</location>
 													<includes>
 														<include>*.ini</include>
 														<include>*.txt</include>
