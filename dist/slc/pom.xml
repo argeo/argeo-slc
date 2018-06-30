@@ -130,7 +130,7 @@
 										<mapping>
 											<directory>/etc/node/conf.d</directory>
 											<username>root</username>
-											<groupname>node</groupname>
+											<groupname>argeo</groupname>
 											<filemode>640</filemode>
 											<configuration>noreplace</configuration>
 											<directoryIncluded>false</directoryIncluded>
