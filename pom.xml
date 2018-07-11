@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.commons</groupId>
@@ -106,108 +108,165 @@ limitations under the License.
 				<role>developer</role>
 			</roles>
 		</developer>
-		<developer>
-			<id>bsinou</id>
-			<name>Bruno Sinou</name>
-			<email><![CDATA[http://www.google.com/recaptcha/mailhide/d?k=01SZoYvDnJzcw0KOR7M7u6Qg==&c=SVgEjXA_Uu9ZrNzLES92w1ght6puLFiVpoNUddCfSU8=]]></email>
-			<organization>Argeo</organization>
-			<organizationUrl>http://www.argeo.org</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
 	</developers>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-site-plugin</artifactId>
-				<inherited>false</inherited>
-				<configuration>
-					<skip>false</skip>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+<!-- 	<build> -->
+<!-- 		<plugins> -->
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-site-plugin</artifactId> -->
+<!-- 				<inherited>false</inherited> -->
+<!-- 				<configuration> -->
+<!-- 					<skip>false</skip> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+<!-- 			<plugin> -->
+<!-- 				<artifactId>maven-javadoc-plugin</artifactId> -->
+<!-- 				<configuration> -->
+<!-- 					<skip>true</skip> -->
+<!-- 				</configuration> -->
+<!-- 			</plugin> -->
+<!-- 		</plugins> -->
+<!-- 	</build> -->
 	<repositories>
 		<repository>
 			<id>argeo</id>
-			<url>http://forge.argeo.org/data/java/argeo-2.1/</url>
+			<url>http://repo.argeo.org/data/java/argeo-2.1/</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
 		</repository>
-		<repository>
-			<id>argeo-rcp</id>
-			<url>http://forge.argeo.org/data/java/argeo-rcp-2.1</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>argeo-rcp</id> -->
+<!-- 			<url>http://repo.argeo.org/data/java/argeo-rcp-2.1</url> -->
+<!-- 			<releases> -->
+<!-- 				<enabled>true</enabled> -->
+<!-- 				<updatePolicy>daily</updatePolicy> -->
+<!-- 				<checksumPolicy>warn</checksumPolicy> -->
+<!-- 			</releases> -->
+<!-- 		</repository> -->
 
 		<!-- Disable Maven default repository -->
-		<repository>
-			<id>central</id>
-			<url>http://repo1.maven.org/maven2</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+<!-- 		<repository> -->
+<!-- 			<id>central</id> -->
+<!-- 			<url>http://repo1.maven.org/maven2</url> -->
+<!-- 			<releases> -->
+<!-- 				<enabled>false</enabled> -->
+<!-- 			</releases> -->
+<!-- 			<snapshots> -->
+<!-- 				<enabled>false</enabled> -->
+<!-- 			</snapshots> -->
+<!-- 		</repository> -->
 	</repositories>
-	<profiles>
-		<profile>
-			<id>localrepo</id>
-			<repositories>
-				<repository>
-					<id>argeo-tp</id>
-					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url>
-					<releases>
-						<enabled>true</enabled>
-						<updatePolicy>daily</updatePolicy>
-						<checksumPolicy>warn</checksumPolicy>
-					</releases>
-				</repository>
-				<!-- <repository> -->
-				<!-- <id>argeo-tp-extras</id> -->
-				<!-- <url>http://localhost:7080/data/java/argeo-tp-extras-2.1</url> -->
-				<!-- <releases> -->
-				<!-- <enabled>true</enabled> -->
-				<!-- <updatePolicy>daily</updatePolicy> -->
-				<!-- <checksumPolicy>warn</checksumPolicy> -->
-				<!-- </releases> -->
-				<!-- </repository> -->
-				<repository>
-					<id>argeo-commons</id>
-					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url>
-					<releases>
-						<enabled>true</enabled>
-						<updatePolicy>daily</updatePolicy>
-						<checksumPolicy>warn</checksumPolicy>
-					</releases>
-				</repository>
-			</repositories>
-			<distributionManagement>
-				<repository>
-					<id>staging</id>
-					<url>dav:http://localhost:7070/data/java/argeo-slc-${developmentCycle.slc}</url>
-				</repository>
-				<site>
-					<id>staging</id>
-					<url>dav:http://localhost:7070/data/docs/argeo-slc-${developmentCycle.slc}</url>
-				</site>
-			</distributionManagement>
-		</profile>
-	</profiles>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>index</report>
+							<report>summary</report>
+							<report>license</report>
+							<report>scm</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<failOnError>false</failOnError>
+					<additionalJOption>-Xdoclint:none</additionalJOption>
+					<excludePackageNames>*.internal.*,org.eclipse.*</excludePackageNames>
+					<encoding>UTF-8</encoding>
+					<detectLinks>true</detectLinks>
+					<!-- <sourcepath>src</sourcepath> -->
+					<links>
+						<!-- Java -->
+						<link>http://docs.oracle.com/javase/8/docs/api</link>
+						<!-- OSGi -->
+						<link>http://www.osgi.org/javadoc/r5/core</link>
+						<link>http://www.osgi.org/javadoc/r5/enterprise</link>
+						<!-- Spring -->
+						<link>http://docs.spring.io/spring/docs/3.2.x/javadoc-api</link>
+						<!-- JCR -->
+						<link>http://www.day.com/maven/javax.jcr/javadocs/jcr-2.0</link>
+						<!-- Eclipse -->
+						<link>http://help.eclipse.org/neon/topic/org.eclipse.platform.doc.isv/reference/api</link>
+					</links>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<id>aggregate-javadoc</id>
+						<inherited>false</inherited>
+						<reports>
+							<report>aggregate</report>
+						</reports>
+					</reportSet>
+					<reportSet>
+						<id>javadoc</id>
+						<reports>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.5</version>
+				<reportSets>
+					<reportSet>
+						<id>aggregate-jxr</id>
+						<inherited>false</inherited>
+						<reports>
+							<report>aggregate</report>
+						</reports>
+					</reportSet>
+					<reportSet>
+						<id>jxr</id>
+						<reports>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+<!-- 	<profiles> -->
+<!-- 		<profile> -->
+<!-- 			<id>localrepo</id> -->
+<!-- 			<repositories> -->
+<!-- 				<repository> -->
+<!-- 					<id>argeo-tp</id> -->
+<!-- 					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url> -->
+<!-- 					<releases> -->
+<!-- 						<enabled>true</enabled> -->
+<!-- 						<updatePolicy>daily</updatePolicy> -->
+<!-- 						<checksumPolicy>warn</checksumPolicy> -->
+<!-- 					</releases> -->
+<!-- 				</repository> -->
+<!-- 				<repository> -->
+<!-- 					<id>argeo-commons</id> -->
+<!-- 					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url> -->
+<!-- 					<releases> -->
+<!-- 						<enabled>true</enabled> -->
+<!-- 						<updatePolicy>daily</updatePolicy> -->
+<!-- 						<checksumPolicy>warn</checksumPolicy> -->
+<!-- 					</releases> -->
+<!-- 				</repository> -->
+<!-- 			</repositories> -->
+<!-- 			<distributionManagement> -->
+<!-- 				<repository> -->
+<!-- 					<id>staging</id> -->
+<!-- 					<url>dav:http://localhost:7070/data/java/argeo-slc-${developmentCycle.slc}</url> -->
+<!-- 				</repository> -->
+<!-- 				<site> -->
+<!-- 					<id>staging</id> -->
+<!-- 					<url>dav:http://localhost:7070/data/docs/argeo-slc-${developmentCycle.slc}</url> -->
+<!-- 				</site> -->
+<!-- 			</distributionManagement> -->
+<!-- 		</profile> -->
+<!-- 	</profiles> -->
 </project>
