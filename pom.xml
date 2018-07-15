@@ -225,39 +225,21 @@ limitations under the License.
 			</plugin>
 		</plugins>
 	</reporting>
-<!-- 	<profiles> -->
-<!-- 		<profile> -->
-<!-- 			<id>localrepo</id> -->
-<!-- 			<repositories> -->
-<!-- 				<repository> -->
-<!-- 					<id>argeo-tp</id> -->
-<!-- 					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url> -->
-<!-- 					<releases> -->
-<!-- 						<enabled>true</enabled> -->
-<!-- 						<updatePolicy>daily</updatePolicy> -->
-<!-- 						<checksumPolicy>warn</checksumPolicy> -->
-<!-- 					</releases> -->
-<!-- 				</repository> -->
-<!-- 				<repository> -->
-<!-- 					<id>argeo-commons</id> -->
-<!-- 					<url>http://localhost:7070/data/java/argeo-${developmentCycle.argeo-commons}</url> -->
-<!-- 					<releases> -->
-<!-- 						<enabled>true</enabled> -->
-<!-- 						<updatePolicy>daily</updatePolicy> -->
-<!-- 						<checksumPolicy>warn</checksumPolicy> -->
-<!-- 					</releases> -->
-<!-- 				</repository> -->
-<!-- 			</repositories> -->
-<!-- 			<distributionManagement> -->
-<!-- 				<repository> -->
-<!-- 					<id>staging</id> -->
-<!-- 					<url>dav:http://localhost:7070/data/java/argeo-slc-${developmentCycle.slc}</url> -->
-<!-- 				</repository> -->
-<!-- 				<site> -->
-<!-- 					<id>staging</id> -->
-<!-- 					<url>dav:http://localhost:7070/data/docs/argeo-slc-${developmentCycle.slc}</url> -->
-<!-- 				</site> -->
-<!-- 			</distributionManagement> -->
-<!-- 		</profile> -->
-<!-- 	</profiles> -->
+	<distributionManagement>
+		<site>
+			<id>staging</id>
+			<url>dav:https://forge.argeo.org/data/docs/argeo-2.1/site/argeo-slc/</url>
+		</site>
+	</distributionManagement>
+	<profiles>
+		<profile>
+			<id>localrepo</id>
+			<distributionManagement>
+				<site>
+					<id>staging</id>
+					<url>dav:http://localhost:7080/data/docs/argeo-2.1/site/argeo-slc/</url>
+				</site>
+			</distributionManagement>
+		</profile>
+	</profiles>
 </project>
