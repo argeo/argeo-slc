@@ -173,6 +173,9 @@ public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
 					monitor.worked(1);
 					if (log.isDebugEnabled())
 						log.debug("Processed source artifact " + node.getPath());
+				} else if (node.getName().endsWith("-javadoc.jar")) {
+					if (log.isDebugEnabled())
+						log.debug("Skip indexing of Javadoc jar " + node.getPath());
 				} else if (node.getName().endsWith(".jar")) {
 					if (jarFileIndexer.support(node.getPath()))
 						if (artifactIndexer.support(node.getPath())) {

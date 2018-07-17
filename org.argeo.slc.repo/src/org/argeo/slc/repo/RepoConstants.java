@@ -33,7 +33,7 @@ public interface RepoConstants {
 	String SDK_ARTIFACT_ID = "sdk";
 
 	// TODO might exists somewhere else
-	String SLC_GROUP_ID = "SLC-GroupId";
+	String SLC_CATEGORY_ID = "SLC-Category";
 
 	// TODO find a more generic way
 	String DEFAULT_DEFAULT_WORKSPACE = "main";

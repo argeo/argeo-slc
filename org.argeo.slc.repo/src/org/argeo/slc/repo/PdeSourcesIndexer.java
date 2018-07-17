@@ -57,8 +57,7 @@ public class PdeSourcesIndexer implements NodeIndexer {
 		// int lastInd = name.lastIndexOf("[");
 		// if (lastInd != -1)
 		// name = name.substring(0, lastInd);
-		return name.endsWith("-sources")
-				&& FilenameUtils.getExtension(path).equals("jar");
+		return name.endsWith("-sources") && FilenameUtils.getExtension(path).equals("jar");
 	}
 
 	public void index(Node sourcesNode) {
@@ -68,8 +67,7 @@ public class PdeSourcesIndexer implements NodeIndexer {
 
 			packageSourcesAsPdeSource(sourcesNode);
 		} catch (Exception e) {
-			throw new SlcException("Cannot generate pde sources for node "
-					+ sourcesNode, e);
+			throw new SlcException("Cannot generate pde sources for node " + sourcesNode, e);
 		}
 	}
 
@@ -78,44 +76,34 @@ public class PdeSourcesIndexer implements NodeIndexer {
 		Binary osgiBinary = null;
 		try {
 			Session session = sourcesNode.getSession();
-			Artifact sourcesArtifact = AetherUtils.convertPathToArtifact(
-					sourcesNode.getPath(), null);
+			Artifact sourcesArtifact = AetherUtils.convertPathToArtifact(sourcesNode.getPath(), null);
 
 			// read name version from manifest
-			Artifact osgiArtifact = new DefaultArtifact(
-					sourcesArtifact.getGroupId(),
-					sourcesArtifact.getArtifactId(),
-					sourcesArtifact.getExtension(),
-					sourcesArtifact.getVersion());
-			String osgiPath = MavenConventionsUtils.artifactPath(
-					artifactBasePath, osgiArtifact);
-			osgiBinary = session.getNode(osgiPath).getNode(Node.JCR_CONTENT)
-					.getProperty(Property.JCR_DATA).getBinary();
+			Artifact osgiArtifact = new DefaultArtifact(sourcesArtifact.getGroupId(), sourcesArtifact.getArtifactId(),
+					sourcesArtifact.getExtension(), sourcesArtifact.getVersion());
+			String osgiPath = MavenConventionsUtils.artifactPath(artifactBasePath, osgiArtifact);
+			osgiBinary = session.getNode(osgiPath).getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getBinary();
 
-			NameVersion nameVersion = RepoUtils.readNameVersion(osgiBinary
-					.getStream());
+			NameVersion nameVersion = RepoUtils.readNameVersion(osgiBinary.getStream());
+			if (nameVersion == null) {
+				log.warn("Cannot package PDE sources for " + osgiPath + " as it is probably not an OSGi bundle");
+				return;
+			}
 
 			// create PDe sources artifact
-			Artifact pdeSourceArtifact = new DefaultArtifact(
-					sourcesArtifact.getGroupId(),
-					sourcesArtifact.getArtifactId() + ".source",
-					sourcesArtifact.getExtension(),
+			Artifact pdeSourceArtifact = new DefaultArtifact(sourcesArtifact.getGroupId(),
+					sourcesArtifact.getArtifactId() + ".source", sourcesArtifact.getExtension(),
 					sourcesArtifact.getVersion());
-			String targetSourceParentPath = MavenConventionsUtils
-					.artifactParentPath(artifactBasePath, pdeSourceArtifact);
-			String targetSourceFileName = MavenConventionsUtils
-					.artifactFileName(pdeSourceArtifact);
+			String targetSourceParentPath = MavenConventionsUtils.artifactParentPath(artifactBasePath,
+					pdeSourceArtifact);
+			String targetSourceFileName = MavenConventionsUtils.artifactFileName(pdeSourceArtifact);
 			// String targetSourceJarPath = targetSourceParentPath + '/'
 			// + targetSourceFileName;
 
-			Node targetSourceParentNode = JcrUtils.mkfolders(session,
-					targetSourceParentPath);
-			origBinary = sourcesNode.getNode(Node.JCR_CONTENT)
-					.getProperty(Property.JCR_DATA).getBinary();
-			byte[] targetJarBytes = RepoUtils.packageAsPdeSource(
-					origBinary.getStream(), nameVersion);
-			JcrUtils.copyBytesAsFile(targetSourceParentNode,
-					targetSourceFileName, targetJarBytes);
+			Node targetSourceParentNode = JcrUtils.mkfolders(session, targetSourceParentPath);
+			origBinary = sourcesNode.getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getBinary();
+			byte[] targetJarBytes = RepoUtils.packageAsPdeSource(origBinary.getStream(), nameVersion);
+			JcrUtils.copyBytesAsFile(targetSourceParentNode, targetSourceFileName, targetJarBytes);
 
 			// reindex
 			// Automagically done via the various listeners or manually
@@ -124,12 +112,10 @@ public class PdeSourcesIndexer implements NodeIndexer {
 			// artifactIndexer.index(targetSourceJarNode);
 			// jarFileIndexer.index(targetSourceJarNode);
 			if (log.isTraceEnabled())
-				log.trace("Created pde source artifact " + pdeSourceArtifact
-						+ " from " + sourcesNode);
+				log.trace("Created pde source artifact " + pdeSourceArtifact + " from " + sourcesNode);
 
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot add PDE sources for " + sourcesNode,
-					e);
+			throw new SlcException("Cannot add PDE sources for " + sourcesNode, e);
 		} finally {
 			JcrUtils.closeQuietly(origBinary);
 			JcrUtils.closeQuietly(osgiBinary);

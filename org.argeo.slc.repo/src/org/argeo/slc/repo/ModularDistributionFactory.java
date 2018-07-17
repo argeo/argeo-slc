@@ -149,7 +149,7 @@ public class ModularDistributionFactory implements Runnable {
 		addManifestAttribute(manifest, Constants.BUNDLE_NAME, osgiDistribution.getName());
 
 		// Categorized name version
-		addManifestAttribute(manifest, RepoConstants.SLC_GROUP_ID, osgiDistribution.getCategory());
+		addManifestAttribute(manifest, RepoConstants.SLC_CATEGORY_ID, osgiDistribution.getCategory());
 		addManifestAttribute(manifest, Constants.BUNDLE_SYMBOLICNAME, osgiDistribution.getName());
 		String version = osgiDistribution.getVersion();
 		if (version.endsWith("-SNAPSHOT")) {
