@@ -306,4 +306,8 @@ public class RunnerServlet extends HttpServlet {
 
 	}
 
+	protected ExecutorService getExecutor() {
+		return executor;
+	}
+
 }
