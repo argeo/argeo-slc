@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dep</artifactId>
-		<version>2.1.15-SNAPSHOT</version>
+		<version>2.1.15</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.dep.e4.rap</artifactId>
@@ -44,14 +44,14 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.minimal</artifactId>
-			<version>2.1.15-SNAPSHOT</version>
+			<version>2.1.15</version>
 		</dependency>
 
 
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.e4</artifactId>
-			<version>2.1.15-SNAPSHOT</version>
+			<version>2.1.15</version>
 		</dependency>
 		<!-- SLC Libs -->
 		<!-- <dependency> -->
