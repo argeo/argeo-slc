@@ -53,6 +53,29 @@
 			<artifactId>org.argeo.slc.e4</artifactId>
 			<version>2.1.16-SNAPSHOT</version>
 		</dependency>
+
+		<!-- ALM Third Parties -->
+		<dependency>
+			<groupId>org.argeo.tp.apache.ant</groupId>
+			<artifactId>org.apache.ant</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache.ant</groupId>
+			<artifactId>org.apache.ant.launch</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.sdk</groupId>
+			<artifactId>biz.aQute.bnd</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.sdk</groupId>
+			<artifactId>org.junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.sdk</groupId>
+			<artifactId>org.redline-rpm</artifactId>
+		</dependency>
+
 		<!-- SLC Libs -->
 		<!-- <dependency> -->
 		<!-- <groupId>org.argeo.slc</groupId> -->
