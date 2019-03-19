@@ -25,6 +25,10 @@ public class RunnerServletContextHelper extends ServletContextHelper {
 			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new HttpRequestCallbackHandler(request, response));
 			lc.login();
 		} catch (LoginException e) {
+			// for CORS
+			// TODO: make it more robust
+			if ("OPTIONS".equals(request.getMethod()))
+				return true;
 			lc = processUnauthorized(request, response);
 			if (lc == null)
 				return false;
