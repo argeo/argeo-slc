@@ -8,40 +8,40 @@
         http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<!-- Views -->
-	<bean id="artifactsBrowser" class="org.argeo.slc.client.ui.dist.views.ArtifactsBrowser"
-		scope="prototype">
-		<property name="jcrSession" ref="slcSession" />
-	</bean>
-	<bean id="queryArtifactsForm" class="org.argeo.slc.client.ui.dist.views.QueryArtifactsForm"
-		scope="prototype">
-		<property name="session" ref="slcSession" />
-		<property name="columnProperties">
-			<list>
-				<value>slc:artifactVersion.jcr:uuid</value>
-				<value>slc:artifactVersion.slc:groupId</value>
-				<value>slc:artifactVersion.slc:artifactId</value>
-				<value>slc:artifactVersion.slc:artifactVersion</value>
-			</list>
-		</property>
-	</bean>
-	<bean id="queryBundlesForm" class="org.argeo.slc.client.ui.dist.views.QueryBundlesForm"
-		scope="prototype">
-		<property name="session" ref="slcSession" />
-		<property name="columnProperties">
-			<list>
-				<value>slc:artifactVersion.jcr:uuid</value>
-				<value>slc:bundleArtifact.slc:symbolic-name</value>
-				<value>slc:artifactVersion.slc:groupId</value>
-				<value>slc:bundleArtifact.slc:bundle-version</value>
-				<!-- <value>slc:bundleArtifact.slc:Fragment-Host</value> -->
-			</list>
-		</property>
-	</bean>
+<!-- 	<bean id="artifactsBrowser" class="org.argeo.slc.client.ui.dist.views.ArtifactsBrowser" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="jcrSession" ref="slcSession" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="queryArtifactsForm" class="org.argeo.slc.client.ui.dist.views.QueryArtifactsForm" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="session" ref="slcSession" /> -->
+<!-- 		<property name="columnProperties"> -->
+<!-- 			<list> -->
+<!-- 				<value>slc:artifactVersion.jcr:uuid</value> -->
+<!-- 				<value>slc:artifactVersion.slc:groupId</value> -->
+<!-- 				<value>slc:artifactVersion.slc:artifactId</value> -->
+<!-- 				<value>slc:artifactVersion.slc:artifactVersion</value> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="queryBundlesForm" class="org.argeo.slc.client.ui.dist.views.QueryBundlesForm" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="session" ref="slcSession" /> -->
+<!-- 		<property name="columnProperties"> -->
+<!-- 			<list> -->
+<!-- 				<value>slc:artifactVersion.jcr:uuid</value> -->
+<!-- 				<value>slc:bundleArtifact.slc:symbolic-name</value> -->
+<!-- 				<value>slc:artifactVersion.slc:groupId</value> -->
+<!-- 				<value>slc:bundleArtifact.slc:bundle-version</value> -->
+<!-- 				<value>slc:bundleArtifact.slc:Fragment-Host</value> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
 
-	<bean id="queryArtifactsText" class="org.argeo.slc.client.ui.dist.views.QueryArtifactsText"
-		scope="prototype">
-		<property name="session" ref="slcSession" />
-	</bean>
+<!-- 	<bean id="queryArtifactsText" class="org.argeo.slc.client.ui.dist.views.QueryArtifactsText" -->
+<!-- 		scope="prototype"> -->
+<!-- 		<property name="session" ref="slcSession" /> -->
+<!-- 	</bean> -->
 
 	<bean id="distributionsView" class="org.argeo.slc.client.ui.dist.views.DistributionsView"
 		scope="prototype">

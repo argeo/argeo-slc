@@ -38,6 +38,7 @@
             icon="icons/help.gif"
             name="About">
 		</view>
+		<!--
 		<view
             class="org.argeo.eclipse.spring.SpringExtensionFactory"
             id="org.argeo.slc.client.ui.dist.artifactsBrowser"
@@ -62,6 +63,7 @@
             icon="icons/search.gif"
             name="Query builder">
 		</view>
+		-->
 		<view
 	         name="Progress View"
 	         icon="icons/pview.gif"
