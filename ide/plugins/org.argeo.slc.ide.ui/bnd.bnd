@@ -5,18 +5,12 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle:	org.eclipse.core.runtime,\
 org.eclipse.core.commands
 
-Import-Package:	org.argeo.cms.auth,\
-org.argeo.eclipse.spring,\
-org.argeo.eclipse.ui.utils,\
-org.eclipse.core.runtime.jobs,\
+Import-Package:org.eclipse.core.runtime.jobs,\
 org.eclipse.jface.window,\
 org.eclipse.swt,\
 org.eclipse.swt.widgets,\
 org.eclipse.ui.services,\
 org.osgi.*;version=0.0.0,\
-org.springframework.core,\
-org.springframework.beans.factory,\
-org.springframework.core.io.support,\
 !org.eclipse.core.runtime,\
 org.eclipse.pde.core,\
 *				

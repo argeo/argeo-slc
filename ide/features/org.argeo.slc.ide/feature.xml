@@ -2,7 +2,7 @@
 <feature
       id="org.argeo.slc.ide"
       label="Argeo IDE"
-      version="1.1.1.qualifier"
+      version="2.1.0.qualifier"
       provider-name="Argeo GmbH"
       plugin="org.argeo.slc.ide.branding"
       image="icons/argeo-icon-100104-256.png">
@@ -54,7 +54,561 @@ and limitations under the License.
          id="org.argeo.slc.ide.ui"
          download-size="0"
          install-size="0"
-         version="1.1.1.qualifier"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.argeo.slc.ide.branding"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.protobuf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.launchbar.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.launchbar.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.cdt.remote.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.remote.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.tools.templates.freemarker"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.tools.templates.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.tm.terminal.control"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.activation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.annotation"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.tools.templates.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="javax.xml.stream"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.e4.tools.emf.editor3x"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.edit.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.e4.emf.xpath"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.e4.emf.xpath.source"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.e4.tools.emf.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.common.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.databinding"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.databinding.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore.change"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore.xmi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.wst.common.emf"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.wst.common.emfworkbench.integration"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.base"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.base.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.extractor.lib"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.jreinfo"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.jreinfo.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.p2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.p2.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.p2.doc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.p2.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.p2.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.predicates"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.predicates.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.preferences"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.resources"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.resources.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup.doc"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup.p2"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup.p2.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup.sync"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.setup.ui.questionnaire"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.workingsets"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.workingsets.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.oomph.workingsets.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.codec"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.compress"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.httpclient"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.io"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.jxpath"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.lang"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.lang3"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.apache.commons.logging"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.freemarker"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.wst.common.project.facet.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.wst.common.project.facet.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.xsd"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.nebula.widgets.tablecombo"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.sun.xml.bind"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.xsd.edit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.gef"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.draw2d"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.tools.templates.freemarker.java11"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>

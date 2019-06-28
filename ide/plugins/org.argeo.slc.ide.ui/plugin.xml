@@ -21,10 +21,10 @@
 <extension
       point="org.eclipse.debug.ui.launchShortcuts">
    <shortcut
-         class="org.argeo.slc.ide.ui.launch.osgi.EclipseBootLaunchShortcut"
-         icon="icons/eclipse-launch.gif"
-         id="org.argeo.slc.ide.ui.eclipseBootLaunchShortcut"
-         label="Eclipse Boot (RCP)"
+         class="org.argeo.slc.ide.ui.launch.osgi.OsgiBootLaunchShortcut"
+         icon="icons/slc-launch.gif"
+         id="org.argeo.slc.ide.ui.osgiBootLaunchShortcut"
+         label="OSGi Boot (Equinox, RAP)"
          modes="run,debug">
          <contextualLaunch>
             <enablement>
@@ -41,10 +41,10 @@
          </contextualLaunch>         
    </shortcut>
    <shortcut
-         class="org.argeo.slc.ide.ui.launch.osgi.OsgiBootLaunchShortcut"
-         icon="icons/slc-launch.gif"
-         id="org.argeo.slc.ide.ui.osgiBootLaunchShortcut"
-         label="OSGi Boot (Equinox, RAP)"
+         class="org.argeo.slc.ide.ui.launch.osgi.EclipseBootLaunchShortcut"
+         icon="icons/eclipse-launch.gif"
+         id="org.argeo.slc.ide.ui.eclipseBootLaunchShortcut"
+         label="Eclipse Boot (RCP)"
          modes="run,debug">
          <contextualLaunch>
             <enablement>

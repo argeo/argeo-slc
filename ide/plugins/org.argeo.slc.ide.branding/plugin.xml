@@ -6,8 +6,8 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="org.argeo.cms.ui.workbench.rcp.secureUi"
-            name="Argeo SLC IDE">
+            application="org.eclipse.e4.ui.workbench.swt.E4Application"
+            name="Argeo IDE">
          <property
                name="windowImages"
                value="icons/argeo-icon-100104-256.png,icons/argeo-icon-100104-256.png,icons/argeo-icon-100104-256.png,icons/argeo-icon-100104-256.png,icons/argeo-icon-100104-256.png">
@@ -34,7 +34,7 @@
          </property>
          <property
                name="appName"
-               value="Argeo SLC IDE">
+               value="Argeo IDE">
          </property>
          <property
                name="preferenceCustomization"
