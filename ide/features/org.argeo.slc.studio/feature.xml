@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.argeo.slc.ide"
+      id="org.argeo.slc.studio"
       label="Argeo IDE"
       version="2.1.0.qualifier"
       provider-name="Argeo GmbH"
-      plugin="org.argeo.slc.ide.branding"
+      plugin="org.argeo.slc.studio.branding"
       image="icons/argeo-icon-100104-256.png">
 
    <description url="http://projects.argeo.org/slc/">
@@ -35,6 +35,10 @@ and limitations under the License.
       <discovery label="Argeo.org" url="http://www.argeo.org"/>
    </url>
 
+   <includes
+         id="org.argeo.slc.ide.osgi"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -49,20 +53,6 @@ and limitations under the License.
       <import plugin="org.eclipse.pde.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.jdt.ui" version="3.4.2" match="greaterOrEqual"/>
    </requires>
-
-   <plugin
-         id="org.argeo.slc.ide.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.argeo.slc.ide.branding"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
 
    <plugin
          id="com.google.gson"
@@ -609,6 +599,13 @@ and limitations under the License.
          install-size="0"
          version="0.0.0"
          fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.argeo.slc.studio.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>

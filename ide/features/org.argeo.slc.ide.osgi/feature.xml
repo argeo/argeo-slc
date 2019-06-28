@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.argeo.slc.ide.osgi"
+      label="Argeo IDE OSGi"
+      version="2.1.0.qualifier"
+      provider-name="Argeo GmbH">
+
+   <description url="http://www.example.com/description">
+      [Enter Feature Description here.]
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import feature="org.eclipse.pde" version="3.14.0.v20190605-1800" match="greaterOrEqual"/>
+      <import feature="org.eclipse.jdt" version="3.18.0.v20190605-1800" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.argeo.slc.ide.osgi.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

@@ -4,7 +4,7 @@ Bundle-Activator: org.argeo.slc.ide.ui.SlcIdeUiPlugin
 Bundle-ManifestVersion: 2
 Bundle-Name: IDE UI
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-SymbolicName: org.argeo.slc.ide.ui;singleton=true
+Bundle-SymbolicName: org.argeo.slc.ide.osgi.ui;singleton:=true
 Bundle-Version: 2.1.0.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.commands,
@@ -19,3 +19,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Export-Package: org.argeo.slc.ide.ui,
  org.argeo.slc.ide.ui.launch.osgi
+Automatic-Module-Name: org.argeo.slc.ide.osgi.ui

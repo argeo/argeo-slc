@@ -10,6 +10,6 @@
 	<packaging>pom</packaging>
 	<name>IDE Plugins</name>
 	<modules>
-		<module>org.argeo.slc.ide.ui</module>
+<!-- 		<module>org.argeo.slc.ide.ui</module> -->
 	</modules>
 </project>
