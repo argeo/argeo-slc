@@ -8,10 +8,10 @@
 		<version>2.1.16-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>plugins</artifactId>
+	<artifactId>features</artifactId>
 	<packaging>pom</packaging>
-	<name>IDE Plugins</name>
+	<name>IDE Features</name>
 	<modules>
-		<!-- <module>org.argeo.slc.ide.ui</module> -->
+<!-- 		<module>org.argeo.slc.ide.node</module> -->
 	</modules>
 </project>

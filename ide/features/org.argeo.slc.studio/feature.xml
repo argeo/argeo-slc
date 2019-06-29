@@ -39,6 +39,10 @@ and limitations under the License.
          id="org.argeo.slc.ide.osgi"
          version="0.0.0"/>
 
+   <includes
+         id="org.argeo.slc.ide.node"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>

@@ -42,6 +42,7 @@
 		<module>dep</module>
 		<module>dist</module>
 		<module>demo</module>
+		<module>ide</module>
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
 	<scm>
