@@ -14,5 +14,5 @@
 	<reference id="repositoryFactory" interface="javax.jcr.RepositoryFactory" />
 	<!-- TODO inject this in a cleaner way -->
 	<reference id="javaRepository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=java)" />
+		filter="(cn=java)" />
 </beans:beans>

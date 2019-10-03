@@ -12,5 +12,5 @@
 
 	<!-- REFERENCES -->
 	<reference id="repositoryFactory" interface="javax.jcr.RepositoryFactory" />
-	<reference id="fileSystemManager" interface="org.apache.commons.vfs.FileSystemManager" />
+	<reference id="fileSystemManager" interface="org.apache.commons.vfs2.FileSystemManager" />
 </beans:beans>

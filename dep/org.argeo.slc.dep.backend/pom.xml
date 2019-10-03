@@ -3,12 +3,11 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dep</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>2.1.16-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.dep.backend</artifactId>
-	<name>SLC Backend Dependencies</name>
-	<description>Shared by RAP and pure server</description>
+	<name>SLC Backend</name>
 	<build>
 		<plugins>
 			<plugin>
@@ -22,7 +21,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.argeo.maven.plugins</groupId>
-				<artifactId>maven-argeo-osgi-plugin</artifactId>
+				<artifactId>argeo-osgi-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>generate-descriptors</id>
@@ -36,207 +35,169 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<!-- Base -->
+		<!-- Parent dependencies -->
+		<dependency>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.dep.cms.sdk</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.minimal</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
-			<type>pom</type>
+			<version>2.1.16-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SLC Libs -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.lib.repo</artifactId> -->
-<!-- 			<version>1.1.14-SNAPSHOT</version> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.argeo.slc</groupId> -->
-<!-- 			<artifactId>org.argeo.slc.lib.jcr</artifactId> -->
-<!-- 			<version>1.1.14-SNAPSHOT</version> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc</groupId> -->
+		<!-- <artifactId>org.argeo.slc.lib.repo</artifactId> -->
+		<!-- <version>1.1.14-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc</groupId> -->
+		<!-- <artifactId>org.argeo.slc.lib.jcr</artifactId> -->
+		<!-- <version>1.1.14-SNAPSHOT</version> -->
+		<!-- </dependency> -->
 
 		<!-- Extensions -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support.simple</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support.ant</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<artifactId>org.argeo.slc.support</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
 		</dependency>
 
 		<!-- SLC Repo -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>2.1.16-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.rpmfactory</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<artifactId>org.argeo.slc.factory</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc</groupId> -->
+		<!-- <artifactId>org.argeo.slc.server.repo.webapp</artifactId> -->
+		<!-- <version>2.1.1-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+
+		<!-- UI -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.client.ui</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.server.repo.webapp</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<artifactId>org.argeo.slc.client.ui.dist</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.client.rap</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
 		</dependency>
 
-		<!-- Node -->
+		<!-- For target platform generation -->
 		<dependency>
-			<groupId>org.argeo.commons.security</groupId>
-			<artifactId>org.argeo.security.dep.node</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-			<exclusions>
-				<exclusion>
-					<!-- Workaround for bug where catalina start add non slf4j logging to 
-						dependencies -->
-					<groupId>org.argeo.tp</groupId>
-					<artifactId>org.apache.commons.logging</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<profiles>
-		<profile>
-			<id>check-osgi</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.argeo.maven.plugins</groupId>
-						<artifactId>maven-argeo-osgi-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>check-osgi</id>
-								<phase>test</phase>
-								<goals>
-									<goal>equinox</goal>
-								</goals>
-								<configuration>
-									<onlyCheck>true</onlyCheck>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<profile>
 			<id>rpmbuild</id>
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
+						<artifactId>maven-assembly-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>copy-dependencies</id>
-								<phase>process-resources</phase>
+								<id>prepare-source</id>
+								<phase>package</phase>
 								<goals>
-									<goal>copy-dependencies</goal>
+									<goal>single</goal>
 								</goals>
 								<configuration>
-									<includeTypes>jar</includeTypes>
-									<includeGroupIds>org.argeo.slc</includeGroupIds>
-									<outputDirectory>${project.build.directory}/slc</outputDirectory>
+									<descriptorRefs>
+										<descriptorRef>a2-source</descriptorRef>
+									</descriptorRefs>
 								</configuration>
 							</execution>
 						</executions>
 					</plugin>
+					<!-- <plugin> -->
+					<!-- <groupId>org.apache.maven.plugins</groupId> -->
+					<!-- <artifactId>maven-dependency-plugin</artifactId> -->
+					<!-- <executions> -->
+					<!-- <execution> -->
+					<!-- <id>copy-argeo</id> -->
+					<!-- <phase>package</phase> -->
+					<!-- <goals> -->
+					<!-- <goal>copy-dependencies</goal> -->
+					<!-- </goals> -->
+					<!-- <configuration> -->
+					<!-- <includeTypes>jar</includeTypes> -->
+					<!-- <outputDirectory>${project.build.directory}/lib-argeo</outputDirectory> -->
+					<!-- <includeGroupIds>org.argeo.slc</includeGroupIds> -->
+					<!-- <excludeTransitive>true</excludeTransitive> -->
+					<!-- <excludeArtifactIds>org.argeo.slc.dep.minimal</excludeArtifactIds> -->
+					<!-- <includeTypes>jar</includeTypes> -->
+					<!-- <includeScope>runtime</includeScope> -->
+					<!-- <useRepositoryLayout>true</useRepositoryLayout> -->
+					<!-- </configuration> -->
+					<!-- </execution> -->
+					<!-- </executions> -->
+					<!-- </plugin> -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>rpm-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>rpm-slc</id>
+								<id>rpm-argeo</id>
 								<phase>package</phase>
 								<goals>
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>slc-libs</name>
+									<name>slc-platform</name>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi</directory>
 											<username>root</username>
 											<groupname>root</groupname>
 											<filemode>644</filemode>
-											<directoryIncluded>false</directoryIncluded>
+											<directoryIncluded>true</directoryIncluded>
 											<sources>
 												<source>
-													<location>${project.build.directory}/slc</location>
+													<location>${project.build.directory}/${project.artifactId}-${project.version}-a2-source</location>
+													<includes>
+														<include>**/*.jar</include>
+													</includes>
 												</source>
 											</sources>
 										</mapping>
+										<!-- <mapping> -->
+										<!-- <directory>/usr/share/osgi/org/argeo/slc/${project.artifactId}/${project.version}</directory> -->
+										<!-- <username>root</username> -->
+										<!-- <groupname>root</groupname> -->
+										<!-- <directoryIncluded>false</directoryIncluded> -->
+										<!-- <artifact /> -->
+										<!-- </mapping> -->
 									</mappings>
 									<requires>
-										<require>slc-tp</require>
-										<require>argeo-node</require>
-									</requires>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
-			<id>rpmbuild-tp</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>rpm-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>rpm-tp</id>
-								<phase>package</phase>
-								<goals>
-									<goal>rpm</goal>
-								</goals>
-								<configuration>
-									<name>slc-tp</name>
-									<projversion>${version.argeo-distribution}</projversion>
-									<mappings>
-										<mapping>
-											<directory>/usr/share/osgi</directory>
-											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>644</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<dependency>
-												<includes>
-													<!-- Core -->
-													<include>org.argeo.tp:org.aspectj.runtime</include>
-													<include>org.argeo.tp:org.aspectj.weaver</include>
-													<include>org.argeo.tp:net.sf.cglib</include>
-													<!-- Simple -->
-													<include>org.argeo.tp:org.tmatesoft.svn</include>
-													<include>org.argeo.tp:org.redline_rpm</include>
-													<!-- Ant -->
-													<include>org.argeo.tp:org.apache.tools.ant</include>
-													<include>org.argeo.tp:org.apache.tools.ant.launch</include>
-													<include>org.argeo.tp:org.apache.oro</include>
-													<include>org.argeo.tp:org.apache.bsf</include>
-													<!-- Maven -->
-													<include>org.argeo.tp:org.sonatype.aether</include>
-													<!-- Misc -->
-													<include>org.argeo.tp:biz.aQute.bndlib</include>
-												</includes>
-											</dependency>
-										</mapping>
-									</mappings>
-									<requires>
-										<require>argeo-node-tp</require>
+										<require>argeo-cms-platform</require>
+										<require>argeo-cms-sdk-tp</require>
+										<require>slc-agent</require>
 									</requires>
 								</configuration>
 							</execution>

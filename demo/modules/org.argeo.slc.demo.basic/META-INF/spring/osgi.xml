@@ -14,5 +14,5 @@
 
 	<!-- REFERENCES -->
 	<reference id="repository" interface="javax.jcr.Repository"
-		filter="(argeo.jcr.repository.alias=slc)" />
+		filter="(cn=slc)" />
 </beans:beans>

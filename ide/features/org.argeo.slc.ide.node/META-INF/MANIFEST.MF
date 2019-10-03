@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.argeo.slc.ide.node
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: IDE CMS Node
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-SymbolicName: org.argeo.slc.ide.node
+Bundle-Version: 2.1.16.SNAPSHOT-r201906291110
+Include-Resource: modularDistribution.csv=modularDistribution.csv,featur
+ e.xml=feature.xml
+Private-Package: !*
+SLC-Category: org.argeo.slc.ide

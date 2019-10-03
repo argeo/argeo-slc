@@ -11,7 +11,7 @@
 
 	<!-- REFERENCES -->
 <!-- 	<reference id="javaRepository" interface="javax.jcr.Repository" -->
-<!-- 		filter="(argeo.jcr.repository.alias=java)" /> -->
+<!-- 		filter="(cn=java)" /> -->
 
 	<!-- Maven -->
 <!-- 	<reference id="mavenRepositorySystem" interface="org.sonatype.aether.RepositorySystem" -->

@@ -1,0 +1,294 @@
+<slc = 'http://www.argeo.org/ns/slc'>
+
+// COMMON
+[slc:nameVersion] > nt:base
+mixin
+- slc:name (STRING) m
+- slc:version (STRING) m
+
+[slc:categorizedNameVersion] > slc:nameVersion
+mixin
+// define as mandatory?
+- slc:category (STRING)
+
+// AGENT
+[slc:agentFactory] > nt:unstructured, mix:title
++ * (slc:agent)
+
+[slc:agent] > nt:unstructured, mix:title
++ * (slc:module)
+
+[slc:module] > slc:nameVersion, mix:title
+mixin
+
+[slc:activableModule] > slc:module
+mixin
+
+[slc:executionModule] > slc:activableModule
+mixin
+
+[slc:executionSpec] > nt:unstructured, mix:referenceable, mix:title
+- slc:name (STRING) m
++ * (slc:executionSpecAttribute) *
+
+[slc:executionSpecAttribute] > nt:base
+mixin abstract
+- slc:isImmutable (BOOLEAN) 
+- slc:isConstant (BOOLEAN) 
+- slc:isHidden (BOOLEAN) 
+
+[slc:primitiveSpecAttribute] > slc:executionSpecAttribute
+mixin
+- slc:type (STRING) 
+- slc:value (UNDEFINED)
+
+[slc:refSpecAttribute] > slc:executionSpecAttribute
+orderable
+mixin
+// typically a class name
+- slc:type (STRING)
+- slc:value (UNDEFINED)
++ * (mix:title)
+
+[slc:executionFlow] > nt:unstructured, mix:title
+- slc:name (STRING) ! m
+// if the execution spec is a referenceable node
+- slc:spec (REFERENCE)
+// if the execution spec is internal (without name)
++ * (slc:executionSpecAttribute) *
+
+// PROCESS
+[slc:process] > nt:unstructured, mix:created, mix:lastModified
+orderable
+- slc:uuid (STRING) ! m
+- slc:status (STRING) m
++ slc:flow (slc:realizedFlow)
++ slc:log
+
+// The first part of the relative path is the thread name, rest is location
+[slc:logEntry] > nt:unstructured
+abstract
+- slc:message (STRING) !
+- slc:timestamp (STRING)
+
+// Log levels are set via types.
+// Querying one level also queries the higher levels thanks to the inheritance
+// e.g. 'select * from [slc:logWarn]' also returns errors 
+[slc:logTrace] > slc:logEntry
+
+[slc:logDebug] > slc:logTrace
+
+[slc:logInfo] > slc:logDebug
+
+[slc:logWarning] > slc:logInfo
+
+[slc:logError] > slc:logWarning
+
+[slc:realizedFlow] > nt:base
+orderable
+mixin
+// the name of the flow
+// - slc:flow (STRING)
+// the name of the execution spec
+// - slc:spec (STRING)
+- slc:started (DATE)
+- slc:completed (DATE)
+//- slc:status (STRING)
++ slc:address (nt:address)
++ slc:flow (slc:realizedFlow) *
+// the realized execution spec attributes
++ * (slc:executionSpecAttribute) *
+
+// RESULT
+[slc:testResult] > nt:unstructured, mix:created, mix:lastModified
+- slc:uuid (STRING) ! m
+- slc:testCase (STRING)
+- slc:completed (DATE)
+// Helper to keep a centralize place to have testResultStatus
+// when adding more than one result part to a given testResult 
++ slc:aggregatedStatus (slc:check)
+// DEPRECATED - FOR COMPATIBILITY - DO NOT USE
++ slc:testStatus (slc:check)
+
+[slc:diffResult] > slc:testResult
++ slc:summary
++ slc:issues
+
+[slc:resultFolder] > nt:unstructured
++ slc:folderStatus (slc:check)
++ * (slc:resultFolder) *
++ * (slc:testResult) *
+
+// base node for user defined and managed result tree
+// simplify UI management
+[slc:myResultRootFolder] > nt:unstructured
++ * (slc:resultFolder) *
++ * (slc:testResult) *
+
+[slc:check] > nt:unstructured
+// true for PASSED, false for FAILED or ERROR
+- slc:success (BOOLEAN) ! m
+- slc:message (STRING)
+// ERROR if set, the check could not be performed because of an unexpected exception
+- slc:errorMessage (STRING)
+// to ease transition with legacy approach
++ * (slc:property) *
+
+[slc:property] > nt:unstructured
+- slc:name (STRING) ! m
+- slc:value (STRING) m
+
+//
+// DISTRIBUTION
+//
+
+// AETHER
+[slc:artifact] > mix:referenceable, mix:created, mix:lastModified
+mixin
+- slc:artifactId (STRING) m
+- slc:groupId (STRING) m
+- slc:artifactVersion (STRING) m
+- slc:artifactExtension (STRING) m
+- slc:artifactClassifier (STRING) ='' m a
+
+[slc:artifactVersion] > mix:referenceable, mix:created, mix:lastModified, mix:title
+mixin
+- slc:artifactId (STRING) m
+- slc:groupId (STRING) m
+- slc:artifactVersion (STRING) m
+
+[slc:artifactBase] > mix:referenceable, mix:created, mix:lastModified
+mixin
+- slc:artifactId (STRING) m
+- slc:groupId (STRING) m
+
+[slc:groupBase] > mix:referenceable, mix:created, mix:lastModified
+mixin
+// it is possible to have groupBase being artifact base (e.g. org.argeo.commons.basic)
+// so using groupId would conflict 
+- slc:groupBaseId (STRING) m
+
+[slc:modularDistributionBase]
+mixin
+
+[slc:modularDistribution] 
+mixin
++ slc:modules (nt:unstructured) m
+
+[slc:moduleCoordinates] > nt:unstructured
+- slc:category (STRING)
+- slc:name (STRING)
+- slc:version (STRING)
+
+// ORIGINS
+[slc:knownOrigin] > nt:base
+mixin
++ slc:origin (nt:address)
+
+[slc:proxied] > nt:address
+- slc:proxy (REFERENCE)
+
+// JAVA
+[slc:jarFile] > mix:referenceable
+mixin
+- 'slc:manifest' (BINARY) m
+- 'slc:Manifest-Version' (STRING)
+- 'slc:Signature-Version' (STRING)
+- 'slc:Class-Path'  (STRING)
+- 'slc:Main-Class' (STRING)
+- 'slc:Extension-Name' (STRING)
+- 'slc:Implementation-Version' (STRING)
+- 'slc:Implementation-Vendor' (STRING)
+- 'slc:Implementation-Vendor-Id' (STRING)
+- 'slc:Implementation-URL' (STRING)
+- 'slc:Specification-Title' (STRING)
+- 'slc:Specification-Version' (STRING)
+- 'slc:Specification-Vendor' (STRING)
+- 'slc:Sealed' (STRING)
+
+// OSGi
+// see http://www.osgi.org/Specifications/Reference
+
+[slc:javaPackage] > mix:referenceable
+- slc:name (STRING) primary m
+
+[slc:osgiBaseVersion] > mix:referenceable
+- slc:asString (STRING) primary m
+- slc:major (LONG) m
+- slc:minor (LONG) m
+- slc:micro (LONG) m
+
+[slc:osgiVersion] > slc:osgiBaseVersion
+- slc:qualifier (STRING)
+
+[slc:exportedPackage] > slc:javaPackage
++ slc:uses (slc:javaPackage) multiple
++ slc:version (slc:osgiVersion)
+
+[slc:importedPackage] > slc:javaPackage
+- slc:version (STRING) ='0.0.0' m a
+- slc:optional (BOOLEAN) ='false' m a
+
+[slc:dynamicImportedPackage] > slc:javaPackage
+- slc:version (STRING) ='0.0.0' m a
+- slc:optional (BOOLEAN) ='false' m a
+
+[slc:requiredBundle] > mix:referenceable
+- 'slc:symbolic-name' (STRING) primary m
+- 'slc:bundle-version' (STRING) ='0.0.0' m a
+- slc:optional (BOOLEAN) ='false' m a
+
+[slc:fragmentHost] > mix:referenceable
+- 'slc:symbolic-name' (STRING) m
+- 'slc:bundle-version' (STRING) ='0.0.0' m a
+
+[slc:bundleNativeCode] > mix:referenceable
+- slc:path (STRING) primary m
+- slc:osname (STRING)
+- slc:processor (STRING)
+
+// see http://www.osgi.org/Specifications/ReferenceHeaders
+[slc:bundle] > mix:referenceable
+mixin
+- 'slc:symbolic-name' (STRING) primary m
+- 'slc:bundle-version' (STRING) m
+- 'slc:Bundle-SymbolicName' (STRING) m
+- 'slc:Bundle-Name' (STRING)
+- 'slc:Bundle-Description' (STRING)
+- 'slc:Bundle-ManifestVersion' (STRING)
+- 'slc:Bundle-Category' (STRING)
+- 'slc:Bundle-ActivationPolicy' (STRING)
+- 'slc:Bundle-Copyright' (STRING)
+- 'slc:Bundle-Vendor' (STRING)
+- 'slc:Bundle-License' (STRING)
+- 'slc:Bundle-DocURL' (STRING)
+- 'slc:Bundle-ContactAddress' (STRING)
+- 'slc:Bundle-Activator' (STRING)
+- 'slc:Bundle-UpdateLocation' (STRING)
+- 'slc:Bundle-Localization' (STRING)
+- 'slc:Bundle-ClassPath' (STRING) *
+// see http://wiki.eclipse.org/EE  < 'OSGi/Minimum-1.0','OSGi/Minimum-1.1','CDC-1.0/Foundation-1.0','CDC-1.1/Foundation-1.1','JRE-1.1','J2SE-1.2','J2SE-1.3','J2SE-1.4','J2SE-1.5','JavaSE-1.6','JavaSE-1.7'
+- 'slc:Bundle-RequiredExecutionEnvironment' (STRING) *
++ 'slc:Bundle-Version' (slc:osgiVersion) m
++ 'slc:Fragment-Host' (slc:fragmentHost)
++ 'slc:Import-Package' (slc:importedPackage) multiple
++ 'slc:Export-Package' (slc:exportedPackage) multiple
++ 'slc:Require-Bundle' (slc:requiredBundle) multiple
++ 'slc:Bundle-NativeCode' (slc:bundleNativeCode) multiple
++ 'slc:DynamicImport-Package' (slc:dynamicImportedPackage) multiple
+
+[slc:bundleArtifact] > slc:artifact,slc:jarFile,slc:bundle
+mixin
+
+// RPM
+[slc:rpm] > mix:referenceable, mix:created, mix:lastModified, mix:title
+mixin
+- slc:name (STRING)
+- slc:version (STRING)
+- slc:rpmVersion (STRING)
+- slc:rpmRelease (STRING)
+- slc:rpmArch (STRING)
+- slc:rpmArchiveSize (STRING)
+// TYPO - TO BE REMOVED
+- slc:rpmArchivaeSize (STRING)
+

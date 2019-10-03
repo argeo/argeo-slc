@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>2.1.16-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>lib</artifactId>
@@ -23,20 +23,20 @@
 		</additionalImports.slc-lib>
 	</properties>
 	<build>
-		<resources>
-			<resource>
-				<directory>.</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>.*</exclude>
-					<exclude>.*/**</exclude>
-					<exclude>pom.xml</exclude>
-					<exclude>build.properties</exclude>
-				</excludes>
-			</resource>
-		</resources>
+<!-- 		<resources> -->
+<!-- 			<resource> -->
+<!-- 				<directory>.</directory> -->
+<!-- 				<includes> -->
+<!-- 					<include>**</include> -->
+<!-- 				</includes> -->
+<!-- 				<excludes> -->
+<!-- 					<exclude>.*</exclude> -->
+<!-- 					<exclude>.*/**</exclude> -->
+<!-- 					<exclude>pom.xml</exclude> -->
+<!-- 					<exclude>build.properties</exclude> -->
+<!-- 				</excludes> -->
+<!-- 			</resource> -->
+<!-- 		</resources> -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -46,10 +46,9 @@
 						<SLC-ExecutionModule>default</SLC-ExecutionModule>
 						<!-- Minimal imports + some optional convenience imports -->
 						<Import-Package>
-							*,
-							net.sf.cglib.core,
-							net.sf.cglib.proxy,
-							net.sf.cglib.reflect,
+							org.springframework.cglib.proxy,
+							org.springframework.cglib.core,
+							org.springframework.cglib.reflect,
 							org.aopalliance.aop,
 							org.argeo.slc.core.execution,
 							org.argeo.slc.core.execution.tasks,
@@ -61,7 +60,8 @@
 							org.springframework.aop.scope,
 							org.springframework.beans.factory.config,
 							org.springframework.core.io,
-							${additionalImports.slc-lib}
+							${additionalImports.slc-lib},
+							*
 						</Import-Package>
 					</instructions>
 				</configuration>
@@ -72,7 +72,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.minimal</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>2.1.16-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 	</dependencies>

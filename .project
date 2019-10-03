@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.argeo.slc</name>
+	<name>argeo-slc</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -8,4 +8,24 @@
 	</buildSpec>
 	<natures>
 	</natures>
+	<filteredResources>
+		<filter>
+			<id>1510764363977</id>
+			<name>demo/exec</name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-indexes</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1510764363979</id>
+			<name>demo/exec</name>
+			<type>22</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-repos</arguments>
+			</matcher>
+		</filter>
+	</filteredResources>
 </projectDescription>

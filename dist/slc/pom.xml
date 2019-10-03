@@ -3,7 +3,8 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dist</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>2.1.16-SNAPSHOT</version>
+		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>slc</artifactId>
 	<packaging>pom</packaging>
@@ -58,7 +59,7 @@
 				<dependency>
 					<groupId>org.argeo.slc</groupId>
 					<artifactId>org.argeo.slc.dep.backend</artifactId>
-					<version>1.2.1-SNAPSHOT</version>
+					<version>2.1.16-SNAPSHOT</version>
 					<type>pom</type>
 				</dependency>
 
@@ -66,19 +67,19 @@
 				<dependency>
 					<groupId>org.argeo.slc</groupId>
 					<artifactId>org.argeo.slc.lib.jcr</artifactId>
-					<version>1.2.1-SNAPSHOT</version>
+					<version>2.1.16-SNAPSHOT</version>
 				</dependency>
 				<dependency>
 					<groupId>org.argeo.slc</groupId>
 					<artifactId>org.argeo.slc.lib.repo</artifactId>
-					<version>1.2.1-SNAPSHOT</version>
+					<version>2.1.16-SNAPSHOT</version>
 				</dependency>
 
 				<!-- Launcher -->
 				<dependency>
 					<groupId>org.argeo.slc</groupId>
 					<artifactId>org.argeo.slc.launcher</artifactId>
-					<version>1.2.1-SNAPSHOT</version>
+					<version>2.1.16-SNAPSHOT</version>
 					<!-- <type>tar.gz</type> -->
 					<!-- <classifier>base</classifier> -->
 				</dependency>
@@ -88,136 +89,65 @@
 			<id>rpmbuild</id>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy-dependencies-rpm</id>
-								<phase>package</phase>
-								<goals>
-									<goal>copy</goal>
-								</goals>
-								<configuration>
-									<includeTypes>jar</includeTypes>
-									<stripVersion>true</stripVersion>
-									<outputDirectory>${project.build.directory}/boot</outputDirectory>
-									<artifactItems>
-										<artifactItem>
-											<groupId>org.argeo.slc</groupId>
-											<artifactId>org.argeo.slc.launcher</artifactId>
-											<version>${project.version}</version>
-										</artifactItem>
-									</artifactItems>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
+<!-- 					<plugin> -->
+<!-- 						<groupId>org.apache.maven.plugins</groupId> -->
+<!-- 						<artifactId>maven-dependency-plugin</artifactId> -->
+<!-- 						<executions> -->
+<!-- 							<execution> -->
+<!-- 								<id>copy-dependencies-rpm</id> -->
+<!-- 								<phase>package</phase> -->
+<!-- 								<goals> -->
+<!-- 									<goal>copy</goal> -->
+<!-- 								</goals> -->
+<!-- 								<configuration> -->
+<!-- 									<includeTypes>jar</includeTypes> -->
+<!-- 									<stripVersion>true</stripVersion> -->
+<!-- 									<outputDirectory>${project.build.directory}/boot</outputDirectory> -->
+<!-- 									<artifactItems> -->
+<!-- 										<artifactItem> -->
+<!-- 											<groupId>org.argeo.slc</groupId> -->
+<!-- 											<artifactId>org.argeo.slc.launcher</artifactId> -->
+<!-- 											<version>${project.version}</version> -->
+<!-- 										</artifactItem> -->
+<!-- 									</artifactItems> -->
+<!-- 								</configuration> -->
+<!-- 							</execution> -->
+<!-- 						</executions> -->
+<!-- 					</plugin> -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>rpm-maven-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>rpm-slc</id>
+								<id>rpm</id>
 								<phase>package</phase>
 								<goals>
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>slc</name>
+									<name>slc-repo</name>
 									<mappings>
 										<mapping>
-											<directory>/usr/bin</directory>
+											<directory>/etc/argeo/conf.d</directory>
 											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>755</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>src/main/rpm/usr/bin</location>
-												</source>
-											</sources>
-										</mapping>
-										<mapping>
-											<directory>/etc/init.d</directory>
-											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>755</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>src/main/rpm/etc/init.d</location>
-												</source>
-											</sources>
-										</mapping>
-										<mapping>
-											<directory>/etc/slc</directory>
-											<username>root</username>
-											<groupname>slc</groupname>
+											<groupname>argeo</groupname>
 											<filemode>640</filemode>
 											<configuration>noreplace</configuration>
 											<directoryIncluded>false</directoryIncluded>
 											<sources>
 												<source>
-													<location>src/main/rpm/etc/slc</location>
-												</source>
-											</sources>
-										</mapping>
-										<mapping>
-											<directory>/etc/slc-cl</directory>
-											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>644</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>src/main/rpm/etc/slc-cl</location>
-												</source>
-											</sources>
-										</mapping>
-										<mapping>
-											<directory>/usr/share/osgi/boot</directory>
-											<username>root</username>
-											<groupname>root</groupname>
-											<filemode>644</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>${project.build.directory}/boot</location>
+													<location>rpm/etc/argeo/conf.d</location>
 													<includes>
-														<include>org.argeo.slc.launcher.jar</include>
+														<include>*.ini</include>
+														<include>*.txt</include>
 													</includes>
 												</source>
 											</sources>
 										</mapping>
-										<!-- Maven (even if not installed) -->
-										<mapping>
-											<directory>/var/lib/slc/.m2</directory>
-											<username>slc</username>
-											<groupname>slc</groupname>
-											<filemode>600</filemode>
-											<directoryIncluded>false</directoryIncluded>
-											<sources>
-												<source>
-													<location>src/main/rpm/var/lib/slc/.m2</location>
-												</source>
-											</sources>
-										</mapping>
 									</mappings>
-									<preinstallScriptlet>
-										<scriptFile>src/main/scripts/preinstall-${rpm.release}</scriptFile>
-									</preinstallScriptlet>
-									<postinstallScriptlet>
-										<scriptFile>src/main/scripts/postinstall</scriptFile>
-									</postinstallScriptlet>
-									<preremoveScriptlet>
-										<scriptFile>src/main/scripts/preremove-${rpm.release}</scriptFile>
-									</preremoveScriptlet>
 									<requires>
-										<require>slc-libs</require>
-										<require>osgi-boot</require>
-										<!-- do not require java so that it can be installed on Ubuntu -->
-										<!-- <require>java-1.6.0-openjdk</require> -->
+										<require>argeo-node</require>
+										<require>slc-platform</require>
 									</requires>
 								</configuration>
 							</execution>

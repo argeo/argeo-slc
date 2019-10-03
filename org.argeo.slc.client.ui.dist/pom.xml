@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>argeo-slc</artifactId>
+		<version>2.1.16-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>org.argeo.slc.client.ui.dist</artifactId>
+	<name>SLC Client UI Distribution</name>
+	<packaging>jar</packaging>
+	<dependencies>
+		<!-- Commons UI -->
+		<dependency>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.eclipse.ui</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.cms.ui.workbench</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+
+		<!-- SLC repo -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.api</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.repo</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.server.repo</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+
+		<!--  Argeo Base dependencies -->
+		<dependency>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.util</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<!-- RAP workbench -->
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>argeo-tp-rap-e3</artifactId>
+			<version>${version.argeo-tp}</version>
+			<type>pom</type>
+			<scope>provided</scope>
+		</dependency>
+		
+	</dependencies>
+</project>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- DISTRIBUTIONS MANAGEMENT -->
+	<bean id="normalizeDistribution"
+		class="org.argeo.slc.client.ui.dist.commands.NormalizeDistribution">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="openModuleEditor" class="org.argeo.slc.client.ui.dist.commands.OpenModuleEditor"
+		scope="prototype">
+		<property name="repoService" ref="repoService" />
+	</bean>
+
+	<!-- REPOSITORY MANAGEMENT -->
+	<bean id="registerRepository"
+		class="org.argeo.slc.client.ui.dist.commands.RegisterRepository">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="unregisterRemoteRepo"
+		class="org.argeo.slc.client.ui.dist.commands.UnregisterRemoteRepo"
+		scope="prototype">
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="displayRepoInformation"
+		class="org.argeo.slc.client.ui.dist.commands.DisplayRepoInformation"
+		scope="prototype">
+		<property name="repoService" ref="repoService" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+
+	<!-- WORKSPACE MANAGEMENT -->
+	<bean id="openWorkspaceEditor"
+		class="org.argeo.slc.client.ui.dist.commands.OpenWorkspaceEditor"
+		scope="prototype">
+		<property name="localRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="fetch" class="org.argeo.slc.client.ui.dist.commands.Fetch"
+		scope="prototype">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="manageWorkspaceAuth"
+		class="org.argeo.slc.client.ui.dist.commands.ManageWorkspaceAuth"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+	</bean>
+
+	<bean id="publishWorkspace" class="org.argeo.slc.client.ui.dist.commands.PublishWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="normalizeWorkspace"
+		class="org.argeo.slc.client.ui.dist.commands.NormalizeWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="openGenerateBinariesWizard"
+		class="org.argeo.slc.client.ui.dist.commands.OpenGenerateBinariesWizard">
+		<property name="repoService" ref="repoService" />
+	</bean>
+
+	<!-- WORKSPACE CRUD -->
+	<bean id="createWorkspace" class="org.argeo.slc.client.ui.dist.commands.CreateWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="copyWorkspace" class="org.argeo.slc.client.ui.dist.commands.CopyWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="copyLocalJavaWorkspace"
+		class="org.argeo.slc.client.ui.dist.commands.CopyLocalJavaWorkspace">
+		<property name="javaRepoManager">
+			<bean factory-bean="slcRepoManager" factory-method="getJavaRepoManager" />
+		</property>
+		<property name="javaRepository" ref="javaRepository" />
+	</bean>
+
+	<bean id="createLocalJavaWorkspace"
+		class="org.argeo.slc.client.ui.dist.commands.CreateLocalJavaWorkspace">
+		<property name="javaRepoManager">
+			<bean factory-bean="slcRepoManager" factory-method="getJavaRepoManager" />
+		</property>
+	</bean>
+
+	<bean id="mergeWorkspaces" class="org.argeo.slc.client.ui.dist.commands.MergeWorkspaces">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<bean id="deleteWorkspace" class="org.argeo.slc.client.ui.dist.commands.DeleteWorkspace">
+		<property name="repositoryFactory" ref="repositoryFactory" />
+		<property name="keyring" ref="keyring" />
+		<property name="nodeRepository" ref="nodeRepository" />
+	</bean>
+
+	<!-- ADVANCED -->
+	<bean id="runInOsgi" class="org.argeo.slc.client.ui.dist.commands.RunInOsgi"
+		scope="prototype">
+		<property name="repository" ref="javaRepository" />
+	</bean>
+
+	<!-- LEGACY -->
+	<!-- <bean id="org.argeo.slc.client.ui.dist.openGenericJcrQueryEditor" class="org.argeo.eclipse.ui.jcr.commands.OpenGenericJcrQueryEditor" 
+		scope="prototype"> <property name="editorId" value="org.argeo.slc.client.ui.dist.genericJcrQueryEditor" 
+		/> </bean> -->
+	<bean id="refreshDistributionsView"
+		class="org.argeo.slc.client.ui.dist.commands.RefreshDistributionsView"
+		scope="prototype">
+	</bean>
+
+	<bean id="org.argeo.slc.client.ui.dist.deleteArtifacts" class="org.argeo.slc.client.ui.dist.commands.DeleteArtifacts"
+		scope="prototype">
+	</bean>
+</beans>

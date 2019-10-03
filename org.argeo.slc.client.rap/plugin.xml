@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.6"?>
+<plugin>
+	<extension
+		point="org.eclipse.rap.ui.entrypoint">
+		<entrypoint
+			id="org.argeo.slc.client.rap.slcSecureRap"
+			class="org.argeo.slc.client.rap.SlcSecureRap"
+			path="/slc">
+		</entrypoint>
+	</extension>
+   
+	<!-- COMMANDS  --> 
+   	<extension
+        point="org.eclipse.ui.commands">
+		<command
+			id="org.argeo.slc.client.rap.openJcrFile"
+			defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+			name="Open Workspace Editor">
+			<commandParameter
+				id="param.repoNodePath"
+				name="Repo node path">
+			</commandParameter>
+			<commandParameter
+				id="param.repoUri"
+				name="Repo URI">
+			</commandParameter>
+			<commandParameter
+				id="param.workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="param.filePath"
+				name="File Path">
+			</commandParameter>
+    	</command>
+   	</extension>
+</plugin>

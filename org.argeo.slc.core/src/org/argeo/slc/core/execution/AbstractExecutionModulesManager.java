@@ -1,0 +1,162 @@
+/*
+ * Copyright (C) 2007-2012 Argeo GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.argeo.slc.core.execution;
+
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.argeo.slc.execution.ExecutionContext;
+import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
+import org.argeo.slc.execution.ExecutionModulesManager;
+import org.argeo.slc.execution.RealizedFlow;
+
+/** Provides the base feature of an execution module manager. */
+public abstract class AbstractExecutionModulesManager implements
+		ExecutionModulesManager {
+	private final static Log log = LogFactory
+			.getLog(AbstractExecutionModulesManager.class);
+
+	// private List<FilteredNotifier> filteredNotifiers = Collections
+	// .synchronizedList(new ArrayList<FilteredNotifier>());
+
+	protected abstract ExecutionFlow findExecutionFlow(String moduleName,
+			String moduleVersion, String flowName);
+
+	protected abstract ExecutionContext findExecutionContext(String moduleName,
+			String moduleVersion);
+
+	protected abstract ExecutionFlowDescriptorConverter getExecutionFlowDescriptorConverter(
+			String moduleName, String moduleVersion);
+
+	public void execute(RealizedFlow realizedFlow) {
+		if (log.isTraceEnabled())
+			log.trace("Executing " + realizedFlow);
+
+		String moduleName = realizedFlow.getModuleName();
+		String moduleVersion = realizedFlow.getModuleVersion();
+
+		Map<? extends String, ? extends Object> variablesToAdd = getExecutionFlowDescriptorConverter(
+				moduleName, moduleVersion).convertValues(
+				realizedFlow.getFlowDescriptor());
+		ExecutionContext executionContext = findExecutionContext(moduleName,
+				moduleVersion);
+		for (String key : variablesToAdd.keySet())
+			executionContext.setVariable(key, variablesToAdd.get(key));
+
+		ExecutionFlow flow = findExecutionFlow(moduleName, moduleVersion,
+				realizedFlow.getFlowDescriptor().getName());
+
+		//
+		// Actually runs the flow, IN THIS THREAD
+		//
+		executionContext.beforeFlow(flow);
+		try {
+			flow.run();
+		} finally {
+			executionContext.afterFlow(flow);
+		}
+		//
+		//
+		//
+	}
+
+	// public void dispatchUpdateStatus(ExecutionProcess process,
+	// String oldStatus, String newStatus) {
+	// // filtered notifiers
+	// for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
+	// .hasNext();) {
+	// FilteredNotifier filteredNotifier = it.next();
+	// if (filteredNotifier.receiveFrom(process))
+	// filteredNotifier.getNotifier().updateStatus(process, oldStatus,
+	// newStatus);
+	// }
+	//
+	// }
+
+	// public void dispatchAddSteps(ExecutionProcess process,
+	// List<ExecutionStep> steps) {
+	// process.addSteps(steps);
+	// for (Iterator<FilteredNotifier> it = filteredNotifiers.iterator(); it
+	// .hasNext();) {
+	// FilteredNotifier filteredNotifier = it.next();
+	// if (filteredNotifier.receiveFrom(process))
+	// filteredNotifier.getNotifier().addSteps(process, steps);
+	// }
+	// }
+
+	// public void registerProcessNotifier(ExecutionProcessNotifier notifier,
+	// Map<String, String> properties) {
+	// filteredNotifiers.add(new FilteredNotifier(notifier, properties));
+	// }
+	//
+	// public void unregisterProcessNotifier(ExecutionProcessNotifier notifier,
+	// Map<String, String> properties) {
+	// filteredNotifiers.remove(notifier);
+	// }
+
+	// protected class FilteredNotifier {
+	// private final ExecutionProcessNotifier notifier;
+	// private final String processId;
+	//
+	// public FilteredNotifier(ExecutionProcessNotifier notifier,
+	// Map<String, String> properties) {
+	// super();
+	// this.notifier = notifier;
+	// if (properties == null)
+	// properties = new HashMap<String, String>();
+	// if (properties.containsKey(SLC_PROCESS_ID))
+	// processId = properties.get(SLC_PROCESS_ID);
+	// else
+	// processId = null;
+	// }
+	//
+	// /**
+	// * Whether event from this process should be received by this listener.
+	// */
+	// public Boolean receiveFrom(ExecutionProcess process) {
+	// if (processId != null)
+	// if (process.getUuid().equals(processId))
+	// return true;
+	// else
+	// return false;
+	// return true;
+	// }
+	//
+	// @Override
+	// public int hashCode() {
+	// return notifier.hashCode();
+	// }
+	//
+	// @Override
+	// public boolean equals(Object obj) {
+	// if (obj instanceof FilteredNotifier) {
+	// FilteredNotifier fn = (FilteredNotifier) obj;
+	// return notifier.equals(fn.notifier);
+	// } else if (obj instanceof ExecutionProcessNotifier) {
+	// ExecutionProcessNotifier epn = (ExecutionProcessNotifier) obj;
+	// return notifier.equals(epn);
+	// } else
+	// return false;
+	// }
+	//
+	// public ExecutionProcessNotifier getNotifier() {
+	// return notifier;
+	// }
+	//
+	// }
+}

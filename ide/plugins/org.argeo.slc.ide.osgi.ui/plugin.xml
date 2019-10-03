@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+<!--
+<extension 
+       point="org.eclipse.ui.preferencePages"> 
+      <page 
+         id="org.argeo.slc.ide.ui.mainPreferencePage" 
+         name="SLC" 
+         class="org.argeo.slc.ide.ui.SlcMainPreferencePage"> 
+       </page> 
+</extension> 
+<extension
+      point="org.eclipse.ui.perspectives">
+   <perspective
+         class="org.argeo.slc.ide.ui.SlcPerspectiveFactory"
+         icon="icons/argeo-icon-100104-256.png"
+         id="org.argeo.slc.ide.ui.slcPerspective"
+         name="SLC">
+   </perspective>
+</extension>
+-->
+<extension
+      point="org.eclipse.debug.ui.launchShortcuts">
+   <shortcut
+         class="org.argeo.slc.ide.ui.launch.osgi.OsgiBootLaunchShortcut"
+         icon="icons/slc-launch.gif"
+         id="org.argeo.slc.ide.ui.osgiBootLaunchShortcut"
+         label="OSGi Boot (Equinox, RAP)"
+         modes="run,debug">
+         <contextualLaunch>
+            <enablement>
+            <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.properties"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="config.ini"/>
+                 </or>
+                </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>         
+   </shortcut>
+   <shortcut
+         class="org.argeo.slc.ide.ui.launch.osgi.EclipseBootLaunchShortcut"
+         icon="icons/eclipse-launch.gif"
+         id="org.argeo.slc.ide.ui.eclipseBootLaunchShortcut"
+         label="Eclipse Boot (RCP)"
+         modes="run,debug">
+         <contextualLaunch>
+            <enablement>
+            <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.properties"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="config.ini"/>
+                 </or>
+                </iterate>
+             </with>
+           </enablement>
+         </contextualLaunch>         
+   </shortcut>
+</extension>
+  <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            id="org.argeo.slc.ide.ui.OsgiBootEquinoxLauncher"
+            name="OSGi Boot Equinox"
+            delegate="org.argeo.slc.ide.ui.launch.osgi.OsgiBootEquinoxLaunchConfiguration"
+            modes="run, debug"
+            sourceLocatorId="org.eclipse.pde.ui.launcher.PDESourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
+      <launchConfigurationType
+            id="org.argeo.slc.ide.ui.EclipseBootLauncher"
+            name="Eclipse Boot"
+            delegate="org.argeo.slc.ide.ui.launch.osgi.EclipseBootLaunchConfiguration"
+            modes="run, debug"
+            sourceLocatorId="org.eclipse.pde.ui.launcher.PDESourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer"/>
+   </extension>
+  <extension
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+      <launchConfigurationTabGroup
+            type="org.argeo.slc.ide.ui.OsgiBootEquinoxLauncher"
+            class="org.argeo.slc.ide.ui.launch.osgi.OsgiBootLauncherTabGroup"
+            id="org.argeo.slc.ide.ui.OsgiBootLauncherTabGroup">
+      </launchConfigurationTabGroup>
+      <launchConfigurationTabGroup
+            type="org.argeo.slc.ide.ui.EclipseBootLauncher"
+            class="org.argeo.slc.ide.ui.launch.osgi.EclipseBootLauncherTabGroup"
+            id="org.argeo.slc.ide.ui.EclipseBootLauncherTabGroup">
+      </launchConfigurationTabGroup>
+  </extension>
+   <extension
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+      <launchConfigurationTypeImage
+            icon="icons/slc-launch.gif"
+            configTypeID="org.argeo.slc.ide.ui.OsgiBootEquinoxLauncher"
+            id="org.argeo.slc.ide.ui.OsgiBootEquinoxLauncherImage">
+      </launchConfigurationTypeImage>
+      <launchConfigurationTypeImage
+            icon="icons/eclipse-launch.gif"
+            configTypeID="org.argeo.slc.ide.ui.EclipseBootLauncher"
+            id="org.argeo.slc.ide.ui.EclipseBootLauncherImage">
+      </launchConfigurationTypeImage>
+   </extension>
+<!--   
+   <extension point = "org.eclipse.pde.core.targets">
+     <target 
+       id="org.eclipse.pde.core.rcpTarget"
+       name="Managed"
+       definition="targets/managedTarget.target"/>
+   </extension>
+   -->
+</plugin>

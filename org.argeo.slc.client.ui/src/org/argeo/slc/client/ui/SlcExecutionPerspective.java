@@ -1,0 +1,43 @@
+/*
+ * Copyright (C) 2007-2012 Argeo GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.argeo.slc.client.ui;
+
+import org.eclipse.ui.IFolderLayout;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IPerspectiveFactory;
+
+/** Perspective to manage SLC execution flows. */
+public class SlcExecutionPerspective implements IPerspectiveFactory {
+
+	public void createInitialLayout(IPageLayout layout) {
+		String editorArea = layout.getEditorArea();
+		layout.setEditorAreaVisible(true);
+		layout.setFixed(false);
+
+		IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT,
+				0.35f, editorArea);
+		left.addView(ClientUiPlugin.ID + ".jcrExecutionModulesView");
+		// left.addView(ClientUiPlugin.ID + ".jcrResultListView");
+		left.addView(ClientUiPlugin.ID + ".jcrResultTreeView");
+		// Sleak view for SWT resource debugging
+		// left.addView("org.eclipse.swt.tools.views.SleakView");
+
+		IFolderLayout bottom = layout.createFolder("bottom",
+				IPageLayout.BOTTOM, 0.65f, editorArea);
+//		BOTTOM.ADDVIEW(SECURITYUIPLUGIN.PLUGIN_ID + ".LOGVIEW");
+		bottom.addView(ClientUiPlugin.ID + ".jcrProcessListView");
+	}
+}

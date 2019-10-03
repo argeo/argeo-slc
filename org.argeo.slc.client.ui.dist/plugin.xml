@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<!-- PERSPECTIVES --> 
+	<extension
+		point="org.eclipse.ui.perspectives">
+		<perspective
+            name="SLC Factory"
+            class="org.argeo.slc.client.ui.dist.DistributionPerspective"
+            id="org.argeo.slc.client.ui.dist.distributionPerspective"
+            icon="icons/distribution_perspective.gif">
+		</perspective>
+		<perspective
+            name="SLC Distribution"
+            class="org.argeo.slc.client.ui.dist.AnonymousDistributionPerspective"
+            id="org.argeo.slc.client.ui.dist.anonymousDistributionPerspective"
+            icon="icons/repo.gif">
+		</perspective>
+   </extension>
+   <!-- VIEWS -->
+   <extension
+		point="org.eclipse.ui.views">
+		<view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.distributionsView"
+            icon="icons/search.gif"
+            name="Distributions">
+		</view>
+		<view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.anonymousDistributionsView"
+            icon="icons/search.gif"
+            name="Public Repository">
+		</view>
+		<view
+            class="org.argeo.slc.client.ui.dist.views.HelpView"
+            id="org.argeo.slc.client.ui.dist.helpView"
+            icon="icons/help.gif"
+            name="About">
+		</view>
+		<!--
+		<view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.artifactsBrowser"
+            icon="icons/packageBrowser.gif"
+            name="Artifacts browser">
+		</view>
+		<view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.queryArtifactsForm"
+            icon="icons/searchForm.gif"
+            name="Artifacts Form">
+		</view>
+		<view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.queryBundlesForm"
+            icon="icons/searchForm.gif"
+			name="Bundles Form">
+		</view>
+		<view
+            class="org.argeo.eclipse.spring.SpringExtensionFactory"
+            id="org.argeo.slc.client.ui.dist.queryArtifactsText"
+            icon="icons/search.gif"
+            name="Query builder">
+		</view>
+		-->
+		<view
+	         name="Progress View"
+	         icon="icons/pview.gif"
+	         category="org.eclipse.ui"
+	         class="org.eclipse.ui.ExtensionFactory:progressView"
+	         id="org.eclipse.ui.views.ProgressView">
+		</view>
+	</extension>
+	<!-- EDITORS -->
+	<extension
+		point="org.eclipse.ui.editors">
+		<!-- <editor
+			class="org.argeo.slc.client.ui.dist.editors.GenericBundleEditor"
+			id="org.argeo.slc.client.ui.dist.genericBundleEditor"
+			name="Bundle editor"
+			icon="icons/artifactVersionBase.gif"
+			default="false">
+		</editor> -->
+		<editor
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			id="org.argeo.slc.client.ui.dist.artifactVersionEditor"
+			name="Artifact Version Editor"
+			icon="icons/artifactVersionBase.gif"
+			default="false">
+		</editor>
+		<editor
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			id="org.argeo.slc.client.ui.dist.modularDistVersionEditor"
+			name="Modular Distribution Version Editor"
+			icon="icons/modularDistributionVersion.gif"
+			default="false">
+		</editor>
+		<editor
+			class="org.argeo.eclipse.spring.SpringExtensionFactory"
+			id="org.argeo.slc.client.ui.dist.distWorkspaceEditor"
+			name="Distribution workspace editor"
+			icon="icons/distribution_perspective.gif"
+			default="false">
+		</editor>
+	</extension>
+
+    <!-- COMMANDS  --> 
+   	<extension
+         point="org.eclipse.ui.commands">
+		
+		<!-- Distribution Managemnt -->
+		<command
+            id="org.argeo.slc.client.ui.dist.normalizeDistribution"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Normalize Distribution">
+			<commandParameter
+				id="workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="targetRepoPath"
+				name="Target repo node path">
+			</commandParameter>
+    	</command>
+    	
+    	<command
+            id="org.argeo.slc.client.ui.dist.openModuleEditor"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Open Workspace Editor">
+			<commandParameter
+				id="param.repoNodePath"
+				name="Repo node path">
+			</commandParameter>
+			<commandParameter
+				id="param.repoUri"
+				name="Repo URI">
+			</commandParameter>
+			<commandParameter
+				id="param.workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="param.modulePath"
+				name="Module path name">
+			</commandParameter>
+    	</command>
+    	
+    	<!-- Repository Management --> 
+    	<command
+            id="org.argeo.slc.client.ui.dist.registerRepository"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Add Repository">
+    	</command>
+    	<command
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.client.ui.dist.unregisterRemoteRepo"
+            name="Unregister remote repository">
+            <commandParameter
+         		id="org.argeo.slc.client.ui.dist.repoNodePath"
+         		name="Remote Repo path">
+  	 		</commandParameter>
+    	</command>
+		<command
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            id="org.argeo.slc.client.ui.dist.displayRepoInformation"
+            name="Display repository information">
+    	</command>
+    	
+    	<!-- Workspace Management -->
+		<command
+            id="org.argeo.slc.client.ui.dist.openWorkspaceEditor"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Open Workspace Editor">
+			<commandParameter
+				id="param.repoNodePath"
+				name="Repo node path">
+			</commandParameter>
+			<commandParameter
+				id="param.repoUri"
+				name="Repo URI">
+			</commandParameter>
+			<commandParameter
+				id="param.workspaceName"
+				name="Workspace name">
+			</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.fetch"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Fetch repository">
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo uri">
+  	 		</commandParameter>
+    	</command>
+    	
+    	<!-- <command
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.MarkAsRelevantCategory"
+            id="org.argeo.slc.client.ui.dist.markAsRelevantCategory"
+            name="Mark as relevant category">
+    	</command> --> 
+    	
+    	<command
+            id="org.argeo.slc.client.ui.dist.openGenerateBinariesWizard"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Generate Binaries...">
+            <commandParameter
+				id="param.repoNodePath"
+				name="Repo node path">
+			</commandParameter>
+			<commandParameter
+				id="param.workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="param.modulePath"
+				name="Module path name">
+			</commandParameter>
+    	</command>
+    	
+    	<command
+            id="org.argeo.slc.client.ui.dist.normalizeWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Normalize Workspace">
+			<commandParameter
+				id="workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="targetRepoPath"
+				name="Target repo node path">
+			</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.manageWorkspaceAuth"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Manage workspace authorizations">
+            <commandParameter
+         		id="org.argeo.slc.client.ui.dist.workspaceName"
+         		name="Workspace Name">
+  	 		</commandParameter>
+    	</command>
+
+    	<command
+            id="org.argeo.slc.client.ui.dist.publishWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Publish selected workspace">
+			<commandParameter
+				id="workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="targetRepoPath"
+				name="Target repo node path">
+			</commandParameter>
+    	</command>
+    	
+		<command
+            id="org.argeo.slc.client.ui.dist.mergeWorkspaces"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Copy chosen Workspace">
+            <commandParameter
+         		id="srcWkspName"
+         		name="Source Workspace Name">
+  	 		</commandParameter>
+          <commandParameter
+         		id="srcRepoPath"
+         		name="Source Repo Node path ">
+  	 		</commandParameter>
+           <commandParameter
+         		id="targetWkspName"
+         		name="Target Workspace Name">
+  	 		</commandParameter>
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo node path">
+  	 		</commandParameter>
+    	</command>
+    	
+    	<!-- Workspaces CRUD --> 
+		<!-- Generic new and copy workspace -->
+		<command
+            id="org.argeo.slc.client.ui.dist.createWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Create Workspace">
+            <commandParameter
+         		id="workspacePrefix"
+         		name="Workspace prefix">
+  	 		</commandParameter>
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo node path">
+  	 		</commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.copyWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Copy chosen Workspace">
+            <commandParameter
+         		id="srcWkspName"
+         		name="Source Workspace Name">
+  	 		</commandParameter>
+            <commandParameter
+         		id="targetRepoPath"
+         		name="Target repo node path">
+  	 		</commandParameter>
+    	</command>
+    	<!-- Specific for local java workspaces --> 
+    	<command
+            id="org.argeo.slc.client.ui.dist.createLocalJavaWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Create Local Java Workspace">
+            <commandParameter
+         		id="workspacePrefix"
+         		name="Workspace prefix">
+  	 		</commandParameter>
+    	</command>
+		<command
+            id="org.argeo.slc.client.ui.dist.copyLocalJavaWorkspace"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Copy chosen local Java Workspace">
+            <commandParameter
+         		id="srcWkspName"
+         		name="Source Workspace Name">
+  	 		</commandParameter>
+    	</command>
+		
+		<!-- Not terminated delete command - does not really work -->
+    	<command
+			id="org.argeo.slc.client.ui.dist.deleteWorkspace"
+			defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+			name="Delete chosen Workspace">
+			<commandParameter
+				id="workspaceName"
+				name="Workspace name">
+			</commandParameter>
+			<commandParameter
+				id="targetRepoPath"
+				name="Target repo node path">
+			</commandParameter>
+    	</command>
+    	
+ 		<!-- Advanced commands --> 
+		<command
+            id="org.argeo.slc.client.ui.dist.doNothing"
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.DoNothing"
+            name="Advanced">
+    	</command>
+		<command
+            id="org.argeo.slc.client.ui.dist.runInOsgi"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Run in OSGi">
+            <commandParameter
+         		id="workspaceName"
+         		name="Workspace Name">
+  	 		</commandParameter>
+            <commandParameter
+                  id="modulePath"
+                  name="Module Path"
+                  optional="true">
+            </commandParameter>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.refreshDistributionsView"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Refresh Distributions View">
+    	</command>
+		
+		<!-- Legacy -->
+		<command
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.RefreshArtifactBrowser"
+            id="org.argeo.slc.client.ui.dist.refreshArtifactBrowser"
+            name="Refresh Artifact Browser">
+    	</command>
+    	    	
+    	<command
+            defaultHandler="org.argeo.slc.client.ui.dist.commands.ShowSizeColumn"
+            id="org.argeo.slc.client.ui.dist.showSizeColumn"
+            name="Show size column">
+            <state 
+				id="org.argeo.slc.client.ui.dist.showSizeColumn.toggleState">
+				<class class="org.eclipse.jface.commands.ToggleState"> 
+					<parameter
+						name="default"
+               			value="true" />
+				</class>
+			</state>
+    	</command>
+    	<command
+            id="org.argeo.slc.client.ui.dist.deleteArtifacts"
+            defaultHandler="org.argeo.eclipse.spring.SpringCommandHandler"
+            name="Remove selected artifacts">
+    	</command>
+    </extension>
+    
+	<!-- MENU CONTRIBUTIONS --> 
+	<extension
+         id="menu:org.eclipse.ui.main.menu"
+         point="org.eclipse.ui.menus">
+		<!-- Distributions view tool bar --> 
+		<menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.dist.distributionsView">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.registerRepository"
+                icon="icons/addRepo.gif"
+                label="Register repository"
+                tooltip="Register a remote repository">
+            </command>
+             <command
+             	 commandId="org.argeo.slc.client.ui.dist.doNothing"
+                 id="org.argeo.slc.client.ui.dist.advancedMenu"
+                 icon="icons/more.gif"
+                 tooltip="Access to advanced commands"
+                 style="pulldown">
+           </command>
+        </menuContribution>
+		<menuContribution locationURI="menu:org.argeo.slc.client.ui.dist.advancedMenu">
+        	<command
+				commandId="org.argeo.slc.client.ui.dist.refreshDistributionsView"
+				icon="icons/refresh.png"
+				label="Refresh"
+				tooltip="Force the full refresh of the distribution tree (close all open connections)">
+			</command>
+            <!-- <command
+            	commandId="org.argeo.slc.client.ui.dist.runInOSGi"
+                icon="icons/showSize.gif"
+                label="Run in OSGi"
+                tooltip="Run in a spearate OSGi runtime">
+            </command>
+            -->
+		</menuContribution>
+		<!-- Anonymous distribution view toolbar -->             
+        <menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.dist.anonymousDistributionsView">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.refreshDistributionsView"
+                icon="icons/refresh.png"
+                label="Refresh"
+                tooltip="Force the full refresh of the distribution tree (close all open connections)">
+            </command>
+        </menuContribution>
+        <!-- Artifact Browser Tool bar --> 
+		<menuContribution
+        	locationURI="toolbar:org.argeo.slc.client.ui.dist.artifactsBrowser">
+            <command
+            	commandId="org.argeo.slc.client.ui.dist.showSizeColumn"
+                icon="icons/showSize.gif"
+                style="toggle" 
+                label="Show sizes"
+                tooltip="Warning: showing size column might reduce overall browser reactivity">
+            </command>
+			<command
+            	commandId="org.argeo.slc.client.ui.dist.refreshArtifactBrowser"
+                icon="icons/refresh.png"
+	                label="Refresh"
+                tooltip="Refresh the whole browser">
+            </command>
+        </menuContribution>
+        <!-- Queries --> 
+		<!-- <menuContribution
+                allPopups="false"
+                locationURI="menu:org.eclipse.ui.main.menu?after=edit">
+        	<menu label="Queries"
+              mnemonic="Queries"
+              id="org.argeo.slc.client.ui.dist.queryMenu">
+                <command
+                      commandId="org.argeo.slc.client.ui.dist.openGenericJcrQueryEditor"
+                      disabledIcon="icons/saveDisabled.gif"
+                      icon="icons/results.gif"
+                      label="JCR Query"
+                      style="push"
+                      tooltip="Open JCR query editor">
+                </command>
+             </menu>
+          </menuContribution> -->
+	</extension>
+	<extension
+           point="org.eclipse.ui.activities">
+        <!-- TODO: find a way to exclude evrything -->
+        <activityPatternBinding
+              activityId="org.argeo.slc.client.ui.slcActivity"
+              isEqualityPattern="true"
+              pattern="org.argeo.slc.client.ui.dist/org.argeo.slc.client.ui.dist.distributionPerspective">
+        </activityPatternBinding>
+        <activityPatternBinding
+              activityId="org.argeo.security.ui.adminActivity"
+              isEqualityPattern="true"
+              pattern="org.argeo.slc.client.ui.dist/org.argeo.slc.client.ui.dist.distributionPerspective">
+        </activityPatternBinding>
+     </extension>
+</plugin>

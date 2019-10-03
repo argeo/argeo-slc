@@ -1,0 +1,17 @@
+Import-Package: org.w3c.dom.*,\
+org.xml.sax.*,\
+javax.xml.transform.*,\
+javax.xml.parsers.*,\
+javax.jcr.nodetype,\
+org.eclipse.aether.*;version=1.0.1,\
+org.osgi.*;version=0.0.0,\
+*
+
+Private-Package: org.eclipse.aether.*
+
+Require-Capability: cms.datamodel; filter:="(name=node)",\
+cms.datamodel; filter:="(name=slc)"
+Provide-Capability: cms.datamodel; name=java,\
+ cms.datamodel; name=dist,\
+ cms.datamodel; name=docs,\
+ cms.datamodel; name=rpm

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pde version="3.5"?>
+
+<product name="Argeo Studio" uid="org.argeo.slc.studio" id="org.argeo.slc.studio.ui.product" application="org.eclipse.ui.ide.workbench" version="2.1.0.qualifier" useFeatures="true" includeLaunchers="true">
+
+   <aboutInfo>
+      <image path="/org.argeo.slc.studio.ui/img/argeo-ITSE.png"/>
+      <text>
+         Argeo Studio - IDE and management tool focused on Argeo-based application development and deployment
+      </text>
+   </aboutInfo>
+
+   <configIni use="default">
+   </configIni>
+
+   <launcherArgs>
+      <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
+      </vmArgsMac>
+   </launcherArgs>
+
+   <windowImages i16="/org.argeo.slc.studio.ui/icons/argeo-icon-16.png" i32="/org.argeo.slc.studio.ui/icons/argeo-icon-32.png" i48="/org.argeo.slc.studio.ui/icons/argeo-icon-48.png" i64="/org.argeo.slc.studio.ui/icons/argeo-icon-64.png" i128="/org.argeo.slc.studio.ui/icons/argeo-icon-128.png" i256="/org.argeo.slc.studio.ui/icons/argeo-icon-256.png"/>
+
+   <splash
+      location="org.argeo.slc.studio.branding"
+      startupProgressRect="0,295,600,5"
+      startupMessageRect="5,270,600,20"
+      startupForegroundColor="00294b" />
+   <launcher name="ArgeoStudio">
+      <linux icon="/org.argeo.slc.studio.ui/icons/argeo-icon-256.xpm"/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>
+      <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</macos>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</windows>
+   </vm>
+
+   <license>
+        <url>https://www.gnu.org/licenses/gpl-3.0.txt</url>
+        <text>
+   Argeo Studio - IDE and management tool focused on Argeo-based application development and deployment
+Copyright (C) 2007-2019  Argeo GmbH
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
+         </text>
+   </license>
+
+   <plugins>
+   </plugins>
+
+   <features>
+      <feature id="org.eclipse.pde" installMode="root"/>
+      <feature id="org.eclipse.jdt" installMode="root"/>
+      <feature id="org.eclipse.egit" installMode="root"/>
+      <feature id="org.eclipse.jgit" installMode="root"/>
+      <feature id="org.eclipse.jgit.ssh.apache" installMode="root"/>
+      <feature id="org.eclipse.platform" installMode="root"/>
+      <feature id="org.eclipse.help" installMode="root"/>
+      <feature id="org.eclipse.emf.common" installMode="root"/>
+      <feature id="org.eclipse.equinox.p2.core.feature" installMode="root"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature" installMode="root"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature" installMode="root"/>
+      <feature id="org.eclipse.emf.ecore" installMode="root"/>
+      <feature id="org.eclipse.equinox.p2.user.ui" installMode="root"/>
+      <feature id="org.eclipse.equinox.p2.extras.feature" installMode="root"/>
+      <feature id="org.eclipse.rcp" installMode="root"/>
+      <feature id="org.eclipse.ecf.core.feature" installMode="root"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature" installMode="root"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature" installMode="root"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature" installMode="root"/>
+      <feature id="org.eclipse.e4.rcp" installMode="root"/>
+      <feature id="org.eclipse.e4.core.tools.feature" installMode="root"/>
+      <feature id="org.eclipse.userstorage" installMode="root"/>
+      <feature id="org.eclipse.cdt" installMode="root"/>
+      <feature id="org.eclipse.cdt.autotools" installMode="root"/>
+      <feature id="org.eclipse.cdt.build.crossgcc" installMode="root"/>
+      <feature id="org.eclipse.cdt.gdb" installMode="root"/>
+      <feature id="org.eclipse.cdt.gnu.build" installMode="root"/>
+      <feature id="org.eclipse.cdt.gnu.debug" installMode="root"/>
+      <feature id="org.eclipse.cdt.gnu.dsf" installMode="root"/>
+      <feature id="org.eclipse.cdt.managedbuilder.llvm" installMode="root"/>
+      <feature id="org.eclipse.cdt.native" installMode="root"/>
+      <feature id="org.eclipse.cdt.platform" installMode="root"/>
+      <feature id="org.eclipse.eclemma.feature" installMode="root"/>
+      <feature id="org.eclipse.epp.mpc" installMode="root"/>
+      <feature id="org.eclipse.epp.package.common.feature" installMode="root"/>
+      <feature id="org.eclipse.epp.package.rcp.feature" installMode="root"/>
+      <feature id="org.eclipse.equinox.p2.discovery.feature" installMode="root"/>
+      <feature id="org.eclipse.rap.tools.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.common_core.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.common_ui.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.jsdt.chromium.debug.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.jsdt.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.jsdt.nodejs.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.json_core.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.json_ui.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.server_core.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.server_ui.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.server_userdoc.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.web_core.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.web_ui.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.web_userdoc.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.xml_core.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.xml_ui.feature" installMode="root"/>
+      <feature id="org.eclipse.wst.xml_userdoc.feature" installMode="root"/>
+      <feature id="org.eclipse.oomph.p2" installMode="root"/>
+      <feature id="org.eclipse.oomph.setup" installMode="root"/>
+      <feature id="org.eclipse.oomph.setup.core" installMode="root"/>
+      <feature id="org.argeo.slc.studio" installMode="root"/>
+      <feature id="org.eclipse.m2e.feature" installMode="root"/>
+   </features>
+
+   <configurations>
+      <plugin id="org.apache.felix.scr" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+   </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
+
+</product>
