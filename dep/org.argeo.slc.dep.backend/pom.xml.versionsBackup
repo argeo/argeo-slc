@@ -1,0 +1,210 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>dep</artifactId>
+		<version>2.1.16-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<artifactId>org.argeo.slc.dep.backend</artifactId>
+	<name>SLC Backend</name>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<SLC-ModularDistribution>default</SLC-ModularDistribution>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.argeo.maven.plugins</groupId>
+				<artifactId>argeo-osgi-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-descriptors</id>
+						<goals>
+							<goal>descriptors</goal>
+						</goals>
+						<phase>generate-resources</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<!-- Parent dependencies -->
+		<dependency>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.dep.cms.sdk</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.dep.minimal</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+
+		<!-- SLC Libs -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc</groupId> -->
+		<!-- <artifactId>org.argeo.slc.lib.repo</artifactId> -->
+		<!-- <version>1.1.14-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc</groupId> -->
+		<!-- <artifactId>org.argeo.slc.lib.jcr</artifactId> -->
+		<!-- <version>1.1.14-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+
+		<!-- Extensions -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.support</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+
+		<!-- SLC Repo -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.repo</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.factory</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.server.repo</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc</groupId> -->
+		<!-- <artifactId>org.argeo.slc.server.repo.webapp</artifactId> -->
+		<!-- <version>2.1.1-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+
+		<!-- UI -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.client.ui</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.client.ui.dist</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.client.rap</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+		</dependency>
+
+		<!-- For target platform generation -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.unit</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<profiles>
+		<profile>
+			<id>rpmbuild</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>prepare-source</id>
+								<phase>package</phase>
+								<goals>
+									<goal>single</goal>
+								</goals>
+								<configuration>
+									<descriptorRefs>
+										<descriptorRef>a2-source</descriptorRef>
+									</descriptorRefs>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- <plugin> -->
+					<!-- <groupId>org.apache.maven.plugins</groupId> -->
+					<!-- <artifactId>maven-dependency-plugin</artifactId> -->
+					<!-- <executions> -->
+					<!-- <execution> -->
+					<!-- <id>copy-argeo</id> -->
+					<!-- <phase>package</phase> -->
+					<!-- <goals> -->
+					<!-- <goal>copy-dependencies</goal> -->
+					<!-- </goals> -->
+					<!-- <configuration> -->
+					<!-- <includeTypes>jar</includeTypes> -->
+					<!-- <outputDirectory>${project.build.directory}/lib-argeo</outputDirectory> -->
+					<!-- <includeGroupIds>org.argeo.slc</includeGroupIds> -->
+					<!-- <excludeTransitive>true</excludeTransitive> -->
+					<!-- <excludeArtifactIds>org.argeo.slc.dep.minimal</excludeArtifactIds> -->
+					<!-- <includeTypes>jar</includeTypes> -->
+					<!-- <includeScope>runtime</includeScope> -->
+					<!-- <useRepositoryLayout>true</useRepositoryLayout> -->
+					<!-- </configuration> -->
+					<!-- </execution> -->
+					<!-- </executions> -->
+					<!-- </plugin> -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>rpm-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>rpm-argeo</id>
+								<phase>package</phase>
+								<goals>
+									<goal>rpm</goal>
+								</goals>
+								<configuration>
+									<name>slc-platform</name>
+									<mappings>
+										<mapping>
+											<directory>/usr/share/osgi</directory>
+											<username>root</username>
+											<groupname>root</groupname>
+											<filemode>644</filemode>
+											<directoryIncluded>true</directoryIncluded>
+											<sources>
+												<source>
+													<location>${project.build.directory}/${project.artifactId}-${project.version}-a2-source</location>
+													<includes>
+														<include>**/*.jar</include>
+													</includes>
+												</source>
+											</sources>
+										</mapping>
+										<!-- <mapping> -->
+										<!-- <directory>/usr/share/osgi/org/argeo/slc/${project.artifactId}/${project.version}</directory> -->
+										<!-- <username>root</username> -->
+										<!-- <groupname>root</groupname> -->
+										<!-- <directoryIncluded>false</directoryIncluded> -->
+										<!-- <artifact /> -->
+										<!-- </mapping> -->
+									</mappings>
+									<requires>
+										<require>argeo-cms-platform</require>
+										<require>argeo-cms-sdk-tp</require>
+										<require>slc-agent</require>
+									</requires>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

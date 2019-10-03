@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>demo</artifactId>
+		<version>2.1.16-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+	<groupId>org.argeo.slc.demo</groupId>
+	<artifactId>modules</artifactId>
+	<packaging>pom</packaging>
+	<name>SLC Demo Modules</name>
+	<modules>
+		<module>org.argeo.slc.demo.ant</module>
+		<module>org.argeo.slc.demo.basic</module>
+		<!-- <module>org.argeo.slc.demo.det</module> -->
+		<!-- <module>org.argeo.slc.demo.detached</module> -->
+		<!-- <module>org.argeo.slc.demo.maven</module> -->
+		<module>org.argeo.slc.demo.minimal</module>
+	</modules>
+	<properties>
+		<additionalImports.slc-lib>
+			com.jcraft.jsch;resolution:=optional,
+			org.apache.commons.exec;resolution:=optional,
+		</additionalImports.slc-lib>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<SLC-ExecutionModule>default</SLC-ExecutionModule>
+						<!-- Minimal imports + some optional convenience imports -->
+						<Import-Package>
+							org.springframework.cglib.proxy,
+							org.springframework.cglib.core,
+							org.springframework.cglib.reflect,
+							org.aopalliance.aop,
+							org.argeo.slc.core.execution,
+							org.argeo.slc.core.execution.tasks,
+							org.argeo.slc.execution,
+							org.argeo.slc.osgi,
+							org.argeo.slc.test,
+							org.springframework.aop,
+							org.springframework.aop.framework,
+							org.springframework.aop.scope,
+							org.springframework.beans.factory.config,
+							org.springframework.core.io,
+							${additionalImports.slc-lib},
+							*
+						</Import-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<dependencies>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.dep.minimal</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.dep.backend</artifactId>
+			<version>2.1.16-SNAPSHOT</version>
+			<type>pom</type>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+</project>
