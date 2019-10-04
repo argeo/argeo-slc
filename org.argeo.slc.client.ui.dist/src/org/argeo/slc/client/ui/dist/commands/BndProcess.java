@@ -23,9 +23,9 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
-import aQute.lib.osgi.Builder;
-import aQute.lib.osgi.Constants;
-import aQute.lib.osgi.Jar;
+import aQute.bnd.osgi.Builder;
+import aQute.bnd.osgi.Constants;
+import aQute.bnd.osgi.Jar;
 
 public class BndProcess extends AbstractHandler implements Constants {
 

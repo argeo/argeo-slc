@@ -21,7 +21,7 @@ import org.argeo.slc.repo.RepoUtils;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 
-import aQute.lib.osgi.Jar;
+import aQute.bnd.osgi.Jar;
 
 public class UriWrapper extends BndWrapper implements Runnable {
 	private final static Log log = LogFactory.getLog(UriWrapper.class);

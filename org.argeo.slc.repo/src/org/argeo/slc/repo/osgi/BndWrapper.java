@@ -18,9 +18,9 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.osgi.framework.Version;
 import org.springframework.beans.factory.BeanNameAware;
 
-import aQute.lib.osgi.Builder;
-import aQute.lib.osgi.Constants;
-import aQute.lib.osgi.Jar;
+import aQute.bnd.osgi.Builder;
+import aQute.bnd.osgi.Constants;
+import aQute.bnd.osgi.Jar;
 
 /** Utilities around the BND library, which manipulates OSGi metadata. */
 public class BndWrapper implements Constants, CategorizedNameVersion,
@@ -124,9 +124,13 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 		} catch (Exception e) {
 			throw new SlcException("Cannot wrap jar", e);
 		} finally {
-			b.close();
-			if (jar != null)
-				jar.close();
+			try {
+				b.close();
+				if (jar != null)
+					jar.close();
+			} catch (Exception e) {
+				// silent
+			}
 		}
 
 	}

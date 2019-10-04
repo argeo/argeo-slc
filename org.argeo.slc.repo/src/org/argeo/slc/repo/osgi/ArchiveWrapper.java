@@ -40,7 +40,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
-import aQute.lib.osgi.Jar;
+import aQute.bnd.osgi.Jar;
 
 /**
  * Download a software distribution and generates the related OSGi bundles from
