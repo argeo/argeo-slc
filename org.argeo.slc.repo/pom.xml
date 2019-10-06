@@ -38,7 +38,7 @@
 		<!-- BND -->
 		<dependency>
 			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>biz.aQute.bnd</artifactId>
+			<artifactId>biz.aQute.bndlib</artifactId>
 		</dependency>
 	</dependencies>
 </project>

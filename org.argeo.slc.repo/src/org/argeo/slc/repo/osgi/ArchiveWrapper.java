@@ -253,10 +253,12 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 				}
 			}
 
-			if (nothingWasDone)
-				throw new SlcException("Nothing was done");
+			if (nothingWasDone) {
+				log.error("Nothing was done when wrapping " + uri + ". THE DISTRIBUTION IS INCONSISTENT.");
+				// throw new SlcException("Nothing was done");
+				// TODO Fail if not all wrappers matched
+			}
 
-			// FIXME Fail if not all wrappers matched
 		} catch (Exception e) {
 			throw new SlcException("Cannot wrap distribution " + uri, e);
 		} finally {

@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -35,12 +37,7 @@
 		</plugins>
 	</build>
 	<dependencies>
-		<!-- Parent dependencies -->
-		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.dep.cms.sdk</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
+		<!-- SLC Minimal -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.minimal</artifactId>
@@ -104,6 +101,35 @@
 			<artifactId>org.argeo.slc.client.rap</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
+
+		<!-- Legacy Argeo Commons platform (Eclipse 3) -->
+		<dependency>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.dep.cms.platform</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.argeo.tp.sdk</groupId>
+			<artifactId>biz.aQute.bndlib</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.sdk</groupId>
+			<artifactId>org.junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.sdk</groupId>
+			<artifactId>org.redline-rpm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>com.googlecode.javaewah.JavaEWAH</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+		</dependency>
+
 
 		<!-- For target platform generation -->
 		<dependency>

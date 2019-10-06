@@ -44,7 +44,7 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 		try {
 			byte[] jarBytes = IOUtils.toByteArray(in);
 
-			jar = new Jar(null, new ByteArrayInputStream(jarBytes));
+			jar = new Jar(name, new ByteArrayInputStream(jarBytes));
 			Manifest sourceManifest = jar.getManifest();
 
 			Version versionToUse;

@@ -67,7 +67,7 @@
 		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>biz.aQute.bnd</artifactId>
+			<artifactId>biz.aQute.bndlib</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.tp.sdk</groupId>
@@ -77,30 +77,14 @@
 			<groupId>org.argeo.tp.sdk</groupId>
 			<artifactId>org.redline-rpm</artifactId>
 		</dependency>
-
-		<!-- SLC Libs -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.slc</groupId> -->
-		<!-- <artifactId>org.argeo.slc.lib.repo</artifactId> -->
-		<!-- <version>1.1.14-SNAPSHOT</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.slc</groupId> -->
-		<!-- <artifactId>org.argeo.slc.lib.jcr</artifactId> -->
-		<!-- <version>1.1.14-SNAPSHOT</version> -->
-		<!-- </dependency> -->
-
-		<!-- Extensions <dependency> <groupId>org.argeo.slc</groupId> <artifactId>org.argeo.slc.support</artifactId> 
-			<version>2.1.13-SNAPSHOT</version> </dependency> -->
-		<!-- UI <dependency> <groupId>org.argeo.slc</groupId> <artifactId>org.argeo.slc.client.ui</artifactId> 
-			<version>2.1.13-SNAPSHOT</version> </dependency> <dependency> <groupId>org.argeo.slc</groupId> 
-			<artifactId>org.argeo.slc.client.ui.dist</artifactId> <version>2.1.13-SNAPSHOT</version> 
-			</dependency> <dependency> <groupId>org.argeo.slc</groupId> <artifactId>org.argeo.slc.client.rap</artifactId> 
-			<version>2.1.13-SNAPSHOT</version> </dependency> -->
-
-		<!-- For target platform generation <dependency> <groupId>org.argeo.slc</groupId> 
-			<artifactId>org.argeo.slc.unit</artifactId> <version>2.1.13-SNAPSHOT</version> 
-			<scope>test</scope> </dependency> -->
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>com.googlecode.javaewah.JavaEWAH</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>
