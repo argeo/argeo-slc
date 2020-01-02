@@ -39,14 +39,14 @@
 	<service ref="modulesManager" interface="org.argeo.slc.execution.ExecutionModulesManager" />
 
 	<!-- LABEL -->
-	<beans:bean class="org.argeo.cms.spring.osgi.OsgiModuleLabel">
-		<beans:property name="bundleContext" ref="bundleContext" />
-	</beans:bean>
+<!-- 	<beans:bean class="org.argeo.cms.spring.osgi.OsgiModuleLabel"> -->
+<!-- 		<beans:property name="bundleContext" ref="bundleContext" /> -->
+<!-- 	</beans:bean> -->
 
 	<!-- ROLES -->
 <!-- 	<reference id="userAdminService" interface="org.argeo.security.UserAdminService" /> -->
 
-	<beans:bean class="org.argeo.cms.spring.SimpleRoleRegistration"
+	<beans:bean class="org.argeo.maintenance.SimpleRoleRegistration"
 		init-method="run">
 		<beans:property name="role" value="org.argeo.slc.user" />
 		<beans:property name="userAdmin" ref="userAdmin" />

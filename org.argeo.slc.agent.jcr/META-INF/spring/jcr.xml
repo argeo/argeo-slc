@@ -34,8 +34,7 @@
 
 
 	<bean
-		class="org.argeo.cms.spring.AuthenticatedApplicationContextInitialization">
-<!-- 		<property name="authenticationManager" ref="authenticationManager" /> -->
+		class="org.argeo.slc.spring.AuthenticatedApplicationContextInitialization">
 	</bean>
 
 

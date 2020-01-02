@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Automatic-Module-Name: org.argeo.slc.dep.spring
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.txt
+Bundle-ManifestVersion: 2
+Bundle-Name: SLC Agent based on Spring
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-SymbolicName: org.argeo.slc.dep.spring
+Bundle-Version: 2.1.17.SNAPSHOT-r202001021027
+Private-Package: !*
+SLC-Category: org.argeo.slc
+SLC-ModularDistribution: default

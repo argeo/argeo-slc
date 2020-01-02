@@ -11,8 +11,10 @@
 	<packaging>pom</packaging>
 	<modules>
 		<module>org.argeo.slc.dep.minimal</module>
-		<module>org.argeo.slc.dep.backend</module>
+		<module>org.argeo.slc.dep.spring</module>
 		<module>org.argeo.slc.dep.e4.rap</module>
+		<!--  Legacy -->
+		<module>org.argeo.slc.dep.backend</module>
 	</modules>
 	<build>
 		<plugins>
