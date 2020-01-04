@@ -18,7 +18,7 @@
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 
 		<version.argeo-tp-extras>2.1.13</version.argeo-tp-extras>
-		
+
 		<version.argeo-commons-legacy>2.1.85-SNAPSHOT</version.argeo-commons-legacy>
 	</properties>
 	<modules>
@@ -39,12 +39,16 @@
 		<!-- E4 -->
 		<module>org.argeo.slc.e4</module>
 
+		<!-- Desktop -->
+		<module>rcp</module>
+
 		<!-- Legacy UI -->
 		<module>legacy</module>
 		<module>org.argeo.slc.client.ui</module>
 		<module>org.argeo.slc.client.ui.dist</module>
 		<module>org.argeo.slc.client.rap</module>
 
+		<!-- Distribution -->
 		<module>lib</module>
 		<module>dep</module>
 		<module>dist</module>

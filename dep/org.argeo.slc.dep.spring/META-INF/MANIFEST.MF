@@ -5,7 +5,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SLC Agent based on Spring
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-SymbolicName: org.argeo.slc.dep.spring
-Bundle-Version: 2.1.17.SNAPSHOT-r202001040954
+Bundle-Version: 2.1.17.SNAPSHOT-r202001041014
 Private-Package: !*
 SLC-Category: org.argeo.slc
 SLC-ModularDistribution: default
