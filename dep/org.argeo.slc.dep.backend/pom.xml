@@ -104,9 +104,9 @@
 
 		<!-- Legacy Argeo Commons platform (Eclipse 3) -->
 		<dependency>
-			<groupId>org.argeo.commons</groupId>
+			<groupId>org.argeo.slc.legacy.commons</groupId>
 			<artifactId>org.argeo.dep.cms.platform</artifactId>
-			<version>${version.argeo-commons}</version>
+			<version>${version.argeo-commons-legacy}</version>
 		</dependency>
 
 		<dependency>

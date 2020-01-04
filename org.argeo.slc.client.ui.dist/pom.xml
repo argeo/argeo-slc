@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -18,9 +20,9 @@
 			<version>${version.argeo-commons}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.commons</groupId>
+			<groupId>org.argeo.slc.legacy.commons</groupId>
 			<artifactId>org.argeo.cms.ui.workbench</artifactId>
-			<version>${version.argeo-commons}</version>
+			<version>${version.argeo-commons-legacy}</version>
 		</dependency>
 
 
@@ -41,7 +43,7 @@
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
 
-		<!--  Argeo Base dependencies -->
+		<!-- Argeo Base dependencies -->
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
 			<artifactId>org.argeo.util</artifactId>
@@ -56,6 +58,6 @@
 			<type>pom</type>
 			<scope>provided</scope>
 		</dependency>
-		
+
 	</dependencies>
 </project>
