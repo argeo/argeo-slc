@@ -54,8 +54,12 @@ public class MiniTerminal implements KeyListener, PaintListener {
 	private String host = "localhost";
 	private String username;
 
+	// Sub process
+	private Process process;
 	private boolean running = false;
 	private OutputStream stdIn = null;
+
+	private Thread readOut;
 
 	public MiniTerminal(Composite parent, int style) {
 		charset = StandardCharsets.UTF_8;
@@ -107,6 +111,13 @@ public class MiniTerminal implements KeyListener, PaintListener {
 			userInput.setLength(userInput.length() - 1);
 			if (!running && buf.length() > 0)
 				buf.setLength(buf.length() - 1);
+		} else if (e.stateMask == 0x40000 && e.keyCode == 0x63) {// Ctrl+C
+			if (process != null)
+				process.destroy();
+		} else if (e.stateMask == 0x40000 && e.keyCode == 0xdf) {// Ctrl+\
+			if (process != null) {
+				process.destroyForcibly();
+			}
 		} else {
 			// if (!running)
 			buf.append(e.character);
@@ -196,10 +207,10 @@ public class MiniTerminal implements KeyListener, PaintListener {
 			pb.redirectErrorStream(true);
 			pb.directory(currentDir.toFile());
 //			Process process = Runtime.getRuntime().exec(input, null, currentPath.toFile());
-			Process process = pb.start();
+			process = pb.start();
 
 			stdIn = process.getOutputStream();
-			Thread readOut = new Thread("Read out") {
+			readOut = new Thread("MinitTerminal read out") {
 				@Override
 				public void run() {
 					running = true;
@@ -215,6 +226,8 @@ public class MiniTerminal implements KeyListener, PaintListener {
 					stdIn = null;
 					displayPrompt();
 					running = false;
+					readOut = null;
+					process = null;
 				}
 			};
 			readOut.start();

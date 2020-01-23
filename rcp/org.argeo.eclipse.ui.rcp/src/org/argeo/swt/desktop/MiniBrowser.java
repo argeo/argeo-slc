@@ -48,18 +48,25 @@ public class MiniBrowser implements BiFunction<Composite, MiniBrowser.Context, C
 	}
 
 	public Control createBody(Composite parent, MiniBrowser.Context context) {
-		Browser browser = new Browser(parent, SWT.WEBKIT);
+		Browser browser = new Browser(parent, SWT.NONE);
 		browser.addLocationListener(new LocationAdapter() {
 			@Override
 			public void changing(LocationEvent event) {
-				if (!context.getUrl().equals(event.location))
+//				if (event.top && !context.getUrl().equals(event.location))
+//					context.setUrl(event.location);
+			}
+
+			@Override
+			public void changed(LocationEvent event) {
+				if (event.top && !context.getUrl().equals(event.location))
 					context.setUrl(event.location);
 			}
+
 		});
 		browser.addTitleListener(e -> context.setTitle(e.title));
 		context.addObserver((o, v) -> {
 			String url = ((Context) o).getUrl();
-			if (!url.equals(browser.getUrl()))
+			if (url != null && !url.equals(browser.getUrl()))
 				browser.setUrl(url.toString());
 		});
 		return browser;
