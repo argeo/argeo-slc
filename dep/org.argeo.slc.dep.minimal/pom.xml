@@ -27,11 +27,6 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
-			<version>2.1.17-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>

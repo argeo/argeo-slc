@@ -22,9 +22,10 @@
 		<version.argeo-commons-legacy>2.1.86-SNAPSHOT</version.argeo-commons-legacy>
 	</properties>
 	<modules>
-		<!-- Runtime -->
 		<module>org.argeo.slc.api</module>
-		<module>org.argeo.slc.core</module>
+
+		<!-- Runtime -->
+		<module>org.argeo.slc.spring</module>
 		<module>org.argeo.slc.unit</module>
 		<module>org.argeo.slc.support</module>
 		<module>org.argeo.slc.repo</module>

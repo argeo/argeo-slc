@@ -8,8 +8,8 @@
 		<version>2.1.17-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.core</artifactId>
-	<name>SLC Runtime</name>
+	<artifactId>org.argeo.slc.spring</artifactId>
+	<name>SLC Spring Runtime</name>
 	<build>
 		<plugins>
 			<plugin>
