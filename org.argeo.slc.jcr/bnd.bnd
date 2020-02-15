@@ -1,2 +1,3 @@
 Import-Package: javax.jcr.nodetype,\
+javax.jcr.security,\
 *

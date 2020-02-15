@@ -23,6 +23,7 @@
 	</properties>
 	<modules>
 		<module>org.argeo.slc.api</module>
+		<module>org.argeo.slc.runtime</module>
 		<module>org.argeo.slc.jcr</module>
 
 		<!-- Runtime -->

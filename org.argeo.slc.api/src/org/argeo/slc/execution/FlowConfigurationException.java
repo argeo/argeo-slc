@@ -1,4 +1,4 @@
-package org.argeo.slc.core.execution;
+package org.argeo.slc.execution;
 
 import org.argeo.slc.SlcException;
 

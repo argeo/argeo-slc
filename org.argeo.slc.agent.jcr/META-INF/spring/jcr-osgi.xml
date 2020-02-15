@@ -20,7 +20,7 @@
 		interface="org.argeo.slc.execution.ExecutionModulesManager" />
 
 	<!-- SERVICES -->
-	<service ref="attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" />
+<!-- 	<service ref="attachmentUploader" interface="org.argeo.slc.core.attachment.AttachmentUploader" /> -->
 
 	<service interface="org.argeo.slc.execution.ExecutionModulesListener"
 		ref="executionModulesListener" />

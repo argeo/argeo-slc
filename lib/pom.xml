@@ -46,20 +46,21 @@
 						<SLC-ExecutionModule>default</SLC-ExecutionModule>
 						<!-- Minimal imports + some optional convenience imports -->
 						<Import-Package>
-							org.springframework.cglib.proxy,
-							org.springframework.cglib.core,
-							org.springframework.cglib.reflect,
-							org.aopalliance.aop,
-							org.argeo.slc.core.execution,
-							org.argeo.slc.core.execution.tasks,
+							org.springframework.cglib.proxy;resolution:="optional",
+							org.springframework.cglib.core;resolution:="optional",
+							org.springframework.cglib.reflect;resolution:="optional",
+							org.aopalliance.aop;resolution:="optional",
+							org.argeo.slc.runtime,
+							org.argeo.slc.core.execution;resolution:="optional",
+							org.argeo.slc.core.execution.tasks;resolution:="optional",
 							org.argeo.slc.execution,
-							org.argeo.slc.osgi,
+							org.argeo.slc.osgi;resolution:="optional",
 							org.argeo.slc.test,
-							org.springframework.aop,
-							org.springframework.aop.framework,
-							org.springframework.aop.scope,
-							org.springframework.beans.factory.config,
-							org.springframework.core.io,
+							org.springframework.aop;resolution:="optional",
+							org.springframework.aop.framework;resolution:="optional",
+							org.springframework.aop.scope;resolution:="optional",
+							org.springframework.beans.factory.config;resolution:="optional",
+							org.springframework.core.io;resolution:="optional",
 							${additionalImports.slc-lib},
 							*
 						</Import-Package>

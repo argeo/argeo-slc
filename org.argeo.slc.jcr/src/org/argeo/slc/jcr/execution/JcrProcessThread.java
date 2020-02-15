@@ -25,10 +25,10 @@ import javax.jcr.Session;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
-import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.RealizedFlow;
+import org.argeo.slc.runtime.ProcessThread;
 
 /** Where the actual execution takes place */
 public class JcrProcessThread extends ProcessThread implements SlcNames {

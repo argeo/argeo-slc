@@ -22,9 +22,9 @@ import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.spi.LoggingEvent;
-import org.argeo.slc.core.execution.ExecutionThread;
-import org.argeo.slc.core.execution.ProcessThreadGroup;
 import org.argeo.slc.execution.ExecutionStep;
+import org.argeo.slc.runtime.ExecutionThread;
+import org.argeo.slc.runtime.ProcessThreadGroup;
 
 /** Not meant to be used directly in standard log4j config */
 public class SlcExecutionAppender extends AppenderSkeleton {
@@ -69,15 +69,12 @@ public class SlcExecutionAppender extends AppenderSkeleton {
 				try {
 					log4jLevel = Level.toLevel(level);
 				} catch (Exception e) {
-					System.err
-							.println("Log4j level could not be set for level '"
-									+ level + "', resetting it to null.");
+					System.err.println("Log4j level could not be set for level '" + level + "', resetting it to null.");
 					e.printStackTrace();
 					level = null;
 				}
 
-			if (log4jLevel != null
-					&& !event.getLevel().isGreaterOrEqual(log4jLevel)) {
+			if (log4jLevel != null && !event.getLevel().isGreaterOrEqual(log4jLevel)) {
 				return;
 			}
 		}
@@ -85,13 +82,11 @@ public class SlcExecutionAppender extends AppenderSkeleton {
 		// Check whether we are within an executing process
 		Thread currentThread = Thread.currentThread();
 		if (currentThread.getThreadGroup() instanceof ProcessThreadGroup) {
-			if (onlyExecutionThread
-					&& !(currentThread instanceof ExecutionThread))
+			if (onlyExecutionThread && !(currentThread instanceof ExecutionThread))
 				return;
 
 			final String type;
-			if (event.getLevel().equals(Level.ERROR)
-					|| event.getLevel().equals(Level.FATAL))
+			if (event.getLevel().equals(Level.ERROR) || event.getLevel().equals(Level.FATAL))
 				type = ExecutionStep.ERROR;
 			else if (event.getLevel().equals(Level.WARN))
 				type = ExecutionStep.WARNING;
@@ -104,17 +99,14 @@ public class SlcExecutionAppender extends AppenderSkeleton {
 			else
 				type = ExecutionStep.INFO;
 
-			ExecutionStep step = new ExecutionStep(event.getLoggerName(),
-					new Date(event.getTimeStamp()), type, event.getMessage()
-							.toString());
+			ExecutionStep step = new ExecutionStep(event.getLoggerName(), new Date(event.getTimeStamp()), type,
+					event.getMessage().toString());
 
 			try {
 				dispatching.set(true);
-				BlockingQueue<ExecutionStep> steps = ((ProcessThreadGroup) currentThread
-						.getThreadGroup()).getSteps();
+				BlockingQueue<ExecutionStep> steps = ((ProcessThreadGroup) currentThread.getThreadGroup()).getSteps();
 				if (steps.remainingCapacity() == 0) {
-					stdOut("WARNING: execution steps queue is full, skipping step: "
-							+ step);
+					stdOut("WARNING: execution steps queue is full, skipping step: " + step);
 					// FIXME understand why it block indefinitely: the queue
 					// should be emptied by the logging thread
 				} else {

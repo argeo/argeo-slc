@@ -10,18 +10,19 @@
 	</parent>
 	<artifactId>org.argeo.slc.jcr</artifactId>
 	<name>SLC JCR implementations</name>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<dependencies>
+		<!-- SLC -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.api</artifactId>
+			<version>2.1.17-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.runtime</artifactId>
+			<version>2.1.17-SNAPSHOT</version>
+		</dependency>
+
 		<!-- Commons -->
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
@@ -49,11 +50,5 @@
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
-		<!-- SLC -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.api</artifactId>
-			<version>2.1.17-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 </project>

@@ -37,12 +37,12 @@
 	</bean>
 
 
-	<bean id="executionStack" class="org.argeo.slc.core.execution.DefaultExecutionStack"
+	<bean id="executionStack" class="org.argeo.slc.runtime.DefaultExecutionStack"
 		scope="execution">
 		<aop:scoped-proxy proxy-target-class="false" />
 	</bean>
 
-	<bean id="instantiationManager" class="org.argeo.slc.core.execution.InstantiationManager" />
+	<bean id="instantiationManager" class="org.argeo.slc.runtime.InstantiationManager" />
 
 	<bean class="org.argeo.slc.core.execution.ExecutionParameterPostProcessor">
 		<property name="executionContext" ref="executionContext" />

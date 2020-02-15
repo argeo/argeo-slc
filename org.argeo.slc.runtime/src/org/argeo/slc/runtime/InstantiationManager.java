@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.execution;
+package org.argeo.slc.runtime;
 
 import java.util.Stack;
 
@@ -47,7 +47,7 @@ public class InstantiationManager {
 	public void flowInitializationStarted(ExecutionFlow flow, String flowName) {
 		// set the flow name if it is DefaultExecutionFlow
 		if (flow instanceof DefaultExecutionFlow) {
-			((DefaultExecutionFlow) flow).setBeanName(flowName);
+			((DefaultExecutionFlow) flow).setName(flowName);
 		}
 
 		if (log.isTraceEnabled())

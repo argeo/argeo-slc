@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.execution;
+package org.argeo.slc.runtime;
 
 import java.security.AccessControlContext;
 import java.security.AccessController;
@@ -26,10 +26,10 @@ import javax.security.auth.Subject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionStep;
+import org.argeo.slc.execution.FlowConfigurationException;
 import org.argeo.slc.execution.RealizedFlow;
 
 /** Thread of a single execution */
@@ -121,7 +121,7 @@ public class ExecutionThread extends Thread {
 	 * Gather object destruction callback to be called in reverse order at the
 	 * end of the thread
 	 */
-	synchronized void registerDestructionCallback(String name, Runnable callback) {
+	public synchronized void registerDestructionCallback(String name, Runnable callback) {
 		destructionCallbacks.add(callback);
 	}
 

@@ -30,6 +30,7 @@ import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
+import org.argeo.slc.execution.FlowConfigurationException;
 import org.argeo.slc.execution.RefSpecAttribute;
 import org.argeo.slc.execution.RefValue;
 import org.argeo.slc.primitive.PrimitiveSpecAttribute;

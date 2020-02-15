@@ -11,7 +11,6 @@ import javax.jcr.RepositoryException;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;
-import org.argeo.slc.core.execution.DefaultExecutionSpec;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.execution.RealizedFlow;
@@ -19,6 +18,7 @@ import org.argeo.slc.execution.RefSpecAttribute;
 import org.argeo.slc.jcr.SlcJcrUtils;
 import org.argeo.slc.primitive.PrimitiveSpecAttribute;
 import org.argeo.slc.primitive.PrimitiveUtils;
+import org.argeo.slc.runtime.DefaultExecutionSpec;
 
 public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 	private static final long serialVersionUID = -3709453850260712001L;
@@ -33,26 +33,20 @@ public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 		}
 	}
 
-	protected void loadFromNode(Node realizedFlowNode)
-			throws RepositoryException {
+	protected void loadFromNode(Node realizedFlowNode) throws RepositoryException {
 		if (realizedFlowNode.hasNode(SLC_ADDRESS)) {
-			String flowPath = realizedFlowNode.getNode(SLC_ADDRESS)
-					.getProperty(Property.JCR_PATH).getString();
+			String flowPath = realizedFlowNode.getNode(SLC_ADDRESS).getProperty(Property.JCR_PATH).getString();
 			// TODO: convert to local path if remote
 			// FIXME start related module
 			Node flowNode = realizedFlowNode.getSession().getNode(flowPath);
 			String flowName = flowNode.getProperty(SLC_NAME).getString();
 			String description = null;
 			if (flowNode.hasProperty(Property.JCR_DESCRIPTION))
-				description = flowNode.getProperty(Property.JCR_DESCRIPTION)
-						.getString();
+				description = flowNode.getProperty(Property.JCR_DESCRIPTION).getString();
 
-			Node executionModuleNode = flowNode.getSession().getNode(
-					SlcJcrUtils.modulePath(flowPath));
-			String executionModuleName = executionModuleNode.getProperty(
-					SLC_NAME).getString();
-			String executionModuleVersion = executionModuleNode.getProperty(
-					SLC_VERSION).getString();
+			Node executionModuleNode = flowNode.getSession().getNode(SlcJcrUtils.modulePath(flowPath));
+			String executionModuleName = executionModuleNode.getProperty(SLC_NAME).getString();
+			String executionModuleVersion = executionModuleNode.getProperty(SLC_VERSION).getString();
 
 			RealizedFlow realizedFlow = this;
 			realizedFlow.setModuleName(executionModuleName);
@@ -65,10 +59,8 @@ public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 
 			// set execution spec name
 			if (flowNode.hasProperty(SlcNames.SLC_SPEC)) {
-				Node executionSpecNode = flowNode.getProperty(SLC_SPEC)
-						.getNode();
-				executionSpec.setBeanName(executionSpecNode.getProperty(
-						SLC_NAME).getString());
+				Node executionSpecNode = flowNode.getProperty(SLC_SPEC).getNode();
+				executionSpec.setName(executionSpecNode.getProperty(SLC_NAME).getString());
 			}
 
 			// explicitly retrieve values
@@ -79,41 +71,32 @@ public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 				values.put(attrName, value);
 			}
 
-			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(flowName,
-					description, values, executionSpec);
+			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(flowName, description, values, executionSpec);
 			realizedFlow.setFlowDescriptor(efd);
 		} else {
-			throw new SlcException("Unsupported realized flow "
-					+ realizedFlowNode);
+			throw new SlcException("Unsupported realized flow " + realizedFlowNode);
 		}
 	}
 
-	protected Map<String, ExecutionSpecAttribute> readExecutionSpecAttributes(
-			Node node) {
+	protected Map<String, ExecutionSpecAttribute> readExecutionSpecAttributes(Node node) {
 		try {
 			Map<String, ExecutionSpecAttribute> attrs = new HashMap<String, ExecutionSpecAttribute>();
 			for (NodeIterator nit = node.getNodes(); nit.hasNext();) {
 				Node specAttrNode = nit.nextNode();
-				if (specAttrNode
-						.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
-					String type = specAttrNode.getProperty(SLC_TYPE)
-							.getString();
+				if (specAttrNode.isNodeType(SlcTypes.SLC_PRIMITIVE_SPEC_ATTRIBUTE)) {
+					String type = specAttrNode.getProperty(SLC_TYPE).getString();
 					Object value = null;
 					if (specAttrNode.hasProperty(SLC_VALUE)) {
-						String valueStr = specAttrNode.getProperty(SLC_VALUE)
-								.getString();
+						String valueStr = specAttrNode.getProperty(SLC_VALUE).getString();
 						value = PrimitiveUtils.convert(type, valueStr);
 					}
-					PrimitiveSpecAttribute specAttr = new PrimitiveSpecAttribute(
-							type, value);
+					PrimitiveSpecAttribute specAttr = new PrimitiveSpecAttribute(type, value);
 					attrs.put(specAttrNode.getName(), specAttr);
-				} else if (specAttrNode
-						.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
+				} else if (specAttrNode.isNodeType(SlcTypes.SLC_REF_SPEC_ATTRIBUTE)) {
 					if (!specAttrNode.hasProperty(SLC_VALUE)) {
 						continue;
 					}
-					Integer value = (int) specAttrNode.getProperty(SLC_VALUE)
-							.getLong();
+					Integer value = (int) specAttrNode.getProperty(SLC_VALUE).getLong();
 					RefSpecAttribute specAttr = new RefSpecAttribute();
 					NodeIterator children = specAttrNode.getNodes();
 					int index = 0;
@@ -132,8 +115,7 @@ public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 			}
 			return attrs;
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot read spec attributes from " + node,
-					e);
+			throw new SlcException("Cannot read spec attributes from " + node, e);
 		}
 	}
 

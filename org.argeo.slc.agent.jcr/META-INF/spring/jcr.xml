@@ -28,9 +28,8 @@
 <!-- 		<property name="repository" ref="repository" /> -->
 <!-- 	</bean> -->
 
-	<bean id="attachmentUploader" class="org.argeo.slc.jcr.execution.JcrAttachmentUploader">
-<!-- 		<property name="session" ref="session" /> -->
-	</bean>
+<!-- 	<bean id="attachmentUploader" class="org.argeo.slc.jcr.execution.JcrAttachmentUploader"> -->
+<!-- 	</bean> -->
 
 
 	<bean

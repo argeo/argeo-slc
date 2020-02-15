@@ -15,15 +15,11 @@
  */
 package org.argeo.slc.core.execution;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.execution.RefSpecAttribute;
 import org.argeo.slc.execution.RefValueChoice;
@@ -37,53 +33,23 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 
 /** Spring based implementation of execution specifications. */
-public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
-		ApplicationContextAware, InitializingBean, Serializable {
+@Deprecated
+public class DefaultExecutionSpec extends org.argeo.slc.runtime.DefaultExecutionSpec
+		implements BeanNameAware, ApplicationContextAware, InitializingBean {
 	private static final long serialVersionUID = 5159882223926926539L;
-	private final static Log log = LogFactory
-			.getLog(DefaultExecutionSpec.class);
+	private final static Log log = LogFactory.getLog(DefaultExecutionSpec.class);
 	private transient ApplicationContext applicationContext;
 
-	private String description;
-	private Map<String, ExecutionSpecAttribute> attributes = new HashMap<String, ExecutionSpecAttribute>();
-
-	private String name = INTERNAL_NAME;
-
-	public Map<String, ExecutionSpecAttribute> getAttributes() {
-		return attributes;
-	}
-
-	public void setAttributes(Map<String, ExecutionSpecAttribute> attributes) {
-		this.attributes = attributes;
+	public DefaultExecutionSpec() {
+		super();
 	}
 
 	public void setBeanName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * The Spring bean name (only relevant for specs declared has high-level
-	 * beans)
-	 */
-	public String getName() {
-		return name;
-	}
-
-	public boolean equals(Object obj) {
-		return ((ExecutionSpec) obj).getName().equals(name);
-	}
-
-	/**
-	 * The Spring bean description (only relevant for specs declared has
-	 * high-level beans)
-	 */
-	public String getDescription() {
-		return description;
+		setName(name);
 	}
 
 	private ConfigurableListableBeanFactory getBeanFactory() {
-		return ((ConfigurableApplicationContext) applicationContext)
-				.getBeanFactory();
+		return ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
 	}
 
 	public void setApplicationContext(ApplicationContext applicationContext) {
@@ -91,17 +57,16 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 	}
 
 	public void afterPropertiesSet() throws Exception {
-		if (description == null) {
+		if (getDescription() == null) {
 			try {
-				description = getBeanFactory().getBeanDefinition(name)
-						.getDescription();
+				setDescription(getBeanFactory().getBeanDefinition(getName()).getDescription());
 			} catch (NoSuchBeanDefinitionException e) {
 				// silent
 			}
 		}
 
-		for (String key : attributes.keySet()) {
-			ExecutionSpecAttribute attr = attributes.get(key);
+		for (String key : getAttributes().keySet()) {
+			ExecutionSpecAttribute attr = getAttributes().get(key);
 			if (attr instanceof RefSpecAttribute) {
 				RefSpecAttribute rsa = (RefSpecAttribute) attr;
 				if (rsa.getChoices() == null) {
@@ -109,26 +74,23 @@ public class DefaultExecutionSpec implements ExecutionSpec, BeanNameAware,
 					rsa.setChoices(choices);
 				}
 				if (log.isTraceEnabled())
-					log.debug("Spec attr " + key + " has "
-							+ rsa.getChoices().size() + " choices");
+					log.debug("Spec attr " + key + " has " + rsa.getChoices().size() + " choices");
 			}
 		}
 	}
 
 	/**
 	 * Generates a list of ref value choices based on the bean available in the
-	 * application ocntext.
+	 * application context.
 	 */
 	protected List<RefValueChoice> buildRefValueChoices(RefSpecAttribute rsa) {
 		List<RefValueChoice> choices = new ArrayList<RefValueChoice>();
 		if (applicationContext == null) {
-			log.warn("No application context declared,"
-					+ " cannot scan ref value choices.");
+			log.warn("No application context declared," + " cannot scan ref value choices.");
 			return choices;
 		}
 
-		beanNames: for (String beanName : getBeanFactory().getBeanNamesForType(
-				rsa.getTargetClass(), true, false)) {
+		beanNames: for (String beanName : getBeanFactory().getBeanNamesForType(rsa.getTargetClass(), true, false)) {
 
 			// Since Spring 3, systemProperties is implicitly defined but has no
 			// bean definition

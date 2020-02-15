@@ -33,11 +33,11 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;
-import org.argeo.slc.core.execution.ProcessThread;
 import org.argeo.slc.execution.ExecutionProcess;
 import org.argeo.slc.execution.ExecutionStep;
 import org.argeo.slc.execution.RealizedFlow;
 import org.argeo.slc.jcr.SlcJcrUtils;
+import org.argeo.slc.runtime.ProcessThread;
 
 /** Execution process implementation based on a JCR node. */
 public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
