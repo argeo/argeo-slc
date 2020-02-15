@@ -19,7 +19,7 @@
 
 		<version.argeo-tp-extras>2.1.13</version.argeo-tp-extras>
 
-		<version.argeo-commons-legacy>2.1.85-SNAPSHOT</version.argeo-commons-legacy>
+		<version.argeo-commons-legacy>2.1.86-SNAPSHOT</version.argeo-commons-legacy>
 	</properties>
 	<modules>
 		<!-- Runtime -->

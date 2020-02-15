@@ -10,32 +10,6 @@
 	</parent>
 	<artifactId>org.argeo.slc.dep.backend</artifactId>
 	<name>SLC Backend</name>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<SLC-ModularDistribution>default</SLC-ModularDistribution>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.argeo.maven.plugins</groupId>
-				<artifactId>argeo-osgi-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>generate-descriptors</id>
-						<goals>
-							<goal>descriptors</goal>
-						</goals>
-						<phase>generate-resources</phase>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 	<dependencies>
 		<!-- SLC Minimal -->
 		<dependency>
@@ -110,24 +84,24 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>biz.aQute.bndlib</artifactId>
+		<groupId>org.argeo.tp.sdk</groupId>
+		<artifactId>biz.aQute.bndlib</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>org.junit</artifactId>
+		<groupId>org.argeo.tp.sdk</groupId>
+		<artifactId>org.junit</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>org.redline-rpm</artifactId>
+		<groupId>org.argeo.tp.sdk</groupId>
+		<artifactId>org.redline-rpm</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.tp.misc</groupId>
-			<artifactId>com.googlecode.javaewah.JavaEWAH</artifactId>
+		<groupId>org.argeo.tp.misc</groupId>
+		<artifactId>com.googlecode.javaewah.JavaEWAH</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.tp.misc</groupId>
-			<artifactId>org.eclipse.jgit</artifactId>
+		<groupId>org.argeo.tp.misc</groupId>
+		<artifactId>org.eclipse.jgit</artifactId>
 		</dependency>
 
 
@@ -161,29 +135,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<!-- <plugin> -->
-					<!-- <groupId>org.apache.maven.plugins</groupId> -->
-					<!-- <artifactId>maven-dependency-plugin</artifactId> -->
-					<!-- <executions> -->
-					<!-- <execution> -->
-					<!-- <id>copy-argeo</id> -->
-					<!-- <phase>package</phase> -->
-					<!-- <goals> -->
-					<!-- <goal>copy-dependencies</goal> -->
-					<!-- </goals> -->
-					<!-- <configuration> -->
-					<!-- <includeTypes>jar</includeTypes> -->
-					<!-- <outputDirectory>${project.build.directory}/lib-argeo</outputDirectory> -->
-					<!-- <includeGroupIds>org.argeo.slc</includeGroupIds> -->
-					<!-- <excludeTransitive>true</excludeTransitive> -->
-					<!-- <excludeArtifactIds>org.argeo.slc.dep.minimal</excludeArtifactIds> -->
-					<!-- <includeTypes>jar</includeTypes> -->
-					<!-- <includeScope>runtime</includeScope> -->
-					<!-- <useRepositoryLayout>true</useRepositoryLayout> -->
-					<!-- </configuration> -->
-					<!-- </execution> -->
-					<!-- </executions> -->
-					<!-- </plugin> -->
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>rpm-maven-plugin</artifactId>
@@ -212,18 +163,11 @@
 												</source>
 											</sources>
 										</mapping>
-										<!-- <mapping> -->
-										<!-- <directory>/usr/share/osgi/org/argeo/slc/${project.artifactId}/${project.version}</directory> -->
-										<!-- <username>root</username> -->
-										<!-- <groupname>root</groupname> -->
-										<!-- <directoryIncluded>false</directoryIncluded> -->
-										<!-- <artifact /> -->
-										<!-- </mapping> -->
 									</mappings>
 									<requires>
 										<require>argeo-cms-platform</require>
 										<require>argeo-cms-sdk-tp</require>
-										<require>slc-agent</require>
+										<require>slc-spring</require>
 									</requires>
 								</configuration>
 							</execution>

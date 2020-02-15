@@ -10,45 +10,6 @@
 	</parent>
 	<artifactId>org.argeo.slc.dep.minimal</artifactId>
 	<name>SLC Agent</name>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<configuration>
-					<instructions>
-						<SLC-ModularDistribution>default</SLC-ModularDistribution>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.argeo.maven.plugins</groupId>
-				<artifactId>argeo-osgi-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>generate-descriptors</id>
-						<goals>
-							<goal>descriptors</goal>
-						</goals>
-						<phase>generate-resources</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- <plugin> -->
-			<!-- <groupId>org.apache.maven.plugins</groupId> -->
-			<!-- <artifactId>maven-dependency-plugin</artifactId> -->
-			<!-- <executions> -->
-			<!-- <execution> -->
-			<!-- <id>copy-dependencies</id> -->
-			<!-- <phase>package</phase> -->
-			<!-- <goals> -->
-			<!-- <goal>copy-dependencies</goal> -->
-			<!-- </goals> -->
-			<!-- </execution> -->
-			<!-- </executions> -->
-			<!-- </plugin> -->
-		</plugins>
-	</build>
 	<dependencies>
 		<!-- Parent dependencies -->
 		<dependency>
