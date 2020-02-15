@@ -16,6 +16,7 @@
 			<groupId>org.argeo.commons</groupId>
 			<artifactId>org.argeo.dep.cms.node</artifactId>
 			<version>${version.argeo-commons}</version>
+			<type>pom</type>
 		</dependency>
 
 		<!-- Absolutely minimal SLC Agent -->
@@ -31,7 +32,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent</artifactId>
+			<artifactId>org.argeo.slc.support</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
 
@@ -46,14 +47,6 @@
 		<!-- <artifactId>org.argeo.slc.agent.cli</artifactId> -->
 		<!-- <version>2.1.1-SNAPSHOT</version> -->
 		<!-- </dependency> -->
-
-		<!-- JCR Agent -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent.jcr</artifactId>
-			<version>2.1.17-SNAPSHOT</version>
-		</dependency>
-
 
 	</dependencies>
 	<profiles>

@@ -13,25 +13,21 @@
 	<dependencies>
 		<!-- Parent dependencies -->
 		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.dep.cms.node</artifactId>
-			<version>${version.argeo-commons}</version>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.dep.minimal</artifactId>
+			<version>2.1.17-SNAPSHOT</version>
+			<type>pom</type>
 		</dependency>
 
-		<!-- Absolutely minimal SLC Agent -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.api</artifactId>
-			<version>2.1.17-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
-			<version>2.1.17-SNAPSHOT</version>
-		</dependency>
+		<!-- Spring-based Agent -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.agent</artifactId>
+			<version>2.1.17-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.agent.jcr</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
 
@@ -130,13 +126,6 @@
 		<!-- <artifactId>org.argeo.slc.agent.cli</artifactId> -->
 		<!-- <version>2.1.1-SNAPSHOT</version> -->
 		<!-- </dependency> -->
-
-		<!-- JCR Agent -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.agent.jcr</artifactId>
-			<version>2.1.17-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>

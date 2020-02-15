@@ -16,11 +16,13 @@
 			<groupId>org.argeo.commons</groupId>
 			<artifactId>org.argeo.dep.cms.e4.rap</artifactId>
 			<version>${version.argeo-commons}</version>
+			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.spring</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
+			<type>pom</type>
 		</dependency>
 
 
