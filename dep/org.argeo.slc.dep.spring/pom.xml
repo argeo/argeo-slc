@@ -234,6 +234,7 @@
 								<configuration>
 									<name>slc-spring-tp</name>
 									<projversion>${version.argeo-tp}</projversion>
+									<release>${maven.build.timestamp}</release>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi</directory>
