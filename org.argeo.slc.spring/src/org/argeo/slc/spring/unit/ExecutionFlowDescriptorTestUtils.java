@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.unit.execution;
+package org.argeo.slc.spring.unit;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.argeo.slc.core.execution.DefaultExecutionSpec;
-import org.argeo.slc.core.execution.PrimitiveAccessor;
-import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
-import org.argeo.slc.core.execution.PrimitiveValue;
-import org.argeo.slc.core.execution.RefSpecAttribute;
-import org.argeo.slc.core.execution.RefValue;
-import org.argeo.slc.core.execution.RefValueChoice;
 import org.argeo.slc.core.test.BasicTestData;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
+import org.argeo.slc.execution.RefSpecAttribute;
+import org.argeo.slc.execution.RefValue;
+import org.argeo.slc.execution.RefValueChoice;
+import org.argeo.slc.primitive.PrimitiveAccessor;
+import org.argeo.slc.primitive.PrimitiveSpecAttribute;
+import org.argeo.slc.primitive.PrimitiveValue;
 
 public class ExecutionFlowDescriptorTestUtils {
 	public static ExecutionFlowDescriptor createSimpleExecutionFlowDescriptor() {

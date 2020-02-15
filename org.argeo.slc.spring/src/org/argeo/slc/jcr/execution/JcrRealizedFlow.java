@@ -12,13 +12,13 @@ import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;
 import org.argeo.slc.core.execution.DefaultExecutionSpec;
-import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
-import org.argeo.slc.core.execution.PrimitiveUtils;
-import org.argeo.slc.core.execution.RefSpecAttribute;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.execution.RealizedFlow;
+import org.argeo.slc.execution.RefSpecAttribute;
 import org.argeo.slc.jcr.SlcJcrUtils;
+import org.argeo.slc.primitive.PrimitiveSpecAttribute;
+import org.argeo.slc.primitive.PrimitiveUtils;
 
 public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 	private static final long serialVersionUID = -3709453850260712001L;

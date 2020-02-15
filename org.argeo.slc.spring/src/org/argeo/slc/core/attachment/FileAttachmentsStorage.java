@@ -30,6 +30,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
+import org.argeo.slc.attachment.Attachment;
+import org.argeo.slc.attachment.AttachmentsStorage;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 

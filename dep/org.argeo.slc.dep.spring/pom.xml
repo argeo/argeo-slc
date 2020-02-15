@@ -22,7 +22,12 @@
 		<!-- Spring-based Agent -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
+			<artifactId>org.argeo.slc.spring</artifactId>
+			<version>2.1.17-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.support</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
 		<dependency>
@@ -42,6 +47,20 @@
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.legacy.fake.java8</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Not strictly Spring dependencies but used by the old approach -->
+		<dependency>
+			<groupId>org.argeo.tp.apache.ant</groupId>
+			<artifactId>org.apache.ant</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache.ant</groupId>
+			<artifactId>org.apache.ant.launch</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.javax</groupId>
+			<artifactId>javax.mail</artifactId>
 		</dependency>
 
 		<!-- Base Spring dependency -->

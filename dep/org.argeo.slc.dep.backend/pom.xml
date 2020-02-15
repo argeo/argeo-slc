@@ -105,15 +105,6 @@
 			<groupId>org.argeo.tp.misc</groupId>
 			<artifactId>org.eclipse.jgit</artifactId>
 		</dependency>
-
-
-		<!-- For target platform generation -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.unit</artifactId>
-			<version>2.1.17-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>

@@ -22,6 +22,9 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
+import org.argeo.slc.execution.RefSpecAttribute;
+import org.argeo.slc.primitive.PrimitiveSpecAttribute;
+import org.argeo.slc.primitive.PrimitiveUtils;
 
 /** Manage parameters that need to be set during the instantiation of a flow */
 public class InstantiationManager {

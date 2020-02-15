@@ -13,24 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.execution;
+package org.argeo.slc.execution;
 
-/** Primitive value to be used by an execution. */
-public class PrimitiveValue extends AbstractExecutionValue implements
-		PrimitiveAccessor {
-	private static final long serialVersionUID = 533414290998374166L;
-
+/** Reference value to be used by an execution */
+public class RefValue extends AbstractExecutionValue {
+	private static final long serialVersionUID = -8951231456757181687L;
+	private String ref;
 	private String type;
 
-	private Object value;
-
-	public PrimitiveValue() {
+	public RefValue() {
 	}
 
-	public PrimitiveValue(String type, Object value) {
+	public RefValue(String ref) {
 		super();
-		this.type = type;
-		this.value = value;
+		this.ref = ref;
+	}
+
+	public String getRef() {
+		return ref;
+	}
+
+	public void setRef(String ref) {
+		this.ref = ref;
 	}
 
 	public String getType() {
@@ -41,12 +45,9 @@ public class PrimitiveValue extends AbstractExecutionValue implements
 		this.type = type;
 	}
 
-	public Object getValue() {
-		return value;
-	}
-
-	public void setValue(Object value) {
-		this.value = value;
+	@Override
+	public String toString() {
+		return "Ref Value [" + type + "=" + ref + "]";
 	}
 
 }

@@ -23,10 +23,10 @@
 	</properties>
 	<modules>
 		<module>org.argeo.slc.api</module>
+		<module>org.argeo.slc.jcr</module>
 
 		<!-- Runtime -->
 		<module>org.argeo.slc.spring</module>
-		<module>org.argeo.slc.unit</module>
 		<module>org.argeo.slc.support</module>
 		<module>org.argeo.slc.repo</module>
 		<module>org.argeo.slc.factory</module>

@@ -18,6 +18,8 @@ package org.argeo.slc.core.attachment;
 import java.io.Serializable;
 import java.util.UUID;
 
+import org.argeo.slc.attachment.Attachment;
+
 public class SimpleAttachment implements Attachment, Serializable {
 	private static final long serialVersionUID = 6615155908800610606L;
 	private String uuid = UUID.randomUUID().toString();

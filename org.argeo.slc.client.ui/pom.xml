@@ -15,7 +15,7 @@
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
+			<artifactId>org.argeo.slc.spring</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
 

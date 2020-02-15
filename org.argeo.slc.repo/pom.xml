@@ -11,15 +11,15 @@
 	<artifactId>org.argeo.slc.repo</artifactId>
 	<name>SLC Repo</name>
 	<dependencies>
-		<!-- SLC Runtime -->
+		<!-- SLC API -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.support</artifactId>
+			<artifactId>org.argeo.slc.api</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.core</artifactId>
+			<artifactId>org.argeo.slc.spring</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
 

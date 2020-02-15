@@ -33,9 +33,9 @@ import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;
-import org.argeo.slc.core.execution.PrimitiveAccessor;
-import org.argeo.slc.core.execution.PrimitiveUtils;
 import org.argeo.slc.deploy.ModuleDescriptor;
+import org.argeo.slc.primitive.PrimitiveAccessor;
+import org.argeo.slc.primitive.PrimitiveUtils;
 import org.argeo.slc.test.TestStatus;
 
 /**

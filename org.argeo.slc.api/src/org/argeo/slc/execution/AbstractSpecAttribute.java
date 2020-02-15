@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.execution;
+package org.argeo.slc.execution;
 
 import java.io.Serializable;
-
-import org.argeo.slc.execution.ExecutionSpecAttribute;
 
 /** Canonical implementation of the execution spec attribute booleans. */
 public abstract class AbstractSpecAttribute implements ExecutionSpecAttribute,

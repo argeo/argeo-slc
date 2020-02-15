@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.execution;
+package org.argeo.slc.primitive;
 
 /** Converts to and from primitive types. */
 public class PrimitiveUtils {

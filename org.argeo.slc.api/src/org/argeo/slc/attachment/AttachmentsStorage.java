@@ -13,8 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.attachment;
+package org.argeo.slc.attachment;
 
-public interface AttachmentsEnabled {
-	public void addAttachment(Attachment attachment);
+import java.io.InputStream;
+import java.io.OutputStream;
+
+public interface AttachmentsStorage {
+	public void retrieveAttachment(Attachment attachment,
+			OutputStream outputStream);
+
+	/** Does NOT close the provided input stream. */
+	public void storeAttachment(Attachment attachment, InputStream inputStream);
 }

@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.attachment;
+package org.argeo.slc.spring.unit;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.argeo.slc.execution.ExecutionFlow;
 
-public interface AttachmentsStorage {
-	public void retrieveAttachment(Attachment attachment,
-			OutputStream outputStream);
-
-	/** Does NOT close the provided input stream. */
-	public void storeAttachment(Attachment attachment, InputStream inputStream);
+public class AbstractExecutionFlowTestcase extends AbstractSpringTestCase {
+	@SuppressWarnings(value = { "unchecked" })
+	protected <T extends ExecutionFlow> T executeFlow(String flowName) {
+		ExecutionFlow flow = getBean(flowName);
+		flow.run();
+		return (T) flow;
+	}
 }

@@ -33,10 +33,6 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;
-import org.argeo.slc.core.execution.PrimitiveSpecAttribute;
-import org.argeo.slc.core.execution.PrimitiveValue;
-import org.argeo.slc.core.execution.RefSpecAttribute;
-import org.argeo.slc.core.execution.RefValueChoice;
 import org.argeo.slc.deploy.ModuleDescriptor;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModuleDescriptor;
@@ -44,7 +40,11 @@ import org.argeo.slc.execution.ExecutionModulesListener;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionSpec;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
+import org.argeo.slc.execution.RefSpecAttribute;
+import org.argeo.slc.execution.RefValueChoice;
 import org.argeo.slc.jcr.SlcJcrUtils;
+import org.argeo.slc.primitive.PrimitiveSpecAttribute;
+import org.argeo.slc.primitive.PrimitiveValue;
 
 /**
  * Synchronizes the local execution runtime with a JCR repository. For the time

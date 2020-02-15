@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.core.attachment.Attachment;
+import org.argeo.slc.attachment.Attachment;
+import org.argeo.slc.attachment.AttachmentsEnabled;
 import org.argeo.slc.core.attachment.AttachmentUploader;
-import org.argeo.slc.core.attachment.AttachmentsEnabled;
 import org.springframework.core.io.Resource;
 
 public class UploadAttachments implements Runnable {

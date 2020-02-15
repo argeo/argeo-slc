@@ -17,7 +17,7 @@ package org.argeo.slc.jcr.execution;
 
 import javax.jcr.Session;
 
-import org.argeo.slc.core.attachment.Attachment;
+import org.argeo.slc.attachment.Attachment;
 import org.argeo.slc.core.attachment.AttachmentUploader;
 import org.springframework.core.io.Resource;
 

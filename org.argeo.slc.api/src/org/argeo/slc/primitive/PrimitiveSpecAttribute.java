@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.execution;
+package org.argeo.slc.primitive;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.execution.AbstractSpecAttribute;
 
 /**
  * A spec attribute wrapping a primitive value.
