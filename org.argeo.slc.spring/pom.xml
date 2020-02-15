@@ -10,17 +10,6 @@
 	</parent>
 	<artifactId>org.argeo.slc.spring</artifactId>
 	<name>SLC Spring Runtime</name>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<skipTests>true</skipTests>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 	<dependencies>
 		<!-- Commons -->
 		<dependency>
@@ -81,6 +70,10 @@
 		<dependency>
 			<groupId>org.argeo.tp.spring</groupId>
 			<artifactId>org.springframework.context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.expression</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.tp.spring</groupId>

@@ -17,7 +17,7 @@ package org.argeo.slc.spring.unit;
 
 import org.argeo.slc.execution.ExecutionFlow;
 
-public class AbstractExecutionFlowTestcase extends AbstractSpringTestCase {
+public abstract class AbstractExecutionFlowTestcase extends AbstractSpringTestCase {
 	@SuppressWarnings(value = { "unchecked" })
 	protected <T extends ExecutionFlow> T executeFlow(String flowName) {
 		ExecutionFlow flow = getBean(flowName);

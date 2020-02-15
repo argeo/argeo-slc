@@ -38,7 +38,7 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 	// applicationContext.close();
 	// }
 
-	public void testSpecOverriding() throws Exception {
+	public void XXXtestSpecOverriding() throws Exception {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("specOverriding.xml");
 		((ExecutionFlow) applicationContext.getBean("flow2")).run();
 		SimpleTestResult res = (SimpleTestResult) applicationContext
@@ -101,7 +101,7 @@ public class BasicExecutionFlowTest extends AbstractExecutionFlowTestCase {
 		applicationContext.close();
 	}
 
-	public void testPlaceHoldersExec() throws Exception {
+	public void XXXtestPlaceHoldersExec() throws Exception {
 		ConfigurableApplicationContext applicationContext = createApplicationContext("placeHolders.cascading.exec.xml");
 
 		ExecutionContext executionContext = (ExecutionContext) applicationContext
