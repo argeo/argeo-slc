@@ -9,7 +9,7 @@ import java.util.jar.Manifest;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.CategorizedNameVersion;
+import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.build.License;
@@ -23,7 +23,7 @@ import aQute.bnd.osgi.Constants;
 import aQute.bnd.osgi.Jar;
 
 /** Utilities around the BND library, which manipulates OSGi metadata. */
-public class BndWrapper implements Constants, CategorizedNameVersion, Distribution, BeanNameAware {
+public class BndWrapper implements Constants, CategoryNameVersion, Distribution, BeanNameAware {
 	private final static Log log = LogFactory.getLog(BndWrapper.class);
 
 	private String groupId;
@@ -213,8 +213,8 @@ public class BndWrapper implements Constants, CategorizedNameVersion, Distributi
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof CategorizedNameVersion) {
-			CategorizedNameVersion cnv = (CategorizedNameVersion) obj;
+		if (obj instanceof CategoryNameVersion) {
+			CategoryNameVersion cnv = (CategoryNameVersion) obj;
 			return getCategory().equals(cnv.getCategory()) && getName().equals(cnv.getName())
 					&& getVersion().equals(cnv.getVersion());
 		} else

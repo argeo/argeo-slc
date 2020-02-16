@@ -8,7 +8,7 @@ import javax.jcr.Session;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.slc.CategorizedNameVersion;
+import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.ArgeoOsgiDistribution;
@@ -36,7 +36,7 @@ public class ProcessDistribution implements Runnable {
 			// Check sources
 			for (Iterator<? extends NameVersion> it = osgiDistribution
 					.nameVersions(); it.hasNext();) {
-				CategorizedNameVersion nv = (CategorizedNameVersion) it.next();
+				CategoryNameVersion nv = (CategoryNameVersion) it.next();
 				Artifact artifact = new DefaultArtifact(nv.getCategory(),
 						nv.getName() + ".source", "jar", nv.getVersion());
 				String path = MavenConventionsUtils.artifactPath("/", artifact);
@@ -62,9 +62,9 @@ public class ProcessDistribution implements Runnable {
 			NameVersion nameVersion) throws RepositoryException {
 		if (log.isTraceEnabled())
 			log.trace("Check " + nameVersion + "...");
-		if (!(nameVersion instanceof CategorizedNameVersion))
+		if (!(nameVersion instanceof CategoryNameVersion))
 			throw new SlcException("Unsupported type " + nameVersion.getClass());
-		CategorizedNameVersion nv = (CategorizedNameVersion) nameVersion;
+		CategoryNameVersion nv = (CategoryNameVersion) nameVersion;
 		Artifact artifact = new DefaultArtifact(nv.getCategory(), nv.getName(),
 				"jar", nv.getVersion());
 		String path = MavenConventionsUtils.artifactPath("/", artifact);

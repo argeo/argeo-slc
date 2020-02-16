@@ -1,13 +1,13 @@
 package org.argeo.slc.repo.osgi;
 
-import org.argeo.slc.DefaultCategorizedNameVersion;
+import org.argeo.slc.DefaultCategoryNameVersion;
 
-/** */
-class OsgiCategorizedNV extends DefaultCategorizedNameVersion implements Runnable {
+/** A module within an archive. */
+public class ArchiveWrapperCNV extends DefaultCategoryNameVersion implements Runnable {
 	/** Build runnable */
 	private ArchiveWrapper build;
 
-	public OsgiCategorizedNV(String category, String name, String version, ArchiveWrapper build) {
+	public ArchiveWrapperCNV(String category, String name, String version, ArchiveWrapper build) {
 		super(category, name, version);
 		this.build = build;
 	}

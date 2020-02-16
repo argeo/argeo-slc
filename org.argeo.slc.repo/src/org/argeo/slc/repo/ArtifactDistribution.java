@@ -1,13 +1,13 @@
 package org.argeo.slc.repo;
 
-import org.argeo.slc.CategorizedNameVersion;
+import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.build.Distribution;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 
 /** A {@link Distribution} based on an Aether {@link Artifact} */
 public class ArtifactDistribution implements Distribution,
-		CategorizedNameVersion {
+		CategoryNameVersion {
 	private final Artifact artifact;
 
 	public ArtifactDistribution(Artifact artifact) {
@@ -46,8 +46,8 @@ public class ArtifactDistribution implements Distribution,
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof CategorizedNameVersion) {
-			CategorizedNameVersion cnv = (CategorizedNameVersion) obj;
+		if (obj instanceof CategoryNameVersion) {
+			CategoryNameVersion cnv = (CategoryNameVersion) obj;
 			return getCategory().equals(cnv.getCategory())
 					&& getName().equals(cnv.getName())
 					&& getVersion().equals(cnv.getVersion());

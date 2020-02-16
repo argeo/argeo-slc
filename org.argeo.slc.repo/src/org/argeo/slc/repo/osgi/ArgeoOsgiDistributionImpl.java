@@ -16,7 +16,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.CategorizedNameVersion;
+import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
@@ -59,7 +59,7 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements A
 				str = str + "\t(Maven)";
 			else if (nv instanceof UriWrapper)
 				str = str + "\t(URI)";
-			else if (nv instanceof OsgiCategorizedNV)
+			else if (nv instanceof ArchiveWrapperCNV)
 				str = str + "\t(OSGi from archive)";
 			else if (nv instanceof BndWrapper)
 				str = str + "\t(Plain BND from archive)";
@@ -81,8 +81,8 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements A
 		while (nvIt.hasNext()) {
 			NameVersion nv = nvIt.next();
 			try {
-				if (nv instanceof CategorizedNameVersion) {
-					CategorizedNameVersion cnv = (CategorizedNameVersion) nv;
+				if (nv instanceof CategoryNameVersion) {
+					CategoryNameVersion cnv = (CategoryNameVersion) nv;
 					// TODO add branch?
 					Path categoryBase = baseDir.resolve(cnv.getCategory());
 					Files.createDirectories(categoryBase);
@@ -138,8 +138,8 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements A
 							if (log.isTraceEnabled())
 								log.trace("Wrote " + bndPath);
 						}
-					} else if (cnv instanceof OsgiCategorizedNV) {
-						OsgiCategorizedNV onv = (OsgiCategorizedNV) cnv;
+					} else if (cnv instanceof ArchiveWrapperCNV) {
+						ArchiveWrapperCNV onv = (ArchiveWrapperCNV) cnv;
 						ArchiveWrapper aw = onv.getBuild();
 						archiveWrappers.add(aw);
 						// TODO specify and implement archive wrapper support

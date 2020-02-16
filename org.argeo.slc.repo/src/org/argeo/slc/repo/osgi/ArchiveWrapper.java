@@ -25,7 +25,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.slc.CategorizedNameVersion;
+import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
@@ -107,7 +107,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 	@SuppressWarnings("resource")
 	protected Iterator<? extends NameVersion> osgiNameVersions() {
-		List<CategorizedNameVersion> nvs = new ArrayList<CategorizedNameVersion>();
+		List<CategoryNameVersion> nvs = new ArrayList<CategoryNameVersion>();
 
 		Session distSession = null;
 		ZipInputStream zin = null;
@@ -139,7 +139,7 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 						if (nv != null) {
 							if (nv.getName().endsWith(".source"))
 								continue entries;
-							CategorizedNameVersion cnv = new OsgiCategorizedNV(groupId, nv.getName(), nv.getVersion(),
+							CategoryNameVersion cnv = new ArchiveWrapperCNV(groupId, nv.getName(), nv.getVersion(),
 									this);
 							nvs.add(cnv);
 							// no need to process further includes

@@ -1,18 +1,18 @@
 package org.argeo.slc;
 
-/** Canonical implementation of {@link CategorizedNameVersion} */
-public class DefaultCategorizedNameVersion extends DefaultNameVersion implements CategorizedNameVersion {
+/** Canonical implementation of {@link CategoryNameVersion} */
+public class DefaultCategoryNameVersion extends DefaultNameVersion implements CategoryNameVersion {
 	private String category;
 
-	public DefaultCategorizedNameVersion() {
+	public DefaultCategoryNameVersion() {
 	}
 
-	public DefaultCategorizedNameVersion(String category, String name, String version) {
+	public DefaultCategoryNameVersion(String category, String name, String version) {
 		super(name, version);
 		this.category = category;
 	}
 
-	public DefaultCategorizedNameVersion(String category, NameVersion nameVersion) {
+	public DefaultCategoryNameVersion(String category, NameVersion nameVersion) {
 		super(nameVersion);
 		this.category = category;
 	}

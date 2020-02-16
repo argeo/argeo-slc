@@ -22,7 +22,7 @@ import javax.jcr.Session;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.slc.CategorizedNameVersion;
+import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.eclipse.aether.artifact.Artifact;
@@ -413,9 +413,9 @@ public class ModularDistributionFactory implements Runnable {
 		b.append("<dependencies>\n");
 		for (Iterator<? extends NameVersion> it = osgiDistribution.nameVersions(); it.hasNext();) {
 			NameVersion nameVersion = it.next();
-			if (!(nameVersion instanceof CategorizedNameVersion))
+			if (!(nameVersion instanceof CategoryNameVersion))
 				throw new SlcException("Unsupported type " + nameVersion.getClass());
-			CategorizedNameVersion nv = (CategorizedNameVersion) nameVersion;
+			CategoryNameVersion nv = (CategoryNameVersion) nameVersion;
 			b.append(getDependencySnippet(nv, false));
 		}
 		b.append("</dependencies>\n");
@@ -425,7 +425,7 @@ public class ModularDistributionFactory implements Runnable {
 		b.append("<dependencies>\n");
 
 		for (Iterator<? extends NameVersion> it = osgiDistribution.nameVersions(); it.hasNext();)
-			b.append(getDependencySnippet((CategorizedNameVersion) it.next(), true));
+			b.append(getDependencySnippet((CategoryNameVersion) it.next(), true));
 		b.append("</dependencies>\n");
 		b.append("</dependencyManagement>\n");
 
@@ -433,7 +433,7 @@ public class ModularDistributionFactory implements Runnable {
 		return b.toString().getBytes();
 	}
 
-	private String getDependencySnippet(CategorizedNameVersion cnv, boolean includeVersion) { // , String type, String
+	private String getDependencySnippet(CategoryNameVersion cnv, boolean includeVersion) { // , String type, String
 																								// scope
 		StringBuilder b = new StringBuilder();
 		b.append("<dependency>\n");
@@ -469,9 +469,9 @@ public class ModularDistributionFactory implements Runnable {
 	}
 
 	private String getCsvLine(NameVersion nameVersion) throws RepositoryException {
-		if (!(nameVersion instanceof CategorizedNameVersion))
+		if (!(nameVersion instanceof CategoryNameVersion))
 			throw new SlcException("Unsupported type " + nameVersion.getClass());
-		CategorizedNameVersion cnv = (CategorizedNameVersion) nameVersion;
+		CategoryNameVersion cnv = (CategoryNameVersion) nameVersion;
 		StringBuilder builder = new StringBuilder();
 
 		builder.append(cnv.getName());

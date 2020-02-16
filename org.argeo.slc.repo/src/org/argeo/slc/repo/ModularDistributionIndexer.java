@@ -21,8 +21,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.slc.CategorizedNameVersion;
-import org.argeo.slc.DefaultCategorizedNameVersion;
+import org.argeo.slc.CategoryNameVersion;
+import org.argeo.slc.DefaultCategoryNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
@@ -111,7 +111,7 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 
 	// Helpers
 	private Node addModule(Node modules, NameVersion nameVersion) throws RepositoryException {
-		CategorizedNameVersion cnv = (CategorizedNameVersion) nameVersion;
+		CategoryNameVersion cnv = (CategoryNameVersion) nameVersion;
 		Node moduleCoord = null;
 		moduleCoord = modules.addNode(cnv.getName(), SlcTypes.SLC_MODULE_COORDINATES);
 		moduleCoord.setProperty(SlcNames.SLC_CATEGORY, cnv.getCategory());
@@ -126,7 +126,7 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 		try {
 			jarIn = new JarInputStream(fileBinary.getStream());
 
-			List<CategorizedNameVersion> modules = new ArrayList<CategorizedNameVersion>();
+			List<CategoryNameVersion> modules = new ArrayList<CategoryNameVersion>();
 
 			// meta data
 			manifest = jarIn.getManifest();
@@ -169,7 +169,7 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 				st.nextToken(); // moduleVersion
 				String relativeUrl = st.nextToken();
 				Artifact currModule = AetherUtils.convertPathToArtifact(relativeUrl, null);
-				modules.add(new DefaultCategorizedNameVersion(currModule.getGroupId(), currModule.getArtifactId(),
+				modules.add(new DefaultCategoryNameVersion(currModule.getGroupId(), currModule.getArtifactId(),
 						currModule.getVersion()));
 			}
 			return new MyModularDistribution(distribution, modules);
@@ -186,14 +186,14 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 	 */
 	private class MyModularDistribution extends ArtifactDistribution implements ArgeoOsgiDistribution {
 
-		private List<CategorizedNameVersion> modules;
+		private List<CategoryNameVersion> modules;
 
-		public MyModularDistribution(Artifact artifact, List<CategorizedNameVersion> modules) {
+		public MyModularDistribution(Artifact artifact, List<CategoryNameVersion> modules) {
 			super(artifact);
 			this.modules = modules;
 		}
 
-		public Iterator<CategorizedNameVersion> nameVersions() {
+		public Iterator<CategoryNameVersion> nameVersions() {
 			return modules.iterator();
 		}
 
