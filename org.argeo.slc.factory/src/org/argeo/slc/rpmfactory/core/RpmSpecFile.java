@@ -16,15 +16,14 @@
 package org.argeo.slc.rpmfactory.core;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-import org.springframework.core.io.Resource;
-
 public class RpmSpecFile {
-	private Resource specFile;
+	private Path specFile;
 
 	private String name;
 	private String version;
@@ -32,7 +31,7 @@ public class RpmSpecFile {
 	private Map<String, String> sources = new HashMap<String, String>();
 	private Map<String, String> patches = new HashMap<String, String>();
 
-	public RpmSpecFile(Resource specFile) {
+	public RpmSpecFile(Path specFile) {
 		this.specFile = specFile;
 		parseSpecFile();
 	}
@@ -41,11 +40,9 @@ public class RpmSpecFile {
 		parseSpecFile();
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void parseSpecFile() {
 		try {
-			List<String> lines = (List<String>) IOUtils.readLines(specFile
-					.getInputStream());
+			List<String> lines = (List<String>) Files.readAllLines(specFile);
 
 			lines: for (String line : lines) {
 				int indexSemiColon = line.indexOf(':');
@@ -101,7 +98,7 @@ public class RpmSpecFile {
 		return buf.toString();
 	}
 
-	public Resource getSpecFile() {
+	public Path getSpecFile() {
 		return specFile;
 	}
 
