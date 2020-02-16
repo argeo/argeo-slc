@@ -75,7 +75,7 @@ public class DefaultNameVersion implements NameVersion,
 
 	@Override
 	public int hashCode() {
-		return name.hashCode() + version.hashCode();
+		return name.hashCode();
 	}
 
 	@Override

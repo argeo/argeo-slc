@@ -23,8 +23,7 @@ import aQute.bnd.osgi.Constants;
 import aQute.bnd.osgi.Jar;
 
 /** Utilities around the BND library, which manipulates OSGi metadata. */
-public class BndWrapper implements Constants, CategorizedNameVersion,
-		Distribution, BeanNameAware {
+public class BndWrapper implements Constants, CategorizedNameVersion, Distribution, BeanNameAware {
 	private final static Log log = LogFactory.getLog(BndWrapper.class);
 
 	private String groupId;
@@ -50,18 +49,13 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 			Version versionToUse;
 			if (sourceManifest != null) {
 				// Symbolic name
-				String sourceSymbolicName = sourceManifest.getMainAttributes()
-						.getValue(BUNDLE_SYMBOLICNAME);
-				if (sourceSymbolicName != null
-						&& !sourceSymbolicName.equals(name))
-					log.info("The new symbolic name ("
-							+ name
-							+ ") is not consistant with the wrapped bundle symbolic name ("
-							+ sourceSymbolicName + ")");
+				String sourceSymbolicName = sourceManifest.getMainAttributes().getValue(BUNDLE_SYMBOLICNAME);
+				if (sourceSymbolicName != null && !sourceSymbolicName.equals(name))
+					log.info("The new symbolic name (" + name
+							+ ") is not consistant with the wrapped bundle symbolic name (" + sourceSymbolicName + ")");
 
 				// Version
-				String sourceVersion = sourceManifest.getMainAttributes()
-						.getValue(BUNDLE_VERSION);
+				String sourceVersion = sourceManifest.getMainAttributes().getValue(BUNDLE_VERSION);
 				if (getVersion() == null && sourceVersion == null) {
 					throw new SlcException("A bundle version must be defined.");
 				} else if (getVersion() == null && sourceVersion != null) {
@@ -72,13 +66,10 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 				} else {// both set
 					versionToUse = new Version(getVersion());
 					Version sv = new Version(sourceVersion);
-					if (versionToUse.getMajor() != sv.getMajor()
-							|| versionToUse.getMinor() != sv.getMinor()
+					if (versionToUse.getMajor() != sv.getMajor() || versionToUse.getMinor() != sv.getMinor()
 							|| versionToUse.getMicro() != sv.getMicro()) {
-						log.warn("The new version ("
-								+ versionToUse
-								+ ") is not consistant with the wrapped bundle version ("
-								+ sv + ")");
+						log.warn("The new version (" + versionToUse
+								+ ") is not consistant with the wrapped bundle version (" + sv + ")");
 					}
 				}
 			} else {
@@ -99,11 +90,9 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 				if (license != null) {
 					StringBuilder sb = new StringBuilder(license.getUri());
 					if (license.getName() != null)
-						sb.append(';').append("description=")
-								.append(license.getName());
+						sb.append(';').append("description=").append(license.getName());
 					if (license.getLink() != null)
-						sb.append(';').append("link=")
-								.append(license.getLink());
+						sb.append(';').append("link=").append(license.getLink());
 					properties.setProperty(BUNDLE_LICENSE, sb.toString());
 					// TODO add LICENSE.TXT
 				} else {
@@ -155,8 +144,7 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 
 	public void setVersion(String version) {
 		if (this.version != null)
-			throw new SlcException("Version already set on " + name + " ("
-					+ this.version + ")");
+			throw new SlcException("Version already set on " + name + " (" + this.version + ")");
 		this.version = version;
 	}
 
@@ -187,8 +175,7 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 			this.name = name;
 		} else {
 			if (!name.contains("#"))
-				log.warn("Using explicitely set name " + this.name
-						+ " and not bean name " + name);
+				log.warn("Using explicitely set name " + this.name + " and not bean name " + name);
 		}
 	}
 
@@ -205,7 +192,7 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 	}
 
 	public String getDistributionId() {
-		return getArtifact().toString();
+		return getCategory() + ":" + getName() + ":" + getVersion();
 	}
 
 	public Artifact getArtifact() {
@@ -214,20 +201,21 @@ public class BndWrapper implements Constants, CategorizedNameVersion,
 
 	@Override
 	public String toString() {
-		return getArtifact().toString();
+		return getDistributionId();
 	}
 
 	@Override
 	public int hashCode() {
-		return getArtifact().hashCode();
+		if (name != null)
+			return name.hashCode();
+		return super.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof CategorizedNameVersion) {
 			CategorizedNameVersion cnv = (CategorizedNameVersion) obj;
-			return getCategory().equals(cnv.getCategory())
-					&& getName().equals(cnv.getName())
+			return getCategory().equals(cnv.getCategory()) && getName().equals(cnv.getName())
 					&& getVersion().equals(cnv.getVersion());
 		} else
 			return false;

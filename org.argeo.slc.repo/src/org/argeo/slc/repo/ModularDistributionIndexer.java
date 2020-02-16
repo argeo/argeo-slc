@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.CategorizedNameVersion;
-import org.argeo.slc.DefaultNameVersion;
+import org.argeo.slc.DefaultCategorizedNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
@@ -169,7 +169,7 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 				st.nextToken(); // moduleVersion
 				String relativeUrl = st.nextToken();
 				Artifact currModule = AetherUtils.convertPathToArtifact(relativeUrl, null);
-				modules.add(new MyCategorizedNameVersion(currModule.getGroupId(), currModule.getArtifactId(),
+				modules.add(new DefaultCategorizedNameVersion(currModule.getGroupId(), currModule.getArtifactId(),
 						currModule.getVersion()));
 			}
 			return new MyModularDistribution(distribution, modules);
@@ -178,20 +178,6 @@ public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
 		} finally {
 			IOUtils.closeQuietly(jarIn);
 			IOUtils.closeQuietly(reader);
-		}
-	}
-
-	/** The created modular distribution */
-	private static class MyCategorizedNameVersion extends DefaultNameVersion implements CategorizedNameVersion {
-		private final String category;
-
-		public MyCategorizedNameVersion(String category, String name, String version) {
-			super(name, version);
-			this.category = category;
-		}
-
-		public String getCategory() {
-			return category;
 		}
 	}
 

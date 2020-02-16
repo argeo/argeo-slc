@@ -15,11 +15,11 @@ import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.repo.ArgeoOsgiDistribution;
 import org.argeo.slc.repo.ArtifactDistribution;
 
-/** A consistent and versioned OSGi distribution, which can be built and tested. */
-public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements
-		ArgeoOsgiDistribution {
-	private final static Log log = LogFactory
-			.getLog(ArgeoOsgiDistributionImpl.class);
+/**
+ * A consistent and versioned OSGi distribution, which can be built and tested.
+ */
+public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements ArgeoOsgiDistribution {
+	private final static Log log = LogFactory.getLog(ArgeoOsgiDistributionImpl.class);
 
 	private List<Object> modules = new ArrayList<Object>();
 
@@ -28,45 +28,38 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements
 	}
 
 	public void init() {
-		if (log.isDebugEnabled()) {
-			SortedSet<String> sort = new TreeSet<String>();
-			Iterator<? extends NameVersion> nvIt = nameVersions();
-			while (nvIt.hasNext()) {
-				NameVersion nv = nvIt.next();
-				sort.add(nv.getName() + ":" + nv.getVersion());
-			}
-
-			StringBuffer buf = new StringBuffer(
-					"## OSGi FACTORY MANAGED MODULES : \n");
-			for (String str : sort) {
-				buf.append(str).append('\n');
-			}
-
-			log.debug(buf);
-		}
+		if (log.isDebugEnabled())
+			log.debug(describe());
 	}
-
-	// private static void print(ModuleSet moduleSet, Integer depth) {
-	// StringBuilder prefix = new StringBuilder();
-	// for (int i = 0; i < depth; i++) {
-	// prefix.append(' ');
-	// }
-	// String p = prefix.toString();
-	// prefix.setLength(0);
-	// log.debug(p + "## " + moduleSet.toString());
-	// Iterator<? extends NameVersion> nvIt = moduleSet.nameVersions();
-	// while (nvIt.hasNext()) {
-	// NameVersion nv = nvIt.next();
-	// if (nv instanceof ModuleSet)
-	// print((ModuleSet) nv, depth + 1);
-	// else
-	// log.debug(p + nv);
-	//
-	// }
-	// }
 
 	public void destroy() {
 
+	}
+
+	public String describe() {
+		SortedSet<String> sort = new TreeSet<String>();
+		Iterator<? extends NameVersion> nvIt = nameVersions();
+		while (nvIt.hasNext()) {
+			NameVersion nv = nvIt.next();
+			String str = nv.toString();
+			if (nv instanceof MavenWrapper)
+				str = str + "\t(Maven)";
+			else if (nv instanceof UriWrapper)
+				str = str + "\t(URI)";
+			else if (nv instanceof OsgiCategorizedNV)
+				str = str + "\t(OSGi from archive)";
+			else if (nv instanceof BndWrapper)
+				str = str + "\t(Plain BND from archive)";
+			else
+				str = str + "\t(UNKNOWN??)";
+			sort.add(str);
+		}
+
+		StringBuffer buf = new StringBuffer("## DISTRIBUTION " + toString() + " ##\n");
+		for (String str : sort) {
+			buf.append(str).append('\n');
+		}
+		return buf.toString();
 	}
 
 	public Iterator<NameVersion> nameVersions() {
@@ -74,23 +67,12 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements
 		for (Object module : modules) {
 			// extract runnable from execution flow
 			if (module instanceof ExecutionFlow) {
-				for (Iterator<Runnable> it = ((ExecutionFlow) module)
-						.runnables(); it.hasNext();) {
+				for (Iterator<Runnable> it = ((ExecutionFlow) module).runnables(); it.hasNext();) {
 					processModule(nameVersions, it.next());
 				}
-			}
-			// module = ((ExecutionFlow) module).getRunnable();
-			else {
+			} else {
 				processModule(nameVersions, module);
 			}
-			// if (module instanceof ModuleSet)
-			// addNameVersions(nameVersions, (ModuleSet) module);
-			// else if (module instanceof NameVersion) {
-			// NameVersion nv = (NameVersion) module;
-			// if (!nameVersions.contains(nv))
-			// nameVersions.add(nv);
-			// } else
-			// log.warn("Ignored " + module);
 		}
 		return nameVersions.iterator();
 	}
@@ -100,37 +82,32 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements
 			addNameVersions(nameVersions, (ModuleSet) module);
 		else if (module instanceof NameVersion) {
 			NameVersion nv = (NameVersion) module;
-			if (!nameVersions.contains(nv))
-				nameVersions.add(nv);
+			addNameVersion(nameVersions, nv);
 		} else
 			log.warn("Ignored " + module);
 	}
 
-	private void addNameVersions(List<NameVersion> nameVersions,
-			ModuleSet moduleSet) {
+	private void addNameVersions(List<NameVersion> nameVersions, ModuleSet moduleSet) {
 		Iterator<? extends NameVersion> it = moduleSet.nameVersions();
 		while (it.hasNext()) {
 			NameVersion nv = it.next();
-			if (!nameVersions.contains(nv))
-				nameVersions.add(nv);
+			addNameVersion(nameVersions, nv);
+		}
+	}
+
+	protected void addNameVersion(List<NameVersion> nameVersions, NameVersion nv) {
+		if (!nameVersions.contains(nv)) {
+			nameVersions.add(nv);
 		}
 	}
 
 	// Modular distribution interface methods. Not yet used.
-	public Distribution getModuleDistribution(String moduleName,
-			String moduleVersion) {
-		// NameVersion searched = new DefaultNameVersion(moduleName,
-		// moduleVersion);
-		// for (Distribution ad : modules) {
-		// if (ad.equals(searched))
-		// return ad;
-		// }
-		return null;
+	public Distribution getModuleDistribution(String moduleName, String moduleVersion) {
+		throw new UnsupportedOperationException();
 	}
 
 	public Object getModulesDescriptor(String descriptorType) {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	/* DEPENDENCY INJECTION */

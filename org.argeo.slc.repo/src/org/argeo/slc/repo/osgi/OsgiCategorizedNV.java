@@ -1,23 +1,15 @@
 package org.argeo.slc.repo.osgi;
 
-import org.argeo.slc.CategorizedNameVersion;
-import org.argeo.slc.DefaultNameVersion;
+import org.argeo.slc.DefaultCategorizedNameVersion;
 
-class OsgiCategorizedNV extends DefaultNameVersion implements
-		CategorizedNameVersion, Runnable {
-	private String category;
+/** */
+class OsgiCategorizedNV extends DefaultCategorizedNameVersion implements Runnable {
 	/** Build runnable */
 	private Runnable build;
 
-	public OsgiCategorizedNV(String category, String name, String version,
-			Runnable build) {
-		super(name, version);
-		this.category = category;
+	public OsgiCategorizedNV(String category, String name, String version, Runnable build) {
+		super(category, name, version);
 		this.build = build;
-	}
-
-	public String getCategory() {
-		return category;
 	}
 
 	@Override
