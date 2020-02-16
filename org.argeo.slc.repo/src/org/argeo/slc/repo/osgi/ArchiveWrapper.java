@@ -86,6 +86,18 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 		return uri;
 	}
 
+	public String getVersion() {
+		return version;
+	}
+
+	public License getLicense() {
+		return license;
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
 	public Iterator<? extends NameVersion> nameVersions() {
 		if (wrappers.size() > 0)
 			return wrappers.values().iterator();
@@ -404,6 +416,18 @@ public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
 
 	public void setSourcesProvider(SourcesProvider sourcesProvider) {
 		this.sourcesProvider = sourcesProvider;
+	}
+
+	public Map<String, BndWrapper> getWrappers() {
+		return wrappers;
+	}
+
+	public Map<String, String> getIncludes() {
+		return includes;
+	}
+
+	public List<String> getExcludes() {
+		return excludes;
 	}
 
 }

@@ -48,20 +48,18 @@ public class UriWrapper extends BndWrapper implements Runnable {
 		try {
 			distSession = osgiFactory.openDistSession();
 			javaSession = osgiFactory.openJavaSession();
-			if (uri == null) {
-				uri = baseUri + '/' + getName() + versionSeparator
-						+ getVersion() + "." + extension;
-			}
+			String uri = getEffectiveUri();
+//			if (uri == null) {
+//				uri = baseUri + '/' + getName() + versionSeparator + getVersion() + "." + extension;
+//			}
 			Node sourceArtifact = osgiFactory.getDist(distSession, uri);
 
 			// TODO factorize with Maven
-			in = sourceArtifact.getNode(Node.JCR_CONTENT)
-					.getProperty(Property.JCR_DATA).getBinary().getStream();
+			in = sourceArtifact.getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getBinary().getStream();
 			out = new ByteArrayOutputStream();
 			wrapJar(in, out);
-			Node newJarNode = RepoUtils
-					.copyBytesAsArtifact(javaSession.getRootNode(),
-							getArtifact(), out.toByteArray());
+			Node newJarNode = RepoUtils.copyBytesAsArtifact(javaSession.getRootNode(), getArtifact(),
+					out.toByteArray());
 			osgiFactory.indexNode(newJarNode);
 			newJarNode.getSession().save();
 			if (log.isDebugEnabled())
@@ -76,23 +74,19 @@ public class UriWrapper extends BndWrapper implements Runnable {
 
 				IOUtils.closeQuietly(out);
 				out = new ByteArrayOutputStream();
-				sourcesProvider
-						.writeSources(packages, new ZipOutputStream(out));
+				sourcesProvider.writeSources(packages, new ZipOutputStream(out));
 
 				IOUtils.closeQuietly(in);
 				in = new ByteArrayInputStream(out.toByteArray());
-				byte[] sourcesJar = RepoUtils.packageAsPdeSource(in,
-						new DefaultNameVersion(this));
-				Artifact sourcesArtifact = new DefaultArtifact(getArtifact()
-						.getGroupId(), getArtifact().getArtifactId()
-						+ ".source", "jar", getArtifact().getVersion());
-				Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(
-						javaSession.getRootNode(), sourcesArtifact, sourcesJar);
+				byte[] sourcesJar = RepoUtils.packageAsPdeSource(in, new DefaultNameVersion(this));
+				Artifact sourcesArtifact = new DefaultArtifact(getArtifact().getGroupId(),
+						getArtifact().getArtifactId() + ".source", "jar", getArtifact().getVersion());
+				Node sourcesJarNode = RepoUtils.copyBytesAsArtifact(javaSession.getRootNode(), sourcesArtifact,
+						sourcesJar);
 				sourcesJarNode.getSession().save();
 
 				if (log.isDebugEnabled())
-					log.debug("Added sources " + sourcesArtifact
-							+ " for bundle " + getArtifact());
+					log.debug("Added sources " + sourcesArtifact + " for bundle " + getArtifact());
 			}
 		} catch (Exception e) {
 			throw new SlcException("Cannot wrap URI " + uri, e);
@@ -110,6 +104,13 @@ public class UriWrapper extends BndWrapper implements Runnable {
 		this.uri = sourceCoords;
 	}
 
+	public String getEffectiveUri() {
+		if (uri == null) {
+			return baseUri + '/' + getName() + versionSeparator + getVersion() + "." + extension;
+		} else
+			return uri;
+	}
+
 	public void setOsgiFactory(OsgiFactory osgiFactory) {
 		this.osgiFactory = osgiFactory;
 	}
@@ -125,4 +126,17 @@ public class UriWrapper extends BndWrapper implements Runnable {
 	public void setSourcesProvider(SourcesProvider sourcesProvider) {
 		this.sourcesProvider = sourcesProvider;
 	}
+
+	public String getUri() {
+		return uri;
+	}
+
+	public String getBaseUri() {
+		return baseUri;
+	}
+
+	public String getVersionSeparator() {
+		return versionSeparator;
+	}
+
 }

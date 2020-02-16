@@ -225,4 +225,8 @@ public class BndWrapper implements Constants, CategorizedNameVersion, Distributi
 		this.doNotModify = doNotModify;
 	}
 
+	public Boolean getDoNotModify() {
+		return doNotModify;
+	}
+
 }
