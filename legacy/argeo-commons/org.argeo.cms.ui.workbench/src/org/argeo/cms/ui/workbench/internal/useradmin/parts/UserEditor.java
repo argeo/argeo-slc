@@ -24,7 +24,7 @@ import org.argeo.cms.CmsException;
 import org.argeo.cms.ui.workbench.WorkbenchUiPlugin;
 import org.argeo.cms.ui.workbench.internal.useradmin.UiUserAdminListener;
 import org.argeo.cms.ui.workbench.internal.useradmin.UserAdminWrapper;
-import org.argeo.cms.util.UserAdminUtils;
+import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.naming.LdapAttrs;
 import org.argeo.node.NodeInstance;
 import org.eclipse.core.runtime.IProgressMonitor;

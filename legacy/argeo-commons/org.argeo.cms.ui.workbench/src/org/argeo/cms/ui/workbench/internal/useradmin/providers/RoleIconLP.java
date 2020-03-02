@@ -1,7 +1,7 @@
 package org.argeo.cms.ui.workbench.internal.useradmin.providers;
 
 import org.argeo.cms.ui.workbench.internal.useradmin.SecurityAdminImages;
-import org.argeo.cms.util.UserAdminUtils;
+import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.naming.LdapAttrs;
 import org.argeo.node.NodeConstants;
 import org.argeo.node.NodeInstance;

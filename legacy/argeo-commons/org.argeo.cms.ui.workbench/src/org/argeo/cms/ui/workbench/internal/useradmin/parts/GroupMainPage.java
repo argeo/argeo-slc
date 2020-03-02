@@ -15,7 +15,7 @@
  */
 package org.argeo.cms.ui.workbench.internal.useradmin.parts;
 
-import static org.argeo.cms.util.UserAdminUtils.setProperty;
+import static org.argeo.cms.auth.UserAdminUtils.setProperty;
 import static org.argeo.naming.LdapAttrs.businessCategory;
 import static org.argeo.naming.LdapAttrs.description;
 import static org.argeo.node.NodeInstance.WORKGROUP;
@@ -45,7 +45,7 @@ import org.argeo.cms.ui.workbench.internal.useradmin.providers.RoleIconLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserFilter;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserTableDefaultDClickListener;
 import org.argeo.cms.util.CmsUtils;
-import org.argeo.cms.util.UserAdminUtils;
+import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.parts.LdifUsersTable;
