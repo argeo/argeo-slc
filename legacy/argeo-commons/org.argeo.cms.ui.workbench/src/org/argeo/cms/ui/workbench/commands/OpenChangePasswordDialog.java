@@ -33,9 +33,9 @@ import javax.transaction.UserTransaction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.api.security.CryptoKeyring;
 import org.argeo.cms.CmsException;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
-import org.argeo.node.security.CryptoKeyring;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

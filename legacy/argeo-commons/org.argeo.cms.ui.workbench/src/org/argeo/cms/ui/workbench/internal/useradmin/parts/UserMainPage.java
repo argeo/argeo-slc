@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.argeo.api.NodeConstants;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.auth.CurrentUser;
 import org.argeo.cms.ui.workbench.CmsWorkbenchStyles;
@@ -38,13 +39,12 @@ import org.argeo.cms.ui.workbench.internal.useradmin.providers.DomainNameLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.RoleIconLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserFilter;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserTableDefaultDClickListener;
-import org.argeo.cms.util.CmsUtils;
+import org.argeo.cms.ui.util.CmsUiUtils;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.parts.LdifUsersTable;
 import org.argeo.naming.LdapAttrs;
-import org.argeo.node.NodeConstants;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -554,7 +554,7 @@ public class UserMainPage extends FormPage implements ArgeoNames {
 		lbl.setFont(EclipseUiUtils.getBoldFont(parent));
 		Text text = toolkit.createText(parent, value, SWT.BORDER);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		CmsUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
+		CmsUiUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
 		return text;
 	}
 
@@ -565,7 +565,7 @@ public class UserMainPage extends FormPage implements ArgeoNames {
 		Text text = toolkit.createText(parent, value, SWT.NONE);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		text.setEditable(false);
-		CmsUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
+		CmsUiUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
 		return text;
 	}
 }

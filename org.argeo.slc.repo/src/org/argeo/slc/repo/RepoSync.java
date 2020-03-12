@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.node.NodeUtils;
+import org.argeo.api.NodeUtils;
 import org.argeo.slc.SlcException;
 import org.xml.sax.SAXException;
 

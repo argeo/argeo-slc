@@ -6,14 +6,14 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
+import org.argeo.api.NodeConstants;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.auth.CurrentUser;
 import org.argeo.cms.ui.CmsImageManager;
 import org.argeo.cms.ui.CmsView;
 import org.argeo.cms.ui.UxContext;
-import org.argeo.cms.util.SimpleUxContext;
-import org.argeo.cms.widgets.auth.CmsLoginShell;
-import org.argeo.node.NodeConstants;
+import org.argeo.cms.ui.util.SimpleUxContext;
+import org.argeo.cms.ui.widgets.auth.CmsLoginShell;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;

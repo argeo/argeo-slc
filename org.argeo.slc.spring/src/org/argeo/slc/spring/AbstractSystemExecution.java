@@ -21,7 +21,7 @@ import javax.security.auth.login.LoginException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.node.NodeConstants;
+import org.argeo.api.NodeConstants;
 import org.argeo.slc.SlcException;
 
 /** Provides base method for executing code with system authorization. */

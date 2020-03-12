@@ -15,8 +15,8 @@
  */
 package org.argeo.cms.ui.workbench.internal.jcr.commands;
 
-import static org.argeo.eclipse.ui.utils.SingleSourcingConstants.FILE_SCHEME;
-import static org.argeo.eclipse.ui.utils.SingleSourcingConstants.SCHEME_HOST_SEPARATOR;
+import static org.argeo.eclipse.ui.util.SingleSourcingConstants.FILE_SCHEME;
+import static org.argeo.eclipse.ui.util.SingleSourcingConstants.SCHEME_HOST_SEPARATOR;
 
 import java.io.File;
 import java.io.FileOutputStream;

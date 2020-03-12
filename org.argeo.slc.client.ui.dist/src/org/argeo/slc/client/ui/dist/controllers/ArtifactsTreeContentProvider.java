@@ -23,7 +23,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 
-import org.argeo.eclipse.ui.jcr.utils.JcrItemsComparator;
+import org.argeo.eclipse.ui.jcr.util.JcrItemsComparator;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcTypes;
 import org.eclipse.jface.viewers.ITreeContentProvider;

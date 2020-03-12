@@ -28,6 +28,7 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
+import org.argeo.api.security.Keyring;
 import org.argeo.cms.ui.jcr.DefaultRepositoryRegister;
 import org.argeo.cms.ui.jcr.JcrBrowserUtils;
 import org.argeo.cms.ui.jcr.JcrDClickListener;
@@ -40,8 +41,7 @@ import org.argeo.cms.ui.workbench.WorkbenchUiPlugin;
 import org.argeo.eclipse.ui.EclipseUiException;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
-import org.argeo.eclipse.ui.jcr.utils.NodeViewerComparer;
-import org.argeo.node.security.Keyring;
+import org.argeo.eclipse.ui.jcr.util.NodeViewerComparer;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;

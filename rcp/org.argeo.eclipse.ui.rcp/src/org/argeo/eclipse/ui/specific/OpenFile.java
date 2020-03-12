@@ -15,14 +15,14 @@
  */
 package org.argeo.eclipse.ui.specific;
 
-import static org.argeo.eclipse.ui.utils.SingleSourcingConstants.FILE_SCHEME;
-import static org.argeo.eclipse.ui.utils.SingleSourcingConstants.SCHEME_HOST_SEPARATOR;
+import static org.argeo.eclipse.ui.util.SingleSourcingConstants.FILE_SCHEME;
+import static org.argeo.eclipse.ui.util.SingleSourcingConstants.SCHEME_HOST_SEPARATOR;
 
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
-import org.argeo.eclipse.ui.utils.SingleSourcingConstants;
+import org.argeo.eclipse.ui.util.SingleSourcingConstants;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;

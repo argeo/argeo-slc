@@ -20,8 +20,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
+import org.argeo.api.NodeUtils;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.node.NodeUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;

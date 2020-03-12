@@ -15,10 +15,10 @@
  */
 package org.argeo.cms.ui.workbench.internal.useradmin.parts;
 
+import static org.argeo.api.NodeInstance.WORKGROUP;
 import static org.argeo.cms.auth.UserAdminUtils.setProperty;
 import static org.argeo.naming.LdapAttrs.businessCategory;
 import static org.argeo.naming.LdapAttrs.description;
-import static org.argeo.node.NodeInstance.WORKGROUP;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,6 +32,8 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.transaction.UserTransaction;
 
+import org.argeo.api.NodeInstance;
+import org.argeo.api.NodeUtils;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.ui.workbench.CmsWorkbenchStyles;
@@ -44,15 +46,13 @@ import org.argeo.cms.ui.workbench.internal.useradmin.providers.MailLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.RoleIconLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserFilter;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserTableDefaultDClickListener;
-import org.argeo.cms.util.CmsUtils;
+import org.argeo.cms.ui.util.CmsUiUtils;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.parts.LdifUsersTable;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.naming.LdapAttrs;
-import org.argeo.node.NodeInstance;
-import org.argeo.node.NodeUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -504,7 +504,7 @@ public class GroupMainPage extends FormPage implements ArgeoNames {
 	// lbl.setFont(EclipseUiUtils.getBoldFont(parent));
 	// Text text = toolkit.createText(parent, value, SWT.BORDER);
 	// text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-	// CmsUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
+	// CmsUiUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
 	// return text;
 	// }
 	//
@@ -516,7 +516,7 @@ public class GroupMainPage extends FormPage implements ArgeoNames {
 		Text text = toolkit.createText(parent, value, SWT.NONE);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		text.setEditable(false);
-		CmsUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
+		CmsUiUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
 		return text;
 	}
 

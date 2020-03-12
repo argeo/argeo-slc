@@ -9,8 +9,8 @@ import java.util.Map;
 import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
+import org.argeo.api.NodeConstants;
 import org.argeo.cms.CmsException;
-import org.argeo.node.NodeConstants;
 import org.argeo.osgi.useradmin.UserAdminConf;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.useradmin.UserAdmin;
