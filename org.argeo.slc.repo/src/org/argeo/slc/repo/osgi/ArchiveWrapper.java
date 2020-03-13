@@ -34,11 +34,11 @@ import org.argeo.slc.build.Distribution;
 import org.argeo.slc.build.License;
 import org.argeo.slc.repo.OsgiFactory;
 import org.argeo.slc.repo.RepoUtils;
+import org.argeo.slc.repo.internal.springutil.AntPathMatcher;
+import org.argeo.slc.repo.internal.springutil.PathMatcher;
 import org.argeo.slc.repo.maven.ArtifactIdComparator;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
 
 import aQute.bnd.osgi.Jar;
 

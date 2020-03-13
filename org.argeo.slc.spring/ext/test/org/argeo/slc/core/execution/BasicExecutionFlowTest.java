@@ -18,9 +18,9 @@ package org.argeo.slc.core.execution;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.argeo.slc.core.test.SimpleTestResult;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.runtime.test.SimpleTestResult;
 import org.argeo.slc.test.TestStatus;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.ConfigurableApplicationContext;

@@ -24,7 +24,7 @@
 
 	<import resource="imports.xml" /> 
 
-	<bean id="myTestRunTemplate" class="org.argeo.slc.core.test.SimpleTestRun" abstract="true">
+	<bean id="myTestRunTemplate" class="org.argeo.slc.runtime.test.SimpleTestRun" abstract="true">
 		<property name="testDefinition" ref="basic.testDef" />
 		<property name="testResult" ref="myTestResult"/>
 	</bean>		
@@ -80,7 +80,7 @@
 	</bean>
 
 
-	<bean id="simpleMap.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+	<bean id="simpleMap.testData" class="org.argeo.slc.runtime.test.BasicTestData" scope="prototype">
 		<property name="expected">
 			<map>
 				<entry key="key1" value="myValue_myValue" />
@@ -93,7 +93,7 @@
 		</property>
 	</bean>
 	
-	<bean id="cascadingMap.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+	<bean id="cascadingMap.testData" class="org.argeo.slc.runtime.test.BasicTestData" scope="prototype">
 		<property name="expected">
 			<map>
 				<entry key="key3">
@@ -124,7 +124,7 @@
 		</property>
 	</bean>	
 	
-	<bean id="simpleList.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+	<bean id="simpleList.testData" class="org.argeo.slc.runtime.test.BasicTestData" scope="prototype">
 		<property name="expected">
 			<list>
 				<value>myValue</value>
@@ -139,7 +139,7 @@
 		</property>
 	</bean>		
 	
-	<bean id="cascadingList.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+	<bean id="cascadingList.testData" class="org.argeo.slc.runtime.test.BasicTestData" scope="prototype">
 		<property name="expected">
 			<list>
 				<list>
@@ -160,7 +160,7 @@
 		</property>
 	</bean>		
 	
-	<bean id="simpleSet.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+	<bean id="simpleSet.testData" class="org.argeo.slc.runtime.test.BasicTestData" scope="prototype">
 		<property name="expected">
 			<set>
 				<value>myValue</value>
@@ -175,7 +175,7 @@
 		</property>
 	</bean>		
 	
-	<bean id="cascadingSet.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+	<bean id="cascadingSet.testData" class="org.argeo.slc.runtime.test.BasicTestData" scope="prototype">
 		<property name="expected">
 			<set>
 				<set>
@@ -196,7 +196,7 @@
 		</property>
 	</bean>		
 	
-	<bean id="cascadingListMap.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+	<bean id="cascadingListMap.testData" class="org.argeo.slc.runtime.test.BasicTestData" scope="prototype">
 		<property name="expected">
 			<list>
 				<map>
@@ -213,7 +213,7 @@
 		</property>
 	</bean>	
 	
-	<bean id="cascadingSetMap.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+	<bean id="cascadingSetMap.testData" class="org.argeo.slc.runtime.test.BasicTestData" scope="prototype">
 		<property name="expected">
 			<set>
 				<map>
@@ -230,7 +230,7 @@
 		</property>
 	</bean>		
 	
-	<bean id="cascadingComplex.testData" class="org.argeo.slc.core.test.BasicTestData" scope="prototype">
+	<bean id="cascadingComplex.testData" class="org.argeo.slc.runtime.test.BasicTestData" scope="prototype">
 		<property name="expected">
 			<set>
 				<map>
@@ -295,7 +295,7 @@
 		</property>
 	</bean>			
 	
-	<bean id="basic.testDef" class="org.argeo.slc.core.test.BasicTestDefinition">
+	<bean id="basic.testDef" class="org.argeo.slc.runtime.test.BasicTestDefinition">
 	</bean>	
 
 
@@ -304,6 +304,6 @@
 			value="testKey=@{testKey}" />
 	</bean>
 	
-	<bean id="myTestResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+	<bean id="myTestResult" class="org.argeo.slc.runtime.test.SimpleTestResult" />
 
 </beans>

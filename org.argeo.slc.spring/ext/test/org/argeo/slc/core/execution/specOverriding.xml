@@ -24,11 +24,11 @@
 
 	<import resource="imports.xml" /> 
  
- 	<bean id="myTestResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+ 	<bean id="myTestResult" class="org.argeo.slc.runtime.test.SimpleTestResult" />
 
-	<bean id="myTestDef" class="org.argeo.slc.core.test.BasicTestDefinition" />
+	<bean id="myTestDef" class="org.argeo.slc.runtime.test.BasicTestDefinition" />
 
-	<bean id="myTestRunTemplate" class="org.argeo.slc.core.test.SimpleTestRun" abstract="true">
+	<bean id="myTestRunTemplate" class="org.argeo.slc.runtime.test.SimpleTestRun" abstract="true">
 		<property name="testDefinition" ref="myTestDef" />
 		<property name="testResult" ref="myTestResult"/>
 	</bean>		
@@ -41,7 +41,7 @@
 						p:type="integer" />
 				</entry>
 				<entry key="testData1">
-					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.runtime.test.BasicTestData"
 						p:isParameter="true" p:isFrozen="true" />
 				</entry>
 			</map>
@@ -73,7 +73,7 @@
 			<map>
 				<entry key="testedComponentId" value="200" />
 				<entry key="testData1">
-					<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+					<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 						<aop:scoped-proxy/>
 						<property name="expected" value="tata101" />
  						<property name="reached" value="tata@{testedComponentId}" />
@@ -87,7 +87,7 @@
 		<property name="attributes">
 			<map>
 				<entry key="testData1">
-					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.runtime.test.BasicTestData"
 						p:isParameter="true" p:isFrozen="true" />
 				</entry>
 			</map>
@@ -107,7 +107,7 @@
 		<constructor-arg>
 			<map>
 				<entry key="testData1">
-					<bean class="org.argeo.slc.core.test.BasicTestData">
+					<bean class="org.argeo.slc.runtime.test.BasicTestData">
 						<property name="expected" value="tata100" />
 						<property name="reached" value="tata100" />
 					</bean>

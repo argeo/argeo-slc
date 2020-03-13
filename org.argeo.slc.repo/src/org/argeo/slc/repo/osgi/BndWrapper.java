@@ -16,14 +16,13 @@ import org.argeo.slc.build.License;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.osgi.framework.Version;
-import org.springframework.beans.factory.BeanNameAware;
 
 import aQute.bnd.osgi.Builder;
 import aQute.bnd.osgi.Constants;
 import aQute.bnd.osgi.Jar;
 
 /** Utilities around the BND library, which manipulates OSGi metadata. */
-public class BndWrapper implements Constants, CategoryNameVersion, Distribution, BeanNameAware {
+public class BndWrapper implements Constants, CategoryNameVersion, Distribution {
 	private final static Log log = LogFactory.getLog(BndWrapper.class);
 
 	private String groupId;
@@ -168,15 +167,6 @@ public class BndWrapper implements Constants, CategoryNameVersion, Distribution,
 
 	public void setBndProperties(Properties bndProperties) {
 		this.bndProperties = bndProperties;
-	}
-
-	public void setBeanName(String name) {
-		if (this.name == null) {
-			this.name = name;
-		} else {
-			if (!name.contains("#"))
-				log.warn("Using explicitely set name " + this.name + " and not bean name " + name);
-		}
 	}
 
 	public String getGroupId() {

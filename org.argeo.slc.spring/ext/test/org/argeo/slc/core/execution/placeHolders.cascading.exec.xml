@@ -24,15 +24,15 @@
 
 	<import resource="imports.xml" /> 
 
-	<bean id="myTestResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+	<bean id="myTestResult" class="org.argeo.slc.runtime.test.SimpleTestResult" />
 
-	<bean id="myTestDef" class="org.argeo.slc.core.test.BasicTestDefinition" />
+	<bean id="myTestDef" class="org.argeo.slc.runtime.test.BasicTestDefinition" />
 
 	<bean id="echo1" parent="task.echo">
 		<property name="message" value="From minimal" />
 	</bean>
 
-	<bean id="myTestRunTemplate" class="org.argeo.slc.core.test.SimpleTestRun" abstract="true">
+	<bean id="myTestRunTemplate" class="org.argeo.slc.runtime.test.SimpleTestRun" abstract="true">
 		<property name="testDefinition" ref="myTestDef" />
 		<property name="testResult" ref="myTestResult"/>
 	</bean>		
@@ -80,7 +80,7 @@
 				<bean parent="task.echo"><property name="message" value="p1=@{p1}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="da1" />
 							<property name="reached" value="@{p1}" />
 						</bean>
@@ -89,7 +89,7 @@
 				<bean parent="task.echo"><property name="message" value="p2=@{p2}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="va2" />
 							<property name="reached" value="@{p2}" />
 						</bean>
@@ -98,7 +98,7 @@
 				<bean parent="task.echo"><property name="message" value="p3=@{p3}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="da3" />
 							<property name="reached" value="@{p3}" />
 						</bean>
@@ -107,7 +107,7 @@
 				<bean parent="task.echo"><property name="message" value="p4=@{p4}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="va4" />
 							<property name="reached" value="@{p4}" />
 						</bean>
@@ -116,7 +116,7 @@
 				<bean parent="task.echo"><property name="message" value="p5=@{p5}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="da5" />
 							<property name="reached" value="@{p5}" />
 						</bean>
@@ -125,7 +125,7 @@
 				<bean parent="task.echo"><property name="message" value="p6=@{p6}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="va6" />
 							<property name="reached" value="@{p6}" />
 						</bean>
@@ -163,7 +163,7 @@
 				<bean parent="task.echo"><property name="message" value="p1=@{p1}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="da1" />
 							<property name="reached" value="@{p1}" />
 						</bean>
@@ -172,7 +172,7 @@
 				<bean parent="task.echo"><property name="message" value="p2=@{p2}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="va2" />
 							<property name="reached" value="@{p2}" />
 						</bean>
@@ -181,7 +181,7 @@
 				<bean parent="task.echo"><property name="message" value="p3=@{p3}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="da3" />
 							<property name="reached" value="@{p3}" />
 						</bean>
@@ -190,7 +190,7 @@
 				<bean parent="task.echo"><property name="message" value="p4=@{p4}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="va4" />
 							<property name="reached" value="@{p4}" />
 						</bean>
@@ -199,7 +199,7 @@
 				<bean parent="task.echo"><property name="message" value="p5=@{p5}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="da5" />
 							<property name="reached" value="@{p5}" />
 						</bean>
@@ -208,7 +208,7 @@
 				<bean parent="task.echo"><property name="message" value="p6=@{p6}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="va6" />
 							<property name="reached" value="@{p6}" />
 						</bean>
@@ -217,7 +217,7 @@
 				<bean parent="task.echo"><property name="message" value="p7=@{p7}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="vb7" />
 							<property name="reached" value="@{p7}" />
 						</bean>
@@ -226,7 +226,7 @@
 				<bean parent="task.echo"><property name="message" value="p8=@{p8}" /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="db8" />
 							<property name="reached" value="@{p8}" />
 						</bean>
@@ -237,7 +237,7 @@
 				<bean parent="task.echo" scope="execution"><property name="message" value="p1=@{p1}" /><aop:scoped-proxy /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 							<property name="expected" value="e1" />
 							<property name="reached" value="@{p1}" />
 							<aop:scoped-proxy />
@@ -247,7 +247,7 @@
 				<bean parent="task.echo" scope="execution"><property name="message" value="p2=@{p2}" /><aop:scoped-proxy /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 							<property name="expected" value="e2" />
 							<property name="reached" value="@{p2}" />
 							<aop:scoped-proxy />
@@ -257,7 +257,7 @@
 				<bean parent="task.echo" scope="execution"><property name="message" value="p3=@{p3}" /><aop:scoped-proxy /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 							<property name="expected" value="e3" />
 							<property name="reached" value="@{p3}" />
 							<aop:scoped-proxy />
@@ -267,7 +267,7 @@
 				<bean parent="task.echo" scope="execution"><property name="message" value="p4=@{p4}" /><aop:scoped-proxy /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 							<property name="expected" value="e4" />
 							<property name="reached" value="@{p4}" />
 							<aop:scoped-proxy />
@@ -277,7 +277,7 @@
 				<bean parent="task.echo" scope="execution"><property name="message" value="p5=@{p5}" /><aop:scoped-proxy /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 							<property name="expected" value="e5" />
 							<property name="reached" value="@{p5}" />
 							<aop:scoped-proxy />
@@ -287,7 +287,7 @@
 				<bean parent="task.echo" scope="execution"><property name="message" value="p6=@{p6}" /><aop:scoped-proxy /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 							<property name="expected" value="e6" />
 							<property name="reached" value="@{p6}" />
 							<aop:scoped-proxy />
@@ -302,7 +302,7 @@
 				<bean parent="task.echo" scope="execution"><property name="message" value="p7=@{p7}" /><aop:scoped-proxy /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 							<property name="expected" value="vb7" />
 							<property name="reached" value="@{p7}" />
 							<aop:scoped-proxy />
@@ -312,7 +312,7 @@
 				<bean parent="task.echo" scope="execution"><property name="message" value="p8=@{p8}" /><aop:scoped-proxy /></bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 							<property name="expected" value="db8" />
 							<property name="reached" value="@{p8}" />
 							<aop:scoped-proxy />

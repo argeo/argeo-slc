@@ -27,11 +27,11 @@
 	<import resource="classpath:org/argeo/slc/core/execution/spring.xml" />
 	<import resource="classpath:/org/argeo/slc/core/test/spring.xml" />
 
-	<bean id="testResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+	<bean id="testResult" class="org.argeo.slc.runtime.test.SimpleTestResult" />
 
-	<bean id="testDef" class="org.argeo.slc.core.test.BasicTestDefinition" />
+	<bean id="testDef" class="org.argeo.slc.runtime.test.BasicTestDefinition" />
 
-	<bean id="testRunTemplate" class="org.argeo.slc.core.test.SimpleTestRun" abstract="true">
+	<bean id="testRunTemplate" class="org.argeo.slc.runtime.test.SimpleTestRun" abstract="true">
 		<property name="testDefinition" ref="testDef" />
 		<property name="testResult" ref="testResult"/>
 	</bean>	
@@ -58,7 +58,7 @@
  
 		<bean parent="testRunTemplate">
 			<property name="testData">
-				<bean class="org.argeo.slc.core.test.BasicTestData">
+				<bean class="org.argeo.slc.runtime.test.BasicTestData">
 					<flow:variable/>
 					<property name="expected" value="@{param1}" />
 					<property name="reached" value="@{param2}" />

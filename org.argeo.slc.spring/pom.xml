@@ -57,6 +57,11 @@
 			<artifactId>org.argeo.slc.jcr</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.repo</artifactId>
+			<version>2.1.17-SNAPSHOT</version>
+		</dependency>
 
 		<!-- Spring -->
 		<dependency>

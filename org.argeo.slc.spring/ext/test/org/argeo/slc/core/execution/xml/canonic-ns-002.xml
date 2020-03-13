@@ -30,7 +30,7 @@
 		<arg name="hide" value="202" />
 		<arg name="refWithoutValue">
 			<beans:bean id="testDataOk" p:expected="tata" p:reached="tata"
-				class="org.argeo.slc.core.test.BasicTestData" />
+				class="org.argeo.slc.runtime.test.BasicTestData" />
 		</arg>
 	</flow>
 </beans:beans>

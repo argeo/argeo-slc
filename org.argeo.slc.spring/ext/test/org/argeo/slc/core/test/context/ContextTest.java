@@ -17,7 +17,8 @@ package org.argeo.slc.core.test.context;
 
 import java.util.List;
 
-import org.argeo.slc.core.test.SimpleTestResult;
+import org.argeo.slc.runtime.test.ContextUtils;
+import org.argeo.slc.runtime.test.SimpleTestResult;
 import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestStatus;
 import org.argeo.slc.test.context.ContextAware;

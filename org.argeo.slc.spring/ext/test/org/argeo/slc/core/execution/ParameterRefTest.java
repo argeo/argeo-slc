@@ -15,8 +15,8 @@
  */
 package org.argeo.slc.core.execution;
 
-import org.argeo.slc.core.test.SimpleTestResult;
 import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.runtime.test.SimpleTestResult;
 import org.argeo.slc.test.TestStatus;
 import org.springframework.context.ConfigurableApplicationContext;
 

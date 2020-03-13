@@ -24,11 +24,11 @@
 
 	<import resource="imports.xml" /> 
 
-	<bean id="myTestResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+	<bean id="myTestResult" class="org.argeo.slc.runtime.test.SimpleTestResult" />
 
-	<bean id="myTestDef" class="org.argeo.slc.core.test.BasicTestDefinition" />
+	<bean id="myTestDef" class="org.argeo.slc.runtime.test.BasicTestDefinition" />
 
-	<bean id="myTestRunTemplate" class="org.argeo.slc.core.test.SimpleTestRun" abstract="true">
+	<bean id="myTestRunTemplate" class="org.argeo.slc.runtime.test.SimpleTestRun" abstract="true">
 		<property name="testDefinition" ref="myTestDef" />
 		<property name="testResult" ref="myTestResult"/>
 	</bean>		
@@ -56,7 +56,7 @@
 				</bean>
 				<bean parent="myTestRunTemplate">
 					<property name="testData">
-						<bean class="org.argeo.slc.core.test.BasicTestData">
+						<bean class="org.argeo.slc.runtime.test.BasicTestData">
 							<property name="expected" value="file1" />
 							<property name="reached" value="@{fileName}" />
 						</bean>

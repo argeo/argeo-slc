@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.test.context;
+package org.argeo.slc.runtime.test;
 
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.test.SimpleResultPart;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestStatus;
 import org.argeo.slc.test.context.ContextAware;

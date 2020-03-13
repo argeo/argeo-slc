@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.test;
+package org.argeo.slc.runtime.test;
 
 import java.util.Date;
 import java.util.List;

@@ -19,9 +19,9 @@ import junit.framework.TestCase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.slc.core.test.SimpleTestResult;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.runtime.test.SimpleTestResult;
 import org.argeo.slc.test.TestResultPart;
 import org.argeo.slc.test.TestStatus;
 import org.springframework.context.ConfigurableApplicationContext;

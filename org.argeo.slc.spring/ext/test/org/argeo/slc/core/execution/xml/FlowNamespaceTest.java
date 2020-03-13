@@ -16,9 +16,9 @@
 package org.argeo.slc.core.execution.xml;
 
 import org.argeo.slc.core.execution.AbstractExecutionFlowTestCase;
-import org.argeo.slc.core.test.SimpleTestResult;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
+import org.argeo.slc.runtime.test.SimpleTestResult;
 import org.springframework.context.ConfigurableApplicationContext;
 
 public abstract class FlowNamespaceTest extends AbstractExecutionFlowTestCase {

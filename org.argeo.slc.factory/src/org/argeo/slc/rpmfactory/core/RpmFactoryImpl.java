@@ -37,11 +37,11 @@ import org.apache.commons.logging.LogFactory;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
-import org.argeo.slc.core.execution.tasks.SystemCall;
 import org.argeo.slc.repo.NodeIndexerVisitor;
 import org.argeo.slc.repo.RpmIndexer;
 import org.argeo.slc.rpmfactory.RpmFactory;
 import org.argeo.slc.rpmfactory.RpmRepository;
+import org.argeo.slc.runtime.tasks.SystemCall;
 
 /**
  * Defines a build environment. This information is typically used by other

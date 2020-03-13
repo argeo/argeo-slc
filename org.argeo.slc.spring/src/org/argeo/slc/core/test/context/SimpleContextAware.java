@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.argeo.slc.SlcException;
+import org.argeo.slc.runtime.test.ContextUtils;
 import org.argeo.slc.test.context.ContextAware;
 import org.argeo.slc.test.context.ParentContextAware;
 import org.springframework.beans.factory.InitializingBean;

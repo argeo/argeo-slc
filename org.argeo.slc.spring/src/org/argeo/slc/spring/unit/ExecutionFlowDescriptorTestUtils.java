@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.argeo.slc.core.execution.DefaultExecutionSpec;
-import org.argeo.slc.core.test.BasicTestData;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.execution.RefSpecAttribute;
@@ -29,6 +28,7 @@ import org.argeo.slc.execution.RefValueChoice;
 import org.argeo.slc.primitive.PrimitiveAccessor;
 import org.argeo.slc.primitive.PrimitiveSpecAttribute;
 import org.argeo.slc.primitive.PrimitiveValue;
+import org.argeo.slc.runtime.test.BasicTestData;
 
 public class ExecutionFlowDescriptorTestUtils {
 	public static ExecutionFlowDescriptor createSimpleExecutionFlowDescriptor() {

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.execution.tasks;
+package org.argeo.slc.runtime.tasks;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,6 +24,8 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,11 +51,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
-import org.argeo.slc.core.execution.ExecutionResources;
+import org.argeo.slc.execution.ExecutionResources;
 import org.argeo.slc.runtime.test.SimpleResultPart;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestStatus;
-import org.springframework.core.io.Resource;
 
 /** Execute an OS specific system call. */
 public class SystemCall implements Runnable {
@@ -72,13 +73,13 @@ public class SystemCall implements Runnable {
 	private String stdErrLogLevel = "ERROR";
 	private String stdOutLogLevel = "INFO";
 
-	private Resource stdOutFile = null;
-	private Resource stdErrFile = null;
+	private Path stdOutFile = null;
+	private Path stdErrFile = null;
 
-	private Resource stdInFile = null;
+	private Path stdInFile = null;
 	/**
-	 * If no {@link #stdInFile} provided, writing to this stream will write to
-	 * the stdin of the process.
+	 * If no {@link #stdInFile} provided, writing to this stream will write to the
+	 * stdin of the process.
 	 */
 	private OutputStream stdInSink = null;
 
@@ -132,8 +133,7 @@ public class SystemCall implements Runnable {
 	/**
 	 * Constructor based on the provided command list.
 	 * 
-	 * @param command
-	 *            the command list
+	 * @param command the command list
 	 */
 	public SystemCall(List<Object> command) {
 		this.command = command;
@@ -142,10 +142,9 @@ public class SystemCall implements Runnable {
 	/**
 	 * Constructor based on the provided command.
 	 * 
-	 * @param cmd
-	 *            the command. If the provided string contains no space a
-	 *            command list is initialized with the argument as first
-	 *            component (useful for chained construction)
+	 * @param cmd the command. If the provided string contains no space a command
+	 *            list is initialized with the argument as first component (useful
+	 *            for chained construction)
 	 */
 	public SystemCall(String cmd) {
 		if (cmd.indexOf(' ') < 0) {
@@ -180,11 +179,10 @@ public class SystemCall implements Runnable {
 
 		try {
 			if (stdInFile != null)
-				stdInStream = stdInFile.getInputStream();
+				stdInStream = Files.newInputStream(stdInFile);
 			else {
 				stdInStream = new PipedInputStream();
-				stdInSink = new PipedOutputStream(
-						(PipedInputStream) stdInStream);
+				stdInSink = new PipedOutputStream((PipedInputStream) stdInStream);
 			}
 		} catch (IOException e2) {
 			throw new SlcException("Cannot open a stream for " + stdInFile, e2);
@@ -211,8 +209,8 @@ public class SystemCall implements Runnable {
 
 		if (redirectStreams) {
 			// Redirect standard streams
-			executorToUse.setStreamHandler(createExecuteStreamHandler(
-					stdOutWriter, stdOutputStream, stdErrWriter, stdInStream));
+			executorToUse.setStreamHandler(
+					createExecuteStreamHandler(stdOutWriter, stdOutputStream, stdErrWriter, stdInStream));
 		} else {
 			// Dummy stream handler (otherwise pump is used)
 			executorToUse.setStreamHandler(new DummyexecuteStreamHandler());
@@ -224,8 +222,7 @@ public class SystemCall implements Runnable {
 		// Command line to use
 		final CommandLine commandLine = createCommandLine();
 		if (logCommand)
-			log.info("Execute command:\n" + commandLine
-					+ "\n in working directory: \n" + dir + "\n");
+			log.info("Execute command:\n" + commandLine + "\n in working directory: \n" + dir + "\n");
 
 		// Env variables
 		Map<String, String> environmentVariablesToUse = null;
@@ -244,8 +241,7 @@ public class SystemCall implements Runnable {
 		try {
 			if (synchronous)
 				try {
-					int exitValue = executorToUse.execute(commandLine,
-							environmentVariablesToUse);
+					int exitValue = executorToUse.execute(commandLine, environmentVariablesToUse);
 					executeResultHandler.onProcessComplete(exitValue);
 				} catch (ExecuteException e1) {
 					if (e1.getExitValue() == Executor.INVALID_EXITVALUE) {
@@ -257,13 +253,11 @@ public class SystemCall implements Runnable {
 					executeResultHandler.onProcessFailed(e1);
 				}
 			else
-				executorToUse.execute(commandLine, environmentVariablesToUse,
-						executeResultHandler);
+				executorToUse.execute(commandLine, environmentVariablesToUse, executeResultHandler);
 		} catch (SlcException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new SlcException("Could not execute command " + commandLine,
-					e);
+			throw new SlcException("Could not execute command " + commandLine, e);
 		} finally {
 			IOUtils.closeQuietly(stdOutWriter);
 			IOUtils.closeQuietly(stdErrWriter);
@@ -278,8 +272,7 @@ public class SystemCall implements Runnable {
 		SystemCallOutputListener tempOutputListener = new SystemCallOutputListener() {
 			private Long lineCount = 0l;
 
-			public void newLine(SystemCall systemCall, String line,
-					Boolean isError) {
+			public void newLine(SystemCall systemCall, String line, Boolean isError) {
 				if (!isError) {
 					if (lineCount != 0l)
 						buf.append('\n');
@@ -304,8 +297,8 @@ public class SystemCall implements Runnable {
 	}
 
 	/**
-	 * Build a command line based on the properties. Can be overridden by
-	 * specific command wrappers.
+	 * Build a command line based on the properties. Can be overridden by specific
+	 * command wrappers.
 	 */
 	protected CommandLine createCommandLine() {
 		// Check if an OS specific command overrides
@@ -327,16 +320,14 @@ public class SystemCall implements Runnable {
 		if (commandToUse == null && cmdToUse == null)
 			throw new SlcException("Please specify a command.");
 		else if (commandToUse != null && cmdToUse != null)
-			throw new SlcException(
-					"Specify the command either as a line or as a list.");
+			throw new SlcException("Specify the command either as a line or as a list.");
 		else if (cmdToUse != null) {
 			if (chroot != null && !chroot.trim().equals(""))
 				cmdToUse = "chroot \"" + chroot + "\" " + cmdToUse;
 			if (sudo != null) {
 				environmentVariables.put("SUDO_ASKPASS", askPassProgram);
 				if (!sudo.trim().equals(""))
-					cmdToUse = "sudo -p " + sudoPrompt + " -u " + sudo + " "
-							+ cmdToUse;
+					cmdToUse = "sudo -p " + sudoPrompt + " -u " + sudo + " " + cmdToUse;
 				else
 					cmdToUse = "sudo -p " + sudoPrompt + " " + cmdToUse;
 			}
@@ -377,21 +368,17 @@ public class SystemCall implements Runnable {
 		}
 
 		if (generateScript != null) {
-			File scriptFile = new File(getExecDirToUse() + File.separator
-					+ generateScript);
+			File scriptFile = new File(getExecDirToUse() + File.separator + generateScript);
 			try {
 				FileUtils.writeStringToFile(scriptFile,
-						(osConsole != null ? osConsole + " " : "")
-								+ commandLine.toString());
+						(osConsole != null ? osConsole + " " : "") + commandLine.toString());
 			} catch (IOException e) {
-				throw new SlcException("Could not generate script "
-						+ scriptFile, e);
+				throw new SlcException("Could not generate script " + scriptFile, e);
 			}
 			commandLine = new CommandLine(scriptFile);
 		} else {
 			if (osConsole != null)
-				commandLine = CommandLine.parse(osConsole + " "
-						+ commandLine.toString());
+				commandLine = CommandLine.parse(osConsole + " " + commandLine.toString());
 		}
 
 		return commandLine;
@@ -401,43 +388,41 @@ public class SystemCall implements Runnable {
 	 * Creates a {@link PumpStreamHandler} which redirects streams to the custom
 	 * logging mechanism.
 	 */
-	protected ExecuteStreamHandler createExecuteStreamHandler(
-			final Writer stdOutWriter, final OutputStream stdOutputStream,
-			final Writer stdErrWriter, final InputStream stdInStream) {
+	protected ExecuteStreamHandler createExecuteStreamHandler(final Writer stdOutWriter,
+			final OutputStream stdOutputStream, final Writer stdErrWriter, final InputStream stdInStream) {
 
 		// Log writers
-		OutputStream stdout = stdOutputStream != null ? stdOutputStream
-				: new LogOutputStream() {
-					protected void processLine(String line, int level) {
-						// if (firstLine) {
-						// if (sudo != null && callbackHandler != null
-						// && line.startsWith(sudoPrompt)) {
-						// try {
-						// PasswordCallback pc = new PasswordCallback(
-						// "sudo password", false);
-						// Callback[] cbs = { pc };
-						// callbackHandler.handle(cbs);
-						// char[] pwd = pc.getPassword();
-						// char[] arr = Arrays.copyOf(pwd,
-						// pwd.length + 1);
-						// arr[arr.length - 1] = '\n';
-						// IOUtils.write(arr, stdInSink);
-						// stdInSink.flush();
-						// } catch (Exception e) {
-						// throw new SlcException(
-						// "Cannot retrieve sudo password", e);
-						// }
-						// }
-						// firstLine = false;
-						// }
+		OutputStream stdout = stdOutputStream != null ? stdOutputStream : new LogOutputStream() {
+			protected void processLine(String line, int level) {
+				// if (firstLine) {
+				// if (sudo != null && callbackHandler != null
+				// && line.startsWith(sudoPrompt)) {
+				// try {
+				// PasswordCallback pc = new PasswordCallback(
+				// "sudo password", false);
+				// Callback[] cbs = { pc };
+				// callbackHandler.handle(cbs);
+				// char[] pwd = pc.getPassword();
+				// char[] arr = Arrays.copyOf(pwd,
+				// pwd.length + 1);
+				// arr[arr.length - 1] = '\n';
+				// IOUtils.write(arr, stdInSink);
+				// stdInSink.flush();
+				// } catch (Exception e) {
+				// throw new SlcException(
+				// "Cannot retrieve sudo password", e);
+				// }
+				// }
+				// firstLine = false;
+				// }
 
-						if (line != null && !line.trim().equals(""))
-							logStdOut(line);
+				if (line != null && !line.trim().equals(""))
+					logStdOut(line);
 
-						if (stdOutWriter != null)
-							appendLineToFile(stdOutWriter, line);
-					}
-				};
+				if (stdOutWriter != null)
+					appendLineToFile(stdOutWriter, line);
+			}
+		};
 
 		OutputStream stderr = new LogOutputStream() {
 			protected void processLine(String line, int level) {
@@ -448,8 +433,7 @@ public class SystemCall implements Runnable {
 			}
 		};
 
-		PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(stdout,
-				stderr, stdInStream) {
+		PumpStreamHandler pumpStreamHandler = new PumpStreamHandler(stdout, stderr, stdInStream) {
 
 			@Override
 			public void stop() throws IOException {
@@ -464,19 +448,16 @@ public class SystemCall implements Runnable {
 	}
 
 	/** Creates the default {@link ExecuteResultHandler}. */
-	protected ExecuteResultHandler createExecuteResultHandler(
-			final CommandLine commandLine) {
+	protected ExecuteResultHandler createExecuteResultHandler(final CommandLine commandLine) {
 		return new ExecuteResultHandler() {
 
 			public void onProcessComplete(int exitValue) {
-				String msg = "System call '" + commandLine
-						+ "' properly completed.";
+				String msg = "System call '" + commandLine + "' properly completed.";
 				if (log.isTraceEnabled())
 					log.trace(msg);
 				if (testResult != null) {
 					forwardPath(testResult);
-					testResult.addResultPart(new SimpleResultPart(
-							TestStatus.PASSED, msg));
+					testResult.addResultPart(new SimpleResultPart(TestStatus.PASSED, msg));
 				}
 				releaseWatchdog();
 			}
@@ -486,8 +467,7 @@ public class SystemCall implements Runnable {
 				String msg = "System call '" + commandLine + "' failed.";
 				if (testResult != null) {
 					forwardPath(testResult);
-					testResult.addResultPart(new SimpleResultPart(
-							TestStatus.ERROR, msg, e));
+					testResult.addResultPart(new SimpleResultPart(TestStatus.ERROR, msg, e));
 				} else {
 					if (exceptionOnFailed)
 						throw new SlcException(msg, e);
@@ -566,7 +546,7 @@ public class SystemCall implements Runnable {
 	}
 
 	/** Creates the writer for the output/err files. */
-	protected Writer createWriter(Resource target, Boolean append) {
+	protected Writer createWriter(Path target, Boolean append) {
 		FileWriter writer = null;
 		try {
 
@@ -574,7 +554,7 @@ public class SystemCall implements Runnable {
 			if (executionResources != null)
 				file = new File(executionResources.getAsOsPath(target, true));
 			else
-				file = target.getFile();
+				file = target.toFile();
 			writer = new FileWriter(file, append);
 		} catch (IOException e) {
 			log.error("Cannot get file for " + target, e);
@@ -584,7 +564,7 @@ public class SystemCall implements Runnable {
 	}
 
 	/** Creates an outputstream for the output/err files. */
-	protected OutputStream createOutputStream(Resource target) {
+	protected OutputStream createOutputStream(Path target) {
 		FileOutputStream out = null;
 		try {
 
@@ -592,7 +572,7 @@ public class SystemCall implements Runnable {
 			if (executionResources != null)
 				file = new File(executionResources.getAsOsPath(target, true));
 			else
-				file = target.getFile();
+				file = target.toFile();
 			out = new FileOutputStream(file, false);
 		} catch (IOException e) {
 			log.error("Cannot get file for " + target, e);
@@ -684,15 +664,15 @@ public class SystemCall implements Runnable {
 		this.watchdogTimeout = watchdogTimeout;
 	}
 
-	public void setStdOutFile(Resource stdOutFile) {
+	public void setStdOutFile(Path stdOutFile) {
 		this.stdOutFile = stdOutFile;
 	}
 
-	public void setStdErrFile(Resource stdErrFile) {
+	public void setStdErrFile(Path stdErrFile) {
 		this.stdErrFile = stdErrFile;
 	}
 
-	public void setStdInFile(Resource stdInFile) {
+	public void setStdInFile(Path stdInFile) {
 		this.stdInFile = stdInFile;
 	}
 
@@ -740,8 +720,7 @@ public class SystemCall implements Runnable {
 		outputListeners.remove(outputListener);
 	}
 
-	public void setOutputListeners(
-			List<SystemCallOutputListener> outputListeners) {
+	public void setOutputListeners(List<SystemCallOutputListener> outputListeners) {
 		this.outputListeners = outputListeners;
 	}
 

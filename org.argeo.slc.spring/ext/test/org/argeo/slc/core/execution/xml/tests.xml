@@ -24,9 +24,9 @@
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
 	http://www.argeo.org/schema/slc-flow http://www.argeo.org/schema/slc-flow-0.12.xsd">
 
-	<bean id="testRun" class="org.argeo.slc.core.test.SimpleTestRun">
+	<bean id="testRun" class="org.argeo.slc.runtime.test.SimpleTestRun">
 		<property name="testDefinition">
-			<bean class="org.argeo.slc.core.test.BasicTestDefinition" />
+			<bean class="org.argeo.slc.runtime.test.BasicTestDefinition" />
 		</property>
 		<property name="testData">
 			<flow:param name="refWithValue" />

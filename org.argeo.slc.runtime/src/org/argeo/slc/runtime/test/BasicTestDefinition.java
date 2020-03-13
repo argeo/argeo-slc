@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.argeo.slc.core.test;
+package org.argeo.slc.runtime.test;
 
 import org.argeo.slc.SlcException;
-import org.argeo.slc.core.test.context.ContextUtils;
 import org.argeo.slc.test.IncompatibleTestDataException;
 import org.argeo.slc.test.TestData;
 import org.argeo.slc.test.TestDefinition;

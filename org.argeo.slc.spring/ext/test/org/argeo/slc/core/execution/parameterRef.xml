@@ -36,11 +36,11 @@
 						p:isParameter="true" p:isFrozen="true" />
 				</entry>
 				<entry key="testData1">
-					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.runtime.test.BasicTestData"
 						p:isParameter="true" p:isFrozen="true" />
 				</entry>
 				<entry key="testData2">
-					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.runtime.test.BasicTestData"
 						p:isParameter="true" p:isFrozen="true" />
 				</entry>
 				<entry key="testedComponentId">
@@ -92,13 +92,13 @@
 					<bean class="org.argeo.slc.core.execution.ExceptionIfInitCalledTwice" />
 				</entry>
 				<entry key="testData1">
-					<bean class="org.argeo.slc.core.test.BasicTestData">
+					<bean class="org.argeo.slc.runtime.test.BasicTestData">
 						<property name="expected" value="toto" />
 						<property name="reached" value="toto" />
 					</bean>
 				</entry>
 				<entry key="testData2">
-					<bean class="org.argeo.slc.core.test.BasicTestData">
+					<bean class="org.argeo.slc.runtime.test.BasicTestData">
 						<property name="expected" value="tata" />
 						<property name="reached" value="toto" />
 					</bean>
@@ -113,13 +113,13 @@
 		<constructor-arg value="testData2" />
 	</bean>
 
-	<bean id="parameterRef.testResult" class="org.argeo.slc.core.test.SimpleTestResult" />
+	<bean id="parameterRef.testResult" class="org.argeo.slc.runtime.test.SimpleTestResult" />
 
-	<bean id="parameterRef.testRun" class="org.argeo.slc.core.test.SimpleTestRun"
+	<bean id="parameterRef.testRun" class="org.argeo.slc.runtime.test.SimpleTestRun"
 		abstract="true">
 		<property name="testResult" ref="parameterRef.testResult" />
 		<property name="testDefinition">
-			<bean class="org.argeo.slc.core.test.BasicTestDefinition" />
+			<bean class="org.argeo.slc.runtime.test.BasicTestDefinition" />
 		</property>
 	</bean>
 
