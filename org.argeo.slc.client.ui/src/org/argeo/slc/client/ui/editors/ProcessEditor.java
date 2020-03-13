@@ -26,6 +26,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.argeo.api.NodeConstants;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -52,7 +53,8 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	public final static String ID = ClientUiPlugin.ID + ".processEditor";
 
 	private Repository repository;
-	private Session session;
+	private Session homeSession;
+	private Session agentSession;
 	private Node processNode;
 	private ProcessController processController;
 	private ServerPushSession pushSession;
@@ -62,13 +64,13 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	private ExecutionModulesManager modulesManager;
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
+	public void init(IEditorSite site, IEditorInput input) throws PartInitException {
 		super.init(site, input);
 		pushSession = new ServerPushSession();
 		pushSession.start();
 		try {
-			session = repository.login();
+			homeSession = repository.login(NodeConstants.HOME);
+			agentSession = repository.login();
 		} catch (RepositoryException e1) {
 			throw new SlcException("Cannot log in to repository");
 		}
@@ -77,10 +79,9 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		String processPath = pei.getProcessPath();
 		try {
 			if (processPath != null) {
-				if (!session.itemExists(processPath))
-					throw new SlcException("Process " + processPath
-							+ " does not exist");
-				processNode = session.getNode(processPath);
+				if (!homeSession.itemExists(processPath))
+					throw new SlcException("Process " + processPath + " does not exist");
+				processNode = homeSession.getNode(processPath);
 			} else {// new
 				processNode = newProcessNode(pei);
 			}
@@ -91,12 +92,10 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 
 	}
 
-	protected Node newProcessNode(ProcessEditorInput pei)
-			throws RepositoryException {
+	protected Node newProcessNode(ProcessEditorInput pei) throws RepositoryException {
 		String uuid = UUID.randomUUID().toString();
-		String processPath = SlcJcrUtils.createExecutionProcessPath(session,
-				uuid);
-		Node processNode = JcrUtils.mkdirs(session, processPath, SLC_PROCESS);
+		String processPath = SlcJcrUtils.createExecutionProcessPath(homeSession, uuid);
+		Node processNode = JcrUtils.mkdirs(homeSession, processPath, SLC_PROCESS);
 		processNode.setProperty(SLC_UUID, uuid);
 		processNode.setProperty(SLC_STATUS, ExecutionProcess.NEW);
 		Node processFlow = processNode.addNode(SLC_FLOW);
@@ -115,14 +114,14 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		try {
 			return processNode.getProperty(SLC_STATUS).getString();
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot retrieve status for " + processNode,
-					e);
+			throw new SlcException("Cannot retrieve status for " + processNode, e);
 		}
 	}
 
 	@Override
 	public void dispose() {
-		JcrUtils.logoutQuietly(session);
+		JcrUtils.logoutQuietly(homeSession);
+		JcrUtils.logoutQuietly(agentSession);
 		if (pushSession != null)
 			pushSession.stop();
 		super.dispose();
@@ -142,30 +141,22 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 
 		try {
 			// make sure modules are started for all nodes
-			for (NodeIterator nit = processNode.getNode(SLC_FLOW).getNodes(); nit
-					.hasNext();) {
+			for (NodeIterator nit = processNode.getNode(SLC_FLOW).getNodes(); nit.hasNext();) {
 				Node flowNode = nit.nextNode();
 				try {
-					String flowDefPath = flowNode.getNode(SLC_ADDRESS)
-							.getProperty(Property.JCR_PATH).getString();
-					Node executionModuleNode = flowNode.getSession().getNode(
-							SlcJcrUtils.modulePath(flowDefPath));
-					if (!executionModuleNode.getProperty(SLC_STARTED)
-							.getBoolean())
-						ClientUiPlugin.startStopExecutionModule(modulesManager,
-								executionModuleNode);
+					String flowDefPath = flowNode.getNode(SLC_ADDRESS).getProperty(Property.JCR_PATH).getString();
+					Node executionModuleNode = agentSession.getNode(SlcJcrUtils.modulePath(flowDefPath));
+					if (!executionModuleNode.getProperty(SLC_STARTED).getBoolean())
+						ClientUiPlugin.startStopExecutionModule(modulesManager, executionModuleNode);
 				} catch (Exception e) {
-					ErrorFeedback.show(
-							"Cannot start execution module related to "
-									+ flowNode, e);
+					ErrorFeedback.show("Cannot start execution module related to " + flowNode, e);
 				}
 			}
 
 			// Actually process
 			ExecutionProcess process = processController.process(processNode);
 			Map<String, String> properties = new HashMap<String, String>();
-			properties.put(ExecutionModulesManager.SLC_PROCESS_ID,
-					process.getUuid());
+			properties.put(ExecutionModulesManager.SLC_PROCESS_ID, process.getUuid());
 			// modulesManager.registerProcessNotifier(this, properties);
 		} catch (Exception e) {
 			ErrorFeedback.show("Execution of " + processNode + " failed", e);
@@ -180,11 +171,8 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 	void relaunch() {
 		try {
 			Node duplicatedNode = duplicateProcess();
-			IWorkbenchPage activePage = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage();
-			activePage.openEditor(
-					new ProcessEditorInput(duplicatedNode.getPath()),
-					ProcessEditor.ID);
+			IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+			activePage.openEditor(new ProcessEditorInput(duplicatedNode.getPath()), ProcessEditor.ID);
 			close(false);
 		} catch (Exception e1) {
 			throw new SlcException("Cannot relaunch " + processNode, e1);
@@ -196,10 +184,8 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		try {
 			Session session = processNode.getSession();
 			String uuid = UUID.randomUUID().toString();
-			String destPath = SlcJcrUtils.createExecutionProcessPath(session,
-					uuid);
-			Node newNode = JcrUtils.mkdirs(session, destPath,
-					SlcTypes.SLC_PROCESS);
+			String destPath = SlcJcrUtils.createExecutionProcessPath(session, uuid);
+			Node newNode = JcrUtils.mkdirs(session, destPath, SlcTypes.SLC_PROCESS);
 
 			Node rootRealizedFlowNode = newNode.addNode(SLC_FLOW);
 			// copy node
@@ -212,8 +198,7 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 			// we just manage one level for the time being
 			NodeIterator nit = rootRealizedFlowNode.getNodes(SLC_FLOW);
 			while (nit.hasNext()) {
-				nit.nextNode().setProperty(SLC_STATUS,
-						ExecutionProcess.INITIALIZED);
+				nit.nextNode().setProperty(SLC_STATUS, ExecutionProcess.INITIALIZED);
 			}
 
 			session.save();
@@ -240,9 +225,8 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		try {
 			String status = processNode.getProperty(SLC_STATUS).getString();
 			if (status.equals(ExecutionProcess.NEW))
-				processNode.setProperty(SLC_STATUS,
-						ExecutionProcess.INITIALIZED);
-			session.save();
+				processNode.setProperty(SLC_STATUS, ExecutionProcess.INITIALIZED);
+			homeSession.save();
 			builderPage.commit(true);
 			editorDirtyStateChanged();
 		} catch (RepositoryException e) {

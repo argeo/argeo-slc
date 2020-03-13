@@ -7,7 +7,9 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
+import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;
@@ -38,41 +40,47 @@ public class JcrRealizedFlow extends RealizedFlow implements SlcNames {
 			String flowPath = realizedFlowNode.getNode(SLC_ADDRESS).getProperty(Property.JCR_PATH).getString();
 			// TODO: convert to local path if remote
 			// FIXME start related module
-			Node flowNode = realizedFlowNode.getSession().getNode(flowPath);
-			String flowName = flowNode.getProperty(SLC_NAME).getString();
-			String description = null;
-			if (flowNode.hasProperty(Property.JCR_DESCRIPTION))
-				description = flowNode.getProperty(Property.JCR_DESCRIPTION).getString();
+			Session agentSession = realizedFlowNode.getSession().getRepository().login();
+			try {
+				Node flowNode = agentSession.getNode(flowPath);
+				String flowName = flowNode.getProperty(SLC_NAME).getString();
+				String description = null;
+				if (flowNode.hasProperty(Property.JCR_DESCRIPTION))
+					description = flowNode.getProperty(Property.JCR_DESCRIPTION).getString();
 
-			Node executionModuleNode = flowNode.getSession().getNode(SlcJcrUtils.modulePath(flowPath));
-			String executionModuleName = executionModuleNode.getProperty(SLC_NAME).getString();
-			String executionModuleVersion = executionModuleNode.getProperty(SLC_VERSION).getString();
+				Node executionModuleNode = flowNode.getSession().getNode(SlcJcrUtils.modulePath(flowPath));
+				String executionModuleName = executionModuleNode.getProperty(SLC_NAME).getString();
+				String executionModuleVersion = executionModuleNode.getProperty(SLC_VERSION).getString();
 
-			RealizedFlow realizedFlow = this;
-			realizedFlow.setModuleName(executionModuleName);
-			realizedFlow.setModuleVersion(executionModuleVersion);
+				RealizedFlow realizedFlow = this;
+				realizedFlow.setModuleName(executionModuleName);
+				realizedFlow.setModuleVersion(executionModuleVersion);
 
-			// retrieve execution spec
-			DefaultExecutionSpec executionSpec = new DefaultExecutionSpec();
-			Map<String, ExecutionSpecAttribute> attrs = readExecutionSpecAttributes(realizedFlowNode);
-			executionSpec.setAttributes(attrs);
+				// retrieve execution spec
+				DefaultExecutionSpec executionSpec = new DefaultExecutionSpec();
+				Map<String, ExecutionSpecAttribute> attrs = readExecutionSpecAttributes(realizedFlowNode);
+				executionSpec.setAttributes(attrs);
 
-			// set execution spec name
-			if (flowNode.hasProperty(SlcNames.SLC_SPEC)) {
-				Node executionSpecNode = flowNode.getProperty(SLC_SPEC).getNode();
-				executionSpec.setName(executionSpecNode.getProperty(SLC_NAME).getString());
+				// set execution spec name
+				if (flowNode.hasProperty(SlcNames.SLC_SPEC)) {
+					Node executionSpecNode = flowNode.getProperty(SLC_SPEC).getNode();
+					executionSpec.setName(executionSpecNode.getProperty(SLC_NAME).getString());
+				}
+
+				// explicitly retrieve values
+				Map<String, Object> values = new HashMap<String, Object>();
+				for (String attrName : attrs.keySet()) {
+					ExecutionSpecAttribute attr = attrs.get(attrName);
+					Object value = attr.getValue();
+					values.put(attrName, value);
+				}
+
+				ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(flowName, description, values, executionSpec);
+				realizedFlow.setFlowDescriptor(efd);
+
+			} finally {
+				JcrUtils.logoutQuietly(agentSession);
 			}
-
-			// explicitly retrieve values
-			Map<String, Object> values = new HashMap<String, Object>();
-			for (String attrName : attrs.keySet()) {
-				ExecutionSpecAttribute attr = attrs.get(attrName);
-				Object value = attr.getValue();
-				values.put(attrName, value);
-			}
-
-			ExecutionFlowDescriptor efd = new ExecutionFlowDescriptor(flowName, description, values, executionSpec);
-			realizedFlow.setFlowDescriptor(efd);
 		} else {
 			throw new SlcException("Unsupported realized flow " + realizedFlowNode);
 		}

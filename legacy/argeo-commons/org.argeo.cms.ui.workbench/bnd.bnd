@@ -9,7 +9,7 @@ Import-Package:	org.argeo.cms.auth,\
 org.argeo.cms,\
 org.argeo.cms.ui,\
 org.argeo.eclipse.spring,\
-org.argeo.eclipse.ui.utils,\
+org.argeo.eclipse.ui.util,\
 org.eclipse.core.runtime.jobs,\
 org.eclipse.jface.window,\
 org.eclipse.swt,\

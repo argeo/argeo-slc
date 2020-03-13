@@ -15,7 +15,7 @@
 	<reference id="keyring" interface="org.argeo.api.security.CryptoKeyring" />
 
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
-		filter="(cn=home)" />
+		filter="(cn=ego)" />
 
 	<reference id="slcRepoManager" interface="org.argeo.slc.repo.SlcRepoManager" />
 </beans:beans>

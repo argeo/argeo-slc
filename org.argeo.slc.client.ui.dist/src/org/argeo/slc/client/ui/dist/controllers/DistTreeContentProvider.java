@@ -12,6 +12,7 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
+import org.argeo.api.NodeConstants;
 import org.argeo.api.NodeUtils;
 import org.argeo.api.security.Keyring;
 import org.argeo.cms.ArgeoNames;
@@ -44,7 +45,7 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 		try {
 			if (nodeSession != null)
 				dispose();
-			nodeSession = nodeRepository.login();
+			nodeSession = nodeRepository.login(NodeConstants.HOME);
 
 			String reposPath = NodeUtils.getUserHome(nodeSession).getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
 
@@ -56,7 +57,8 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 				Node repoNode = repos.nextNode();
 				if (repoNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
 					String label = repoNode.isNodeType(NodeType.MIX_TITLE)
-							? repoNode.getProperty(Property.JCR_TITLE).getString() : repoNode.getName();
+							? repoNode.getProperty(Property.JCR_TITLE).getString()
+							: repoNode.getName();
 					repositories.add(new RepoElem(repositoryFactory, keyring, repoNode, label));
 				}
 			}
@@ -106,7 +108,7 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 				throw new SlcException("User must be authenticated.");
 
 			// make sure base directory is available
-			Node repos = JcrUtils.mkdirs(homeNode, RepoConstants.REPOSITORIES_BASE_PATH,null);
+			Node repos = JcrUtils.mkdirs(homeNode, RepoConstants.REPOSITORIES_BASE_PATH, null);
 			if (nodeSession.hasPendingChanges())
 				nodeSession.save();
 

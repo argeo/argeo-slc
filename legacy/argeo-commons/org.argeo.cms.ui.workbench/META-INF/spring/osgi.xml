@@ -18,7 +18,7 @@
 	</list>
 
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
-		filter="(cn=home)" />
+		filter="(cn=ego)" />
 		
 	<reference id="nodeInstance" interface="org.argeo.api.NodeInstance" />
 
