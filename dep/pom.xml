@@ -13,6 +13,7 @@
 		<module>org.argeo.slc.dep.minimal</module>
 		<module>org.argeo.slc.dep.spring</module>
 		<module>org.argeo.slc.dep.e4.rap</module>
+		<module>org.argeo.slc.dep.spring.e4.rap</module>
 		<!--  Legacy -->
 		<module>org.argeo.slc.dep.backend</module>
 	</modules>
