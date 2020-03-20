@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans xmlns="http://www.springframework.org/schema/osgi"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:beans="http://www.springframework.org/schema/beans"
+<beans:beans
+	xmlns="http://www.springframework.org/schema/osgi"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:osgi="http://www.springframework.org/schema/osgi"
 	xsi:schemaLocation="http://www.springframework.org/schema/osgi  
        http://www.springframework.org/schema/osgi/spring-osgi-1.1.xsd
@@ -10,8 +12,10 @@
 
 	<beans:description>SLC UI RAP</beans:description>
 
-	<reference id="nodeRepository" interface="javax.jcr.Repository"
-		filter="(cn=node)" />
-	<reference id="repositoryFactory" interface="javax.jcr.RepositoryFactory" />
-	<reference id="keyring" interface="org.argeo.api.security.CryptoKeyring" />
+	<reference id="nodeRepository"
+	interface="javax.jcr.Repository" />
+	<reference id="repositoryFactory"
+		interface="javax.jcr.RepositoryFactory" />
+	<reference id="keyring"
+		interface="org.argeo.api.security.CryptoKeyring" />
 </beans:beans>
