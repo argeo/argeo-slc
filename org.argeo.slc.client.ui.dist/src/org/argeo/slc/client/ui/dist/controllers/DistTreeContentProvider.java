@@ -45,7 +45,7 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 		try {
 			if (nodeSession != null)
 				dispose();
-			nodeSession = nodeRepository.login(NodeConstants.HOME);
+			nodeSession = nodeRepository.login(NodeConstants.HOME_WORKSPACE);
 
 			String reposPath = NodeUtils.getUserHome(nodeSession).getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
 

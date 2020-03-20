@@ -45,7 +45,7 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 		Session session = null;
 		if (getProcess() instanceof JcrExecutionProcess)
 			try {
-				session = ((JcrExecutionProcess) getProcess()).getRepository().login(NodeConstants.HOME);
+				session = ((JcrExecutionProcess) getProcess()).getRepository().login(NodeConstants.HOME_WORKSPACE);
 
 				List<RealizedFlow> realizedFlows = getProcess().getRealizedFlows();
 				for (RealizedFlow realizedFlow : realizedFlows) {

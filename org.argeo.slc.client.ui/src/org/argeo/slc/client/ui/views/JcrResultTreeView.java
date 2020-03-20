@@ -140,7 +140,7 @@ public class JcrResultTreeView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		try {
-			session = repository.login(NodeConstants.HOME);
+			session = repository.login(NodeConstants.HOME_WORKSPACE);
 		} catch (RepositoryException e1) {
 			throw new SlcException("Cannot log in to repository");
 		}

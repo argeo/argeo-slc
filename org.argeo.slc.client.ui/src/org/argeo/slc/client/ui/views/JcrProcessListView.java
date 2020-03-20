@@ -80,7 +80,7 @@ public class JcrProcessListView extends ViewPart {
 		pushSession = new ServerPushSession();
 		pushSession.start();
 		try {
-			session = repository.login(NodeConstants.HOME);
+			session = repository.login(NodeConstants.HOME_WORKSPACE);
 		} catch (RepositoryException re) {
 			throw new SlcException("Unable to log in Repository " + repository, re);
 		}

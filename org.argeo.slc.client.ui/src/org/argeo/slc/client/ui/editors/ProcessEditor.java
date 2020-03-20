@@ -69,7 +69,7 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		pushSession = new ServerPushSession();
 		pushSession.start();
 		try {
-			homeSession = repository.login(NodeConstants.HOME);
+			homeSession = repository.login(NodeConstants.HOME_WORKSPACE);
 			agentSession = repository.login();
 		} catch (RepositoryException e1) {
 			throw new SlcException("Cannot log in to repository");
