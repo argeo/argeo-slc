@@ -1,6 +1,6 @@
 Import-Package: org.apache.commons.io,\
 				org.eclipse.core.commands,\
-				org.argeo.eclipse.ui.utils,\
+				org.argeo.eclipse.ui.util,\
 				!org.eclipse.core.runtime,\
 				!org.eclipse.ui.plugin,\
 				org.eclipse.swt,\
