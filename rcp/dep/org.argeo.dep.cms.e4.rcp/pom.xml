@@ -651,7 +651,7 @@
 									<name>argeo-cms-e4-rcp</name>
 									<mappings>
 										<mapping>
-											<directory>/usr/share/osgi</directory>
+											<directory>/usr/lib/osgi</directory>
 											<username>root</username>
 											<groupname>root</groupname>
 											<filemode>644</filemode>
@@ -714,7 +714,7 @@
 									<release>${maven.build.timestamp}</release>
 									<mappings>
 										<mapping>
-											<directory>/usr/share/osgi</directory>
+											<directory>/usr/lib/osgi</directory>
 											<username>root</username>
 											<groupname>root</groupname>
 											<filemode>644</filemode>

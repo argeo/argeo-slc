@@ -3,15 +3,17 @@ APP=argeo-companion
 
 JVM=java
 
-# Directories and files
-CONF_DIR=/etc/$APP
+BASE_DIR="$(cd "$(dirname "$0")/.."; pwd -P)"
 
-EXEC_DIR=$HOME/.local/share/$APP
+# Directories and files
+CONF_DIR=$BASE_DIR/etc/$APP
+
+EXEC_DIR=.
 DATA_DIR=$EXEC_DIR/data
 CONF_RW=$EXEC_DIR/state
 
-A2_SOURCES=a2:///usr/share/osgi,a2:///usr/lib/osgi
-OSGI_INSTALL_AREA=/usr/share/osgi/boot
+A2_SOURCES=a2://$BASE_DIR/share/osgi
+OSGI_INSTALL_AREA=$BASE_DIR/share/osgi/boot
 OSGI_FRAMEWORK=$OSGI_INSTALL_AREA/org.eclipse.osgi.jar
 
 # Overwrite variables
