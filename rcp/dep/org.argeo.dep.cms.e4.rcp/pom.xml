@@ -73,6 +73,11 @@
 			<artifactId>org.eclipse.swt.gtk.linux.arm</artifactId>
 			<version>3.108.0.v20180905-1254</version>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.rcp.e4</groupId>
+			<artifactId>org.eclipse.swt.gtk.linux.aarch64</artifactId>
+			<version>3.109.0.202003311246</version>
+		</dependency>
 
 		<!-- Additional text components (not in RCP distribution) -->
 		<dependency>
