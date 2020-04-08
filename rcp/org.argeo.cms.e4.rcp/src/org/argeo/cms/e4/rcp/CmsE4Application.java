@@ -14,6 +14,7 @@ import org.argeo.cms.ui.CmsView;
 import org.argeo.cms.ui.UxContext;
 import org.argeo.cms.ui.util.SimpleUxContext;
 import org.argeo.cms.ui.widgets.auth.CmsLoginShell;
+import org.argeo.eclipse.ui.specific.UiContext;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
@@ -76,7 +77,7 @@ public class CmsE4Application implements IApplication, CmsView {
 		// }
 
 		uxContext = new SimpleUxContext();
-
+		UiContext.setData(CmsView.KEY, this);
 		e4Application = getApplication(null);
 		Object res = Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
 
