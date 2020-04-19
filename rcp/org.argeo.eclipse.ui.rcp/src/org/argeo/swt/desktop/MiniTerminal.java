@@ -61,7 +61,12 @@ public class MiniTerminal implements KeyListener, PaintListener {
 
 	private Thread readOut;
 
-	public MiniTerminal(Composite parent, int style) {
+	public MiniTerminal(Composite parent, String url) {
+		this(parent);
+		setPath(url);
+	}
+
+	public MiniTerminal(Composite parent) {
 		charset = StandardCharsets.UTF_8;
 
 		Display display = parent.getDisplay();
@@ -199,7 +204,7 @@ public class MiniTerminal implements KeyListener, PaintListener {
 			// exit
 			else if (args.get(0).equals("exit")) {
 				println("logout");
-				area.getShell().dispose();
+				exitCalled();
 				return;
 			}
 
@@ -210,7 +215,7 @@ public class MiniTerminal implements KeyListener, PaintListener {
 			process = pb.start();
 
 			stdIn = process.getOutputStream();
-			readOut = new Thread("MinitTerminal read out") {
+			readOut = new Thread("MiniTerminal read out") {
 				@Override
 				public void run() {
 					running = true;
@@ -300,6 +305,10 @@ public class MiniTerminal implements KeyListener, PaintListener {
 //		area.setCaret(caret);
 	}
 
+	protected void exitCalled() {
+
+	}
+
 	public void setPath(String path) {
 		this.currentDir = Paths.get(path);
 	}
@@ -312,9 +321,15 @@ public class MiniTerminal implements KeyListener, PaintListener {
 		Display display = Display.getCurrent() == null ? new Display() : Display.getCurrent();
 		Shell shell = new Shell(display, SWT.SHELL_TRIM);
 
-		MiniTerminal miniBrowser = new MiniTerminal(shell, SWT.NONE);
 		String url = args.length > 0 ? args[0] : System.getProperty("user.home");
-		miniBrowser.setPath(url);
+		new MiniTerminal(shell, url) {
+
+			@Override
+			protected void exitCalled() {
+				shell.dispose();
+				System.exit(0);
+			}
+		};
 
 		shell.open();
 		shell.setSize(new Point(800, 480));

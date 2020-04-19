@@ -24,20 +24,24 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 public class MiniExplorer {
-	private Path url;
+	private Path path;
 	private Text addressT;
 	private Table browser;
 
 	private boolean showHidden = false;
 
-	public MiniExplorer(Composite parent, int style) {
-		parent.setLayout(new GridLayout());
+	public MiniExplorer(Composite parent, String url) {
+		this(parent);
+		setUrl(url);
+	}
+
+	public MiniExplorer(Composite parent) {
+		parent.setLayout(noSpaceGridLayout(new GridLayout()));
 
 		Composite toolBar = new Composite(parent, SWT.NONE);
 		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		toolBar.setLayout(new FillLayout());
-		addressT = new Text(toolBar, SWT.SINGLE | SWT.BORDER);
-		// addressT.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		addressT = new Text(toolBar, SWT.SINGLE);
 		addressT.addSelectionListener(new SelectionAdapter() {
 
 			@Override
@@ -45,20 +49,25 @@ public class MiniExplorer {
 				setUrl(addressT.getText().trim());
 			}
 		});
-		browser = createTable(parent, this.url);
+		browser = createTable(parent, this.path);
 
 	}
 
-	public void setUrl(Path url) {
-		this.url = url;
+	public void setPath(Path url) {
+		this.path = url;
 		if (addressT != null)
 			addressT.setText(url.toString());
 		if (browser != null) {
 			Composite parent = browser.getParent();
 			browser.dispose();
-			browser = createTable(parent, this.url);
+			browser = createTable(parent, this.path);
 			parent.layout(true, true);
 		}
+		pathChanged(url);
+	}
+
+	protected void pathChanged(Path path) {
+
 	}
 
 	protected Table createTable(Composite parent, Path path) {
@@ -72,7 +81,7 @@ public class MiniExplorer {
 				TableItem item = table.getItem(pt);
 				Path path = (Path) item.getData();
 				if (Files.isDirectory(path)) {
-					setUrl(path);
+					setPath(path);
 				} else {
 					Program.launch(path.toString());
 				}
@@ -88,14 +97,14 @@ public class MiniExplorer {
 
 			try {
 				// directories
-				DirectoryStream<Path> ds = Files.newDirectoryStream(url, p -> Files.isDirectory(p) && isShown(p));
+				DirectoryStream<Path> ds = Files.newDirectoryStream(path, p -> Files.isDirectory(p) && isShown(p));
 				ds.forEach(p -> {
 					TableItem ti = new TableItem(table, SWT.NONE);
 					ti.setText(p.getFileName().toString() + "/");
 					ti.setData(p);
 				});
 				// files
-				ds = Files.newDirectoryStream(url, p -> !Files.isDirectory(p) && isShown(p));
+				ds = Files.newDirectoryStream(path, p -> !Files.isDirectory(p) && isShown(p));
 				ds.forEach(p -> {
 					TableItem ti = new TableItem(table, SWT.NONE);
 					ti.setText(p.getFileName().toString());
@@ -120,16 +129,30 @@ public class MiniExplorer {
 	}
 
 	public void setUrl(String url) {
-		setUrl(Paths.get(url));
+		setPath(Paths.get(url));
+	}
+
+	private static GridLayout noSpaceGridLayout(GridLayout layout) {
+		layout.horizontalSpacing = 0;
+		layout.verticalSpacing = 0;
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		return layout;
 	}
 
 	public static void main(String[] args) {
 		Display display = Display.getCurrent() == null ? new Display() : Display.getCurrent();
 		Shell shell = new Shell(display, SWT.SHELL_TRIM);
 
-		MiniExplorer miniBrowser = new MiniExplorer(shell, SWT.NONE);
 		String url = args.length > 0 ? args[0] : System.getProperty("user.home");
-		miniBrowser.setUrl(url);
+		new MiniExplorer(shell, url) {
+
+			@Override
+			protected void pathChanged(Path path) {
+				shell.setText(path.toString());
+			}
+
+		};
 
 		shell.open();
 		shell.setSize(new Point(800, 480));

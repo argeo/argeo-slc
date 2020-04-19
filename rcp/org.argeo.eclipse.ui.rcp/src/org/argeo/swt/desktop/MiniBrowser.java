@@ -1,8 +1,5 @@
 package org.argeo.swt.desktop;
 
-import java.util.Observable;
-import java.util.function.BiFunction;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.browser.LocationAdapter;
@@ -20,99 +17,87 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /** A minimalistic web browser based on {@link Browser}. */
-public class MiniBrowser implements BiFunction<Composite, MiniBrowser.Context, Control> {
-	@Override
-	public Control apply(Composite parent, MiniBrowser.Context context) {
-		parent.setLayout(new GridLayout());
-		Control toolBar = createToolBar(parent, context);
+public class MiniBrowser {
+	private Browser browser;
+	private Text addressT;
+
+	public MiniBrowser(Composite composite, String url) {
+		createUi(composite);
+		setUrl(url);
+	}
+
+	public Control createUi(Composite parent) {
+		parent.setLayout(noSpaceGridLayout(new GridLayout()));
+		Control toolBar = createToolBar(parent);
 		toolBar.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		Control body = createBody(parent, context);
+		Control body = createBody(parent);
 		body.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		return body;
 	}
 
-	public Control createToolBar(Composite parent, MiniBrowser.Context context) {
+	public Control createToolBar(Composite parent) {
 		Composite toolBar = new Composite(parent, SWT.NONE);
 		toolBar.setLayout(new FillLayout());
-		Text addressT = new Text(toolBar, SWT.SINGLE | SWT.BORDER);
+		addressT = new Text(toolBar, SWT.SINGLE);
 		addressT.addSelectionListener(new SelectionAdapter() {
 
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
-				String url = addressT.getText().trim();
-				context.setUrl(url);
+				setUrl(addressT.getText().trim());
 			}
 		});
-		context.addObserver((o, v) -> addressT.setText(((Context) o).getUrl().toString()));
 		return toolBar;
 	}
 
-	public Control createBody(Composite parent, MiniBrowser.Context context) {
-		Browser browser = new Browser(parent, SWT.NONE);
+	public Control createBody(Composite parent) {
+		browser = new Browser(parent, SWT.NONE);
 		browser.addLocationListener(new LocationAdapter() {
 			@Override
-			public void changing(LocationEvent event) {
-//				if (event.top && !context.getUrl().equals(event.location))
-//					context.setUrl(event.location);
-			}
-
-			@Override
 			public void changed(LocationEvent event) {
-				if (event.top && !context.getUrl().equals(event.location))
-					context.setUrl(event.location);
+				addressT.setText(event.location);
 			}
 
 		});
-		browser.addTitleListener(e -> context.setTitle(e.title));
-		context.addObserver((o, v) -> {
-			String url = ((Context) o).getUrl();
-			if (url != null && !url.equals(browser.getUrl()))
-				browser.setUrl(url.toString());
-		});
+		browser.addTitleListener(e -> titleChanged(e.title));
 		return browser;
 	}
 
-	/** The observable context of this web browser. */
-	public static class Context extends Observable {
-		private String url;
-		private String title = "";
+	void setUrl(String url) {
+		if (browser != null && url != null && !url.equals(browser.getUrl()))
+			browser.setUrl(url.toString());
+	}
 
-		public void setUrl(String url) {
-			this.url = url;
-			System.out.println(url);
-			setChanged();
-			notifyObservers(url);
-		}
+	/** Called when URL changed; to be overridden, does nothing by default. */
+	protected void urlChanged(String url) {
+	}
 
-		public String getUrl() {
-			return url;
-		}
+	/** Called when title changed; to be overridden, does nothing by default. */
+	protected void titleChanged(String title) {
+	}
 
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-			setChanged();
-			notifyObservers(title);
-		}
-
+	private static GridLayout noSpaceGridLayout(GridLayout layout) {
+		layout.horizontalSpacing = 0;
+		layout.verticalSpacing = 0;
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		return layout;
 	}
 
 	public static void main(String[] args) {
 		Display display = Display.getCurrent() == null ? new Display() : Display.getCurrent();
 		Shell shell = new Shell(display, SWT.SHELL_TRIM);
 
-		MiniBrowser miniBrowser = new MiniBrowser();
-		MiniBrowser.Context context = new MiniBrowser.Context();
-		miniBrowser.apply(shell, context);
-		context.addObserver((o, v) -> shell.setText(((Context) o).getTitle()));
-		String url = args.length > 0 ? args[0] : "http://www.argeo.org";
-		context.setUrl(url);
+		String url = args.length > 0 ? args[0] : "https://duckduckgo.com/";
+		new MiniBrowser(shell, url) {
 
+			@Override
+			protected void titleChanged(String title) {
+				shell.setText(title);
+			}
+		};
 		shell.open();
 		shell.setSize(new Point(800, 480));
+
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch())
 				display.sleep();
