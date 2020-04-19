@@ -1,4 +1,4 @@
-package org.argeo.swt.desktop;
+package org.argeo.minidesktop;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -54,7 +54,6 @@ public class MiniDesktopManager {
 			rootShell = new Shell(display, SWT.NO_TRIM);
 			rootShell.setFullScreen(true);
 			Rectangle bounds = display.getBounds();
-
 			rootShell.setSize(bounds.width, bounds.height);
 		} else {
 			rootShell = new Shell(display, SWT.SHELL_TRIM);
@@ -134,7 +133,7 @@ public class MiniDesktopManager {
 		addToolItem(toolBar, display.getSystemImage(SWT.ICON_QUESTION), "Browser", () -> {
 			String url = "https://duckduckgo.com/";
 			AppContext appContext = createAppParent();
-			new MiniBrowser(appContext.getAppParent(), url) {
+			new MiniBrowser(appContext.getAppParent(), url, false, false) {
 				@Override
 				protected void titleChanged(String title) {
 					if (appContext.shell != null)
