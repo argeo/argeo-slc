@@ -3,7 +3,6 @@ package org.argeo.swt.desktop;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -224,8 +223,6 @@ public class MiniDesktopManager {
 	}
 
 	protected void initBackground(Composite backgroundArea) {
-		MiniDesktopLayer desktopLayer = new MiniDesktopLayer();
-		desktopLayer.init(backgroundArea, Paths.get(System.getProperty("user.dir")));
 	}
 
 	public void run() {
