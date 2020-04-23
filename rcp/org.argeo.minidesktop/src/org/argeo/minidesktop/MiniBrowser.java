@@ -150,7 +150,7 @@ public class MiniBrowser {
 		}
 		boolean fullscreen = options.contains("--fullscreen");
 		boolean appMode = options.contains("--app");
-		String url = "https://duckduckgo.com/";
+		String url = "https://start.duckduckgo.com/";
 		if (options.size() > 0) {
 			String last = options.get(options.size() - 1);
 			if (!last.startsWith("--"))

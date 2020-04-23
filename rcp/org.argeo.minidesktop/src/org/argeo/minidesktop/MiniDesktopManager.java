@@ -11,6 +11,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
@@ -37,16 +38,21 @@ public class MiniDesktopManager {
 	private final boolean fullscreen;
 	private final boolean stacking;
 
+	private MiniDesktopImages images;
+
 	public MiniDesktopManager(boolean fullscreen, boolean stacking) {
 		this.fullscreen = fullscreen;
 		this.stacking = stacking;
 	}
 
 	public void init() {
+		Display.setAppName("Mini SWT Desktop");
 		display = Display.getCurrent();
 		if (display != null)
 			throw new IllegalStateException("Already a display " + display);
 		display = new Display();
+
+		images = new MiniDesktopImages(display);
 
 		int toolBarSize = 48;
 
@@ -56,9 +62,11 @@ public class MiniDesktopManager {
 			Rectangle bounds = display.getBounds();
 			rootShell.setSize(bounds.width, bounds.height);
 		} else {
-			rootShell = new Shell(display, SWT.SHELL_TRIM);
+			rootShell = new Shell(display, SWT.CLOSE | SWT.RESIZE);
 			Rectangle shellArea = rootShell.computeTrim(200, 200, 800, 480);
 			rootShell.setSize(shellArea.width, shellArea.height);
+			rootShell.setText(Display.getAppName());
+			rootShell.setImage(images.terminalIcon);
 		}
 
 		rootShell.setLayout(noSpaceGridLayout(new GridLayout(2, false)));
@@ -75,19 +83,33 @@ public class MiniDesktopManager {
 		} else {
 			toolBar = new ToolBar(toolBarArea, SWT.VERTICAL | SWT.FLAT | SWT.BORDER);
 			createDock(toolBar);
-			toolBarArea.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+			toolBarArea.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 		}
 
 		if (isStacking()) {
-			tabFolder = new CTabFolder(rootShell, SWT.MULTI);
+			tabFolder = new CTabFolder(rootShell, SWT.MULTI | SWT.BORDER | SWT.BOTTOM);
+			tabFolder.setLayout(noSpaceGridLayout(new GridLayout()));
 			tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+			Color selectionBackground = display.getSystemColor(SWT.COLOR_LIST_SELECTION);
+			tabFolder.setSelectionBackground(selectionBackground);
+//			tabFolder.setSelectionForeground(selectionBackground);
+//			tabFolder.setSelectionBackground(
+//					new Color[] { display.getSystemColor(SWT.COLOR_WHITE), display.getSystemColor(SWT.COLOR_BLUE) },
+//					new int[] { 100 }, true);
+
 			// background
 			Control background = createBackground(tabFolder);
-			CTabItem noCloseItem = new CTabItem(tabFolder, SWT.NONE);
-			noCloseItem.setText("Home");
-			noCloseItem.setControl(background);
+			CTabItem homeTabItem = new CTabItem(tabFolder, SWT.NONE);
+			homeTabItem.setText("Home");
+			homeTabItem.setImage(images.homeIcon);
+			homeTabItem.setControl(background);
+			tabFolder.setFocus();
 		} else {
-			createBackground(rootShell);
+			if (isFullscreen())
+				createBackground(rootShell);
+			else
+				rootShell.pack();
 		}
 
 		rootShell.open();
@@ -101,9 +123,9 @@ public class MiniDesktopManager {
 
 	protected void createDock(ToolBar toolBar) {
 		// Terminal
-		addToolItem(toolBar, display.getSystemImage(SWT.ICON_INFORMATION), "Terminal", () -> {
+		addToolItem(toolBar, images.terminalIcon, "Terminal", () -> {
 			String url = System.getProperty("user.home");
-			AppContext appContext = createAppParent();
+			AppContext appContext = createAppParent(images.terminalIcon);
 			new MiniTerminal(appContext.getAppParent(), url) {
 
 				@Override
@@ -130,9 +152,9 @@ public class MiniDesktopManager {
 		});
 
 		// Web browser
-		addToolItem(toolBar, display.getSystemImage(SWT.ICON_QUESTION), "Browser", () -> {
-			String url = "https://duckduckgo.com/";
-			AppContext appContext = createAppParent();
+		addToolItem(toolBar, images.browserIcon, "Browser", () -> {
+			String url = "https://start.duckduckgo.com/";
+			AppContext appContext = createAppParent(images.browserIcon);
 			new MiniBrowser(appContext.getAppParent(), url, false, false) {
 				@Override
 				protected void titleChanged(String title) {
@@ -148,9 +170,9 @@ public class MiniDesktopManager {
 		});
 
 		// File explorer
-		addToolItem(toolBar, display.getSystemImage(SWT.ICON_WARNING), "Explorer", () -> {
+		addToolItem(toolBar, images.explorerIcon, "Explorer", () -> {
 			String url = System.getProperty("user.home");
-			AppContext appContext = createAppParent();
+			AppContext appContext = createAppParent(images.explorerIcon);
 			new MiniExplorer(appContext.getAppParent(), url) {
 
 				@Override
@@ -166,8 +188,11 @@ public class MiniDesktopManager {
 			openApp(appContext);
 		});
 
+		// Separator
+		new ToolItem(toolBar, SWT.SEPARATOR);
+
 		// Exit
-		addToolItem(toolBar, display.getSystemImage(SWT.ICON_ERROR), "Exit", () -> rootShell.dispose());
+		addToolItem(toolBar, images.exitIcon, "Exit", () -> rootShell.dispose());
 
 		toolBar.pack();
 	}
@@ -190,15 +215,17 @@ public class MiniDesktopManager {
 		});
 	}
 
-	protected AppContext createAppParent() {
+	protected AppContext createAppParent(Image icon) {
 		if (isStacking()) {
-			Composite appParent = new Composite(tabFolder, SWT.NONE);
+			Composite appParent = new Composite(tabFolder, SWT.CLOSE);
 			appParent.setLayout(noSpaceGridLayout(new GridLayout()));
 			CTabItem item = new CTabItem(tabFolder, SWT.CLOSE);
+			item.setImage(icon);
 			item.setControl(appParent);
 			return new AppContext(item);
 		} else {
-			Shell shell = new Shell(rootShell, SWT.SHELL_TRIM);
+			Shell shell = new Shell(rootShell.getDisplay(), SWT.SHELL_TRIM);
+			shell.setImage(icon);
 			return new AppContext(shell);
 		}
 	}
@@ -210,6 +237,7 @@ public class MiniDesktopManager {
 			shell.setSize(new Point(800, 480));
 		}
 		if (appContext.tabItem != null) {
+			tabFolder.setFocus();
 			tabFolder.setSelection(appContext.tabItem);
 		}
 	}
