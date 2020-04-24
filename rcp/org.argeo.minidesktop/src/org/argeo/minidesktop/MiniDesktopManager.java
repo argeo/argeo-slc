@@ -52,6 +52,10 @@ public class MiniDesktopManager {
 			throw new IllegalStateException("Already a display " + display);
 		display = new Display();
 
+		if (display.getTouchEnabled()) {
+			System.out.println("Touch enabled.");
+		}
+
 		images = new MiniDesktopImages(display);
 
 		int toolBarSize = 48;
@@ -93,10 +97,6 @@ public class MiniDesktopManager {
 
 			Color selectionBackground = display.getSystemColor(SWT.COLOR_LIST_SELECTION);
 			tabFolder.setSelectionBackground(selectionBackground);
-//			tabFolder.setSelectionForeground(selectionBackground);
-//			tabFolder.setSelectionBackground(
-//					new Color[] { display.getSystemColor(SWT.COLOR_WHITE), display.getSystemColor(SWT.COLOR_BLUE) },
-//					new int[] { 100 }, true);
 
 			// background
 			Control background = createBackground(tabFolder);
