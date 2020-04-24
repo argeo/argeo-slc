@@ -250,6 +250,14 @@ public class MiniDesktopManager {
 	}
 
 	protected void initBackground(Composite backgroundArea) {
+		MiniHomePart homePart = new MiniHomePart() {
+
+			@Override
+			protected void fillAppsToolBar(ToolBar toolBar) {
+				createDock(toolBar);
+			}
+		};
+		homePart.createUiPart(backgroundArea, null);
 	}
 
 	public void run() {
