@@ -58,15 +58,19 @@ public class MiniHomePart {
 		if (netInterfaces != null)
 			while (netInterfaces.hasMoreElements()) {
 				NetworkInterface netInterface = netInterfaces.nextElement();
+				byte[] hardwareAddress = null;
 				try {
-					label(hostGroup, convertHardwareAddress(netInterface.getHardwareAddress()));
+					hardwareAddress = netInterface.getHardwareAddress();
+					if (hardwareAddress != null) {
+						label(hostGroup, convertHardwareAddress(hardwareAddress));
+						label(hostGroup, netInterface.getName());
+						for (InterfaceAddress addr : netInterface.getInterfaceAddresses()) {
+							label(hostGroup, cleanHostAddress(addr.getAddress().getHostAddress()));
+							label(hostGroup, Short.toString(addr.getNetworkPrefixLength()));
+						}
+					}
 				} catch (SocketException e) {
 					label(hostGroup, e.getMessage());
-				}
-				label(hostGroup, netInterface.getName());
-				for (InterfaceAddress addr : netInterface.getInterfaceAddresses()) {
-					label(hostGroup, cleanHostAddress(addr.getAddress().getHostAddress()));
-					label(hostGroup, Short.toString(addr.getNetworkPrefixLength()));
 				}
 			}
 

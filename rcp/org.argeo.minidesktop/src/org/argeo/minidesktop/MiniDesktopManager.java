@@ -64,6 +64,7 @@ public class MiniDesktopManager {
 			rootShell = new Shell(display, SWT.NO_TRIM);
 			rootShell.setFullScreen(true);
 			Rectangle bounds = display.getBounds();
+			rootShell.setLocation(0, 0);
 			rootShell.setSize(bounds.width, bounds.height);
 		} else {
 			rootShell = new Shell(display, SWT.CLOSE | SWT.RESIZE);
@@ -106,17 +107,15 @@ public class MiniDesktopManager {
 			homeTabItem.setControl(background);
 			tabFolder.setFocus();
 		} else {
-			if (isFullscreen())
-				createBackground(rootShell);
-			else
-				rootShell.pack();
+			createBackground(rootShell);
 		}
 
 		rootShell.open();
 		// rootShell.layout(true, true);
 
 		if (toolBarShell != null) {
-			toolBarShell.setLocation(new Point(0, 0));
+			int toolBarShellY = (display.getBounds().height - toolBar.getSize().y) / 2;
+			toolBarShell.setLocation(0, toolBarShellY);
 			toolBarShell.open();
 		}
 	}
@@ -224,7 +223,8 @@ public class MiniDesktopManager {
 			item.setControl(appParent);
 			return new AppContext(item);
 		} else {
-			Shell shell = new Shell(rootShell.getDisplay(), SWT.SHELL_TRIM);
+			Shell shell = isFullscreen() ? new Shell(rootShell, SWT.SHELL_TRIM)
+					: new Shell(rootShell.getDisplay(), SWT.SHELL_TRIM);
 			shell.setImage(icon);
 			return new AppContext(shell);
 		}
