@@ -1,5 +1,6 @@
 package org.argeo.minidesktop;
 
+import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
@@ -118,6 +119,9 @@ public class MiniDesktopManager {
 			toolBarShell.setLocation(0, toolBarShellY);
 			toolBarShell.open();
 		}
+
+		long jvmUptime = ManagementFactory.getRuntimeMXBean().getUptime();
+		System.out.println("SWT Mini Desktop Manager available in " + jvmUptime + " ms.");
 	}
 
 	protected void createDock(ToolBar toolBar) {
