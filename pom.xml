@@ -67,6 +67,9 @@
 		<developerConnection>scm:git:https://code.argeo.org/git/lgpl/argeo-slc.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
+	<organization>
+		<name>Argeo GmbH</name>
+	</organization>
 	<inceptionYear>2007</inceptionYear>
 	<licenses>
 		<license>
