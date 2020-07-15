@@ -62,61 +62,19 @@
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
 	<scm>
-		<connection>scm:git:http://git.argeo.org/apache2/argeo-slc.git</connection>
-		<url>http://git.argeo.org/?p=apache2/argeo-slc.git;a=summary</url>
-		<developerConnection>scm:git:https://code.argeo.org/git/apache2/argeo-slc.git</developerConnection>
+		<connection>scm:git:http://git.argeo.org/lgpl/argeo-slc.git</connection>
+		<url>http://git.argeo.org/?p=lgpl/argeo-slc.git;a=summary</url>
+		<developerConnection>scm:git:https://code.argeo.org/git/lgpl/argeo-slc.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<inceptionYear>2007</inceptionYear>
 	<licenses>
 		<license>
-			<name>Apache 2</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>LGPL-3.0-or-later</name>
+			<url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
 			<distribution>repo</distribution>
-			<comments><![CDATA[
-SLC (Software Life Cycle) framework
-			   
-Copyright (C) 2007-2018 Argeo GmbH
-
-Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-]]>
-			</comments>
 		</license>
 	</licenses>
-	<developers>
-		<developer>
-			<id>mbaudier</id>
-			<name>Mathieu Baudier</name>
-			<email><![CDATA[http://mailhide.recaptcha.net/d?k=01EM7GpnvY3k8woQ2tnnZLUA==&c=crsNpHjhOBDPswHG6HD_gXaqymhC69wmBf7wlagcSHw=]]></email>
-			<organization>Argeo</organization>
-			<organizationUrl>http://www.argeo.org</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-				<role>QA</role>
-			</roles>
-		</developer>
-		<developer>
-			<id>ocapillo</id>
-			<name>Olivier Capillon</name>
-			<email><![CDATA[http://mailhide.recaptcha.net/d?k=01EM7GpnvY3k8woQ2tnnZLUA==&c=BYw8i94WiejnvegUKJoCZQQr0h-mYlKCNKZVe_3WPIA=]]></email>
-			<organization>Argeo</organization>
-			<organizationUrl>http://www.argeo.org</organizationUrl>
-			<roles>
-				<role>developer</role>
-			</roles>
-		</developer>
-	</developers>
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.tp</groupId>
