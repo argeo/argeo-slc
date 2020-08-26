@@ -73,6 +73,17 @@ along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
       <feature id="org.eclipse.emf.ecore" installMode="root"/>
       <feature id="org.eclipse.ecf.core.feature" installMode="root"/>
       <feature id="org.eclipse.ecf.filetransfer.feature" installMode="root"/>
+      <feature id="org.eclipse.egit" installMode="root"/>
+      <feature id="org.eclipse.jgit" installMode="root"/>
+      <feature id="org.eclipse.jgit.http.apache" installMode="root"/>
+      <feature id="org.eclipse.jgit.ssh.apache" installMode="root"/>
+      <feature id="org.eclipse.jgit.ssh.jsch" installMode="root"/>
+      <feature id="org.eclipse.equinox.p2.core.feature" installMode="root"/>
+      <feature id="org.eclipse.equinox.p2.rcp.feature" installMode="root"/>
+      <feature id="org.eclipse.equinox.p2.user.ui" installMode="root"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature" installMode="root"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature" installMode="root"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature" installMode="root"/>
    </features>
 
    <configurations>
