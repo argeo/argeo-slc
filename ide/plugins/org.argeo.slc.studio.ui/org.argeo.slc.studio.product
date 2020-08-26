@@ -32,7 +32,6 @@
       </win>
    </launcher>
 
-
    <vm>
       <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</linux>
       <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8</macos>
@@ -64,65 +63,16 @@ along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
    </plugins>
 
    <features>
+      <feature id="org.argeo.slc.studio" installMode="root"/>
       <feature id="org.eclipse.pde" installMode="root"/>
       <feature id="org.eclipse.jdt" installMode="root"/>
-      <feature id="org.eclipse.egit" installMode="root"/>
-      <feature id="org.eclipse.jgit" installMode="root"/>
-      <feature id="org.eclipse.jgit.ssh.apache" installMode="root"/>
-      <feature id="org.eclipse.platform" installMode="root"/>
-      <feature id="org.eclipse.help" installMode="root"/>
-      <feature id="org.eclipse.emf.common" installMode="root"/>
-      <feature id="org.eclipse.equinox.p2.core.feature" installMode="root"/>
-      <feature id="org.eclipse.ecf.core.ssl.feature" installMode="root"/>
-      <feature id="org.eclipse.ecf.filetransfer.ssl.feature" installMode="root"/>
-      <feature id="org.eclipse.emf.ecore" installMode="root"/>
-      <feature id="org.eclipse.equinox.p2.user.ui" installMode="root"/>
-      <feature id="org.eclipse.equinox.p2.extras.feature" installMode="root"/>
-      <feature id="org.eclipse.rcp" installMode="root"/>
-      <feature id="org.eclipse.ecf.core.feature" installMode="root"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient45.feature" installMode="root"/>
-      <feature id="org.eclipse.equinox.p2.rcp.feature" installMode="root"/>
-      <feature id="org.eclipse.ecf.filetransfer.feature" installMode="root"/>
+      <feature id="org.argeo.slc.ide.osgi" installMode="root"/>
       <feature id="org.eclipse.e4.rcp" installMode="root"/>
-      <feature id="org.eclipse.e4.core.tools.feature" installMode="root"/>
-      <feature id="org.eclipse.userstorage" installMode="root"/>
-      <feature id="org.eclipse.cdt" installMode="root"/>
-      <feature id="org.eclipse.cdt.autotools" installMode="root"/>
-      <feature id="org.eclipse.cdt.build.crossgcc" installMode="root"/>
-      <feature id="org.eclipse.cdt.gdb" installMode="root"/>
-      <feature id="org.eclipse.cdt.gnu.build" installMode="root"/>
-      <feature id="org.eclipse.cdt.gnu.debug" installMode="root"/>
-      <feature id="org.eclipse.cdt.gnu.dsf" installMode="root"/>
-      <feature id="org.eclipse.cdt.managedbuilder.llvm" installMode="root"/>
-      <feature id="org.eclipse.cdt.native" installMode="root"/>
-      <feature id="org.eclipse.cdt.platform" installMode="root"/>
-      <feature id="org.eclipse.eclemma.feature" installMode="root"/>
-      <feature id="org.eclipse.epp.mpc" installMode="root"/>
-      <feature id="org.eclipse.epp.package.common.feature" installMode="root"/>
-      <feature id="org.eclipse.epp.package.rcp.feature" installMode="root"/>
-      <feature id="org.eclipse.equinox.p2.discovery.feature" installMode="root"/>
-      <feature id="org.eclipse.rap.tools.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.common_core.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.common_ui.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.jsdt.chromium.debug.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.jsdt.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.jsdt.nodejs.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.json_core.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.json_ui.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.server_core.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.server_ui.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.server_userdoc.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.web_core.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.web_ui.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.web_userdoc.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.xml_core.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.xml_ui.feature" installMode="root"/>
-      <feature id="org.eclipse.wst.xml_userdoc.feature" installMode="root"/>
-      <feature id="org.eclipse.oomph.p2" installMode="root"/>
-      <feature id="org.eclipse.oomph.setup" installMode="root"/>
-      <feature id="org.eclipse.oomph.setup.core" installMode="root"/>
-      <feature id="org.argeo.slc.studio" installMode="root"/>
-      <feature id="org.eclipse.m2e.feature" installMode="root"/>
+      <feature id="org.eclipse.platform" installMode="root"/>
+      <feature id="org.eclipse.emf.common" installMode="root"/>
+      <feature id="org.eclipse.emf.ecore" installMode="root"/>
+      <feature id="org.eclipse.ecf.core.feature" installMode="root"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature" installMode="root"/>
    </features>
 
    <configurations>
