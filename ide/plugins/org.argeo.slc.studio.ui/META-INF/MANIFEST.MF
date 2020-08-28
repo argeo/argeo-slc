@@ -10,6 +10,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.ui,
  org.eclipse.ui.console,
  org.eclipse.ui.navigator.resources
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: org.argeo.slc.studio.ui
 Export-Package: org.argeo.slc.studio.ui

@@ -4,7 +4,7 @@
       label="Argeo IDE"
       version="2.1.0.qualifier"
       provider-name="Argeo GmbH"
-      plugin="org.argeo.slc.studio.branding"
+      plugin="org.argeo.slc.studio.ui"
       image="icons/argeo-icon-100104-256.png">
 
    <description url="http://projects.argeo.org/slc/">
@@ -60,5 +60,11 @@ and limitations under the License.
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.junit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>
