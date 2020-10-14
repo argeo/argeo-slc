@@ -1,0 +1,184 @@
+package org.argeo.cms.ui.rcp;
+
+import java.security.PrivilegedAction;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.security.auth.Subject;
+import javax.security.auth.login.LoginContext;
+import javax.security.auth.login.LoginException;
+
+import org.argeo.api.NodeConstants;
+import org.argeo.cms.ui.CmsApp;
+import org.argeo.cms.ui.CmsImageManager;
+import org.argeo.cms.ui.CmsView;
+import org.argeo.cms.ui.UxContext;
+import org.argeo.cms.ui.util.CmsUiUtils;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+
+/** Runs a {@link CmsApp} as an SWT desktop application. */
+public class CmsRcpApp implements CmsView {
+	private Display display;
+	private Shell shell;
+	private CmsApp cmsApp;
+	private CmsUiThread uiThread;
+
+	// CMS View
+	private String uid;
+	private LoginContext loginContext;
+	
+	private EventAdmin eventAdmin;
+
+	public CmsRcpApp() {
+		uid = UUID.randomUUID().toString();
+	}
+
+	public void init(Map<String, String> properties) {
+		uiThread = new CmsUiThread();
+		uiThread.start();
+
+	}
+
+	public void destroy(Map<String, String> properties) {
+		if (!shell.isDisposed())
+			shell.dispose();
+		try {
+			uiThread.join();
+		} catch (InterruptedException e) {
+			// silent
+		} finally {
+			uiThread = null;
+		}
+	}
+
+	class CmsUiThread extends Thread {
+
+		public CmsUiThread() {
+			super("CMS UI");
+		}
+
+		@Override
+		public void run() {
+			display = new Display();
+			shell = new Shell(display);
+			shell.setText("Argeo CMS");
+			Composite parent = shell;
+			parent.setLayout(new GridLayout());
+			CmsView.registerCmsView(shell, CmsRcpApp.this);
+
+//			Subject subject = new Subject();
+//			CmsLoginShell loginShell = new CmsLoginShell(CmsRcpApp.this);
+//			loginShell.setSubject(subject);
+			try {
+				// try pre-auth
+//				loginContext = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, subject, loginShell);
+				loginContext = new LoginContext(NodeConstants.LOGIN_CONTEXT_SINGLE_USER);
+				loginContext.login();
+			} catch (LoginException e) {
+				throw new IllegalStateException("Could not log in.", e);
+//				loginShell.createUi();
+//				loginShell.open();
+//
+//				while (!loginShell.getShell().isDisposed()) {
+//					if (!display.readAndDispatch())
+//						display.sleep();
+//				}
+			}
+
+			Subject.doAs(loginContext.getSubject(), (PrivilegedAction<Void>) () -> {
+				Composite ui = cmsApp.initUi(parent);
+				// ui.setData(CmsApp.UI_NAME_PROPERTY, uiName);
+				ui.setLayoutData(CmsUiUtils.fillAll());
+
+				shell.open();
+				while (!shell.isDisposed()) {
+					if (!display.readAndDispatch())
+						display.sleep();
+				}
+				display.dispose();
+				return null;
+			});
+		}
+
+	}
+
+	/*
+	 * CMS VIEW
+	 */
+
+	@Override
+	public String getUid() {
+		return uid;
+	}
+
+	@Override
+	public UxContext getUxContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void navigateTo(String state) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void authChange(LoginContext loginContext) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void logout() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void exception(Throwable e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public CmsImageManager getImageManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAnonymous() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void sendEvent(String topic, Map<String, Object> properties) {
+		if (properties == null)
+			properties = new HashMap<>();
+		if (properties.containsKey(CMS_VIEW_UID_PROPERTY) && !properties.get(CMS_VIEW_UID_PROPERTY).equals(uid))
+			throw new IllegalArgumentException("Property " + CMS_VIEW_UID_PROPERTY + " is set to another CMS view uid ("
+					+ properties.get(CMS_VIEW_UID_PROPERTY) + ") then " + uid);
+		properties.put(CMS_VIEW_UID_PROPERTY, uid);
+		eventAdmin.sendEvent(new Event(topic, properties));
+	}
+
+	/*
+	 * DEPENDENCY INJECTION
+	 */
+	public void setCmsApp(CmsApp cmsApp) {
+		this.cmsApp = cmsApp;
+	}
+
+	public void setEventAdmin(EventAdmin eventAdmin) {
+		this.eventAdmin = eventAdmin;
+	}
+
+}

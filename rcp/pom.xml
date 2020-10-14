@@ -15,6 +15,7 @@
 	<modules>
 		<module>org.argeo.minidesktop</module>
 		<module>org.argeo.eclipse.ui.rcp</module>
+		<module>org.argeo.cms.ui.rcp</module>
 		<module>org.argeo.cms.e4.rcp</module>
 		<module>dep</module>
 		<module>dist</module>
