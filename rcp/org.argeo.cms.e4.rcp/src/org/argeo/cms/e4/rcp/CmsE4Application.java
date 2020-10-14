@@ -1,6 +1,7 @@
 package org.argeo.cms.e4.rcp;
 
 import java.security.PrivilegedExceptionAction;
+import java.util.UUID;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
@@ -14,7 +15,6 @@ import org.argeo.cms.ui.CmsView;
 import org.argeo.cms.ui.UxContext;
 import org.argeo.cms.ui.util.SimpleUxContext;
 import org.argeo.cms.ui.widgets.auth.CmsLoginShell;
-import org.argeo.eclipse.ui.specific.UiContext;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
@@ -26,9 +26,11 @@ public class CmsE4Application implements IApplication, CmsView {
 	private LoginContext loginContext;
 	private IApplication e4Application;
 	private UxContext uxContext;
+	private String uid;
 
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
+		uid = UUID.randomUUID().toString();
 		Subject subject = new Subject();
 		Display display = createDisplay();
 		CmsLoginShell loginShell = new CmsLoginShell(this);
@@ -77,7 +79,8 @@ public class CmsE4Application implements IApplication, CmsView {
 		// }
 
 		uxContext = new SimpleUxContext();
-		UiContext.setData(CmsView.KEY, this);
+		//UiContext.setData(CmsView.KEY, this);
+		CmsView.registerCmsView(loginShell.getShell(), this);
 		e4Application = getApplication(null);
 		Object res = Subject.doAs(subject, new PrivilegedExceptionAction<Object>() {
 
@@ -192,4 +195,10 @@ public class CmsE4Application implements IApplication, CmsView {
 		return CurrentUser.isAnonymous(getSubject());
 	}
 
+	@Override
+	public String getUid() {
+		return uid;
+	}
+
+	
 }
