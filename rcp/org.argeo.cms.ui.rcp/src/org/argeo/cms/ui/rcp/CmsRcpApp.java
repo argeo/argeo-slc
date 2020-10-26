@@ -157,43 +157,40 @@ public class CmsRcpApp implements CmsView {
 
 	@Override
 	public UxContext getUxContext() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void navigateTo(String state) {
-		// TODO Auto-generated method stub
-
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void authChange(LoginContext loginContext) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void logout() {
-		// TODO Auto-generated method stub
-
+		if (loginContext != null)
+			try {
+				loginContext.logout();
+			} catch (LoginException e) {
+				log.error("Cannot log out", e);
+			}
 	}
 
 	@Override
 	public void exception(Throwable e) {
-		// TODO Auto-generated method stub
-
+		log.error("Unexpected exception in CMS RCP", e);
 	}
 
 	@Override
 	public CmsImageManager getImageManager() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public boolean isAnonymous() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -212,6 +209,14 @@ public class CmsRcpApp implements CmsView {
 					+ properties.get(CMS_VIEW_UID_PROPERTY) + ") then " + uid);
 		properties.put(CMS_VIEW_UID_PROPERTY, uid);
 		eventAdmin.sendEvent(new Event(topic, properties));
+	}
+
+	public <T> T doAs(PrivilegedAction<T> action) {
+		return Subject.doAs(getSubject(), action);
+	}
+
+	protected Subject getSubject() {
+		return loginContext.getSubject();
 	}
 
 	/*
