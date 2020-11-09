@@ -51,7 +51,7 @@
 		<!-- Argeo Base dependencies -->
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.util</artifactId>
+			<artifactId>org.argeo.core</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 
