@@ -16,7 +16,7 @@
 		<version.argeo-tp>2.1.27</version.argeo-tp>
 		<version.argeo-tp-extras>2.1.13</version.argeo-tp-extras>
 		<version.argeo-commons>2.1.89-SNAPSHOT</version.argeo-commons>
-		
+
 		<version.slc>2.1.17-SNAPSHOT</version.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
 		<developmentCycle.slc>2.1</developmentCycle.slc>
@@ -25,33 +25,12 @@
 		<argeo.rpm.stagingRepository>/srv/rpmfactory/argeo-osgi-2/el7</argeo.rpm.stagingRepository>
 	</properties>
 	<modules>
-		<module>org.argeo.slc.api</module>
-		<module>org.argeo.slc.runtime</module>
-		<module>org.argeo.slc.jcr</module>
-
-		<!-- Runtime -->
-		<module>org.argeo.slc.spring</module>
-		<module>org.argeo.slc.support</module>
-		<module>org.argeo.slc.repo</module>
-		<module>org.argeo.slc.factory</module>
-		<module>org.argeo.slc.launcher</module>
-
-		<!-- Modules -->
-		<module>org.argeo.slc.agent</module>
-		<module>org.argeo.slc.agent.jcr</module>
-		<module>org.argeo.slc.server.repo</module>
-
-		<!-- E4 -->
-		<module>org.argeo.slc.e4</module>
-
 		<!-- Desktop -->
 		<module>rcp</module>
 
 		<!-- Legacy UI -->
 		<module>legacy</module>
-		<module>org.argeo.slc.client.ui</module>
-		<module>org.argeo.slc.client.ui.dist</module>
-		<module>org.argeo.slc.client.rap</module>
+		<module>cms</module>
 
 		<!-- Distribution -->
 		<module>lib</module>
@@ -78,29 +57,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<dependencies>
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>argeo-tp</artifactId>
-			<version>${version.argeo-tp}</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.argeo.tp.apache</groupId>
-					<artifactId>org.apache.xerces</artifactId>
-				</exclusion>
-				<!-- Avoid slf4j implementations lurking in the classpath. -->
-				<exclusion>
-					<groupId>org.argeo.tp.sdk</groupId>
-					<artifactId>biz.aQute.bndlib</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.argeo.tp.misc</groupId>
-					<artifactId>slf4j.osgi</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -146,73 +102,6 @@
 			</releases>
 		</repository>
 	</repositories>
-	<reporting>
-		<plugins>
-			<plugin>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.9</version>
-				<reportSets>
-					<reportSet>
-						<reports>
-							<report>index</report>
-							<report>summary</report>
-							<report>license</report>
-							<report>scm</report>
-						</reports>
-					</reportSet>
-				</reportSets>
-			</plugin>
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.0</version>
-				<configuration>
-					<failOnError>false</failOnError>
-					<additionalJOption>-Xdoclint:none</additionalJOption>
-					<excludePackageNames>*.internal.*,org.eclipse.*</excludePackageNames>
-					<encoding>UTF-8</encoding>
-					<detectLinks>true</detectLinks>
-					<links>
-						<link>http://docs.oracle.com/javase/8/docs/api</link>
-						<link>https://osgi.org/javadoc/r5/core</link>
-						<link>https://osgi.org/javadoc/r5/enterprise</link>
-						<link>https://docs.adobe.com/docs/en/spec/javax.jcr/javadocs/jcr-2.0</link>
-						<link>http://help.eclipse.org/oxygen/topic/org.eclipse.platform.doc.isv/reference/api</link>
-						<link>http://docs.spring.io/spring/docs/3.2.x/javadoc-api</link>
-					</links>
-				</configuration>
-				<reportSets>
-					<reportSet>
-						<id>aggregate-javadoc</id>
-						<inherited>false</inherited>
-						<reports>
-							<report>aggregate</report>
-						</reports>
-					</reportSet>
-					<reportSet>
-						<id>javadoc</id>
-						<reports />
-					</reportSet>
-				</reportSets>
-			</plugin>
-			<plugin>
-				<artifactId>maven-jxr-plugin</artifactId>
-				<version>2.5</version>
-				<reportSets>
-					<reportSet>
-						<id>aggregate-jxr</id>
-						<inherited>false</inherited>
-						<reports>
-							<report>aggregate</report>
-						</reports>
-					</reportSet>
-					<reportSet>
-						<id>jxr</id>
-						<reports />
-					</reportSet>
-				</reportSets>
-			</plugin>
-		</plugins>
-	</reporting>
 	<distributionManagement>
 		<site>
 			<id>staging</id>

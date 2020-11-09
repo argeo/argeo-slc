@@ -4,22 +4,31 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
-		<artifactId>argeo-slc</artifactId>
+		<artifactId>argeo-slc-cms</artifactId>
 		<version>2.1.17-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.client.ui</artifactId>
-	<name>SLC Client UI</name>
-	<packaging>jar</packaging>
+	<artifactId>org.argeo.slc.jcr</artifactId>
+	<name>SLC JCR implementations</name>
 	<dependencies>
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.spring</artifactId>
+			<artifactId>org.argeo.slc.api</artifactId>
+			<version>2.1.17-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.runtime</artifactId>
 			<version>2.1.17-SNAPSHOT</version>
 		</dependency>
 
-		<!-- Argeo Commons -->
+		<!-- Commons -->
+		<dependency>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.enterprise</artifactId>
+			<version>${version.argeo-commons}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
 			<artifactId>org.argeo.api</artifactId>
@@ -27,28 +36,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.eclipse.ui</artifactId>
+			<artifactId>org.argeo.cms</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.eclipse.ui.rap</artifactId>
+			<artifactId>org.argeo.jcr</artifactId>
 			<version>${version.argeo-commons}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.argeo.slc.legacy.commons</groupId>
-			<artifactId>org.argeo.cms.ui.workbench</artifactId>
-			<version>${version.argeo-commons-legacy}</version>
-		</dependency>
-
-		<!-- RAP workbench -->
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>argeo-tp-rap-e3</artifactId>
-			<version>${version.argeo-tp}</version>
-			<type>pom</type>
-			<scope>provided</scope>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.util</artifactId>
+			<version>${version.argeo-commons}</version>
 		</dependency>
 
 	</dependencies>
