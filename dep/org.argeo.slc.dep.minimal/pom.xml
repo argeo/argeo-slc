@@ -18,7 +18,7 @@
 			<version>${version.argeo-commons}</version>
 			<type>pom</type>
 		</dependency>
-
+		
 		<!-- Absolutely minimal SLC Agent -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>

@@ -25,6 +25,143 @@
 			<type>pom</type>
 		</dependency>
 
+		<!-- CMS extensions -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.cms.integration</artifactId>
+			<version>2.1.17-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.ext.equinox.jetty</artifactId>
+			<version>2.1.17-SNAPSHOT</version>
+		</dependency>
+		<!-- Misc -->
+		<dependency>
+			<groupId>org.argeo.tp.apache.commons</groupId>
+			<artifactId>org.apache.commons.vfs</artifactId>
+		</dependency>
+		<!-- Jackson JSON processor -->
+		<dependency>
+			<groupId>org.argeo.tp.jackson</groupId>
+			<artifactId>com.fasterxml.jackson.core.jackson-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jackson</groupId>
+			<artifactId>com.fasterxml.jackson.core.jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jackson</groupId>
+			<artifactId>com.fasterxml.jackson.core.jackson-annotations</artifactId>
+		</dependency>
+		<!-- HTTP2 -->
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.alpn.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.alpn.client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.alpn.server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.http2.common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.http2.client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.http2.client.http</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.http2.server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.http2.hpack</artifactId>
+		</dependency>
+
+		<!-- Async -->
+		<dependency>
+			<groupId>org.argeo.tp.javax</groupId>
+			<artifactId>javax.websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.websocket.api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.websocket.common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.websocket.client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.websocket.server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.websocket.servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.websocket.javax.websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.jetty</groupId>
+			<artifactId>org.eclipse.jetty.websocket.javax.websocket.server</artifactId>
+		</dependency>
+
+		<!-- SSH -->
+		<dependency>
+			<groupId>org.argeo.tp.apache</groupId>
+			<artifactId>org.apache.mina.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache</groupId>
+			<artifactId>org.apache.tomcat.jni</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache</groupId>
+			<artifactId>org.apache.sshd.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache</groupId>
+			<artifactId>org.apache.sshd.common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache</groupId>
+			<artifactId>org.apache.sshd.sftp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache</groupId>
+			<artifactId>org.apache.sshd.scp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache</groupId>
+			<artifactId>org.apache.sshd.cli</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache</groupId>
+			<artifactId>org.apache.sshd.putty</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>net.i2p.crypto.eddsa</artifactId>
+		</dependency>
+
+
+
 
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
