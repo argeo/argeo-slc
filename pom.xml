@@ -22,7 +22,7 @@
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<version.argeo-commons-legacy>2.1.86-SNAPSHOT</version.argeo-commons-legacy>
 
-		<argeo.rpm.stagingRepository>/srv/rpmfactory/argeo-osgi-2/el7</argeo.rpm.stagingRepository>
+		<argeo.rpm.stagingRepository>/srv/rpmfactory/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
 	</properties>
 	<modules>
 		<!-- Desktop -->
