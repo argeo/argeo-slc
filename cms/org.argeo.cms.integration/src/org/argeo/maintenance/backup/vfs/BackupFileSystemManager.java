@@ -9,7 +9,6 @@ import org.apache.commons.vfs2.provider.local.DefaultLocalFileProvider;
 import org.apache.commons.vfs2.provider.ram.RamFileProvider;
 import org.apache.commons.vfs2.provider.sftp.SftpFileProvider;
 import org.apache.commons.vfs2.provider.url.UrlFileProvider;
-import org.argeo.maintenance.MaintenanceException;
 
 /**
  * Programatically configured VFS file system manager which can be declared as a

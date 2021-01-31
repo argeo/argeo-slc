@@ -1,7 +1,6 @@
 package org.argeo.maintenance.backup.vfs;
 
 import org.apache.commons.vfs2.FileObject;
-import org.argeo.maintenance.MaintenanceException;
 
 /** Backups an OpenLDAP server using slapcat */
 public class OpenLdapBackup extends OsCallBackup {

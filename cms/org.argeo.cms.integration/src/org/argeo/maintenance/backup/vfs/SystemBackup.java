@@ -14,7 +14,6 @@ import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.UserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
-import org.argeo.maintenance.MaintenanceException;
 import org.argeo.util.LangUtils;
 
 /**

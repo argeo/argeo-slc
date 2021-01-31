@@ -4,7 +4,6 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
-import org.argeo.maintenance.MaintenanceException;
 
 /**
  * Simplify atomic backups implementation, especially by managing VFS.

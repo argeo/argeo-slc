@@ -14,7 +14,6 @@ import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.Selectors;
-import org.argeo.maintenance.MaintenanceException;
 
 /** Simple backup purge which keeps backups only for a given number of days */
 public class SimpleBackupPurge implements BackupPurge {
