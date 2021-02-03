@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.argeo.maven</groupId>
 		<artifactId>argeo-osgi-parent</artifactId>
-		<version>2.1.2</version>
+		<version>2.1.3</version>
 	</parent>
 	<groupId>org.argeo.slc</groupId>
 	<artifactId>argeo-slc</artifactId>
@@ -15,14 +15,14 @@
 	<properties>
 		<version.argeo-tp>2.1.27</version.argeo-tp>
 		<version.argeo-tp-extras>2.1.13</version.argeo-tp-extras>
-		<version.argeo-commons>2.1.91-SNAPSHOT</version.argeo-commons>
+		<version.argeo-commons>2.1.92-SNAPSHOT</version.argeo-commons>
 
 		<version.slc>2.1.17-SNAPSHOT</version.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<version.argeo-commons-legacy>2.1.86-SNAPSHOT</version.argeo-commons-legacy>
 
-		<argeo.rpm.stagingRepository>/srv/rpmfactory/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
+		<argeo.rpm.stagingRepository>/srv/rpmfactory/testing/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
 	</properties>
 	<modules>
 		<!-- Desktop -->
@@ -85,21 +85,27 @@
 	<repositories>
 		<repository>
 			<id>argeo</id>
-			<url>http://repo.argeo.org/data/java/argeo-2.1/</url>
+			<url>http://forge.argeo.org/data/java/argeo-2.1/</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>argeo-extras</id>
-			<url>http://repo.argeo.org/data/java/argeo-extras-2.1/</url>
+			<url>http://forge.argeo.org/data/java/argeo-extras-2.1/</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
 				<checksumPolicy>warn</checksumPolicy>
 			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 	<distributionManagement>

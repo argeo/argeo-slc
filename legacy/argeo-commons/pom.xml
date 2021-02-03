@@ -37,7 +37,7 @@
 	<repositories>
 		<repository>
 			<id>argeo</id>
-			<url>http://repo.argeo.org/data/java/argeo-2.1/</url>
+			<url>http://forge.argeo.org/data/java/argeo-2.1/</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
@@ -49,7 +49,7 @@
 		</repository>
 		<repository>
 			<id>argeo-extras</id>
-			<url>http://repo.argeo.org/data/java/argeo-extras-2.1/</url>
+			<url>http://forge.argeo.org/data/java/argeo-extras-2.1/</url>
 			<releases>
 				<enabled>true</enabled>
 				<updatePolicy>daily</updatePolicy>
