@@ -62,6 +62,14 @@
 			<groupId>org.argeo.tp.javax</groupId>
 			<artifactId>javax.mail</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>com.jcraft.jsch</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache.commons</groupId>
+			<artifactId>org.apache.commons.vfs</artifactId>
+		</dependency>
 
 		<!-- Base Spring dependency -->
 		<dependency>
