@@ -12,7 +12,7 @@
 			<map>
 				<entry key="testData1" value-ref="basic.001.testData" />
 				<entry key="testData2">
-					<bean class="org.argeo.slc.core.test.BasicTestData" scope="execution">
+					<bean class="org.argeo.slc.runtime.test.BasicTestData" scope="execution">
 						<aop:scoped-proxy />
 						<property name="expected" value="tata101" />
 						<property name="reached" value="tata@{testedComponentId}" />
@@ -22,7 +22,7 @@
 		</constructor-arg>
 	</bean>
 
-	<bean id="basic.001.testData" class="org.argeo.slc.core.test.BasicTestData"
+	<bean id="basic.001.testData" class="org.argeo.slc.runtime.test.BasicTestData"
 		scope="execution">
 		<aop:scoped-proxy />
 		<property name="expected" value="tata100" />

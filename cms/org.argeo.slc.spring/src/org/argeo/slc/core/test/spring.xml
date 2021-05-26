@@ -22,7 +22,7 @@
     default-lazy-init="true">
 
     <bean name="slcDefault.test.testRun"
-        class="org.argeo.slc.core.test.SimpleTestRun"
+        class="org.argeo.slc.runtime.test.SimpleTestRun"
         scope="prototype">
     </bean>
 
@@ -31,7 +31,7 @@
     </bean>
 
     <bean id="slcDefault.test.basicSimpleTestResult"
-        class="org.argeo.slc.core.test.SimpleTestResult"
+        class="org.argeo.slc.runtime.test.SimpleTestResult"
         abstract="true">
         <property name="uuid">
             <bean factory-bean="slcDefault.test.uuid"

@@ -25,7 +25,7 @@
 					<map>
 						<entry key="testKey">
 							<bean p:value="777"
-								class="org.argeo.slc.core.execution.PrimitiveSpecAttribute" />
+								class="org.argeo.slc.primitive.PrimitiveSpecAttribute" />
 						</entry>
 					</map>
 				</property>

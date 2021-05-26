@@ -8,13 +8,13 @@
 		<constructor-arg>
 			<map>
 				<entry key="testData1">
-					<bean class="org.argeo.slc.core.test.BasicTestData">
+					<bean class="org.argeo.slc.runtime.test.BasicTestData">
 						<property name="expected" value="toto" />
 						<property name="reached" value="toto" />
 					</bean>
 				</entry>
 				<entry key="testData2">
-					<bean class="org.argeo.slc.core.test.BasicTestData">
+					<bean class="org.argeo.slc.runtime.test.BasicTestData">
 						<property name="expected" value="tata" />
 						<property name="reached" value="toto" />
 					</bean>

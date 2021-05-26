@@ -9,6 +9,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
+import org.argeo.api.NodeConstants;
 import org.argeo.api.NodeUtils;
 import org.argeo.api.security.Keyring;
 import org.argeo.cms.ArgeoNames;
@@ -92,7 +93,7 @@ public class RepoElem extends DistParentElem {
 
 		try {
 			// FIXME make it more generic
-			String defaultWorkspace = "main";
+			String defaultWorkspace = NodeConstants.SYS_WORKSPACE;
 			defaultSession = repository.login(credentials, defaultWorkspace);
 			refreshChildren();
 		} catch (RepositoryException e) {
@@ -173,7 +174,7 @@ public class RepoElem extends DistParentElem {
 	protected Session repositoryLogin(String workspaceName) {
 		try {
 			if (workspaceName == null)
-				workspaceName = "main";// FIXME make it more generic
+				workspaceName = NodeConstants.SYS_WORKSPACE;// FIXME make it more generic
 			return repository.login(credentials, workspaceName);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot login repository " + label + " with credential " + credentials, e);

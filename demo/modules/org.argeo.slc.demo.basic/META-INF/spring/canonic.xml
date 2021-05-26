@@ -27,18 +27,18 @@
 						p:isFrozen="false" p:isHidden="true" p:type="integer" />
 				</entry>
 				<entry key="refWithValue">
-					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.runtime.test.BasicTestData"
 						p:value-ref="testDataNok" p:isParameter="true" p:isFrozen="false" />
 				</entry>
 				<entry key="refWithoutValue">
-					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.runtime.test.BasicTestData"
 						p:isParameter="false" p:isFrozen="false" />
 				</entry>
 				<entry key="refWithoutValueFrozen">
-					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.runtime.test.BasicTestData"
 						p:isParameter="true" p:isFrozen="true">
 						<property name="value">
-							<bean class="org.argeo.slc.core.test.BasicTestData">
+							<bean class="org.argeo.slc.runtime.test.BasicTestData">
 								<aop:scoped-proxy />
 								<property name="expected" value="tata" />
 								<property name="reached" value="tata" />
@@ -64,13 +64,13 @@
 		</property>
 	</bean>
 
-	<bean id="testDataOk" class="org.argeo.slc.core.test.BasicTestData">
+	<bean id="testDataOk" class="org.argeo.slc.runtime.test.BasicTestData">
 		<aop:scoped-proxy />
 		<property name="expected" value="tata" />
 		<property name="reached" value="tata" />
 	</bean>
 
-	<bean id="testDataNok" class="org.argeo.slc.core.test.BasicTestData">
+	<bean id="testDataNok" class="org.argeo.slc.runtime.test.BasicTestData">
 		<aop:scoped-proxy />
 		<property name="expected" value="tata" />
 		<property name="reached" value="toto" />

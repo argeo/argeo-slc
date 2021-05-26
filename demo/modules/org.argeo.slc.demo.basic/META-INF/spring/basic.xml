@@ -16,11 +16,11 @@
 						p:type="integer" />
 				</entry>
 				<entry key="testData1">
-					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.runtime.test.BasicTestData"
 						p:isParameter="true" p:isFrozen="true" />
 				</entry>
 				<entry key="testData2">
-					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.core.test.BasicTestData"
+					<bean parent="specAttr.ref" p:targetClass="org.argeo.slc.runtime.test.BasicTestData"
 						p:isParameter="true" p:isFrozen="true" />
 				</entry>
 			</map>
@@ -95,13 +95,13 @@
 		<constructor-arg value="testData2" />
 	</bean>
 
-	<bean id="basic.testData" class="org.argeo.slc.core.test.BasicTestData">
+	<bean id="basic.testData" class="org.argeo.slc.runtime.test.BasicTestData">
 		<aop:scoped-proxy />
 		<property name="expected" value="tata" />
 		<property name="reached" value="tata" />
 	</bean>
 
-	<bean id="basic.testDef" class="org.argeo.slc.core.test.BasicTestDefinition"
+	<bean id="basic.testDef" class="org.argeo.slc.runtime.test.BasicTestDefinition"
 		scope="prototype" />
 
 	<bean id="basic.testResult" class="org.argeo.slc.jcr.JcrTestResult"
@@ -127,7 +127,7 @@
 	<!-- <aop:scoped-proxy /> -->
 	<!-- </bean> -->
 
-	<bean id="basic.testRun" class="org.argeo.slc.core.test.SimpleTestRun"
+	<bean id="basic.testRun" class="org.argeo.slc.runtime.test.SimpleTestRun"
 		abstract="true">
 		<property name="testResult" ref="basic.testResult" />
 	</bean>

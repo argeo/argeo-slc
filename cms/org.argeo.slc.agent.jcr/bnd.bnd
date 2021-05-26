@@ -1,4 +1,5 @@
 Import-Package: org.argeo.slc.jcr,\
+org.argeo.security.jackrabbit,\
 org.apache.commons.vfs2.provider.bzip2,\
 org.apache.commons.vfs2.provider.compressed,\
 org.apache.commons.vfs2.provider.ftp,\

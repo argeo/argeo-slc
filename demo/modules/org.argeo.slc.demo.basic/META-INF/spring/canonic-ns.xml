@@ -17,13 +17,13 @@
 			isParameter="true" type="integer" />
 		<flow:primitive name="hide" value="300" isParameter="true"
 			type="integer" isHidden="true" />
-		<flow:ref name="refWithValue" targetClass="org.argeo.slc.core.test.BasicTestData"
+		<flow:ref name="refWithValue" targetClass="org.argeo.slc.runtime.test.BasicTestData"
 			isParameter="true" ref="testDataNok" />
-		<flow:ref name="refWithoutValue" targetClass="org.argeo.slc.core.test.BasicTestData" />
-		<flow:ref name="refWithoutValueFrozen" targetClass="org.argeo.slc.core.test.BasicTestData"
+		<flow:ref name="refWithoutValue" targetClass="org.argeo.slc.runtime.test.BasicTestData" />
+		<flow:ref name="refWithoutValueFrozen" targetClass="org.argeo.slc.runtime.test.BasicTestData"
 			isParameter="true" isFrozen="true">
 			<flow:value>
-				<bean class="org.argeo.slc.core.test.BasicTestData">
+				<bean class="org.argeo.slc.runtime.test.BasicTestData">
 					<aop:scoped-proxy />
 					<property name="expected" value="tata" />
 					<property name="reached" value="tata" />
@@ -41,13 +41,13 @@
 		</bean>
 	</flow:flow>
 
-	<bean id="testDataOk" class="org.argeo.slc.core.test.BasicTestData">
+	<bean id="testDataOk" class="org.argeo.slc.runtime.test.BasicTestData">
 		<aop:scoped-proxy />
 		<property name="expected" value="tata" />
 		<property name="reached" value="tata" />
 	</bean>
 
-	<bean id="testDataNok" class="org.argeo.slc.core.test.BasicTestData">
+	<bean id="testDataNok" class="org.argeo.slc.runtime.test.BasicTestData">
 		<aop:scoped-proxy />
 		<property name="expected" value="tata" />
 		<property name="reached" value="toto" />

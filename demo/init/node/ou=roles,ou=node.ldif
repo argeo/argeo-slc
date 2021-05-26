@@ -1,0 +1,19 @@
+dn: cn=admin,ou=roles,ou=node
+objectClass: groupOfNames
+objectClass: top
+cn: admin
+member: uid=root,ou=People,dc=example,dc=com
+
+dn: cn=org.argeo.slc.user,ou=roles,ou=node
+objectClass: groupOfNames
+objectClass: top
+cn: org.argeo.slc.user
+member: uid=root,ou=People,dc=example,dc=com
+member: uid=demo,ou=People,dc=example,dc=com
+
+dn: cn=userAdmin,ou=roles,ou=node
+objectClass: groupOfNames
+objectClass: top
+member: cn=admin,ou=roles,ou=node
+cn: userAdmin
+
