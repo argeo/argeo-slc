@@ -6,6 +6,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.argeo.api.NodeConstants;
 import org.argeo.cms.ArgeoTypes;
 import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.jcr.JcrUtils;
@@ -24,14 +25,12 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public class UnregisterRemoteRepo extends AbstractHandler {
 	// private static final Log log = LogFactory
 	// .getLog(UnregisterRemoteRepo.class);
-	
+
 	public final static String ID = DistPlugin.PLUGIN_ID + ".unregisterRemoteRepo";
 	public final static String DEFAULT_LABEL = "Unregister";
-	public final static ImageDescriptor DEFAULT_ICON = DistPlugin
-			.getImageDescriptor("icons/removeItem.gif");
+	public final static ImageDescriptor DEFAULT_ICON = DistPlugin.getImageDescriptor("icons/removeItem.gif");
 
-	public final static String PARAM_REPO_PATH = DistPlugin.PLUGIN_ID
-			+ ".repoNodePath";
+	public final static String PARAM_REPO_PATH = DistPlugin.PLUGIN_ID + ".repoNodePath";
 
 	// DEPENCY INJECTION
 	private Repository nodeRepository;
@@ -43,18 +42,16 @@ public class UnregisterRemoteRepo extends AbstractHandler {
 			return null;
 
 		try {
-			session = nodeRepository.login();
+			session = nodeRepository.login(NodeConstants.HOME_WORKSPACE);
 			Node rNode = session.getNode(repoPath);
 			if (rNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
 
-				String alias = rNode.getProperty(Property.JCR_TITLE)
-						.getString();
-				String msg = "Your are about to unregister remote repository: "
-						+ alias + "\n" + "Are you sure you want to proceed ?";
+				String alias = rNode.getProperty(Property.JCR_TITLE).getString();
+				String msg = "Your are about to unregister remote repository: " + alias + "\n"
+						+ "Are you sure you want to proceed ?";
 
-				boolean result = MessageDialog.openConfirm(DistPlugin
-						.getDefault().getWorkbench().getDisplay()
-						.getActiveShell(), "Confirm Delete", msg);
+				boolean result = MessageDialog.openConfirm(
+						DistPlugin.getDefault().getWorkbench().getDisplay().getActiveShell(), "Confirm Delete", msg);
 
 				if (result) {
 					rNode.remove();
@@ -63,9 +60,7 @@ public class UnregisterRemoteRepo extends AbstractHandler {
 				CommandUtils.callCommand(RefreshDistributionsView.ID);
 			}
 		} catch (RepositoryException e) {
-			throw new SlcException(
-					"Unexpected error while unregistering remote repository.",
-					e);
+			throw new SlcException("Unexpected error while unregistering remote repository.", e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
 		}

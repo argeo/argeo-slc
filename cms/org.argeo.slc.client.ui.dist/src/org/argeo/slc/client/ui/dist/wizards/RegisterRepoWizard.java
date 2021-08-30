@@ -11,6 +11,7 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 import javax.jcr.nodetype.NodeType;
 
+import org.argeo.api.NodeConstants;
 import org.argeo.api.NodeUtils;
 import org.argeo.api.security.Keyring;
 import org.argeo.cms.ArgeoNames;
@@ -87,7 +88,7 @@ public class RegisterRepoWizard extends Wizard {
 
 		Session nodeSession = null;
 		try {
-			nodeSession = nodeRepository.login();
+			nodeSession = nodeRepository.login(NodeConstants.HOME_WORKSPACE);
 			String reposPath = NodeUtils.getUserHome(nodeSession).getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
 
 			Node repos = nodeSession.getNode(reposPath);
