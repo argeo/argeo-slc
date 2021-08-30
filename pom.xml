@@ -17,7 +17,7 @@
 		<version.argeo-tp-extras>2.1.13</version.argeo-tp-extras>
 		<version.argeo-commons>2.1.91</version.argeo-commons>
 
-		<version.slc>2.1.17-SNAPSHOT</version.slc>
+		<version.slc>2.1.17</version.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
 		<developmentCycle.slc>2.1</developmentCycle.slc>
 		<version.argeo-commons-legacy>2.1.86</version.argeo-commons-legacy>
