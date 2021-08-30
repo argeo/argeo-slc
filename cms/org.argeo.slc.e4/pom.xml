@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc-cms</artifactId>
-		<version>2.1.17</version>
+		<version>2.1.18-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.e4</artifactId>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.jcr</artifactId>
-			<version>2.1.17</version>
+			<version>2.1.18-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Argeo Commons -->
