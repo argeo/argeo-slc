@@ -89,6 +89,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.tp.rcp.e4</groupId>
+			<artifactId>org.eclipse.e4.core.commands</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.rcp.e4</groupId>
 			<artifactId>org.apache.felix.gogo.shell</artifactId>
 		</dependency>
 		<dependency>
