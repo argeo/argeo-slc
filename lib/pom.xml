@@ -46,6 +46,7 @@
 						<SLC-ExecutionModule>default</SLC-ExecutionModule>
 						<!-- Minimal imports + some optional convenience imports -->
 						<Import-Package>
+							org.argeo.security.jackrabbit;resolution:="optional",
 							org.springframework.cglib.proxy;resolution:="optional",
 							org.springframework.cglib.core;resolution:="optional",
 							org.springframework.cglib.reflect;resolution:="optional",
