@@ -8,7 +8,10 @@
 	</parent>
 	<artifactId>slc</artifactId>
 	<packaging>pom</packaging>
-	<name>SLC Distribution</name>
+	<name>SLC Legacy Distribution</name>
+	<properties>
+		<argeo.rpm.stagingRepository>/srv/rpmfactory/legacy/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
+	</properties>
 	<profiles>
 		<profile>
 			<id>dist</id>
@@ -125,7 +128,7 @@
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>slc-repo</name>
+									<name>slc-legacy</name>
 									<mappings>
 										<mapping>
 											<directory>/etc/argeo/conf.d</directory>

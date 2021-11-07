@@ -8,6 +8,9 @@
 	</parent>
 	<artifactId>org.argeo.slc.dep.spring</artifactId>
 	<name>SLC Agent based on Spring</name>
+	<properties>
+		<argeo.rpm.stagingRepository>/srv/rpmfactory/legacy/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
+	</properties>
 	<dependencies>
 		<!-- Parent dependencies -->
 		<dependency>
@@ -210,6 +213,8 @@
 									</mappings>
 									<requires>
 										<require>argeo-cms-node</require>
+										<require>argeo-slc</require>
+										<require>argeo-slc-tp</require>
 										<require>slc-spring-tp</require>
 									</requires>
 								</configuration>
