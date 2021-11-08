@@ -30,7 +30,6 @@
 		<!-- Distribution -->
 		<module>lib</module>
 		<module>dep</module>
-		<module>dist</module>
 		<module>demo</module>
 		<module>ide</module>
 	</modules>
