@@ -3,17 +3,20 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dep</artifactId>
-		<version>2.1.18-SNAPSHOT</version>
+		<version>2.3.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.dep.backend</artifactId>
 	<name>SLC Backend</name>
+	<properties>
+		<argeo.rpm.stagingRepository>/srv/rpmfactory/legacy/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
+	</properties>
 	<dependencies>
 		<!-- SLC Minimal -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.spring</artifactId>
-			<version>2.1.18-SNAPSHOT</version>
+			<version>2.3.1-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 
@@ -36,17 +39,6 @@
 			<version>2.1.18-SNAPSHOT</version>
 		</dependency>
 
-		<!-- SLC Repo -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>2.1.18-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.factory</artifactId>
-			<version>2.1.18-SNAPSHOT</version>
-		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
@@ -92,18 +84,6 @@
 			<type>pom</type>
 		</dependency>
 
-		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>biz.aQute.bndlib</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>org.junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>org.redline-rpm</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.argeo.tp.misc</groupId>
 			<artifactId>com.googlecode.javaewah.JavaEWAH</artifactId>
@@ -166,7 +146,6 @@
 									</mappings>
 									<requires>
 										<require>argeo-cms-platform</require>
-										<require>argeo-cms-sdk-tp</require>
 										<require>slc-spring</require>
 									</requires>
 								</configuration>

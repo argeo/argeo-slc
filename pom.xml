@@ -9,18 +9,18 @@
 	<artifactId>argeo-slc</artifactId>
 	<packaging>pom</packaging>
 	<name>Argeo SLC</name>
-	<version>2.1.18-SNAPSHOT</version>
+	<version>2.3.1-SNAPSHOT</version>
 	<properties>
 		<version.argeo-tp>2.1.27</version.argeo-tp>
 		<version.argeo-tp-extras>2.1.13</version.argeo-tp-extras>
-		<version.argeo-commons>2.1.104-SNAPSHOT</version.argeo-commons>
+		<version.argeo-commons>2.3.1-SNAPSHOT</version.argeo-commons>
 
-		<version.slc>2.1.18-SNAPSHOT</version.slc>
+		<version.slc>2.3.1-SNAPSHOT</version.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
-		<developmentCycle.slc>2.1</developmentCycle.slc>
+		<developmentCycle.slc>2.3</developmentCycle.slc>
 		<version.argeo-commons-legacy>2.1.86</version.argeo-commons-legacy>
 
-		<argeo.rpm.stagingRepository>/srv/rpmfactory/testing/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
+		<argeo.rpm.stagingRepository>/srv/rpmfactory/unstable/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
 	</properties>
 	<modules>
 		<!-- Legacy UI -->
@@ -30,7 +30,6 @@
 		<!-- Distribution -->
 		<module>lib</module>
 		<module>dep</module>
-		<module>dist</module>
 		<module>demo</module>
 		<module>ide</module>
 	</modules>
@@ -102,11 +101,34 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>argeo-unstable</id>
+			<url>http://forge.argeo.org/data/java/argeo-2.3/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<!-- Disable Maven default repository -->
+		<repository>
+			<id>central</id>
+			<url>http://repo1.maven.org/maven2</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 	<distributionManagement>
 		<site>
 			<id>staging</id>
-			<url>file:///srv/docfactory/argeo-2.1/site/argeo-slc/</url>
+			<url>file:///srv/docfactory/argeo-2.3/site/argeo-slc/</url>
 		</site>
 	</distributionManagement>
 	<profiles>
@@ -115,7 +137,7 @@
 			<repositories>
 				<repository>
 					<id>argeo-extras</id>
-					<url>http://localhost:7080/data/java/argeo-extras-2.1</url>
+					<url>http://localhost:7080/data/java/argeo-extras-2.3</url>
 					<releases>
 						<enabled>true</enabled>
 						<updatePolicy>daily</updatePolicy>

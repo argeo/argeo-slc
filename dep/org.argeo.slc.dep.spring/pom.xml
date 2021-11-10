@@ -3,17 +3,20 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>dep</artifactId>
-		<version>2.1.18-SNAPSHOT</version>
+		<version>2.3.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.dep.spring</artifactId>
 	<name>SLC Agent based on Spring</name>
+	<properties>
+		<argeo.rpm.stagingRepository>/srv/rpmfactory/legacy/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
+	</properties>
 	<dependencies>
 		<!-- Parent dependencies -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.minimal</artifactId>
-			<version>2.1.18-SNAPSHOT</version>
+			<version>2.3.1-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 
@@ -210,6 +213,8 @@
 									</mappings>
 									<requires>
 										<require>argeo-cms-node</require>
+										<require>argeo-slc</require>
+										<require>argeo-slc-tp</require>
 										<require>slc-spring-tp</require>
 									</requires>
 								</configuration>
