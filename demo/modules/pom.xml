@@ -13,9 +13,6 @@
 	<modules>
 		<module>org.argeo.slc.demo.ant</module>
 		<module>org.argeo.slc.demo.basic</module>
-		<!-- <module>org.argeo.slc.demo.det</module> -->
-		<!-- <module>org.argeo.slc.demo.detached</module> -->
-		<!-- <module>org.argeo.slc.demo.maven</module> -->
 		<module>org.argeo.slc.demo.minimal</module>
 	</modules>
 	<properties>

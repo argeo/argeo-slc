@@ -10,12 +10,6 @@
 	<packaging>pom</packaging>
 	<name>SLC Standard Libs</name>
 	<description>SLC execution modules for generic tasks, to be used as parent pom</description>
-	<modules>
-		<module>org.argeo.slc.lib.build</module>
-		<module>org.argeo.slc.lib.jcr</module>
-		<module>org.argeo.slc.lib.repo</module>
-		<module>org.argeo.slc.lib.rpmfactory</module>
-	</modules>
 	<properties>
 		<additionalImports.slc-lib>
 			com.jcraft.jsch;resolution:=optional,
@@ -23,20 +17,6 @@
 		</additionalImports.slc-lib>
 	</properties>
 	<build>
-<!-- 		<resources> -->
-<!-- 			<resource> -->
-<!-- 				<directory>.</directory> -->
-<!-- 				<includes> -->
-<!-- 					<include>**</include> -->
-<!-- 				</includes> -->
-<!-- 				<excludes> -->
-<!-- 					<exclude>.*</exclude> -->
-<!-- 					<exclude>.*/**</exclude> -->
-<!-- 					<exclude>pom.xml</exclude> -->
-<!-- 					<exclude>build.properties</exclude> -->
-<!-- 				</excludes> -->
-<!-- 			</resource> -->
-<!-- 		</resources> -->
 		<plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
