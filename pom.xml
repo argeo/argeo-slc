@@ -15,7 +15,7 @@
 		<version.argeo-tp-extras>2.1.13</version.argeo-tp-extras>
 		<version.argeo-commons>2.3-SNAPSHOT</version.argeo-commons>
 
-		<version.slc>2.3.1-SNAPSHOT</version.slc>
+		<version.slc>2.3-SNAPSHOT</version.slc>
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
 		<developmentCycle.slc>2.3</developmentCycle.slc>
 		<version.argeo-commons-legacy>2.1.86</version.argeo-commons-legacy>
@@ -23,14 +23,21 @@
 		<argeo.rpm.stagingRepository>/srv/rpmfactory/unstable/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
 	</properties>
 	<modules>
-		<!-- Legacy UI -->
-		<module>legacy</module>
+		<!-- SLC framework -->
+		<module>org.argeo.slc.api</module>
+		<module>org.argeo.slc.runtime</module>
+		<module>org.argeo.slc.jcr</module>
+		<module>org.argeo.slc.repo</module>
+		<module>org.argeo.slc.factory</module>
+		
+		<!-- CMS extensions -->
 		<module>cms</module>
 
+		<!-- Legacy -->
+		<module>legacy</module>
+
 		<!-- Distribution -->
-		<module>lib</module>
 		<module>dep</module>
-		<module>demo</module>
 		<module>ide</module>
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
@@ -51,6 +58,29 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	<dependencies>
+		<dependency>
+			<groupId>org.argeo.tp</groupId>
+			<artifactId>argeo-tp</artifactId>
+			<version>${version.argeo-tp}</version>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.argeo.tp.apache</groupId>
+					<artifactId>org.apache.xerces</artifactId>
+				</exclusion>
+				<!-- Avoid slf4j implementations lurking in the classpath. -->
+				<exclusion>
+					<groupId>org.argeo.tp.sdk</groupId>
+					<artifactId>biz.aQute.bndlib</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.argeo.tp.misc</groupId>
+					<artifactId>slf4j.osgi</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

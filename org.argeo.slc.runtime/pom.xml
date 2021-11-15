@@ -3,14 +3,17 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>argeo-slc</artifactId>
-		<version>2.1.18-SNAPSHOT</version>
+		<version>2.3-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<groupId>org.argeo.slc</groupId>
-	<artifactId>dist</artifactId>
-	<packaging>pom</packaging>
-	<name>SLC Distribution</name>
-	<modules>
-		<module>slc</module>
-	</modules>
+	<artifactId>org.argeo.slc.runtime</artifactId>
+	<name>SLC Runtime</name>
+	<dependencies>
+		<!-- SLC -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.api</artifactId>
+			<version>2.3-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>
