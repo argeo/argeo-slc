@@ -253,7 +253,9 @@
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>argeo-slc</name>
+									<name>argeo-slc${argeo.rpm.suffix}</name>
+									<projversion>${version.released}</projversion>
+									<release>${maven.build.timestamp}</release>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi</directory>
@@ -272,8 +274,8 @@
 										</mapping>
 									</mappings>
 									<requires>
-										<require>argeo-cms-node</require>
-										<require>argeo-slc-tp</require>
+										<require>argeo-cms-node${argeo.rpm.suffix}</require>
+										<require>argeo-slc-tp${argeo.rpm.suffix}</require>
 									</requires>
 								</configuration>
 							</execution>
@@ -314,7 +316,7 @@
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>argeo-slc-tp</name>
+									<name>argeo-slc-tp${argeo.rpm.suffix}</name>
 									<projversion>${version.argeo-tp}</projversion>
 									<release>${maven.build.timestamp}</release>
 									<mappings>
@@ -335,7 +337,7 @@
 										</mapping>
 									</mappings>
 									<requires>
-										<require>argeo-cms-ext-tp</require>
+										<require>argeo-cms-ext-tp${argeo.rpm.suffix}</require>
 									</requires>
 								</configuration>
 							</execution>

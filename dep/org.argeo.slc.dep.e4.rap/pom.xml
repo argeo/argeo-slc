@@ -97,7 +97,9 @@
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>argeo-slc-e4-rap</name>
+									<name>argeo-slc-e4-rap${argeo.rpm.suffix}</name>
+									<projversion>${version.released}</projversion>
+									<release>${maven.build.timestamp}</release>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi</directory>
@@ -116,9 +118,9 @@
 										</mapping>
 									</mappings>
 									<requires>
-										<require>argeo-cms-e4-rap</require>
-										<require>argeo-cms-sdk-tp</require>
-										<require>argeo-slc</require>
+										<require>argeo-cms-e4-rap${argeo.rpm.suffix}</require>
+										<require>argeo-cms-sdk-tp${argeo.rpm.suffix}</require>
+										<require>argeo-slc${argeo.rpm.suffix}</require>
 									</requires>
 								</configuration>
 							</execution>

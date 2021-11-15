@@ -1,16 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
-		<artifactId>dep</artifactId>
+		<artifactId>legacy-dep</artifactId>
 		<version>2.3-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.dep.spring</artifactId>
 	<name>SLC Agent based on Spring</name>
-	<properties>
-		<argeo.rpm.stagingRepository>/srv/rpmfactory/legacy/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
-	</properties>
 	<dependencies>
 		<!-- Parent dependencies -->
 		<dependency>
@@ -24,22 +23,22 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.spring</artifactId>
-			<version>2.1.18-SNAPSHOT</version>
+			<version>2.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support</artifactId>
-			<version>2.1.18-SNAPSHOT</version>
+			<version>2.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.agent</artifactId>
-			<version>2.1.18-SNAPSHOT</version>
+			<version>2.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.agent.jcr</artifactId>
-			<version>2.1.18-SNAPSHOT</version>
+			<version>2.3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Transitional fake Java 8 APIs, required by old version of Spring, 
@@ -47,7 +46,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.legacy.fake.java8</artifactId>
-			<version>2.1.18-SNAPSHOT</version>
+			<version>2.3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Not strictly Spring dependencies but used by the old approach -->
@@ -193,7 +192,9 @@
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>slc-spring</name>
+									<name>argeo-slc-spring${argeo.rpm.suffix}</name>
+									<projversion>${version.released}</projversion>
+									<release>${maven.build.timestamp}</release>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi</directory>
@@ -212,10 +213,10 @@
 										</mapping>
 									</mappings>
 									<requires>
-										<require>argeo-cms-node</require>
-										<require>argeo-slc</require>
-										<require>argeo-slc-tp</require>
-										<require>slc-spring-tp</require>
+										<require>argeo-cms-node${argeo.rpm.suffix}</require>
+										<require>argeo-slc${argeo.rpm.suffix}</require>
+										<require>argeo-slc-tp${argeo.rpm.suffix}</require>
+										<require>argeo-slc-spring-tp${argeo.rpm.suffix}</require>
 									</requires>
 								</configuration>
 							</execution>
@@ -256,7 +257,7 @@
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>slc-spring-tp</name>
+									<name>argeo-slc-spring-tp${argeo.rpm.suffix}</name>
 									<projversion>${version.argeo-tp}</projversion>
 									<release>${maven.build.timestamp}</release>
 									<mappings>
