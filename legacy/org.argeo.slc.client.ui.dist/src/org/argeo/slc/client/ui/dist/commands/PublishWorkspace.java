@@ -8,6 +8,7 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
+import org.argeo.api.NodeConstants;
 import org.argeo.api.security.Keyring;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
@@ -47,7 +48,7 @@ public class PublishWorkspace extends AbstractHandler {
 		Session session = null;
 
 		try {
-			nodeSession = nodeRepository.login();
+			nodeSession = nodeRepository.login(NodeConstants.HOME_WORKSPACE);
 			Node repoNode = nodeSession.getNode(targetRepoPath);
 			Repository repository = RepoUtils.getRepository(repositoryFactory,
 					keyring, repoNode);
