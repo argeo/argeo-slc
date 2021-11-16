@@ -4,66 +4,147 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
-		<artifactId>dep</artifactId>
+		<artifactId>legacy-dep</artifactId>
 		<version>2.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.dep.minimal</artifactId>
-	<name>SLC Agent</name>
+	<artifactId>org.argeo.slc.dep.spring</artifactId>
+	<name>SLC Agent based on Spring</name>
 	<dependencies>
 		<!-- Parent dependencies -->
 		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.dep.cms.node</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.dep.cms.ext</artifactId>
-			<version>${version.argeo-commons}</version>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.dep.minimal</artifactId>
+			<version>2.1-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 
-		<!-- SLC Runtime -->
+		<!-- Spring-based Agent -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.api</artifactId>
+			<artifactId>org.argeo.slc.spring</artifactId>
 			<version>2.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.runtime</artifactId>
+			<artifactId>org.argeo.slc.support</artifactId>
 			<version>2.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.jcr</artifactId>
-			<version>2.1-SNAPSHOT</version>
-		</dependency>
-
-		<!-- SLC Repo -->
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.repo</artifactId>
+			<artifactId>org.argeo.slc.agent</artifactId>
 			<version>2.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.factory</artifactId>
+			<artifactId>org.argeo.slc.agent.jcr</artifactId>
 			<version>2.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- CMS extensions -->
+		<!-- Transitional fake Java 8 APIs, required by old version of Spring, 
+			in the process of being removed -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.cms.integration</artifactId>
+			<artifactId>org.argeo.legacy.fake.java8</artifactId>
 			<version>2.1-SNAPSHOT</version>
 		</dependency>
+
+		<!-- Not strictly Spring dependencies but used by the old approach -->
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.ext.equinox.jetty</artifactId>
-			<version>2.1-SNAPSHOT</version>
+			<groupId>org.argeo.tp.apache.ant</groupId>
+			<artifactId>org.apache.ant</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache.ant</groupId>
+			<artifactId>org.apache.ant.launch</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.javax</groupId>
+			<artifactId>javax.mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>com.jcraft.jsch</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.apache.commons</groupId>
+			<artifactId>org.apache.commons.vfs</artifactId>
+		</dependency>
+
+		<!-- Base Spring dependency -->
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.beans</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.javax</groupId>
+			<artifactId>javax.el</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.gemini</groupId>
+			<artifactId>org.eclipse.gemini.blueprint.core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.gemini</groupId>
+			<artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.gemini</groupId>
+			<artifactId>org.eclipse.gemini.blueprint.io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>org.aspectj.weaver</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>org.aopalliance</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.aop</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.expression</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.instrument</artifactId>
+		</dependency>
+
+		<!-- Spring -->
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.aspects</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.context.support</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.tx</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.spring</groupId>
+			<artifactId>org.springframework.web.servlet</artifactId>
 		</dependency>
 
 		<!-- CLI Agent -->
@@ -77,148 +158,6 @@
 		<!-- <artifactId>org.argeo.slc.agent.cli</artifactId> -->
 		<!-- <version>2.1.1-SNAPSHOT</version> -->
 		<!-- </dependency> -->
-
-		<!-- SDK Third Parties -->
-		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>biz.aQute.bndlib</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>org.junit</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>org.hamcrest</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.sdk</groupId>
-			<artifactId>org.redline-rpm</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.misc</groupId>
-			<artifactId>com.googlecode.javaewah.JavaEWAH</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.misc</groupId>
-			<artifactId>org.eclipse.jgit</artifactId>
-		</dependency>
-
-		<!-- Misc -->
-		<dependency>
-			<groupId>org.argeo.tp.apache.commons</groupId>
-			<artifactId>org.apache.commons.vfs</artifactId>
-		</dependency>
-
-		<!-- HTTP2 -->
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.alpn.api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.alpn.client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.alpn.server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.http2.common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.http2.client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.http2.client.http</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.http2.server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.http2.hpack</artifactId>
-		</dependency>
-
-		<!-- Async -->
-		<dependency>
-			<groupId>org.argeo.tp.javax</groupId>
-			<artifactId>javax.websocket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.websocket.api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.websocket.common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.websocket.client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.websocket.server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.websocket.servlet</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.websocket.javax.websocket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.jetty</groupId>
-			<artifactId>org.eclipse.jetty.websocket.javax.websocket.server</artifactId>
-		</dependency>
-
-		<!-- SSH -->
-		<dependency>
-			<groupId>org.argeo.tp.apache</groupId>
-			<artifactId>org.apache.mina.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.apache</groupId>
-			<artifactId>org.apache.tomcat.jni</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.apache</groupId>
-			<artifactId>org.apache.sshd.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.apache</groupId>
-			<artifactId>org.apache.sshd.common</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.apache</groupId>
-			<artifactId>org.apache.sshd.sftp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.apache</groupId>
-			<artifactId>org.apache.sshd.scp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.apache</groupId>
-			<artifactId>org.apache.sshd.cli</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.apache</groupId>
-			<artifactId>org.apache.sshd.putty</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.misc</groupId>
-			<artifactId>net.i2p.crypto.eddsa</artifactId>
-		</dependency>
-
-
-
-
 	</dependencies>
 	<profiles>
 		<profile>
@@ -253,7 +192,7 @@
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>argeo-slc${argeo.rpm.suffix}</name>
+									<name>argeo-slc-spring${argeo.rpm.suffix}</name>
 									<projversion>${version.released}</projversion>
 									<release>${maven.build.timestamp}</release>
 									<mappings>
@@ -275,7 +214,9 @@
 									</mappings>
 									<requires>
 										<require>argeo-cms-node${argeo.rpm.suffix}</require>
+										<require>argeo-slc${argeo.rpm.suffix}</require>
 										<require>argeo-slc-tp${argeo.rpm.suffix}</require>
+										<require>argeo-slc-spring-tp${argeo.rpm.suffix}</require>
 									</requires>
 								</configuration>
 							</execution>
@@ -316,7 +257,7 @@
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>argeo-slc-tp${argeo.rpm.suffix}</name>
+									<name>argeo-slc-spring-tp${argeo.rpm.suffix}</name>
 									<projversion>${version.argeo-tp}</projversion>
 									<release>${maven.build.timestamp}</release>
 									<mappings>
@@ -336,9 +277,6 @@
 											</sources>
 										</mapping>
 									</mappings>
-									<requires>
-										<require>argeo-cms-ext-tp${argeo.rpm.suffix}</require>
-									</requires>
 								</configuration>
 							</execution>
 						</executions>

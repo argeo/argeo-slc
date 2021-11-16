@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.argeo.slc.legacy.commons</groupId>
-		<artifactId>argeo-commons-legacy</artifactId>
-		<version>2.1.87-SNAPSHOT</version>
+		<groupId>org.argeo.slc</groupId>
+		<artifactId>legacy</artifactId>
+		<version>2.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>legacy-dep</artifactId>
-	<name>Commons Modular Distributions (Legacy)</name>
+	<name>SLC Legacy Dependencies</name>
 	<packaging>pom</packaging>
 	<modules>
-		<module>org.argeo.dep.cms.platform</module>
+		<module>org.argeo.slc.dep.spring</module>
+		<module>org.argeo.slc.dep.backend</module>
 	</modules>
 	<build>
 		<plugins>
@@ -30,7 +30,7 @@
 				<configuration>
 					<quiet>true</quiet>
 					<files>
-						<file>../../../../cnf/${version.context}.bnd</file>
+						<file>../../../cnf/${version.context}.bnd</file>
 					</files>
 				</configuration>
 			</plugin>
@@ -64,6 +64,11 @@
 		<dependency>
 			<groupId>org.argeo.tp.sdk</groupId>
 			<artifactId>org.junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.sdk</groupId>
+			<artifactId>org.hamcrest</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

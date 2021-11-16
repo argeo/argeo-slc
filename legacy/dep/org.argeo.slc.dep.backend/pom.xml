@@ -2,27 +2,67 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
-		<artifactId>dep</artifactId>
+		<artifactId>legacy-dep</artifactId>
 		<version>2.1-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.dep.e4.rap</artifactId>
-	<name>SLC E4 RAP</name>
+	<artifactId>org.argeo.slc.dep.backend</artifactId>
+	<name>SLC Backend</name>
 	<dependencies>
-		<!-- Parent dependencies -->
-		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.dep.cms.e4.rap</artifactId>
-			<version>${version.argeo-commons}</version>
-			<type>pom</type>
-		</dependency>
+		<!-- SLC Minimal -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.dep.minimal</artifactId>
+			<artifactId>org.argeo.slc.dep.spring</artifactId>
 			<version>2.1-SNAPSHOT</version>
 			<type>pom</type>
 		</dependency>
 
+		<!-- SLC Libs -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc</groupId> -->
+		<!-- <artifactId>org.argeo.slc.lib.repo</artifactId> -->
+		<!-- <version>1.1.14-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc</groupId> -->
+		<!-- <artifactId>org.argeo.slc.lib.jcr</artifactId> -->
+		<!-- <version>1.1.14-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+
+		<!-- Extensions -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.support</artifactId>
+			<version>2.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.server.repo</artifactId>
+			<version>2.1-SNAPSHOT</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.argeo.slc</groupId> -->
+		<!-- <artifactId>org.argeo.slc.server.repo.webapp</artifactId> -->
+		<!-- <version>2.1.1-SNAPSHOT</version> -->
+		<!-- </dependency> -->
+
+		<!-- UI -->
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.client.ui</artifactId>
+			<version>2.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.client.ui.dist</artifactId>
+			<version>2.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.slc</groupId>
+			<artifactId>org.argeo.slc.client.rap</artifactId>
+			<version>2.1-SNAPSHOT</version>
+		</dependency>
 
 		<!-- OSGi Boot for platform generation only, as it could be used by regular 
 			Java applications to launch an OSGi runtime. -->
@@ -33,36 +73,22 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- ALM Third Parties -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.tp.apache.ant</groupId> -->
-		<!-- <artifactId>org.apache.ant</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.tp.apache.ant</groupId> -->
-		<!-- <artifactId>org.apache.ant.launch</artifactId> -->
-		<!-- </dependency> -->
+		<!-- Legacy Argeo Commons platform (Eclipse 3) -->
+		<dependency>
+			<groupId>org.argeo.slc.legacy.commons</groupId>
+			<artifactId>org.argeo.dep.cms.platform</artifactId>
+			<version>${version.argeo-commons-legacy}</version>
+			<type>pom</type>
+		</dependency>
 
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.tp.sdk</groupId> -->
-		<!-- <artifactId>biz.aQute.bndlib</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.tp.sdk</groupId> -->
-		<!-- <artifactId>org.junit</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.tp.sdk</groupId> -->
-		<!-- <artifactId>org.redline-rpm</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.tp.misc</groupId> -->
-		<!-- <artifactId>com.googlecode.javaewah.JavaEWAH</artifactId> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.argeo.tp.misc</groupId> -->
-		<!-- <artifactId>org.eclipse.jgit</artifactId> -->
-		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>com.googlecode.javaewah.JavaEWAH</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.tp.misc</groupId>
+			<artifactId>org.eclipse.jgit</artifactId>
+		</dependency>
 	</dependencies>
 	<profiles>
 		<profile>
@@ -97,7 +123,7 @@
 									<goal>rpm</goal>
 								</goals>
 								<configuration>
-									<name>argeo-slc-e4-rap${argeo.rpm.suffix}</name>
+									<name>argeo-slc-platform${argeo.rpm.suffix}</name>
 									<projversion>${version.released}</projversion>
 									<release>${maven.build.timestamp}</release>
 									<mappings>
@@ -118,9 +144,8 @@
 										</mapping>
 									</mappings>
 									<requires>
-										<require>argeo-cms-e4-rap${argeo.rpm.suffix}</require>
-										<require>argeo-cms-sdk-tp${argeo.rpm.suffix}</require>
-										<require>argeo-slc${argeo.rpm.suffix}</require>
+										<require>argeo-cms-platform${argeo.rpm.suffix}</require>
+										<require>argeo-slc-spring${argeo.rpm.suffix}</require>
 									</requires>
 								</configuration>
 							</execution>

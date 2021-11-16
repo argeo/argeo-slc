@@ -1,9 +1,0 @@
-Import-Package: org.eclipse.swt,\
-org.eclipse.e4.ui.model.application.ui,\
-org.eclipse.e4.ui.model.application,\
-org.eclipse.swt.events,\
-javax.jcr.nodetype,\
-org.argeo.slc.jcr,\
-org.eclipse.core.commands.common,\
-org.eclipse.jface.window,\
-*
