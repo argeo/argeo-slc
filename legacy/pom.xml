@@ -12,9 +12,6 @@
 	<version>2.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>SLC Legacy Argeo Software</name>
-	<properties>
-		<argeo.rpm.stagingRepository>/srv/rpmfactory/legacy/argeo-osgi-2/argeo</argeo.rpm.stagingRepository>
-	</properties>
 	<modules>
 		<!-- Legacy UI -->
 		<module>org.argeo.legacy.fake.java8</module>
