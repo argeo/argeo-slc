@@ -15,7 +15,7 @@
 	<modules>
 		<!-- Legacy UI -->
 		<module>org.argeo.legacy.fake.java8</module>
-<!-- 		<module>argeo-commons</module> -->
+		<module>argeo-commons</module>
 
 		<!-- Legacy Runtime -->
 		<module>org.argeo.slc.spring</module>
