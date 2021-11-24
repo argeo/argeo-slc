@@ -18,7 +18,7 @@
 
 		<developmentCycle.startDate>2015-02-12</developmentCycle.startDate>
 		<developmentCycle.slc>2.1</developmentCycle.slc>
-		<version.argeo-commons-legacy>2.1.87-SNAPSHOT</version.argeo-commons-legacy>
+		<version.argeo-commons-legacy>2.1.104</version.argeo-commons-legacy>
 	</properties>
 	<modules>
 		<!-- SLC framework -->
