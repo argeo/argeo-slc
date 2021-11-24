@@ -98,8 +98,6 @@
 								</goals>
 								<configuration>
 									<name>argeo-slc-e4-rap${argeo.rpm.suffix}</name>
-									<projversion>${version.released}</projversion>
-									<release>${maven.build.timestamp}</release>
 									<mappings>
 										<mapping>
 											<directory>/usr/share/osgi</directory>
