@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,7 +43,7 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements A
 	public void init() {
 		if (log.isDebugEnabled())
 			log.debug(describe());
-//		migrateTov2(Paths.get(System.getProperty("user.home"), "dev/git/gpl/argeo-tp/argeo-tp"));
+		migrateTov2(Paths.get(System.getProperty("user.home"), "dev/git/unstable/argeo-tp/argeo-tp"));
 	}
 
 	public void destroy() {

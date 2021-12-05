@@ -36,9 +36,9 @@
 		<module>lib</module>
 
 		<!-- Spring-based modules demo -->
-		<module>org.argeo.slc.demo.ant</module>
-		<module>org.argeo.slc.demo.basic</module>
-		<module>org.argeo.slc.demo.minimal</module>
+<!-- 		<module>org.argeo.slc.demo.ant</module> -->
+<!-- 		<module>org.argeo.slc.demo.basic</module> -->
+<!-- 		<module>org.argeo.slc.demo.minimal</module> -->
 
 		<module>dep</module>
 	</modules>

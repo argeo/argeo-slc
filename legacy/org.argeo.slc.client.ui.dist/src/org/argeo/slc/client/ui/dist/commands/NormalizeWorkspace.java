@@ -15,7 +15,7 @@ import javax.jcr.util.TraversingItemVisitor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.api.security.Keyring;
-import org.argeo.eclipse.ui.EclipseJcrMonitor;
+import org.argeo.eclipse.ui.jcr.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;

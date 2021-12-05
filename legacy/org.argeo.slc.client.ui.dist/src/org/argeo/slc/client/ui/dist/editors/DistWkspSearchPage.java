@@ -24,7 +24,7 @@ import javax.jcr.query.qom.StaticOperand;
 
 import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.cms.ui.workbench.util.PrivilegedJob;
-import org.argeo.eclipse.ui.EclipseJcrMonitor;
+import org.argeo.eclipse.ui.jcr.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
