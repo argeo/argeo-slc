@@ -42,27 +42,4 @@
 
 		<module>dep</module>
 	</modules>
-	<dependencies>
-		<dependency>
-			<groupId>org.argeo.tp</groupId>
-			<artifactId>argeo-tp</artifactId>
-			<version>${version.argeo-tp}</version>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.argeo.tp.apache</groupId>
-					<artifactId>org.apache.xerces</artifactId>
-				</exclusion>
-				<!-- Avoid slf4j implementations lurking in the classpath. -->
-				<exclusion>
-					<groupId>org.argeo.tp.sdk</groupId>
-					<artifactId>biz.aQute.bndlib</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.argeo.tp.misc</groupId>
-					<artifactId>slf4j.osgi</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-	</dependencies>
 </project>

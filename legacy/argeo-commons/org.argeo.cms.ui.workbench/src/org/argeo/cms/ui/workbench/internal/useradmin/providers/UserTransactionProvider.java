@@ -3,13 +3,11 @@ package org.argeo.cms.ui.workbench.internal.useradmin.providers;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.ui.workbench.WorkbenchUiPlugin;
+import org.argeo.osgi.transaction.WorkTransaction;
 import org.eclipse.ui.AbstractSourceProvider;
 import org.eclipse.ui.ISources;
 
@@ -24,7 +22,7 @@ public class UserTransactionProvider extends AbstractSourceProvider {
 	public final static String STATUS_NO_TRANSACTION = "status.noTransaction";
 
 	/* DEPENDENCY INJECTION */
-	private UserTransaction userTransaction;
+	private WorkTransaction userTransaction;
 
 	@Override
 	public String[] getProvidedSourceNames() {
@@ -45,7 +43,7 @@ public class UserTransactionProvider extends AbstractSourceProvider {
 	private String getInternalCurrentState() {
 		try {
 			String transactionState;
-			if (userTransaction.getStatus() == Status.STATUS_NO_TRANSACTION)
+			if (userTransaction.isNoTransactionStatus())
 				transactionState = STATUS_NO_TRANSACTION;
 			else
 				// if (userTransaction.getStatus() == Status.STATUS_ACTIVE)
@@ -68,7 +66,7 @@ public class UserTransactionProvider extends AbstractSourceProvider {
 	}
 
 	/* DEPENDENCY INJECTION */
-	public void setUserTransaction(UserTransaction userTransaction) {
+	public void setUserTransaction(WorkTransaction userTransaction) {
 		this.userTransaction = userTransaction;
 	}
 }

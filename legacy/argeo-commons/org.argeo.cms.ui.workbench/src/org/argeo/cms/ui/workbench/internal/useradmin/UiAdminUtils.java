@@ -1,9 +1,8 @@
 package org.argeo.cms.ui.workbench.internal.useradmin;
 
-import javax.transaction.UserTransaction;
-
 import org.argeo.cms.CmsException;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserTransactionProvider;
+import org.argeo.osgi.transaction.WorkTransaction;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.services.ISourceProviderService;
@@ -16,7 +15,7 @@ public class UiAdminUtils {
 	 */
 	/** Easily notify the ActiveWindow that the transaction had a state change */
 	public final static void notifyTransactionStateChange(
-			UserTransaction userTransaction) {
+			WorkTransaction userTransaction) {
 		try {
 			IWorkbenchWindow aww = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow();

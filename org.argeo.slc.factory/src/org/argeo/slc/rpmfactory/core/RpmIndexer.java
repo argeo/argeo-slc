@@ -1,4 +1,4 @@
-package org.argeo.slc.repo;
+package org.argeo.slc.rpmfactory.core;
 
 import static org.redline_rpm.header.Header.HeaderTag.HEADERIMMUTABLE;
 import static org.redline_rpm.header.Signature.SignatureTag.SIGNATURES;
@@ -15,6 +15,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;
+import org.argeo.slc.repo.NodeIndexer;
 import org.redline_rpm.ChannelWrapper.Key;
 import org.redline_rpm.ReadableChannelWrapper;
 import org.redline_rpm.header.AbstractHeader;

@@ -23,7 +23,6 @@ import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.NodeIndexerVisitor;
-import org.argeo.slc.repo.RpmIndexer;
 import org.argeo.slc.rpmfactory.RpmFactory;
 import org.argeo.slc.rpmfactory.RpmRepository;
 import org.argeo.slc.runtime.tasks.SystemCall;

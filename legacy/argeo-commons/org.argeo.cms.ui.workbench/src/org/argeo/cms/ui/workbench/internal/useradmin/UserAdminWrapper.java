@@ -6,11 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.Status;
-import javax.transaction.UserTransaction;
-
 import org.argeo.api.NodeConstants;
 import org.argeo.cms.CmsException;
+import org.argeo.osgi.transaction.WorkTransaction;
 import org.argeo.osgi.useradmin.UserAdminConf;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.useradmin.UserAdmin;
@@ -22,7 +20,7 @@ public class UserAdminWrapper {
 
 	private UserAdmin userAdmin;
 	private ServiceReference<UserAdmin> userAdminServiceReference;
-	private UserTransaction userTransaction;
+	private WorkTransaction userTransaction;
 
 	// First effort to simplify UX while managing users and groups
 	public final static boolean COMMIT_ON_SAVE = true;
@@ -35,10 +33,10 @@ public class UserAdminWrapper {
 	 * with {@link UserAdminWrapper#commitOrNotifyTransactionStateChange()} once
 	 * the security model changes have been performed.
 	 */
-	public UserTransaction beginTransactionIfNeeded() {
+	public WorkTransaction beginTransactionIfNeeded() {
 		try {
 			// UserTransaction userTransaction = getUserTransaction();
-			if (userTransaction.getStatus() == Status.STATUS_NO_TRANSACTION) {
+			if (userTransaction.isNoTransactionStatus()) {
 				userTransaction.begin();
 				// UiAdminUtils.notifyTransactionStateChange(userTransaction);
 			}
@@ -57,7 +55,7 @@ public class UserAdminWrapper {
 	public void commitOrNotifyTransactionStateChange() {
 		try {
 			// UserTransaction userTransaction = getUserTransaction();
-			if (userTransaction.getStatus() == Status.STATUS_NO_TRANSACTION)
+			if (userTransaction.isNoTransactionStatus())
 				return;
 
 			if (UserAdminWrapper.COMMIT_ON_SAVE)
@@ -107,7 +105,7 @@ public class UserAdminWrapper {
 		return userAdmin;
 	}
 
-	public UserTransaction getUserTransaction() {
+	public WorkTransaction getUserTransaction() {
 		return userTransaction;
 	}
 
@@ -116,7 +114,7 @@ public class UserAdminWrapper {
 		this.userAdmin = userAdmin;
 	}
 
-	public void setUserTransaction(UserTransaction userTransaction) {
+	public void setUserTransaction(WorkTransaction userTransaction) {
 		this.userTransaction = userTransaction;
 	}
 

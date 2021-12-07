@@ -14,13 +14,13 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
-import javax.transaction.UserTransaction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.api.security.CryptoKeyring;
 import org.argeo.cms.CmsException;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
+import org.argeo.osgi.transaction.WorkTransaction;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -44,7 +44,7 @@ import org.osgi.service.useradmin.UserAdmin;
 public class OpenChangePasswordDialog extends AbstractHandler {
 	private final static Log log = LogFactory.getLog(OpenChangePasswordDialog.class);
 	private UserAdmin userAdmin;
-	private UserTransaction userTransaction;
+	private WorkTransaction userTransaction;
 	private CryptoKeyring keyring = null;
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -150,7 +150,7 @@ public class OpenChangePasswordDialog extends AbstractHandler {
 		this.userAdmin = userAdmin;
 	}
 
-	public void setUserTransaction(UserTransaction userTransaction) {
+	public void setUserTransaction(WorkTransaction userTransaction) {
 		this.userTransaction = userTransaction;
 	}
 

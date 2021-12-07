@@ -6,11 +6,11 @@ import java.util.Map;
 
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
-import javax.transaction.UserTransaction;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.cms.CmsException;
+import org.argeo.osgi.transaction.WorkTransaction;
 import org.osgi.service.useradmin.Role;
 import org.osgi.service.useradmin.UserAdmin;
 
@@ -19,13 +19,12 @@ import org.osgi.service.useradmin.UserAdmin;
  * is already registered.
  */
 public class SimpleRoleRegistration implements Runnable {
-	private final static Log log = LogFactory
-			.getLog(SimpleRoleRegistration.class);
+	private final static Log log = LogFactory.getLog(SimpleRoleRegistration.class);
 
 	private String role;
 	private List<String> roles = new ArrayList<String>();
 	private UserAdmin userAdmin;
-	private UserTransaction userTransaction;
+	private WorkTransaction userTransaction;
 
 	@Override
 	public void run() {
@@ -82,7 +81,7 @@ public class SimpleRoleRegistration implements Runnable {
 		this.userAdmin = userAdminService;
 	}
 
-	public void setUserTransaction(UserTransaction userTransaction) {
+	public void setUserTransaction(WorkTransaction userTransaction) {
 		this.userTransaction = userTransaction;
 	}
 

@@ -15,12 +15,13 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
-import javax.transaction.UserTransaction;
 
 import org.argeo.api.NodeInstance;
 import org.argeo.api.NodeUtils;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.CmsException;
+import org.argeo.cms.auth.UserAdminUtils;
+import org.argeo.cms.ui.util.CmsUiUtils;
 import org.argeo.cms.ui.workbench.CmsWorkbenchStyles;
 import org.argeo.cms.ui.workbench.internal.useradmin.SecurityAdminImages;
 import org.argeo.cms.ui.workbench.internal.useradmin.UserAdminWrapper;
@@ -31,13 +32,12 @@ import org.argeo.cms.ui.workbench.internal.useradmin.providers.MailLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.RoleIconLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserFilter;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserTableDefaultDClickListener;
-import org.argeo.cms.ui.util.CmsUiUtils;
-import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.parts.LdifUsersTable;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.naming.LdapAttrs;
+import org.argeo.osgi.transaction.WorkTransaction;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -450,7 +450,7 @@ public class GroupMainPage extends FormPage implements ArgeoNames {
 				userAdminWrapper.notifyListeners(new UserAdminEvent(null, UserAdminEvent.ROLE_CHANGED, myGroup));
 			} else if (role.getType() == Role.USER) {
 				// TODO check if the group is already member of this group
-				UserTransaction transaction = userAdminWrapper.beginTransactionIfNeeded();
+				WorkTransaction transaction = userAdminWrapper.beginTransactionIfNeeded();
 				User user = (User) role;
 				myGroup.addMember(user);
 				if (UserAdminWrapper.COMMIT_ON_SAVE)

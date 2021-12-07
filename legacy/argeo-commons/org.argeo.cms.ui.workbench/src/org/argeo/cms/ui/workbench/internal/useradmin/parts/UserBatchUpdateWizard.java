@@ -5,26 +5,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.api.NodeConstants;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.auth.CurrentUser;
+import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.cms.ui.workbench.internal.useradmin.UiAdminUtils;
 import org.argeo.cms.ui.workbench.internal.useradmin.UserAdminWrapper;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.CommonNameLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.DomainNameLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.MailLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserNameLP;
-import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.parts.LdifUsersTable;
 import org.argeo.naming.LdapAttrs;
 import org.argeo.naming.LdapObjs;
+import org.argeo.osgi.transaction.WorkTransaction;
 import org.eclipse.jface.dialogs.IPageChangeProvider;
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -92,15 +90,10 @@ public class UserBatchUpdateWizard extends Wizard {
 	public boolean performFinish() {
 		if (!canFinish())
 			return false;
-		UserTransaction ut = userAdminWrapper.getUserTransaction();
-		try {
-			if (ut.getStatus() != javax.transaction.Status.STATUS_NO_TRANSACTION
-					&& !MessageDialog.openConfirm(getShell(), "Existing Transaction",
-							"A user transaction is already existing, " + "are you sure you want to proceed ?"))
-				return false;
-		} catch (SystemException e) {
-			throw new CmsException("Cannot get user transaction state " + "before user batch update", e);
-		}
+		WorkTransaction ut = userAdminWrapper.getUserTransaction();
+		if (!ut.isNoTransactionStatus() && !MessageDialog.openConfirm(getShell(), "Existing Transaction",
+				"A user transaction is already existing, " + "are you sure you want to proceed ?"))
+			return false;
 
 		// We cannot use jobs, user modifications are still meant to be done in
 		// the UIThread
@@ -153,14 +146,9 @@ public class UserBatchUpdateWizard extends Wizard {
 			} catch (Exception e) {
 				throw new CmsException("Cannot perform batch update on users", e);
 			} finally {
-				UserTransaction ut = userAdminWrapper.getUserTransaction();
-				try {
-					if (ut.getStatus() != javax.transaction.Status.STATUS_NO_TRANSACTION)
-						ut.rollback();
-				} catch (IllegalStateException | SecurityException | SystemException e) {
-					log.error("Unable to rollback session in 'finally', " + "the system might be in a dirty state");
-					e.printStackTrace();
-				}
+				WorkTransaction ut = userAdminWrapper.getUserTransaction();
+				if (!ut.isNoTransactionStatus())
+					ut.rollback();
 			}
 		}
 	}
@@ -192,14 +180,9 @@ public class UserBatchUpdateWizard extends Wizard {
 			} catch (Exception e) {
 				throw new CmsException("Cannot perform batch update on users", e);
 			} finally {
-				UserTransaction ut = userAdminWrapper.getUserTransaction();
-				try {
-					if (ut.getStatus() != javax.transaction.Status.STATUS_NO_TRANSACTION)
-						ut.rollback();
-				} catch (IllegalStateException | SecurityException | SystemException e) {
-					log.error("Unable to rollback session in finally block, the system might be in a dirty state");
-					e.printStackTrace();
-				}
+				WorkTransaction ut = userAdminWrapper.getUserTransaction();
+				if (!ut.isNoTransactionStatus())
+					ut.rollback();
 			}
 		}
 	}
@@ -459,8 +442,7 @@ public class UserBatchUpdateWizard extends Wizard {
 	}
 
 	/**
-	 * Displays a list of users with a check box to be able to choose some of
-	 * them
+	 * Displays a list of users with a check box to be able to choose some of them
 	 */
 	private class ChooseUsersWizardPage extends WizardPage implements IPageChangedListener {
 		private static final long serialVersionUID = 7651807402211214274L;
