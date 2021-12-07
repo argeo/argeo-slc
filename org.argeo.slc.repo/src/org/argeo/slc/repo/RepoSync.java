@@ -29,9 +29,9 @@ import javax.jcr.query.QueryResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.argeo.cms.jcr.CmsJcrUtils;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.api.NodeUtils;
 import org.argeo.slc.SlcException;
 import org.xml.sax.SAXException;
 
@@ -104,14 +104,14 @@ public class RepoSync implements Runnable {
 
 			// Setup
 			if (sourceRepository == null)
-				sourceRepository = NodeUtils.getRepositoryByUri(repositoryFactory, sourceRepoUri);
+				sourceRepository = CmsJcrUtils.getRepositoryByUri(repositoryFactory, sourceRepoUri);
 			if (sourceCredentials == null && sourceUsername != null)
 				sourceCredentials = new SimpleCredentials(sourceUsername, sourcePassword);
 			// FIXME make it more generic
 			sourceDefaultSession = sourceRepository.login(sourceCredentials, RepoConstants.DEFAULT_DEFAULT_WORKSPACE);
 
 			if (targetRepository == null)
-				targetRepository = NodeUtils.getRepositoryByUri(repositoryFactory, targetRepoUri);
+				targetRepository = CmsJcrUtils.getRepositoryByUri(repositoryFactory, targetRepoUri);
 			if (targetCredentials == null && targetUsername != null)
 				targetCredentials = new SimpleCredentials(targetUsername, targetPassword);
 			targetDefaultSession = targetRepository.login(targetCredentials);

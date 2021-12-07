@@ -10,10 +10,10 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
 import org.argeo.api.NodeConstants;
-import org.argeo.api.NodeUtils;
 import org.argeo.api.security.Keyring;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.ArgeoTypes;
+import org.argeo.cms.jcr.CmsJcrUtils;
 import org.argeo.cms.ui.workbench.internal.WorkbenchConstants;
 import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.eclipse.ui.EclipseUiException;
@@ -149,7 +149,7 @@ public class AddRemoteRepository extends AbstractHandler implements WorkbenchCon
 			Session nodeSession = null;
 			try {
 				nodeSession = nodeRepository.login();
-				Node home = NodeUtils.getUserHome(nodeSession);
+				Node home = CmsJcrUtils.getUserHome(nodeSession);
 
 				Node remote = home.hasNode(ARGEO_REMOTE) ? home.getNode(ARGEO_REMOTE) : home.addNode(ARGEO_REMOTE);
 				if (remote.hasNode(name.getText()))

@@ -4,10 +4,8 @@ javax.xml.transform.*,\
 javax.xml.parsers.*,\
 javax.jcr.nodetype,\
 org.osgi.*;version=0.0.0,\
+org.argeo.api,\
 *
-
-Private-Package: org.eclipse.aether.*
-Export-Package: !org.eclipse.aether.*, !*.internal.*, *
 
 Require-Capability: cms.datamodel; filter:="(name=slc)"
 Provide-Capability: cms.datamodel; name=java,\

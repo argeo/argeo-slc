@@ -13,10 +13,10 @@ import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
 import org.argeo.api.NodeConstants;
-import org.argeo.api.NodeUtils;
 import org.argeo.api.security.Keyring;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.ArgeoTypes;
+import org.argeo.cms.jcr.CmsJcrUtils;
 import org.argeo.eclipse.ui.TreeParent;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -47,7 +47,7 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 				dispose();
 			nodeSession = nodeRepository.login(NodeConstants.HOME_WORKSPACE);
 
-			String reposPath = NodeUtils.getUserHome(nodeSession).getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
+			String reposPath = CmsJcrUtils.getUserHome(nodeSession).getPath() + RepoConstants.REPOSITORIES_BASE_PATH;
 
 			if (!nodeSession.itemExists(reposPath))
 				initializeModel(nodeSession);
@@ -103,7 +103,7 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 
 	private void initializeModel(Session nodeSession) {
 		try {
-			Node homeNode = NodeUtils.getUserHome(nodeSession);
+			Node homeNode = CmsJcrUtils.getUserHome(nodeSession);
 			if (homeNode == null) // anonymous
 				throw new SlcException("User must be authenticated.");
 
@@ -114,7 +114,7 @@ public class DistTreeContentProvider implements ITreeContentProvider {
 
 			// register default local java repository
 			String alias = RepoConstants.DEFAULT_JAVA_REPOSITORY_ALIAS;
-			Repository javaRepository = NodeUtils.getRepositoryByAlias(repositoryFactory, alias);
+			Repository javaRepository = CmsJcrUtils.getRepositoryByAlias(repositoryFactory, alias);
 			if (javaRepository != null) {
 				if (!repos.hasNode(alias)) {
 					Node repoNode = repos.addNode(alias, ArgeoTypes.ARGEO_REMOTE_REPOSITORY);

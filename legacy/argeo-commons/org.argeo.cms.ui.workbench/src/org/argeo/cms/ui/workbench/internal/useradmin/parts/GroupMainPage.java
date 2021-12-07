@@ -17,10 +17,10 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
 import org.argeo.api.NodeInstance;
-import org.argeo.api.NodeUtils;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.auth.UserAdminUtils;
+import org.argeo.cms.jcr.CmsJcrUtils;
 import org.argeo.cms.ui.util.CmsUiUtils;
 import org.argeo.cms.ui.workbench.CmsWorkbenchStyles;
 import org.argeo.cms.ui.workbench.internal.useradmin.SecurityAdminImages;
@@ -175,7 +175,7 @@ public class GroupMainPage extends FormPage implements ArgeoNames {
 				// dnTxt.setText(group.getName());
 				// cnTxt.setText(UserAdminUtils.getProperty(group, LdapAttrs.cn.name()));
 				descTxt.setText(UserAdminUtils.getProperty(group, LdapAttrs.description.name()));
-				Node workgroupHome = NodeUtils.getGroupHome(session, cn);
+				Node workgroupHome = CmsJcrUtils.getGroupHome(session, cn);
 				if (workgroupHome == null)
 					markAsWorkgroupLk.setText("<a>Mark as workgroup</a>");
 				else
@@ -194,7 +194,7 @@ public class GroupMainPage extends FormPage implements ArgeoNames {
 				boolean confirmed = MessageDialog.openConfirm(parent.getShell(), "Mark as workgroup",
 						"Are you sure you want to mark " + cn + " as being a workgroup? ");
 				if (confirmed) {
-					Node workgroupHome = NodeUtils.getGroupHome(session, cn);
+					Node workgroupHome = CmsJcrUtils.getGroupHome(session, cn);
 					if (workgroupHome != null)
 						return; // already marked as workgroup, do nothing
 					else

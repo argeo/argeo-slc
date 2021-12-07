@@ -11,5 +11,6 @@ javax.jcr.nodetype,\
 javax.jcr.security,\
 aQute.lib.*;resolution:=optional,\
 org.osgi.*;version=0.0.0,\
+org.argeo.api,\
 *
 							
