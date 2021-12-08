@@ -10,10 +10,10 @@
 
 	<!-- REFERENCES -->
 	<reference id="userAdmin" interface="org.osgi.service.useradmin.UserAdmin" />
-	<reference id="userTransaction" interface="javax.transaction.UserTransaction" />
+	<reference id="userTransaction" interface="org.argeo.osgi.transaction.WorkTransaction" />
 
-	<set id="defaultRpmRepositories" cardinality="0..N"
-		interface="org.argeo.slc.rpmfactory.RpmRepository" />
+<!-- 	<set id="defaultRpmRepositories" cardinality="0..N" -->
+<!-- 		interface="org.argeo.slc.rpmfactory.RpmRepository" /> -->
 
 	<reference id="javaRepository" interface="javax.jcr.Repository"
 		filter="(cn=java)" />

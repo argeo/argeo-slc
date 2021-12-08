@@ -44,15 +44,15 @@
 	<!-- </bean> -->
 
 	<!-- RPM -->
-	<bean id="rpmRepoManager" class="org.argeo.slc.repo.core.RpmRepoManagerImpl"
-		init-method="init" destroy-method="destroy" depends-on="ROLE_SLC">
-		<property name="nodeIndexers">
-			<list>
-				<bean class="org.argeo.slc.repo.RpmIndexer" />
-			</list>
-		</property>
-		<property name="jcrRepository" ref="rpmRepository" />
-	</bean>
+<!-- 	<bean id="rpmRepoManager" class="org.argeo.slc.repo.core.RpmRepoManagerImpl" -->
+<!-- 		init-method="init" destroy-method="destroy" depends-on="ROLE_SLC"> -->
+<!-- 		<property name="nodeIndexers"> -->
+<!-- 			<list> -->
+<!-- 				<bean class="org.argeo.slc.rpmfactory.core.RpmIndexer" /> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 		<property name="jcrRepository" ref="rpmRepository" /> -->
+<!-- 	</bean> -->
 
 	<!-- <bean id="rpmProxyService" class="org.argeo.slc.rpmfactory.core.RpmProxyServiceImpl" -->
 	<!-- init-method="init" destroy-method="destroy" depends-on="ROLE_SLC"> -->

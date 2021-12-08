@@ -32,7 +32,7 @@
 		cardinality="0..N">
 		<listener ref="modulesManager" />
 	</list>
-	<reference id="userTransaction" interface="javax.transaction.UserTransaction" />
+	<reference id="userTransaction" interface="org.argeo.osgi.transaction.WorkTransaction" />
 	<reference id="userAdmin" interface="org.osgi.service.useradmin.UserAdmin" />
 
 	<!-- SERVICES -->
