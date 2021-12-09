@@ -14,8 +14,14 @@
 		<!-- Commons UI -->
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.eclipse.ui</artifactId>
+			<artifactId>org.argeo.cms.swt</artifactId>
 			<version>${version.argeo-commons}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.argeo.commons</groupId>
+			<artifactId>org.argeo.swt.specific.rap</artifactId>
+			<version>${version.argeo-commons}</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc.legacy.commons</groupId>
@@ -49,7 +55,7 @@
 		<!-- Argeo Base dependencies -->
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.core</artifactId>
+			<artifactId>org.argeo.cms</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 

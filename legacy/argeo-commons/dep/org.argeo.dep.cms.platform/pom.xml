@@ -42,14 +42,19 @@
 		</dependency>
 
 		<!-- Argeo Commons UI -->
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.commons</groupId> -->
+<!-- 			<artifactId>org.argeo.eclipse.ui</artifactId> -->
+<!-- 			<version>${version.argeo-commons}</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.eclipse.ui</artifactId>
+			<artifactId>org.argeo.swt.specific.rap</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.eclipse.ui.rap</artifactId>
+			<artifactId>org.argeo.cms.swt</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 		<dependency>
@@ -57,11 +62,11 @@
 			<artifactId>org.argeo.cms.ui</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.cms.ui.theme</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.commons</groupId> -->
+<!-- 			<artifactId>org.argeo.cms.ui.theme</artifactId> -->
+<!-- 			<version>${version.argeo-commons}</version> -->
+<!-- 		</dependency> -->
 
 		<!-- Eclipse 3 specific -->
 		<dependency>

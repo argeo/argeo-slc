@@ -22,10 +22,10 @@ import org.apache.commons.io.IOUtils;
 import org.argeo.cms.ui.jcr.JcrDClickListener;
 import org.argeo.cms.ui.workbench.WorkbenchUiPlugin;
 import org.argeo.cms.ui.workbench.internal.jcr.parts.GenericNodeEditorInput;
+import org.argeo.cms.ui.workbench.legacy.rap.OpenFile;
+import org.argeo.cms.ui.workbench.legacy.rap.SingleSourcingException;
 import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.eclipse.ui.EclipseUiException;
-import org.argeo.eclipse.ui.specific.OpenFile;
-import org.argeo.eclipse.ui.specific.SingleSourcingException;
 import org.argeo.jcr.JcrUtils;
 import org.eclipse.jface.viewers.TreeViewer;
 

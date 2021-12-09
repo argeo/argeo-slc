@@ -1,7 +1,7 @@
 package org.argeo.cms.ui.workbench.internal.jcr.commands;
 
-import static org.argeo.eclipse.ui.util.SingleSourcingConstants.FILE_SCHEME;
-import static org.argeo.eclipse.ui.util.SingleSourcingConstants.SCHEME_HOST_SEPARATOR;
+import static org.argeo.cms.ui.workbench.legacy.rap.SingleSourcingConstants.FILE_SCHEME;
+import static org.argeo.cms.ui.workbench.legacy.rap.SingleSourcingConstants.SCHEME_HOST_SEPARATOR;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,9 +18,9 @@ import javax.jcr.RepositoryException;
 
 import org.argeo.cms.ui.jcr.model.SingleJcrNodeElem;
 import org.argeo.cms.ui.workbench.WorkbenchUiPlugin;
+import org.argeo.cms.ui.workbench.legacy.rap.OpenFile;
 import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.eclipse.ui.EclipseUiException;
-import org.argeo.eclipse.ui.specific.OpenFile;
 import org.argeo.jcr.JcrUtils;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
