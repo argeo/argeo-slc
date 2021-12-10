@@ -10,7 +10,6 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.cms.CmsException;
-import org.argeo.cms.ui.widgets.auth.DefaultLoginDialog;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;

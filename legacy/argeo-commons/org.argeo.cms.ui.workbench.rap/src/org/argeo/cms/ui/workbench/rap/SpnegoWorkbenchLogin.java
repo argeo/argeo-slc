@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.argeo.cms.CmsMsg;
 import org.argeo.cms.auth.CurrentUser;
 import org.argeo.cms.ui.util.CmsUiUtils;
-import org.argeo.cms.ui.util.LoginEntryPoint;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.swt.SWT;

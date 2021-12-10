@@ -8,8 +8,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
-import org.argeo.cms.ui.useradmin.PickUpUserDialog;
 import org.argeo.cms.auth.UserAdminUtils;
+import org.argeo.cms.swt.useradmin.PickUpUserDialog;
 import org.argeo.eclipse.ui.EclipseUiException;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.jcr.JcrUtils;

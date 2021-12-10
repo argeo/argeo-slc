@@ -21,7 +21,7 @@ import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.cms.jcr.CmsJcrUtils;
-import org.argeo.cms.ui.util.CmsUiUtils;
+import org.argeo.cms.swt.CmsSwtUtils;
 import org.argeo.cms.ui.workbench.CmsWorkbenchStyles;
 import org.argeo.cms.ui.workbench.internal.useradmin.SecurityAdminImages;
 import org.argeo.cms.ui.workbench.internal.useradmin.UserAdminWrapper;
@@ -501,7 +501,7 @@ public class GroupMainPage extends FormPage implements ArgeoNames {
 		Text text = toolkit.createText(parent, value, SWT.NONE);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		text.setEditable(false);
-		CmsUiUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
+		CmsSwtUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
 		return text;
 	}
 

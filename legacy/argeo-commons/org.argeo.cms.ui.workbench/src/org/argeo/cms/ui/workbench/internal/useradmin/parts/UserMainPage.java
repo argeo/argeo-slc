@@ -24,8 +24,8 @@ import org.argeo.cms.ui.workbench.internal.useradmin.providers.DomainNameLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.RoleIconLP;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserFilter;
 import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserTableDefaultDClickListener;
-import org.argeo.cms.ui.util.CmsUiUtils;
 import org.argeo.cms.auth.UserAdminUtils;
+import org.argeo.cms.swt.CmsSwtUtils;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.parts.LdifUsersTable;
@@ -539,7 +539,7 @@ public class UserMainPage extends FormPage implements ArgeoNames {
 		lbl.setFont(EclipseUiUtils.getBoldFont(parent));
 		Text text = toolkit.createText(parent, value, SWT.BORDER);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		CmsUiUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
+		CmsSwtUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
 		return text;
 	}
 
@@ -550,7 +550,7 @@ public class UserMainPage extends FormPage implements ArgeoNames {
 		Text text = toolkit.createText(parent, value, SWT.NONE);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		text.setEditable(false);
-		CmsUiUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
+		CmsSwtUtils.style(text, CmsWorkbenchStyles.WORKBENCH_FORM_TEXT);
 		return text;
 	}
 }

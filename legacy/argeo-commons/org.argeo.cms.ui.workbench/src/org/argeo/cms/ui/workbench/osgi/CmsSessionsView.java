@@ -9,8 +9,8 @@ import java.util.List;
 
 import javax.naming.ldap.LdapName;
 
+import org.argeo.api.cms.CmsSession;
 import org.argeo.cms.CmsException;
-import org.argeo.cms.auth.CmsSession;
 import org.argeo.cms.ui.workbench.WorkbenchUiPlugin;
 import org.argeo.eclipse.ui.ColumnViewerComparator;
 import org.argeo.eclipse.ui.specific.EclipseUiSpecificUtils;
@@ -52,7 +52,7 @@ public class CmsSessionsView extends ViewPart {
 			private static final long serialVersionUID = -5234573509093747505L;
 
 			public String getText(Object element) {
-				return ((CmsSession) element).getAuthorization().toString();
+				return ((CmsSession) element).getDisplayName();
 			}
 
 			public String getToolTipText(Object element) {
