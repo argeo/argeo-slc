@@ -1,11 +1,10 @@
 package org.argeo.slc.core.execution.tasks;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.core.execution.AbstractExecutionFlowTestCase;
 
 public class SystemCallTest extends AbstractExecutionFlowTestCase {
-	private final static Log log = LogFactory.getLog(SystemCallTest.class);
+	private final static CmsLog log = CmsLog.getLog(SystemCallTest.class);
 
 	private final String defFile = "systemCall.xml";
 

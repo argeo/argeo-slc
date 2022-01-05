@@ -17,5 +17,5 @@
 	<reference id="repositoryFactory"
 		interface="javax.jcr.RepositoryFactory" />
 	<reference id="keyring"
-		interface="org.argeo.api.security.CryptoKeyring" />
+		interface="org.argeo.cms.security.CryptoKeyring" />
 </beans:beans>

@@ -12,14 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 
 /** Access a JCR repository via web services. */
 public class JcrWriteServlet extends JcrReadServlet {
 	private static final long serialVersionUID = 17272653843085492L;
-	private final static Log log = LogFactory.getLog(JcrWriteServlet.class);
+	private final static CmsLog log = CmsLog.getLog(JcrWriteServlet.class);
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

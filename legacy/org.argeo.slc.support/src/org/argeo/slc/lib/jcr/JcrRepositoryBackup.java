@@ -15,20 +15,19 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSelectInfo;
 import org.apache.commons.vfs2.FileSelector;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.jcr.CmsJcrUtils;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 
 /** Backups a JCR repository */
 public class JcrRepositoryBackup implements Runnable {
-	private final static Log log = LogFactory.getLog(JcrRepositoryBackup.class);
+	private final static CmsLog log = CmsLog.getLog(JcrRepositoryBackup.class);
 
 	private String sourceRepo;
 	private String sourceDatastore;

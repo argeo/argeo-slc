@@ -7,8 +7,7 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.CmsException;
 import org.eclipse.core.runtime.ILogListener;
 import org.eclipse.core.runtime.IStatus;
@@ -21,7 +20,7 @@ import org.osgi.framework.ServiceRegistration;
 
 /** The activator class controls the plug-in life cycle */
 public class WorkbenchUiPlugin extends AbstractUIPlugin implements ILogListener {
-	private final static Log log = LogFactory.getLog(WorkbenchUiPlugin.class);
+	private final static CmsLog log = CmsLog.getLog(WorkbenchUiPlugin.class);
 
 	// The plug-in ID
 	public final static String PLUGIN_ID = "org.argeo.cms.ui.workbench"; //$NON-NLS-1$
@@ -129,7 +128,7 @@ public class WorkbenchUiPlugin extends AbstractUIPlugin implements ILogListener 
 	}
 
 	public void logging(IStatus status, String plugin) {
-		Log pluginLog = LogFactory.getLog(plugin);
+		CmsLog pluginLog = CmsLog.getLog(plugin);
 		Integer severity = status.getSeverity();
 		if (severity == IStatus.ERROR)
 			pluginLog.error(status.getMessage(), status.getException());

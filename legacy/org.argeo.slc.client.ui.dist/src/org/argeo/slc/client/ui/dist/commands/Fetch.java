@@ -6,7 +6,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
-import org.argeo.api.security.Keyring;
+import org.argeo.cms.security.Keyring;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -25,7 +25,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * definition of the fetch process parameters
  */
 public class Fetch extends AbstractHandler {
-	// private final static Log log = LogFactory.getLog(Fetch.class);
+	// private final static CmsLog log = CmsLog.getLog(Fetch.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".fetch";
 	public final static String DEFAULT_LABEL = "Fetch...";

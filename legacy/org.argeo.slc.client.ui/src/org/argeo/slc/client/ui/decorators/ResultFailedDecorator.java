@@ -28,7 +28,7 @@ public class ResultFailedDecorator extends LabelProvider implements
 
 	// FIXME why not use? org.eclipse.jface.viewers.DecoratingLabelProvider
 
-	// private final static Log log = LogFactory
+	// private final static CmsLog log = CmsLog
 	// .getLog(ResultFailedDecorator.class);
 
 	private final static DateFormat dateFormat = new SimpleDateFormat(

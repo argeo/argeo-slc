@@ -10,8 +10,7 @@ import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.security.AccessControlException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.jcr.proxy.AbstractUrlProxy;
@@ -26,7 +25,7 @@ import org.argeo.slc.rpmfactory.RpmRepository;
 /** Synchronises the node repository with remote Maven repositories */
 public class RpmProxyServiceImpl extends AbstractUrlProxy implements
 		RpmProxyService, ArgeoNames, SlcNames {
-	private final static Log log = LogFactory.getLog(RpmProxyServiceImpl.class);
+	private final static CmsLog log = CmsLog.getLog(RpmProxyServiceImpl.class);
 
 	private Set<RpmRepository> defaultRepositories = new HashSet<RpmRepository>();
 

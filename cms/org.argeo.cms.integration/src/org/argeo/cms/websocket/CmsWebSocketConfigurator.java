@@ -12,9 +12,8 @@ import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
 import javax.websocket.server.ServerEndpointConfig.Configurator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsAuth;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.auth.RemoteAuthCallbackHandler;
 import org.argeo.cms.auth.RemoteAuthSession;
 import org.argeo.cms.servlet.ServletHttpSession;
@@ -24,7 +23,7 @@ import org.osgi.service.http.context.ServletContextHelper;
 public class CmsWebSocketConfigurator extends Configurator {
 	public final static String WEBSOCKET_SUBJECT = "org.argeo.cms.websocket.subject";
 
-	private final static Log log = LogFactory.getLog(CmsWebSocketConfigurator.class);
+	private final static CmsLog log = CmsLog.getLog(CmsWebSocketConfigurator.class);
 	final static String HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
 
 	@Override
@@ -72,7 +71,7 @@ public class CmsWebSocketConfigurator extends Configurator {
 			rejectResponse(response, null);
 		}
 		try {
-			LoginContext lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER,
+			LoginContext lc = new LoginContext(CmsAuth.LOGIN_CONTEXT_USER,
 					new RemoteAuthCallbackHandler(httpSession));
 			lc.login();
 			if (log.isDebugEnabled())

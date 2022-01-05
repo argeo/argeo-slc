@@ -8,13 +8,12 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.osgi.framework.Constants;
 
 /** <b>Experimental</b> */
 public class FileSystemBundleRegister implements BundleRegister {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(FileSystemBundleRegister.class);
 	private Properties packagesBundles = null;
 

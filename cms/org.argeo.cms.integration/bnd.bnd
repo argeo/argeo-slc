@@ -1,4 +1,4 @@
 Import-Package:\
-org.argeo.api,\
 javax.jcr.nodetype,\
+org.apache.commons.logging,\
 *

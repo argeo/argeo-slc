@@ -6,7 +6,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsConstants;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
@@ -29,7 +29,7 @@ public class JcrProcessThread extends ProcessThread implements SlcNames {
 		Session session = null;
 		if (getProcess() instanceof JcrExecutionProcess)
 			try {
-				session = ((JcrExecutionProcess) getProcess()).getRepository().login(NodeConstants.HOME_WORKSPACE);
+				session = ((JcrExecutionProcess) getProcess()).getRepository().login(CmsConstants.HOME_WORKSPACE);
 
 				List<RealizedFlow> realizedFlows = getProcess().getRealizedFlows();
 				for (RealizedFlow realizedFlow : realizedFlows) {

@@ -25,7 +25,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /** List all children of the current node */
 public class ChildNodesPage extends FormPage {
-	// private final static Log log = LogFactory.getLog(ChildNodesPage.class);
+	// private final static CmsLog log = CmsLog.getLog(ChildNodesPage.class);
 
 	private Node currentNode;
 

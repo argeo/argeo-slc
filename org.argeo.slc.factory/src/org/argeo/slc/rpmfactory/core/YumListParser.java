@@ -11,8 +11,7 @@ import java.util.TreeSet;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.LineIterator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 
 /**
@@ -20,7 +19,7 @@ import org.argeo.slc.SlcException;
  * packages.
  */
 public class YumListParser implements RpmPackageSet {
-	private final static Log log = LogFactory.getLog(YumListParser.class);
+	private final static CmsLog log = CmsLog.getLog(YumListParser.class);
 
 	private Set<String> installed = new TreeSet<String>();
 	/** Not installed but available */

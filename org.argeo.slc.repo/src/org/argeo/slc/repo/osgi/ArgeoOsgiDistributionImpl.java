@@ -15,8 +15,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
@@ -32,7 +31,7 @@ import org.osgi.framework.Constants;
  * A consistent and versioned OSGi distribution, which can be built and tested.
  */
 public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements ArgeoOsgiDistribution {
-	private final static Log log = LogFactory.getLog(ArgeoOsgiDistributionImpl.class);
+	private final static CmsLog log = CmsLog.getLog(ArgeoOsgiDistributionImpl.class);
 
 	private List<Object> modules = new ArrayList<Object>();
 

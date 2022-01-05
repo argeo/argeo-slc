@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
@@ -15,7 +14,7 @@ import org.argeo.slc.execution.ExecutionStack;
 /** Canonical implementation of an execution stack. */
 public class DefaultExecutionStack implements ExecutionStack {
 
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(DefaultExecutionStack.class);
 
 	private final Stack<ExecutionFlowRuntime> stack = new Stack<ExecutionFlowRuntime>();

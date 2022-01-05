@@ -10,7 +10,7 @@ Import-Package: org.argeo.eclipse.spring,\
 javax.jcr.nodetype,\
 javax.jcr.security,\
 aQute.lib.*;resolution:=optional,\
+org.springframework.beans.factory,\
 org.osgi.*;version=0.0.0,\
-org.argeo.api,\
 *
 							

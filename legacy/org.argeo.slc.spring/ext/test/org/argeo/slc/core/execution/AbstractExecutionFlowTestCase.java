@@ -2,8 +2,7 @@ package org.argeo.slc.core.execution;
 
 import junit.framework.TestCase;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.runtime.test.SimpleTestResult;
@@ -14,7 +13,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public abstract class AbstractExecutionFlowTestCase extends TestCase {
 
-	protected final Log log = LogFactory.getLog(getClass());
+	protected final CmsLog log = CmsLog.getLog(getClass());
 
 	protected void logException(Throwable ex) {
 		log.info("Got Exception of class " + ex.getClass().toString()

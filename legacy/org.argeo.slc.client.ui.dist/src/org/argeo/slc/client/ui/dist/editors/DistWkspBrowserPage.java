@@ -49,7 +49,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class DistWkspBrowserPage extends FormPage implements DistConstants,
 		RepoConstants {
-	// private final static Log log = LogFactory
+	// private final static CmsLog log = CmsLog
 	// .getLog(ArtifactsBrowserPage.class);
 
 	final static String PAGE_ID = "artifactsBrowserPage";

@@ -10,5 +10,4 @@ org.argeo.cms.ui.workbench,\
 org.argeo.cms.ui.workbench.commands,\
 org.argeo.eclipse.ui.specific,\
 org.argeo.eclipse.spring,\
-org.argeo.api,\
 *

@@ -13,10 +13,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
-import org.argeo.api.security.Keyring;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.ArgeoTypes;
 import org.argeo.cms.jcr.CmsJcrUtils;
+import org.argeo.cms.security.Keyring;
 import org.argeo.cms.ui.workbench.util.PrivilegedJob;
 import org.argeo.eclipse.ui.jcr.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
@@ -62,7 +62,7 @@ import org.eclipse.swt.widgets.Text;
  * object.
  */
 public class FetchWizard extends Wizard {
-	// private final static Log log = LogFactory.getLog(FetchWizard.class);
+	// private final static CmsLog log = CmsLog.getLog(FetchWizard.class);
 
 	// Business objects
 	private Keyring keyring;

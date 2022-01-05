@@ -19,8 +19,7 @@ import javax.jcr.observation.Event;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.eclipse.ui.jcr.DefaultNodeLabelProvider;
 import org.argeo.eclipse.ui.jcr.NodeElementComparer;
@@ -57,7 +56,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /** JCR based view of the execution modules. */
 public class JcrExecutionModulesView extends ViewPart implements SlcTypes, SlcNames {
-	private final static Log log = LogFactory.getLog(JcrExecutionModulesView.class);
+	private final static CmsLog log = CmsLog.getLog(JcrExecutionModulesView.class);
 
 	public static final String ID = ClientUiPlugin.ID + ".jcrExecutionModulesView";
 

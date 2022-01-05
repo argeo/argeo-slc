@@ -10,5 +10,5 @@
 
 	<reference id="userAdmin" interface="org.osgi.service.useradmin.UserAdmin" />
 	<reference id="userTransaction" interface="org.argeo.osgi.transaction.WorkTransaction" />
-	<reference id="keyring" interface="org.argeo.api.security.CryptoKeyring" />
+	<reference id="keyring" interface="org.argeo.cms.security.CryptoKeyring" />
 </beans:beans>

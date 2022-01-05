@@ -3,8 +3,7 @@ package org.argeo.slc.repo.maven;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -17,7 +16,7 @@ public class AetherUtils {
 	public static final Pattern SNAPSHOT_TIMESTAMP = Pattern
 			.compile("^(.*-)?([0-9]{8}.[0-9]{6}-[0-9]+)$");
 
-	private final static Log log = LogFactory.getLog(AetherUtils.class);
+	private final static CmsLog log = CmsLog.getLog(AetherUtils.class);
 
 	/** Logs a dependency node and its transitive dependencies as a tree. */
 	public static void logDependencyNode(int depth,

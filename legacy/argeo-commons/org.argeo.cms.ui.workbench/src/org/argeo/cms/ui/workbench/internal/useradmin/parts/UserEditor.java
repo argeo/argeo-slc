@@ -5,13 +5,13 @@ import java.util.List;
 
 import javax.jcr.Repository;
 
-import org.argeo.api.NodeInstance;
+import org.argeo.api.cms.CmsData;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.ui.workbench.WorkbenchUiPlugin;
 import org.argeo.cms.ui.workbench.internal.useradmin.UiUserAdminListener;
 import org.argeo.cms.ui.workbench.internal.useradmin.UserAdminWrapper;
+import org.argeo.util.naming.LdapAttrs;
 import org.argeo.cms.auth.UserAdminUtils;
-import org.argeo.naming.LdapAttrs;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -39,7 +39,7 @@ public class UserEditor extends FormEditor {
 	private Repository repository;
 	private UserAdminWrapper userAdminWrapper;
 	private UserAdmin userAdmin;
-	private NodeInstance nodeInstance;
+	private CmsData nodeInstance;
 
 	// Context
 	private User user;
@@ -207,7 +207,7 @@ public class UserEditor extends FormEditor {
 		this.repository = repository;
 	}
 
-	public void setNodeInstance(NodeInstance nodeInstance) {
+	public void setNodeInstance(CmsData nodeInstance) {
 		this.nodeInstance = nodeInstance;
 	}
 

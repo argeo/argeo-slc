@@ -9,7 +9,7 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
-import org.argeo.api.security.Keyring;
+import org.argeo.cms.security.Keyring;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.client.ui.dist.DistPlugin;
@@ -29,7 +29,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * {@code NodeType.NT_UNSTRUCTURED}
  */
 public class DeleteWorkspace extends AbstractHandler {
-	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
+	// private static final CmsLog log = CmsLog.getLog(DeleteWorkspace.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".deleteWorkspace";
 	public final static String DEFAULT_LABEL = "Clear";

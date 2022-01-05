@@ -5,8 +5,7 @@ import java.net.URL;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.build.License;
@@ -36,7 +35,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 /** Show details for a given bundle. */
 public class BundleDetailPage extends FormPage implements SlcNames {
-	private final static Log log = LogFactory.getLog(BundleDetailPage.class);
+	private final static CmsLog log = CmsLog.getLog(BundleDetailPage.class);
 
 	final static String PAGE_ID = "BundleDetailPage";
 

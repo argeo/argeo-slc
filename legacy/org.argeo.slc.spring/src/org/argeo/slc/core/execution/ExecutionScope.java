@@ -1,7 +1,6 @@
 package org.argeo.slc.core.execution;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.execution.ExecutionContext;
@@ -17,7 +16,7 @@ import org.springframework.beans.factory.config.Scope;
  * reused across an execution.
  */
 public class ExecutionScope implements Scope {
-	private final static Log log = LogFactory.getLog(ExecutionScope.class);
+	private final static CmsLog log = CmsLog.getLog(ExecutionScope.class);
 
 	private final ThreadLocal<ExecutionStack> executionStack = new ThreadLocal<ExecutionStack>();
 	public final ThreadLocal<String> executionStackBeanName = new ThreadLocal<String>();

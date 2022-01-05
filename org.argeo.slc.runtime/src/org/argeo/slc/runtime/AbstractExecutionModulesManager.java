@@ -2,8 +2,7 @@ package org.argeo.slc.runtime;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
@@ -13,7 +12,7 @@ import org.argeo.slc.execution.RealizedFlow;
 /** Provides the base feature of an execution module manager. */
 public abstract class AbstractExecutionModulesManager implements
 		ExecutionModulesManager {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(AbstractExecutionModulesManager.class);
 
 	// private List<FilteredNotifier> filteredNotifiers = Collections

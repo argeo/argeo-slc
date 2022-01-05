@@ -5,8 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.init.osgi.OsgiBoot;
 import org.argeo.slc.SlcException;
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
@@ -21,7 +20,7 @@ import junit.framework.TestCase;
 
 @SuppressWarnings("restriction")
 public abstract class AbstractOsgiRuntimeTestCase extends TestCase {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(AbstractOsgiRuntimeTestCase.class);
 
 	protected OsgiBoot osgiBoot = null;

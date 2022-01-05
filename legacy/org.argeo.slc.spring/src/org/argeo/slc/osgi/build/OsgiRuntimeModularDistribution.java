@@ -3,8 +3,7 @@ package org.argeo.slc.osgi.build;
 import java.net.URL;
 import java.util.SortedMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.core.build.VersionedResourceDistribution;
@@ -17,7 +16,7 @@ import org.springframework.core.io.ResourceLoader;
 
 public class OsgiRuntimeModularDistribution extends
 		AbstractOsgiModularDistribution implements ResourceLoaderAware {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(OsgiRuntimeModularDistribution.class);
 
 	private ResourceLoader resourceLoader;

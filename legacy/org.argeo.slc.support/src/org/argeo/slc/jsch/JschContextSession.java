@@ -1,7 +1,6 @@
 package org.argeo.slc.jsch;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -10,7 +9,7 @@ import com.jcraft.jsch.Session;
 /** Caches a JSCH session in the the ssh target. */
 public class JschContextSession extends AbstractJschTask implements
 		InitializingBean, DisposableBean {
-	private final static Log log = LogFactory.getLog(JschContextSession.class);
+	private final static CmsLog log = CmsLog.getLog(JschContextSession.class);
 	private Boolean autoconnect = false;
 
 	@Override

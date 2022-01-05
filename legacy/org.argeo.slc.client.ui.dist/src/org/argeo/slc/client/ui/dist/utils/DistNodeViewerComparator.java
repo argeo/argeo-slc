@@ -10,8 +10,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.eclipse.ui.GenericTableComparator;
 import org.argeo.slc.SlcException;
 import org.eclipse.jface.viewers.Viewer;
@@ -20,7 +19,7 @@ import org.eclipse.jface.viewers.Viewer;
 public class DistNodeViewerComparator extends GenericTableComparator {
 	private static final long serialVersionUID = -5966120108210992211L;
 
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(DistNodeViewerComparator.class);
 
 	// Jcr property type goes to 12

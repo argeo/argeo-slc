@@ -1,13 +1,12 @@
 package org.argeo.slc.osgi;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.core.execution.AbstractSpringExecutionModule;
 import org.argeo.slc.execution.ExecutionContext;
 
 @Deprecated
 public class OsgiExecutionModule extends AbstractSpringExecutionModule {
-	private final static Log log = LogFactory.getLog(OsgiExecutionModule.class);
+	private final static CmsLog log = CmsLog.getLog(OsgiExecutionModule.class);
 
 	public OsgiExecutionModule() {
 		log.error("######## ERROR - DEPRECATED APPROACH USED ########");

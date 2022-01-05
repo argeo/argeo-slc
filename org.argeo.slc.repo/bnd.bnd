@@ -4,7 +4,6 @@ javax.xml.transform.*,\
 javax.xml.parsers.*,\
 javax.jcr.nodetype,\
 org.osgi.*;version=0.0.0,\
-org.argeo.api,\
 *
 
 Require-Capability: cms.datamodel; filter:="(name=slc)"

@@ -9,8 +9,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
@@ -18,8 +17,7 @@ import org.argeo.slc.repo.NodeIndexer;
 
 /** Generic operations on a JCR-based repo. */
 abstract class AbstractJcrRepoManager {
-	private final static Log log = LogFactory
-			.getLog(AbstractJcrRepoManager.class);
+	private final static CmsLog log = CmsLog.getLog(AbstractJcrRepoManager.class);
 	private String securityWorkspace = "security";
 
 	private Repository jcrRepository;
@@ -33,8 +31,7 @@ abstract class AbstractJcrRepoManager {
 	public void init() {
 		try {
 			adminSession = jcrRepository.login();
-			String[] workspaceNames = adminSession.getWorkspace()
-					.getAccessibleWorkspaceNames();
+			String[] workspaceNames = adminSession.getWorkspace().getAccessibleWorkspaceNames();
 			for (String workspaceName : workspaceNames) {
 				if (workspaceName.equals(securityWorkspace))
 					continue;
@@ -62,16 +59,14 @@ abstract class AbstractJcrRepoManager {
 		try {
 			try {
 				jcrRepository.login(workspaceName);
-				throw new SlcException("Workspace " + workspaceName
-						+ " exists already.");
+				throw new SlcException("Workspace " + workspaceName + " exists already.");
 			} catch (NoSuchWorkspaceException e) {
 				// try to create workspace
 				adminSession.getWorkspace().createWorkspace(workspaceName);
 				workspaceInit(workspaceName);
 			}
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot create workspace " + workspaceName,
-					e);
+			throw new SlcException("Cannot create workspace " + workspaceName, e);
 		}
 	}
 
@@ -80,10 +75,8 @@ abstract class AbstractJcrRepoManager {
 		try {
 			workspaceAdminSession = jcrRepository.login(workspaceName);
 			workspaceSessions.put(workspaceName, adminSession);
-			JcrUtils.addPrivilege(workspaceAdminSession, "/",
-					SlcConstants.ROLE_SLC, "jcr:all");
-			WorkspaceIndexer workspaceIndexer = new WorkspaceIndexer(
-					workspaceAdminSession, nodeIndexers);
+			JcrUtils.addPrivilege(workspaceAdminSession, "/", SlcConstants.ROLE_SLC, "jcr:all");
+			WorkspaceIndexer workspaceIndexer = new WorkspaceIndexer(workspaceAdminSession, nodeIndexers);
 			workspaceIndexers.put(workspaceName, workspaceIndexer);
 		} catch (RepositoryException e) {
 			log.error("Cannot initialize workspace " + workspaceName, e);

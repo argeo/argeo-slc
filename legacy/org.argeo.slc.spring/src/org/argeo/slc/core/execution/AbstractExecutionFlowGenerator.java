@@ -3,8 +3,7 @@ package org.argeo.slc.core.execution;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.MutablePropertyValues;
@@ -18,7 +17,7 @@ import org.springframework.core.PriorityOrdered;
 
 public abstract class AbstractExecutionFlowGenerator implements
 		BeanFactoryPostProcessor, PriorityOrdered {
-	private final Log log = LogFactory.getLog(getClass());
+	private final CmsLog log = CmsLog.getLog(getClass());
 
 	protected abstract Map<String, BeanDefinition> createExecutionFlowDefinitions(
 			ConfigurableListableBeanFactory beanFactory);

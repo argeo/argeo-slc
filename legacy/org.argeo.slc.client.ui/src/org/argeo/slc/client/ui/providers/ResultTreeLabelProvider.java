@@ -17,7 +17,7 @@ import org.eclipse.swt.graphics.Image;
 
 /** Basic label provider for a tree of result */
 public class ResultTreeLabelProvider extends LabelProvider {
-	// private final static Log log = LogFactory
+	// private final static CmsLog log = CmsLog
 	// .getLog(ResultTreeLabelProvider.class);
 
 	@Override

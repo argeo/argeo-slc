@@ -18,8 +18,7 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.ExecutionResources;
 import org.argeo.slc.core.execution.tasks.SystemCall;
@@ -32,7 +31,7 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.Session;
 
 public class RemoteExec extends AbstractJschTask {
-	private final static Log log = LogFactory.getLog(RemoteExec.class);
+	private final static CmsLog log = CmsLog.getLog(RemoteExec.class);
 
 	private Boolean failOnBadExitStatus = true;
 

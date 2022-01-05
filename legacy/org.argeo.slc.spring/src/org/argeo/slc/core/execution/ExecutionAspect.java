@@ -1,7 +1,6 @@
 package org.argeo.slc.core.execution;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionStack;
@@ -13,7 +12,7 @@ import org.aspectj.lang.annotation.Pointcut;
 @Aspect
 /** Aspect intercepting calls on execution flows and contexts. */
 public class ExecutionAspect {
-	private final static Log log = LogFactory.getLog(ExecutionAspect.class);
+	private final static CmsLog log = CmsLog.getLog(ExecutionAspect.class);
 
 	private ExecutionStack executionStack;
 	private ExecutionContext executionContext;

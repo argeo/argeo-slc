@@ -7,8 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.springframework.core.io.Resource;
 
@@ -17,7 +16,7 @@ import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.Session;
 
 public class ScpFrom extends AbstractJschTask {
-	private final static Log log = LogFactory.getLog(ScpFrom.class);
+	private final static CmsLog log = CmsLog.getLog(ScpFrom.class);
 
 	private Resource localResource;
 	private String remotePath;

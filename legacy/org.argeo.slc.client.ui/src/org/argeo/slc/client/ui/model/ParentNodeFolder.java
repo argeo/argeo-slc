@@ -23,7 +23,7 @@ import org.argeo.slc.SlcTypes;
  * and keeps a reference to its parent.
  */
 public class ParentNodeFolder extends ResultParent {
-	// private final static Log log = LogFactory.getLog(ParentNodeFolder.class);
+	// private final static CmsLog log = CmsLog.getLog(ParentNodeFolder.class);
 
 	private Node node = null;
 

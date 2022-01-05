@@ -10,14 +10,13 @@ import java.util.Set;
 
 import org.apache.commons.exec.Executor;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
 
 /** Rebuild an SRPM in mock. (Historical) Replaces the build-mock.sh script. */
 public class BuildInMock implements Runnable {
-	private final static Log log = LogFactory.getLog(BuildInMock.class);
+	private final static CmsLog log = CmsLog.getLog(BuildInMock.class);
 
 	/** Mock flavour provided by the EPEL repository */
 	public final static String EPEL = "EPEL";

@@ -8,8 +8,7 @@ import javax.jcr.Property;
 import javax.jcr.Session;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.SlcException;
@@ -23,7 +22,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
  * repositories.
  */
 public class MavenWrapper extends BndWrapper implements Runnable {
-	private final static Log log = LogFactory.getLog(MavenWrapper.class);
+	private final static CmsLog log = CmsLog.getLog(MavenWrapper.class);
 
 	private String sourceCoords;
 

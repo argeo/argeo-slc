@@ -15,7 +15,7 @@ import org.w3c.dom.NodeList;
  * converting it into bean definitions.
  */
 public class NamespaceUtils {
-	// private final static Log log = LogFactory.getLog(NamespaceUtils.class);
+	// private final static CmsLog log = CmsLog.getLog(NamespaceUtils.class);
 
 	/**
 	 * Returns the value defined either: directly by the the 'value' attribute,

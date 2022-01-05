@@ -40,7 +40,7 @@ import org.eclipse.ui.part.ViewPart;
 
 public class ArtifactsBrowser extends ViewPart implements DistConstants,
 		RepoConstants {
-	// private final static Log log = LogFactory.getLog(ArtifactsBrowser.class);
+	// private final static CmsLog log = CmsLog.getLog(ArtifactsBrowser.class);
 	public final static String ID = DistPlugin.PLUGIN_ID + ".artifactsBrowser";
 
 	/* DEPENDENCY INJECTION */

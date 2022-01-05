@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.deploy.DigestCheck;
 import org.argeo.slc.core.deploy.ResourceSet;
@@ -16,7 +15,7 @@ import org.springframework.core.io.Resource;
 import com.jcraft.jsch.Session;
 
 public class SshFilesDeployment extends AbstractJschTask implements Runnable {
-	private final static Log log = LogFactory.getLog(SshFilesDeployment.class);
+	private final static CmsLog log = CmsLog.getLog(SshFilesDeployment.class);
 	private String targetBase = "";
 	private ResourceSet resourceSet;
 	/**

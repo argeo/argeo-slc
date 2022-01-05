@@ -2,8 +2,7 @@ package org.argeo.slc.runtime;
 
 import java.util.Stack;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
@@ -14,7 +13,7 @@ import org.argeo.slc.primitive.PrimitiveUtils;
 /** Manage parameters that need to be set during the instantiation of a flow */
 public class InstantiationManager {
 
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(InstantiationManager.class);
 
 	private ThreadLocal<Stack<ExecutionFlow>> flowStack = new ThreadLocal<Stack<ExecutionFlow>>();

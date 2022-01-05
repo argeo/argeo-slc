@@ -10,8 +10,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
 
@@ -21,7 +20,7 @@ public class SendMail implements Runnable {
 	// http://java.sun.com/developer/onlineTraining/JavaMail/contents.html#JavaMailUsage
 	// http://java.sun.com/products/javamail/FAQ.html#gmail
 
-	private final static Log log = LogFactory.getLog(SendMail.class);
+	private final static CmsLog log = CmsLog.getLog(SendMail.class);
 
 	private String host;
 	private String from;

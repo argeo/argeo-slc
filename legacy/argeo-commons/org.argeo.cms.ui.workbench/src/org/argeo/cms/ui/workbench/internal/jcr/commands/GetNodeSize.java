@@ -22,7 +22,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Compute an approximative size for the selected node(s) */
 public class GetNodeSize extends AbstractHandler {
-	// private final static Log log = LogFactory.getLog(GetNodeSize.class);
+	// private final static CmsLog log = CmsLog.getLog(GetNodeSize.class);
 
 	public final static String ID = WorkbenchUiPlugin.PLUGIN_ID + ".getNodeSize";
 

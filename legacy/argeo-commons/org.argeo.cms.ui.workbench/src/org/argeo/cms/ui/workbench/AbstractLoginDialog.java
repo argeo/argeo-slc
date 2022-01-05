@@ -8,8 +8,7 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -28,7 +27,7 @@ import org.osgi.framework.FrameworkUtil;
 public abstract class AbstractLoginDialog extends TrayDialog implements CallbackHandler {
 	private static final long serialVersionUID = -8046708963512717709L;
 
-	private final static Log log = LogFactory.getLog(AbstractLoginDialog.class);
+	private final static CmsLog log = CmsLog.getLog(AbstractLoginDialog.class);
 
 	private Thread modalContextThread = null;
 	boolean processCallbacks = false;

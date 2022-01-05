@@ -5,8 +5,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NodeType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
@@ -21,7 +20,7 @@ import org.osgi.framework.Constants;
  * files and other non artifact files).
  */
 public class ArtifactIndexer implements NodeIndexer, SlcNames {
-	private Log log = LogFactory.getLog(ArtifactIndexer.class);
+	private CmsLog log = CmsLog.getLog(ArtifactIndexer.class);
 	private Boolean force = false;
 
 	public Boolean support(String path) {
@@ -57,65 +56,49 @@ public class ArtifactIndexer implements NodeIndexer, SlcNames {
 			artifact = AetherUtils.convertPathToArtifact(relativePath, null);
 			// support() guarantees that artifact won't be null, no NPE check
 			fileNode.addMixin(SlcTypes.SLC_ARTIFACT);
-			fileNode.setProperty(SlcNames.SLC_ARTIFACT_ID,
-					artifact.getArtifactId());
+			fileNode.setProperty(SlcNames.SLC_ARTIFACT_ID, artifact.getArtifactId());
 			fileNode.setProperty(SlcNames.SLC_GROUP_ID, artifact.getGroupId());
-			fileNode.setProperty(SlcNames.SLC_ARTIFACT_VERSION,
-					artifact.getVersion());
-			fileNode.setProperty(SlcNames.SLC_ARTIFACT_EXTENSION,
-					artifact.getExtension());
+			fileNode.setProperty(SlcNames.SLC_ARTIFACT_VERSION, artifact.getVersion());
+			fileNode.setProperty(SlcNames.SLC_ARTIFACT_EXTENSION, artifact.getExtension());
 			// can be null but ok for JCR API
-			fileNode.setProperty(SlcNames.SLC_ARTIFACT_CLASSIFIER,
-					artifact.getClassifier());
+			fileNode.setProperty(SlcNames.SLC_ARTIFACT_CLASSIFIER, artifact.getClassifier());
 			JcrUtils.updateLastModified(fileNode);
 
 			// make sure there are checksums
 			String shaNodeName = fileNode.getName() + ".sha1";
 			if (!fileNode.getParent().hasNode(shaNodeName)) {
 				String sha = JcrUtils.checksumFile(fileNode, "SHA-1");
-				JcrUtils.copyBytesAsFile(fileNode.getParent(), shaNodeName,
-						sha.getBytes());
+				JcrUtils.copyBytesAsFile(fileNode.getParent(), shaNodeName, sha.getBytes());
 			}
 			String md5NodeName = fileNode.getName() + ".md5";
 			if (!fileNode.getParent().hasNode(md5NodeName)) {
 				String md5 = JcrUtils.checksumFile(fileNode, "MD5");
-				JcrUtils.copyBytesAsFile(fileNode.getParent(), md5NodeName,
-						md5.getBytes());
+				JcrUtils.copyBytesAsFile(fileNode.getParent(), md5NodeName, md5.getBytes());
 			}
 
 			// Create a default pom if none already exist
 			String fileNodeName = fileNode.getName();
 			String pomName = null;
 			if (fileNodeName.endsWith(".jar"))
-				pomName = fileNodeName.substring(0, fileNodeName.length()
-						- ".jar".length())
-						+ ".pom";
+				pomName = fileNodeName.substring(0, fileNodeName.length() - ".jar".length()) + ".pom";
 
 			if (pomName != null && !fileNode.getParent().hasNode(pomName)) {
 				String pom = generatePomForBundle(fileNode);
-				Node pomNode = JcrUtils.copyBytesAsFile(fileNode.getParent(),
-						pomName, pom.getBytes());
+				Node pomNode = JcrUtils.copyBytesAsFile(fileNode.getParent(), pomName, pom.getBytes());
 				// corresponding check sums
 				String sha = JcrUtils.checksumFile(pomNode, "SHA-1");
-				JcrUtils.copyBytesAsFile(fileNode.getParent(), pomName
-						+ ".sha1", sha.getBytes());
+				JcrUtils.copyBytesAsFile(fileNode.getParent(), pomName + ".sha1", sha.getBytes());
 				String md5 = JcrUtils.checksumFile(fileNode, "MD5");
-				JcrUtils.copyBytesAsFile(fileNode.getParent(),
-						pomName + ".md5", md5.getBytes());
+				JcrUtils.copyBytesAsFile(fileNode.getParent(), pomName + ".md5", md5.getBytes());
 			}
 
 			// set higher levels
 			Node artifactVersionBase = fileNode.getParent();
-			if (!artifactVersionBase
-					.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE)) {
-				artifactVersionBase
-						.addMixin(SlcTypes.SLC_ARTIFACT_VERSION_BASE);
-				artifactVersionBase.setProperty(SlcNames.SLC_ARTIFACT_VERSION,
-						artifact.getBaseVersion());
-				artifactVersionBase.setProperty(SlcNames.SLC_ARTIFACT_ID,
-						artifact.getArtifactId());
-				artifactVersionBase.setProperty(SlcNames.SLC_GROUP_ID,
-						artifact.getGroupId());
+			if (!artifactVersionBase.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE)) {
+				artifactVersionBase.addMixin(SlcTypes.SLC_ARTIFACT_VERSION_BASE);
+				artifactVersionBase.setProperty(SlcNames.SLC_ARTIFACT_VERSION, artifact.getBaseVersion());
+				artifactVersionBase.setProperty(SlcNames.SLC_ARTIFACT_ID, artifact.getArtifactId());
+				artifactVersionBase.setProperty(SlcNames.SLC_GROUP_ID, artifact.getGroupId());
 			}
 			JcrUtils.updateLastModified(artifactVersionBase);
 
@@ -127,10 +110,8 @@ public class ArtifactIndexer implements NodeIndexer, SlcNames {
 			Node artifactBase = artifactVersionBase.getParent();
 			if (!artifactBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
 				artifactBase.addMixin(SlcTypes.SLC_ARTIFACT_BASE);
-				artifactBase.setProperty(SlcNames.SLC_ARTIFACT_ID,
-						artifact.getArtifactId());
-				artifactBase.setProperty(SlcNames.SLC_GROUP_ID,
-						artifact.getGroupId());
+				artifactBase.setProperty(SlcNames.SLC_ARTIFACT_ID, artifact.getArtifactId());
+				artifactBase.setProperty(SlcNames.SLC_GROUP_ID, artifact.getGroupId());
 			}
 			JcrUtils.updateLastModified(artifactBase);
 
@@ -141,17 +122,14 @@ public class ArtifactIndexer implements NodeIndexer, SlcNames {
 				// + " is also artifact base");
 				// }
 				groupBase.addMixin(SlcTypes.SLC_GROUP_BASE);
-				groupBase.setProperty(SlcNames.SLC_GROUP_BASE_ID,
-						artifact.getGroupId());
+				groupBase.setProperty(SlcNames.SLC_GROUP_BASE_ID, artifact.getGroupId());
 			}
-			JcrUtils.updateLastModifiedAndParents(groupBase,
-					RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH);
+			JcrUtils.updateLastModifiedAndParents(groupBase, RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH);
 
 			if (log.isTraceEnabled())
 				log.trace("Indexed artifact " + artifact + " on " + fileNode);
 		} catch (Exception e) {
-			throw new SlcException("Cannot index artifact " + artifact
-					+ " metadata on node " + fileNode, e);
+			throw new SlcException("Cannot index artifact " + artifact + " metadata on node " + fileNode, e);
 		}
 	}
 
@@ -170,71 +148,55 @@ public class ArtifactIndexer implements NodeIndexer, SlcNames {
 	private String generatePomForBundle(Node n) throws RepositoryException {
 		StringBuffer p = new StringBuffer();
 		p.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		p.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
+		p.append(
+				"<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
 		p.append("<modelVersion>4.0.0</modelVersion>");
 
 		// Categorized name version
-		p.append("<groupId>").append(JcrUtils.get(n, SLC_GROUP_ID))
-				.append("</groupId>\n");
-		p.append("<artifactId>").append(JcrUtils.get(n, SLC_ARTIFACT_ID))
-				.append("</artifactId>\n");
-		p.append("<version>").append(JcrUtils.get(n, SLC_ARTIFACT_VERSION))
-				.append("</version>\n");
+		p.append("<groupId>").append(JcrUtils.get(n, SLC_GROUP_ID)).append("</groupId>\n");
+		p.append("<artifactId>").append(JcrUtils.get(n, SLC_ARTIFACT_ID)).append("</artifactId>\n");
+		p.append("<version>").append(JcrUtils.get(n, SLC_ARTIFACT_VERSION)).append("</version>\n");
 		// TODO make it more generic
 		p.append("<packaging>jar</packaging>\n");
 		if (n.hasProperty(SLC_ + Constants.BUNDLE_NAME))
-			p.append("<name>")
-					.append(JcrUtils.get(n, SLC_ + Constants.BUNDLE_NAME))
-					.append("</name>\n");
+			p.append("<name>").append(JcrUtils.get(n, SLC_ + Constants.BUNDLE_NAME)).append("</name>\n");
 		if (n.hasProperty(SLC_ + Constants.BUNDLE_DESCRIPTION))
-			p.append("<description>")
-					.append(JcrUtils
-							.get(n, SLC_ + Constants.BUNDLE_DESCRIPTION))
+			p.append("<description>").append(JcrUtils.get(n, SLC_ + Constants.BUNDLE_DESCRIPTION))
 					.append("</description>\n");
 
 		// Dependencies in case of a distribution
 		if (n.isNodeType(SlcTypes.SLC_MODULAR_DISTRIBUTION)) {
-			p.append(getDependenciesSnippet(n.getNode(SlcNames.SLC_MODULES)
-					.getNodes()));
-			p.append(getDependencyManagementSnippet(n.getNode(
-					SlcNames.SLC_MODULES).getNodes()));
+			p.append(getDependenciesSnippet(n.getNode(SlcNames.SLC_MODULES).getNodes()));
+			p.append(getDependencyManagementSnippet(n.getNode(SlcNames.SLC_MODULES).getNodes()));
 		}
 		p.append("</project>\n");
 		return p.toString();
 	}
 
-	private String getDependenciesSnippet(NodeIterator nit)
-			throws RepositoryException {
+	private String getDependenciesSnippet(NodeIterator nit) throws RepositoryException {
 		StringBuilder b = new StringBuilder();
 		b.append("<dependencies>\n");
 		while (nit.hasNext()) {
 			Node currModule = nit.nextNode();
 			if (currModule.isNodeType(SlcTypes.SLC_MODULE_COORDINATES)) {
-				b.append(getDependencySnippet(
-						currModule.getProperty(SlcNames.SLC_CATEGORY)
-								.getString(),
-						currModule.getProperty(SlcNames.SLC_NAME).getString(),
-						null));
+				b.append(getDependencySnippet(currModule.getProperty(SlcNames.SLC_CATEGORY).getString(),
+						currModule.getProperty(SlcNames.SLC_NAME).getString(), null));
 			}
 		}
 		b.append("</dependencies>\n");
 		return b.toString();
 	}
 
-	private String getDependencyManagementSnippet(NodeIterator nit)
-			throws RepositoryException {
+	private String getDependencyManagementSnippet(NodeIterator nit) throws RepositoryException {
 		StringBuilder b = new StringBuilder();
 		b.append("<dependencyManagement>\n");
 		b.append("<dependencies>\n");
 		while (nit.hasNext()) {
 			Node currModule = nit.nextNode();
 			if (currModule.isNodeType(SlcTypes.SLC_MODULE_COORDINATES)) {
-				b.append(getDependencySnippet(
-						currModule.getProperty(SlcNames.SLC_CATEGORY)
-								.getString(),
+				b.append(getDependencySnippet(currModule.getProperty(SlcNames.SLC_CATEGORY).getString(),
 						currModule.getProperty(SlcNames.SLC_NAME).getString(),
-						currModule.getProperty(SlcNames.SLC_VERSION)
-								.getString()));
+						currModule.getProperty(SlcNames.SLC_VERSION).getString()));
 			}
 		}
 		b.append("</dependencies>\n");
@@ -242,8 +204,7 @@ public class ArtifactIndexer implements NodeIndexer, SlcNames {
 		return b.toString();
 	}
 
-	private String getDependencySnippet(String category, String name,
-			String version) {
+	private String getDependencySnippet(String category, String name, String version) {
 		StringBuilder b = new StringBuilder();
 		b.append("<dependency>\n");
 		b.append("\t<groupId>").append(category).append("</groupId>\n");

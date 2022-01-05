@@ -10,8 +10,7 @@ import java.util.List;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
 import org.springframework.core.io.Resource;
@@ -19,7 +18,7 @@ import org.springframework.core.io.UrlResource;
 
 /** Generates an SRPM from a spec file */
 public class CreateSrpm implements Runnable {
-	private final static Log log = LogFactory.getLog(CreateSrpm.class);
+	private final static CmsLog log = CmsLog.getLog(CreateSrpm.class);
 
 	private File topdir;
 

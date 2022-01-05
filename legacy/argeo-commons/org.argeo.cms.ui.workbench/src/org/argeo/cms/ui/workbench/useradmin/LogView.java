@@ -2,8 +2,8 @@ package org.argeo.cms.ui.workbench.useradmin;
 
 import java.util.ArrayList;
 
-import org.argeo.api.ArgeoLogListener;
-import org.argeo.api.ArgeoLogger;
+import org.argeo.cms.ArgeoLogListener;
+import org.argeo.cms.ArgeoLogger;
 import org.argeo.cms.ui.workbench.WorkbenchUiPlugin;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.LabelProvider;

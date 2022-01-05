@@ -9,8 +9,7 @@ import java.util.List;
 
 import javax.security.auth.Subject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionStep;
@@ -20,7 +19,7 @@ import org.argeo.slc.execution.RealizedFlow;
 /** Thread of a single execution */
 public class ExecutionThread extends Thread {
 	public final static String SYSPROP_EXECUTION_AUTO_UPGRADE = "slc.execution.autoupgrade";
-	private final static Log log = LogFactory.getLog(ExecutionThread.class);
+	private final static CmsLog log = CmsLog.getLog(ExecutionThread.class);
 
 	private ExecutionModulesManager executionModulesManager;
 	private final RealizedFlow realizedFlow;

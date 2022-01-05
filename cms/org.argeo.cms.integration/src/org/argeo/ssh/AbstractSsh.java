@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ClientChannel;
 import org.apache.sshd.client.channel.ClientChannelEvent;
@@ -19,10 +17,11 @@ import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.client.subsystem.sftp.fs.SftpFileSystemProvider;
 import org.apache.sshd.common.util.io.NoCloseInputStream;
 import org.apache.sshd.common.util.io.NoCloseOutputStream;
+import org.argeo.api.cms.CmsLog;
 
 @SuppressWarnings("restriction")
 abstract class AbstractSsh {
-	private final static Log log = LogFactory.getLog(AbstractSsh.class);
+	private final static CmsLog log = CmsLog.getLog(AbstractSsh.class);
 
 	private static SshClient sshClient;
 	private static SftpFileSystemProvider sftpFileSystemProvider;

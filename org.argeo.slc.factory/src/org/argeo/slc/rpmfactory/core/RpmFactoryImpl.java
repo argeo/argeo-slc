@@ -17,8 +17,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
@@ -32,7 +31,7 @@ import org.argeo.slc.runtime.tasks.SystemCall;
  * components performing the various actions related to RPM build.
  */
 public class RpmFactoryImpl implements RpmFactory {
-	private Log log = LogFactory.getLog(RpmFactoryImpl.class);
+	private CmsLog log = CmsLog.getLog(RpmFactoryImpl.class);
 
 	private Repository rpmRepository;
 	private Repository distRepository;

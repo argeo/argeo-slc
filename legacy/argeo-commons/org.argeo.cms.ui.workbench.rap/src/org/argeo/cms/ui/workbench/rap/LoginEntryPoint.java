@@ -8,10 +8,9 @@ import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsAuth;
 import org.argeo.api.cms.CmsImageManager;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.api.cms.CmsView;
 import org.argeo.api.cms.UxContext;
 import org.argeo.cms.CmsException;
@@ -20,7 +19,6 @@ import org.argeo.cms.swt.CmsSwtUtils;
 import org.argeo.cms.swt.SimpleSwtUxContext;
 import org.argeo.cms.swt.auth.CmsLogin;
 import org.argeo.cms.swt.auth.CmsLoginShell;
-import org.argeo.eclipse.ui.specific.UiContext;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.swt.events.SelectionListener;
@@ -30,7 +28,7 @@ import org.eclipse.swt.widgets.Display;
 public class LoginEntryPoint implements EntryPoint, CmsView {
 	protected final static String HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
 	protected final static String HEADER_AUTHORIZATION = "Authorization";
-	private final static Log log = LogFactory.getLog(LoginEntryPoint.class);
+	private final static CmsLog log = CmsLog.getLog(LoginEntryPoint.class);
 	private LoginContext loginContext;
 	private UxContext uxContext = null;
 	private String uid;
@@ -45,7 +43,7 @@ public class LoginEntryPoint implements EntryPoint, CmsView {
 		CmsSwtUtils.registerCmsView(loginShell.getShell(), this);
 		try {
 			// try pre-auth
-			loginContext = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, loginShell);
+			loginContext = new LoginContext(CmsAuth.LOGIN_CONTEXT_USER, loginShell);
 			loginContext.login();
 		} catch (LoginException e) {
 			loginShell.createUi();

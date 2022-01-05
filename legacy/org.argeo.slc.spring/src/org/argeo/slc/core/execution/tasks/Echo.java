@@ -4,16 +4,15 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.springframework.core.io.Resource;
 
 public class Echo implements Runnable {
-	private final static Log defaultLog = LogFactory.getLog(Echo.class);
+	private final static CmsLog defaultLog = CmsLog.getLog(Echo.class);
 	private Resource writeTo = null;
 
-	private Log log;
+	private CmsLog log;
 	private Object message;
 
 	public void run() {
@@ -32,7 +31,7 @@ public class Echo implements Runnable {
 		}
 	}
 
-	private Log log() {
+	private CmsLog log() {
 		return log != null ? log : defaultLog;
 	}
 

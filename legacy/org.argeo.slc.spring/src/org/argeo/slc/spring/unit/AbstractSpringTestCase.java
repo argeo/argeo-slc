@@ -2,8 +2,7 @@ package org.argeo.slc.spring.unit;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -14,7 +13,7 @@ import junit.framework.TestCase;
 
 /** Helper for tests using a Spring application co,text. */
 public abstract class AbstractSpringTestCase extends TestCase {
-	protected final Log log = LogFactory.getLog(getClass());
+	protected final CmsLog log = CmsLog.getLog(getClass());
 	private ConfigurableApplicationContext context;
 
 	/**

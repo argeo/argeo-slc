@@ -7,18 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.helper.ProjectHelper2;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.springframework.core.io.Resource;
 
 public class AntRun implements Runnable {
-	private final static Log log = LogFactory.getLog(AntRun.class);
+	private final static CmsLog log = CmsLog.getLog(AntRun.class);
 
 	private Resource buildFile;
 	private File baseDir;

@@ -15,8 +15,7 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import javax.management.StandardMBean;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -45,7 +44,7 @@ public class OsgiExecutionModulesManager extends
 		AbstractExecutionModulesManager implements
 		OsgiServiceLifecycleListener, BundleListener {
 
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(OsgiExecutionModulesManager.class);
 
 	private BundlesManager bundlesManager;

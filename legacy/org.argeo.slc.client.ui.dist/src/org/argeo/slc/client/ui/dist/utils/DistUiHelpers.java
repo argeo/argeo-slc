@@ -8,15 +8,14 @@ import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.SlcTypes;
 import org.argeo.slc.client.ui.dist.DistConstants;
 
 public class DistUiHelpers implements DistConstants, SlcTypes, SlcNames {
-	private final static Log log = LogFactory.getLog(DistUiHelpers.class);
+	private final static CmsLog log = CmsLog.getLog(DistUiHelpers.class);
 	private final static DateFormat df = new SimpleDateFormat(DATE_TIME_FORMAT);
 
 	/**

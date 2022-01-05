@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.PrivilegedAction;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 
 import com.jcraft.jsch.JSch;
@@ -15,7 +14,7 @@ import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserAuthGSSAPIWithMIC;
 
 public abstract class AbstractJschTask implements Runnable {
-	private final Log log = LogFactory.getLog(getClass());
+	private final CmsLog log = CmsLog.getLog(getClass());
 
 	private SshTarget sshTarget;
 
@@ -121,7 +120,7 @@ public abstract class AbstractJschTask implements Runnable {
 	}
 
 	private static class JschLogger implements Logger {
-		private final Log log = LogFactory.getLog(JschLogger.class);
+		private final CmsLog log = CmsLog.getLog(JschLogger.class);
 
 		// TODO better support levels
 		@Override

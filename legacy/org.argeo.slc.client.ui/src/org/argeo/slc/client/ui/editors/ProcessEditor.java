@@ -11,7 +11,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsConstants;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -54,7 +54,7 @@ public class ProcessEditor extends FormEditor implements SlcTypes, SlcNames {
 		pushSession = new ServerPushSession();
 		pushSession.start();
 		try {
-			homeSession = repository.login(NodeConstants.HOME_WORKSPACE);
+			homeSession = repository.login(CmsConstants.HOME_WORKSPACE);
 			agentSession = repository.login();
 		} catch (RepositoryException e1) {
 			throw new SlcException("Cannot log in to repository");

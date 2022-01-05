@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -22,7 +21,7 @@ import org.springframework.core.Ordered;
 @SuppressWarnings(value = { "unchecked", "rawtypes" })
 public class MultipleServiceExporterPostProcessor implements
 		ApplicationListener, Ordered {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(MultipleServiceExporterPostProcessor.class);
 
 	private List<Class> interfaces = new ArrayList<Class>();

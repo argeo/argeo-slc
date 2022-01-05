@@ -21,7 +21,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Delete chosen artifacts from the current workspace */
 public class DeleteArtifacts extends AbstractHandler {
-	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
+	// private static final CmsLog log = CmsLog.getLog(DeleteWorkspace.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".deleteArtifacts";
 	public final static String DEFAULT_LABEL = "Delete selected items";

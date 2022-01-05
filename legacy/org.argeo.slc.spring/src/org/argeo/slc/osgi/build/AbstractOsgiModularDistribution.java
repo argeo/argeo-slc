@@ -8,8 +8,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -23,7 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 public abstract class AbstractOsgiModularDistribution implements
 		ModularDistribution, BundleContextAware, InitializingBean {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(AbstractOsgiModularDistribution.class);
 
 	private BundleContext bundleContext;

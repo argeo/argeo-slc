@@ -1,6 +1,6 @@
 package org.argeo.slc.repo;
 
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsConstants;
 
 /** SLC repository constants */
 public interface RepoConstants {
@@ -23,5 +23,5 @@ public interface RepoConstants {
 	String SLC_CATEGORY_ID = "SLC-Category";
 
 	// TODO find a more generic way
-	String DEFAULT_DEFAULT_WORKSPACE = NodeConstants.SYS_WORKSPACE;
+	String DEFAULT_DEFAULT_WORKSPACE = CmsConstants.SYS_WORKSPACE;
 }

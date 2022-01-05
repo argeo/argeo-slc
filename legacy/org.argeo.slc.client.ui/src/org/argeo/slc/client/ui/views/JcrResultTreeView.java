@@ -18,7 +18,7 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
@@ -125,7 +125,7 @@ public class JcrResultTreeView extends ViewPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		try {
-			session = repository.login(NodeConstants.HOME_WORKSPACE);
+			session = repository.login(CmsConstants.HOME_WORKSPACE);
 		} catch (RepositoryException e1) {
 			throw new SlcException("Cannot log in to repository");
 		}

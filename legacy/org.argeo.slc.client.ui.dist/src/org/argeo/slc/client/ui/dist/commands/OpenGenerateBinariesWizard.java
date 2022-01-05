@@ -15,7 +15,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Open a {@code GenerateBinariesWizard} wizard for the selected node */
 public class OpenGenerateBinariesWizard extends AbstractHandler {
-	// private static final Log log = LogFactory.getLog(DeleteWorkspace.class);
+	// private static final CmsLog log = CmsLog.getLog(DeleteWorkspace.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID
 			+ ".openGenerateBinariesWizard";

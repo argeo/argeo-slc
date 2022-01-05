@@ -1,7 +1,5 @@
 package org.argeo.cms.integration;
 
-import static org.argeo.api.NodeConstants.LOGIN_CONTEXT_USER;
-
 import java.io.IOException;
 import java.security.AccessControlContext;
 import java.security.PrivilegedAction;
@@ -13,6 +11,7 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.argeo.api.cms.CmsAuth;
 import org.argeo.cms.auth.RemoteAuthCallbackHandler;
 import org.argeo.cms.auth.RemoteAuthUtils;
 import org.argeo.cms.servlet.ServletHttpRequest;
@@ -46,7 +45,7 @@ public class CmsPrivateServletContext extends ServletContextHelper {
 		if ((pathInfo != null && (servletPath + pathInfo).equals(loginPage)) || servletPath.contentEquals(loginServlet))
 			return true;
 		try {
-			lc = new LoginContext(LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response));
+			lc = new LoginContext(CmsAuth.LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response));
 			lc.login();
 		} catch (LoginException e) {
 			lc = processUnauthorized(req, resp);

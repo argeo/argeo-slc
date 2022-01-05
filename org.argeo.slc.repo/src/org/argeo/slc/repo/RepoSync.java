@@ -27,8 +27,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.jcr.CmsJcrUtils;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
@@ -44,7 +43,7 @@ import org.xml.sax.SAXException;
  * we copy the content of the source workspace into the target one.
  */
 public class RepoSync implements Runnable {
-	private final static Log log = LogFactory.getLog(RepoSync.class);
+	private final static CmsLog log = CmsLog.getLog(RepoSync.class);
 
 	// Centralizes definition of workspaces that must be ignored by the sync.
 	private final static List<String> IGNORED_WKSP_LIST = Arrays.asList("security", "localrepo");

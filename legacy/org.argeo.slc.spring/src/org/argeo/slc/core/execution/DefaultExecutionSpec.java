@@ -3,8 +3,7 @@ package org.argeo.slc.core.execution;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
 import org.argeo.slc.execution.RefSpecAttribute;
 import org.argeo.slc.execution.RefValueChoice;
@@ -22,7 +21,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class DefaultExecutionSpec extends org.argeo.slc.runtime.DefaultExecutionSpec
 		implements BeanNameAware, ApplicationContextAware, InitializingBean {
 	private static final long serialVersionUID = 5159882223926926539L;
-	private final static Log log = LogFactory.getLog(DefaultExecutionSpec.class);
+	private final static CmsLog log = CmsLog.getLog(DefaultExecutionSpec.class);
 	private transient ApplicationContext applicationContext;
 
 	public DefaultExecutionSpec() {

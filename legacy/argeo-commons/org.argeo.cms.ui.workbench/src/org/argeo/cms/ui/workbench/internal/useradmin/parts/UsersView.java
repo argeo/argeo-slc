@@ -3,7 +3,7 @@ package org.argeo.cms.ui.workbench.internal.useradmin.parts;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.auth.CurrentUser;
@@ -19,8 +19,8 @@ import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserTableDefaultD
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.parts.LdifUsersTable;
-import org.argeo.naming.LdapAttrs;
-import org.argeo.naming.LdapObjs;
+import org.argeo.util.naming.LdapAttrs;
+import org.argeo.util.naming.LdapObjs;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -37,7 +37,7 @@ import org.osgi.service.useradmin.UserAdminListener;
 
 /** List all users with filter - based on Ldif userAdmin */
 public class UsersView extends ViewPart implements ArgeoNames {
-	// private final static Log log = LogFactory.getLog(UsersView.class);
+	// private final static CmsLog log = CmsLog.getLog(UsersView.class);
 
 	public final static String ID = WorkbenchUiPlugin.PLUGIN_ID + ".usersView";
 
@@ -61,7 +61,7 @@ public class UsersView extends ViewPart implements ArgeoNames {
 		columnDefs.add(new ColumnDefinition(new MailLP(), "E-mail", 150));
 		columnDefs.add(new ColumnDefinition(new DomainNameLP(), "Domain", 200));
 		// Only show technical DN to admin
-		if (CurrentUser.isInRole(NodeConstants.ROLE_ADMIN))
+		if (CurrentUser.isInRole(CmsConstants.ROLE_ADMIN))
 			columnDefs.add(new ColumnDefinition(new UserNameLP(),
 					"Distinguished Name", 300));
 

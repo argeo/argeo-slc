@@ -1,7 +1,6 @@
 package org.argeo.slc.client.ui.dist.commands;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;
@@ -16,7 +15,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Create a new empty workspace in the default local java repository */
 public class CreateLocalJavaWorkspace extends AbstractHandler {
-	private static final Log log = LogFactory
+	private static final CmsLog log = CmsLog
 			.getLog(CreateLocalJavaWorkspace.class);
 
 	// Exposes commands meta-info

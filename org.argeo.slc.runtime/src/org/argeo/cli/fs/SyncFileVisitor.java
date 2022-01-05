@@ -2,13 +2,12 @@ package org.argeo.cli.fs;
 
 import java.nio.file.Path;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.fs.BasicSyncFileVisitor;
 
 /** Synchronises two directory structures. */
 public class SyncFileVisitor extends BasicSyncFileVisitor {
-	private final static Log log = LogFactory.getLog(SyncFileVisitor.class);
+	private final static CmsLog log = CmsLog.getLog(SyncFileVisitor.class);
 
 	public SyncFileVisitor(Path sourceBasePath, Path targetBasePath, boolean delete, boolean recursive) {
 		super(sourceBasePath, targetBasePath, delete, recursive);

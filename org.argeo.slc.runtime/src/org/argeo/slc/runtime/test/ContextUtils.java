@@ -3,8 +3,7 @@ package org.argeo.slc.runtime.test;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestStatus;
 import org.argeo.slc.test.context.ContextAware;
@@ -12,7 +11,7 @@ import org.argeo.slc.test.context.ParentContextAware;
 
 /** Utilities for comparing and synchronising contexts. */
 public class ContextUtils {
-	private final static Log log = LogFactory.getLog(ContextUtils.class);
+	private final static CmsLog log = CmsLog.getLog(ContextUtils.class);
 
 	public static void compareReachedExpected(ContextAware contextAware,
 			TestResult testResult) {

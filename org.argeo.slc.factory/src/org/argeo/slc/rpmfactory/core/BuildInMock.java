@@ -10,15 +10,14 @@ import java.util.Set;
 
 import org.apache.commons.exec.Executor;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.rpmfactory.RpmFactory;
 import org.argeo.slc.runtime.tasks.SystemCall;
 
 /** Build an RPM in mock. */
 public class BuildInMock implements Runnable {
-	private final static Log log = LogFactory.getLog(BuildInMock.class);
+	private final static CmsLog log = CmsLog.getLog(BuildInMock.class);
 	private final static String NOARCH = "noarch";
 
 	private String rpmPackage = null;

@@ -2,13 +2,12 @@ package org.argeo.slc.core.deploy;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.core.test.context.AbstractInternalSpringTestCase;
 import org.springframework.core.io.Resource;
 
 public class DefaultResourceSetTest extends AbstractInternalSpringTestCase {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(DefaultResourceSetTest.class);
 
 	public void testListResources() {

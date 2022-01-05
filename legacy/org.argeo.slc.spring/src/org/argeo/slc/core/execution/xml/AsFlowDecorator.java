@@ -1,7 +1,6 @@
 package org.argeo.slc.core.execution.xml;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlow;
@@ -17,7 +16,7 @@ import org.w3c.dom.Node;
 
 /** Publishes a {@link Runnable} as an {@link ExecutionFlow} */
 public class AsFlowDecorator implements BeanDefinitionDecorator {
-	private Log log = LogFactory.getLog(AsFlowDecorator.class);
+	private CmsLog log = CmsLog.getLog(AsFlowDecorator.class);
 
 	public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder bean,
 			ParserContext ctx) {

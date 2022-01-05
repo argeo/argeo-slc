@@ -6,9 +6,8 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsAuth;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.CmsException;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.EntryPoint;
@@ -20,7 +19,7 @@ import org.eclipse.ui.PlatformUI;
  * unauthenticated access.
  */
 public class AnonymousEntryPoint implements EntryPoint {
-	private final static Log log = LogFactory.getLog(AnonymousEntryPoint.class);
+	private final static CmsLog log = CmsLog.getLog(AnonymousEntryPoint.class);
 
 	/**
 	 * How many seconds to wait before invalidating the session if the user has
@@ -41,7 +40,7 @@ public class AnonymousEntryPoint implements EntryPoint {
 
 		final LoginContext loginContext;
 		try {
-			loginContext = new LoginContext(NodeConstants.LOGIN_CONTEXT_ANONYMOUS,
+			loginContext = new LoginContext(CmsAuth.LOGIN_CONTEXT_ANONYMOUS,
 					subject);
 			loginContext.login();
 		} catch (LoginException e1) {

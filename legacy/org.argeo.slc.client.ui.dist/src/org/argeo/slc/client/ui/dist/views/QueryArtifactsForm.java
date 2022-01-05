@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Text;
 /** Query SLC Repo to get some artifacts given some predefined parameters */
 public class QueryArtifactsForm extends AbstractQueryArtifactsView implements
 		SlcNames {
-	// private static final Log log = LogFactory.getLog(QueryArtifactsForm.class);
+	// private static final CmsLog log = CmsLog.getLog(QueryArtifactsForm.class);
 	public static final String ID = DistPlugin.PLUGIN_ID + ".queryArtifactsForm";
 
 	// widgets

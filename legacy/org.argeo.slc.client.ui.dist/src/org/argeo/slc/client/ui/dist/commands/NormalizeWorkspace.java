@@ -12,9 +12,8 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.util.TraversingItemVisitor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.security.Keyring;
+import org.argeo.api.cms.CmsLog;
+import org.argeo.cms.security.Keyring;
 import org.argeo.eclipse.ui.jcr.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
@@ -43,7 +42,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * must sometimes be triggered manually
  */
 public class NormalizeWorkspace extends AbstractHandler implements SlcNames {
-	private final static Log log = LogFactory.getLog(NormalizeWorkspace.class);
+	private final static CmsLog log = CmsLog.getLog(NormalizeWorkspace.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".normalizeWorkspace";
 	public final static ImageDescriptor DEFAULT_ICON = DistPlugin.getImageDescriptor("icons/normalize.gif");

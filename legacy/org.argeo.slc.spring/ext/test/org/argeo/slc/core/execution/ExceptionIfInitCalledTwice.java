@@ -1,12 +1,11 @@
 package org.argeo.slc.core.execution;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.springframework.beans.factory.InitializingBean;
 
 public class ExceptionIfInitCalledTwice implements Runnable, InitializingBean {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(ExceptionIfInitCalledTwice.class);
 
 	private Boolean calledOnce = false;

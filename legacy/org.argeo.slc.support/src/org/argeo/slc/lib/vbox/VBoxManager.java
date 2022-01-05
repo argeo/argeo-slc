@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.tasks.SystemCall;
 import org.springframework.core.io.Resource;
 
 public class VBoxManager {
-	private final static Log log = LogFactory.getLog(VBoxManager.class);
+	private final static CmsLog log = CmsLog.getLog(VBoxManager.class);
 
 	private VBoxMachine vm;
 	private String executable = "VBoxManage";

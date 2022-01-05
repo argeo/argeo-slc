@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class ArtifactsTableConfigurer implements SlcNames, SlcTypes,
 		DistConstants {
-	// private final static Log log = LogFactory
+	// private final static CmsLog log = CmsLog
 	// .getLog(ArtifactsTableConfigurer.class);
 	// Used in the comparator to be able to retrieve the value from a row
 	// knowing the corresponding column index.

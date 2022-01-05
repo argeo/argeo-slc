@@ -1,7 +1,6 @@
 package org.argeo.eclipse.spring;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.eclipse.ui.EclipseUiException;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -11,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 
 /** Allows to declare Eclipse commands as Spring beans */
 public class SpringCommandHandler implements IHandler {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(SpringCommandHandler.class);
 
 	public void addHandlerListener(IHandlerListener handlerListener) {

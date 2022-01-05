@@ -6,8 +6,7 @@ import java.util.Map;
 
 import javax.jcr.Node;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.BasicNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -27,7 +26,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Deletes one or many results */
 public class UpdateModule extends AbstractHandler {
-	private final static Log log = LogFactory.getLog(UpdateModule.class);
+	private final static CmsLog log = CmsLog.getLog(UpdateModule.class);
 
 	private ModulesManager modulesManager;
 

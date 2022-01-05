@@ -2,8 +2,7 @@ package org.argeo.eclipse.spring;
 
 import static java.text.MessageFormat.format;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -15,7 +14,7 @@ import org.springframework.context.ApplicationContext;
 
 /** Tracks Spring application context published as services. */
 class ApplicationContextTracker {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(ApplicationContextTracker.class);
 
 	private static final String FILTER = "(&(objectClass=org.springframework.context.ApplicationContext)" //$NON-NLS-1$

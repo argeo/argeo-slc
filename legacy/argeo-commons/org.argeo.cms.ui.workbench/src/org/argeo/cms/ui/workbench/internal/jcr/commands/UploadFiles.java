@@ -31,7 +31,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Upload local file(s) under the currently selected node */
 public class UploadFiles extends AbstractHandler {
-	// private final static Log log = LogFactory.getLog(ImportFileSystem.class);
+	// private final static CmsLog log = CmsLog.getLog(ImportFileSystem.class);
 
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 

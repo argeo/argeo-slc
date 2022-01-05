@@ -1,12 +1,11 @@
 package org.argeo.slc.core.execution;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.runtime.InstantiationManager;
 import org.springframework.beans.factory.FactoryBean;
 
 public class ParameterRef implements FactoryBean<Object> {
-	private final static Log log = LogFactory.getLog(ParameterRef.class);
+	private final static CmsLog log = CmsLog.getLog(ParameterRef.class);
 
 	private InstantiationManager instantiationManager;
 	private String name;

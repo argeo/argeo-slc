@@ -15,13 +15,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsAuth;
 import org.argeo.cms.CmsUserManager;
 import org.argeo.cms.auth.RemoteAuthCallback;
 import org.argeo.cms.auth.RemoteAuthCallbackHandler;
 import org.argeo.cms.servlet.ServletHttpRequest;
 import org.argeo.cms.servlet.ServletHttpResponse;
-import org.argeo.naming.NamingUtils;
+import org.argeo.util.naming.NamingUtils;
 import org.osgi.service.useradmin.Authorization;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -45,7 +45,7 @@ public class CmsTokenServlet extends HttpServlet {
 		ServletHttpResponse response = new ServletHttpResponse(resp);
 		LoginContext lc = null;
 		try {
-			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response) {
+			lc = new LoginContext(CmsAuth.LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response) {
 				public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
 					for (Callback callback : callbacks) {
 						if (callback instanceof RemoteAuthCallback) {

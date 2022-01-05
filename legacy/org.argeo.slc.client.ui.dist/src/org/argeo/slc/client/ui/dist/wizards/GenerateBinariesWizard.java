@@ -8,8 +8,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.ui.workbench.util.PrivilegedJob;
 import org.argeo.eclipse.ui.jcr.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
@@ -51,7 +50,7 @@ import org.eclipse.swt.widgets.Text;
  * artifacts for this group using a {@link GenerateBinaries} runnable
  */
 public class GenerateBinariesWizard extends Wizard {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(GenerateBinariesWizard.class);
 
 	// Business objects

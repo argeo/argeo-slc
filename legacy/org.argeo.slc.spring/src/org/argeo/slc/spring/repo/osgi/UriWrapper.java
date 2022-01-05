@@ -1,11 +1,10 @@
 package org.argeo.slc.spring.repo.osgi;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.springframework.beans.factory.BeanNameAware;
 
 public class UriWrapper extends org.argeo.slc.repo.osgi.UriWrapper implements BeanNameAware {
-	private final static Log log = LogFactory.getLog(UriWrapper.class);
+	private final static CmsLog log = CmsLog.getLog(UriWrapper.class);
 
 	@Override
 	public void setBeanName(String name) {

@@ -16,7 +16,7 @@ import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsConstants;
 import org.argeo.eclipse.ui.jcr.AsyncUiEventListener;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -65,7 +65,7 @@ public class JcrProcessListView extends ViewPart {
 		pushSession = new ServerPushSession();
 		pushSession.start();
 		try {
-			session = repository.login(NodeConstants.HOME_WORKSPACE);
+			session = repository.login(CmsConstants.HOME_WORKSPACE);
 		} catch (RepositoryException re) {
 			throw new SlcException("Unable to log in Repository " + repository, re);
 		}

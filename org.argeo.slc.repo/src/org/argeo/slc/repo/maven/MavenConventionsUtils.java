@@ -3,8 +3,7 @@ package org.argeo.slc.repo.maven;
 import java.io.File;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.eclipse.aether.artifact.Artifact;
 
 /**
@@ -12,7 +11,7 @@ import org.eclipse.aether.artifact.Artifact;
  * based).
  */
 public class MavenConventionsUtils {
-	private final static Log log = LogFactory.getLog(MavenConventionsUtils.class);
+	private final static CmsLog log = CmsLog.getLog(MavenConventionsUtils.class);
 
 	/**
 	 * Path to the file identified by this artifact <b>without</b> using Maven

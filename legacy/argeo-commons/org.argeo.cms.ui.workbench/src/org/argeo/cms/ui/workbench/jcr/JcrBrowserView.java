@@ -13,8 +13,8 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventListener;
 import javax.jcr.observation.ObservationManager;
 
-import org.argeo.api.NodeConstants;
-import org.argeo.api.security.Keyring;
+import org.argeo.api.cms.CmsConstants;
+import org.argeo.cms.security.Keyring;
 import org.argeo.cms.ui.jcr.DefaultRepositoryRegister;
 import org.argeo.cms.ui.jcr.JcrBrowserUtils;
 import org.argeo.cms.ui.jcr.JcrDClickListener;
@@ -84,7 +84,7 @@ public class JcrBrowserView extends ViewPart {
 		top.setLayout(gl);
 
 		try {
-			this.userSession = this.nodeRepository.login(NodeConstants.HOME_WORKSPACE);
+			this.userSession = this.nodeRepository.login(CmsConstants.HOME_WORKSPACE);
 		} catch (RepositoryException e) {
 			throw new EclipseUiException("Cannot open user session", e);
 		}

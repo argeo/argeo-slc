@@ -14,8 +14,7 @@ import javax.jcr.Session;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -36,7 +35,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 /** <b>UNDER DEVELOPMENT</b>. Download and prepare an OSGi runtime */
 public class RunInOsgi extends AbstractHandler implements SlcNames {
-	private final static Log log = LogFactory.getLog(RunInOsgi.class);
+	private final static CmsLog log = CmsLog.getLog(RunInOsgi.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".runInOsgi";
 	public final static String DEFAULT_LABEL = "Run in OSGi";

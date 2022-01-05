@@ -30,8 +30,7 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.core.execution.ExecutionResources;
@@ -44,7 +43,7 @@ import org.springframework.core.io.Resource;
 public class SystemCall implements Runnable {
 	public final static String LOG_STDOUT = "System.out";
 
-	private final Log log = LogFactory.getLog(getClass());
+	private final CmsLog log = CmsLog.getLog(getClass());
 
 	private String execDir;
 

@@ -2,8 +2,7 @@ package org.argeo.slc.support.deploy;
 
 import java.io.File;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.deploy.DeployEnvironment;
@@ -13,7 +12,7 @@ import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.TargetData;
 
 public class HttpdApplicationDeployment implements Deployment {
-	private static final Log log = LogFactory
+	private static final CmsLog log = CmsLog
 			.getLog(HttpdApplicationDeployment.class);
 
 	private HttpdApplicationTargetData targetData;

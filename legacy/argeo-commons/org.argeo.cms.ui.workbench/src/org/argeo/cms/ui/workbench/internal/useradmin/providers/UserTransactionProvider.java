@@ -3,8 +3,7 @@ package org.argeo.cms.ui.workbench.internal.useradmin.providers;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.ui.workbench.WorkbenchUiPlugin;
 import org.argeo.osgi.transaction.WorkTransaction;
@@ -13,7 +12,7 @@ import org.eclipse.ui.ISources;
 
 /** Observe and notify UI on UserTransaction state changes */
 public class UserTransactionProvider extends AbstractSourceProvider {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(UserTransactionProvider.class);
 
 	public final static String TRANSACTION_STATE = WorkbenchUiPlugin.PLUGIN_ID

@@ -2,8 +2,7 @@ package org.argeo.slc.core.execution.xml;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.core.execution.DefaultExecutionSpec;
 import org.argeo.slc.execution.RefSpecAttribute;
 import org.argeo.slc.execution.RefValueChoice;
@@ -21,7 +20,7 @@ import org.w3c.dom.Element;
 /** Interprets the <flow:spec> tag */
 public class SpecBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
-	private Log log = LogFactory.getLog(SpecBeanDefinitionParser.class);
+	private CmsLog log = CmsLog.getLog(SpecBeanDefinitionParser.class);
 
 	@Override
 	protected void doParse(Element element, ParserContext parserContext,

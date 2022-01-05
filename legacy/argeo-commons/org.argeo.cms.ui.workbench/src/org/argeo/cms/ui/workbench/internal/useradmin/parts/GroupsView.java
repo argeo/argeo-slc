@@ -3,9 +3,8 @@ package org.argeo.cms.ui.workbench.internal.useradmin.parts;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsConstants;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.auth.CurrentUser;
@@ -20,8 +19,8 @@ import org.argeo.cms.ui.workbench.internal.useradmin.providers.UserTableDefaultD
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.parts.LdifUsersTable;
-import org.argeo.naming.LdapAttrs;
-import org.argeo.naming.LdapObjs;
+import org.argeo.util.naming.LdapAttrs;
+import org.argeo.util.naming.LdapObjs;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -43,7 +42,7 @@ import org.osgi.service.useradmin.UserAdminListener;
 
 /** List all groups with filter */
 public class GroupsView extends ViewPart implements ArgeoNames {
-	private final static Log log = LogFactory.getLog(GroupsView.class);
+	private final static CmsLog log = CmsLog.getLog(GroupsView.class);
 	public final static String ID = WorkbenchUiPlugin.PLUGIN_ID + ".groupsView";
 
 	/* DEPENDENCY INJECTION */
@@ -132,14 +131,14 @@ public class GroupsView extends ViewPart implements ArgeoNames {
 
 		public MyUserTableViewer(Composite parent, int style) {
 			super(parent, style);
-			showSystemRoles = CurrentUser.isInRole(NodeConstants.ROLE_ADMIN);
+			showSystemRoles = CurrentUser.isInRole(CmsConstants.ROLE_ADMIN);
 		}
 
 		protected void populateStaticFilters(Composite staticFilterCmp) {
 			staticFilterCmp.setLayout(new GridLayout());
 			final Button showSystemRoleBtn = new Button(staticFilterCmp, SWT.CHECK);
 			showSystemRoleBtn.setText("Show system roles");
-			showSystemRoles = CurrentUser.isInRole(NodeConstants.ROLE_ADMIN);
+			showSystemRoles = CurrentUser.isInRole(CmsConstants.ROLE_ADMIN);
 			showSystemRoleBtn.setSelection(showSystemRoles);
 
 			showSystemRoleBtn.addSelectionListener(new SelectionAdapter() {
@@ -172,7 +171,7 @@ public class GroupsView extends ViewPart implements ArgeoNames {
 					builder.append("(&(").append(LdapAttrs.objectClass.name()).append("=")
 							.append(LdapObjs.groupOfNames.name()).append(")");
 					if (!showSystemRoles)
-						builder.append("(!(").append(LdapAttrs.DN).append("=*").append(NodeConstants.ROLES_BASEDN)
+						builder.append("(!(").append(LdapAttrs.DN).append("=*").append(CmsConstants.ROLES_BASEDN)
 								.append("))");
 					builder.append("(|");
 					builder.append(tmpBuilder.toString());
@@ -181,7 +180,7 @@ public class GroupsView extends ViewPart implements ArgeoNames {
 					if (!showSystemRoles)
 						builder.append("(&(").append(LdapAttrs.objectClass.name()).append("=")
 								.append(LdapObjs.groupOfNames.name()).append(")(!(").append(LdapAttrs.DN).append("=*")
-								.append(NodeConstants.ROLES_BASEDN).append(")))");
+								.append(CmsConstants.ROLES_BASEDN).append(")))");
 					else
 						builder.append("(").append(LdapAttrs.objectClass.name()).append("=")
 								.append(LdapObjs.groupOfNames.name()).append(")");

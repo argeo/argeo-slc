@@ -10,7 +10,7 @@
 
 	<!-- JCR -->
 	<reference id="repositoryFactory" interface="javax.jcr.RepositoryFactory" />
-	<reference id="keyring" interface="org.argeo.api.security.CryptoKeyring" />
+	<reference id="keyring" interface="org.argeo.cms.security.CryptoKeyring" />
 	<list id="repositories" interface="javax.jcr.Repository"
 		cardinality="0..N">
 		<listener ref="repositoryRegister" bind-method="register"
@@ -20,7 +20,7 @@
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
 		filter="(cn=ego)" />
 		
-	<reference id="nodeInstance" interface="org.argeo.api.NodeInstance" />
+	<reference id="nodeInstance" interface="org.argeo.api.cms.CmsData" />
 
 	<reference id="nodeFileSystemProvider" interface="java.nio.file.spi.FileSystemProvider"
 		filter="(service.pid=org.argeo.api.fsProvider)" />
@@ -30,8 +30,6 @@
 	<reference id="userTransaction" interface="org.argeo.osgi.transaction.WorkTransaction" />
 
 
-	<reference id="secureLogger" interface="org.argeo.api.ArgeoLogger"
-		cardinality="0..1" />
 	<reference id="defaultCallbackHandler" interface="javax.security.auth.callback.CallbackHandler" />
 
 </beans:beans>

@@ -1,9 +1,9 @@
 package org.argeo.cms.ui.workbench.internal.useradmin.parts;
 
-import static org.argeo.api.NodeInstance.WORKGROUP;
+import static org.argeo.api.cms.CmsData.WORKGROUP;
 import static org.argeo.cms.auth.UserAdminUtils.setProperty;
-import static org.argeo.naming.LdapAttrs.businessCategory;
-import static org.argeo.naming.LdapAttrs.description;
+import static org.argeo.util.naming.LdapAttrs.businessCategory;
+import static org.argeo.util.naming.LdapAttrs.description;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,7 +16,7 @@ import javax.jcr.Session;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
-import org.argeo.api.NodeInstance;
+import org.argeo.api.cms.CmsData;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.auth.UserAdminUtils;
@@ -36,8 +36,8 @@ import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.parts.LdifUsersTable;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.naming.LdapAttrs;
 import org.argeo.osgi.transaction.WorkTransaction;
+import org.argeo.util.naming.LdapAttrs;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -85,12 +85,12 @@ public class GroupMainPage extends FormPage implements ArgeoNames {
 	final static String ID = "GroupEditor.mainPage";
 
 	private final UserEditor editor;
-	private final NodeInstance nodeInstance;
+	private final CmsData nodeInstance;
 	private final UserAdminWrapper userAdminWrapper;
 	private final Session session;
 
 	public GroupMainPage(FormEditor editor, UserAdminWrapper userAdminWrapper, Repository repository,
-			NodeInstance nodeInstance) {
+			CmsData nodeInstance) {
 		super(editor, ID, "Main");
 		try {
 			session = repository.login();

@@ -16,8 +16,8 @@ import org.argeo.cms.ui.workbench.internal.useradmin.UserAdminWrapper;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
-import org.argeo.naming.LdapAttrs;
 import org.argeo.osgi.useradmin.UserAdminConf;
+import org.argeo.util.naming.LdapAttrs;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -40,7 +40,7 @@ import org.osgi.service.useradmin.UserAdminEvent;
 
 /** Open a wizard that enables creation of a new user. */
 public class NewUser extends AbstractHandler {
-	// private final static Log log = LogFactory.getLog(NewUser.class);
+	// private final static CmsLog log = CmsLog.getLog(NewUser.class);
 	public final static String ID = WorkbenchUiPlugin.PLUGIN_ID + ".newUser";
 
 	/* DEPENDENCY INJECTION */

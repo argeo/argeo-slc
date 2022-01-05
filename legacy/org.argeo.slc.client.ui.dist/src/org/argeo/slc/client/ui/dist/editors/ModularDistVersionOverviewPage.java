@@ -20,8 +20,7 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.StaticOperand;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.jcr.JcrUtils;
@@ -78,7 +77,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class ModularDistVersionOverviewPage extends FormPage implements
 		SlcNames {
 
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(ModularDistVersionOverviewPage.class);
 
 	final static String PAGE_ID = "ModularDistVersionOverviewPage";

@@ -7,8 +7,7 @@ import java.util.Properties;
 import java.util.jar.Manifest;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.build.Distribution;
@@ -23,7 +22,7 @@ import aQute.bnd.osgi.Jar;
 
 /** Utilities around the BND library, which manipulates OSGi metadata. */
 public class BndWrapper implements Constants, CategoryNameVersion, Distribution {
-	private final static Log log = LogFactory.getLog(BndWrapper.class);
+	private final static CmsLog log = CmsLog.getLog(BndWrapper.class);
 
 	private String groupId;
 	private String name;

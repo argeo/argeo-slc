@@ -9,10 +9,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
-import org.argeo.api.NodeConstants;
-import org.argeo.api.security.Keyring;
+import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.jcr.CmsJcrUtils;
+import org.argeo.cms.security.Keyring;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.RepoConstants;
@@ -23,7 +23,7 @@ import org.argeo.slc.repo.RepoUtils;
  * home Node or just an URI and a label if user is anonymous
  */
 public class RepoElem extends DistParentElem {
-	// private final static Log log = LogFactory.getLog(RepoElem.class);
+	// private final static CmsLog log = CmsLog.getLog(RepoElem.class);
 
 	private RepositoryFactory repositoryFactory;
 	private Keyring keyring;
@@ -93,7 +93,7 @@ public class RepoElem extends DistParentElem {
 
 		try {
 			// FIXME make it more generic
-			String defaultWorkspace = NodeConstants.SYS_WORKSPACE;
+			String defaultWorkspace = CmsConstants.SYS_WORKSPACE;
 			defaultSession = repository.login(credentials, defaultWorkspace);
 			refreshChildren();
 		} catch (RepositoryException e) {
@@ -174,7 +174,7 @@ public class RepoElem extends DistParentElem {
 	protected Session repositoryLogin(String workspaceName) {
 		try {
 			if (workspaceName == null)
-				workspaceName = NodeConstants.SYS_WORKSPACE;// FIXME make it more generic
+				workspaceName = CmsConstants.SYS_WORKSPACE;// FIXME make it more generic
 			return repository.login(credentials, workspaceName);
 		} catch (RepositoryException e) {
 			throw new SlcException("Cannot login repository " + label + " with credential " + credentials, e);

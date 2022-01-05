@@ -3,8 +3,8 @@ package org.argeo.slc.client.ui.dist.commands;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryFactory;
 
-import org.argeo.api.security.Keyring;
 import org.argeo.cms.ArgeoNames;
+import org.argeo.cms.security.Keyring;
 import org.argeo.slc.SlcNames;
 import org.argeo.slc.client.ui.dist.DistPlugin;
 import org.argeo.slc.client.ui.dist.utils.CommandHelpers;

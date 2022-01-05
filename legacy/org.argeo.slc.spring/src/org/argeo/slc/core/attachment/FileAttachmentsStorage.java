@@ -12,8 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.attachment.Attachment;
 import org.argeo.slc.attachment.AttachmentsStorage;
@@ -22,7 +21,7 @@ import org.springframework.core.io.Resource;
 
 public class FileAttachmentsStorage implements AttachmentsStorage,
 		AttachmentUploader, InitializingBean {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(FileAttachmentsStorage.class);
 
 	private File attachmentsDirectory;

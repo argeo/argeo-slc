@@ -11,17 +11,16 @@ import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.FileContent;
 import org.apache.commons.vfs2.FileObject;
+import org.argeo.api.cms.CmsLog;
 
 /**
  * Runs an OS command and save its standard output as a file. Typically used for
  * MySQL or OpenLDAP dumps.
  */
 public class OsCallBackup extends AbstractAtomicBackup {
-	private final static Log log = LogFactory.getLog(OsCallBackup.class);
+	private final static CmsLog log = CmsLog.getLog(OsCallBackup.class);
 
 	private String command;
 	private Map<String, String> variables = new HashMap<String, String>();

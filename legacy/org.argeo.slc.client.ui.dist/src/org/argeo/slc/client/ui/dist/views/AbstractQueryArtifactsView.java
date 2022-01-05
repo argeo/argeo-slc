@@ -13,8 +13,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.eclipse.ui.GenericTableComparator;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcTypes;
@@ -39,7 +38,7 @@ import org.eclipse.ui.part.ViewPart;
 /** Factorizes useful methods to build a query view in a sashForm */
 public abstract class AbstractQueryArtifactsView extends ViewPart implements
 		SlcTypes {
-	private static final Log log = LogFactory
+	private static final CmsLog log = CmsLog
 			.getLog(AbstractQueryArtifactsView.class);
 
 	// shortcuts

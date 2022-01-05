@@ -22,8 +22,7 @@ import javax.jcr.Session;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.DefaultNameVersion;
@@ -48,7 +47,7 @@ import aQute.bnd.osgi.Jar;
  * need further modification.
  */
 public class ArchiveWrapper implements Runnable, ModuleSet, Distribution {
-	private final static Log log = LogFactory.getLog(ArchiveWrapper.class);
+	private final static CmsLog log = CmsLog.getLog(ArchiveWrapper.class);
 
 	private OsgiFactory osgiFactory;
 	private String version;

@@ -7,8 +7,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -22,7 +21,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
  * "...-sources.jar"
  */
 public class PdeSourcesIndexer implements NodeIndexer {
-	private Log log = LogFactory.getLog(PdeSourcesIndexer.class);
+	private CmsLog log = CmsLog.getLog(PdeSourcesIndexer.class);
 
 	private String artifactBasePath = RepoConstants.DEFAULT_ARTIFACTS_BASE_PATH;
 

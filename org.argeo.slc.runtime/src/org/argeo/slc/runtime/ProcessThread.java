@@ -12,8 +12,7 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
@@ -25,7 +24,7 @@ import org.argeo.slc.execution.RealizedFlow;
  * sequential {@link ExecutionThread}s.
  */
 public class ProcessThread extends Thread {
-	private final static Log log = LogFactory.getLog(ProcessThread.class);
+	private final static CmsLog log = CmsLog.getLog(ProcessThread.class);
 
 	private final ExecutionModulesManager executionModulesManager;
 	private final ExecutionProcess process;

@@ -7,8 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringUtils;
@@ -17,7 +16,7 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.Session;
 
 public class SshShell extends AbstractJschTask {
-	private final static Log log = LogFactory.getLog(SshShell.class);
+	private final static CmsLog log = CmsLog.getLog(SshShell.class);
 	private Resource input;
 
 	@Override

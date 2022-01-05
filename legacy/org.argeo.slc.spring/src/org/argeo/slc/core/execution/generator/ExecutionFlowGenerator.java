@@ -2,8 +2,7 @@ package org.argeo.slc.core.execution.generator;
 
 import java.util.HashMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.springframework.aop.scope.ScopedProxyUtils;
 import org.springframework.beans.BeansException;
@@ -28,7 +27,7 @@ import org.springframework.core.Ordered;
 public class ExecutionFlowGenerator implements BeanFactoryPostProcessor,
 		Ordered {
 	
-	private final Log log = LogFactory.getLog(getClass());
+	private final CmsLog log = CmsLog.getLog(getClass());
 
 	/**
 	 * Source providing a list of <code>RunnableCallFlowDescriptor</code> 

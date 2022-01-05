@@ -14,9 +14,8 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.util.TraversingItemVisitor;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.security.Keyring;
+import org.argeo.api.cms.CmsLog;
+import org.argeo.cms.security.Keyring;
 import org.argeo.eclipse.ui.jcr.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
@@ -59,7 +58,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Legacy - Make sure than Maven and OSGi metadata are consistent */
 public class NormalizeDistribution extends AbstractHandler implements SlcNames {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(NormalizeDistribution.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID

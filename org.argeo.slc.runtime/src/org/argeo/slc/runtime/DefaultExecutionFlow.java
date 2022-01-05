@@ -6,8 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
@@ -16,7 +15,7 @@ import org.argeo.slc.execution.ExecutionSpecAttribute;
 
 /** Default implementation of an execution flow. */
 public class DefaultExecutionFlow implements ExecutionFlow {
-	private final static Log log = LogFactory.getLog(DefaultExecutionFlow.class);
+	private final static CmsLog log = CmsLog.getLog(DefaultExecutionFlow.class);
 
 	private final ExecutionSpec executionSpec;
 	private String name = null;

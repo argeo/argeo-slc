@@ -8,9 +8,8 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.security.Keyring;
+import org.argeo.api.cms.CmsLog;
+import org.argeo.cms.security.Keyring;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
@@ -27,7 +26,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Create a new empty workspace in a remote repository */
 public class CreateWorkspace extends AbstractHandler {
-	private static final Log log = LogFactory.getLog(CreateWorkspace.class);
+	private static final CmsLog log = CmsLog.getLog(CreateWorkspace.class);
 
 	// Exposes commands meta-info
 	public final static String ID = DistPlugin.PLUGIN_ID + ".createWorkspace";

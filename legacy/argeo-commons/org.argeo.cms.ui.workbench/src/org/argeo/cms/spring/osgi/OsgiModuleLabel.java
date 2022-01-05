@@ -1,7 +1,6 @@
 package org.argeo.cms.spring.osgi;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -11,7 +10,7 @@ import org.osgi.framework.Constants;
  * {@link BundleContext}.
  */
 public class OsgiModuleLabel {
-	private final static Log log = LogFactory.getLog(OsgiModuleLabel.class);
+	private final static CmsLog log = CmsLog.getLog(OsgiModuleLabel.class);
 
 	private Bundle bundle;
 

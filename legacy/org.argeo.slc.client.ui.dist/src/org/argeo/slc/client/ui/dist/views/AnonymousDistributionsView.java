@@ -21,7 +21,7 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class AnonymousDistributionsView extends ViewPart implements SlcNames,
 		ArgeoNames {
-	// private final static Log log = LogFactory
+	// private final static CmsLog log = CmsLog
 	// .getLog(AnonymousDistributionsView.class);
 	public final static String ID = DistPlugin.PLUGIN_ID
 			+ ".anonymousDistributionsView";

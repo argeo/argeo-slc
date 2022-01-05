@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.FileSystemManager;
@@ -14,6 +12,7 @@ import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.UserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.util.LangUtils;
 
 /**
@@ -21,7 +20,7 @@ import org.argeo.util.LangUtils;
  * remote and local data based on certain criteria.
  */
 public class SystemBackup implements Runnable {
-	private final static Log log = LogFactory.getLog(SystemBackup.class);
+	private final static CmsLog log = CmsLog.getLog(SystemBackup.class);
 
 	private FileSystemManager fileSystemManager;
 	private UserAuthenticator userAuthenticator = null;

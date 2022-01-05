@@ -4,14 +4,13 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsAuth;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.CmsException;
 
 /** Provides base method for executing code with system authorization. */
 abstract class AbstractSystemExecution {
-	private final static Log log = LogFactory.getLog(AbstractSystemExecution.class);
+	private final static CmsLog log = CmsLog.getLog(AbstractSystemExecution.class);
 	private final Subject subject = new Subject();
 
 	/** Authenticate the calling thread */
@@ -19,7 +18,7 @@ abstract class AbstractSystemExecution {
 		ClassLoader origClassLoader = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 		try {
-			LoginContext lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_DATA_ADMIN, subject);
+			LoginContext lc = new LoginContext(CmsAuth.LOGIN_CONTEXT_DATA_ADMIN, subject);
 			lc.login();
 		} catch (LoginException e) {
 			throw new CmsException("Cannot login as system", e);
@@ -34,7 +33,7 @@ abstract class AbstractSystemExecution {
 		ClassLoader origClassLoader = Thread.currentThread().getContextClassLoader();
 		Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 		try {
-			LoginContext lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_DATA_ADMIN, subject);
+			LoginContext lc = new LoginContext(CmsAuth.LOGIN_CONTEXT_DATA_ADMIN, subject);
 			lc.logout();
 		} catch (LoginException e) {
 			throw new CmsException("Cannot logout as system", e);

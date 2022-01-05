@@ -34,14 +34,13 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.ArgeoTypes;
 import org.argeo.cms.jcr.CmsJcrUtils;
+import org.argeo.cms.security.Keyring;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.api.security.Keyring;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -55,7 +54,7 @@ import org.osgi.framework.Constants;
 
 /** Utilities around repo */
 public class RepoUtils implements ArgeoNames, SlcNames {
-	private final static Log log = LogFactory.getLog(RepoUtils.class);
+	private final static CmsLog log = CmsLog.getLog(RepoUtils.class);
 
 	/** Packages a regular sources jar as PDE source. */
 	public static void packagesAsPdeSource(File sourceFile,
@@ -627,8 +626,7 @@ public class RepoUtils implements ArgeoNames, SlcNames {
 				monitor.worked(1);
 
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot copy " + fromNode + " to " + toNode,
-					e);
+			throw new SlcException("Cannot copy " + fromNode + " to " + toNode, e);
 		}
 	}
 

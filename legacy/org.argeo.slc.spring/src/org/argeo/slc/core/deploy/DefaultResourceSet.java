@@ -7,8 +7,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ResourceLoaderAware;
@@ -21,7 +20,7 @@ import org.springframework.util.PathMatcher;
 
 public class DefaultResourceSet implements ResourceLoaderAware,
 		InitializingBean, ResourceSet {
-	private final static Log log = LogFactory.getLog(DefaultResourceSet.class);
+	private final static CmsLog log = CmsLog.getLog(DefaultResourceSet.class);
 	public final static String DEFAULT_EXCLUDES = "**/.svn/**";
 
 	private String base;

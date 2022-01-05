@@ -13,7 +13,7 @@ import javax.jcr.PropertyIterator;
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 
-import org.argeo.cms.ui.CmsConstants;
+import org.argeo.cms.ui.CmsUiConstants;
 import org.argeo.cms.ui.workbench.internal.WorkbenchConstants;
 import org.argeo.eclipse.ui.EclipseUiException;
 import org.argeo.jcr.JcrUtils;
@@ -39,13 +39,13 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 
 public class GenericNodePage extends FormPage implements WorkbenchConstants {
-	// private final static Log log = LogFactory.getLog(GenericNodePage.class);
+	// private final static CmsLog log = CmsLog.getLog(GenericNodePage.class);
 
 	// local constants
 	private final static String JCR_PROPERTY_NAME = "jcr:name";
 
 	// Utils
-	protected DateFormat timeFormatter = new SimpleDateFormat(CmsConstants.DATE_TIME_FORMAT);
+	protected DateFormat timeFormatter = new SimpleDateFormat(CmsUiConstants.DATE_TIME_FORMAT);
 
 	// Main business Objects
 	private Node currentNode;

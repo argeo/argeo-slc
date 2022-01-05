@@ -9,8 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionContext;
 import org.springframework.core.io.FileSystemResource;
@@ -19,7 +18,7 @@ import org.springframework.util.Assert;
 
 /** Implements write access to resources based on standard Java {@link File} */
 public class FileExecutionResources implements ExecutionResources {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(FileExecutionResources.class);
 	protected final static String DEFAULT_EXECUTION_RESOURCES_DIRNAME = "executionResources";
 	public final static String DEFAULT_EXECUTION_RESOURCES_TMP_PATH = System

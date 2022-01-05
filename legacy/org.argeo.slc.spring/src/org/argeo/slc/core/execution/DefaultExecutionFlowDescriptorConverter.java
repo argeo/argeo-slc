@@ -7,8 +7,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
@@ -42,7 +41,7 @@ public class DefaultExecutionFlowDescriptorConverter implements
 	/** Workaround for https://www.spartadn.com/bugzilla/show_bug.cgi?id=206 */
 	private final static String REF_VALUE_INTERNAL = "[internal]";
 
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(DefaultExecutionFlowDescriptorConverter.class);
 
 	private ApplicationContext applicationContext;

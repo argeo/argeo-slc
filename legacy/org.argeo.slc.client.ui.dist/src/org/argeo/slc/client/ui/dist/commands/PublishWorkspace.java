@@ -8,8 +8,8 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
-import org.argeo.api.NodeConstants;
-import org.argeo.api.security.Keyring;
+import org.argeo.api.cms.CmsConstants;
+import org.argeo.cms.security.Keyring;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
@@ -23,7 +23,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 
 /** Publish the current workspace by giving READ_ONLY rights to anonymous */
 public class PublishWorkspace extends AbstractHandler {
-	// private static final Log log = LogFactory.getLog(PublishWorkspace.class);
+	// private static final CmsLog log = CmsLog.getLog(PublishWorkspace.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".publishWorkspace";
 	public final static String DEFAULT_LABEL = "Make Public";
@@ -48,7 +48,7 @@ public class PublishWorkspace extends AbstractHandler {
 		Session session = null;
 
 		try {
-			nodeSession = nodeRepository.login(NodeConstants.HOME_WORKSPACE);
+			nodeSession = nodeRepository.login(CmsConstants.HOME_WORKSPACE);
 			Node repoNode = nodeSession.getNode(targetRepoPath);
 			Repository repository = RepoUtils.getRepository(repositoryFactory,
 					keyring, repoNode);

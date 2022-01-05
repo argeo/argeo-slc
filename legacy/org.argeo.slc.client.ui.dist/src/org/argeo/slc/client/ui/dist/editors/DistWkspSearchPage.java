@@ -72,7 +72,7 @@ import org.eclipse.ui.forms.widgets.Section;
 
 /** Show all bundles contained in a given workspace as filter-able table */
 public class DistWkspSearchPage extends FormPage implements SlcNames {
-	// final private static Log log = LogFactory
+	// final private static CmsLog log = CmsLog
 	// .getLog(DistributionOverviewPage.class);
 
 	final static String PAGE_ID = "distributionOverviewPage";

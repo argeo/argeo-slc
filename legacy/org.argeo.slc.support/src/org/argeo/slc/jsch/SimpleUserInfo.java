@@ -5,8 +5,7 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.util.Arrays;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 
 import com.jcraft.jsch.UserInfo;
@@ -16,7 +15,7 @@ public class SimpleUserInfo implements UserInfo {
 	private Boolean permissive = true;
 	private Boolean verbose = false;
 
-	private final static Log log = LogFactory.getLog(SimpleUserInfo.class);
+	private final static CmsLog log = CmsLog.getLog(SimpleUserInfo.class);
 
 	protected String password;
 	protected char[] passwordSafe;

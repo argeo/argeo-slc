@@ -9,8 +9,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
@@ -20,7 +19,7 @@ import org.eclipse.aether.artifact.Artifact;
 
 /** Create a distribution node from a set of artifacts */
 public class IndexDistribution implements Runnable {
-	private final static Log log = LogFactory.getLog(IndexDistribution.class);
+	private final static CmsLog log = CmsLog.getLog(IndexDistribution.class);
 	private Repository repository;
 	private String workspace;
 

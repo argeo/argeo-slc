@@ -10,9 +10,8 @@ import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.security.Keyring;
+import org.argeo.api.cms.CmsLog;
+import org.argeo.cms.security.Keyring;
 import org.argeo.eclipse.ui.jcr.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
@@ -29,7 +28,7 @@ import org.eclipse.core.runtime.jobs.Job;
 
 /** Merge two workspaces */
 public class MergeWorkspaces extends AbstractHandler {
-	private final static Log log = LogFactory.getLog(MergeWorkspaces.class);
+	private final static CmsLog log = CmsLog.getLog(MergeWorkspaces.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".mergeWorkspaces";
 	public final static String DEFAULT_LABEL = "Merge";

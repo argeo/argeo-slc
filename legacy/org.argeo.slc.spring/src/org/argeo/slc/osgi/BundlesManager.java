@@ -2,8 +2,7 @@ package org.argeo.slc.osgi;
 
 import java.util.Collection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.eclipse.gemini.blueprint.context.BundleContextAware;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextEvent;
@@ -33,7 +32,7 @@ import org.springframework.util.Assert;
 public class BundlesManager implements BundleContextAware, FrameworkListener,
 		InitializingBean, DisposableBean,
 		OsgiBundleApplicationContextListener<OsgiBundleApplicationContextEvent> {
-	private final static Log log = LogFactory.getLog(BundlesManager.class);
+	private final static CmsLog log = CmsLog.getLog(BundlesManager.class);
 
 	private BundleContext bundleContext;
 

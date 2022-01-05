@@ -19,7 +19,7 @@ import org.eclipse.ui.commands.ICommandService;
 /** Eclipse rap specific action bar advisor */
 public class RapActionBarAdvisor extends ActionBarAdvisor {
 	private final static String ID_BASE = SecureRapActivator.ID;
-	// private final static Log log = LogFactory
+	// private final static CmsLog log = CmsLog
 	// .getLog(SecureActionBarAdvisor.class);
 
 	/** Null means anonymous */

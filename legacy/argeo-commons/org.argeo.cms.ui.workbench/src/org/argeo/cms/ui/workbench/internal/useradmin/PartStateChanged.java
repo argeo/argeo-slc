@@ -10,7 +10,7 @@ import org.eclipse.ui.PlatformUI;
 
 /** Manage transaction and part refresh while updating the security model */
 public class PartStateChanged implements IPartListener, IStartup {
-	// private final static Log log = LogFactory.getLog(PartStateChanged.class);
+	// private final static CmsLog log = CmsLog.getLog(PartStateChanged.class);
 	// private IContextActivation contextActivation;
 
 	@Override

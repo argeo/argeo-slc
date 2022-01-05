@@ -6,8 +6,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.ui.workbench.util.PrivilegedJob;
 import org.argeo.eclipse.ui.jcr.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
@@ -37,7 +36,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * JavaRepoManager.
  */
 public class CopyLocalJavaWorkspace extends AbstractHandler {
-	private static final Log log = LogFactory
+	private static final CmsLog log = CmsLog
 			.getLog(CopyLocalJavaWorkspace.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".copyLocalJavaWorkspace";

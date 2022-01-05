@@ -1,7 +1,6 @@
 package org.argeo.cms.ui.workbench.legacy.rap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.rap.rwt.RWT;
@@ -25,7 +24,7 @@ import org.eclipse.rap.rwt.client.service.UrlLauncher;
  * </p>
  */
 public class OpenFile extends AbstractHandler {
-	private final static Log log = LogFactory.getLog(OpenFile.class);
+	private final static CmsLog log = CmsLog.getLog(OpenFile.class);
 
 	public final static String ID = SingleSourcingConstants.OPEN_FILE_CMD_ID;
 	public final static String PARAM_FILE_NAME = SingleSourcingConstants.PARAM_FILE_NAME;

@@ -7,15 +7,14 @@ import java.util.List;
 
 import org.apache.commons.exec.Executor;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.rpmfactory.RpmFactory;
 import org.argeo.slc.runtime.tasks.SystemCall;
 
 /** Releases the content of staging to a public repository. */
 public class ReleaseStaging implements Runnable {
-	private final static Log log = LogFactory.getLog(ReleaseStaging.class);
+	private final static CmsLog log = CmsLog.getLog(ReleaseStaging.class);
 
 	private RpmFactory rpmFactory;
 	private Executor executor;

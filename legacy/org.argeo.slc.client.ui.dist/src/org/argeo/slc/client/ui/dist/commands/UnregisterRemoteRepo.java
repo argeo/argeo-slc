@@ -6,7 +6,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.ArgeoTypes;
 import org.argeo.cms.ui.workbench.util.CommandUtils;
 import org.argeo.jcr.JcrUtils;
@@ -23,7 +23,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
  * the node Repository. It does not affect the repository instance
  */
 public class UnregisterRemoteRepo extends AbstractHandler {
-	// private static final Log log = LogFactory
+	// private static final CmsLog log = CmsLog
 	// .getLog(UnregisterRemoteRepo.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".unregisterRemoteRepo";
@@ -42,7 +42,7 @@ public class UnregisterRemoteRepo extends AbstractHandler {
 			return null;
 
 		try {
-			session = nodeRepository.login(NodeConstants.HOME_WORKSPACE);
+			session = nodeRepository.login(CmsConstants.HOME_WORKSPACE);
 			Node rNode = session.getNode(repoPath);
 			if (rNode.isNodeType(ArgeoTypes.ARGEO_REMOTE_REPOSITORY)) {
 

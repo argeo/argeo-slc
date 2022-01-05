@@ -5,8 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionSpec;
 import org.argeo.slc.execution.ExecutionContext;
@@ -23,7 +22,7 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class RunnableCallFlow implements ExecutionFlow, ApplicationContextAware {
 
-	private final static Log log = LogFactory.getLog(RunnableCallFlow.class);
+	private final static CmsLog log = CmsLog.getLog(RunnableCallFlow.class);
 
 	/**
 	 * Key in the execution context for the index of the call (e.g. 0 for the

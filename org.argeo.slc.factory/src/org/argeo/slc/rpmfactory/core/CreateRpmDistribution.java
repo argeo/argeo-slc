@@ -11,8 +11,7 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.rpmfactory.RpmFactory;
@@ -23,7 +22,7 @@ import org.argeo.slc.runtime.tasks.SystemCall;
  * consistent distributable set (typically to be used to generate an ISO).
  */
 public class CreateRpmDistribution implements Runnable {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(CreateRpmDistribution.class);
 
 	private RpmFactory rpmFactory;

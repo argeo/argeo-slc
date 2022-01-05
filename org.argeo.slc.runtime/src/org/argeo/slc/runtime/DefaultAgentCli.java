@@ -8,8 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -25,7 +24,7 @@ import org.argeo.slc.execution.SlcAgentCli;
  * Reference implementation of args to URIs algorithm.
  */
 public class DefaultAgentCli implements SlcAgentCli {
-	private final static Log log = LogFactory.getLog(DefaultAgentCli.class);
+	private final static CmsLog log = CmsLog.getLog(DefaultAgentCli.class);
 
 	private final static String UTF8 = "UTF-8";
 	private SlcAgent agent;

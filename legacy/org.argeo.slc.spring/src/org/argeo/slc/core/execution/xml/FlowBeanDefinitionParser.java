@@ -3,8 +3,7 @@ package org.argeo.slc.core.execution.xml;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.DefaultExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlow;
@@ -25,7 +24,7 @@ import org.w3c.dom.NodeList;
 /** Interprets the <flow:flow> tag */
 public class FlowBeanDefinitionParser extends
 		AbstractSingleBeanDefinitionParser {
-	private Log log = LogFactory.getLog(FlowBeanDefinitionParser.class);
+	private CmsLog log = CmsLog.getLog(FlowBeanDefinitionParser.class);
 
 	/** Whether the user has already be warned on path attribute usage. */
 	private Boolean warnedAboutPathAttribute = false;

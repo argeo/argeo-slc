@@ -12,7 +12,7 @@
 		filter="(cn=java)" />
 
 	<reference id="repositoryFactory" interface="javax.jcr.RepositoryFactory" />
-	<reference id="keyring" interface="org.argeo.api.security.CryptoKeyring" />
+	<reference id="keyring" interface="org.argeo.cms.security.CryptoKeyring" />
 
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
 		filter="(cn=ego)" />

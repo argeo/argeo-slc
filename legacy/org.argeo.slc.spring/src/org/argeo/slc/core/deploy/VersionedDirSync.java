@@ -4,8 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.deploy.VersioningDriver;
 
@@ -14,7 +13,7 @@ import org.argeo.slc.deploy.VersioningDriver;
  * information if possible.
  */
 public class VersionedDirSync implements Runnable {
-	private final static Log log = LogFactory.getLog(VersionedDirSync.class);
+	private final static CmsLog log = CmsLog.getLog(VersionedDirSync.class);
 
 	private VersioningDriver versioningDriver;
 	private File dir;

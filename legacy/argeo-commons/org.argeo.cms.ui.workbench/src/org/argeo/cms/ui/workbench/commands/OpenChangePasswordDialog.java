@@ -15,10 +15,9 @@ import javax.naming.ldap.LdapName;
 import javax.security.auth.Subject;
 import javax.security.auth.x500.X500Principal;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.security.CryptoKeyring;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.CmsException;
+import org.argeo.cms.security.CryptoKeyring;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
 import org.argeo.osgi.transaction.WorkTransaction;
 import org.eclipse.core.commands.AbstractHandler;
@@ -42,7 +41,7 @@ import org.osgi.service.useradmin.UserAdmin;
 
 /** Open the change password dialog */
 public class OpenChangePasswordDialog extends AbstractHandler {
-	private final static Log log = LogFactory.getLog(OpenChangePasswordDialog.class);
+	private final static CmsLog log = CmsLog.getLog(OpenChangePasswordDialog.class);
 	private UserAdmin userAdmin;
 	private WorkTransaction userTransaction;
 	private CryptoKeyring keyring = null;

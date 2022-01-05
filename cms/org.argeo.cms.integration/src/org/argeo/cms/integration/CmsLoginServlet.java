@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.argeo.api.NodeConstants;
+import org.argeo.api.cms.CmsAuth;
 import org.argeo.api.cms.CmsSessionId;
 import org.argeo.cms.auth.RemoteAuthCallback;
 import org.argeo.cms.auth.RemoteAuthCallbackHandler;
@@ -49,7 +49,7 @@ public class CmsLoginServlet extends HttpServlet {
 		ServletHttpRequest request = new ServletHttpRequest(req);
 		ServletHttpResponse response = new ServletHttpResponse(resp);
 		try {
-			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response) {
+			lc = new LoginContext(CmsAuth.LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response) {
 				public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
 					for (Callback callback : callbacks) {
 						if (callback instanceof NameCallback && username != null)

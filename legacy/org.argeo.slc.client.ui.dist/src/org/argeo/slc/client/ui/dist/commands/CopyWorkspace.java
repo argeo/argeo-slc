@@ -8,9 +8,8 @@ import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.argeo.api.security.Keyring;
+import org.argeo.api.cms.CmsLog;
+import org.argeo.cms.security.Keyring;
 import org.argeo.cms.ui.workbench.util.PrivilegedJob;
 import org.argeo.eclipse.ui.jcr.EclipseJcrMonitor;
 import org.argeo.jcr.JcrMonitor;
@@ -36,7 +35,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Create a copy of the chosen workspace in a remote repository */
 public class CopyWorkspace extends AbstractHandler {
-	private static final Log log = LogFactory.getLog(CopyWorkspace.class);
+	private static final CmsLog log = CmsLog.getLog(CopyWorkspace.class);
 
 	public final static String ID = DistPlugin.PLUGIN_ID + ".copyWorkspace";
 	public final static String DEFAULT_LABEL = "Duplicate...";

@@ -3,8 +3,7 @@ package org.argeo.slc.osgi;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.core.execution.FileExecutionResources;
 import org.eclipse.gemini.blueprint.context.BundleContextAware;
@@ -15,7 +14,7 @@ import org.springframework.core.io.Resource;
 /** Write access to resources in an OSGi context */
 public class OsgiExecutionResources extends FileExecutionResources implements
 		BundleContextAware {
-	private final static Log log = LogFactory
+	private final static CmsLog log = CmsLog
 			.getLog(OsgiExecutionResources.class);
 
 	private BundleContext bundleContext;

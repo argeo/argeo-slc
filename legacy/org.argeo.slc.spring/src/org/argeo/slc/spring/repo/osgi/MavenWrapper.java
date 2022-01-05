@@ -1,11 +1,10 @@
 package org.argeo.slc.spring.repo.osgi;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.springframework.beans.factory.BeanNameAware;
 
 public class MavenWrapper extends org.argeo.slc.repo.osgi.MavenWrapper implements BeanNameAware {
-	private final static Log log = LogFactory.getLog(MavenWrapper.class);
+	private final static CmsLog log = CmsLog.getLog(MavenWrapper.class);
 
 	@Override
 	public void setBeanName(String name) {

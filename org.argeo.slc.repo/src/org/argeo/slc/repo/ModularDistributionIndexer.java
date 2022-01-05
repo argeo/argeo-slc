@@ -18,8 +18,7 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.DefaultCategoryNameVersion;
@@ -42,7 +41,7 @@ import org.osgi.framework.Constants;
  * file contains a tag "dependencyManagement" that list all modules</li> </list>
  */
 public class ModularDistributionIndexer implements NodeIndexer, SlcNames {
-	private final static Log log = LogFactory.getLog(ModularDistributionIndexer.class);
+	private final static CmsLog log = CmsLog.getLog(ModularDistributionIndexer.class);
 
 	// Constants for csv indexing
 	private final static String INDEX_FILE_NAME = "modularDistribution.csv";
