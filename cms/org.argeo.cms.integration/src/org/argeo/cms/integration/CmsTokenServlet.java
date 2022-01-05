@@ -19,6 +19,8 @@ import org.argeo.api.NodeConstants;
 import org.argeo.cms.CmsUserManager;
 import org.argeo.cms.auth.HttpRequestCallback;
 import org.argeo.cms.auth.HttpRequestCallbackHandler;
+import org.argeo.cms.servlet.ServletHttpRequest;
+import org.argeo.cms.servlet.ServletHttpResponse;
 import org.argeo.naming.NamingUtils;
 import org.osgi.service.useradmin.Authorization;
 
@@ -38,8 +40,9 @@ public class CmsTokenServlet extends HttpServlet {
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ServletHttpRequest request = new ServletHttpRequest(req);
+		ServletHttpResponse response = new ServletHttpResponse(resp);
 		LoginContext lc = null;
 		try {
 			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new HttpRequestCallbackHandler(request, response) {
@@ -61,7 +64,7 @@ public class CmsTokenServlet extends HttpServlet {
 			Subject subject = lc.getSubject();
 			Authorization authorization = extractFrom(subject.getPrivateCredentials(Authorization.class));
 			String token = UUID.randomUUID().toString();
-			String expiryDateStr = request.getParameter(PARAM_EXPIRY_DATE);
+			String expiryDateStr = req.getParameter(PARAM_EXPIRY_DATE);
 			ZonedDateTime expiryDate;
 			if (expiryDateStr != null) {
 				expiryDate = NamingUtils.ldapDateToZonedDateTime(expiryDateStr);
@@ -77,11 +80,11 @@ public class CmsTokenServlet extends HttpServlet {
 			tokenDescriptor.setExpiryDate(expiryDateStr);
 //			tokenDescriptor.setRoles(Collections.unmodifiableSortedSet(new TreeSet<>(Arrays.asList(roles))));
 
-			response.setContentType("application/json");
-			JsonGenerator jg = objectMapper.getFactory().createGenerator(response.getWriter());
+			resp.setContentType("application/json");
+			JsonGenerator jg = objectMapper.getFactory().createGenerator(resp.getWriter());
 			jg.writeObject(tokenDescriptor);
 		} catch (Exception e) {
-			new CmsExceptionsChain(e).writeAsJson(objectMapper, response);
+			new CmsExceptionsChain(e).writeAsJson(objectMapper, resp);
 		}
 	}
 

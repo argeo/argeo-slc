@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.argeo.slc</groupId>
@@ -12,59 +14,59 @@
 	<name>SLC Launcher</name>
 	<build>
 		<plugins>
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.maven.plugins</groupId> -->
-<!-- 				<artifactId>maven-assembly-plugin</artifactId> -->
-<!-- 				<configuration> -->
-<!-- 					<descriptors> -->
-<!-- 						<descriptor>assembly/base.xml</descriptor> -->
-<!-- 					</descriptors> -->
-<!-- 				</configuration> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<id>assembly-base</id> -->
-<!-- 						<phase>package</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>single</goal> -->
-<!-- 						</goals> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.apache.felix</groupId> -->
-<!-- 				<artifactId>maven-bundle-plugin</artifactId> -->
-<!-- 				<configuration> -->
-<!-- 					<instructions> -->
-<!-- 						<Main-Class>org.argeo.slc.cli.SlcMain</Main-Class> -->
-<!-- 					</instructions> -->
-<!-- 				</configuration> -->
-<!-- 			</plugin> -->
-<!-- 			<plugin> -->
-<!-- 				<artifactId>maven-resources-plugin</artifactId> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<phase>validate</phase> -->
-<!-- 						<goals> -->
-<!-- 							<goal>copy-resources</goal> -->
-<!-- 						</goals> -->
-<!-- 						<configuration> -->
-<!-- 							<outputDirectory>${basedir}/target/base</outputDirectory> -->
-<!-- 							<resources> -->
-<!-- 								<resource> -->
-<!-- 									<directory>base</directory> -->
-<!-- 									<filtering>true</filtering> -->
-<!-- 								</resource> -->
-<!-- 							</resources> -->
-<!-- 						</configuration> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-assembly-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- <descriptors> -->
+			<!-- <descriptor>assembly/base.xml</descriptor> -->
+			<!-- </descriptors> -->
+			<!-- </configuration> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <id>assembly-base</id> -->
+			<!-- <phase>package</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>single</goal> -->
+			<!-- </goals> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.felix</groupId> -->
+			<!-- <artifactId>maven-bundle-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- <instructions> -->
+			<!-- <Main-Class>org.argeo.slc.cli.SlcMain</Main-Class> -->
+			<!-- </instructions> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
+			<!-- <plugin> -->
+			<!-- <artifactId>maven-resources-plugin</artifactId> -->
+			<!-- <executions> -->
+			<!-- <execution> -->
+			<!-- <phase>validate</phase> -->
+			<!-- <goals> -->
+			<!-- <goal>copy-resources</goal> -->
+			<!-- </goals> -->
+			<!-- <configuration> -->
+			<!-- <outputDirectory>${basedir}/target/base</outputDirectory> -->
+			<!-- <resources> -->
+			<!-- <resource> -->
+			<!-- <directory>base</directory> -->
+			<!-- <filtering>true</filtering> -->
+			<!-- </resource> -->
+			<!-- </resources> -->
+			<!-- </configuration> -->
+			<!-- </execution> -->
+			<!-- </executions> -->
+			<!-- </plugin> -->
 		</plugins>
 	</build>
 	<dependencies>
 		<dependency>
 			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.osgi.boot</artifactId>
+			<artifactId>org.argeo.init</artifactId>
 			<version>${version.argeo-commons}</version>
 		</dependency>
 	</dependencies>

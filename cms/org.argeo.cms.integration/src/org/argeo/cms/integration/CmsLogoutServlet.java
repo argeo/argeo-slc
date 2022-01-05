@@ -18,6 +18,8 @@ import org.argeo.api.cms.CmsSessionId;
 import org.argeo.cms.auth.CurrentUser;
 import org.argeo.cms.auth.HttpRequestCallback;
 import org.argeo.cms.auth.HttpRequestCallbackHandler;
+import org.argeo.cms.servlet.ServletHttpRequest;
+import org.argeo.cms.servlet.ServletHttpResponse;
 
 /** Externally authenticate an http session. */
 public class CmsLogoutServlet extends HttpServlet {
@@ -32,18 +34,21 @@ public class CmsLogoutServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		ServletHttpRequest httpRequest = new ServletHttpRequest(request);
+		ServletHttpResponse httpResponse = new ServletHttpResponse(response);
 		LoginContext lc = null;
 		try {
-			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new HttpRequestCallbackHandler(request, response) {
-				public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-					for (Callback callback : callbacks) {
-						if (callback instanceof HttpRequestCallback) {
-							((HttpRequestCallback) callback).setRequest(request);
-							((HttpRequestCallback) callback).setResponse(response);
+			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER,
+					new HttpRequestCallbackHandler(httpRequest, httpResponse) {
+						public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+							for (Callback callback : callbacks) {
+								if (callback instanceof HttpRequestCallback) {
+									((HttpRequestCallback) callback).setRequest(httpRequest);
+									((HttpRequestCallback) callback).setResponse(httpResponse);
+								}
+							}
 						}
-					}
-				}
-			});
+					});
 			lc.login();
 
 			Subject subject = lc.getSubject();

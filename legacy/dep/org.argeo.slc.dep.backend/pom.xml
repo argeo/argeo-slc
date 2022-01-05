@@ -64,15 +64,6 @@
 			<version>2.3-SNAPSHOT</version>
 		</dependency>
 
-		<!-- OSGi Boot for platform generation only, as it could be used by regular 
-			Java applications to launch an OSGi runtime. -->
-		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.osgi.boot</artifactId>
-			<version>${version.argeo-commons}</version>
-			<scope>test</scope>
-		</dependency>
-
 		<!-- Legacy Argeo Commons platform (Eclipse 3) -->
 		<dependency>
 			<groupId>org.argeo.slc.legacy.commons</groupId>

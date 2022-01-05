@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.argeo.osgi.boot.OsgiBoot;
+import org.argeo.init.osgi.OsgiBoot;
 import org.argeo.slc.SlcException;
 import org.eclipse.core.runtime.adaptor.EclipseStarter;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;

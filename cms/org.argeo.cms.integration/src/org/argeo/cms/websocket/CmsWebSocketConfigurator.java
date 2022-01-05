@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
-import javax.servlet.http.HttpSession;
 import javax.websocket.Extension;
 import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
@@ -17,6 +16,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.api.NodeConstants;
 import org.argeo.cms.auth.HttpRequestCallbackHandler;
+import org.argeo.cms.auth.HttpSession;
+import org.argeo.cms.servlet.ServletHttpSession;
 import org.osgi.service.http.context.ServletContextHelper;
 
 /** Customises the initialisation of a new web socket. */
@@ -62,7 +63,8 @@ public class CmsWebSocketConfigurator extends Configurator {
 
 	@Override
 	public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
-		HttpSession httpSession = (HttpSession) request.getHttpSession();
+
+		HttpSession httpSession = new ServletHttpSession((javax.servlet.http.HttpSession) request.getHttpSession());
 		if (log.isDebugEnabled() && httpSession != null)
 			log.debug("Web socket HTTP session id: " + httpSession.getId());
 
@@ -112,4 +114,3 @@ public class CmsWebSocketConfigurator extends Configurator {
 //	webServerConfig.put(InternalHttpConstants.WEBSOCKET_ENABLED, "true");
 //}
 //}
-

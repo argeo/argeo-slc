@@ -18,7 +18,7 @@ import java.util.UUID;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 
-import org.argeo.osgi.boot.OsgiBoot;
+import org.argeo.init.osgi.OsgiBoot;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.launch.Framework;
