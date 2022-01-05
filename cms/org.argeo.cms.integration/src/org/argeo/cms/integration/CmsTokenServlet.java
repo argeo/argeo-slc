@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.argeo.api.NodeConstants;
 import org.argeo.cms.CmsUserManager;
-import org.argeo.cms.auth.HttpRequestCallback;
-import org.argeo.cms.auth.HttpRequestCallbackHandler;
+import org.argeo.cms.auth.RemoteAuthCallback;
+import org.argeo.cms.auth.RemoteAuthCallbackHandler;
 import org.argeo.cms.servlet.ServletHttpRequest;
 import org.argeo.cms.servlet.ServletHttpResponse;
 import org.argeo.naming.NamingUtils;
@@ -45,12 +45,12 @@ public class CmsTokenServlet extends HttpServlet {
 		ServletHttpResponse response = new ServletHttpResponse(resp);
 		LoginContext lc = null;
 		try {
-			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new HttpRequestCallbackHandler(request, response) {
+			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response) {
 				public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
 					for (Callback callback : callbacks) {
-						if (callback instanceof HttpRequestCallback) {
-							((HttpRequestCallback) callback).setRequest(request);
-							((HttpRequestCallback) callback).setResponse(response);
+						if (callback instanceof RemoteAuthCallback) {
+							((RemoteAuthCallback) callback).setRequest(request);
+							((RemoteAuthCallback) callback).setResponse(response);
 						}
 					}
 				}

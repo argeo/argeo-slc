@@ -15,8 +15,8 @@ import javax.websocket.server.ServerEndpointConfig.Configurator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.argeo.api.NodeConstants;
-import org.argeo.cms.auth.HttpRequestCallbackHandler;
-import org.argeo.cms.auth.HttpSession;
+import org.argeo.cms.auth.RemoteAuthCallbackHandler;
+import org.argeo.cms.auth.RemoteAuthSession;
 import org.argeo.cms.servlet.ServletHttpSession;
 import org.osgi.service.http.context.ServletContextHelper;
 
@@ -64,7 +64,7 @@ public class CmsWebSocketConfigurator extends Configurator {
 	@Override
 	public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
 
-		HttpSession httpSession = new ServletHttpSession((javax.servlet.http.HttpSession) request.getHttpSession());
+		RemoteAuthSession httpSession = new ServletHttpSession((javax.servlet.http.HttpSession) request.getHttpSession());
 		if (log.isDebugEnabled() && httpSession != null)
 			log.debug("Web socket HTTP session id: " + httpSession.getId());
 
@@ -73,7 +73,7 @@ public class CmsWebSocketConfigurator extends Configurator {
 		}
 		try {
 			LoginContext lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER,
-					new HttpRequestCallbackHandler(httpSession));
+					new RemoteAuthCallbackHandler(httpSession));
 			lc.login();
 			if (log.isDebugEnabled())
 				log.debug("Web socket logged-in as " + lc.getSubject());

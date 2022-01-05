@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.argeo.api.NodeConstants;
 import org.argeo.api.cms.CmsSessionId;
-import org.argeo.cms.auth.HttpRequestCallback;
-import org.argeo.cms.auth.HttpRequestCallbackHandler;
+import org.argeo.cms.auth.RemoteAuthCallback;
+import org.argeo.cms.auth.RemoteAuthCallbackHandler;
 import org.argeo.cms.servlet.ServletHttpRequest;
 import org.argeo.cms.servlet.ServletHttpResponse;
 import org.osgi.service.useradmin.Authorization;
@@ -49,16 +49,16 @@ public class CmsLoginServlet extends HttpServlet {
 		ServletHttpRequest request = new ServletHttpRequest(req);
 		ServletHttpResponse response = new ServletHttpResponse(resp);
 		try {
-			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new HttpRequestCallbackHandler(request, response) {
+			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response) {
 				public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
 					for (Callback callback : callbacks) {
 						if (callback instanceof NameCallback && username != null)
 							((NameCallback) callback).setName(username);
 						else if (callback instanceof PasswordCallback && password != null)
 							((PasswordCallback) callback).setPassword(password.toCharArray());
-						else if (callback instanceof HttpRequestCallback) {
-							((HttpRequestCallback) callback).setRequest(request);
-							((HttpRequestCallback) callback).setResponse(response);
+						else if (callback instanceof RemoteAuthCallback) {
+							((RemoteAuthCallback) callback).setRequest(request);
+							((RemoteAuthCallback) callback).setResponse(response);
 						}
 					}
 				}

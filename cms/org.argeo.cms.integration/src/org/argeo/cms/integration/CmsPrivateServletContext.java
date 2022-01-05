@@ -13,8 +13,8 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.argeo.cms.auth.HttpRequestCallbackHandler;
-import org.argeo.cms.servlet.ServletAuthUtils;
+import org.argeo.cms.auth.RemoteAuthCallbackHandler;
+import org.argeo.cms.auth.RemoteAuthUtils;
 import org.argeo.cms.servlet.ServletHttpRequest;
 import org.argeo.cms.servlet.ServletHttpResponse;
 import org.osgi.service.http.context.ServletContextHelper;
@@ -46,7 +46,7 @@ public class CmsPrivateServletContext extends ServletContextHelper {
 		if ((pathInfo != null && (servletPath + pathInfo).equals(loginPage)) || servletPath.contentEquals(loginServlet))
 			return true;
 		try {
-			lc = new LoginContext(LOGIN_CONTEXT_USER, new HttpRequestCallbackHandler(request, response));
+			lc = new LoginContext(LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response));
 			lc.login();
 		} catch (LoginException e) {
 			lc = processUnauthorized(req, resp);
@@ -58,7 +58,7 @@ public class CmsPrivateServletContext extends ServletContextHelper {
 			@Override
 			public Void run() {
 				// TODO also set login context in order to log out ?
-				ServletAuthUtils.configureRequestSecurity(request);
+				RemoteAuthUtils.configureRequestSecurity(request);
 				return null;
 			}
 
@@ -69,7 +69,7 @@ public class CmsPrivateServletContext extends ServletContextHelper {
 
 	@Override
 	public void finishSecurity(HttpServletRequest req, HttpServletResponse resp) {
-		ServletAuthUtils.clearRequestSecurity(new ServletHttpRequest(req));
+		RemoteAuthUtils.clearRequestSecurity(new ServletHttpRequest(req));
 	}
 
 	protected LoginContext processUnauthorized(HttpServletRequest request, HttpServletResponse response) {
