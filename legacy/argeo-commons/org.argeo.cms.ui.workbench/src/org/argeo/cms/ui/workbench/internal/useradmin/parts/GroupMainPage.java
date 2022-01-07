@@ -1,6 +1,6 @@
 package org.argeo.cms.ui.workbench.internal.useradmin.parts;
 
-import static org.argeo.api.cms.CmsData.WORKGROUP;
+import static org.argeo.api.cms.CmsContext.WORKGROUP;
 import static org.argeo.cms.auth.UserAdminUtils.setProperty;
 import static org.argeo.util.naming.LdapAttrs.businessCategory;
 import static org.argeo.util.naming.LdapAttrs.description;
@@ -13,10 +13,8 @@ import javax.jcr.Node;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
-import org.argeo.api.cms.CmsData;
+import org.argeo.api.cms.CmsContext;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.CmsException;
 import org.argeo.cms.auth.UserAdminUtils;
@@ -85,12 +83,12 @@ public class GroupMainPage extends FormPage implements ArgeoNames {
 	final static String ID = "GroupEditor.mainPage";
 
 	private final UserEditor editor;
-	private final CmsData nodeInstance;
+	private final CmsContext nodeInstance;
 	private final UserAdminWrapper userAdminWrapper;
 	private final Session session;
 
 	public GroupMainPage(FormEditor editor, UserAdminWrapper userAdminWrapper, Repository repository,
-			CmsData nodeInstance) {
+			CmsContext nodeInstance) {
 		super(editor, ID, "Main");
 		try {
 			session = repository.login();
@@ -197,20 +195,15 @@ public class GroupMainPage extends FormPage implements ArgeoNames {
 					Node workgroupHome = CmsJcrUtils.getGroupHome(session, cn);
 					if (workgroupHome != null)
 						return; // already marked as workgroup, do nothing
-					else
-						try {
-							// improve transaction management
-							userAdminWrapper.beginTransactionIfNeeded();
-							nodeInstance.createWorkgroup(new LdapName(group.getName()));
-							setProperty(group, businessCategory, WORKGROUP);
-							userAdminWrapper.commitOrNotifyTransactionStateChange();
-							userAdminWrapper
-									.notifyListeners(new UserAdminEvent(null, UserAdminEvent.ROLE_CHANGED, group));
-							part.refresh();
-						} catch (InvalidNameException e1) {
-							throw new CmsException("Cannot create Workgroup for " + group.toString(), e1);
-						}
-
+					else {
+						// improve transaction management
+						userAdminWrapper.beginTransactionIfNeeded();
+						nodeInstance.createWorkgroup(group.getName());
+						setProperty(group, businessCategory, WORKGROUP);
+						userAdminWrapper.commitOrNotifyTransactionStateChange();
+						userAdminWrapper.notifyListeners(new UserAdminEvent(null, UserAdminEvent.ROLE_CHANGED, group));
+						part.refresh();
+					}
 				}
 			}
 		});
