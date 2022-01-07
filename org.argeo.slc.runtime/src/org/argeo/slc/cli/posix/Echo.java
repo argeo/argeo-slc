@@ -1,11 +1,11 @@
-package org.argeo.cli.posix;
+package org.argeo.slc.cli.posix;
 
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.argeo.cli.DescribedCommand;
+import org.argeo.cms.cli.DescribedCommand;
 
 public class Echo implements DescribedCommand<String> {
 

@@ -1,9 +1,9 @@
-package org.argeo.slc.runtime;
+package org.argeo.slc.cli;
 
 import org.apache.commons.cli.Option;
-import org.argeo.cli.CommandsCli;
-import org.argeo.cli.fs.FsCommands;
-import org.argeo.cli.posix.PosixCommands;
+import org.argeo.cms.cli.CommandsCli;
+import org.argeo.slc.cli.fs.FsCommands;
+import org.argeo.slc.cli.posix.PosixCommands;
 
 /** Argeo command line tools. */
 public class ArgeoCli extends CommandsCli {

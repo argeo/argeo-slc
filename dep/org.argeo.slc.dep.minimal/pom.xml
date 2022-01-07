@@ -107,14 +107,6 @@
 		<!-- Apache Commons -->
 		<dependency>
 			<groupId>org.argeo.tp.apache.commons</groupId>
-			<artifactId>org.apache.commons.exec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.apache.commons</groupId>
-			<artifactId>org.apache.commons.cli</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.argeo.tp.apache.commons</groupId>
 			<artifactId>org.apache.commons.vfs</artifactId>
 		</dependency>
 

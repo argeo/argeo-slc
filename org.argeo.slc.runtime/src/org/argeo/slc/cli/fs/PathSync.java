@@ -1,4 +1,4 @@
-package org.argeo.cli.fs;
+package org.argeo.slc.cli.fs;
 
 import java.net.URI;
 import java.nio.file.FileSystems;

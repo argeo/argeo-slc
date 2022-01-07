@@ -1,4 +1,4 @@
-package org.argeo.cli.fs;
+package org.argeo.slc.cli.fs;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -9,8 +9,8 @@ import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.argeo.cli.CommandArgsException;
-import org.argeo.cli.DescribedCommand;
+import org.argeo.cms.cli.CommandArgsException;
+import org.argeo.cms.cli.DescribedCommand;
 import org.argeo.sync.SyncResult;
 
 public class FileSync implements DescribedCommand<SyncResult<Path>> {

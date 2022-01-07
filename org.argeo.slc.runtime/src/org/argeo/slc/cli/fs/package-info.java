@@ -1,2 +1,2 @@
 /** File system CLI commands. */
-package org.argeo.cli.fs;
+package org.argeo.slc.cli.fs;
