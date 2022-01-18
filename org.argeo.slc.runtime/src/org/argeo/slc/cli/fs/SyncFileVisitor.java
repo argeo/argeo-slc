@@ -3,7 +3,7 @@ package org.argeo.slc.cli.fs;
 import java.nio.file.Path;
 
 import org.argeo.api.cms.CmsLog;
-import org.argeo.fs.BasicSyncFileVisitor;
+import org.argeo.util.BasicSyncFileVisitor;
 
 /** Synchronises two directory structures. */
 public class SyncFileVisitor extends BasicSyncFileVisitor {

@@ -11,7 +11,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.argeo.cms.cli.CommandArgsException;
 import org.argeo.cms.cli.DescribedCommand;
-import org.argeo.sync.SyncResult;
+import org.argeo.util.SyncResult;
 
 public class FileSync implements DescribedCommand<SyncResult<Path>> {
 	final static Option deleteOption = Option.builder().longOpt("delete").desc("delete from target").build();

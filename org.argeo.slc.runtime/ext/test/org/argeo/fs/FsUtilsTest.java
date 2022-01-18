@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.argeo.util.FsUtils;
+
 /** {@link FsUtils} tests. */
 public class FsUtilsTest {
 	final static String FILE00 = "file00";

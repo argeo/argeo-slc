@@ -25,7 +25,7 @@ import org.argeo.cms.cli.CommandRuntimeException;
 import org.argeo.cms.cli.DescribedCommand;
 import org.argeo.jackrabbit.client.ClientDavexRepositoryFactory;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.sync.SyncResult;
+import org.argeo.util.SyncResult;
 
 public class JcrSync implements DescribedCommand<SyncResult<Node>> {
 	public final static String DEFAULT_LOCALFS_CONFIG = "repository-localfs.xml";
