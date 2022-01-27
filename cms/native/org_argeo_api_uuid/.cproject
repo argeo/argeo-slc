@@ -47,7 +47,11 @@
                             							
                             <builder id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder.1748550507" name="Autotools Makefile Generator.Build (GNU)" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.builder"/>
                             							
-                            <tool id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.1751972138" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure"/>
+                            <tool id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.1751972138" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure">
+                                								
+                                <option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.769183800" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.1357756331" valueType="string"/>
+                                							
+                            </tool>
                             							
                             <tool id="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen.244550704" name="autogen.sh" superClass="org.eclipse.linuxtools.cdt.autotools.core.toolchain.tool.autogen"/>
                             							
@@ -122,6 +126,8 @@
                             <tool id="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.debug.1653104314" name="configure" superClass="org.eclipse.linuxtools.cdt.autotools.core.gnu.toolchain.tool.configure.debug">
                                 								
                                 <option defaultValue="CFLAGS=-g -O0" id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.user.883667952" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.user" valueType="string"/>
+                                								
+                                <option id="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name.1821425238" superClass="org.eclipse.linuxtools.cdt.autotools.core.option.configure.name" value="org.eclipse.linuxtools.cdt.autotools.core.configuration.build.debug.628527181" valueType="string"/>
                                 							
                             </tool>
                             							
