@@ -20,7 +20,7 @@
 	<reference id="nodeRepository" interface="javax.jcr.Repository"
 		filter="(cn=ego)" />
 		
-	<reference id="nodeInstance" interface="org.argeo.api.cms.CmsData" />
+	<reference id="nodeInstance" interface="org.argeo.api.cms.CmsContext" />
 
 	<reference id="nodeFileSystemProvider" interface="java.nio.file.spi.FileSystemProvider"
 		filter="(service.pid=org.argeo.api.fsProvider)" />

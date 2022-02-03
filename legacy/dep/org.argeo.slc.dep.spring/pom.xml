@@ -49,6 +49,11 @@
 			<version>2.3-SNAPSHOT</version>
 		</dependency>
 
+		<!-- Spring dependencies -->
+		<dependency>
+			<groupId>org.argeo.tp.apache</groupId>
+			<artifactId>org.apache.log4j</artifactId>
+		</dependency>
 		<!-- Not strictly Spring dependencies but used by the old approach -->
 		<dependency>
 			<groupId>org.argeo.tp.apache.ant</groupId>

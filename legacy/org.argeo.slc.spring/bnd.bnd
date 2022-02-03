@@ -4,6 +4,7 @@ aQute.bnd.osgi,\
 org.apache.tools.ant.*;resolution:="optional",\
 junit.framework;resolution:="optional",\
 org.osgi.*;version=0.0.0,\
+org.argeo.cms.auth,\
 *
 
 Export-Package: org.argeo.slc.core.test,\
