@@ -281,11 +281,11 @@ public class A2Factory {
 	}
 
 	public static void main(String[] args) {
-		Path originBase = Paths.get("../output/origin");
-		Path factoryBase = Paths.get("../output/a2");
+		Path originBase = Paths.get("../output/origin").toAbsolutePath();
+		Path factoryBase = Paths.get("../output/a2").toAbsolutePath();
 		A2Factory factory = new A2Factory(originBase, factoryBase);
 
-		Path descriptorsBase = Paths.get(System.getProperty("user.home"), "/dev/git/unstable/argeo-tp/migration");
+		Path descriptorsBase = Paths.get("../tp").toAbsolutePath();
 
 		factory.processEclipseArchive(
 				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
