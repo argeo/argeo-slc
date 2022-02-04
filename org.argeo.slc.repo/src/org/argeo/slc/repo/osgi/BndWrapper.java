@@ -86,12 +86,7 @@ public class BndWrapper implements Constants, CategoryNameVersion, Distribution 
 
 				// License
 				if (license != null) {
-					StringBuilder sb = new StringBuilder(license.getUri());
-					if (license.getName() != null)
-						sb.append(';').append("description=").append(license.getName());
-					if (license.getLink() != null)
-						sb.append(';').append("link=").append(license.getLink());
-					properties.setProperty(BUNDLE_LICENSE, sb.toString());
+					properties.setProperty(BUNDLE_LICENSE, license.toString());
 					// TODO add LICENSE.TXT
 				} else {
 					log.warn("No license set for " + toString());

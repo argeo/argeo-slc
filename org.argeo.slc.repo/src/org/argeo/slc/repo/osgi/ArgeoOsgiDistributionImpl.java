@@ -1,5 +1,8 @@
 package org.argeo.slc.repo.osgi;
 
+import static org.argeo.slc.ManifestConstants.SLC_ORIGIN_M2;
+import static org.argeo.slc.ManifestConstants.SLC_ORIGIN_URI;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.file.Files;
@@ -17,12 +20,14 @@ import java.util.TreeSet;
 
 import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.CategoryNameVersion;
+import org.argeo.slc.ManifestConstants;
 import org.argeo.slc.ModuleSet;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.repo.ArgeoOsgiDistribution;
 import org.argeo.slc.repo.ArtifactDistribution;
+import org.argeo.slc.repo.FreeLicense;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.osgi.framework.Constants;
@@ -42,7 +47,7 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements A
 	public void init() {
 		if (log.isDebugEnabled())
 			log.debug(describe());
-		migrateTov2(Paths.get(System.getProperty("user.home"), "dev/git/unstable/argeo-tp/argeo-tp"));
+		migrateTov2(Paths.get(System.getProperty("user.home"), "dev/git/unstable/argeo-tp/migration"));
 	}
 
 	public void destroy() {
@@ -100,14 +105,14 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements A
 						else
 							log.warn("No license for " + cnv);
 						if (bw.getDoNotModify()) {
-							props.put("SLC-Source-Original", "true");
+							props.put(ManifestConstants.SLC_ORIGIN_MANIFEST_NOT_MODIFIED.toString(), "true");
 						}
 						// props.put("SLC-Category", cnv.getCategory());
 
 						if (cnv instanceof MavenWrapper) {
 							MavenWrapper mw = (MavenWrapper) cnv;
 							String sourceCoords = mw.getSourceCoords();
-							props.put("SLC-Source-M2", sourceCoords);
+							props.put(SLC_ORIGIN_M2.toString(), sourceCoords);
 							Artifact mavenCnv = new DefaultArtifact(sourceCoords);
 							if (mavenCnv.getArtifactId().equals(cnv.getName()))
 								props.remove(Constants.BUNDLE_SYMBOLICNAME);
@@ -115,11 +120,11 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements A
 								props.remove(Constants.BUNDLE_VERSION);
 						} else if (cnv instanceof UriWrapper) {
 							UriWrapper mw = (UriWrapper) cnv;
-							props.put("SLC-Source-URI", mw.getEffectiveUri());
+							props.put(SLC_ORIGIN_URI.toString(), mw.getEffectiveUri());
 							if (mw.getUri() == null && mw.getBaseUri() != null) {
 								log.warn("Base URI for " + cnv);
-								props.put("SLC-Source-BaseURI", mw.getBaseUri());
-								props.put("SLC-Source-VersionSeparator", mw.getVersionSeparator());
+								props.put("SLC-Origin-BaseURI", mw.getBaseUri());
+								props.put("SLC-Origin-VersionSeparator", mw.getVersionSeparator());
 							}
 						} else {
 							log.warn("Unidentified BND wrapper " + cnv);
@@ -160,6 +165,62 @@ public class ArgeoOsgiDistributionImpl extends ArtifactDistribution implements A
 				log.debug(" includes: " + aw.getIncludes());
 				log.debug(" excludes: " + aw.getExcludes());
 				log.debug(" beans   : " + aw.getWrappers());
+
+				String uri = aw.getUri();
+				String duName = null;
+				String category = null;
+				String oldCategory = null;
+				if (uri.startsWith("http://www.eclipse.org/downloads/rt/rap/3.10/e4/rap-e4")) {
+					duName = "eclipse-rap";
+					category = "org.argeo.tp.eclipse.rap";
+					oldCategory = "org.argeo.tp.rap.e4";
+				} else if (uri.startsWith("http://www.eclipse.org/downloads/equinox/")) {
+					duName = "eclipse-equinox";
+					category = "org.argeo.tp.eclipse.equinox";
+					oldCategory = "org.argeo.tp.equinox";
+				} else if (uri.startsWith("http://www.eclipse.org/downloads/eclipse/downloads/drops4")) {
+					duName = "eclipse-rcp";
+					category = "org.argeo.tp.eclipse.rcp";
+					oldCategory = "org.argeo.tp.rcp.e4";
+				}
+
+				if (duName != null) {
+					try {
+						Path duDir = baseDir.resolve(category).resolve(duName);
+						Files.createDirectories(duDir);
+						Path bndPath = duDir.resolve("common.bnd");
+						Path includesPath = duDir.resolve("includes.properties");
+
+						Map<String, String> props = new TreeMap<>();
+						props.put(ManifestConstants.SLC_ORIGIN_URI.toString(), aw.getUri());
+						props.put(ManifestConstants.SLC_ORIGIN_MANIFEST_NOT_MODIFIED.toString(), "true");
+						props.put(Constants.BUNDLE_LICENSE, FreeLicense.EPL.toString());
+						// write BND file
+						try (Writer bndWriter = Files.newBufferedWriter(bndPath);
+								Writer includesWriter = Files.newBufferedWriter(includesPath);) {
+							// writer.write("# " + cnv + "\n");
+							props: for (String key : props.keySet()) {
+								String value = props.get(key);
+								if (Constants.EXPORT_PACKAGE.equals(key) && "*".equals(value.trim()))
+									continue props;
+
+								bndWriter.write(key + ": " + value + '\n');
+							}
+
+							for (String key : aw.getIncludes().keySet()) {
+								String value = aw.getIncludes().get(key);
+								if (value.equals(oldCategory))
+									value = category;
+								includesWriter.write(key + "=" + value + '\n');
+							}
+							if (log.isTraceEnabled())
+								log.trace("Wrote " + bndPath);
+						}
+					} catch (IOException e) {
+						log.error("Could not process " + aw, e);
+					}
+
+				}
 			}
 		}
 

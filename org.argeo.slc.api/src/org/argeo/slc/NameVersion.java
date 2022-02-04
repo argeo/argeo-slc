@@ -6,8 +6,19 @@ package org.argeo.slc;
  */
 public interface NameVersion {
 	/** The name of the component. */
-	public String getName();
+	String getName();
 
 	/** The version of the component. */
-	public String getVersion();
+	String getVersion();
+
+	/**
+	 * The forward compatible branch of this version, by default it is
+	 * [major].[minor].
+	 */
+	default String getBranch() {
+		String[] parts = getVersion().split("\\.");
+		if (parts.length < 2)
+			throw new IllegalStateException("Version " + getVersion() + " cannot be interpreted as branch.");
+		return parts[0] + "." + parts[1];
+	}
 }
