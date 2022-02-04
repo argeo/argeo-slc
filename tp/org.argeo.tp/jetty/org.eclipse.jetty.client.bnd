@@ -1,0 +1,3 @@
+SLC-Origin-M2: org.eclipse.jetty:jetty-client
+SLC-Origin-ManifestNotModified: true
+Bundle-SymbolicName: org.eclipse.jetty.client

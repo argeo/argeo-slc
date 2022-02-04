@@ -1,6 +1,8 @@
 package org.argeo.slc.build.m2;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Set;
 
 /**
@@ -8,10 +10,12 @@ import java.util.Set;
  * based).
  */
 public class MavenConventionsUtils {
+	public final static String MAVEN_CENTRAL_BASE_URL = "https://repo1.maven.org/maven2/";
+
 	/**
-	 * Path to the file identified by this artifact <b>without</b> using Maven
-	 * APIs (convention based). Default location of repository
-	 * (~/.m2/repository) is used here.
+	 * Path to the file identified by this artifact <b>without</b> using Maven APIs
+	 * (convention based). Default location of repository (~/.m2/repository) is used
+	 * here.
 	 * 
 	 * @see MavenConventionsUtils#artifactToFile(String, Artifact)
 	 */
@@ -21,13 +25,11 @@ public class MavenConventionsUtils {
 	}
 
 	/**
-	 * Path to the file identified by this artifact <b>without</b> using Maven
-	 * APIs (convention based).
+	 * Path to the file identified by this artifact <b>without</b> using Maven APIs
+	 * (convention based).
 	 * 
-	 * @param repositoryPath
-	 *            path to the related local repository location
-	 * @param artifact
-	 *            the artifact
+	 * @param repositoryPath path to the related local repository location
+	 * @param artifact       the artifact
 	 */
 	public static File artifactToFile(String repositoryPath, Artifact artifact) {
 		return new File(repositoryPath + File.separator + artifact.getGroupId().replace('.', File.separatorChar)
@@ -53,6 +55,17 @@ public class MavenConventionsUtils {
 			return repoUrl + artifactPath("/", artifact).substring(1);
 		else
 			return repoUrl + artifactPath("/", artifact);
+	}
+
+	/** Absolute path to the file */
+	public static URL mavenCentralUrl(Artifact artifact) {
+		String url = artifactUrl(MAVEN_CENTRAL_BASE_URL, artifact);
+		try {
+			return new URL(url);
+		} catch (MalformedURLException e) {
+			// it should not happen
+			throw new IllegalStateException(e);
+		}
 	}
 
 	/** Absolute path to the directories where the files will be stored */
@@ -131,68 +144,7 @@ public class MavenConventionsUtils {
 		return p.toString();
 	}
 
-//	/**
-//	 * Directly parses Maven POM XML format in order to find all artifacts
-//	 * references under the dependency and dependencyManagement tags. This is
-//	 * meant to migrate existing pom registering a lot of artifacts, not to
-//	 * replace Maven resolving.
-//	 */
-//	public static void gatherPomDependencies(AetherTemplate aetherTemplate, Set<Artifact> artifacts,
-//			Artifact pomArtifact) {
-//		if (log.isDebugEnabled())
-//			log.debug("Gather dependencies for " + pomArtifact);
-//
-//		try {
-//			File file = aetherTemplate.getResolvedFile(pomArtifact);
-//			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-//			Document doc = documentBuilder.parse(file);
-//
-//			// properties
-//			Properties props = new Properties();
-//			props.setProperty("project.version", pomArtifact.getBaseVersion());
-//			NodeList properties = doc.getElementsByTagName("properties");
-//			if (properties.getLength() > 0) {
-//				NodeList propertiesElems = properties.item(0).getChildNodes();
-//				for (int i = 0; i < propertiesElems.getLength(); i++) {
-//					if (propertiesElems.item(i) instanceof Element) {
-//						Element property = (Element) propertiesElems.item(i);
-//						props.put(property.getNodeName(), property.getTextContent());
-//					}
-//				}
-//			}
-//
-//			// dependencies (direct and dependencyManagement)
-//			NodeList dependencies = doc.getElementsByTagName("dependency");
-//			for (int i = 0; i < dependencies.getLength(); i++) {
-//				Element dependency = (Element) dependencies.item(i);
-//				String groupId = dependency.getElementsByTagName("groupId").item(0).getTextContent().trim();
-//				String artifactId = dependency.getElementsByTagName("artifactId").item(0).getTextContent().trim();
-//				String version = dependency.getElementsByTagName("version").item(0).getTextContent().trim();
-//				if (version.startsWith("${")) {
-//					String versionKey = version.substring(0, version.length() - 1).substring(2);
-//					if (!props.containsKey(versionKey))
-//						throw new SlcException("Cannot interpret version " + version);
-//					version = props.getProperty(versionKey);
-//				}
-//				NodeList scopes = dependency.getElementsByTagName("scope");
-//				if (scopes.getLength() > 0 && scopes.item(0).getTextContent().equals("import")) {
-//					// recurse
-//					gatherPomDependencies(aetherTemplate, artifacts,
-//							new DefaultArtifact(groupId, artifactId, "pom", version));
-//				} else {
-//					// TODO: deal with scope?
-//					// TODO: deal with type
-//					String type = "jar";
-//					Artifact artifact = new DefaultArtifact(groupId, artifactId, type, version);
-//					artifacts.add(artifact);
-//				}
-//			}
-//		} catch (Exception e) {
-//			throw new SlcException("Cannot process " + pomArtifact, e);
-//		}
-//	}
-
-	/** Prevent instantiation */
+	/** Singleton */
 	private MavenConventionsUtils() {
 	}
 }

@@ -4,6 +4,7 @@ public enum ManifestConstants {
 	// OSGi
 	BUNDLE_SYMBOLICNAME("Bundle-SymbolicName"), //
 	BUNDLE_VERSION("Bundle-Version"), //
+	BUNDLE_LICENSE("Bundle-License"), //
 	// SLC
 	SLC_CATEGORY("SLC-Category"), //
 	SLC_ORIGIN_M2("SLC-Origin-M2"), //
