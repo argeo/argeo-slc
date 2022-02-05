@@ -33,6 +33,7 @@ import java.util.TreeMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import org.argeo.slc.DefaultNameVersion;
@@ -104,6 +105,8 @@ public class A2Factory {
 			Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, fileProps);
 
 			downloadAndProcessM2Sources(artifact, targetBundleDir);
+
+			createJar(targetBundleDir);
 		} catch (Exception e) {
 			throw new RuntimeException("Cannot process " + bndFile, e);
 		}
@@ -180,6 +183,8 @@ public class A2Factory {
 
 				// sources
 				downloadAndProcessM2Sources(artifact, targetBundleDir);
+
+				createJar(targetBundleDir);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot process " + duDir, e);
@@ -192,7 +197,7 @@ public class A2Factory {
 		URL sourcesUrl = MavenConventionsUtils.mavenCentralUrl(sourcesArtifact);
 		Path sourcesDownloaded = download(sourcesUrl, originBase, artifact.toM2Coordinates() + ".sources.jar");
 		processM2SourceJar(sourcesDownloaded, targetBundleDir);
-		logger.log(Level.DEBUG, () -> "Processed " + sourcesDownloaded);
+		logger.log(Level.DEBUG, () -> "Processed source " + sourcesDownloaded);
 
 	}
 
@@ -324,6 +329,11 @@ public class A2Factory {
 					return super.visitFile(file, attrs);
 				}
 			});
+
+			DirectoryStream<Path> dirs = Files.newDirectoryStream(targetCategoryBase, (p) -> Files.isDirectory(p));
+			for (Path dir : dirs) {
+				createJar(dir);
+			}
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot process " + duDir, e);
 		}
@@ -334,7 +344,25 @@ public class A2Factory {
 		NameVersion nameVersion;
 		Path targetBundleDir;
 		try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(file), false)) {
-			Manifest manifest = jarIn.getManifest();
+			Manifest manifest = new Manifest(jarIn.getManifest());
+
+			// remove problematic entries in MANIFEST
+//			Set<String> entriesToDelete = new HashSet<>();
+//			for (String key : manifest.getEntries().keySet()) {
+////				logger.log(DEBUG, "## " + key);
+//				Attributes attrs = manifest.getAttributes(key);
+//				for (Object attrName : attrs.keySet()) {
+////					logger.log(DEBUG, attrName + "=" + attrs.get(attrName));
+//					if ("Specification-Version".equals(attrName.toString())
+//							|| "Implementation-Version".equals(attrName.toString())) {
+//						entriesToDelete.add(key);
+//
+//					}
+//				}
+//			}
+//			for (String key : entriesToDelete) {
+//				manifest.getEntries().remove(key);
+//			}
 
 			String symbolicNameFromEntries = entries.get(BUNDLE_SYMBOLICNAME.toString());
 			String versionFromEntries = entries.get(BUNDLE_VERSION.toString());
@@ -520,6 +548,32 @@ public class A2Factory {
 		return dest;
 	}
 
+	protected Path createJar(Path bundleDir) throws IOException {
+		Path jarPath = bundleDir.getParent().resolve(bundleDir.getFileName() + ".jar");
+		Path manifestPath = bundleDir.resolve("META-INF/MANIFEST.MF");
+		Manifest manifest;
+		try (InputStream in = Files.newInputStream(manifestPath)) {
+			manifest = new Manifest(in);
+		}
+		try (JarOutputStream jarOut = new JarOutputStream(Files.newOutputStream(jarPath), manifest)) {
+			Files.walkFileTree(bundleDir, new SimpleFileVisitor<Path>() {
+
+				@Override
+				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+					if (file.getFileName().toString().equals("MANIFEST.MF"))
+						return super.visitFile(file, attrs);
+					JarEntry entry = new JarEntry(bundleDir.relativize(file).toString());
+					jarOut.putNextEntry(entry);
+					Files.copy(file, jarOut);
+					return super.visitFile(file, attrs);
+				}
+
+			});
+		}
+		deleteDirectory(bundleDir);
+		return jarPath;
+	}
+
 	public static void main(String[] args) {
 		Path originBase = Paths.get("../output/origin").toAbsolutePath().normalize();
 		Path factoryBase = Paths.get("../output/a2").toAbsolutePath().normalize();
@@ -527,11 +581,13 @@ public class A2Factory {
 
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
 
+		// Eclipse
 		factory.processEclipseArchive(
 				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
 
+		// Maven
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty"));
