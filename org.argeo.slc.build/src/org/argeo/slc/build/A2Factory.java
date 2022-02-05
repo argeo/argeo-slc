@@ -1,6 +1,9 @@
 package org.argeo.slc.build;
 
+import static java.lang.System.Logger.Level.DEBUG;
 import static org.argeo.slc.ManifestConstants.BUNDLE_LICENSE;
+import static org.argeo.slc.ManifestConstants.BUNDLE_SYMBOLICNAME;
+import static org.argeo.slc.ManifestConstants.BUNDLE_VERSION;
 import static org.argeo.slc.ManifestConstants.SLC_ORIGIN_M2;
 
 import java.io.FileNotFoundException;
@@ -26,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -36,6 +40,9 @@ import org.argeo.slc.ManifestConstants;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.build.m2.DefaultArtifact;
 import org.argeo.slc.build.m2.MavenConventionsUtils;
+
+import aQute.bnd.osgi.Analyzer;
+import aQute.bnd.osgi.Jar;
 
 public class A2Factory {
 	private final static Logger logger = System.getLogger(A2Factory.class.getName());
@@ -58,6 +65,48 @@ public class A2Factory {
 		eclipseMirrors.add("https://archive.eclipse.org/");
 
 		mirrors.put("http://www.eclipse.org/downloads", eclipseMirrors);
+	}
+
+	public void processCategory(Path targetCategoryBase) {
+		try {
+			DirectoryStream<Path> bnds = Files.newDirectoryStream(targetCategoryBase,
+					(p) -> p.getFileName().toString().endsWith(".bnd")
+							&& !p.getFileName().toString().equals(COMMON_BND));
+			for (Path p : bnds) {
+				processSingleM2ArtifactDistributionUnit(p);
+			}
+
+			DirectoryStream<Path> dus = Files.newDirectoryStream(targetCategoryBase, (p) -> Files.isDirectory(p));
+			for (Path duDir : dus) {
+				processM2BasedDistributionUnit(duDir);
+			}
+		} catch (IOException e) {
+			throw new RuntimeException("Cannot process category " + targetCategoryBase, e);
+		}
+	}
+
+	public void processSingleM2ArtifactDistributionUnit(Path bndFile) {
+		try {
+			String category = bndFile.getParent().getFileName().toString();
+			Path targetCategoryBase = factoryBase.resolve(category);
+			Properties fileProps = new Properties();
+			try (InputStream in = Files.newInputStream(bndFile)) {
+				fileProps.load(in);
+			}
+
+			String m2Coordinates = fileProps.getProperty(SLC_ORIGIN_M2.toString());
+			if (m2Coordinates == null)
+				throw new IllegalArgumentException("No M2 coordinates available for " + bndFile);
+			DefaultArtifact artifact = new DefaultArtifact(m2Coordinates);
+			URL url = MavenConventionsUtils.mavenCentralUrl(artifact);
+			Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
+
+			Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, fileProps);
+
+			downloadAndProcessM2Sources(artifact, targetBundleDir);
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot process " + bndFile, e);
+		}
 	}
 
 	public void processM2BasedDistributionUnit(Path duDir) {
@@ -99,7 +148,7 @@ public class A2Factory {
 							String value = fileProps.getProperty(key.toString());
 							writer.write(key + ": " + value + '\n');
 						}
-						logger.log(Level.DEBUG, () -> "Migrated  " + p);
+						logger.log(DEBUG, () -> "Migrated  " + p);
 					}
 				}
 
@@ -108,33 +157,87 @@ public class A2Factory {
 				Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
 
 				// prepare manifest entries
-				Map<String, String> entries = new HashMap<>();
-				for (Object key : commonProps.keySet()) {
-					entries.put(key.toString(), commonProps.getProperty(key.toString()));
-				}
+				Properties mergeProps = new Properties();
+				mergeProps.putAll(commonProps);
+
+				// Map<String, String> entries = new HashMap<>();
+//				for (Object key : commonProps.keySet()) {
+//					entries.put(key.toString(), commonProps.getProperty(key.toString()));
+//				}
 				fileEntries: for (Object key : fileProps.keySet()) {
 					if (ManifestConstants.SLC_ORIGIN_M2.toString().equals(key))
 						continue fileEntries;
 					String value = fileProps.getProperty(key.toString());
-					String previousValue = entries.put(key.toString(), value);
+					Object previousValue = mergeProps.put(key.toString(), value);
 					if (previousValue != null) {
 						logger.log(Level.WARNING,
 								downloaded + ": " + key + " was " + previousValue + ", overridden with " + value);
 					}
 				}
-				entries.put(ManifestConstants.SLC_ORIGIN_M2.toString(), artifact.toM2Coordinates());
-				Path targetBundleDir = processBundleJar(downloaded, targetCategoryBase, entries);
-				logger.log(Level.DEBUG, () -> "Processed " + downloaded);
+				mergeProps.put(ManifestConstants.SLC_ORIGIN_M2.toString(), artifact.toM2Coordinates());
+				Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, mergeProps);
+//				logger.log(Level.DEBUG, () -> "Processed " + downloaded);
 
 				// sources
-				DefaultArtifact sourcesArtifact = new DefaultArtifact(artifact.toM2Coordinates(), "sources");
-				URL sourcesUrl = MavenConventionsUtils.mavenCentralUrl(sourcesArtifact);
-				Path sourcesDownloaded = download(sourcesUrl, originBase, artifact.toM2Coordinates() + ".sources.jar");
-				processM2SourceJar(sourcesDownloaded, targetBundleDir);
-				logger.log(Level.DEBUG, () -> "Processed " + sourcesDownloaded);
+				downloadAndProcessM2Sources(artifact, targetBundleDir);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException("Cannot process " + duDir, e);
+		}
+
+	}
+
+	protected void downloadAndProcessM2Sources(DefaultArtifact artifact, Path targetBundleDir) throws IOException {
+		DefaultArtifact sourcesArtifact = new DefaultArtifact(artifact.toM2Coordinates(), "sources");
+		URL sourcesUrl = MavenConventionsUtils.mavenCentralUrl(sourcesArtifact);
+		Path sourcesDownloaded = download(sourcesUrl, originBase, artifact.toM2Coordinates() + ".sources.jar");
+		processM2SourceJar(sourcesDownloaded, targetBundleDir);
+		logger.log(Level.DEBUG, () -> "Processed " + sourcesDownloaded);
+
+	}
+
+	protected Path processBndJar(Path downloaded, Path targetCategoryBase, Properties fileProps) {
+
+		try {
+			Map<String, String> additionalEntries = new TreeMap<>();
+			boolean doNotModify = Boolean.parseBoolean(fileProps
+					.getOrDefault(ManifestConstants.SLC_ORIGIN_MANIFEST_NOT_MODIFIED.toString(), "false").toString());
+
+			if (doNotModify) {
+				fileEntries: for (Object key : fileProps.keySet()) {
+					if (ManifestConstants.SLC_ORIGIN_M2.toString().equals(key))
+						continue fileEntries;
+					String value = fileProps.getProperty(key.toString());
+					additionalEntries.put(key.toString(), value);
+				}
+			} else {
+
+				try (Analyzer bndAnalyzer = new Analyzer()) {
+					bndAnalyzer.setProperties(fileProps);
+					Jar jar = new Jar(downloaded.toFile());
+					bndAnalyzer.setJar(jar);
+					Manifest manifest = bndAnalyzer.calcManifest();
+
+					keys: for (Object key : manifest.getMainAttributes().keySet()) {
+						Object value = manifest.getMainAttributes().get(key);
+
+						switch (key.toString()) {
+						case "Tool":
+						case "Bnd-LastModified":
+						case "Created-By":
+							continue keys;
+						}
+						additionalEntries.put(key.toString(), value.toString());
+						// logger.log(DEBUG, () -> key + "=" + value);
+
+					}
+				}
+			}
+			Path targetBundleDir = processBundleJar(downloaded, targetCategoryBase, additionalEntries);
+			logger.log(Level.DEBUG, () -> "Processed " + downloaded);
+			return targetBundleDir;
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot BND process " + downloaded, e);
 		}
 
 	}
@@ -227,13 +330,24 @@ public class A2Factory {
 
 	}
 
-	protected Path processBundleJar(Path file, Path targetBase, Map<String, String> additionalManifestEntries)
-			throws IOException {
+	protected Path processBundleJar(Path file, Path targetBase, Map<String, String> entries) throws IOException {
 		NameVersion nameVersion;
 		Path targetBundleDir;
 		try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(file), false)) {
 			Manifest manifest = jarIn.getManifest();
-			nameVersion = nameVersionFromManifest(manifest);
+
+			String symbolicNameFromEntries = entries.get(BUNDLE_SYMBOLICNAME.toString());
+			String versionFromEntries = entries.get(BUNDLE_VERSION.toString());
+
+			if (symbolicNameFromEntries != null && versionFromEntries != null) {
+				nameVersion = new DefaultNameVersion(symbolicNameFromEntries, versionFromEntries);
+			} else {
+				nameVersion = nameVersionFromManifest(manifest);
+				if (versionFromEntries != null && !nameVersion.getVersion().equals(versionFromEntries)) {
+					logger.log(Level.WARNING, "Original version is " + nameVersion.getVersion()
+							+ " while new version is " + versionFromEntries);
+				}
+			}
 			targetBundleDir = targetBase.resolve(nameVersion.getName() + "." + nameVersion.getBranch());
 
 			// TODO make it less dangerous?
@@ -255,8 +369,8 @@ public class A2Factory {
 			// copy MANIFEST
 			Path manifestPath = targetBundleDir.resolve("META-INF/MANIFEST.MF");
 			Files.createDirectories(manifestPath.getParent());
-			for (String key : additionalManifestEntries.keySet()) {
-				String value = additionalManifestEntries.get(key);
+			for (String key : entries.keySet()) {
+				String value = entries.get(key);
 				Object previousValue = manifest.getMainAttributes().putValue(key, value);
 				if (previousValue != null && !previousValue.equals(value)) {
 					logger.log(Level.WARNING,
@@ -339,6 +453,8 @@ public class A2Factory {
 		Attributes attrs = manifest.getMainAttributes();
 		// symbolic name
 		String symbolicName = attrs.getValue(ManifestConstants.BUNDLE_SYMBOLICNAME.toString());
+		if (symbolicName == null)
+			return null;
 		// make sure there is no directive
 		symbolicName = symbolicName.split(";")[0];
 
@@ -411,11 +527,14 @@ public class A2Factory {
 
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
 
-//		factory.processEclipseArchive(
-//				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
-//		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
-//		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
+		factory.processEclipseArchive(
+				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
 
-		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp").resolve("jetty"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
 	}
 }

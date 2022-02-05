@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<target name="tp-rap">
+	<locations>
+		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp.apache" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp.eclipse.equinox" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp.eclipse.rap" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp.jetty" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp.sdk" type="Directory"/>
+	</locations>
+</target>

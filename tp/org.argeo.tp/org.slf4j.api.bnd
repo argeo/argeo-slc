@@ -1,0 +1,3 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.slf4j.api
+SLC-Origin-M2: org.slf4j:slf4j-api:1.7.28

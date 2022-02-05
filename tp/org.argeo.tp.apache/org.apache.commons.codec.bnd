@@ -1,0 +1,4 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.commons.codec
+Bundle-Version: 1.13.0
+SLC-Origin-M2: commons-codec:commons-codec:1.13
