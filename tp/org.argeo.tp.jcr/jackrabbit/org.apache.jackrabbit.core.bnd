@@ -1,0 +1,13 @@
+SLC-Origin-M2: org.apache.jackrabbit:jackrabbit-core
+Bundle-SymbolicName: org.apache.jackrabbit.core
+Import-Package: org.apache.jackrabbit.test;resolution:=optional,\
+org.apache.derby.*;resolution:=optional,\
+org.h2;resolution:=optional,\
+org.postgresql;resolution:=optional,\
+oracle.jdbc;resolution:=optional,\
+org.gjt.mm.mysql;resolution:=optional,\
+com.mysql.jdbc;resolution:=optional,\
+com.microsoft.sqlserver.jdbc;resolution:=optional,\
+net.sourceforge.jtds.jdbc;resolution:=optional,\
+org.hsqldb;resolution:=optional,\
+*

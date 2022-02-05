@@ -1,0 +1,2 @@
+SLC-Origin-M2: org.apache.jackrabbit:jackrabbit-spi2jcr
+Bundle-SymbolicName: org.apache.jackrabbit.spi2jcr

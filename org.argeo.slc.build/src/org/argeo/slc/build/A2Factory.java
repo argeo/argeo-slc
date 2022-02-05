@@ -102,7 +102,7 @@ public class A2Factory {
 			URL url = MavenConventionsUtils.mavenCentralUrl(artifact);
 			Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
 
-			Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, fileProps);
+			Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, fileProps, artifact);
 
 			downloadAndProcessM2Sources(artifact, targetBundleDir);
 
@@ -178,7 +178,7 @@ public class A2Factory {
 					}
 				}
 				mergeProps.put(ManifestConstants.SLC_ORIGIN_M2.toString(), artifact.toM2Coordinates());
-				Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, mergeProps);
+				Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, mergeProps, artifact);
 //				logger.log(Level.DEBUG, () -> "Processed " + downloaded);
 
 				// sources
@@ -201,7 +201,8 @@ public class A2Factory {
 
 	}
 
-	protected Path processBndJar(Path downloaded, Path targetCategoryBase, Properties fileProps) {
+	protected Path processBndJar(Path downloaded, Path targetCategoryBase, Properties fileProps,
+			DefaultArtifact artifact) {
 
 		try {
 			Map<String, String> additionalEntries = new TreeMap<>();
@@ -216,6 +217,21 @@ public class A2Factory {
 					additionalEntries.put(key.toString(), value);
 				}
 			} else {
+				if (artifact != null) {
+					if (!fileProps.containsKey(BUNDLE_SYMBOLICNAME.toString())) {
+						fileProps.put(BUNDLE_SYMBOLICNAME.toString(), artifact.getName());
+					}
+					if (!fileProps.containsKey(BUNDLE_VERSION.toString())) {
+						fileProps.put(BUNDLE_VERSION.toString(), artifact.getVersion());
+					}
+				}
+
+//				if (!fileProps.contains(EXPORT_PACKAGE.toString())) {
+//					fileProps.put(EXPORT_PACKAGE.toString(), "*");
+//				}
+//				if (!fileProps.contains(IMPORT_PACKAGE.toString())) {
+//					fileProps.put(IMPORT_PACKAGE.toString(), "*");
+//				}
 
 				try (Analyzer bndAnalyzer = new Analyzer()) {
 					bndAnalyzer.setProperties(fileProps);
@@ -347,6 +363,7 @@ public class A2Factory {
 			Manifest manifest = new Manifest(jarIn.getManifest());
 
 			// remove problematic entries in MANIFEST
+			manifest.getEntries().clear();
 //			Set<String> entriesToDelete = new HashSet<>();
 //			for (String key : manifest.getEntries().keySet()) {
 ////				logger.log(DEBUG, "## " + key);
@@ -387,6 +404,8 @@ public class A2Factory {
 			JarEntry entry;
 			entries: while ((entry = jarIn.getNextJarEntry()) != null) {
 				if (entry.isDirectory())
+					continue entries;
+				if (entry.getName().endsWith(".RSA") || entry.getName().endsWith(".SF"))
 					continue entries;
 				Path target = targetBundleDir.resolve(entry.getName());
 				Files.createDirectories(target.getParent());
@@ -588,9 +607,11 @@ public class A2Factory {
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
 
 		// Maven
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.javax"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jcr"));
 	}
 }

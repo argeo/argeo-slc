@@ -1,0 +1,5 @@
+Bundle-License: BSD-3-Clause
+Bundle-SymbolicName: org.hamcrest
+Bundle-Version: 2.1.0
+SLC-Origin-M2: org.hamcrest:hamcrest:2.1
+SLC-Origin-ManifestNotModified: true

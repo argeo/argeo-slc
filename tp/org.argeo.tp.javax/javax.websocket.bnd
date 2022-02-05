@@ -1,0 +1,3 @@
+Bundle-SymbolicName: javax.websocket
+SLC-Origin-M2: javax.websocket:javax.websocket-api:1.1
+SLC-Origin-ManifestNotModified: true

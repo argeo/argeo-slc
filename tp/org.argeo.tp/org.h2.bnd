@@ -1,0 +1,4 @@
+Bundle-License: MPL-2.0
+Bundle-SymbolicName: org.h2
+SLC-Origin-M2: com.h2database:h2:1.4.199
+SLC-Origin-ManifestNotModified: true

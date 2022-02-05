@@ -1,0 +1,6 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.commons.dbcp
+Bundle-Version: 1.4.0
+SLC-Origin-M2: commons-dbcp:commons-dbcp:1.4
+Import-Package: javax.transaction.*; resolution:="optional",\
+*
