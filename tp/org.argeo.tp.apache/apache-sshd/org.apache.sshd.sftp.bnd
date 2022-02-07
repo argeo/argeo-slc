@@ -1,0 +1,3 @@
+Bundle-SymbolicName: org.apache.sshd.sftp
+SLC-Origin-M2: org.apache.sshd:sshd-sftp
+SLC-Origin-ManifestNotModified: true

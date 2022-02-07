@@ -5,4 +5,3 @@ Import-Package: org.hamcrest;resolution:=optional,\
 org.hamcrest.core;resolution:=optional,\
 *
 SLC-Origin-M2: junit:junit:4.12
-Export-Package: junit.*;version="4.12.0"

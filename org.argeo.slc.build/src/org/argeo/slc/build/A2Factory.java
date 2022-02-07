@@ -4,6 +4,7 @@ import static java.lang.System.Logger.Level.DEBUG;
 import static org.argeo.slc.ManifestConstants.BUNDLE_LICENSE;
 import static org.argeo.slc.ManifestConstants.BUNDLE_SYMBOLICNAME;
 import static org.argeo.slc.ManifestConstants.BUNDLE_VERSION;
+import static org.argeo.slc.ManifestConstants.EXPORT_PACKAGE;
 import static org.argeo.slc.ManifestConstants.SLC_ORIGIN_M2;
 
 import java.io.FileNotFoundException;
@@ -226,9 +227,10 @@ public class A2Factory {
 					}
 				}
 
-//				if (!fileProps.contains(EXPORT_PACKAGE.toString())) {
-//					fileProps.put(EXPORT_PACKAGE.toString(), "*");
-//				}
+				if (!fileProps.containsKey(EXPORT_PACKAGE.toString())) {
+					fileProps.put(EXPORT_PACKAGE.toString(),
+							"*;version=\"" + fileProps.getProperty(BUNDLE_VERSION.toString()) + "\"");
+				}
 //				if (!fileProps.contains(IMPORT_PACKAGE.toString())) {
 //					fileProps.put(IMPORT_PACKAGE.toString(), "*");
 //				}
@@ -249,10 +251,20 @@ public class A2Factory {
 							continue keys;
 						}
 						additionalEntries.put(key.toString(), value.toString());
-						// logger.log(DEBUG, () -> key + "=" + value);
+						logger.log(DEBUG, () -> key + "=" + value);
 
 					}
 				}
+
+//				try (Builder bndBuilder = new Builder()) {
+//					Jar jar = new Jar(downloaded.toFile());
+//					bndBuilder.addClasspath(jar);
+//					Path targetBundleDir = targetCategoryBase.resolve(artifact.getName() + "." + artifact.getBranch());
+//
+//					Jar target = new Jar(targetBundleDir.toFile());
+//					bndBuilder.setJar(target);
+//					return targetBundleDir;
+//				}
 			}
 			Path targetBundleDir = processBundleJar(downloaded, targetCategoryBase, additionalEntries);
 			logger.log(Level.DEBUG, () -> "Processed " + downloaded);
@@ -600,6 +612,9 @@ public class A2Factory {
 
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
 
+//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp/slf4j"));
+//		System.exit(0);
+
 		// Eclipse
 		factory.processEclipseArchive(
 				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
@@ -607,11 +622,10 @@ public class A2Factory {
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
 
 		// Maven
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.javax"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jcr"));
 	}
 }

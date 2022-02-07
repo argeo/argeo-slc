@@ -1,0 +1,3 @@
+Bundle-SymbolicName: org.apache.sshd.git
+SLC-Origin-M2: org.apache.sshd:sshd-git
+SLC-Origin-ManifestNotModified: true

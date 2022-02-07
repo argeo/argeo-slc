@@ -1,0 +1,3 @@
+Bundle-SymbolicName: org.apache.sshd.scp
+SLC-Origin-M2: org.apache.sshd:sshd-scp
+SLC-Origin-ManifestNotModified: true

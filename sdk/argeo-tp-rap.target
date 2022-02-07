@@ -9,6 +9,5 @@
 		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp.jetty" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp.sdk" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp.jcr" type="Directory"/>
-		<location path="${project_loc:argeo-slc-unstable}/output/a2/org.argeo.tp.javax" type="Directory"/>
 	</locations>
 </target>

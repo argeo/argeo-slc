@@ -1,7 +1,5 @@
 Bundle-Activator: org.apache.tika.parser.internal.Activator
 Bundle-License: Apache-2.0
 Bundle-SymbolicName: org.apache.tika.parsers
-Bundle-Version: 1.22.0
 Import-Package: *;resolution:=optional
 SLC-Origin-M2: org.apache.tika:tika-parsers:1.22
-Export-Package: org.apache.tika.*

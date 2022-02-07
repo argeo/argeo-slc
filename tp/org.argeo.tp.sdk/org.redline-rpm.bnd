@@ -1,6 +1,5 @@
 Bundle-License: MIT
 Bundle-SymbolicName: org.redline-rpm
-Bundle-Version: 1.2.8
 Import-Package: sun.security.*;resolution:=optional,
 					org.apache.tools.ant.*;resolution:=optional,
 					org.apache.tools.zip;resolution:=optional,
