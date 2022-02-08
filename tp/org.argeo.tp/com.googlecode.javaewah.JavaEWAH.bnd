@@ -1,0 +1,4 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: com.googlecode.javaewah.JavaEWAH
+SLC-Origin-M2: com.googlecode.javaewah:JavaEWAH:1.1.6
+SLC-Origin-ManifestNotModified: true

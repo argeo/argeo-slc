@@ -250,6 +250,8 @@ public class A2Factory {
 						case "Created-By":
 							continue keys;
 						}
+						if("Require-Capability".equals(key.toString()) && value.toString().equals("osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version=1.1))\""))
+							continue keys;// hack for very old classes
 						additionalEntries.put(key.toString(), value.toString());
 						logger.log(DEBUG, () -> key + "=" + value);
 
@@ -428,7 +430,7 @@ public class A2Factory {
 			// copy MANIFEST
 			Path manifestPath = targetBundleDir.resolve("META-INF/MANIFEST.MF");
 			Files.createDirectories(manifestPath.getParent());
-			for (String key : entries.keySet()) {
+			 for (String key : entries.keySet()) {
 				String value = entries.get(key);
 				Object previousValue = manifest.getMainAttributes().putValue(key, value);
 				if (previousValue != null && !previousValue.equals(value)) {
@@ -612,6 +614,7 @@ public class A2Factory {
 
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
 
+//		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp/slf4j"));
 //		System.exit(0);
 
