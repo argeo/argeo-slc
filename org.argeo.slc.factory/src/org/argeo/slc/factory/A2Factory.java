@@ -1,4 +1,4 @@
-package org.argeo.slc.build;
+package org.argeo.slc.factory;
 
 import static java.lang.System.Logger.Level.DEBUG;
 import static org.argeo.slc.ManifestConstants.BUNDLE_LICENSE;
@@ -40,12 +40,13 @@ import java.util.jar.Manifest;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.ManifestConstants;
 import org.argeo.slc.NameVersion;
-import org.argeo.slc.build.m2.DefaultArtifact;
-import org.argeo.slc.build.m2.MavenConventionsUtils;
+import org.argeo.slc.factory.m2.DefaultArtifact;
+import org.argeo.slc.factory.m2.MavenConventionsUtils;
 
 import aQute.bnd.osgi.Analyzer;
 import aQute.bnd.osgi.Jar;
 
+/** The central class for A2 packaging. */
 public class A2Factory {
 	private final static Logger logger = System.getLogger(A2Factory.class.getName());
 
@@ -250,7 +251,8 @@ public class A2Factory {
 						case "Created-By":
 							continue keys;
 						}
-						if("Require-Capability".equals(key.toString()) && value.toString().equals("osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version=1.1))\""))
+						if ("Require-Capability".equals(key.toString())
+								&& value.toString().equals("osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version=1.1))\""))
 							continue keys;// hack for very old classes
 						additionalEntries.put(key.toString(), value.toString());
 						logger.log(DEBUG, () -> key + "=" + value);
@@ -323,7 +325,7 @@ public class A2Factory {
 			String url = commonProps.getProperty(ManifestConstants.SLC_ORIGIN_URI.toString());
 			Path downloaded = tryDownload(url, originBase);
 
-			FileSystem zipFs = FileSystems.newFileSystem(downloaded, null);
+			FileSystem zipFs = FileSystems.newFileSystem(downloaded, (ClassLoader) null);
 
 			List<PathMatcher> pathMatchers = new ArrayList<>();
 			for (Object pattern : includes.keySet()) {
@@ -430,7 +432,7 @@ public class A2Factory {
 			// copy MANIFEST
 			Path manifestPath = targetBundleDir.resolve("META-INF/MANIFEST.MF");
 			Files.createDirectories(manifestPath.getParent());
-			 for (String key : entries.keySet()) {
+			for (String key : entries.keySet()) {
 				String value = entries.get(key);
 				Object previousValue = manifest.getMainAttributes().putValue(key, value);
 				if (previousValue != null && !previousValue.equals(value)) {

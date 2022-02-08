@@ -1,4 +1,4 @@
-package org.argeo.slc.build.m2;
+package org.argeo.slc.factory.m2;
 
 public interface Artifact {
 	String getGroupId();

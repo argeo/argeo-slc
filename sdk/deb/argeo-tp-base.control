@@ -1,0 +1,5 @@
+Package: argeo-tp-base
+Version: 2.3.4
+Architecture: all
+Maintainer: Mathieu Baudier <mbaudier@argeo.org>
+Description: Base third parties which are GPL compatible

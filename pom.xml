@@ -26,7 +26,7 @@
 		<module>org.argeo.slc.runtime</module>
 		<module>org.argeo.slc.jcr</module>
 		<module>org.argeo.slc.repo</module>
-		<module>org.argeo.slc.factory</module>
+		<module>org.argeo.slc.rpmfactory</module>
 		
 		<!-- CMS extensions -->
 		<module>cms</module>
