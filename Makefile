@@ -1,14 +1,15 @@
 include sdk.mk
 .PHONY: clean all osgi
 
-all: osgi
+all: osgi distribution
 
-BUNDLE_PREFIX = org.argeo.slc
+BUNDLE_PREFIX = org.argeo
 A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
 org.argeo.slc.api \
 org.argeo.slc.factory \
+ext/org.argeo.ext.slf4j
 
 BUILD_CLASSPATH_FEDORA = \
 /usr/share/java/osgi-core/osgi.core.jar:$\
@@ -42,6 +43,7 @@ BUILD_BASE = $(SDK_BUILD_BASE)
 distribution: osgi
 	$(JVM) -cp $(DISTRIBUTION_CLASSPATH) tp/Make.java
 
+
 #
 # GENERIC
 #
@@ -50,9 +52,9 @@ JAVADOC := /usr/bin/javadoc
 ECJ_JAR := /usr/share/java/ecj.jar
 BND_TOOL := /usr/bin/bnd
 
-WORKSPACE_BNDS := $(shell cd $(SDK_SRC_BASE) && find cnf -name '*.bnd')
+WORKSPACE_BNDS := $(shell cd $(SDK_SRC_BASE) && find cnf -name '*.bnd') 
 #BND_WORKSPACES := $(foreach bundle, $(BUNDLES), ./$(dir $(bundle)))
-BUILD_WORKSPACE_BNDS := $(WORKSPACE_BNDS:%=$(SDK_BUILD_BASE)/%)
+BUILD_WORKSPACE_BNDS := $(WORKSPACE_BNDS:%=$(SDK_BUILD_BASE)/%) $(WORKSPACE_BNDS:%=$(SDK_BUILD_BASE)/ext/%)
 
 cnf: $(BUILD_WORKSPACE_BNDS)
 
@@ -63,22 +65,25 @@ JAVA_SRCS = $(foreach bundle, $(BUNDLES), $(shell find $(bundle) -name '*.java')
 ECJ_SRCS = $(foreach bundle, $(BUNDLES), $(bundle)/src[-d $(BUILD_BASE)/$(bundle)/bin])
 
 osgi: cnf $(A2_BUNDLES)
+	mkdir -p $(SDK_BUILD_BASE)/a2/org.argeo.tp
+	mv $(SDK_BUILD_BASE)/a2/$(A2_CATEGORY)/ext/org.argeo.ext.slf4j.$(MAJOR).$(MINOR).jar $(SDK_BUILD_BASE)/a2/org.argeo.tp
+	rmdir $(SDK_BUILD_BASE)/a2/$(A2_CATEGORY)/ext
 
 clean:
 	rm -rf $(BUILD_BASE)/*-compiled
-	rm -rf $(BUILD_BASE)/{cnf,a2}
+	rm -rf $(BUILD_BASE)/cnf
+	rm -rf $(BUILD_BASE)/a2
 	rm -rf $(BUILD_BASE)/$(BUNDLE_PREFIX).* 
+	rm -rf $(BUILD_BASE)/ext
+	rm -rf $(BUILD_BASE)/build
+	rm -rf $(BUILD_BASE)/deb
 
 # SDK level
 $(SDK_BUILD_BASE)/cnf/%.bnd: cnf/%.bnd
 	mkdir -p $(dir $@)
 	cp $< $@
 	
-$(SDK_BUILD_BASE)/eclipse/cnf/%.bnd: cnf/%.bnd
-	mkdir -p $(dir $@)
-	cp $< $@
-
-$(SDK_BUILD_BASE)/rcp/cnf/%.bnd: cnf/%.bnd
+$(SDK_BUILD_BASE)/ext/cnf/%.bnd: cnf/%.bnd
 	mkdir -p $(dir $@)
 	cp $< $@
 
@@ -88,6 +93,7 @@ $(SDK_BUILD_BASE)/a2/$(A2_CATEGORY)/%.$(MAJOR).$(MINOR).jar : $(BUILD_BASE)/%/bu
 
 # Build level
 $(BUILD_BASE)/%/bundle.jar : %/bnd.bnd $(BUILD_BASE)/java-compiled 
+	mkdir -p $(dir $@)
 	rsync -r --exclude "*.java" $(dir  $<)src/ $(dir $@)bin
 	rsync -r $(dir  $<)src/ $(dir $@)src
 	if [ -d "$(dir  $<)OSGI-INF" ]; then rsync -r $(dir  $<)OSGI-INF/ $(dir $@)/OSGI-INF; fi

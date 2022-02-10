@@ -1,1 +1,1 @@
-include $(SDK_SRC_BASE)/sdk/deb.mk
+##include $(SDK_SRC_BASE)/sdk/deb.mk
