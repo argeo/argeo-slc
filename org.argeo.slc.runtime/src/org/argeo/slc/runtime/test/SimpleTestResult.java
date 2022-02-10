@@ -7,7 +7,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.Vector;
 
-import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.test.TestResult;
 import org.argeo.slc.test.TestResultPart;
@@ -17,8 +16,6 @@ import org.argeo.slc.test.TestRun;
  * Basic implementation of a test result containing only a list of result parts.
  */
 public class SimpleTestResult implements TestResult {
-	private static CmsLog log = CmsLog.getLog(SimpleTestResult.class);
-
 	private String uuid;
 	private String currentTestRunUuid;
 
@@ -31,13 +28,11 @@ public class SimpleTestResult implements TestResult {
 
 	public void addResultPart(TestResultPart part) {
 		if (throwError && part.getStatus() == ERROR) {
-			throw new SlcException(
-					"There was an error in the underlying test: "
-							+ part.getExceptionMessage());
+			throw new SlcException("There was an error in the underlying test: " + part.getExceptionMessage());
 		}
 		parts.add(part);
-		if (log.isDebugEnabled())
-			log.debug(part);
+//		if (log.isDebugEnabled())
+//			log.debug(part);
 	}
 
 	public void close() {

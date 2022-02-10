@@ -1,13 +1,15 @@
 package org.argeo.slc.cli.fs;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.nio.file.Path;
+import java.util.Objects;
 
-import org.argeo.api.cms.CmsLog;
-import org.argeo.util.BasicSyncFileVisitor;
+import org.argeo.slc.sync.BasicSyncFileVisitor;
 
 /** Synchronises two directory structures. */
 public class SyncFileVisitor extends BasicSyncFileVisitor {
-	private final static CmsLog log = CmsLog.getLog(SyncFileVisitor.class);
+	private final static Logger logger = System.getLogger(SyncFileVisitor.class.getName());
 
 	public SyncFileVisitor(Path sourceBasePath, Path targetBasePath, boolean delete, boolean recursive) {
 		super(sourceBasePath, targetBasePath, delete, recursive);
@@ -15,16 +17,16 @@ public class SyncFileVisitor extends BasicSyncFileVisitor {
 
 	@Override
 	protected void error(Object obj, Throwable e) {
-		log.error(obj, e);
+		logger.log(Level.ERROR, Objects.toString(obj), e);
 	}
 
 	@Override
 	protected boolean isTraceEnabled() {
-		return log.isTraceEnabled();
+		return logger.isLoggable(Level.TRACE);
 	}
 
 	@Override
 	protected void trace(Object obj) {
-		log.trace(obj);
+		logger.log(Level.TRACE, Objects.toString(obj));
 	}
 }

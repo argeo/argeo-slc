@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.nio.file.spi.FileSystemProvider;
 import java.util.concurrent.Callable;
 
-import org.argeo.util.SyncResult;
+import org.argeo.slc.sync.SyncResult;
 
 /** Synchronises two paths. */
 public class PathSync implements Callable<SyncResult<Path>> {

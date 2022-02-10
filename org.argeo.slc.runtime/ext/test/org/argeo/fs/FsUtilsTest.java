@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.argeo.util.FsUtils;
+import org.argeo.slc.sync.FsSyncUtils;
 
 /** {@link FsUtils} tests. */
 public class FsUtilsTest {
@@ -16,26 +16,26 @@ public class FsUtilsTest {
 	public void testDelete() throws IOException {
 		Path dir = createDir00();
 		assert Files.exists(dir);
-		FsUtils.delete(dir);
+		FsSyncUtils.delete(dir);
 		assert !Files.exists(dir);
 	}
 
 	public void testSync() throws IOException {
 		Path source = createDir00();
 		Path target = Files.createTempDirectory(getClass().getName());
-		FsUtils.sync(source, target);
+		FsSyncUtils.sync(source, target);
 		assert Files.exists(target.resolve(FILE00));
 		assert Files.exists(target.resolve(SUB_DIR));
 		assert Files.exists(target.resolve(SUB_DIR + File.separator + FILE01));
-		FsUtils.delete(source.resolve(SUB_DIR));
-		FsUtils.sync(source, target, true);
+		FsSyncUtils.delete(source.resolve(SUB_DIR));
+		FsSyncUtils.sync(source, target, true);
 		assert Files.exists(target.resolve(FILE00));
 		assert !Files.exists(target.resolve(SUB_DIR));
 		assert !Files.exists(target.resolve(SUB_DIR + File.separator + FILE01));
 
 		// clean up
-		FsUtils.delete(source);
-		FsUtils.delete(target);
+		FsSyncUtils.delete(source);
+		FsSyncUtils.delete(target);
 
 	}
 

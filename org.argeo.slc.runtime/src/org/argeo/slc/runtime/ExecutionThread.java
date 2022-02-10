@@ -1,5 +1,8 @@
 package org.argeo.slc.runtime;
 
+import static java.lang.System.Logger.Level.ERROR;
+import static java.lang.System.Logger.Level.WARNING;
+
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -9,7 +12,6 @@ import java.util.List;
 
 import javax.security.auth.Subject;
 
-import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.execution.ExecutionFlowDescriptor;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionStep;
@@ -19,7 +21,7 @@ import org.argeo.slc.execution.RealizedFlow;
 /** Thread of a single execution */
 public class ExecutionThread extends Thread {
 	public final static String SYSPROP_EXECUTION_AUTO_UPGRADE = "slc.execution.autoupgrade";
-	private final static CmsLog log = CmsLog.getLog(ExecutionThread.class);
+	private final static System.Logger logger = System.getLogger(ExecutionThread.class.getName());
 
 	private ExecutionModulesManager executionModulesManager;
 	private final RealizedFlow realizedFlow;
@@ -75,13 +77,13 @@ public class ExecutionThread extends Thread {
 			}
 		} catch (FlowConfigurationException e) {
 			String msg = "Configuration problem with flow " + flowName + ":\n" + e.getMessage();
-			log.error(msg);
+			logger.log(ERROR, msg);
 			getProcessThreadGroup().dispatchAddStep(
 					new ExecutionStep(realizedFlow.getModuleName(), ExecutionStep.ERROR, msg + " " + e.getMessage()));
 		} catch (Exception e) {
 			// TODO: re-throw exception ?
 			String msg = "Execution of flow " + flowName + " failed.";
-			log.error(msg, e);
+			logger.log(ERROR, msg, e);
 			getProcessThreadGroup().dispatchAddStep(
 					new ExecutionStep(realizedFlow.getModuleName(), ExecutionStep.ERROR, msg + " " + e.getMessage()));
 		} finally {
@@ -96,14 +98,14 @@ public class ExecutionThread extends Thread {
 			try {
 				destructionCallbacks.get(i).run();
 			} catch (Exception e) {
-				log.warn("Could not process destruction callback " + i + " in thread " + getName(), e);
+				logger.log(WARNING, "Could not process destruction callback " + i + " in thread " + getName(), e);
 			}
 		}
 	}
 
 	/**
-	 * Gather object destruction callback to be called in reverse order at the
-	 * end of the thread
+	 * Gather object destruction callback to be called in reverse order at the end
+	 * of the thread
 	 */
 	public synchronized void registerDestructionCallback(String name, Runnable callback) {
 		destructionCallbacks.add(callback);

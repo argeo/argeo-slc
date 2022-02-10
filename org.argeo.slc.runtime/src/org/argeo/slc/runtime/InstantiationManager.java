@@ -1,8 +1,8 @@
 package org.argeo.slc.runtime;
 
+import java.lang.System.Logger.Level;
 import java.util.Stack;
 
-import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
@@ -13,16 +13,15 @@ import org.argeo.slc.primitive.PrimitiveUtils;
 /** Manage parameters that need to be set during the instantiation of a flow */
 public class InstantiationManager {
 
-	private final static CmsLog log = CmsLog
-			.getLog(InstantiationManager.class);
+	private final static System.Logger logger = System.getLogger(InstantiationManager.class.getName());
 
 	private ThreadLocal<Stack<ExecutionFlow>> flowStack = new ThreadLocal<Stack<ExecutionFlow>>();
 
 	public Object createRef(String name) {
 
 		if ((flowStack.get() == null) || flowStack.get().empty()) {
-			throw new SlcException("No flow is currently initializing."
-					+ " Declare ParameterRef as inner beans or prototypes.");
+			throw new SlcException(
+					"No flow is currently initializing." + " Declare ParameterRef as inner beans or prototypes.");
 		}
 
 		return getInitializingFlowParameter(name);
@@ -34,9 +33,8 @@ public class InstantiationManager {
 			((DefaultExecutionFlow) flow).setName(flowName);
 		}
 
-		if (log.isTraceEnabled())
-			log.trace("Start initialization of " + flow.hashCode() + " ("
-					+ flow + " - " + flow.getClass() + ")");
+		logger.log(Level.TRACE,
+				() -> "Start initialization of " + flow.hashCode() + " (" + flow + " - " + flow.getClass() + ")");
 
 		// log.info("# flowInitializationStarted " + flowName);
 		// create a stack for this thread if there is none
@@ -47,9 +45,8 @@ public class InstantiationManager {
 	}
 
 	public void flowInitializationFinished(ExecutionFlow flow, String flowName) {
-		if (log.isTraceEnabled())
-			log.trace("Finish initialization of " + flow.hashCode() + " ("
-					+ flow + " - " + flow.getClass() + ")");
+		logger.log(Level.TRACE,
+				() -> "Finish initialization of " + flow.hashCode() + " (" + flow + " - " + flow.getClass() + ")");
 
 		if (flowStack.get() != null) {
 			ExecutionFlow registeredFlow = flowStack.get().pop();
@@ -61,7 +58,7 @@ public class InstantiationManager {
 			}
 		} else {
 			// happens for flows imported as services
-			log.warn("flowInitializationFinished - Flow Stack is null");
+			logger.log(Level.WARNING, "flowInitializationFinished - Flow Stack is null");
 		}
 	}
 
@@ -75,9 +72,8 @@ public class InstantiationManager {
 				return flowStack.get().elementAt(i);
 			}
 		}
-		throw new SlcException("Key " + key + " is not set as parameter in "
-				+ flowStack.get().firstElement().toString() + " (stack size="
-				+ flowStack.get().size() + ")");
+		throw new SlcException("Key " + key + " is not set as parameter in " + flowStack.get().firstElement().toString()
+				+ " (stack size=" + flowStack.get().size() + ")");
 
 	}
 
@@ -86,16 +82,15 @@ public class InstantiationManager {
 	}
 
 	public Class<?> getInitializingFlowParameterClass(String key) {
-		ExecutionSpecAttribute attr = findInitializingFlowWithParameter(key)
-				.getExecutionSpec().getAttributes().get(key);
+		ExecutionSpecAttribute attr = findInitializingFlowWithParameter(key).getExecutionSpec().getAttributes()
+				.get(key);
 		if (attr instanceof RefSpecAttribute)
 			return ((RefSpecAttribute) attr).getTargetClass();
 		else if (attr instanceof PrimitiveSpecAttribute) {
 			String type = ((PrimitiveSpecAttribute) attr).getType();
 			Class<?> clss = PrimitiveUtils.typeAsClass(type);
 			if (clss == null)
-				throw new SlcException("Cannot convert type " + type
-						+ " to class.");
+				throw new SlcException("Cannot convert type " + type + " to class.");
 			return clss;
 		} else
 			return null;

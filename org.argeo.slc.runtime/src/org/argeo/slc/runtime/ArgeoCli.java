@@ -1,7 +1,7 @@
-package org.argeo.slc.cli;
+package org.argeo.slc.runtime;
 
 import org.apache.commons.cli.Option;
-import org.argeo.cms.cli.CommandsCli;
+import org.argeo.slc.cli.CommandsCli;
 import org.argeo.slc.cli.fs.FsCommands;
 import org.argeo.slc.cli.posix.PosixCommands;
 

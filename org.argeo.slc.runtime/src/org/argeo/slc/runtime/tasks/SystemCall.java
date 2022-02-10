@@ -1,5 +1,11 @@
 package org.argeo.slc.runtime.tasks;
 
+import static java.lang.System.Logger.Level.DEBUG;
+import static java.lang.System.Logger.Level.ERROR;
+import static java.lang.System.Logger.Level.INFO;
+import static java.lang.System.Logger.Level.TRACE;
+import static java.lang.System.Logger.Level.WARNING;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -9,6 +15,7 @@ import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.Writer;
+import java.lang.System.Logger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,7 +39,6 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.exec.ShutdownHookProcessDestroyer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.argeo.api.cms.CmsLog;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.UnsupportedException;
 import org.argeo.slc.execution.ExecutionResources;
@@ -44,7 +50,7 @@ import org.argeo.slc.test.TestStatus;
 public class SystemCall implements Runnable {
 	public final static String LOG_STDOUT = "System.out";
 
-	private final CmsLog log = CmsLog.getLog(getClass());
+	private final Logger logger = System.getLogger(getClass().getName());
 
 	private String execDir;
 
@@ -172,11 +178,9 @@ public class SystemCall implements Runnable {
 			throw new SlcException("Cannot open a stream for " + stdInFile, e2);
 		}
 
-		if (log.isTraceEnabled()) {
-			log.debug("os.name=" + System.getProperty("os.name"));
-			log.debug("os.arch=" + System.getProperty("os.arch"));
-			log.debug("os.version=" + System.getProperty("os.version"));
-		}
+		logger.log(TRACE, () -> "os.name=" + System.getProperty("os.name"));
+		logger.log(TRACE, () -> "os.arch=" + System.getProperty("os.arch"));
+		logger.log(TRACE, () -> "os.version=" + System.getProperty("os.version"));
 
 		// Execution directory
 		File dir = new File(getExecDirToUse());
@@ -206,7 +210,7 @@ public class SystemCall implements Runnable {
 		// Command line to use
 		final CommandLine commandLine = createCommandLine();
 		if (logCommand)
-			log.info("Execute command:\n" + commandLine + "\n in working directory: \n" + dir + "\n");
+			logger.log(INFO, "Execute command:\n" + commandLine + "\n in working directory: \n" + dir + "\n");
 
 		// Env variables
 		Map<String, String> environmentVariablesToUse = null;
@@ -342,8 +346,8 @@ public class SystemCall implements Runnable {
 			commandLine = new CommandLine(commandToUse.get(0).toString());
 
 			for (int i = 1; i < commandToUse.size(); i++) {
-				if (log.isTraceEnabled())
-					log.debug(commandToUse.get(i));
+				if (logger.isLoggable(TRACE))
+					logger.log(TRACE, commandToUse.get(i));
 				commandLine.addArgument(commandToUse.get(i).toString());
 			}
 		} else {
@@ -437,8 +441,7 @@ public class SystemCall implements Runnable {
 
 			public void onProcessComplete(int exitValue) {
 				String msg = "System call '" + commandLine + "' properly completed.";
-				if (log.isTraceEnabled())
-					log.trace(msg);
+				logger.log(TRACE, () -> msg);
 				if (testResult != null) {
 					forwardPath(testResult);
 					testResult.addResultPart(new SimpleResultPart(TestStatus.PASSED, msg));
@@ -456,7 +459,7 @@ public class SystemCall implements Runnable {
 					if (exceptionOnFailed)
 						throw new SlcException(msg, e);
 					else
-						log.error(msg, e);
+						logger.log(ERROR, msg, e);
 				}
 				releaseWatchdog();
 			}
@@ -503,15 +506,17 @@ public class SystemCall implements Runnable {
 //		}
 
 		if ("ERROR".equals(logLevel))
-			log.error(line);
+			logger.log(ERROR, line);
 		else if ("WARN".equals(logLevel))
-			log.warn(line);
+			logger.log(WARNING, line);
+		else if ("WARNING".equals(logLevel))
+			logger.log(WARNING, line);
 		else if ("INFO".equals(logLevel))
-			log.info(line);
+			logger.log(INFO, line);
 		else if ("DEBUG".equals(logLevel))
-			log.debug(line);
+			logger.log(DEBUG, line);
 		else if ("TRACE".equals(logLevel))
-			log.trace(line);
+			logger.log(TRACE, line);
 		else if (LOG_STDOUT.equals(logLevel))
 			System.out.println(line);
 		else if ("System.err".equals(logLevel))
@@ -525,7 +530,7 @@ public class SystemCall implements Runnable {
 		try {
 			writer.append(line).append('\n');
 		} catch (IOException e) {
-			log.error("Cannot write to log file", e);
+			logger.log(ERROR, "Cannot write to log file", e);
 		}
 	}
 
@@ -541,7 +546,7 @@ public class SystemCall implements Runnable {
 				file = target.toFile();
 			writer = new FileWriter(file, append);
 		} catch (IOException e) {
-			log.error("Cannot get file for " + target, e);
+			logger.log(ERROR, "Cannot get file for " + target, e);
 			IOUtils.closeQuietly(writer);
 		}
 		return writer;
@@ -559,7 +564,7 @@ public class SystemCall implements Runnable {
 				file = target.toFile();
 			out = new FileOutputStream(file, false);
 		} catch (IOException e) {
-			log.error("Cannot get file for " + target, e);
+			logger.log(ERROR, "Cannot get file for " + target, e);
 			IOUtils.closeQuietly(out);
 		}
 		return out;
