@@ -20,12 +20,12 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
-import org.argeo.cms.cli.CommandArgsException;
-import org.argeo.cms.cli.CommandRuntimeException;
-import org.argeo.cms.cli.DescribedCommand;
 import org.argeo.jackrabbit.client.ClientDavexRepositoryFactory;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.util.SyncResult;
+import org.argeo.slc.cli.CommandArgsException;
+import org.argeo.slc.cli.CommandRuntimeException;
+import org.argeo.slc.cli.DescribedCommand;
+import org.argeo.slc.sync.SyncResult;
 
 public class JcrSync implements DescribedCommand<SyncResult<Node>> {
 	public final static String DEFAULT_LOCALFS_CONFIG = "repository-localfs.xml";
