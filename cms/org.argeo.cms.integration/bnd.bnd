@@ -2,4 +2,5 @@ Import-Package:\
 javax.jcr.nodetype,\
 org.apache.commons.logging,\
 org.apache.jackrabbit.*;version="[1,4)",\
+javax.servlet.*;version="[3,5)",\
 *

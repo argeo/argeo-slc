@@ -66,6 +66,8 @@ public class A2Factory {
 		// TODO make it configurable
 		List<String> eclipseMirrors = new ArrayList<>();
 		eclipseMirrors.add("https://archive.eclipse.org/");
+		eclipseMirrors.add("http://ftp-stud.hs-esslingen.de/Mirrors/eclipse/");
+		eclipseMirrors.add("http://ftp.fau.de/eclipse/");
 
 		mirrors.put("http://www.eclipse.org/downloads", eclipseMirrors);
 	}
@@ -619,8 +621,9 @@ public class A2Factory {
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
 
 //		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
-		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
-//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jcr/oak"));
+//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
+		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty"));
+		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty-websocket"));
 		System.exit(0);
 
 		// Eclipse
@@ -628,6 +631,8 @@ public class A2Factory {
 				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
+
+		System.exit(0);
 
 		// Maven
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
