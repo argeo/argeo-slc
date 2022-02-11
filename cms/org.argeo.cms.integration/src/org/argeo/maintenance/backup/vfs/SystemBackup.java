@@ -45,7 +45,7 @@ public class SystemBackup implements Runnable {
 		FileSystemOptions opts = new FileSystemOptions();
 		try {
 			DefaultFileSystemConfigBuilder.getInstance().setUserAuthenticator(opts, userAuthenticator);
-		} catch (FileSystemException e) {
+		} catch (Exception e) {
 			throw new MaintenanceException("Cannot create authentication", e);
 		}
 

@@ -1,3 +1,5 @@
 Bundle-SymbolicName: org.apache.sshd.core
 SLC-Origin-M2: org.apache.sshd:sshd-core
-SLC-Origin-ManifestNotModified: true
+Import-Package: \
+org.apache.tomcat.jni.*;resolution:=optional,\
+*

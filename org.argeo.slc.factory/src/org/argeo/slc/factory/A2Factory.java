@@ -211,6 +211,16 @@ public class A2Factory {
 			boolean doNotModify = Boolean.parseBoolean(fileProps
 					.getOrDefault(ManifestConstants.SLC_ORIGIN_MANIFEST_NOT_MODIFIED.toString(), "false").toString());
 
+			// we always force the symbolic name
+			if (artifact != null) {
+				if (!fileProps.containsKey(BUNDLE_SYMBOLICNAME.toString())) {
+					fileProps.put(BUNDLE_SYMBOLICNAME.toString(), artifact.getName());
+				}
+				if (!fileProps.containsKey(BUNDLE_VERSION.toString())) {
+					fileProps.put(BUNDLE_VERSION.toString(), artifact.getVersion());
+				}
+			}
+			
 			if (doNotModify) {
 				fileEntries: for (Object key : fileProps.keySet()) {
 					if (ManifestConstants.SLC_ORIGIN_M2.toString().equals(key))
@@ -219,14 +229,6 @@ public class A2Factory {
 					additionalEntries.put(key.toString(), value);
 				}
 			} else {
-				if (artifact != null) {
-					if (!fileProps.containsKey(BUNDLE_SYMBOLICNAME.toString())) {
-						fileProps.put(BUNDLE_SYMBOLICNAME.toString(), artifact.getName());
-					}
-					if (!fileProps.containsKey(BUNDLE_VERSION.toString())) {
-						fileProps.put(BUNDLE_VERSION.toString(), artifact.getVersion());
-					}
-				}
 
 				if (!fileProps.containsKey(EXPORT_PACKAGE.toString())) {
 					fileProps.put(EXPORT_PACKAGE.toString(),
@@ -617,8 +619,9 @@ public class A2Factory {
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
 
 //		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
-//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp/slf4j"));
-//		System.exit(0);
+		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
+//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jcr/oak"));
+		System.exit(0);
 
 		// Eclipse
 		factory.processEclipseArchive(

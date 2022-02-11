@@ -90,7 +90,6 @@ clean:
 	rm -rf $(BUILD_BASE)/ext
 	rm -rf $(BUILD_BASE)/build
 	rm -rf $(BUILD_BASE)/deb
-	rm -rf $(BUILD_BASE)/bootstrap
 
 # SDK level
 $(SDK_BUILD_BASE)/cnf/%.bnd: cnf/%.bnd

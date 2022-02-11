@@ -8,28 +8,20 @@
 		<version>2.3-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
-	<artifactId>org.argeo.slc.rpmfactory</artifactId>
-	<name>SLC RPM Factory</name>
+	<artifactId>org.argeo.slc.factory</artifactId>
+	<name>SLC Factory</name>
 	<dependencies>
 		<!-- SLC -->
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.runtime</artifactId>
+			<artifactId>org.argeo.slc.api</artifactId>
 			<version>2.3-SNAPSHOT</version>
 		</dependency>
 
-
+		<!-- BND -->
 		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.slc.repo</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<groupId>org.argeo.tp.sdk</groupId>
+			<artifactId>biz.aQute.bndlib</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.argeo.commons</groupId>
-			<artifactId>org.argeo.api.cms</artifactId>
-			<version>${version.argeo-commons}</version>
-		</dependency>
-
 	</dependencies>
 </project>
