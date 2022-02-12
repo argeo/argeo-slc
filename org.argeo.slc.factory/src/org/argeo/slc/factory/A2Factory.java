@@ -53,15 +53,14 @@ public class A2Factory {
 	private final static String COMMON_BND = "common.bnd";
 
 	private Path originBase;
-	private Path factoryBase;
+	private Path a2Base;
 
 	/** key is URI prefix, value list of base URLs */
 	private Map<String, List<String>> mirrors = new HashMap<String, List<String>>();
 
-	public A2Factory(Path originBase, Path factoryBase) {
-		super();
-		this.originBase = originBase;
-		this.factoryBase = factoryBase;
+	public A2Factory(Path a2Base) {
+		this.originBase = Paths.get(System.getProperty("user.home"), ".cache", "argeo/slc/origin");
+		this.a2Base = a2Base;
 
 		// TODO make it configurable
 		List<String> eclipseMirrors = new ArrayList<>();
@@ -93,7 +92,7 @@ public class A2Factory {
 	public void processSingleM2ArtifactDistributionUnit(Path bndFile) {
 		try {
 			String category = bndFile.getParent().getFileName().toString();
-			Path targetCategoryBase = factoryBase.resolve(category);
+			Path targetCategoryBase = a2Base.resolve(category);
 			Properties fileProps = new Properties();
 			try (InputStream in = Files.newInputStream(bndFile)) {
 				fileProps.load(in);
@@ -119,7 +118,7 @@ public class A2Factory {
 	public void processM2BasedDistributionUnit(Path duDir) {
 		try {
 			String category = duDir.getParent().getFileName().toString();
-			Path targetCategoryBase = factoryBase.resolve(category);
+			Path targetCategoryBase = a2Base.resolve(category);
 			Path commonBnd = duDir.resolve(COMMON_BND);
 			Properties commonProps = new Properties();
 			try (InputStream in = Files.newInputStream(commonBnd)) {
@@ -214,15 +213,7 @@ public class A2Factory {
 					.getOrDefault(ManifestConstants.SLC_ORIGIN_MANIFEST_NOT_MODIFIED.toString(), "false").toString());
 
 			// we always force the symbolic name
-			if (artifact != null) {
-				if (!fileProps.containsKey(BUNDLE_SYMBOLICNAME.toString())) {
-					fileProps.put(BUNDLE_SYMBOLICNAME.toString(), artifact.getName());
-				}
-				if (!fileProps.containsKey(BUNDLE_VERSION.toString())) {
-					fileProps.put(BUNDLE_VERSION.toString(), artifact.getVersion());
-				}
-			}
-			
+
 			if (doNotModify) {
 				fileEntries: for (Object key : fileProps.keySet()) {
 					if (ManifestConstants.SLC_ORIGIN_M2.toString().equals(key))
@@ -231,6 +222,14 @@ public class A2Factory {
 					additionalEntries.put(key.toString(), value);
 				}
 			} else {
+				if (artifact != null) {
+					if (!fileProps.containsKey(BUNDLE_SYMBOLICNAME.toString())) {
+						fileProps.put(BUNDLE_SYMBOLICNAME.toString(), artifact.getName());
+					}
+					if (!fileProps.containsKey(BUNDLE_VERSION.toString())) {
+						fileProps.put(BUNDLE_VERSION.toString(), artifact.getVersion());
+					}
+				}
 
 				if (!fileProps.containsKey(EXPORT_PACKAGE.toString())) {
 					fileProps.put(EXPORT_PACKAGE.toString(),
@@ -313,7 +312,7 @@ public class A2Factory {
 	public void processEclipseArchive(Path duDir) {
 		try {
 			String category = duDir.getParent().getFileName().toString();
-			Path targetCategoryBase = factoryBase.resolve(category);
+			Path targetCategoryBase = a2Base.resolve(category);
 			Files.createDirectories(targetCategoryBase);
 			Files.createDirectories(originBase);
 
@@ -377,7 +376,7 @@ public class A2Factory {
 	}
 
 	protected Path processBundleJar(Path file, Path targetBase, Map<String, String> entries) throws IOException {
-		NameVersion nameVersion;
+		DefaultNameVersion nameVersion;
 		Path targetBundleDir;
 		try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(file), false)) {
 			Manifest manifest = new Manifest(jarIn.getManifest());
@@ -412,6 +411,10 @@ public class A2Factory {
 					logger.log(Level.WARNING, "Original version is " + nameVersion.getVersion()
 							+ " while new version is " + versionFromEntries);
 				}
+				if (symbolicNameFromEntries != null) {
+					// we always force our symbolic name
+					nameVersion.setName(symbolicNameFromEntries);
+				}
 			}
 			targetBundleDir = targetBase.resolve(nameVersion.getName() + "." + nameVersion.getBranch());
 
@@ -440,8 +443,13 @@ public class A2Factory {
 				String value = entries.get(key);
 				Object previousValue = manifest.getMainAttributes().putValue(key, value);
 				if (previousValue != null && !previousValue.equals(value)) {
-					logger.log(Level.WARNING,
-							file.getFileName() + ": " + key + " was " + previousValue + ", overridden with " + value);
+					if (ManifestConstants.IMPORT_PACKAGE.toString().equals(key)
+							|| ManifestConstants.EXPORT_PACKAGE.toString().equals(key))
+						logger.log(Level.WARNING, file.getFileName() + ": " + key + " was modified");
+
+					else
+						logger.log(Level.WARNING, file.getFileName() + ": " + key + " was " + previousValue
+								+ ", overridden with " + value);
 				}
 			}
 			try (OutputStream out = Files.newOutputStream(manifestPath)) {
@@ -516,7 +524,7 @@ public class A2Factory {
 		});
 	}
 
-	protected NameVersion nameVersionFromManifest(Manifest manifest) {
+	protected DefaultNameVersion nameVersionFromManifest(Manifest manifest) {
 		Attributes attrs = manifest.getMainAttributes();
 		// symbolic name
 		String symbolicName = attrs.getValue(ManifestConstants.BUNDLE_SYMBOLICNAME.toString());
@@ -614,9 +622,8 @@ public class A2Factory {
 	}
 
 	public static void main(String[] args) {
-		Path originBase = Paths.get("../output/origin").toAbsolutePath().normalize();
 		Path factoryBase = Paths.get("../output/a2").toAbsolutePath().normalize();
-		A2Factory factory = new A2Factory(originBase, factoryBase);
+		A2Factory factory = new A2Factory(factoryBase);
 
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
 

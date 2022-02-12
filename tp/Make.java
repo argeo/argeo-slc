@@ -5,9 +5,12 @@ import org.argeo.slc.factory.A2Factory;
 
 class Make {
 	public static void main(String[] args) {
-		Path originBase = Paths.get("./output/origin").toAbsolutePath().normalize();
-		Path factoryBase = Paths.get("./output/a2").toAbsolutePath().normalize();
-		A2Factory factory = new A2Factory(originBase, factoryBase);
+		if(args.length < 1) {
+			System.err.println("Usage: <path to a2 output dir>");
+			System.exit(1);
+		}
+		Path a2Base = Paths.get(args[0]).toAbsolutePath().normalize();
+		A2Factory factory = new A2Factory(a2Base);
 
 		Path descriptorsBase = Paths.get("./tp").toAbsolutePath().normalize();
 
