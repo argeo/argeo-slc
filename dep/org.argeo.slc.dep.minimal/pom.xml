@@ -60,11 +60,11 @@
 			<artifactId>org.argeo.cms.integration</artifactId>
 			<version>2.3-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>org.argeo.slc</groupId>
-			<artifactId>org.argeo.ext.equinox.jetty</artifactId>
-			<version>2.3-SNAPSHOT</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.argeo.slc</groupId> -->
+<!-- 			<artifactId>org.argeo.ext.equinox.jetty</artifactId> -->
+<!-- 			<version>2.3-SNAPSHOT</version> -->
+<!-- 		</dependency> -->
 
 		<!-- CLI Agent -->
 		<!-- <dependency> -->
