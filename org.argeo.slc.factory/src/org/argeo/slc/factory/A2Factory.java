@@ -126,6 +126,10 @@ public class A2Factory {
 			}
 
 			String m2Version = commonProps.getProperty(SLC_ORIGIN_M2.toString());
+			if (m2Version == null) {
+				logger.log(Level.WARNING, "Ignoring " + duDir + " as it is not an M2-based distribution unit");
+				return;// ignore, this is probably an Eclipse archive
+			}
 			if (!m2Version.startsWith(":")) {
 				throw new IllegalStateException("Only the M2 version can be specified: " + m2Version);
 			}
@@ -622,15 +626,16 @@ public class A2Factory {
 	}
 
 	public static void main(String[] args) {
-		Path factoryBase = Paths.get("../output/a2").toAbsolutePath().normalize();
+		Path factoryBase = Paths.get("../../output/a2").toAbsolutePath().normalize();
 		A2Factory factory = new A2Factory(factoryBase);
 
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
 
 //		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
-		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty"));
-		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty-websocket"));
+//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty"));
+//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty-websocket"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 		System.exit(0);
 
 		// Eclipse

@@ -23,6 +23,7 @@ class Make {
 				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 
 		// Maven
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
