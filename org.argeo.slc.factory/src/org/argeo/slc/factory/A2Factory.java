@@ -318,6 +318,11 @@ public class A2Factory {
 			String category = duDir.getParent().getFileName().toString();
 			Path targetCategoryBase = a2Base.resolve(category);
 			Files.createDirectories(targetCategoryBase);
+			// first delete all directories from previous builds
+			for (Path dir : Files.newDirectoryStream(targetCategoryBase, (p) -> Files.isDirectory(p))) {
+				deleteDirectory(dir);
+			}
+
 			Files.createDirectories(originBase);
 
 			Path commonBnd = duDir.resolve(COMMON_BND);
@@ -345,15 +350,7 @@ public class A2Factory {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 					pathMatchers: for (PathMatcher pathMatcher : pathMatchers) {
-						if (pathMatcher.matches(file)) {
-//							Path target = targetBase.resolve(file.getFileName().toString());
-//							if (!Files.exists(target)) {
-//								Files.copy(file, target);
-//								logger.log(Level.DEBUG, () -> "Copied " + target + " from " + downloaded);
-//							} else {
-//								logger.log(Level.DEBUG, () -> target + " already exists.");
-//
-//							}
+						if (pathMatcher.matches(file)) {							
 							if (file.getFileName().toString().contains(".source_")) {
 								processEclipseSourceJar(file, targetCategoryBase);
 								logger.log(Level.DEBUG, () -> "Processed source " + file);
@@ -362,10 +359,10 @@ public class A2Factory {
 								processBundleJar(file, targetCategoryBase, new HashMap<>());
 								logger.log(Level.DEBUG, () -> "Processed " + file);
 							}
-							continue pathMatchers;
+							break pathMatchers;
 						}
 					}
-					return super.visitFile(file, attrs);
+					return FileVisitResult.CONTINUE;
 				}
 			});
 
@@ -423,9 +420,9 @@ public class A2Factory {
 			targetBundleDir = targetBase.resolve(nameVersion.getName() + "." + nameVersion.getBranch());
 
 			// TODO make it less dangerous?
-			if (Files.exists(targetBundleDir)) {
-				deleteDirectory(targetBundleDir);
-			}
+//			if (Files.exists(targetBundleDir)) {
+//				deleteDirectory(targetBundleDir);
+//			}
 
 			// copy entries
 			JarEntry entry;
@@ -464,46 +461,48 @@ public class A2Factory {
 	}
 
 	protected void processEclipseSourceJar(Path file, Path targetBase) throws IOException {
-		// NameVersion nameVersion;
-		Path targetBundleDir;
-		try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(file), false)) {
-			Manifest manifest = jarIn.getManifest();
-			// nameVersion = nameVersionFromManifest(manifest);
+		try {
+			Path targetBundleDir;
+			try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(file), false)) {
+				Manifest manifest = jarIn.getManifest();
 
-			String[] relatedBundle = manifest.getMainAttributes().getValue("Eclipse-SourceBundle").split(";");
-			String version = relatedBundle[1].substring("version=\"".length());
-			version = version.substring(0, version.length() - 1);
-			NameVersion nameVersion = new DefaultNameVersion(relatedBundle[0], version);
-			targetBundleDir = targetBase.resolve(nameVersion.getName() + "." + nameVersion.getBranch());
+				String[] relatedBundle = manifest.getMainAttributes().getValue("Eclipse-SourceBundle").split(";");
+				String version = relatedBundle[1].substring("version=\"".length());
+				version = version.substring(0, version.length() - 1);
+				NameVersion nameVersion = new DefaultNameVersion(relatedBundle[0], version);
+				targetBundleDir = targetBase.resolve(nameVersion.getName() + "." + nameVersion.getBranch());
 
-			Path targetSourceDir = targetBundleDir.resolve("OSGI-OPT/src");
+				Path targetSourceDir = targetBundleDir.resolve("OSGI-OPT/src");
 
-			// TODO make it less dangerous?
-			if (Files.exists(targetSourceDir)) {
-				deleteDirectory(targetSourceDir);
-			} else {
-				Files.createDirectories(targetSourceDir);
-			}
+				// TODO make it less dangerous?
+				if (Files.exists(targetSourceDir)) {
+//				deleteDirectory(targetSourceDir);
+				} else {
+					Files.createDirectories(targetSourceDir);
+				}
 
-			// copy entries
-			JarEntry entry;
-			entries: while ((entry = jarIn.getNextJarEntry()) != null) {
-				if (entry.isDirectory())
-					continue entries;
-				if (entry.getName().startsWith("META-INF"))// skip META-INF entries
-					continue entries;
-				Path target = targetSourceDir.resolve(entry.getName());
-				Files.createDirectories(target.getParent());
-				Files.copy(jarIn, target);
-				logger.log(Level.TRACE, () -> "Copied source " + target);
-			}
+				// copy entries
+				JarEntry entry;
+				entries: while ((entry = jarIn.getNextJarEntry()) != null) {
+					if (entry.isDirectory())
+						continue entries;
+					if (entry.getName().startsWith("META-INF"))// skip META-INF entries
+						continue entries;
+					Path target = targetSourceDir.resolve(entry.getName());
+					Files.createDirectories(target.getParent());
+					Files.copy(jarIn, target);
+					logger.log(Level.TRACE, () -> "Copied source " + target);
+				}
 
-			// copy MANIFEST
+				// copy MANIFEST
 //			Path manifestPath = targetBundleDir.resolve("META-INF/MANIFEST.MF");
 //			Files.createDirectories(manifestPath.getParent());
 //			try (OutputStream out = Files.newOutputStream(manifestPath)) {
 //				manifest.write(out);
 //			}
+			}
+		} catch (IOException e) {
+			throw new IllegalStateException("Cannot process " + file, e);
 		}
 
 	}
@@ -635,8 +634,8 @@ public class A2Factory {
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty-websocket"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
-		System.exit(0);
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
+//		System.exit(0);
 
 		// Eclipse
 		factory.processEclipseArchive(
