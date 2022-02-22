@@ -30,7 +30,7 @@ bootstrap :
 
 move-ext: osgi
 	mkdir -p $(SDK_BUILD_BASE)/a2/org.argeo.tp
-	mv $(SDK_BUILD_BASE)/a2/$(A2_CATEGORY)/org.argeo.ext.slf4j.$(MAJOR).$(MINOR).jar $(SDK_BUILD_BASE)/a2/org.argeo.tp
+	cp $(SDK_BUILD_BASE)/a2/$(A2_CATEGORY)/org.argeo.ext.slf4j.$(MAJOR).$(MINOR).jar $(SDK_BUILD_BASE)/a2/org.argeo.tp
 #	mv $(SDK_BUILD_BASE)/a2/$(A2_CATEGORY)/org.argeo.ext.equinox.jetty.$(MAJOR).$(MINOR).jar $(SDK_BUILD_BASE)/a2/org.argeo.tp.eclipse.equinox
 
 clean:
