@@ -35,9 +35,6 @@
 		<!-- Distribution -->
 		<module>dep</module>
 		<module>ide</module>
-
-		<!-- Legacy -->
-		<module>legacy</module>
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
 	<scm>
