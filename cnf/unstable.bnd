@@ -1,4 +1,6 @@
-version.released=2.3.1
+MAJOR=2
+MINOR=3
+MICRO=1
 qualifier=.next
 
 category=org.argeo.slc

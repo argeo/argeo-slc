@@ -43,4 +43,4 @@ A2_BASE = $(A2_OUTPUT)
 VPATH = .:ext
 DEP_CATEGORIES = org.argeo.tp org.argeo.tp.apache org.argeo.tp.sdk org.argeo.tp.jcr
 
-include  $(SDK_SRC_BASE)/sdk/osgi.mk
+include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk
