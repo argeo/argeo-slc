@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.argeo.slc</groupId>
 		<artifactId>legacy-dep</artifactId>
-		<version>2.3-SNAPSHOT</version>
+		<version>2.3.1</version>
 		<relativePath>..</relativePath>
 	</parent>
 	<artifactId>org.argeo.slc.dep.backend</artifactId>
@@ -13,7 +13,7 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.dep.spring</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<version>2.3.1</version>
 			<type>pom</type>
 		</dependency>
 
@@ -33,13 +33,13 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.support</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<version>2.3.1</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.server.repo</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<version>2.3.1</version>
 		</dependency>
 		<!-- <dependency> -->
 		<!-- <groupId>org.argeo.slc</groupId> -->
@@ -51,17 +51,17 @@
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.client.ui</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<version>2.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.client.ui.dist</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<version>2.3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.argeo.slc</groupId>
 			<artifactId>org.argeo.slc.client.rap</artifactId>
-			<version>2.3-SNAPSHOT</version>
+			<version>2.3.1</version>
 		</dependency>
 
 		<!-- Legacy Argeo Commons platform (Eclipse 3) -->
