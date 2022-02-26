@@ -34,7 +34,6 @@
 
 		<!-- Distribution -->
 		<module>dep</module>
-		<module>ide</module>
 	</modules>
 	<url>http://projects.argeo.org/slc/</url>
 	<scm>
