@@ -90,7 +90,7 @@ public class LoginEntryPoint implements EntryPoint, CmsView {
 	}
 
 	protected CmsLoginShell createCmsLoginShell() {
-		return new CmsLoginShell(this) {
+		return new CmsLoginShell(this, null) {
 
 			@Override
 			public void createContents(Composite parent) {
