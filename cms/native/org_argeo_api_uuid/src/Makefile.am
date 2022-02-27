@@ -1,2 +1,0 @@
-bin_PROGRAMS = org_argeo_api_uuid_unstable
-org_argeo_api_uuid_unstable_SOURCES = org_argeo_api_uuid_unstable.c
