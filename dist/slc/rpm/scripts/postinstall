@@ -1,8 +1,0 @@
-if [ $1 = "1" ];then
-	APP=%{name}
-	/sbin/chkconfig --add $APP
-	/sbin/chkconfig --level 3 $APP on
-fi
-
-# Workaround until we find a way to do it in the spec file
-chown -f slc.slc /var/lib/slc/.m2
