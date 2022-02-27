@@ -30,10 +30,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.jackrabbit.api.JackrabbitNode;
 import org.apache.jackrabbit.api.JackrabbitValue;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.osgi.service.http.context.ServletContextHelper;
 
@@ -43,7 +42,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /** Access a JCR repository via web services. */
 public class JcrReadServlet extends HttpServlet {
 	private static final long serialVersionUID = 6536175260540484539L;
-	private final static Log log = LogFactory.getLog(JcrReadServlet.class);
+	private final static CmsLog log = CmsLog.getLog(JcrReadServlet.class);
 
 	protected final static String ACCEPT_HTTP_HEADER = "Accept";
 	protected final static String CONTENT_DISPOSITION_HTTP_HEADER = "Content-Disposition";

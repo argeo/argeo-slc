@@ -1,0 +1,3 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.xalan.serializer
+SLC-Origin-M2: xalan:serializer:2.7.2

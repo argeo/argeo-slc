@@ -17,8 +17,7 @@ import org.argeo.slc.SlcException;
 public class OsgiProfile {
 	public final static String PROP_SYSTEM_PACKAGES = "org.osgi.framework.system.packages";
 
-	public final static OsgiProfile PROFILE_JAVA_SE_1_6 = new OsgiProfile(
-			"JavaSE-1.6.profile");
+	public final static OsgiProfile PROFILE_JAVA_SE_1_6 = new OsgiProfile("JavaSE-1.6.profile");
 
 	private final URL url;
 	private final Properties properties;
@@ -37,15 +36,12 @@ public class OsgiProfile {
 	}
 
 	public OsgiProfile(String name) {
-		this(OsgiProfile.class.getClassLoader().getResource(
-				'/'
-						+ OsgiProfile.class.getPackage().getName()
-								.replace('.', '/') + '/' + name));
+		this(OsgiProfile.class.getClassLoader()
+				.getResource('/' + OsgiProfile.class.getPackage().getName().replace('.', '/') + '/' + name));
 	}
 
 	public List<String> getSystemPackages() {
-		String[] splitted = properties.getProperty(PROP_SYSTEM_PACKAGES).split(
-				",");
+		String[] splitted = properties.getProperty(PROP_SYSTEM_PACKAGES).split(",");
 		List<String> res = new ArrayList<String>();
 		for (String pkg : splitted) {
 			res.add(pkg.trim());

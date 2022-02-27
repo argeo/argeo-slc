@@ -8,10 +8,8 @@ public interface SourcesProvider {
 	/**
 	 * Writes sources into a ZIP (or a JAR), under the same sirectory structure.
 	 * 
-	 * @param packages
-	 *            the packages to import
-	 * @param out
-	 *            the ZIP or JAR to write to
+	 * @param packages the packages to import
+	 * @param out      the ZIP or JAR to write to
 	 */
 	public void writeSources(List<String> packages, ZipOutputStream zout);
 }

@@ -14,8 +14,7 @@ import javax.jcr.Repository;
 import javax.jcr.Session;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -33,7 +32,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
  */
 @Deprecated
 public class ImportBundlesZip implements Runnable {
-	private final static Log log = LogFactory.getLog(ImportBundlesZip.class);
+	private final static CmsLog log = CmsLog.getLog(ImportBundlesZip.class);
 	private Repository repository;
 	private String workspace;
 	private String groupId;
@@ -68,8 +67,7 @@ public class ImportBundlesZip implements Runnable {
 			ZipEntry zipEntry = null;
 			entries: while ((zipEntry = zipIn.getNextEntry()) != null) {
 				String entryName = zipEntry.getName();
-				if (!entryName.endsWith(".jar")
-						|| entryName.contains("feature"))
+				if (!entryName.endsWith(".jar") || entryName.contains("feature"))
 					continue entries;// skip
 				byte[] jarBytes = IOUtils.toByteArray(zipIn);
 				zipIn.closeEntry();
@@ -88,8 +86,7 @@ public class ImportBundlesZip implements Runnable {
 					continue entries;
 				}
 
-				String bundleName = RepoUtils
-						.extractBundleNameFromSourceName(nv.getName());
+				String bundleName = RepoUtils.extractBundleNameFromSourceName(nv.getName());
 				// skip excluded bundles and their sources
 				if (excludedBundles.contains(bundleName))
 					continue entries;
@@ -98,10 +95,9 @@ public class ImportBundlesZip implements Runnable {
 				// continue entries;
 				// }
 
-				Artifact artifact = new DefaultArtifact(groupId, nv.getName(),
-						"jar", nv.getVersion());
-				Node artifactNode = RepoUtils.copyBytesAsArtifact(
-						session.getNode(artifactBasePath), artifact, jarBytes);
+				Artifact artifact = new DefaultArtifact(groupId, nv.getName(), "jar", nv.getVersion());
+				Node artifactNode = RepoUtils.copyBytesAsArtifact(session.getNode(artifactBasePath), artifact,
+						jarBytes);
 				jarBytes = null;// superstition, in order to free memory
 
 				// indexes
@@ -112,8 +108,7 @@ public class ImportBundlesZip implements Runnable {
 					log.debug("Imported " + entryName + " to " + artifactNode);
 			}
 		} catch (Exception e) {
-			throw new SlcException("Cannot import zip " + zipFile + " to "
-					+ workspace, e);
+			throw new SlcException("Cannot import zip " + zipFile + " to " + workspace, e);
 		} finally {
 			IOUtils.closeQuietly(zipIn);
 			IOUtils.closeQuietly(jarIn);

@@ -16,10 +16,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.argeo.api.NodeConstants;
-import org.argeo.cms.auth.CmsSessionId;
-import org.argeo.cms.auth.HttpRequestCallback;
-import org.argeo.cms.auth.HttpRequestCallbackHandler;
+import org.argeo.api.cms.CmsAuth;
+import org.argeo.api.cms.CmsSessionId;
+import org.argeo.cms.auth.RemoteAuthCallback;
+import org.argeo.cms.auth.RemoteAuthCallbackHandler;
+import org.argeo.cms.servlet.ServletHttpRequest;
+import org.argeo.cms.servlet.ServletHttpResponse;
 import org.osgi.service.useradmin.Authorization;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -40,22 +42,23 @@ public class CmsLoginServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		LoginContext lc = null;
-		String username = request.getParameter(PARAM_USERNAME);
-		String password = request.getParameter(PARAM_PASSWORD);
+		String username = req.getParameter(PARAM_USERNAME);
+		String password = req.getParameter(PARAM_PASSWORD);
+		ServletHttpRequest request = new ServletHttpRequest(req);
+		ServletHttpResponse response = new ServletHttpResponse(resp);
 		try {
-			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new HttpRequestCallbackHandler(request, response) {
+			lc = new LoginContext(CmsAuth.LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response) {
 				public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
 					for (Callback callback : callbacks) {
 						if (callback instanceof NameCallback && username != null)
 							((NameCallback) callback).setName(username);
 						else if (callback instanceof PasswordCallback && password != null)
 							((PasswordCallback) callback).setPassword(password.toCharArray());
-						else if (callback instanceof HttpRequestCallback) {
-							((HttpRequestCallback) callback).setRequest(request);
-							((HttpRequestCallback) callback).setResponse(response);
+						else if (callback instanceof RemoteAuthCallback) {
+							((RemoteAuthCallback) callback).setRequest(request);
+							((RemoteAuthCallback) callback).setResponse(response);
 						}
 					}
 				}
@@ -65,7 +68,7 @@ public class CmsLoginServlet extends HttpServlet {
 			Subject subject = lc.getSubject();
 			CmsSessionId cmsSessionId = extractFrom(subject.getPrivateCredentials(CmsSessionId.class));
 			if (cmsSessionId == null) {
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				return;
 			}
 			Authorization authorization = extractFrom(subject.getPrivateCredentials(Authorization.class));
@@ -75,15 +78,15 @@ public class CmsLoginServlet extends HttpServlet {
 					cmsSessionId.getUuid().toString(), authorization.getRoles(), authorization.toString(),
 					locale != null ? locale.toString() : null);
 
-			response.setContentType("application/json");
-			JsonGenerator jg = objectMapper.getFactory().createGenerator(response.getWriter());
+			resp.setContentType("application/json");
+			JsonGenerator jg = objectMapper.getFactory().createGenerator(resp.getWriter());
 			jg.writeObject(cmsSessionDescriptor);
 
-			String redirectTo = redirectTo(request);
+			String redirectTo = redirectTo(req);
 			if (redirectTo != null)
-				response.sendRedirect(redirectTo);
+				resp.sendRedirect(redirectTo);
 		} catch (LoginException e) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 	}

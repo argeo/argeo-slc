@@ -12,68 +12,59 @@ public abstract class FreeLicense implements License {
 	final static String RESOURCES = "/org/argeo/slc/repo/license/";
 
 	/** GNU */
-	public final static FreeLicense GPL_v3 = new FreeLicense(
-			"GNU General Public License, version 3.0",
-			"http://www.gnu.org/licenses/gpl-3.0.txt",
-			"http://www.gnu.org/licenses/", RESOURCES + "gpl-3.0.txt") {
+	public final static FreeLicense GPL_v3 = new FreeLicense("GPL-3.0-or-later",
+			"http://www.gnu.org/licenses/gpl-3.0.txt", null, RESOURCES + "gpl-3.0.txt") {
 	};
 
-	public final static FreeLicense GPL_v2 = new FreeLicense(
-			"GNU General Public License, version 2.0",
-			"http://www.gnu.org/licenses/gpl-2.0.txt",
-			"http://www.gnu.org/licenses/", RESOURCES + "gpl-2.0.txt") {
+	public final static FreeLicense GPL_v2 = new FreeLicense("GPL-2.0-or-later",
+			"http://www.gnu.org/licenses/gpl-2.0.txt", null, RESOURCES + "gpl-2.0.txt") {
 	};
 	public final static FreeLicense GPL = GPL_v3;
 
-	public final static FreeLicense LGPL_v3 = new FreeLicense(
-			"GNU Lesser General Public License, version 3.0",
-			"http://www.gnu.org/licenses/lgpl-3.0.txt",
-			"http://www.gnu.org/licenses/", RESOURCES + "lgpl-3.0.txt") {
+	public final static FreeLicense LGPL_v3 = new FreeLicense("LGPL-3.0-or-later",
+			"http://www.gnu.org/licenses/lgpl-3.0.txt", null, RESOURCES + "lgpl-3.0.txt") {
 	};
 
-	public final static FreeLicense LGPL_v2 = new FreeLicense(
-			"GNU Lesser General Public License, version 2.1",
-			"http://www.gnu.org/licenses/lgpl-2.1.txt",
-			"http://www.gnu.org/licenses/", RESOURCES + "lgpl-2.1.txt") {
+	public final static FreeLicense LGPL_v2 = new FreeLicense("LGPL-2.0-or-later",
+			"http://www.gnu.org/licenses/lgpl-2.1.txt", null, RESOURCES + "lgpl-2.1.txt") {
 	};
 	public final static FreeLicense LGPL = LGPL_v3;
 
 	/** Apache */
-	public final static FreeLicense APACHE_v2 = new FreeLicense(
-			"Apache License, Version 2.0",
-			"http://www.apache.org/licenses/LICENSE-2.0.txt",
-			"http://www.apache.org/licenses/", RESOURCES + "apache-2.0.txt") {
+	public final static FreeLicense APACHE_v2 = new FreeLicense("Apache-2.0",
+			"http://www.apache.org/licenses/LICENSE-2.0.txt", null, RESOURCES + "apache-2.0.txt") {
 	};
 	public final static FreeLicense APACHE = APACHE_v2;
 
 	/** Eclipse */
-	public final static FreeLicense EPL_v1 = new FreeLicense(
-			"Eclipse Public License, Version 1.0",
-			"http://www.eclipse.org/legal/epl-v10.html",
-			"http://www.eclipse.org/legal/eplfaq.php", RESOURCES
-					+ "epl-1.0.txt") {
+	public final static FreeLicense EPL_v1 = new FreeLicense("EPL-1.0", "http://www.eclipse.org/legal/epl-v10.html",
+			null, RESOURCES + "epl-1.0.txt") {
+	};
+	public final static FreeLicense EPL_v2 = new FreeLicense("EPL-2.0", "http://www.eclipse.org/legal/epl-v20.html",
+			null, RESOURCES + "epl-1.0.txt") {
 	};
 	public final static FreeLicense EPL = EPL_v1;
 
 	/** Miscellaneous */
-	public final static FreeLicense MIT = new FreeLicense("The MIT License",
-			"http://opensource.org/licenses/MIT", null, RESOURCES + "mit.txt") {
+	public final static FreeLicense MIT = new FreeLicense("MIT", "http://opensource.org/licenses/MIT", null,
+			RESOURCES + "mit.txt") {
 	};
 
-	public final static FreeLicense BSD_NEW = new FreeLicense(
-			"The BSD 3-Clause License",
-			"http://opensource.org/licenses/BSD-3-Clause", null, RESOURCES
-					+ "bsd-3-clause.txt") {
+	public final static FreeLicense BSD_NEW = new FreeLicense("BSD-3-Clause",
+			"http://opensource.org/licenses/BSD-3-Clause", null, RESOURCES + "bsd-3-clause.txt") {
 	};
 
 	public final static FreeLicense BSD = BSD_NEW;
 
-	public final static FreeLicense CDDL_v1 = new FreeLicense(
-			"Common Development and Distribution License",
-			"http://opensource.org/licenses/CDDL-1.0", null, RESOURCES
-					+ "cddl-1.0.txt") {
+	public final static FreeLicense CDDL_v1 = new FreeLicense("CDDL-1.0", "http://opensource.org/licenses/CDDL-1.0",
+			null, RESOURCES + "cddl-1.0.txt") {
 	};
 	public final static FreeLicense CDDL = CDDL_v1;
+
+	public final static FreeLicense MOZILLA_v2 = new FreeLicense("MPL-2.0", "https://opensource.org/licenses/MPL-2.0",
+			null, RESOURCES + "cddl-1.0.txt") {
+	};
+	public final static FreeLicense MOZILLA = MOZILLA_v2;
 
 	/** Public domain corner case */
 	public final static License PUBLIC_DOMAIN = new License() {
@@ -140,8 +131,7 @@ public abstract class FreeLicense implements License {
 			String text = IOUtils.toString(in);
 			return text;
 		} catch (Exception e) {
-			throw new SlcException("Cannot retrieve license " + name + " from "
-					+ url, e);
+			throw new SlcException("Cannot retrieve license " + name + " from " + url, e);
 		} finally {
 			IOUtils.closeQuietly(in);
 		}
@@ -161,6 +151,11 @@ public abstract class FreeLicense implements License {
 
 	@Override
 	public String toString() {
-		return name + " (" + uri + ")";
+		StringBuilder sb = new StringBuilder(name != null ? name : uri);
+//		if (link != null)
+//			sb.append(';').append("link=").append(link);
+//		else if (uri != null && name != null)
+//			sb.append(';').append("link=").append(uri);
+		return sb.toString();
 	}
 }

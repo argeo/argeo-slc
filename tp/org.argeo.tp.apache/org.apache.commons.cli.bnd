@@ -1,0 +1,3 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.commons.cli
+SLC-Origin-M2: commons-cli:commons-cli:1.5.0

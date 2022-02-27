@@ -13,11 +13,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.argeo.api.NodeConstants;
-import org.argeo.cms.auth.CmsSessionId;
+import org.argeo.api.cms.CmsAuth;
+import org.argeo.api.cms.CmsSessionId;
 import org.argeo.cms.auth.CurrentUser;
-import org.argeo.cms.auth.HttpRequestCallback;
-import org.argeo.cms.auth.HttpRequestCallbackHandler;
+import org.argeo.cms.auth.RemoteAuthCallback;
+import org.argeo.cms.auth.RemoteAuthCallbackHandler;
+import org.argeo.cms.servlet.ServletHttpRequest;
+import org.argeo.cms.servlet.ServletHttpResponse;
 
 /** Externally authenticate an http session. */
 public class CmsLogoutServlet extends HttpServlet {
@@ -32,18 +34,21 @@ public class CmsLogoutServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		ServletHttpRequest httpRequest = new ServletHttpRequest(request);
+		ServletHttpResponse httpResponse = new ServletHttpResponse(response);
 		LoginContext lc = null;
 		try {
-			lc = new LoginContext(NodeConstants.LOGIN_CONTEXT_USER, new HttpRequestCallbackHandler(request, response) {
-				public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-					for (Callback callback : callbacks) {
-						if (callback instanceof HttpRequestCallback) {
-							((HttpRequestCallback) callback).setRequest(request);
-							((HttpRequestCallback) callback).setResponse(response);
+			lc = new LoginContext(CmsAuth.LOGIN_CONTEXT_USER,
+					new RemoteAuthCallbackHandler(httpRequest, httpResponse) {
+						public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+							for (Callback callback : callbacks) {
+								if (callback instanceof RemoteAuthCallback) {
+									((RemoteAuthCallback) callback).setRequest(httpRequest);
+									((RemoteAuthCallback) callback).setResponse(httpResponse);
+								}
+							}
 						}
-					}
-				}
-			});
+					});
 			lc.login();
 
 			Subject subject = lc.getSubject();

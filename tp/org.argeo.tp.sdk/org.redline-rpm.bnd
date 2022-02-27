@@ -1,0 +1,7 @@
+Bundle-License: MIT
+Bundle-SymbolicName: org.redline-rpm
+Import-Package: sun.security.*;resolution:=optional,
+org.apache.tools.ant.*;resolution:=optional,
+org.apache.tools.zip;resolution:=optional,
+*
+SLC-Origin-M2: org.redline-rpm:redline:1.2.10

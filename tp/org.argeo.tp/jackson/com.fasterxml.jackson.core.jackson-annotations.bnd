@@ -1,0 +1,3 @@
+Bundle-SymbolicName: com.fasterxml.jackson.core.jackson-annotations
+SLC-Origin-M2: com.fasterxml.jackson.core:jackson-annotations
+SLC-Origin-ManifestNotModified: true

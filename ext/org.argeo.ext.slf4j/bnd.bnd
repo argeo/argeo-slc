@@ -1,0 +1,3 @@
+Export-Package: org.slf4j.impl
+
+Import-Package: *

@@ -1,0 +1,6 @@
+Bundle-SymbolicName: org.apache.sshd.git
+SLC-Origin-M2: org.apache.sshd:sshd-git
+Import-Package: \
+org.eclipse.jgit.pgm.*;resolution:=optional,\
+org.kohsuke.*;resolution:=optional,\
+*

@@ -1,0 +1,4 @@
+Bundle-SymbolicName: javax.websocket
+Bundle-License: GPL-2.0-only OR CDDL-1.1
+SLC-Origin-M2: javax.websocket:javax.websocket-api:1.1
+SLC-Origin-ManifestNotModified: true

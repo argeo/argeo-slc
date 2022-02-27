@@ -11,8 +11,7 @@ import javax.jcr.Property;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -26,7 +25,7 @@ import org.argeo.slc.runtime.ProcessThread;
 
 /** Execution process implementation based on a JCR node. */
 public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
-	private final static Log log = LogFactory.getLog(JcrExecutionProcess.class);
+	private final static CmsLog log = CmsLog.getLog(JcrExecutionProcess.class);
 	private final Node node;
 
 	private Long nextLogLine = 1l;
@@ -72,8 +71,8 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 	}
 
 	/**
-	 * Synchronized in order to make sure that there is no concurrent
-	 * modification of {@link #nextLogLine}.
+	 * Synchronized in order to make sure that there is no concurrent modification
+	 * of {@link #nextLogLine}.
 	 */
 	public synchronized void addSteps(List<ExecutionStep> steps) {
 		try {
@@ -93,8 +92,7 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 					// skip
 					continue steps;
 
-				String relPath = SLC_LOG + '/'
-						+ step.getThread().replace('/', '_') + '/'
+				String relPath = SLC_LOG + '/' + step.getThread().replace('/', '_') + '/'
 						+ step.getLocation().replace('.', '/');
 				String path = node.getPath() + '/' + relPath;
 				// clean special character
@@ -102,8 +100,7 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 				path = path.replace('@', '_');
 
 				Node location = JcrUtils.mkdirs(node.getSession(), path);
-				Node logEntry = location.addNode(Long.toString(nextLogLine),
-						type);
+				Node logEntry = location.addNode(Long.toString(nextLogLine), type);
 				logEntry.setProperty(SLC_MESSAGE, step.getLog());
 				Calendar calendar = new GregorianCalendar();
 				calendar.setTime(step.getTimestamp());
@@ -139,17 +136,12 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 				Node realizedFlowNode = nit.nextNode();
 
 				if (realizedFlowNode.hasNode(SLC_ADDRESS)) {
-					String flowPath = realizedFlowNode.getNode(SLC_ADDRESS)
-							.getProperty(Property.JCR_PATH).getString();
-					NameVersion moduleNameVersion = SlcJcrUtils
-							.moduleNameVersion(flowPath);
-					((ProcessThread) Thread.currentThread())
-							.getExecutionModulesManager().start(
-									moduleNameVersion);
+					String flowPath = realizedFlowNode.getNode(SLC_ADDRESS).getProperty(Property.JCR_PATH).getString();
+					NameVersion moduleNameVersion = SlcJcrUtils.moduleNameVersion(flowPath);
+					((ProcessThread) Thread.currentThread()).getExecutionModulesManager().start(moduleNameVersion);
 				}
 
-				RealizedFlow realizedFlow = new JcrRealizedFlow(
-						realizedFlowNode);
+				RealizedFlow realizedFlow = new JcrRealizedFlow(realizedFlowNode);
 				if (realizedFlow != null)
 					realizedFlows.add(realizedFlow);
 			}
@@ -163,8 +155,7 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 		try {
 			return node.getPath();
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot get process node path for " + node,
-					e);
+			throw new SlcException("Cannot get process node path for " + node, e);
 		}
 	}
 
@@ -172,8 +163,7 @@ public class JcrExecutionProcess implements ExecutionProcess, SlcNames {
 		try {
 			return node.getSession().getRepository();
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot get process JCR repository for "
-					+ node, e);
+			throw new SlcException("Cannot get process JCR repository for " + node, e);
 		}
 	}
 }

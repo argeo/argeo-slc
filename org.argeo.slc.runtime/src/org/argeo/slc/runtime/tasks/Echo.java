@@ -2,28 +2,28 @@ package org.argeo.slc.runtime.tasks;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 
 public class Echo implements Runnable {
-	private final static Log defaultLog = LogFactory.getLog(Echo.class);
+	private final static Logger defaultLogger = System.getLogger(Echo.class.getName());
 	private Path writeTo = null;
 
-	private Log log;
+	private Logger log;
 	private Object message;
 
 	public void run() {
-		log().info(message);
+		log().log(Level.INFO, message);
 
 		if (writeTo != null) {
 			try {
 				File file = writeTo.toFile();
-				if (log().isDebugEnabled())
-					log().debug("Write to " + file);
+
+				log().log(Level.DEBUG, () -> "Write to " + file);
 				if (message != null)
 					FileUtils.writeStringToFile(file, message.toString());
 			} catch (IOException e) {
@@ -32,8 +32,8 @@ public class Echo implements Runnable {
 		}
 	}
 
-	private Log log() {
-		return log != null ? log : defaultLog;
+	private Logger log() {
+		return log != null ? log : defaultLogger;
 	}
 
 	public void setMessage(Object message) {

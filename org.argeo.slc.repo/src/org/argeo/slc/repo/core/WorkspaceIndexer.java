@@ -9,15 +9,14 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.EventListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.NodeIndexer;
 
 /** Maintains the metadata of a workspace, using listeners */
 public class WorkspaceIndexer {
-	private final static Log log = LogFactory.getLog(WorkspaceIndexer.class);
+	private final static CmsLog log = CmsLog.getLog(WorkspaceIndexer.class);
 
 	private final Session adminSession;
 	private IndexingListener artifactListener;

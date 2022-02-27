@@ -8,8 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.NameVersion;
 import org.argeo.slc.SlcException;
@@ -25,8 +23,6 @@ import org.argeo.slc.execution.SlcAgentCli;
  * Reference implementation of args to URIs algorithm.
  */
 public class DefaultAgentCli implements SlcAgentCli {
-	private final static Log log = LogFactory.getLog(DefaultAgentCli.class);
-
 	private final static String UTF8 = "UTF-8";
 	private SlcAgent agent;
 //	private AuthenticationManager authenticationManager;
@@ -45,7 +41,7 @@ public class DefaultAgentCli implements SlcAgentCli {
 		if (args.length > 0 && args[0].equals("help")) {
 			StringBuilder buf = new StringBuilder();
 			help(args, buf);
-			log.info("\n" + buf);
+//			log.info("\n" + buf);
 			return buf.toString();
 		} else {
 			List<URI> uris = asURIs(args);

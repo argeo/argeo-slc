@@ -24,8 +24,7 @@ import javax.jcr.nodetype.NodeType;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
@@ -38,7 +37,7 @@ import org.osgi.framework.Version;
  * from MANIFEST)
  */
 public class JarFileIndexer implements NodeIndexer, SlcNames {
-	private final static Log log = LogFactory.getLog(JarFileIndexer.class);
+	private final static CmsLog log = CmsLog.getLog(JarFileIndexer.class);
 	private Boolean force = false;
 
 	public Boolean support(String path) {
@@ -77,12 +76,10 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 			manifest.write(bo);
 			byte[] newManifest = bo.toByteArray();
 			if (fileNode.hasProperty(SLC_MANIFEST)) {
-				byte[] storedManifest = JcrUtils.getBinaryAsBytes(fileNode
-						.getProperty(SLC_MANIFEST));
+				byte[] storedManifest = JcrUtils.getBinaryAsBytes(fileNode.getProperty(SLC_MANIFEST));
 				if (Arrays.equals(newManifest, storedManifest)) {
 					if (log.isTraceEnabled())
-						log.trace("Manifest not changed, doing nothing "
-								+ fileNode);
+						log.trace("Manifest not changed, doing nothing " + fileNode);
 					return;
 				}
 			}
@@ -136,8 +133,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 
 	}
 
-	private void getI18nValues(Binary fileBinary, Attributes attrs)
-			throws IOException {
+	private void getI18nValues(Binary fileBinary, Attributes attrs) throws IOException {
 		JarInputStream jarIn = null;
 		try {
 			jarIn = new JarInputStream(fileBinary.getStream());
@@ -162,8 +158,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 			browse: if (bundleLocalization != null) {
 				JarEntry entry = jarIn.getNextJarEntry();
 				while (entry != null) {
-					if (entry.getName().equals(
-							bundleLocalization + ".properties")) {
+					if (entry.getName().equals(bundleLocalization + ".properties")) {
 						jarEntry = entry;
 
 						// if(je.getSize() != -1){
@@ -203,19 +198,15 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 				}
 			}
 		} catch (RepositoryException e) {
-			throw new SlcException(
-					"Error while reading the jar binary content " + fileBinary,
-					e);
+			throw new SlcException("Error while reading the jar binary content " + fileBinary, e);
 		} catch (IOException ioe) {
-			throw new SlcException("unable to get internationalized values",
-					ioe);
+			throw new SlcException("unable to get internationalized values", ioe);
 		} finally {
 			IOUtils.closeQuietly(jarIn);
 		}
 	}
 
-	protected void addOsgiMetadata(Node fileNode, Attributes attrs)
-			throws RepositoryException {
+	protected void addOsgiMetadata(Node fileNode, Attributes attrs) throws RepositoryException {
 
 		// TODO remove this ?
 		// Compulsory for the time being, because bundle artifact extends
@@ -250,12 +241,9 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		addAttr(Constants.BUNDLE_LOCALIZATION, fileNode, attrs);
 
 		// required execution environment
-		if (attrs.containsKey(new Name(
-				Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT)))
-			fileNode.setProperty(SlcNames.SLC_
-					+ Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT, attrs
-					.getValue(Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT)
-					.split(","));
+		if (attrs.containsKey(new Name(Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT)))
+			fileNode.setProperty(SlcNames.SLC_ + Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT,
+					attrs.getValue(Constants.BUNDLE_REQUIREDEXECUTIONENVIRONMENT).split(","));
 
 		// bundle classpath
 		if (attrs.containsKey(new Name(Constants.BUNDLE_CLASSPATH)))
@@ -266,8 +254,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		Version version = new Version(attrs.getValue(Constants.BUNDLE_VERSION));
 		fileNode.setProperty(SlcNames.SLC_BUNDLE_VERSION, version.toString());
 		cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.BUNDLE_VERSION);
-		Node bundleVersionNode = fileNode.addNode(SlcNames.SLC_
-				+ Constants.BUNDLE_VERSION, SlcTypes.SLC_OSGI_VERSION);
+		Node bundleVersionNode = fileNode.addNode(SlcNames.SLC_ + Constants.BUNDLE_VERSION, SlcTypes.SLC_OSGI_VERSION);
 		mapOsgiVersion(version, bundleVersionNode);
 
 		// fragment
@@ -275,13 +262,11 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		if (attrs.containsKey(new Name(Constants.FRAGMENT_HOST))) {
 			String fragmentHost = attrs.getValue(Constants.FRAGMENT_HOST);
 			String[] tokens = fragmentHost.split(";");
-			Node node = fileNode.addNode(SlcNames.SLC_
-					+ Constants.FRAGMENT_HOST, SlcTypes.SLC_FRAGMENT_HOST);
+			Node node = fileNode.addNode(SlcNames.SLC_ + Constants.FRAGMENT_HOST, SlcTypes.SLC_FRAGMENT_HOST);
 			node.setProperty(SlcNames.SLC_SYMBOLIC_NAME, tokens[0]);
 			for (int i = 1; i < tokens.length; i++) {
 				if (tokens[i].startsWith(Constants.BUNDLE_VERSION_ATTRIBUTE)) {
-					node.setProperty(SlcNames.SLC_BUNDLE_VERSION,
-							attributeValue(tokens[i]));
+					node.setProperty(SlcNames.SLC_BUNDLE_VERSION, attributeValue(tokens[i]));
 				}
 			}
 		}
@@ -293,20 +278,14 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 			List<String> packages = parseCommaSeparated(importPackages);
 			for (String pkg : packages) {
 				String[] tokens = pkg.split(";");
-				Node node = fileNode.addNode(SlcNames.SLC_
-						+ Constants.IMPORT_PACKAGE,
-						SlcTypes.SLC_IMPORTED_PACKAGE);
+				Node node = fileNode.addNode(SlcNames.SLC_ + Constants.IMPORT_PACKAGE, SlcTypes.SLC_IMPORTED_PACKAGE);
 				node.setProperty(SlcNames.SLC_NAME, tokens[0]);
 				for (int i = 1; i < tokens.length; i++) {
 					if (tokens[i].startsWith(Constants.VERSION_ATTRIBUTE)) {
-						node.setProperty(SlcNames.SLC_VERSION,
-								attributeValue(tokens[i]));
-					} else if (tokens[i]
-							.startsWith(Constants.RESOLUTION_DIRECTIVE)) {
-						node.setProperty(
-								SlcNames.SLC_OPTIONAL,
-								directiveValue(tokens[i]).equals(
-										Constants.RESOLUTION_OPTIONAL));
+						node.setProperty(SlcNames.SLC_VERSION, attributeValue(tokens[i]));
+					} else if (tokens[i].startsWith(Constants.RESOLUTION_DIRECTIVE)) {
+						node.setProperty(SlcNames.SLC_OPTIONAL,
+								directiveValue(tokens[i]).equals(Constants.RESOLUTION_OPTIONAL));
 					}
 				}
 			}
@@ -315,19 +294,16 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		// dynamic import package
 		cleanSubNodes(fileNode, SlcNames.SLC_ + Constants.DYNAMICIMPORT_PACKAGE);
 		if (attrs.containsKey(new Name(Constants.DYNAMICIMPORT_PACKAGE))) {
-			String importPackages = attrs
-					.getValue(Constants.DYNAMICIMPORT_PACKAGE);
+			String importPackages = attrs.getValue(Constants.DYNAMICIMPORT_PACKAGE);
 			List<String> packages = parseCommaSeparated(importPackages);
 			for (String pkg : packages) {
 				String[] tokens = pkg.split(";");
-				Node node = fileNode.addNode(SlcNames.SLC_
-						+ Constants.DYNAMICIMPORT_PACKAGE,
+				Node node = fileNode.addNode(SlcNames.SLC_ + Constants.DYNAMICIMPORT_PACKAGE,
 						SlcTypes.SLC_DYNAMIC_IMPORTED_PACKAGE);
 				node.setProperty(SlcNames.SLC_NAME, tokens[0]);
 				for (int i = 1; i < tokens.length; i++) {
 					if (tokens[i].startsWith(Constants.VERSION_ATTRIBUTE)) {
-						node.setProperty(SlcNames.SLC_VERSION,
-								attributeValue(tokens[i]));
+						node.setProperty(SlcNames.SLC_VERSION, attributeValue(tokens[i]));
 					}
 				}
 			}
@@ -340,9 +316,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 			List<String> packages = parseCommaSeparated(exportPackages);
 			for (String pkg : packages) {
 				String[] tokens = pkg.split(";");
-				Node node = fileNode.addNode(SlcNames.SLC_
-						+ Constants.EXPORT_PACKAGE,
-						SlcTypes.SLC_EXPORTED_PACKAGE);
+				Node node = fileNode.addNode(SlcNames.SLC_ + Constants.EXPORT_PACKAGE, SlcTypes.SLC_EXPORTED_PACKAGE);
 				node.setProperty(SlcNames.SLC_NAME, tokens[0]);
 				// TODO: are these cleans really necessary?
 				cleanSubNodes(node, SlcNames.SLC_USES);
@@ -350,8 +324,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 				for (int i = 1; i < tokens.length; i++) {
 					if (tokens[i].startsWith(Constants.VERSION_ATTRIBUTE)) {
 						String versionStr = attributeValue(tokens[i]);
-						Node versionNode = node.addNode(SlcNames.SLC_VERSION,
-								SlcTypes.SLC_OSGI_VERSION);
+						Node versionNode = node.addNode(SlcNames.SLC_VERSION, SlcTypes.SLC_OSGI_VERSION);
 						mapOsgiVersion(new Version(versionStr), versionNode);
 					} else if (tokens[i].startsWith(Constants.USES_DIRECTIVE)) {
 						String usedPackages = directiveValue(tokens[i]);
@@ -360,8 +333,7 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 							// log.debug("usedPackage='" +
 							// usedPackage +
 							// "'");
-							Node usesNode = node.addNode(SlcNames.SLC_USES,
-									SlcTypes.SLC_JAVA_PACKAGE);
+							Node usesNode = node.addNode(SlcNames.SLC_USES, SlcTypes.SLC_JAVA_PACKAGE);
 							usesNode.setProperty(SlcNames.SLC_NAME, usedPackage);
 						}
 					}
@@ -376,21 +348,14 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 			List<String> bundles = parseCommaSeparated(requireBundle);
 			for (String bundle : bundles) {
 				String[] tokens = bundle.split(";");
-				Node node = fileNode.addNode(SlcNames.SLC_
-						+ Constants.REQUIRE_BUNDLE,
-						SlcTypes.SLC_REQUIRED_BUNDLE);
+				Node node = fileNode.addNode(SlcNames.SLC_ + Constants.REQUIRE_BUNDLE, SlcTypes.SLC_REQUIRED_BUNDLE);
 				node.setProperty(SlcNames.SLC_SYMBOLIC_NAME, tokens[0]);
 				for (int i = 1; i < tokens.length; i++) {
-					if (tokens[i]
-							.startsWith(Constants.BUNDLE_VERSION_ATTRIBUTE)) {
-						node.setProperty(SlcNames.SLC_BUNDLE_VERSION,
-								attributeValue(tokens[i]));
-					} else if (tokens[i]
-							.startsWith(Constants.RESOLUTION_DIRECTIVE)) {
-						node.setProperty(
-								SlcNames.SLC_OPTIONAL,
-								directiveValue(tokens[i]).equals(
-										Constants.RESOLUTION_OPTIONAL));
+					if (tokens[i].startsWith(Constants.BUNDLE_VERSION_ATTRIBUTE)) {
+						node.setProperty(SlcNames.SLC_BUNDLE_VERSION, attributeValue(tokens[i]));
+					} else if (tokens[i].startsWith(Constants.RESOLUTION_DIRECTIVE)) {
+						node.setProperty(SlcNames.SLC_OPTIONAL,
+								directiveValue(tokens[i]).equals(Constants.RESOLUTION_OPTIONAL));
 					}
 				}
 			}
@@ -398,21 +363,18 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 
 	}
 
-	private void addAttr(String key, Node node, Attributes attrs)
-			throws RepositoryException {
+	private void addAttr(String key, Node node, Attributes attrs) throws RepositoryException {
 		addAttr(new Name(key), node, attrs);
 	}
 
-	private void addAttr(Name key, Node node, Attributes attrs)
-			throws RepositoryException {
+	private void addAttr(Name key, Node node, Attributes attrs) throws RepositoryException {
 		if (attrs.containsKey(key)) {
 			String value = attrs.getValue(key);
 			node.setProperty(SlcNames.SLC_ + key, value);
 		}
 	}
 
-	private void cleanSubNodes(Node node, String name)
-			throws RepositoryException {
+	private void cleanSubNodes(Node node, String name) throws RepositoryException {
 		if (node.hasNode(name)) {
 			NodeIterator nit = node.getNodes(name);
 			while (nit.hasNext())
@@ -465,15 +427,13 @@ public class JarFileIndexer implements NodeIndexer, SlcNames {
 		return res;
 	}
 
-	protected void mapOsgiVersion(Version version, Node versionNode)
-			throws RepositoryException {
+	protected void mapOsgiVersion(Version version, Node versionNode) throws RepositoryException {
 		versionNode.setProperty(SlcNames.SLC_AS_STRING, version.toString());
 		versionNode.setProperty(SlcNames.SLC_MAJOR, version.getMajor());
 		versionNode.setProperty(SlcNames.SLC_MINOR, version.getMinor());
 		versionNode.setProperty(SlcNames.SLC_MICRO, version.getMicro());
 		if (!version.getQualifier().equals(""))
-			versionNode.setProperty(SlcNames.SLC_QUALIFIER,
-					version.getQualifier());
+			versionNode.setProperty(SlcNames.SLC_QUALIFIER, version.getQualifier());
 	}
 
 	public void setForce(Boolean force) {

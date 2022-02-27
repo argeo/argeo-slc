@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionSpecAttribute;
@@ -14,22 +12,16 @@ import org.argeo.slc.execution.ExecutionStack;
 
 /** Canonical implementation of an execution stack. */
 public class DefaultExecutionStack implements ExecutionStack {
-
-	private final static Log log = LogFactory
-			.getLog(DefaultExecutionStack.class);
-
 	private final Stack<ExecutionFlowRuntime> stack = new Stack<ExecutionFlowRuntime>();
 
 	public synchronized void enterFlow(ExecutionFlow executionFlow) {
 		ExecutionFlowRuntime runtime = new ExecutionFlowRuntime(executionFlow);
 		stack.push(runtime);
 
-		Map<String, ExecutionSpecAttribute> specAttrs = executionFlow
-				.getExecutionSpec().getAttributes();
+		Map<String, ExecutionSpecAttribute> specAttrs = executionFlow.getExecutionSpec().getAttributes();
 		for (String key : specAttrs.keySet()) {
 			if (executionFlow.isSetAsParameter(key)) {
-				runtime.getLocalVariables().put(key,
-						executionFlow.getParameter(key));
+				runtime.getLocalVariables().put(key, executionFlow.getParameter(key));
 			}
 		}
 	}
@@ -61,10 +53,8 @@ public class DefaultExecutionStack implements ExecutionStack {
 	public synchronized void leaveFlow(ExecutionFlow executionFlow) {
 		ExecutionFlowRuntime leftEf = stack.pop();
 
-		if (!leftEf.getExecutionFlow().getName()
-				.equals(executionFlow.getName()))
-			throw new SlcException("Asked to leave " + executionFlow
-					+ " but last is " + leftEf);
+		if (!leftEf.getExecutionFlow().getName().equals(executionFlow.getName()))
+			throw new SlcException("Asked to leave " + executionFlow + " but last is " + leftEf);
 
 		leftEf.getScopedObjects().clear();
 		leftEf.getLocalVariables().clear();
@@ -73,12 +63,12 @@ public class DefaultExecutionStack implements ExecutionStack {
 	public synchronized void addScopedObject(String name, Object obj) {
 		ExecutionFlowRuntime runtime = stack.peek();
 		// TODO: check that the object is not set yet ?
-		if (log.isDebugEnabled()) {
-			Object existing = findScopedObject(name);
-			if (existing != null)
-				log.warn("Scoped object " + name + " of type " + obj.getClass()
-						+ " already registered in " + runtime);
-		}
+//		if (log.isDebugEnabled()) {
+//			Object existing = findScopedObject(name);
+//			if (existing != null)
+//				log.warn("Scoped object " + name + " of type " + obj.getClass()
+//						+ " already registered in " + runtime);
+//		}
 		runtime.getScopedObjects().put(name, obj);
 	}
 

@@ -1,0 +1,4 @@
+SLC-Origin-M2: org.apache.jackrabbit:jackrabbit-jcr-servlet
+Bundle-SymbolicName: org.apache.jackrabbit.servlet
+Fragment-Host: org.apache.jackrabbit.core
+Import-Package: org.apache.jackrabbit.rmi.*;resolution:=optional,*

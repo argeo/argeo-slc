@@ -1,0 +1,3 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.commons.collections
+SLC-Origin-M2: commons-collections:commons-collections:3.2.2

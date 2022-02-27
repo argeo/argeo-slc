@@ -33,7 +33,9 @@ public class BasicSshServer {
 			// sshd.setShellFactory(new ProcessShellFactory(new String[] { "/bin/sh", "-i",
 			// "-l" }));
 			String[] shellCommand = OS.LOCAL.getDefaultShellCommand();
-			sshd.setShellFactory(new ProcessShellFactory(shellCommand));
+			// FIXME transfer args
+//			sshd.setShellFactory(new ProcessShellFactory(shellCommand));
+//			sshd.setShellFactory(new ProcessShellFactory(shellCommand[0], shellCommand));
 			sshd.setCommandFactory(new ScpCommandFactory());
 			sshd.start();
 		} catch (Exception e) {

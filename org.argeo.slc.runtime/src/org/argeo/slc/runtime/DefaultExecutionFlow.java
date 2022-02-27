@@ -1,13 +1,15 @@
 package org.argeo.slc.runtime;
 
+import static java.lang.System.Logger.Level.ERROR;
+import static java.lang.System.Logger.Level.WARNING;
+
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
@@ -16,7 +18,7 @@ import org.argeo.slc.execution.ExecutionSpecAttribute;
 
 /** Default implementation of an execution flow. */
 public class DefaultExecutionFlow implements ExecutionFlow {
-	private final static Log log = LogFactory.getLog(DefaultExecutionFlow.class);
+	private final static System.Logger logger = System.getLogger(DefaultExecutionFlow.class.getName());
 
 	private final ExecutionSpec executionSpec;
 	private String name = null;
@@ -84,7 +86,7 @@ public class DefaultExecutionFlow implements ExecutionFlow {
 		try {
 			for (Runnable executable : executables) {
 				if (Thread.interrupted()) {
-					log.error("Flow '" + getName() + "' killed before '" + executable + "'");
+					logger.log(ERROR, "Flow '" + getName() + "' killed before '" + executable + "'");
 					Thread.currentThread().interrupt();
 					return;
 					// throw new ThreadDeath();
@@ -93,7 +95,7 @@ public class DefaultExecutionFlow implements ExecutionFlow {
 			}
 		} catch (RuntimeException e) {
 			if (Thread.interrupted()) {
-				log.error("Flow '" + getName() + "' killed while receiving an unrelated exception", e);
+				logger.log(ERROR, "Flow '" + getName() + "' killed while receiving an unrelated exception", e);
 				Thread.currentThread().interrupt();
 				return;
 				// throw new ThreadDeath();
@@ -101,9 +103,9 @@ public class DefaultExecutionFlow implements ExecutionFlow {
 			if (failOnError)
 				throw e;
 			else {
-				log.error("Execution flow failed," + " but process did not fail" + " because failOnError property"
-						+ " is set to false: " + e);
-				if (log.isTraceEnabled())
+				logger.log(ERROR, "Execution flow failed," + " but process did not fail"
+						+ " because failOnError property" + " is set to false: " + e);
+				if (logger.isLoggable(Level.TRACE))
 					e.printStackTrace();
 			}
 		}
@@ -156,7 +158,7 @@ public class DefaultExecutionFlow implements ExecutionFlow {
 					DefaultExecutionFlow flow = (DefaultExecutionFlow) executable;
 					String newPath = path + '/' + flow.getName();
 					flow.setPath(newPath);
-					log.warn(newPath + " was forcibly set on " + flow);
+					logger.log(WARNING, newPath + " was forcibly set on " + flow);
 				}
 			}
 		}

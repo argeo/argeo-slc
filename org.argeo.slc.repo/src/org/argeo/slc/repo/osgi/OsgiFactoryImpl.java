@@ -19,8 +19,7 @@ import javax.jcr.Session;
 import javax.jcr.security.Privilege;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcConstants;
 import org.argeo.slc.SlcException;
@@ -35,7 +34,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 
 /** Default implementation of {@link OsgiFactory}. */
 public class OsgiFactoryImpl implements OsgiFactory, SlcNames {
-	private final static Log log = LogFactory.getLog(OsgiFactoryImpl.class);
+	private final static CmsLog log = CmsLog.getLog(OsgiFactoryImpl.class);
 
 	private String workspace;
 	private Repository distRepository;

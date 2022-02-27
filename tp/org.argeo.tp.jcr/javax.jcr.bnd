@@ -1,0 +1,5 @@
+Bundle-License: https://www.adobe.io/experience-manager/reference-materials/spec/jcr/2.0/license.html
+Bundle-SymbolicName: javax.jcr
+Bundle-Version: 2.0.0
+SLC-Origin-M2: javax.jcr:jcr:2.0
+SLC-Origin-ManifestNotModified: true

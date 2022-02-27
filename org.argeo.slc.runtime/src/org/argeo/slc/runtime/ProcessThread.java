@@ -1,5 +1,6 @@
 package org.argeo.slc.runtime;
 
+import java.lang.System.Logger.Level;
 import java.security.AccessControlContext;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
@@ -12,8 +13,6 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.execution.ExecutionModulesManager;
 import org.argeo.slc.execution.ExecutionProcess;
@@ -25,7 +24,7 @@ import org.argeo.slc.execution.RealizedFlow;
  * sequential {@link ExecutionThread}s.
  */
 public class ProcessThread extends Thread {
-	private final static Log log = LogFactory.getLog(ProcessThread.class);
+	private final static System.Logger logger = System.getLogger(ProcessThread.class.getName());
 
 	private final ExecutionModulesManager executionModulesManager;
 	private final ExecutionProcess process;
@@ -55,7 +54,7 @@ public class ProcessThread extends Thread {
 		// throw new SlcException("Can only execute authenticated threads");
 		// SecurityContextHolder.getContext().setAuthentication(authentication);
 
-		log.info("\n##\n## SLC Process #" + process.getUuid() + " STARTED\n##\n");
+		logger.log(Level.INFO, "\n##\n## SLC Process #" + process.getUuid() + " STARTED\n##\n");
 
 		// Start logging
 		new LoggingThread().start();
@@ -86,7 +85,7 @@ public class ProcessThread extends Thread {
 			return;
 		} catch (Exception e) {
 			String msg = "Process " + getProcess().getUuid() + " failed unexpectedly.";
-			log.error(msg, e);
+			logger.log(Level.ERROR, msg, e);
 			getProcessThreadGroup()
 					.dispatchAddStep(new ExecutionStep("Process", ExecutionStep.ERROR, msg + " " + e.getMessage()));
 		}
@@ -119,7 +118,7 @@ public class ProcessThread extends Thread {
 			process.setStatus(ExecutionProcess.COMPLETED);
 		// executionModulesManager.dispatchUpdateStatus(process, oldStatus,
 		// process.getStatus());
-		log.info("\n## SLC Process #" + process.getUuid() + " " + process.getStatus() + "\n");
+		logger.log(Level.INFO, "\n## SLC Process #" + process.getUuid() + " " + process.getStatus() + "\n");
 	}
 
 	/** Called when being killed */
@@ -130,7 +129,7 @@ public class ProcessThread extends Thread {
 			try {
 				executionThread.interrupt();
 			} catch (Exception e) {
-				log.error("Cannot interrupt " + executionThread);
+				logger.log(Level.ERROR, "Cannot interrupt " + executionThread);
 			}
 		}
 		processThreadGroup.interrupt();

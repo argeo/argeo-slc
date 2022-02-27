@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.sshd.agent.SshAgent;
 import org.apache.sshd.agent.SshAgentFactory;
 import org.apache.sshd.agent.local.LocalAgentFactory;
@@ -21,9 +19,10 @@ import org.apache.sshd.client.future.ConnectFuture;
 import org.apache.sshd.client.session.ClientSession;
 import org.apache.sshd.client.subsystem.sftp.fs.SftpFileSystem;
 import org.apache.sshd.client.subsystem.sftp.fs.SftpFileSystemProvider;
+import org.argeo.api.cms.CmsLog;
 
 public class SshSync {
-	private final static Log log = LogFactory.getLog(SshSync.class);
+	private final static CmsLog log = CmsLog.getLog(SshSync.class);
 
 	public static void main(String[] args) {
 

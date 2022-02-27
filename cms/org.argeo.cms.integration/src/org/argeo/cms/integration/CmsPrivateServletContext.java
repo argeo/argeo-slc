@@ -1,7 +1,5 @@
 package org.argeo.cms.integration;
 
-import static org.argeo.api.NodeConstants.LOGIN_CONTEXT_USER;
-
 import java.io.IOException;
 import java.security.AccessControlContext;
 import java.security.PrivilegedAction;
@@ -13,8 +11,11 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.argeo.cms.auth.HttpRequestCallbackHandler;
-import org.argeo.cms.servlet.ServletAuthUtils;
+import org.argeo.api.cms.CmsAuth;
+import org.argeo.cms.auth.RemoteAuthCallbackHandler;
+import org.argeo.cms.auth.RemoteAuthUtils;
+import org.argeo.cms.servlet.ServletHttpRequest;
+import org.argeo.cms.servlet.ServletHttpResponse;
 import org.osgi.service.http.context.ServletContextHelper;
 
 /** Manages security access to servlets. */
@@ -34,18 +35,20 @@ public class CmsPrivateServletContext extends ServletContextHelper {
 	 * the login page.
 	 */
 	@Override
-	public boolean handleSecurity(final HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public boolean handleSecurity(final HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		LoginContext lc = null;
+		ServletHttpRequest request = new ServletHttpRequest(req);
+		ServletHttpResponse response = new ServletHttpResponse(resp);
 
-		String pathInfo = request.getPathInfo();
-		String servletPath = request.getServletPath();
+		String pathInfo = req.getPathInfo();
+		String servletPath = req.getServletPath();
 		if ((pathInfo != null && (servletPath + pathInfo).equals(loginPage)) || servletPath.contentEquals(loginServlet))
 			return true;
 		try {
-			lc = new LoginContext(LOGIN_CONTEXT_USER, new HttpRequestCallbackHandler(request, response));
+			lc = new LoginContext(CmsAuth.LOGIN_CONTEXT_USER, new RemoteAuthCallbackHandler(request, response));
 			lc.login();
 		} catch (LoginException e) {
-			lc = processUnauthorized(request, response);
+			lc = processUnauthorized(req, resp);
 			if (lc == null)
 				return false;
 		}
@@ -54,7 +57,7 @@ public class CmsPrivateServletContext extends ServletContextHelper {
 			@Override
 			public Void run() {
 				// TODO also set login context in order to log out ?
-				ServletAuthUtils.configureRequestSecurity(request);
+				RemoteAuthUtils.configureRequestSecurity(request);
 				return null;
 			}
 
@@ -64,8 +67,8 @@ public class CmsPrivateServletContext extends ServletContextHelper {
 	}
 
 	@Override
-	public void finishSecurity(HttpServletRequest request, HttpServletResponse response) {
-		ServletAuthUtils.clearRequestSecurity(request);
+	public void finishSecurity(HttpServletRequest req, HttpServletResponse resp) {
+		RemoteAuthUtils.clearRequestSecurity(new ServletHttpRequest(req));
 	}
 
 	protected LoginContext processUnauthorized(HttpServletRequest request, HttpServletResponse response) {

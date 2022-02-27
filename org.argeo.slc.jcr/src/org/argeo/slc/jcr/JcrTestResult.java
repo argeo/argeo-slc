@@ -15,8 +15,7 @@ import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
@@ -33,7 +32,7 @@ import org.argeo.slc.test.TestStatus;
  * {@link SlcTypes#SLC_TEST_RESULT}.
  */
 public class JcrTestResult implements TestResult, SlcNames, AttachmentsEnabled {
-	private final static Log log = LogFactory.getLog(JcrTestResult.class);
+	private final static CmsLog log = CmsLog.getLog(JcrTestResult.class);
 
 	/** Should only be set for an already existing result. */
 	private String uuid;

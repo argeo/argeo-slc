@@ -12,8 +12,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.SlcNames;
@@ -35,21 +34,19 @@ import org.argeo.slc.primitive.PrimitiveValue;
  * Synchronizes the local execution runtime with a JCR repository. For the time
  * being the state is completely reset from one start to another.
  */
-public class JcrExecutionModulesListener implements ExecutionModulesListener,
-		SlcNames {
+public class JcrExecutionModulesListener implements ExecutionModulesListener, SlcNames {
 	private final static String SLC_EXECUTION_MODULES_PROPERTY = "slc.executionModules";
 
-	private final static Log log = LogFactory
-			.getLog(JcrExecutionModulesListener.class);
+	private final static CmsLog log = CmsLog.getLog(JcrExecutionModulesListener.class);
 	private JcrAgent agent;
 
 	private ExecutionModulesManager modulesManager;
 
 	private Repository repository;
 	/**
-	 * We don't use a thread bound session because many different threads will
-	 * call this critical component and we don't want to login each time. We
-	 * therefore rather protect access to this session via synchronized.
+	 * We don't use a thread bound session because many different threads will call
+	 * this critical component and we don't want to login each time. We therefore
+	 * rather protect access to this session via synchronized.
 	 */
 	private Session session;
 
@@ -63,54 +60,38 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			if (modulesManager != null) {
 				Node agentNode = session.getNode(agent.getNodePath());
 
-				List<ModuleDescriptor> moduleDescriptors = modulesManager
-						.listModules();
+				List<ModuleDescriptor> moduleDescriptors = modulesManager.listModules();
 
 				// scan SLC-ExecutionModule metadata
 				for (ModuleDescriptor md : moduleDescriptors) {
-					if (md.getMetadata().containsKey(
-							ExecutionModuleDescriptor.SLC_EXECUTION_MODULE)) {
-						String moduleNodeName = SlcJcrUtils
-								.getModuleNodeName(md);
-						Node moduleNode = agentNode.hasNode(moduleNodeName) ? agentNode
-								.getNode(moduleNodeName) : agentNode
-								.addNode(moduleNodeName);
+					if (md.getMetadata().containsKey(ExecutionModuleDescriptor.SLC_EXECUTION_MODULE)) {
+						String moduleNodeName = SlcJcrUtils.getModuleNodeName(md);
+						Node moduleNode = agentNode.hasNode(moduleNodeName) ? agentNode.getNode(moduleNodeName)
+								: agentNode.addNode(moduleNodeName);
 						moduleNode.addMixin(SlcTypes.SLC_EXECUTION_MODULE);
 						moduleNode.setProperty(SLC_NAME, md.getName());
 						moduleNode.setProperty(SLC_VERSION, md.getVersion());
-						moduleNode.setProperty(Property.JCR_TITLE,
-								md.getTitle());
-						moduleNode.setProperty(Property.JCR_DESCRIPTION,
-								md.getDescription());
+						moduleNode.setProperty(Property.JCR_TITLE, md.getTitle());
+						moduleNode.setProperty(Property.JCR_DESCRIPTION, md.getDescription());
 						moduleNode.setProperty(SLC_STARTED, md.getStarted());
 					}
 				}
 
 				// scan execution modules property
-				String executionModules = System
-						.getProperty(SLC_EXECUTION_MODULES_PROPERTY);
+				String executionModules = System.getProperty(SLC_EXECUTION_MODULES_PROPERTY);
 				if (executionModules != null) {
 					for (String executionModule : executionModules.split(",")) {
 						allModules: for (ModuleDescriptor md : moduleDescriptors) {
-							String moduleNodeName = SlcJcrUtils
-									.getModuleNodeName(md);
+							String moduleNodeName = SlcJcrUtils.getModuleNodeName(md);
 							if (md.getName().equals(executionModule)) {
-								Node moduleNode = agentNode
-										.hasNode(moduleNodeName) ? agentNode
-										.getNode(moduleNodeName) : agentNode
-										.addNode(moduleNodeName);
-								moduleNode
-										.addMixin(SlcTypes.SLC_EXECUTION_MODULE);
+								Node moduleNode = agentNode.hasNode(moduleNodeName) ? agentNode.getNode(moduleNodeName)
+										: agentNode.addNode(moduleNodeName);
+								moduleNode.addMixin(SlcTypes.SLC_EXECUTION_MODULE);
 								moduleNode.setProperty(SLC_NAME, md.getName());
-								moduleNode.setProperty(SLC_VERSION,
-										md.getVersion());
-								moduleNode.setProperty(Property.JCR_TITLE,
-										md.getTitle());
-								moduleNode.setProperty(
-										Property.JCR_DESCRIPTION,
-										md.getDescription());
-								moduleNode.setProperty(SLC_STARTED,
-										md.getStarted());
+								moduleNode.setProperty(SLC_VERSION, md.getVersion());
+								moduleNode.setProperty(Property.JCR_TITLE, md.getTitle());
+								moduleNode.setProperty(Property.JCR_DESCRIPTION, md.getDescription());
+								moduleNode.setProperty(SLC_STARTED, md.getStarted());
 								break allModules;
 							}
 						}
@@ -149,26 +130,21 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 	 * EXECUTION MODULES LISTENER
 	 */
 
-	public synchronized void executionModuleAdded(
-			ModuleDescriptor moduleDescriptor) {
+	public synchronized void executionModuleAdded(ModuleDescriptor moduleDescriptor) {
 		syncExecutionModule(moduleDescriptor);
 	}
 
 	protected void syncExecutionModule(ModuleDescriptor moduleDescriptor) {
 		try {
 			Node agentNode = session.getNode(agent.getNodePath());
-			String moduleNodeName = SlcJcrUtils
-					.getModuleNodeName(moduleDescriptor);
-			Node moduleNode = agentNode.hasNode(moduleNodeName) ? agentNode
-					.getNode(moduleNodeName) : agentNode
-					.addNode(moduleNodeName);
+			String moduleNodeName = SlcJcrUtils.getModuleNodeName(moduleDescriptor);
+			Node moduleNode = agentNode.hasNode(moduleNodeName) ? agentNode.getNode(moduleNodeName)
+					: agentNode.addNode(moduleNodeName);
 			moduleNode.addMixin(SlcTypes.SLC_EXECUTION_MODULE);
 			moduleNode.setProperty(SLC_NAME, moduleDescriptor.getName());
 			moduleNode.setProperty(SLC_VERSION, moduleDescriptor.getVersion());
-			moduleNode.setProperty(Property.JCR_TITLE,
-					moduleDescriptor.getTitle());
-			moduleNode.setProperty(Property.JCR_DESCRIPTION,
-					moduleDescriptor.getDescription());
+			moduleNode.setProperty(Property.JCR_TITLE, moduleDescriptor.getTitle());
+			moduleNode.setProperty(Property.JCR_DESCRIPTION, moduleDescriptor.getDescription());
 			moduleNode.setProperty(SLC_STARTED, moduleDescriptor.getStarted());
 			session.save();
 		} catch (RepositoryException e) {
@@ -177,8 +153,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		}
 	}
 
-	public synchronized void executionModuleRemoved(
-			ModuleDescriptor moduleDescriptor) {
+	public synchronized void executionModuleRemoved(ModuleDescriptor moduleDescriptor) {
 		try {
 			String moduleName = SlcJcrUtils.getModuleNodeName(moduleDescriptor);
 			Node agentNode = session.getNode(agent.getNodePath());
@@ -192,23 +167,19 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			session.save();
 		} catch (RepositoryException e) {
 			JcrUtils.discardQuietly(session);
-			throw new SlcException("Cannot remove module " + moduleDescriptor,
-					e);
+			throw new SlcException("Cannot remove module " + moduleDescriptor, e);
 		}
 	}
 
-	public synchronized void executionFlowAdded(ModuleDescriptor module,
-			ExecutionFlowDescriptor efd) {
+	public synchronized void executionFlowAdded(ModuleDescriptor module, ExecutionFlowDescriptor efd) {
 		try {
 			Node agentNode = session.getNode(agent.getNodePath());
-			Node moduleNode = agentNode.getNode(SlcJcrUtils
-					.getModuleNodeName(module));
+			Node moduleNode = agentNode.getNode(SlcJcrUtils.getModuleNodeName(module));
 			String relativePath = getExecutionFlowRelativePath(efd);
 			@SuppressWarnings("unused")
 			Node flowNode = null;
 			if (!moduleNode.hasNode(relativePath)) {
-				flowNode = createExecutionFlowNode(moduleNode, relativePath,
-						efd);
+				flowNode = createExecutionFlowNode(moduleNode, relativePath, efd);
 				session.save();
 			} else {
 				flowNode = moduleNode.getNode(relativePath);
@@ -218,14 +189,12 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 				log.trace("Flow " + efd + " added to JCR");
 		} catch (RepositoryException e) {
 			JcrUtils.discardQuietly(session);
-			throw new SlcException("Cannot add flow " + efd + " from module "
-					+ module, e);
+			throw new SlcException("Cannot add flow " + efd + " from module " + module, e);
 		}
 
 	}
 
-	protected Node createExecutionFlowNode(Node moduleNode,
-			String relativePath, ExecutionFlowDescriptor efd)
+	protected Node createExecutionFlowNode(Node moduleNode, String relativePath, ExecutionFlowDescriptor efd)
 			throws RepositoryException {
 		Node flowNode = null;
 		List<String> pathTokens = Arrays.asList(relativePath.split("/"));
@@ -241,8 +210,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 				if (names.hasNext())
 					currNode = currNode.addNode(name);
 				else
-					flowNode = currNode.addNode(name,
-							SlcTypes.SLC_EXECUTION_FLOW);
+					flowNode = currNode.addNode(name, SlcTypes.SLC_EXECUTION_FLOW);
 			}
 		}
 
@@ -250,8 +218,7 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		flowNode.setProperty(SLC_NAME, efd.getName());
 		String endName = pathTokens.get(pathTokens.size() - 1);
 		flowNode.setProperty(Property.JCR_TITLE, endName);
-		if (efd.getDescription() != null
-				&& !efd.getDescription().trim().equals("")) {
+		if (efd.getDescription() != null && !efd.getDescription().trim().equals("")) {
 			flowNode.setProperty(Property.JCR_DESCRIPTION, efd.getDescription());
 		} else {
 			flowNode.setProperty(Property.JCR_DESCRIPTION, endName);
@@ -266,32 +233,26 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 			mapExecutionSpec(flowNode, executionSpec);
 		} else {
 			// reference spec node
-			Node executionSpecsNode = moduleNode.hasNode(SLC_EXECUTION_SPECS) ? moduleNode
-					.getNode(SLC_EXECUTION_SPECS) : moduleNode
-					.addNode(SLC_EXECUTION_SPECS);
-			Node executionSpecNode = executionSpecsNode.addNode(esName,
-					SlcTypes.SLC_EXECUTION_SPEC);
+			Node executionSpecsNode = moduleNode.hasNode(SLC_EXECUTION_SPECS) ? moduleNode.getNode(SLC_EXECUTION_SPECS)
+					: moduleNode.addNode(SLC_EXECUTION_SPECS);
+			Node executionSpecNode = executionSpecsNode.addNode(esName, SlcTypes.SLC_EXECUTION_SPEC);
 			executionSpecNode.setProperty(SLC_NAME, esName);
 			executionSpecNode.setProperty(Property.JCR_TITLE, esName);
-			if (executionSpec.getDescription() != null
-					&& !executionSpec.getDescription().trim().equals(""))
-				executionSpecNode.setProperty(Property.JCR_DESCRIPTION,
-						executionSpec.getDescription());
+			if (executionSpec.getDescription() != null && !executionSpec.getDescription().trim().equals(""))
+				executionSpecNode.setProperty(Property.JCR_DESCRIPTION, executionSpec.getDescription());
 			mapExecutionSpec(executionSpecNode, executionSpec);
 			flowNode.setProperty(SLC_SPEC, executionSpecNode);
 		}
 
 		// flow values
 		for (String attr : efd.getValues().keySet()) {
-			ExecutionSpecAttribute esa = executionSpec.getAttributes()
-					.get(attr);
+			ExecutionSpecAttribute esa = executionSpec.getAttributes().get(attr);
 			if (esa instanceof PrimitiveSpecAttribute) {
 				PrimitiveSpecAttribute psa = (PrimitiveSpecAttribute) esa;
 				// if spec reference there will be no node at this stage
 				Node valueNode = JcrUtils.getOrAdd(flowNode, attr);
 				valueNode.setProperty(SLC_TYPE, psa.getType());
-				SlcJcrUtils.setPrimitiveAsProperty(valueNode, SLC_VALUE,
-						(PrimitiveValue) efd.getValues().get(attr));
+				SlcJcrUtils.setPrimitiveAsProperty(valueNode, SLC_VALUE, (PrimitiveValue) efd.getValues().get(attr));
 			}
 		}
 
@@ -299,14 +260,12 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 	}
 
 	/**
-	 * Base can be either an execution spec node, or an execution flow node (in
-	 * case the execution spec is internal)
+	 * Base can be either an execution spec node, or an execution flow node (in case
+	 * the execution spec is internal)
 	 */
-	protected void mapExecutionSpec(Node baseNode, ExecutionSpec executionSpec)
-			throws RepositoryException {
+	protected void mapExecutionSpec(Node baseNode, ExecutionSpec executionSpec) throws RepositoryException {
 		for (String attrName : executionSpec.getAttributes().keySet()) {
-			ExecutionSpecAttribute esa = executionSpec.getAttributes().get(
-					attrName);
+			ExecutionSpecAttribute esa = executionSpec.getAttributes().get(attrName);
 			Node attrNode = baseNode.addNode(attrName);
 			// booleans
 			attrNode.addMixin(SlcTypes.SLC_EXECUTION_SPEC_ATTRIBUTE);
@@ -333,12 +292,9 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 							index = count;
 						Node choiceNode = attrNode.addNode(choice.getName());
 						choiceNode.addMixin(NodeType.MIX_TITLE);
-						choiceNode.setProperty(Property.JCR_TITLE,
-								choice.getName());
-						if (choice.getDescription() != null
-								&& !choice.getDescription().trim().equals(""))
-							choiceNode.setProperty(Property.JCR_DESCRIPTION,
-									choice.getDescription());
+						choiceNode.setProperty(Property.JCR_TITLE, choice.getName());
+						if (choice.getDescription() != null && !choice.getDescription().trim().equals(""))
+							choiceNode.setProperty(Property.JCR_DESCRIPTION, choice.getDescription());
 						count++;
 					}
 
@@ -349,19 +305,16 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 		}
 	}
 
-	public synchronized void executionFlowRemoved(ModuleDescriptor module,
-			ExecutionFlowDescriptor executionFlow) {
+	public synchronized void executionFlowRemoved(ModuleDescriptor module, ExecutionFlowDescriptor executionFlow) {
 		try {
 			Node agentNode = session.getNode(agent.getNodePath());
-			Node moduleNode = agentNode.getNode(SlcJcrUtils
-					.getModuleNodeName(module));
+			Node moduleNode = agentNode.getNode(SlcJcrUtils.getModuleNodeName(module));
 			String relativePath = getExecutionFlowRelativePath(executionFlow);
 			if (moduleNode.hasNode(relativePath))
 				moduleNode.getNode(relativePath).remove();
 			agentNode.getSession().save();
 		} catch (RepositoryException e) {
-			throw new SlcException("Cannot remove flow " + executionFlow
-					+ " from module " + module, e);
+			throw new SlcException("Cannot remove flow " + executionFlow + " from module " + module, e);
 		}
 	}
 
@@ -370,11 +323,9 @@ public class JcrExecutionModulesListener implements ExecutionModulesListener,
 	 */
 	/** @return the relative path, never starts with '/' */
 	@SuppressWarnings("deprecation")
-	protected String getExecutionFlowRelativePath(
-			ExecutionFlowDescriptor executionFlow) {
-		String relativePath = executionFlow.getPath() == null ? executionFlow
-				.getName() : executionFlow.getPath() + '/'
-				+ executionFlow.getName();
+	protected String getExecutionFlowRelativePath(ExecutionFlowDescriptor executionFlow) {
+		String relativePath = executionFlow.getPath() == null ? executionFlow.getName()
+				: executionFlow.getPath() + '/' + executionFlow.getName();
 		// we assume that it is more than one char long
 		if (relativePath.charAt(0) == '/')
 			relativePath = relativePath.substring(1);

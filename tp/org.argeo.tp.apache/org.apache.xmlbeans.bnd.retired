@@ -1,0 +1,8 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.xmlbeans
+DynamicImport-Package: *
+Import-Package: org.apache.tools.ant.*;resolution:=optional,
+net.sf.saxon.*;resolution:=optional,
+com.sun.*;resolution:=optional,
+*
+SLC-Origin-M2: org.apache.xmlbeans:xmlbeans:3.1.0

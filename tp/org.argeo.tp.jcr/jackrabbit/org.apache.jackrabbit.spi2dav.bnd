@@ -1,0 +1,2 @@
+SLC-Origin-M2: org.apache.jackrabbit:jackrabbit-spi2dav
+Bundle-SymbolicName: org.apache.jackrabbit.spi2dav

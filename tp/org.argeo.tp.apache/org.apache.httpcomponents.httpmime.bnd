@@ -1,0 +1,3 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.httpcomponents.httpmime
+SLC-Origin-M2: org.apache.httpcomponents:httpmime:4.5.13

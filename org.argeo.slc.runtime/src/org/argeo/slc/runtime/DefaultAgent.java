@@ -21,7 +21,7 @@ import org.argeo.slc.execution.SlcAgent;
 
 /** Implements the base methods of an SLC agent. */
 public class DefaultAgent implements SlcAgent {
-	// private final static Log log = LogFactory.getLog(DefaultAgent.class);
+	// private final static CmsLog log = CmsLog.getLog(DefaultAgent.class);
 	/** UTF-8 charset for encoding. */
 	private final static String UTF8 = "UTF-8";
 

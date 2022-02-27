@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.argeo.cms.auth.CmsSession;
+import org.argeo.api.cms.CmsSession;
 import org.osgi.service.useradmin.Authorization;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

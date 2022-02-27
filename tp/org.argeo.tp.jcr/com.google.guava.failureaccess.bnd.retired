@@ -1,0 +1,4 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: com.google.guava.failureaccess
+SLC-Origin-M2: com.google.guava:failureaccess:1.0.1
+SLC-Origin-ManifestNotModified: true

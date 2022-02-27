@@ -13,8 +13,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrMonitor;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
@@ -32,7 +31,7 @@ import org.osgi.framework.Version;
  * group.
  */
 public class GenerateBinaries implements Runnable, SlcNames {
-	private final static Log log = LogFactory.getLog(GenerateBinaries.class);
+	private final static CmsLog log = CmsLog.getLog(GenerateBinaries.class);
 
 	// Connection info
 	private Repository repository;
@@ -49,10 +48,8 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	private List<String> excludedSuffixes = new ArrayList<String>();
 
 	// Indexes
-	private Set<Artifact> binaries = new TreeSet<Artifact>(
-			new ArtifactIdComparator());
-	private Set<Artifact> sources = new TreeSet<Artifact>(
-			new ArtifactIdComparator());
+	private Set<Artifact> binaries = new TreeSet<Artifact>(new ArtifactIdComparator());
+	private Set<Artifact> sources = new TreeSet<Artifact>(new ArtifactIdComparator());
 
 	// local cache
 	private ArtifactIndexer artifactIndexer = new ArtifactIndexer();
@@ -62,13 +59,11 @@ public class GenerateBinaries implements Runnable, SlcNames {
 		Session session = null;
 		try {
 			session = repository.login(credentials, workspace);
-			Node groupNode = session.getNode(MavenConventionsUtils.groupPath(
-					artifactBasePath, groupId));
+			Node groupNode = session.getNode(MavenConventionsUtils.groupPath(artifactBasePath, groupId));
 			internalPreProcessing(groupNode, null);
 			internalProcessing(groupNode, null);
 		} catch (Exception e) {
-			throw new SlcException("Cannot normalize group " + groupId + " in "
-					+ workspace, e);
+			throw new SlcException("Cannot normalize group " + groupId + " in " + workspace, e);
 		} finally {
 			JcrUtils.logoutQuietly(session);
 		}
@@ -78,18 +73,15 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	 * Generates binaries-, sources- and sdk-version.pom artifacts for the given
 	 * version (or the highest of all children version if none is precised).
 	 * 
-	 * By default, it includes each latest version of all artifact of this
-	 * group.
+	 * By default, it includes each latest version of all artifact of this group.
 	 * 
 	 * The 3 generated artifacts are then marked as modular distributions and
 	 * indexed.
 	 */
-	public static void processGroupNode(Node groupNode, String version,
-			JcrMonitor monitor) throws RepositoryException {
+	public static void processGroupNode(Node groupNode, String version, JcrMonitor monitor) throws RepositoryException {
 		// TODO set artifactsBase based on group node
 		GenerateBinaries gb = new GenerateBinaries();
-		String groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID)
-				.getString();
+		String groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID).getString();
 		gb.setGroupId(groupId);
 		gb.setVersion(version);
 		// TODO use already done pre-processing
@@ -98,12 +90,10 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	}
 
 	/** Only builds local indexes. Does not change anything in the local Session */
-	public static GenerateBinaries preProcessGroupNode(Node groupNode,
-			JcrMonitor monitor) throws RepositoryException {
+	public static GenerateBinaries preProcessGroupNode(Node groupNode, JcrMonitor monitor) throws RepositoryException {
 		// TODO set artifactsBase based on group node
 		GenerateBinaries gb = new GenerateBinaries();
-		String groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID)
-				.getString();
+		String groupId = groupNode.getProperty(SlcNames.SLC_GROUP_BASE_ID).getString();
 		gb.setGroupId(groupId);
 		// gb.setVersion(version);
 		// gb.setOverridePoms(overridePoms);
@@ -117,8 +107,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	}
 
 	public Artifact getHighestArtifactVersion() throws RepositoryException {
-		return allArtifactsHighestVersion == null ? null : RepoUtils
-				.asArtifact(allArtifactsHighestVersion);
+		return allArtifactsHighestVersion == null ? null : RepoUtils.asArtifact(allArtifactsHighestVersion);
 	}
 
 	// //////////////////////////////////////
@@ -128,12 +117,11 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	 * Browse all children of a Node considered as a folder that follows Aether
 	 * conventions i.e that has Aether's artifact base as children.
 	 * 
-	 * Each of such child contains a set of Aether artifact versions. This
-	 * methods build the binaries {@code Set<Artifact>} and other indexes. It
-	 * does not impact the
+	 * Each of such child contains a set of Aether artifact versions. This methods
+	 * build the binaries {@code Set<Artifact>} and other indexes. It does not
+	 * impact the
 	 */
-	protected void internalPreProcessing(Node groupNode, JcrMonitor monitor)
-			throws RepositoryException {
+	protected void internalPreProcessing(Node groupNode, JcrMonitor monitor) throws RepositoryException {
 		if (monitor != null)
 			monitor.subTask("Pre processing group " + groupId);
 
@@ -141,8 +129,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 		// gathering latest versions of each artifact
 		allArtifactsHighestVersion = null;
 
-		aBases: for (NodeIterator aBases = groupNode.getNodes(); aBases
-				.hasNext();) {
+		aBases: for (NodeIterator aBases = groupNode.getNodes(); aBases.hasNext();) {
 			Node aBase = aBases.nextNode();
 			if (aBase.isNodeType(SlcTypes.SLC_ARTIFACT_BASE)) {
 				Node highestAVersion = getArtifactLatestVersion(aBase);
@@ -151,8 +138,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 				else {
 					// retrieve relevant child node
 					// Information is stored on the NT_FILE child node.
-					for (NodeIterator files = highestAVersion.getNodes(); files
-							.hasNext();) {
+					for (NodeIterator files = highestAVersion.getNodes(); files.hasNext();) {
 						Node file = files.nextNode();
 						if (file.isNodeType(SlcTypes.SLC_BUNDLE_ARTIFACT)) {
 							if (log.isDebugEnabled())
@@ -171,8 +157,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	}
 
 	/** Does the real job : writes JCR META-DATA and generates binaries */
-	protected void internalProcessing(Node groupNode, JcrMonitor monitor)
-			throws RepositoryException {
+	protected void internalProcessing(Node groupNode, JcrMonitor monitor) throws RepositoryException {
 		if (monitor != null)
 			monitor.subTask("Processing group " + groupId);
 
@@ -184,11 +169,9 @@ public class GenerateBinaries implements Runnable, SlcNames {
 		// => the version can then be left empty
 		if (version == null || version.trim().equals(""))
 			if (allArtifactsHighestVersion != null)
-				version = allArtifactsHighestVersion.getProperty(
-						SLC_ARTIFACT_VERSION).getString();
+				version = allArtifactsHighestVersion.getProperty(SLC_ARTIFACT_VERSION).getString();
 			else
-				throw new SlcException("Group version " + version
-						+ " is empty.");
+				throw new SlcException("Group version " + version + " is empty.");
 
 		// int bundleCount = symbolicNamesToNodes.size();
 		// int count = 1;
@@ -203,16 +186,13 @@ public class GenerateBinaries implements Runnable, SlcNames {
 		// }
 
 		// indexes
-		Set<Artifact> indexes = new TreeSet<Artifact>(
-				new ArtifactIdComparator());
+		Set<Artifact> indexes = new TreeSet<Artifact>(new ArtifactIdComparator());
 
 		Artifact indexArtifact;
-		indexArtifact = writeIndex(session, RepoConstants.BINARIES_ARTIFACT_ID,
-				binaries);
+		indexArtifact = writeIndex(session, RepoConstants.BINARIES_ARTIFACT_ID, binaries);
 		indexes.add(indexArtifact);
 
-		indexArtifact = writeIndex(session, RepoConstants.SOURCES_ARTIFACT_ID,
-				sources);
+		indexArtifact = writeIndex(session, RepoConstants.SOURCES_ARTIFACT_ID, sources);
 		indexes.add(indexArtifact);
 
 		// sdk
@@ -222,8 +202,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 			monitor.worked(1);
 	}
 
-	protected void preProcessBundleArtifact(Node bundleNode)
-			throws RepositoryException {
+	protected void preProcessBundleArtifact(Node bundleNode) throws RepositoryException {
 
 		String symbolicName = JcrUtils.get(bundleNode, SLC_SYMBOLIC_NAME);
 		// Sanity check.
@@ -233,8 +212,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 		// Manage source bundles
 		if (symbolicName.endsWith(".source")) {
 			// TODO make a shared node with classifier 'sources'?
-			String bundleName = RepoUtils
-					.extractBundleNameFromSourceName(symbolicName);
+			String bundleName = RepoUtils.extractBundleNameFromSourceName(symbolicName);
 			for (String excludedSuffix : excludedSuffixes) {
 				if (bundleName.endsWith(excludedSuffix))
 					return;// skip adding to sources
@@ -262,8 +240,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 
 		// Extra check. to remove
 		if (bundleNode.getSession().hasPendingChanges())
-			throw new SlcException("Pending changes in the session, "
-					+ "this should not be true here.");
+			throw new SlcException("Pending changes in the session, " + "this should not be true here.");
 	}
 
 	// protected void processBundleArtifact(Node bundleNode)
@@ -292,25 +269,19 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	// LOCAL WRITERS
 	//
 
-	private Artifact writeIndex(Session session, String artifactId,
-			Set<Artifact> artifacts) throws RepositoryException {
-		Artifact artifact = new DefaultArtifact(groupId, artifactId, "pom",
-				version);
-		Artifact parentArtifact = parentPomCoordinates != null ? new DefaultArtifact(
-				parentPomCoordinates) : null;
-		String pom = MavenConventionsUtils.artifactsAsDependencyPom(artifact,
-				artifacts, parentArtifact);
-		Node node = RepoUtils.copyBytesAsArtifact(
-				session.getNode(artifactBasePath), artifact, pom.getBytes());
+	private Artifact writeIndex(Session session, String artifactId, Set<Artifact> artifacts)
+			throws RepositoryException {
+		Artifact artifact = new DefaultArtifact(groupId, artifactId, "pom", version);
+		Artifact parentArtifact = parentPomCoordinates != null ? new DefaultArtifact(parentPomCoordinates) : null;
+		String pom = MavenConventionsUtils.artifactsAsDependencyPom(artifact, artifacts, parentArtifact);
+		Node node = RepoUtils.copyBytesAsArtifact(session.getNode(artifactBasePath), artifact, pom.getBytes());
 		artifactIndexer.index(node);
 
 		// TODO factorize
 		String pomSha = JcrUtils.checksumFile(node, "SHA-1");
-		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".sha1",
-				pomSha.getBytes());
+		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".sha1", pomSha.getBytes());
 		String pomMd5 = JcrUtils.checksumFile(node, "MD5");
-		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".md5",
-				pomMd5.getBytes());
+		JcrUtils.copyBytesAsFile(node.getParent(), node.getName() + ".md5", pomMd5.getBytes());
 		session.save();
 		return artifact;
 	}
@@ -319,8 +290,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	private Node getArtifactLatestVersion(Node artifactBase) {
 		try {
 			Node highestAVersion = null;
-			for (NodeIterator aVersions = artifactBase.getNodes(); aVersions
-					.hasNext();) {
+			for (NodeIterator aVersions = artifactBase.getNodes(); aVersions.hasNext();) {
 				Node aVersion = aVersions.nextNode();
 				if (aVersion.isNodeType(SlcTypes.SLC_ARTIFACT_VERSION_BASE)) {
 					if (highestAVersion == null) {
@@ -341,8 +311,7 @@ public class GenerateBinaries implements Runnable, SlcNames {
 						if (currVersion.compareTo(currentHighestVersion) > 0) {
 							highestAVersion = aVersion;
 						}
-						if (currVersion
-								.compareTo(extractOsgiVersion(allArtifactsHighestVersion)) > 0) {
+						if (currVersion.compareTo(extractOsgiVersion(allArtifactsHighestVersion)) > 0) {
 							allArtifactsHighestVersion = aVersion;
 						}
 					}
@@ -351,15 +320,12 @@ public class GenerateBinaries implements Runnable, SlcNames {
 			}
 			return highestAVersion;
 		} catch (RepositoryException re) {
-			throw new SlcException("Unable to get latest version for node "
-					+ artifactBase, re);
+			throw new SlcException("Unable to get latest version for node " + artifactBase, re);
 		}
 	}
 
-	private Version extractOsgiVersion(Node artifactVersion)
-			throws RepositoryException {
-		String rawVersion = artifactVersion.getProperty(SLC_ARTIFACT_VERSION)
-				.getString();
+	private Version extractOsgiVersion(Node artifactVersion) throws RepositoryException {
+		String rawVersion = artifactVersion.getProperty(SLC_ARTIFACT_VERSION).getString();
 		String cleanVersion = rawVersion.replace("-SNAPSHOT", ".SNAPSHOT");
 		Version osgiVersion = null;
 		// log invalid version value to enable tracking them
@@ -410,7 +376,10 @@ public class GenerateBinaries implements Runnable, SlcNames {
 	//
 	// // XML header
 	// p.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-	// p.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n");
+	// p.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\"
+	// xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+	// xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0
+	// http://maven.apache.org/maven-v4_0_0.xsd\">\n");
 	// p.append("<modelVersion>4.0.0</modelVersion>");
 	//
 	// // Artifact

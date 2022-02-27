@@ -1,5 +1,0 @@
-Import-Package: javax.jcr.nodetype,\
-org.argeo.slc.repo,\
-org.osgi.*;version=0.0.0,\
-*
-							

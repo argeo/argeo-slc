@@ -14,15 +14,13 @@ import javax.jcr.Session;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.argeo.api.cms.CmsLog;
 import org.argeo.jcr.JcrUtils;
 import org.argeo.slc.SlcException;
 import org.argeo.slc.repo.OsgiFactory;
 
 public class ArchiveSourcesProvider implements SourcesProvider {
-	private final static Log log = LogFactory
-			.getLog(ArchiveSourcesProvider.class);
+	private final static CmsLog log = CmsLog.getLog(ArchiveSourcesProvider.class);
 
 	private OsgiFactory osgiFactory;
 	private String uri;
@@ -39,8 +37,8 @@ public class ArchiveSourcesProvider implements SourcesProvider {
 				log.debug("Wrapping " + uri);
 
 			Node distNode = osgiFactory.getDist(distSession, uri);
-			zin = new ZipInputStream(distNode.getNode(Node.JCR_CONTENT)
-					.getProperty(Property.JCR_DATA).getBinary().getStream());
+			zin = new ZipInputStream(
+					distNode.getNode(Node.JCR_CONTENT).getProperty(Property.JCR_DATA).getBinary().getStream());
 
 			// prepare
 			Set<String> directories = new TreeSet<String>();

@@ -8,16 +8,15 @@ import java.util.Date;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.vfs2.FileObject;
 import org.apache.commons.vfs2.FileSystemManager;
 import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.Selectors;
+import org.argeo.api.cms.CmsLog;
 
 /** Simple backup purge which keeps backups only for a given number of days */
 public class SimpleBackupPurge implements BackupPurge {
-	private final static Log log = LogFactory.getLog(SimpleBackupPurge.class);
+	private final static CmsLog log = CmsLog.getLog(SimpleBackupPurge.class);
 
 	private Integer daysKept = 30;
 

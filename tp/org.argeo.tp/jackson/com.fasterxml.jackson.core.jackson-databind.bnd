@@ -1,0 +1,3 @@
+Bundle-SymbolicName: com.fasterxml.jackson.core.jackson-databind
+SLC-Origin-M2: com.fasterxml.jackson.core:jackson-databind
+SLC-Origin-ManifestNotModified: true

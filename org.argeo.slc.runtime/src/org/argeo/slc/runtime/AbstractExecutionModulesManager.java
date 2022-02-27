@@ -2,8 +2,6 @@ package org.argeo.slc.runtime;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.argeo.slc.execution.ExecutionContext;
 import org.argeo.slc.execution.ExecutionFlow;
 import org.argeo.slc.execution.ExecutionFlowDescriptorConverter;
@@ -13,8 +11,6 @@ import org.argeo.slc.execution.RealizedFlow;
 /** Provides the base feature of an execution module manager. */
 public abstract class AbstractExecutionModulesManager implements
 		ExecutionModulesManager {
-	private final static Log log = LogFactory
-			.getLog(AbstractExecutionModulesManager.class);
 
 	// private List<FilteredNotifier> filteredNotifiers = Collections
 	// .synchronizedList(new ArrayList<FilteredNotifier>());
@@ -29,9 +25,6 @@ public abstract class AbstractExecutionModulesManager implements
 			String moduleName, String moduleVersion);
 
 	public void execute(RealizedFlow realizedFlow) {
-		if (log.isTraceEnabled())
-			log.trace("Executing " + realizedFlow);
-
 		String moduleName = realizedFlow.getModuleName();
 		String moduleVersion = realizedFlow.getModuleVersion();
 
