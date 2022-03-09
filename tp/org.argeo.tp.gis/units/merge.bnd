@@ -1,0 +1,10 @@
+Bundle-License: BSD-3-Clause
+Bundle-SymbolicName: tech.units.indriya
+SLC-Origin-M2: :2.1.3
+Export-Package: javax.measure.*, tech.units.indriya.*
+Import-Package: \
+*;resolution:="optional"
+SLC-Origin-M2-Merge: \
+javax.measure:unit-api, \
+tech.units:indriya, \
+tech.uom.lib:uom-lib-common:2.1, \

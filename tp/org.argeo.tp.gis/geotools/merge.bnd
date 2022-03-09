@@ -2,7 +2,7 @@ Bundle-License: LGPL-2.1-only
 Bundle-SymbolicName: org.geotools
 SLC-Origin-M2: :26.3
 SLC-Origin-M2-Repo: https://repo.osgeo.org/repository/release/
-Export-Package: org.geotools.*, org.opengis.*, net.opengis.*
+Export-Package: org.geotools.*, org.opengis.*, net.opengis.*, org.w3.xlink.*
 Import-Package: \
 org.locationtech.jts.*,\
 org.geotools.gui.swing.*;resolution:="optional",\
@@ -39,3 +39,4 @@ org.geotools.jdbc:gt-jdbc-h2, \
 org.geotools.ogc:net.opengis.ows, \
 org.geotools.ogc:net.opengis.wfs, \
 org.geotools.ogc:net.opengis.fes, \
+org.geotools.ogc:org.w3.xlink, \
