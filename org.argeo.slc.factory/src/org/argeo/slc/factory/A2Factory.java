@@ -1,17 +1,16 @@
 package org.argeo.slc.factory;
 
 import static java.lang.System.Logger.Level.DEBUG;
-import static org.argeo.slc.ManifestConstants.BUNDLE_LICENSE;
 import static org.argeo.slc.ManifestConstants.BUNDLE_SYMBOLICNAME;
 import static org.argeo.slc.ManifestConstants.BUNDLE_VERSION;
 import static org.argeo.slc.ManifestConstants.EXPORT_PACKAGE;
 import static org.argeo.slc.ManifestConstants.SLC_ORIGIN_M2;
+import static org.argeo.slc.ManifestConstants.SLC_ORIGIN_M2_REPO;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.net.URL;
@@ -24,6 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +37,7 @@ import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
+import org.argeo.slc.DefaultCategoryNameVersion;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.ManifestConstants;
 import org.argeo.slc.NameVersion;
@@ -51,6 +52,7 @@ public class A2Factory {
 	private final static Logger logger = System.getLogger(A2Factory.class.getName());
 
 	private final static String COMMON_BND = "common.bnd";
+	private final static String MERGE_BND = "merge.bnd";
 
 	private Path originBase;
 	private Path a2Base;
@@ -74,8 +76,8 @@ public class A2Factory {
 	public void processCategory(Path targetCategoryBase) {
 		try {
 			DirectoryStream<Path> bnds = Files.newDirectoryStream(targetCategoryBase,
-					(p) -> p.getFileName().toString().endsWith(".bnd")
-							&& !p.getFileName().toString().equals(COMMON_BND));
+					(p) -> p.getFileName().toString().endsWith(".bnd") && !p.getFileName().toString().equals(COMMON_BND)
+							&& !p.getFileName().toString().equals(MERGE_BND));
 			for (Path p : bnds) {
 				processSingleM2ArtifactDistributionUnit(p);
 			}
@@ -97,17 +99,28 @@ public class A2Factory {
 			try (InputStream in = Files.newInputStream(bndFile)) {
 				fileProps.load(in);
 			}
+			String repoStr = fileProps.containsKey(SLC_ORIGIN_M2_REPO.toString())
+					? fileProps.getProperty(SLC_ORIGIN_M2_REPO.toString())
+					: null;
+
+			if (!fileProps.containsKey(BUNDLE_SYMBOLICNAME.toString())
+					&& !fileProps.containsKey(ManifestConstants.SLC_ORIGIN_MANIFEST_NOT_MODIFIED.toString())) {
+				// use file name as symbolic name
+				String symbolicName = bndFile.getFileName().toString();
+				symbolicName = symbolicName.substring(0, symbolicName.length() - ".bnd".length());
+				fileProps.put(BUNDLE_SYMBOLICNAME.toString(), symbolicName);
+			}
 
 			String m2Coordinates = fileProps.getProperty(SLC_ORIGIN_M2.toString());
 			if (m2Coordinates == null)
 				throw new IllegalArgumentException("No M2 coordinates available for " + bndFile);
 			DefaultArtifact artifact = new DefaultArtifact(m2Coordinates);
-			URL url = MavenConventionsUtils.mavenCentralUrl(artifact);
+			URL url = MavenConventionsUtils.mavenRepoUrl(repoStr, artifact);
 			Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
 
 			Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, fileProps, artifact);
 
-			downloadAndProcessM2Sources(artifact, targetBundleDir);
+			downloadAndProcessM2Sources(repoStr, artifact, targetBundleDir);
 
 			createJar(targetBundleDir);
 		} catch (Exception e) {
@@ -119,6 +132,14 @@ public class A2Factory {
 		try {
 			String category = duDir.getParent().getFileName().toString();
 			Path targetCategoryBase = a2Base.resolve(category);
+
+			// merge
+			Path mergeBnd = duDir.resolve(MERGE_BND);
+			if (Files.exists(mergeBnd)) {
+				mergeM2Artifacts(mergeBnd);
+				return;
+			}
+
 			Path commonBnd = duDir.resolve(COMMON_BND);
 			Properties commonProps = new Properties();
 			try (InputStream in = Files.newInputStream(commonBnd)) {
@@ -135,8 +156,6 @@ public class A2Factory {
 			}
 			m2Version = m2Version.substring(1);
 
-			// String license = commonProps.getProperty(BUNDLE_LICENSE.toString());
-
 			DirectoryStream<Path> ds = Files.newDirectoryStream(duDir,
 					(p) -> p.getFileName().toString().endsWith(".bnd")
 							&& !p.getFileName().toString().equals(COMMON_BND));
@@ -149,31 +168,25 @@ public class A2Factory {
 				DefaultArtifact artifact = new DefaultArtifact(m2Coordinates);
 
 				// temporary rewrite, for migration
-				String localLicense = fileProps.getProperty(BUNDLE_LICENSE.toString());
-				if (localLicense != null || artifact.getVersion() != null) {
-					fileProps.remove(BUNDLE_LICENSE.toString());
-					fileProps.put(SLC_ORIGIN_M2.toString(), artifact.getGroupId() + ":" + artifact.getArtifactId());
-					try (Writer writer = Files.newBufferedWriter(p)) {
-						for (Object key : fileProps.keySet()) {
-							String value = fileProps.getProperty(key.toString());
-							writer.write(key + ": " + value + '\n');
-						}
-						logger.log(DEBUG, () -> "Migrated  " + p);
-					}
-				}
+//				String localLicense = fileProps.getProperty(BUNDLE_LICENSE.toString());
+//				if (localLicense != null || artifact.getVersion() != null) {
+//					fileProps.remove(BUNDLE_LICENSE.toString());
+//					fileProps.put(SLC_ORIGIN_M2.toString(), artifact.getGroupId() + ":" + artifact.getArtifactId());
+//					try (Writer writer = Files.newBufferedWriter(p)) {
+//						for (Object key : fileProps.keySet()) {
+//							String value = fileProps.getProperty(key.toString());
+//							writer.write(key + ": " + value + '\n');
+//						}
+//						logger.log(DEBUG, () -> "Migrated  " + p);
+//					}
+//				}
 
 				artifact.setVersion(m2Version);
-				URL url = MavenConventionsUtils.mavenCentralUrl(artifact);
-				Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
 
 				// prepare manifest entries
 				Properties mergeProps = new Properties();
 				mergeProps.putAll(commonProps);
 
-				// Map<String, String> entries = new HashMap<>();
-//				for (Object key : commonProps.keySet()) {
-//					entries.put(key.toString(), commonProps.getProperty(key.toString()));
-//				}
 				fileEntries: for (Object key : fileProps.keySet()) {
 					if (ManifestConstants.SLC_ORIGIN_M2.toString().equals(key))
 						continue fileEntries;
@@ -181,15 +194,31 @@ public class A2Factory {
 					Object previousValue = mergeProps.put(key.toString(), value);
 					if (previousValue != null) {
 						logger.log(Level.WARNING,
-								downloaded + ": " + key + " was " + previousValue + ", overridden with " + value);
+								commonBnd + ": " + key + " was " + previousValue + ", overridden with " + value);
 					}
 				}
 				mergeProps.put(ManifestConstants.SLC_ORIGIN_M2.toString(), artifact.toM2Coordinates());
+				if (!mergeProps.containsKey(BUNDLE_SYMBOLICNAME.toString())
+						&& !mergeProps.containsKey(ManifestConstants.SLC_ORIGIN_MANIFEST_NOT_MODIFIED.toString())) {
+					// use file name as symbolic name
+					String symbolicName = p.getFileName().toString();
+					symbolicName = symbolicName.substring(0, symbolicName.length() - ".bnd".length());
+					mergeProps.put(BUNDLE_SYMBOLICNAME.toString(), symbolicName);
+				}
+
+				String repoStr = mergeProps.containsKey(SLC_ORIGIN_M2_REPO.toString())
+						? mergeProps.getProperty(SLC_ORIGIN_M2_REPO.toString())
+						: null;
+
+				// download
+				URL url = MavenConventionsUtils.mavenRepoUrl(repoStr, artifact);
+				Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
+
 				Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, mergeProps, artifact);
 //				logger.log(Level.DEBUG, () -> "Processed " + downloaded);
 
 				// sources
-				downloadAndProcessM2Sources(artifact, targetBundleDir);
+				downloadAndProcessM2Sources(repoStr, artifact, targetBundleDir);
 
 				createJar(targetBundleDir);
 			}
@@ -199,9 +228,117 @@ public class A2Factory {
 
 	}
 
-	protected void downloadAndProcessM2Sources(DefaultArtifact artifact, Path targetBundleDir) throws IOException {
+	protected void mergeM2Artifacts(Path mergeBnd) throws IOException {
+		Path duDir = mergeBnd.getParent();
+		String category = duDir.getParent().getFileName().toString();
+		Path targetCategoryBase = a2Base.resolve(category);
+
+		Properties mergeProps = new Properties();
+		try (InputStream in = Files.newInputStream(mergeBnd)) {
+			mergeProps.load(in);
+		}
+		String m2Version = mergeProps.getProperty(SLC_ORIGIN_M2.toString());
+		if (m2Version == null) {
+			logger.log(Level.WARNING, "Ignoring " + duDir + " as it is not an M2-based distribution unit");
+			return;// ignore, this is probably an Eclipse archive
+		}
+		if (!m2Version.startsWith(":")) {
+			throw new IllegalStateException("Only the M2 version can be specified: " + m2Version);
+		}
+		m2Version = m2Version.substring(1);
+
+		String artifactsStr = mergeProps.getProperty(ManifestConstants.SLC_ORIGIN_M2_MERGE.toString());
+		String repoStr = mergeProps.containsKey(SLC_ORIGIN_M2_REPO.toString())
+				? mergeProps.getProperty(SLC_ORIGIN_M2_REPO.toString())
+				: null;
+
+		String bundleSymbolicName = mergeProps.getProperty(ManifestConstants.BUNDLE_SYMBOLICNAME.toString());
+		DefaultCategoryNameVersion nameVersion = new DefaultArtifact(
+				category + ":" + bundleSymbolicName + ":" + m2Version);
+		Path targetBundleDir = targetCategoryBase.resolve(bundleSymbolicName + "." + nameVersion.getBranch());
+
+		String[] artifacts = artifactsStr.split(",");
+		artifacts: for (String str : artifacts) {
+			String m2Coordinates = str.trim();
+			if ("".equals(m2Coordinates))
+				continue artifacts;
+			DefaultArtifact artifact = new DefaultArtifact(m2Coordinates.trim());
+			artifact.setVersion(m2Version);
+			URL url = MavenConventionsUtils.mavenRepoUrl(repoStr, artifact);
+			Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
+			JarEntry entry;
+			try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(downloaded), false)) {
+				entries: while ((entry = jarIn.getNextJarEntry()) != null) {
+					if (entry.isDirectory())
+						continue entries;
+					if (entry.getName().endsWith(".RSA") || entry.getName().endsWith(".SF"))
+						continue entries;
+					Path target = targetBundleDir.resolve(entry.getName());
+					Files.createDirectories(target.getParent());
+					if (!Files.exists(target)) {
+						Files.copy(jarIn, target);
+					} else {
+						if (entry.getName().startsWith("META-INF/services/")) {
+							try (OutputStream out = Files.newOutputStream(target, StandardOpenOption.APPEND)) {
+								jarIn.transferTo(out);
+							}
+						} else {
+							throw new IllegalStateException("File " + target + " already exists");
+						}
+					}
+					logger.log(Level.TRACE, () -> "Copied " + target);
+				}
+
+			}
+			downloadAndProcessM2Sources(repoStr, artifact, targetBundleDir);
+		}
+
+		Map<String, String> entries = new TreeMap<>();
+		try (Analyzer bndAnalyzer = new Analyzer()) {
+			bndAnalyzer.setProperties(mergeProps);
+			Jar jar = new Jar(targetBundleDir.toFile());
+			bndAnalyzer.setJar(jar);
+			Manifest manifest = bndAnalyzer.calcManifest();
+
+			keys: for (Object key : manifest.getMainAttributes().keySet()) {
+				Object value = manifest.getMainAttributes().get(key);
+
+				switch (key.toString()) {
+				case "Tool":
+				case "Bnd-LastModified":
+				case "Created-By":
+					continue keys;
+				}
+				if ("Require-Capability".equals(key.toString())
+						&& value.toString().equals("osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version=1.1))\""))
+					continue keys;// hack for very old classes
+				entries.put(key.toString(), value.toString());
+				logger.log(DEBUG, () -> key + "=" + value);
+
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Cannot process " + mergeBnd, e);
+		}
+
+		Manifest manifest = new Manifest();
+		Path manifestPath = targetBundleDir.resolve("META-INF/MANIFEST.MF");
+		Files.createDirectories(manifestPath.getParent());
+		for (String key : entries.keySet()) {
+			String value = entries.get(key);
+			manifest.getMainAttributes().putValue(key, value);
+		}
+		try (OutputStream out = Files.newOutputStream(manifestPath)) {
+			manifest.write(out);
+		}
+
+		createJar(targetBundleDir);
+
+	}
+
+	protected void downloadAndProcessM2Sources(String repoStr, DefaultArtifact artifact, Path targetBundleDir)
+			throws IOException {
 		DefaultArtifact sourcesArtifact = new DefaultArtifact(artifact.toM2Coordinates(), "sources");
-		URL sourcesUrl = MavenConventionsUtils.mavenCentralUrl(sourcesArtifact);
+		URL sourcesUrl = MavenConventionsUtils.mavenRepoUrl(repoStr, sourcesArtifact);
 		Path sourcesDownloaded = download(sourcesUrl, originBase, artifact.toM2Coordinates() + ".sources.jar");
 		processM2SourceJar(sourcesDownloaded, targetBundleDir);
 		logger.log(Level.DEBUG, () -> "Processed source " + sourcesDownloaded);
@@ -350,7 +487,7 @@ public class A2Factory {
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 					pathMatchers: for (PathMatcher pathMatcher : pathMatchers) {
-						if (pathMatcher.matches(file)) {							
+						if (pathMatcher.matches(file)) {
 							if (file.getFileName().toString().contains(".source_")) {
 								processEclipseSourceJar(file, targetCategoryBase);
 								logger.log(Level.DEBUG, () -> "Processed source " + file);
@@ -637,8 +774,8 @@ public class A2Factory {
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.poi"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
 		System.exit(0);
 
 		// Eclipse
