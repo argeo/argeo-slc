@@ -635,7 +635,11 @@ public class A2Factory {
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty-websocket"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
-//		System.exit(0);
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.poi"));
+		System.exit(0);
 
 		// Eclipse
 		factory.processEclipseArchive(

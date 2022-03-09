@@ -1,0 +1,4 @@
+Bundle-License: W3C
+Bundle-SymbolicName: org.w3c.dom.smil
+Bundle-Version: 1.0
+SLC-Origin-M2: org.axsl.org.w3c.dom.smil:smil-boston-dom-java:2000-02-25

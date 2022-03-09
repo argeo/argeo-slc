@@ -1,0 +1,9 @@
+Bundle-SymbolicName: org.apache.fop.core
+SLC-Origin-M2: org.apache.xmlgraphics:fop-core
+Import-Package: \
+javax.media.jai;resolution:="optional",\
+org.apache.tools.ant.*;resolution:="optional",\
+*
+Export-Package: \
+!org.apache.fop.util.*,\
+*

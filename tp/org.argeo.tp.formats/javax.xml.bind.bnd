@@ -1,0 +1,7 @@
+Bundle-License: CDDL-1.0 OR GPL-2.0 WITH Classpath-exception-2.0
+Bundle-SymbolicName: javax.xml.bind
+Bundle-Version: 2.4.0
+SLC-Origin-M2: javax.xml.bind:jaxb-api:2.4.0-b180830.0359
+Import-Package: \
+org.glassfish.hk2.osgiresourcelocator;resolution:="optional",\
+*

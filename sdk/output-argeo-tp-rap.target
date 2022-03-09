@@ -8,6 +8,8 @@
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.jetty" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.sdk" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.jcr" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.formats" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.poi" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp" type="Directory"/>
 	</locations>
 </target>

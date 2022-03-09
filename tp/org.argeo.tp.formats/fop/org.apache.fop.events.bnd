@@ -1,0 +1,6 @@
+Bundle-SymbolicName: org.apache.fop.events
+SLC-Origin-M2: org.apache.xmlgraphics:fop-events
+Import-Package: \
+com.thoughtworks.qdox.*;resolution:="optional",\
+org.apache.tools.ant.*;resolution:="optional",\
+*
