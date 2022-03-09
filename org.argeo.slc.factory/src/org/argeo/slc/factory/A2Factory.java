@@ -287,7 +287,8 @@ public class A2Factory {
 							try (OutputStream out = Files.newOutputStream(target, StandardOpenOption.APPEND)) {
 								out.write("\n".getBytes());
 								jarIn.transferTo(out);
-								System.out.println("Appended "+entry.getName());
+								if (logger.isLoggable(DEBUG))
+									logger.log(DEBUG,"Appended " + entry.getName());
 							}
 						} else {
 							throw new IllegalStateException("File " + target + " already exists");
