@@ -21,7 +21,6 @@ org.geotools:gt-coverage, \
 org.geotools:gt-referencing, \
 org.geotools:gt-process, \
 org.geotools:gt-epsg-extension, \
-org.geotools:gt-epsg-postgresql, \
 org.geotools:gt-epsg-wkt, \
 org.geotools:gt-transform, \
 org.geotools:gt-geojson, \
