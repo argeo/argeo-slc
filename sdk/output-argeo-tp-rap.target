@@ -10,6 +10,7 @@
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.jcr" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.formats" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.poi" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.gis" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp" type="Directory"/>
 	</locations>
 </target>

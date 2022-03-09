@@ -1,0 +1,41 @@
+Bundle-License: LGPL-2.1-only
+Bundle-SymbolicName: org.geotools
+SLC-Origin-M2: :26.3
+SLC-Origin-M2-Repo: https://repo.osgeo.org/repository/release/
+Export-Package: org.geotools.*, org.opengis.*, net.opengis.*
+Import-Package: \
+org.locationtech.jts.*,\
+org.geotools.gui.swing.*;resolution:="optional",\
+org.geotools.*,\
+org.opengis.*,\
+net.opengis.*,\
+*;resolution:="optional"
+SLC-Origin-M2-Merge: \
+org.geotools:gt-metadata, \
+org.geotools:gt-property, \
+org.geotools:gt-opengis, \
+org.geotools:gt-main, \
+org.geotools:gt-cql, \
+org.geotools:gt-http, \
+org.geotools:gt-coverage, \
+org.geotools:gt-referencing, \
+org.geotools:gt-process, \
+org.geotools:gt-epsg-extension, \
+org.geotools:gt-epsg-postgresql, \
+org.geotools:gt-epsg-wkt, \
+org.geotools:gt-transform, \
+org.geotools:gt-geojson, \
+org.geotools:gt-shapefile, \
+org.geotools:gt-xml, \
+org.geotools:gt-svg, \
+org.geotools:gt-image, \
+org.geotools:gt-geotiff, \
+org.geotools:gt-render, \
+org.geotools:gt-swing, \
+org.geotools:gt-wms, \
+org.geotools:gt-jdbc, \
+org.geotools.jdbc:gt-jdbc-postgis, \
+org.geotools.jdbc:gt-jdbc-h2, \
+org.geotools.ogc:net.opengis.ows, \
+org.geotools.ogc:net.opengis.wfs, \
+org.geotools.ogc:net.opengis.fes, \
