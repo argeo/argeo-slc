@@ -276,6 +276,8 @@ public class A2Factory {
 						continue entries;
 					if (entry.getName().startsWith("META-INF/versions/"))
 						continue entries;
+					if (entry.getName().equals("module-info.class"))
+						continue entries;
 					Path target = targetBundleDir.resolve(entry.getName());
 					Files.createDirectories(target.getParent());
 					if (!Files.exists(target)) {
@@ -283,7 +285,9 @@ public class A2Factory {
 					} else {
 						if (entry.getName().startsWith("META-INF/services/")) {
 							try (OutputStream out = Files.newOutputStream(target, StandardOpenOption.APPEND)) {
+								out.write("\n".getBytes());
 								jarIn.transferTo(out);
+								System.out.println("Appended "+entry.getName());
 							}
 						} else {
 							throw new IllegalStateException("File " + target + " already exists");
@@ -432,7 +436,7 @@ public class A2Factory {
 
 			// TODO make it less dangerous?
 			if (Files.exists(targetSourceDir)) {
-				deleteDirectory(targetSourceDir);
+//				deleteDirectory(targetSourceDir);
 			} else {
 				Files.createDirectories(targetSourceDir);
 			}
@@ -443,6 +447,8 @@ public class A2Factory {
 				if (entry.isDirectory())
 					continue entries;
 				if (entry.getName().startsWith("META-INF"))// skip META-INF entries
+					continue entries;
+				if (entry.getName().startsWith("module-info.java"))// skip META-INF entries
 					continue entries;
 				Path target = targetSourceDir.resolve(entry.getName());
 				Files.createDirectories(target.getParent());
