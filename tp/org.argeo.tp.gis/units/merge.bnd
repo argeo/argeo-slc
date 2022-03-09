@@ -1,7 +1,7 @@
 Bundle-License: BSD-3-Clause
 Bundle-SymbolicName: tech.units.indriya
 SLC-Origin-M2: :2.0.2
-Export-Package: javax.measure.*, tech.units.indriya.*
+Export-Package: javax.measure.*, tech.units.indriya.*, si.uom.*, systems.uom.*
 Import-Package: \
 *;resolution:="optional"
 SLC-Origin-M2-Merge: \

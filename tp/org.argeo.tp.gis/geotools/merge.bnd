@@ -9,6 +9,10 @@ org.geotools.gui.swing.*;resolution:="optional",\
 org.geotools.*,\
 org.opengis.*,\
 net.opengis.*,\
+javax.measure.*, \
+tech.units.indriya.*, \
+si.uom.*, \
+systems.uom.*, \
 *;resolution:="optional"
 SLC-Origin-M2-Merge: \
 org.geotools:gt-metadata, \
