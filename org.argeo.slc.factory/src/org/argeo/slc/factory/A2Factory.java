@@ -263,7 +263,8 @@ public class A2Factory {
 			if ("".equals(m2Coordinates))
 				continue artifacts;
 			DefaultArtifact artifact = new DefaultArtifact(m2Coordinates.trim());
-			artifact.setVersion(m2Version);
+			if (artifact.getVersion() == null)
+				artifact.setVersion(m2Version);
 			URL url = MavenConventionsUtils.mavenRepoUrl(repoStr, artifact);
 			Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
 			JarEntry entry;
@@ -272,6 +273,8 @@ public class A2Factory {
 					if (entry.isDirectory())
 						continue entries;
 					if (entry.getName().endsWith(".RSA") || entry.getName().endsWith(".SF"))
+						continue entries;
+					if (entry.getName().startsWith("META-INF/versions/"))
 						continue entries;
 					Path target = targetBundleDir.resolve(entry.getName());
 					Files.createDirectories(target.getParent());
