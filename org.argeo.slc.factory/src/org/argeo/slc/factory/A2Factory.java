@@ -288,7 +288,7 @@ public class A2Factory {
 								out.write("\n".getBytes());
 								jarIn.transferTo(out);
 								if (logger.isLoggable(DEBUG))
-									logger.log(DEBUG,"Appended " + entry.getName());
+									logger.log(DEBUG, "Appended " + entry.getName());
 							}
 						} else {
 							throw new IllegalStateException("File " + target + " already exists");
@@ -453,8 +453,12 @@ public class A2Factory {
 					continue entries;
 				Path target = targetSourceDir.resolve(entry.getName());
 				Files.createDirectories(target.getParent());
-				Files.copy(jarIn, target);
-				logger.log(Level.TRACE, () -> "Copied source " + target);
+				if (!Files.exists(target)) {
+					Files.copy(jarIn, target);
+					logger.log(Level.TRACE, () -> "Copied source " + target);
+				} else {
+					logger.log(Level.WARNING, () -> target + " already exists, skipping...");
+				}
 			}
 		}
 
