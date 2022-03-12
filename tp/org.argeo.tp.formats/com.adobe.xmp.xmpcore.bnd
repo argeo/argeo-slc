@@ -1,0 +1,4 @@
+Bundle-License: BSD-3-Clause
+Bundle-SymbolicName: com.adobe.xmp.xmpcore
+# No source available in Maven Central for 6.1.11
+SLC-Origin-M2: com.adobe.xmp:xmpcore:6.1.10

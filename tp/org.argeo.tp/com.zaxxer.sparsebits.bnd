@@ -1,0 +1,3 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: com.zaxxer.sparsebits
+SLC-Origin-M2: com.zaxxer:SparseBitSet:1.2

@@ -31,6 +31,9 @@ class Make {
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jcr"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.poi"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
 	}
 
 }

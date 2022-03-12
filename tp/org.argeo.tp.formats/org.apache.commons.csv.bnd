@@ -1,0 +1,3 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.commons.csv
+SLC-Origin-M2: org.apache.commons:commons-csv:1.9.0

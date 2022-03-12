@@ -1,6 +1,6 @@
 MAJOR=2
 MINOR=3
-MICRO=2
+MICRO=3
 qualifier=.next
 
 category=org.argeo.slc

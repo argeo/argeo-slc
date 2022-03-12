@@ -58,8 +58,13 @@ public class MavenConventionsUtils {
 	}
 
 	/** Absolute path to the file */
-	public static URL mavenCentralUrl(Artifact artifact) {
-		String url = artifactUrl(MAVEN_CENTRAL_BASE_URL, artifact);
+//	public static URL mavenCentralUrl(Artifact artifact) {
+//		return mavenRepoUrl(MAVEN_CENTRAL_BASE_URL, artifact);
+//	}
+
+	/** Absolute path to the file */
+	public static URL mavenRepoUrl(String repoBase, Artifact artifact) {
+		String url = artifactUrl(repoBase == null ? MAVEN_CENTRAL_BASE_URL : repoBase, artifact);
 		try {
 			return new URL(url);
 		} catch (MalformedURLException e) {

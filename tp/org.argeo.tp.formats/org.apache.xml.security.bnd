@@ -1,4 +1,3 @@
 Bundle-License: Apache-2.0
 Bundle-SymbolicName: org.apache.xml.security
 SLC-Origin-M2: org.apache.santuario:xmlsec:2.1.2
-Export-Package: org.apache.*

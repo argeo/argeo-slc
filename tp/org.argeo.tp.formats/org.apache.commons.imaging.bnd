@@ -1,0 +1,4 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.commons.imaging
+Bundle-Version: 0.99.2
+SLC-Origin-M2: org.apache.commons:commons-imaging:1.0-alpha2

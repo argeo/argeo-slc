@@ -1,0 +1,7 @@
+Bundle-SymbolicName: org.apache.poi.ooxml.schemas
+Import-Package: \
+com.microsoft.schemas.*;resolution:=optional, \
+org.openxmlformats.schemas.*;resolution:=optional, \
+*
+Require-Bundle: org.apache.xmlbeans
+SLC-Origin-M2: org.apache.poi:poi-ooxml-full
