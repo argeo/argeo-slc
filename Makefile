@@ -2,6 +2,7 @@ include sdk.mk
 .PHONY: clean all osgi
 
 all: osgi
+	$(MAKE) -f Makefile-ext.mk
 
 A2_CATEGORY = org.argeo.slc
 
@@ -30,6 +31,7 @@ bootstrap :
 clean:
 	rm -rf $(BUILD_BASE)
 	rm -rf $(BOOTSTRAP_BASE)
+	$(MAKE) -f Makefile-ext.mk clean
 
 A2_OUTPUT = $(SDK_BUILD_BASE)/a2
 A2_BASE = $(A2_OUTPUT)
