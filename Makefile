@@ -1,7 +1,7 @@
 include sdk.mk
 .PHONY: clean all osgi
 
-all: osgi move-ext
+all: osgi
 
 A2_CATEGORY = org.argeo.slc
 
@@ -9,7 +9,6 @@ BUNDLES = \
 org.argeo.slc.api \
 org.argeo.slc.factory \
 org.argeo.slc.runtime \
-ext/org.argeo.ext.slf4j \
 
 BOOTSTRAP_BASE=$(SDK_BUILD_BASE)/bootstrap
 
@@ -28,11 +27,6 @@ bootstrap :
 	 org.argeo.slc.api/src[-d $(BOOTSTRAP_BASE)/org.argeo.slc.api/bin] \
 	 org.argeo.slc.factory/src[-d $(BOOTSTRAP_BASE)/org.argeo.slc.factory/bin] \
 
-move-ext: osgi
-	mkdir -p $(SDK_BUILD_BASE)/a2/org.argeo.tp
-	cp $(SDK_BUILD_BASE)/a2/$(A2_CATEGORY)/org.argeo.ext.slf4j.$(MAJOR).$(MINOR).jar $(SDK_BUILD_BASE)/a2/org.argeo.tp
-#	mv $(SDK_BUILD_BASE)/a2/$(A2_CATEGORY)/org.argeo.ext.equinox.jetty.$(MAJOR).$(MINOR).jar $(SDK_BUILD_BASE)/a2/org.argeo.tp.eclipse.equinox
-
 clean:
 	rm -rf $(BUILD_BASE)
 	rm -rf $(BOOTSTRAP_BASE)
@@ -40,7 +34,6 @@ clean:
 A2_OUTPUT = $(SDK_BUILD_BASE)/a2
 A2_BASE = $(A2_OUTPUT)
 
-VPATH = .:ext
 DEP_CATEGORIES = org.argeo.tp org.argeo.tp.apache org.argeo.tp.sdk org.argeo.tp.jcr
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk
