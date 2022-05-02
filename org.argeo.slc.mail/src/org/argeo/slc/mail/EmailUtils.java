@@ -12,6 +12,7 @@ import javax.mail.internet.MimeMessage;
 /** Utilities around emails. */
 public class EmailUtils {
 	public final static String INBOX = "Inbox";
+	public final static String INBOX_UPPER_CASE = "INBOX";
 	public final static String MESSAGE_ID = "Message-ID";
 
 	public static String getMessageId(Message msg) {

@@ -50,7 +50,7 @@ public class EmailMigration {
 	private String sourcePassword;
 
 	public void process() throws MessagingException, IOException {
-		Path baseDir = Paths.get(targetBaseDir).resolve(sourceUsername);
+		Path baseDir = Paths.get(targetBaseDir).resolve(sourceUsername).resolve("mbox");
 
 		Store sourceStore = null;
 		try {
@@ -62,14 +62,37 @@ public class EmailMigration {
 			sourceStore = sourceSession.getStore("imaps");
 			sourceStore.connect(sourceServer, sourceUsername, sourcePassword);
 
-			// Always start with Inbox
-			Folder inboxFolder = sourceStore.getFolder(EmailUtils.INBOX);
+			Folder defaultFolder = sourceStore.getDefaultFolder();
+			migrateFolders(baseDir, defaultFolder);
 
-			migrateFolder(baseDir, inboxFolder);
+			// Always start with Inbox
+//			Folder inboxFolder = sourceStore.getFolder(EmailUtils.INBOX);
+//			migrateFolder(baseDir, inboxFolder);
 		} finally {
 			if (sourceStore != null)
 				sourceStore.close();
 
+		}
+	}
+
+	protected void migrateFolders(Path baseDir, Folder sourceFolder) throws MessagingException, IOException {
+		folders: for (Folder folder : sourceFolder.list()) {
+			String folderName = folder.getName();
+
+			if ((folder.getType() & Folder.HOLDS_MESSAGES) != 0) {
+				// Make it configurable
+				switch (folderName) {
+				case "All Mail":
+				case "Important":
+					continue folders;
+				default:
+					// doe nothing
+				}
+				migrateFolder(baseDir, folder);
+			}
+			if ((folder.getType() & Folder.HOLDS_FOLDERS) != 0) {
+				migrateFolders(baseDir.resolve(folder.getName()), folder);
+			}
 		}
 	}
 
@@ -82,6 +105,8 @@ public class EmailMigration {
 		try {
 			int messageCount = sourceFolder.getMessageCount();
 			logger.log(DEBUG, folderName + " - Message count : " + messageCount);
+			if (messageCount == 0)
+				return;
 //			logger.log(DEBUG, folderName + " - Unread Messages : " + sourceFolder.getUnreadMessageCount());
 
 			boolean saveAsFiles = false;
@@ -121,10 +146,19 @@ public class EmailMigration {
 
 	protected Folder migrateFolderToMbox(Path baseDir, Folder sourceFolder) throws MessagingException, IOException {
 		String folderName = sourceFolder.getName();
+		if (sourceFolder.getName().equals(EmailUtils.INBOX_UPPER_CASE))
+			folderName = EmailUtils.INBOX;// Inbox
 
-		Path targetDir = baseDir.resolve("mbox");
+		Path targetDir = baseDir;// .resolve("mbox");
 		Files.createDirectories(targetDir);
-		Path targetPath = targetDir.resolve(folderName);
+		Path targetPath;
+		if (((sourceFolder.getType() & Folder.HOLDS_FOLDERS) != 0) && sourceFolder.list().length != 0) {
+			Path dir = targetDir.resolve(folderName);
+			Files.createDirectories(dir);
+			targetPath = dir.resolve("_Misc");
+		} else {
+			targetPath = targetDir.resolve(folderName);
+		}
 		if (!Files.exists(targetPath))
 			Files.createFile(targetPath);
 		URLName targetUrlName = new URLName("mbox:" + targetPath.toString());
@@ -138,7 +172,7 @@ public class EmailMigration {
 		int currentTargetMessageCount = targetFolder.getMessageCount();
 		if (currentTargetMessageCount != 0) {
 			MimeMessage lastTargetMessage = (MimeMessage) targetFolder.getMessage(currentTargetMessageCount);
-			logger.log(DEBUG, "Last target message " + describe(lastTargetMessage));
+			logger.log(DEBUG, folderName + " - Last target message " + describe(lastTargetMessage));
 			Date lastTargetSent = lastTargetMessage.getReceivedDate();
 			Message[] lastSourceMessage = sourceFolder
 					.search(new HeaderTerm(EmailUtils.MESSAGE_ID, lastTargetMessage.getMessageID()));
@@ -156,7 +190,7 @@ public class EmailMigration {
 		} else {
 			lastSourceNumber = 0;
 		}
-		logger.log(DEBUG, "Last source message number " + lastSourceNumber);
+		logger.log(DEBUG, folderName + " - Last source message number " + lastSourceNumber);
 
 		int countToRetrieve = sourceFolder.getMessageCount() - lastSourceNumber;
 //	for (int i = startNumber; i < messageCount; i++) {
@@ -273,7 +307,7 @@ public class EmailMigration {
 
 			long duration = System.currentTimeMillis() - begin;
 			logger.log(DEBUG, folderName + " - batch " + i + " took " + (duration / 1000) + " s, "
-					+ (duration / (end - start)) + " ms per message. Last message " + describeLast);
+					+ (duration / (end - start + 1)) + " ms per message. Last message " + describeLast);
 		}
 
 		return targetFolder;
