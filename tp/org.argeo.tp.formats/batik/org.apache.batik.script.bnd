@@ -1,5 +1,0 @@
-Bundle-SymbolicName: org.apache.batik.script
-SLC-Origin-M2: org.apache.xmlgraphics:batik-script
-Import-Package: \
-org.python.*;resolution:="optional",\
-*
