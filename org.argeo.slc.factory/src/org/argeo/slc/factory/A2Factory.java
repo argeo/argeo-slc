@@ -276,7 +276,13 @@ public class A2Factory {
 						continue entries;
 					if (entry.getName().startsWith("META-INF/versions/"))
 						continue entries;
+					if (entry.getName().startsWith("META-INF/maven/"))
+						continue entries;
 					if (entry.getName().equals("module-info.class"))
+						continue entries;
+					if (entry.getName().equals("META-INF/NOTICE"))
+						continue entries;
+					if (entry.getName().equals("META-INF/LICENSE"))
 						continue entries;
 					Path target = targetBundleDir.resolve(entry.getName());
 					Files.createDirectories(target.getParent());
@@ -290,6 +296,9 @@ public class A2Factory {
 								if (logger.isLoggable(DEBUG))
 									logger.log(DEBUG, "Appended " + entry.getName());
 							}
+						} else if (entry.getName().startsWith("org/apache/batik/")) {
+							logger.log(Level.WARNING, "Skip " + entry.getName());
+							continue entries;
 						} else {
 							throw new IllegalStateException("File " + target + " already exists");
 						}
@@ -531,7 +540,8 @@ public class A2Factory {
 		DefaultNameVersion nameVersion;
 		Path targetBundleDir;
 		try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(file), false)) {
-			Manifest manifest = new Manifest(jarIn.getManifest());
+			Manifest sourceManifest = jarIn.getManifest();
+			Manifest manifest = sourceManifest != null ? new Manifest(sourceManifest) : new Manifest();
 
 			// remove problematic entries in MANIFEST
 			manifest.getEntries().clear();
@@ -789,7 +799,7 @@ public class A2Factory {
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
 		System.exit(0);
 
 		// Eclipse
