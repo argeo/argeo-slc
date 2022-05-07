@@ -41,6 +41,7 @@ import org.argeo.slc.DefaultCategoryNameVersion;
 import org.argeo.slc.DefaultNameVersion;
 import org.argeo.slc.ManifestConstants;
 import org.argeo.slc.NameVersion;
+import org.argeo.slc.factory.m2.Artifact;
 import org.argeo.slc.factory.m2.DefaultArtifact;
 import org.argeo.slc.factory.m2.MavenConventionsUtils;
 
@@ -73,6 +74,11 @@ public class A2Factory {
 		mirrors.put("http://www.eclipse.org/downloads", eclipseMirrors);
 	}
 
+	/*
+	 * MAVEN ORIGIN
+	 */
+
+	/** Process a whole category/group id. */
 	public void processCategory(Path targetCategoryBase) {
 		try {
 			DirectoryStream<Path> bnds = Files.newDirectoryStream(targetCategoryBase,
@@ -91,6 +97,7 @@ public class A2Factory {
 		}
 	}
 
+	/** Process a standalone Maven artifact. */
 	public void processSingleM2ArtifactDistributionUnit(Path bndFile) {
 		try {
 			String category = bndFile.getParent().getFileName().toString();
@@ -116,7 +123,7 @@ public class A2Factory {
 				throw new IllegalArgumentException("No M2 coordinates available for " + bndFile);
 			DefaultArtifact artifact = new DefaultArtifact(m2Coordinates);
 			URL url = MavenConventionsUtils.mavenRepoUrl(repoStr, artifact);
-			Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
+			Path downloaded = download(url, originBase, artifact);
 
 			Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, fileProps, artifact);
 
@@ -128,6 +135,7 @@ public class A2Factory {
 		}
 	}
 
+	/** Process multiple Maven artifacts. */
 	public void processM2BasedDistributionUnit(Path duDir) {
 		try {
 			String category = duDir.getParent().getFileName().toString();
@@ -137,10 +145,13 @@ public class A2Factory {
 			Path mergeBnd = duDir.resolve(MERGE_BND);
 			if (Files.exists(mergeBnd)) {
 				mergeM2Artifacts(mergeBnd);
-				return;
+//				return;
 			}
 
 			Path commonBnd = duDir.resolve(COMMON_BND);
+			if (!Files.exists(commonBnd)) {
+				return;
+			}
 			Properties commonProps = new Properties();
 			try (InputStream in = Files.newInputStream(commonBnd)) {
 				commonProps.load(in);
@@ -157,8 +168,8 @@ public class A2Factory {
 			m2Version = m2Version.substring(1);
 
 			DirectoryStream<Path> ds = Files.newDirectoryStream(duDir,
-					(p) -> p.getFileName().toString().endsWith(".bnd")
-							&& !p.getFileName().toString().equals(COMMON_BND));
+					(p) -> p.getFileName().toString().endsWith(".bnd") && !p.getFileName().toString().equals(COMMON_BND)
+							&& !p.getFileName().toString().equals(MERGE_BND));
 			for (Path p : ds) {
 				Properties fileProps = new Properties();
 				try (InputStream in = Files.newInputStream(p)) {
@@ -212,7 +223,7 @@ public class A2Factory {
 
 				// download
 				URL url = MavenConventionsUtils.mavenRepoUrl(repoStr, artifact);
-				Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
+				Path downloaded = download(url, originBase, artifact);
 
 				Path targetBundleDir = processBndJar(downloaded, targetCategoryBase, mergeProps, artifact);
 //				logger.log(Level.DEBUG, () -> "Processed " + downloaded);
@@ -228,6 +239,7 @@ public class A2Factory {
 
 	}
 
+	/** Merge multiple Maven artifacts. */
 	protected void mergeM2Artifacts(Path mergeBnd) throws IOException {
 		Path duDir = mergeBnd.getParent();
 		String category = duDir.getParent().getFileName().toString();
@@ -266,7 +278,7 @@ public class A2Factory {
 			if (artifact.getVersion() == null)
 				artifact.setVersion(m2Version);
 			URL url = MavenConventionsUtils.mavenRepoUrl(repoStr, artifact);
-			Path downloaded = download(url, originBase, artifact.toM2Coordinates() + ".jar");
+			Path downloaded = download(url, originBase, artifact);
 			JarEntry entry;
 			try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(downloaded), false)) {
 				entries: while ((entry = jarIn.getNextJarEntry()) != null) {
@@ -352,16 +364,7 @@ public class A2Factory {
 
 	}
 
-	protected void downloadAndProcessM2Sources(String repoStr, DefaultArtifact artifact, Path targetBundleDir)
-			throws IOException {
-		DefaultArtifact sourcesArtifact = new DefaultArtifact(artifact.toM2Coordinates(), "sources");
-		URL sourcesUrl = MavenConventionsUtils.mavenRepoUrl(repoStr, sourcesArtifact);
-		Path sourcesDownloaded = download(sourcesUrl, originBase, artifact.toM2Coordinates() + ".sources.jar");
-		processM2SourceJar(sourcesDownloaded, targetBundleDir);
-		logger.log(Level.DEBUG, () -> "Processed source " + sourcesDownloaded);
-
-	}
-
+	/** Generate MANIFEST using BND. */
 	protected Path processBndJar(Path downloaded, Path targetCategoryBase, Properties fileProps,
 			DefaultArtifact artifact) {
 
@@ -440,6 +443,18 @@ public class A2Factory {
 
 	}
 
+	/** Download and integrates sources for a single Maven artifact. */
+	protected void downloadAndProcessM2Sources(String repoStr, DefaultArtifact artifact, Path targetBundleDir)
+			throws IOException {
+		DefaultArtifact sourcesArtifact = new DefaultArtifact(artifact.toM2Coordinates(), "sources");
+		URL sourcesUrl = MavenConventionsUtils.mavenRepoUrl(repoStr, sourcesArtifact);
+		Path sourcesDownloaded = download(sourcesUrl, originBase, artifact, true);
+		processM2SourceJar(sourcesDownloaded, targetBundleDir);
+		logger.log(Level.DEBUG, () -> "Processed source " + sourcesDownloaded);
+
+	}
+
+	/** Integrate sources from a downloaded jar file. */
 	protected void processM2SourceJar(Path file, Path targetBundleDir) throws IOException {
 		try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(file), false)) {
 			Path targetSourceDir = targetBundleDir.resolve("OSGI-OPT/src");
@@ -473,6 +488,22 @@ public class A2Factory {
 
 	}
 
+	/** Download a Maven artifact. */
+	protected Path download(URL url, Path dir, Artifact artifact) throws IOException {
+		return download(url, dir, artifact, false);
+	}
+
+	/** Download a Maven artifact. */
+	protected Path download(URL url, Path dir, Artifact artifact, boolean sources) throws IOException {
+		return download(url, dir, artifact.getGroupId() + '/' + artifact.getArtifactId() + "-" + artifact.getVersion()
+				+ (sources ? "-sources" : "") + ".jar");
+	}
+
+	/*
+	 * ECLIPSE ORIGIN
+	 */
+
+	/** Process an archive in Eclipse format. */
 	public void processEclipseArchive(Path duDir) {
 		try {
 			String category = duDir.getParent().getFileName().toString();
@@ -490,27 +521,47 @@ public class A2Factory {
 			try (InputStream in = Files.newInputStream(commonBnd)) {
 				commonProps.load(in);
 			}
-			Properties includes = new Properties();
-			try (InputStream in = Files.newInputStream(duDir.resolve("includes.properties"))) {
-				includes.load(in);
-			}
 			String url = commonProps.getProperty(ManifestConstants.SLC_ORIGIN_URI.toString());
 			Path downloaded = tryDownload(url, originBase);
 
 			FileSystem zipFs = FileSystems.newFileSystem(downloaded, (ClassLoader) null);
 
-			List<PathMatcher> pathMatchers = new ArrayList<>();
+			// filters
+			List<PathMatcher> includeMatchers = new ArrayList<>();
+			Properties includes = new Properties();
+			try (InputStream in = Files.newInputStream(duDir.resolve("includes.properties"))) {
+				includes.load(in);
+			}
 			for (Object pattern : includes.keySet()) {
 				PathMatcher pathMatcher = zipFs.getPathMatcher("glob:/" + pattern);
-				pathMatchers.add(pathMatcher);
+				includeMatchers.add(pathMatcher);
+			}
+
+			List<PathMatcher> excludeMatchers = new ArrayList<>();
+			Path excludeFile = duDir.resolve("excludes.properties");
+			if (Files.exists(excludeFile)) {
+				Properties excludes = new Properties();
+				try (InputStream in = Files.newInputStream(excludeFile)) {
+					excludes.load(in);
+				}
+				for (Object pattern : excludes.keySet()) {
+					PathMatcher pathMatcher = zipFs.getPathMatcher("glob:/" + pattern);
+					excludeMatchers.add(pathMatcher);
+				}
 			}
 
 			Files.walkFileTree(zipFs.getRootDirectories().iterator().next(), new SimpleFileVisitor<Path>() {
 
 				@Override
 				public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-					pathMatchers: for (PathMatcher pathMatcher : pathMatchers) {
-						if (pathMatcher.matches(file)) {
+					includeMatchers: for (PathMatcher includeMatcher : includeMatchers) {
+						if (includeMatcher.matches(file)) {
+							for (PathMatcher excludeMatcher : excludeMatchers) {
+								if (excludeMatcher.matches(file)) {
+									logger.log(Level.WARNING, "Skipping excluded " + file);
+									return FileVisitResult.CONTINUE;
+								}
+							}
 							if (file.getFileName().toString().contains(".source_")) {
 								processEclipseSourceJar(file, targetCategoryBase);
 								logger.log(Level.DEBUG, () -> "Processed source " + file);
@@ -519,7 +570,7 @@ public class A2Factory {
 								processBundleJar(file, targetCategoryBase, new HashMap<>());
 								logger.log(Level.DEBUG, () -> "Processed " + file);
 							}
-							break pathMatchers;
+							break includeMatchers;
 						}
 					}
 					return FileVisitResult.CONTINUE;
@@ -536,6 +587,58 @@ public class A2Factory {
 
 	}
 
+	/** Process sources in Eclipse format. */
+	protected void processEclipseSourceJar(Path file, Path targetBase) throws IOException {
+		try {
+			Path targetBundleDir;
+			try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(file), false)) {
+				Manifest manifest = jarIn.getManifest();
+
+				String[] relatedBundle = manifest.getMainAttributes().getValue("Eclipse-SourceBundle").split(";");
+				String version = relatedBundle[1].substring("version=\"".length());
+				version = version.substring(0, version.length() - 1);
+				NameVersion nameVersion = new DefaultNameVersion(relatedBundle[0], version);
+				targetBundleDir = targetBase.resolve(nameVersion.getName() + "." + nameVersion.getBranch());
+
+				Path targetSourceDir = targetBundleDir.resolve("OSGI-OPT/src");
+
+				// TODO make it less dangerous?
+				if (Files.exists(targetSourceDir)) {
+//				deleteDirectory(targetSourceDir);
+				} else {
+					Files.createDirectories(targetSourceDir);
+				}
+
+				// copy entries
+				JarEntry entry;
+				entries: while ((entry = jarIn.getNextJarEntry()) != null) {
+					if (entry.isDirectory())
+						continue entries;
+					if (entry.getName().startsWith("META-INF"))// skip META-INF entries
+						continue entries;
+					Path target = targetSourceDir.resolve(entry.getName());
+					Files.createDirectories(target.getParent());
+					Files.copy(jarIn, target);
+					logger.log(Level.TRACE, () -> "Copied source " + target);
+				}
+
+				// copy MANIFEST
+//			Path manifestPath = targetBundleDir.resolve("META-INF/MANIFEST.MF");
+//			Files.createDirectories(manifestPath.getParent());
+//			try (OutputStream out = Files.newOutputStream(manifestPath)) {
+//				manifest.write(out);
+//			}
+			}
+		} catch (IOException e) {
+			throw new IllegalStateException("Cannot process " + file, e);
+		}
+
+	}
+
+	/*
+	 * COMMON PROCESSING
+	 */
+	/** Normalise a bundle. */
 	protected Path processBundleJar(Path file, Path targetBase, Map<String, String> entries) throws IOException {
 		DefaultNameVersion nameVersion;
 		Path targetBundleDir;
@@ -621,54 +724,12 @@ public class A2Factory {
 		return targetBundleDir;
 	}
 
-	protected void processEclipseSourceJar(Path file, Path targetBase) throws IOException {
-		try {
-			Path targetBundleDir;
-			try (JarInputStream jarIn = new JarInputStream(Files.newInputStream(file), false)) {
-				Manifest manifest = jarIn.getManifest();
+	/*
+	 * UTILITIES
+	 */
 
-				String[] relatedBundle = manifest.getMainAttributes().getValue("Eclipse-SourceBundle").split(";");
-				String version = relatedBundle[1].substring("version=\"".length());
-				version = version.substring(0, version.length() - 1);
-				NameVersion nameVersion = new DefaultNameVersion(relatedBundle[0], version);
-				targetBundleDir = targetBase.resolve(nameVersion.getName() + "." + nameVersion.getBranch());
-
-				Path targetSourceDir = targetBundleDir.resolve("OSGI-OPT/src");
-
-				// TODO make it less dangerous?
-				if (Files.exists(targetSourceDir)) {
-//				deleteDirectory(targetSourceDir);
-				} else {
-					Files.createDirectories(targetSourceDir);
-				}
-
-				// copy entries
-				JarEntry entry;
-				entries: while ((entry = jarIn.getNextJarEntry()) != null) {
-					if (entry.isDirectory())
-						continue entries;
-					if (entry.getName().startsWith("META-INF"))// skip META-INF entries
-						continue entries;
-					Path target = targetSourceDir.resolve(entry.getName());
-					Files.createDirectories(target.getParent());
-					Files.copy(jarIn, target);
-					logger.log(Level.TRACE, () -> "Copied source " + target);
-				}
-
-				// copy MANIFEST
-//			Path manifestPath = targetBundleDir.resolve("META-INF/MANIFEST.MF");
-//			Files.createDirectories(manifestPath.getParent());
-//			try (OutputStream out = Files.newOutputStream(manifestPath)) {
-//				manifest.write(out);
-//			}
-			}
-		} catch (IOException e) {
-			throw new IllegalStateException("Cannot process " + file, e);
-		}
-
-	}
-
-	static void deleteDirectory(Path path) throws IOException {
+	/** Recursively deletes a directory. */
+	private static void deleteDirectory(Path path) throws IOException {
 		if (!Files.exists(path))
 			return;
 		Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
@@ -688,6 +749,7 @@ public class A2Factory {
 		});
 	}
 
+	/** Extract name/version from a MANIFEST. */
 	protected DefaultNameVersion nameVersionFromManifest(Manifest manifest) {
 		Attributes attrs = manifest.getMainAttributes();
 		// symbolic name
@@ -701,6 +763,7 @@ public class A2Factory {
 		return new DefaultNameVersion(symbolicName, version);
 	}
 
+	/** Try to download from an URI. */
 	protected Path tryDownload(String uri, Path dir) throws IOException {
 		// find mirror
 		List<String> urlBases = null;
@@ -716,7 +779,7 @@ public class A2Factory {
 		}
 		if (urlBases == null)
 			try {
-				return download(new URL(uri), dir, null);
+				return download(new URL(uri), dir);
 			} catch (FileNotFoundException e) {
 				throw new FileNotFoundException("Cannot find " + uri);
 			}
@@ -726,7 +789,7 @@ public class A2Factory {
 			String relativePath = uri.substring(uriPrefix.length());
 			URL url = new URL(urlBase + relativePath);
 			try {
-				return download(url, dir, null);
+				return download(url, dir);
 			} catch (FileNotFoundException e) {
 				logger.log(Level.WARNING, "Cannot download " + url + ", trying another mirror");
 			}
@@ -739,6 +802,12 @@ public class A2Factory {
 //		
 //	}
 
+	/** Effectively download. */
+	protected Path download(URL url, Path dir) throws IOException {
+		return download(url, dir, (String) null);
+	}
+
+	/** Effectively download. */
 	protected Path download(URL url, Path dir, String name) throws IOException {
 
 		Path dest;
@@ -750,6 +819,8 @@ public class A2Factory {
 		if (Files.exists(dest)) {
 			logger.log(Level.TRACE, () -> "File " + dest + " already exists for " + url + ", not downloading again");
 			return dest;
+		} else {
+			Files.createDirectories(dest.getParent());
 		}
 
 		try (InputStream in = url.openStream()) {
@@ -759,6 +830,7 @@ public class A2Factory {
 		return dest;
 	}
 
+	/** Create a JAR file from a directory. */
 	protected Path createJar(Path bundleDir) throws IOException {
 		Path jarPath = bundleDir.getParent().resolve(bundleDir.getFileName() + ".jar");
 		Path manifestPath = bundleDir.resolve("META-INF/MANIFEST.MF");
@@ -785,6 +857,7 @@ public class A2Factory {
 		return jarPath;
 	}
 
+	/** For development purproses. */
 	public static void main(String[] args) {
 		Path factoryBase = Paths.get("../../output/a2").toAbsolutePath().normalize();
 		A2Factory factory = new A2Factory(factoryBase);
@@ -799,15 +872,28 @@ public class A2Factory {
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
+		factory.processEclipseArchive(
+				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rwt").resolve("eclipse-rwt"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-swt"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-nebula"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-equinox"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 		System.exit(0);
 
 		// Eclipse
 		factory.processEclipseArchive(
 				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rwt").resolve("eclipse-rwt"));
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-swt"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-nebula"));
+		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-equinox"));
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
-
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 		System.exit(0);
 
 		// Maven
@@ -816,5 +902,8 @@ public class A2Factory {
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jcr"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.poi"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
 	}
 }

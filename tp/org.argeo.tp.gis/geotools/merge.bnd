@@ -1,6 +1,6 @@
 Bundle-License: LGPL-2.1-only
 Bundle-SymbolicName: org.geotools
-SLC-Origin-M2: :26.3
+SLC-Origin-M2: :26.4
 SLC-Origin-M2-Repo: https://repo.osgeo.org/repository/release/
 Export-Package: org.geotools.*, org.opengis.*, net.opengis.*, org.w3.xlink.*
 Import-Package: \
