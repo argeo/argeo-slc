@@ -4,14 +4,21 @@ import static java.lang.System.Logger.Level.DEBUG;
 import static java.lang.System.Logger.Level.ERROR;
 import static org.argeo.slc.mail.EmailUtils.describe;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.System.Logger;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.time.Instant;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.mail.FetchProfile;
@@ -21,11 +28,16 @@ import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.Store;
+import javax.mail.URLName;
+import javax.mail.internet.InternetHeaders;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.search.HeaderTerm;
+import javax.mail.util.SharedFileInputStream;
 
 import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.mbox.MboxFolder;
+import com.sun.mail.mbox.MboxMessage;
 
 /** Migrates emails from one storage to the another one. */
 public class EmailMigration {
@@ -164,76 +176,76 @@ public class EmailMigration {
 		}
 	}
 
-//	protected void migrateFoldersToFs(Path baseDir, Folder sourceFolder) throws MessagingException, IOException {
-//		folders: for (Folder folder : sourceFolder.list()) {
-//			String folderName = folder.getName();
-//
-//			if ((folder.getType() & Folder.HOLDS_MESSAGES) != 0) {
-//				// Make it configurable
-//				switch (folderName) {
-//				case "All Mail":
-//				case "Important":
-//					continue folders;
-//				default:
-//					// doe nothing
-//				}
-//				migrateFolderToFs(baseDir, folder);
-//			}
-//			if ((folder.getType() & Folder.HOLDS_FOLDERS) != 0) {
-//				migrateFoldersToFs(baseDir.resolve(folder.getName()), folder);
-//			}
-//		}
-//	}
+	protected void migrateFoldersToFs(Path baseDir, Folder sourceFolder) throws MessagingException, IOException {
+		folders: for (Folder folder : sourceFolder.list()) {
+			String folderName = folder.getName();
 
-//	protected void migrateFolderToFs(Path baseDir, Folder sourceFolder) throws MessagingException, IOException {
-//
-//		String folderName = sourceFolder.getName();
-//		sourceFolder.open(Folder.READ_ONLY);
-//
-//		Folder targetFolder = null;
-//		try {
-//			int messageCount = sourceFolder.getMessageCount();
-//			logger.log(DEBUG, folderName + " - Message count : " + messageCount);
-//			if (messageCount == 0)
-//				return;
-////			logger.log(DEBUG, folderName + " - Unread Messages : " + sourceFolder.getUnreadMessageCount());
-//
-//			boolean saveAsFiles = false;
-//
-//			if (saveAsFiles) {
-//				Message messages[] = sourceFolder.getMessages();
-//
-//				for (int i = 0; i < messages.length; ++i) {
-////					logger.log(DEBUG, "MESSAGE #" + (i + 1) + ":");
-//					Message msg = messages[i];
-////					String from = "unknown";
-////					if (msg.getReplyTo().length >= 1) {
-////						from = msg.getReplyTo()[0].toString();
-////					} else if (msg.getFrom().length >= 1) {
-////						from = msg.getFrom()[0].toString();
-////					}
-//					String subject = msg.getSubject();
-//					Instant sentDate = msg.getSentDate().toInstant();
-////					logger.log(DEBUG, "Saving ... " + subject + " from " + from + " (" + sentDate + ")");
-//					String fileName = sentDate + "  " + subject;
-//					Path file = baseDir.resolve(fileName);
-//					savePartsAsFiles(msg.getContent(), file);
-//				}
-//			} 
-//			else {
-//				long begin = System.currentTimeMillis();
-//				targetFolder = openMboxTargetFolder(sourceFolder, baseDir);
-//				migrateFolder(sourceFolder, targetFolder);
-//				long duration = System.currentTimeMillis() - begin;
-//				logger.log(DEBUG, folderName + " - Migration of " + messageCount + " messages took " + (duration / 1000)
-//						+ " s (" + (duration / messageCount) + " ms per message)");
-//			}
-//		} finally {
-//			sourceFolder.close();
-//			if (targetFolder != null)
-//				targetFolder.close();
-//		}
-//	}
+			if ((folder.getType() & Folder.HOLDS_MESSAGES) != 0) {
+				// Make it configurable
+				switch (folderName) {
+				case "All Mail":
+				case "Important":
+					continue folders;
+				default:
+					// doe nothing
+				}
+				migrateFolderToFs(baseDir, folder);
+			}
+			if ((folder.getType() & Folder.HOLDS_FOLDERS) != 0) {
+				migrateFoldersToFs(baseDir.resolve(folder.getName()), folder);
+			}
+		}
+	}
+
+	protected void migrateFolderToFs(Path baseDir, Folder sourceFolder) throws MessagingException, IOException {
+
+		String folderName = sourceFolder.getName();
+		sourceFolder.open(Folder.READ_ONLY);
+
+		Folder targetFolder = null;
+		try {
+			int messageCount = sourceFolder.getMessageCount();
+			logger.log(DEBUG, folderName + " - Message count : " + messageCount);
+			if (messageCount == 0)
+				return;
+//			logger.log(DEBUG, folderName + " - Unread Messages : " + sourceFolder.getUnreadMessageCount());
+
+			boolean saveAsFiles = false;
+
+			if (saveAsFiles) {
+				Message messages[] = sourceFolder.getMessages();
+
+				for (int i = 0; i < messages.length; ++i) {
+//					logger.log(DEBUG, "MESSAGE #" + (i + 1) + ":");
+					Message msg = messages[i];
+//					String from = "unknown";
+//					if (msg.getReplyTo().length >= 1) {
+//						from = msg.getReplyTo()[0].toString();
+//					} else if (msg.getFrom().length >= 1) {
+//						from = msg.getFrom()[0].toString();
+//					}
+					String subject = msg.getSubject();
+					Instant sentDate = msg.getSentDate().toInstant();
+//					logger.log(DEBUG, "Saving ... " + subject + " from " + from + " (" + sentDate + ")");
+					String fileName = sentDate + "  " + subject;
+					Path file = baseDir.resolve(fileName);
+					savePartsAsFiles(msg.getContent(), file);
+				}
+			} 
+			else {
+				long begin = System.currentTimeMillis();
+				targetFolder = openMboxTargetFolder(sourceFolder, baseDir);
+				migrateFolder(sourceFolder, targetFolder);
+				long duration = System.currentTimeMillis() - begin;
+				logger.log(DEBUG, folderName + " - Migration of " + messageCount + " messages took " + (duration / 1000)
+						+ " s (" + (duration / messageCount) + " ms per message)");
+			}
+		} finally {
+			sourceFolder.close();
+			if (targetFolder != null)
+				targetFolder.close();
+		}
+	}
 
 	protected Folder migrateFolder(Folder sourceFolder, Folder targetFolder) throws MessagingException, IOException {
 		String folderName = targetFolder.getName();
@@ -315,86 +327,86 @@ public class EmailMigration {
 		return targetFolder;
 	}
 
-//	protected Folder openMboxTargetFolder(Folder sourceFolder, Path baseDir) throws MessagingException, IOException {
-//		String folderName = sourceFolder.getName();
-//		if (sourceFolder.getName().equals(EmailUtils.INBOX_UPPER_CASE))
-//			folderName = EmailUtils.INBOX;// Inbox
-//
-//		Path targetDir = baseDir;// .resolve("mbox");
-//		Files.createDirectories(targetDir);
-//		Path targetPath;
-//		if (((sourceFolder.getType() & Folder.HOLDS_FOLDERS) != 0) && sourceFolder.list().length != 0) {
-//			Path dir = targetDir.resolve(folderName);
-//			Files.createDirectories(dir);
-//			targetPath = dir.resolve("_Misc");
-//		} else {
-//			targetPath = targetDir.resolve(folderName);
-//		}
-//		if (!Files.exists(targetPath))
-//			Files.createFile(targetPath);
-//		URLName targetUrlName = new URLName("mbox:" + targetPath.toString());
-//		Properties targetProperties = new Properties();
-//		// targetProperties.setProperty("mail.mime.address.strict", "false");
-//		Session targetSession = Session.getDefaultInstance(targetProperties);
-//		Folder targetFolder = targetSession.getFolder(targetUrlName);
-//		targetFolder.open(Folder.READ_WRITE);
-//
-//		return targetFolder;
-//	}
+	protected Folder openMboxTargetFolder(Folder sourceFolder, Path baseDir) throws MessagingException, IOException {
+		String folderName = sourceFolder.getName();
+		if (sourceFolder.getName().equals(EmailUtils.INBOX_UPPER_CASE))
+			folderName = EmailUtils.INBOX;// Inbox
+
+		Path targetDir = baseDir;// .resolve("mbox");
+		Files.createDirectories(targetDir);
+		Path targetPath;
+		if (((sourceFolder.getType() & Folder.HOLDS_FOLDERS) != 0) && sourceFolder.list().length != 0) {
+			Path dir = targetDir.resolve(folderName);
+			Files.createDirectories(dir);
+			targetPath = dir.resolve("_Misc");
+		} else {
+			targetPath = targetDir.resolve(folderName);
+		}
+		if (!Files.exists(targetPath))
+			Files.createFile(targetPath);
+		URLName targetUrlName = new URLName("mbox:" + targetPath.toString());
+		Properties targetProperties = new Properties();
+		// targetProperties.setProperty("mail.mime.address.strict", "false");
+		Session targetSession = Session.getDefaultInstance(targetProperties);
+		Folder targetFolder = targetSession.getFolder(targetUrlName);
+		targetFolder.open(Folder.READ_WRITE);
+
+		return targetFolder;
+	}
 
 	protected void copyMessages(Message[] sourceMessages, Folder targetFolder) throws MessagingException {
 		targetFolder.appendMessages(sourceMessages);
 	}
 
-//	protected void copyMessagesToMbox(Message[] sourceMessages, Folder targetFolder)
-//			throws MessagingException, IOException {
-//		Message[] targetMessages = new Message[sourceMessages.length];
-//		for (int j = 0; j < sourceMessages.length; j++) {
-//			MimeMessage sourceMm = (MimeMessage) sourceMessages[j];
-//			InternetHeaders ih = new InternetHeaders();
-//			for (Enumeration<String> e = sourceMm.getAllHeaderLines(); e.hasMoreElements();) {
-//				ih.addHeaderLine(e.nextElement());
-//			}
-//			Path tmpFileSource = Files.createTempFile("argeo-mbox-source", ".txt");
-//			Path tmpFileTarget = Files.createTempFile("argeo-mbox-target", ".txt");
-//			Files.copy(sourceMm.getRawInputStream(), tmpFileSource, StandardCopyOption.REPLACE_EXISTING);
-//
-//			// we use ISO_8859_1 because it is more robust than US_ASCII with regard to
-//			// missing characters
-//			try (BufferedReader reader = Files.newBufferedReader(tmpFileSource, StandardCharsets.ISO_8859_1);
-//					BufferedWriter writer = Files.newBufferedWriter(tmpFileTarget, StandardCharsets.ISO_8859_1);) {
-//				int lineNumber = 0;
-//				String line = null;
-//				try {
-//					while ((line = reader.readLine()) != null) {
-//						lineNumber++;
-//						if (line.startsWith("From ")) {
-//							writer.write(">" + line);
-//							logger.log(DEBUG,
-//									"Fix line " + lineNumber + " in " + EmailUtils.describe(sourceMm) + ": " + line);
-//						} else {
-//							writer.write(line);
-//						}
-//						writer.newLine();
-//					}
-//				} catch (IOException e) {
-//					logger.log(ERROR, "Error around line " + lineNumber + " of " + tmpFileSource);
-//					throw e;
-//				}
-//			}
-//
-//			MboxMessage mboxMessage = new MboxMessage((MboxFolder) targetFolder, ih,
-//					new SharedFileInputStream(tmpFileTarget.toFile()), sourceMm.getMessageNumber(),
-//					EmailUtils.getUnixFrom(sourceMm), true);
-//			targetMessages[j] = mboxMessage;
-//
-//			// clean up
-//			Files.delete(tmpFileSource);
-//			Files.delete(tmpFileTarget);
-//		}
-//		targetFolder.appendMessages(targetMessages);
-//
-//	}
+	protected void copyMessagesToMbox(Message[] sourceMessages, Folder targetFolder)
+			throws MessagingException, IOException {
+		Message[] targetMessages = new Message[sourceMessages.length];
+		for (int j = 0; j < sourceMessages.length; j++) {
+			MimeMessage sourceMm = (MimeMessage) sourceMessages[j];
+			InternetHeaders ih = new InternetHeaders();
+			for (Enumeration<String> e = sourceMm.getAllHeaderLines(); e.hasMoreElements();) {
+				ih.addHeaderLine(e.nextElement());
+			}
+			Path tmpFileSource = Files.createTempFile("argeo-mbox-source", ".txt");
+			Path tmpFileTarget = Files.createTempFile("argeo-mbox-target", ".txt");
+			Files.copy(sourceMm.getRawInputStream(), tmpFileSource, StandardCopyOption.REPLACE_EXISTING);
+
+			// we use ISO_8859_1 because it is more robust than US_ASCII with regard to
+			// missing characters
+			try (BufferedReader reader = Files.newBufferedReader(tmpFileSource, StandardCharsets.ISO_8859_1);
+					BufferedWriter writer = Files.newBufferedWriter(tmpFileTarget, StandardCharsets.ISO_8859_1);) {
+				int lineNumber = 0;
+				String line = null;
+				try {
+					while ((line = reader.readLine()) != null) {
+						lineNumber++;
+						if (line.startsWith("From ")) {
+							writer.write(">" + line);
+							logger.log(DEBUG,
+									"Fix line " + lineNumber + " in " + EmailUtils.describe(sourceMm) + ": " + line);
+						} else {
+							writer.write(line);
+						}
+						writer.newLine();
+					}
+				} catch (IOException e) {
+					logger.log(ERROR, "Error around line " + lineNumber + " of " + tmpFileSource);
+					throw e;
+				}
+			}
+
+			MboxMessage mboxMessage = new MboxMessage((MboxFolder) targetFolder, ih,
+					new SharedFileInputStream(tmpFileTarget.toFile()), sourceMm.getMessageNumber(),
+					EmailUtils.getUnixFrom(sourceMm), true);
+			targetMessages[j] = mboxMessage;
+
+			// clean up
+			Files.delete(tmpFileSource);
+			Files.delete(tmpFileTarget);
+		}
+		targetFolder.appendMessages(targetMessages);
+
+	}
 
 	/** Save body parts and attachments as plain files. */
 	protected void savePartsAsFiles(Object content, Path fileBase) throws IOException, MessagingException {
