@@ -7,6 +7,7 @@ A2_CATEGORY = org.argeo.tp
 
 BUNDLES = \
 ext/org.argeo.ext.slf4j \
+ext/javax.mail.mbox \
 
 clean:
 	rm -rf $(BUILD_BASE)
