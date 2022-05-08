@@ -1,0 +1,3 @@
+Bundle-License: LGPL-2.1
+Bundle-SymbolicName: com.lowagie
+SLC-Origin-M2: com.github.librepdf:openpdf:1.3.27

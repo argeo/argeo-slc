@@ -265,6 +265,8 @@ public class A2Factory {
 				: null;
 
 		String bundleSymbolicName = mergeProps.getProperty(ManifestConstants.BUNDLE_SYMBOLICNAME.toString());
+		if (bundleSymbolicName == null)
+			throw new IllegalArgumentException("Bundle-SymbolicName must be set in " + mergeBnd);
 		DefaultCategoryNameVersion nameVersion = new DefaultArtifact(
 				category + ":" + bundleSymbolicName + ":" + m2Version);
 		Path targetBundleDir = targetCategoryBase.resolve(bundleSymbolicName + "." + nameVersion.getBranch());
@@ -474,6 +476,8 @@ public class A2Factory {
 				if (entry.getName().startsWith("META-INF"))// skip META-INF entries
 					continue entries;
 				if (entry.getName().startsWith("module-info.java"))// skip META-INF entries
+					continue entries;
+				if (entry.getName().startsWith("/")) // absolute paths
 					continue entries;
 				Path target = targetSourceDir.resolve(entry.getName());
 				Files.createDirectories(target.getParent());
@@ -872,16 +876,7 @@ public class A2Factory {
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
-//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
-		factory.processEclipseArchive(
-				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rwt").resolve("eclipse-rwt"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-swt"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-nebula"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-equinox"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
 		System.exit(0);
 
 		// Eclipse
@@ -894,7 +889,6 @@ public class A2Factory {
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-equinox"));
 		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
-		System.exit(0);
 
 		// Maven
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
