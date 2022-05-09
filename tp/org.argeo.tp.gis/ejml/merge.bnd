@@ -1,0 +1,17 @@
+Bundle-SymbolicName: org.ejml
+Bundle-License: Apache-2.0
+SLC-Origin-M2: :0.41
+Export-Package: org.ejml.*
+SLC-Origin-M2-Merge: \
+org.ejml:ejml-core, \
+org.ejml:ejml-simple, \
+org.ejml:ejml-fdense, \
+org.ejml:ejml-ddense, \
+org.ejml:ejml-cdense, \
+org.ejml:ejml-zdense, \
+org.ejml:ejml-dsparse, \
+
+Import-Package: \
+us.hebi.matlab.*;resolution:="optional", \
+javax.swing;resolution:="optional",
+*

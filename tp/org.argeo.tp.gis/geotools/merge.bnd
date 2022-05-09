@@ -13,6 +13,7 @@ javax.measure.*, \
 tech.units.indriya.*, \
 si.uom.*, \
 systems.uom.*, \
+org.ejml.*,\
 *;resolution:="optional"
 SLC-Origin-M2-Merge: \
 org.geotools:gt-metadata, \
