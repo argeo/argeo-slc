@@ -314,7 +314,7 @@ public class A2Factory {
 							logger.log(Level.WARNING, "Skip " + entry.getName());
 							continue entries;
 						} else {
-							throw new IllegalStateException("File " + target + " already exists");
+							throw new IllegalStateException("File " + target + " from " + artifact + " already exists");
 						}
 					}
 					logger.log(Level.TRACE, () -> "Copied " + target);
@@ -876,7 +876,7 @@ public class A2Factory {
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
 		System.exit(0);
 
 		// Eclipse
