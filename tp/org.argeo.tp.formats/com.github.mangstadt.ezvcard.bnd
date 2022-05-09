@@ -1,0 +1,3 @@
+Bundle-License: BSD-2-Clause
+Bundle-SymbolicName: com.github.mangstadt.ezvcard
+SLC-Origin-M2: com.googlecode.ez-vcard:ez-vcard:0.11.3
