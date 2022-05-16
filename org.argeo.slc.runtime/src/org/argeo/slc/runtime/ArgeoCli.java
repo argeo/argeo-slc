@@ -1,8 +1,7 @@
 package org.argeo.slc.runtime;
 
 import org.apache.commons.cli.Option;
-import org.argeo.slc.cli.CommandsCli;
-import org.argeo.slc.cli.fs.FsCommands;
+import org.argeo.cms.cli.CommandsCli;
 import org.argeo.slc.cli.posix.PosixCommands;
 
 /** Argeo command line tools. */
@@ -16,7 +15,7 @@ public class ArgeoCli extends CommandsCli {
 				Option.builder("D").hasArgs().argName("property=value").desc("use value for given property").build());
 
 		addCommandsCli(new PosixCommands("posix"));
-		addCommandsCli(new FsCommands("fs"));
+//		addCommandsCli(new FsCommands("fs"));
 //		addCommandsCli(new JcrCommands("jcr"));
 	}
 
