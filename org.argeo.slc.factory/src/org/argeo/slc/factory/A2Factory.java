@@ -324,6 +324,21 @@ public class A2Factory {
 			downloadAndProcessM2Sources(repoStr, artifact, targetBundleDir);
 		}
 
+		// additional service files
+		Path servicesDir = duDir.resolve("services");
+		if (Files.exists(servicesDir)) {
+			for (Path p : Files.newDirectoryStream(servicesDir)) {
+				Path target = targetBundleDir.resolve("META-INF/services/").resolve(p.getFileName());
+				try (InputStream in = Files.newInputStream(p);
+						OutputStream out = Files.newOutputStream(target, StandardOpenOption.APPEND);) {
+					out.write("\n".getBytes());
+					in.transferTo(out);
+					if (logger.isLoggable(DEBUG))
+						logger.log(DEBUG, "Appended " + p);
+				}
+			}
+		}
+
 		Map<String, String> entries = new TreeMap<>();
 		try (Analyzer bndAnalyzer = new Analyzer()) {
 			bndAnalyzer.setProperties(mergeProps);
@@ -344,7 +359,7 @@ public class A2Factory {
 						&& value.toString().equals("osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version=1.1))\""))
 					continue keys;// hack for very old classes
 				entries.put(key.toString(), value.toString());
-				logger.log(DEBUG, () -> key + "=" + value);
+				//logger.log(DEBUG, () -> key + "=" + value);
 
 			}
 		} catch (Exception e) {
@@ -357,6 +372,13 @@ public class A2Factory {
 		for (String key : entries.keySet()) {
 			String value = entries.get(key);
 			manifest.getMainAttributes().putValue(key, value);
+		}
+
+		// Use Maven version as Bundle-Version
+		String bundleVersion = manifest.getMainAttributes().getValue(ManifestConstants.BUNDLE_VERSION.toString());
+		if (bundleVersion == null || bundleVersion.trim().equals("0")) {
+			// TODO check why it is sometimes set to "0"
+			manifest.getMainAttributes().putValue(ManifestConstants.BUNDLE_VERSION.toString(), m2Version);
 		}
 		try (OutputStream out = Files.newOutputStream(manifestPath)) {
 			manifest.write(out);
@@ -421,7 +443,7 @@ public class A2Factory {
 								&& value.toString().equals("osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version=1.1))\""))
 							continue keys;// hack for very old classes
 						additionalEntries.put(key.toString(), value.toString());
-						logger.log(DEBUG, () -> key + "=" + value);
+						//logger.log(DEBUG, () -> key + "=" + value);
 
 					}
 				}

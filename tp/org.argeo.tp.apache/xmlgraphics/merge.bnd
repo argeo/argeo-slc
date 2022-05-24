@@ -1,0 +1,10 @@
+Bundle-License: Apache-2.0
+Bundle-SymbolicName: org.apache.xmlgraphics
+SLC-Origin-M2: :2.7
+SLC-Origin-M2-Merge: \
+org.apache.xmlgraphics:xmlgraphics-commons
+Export-Package: org.apache.xmlgraphics.*
+Import-Package: \
+org.apache.fop.image.loader.batik;resolution:="optional", \
+*
+
