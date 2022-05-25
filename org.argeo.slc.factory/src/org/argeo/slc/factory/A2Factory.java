@@ -36,6 +36,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
+import java.util.zip.Deflater;
 
 import org.argeo.slc.DefaultCategoryNameVersion;
 import org.argeo.slc.DefaultNameVersion;
@@ -249,6 +250,8 @@ public class A2Factory {
 		try (InputStream in = Files.newInputStream(mergeBnd)) {
 			mergeProps.load(in);
 		}
+
+		// Version
 		String m2Version = mergeProps.getProperty(SLC_ORIGIN_M2.toString());
 		if (m2Version == null) {
 			logger.log(Level.WARNING, "Ignoring " + duDir + " as it is not an M2-based distribution unit");
@@ -258,6 +261,7 @@ public class A2Factory {
 			throw new IllegalStateException("Only the M2 version can be specified: " + m2Version);
 		}
 		m2Version = m2Version.substring(1);
+		mergeProps.put(ManifestConstants.BUNDLE_VERSION.toString(), m2Version);
 
 		String artifactsStr = mergeProps.getProperty(ManifestConstants.SLC_ORIGIN_M2_MERGE.toString());
 		String repoStr = mergeProps.containsKey(SLC_ORIGIN_M2_REPO.toString())
@@ -308,7 +312,7 @@ public class A2Factory {
 								out.write("\n".getBytes());
 								jarIn.transferTo(out);
 								if (logger.isLoggable(DEBUG))
-									logger.log(DEBUG, "Appended " + entry.getName());
+									logger.log(DEBUG, artifact.getArtifactId() + " - Appended " + entry.getName());
 							}
 						} else if (entry.getName().startsWith("org/apache/batik/")) {
 							logger.log(Level.WARNING, "Skip " + entry.getName());
@@ -359,7 +363,7 @@ public class A2Factory {
 						&& value.toString().equals("osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version=1.1))\""))
 					continue keys;// hack for very old classes
 				entries.put(key.toString(), value.toString());
-				//logger.log(DEBUG, () -> key + "=" + value);
+				// logger.log(DEBUG, () -> key + "=" + value);
 
 			}
 		} catch (Exception e) {
@@ -374,12 +378,12 @@ public class A2Factory {
 			manifest.getMainAttributes().putValue(key, value);
 		}
 
-		// Use Maven version as Bundle-Version
-		String bundleVersion = manifest.getMainAttributes().getValue(ManifestConstants.BUNDLE_VERSION.toString());
-		if (bundleVersion == null || bundleVersion.trim().equals("0")) {
-			// TODO check why it is sometimes set to "0"
-			manifest.getMainAttributes().putValue(ManifestConstants.BUNDLE_VERSION.toString(), m2Version);
-		}
+//		// Use Maven version as Bundle-Version
+//		String bundleVersion = manifest.getMainAttributes().getValue(ManifestConstants.BUNDLE_VERSION.toString());
+//		if (bundleVersion == null || bundleVersion.trim().equals("0")) {
+//			// TODO check why it is sometimes set to "0"
+//			manifest.getMainAttributes().putValue(ManifestConstants.BUNDLE_VERSION.toString(), m2Version);
+//		}
 		try (OutputStream out = Files.newOutputStream(manifestPath)) {
 			manifest.write(out);
 		}
@@ -443,7 +447,7 @@ public class A2Factory {
 								&& value.toString().equals("osgi.ee;filter:=\"(&(osgi.ee=JavaSE)(version=1.1))\""))
 							continue keys;// hack for very old classes
 						additionalEntries.put(key.toString(), value.toString());
-						//logger.log(DEBUG, () -> key + "=" + value);
+						// logger.log(DEBUG, () -> key + "=" + value);
 
 					}
 				}
@@ -474,7 +478,7 @@ public class A2Factory {
 		URL sourcesUrl = MavenConventionsUtils.mavenRepoUrl(repoStr, sourcesArtifact);
 		Path sourcesDownloaded = download(sourcesUrl, originBase, artifact, true);
 		processM2SourceJar(sourcesDownloaded, targetBundleDir);
-		logger.log(Level.DEBUG, () -> "Processed source " + sourcesDownloaded);
+		logger.log(Level.TRACE, () -> "Processed source " + sourcesDownloaded);
 
 	}
 
@@ -858,6 +862,28 @@ public class A2Factory {
 
 	/** Create a JAR file from a directory. */
 	protected Path createJar(Path bundleDir) throws IOException {
+		// Remove from source the resources already in the jar file
+//		Path srcDir = bundleDir.resolve("OSGI-OPT/src");
+//		Files.walkFileTree(srcDir, new SimpleFileVisitor<Path>() {
+//
+//			@Override
+//			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+//				// always keep .java file
+//				if (file.getFileName().toString().endsWith(".java"))
+//					return super.visitFile(file, attrs);
+//
+//				Path relPath = srcDir.relativize(file);
+//				Path bundlePath = bundleDir.resolve(relPath);
+//				if (Files.exists(bundlePath)) {
+//					Files.delete(file);
+//					logger.log(DEBUG, () -> "Removed " + file + " from sources.");
+//				}
+//				return super.visitFile(file, attrs);
+//			}
+//
+//		});
+
+		// Create the jar
 		Path jarPath = bundleDir.getParent().resolve(bundleDir.getFileName() + ".jar");
 		Path manifestPath = bundleDir.resolve("META-INF/MANIFEST.MF");
 		Manifest manifest;
@@ -865,6 +891,7 @@ public class A2Factory {
 			manifest = new Manifest(in);
 		}
 		try (JarOutputStream jarOut = new JarOutputStream(Files.newOutputStream(jarPath), manifest)) {
+			jarOut.setLevel(Deflater.DEFAULT_COMPRESSION);
 			Files.walkFileTree(bundleDir, new SimpleFileVisitor<Path>() {
 
 				@Override
@@ -896,9 +923,9 @@ public class A2Factory {
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty-websocket"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
-//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
-//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
 		System.exit(0);
 
 		// Eclipse
