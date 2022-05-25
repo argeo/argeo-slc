@@ -1,2 +1,4 @@
 org.apache.fop.image.loader.batik.ImageLoaderFactorySVG
 org.apache.fop.image.loader.batik.ImageLoaderFactoryWMF
+org.apache.fop.render.pdf.pdfbox.ImageLoaderFactoryPDF
+org.apache.fop.render.pdf.pdfbox.ImageLoaderFactoryImageRawData

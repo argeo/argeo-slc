@@ -5,6 +5,7 @@ SLC-Origin-M2-Merge: \
 org.apache.xmlgraphics:fop-core,\
 org.apache.xmlgraphics:fop-util,\
 org.apache.xmlgraphics:fop-events,\
+org.apache.xmlgraphics:fop-pdf-images,\
 
 Export-Package: org.apache.fop.*
 
