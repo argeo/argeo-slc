@@ -1,0 +1,14 @@
+Bundle-License: EPL-2.0
+Bundle-SymbolicName: org.junit.jupiter
+SLC-Origin-M2: :5.8.2
+SLC-Origin-M2-Merge: \
+org.junit.jupiter:junit-jupiter-api, \
+org.junit.jupiter:junit-jupiter-engine, \
+org.junit.jupiter:junit-jupiter-params, \
+
+Export-Package: org.junit.jupiter.*
+
+Import-Package: \
+com.googlecode.openbeans.*;resolution:="optional", \
+kotlin.*;resolution:="optional", \
+*

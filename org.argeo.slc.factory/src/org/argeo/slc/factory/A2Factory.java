@@ -290,19 +290,23 @@ public class A2Factory {
 				entries: while ((entry = jarIn.getNextJarEntry()) != null) {
 					if (entry.isDirectory())
 						continue entries;
-					if (entry.getName().endsWith(".RSA") || entry.getName().endsWith(".SF"))
+					else if (entry.getName().endsWith(".RSA") || entry.getName().endsWith(".SF"))
 						continue entries;
-					if (entry.getName().startsWith("META-INF/versions/"))
+					else if (entry.getName().startsWith("META-INF/versions/"))
 						continue entries;
-					if (entry.getName().startsWith("META-INF/maven/"))
+					else if (entry.getName().startsWith("META-INF/maven/"))
 						continue entries;
-					if (entry.getName().equals("module-info.class"))
+					else if (entry.getName().equals("module-info.class"))
 						continue entries;
-					if (entry.getName().equals("META-INF/NOTICE"))
+					else if (entry.getName().equals("META-INF/NOTICE"))
 						continue entries;
-					if (entry.getName().equals("META-INF/NOTICE.txt"))
+					else if (entry.getName().equals("META-INF/NOTICE.txt"))
 						continue entries;
-					if (entry.getName().equals("META-INF/LICENSE"))
+					else if (entry.getName().equals("META-INF/LICENSE"))
+						continue entries;
+					else if (entry.getName().equals("META-INF/LICENSE.md"))
+						continue entries;
+					else if (entry.getName().equals("META-INF/LICENSE-notice.md"))
 						continue entries;
 					Path target = targetBundleDir.resolve(entry.getName());
 					Files.createDirectories(target.getParent());
@@ -920,9 +924,9 @@ public class A2Factory {
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
 
 //		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
-		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
+//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty"));
-//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty.websocket"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));

@@ -1,0 +1,22 @@
+Bundle-License: EPL-2.0
+Bundle-SymbolicName: org.junit.platform
+SLC-Origin-M2: :1.8.2
+SLC-Origin-M2-Merge: \
+org.junit.platform:junit-platform-commons, \
+org.junit.platform:junit-platform-console, \
+org.junit.platform:junit-platform-engine, \
+org.junit.platform:junit-platform-reporting, \
+org.junit.platform:junit-platform-suite, \
+org.junit.platform:junit-platform-suite-api, \
+org.junit.platform:junit-platform-suite-commons, \
+org.junit.platform:junit-platform-suite-engine, \
+org.junit.platform:junit-platform-testkit, \
+org.junit.platform:junit-platform-launcher, \
+
+Export-Package: org.junit.platform.*
+
+Import-Package: \
+org.assertj.*;resolution:="optional", \
+groovy.lang.*;resolution:="optional", \
+org.fusesource.*;resolution:="optional", \
+*
