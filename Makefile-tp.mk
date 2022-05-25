@@ -26,6 +26,8 @@ bootstrap :
 
 clean:
 	rm -rf $(BOOTSTRAP_BASE)
+	rm -rf $(A2_OUTPUT)/org.argeo.tp
+	rm -rf $(A2_OUTPUT)/org.argeo.tp.*
 	$(MAKE) -f Makefile-ext.mk clean
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk

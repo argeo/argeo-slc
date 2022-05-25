@@ -1,0 +1,22 @@
+Bundle-SymbolicName: org.eclipse.jetty.websocket
+Bundle-License: Apache-2.0
+SLC-Origin-M2: :10.0.9
+SLC-Origin-M2-Merge: \
+org.eclipse.jetty.websocket:websocket-core-client, \
+org.eclipse.jetty.websocket:websocket-core-common, \
+org.eclipse.jetty.websocket:websocket-core-server, \
+org.eclipse.jetty.websocket:websocket-jetty-api, \
+org.eclipse.jetty.websocket:websocket-jetty-client, \
+org.eclipse.jetty.websocket:websocket-jetty-common, \
+org.eclipse.jetty.websocket:websocket-jetty-server,\
+org.eclipse.jetty.websocket:websocket-javax-client, \
+org.eclipse.jetty.websocket:websocket-javax-common, \
+org.eclipse.jetty.websocket:websocket-javax-server,\
+org.eclipse.jetty.websocket:websocket-servlet, \
+
+Export-Package: org.eclipse.jetty.*
+
+Import-Package: \
+!java.*, \
+org.eclipse.jetty.webapp;resolution:="optional", \
+*

@@ -300,6 +300,8 @@ public class A2Factory {
 						continue entries;
 					if (entry.getName().equals("META-INF/NOTICE"))
 						continue entries;
+					if (entry.getName().equals("META-INF/NOTICE.txt"))
+						continue entries;
 					if (entry.getName().equals("META-INF/LICENSE"))
 						continue entries;
 					Path target = targetBundleDir.resolve(entry.getName());
@@ -920,11 +922,12 @@ public class A2Factory {
 //		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty"));
-//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty-websocket"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty.websocket"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
 		System.exit(0);
 
