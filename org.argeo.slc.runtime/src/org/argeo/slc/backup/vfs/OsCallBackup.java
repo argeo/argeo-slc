@@ -1,4 +1,4 @@
-package org.argeo.maintenance.backup.vfs;
+package org.argeo.slc.backup.vfs;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;

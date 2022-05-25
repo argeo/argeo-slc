@@ -1,4 +1,4 @@
-package org.argeo.maintenance.backup.vfs;
+package org.argeo.slc.backup.vfs;
 
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.impl.DefaultFileSystemManager;
