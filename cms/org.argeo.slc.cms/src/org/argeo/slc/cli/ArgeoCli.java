@@ -1,4 +1,4 @@
-package org.argeo.slc.runtime;
+package org.argeo.slc.cli;
 
 import org.apache.commons.cli.Option;
 import org.argeo.cms.cli.CommandsCli;

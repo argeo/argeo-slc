@@ -9,7 +9,9 @@ BUNDLES = \
 org.argeo.slc.api \
 org.argeo.slc.factory \
 org.argeo.slc.runtime \
+cms/org.argeo.slc.cms \
 
+VPATH = .:cms
 
 clean:
 	rm -rf $(BUILD_BASE)
