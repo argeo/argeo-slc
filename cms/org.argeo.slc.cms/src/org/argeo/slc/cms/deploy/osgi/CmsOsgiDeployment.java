@@ -145,6 +145,7 @@ public class CmsOsgiDeployment implements Deployment {
 			deploymentData.getModulesToActivate(3).add("org.argeo.cms");
 
 			deploymentData.getModulesToActivate(4).add("org.argeo.cms.servlet");
+			deploymentData.getModulesToActivate(4).add("org.argeo.cms.ui.rap");
 			deploymentData.getModulesToActivate(4).add("org.argeo.cms.jcr");
 
 			deploymentData.getModulesToActivate(5).add("org.argeo.cms.e4.rap");
@@ -155,16 +156,20 @@ public class CmsOsgiDeployment implements Deployment {
 			deployment.setDeploymentData(deploymentData);
 			deployment.run();
 
-//			Path instanceData2 = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment2/data");
-//			Files.createDirectories(instanceData2);
-//			Integer httpPort2 = 7071;
-//			SimpleCmsTargetData targetData2 = new SimpleCmsTargetData(instanceData2, httpPort2);
-//
-//			CmsOsgiDeployment deployment2 = new CmsOsgiDeployment();
-//			deployment2.setDistribution(distribution);
-//			deployment2.setTargetData(targetData2);
-//			deployment2.setDeploymentData(deploymentData);
-//			deployment2.run();
+			boolean multiple = false;
+			if (multiple) {
+
+				Path instanceData2 = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment2/data");
+				Files.createDirectories(instanceData2);
+				Integer httpPort2 = 7071;
+				SimpleCmsTargetData targetData2 = new SimpleCmsTargetData(instanceData2, httpPort2);
+
+				CmsOsgiDeployment deployment2 = new CmsOsgiDeployment();
+				deployment2.setDistribution(distribution);
+				deployment2.setTargetData(targetData2);
+				deployment2.setDeploymentData(deploymentData);
+				deployment2.run();
+			}
 
 			deployment.getRuntimeContext().waitForStop(0);
 
