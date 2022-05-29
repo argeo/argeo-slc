@@ -1,9 +1,12 @@
 package org.argeo.slc.cms.deploy.osgi;
 
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.TreeMap;
@@ -15,7 +18,9 @@ import org.argeo.init.osgi.OsgiRuntimeContext;
 import org.argeo.slc.WellKnownConstants;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.cms.deploy.CmsDeployedSystem;
+import org.argeo.slc.cms.deploy.CmsDeploymentData;
 import org.argeo.slc.cms.deploy.CmsTargetData;
+import org.argeo.slc.cms.deploy.SimpleCmsDeploymentData;
 import org.argeo.slc.cms.deploy.SimpleCmsTargetData;
 import org.argeo.slc.cms.distribution.A2Distribution;
 import org.argeo.slc.deploy.DeployedSystem;
@@ -24,11 +29,15 @@ import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.TargetData;
 
 public class CmsOsgiDeployment implements Deployment {
+	private final static Logger logger = System.getLogger(CmsOsgiDeployment.class.getName());
 
 	private A2Distribution distribution;
 	private CmsTargetData targetData;
+	private CmsDeploymentData deploymentData;
 
 	private CmsDeployedSystem deployedSystem;
+
+	private OsgiRuntimeContext runtimeContext;
 
 	@Override
 	public void run() {
@@ -43,23 +52,45 @@ public class CmsOsgiDeployment implements Deployment {
 			config.put(OsgiBoot.PROP_ARGEO_OSGI_SOURCES, sourcesProperty.toString());
 
 			// target
-			config.put(WellKnownConstants.OSGI_INSTANCE_AREA, targetData.getInstanceData().toUri().toString());
+			config.put(WellKnownConstants.OSGI_INSTANCE_AREA,
+					targetData.getInstanceData().toRealPath().toUri().toString());
 			if (targetData.getHttpPort() != null) {
 				config.put(WellKnownConstants.OSGI_HTTP_PORT, targetData.getHttpPort().toString());
 			}
 
 			Path configurationArea = Files.createTempDirectory("slc-cms-test");
-			config.put(WellKnownConstants.OSGI_CONFIGURATION_AREA, configurationArea.toString());
+			config.put(WellKnownConstants.OSGI_CONFIGURATION_AREA, configurationArea.toUri().toString());
+
+			// modules activation
+			for (int startLevel = 0; startLevel <= 6; startLevel++) {
+				List<String> modules = deploymentData.getModulesToActivate(startLevel);
+				if (modules.size() != 0) {
+					String startProperty = String.join(",", modules);
+					config.put(OsgiBoot.PROP_ARGEO_OSGI_START + "." + startLevel + ".node", startProperty);
+				}
+			}
+
+			config.put("org.eclipse.equinox.http.jetty.autostart", "false");
+			config.put("org.osgi.framework.bootdelegation",
+					"com.sun.jndi.ldap,com.sun.jndi.ldap.sasl,com.sun.security.jgss,com.sun.jndi.dns,com.sun.nio.file,com.sun.nio.sctp");
+			config.put("eclipse.ignoreApp", "true");
+			config.put("osgi.noShutdown", "true");
+
+//			config.put("osgi.console", "true");
 
 			// initialise
-			OsgiRuntimeContext runtimeContext = new OsgiRuntimeContext(config);
+			for (String key : config.keySet()) {
+//				System.out.println(key + "=" + config.get(key));
+				logger.log(Level.INFO, () -> key + "=" + config.get(key));
+			}
+
+			runtimeContext = new OsgiRuntimeContext(config);
 			runtimeContext.run();
 
 			deployedSystem = new CmsOsgiDeployedSystem(runtimeContext.getFramework().getBundleContext(), distribution,
-					targetData, null);
+					targetData, deploymentData);
 
-			runtimeContext.waitForStop(0);
-		} catch (IOException | InterruptedException e) {
+		} catch (Exception e) {
 			throw new IllegalStateException("Cannot run OSGi deployment", e);
 		}
 
@@ -77,8 +108,7 @@ public class CmsOsgiDeployment implements Deployment {
 
 	@Override
 	public void setDeploymentData(DeploymentData deploymentData) {
-		// TODO Auto-generated method stub
-
+		this.deploymentData = (CmsDeploymentData) deploymentData;
 	}
 
 	@Override
@@ -86,24 +116,62 @@ public class CmsOsgiDeployment implements Deployment {
 		this.distribution = (A2Distribution) distribution;
 	}
 
-	public static void main(String[] args) throws IOException {
-		Path userHome = Paths.get(System.getProperty("user.home"));
+	public OsgiRuntimeContext getRuntimeContext() {
+		return runtimeContext;
+	}
 
-		// distribution
-		Path a2Base = userHome.resolve("dev/git/unstable/output/a2");
-		A2Distribution distribution = new A2Distribution();
-		distribution.getA2Sources().add(new FsA2Source(a2Base));
+	public static void main(String[] args) {
+		try {
+			Path userHome = Paths.get(System.getProperty("user.home"));
 
-		// target data
-		Path instanceData = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment/data");
-		Files.createDirectories(instanceData);
-		Integer httpPort = 7070;
-		SimpleCmsTargetData targetData = new SimpleCmsTargetData(instanceData, httpPort);
+			// distribution
+			Path a2Base = userHome.resolve("dev/git/unstable/output/a2");
+			A2Distribution distribution = new A2Distribution();
+			distribution.getA2Sources().add(new FsA2Source(a2Base));
 
-		CmsOsgiDeployment deployment = new CmsOsgiDeployment();
-		deployment.setDistribution(distribution);
-		deployment.setTargetData(targetData);
-		deployment.run();
+			// target data
+			Path instanceData = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment/data");
+			Files.createDirectories(instanceData);
+			Integer httpPort = 7070;
+			SimpleCmsTargetData targetData = new SimpleCmsTargetData(instanceData, httpPort);
+
+			// deployment data
+			SimpleCmsDeploymentData deploymentData = new SimpleCmsDeploymentData();
+			deploymentData.getModulesToActivate(2).add("org.eclipse.equinox.http.servlet");
+			deploymentData.getModulesToActivate(2).add("org.eclipse.equinox.cm");
+			deploymentData.getModulesToActivate(2).add("org.apache.felix.scr");
+			deploymentData.getModulesToActivate(2).add("org.eclipse.rap.rwt.osgi");
+
+			deploymentData.getModulesToActivate(3).add("org.argeo.cms");
+
+			deploymentData.getModulesToActivate(4).add("org.argeo.cms.servlet");
+			deploymentData.getModulesToActivate(4).add("org.argeo.cms.jcr");
+
+			deploymentData.getModulesToActivate(5).add("org.argeo.cms.e4.rap");
+
+			CmsOsgiDeployment deployment = new CmsOsgiDeployment();
+			deployment.setDistribution(distribution);
+			deployment.setTargetData(targetData);
+			deployment.setDeploymentData(deploymentData);
+			deployment.run();
+
+//			Path instanceData2 = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment2/data");
+//			Files.createDirectories(instanceData2);
+//			Integer httpPort2 = 7071;
+//			SimpleCmsTargetData targetData2 = new SimpleCmsTargetData(instanceData2, httpPort2);
+//
+//			CmsOsgiDeployment deployment2 = new CmsOsgiDeployment();
+//			deployment2.setDistribution(distribution);
+//			deployment2.setTargetData(targetData2);
+//			deployment2.setDeploymentData(deploymentData);
+//			deployment2.run();
+
+			deployment.getRuntimeContext().waitForStop(0);
+
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 }
