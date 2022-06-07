@@ -926,10 +926,10 @@ public class A2Factory {
 //		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.osgi"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
-//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
 		System.exit(0);
