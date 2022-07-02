@@ -30,6 +30,7 @@ class Make {
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 
 		// Maven
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.osgi"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
 		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
