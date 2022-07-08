@@ -1,5 +1,6 @@
 Bundle-License: Apache-2.0
-Bundle-SymbolicName: org.apache.commons.fileupload
-Import-Package: javax.portlet;resolution:=optional,\
+Import-Package:\
+javax.portlet;resolution:=optional,\
+javax.servlet.*;resolution:=optional,\
 *
 SLC-Origin-M2: commons-fileupload:commons-fileupload:1.4

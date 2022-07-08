@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.8"?>
-<target name="(output) argeo-tp-swt">
+<target name="Argeo TP SWT">
 	<locations>
-		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.eclipse.swt" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/../output/a2/swt/rcp/org.argeo.tp.swt" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/../output/a2/lib/linux/x86_64/swt/rcp/org.argeo.tp.swt" type="Directory"/>
 		<location type="Target" uri="file:${project_loc:/argeo-slc-unstable}/sdk/output-argeo-tp-backend.target"/>
 	</locations>
 </target>

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeMap;
 import java.util.jar.Attributes;
@@ -58,13 +59,35 @@ public class A2Factory {
 
 	private Path originBase;
 	private Path a2Base;
+	private Path a2LibBase;
+	private Path descriptorsBase;
+
+	private Properties uris = new Properties();
+
+	private boolean includeSources = true;
 
 	/** key is URI prefix, value list of base URLs */
 	private Map<String, List<String>> mirrors = new HashMap<String, List<String>>();
 
-	public A2Factory(Path a2Base) {
+	public A2Factory(Path a2Base, Path descriptorsBase, boolean includeSources) {
+		Objects.requireNonNull(a2Base);
+		Objects.requireNonNull(descriptorsBase);
 		this.originBase = Paths.get(System.getProperty("user.home"), ".cache", "argeo/slc/origin");
 		this.a2Base = a2Base;
+		this.a2LibBase = a2Base.resolve("lib");
+		this.descriptorsBase = descriptorsBase;
+		if (!Files.exists(this.descriptorsBase))
+			throw new IllegalArgumentException(this.descriptorsBase + " does not exist");
+		this.includeSources = includeSources;
+
+		Path urisPath = this.descriptorsBase.resolve("uris.properties");
+		if (Files.exists(urisPath)) {
+			try (InputStream in = Files.newInputStream(urisPath)) {
+				uris.load(in);
+			} catch (IOException e) {
+				throw new IllegalStateException("Cannot load " + urisPath, e);
+			}
+		}
 
 		// TODO make it configurable
 		List<String> eclipseMirrors = new ArrayList<>();
@@ -80,8 +103,9 @@ public class A2Factory {
 	 */
 
 	/** Process a whole category/group id. */
-	public void processCategory(Path targetCategoryBase) {
+	public void processCategory(Path categoryRelativePath) {
 		try {
+			Path targetCategoryBase = descriptorsBase.resolve(categoryRelativePath);
 			DirectoryStream<Path> bnds = Files.newDirectoryStream(targetCategoryBase,
 					(p) -> p.getFileName().toString().endsWith(".bnd") && !p.getFileName().toString().equals(COMMON_BND)
 							&& !p.getFileName().toString().equals(MERGE_BND));
@@ -94,15 +118,17 @@ public class A2Factory {
 				processM2BasedDistributionUnit(duDir);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Cannot process category " + targetCategoryBase, e);
+			throw new RuntimeException("Cannot process category " + categoryRelativePath, e);
 		}
 	}
 
 	/** Process a standalone Maven artifact. */
 	public void processSingleM2ArtifactDistributionUnit(Path bndFile) {
 		try {
-			String category = bndFile.getParent().getFileName().toString();
-			Path targetCategoryBase = a2Base.resolve(category);
+//			String category = bndFile.getParent().getFileName().toString();
+			Path categoryRelativePath = descriptorsBase.relativize(bndFile.getParent());
+			Path targetCategoryBase = a2Base.resolve(categoryRelativePath);
+
 			Properties fileProps = new Properties();
 			try (InputStream in = Files.newInputStream(bndFile)) {
 				fileProps.load(in);
@@ -111,8 +137,7 @@ public class A2Factory {
 					? fileProps.getProperty(SLC_ORIGIN_M2_REPO.toString())
 					: null;
 
-			if (!fileProps.containsKey(BUNDLE_SYMBOLICNAME.toString())
-					&& !fileProps.containsKey(ManifestConstants.SLC_ORIGIN_MANIFEST_NOT_MODIFIED.toString())) {
+			if (!fileProps.containsKey(BUNDLE_SYMBOLICNAME.toString())) {
 				// use file name as symbolic name
 				String symbolicName = bndFile.getFileName().toString();
 				symbolicName = symbolicName.substring(0, symbolicName.length() - ".bnd".length());
@@ -139,8 +164,9 @@ public class A2Factory {
 	/** Process multiple Maven artifacts. */
 	public void processM2BasedDistributionUnit(Path duDir) {
 		try {
-			String category = duDir.getParent().getFileName().toString();
-			Path targetCategoryBase = a2Base.resolve(category);
+			// String category = duDir.getParent().getFileName().toString();
+			Path categoryRelativePath = descriptorsBase.relativize(duDir.getParent());
+			Path targetCategoryBase = a2Base.resolve(categoryRelativePath);
 
 			// merge
 			Path mergeBnd = duDir.resolve(MERGE_BND);
@@ -210,8 +236,7 @@ public class A2Factory {
 					}
 				}
 				mergeProps.put(ManifestConstants.SLC_ORIGIN_M2.toString(), artifact.toM2Coordinates());
-				if (!mergeProps.containsKey(BUNDLE_SYMBOLICNAME.toString())
-						&& !mergeProps.containsKey(ManifestConstants.SLC_ORIGIN_MANIFEST_NOT_MODIFIED.toString())) {
+				if (!mergeProps.containsKey(BUNDLE_SYMBOLICNAME.toString())) {
 					// use file name as symbolic name
 					String symbolicName = p.getFileName().toString();
 					symbolicName = symbolicName.substring(0, symbolicName.length() - ".bnd".length());
@@ -480,6 +505,8 @@ public class A2Factory {
 	/** Download and integrates sources for a single Maven artifact. */
 	protected void downloadAndProcessM2Sources(String repoStr, DefaultArtifact artifact, Path targetBundleDir)
 			throws IOException {
+		if (!includeSources)
+			return;
 		DefaultArtifact sourcesArtifact = new DefaultArtifact(artifact.toM2Coordinates(), "sources");
 		URL sourcesUrl = MavenConventionsUtils.mavenRepoUrl(repoStr, sourcesArtifact);
 		Path sourcesDownloaded = download(sourcesUrl, originBase, artifact, true);
@@ -540,10 +567,11 @@ public class A2Factory {
 	 */
 
 	/** Process an archive in Eclipse format. */
-	public void processEclipseArchive(Path duDir) {
+	public void processEclipseArchive(Path relativePath) {
 		try {
-			String category = duDir.getParent().getFileName().toString();
-			Path targetCategoryBase = a2Base.resolve(category);
+			Path categoryRelativePath = relativePath.getParent();
+			// String category = categoryRelativePath.getFileName().toString();
+			Path targetCategoryBase = a2Base.resolve(categoryRelativePath);
 			Files.createDirectories(targetCategoryBase);
 			// first delete all directories from previous builds
 			for (Path dir : Files.newDirectoryStream(targetCategoryBase, (p) -> Files.isDirectory(p))) {
@@ -552,12 +580,19 @@ public class A2Factory {
 
 			Files.createDirectories(originBase);
 
+			Path duDir = descriptorsBase.resolve(relativePath);
 			Path commonBnd = duDir.resolve(COMMON_BND);
 			Properties commonProps = new Properties();
 			try (InputStream in = Files.newInputStream(commonBnd)) {
 				commonProps.load(in);
 			}
 			String url = commonProps.getProperty(ManifestConstants.SLC_ORIGIN_URI.toString());
+			if (url == null) {
+				url = uris.getProperty(relativePath.getFileName().toString());
+				if (url == null)
+					throw new IllegalStateException("No url available for " + duDir);
+				commonProps.put(ManifestConstants.SLC_ORIGIN_URI.toString(), url);
+			}
 			Path downloaded = tryDownload(url, originBase);
 
 			FileSystem zipFs = FileSystems.newFileSystem(downloaded, (ClassLoader) null);
@@ -598,12 +633,12 @@ public class A2Factory {
 									return FileVisitResult.CONTINUE;
 								}
 							}
-							if (file.getFileName().toString().contains(".source_")) {
+							if (includeSources && file.getFileName().toString().contains(".source_")) {
 								processEclipseSourceJar(file, targetCategoryBase);
 								logger.log(Level.DEBUG, () -> "Processed source " + file);
 
 							} else {
-								processBundleJar(file, targetCategoryBase, new HashMap<>());
+								processBundleJar(file, targetCategoryBase, new HashMap(commonProps));
 								logger.log(Level.DEBUG, () -> "Processed " + file);
 							}
 							break includeMatchers;
@@ -618,7 +653,7 @@ public class A2Factory {
 				createJar(dir);
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("Cannot process " + duDir, e);
+			throw new RuntimeException("Cannot process " + relativePath, e);
 		}
 
 	}
@@ -701,28 +736,42 @@ public class A2Factory {
 //				manifest.getEntries().remove(key);
 //			}
 
-			String symbolicNameFromEntries = entries.get(BUNDLE_SYMBOLICNAME.toString());
-			String versionFromEntries = entries.get(BUNDLE_VERSION.toString());
+			String ourSymbolicName = entries.get(BUNDLE_SYMBOLICNAME.toString());
+			String ourVersion = entries.get(BUNDLE_VERSION.toString());
 
-			if (symbolicNameFromEntries != null && versionFromEntries != null) {
-				nameVersion = new DefaultNameVersion(symbolicNameFromEntries, versionFromEntries);
+			if (ourSymbolicName != null && ourVersion != null) {
+				nameVersion = new DefaultNameVersion(ourSymbolicName, ourVersion);
 			} else {
 				nameVersion = nameVersionFromManifest(manifest);
-				if (versionFromEntries != null && !nameVersion.getVersion().equals(versionFromEntries)) {
-					logger.log(Level.WARNING, "Original version is " + nameVersion.getVersion()
-							+ " while new version is " + versionFromEntries);
+				if (ourVersion != null && !nameVersion.getVersion().equals(ourVersion)) {
+					logger.log(Level.WARNING,
+							"Original version is " + nameVersion.getVersion() + " while new version is " + ourVersion);
+					entries.put(BUNDLE_VERSION.toString(), ourVersion);
 				}
-				if (symbolicNameFromEntries != null) {
+				if (ourSymbolicName != null) {
 					// we always force our symbolic name
-					nameVersion.setName(symbolicNameFromEntries);
+					nameVersion.setName(ourSymbolicName);
 				}
 			}
 			targetBundleDir = targetBase.resolve(nameVersion.getName() + "." + nameVersion.getBranch());
+
+			// force Java 9 module name
+			entries.put(ManifestConstants.AUTOMATIC_MODULE_NAME.toString(), nameVersion.getName());
 
 			// TODO make it less dangerous?
 //			if (Files.exists(targetBundleDir)) {
 //				deleteDirectory(targetBundleDir);
 //			}
+
+			boolean isNative = false;
+			String os = null;
+			String arch = null;
+			if (targetBundleDir.startsWith(a2LibBase)) {
+				isNative = true;
+				Path libRelativePath = a2LibBase.relativize(targetBundleDir);
+				os = libRelativePath.getName(0).toString();
+				arch = libRelativePath.getName(1).toString();
+			}
 
 			// copy entries
 			JarEntry entry;
@@ -731,9 +780,43 @@ public class A2Factory {
 					continue entries;
 				if (entry.getName().endsWith(".RSA") || entry.getName().endsWith(".SF"))
 					continue entries;
+				if (entry.getName().endsWith("module-info.class")) // skip Java 9 module info
+					continue entries;
+				if (entry.getName().startsWith("META-INF/versions/")) // skip multi-version
+					continue entries;
+				if (entry.getName().startsWith("OSGI-OPT/src/")) // skip embedded sources
+					continue entries;
 				Path target = targetBundleDir.resolve(entry.getName());
 				Files.createDirectories(target.getParent());
 				Files.copy(jarIn, target);
+
+				// native libraries
+				if (isNative && (entry.getName().endsWith(".so") || entry.getName().endsWith(".dll")
+						|| entry.getName().endsWith(".jnilib"))) {
+					Path categoryDir = targetBundleDir.getParent();
+//					String[] segments = categoryDir.getFileName().toString().split("\\.");
+//					String arch = segments[segments.length - 1];
+//					String os = segments[segments.length - 2];
+					boolean copyDll = false;
+					Path targetDll = categoryDir.resolve(target.getFileName());
+					if (nameVersion.getName().equals("com.sun.jna")) {
+						if (arch.equals("x86_64"))
+							arch = "x86-64";
+						if (os.equals("macosx"))
+							os = "darwin";
+						if (target.getParent().getFileName().toString().equals(os + "-" + arch)) {
+							copyDll = true;
+						}
+					} else {
+						copyDll = true;
+					}
+					if (copyDll) {
+						if (Files.exists(targetDll))
+							Files.delete(targetDll);
+						Files.copy(target, targetDll);
+					}
+					Files.delete(target);
+				}
 				logger.log(Level.TRACE, () -> "Copied " + target);
 			}
 
@@ -746,12 +829,17 @@ public class A2Factory {
 				if (previousValue != null && !previousValue.equals(value)) {
 					if (ManifestConstants.IMPORT_PACKAGE.toString().equals(key)
 							|| ManifestConstants.EXPORT_PACKAGE.toString().equals(key))
-						logger.log(Level.WARNING, file.getFileName() + ": " + key + " was modified");
-
+						logger.log(Level.TRACE, file.getFileName() + ": " + key + " was modified");
 					else
 						logger.log(Level.WARNING, file.getFileName() + ": " + key + " was " + previousValue
 								+ ", overridden with " + value);
 				}
+
+				// hack to remove unresolvable
+				if (key.equals("Provide-Capability") || key.equals("Require-Capability"))
+					if (nameVersion.getName().equals("osgi.core") || nameVersion.getName().equals("osgi.cmpn")) {
+						manifest.getMainAttributes().remove(key);
+					}
 			}
 			try (OutputStream out = Files.newOutputStream(manifestPath)) {
 				manifest.write(out);
@@ -919,9 +1007,8 @@ public class A2Factory {
 	/** For development purproses. */
 	public static void main(String[] args) {
 		Path factoryBase = Paths.get("../../output/a2").toAbsolutePath().normalize();
-		A2Factory factory = new A2Factory(factoryBase);
-
 		Path descriptorsBase = Paths.get("../tp").toAbsolutePath().normalize();
+		A2Factory factory = new A2Factory(factoryBase, descriptorsBase, true);
 
 //		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
@@ -929,31 +1016,43 @@ public class A2Factory {
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.osgi"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
-		System.exit(0);
+
+		// SDK
+		factory.processCategory(Paths.get("org.argeo.tp.sdk"));
 
 		// Eclipse
-		factory.processEclipseArchive(
-				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rwt").resolve("eclipse-rwt"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-swt"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-nebula"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-equinox"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
+		factory.processCategory(Paths.get("osgi/api/org.argeo.tp.osgi"));
+		factory.processEclipseArchive(Paths.get("osgi/equinox/org.argeo.tp.osgi", "eclipse-equinox"));
+
+		factory.processEclipseArchive(Paths.get("org.argeo.tp.eclipse", "eclipse-equinox"));
+
+		factory.processEclipseArchive(Paths.get("swt/rap/org.argeo.tp.swt", "eclipse-rap"));
+		factory.processEclipseArchive(Paths.get("swt/rap/org.argeo.tp.swt.workbench", "eclipse-rap"));
+
+		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+
+		factory.processEclipseArchive(Paths.get("lib/linux/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+		factory.processEclipseArchive(Paths.get("lib/linux/aarch64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+		factory.processEclipseArchive(Paths.get("lib/win32/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+		factory.processEclipseArchive(Paths.get("lib/macosx/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+		System.exit(1);
+		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt", "eclipse-nebula"));
+		// factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt",
+		// "eclipse-equinox"));
+		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt.workbench", "eclipse-rcp"));
+		factory.processCategory(Paths.get("swt/rcp/org.argeo.tp.swt.workbench"));
 
 		// Maven
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jcr"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.poi"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
+		factory.processCategory(Paths.get("org.argeo.tp"));
+		factory.processCategory(Paths.get("org.argeo.tp.apache"));
+		factory.processCategory(Paths.get("org.argeo.tp.jetty"));
+		factory.processCategory(Paths.get("org.argeo.tp.jcr"));
+		factory.processCategory(Paths.get("org.argeo.tp.formats"));
+		factory.processCategory(Paths.get("org.argeo.tp.poi"));
+		factory.processCategory(Paths.get("org.argeo.tp.gis"));
 	}
 }

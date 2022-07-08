@@ -1,3 +1,4 @@
 Import-Package: \
 org.apache.commons.logging,\
+org.osgi.*;version=0.0.0§,\
 *

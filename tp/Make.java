@@ -5,40 +5,47 @@ import org.argeo.slc.factory.A2Factory;
 
 class Make {
 	public static void main(String[] args) {
-		if(args.length < 1) {
+		if (args.length < 1) {
 			System.err.println("Usage: <path to a2 output dir>");
 			System.exit(1);
 		}
 		Path a2Base = Paths.get(args[0]).toAbsolutePath().normalize();
-		A2Factory factory = new A2Factory(a2Base);
-
 		Path descriptorsBase = Paths.get("./tp").toAbsolutePath().normalize();
+		A2Factory factory = new A2Factory(a2Base, descriptorsBase, true);
 
-//		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
-//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp/slf4j"));
-//		System.exit(0);
+		// SDK
+		factory.processCategory(Paths.get("org.argeo.tp.sdk"));
 
 		// Eclipse
-		factory.processEclipseArchive(
-				descriptorsBase.resolve("org.argeo.tp.eclipse.equinox").resolve("eclipse-equinox"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rwt").resolve("eclipse-rwt"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rap").resolve("eclipse-rap"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-swt"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-nebula"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.swt").resolve("eclipse-equinox"));
-		factory.processEclipseArchive(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp").resolve("eclipse-rcp"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
+		factory.processCategory(Paths.get("osgi/api/org.argeo.tp.osgi"));
+		factory.processEclipseArchive(Paths.get("osgi/equinox/org.argeo.tp.osgi", "eclipse-equinox"));
+
+		factory.processEclipseArchive(Paths.get("org.argeo.tp.eclipse", "eclipse-equinox"));
+
+		factory.processEclipseArchive(Paths.get("swt/rap/org.argeo.tp.swt", "eclipse-rap"));
+		factory.processEclipseArchive(Paths.get("swt/rap/org.argeo.tp.swt.workbench", "eclipse-rap"));
+		
+		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+		
+		factory.processEclipseArchive(Paths.get("lib/linux/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+		factory.processEclipseArchive(Paths.get("lib/linux/aarch64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+		factory.processEclipseArchive(Paths.get("lib/win32/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+		factory.processEclipseArchive(Paths.get("lib/macosx/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+
+		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt", "eclipse-nebula"));
+		// factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt",
+		// "eclipse-equinox"));
+		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt.workbench", "eclipse-rcp"));
+		factory.processCategory(Paths.get("swt/rcp/org.argeo.tp.swt.workbench"));
 
 		// Maven
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.osgi"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jetty"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.jcr"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.poi"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
+		factory.processCategory(Paths.get("org.argeo.tp"));
+		factory.processCategory(Paths.get("org.argeo.tp.apache"));
+		factory.processCategory(Paths.get("org.argeo.tp.jetty"));
+		factory.processCategory(Paths.get("org.argeo.tp.jcr"));
+		factory.processCategory(Paths.get("org.argeo.tp.formats"));
+		factory.processCategory(Paths.get("org.argeo.tp.poi"));
+		factory.processCategory(Paths.get("org.argeo.tp.gis"));
 	}
 
 }
