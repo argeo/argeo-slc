@@ -784,6 +784,9 @@ public class A2Factory {
 					continue entries;
 				if (entry.getName().startsWith("META-INF/versions/")) // skip multi-version
 					continue entries;
+				// skip file system providers as they cause issues with native image
+				if (entry.getName().startsWith("META-INF/services/java.nio.file.spi.FileSystemProvider")) 
+					continue entries;
 				if (entry.getName().startsWith("OSGI-OPT/src/")) // skip embedded sources
 					continue entries;
 				Path target = targetBundleDir.resolve(entry.getName());
