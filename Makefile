@@ -42,7 +42,8 @@ native-image:
 	mkdir -p $(A2_OUTPUT)/libexec/$(A2_CATEGORY)
 	cd $(A2_OUTPUT)/libexec/$(A2_CATEGORY) && /opt/graalvm-ce/bin/native-image \
 		-cp $(A2_CLASSPATH):$(A2_BUNDLES_CLASSPATH) org.argeo.slc.tool.Main \
-		--enable-url-protocols=http,https -H:AdditionalSecurityProviders=sun.security.jgss.SunProvider \
+		--enable-url-protocols=http,https \
+		-H:AdditionalSecurityProviders=sun.security.jgss.SunProvider,org.bouncycastle.jce.provider.BouncyCastleProvider,net.i2p.crypto.eddsa.EdDSASecurityProvider \
 		--initialize-at-build-time=org.argeo.init.logging.ThinLogging,org.slf4j.LoggerFactory \
 		--no-fallback 
  

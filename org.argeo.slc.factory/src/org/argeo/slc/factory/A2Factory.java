@@ -1019,10 +1019,11 @@ public class A2Factory {
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.osgi"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
-//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
+		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
+		System.exit(1);
 
 		// SDK
 		factory.processCategory(Paths.get("org.argeo.tp.sdk"));
@@ -1042,7 +1043,7 @@ public class A2Factory {
 		factory.processEclipseArchive(Paths.get("lib/linux/aarch64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
 		factory.processEclipseArchive(Paths.get("lib/win32/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
 		factory.processEclipseArchive(Paths.get("lib/macosx/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
-		System.exit(1);
+
 		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt", "eclipse-nebula"));
 		// factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt",
 		// "eclipse-equinox"));

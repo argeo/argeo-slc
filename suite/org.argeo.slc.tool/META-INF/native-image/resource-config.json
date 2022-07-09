@@ -8,6 +8,9 @@
       "pattern":"\\QMETA-INF/services/javax.xml.validation.SchemaFactory\\E"
     }, 
     {
+      "pattern":"\\Qorg/apache/sshd/sshd-version.properties\\E"
+    }, 
+    {
       "pattern":"\\Qorg/argeo/cms/acr/schemas/DSMLv2.xsd\\E"
     }, 
     {
@@ -78,6 +81,9 @@
     }, 
     {
       "pattern":"\\Qorg/eclipse/swt/internal/gtk/swt_theming_fixes_gtk_3_24_5.css\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
     }
   ]},
   "bundles":[
@@ -97,7 +103,7 @@
     }, 
     {
       "name":"org.eclipse.swt.internal.SWTMessages",
-      "locales":[""]
+      "locales":["und"]
     }, 
     {
       "name":"sun.security.util.Resources",

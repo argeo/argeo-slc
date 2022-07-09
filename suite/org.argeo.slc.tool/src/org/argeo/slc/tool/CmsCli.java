@@ -49,10 +49,10 @@ public class CmsCli extends CommandsCli {
 		@Override
 		public String apply(List<String> args) {
 			CommandLine cl = toCommandLine(args);
-			String dataÜath = cl.getOptionValue(dataOption);
+			String dataPath = cl.getOptionValue(dataOption);
 			boolean ui = cl.hasOption(uiOption);
 
-			Path instancePath = Paths.get(dataÜath);
+			Path instancePath = Paths.get(dataPath);
 			System.setProperty("osgi.instance.area", instancePath.toUri().toString());
 
 			StaticCms staticCms = new StaticCms() {

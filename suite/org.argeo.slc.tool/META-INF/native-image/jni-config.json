@@ -20,11 +20,53 @@
   ]
 },
 {
+  "name":"java.lang.String",
+  "methods":[
+    {"name":"<init>","parameterTypes":["byte[]"] }, 
+    {"name":"getBytes","parameterTypes":[] }
+  ]
+},
+{
   "name":"java.lang.Throwable",
   "methods":[{"name":"addSuppressed","parameterTypes":["java.lang.Throwable"] }]
 },
 {
   "name":"jdk.internal.loader.ClassLoaders$PlatformClassLoader"
+},
+{
+  "name":"org.apache.tomcat.jni.FileInfo",
+  "fields":[
+    {"name":"atime"}, 
+    {"name":"csize"}, 
+    {"name":"ctime"}, 
+    {"name":"device"}, 
+    {"name":"filehand"}, 
+    {"name":"filetype"}, 
+    {"name":"fname"}, 
+    {"name":"group"}, 
+    {"name":"inode"}, 
+    {"name":"mtime"}, 
+    {"name":"name"}, 
+    {"name":"nlink"}, 
+    {"name":"pool"}, 
+    {"name":"protection"}, 
+    {"name":"size"}, 
+    {"name":"user"}, 
+    {"name":"valid"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.tomcat.jni.Sockaddr",
+  "fields":[
+    {"name":"family"}, 
+    {"name":"hostname"}, 
+    {"name":"next"}, 
+    {"name":"pool"}, 
+    {"name":"port"}, 
+    {"name":"servname"}
+  ],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
   "name":"org.eclipse.swt.browser.WebKit",
@@ -174,16 +216,16 @@
 {
   "name":"org.eclipse.swt.internal.gtk3.GdkEventKey",
   "fields":[
-    {"name":"window"},
-    {"name":"send_event"},
-    {"name":"time"},
-    {"name":"state"},
-    {"name":"keyval"},
-    {"name":"length"},
-    {"name":"string"},
-    {"name":"is_modifier"},
-    {"name":"hardware_keycode"},
-    {"name":"group"}
+    {"name":"group"}, 
+    {"name":"hardware_keycode"}, 
+    {"name":"is_modifier"}, 
+    {"name":"keyval"}, 
+    {"name":"length"}, 
+    {"name":"send_event"}, 
+    {"name":"state"}, 
+    {"name":"string"}, 
+    {"name":"time"}, 
+    {"name":"window"}
   ]
 },
 {
