@@ -29,6 +29,9 @@ public class BouncyCastleFeature implements Feature {
 		RuntimeClassInitialization.initializeAtBuildTime("net.i2p.crypto.eddsa");
 		Security.addProvider(new EdDSASecurityProvider());
 
+		// required for Tomcat JNI DLL to load properly
+		RuntimeClassInitialization.initializeAtBuildTime("org.apache.tomcat.jni");
+
 		RuntimeClassInitializationSupport rci = ImageSingletons.lookup(RuntimeClassInitializationSupport.class);
 		rci.rerunInitialization("org.bouncycastle.jcajce.provider.drbg.DRBG$Default", "dependency with native random");
 		rci.rerunInitialization("org.bouncycastle.jcajce.provider.drbg.DRBG$NonceAndIV",
