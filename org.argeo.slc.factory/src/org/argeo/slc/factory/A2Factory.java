@@ -648,7 +648,8 @@ public class A2Factory {
 				}
 			});
 
-			DirectoryStream<Path> dirs = Files.newDirectoryStream(targetCategoryBase, (p) -> Files.isDirectory(p));
+			DirectoryStream<Path> dirs = Files.newDirectoryStream(targetCategoryBase,
+					(p) -> Files.isDirectory(p) && p.getFileName().toString().indexOf('.') >= 0);
 			for (Path dir : dirs) {
 				createJar(dir);
 			}
@@ -785,7 +786,7 @@ public class A2Factory {
 				if (entry.getName().startsWith("META-INF/versions/")) // skip multi-version
 					continue entries;
 				// skip file system providers as they cause issues with native image
-				if (entry.getName().startsWith("META-INF/services/java.nio.file.spi.FileSystemProvider")) 
+				if (entry.getName().startsWith("META-INF/services/java.nio.file.spi.FileSystemProvider"))
 					continue entries;
 				if (entry.getName().startsWith("OSGI-OPT/src/")) // skip embedded sources
 					continue entries;
@@ -801,7 +802,7 @@ public class A2Factory {
 //					String arch = segments[segments.length - 1];
 //					String os = segments[segments.length - 2];
 					boolean copyDll = false;
-					Path targetDll = categoryDir.resolve(target.getFileName());
+					Path targetDll = categoryDir.resolve(targetBundleDir.relativize(target));
 					if (nameVersion.getName().equals("com.sun.jna")) {
 						if (arch.equals("x86_64"))
 							arch = "x86-64";
@@ -810,10 +811,12 @@ public class A2Factory {
 						if (target.getParent().getFileName().toString().equals(os + "-" + arch)) {
 							copyDll = true;
 						}
+						targetDll = categoryDir.resolve(target.getFileName());
 					} else {
 						copyDll = true;
 					}
 					if (copyDll) {
+						Files.createDirectories(targetDll.getParent());
 						if (Files.exists(targetDll))
 							Files.delete(targetDll);
 						Files.copy(target, targetDll);
@@ -1019,11 +1022,11 @@ public class A2Factory {
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.osgi"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp"));
-		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
+//		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.apache"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
-		System.exit(1);
+//		System.exit(1);
 
 		// SDK
 		factory.processCategory(Paths.get("org.argeo.tp.sdk"));
@@ -1043,6 +1046,8 @@ public class A2Factory {
 		factory.processEclipseArchive(Paths.get("lib/linux/aarch64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
 		factory.processEclipseArchive(Paths.get("lib/win32/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
 		factory.processEclipseArchive(Paths.get("lib/macosx/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
+
+		System.exit(1);
 
 		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt", "eclipse-nebula"));
 		// factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt",
