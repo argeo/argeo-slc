@@ -3,7 +3,9 @@ package org.argeo.slc.tool;
 import java.security.Security;
 
 import org.apache.commons.cli.Option;
-import org.argeo.cms.cli.CommandsCli;
+import org.argeo.api.cli.CommandsCli;
+import org.argeo.cms.ssh.cli.SshCli;
+import org.argeo.cms.swt.rcp.cli.CmsCli;
 import org.argeo.slc.cli.posix.PosixCommands;
 import org.argeo.slc.tool.swt.MiniDesktopCli;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;

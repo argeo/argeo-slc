@@ -1,6 +1,6 @@
 package org.argeo.slc.cli.posix;
 
-import org.argeo.cms.cli.CommandsCli;
+import org.argeo.api.cli.CommandsCli;
 
 /** POSIX commands. */
 public class PosixCommands extends CommandsCli {

@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.argeo.cms.cli.DescribedCommand;
+import org.argeo.api.cli.DescribedCommand;
 
 public class Echo implements DescribedCommand<String> {
 
