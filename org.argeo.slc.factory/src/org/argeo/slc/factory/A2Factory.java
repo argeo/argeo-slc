@@ -333,6 +333,10 @@ public class A2Factory {
 						continue entries;
 					else if (entry.getName().equals("META-INF/LICENSE-notice.md"))
 						continue entries;
+					else if (entry.getName().equals("META-INF/DEPENDENCIES"))
+						continue entries;
+					if (entry.getName().startsWith(".cache/")) // Apache SSHD
+						continue entries;
 					Path target = targetBundleDir.resolve(entry.getName());
 					Files.createDirectories(target.getParent());
 					if (!Files.exists(target)) {
@@ -1017,7 +1021,7 @@ public class A2Factory {
 		A2Factory factory = new A2Factory(factoryBase, descriptorsBase, true);
 
 //		factory.processSingleM2ArtifactDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache").resolve("org.apache.xml.resolver.bnd"));
-//		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
+		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.apache/apache-sshd"));
 //		factory.processM2BasedDistributionUnit(descriptorsBase.resolve("org.argeo.tp.jetty/jetty"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.osgi"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.eclipse.rcp"));
@@ -1026,7 +1030,7 @@ public class A2Factory {
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.sdk"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.formats"));
 //		factory.processCategory(descriptorsBase.resolve("org.argeo.tp.gis"));
-//		System.exit(1);
+		System.exit(1);
 
 		// SDK
 		factory.processCategory(Paths.get("org.argeo.tp.sdk"));
