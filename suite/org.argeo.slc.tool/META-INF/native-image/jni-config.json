@@ -69,6 +69,10 @@
   "methods":[{"name":"<init>","parameterTypes":[] }]
 },
 {
+  "name":"org.argeo.slc.tool.Main",
+  "methods":[{"name":"main","parameterTypes":["java.lang.String[]"] }]
+},
+{
   "name":"org.eclipse.swt.browser.WebKit",
   "methods":[
     {"name":"JSDOMEventProc","parameterTypes":["long","long","long"] }, 

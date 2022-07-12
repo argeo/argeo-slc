@@ -47,7 +47,16 @@
       "pattern":"\\Qorg/argeo/cms/acr/schemas/xml.xsd\\E"
     }, 
     {
+      "pattern":"\\Qorg/argeo/cms/internal/runtime/dc=example,dc=com.ldif\\E"
+    }, 
+    {
       "pattern":"\\Qorg/argeo/cms/internal/runtime/jaas.cfg\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/argeo/cms/internal/runtime/ou=roles,ou=node.ldif\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/argeo/cms/internal/runtime/ou=tokens,ou=node.ldif\\E"
     }, 
     {
       "pattern":"\\Qorg/argeo/minidesktop/cheatsheet_obj@2x.png\\E"
@@ -97,6 +106,7 @@
     {
       "name":"org.apache.xerces.impl.xpath.regex.message",
       "locales":[
+        "", 
         "en", 
         "und"
       ]
