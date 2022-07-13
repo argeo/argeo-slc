@@ -6,13 +6,9 @@ all: osgi
 A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
-org.argeo.slc.api \
-org.argeo.slc.factory \
-org.argeo.slc.runtime \
-cms/org.argeo.slc.cms \
-swt/rap/org.argeo.tool.server \
+swt/rcp/org.argeo.tool.desktop \
 
-VPATH = .:cms:swt/rap
+VPATH = .:cms:swt/rcp
 
 clean:
 	rm -rf $(BUILD_BASE)
@@ -27,22 +23,16 @@ org.argeo.tp.apache \
 org.argeo.tp.jetty \
 org.argeo.tp.eclipse \
 osgi/api/org.argeo.tp.osgi \
-swt/rap/org.argeo.tp.swt \
-swt/rap/org.argeo.tp.swt.workbench \
-org.argeo.tp.jcr \
-org.argeo.tp.formats \
-org.argeo.tp.gis \
+swt/rcp/org.argeo.tp.swt \
+lib/linux/x86_64/swt/rcp/org.argeo.tp.swt \
+swt/rcp/org.argeo.tp.swt.workbench \
 org.argeo.cms \
-org.argeo.cms.eclipse.rap \
+org.argeo.cms.eclipse.rcp \
 
 GRAALVM_HOME = /opt/graalvm-ce
 A2_BUNDLES_CLASSPATH = $(subst $(space),$(pathsep),$(strip $(A2_BUNDLES)))
 
-graalvm-custom:
-	$(GRAALVM_HOME)/bin/java -jar $(ECJ_JAR) @$(SDK_SRC_BASE)/sdk/argeo-build/ecj.args -cp $(A2_CLASSPATH) \
-		graalvm/org.argeo.slc.graalvm/src[-d $(SDK_BUILD_BASE)/$(A2_CATEGORY)/graalvm/bin]
-
-tool-server: osgi graalvm-custom
+tool-desktop:
 	mkdir -p $(A2_OUTPUT)/libexec/$(A2_CATEGORY)
 	cd $(A2_OUTPUT)/libexec/$(A2_CATEGORY) && $(GRAALVM_HOME)/bin/native-image \
 		-cp $(A2_CLASSPATH):$(A2_BUNDLES_CLASSPATH):$(SDK_BUILD_BASE)/$(A2_CATEGORY)/graalvm/bin \
@@ -51,8 +41,8 @@ tool-server: osgi graalvm-custom
 		-H:AdditionalSecurityProviders=sun.security.jgss.SunProvider,org.bouncycastle.jce.provider.BouncyCastleProvider,net.i2p.crypto.eddsa.EdDSASecurityProvider \
 		--initialize-at-build-time=org.argeo.init.logging.ThinLogging,org.slf4j.LoggerFactory \
 		--no-fallback \
-		 org.argeo.tool.server.ArgeoServer \
-		 argeo
-
+		 org.argeo.tool.desktop.ArgeoDesktop \
+		 argeo-desktop
+ 
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk

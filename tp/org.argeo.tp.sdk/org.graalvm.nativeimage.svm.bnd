@@ -1,4 +1,0 @@
-Bundle-License: GPL-2.0-only WITH Classpath-exception-2.0
-SLC-Origin-M2: org.graalvm.nativeimage:svm:22.1.0.1
-# Workaround for errors in Eclipse PDE when using GraalVM as JCM
-Import-Package: *;resolution:="optional"
