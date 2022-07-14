@@ -3,11 +3,11 @@
 <target name="Argeo TP Backend">
 	<locations>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.jetty" type="Directory"/>
-		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.eclipse" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.jcr" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.formats" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.poi" type="Directory"/>
 		<location path="${project_loc:argeo-slc-unstable}/../output/a2/org.argeo.tp.gis" type="Directory"/>
+		<location path="${project_loc:argeo-slc-unstable}/../output/a2/osgi/equinox/org.argeo.tp.eclipse" type="Directory"/>
 		<location type="Target" uri="file:${project_loc:/argeo-slc-unstable}/sdk/output-argeo-tp-minimal.target"/>
 	</locations>
 </target>

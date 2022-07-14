@@ -19,22 +19,19 @@ class Make {
 		// Eclipse
 		factory.processCategory(Paths.get("osgi/api/org.argeo.tp.osgi"));
 		factory.processEclipseArchive(Paths.get("osgi/equinox/org.argeo.tp.osgi", "eclipse-equinox"));
-
-		factory.processEclipseArchive(Paths.get("org.argeo.tp.eclipse", "eclipse-equinox"));
+		factory.processEclipseArchive(Paths.get("osgi/equinox/org.argeo.tp.eclipse", "eclipse-equinox"));
 
 		factory.processEclipseArchive(Paths.get("swt/rap/org.argeo.tp.swt", "eclipse-rap"));
 		factory.processEclipseArchive(Paths.get("swt/rap/org.argeo.tp.swt.workbench", "eclipse-rap"));
-		
+
 		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
-		
+
 		factory.processEclipseArchive(Paths.get("lib/linux/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
 		factory.processEclipseArchive(Paths.get("lib/linux/aarch64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
 		factory.processEclipseArchive(Paths.get("lib/win32/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
 		factory.processEclipseArchive(Paths.get("lib/macosx/x86_64/swt/rcp/org.argeo.tp.swt", "eclipse-rcp"));
 
 		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt", "eclipse-nebula"));
-		// factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt",
-		// "eclipse-equinox"));
 		factory.processEclipseArchive(Paths.get("swt/rcp/org.argeo.tp.swt.workbench", "eclipse-rcp"));
 		factory.processCategory(Paths.get("swt/rcp/org.argeo.tp.swt.workbench"));
 
