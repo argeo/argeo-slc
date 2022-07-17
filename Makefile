@@ -33,7 +33,7 @@ org.argeo.tp.jcr \
 org.argeo.tp.formats \
 org.argeo.tp.gis \
 org.argeo.cms \
-org.argeo.cms.eclipse.rap \
+swt/rap/org.argeo.cms \
 
 GRAALVM_HOME = /opt/graalvm-ce
 A2_BUNDLES_CLASSPATH = $(subst $(space),$(pathsep),$(strip $(A2_BUNDLES)))
