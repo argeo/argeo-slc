@@ -25,8 +25,8 @@ org.argeo.tp \
 org.argeo.tp.sdk \
 org.argeo.tp.apache \
 org.argeo.tp.jetty \
-org.argeo.tp.eclipse \
 osgi/api/org.argeo.tp.osgi \
+osgi/equinox/org.argeo.tp.eclipse \
 swt/rap/org.argeo.tp.swt \
 swt/rap/org.argeo.tp.swt.workbench \
 org.argeo.tp.jcr \
