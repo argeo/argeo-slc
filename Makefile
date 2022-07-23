@@ -51,6 +51,7 @@ tool-server: osgi graalvm-custom
 		-H:AdditionalSecurityProviders=sun.security.jgss.SunProvider,org.bouncycastle.jce.provider.BouncyCastleProvider,net.i2p.crypto.eddsa.EdDSASecurityProvider \
 		--initialize-at-build-time=org.argeo.init.logging.ThinLogging,org.slf4j.LoggerFactory \
 		--no-fallback \
+		-Dargeo.logging.synchronous=true \
 		 org.argeo.tool.server.ArgeoServer \
 		 argeo
 
