@@ -105,7 +105,7 @@ public class SpnegoAuthScheme implements AuthScheme {
 		String hostname;
 		try {
 			hostname = method.getURI().getHost();
-			String tokenStr = RemoteAuthUtils.getGssToken(null, DEFAULT_KERBEROS_SERVICE, hostname);
+			String tokenStr = RemoteAuthUtils.createGssToken(null, DEFAULT_KERBEROS_SERVICE, hostname);
 			return "Negotiate " + tokenStr;
 		} catch (Exception e1) {
 			complete = true;
