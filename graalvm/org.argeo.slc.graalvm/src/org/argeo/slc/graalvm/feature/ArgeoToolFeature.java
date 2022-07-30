@@ -3,10 +3,8 @@ package org.argeo.slc.graalvm.feature;
 import java.security.Security;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.graalvm.nativeimage.ImageSingletons;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
-import org.graalvm.nativeimage.impl.RuntimeClassInitializationSupport;
 
 import net.i2p.crypto.eddsa.EdDSASecurityProvider;
 
@@ -27,10 +25,10 @@ public class ArgeoToolFeature implements Feature {
 		// required for Tomcat JNI DLL to load properly
 		RuntimeClassInitialization.initializeAtBuildTime("org.apache.tomcat.jni");
 
-		RuntimeClassInitializationSupport rci = ImageSingletons.lookup(RuntimeClassInitializationSupport.class);
-		rci.rerunInitialization("org.bouncycastle.jcajce.provider.drbg.DRBG$Default", "dependency with native random");
-		rci.rerunInitialization("org.bouncycastle.jcajce.provider.drbg.DRBG$NonceAndIV",
-				"dependency with native random");
+//		RuntimeClassInitializationSupport rci = ImageSingletonsSupport.lookup(RuntimeClassInitializationSupport.class);
+//		rci.rerunInitialization("org.bouncycastle.jcajce.provider.drbg.DRBG$Default", "dependency with native random");
+//		rci.rerunInitialization("org.bouncycastle.jcajce.provider.drbg.DRBG$NonceAndIV",
+//				"dependency with native random");
 	}
 
 }
