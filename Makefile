@@ -46,9 +46,8 @@ tool-server: osgi graalvm-custom
 	mkdir -p $(A2_OUTPUT)/libexec/$(A2_CATEGORY)
 	cd $(A2_OUTPUT)/libexec/$(A2_CATEGORY) && $(GRAALVM_HOME)/bin/native-image \
 		-cp $(A2_CLASSPATH):$(A2_BUNDLES_CLASSPATH):$(SDK_BUILD_BASE)/$(A2_CATEGORY)/graalvm/bin \
-		--features=org.argeo.slc.graalvm.feature.ArgeoToolFeature \
 		--enable-url-protocols=http,https \
-		-H:AdditionalSecurityProviders=sun.security.jgss.SunProvider,org.bouncycastle.jce.provider.BouncyCastleProvider,net.i2p.crypto.eddsa.EdDSASecurityProvider \
+		-H:AdditionalSecurityProviders=sun.security.jgss.SunProvider \
 		--initialize-at-build-time=org.argeo.init.logging.ThinLogging,org.slf4j.LoggerFactory \
 		--no-fallback \
 		-Dargeo.logging.synchronous=true \
