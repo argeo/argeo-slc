@@ -1,4 +1,4 @@
-include sdk.mk
+include ../sdk.mk
 .PHONY: clean all osgi
 
 all: osgi
@@ -6,8 +6,8 @@ all: osgi
 A2_CATEGORY = org.argeo.tp
 
 BUNDLES = \
-ext/org.argeo.ext.slf4j \
-ext/javax.mail.mbox \
+org.argeo.ext.slf4j \
+javax.mail.mbox \
 
 clean:
 	rm -rf $(BUILD_BASE)

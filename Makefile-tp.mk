@@ -2,7 +2,7 @@ include sdk.mk
 .PHONY: clean all
 
 all: distribution
-	$(MAKE) -f Makefile-ext.mk
+	$(MAKE) -C ext
 
 
 BOOTSTRAP_BASE=$(SDK_BUILD_BASE)/bootstrap
