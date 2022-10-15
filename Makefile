@@ -10,6 +10,9 @@ org.argeo.slc.api \
 org.argeo.slc.factory \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
+org.argeo.slc.repo \
+org.argeo.slc.rpmfactory \
+org.argeo.slc.jcr \
 swt/rap/org.argeo.tool.server \
 
 clean:

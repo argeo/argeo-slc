@@ -148,7 +148,6 @@ public class ProcessThread extends Thread {
 		}
 	}
 
-	/** @return the (distinct) thread used for this execution */
 	protected final void execute(RealizedFlow realizedFlow, Boolean synchronous) throws InterruptedException {
 		if (killed)
 			return;
