@@ -9,16 +9,11 @@ BUNDLES = \
 org.argeo.slc.api \
 org.argeo.slc.factory \
 org.argeo.slc.runtime \
-cms/org.argeo.slc.cms \
+org.argeo.slc.cms \
 swt/rap/org.argeo.tool.server \
-
-VPATH = .:cms:swt/rap
 
 clean:
 	rm -rf $(BUILD_BASE)
-
-A2_OUTPUT = $(SDK_BUILD_BASE)/a2
-A2_BASE = $(A2_OUTPUT)
 
 DEP_CATEGORIES = \
 org.argeo.tp \
@@ -33,6 +28,7 @@ org.argeo.tp.jcr \
 org.argeo.tp.formats \
 org.argeo.tp.gis \
 org.argeo.cms \
+org.argeo.cms.jcr \
 swt/rap/org.argeo.cms \
 
 GRAALVM_HOME = /opt/graalvm-ce

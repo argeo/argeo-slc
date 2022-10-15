@@ -8,8 +8,6 @@ A2_CATEGORY = org.argeo.slc
 BUNDLES = \
 swt/rcp/org.argeo.tool.desktop \
 
-VPATH = .:cms:swt/rcp
-
 clean:
 	rm -rf $(BUILD_BASE)
 
