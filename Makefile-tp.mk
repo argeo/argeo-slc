@@ -2,7 +2,7 @@ include sdk.mk
 .PHONY: clean all
 
 all: distribution
-	$(MAKE) -C ext
+	$(MAKE) -C ext all
 
 
 BOOTSTRAP_BASE=$(SDK_BUILD_BASE)/bootstrap
@@ -28,6 +28,6 @@ clean:
 	rm -rf $(BOOTSTRAP_BASE)
 	rm -rf $(A2_OUTPUT)/org.argeo.tp
 	rm -rf $(A2_OUTPUT)/org.argeo.tp.*
-	$(MAKE) -f Makefile-ext.mk clean
+	$(MAKE) -C ext clean
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk
