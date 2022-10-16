@@ -1,5 +1,0 @@
-Bundle-SymbolicName: org.apache.sshd.putty
-SLC-Origin-M2: org.apache.sshd:sshd-putty
-Import-Package: \
-net.i2p.*;resolution:=optional,\
-*

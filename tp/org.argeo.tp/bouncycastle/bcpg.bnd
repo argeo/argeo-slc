@@ -1,3 +1,0 @@
-Bundle-SymbolicName: bcpg
-SLC-Origin-ManifestNotModified: true
-SLC-Origin-M2: org.bouncycastle:bcpg-jdk18on

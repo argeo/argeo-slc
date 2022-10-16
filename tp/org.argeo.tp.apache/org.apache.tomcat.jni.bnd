@@ -1,3 +1,0 @@
-Bundle-License: Apache-2.0
-# Use Tomcat v9 to stay compatible with JNI library v1.2 provided by Debian 11
-SLC-Origin-M2: org.apache.tomcat:tomcat-jni:9.0.43

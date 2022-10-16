@@ -1,4 +1,0 @@
-Bundle-License: BSD-2-Clause
-Bundle-SymbolicName: org.postgresql.jdbc42
-SLC-Origin-M2: org.postgresql:postgresql:42.3.5
-SLC-Origin-ManifestNotModified: true

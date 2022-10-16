@@ -1,4 +1,0 @@
-Bundle-License: UPL-1.0
-SLC-Origin-M2: org.graalvm.sdk:graal-sdk:22.1.0.1
-# Workaround for errors in Eclipse PDE when using GraalVM as JCM
-Import-Package: java.*;resolution:="optional", *

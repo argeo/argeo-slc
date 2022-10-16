@@ -1,3 +1,0 @@
-SLC-Origin-M2: org.apache.jackrabbit:oak-jackrabbit-api
-Bundle-SymbolicName: org.apache.jackrabbit.api
-Export-Package: org.apache.jackrabbit.*

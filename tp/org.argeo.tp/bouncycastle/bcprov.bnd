@@ -1,3 +1,0 @@
-Bundle-SymbolicName: bcprov
-SLC-Origin-ManifestNotModified: true
-SLC-Origin-M2: org.bouncycastle:bcprov-jdk18on

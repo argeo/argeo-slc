@@ -1,4 +1,0 @@
-Bundle-License: Apache-2.0
-Bundle-SymbolicName: org.apache.commons.io
-SLC-Origin-M2: commons-io:commons-io:2.11.0
-Import-Package: sun.*;resolution:=optional, *

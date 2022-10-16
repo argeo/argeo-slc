@@ -1,6 +1,0 @@
-Bundle-License: EPL-1.0
-Bundle-SymbolicName: org.junit
-Import-Package: org.hamcrest;resolution:=optional,\
-org.hamcrest.core;resolution:=optional,\
-*
-SLC-Origin-M2: junit:junit:4.13.2

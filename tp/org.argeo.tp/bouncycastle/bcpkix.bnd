@@ -1,3 +1,0 @@
-Bundle-SymbolicName: bcpkix
-SLC-Origin-ManifestNotModified: true
-SLC-Origin-M2: org.bouncycastle:bcpkix-jdk18on

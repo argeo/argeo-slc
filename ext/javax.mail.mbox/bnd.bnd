@@ -1,7 +1,0 @@
-Export-Package: com.sun.mail.*;version="1.6.7"
-
-Import-Package: \
-javax.mail.event,\
-*
-
-Bundle-Version : 1.6.7

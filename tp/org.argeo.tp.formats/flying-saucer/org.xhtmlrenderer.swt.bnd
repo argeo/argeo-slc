@@ -1,4 +1,0 @@
-SLC-Origin-M2: org.xhtmlrenderer:flying-saucer-swt
-Import-Package:\
-org.eclipse.swt.printing;resolution:="optional",\
-*

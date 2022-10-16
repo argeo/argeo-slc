@@ -1,5 +1,0 @@
-Bundle-License: Apache-2.0
-Bundle-SymbolicName: org.apache.commons.vfs
-Import-Package: org.apache.tools.ant.*;resolution:=optional,
-*
-SLC-Origin-M2: org.apache.commons:commons-vfs2:2.9.0

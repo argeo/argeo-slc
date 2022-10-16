@@ -1,6 +1,0 @@
-Bundle-SymbolicName: org.apache.xalan
-SLC-Origin-M2: :2.7.2
-Export-Package: org.apache.*
-SLC-Origin-M2-Merge: \
-xalan:xalan,\
-xalan:serializer,\

@@ -1,6 +1,0 @@
-Bundle-SymbolicName: org.apache.sshd.core
-SLC-Origin-M2: org.apache.sshd:sshd-core
-Import-Package: \
-org.apache.tomcat.jni.*;resolution:=optional,\
-org.bouncycastle.crypto.prng,\
-*

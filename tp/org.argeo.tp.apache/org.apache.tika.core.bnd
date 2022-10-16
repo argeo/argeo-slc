@@ -1,4 +1,0 @@
-Bundle-License: Apache-2.0
-Bundle-SymbolicName: org.apache.tika.core
-SLC-Origin-M2: org.apache.tika:tika-core:1.28.2
-SLC-Origin-ManifestNotModified: true

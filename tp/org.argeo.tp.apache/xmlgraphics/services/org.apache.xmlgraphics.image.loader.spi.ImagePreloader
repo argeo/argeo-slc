@@ -1,5 +1,0 @@
-org.apache.fop.image.loader.batik.PreloaderWMF
-org.apache.fop.image.loader.batik.PreloaderSVG
-org.apache.fop.render.pdf.pdfbox.PreloaderPDF
-org.apache.fop.render.pdf.pdfbox.PreloaderImageRawData
-org.apache.fop.render.pdf.pdfbox.LastResortPreloaderPDF
