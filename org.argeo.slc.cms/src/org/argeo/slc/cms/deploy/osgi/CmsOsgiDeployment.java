@@ -6,6 +6,7 @@ import java.lang.System.Logger.Level;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
@@ -127,7 +128,7 @@ public class CmsOsgiDeployment implements Deployment {
 			// distribution
 			Path a2Base = userHome.resolve("dev/git/unstable/output/a2");
 			A2Distribution distribution = new A2Distribution();
-			distribution.getA2Sources().add(new FsA2Source(a2Base));
+			distribution.getA2Sources().add(new FsA2Source(a2Base, new HashMap<>(), true));
 
 			// target data
 			Path instanceData = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment/data");
