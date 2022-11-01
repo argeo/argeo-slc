@@ -9,12 +9,6 @@ BUNDLES = \
 swt/rcp/org.argeo.tool.rcp.cli \
 swt/rcp/org.argeo.tool.desktop \
 
-clean:
-	rm -rf $(BUILD_BASE)
-
-A2_OUTPUT = $(SDK_BUILD_BASE)/a2
-A2_BASE = $(A2_OUTPUT)
-
 DEP_CATEGORIES = \
 org.argeo.tp \
 org.argeo.tp.sdk \
@@ -28,6 +22,9 @@ swt/rcp/org.argeo.tp.swt.workbench \
 org.argeo.cms \
 swt/org.argeo.cms \
 swt/rcp/org.argeo.cms \
+
+clean:
+	rm -rf $(BUILD_BASE)
 
 GRAALVM_HOME = /opt/graalvm-ce
 A2_BUNDLES_CLASSPATH = $(subst $(space),$(pathsep),$(strip $(A2_BUNDLES)))
