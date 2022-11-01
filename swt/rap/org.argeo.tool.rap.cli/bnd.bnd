@@ -1,4 +1,5 @@
 Import-Package: \
+javax.websocket.server,\
 org.eclipse.jetty.util.component;version="[9.4,12)";resolution:=optional,\
 org.eclipse.jetty.http;version="[9.4,12)";resolution:=optional,\
 org.eclipse.jetty.io;version="[9.4,12)";resolution:=optional,\
