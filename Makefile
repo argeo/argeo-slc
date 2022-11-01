@@ -17,6 +17,8 @@ org.argeo.slc.cms \
 org.argeo.slc.repo \
 org.argeo.slc.rpmfactory \
 org.argeo.slc.jcr \
+swt/org.argeo.tool.swt \
+swt/org.argeo.tool.devops.e4 \
 swt/rap/org.argeo.tool.rap.cli \
 swt/rap/org.argeo.tool.server \
 
@@ -35,6 +37,7 @@ org.argeo.tp.gis \
 org.argeo.cms \
 org.argeo.cms.jcr \
 swt/org.argeo.cms \
+swt/org.argeo.cms.jcr \
 swt/rap/org.argeo.cms \
 
 clean:
