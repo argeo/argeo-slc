@@ -2,6 +2,7 @@ include sdk.mk
 .PHONY: clean all osgi
 
 all: osgi
+	$(MAKE) -f Makefile-rcp.mk all
 
 A2_CATEGORY = org.argeo.slc
 
@@ -13,10 +14,12 @@ org.argeo.slc.cms \
 org.argeo.slc.repo \
 org.argeo.slc.rpmfactory \
 org.argeo.slc.jcr \
+swt/rap/org.argeo.tool.rap.cli \
 swt/rap/org.argeo.tool.server \
 
 clean:
 	rm -rf $(BUILD_BASE)
+	$(MAKE) -f Makefile-rcp.mk clean
 
 DEP_CATEGORIES = \
 org.argeo.tp \
@@ -32,6 +35,7 @@ org.argeo.tp.formats \
 org.argeo.tp.gis \
 org.argeo.cms \
 org.argeo.cms.jcr \
+swt/org.argeo.cms \
 swt/rap/org.argeo.cms \
 
 GRAALVM_HOME = /opt/graalvm-ce

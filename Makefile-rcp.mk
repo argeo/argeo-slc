@@ -6,6 +6,7 @@ all: osgi
 A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
+swt/rcp/org.argeo.tool.rcp.cli \
 swt/rcp/org.argeo.tool.desktop \
 
 clean:

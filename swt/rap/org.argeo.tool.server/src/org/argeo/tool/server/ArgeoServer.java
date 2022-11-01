@@ -1,7 +1,7 @@
 package org.argeo.tool.server;
 
 import org.argeo.cms.cli.ArgeoCli;
-import org.argeo.cms.swt.rap.cli.CmsRapCli;
+import org.argeo.tool.rap.cli.CmsRapCli;
 
 /** Argeo command line tools. */
 public class ArgeoServer extends ArgeoCli {
