@@ -25,15 +25,16 @@ swt/rap/org.argeo.tool.server \
 DEP_CATEGORIES = \
 org.argeo.tp \
 org.argeo.tp.sdk \
-org.argeo.tp.apache \
+org.argeo.tp.crypto \
 org.argeo.tp.jetty \
+org.argeo.tp.sql \
+org.argeo.tp.utils \
+org.argeo.tp.jcr \
+org.argeo.tp.gis \
 osgi/api/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rap/org.argeo.tp.swt \
 swt/rap/org.argeo.tp.swt.workbench \
-org.argeo.tp.jcr \
-org.argeo.tp.formats \
-org.argeo.tp.gis \
 org.argeo.cms \
 org.argeo.cms.jcr \
 swt/org.argeo.cms \
