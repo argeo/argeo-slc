@@ -12,8 +12,8 @@ import javax.jcr.Session;
 import javax.jcr.nodetype.NodeType;
 
 import org.argeo.api.cms.CmsConstants;
+import org.argeo.api.cms.keyring.Keyring;
 import org.argeo.cms.jcr.CmsJcrUtils;
-import org.argeo.cms.security.Keyring;
 import org.argeo.cms.ui.jcr.model.RepositoriesElem;
 import org.argeo.cms.ui.jcr.model.SingleJcrNodeElem;
 import org.argeo.cms.ux.widgets.TreeParent;

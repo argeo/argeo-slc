@@ -12,11 +12,11 @@ import javax.jcr.Session;
 import javax.jcr.SimpleCredentials;
 
 import org.argeo.api.cms.CmsConstants;
+import org.argeo.api.cms.keyring.Keyring;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.ArgeoTypes;
 import org.argeo.cms.e4.jcr.JcrBrowserView;
 import org.argeo.cms.jcr.CmsJcrUtils;
-import org.argeo.cms.security.Keyring;
 import org.argeo.eclipse.ui.EclipseUiException;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
 import org.argeo.jcr.JcrUtils;

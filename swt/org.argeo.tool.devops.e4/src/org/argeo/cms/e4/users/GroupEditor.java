@@ -1,9 +1,9 @@
 package org.argeo.cms.e4.users;
 
+import static org.argeo.api.acr.ldap.LdapAttrs.businessCategory;
+import static org.argeo.api.acr.ldap.LdapAttrs.description;
 import static org.argeo.api.cms.CmsContext.WORKGROUP;
 import static org.argeo.cms.auth.UserAdminUtils.setProperty;
-import static org.argeo.util.naming.LdapAttrs.businessCategory;
-import static org.argeo.util.naming.LdapAttrs.description;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,8 +16,10 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.argeo.api.acr.ldap.LdapAttrs;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.api.cms.CmsContext;
+import org.argeo.api.cms.transaction.WorkTransaction;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.cms.e4.users.providers.CommonNameLP;
 import org.argeo.cms.e4.users.providers.MailLP;
@@ -32,8 +34,6 @@ import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.jcr.JcrException;
 import org.argeo.jcr.JcrUtils;
-import org.argeo.util.naming.LdapAttrs;
-import org.argeo.util.transaction.WorkTransaction;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;

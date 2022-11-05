@@ -1,11 +1,11 @@
 package org.argeo.cms.e4.users;
 
+import static org.argeo.api.acr.ldap.LdapAttrs.cn;
+import static org.argeo.api.acr.ldap.LdapAttrs.givenName;
+import static org.argeo.api.acr.ldap.LdapAttrs.mail;
+import static org.argeo.api.acr.ldap.LdapAttrs.sn;
+import static org.argeo.api.acr.ldap.LdapAttrs.uid;
 import static org.argeo.cms.auth.UserAdminUtils.getProperty;
-import static org.argeo.util.naming.LdapAttrs.cn;
-import static org.argeo.util.naming.LdapAttrs.givenName;
-import static org.argeo.util.naming.LdapAttrs.mail;
-import static org.argeo.util.naming.LdapAttrs.sn;
-import static org.argeo.util.naming.LdapAttrs.uid;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.argeo.api.acr.ldap.LdapAttrs;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.auth.CurrentUser;
 import org.argeo.cms.auth.UserAdminUtils;
@@ -27,7 +28,6 @@ import org.argeo.cms.ui.eclipse.forms.AbstractFormPart;
 import org.argeo.cms.ui.eclipse.forms.IManagedForm;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
-import org.argeo.util.naming.LdapAttrs;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;

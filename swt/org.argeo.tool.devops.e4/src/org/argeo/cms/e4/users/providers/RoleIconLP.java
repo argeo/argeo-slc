@@ -1,10 +1,10 @@
 package org.argeo.cms.e4.users.providers;
 
 import org.argeo.api.cms.CmsContext;
+import org.argeo.api.acr.ldap.LdapAttrs;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.cms.e4.users.SecurityAdminImages;
-import org.argeo.util.naming.LdapAttrs;
 import org.eclipse.swt.graphics.Image;
 import org.osgi.service.useradmin.Role;
 import org.osgi.service.useradmin.User;

@@ -3,12 +3,12 @@ package org.argeo.cms.swt.useradmin;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapObjs;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiException;
 import org.argeo.eclipse.ui.EclipseUiUtils;
-import org.argeo.util.naming.LdapAttrs;
-import org.argeo.util.naming.LdapObjs;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;

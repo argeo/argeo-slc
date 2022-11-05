@@ -15,12 +15,12 @@ import org.argeo.api.cli.DescribedCommand;
 import org.argeo.api.cms.CmsApp;
 import org.argeo.api.cms.CmsContext;
 import org.argeo.api.cms.CmsState;
+import org.argeo.api.register.Component;
+import org.argeo.api.register.ComponentRegister;
 import org.argeo.cms.jetty.CmsJettyServer;
 import org.argeo.cms.runtime.StaticCms;
 import org.argeo.cms.swt.app.CmsUserApp;
 import org.argeo.cms.web.CmsWebApp;
-import org.argeo.util.register.Component;
-import org.argeo.util.register.ComponentRegister;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 
 public class CmsRapCli extends CommandsCli {

@@ -13,7 +13,7 @@ import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.UserAuthenticator;
 import org.apache.commons.vfs2.impl.DefaultFileSystemConfigBuilder;
 import org.argeo.api.cms.CmsLog;
-import org.argeo.util.LangUtils;
+import org.argeo.cms.util.LangUtils;
 
 /**
  * Combines multiple backups and transfer them to a remote location. Purges

@@ -11,9 +11,9 @@ import javax.annotation.PostConstruct;
 
 import org.argeo.api.cms.CmsSession;
 import org.argeo.cms.auth.RoleNameUtils;
+import org.argeo.cms.util.LangUtils;
 import org.argeo.eclipse.ui.ColumnViewerComparator;
 import org.argeo.eclipse.ui.specific.EclipseUiSpecificUtils;
-import org.argeo.util.LangUtils;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;

@@ -10,7 +10,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.argeo.cms.swt.CmsException;
-import org.argeo.util.LangUtils;
+import org.argeo.cms.util.LangUtils;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;

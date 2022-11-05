@@ -12,6 +12,7 @@ org.apache.jackrabbit.*;version="[2,3)",\
 org.argeo.cms,\
 org.argeo.jcr,\
 org.argeo.api.acr,\
+org.argeo.api.cms.directory,\
 org.argeo.cms.e4.rap;resolution:=optional,\
 org.eclipse.*;resolution:=optional,\
 *

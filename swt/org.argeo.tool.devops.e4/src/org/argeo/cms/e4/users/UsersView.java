@@ -7,6 +7,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
+import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapObjs;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.auth.CurrentUser;
 import org.argeo.cms.e4.users.providers.CommonNameLP;
@@ -18,8 +20,6 @@ import org.argeo.cms.swt.CmsException;
 import org.argeo.cms.swt.useradmin.LdifUsersTable;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiUtils;
-import org.argeo.util.naming.LdapAttrs;
-import org.argeo.util.naming.LdapObjs;
 import org.eclipse.e4.ui.di.Focus;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.e4.ui.workbench.modeling.ESelectionService;

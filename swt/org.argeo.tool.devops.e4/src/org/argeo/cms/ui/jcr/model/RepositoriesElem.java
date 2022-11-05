@@ -9,9 +9,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.RepositoryFactory;
 import javax.jcr.Session;
 
+import org.argeo.api.cms.keyring.Keyring;
 import org.argeo.cms.ArgeoNames;
 import org.argeo.cms.jcr.CmsJcrUtils;
-import org.argeo.cms.security.Keyring;
 import org.argeo.cms.ui.jcr.RepositoryRegister;
 import org.argeo.cms.ux.widgets.TreeParent;
 import org.argeo.eclipse.ui.EclipseUiException;

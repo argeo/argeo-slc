@@ -9,14 +9,14 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.argeo.api.acr.ldap.LdapAttrs;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.cms.e4.users.UiAdminUtils;
 import org.argeo.cms.e4.users.UserAdminWrapper;
+import org.argeo.cms.runtime.DirectoryConf;
 import org.argeo.cms.swt.CmsException;
 import org.argeo.eclipse.ui.EclipseUiUtils;
 import org.argeo.eclipse.ui.dialogs.ErrorFeedback;
-import org.argeo.util.directory.DirectoryConf;
-import org.argeo.util.naming.LdapAttrs;
 import org.eclipse.e4.core.di.annotations.Execute;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.jface.wizard.WizardDialog;
