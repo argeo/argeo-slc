@@ -15,7 +15,7 @@ import javax.inject.Inject;
 
 import org.argeo.api.acr.ldap.LdapAttrs;
 import org.argeo.api.cms.CmsConstants;
-import org.argeo.cms.auth.CurrentUser;
+import org.argeo.cms.CurrentUser;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.cms.e4.users.providers.CommonNameLP;
 import org.argeo.cms.e4.users.providers.DomainNameLP;

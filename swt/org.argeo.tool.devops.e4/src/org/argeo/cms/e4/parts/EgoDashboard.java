@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 import javax.annotation.PostConstruct;
 
 import org.argeo.api.cms.CmsSession;
-import org.argeo.cms.auth.CurrentUser;
+import org.argeo.cms.CurrentUser;
 import org.argeo.cms.swt.CmsSwtUtils;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
