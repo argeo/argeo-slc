@@ -10,7 +10,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.argeo.api.cms.CmsSession;
-import org.argeo.cms.auth.RoleNameUtils;
+import org.argeo.cms.RoleNameUtils;
 import org.argeo.cms.util.LangUtils;
 import org.argeo.eclipse.ui.ColumnViewerComparator;
 import org.argeo.eclipse.ui.specific.EclipseUiSpecificUtils;
