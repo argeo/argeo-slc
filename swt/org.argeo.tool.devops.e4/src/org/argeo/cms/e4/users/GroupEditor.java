@@ -1,7 +1,7 @@
 package org.argeo.cms.e4.users;
 
-import static org.argeo.api.acr.ldap.LdapAttrs.businessCategory;
-import static org.argeo.api.acr.ldap.LdapAttrs.description;
+import static org.argeo.api.acr.ldap.LdapAttr.businessCategory;
+import static org.argeo.api.acr.ldap.LdapAttr.description;
 import static org.argeo.api.cms.CmsContext.WORKGROUP;
 import static org.argeo.cms.auth.UserAdminUtils.setProperty;
 
@@ -16,7 +16,7 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapAttr;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.api.cms.CmsContext;
 import org.argeo.api.cms.transaction.WorkTransaction;
@@ -146,7 +146,7 @@ public class GroupEditor extends AbstractRoleEditor {
 		body.setLayout(layout);
 		body.setLayoutData(CmsSwtUtils.fillWidth());
 
-		String cn = UserAdminUtils.getProperty(group, LdapAttrs.cn.name());
+		String cn = UserAdminUtils.getProperty(group, LdapAttr.cn.name());
 		createReadOnlyLT(body, "Name", cn);
 		createReadOnlyLT(body, "DN", group.getName());
 		createReadOnlyLT(body, "Domain", UserAdminUtils.getDomainName(group));
@@ -194,7 +194,7 @@ public class GroupEditor extends AbstractRoleEditor {
 			public void refresh() {
 				// dnTxt.setText(group.getName());
 				// cnTxt.setText(UserAdminUtils.getProperty(group, LdapAttrs.cn.name()));
-				descTxt.setText(UserAdminUtils.getProperty(group, LdapAttrs.description.name()));
+				descTxt.setText(UserAdminUtils.getProperty(group, LdapAttr.description.name()));
 				Node workgroupHome = CmsJcrUtils.getGroupHome(groupsSession, cn);
 				if (workgroupHome == null)
 					markAsWorkgroupLk.setText("<a>Mark as workgroup</a>");

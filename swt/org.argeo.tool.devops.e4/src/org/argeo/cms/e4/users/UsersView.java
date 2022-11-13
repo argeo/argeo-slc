@@ -7,8 +7,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
-import org.argeo.api.acr.ldap.LdapObjs;
+import org.argeo.api.acr.ldap.LdapAttr;
+import org.argeo.api.acr.ldap.LdapObj;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.CurrentUser;
 import org.argeo.cms.e4.users.providers.CommonNameLP;
@@ -116,8 +116,8 @@ public class UsersView {
 	private class MyUserTableViewer extends LdifUsersTable {
 		private static final long serialVersionUID = 8467999509931900367L;
 
-		private final String[] knownProps = { LdapAttrs.DN, LdapAttrs.uid.name(), LdapAttrs.cn.name(),
-				LdapAttrs.givenName.name(), LdapAttrs.sn.name(), LdapAttrs.mail.name() };
+		private final String[] knownProps = { LdapAttr.DN, LdapAttr.uid.name(), LdapAttr.cn.name(),
+				LdapAttr.givenName.name(), LdapAttr.sn.name(), LdapAttr.mail.name() };
 
 		public MyUserTableViewer(Composite parent, int style) {
 			super(parent, style);
@@ -140,13 +140,13 @@ public class UsersView {
 						tmpBuilder.append("*)");
 					}
 				if (tmpBuilder.length() > 1) {
-					builder.append("(&(").append(LdapAttrs.objectClass.name()).append("=")
-							.append(LdapObjs.inetOrgPerson.name()).append(")(|");
+					builder.append("(&(").append(LdapAttr.objectClass.name()).append("=")
+							.append(LdapObj.inetOrgPerson.name()).append(")(|");
 					builder.append(tmpBuilder.toString());
 					builder.append("))");
 				} else
-					builder.append("(").append(LdapAttrs.objectClass.name()).append("=")
-							.append(LdapObjs.inetOrgPerson.name()).append(")");
+					builder.append("(").append(LdapAttr.objectClass.name()).append("=")
+							.append(LdapObj.inetOrgPerson.name()).append(")");
 				roles = userAdminWrapper.getUserAdmin().getRoles(builder.toString());
 			} catch (InvalidSyntaxException e) {
 				throw new CmsException("Unable to get roles with filter: " + filter, e);

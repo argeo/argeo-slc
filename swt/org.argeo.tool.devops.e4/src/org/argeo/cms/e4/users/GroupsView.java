@@ -7,8 +7,8 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
-import org.argeo.api.acr.ldap.LdapObjs;
+import org.argeo.api.acr.ldap.LdapAttr;
+import org.argeo.api.acr.ldap.LdapObj;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.api.cms.CmsLog;
 import org.argeo.cms.CurrentUser;
@@ -150,7 +150,7 @@ public class GroupsView {
 
 		private boolean showSystemRoles = true;
 
-		private final String[] knownProps = { LdapAttrs.uid.name(), LdapAttrs.cn.name(), LdapAttrs.DN };
+		private final String[] knownProps = { LdapAttr.uid.name(), LdapAttr.cn.name(), LdapAttr.DN };
 
 		public MyUserTableViewer(Composite parent, int style) {
 			super(parent, style);
@@ -191,27 +191,27 @@ public class GroupsView {
 						tmpBuilder.append("*)");
 					}
 				if (tmpBuilder.length() > 1) {
-					builder.append("(&(").append(LdapAttrs.objectClass.name()).append("=")
-							.append(LdapObjs.groupOfNames.name()).append(")");
+					builder.append("(&(").append(LdapAttr.objectClass.name()).append("=")
+							.append(LdapObj.groupOfNames.name()).append(")");
 					// hide tokens
-					builder.append("(!(").append(LdapAttrs.DN).append("=*").append(CmsConstants.TOKENS_BASEDN)
+					builder.append("(!(").append(LdapAttr.DN).append("=*").append(CmsConstants.TOKENS_BASEDN)
 							.append("))");
 
 					if (!showSystemRoles)
-						builder.append("(!(").append(LdapAttrs.DN).append("=*").append(CmsConstants.SYSTEM_ROLES_BASEDN)
+						builder.append("(!(").append(LdapAttr.DN).append("=*").append(CmsConstants.SYSTEM_ROLES_BASEDN)
 								.append("))");
 					builder.append("(|");
 					builder.append(tmpBuilder.toString());
 					builder.append("))");
 				} else {
 					if (!showSystemRoles)
-						builder.append("(&(").append(LdapAttrs.objectClass.name()).append("=")
-								.append(LdapObjs.groupOfNames.name()).append(")(!(").append(LdapAttrs.DN).append("=*")
-								.append(CmsConstants.SYSTEM_ROLES_BASEDN).append("))(!(").append(LdapAttrs.DN).append("=*")
+						builder.append("(&(").append(LdapAttr.objectClass.name()).append("=")
+								.append(LdapObj.groupOfNames.name()).append(")(!(").append(LdapAttr.DN).append("=*")
+								.append(CmsConstants.SYSTEM_ROLES_BASEDN).append("))(!(").append(LdapAttr.DN).append("=*")
 								.append(CmsConstants.TOKENS_BASEDN).append(")))");
 					else
-						builder.append("(&(").append(LdapAttrs.objectClass.name()).append("=")
-								.append(LdapObjs.groupOfNames.name()).append(")(!(").append(LdapAttrs.DN).append("=*")
+						builder.append("(&(").append(LdapAttr.objectClass.name()).append("=")
+								.append(LdapObj.groupOfNames.name()).append(")(!(").append(LdapAttr.DN).append("=*")
 								.append(CmsConstants.TOKENS_BASEDN).append(")))");
 
 				}

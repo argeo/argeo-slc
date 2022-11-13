@@ -1,6 +1,6 @@
 package org.argeo.cms.e4.users.providers;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapAttr;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.osgi.service.useradmin.User;
 
@@ -10,12 +10,12 @@ public class CommonNameLP extends UserAdminAbstractLP {
 
 	@Override
 	public String getText(User user) {
-		return UserAdminUtils.getProperty(user, LdapAttrs.cn.name());
+		return UserAdminUtils.getProperty(user, LdapAttr.cn.name());
 	}
 
 	@Override
 	public String getToolTipText(Object element) {
-		return UserAdminUtils.getProperty((User) element, LdapAttrs.DN);
+		return UserAdminUtils.getProperty((User) element, LdapAttr.DN);
 	}
 
 }

@@ -3,8 +3,8 @@ package org.argeo.cms.swt.useradmin;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
-import org.argeo.api.acr.ldap.LdapObjs;
+import org.argeo.api.acr.ldap.LdapAttr;
+import org.argeo.api.acr.ldap.LdapObj;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.eclipse.ui.ColumnDefinition;
 import org.argeo.eclipse.ui.EclipseUiException;
@@ -157,8 +157,8 @@ public class PickUpUserDialog extends TrayDialog {
 	private class MyUserTableViewer extends LdifUsersTable {
 		private static final long serialVersionUID = 8467999509931900367L;
 
-		private final String[] knownProps = { LdapAttrs.uid.name(),
-				LdapAttrs.cn.name(), LdapAttrs.DN };
+		private final String[] knownProps = { LdapAttr.uid.name(),
+				LdapAttr.cn.name(), LdapAttr.DN };
 
 		private Button showSystemRoleBtn;
 		private Button showUserBtn;
@@ -204,15 +204,15 @@ public class PickUpUserDialog extends TrayDialog {
 						filterBuilder.append("*)");
 					}
 
-				String typeStr = "(" + LdapAttrs.objectClass.name() + "="
-						+ LdapObjs.groupOfNames.name() + ")";
+				String typeStr = "(" + LdapAttr.objectClass.name() + "="
+						+ LdapObj.groupOfNames.name() + ")";
 				if ((showUserBtn.getSelection()))
-					typeStr = "(|(" + LdapAttrs.objectClass.name() + "="
-							+ LdapObjs.inetOrgPerson.name() + ")" + typeStr
+					typeStr = "(|(" + LdapAttr.objectClass.name() + "="
+							+ LdapObj.inetOrgPerson.name() + ")" + typeStr
 							+ ")";
 
 				if (!showSystemRoleBtn.getSelection())
-					typeStr = "(& " + typeStr + "(!(" + LdapAttrs.DN + "=*"
+					typeStr = "(& " + typeStr + "(!(" + LdapAttr.DN + "=*"
 							+ CmsConstants.SYSTEM_ROLES_BASEDN + ")))";
 
 				if (filterBuilder.length() > 1) {

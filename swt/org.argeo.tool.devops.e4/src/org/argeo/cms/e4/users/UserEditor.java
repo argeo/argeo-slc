@@ -1,10 +1,10 @@
 package org.argeo.cms.e4.users;
 
-import static org.argeo.api.acr.ldap.LdapAttrs.cn;
-import static org.argeo.api.acr.ldap.LdapAttrs.givenName;
-import static org.argeo.api.acr.ldap.LdapAttrs.mail;
-import static org.argeo.api.acr.ldap.LdapAttrs.sn;
-import static org.argeo.api.acr.ldap.LdapAttrs.uid;
+import static org.argeo.api.acr.ldap.LdapAttr.cn;
+import static org.argeo.api.acr.ldap.LdapAttr.givenName;
+import static org.argeo.api.acr.ldap.LdapAttr.mail;
+import static org.argeo.api.acr.ldap.LdapAttr.sn;
+import static org.argeo.api.acr.ldap.LdapAttr.uid;
 import static org.argeo.cms.auth.UserAdminUtils.getProperty;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapAttr;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.CurrentUser;
 import org.argeo.cms.auth.UserAdminUtils;
@@ -158,20 +158,20 @@ public class UserEditor extends AbstractRoleEditor {
 			@SuppressWarnings("unchecked")
 			public void commit(boolean onSave) {
 				// TODO Sanity checks (mail validity...)
-				user.getProperties().put(LdapAttrs.givenName.name(), firstName.getText());
-				user.getProperties().put(LdapAttrs.sn.name(), lastName.getText());
-				user.getProperties().put(LdapAttrs.cn.name(), commonName.getText());
-				user.getProperties().put(LdapAttrs.mail.name(), email.getText());
+				user.getProperties().put(LdapAttr.givenName.name(), firstName.getText());
+				user.getProperties().put(LdapAttr.sn.name(), lastName.getText());
+				user.getProperties().put(LdapAttr.cn.name(), commonName.getText());
+				user.getProperties().put(LdapAttr.mail.name(), email.getText());
 				super.commit(onSave);
 			}
 
 			@Override
 			public void refresh() {
-				distinguishedName.setText(UserAdminUtils.getProperty(user, LdapAttrs.uid.name()));
-				commonName.setText(UserAdminUtils.getProperty(user, LdapAttrs.cn.name()));
-				firstName.setText(UserAdminUtils.getProperty(user, LdapAttrs.givenName.name()));
-				lastName.setText(UserAdminUtils.getProperty(user, LdapAttrs.sn.name()));
-				email.setText(UserAdminUtils.getProperty(user, LdapAttrs.mail.name()));
+				distinguishedName.setText(UserAdminUtils.getProperty(user, LdapAttr.uid.name()));
+				commonName.setText(UserAdminUtils.getProperty(user, LdapAttr.cn.name()));
+				firstName.setText(UserAdminUtils.getProperty(user, LdapAttr.givenName.name()));
+				lastName.setText(UserAdminUtils.getProperty(user, LdapAttr.sn.name()));
+				email.setText(UserAdminUtils.getProperty(user, LdapAttr.mail.name()));
 				refreshFormTitle(user);
 				super.refresh();
 			}

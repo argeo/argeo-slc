@@ -1,6 +1,6 @@
 package org.argeo.cms.e4.users;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapAttr;
 import org.argeo.cms.e4.CmsE4Utils;
 import org.eclipse.e4.ui.workbench.modeling.EPartService;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -27,7 +27,7 @@ public class UserTableDefaultDClickListener implements IDoubleClickListener {
 		User user = (User) obj;
 
 		String editorId = getEditorId(user);
-		CmsE4Utils.openEditor(partService, editorId, LdapAttrs.uid.name(), user.getName());
+		CmsE4Utils.openEditor(partService, editorId, LdapAttr.uid.name(), user.getName());
 	}
 
 	protected String getEditorId(User user) {

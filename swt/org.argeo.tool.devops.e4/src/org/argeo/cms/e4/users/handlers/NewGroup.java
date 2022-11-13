@@ -5,7 +5,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapAttr;
 import org.argeo.cms.e4.users.UserAdminWrapper;
 import org.argeo.cms.runtime.DirectoryConf;
 import org.argeo.cms.swt.CmsException;
@@ -77,7 +77,7 @@ public class NewGroup {
 				Dictionary props = group.getProperties();
 				String descStr = descriptionTxt.getText();
 				if (EclipseUiUtils.notEmpty(descStr))
-					props.put(LdapAttrs.description.name(), descStr);
+					props.put(LdapAttr.description.name(), descStr);
 				userAdminWrapper.commitOrNotifyTransactionStateChange();
 				userAdminWrapper.notifyListeners(new UserAdminEvent(null, UserAdminEvent.ROLE_CREATED, group));
 				return true;
@@ -180,7 +180,7 @@ public class NewGroup {
 			String bdn = baseDnCmb.getText();
 			if (EclipseUiUtils.notEmpty(bdn)) {
 				Dictionary<String, ?> props = DirectoryConf.uriAsProperties(dns.get(bdn));
-				String dn = LdapAttrs.cn.name() + "=" + cn + "," + DirectoryConf.groupBase.getValue(props) + "," + bdn;
+				String dn = LdapAttr.cn.name() + "=" + cn + "," + DirectoryConf.groupBase.getValue(props) + "," + bdn;
 				return dn;
 			}
 			return null;

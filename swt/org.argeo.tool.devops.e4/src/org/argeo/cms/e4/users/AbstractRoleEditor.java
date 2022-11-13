@@ -7,7 +7,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapAttr;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.cms.ui.eclipse.forms.AbstractFormPart;
 import org.argeo.cms.ui.eclipse.forms.IManagedForm;
@@ -65,7 +65,7 @@ public abstract class AbstractRoleEditor {
 	@PostConstruct
 	public void init(Composite parent) {
 		this.userAdmin = userAdminWrapper.getUserAdmin();
-		username = mPart.getPersistedState().get(LdapAttrs.uid.name());
+		username = mPart.getPersistedState().get(LdapAttr.uid.name());
 		user = (User) userAdmin.getRole(username);
 
 		listener = new NameChangeListener(Display.getCurrent());
@@ -125,7 +125,7 @@ public abstract class AbstractRoleEditor {
 
 	void updateEditorTitle(String title) {
 		if (title == null) {
-			String commonName = UserAdminUtils.getProperty(user, LdapAttrs.cn.name());
+			String commonName = UserAdminUtils.getProperty(user, LdapAttr.cn.name());
 			title = "".equals(commonName) ? user.getName() : commonName;
 		}
 		setPartName(title);

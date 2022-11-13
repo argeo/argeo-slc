@@ -9,7 +9,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapAttr;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.argeo.cms.e4.users.UiAdminUtils;
 import org.argeo.cms.e4.users.UserAdminWrapper;
@@ -90,19 +90,19 @@ public class NewUser {
 
 				String lastNameStr = lastNameTxt.getText();
 				if (EclipseUiUtils.notEmpty(lastNameStr))
-					props.put(LdapAttrs.sn.name(), lastNameStr);
+					props.put(LdapAttr.sn.name(), lastNameStr);
 
 				String firstNameStr = firstNameTxt.getText();
 				if (EclipseUiUtils.notEmpty(firstNameStr))
-					props.put(LdapAttrs.givenName.name(), firstNameStr);
+					props.put(LdapAttr.givenName.name(), firstNameStr);
 
 				String cn = UserAdminUtils.buildDefaultCn(firstNameStr, lastNameStr);
 				if (EclipseUiUtils.notEmpty(cn))
-					props.put(LdapAttrs.cn.name(), cn);
+					props.put(LdapAttr.cn.name(), cn);
 
 				String mailStr = primaryMailTxt.getText();
 				if (EclipseUiUtils.notEmpty(mailStr))
-					props.put(LdapAttrs.mail.name(), mailStr);
+					props.put(LdapAttr.mail.name(), mailStr);
 
 				char[] password = mainUserInfo.getPassword();
 				user.getCredentials().put(null, password);
@@ -242,7 +242,7 @@ public class NewUser {
 			String bdn = baseDnCmb.getText();
 			if (EclipseUiUtils.notEmpty(bdn)) {
 				Dictionary<String, ?> props = DirectoryConf.uriAsProperties(dns.get(bdn));
-				String dn = LdapAttrs.uid.name() + "=" + uid + "," + DirectoryConf.userBase.getValue(props) + "," + bdn;
+				String dn = LdapAttr.uid.name() + "=" + uid + "," + DirectoryConf.userBase.getValue(props) + "," + bdn;
 				return dn;
 			}
 			return null;

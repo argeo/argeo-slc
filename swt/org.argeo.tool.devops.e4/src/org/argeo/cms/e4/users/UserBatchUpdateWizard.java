@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
-import org.argeo.api.acr.ldap.LdapObjs;
+import org.argeo.api.acr.ldap.LdapAttr;
+import org.argeo.api.acr.ldap.LdapObj;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.api.cms.CmsLog;
 import org.argeo.api.cms.transaction.WorkTransaction;
@@ -167,7 +167,7 @@ public class UserBatchUpdateWizard extends Wizard {
 			try {
 				for (User user : usersToUpdate) {
 					// the char array is emptied after being used.
-					user.getProperties().put(LdapAttrs.mail.name(), newEmail);
+					user.getProperties().put(LdapAttr.mail.name(), newEmail);
 				}
 
 				userAdminWrapper.commitOrNotifyTransactionStateChange();
@@ -495,8 +495,8 @@ public class UserBatchUpdateWizard extends Wizard {
 
 		private class ChooseUserTableViewer extends LdifUsersTable {
 			private static final long serialVersionUID = 5080437561015853124L;
-			private final String[] knownProps = { LdapAttrs.uid.name(), LdapAttrs.DN, LdapAttrs.cn.name(),
-					LdapAttrs.givenName.name(), LdapAttrs.sn.name(), LdapAttrs.mail.name() };
+			private final String[] knownProps = { LdapAttr.uid.name(), LdapAttr.DN, LdapAttr.cn.name(),
+					LdapAttr.givenName.name(), LdapAttr.sn.name(), LdapAttr.mail.name() };
 
 			public ChooseUserTableViewer(Composite parent, int style) {
 				super(parent, style);
@@ -519,13 +519,13 @@ public class UserBatchUpdateWizard extends Wizard {
 							tmpBuilder.append("*)");
 						}
 					if (tmpBuilder.length() > 1) {
-						builder.append("(&(").append(LdapAttrs.objectClass.name()).append("=")
-								.append(LdapObjs.inetOrgPerson.name()).append(")(|");
+						builder.append("(&(").append(LdapAttr.objectClass.name()).append("=")
+								.append(LdapObj.inetOrgPerson.name()).append(")(|");
 						builder.append(tmpBuilder.toString());
 						builder.append("))");
 					} else
-						builder.append("(").append(LdapAttrs.objectClass.name()).append("=")
-								.append(LdapObjs.inetOrgPerson.name()).append(")");
+						builder.append("(").append(LdapAttr.objectClass.name()).append("=")
+								.append(LdapObj.inetOrgPerson.name()).append(")");
 					roles = userAdminWrapper.getUserAdmin().getRoles(builder.toString());
 				} catch (InvalidSyntaxException e) {
 					throw new CmsException("Unable to get roles with filter: " + filter, e);

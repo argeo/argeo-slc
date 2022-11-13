@@ -2,7 +2,7 @@ package org.argeo.cms.e4.users.providers;
 
 import static org.argeo.eclipse.ui.EclipseUiUtils.notEmpty;
 
-import org.argeo.api.acr.ldap.LdapAttrs;
+import org.argeo.api.acr.ldap.LdapAttr;
 import org.argeo.api.cms.CmsConstants;
 import org.argeo.cms.auth.UserAdminUtils;
 import org.eclipse.jface.viewers.Viewer;
@@ -19,8 +19,8 @@ public class UserFilter extends ViewerFilter {
 	private String searchString;
 	private boolean showSystemRole = true;
 
-	private final String[] knownProps = { LdapAttrs.DN, LdapAttrs.cn.name(), LdapAttrs.givenName.name(),
-			LdapAttrs.sn.name(), LdapAttrs.uid.name(), LdapAttrs.description.name(), LdapAttrs.mail.name() };
+	private final String[] knownProps = { LdapAttr.DN, LdapAttr.cn.name(), LdapAttr.givenName.name(),
+			LdapAttr.sn.name(), LdapAttr.uid.name(), LdapAttr.description.name(), LdapAttr.mail.name() };
 
 	public void setSearchText(String s) {
 		// ensure that the value can be used for matching
