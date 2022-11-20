@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.TreeMap;
 
+import org.argeo.cms.CmsDeployProperty;
 import org.argeo.init.a2.A2Source;
 import org.argeo.init.a2.FsA2Source;
 import org.argeo.init.osgi.OsgiBoot;
@@ -56,7 +57,7 @@ public class CmsOsgiDeployment implements Deployment {
 			config.put(WellKnownConstants.OSGI_INSTANCE_AREA,
 					targetData.getInstanceData().toRealPath().toUri().toString());
 			if (targetData.getHttpPort() != null) {
-				config.put(WellKnownConstants.OSGI_HTTP_PORT, targetData.getHttpPort().toString());
+				config.put(CmsDeployProperty.HTTP_PORT.getProperty(), targetData.getHttpPort().toString());
 			}
 
 			Path configurationArea = Files.createTempDirectory("slc-cms-test");
@@ -67,7 +68,7 @@ public class CmsOsgiDeployment implements Deployment {
 				List<String> modules = deploymentData.getModulesToActivate(startLevel);
 				if (modules.size() != 0) {
 					String startProperty = String.join(",", modules);
-					config.put(OsgiBoot.PROP_ARGEO_OSGI_START + "." + startLevel + ".node", startProperty);
+					config.put(OsgiBoot.PROP_ARGEO_OSGI_START + "." + startLevel, startProperty);
 				}
 			}
 
@@ -77,7 +78,7 @@ public class CmsOsgiDeployment implements Deployment {
 			config.put("eclipse.ignoreApp", "true");
 			config.put("osgi.noShutdown", "true");
 
-//			config.put("osgi.console", "true");
+			config.put("osgi.console", "2323");
 
 			// initialise
 			for (String key : config.keySet()) {
@@ -128,7 +129,10 @@ public class CmsOsgiDeployment implements Deployment {
 			// distribution
 			Path a2Base = userHome.resolve("dev/git/unstable/output/a2");
 			A2Distribution distribution = new A2Distribution();
-			distribution.getA2Sources().add(new FsA2Source(a2Base, new HashMap<>(), true));
+			Map<String, String> xOr = new HashMap<>();
+			xOr.put("osgi", "equinox");
+			xOr.put("swt", "rap");
+			distribution.getA2Sources().add(new FsA2Source(a2Base, xOr, true));
 
 			// target data
 			Path instanceData = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment/data");
@@ -139,17 +143,26 @@ public class CmsOsgiDeployment implements Deployment {
 			// deployment data
 			SimpleCmsDeploymentData deploymentData = new SimpleCmsDeploymentData();
 			deploymentData.getModulesToActivate(2).add("org.eclipse.equinox.http.servlet");
-			deploymentData.getModulesToActivate(2).add("org.eclipse.equinox.cm");
 			deploymentData.getModulesToActivate(2).add("org.apache.felix.scr");
 			deploymentData.getModulesToActivate(2).add("org.eclipse.rap.rwt.osgi");
+			deploymentData.getModulesToActivate(2).add("org.eclipse.equinox.console");
 
 			deploymentData.getModulesToActivate(3).add("org.argeo.cms");
+			deploymentData.getModulesToActivate(3).add("org.argeo.cms.swt.rap");
+			deploymentData.getModulesToActivate(3).add("org.argeo.cms.ee");
+			deploymentData.getModulesToActivate(3).add("org.argeo.cms.lib.sshd");
+			deploymentData.getModulesToActivate(3).add("org.argeo.cms.lib.equinox");
+			deploymentData.getModulesToActivate(3).add("org.argeo.cms.lib.jetty");
 
-			deploymentData.getModulesToActivate(4).add("org.argeo.cms.servlet");
-			deploymentData.getModulesToActivate(4).add("org.argeo.cms.ui.rap");
+//			deploymentData.getModulesToActivate(4).add("org.argeo.cms.servlet");
+//			deploymentData.getModulesToActivate(4).add("org.argeo.cms.ui.rap");
 			deploymentData.getModulesToActivate(4).add("org.argeo.cms.jcr");
-
-			deploymentData.getModulesToActivate(5).add("org.argeo.cms.e4.rap");
+//
+			deploymentData.getModulesToActivate(5).add("org.argeo.app.profile.acr.fs");
+			deploymentData.getModulesToActivate(5).add("org.argeo.app.core");
+			deploymentData.getModulesToActivate(5).add("org.argeo.app.ui");
+			deploymentData.getModulesToActivate(5).add("org.argeo.app.profile.acr.fs");
+			deploymentData.getModulesToActivate(5).add("org.argeo.app.theme.default");
 
 			CmsOsgiDeployment deployment = new CmsOsgiDeployment();
 			deployment.setDistribution(distribution);

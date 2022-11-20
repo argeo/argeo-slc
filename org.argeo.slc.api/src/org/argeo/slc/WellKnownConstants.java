@@ -13,5 +13,5 @@ public interface WellKnownConstants {
 	final static String OSGI_INSTANCE_AREA = "osgi.instance.area";
 	final static String OSGI_CONFIGURATION_AREA = "osgi.configuration.area";
 
-	final static String OSGI_HTTP_PORT = "org.osgi.service.http.port";
+//	final static String OSGI_HTTP_PORT = "org.osgi.service.http.port";
 }
