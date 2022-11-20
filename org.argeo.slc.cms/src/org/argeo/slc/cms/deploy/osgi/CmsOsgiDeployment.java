@@ -148,20 +148,17 @@ public class CmsOsgiDeployment implements Deployment {
 			deploymentData.getModulesToActivate(2).add("org.eclipse.equinox.console");
 
 			deploymentData.getModulesToActivate(3).add("org.argeo.cms");
-			deploymentData.getModulesToActivate(3).add("org.argeo.cms.swt.rap");
 			deploymentData.getModulesToActivate(3).add("org.argeo.cms.ee");
 			deploymentData.getModulesToActivate(3).add("org.argeo.cms.lib.sshd");
 			deploymentData.getModulesToActivate(3).add("org.argeo.cms.lib.equinox");
 			deploymentData.getModulesToActivate(3).add("org.argeo.cms.lib.jetty");
+			deploymentData.getModulesToActivate(3).add("org.argeo.cms.swt.rap");
 
-//			deploymentData.getModulesToActivate(4).add("org.argeo.cms.servlet");
-//			deploymentData.getModulesToActivate(4).add("org.argeo.cms.ui.rap");
 			deploymentData.getModulesToActivate(4).add("org.argeo.cms.jcr");
-//
-			deploymentData.getModulesToActivate(5).add("org.argeo.app.profile.acr.fs");
+			deploymentData.getModulesToActivate(4).add("org.argeo.app.profile.acr.fs");
+
 			deploymentData.getModulesToActivate(5).add("org.argeo.app.core");
 			deploymentData.getModulesToActivate(5).add("org.argeo.app.ui");
-			deploymentData.getModulesToActivate(5).add("org.argeo.app.profile.acr.fs");
 			deploymentData.getModulesToActivate(5).add("org.argeo.app.theme.default");
 
 			CmsOsgiDeployment deployment = new CmsOsgiDeployment();
