@@ -1,12 +1,15 @@
 package org.argeo.slc.systemd.dbus;
 
 import static java.lang.System.Logger.Level.DEBUG;
+import static java.lang.System.Logger.Level.ERROR;
 import static java.lang.System.Logger.Level.INFO;
 import static java.lang.System.Logger.Level.WARNING;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -35,7 +38,19 @@ public class ServiceStatistics {
 
 	private long frequency = 60 * 1000;
 
+	private long begin;
+
+	private Statistics previousStat = null;
+
+	private StatisticsThread statisticsThread;
+
+	private Path basePath;
+
+	private BigInteger maxMemory = BigInteger.ZERO;
+	private BigInteger maxTasks = BigInteger.ZERO;
+
 	public void start() {
+		begin = Instant.now().toEpochMilli();
 		final long pid = ProcessHandle.current().pid();
 		try {
 			manager = Systemd.get().getManager();
@@ -60,56 +75,133 @@ public class ServiceStatistics {
 			manager = null;
 			Systemd.disconnect();
 		} else {
+			// standard systemd property
+			String logsDirectory = System.getenv("LOGS_DIRECTORY");
+			if (logsDirectory == null) {
+				logsDirectory = System.getProperty("user.dir");
+			}
+			// MainPID,CPUUsageNSec,MemoryCurrent,IPIngressBytes,IPEgressBytes,IOReadBytes,IOWriteBytes,TasksCurrent
+			basePath = Paths.get(logsDirectory);
+
+			logger.log(DEBUG, () -> "Writing statistics for " + unitName + " to " + basePath);
 			// start collecting
-			collectStatistics();
+			statisticsThread = new StatisticsThread();
+			statisticsThread.start();
 		}
 	}
 
 	public void stop() {
 		if (manager != null) {
-			Systemd.disconnect();
-			manager = null;
-			notifyAll();
+			// write accounting
+			Path accountingPath = basePath.resolve("accounting-" + unitName + ".csv");
+			logger.log(INFO, () -> "Writing accounting for " + unitName + " to " + accountingPath);
+			boolean writeHeader = !Files.exists(accountingPath);
+			try (Writer writer = Files.newBufferedWriter(accountingPath, StandardCharsets.UTF_8,
+					StandardOpenOption.APPEND, StandardOpenOption.CREATE)) {
+				CsvWriter csvWriter = new CsvWriter(writer);
+
+				if (writeHeader)// header
+					csvWriter.writeLine("BeginTimeMillis", "EndTimeMillis", "CPUUsageNSec", "MaxMemory",
+							"IPIngressBytes", "IPEgressBytes", "IOReadBytes", "IOWriteBytes", "MaxTasks");
+
+				// TODO better synchronise with stop
+				csvWriter.writeLine(begin, System.currentTimeMillis(), service.getCPUUsageNSec(), maxMemory,
+						service.getIPIngressBytes(), service.getIPEgressBytes(), service.getIOReadBytes(),
+						service.getIOWriteBytes(), maxTasks);
+				writer.flush();
+			} catch (IOException e) {
+				logger.log(ERROR, "Cannot write accounting to " + accountingPath, e);
+			}
+
+			// disconnect
+			synchronized (this) {
+				Systemd.disconnect();
+				manager = null;
+				notifyAll();
+				statisticsThread.interrupt();
+			}
 		}
 	}
 
 	protected void collectStatistics() {
-		// standard systemd property
-		String logsDirectory = System.getenv("LOGS_DIRECTORY");
-		if (logsDirectory == null) {
-			logsDirectory = System.getProperty("user.dir");
-		}
-		// MainPID,CPUUsageNSec,MemoryCurrent,IPIngressBytes,IPEgressBytes,IOReadBytes,IOWriteBytes,TasksCurrent
-		Path basePath = Paths.get(logsDirectory);
-
-		logger.log(DEBUG, () -> "Writing statistics for " + unitName + " to " + basePath);
 		try {
 			while (manager != null) {
-				String dateSuffix = Instant.now().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE);
+				synchronized (this) {
 
-				Path csvPath = basePath.resolve("statistics-" + unitName + "-" + dateSuffix + ".csv");
-				boolean writeHeader = !Files.exists(csvPath);
-				try (Writer writer = Files.newBufferedWriter(csvPath, StandardCharsets.UTF_8,
-						StandardOpenOption.APPEND)) {
-					CsvWriter csvWriter = new CsvWriter(writer);
+					String dateSuffix = Instant.ofEpochMilli(begin).atOffset(ZoneOffset.UTC)
+							.format(DateTimeFormatter.ISO_LOCAL_DATE) + "-" + begin;
 
-					if (writeHeader)// header
-						csvWriter.writeLine("CurrentTimeMillis", "CPUUsageNSec", "MemoryCurrent", "IPIngressBytes",
-								"IPEgressBytes", "IOReadBytes", "IOWriteBytes", "TasksCurrent");
+					Path statisticsPath = basePath.resolve("statistics-" + unitName + "-" + dateSuffix + ".csv");
+					boolean writeHeader = !Files.exists(statisticsPath);
+					if (!writeHeader && previousStat == null)
+						logger.log(ERROR,
+								"File " + statisticsPath + " exists, but we don't have previous statistics in memory");
 
-					// TODO better synchronise with stop
-					csvWriter.writeLine(System.currentTimeMillis(), service.getCPUUsageNSec(),
-							service.getMemoryCurrent(), service.getIPIngressBytes(), service.getIPEgressBytes(),
-							service.getIOReadBytes(), service.getIOWriteBytes(), service.getTasksCurrent());
+					try (Writer writer = Files.newBufferedWriter(statisticsPath, StandardCharsets.UTF_8,
+							StandardOpenOption.APPEND, StandardOpenOption.CREATE)) {
+						CsvWriter csvWriter = new CsvWriter(writer);
+
+						if (writeHeader)// header
+							csvWriter.writeLine("CurrentTimeMillis", "CPUUsageNSec", "MemoryCurrent", "IPIngressBytes",
+									"IPEgressBytes", "IOReadBytes", "IOWriteBytes", "TasksCurrent");
+
+						Statistics s = new Statistics(Instant.now().toEpochMilli(), service.getCPUUsageNSec(),
+								service.getMemoryCurrent(), service.getIPIngressBytes(), service.getIPEgressBytes(),
+								service.getIOReadBytes(), service.getIOWriteBytes(), service.getTasksCurrent());
+
+						if (s.MemoryCurrent().compareTo(maxMemory) > 0)
+							maxMemory = s.MemoryCurrent();
+						if (s.TasksCurrent().compareTo(maxTasks) > 0)
+							maxTasks = s.TasksCurrent();
+
+						Statistics diff = Statistics.diff(s, previousStat);
+						// TODO better synchronise with stop
+						csvWriter.writeLine(diff.CurrentTimeMillis(), diff.CPUUsageNSec(), diff.MemoryCurrent(),
+								diff.IPIngressBytes(), diff.IPEgressBytes(), diff.IOReadBytes(), diff.IOWriteBytes(),
+								diff.TasksCurrent());
+						previousStat = s;
+					}
+					try {
+						this.wait(frequency);
+					} catch (InterruptedException e) {
+						logger.log(Level.TRACE, () -> "Statistics collection interrupted for " + unitName);
+					}
 				}
-				Thread.sleep(frequency);
 			}
 		} catch (IOException e) {
 			throw new IllegalStateException("Cannot collect statistics", e);
-		} catch (InterruptedException e) {
-			logger.log(WARNING, "Statistics collection interrupted for " + unitName);
+		}
+	}
+
+	class StatisticsThread extends Thread {
+
+		public StatisticsThread() {
+			super("Statistics for " + unitName);
 		}
 
+		@Override
+		public void run() {
+			collectStatistics();
+		}
+
+	}
+
+	private record Statistics(long CurrentTimeMillis, BigInteger CPUUsageNSec, BigInteger MemoryCurrent,
+			BigInteger IPIngressBytes, BigInteger IPEgressBytes, BigInteger IOReadBytes, BigInteger IOWriteBytes,
+			BigInteger TasksCurrent) {
+
+		final static Statistics NULL = new Statistics(0, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO,
+				BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO);
+
+		public static Statistics diff(Statistics now, Statistics previous) {
+			if (previous == null)
+				previous = NULL;
+			return new Statistics(now.CurrentTimeMillis(), now.CPUUsageNSec().subtract(previous.CPUUsageNSec()),
+					now.MemoryCurrent(), now.IPIngressBytes().subtract(previous.IPIngressBytes()),
+					now.IPEgressBytes().subtract(previous.IPEgressBytes()),
+					now.IOReadBytes().subtract(previous.IOReadBytes()),
+					now.IOWriteBytes().subtract(previous.IOWriteBytes()), now.TasksCurrent());
+		}
 	}
 
 	public static void main(String[] args) throws Exception {
