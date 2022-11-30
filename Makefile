@@ -11,12 +11,12 @@ A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
 org.argeo.slc.api \
-org.argeo.slc.factory \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
 org.argeo.slc.repo \
 org.argeo.slc.rpmfactory \
 org.argeo.slc.jcr \
+lib/linux/org.argeo.slc.systemd \
 swt/org.argeo.tool.swt \
 swt/org.argeo.tool.devops.e4 \
 swt/rap/org.argeo.tool.rap.cli \
