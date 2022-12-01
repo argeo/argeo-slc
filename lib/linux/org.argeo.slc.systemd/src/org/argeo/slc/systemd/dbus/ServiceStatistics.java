@@ -128,8 +128,10 @@ public class ServiceStatistics {
 			while (manager != null) {
 				synchronized (this) {
 
-					String dateSuffix = Instant.ofEpochMilli(begin).atOffset(ZoneOffset.UTC)
-							.format(DateTimeFormatter.ISO_LOCAL_DATE) + "-" + begin;
+					// We change the prefix in order to have a file per day
+					// but keep the begin timestamp in order to identify restarts
+					String dateSuffix = Instant.now().atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_DATE)
+							+ "-" + begin;
 
 					Path statisticsPath = basePath.resolve("statistics-" + unitName + "-" + dateSuffix + ".csv");
 					boolean writeHeader = !Files.exists(statisticsPath);
