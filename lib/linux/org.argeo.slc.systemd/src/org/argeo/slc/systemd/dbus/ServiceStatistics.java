@@ -142,11 +142,11 @@ public class ServiceStatistics {
 						CsvWriter csvWriter = new CsvWriter(writer);
 
 						if (writeHeader)// header
-							csvWriter.writeLine("CurrentTimeMillis", "CPUUsageNSec", "MemoryCurrent", "IPIngressBytes",
+							csvWriter.writeLine("CurrentTimeMillis", "MemoryCurrent", "CPUUsageNSec", "IPIngressBytes",
 									"IPEgressBytes", "IOReadBytes", "IOWriteBytes", "TasksCurrent");
 
-						Statistics s = new Statistics(Instant.now().toEpochMilli(), service.getCPUUsageNSec(),
-								service.getMemoryCurrent(), service.getIPIngressBytes(), service.getIPEgressBytes(),
+						Statistics s = new Statistics(Instant.now().toEpochMilli(), service.getMemoryCurrent(),
+								service.getCPUUsageNSec(), service.getIPIngressBytes(), service.getIPEgressBytes(),
 								service.getIOReadBytes(), service.getIOWriteBytes(), service.getTasksCurrent());
 
 						if (s.MemoryCurrent().compareTo(maxMemory) > 0)
@@ -156,7 +156,7 @@ public class ServiceStatistics {
 
 						Statistics diff = Statistics.diff(s, previousStat);
 						// TODO better synchronise with stop
-						csvWriter.writeLine(diff.CurrentTimeMillis(), diff.CPUUsageNSec(), diff.MemoryCurrent(),
+						csvWriter.writeLine(diff.CurrentTimeMillis(), diff.MemoryCurrent(), diff.CPUUsageNSec(),
 								diff.IPIngressBytes(), diff.IPEgressBytes(), diff.IOReadBytes(), diff.IOWriteBytes(),
 								diff.TasksCurrent());
 						previousStat = s;
@@ -186,7 +186,7 @@ public class ServiceStatistics {
 
 	}
 
-	private record Statistics(long CurrentTimeMillis, BigInteger CPUUsageNSec, BigInteger MemoryCurrent,
+	private record Statistics(long CurrentTimeMillis, BigInteger MemoryCurrent, BigInteger CPUUsageNSec,
 			BigInteger IPIngressBytes, BigInteger IPEgressBytes, BigInteger IOReadBytes, BigInteger IOWriteBytes,
 			BigInteger TasksCurrent) {
 
@@ -196,29 +196,12 @@ public class ServiceStatistics {
 		public static Statistics diff(Statistics now, Statistics previous) {
 			if (previous == null)
 				previous = NULL;
-			return new Statistics(now.CurrentTimeMillis(), now.CPUUsageNSec().subtract(previous.CPUUsageNSec()),
-					now.MemoryCurrent(), now.IPIngressBytes().subtract(previous.IPIngressBytes()),
+			return new Statistics(now.CurrentTimeMillis(), now.MemoryCurrent(),
+					now.CPUUsageNSec().subtract(previous.CPUUsageNSec()),
+					now.IPIngressBytes().subtract(previous.IPIngressBytes()),
 					now.IPEgressBytes().subtract(previous.IPEgressBytes()),
 					now.IOReadBytes().subtract(previous.IOReadBytes()),
 					now.IOWriteBytes().subtract(previous.IOWriteBytes()), now.TasksCurrent());
 		}
 	}
-
-	public static void main(String[] args) throws Exception {
-		try {
-			Systemd systemd = Systemd.get();
-			Service service = systemd.getManager().getService("ipsec.service");
-			System.out.println(service.getCPUUsageNSec());
-
-			for (UnitType unitType : systemd.getManager().listUnits()) {
-				if (unitType.isService()) {
-					System.out.println(unitType.getUnitName());
-				}
-			}
-
-		} finally {
-			Systemd.disconnect();
-		}
-	}
-
 }
