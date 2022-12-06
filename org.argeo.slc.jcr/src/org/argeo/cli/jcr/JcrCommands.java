@@ -1,6 +1,6 @@
 package org.argeo.cli.jcr;
 
-import org.argeo.slc.cli.CommandsCli;
+import org.argeo.api.cli.CommandsCli;
 
 /** File utilities. */
 public class JcrCommands extends CommandsCli {

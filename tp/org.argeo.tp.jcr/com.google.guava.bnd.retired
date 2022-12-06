@@ -1,5 +1,0 @@
-Bundle-License: Apache-2.0
-Bundle-SymbolicName: com.google.guava
-Bundle-Version: 27.1.0.jre
-SLC-Origin-M2: com.google.guava:guava:27.1-jre
-SLC-Origin-ManifestNotModified: true

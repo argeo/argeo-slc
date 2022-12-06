@@ -1,4 +1,0 @@
-Bundle-License: MPL-2.0
-Bundle-SymbolicName: org.mozilla.javascript
-SLC-Origin-M2: org.mozilla:rhino:1.7.14
-SLC-Origin-ManifestNotModified: true

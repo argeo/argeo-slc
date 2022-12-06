@@ -1,8 +1,0 @@
-Bundle-SymbolicName: org.apache.poi.ooxml
-Import-Package: \
-com.graphbuilder.*;resolution:=optional,\
-com.graphbuilder.*;resolution:=optional,\
-org.etsi.uri.*;resolution:=optional,\
-org.apache.logging.log4j.*;resolution:=optional,\
-*
-SLC-Origin-M2: org.apache.poi:poi-ooxml

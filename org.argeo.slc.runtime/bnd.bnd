@@ -1,2 +1,4 @@
-Import-Package: org.argeo.slc.deploy,\
+Import-Package: \
+org.argeo.slc.deploy,\
+org.apache.commons.exec.*resolution:=optional,\
 *

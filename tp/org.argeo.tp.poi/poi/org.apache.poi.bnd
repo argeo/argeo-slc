@@ -1,5 +1,0 @@
-Bundle-SymbolicName: org.apache.poi
-SLC-Origin-M2: org.apache.poi:poi
-Import-Package: \
-org.apache.logging.log4j.*;resolution:=optional,\
-*

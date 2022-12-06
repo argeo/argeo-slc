@@ -7,6 +7,8 @@ public enum ManifestConstants {
 	BUNDLE_LICENSE("Bundle-License"), //
 	EXPORT_PACKAGE("Export-Package"), //
 	IMPORT_PACKAGE("Import-Package"), //
+	// JAVA
+	AUTOMATIC_MODULE_NAME("Automatic-Module-Name"), //
 	// SLC
 	SLC_CATEGORY("SLC-Category"), //
 	SLC_ORIGIN_M2("SLC-Origin-M2"), //

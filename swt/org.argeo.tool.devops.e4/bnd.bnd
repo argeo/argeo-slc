@@ -1,0 +1,22 @@
+Bundle-ActivationPolicy: lazy
+
+Import-Package: \
+org.eclipse.swt,\
+org.eclipse.swt.widgets;version="0.0.0",\
+org.eclipse.jface.window,\
+org.eclipse.core.commands.common,\
+org.eclipse.e4.ui.model.application.ui;resolution:=optional,\
+org.eclipse.e4.ui.model.application;resolution:=optional,\
+javax.jcr.nodetype,\
+org.apache.jackrabbit.*;version="[2,3)",\
+org.argeo.cms,\
+org.argeo.jcr,\
+org.argeo.api.acr,\
+org.argeo.api.cms.directory,\
+org.argeo.cms.e4.rap;resolution:=optional,\
+org.eclipse.*;resolution:=optional,\
+*
+
+Service-Component: OSGI-INF/homeRepository.xml,\
+OSGI-INF/userAdminWrapper.xml,\
+OSGI-INF/cmsAdminRap.xml,\

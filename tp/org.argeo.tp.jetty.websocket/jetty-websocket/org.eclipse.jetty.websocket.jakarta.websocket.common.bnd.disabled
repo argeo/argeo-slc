@@ -1,3 +1,0 @@
-SLC-Origin-M2: org.eclipse.jetty.websocket:websocket-jakarta-common
-SLC-Origin-ManifestNotModified: true
-Bundle-SymbolicName: org.eclipse.jetty.websocket.jakarta.common

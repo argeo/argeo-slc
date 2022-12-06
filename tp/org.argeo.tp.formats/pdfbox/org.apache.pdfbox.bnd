@@ -1,5 +1,0 @@
-Bundle-SymbolicName: org.apache.pdfbox
-SLC-Origin-M2: org.apache.pdfbox:pdfbox
-Import-Package: \
-sun.java2d.cmm.kcms;resolution:="optional",\
-*

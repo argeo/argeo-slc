@@ -1,41 +1,69 @@
 include sdk.mk
-.PHONY: clean all osgi
+.PHONY: clean all osgi jni
 
-all: osgi
-	$(MAKE) -f Makefile-ext.mk
+all: osgi jni
+	$(MAKE) -f Makefile-rcp.mk all
+
+jni:
+	$(MAKE) -C jni
 
 A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
 org.argeo.slc.api \
-org.argeo.slc.factory \
 org.argeo.slc.runtime \
+org.argeo.slc.cms \
+org.argeo.slc.repo \
+org.argeo.slc.rpmfactory \
+org.argeo.slc.jcr \
+lib/linux/org.argeo.slc.systemd \
+swt/org.argeo.tool.swt \
+swt/org.argeo.tool.devops.e4 \
+swt/rap/org.argeo.tool.rap.cli \
+swt/rap/org.argeo.tool.server \
 
-BOOTSTRAP_BASE=$(SDK_BUILD_BASE)/bootstrap
-
-distribution: bootstrap
-	$(JVM) -cp \
-	 $(BOOTSTRAP_BASE)/bndlib.jar:$(BOOTSTRAP_BASE)/slf4j-api.jar:$(BOOTSTRAP_BASE)/org.argeo.slc.api/bin:$(BOOTSTRAP_BASE)/org.argeo.slc.factory/bin \
-	 tp/Make.java $(A2_OUTPUT)
-	
-bootstrap :
-	mkdir -p $(SDK_BUILD_BASE)/bootstrap
-	wget -c -O $(BOOTSTRAP_BASE)/ecj.jar https://repo1.maven.org/maven2/org/eclipse/jdt/ecj/3.28.0/ecj-3.28.0.jar
-	wget -c -O $(BOOTSTRAP_BASE)/slf4j-api.jar https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.28/slf4j-api-1.7.28.jar
-	wget -c -O $(BOOTSTRAP_BASE)/bndlib.jar https://repo1.maven.org/maven2/biz/aQute/bnd/biz.aQute.bndlib/5.3.0/biz.aQute.bndlib-5.3.0.jar
-	$(JVM) -cp $(BOOTSTRAP_BASE)/ecj.jar org.eclipse.jdt.internal.compiler.batch.Main -11 -nowarn -time -cp \
-	 $(BOOTSTRAP_BASE)/bndlib.jar:$(BOOTSTRAP_BASE)/slf4j.jar \
-	 org.argeo.slc.api/src[-d $(BOOTSTRAP_BASE)/org.argeo.slc.api/bin] \
-	 org.argeo.slc.factory/src[-d $(BOOTSTRAP_BASE)/org.argeo.slc.factory/bin] \
+DEP_CATEGORIES = \
+org.argeo.tp \
+org.argeo.tp.sdk \
+org.argeo.tp.crypto \
+org.argeo.tp.jetty \
+org.argeo.tp.sql \
+org.argeo.tp.utils \
+org.argeo.tp.jcr \
+org.argeo.tp.gis \
+osgi/api/org.argeo.tp.osgi \
+osgi/equinox/org.argeo.tp.eclipse \
+swt/rap/org.argeo.tp.swt \
+swt/rap/org.argeo.tp.swt.workbench \
+org.argeo.cms \
+org.argeo.cms.jcr \
+swt/org.argeo.cms \
+swt/org.argeo.cms.jcr \
+swt/rap/org.argeo.cms \
 
 clean:
 	rm -rf $(BUILD_BASE)
-	rm -rf $(BOOTSTRAP_BASE)
-	$(MAKE) -f Makefile-ext.mk clean
+	$(MAKE) -C jni clean
+	$(MAKE) -f Makefile-rcp.mk clean
 
-A2_OUTPUT = $(SDK_BUILD_BASE)/a2
-A2_BASE = $(A2_OUTPUT)
+GRAALVM_HOME = /opt/graalvm-ce
+A2_BUNDLES_CLASSPATH = $(subst $(space),$(pathsep),$(strip $(A2_BUNDLES)))
 
-DEP_CATEGORIES = org.argeo.tp org.argeo.tp.apache org.argeo.tp.sdk org.argeo.tp.jcr
+graalvm-custom:
+	$(GRAALVM_HOME)/bin/java -jar $(ECJ_JAR) @$(SDK_SRC_BASE)/sdk/argeo-build/ecj.args -cp $(A2_CLASSPATH) \
+		graalvm/org.argeo.slc.graalvm/src[-d $(SDK_BUILD_BASE)/$(A2_CATEGORY)/graalvm/bin]
+
+tool-server: osgi graalvm-custom
+	mkdir -p $(A2_OUTPUT)/libexec/$(A2_CATEGORY)
+	cd $(A2_OUTPUT)/libexec/$(A2_CATEGORY) && $(GRAALVM_HOME)/bin/native-image \
+		-cp $(A2_CLASSPATH):$(A2_BUNDLES_CLASSPATH):$(SDK_BUILD_BASE)/$(A2_CATEGORY)/graalvm/bin \
+		--enable-url-protocols=http,https \
+		-H:AdditionalSecurityProviders=sun.security.jgss.SunProvider \
+		--initialize-at-build-time=org.argeo.init.logging.ThinLogging,org.slf4j.LoggerFactory \
+		--no-fallback \
+		-Dargeo.logging.synchronous=true \
+		 org.argeo.tool.server.ArgeoServer \
+		 argeo
+
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk

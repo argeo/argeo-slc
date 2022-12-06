@@ -1,3 +1,0 @@
-SLC-Origin-M2: org.eclipse.jetty.websocket:websocket-core-client
-SLC-Origin-ManifestNotModified: true
-Bundle-SymbolicName: org.eclipse.jetty.websocket.core.client

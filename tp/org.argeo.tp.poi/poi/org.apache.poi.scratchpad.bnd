@@ -1,5 +1,0 @@
-Bundle-SymbolicName: org.apache.poi.scratchpad
-SLC-Origin-M2: org.apache.poi:poi-scratchpad
-Import-Package: \
-org.apache.logging.log4j.*;resolution:=optional,\
-*

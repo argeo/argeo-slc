@@ -40,7 +40,6 @@ public class SlcJcrResultUtils {
 	 * it throws an exception.
 	 * 
 	 * @param session
-	 * @return
 	 */
 	public static Node getSlcResultsParentNode(Session session) {
 		try {
@@ -90,7 +89,6 @@ public class SlcJcrResultUtils {
 	 * that node if it has the correct type and throws an exception otherwise.
 	 * 
 	 * @param session
-	 * @return
 	 */
 	public static Node getMyResultParentNode(Session session) {
 		try {
@@ -123,7 +121,6 @@ public class SlcJcrResultUtils {
 	 * 
 	 * @param session
 	 * @param absPath
-	 * @return
 	 */
 	public static synchronized Node createResultFolderNode(Session session,
 			String absPath) {
