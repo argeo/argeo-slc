@@ -1,0 +1,27 @@
+Argeo SLC provides components (mostly Java but also native, or GNU/Linux specific scripts and systemd units) around the life cycle of IT systems, especially those built on Argeo Commons.
+
+## Build
+Prerequisites to build this layer:
+- build Argeo TP
+- build Argeo Commons
+- build Argeo JCR
+(cf. http://git.argeo.org)
+
+Then, run:
+
+git clone http://git.argeo.org/gpl/argeo-slc.git --recursive
+export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/
+./argeo-slc/configure
+
+cd argeo-slc
+make clean all
+
+In order to use it within an Eclipse PDE environment:
+
+make clean all manifests
+
+which will copy the generated OSGi MANIFESTs back to the source tree. The *.target files in argeo-tp/sdk can then be used to configure the target platforms.
+
+In order to develop with the Eclipse RCP components (Eclipse RAP being the default), additionally run:
+
+make -f Makefile-rcp.mk manifests
