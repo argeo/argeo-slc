@@ -25,6 +25,7 @@ swt/rap/org.argeo.tool.server \
 DEP_CATEGORIES = \
 org.argeo.tp \
 org.argeo.tp.sdk \
+org.argeo.tp.build \
 org.argeo.tp.crypto \
 org.argeo.tp.jetty \
 org.argeo.tp.sql \
