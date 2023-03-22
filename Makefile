@@ -23,12 +23,10 @@ swt/rap/org.argeo.tool.rap.cli \
 swt/rap/org.argeo.tool.server \
 
 DEP_CATEGORIES = \
+crypto/fips/org.argeo.tp.crypto \
 org.argeo.tp \
 org.argeo.tp.sdk \
-org.argeo.tp.build \
-org.argeo.tp.crypto \
 org.argeo.tp.jetty \
-org.argeo.tp.sql \
 org.argeo.tp.utils \
 org.argeo.tp.jcr \
 org.argeo.tp.gis \
