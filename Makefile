@@ -30,10 +30,9 @@ log/syslogger/org.argeo.tp \
 org.argeo.tp \
 org.argeo.tp.build \
 org.argeo.tp.sdk \
-org.argeo.tp.jetty \
+org.argeo.tp.httpd \
 org.argeo.tp.utils \
 org.argeo.tp.jcr \
-org.argeo.tp.gis \
 osgi/api/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rap/org.argeo.tp.swt \
