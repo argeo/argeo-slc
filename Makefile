@@ -26,7 +26,9 @@ swt/rap/org.argeo.tool.server \
 
 DEP_CATEGORIES = \
 crypto/fips/org.argeo.tp.crypto \
+log/syslogger/org.argeo.tp \
 org.argeo.tp \
+org.argeo.tp.build \
 org.argeo.tp.sdk \
 org.argeo.tp.jetty \
 org.argeo.tp.utils \
