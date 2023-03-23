@@ -18,7 +18,9 @@ org.argeo.slc.rpmfactory \
 org.argeo.slc.jcr \
 lib/linux/org.argeo.slc.systemd \
 swt/org.argeo.tool.swt \
+swt/org.argeo.cms.e4 \
 swt/org.argeo.tool.devops.e4 \
+swt/rap/org.argeo.cms.e4.rap \
 swt/rap/org.argeo.tool.rap.cli \
 swt/rap/org.argeo.tool.server \
 

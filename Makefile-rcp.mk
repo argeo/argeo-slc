@@ -6,18 +6,23 @@ all: osgi
 A2_CATEGORY = org.argeo.slc
 
 BUNDLES = \
+swt/rcp/org.argeo.cms.e4.rcp \
 swt/rcp/org.argeo.tool.rcp.cli \
 swt/rcp/org.argeo.tool.desktop \
 
 DEP_CATEGORIES = \
 org.argeo.tp \
 osgi/api/org.argeo.tp.osgi \
+osgi/equinox/org.argeo.tp.eclipse \
 swt/rcp/org.argeo.tp.swt \
 lib/linux/x86_64/swt/rcp/org.argeo.tp.swt \
 swt/rcp/org.argeo.tp.swt.workbench \
 org.argeo.cms \
 swt/org.argeo.cms \
 swt/rcp/org.argeo.cms \
+$(A2_CATEGORY) \
+swt/$(A2_CATEGORY) \
+swt/rcp/$(A2_CATEGORY) \
 
 clean:
 	rm -rf $(BUILD_BASE)
