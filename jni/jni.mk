@@ -1,3 +1,6 @@
+include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk
+
+A2_NATIVE_CATEGORY=$(A2_OUTPUT)/lib/linux/$(shell uname -m)/$(A2_CATEGORY)
 TARGET_EXEC := libJava_$(NATIVE_PACKAGE).so
 
 LDFLAGS = -shared -fPIC -Wl,-soname,$(TARGET_EXEC).$(MAJOR).$(MINOR) $(ADDITIONAL_LIBS)
@@ -15,7 +18,10 @@ INC_DIRS := $(shell find $(SRC_DIRS) -type d) $(JAVA_HOME)/include $(JAVA_HOME)/
 
 
 .PHONY: clean all ide
-all: $(SDK_BUILD_BASE)/jni/$(TARGET_EXEC)
+all: $(A2_NATIVE_CATEGORY)/$(TARGET_EXEC)
+
+clean:
+	$(RM) $(A2_NATIVE_CATEGORY)/$(TARGET_EXEC)
 
 # Find all the C and C++ files we want to compile
 # Note the single quotes around the * expressions. Make will incorrectly expand these otherwise.
@@ -37,7 +43,8 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS := $(INC_FLAGS) -MMD -MP
 
 # The final build step.
-$(SDK_BUILD_BASE)/jni/$(TARGET_EXEC): $(OBJS)
+$(A2_NATIVE_CATEGORY)/$(TARGET_EXEC): $(OBJS)
+	mkdir -p $(A2_NATIVE_CATEGORY)
 	$(CC) $(OBJS) -o $@ $(LDFLAGS)
 
 # Build step for C source

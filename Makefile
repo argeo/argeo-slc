@@ -67,5 +67,7 @@ tool-server: osgi graalvm-custom
 		 org.argeo.tool.server.ArgeoServer \
 		 argeo
 
+native-deps-debian:
+	sudo apt install uuid-dev
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk
