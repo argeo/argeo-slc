@@ -3,6 +3,10 @@ include sdk.mk
 
 all: osgi jni
 	$(MAKE) -f Makefile-rcp.mk all
+	
+install: osgi-install
+
+uninstall: osgi-uninstall
 
 jni:
 	$(MAKE) -C jni
