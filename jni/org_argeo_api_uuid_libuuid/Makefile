@@ -1,3 +1,5 @@
+A2_CATEGORY = org.argeo.slc
+
 NATIVE_PACKAGE := org_argeo_api_uuid_libuuid
 
 ADDITIONAL_INCLUDES = /usr/include/uuid

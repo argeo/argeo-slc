@@ -8,7 +8,6 @@ org.eclipse.core.commands.common,\
 org.eclipse.e4.ui.model.application.ui;resolution:=optional,\
 org.eclipse.e4.ui.model.application;resolution:=optional,\
 javax.jcr.nodetype,\
-org.apache.jackrabbit.*;version="[2,3)",\
 org.argeo.cms,\
 org.argeo.jcr,\
 org.argeo.api.acr,\

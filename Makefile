@@ -3,6 +3,10 @@ include sdk.mk
 
 all: osgi jni
 	$(MAKE) -f Makefile-rcp.mk all
+	
+install: osgi-install
+
+uninstall: osgi-uninstall
 
 jni:
 	$(MAKE) -C jni
@@ -18,19 +22,21 @@ org.argeo.slc.rpmfactory \
 org.argeo.slc.jcr \
 lib/linux/org.argeo.slc.systemd \
 swt/org.argeo.tool.swt \
+swt/org.argeo.cms.e4 \
 swt/org.argeo.tool.devops.e4 \
+swt/rap/org.argeo.cms.e4.rap \
 swt/rap/org.argeo.tool.rap.cli \
 swt/rap/org.argeo.tool.server \
 
 DEP_CATEGORIES = \
+crypto/fips/org.argeo.tp.crypto \
+log/syslogger/org.argeo.tp \
 org.argeo.tp \
+org.argeo.tp.build \
 org.argeo.tp.sdk \
-org.argeo.tp.crypto \
-org.argeo.tp.jetty \
-org.argeo.tp.sql \
+org.argeo.tp.httpd \
 org.argeo.tp.utils \
 org.argeo.tp.jcr \
-org.argeo.tp.gis \
 osgi/api/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rap/org.argeo.tp.swt \
@@ -65,5 +71,7 @@ tool-server: osgi graalvm-custom
 		 org.argeo.tool.server.ArgeoServer \
 		 argeo
 
+native-deps-debian:
+	sudo apt install uuid-dev
 
 include  $(SDK_SRC_BASE)/sdk/argeo-build/osgi.mk
