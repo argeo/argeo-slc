@@ -33,7 +33,7 @@ public class EgoDashboard {
 		CmsSession cmsSession = CurrentUser.getCmsSession();
 		ZonedDateTime loggedIndSince = cmsSession.getCreationTime();
 		CmsSwtUtils.lbl(p, "Session:");
-		CmsSwtUtils.txt(p, cmsSession.getUuid().toString());
+		CmsSwtUtils.txt(p, cmsSession.uuid().toString());
 		CmsSwtUtils.lbl(p, "Logged in since:");
 		CmsSwtUtils.txt(p, loggedIndSince.toString());
 //		}

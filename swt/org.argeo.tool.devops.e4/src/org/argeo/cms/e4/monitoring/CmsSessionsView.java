@@ -106,7 +106,7 @@ public class CmsSessionsView {
 			private static final long serialVersionUID = -5234573509093747505L;
 
 			public String getText(Object element) {
-				return ((CmsSession) element).getUuid().toString();
+				return ((CmsSession) element).uuid().toString();
 			}
 
 			public String getToolTipText(Object element) {
