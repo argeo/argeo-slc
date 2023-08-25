@@ -34,9 +34,11 @@ graalvm-custom:
 #tool-server: osgi graalvm-custom
 #:$(SDK_BUILD_BASE)/$(A2_CATEGORY)/graalvm/bin
 
-tool-server: osgi 
-	mkdir -p $(A2_OUTPUT)/libexec/$(A2_CATEGORY)
-	cd $(A2_OUTPUT)/libexec/$(A2_CATEGORY) && $(GRAALVM_HOME)/bin/native-image \
+LIBEXEC_DIR=$(A2_OUTPUT)/libexec/linux/x86_64/$(A2_CATEGORY)
+
+tool-server: 
+	mkdir -p $(LIBEXEC_DIR)
+	cd $(LIBEXEC_DIR) && $(GRAALVM_HOME)/bin/native-image \
 		-cp $(DEP_CLASSPATH) \
 		--enable-url-protocols=http,https \
 		-H:AdditionalSecurityProviders=sun.security.jgss.SunProvider \
@@ -45,6 +47,11 @@ tool-server: osgi
 		-Dargeo.logging.synchronous=true \
 		 org.argeo.tool.server.ArgeoServer \
 		 argeo
+
+#		--static \
+
+#		-H:+StaticExecutableWithDynamicLibC \
+# 		-H:Name=argeo \
 
 # Use --verbose in order to see whcih configurations are used 
 		 
