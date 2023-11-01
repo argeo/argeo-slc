@@ -13,11 +13,11 @@ import org.argeo.api.acr.spi.ProvidedRepository;
 import org.argeo.api.cli.CommandsCli;
 import org.argeo.api.cli.DescribedCommand;
 import org.argeo.api.cms.CmsApp;
+import org.argeo.api.register.Component;
+import org.argeo.api.register.ComponentRegister;
 import org.argeo.cms.runtime.StaticCms;
 import org.argeo.cms.swt.app.CmsUserApp;
 import org.argeo.cms.ui.rcp.CmsRcpDisplayFactory;
-import org.argeo.api.register.Component;
-import org.argeo.api.register.ComponentRegister;
 
 public class CmsCli extends CommandsCli {
 
@@ -82,7 +82,9 @@ public class CmsCli extends CommandsCli {
 				protected void postActivation(ComponentRegister register) {
 					if (ui) {
 						Component<? extends CmsUserApp> cmsAppC = register.find(CmsUserApp.class, null).first();
-						CmsRcpDisplayFactory.openCmsApp(cmsAppC.get(), "data", (e) -> {
+						Component<? extends CmsRcpDisplayFactory> cmsRcpDisplayFactoryC = register
+								.find(CmsRcpDisplayFactory.class, null).first();
+						cmsRcpDisplayFactoryC.get().openCmsApp(cmsAppC.get(), "data", (e) -> {
 							// asynchronous in order to avoid deadlock in UI thread
 							ForkJoinPool.commonPool().execute(() -> stop());
 						});

@@ -1,5 +1,7 @@
 package org.argeo.cms.e4.rap;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -166,6 +168,17 @@ public class CmsLoginLifecycle implements CmsView {
 	@Override
 	public String getUid() {
 		return uid;
+	}
+	
+	
+
+	@Override
+	public URI toBackendUri(String url) {
+		try {
+			return new URI(url);
+		} catch (URISyntaxException e) {
+			throw new IllegalArgumentException("Cannot convert " + url, e);
+		}
 	}
 
 	// CALLBACKS
