@@ -1,5 +1,7 @@
 package org.argeo.cms.e4.rcp;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.PrivilegedExceptionAction;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -28,6 +30,8 @@ public class CmsE4Application implements IApplication, CmsView {
 	private IApplication e4Application;
 	private UxContext uxContext;
 	private String uid;
+
+	private String httpServerBase;
 
 	@Override
 	public Object start(IApplicationContext context) throws Exception {
@@ -207,6 +211,24 @@ public class CmsE4Application implements IApplication, CmsView {
 	@Override
 	public <T> T doAs(Callable<T> action) {
 		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public URI toBackendUri(String url) {
+		try {
+			URI u = new URI(url);
+			if (u.getHost() == null) {
+				// TODO make it more robust
+				u = new URI(httpServerBase + url);
+			}
+			return u;
+		} catch (URISyntaxException e) {
+			throw new IllegalArgumentException("Cannot convert " + url, e);
+		}
+	}
+
+	public void setHttpServerBase(String httpServerBase) {
+		this.httpServerBase = httpServerBase;
 	}
 
 }
