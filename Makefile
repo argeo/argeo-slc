@@ -52,25 +52,6 @@ clean:
 	$(MAKE) -C jni clean
 	$(MAKE) -f Makefile-rcp.mk clean
 
-GRAALVM_HOME = /opt/graalvm-ce
-A2_BUNDLES_CLASSPATH = $(subst $(space),$(pathsep),$(strip $(A2_BUNDLES)))
-
-graalvm-custom:
-	$(GRAALVM_HOME)/bin/java -jar $(ECJ_JAR) @$(SDK_SRC_BASE)/sdk/argeo-build/ecj.args -cp $(A2_CLASSPATH) \
-		graalvm/org.argeo.slc.graalvm/src[-d $(SDK_BUILD_BASE)/$(A2_CATEGORY)/graalvm/bin]
-
-tool-server: osgi graalvm-custom
-	mkdir -p $(A2_OUTPUT)/libexec/$(A2_CATEGORY)
-	cd $(A2_OUTPUT)/libexec/$(A2_CATEGORY) && $(GRAALVM_HOME)/bin/native-image \
-		-cp $(A2_CLASSPATH):$(A2_BUNDLES_CLASSPATH):$(SDK_BUILD_BASE)/$(A2_CATEGORY)/graalvm/bin \
-		--enable-url-protocols=http,https \
-		-H:AdditionalSecurityProviders=sun.security.jgss.SunProvider \
-		--initialize-at-build-time=org.argeo.init.logging.ThinLogging,org.slf4j.LoggerFactory \
-		--no-fallback \
-		-Dargeo.logging.synchronous=true \
-		 org.argeo.tool.server.ArgeoServer \
-		 argeo
-
 native-deps-debian:
 	sudo apt install uuid-dev
 
