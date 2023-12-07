@@ -10,10 +10,9 @@ import javax.servlet.ServletException;
 
 import org.argeo.cms.jetty.CmsJettyServer;
 import org.argeo.cms.web.CmsWebApp;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.ee8.servlet.DefaultServlet;
+import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.eclipse.rap.rwt.application.ApplicationRunner;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 
@@ -25,7 +24,8 @@ public class RapJettyServer extends CmsJettyServer {
 		// rwt-resources requires a file system
 		try {
 			Path tempDir = Files.createTempDirectory("argeo-rwtRunner");
-			servletContextHandler.setBaseResource(Resource.newResource(tempDir.resolve("www").toString()));
+			// FIXME we need a base directory
+			//servletContextHandler.setBaseResource(Resource.newResource(tempDir.resolve("www").toString()));
 		} catch (IOException e) {
 			throw new IllegalStateException("Cannot create temporary directory", e);
 		}

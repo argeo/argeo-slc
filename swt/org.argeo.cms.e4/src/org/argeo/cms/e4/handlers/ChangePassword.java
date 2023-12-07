@@ -8,7 +8,7 @@ import static org.argeo.cms.CmsMsg.repeatNewPassword;
 
 import java.util.Arrays;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
