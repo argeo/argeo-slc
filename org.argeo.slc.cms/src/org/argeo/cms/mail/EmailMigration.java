@@ -21,23 +21,23 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import javax.mail.FetchProfile;
-import javax.mail.Folder;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.URLName;
-import javax.mail.internet.InternetHeaders;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.search.HeaderTerm;
-import javax.mail.util.SharedFileInputStream;
+import org.eclipse.angus.mail.imap.IMAPFolder;
+import org.eclipse.angus.mail.mbox.MboxFolder;
+import org.eclipse.angus.mail.mbox.MboxMessage;
 
-import com.sun.mail.imap.IMAPFolder;
-import com.sun.mail.mbox.MboxFolder;
-import com.sun.mail.mbox.MboxMessage;
+import jakarta.mail.FetchProfile;
+import jakarta.mail.Folder;
+import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
+import jakarta.mail.Session;
+import jakarta.mail.Store;
+import jakarta.mail.URLName;
+import jakarta.mail.internet.InternetHeaders;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.search.HeaderTerm;
+import jakarta.mail.util.SharedFileInputStream;
 
 /** Migrates emails from one storage to the another one. */
 public class EmailMigration {
