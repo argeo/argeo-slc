@@ -1,4 +1,0 @@
-#Require-Capability: cms.datamodel;filter:="(name=ldap)",\
-# cms.datamodel;filter:="(name=argeo)"
-
-Provide-Capability: cms.datamodel;name=slc;cnd=/org/argeo/slc/slc.cnd
