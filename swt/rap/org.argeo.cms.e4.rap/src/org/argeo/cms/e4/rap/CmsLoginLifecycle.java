@@ -3,10 +3,10 @@ package org.argeo.cms.e4.rap;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.AccessController;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import jakarta.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
@@ -35,13 +35,15 @@ import org.eclipse.swt.widgets.Display;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
+import jakarta.inject.Inject;
+
 @SuppressWarnings("restriction")
-public class CmsLoginLifecycle implements CmsView {
+public class CmsLoginLifecycle implements CmsView {// TODO extends SwtAppUi
 	private final static CmsLog log = CmsLog.getLog(CmsLoginLifecycle.class);
 
 	@Inject
 	private CmsContext cmsContext;
-	
+
 	private UxContext uxContext;
 	private CmsImageManager imageManager;
 
@@ -169,8 +171,6 @@ public class CmsLoginLifecycle implements CmsView {
 	public String getUid() {
 		return uid;
 	}
-	
-	
 
 	@Override
 	public URI toBackendUri(String url) {
@@ -200,6 +200,16 @@ public class CmsLoginLifecycle implements CmsView {
 
 	@Override
 	public <T> T doAs(Callable<T> action) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public TimerTask schedule(Runnable task, long delay) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public TimerTask schedule(Runnable task, long delay, long period) {
 		throw new UnsupportedOperationException();
 	}
 
