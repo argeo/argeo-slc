@@ -3,6 +3,7 @@ package org.argeo.cms.e4.rcp;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.PrivilegedExceptionAction;
+import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -210,6 +211,16 @@ public class CmsE4Application implements IApplication, CmsView {
 
 	@Override
 	public <T> T doAs(Callable<T> action) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public TimerTask schedule(Runnable task, long delay) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public TimerTask schedule(Runnable task, long delay, long period) {
 		throw new UnsupportedOperationException();
 	}
 
