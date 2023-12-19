@@ -3,7 +3,7 @@ package org.argeo.cms.e4.addons;
 import java.security.AccessController;
 import java.util.Iterator;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 

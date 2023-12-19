@@ -10,18 +10,17 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.argeo.minidesktop.MiniDesktopManager;
+import org.eclipse.jetty.ee8.servlet.DefaultServlet;
+import org.eclipse.jetty.ee8.servlet.ServletContextHandler;
+import org.eclipse.jetty.ee8.servlet.ServletHolder;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.servlet.DefaultServlet;
-import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.resource.Resource;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.ApplicationRunner;
 import org.eclipse.rap.rwt.application.EntryPoint;
-import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.engine.RWTServlet;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -59,7 +58,8 @@ public class RwtRunner {
 		// rwt-resources requires a file system
 		try {
 			tempDir = Files.createTempDirectory("argeo-rwtRunner");
-			context.setBaseResource(Resource.newResource(tempDir.resolve("www").toString()));
+			// FIXME we need a base directory
+//			context.setBaseResource(new PathResource(tempDir.resolve("www")));
 		} catch (IOException e) {
 			throw new IllegalStateException("Cannot create temporary directory", e);
 		}

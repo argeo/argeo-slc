@@ -17,13 +17,8 @@ BUNDLES = \
 org.argeo.slc.api \
 org.argeo.slc.runtime \
 org.argeo.slc.cms \
-org.argeo.slc.repo \
-org.argeo.slc.rpmfactory \
-org.argeo.slc.jcr \
 lib/linux/org.argeo.slc.systemd \
-swt/org.argeo.tool.swt \
 swt/org.argeo.cms.e4 \
-swt/org.argeo.tool.devops.e4 \
 swt/rap/org.argeo.cms.e4.rap \
 swt/rap/org.argeo.tool.rap.cli \
 swt/rap/org.argeo.tool.server \
@@ -32,20 +27,16 @@ DEP_CATEGORIES = \
 crypto/fips/org.argeo.tp.crypto \
 log/syslogger/org.argeo.tp \
 org.argeo.tp \
-org.argeo.tp.build \
-org.argeo.tp.sdk \
 org.argeo.tp.httpd \
-org.argeo.tp.utils \
-org.argeo.tp.jcr \
+org.argeo.tp.sys \
 osgi/api/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rap/org.argeo.tp.swt \
 swt/rap/org.argeo.tp.swt.workbench \
 org.argeo.cms \
-org.argeo.cms.jcr \
 swt/org.argeo.cms \
-swt/org.argeo.cms.jcr \
 swt/rap/org.argeo.cms \
+$(A2_CATEGORY)
 
 clean:
 	rm -rf $(BUILD_BASE)
