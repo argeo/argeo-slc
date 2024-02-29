@@ -9,14 +9,15 @@ import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.TargetData;
 import org.osgi.framework.BundleContext;
 
-public class CmsOsgiDeployedSystem implements CmsDeployedSystem {
+/** A deployed OSGi-based Argeo CMS system. */
+public class OsgiCmsDeployedSystem implements CmsDeployedSystem {
 	private ModularDistribution distribution;
 	private CmsTargetData targetData;
 	private CmsDeploymentData deploymentData;
 
 	private BundleContext systemBundleContext;
 
-	public CmsOsgiDeployedSystem(BundleContext systemBundleContext, ModularDistribution distribution,
+	public OsgiCmsDeployedSystem(BundleContext systemBundleContext, ModularDistribution distribution,
 			CmsTargetData targetData, CmsDeploymentData deploymentData) {
 		this.systemBundleContext = systemBundleContext;
 

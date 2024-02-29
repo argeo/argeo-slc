@@ -23,15 +23,15 @@ import org.argeo.slc.cms.deploy.CmsDeployedSystem;
 import org.argeo.slc.cms.deploy.CmsDeploymentData;
 import org.argeo.slc.cms.deploy.CmsTargetData;
 import org.argeo.slc.cms.deploy.SimpleCmsDeploymentData;
-import org.argeo.slc.cms.deploy.SimpleCmsTargetData;
 import org.argeo.slc.cms.distribution.A2Distribution;
 import org.argeo.slc.deploy.DeployedSystem;
 import org.argeo.slc.deploy.Deployment;
 import org.argeo.slc.deploy.DeploymentData;
 import org.argeo.slc.deploy.TargetData;
 
-public class CmsOsgiDeployment implements Deployment {
-	private final static Logger logger = System.getLogger(CmsOsgiDeployment.class.getName());
+/** The process of deploying an OSGi based Argeo CMS system. */
+public class OsgiCmsDeployment implements Deployment {
+	private final static Logger logger = System.getLogger(OsgiCmsDeployment.class.getName());
 
 	private A2Distribution distribution;
 	private CmsTargetData targetData;
@@ -73,23 +73,26 @@ public class CmsOsgiDeployment implements Deployment {
 			}
 
 			config.put("org.eclipse.equinox.http.jetty.autostart", "false");
-			config.put("org.osgi.framework.bootdelegation",
-					"com.sun.jndi.ldap,com.sun.jndi.ldap.sasl,com.sun.security.jgss,com.sun.jndi.dns,com.sun.nio.file,com.sun.nio.sctp");
+			config.put("org.osgi.framework.system.packages.extra",
+					"sun.security.util,sun.security.internal.spec,sun.security.provider,com.sun.net.httpserver,com.sun.jndi.ldap,com.sun.jndi.ldap.sasl,com.sun.jndi.dns,com.sun.security.jgss,com.sun.nio.file,com.sun.nio.sctp");
 			config.put("eclipse.ignoreApp", "true");
 			config.put("osgi.noShutdown", "true");
+			
+			config.put("argeo.directory", "dc=example,dc=com.ldif");
 
-			config.put("osgi.console", "2323");
+			if (targetData instanceof OsgiCmsTargetData osgiCmsTargetData && osgiCmsTargetData.getTelnetPort() != null)
+				config.put("osgi.console", osgiCmsTargetData.getTelnetPort().toString());
 
 			// initialise
 			for (String key : config.keySet()) {
 //				System.out.println(key + "=" + config.get(key));
-				logger.log(Level.INFO, () -> key + "=" + config.get(key));
+				logger.log(Level.TRACE, () -> key + "=" + config.get(key));
 			}
 
 			runtimeContext = new OsgiRuntimeContext(config);
 			runtimeContext.run();
 
-			deployedSystem = new CmsOsgiDeployedSystem(runtimeContext.getFramework().getBundleContext(), distribution,
+			deployedSystem = new OsgiCmsDeployedSystem(runtimeContext.getFramework().getBundleContext(), distribution,
 					targetData, deploymentData);
 
 		} catch (Exception e) {
@@ -132,13 +135,14 @@ public class CmsOsgiDeployment implements Deployment {
 			Map<String, String> xOr = new HashMap<>();
 			xOr.put("osgi", "equinox");
 			xOr.put("swt", "rap");
+			xOr.put("log", "syslogger");
+			xOr.put("crypto", "fips");
 			distribution.getA2Sources().add(new FsA2Source(a2Base, xOr, true));
 
 			// target data
 			Path instanceData = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment/data");
 			Files.createDirectories(instanceData);
-			Integer httpPort = 7070;
-			SimpleCmsTargetData targetData = new SimpleCmsTargetData(instanceData, httpPort);
+			OsgiCmsTargetData targetData = new OsgiCmsTargetData(instanceData, 7070, 2323);
 
 			// deployment data
 			SimpleCmsDeploymentData deploymentData = new SimpleCmsDeploymentData();
@@ -160,29 +164,36 @@ public class CmsOsgiDeployment implements Deployment {
 			deploymentData.getModulesToActivate(5).add("org.argeo.app.core");
 			deploymentData.getModulesToActivate(5).add("org.argeo.app.ui");
 			deploymentData.getModulesToActivate(5).add("org.argeo.app.theme.default");
+			deploymentData.getModulesToActivate(5).add("org.argeo.app.jcr");
 
-			CmsOsgiDeployment deployment = new CmsOsgiDeployment();
+			deploymentData.getModulesToActivate(5).add("org.example.suite.theme");
+			deploymentData.getModulesToActivate(5).add("org.example.suite.core");
+			deploymentData.getModulesToActivate(5).add("org.example.suite.ui");
+			deploymentData.getModulesToActivate(5).add("org.example.suite.ui.rap");
+
+			OsgiCmsDeployment deployment = new OsgiCmsDeployment();
 			deployment.setDistribution(distribution);
 			deployment.setTargetData(targetData);
 			deployment.setDeploymentData(deploymentData);
 			deployment.run();
 
-			boolean multiple = false;
+			boolean multiple = true;
 			if (multiple) {
+				// wait a bit
+				Thread.sleep(5000);
 
 				Path instanceData2 = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment2/data");
 				Files.createDirectories(instanceData2);
-				Integer httpPort2 = 7071;
-				SimpleCmsTargetData targetData2 = new SimpleCmsTargetData(instanceData2, httpPort2);
+				OsgiCmsTargetData targetData2 = new OsgiCmsTargetData(instanceData2, 7071, 2324);
 
-				CmsOsgiDeployment deployment2 = new CmsOsgiDeployment();
+				OsgiCmsDeployment deployment2 = new OsgiCmsDeployment();
 				deployment2.setDistribution(distribution);
 				deployment2.setTargetData(targetData2);
 				deployment2.setDeploymentData(deploymentData);
 				deployment2.run();
 			}
 
-			deployment.getRuntimeContext().waitForStop(0);
+			// deployment.getRuntimeContext().waitForStop(0);
 
 		} catch (IOException | InterruptedException e) {
 			e.printStackTrace();
