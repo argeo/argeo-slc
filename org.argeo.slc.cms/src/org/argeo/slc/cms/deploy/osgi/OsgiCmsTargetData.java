@@ -7,8 +7,8 @@ import org.argeo.slc.cms.deploy.SimpleCmsTargetData;
 public class OsgiCmsTargetData extends SimpleCmsTargetData {
 	private Integer telnetPort;
 
-	public OsgiCmsTargetData(Path instanceData, Integer httpPort, Integer telnetPort) {
-		super(instanceData, httpPort);
+	public OsgiCmsTargetData(Path instanceData, String host, Integer httpPort, Integer telnetPort) {
+		super(instanceData, host, httpPort);
 		this.telnetPort = telnetPort;
 	}
 

@@ -7,6 +7,8 @@ import org.argeo.slc.deploy.TargetData;
 public interface CmsTargetData extends TargetData {
 	Path getInstanceData();
 
+	String getHost();
+
 	Integer getHttpPort();
 
 }

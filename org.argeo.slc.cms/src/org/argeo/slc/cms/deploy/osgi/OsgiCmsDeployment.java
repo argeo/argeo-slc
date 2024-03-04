@@ -56,6 +56,11 @@ public class OsgiCmsDeployment implements Deployment {
 			// target
 			config.put(WellKnownConstants.OSGI_INSTANCE_AREA,
 					targetData.getInstanceData().toRealPath().toUri().toString());
+
+			if (targetData.getHost() != null) {
+				config.put(CmsDeployProperty.HOST.getProperty(), targetData.getHost().toString());
+			}
+
 			if (targetData.getHttpPort() != null) {
 				config.put(CmsDeployProperty.HTTP_PORT.getProperty(), targetData.getHttpPort().toString());
 			}
@@ -77,11 +82,19 @@ public class OsgiCmsDeployment implements Deployment {
 					"sun.security.util,sun.security.internal.spec,sun.security.provider,com.sun.net.httpserver,com.sun.jndi.ldap,com.sun.jndi.ldap.sasl,com.sun.jndi.dns,com.sun.security.jgss,com.sun.nio.file,com.sun.nio.sctp");
 			config.put("eclipse.ignoreApp", "true");
 			config.put("osgi.noShutdown", "true");
-			
+			config.put("osgi.clean", "true");
+			config.put("osgi.framework.useSystemProperties", "false");
+
 			config.put("argeo.directory", "dc=example,dc=com.ldif");
 
-			if (targetData instanceof OsgiCmsTargetData osgiCmsTargetData && osgiCmsTargetData.getTelnetPort() != null)
-				config.put("osgi.console", osgiCmsTargetData.getTelnetPort().toString());
+			if (targetData instanceof OsgiCmsTargetData osgiCmsTargetData
+					&& osgiCmsTargetData.getTelnetPort() != null) {
+				String hostStr = "";
+				if (targetData.getHost() != null) {
+					hostStr = targetData.getHost().toString() + ":";
+				}
+				config.put("osgi.console", hostStr + osgiCmsTargetData.getTelnetPort().toString());
+			}
 
 			// initialise
 			for (String key : config.keySet()) {
@@ -137,12 +150,12 @@ public class OsgiCmsDeployment implements Deployment {
 			xOr.put("swt", "rap");
 			xOr.put("log", "syslogger");
 			xOr.put("crypto", "fips");
-			distribution.getA2Sources().add(new FsA2Source(a2Base, xOr, true));
+			distribution.getA2Sources().add(new FsA2Source(a2Base, xOr, true, null, null));
 
 			// target data
 			Path instanceData = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment/data");
 			Files.createDirectories(instanceData);
-			OsgiCmsTargetData targetData = new OsgiCmsTargetData(instanceData, 7070, 2323);
+			OsgiCmsTargetData targetData = new OsgiCmsTargetData(instanceData, "host1", 7070, 2323);
 
 			// deployment data
 			SimpleCmsDeploymentData deploymentData = new SimpleCmsDeploymentData();
@@ -184,7 +197,7 @@ public class OsgiCmsDeployment implements Deployment {
 
 				Path instanceData2 = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment2/data");
 				Files.createDirectories(instanceData2);
-				OsgiCmsTargetData targetData2 = new OsgiCmsTargetData(instanceData2, 7071, 2324);
+				OsgiCmsTargetData targetData2 = new OsgiCmsTargetData(instanceData2, "host2", 7070, 2323);
 
 				OsgiCmsDeployment deployment2 = new OsgiCmsDeployment();
 				deployment2.setDistribution(distribution);

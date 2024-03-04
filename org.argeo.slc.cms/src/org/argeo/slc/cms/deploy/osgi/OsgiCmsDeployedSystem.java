@@ -15,11 +15,11 @@ public class OsgiCmsDeployedSystem implements CmsDeployedSystem {
 	private CmsTargetData targetData;
 	private CmsDeploymentData deploymentData;
 
-	private BundleContext systemBundleContext;
+	// private BundleContext systemBundleContext;
 
 	public OsgiCmsDeployedSystem(BundleContext systemBundleContext, ModularDistribution distribution,
 			CmsTargetData targetData, CmsDeploymentData deploymentData) {
-		this.systemBundleContext = systemBundleContext;
+		// this.systemBundleContext = systemBundleContext;
 
 		this.distribution = distribution;
 		this.targetData = targetData;
