@@ -12,11 +12,10 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.TreeMap;
 
+import org.argeo.api.a2.A2Source;
+import org.argeo.api.a2.FsA2Source;
+import org.argeo.api.init.InitConstants;
 import org.argeo.cms.CmsDeployProperty;
-import org.argeo.init.a2.A2Source;
-import org.argeo.init.a2.FsA2Source;
-import org.argeo.init.osgi.OsgiBoot;
-import org.argeo.init.osgi.OsgiRuntimeContext;
 import org.argeo.slc.WellKnownConstants;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.cms.deploy.CmsDeployedSystem;
@@ -39,8 +38,6 @@ public class OsgiCmsDeployment implements Deployment {
 
 	private CmsDeployedSystem deployedSystem;
 
-	private OsgiRuntimeContext runtimeContext;
-
 	@Override
 	public void run() {
 		try {
@@ -51,7 +48,7 @@ public class OsgiCmsDeployment implements Deployment {
 			for (A2Source a2Source : distribution.getA2Sources()) {
 				sourcesProperty.add(a2Source.getUri().toString());
 			}
-			config.put(OsgiBoot.PROP_ARGEO_OSGI_SOURCES, sourcesProperty.toString());
+			config.put(InitConstants.PROP_ARGEO_OSGI_SOURCES, sourcesProperty.toString());
 
 			// target
 			config.put(WellKnownConstants.OSGI_INSTANCE_AREA,
@@ -73,7 +70,7 @@ public class OsgiCmsDeployment implements Deployment {
 				List<String> modules = deploymentData.getModulesToActivate(startLevel);
 				if (modules.size() != 0) {
 					String startProperty = String.join(",", modules);
-					config.put(OsgiBoot.PROP_ARGEO_OSGI_START + "." + startLevel, startProperty);
+					config.put(InitConstants.PROP_ARGEO_OSGI_START + "." + startLevel, startProperty);
 				}
 			}
 
@@ -102,11 +99,12 @@ public class OsgiCmsDeployment implements Deployment {
 				logger.log(Level.TRACE, () -> key + "=" + config.get(key));
 			}
 
-			runtimeContext = new OsgiRuntimeContext(config);
-			runtimeContext.run();
+			// FIXME use runtime manager
+//			runtimeContext = new OsgiRuntimeContext(config);
+//			runtimeContext.run();
 
-			deployedSystem = new OsgiCmsDeployedSystem(runtimeContext.getFramework().getBundleContext(), distribution,
-					targetData, deploymentData);
+//			deployedSystem = new OsgiCmsDeployedSystem(runtimeContext.getFramework().getBundleContext(), distribution,
+//					targetData, deploymentData);
 
 		} catch (Exception e) {
 			throw new IllegalStateException("Cannot run OSGi deployment", e);
@@ -132,10 +130,6 @@ public class OsgiCmsDeployment implements Deployment {
 	@Override
 	public void setDistribution(Distribution distribution) {
 		this.distribution = (A2Distribution) distribution;
-	}
-
-	public OsgiRuntimeContext getRuntimeContext() {
-		return runtimeContext;
 	}
 
 	public static void main(String[] args) {

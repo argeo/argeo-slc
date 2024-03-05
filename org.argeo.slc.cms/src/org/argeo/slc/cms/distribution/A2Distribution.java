@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.argeo.init.a2.A2Branch;
-import org.argeo.init.a2.A2Component;
-import org.argeo.init.a2.A2Contribution;
-import org.argeo.init.a2.A2Module;
-import org.argeo.init.a2.A2Source;
+import org.argeo.api.a2.A2Branch;
+import org.argeo.api.a2.A2Component;
+import org.argeo.api.a2.A2Contribution;
+import org.argeo.api.a2.A2Module;
+import org.argeo.api.a2.A2Source;
 import org.argeo.slc.CategoryNameVersion;
 import org.argeo.slc.DefaultCategoryNameVersion;
 import org.argeo.slc.NameVersion;
