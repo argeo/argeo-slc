@@ -1,15 +1,15 @@
 include sdk.mk
 .PHONY: clean all osgi jni
 
-all: osgi jni
+all: osgi-all
 	$(MAKE) -f Makefile-rcp.mk all
 	
 install: osgi-install
 
 uninstall: osgi-uninstall
 
-jni:
-	$(MAKE) -C jni
+#jni:
+#	$(MAKE) -C jni
 
 A2_CATEGORY = org.argeo.slc
 
@@ -38,9 +38,12 @@ swt/org.argeo.cms \
 swt/rap/org.argeo.cms \
 $(A2_CATEGORY)
 
-clean:
-	rm -rf $(BUILD_BASE)
-	$(MAKE) -C jni clean
+NATIVE_PACKAGES= \
+org_argeo_api_uuid_libuuid
+
+clean: osgi-clean
+#	rm -rf $(BUILD_BASE)
+#	$(MAKE) -C jni clean
 	$(MAKE) -f Makefile-rcp.mk clean
 
 native-deps-debian:
