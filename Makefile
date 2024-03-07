@@ -29,7 +29,7 @@ log/syslogger/org.argeo.tp \
 org.argeo.tp \
 org.argeo.tp.httpd \
 org.argeo.tp.sys \
-osgi/api/org.argeo.tp.osgi \
+osgi/equinox/org.argeo.tp.osgi \
 osgi/equinox/org.argeo.tp.eclipse \
 swt/rap/org.argeo.tp.swt \
 swt/rap/org.argeo.tp.swt.workbench \

@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.argeo.api.cms.CmsLog;
-import org.argeo.api.init.InitConstants;
 import org.argeo.api.init.RuntimeManager;
 import org.argeo.cms.CmsDeployProperty;
 import org.osgi.framework.BundleActivator;
@@ -20,7 +19,22 @@ public class SlcInitActivator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception {
 		Path userHome = Paths.get(System.getProperty("user.home"));
-//		OsgiCmsDeployment.main(new String[0]);
+
+//		{
+//			EquinoxFactory equinoxFactory = new EquinoxFactory();
+//			Map<String, String> config = new HashMap<>();
+//			config.put("osgi.console", "host1:2023");
+//			config.put("osgi.frameworkParentClassloader", "app");
+//			config.put("osgi.parentClassLoader", "app");
+//			RuntimeManager.loadConfig(Paths.get("/usr/local/etc/argeo/user/cms/test3"), config);
+//			Framework framework = equinoxFactory.newFramework(config);
+//			framework.start();
+//			OsgiBoot osgiBoot = new OsgiBoot(framework.getBundleContext());
+//			osgiBoot.bootstrap(config);
+//		}
+
+		// OsgiCmsDeployment.test();
+
 		runtimeManagerSt = new ServiceTracker<>(context, RuntimeManager.class, null) {
 
 			@Override
@@ -35,7 +49,7 @@ public class SlcInitActivator implements BundleActivator {
 //							return;
 //						}
 
-						runtimeManager.startRuntime("cms/test1", (config) -> {
+						runtimeManager.startRuntime("native/test1", (config) -> {
 							config.put("osgi.console", "host1:2023");
 							config.put(CmsDeployProperty.SSHD_PORT.getProperty(), "2222");
 							config.put(CmsDeployProperty.HTTP_PORT.getProperty(), "7070");
@@ -44,14 +58,15 @@ public class SlcInitActivator implements BundleActivator {
 //								System.out.println(key + "=" + config.get(key));
 ////								log.debug(() -> key + "=" + config.get(key));
 //							}
+//							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
 						});
 						runtimeManager.startRuntime("native/test2", (config) -> {
 							config.put("osgi.console", "host2:2023");
 							config.put(CmsDeployProperty.SSHD_PORT.getProperty(), "2222");
 							// config.put(CmsDeployProperty.HTTP_PORT.getProperty(), "7070");
 							config.put(CmsDeployProperty.HOST.getProperty(), "host2");
-							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
-//							config.put("argeo.directory", "ipa:///");
+//							config.put("argeo.osgi.start.6", "org.argeo.swt.minidesktop");
+////							config.put("argeo.directory", "ipa:///");
 //							Path instanceData = userHome
 //									.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment/data");
 //							config.put(InitConstants.PROP_OSGI_INSTANCE_AREA, instanceData.toUri().toString());

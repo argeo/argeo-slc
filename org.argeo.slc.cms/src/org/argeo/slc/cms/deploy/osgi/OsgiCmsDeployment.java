@@ -15,7 +15,9 @@ import java.util.TreeMap;
 import org.argeo.api.a2.A2Source;
 import org.argeo.api.a2.FsA2Source;
 import org.argeo.api.init.InitConstants;
+import org.argeo.api.init.RuntimeContext;
 import org.argeo.cms.CmsDeployProperty;
+import org.argeo.init.osgi.OsgiRuntimeContext;
 import org.argeo.slc.WellKnownConstants;
 import org.argeo.slc.build.Distribution;
 import org.argeo.slc.cms.deploy.CmsDeployedSystem;
@@ -37,6 +39,8 @@ public class OsgiCmsDeployment implements Deployment {
 	private CmsDeploymentData deploymentData;
 
 	private CmsDeployedSystem deployedSystem;
+
+	private OsgiRuntimeContext runtimeContext;
 
 	@Override
 	public void run() {
@@ -100,8 +104,8 @@ public class OsgiCmsDeployment implements Deployment {
 			}
 
 			// FIXME use runtime manager
-//			runtimeContext = new OsgiRuntimeContext(config);
-//			runtimeContext.run();
+			runtimeContext = new OsgiRuntimeContext(config);
+			runtimeContext.run();
 
 //			deployedSystem = new OsgiCmsDeployedSystem(runtimeContext.getFramework().getBundleContext(), distribution,
 //					targetData, deploymentData);
@@ -132,7 +136,20 @@ public class OsgiCmsDeployment implements Deployment {
 		this.distribution = (A2Distribution) distribution;
 	}
 
+	public OsgiRuntimeContext getRuntimeContext() {
+		return runtimeContext;
+	}
+
 	public static void main(String[] args) {
+		RuntimeContext runtimeContext = test();
+		try {
+			runtimeContext.waitForStop(0);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static RuntimeContext test() {
 		try {
 			Path userHome = Paths.get(System.getProperty("user.home"));
 
@@ -187,7 +204,7 @@ public class OsgiCmsDeployment implements Deployment {
 			boolean multiple = true;
 			if (multiple) {
 				// wait a bit
-				Thread.sleep(5000);
+//				Thread.sleep(5000);
 
 				Path instanceData2 = userHome.resolve("dev/git/unstable/argeo-slc/sdk/exec/cms-deployment2/data");
 				Files.createDirectories(instanceData2);
@@ -200,11 +217,11 @@ public class OsgiCmsDeployment implements Deployment {
 				deployment2.run();
 			}
 
-			// deployment.getRuntimeContext().waitForStop(0);
-
-		} catch (IOException | InterruptedException e) {
+			return deployment.getRuntimeContext();
+		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
+			return null;
 		}
 	}
 
